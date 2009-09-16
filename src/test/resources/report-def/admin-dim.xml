@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns="http://www.activityinfo.org/report-def"    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <parameters>
+        <parameter name="MONTH" label="Mois" type="date" date-unit="month"/>
+    </parameters>
+
+    <filter>
+        <dimension type="database">
+            <include id="1"/>
+        </dimension>
+    </filter>
+
+    <theme>
+        <fonts>
+            <font role="header">Cambria</font>
+            <font role="body">Calibri</font>
+        </fonts>
+        <colors>
+
+        </colors>
+
+    </theme>
+
+    <title>Rapport Mensuelle de RRM</title>
+
+    <description>Rapport au profondeur des activités de PEAR jusqu'à le mois donnée</description>
+
+    <body>
+
+        <pivotTable>
+
+            <title>Résumé Statistique par Partenaire</title>
+
+            <filter>
+                <date-range max="${MONTH}" date-unit="month"/>
+            </filter>
+
+            <dimensions>
+                <row>
+                    <dimension type="database"/>
+                    <dimension type="activity"/>
+                    <dimension type="indicator"/>
+                </row>
+
+                <column>
+                    <dimension type="admin" levelId="1"/>
+                    <dimension type="partner"/>
+                </column>
+
+            </dimensions>
+
+        </pivotTable>
+
+
+        <chart type="stacked-bar">
+
+            <title>Distributions NFI</title>
+
+            <categoryAxisTitle>Activités</categoryAxisTitle>
+            <valueAxisTitle>Bénéficiaries</valueAxisTitle>
+
+            <filter>
+                <date-range max="${MONTH}" date-unit="month" count="6"/>
+            </filter>
+
+            <dimensions>
+                <category>
+                    <dimension type="date" date-unit="month"/>
+                </category>
+
+                <legend>
+                    <dimension type="partner"/>
+                </legend>
+            </dimensions>
+
+            <indicators>
+                <indicator id="28"/>
+            </indicators>
+        </chart>
+
+
+    </body>
+</report>

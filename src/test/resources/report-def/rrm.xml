@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns="http://www.activityinfo.org/report-def"    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+
+<filter>
+<dimension type="database">
+<include id="1"/>
+</dimension>
+</filter>
+
+<title>Rapport RRM</title>
+
+<description>Resumé des résultats pour une period de temps donnée.</description>
+
+<body>
+
+
+<pivotTable>
+<title>Résumé Statistique par Province et Partenaire</title>
+
+<dimensions>
+
+<row>
+<dimension type="activity"/>
+<dimension type="indicator"/>
+</row>
+
+<column>
+<dimension type="adminlevel" levelId="1"/>
+<dimension type="partner"/>
+</column>
+
+</dimensions>
+
+</pivotTable>
+
+
+<map>
+   <title>Carte des Activites - Nord Kivu</title>
+   <filter>
+     <dimension type="adminlevel" levelId="1">
+         <include id="141801"/>
+     </dimension>
+    </filter>
+   <baseMap>zs.gray.cd</baseMap>
+   <layers>
+      <iconLayer>
+           <activity id="22"/>
+           <icon>nfi</icon>
+       </iconLayer>
+      <iconLayer>
+           <activity id="27"/>
+           <icon>bread</icon>
+       </iconLayer>
+      <iconLayer>
+            <activity id="25"/>
+            <icon>educ</icon>
+      </iconLayer>
+      <iconLayer>
+             <activity id="24"/>
+             <icon>msa</icon>
+      </iconLayer>
+       <iconLayer>
+              <activity id="28"/>
+              <icon>wash</icon>
+       </iconLayer>
+       <iconLayer>
+               <activity id="26"/>
+                <icon>educ-building</icon>
+       </iconLayer>
+       <iconLayer>
+             <activity id="31"/>
+             <icon>watertrucking</icon>
+       </iconLayer>
+   </layers>
+  </map>
+
+
+<map>
+   <title>Carte des Activites - Sud Kivu</title>
+   <filter>
+     <dimension type="adminlevel" levelId="1">
+         <include id="141803"/>
+     </dimension>
+    </filter>
+   <baseMap>zs.gray.cd</baseMap>
+   <layers>
+      <iconLayer>
+           <activity id="22"/>
+           <icon>nfi</icon>
+       </iconLayer>
+      <iconLayer>
+           <activity id="27"/>
+           <icon>bread</icon>
+       </iconLayer>
+      <iconLayer>
+            <activity id="25"/>
+            <icon>educ</icon>
+      </iconLayer>
+      <iconLayer>
+             <activity id="24"/>
+             <icon>msa</icon>
+      </iconLayer>
+       <iconLayer>
+              <activity id="28"/>
+              <icon>wash</icon>
+       </iconLayer>
+       <iconLayer>
+               <activity id="26"/>
+                <icon>educ-building</icon>
+       </iconLayer>
+       <iconLayer>
+             <activity id="31"/>
+             <icon>watertrucking</icon>
+       </iconLayer>
+   </layers>
+  </map>
+
+<map>
+   <title>Carte des Activites - Ituri</title>
+   <filter>
+     <dimension type="adminlevel" levelId="2">
+         <include id="141831"/>
+     </dimension>
+    </filter>
+   <baseMap>zs.gray.cd</baseMap>
+   <layers>
+      <iconLayer>
+           <activity id="22"/>
+           <icon>nfi</icon>
+       </iconLayer>
+      <iconLayer>
+           <activity id="27"/>
+           <icon>bread</icon>
+       </iconLayer>
+      <iconLayer>
+            <activity id="25"/>
+            <icon>educ</icon>
+      </iconLayer>
+      <iconLayer>
+             <activity id="24"/>
+             <icon>msa</icon>
+      </iconLayer>
+       <iconLayer>
+              <activity id="28"/>
+              <icon>wash</icon>
+       </iconLayer>
+       <iconLayer>
+               <activity id="26"/>
+                <icon>educ-building</icon>
+       </iconLayer>
+       <iconLayer>
+             <activity id="31"/>
+             <icon>watertrucking</icon>
+       </iconLayer>
+   </layers>
+  </map>
+
+<map>
+   <title>Carte des Activites - Haut Ulele</title>
+   <filter>
+     <dimension type="adminlevel" levelId="2">
+         <include id="141830"/>
+     </dimension>
+    </filter>
+   <baseMap>zs.gray.cd</baseMap>
+   <layers>
+      <iconLayer>
+           <activity id="22"/>
+           <icon>nfi</icon>
+       </iconLayer>
+      <iconLayer>
+           <activity id="27"/>
+           <icon>bread</icon>
+       </iconLayer>
+      <iconLayer>
+            <activity id="25"/>
+            <icon>educ</icon>
+      </iconLayer>
+      <iconLayer>
+             <activity id="24"/>
+             <icon>msa</icon>
+      </iconLayer>
+       <iconLayer>
+              <activity id="28"/>
+              <icon>wash</icon>
+       </iconLayer>
+       <iconLayer>
+               <activity id="26"/>
+                <icon>educ-building</icon>
+       </iconLayer>
+       <iconLayer>
+             <activity id="31"/>
+             <icon>watertrucking</icon>
+       </iconLayer>
+   </layers>
+  </map>
+
+
+
+<map>
+   <title>Distributions NFI par type de Beneficiare</title>
+   <baseMap>zs.gray.cd</baseMap>
+   <layers>
+        <graduatedSymbolLayer>
+            <indicators>
+                <indicator id="29"/> <!-- Deplaces -->
+                <indicator id="31"/> <!-- Retournees -->
+                <indicator id="33"/> <!-- Fam d'acc -->
+                <indicator id="34"/> <!-- catostroph -->
+             </indicators>
+             <dimensions>
+                 <color>
+                 <dimension type="indicator">
+    <category id="29" color="#FF0000" label="Déplacés"/>
+    <category id="31" color="#0000BB" label="Retournes"/>
+    <category id="33" color="#00BB00" label="Famille d'Accueille"/>
+     <category id="34" color="#FFFF00" label="Victimes de Catastrophes Naturelles"/>
+                 </dimension>
+                 </color>
+            </dimensions>
+        </graduatedSymbolLayer>
+   </layers>
+  </map>
+
+  <chart type="pie">
+     <title>Repartition des Beneficiaries NFI par Statut</title>
+     <dimensions>
+          <category>
+                <dimension type="indicator">
+                     <category id="29" color="#FF0000"/>
+                     <category id="31" color="#0000BB"/>
+                     <category id="33" color="#00BB00"/>
+                     <category id="34" color="#FFFF00"/>
+                 </dimension>
+
+          </category>
+
+     </dimensions>
+            <indicators>
+                <indicator id="29"/> <!-- Deplaces -->
+                <indicator id="31"/> <!-- Retournees -->
+                <indicator id="33"/> <!-- Fam d'acc -->
+                <indicator id="34"/> <!-- catostroph -->
+             </indicators>
+
+  </chart>
+
+
+</body>
+</report>

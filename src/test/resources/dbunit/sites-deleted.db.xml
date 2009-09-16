@@ -1,0 +1,327 @@
+<?xml version="1.0"?>
+<dataset>
+
+
+	<!-- Country setup -->
+
+	<country countryId="1" name="Rdc" x1="0" y1="0" x2="0" y2="0" />
+
+    <adminLevel countryId="1" adminLevelId="1" name="Province" AllowAdd="0"	/>
+    <adminLevel countryId="1" adminLevelId="2" name="Territoire" AllowAdd="0" ParentId="1"/>    
+
+	<locationType locationTypeId="1" countryId="1" name="localite" reuse="1"/>
+	<locationType locationTypeId="2" countryId="1" name="Health Center" reuse="1"/>
+    <locationType locationTypeId="3" countryId="1" name="Territorie" reuse="1" BoundAdminLevelId="2"/>
+	
+	<adminEntity adminLevelId="1" adminEntityId="1" name="Kinshasa" code="10" x1="0" y1="0" x2="0" y2="0"/>
+	<adminEntity adminLevelId="1" adminEntityId="2" name="Sud Kivu" code="20" x1="0" y1="0" x2="0" y2="0"/>
+	<adminEntity adminLevelId="1" adminEntityId="3" name="Nord Kivu" code="30" x1="0" y1="0" x2="0" y2="0"/>
+	<adminEntity adminLevelId="1" adminEntityId="4" name="Ituri" code="40" x1="0" y1="0" x2="0" y2="0"/>
+
+	<adminEntity adminLevelId="2" adminEntityId="10" adminEntityParentId="4" name="Bukavu" code="203" x1="0" y1="0" x2="0" y2="0"/>
+	<adminEntity adminLevelId="2" adminEntityId="11" adminEntityParentId="2" name="Walungu" code="201" x1="0" y1="0" x2="0" y2="0"/>
+	<adminEntity adminLevelId="2" adminEntityId="12" adminEntityParentId="2" name="Shabunda" code="202" x1="0" y1="0" x2="0" y2="0"/>
+	<adminEntity adminLevelId="2" adminEntityId="13" adminEntityParentId="2" name="Kalehe" code="203" x1="0" y1="0" x2="0" y2="0"/>
+	<adminEntity adminLevelId="2" adminEntityId="21" adminEntityParentId="4" name="Irumu" code="203" x1="0" y1="0" x2="0" y2="0"/>
+
+	
+
+	<!--  User setup -->
+	
+	<userLogin userId="1" name="Alex" email="akbertram@gmail.com" password="$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1." locale="fr" newUser="1"  />
+	<userLogin userId="2" name="Bavon" email="bavon@nrc.org" password="$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1." locale="fr" newUser="1"  />
+	<userLogin userId="5" name="Christian" email="christian@nrc.org" password="xyz" locale="fr" newUser="1"/>
+	<userLogin userId="3" name="Lisa" email="lisa@solidarites" password="xyz" locale="fr" newUser="1"/>
+	
+	<userLogin userId="4" name="Marlene" email="marlene@solidarites" password="xyz" locale="fr" newUser="1"/>	
+	
+	<!--  Attributes -->
+		
+	<!--  NFI Attribute 1: Cause -->
+		
+		<attributeGroup attributeGroupId="1"
+			name="cause"
+			multipleAllowed="1"
+			sortOrder="2"
+			version="1"/>
+			
+			<attribute attributeGroupId="1"
+				attributeId="1"
+				sortOrder="2"
+				name="Catastrophe Naturelle" 
+				version="1"/>
+			<attribute attributeGroupId="1"
+				attributeId="2"
+				sortOrder="1"
+				name="Deplacement"
+				version="1"/>
+		
+	<!--  NFI Attribute 2: Contenu de Kit -->
+	
+	<attributeGroup attributeGroupId="2"
+		name="contenu du kit"
+		multipleAllowed="1"
+		sortOrder="1"
+		version="1"/>
+		
+			<attribute attributeGroupId="2"
+				attributeId="3"
+				name="Casserole"
+				sortOrder="1"
+				version="1" />
+			
+			<attribute attributeGroupId="2"
+				attributeId="4"
+				name="Soap"
+				sortOrder="2"
+				version="1" />
+	
+	<!--  Database: PEAR -->
+	
+	<userDatabase databaseId="1" name="PEAR" countryId="1" ownerUserId="1" version="1"/>
+
+	
+		<!--  PEAR Activity 1 : NFI Distribution -->	
+	
+		<activity activityId="1"
+			databaseId="1"
+			name="NFI"
+			reportingFrequency="0"
+			allowEdit="1"
+			isAssessment="0"
+			sortOrder="1"
+			locationTypeId="1" version="1"/>
+			
+	
+			<attributeGroupInActivity activityId="1" attributeGroupId="1"/>
+			<attributeGroupInActivity activityId="1" attributeGroupId="2"/>		
+			
+			<!-- NFI Indicator 1: Beneficiaries -->
+				
+			<indicator indicatorId="1"
+				activityId="1"
+				name="beneficiaries"
+				units="menages"
+				aggregation="0"
+				category="inputs"
+				description="falling in lve"
+				listHeader="no header really"
+				collectIntervention="1"
+				collectMonitoring="1"
+				sortOrder="2"
+				version="1"/>
+			
+			<!-- NFI Indicator 2: Bache  -->
+				
+			<indicator indicatorId="2"
+				activityId="1"
+				name="baches" 
+				units="menages"   
+				aggregation="0"
+				collectIntervention="1"  
+				collectMonitoring="1"  
+				category="outputs"  
+				listHeader="header"  
+				description="desc"
+                dateDeleted="2009-01-16"
+				sortOrder="1"
+				version="1"/>
+
+            <!-- NFI Indicator 3: Number of Distributions -->
+
+            <indicator indicatorId="103"
+                activityId="1"
+                name="Nb. of distributions"
+                units="distributions"
+                aggregation="2"
+                collectIntervention="0"
+                collectMonitoring="0"
+                category="outputs"
+                listHeader="distribs"
+                description="Nomber of distributions effectuees"
+                dateDeleted="2009-01-16"
+                sortOrder="3"
+                version="1"/>
+
+							
+		<!--  PEAR Activity 2 :  Kits Scolaire -->
+	
+		<activity activityId="2"
+			databaseId="1"
+			name="Distribution de Kits Scolaire"
+			reportingFrequency="0"
+			allowEdit="1"
+			isAssessment="0"
+			sortOrder="1"
+			locationTypeId="1" version="1"/>
+			
+			<attributeGroupInActivity activityId="2" attributeGroupId="1"/>
+	
+	<!--  Database: PEAR PLUS -->
+	
+	<userDatabase databaseId="2" name="PEAR Plus" countryId="1" ownerUserId="1" version="1"
+                  dateDeleted="2009-01-16"/>
+
+		<!-- PEAR PLUS Activity #1 - Support to health centers (monthly reporting) -->
+
+		<activity activityId="3"
+			databaseId="2"
+			name="Appui aux centres de santé"
+			reportingFrequency="1"
+			allowEdit="1"
+			isAssessment="0"
+			sortOrder="1"
+			locationTypeId="1" version="1"/>
+			
+			
+			<!-- Appui CS Indicator 1: Utilisation Rate  -->
+				
+			<indicator indicatorId="5"
+				activityId="3"
+				name="Utilisaton rate"
+				units="nc/hab/month"   
+				aggregation="1"  
+				collectIntervention="1"  
+				collectMonitoring="0"  
+				category="outputs"  
+				listHeader="header"  
+				description="desc"  
+				sortOrder="1"
+				version="1"/>
+
+    <activity activityId="4"
+        databaseId="2"
+        name="Reunification of child soliders"
+        reportingFrequency="1"
+        allowEdit="1"
+        isAssessment="0"
+        sortOrder="1"
+        locationTypeId="3" version="1"/>
+
+            <indicator indicatorId="6"
+                 activityId="4"
+                 name="Number of children"
+                 units="children"
+                 aggregation="1"
+                 collectIntervention="1"
+                 collectMonitoring="0"
+                 listHeader="kids"
+                 description="desc"
+                 sortOrder="1"
+                 version="2"/>
+
+
+	
+	<!--  PEAR Partners -->
+
+	<partner partnerId="1" name="NRC"  />
+	<partnerInDatabase partnerId="1" databaseId="1"/>
+	
+	<partner partnerId="2" name="Solidarites"  />
+	<partnerInDatabase partnerId="2" databaseId="1"/>
+
+    <!-- Bavon at NRC has access to PEAR -->
+     <userPermission userPermissionId="1" databaseId="1" userId="2" partnerId="1" allowView="1" allowViewAll="0" allowEdit="1" allowEditAll="0" allowDesign="0"/>
+
+
+	<!-- id=1  NFI Distribution at Penekusu, Sud Kivu   2 jan 2009-->
+
+	<location locationId="1" name="Penekusu" locationTypeId="1" X="1.532" Y="27.323" version="1"/>
+	<locationAdminLink locationId="1" adminEntityId="2"/>
+	<locationAdminLink locationId="1" adminEntityId="12"/>
+	
+	<site siteId="1" activityId="1" locationId="1" partnerId="1" Status="1" target="0" Date1="2009-01-01"
+          Date2="2009-01-02" DateCreated="2009-02-01" DateEdited="2009-02-01"
+          DateDeleted="2009-01-16" version="1"/>
+	<attributeValue siteId="1" attributeId="1" value="0"/>
+	<attributeValue siteId="1" attributeId="2" value="1"/>
+	
+	<reportingPeriod reportingPeriodId="1" siteId="1" monitoring="0" date1="2009-01-01" date2="2009-01-02" DateCreated="2009-02-01" DateEdited="2009-02-01" version="1"/>
+	<indicatorValue reportingPeriodId="1" indicatorId="1" value="1500"/>
+	<indicatorValue reportingPeriodId="1" indicatorId="2" value="500"/>
+		
+	
+	<!-- id=2 NFI Distribution at Ngwshe, Sud Kivu 16 jan 2009 -->
+	
+	<location locationId="2" name="Ngshwe" locationTypeId="1" X="1.323" Y="28.232" version="1"/>
+	<locationAdminLink locationId="2" adminEntityId="2"/>
+	<locationAdminLink locationId="2" adminEntityId="11"/>
+	
+	<site siteId="2" activityId="1" locationId="2" partnerId="1" Status="1" target="1" Date1="2009-01-15" Date2="2009-01-16" DateCreated="2009-02-01" DateEdited="2009-02-01" version="1"/>
+	<attributeValue siteId="2" attributeId="1" value="1"/>
+	<attributeValue siteId="2" attributeId="2" value="1"/>
+	
+	<reportingPeriod reportingPeriodId="2" siteId="2" monitoring="0" date1="2009-01-15" date2="2009-01-16" DateCreated="2009-02-01" DateEdited="2009-02-01" version="1"/>
+	<indicatorValue reportingPeriodId="2" indicatorId="1" value="3600"/>
+	<indicatorValue reportingPeriodId="2" indicatorId="2" value="1200"/>
+
+	<!-- id=3 NFI Distribution at Boga, Ituri 2008 -->
+	
+	<location locationId="3" name="Boga" locationTypeId="1" X="3.323" Y="27.232" version="1"/>
+	<locationAdminLink locationId="3" adminEntityId="4"/>
+	<locationAdminLink locationId="3" adminEntityId="21"/>
+	
+	<site siteId="3" activityId="1" locationId="3" partnerId="2" Status="1" target="0" Date1="2008-10-05" Date2="2008-10-06" DateCreated="2009-02-01" DateEdited="2009-02-01" version="1"/>
+	<attributeValue siteId="3" attributeId="1" value="1"/>
+	<attributeValue siteId="3" attributeId="2" value="0"/>
+	
+	<reportingPeriod reportingPeriodId="3" siteId="3" monitoring="0" date1="2008-10-05" date2="2008-10-06" DateCreated="2009-02-01" DateEdited="2009-02-01" version="1"/>
+	<indicatorValue reportingPeriodId="3" indicatorId="1" value="10000"/>
+	<indicatorValue reportingPeriodId="3" indicatorId="2" value="500"/>
+
+	
+	<!--  PEAR Plus Health Center Support in Ngweshe -->
+
+	<location locationId="9" name="CS Ngweshe" locationTypeId="2" X="3.23" Y="27.232" version="1"/>
+	<locationAdminLink locationId="9" adminEntityId="2"/>
+	<locationAdminLink locationId="9" adminEntityId="11"/>
+		
+	<site siteId="9" activityId="3" locationId="9" partnerId="1" Status="1" target="0" Date1="2009-01-01" Date2="2009-12-31" DateCreated="2009-01-01" DateEdited="2009-01-01" version="1"/>
+		
+	<reportingPeriod reportingPeriodId="91" siteId="9" monitoring="0" date1="2009-01-01" date2="2009-01-31" DateCreated="2009-02-01" DateEdited="2009-02-01" version="1"/>
+		<indicatorValue reportingPeriodId="91" indicatorId="5" value="0.1"/>
+
+	<reportingPeriod reportingPeriodId="92" siteId="9" monitoring="0" date1="2009-02-01" date2="2009-02-28" DateCreated="2009-02-01" DateEdited="2009-02-01" version="1"/>
+		<indicatorValue reportingPeriodId="92" indicatorId="5" value="0.3"/>
+
+	<reportingPeriod reportingPeriodId="93" siteId="9" monitoring="0" date1="2009-03-01" date2="2009-03-30" DateCreated="2009-02-01" DateEdited="2009-02-01" version="1"/>
+		<indicatorValue reportingPeriodId="93" indicatorId="5" value="0.4"/>
+
+
+	<!--  Kit scolaires in Bukavu -->
+	<location locationId="4" name="Boga" locationTypeId="1" X="3.323" Y="27.232" version="1"/>
+	<locationAdminLink locationId="4" adminEntityId="2"/>
+	<locationAdminLink locationId="4" adminEntityId="10"/>
+	
+	<site siteId="4" activityId="2" locationId="4" partnerId="2" Status="1" target="0" Date1="2008-10-06" Date2="2008-11-06" DateCreated="2009-10-05" DateEdited="2009-10-05" version="1"/>
+
+	<!-- Kit scolaires in Boga Ituri -->
+
+	<site siteId="5" activityId="2" locationId="3" partnerId="1" Status="1" target="0" Date1="2008-10-05" Date2="2008-10-05" DateCreated="2009-02-01" DateEdited="2009-02-01" version="1"/>
+
+
+
+
+    <!-- PEAR Plus child reunification in Walungu -->
+
+    <location locationId="6" name="Walungu" locationTypeId="3" version="1"/>
+    <locationAdminLink locationId="6" adminEntityId="3"/>
+	<locationAdminLink locationId="6" adminEntityId="11"/>
+
+    <site siteId="6" activityId="4" locationId="6" partnerId="1" Status="1" target="0" DateCreated="2009-02-01" DateEdited="2009-02-01" version="1"/>
+
+    <reportingPeriod reportingPeriodId="601" siteId="6" monitoring="0" date1="2009-01-01" date2="2009-01-31" version="1" DateCreated="2009-01-01" DateEdited="2009-01-01"/>
+    <indicatorValue reportingPeriodId="601" indicatorId="6" value="35"/>
+
+    <reportingPeriod reportingPeriodId="602" siteId="6" monitoring="0" date1="2009-02-01" date2="2009-02-28" version="1" DateCreated="2009-01-01" DateEdited="2009-01-01"/>
+    <indicatorValue reportingPeriodId="602" indicatorId="6" value="70"/>
+
+
+    <!-- PEAR Plus child reunification in Shabunda -->
+
+    <location locationId="7" name="Shabunda" locationTypeId="3" version="1"/>
+    <locationAdminLink locationId="7" adminEntityId="3"/>
+    <locationAdminLink locationId="7" adminEntityId="12"/>
+
+    <site siteId="7" activityId="4" locationId="7" partnerId="1" Status="1" target="0"  DateCreated="2009-02-01" DateEdited="2009-02-01" version="1"/>
+</dataset>

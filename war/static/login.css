@@ -1,0 +1,204 @@
+
+body.login {
+    display: block;
+    color: #333;
+    background: #d7d7d7;
+    font: 12px "Lucida Grande", Helvetica, Arial, Verdana, sans-serif;
+}
+
+a:link, a:visited, a:hover, a:active {
+    color:#14527E;
+}
+
+
+div#login {
+    margin: 34px auto 0;
+    width: 851px;
+}
+
+div#cap-top {
+    position: relative;
+    background: url('box_top.png');
+    height: 28px;
+    width: 851px;
+}
+
+div#cap-body {
+
+    background: url('box_mid.png') repeat-y;
+    width: 851px;
+}
+
+#unicef-logo {
+    position: absolute;
+    width: 120px;
+    height: 29px;
+    left: 880px;
+    top: 530px;
+}
+
+div#cap-bottom {
+    background: url('box_bottom.png');
+    height: 28px;
+    width: 851px;
+}
+
+
+div#login div#panelLogin div {
+    margin: 0 0 0 40px;
+    padding-bottom: 8px;
+    width: 410px;
+}
+
+div#login div#branding {
+    padding-top: 15px;
+    width: 400px;
+}
+
+div#login div#branding img {
+    display: block;
+    margin: 0 0 10px 40px;
+}
+
+div#login label {
+    color: #888;
+    display: block;
+    float: left;
+    font-size: 12px;
+}
+
+div#login input#txtLogin, div#login input#txtPassword {
+    background: #fafafa;
+    border: 1px solid #eee;
+    font-size: 18px;
+    line-height: 20px;
+    margin: 0;
+    padding: 3px;
+    width: 400px;
+}
+
+div#login input#txtLogin:focus, div#login input#txtPassword:focus {
+    background: #fcfcfc;
+    border: 1px solid #ccc;
+}
+
+span#loginBox {
+    font-size: 12px;
+    position: relative;
+    top: -38px;
+    margin: 0 2px 0 0;
+    float: right;
+    width: 83px;
+    display: block;
+}
+
+p#twitBug {
+    position: relative;
+    top: -142px;
+    right: 60px;
+    float: right;
+}
+
+.rememberBox {
+    font-size: 12px;
+}
+
+#errorPanel {
+    color: red;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+p.langLink {
+    cursor: pointer;
+    font-size: 12px;
+    margin: 0 auto 0;
+    padding-right: 25px;
+    position: relative;
+    top: 33px;
+    width: 851px;
+}
+
+a {
+    text-decoration: none;
+    color: #1969bc;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: #1969bc;
+}
+
+.twitterFeed {
+    position: absolute;
+    left: 65px;
+    top: 80px;
+    width: 250px;
+    height: 220px;
+}
+
+.copyrightStatement {
+    font-size: x-small;
+    color: gray;
+    margin: auto;
+    padding-left: 20px;
+    width: 851px;
+    clear: both;
+}
+
+.checkBox {
+    vertical-align: middle;
+}
+
+.marketTitle {
+    color: #db7214;
+    font: 18px "Lucida Grande", Helvetica, Arial, Verdana, sans-serif;
+    padding-top: 55px;
+}
+
+
+.marketBody {
+    color: #000;
+    font: 15px "Lucida Grande", Helvetica, Arial, Verdana, sans-serif;
+}
+
+#learnmore {
+    background: url('learnmore_fr.png') no-repeat;
+    cursor: pointer;
+    display: block;
+    height: 50px;
+    margin-top: 15px;
+    margin-left: 100px;
+    width: 121px;
+}
+
+#noteBg {
+    background: url('note_bg_fr.png') no-repeat;
+    width: 357px;
+    height: 442px;
+}
+
+#loginButton {
+  
+    display: block;
+    height: 27px;
+    margin-top: 3px;
+    width: 83px;
+}
+
+#loginHelp {
+    padding-bottom: 0 !important;
+    padding-left: 50px !important;
+    padding-top: 2px !important;
+    width: 140px !important;
+}
+
+div#whatsNew {
+    float: right;
+    position: relative;
+    margin: 0;
+    z-index: 50;
+    width: 375px;
+    height: 450px;
+}
+

@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.bertram</groupId>
+    <artifactId>activityinfo</artifactId>
+    <packaging>war</packaging>
+    <version>0.3</version>
+    <name>ActivityInfo</name>  log
+
+    <!--  include pluginRepository and repository for GWT-Maven -->
+    <pluginRepositories>
+        <pluginRepository>
+            <id>Codehaus Mojo Snapshot</id>
+            <url>http://snapshots.repository.codehaus.org/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <properties>
+        <!--  convenience to define GWT version in one place -->
+        <gwtVersion>2.0-SNAPSHOT</gwtVersion>
+        <platform>windows</platform>
+
+        <!--  tell the compiler we can use 1.6 -->
+        <maven.compiler.source>1.6</maven.compiler.source>
+        <maven.compiler.target>1.6</maven.compiler.target>
+
+        <!-- 	<gwt.output.directory>${basedir}/target/gwt</gwt.output.directory> -->
+        <gwt.output.directory>${basedir}/war</gwt.output.directory>
+
+        <!-- the value of the rename-to attribute in your GWT module configuration -->
+        <gwt.module.alias>ActivityInfo</gwt.module.alias>
+
+    </properties>
+
+    <dependencies>
+
+        <!--  GWT deps (from central repo) -->
+
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-servlet</artifactId>
+            <version>${gwtVersion}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
+            <version>${gwtVersion}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!--  Other clientside APIs  -->
+        <dependency>
+            <groupId>com.extjs</groupId>
+            <artifactId>gxt</artifactId>
+            <version>2.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.gwt</groupId>
+                    <artifactId>gwt-user</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt.google-apis</groupId>
+            <artifactId>gwt-maps</artifactId>
+            <version>1.0.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt.google-apis</groupId>
+            <artifactId>gwt-gears</artifactId>
+            <version>1.2.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>net.ltgt</groupId>
+            <artifactId>gwt-in-the-air</artifactId>
+            <version>0.0.311</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!--  Dependency Injection Framework -->
+
+        <dependency>
+            <groupId>com.google.code.guice</groupId>
+            <artifactId>guice</artifactId>
+            <version>2.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.code.guice</groupId>
+            <artifactId>guice-servlet</artifactId>
+            <version>2.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.code.guice</groupId>
+            <artifactId>gin</artifactId>
+            <version>2.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Report creation dependencies -->
+
+        <dependency>
+            <groupId>net.sf.jcharts</groupId>
+            <artifactId>krysalis-jCharts</artifactId>
+            <version>1.0.0-alpha-1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>3.5-beta5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-scratchpad</artifactId>
+            <version>3.5-beta5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.lowagie</groupId>
+            <artifactId>itext</artifactId>
+            <version>2.1.7</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lowagie</groupId>
+            <artifactId>itext-rtf</artifactId>
+            <version>2.1.7</version>
+        </dependency>
+
+        <!-- Scheduling Framework -->
+        <dependency>
+            <groupId>quartz</groupId>
+            <artifactId>quartz</artifactId>
+            <version>1.5.2</version>
+        </dependency>
+
+        <!-- Emailing -->
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-email</artifactId>
+            <version>1.1</version>
+        </dependency> 
+
+        <!-- Database dependencies -->
+
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>persistence-api</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.transaction</groupId>
+                    <artifactId>jta</artifactId>
+                </exclusion>
+            </exclusions>
+            <version>3.4.0.GA</version>
+        </dependency>
+        <dependency>
+            <groupId>geronimo-spec</groupId>
+            <artifactId>geronimo-spec-jta</artifactId>
+            <version>1.0.1B-rc4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.microsoft</groupId>
+            <artifactId>sqljdbc</artifactId>
+            <version>1.1.1501</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.5.2</version>
+        </dependency>
+
+        <!-- Bean  Mapping and XML -->
+
+        <dependency>
+            <groupId>org.dozer</groupId>
+            <artifactId>dozer</artifactId>
+            <version>5.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xerces</artifactId>
+            <version>2.4.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>2.3.9</version>
+        </dependency>
+
+        <!-- Random library for BASE64 decoding (KmlDataServlet) -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.3</version>
+        </dependency>
+
+        <!--  testing framework  -->
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.dbunit</groupId>
+            <artifactId>dbunit</artifactId>
+            <version>2.4.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>1.8.0.7</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+            <version>2.5.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!--<dependency>-->
+        <!--<groupId>org.geotools</groupId>-->
+        <!--<artifactId>gt-main</artifactId>-->
+        <!--<version>2.5.2</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+        <!--<groupId>org.geotools</groupId>-->
+        <!--<artifactId>gt-shapefile</artifactId>-->
+        <!--<version>2.5-RC1</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+        <!--<groupId>org.geotools</groupId>-->
+        <!--<artifactId>gt-epsg-hsql</artifactId>-->
+        <!--<version>2.5-RC1</version>-->
+        <!--</dependency>-->
+
+
+
+
+        <!--<dependency>-->
+        <!--<groupId>org.slf4j</groupId>-->
+        <!--<artifactId>slf4j-nop</artifactId>-->
+        <!--<version>1.5.6</version>-->
+        <!--<scope>test</scope>-->
+        <!--</dependency>-->
+    </dependencies>
+
+    <!--<repositories>-->
+    <!--<repository>-->
+    <!--<snapshots>-->
+    <!--<enabled>false</enabled>-->
+    <!--</snapshots>-->
+    <!--<id>osgeo</id>-->
+    <!--<name>Open Source Geospatial Foundation Repository</name>-->
+    <!--<url>http://download.osgeo.org/webdav/geotools/</url>-->
+    <!--</repository>-->
+    <!--<repository>-->
+    <!--<id>opengeo</id>-->
+    <!--<name>Geotools repository</name>-->
+    <!--<url>http://download.osgeo.org/webdav/geotools/</url>-->
+    <!--</repository>-->
+    <!---->
+    <!--</repositories>-->
+
+    <description>Web-based database system for monitoring and evaluation</description>
+    <scm>
+        <developerConnection>akbertram</developerConnection>
+        <url>https://activity-info.googlecode.com/svn/trunk/</url>
+    </scm>
+
+    <organization>
+        <name>UNICEF</name>
+    </organization>
+
+    <build>
+
+        <!-- Compile classes into the war
+               directory for hosted mode live editing -->
+
+        <outputDirectory>${gwt.output.directory}/WEB-INF/classes</outputDirectory>
+
+        <plugins>
+
+            <!-- configure the Java Compiler Plugin -->
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.0.2</version>
+                <configuration>
+
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <encoding>UTF-8</encoding>
+
+                </configuration>
+            </plugin>
+
+            <plugin>
+
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.3</version>
+
+                <!-- set encoding to something not platform dependent -->
+
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+
+            </plugin>
+
+            <!--  configure the GWT-Maven plugin -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>gwt-maven-plugin</artifactId>
+                <version>1.1-INTERNAL</version>
+                <configuration>
+                    <runTarget>/</runTarget>
+                    <logLevel>INFO</logLevel>
+                    <inplace>false</inplace>
+                    <port>8899</port>
+                    <generateDirectory>${basedir}/src/main/java</generateDirectory>
+                    <module>org.activityinfo.Application</module>
+                    <webappDirectory>${basedir}/war</webappDirectory>
+                    <i18nConstantsBundles>
+                        <i18nConstantsBundle>org.activityinfo.shared.i18n.UIConstants</i18nConstantsBundle>
+                    </i18nConstantsBundles>
+                    <i18nMessagesBundles>
+                        <i18nMessagesBundle>org.activityinfo.shared.i18n.UIMessages</i18nMessagesBundle>
+                    </i18nMessagesBundles>
+
+                    <extraJvmArgs>-Xmx512M</extraJvmArgs>
+
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>i18n</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>i18n</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>gwt-compile</id>
+                        <phase>prepare-package</phase>
+                        <configuration>
+                            <soyc>true</soyc>
+                            <extra>true</extra>
+
+                            <extraJvmArgs>-Xmx512M -Xss1024k </extraJvmArgs>
+                        </configuration>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>clean</phase>
+                        <configuration>
+                            <tasks>
+                                <delete includeemptydirs="true" quiet="true">
+                                    <fileset dir="${basedir}/war/Application"/>
+                                    <fileset dir="${basedir}/war/temp" includes="**/*" />
+                                    <fileset dir="${basedir}/tomcat"/>
+                                    <fileset dir="${basedir}/war/WEB-INF/lib"/>
+                                </delete>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+            <!-- Exclude GWT integration tests from the test phase -->
+            <!-- (they don't run correctly) -->
+
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.4.3</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/*GwtTest.java</exclude>
+                        <exclude>**/report/*.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+
+                <!-- Include GWT compiler output in the war -->
+
+                <configuration>
+                    <warSourceDirectory>${basedir}/war</warSourceDirectory>
+                </configuration>
+
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>

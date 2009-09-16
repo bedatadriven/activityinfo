@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns="http://www.activityinfo.org/report-def" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xsi:schemaLocation="http://www.activityinfo.org/report-def report-def.xsd">
+	
+	<title>PEAR Rapport Mensuelle</title>
+	
+	<description>Rapport au profondeur des activités de PEAR jusqu'à le mois donnée</description>
+
+	<body>
+	
+		<table>
+	
+			<sheet-title>Distributions NFI</sheet-title>
+			
+			<title>Distributions NFI derniere 12 mois</title>
+		
+			<filter>
+				<dimension type="activity">
+					<include id="1"/>
+				</dimension>
+			</filter>
+			
+			<columns>
+				<column label="Date" source="site.date1"/>
+				<column label="Partner" source="partner.name" />
+				<column label="Province" source="admin" sourceId="1" />
+				<column label="Site" source="location.name"/>
+				<column label="Axe" source="location.axe"/>
+				<column label="Status" source="site.status"/>
+				<columnGroup label="Extrants">
+					<column label="NFI" source="indicator" sourceId="1"/>
+					<column label="Bache" source="indicator" sourceId="2"/>
+				</columnGroup>				
+			 	<column label="Contenu de Kit" source="attributeGroup" sourceId="7"/>
+			</columns>
+				
+			<sortBy>
+				<column source="site.date1" order="descending"/>
+			</sortBy>
+			
+			<groupBy>
+				<column source="admin" sourceId="2" />
+			</groupBy>
+			
+			<panelBy>
+				<column source="admin" sourceId="1"/>			
+			</panelBy>
+			
+			
+		</table>
+		
+	</body>	
+</report>

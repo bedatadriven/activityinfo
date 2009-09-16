@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<dataset>
+
+
+	<!-- Country setup -->
+
+	<country countryId="1" name="Rdc" x1="0" y1="0" x2="0" y2="0" />
+	<locationType locationTypeId="1" countryId="1" name="localite" reuse="1"/>
+
+	<!--  User setup -->
+
+	<userLogin userId="1" name="Alex" email="akbertram@gmail.com" password="$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1." locale="fr" newUser="1"  />
+
+
+	<!--  Database: PEAR PLUS -->
+	
+	<userDatabase databaseId="2" name="PEAR Plus" countryId="1" ownerUserId="1" version="1"/>
+
+		<!-- PEAR PLUS Activity #1 - Support to health centers (monthly reporting) -->
+
+		<activity activityId="3"
+			databaseId="2"
+			name="Appui aux centres de santé"
+			reportingFrequency="1"
+			allowEdit="1"
+			isAssessment="0"
+			sortOrder="1"
+			locationTypeId="1" version="1"/>
+			
+			
+			<!-- Appui CS Indicator 1: Utilisation Rate  -->
+				
+			<indicator indicatorId="5"
+				activityId="3"
+				name="Utilisaton rate"
+				units="nc/hab/month"   
+				aggregation="1"  
+				collectIntervention="1"  
+				collectMonitoring="0"  
+				category="outputs"  
+				listHeader="header"  
+				description="desc"  
+				sortOrder="1"
+				version="1"/>
+
+    <activity activityId="4"
+        databaseId="2"
+        name="Reunification of child soliders"
+        reportingFrequency="1"
+        allowEdit="1"
+        isAssessment="0"
+        sortOrder="1"
+        locationTypeId="1" version="1"/>
+
+            <indicator indicatorId="6"
+                 activityId="4"
+                 name="Number of children"
+                 units="children"
+                 aggregation="0"
+                 collectIntervention="1"
+                 collectMonitoring="0"
+                 listHeader="kids"
+                 description="desc"
+                 sortOrder="1"
+                 version="2"/>
+
+
+	<!--  PEAR Partners -->
+
+	<partner partnerId="1" name="NRC"  />
+	<partnerInDatabase partnerId="1" databaseId="2"/>
+
+    <!-- PEAR Plus implementation site -->
+
+	<location locationId="1" name="Ndikpa-Zengo" locationTypeId="1" X="3.23" Y="27.232" version="1"/>
+
+	<!--  PEAR Plus Health Center Support in Ngweshe -->
+
+	<site siteId="9" activityId="3" locationId="1" partnerId="1" Status="1" target="0" Date1="2009-01-01" Date2="2009-12-31" DateCreated="2009-01-01" DateEdited="2009-01-01" version="1"/>
+		
+	<reportingPeriod reportingPeriodId="91" siteId="9" monitoring="0" date1="2009-01-01" date2="2009-01-31" DateCreated="2009-02-01" DateEdited="2009-02-01" version="1"/>
+		<indicatorValue reportingPeriodId="91" indicatorId="5" value="0.0"/>
+
+    <!-- PEAR Plus child reunification in Walungu -->
+
+
+    <site siteId="6" activityId="4" locationId="1" partnerId="1" Status="1" target="0" DateCreated="2009-02-01" DateEdited="2009-02-01" version="1"/>
+
+    <reportingPeriod reportingPeriodId="601" siteId="6" monitoring="0" date1="2009-01-01" date2="2009-01-31" version="1" DateCreated="2009-01-01" DateEdited="2009-01-01"/>
+    <indicatorValue reportingPeriodId="601" indicatorId="6" value="0"/>
+
+</dataset>

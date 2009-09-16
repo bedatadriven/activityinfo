@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns="http://www.activityinfo.org/report-def"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <map>
+        <title>Distributions NFI</title>
+        <baseMap>admingray</baseMap>
+        <layers>
+            
+            <graduatedSymbolLayer>
+                <title>Déplaces</title>
+                <indicators>
+                    <indicator id="29"/>  <!-- Deplaces-->
+                    <indicator id="30"/>  <!-- Retournes assistes -->
+                    <indicator id="31"/>  <!-- Retournes assistes -->
+                    <indicator id="33"/>  <!-- Familles d'acceuille -->
+                    <indicator id="34"/>  <!-- Victimes de cato naturelle -->
+                </indicators>
+                <dimensions>
+                    <color>
+                        <dimension type="indicator">
+                            <category id="29" color="#FF0000"/>
+                            <category id="30" color="#990fe1"/>
+                            <category id="31" color="#990fe1"/>
+                            <category id="33" color="#9fa718"/>
+                            <category id="34" color="#dfe10f"/>
+                        </dimension>
+                    </color>
+                </dimensions>
+            </graduatedSymbolLayer>
+        </layers>
+    </map>
+</report>

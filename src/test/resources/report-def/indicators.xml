@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns="http://www.activityinfo.org/report-def"    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<parameters>
+<parameter name="FROM" label="A partir de" type="date"/>
+<parameter name="TO" label="Jusqu'à" type="date"/>
+</parameters>
+
+<filter>
+<dimension type="database">
+<include id="1"/>
+</dimension>
+<date-range min="${FROM}" max="${TO}"/>
+</filter>
+
+<title>Rapport RRM</title>
+
+<description>Resumé des résultats pour une period de temps donnée.</description>
+
+<body>
+
+
+<pivotTable>
+<title>Résumé Statistique par Province et Partenaire</title>
+
+<dimensions>
+
+<row>
+<dimension type="activity"/>
+<dimension type="indicator"/>
+</row>
+
+<column>
+<dimension type="adminlevel" levelId="1"/>
+<dimension type="partner"/>
+</column>
+
+</dimensions>
+
+</pivotTable>
+
+<map>
+   <title>Distributions NFI par type de Beneficiare</title>
+   <baseMap>zs.gray.cd</baseMap>
+   <layers>
+        <graduatedSymbolLayer>
+            <indicators>
+                <indicator id="29"/> <!-- Deplaces -->
+                <indicator id="31"/> <!-- Retournees -->
+                <indicator id="33"/> <!-- Fam d'acc -->
+                <indicator id="34"/> <!-- catostroph -->
+             </indicators>
+             <dimensions>
+                 <color>
+                     <dimension type="indicator">
+                         <category id="29" color="#FF0000"/>
+                         <category id="31" color="#0000BB"/>
+                         <category id="33" color="#00BB00"/>
+                         <category id="34" color="#FFFF00"/>
+                     </dimension>
+                 </color>
+            </dimensions>
+        </graduatedSymbolLayer>
+   </layers>
+  </map>
+
+
+</body>
+</report>

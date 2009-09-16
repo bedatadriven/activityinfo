@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns="http://www.activityinfo.org/report-def" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xsi:schemaLocation="http://www.activityinfo.org/report-def report-def.xsd">
+	
+	<parameters>
+		<parameter name="MONTH" label="Mois" type="date" date-unit="month"/>
+	</parameters>
+	
+	<filter>
+		<dimension type="database">
+			<include id="2"/>
+		</dimension>
+	</filter>	
+
+	<file-name>PEAR Rapport Mensuelle ${MONTH}</file-name>
+
+	<title>PEAR Rapport Mensuelle</title>
+	
+	<description>Rapport au profondeur des activités de PEAR jusqu'à le mois donnée</description>
+
+	<body>
+        
+	
+		<pivotTable>
+		
+			<sheet-title>Résumé</sheet-title>
+			
+			<title>Résumé Statistique par Partenaire</title>
+		
+			<filter>
+				<date-range max="${MONTH}" date-unit="month"/>
+			</filter>
+		
+			<dimensions>
+				<row>
+					<dimension type="database"/>
+					<dimension type="activity"/>
+					<dimension type="indicator"/>
+				</row>
+				
+				<column>
+					<dimension type="partner"/>
+				</column>
+	
+			</dimensions>
+		
+		</pivotTable>
+	
+		<chart type="stacked-bar">
+			
+			<title>Beneficiaries by Activity and Partner to Date</title>
+			
+			<filter>
+				<date-range max="${MONTH}" date-unit="month" count="12"/>
+			</filter>
+			
+			<dimensions>
+				<category>
+					<dimension type="date" date-unit="year" />
+					<dimension type="date" date-unit="month"/>
+				</category>
+				<legend>
+					<dimension type="partner"/>
+				</legend>
+			</dimensions>
+			
+			<indicators>
+				<indicator id="5"/>
+			</indicators>
+		</chart>
+		
+		<chart type="clustered-bar">
+		
+			<title>Total Beneficiaries</title>
+			
+			<categoryAxisTitle>Activités</categoryAxisTitle>
+			<valueAxisTitle>Bénéficiaries</valueAxisTitle>
+			
+			<dimensions>
+				<category>
+					<dimension type="indicator">
+						<label category="5" label="NFI"/>
+						<label category="20" label="Kits Scolaires"/>
+						<label category="47" label="Rehab. Ecole"/>
+					</dimension>
+				</category>
+				<legend>
+					<dimension type="partner"/>
+				</legend>
+			</dimensions>
+			
+			<indicators>
+				<indicator id="5"/>
+				<indicator id="20"/>
+				<indicator id="47"/>
+			</indicators>
+		</chart>
+		
+		<table>
+	
+			<sheet-title>Distributions NFI</sheet-title>
+			
+			<title>Distributions NFI derniere 12 mois</title>
+		
+			<filter>
+				<dimension type="activity">
+					<include id="12"/>
+				</dimension>
+				<date-range max="${MONTH}" date-unit="month" count="12"/>
+			</filter>
+			
+			<columns frozen="4">
+				<column label="Date" source="site.date1"/>
+				<column label="Partner" source="partner.name" />
+				<column label="Province" source="admin" sourceId="1" />
+				<column label="Site" source="location.name"/>
+				<column label="Axe" source="location.axe"/>
+				<column label="Status" source="site.status"/>
+				<columnGroup label="Beneficiaries">
+					<column label="Total" source="indicator" sourceId="5"/>
+					<column label="Retournés" source="indicator" sourceId="22"/>
+					<column label="Répatriés" source="indicator" sourceId="24"/>
+				</columnGroup>				
+				<columnGroup label="Contenu de Kit" source="attributeGroup" sourceId="7"/>
+			</columns>
+				
+			<sortBy>
+				<column source="site.date1" order="descending"/>
+			</sortBy>
+			
+			<groupBy>
+			</groupBy>
+			
+			<panelBy>
+				<column source="admin" sourceId="1"/>			
+			</panelBy>			
+		</table>
+		
+		<map>
+		
+			<title>Distributions NFI dans le derniere 3 mois</title>
+		
+			<filter>
+				<dimension type="activity">
+					<include id="12"/>
+				</dimension>
+				<date-range max="${MONTH}" date-unit="month" count="3"/>
+			</filter>
+			
+		
+		</map>
+		
+	</body>	
+</report>

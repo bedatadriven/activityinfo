@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns="http://www.activityinfo.org/report-def"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <chart type="pie">
+        <title>Distributions NFI</title>
+
+        <categoryAxisTitle>Activités</categoryAxisTitle>
+        <valueAxisTitle>Bénéficiaries</valueAxisTitle>
+
+        <dimensions>
+            <category>
+                <dimension type="indicator">
+                    <category id="29" label="Déplacés"/>
+                    <category id="30" label="Retournés Assistés"/>
+                    <category id="31" label="Retournés Spontanés"/>
+                    <category id="33" label="Famille d'Acceuille"/>
+                    <category id="34" label="Catastroph Naturelle"/>
+                </dimension>
+            </category>
+        </dimensions>
+
+        <indicators>
+            <indicator id="29"/>
+            <indicator id="30"/>
+            <indicator id="31"/>
+            <indicator id="33"/>
+            <indicator id="34"/>
+        </indicators>
+
+
+    </chart>
+
+
+</report>

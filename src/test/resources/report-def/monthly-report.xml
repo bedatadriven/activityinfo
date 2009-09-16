@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns="http://www.activityinfo.org/report-def" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xsi:schemaLocation="http://www.activityinfo.org/report-def report-def.xsd">
+	
+	<parameters>
+		<parameter name="DBID" type="database"/>
+		<parameter name="MONTH" type="date" date-unit="month"/>
+	</parameters>
+	
+	<filter>
+		<databases>
+			<database id="${DBID}"/>
+		</databases>
+	</filter>	
+
+	<body>
+	
+		<title>Monthly Report</title>
+	
+		<table>
+			
+			<title>Statistical Summary by Partner</title>
+		
+			<dimensions>
+				<row>
+					<dimension type="database"/>
+					<dimension type="activity"/>
+					<dimension type="indicator"/>
+				</row>
+				<column>
+					<dimension type="partner"/>
+				</column>
+			
+			</dimensions>
+		
+		</table>
+	
+	
+		<chart type="column">
+			
+			<title>NFI Distributions by Partner to Date</title>
+		
+			<dimensions>
+				<category>
+					<dimension type="partner"/>
+				</category>	
+			</dimensions>
+			
+			<values>
+				<indicator id="31"/>
+			</values>	
+		</chart>
+		
+		<chart type="column">
+			
+			<title>Beneficiaries by Activity and Partner to Date</title>
+			
+			<dimensions>
+				<category>
+					<dimension type="indicator"/>
+				</category>
+				<legend>
+					<dimension type="partner"/>
+				</legend>
+			</dimensions>
+			
+			<values>
+				<indicator id="5" label="NFI" scale="5"/>
+				<indicator id="20" label="Kits scolaire"/>
+				<indicator id="47" label="Rehabilitation"/>
+			</values>
+		</chart>
+		
+		<chart type="pie">
+		
+			<title>Repartition des Beneficiaries par Province</title>
+			
+			<dimensions>
+				<legend>
+					<dimension type="admin" level="1"/>
+				</legend>
+			</dimensions>	
+			
+			<values>
+				<indicator id="5"/>
+			</values>
+		</chart>
+		
+		<chart type="cumulative">
+			
+			<title>Cumulative NFI Distributions by Partner in 2008</title>
+	
+			<filter>
+				<date-range date-unit="month" max="${MONTH}" last="12"/>
+			</filter>
+					
+			<dimensions>
+				<category>
+					<dimension type="date" date-unit="month"/>
+				</category>
+				<legend>
+					<dimension type="partner"/>
+				</legend>
+			</dimensions>	
+		</chart>
+		
+		<chart type="column">
+			
+			<title>Total NFI Distributions, previous 12 months</title>
+	
+			<filter>
+				<date-range unit="month" max="${DATE}" last="12"/>
+			</filter>
+			
+			<dimensions>
+				<legend>
+					<dimension type="partner"/>
+				</legend>
+			</dimensions>	
+		</chart>
+	
+		<grid>
+			<title>Total NFI Distribution</title>
+			
+			<filter>
+				<date-range unit="month" max="${DATE}" last="3"/>
+			</filter>
+			
+			<columns>
+				<column type="admin" level="1"/>
+				<column type="partner"/>
+				<column-group label="Date">
+					<column type="date1" label="Started"/>
+					<column type="date2" label="Completed"/>
+				</column-group>
+				<column-group label="Beneficiaries">
+					<column type="indicator" id="1"/>
+				</column-group>
+			</columns>
+		</grid>
+	
+		
+		<narrative>
+			
+			<title>Activities during the last Month</title>
+			
+			<filter>
+				<date-range unit="month" max="${DATE}" last="3"/>
+			</filter>
+			
+			
+		</narrative>
+	</body>	
+</report>

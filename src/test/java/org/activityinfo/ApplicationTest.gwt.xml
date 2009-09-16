@@ -1,0 +1,10 @@
+<module rename-to="ApplicationTest">
+
+
+    <!-- Inherit our main Application Module -->
+
+    <inherits name="org.activityinfo.Application"/>
+
+    
+
+</module>

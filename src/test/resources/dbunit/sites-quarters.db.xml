@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<dataset>
+
+
+	<!-- Country setup -->
+
+	<country countryId="1" name="Rdc" x1="0" y1="0" x2="0" y2="0" />
+
+	<locationType locationTypeId="1" countryId="1" name="localite" reuse="1"/>
+
+	<!--  User setup -->
+	
+	<userLogin userId="1" name="Alex" email="akbertram@gmail.com" password="$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1." locale="fr" newUser="1"  />
+
+	<!--  Database: PEAR -->
+	
+	<userDatabase databaseId="1" name="PEAR" countryId="1" ownerUserId="1" version="1"/>
+
+	
+		<!--  PEAR Activity 1 : NFI Distribution -->	
+	
+		<activity activityId="1"
+			databaseId="1"
+			name="NFI"
+			reportingFrequency="0"
+			allowEdit="1"
+			isAssessment="0"
+			sortOrder="1"
+			locationTypeId="1" version="1"/>
+
+			<indicator indicatorId="1"
+				activityId="1"
+				name="beneficiaries"
+				units="menages"
+				aggregation="0"
+				category="inputs"
+				description="falling in lve"
+				listHeader="no header really"
+				collectIntervention="1"
+				collectMonitoring="1"
+				sortOrder="2"
+				version="1"/>
+
+	
+	<!--  PEAR Partners -->
+
+	<partner partnerId="1" name="NRC"  />
+	<partnerInDatabase partnerId="1" databaseId="1"/>
+
+
+	<!-- id=1  NFI Distribution at Penekusu, Sud Kivu  2009 Q1-->
+
+	<location locationId="1" name="Penekusu" locationTypeId="1" X="1.532" Y="27.323" version="1"/>
+	<site siteId="1" activityId="1" locationId="1" partnerId="1" Status="1" target="0" Date1="2009-01-01"
+          Date2="2009-01-02" DateCreated="2009-02-01" DateEdited="2009-02-01"
+          version="1"/>
+
+	<reportingPeriod reportingPeriodId="1" siteId="1" monitoring="0" date1="2009-01-01" date2="2009-01-02" DateCreated="2009-02-01" DateEdited="2009-02-01" version="1"/>
+	<indicatorValue reportingPeriodId="1" indicatorId="1" value="1500"/>
+		
+	
+	<!-- id=2 NFI Distribution at Ngwshe, Sud Kivu 2009 Q2 -->
+	
+	<location locationId="2" name="Ngshwe" locationTypeId="1" X="1.323" Y="28.232" version="1"/>
+
+	<site siteId="2" activityId="1" locationId="2" partnerId="1" Status="1" target="1" Date1="2009-01-15" Date2="2009-01-16" DateCreated="2009-02-01" DateEdited="2009-02-01" version="1"/>
+
+	<reportingPeriod reportingPeriodId="2" siteId="2" monitoring="0" date1="2009-04-15" date2="2009-04-16" DateCreated="2009-02-01" DateEdited="2009-02-01" version="1"/>
+	<indicatorValue reportingPeriodId="2" indicatorId="1" value="3600"/>
+
+
+	<!-- id=3 NFI Distribution at Boga, Ituri 2008 Q4 -->
+	
+	<location locationId="3" name="Boga" locationTypeId="1" X="3.323" Y="27.232" version="1"/>
+	<site siteId="3" activityId="1" locationId="3" partnerId="1" Status="1" target="0" Date1="2008-10-05" Date2="2008-10-06" DateCreated="2009-02-01" DateEdited="2009-02-01" version="1"/>
+
+	<reportingPeriod reportingPeriodId="3" siteId="3" monitoring="0" date1="2008-10-05" date2="2008-10-06" DateCreated="2009-02-01" DateEdited="2009-02-01" version="1"/>
+	<indicatorValue reportingPeriodId="3" indicatorId="1" value="10000"/>
+</dataset>

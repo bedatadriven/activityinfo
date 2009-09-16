@@ -1,0 +1,24 @@
+
+div.report {
+    padding:20px;
+}
+
+.report h1 {
+ font-family: Arial;
+}
+
+.report td {
+	border: solid 1px black;
+}
+
+.report td.r-indent1 { padding-left: 0.25in; }
+.reort td.r-indent2 { padding-left: 0.5in; }
+.report td.r-indent3 { padding-left: 0.75in; }
+
+.report td.r-value {
+	text-align: right;
+}
+
+.report tr.r-row-group {
+	background-color: rgb(190,190,190);
+}

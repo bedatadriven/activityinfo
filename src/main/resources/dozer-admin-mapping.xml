@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://dozer.sourceforge.net beanmapping.xsd ">
+
+	<mapping wildcard="true">
+		
+		<class-a>org.activityinfo.server.domain.AdminLevel</class-a>
+		<class-b>org.activityinfo.shared.dto.AdminLevelModel</class-b>
+	
+		<field>
+			<a>parent.id</a>
+			<b>parentLevelId</b>
+		</field>
+	</mapping>
+
+	<mapping wildcard="true">
+	
+		<class-a>org.activityinfo.server.domain.AdminEntity</class-a>
+		<class-b>org.activityinfo.shared.dto.AdminEntityModel</class-b>
+		
+		<field>
+			<a>level.id</a>
+			<b>levelId</b>
+		</field>
+		
+		<field>
+			<a>parent.id</a>
+			<b>parentId</b>
+		</field>
+	</mapping>
+	
+	<mapping wildcard="true">
+		<class-a>org.activityinfo.server.domain.LocationType</class-a>
+		<class-b>org.activityinfo.shared.dto.LocationTypeModel</class-b>
+	
+		<field>
+			<a>boundAdminLevel.id</a>
+			<b>boundAdminLevelId</b>
+		</field>
+	
+	</mapping>
+	
+</mappings>
