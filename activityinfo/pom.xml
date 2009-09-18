@@ -6,7 +6,7 @@
     <artifactId>activityinfo</artifactId>
     <packaging>war</packaging>
     <version>0.3</version>
-    <name>ActivityInfo</name>  log
+    <name>ActivityInfo</name>
 
     <!--  include pluginRepository and repository for GWT-Maven -->
     <pluginRepositories>
@@ -14,6 +14,14 @@
             <id>Codehaus Mojo Snapshot</id>
             <url>http://snapshots.repository.codehaus.org/</url>
         </pluginRepository>
+
+       <pluginRepository>
+            <id>activityinfo</id>
+            <name>ActivityInfo team repository</name>
+            <url>http://www.activityinfo.org/m2/</url>
+            <layout>default</layout>
+        </pluginRepository>
+
     </pluginRepositories>
 
     <properties>
@@ -54,7 +62,7 @@
         <dependency>
             <groupId>com.extjs</groupId>
             <artifactId>gxt</artifactId>
-            <version>2.0</version>
+            <version>2.0.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.google.gwt</groupId>
@@ -72,14 +80,6 @@
             <groupId>com.google.gwt.google-apis</groupId>
             <artifactId>gwt-gears</artifactId>
             <version>1.2.1</version>
-            <scope>provided</scope>
-        </dependency>
-
-
-        <dependency>
-            <groupId>net.ltgt</groupId>
-            <artifactId>gwt-in-the-air</artifactId>
-            <version>0.0.311</version>
             <scope>provided</scope>
         </dependency>
 
@@ -148,7 +148,7 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-email</artifactId>
             <version>1.1</version>
-        </dependency> 
+        </dependency>
 
         <!-- Database dependencies -->
 
@@ -187,9 +187,9 @@
         <!-- Bean  Mapping and XML -->
 
         <dependency>
-            <groupId>org.dozer</groupId>
+            <groupId>net.sf.dozer</groupId>
             <artifactId>dozer</artifactId>
-            <version>5.0</version>
+            <version>5.1</version>
         </dependency>
 
         <dependency>
@@ -237,52 +237,19 @@
             <version>2.5.1</version>
             <scope>test</scope>
         </dependency>
-
-        <!--<dependency>-->
-        <!--<groupId>org.geotools</groupId>-->
-        <!--<artifactId>gt-main</artifactId>-->
-        <!--<version>2.5.2</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-        <!--<groupId>org.geotools</groupId>-->
-        <!--<artifactId>gt-shapefile</artifactId>-->
-        <!--<version>2.5-RC1</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-        <!--<groupId>org.geotools</groupId>-->
-        <!--<artifactId>gt-epsg-hsql</artifactId>-->
-        <!--<version>2.5-RC1</version>-->
-        <!--</dependency>-->
-
-
-
-
-        <!--<dependency>-->
-        <!--<groupId>org.slf4j</groupId>-->
-        <!--<artifactId>slf4j-nop</artifactId>-->
-        <!--<version>1.5.6</version>-->
-        <!--<scope>test</scope>-->
-        <!--</dependency>-->
     </dependencies>
 
-    <!--<repositories>-->
-    <!--<repository>-->
-    <!--<snapshots>-->
-    <!--<enabled>false</enabled>-->
-    <!--</snapshots>-->
-    <!--<id>osgeo</id>-->
-    <!--<name>Open Source Geospatial Foundation Repository</name>-->
-    <!--<url>http://download.osgeo.org/webdav/geotools/</url>-->
-    <!--</repository>-->
-    <!--<repository>-->
-    <!--<id>opengeo</id>-->
-    <!--<name>Geotools repository</name>-->
-    <!--<url>http://download.osgeo.org/webdav/geotools/</url>-->
-    <!--</repository>-->
-    <!---->
-    <!--</repositories>-->
+    <repositories>
+        <repository>
+            <id>activityinfo</id>
+            <name>ActivityInfo team repository</name>
+            <url>http://www.activityinfo.org/m2/</url>
+            <layout>default</layout>
+        </repository>
 
-    <description>Web-based database system for monitoring and evaluation</description>
+    </repositories>
+
+    <description>Web-based database system for program monitoring</description>
     <scm>
         <developerConnection>akbertram</developerConnection>
         <url>https://activity-info.googlecode.com/svn/trunk/</url>
@@ -339,7 +306,7 @@
                     <runTarget>/</runTarget>
                     <logLevel>INFO</logLevel>
                     <inplace>false</inplace>
-                    <port>8899</port>
+                    <port>8998</port>
                     <generateDirectory>${basedir}/src/main/java</generateDirectory>
                     <module>org.activityinfo.Application</module>
                     <webappDirectory>${basedir}/war</webappDirectory>
@@ -426,6 +393,24 @@
 
             </plugin>
 
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>hibernate3-maven-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <components>
+                        <component>
+                            <name>hbm2ddl</name>
+                            <implementation>jpaconfiguration</implementation>
+                        </component>
+                    </components>
+                    <componentProperties>
+                        <drop>false</drop>
+                        <create>true</create>
+                        <persistenceUnit>activityInfo</persistenceUnit>
+                    </componentProperties>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

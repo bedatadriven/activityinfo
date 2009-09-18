@@ -2,7 +2,7 @@ package org.activityinfo.shared.i18n;
 
 /**
  * Interface to represent the constants contained in resource bundle:
- * 	'C:/Users/Owner/Eclipse/activityinfo-0.3/src/main/java/org/activityinfo/shared/i18n/UIConstants.properties'.
+ * 	'C:/Users/Owner/Eclipse/activityinfo/src/main/java/org/activityinfo/shared/i18n/UIConstants.properties'.
  */
 public interface UIConstants extends com.google.gwt.i18n.client.Constants {
   
