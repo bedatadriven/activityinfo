@@ -1,24 +1,48 @@
+/*
+ * This file is part of ActivityInfo.
+ *
+ * ActivityInfo is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * ActivityInfo is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with ActivityInfo.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Copyright 2009 Alex Bertram and contributors.
+ */
+
 package org.activityinfo.client.page.map;
 
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.data.*;
+import com.extjs.gxt.ui.client.event.LoadListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
-import org.activityinfo.client.command.CommandService;
 import org.activityinfo.client.Application;
+import org.activityinfo.client.command.CommandService;
 import org.activityinfo.shared.command.GetBaseMaps;
 import org.activityinfo.shared.command.result.BaseMapResult;
 import org.activityinfo.shared.map.BaseMap;
 import org.activityinfo.shared.report.model.MapElement;
 
-import java.util.List;
 import java.util.ArrayList;
-/*
+import java.util.List;
+
+/**
+ *
+ * Provides user interface for selecting the layout and basemap of the
+ * map.
+ *
  * @author Alex Bertram
  */
-
 public class LayoutForm extends FormPanel {
 
     private final CommandService service;
@@ -46,6 +70,16 @@ public class LayoutForm extends FormPanel {
         baseMapCombo.setForceSelection(true);
         baseMapCombo.setAllowBlank(false);
         add(baseMapCombo);
+
+        final ListLoader loader = baseMapCombo.getStore().getLoader();
+        loader.addLoadListener(new LoadListener() {
+            @Override
+            public void loaderLoad(LoadEvent le) {
+                baseMapCombo.setValue(baseMapCombo.getStore().getAt(0));
+                loader.removeLoadListener(this);
+            }
+        });
+        loader.load();
 
         pageSizeCombo = new ComboBox<PageSizeModel>();
         pageSizeCombo.setFieldLabel("Taille de page");
