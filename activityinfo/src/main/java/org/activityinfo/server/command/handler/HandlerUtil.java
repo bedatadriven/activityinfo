@@ -1,15 +1,48 @@
+/*
+ * This file is part of ActivityInfo.
+ *
+ * ActivityInfo is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * ActivityInfo is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with ActivityInfo.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Copyright 2009 Alex Bertram and contributors.
+ */
+
 package org.activityinfo.server.command.handler;
 
-
-import java.util.*;
 
 import org.activityinfo.server.domain.UserDatabase;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.Month;
 import org.dozer.Mapper;
 
+import java.util.*;
+
+/**
+ *
+ * Convienence methods for <code>CommandHandler</code>s
+ *
+ */
 public class HandlerUtil {
 
+    /**
+     *
+     * Returns the entity class for the given entity name.
+     * For example, "Site" => org.activityinfo.server.domain.Site.class
+     *
+     * @param name The name of the entity
+     * @return The associated domain entity class
+     * @throws ClassNotFoundException if the entity name does not match a domain entity
+     */
     protected Class classForEntityName(String name) throws ClassNotFoundException {
 
         if (name.equals("Database")) {
@@ -20,12 +53,12 @@ public class HandlerUtil {
     }
 
     /**
-     * Returns the command executor that corresponds to the given command.
-     * <strong>Only</strong> the package com.bertram.activityinfo.server.command.handler
-     * is searched, so the executor must be there.
+     * Returns the <code>CommandHandler</code> that corresponds to the given <code>Command</code>.
+     * <strong>Only</strong> the package org.activityinfo.server.command.handler
+     * is searched, so the handler must be there.
      *
-     * @param cmd
-     * @return
+     * @param cmd The <code>Command</code> for which a <code>CommandHandler</code> is to be returned
+     * @return A <code>CommandHandler</code> capabling of handling the given <code>Command</code>
      */
     @SuppressWarnings("unchecked")
     public static Class<CommandHandler<?>> executorForCommand(Command<?> cmd) {

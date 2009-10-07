@@ -1,19 +1,40 @@
+/*
+ * This file is part of ActivityInfo.
+ *
+ * ActivityInfo is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * ActivityInfo is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with ActivityInfo.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Copyright 2009 Alex Bertram and contributors.
+ */
+
 package org.activityinfo.server.command.handler;
 
-import java.util.*;
-
-import javax.persistence.EntityManager;
-
-import org.activityinfo.server.command.handler.BaseEntityHandler;
-import org.activityinfo.server.command.handler.CommandHandler;
+import com.google.inject.Inject;
 import org.activityinfo.server.domain.*;
 import org.activityinfo.shared.command.UpdateEntity;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.exception.IllegalAccessCommandException;
 
-import com.google.inject.Inject;
+import javax.persistence.EntityManager;
+import java.util.Date;
+import java.util.Map;
 
+/**
+ * @see org.activityinfo.shared.command.UpdateEntity
+ *
+ * @author Alex Bertram
+ */
 public class UpdateEntityHandler extends BaseEntityHandler implements CommandHandler<UpdateEntity> {
 
     @Inject

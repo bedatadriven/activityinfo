@@ -1,14 +1,39 @@
+/*
+ * This file is part of ActivityInfo.
+ *
+ * ActivityInfo is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * ActivityInfo is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with ActivityInfo.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Copyright 2009 Alex Bertram and contributors.
+ */
+
 package org.activityinfo.server.command.handler;
 
 import org.activityinfo.server.domain.*;
 import org.activityinfo.shared.dto.*;
-import org.activityinfo.shared.exception.UnexpectedCommandException;
 import org.activityinfo.shared.exception.IllegalAccessCommandException;
 
 import javax.persistence.EntityManager;
-import java.util.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
+ *
+ * Provides functionality common to CreateEntityHandler and
+ * UpdateEntityHandler
+ *
  * @author Alex Bertram (akbertram@gmail.com)
  */
 public class BaseEntityHandler {
@@ -46,6 +71,15 @@ public class BaseEntityHandler {
         }
     }
 
+    /**
+     * Asserts that the user has permission to edit a site in a given database
+     * belonging to a given partner
+     *
+     * @param user The user for whom to check permission
+     * @param activity The activity to which the site belongs
+     * @param partner The partner who owns the site
+     * @throws IllegalAccessCommandException if the user does not have permission to modify this <code>Site</code>
+     */
     protected void assertSiteEditPriveleges(User user, Activity activity, Partner partner) throws IllegalAccessCommandException {
         UserDatabase db = activity.getDatabase();
 
@@ -59,10 +93,15 @@ public class BaseEntityHandler {
             throw new IllegalAccessCommandException();
         if(perm.getPartner().getId() != partner.getId())
             throw new IllegalAccessCommandException();
-
     }
 
-
+    /**
+     * Asserts that the user has permission to modify the structure of the given database.
+     *
+     * @param user  THe user for whom to check permissions
+     * @param database  The database the user is trying to modify
+     * @throws IllegalAccessCommandException If the user does not have permission
+     */
     protected void assertDesignPriviledges(User user, UserDatabase database) throws IllegalAccessCommandException {
 
         if(!database.isAllowedDesign(user)) {

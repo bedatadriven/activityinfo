@@ -1,11 +1,27 @@
+/*
+ * This file is part of ActivityInfo.
+ *
+ * ActivityInfo is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * ActivityInfo is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with ActivityInfo.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Copyright 2009 Alex Bertram and contributors.
+ */
+
 package org.activityinfo.server.command.handler;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.extjs.gxt.ui.client.Style.SortDir;
+import com.extjs.gxt.ui.client.data.SortInfo;
+import com.google.inject.Inject;
 import org.activityinfo.server.dao.SchemaDAO;
 import org.activityinfo.server.dao.SiteProjectionBinder;
 import org.activityinfo.server.dao.filter.FrenchFilterParser;
@@ -18,24 +34,22 @@ import org.activityinfo.server.domain.User;
 import org.activityinfo.server.report.generator.FilterCriterionBridge;
 import org.activityinfo.shared.command.GetSites;
 import org.activityinfo.shared.command.result.CommandResult;
-import org.activityinfo.shared.command.result.PagingResult;
 import org.activityinfo.shared.command.result.SiteResult;
 import org.activityinfo.shared.domain.SiteColumn;
-import org.activityinfo.shared.dto.AdminEntityModel;
-import org.activityinfo.shared.dto.AdminLevelModel;
-import org.activityinfo.shared.dto.IndicatorModel;
-import org.activityinfo.shared.dto.PartnerModel;
-import org.activityinfo.shared.dto.SiteModel;
+import org.activityinfo.shared.dto.*;
 import org.activityinfo.shared.exception.CommandException;
 import org.dozer.Mapper;
 import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
-import com.extjs.gxt.ui.client.Style.SortDir;
-import com.extjs.gxt.ui.client.data.SortInfo;
-import com.google.inject.Inject;
+import java.util.*;
 
+/**
+ * @see org.activityinfo.shared.command.GetSites
+ *
+ * @author Alex Bertram
+ */
 public class GetSitesHandler implements CommandHandler<GetSites> {
 
 	private final SiteTableDAO siteDAO;
