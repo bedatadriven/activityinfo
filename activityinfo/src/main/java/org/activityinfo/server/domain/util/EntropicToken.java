@@ -1,12 +1,31 @@
+/*
+ * This file is part of ActivityInfo.
+ *
+ * ActivityInfo is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * ActivityInfo is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with ActivityInfo.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Copyright 2009 Alex Bertram and contributors.
+ */
+
 package org.activityinfo.server.domain.util;
 
 import java.security.SecureRandom;
 
 public class EntropicToken {
 
-	public static int TOKEN_SIZE = 16; // 128 bits
+	private static final int TOKEN_SIZE = 16; // 128 bits
 	
-	private static SecureRandom SECURE_RANDOM = new SecureRandom();	
+	private static final SecureRandom SECURE_RANDOM = new SecureRandom();	
 	
 	public static String generate() {
 		byte[] token = new byte[TOKEN_SIZE];
@@ -15,7 +34,7 @@ public class EntropicToken {
 		return stringFromBytes(token);
 	}
 	
-	public static String stringFromBytes(byte[] bytes) {
+	private static String stringFromBytes(byte[] bytes) {
 	
 		StringBuilder sb = new StringBuilder();
 

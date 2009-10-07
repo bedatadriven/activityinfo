@@ -1,32 +1,30 @@
 /*
- * 
- *  This file is part of ActivityInfo.
+ * This file is part of ActivityInfo.
  *
- *  ActivityInfo is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * ActivityInfo is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  ActivityInfo is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * ActivityInfo is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with ActivityInfo.  If not, see <http://www.gnu.org/licenses/>.
- *  
- *  Copyright 2009 Alex Bertram
- *  
+ * You should have received a copy of the GNU General Public License
+ * along with ActivityInfo.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Copyright 2009 Alex Bertram and contributors.
  */
 package org.activityinfo.server.domain;
 
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Locale;
-import javax.persistence.*;
-
 import org.activityinfo.server.domain.util.BCrypt;
+
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
 
 /**
  * 
@@ -151,14 +149,7 @@ public class User implements java.io.Serializable {
 		
 		if(this.hashedPassword == null)
 			return true;
-		
-		if(this.hashedPassword == null && (password == null || password.length()==0) )
-			return true;
-		if(this.hashedPassword == null)
-			return false;
-		
-		
-		
+
 		return BCrypt.checkpw(password, this.hashedPassword);
 	}
 	
