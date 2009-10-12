@@ -1,23 +1,22 @@
 package org.activityinfo.server.dao.hibernate;
 
+import com.google.inject.Inject;
 import org.activityinfo.server.domain.AggregationMethod;
 import org.activityinfo.shared.report.content.*;
 import org.activityinfo.shared.report.model.*;
-import org.hibernate.ejb.HibernateEntityManager;
 import org.hibernate.Session;
+import org.hibernate.ejb.HibernateEntityManager;
 import org.hibernate.jdbc.Work;
 
 import javax.persistence.EntityManager;
-import java.util.List;
-import java.util.Set;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.ResultSet;
-import java.sql.PreparedStatement;
-
-import com.google.inject.Inject;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

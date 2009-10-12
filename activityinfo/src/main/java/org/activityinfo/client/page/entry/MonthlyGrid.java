@@ -1,25 +1,24 @@
 package org.activityinfo.client.page.entry;
 
-import org.activityinfo.client.Application;
-import org.activityinfo.client.common.grid.AbstractEditorGridView;
-import org.activityinfo.client.common.widget.MappingComboBox;
-import org.activityinfo.shared.command.Month;
-import org.activityinfo.shared.dto.ActivityModel;
-import org.activityinfo.shared.dto.IndicatorRow;
-
-import com.extjs.gxt.ui.client.widget.grid.*;
-import com.extjs.gxt.ui.client.widget.form.NumberField;
-import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.Store;
-import com.extjs.gxt.ui.client.util.DateWrapper;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.google.gwt.i18n.client.NumberFormat;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.util.DateWrapper;
+import com.extjs.gxt.ui.client.widget.form.NumberField;
+import com.extjs.gxt.ui.client.widget.grid.*;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Element;
+import org.activityinfo.client.Application;
+import org.activityinfo.client.page.common.grid.AbstractEditorGridView;
+import org.activityinfo.client.page.common.widget.MappingComboBox;
+import org.activityinfo.shared.command.Month;
+import org.activityinfo.shared.dto.ActivityModel;
+import org.activityinfo.shared.dto.IndicatorRow;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,30 +1,25 @@
 package org.activityinfo.client.page.config;
 
-import org.activityinfo.client.Application;
-import org.activityinfo.client.common.action.UIActions;
-import org.activityinfo.client.common.dialog.FormDialogCallback;
-import org.activityinfo.client.common.dialog.FormDialogImpl;
-import org.activityinfo.client.common.dialog.FormDialogTether;
-import org.activityinfo.client.common.grid.AbstractGridView;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.inject.Inject;
 import org.activityinfo.client.icon.IconImageBundle;
+import org.activityinfo.client.page.common.dialog.FormDialogCallback;
+import org.activityinfo.client.page.common.dialog.FormDialogImpl;
+import org.activityinfo.client.page.common.dialog.FormDialogTether;
+import org.activityinfo.client.page.common.grid.AbstractGridView;
+import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.client.page.config.form.PartnerForm;
 import org.activityinfo.shared.dto.PartnerModel;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
 import org.activityinfo.shared.i18n.UIConstants;
 
-import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.data.Loader;
-import com.extjs.gxt.ui.client.data.ListLoader;
-import com.extjs.gxt.ui.client.store.Store;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.Style;
-import com.google.inject.Inject;
-
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 /*
  * @author Alex Bertram
  */

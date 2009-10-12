@@ -2,7 +2,6 @@ package org.activityinfo.client.command.loader;
 
 import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.data.Loader;
-
 import org.activityinfo.shared.command.BatchCommand;
 import org.activityinfo.shared.command.Command;
 

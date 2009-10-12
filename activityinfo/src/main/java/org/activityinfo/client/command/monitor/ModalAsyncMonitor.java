@@ -1,19 +1,25 @@
 package org.activityinfo.client.command.monitor;
 
 
-import org.activityinfo.client.Application;
-import org.activityinfo.shared.i18n.UIConstants;
-
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.MessageBox.MessageBoxType;
 import com.google.gwt.core.client.GWT;
+import org.activityinfo.client.Application;
+import org.activityinfo.shared.i18n.UIConstants;
 
+/**
+ * Uses a GXT modal dialog box to keep the user updated on
+ * the progress of an asynchronous call
+ *
+ * The monitor allows a limited number of retries (defaults to two) before giving up.
+ */
 public class ModalAsyncMonitor implements AsyncMonitor {
 
 	protected MessageBox box;
 	protected boolean cancelled;
+    protected boolean inProgress = false;
 	
 	public ModalAsyncMonitor() {
 		
@@ -22,6 +28,8 @@ public class ModalAsyncMonitor implements AsyncMonitor {
 
 	@Override
 	public void beforeRequest() {
+
+        inProgress = true;
 
 		box = new MessageBox();
 		box.setTitle("ActivityInfo");
@@ -40,6 +48,9 @@ public class ModalAsyncMonitor implements AsyncMonitor {
 				 * doesn't have any say over whether the result is sent
 				 * back to the original caller.
 				 */
+                if(!inProgress) {
+                    box.close();
+                }
 			}
 		});
 		box.show();
@@ -47,6 +58,9 @@ public class ModalAsyncMonitor implements AsyncMonitor {
 
 	
 	public void onConnectionProblem() {
+
+        inProgress = false;
+
 		UIConstants constants = GWT.create(UIConstants.class);
 		
 		box.updateText(constants.connectionProblem());
@@ -60,6 +74,8 @@ public class ModalAsyncMonitor implements AsyncMonitor {
 			return false;
 		
 		} else {
+
+            inProgress = true;
 		
 			UIConstants constants = GWT.create(UIConstants.class);
 			box.updateText(constants.retrying());
@@ -72,10 +88,12 @@ public class ModalAsyncMonitor implements AsyncMonitor {
 	@Override
 	public void onServerError() {
 
+        inProgress = false;
+
 		box.close();
-		
+
 		MessageBox.alert("ActivityInfo", Application.CONSTANTS.serverError(), null);
-		
+
 	}
 
 	@Override

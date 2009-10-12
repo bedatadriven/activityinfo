@@ -36,6 +36,8 @@
         <!-- 	<gwt.output.directory>${basedir}/target/gwt</gwt.output.directory> -->
         <gwt.output.directory>${basedir}/war</gwt.output.directory>
 
+        <gwt.module>org.activityinfo.Application</gwt.module>
+
         <!-- the value of the rename-to attribute in your GWT module configuration -->
         <gwt.module.alias>ActivityInfo</gwt.module.alias>
 
@@ -55,6 +57,13 @@
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
             <version>${gwtVersion}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-dev</artifactId>
+            <version>${gwtVersion}</version>
+            <classifier>windows</classifier>
             <scope>provided</scope>
         </dependency>
 
@@ -306,10 +315,11 @@
                     <runTarget>/</runTarget>
                     <logLevel>INFO</logLevel>
                     <inplace>false</inplace>
-                    <port>8998</port>
+                    <port>8993</port>
                     <generateDirectory>${basedir}/src/main/java</generateDirectory>
-                    <module>org.activityinfo.Application</module>
+                    <module>${gwt.module}</module>
                     <webappDirectory>${basedir}/war</webappDirectory>
+                    <extraCompilerArgs>-XdisableClassMetadata</extraCompilerArgs>
                     <i18nConstantsBundles>
                         <i18nConstantsBundle>org.activityinfo.shared.i18n.UIConstants</i18nConstantsBundle>
                     </i18nConstantsBundles>
@@ -334,7 +344,7 @@
                         <configuration>
                             <soyc>true</soyc>
                             <extra>true</extra>
-
+                            <extraCompilerArgs>-XdisableClassMetadata</extraCompilerArgs>
                             <extraJvmArgs>-Xmx512M -Xss1024k </extraJvmArgs>
                         </configuration>
                         <goals>
@@ -413,5 +423,17 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+          <!-- Build the Application Module with only permutations for
+               FireFox for testing purposes -->
+          <profile>
+              <id>fftest</id>
+              <properties>
+                  <gwt.module>org.activityinfo.ApplicationFFTest</gwt.module>
+              </properties>
+          </profile>
+    </profiles>
+
 
 </project>

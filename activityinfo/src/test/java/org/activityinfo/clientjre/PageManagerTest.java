@@ -1,7 +1,6 @@
 package org.activityinfo.clientjre;
 
-import static org.easymock.EasyMock.*;
-
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.Place;
 import org.activityinfo.client.ViewPath;
@@ -12,11 +11,9 @@ import org.activityinfo.clientjre.mock.MockEventBus;
 import org.activityinfo.clientjre.mock.MockTimer;
 import org.easymock.Capture;
 import org.easymock.EasyMock;
-
-import org.junit.Test;
+import static org.easymock.EasyMock.*;
 import org.junit.Assert;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.junit.Test;
 
 import java.util.List;
 

@@ -1,18 +1,16 @@
 package org.activityinfo.client.page.map;
 
-import org.activityinfo.client.EventBus;
-import org.activityinfo.client.Place;
-import org.activityinfo.client.PlaceSerializer;
-import org.activityinfo.client.command.CommandService;
-import org.activityinfo.client.common.place.SimplePlaceParser;
-import org.activityinfo.client.inject.AppInjector;
-import org.activityinfo.client.page.*;
-import org.activityinfo.client.page.base.GalleryPage;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
+import org.activityinfo.client.Place;
+import org.activityinfo.client.PlaceSerializer;
+import org.activityinfo.client.inject.AppInjector;
+import org.activityinfo.client.page.PageId;
+import org.activityinfo.client.page.PageLoader;
+import org.activityinfo.client.page.PageManager;
+import org.activityinfo.client.page.PagePresenter;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -22,16 +20,14 @@ public class MapLoader implements PageLoader {
     private final AppInjector injector;
 
     @Inject
-    public MapLoader(AppInjector injector) {
+    public MapLoader(AppInjector injector, PageManager pageManager, PlaceSerializer placeSerializer) {
         this.injector = injector;
 
-        PageManager pageManager = injector.getPageManager();
         pageManager.registerPageLoader(Maps.Home, this);
         pageManager.registerPageLoader(Maps.Single, this);
 
-        PlaceSerializer placeSerializer = injector.getPlaceSerializer();
-        placeSerializer.registerParser(Maps.Home, new SimplePlaceParser(new MapHomePlace()));
-        placeSerializer.registerParser(Maps.Single, new SimplePlaceParser(new SingleMapPlace()));
+        placeSerializer.registerStatelessPlace(Maps.Home, new MapHomePlace());
+        placeSerializer.registerStatelessPlace(Maps.Single, new SingleMapPlace());
     }
 
     @Override

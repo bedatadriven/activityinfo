@@ -1,8 +1,6 @@
 package org.activityinfo.shared.command;
 
 import org.activityinfo.shared.command.result.AdminEntityResult;
-import org.activityinfo.shared.command.result.ListResult;
-import org.activityinfo.shared.dto.AdminEntityModel;
 
 public class GetAdminEntities extends GetListCommand<AdminEntityResult> {
 

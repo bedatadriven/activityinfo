@@ -1,9 +1,11 @@
 package org.activityinfo.client.page.welcome;
 
-import org.activityinfo.client.Place;
-import org.activityinfo.client.page.*;
-
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import org.activityinfo.client.Place;
+import org.activityinfo.client.page.NavigationCallback;
+import org.activityinfo.client.page.PageId;
+import org.activityinfo.client.page.PagePresenter;
+import org.activityinfo.client.page.Pages;
 /*
  * @author Alex Bertram
  */

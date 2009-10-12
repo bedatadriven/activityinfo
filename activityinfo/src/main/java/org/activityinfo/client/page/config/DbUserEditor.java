@@ -1,31 +1,34 @@
 package org.activityinfo.client.page.config;
 
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.ModelKeyProvider;
+import com.extjs.gxt.ui.client.data.SortInfo;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Record;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.ImplementedBy;
+import com.google.inject.Inject;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.Place;
 import org.activityinfo.client.command.CommandService;
 import org.activityinfo.client.command.loader.PagingCmdLoader;
-import org.activityinfo.client.common.action.UIActions;
-import org.activityinfo.client.common.dialog.FormDialogCallback;
-import org.activityinfo.client.common.dialog.FormDialogTether;
-import org.activityinfo.client.common.grid.AbstractEditorGridPresenter;
-import org.activityinfo.client.common.grid.GridPresenter;
-import org.activityinfo.client.common.grid.GridView;
-import org.activityinfo.client.page.*;
+import org.activityinfo.client.page.PageId;
+import org.activityinfo.client.page.Pages;
+import org.activityinfo.client.page.common.dialog.FormDialogCallback;
+import org.activityinfo.client.page.common.dialog.FormDialogTether;
+import org.activityinfo.client.page.common.grid.AbstractEditorGridPresenter;
+import org.activityinfo.client.page.common.grid.GridPresenter;
+import org.activityinfo.client.page.common.grid.GridView;
+import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.client.util.IStateManager;
-import org.activityinfo.shared.command.*;
+import org.activityinfo.shared.command.BatchCommand;
+import org.activityinfo.shared.command.Command;
+import org.activityinfo.shared.command.GetUsers;
+import org.activityinfo.shared.command.UpdateUserPermissions;
 import org.activityinfo.shared.command.result.UserResult;
 import org.activityinfo.shared.command.result.VoidResult;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
 import org.activityinfo.shared.dto.UserModel;
-
-import com.extjs.gxt.ui.client.data.SortInfo;
-import com.extjs.gxt.ui.client.data.ModelKeyProvider;
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.store.Record;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.Inject;
-import com.google.inject.ImplementedBy;
 /*
  * @author Alex Bertram
  */
@@ -123,7 +126,7 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserModel>
         model.setAllowEditAll(false);
         model.setAllowDesign(false);
 
-        service.execute(new UpdateUser(db.getId(), model), view.getDeletingMonitor(), new AsyncCallback<VoidResult>() {
+        service.execute(new UpdateUserPermissions(db.getId(), model), view.getDeletingMonitor(), new AsyncCallback<VoidResult>() {
             public void onFailure(Throwable caught) {
 
             }
@@ -140,7 +143,7 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserModel>
         BatchCommand batch = new BatchCommand();
 
         for(Record record : store.getModifiedRecords()) {
-            batch.add(new UpdateUser(db.getId(), (UserModel)record.getModel()));
+            batch.add(new UpdateUserPermissions(db.getId(), (UserModel)record.getModel()));
         }
 
         return batch;
@@ -155,7 +158,7 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserModel>
         view.showNewForm(newUser, new FormDialogCallback() {
             @Override
             public void onValidated(FormDialogTether dlg) {
-                service.execute(new UpdateUser(db, newUser), dlg, new AsyncCallback<VoidResult>() {
+                service.execute(new UpdateUserPermissions(db, newUser), dlg, new AsyncCallback<VoidResult>() {
 
                     public void onFailure(Throwable caught) {
 

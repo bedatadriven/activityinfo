@@ -1,17 +1,20 @@
 package org.activityinfo.server.report.generator;
 
 import org.activityinfo.server.domain.User;
-import org.activityinfo.server.report.generator.ReportGenerator;
+import org.activityinfo.server.util.DateUtilCalendarImpl;
 import org.activityinfo.shared.report.model.DateUnit;
 import org.activityinfo.shared.report.model.Parameter;
 import org.activityinfo.shared.report.model.Report;
-import org.junit.Test;
+import org.activityinfo.shared.date.DateRange;
+import org.activityinfo.shared.date.DateUtil;
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.replay;
 import org.junit.Assert;
-import static org.easymock.EasyMock.*;
+import org.junit.Test;
 
-import java.util.Map;
-import java.util.HashMap;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -30,6 +33,7 @@ public class ReportGeneratorTest {
 
         // Input user
         User user = new User();
+        user.setLocale("en");
 
         // Input test data: report model + parameter
 		Report report = new Report();
@@ -38,20 +42,21 @@ public class ReportGeneratorTest {
 		param.setType(Parameter.Type.DATE);
 		param.setDateUnit(DateUnit.MONTH);
 		report.addParameter(param);
-		report.setFileName("Report ${MONTH} of Activities");
+		report.setFileName("Report ${DATE_RANGE} of Activities");
 
         // Input test data: parameter values
-		Map<String, Object> paramValues = new HashMap<String, Object>();
-		paramValues.put("MONTH", new Date(0));
+        DateUtil dateUtil = new DateUtilCalendarImpl();
+        DateRange dateRange = dateUtil.monthRange(2009, 1);
+
 
 		// class under test
         ReportGenerator generator = new ReportGenerator(null, null, null, null, null);
 
-        generator.generate(user, report, null, paramValues);
+        generator.generate(user, report, null, dateRange);
 
         // VERIFY correct file name
 
-		Assert.assertEquals("Report Jan 1970 of Activities", report.getContent().getFileName());
+		Assert.assertEquals("Report Jan 2009 of Activities", report.getContent().getFileName());
 
     }
 }

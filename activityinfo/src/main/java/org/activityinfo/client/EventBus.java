@@ -1,11 +1,8 @@
 package org.activityinfo.client;
 
-import com.extjs.gxt.ui.client.event.BaseObservable;
-import com.extjs.gxt.ui.client.event.EventType;
 import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.EventType;
 import com.extjs.gxt.ui.client.event.Observable;
-import com.google.inject.Singleton;
-import com.google.gwt.core.client.GWT;
 
 
 public interface EventBus extends Observable {

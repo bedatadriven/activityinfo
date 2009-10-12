@@ -1,7 +1,5 @@
 package org.activityinfo.client.command;
 
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.Listener;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -10,25 +8,29 @@ import com.google.gwt.user.client.rpc.InvocationException;
 import com.google.gwt.user.client.rpc.StatusCodeException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-
 import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.EventBus;
+import org.activityinfo.client.command.cache.CommandListener;
+import org.activityinfo.client.command.cache.CommandProxy;
+import org.activityinfo.client.command.cache.CommandProxyResult;
 import org.activityinfo.client.command.monitor.AsyncMonitor;
 import org.activityinfo.client.command.monitor.NullAsyncMonitor;
-import org.activityinfo.client.event.AuthenticationEvent;
 import org.activityinfo.client.event.ConnectionEvent;
 import org.activityinfo.client.util.ITimer;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.RemoteCommandServiceAsync;
 import org.activityinfo.shared.command.result.CommandResult;
-import org.activityinfo.shared.dto.ReportTemplateDTO;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.exception.InvalidAuthTokenException;
 import org.activityinfo.shared.exception.UnexpectedCommandException;
 
-import java.util.*;
-import java.util.Map.Entry;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * An implementation of {@link org.activityinfo.client.command.CommandService} that
+ * provides for baching of commands at 200 ms, pluggable caches, and retrying.
+ */
 @Singleton
 public class CommandServiceImpl implements CommandService, CommandEventSource {
 
@@ -218,8 +220,8 @@ public class CommandServiceImpl implements CommandService, CommandEventSource {
 
         /*
         * Not all failures are created equal.
-        * If our authentication token has expired, for
-        * example, we just need to login again
+        * Sort through the harry mess of exceptions to figure out how
+        * to present this to the user.
         */
 
         if(caught instanceof InvalidAuthTokenException) {
@@ -228,7 +230,9 @@ public class CommandServiceImpl implements CommandService, CommandEventSource {
              * requeue these commands and trigger an authentication
              */
 
-            // TODO:
+            // TODO: for the moment our auth tokens don't expire. If at some point
+            // we implement more aggressive security this needs to be handled gracefully
+            // on the client.
             Window.alert("You are not authenticated. Not clear why this has happened. Try logging in again.");
 
 
@@ -243,7 +247,16 @@ public class CommandServiceImpl implements CommandService, CommandEventSource {
 
         } else if(caught instanceof StatusCodeException) {
 
+            int code = ((StatusCodeException) caught).getStatusCode();
+
+            // TODO: handle 404s and other indications of temporary service inavailability
+            // (different than 500 which means we fucked up on the server)
+
+            // internal server error. This shouldn't happen so probably
+            // indicates a pretty serious error.
+
             onServerError(executingCommands, caught);
+
 
         } else if(caught instanceof InvocationException) {
 

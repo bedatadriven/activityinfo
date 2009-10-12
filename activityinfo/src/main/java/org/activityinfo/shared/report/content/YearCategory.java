@@ -1,7 +1,5 @@
 package org.activityinfo.shared.report.content;
 
-import org.activityinfo.shared.report.content.DimensionCategory;
-
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */

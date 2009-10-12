@@ -1,8 +1,6 @@
 package org.activityinfo.shared.map;
 
 import org.activityinfo.shared.dto.DTO;
-
-import java.io.Serializable;
 /*
  * @author Alex Bertram
  */

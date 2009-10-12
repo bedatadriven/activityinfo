@@ -1,14 +1,13 @@
 package org.activityinfo.server.report.generator;
 
-import org.junit.Test;
-import org.junit.Assert;
 import org.activityinfo.server.DbUnitTestCase;
 import org.activityinfo.server.dao.hibernate.SiteTableDAO;
 import org.activityinfo.server.dao.hibernate.SiteTableDAOHibernate;
 import org.activityinfo.server.domain.User;
-import org.activityinfo.server.report.generator.SiteDataBinder;
 import org.activityinfo.shared.report.content.SiteData;
 import org.hibernate.criterion.Restrictions;
+import org.junit.Assert;
+import org.junit.Test;
 
 import javax.persistence.EntityManager;
 import java.util.List;

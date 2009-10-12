@@ -2,9 +2,9 @@ package org.activityinfo.server.dao.hibernate;
 
 import org.activityinfo.server.dao.SiteProjectionBinder;
 import org.activityinfo.server.domain.User;
+import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Conjunction;
 
 import java.util.List;
 

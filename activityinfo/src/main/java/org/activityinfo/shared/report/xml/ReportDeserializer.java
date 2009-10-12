@@ -1,11 +1,11 @@
 package org.activityinfo.shared.report.xml;
 
-import org.activityinfo.shared.report.model.ReportElement;
-import org.activityinfo.shared.report.model.Report;
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;
 import com.google.gwt.xml.client.NodeList;
 import com.google.gwt.xml.client.Text;
+import org.activityinfo.shared.report.model.Report;
+import org.activityinfo.shared.report.model.ReportElement;
 /*
  * @author Alex Bertram
  */

@@ -1,11 +1,10 @@
 package org.activityinfo.client.inject;
 
-import org.activityinfo.shared.command.RemoteCommandService;
-import org.activityinfo.shared.command.RemoteCommandServiceAsync;
-
-import com.google.inject.Provider;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
+import com.google.inject.Provider;
+import org.activityinfo.shared.command.RemoteCommandService;
+import org.activityinfo.shared.command.RemoteCommandServiceAsync;
 /*
  * @author Alex Bertram
  */

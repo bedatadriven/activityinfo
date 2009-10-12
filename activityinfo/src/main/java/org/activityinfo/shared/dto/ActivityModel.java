@@ -3,17 +3,12 @@ package org.activityinfo.shared.dto;
 import com.extjs.gxt.ui.client.data.BaseModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 
-public class ActivityModel extends BaseModel implements EntityDTO, Versioned {
-
-    /**
-     *
-     */
-    private static final long serialVersionUID = 5573352413098324599L;
+public class ActivityModel extends BaseModel implements EntityDTO {
 
     public final static int REPORT_ONCE = 0;
     public static final int REPORT_MONTHLY = 1;
@@ -70,14 +65,6 @@ public class ActivityModel extends BaseModel implements EntityDTO, Versioned {
 
     public String getName(){
         return get("name");
-    }
-
-    public Integer getVersion() {
-        return get("version");
-    }
-
-    public void setVersion(int version) {
-        set("version", version);
     }
 
     public UserDatabaseDTO getDatabase() {
@@ -224,4 +211,14 @@ public class ActivityModel extends BaseModel implements EntityDTO, Versioned {
         }
     }
 
+
+    public AttributeGroupModel getAttributeGroupById(int id) {
+        for(AttributeGroupModel group : attributeGroups) {
+            if(group.getId()==id)
+                return group;
+
+        }
+
+        return null;
+    }
 }

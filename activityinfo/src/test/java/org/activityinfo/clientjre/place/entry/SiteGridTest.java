@@ -1,36 +1,31 @@
 package org.activityinfo.clientjre.place.entry;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.Before;
-import static org.easymock.EasyMock.*;
-
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.SortInfo;
+import com.extjs.gxt.ui.client.store.Record;
 import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.EventBus;
-import org.activityinfo.client.common.action.UIActions;
 import org.activityinfo.client.event.SiteEvent;
 import org.activityinfo.client.mock.DummyData;
 import org.activityinfo.client.mock.MockCommandService;
+import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.client.page.entry.SiteEditor;
 import org.activityinfo.client.page.entry.SiteGridPlace;
-import org.activityinfo.client.util.IStateManager;
-import org.activityinfo.clientjre.mock.*;
+import org.activityinfo.clientjre.mock.MockEventBus;
+import org.activityinfo.clientjre.mock.MockStateManager;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.GetSites;
 import org.activityinfo.shared.command.UpdateEntity;
 import org.activityinfo.shared.command.result.SiteResult;
 import org.activityinfo.shared.command.result.VoidResult;
-import org.activityinfo.shared.dto.*;
-import org.easymock.Capture;
+import org.activityinfo.shared.dto.Schema;
+import org.activityinfo.shared.dto.SiteModel;
+import static org.easymock.EasyMock.*;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.Collections;
-import java.util.ArrayList;
-
-import com.extjs.gxt.ui.client.data.PagingLoader;
-import com.extjs.gxt.ui.client.data.SortInfo;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.Record;
-import com.extjs.gxt.ui.client.Style;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

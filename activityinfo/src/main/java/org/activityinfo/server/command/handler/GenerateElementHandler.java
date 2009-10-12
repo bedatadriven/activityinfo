@@ -25,12 +25,13 @@ import org.activityinfo.server.report.generator.ReportGenerator;
 import org.activityinfo.shared.command.GenerateElement;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.CommandException;
+import org.activityinfo.shared.date.DateRange;
 
 import java.util.HashMap;
-/*
+
+/**
  * @author Alex Bertram
  */
-
 public class GenerateElementHandler implements CommandHandler<GenerateElement> {
 
 
@@ -43,9 +44,7 @@ public class GenerateElementHandler implements CommandHandler<GenerateElement> {
 
     public CommandResult execute(GenerateElement cmd, User user) throws CommandException {
 
-        HashMap<String, Object> params = new HashMap<String, Object>();
-
-        return generator.generateElement(user, cmd.getElement(), null, params);
+        return generator.generateElement(user, cmd.getElement(), null, new DateRange());
        
     }
 }

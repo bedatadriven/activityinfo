@@ -1,9 +1,8 @@
 package org.activityinfo.client.command.callback;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.client.command.monitor.AsyncMonitor;
 import org.activityinfo.shared.command.result.CreateResult;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Convenience callback for commands that return CreateResult

@@ -2,8 +2,8 @@ package org.activityinfo.server.report.generator;
 
 import org.activityinfo.server.report.generator.map.Grid;
 import org.activityinfo.shared.report.content.Point;
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
 
 import java.util.List;
 /*

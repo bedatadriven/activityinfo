@@ -19,7 +19,7 @@ public class PivotChartElement extends PivotElement<PivotChartContent> {
 	private Type type;
 	private List<Dimension> legendDimensions = new ArrayList<Dimension>();
 	private List<Dimension> categoryDimensions = new ArrayList<Dimension>();
-	private List<ParameterizedValue<Integer>> indicators = new ArrayList<ParameterizedValue<Integer>>();
+	private List<Integer> indicators = new ArrayList<Integer>();
 	
 	private String categoryAxisTitle;
 	private String valueAxisTitle;
@@ -49,24 +49,24 @@ public class PivotChartElement extends PivotElement<PivotChartContent> {
 		this.type = type;
 	}
 
-	public List<ParameterizedValue<Integer>> getIndicators() {
+	public List<Integer> getIndicators() {
 		return indicators;
 	}
 
-	public void setIndicators(List<ParameterizedValue<Integer>> indicators) {
+	public void setIndicators(List<Integer> indicators) {
 		this.indicators = indicators;
 	}
 
 	public void setIndicator(int indicatorId) {
 		this.indicators.clear();
-		this.indicators.add(ParameterizedValue.literal(indicatorId));
+		this.indicators.add(indicatorId);
 	}
 	
 	public void addIndicator(int indicatorId) {
-		this.indicators.add(ParameterizedValue.literal(indicatorId));
+		this.indicators.add(indicatorId);
 	}
 
-	public void addIndicator(ParameterizedValue<Integer> value) {
+	public void addIndicator(Integer value) {
 		this.indicators.add(value);
 	}
 	

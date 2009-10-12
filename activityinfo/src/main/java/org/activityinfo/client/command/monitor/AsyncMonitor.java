@@ -1,6 +1,16 @@
 package org.activityinfo.client.command.monitor;
 
 
+/**
+ * The <code>AsyncMonitor</code> provides a complement to the AsyncCallback
+ * interface, allowing a division of responibility between application logic,
+ * which is handled by classes implementing AsyncCallback, and which handle
+ * command success or "expected" <code>CommandException</code> and the AsyncMonitor
+ * which provides feedback to the user regarding progress, completion, connection
+ * problems, general surver failures, and <code>UnexpectedCommandException</code>s
+ *
+ *
+ */
 public interface AsyncMonitor {
 
 	/**

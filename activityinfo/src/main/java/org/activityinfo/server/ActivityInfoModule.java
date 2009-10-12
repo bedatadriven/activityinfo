@@ -3,17 +3,16 @@ package org.activityinfo.server;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-
 import org.activityinfo.server.dao.*;
 import org.activityinfo.server.dao.hibernate.PivotDAO;
 import org.activityinfo.server.dao.hibernate.PivotDAOHibernateJdbc;
 import org.activityinfo.server.dao.hibernate.SiteTableDAO;
 import org.activityinfo.server.dao.hibernate.SiteTableDAOHibernate;
 import org.activityinfo.server.dao.jpa.*;
+import org.activityinfo.server.mail.Mailer;
 import org.activityinfo.server.report.renderer.html.HtmlChartRenderer;
 import org.activityinfo.server.report.renderer.html.HtmlChartRendererJC;
 import org.activityinfo.server.service.Authenticator;
-import org.activityinfo.server.mail.Mailer;
 import org.activityinfo.server.service.PasswordGenerator;
 import org.activityinfo.server.service.impl.CongoPasswordGenerator;
 import org.activityinfo.server.service.impl.DbAuthenticator;
@@ -24,6 +23,9 @@ import org.dozer.Mapper;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Defines application-wide bindings for the Guice Dependency Injection Framework.
+ */
 public class ActivityInfoModule extends AbstractModule {
 
     @Override

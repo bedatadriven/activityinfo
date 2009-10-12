@@ -2,18 +2,17 @@ package org.activityinfo.client.page.entry;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.maps.client.Maps;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
-
 import org.activityinfo.client.Application;
 import org.activityinfo.client.Place;
 import org.activityinfo.client.PlaceSerializer;
 import org.activityinfo.client.command.callback.Got;
-import org.activityinfo.client.common.frameset.VSplitFrameSet;
-import org.activityinfo.client.common.nav.NavigationPanel;
 import org.activityinfo.client.inject.AppInjector;
 import org.activityinfo.client.page.*;
+import org.activityinfo.client.page.common.nav.NavigationPanel;
+import org.activityinfo.client.page.common.widget.VSplitFrameSet;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.dto.ActivityModel;
 import org.activityinfo.shared.dto.Schema;
@@ -26,14 +25,11 @@ public class DataEntryLoader implements PageLoader {
     private final AppInjector injector;
 
     @Inject
-    public DataEntryLoader(AppInjector injector) {
+    public DataEntryLoader(AppInjector injector, PageManager pageManager, PlaceSerializer placeSerializer) {
         this.injector = injector;
 
-        PageManager pageManager = this.injector.getPageManager();
         pageManager.registerPageLoader(Pages.DataEntryFrameSet, this);
         pageManager.registerPageLoader(Pages.SiteGrid, this);
-
-        PlaceSerializer placeSerializer = this.injector.getPlaceSerializer();
         placeSerializer.registerParser(Pages.SiteGrid, new SiteGridPlace.Parser());
     }
 

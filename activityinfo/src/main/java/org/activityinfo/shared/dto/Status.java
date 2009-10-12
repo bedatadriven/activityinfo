@@ -1,15 +1,13 @@
 package org.activityinfo.shared.dto;
 
+import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.google.gwt.core.client.GWT;
+import org.activityinfo.shared.i18n.UIConstants;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-
-import org.activityinfo.shared.i18n.UIConstants;
-
-import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.google.gwt.core.client.GWT;
 
 public class Status extends BaseModelData {
 

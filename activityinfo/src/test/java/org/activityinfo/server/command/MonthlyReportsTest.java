@@ -4,10 +4,9 @@ import org.activityinfo.shared.command.GetMonthlyReports;
 import org.activityinfo.shared.command.Month;
 import org.activityinfo.shared.command.UpdateMonthlyReports;
 import org.activityinfo.shared.command.result.MonthlyReportResult;
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
 
-import java.util.List;
 import java.util.ArrayList;
 /*
  * @author Alex Bertram

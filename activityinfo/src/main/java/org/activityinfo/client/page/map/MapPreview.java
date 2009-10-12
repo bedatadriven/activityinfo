@@ -1,33 +1,33 @@
 package org.activityinfo.client.page.map;
 
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.state.StateManager;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Status;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
-import com.extjs.gxt.ui.client.state.StateManager;
-import com.extjs.gxt.ui.client.Style;
-import com.google.gwt.maps.client.MapWidget;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.maps.client.MapType;
+import com.google.gwt.maps.client.MapWidget;
+import com.google.gwt.maps.client.geom.LatLng;
+import com.google.gwt.maps.client.geom.LatLngBounds;
+import com.google.gwt.maps.client.overlay.Icon;
 import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.maps.client.overlay.MarkerOptions;
 import com.google.gwt.maps.client.overlay.Overlay;
-import com.google.gwt.maps.client.overlay.Icon;
-import com.google.gwt.maps.client.geom.LatLngBounds;
-import com.google.gwt.maps.client.geom.LatLng;
-
 import org.activityinfo.client.Application;
-import org.activityinfo.client.map.IconFactory;
+import org.activityinfo.client.map.GcIconFactory;
 import org.activityinfo.client.map.MapTypeFactory;
+import org.activityinfo.client.map.IconFactory;
+import org.activityinfo.shared.map.BaseMap;
 import org.activityinfo.shared.report.content.Content;
 import org.activityinfo.shared.report.content.Extents;
-import org.activityinfo.shared.report.content.MapMarker;
 import org.activityinfo.shared.report.content.MapContent;
+import org.activityinfo.shared.report.content.MapMarker;
 import org.activityinfo.shared.report.model.MapElement;
 import org.activityinfo.shared.report.model.ReportElement;
-import org.activityinfo.shared.map.BaseMap;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -139,20 +139,20 @@ public class MapPreview extends ContentPanel {
 
         status.setStatus(content.getUnmappedSites().size() + " site(s) ont manqué des coordinées géographique", null);
 
-        IconFactory iconFactory = new IconFactory();
+        GcIconFactory iconFactory = new GcIconFactory();
         iconFactory.primaryColor = "#0000FF";
 
         for(MapMarker marker : content.getMarkers()) {
 
             Icon icon;
             if(marker.getIcon() != null) {
-                icon = iconFactory.createIcon(marker.getIcon());
+                icon = IconFactory.createIcon(marker.getIcon());
             } else {
                 iconFactory.width = marker.getRadius() * 2;
                 iconFactory.height = marker.getRadius() * 2;
                 iconFactory.primaryColor = "#" + Integer.toHexString(marker.getColor());
 
-                icon = iconFactory.createBubble(marker.getColor(), marker.getRadius());
+                icon = IconFactory.createBubble(marker.getColor(), marker.getRadius());
             }
 
             LatLng latLng = LatLng.newInstance(marker.getLat(), marker.getLng());

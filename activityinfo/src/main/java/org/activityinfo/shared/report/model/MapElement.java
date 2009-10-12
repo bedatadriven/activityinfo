@@ -2,8 +2,8 @@ package org.activityinfo.shared.report.model;
 
 import org.activityinfo.shared.report.content.MapContent;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**

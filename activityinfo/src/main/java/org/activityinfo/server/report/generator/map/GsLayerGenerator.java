@@ -1,14 +1,11 @@
 package org.activityinfo.server.report.generator.map;
 
-import org.activityinfo.shared.report.model.*;
-import org.activityinfo.shared.report.model.Dimension;
-import org.activityinfo.shared.report.content.*;
-import org.activityinfo.shared.report.content.Point;
 import org.activityinfo.server.report.generator.MapSymbol;
+import org.activityinfo.shared.report.content.*;
+import org.activityinfo.shared.report.model.*;
 
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.List;
 
 /*
  * @author Alex Bertram

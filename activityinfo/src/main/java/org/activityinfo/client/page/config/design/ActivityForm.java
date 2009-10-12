@@ -1,24 +1,24 @@
 package org.activityinfo.client.page.config.design;
 
 
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.binding.Converter;
+import com.extjs.gxt.ui.client.binding.FieldBinding;
+import com.extjs.gxt.ui.client.binding.FormBinding;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
+import com.extjs.gxt.ui.client.widget.form.TextField;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.command.CommandService;
-import org.activityinfo.client.common.widget.MappingComboBox;
-import org.activityinfo.client.common.widget.MappingComboBoxBinding;
-import org.activityinfo.client.common.widget.MapIconComboBox;
-import org.activityinfo.client.page.config.design.AbstractDesignForm;
+import org.activityinfo.client.page.common.widget.MapIconComboBox;
+import org.activityinfo.client.page.common.widget.MappingComboBox;
+import org.activityinfo.client.page.common.widget.MappingComboBoxBinding;
 import org.activityinfo.shared.dto.ActivityModel;
 import org.activityinfo.shared.dto.LocationTypeModel;
-import org.activityinfo.shared.dto.UserDatabaseDTO;
 import org.activityinfo.shared.dto.MapIconModel;
-
-import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.form.*;
-import com.extjs.gxt.ui.client.binding.FormBinding;
-import com.extjs.gxt.ui.client.binding.FieldBinding;
-import com.extjs.gxt.ui.client.binding.Converter;
-import com.extjs.gxt.ui.client.Style;
+import org.activityinfo.shared.dto.UserDatabaseDTO;
 
 public class ActivityForm extends AbstractDesignForm {
 

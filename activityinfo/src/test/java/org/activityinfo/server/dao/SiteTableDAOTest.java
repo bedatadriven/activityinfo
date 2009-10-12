@@ -1,7 +1,6 @@
 package org.activityinfo.server.dao;
 
 import org.activityinfo.server.DbUnitTestCase;
-import org.activityinfo.server.dao.SiteProjectionBinder;
 import org.activityinfo.server.dao.hibernate.SiteTableDAO;
 import org.activityinfo.server.dao.hibernate.SiteTableDAOHibernate;
 import org.activityinfo.server.domain.AdminEntity;

@@ -1,20 +1,21 @@
 package org.activityinfo.server.dao;
 
 import org.activityinfo.server.DbUnitTestCase;
-import org.activityinfo.server.util.DateUtilCalendarImpl;
 import org.activityinfo.server.dao.hibernate.PivotDAO;
 import org.activityinfo.server.dao.hibernate.PivotDAOHibernateJdbc;
 import org.activityinfo.shared.report.content.DimensionCategory;
 import org.activityinfo.shared.report.content.EntityCategory;
-import org.activityinfo.shared.report.content.LabeledDimensionCategory;
 import org.activityinfo.shared.report.content.QuarterCategory;
 import org.activityinfo.shared.report.model.*;
-import org.junit.Test;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 import javax.persistence.EntityManager;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

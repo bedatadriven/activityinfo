@@ -1,10 +1,10 @@
 package org.activityinfo.clientjre.mock;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Date;
-
 import org.activityinfo.client.util.IStateManager;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

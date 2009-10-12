@@ -1,17 +1,16 @@
 package org.activityinfo.shared.dto;
 
+import com.extjs.gxt.ui.client.data.BaseModelData;
+
 import java.util.ArrayList;
 import java.util.List;
 
-
-import com.extjs.gxt.ui.client.data.BaseModelData;
+import org.activityinfo.shared.report.model.ReportFrequency;
 
 public class ReportTemplateDTO extends BaseModelData implements DTO {
 
-	private List<ReportParameterDTO> parameters = new ArrayList<ReportParameterDTO>();
-	
-	public ReportTemplateDTO() {
-		
+    public ReportTemplateDTO() {
+		setFrequency(ReportFrequency.NOT_DATE_BOUND);        
 	}
 
     public int getId() {
@@ -69,20 +68,8 @@ public class ReportTemplateDTO extends BaseModelData implements DTO {
 	public void setOwnerName(String name) {
 		set("ownerName", name);
 	}
-	
-	public List<ReportParameterDTO> getParameters() {
-		return parameters;
-	}
 
-	public void setParameters(List<ReportParameterDTO> parameters) {
-		this.parameters = parameters;
-	}
-
-	public void addParameter(ReportParameterDTO param) {
-		this.parameters.add(param);
-	}
-
-	public void setAmOwner(boolean amOwner) {
+    public void setAmOwner(boolean amOwner) {
 		set("amOwner", amOwner);
 	}
 	
@@ -90,21 +77,28 @@ public class ReportTemplateDTO extends BaseModelData implements DTO {
 		return (Boolean)get("amOwner");
 	}
 
-
-    public int getSubscriptionFrequency() {
-        return (Integer)get("subscriptionFrequency");
+    public int getFrequency() {
+        return (Integer)get("frequency");
     }
 
-    public void setSubscriptionFrequency(int frequency) {
-        set("subscriptionFrequency", frequency);
+    public void setFrequency(int frequency) {
+        set("frequency", frequency);
     }
 
-    public int getSubscriptionDay() {
-        return (Integer)get("subscriptionDay");
+    public int getDay() {
+        return (Integer)get("day");
     }
 
-    public void setSubscriptionDay(int day) {
-        set("subscriptionDay", day);
+    public void setDay(int day) {
+        set("day", day);
     }
-    
+
+    public boolean isSubscribed() {
+        return (Boolean)get("subscribed");
+    }
+
+    public void setSubscribed(boolean subscribed) {
+        set("subscribed", subscribed);
+    }
+
 }

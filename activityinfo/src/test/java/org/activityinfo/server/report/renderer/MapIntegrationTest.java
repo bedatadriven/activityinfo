@@ -8,15 +8,15 @@ import org.activityinfo.server.report.generator.MapGenerator;
 import org.activityinfo.server.report.renderer.image.ImageMapRenderer;
 import org.activityinfo.server.report.renderer.ppt.PPTMapRenderer;
 import org.activityinfo.shared.report.model.*;
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.persistence.EntityManager;
-import java.util.HashMap;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 /*
  * @author Alex Bertram
  */
@@ -57,7 +57,7 @@ public class MapIntegrationTest {
 
         MapGenerator gtor = new MapGenerator(pivotDAO, siteDAO, new BaseMapDAOImpl());
 
-        gtor.generate(new User(), element, null, new HashMap<String, Object>());
+        gtor.generate(new User(), element, null, null);
 
         Assert.assertNotNull("content",element.getContent());
         Assert.assertTrue(element.getContent().getMarkers().size() > 0);

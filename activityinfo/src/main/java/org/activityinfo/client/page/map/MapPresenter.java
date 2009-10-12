@@ -1,27 +1,24 @@
 package org.activityinfo.client.page.map;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.Place;
 import org.activityinfo.client.command.CommandService;
-import org.activityinfo.client.command.DownloadCallback;
+import org.activityinfo.client.command.callback.DownloadCallback;
 import org.activityinfo.client.command.callback.Got;
 import org.activityinfo.client.command.monitor.AsyncMonitor;
-import org.activityinfo.client.common.action.UIActions;
-import org.activityinfo.client.common.action.ActionListener;
 import org.activityinfo.client.page.NavigationCallback;
 import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.PagePresenter;
-import org.activityinfo.client.page.base.ExportCallback;
+import org.activityinfo.client.page.common.toolbar.ActionListener;
+import org.activityinfo.client.page.common.toolbar.ExportCallback;
+import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.shared.command.GenerateElement;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.RenderElement;
-import org.activityinfo.shared.command.result.RenderResult;
 import org.activityinfo.shared.dto.Schema;
 import org.activityinfo.shared.report.content.Content;
 import org.activityinfo.shared.report.model.ReportElement;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.Window;
 /*
  * @author Alex Bertram
  */

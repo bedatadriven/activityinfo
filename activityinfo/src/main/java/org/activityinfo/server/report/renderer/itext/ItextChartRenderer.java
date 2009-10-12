@@ -1,20 +1,18 @@
 package org.activityinfo.server.report.renderer.itext;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Image;
-import com.lowagie.text.DocWriter;
-import com.lowagie.text.pdf.PdfWriter;
-import com.lowagie.text.pdf.PdfContentByte;
 import com.google.inject.Inject;
-import org.activityinfo.shared.report.model.PivotChartElement;
+import com.lowagie.text.DocWriter;
+import com.lowagie.text.Document;
+import com.lowagie.text.Image;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfWriter;
 import org.activityinfo.server.report.renderer.ChartRendererJC;
+import org.activityinfo.shared.report.model.PivotChartElement;
 
 import javax.imageio.ImageIO;
-import java.io.ByteArrayOutputStream;
-import java.awt.image.RenderedImage;
-import java.awt.image.BufferedImage;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 /*
  * @author Alex Bertram
  */

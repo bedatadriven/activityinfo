@@ -1,94 +1,97 @@
 package org.activityinfo.server.schedule;
 
+import com.google.inject.Inject;
+import org.activityinfo.server.domain.DomainFilters;
+import org.activityinfo.server.domain.ReportSubscription;
+import org.activityinfo.server.domain.ReportTemplate;
+import org.activityinfo.server.mail.Mailer;
+import org.activityinfo.server.report.ReportParser;
+import org.activityinfo.server.report.generator.ReportGenerator;
+import org.activityinfo.server.report.renderer.itext.RtfReportRenderer;
+import org.activityinfo.shared.report.model.Report;
+import org.activityinfo.shared.report.model.ReportFrequency;
+import org.activityinfo.shared.date.DateRange;
+import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail.EmailAttachment;
+import org.apache.commons.mail.MultiPartEmail;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.activityinfo.server.domain.ReportSubscription;
-import org.activityinfo.server.domain.DomainFilters;
-import org.activityinfo.server.domain.util.EntropicToken;
-import org.activityinfo.server.report.generator.ReportGenerator;
-import org.activityinfo.server.report.renderer.html.HtmlReportRenderer;
-import org.activityinfo.server.report.renderer.itext.RtfReportRenderer;
-import org.activityinfo.server.report.ReportParser;
-import org.activityinfo.server.report.ServletImageStorageProvider;
-import org.activityinfo.server.report.util.HtmlWriter;
-import org.activityinfo.server.mail.Mailer;
-import org.activityinfo.shared.report.model.Report;
-import org.activityinfo.shared.domain.Subscription;
-import org.activityinfo.client.Application;
 import org.xml.sax.SAXException;
-import org.apache.commons.mail.HtmlEmail;
-import org.apache.commons.mail.EmailException;
 
 import javax.persistence.EntityManager;
-import javax.servlet.ServletContext;
-import java.util.*;
-import java.text.MessageFormat;
 import java.io.FileOutputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.File;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.text.DateFormat;
 
-import com.google.inject.Inject;
-/*
+
+/**
+ *
+ * Quartz Job that is run nightly to mail reports to subscribers.
+ *
  * @author Alex Bertram
  */
-
 public class ReportMailerJob implements Job {
 
-    private final ServletContext context;
     private final EntityManager em;
     private final ReportGenerator reportGenerator;
-    private final HtmlReportRenderer htmlReportRenderer;
     private final RtfReportRenderer rtfReportRenderer;
     private final Mailer mailer;
 
+    private DateFormat reportDateFormat;
+
     @Inject
-    public ReportMailerJob(EntityManager em, ReportGenerator reportGenerator, HtmlReportRenderer htmlReportRenderer, ServletContext context, RtfReportRenderer rtfReportRenderer, Mailer mailer) {
+    public ReportMailerJob(EntityManager em, ReportGenerator reportGenerator,
+                           RtfReportRenderer rtfReportRenderer, Mailer mailer) {
         this.em = em;
         this.reportGenerator = reportGenerator;
-        this.htmlReportRenderer = htmlReportRenderer;
-        this.context = context;
         this.rtfReportRenderer = rtfReportRenderer;
         this.mailer = mailer;
+
+        reportDateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
     }
 
 
     public void execute(JobExecutionContext jobContext) throws JobExecutionException {
 
-        List<ReportSubscription> subs = em.createQuery("select s from ReportSubscription s where s.frequency <> 0")
+        Date today = new Date();
+        List<ReportTemplate> reports = em.createQuery("select t from ReportTemplate t")
                                             .getResultList();
 
-        execute(new Date(), subs);
+        for(ReportTemplate template : reports) {
+            try {
+                Report report = ReportParser.parseXml(template.getXml());
+                if(report.getFrequency() == ReportFrequency.MONTHLY) {
+                    if(ReportMailerHelper.mailToday(today, report)) {
+                        execute(today, report, template.getSubscriptions());
+                    }
+                }
+            } catch(Throwable caught) {
+                caught.printStackTrace();
+            }
+        }
     }
 
-    public void execute(Date today, List<ReportSubscription> subs) {
+    public void execute(Date today, Report report, Set<ReportSubscription> subs) {
+
+        // calculate the date range for the report
+        DateRange dateRange = ReportMailerHelper.computeDateRange(report, today);
 
         // loop through report subscriptions that are to be mailed
         // today
+       for(ReportSubscription sub : subs) {
 
-
-        for(ReportSubscription sub : subs) {
-            if(ReportMailerHelper.mailToday(today, sub)) {
-
-                try {
-                    mailReport(sub, today);
-                } catch(Exception e) {
-                    context.log("Report mailing of " + sub.getTemplate().getId() + " failed for user " + sub.getUser().getEmail(), e);
-                }
+            try {
+                mailReport(sub, today);
+            } catch(Exception e) {
+                System.out.println("Report mailing of " + sub.getTemplate().getId() + " failed for user "
+                        + sub.getUser().getEmail());
+                e.printStackTrace();
             }
-        }
-
-    }
-
-    private String frequencyString(ResourceBundle messages, int frequency) {
-        if(frequency == Subscription.DAILY) {
-            return messages.getString("daily");
-        } else if(frequency == Subscription.WEEKLY) {
-            return messages.getString("weekly");
-        } else if(frequency == Subscription.MONTHLY) {
-            return messages.getString("monthly");
-        } else {
-            throw new RuntimeException("Invalid frequency = " + frequency);
         }
 
     }
@@ -102,86 +105,36 @@ public class ReportMailerJob implements Job {
         // load the report definition
         Report report = ReportParser.parseXml(sub.getTemplate().getXml());
 
-        // set the report date parameters in function of the
-        // date today / subscription frequency
-
-
         // generate the report
         reportGenerator.generate(sub.getUser(), report, null,
-                ReportMailerHelper.computeDateParameters(report, sub, today));
+               ReportMailerHelper.computeDateRange(report, today));
 
-        String tempPath = context.getRealPath("/temp/");
+        // render the report to a temporary path and create the
+        // attachement
 
-        // render the report first to an rtf document that the user can
-        // download
-
-        // TODO: friendly URLs and stored outside the servlet context
-        // (so when someone checks their email 3 months after its been sent
-        //  and the context has been replaced with a new version the link is still valid)
-        String rtfName = EntropicToken.generate() + ".rtf";
-        String rtfFile = tempPath + "/" + rtfName;
-        String rtfUrl = "http://www.activityinfo.org/temp/" + rtfName;
-        FileOutputStream rtf = new FileOutputStream(rtfFile);
+        File tempFile = File.createTempFile("report", ".rtf");
+        FileOutputStream rtf = new FileOutputStream(tempFile);
         rtfReportRenderer.render(report, rtf);
         rtf.close();
 
-        // prepare an image storage provider with absolute urls
-        // TODO: how do we get the server's name?
-        // TODO: to embed or not to embed?
-        ServletImageStorageProvider isp = new ServletImageStorageProvider(
-                "http://www.activityinfo.org/temp/",
-                tempPath);
-
-        // load our resource bundle with localized messages
-        ResourceBundle mailMessages =
-              ResourceBundle.getBundle("org.activityinfo.server.schedule.MailMessages", sub.getUser().getLocaleObject());
+        EmailAttachment attachment = new EmailAttachment();
+        attachment.setName(report.getContent().getFileName() +
+                reportDateFormat.format(today) + ".rtf");
+        attachment.setDescription(report.getTitle());
+        attachment.setPath(tempFile.getAbsolutePath());
+        attachment.setDisposition(EmailAttachment.ATTACHMENT);
 
         // compose both a full html rendering of this report and a short text
         // message for email clients that can't read html
 
-        StringBuilder textWriter = new StringBuilder();
-        HtmlWriter htmlWriter = new HtmlWriter();
-
-        htmlWriter.startDocument();
-        htmlWriter.startDocumentBody();
-        String greeting = MessageFormat.format(mailMessages.getString("greeting"), sub.getUser().getName());
-        htmlWriter.paragraph(greeting);
-        textWriter.append(greeting).append("\n\n");
-
-        String intro;
-        if(sub.getInvitingUser() != null) {
-            intro = MessageFormat.format(mailMessages.getString("reportIntroInvited"),
-                    sub.getInvitingUser().getName(),
-                    sub.getInvitingUser().getEmail(),
-                    report.getTitle(),
-                    frequencyString(mailMessages, sub.getFrequency()));
-        } else {
-            intro = MessageFormat.format(mailMessages.getString("reportIntro"),
-                    report.getTitle(),
-                    frequencyString(mailMessages, sub.getFrequency()));
-
-        }
-        htmlWriter.paragraph(intro);
-        textWriter.append(intro).append("\n\n");
-
-        htmlWriter.paragraph(MessageFormat.format(mailMessages.getString("reportDownloadHtml"),
-                rtfUrl));
-        textWriter.append(MessageFormat.format(mailMessages.getString("reportDownloadText"),
-                rtfUrl));
-
-        htmlWriter.text("<hr>");
-        htmlReportRenderer.render(htmlWriter, isp, report);
-
-        htmlWriter.endDocumentBody();
-        htmlWriter.endDocument();
-
         // email
-        HtmlEmail email = new HtmlEmail();
-        email.setHtmlMsg(htmlWriter.toString());
-        email.setTextMsg(textWriter.toString());
+        MultiPartEmail email = new MultiPartEmail();
+       // email.setHtmlMsg(ReportMailerHelper.composeHtmlEmail(sub, report ));
+        email.setMsg(ReportMailerHelper.composeTextEmail(sub, report ));
         email.addTo(sub.getUser().getEmail(), sub.getUser().getName());
         email.setSubject("ActivityInfo: " + report.getTitle());
-        
+        email.attach(attachment);
+
         mailer.send(email);
     }
 }

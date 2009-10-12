@@ -1,11 +1,9 @@
 package org.activityinfo.shared.report.content;
 
-import java.util.*;
-import java.io.Serializable;
-
 import org.activityinfo.shared.report.model.Dimension;
 
-import com.extjs.gxt.ui.client.data.TreeModel;
+import java.io.Serializable;
+import java.util.*;
 
 public class PivotTableData implements Serializable {
 

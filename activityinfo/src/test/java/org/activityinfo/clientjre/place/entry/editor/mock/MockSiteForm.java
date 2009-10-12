@@ -1,19 +1,18 @@
 package org.activityinfo.clientjre.place.entry.editor.mock;
 
+import com.extjs.gxt.ui.client.store.ListStore;
 import org.activityinfo.client.command.monitor.AsyncMonitor;
 import org.activityinfo.client.page.entry.editor.AdminFieldSetPresenter;
 import org.activityinfo.client.page.entry.editor.MapPresenter;
 import org.activityinfo.client.page.entry.editor.SiteFormPresenter;
-import org.activityinfo.clientjre.place.entry.editor.mock.MockAdminFieldSet;
 import org.activityinfo.shared.dto.ActivityModel;
 import org.activityinfo.shared.dto.PartnerModel;
 import org.activityinfo.shared.dto.SiteModel;
-import com.extjs.gxt.ui.client.store.ListStore;
 
-import java.util.Map;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

@@ -1,22 +1,20 @@
 package org.activityinfo.server.service;
 
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-
 import org.activityinfo.server.DbUnitTestCase;
 import org.activityinfo.server.dao.AuthDAO;
 import org.activityinfo.server.dao.jpa.AuthDAOJPA;
 import org.activityinfo.server.domain.Authentication;
 import org.activityinfo.server.domain.User;
-import org.activityinfo.server.service.Authenticator;
 import org.activityinfo.server.service.impl.DbAuthenticator;
 import org.activityinfo.shared.exception.InvalidAuthTokenException;
 import org.activityinfo.shared.exception.InvalidLoginException;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import java.util.List;
 
 
 public class AuthTest extends DbUnitTestCase {

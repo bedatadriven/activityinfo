@@ -1,6 +1,5 @@
 package org.activityinfo.server.mail;
 
-import org.apache.commons.mail.HtmlEmail;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
 

@@ -1,9 +1,9 @@
 package org.activityinfo.shared.report.content;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.io.Serializable;
 
 public abstract class TreeNode<T extends TreeNode> implements Serializable {
 

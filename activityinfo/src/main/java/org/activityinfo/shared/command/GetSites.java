@@ -1,16 +1,12 @@
 package org.activityinfo.shared.command;
 
-import org.activityinfo.shared.command.result.PagingResult;
 import org.activityinfo.shared.command.result.SiteResult;
-import org.activityinfo.shared.dto.SiteModel;
 import org.activityinfo.shared.report.model.Filter;
 
 /**
  * Retrieves a list of sites based on the provided criteria.
  * 
- * See {@link GetSitesHandler} for implementation.
- * 
- * 
+ *
  * @author Alex Bertram
  *
  */
@@ -34,7 +30,7 @@ public class GetSites extends PagingGetCommand<SiteResult> {
 	/**
 	 * 
 	 * Option to query only for the sites of assessment activities.
-	 * See {@link Activity#isAssessment()} 
+	 * See {@link org.activityinfo.server.domain.Activity#isAssessment()}
 	 * 
 	 * @return True if the command is to return only sites of assessment activities.
 	 */
@@ -45,7 +41,7 @@ public class GetSites extends PagingGetCommand<SiteResult> {
 	/**
 	 * 
 	 * Option to query only for the sites of assessment activities.
-	 * See {@link Activity#isAssessment()} 
+	 * See {@link org.activityinfo.server.domain.Activity#isAssessment()}
 	 * 
 	 * @param assessmentsOnly True if the command is to return only sites of assessment activities.
 	 */

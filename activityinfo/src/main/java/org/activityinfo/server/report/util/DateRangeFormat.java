@@ -1,9 +1,12 @@
 package org.activityinfo.server.report.util;
 
+import org.activityinfo.shared.date.DateRange;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class DateRangeFormat {
 	
@@ -15,17 +18,20 @@ public class DateRangeFormat {
 	private String afterPattern;
 	private String beforePattern;
 	
-	public DateRangeFormat() {
+	public DateRangeFormat(Locale locale) {
 		
-		medium = DateFormat.getDateInstance(DateFormat.MEDIUM);
-		month= getMonthFormat();
-		monthYear = getMonthYearFormat();
+		medium = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
+		month = getMonthFormat(locale);
+		monthYear = getMonthYearFormat(locale);
 		rangePattern = "%s - %s";
 		beforePattern = "Activites termines jusqu'a %s";    //TODO i18n
 		afterPattern = "Activites termines dans / apres %s";
 	}
-	
-	
+
+    public String format(DateRange range) {
+        return format(range.getMinDate(), range.getMaxDate());
+    }
+
 	public String format(Date min, Date max) {
 		StringBuilder text = new StringBuilder();
 		
@@ -122,16 +128,16 @@ public class DateRangeFormat {
 		return c.get(field) == c.getMinimum(field);
 	}
 	
-	protected DateFormat getMonthYearFormat() {
-		SimpleDateFormat format = (SimpleDateFormat) DateFormat.getDateInstance();
-		format.applyLocalizedPattern("MMM yyyy");
+	protected DateFormat getMonthYearFormat(Locale locale) {
+		SimpleDateFormat format = (SimpleDateFormat) DateFormat.getDateInstance(DateFormat.SHORT,locale);
+		format.applyPattern("MMM yyyy");
 		
 		return format;
 	}
 	
-	protected DateFormat getMonthFormat() {
-		SimpleDateFormat format = (SimpleDateFormat) DateFormat.getDateInstance();
-		format.applyLocalizedPattern("MMM");
+	protected DateFormat getMonthFormat(Locale locale) {
+		SimpleDateFormat format = (SimpleDateFormat) DateFormat.getDateInstance(DateFormat.SHORT, locale);
+		format.applyPattern("MMM");
 		
 		return format;
 	}

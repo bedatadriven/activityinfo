@@ -1,9 +1,7 @@
 package org.activityinfo.server.command;
 
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-
+import com.google.inject.*;
 import org.activityinfo.server.ActivityInfoModule;
 import org.activityinfo.server.DbUnitTestCase;
 import org.activityinfo.server.command.handler.CommandHandler;
@@ -14,14 +12,11 @@ import org.activityinfo.server.domain.User;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.CommandException;
-import org.junit.Before;
-import org.junit.After;
 import org.junit.AfterClass;
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Provides;
-import com.google.inject.Singleton;
+import org.junit.Before;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 public abstract class CommandTestCase extends DbUnitTestCase {
 	

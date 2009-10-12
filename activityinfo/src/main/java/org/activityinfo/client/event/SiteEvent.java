@@ -1,8 +1,7 @@
 package org.activityinfo.client.event;
 
-import com.extjs.gxt.ui.client.event.EventType;
 import com.extjs.gxt.ui.client.event.BaseEvent;
-
+import com.extjs.gxt.ui.client.event.EventType;
 import org.activityinfo.shared.dto.SiteModel;
 
 /**

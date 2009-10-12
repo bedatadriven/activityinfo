@@ -1,14 +1,10 @@
 package org.activityinfo.client.command.loader;
 
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoader;
 import org.activityinfo.client.command.CommandService;
-import org.activityinfo.shared.command.GetSites;
 import org.activityinfo.shared.command.PagingGetCommand;
 import org.activityinfo.shared.command.result.PagingResult;
-
-import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.data.PagingLoader;
-import com.extjs.gxt.ui.client.data.SortInfo;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 
 public class PagingCmdLoader<ResultT extends PagingResult<?>>
 	extends AbstractListCmdLoader<ResultT, PagingGetCommand<ResultT>>

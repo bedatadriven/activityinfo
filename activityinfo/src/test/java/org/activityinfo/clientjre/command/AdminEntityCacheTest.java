@@ -1,18 +1,15 @@
 package org.activityinfo.clientjre.command;
 
-import org.activityinfo.client.command.CommandProxyResult;
 import org.activityinfo.client.command.ProxyManager;
 import org.activityinfo.client.command.cache.AdminEntityCache;
-import org.activityinfo.client.command.cache.SchemaCache;
+import org.activityinfo.client.command.cache.CommandProxyResult;
 import org.activityinfo.client.mock.DummyData;
 import org.activityinfo.clientjre.mock.MockEventBus;
 import org.activityinfo.shared.command.GetAdminEntities;
-import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.result.ListResult;
 import org.activityinfo.shared.dto.AdminEntityModel;
-import org.activityinfo.shared.dto.Schema;
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
 
 public class AdminEntityCacheTest {
 

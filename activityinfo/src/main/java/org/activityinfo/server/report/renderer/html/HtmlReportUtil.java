@@ -1,9 +1,9 @@
 package org.activityinfo.server.report.renderer.html;
 
-import java.util.List;
-
 import org.activityinfo.server.report.util.HtmlWriter;
 import org.activityinfo.shared.report.content.FilterDescription;
+
+import java.util.List;
 
 public class HtmlReportUtil {
 	

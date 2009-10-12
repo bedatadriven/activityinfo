@@ -3,7 +3,7 @@ package org.activityinfo.shared.dto;
 import java.util.*;
 
 
-public class UserDatabaseDTO extends SchemaModel implements EntityDTO, Versioned {
+public class UserDatabaseDTO extends SchemaModel implements EntityDTO {
 
 
 	public static final int MODEL_TYPE = 14;
@@ -23,11 +23,7 @@ public class UserDatabaseDTO extends SchemaModel implements EntityDTO, Versioned
     }
 
 
-    public Integer getVersion() {
-		return get("version");
-	}
-	
-	public void setVersion(int version) {
+    public void setVersion(int version) {
 		set("version", version);
 	}
 	

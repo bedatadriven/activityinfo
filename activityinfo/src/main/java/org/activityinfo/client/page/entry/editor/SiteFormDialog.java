@@ -1,15 +1,14 @@
 package org.activityinfo.client.page.entry.editor;
 
+import com.extjs.gxt.ui.client.store.ListStore;
 import org.activityinfo.client.command.monitor.AsyncMonitor;
-import org.activityinfo.client.common.action.UIActions;
-import org.activityinfo.client.common.dialog.FormDialogImpl;
+import org.activityinfo.client.page.common.dialog.FormDialogImpl;
+import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.shared.dto.ActivityModel;
 import org.activityinfo.shared.dto.PartnerModel;
 import org.activityinfo.shared.dto.SiteModel;
 
 import java.util.Map;
-
-import com.extjs.gxt.ui.client.store.ListStore;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

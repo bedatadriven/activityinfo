@@ -1,7 +1,6 @@
 package org.activityinfo.client.command.callback;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import org.activityinfo.shared.command.result.VoidResult;
 
 public abstract class Updated implements AsyncCallback<VoidResult> {

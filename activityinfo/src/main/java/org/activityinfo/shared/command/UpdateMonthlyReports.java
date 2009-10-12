@@ -2,10 +2,8 @@ package org.activityinfo.shared.command;
 
 import org.activityinfo.shared.command.result.VoidResult;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.ArrayList;
 import java.io.Serializable;
+import java.util.ArrayList;
 /*
  * @author Alex Bertram
  */

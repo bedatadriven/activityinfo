@@ -1,6 +1,7 @@
 package org.activityinfo.server.dao;
 
-import org.activityinfo.server.domain.*;
+import org.activityinfo.server.domain.Authentication;
+import org.activityinfo.server.domain.User;
 
 public interface AuthDAO {
 

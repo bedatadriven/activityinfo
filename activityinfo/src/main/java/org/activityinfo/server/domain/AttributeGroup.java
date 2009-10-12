@@ -40,9 +40,8 @@ import java.util.Set;
 public class AttributeGroup implements Serializable, Deleteable, Orderable, SchemaElement {
 
 	private int id;
-	private int version;
-	
-	private String name;
+
+    private String name;
 	private Set<Attribute> attributes = new HashSet<Attribute>(0);
 
 	private Set<Activity> activities = new HashSet<Activity>(0);
@@ -68,18 +67,8 @@ public class AttributeGroup implements Serializable, Deleteable, Orderable, Sche
 	private void setId(int id) {
 		this.id = id;
 	}
-	
-	@Version
-	@Column(nullable=false)
-	public int getVersion() {
-		return this.version;
-	}
-	
-	public void setVersion(int version) {
-		this.version = version;
-	}
-	
-	@Column
+
+    @Column
 	public String getName() {
 		return this.name;
 	}

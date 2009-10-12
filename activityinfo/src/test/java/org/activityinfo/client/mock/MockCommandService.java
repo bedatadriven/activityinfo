@@ -1,5 +1,6 @@
 package org.activityinfo.client.mock;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.client.command.CommandService;
 import org.activityinfo.client.command.monitor.AsyncMonitor;
 import org.activityinfo.shared.command.BatchCommand;
@@ -7,12 +8,10 @@ import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.BatchResult;
 import org.activityinfo.shared.command.result.CommandResult;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-
-import java.util.Map;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

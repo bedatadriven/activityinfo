@@ -1,14 +1,10 @@
 package org.activityinfo.client.page.config;
 
-import org.activityinfo.client.Application;
-
-import com.extjs.gxt.ui.client.widget.HtmlContainer;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.google.gwt.core.client.GWT;
+import com.extjs.gxt.ui.client.widget.form.TextField;
+import org.activityinfo.client.Application;
 
 public class AccountPanel extends FormPanel implements AccountEditor.View {
 	

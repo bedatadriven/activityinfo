@@ -1,19 +1,17 @@
 package org.activityinfo.client.page.entry.editor;
 
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.widget.Text;
+import com.extjs.gxt.ui.client.widget.form.FieldSet;
+import com.extjs.gxt.ui.client.widget.form.NumberField;
+import com.extjs.gxt.ui.client.widget.layout.TableData;
+import com.extjs.gxt.ui.client.widget.layout.TableLayout;
+import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
+import com.google.gwt.i18n.client.NumberFormat;
 import org.activityinfo.client.Application;
 import org.activityinfo.shared.dto.ActivityModel;
 import org.activityinfo.shared.dto.IndicatorGroup;
 import org.activityinfo.shared.dto.IndicatorModel;
-
-import com.extjs.gxt.ui.client.widget.layout.TableLayout;
-import com.extjs.gxt.ui.client.widget.layout.TableData;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.extjs.gxt.ui.client.widget.form.NumberField;
-import com.extjs.gxt.ui.client.widget.Text;
-import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.Events;
-import com.google.gwt.i18n.client.NumberFormat;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

@@ -1,15 +1,16 @@
 package org.activityinfo.clientjre.mock;
 
-import org.activityinfo.shared.command.*;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.activityinfo.shared.command.Command;
+import org.activityinfo.shared.command.GetSchema;
+import org.activityinfo.shared.command.RemoteCommandServiceAsync;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.dto.Schema;
 import org.activityinfo.shared.exception.CommandException;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-
-import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**

@@ -1,41 +1,42 @@
 package org.activityinfo.client.page.report;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.Window;
+import com.google.inject.ImplementedBy;
+import com.google.inject.Inject;
 import org.activityinfo.client.Place;
 import org.activityinfo.client.command.CommandService;
+import org.activityinfo.client.command.Authentication;
 import org.activityinfo.client.command.callback.Got;
 import org.activityinfo.client.command.monitor.AsyncMonitor;
-import org.activityinfo.client.common.action.ActionListener;
-import org.activityinfo.client.common.action.UIActions;
-import org.activityinfo.client.common.dialog.FormDialogCallback;
-import org.activityinfo.client.common.dialog.FormDialogImpl;
 import org.activityinfo.client.page.NavigationCallback;
 import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.PagePresenter;
 import org.activityinfo.client.page.Pages;
+import org.activityinfo.client.page.common.dialog.FormDialogCallback;
+import org.activityinfo.client.page.common.dialog.FormDialogImpl;
+import org.activityinfo.client.page.common.toolbar.ActionListener;
+import org.activityinfo.client.page.common.toolbar.UIActions;
+import org.activityinfo.client.page.common.toolbar.ExportCallback;
 import org.activityinfo.shared.command.GetReportDef;
 import org.activityinfo.shared.command.RenderReportHtml;
 import org.activityinfo.shared.command.UpdateReportDef;
+import org.activityinfo.shared.command.RenderElement;
 import org.activityinfo.shared.command.result.HtmlResult;
 import org.activityinfo.shared.command.result.VoidResult;
 import org.activityinfo.shared.command.result.XmlResult;
 import org.activityinfo.shared.dto.ReportTemplateDTO;
+import org.activityinfo.shared.date.DateRange;
 
-import java.util.List;
-import java.util.Map;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.ImplementedBy;
-
-/*
+/**
  * @author Alex Bertram
  */
-
-public class ReportPreviewPresenter implements PagePresenter, ActionListener {
+public class ReportPreviewPresenter implements PagePresenter, ActionListener, ExportCallback {
 
     @ImplementedBy(ReportPreview.class)
     public interface View {
         void init(ReportPreviewPresenter presenter, ReportTemplateDTO template);
-        Map<String,Object> getParameters();
+        DateRange getDateRange();
 
         void setPreviewHtml(String html);
 
@@ -44,20 +45,25 @@ public class ReportPreviewPresenter implements PagePresenter, ActionListener {
         void setActionEnabled(String actionId, boolean enabled);
     }
 
+    private final Authentication auth;
     private final CommandService service;
-    private final ReportTemplateDTO template;
     private final View view;
 
-    public ReportPreviewPresenter(CommandService service, ReportTemplateDTO template, View view) {
+    private ReportTemplateDTO template;
+
+    @Inject
+    public ReportPreviewPresenter(Authentication auth, CommandService service, View view) {
+        this.auth = auth;
         this.service = service;
-        this.template = template;
         this.view = view;
+    }
+
+    public void go(ReportTemplateDTO template) {
+        this.template = template;
         this.view.init(this, template);
 
         this.view.setActionEnabled(UIActions.edit, template.getAmOwner());
     }
-
-
 
     public PageId getPageId() {
         return Pages.ReportPreview;
@@ -83,10 +89,29 @@ public class ReportPreviewPresenter implements PagePresenter, ActionListener {
         return false;
     }
 
+    @Override
+    public void export(RenderElement.Format format) {
+
+        StringBuilder url = new StringBuilder();
+        url.append("../report?auth=").append(auth.getAuthToken())
+                .append("&id=").append(template.getId())
+                .append("&format=").append(format.toString());
+
+        DateRange range = view.getDateRange();
+        if(range.getMinDate() != null) {
+            url.append("&from=").append(range.getMinDate().getTime());
+        }
+        if(range.getMaxDate() != null) {
+            url.append("&to=").append(range.getMaxDate().getTime());
+        }
+
+        Window.open(url.toString(), "_downloadFrame", null);
+    }
+
     public void onUIAction(String actionId) {
         if(UIActions.refresh.equals(actionId)) {
 
-            RenderReportHtml command = new RenderReportHtml(template.getId(), view.getParameters());
+            RenderReportHtml command = new RenderReportHtml(template.getId(), view.getDateRange());
             service.execute(command, view.getLoadingMonitor(), new Got<HtmlResult>() {
 
                 @Override

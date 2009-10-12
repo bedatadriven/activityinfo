@@ -1,20 +1,16 @@
 package org.activityinfo.server.report;
 
+import org.activityinfo.shared.dto.ReportTemplateDTO;
+import org.activityinfo.shared.report.model.ReportFrequency;
+import org.apache.xerces.parsers.SAXParser;
+import org.apache.xerces.xni.*;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.activityinfo.shared.dto.ReportParameterDTO;
-import org.activityinfo.shared.dto.ReportTemplateDTO;
-import org.apache.xerces.parsers.SAXParser;
-import org.apache.xerces.xni.Augmentations;
-import org.apache.xerces.xni.QName;
-import org.apache.xerces.xni.XMLAttributes;
-import org.apache.xerces.xni.XMLString;
-import org.apache.xerces.xni.XNIException;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 
 public class ReportMetadataParser extends SAXParser {
@@ -22,23 +18,17 @@ public class ReportMetadataParser extends SAXParser {
 	private ReportTemplateDTO report;
 	private String currentText = null;
 	private boolean inBody = false;
-	private Map<String, Integer> typeNames;
-	private Map<String, Integer> dateUnitNames; 
-	
-	public ReportMetadataParser() {
-		typeNames = new HashMap<String, Integer>();
-		typeNames.put("database", ReportParameterDTO.TYPE_DATABASE);
-		typeNames.put("activity", ReportParameterDTO.TYPE_ACTIVITY);
-		typeNames.put("attribute", ReportParameterDTO.TYPE_ATTRIBUTE);
-		typeNames.put("indicator", ReportParameterDTO.TYPE_INDICATOR);
-		typeNames.put("date", ReportParameterDTO.TYPE_DATE);
+	private Map<String, Integer> frequencyNames;
+
+    public ReportMetadataParser() {
 		
 		
-		dateUnitNames = new HashMap<String, Integer>();
-		dateUnitNames.put("month", ReportParameterDTO.UNIT_MONTH);
-		dateUnitNames.put("year", ReportParameterDTO.UNIT_YEAR);
-		dateUnitNames.put("day", ReportParameterDTO.UNIT_DAY);
-		dateUnitNames.put("quarter", ReportParameterDTO.UNIT_QUARTER);
+		frequencyNames = new HashMap<String, Integer>();
+		frequencyNames.put("monthly", ReportFrequency.MONTHLY);
+		frequencyNames.put("weekly", ReportFrequency.WEEKLY);
+		frequencyNames.put("day", ReportFrequency.DAILY);
+		frequencyNames.put("none", ReportFrequency.NOT_DATE_BOUND);
+        frequencyNames.put("adhoc", ReportFrequency.ADHOC);
 		
 	}
 
@@ -55,25 +45,28 @@ public class ReportMetadataParser extends SAXParser {
 		super.startElement(name, attributes, aug);
 		
 		if(name.localpart.equals("report")) {
-			
-			inBody = false;
-			
-		} else if(name.localpart.equals("parameter")) {
-			
-			ReportParameterDTO param = new ReportParameterDTO(
-					attributes.getValue("name"),
-					attributes.getValue("label"),
-					typeNames.get(attributes.getValue("type")));
 
-			if(param.getType() == ReportParameterDTO.TYPE_DATE &&
-					attributes.getValue("date-unit") != null ) {
-				
-				param.setDateUnit( dateUnitNames.get(attributes.getValue("date-unit")));
-				
-			}
-			
-			report.addParameter(param);
-			
+			inBody = false;
+
+            String freqString = attributes.getValue("frequency");
+            if(freqString != null) {
+                report.setFrequency(frequencyNames.get(freqString));
+
+               String day = attributes.getValue("day");
+                if(report.getFrequency() == ReportFrequency.MONTHLY) {
+                    if("last".equals(day)) {
+                        report.setDay(ReportFrequency.LAST_DAY_OF_MONTH);
+                    } else if(day !=null) {
+                        report.setDay(Integer.parseInt(day));
+                    } else {
+                        report.setDay(1);
+                    }
+                } else if(report.getFrequency() == ReportFrequency.WEEKLY) {
+                    report.setDay(Integer.parseInt(day));
+                }
+
+            }
+
 		} else if (name.localpart.equals("body")) {
 			
 			inBody = true;

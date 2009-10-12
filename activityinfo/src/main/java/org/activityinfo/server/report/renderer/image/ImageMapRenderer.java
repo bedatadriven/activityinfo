@@ -1,29 +1,26 @@
 package org.activityinfo.server.report.renderer.image;
 
+import com.google.inject.Inject;
+import org.activityinfo.server.report.generator.MapIconPath;
 import org.activityinfo.server.report.generator.map.TileProvider;
 import org.activityinfo.server.report.generator.map.TiledMap;
-import org.activityinfo.server.report.generator.MapIconPath;
+import org.activityinfo.shared.map.BaseMap;
+import org.activityinfo.shared.map.LocalBaseMap;
 import org.activityinfo.shared.report.content.MapMarker;
 import org.activityinfo.shared.report.model.MapElement;
-import org.activityinfo.shared.map.LocalBaseMap;
-import org.activityinfo.shared.map.BaseMap;
 
 import javax.imageio.ImageIO;
-import javax.servlet.ServletContext;
 import java.awt.*;
 import java.awt.color.ColorSpace;
-import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
 import java.awt.geom.Ellipse2D;
-import java.io.IOException;
+import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.OutputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URL;
-import java.util.Map;
 import java.util.HashMap;
-
-import com.google.inject.Inject;
+import java.util.Map;
 /*
  * @author Alex Bertram
  */

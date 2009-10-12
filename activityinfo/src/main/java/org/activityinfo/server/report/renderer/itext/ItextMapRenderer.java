@@ -1,16 +1,14 @@
 package org.activityinfo.server.report.renderer.itext;
 
-import org.activityinfo.server.report.renderer.image.ImageMapRenderer;
-import org.activityinfo.server.report.generator.MapIconPath;
-import org.activityinfo.shared.report.model.MapElement;
-import com.lowagie.text.Document;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Image;
-import com.lowagie.text.DocWriter;
 import com.google.inject.Inject;
+import com.lowagie.text.DocWriter;
+import com.lowagie.text.Document;
+import com.lowagie.text.Image;
+import org.activityinfo.server.report.generator.MapIconPath;
+import org.activityinfo.server.report.renderer.image.ImageMapRenderer;
+import org.activityinfo.shared.report.model.MapElement;
 
 import java.io.ByteArrayOutputStream;
-import java.io.RandomAccessFile;
 /*
  * @author Alex Bertram
  */

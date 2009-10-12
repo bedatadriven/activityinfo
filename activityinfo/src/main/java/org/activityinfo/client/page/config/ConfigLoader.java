@@ -1,22 +1,20 @@
 package org.activityinfo.client.page.config;
 
-import org.activityinfo.client.Place;
-import org.activityinfo.client.PlaceSerializer;
-import org.activityinfo.client.command.CommandService;
-import org.activityinfo.client.command.callback.Got;
-import org.activityinfo.client.common.frameset.VSplitFrameSet;
-import org.activityinfo.client.common.nav.NavigationPanel;
-import org.activityinfo.client.common.place.SimplePlaceParser;
-import org.activityinfo.client.inject.AppInjector;
-import org.activityinfo.client.page.*;
-import org.activityinfo.client.page.config.design.Designer;
-import org.activityinfo.shared.command.GetSchema;
-import org.activityinfo.shared.dto.Schema;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
+import org.activityinfo.client.Place;
+import org.activityinfo.client.PlaceSerializer;
+import org.activityinfo.client.command.CommandService;
+import org.activityinfo.client.command.callback.Got;
+import org.activityinfo.client.inject.AppInjector;
+import org.activityinfo.client.page.*;
+import org.activityinfo.client.page.common.nav.NavigationPanel;
+import org.activityinfo.client.page.common.widget.VSplitFrameSet;
+import org.activityinfo.client.page.config.design.Designer;
+import org.activityinfo.shared.command.GetSchema;
+import org.activityinfo.shared.dto.Schema;
 
 public class ConfigLoader implements PageLoader {
 
@@ -24,11 +22,10 @@ public class ConfigLoader implements PageLoader {
     private final CommandService service;
 
     @Inject
-    public ConfigLoader(AppInjector injector) {
+    public ConfigLoader(AppInjector injector, PageManager pageManager, PlaceSerializer placeSerializer) {
         this.injector = injector;
         this.service = injector.getService();
 
-        PageManager pageManager = injector.getPageManager();
         pageManager.registerPageLoader(Pages.ConfigFrameSet, this);
         pageManager.registerPageLoader(Pages.Account, this);
         pageManager.registerPageLoader(Pages.DatabaseList, this);
@@ -36,9 +33,8 @@ public class ConfigLoader implements PageLoader {
         pageManager.registerPageLoader(Pages.DatabasePartners, this);
         pageManager.registerPageLoader(Pages.Design, this);
 
-        PlaceSerializer placeSerializer = injector.getPlaceSerializer();
-        placeSerializer.registerParser(Pages.Account, new SimplePlaceParser(new AccountPlace()));
-        placeSerializer.registerParser(Pages.DatabaseList, new SimplePlaceParser(new DbListPlace()));
+        placeSerializer.registerStatelessPlace(Pages.Account, new AccountPlace());
+        placeSerializer.registerStatelessPlace(Pages.DatabaseList, new DbListPlace());
         placeSerializer.registerParser(Pages.DatabaseUsers, new DbPlace.Parser(Pages.DatabaseUsers));
         placeSerializer.registerParser(Pages.DatabasePartners, new DbPlace.Parser(Pages.DatabasePartners));
         placeSerializer.registerParser(Pages.Design, new DbPlace.Parser(Pages.Design));

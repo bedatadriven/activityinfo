@@ -1,23 +1,8 @@
 package org.activityinfo.server.servlet.kml;
 
-import javax.servlet.http.HttpServletRequest;
-
-/**
- * @author Alex Bertram (akbertram@gmail.com)
- */
-
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.charset.Charset;
-import java.util.List;
-import java.util.ArrayList;
-
-import javax.persistence.EntityManager;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletResponse;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.TransformerConfigurationException;
-
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Singleton;
 import org.activityinfo.server.command.handler.GetSchemaHandler;
 import org.activityinfo.server.dao.hibernate.SiteTableDAO;
 import org.activityinfo.server.dao.hibernate.SiteTableDAOHibernate;
@@ -38,13 +23,30 @@ import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.exception.InvalidLoginException;
 import org.activityinfo.shared.report.content.SiteData;
 import org.apache.commons.codec.binary.Base64;
-
-import org.xml.sax.SAXException;
 import org.hibernate.criterion.Order;
-import com.google.inject.Singleton;
-import com.google.inject.Injector;
-import com.google.inject.Inject;
+import org.xml.sax.SAXException;
 
+import javax.persistence.EntityManager;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.stream.StreamResult;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Serves a KML (Google Earth) file containing the locations of all activities
+ * that are visible to the user.
+ *
+ * Users are authenticated using Basic HTTP authentication, and will see a prompt
+ * for their username (email) and password when they access from Google Earth.
+ *
+ * @author Alex Bertram
+ */
 @Singleton
 public class KmlDataServlet extends javax.servlet.http.HttpServlet {
 
@@ -119,6 +121,9 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
 	}
 
     protected void writeDocument(User user, PrintWriter out) throws TransformerConfigurationException, SAXException, CommandException {
+
+        // TODO: rewrite using FreeMarker
+
         EntityManager em = injector.getInstance(EntityManager.class);
         DomainFilters.applyUserFilter(user, em);
 

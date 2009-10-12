@@ -1,12 +1,6 @@
 package org.activityinfo.client.page.entry.editor;
 
 
-import org.activityinfo.client.Application;
-import org.activityinfo.client.common.widget.CoordinateField;
-import org.activityinfo.client.map.MapTypeFactory;
-import org.activityinfo.client.page.config.form.FieldSetFitLayout;
-import org.activityinfo.shared.dto.Bounds;
-
 import com.extjs.gxt.ui.client.event.ContainerEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
@@ -20,13 +14,18 @@ import com.google.gwt.maps.client.MapType;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.control.MapTypeControl;
 import com.google.gwt.maps.client.control.SmallMapControl;
+import com.google.gwt.maps.client.event.MapMoveEndHandler;
 import com.google.gwt.maps.client.event.MapZoomEndHandler;
 import com.google.gwt.maps.client.event.MarkerDragEndHandler;
-import com.google.gwt.maps.client.event.MapMoveEndHandler;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.geom.LatLngBounds;
 import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.maps.client.overlay.MarkerOptions;
+import org.activityinfo.client.Application;
+import org.activityinfo.client.map.MapTypeFactory;
+import org.activityinfo.client.page.common.widget.CoordinateField;
+import org.activityinfo.client.page.config.form.FieldSetFitLayout;
+import org.activityinfo.shared.dto.Bounds;
 
 public class MapFieldSet extends FieldSet implements MapPresenter.View {
 

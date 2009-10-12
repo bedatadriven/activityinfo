@@ -5,24 +5,22 @@
 <web-app>
     <display-name>ActivityInfo</display-name>
 
+    <filter>
+        <filter-name>guiceFilter</filter-name>
+        <filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>guiceFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
 
     <listener>
-        <listener-class>org.activityinfo.server.servlet.ServletConfig</listener-class>
+        <listener-class>org.activityinfo.server.servlet.DiIInstaller</listener-class>
     </listener>
-
-    <filter>
-       <filter-name>guiceFilter</filter-name>
-       <filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
-     </filter>
-
-     <filter-mapping>
-       <filter-name>guiceFilter</filter-name>
-       <url-pattern>/*</url-pattern>
-     </filter-mapping>
 
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
-
-
 </web-app>

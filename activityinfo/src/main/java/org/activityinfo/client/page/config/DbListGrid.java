@@ -1,25 +1,22 @@
 package org.activityinfo.client.page.config;
 
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
-import com.extjs.gxt.ui.client.data.ListLoader;
-import com.extjs.gxt.ui.client.data.Loader;
-
+import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.activityinfo.client.Application;
-import org.activityinfo.client.common.action.UIActions;
-import org.activityinfo.client.common.dialog.FormDialogCallback;
-import org.activityinfo.client.common.dialog.FormDialogImpl;
-import org.activityinfo.client.common.dialog.FormDialogTether;
-import org.activityinfo.client.common.grid.AbstractGridView;
+import org.activityinfo.client.page.common.dialog.FormDialogCallback;
+import org.activityinfo.client.page.common.dialog.FormDialogImpl;
+import org.activityinfo.client.page.common.dialog.FormDialogTether;
+import org.activityinfo.client.page.common.grid.AbstractGridView;
+import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.client.page.config.form.DatabaseForm;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 public class DbListGrid extends AbstractGridView<UserDatabaseDTO, DbListPresenter> implements DbListPresenter.View {
 

@@ -1,25 +1,43 @@
 package org.activityinfo.shared.dto;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
-
-
 import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.data.ModelData;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 public class Schema extends BaseModel implements DTO {
 
-	
+	private long version;
 	private List<UserDatabaseDTO> databases = new ArrayList<UserDatabaseDTO>(0);
 	private List<CountryModel> countries = new ArrayList<CountryModel>(0);
 	
 	public Schema()
 	{
 	}
-	
-	public List<UserDatabaseDTO> getDatabases()
+
+    /**
+     * Gets the version number of this schema. This number can be used to
+     * check for updates on the server.
+     *
+     * @return  the version number of this schema
+     */
+    public long getVersion() {
+        return version;
+    }
+
+    /**
+     * Sets the version number of the schema.
+     *
+     * @param version a numeric version identifier
+     */
+    public void setVersion(long version) {
+        this.version = version;
+    }
+
+    public List<UserDatabaseDTO> getDatabases()
 	{
 		return databases;
 	}
@@ -69,6 +87,12 @@ public class Schema extends BaseModel implements DTO {
 		return country;
 	}
 
+    /**
+     * Finds a database in this schema by id.
+     *
+     * @param id The database id
+     * @return The database corresponding to this id, or null if none exists.
+     */
 	public UserDatabaseDTO getDatabaseById(int id) {
 		for(UserDatabaseDTO database : databases) {
 			if(database.getId() == id) {
@@ -77,7 +101,17 @@ public class Schema extends BaseModel implements DTO {
 		}
 		return null;
 	}
-	
+
+    /**
+     *
+     * Helper function to search a list of <code>ModelData</code> for a model
+     * with that has a value of <code>id</code> for the property "id"
+     *
+     * @param list The list of <code>ModelData</code> to search
+     * @param id  The id for which to search
+     * @param <T> The <code>ModelData</code> subclass
+     * @return  The corresponding <code>ModelData</code>, or null if none was found.
+     */
 	public static <T extends ModelData> T getById(List<T> list, int id) {
 		for(T m : list) {
 			Integer mId = m.get("id");
@@ -160,5 +194,6 @@ public class Schema extends BaseModel implements DTO {
 		}
 		return null;
 	}
+
 
 }

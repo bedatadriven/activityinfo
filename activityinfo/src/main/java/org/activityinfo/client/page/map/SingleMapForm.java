@@ -4,12 +4,11 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
 import com.google.inject.Inject;
-
 import org.activityinfo.client.command.CommandService;
-import org.activityinfo.client.common.filter.AdminFilterPanel;
-import org.activityinfo.client.common.filter.DateRangePanel;
-import org.activityinfo.client.common.filter.IndicatorTreePanel;
 import org.activityinfo.client.icon.IconImageBundle;
+import org.activityinfo.client.page.common.filter.AdminFilterPanel;
+import org.activityinfo.client.page.common.filter.DateRangePanel;
+import org.activityinfo.client.page.common.filter.IndicatorTreePanel;
 import org.activityinfo.shared.dto.AdminEntityModel;
 import org.activityinfo.shared.dto.Schema;
 import org.activityinfo.shared.i18n.UIConstants;

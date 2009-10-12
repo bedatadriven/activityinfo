@@ -1,15 +1,9 @@
 package org.activityinfo.server.report.generator;
 
+import com.google.inject.Inject;
 import org.activityinfo.server.dao.hibernate.PivotDAO;
 import org.activityinfo.server.dao.hibernate.SiteTableDAO;
-import org.activityinfo.server.domain.Location;
-import org.activityinfo.shared.domain.SiteColumn;
-import org.activityinfo.shared.report.model.DimensionType;
-import org.activityinfo.shared.report.model.Filter;
 import org.activityinfo.shared.report.model.ReportElement;
-import org.hibernate.criterion.*;
-
-import com.google.inject.Inject;
 
 /**
  * This is the base class for generators of element that 

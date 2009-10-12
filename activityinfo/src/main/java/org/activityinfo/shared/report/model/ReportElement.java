@@ -2,13 +2,49 @@ package org.activityinfo.shared.report.model;
 
 import com.extjs.gxt.ui.client.data.BaseModel;
 
-import java.io.Serializable;
-
 /**
- * 
- * ReportElement is the base class for all report elements and the 
+ *
+ * ReportElement is the base class for all report elements and the
  * report container itself.
- * 
+ *
+ * In ActivityInfo, we require that a given report element (such as chart) can
+ * be rendered either on the client side or the server side. For example, on the
+ * server side, a chart might be rendered to a GIF image that is included in a Word
+ * document to be downloaded by the user, while on the client side, we want to render
+ * the same chart using the OpenFlashChart flash component.
+ *
+ * So in order to maximize code reuse, the report pipeline is divided into serveral types of
+ * interchangeable components:
+ *
+ * <ol>
+ * <li><strong>Report Models</strong> define the structure and presentation of Tables, Pivot Tables,
+ * Charts, etc. They have no dependencies and can be moved between the server and client.</li>
+ *
+ * <li><strong>Data Access Objects (DAOs)</strong> retrieve data and do the raw
+ * number crunching. <code>SiteTableDAO</code> provides access to
+ * lists of sites, while <code>PivotDAO</code> summarizes data
+ * into a cube. Currently, there is a server-side implementation based on Hibernate and JDBC, but
+ * ultimately we will have client-side implementations that read the data from client-side SqlLite
+ * databases.
+ * </li>
+ *
+ * <li><strong>Generators</strong> intrepret the Report Models and use DAOs to obtain data and structure the
+ * content of a report element in <code>Content</code> objects.
+ * In principal, generators should be able to run on either the server or client side, but in practice
+ * they've been developed for the server side and probably have non-GWT-compatible-dependencies.</li>
+ *
+ * <li><strong>Renderers</strong> are server side class that accept Report Models and Report Content and render
+ * them into a given format, such as PDF, a Word Document, or a PNG file. Renderers should not contain any
+ * decisional logic or access data external to the <code>Content</code> object -- this sort of thing should be
+ * centralized in the generators.</li>
+ *
+ * </ol>
+ *
+ * @see org.activityinfo.server.dao.hibernate.SiteTableDAO
+ * @see org.activityinfo.server.dao.hibernate.PivotDAO
+ * @see org.activityinfo.server.report.generator.ReportGenerator
+ * @see org.activityinfo.shared.report.content.Content
+ * @see org.activityinfo.server.report.renderer.Renderer
  * 
  * 
  * @author Alex Bertram
@@ -17,52 +53,82 @@ import java.io.Serializable;
 public abstract class ReportElement extends BaseModel {
 
 
-	private ParameterizedFilter filter = new ParameterizedFilter();
+	private Filter filter = new Filter();
 	
 	public ReportElement() {
 		
 	}
 
 	/**
-	 * The filter that will be applied to this report. 
+	 * Gets the filter that will be applied to this report.
 	 * Note that elements inherit the report's global filter,
 	 * as well as any other filter specified by the callers
 	 * at runtime.
+     *
+     * If this element is part of a <code>Report</code>, then
+     * the <code>DateRange</code> provided to the generator will
+     * also be applied to the filter, IF the <code>minDate</code>
+     * and/or <code>maxDate</code> of this element's filter are <code>null</code>.
+     *
+     * This allows an individual <code>ReportElement</code> to override
+     * the <code>DateRange</code> of the report-- for example, a <code>MONTHLY</code>
+     * report may include a graph of results year-to-date.
 	 * 
-	 * @return
+	 * @return The filter applied to the report element.
 	 */
-	public ParameterizedFilter getFilter() {
+	public Filter getFilter() {
 		return filter;
 	}
 
-	public void setFilter(ParameterizedFilter filter) {
+    /**
+     * Sets the filter that will be applied to this report.
+     *
+     * @param filter
+     */
+	public void setFilter(Filter filter) {
 		this.filter = filter;
 	}
 
 	/**
-	 * The full title of the report element
+	 * Gets the full title of the report element. In document-based output,
+     * like RTF, PDF, etc, this will be a text header that precedes the report element,
+     * while in a PowerPoint presentation it may be the slide's title.
 	 *  
-	 * @return The full title of the report element
+	 * @return the full title of the report element
 	 */
 	public String getTitle() {
 		return get("title");
 	}
 
+    /**
+     * Sets the full title of the report element. In document-based output,
+     * like RTF, PDF, etc, this will be a text header that precedes the report element,
+     * while in a PowerPoint presentation it may be the slide's title.
+     *
+     * @param title the full title of the report element
+     */
 	public void setTitle(String title) {
 		set("title", title);
 	}
 
 	/**
-	 * A shorter form of the title used to name worksheet tabs 
-	 * (e.g. something other than Sheet1, Sheet2, Sheet3 at the 
-	 * bottom of Excel)
+	 * Gets the short form of the title used to name worksheet tabs.
+	 * For example, something other than Sheet1, Sheet2, Sheet3 at the
+	 * bottom of Excel.
 	 * 
-	 * @return
+	 * @return The sheet title
 	 */
 	public String getSheetTitle() {
 		return get("sheetTitle");
 	}
 
+    /**
+     * Sets the short form of the title used to name worksheet tabs.
+	 * For example, something other than Sheet1, Sheet2, Sheet3 at the
+	 * bottom of Excel.
+     *
+     * @param sheetTitle The sheet title
+     */
 	public void setSheetTitle(String sheetTitle) {
 		set("sheetTitle", sheetTitle);
 	}

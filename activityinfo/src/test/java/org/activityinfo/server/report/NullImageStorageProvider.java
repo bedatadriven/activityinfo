@@ -1,10 +1,10 @@
 package org.activityinfo.server.report;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
 import org.activityinfo.server.report.renderer.html.ImageStorage;
 import org.activityinfo.server.report.renderer.html.ImageStorageProvider;
+
+import java.io.IOException;
+import java.io.OutputStream;
 
 public class NullImageStorageProvider implements ImageStorageProvider {
 

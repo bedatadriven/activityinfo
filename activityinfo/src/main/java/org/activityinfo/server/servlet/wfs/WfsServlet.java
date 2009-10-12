@@ -1,8 +1,18 @@
 package org.activityinfo.server.servlet.wfs;
 
-import java.io.IOException;
-import java.util.*;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Singleton;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import org.activityinfo.server.domain.Activity;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -10,22 +20,19 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.persistence.EntityManager;
+import java.io.IOException;
+import java.util.*;
 
-import org.activityinfo.server.domain.Activity;
-import org.activityinfo.server.servlet.wfs.Capabilities;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.google.inject.Singleton;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
-
+/**
+ *
+ * An implementation of the Web Feature Service (WFS) Specification that allows
+ * access to ActivityInfo directly from ArcGIS and other GIS software.
+ *
+ * This implementation relies heavily on FreeMarker, see /war/ftl/wfs for the
+ * response templates.
+ *
+ * @author Alex Bertram
+ */
 @Singleton
 public class WfsServlet extends HttpServlet {
 

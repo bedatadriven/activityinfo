@@ -60,19 +60,21 @@ public class UpdateSubscriptionHandler implements CommandHandler<UpdateSubscript
 
             // new subscriptions can be created either by the user themselves
             // or by a second user (invitation)
-            
-            ReportSubscription sub = new ReportSubscription(
-                    em.getReference(ReportTemplate.class, cmd.getReportTemplateId()),
-                    em.getReference(User.class, userId));
 
-            sub.setFrequency(cmd.getFrequency());
-            sub.setDay(cmd.getDay());
+            if(cmd.isSubscribed()) {
 
-            if(userId != currentUser.getId()) {
-                sub.setInvitingUser(currentUser);
+                ReportSubscription sub = new ReportSubscription(
+                        em.getReference(ReportTemplate.class, cmd.getReportTemplateId()),
+                        em.getReference(User.class, userId));
+
+                sub.setSubscribed(true);
+
+                if(userId != currentUser.getId()) {
+                    sub.setInvitingUser(currentUser);
+                }
+
+                em.persist(sub);
             }
-
-            em.persist(sub);
         } else {
 
             // only the user themselves can change a subscription once it's been
@@ -83,8 +85,7 @@ public class UpdateSubscriptionHandler implements CommandHandler<UpdateSubscript
             }
 
             ReportSubscription sub = results.get(0);
-            sub.setFrequency(cmd.getFrequency());
-            sub.setDay(cmd.getDay());
+            sub.setSubscribed(cmd.isSubscribed());
         }
 
         return new VoidResult();

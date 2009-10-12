@@ -1,14 +1,13 @@
 package org.activityinfo.server.report.generator.map;
 
-import org.activityinfo.server.report.generator.map.Cluster;
-import org.activityinfo.server.report.generator.map.MarkerGraph;
-import org.activityinfo.server.report.generator.map.PointValue;
 import org.activityinfo.shared.report.content.Point;
 import org.junit.Test;
 
-import java.util.List;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.io.*;
+import java.util.List;
 /*
  * @author Alex Bertram
  */

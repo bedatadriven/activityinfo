@@ -1,13 +1,7 @@
 package org.activityinfo.client.page.entry.editor;
 
-import org.activityinfo.client.page.entry.editor.AdminFieldSet;
-import org.activityinfo.shared.dto.ActivityModel;
-import org.activityinfo.shared.dto.AdminEntityModel;
-import org.activityinfo.shared.dto.AdminLevelModel;
-
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.store.ListStore;
+import org.activityinfo.shared.dto.ActivityModel;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

@@ -1,7 +1,5 @@
 package org.activityinfo.server.report.generator.map;
 
-import org.activityinfo.server.report.generator.map.Cluster;
-
 import java.util.List;
 /*
  * @author Alex Bertram

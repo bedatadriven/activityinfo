@@ -1,21 +1,15 @@
 package org.activityinfo.server.schedule;
 
-import com.google.inject.Injector;
 import com.google.inject.Inject;
-
-import javax.servlet.ServletContextListener;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContext;
-
-import org.activityinfo.server.servlet.ServletConfig;
-import org.quartz.spi.JobFactory;
 import org.quartz.*;
+import org.quartz.spi.JobFactory;
 
+import javax.servlet.ServletContext;
 import java.util.Date;
+
 /*
  * @author Alex Bertram
  */
-
 public class ScheduleInitializer  {
 
     private JobFactory jobFactory;

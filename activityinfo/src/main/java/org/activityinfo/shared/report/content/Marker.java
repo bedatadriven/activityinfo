@@ -1,11 +1,8 @@
 package org.activityinfo.shared.report.content;
 
-import org.activityinfo.shared.report.content.LatLng;
-import org.activityinfo.shared.report.content.Point;
-
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Collection;
+import java.util.List;
 
 
 public class Marker<SiteT extends SiteGeoData> {

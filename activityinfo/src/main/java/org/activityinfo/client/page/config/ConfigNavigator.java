@@ -1,25 +1,25 @@
 package org.activityinfo.client.page.config;
 
+import com.extjs.gxt.ui.client.data.DataReader;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Inject;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.command.CommandService;
 import org.activityinfo.client.command.callback.Got;
-import org.activityinfo.client.common.nav.Link;
-import org.activityinfo.client.common.nav.Navigator;
 import org.activityinfo.client.icon.IconImageBundle;
 import org.activityinfo.client.page.Pages;
+import org.activityinfo.client.page.common.nav.Link;
+import org.activityinfo.client.page.common.nav.Navigator;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.dto.Schema;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
 import org.activityinfo.shared.i18n.UIConstants;
 
-import com.extjs.gxt.ui.client.data.DataReader;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.Inject;
-
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
+ *
  * @author Alex Bertram (akbertram@gmail.com)
  */
 public class ConfigNavigator implements Navigator {

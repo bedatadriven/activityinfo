@@ -1,11 +1,15 @@
 package org.activityinfo.client.page.table.drilldown;
 
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.LoadEvent;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.store.ListStore;
 import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.command.CommandService;
 import org.activityinfo.client.command.callback.Got;
-import org.activityinfo.client.common.grid.AbstractGridPlace;
 import org.activityinfo.client.event.PivotCellEvent;
+import org.activityinfo.client.page.common.grid.AbstractGridPlace;
 import org.activityinfo.client.page.entry.SiteEditor;
 import org.activityinfo.client.util.IStateManager;
 import org.activityinfo.shared.command.GetSchema;
@@ -19,11 +23,6 @@ import org.activityinfo.shared.report.content.EntityCategory;
 import org.activityinfo.shared.report.content.PivotTableData;
 import org.activityinfo.shared.report.model.DimensionType;
 import org.activityinfo.shared.report.model.Filter;
-
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.data.LoadEvent;
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.store.ListStore;
 /*
  * @author Alex Bertram
  */

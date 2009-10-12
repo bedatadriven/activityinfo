@@ -50,8 +50,7 @@ import java.util.Set;
 public class Site implements java.io.Serializable, Deleteable {
 
 	private int id;
-	private int version;
-	private Site assessment;
+    private Site assessment;
 	
 	private Activity activity;
 	private Location location;
@@ -99,18 +98,8 @@ public class Site implements java.io.Serializable, Deleteable {
 	public void setId(int siteId) {
 		this.id = siteId;
 	}
-	
-	@Version
-	@Column(nullable=false)
-	public int getVersion() {
-		return this.version;
-	}
-	
-	protected void setVersion(int version) {
-		this.version = version;
-	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "AssessmentSiteId")
 	public Site getAssessment() {
 		return this.assessment;

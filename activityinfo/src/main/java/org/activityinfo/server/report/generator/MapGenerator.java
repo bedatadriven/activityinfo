@@ -1,22 +1,24 @@
 package org.activityinfo.server.report.generator;
 
+import com.google.inject.Inject;
 import org.activityinfo.server.dao.BaseMapDAO;
 import org.activityinfo.server.dao.hibernate.PivotDAO;
 import org.activityinfo.server.dao.hibernate.SiteTableDAO;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.server.report.generator.map.*;
 import org.activityinfo.shared.map.BaseMap;
-import org.activityinfo.shared.report.content.*;
+import org.activityinfo.shared.report.content.Extents;
+import org.activityinfo.shared.report.content.MapContent;
+import org.activityinfo.shared.report.content.MapMarker;
+import org.activityinfo.shared.report.content.SiteData;
 import org.activityinfo.shared.report.model.*;
+import org.activityinfo.shared.date.DateRange;
 
 import java.util.*;
-import java.util.List;
 
-import com.google.inject.Inject;
 /*
  * @author Alex Bertram
  */
-
 public class MapGenerator extends ListGenerator<MapElement> {
 
     private final BaseMapDAO baseMapDAO;
@@ -27,9 +29,9 @@ public class MapGenerator extends ListGenerator<MapElement> {
         this.baseMapDAO = baseMapDAO;
     }
 
-    public void generate(User user, MapElement element, Filter inheritedFilter, Map<String, Object> parameterValues) {
+    public void generate(User user, MapElement element, Filter inheritedFilter, DateRange dateRange) {
 
-        Filter filter = ParamFilterHelper.resolve(element.getFilter(), parameterValues);
+        Filter filter = resolveElementFilter(element, dateRange);
         Filter effectiveFilter = inheritedFilter == null ? filter : new Filter(inheritedFilter, filter);
 
         List<SiteData> sites = siteDAO.query(
@@ -40,7 +42,7 @@ public class MapGenerator extends ListGenerator<MapElement> {
                 SiteTableDAO.RETRIEVE_ALL, 0, -1);
 
         MapContent content = new MapContent();
-        content.setFilterDescriptions(generateFilterDescriptions(filter, Collections.<DimensionType>emptySet()));
+        content.setFilterDescriptions(generateFilterDescriptions(filter, Collections.<DimensionType>emptySet(), user));
 
         // Set up layer generators
         List<LayerGenerator> layerGenerators = new ArrayList<LayerGenerator>();

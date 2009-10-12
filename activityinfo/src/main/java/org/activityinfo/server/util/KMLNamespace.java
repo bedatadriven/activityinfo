@@ -3,7 +3,6 @@ package org.activityinfo.server.util;
 import org.xml.sax.SAXException;
 
 import java.text.SimpleDateFormat;
-import java.util.Locale;
 import java.util.Date;
 
 /**

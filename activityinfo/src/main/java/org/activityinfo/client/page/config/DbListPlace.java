@@ -1,13 +1,11 @@
 package org.activityinfo.client.page.config;
 
-import java.util.List;
-
 import org.activityinfo.client.Place;
-import org.activityinfo.client.PlaceParser;
 import org.activityinfo.client.ViewPath;
-import org.activityinfo.client.common.place.SimplePlaceParser;
 import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.Pages;
+
+import java.util.List;
 
 public class DbListPlace implements Place {
 
@@ -40,7 +38,4 @@ public class DbListPlace implements Place {
         return 0;
     }
 
-    public static PlaceParser Parser() {
-        return new SimplePlaceParser(new DbListPlace());
-    }
 }

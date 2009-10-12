@@ -1,11 +1,10 @@
 package org.activityinfo.client.util;
 
+import com.extjs.gxt.ui.client.util.DateWrapper;
 import org.activityinfo.shared.command.Month;
 import org.activityinfo.shared.date.DateRange;
 import org.activityinfo.shared.date.DateUtil;
 import org.activityinfo.shared.report.model.DateUnit;
-
-import com.extjs.gxt.ui.client.util.DateWrapper;
 
 import java.util.Date;
 /*
@@ -25,10 +24,10 @@ public class DateUtilGWTImpl extends DateUtil {
         DateRange range = new DateRange();
 
         DateWrapper date = new DateWrapper(year, 0, 1);
-        range.date1 = date.asDate();
+        range.setMinDate(date.asDate());
 
         date = new DateWrapper(year, 11, 31);
-        range.date2 = date.asDate();
+        range.setMaxDate(date.asDate());
 
         return range;
 
@@ -40,11 +39,11 @@ public class DateUtilGWTImpl extends DateUtil {
         DateRange range = new DateRange();
 
         DateWrapper date = new DateWrapper(year, month-1, 1);
-        range.date1 = date.asDate();
+        range.setMinDate(date.asDate());
 
         date = date.addMonths(1);
         date = date.addDays(-1);
-        range.date2 = date.asDate();
+        range.setMaxDate(date.asDate());
 
         return range;
 

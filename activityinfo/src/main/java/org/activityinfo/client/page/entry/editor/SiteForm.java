@@ -3,18 +3,19 @@ package org.activityinfo.client.page.entry.editor;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.form.*;
+import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.maps.client.Maps;
-
 import org.activityinfo.client.Application;
 import org.activityinfo.client.command.monitor.AsyncMonitor;
 import org.activityinfo.client.command.monitor.MaskingAsyncMonitor;
-import org.activityinfo.client.page.base.*;
+import org.activityinfo.client.page.common.widget.LoadingPlaceHolder;
 import org.activityinfo.client.page.config.form.ModelFormPanel;
-import org.activityinfo.shared.dto.*;
+import org.activityinfo.shared.dto.ActivityModel;
+import org.activityinfo.shared.dto.PartnerModel;
+import org.activityinfo.shared.dto.SiteModel;
 
-import java.util.*;
+import java.util.Map;
 
 public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
 

@@ -1,13 +1,11 @@
 package org.activityinfo.client.page.map;
 
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.layout.FormLayout;
-import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.google.gwt.i18n.client.NumberFormat;
-import org.activityinfo.client.common.widget.ColorField;
-import org.activityinfo.client.common.widget.MappingComboBox;
 import org.activityinfo.client.Application;
+import org.activityinfo.client.page.common.widget.ColorField;
+import org.activityinfo.client.page.common.widget.MappingComboBox;
 import org.activityinfo.shared.report.model.GsMapLayer;
 /*
  * @author Alex Bertram

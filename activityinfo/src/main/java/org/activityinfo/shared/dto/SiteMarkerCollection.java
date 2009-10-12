@@ -5,7 +5,7 @@ import org.activityinfo.shared.command.result.CommandResult;
 import java.util.List;
 
 /**
- * @author Alex Bertram (akbertram@gmail.com)
+ * @author Alex Bertram
  */
 public class SiteMarkerCollection implements CommandResult {
 

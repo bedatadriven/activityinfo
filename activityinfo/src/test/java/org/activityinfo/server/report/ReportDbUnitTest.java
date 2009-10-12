@@ -1,15 +1,15 @@
 package org.activityinfo.server.report;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-
+import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
 import org.activityinfo.server.DbUnitTestCase;
 import org.activityinfo.server.report.renderer.html.HtmlChartRenderer;
 import org.activityinfo.server.report.renderer.html.HtmlChartRendererJC;
 import org.activityinfo.server.report.renderer.html.ImageStorageProvider;
-import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
-import com.google.inject.Singleton;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 public abstract class ReportDbUnitTest extends DbUnitTestCase {
 

@@ -6,8 +6,8 @@ import org.activityinfo.shared.command.result.CreateResult;
 import org.activityinfo.shared.dto.PartnerModel;
 import org.activityinfo.shared.dto.Schema;
 import org.activityinfo.shared.exception.DuplicateException;
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
 
 public class PartnerTest extends CommandTestCase {
 

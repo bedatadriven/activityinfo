@@ -1,10 +1,6 @@
 package org.activityinfo.shared.command;
 
-import org.activityinfo.shared.command.result.ListResult;
-import org.activityinfo.shared.dto.SiteMarker;
 import org.activityinfo.shared.dto.SiteMarkerCollection;
-
-import java.util.List;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

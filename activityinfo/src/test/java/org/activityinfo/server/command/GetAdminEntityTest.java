@@ -1,14 +1,11 @@
 package org.activityinfo.server.command;
 
 import junit.framework.Assert;
-
-import org.activityinfo.server.command.CommandTestCase;
 import org.activityinfo.shared.command.GetAdminEntities;
 import org.activityinfo.shared.command.result.ListResult;
 import org.activityinfo.shared.dto.AdminEntityModel;
 import org.activityinfo.shared.dto.Bounds;
 import org.activityinfo.shared.exception.CommandException;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 

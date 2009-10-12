@@ -1,6 +1,5 @@
 package org.activityinfo.client.page.config.design;
 
-import org.activityinfo.client.Application;
 import org.activityinfo.shared.dto.ActivityModel;
 
 public class AttributeFolder extends Folder {

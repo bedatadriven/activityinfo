@@ -1,48 +1,47 @@
 package org.activityinfo.client.page.entry;
 
-import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.ebessette.maps.core.client.overlay.MarkerManagerImpl;
+import com.ebessette.maps.core.client.overlay.OverlayManagerOptions;
+import com.extjs.gxt.ui.client.GXT;
+import com.extjs.gxt.ui.client.dnd.DropTarget;
+import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.state.StateManager;
+import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.state.StateManager;
-import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.dnd.DropTarget;
-import com.extjs.gxt.ui.client.store.Record;
-import com.extjs.gxt.ui.client.GXT;
-import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.MapType;
+import com.google.gwt.maps.client.MapWidget;
+import com.google.gwt.maps.client.control.SmallMapControl;
 import com.google.gwt.maps.client.event.MapClickHandler;
 import com.google.gwt.maps.client.event.MapRightClickHandler;
-import com.google.gwt.maps.client.control.SmallMapControl;
+import com.google.gwt.maps.client.geom.LatLng;
+import com.google.gwt.maps.client.geom.LatLngBounds;
+import com.google.gwt.maps.client.geom.Point;
 import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.maps.client.overlay.MarkerOptions;
 import com.google.gwt.maps.client.overlay.Overlay;
-import com.google.gwt.maps.client.geom.LatLngBounds;
-import com.google.gwt.maps.client.geom.LatLng;
-import com.google.gwt.maps.client.geom.Point;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
-import com.ebessette.maps.core.client.overlay.MarkerManagerImpl;
-import com.ebessette.maps.core.client.overlay.OverlayManagerOptions;
-
+import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.EventBus;
-import org.activityinfo.client.AppEvents;
-import org.activityinfo.client.event.SiteEvent;
 import org.activityinfo.client.command.CommandService;
-import org.activityinfo.client.page.base.AdminBoundsHelper;
-import org.activityinfo.client.page.base.Shutdownable;
+import org.activityinfo.client.event.SiteEvent;
+import org.activityinfo.client.map.GcIconFactory;
 import org.activityinfo.client.map.MapTypeFactory;
-import org.activityinfo.client.map.IconFactory;
-import org.activityinfo.shared.dto.*;
+import org.activityinfo.client.page.common.AdminBoundsHelper;
+import org.activityinfo.client.page.common.Shutdownable;
 import org.activityinfo.shared.command.GetSitePoints;
+import org.activityinfo.shared.dto.*;
 
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A map panel that serves a counterpart to the SiteGrid, and
@@ -317,7 +316,7 @@ public class SiteMap extends ContentPanel implements Shutdownable {
             // so we'll bring in a ringer for the selected site
 
             if(highlitMarker == null) {
-                IconFactory iconFactory = new IconFactory();
+                GcIconFactory iconFactory = new GcIconFactory();
                 iconFactory.primaryColor = "#0000FF";
                 MarkerOptions opts = MarkerOptions.newInstance();
                 opts.setIcon(iconFactory.createMarkerIcon());

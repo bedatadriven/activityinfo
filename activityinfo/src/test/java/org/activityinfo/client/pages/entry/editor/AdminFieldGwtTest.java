@@ -2,18 +2,12 @@ package org.activityinfo.client.pages.entry.editor;
 
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.store.ListStore;
-
 import org.activityinfo.client.mock.DummyData;
 import org.activityinfo.client.mock.MockCommandService;
 import org.activityinfo.client.page.entry.editor.AdminFieldSet;
 import org.activityinfo.client.page.entry.editor.AdminFieldSetPresenter;
 import org.activityinfo.shared.command.GetAdminEntities;
 import org.activityinfo.shared.dto.ActivityModel;
-import org.activityinfo.shared.dto.AdminEntityModel;
 import org.activityinfo.shared.dto.Schema;
 
 /**

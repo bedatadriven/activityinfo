@@ -1,10 +1,8 @@
 package org.activityinfo.shared.dto;
 
-import java.util.Date;
-
-
-
 import com.extjs.gxt.ui.client.data.BaseModelData;
+
+import java.util.Date;
 
 public class SiteModel extends BaseModelData implements EntityDTO {
 	

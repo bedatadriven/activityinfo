@@ -2,9 +2,9 @@ package org.activityinfo.server;
 
 import org.junit.Test;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.persistence.EntityManager;
 /*
  * @author Alex Bertram
  */
@@ -22,6 +22,7 @@ public class SchemaMigrationTest {
         em.createQuery("select a from Attribute a").setMaxResults(10).getResultList();
         em.createQuery("select a from AttributeGroup a").setMaxResults(10).getResultList();
         em.createQuery("select a from AttributeValue a").setMaxResults(10).getResultList();
+        em.createQuery("select a from Authentication a").setMaxResults(10).getResultList();
         em.createQuery("select c from Country c").setMaxResults(10).getResultList();
         em.createQuery("select i from Indicator i").setMaxResults(10).getResultList();
         em.createQuery("select i from IndicatorValue i").setMaxResults(10).getResultList();

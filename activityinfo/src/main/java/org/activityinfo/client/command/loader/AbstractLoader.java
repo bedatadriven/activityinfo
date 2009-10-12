@@ -1,8 +1,8 @@
 package org.activityinfo.client.command.loader;
 
+import com.extjs.gxt.ui.client.data.Loader;
 import com.extjs.gxt.ui.client.event.BaseObservable;
 import com.extjs.gxt.ui.client.event.LoadListener;
-import com.extjs.gxt.ui.client.data.Loader;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

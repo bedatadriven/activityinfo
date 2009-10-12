@@ -1,7 +1,7 @@
 package org.activityinfo.client.page.config.design;
 
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.binding.FormBinding;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
 /*
  * @author Alex Bertram
  */

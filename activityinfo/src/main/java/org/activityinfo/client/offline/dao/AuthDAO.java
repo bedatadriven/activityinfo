@@ -9,16 +9,18 @@ import com.google.gwt.core.client.GWT;
 
 import org.activityinfo.client.command.Authentication;
 
+/**
+ * Data Access Object
+ *
+ */
 public class AuthDAO {
-
-    private Database authDb;
 
     public AuthDAO() {
 
 
     }
 
-    private void openOrCreateDatabase() throws DatabaseException {
+    private Database openOrCreateDatabase() throws DatabaseException {
 
         Database db;
 
@@ -29,7 +31,7 @@ public class AuthDAO {
         db.execute("create table if not exists users (id integer primary key autoincrement, " +
                 " Email varchar(75) unique, AuthToken varchar(32))");
 
-        authDb = db;
+        return db;
     }
 
 
@@ -37,38 +39,29 @@ public class AuthDAO {
      * Updates a user's authentication token if it exists, or else creates a new
      * record for this user.
      *
-     * @param auth
+     * @param auth The authentication data to store 
      * @return The user's local id
+     * @throws com.google.gwt.gears.client.database.DatabaseException if an underlying database operation fails.
      */
     public int updateOrInsert(Authentication auth) throws DatabaseException {
 
-        if(authDb == null)
-            openOrCreateDatabase();
+        Database authDb = openOrCreateDatabase();
 
-        // Try to update an existing entry with this AuthToken
-        authDb.execute("update users set authToken = ? where email = ?", auth.getAuthToken(), auth.getEmail());
-        if(authDb.getRowsAffected() == 0) {
-            // New User: insert record
-            authDb.execute("insert into users (email, authToken) values (?, ?)", auth.getAuthToken(), auth.getEmail());
-            return authDb.getLastInsertRowId();
-        } else {
-            // Existing record: update authToken
-            ResultSet rs = authDb.execute("select id from users where email = ?", auth.getEmail());
-            return rs.getFieldAsInt(0);
-        }
-    }
-
-    public void close() {
-        if(authDb != null) {
-            try {
-                authDb.close();
-            } catch (DatabaseException e) {
-                GWT.log("Exception thrown while closing auth db", e);
+        try {
+            // Try to update an existing entry with this AuthToken
+            authDb.execute("update users set authToken = ? where email = ?", auth.getAuthToken(), auth.getEmail());
+            if(authDb.getRowsAffected() == 0) {
+                // New User: insert record
+                authDb.execute("insert into users (email, authToken) values (?, ?)", auth.getEmail(), auth.getAuthToken());
+                return authDb.getLastInsertRowId();
+            } else {
+                // Existing record: just get local user id that we use to identify the database
+                ResultSet rs = authDb.execute("select id from users where email = ?", auth.getEmail());
+                return rs.getFieldAsInt(0);
             }
-            authDb = null;
+        } finally {
+            authDb.close();
         }
     }
-
-
 
 }

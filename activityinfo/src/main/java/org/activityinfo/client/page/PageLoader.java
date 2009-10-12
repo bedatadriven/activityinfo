@@ -1,9 +1,7 @@
 package org.activityinfo.client.page;
 
-import org.activityinfo.client.Place;
-import org.activityinfo.client.page.PagePresenter;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.activityinfo.client.Place;
 
 public interface PageLoader {
 

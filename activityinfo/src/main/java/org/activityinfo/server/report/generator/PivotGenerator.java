@@ -5,10 +5,9 @@ import org.activityinfo.shared.report.content.*;
 import org.activityinfo.shared.report.model.Dimension;
 import org.activityinfo.shared.report.model.Filter;
 import org.activityinfo.shared.report.model.PivotElement;
-import org.activityinfo.shared.report.model.PivotTableElement;
 
-import java.util.*;
 import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

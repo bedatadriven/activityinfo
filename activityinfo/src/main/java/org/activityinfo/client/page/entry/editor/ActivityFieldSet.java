@@ -1,18 +1,11 @@
 package org.activityinfo.client.page.entry.editor;
 
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.form.*;
 import org.activityinfo.client.Application;
-import org.activityinfo.client.page.entry.editor.AbstractFieldSet;
 import org.activityinfo.shared.dto.ActivityModel;
 import org.activityinfo.shared.dto.PartnerModel;
 import org.activityinfo.shared.dto.SiteModel;
-
-import com.extjs.gxt.ui.client.widget.form.*;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.FieldEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-
-import java.util.Date;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

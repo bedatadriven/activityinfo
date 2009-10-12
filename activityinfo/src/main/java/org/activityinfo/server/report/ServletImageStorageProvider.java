@@ -1,12 +1,11 @@
 package org.activityinfo.server.report;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-
-
 import org.activityinfo.server.domain.util.EntropicToken;
 import org.activityinfo.server.report.renderer.html.ImageStorage;
 import org.activityinfo.server.report.renderer.html.ImageStorageProvider;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class ServletImageStorageProvider implements ImageStorageProvider {
 

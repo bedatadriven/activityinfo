@@ -1,17 +1,18 @@
 package org.activityinfo.server.dao.jpa;
 
-import java.util.Collection;
-import java.util.List;
-
-import javax.persistence.EntityManager;
-
+import com.google.inject.Inject;
 import org.activityinfo.server.dao.SchemaDAO;
-import org.activityinfo.server.domain.*;
+import org.activityinfo.server.domain.SchemaElement;
+import org.activityinfo.server.domain.User;
+import org.activityinfo.server.domain.UserDatabase;
+import org.activityinfo.server.domain.UserPermission;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.ejb.HibernateEntityManager;
 
-import com.google.inject.Inject;
+import javax.persistence.EntityManager;
+import java.util.Collection;
+import java.util.List;
 
 public class SchemaDAOJPA implements SchemaDAO  {
 

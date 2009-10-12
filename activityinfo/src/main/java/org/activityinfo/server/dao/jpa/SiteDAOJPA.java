@@ -1,11 +1,10 @@
 package org.activityinfo.server.dao.jpa;
 
+import com.google.inject.Inject;
 import org.activityinfo.server.dao.SiteDAO;
 import org.activityinfo.server.domain.Site;
 
-import javax.persistence.EntityManager;
-
-import com.google.inject.Inject;/*
+import javax.persistence.EntityManager;/*
  * @author Alex Bertram
  */
 

@@ -1,9 +1,11 @@
 package org.activityinfo.server.report.generator;
 
-import java.util.*;
-
+import com.google.inject.Inject;
 import org.activityinfo.server.dao.SchemaDAO;
-import org.activityinfo.server.dao.hibernate.*;
+import org.activityinfo.server.dao.hibernate.PivotDAO;
+import org.activityinfo.server.dao.hibernate.SiteAdminOrder;
+import org.activityinfo.server.dao.hibernate.SiteIndicatorOrder;
+import org.activityinfo.server.dao.hibernate.SiteTableDAO;
 import org.activityinfo.server.domain.Indicator;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.shared.report.content.TableContent;
@@ -12,9 +14,10 @@ import org.activityinfo.shared.report.model.DimensionType;
 import org.activityinfo.shared.report.model.Filter;
 import org.activityinfo.shared.report.model.TableElement;
 import org.activityinfo.shared.report.model.TableElement.Column;
+import org.activityinfo.shared.date.DateRange;
 import org.hibernate.criterion.Order;
 
-import com.google.inject.Inject;
+import java.util.*;
 
 public class TableGenerator extends ListGenerator<TableElement> {
 
@@ -28,13 +31,13 @@ public class TableGenerator extends ListGenerator<TableElement> {
 	}
 
     @Override
-    public void generate(User user, TableElement element, Filter inheritedFilter, Map<String, Object> parameterValues) {
+    public void generate(User user, TableElement element, Filter inheritedFilter, DateRange dateRange) {
 
-        Filter filter = ParamFilterHelper.resolve(element.getFilter(), parameterValues);
+        Filter filter = resolveElementFilter(element, dateRange);
         Filter effectiveFilter = inheritedFilter == null ? filter : new Filter(inheritedFilter, filter);
 
         TableContent content = new TableContent();
-        content.setFilterDescriptions(generateFilterDescriptions(filter, Collections.<DimensionType>emptySet()));
+        content.setFilterDescriptions(generateFilterDescriptions(filter, Collections.<DimensionType>emptySet(), user));
         content.setData(generateData(user, element, effectiveFilter));
 
 

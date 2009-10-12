@@ -1,18 +1,16 @@
 package org.activityinfo.client.page.entry.editor;
 
+import com.extjs.gxt.ui.client.store.ListStore;
 import org.activityinfo.client.command.CommandService;
 import org.activityinfo.client.command.loader.ListCmdLoader;
-import org.activityinfo.client.page.base.AdminBoundsHelper;
+import org.activityinfo.client.page.common.AdminBoundsHelper;
 import org.activityinfo.shared.command.GetAdminEntities;
 import org.activityinfo.shared.command.result.AdminEntityResult;
 import org.activityinfo.shared.dto.*;
 
-import com.extjs.gxt.ui.client.store.ListStore;
-
-import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

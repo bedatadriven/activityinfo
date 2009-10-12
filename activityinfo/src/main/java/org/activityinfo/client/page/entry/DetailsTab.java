@@ -1,13 +1,10 @@
 package org.activityinfo.client.page.entry;
 
-import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.Style;
-import com.google.gwt.user.client.Element;
-
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Html;
+import com.extjs.gxt.ui.client.widget.TabItem;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.activityinfo.client.Application;
 
 public class DetailsTab extends TabItem implements DetailsPresenter.View {

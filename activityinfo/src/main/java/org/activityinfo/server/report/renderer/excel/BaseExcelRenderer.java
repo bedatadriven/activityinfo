@@ -1,15 +1,10 @@
 package org.activityinfo.server.report.renderer.excel;
 
-import java.util.List;
-
 import org.activityinfo.shared.report.content.FilterDescription;
 import org.activityinfo.shared.report.model.ReportElement;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CreationHelper;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
+
+import java.util.List;
 
 
 public abstract class BaseExcelRenderer<ElementT extends ReportElement> {

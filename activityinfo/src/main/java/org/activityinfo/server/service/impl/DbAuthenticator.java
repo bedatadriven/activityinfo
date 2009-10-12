@@ -1,7 +1,6 @@
 package org.activityinfo.server.service.impl;
 
 import com.google.inject.Inject;
-
 import org.activityinfo.server.dao.AuthDAO;
 import org.activityinfo.server.domain.Authentication;
 import org.activityinfo.server.domain.User;

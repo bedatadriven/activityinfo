@@ -1,17 +1,24 @@
 package org.activityinfo.client.page.config.design;
 
+import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.store.Record;
+import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.store.TreeStore;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.ImplementedBy;
+import com.google.inject.Inject;
 import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.Place;
 import org.activityinfo.client.command.CommandService;
-import org.activityinfo.client.common.action.UIActions;
-import org.activityinfo.client.common.dialog.FormDialogCallback;
-import org.activityinfo.client.common.dialog.FormDialogTether;
-import org.activityinfo.client.common.grid.AbstractEditorGridPresenter;
-import org.activityinfo.client.common.grid.TreeGridView;
 import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.PagePresenter;
 import org.activityinfo.client.page.Pages;
+import org.activityinfo.client.page.common.dialog.FormDialogCallback;
+import org.activityinfo.client.page.common.dialog.FormDialogTether;
+import org.activityinfo.client.page.common.grid.AbstractEditorGridPresenter;
+import org.activityinfo.client.page.common.grid.TreeGridView;
+import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.client.page.config.DbPlace;
 import org.activityinfo.client.util.IStateManager;
 import org.activityinfo.shared.command.*;
@@ -19,14 +26,6 @@ import org.activityinfo.shared.command.result.CreateResult;
 import org.activityinfo.shared.command.result.VoidResult;
 import org.activityinfo.shared.dto.*;
 import org.activityinfo.shared.i18n.UIConstants;
-
-import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.store.Record;
-import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.store.Store;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.Inject;
-import com.google.inject.ImplementedBy;
 
 import java.util.List;
 

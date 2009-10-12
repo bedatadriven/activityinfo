@@ -1,13 +1,12 @@
 package org.activityinfo.client.page.config.design;
 
 
-import org.activityinfo.client.Application;
-import org.activityinfo.client.common.widget.MappingComboBox;
-import org.activityinfo.client.common.widget.MappingComboBoxBinding;
-
-import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.binding.FormBinding;
 import com.extjs.gxt.ui.client.binding.FieldBinding;
+import com.extjs.gxt.ui.client.binding.FormBinding;
+import com.extjs.gxt.ui.client.widget.form.TextField;
+import org.activityinfo.client.Application;
+import org.activityinfo.client.page.common.widget.MappingComboBox;
+import org.activityinfo.client.page.common.widget.MappingComboBoxBinding;
 
 public class AttributeGroupForm extends AbstractDesignForm {
 

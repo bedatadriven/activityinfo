@@ -1,15 +1,14 @@
 package org.activityinfo.client.page.entry;
 
-import org.activityinfo.client.AppEvents;
-import org.activityinfo.client.EventBus;
-import org.activityinfo.client.event.SiteEvent;
-import org.activityinfo.client.page.base.Shutdownable;
-import org.activityinfo.shared.dto.*;
-import org.activityinfo.shared.i18n.UIConstants;
-
 import com.extjs.gxt.ui.client.event.Listener;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.inject.Inject;
+import org.activityinfo.client.AppEvents;
+import org.activityinfo.client.EventBus;
+import org.activityinfo.client.event.SiteEvent;
+import org.activityinfo.client.page.common.Shutdownable;
+import org.activityinfo.shared.dto.*;
+import org.activityinfo.shared.i18n.UIConstants;
 /*
  * @author Alex Bertram
  */

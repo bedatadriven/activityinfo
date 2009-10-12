@@ -1,12 +1,12 @@
 package org.activityinfo.server.dao.jpa;
 
-import java.util.List;
-import javax.persistence.EntityManager;
-
-import org.activityinfo.server.dao.AuthDAO;
-import org.activityinfo.server.domain.*;
-
 import com.google.inject.Inject;
+import org.activityinfo.server.dao.AuthDAO;
+import org.activityinfo.server.domain.Authentication;
+import org.activityinfo.server.domain.User;
+
+import javax.persistence.EntityManager;
+import java.util.List;
 
 
 public class AuthDAOJPA implements AuthDAO {

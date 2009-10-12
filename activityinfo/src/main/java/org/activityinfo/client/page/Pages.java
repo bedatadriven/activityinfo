@@ -1,6 +1,7 @@
+/**
+ * The root package of each of the Application's main "rubriques"
+ */
 package org.activityinfo.client.page;
-
-import org.activityinfo.client.page.FrameSetId;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

@@ -3,8 +3,8 @@ package org.activityinfo.clientjre.place.entry.editor;
 import org.activityinfo.clientjre.mock.JreCoordinateEditor;
 import org.activityinfo.shared.map.AbstractCoordinateEditor;
 import org.activityinfo.shared.map.CoordinateFormatException;
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

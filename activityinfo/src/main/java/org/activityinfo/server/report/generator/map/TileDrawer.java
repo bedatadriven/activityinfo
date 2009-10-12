@@ -1,6 +1,6 @@
 package org.activityinfo.server.report.generator.map;
 
-import java.awt.Image;
+import java.awt.*;
 
 public interface TileDrawer {
 

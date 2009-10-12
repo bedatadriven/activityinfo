@@ -1,7 +1,6 @@
 package org.activityinfo.client.event;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
-
 import org.activityinfo.client.AppEvents;
 
 public class AuthenticationEvent extends BaseEvent {

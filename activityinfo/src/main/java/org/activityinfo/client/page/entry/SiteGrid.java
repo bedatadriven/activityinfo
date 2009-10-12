@@ -1,26 +1,32 @@
 package org.activityinfo.client.page.entry;
 
-import org.activityinfo.client.Application;
-import org.activityinfo.client.common.action.UIActions;
-import org.activityinfo.client.common.grid.AbstractEditorGridView;
-import org.activityinfo.shared.dto.*;
-
-import com.extjs.gxt.ui.client.widget.grid.*;
-import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
-import com.extjs.gxt.ui.client.widget.form.*;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.FieldEvent;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.widget.form.DateField;
+import com.extjs.gxt.ui.client.widget.form.NumberField;
+import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.form.TriggerField;
+import com.extjs.gxt.ui.client.widget.grid.*;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
+import org.activityinfo.client.Application;
+import org.activityinfo.client.page.common.grid.AbstractEditorGridView;
+import org.activityinfo.client.page.common.toolbar.UIActions;
+import org.activityinfo.shared.dto.ActivityModel;
+import org.activityinfo.shared.dto.AdminLevelModel;
+import org.activityinfo.shared.dto.IndicatorModel;
+import org.activityinfo.shared.dto.SiteModel;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

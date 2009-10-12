@@ -1,12 +1,11 @@
 package org.activityinfo.server.dao.jpa;
 
-import javax.persistence.EntityManager;
-
+import com.google.inject.Inject;
 import org.activityinfo.server.dao.ReportDAO;
 import org.activityinfo.server.domain.ReportTemplate;
 import org.activityinfo.server.domain.UserDatabase;
 
-import com.google.inject.Inject;
+import javax.persistence.EntityManager;
 
 public class ReportDAOJPA implements ReportDAO {
 

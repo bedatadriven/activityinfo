@@ -1,42 +1,38 @@
 package org.activityinfo.client.page.report;
 
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
-import com.extjs.gxt.ui.client.widget.form.Field;
-import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.extjs.gxt.ui.client.util.DateWrapper;
-import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.google.gwt.i18n.client.DateTimeFormat;
-
 import org.activityinfo.client.Application;
+import org.activityinfo.client.util.DateUtilGWTImpl;
 import org.activityinfo.client.command.monitor.AsyncMonitor;
 import org.activityinfo.client.command.monitor.MaskingAsyncMonitor;
-import org.activityinfo.client.common.action.ActionToolBar;
-import org.activityinfo.client.common.action.UIActions;
-import org.activityinfo.shared.dto.ReportParameterDTO;
+import org.activityinfo.client.page.common.toolbar.ActionToolBar;
+import org.activityinfo.client.page.common.toolbar.ExportMenuButton;
 import org.activityinfo.shared.dto.ReportTemplateDTO;
+import org.activityinfo.shared.command.RenderElement;
+import org.activityinfo.shared.command.Month;
+import org.activityinfo.shared.report.model.ReportFrequency;
+import org.activityinfo.shared.date.DateRange;
+import org.activityinfo.shared.date.DateUtil;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Date;
-
-/*
+/**
+ *
+ *
  * @author Alex Bertram
  */
-
 public class ReportPreview extends ContentPanel implements ReportPreviewPresenter.View {
-    private ActionToolBar toolBar;
-    private Html previewHtml;
 
+    private static class DateValue extends BaseModelData {
 
-    private class DateValue extends BaseModelData {
-
-        public DateValue(Date value, String label) {
+        public DateValue(DateRange value, String label) {
             setValue(value);
             setLabel(label);
         }
@@ -49,19 +45,24 @@ public class ReportPreview extends ContentPanel implements ReportPreviewPresente
             set("label", label);
         }
 
-        public void setValue(Date value) {
+        public void setValue(DateRange value) {
             set("value", value);
         }
 
-        public Date getValue() {
+        public DateRange getValue() {
             return get("value");
         }
-
     }
 
-    private Map<String, Field> fields = new HashMap<String,Field>();
+    private ActionToolBar toolBar;
+    private Html previewHtml;
+    private DateUtil dateUtil;
+    private DateRange dateRange;
+
 
     public ReportPreview() {
+        dateUtil = new DateUtilGWTImpl();
+        dateRange = new DateRange();
     }
 
     public void init(ReportPreviewPresenter presenter, ReportTemplateDTO template) {
@@ -71,24 +72,23 @@ public class ReportPreview extends ContentPanel implements ReportPreviewPresente
 
         setHeading(template.getTitle());
 
-        for(ReportParameterDTO param : template.getParameters())  {
-            Field<?> f = createParameterField(param);
-            fields.put(param.getName(),f);
-
-            toolBar.add(new LabelToolItem(param.getLabel()));
-            toolBar.add(f);
+        if(template.getFrequency() == ReportFrequency.MONTHLY) {
+            addMonthlyFields();
+        } else if(template.getFrequency() == ReportFrequency.ADHOC) {
+            addAddHocFields();
         }
 
         toolBar.addRefreshButton();
         toolBar.addEditButton();
+
+        ExportMenuButton export = new ExportMenuButton(RenderElement.Format.Word, presenter);
+        toolBar.add(export);
 
         setTopComponent(toolBar);
 
         previewHtml = new Html();
         previewHtml.addStyleName("report");
         add(previewHtml);
-
-
 
         setScrollMode(Style.Scroll.AUTO);
     }
@@ -98,103 +98,64 @@ public class ReportPreview extends ContentPanel implements ReportPreviewPresente
 
     }
 
-    private Field<?> createParameterField(ReportParameterDTO param) {
-
-        Field<?> field;
-
-        switch(param.getType()) {
-        case ReportParameterDTO.TYPE_DATE:
-            field = createDateParameterField(param);
-            break;
-        default:
-            throw new IllegalArgumentException();
-        }
-
-        field.setFieldLabel(param.getLabel());
-        field.setName(param.getName());
-
-        return field;
+    public DateRange getDateRange() {
+        return dateRange;
     }
 
-    private Field<?> createDateParameterField(ReportParameterDTO param) {
+    private void addAddHocFields() {
 
-        if(param.getDateUnit() == ReportParameterDTO.UNIT_DAY) {
+        final DateField fromField = new DateField();
+        final DateField toField = new DateField();
 
-            DateField dateField = new DateField();
-            dateField.setAllowBlank(false);
-            dateField.addListener(Events.Change, new Listener<FieldEvent>() {
-
-                @Override
-                public void handleEvent(FieldEvent be) {
-                  //  onParamChanged();
-                }
-            });
-
-            return dateField;
-
-        } else {
-
-            ComboBox<DateValue> combo = new ComboBox<DateValue>();
-            combo.setValueField("value");
-            combo.setDisplayField("label");
-            combo.setStore(getDateStore(param.getDateUnit()));
-            combo.setValue(combo.getStore().getAt(0));
-            combo.setEditable(false);
-            combo.setForceSelection(true);
-            combo.setAllowBlank(false);
-            combo.addSelectionChangedListener(new SelectionChangedListener<DateValue>() {
-
-                @Override
-                public void selectionChanged(
-                        SelectionChangedEvent<DateValue> se) {
-
-                   // onParamChanged();
-
-                }
-
-            });
-            return combo;
-        }
-    }
-
-    public Map<String, Object> getParameters() {
-
-        Map<String, Object> values = new HashMap<String, Object>();
-
-        for(Map.Entry<String,Field> entry : fields.entrySet()) {
-
-            Object value = entry.getValue().getValue();
-
-            if(value instanceof DateValue) {
-                values.put(entry.getKey(),((DateValue) value).getValue());
-            } else {
-                values.put(entry.getKey(), entry.getValue().getValue());
+        Listener<FieldEvent> listener = new Listener<FieldEvent>() {
+            @Override
+            public void handleEvent(FieldEvent be) {
+                dateRange = new DateRange(fromField.getValue(), toField.getValue());
             }
-        }
+        };
 
+        fromField.addListener(Events.Change, listener);
+        toField.addListener(Events.Change, listener);
 
-        return values;
+        toolBar.add(new LabelToolItem(Application.CONSTANTS.fromDate()));
+        toolBar.add(fromField);
+        toolBar.add(new LabelToolItem(Application.CONSTANTS.toDate()));
+        toolBar.add(toField);
     }
 
-    private ListStore<DateValue> getDateStore(int dateUnit) {
-
+    private void addMonthlyFields() {
+        // Create store
         ListStore<DateValue> store = new ListStore<DateValue>();
+        DateTimeFormat format = DateTimeFormat.getFormat("MMM yyyy");
+        Month month = dateUtil.getCurrentMonth();
 
-        if(dateUnit == ReportParameterDTO.UNIT_MONTH) {
-            DateWrapper month = new DateWrapper();
-            DateTimeFormat format = DateTimeFormat.getFormat("MMM yyyy");
-
-            for(int i=36; i!=0; i--) {
-                store.add(new DateValue(month.asDate(), format.format(month.asDate())));
-                month = month.addMonths(-1);
-            }
-
-        } else {
-            throw new Error("not implemented");
+        for(int i=36; i!=0; i--) {
+            DateRange range = dateUtil.monthRange(month);
+            store.add(new DateValue(range, format.format(range.getMinDate())));
+            month = month.previous();
         }
 
+        ComboBox<DateValue> combo = new ComboBox<DateValue>();
+        combo.setValueField("value");
+        combo.setDisplayField("label");
+        combo.setStore(store);
+        combo.setValue(combo.getStore().getAt(0));
+        combo.setEditable(false);
+        combo.setForceSelection(true);
+        combo.setAllowBlank(false);
+        combo.addSelectionChangedListener(new SelectionChangedListener<DateValue>() {
 
-        return store;
+            @Override
+            public void selectionChanged(
+                    SelectionChangedEvent<DateValue> se) {
+
+                dateRange = se.getSelectedItem().getValue();
+                // onParamChanged();
+
+            }
+
+        });
+        toolBar.add(combo);
     }
 
     public void setPreviewHtml(String html) {
@@ -205,6 +166,4 @@ public class ReportPreview extends ContentPanel implements ReportPreviewPresente
     public AsyncMonitor getLoadingMonitor() {
         return new MaskingAsyncMonitor(this, Application.CONSTANTS.loading());
     }
-
-
 }

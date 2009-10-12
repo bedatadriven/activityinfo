@@ -3,7 +3,7 @@ package org.activityinfo.shared.dto;
 import org.activityinfo.shared.command.result.CommandResult;
 
 /**
- * @author Alex Bertram (akbertram@gmail.com)
+ * @author Alex Bertram
  */
 public class SiteMarker implements CommandResult {
 

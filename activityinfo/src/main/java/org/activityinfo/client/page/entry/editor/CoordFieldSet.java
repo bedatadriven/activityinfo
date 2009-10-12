@@ -1,7 +1,7 @@
 package org.activityinfo.client.page.entry.editor;
 
 import org.activityinfo.client.Application;
-import org.activityinfo.client.common.widget.CoordinateField;
+import org.activityinfo.client.page.common.widget.CoordinateField;
 import org.activityinfo.shared.dto.Bounds;
 
 /**

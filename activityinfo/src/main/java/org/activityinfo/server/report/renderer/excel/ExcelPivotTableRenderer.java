@@ -1,16 +1,12 @@
 package org.activityinfo.server.report.renderer.excel;
 
-import java.util.List;
-import java.util.Map.Entry;
-
 import org.activityinfo.shared.report.content.FilterDescription;
 import org.activityinfo.shared.report.content.PivotTableData;
 import org.activityinfo.shared.report.model.PivotTableElement;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
+
+import java.util.List;
+import java.util.Map.Entry;
 
 public class ExcelPivotTableRenderer implements ExcelRenderer<PivotTableElement> {
 	

@@ -1,11 +1,8 @@
 package org.activityinfo.shared.command;
 
 
-import org.activityinfo.shared.command.AuthenticationResult;
-import org.activityinfo.shared.command.Command;
-import org.activityinfo.shared.command.result.CommandResult;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.activityinfo.shared.command.result.CommandResult;
 
 import java.util.List;
 

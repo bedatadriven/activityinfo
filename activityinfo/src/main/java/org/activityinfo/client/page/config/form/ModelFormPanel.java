@@ -1,20 +1,19 @@
 package org.activityinfo.client.page.config.form;
 
-import com.extjs.gxt.ui.client.widget.form.*;
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.Container;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.Container;
+import com.extjs.gxt.ui.client.widget.form.*;
 import com.google.gwt.core.client.GWT;
+import org.activityinfo.client.page.common.widget.MappingComboBox;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.HashSet;
-
-import org.activityinfo.client.common.widget.MappingComboBox;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

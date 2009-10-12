@@ -1,16 +1,18 @@
 package org.activityinfo.client.inject;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.Dictionary;
+import com.google.gwt.user.client.Cookies;
+import com.google.inject.Provider;
 import org.activityinfo.client.command.Authentication;
 
-import com.google.inject.Provider;
-import com.google.gwt.i18n.client.Dictionary;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.Cookies;
-import com.google.gwt.core.client.GWT;
-/*
+/**
+ * Supplies user <code>Authentication</code> information from
+ * the <code>authToken</code> and <code>email</code> cookies, or
+ * failing that, from the <code>UserInfo</code> dictionary. 
+ *
  * @author Alex Bertram
  */
-
 public class AuthProvider implements Provider<Authentication> {
 
     public Authentication get() {

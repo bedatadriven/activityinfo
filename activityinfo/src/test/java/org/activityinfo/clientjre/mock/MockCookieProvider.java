@@ -2,9 +2,9 @@ package org.activityinfo.clientjre.mock;
 
 import org.activityinfo.client.util.CookieProvider;
 
-import java.util.Map;
-import java.util.HashMap;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

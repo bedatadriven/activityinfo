@@ -1,17 +1,16 @@
 package org.activityinfo.client.page.welcome;
 
+import com.google.inject.Inject;
 import org.activityinfo.client.Place;
 import org.activityinfo.client.page.NavigationCallback;
 import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.PagePresenter;
 import org.activityinfo.client.page.Pages;
-import org.activityinfo.client.page.base.GalleryView;
 import org.activityinfo.client.page.charts.ChartPlace;
+import org.activityinfo.client.page.common.GalleryView;
 import org.activityinfo.client.page.entry.SiteGridPlace;
 import org.activityinfo.client.page.map.MapHomePlace;
 import org.activityinfo.client.page.table.PivotPlace;
-
-import com.google.inject.Inject;
 /*
  * @author Alex Bertram
  */

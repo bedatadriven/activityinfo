@@ -1,19 +1,20 @@
 package org.activityinfo.server.report.renderer.excel;
 
+import org.activityinfo.server.report.renderer.Renderer;
+import org.activityinfo.shared.report.content.MapContent;
+import org.activityinfo.shared.report.content.MapMarker;
 import org.activityinfo.shared.report.model.MapElement;
 import org.activityinfo.shared.report.model.ReportElement;
-import org.activityinfo.shared.report.content.MapMarker;
-import org.activityinfo.shared.report.content.MapContent;
-import org.activityinfo.server.report.renderer.Renderer;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 
-import java.io.OutputStream;
 import java.io.IOException;
-/*
+import java.io.OutputStream;
+
+/**
+ * 
  * @author Alex Bertram
  */
-
 public class ExcelMapDataExporter implements Renderer {
 
     public void render(ReportElement element, OutputStream stm) throws IOException {
@@ -52,6 +53,16 @@ public class ExcelMapDataExporter implements Renderer {
 
         book.write(stm);
 
+    }
+
+    @Override
+    public String getMimeType() {
+        return "application/vnd.ms-excel";
+    }
+
+    @Override
+    public String getFileSuffix() {
+        return ".xls";
     }
 
     private class Helper {

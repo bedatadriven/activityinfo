@@ -29,6 +29,7 @@ import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.command.result.ReportTemplateResult;
 import org.activityinfo.shared.dto.ReportTemplateDTO;
 import org.activityinfo.shared.exception.CommandException;
+import org.activityinfo.shared.report.model.Report;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -70,20 +71,18 @@ public class GetReportTemplatesHandler implements CommandHandler<GetReportTempla
             dto.setOwnerName(template.getOwner().getName());
 			dto.setAmOwner( template.getOwner().getId() == user.getId());
 			dto.setEditAllowed(dto.getAmOwner());
-            dto.setSubscriptionFrequency(0);
-            dto.setSubscriptionDay(0);
 
-            for(ReportSubscription sub : template.getSubscriptions()) {
+            dto.setSubscribed(false);
+            for(ReportSubscription sub : template.getSubscriptions()) {     // todo: this is ridiculous.
                 if(sub.getUser().getId() == user.getId()) {
-                    dto.setSubscriptionFrequency(sub.getFrequency());
-                    dto.setSubscriptionDay(sub.getDay());
+                    dto.setSubscribed( sub.isSubscribed() );
                     break;
                 }
             }
 
+
 			try {
 				parser.parse(dto, template.getXml());
-			
 			} catch(Exception e) {
 				e.printStackTrace();
 				// do nothing ?

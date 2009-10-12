@@ -1,15 +1,17 @@
 package org.activityinfo.server.report.renderer.excel;
 
-import org.junit.Test;
-import org.junit.Assert;
 import org.activityinfo.server.report.DummyPivotTableData;
 import org.activityinfo.server.report.DummyPivotTableData2;
-import org.activityinfo.server.report.renderer.excel.ExcelPivotTableRenderer;
-import org.activityinfo.shared.report.model.*;
+import org.activityinfo.shared.report.model.PivotTableElement;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.junit.Assert;
+import org.junit.Test;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

@@ -1,10 +1,9 @@
 package org.activityinfo.server.report.renderer.html;
 
-import java.io.IOException;
-
-import org.activityinfo.server.report.generator.ContentGenerator;
 import org.activityinfo.server.report.util.HtmlWriter;
 import org.activityinfo.shared.report.model.ReportElement;
+
+import java.io.IOException;
 
 public interface HtmlRenderer<T extends ReportElement> {
 

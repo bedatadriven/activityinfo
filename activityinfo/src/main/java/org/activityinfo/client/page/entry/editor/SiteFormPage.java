@@ -1,14 +1,13 @@
 package org.activityinfo.client.page.entry.editor;
 
-import org.activityinfo.client.Application;
-import org.activityinfo.client.common.action.UIActions;
-import org.activityinfo.client.page.base.SaveChangesCallback;
-import org.activityinfo.client.page.base.SavePromptMessageBox;
-
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
+import org.activityinfo.client.Application;
+import org.activityinfo.client.page.common.dialog.SaveChangesCallback;
+import org.activityinfo.client.page.common.dialog.SavePromptMessageBox;
+import org.activityinfo.client.page.common.toolbar.UIActions;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

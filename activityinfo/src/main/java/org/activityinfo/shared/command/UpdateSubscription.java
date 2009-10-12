@@ -1,25 +1,32 @@
 package org.activityinfo.shared.command;
 
 import org.activityinfo.shared.command.result.VoidResult;
-/*
+
+/**
+ * Updates the frequency with which a given report is mailed
+ * to a given user.
+ *
+ * Normally, only the users themselves are permitted to change
+ * subscription preferences. However, the owner of a report can
+ * "invite" other users to subscribe to their report, if the user
+ * has not already set a subscription preference.
+ *
+ *
  * @author Alex Bertram
  */
-
 public class UpdateSubscription implements Command<VoidResult> {
 
     int reportTemplateId;
-    int frequency;
-    int day;
+    boolean subscribed;
 
     Integer userId;
 
     public UpdateSubscription() {
     }
 
-    public UpdateSubscription(int reportTemplateId, int frequency, int day) {
+    public UpdateSubscription(int reportTemplateId, boolean subscribed) {
         this.reportTemplateId = reportTemplateId;
-        this.frequency = frequency;
-        this.day = day;
+        this.subscribed = subscribed;
     }
 
     public int getReportTemplateId() {
@@ -30,27 +37,19 @@ public class UpdateSubscription implements Command<VoidResult> {
         this.reportTemplateId = reportTemplateId;
     }
 
-    public int getFrequency() {
-        return frequency;
-    }
-
-    public void setFrequency(int frequency) {
-        this.frequency = frequency;
-    }
-
-    public int getDay() {
-        return day;
-    }
-
-    public void setDay(int day) {
-        this.day = day;
-    }
-
     public Integer getUserId() {
         return userId;
     }
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public boolean isSubscribed() {
+        return subscribed;
+    }
+
+    public void setSubscribed(boolean subscribed) {
+        this.subscribed = subscribed;
     }
 }

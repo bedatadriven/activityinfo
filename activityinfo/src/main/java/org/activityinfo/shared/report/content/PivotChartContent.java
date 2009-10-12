@@ -1,10 +1,5 @@
 package org.activityinfo.shared.report.content;
 
-import org.activityinfo.shared.report.content.PivotTableData;
-
-import java.util.List;
-import java.io.Serializable;
-
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */

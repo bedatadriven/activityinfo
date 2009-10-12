@@ -1,13 +1,16 @@
 package org.activityinfo.client;
 
-
 import com.extjs.gxt.ui.client.GXT;
+import com.extjs.gxt.ui.client.widget.Viewport;
 import com.extjs.gxt.ui.client.util.Theme;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-
+import com.google.gwt.user.client.ui.RootPanel;
 import org.activityinfo.client.icon.IconImageBundle;
 import org.activityinfo.client.inject.AppInjector;
+import org.activityinfo.client.page.app.AppFrameSet;
+import org.activityinfo.client.command.Authentication;
+import org.activityinfo.client.offline.ui.OfflineMenu;
 import org.activityinfo.shared.i18n.UIConstants;
 import org.activityinfo.shared.i18n.UIMessages;
 
@@ -27,32 +30,33 @@ public class Application implements EntryPoint {
     /**
 	 * This is the entry point method.
 	 */
-	public void onModuleLoad() { 
+	public void onModuleLoad() {
 
 		GXT.setDefaultTheme(Theme.BLUE, true);
 
         AppInjector injector = GWT.create(AppInjector.class);
 
-        injector.createSchemaCache();
-        injector.createAdminEntityCache();
-
         injector.createWelcomeLoader();
         injector.createDataEntryLoader();
-        injector.createPivotLoader();
         injector.createChartLoader();
-        injector.createMapLoader();
         injector.createReportLoader();
+        injector.createPivotLoader();
+        injector.createMapLoader();
         injector.createConfigLoader();
 
-        injector.createSchemaCache();
-        injector.createAdminEntityCache();
+        injector.getHistoryManager();
 
-        injector.createHistoryManager();
+        createCaches(injector);
 
         GWT.log("Application: everyone plugged, firing Init event", null);
 
         injector.getEventBus().fireEvent(AppEvents.Init);
 
+    }
+
+    protected void createCaches(AppInjector injector) {
+        injector.createSchemaCache();
+        injector.createAdminCache();
     }
 
 

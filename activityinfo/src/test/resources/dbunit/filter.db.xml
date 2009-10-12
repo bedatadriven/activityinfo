@@ -29,12 +29,13 @@
 
 	<!--  User setup -->
 	
-	<userLogin userId="1" name="Alex" email="akbertram@gmail.com" password="$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1." locale="fr" newUser="1"  />
+	<userLogin userId="1" name="Alex" email="akbertram@gmail.com"
+               password="$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1." locale="fr" newUser="1"  />
 
 	
 	<!--  Database: PEAR -->
 	
-	<userDatabase databaseId="1" name="PEAR" countryId="1" ownerUserId="1" version="1"/>
+	<userDatabase databaseId="1" name="PEAR" countryId="1" ownerUserId="1" lastSchemaUpdate="2009-01-01"/>
 
 	
 		<!--  PEAR Activity 1 : NFI Distribution -->	
@@ -46,7 +47,7 @@
 			allowEdit="1"
 			isAssessment="0"
 			sortOrder="1"
-			locationTypeId="1" version="1"/>
+			locationTypeId="1"/>
 			
 
 	<!--  PEAR Partners -->
@@ -63,34 +64,40 @@
 
 	<!--  NFI Distribution at Penekusu, Sud Kivu   2 jan 2009-->
 
-	<location locationId="1" name="Penekusu" locationTypeId="1" X="1.532" Y="27.323" version="1"/>
+	<location locationId="1" name="Penekusu" locationTypeId="1" X="1.532" Y="27.323"/>
 	<locationAdminLink locationId="1" adminEntityId="2"/>
 	<locationAdminLink locationId="1" adminEntityId="12"/>
 
-    <site siteId="1" activityId="1" locationId="1" partnerId="1" Status="1" target="0" Date1="2009-01-01" Date2="2009-01-02" DateCreated="2009-02-01" DateEdited="2009-02-01" version="1"/>
+    <site siteId="1" activityId="1" locationId="1" partnerId="1" Status="1" target="0" Date1="2009-01-01" Date2="2009-01-02" DateCreated="2009-02-01" DateEdited="2009-02-01" />
 
 	<!--  IRC NFI Distribution at Ngwshe, Sud Kivu 16 jan 2009 -->
 	
-	<location locationId="2" name="Ngshwe" locationTypeId="1" X="1.323" Y="28.232" version="1"/>
+	<location locationId="2" name="Ngshwe" locationTypeId="1" X="1.323" Y="28.232" />
 	<locationAdminLink locationId="2" adminEntityId="2"/>
 	<locationAdminLink locationId="2" adminEntityId="11"/>
 	
-	<site siteId="2" activityId="1" locationId="2" partnerId="3" Status="1" target="0" Date1="2009-01-15" Date2="2009-01-16" DateCreated="2009-02-01" DateEdited="2009-02-01" version="1"/>
+	<site siteId="2" activityId="1" locationId="2" partnerId="3" Status="1" target="0"
+          Date1="2009-01-15" Date2="2009-01-16"
+          DateCreated="2009-02-01" DateEdited="2009-02-01" />
 
 	<!--  NFI Distribution at Boga, Ituri 2008 -->
 	
-	<location locationId="3" name="Boga" locationTypeId="1" X="3.323" Y="27.232" version="1"/>
+	<location locationId="3" name="Boga" locationTypeId="1" X="3.323" Y="27.232" />
 	<locationAdminLink locationId="3" adminEntityId="4"/>
 	<locationAdminLink locationId="3" adminEntityId="21"/>
 	
-	<site siteId="3" activityId="1" locationId="3" partnerId="2" Status="1" target="0" Date1="2008-10-05" Date2="2008-10-06" DateCreated="2009-02-01" DateEdited="2009-02-01" version="1"/>
+	<site siteId="3" activityId="1" locationId="3" partnerId="2" Status="1" target="0"
+          Date1="2008-10-05" Date2="2008-10-06"
+          DateCreated="2009-02-01" DateEdited="2009-02-01"/>
 
     <!-- IRC  NFI Distribution at Mushinga, North  KIVU -->
 
-    <location locationId="4" name="Mushinga" locationTypeId="1" X="3.323" Y="27.232" version="1"/>
+    <location locationId="4" name="Mushinga" locationTypeId="1" X="3.323" Y="27.232" />
     <locationAdminLink locationId="4" adminEntityId="3"/>
 
-    <site siteId="4" activityId="1" locationId="3" partnerId="3" Status="1" target="0" Date1="2008-10-05" Date2="2008-10-06" DateCreated="2009-02-01" DateEdited="2009-02-01" version="1"/>
+    <site siteId="4" activityId="1" locationId="3" partnerId="3" Status="1" target="0" 
+          Date1="2008-10-05" Date2="2008-10-06"
+          DateCreated="2009-02-01" DateEdited="2009-02-01"/>
 
     
 </dataset>

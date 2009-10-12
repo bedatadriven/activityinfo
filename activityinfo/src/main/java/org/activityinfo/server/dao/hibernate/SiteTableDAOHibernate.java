@@ -1,11 +1,6 @@
 package org.activityinfo.server.dao.hibernate;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.EntityManager;
-
+import com.google.inject.Inject;
 import org.activityinfo.server.dao.SiteProjectionBinder;
 import org.activityinfo.server.domain.AdminEntity;
 import org.activityinfo.server.domain.Site;
@@ -14,18 +9,14 @@ import org.activityinfo.shared.domain.SiteColumn;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.Session;
-import org.hibernate.criterion.Conjunction;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.ProjectionList;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Property;
-import org.hibernate.criterion.Subqueries;
+import org.hibernate.criterion.*;
 import org.hibernate.ejb.HibernateEntityManager;
 import org.hibernate.transform.ResultTransformer;
 
-import com.google.inject.Inject;
+import javax.persistence.EntityManager;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Encapsulates data-access calls needed to retrieve and project 

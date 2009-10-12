@@ -3,19 +3,15 @@
  */
 package com.ebessette.maps.core.client.overlay;
 
+import com.google.gwt.maps.client.MapWidget;
+import com.google.gwt.maps.client.geom.*;
+import com.google.gwt.maps.client.overlay.Marker;
+import com.google.gwt.user.client.DeferredCommand;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
-import com.google.gwt.maps.client.MapWidget;
-import com.google.gwt.maps.client.geom.LatLng;
-import com.google.gwt.maps.client.geom.LatLngBounds;
-import com.google.gwt.maps.client.geom.Point;
-import com.google.gwt.maps.client.geom.Projection;
-import com.google.gwt.maps.client.geom.Size;
-import com.google.gwt.maps.client.overlay.Marker;
-import com.google.gwt.user.client.DeferredCommand;
 
 /**
  * Manage the visibility of markers on a map, based on the map's current view

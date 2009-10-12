@@ -1,9 +1,9 @@
 package org.activityinfo.server.report.renderer.itext;
 
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Font;
-import com.lowagie.text.Cell;
 import com.lowagie.text.BadElementException;
+import com.lowagie.text.Cell;
+import com.lowagie.text.Font;
+import com.lowagie.text.Paragraph;
 
 import java.awt.*;
 /*

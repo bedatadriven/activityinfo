@@ -1,7 +1,7 @@
 package org.activityinfo.client.page;
 
 import org.activityinfo.client.Place;
-import org.activityinfo.client.page.base.Shutdownable;
+import org.activityinfo.client.page.common.Shutdownable;
 
 public interface PagePresenter extends Shutdownable {
 

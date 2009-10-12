@@ -1,23 +1,28 @@
 package org.activityinfo.server.report.renderer.ppt;
 
-import org.activityinfo.server.report.renderer.image.ImageMapRenderer;
-import org.activityinfo.server.report.generator.map.IconRectCalculator;
+import com.google.inject.Inject;
 import org.activityinfo.server.report.generator.MapIconPath;
+import org.activityinfo.server.report.generator.map.IconRectCalculator;
+import org.activityinfo.server.report.renderer.image.ImageMapRenderer;
 import org.activityinfo.shared.report.content.MapMarker;
 import org.activityinfo.shared.report.model.MapElement;
-import org.apache.poi.hslf.usermodel.SlideShow;
-import org.apache.poi.hslf.model.*;
 import org.apache.poi.ddf.EscherProperties;
+import org.apache.poi.hslf.model.AutoShape;
+import org.apache.poi.hslf.model.Picture;
+import org.apache.poi.hslf.model.ShapeTypes;
+import org.apache.poi.hslf.model.Slide;
+import org.apache.poi.hslf.usermodel.SlideShow;
 
 import javax.imageio.ImageIO;
-import java.io.*;
 import java.awt.*;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
-import java.util.Map;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
-
-import com.google.inject.Inject;
+import java.util.Map;
 /*
  * @author Alex Bertram
  */

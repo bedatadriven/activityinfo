@@ -1,14 +1,21 @@
 package org.activityinfo.client.page.entry;
 
+import com.extjs.gxt.ui.client.data.LoadEvent;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.LoadListener;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Record;
+import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.util.DateWrapper;
 import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.Place;
 import org.activityinfo.client.command.CommandService;
 import org.activityinfo.client.command.loader.ListCmdLoader;
-import org.activityinfo.client.common.grid.AbstractEditorGridPresenter;
-import org.activityinfo.client.common.grid.GridView;
 import org.activityinfo.client.event.SiteEvent;
 import org.activityinfo.client.page.PageId;
+import org.activityinfo.client.page.common.grid.AbstractEditorGridPresenter;
+import org.activityinfo.client.page.common.grid.GridView;
 import org.activityinfo.client.util.IStateManager;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.GetMonthlyReports;
@@ -18,14 +25,6 @@ import org.activityinfo.shared.command.result.MonthlyReportResult;
 import org.activityinfo.shared.dto.ActivityModel;
 import org.activityinfo.shared.dto.IndicatorRow;
 import org.activityinfo.shared.dto.SiteModel;
-
-import com.extjs.gxt.ui.client.data.LoadEvent;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.Record;
-import com.extjs.gxt.ui.client.store.Store;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.LoadListener;
-import com.extjs.gxt.ui.client.util.DateWrapper;
 
 import java.util.ArrayList;
 /*

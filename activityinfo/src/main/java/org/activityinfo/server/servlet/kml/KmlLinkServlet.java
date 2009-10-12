@@ -1,33 +1,37 @@
 package org.activityinfo.server.servlet.kml;
 
+import com.google.inject.Singleton;
 import org.activityinfo.server.util.KMLNamespace;
 import org.activityinfo.server.util.XmlBuilder;
 import org.xml.sax.SAXException;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletException;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;
 
-import com.google.inject.Singleton;
-
 /**
+ * Serves a simple KML file containing a network link to {@link org.activityinfo.server.servlet.kml.KmlDataServlet}.
+ *
+ * This file will be downloaded to the users computer and can be saved locally, but will asssure
+ * that all actual data comes live from the server.
+ *
  * @author Alex Bertram (akbertram@gmail.com)
  */
 @Singleton
 public class KmlLinkServlet extends HttpServlet {
 
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        // TODO: rewrite using FreeMarker
 
         resp.setContentType("application/vnd.google-earth.kml+xml");
 
-        //resp.setContentType("text/xml");
-        
         try {
             XmlBuilder xml = new XmlBuilder(new StreamResult(resp.getOutputStream()));
 

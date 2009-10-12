@@ -1,13 +1,12 @@
 package org.activityinfo.client.page.config;
 
+import com.google.inject.ImplementedBy;
+import com.google.inject.Inject;
 import org.activityinfo.client.Place;
 import org.activityinfo.client.page.NavigationCallback;
 import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.PagePresenter;
 import org.activityinfo.client.page.Pages;
-
-import com.google.inject.Inject;
-import com.google.inject.ImplementedBy;
 
 public class AccountEditor implements PagePresenter {
 

@@ -1,11 +1,11 @@
 package org.activityinfo.server.report.renderer.itext;
 
-import org.activityinfo.shared.report.model.PivotTableElement;
-import org.activityinfo.shared.report.content.PivotTableData;
 import com.lowagie.text.*;
+import org.activityinfo.shared.report.content.PivotTableData;
+import org.activityinfo.shared.report.model.PivotTableElement;
 
-import java.util.List;
 import java.text.NumberFormat;
+import java.util.List;
 /*
  * @author Alex Bertram
  */

@@ -1,7 +1,6 @@
 package org.activityinfo.server.command;
 
 
-import org.activityinfo.server.command.CommandTestCase;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.dto.ActivityModel;
 import org.activityinfo.shared.dto.AttributeModel;

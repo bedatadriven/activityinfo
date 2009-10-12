@@ -1,5 +1,7 @@
 package org.activityinfo.client.command;
 
+import org.activityinfo.client.command.cache.CommandListener;
+import org.activityinfo.client.command.cache.CommandProxy;
 import org.activityinfo.shared.command.Command;
 
 /**

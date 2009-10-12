@@ -5,8 +5,6 @@ import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.TileLayer;
 import com.google.gwt.maps.client.geom.MercatorProjection;
 import com.google.gwt.maps.client.geom.Projection;
-import org.activityinfo.client.map.BaseMapLayer;
-import org.activityinfo.client.map.RgcTileLayer;
 import org.activityinfo.shared.map.BaseMap;
 
 public class MapTypeFactory {

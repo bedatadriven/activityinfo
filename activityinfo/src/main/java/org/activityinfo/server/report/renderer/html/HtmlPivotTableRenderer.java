@@ -1,11 +1,11 @@
 package org.activityinfo.server.report.renderer.html;
 
-import java.util.List;
-import java.text.NumberFormat;
-
 import org.activityinfo.server.report.util.HtmlWriter;
 import org.activityinfo.shared.report.content.PivotTableData;
 import org.activityinfo.shared.report.model.PivotTableElement;
+
+import java.text.NumberFormat;
+import java.util.List;
 
 public class HtmlPivotTableRenderer implements HtmlRenderer<PivotTableElement> {
 

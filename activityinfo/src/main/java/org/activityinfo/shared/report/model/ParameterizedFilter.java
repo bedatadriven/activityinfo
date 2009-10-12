@@ -2,15 +2,7 @@ package org.activityinfo.shared.report.model;
 
 import com.extjs.gxt.ui.client.data.BaseModel;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Models a parameterized filter
@@ -86,7 +78,7 @@ public class ParameterizedFilter extends BaseModel {
 	}
 
 	public void setMaxDate(ParameterizedValue<Date> maxDate) {
-		this.maxDate = null;
+		this.maxDate = maxDate;
 	}
 	
 	public void setMaxDateParameter(String name) {

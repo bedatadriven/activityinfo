@@ -1,44 +1,41 @@
 package org.activityinfo.client.page.charts;
 
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
-import com.extjs.gxt.ui.client.widget.button.ToggleButton;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
-import com.extjs.gxt.charts.client.model.ChartModel;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.button.ToggleButton;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.inject.Inject;
-
 import org.activityinfo.client.Application;
 import org.activityinfo.client.EventBus;
-import org.activityinfo.client.common.filter.IndicatorTreePanel;
-import org.activityinfo.client.common.filter.AdminFilterPanel;
-import org.activityinfo.client.common.filter.DateRangePanel;
-import org.activityinfo.client.common.action.ActionToolBar;
-import org.activityinfo.client.common.DimensionStoreFactory;
+import org.activityinfo.client.command.CommandService;
 import org.activityinfo.client.command.monitor.AsyncMonitor;
 import org.activityinfo.client.command.monitor.MaskingAsyncMonitor;
-import org.activityinfo.client.command.CommandService;
+import org.activityinfo.client.page.common.filter.AdminFilterPanel;
+import org.activityinfo.client.page.common.filter.DateRangePanel;
+import org.activityinfo.client.page.common.filter.IndicatorTreePanel;
+import org.activityinfo.client.page.common.toolbar.ActionToolBar;
+import org.activityinfo.client.page.common.toolbar.ExportCallback;
+import org.activityinfo.client.page.common.toolbar.ExportMenuButton;
 import org.activityinfo.client.page.table.PivotGridPanel;
-import org.activityinfo.client.page.base.ExportMenuButton;
-import org.activityinfo.client.page.base.ExportCallback;
-import org.activityinfo.shared.report.model.PivotChartElement;
-import org.activityinfo.shared.report.model.Dimension;
+import org.activityinfo.client.report.DimensionStoreFactory;
+import org.activityinfo.shared.command.RenderElement;
 import org.activityinfo.shared.report.model.DateDimension;
 import org.activityinfo.shared.report.model.DateUnit;
-import org.activityinfo.shared.report.content.PivotChartContent;
-import org.activityinfo.shared.command.RenderElement;
+import org.activityinfo.shared.report.model.Dimension;
+import org.activityinfo.shared.report.model.PivotChartElement;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

@@ -1,19 +1,16 @@
 package org.activityinfo.server.report.generator.map;
 
-import org.activityinfo.server.report.generator.map.CircleFitnessFunctor;
-import org.activityinfo.server.report.generator.map.GeneticSolver;
-import org.activityinfo.server.report.generator.map.GsLogCalculator;
-import org.activityinfo.server.report.generator.map.MarkerGraph;
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
 
-import java.io.*;
-import java.util.List;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.util.ArrayList;
-/*
+import java.util.List;
+
+/**
  * @author Alex Bertram
  */
-
 public class ComplexClusterTest extends GraphTest {
 
 
@@ -22,6 +19,7 @@ public class ComplexClusterTest extends GraphTest {
 
         ComplexPoints data = new ComplexPoints();
 
+        
         FitnessFunctor fitFtor = new CircleFitnessFunctor();
         GsLogCalculator rCtor = new GsLogCalculator(5, 30);
 

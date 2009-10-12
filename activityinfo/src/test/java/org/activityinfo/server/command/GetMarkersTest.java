@@ -1,7 +1,5 @@
 package org.activityinfo.server.command;
 
-import static org.easymock.EasyMock.*;
-
 import org.activityinfo.server.command.handler.GetMarkersHandler;
 import org.activityinfo.server.dao.SiteProjectionBinder;
 import org.activityinfo.server.dao.hibernate.SiteTableDAO;
@@ -11,15 +9,15 @@ import org.activityinfo.shared.dto.SiteMarkerCollection;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.report.content.SiteData;
 import org.easymock.EasyMock;
-
+import static org.easymock.EasyMock.*;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

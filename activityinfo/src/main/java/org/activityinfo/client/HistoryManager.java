@@ -1,23 +1,17 @@
 package org.activityinfo.client;
 
-import org.activityinfo.client.AppEvents;
-import org.activityinfo.client.EventBus;
-import org.activityinfo.client.Place;
-import org.activityinfo.client.PlaceSerializer;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.util.DateWrapper;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.History;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.activityinfo.client.event.NavigationEvent;
 import org.activityinfo.client.page.PageManager;
-import org.activityinfo.client.page.welcome.WelcomePlace;
-
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.util.DateWrapper;
-import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Cookies;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.core.client.GWT;
-import com.google.inject.Singleton;
-import com.google.inject.Inject;
 
 /**
  *

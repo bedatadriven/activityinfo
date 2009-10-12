@@ -2,7 +2,8 @@ package org.activityinfo.server.dao.filter;
 
 import org.activityinfo.server.domain.Partner;
 import org.hibernate.Session;
-import org.hibernate.criterion.*;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Restrictions;
 
 import java.util.Locale;
 

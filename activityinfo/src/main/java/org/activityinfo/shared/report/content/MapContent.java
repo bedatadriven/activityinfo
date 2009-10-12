@@ -1,12 +1,11 @@
 package org.activityinfo.shared.report.content;
 
 import org.activityinfo.shared.map.BaseMap;
-import org.activityinfo.shared.report.content.Extents;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.HashSet;
-import java.util.ArrayList;
 /*
  * @author Alex Bertram
  */

@@ -1,13 +1,12 @@
 package org.activityinfo.server.dao.filter;
 
-import org.activityinfo.server.dao.filter.DateTokenMatcher;
 import org.activityinfo.shared.date.DateRange;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Locale;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 
 /**
@@ -22,8 +21,8 @@ public class DateTokenMatcherTest {
         DateTokenMatcher matcher = new DateTokenMatcher(Locale.FRENCH);
         DateRange r = matcher.tryParse("2007");
 
-        assertDate("date1", r.date1, 2007, 1, 1);
-        assertDate("date2", r.date2, 2007, 12, 31);
+        assertDate("date1", r.getMinDate(), 2007, 1, 1);
+        assertDate("date2", r.getMaxDate(), 2007, 12, 31);
     }
 
     @Test
@@ -32,8 +31,8 @@ public class DateTokenMatcherTest {
         DateTokenMatcher matcher = new DateTokenMatcher(Locale.FRENCH);
         DateRange r = matcher.tryParse("avant 2009");
 
-        Assert.assertNull("date1", r.date1);
-        assertDate("date2", r.date2, 2008, 12, 31);
+        Assert.assertNull("date1", r.getMinDate());
+        assertDate("date2", r.getMaxDate(), 2008, 12, 31);
     }
 
     @Test
@@ -42,8 +41,8 @@ public class DateTokenMatcherTest {
         DateTokenMatcher matcher = new DateTokenMatcher(Locale.FRENCH);
         DateRange r = matcher.tryParse("apres 2008");
 
-        assertDate("date1", r.date1, 2009, 1, 1);
-        Assert.assertNull("date2", r.date2);
+        assertDate("date1", r.getMinDate(), 2009, 1, 1);
+        Assert.assertNull("date2", r.getMaxDate());
     }
 
     @Test
@@ -51,8 +50,8 @@ public class DateTokenMatcherTest {
         DateTokenMatcher matcher = new DateTokenMatcher(Locale.FRENCH);
         DateRange r = matcher.tryParse("janvier 2009");
 
-        assertDate("date1", r.date1, 2009, 1, 1);
-        assertDate("date2", r.date2, 2009, 1, 31);
+        assertDate("date1", r.getMinDate(), 2009, 1, 1);
+        assertDate("date2", r.getMaxDate(), 2009, 1, 31);
     }
 
     @Test
@@ -61,8 +60,8 @@ public class DateTokenMatcherTest {
         matcher.setToday(2009, 8, 7);
         DateRange r = matcher.tryParse("avril");
 
-        assertDate("date1", r.date1, 2009, 4, 1);
-        assertDate("date2", r.date2, 2009, 4, 30);
+        assertDate("date1", r.getMinDate(), 2009, 4, 1);
+        assertDate("date2", r.getMaxDate(), 2009, 4, 30);
     }
 
     @Test
@@ -70,7 +69,7 @@ public class DateTokenMatcherTest {
         DateTokenMatcher matcher = new DateTokenMatcher(Locale.FRENCH);
         DateRange r = matcher.tryParse("apres juin 2009");
 
-        assertDate("date1", r.date1, 2009, 7, 1);
+        assertDate("date1", r.getMinDate(), 2009, 7, 1);
         Assert.assertNull("date2", null);
     }
 
@@ -79,7 +78,7 @@ public class DateTokenMatcherTest {
         DateTokenMatcher matcher = new DateTokenMatcher(Locale.FRENCH);
         DateRange r = matcher.tryParse("apres dec 2009");
 
-        assertDate("date1", r.date1, 2010, 1, 1);
+        assertDate("date1", r.getMinDate(), 2010, 1, 1);
         Assert.assertNull("date2", null);
     }
 
@@ -89,7 +88,7 @@ public class DateTokenMatcherTest {
           DateRange r = matcher.tryParse("avant mai 2009");
 
           Assert.assertNull("date1", null);
-          assertDate("date1", r.date2, 2009,4, 30);
+          assertDate("date1", r.getMaxDate(), 2009,4, 30);
     }
 
     @Test
@@ -97,8 +96,8 @@ public class DateTokenMatcherTest {
         DateTokenMatcher matcher = new DateTokenMatcher(Locale.FRENCH);
         DateRange r = matcher.tryParse("13 mai 2009");
 
-        assertDate("date1", r.date1, 2009, 5, 13);
-        assertDate("date2", r.date2, 2009, 5, 13);
+        assertDate("date1", r.getMinDate(), 2009, 5, 13);
+        assertDate("date2", r.getMaxDate(), 2009, 5, 13);
 
     }
 
@@ -107,8 +106,8 @@ public class DateTokenMatcherTest {
         DateTokenMatcher matcher = new DateTokenMatcher(Locale.FRENCH);
         DateRange r = matcher.tryParse("13/5/09");
 
-        assertDate("date1", r.date1, 2009, 5, 13);
-        assertDate("date2", r.date2, 2009, 5, 13);
+        assertDate("date1", r.getMinDate(), 2009, 5, 13);
+        assertDate("date2", r.getMaxDate(), 2009, 5, 13);
     }
 
     @Test
@@ -116,8 +115,8 @@ public class DateTokenMatcherTest {
         DateTokenMatcher matcher = new DateTokenMatcher(Locale.FRENCH);
         DateRange r = matcher.tryParse("apres 13/5/09");
 
-        assertDate("date1", r.date1, 2009, 5, 14);
-        Assert.assertNull("date2", r.date2);
+        assertDate("date1", r.getMinDate(), 2009, 5, 14);
+        Assert.assertNull("date2", r.getMaxDate());
     }
         
 
@@ -126,8 +125,8 @@ public class DateTokenMatcherTest {
         DateTokenMatcher matcher = new DateTokenMatcher(Locale.FRENCH);
         DateRange r = matcher.tryParse("2007 - 2009");
 
-        assertDate("date1", r.date1, 2007, 1, 1);
-        assertDate("date2", r.date2, 2009, 12, 31);
+        assertDate("date1", r.getMinDate(), 2007, 1, 1);
+        assertDate("date2", r.getMaxDate(), 2009, 12, 31);
     }
 
     @Test
@@ -135,8 +134,8 @@ public class DateTokenMatcherTest {
         DateTokenMatcher matcher = new DateTokenMatcher(Locale.FRENCH);
         DateRange r = matcher.tryParse("janvier 2007 - avril 2009");
 
-        assertDate("date1", r.date1, 2007, 1, 1);
-        assertDate("date2", r.date2, 2009, 4, 30);
+        assertDate("date1", r.getMinDate(), 2007, 1, 1);
+        assertDate("date2", r.getMaxDate(), 2009, 4, 30);
     }
 
      @Test
@@ -144,8 +143,8 @@ public class DateTokenMatcherTest {
          DateTokenMatcher matcher = new DateTokenMatcher(Locale.FRENCH);
          DateRange r = matcher.tryParse("janvier - avril 2009");
 
-         assertDate("date1", r.date1, 2009, 1, 1);
-         assertDate("date2", r.date2, 2009, 4, 30);
+         assertDate("date1", r.getMinDate(), 2009, 1, 1);
+         assertDate("date2", r.getMaxDate(), 2009, 4, 30);
      }
 
     @Test
@@ -154,8 +153,8 @@ public class DateTokenMatcherTest {
             matcher.setToday(2008, 8, 7);
          DateRange r = matcher.tryParse("janvier - avril");
 
-         assertDate("date1", r.date1, 2008, 1, 1);
-         assertDate("date2", r.date2, 2008, 4, 30);
+         assertDate("date1", r.getMinDate(), 2008, 1, 1);
+         assertDate("date2", r.getMaxDate(), 2008, 4, 30);
      }
 
 

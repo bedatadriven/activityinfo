@@ -37,8 +37,7 @@ public class Attribute implements Serializable, Deleteable, Orderable, SchemaEle
 	private AttributeGroup group;
 	private String name;
 	private int sortOrder;
-	private int version;
-	private Date dateDeleted;
+    private Date dateDeleted;
 	
 	public Attribute() {
 		
@@ -54,18 +53,8 @@ public class Attribute implements Serializable, Deleteable, Orderable, SchemaEle
 	public void setId(int id) {
 		this.id = id;
 	}
-	
-	@Version
-	@Column(nullable=false)
-	public int getVersion() {
-		return this.version;
-	}
-	
-	protected void setVersion(int version) {
-		this.version = version;
-	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "AttributeGroupId", nullable = false)
 	public AttributeGroup getGroup() {
 		return this.group;

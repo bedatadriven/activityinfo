@@ -1,29 +1,26 @@
 package org.activityinfo.server.report;
 
-import org.xml.sax.InputSource;
 import org.activityinfo.server.dao.SchemaDAO;
 import org.activityinfo.server.dao.hibernate.PivotDAO;
 import org.activityinfo.server.dao.hibernate.PivotDAOHibernateJdbc;
 import org.activityinfo.server.dao.jpa.SchemaDAOJPA;
 import org.activityinfo.server.domain.User;
-import org.activityinfo.server.report.ReportParser;
 import org.activityinfo.server.report.generator.PivotChartGenerator;
 import org.activityinfo.server.report.renderer.ChartRendererJC;
 import org.activityinfo.shared.report.model.PivotChartElement;
 import org.activityinfo.shared.report.model.Report;
 import org.junit.Assert;
 import org.junit.Test;
+import org.xml.sax.InputSource;
 
-import javax.persistence.Persistence;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityManager;
 import javax.imageio.ImageIO;
-import java.io.InputStream;
-import java.io.File;
-import java.util.HashMap;
-import java.awt.image.BufferedImage;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import java.awt.image.RenderedImage;
-import java.awt.*;
+import java.io.File;
+import java.io.InputStream;
+import java.util.HashMap;
 /*
  * @author Alex Bertram
  */
@@ -56,7 +53,7 @@ public class PieChartTest {
         final PivotChartElement chartElement = (PivotChartElement) report.getElements().get(0);
 
         generator.generate(user, chartElement,
-                null, new HashMap<String,Object>());
+                null, null);
 
         Assert.assertNotNull("content", chartElement.getContent());
 

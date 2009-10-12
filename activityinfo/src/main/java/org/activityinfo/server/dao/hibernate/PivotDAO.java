@@ -1,7 +1,9 @@
 package org.activityinfo.server.dao.hibernate;
 
 import org.activityinfo.shared.report.content.DimensionCategory;
-import org.activityinfo.shared.report.model.*;
+import org.activityinfo.shared.report.model.Dimension;
+import org.activityinfo.shared.report.model.DimensionType;
+import org.activityinfo.shared.report.model.Filter;
 
 import java.util.*;
 

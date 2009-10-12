@@ -2,13 +2,16 @@ package org.activityinfo.shared.command.result;
 
 import org.activityinfo.shared.dto.SiteModel;
 
-import java.util.List;
-import java.util.ArrayList;
 import java.util.Arrays;
-/*
+import java.util.List;
+
+/**
+ * Result from the GetSites command
+ *
+ * @see org.activityinfo.shared.command.GetSites
+ *
  * @author Alex Bertram
  */
-
 public class SiteResult extends PagingResult<SiteModel> {
     
     public SiteResult() {

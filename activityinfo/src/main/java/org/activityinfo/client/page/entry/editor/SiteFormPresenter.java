@@ -1,22 +1,24 @@
 package org.activityinfo.client.page.entry.editor;
 
-import java.util.Map;
-
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.command.CommandService;
 import org.activityinfo.client.command.monitor.AsyncMonitor;
-import org.activityinfo.client.common.action.UIActions;
 import org.activityinfo.client.event.SiteEvent;
+import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.shared.command.CreateEntity;
 import org.activityinfo.shared.command.UpdateEntity;
 import org.activityinfo.shared.command.result.CreateResult;
 import org.activityinfo.shared.command.result.VoidResult;
-import org.activityinfo.shared.dto.*;
+import org.activityinfo.shared.dto.ActivityModel;
+import org.activityinfo.shared.dto.Bounds;
+import org.activityinfo.shared.dto.PartnerModel;
+import org.activityinfo.shared.dto.SiteModel;
 
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.Style;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import java.util.Map;
 
 public class SiteFormPresenter implements SiteFormLeash {
 

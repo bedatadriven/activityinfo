@@ -1,13 +1,11 @@
 package org.activityinfo.client.page.map;
 
+import com.google.inject.Inject;
 import org.activityinfo.client.Place;
 import org.activityinfo.client.page.NavigationCallback;
 import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.PagePresenter;
-import org.activityinfo.client.page.base.GalleryView;
-import org.activityinfo.client.page.charts.Charts;
-
-import com.google.inject.Inject;
+import org.activityinfo.client.page.common.GalleryView;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

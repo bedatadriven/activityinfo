@@ -1,17 +1,14 @@
 package org.activityinfo.server.report.renderer.html;
 
-import java.io.IOException;
-import java.text.NumberFormat;
-import java.util.List;
-
-import org.activityinfo.server.report.renderer.html.CssStyles;
-import org.activityinfo.server.report.renderer.html.HtmlRenderer;
-import org.activityinfo.server.report.renderer.html.HtmlReportUtil;
 import org.activityinfo.server.report.util.HtmlTableCellTag;
 import org.activityinfo.server.report.util.HtmlWriter;
 import org.activityinfo.shared.report.content.TableData;
 import org.activityinfo.shared.report.model.TableElement;
 import org.activityinfo.shared.report.model.TableElement.Column;
+
+import java.io.IOException;
+import java.text.NumberFormat;
+import java.util.List;
 
 public class HtmlTableRenderer implements HtmlRenderer<TableElement> {
 

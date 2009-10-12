@@ -1,0 +1,9 @@
+{
+ "name" : "ActivityInfo",
+ "requiredCookie" : "offline=enabled",
+ "betaManifestVersion" : 1,
+ "version" : 1,
+ "entries" : [
+     __ENTRIES__
+    ]
+}

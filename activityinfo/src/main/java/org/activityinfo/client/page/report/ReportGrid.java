@@ -1,31 +1,27 @@
 package org.activityinfo.client.page.report;
 
-import com.extjs.gxt.ui.client.widget.grid.*;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
+import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.GridEvent;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
-import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.GridEvent;
-import com.google.inject.Inject;
-import com.google.gwt.i18n.client.DateTimeFormat;
+import com.extjs.gxt.ui.client.widget.grid.*;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
+import com.extjs.gxt.ui.client.widget.ComponentPlugin;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.i18n.client.NumberFormat;
-import com.google.gwt.core.client.GWT;
-
-import org.activityinfo.client.common.grid.AbstractEditorGridView;
-import org.activityinfo.client.common.widget.MappingComboBox;
+import com.google.inject.Inject;
 import org.activityinfo.client.Application;
+import org.activityinfo.client.page.common.grid.AbstractEditorGridView;
+import org.activityinfo.client.page.common.widget.MappingComboBox;
+import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.shared.dto.ReportTemplateDTO;
-import org.activityinfo.shared.domain.Subscription;
+import org.activityinfo.shared.report.model.ReportFrequency;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -57,27 +53,11 @@ public class ReportGrid extends AbstractEditorGridView<ReportTemplateDTO, Report
         grid.addListener(Events.BeforeEdit, new Listener<GridEvent<ReportTemplateDTO>>() {
             public void handleEvent(GridEvent<ReportTemplateDTO> be) {
                 ReportTemplateDTO report = be.getModel();
-                if("subscriptionFrequency".equals(be.getProperty())) {
-                    if(report.getSubscriptionFrequency() == Subscription.MONTHLY) {
-                        if(report.getSubscriptionFrequency() < 1)
-                            report.setSubscriptionFrequency(1);
-                        else if(report.getSubscriptionFrequency() > Subscription.LAST_DAY_OF_MONTH)
-                            report.setSubscriptionFrequency(28);
-                    } else if(report.getSubscriptionFrequency() == Subscription.WEEKLY) {
-                        if(report.getSubscriptionDay() > 6)
-                            report.setSubscriptionFrequency(6);
-                    }
-
-                } else if("subscriptionDay".equals(be.getProperty())) {
-                    if(report.getSubscriptionFrequency() <= Subscription.DAILY ) {
-                        be.setCancelled(true);
-                    } else {
-                        prepareDayCombo(report.getSubscriptionFrequency());
-                    }
-                }
+                be.setCancelled( ! (report.getFrequency() == ReportFrequency.MONTHLY ||
+                                    report.getFrequency() == ReportFrequency.WEEKLY ||
+                                    report.getFrequency() == ReportFrequency.DAILY) );
             }
         });
-
 
         GroupingView view = new GroupingView();
         view.setShowGroupedColumn(false);
@@ -117,94 +97,76 @@ public class ReportGrid extends AbstractEditorGridView<ReportTemplateDTO, Report
         });
         columns.add(name);
 
-        columns.add(createSubscriptionColumn());
-        columns.add(createDayColumn());
+        ColumnConfig frequency = new ColumnConfig("frequency", "Frequence", 100); // TODO: i18n
+        frequency.setRenderer(new GridCellRenderer<ReportTemplateDTO>() {
+            public Object render(ReportTemplateDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
+                if(model.getFrequency() == ReportFrequency.MONTHLY) {
+                    return Application.CONSTANTS.monthly();
+                } else if(model.getFrequency() == ReportFrequency.WEEKLY) {
+                    return "hebdodomaire"; // TODO: i18n
+                } else if(model.getFrequency() == ReportFrequency.DAILY) {
+                    return "journalièrement";
+                } else if(model.getFrequency() == ReportFrequency.ADHOC) {
+                    return "ad hoc";
+                }
+                return "-";
+            }
+        });
+        columns.add(frequency);
+
+        ColumnConfig day = new ColumnConfig("day", "Jour", 100);
+        day.setRenderer(new GridCellRenderer<ReportTemplateDTO>() {
+            public Object render(ReportTemplateDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<ReportTemplateDTO> store, Grid<ReportTemplateDTO> grid) {
+                if(model.getFrequency() == ReportFrequency.WEEKLY)
+                    return model.getDay() < 7 ? weekdays[model.getDay()] :
+                            weekdays[6];
+                else if(model.getFrequency() == ReportFrequency.MONTHLY)
+                    return Integer.toString(model.getDay());
+                else
+                    return "";
+            }
+        });
+        columns.add(day);
+
+        ColumnConfig subscribed = new ColumnConfig("subscribed", "Abonnement Email", 100);
+        subscribed.setRenderer(new GridCellRenderer<ReportTemplateDTO>() {
+            @Override
+            public Object render(ReportTemplateDTO model, String property, ColumnData columnData, int rowIndex, int colIndex, ListStore<ReportTemplateDTO> store, Grid<ReportTemplateDTO> grid) {
+                if(model.isSubscribed()) {
+                    return Application.CONSTANTS.yes();
+                } else {
+                    return "";
+                }
+            }
+        });
+
+        final MappingComboBox<Boolean> subCombo = new MappingComboBox();
+        subCombo.add(true, Application.CONSTANTS.yes());
+        subCombo.add(false, Application.CONSTANTS.no());
+
+        CellEditor subEditor = new CellEditor(subCombo) {
+            @Override
+            public Object preProcessValue(Object o) {
+                return subCombo.wrap((Boolean)o);
+            }
+
+            @Override
+            public Object postProcessValue(Object o) {
+                return ((MappingComboBox.Wrapper)o).getWrappedValue();
+            }
+        };
+        subscribed.setEditor(subEditor);
+        columns.add(subscribed);
 
         return new ColumnModel(columns);
     }
 
-    private ColumnConfig createSubscriptionColumn() {
-        final MappingComboBox<Integer> subscriptionCombo = new MappingComboBox<Integer>();
-        subscriptionCombo.add(Subscription.NONE, "Aucune");    // TODO i18n
-        subscriptionCombo.add(Subscription.DAILY, "Journalière");
-        subscriptionCombo.add(Subscription.WEEKLY, "Hebdodomaire");
-        subscriptionCombo.add(Subscription.MONTHLY, "Mensuelle");
-
-        ColumnConfig subscription = new ColumnConfig("subscriptionFrequency", "Livraison par email", 100);
-        subscription.setRenderer(new GridCellRenderer<ReportTemplateDTO>() {
-            public Object render(ReportTemplateDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
-                return subscriptionCombo.getValueLabel(model.getSubscriptionFrequency());
-            }
-        });
-        subscription.setEditor(new CellEditor(subscriptionCombo) {
-            @Override
-            public Object preProcessValue(Object frequency) {
-                return subscriptionCombo.wrap((Integer) frequency);
-            }
-
-            @Override
-            public Object postProcessValue(Object wrapper) {
-                return ((ModelData)wrapper).get("value");
-            }
-        });
-        return subscription;
-    }
-
-    private ColumnConfig createDayColumn() {
-
-        dayCombo = new MappingComboBox<Integer>();
-
-        ColumnConfig day = new ColumnConfig("subscriptionDay", "Jour", 100);
-        day.setRenderer(new GridCellRenderer<ReportTemplateDTO>() {
-            public Object render(ReportTemplateDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<ReportTemplateDTO> reportTemplateDTOListStore, Grid<ReportTemplateDTO> reportTemplateDTOGrid) {
-                if(model.getSubscriptionFrequency() == 0)
-                    return "";
-                else if(model.getSubscriptionFrequency() == 1)
-                    return "-";
-                else if(model.getSubscriptionFrequency() == 2)
-                    return model.getSubscriptionDay() < 7 ? weekdays[model.getSubscriptionDay()] :
-                            weekdays[6];
-                else
-                    return Integer.toString(model.getSubscriptionDay());
-            }
-        });
-        day.setEditor(new CellEditor(dayCombo) {
-            @Override
-            public Object preProcessValue(Object value) {
-                return dayCombo.wrap((Integer) value);
-            }
-
-            @Override
-            public Object postProcessValue(Object value) {
-                return ((ModelData)value).get("value");
-            }
-        });
-        return day;
-    }
-
-    private void prepareDayCombo(int subscriptionFrequency) {
-        if(subscriptionFrequency == Subscription.WEEKLY) {
-            if(dayCombo.getStore().getCount() != 7) {
-                dayCombo.getStore().removeAll();
-                for(int i=0; i!=7;++i) {
-                    dayCombo.add(i, weekdays[i]);
-                }
-            }
-        } else {
-            if(dayCombo.getStore().getCount() != 29) {
-                dayCombo.getStore().removeAll();
-                dayCombo.add(1, "Première jour de mois");
-                dayCombo.add(Subscription.LAST_DAY_OF_MONTH, "Dernière jour de mois");
-                for(int i=2;i!=Subscription.LAST_DAY_OF_MONTH;++i) {
-                    dayCombo.add(i, numberFormat.format(i));
-                }
-            }
-        }
-    }
 
     @Override
     protected void initToolBar() {
         toolBar.addSaveSplitButton();
+        toolBar.add(new SeparatorToolItem());
+        toolBar.addButton(UIActions.add, Application.CONSTANTS.newText(), Application.ICONS.add());
     }
 
 

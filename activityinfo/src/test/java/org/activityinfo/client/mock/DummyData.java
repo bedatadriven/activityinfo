@@ -1,11 +1,15 @@
 package org.activityinfo.client.mock;
 
-import org.activityinfo.shared.command.result.*;
+import org.activityinfo.shared.command.result.AdminEntityResult;
+import org.activityinfo.shared.command.result.ListResult;
+import org.activityinfo.shared.command.result.SiteResult;
+import org.activityinfo.shared.command.result.UserResult;
 import org.activityinfo.shared.dto.*;
 
-import java.util.*;
-
-import com.extjs.gxt.ui.client.data.ModelData;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DummyData {
 

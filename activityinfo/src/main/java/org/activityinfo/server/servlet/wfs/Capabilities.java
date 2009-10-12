@@ -1,12 +1,5 @@
 package org.activityinfo.server.servlet.wfs;
 
-import org.activityinfo.server.dao.SchemaDAO;
-import org.activityinfo.server.domain.Activity;
-import org.activityinfo.server.domain.UserDatabase;
-import org.xml.sax.SAXException;
-
-import com.google.inject.Inject;
-
 import java.util.List;
 
 public class Capabilities {

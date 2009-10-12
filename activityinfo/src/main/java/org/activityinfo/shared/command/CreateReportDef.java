@@ -2,6 +2,15 @@ package org.activityinfo.shared.command;
 
 import org.activityinfo.shared.command.result.CreateResult;
 
+
+/**
+ *
+ * Creates a new Report Definition
+ *
+ * Returns {@link org.activityinfo.shared.command.result.CreateResult}
+ *
+ * @author Alex Bertram
+ */
 public class CreateReportDef implements Command<CreateResult> {
 	
 	private String xml;

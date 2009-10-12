@@ -3,15 +3,14 @@ package org.activityinfo.clientjre.place.entry.editor;
 import org.activityinfo.client.mock.DummyData;
 import org.activityinfo.client.mock.MockCommandService;
 import org.activityinfo.client.page.entry.editor.AdminFieldSetPresenter;
-import org.activityinfo.client.page.entry.editor.SiteFormPresenter;
 import org.activityinfo.clientjre.mock.MockEventBus;
 import org.activityinfo.shared.dto.AdminEntityModel;
 import org.activityinfo.shared.dto.AdminLevelModel;
 import org.activityinfo.shared.dto.Schema;
 import org.activityinfo.shared.dto.SiteModel;
-import org.junit.Test;
+import static org.easymock.EasyMock.createNiceMock;
 import org.junit.Assert;
-import static org.easymock.EasyMock.*;
+import org.junit.Test;
 
 import java.util.Map;
 /*

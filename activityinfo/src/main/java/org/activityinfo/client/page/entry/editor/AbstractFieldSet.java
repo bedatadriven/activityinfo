@@ -1,7 +1,7 @@
 package org.activityinfo.client.page.entry.editor;
 
-import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
+import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

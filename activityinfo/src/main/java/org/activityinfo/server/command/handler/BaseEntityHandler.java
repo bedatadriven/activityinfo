@@ -367,6 +367,8 @@ public class BaseEntityHandler {
 
         if(changes.containsKey("sortOrder"))
             indicator.setSortOrder( (Integer)changes.get("sortOrder") );
+        
+        indicator.getActivity().getDatabase().setLastSchemaUpdate(new Date());
     }
 
     protected void updateAttributeProperties(Map<String, Object> changes, Attribute attribute) {
@@ -374,6 +376,8 @@ public class BaseEntityHandler {
             attribute.setName( (String)changes.get("name") );
         if(changes.containsKey("sortOrder"))
             attribute.setSortOrder( (Integer)changes.get("sortOrder"));
+
+        // TODO: update lastSchemaUpdate
     }
 
     protected void updateAttributeGroupProperties(AttributeGroup group, Map<String, Object> changes) {
@@ -386,6 +390,8 @@ public class BaseEntityHandler {
         if(changes.containsKey("sortOrder")) {
             group.setSortOrder( (Integer)changes.get("sortOrder") );
         }
+
+
     }
 
     protected void updateActivityProperties(Activity activity, Map<String, Object> changes) {
@@ -411,5 +417,7 @@ public class BaseEntityHandler {
 
         if(changes.containsKey("sortOrder"))
             activity.setSortOrder( (Integer)changes.get("sortOrder"));
+
+        activity.getDatabase().setLastSchemaUpdate(new Date());
     }
 }

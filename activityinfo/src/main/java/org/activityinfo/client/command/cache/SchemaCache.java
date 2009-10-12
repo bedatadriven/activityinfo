@@ -1,9 +1,8 @@
 package org.activityinfo.client.command.cache;
 
-import org.activityinfo.client.AppEvents;
+import com.google.inject.Inject;
 import org.activityinfo.client.EventBus;
-import org.activityinfo.client.command.*;
-import org.activityinfo.client.event.AuthenticationEvent;
+import org.activityinfo.client.command.CommandEventSource;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.CreateEntity;
 import org.activityinfo.shared.command.GetSchema;
@@ -11,20 +10,21 @@ import org.activityinfo.shared.command.UpdateEntity;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.dto.Schema;
 
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.google.inject.Inject;
-
+/**
+ *
+ * Caches the user's schema in-memory for the duration of the session.
+ *
+ * TODO: we need to peridiodically check the server for updates. Do we do this here
+ * or in a seperate class?
+ *
+ * @author Alex Bertram
+ */
 public class SchemaCache implements CommandProxy<GetSchema>, CommandListener {
-
-    protected final EventBus eventBus;
 
     protected Schema schema = null;
 
     @Inject
     public SchemaCache(final EventBus eventBus, CommandEventSource source) {
-
-        this.eventBus = eventBus;
 
         source.registerProxy(GetSchema.class, this);
         source.registerListener(GetSchema.class, this);
@@ -62,13 +62,19 @@ public class SchemaCache implements CommandProxy<GetSchema>, CommandListener {
     @Override
     public void onSuccess(Command command, CommandResult result) {
         if(command instanceof GetSchema) {
-            schema = (Schema)result;
-            cache(schema);
+            cache((Schema)result);
         }
     }
 
+    /**
+     * Caches the schema in-memory following a successful GetSchema
+     * call. Subclasses can override this to provide a more permanent
+     * cache.
+     *
+     * @param schema The schema to cache
+     */
     protected void cache(Schema schema) {
-
+        this.schema = schema;
     }
 
 

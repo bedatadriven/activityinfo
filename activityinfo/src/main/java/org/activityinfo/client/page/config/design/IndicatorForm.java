@@ -1,21 +1,18 @@
 package org.activityinfo.client.page.config.design;
 
 
-
-import org.activityinfo.client.common.widget.MappingComboBox;
-import org.activityinfo.client.common.widget.MappingComboBoxBinding;
-import org.activityinfo.shared.dto.IndicatorModel;
-import org.activityinfo.shared.i18n.UIConstants;
-
 import com.extjs.gxt.ui.client.Style.Orientation;
+import com.extjs.gxt.ui.client.binding.FieldBinding;
+import com.extjs.gxt.ui.client.binding.FormBinding;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.binding.FormBinding;
-import com.extjs.gxt.ui.client.binding.FieldBinding;
 import com.google.gwt.core.client.GWT;
+import org.activityinfo.client.page.common.widget.MappingComboBox;
+import org.activityinfo.client.page.common.widget.MappingComboBoxBinding;
+import org.activityinfo.shared.dto.IndicatorModel;
+import org.activityinfo.shared.i18n.UIConstants;
 
 public class IndicatorForm extends AbstractDesignForm {
 

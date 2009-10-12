@@ -3,11 +3,11 @@
  */
 package com.ebessette.maps.core.client.overlay;
 
-import java.util.List;
-
 import com.google.gwt.maps.client.event.MapMoveEndHandler;
 import com.google.gwt.maps.client.overlay.Overlay;
 import com.google.gwt.user.client.Command;
+
+import java.util.List;
 
 /**
  * Manage the visibility of overlays on a map, based on the map's current view

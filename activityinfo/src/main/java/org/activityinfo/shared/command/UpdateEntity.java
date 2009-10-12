@@ -1,14 +1,24 @@
 package org.activityinfo.shared.command;
 
-import java.util.Map;
-
-
+import com.extjs.gxt.ui.client.data.RpcMap;
 import org.activityinfo.shared.command.result.VoidResult;
 import org.activityinfo.shared.dto.EntityDTO;
 
-import com.extjs.gxt.ui.client.data.RpcMap;
-import com.extjs.gxt.ui.client.data.ModelData;
+import java.util.Map;
 
+/**
+ *
+ * Updates a domain entity on the server.
+ *
+ * Some entities require specialized commands to create or update. See:
+ * <ul>
+ * <li>{@link org.activityinfo.shared.command.AddPartner}</li>
+ * <li>{@link UpdateUserPermissions}</li>
+ * <li>{@link org.activityinfo.shared.command.UpdateSubscription}</li>
+ * </ul>
+ *
+ * @author Alex Bertram (akbertram@gmail.com)
+ */
 public class UpdateEntity implements Command<VoidResult> {
 
 	private int id;

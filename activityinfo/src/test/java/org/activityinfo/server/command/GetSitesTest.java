@@ -1,18 +1,15 @@
 package org.activityinfo.server.command;
 
+import com.extjs.gxt.ui.client.Style.SortDir;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import com.extjs.gxt.ui.client.data.SortInfo;
 import junit.framework.Assert;
-
-import org.activityinfo.server.command.CommandTestCase;
 import org.activityinfo.shared.command.GetSites;
 import org.activityinfo.shared.dto.IndicatorModel;
 import org.activityinfo.shared.dto.SiteModel;
 import org.activityinfo.shared.exception.CommandException;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.extjs.gxt.ui.client.Style.SortDir;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import com.extjs.gxt.ui.client.data.SortInfo;
 
 public class GetSitesTest extends CommandTestCase {
 	

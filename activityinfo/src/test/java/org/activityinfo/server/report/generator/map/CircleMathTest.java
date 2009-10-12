@@ -1,9 +1,8 @@
 package org.activityinfo.server.report.generator.map;
 
-import org.activityinfo.server.report.generator.map.CircleMath;
 import org.activityinfo.shared.report.content.Point;
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
 
 public class CircleMathTest {
 

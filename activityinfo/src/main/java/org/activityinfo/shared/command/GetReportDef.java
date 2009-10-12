@@ -1,8 +1,14 @@
 package org.activityinfo.shared.command;
 
-import org.activityinfo.shared.command.result.SingleResult;
 import org.activityinfo.shared.command.result.XmlResult;
 
+/**
+ *
+ * Returns the XML definition of the {@link org.activityinfo.shared.report.model.Report ReportModel} for a given
+ * {@link org.activityinfo.server.domain.ReportTemplate} database entity.
+ *
+ * @author Alex Bertram
+ */
 public class GetReportDef implements Command<XmlResult> {
 
 
@@ -12,10 +18,20 @@ public class GetReportDef implements Command<XmlResult> {
 		
 	}
 
-	public GetReportDef(int reportId) {
-		id = reportId;
+    /**
+     *
+     * @param id The id of the {@link org.activityinfo.server.domain.ReportTemplate} database entity for which to return
+     *  the XML definition.
+     */
+	public GetReportDef(int id) {
+		this.id = id;
 	}
 
+    /**
+     *
+     * @return The id of the {@link org.activityinfo.server.domain.ReportTemplate} database entity for which to return
+     *  the XML definition.
+     */
 	public int getId() {
 		return id;
 	}

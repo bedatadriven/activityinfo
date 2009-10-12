@@ -1,23 +1,18 @@
 package org.activityinfo.client.page.map;
 
-import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.util.Margins;
-
 import org.activityinfo.client.Application;
 import org.activityinfo.client.command.monitor.AsyncMonitor;
 import org.activityinfo.client.command.monitor.MaskingAsyncMonitor;
-import org.activityinfo.client.common.action.UIActions;
-import org.activityinfo.client.common.action.ActionToolBar;
-import org.activityinfo.client.page.base.ExportCallback;
-import org.activityinfo.client.page.base.ExportMenuButton;
-import org.activityinfo.client.page.map.MapPresenter;
+import org.activityinfo.client.page.common.toolbar.ActionToolBar;
+import org.activityinfo.client.page.common.toolbar.ExportCallback;
+import org.activityinfo.client.page.common.toolbar.ExportMenuButton;
+import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.shared.command.RenderElement;
 import org.activityinfo.shared.dto.Schema;
 import org.activityinfo.shared.report.content.Content;

@@ -1,22 +1,18 @@
 package org.activityinfo.server.report.generator;
 
-import org.junit.Test;
-import org.junit.Assert;
-import static org.easymock.EasyMock.*;
-
 import org.activityinfo.server.dao.hibernate.PivotDAO;
 import org.activityinfo.server.domain.User;
-import org.activityinfo.server.report.generator.PivotTableGenerator;
 import org.activityinfo.shared.report.content.PivotTableData;
-import org.activityinfo.shared.report.model.AdminDimension;
-import org.activityinfo.shared.report.model.Dimension;
-import org.activityinfo.shared.report.model.DimensionType;
-import org.activityinfo.shared.report.model.Filter;
-import org.activityinfo.shared.report.model.PivotTableElement;
+import org.activityinfo.shared.report.model.*;
 import org.easymock.EasyMock;
+import static org.easymock.EasyMock.*;
+import org.junit.Assert;
+import org.junit.Test;
 
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -59,7 +55,7 @@ public class PivotTableGeneratorTest {
 
         PivotTableGenerator generator = new PivotTableGenerator(dao);
 
-        generator.generate(user, element, null, new HashMap<String, Object>());
+        generator.generate(user, element, null, null);
 
         Assert.assertNotNull("element content", element.getContent());
 

@@ -1,8 +1,5 @@
 package org.activityinfo.shared.command.result;
 
-import org.activityinfo.shared.command.result.SingleResult;
-
-
 public class XmlResult implements SingleResult<String> {
 
 	String xml;

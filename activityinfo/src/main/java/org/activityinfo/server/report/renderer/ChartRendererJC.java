@@ -1,21 +1,13 @@
 package org.activityinfo.server.report.renderer;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
-import java.io.IOException;
-import java.util.List;
-import java.util.Collection;
-
 import org.activityinfo.server.report.renderer.html.ImageStorage;
 import org.activityinfo.server.report.renderer.html.ImageStorageProvider;
 import org.activityinfo.shared.report.content.PivotTableData;
+import org.activityinfo.shared.report.model.CategoryProperties;
+import org.activityinfo.shared.report.model.Dimension;
 import org.activityinfo.shared.report.model.ModelException;
 import org.activityinfo.shared.report.model.PivotChartElement;
-import org.activityinfo.shared.report.model.Dimension;
-import org.activityinfo.shared.report.model.CategoryProperties;
 import org.krysalis.jcharts.Chart;
-import org.krysalis.jcharts.nonAxisChart.PieChart2D;
 import org.krysalis.jcharts.axisChart.AxisChart;
 import org.krysalis.jcharts.chartData.AxisChartDataSet;
 import org.krysalis.jcharts.chartData.ChartDataException;
@@ -23,11 +15,18 @@ import org.krysalis.jcharts.chartData.DataSeries;
 import org.krysalis.jcharts.chartData.PieChartDataSet;
 import org.krysalis.jcharts.chartData.interfaces.IAxisDataSeries;
 import org.krysalis.jcharts.encoders.JPEGEncoder13;
+import org.krysalis.jcharts.nonAxisChart.PieChart2D;
 import org.krysalis.jcharts.properties.*;
 import org.krysalis.jcharts.properties.util.ChartFont;
 import org.krysalis.jcharts.properties.util.ChartStroke;
 import org.krysalis.jcharts.types.ChartType;
 import org.krysalis.jcharts.types.PieLabelType;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
 
 
 /**

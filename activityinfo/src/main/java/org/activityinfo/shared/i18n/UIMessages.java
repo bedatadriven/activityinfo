@@ -2,7 +2,7 @@ package org.activityinfo.shared.i18n;
 
 /**
  * Interface to represent the messages contained in resource bundle:
- * 	C:/Users/Owner/Eclipse/activityinfo/src/main/java/org/activityinfo/shared/i18n/UIMessages.properties'.
+ * 	C:/Users/Owner/Eclipse/activityinfo/war/WEB-INF/classes/org/activityinfo/shared/i18n/UIMessages.properties'.
  */
 public interface UIMessages extends com.google.gwt.i18n.client.Messages {
   

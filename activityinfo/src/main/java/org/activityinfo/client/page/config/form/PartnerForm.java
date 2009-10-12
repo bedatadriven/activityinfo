@@ -1,13 +1,12 @@
 package org.activityinfo.client.page.config.form;
 
-import org.activityinfo.shared.i18n.UIConstants;
-
+import com.extjs.gxt.ui.client.binding.FieldBinding;
+import com.extjs.gxt.ui.client.binding.FormBinding;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.binding.FormBinding;
-import com.extjs.gxt.ui.client.binding.FieldBinding;
 import com.google.gwt.core.client.GWT;
+import org.activityinfo.shared.i18n.UIConstants;
 
 public class PartnerForm extends FormPanel {
 

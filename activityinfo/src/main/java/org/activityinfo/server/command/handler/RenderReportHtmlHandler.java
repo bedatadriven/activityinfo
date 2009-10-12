@@ -65,7 +65,7 @@ public class RenderReportHtmlHandler implements CommandHandler<RenderReportHtml>
         try {
             Report report = ReportParser.parseXml(xml);
 
-            generator.generate(user, report, null, cmd.getParameters().getTransientMap());
+            generator.generate(user, report, null, cmd.getDateRange());
 
             ServletImageStorageProvider isp = new ServletImageStorageProvider("temp/",
                     servletContext.getRealPath("/temp/"));

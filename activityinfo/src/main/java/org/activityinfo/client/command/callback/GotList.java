@@ -1,12 +1,10 @@
 package org.activityinfo.client.command.callback;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.activityinfo.shared.command.result.ListResult;
 
 import java.util.List;
-
-import org.activityinfo.shared.command.result.ListResult;
-import org.activityinfo.shared.dto.DTO;
 
 public abstract class GotList<T extends ModelData> implements AsyncCallback<ListResult<T>> {
 

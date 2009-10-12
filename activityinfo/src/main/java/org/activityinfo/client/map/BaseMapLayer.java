@@ -6,7 +6,6 @@ import com.google.gwt.maps.client.TileLayer;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.geom.LatLngBounds;
 import com.google.gwt.maps.client.geom.Point;
-import com.google.gwt.core.client.GWT;
 import org.activityinfo.shared.map.BaseMap;
 
 public class BaseMapLayer extends TileLayer {

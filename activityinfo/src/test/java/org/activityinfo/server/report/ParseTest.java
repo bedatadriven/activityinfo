@@ -1,17 +1,14 @@
 package org.activityinfo.server.report;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.activityinfo.server.report.ReportParser;
+import junit.framework.TestCase;
 import org.activityinfo.shared.report.model.*;
 import org.junit.Assert;
 import org.junit.Test;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-
-import junit.framework.TestCase;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class ParseTest extends TestCase {
 

@@ -1,7 +1,6 @@
 package org.activityinfo.server.report.generator.map;
 
-import java.awt.Image;
-import java.io.IOException;
+import java.awt.*;
 
 public interface TileProvider {
 

@@ -5,7 +5,7 @@ import com.extjs.gxt.ui.client.data.BaseModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AttributeGroupModel extends BaseModel implements EntityDTO, Versioned {
+public class AttributeGroupModel extends BaseModel implements EntityDTO {
 
 	private List<AttributeModel> attributes = new ArrayList<AttributeModel>(0);
 	
@@ -34,15 +34,7 @@ public class AttributeGroupModel extends BaseModel implements EntityDTO, Version
         set("id",  id);
     }
 
-    public Integer getVersion() {
-		return get("version");
-	}
-	
-	public void setVersion(int version) {
-		set("version", version);
-	}
-	
-	public void setName(String name) {
+    public void setName(String name) {
 		set("name", name);
 	}
 	

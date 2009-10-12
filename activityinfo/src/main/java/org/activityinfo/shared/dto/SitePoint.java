@@ -1,7 +1,7 @@
 package org.activityinfo.shared.dto;
 
 /**
- * @author Alex Bertram (akbertram@gmail.com)
+ * @author Alex Bertram
  */
 public class SitePoint implements DTO {
 

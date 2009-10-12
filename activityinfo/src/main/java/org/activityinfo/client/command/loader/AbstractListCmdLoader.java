@@ -1,14 +1,12 @@
 package org.activityinfo.client.command.loader;
 
+import com.extjs.gxt.ui.client.Style.SortDir;
+import com.extjs.gxt.ui.client.data.ListLoadConfig;
+import com.extjs.gxt.ui.client.data.ListLoader;
+import com.extjs.gxt.ui.client.data.SortInfo;
 import org.activityinfo.client.command.CommandService;
 import org.activityinfo.shared.command.GetListCommand;
 import org.activityinfo.shared.command.result.ListResult;
-
-import com.extjs.gxt.ui.client.Style.SortDir;
-import com.extjs.gxt.ui.client.data.ListLoader;
-import com.extjs.gxt.ui.client.data.SortInfo;
-import com.extjs.gxt.ui.client.data.LoadConfig;
-import com.extjs.gxt.ui.client.data.ListLoadConfig;
 
 public abstract class AbstractListCmdLoader<	
 							ResultT extends ListResult,

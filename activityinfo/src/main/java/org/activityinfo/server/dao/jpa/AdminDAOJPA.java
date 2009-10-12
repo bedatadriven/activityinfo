@@ -1,19 +1,18 @@
 package org.activityinfo.server.dao.jpa;
 
-import java.util.List;
-
-import javax.persistence.EntityManager;
-
+import com.google.inject.Inject;
 import org.activityinfo.server.dao.AdminDAO;
 import org.activityinfo.server.domain.AdminEntity;
-import org.hibernate.ejb.HibernateEntityManager;
-import org.hibernate.Session;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
-import com.google.inject.Inject;
+import org.hibernate.ejb.HibernateEntityManager;
+
+import javax.persistence.EntityManager;
+import java.util.List;
 
 public class AdminDAOJPA implements AdminDAO  {
 

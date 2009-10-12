@@ -1,9 +1,15 @@
 package org.activityinfo.client.command;
-/*
+
+
+/**
+ * Encapsulates user identity and their authorization to access the server.
+ *
+ * This is normally injected by Gin, see the default {@link org.activityinfo.client.inject.AuthProvider}
+ *
  * @author Alex Bertram
  */
-
 public class Authentication {
+
 
     private String authToken;
     private String email;
@@ -17,6 +23,10 @@ public class Authentication {
         this.email = email;
     }
 
+    /**
+     *
+     * @return The authorization token required for calls to the command service
+     */
     public String getAuthToken() {
         return authToken;
     }
@@ -25,6 +35,10 @@ public class Authentication {
         this.authToken = authToken;
     }
 
+    /**
+     *
+     * @return The email address of the currently authenticated user
+     */
     public String getEmail() {
         return email;
     }

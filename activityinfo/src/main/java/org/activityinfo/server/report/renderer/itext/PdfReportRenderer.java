@@ -1,15 +1,12 @@
 package org.activityinfo.server.report.renderer.itext;
 
-import org.activityinfo.shared.report.model.ReportElement;
-
-import java.io.OutputStream;
-import java.io.IOException;
-
+import com.google.inject.Inject;
+import com.lowagie.text.DocWriter;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.DocWriter;
 import com.lowagie.text.pdf.PdfWriter;
-import com.google.inject.Inject;
+
+import java.io.OutputStream;
 /*
  * @author Alex Bertram
  */
@@ -30,5 +27,13 @@ public class PdfReportRenderer extends ItextReportRenderer {
         return writer;
     }
 
+    @Override
+    public String getMimeType() {
+        return "application/pdf";
+    }
 
+    @Override
+    public String getFileSuffix() {
+        return ".pdf";
+    }
 }

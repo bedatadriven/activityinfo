@@ -1,7 +1,6 @@
 package org.activityinfo.client.page.config.design;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
-
 import org.activityinfo.shared.dto.ActivityModel;
 
 public class Folder extends BaseModelData {

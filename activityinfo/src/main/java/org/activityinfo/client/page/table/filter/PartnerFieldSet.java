@@ -1,19 +1,15 @@
 package org.activityinfo.client.page.table.filter;
 
-import com.extjs.gxt.ui.client.widget.ListView;
-import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ModelIconProvider;
+import com.extjs.gxt.ui.client.store.TreeStore;
+import com.extjs.gxt.ui.client.widget.ListView;
+import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
-
 import org.activityinfo.client.Application;
-import org.activityinfo.client.page.base.FieldSetFitLayout;
+import org.activityinfo.client.page.common.FieldSetFitLayout;
 import org.activityinfo.shared.dto.PartnerModel;
 import org.activityinfo.shared.dto.Schema;
-
-import java.util.Collections;
 /*
  * @author Alex Bertram
  */

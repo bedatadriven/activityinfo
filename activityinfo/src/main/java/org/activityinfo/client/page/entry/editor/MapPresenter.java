@@ -3,9 +3,6 @@ package org.activityinfo.client.page.entry.editor;
 import org.activityinfo.shared.dto.Bounds;
 import org.activityinfo.shared.dto.SiteModel;
 
-import com.google.gwt.maps.client.geom.LatLng;
-import com.google.gwt.maps.client.geom.LatLngBounds;
-
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */

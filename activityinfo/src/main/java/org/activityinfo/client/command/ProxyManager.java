@@ -1,15 +1,22 @@
 package org.activityinfo.client.command;
 
+import com.google.gwt.core.client.GWT;
+import org.activityinfo.client.command.cache.CommandListener;
+import org.activityinfo.client.command.cache.CommandProxy;
+import org.activityinfo.client.command.cache.CommandProxyResult;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.CommandResult;
 
-import java.util.List;
-import java.util.Map;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import com.google.gwt.core.client.GWT;
-
+/**
+ * Utility class that maintains a list of {@link org.activityinfo.client.command.cache.CommandListener}s and
+ * {@link org.activityinfo.client.command.cache.CommandProxy}
+ *
+ */
 public class ProxyManager implements CommandEventSource {
 
     private Map<Class<? extends Command>, List<CommandListener>> listeners =

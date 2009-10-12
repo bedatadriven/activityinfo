@@ -1,7 +1,5 @@
 package org.activityinfo.client.page;
 
-import org.activityinfo.client.page.PageId;
-
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */

@@ -1,7 +1,7 @@
 package org.activityinfo.server.report.generator.map;
 
-import java.util.List;
 import java.awt.*;
+import java.util.List;
 /*
  * @author Alex Bertram
  */

@@ -1,8 +1,8 @@
 package org.activityinfo.server.report.generator.map;
 
 import org.activityinfo.shared.report.content.Extents;
-import org.activityinfo.shared.report.content.SiteData;
 import org.activityinfo.shared.report.content.MapContent;
+import org.activityinfo.shared.report.content.SiteData;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package org.activityinfo.shared.command.result;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import java.io.Serializable;
 
 /**
  * 
@@ -10,7 +10,8 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @author Alex Bertram
  *
  */
-public interface CommandResult extends IsSerializable {
+public interface CommandResult extends Serializable {
+
 
 
 	

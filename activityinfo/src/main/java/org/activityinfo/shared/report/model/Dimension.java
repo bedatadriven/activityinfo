@@ -1,15 +1,14 @@
 package org.activityinfo.shared.report.model;
 
+import com.extjs.gxt.ui.client.data.BaseModelData;
 import org.activityinfo.shared.report.content.DimensionCategory;
 import org.activityinfo.shared.report.content.EntityCategory;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.io.Serializable;
-
-import com.extjs.gxt.ui.client.data.BaseModelData;
 
 
 /**

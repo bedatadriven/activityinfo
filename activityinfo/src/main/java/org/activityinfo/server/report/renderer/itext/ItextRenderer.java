@@ -1,7 +1,7 @@
 package org.activityinfo.server.report.renderer.itext;
 
-import com.lowagie.text.Document;
 import com.lowagie.text.DocWriter;
+import com.lowagie.text.Document;
 /*
  * @author Alex Bertram
  */

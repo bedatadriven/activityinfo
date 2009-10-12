@@ -2,128 +2,148 @@ package org.activityinfo.server.schedule;
 
 import org.activityinfo.server.domain.ReportSubscription;
 import org.activityinfo.server.util.DateUtilCalendarImpl;
-import org.activityinfo.shared.domain.Subscription;
-import org.activityinfo.shared.report.model.Report;
-import org.activityinfo.shared.report.model.ParameterizedFilter;
-import org.activityinfo.shared.report.model.DateUnit;
-import org.activityinfo.shared.report.model.ParameterizedValue;
+import org.activityinfo.server.report.util.HtmlWriter;
 import org.activityinfo.shared.date.DateUtil;
+import org.activityinfo.shared.date.DateRange;
+import org.activityinfo.shared.report.model.*;
 
-import java.util.Date;
-import java.util.Calendar;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.*;
+import java.text.MessageFormat;
+
 /*
  * @author Alex Bertram
  */
-
 public class ReportMailerHelper {
 
     private static final DateUtil dateUtil = new DateUtilCalendarImpl();
 
 
-    public static boolean mailToday(Date dateToday, ReportSubscription sub) {
+    /**
+     * Checks if the given ReportSubscription should be mailed today.
+     *
+     * @param dateToday Today's date
+     * @param report The report for which to check
+     * @return True if the report should be mailed.
+     */
+    public static boolean mailToday(Date dateToday, Report report) {
 
         Calendar today = Calendar.getInstance();
         today.setTime(dateToday);
 
-        if(sub.getFrequency() == Subscription.DAILY) {
+        if(report.getFrequency() == ReportFrequency.DAILY) {
             return true;
-        } else if(sub.getFrequency() == Subscription.WEEKLY) {
-            return today.get(Calendar.DAY_OF_WEEK) == sub.getDay();
-        } else if(sub.getFrequency() == Subscription.MONTHLY) {
-            if(sub.getDay() == Subscription.LAST_DAY_OF_MONTH) {
+
+        } else if(report.getFrequency() == ReportFrequency.WEEKLY) {
+            return today.get(Calendar.DAY_OF_WEEK) == report.getDay()+1;
+
+        } else if(report.getFrequency() == ReportFrequency.MONTHLY) {
+            if(report.getDay() == ReportFrequency.LAST_DAY_OF_MONTH) {
                 return today.get(Calendar.DATE) == today.getActualMaximum(Calendar.DATE);
             } else {
-                return today.get(Calendar.DATE) == sub.getDay();
+                return today.get(Calendar.DATE) == report.getDay();
             }
         }
         return false;
     }
 
-    public static Map<String,Object> computeDateParameters(Report report, ReportSubscription sub, Date today) {
+    public static DateRange computeDateRange(Report report, Date today) {
 
-        Map<String,Object> paramValues = new HashMap();
-        ParameterizedFilter filter = report.getFilter();
-        if(filter.getMinDate().getParameterName() != null) {
-            paramValues.put(filter.getMinDate().getParameterName(), computeMinDate(filter, sub, today));
-        }
-        if(filter.getMaxDate().getParameterName() != null) {
-            paramValues.put(filter.getMaxDate().getParameterName(), computeMaxDate(filter, sub, today));
-        }
+        if(report.getFrequency() == ReportFrequency.MONTHLY) {
+            return dateUtil.lastCompleteMonthRange(today);
 
-        return paramValues;
+        } else if(report.getFrequency() == ReportFrequency.WEEKLY) {
+            DateRange lastWeek = new DateRange();
+            lastWeek.setMaxDate(today);
+            lastWeek.setMinDate(dateUtil.add(today, DateUnit.WEEK, -1));
 
-    }
+            return lastWeek;
 
-    private static Date computeMinDate(ParameterizedFilter filter, ReportSubscription sub, Date today) {
-
-
-        if(filter.getDateUnit() == DateUnit.YEAR) {
-
-            // set this to beginning of current year
-            return  dateUtil.floor(today, DateUnit.YEAR);
-
-        } else if(filter.getDateUnit() == DateUnit.QUARTER) {
-
-            throw new RuntimeException("Quarter not implemened");
-
-        } else if(filter.getDateUnit() == DateUnit.MONTH) {
-
-            return startDateOfLastCompleteMonth(today);
-
-        } else if(filter.getDateUnit() == DateUnit.WEEK) {
-            // set this to 7 days ago
-            return dateUtil.add(today, DateUnit.DAY, -7);
-
-        } else if(filter.getDateUnit() == DateUnit.DAY) {
-
-            // set this to based on the subscription frequency
-            if(sub.getFrequency() == Subscription.DAILY) {
-                return dateUtil.add(today, DateUnit.DAY, -1);
-            } else if(sub.getFrequency() == Subscription.WEEKLY) {
-                return dateUtil.add(today, DateUnit.DAY, -7);
-            } else if(sub.getFrequency() == Subscription.MONTHLY) {
-                return startDateOfLastCompleteMonth(today);
-            } else {
-                throw new RuntimeException("Invalid subscription frequency value = " + sub.getFrequency());
-            }
         } else {
-            throw new RuntimeException("Invalid date unit = " + filter.getDateUnit().toString());
+            return new DateRange();
         }
     }
 
-    private static Date computeMaxDate(ParameterizedFilter filter, ReportSubscription sub, Date today) {
-        if(filter.getDateUnit() == DateUnit.YEAR) {
-            return dateUtil.ceil(today, DateUnit.YEAR);
 
-        } else if(filter.getDateUnit() == DateUnit.QUARTER) {
-            throw new RuntimeException("oops logic for quarter not implemented");
 
-        } else if(filter.getDateUnit() == DateUnit.MONTH) {
-            return endDateOfLastCompleteMonth(today);
+    public static String frequencyString(ResourceBundle messages, int frequency) {
+        if(frequency == ReportFrequency.DAILY) {
+            return messages.getString("daily");
+        } else if(frequency == ReportFrequency.WEEKLY) {
+            return messages.getString("weekly");
+        } else if(frequency == ReportFrequency.MONTHLY) {
+            return messages.getString("monthly");
         } else {
-            return today;
+            throw new RuntimeException("Invalid frequency = " + frequency);
         }
     }
 
+    public static String composeTextEmail(ReportSubscription sub, Report report) {
 
-    private static Date startDateOfLastCompleteMonth(Date today) {
-        // set this to the beginning of the last complete month
-        Date start = dateUtil.floor(today, DateUnit.MONTH);
-        if(!dateUtil.isLastDayOfMonth(today)) {
-            start = dateUtil.add(start, DateUnit.MONTH, -1);
+        // load our resource bundle with localized messages
+        ResourceBundle mailMessages =
+              ResourceBundle.getBundle("org.activityinfo.server.mail.MailMessages", sub.getUser().getLocaleObject());
+
+        StringBuilder sb = new StringBuilder();
+
+        String greeting = MessageFormat.format(mailMessages.getString("greeting"), sub.getUser().getName());
+        sb.append(greeting).append("\n\n");
+
+        String intro;
+        if(sub.getInvitingUser() != null) {
+            intro = MessageFormat.format(mailMessages.getString("reportIntroInvited"),
+                    sub.getInvitingUser().getName(),
+                    sub.getInvitingUser().getEmail(),
+                    report.getTitle(),
+                    frequencyString(mailMessages, report.getFrequency()));
+        } else {
+            intro = MessageFormat.format(mailMessages.getString("reportIntro"),
+                    report.getTitle(),
+                    frequencyString(mailMessages, report.getFrequency()));
+
         }
-        return start;
+        sb.append(intro).append("\n\n");
+        sb.append(MessageFormat.format(mailMessages.getString("viewLive"), sub.getTemplate().getId()));
+
+        return sb.toString();
     }
 
-    private static Date endDateOfLastCompleteMonth(Date today) {
-        // set this to the beginning of the last complete month
-        Date end = dateUtil.ceil(today, DateUnit.MONTH);
-        if(!dateUtil.isLastDayOfMonth(today)) {
-            end = dateUtil.add(end, DateUnit.MONTH, -1);
-        }
-        return end;
-    }
+    static String composeHtmlEmail(ReportSubscription sub, Report report) {
 
+        // load our resource bundle with localized messages
+        ResourceBundle mailMessages =
+              ResourceBundle.getBundle("org.activityinfo.server.mail.MailMessages", sub.getUser().getLocaleObject());
+
+        HtmlWriter htmlWriter = new HtmlWriter();
+
+        htmlWriter.startDocument();
+        htmlWriter.startDocumentBody();
+        String greeting = MessageFormat.format(mailMessages.getString("greeting"), sub.getUser().getName());
+        htmlWriter.paragraph(greeting);
+
+        String intro;
+        if(sub.getInvitingUser() != null) {
+            intro = MessageFormat.format(mailMessages.getString("reportIntroInvited"),
+                    sub.getInvitingUser().getName(),
+                    sub.getInvitingUser().getEmail(),
+                    report.getTitle(),
+                    frequencyString(mailMessages, report.getFrequency()));
+        } else {
+            intro = MessageFormat.format(mailMessages.getString("reportIntro"),
+                    report.getTitle(),
+                    frequencyString(mailMessages, report.getFrequency()));
+
+        }
+        htmlWriter.paragraph(intro);
+
+        htmlWriter.paragraph(MessageFormat.format(mailMessages.getString("viewLive"),
+                Integer.toString(sub.getTemplate().getId())));
+
+        htmlWriter.paragraph(mailMessages.getString("signature"));
+
+        htmlWriter.endDocumentBody();
+        htmlWriter.endDocument();
+
+        return htmlWriter.toString();
+
+    }
 }

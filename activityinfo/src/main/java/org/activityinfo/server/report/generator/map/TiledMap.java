@@ -3,8 +3,7 @@ package org.activityinfo.server.report.generator.map;
 import org.activityinfo.shared.report.content.LatLng;
 import org.activityinfo.shared.report.content.Point;
 
-import java.awt.Graphics2D;
-import java.awt.Image;
+import java.awt.*;
 
 public class TiledMap {
 

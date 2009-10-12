@@ -1,7 +1,6 @@
 package org.activityinfo.clientjre.place.entry.editor;
 
 import com.extjs.gxt.ui.client.store.ListStore;
-
 import org.activityinfo.client.mock.DummyData;
 import org.activityinfo.client.mock.MockCommandService;
 import org.activityinfo.client.page.entry.editor.AdminFieldSetPresenter;
@@ -11,9 +10,9 @@ import org.activityinfo.shared.dto.ActivityModel;
 import org.activityinfo.shared.dto.AdminEntityModel;
 import org.activityinfo.shared.dto.Schema;
 import org.activityinfo.shared.dto.SiteModel;
+import static org.easymock.EasyMock.*;
 import org.junit.Assert;
 import org.junit.Test;
-import static org.easymock.EasyMock.*;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

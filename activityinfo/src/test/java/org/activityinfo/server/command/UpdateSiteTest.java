@@ -1,6 +1,5 @@
 package org.activityinfo.server.command;
 
-import org.activityinfo.server.command.CommandTestCase;
 import org.activityinfo.shared.command.GetSites;
 import org.activityinfo.shared.command.UpdateEntity;
 import org.activityinfo.shared.command.result.ListResult;

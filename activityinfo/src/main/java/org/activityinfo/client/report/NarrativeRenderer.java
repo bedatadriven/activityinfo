@@ -1,24 +1,12 @@
 package org.activityinfo.client.report;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-
-import org.activityinfo.shared.dto.ActivityModel;
-import org.activityinfo.shared.dto.AdminLevelModel;
-import org.activityinfo.shared.dto.AttributeGroupModel;
-import org.activityinfo.shared.dto.AttributeModel;
-import org.activityinfo.shared.dto.IndicatorModel;
-import org.activityinfo.shared.dto.Schema;
-import org.activityinfo.shared.dto.SiteModel;
-import org.activityinfo.shared.i18n.UIMessages;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
+import org.activityinfo.shared.dto.*;
+import org.activityinfo.shared.i18n.UIMessages;
+
+import java.util.*;
 
 public class NarrativeRenderer {
 

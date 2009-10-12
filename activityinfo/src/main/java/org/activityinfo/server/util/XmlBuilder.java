@@ -1,9 +1,7 @@
 package org.activityinfo.server.util;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
-import java.util.Map.Entry;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -11,10 +9,8 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
-
-import org.apache.log4j.xml.SAXErrorHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
+import java.util.Map.Entry;
+import java.util.Stack;
 
 public class XmlBuilder {
 

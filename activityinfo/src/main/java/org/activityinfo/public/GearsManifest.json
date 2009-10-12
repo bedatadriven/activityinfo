@@ -1,9 +1,0 @@
-{
- "name" : "ActivityInfoOffline",
- "betaManifestVersion" : 1,
- "version" : "__VERSION__",
- "entries" : [
-     __ENTRIES__,
-     { "url" : "../", "src" : "Offline.html" }
-    ]
-}

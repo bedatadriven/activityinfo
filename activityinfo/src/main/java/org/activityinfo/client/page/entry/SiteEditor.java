@@ -1,40 +1,42 @@
 package org.activityinfo.client.page.entry;
 
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.LoadEvent;
+import com.extjs.gxt.ui.client.data.SortInfo;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Record;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Inject;
 import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.Place;
 import org.activityinfo.client.command.CommandService;
 import org.activityinfo.client.command.loader.CommandLoadEvent;
-import org.activityinfo.client.command.loader.ListCmdLoader;
 import org.activityinfo.client.command.loader.PagingCmdLoader;
 import org.activityinfo.client.command.monitor.NullAsyncMonitor;
-import org.activityinfo.client.common.action.UIActions;
-import org.activityinfo.client.common.grid.AbstractEditorGridPresenter;
-import org.activityinfo.client.common.grid.GridView;
 import org.activityinfo.client.event.SiteEvent;
-import org.activityinfo.client.page.*;
-import org.activityinfo.client.page.base.Shutdownable;
+import org.activityinfo.client.page.PageId;
+import org.activityinfo.client.page.PagePresenter;
+import org.activityinfo.client.page.Pages;
+import org.activityinfo.client.page.common.Shutdownable;
+import org.activityinfo.client.page.common.grid.AbstractEditorGridPresenter;
+import org.activityinfo.client.page.common.grid.GridView;
+import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.client.page.entry.editor.SiteFormLoader;
 import org.activityinfo.client.util.IStateManager;
 import org.activityinfo.shared.command.*;
-import org.activityinfo.shared.command.result.AdminEntityResult;
 import org.activityinfo.shared.command.result.PagingResult;
 import org.activityinfo.shared.command.result.SiteResult;
 import org.activityinfo.shared.command.result.VoidResult;
-import org.activityinfo.shared.dto.*;
+import org.activityinfo.shared.dto.ActivityModel;
+import org.activityinfo.shared.dto.AdminLevelModel;
+import org.activityinfo.shared.dto.SiteModel;
+import org.activityinfo.shared.dto.UserDatabaseDTO;
 
-import com.extjs.gxt.ui.client.data.LoadEvent;
-import com.extjs.gxt.ui.client.data.SortInfo;
-import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.store.Record;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.Inject;
-
-import java.util.Map;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

@@ -1,7 +1,6 @@
 package org.activityinfo.server.command;
 
-import java.util.GregorianCalendar;
-
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import org.activityinfo.shared.command.CreateEntity;
 import org.activityinfo.shared.command.GetSites;
 import org.activityinfo.shared.command.result.CreateResult;
@@ -12,7 +11,7 @@ import org.activityinfo.shared.exception.CommandException;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import java.util.GregorianCalendar;
 
 public class CreateSiteTest extends CommandTestCase {
 

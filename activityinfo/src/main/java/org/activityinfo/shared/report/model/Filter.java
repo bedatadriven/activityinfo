@@ -1,33 +1,56 @@
 package org.activityinfo.shared.report.model;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.io.Serializable;
-
 import org.activityinfo.shared.date.DateRange;
-import org.activityinfo.shared.report.model.DimensionType;
 
+import java.io.Serializable;
+import java.util.*;
+
+/**
+ * Defines a filter of activity data as a date range and a set of restrictions on
+ * <code>Dimensions</code>.
+ *
+ */
 public class Filter implements Serializable {
+
+    // TODO: should be restrictions on DIMENSIONS and not DimensionTypes!!
 
 	private Map<DimensionType, Set<Integer>> restrictions = new HashMap<DimensionType, Set<Integer>>();
 	
 	private Date minDate = null;
 	private Date maxDate = null;
-	
-	
+
+
+    /**
+     * Constructs a <code>Filter</code> with no restrictions. All data visible to the user
+     * will be included.
+     */
 	public Filter() {
-	
+
 	}
 
+    /**
+     * Constructs a copy of the given <code>filter</code>
+     *
+     * @param filter The filter which to copy.
+     */
+    public Filter(Filter filter) {
 
+        for(Map.Entry<DimensionType, Set<Integer>> entry : filter.restrictions.entrySet()) {
+            this.restrictions.put(entry.getKey(), new HashSet<Integer>(entry.getValue()));
+        }
+        this.minDate = filter.minDate;
+        this.maxDate = filter.maxDate;
+    }
+
+
+    /**
+     * Constructs a <code>Filter</code> as the intersection between two <code>Filter</code>s.
+     *
+     * @param a The first filter
+     * @param b The second filter
+     */
 	public Filter(Filter a, Filter b) {
-	
-		
+
 		Set<DimensionType> types = new HashSet<DimensionType>();
 		types.addAll(a.restrictions.keySet());
 		types.addAll(b.restrictions.keySet());
@@ -148,8 +171,8 @@ public class Filter implements Serializable {
 	}
 
     public void setDateRange(DateRange range) {
-        this.minDate = range.date1;
-        this.maxDate = range.date2;
+        this.minDate = range.getMinDate();
+        this.maxDate = range.getMaxDate();
     }
 
     @Override

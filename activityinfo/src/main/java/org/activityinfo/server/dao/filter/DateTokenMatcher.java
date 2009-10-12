@@ -4,12 +4,12 @@ import org.activityinfo.shared.date.DateRange;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 
+import java.text.DateFormat;
+import java.text.DateFormatSymbols;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.*;
 import java.util.regex.Pattern;
-import java.text.DateFormatSymbols;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.NumberFormat;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -183,23 +183,23 @@ public class DateTokenMatcher implements TokenMatcher {
 
     private Criterion createCriterion(DateRange range) {
 
-        if(range.date1.getTime() > range.date2.getTime()) {
-            Date tmp = range.date1;
-            range.date1 = range.date2;
-            range.date2 = tmp;
+        if(range.getMinDate().getTime() > range.getMaxDate().getTime()) {
+            Date tmp = range.getMinDate();
+            range.setMinDate(range.getMaxDate());
+            range.setMaxDate(tmp);
         }
 
-        if(range.date1 != null && range.date2!=null) {
+        if(range.getMinDate() != null && range.getMaxDate() !=null) {
 
             return Restrictions.not(
                 Restrictions.or(
-                   Restrictions.lt("site.date2", range.date1),
-                   Restrictions.gt("site.date1", range.date2)));
-        } else if(range.date1 != null) {
-            return Restrictions.ge("site.date2", range.date1);
+                   Restrictions.lt("site.date2", range.getMinDate()),
+                   Restrictions.gt("site.date1", range.getMaxDate())));
+        } else if(range.getMinDate() != null) {
+            return Restrictions.ge("site.date2", range.getMinDate());
 
         } else {
-            return Restrictions.le("site.date1", range.date1);
+            return Restrictions.le("site.date1", range.getMinDate());
         }
     }
 
@@ -272,13 +272,13 @@ public class DateTokenMatcher implements TokenMatcher {
             c.set(Calendar.MONTH, pd1.month-1);
             c.set(Calendar.YEAR, pd1.year);
 
-            range.date1 = c.getTime();
+            range.setMinDate(c.getTime());
 
             c.set(Calendar.MONTH, pd2.month-1);
             c.set(Calendar.YEAR, pd2.year);
             c.set(Calendar.DATE, c.getActualMaximum(Calendar.DATE));
 
-            range.date2 = c.getTime();
+            range.setMaxDate(c.getTime());
 
             return range;
 
@@ -293,13 +293,13 @@ public class DateTokenMatcher implements TokenMatcher {
             c.set(Calendar.MONTH, 0);
             c.set(Calendar.YEAR, pd1.year);
 
-            range.date1 = c.getTime();
+            range.setMinDate(c.getTime());
 
             c.set(Calendar.DATE, 31);
             c.set(Calendar.MONTH, 11);
             c.set(Calendar.YEAR, pd2.year);
 
-            range.date2 = c.getTime();
+            range.setMaxDate(c.getTime());
 
             return range;
 
@@ -345,13 +345,13 @@ public class DateTokenMatcher implements TokenMatcher {
 
             if(qualifier == 1) { // before the given date
                 c.add(Calendar.DATE, -1);
-                range.date2 = c.getTime();
+                range.setMaxDate(c.getTime());
             } else if(qualifier == -1) {
                 c.add(Calendar.DATE, 1);
-                range.date1 = c.getTime();
+                range.setMinDate(c.getTime());
             } else {
-                range.date1 = c.getTime();
-                range.date2 = range.date1;
+                range.setMinDate(c.getTime());
+                range.setMaxDate(range.getMinDate());
             }
             return range;
 
@@ -372,14 +372,14 @@ public class DateTokenMatcher implements TokenMatcher {
 
             if(qualifier == 1) { // before the given month
                 c.add(Calendar.DATE, -1);
-                range.date2 = c.getTime();
+                range.setMaxDate(c.getTime());
             } else if(qualifier == -1) { // after the given month
                 c.add(Calendar.MONTH, +1);
-                range.date1 = c.getTime();
+                range.setMinDate(c.getTime());
             } else {                     // durin the given month
-                range.date1 = c.getTime();
+                range.setMinDate(c.getTime());
                 c.set(Calendar.DATE, c.getActualMaximum(Calendar.DATE));
-                range.date2 = c.getTime();
+                range.setMaxDate(c.getTime());
             }
             return range;
         } else {
@@ -392,16 +392,16 @@ public class DateTokenMatcher implements TokenMatcher {
             c.set(Calendar.YEAR, pd.year);
             if(qualifier == 1) { // before the given year
                 c.add(Calendar.DATE, -1);
-                range.date2 = c.getTime();
+                range.setMaxDate(c.getTime());
             } else if(qualifier == -1) { // after the given year
                 c.set(Calendar.YEAR, pd.year+1);
-                range.date1 = c.getTime();
+                range.setMinDate(c.getTime());
             } else {  // during
-                range.date1 = c.getTime();
+                range.setMinDate(c.getTime());
 
                 c.set(Calendar.MONTH, c.getActualMaximum(Calendar.MONTH));
                 c.set(Calendar.DATE, c.getActualMaximum(Calendar.DATE));
-                range.date2 = c.getTime();
+                range.setMaxDate(c.getTime());
             }
             return range;
         }

@@ -1,11 +1,9 @@
 package	org.activityinfo.shared.dto;
 
-import org.activityinfo.shared.command.result.CommandResult;
-
 import com.extjs.gxt.ui.client.data.BaseModel;
 
 
-public class IndicatorModel extends BaseModel implements Versioned, EntityDTO {
+public class IndicatorModel extends BaseModel implements EntityDTO {
 	
 	
 	public final static int AGGREGATE_SUM = 0;
@@ -37,16 +35,7 @@ public class IndicatorModel extends BaseModel implements Versioned, EntityDTO {
         set("id", id);
     }
 
-    public Integer getVersion() {
-		return get("version");
-	}
-	
-	public void setVersion(int version) {
-		set("version", version);
-	}
-	
-	
-	public void setName(String value) {
+    public void setName(String value) {
 		set("name", value);
 	}
 	

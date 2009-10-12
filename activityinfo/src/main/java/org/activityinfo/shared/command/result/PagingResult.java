@@ -1,15 +1,18 @@
 package org.activityinfo.shared.command.result;
 
-import java.util.List;
-import java.util.Collections;
-
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
-import org.activityinfo.shared.command.result.CommandResult;
-import org.activityinfo.shared.command.result.ListResult;
-import org.activityinfo.shared.dto.DTO;
+import java.util.List;
 
+/**
+ * Abstract base class for <code>CommandResult</code>s that are compatible with the
+ * GXT loading framework.
+ *
+ * @see com.extjs.gxt.ui.client.data.PagingLoadResult
+ *
+ * @param <D> The type of model contained in the list
+ */
 public abstract class PagingResult<D extends ModelData> extends ListResult<D>
         implements CommandResult, PagingLoadResult<D> {
 

@@ -1,12 +1,11 @@
 package org.activityinfo.clientjre.place.entry.editor;
 
-import org.activityinfo.client.mock.DummyData;
 import org.activityinfo.client.page.entry.editor.MapPresenter;
 import org.activityinfo.clientjre.place.entry.editor.mock.MockMapView;
 import org.activityinfo.shared.dto.Bounds;
 import org.activityinfo.shared.dto.SiteModel;
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

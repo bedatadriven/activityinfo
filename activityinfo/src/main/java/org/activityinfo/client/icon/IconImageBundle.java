@@ -1,8 +1,15 @@
+/**
+ * Application icons
+ */
 package org.activityinfo.client.icon;
 
-import com.google.gwt.user.client.ui.ImageBundle;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.ImageBundle;
 
+/**
+ * Provides access to the application's icons through
+ * GWT's magic ImageBundle generator.
+ */
 public interface IconImageBundle extends ImageBundle {
 
     AbstractImagePrototype add();

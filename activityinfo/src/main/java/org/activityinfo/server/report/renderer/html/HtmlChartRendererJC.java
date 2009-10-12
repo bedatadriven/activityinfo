@@ -1,14 +1,14 @@
 package org.activityinfo.server.report.renderer.html;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Collections;
-import java.util.ArrayList;
-
 import org.activityinfo.server.report.renderer.ChartRendererJC;
 import org.activityinfo.server.report.util.HtmlWriter;
 import org.activityinfo.shared.report.model.Dimension;
 import org.activityinfo.shared.report.model.PivotChartElement;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class HtmlChartRendererJC extends ChartRendererJC implements HtmlChartRenderer {
 

@@ -3,8 +3,8 @@ package org.activityinfo.server.report.generator.map;
 import org.activityinfo.shared.report.content.Point;
 import org.activityinfo.shared.report.model.MapIcon;
 
-import java.util.List;
 import java.awt.*;
+import java.util.List;
 /*
  * @author Alex Bertram
  */

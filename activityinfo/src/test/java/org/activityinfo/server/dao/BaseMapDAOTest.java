@@ -1,9 +1,8 @@
 package org.activityinfo.server.dao;
 
-import org.junit.Test;
-import org.junit.Assert;
-import org.activityinfo.shared.map.BaseMap;
 import org.activityinfo.shared.map.LocalBaseMap;
+import org.junit.Assert;
+import org.junit.Test;
 
 import java.io.File;
 /*

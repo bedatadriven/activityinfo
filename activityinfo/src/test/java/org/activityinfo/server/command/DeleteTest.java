@@ -1,10 +1,7 @@
 package org.activityinfo.server.command;
 
-import java.util.Collection;
-
+import com.extjs.gxt.ui.client.data.ModelData;
 import junit.framework.Assert;
-
-import org.activityinfo.server.command.CommandTestCase;
 import org.activityinfo.shared.command.Delete;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.GetSites;
@@ -15,7 +12,7 @@ import org.activityinfo.shared.exception.CommandException;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.extjs.gxt.ui.client.data.ModelData;
+import java.util.Collection;
 
 public class DeleteTest extends CommandTestCase {
 

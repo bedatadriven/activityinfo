@@ -1,16 +1,21 @@
 package org.activityinfo.client.page.table;
 
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.ImplementedBy;
+import com.google.inject.Inject;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.Place;
 import org.activityinfo.client.command.CommandService;
-import org.activityinfo.client.command.DownloadCallback;
+import org.activityinfo.client.command.callback.DownloadCallback;
 import org.activityinfo.client.command.callback.Got;
 import org.activityinfo.client.command.monitor.AsyncMonitor;
-import org.activityinfo.client.common.action.UIActions;
 import org.activityinfo.client.page.NavigationCallback;
 import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.PagePresenter;
 import org.activityinfo.client.page.Pages;
+import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.shared.command.GenerateElement;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.RenderElement;
@@ -19,14 +24,8 @@ import org.activityinfo.shared.report.content.Content;
 import org.activityinfo.shared.report.content.PivotContent;
 import org.activityinfo.shared.report.model.*;
 
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.Inject;
-import com.google.inject.ImplementedBy;
-
-import java.util.List;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

@@ -35,9 +35,8 @@ public class AttributeValue implements java.io.Serializable {
 	private Attribute attribute;
 	private Site site;
 	private boolean value;
-	private Boolean foo;
-	
-	public AttributeValue() {
+
+    public AttributeValue() {
 	}
 
 

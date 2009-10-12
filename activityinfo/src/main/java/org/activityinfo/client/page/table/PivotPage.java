@@ -1,34 +1,33 @@
 package org.activityinfo.client.page.table;
 
-import com.extjs.gxt.ui.client.widget.*;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.extjs.gxt.ui.client.widget.layout.*;
-import com.extjs.gxt.ui.client.util.Padding;
-import com.extjs.gxt.ui.client.util.Margins;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.StoreListener;
-import com.extjs.gxt.ui.client.store.StoreEvent;
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.ListViewDragSource;
 import com.extjs.gxt.ui.client.dnd.ListViewDropTarget;
-import com.extjs.gxt.ui.client.dnd.DND;
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.StoreEvent;
+import com.extjs.gxt.ui.client.store.StoreListener;
+import com.extjs.gxt.ui.client.util.Margins;
+import com.extjs.gxt.ui.client.util.Padding;
+import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.layout.*;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.inject.Inject;
-
 import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.command.CommandService;
 import org.activityinfo.client.command.monitor.AsyncMonitor;
 import org.activityinfo.client.command.monitor.MaskingAsyncMonitor;
-import org.activityinfo.client.common.action.UIActions;
-import org.activityinfo.client.common.filter.AdminFilterPanel;
-import org.activityinfo.client.common.filter.DateRangePanel;
-import org.activityinfo.client.common.filter.IndicatorTreePanel;
 import org.activityinfo.client.event.PivotCellEvent;
+import org.activityinfo.client.page.common.filter.AdminFilterPanel;
+import org.activityinfo.client.page.common.filter.DateRangePanel;
+import org.activityinfo.client.page.common.filter.IndicatorTreePanel;
+import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.client.page.table.drilldown.DrillDownEditor;
 import org.activityinfo.client.page.table.drilldown.DrillDownGrid;
 import org.activityinfo.client.util.DateUtilGWTImpl;
@@ -39,8 +38,8 @@ import org.activityinfo.shared.dto.Schema;
 import org.activityinfo.shared.report.model.Dimension;
 import org.activityinfo.shared.report.model.PivotTableElement;
 
-import java.util.List;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

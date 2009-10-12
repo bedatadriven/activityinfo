@@ -1,14 +1,16 @@
 package org.activityinfo.client;
 
-import com.extjs.gxt.ui.client.event.EventType;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.BaseObservable;
+import com.extjs.gxt.ui.client.event.EventType;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.google.gwt.core.client.GWT;
+import com.google.inject.Singleton;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
+@Singleton
 public class LoggingEventBus extends BaseObservable implements EventBus {
 
 	public boolean fireEvent(BaseEvent event) {

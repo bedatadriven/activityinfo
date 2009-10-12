@@ -3,9 +3,6 @@ package org.activityinfo.client.page.entry;
 import com.extjs.gxt.ui.client.data.DataProxy;
 import com.extjs.gxt.ui.client.data.DataReader;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
-import java.util.List;
-
 import org.activityinfo.client.command.CommandService;
 import org.activityinfo.shared.command.GetAdminEntities;
 import org.activityinfo.shared.command.GetMonthlyReports;
@@ -18,6 +15,8 @@ import org.activityinfo.shared.dto.AdminEntityModel;
 import org.activityinfo.shared.dto.AdminLevelModel;
 import org.activityinfo.shared.dto.IndicatorRow;
 import org.activityinfo.shared.dto.SiteModel;
+
+import java.util.List;
 
 public class SiteTreeProxy implements DataProxy {
 

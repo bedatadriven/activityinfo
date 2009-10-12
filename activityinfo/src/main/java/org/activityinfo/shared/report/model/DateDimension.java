@@ -47,13 +47,13 @@ public class DateDimension extends Dimension {
 
 		DateDimension that = (DateDimension)other;
 	
-		return this.unit == that.unit;
+		return this.unit == that.unit;                                  
 	}
 
 	/**
 	 * 
 	 * @return The format string that should be applied to category values in this
-	 * dimension. See {@link java.text.SimpleDateFormat#applyLocalizedPattern(String)} for details on
+	 * dimension. See {@link java.text.SimpleDateFormat#applyPattern(String)} for details on
 	 * the grammar of this format string.
 	 */
 	public String getFormat() {

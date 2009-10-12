@@ -2,7 +2,7 @@ package org.activityinfo.shared.dto;
 
 import com.extjs.gxt.ui.client.data.BaseModel;
 
-public class AttributeModel extends BaseModel implements EntityDTO, Versioned {
+public class AttributeModel extends BaseModel implements EntityDTO {
 
     public static final String PROPERTY_PREFIX = "ATTRIB";
 
@@ -25,11 +25,7 @@ public class AttributeModel extends BaseModel implements EntityDTO, Versioned {
         set("id", id);
     }
 
-    public Integer getVersion() {
-		return get("version");
-	}
-	
-	public void setVersion(int version) {
+    public void setVersion(int version) {
 		set("version", version);
 	}
 

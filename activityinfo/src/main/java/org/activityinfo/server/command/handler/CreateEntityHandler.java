@@ -119,6 +119,7 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
 
     private void updateDatabaseProperties(UserDatabase database, Map<String, Object> properties) {
 
+        database.setLastSchemaUpdate(new Date());
 
         if(properties.containsKey("name"))
             database.setName((String)properties.get("name"));

@@ -1,32 +1,24 @@
 package org.activityinfo.client.page.charts;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.ImplementedBy;
+import com.google.inject.Inject;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.Place;
 import org.activityinfo.client.command.CommandService;
 import org.activityinfo.client.command.monitor.AsyncMonitor;
-import org.activityinfo.client.common.action.UIActions;
-import org.activityinfo.client.common.action.ActionListener;
 import org.activityinfo.client.page.NavigationCallback;
 import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.PagePresenter;
-import org.activityinfo.client.page.base.ExportCallback;
+import org.activityinfo.client.page.common.toolbar.ActionListener;
+import org.activityinfo.client.page.common.toolbar.ExportCallback;
+import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.shared.command.GenerateElement;
 import org.activityinfo.shared.command.RenderElement;
 import org.activityinfo.shared.report.content.Content;
 import org.activityinfo.shared.report.content.PivotChartContent;
-import org.activityinfo.shared.report.content.PivotTableData;
 import org.activityinfo.shared.report.model.PivotChartElement;
-
-import com.extjs.gxt.charts.client.model.ChartModel;
-import com.extjs.gxt.charts.client.model.charts.FilledBarChart;
-import com.extjs.gxt.charts.client.model.axis.XAxis;
-import com.extjs.gxt.charts.client.model.axis.YAxis;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.core.client.GWT;
-import com.google.inject.ImplementedBy;
-import com.google.inject.Inject;
-
-import java.util.List;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

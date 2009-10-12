@@ -1,8 +1,5 @@
 package org.activityinfo.server.report.renderer.excel;
 
-import java.util.Date;
-import java.util.List;
-
 import org.activityinfo.shared.report.content.FilterDescription;
 import org.activityinfo.shared.report.content.TableData;
 import org.activityinfo.shared.report.model.TableElement;
@@ -10,6 +7,9 @@ import org.activityinfo.shared.report.model.TableElement.Column;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
+
+import java.util.Date;
+import java.util.List;
 
 public class ExcelTableRenderer implements ExcelRenderer<TableElement> {
 

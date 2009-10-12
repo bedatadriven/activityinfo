@@ -3,6 +3,16 @@ package org.activityinfo.shared.command;
 import org.activityinfo.shared.command.result.RenderResult;
 import org.activityinfo.shared.report.model.ReportElement;
 
+/**
+ *
+ * Renders a {@link org.activityinfo.shared.report.model.ReportElement} in the
+ * specified format, saves the file to the server, and returns the name of the
+ * temporary file that can be used to initiate a download.
+ *
+ * See also: {@link org.activityinfo.server.servlet.DownloadServlet}
+ *
+ * @author Alex Bertram
+ */
 public class RenderElement implements Command<RenderResult> {
 
     public enum Format {
@@ -25,6 +35,10 @@ public class RenderElement implements Command<RenderResult> {
         this.format = format;
     }
 
+    /**
+     *
+     * @return The format into which to render the element.
+     */
     public Format getFormat() {
         return format;
     }
@@ -33,6 +47,10 @@ public class RenderElement implements Command<RenderResult> {
         this.format = format;
     }
 
+    /**
+     *
+     * @return  The element to be rendered
+     */
     public ReportElement getElement() {
         return element;
     }

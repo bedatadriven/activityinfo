@@ -1,7 +1,7 @@
 package org.activityinfo.client.util;
 
-import java.util.Map;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

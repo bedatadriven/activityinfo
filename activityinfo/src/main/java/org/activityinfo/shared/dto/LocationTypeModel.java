@@ -1,7 +1,6 @@
 package org.activityinfo.shared.dto;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.extjs.gxt.ui.client.data.ModelData;
 
 import java.util.Map;
 

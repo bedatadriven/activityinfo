@@ -1,7 +1,6 @@
 package org.activityinfo.client.page.entry.editor;
 
 import org.activityinfo.client.Application;
-import org.activityinfo.client.page.entry.editor.AttributeCheckBoxGroup;
 import org.activityinfo.shared.dto.ActivityModel;
 import org.activityinfo.shared.dto.AttributeGroupModel;
 

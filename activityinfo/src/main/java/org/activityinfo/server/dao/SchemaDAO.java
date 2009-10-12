@@ -1,9 +1,12 @@
 package org.activityinfo.server.dao;
 
+import org.activityinfo.server.domain.SchemaElement;
+import org.activityinfo.server.domain.User;
+import org.activityinfo.server.domain.UserDatabase;
+import org.activityinfo.server.domain.UserPermission;
+
 import java.util.Collection;
 import java.util.List;
-
-import org.activityinfo.server.domain.*;
 
 public interface SchemaDAO {
 

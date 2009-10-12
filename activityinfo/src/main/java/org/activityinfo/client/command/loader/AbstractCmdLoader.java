@@ -1,5 +1,8 @@
 package org.activityinfo.client.command.loader;
 
+import com.extjs.gxt.ui.client.data.LoadEvent;
+import com.extjs.gxt.ui.client.data.Loader;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.client.command.CommandService;
 import org.activityinfo.client.command.monitor.AsyncMonitor;
 import org.activityinfo.shared.command.Command;
@@ -7,12 +10,6 @@ import org.activityinfo.shared.command.GetListCommand;
 import org.activityinfo.shared.command.result.BatchResult;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.command.result.ListResult;
-
-import com.extjs.gxt.ui.client.data.LoadEvent;
-import com.extjs.gxt.ui.client.data.Loader;
-import com.extjs.gxt.ui.client.event.BaseObservable;
-import com.extjs.gxt.ui.client.event.LoadListener;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 
 /**

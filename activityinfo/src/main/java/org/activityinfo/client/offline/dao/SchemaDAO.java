@@ -6,10 +6,7 @@ import com.google.gwt.gears.client.database.DatabaseException;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.js.JsonConverter;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.HashMap;
+import java.util.*;
 
 import org.activityinfo.shared.dto.*;
 
@@ -43,6 +40,7 @@ public class SchemaDAO {
 
     private void createSchemaTables() throws DatabaseException {
 
+        gearsDb.execute("create table if not exists SchemaUpdate (version integer, updateTime date)");
 
         gearsDb.execute("create table if not exists Country (id integer primary key, " +
                 "name text, properties text)");
@@ -61,15 +59,15 @@ public class SchemaDAO {
         gearsDb.execute("create table if not exists PartnerInDatabase (partnerId int, databaseId int)");
 
         gearsDb.execute("create table if not exists Activity (id integer primary key, " +
-                "databaseId integer, name text, properties text)");
+                "databaseId integer, name text, sortOrder int, properties text)");
 
         gearsDb.execute("create table if not exists Indicator (id integer primary key, activityId integer, " +
-                "name text, properties text)");
+                "name text, sortOrder int, properties text)");
 
         gearsDb.execute("create table if not exists AttributeGroup (id integer, activityId integer, " +
-                "name text, properties text)");
+                "name text, sortOrder int, properties text)");
 
-        gearsDb.execute("create table if not exists Attribute(id integer, attributeGroupId integer, name text)");
+        gearsDb.execute("create table if not exists Attribute(id integer, attributeGroupId integer, name text, sortOrder int)");
     }
 
     private void insertCountry(CountryModel country) throws DatabaseException {
@@ -132,24 +130,27 @@ public class SchemaDAO {
                 Integer.toString(partner.getId()));
     }
 
-    private void insertActivity(ActivityModel activity) throws DatabaseException {
+    private void insertActivity(ActivityModel activity, int sortOrder) throws DatabaseException {
 
-        gearsDb.execute("insert into Activity (id, databaseId, name, properties) values (?, ?, ?, ?)",
+        gearsDb.execute("insert into Activity (id, databaseId, name, sortOrder, properties) values (?, ?, ?, ?, ?)",
                 Integer.toString(activity.getId()),
                 Integer.toString(activity.getDatabase().getId()),
                 activity.getName(),
+                Integer.toString(sortOrder),
                 JsonConverter.encode(activity.getProperties()).toString());
 
     }
 
-    private void insertIndicator(ActivityModel activity, IndicatorModel indicator) throws DatabaseException {
+    private void insertIndicator(ActivityModel activity, IndicatorModel indicator, int sortOrder) throws DatabaseException {
 
-        gearsDb.execute("insert into Indicator (id, activityId, name, properties) values (?, ?, ?, ?)",
+        gearsDb.execute("insert into Indicator (id, activityId, name, sortOrder, properties) values (?, ?, ?, ?, ?)",
                 Integer.toString(indicator.getId()),
                 Integer.toString(activity.getId()),
                 indicator.getName(),
+                Integer.toString(sortOrder),
                 JsonConverter.encode(indicator.getProperties()).toString());
     }
+
 
 //
 //    private void serializePropertyMap(Map<String, Object> map) {
@@ -209,6 +210,7 @@ public class SchemaDAO {
 
     public void save(Schema schema) throws DatabaseException {
 
+        gearsDb.execute("delete from SchemaUpdate");
         gearsDb.execute("delete from UserDatabase");
         gearsDb.execute("delete from Country");
         gearsDb.execute("delete from AdminLevel");
@@ -223,6 +225,8 @@ public class SchemaDAO {
 
         for(UserDatabaseDTO db : schema.getDatabases()) {
 
+            int sortOrder = 0;
+
             insertDatabase(db);
 
             CountryModel country = db.getCountry();
@@ -234,18 +238,24 @@ public class SchemaDAO {
             for(PartnerModel partner : db.getPartners()) {
                 if(!partnersInserted.contains(partner.getId())) {
                     insertPartner(partner);
+                    partnersInserted.add(partner.getId());
                 }
                 insertPartnerInDatabase(db, partner);
             }
+
             for(ActivityModel activity : db.getActivities()) {
-                insertActivity(activity);
+                insertActivity(activity, sortOrder++);
 
                 for(IndicatorModel indicator : activity.getIndicators()) {
-                    insertIndicator(activity, indicator);
+                    insertIndicator(activity, indicator, sortOrder++);
                 }
             }
-
         }
+
+        gearsDb.execute("insert into SchemaUpdate (version, updateTime) values (?, ?)",
+                Long.toString(schema.getVersion()),
+                new Date().toString());
+
     }
 
     private <T extends ModelData> Map<Integer, T> loadModels(String query, ModelCreator<T> creator)
@@ -267,6 +277,15 @@ public class SchemaDAO {
 
     public Schema load() throws DatabaseException {
 
+        Schema schema = new Schema();
+
+        ResultSet rs = gearsDb.execute("select version, updateTime from SchemaUpdate");
+        if(!rs.isValidRow()) {
+            return null;  // no schema has been saved
+        }
+
+        schema.setVersion(rs.getFieldAsLong(0));
+
         final Map<Integer, CountryModel> countries = loadModels("select properties from Country", new ModelCreator<CountryModel>() {
             public CountryModel create(ResultSet rs) {
                 return new CountryModel();
@@ -285,7 +304,7 @@ public class SchemaDAO {
                     }
                 });
 
-        loadModels("select properties, countryId from LocationType",
+        loadModels("select properties, countryId from LocationType order by name",
                 new ModelCreator<LocationTypeModel>() {
                     @Override
                     public LocationTypeModel create(ResultSet rs) throws DatabaseException {
@@ -296,7 +315,8 @@ public class SchemaDAO {
                     }
                 });
 
-        final Map<Integer, UserDatabaseDTO> databases = loadModels("select properties, countryId from UserDatabase",
+        final Map<Integer, UserDatabaseDTO> databases = loadModels(
+                "select properties, countryId from UserDatabase order by name",
                 new ModelCreator<UserDatabaseDTO>() {
                     public UserDatabaseDTO create(ResultSet rs) throws DatabaseException {
                         UserDatabaseDTO db = new UserDatabaseDTO();
@@ -307,7 +327,7 @@ public class SchemaDAO {
 
         loadModels("select p.properties, d.id from Partner p " +
                 "left join PartnerInDatabase link on (p.id = link.partnerId) " +
-                "left join UserDatabase d on (link.databaseId = d.id)",
+                "left join UserDatabase d on (link.databaseId = d.id) order by p.name",
                 new ModelCreator<PartnerModel>() {
                     public PartnerModel create(ResultSet rs) throws DatabaseException {
                         PartnerModel partner = new PartnerModel();
@@ -318,20 +338,20 @@ public class SchemaDAO {
                });
 
 
-        final Map<Integer, ActivityModel> activities = loadModels("select properties, databaseId from Activity",
+        final Map<Integer, ActivityModel> activities = loadModels(
+                "select properties, databaseId from Activity order by sortOrder",
                 new ModelCreator<ActivityModel>() {
                     public ActivityModel create(ResultSet rs, Map<String,Object> properties) throws DatabaseException {
                         ActivityModel activity = new ActivityModel(properties);
                         UserDatabaseDTO db = databases.get(rs.getFieldAsInt(1));
                         activity.setDatabase(db);
 
-
                         db.getActivities().add(activity);
                         return activity;
                     }
                 });
 
-        loadModels("select properties, activityId from Indicator",
+        loadModels("select properties, activityId from Indicator order by sortOrder",
                 new ModelCreator<IndicatorModel>() {
                     public IndicatorModel create(ResultSet rs) throws DatabaseException {
                         IndicatorModel indicator = new IndicatorModel();
@@ -342,7 +362,7 @@ public class SchemaDAO {
                 });
 
 
-        Schema schema = new Schema();
+
         schema.getDatabases().addAll(databases.values());
 
         return schema;

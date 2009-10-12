@@ -16,25 +16,24 @@
 	<attributeGroup attributeGroupId="1" 
 		sortOrder="1"
 		multipleAllowed="1"
-		name="Cause" 
-		version="1"/>
+		name="Cause"/>
 		
 	
 	<attribute attributeId="1"
 		attributeGroupId="1"
 		name="Retour"
-		sortOrder="2" version="1"/>
+		sortOrder="2"/>
 		
 		
 	<attribute attributeId="2"
 		attributeGroupId="1"
 		name="Deplacement"
-		sortOrder="1" version="1"/>
+		sortOrder="1"/>
 				
 	
 	<userLogin userId="1" name="Alex" email="user1@user.com" locale="fr" newUser="1"  />
 	
-	<userDatabase databaseId="1" name="PEAR" countryId="1" ownerUserId="1" version="1"/>
+	<userDatabase databaseId="1" name="PEAR" countryId="1" ownerUserId="1" lastSchemaUpdate="2009-01-01"/>
 
 		<activity activityId="1"
 			databaseId="1"
@@ -43,7 +42,7 @@
 			allowEdit="1"
 			isAssessment="0"
 			sortOrder="1"
-			locationTypeId="1" version="1"/>
+			locationTypeId="1" />
 
 		<activity activityId="2"
 			databaseId="1"
@@ -51,8 +50,8 @@
 			reportingFrequency="0"
 			allowEdit="1"
 			isAssessment="0"
-			sortOrder="1"
-			locationTypeId="1" version="1"/>
+			sortOrder="2"
+			locationTypeId="1" />
 
 				<indicator indicatorId="1"
 					activityId="1"
@@ -64,8 +63,7 @@
 					listHeader="no header really"
 					collectIntervention="1"
 					collectMonitoring="1"
-					sortOrder="2"
-					version="1" />
+					sortOrder="2"/>
 							
 				<indicator indicatorId="2"
 					activityId="1"
@@ -77,8 +75,7 @@
 					category="outputs"  
 					listHeader="header"  
 					description="desc"  
-					sortOrder="1"
-					version="1"/>
+					sortOrder="1"/>
 			
 			<attributeGroupInActivity attributeGroupId="1" activityId="1"/>
 		
@@ -97,15 +94,16 @@
 		allowViewAll="0" 
 		allowEdit="1"
 		allowEditAll="0"
-		allowDesign="0" />
+		allowDesign="0"
+        lastSchemaUpdate="2009-01-02" />
 		
 		
 	<userLogin userId="3" name="Stefan" email="stefan@irc.org" locale="fr"  newUser="1"/>
 	
-	<userDatabase databaseId="2" name="RRM" countryId="1" ownerUserId="1" version="1"/>
+	<userDatabase databaseId="2" name="RRM" countryId="1" ownerUserId="1" lastSchemaUpdate="2009-01-01"/>
 	
 	<reportTemplate reportTemplateId="1" ownerUserId="1" visibility="1" XML="
-		&lt;report&gt;
+		&lt;report frequency=&quot;monthly&quot; day=&quot;last&quot;&gt;
 			&lt;title&gt;Report 1&lt;/title&gt;
 			
 			&lt;parameters&gt;
@@ -116,9 +114,9 @@
 					date-unit=&quot;month&quot;/&gt;
 			&lt;/parameters&gt;
 			
-		&lt;/report&gt;" Version="1"/>
+		&lt;/report&gt;"/>
 
-    <reportSubscription userId="1" reportTemplateId="1" frequency="1" day="5"/>
+    <reportSubscription userId="1" reportTemplateId="1" subscribed="1"/>
 	
 	
 

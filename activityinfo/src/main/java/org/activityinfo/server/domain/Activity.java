@@ -44,8 +44,7 @@ import java.util.Set;
 public class Activity implements Serializable, Deleteable, Orderable, SchemaElement {
 
 	private int id;
-	private int version;
-	private LocationType locationType;
+    private LocationType locationType;
 	
 	private UserDatabase database;
 	private String name;
@@ -87,17 +86,7 @@ public class Activity implements Serializable, Deleteable, Orderable, SchemaElem
 		this.id = id;
 	}
 
-	@Version
-	@Column(nullable=false)
-	public int getVersion() {
-		return this.version;
-	}
-	
-	public void setVersion(int version) {
-		this.version = version;
-	}
-	
-	@ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "LocationTypeId", nullable = false)
 	public LocationType getLocationType() {
 		return this.locationType;

@@ -1,7 +1,7 @@
 package org.activityinfo.server.dao.filter;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

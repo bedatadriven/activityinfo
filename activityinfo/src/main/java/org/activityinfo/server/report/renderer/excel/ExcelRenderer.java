@@ -1,7 +1,6 @@
 package org.activityinfo.server.report.renderer.excel;
 
 
-import org.activityinfo.server.report.generator.ContentGenerator;
 import org.activityinfo.shared.report.model.ReportElement;
 import org.apache.poi.ss.usermodel.Workbook;
 

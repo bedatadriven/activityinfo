@@ -13,10 +13,8 @@ import org.activityinfo.shared.command.result.AdminEntityResult;
 import org.activityinfo.shared.dto.AdminEntityModel;
 import org.activityinfo.shared.dto.Schema;
 import org.activityinfo.shared.dto.SiteModel;
+import static org.easymock.EasyMock.createNiceMock;
 import org.junit.Test;
-import org.junit.Assert;
-import static org.easymock.EasyMock.*;
-import com.extjs.gxt.ui.client.data.ModelData;
 /*
  * @author Alex Bertram
  */

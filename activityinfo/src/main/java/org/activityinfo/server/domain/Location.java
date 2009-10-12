@@ -31,8 +31,7 @@ import java.util.Set;
 public class Location implements java.io.Serializable {
 
 	private int id;
-	private int version;
-	private LocationType locationType;
+    private LocationType locationType;
 	private String locationGuid;
 	private Double x;
 	private Double y;
@@ -44,18 +43,8 @@ public class Location implements java.io.Serializable {
 	public Location() {
 	}
 
-	@Version
-	@Column(nullable=false)
-	public int getVersion() {
-		return this.version;
-	}
-	
-	protected void setVersion(int version) {
-		this.version = version;
-	}
-	
 
-	@Id
+    @Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name = "LocationID", unique = true, nullable = false)
 	public int getId() {

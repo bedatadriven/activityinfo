@@ -1,12 +1,10 @@
 package org.activityinfo.server.report.renderer.html;
 
-import java.io.IOException;
-
-import org.activityinfo.server.report.renderer.html.HtmlTableRenderer;
+import com.google.inject.Inject;
 import org.activityinfo.server.report.util.HtmlWriter;
 import org.activityinfo.shared.report.model.*;
 
-import com.google.inject.Inject;
+import java.io.IOException;
 
 public class HtmlReportRenderer implements HtmlRenderer<Report> {
 

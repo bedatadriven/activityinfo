@@ -2,7 +2,6 @@ package org.activityinfo.client.page;
 
 import org.activityinfo.client.Place;
 import org.activityinfo.client.command.monitor.AsyncMonitor;
-import org.activityinfo.client.page.PagePresenter;
 
 /**
  * A PageFrame is a Page which can host one or more page within

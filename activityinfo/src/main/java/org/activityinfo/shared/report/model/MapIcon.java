@@ -1,10 +1,13 @@
 package org.activityinfo.shared.report.model;
 
 import java.io.Serializable;
-/*
+
+/**
+ * A generic bitmap icon that can be used on the client or server side,
+ * in tiled maps as well as SVG maps.
+ *
  * @author Alex Bertram
  */
-
 public class MapIcon implements Serializable {
 
     private String name;
@@ -24,6 +27,10 @@ public class MapIcon implements Serializable {
         this.anchorY = anchorY;
     }
 
+    /**
+     *
+     * @return A short name of the icon
+     */
     public String getName() {
         return name;
     }
@@ -32,6 +39,10 @@ public class MapIcon implements Serializable {
         this.name = name;
     }
 
+    /**
+     * 
+     * @return The width of the icon image, in pixels
+     */
     public int getWidth() {
         return width;
     }
@@ -40,6 +51,10 @@ public class MapIcon implements Serializable {
         this.width = width;
     }
 
+    /**
+     *
+     * @return The height of the icon image, in pixels
+     */
     public int getHeight() {
         return height;
     }
@@ -48,14 +63,25 @@ public class MapIcon implements Serializable {
         this.height = height;
     }
 
+    /**
+     *
+     * @return The distance from the left side at which the image should be
+     * anchored to the point.
+     */
     public int getAnchorX() {
         return anchorX;
     }
+
 
     public void setAnchorX(int anchorX) {
         this.anchorX = anchorX;
     }
 
+    /**
+     *
+     * @return The distance from the top at which of the image should be
+     * anchored to the point.
+     */
     public int getAnchorY() {
         return anchorY;
     }

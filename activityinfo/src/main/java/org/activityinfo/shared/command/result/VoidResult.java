@@ -1,7 +1,11 @@
 package org.activityinfo.shared.command.result;
 
-import org.activityinfo.shared.command.result.CommandResult;
-
+/**
+ * Empty result type.
+ *
+ * @author Alex Bertram
+ *
+ */
 public class VoidResult implements CommandResult {
 
 }

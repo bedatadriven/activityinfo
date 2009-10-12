@@ -1,15 +1,14 @@
 package org.activityinfo.clientjre.mock;
 
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.BaseObservable;
 import com.extjs.gxt.ui.client.event.EventType;
-import com.extjs.gxt.ui.client.event.BaseEvent;
-
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.event.NavigationEvent;
 import org.junit.Assert;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

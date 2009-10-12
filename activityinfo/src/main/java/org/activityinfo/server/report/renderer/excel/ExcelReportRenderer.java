@@ -1,18 +1,17 @@
 package org.activityinfo.server.report.renderer.excel;
 
 
+import com.google.inject.Inject;
 import org.activityinfo.server.report.renderer.Renderer;
 import org.activityinfo.shared.report.model.PivotTableElement;
 import org.activityinfo.shared.report.model.Report;
 import org.activityinfo.shared.report.model.ReportElement;
 import org.activityinfo.shared.report.model.TableElement;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Workbook;
 
-import com.google.inject.Inject;
-
-import java.io.OutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 public class ExcelReportRenderer implements ExcelRenderer<Report>, Renderer {
 
@@ -46,6 +45,16 @@ public class ExcelReportRenderer implements ExcelRenderer<Report>, Renderer {
         }
         book.write(os);
 
+    }
+
+    @Override
+    public String getMimeType() {
+        return "application/vnd.ms-excel";
+    }
+
+    @Override
+    public String getFileSuffix() {
+        return ".xls";
     }
 
     @Override

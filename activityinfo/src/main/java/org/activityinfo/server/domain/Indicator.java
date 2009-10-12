@@ -36,8 +36,7 @@ import java.util.Date;
 public class Indicator implements java.io.Serializable, Orderable, Deleteable, SchemaElement {
 
 	private int id;
-	private int version;
-	private Date dateDeleted;
+    private Date dateDeleted;
 
 	private String name;
 	private String units;
@@ -74,17 +73,7 @@ public class Indicator implements java.io.Serializable, Orderable, Deleteable, S
 		this.id = indicatorId;
 	}
 
-	@Version
-	@Column(nullable=false)
-	public int getVersion() {
-		return this.version;
-	}
-	
-	protected void setVersion(int version) {
-		this.version = version;
-	}
-	
-	@Column(name = "Name", nullable = false, length = 128)
+    @Column(name = "Name", nullable = false, length = 128)
 	public String getName() {
 		return this.name;
 	}

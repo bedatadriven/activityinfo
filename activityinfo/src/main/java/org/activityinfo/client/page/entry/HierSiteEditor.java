@@ -1,16 +1,25 @@
 package org.activityinfo.client.page.entry;
 
+import com.extjs.gxt.ui.client.data.BaseTreeLoader;
+import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.data.ModelKeyProvider;
+import com.extjs.gxt.ui.client.data.TreeLoader;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.store.Record;
+import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.store.TreeStore;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.Place;
 import org.activityinfo.client.command.CommandService;
 import org.activityinfo.client.command.monitor.NullAsyncMonitor;
-import org.activityinfo.client.common.action.UIActions;
-import org.activityinfo.client.common.grid.AbstractEditorGridPresenter;
-import org.activityinfo.client.common.grid.GridView;
 import org.activityinfo.client.event.SiteEvent;
 import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.Pages;
+import org.activityinfo.client.page.common.grid.AbstractEditorGridPresenter;
+import org.activityinfo.client.page.common.grid.GridView;
+import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.client.page.entry.editor.SiteFormLoader;
 import org.activityinfo.client.util.IStateManager;
 import org.activityinfo.shared.command.*;
@@ -18,20 +27,10 @@ import org.activityinfo.shared.command.result.VoidResult;
 import org.activityinfo.shared.date.DateUtil;
 import org.activityinfo.shared.dto.*;
 
-import com.extjs.gxt.ui.client.store.Store;
-import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.store.Record;
-import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.data.TreeLoader;
-import com.extjs.gxt.ui.client.data.BaseTreeLoader;
-import com.extjs.gxt.ui.client.data.ModelKeyProvider;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 /*
  * @author Alex Bertram
  */

@@ -1,37 +1,31 @@
 package org.activityinfo.clientjre.place.config.design;
 
-import org.junit.Test;
-import org.junit.Assert;
-import static org.easymock.EasyMock.*;
-
-import org.activityinfo.client.common.action.UIActions;
-import org.activityinfo.client.common.grid.ConfirmCallback;
-import org.activityinfo.client.common.dialog.FormDialogTether;
-import org.activityinfo.client.common.dialog.FormDialogCallback;
+import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.store.Record;
+import com.extjs.gxt.ui.client.store.TreeStore;
 import org.activityinfo.client.mock.DummyData;
 import org.activityinfo.client.mock.MockCommandService;
 import org.activityinfo.client.page.NavigationCallback;
+import org.activityinfo.client.page.common.grid.ConfirmCallback;
+import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.client.page.config.design.Designer;
 import org.activityinfo.client.page.config.design.IndicatorFolder;
 import org.activityinfo.client.page.entry.SiteGridPlace;
-import org.activityinfo.client.command.CommandService;
 import org.activityinfo.clientjre.mock.MockEventBus;
 import org.activityinfo.clientjre.mock.MockStateManager;
+import org.activityinfo.shared.command.CreateEntity;
 import org.activityinfo.shared.command.Delete;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.UpdateEntity;
-import org.activityinfo.shared.command.CreateEntity;
-import org.activityinfo.shared.command.result.VoidResult;
 import org.activityinfo.shared.command.result.CreateResult;
+import org.activityinfo.shared.command.result.VoidResult;
 import org.activityinfo.shared.dto.ActivityModel;
 import org.activityinfo.shared.dto.Schema;
-import org.activityinfo.shared.dto.EntityDTO;
 import org.activityinfo.shared.i18n.UIConstants;
+import static org.easymock.EasyMock.*;
 import org.easymock.IAnswer;
-import org.easymock.EasyMock;
-import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.store.Record;
-import com.extjs.gxt.ui.client.data.ModelData;
+import org.junit.Assert;
+import org.junit.Test;
 
 import java.util.List;
 /*

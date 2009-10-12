@@ -1,13 +1,12 @@
 package org.activityinfo.clientjre.place.entry.editor.mock;
 
+import com.extjs.gxt.ui.client.store.ListStore;
 import org.activityinfo.client.page.entry.editor.AdminFieldSetPresenter;
 import org.activityinfo.shared.dto.AdminEntityModel;
 
-import com.extjs.gxt.ui.client.store.ListStore;
-
-import java.util.Map;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**

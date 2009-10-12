@@ -2,8 +2,9 @@ package org.activityinfo.server.report.generator.map;
 
 import org.activityinfo.shared.report.content.Point;
 
-import java.util.*;
 import java.awt.geom.Line2D;
+import java.util.ArrayList;
+import java.util.List;
 /*
  * @author Alex Bertram
  */

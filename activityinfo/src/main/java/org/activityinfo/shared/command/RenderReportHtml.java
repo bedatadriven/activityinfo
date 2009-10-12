@@ -1,25 +1,23 @@
 package org.activityinfo.shared.command;
 
 import com.extjs.gxt.ui.client.data.RpcMap;
+import org.activityinfo.shared.command.result.HtmlResult;
+import org.activityinfo.shared.date.DateRange;
 
 import java.util.Map;
-
-import org.activityinfo.shared.command.Command;
-import org.activityinfo.shared.command.result.HtmlResult;
 
 public class RenderReportHtml implements Command<HtmlResult> {
 
     private int templateId;
-    private RpcMap parameters;
+    private DateRange dateRange;
 
 
     public RenderReportHtml() {
     }
 
-    public RenderReportHtml(int templateId, Map<String,Object> parameters) {
+    public RenderReportHtml(int templateId, DateRange dateRange) {
         this.templateId = templateId;
-        this.parameters = new RpcMap();
-        this.parameters.putAll(parameters);
+        this.dateRange = dateRange;
     }
 
     public int getTemplateId() {
@@ -30,11 +28,11 @@ public class RenderReportHtml implements Command<HtmlResult> {
         this.templateId = templateId;
     }
 
-    public RpcMap getParameters() {
-        return parameters;
+    public DateRange getDateRange() {
+        return dateRange;
     }
 
-    public void setParameters(RpcMap parameters) {
-        this.parameters = parameters;
+    public void setDateRange(DateRange dateRange) {
+        this.dateRange = dateRange;
     }
 }

@@ -1,16 +1,26 @@
 package org.activityinfo.shared.dto;
 
 import com.extjs.gxt.ui.client.data.BaseModel;
-
-import org.activityinfo.server.domain.IndicatorValue;
 import org.activityinfo.shared.command.Month;
 
+/**
+ *
+ * An indicator row is a projection of the {@link org.activityinfo.server.domain.ReportingPeriod},
+ * {@link org.activityinfo.server.domain.IndicatorValue} and {@link org.activityinfo.server.domain.Indicator}
+ * entities.
+ *
+ * @author Alex Bertram
+ */
 public class IndicatorRow extends BaseModel implements DTO {
 
     private int siteId;
     private int activityId;
     private int indicatorId;
 
+    /**
+     *
+     * @return The id of the site to which this row belongs.
+     */
     public int getSiteId() {
         return siteId;
     }
@@ -19,6 +29,10 @@ public class IndicatorRow extends BaseModel implements DTO {
         this.siteId = siteId;
     }
 
+    /**
+     *
+     * @return The id of the activity to which the row's site belongs.
+     */
     public int getActivityId() {
         return activityId;
     }
@@ -27,6 +41,10 @@ public class IndicatorRow extends BaseModel implements DTO {
         this.activityId = activityId;
     }
 
+    /**
+     *
+     * @return The id of the indicator
+     */
     public int getIndicatorId() {
         return indicatorId;
     }
@@ -35,6 +53,10 @@ public class IndicatorRow extends BaseModel implements DTO {
         this.indicatorId = indicatorId;
     }
 
+    /**
+     *
+     * @return The name of the indicator.
+     */
     public String getIndicatorName() {
         return get("indicatorName");
     }
@@ -43,6 +65,13 @@ public class IndicatorRow extends BaseModel implements DTO {
         set("indicatorName", name);
     }
 
+    /**
+     * The value of the 
+     *
+     * @param year
+     * @param month
+     * @return
+     */
     public Double getValue(int year, int month) {
         return get(propertyName(year, month));
     }

@@ -1,12 +1,11 @@
 package org.activityinfo.server.report.renderer.html;
 
 import org.activityinfo.server.report.DummyPivotTableData;
-import org.activityinfo.server.report.renderer.html.ImageStorageProvider;
-import org.activityinfo.server.report.renderer.html.HtmlPivotTableRenderer;
 import org.activityinfo.server.report.util.HtmlWriter;
 import org.activityinfo.shared.report.model.PivotTableElement;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.replay;
 import org.junit.Test;
-import static org.easymock.EasyMock.*;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;

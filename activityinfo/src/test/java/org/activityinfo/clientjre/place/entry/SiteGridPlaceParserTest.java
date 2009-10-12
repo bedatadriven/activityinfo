@@ -1,13 +1,13 @@
 package org.activityinfo.clientjre.place.entry;
 
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.SortInfo;
 import org.activityinfo.client.PlaceSerializer;
 import org.activityinfo.client.page.Pages;
 import org.activityinfo.client.page.entry.SiteGridPlace;
 import org.activityinfo.shared.dto.ActivityModel;
-import org.junit.Test;
 import org.junit.Assert;
-import com.extjs.gxt.ui.client.data.SortInfo;
-import com.extjs.gxt.ui.client.Style;
+import org.junit.Test;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

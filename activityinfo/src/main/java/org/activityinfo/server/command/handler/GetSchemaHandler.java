@@ -31,6 +31,7 @@ import org.dozer.Mapper;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Date;
 
 
 /**
@@ -53,12 +54,16 @@ public class GetSchemaHandler implements CommandHandler<GetSchema> {
     public CommandResult execute(GetSchema cmd, User user) throws CommandException {
 
     	Schema schema = new Schema();
+        Date lastUpdate = new Date(0);
 
     	List<UserDatabase> databases = schemaDAO.getDatabases(user);
     	
     	Map<Integer, CountryModel> countries = new HashMap<Integer, CountryModel>();
     	
 		for(UserDatabase database : databases) {
+
+            if(database.getLastSchemaUpdate().after(lastUpdate))
+                lastUpdate = lastUpdate;
 	
 			UserDatabaseDTO databaseDTO = new UserDatabaseDTO();
 			
@@ -84,6 +89,9 @@ public class GetSchemaHandler implements CommandHandler<GetSchema> {
 							database.getPermissionByUser(user).getPartner().getId());
 				
 				permission = database.getPermissionByUser(user);
+
+                if(permission.getLastSchemaUpdate().after(lastUpdate))
+                    lastUpdate = permission.getLastSchemaUpdate();
 			}
 				
 			databaseDTO.setViewAllAllowed( databaseDTO.getAmOwner() || permission.isAllowViewAll() );
@@ -107,6 +115,8 @@ public class GetSchemaHandler implements CommandHandler<GetSchema> {
 			schema.getDatabases().add(databaseDTO);
 			
 		}
+
+        schema.setVersion(lastUpdate.getTime());
 
         return schema;
 

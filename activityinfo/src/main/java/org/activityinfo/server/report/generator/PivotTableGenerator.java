@@ -1,16 +1,18 @@
 package org.activityinfo.server.report.generator;
 
 
-import java.util.*;
-
+import com.google.inject.Inject;
 import org.activityinfo.server.dao.hibernate.PivotDAO;
 import org.activityinfo.server.domain.User;
-import org.activityinfo.shared.report.content.*;
+import org.activityinfo.shared.report.content.PivotContent;
+import org.activityinfo.shared.report.content.PivotTableData;
 import org.activityinfo.shared.report.model.Dimension;
 import org.activityinfo.shared.report.model.Filter;
 import org.activityinfo.shared.report.model.PivotTableElement;
+import org.activityinfo.shared.date.DateRange;
 
-import com.google.inject.Inject;
+import java.util.Comparator;
+import java.util.Map;
 
 public class PivotTableGenerator extends PivotGenerator<PivotTableElement> {
 
@@ -23,16 +25,16 @@ public class PivotTableGenerator extends PivotGenerator<PivotTableElement> {
 
     @Override
     public void generate(User user, PivotTableElement element, Filter inheritedFilter,
-                         Map<String, Object> parameterValues) {
+                         DateRange dateRange) {
 
-        Filter filter = ParamFilterHelper.resolve(element.getFilter(), parameterValues);
+        Filter filter = resolveElementFilter(element, dateRange);
         Filter effectiveFilter = inheritedFilter == null ? filter : new Filter(inheritedFilter, filter);
 
         PivotContent content = new PivotContent();
         content.setEffectiveFilter(effectiveFilter);
         content.setFilterDescriptions(
                 generateFilterDescriptions(
-                        filter, element.allDimensionTypes()));
+                        filter, element.allDimensionTypes(), user));
 
         content.setData(generateData(user.getLocaleObject(), element, effectiveFilter,
                 element.getRowDimensions(), element.getColumnDimensions()));

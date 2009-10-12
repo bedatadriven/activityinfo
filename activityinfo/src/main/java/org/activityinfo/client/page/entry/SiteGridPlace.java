@@ -1,14 +1,14 @@
 package org.activityinfo.client.page.entry;
 
-import java.util.List;
-
 import org.activityinfo.client.Place;
 import org.activityinfo.client.PlaceParser;
 import org.activityinfo.client.ViewPath;
-import org.activityinfo.client.common.grid.AbstractPagingGridPlace;
 import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.Pages;
+import org.activityinfo.client.page.common.grid.AbstractPagingGridPlace;
 import org.activityinfo.shared.dto.ActivityModel;
+
+import java.util.List;
 
 
 public class SiteGridPlace extends AbstractPagingGridPlace {

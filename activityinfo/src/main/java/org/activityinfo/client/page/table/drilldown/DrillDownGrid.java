@@ -1,14 +1,13 @@
 package org.activityinfo.client.page.table.drilldown;
 
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.page.entry.SiteEditor;
 import org.activityinfo.client.page.entry.SiteGrid;
 import org.activityinfo.shared.dto.ActivityModel;
 import org.activityinfo.shared.dto.IndicatorModel;
 import org.activityinfo.shared.dto.SiteModel;
-
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.store.ListStore;
 
 import java.util.List;
 /*

@@ -3,8 +3,6 @@ package org.activityinfo.server.util;
 import org.activityinfo.shared.command.Month;
 import org.activityinfo.shared.date.DateRange;
 import org.activityinfo.shared.date.DateUtil;
-import org.activityinfo.shared.report.content.DimensionCategory;
-import org.activityinfo.shared.report.content.YearCategory;
 import org.activityinfo.shared.report.model.DateUnit;
 
 import java.util.Calendar;
@@ -29,11 +27,11 @@ public class DateUtilCalendarImpl extends DateUtil {
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, 0);
         calendar.set(Calendar.DATE, 1);
-        range.date1 = calendar.getTime();
+        range.setMinDate(calendar.getTime());
 
         calendar.set(Calendar.MONTH, 11);
         calendar.set(Calendar.DATE, 31);
-        range.date2 = calendar.getTime();
+        range.setMaxDate(calendar.getTime());
 
         return range;
     }
@@ -47,10 +45,10 @@ public class DateUtilCalendarImpl extends DateUtil {
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, month-1);
         calendar.set(Calendar.DATE, 1);
-        range.date1 = calendar.getTime();
+        range.setMinDate(calendar.getTime());
 
         calendar.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DATE));
-        range.date2 = calendar.getTime();
+        range.setMaxDate(calendar.getTime());
 
         return range;
     }

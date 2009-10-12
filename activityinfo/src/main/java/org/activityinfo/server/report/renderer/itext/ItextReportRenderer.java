@@ -1,17 +1,14 @@
 package org.activityinfo.server.report.renderer.itext;
 
-import org.activityinfo.shared.report.model.*;
-import org.activityinfo.server.report.renderer.Renderer;
-
-import java.io.OutputStream;
-import java.io.IOException;
-
-import com.lowagie.text.Document;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.DocWriter;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.pdf.PdfWriter;
 import com.google.inject.Inject;
+import com.lowagie.text.DocWriter;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import org.activityinfo.server.report.renderer.Renderer;
+import org.activityinfo.shared.report.model.*;
+
+import java.io.IOException;
+import java.io.OutputStream;
 /*
  * @author Alex Bertram
  */

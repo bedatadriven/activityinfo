@@ -1,22 +1,18 @@
 package org.activityinfo.client.command.cache;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-import java.util.ArrayList;
-
-import org.activityinfo.client.command.*;
-import org.activityinfo.shared.command.BatchCommand;
-import org.activityinfo.shared.command.Command;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import org.activityinfo.client.command.CommandEventSource;
 import org.activityinfo.shared.command.GetAdminEntities;
 import org.activityinfo.shared.command.result.AdminEntityResult;
 import org.activityinfo.shared.command.result.CommandResult;
-import org.activityinfo.shared.command.result.ListResult;
-import org.activityinfo.shared.dto.AdminEntityModel;
 
-import com.google.inject.Singleton;
-import com.google.inject.Inject;
-
+/**
+ * Caches the results of
+ *
+ *
+ * @author Alex Bertram
+ */
 @Singleton
 public class AdminEntityCache extends AbstractCache implements CommandProxy<GetAdminEntities>, CommandListener<GetAdminEntities> {
 

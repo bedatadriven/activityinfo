@@ -24,6 +24,7 @@ import com.google.inject.Injector;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.server.domain.util.EntropicToken;
 import org.activityinfo.server.report.renderer.Renderer;
+import org.activityinfo.server.report.renderer.RendererFactory;
 import org.activityinfo.server.report.renderer.excel.ExcelMapDataExporter;
 import org.activityinfo.server.report.renderer.excel.ExcelReportRenderer;
 import org.activityinfo.server.report.renderer.image.ImageReportRenderer;
@@ -48,57 +49,33 @@ import java.io.IOException;
  */
 public class RenderElementHandler implements CommandHandler<RenderElement> {
 
-    private final Injector injector;
+    private final RendererFactory rendererFactory;
     private final GenerateElementHandler generator;
     private final String tempPath;
 
 
-
     @Inject
-    public RenderElementHandler(Injector injector, ServletContext context, GenerateElementHandler generator) {
+    public RenderElementHandler(RendererFactory rendererFactory, ServletContext context, GenerateElementHandler generator) {
 
-        this.injector = injector;
+        this.rendererFactory = rendererFactory;
         this.tempPath = context.getRealPath("/temp");
         this.generator = generator;
-
     }
 
     public CommandResult execute(RenderElement cmd, User user) throws CommandException {
 
-        String extension;
-        Renderer renderer;
-
-        if(cmd.getFormat() == RenderElement.Format.PNG) {
-            extension = ".png";
-            renderer = injector.getInstance(ImageReportRenderer.class);
-
-        } else if(cmd.getFormat() == RenderElement.Format.Excel) {
-            extension = ".xls";
-            renderer = injector.getInstance(ExcelReportRenderer.class);
-
-        } else if(cmd.getFormat() == RenderElement.Format.Excel_Data &&
-                cmd.getElement() instanceof MapElement) {
-
-            extension = ".xls";
-            renderer = injector.getInstance(ExcelMapDataExporter.class);
-
-
-        } else if(cmd.getFormat() == RenderElement.Format.PowerPoint) {
-            extension = ".ppt";
-            renderer = injector.getInstance(PPTRenderer.class);
-
-        } else {
-            throw new UnexpectedCommandException();
-        }
+        // generate the content
 
         generator.execute(new GenerateElement(cmd.getElement()), user);
 
+        // create the renderer
+        Renderer renderer = rendererFactory.get(cmd.getFormat());
+
         // compose temporary file name
-
-        String filename = EntropicToken.generate() + extension;
-
+        String filename = EntropicToken.generate() + renderer.getFileSuffix();
 		String path = tempPath + "/" + filename;
 
+        // render to a temporary file
         try {
             FileOutputStream os = new FileOutputStream(path);
 

@@ -47,10 +47,9 @@ public class ReportTemplate implements Serializable {
 	private UserDatabase database;
 	private int visibility;
 	private String xml;
-	private int version;
-	private Date dateDeleted;
+    private Date dateDeleted;
     private Set<ReportSubscription> subscriptions = new HashSet<ReportSubscription>(0);
-	
+    
 	public ReportTemplate(){
 		
 	}
@@ -115,17 +114,7 @@ public class ReportTemplate implements Serializable {
         this.subscriptions = subscriptions;
     }
 
-    @Version
-	@Column
-	public int getVersion() {
-		return version;
-	}
-
-	public void setVersion(int version) {
-		this.version = version;
-	}
-
-	@Column(nullable=true)
+    @Column(nullable=true)
 	@Temporal(TemporalType.TIMESTAMP)
 	public Date getDateDeleted() {
 		return dateDeleted;
@@ -134,4 +123,6 @@ public class ReportTemplate implements Serializable {
 	public void setDateDeleted(Date dateDeleted) {
 		this.dateDeleted = dateDeleted;
 	}
+
+
 }

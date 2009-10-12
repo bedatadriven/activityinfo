@@ -1,19 +1,22 @@
 package org.activityinfo.client.page.entry;
 
+import com.extjs.gxt.ui.client.data.DataReader;
+import com.extjs.gxt.ui.client.data.ModelData;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Inject;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.command.CommandService;
-import org.activityinfo.client.common.nav.Link;
-import org.activityinfo.client.common.nav.Navigator;
+import org.activityinfo.client.page.common.nav.Link;
+import org.activityinfo.client.page.common.nav.Navigator;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.dto.ActivityModel;
 import org.activityinfo.shared.dto.Schema;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
 
-import com.extjs.gxt.ui.client.data.*;
-import com.google.inject.Inject;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class DataEntryNavigator implements Navigator

@@ -1,7 +1,5 @@
 package org.activityinfo.shared.report.content;
 
-import org.activityinfo.shared.report.content.LatLng;
-
 import java.io.Serializable;
 
 public class Extents implements Serializable {

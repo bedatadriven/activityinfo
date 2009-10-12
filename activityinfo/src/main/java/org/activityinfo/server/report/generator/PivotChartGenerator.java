@@ -1,15 +1,15 @@
 package org.activityinfo.server.report.generator;
 
-import java.util.*;
-
+import com.google.inject.Inject;
 import org.activityinfo.server.dao.SchemaDAO;
 import org.activityinfo.server.dao.hibernate.PivotDAO;
 import org.activityinfo.server.domain.Indicator;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.shared.report.content.PivotChartContent;
 import org.activityinfo.shared.report.model.*;
+import org.activityinfo.shared.date.DateRange;
 
-import com.google.inject.Inject;
+import java.util.Map;
 
 public class PivotChartGenerator extends PivotGenerator<PivotChartElement> {
 
@@ -24,7 +24,7 @@ public class PivotChartGenerator extends PivotGenerator<PivotChartElement> {
 
     @Override
     public void generate(User user, PivotChartElement element, Filter inheritedFilter,
-                         Map<String, Object> parameterValues) {
+                         DateRange dateRange) {
 
 		if(element.getIndicators().size() == 0) {
 			throw new ModelException("No indicators specified for chart", element);
@@ -40,7 +40,7 @@ public class PivotChartGenerator extends PivotGenerator<PivotChartElement> {
 		}
 
 
-        Filter filter = ParamFilterHelper.resolve(element.getFilter(), parameterValues);
+        Filter filter = resolveElementFilter(element, dateRange);
         Filter effectiveFilter = inheritedFilter == null ? new Filter(filter, new Filter()) : new Filter(inheritedFilter, filter);
 
         /*
@@ -48,25 +48,26 @@ public class PivotChartGenerator extends PivotGenerator<PivotChartElement> {
          * here
          */
         effectiveFilter.clearRestrictions(DimensionType.Indicator);
-        for(ParameterizedValue<Integer> indicator : element.getIndicators()) {
-            effectiveFilter.addRestriction(DimensionType.Indicator, indicator.resolve(parameterValues));
+        for(Integer indicator : element.getIndicators()) {
+            effectiveFilter.addRestriction(DimensionType.Indicator, indicator);
         }
 
         PivotChartContent content = new PivotChartContent();
         content.setXAxisTitle(composeXAxisTitle(element));
 
         
-        content.setYAxisTitle(composeYAxisTitle(element, parameterValues));
+        content.setYAxisTitle(composeYAxisTitle(element));
         content.setEffectiveFilter(filter);
-        content.setFilterDescriptions(generateFilterDescriptions(filter, element.allDimensionTypes()));
+        content.setFilterDescriptions(generateFilterDescriptions(filter, element.allDimensionTypes(), user));
         content.setData(generateData(user.getLocaleObject(), element, effectiveFilter, element.getCategoryDimensions(), element.getLegendDimensions()));
 
         element.setContent(content);
 	}
 	
 	/**
+     * Composes a title for the X Axis.
 	 * 
-	 * @param element
+	 * @param element The <code>PivotChartElement</code> for which to compose the title
 	 * @return The category axis title, if explicitly specified, otherwise the name
 	 * of the dimension type of the last category dimension
 	 */
@@ -93,13 +94,13 @@ public class PivotChartGenerator extends PivotGenerator<PivotChartElement> {
 	 * @return The value axis title, if specified explicitly, otherwise the units
 	 * 			of the first indicator referenced
 	 */
-	protected String composeYAxisTitle(PivotChartElement element, Map<String, Object> parameterValues) {
+	protected String composeYAxisTitle(PivotChartElement element) {
 		
 		if(element.getValueAxisTitle() != null) {
 			return element.getValueAxisTitle();
 		}
 		
-		int indicatorId = element.getIndicators().get(0).resolve(parameterValues);
+		int indicatorId = element.getIndicators().get(0);
 		
 		Indicator indicator = schemaDAO.findById(Indicator.class, indicatorId);
 		

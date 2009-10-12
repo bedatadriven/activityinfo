@@ -1,10 +1,10 @@
 package org.activityinfo.shared.report.content;
 
+import org.activityinfo.shared.report.model.DimensionType;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.Serializable;
-
-import org.activityinfo.shared.report.model.DimensionType;
 
 /**
  * Encapsulates a text description of a given filter restriction.

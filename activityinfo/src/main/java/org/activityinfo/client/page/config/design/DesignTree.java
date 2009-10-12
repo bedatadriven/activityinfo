@@ -1,43 +1,45 @@
 package org.activityinfo.client.page.config.design;
 
-import org.activityinfo.client.Application;
-import org.activityinfo.client.command.CommandService;
-import org.activityinfo.client.common.action.UIActions;
-import org.activityinfo.client.common.dialog.FormDialogCallback;
-import org.activityinfo.client.common.dialog.FormDialogImpl;
-import org.activityinfo.client.common.dialog.FormDialogTether;
-import org.activityinfo.client.common.grid.AbstractEditorTreeGridView;
-import org.activityinfo.client.common.grid.ImprovedCellTreeGridSelectionModel;
-import org.activityinfo.client.page.config.design.ActivityForm;
-import org.activityinfo.client.page.config.design.AttributeGroupForm;
-import org.activityinfo.client.page.config.design.IndicatorForm;
-import org.activityinfo.shared.dto.*;
-
-import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.widget.grid.*;
-import com.extjs.gxt.ui.client.widget.treegrid.*;
+import com.extjs.gxt.ui.client.GXT;
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.binding.FieldBinding;
+import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.data.ModelIconProvider;
+import com.extjs.gxt.ui.client.data.TreeModel;
+import com.extjs.gxt.ui.client.dnd.DND;
+import com.extjs.gxt.ui.client.dnd.TreeGridDragSource;
+import com.extjs.gxt.ui.client.dnd.TreeGridDropTarget;
+import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.store.TreeStore;
+import com.extjs.gxt.ui.client.util.Margins;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.store.Store;
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.GXT;
-import com.extjs.gxt.ui.client.binding.FieldBinding;
-import com.extjs.gxt.ui.client.dnd.*;
-import com.extjs.gxt.ui.client.util.Margins;
-import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.widget.treegrid.CellTreeGridSelectionModel;
+import com.extjs.gxt.ui.client.widget.treegrid.EditorTreeGrid;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.inject.Inject;
+import org.activityinfo.client.Application;
+import org.activityinfo.client.command.CommandService;
+import org.activityinfo.client.page.common.dialog.FormDialogCallback;
+import org.activityinfo.client.page.common.dialog.FormDialogImpl;
+import org.activityinfo.client.page.common.dialog.FormDialogTether;
+import org.activityinfo.client.page.common.grid.AbstractEditorTreeGridView;
+import org.activityinfo.client.page.common.grid.ImprovedCellTreeGridSelectionModel;
+import org.activityinfo.client.page.common.toolbar.UIActions;
+import org.activityinfo.shared.dto.*;
 
-
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 /*
  * @author Alex Bertram
  */

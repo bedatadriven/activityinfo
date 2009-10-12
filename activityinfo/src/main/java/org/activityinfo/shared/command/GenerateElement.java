@@ -1,11 +1,13 @@
 package org.activityinfo.shared.command;
 
-import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.report.content.Content;
-import org.activityinfo.shared.report.model.PivotChartElement;
 import org.activityinfo.shared.report.model.ReportElement;
 
 /**
+ * Generates and returns to the client the content of an element.
+ *
+ * Returns: {@link org.activityinfo.shared.report.content.Content}
+ *
  * @author Alex Bertram (akbertram@gmail.com)
  */
 public class GenerateElement<T extends Content> implements Command<T> {

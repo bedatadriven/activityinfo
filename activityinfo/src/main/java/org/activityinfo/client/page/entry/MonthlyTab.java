@@ -3,7 +3,6 @@ package org.activityinfo.client.page.entry;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.Element;
-
 import org.activityinfo.client.Application;
 
 public class MonthlyTab extends TabItem {

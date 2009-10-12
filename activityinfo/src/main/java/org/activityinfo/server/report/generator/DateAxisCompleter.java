@@ -1,11 +1,11 @@
 package org.activityinfo.server.report.generator;
 
-import java.util.Collection;
-
-import org.activityinfo.shared.report.content.YearCategory;
 import org.activityinfo.shared.report.content.PivotTableData.Axis;
+import org.activityinfo.shared.report.content.YearCategory;
 import org.activityinfo.shared.report.model.DateDimension;
 import org.activityinfo.shared.report.model.DateUnit;
+
+import java.util.Collection;
 
 /**
  * While we don't normally want to include gobs of empty cells, 

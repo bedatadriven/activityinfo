@@ -6,20 +6,22 @@ import org.activityinfo.server.dao.hibernate.PivotDAOHibernateJdbc;
 import org.activityinfo.server.dao.hibernate.SiteTableDAO;
 import org.activityinfo.server.dao.hibernate.SiteTableDAOHibernate;
 import org.activityinfo.server.domain.User;
-import org.activityinfo.server.report.ReportParser;
 import org.activityinfo.server.report.generator.MapGenerator;
 import org.activityinfo.server.report.renderer.image.ImageMapRenderer;
 import org.activityinfo.server.report.renderer.ppt.PPTMapRenderer;
-import org.activityinfo.shared.report.model.*;
-import org.junit.Test;
+import org.activityinfo.shared.report.model.DimensionType;
+import org.activityinfo.shared.report.model.GsMapLayer;
+import org.activityinfo.shared.report.model.MapElement;
+import org.activityinfo.shared.report.model.Report;
 import org.junit.Assert;
+import org.junit.Test;
 import org.xml.sax.InputSource;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.persistence.EntityManager;
-import java.io.InputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.util.HashMap;
 /*
  * @author Alex Bertram
@@ -54,8 +56,7 @@ public class MapTest {
         user.setLocale("fr");
 
 
-        generator.generate(user, mapElement,
-                null, new HashMap<String,Object>());
+        generator.generate(user, mapElement, null, null);
 
         Assert.assertNotNull("content", mapElement.getContent());
                                                             

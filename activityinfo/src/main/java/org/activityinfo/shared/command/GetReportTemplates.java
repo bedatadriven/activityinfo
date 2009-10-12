@@ -1,8 +1,6 @@
 package org.activityinfo.shared.command;
 
-import org.activityinfo.shared.command.result.PagingResult;
 import org.activityinfo.shared.command.result.ReportTemplateResult;
-import org.activityinfo.shared.dto.ReportTemplateDTO;
 
 public class GetReportTemplates extends GetListCommand<ReportTemplateResult> {
 

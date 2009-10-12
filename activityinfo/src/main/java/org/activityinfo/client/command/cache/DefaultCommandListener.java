@@ -1,6 +1,5 @@
 package org.activityinfo.client.command.cache;
 
-import org.activityinfo.client.command.CommandListener;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.CommandResult;
 

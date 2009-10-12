@@ -4,10 +4,10 @@ import org.activityinfo.shared.report.content.Extents;
 import org.activityinfo.shared.report.content.Marker;
 import org.activityinfo.shared.report.content.SiteGeoData;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

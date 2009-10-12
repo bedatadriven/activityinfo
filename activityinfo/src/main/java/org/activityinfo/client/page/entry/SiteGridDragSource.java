@@ -1,15 +1,9 @@
 package org.activityinfo.client.page.entry;
 
-import com.extjs.gxt.ui.client.dnd.GridDragSource;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.dnd.DragSource;
 import com.extjs.gxt.ui.client.event.DNDEvent;
-import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.util.Format;
-import com.google.gwt.user.client.Element;
-
-import java.util.List;
 /*
  * @author Alex Bertram
  */

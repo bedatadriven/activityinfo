@@ -14,9 +14,9 @@
 
 package org.activityinfo.server.service.impl;
 
-import java.util.Random;
-
 import org.activityinfo.server.service.PasswordGenerator;
+
+import java.util.Random;
 
 public class PronounceablePasswordGenerator implements PasswordGenerator {
 

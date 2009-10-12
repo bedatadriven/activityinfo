@@ -2,9 +2,8 @@ package org.activityinfo.shared.report.content;
 
 import org.activityinfo.shared.report.model.Filter;
 
-import java.util.List;
 import java.util.ArrayList;
-import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

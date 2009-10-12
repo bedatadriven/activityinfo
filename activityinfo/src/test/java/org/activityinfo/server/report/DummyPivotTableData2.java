@@ -1,10 +1,16 @@
 package org.activityinfo.server.report;
 
-import org.activityinfo.shared.report.content.*;
-import org.activityinfo.shared.report.model.*;
+import org.activityinfo.shared.report.content.EntityCategory;
+import org.activityinfo.shared.report.content.FilterDescription;
+import org.activityinfo.shared.report.content.PivotContent;
+import org.activityinfo.shared.report.content.PivotTableData;
+import org.activityinfo.shared.report.model.AdminDimension;
+import org.activityinfo.shared.report.model.Dimension;
+import org.activityinfo.shared.report.model.DimensionType;
+import org.activityinfo.shared.report.model.PivotTableElement;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

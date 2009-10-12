@@ -1,20 +1,15 @@
 package org.activityinfo.server.report.generator.map;
 
-import org.activityinfo.shared.report.content.LatLng;
-import org.activityinfo.shared.report.content.Extents;
-import org.activityinfo.shared.report.content.SiteData;
-import org.activityinfo.shared.report.content.Point;
-import org.activityinfo.shared.report.model.MapElement;
-import org.activityinfo.shared.report.model.GsMapLayer;
-import org.activityinfo.shared.domain.SiteColumn;
 import org.activityinfo.server.report.generator.MapSymbol;
-import org.junit.Test;
+import org.activityinfo.shared.report.content.LatLng;
+import org.activityinfo.shared.report.content.Point;
 import org.junit.Assert;
+import org.junit.Test;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 /*
  * Real example that didn't work.
  *

@@ -1,14 +1,14 @@
 package org.activityinfo.clientjre.command;
 
-import org.activityinfo.client.command.CommandProxyResult;
 import org.activityinfo.client.command.ProxyManager;
+import org.activityinfo.client.command.cache.CommandProxyResult;
 import org.activityinfo.client.command.cache.SchemaCache;
 import org.activityinfo.client.mock.DummyData;
 import org.activityinfo.clientjre.mock.MockEventBus;
-import org.activityinfo.shared.command.*;
+import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.dto.Schema;
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -31,7 +31,7 @@ public class SchemaCacheTest {
 
         CommandProxyResult<Schema> proxyResult = proxyMgr.execute(new GetSchema());
 
-        Assert.assertTrue(proxyResult.couldExecute);
+        Assert.assertTrue("could execute locally", proxyResult.couldExecute);
         Assert.assertEquals("PEAR", proxyResult.result.getDatabaseById(1).getName());
     }
 

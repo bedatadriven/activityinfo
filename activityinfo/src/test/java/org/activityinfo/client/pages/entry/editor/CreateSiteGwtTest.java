@@ -1,15 +1,14 @@
 package org.activityinfo.client.pages.entry.editor;
 
-import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.ServiceDefTarget;
+import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import org.activityinfo.client.LoggingEventBus;
 import org.activityinfo.client.command.Authentication;
 import org.activityinfo.client.command.CommandRequest;
 import org.activityinfo.client.command.CommandServiceImpl;
-import org.activityinfo.client.common.action.UIActions;
+import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.client.page.entry.editor.SiteForm;
 import org.activityinfo.client.page.entry.editor.SiteFormDialog;
 import org.activityinfo.client.page.entry.editor.SiteFormLoader;

@@ -1,16 +1,24 @@
 package org.activityinfo.client.command;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.client.command.monitor.AsyncMonitor;
 import org.activityinfo.shared.command.Command;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;/*
+
+/**
+ *
+ * Encapsulates a pending command request to the server.
+ *
  * @author Alex Bertram
  */
-
 public class CommandRequest {
 
 
+    /**
+     * The pending command
+     */
     private final Command command;
+
     private final AsyncMonitor monitor;
     private final AsyncCallback callback;
 

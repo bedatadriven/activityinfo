@@ -1,48 +1,6 @@
 <module rename-to="Application">
 
-	<!-- Inherit the core Web Toolkit stuff.                        -->
-	<inherits name='com.google.gwt.user.User' />
+    <inherits name="org.activityinfo.ApplicationBase"/>
 
-	<!-- Inherit additional dependencies  -->
-	<inherits name='com.google.gwt.inject.Inject' />
-	<inherits name="com.google.gwt.i18n.I18N" />
-	<inherits name='com.extjs.gxt.ui.GXT' />
-  	<inherits name="com.google.gwt.maps.GoogleMaps" />
-    <inherits name="com.ebessette.maps.core.CoreMaps" />
-    <inherits name="com.google.gwt.gears.Gears" />
-    <inherits name="com.google.gwt.inject.Inject"/>
-    <inherits name="com.google.gwt.gears.Offline" />
-    <inherits name="com.extjs.gxt.charts.Chart"/>
-
-    <!-- Include generated sources -->
- 	<source path='client'/>
-    <source path='shared'/>
-
-	<!-- Specify the app entry point class.                         -->
-	<entry-point class='org.activityinfo.client.Application' />
-
-	<!-- Enable other locales -->
-    <!--<extend-property name="locale" values="en" />-->
-	<extend-property name="locale" values="fr" />
-
-	<!-- Configure rebinding for the Gears Data Context -->
-    <replace-with class="org.activityinfo.client.offline.OfflineMenuButtonNoGears">
-        <when-type-is class="org.activityinfo.client.command.offline.OfflineMenuButton"/>
-        <when-property-is name="gears.installed" value="false"/>
-    </replace-with>
-
-
-	<!-- Specify the application specific style sheet.              -->
-	<stylesheet src='Application.css' />
-	
-
-	<servlet path="/cmd"
-		class="org.activityinfo.server.servlet.RemoteCommandServlet" />
-
-			
-    <script src="http://maps.google.com/maps?gwt=1&amp;file=api&amp;v=2&amp;key=ABQIAAAAHxDe2DM8fTqR3KT6JA3uSxQowpcadhvcZvF-AZHbBConS0qRQRSyDoOLQrw76pJeJNUXt2g-yC8FAg" />
-
-	<!-- ie6, gecko, gecko1_8, safari or opera -->
-	
 
 </module>

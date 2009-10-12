@@ -3,8 +3,8 @@ package org.activityinfo.server.command;
 import org.activityinfo.shared.command.GetUsers;
 import org.activityinfo.shared.command.result.UserResult;
 import org.activityinfo.shared.exception.CommandException;
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
 
 public class GetUsersTest extends CommandTestCase {
 

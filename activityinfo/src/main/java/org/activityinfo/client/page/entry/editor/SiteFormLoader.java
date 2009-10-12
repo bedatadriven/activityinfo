@@ -2,7 +2,6 @@ package org.activityinfo.client.page.entry.editor;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
-
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.command.CommandService;
 import org.activityinfo.client.command.monitor.AsyncMonitor;

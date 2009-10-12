@@ -66,8 +66,7 @@ import java.util.Set;
 public class UserDatabase implements java.io.Serializable, Deleteable, SchemaElement {
 
 	private int id;
-	private int version;
-	private Country country;
+    private Country country;
 	private Date startDate;
 	private String fullName;
 	private String name;
@@ -76,6 +75,7 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
 	private Set<Activity> activities = new HashSet<Activity>(0);
 	private Set<UserPermission> userPermissions = new HashSet<UserPermission>(0);
 	private Date dateDeleted;
+    private Date lastSchemaUpdate;
 	
 //	@MapKey(name="user")
 //	@OneToMany(mappedBy="database")
@@ -99,16 +99,6 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
 
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	@Version
-	@Column(nullable=false)
-	public int getVersion() {
-		return this.version;
-	}
-	
-	protected void setVersion(int version) {
-		this.version = version;
 	}
 
     /**
@@ -360,5 +350,24 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
 		return getDateDeleted() == null;
 	}
 
+    /**
+     * Gets the timestamp on which structure of the database (activities, indicators, etc)
+     * was last modified.
+     *
+     * @return The timestamp on which the structure of the database was last modified.
+     */
+    @Column(nullable = false)
+    public Date getLastSchemaUpdate() {
+        return lastSchemaUpdate;
+    }
 
+    /**
+     * Sets the timestamp on which the structure of the database (activities, indicateurs, etc
+     * was last modified.
+     * 
+     * @param lastSchemaUpdate
+     */
+    public void setLastSchemaUpdate(Date lastSchemaUpdate) {
+        this.lastSchemaUpdate = lastSchemaUpdate;
+    }
 }

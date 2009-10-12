@@ -1,19 +1,31 @@
 package org.activityinfo.server.servlet;
 
-import com.google.inject.Singleton;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import org.activityinfo.server.report.renderer.image.ImageMapRenderer;
 
+import javax.imageio.ImageIO;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletException;
-import javax.imageio.ImageIO;
-import java.io.IOException;
-import java.awt.image.BufferedImage;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
-import org.activityinfo.server.report.renderer.image.ImageMapRenderer;
-
+/**
+ *
+ * Servlet that generates map icons for use in a Google Maps
+ * {@link com.google.gwt.maps.client.overlay.Icon}
+ *
+ * The query parameter "t" indicates the type of icon to be generated:
+ *
+ * <b>t=bubble</b>: Generates a semi-transparent circle
+ * @param r Radius, in pixels, of the bubble
+ * @param c Color, as an RGB integer, of the bubble
+ *
+ * @author Alex Bertram
+ */
 @Singleton
 public class MapIconServlet extends HttpServlet {
 
@@ -38,7 +50,6 @@ public class MapIconServlet extends HttpServlet {
             } catch(NumberFormatException e) {
                 color = Color.decode(req.getParameter("c")).getRGB();
             }
-
 
             BufferedImage icon = new BufferedImage(radius*2, radius*2, BufferedImage.TYPE_INT_ARGB);
             Graphics2D g2d = icon.createGraphics();

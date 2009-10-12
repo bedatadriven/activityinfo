@@ -1,12 +1,19 @@
 package org.activityinfo.shared.command;
 
-import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.VoidResult;
 import org.activityinfo.shared.dto.EntityDTO;
 
-import com.extjs.gxt.ui.client.data.ModelData;
 
-
+/**
+ * Deletes a database entity.
+ *
+ * Note: the specified entity must be <code>Deletable</code>
+ *
+ * Returns <code>VoidResult</code>
+ *
+ * @see org.activityinfo.server.domain.Deleteable
+ *
+ */
 public class Delete implements Command<VoidResult> {
 	
 

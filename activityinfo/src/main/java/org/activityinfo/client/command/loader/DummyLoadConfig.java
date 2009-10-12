@@ -1,10 +1,9 @@
 package org.activityinfo.client.command.loader;
 
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.extjs.gxt.ui.client.data.SortInfo;
 import com.extjs.gxt.ui.client.Style;
-
+import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.SortInfo;
 import org.activityinfo.shared.command.GetListCommand;
 import org.activityinfo.shared.command.PagingGetCommand;
 

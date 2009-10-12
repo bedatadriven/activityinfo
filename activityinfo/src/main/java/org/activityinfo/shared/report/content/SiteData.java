@@ -1,9 +1,8 @@
 package org.activityinfo.shared.report.content;
 
-import java.util.*;
-
 import org.activityinfo.shared.domain.SiteColumn;
-import org.activityinfo.shared.report.model.Dimension;
+
+import java.util.*;
 
 /**
  * A "non-tabular" representation of sites used by 

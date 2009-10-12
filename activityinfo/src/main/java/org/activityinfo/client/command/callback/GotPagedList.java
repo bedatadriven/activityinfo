@@ -1,11 +1,10 @@
 package org.activityinfo.client.command.callback;
 
-import java.util.List;
-
-import org.activityinfo.shared.command.result.PagingResult;
-
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.activityinfo.shared.command.result.PagingResult;
+
+import java.util.List;
 
 public abstract class GotPagedList<T extends ModelData> implements AsyncCallback<PagingResult<T>> {
 

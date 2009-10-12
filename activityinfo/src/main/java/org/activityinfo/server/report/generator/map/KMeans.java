@@ -2,10 +2,9 @@ package org.activityinfo.server.report.generator.map;
 
 import org.activityinfo.shared.report.content.Point;
 
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Arrays;
+import java.util.List;
 
 
 /**

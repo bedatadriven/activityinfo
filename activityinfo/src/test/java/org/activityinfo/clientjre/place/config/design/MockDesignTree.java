@@ -1,18 +1,19 @@
 package org.activityinfo.clientjre.place.config.design;
 
-import static org.easymock.EasyMock.*;
-import org.activityinfo.client.page.config.design.Designer;
-import org.activityinfo.client.common.dialog.FormDialogTether;
-import org.activityinfo.client.common.dialog.FormDialogCallback;
-import org.activityinfo.client.common.grid.ConfirmCallback;
-import org.activityinfo.client.command.monitor.AsyncMonitor;
-import org.activityinfo.shared.dto.UserDatabaseDTO;
-import org.activityinfo.shared.dto.EntityDTO;
-import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.store.TreeStore;
+import org.activityinfo.client.command.monitor.AsyncMonitor;
+import org.activityinfo.client.page.common.dialog.FormDialogCallback;
+import org.activityinfo.client.page.common.dialog.FormDialogTether;
+import org.activityinfo.client.page.common.grid.ConfirmCallback;
+import org.activityinfo.client.page.config.design.Designer;
+import org.activityinfo.shared.dto.EntityDTO;
+import org.activityinfo.shared.dto.UserDatabaseDTO;
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.replay;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 /*
  * @author Alex Bertram
  */

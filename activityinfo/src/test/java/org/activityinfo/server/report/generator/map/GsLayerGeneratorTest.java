@@ -1,15 +1,15 @@
 package org.activityinfo.server.report.generator.map;
 
-import org.activityinfo.shared.report.model.*;
-import org.activityinfo.shared.report.content.SiteData;
+import org.activityinfo.shared.domain.SiteColumn;
 import org.activityinfo.shared.report.content.LatLng;
 import org.activityinfo.shared.report.content.MapContent;
-import org.activityinfo.shared.domain.SiteColumn;
+import org.activityinfo.shared.report.content.SiteData;
+import org.activityinfo.shared.report.model.*;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 /*
  * @author Alex Bertram
  */

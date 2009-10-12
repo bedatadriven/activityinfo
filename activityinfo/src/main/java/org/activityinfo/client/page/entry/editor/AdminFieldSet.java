@@ -1,24 +1,21 @@
 package org.activityinfo.client.page.entry.editor;
 
-import java.util.*;
-
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.FieldEvent;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.user.client.Event;
 import org.activityinfo.client.Application;
-import org.activityinfo.client.common.widget.RemoteComboBox;
-import org.activityinfo.client.page.entry.editor.AbstractFieldSet;
+import org.activityinfo.client.page.common.widget.RemoteComboBox;
 import org.activityinfo.shared.dto.ActivityModel;
 import org.activityinfo.shared.dto.AdminEntityModel;
 import org.activityinfo.shared.dto.AdminLevelModel;
 
-import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.Field;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.data.Loader;
-import com.extjs.gxt.ui.client.data.LoadEvent;
-import com.extjs.gxt.ui.client.data.ListLoadResult;
-import com.extjs.gxt.ui.client.data.ListLoader;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.event.dom.client.KeyCodes;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class AdminFieldSet extends AbstractFieldSet implements AdminFieldSetPresenter.View  {
 

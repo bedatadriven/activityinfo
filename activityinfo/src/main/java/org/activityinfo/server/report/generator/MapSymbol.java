@@ -3,8 +3,8 @@ package org.activityinfo.server.report.generator;
 import org.activityinfo.shared.report.content.DimensionCategory;
 import org.activityinfo.shared.report.model.Dimension;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 /*
  * @author Alex Bertram
  */

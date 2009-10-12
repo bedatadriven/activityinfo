@@ -1,11 +1,10 @@
 package org.activityinfo.client.page.config.form;
 
-import org.activityinfo.client.Application;
-
+import com.extjs.gxt.ui.client.binding.FieldBinding;
+import com.extjs.gxt.ui.client.binding.FormBinding;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.binding.FormBinding;
-import com.extjs.gxt.ui.client.binding.FieldBinding;
+import org.activityinfo.client.Application;
 
 public class DatabaseForm extends FormPanel {
 

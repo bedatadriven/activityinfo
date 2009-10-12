@@ -1,27 +1,27 @@
 package org.activityinfo.server.report.renderer.itext;
 
-import org.activityinfo.server.report.renderer.ChartRendererJC;
-import org.activityinfo.server.report.ReportParser;
-import org.activityinfo.server.report.generator.*;
+import org.activityinfo.server.dao.BaseMapDAO;
+import org.activityinfo.server.dao.BaseMapDAOImpl;
 import org.activityinfo.server.dao.hibernate.PivotDAO;
 import org.activityinfo.server.dao.hibernate.PivotDAOHibernateJdbc;
 import org.activityinfo.server.dao.hibernate.SiteTableDAO;
 import org.activityinfo.server.dao.hibernate.SiteTableDAOHibernate;
 import org.activityinfo.server.dao.jpa.SchemaDAOJPA;
-import org.activityinfo.server.dao.BaseMapDAO;
-import org.activityinfo.server.dao.BaseMapDAOImpl;
 import org.activityinfo.server.domain.User;
+import org.activityinfo.server.report.ReportParser;
+import org.activityinfo.server.report.generator.*;
+import org.activityinfo.server.report.renderer.ChartRendererJC;
 import org.activityinfo.shared.report.model.Filter;
 import org.activityinfo.shared.report.model.Report;
-import org.xml.sax.InputSource;
 import org.junit.Test;
+import org.xml.sax.InputSource;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Persistence;
 import javax.persistence.EntityManagerFactory;
-import java.io.InputStream;
+import javax.persistence.Persistence;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.HashMap;
 /*
  * @author Alex Bertram
@@ -57,7 +57,7 @@ public class ItextIntegrationTest  {
         ReportGenerator gtor = new ReportGenerator(pivotDAO, ptGtor, pcGtor, tGtor, mGtor );
 
         User user = new User("a@gmail.com", "Alex", "fr");
-        gtor.generate(user, report, new Filter(), new HashMap<String,Object>());
+        gtor.generate(user, report, new Filter(), null);
 
         // RENDER
 

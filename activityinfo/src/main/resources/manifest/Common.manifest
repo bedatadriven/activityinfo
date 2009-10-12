@@ -1,0 +1,10 @@
+{
+ "name" : "ActivityInfo",
+ "requiredCookie" : "offline=enabled",
+ "betaManifestVersion" : 1,
+ "version" : "__VERSION__",
+ "entries" : [
+     __ENTRIES__,
+     { "url" : "../", "src" : "Offline.html" }
+    ]
+}

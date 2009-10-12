@@ -1,13 +1,18 @@
 package org.activityinfo.server.dao.filter;
 
 import com.google.inject.Inject;
+import org.hibernate.Session;
+import org.hibernate.criterion.Conjunction;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.ejb.HibernateEntityManager;
 
 import javax.persistence.EntityManager;
-import java.util.*;
-
-import org.hibernate.criterion.*;
-import org.hibernate.ejb.HibernateEntityManager;
-import org.hibernate.Session;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

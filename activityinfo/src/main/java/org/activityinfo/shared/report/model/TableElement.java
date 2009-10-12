@@ -1,12 +1,11 @@
 package org.activityinfo.shared.report.model;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
 import org.activityinfo.shared.report.content.TableContent;
 import org.activityinfo.shared.report.content.TreeNode;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 public class TableElement extends ReportElement {

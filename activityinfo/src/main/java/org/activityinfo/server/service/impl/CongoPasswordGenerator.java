@@ -1,10 +1,9 @@
 package org.activityinfo.server.service.impl;
 
-import java.util.Random;
-
+import com.google.inject.Singleton;
 import org.activityinfo.server.service.PasswordGenerator;
 
-import com.google.inject.Singleton;
+import java.util.Random;
 
 @Singleton
 public class CongoPasswordGenerator implements PasswordGenerator {

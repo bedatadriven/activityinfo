@@ -1,12 +1,11 @@
 package org.activityinfo.server.report.generator.map;
 
-import org.activityinfo.server.report.generator.map.MarkerGraph;
 import org.activityinfo.shared.report.content.LatLng;
 import org.activityinfo.shared.report.content.Point;
 
-import java.util.List;
-import java.util.ArrayList;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 /*
  * @author Alex Bertram
  */

@@ -1,13 +1,11 @@
 package org.activityinfo.client.page.entry.editor;
 
 
-import org.activityinfo.shared.dto.AttributeGroupModel;
-import org.activityinfo.shared.dto.AttributeModel;
-import org.activityinfo.shared.dto.SiteModel;
-
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
+import org.activityinfo.shared.dto.AttributeGroupModel;
+import org.activityinfo.shared.dto.AttributeModel;
 
 public class AttributeCheckBoxGroup extends CheckBoxGroup {
 

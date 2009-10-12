@@ -1,5 +1,16 @@
 package org.activityinfo.server.report;
 
+import org.activityinfo.shared.report.content.DimensionCategory;
+import org.activityinfo.shared.report.content.EntityCategory;
+import org.activityinfo.shared.report.model.*;
+import org.activityinfo.shared.report.model.Dimension;
+import org.activityinfo.shared.report.model.TableElement.Column;
+import org.apache.xerces.parsers.SAXParser;
+import org.apache.xerces.xni.*;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
+import java.awt.*;
 import java.io.IOException;
 import java.io.StringReader;
 import java.text.ParseException;
@@ -8,21 +19,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Stack;
-import java.awt.*;
-
-import org.activityinfo.shared.report.content.DimensionCategory;
-import org.activityinfo.shared.report.content.EntityCategory;
-import org.activityinfo.shared.report.model.*;
-import org.activityinfo.shared.report.model.Dimension;
-import org.activityinfo.shared.report.model.TableElement.Column;
-import org.apache.xerces.parsers.SAXParser;
-import org.apache.xerces.xni.Augmentations;
-import org.apache.xerces.xni.QName;
-import org.apache.xerces.xni.XMLAttributes;
-import org.apache.xerces.xni.XMLString;
-import org.apache.xerces.xni.XNIException;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 
 public class ReportParser extends SAXParser {
@@ -58,6 +54,8 @@ public class ReportParser extends SAXParser {
 			report = new Report();
 			currentElement = report;
 
+            
+
 		/* 
 		 * Properties of the root (report) element
 		 */
@@ -91,21 +89,15 @@ public class ReportParser extends SAXParser {
 		} else if("include".equals(qname.localpart)) {
 
 			currentElement.getFilter().addRestriction(currentFilterDim,
-					parseParameterizedIntValue(attribs.getValue("id")));
+					Integer.parseInt(attribs.getValue("id")));
 
 		} else if("date-range".equals(qname.localpart)) {
 
 			if(attribs.getValue("min")!=null) {
-				currentElement.getFilter().setMinDate( parseParameterizedDateValue(attribs.getValue("min")));
+				currentElement.getFilter().setMinDate( parseDateValue(attribs.getValue("min")));
 			}
 			if(attribs.getValue("max")!=null) {
-				currentElement.getFilter().setMaxDate( parseParameterizedDateValue(attribs.getValue("max")));
-			}
-			if(attribs.getValue("date-unit")!=null) {
-				currentElement.getFilter().setDateUnit( parseDateUnit( attribs.getValue("date-unit")));
-			}
-			if(attribs.getValue("count") != null ){
-				currentElement.getFilter().setCount( parseParameterizedIntValue(attribs.getValue("count")));
+				currentElement.getFilter().setMaxDate( parseDateValue(attribs.getValue("max")));
 			}
 
 		/*
@@ -172,7 +164,7 @@ public class ReportParser extends SAXParser {
 		} else if("indicator".equals(qname.localpart)) {
 
             if(currentElement instanceof PivotChartElement) {
-                ((PivotChartElement)currentElement).addIndicator( parseParameterizedIntValue(attribs.getValue("id")));
+                ((PivotChartElement)currentElement).addIndicator( Integer.parseInt(attribs.getValue("id")));
             } else if(currentLayer instanceof GsMapLayer) {
                 ((GsMapLayer)currentLayer).addIndicator( Integer.parseInt(attribs.getValue("id")) );
             } else if(currentLayer instanceof IconMapLayer) {
@@ -334,9 +326,8 @@ public class ReportParser extends SAXParser {
 
         } else if(type == DimensionType.AdminLevel) {
 
-            AdminDimension dim = new AdminDimension(
+            return new AdminDimension(
                     Integer.parseInt(attribs.getValue("levelId")));
-            return dim;
 
 		} else {
 			
@@ -391,31 +382,23 @@ public class ReportParser extends SAXParser {
 		}
 		throw new XNIException("date unit: " + unitAttrib);
 	}
-	
-
-	private ParameterizedValue<Integer> parseParameterizedIntValue(String value) {
-		
-		if(value.startsWith("${")) {
-			String paramName = value.substring(2, value.length()-1);
-			return ParameterizedValue.<Integer>forParam(paramName);
-		} else {
-			return ParameterizedValue.literal(Integer.parseInt(value));
-		}
-	}	
 
 
-	private ParameterizedValue<Date> parseParameterizedDateValue(String value) {
-		if(value.startsWith("${")) {
-			String paramName = value.substring(2, value.length()-1);
-			return ParameterizedValue.<Date>forParam(paramName);
-		} else {
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			try {
-				return  ParameterizedValue.literal(sdf.parse(value));
-			} catch (ParseException e) {
-				throw new XNIException(e);
-			}
-		}
+    private Date parseDateValue(String value) {
+
+        if(value.startsWith("${")) {
+            // legacy parameter. treat as null and it should
+            // work out.
+            
+            return null;
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            return sdf.parse(value);
+        } catch (ParseException e) {
+            throw new XNIException(e);
+        }
 	}
 
 	public Report getReport() {

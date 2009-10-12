@@ -1,15 +1,14 @@
 package org.activityinfo.server.report.renderer.ppt;
 
-import org.junit.Test;
-import org.activityinfo.server.report.ParseTest;
-import org.apache.poi.hslf.HSLFSlideShow;
-import org.apache.poi.hslf.model.Slide;
-import org.apache.poi.hslf.model.Shape;
-import org.apache.poi.hslf.usermodel.SlideShow;
 import org.apache.poi.ddf.EscherProperties;
+import org.apache.poi.hslf.HSLFSlideShow;
+import org.apache.poi.hslf.model.Shape;
+import org.apache.poi.hslf.model.Slide;
+import org.apache.poi.hslf.usermodel.SlideShow;
+import org.junit.Test;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 /*
  * @author Alex Bertram
  */

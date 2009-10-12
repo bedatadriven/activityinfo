@@ -7,8 +7,8 @@ import org.activityinfo.shared.domain.SiteColumn;
 import org.activityinfo.shared.report.content.TableData;
 import org.activityinfo.shared.report.model.TableElement;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The RowBinder class bridges the SiteDAO object (which

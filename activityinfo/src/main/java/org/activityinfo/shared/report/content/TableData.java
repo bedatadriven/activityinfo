@@ -1,13 +1,11 @@
 package org.activityinfo.shared.report.content;
 
+import org.activityinfo.shared.report.model.TableElement.Column;
+
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.io.Serializable;
-
-
-import org.activityinfo.shared.report.model.TableElement;
-import org.activityinfo.shared.report.model.TableElement.Column;
 
 public class TableData implements Serializable {
 

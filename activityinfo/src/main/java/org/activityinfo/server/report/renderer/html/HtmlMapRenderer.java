@@ -1,11 +1,10 @@
 package org.activityinfo.server.report.renderer.html;
 
-import org.activityinfo.server.report.renderer.image.ImageMapRenderer;
-import org.activityinfo.server.report.generator.MapIconPath;
-import org.activityinfo.server.report.util.HtmlWriter;
-import org.activityinfo.shared.report.model.ReportElement;
-import org.activityinfo.shared.report.model.MapElement;
 import com.google.inject.Inject;
+import org.activityinfo.server.report.generator.MapIconPath;
+import org.activityinfo.server.report.renderer.image.ImageMapRenderer;
+import org.activityinfo.server.report.util.HtmlWriter;
+import org.activityinfo.shared.report.model.MapElement;
 
 import java.io.IOException;
 import java.io.OutputStream;

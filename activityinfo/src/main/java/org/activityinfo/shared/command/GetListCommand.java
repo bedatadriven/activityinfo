@@ -1,9 +1,8 @@
 package org.activityinfo.shared.command;
 
+import com.extjs.gxt.ui.client.data.SortInfo;
 import org.activityinfo.client.command.loader.ListCmdLoader;
 import org.activityinfo.shared.command.result.CommandResult;
-
-import com.extjs.gxt.ui.client.data.SortInfo;
 
 /**
  * Base class for Commands that return lists of objects, support sorting on the server,
@@ -11,7 +10,8 @@ import com.extjs.gxt.ui.client.data.SortInfo;
  * 
  * @author Alex Bertram
  *
- * @param <T> The result type of the command. Generally should be {@link org.activityinfo.shared.command.result.ListResult} or
+ * @param <T> The result type of the command. Generally should be
+ * {@link org.activityinfo.shared.command.result.ListResult} or
  * {@link org.activityinfo.shared.command.result.PagingResult}
  */
 public abstract class GetListCommand<T extends CommandResult> implements Command<T> {

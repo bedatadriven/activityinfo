@@ -33,8 +33,7 @@ public class ReportSubscription implements Serializable {
     private ReportSubscriptionId id;
     private ReportTemplate template;
     private User user;
-    private int frequency;
-    private int day;
+    private boolean subscribed;
     private User invitingUser;
 
     public ReportSubscription() {
@@ -73,7 +72,7 @@ public class ReportSubscription implements Serializable {
     /**
      * Sets the Report Template to which the user is subscribed.
      *
-     * @param template
+     * @param template The report template
      */
     public void setTemplate(ReportTemplate template) {
         this.template = template;
@@ -100,52 +99,6 @@ public class ReportSubscription implements Serializable {
     }
 
     /**
-     * Gets the frequency with which this report should be mailed. See constants in
-     * {@link org.activityinfo.shared.domain.Subscription}.
-     *
-     * @return The frequency with which this report should be mailed.
-     */
-    public int getFrequency() {
-        return frequency;
-    }
-
-    /**
-     * Sets the frequency with which the report should be mailed.
-     *
-     * @param frequency A constant from {@link org.activityinfo.shared.domain.Subscription} :
-     * <code>DAILY, WEEKLY, MONTHLY</code>
-     */
-    public void setFrequency(int frequency) {
-        this.frequency = frequency;
-    }
-
-    /**
-     * Gets the day on which the report is to be mailed.
-     *
-     * If the subscription frequency is
-     * <code>WEEKLY</code>, then this value refers to the
-     * day of the week (0=Sunday, 6=Saturday). If the frequency is <code>MONTHLY</code> this refers to the
-     * day of the month (1..28). A value of {@link org.activityinfo.shared.domain.Subscription.LAST_DAY_OF_MONTH} (28)
-     * indicats that the report will be mailed on the last day of the month, whether this the 28th, the 30th, or the 31st.
-     *
-     * @return the day on which the report is to be mailed.
-     *
-     */
-    public int getDay() {
-        return day;
-    }
-
-    /**
-     * Sets the day on which the report should be mailed.
-     *
-     * @param day For <code>WEEKLY</code> subscriptions, 0=Sunday, 6=Saturday. For <code>MONTHLY</code>,
-     * subscriptions, 1=first day of month,2,3,4...28=<code>LAST_DAY_OF_MONTH</code>
-     */
-    public void setDay(int day) {
-        this.day = day;
-    }
-
-    /**
      * Gets the inviting user
      *
      * @return The second user who has invited <code>user</code> to
@@ -166,5 +119,23 @@ public class ReportSubscription implements Serializable {
      */
     public void setInvitingUser(User invitingUser) {
         this.invitingUser = invitingUser;
+    }
+
+    /**
+     * Gets the subscription status to <code>report</code>
+     *
+     * @return True if the user is subscribed to the <code>report</code>
+     */
+    public boolean isSubscribed() {
+        return subscribed;
+    }
+
+    /**
+     * Sets the subscription status to <code>report</code>
+     *
+     * @param subscribed True if the user is to receive this report by mail.
+     */
+    public void setSubscribed(boolean subscribed) {
+        this.subscribed = subscribed;
     }
 }

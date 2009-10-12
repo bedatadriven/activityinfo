@@ -1,22 +1,22 @@
 package org.activityinfo.clientjre.place.config;
 
-import org.activityinfo.client.common.action.UIActions;
+import com.extjs.gxt.ui.client.store.Record;
 import org.activityinfo.client.mock.DummyData;
 import org.activityinfo.client.mock.MockCommandService;
 import org.activityinfo.client.page.Pages;
+import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.client.page.config.DbPlace;
 import org.activityinfo.client.page.config.DbUserEditor;
 import org.activityinfo.clientjre.mock.MockEventBus;
 import org.activityinfo.clientjre.mock.MockStateManager;
 import org.activityinfo.shared.command.GetUsers;
-import org.activityinfo.shared.command.UpdateUser;
+import org.activityinfo.shared.command.UpdateUserPermissions;
 import org.activityinfo.shared.command.result.UserResult;
 import org.activityinfo.shared.command.result.VoidResult;
 import org.activityinfo.shared.dto.Schema;
-import org.junit.Test;
-import org.junit.Assert;
 import static org.easymock.EasyMock.*;
-import com.extjs.gxt.ui.client.store.Record;
+import org.junit.Assert;
+import org.junit.Test;
 /*
  * @author Alex Bertram
  */
@@ -69,7 +69,7 @@ public class DbUserTest {
         // Collaborator: command service
         MockCommandService service = new MockCommandService();
         service.setResult(GetUsers.class, users);
-        service.setResult(UpdateUser.class, new VoidResult());
+        service.setResult(UpdateUserPermissions.class, new VoidResult());
 
         // Collaborator: View
         DbUserEditor.View view = createNiceMock(DbUserEditor.View.class);
@@ -87,7 +87,7 @@ public class DbUserTest {
 
         editor.onUIAction(UIActions.save);
 
-        UpdateUser cmd = service.getLastExecuted(UpdateUser.class);
+        UpdateUserPermissions cmd = service.getLastExecuted(UpdateUserPermissions.class);
         Assert.assertEquals("typhaine@sol.net", cmd.getModel().getEmail());
         Assert.assertEquals(true, cmd.getModel().getAllowViewAll());
     }
@@ -104,7 +104,7 @@ public class DbUserTest {
         // Collaborator: command service
         MockCommandService service = new MockCommandService();
         service.setResult(GetUsers.class, users);
-        service.setResult(UpdateUser.class, new VoidResult());
+        service.setResult(UpdateUserPermissions.class, new VoidResult());
 
         // Collaborator: View
         DbUserEditor.View view = createNiceMock(DbUserEditor.View.class);

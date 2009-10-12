@@ -1,9 +1,8 @@
 package org.activityinfo.client.page.config.form;
 
-import org.activityinfo.client.Application;
-
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import org.activityinfo.client.Application;
 
 public class DateRangeForm extends FormPanel {
 

@@ -34,8 +34,7 @@ import java.util.Set;
 public class ReportingPeriod implements java.io.Serializable, Deleteable {
 
 	private int id;
-	private int version;
-	private Site site;
+    private Site site;
 	private boolean monitoring;
 	private Date date1;
 	private Date date2;
@@ -73,18 +72,8 @@ public class ReportingPeriod implements java.io.Serializable, Deleteable {
 		this.id = id;
 	}
 
-	@Version
-	@Column(nullable=false)
-	public int getVersion() {
-		return this.version;
-	}
-	
-	protected void setVersion(int version) {
-		this.version = version;
-	}
-	
 
-	@ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SiteId", nullable = false)
 	public Site getSite() {
 		return this.site;

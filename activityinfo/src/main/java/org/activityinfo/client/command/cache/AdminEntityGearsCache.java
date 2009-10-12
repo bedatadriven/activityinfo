@@ -1,26 +1,31 @@
 package org.activityinfo.client.command.cache;
 
-import java.util.ArrayList;
-import java.util.List;
-
-
-import org.activityinfo.client.command.CommandEventSource;
-import org.activityinfo.client.command.CommandProxyResult;
-import org.activityinfo.shared.command.GetAdminEntities;
-import org.activityinfo.shared.command.result.AdminEntityResult;
-import org.activityinfo.shared.command.result.CommandResult;
-import org.activityinfo.shared.command.result.ListResult;
-import org.activityinfo.shared.dto.AdminEntityModel;
-import org.activityinfo.shared.dto.Bounds;
-
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.gears.client.Factory;
 import com.google.gwt.gears.client.GearsException;
 import com.google.gwt.gears.client.database.Database;
 import com.google.gwt.gears.client.database.DatabaseException;
 import com.google.gwt.gears.client.database.ResultSet;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.core.client.GWT;
+import org.activityinfo.client.command.CommandEventSource;
+import org.activityinfo.shared.command.GetAdminEntities;
+import org.activityinfo.shared.command.result.AdminEntityResult;
+import org.activityinfo.shared.command.result.CommandResult;
+import org.activityinfo.shared.dto.AdminEntityModel;
+import org.activityinfo.shared.dto.Bounds;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Extends the default in-memory AdminEntityCache to store the results of
+ * GetAdminEntities commands in a client-side Gears database.
+ *
+ * Note, this implementation caches AdminEntities in a user-independent local database called
+ * "admin." This needs to be reconciled with the more general offline approach.
+ *
+ * @author Alex Bertram
+ */
 public class AdminEntityGearsCache extends AdminEntityCache {
 	
 	protected Database db;

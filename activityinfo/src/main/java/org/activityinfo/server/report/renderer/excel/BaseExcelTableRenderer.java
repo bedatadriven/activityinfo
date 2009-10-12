@@ -1,17 +1,13 @@
 package org.activityinfo.server.report.renderer.excel;
 
+import org.activityinfo.shared.report.content.TreeNode;
+import org.activityinfo.shared.report.model.ReportElement;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.activityinfo.shared.report.content.TreeNode;
-import org.activityinfo.shared.report.model.ReportElement;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.util.CellRangeAddress;
 
 
 public abstract class BaseExcelTableRenderer<ElementT extends ReportElement, ColumnT extends TreeNode> 
