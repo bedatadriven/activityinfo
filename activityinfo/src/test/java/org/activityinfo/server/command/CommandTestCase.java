@@ -4,6 +4,8 @@ package org.activityinfo.server.command;
 import com.google.inject.*;
 import org.activityinfo.server.ActivityInfoModule;
 import org.activityinfo.server.DbUnitTestCase;
+import org.activityinfo.server.service.impl.CongoPasswordGenerator;
+import org.activityinfo.server.service.impl.NullMailer;
 import org.activityinfo.server.command.handler.CommandHandler;
 import org.activityinfo.server.command.handler.HandlerUtil;
 import org.activityinfo.server.dao.jpa.AuthDAOJPA;
@@ -67,7 +69,7 @@ public abstract class CommandTestCase extends DbUnitTestCase {
 
         DomainFilters.applyUserFilter(user, em);
 
-        AuthDAOJPA userDAO = new AuthDAOJPA(em);
+        AuthDAOJPA userDAO = new AuthDAOJPA(em, new CongoPasswordGenerator(), new NullMailer());
 
         Class<? extends CommandHandler> executorClass = HandlerUtil.executorForCommand(command);
 		CommandHandler<Command<T>> handler = (CommandHandler<Command<T>>) 

@@ -17,6 +17,11 @@ public class AttributeModel extends BaseModel implements EntityDTO {
         
     }
 
+    public AttributeModel(int id, String name) {
+        setId(id);
+        setName(name);
+    }
+
     public int getId() {
         return (Integer)get("id");
     }

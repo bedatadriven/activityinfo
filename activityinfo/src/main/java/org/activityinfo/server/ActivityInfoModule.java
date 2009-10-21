@@ -10,6 +10,7 @@ import org.activityinfo.server.dao.hibernate.SiteTableDAO;
 import org.activityinfo.server.dao.hibernate.SiteTableDAOHibernate;
 import org.activityinfo.server.dao.jpa.*;
 import org.activityinfo.server.mail.Mailer;
+import org.activityinfo.server.mail.MailerImpl;
 import org.activityinfo.server.report.renderer.html.HtmlChartRenderer;
 import org.activityinfo.server.report.renderer.html.HtmlChartRendererJC;
 import org.activityinfo.server.service.Authenticator;
@@ -42,7 +43,7 @@ public class ActivityInfoModule extends AbstractModule {
         bind(BaseMapDAO.class).to(BaseMapDAOImpl.class);
 
         /* External Services */
-        bind(Mailer.class).to(NullMailer.class);
+        bind(Mailer.class).to(MailerImpl.class);
         bind(PasswordGenerator.class).to(CongoPasswordGenerator.class);
         bind(Authenticator.class).to(DbAuthenticator.class);
 
@@ -59,6 +60,11 @@ public class ActivityInfoModule extends AbstractModule {
 
         return new DozerBeanMapper(mappingFiles);
 
+    }
+
+    public static Mapper getMapper() {
+        ActivityInfoModule mod = new ActivityInfoModule();
+        return mod.provideMapper();
     }
 
 }

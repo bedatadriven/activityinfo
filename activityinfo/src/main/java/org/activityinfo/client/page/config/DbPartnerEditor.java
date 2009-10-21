@@ -60,6 +60,8 @@ public class DbPartnerEditor extends AbstractGridPresenter<PartnerModel> {
     }
 
     public void go(UserDatabaseDTO db) {
+        this.db = db;
+
         store = new ListStore<PartnerModel>();
         store.setSortField("name");
         store.setSortDir(Style.SortDir.ASC);

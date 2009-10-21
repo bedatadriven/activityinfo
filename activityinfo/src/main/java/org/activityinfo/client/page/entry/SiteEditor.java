@@ -12,10 +12,13 @@ import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.Place;
 import org.activityinfo.client.command.CommandService;
+import org.activityinfo.client.command.Authentication;
+import org.activityinfo.client.command.callback.DownloadCallback;
 import org.activityinfo.client.command.loader.CommandLoadEvent;
 import org.activityinfo.client.command.loader.PagingCmdLoader;
 import org.activityinfo.client.command.monitor.NullAsyncMonitor;
 import org.activityinfo.client.event.SiteEvent;
+import org.activityinfo.client.event.DownloadEvent;
 import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.PagePresenter;
 import org.activityinfo.client.page.Pages;
@@ -33,6 +36,8 @@ import org.activityinfo.shared.dto.ActivityModel;
 import org.activityinfo.shared.dto.AdminLevelModel;
 import org.activityinfo.shared.dto.SiteModel;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
+import org.activityinfo.shared.report.model.TableElement;
+import org.activityinfo.shared.i18n.UIConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,8 +122,6 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
             }
         };
         this.eventBus.addListener(AppEvents.SiteSelected, siteSelectedListner);
-
-
     }
 
 
@@ -347,9 +350,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
     }
 
     protected void onEdit(SiteModel site) {
-
         formLoader.edit(currentActivity, site, new NullAsyncMonitor());
-
     }
 
 
@@ -369,8 +370,9 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
     }
 
     private void onExport() {
-
-    }
+        String url = "../export?auth=#AUTH#&a=" + currentActivity.getId();
+        eventBus.fireEvent(new DownloadEvent(url));
+   }
 
     public void onFilter(String filter) {
         GetSites cmd = (GetSites) loader.getCommand();

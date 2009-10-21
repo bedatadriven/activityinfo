@@ -9,7 +9,7 @@ import org.activityinfo.shared.dto.Schema;
  *
  * @author Alex Bertram
  */
-public class GetSchema implements Command<Schema> {
+public class GetSchema implements Command<Schema>  {
 
 
     @Override

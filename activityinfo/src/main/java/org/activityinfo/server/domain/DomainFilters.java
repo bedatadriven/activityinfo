@@ -31,12 +31,22 @@ import javax.persistence.EntityManager;
 public class DomainFilters {
 
     public static void applyUserFilter(User user, EntityManager em) {
+         applyDeletedFilter(em);
+        applyVisibleFilter(user,em);
+
+    }
+
+    public static void applyDeletedFilter(EntityManager em) {
         org.hibernate.Session session = ((HibernateEntityManager) em).getSession();
 
         /* Hide entities deleted by users  */
         session.enableFilter("hideDeleted");
 
+    }
+
+    public static void applyVisibleFilter(User user, EntityManager em) {
         /* Hide entities that this user does not have permission to view */
+        org.hibernate.Session session = ((HibernateEntityManager) em).getSession();
 
         Filter filter = session.enableFilter("userVisible");
 		filter.setParameter("currentUserId", user.getId());

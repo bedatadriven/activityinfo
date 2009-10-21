@@ -52,7 +52,7 @@ public class CreateSiteGwtTest extends GWTTestCase {
 
         Authentication auth = new Authentication("9cdbcf2b2ce45c282f6f0c98ea4a3dea", "user@user.org");
 
-        final CommandServiceImpl service = new CommandServiceImpl(remoteService, eventBus, new GWTTimerImpl(), auth) {
+        final CommandServiceImpl service = new CommandServiceImpl(remoteService, null, eventBus, new GWTTimerImpl(), auth) {
 
             @Override
             protected void onServerError(List<CommandRequest> executingCommands, Throwable caught) {

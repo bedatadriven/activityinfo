@@ -6,16 +6,15 @@ package org.activityinfo.client.offline;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.gears.client.Factory;
-import com.google.gwt.gears.client.GearsException;
+import com.google.gwt.gears.client.workerpool.WorkerPool;
+import com.google.gwt.gears.client.workerpool.WorkerPoolMessageHandler;
+import com.google.gwt.gears.client.workerpool.WorkerPoolErrorHandler;
 import com.google.gwt.gears.client.localserver.ManagedResourceStore;
-import com.google.gwt.gears.client.localserver.LocalServer;
 import com.google.gwt.gears.client.localserver.ManagedResourceStoreErrorHandler;
 import com.google.gwt.gears.client.localserver.ManagedResourceStoreCompleteHandler;
 import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.core.client.GWT;
 import com.google.inject.Inject;
@@ -24,6 +23,7 @@ import org.activityinfo.client.EventBus;
 import org.activityinfo.client.command.Authentication;
 import org.activityinfo.client.command.CommandService;
 import org.activityinfo.client.offline.ui.OfflineStatusWindow;
+import org.activityinfo.shared.message.StartSynchronizing;
 
 /**
  * With regards to offline functionality, the application can be in one of three
@@ -61,7 +61,8 @@ public class OfflineManager {
     private final OfflineStatusWindow statusWindow;
 
     @Inject
-    public OfflineManager(EventBus eventBus, CommandService service, Authentication auth, OfflineStatusWindow statusWindow) {
+    public OfflineManager(EventBus eventBus, CommandService service, Authentication auth,
+                          OfflineStatusWindow statusWindow, DatabaseProvider databaseProvider) {
         this.eventBus = eventBus;
         this.service = service;
         this.auth = auth;
@@ -94,7 +95,13 @@ public class OfflineManager {
             }
         });
 
+
+        // not ready for prime time :-(
+        //initWorkerPool(auth, databaseProvider);
+
+
     }
+
 
     /**
      *
@@ -136,11 +143,33 @@ public class OfflineManager {
 
     private void disableOfflineMode() {
         // remove the cookie
-        Cookies.removeCookie("offline");
+        Cookies.removeCookie(ManagedResourceStores.OFFLINE_COOKIE_NAME);
 
         Window.Location.reload();
 
         // TODO: prompt for removal of offline database
     }
+
+    private void initWorkerPool(Authentication auth, DatabaseProvider databaseProvider) {
+          // start the synchro worker pool
+          WorkerPool workerPool = Factory.getInstance().createWorkerPool();
+          workerPool.setMessageHandler(new WorkerPoolMessageHandler() {
+              @Override
+              public void onMessageReceived(MessageEvent event) {
+                  GWT.log("Message from worker " + event.getSender() + ": " + event.getBody(), null);
+              }
+          });
+
+          int workerId = workerPool.createWorkerFromUrl("/Synchronizer/worker.js");
+          GWT.log("Created synchro worker, id = " + workerId, null);
+
+          StartSynchronizing msg = StartSynchronizing.newInstance();
+          msg.setAuthToken(auth.getAuthToken());
+          msg.setEndPoint(GWT.getModuleBaseURL() + "/cmd");
+          msg.setUserDb(databaseProvider.getDatabaseName());
+
+          workerPool.sendMessage(msg, workerId);
+      }
+    
 
 }

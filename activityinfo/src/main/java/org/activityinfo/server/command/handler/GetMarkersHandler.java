@@ -22,13 +22,13 @@ package org.activityinfo.server.command.handler;
 import com.google.inject.Inject;
 import org.activityinfo.server.dao.hibernate.SiteTableDAO;
 import org.activityinfo.server.domain.User;
+import org.activityinfo.server.domain.SiteData;
 import org.activityinfo.server.report.generator.SiteDataBinder;
 import org.activityinfo.shared.command.GetMarkers;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.dto.SiteMarker;
 import org.activityinfo.shared.dto.SiteMarkerCollection;
 import org.activityinfo.shared.exception.CommandException;
-import org.activityinfo.shared.report.content.SiteData;
 
 import java.util.ArrayList;
 import java.util.List;

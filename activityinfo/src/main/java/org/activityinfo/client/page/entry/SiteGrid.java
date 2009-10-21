@@ -1,6 +1,7 @@
 package org.activityinfo.client.page.entry;
 
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -125,10 +126,9 @@ public class SiteGrid extends AbstractEditorGridView<SiteModel, SiteEditor>
         toolBar.addEditButton();
         toolBar.addDeleteButton(Application.CONSTANTS.deleteSite());
 
-        //toolBar.add(new SeparatorToolItem());
+        toolBar.add(new SeparatorToolItem());
 
-        // TODO toolBar.addButton(UIActions.map, Application.CONSTANTS.maps(), Application.ICONS.map());
-        // TODO toolBar.addExcelExportButton();
+        toolBar.addExcelExportButton();
     }
 
     @Override
@@ -258,14 +258,33 @@ public class SiteGrid extends AbstractEditorGridView<SiteModel, SiteEditor>
     }
 
     protected ColumnConfig createIndicatorColumn(IndicatorModel indicator, String header) {
+        final NumberFormat format = NumberFormat.getFormat("0");
+
         NumberField indicatorField = new NumberField();
-        indicatorField.getPropertyEditor().setFormat(NumberFormat.getFormat("0"));
+        indicatorField.getPropertyEditor().setFormat(format);
 
         ColumnConfig indicatorColumn = new ColumnConfig(indicator.getPropertyName(),
                 header, 50);
-        indicatorColumn.setNumberFormat(NumberFormat.getFormat("0"));
+
+        indicatorColumn.setNumberFormat(format);
         indicatorColumn.setEditor(new CellEditor(indicatorField));
         indicatorColumn.setAlignment(Style.HorizontalAlignment.RIGHT);
+
+        // For SUM indicators, don't show ZEROs in the Grid
+        // (it looks better if we don't)
+        if(indicator.getAggregation() == IndicatorModel.AGGREGATE_SUM) {
+            indicatorColumn.setRenderer(new GridCellRenderer() {
+                @Override
+                public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
+                    Double value = model.get(property);
+                    if(value != null && value != 0) {
+                        return format.format(value);
+                    } else {
+                        return "";
+                    }
+                }
+            });
+        }
 
         return indicatorColumn;
     }

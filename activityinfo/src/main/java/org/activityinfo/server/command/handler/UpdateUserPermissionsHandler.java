@@ -85,28 +85,9 @@ public class UpdateUserPermissionsHandler implements CommandHandler<UpdateUserPe
 
 		    String password = passwordGenerator.generate();
 
-		    user = authDAO.createUser(model.getEmail(), model.getName(), password, currentUser.getLocale());
+		    user = authDAO.createUser(model.getEmail(), model.getName(), currentUser.getLocale(), currentUser);
 
-            try {
-                ResourceBundle mailMessages =
-                      ResourceBundle.getBundle("org.activityinfo.server.mail.MailMessages", user.getLocaleObject());
 
-                SimpleEmail email = new SimpleEmail();
-                email.addTo(user.getEmail(), user.getName());
-                email.setSubject(mailMessages.getString("passwordSubject"));
-
-                StringBuilder sb = new StringBuilder();
-                sb.append(MessageFormat.format(mailMessages.getString("greeting"), user.getName())).append("\n\n");
-                sb.append(MessageFormat.format(mailMessages.getString("newUserIntro"), currentUser.getName(), currentUser.getEmail())).append("\n\n");
-                sb.append(MessageFormat.format(mailMessages.getString("newUserPassword"), user.getName(), password)).append("\n\n");
-                sb.append(mailMessages.getString("newUserSignoff"));
-                email.setMsg(sb.toString());
-
-                mailer.send(email);
-            } catch (Exception e) {
-                // don't let an email failure rollback the creation of the user.
-                e.printStackTrace();
-            }
 
         }
 		

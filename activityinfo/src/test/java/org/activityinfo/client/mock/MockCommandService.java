@@ -5,8 +5,10 @@ import org.activityinfo.client.command.CommandService;
 import org.activityinfo.client.command.monitor.AsyncMonitor;
 import org.activityinfo.shared.command.BatchCommand;
 import org.activityinfo.shared.command.Command;
+import org.activityinfo.shared.command.RenderElement;
 import org.activityinfo.shared.command.result.BatchResult;
 import org.activityinfo.shared.command.result.CommandResult;
+import org.activityinfo.shared.report.model.ReportElement;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,6 +42,11 @@ public class MockCommandService implements CommandService {
         } else {
            callback.onSuccess((T)findResult(command));
         }
+    }
+
+    @Override
+    public void export(ReportElement element, RenderElement.Format format, AsyncMonitor monitor, AsyncCallback<Void> callback) {
+
     }
 
     private CommandResult findResult(Command command) {

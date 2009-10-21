@@ -10,7 +10,7 @@ import org.activityinfo.client.page.common.filter.AdminFilterPanel;
 import org.activityinfo.client.page.common.filter.DateRangePanel;
 import org.activityinfo.client.page.common.filter.IndicatorTreePanel;
 import org.activityinfo.shared.dto.AdminEntityModel;
-import org.activityinfo.shared.dto.Schema;
+import org.activityinfo.shared.dto.IndicatorModel;
 import org.activityinfo.shared.i18n.UIConstants;
 import org.activityinfo.shared.report.model.DimensionType;
 import org.activityinfo.shared.report.model.GsMapLayer;
@@ -68,16 +68,14 @@ public class SingleMapForm extends ContentPanel implements MapForm {
         accordianLayout.setActiveItem(indicatorTree);
     }
 
-    public void setSchema(Schema schema) {
-      //  indicatorTree.setSchema(schema);
-    }
-
     public ReportElement getMapElement() {
         MapElement element = new MapElement();
         layoutForm.updateElement(element);
 
         List<Integer> indicators = new ArrayList<Integer>();
-        indicators.add(indicatorTree.getSelection().get(0).getId());
+        List<IndicatorModel> sel = indicatorTree.getSelection();
+        if(sel.size() != 0)
+            indicators.add(sel.get(0).getId());
 
         GsMapLayer layer = new GsMapLayer();
         layer.setIndicatorIds(indicators);
@@ -91,6 +89,15 @@ public class SingleMapForm extends ContentPanel implements MapForm {
         }
 
         return element;
+    }
+
+    /**
+     * Public for testing
+     *
+     * @return the indicator tree panel
+     */
+    public IndicatorTreePanel getIndicatorTree() {
+        return indicatorTree;
     }
 
     public boolean validate() {

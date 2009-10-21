@@ -4,8 +4,8 @@ import org.activityinfo.server.DbUnitTestCase;
 import org.activityinfo.server.dao.hibernate.SiteTableDAO;
 import org.activityinfo.server.dao.hibernate.SiteTableDAOHibernate;
 import org.activityinfo.server.domain.User;
+import org.activityinfo.server.domain.SiteData;
 import org.activityinfo.server.report.generator.SiteDataBinder;
-import org.activityinfo.shared.report.content.SiteData;
 import org.junit.Assert;
 import org.junit.Test;
 

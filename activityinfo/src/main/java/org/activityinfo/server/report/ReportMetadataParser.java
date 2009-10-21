@@ -21,8 +21,7 @@ public class ReportMetadataParser extends SAXParser {
 	private Map<String, Integer> frequencyNames;
 
     public ReportMetadataParser() {
-		
-		
+
 		frequencyNames = new HashMap<String, Integer>();
 		frequencyNames.put("monthly", ReportFrequency.MONTHLY);
 		frequencyNames.put("weekly", ReportFrequency.WEEKLY);

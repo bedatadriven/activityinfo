@@ -3,7 +3,7 @@ package org.activityinfo.server.report.generator.map;
 import org.activityinfo.shared.domain.SiteColumn;
 import org.activityinfo.shared.report.content.LatLng;
 import org.activityinfo.shared.report.content.MapContent;
-import org.activityinfo.shared.report.content.SiteData;
+import org.activityinfo.server.domain.SiteData;
 import org.activityinfo.shared.report.model.*;
 import org.junit.Assert;
 import org.junit.Test;
@@ -53,6 +53,7 @@ public class GsLayerGeneratorTest {
         Assert.assertEquals("marker count", 2, content.getMarkers().size());
         Assert.assertEquals(255, content.getMarkers().get(0).getColor());
         Assert.assertEquals(0, content.getMarkers().get(1).getColor());
+        Assert.assertTrue(content.getMarkers().get(0).getRadius() >= layer.getMinRadius());
     }
 
     @Test

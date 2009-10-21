@@ -22,6 +22,7 @@ package org.activityinfo.server.command.handler;
 import com.google.inject.Inject;
 import org.activityinfo.server.dao.hibernate.SiteTableDAO;
 import org.activityinfo.server.domain.User;
+import org.activityinfo.server.domain.SiteData;
 import org.activityinfo.server.report.generator.SiteDataBinder;
 import org.activityinfo.shared.command.GetSitePoints;
 import org.activityinfo.shared.command.result.CommandResult;
@@ -29,7 +30,6 @@ import org.activityinfo.shared.dto.Bounds;
 import org.activityinfo.shared.dto.SitePoint;
 import org.activityinfo.shared.dto.SitePointCollection;
 import org.activityinfo.shared.exception.CommandException;
-import org.activityinfo.shared.report.content.SiteData;
 import org.hibernate.criterion.Restrictions;
 
 import java.util.ArrayList;

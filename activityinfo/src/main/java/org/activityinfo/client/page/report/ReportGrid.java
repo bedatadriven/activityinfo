@@ -97,15 +97,15 @@ public class ReportGrid extends AbstractEditorGridView<ReportTemplateDTO, Report
         });
         columns.add(name);
 
-        ColumnConfig frequency = new ColumnConfig("frequency", "Frequence", 100); // TODO: i18n
+        ColumnConfig frequency = new ColumnConfig("frequency", Application.CONSTANTS.reportingFrequency(), 100);
         frequency.setRenderer(new GridCellRenderer<ReportTemplateDTO>() {
             public Object render(ReportTemplateDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
                 if(model.getFrequency() == ReportFrequency.MONTHLY) {
                     return Application.CONSTANTS.monthly();
                 } else if(model.getFrequency() == ReportFrequency.WEEKLY) {
-                    return "hebdodomaire"; // TODO: i18n
+                    return Application.CONSTANTS.weekly();
                 } else if(model.getFrequency() == ReportFrequency.DAILY) {
-                    return "journalièrement";
+                    return Application.CONSTANTS.daily();
                 } else if(model.getFrequency() == ReportFrequency.ADHOC) {
                     return "ad hoc";
                 }

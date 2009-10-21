@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -62,7 +63,8 @@ public class RootServlet extends HttpServlet {
             if(auth == null) {
                 showLogin(response, getBookmark(request), "");
             } else {
-                loadApp(response, auth);
+
+                loadApp(response, auth, "offline".equals(request.getQueryString()));
             }
         }
     }
@@ -93,13 +95,18 @@ public class RootServlet extends HttpServlet {
         }
     }
 
-    private void loadApp(HttpServletResponse response, Authentication auth) throws IOException {
+    private void loadApp(HttpServletResponse response, Authentication auth, boolean offline) throws IOException {
+        // define model
+        Map<String,Object> model = new HashMap<String, Object>();
+        model.put("auth", auth);
+        model.put("offline", offline);
+
         // load the app directly
         response.setContentType("text/html");
 
         Template template = templateCfg.getTemplate("hostpage.ftl");
         try {
-            template.process(auth, response.getWriter());
+            template.process(model, response.getWriter());
         } catch (TemplateException e) {
             response.setContentType("text/plain");
             e.printStackTrace(response.getWriter());
@@ -160,7 +167,7 @@ public class RootServlet extends HttpServlet {
             cookie.setMaxAge(remember ? 30*24*60*60 : -1);
             response.addCookie(cookie);
 
-            response.sendRedirect("/" + (bookmark == null ? "" : "#" + bookmark));
+            response.sendRedirect((bookmark == null ? "" : "#" + bookmark));
 
         } catch (InvalidLoginException e) {
 

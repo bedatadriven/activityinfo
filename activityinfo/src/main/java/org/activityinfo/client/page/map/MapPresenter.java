@@ -33,8 +33,6 @@ public class MapPresenter implements PagePresenter, ExportCallback, ActionListen
 
         public AsyncMonitor getMapLoadingMonitor();
 
-        public void setSchema(Schema schema);
-
         public ReportElement getMapElement();
 
         void setContent(ReportElement element, Content result);
@@ -54,12 +52,6 @@ public class MapPresenter implements PagePresenter, ExportCallback, ActionListen
         this.view = view;
         this.view.bindPresenter(this);
 
-        service.execute(new GetSchema(), view.getSchemaLoadingMonitor(), new Got<Schema>() {
-            @Override
-            public void got(Schema result) {
-                view.setSchema(result);
-            }
-        });
     }
 
     public void onUIAction(String itemId) {
@@ -115,7 +107,7 @@ public class MapPresenter implements PagePresenter, ExportCallback, ActionListen
         if(view.validate()) {
 
            service.execute(new RenderElement(view.getMapElement(), format), view.getMapLoadingMonitor(),
-                   new DownloadCallback());
+                   new DownloadCallback(eventBus));
         }
 
     }

@@ -5,11 +5,22 @@ import com.google.gwt.gears.client.database.ResultSet;
 import com.google.gwt.gears.client.database.DatabaseException;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.js.JsonConverter;
+import static com.extjs.gxt.ui.client.js.JsonConverter.encode;
 
 import java.util.*;
 
 import org.activityinfo.shared.dto.*;
 
+/**
+ * Persists the user-visible schema to and from the Gears database.
+ *
+ *
+ * Note: only the properties specifically needed in queries are stored in
+ * columns, the rest are stuffed into a JSON-encoded property bag in the properties column.
+ * Hopefully this will make changes to the database structure easier to propogate down to the client.
+ *
+ * @author Alex Bertram
+ */
 public class SchemaDAO {
 
     private final Database gearsDb;
@@ -64,10 +75,14 @@ public class SchemaDAO {
         gearsDb.execute("create table if not exists Indicator (id integer primary key, activityId integer, " +
                 "name text, sortOrder int, properties text)");
 
-        gearsDb.execute("create table if not exists AttributeGroup (id integer, activityId integer, " +
+        gearsDb.execute("create table if not exists AttributeGroup (id integer primary key, activityId integer, " +
                 "name text, sortOrder int, properties text)");
 
-        gearsDb.execute("create table if not exists Attribute(id integer, attributeGroupId integer, name text, sortOrder int)");
+        gearsDb.execute("create table if not exists AttributeGroupInActivity " +
+                "(activityId integer, attributeGroupId integer, sortOrder integer)");
+
+        gearsDb.execute("create table if not exists Attribute(id integer, attributeGroupId integer, " +
+                "name text, sortOrder int, properties text)");
     }
 
     private void insertCountry(CountryModel country) throws DatabaseException {
@@ -75,7 +90,7 @@ public class SchemaDAO {
         gearsDb.execute("insert into Country (id, name, properties) values (?, ?, ?)",
                 Integer.toString(country.getId()),
                 country.getName(),
-                JsonConverter.encode(country.getProperties()).toString());
+                encode(country.getProperties()).toString());
 
         for(AdminLevelModel level : country.getAdminLevels()) {
             insertAdminLevel(country, level);
@@ -93,7 +108,7 @@ public class SchemaDAO {
                 Integer.toString(country.getId()),
                 level.isRoot() ? "" : Integer.toString(level.getParentLevelId()),
                 level.getName(),
-                JsonConverter.encode(level.getProperties()).toString(),
+                encode(level.getProperties()).toString(),
                 "0");
     }
 
@@ -102,7 +117,7 @@ public class SchemaDAO {
                 Integer.toString(type.getId()),
                 Integer.toString(country.getId()),
                 type.getName(),
-                JsonConverter.encode(type.getProperties()).toString());
+                encode(type.getProperties()).toString());
 
     }
 
@@ -112,7 +127,7 @@ public class SchemaDAO {
                 Integer.toString(db.getId()),
                 Integer.toString(db.getCountry().getId()),
                 db.getName(),
-                JsonConverter.encode(db.getProperties()).toString());
+                encode(db.getProperties()).toString());
     }
 
     private void insertPartner(PartnerModel partner) throws DatabaseException {
@@ -120,7 +135,7 @@ public class SchemaDAO {
         gearsDb.execute("insert into Partner (id, name, properties) values (?, ?, ?)",
                 Integer.toString(partner.getId()),
                 partner.getName(),
-                JsonConverter.encode(partner.getProperties()).toString());
+                encode(partner.getProperties()).toString());
     }
 
     private void insertPartnerInDatabase(UserDatabaseDTO db, PartnerModel partner) throws DatabaseException {
@@ -130,26 +145,49 @@ public class SchemaDAO {
                 Integer.toString(partner.getId()));
     }
 
-    private void insertActivity(ActivityModel activity, int sortOrder) throws DatabaseException {
+    private void insertActivity(ActivityModel activity, int sortOrder)
+            throws DatabaseException {
 
         gearsDb.execute("insert into Activity (id, databaseId, name, sortOrder, properties) values (?, ?, ?, ?, ?)",
                 Integer.toString(activity.getId()),
                 Integer.toString(activity.getDatabase().getId()),
                 activity.getName(),
                 Integer.toString(sortOrder),
-                JsonConverter.encode(activity.getProperties()).toString());
+                encode(activity.getProperties()).toString());
 
     }
 
-    private void insertIndicator(ActivityModel activity, IndicatorModel indicator, int sortOrder) throws DatabaseException {
+    private void insertIndicator(ActivityModel activity, IndicatorModel indicator, int sortOrder)
+            throws DatabaseException {
 
         gearsDb.execute("insert into Indicator (id, activityId, name, sortOrder, properties) values (?, ?, ?, ?, ?)",
                 Integer.toString(indicator.getId()),
                 Integer.toString(activity.getId()),
                 indicator.getName(),
                 Integer.toString(sortOrder),
-                JsonConverter.encode(indicator.getProperties()).toString());
+                encode(indicator.getProperties()).toString());
     }
+
+    private void insertAttributeGroup(ActivityModel activity, AttributeGroupModel attributeGroup, int sortOrder)
+            throws DatabaseException {
+
+        gearsDb.execute("insert into AttributeGroup (id, name, properties) values (?, ?, ?)",
+                Integer.toString(attributeGroup.getId()),
+                attributeGroup.getName(),
+                encode(attributeGroup.getProperties()).toString());
+
+    }
+
+    private void insertAttribute(AttributeGroupModel attributeGroup, AttributeModel attribute, int sortOrder)
+        throws DatabaseException {
+        gearsDb.execute("insert into Attribute (id, attributeGroupId, name, sortOrder, properties) values (?,?,?,?,?)",
+                Integer.toString(attribute.getId()),
+                Integer.toString(attributeGroup.getId()),
+                attribute.getName(),
+                Integer.toString(sortOrder),
+                encode(attribute.getProperties()).toString());
+    }
+
 
 
 //
@@ -222,6 +260,7 @@ public class SchemaDAO {
 
         Set<Integer> countriesInserted = new HashSet<Integer>();
         Set<Integer> partnersInserted = new HashSet<Integer>();
+        Set<Integer> attributeGroupsInserted = new HashSet<Integer>();
 
         for(UserDatabaseDTO db : schema.getDatabases()) {
 
@@ -249,6 +288,21 @@ public class SchemaDAO {
                 for(IndicatorModel indicator : activity.getIndicators()) {
                     insertIndicator(activity, indicator, sortOrder++);
                 }
+
+                for(AttributeGroupModel attributeGroup : activity.getAttributeGroups()) {
+                    if(!attributeGroupsInserted.contains(attributeGroup.getId())) {
+                        insertAttributeGroup(activity, attributeGroup, sortOrder++);
+                        attributeGroupsInserted.add(attributeGroup.getId());
+                        for(AttributeModel attribute: attributeGroup.getAttributes()) {
+                            insertAttribute(attributeGroup, attribute, sortOrder++);
+                        }
+                    }
+                    gearsDb.execute("insert into AttributeGroupInActivity (activityId, attributeGroupId, sortOrder) values(?,?, ?)",
+                            Integer.toString(activity.getId()),
+                            Integer.toString(attributeGroup.getId()),
+                            Integer.toString(sortOrder++));
+
+                }
             }
         }
 
@@ -257,6 +311,8 @@ public class SchemaDAO {
                 new Date().toString());
 
     }
+
+
 
     private <T extends ModelData> Map<Integer, T> loadModels(String query, ModelCreator<T> creator)
             throws DatabaseException {
@@ -291,6 +347,25 @@ public class SchemaDAO {
                 return new CountryModel();
             }
         });
+
+        final Map<Integer, AttributeGroupModel> attributeGroups = loadModels("select properties from AttributeGroup",
+                new ModelCreator<AttributeGroupModel>() {
+                    @Override
+                    public AttributeGroupModel create(ResultSet rs) throws DatabaseException {
+                        return new AttributeGroupModel();
+                    }
+                });
+
+        loadModels("select properties, attributeGroupId from Attribute order by sortOrder",
+                new ModelCreator<AttributeModel>() {
+                    @Override
+                    public AttributeModel create(ResultSet rs) throws DatabaseException {
+                        AttributeModel attribute = new AttributeModel();
+                        attributeGroups.get(rs.getFieldAsInt(1)).getAttributes().add(attribute);
+                        return attribute;
+                    }
+                });
+
 
 
         loadModels("select properties, countryId from AdminLevel",
@@ -362,6 +437,12 @@ public class SchemaDAO {
                 });
 
 
+        rs = gearsDb.execute("select activityid, attributeGroupId from AttributeGroupInActivity order by sortOrder");
+        while(rs.isValidRow()) {
+            activities.get(rs.getFieldAsInt(0)).getAttributeGroups().add(
+                    attributeGroups.get(rs.getFieldAsInt(1)));
+            rs.next();
+        }
 
         schema.getDatabases().addAll(databases.values());
 

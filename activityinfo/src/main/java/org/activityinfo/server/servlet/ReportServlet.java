@@ -108,7 +108,7 @@ public class ReportServlet extends HttpServlet {
             dateRange.setMinDate( new Date(Long.parseLong(req.getParameter("minDate"))));
         }
         if(req.getParameter("maxDate") != null) {
-            dateRange.setMinDate( new Date(Long.parseLong(req.getParameter("maxDate"))));
+            dateRange.setMaxDate( new Date(Long.parseLong(req.getParameter("maxDate"))));
         }
 
         // generate the report content

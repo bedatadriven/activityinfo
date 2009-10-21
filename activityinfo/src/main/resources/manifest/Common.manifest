@@ -5,6 +5,6 @@
  "version" : "__VERSION__",
  "entries" : [
      __ENTRIES__,
-     { "url" : "../", "src" : "Offline.html" }
+     { "url" : "../", "src" : "../?offline" }
     ]
 }

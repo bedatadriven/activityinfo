@@ -10,7 +10,7 @@ public class CacheModule extends AbstractGinModule {
     @Override
     protected void configure() {
 
-        bind(SchemaCache.class).asEagerSingleton();
-        bind(AdminEntityCache.class).asEagerSingleton();
+//        bind(SchemaCache.class).asEagerSingleton();
+//        bind(AdminEntityCache.class).asEagerSingleton();
     }
 }

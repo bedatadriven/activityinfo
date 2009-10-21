@@ -23,10 +23,10 @@ import org.activityinfo.client.Application;
 import org.activityinfo.client.inject.AppInjector;
 import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.state.StateManager;
-/*
+
+/**
  * @author Alex Bertram
  */
-
 public class OfflineApplication extends Application {
 
     @Override
@@ -35,7 +35,8 @@ public class OfflineApplication extends Application {
         StateManager.get().setProvider(injector.getDatabaseStateProvider());
 
         injector.createOfflineManager();        
-        injector.createOfflineSchemaCache();
+        //injector.createOfflineSchemaCache();  not ready for prime time
+        injector.createSchemaCache();
         injector.createAdminCache();
 
     }

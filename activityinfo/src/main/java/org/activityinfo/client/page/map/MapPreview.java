@@ -1,9 +1,13 @@
 package org.activityinfo.client.page.map;
 
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.state.StateManager;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Status;
+import com.extjs.gxt.ui.client.widget.Html;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.maps.client.MapType;
@@ -14,33 +18,53 @@ import com.google.gwt.maps.client.overlay.Icon;
 import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.maps.client.overlay.MarkerOptions;
 import com.google.gwt.maps.client.overlay.Overlay;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.client.Application;
+import org.activityinfo.client.command.monitor.MaskingAsyncMonitor;
 import org.activityinfo.client.map.GcIconFactory;
 import org.activityinfo.client.map.MapTypeFactory;
 import org.activityinfo.client.map.IconFactory;
-import org.activityinfo.shared.map.BaseMap;
+import org.activityinfo.client.map.MapApiLoader;
 import org.activityinfo.shared.report.content.Content;
 import org.activityinfo.shared.report.content.Extents;
 import org.activityinfo.shared.report.content.MapContent;
 import org.activityinfo.shared.report.content.MapMarker;
 import org.activityinfo.shared.report.model.MapElement;
 import org.activityinfo.shared.report.model.ReportElement;
+import org.activityinfo.shared.map.BaseMap;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
+ *
+ * Displays the content of a MapElement using Google Maps.
+ *
  * @author Alex Bertram (akbertram@gmail.com)
  */
 public class MapPreview extends ContentPanel {
 
     private MapPresenter presenter;
+
     private MapWidget map = null;
+    private String currentBaseMapId = null;
+
     private LatLngBounds pendingZoom = null;
-    private StateManager stateMgr;
+
+    /**
+     * List of <code>Overlay</code>s that have been added to the map.
+     */
     private List<Overlay> overlays = new ArrayList<Overlay>();
-    private ToolBar statusBar;
     private Status status;
+
+    private MapElement element;
+    private MapContent content;
+
+    /**
+     * True if the Google Maps API is not loaded AND
+     * an attempt to load the API has already failed.
+     */
+    private boolean apiLoadFailed = false;
 
 
     public MapPreview() {
@@ -50,23 +74,15 @@ public class MapPreview extends ContentPanel {
         setScrollMode(Style.Scroll.AUTO);
 
         status = new Status();
-        statusBar = new ToolBar();
-        statusBar.add(status);
-        setBottomComponent(statusBar);
-    }
+        ToolBar toolBar = new ToolBar();
+        toolBar.add(status);
+        setBottomComponent(toolBar);
 
-    private void createMap(BaseMap baseMap) {
-        map = new MapWidget();
+        // seems like a good time to preload the MapsApi if
+        // we haven't already done so
+        
+        MapApiLoader.preload();
 
-        MapType baseMapType = MapTypeFactory.createBaseMapType(baseMap);
-        map.addMapType(baseMapType);
-        map.setCurrentMapType(baseMapType);
-        map.removeMapType(MapType.getNormalMap());
-        map.removeMapType(MapType.getHybridMap());
-
-        map.setDraggable(false);
-
-        add(map);
     }
 
     private void zoomToBounds(LatLngBounds bounds) {
@@ -97,10 +113,16 @@ public class MapPreview extends ContentPanel {
 
     public void setContent(ReportElement element, Content content) {
 
-        clearOverlays();
+        this.element = (MapElement) element;
+        this.content = (MapContent) content;
 
-        if(content instanceof MapContent) {
-            render((MapElement)element, (MapContent) content);
+        if(!apiLoadFailed) {
+
+            clearOverlays();
+
+            if(content instanceof MapContent) {
+                createMapIfNeededAndUpdateMapContent();
+            }
         }
     }
 
@@ -110,6 +132,57 @@ public class MapPreview extends ContentPanel {
             LatLng.newInstance(extents.getMinLat(), extents.getMaxLon()));
     }
 
+
+    public void createMapIfNeededAndUpdateMapContent() {
+
+        if(map == null) {
+            MapApiLoader.load(new MaskingAsyncMonitor(this, "Chargement de Google Maps en cours..."), // TODO: i18n
+                    new AsyncCallback<Void>() {
+                @Override
+                public void onSuccess(Void result) {
+
+                    apiLoadFailed = false;
+
+                    map = new MapWidget();
+                    map.setDraggable(false);
+
+                    changeBaseMapIfNeeded(content.getBaseMap());
+
+                    // clear the error message content
+                    removeAll();
+
+                    add(map);
+
+                    updateMapToContent();
+                }
+
+                @Override
+                public void onFailure(Throwable caught) {
+                    handleApiLoadFailure();
+                }
+            });
+
+        } else {
+            clearOverlays();
+            changeBaseMapIfNeeded(content.getBaseMap());
+            updateMapToContent();
+        }
+    }
+
+    private void changeBaseMapIfNeeded(BaseMap baseMap) {
+        if(currentBaseMapId == null || !currentBaseMapId.equals(baseMap.getId())) {
+            MapType baseMapType = MapTypeFactory.createBaseMapType(baseMap);
+            map.addMapType(baseMapType);
+            map.setCurrentMapType(baseMapType);
+            map.removeMapType(MapType.getNormalMap());
+            map.removeMapType(MapType.getHybridMap());
+            currentBaseMapId = baseMap.getId();
+        }
+    }
+
+    /**
+     * Clears all existing content from the map
+     */
     private void clearOverlays() {
         for(Overlay overlay : overlays) {
             map.removeOverlay(overlay);
@@ -117,26 +190,23 @@ public class MapPreview extends ContentPanel {
         overlays.clear();
     }
 
-    public void render(MapElement element, MapContent content) {
 
-        if(map == null) {
-            createMap(content.getBaseMap());
-        } else {
-            if( map.getCurrentMapType().equals(content.getBaseMap())) {
-                        
-            }
-        }
+    /**
+     * Updates the size of the map and adds Overlays to reflect the content
+     * of the current 
+     */
+    private void updateMapToContent() {
 
         map.setWidth(element.getWidth()+ "px");
         map.setHeight(element.getHeight() + "px");
 
         layout();
-    
-        map.checkResizeAndCenter();
 
+        map.checkResizeAndCenter();
 
         zoomToBounds(llBoundsForExtents(content.getExtents()));
 
+        // TODO: i18n
         status.setStatus(content.getUnmappedSites().size() + " site(s) ont manqué des coordinées géographique", null);
 
         GcIconFactory iconFactory = new GcIconFactory();
@@ -164,8 +234,26 @@ public class MapPreview extends ContentPanel {
 
             map.addOverlay(overlay);
             overlays.add(overlay);
-
         }
+    }
 
+    /**
+     * Handles the failure of the Google Maps API to load.
+     */
+    private void handleApiLoadFailure() {
+
+        apiLoadFailed = true;
+
+        if(this.getItemCount() == 0) {
+
+            add(new Html("Google Maps n'a pu pas etre charge. Veuillez verrifer votre connexion internet."));
+            add(new Button(Application.CONSTANTS.retry(), new SelectionListener<ButtonEvent>() {
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    createMapIfNeededAndUpdateMapContent();
+                }
+            }));
+            layout();
+        }
     }
 }

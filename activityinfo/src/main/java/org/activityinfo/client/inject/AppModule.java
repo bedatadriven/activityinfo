@@ -38,8 +38,9 @@ public class AppModule extends AbstractGinModule {
         bind(IStateManager.class).to(GxtStateManagerImpl.class);
         bind(ITimer.class).to(GWTTimerImpl.class);
 
-        bind(PageManager.class).asEagerSingleton();
-        bind(HistoryManager.class).asEagerSingleton();
+//      eager singletson seem to cause program
+//        bind(PageManager.class).asEagerSingleton();
+//        bind(HistoryManager.class).asEagerSingleton();
 
         bind(FrameSetPresenter.class).annotatedWith(Root.class).to(AppFrameSet.class);
 

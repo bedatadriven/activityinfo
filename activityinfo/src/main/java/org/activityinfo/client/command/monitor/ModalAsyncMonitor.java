@@ -4,6 +4,7 @@ package org.activityinfo.client.command.monitor;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.WaitMessageBox;
 import com.extjs.gxt.ui.client.widget.MessageBox.MessageBoxType;
 import com.google.gwt.core.client.GWT;
 import org.activityinfo.client.Application;
@@ -31,11 +32,10 @@ public class ModalAsyncMonitor implements AsyncMonitor {
 
         inProgress = true;
 
-		box = new MessageBox();
+		box = new WaitMessageBox();
 		box.setTitle("ActivityInfo");
 		box.setModal(true);
 		box.setMessage(Application.CONSTANTS.loading());
-		box.setType(MessageBoxType.WAIT);
 		box.setButtons(MessageBox.CANCEL);
 		
 		box.addCallback(new Listener<MessageBoxEvent>() {

@@ -26,6 +26,7 @@ import org.activityinfo.server.report.renderer.ppt.PPTRenderer;
 import org.activityinfo.server.report.renderer.itext.RtfReportRenderer;
 import org.activityinfo.server.report.renderer.itext.PdfReportRenderer;
 import org.activityinfo.server.report.renderer.excel.ExcelReportRenderer;
+import org.activityinfo.server.report.renderer.excel.ExcelMapDataExporter;
 import org.activityinfo.server.report.renderer.image.ImageReportRenderer;
 
 /**
@@ -53,6 +54,8 @@ public class RendererFactory {
                 return injector.getInstance(PdfReportRenderer.class);
             case PNG:
                 return injector.getInstance(ImageReportRenderer.class);
+            case Excel_Data:
+                return injector.getInstance(ExcelMapDataExporter.class);
         }
 
         throw new IllegalArgumentException();

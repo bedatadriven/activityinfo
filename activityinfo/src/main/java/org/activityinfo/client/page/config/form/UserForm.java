@@ -17,7 +17,6 @@ import org.activityinfo.shared.i18n.UIConstants;
 
 public class UserForm extends FormPanel {
 
-	private ListStore<PartnerModel> partnerStore; 
     private FormBinding binding;
 
 	public UserForm(UserDatabaseDTO database) {
@@ -41,8 +40,8 @@ public class UserForm extends FormPanel {
 		emailField.setAllowBlank(false);
         binding.addFieldBinding(new FieldBinding(emailField, "email"));
 		this.add(emailField);
-		
-		partnerStore = new ListStore<PartnerModel>();
+
+        ListStore<PartnerModel> partnerStore = new ListStore<PartnerModel>();
 		partnerStore.add(database.getPartners());
 		partnerStore.sort("name", SortDir.ASC);
 		

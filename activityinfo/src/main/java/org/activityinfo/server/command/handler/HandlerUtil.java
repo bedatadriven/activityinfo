@@ -21,11 +21,16 @@ package org.activityinfo.server.command.handler;
 
 
 import org.activityinfo.server.domain.UserDatabase;
+import org.activityinfo.server.domain.User;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.Month;
+import org.activityinfo.shared.command.result.CommandResult;
+import org.activityinfo.shared.exception.CommandException;
 import org.dozer.Mapper;
 
 import java.util.*;
+
+import com.google.inject.Injector;
 
 /**
  *
@@ -70,14 +75,17 @@ public class HandlerUtil {
                 commandName + "Handler";
 
         try {
-
             return (Class<CommandHandler<?>>) CommandHandler.class.getClassLoader().loadClass(etorName);
 
         } catch (ClassNotFoundException e) {
-
             throw new IllegalArgumentException("No handler class for " + commandName, e);
-
         }
+    }
+
+    public static <T extends CommandResult> T execute(Injector injector, Command<T> cmd, User user) throws CommandException {
+        Class<? extends CommandHandler> handlerClass = executorForCommand(cmd);
+        CommandHandler handler = injector.getInstance(handlerClass);
+        return (T)handler.execute(cmd, user);
     }
 
 

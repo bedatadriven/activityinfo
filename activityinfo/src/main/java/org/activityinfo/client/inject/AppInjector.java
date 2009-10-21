@@ -35,6 +35,7 @@ import org.activityinfo.client.page.table.PivotModule;
 import org.activityinfo.client.page.table.PivotPageLoader;
 import org.activityinfo.client.page.welcome.Welcome;
 import org.activityinfo.client.page.welcome.WelcomeLoader;
+import org.activityinfo.client.page.DownloadManager;
 import org.activityinfo.client.util.IStateManager;
 import org.activityinfo.shared.i18n.UIConstants;
 
@@ -100,4 +101,6 @@ public interface AppInjector extends Ginjector {
 
 
     DatabaseStateProvider getDatabaseStateProvider();
+
+    DownloadManager getDownloadManager();
 }

@@ -23,6 +23,7 @@ import org.activityinfo.shared.dto.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -275,6 +276,15 @@ public class IndicatorTreePanel extends ContentPanel {
             }
         }
         return list;
+    }
+
+    public void setSelection(int indicatorId) {
+
+    }
+
+    public void setSelection(Set<Integer> indicatorIds) {
+        List<IndicatorModel> indicators = new ArrayList<IndicatorModel>();
+        
     }
 
     public List<Integer> getSelectedIds() {

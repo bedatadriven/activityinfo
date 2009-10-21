@@ -448,6 +448,15 @@ public interface UIConstants extends com.google.gwt.i18n.client.Constants {
   String customDateRange();
 
   /**
+   * Translated "Daily".
+   * 
+   * @return translated "Daily"
+   */
+  @DefaultStringValue("Daily")
+  @Key("daily")
+  String daily();
+
+  /**
    * Translated "Data Collection".
    * 
    * @return translated "Data Collection"
@@ -628,6 +637,15 @@ public interface UIConstants extends com.google.gwt.i18n.client.Constants {
   String endDate();
 
   /**
+   * Translated "Error".
+   * 
+   * @return translated "Error"
+   */
+  @DefaultStringValue("Error")
+  @Key("error")
+  String error();
+
+  /**
    * Translated "Excel 97-2003".
    * 
    * @return translated "Excel 97-2003"
@@ -707,6 +725,15 @@ public interface UIConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Full Name")
   @Key("fullName")
   String fullName();
+
+  /**
+   * Translated "In order to use ActivityInfo offline, you must first install <b>Google Gears</b>. Click <a href=\"http://tools.google.com/gears/\" target=\"_blank\">here</a> to install.".
+   * 
+   * @return translated "In order to use ActivityInfo offline, you must first install <b>Google Gears</b>. Click <a href=\"http://tools.google.com/gears/\" target=\"_blank\">here</a> to install."
+   */
+  @DefaultStringValue("In order to use ActivityInfo offline, you must first install <b>Google Gears</b>. Click <a href=\"http://tools.google.com/gears/\" target=\"_blank\">here</a> to install.")
+  @Key("gearsRequired")
+  String gearsRequired();
 
   /**
    * Translated "Geographic Position".
@@ -869,6 +896,15 @@ public interface UIConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Loading Databases")
   @Key("loadingDatabases")
   String loadingDatabases();
+
+  /**
+   * Translated "Loading the offline module...".
+   * 
+   * @return translated "Loading the offline module..."
+   */
+  @DefaultStringValue("Loading the offline module...")
+  @Key("loadingOfflineMode")
+  String loadingOfflineMode();
 
   /**
    * Translated "Loading database definitions".
@@ -1159,6 +1195,15 @@ public interface UIConstants extends com.google.gwt.i18n.client.Constants {
   String notImplemented();
 
   /**
+   * Translated "Offline".
+   * 
+   * @return translated "Offline"
+   */
+  @DefaultStringValue("Offline")
+  @Key("offlineMode")
+  String offlineMode();
+
+  /**
    * Translated "OK".
    * 
    * @return translated "OK"
@@ -1364,6 +1409,15 @@ public interface UIConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Report Definitions")
   @Key("reportDefinitions")
   String reportDefinitions();
+
+  /**
+   * Translated "Frequency".
+   * 
+   * @return translated "Frequency"
+   */
+  @DefaultStringValue("Frequency")
+  @Key("reportFrequency")
+  String reportFrequency();
 
   /**
    * Translated "Once".
@@ -1688,6 +1742,15 @@ public interface UIConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Value")
   @Key("value")
   String value();
+
+  /**
+   * Translated "Weekly".
+   * 
+   * @return translated "Weekly"
+   */
+  @DefaultStringValue("Weekly")
+  @Key("weekly")
+  String weekly();
 
   /**
    * Translated "W".

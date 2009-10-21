@@ -16,6 +16,7 @@ import org.activityinfo.client.command.monitor.AsyncMonitor;
 import org.activityinfo.client.command.monitor.MaskingAsyncMonitor;
 import org.activityinfo.client.page.common.toolbar.ActionToolBar;
 import org.activityinfo.client.page.common.toolbar.ExportMenuButton;
+import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.shared.dto.ReportTemplateDTO;
 import org.activityinfo.shared.command.RenderElement;
 import org.activityinfo.shared.command.Month;
@@ -29,6 +30,7 @@ import org.activityinfo.shared.date.DateUtil;
  * @author Alex Bertram
  */
 public class ReportPreview extends ContentPanel implements ReportPreviewPresenter.View {
+    private ReportPreviewPresenter presenter;
 
     private static class DateValue extends BaseModelData {
 
@@ -68,7 +70,8 @@ public class ReportPreview extends ContentPanel implements ReportPreviewPresente
     public void init(ReportPreviewPresenter presenter, ReportTemplateDTO template) {
 
         toolBar = new ActionToolBar();
-        toolBar.setListener(presenter);
+        this.presenter = presenter;
+        toolBar.setListener(this.presenter);
 
         setHeading(template.getTitle());
 
@@ -156,6 +159,10 @@ public class ReportPreview extends ContentPanel implements ReportPreviewPresente
 
         });
         toolBar.add(combo);
+
+        // TODO: most of this should be in the presenter
+        dateRange = combo.getValue().getValue();
+        presenter.onUIAction(UIActions.refresh);
     }
 
     public void setPreviewHtml(String html) {

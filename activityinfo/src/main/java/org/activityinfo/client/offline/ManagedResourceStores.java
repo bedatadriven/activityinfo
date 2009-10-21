@@ -33,6 +33,9 @@ import com.google.gwt.core.client.GWT;
  */
 public class ManagedResourceStores {
 
+    public static String OFFLINE_COOKIE_NAME = "offline";
+
+    public static String REQUIRED_COOKIE = "offline=enabled";
 
     /**
      * Gets the <code>ManagedResourceStore</code> common to all permutations of the app.
@@ -41,7 +44,7 @@ public class ManagedResourceStores {
      */
     public static ManagedResourceStore getCommon() {
         LocalServer server = Factory.getInstance().createLocalServer();
-        ManagedResourceStore store = server.createManagedStore("ActivityInfo", "offline=true");
+        ManagedResourceStore store = server.createManagedStore("ActivityInfo", REQUIRED_COOKIE);
         store.setManifestUrl(GWT.getModuleBaseURL() + GWT.getModuleName() + ".nocache.manifest");
         store.checkForUpdate();
         return store;
@@ -54,9 +57,8 @@ public class ManagedResourceStores {
      */
     public static ManagedResourceStore getPermutation() {
         LocalServer server = Factory.getInstance().createLocalServer();
-        ManagedResourceStore store = server.createManagedStore(GWT.getPermutationStrongName(), "offline=true");
-        store.setManifestUrl(GWT.getModuleBaseURL() + GWT.getModuleName() +
-                "." + GWT.getPermutationStrongName() + ".cache.manifest");
+        ManagedResourceStore store = server.createManagedStore(GWT.getPermutationStrongName(), REQUIRED_COOKIE);
+        store.setManifestUrl(getPermutationManifestName());
         return store;
     }
 
@@ -70,11 +72,15 @@ public class ManagedResourceStores {
     public static boolean isPermutationAvailable() {
         LocalServer server = Factory.getInstance().createLocalServer();
         try {
-            return server.canServeLocally(GWT.getModuleBaseURL() + GWT.getModuleName() +
-                GWT.getPermutationStrongName() + ".cache.html");
+            return server.canServeLocally(getPermutationManifestName());
         } catch (GearsException e) {
             return false;
         }
     }
-    
+
+    private static String getPermutationManifestName() {
+        return GWT.getModuleBaseURL() + GWT.getModuleName() +
+            GWT.getPermutationStrongName() + ".cache.html";
+    }
+
 }

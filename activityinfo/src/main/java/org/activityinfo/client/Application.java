@@ -6,11 +6,14 @@ import com.extjs.gxt.ui.client.util.Theme;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.ajaxloader.client.AjaxLoader;
+import com.google.gwt.maps.client.Maps;
 import org.activityinfo.client.icon.IconImageBundle;
 import org.activityinfo.client.inject.AppInjector;
 import org.activityinfo.client.page.app.AppFrameSet;
 import org.activityinfo.client.command.Authentication;
 import org.activityinfo.client.offline.ui.OfflineMenu;
+import org.activityinfo.client.map.MapApiLoader;
 import org.activityinfo.shared.i18n.UIConstants;
 import org.activityinfo.shared.i18n.UIMessages;
 
@@ -45,12 +48,16 @@ public class Application implements EntryPoint {
         injector.createConfigLoader();
 
         injector.getHistoryManager();
+        injector.getDownloadManager();
 
         createCaches(injector);
 
         GWT.log("Application: everyone plugged, firing Init event", null);
 
         injector.getEventBus().fireEvent(AppEvents.Init);
+
+        // preload Maps API
+        MapApiLoader.preload();
 
     }
 

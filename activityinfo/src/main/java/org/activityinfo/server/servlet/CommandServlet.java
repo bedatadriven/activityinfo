@@ -35,7 +35,7 @@ import java.util.List;
  *
  */
 @Singleton
-public class RemoteCommandServlet extends RemoteServiceServlet implements RemoteCommandService {
+public class CommandServlet extends RemoteServiceServlet implements RemoteCommandService {
 
 	@Inject
 	private Injector injector;
@@ -69,7 +69,6 @@ public class RemoteCommandServlet extends RemoteServiceServlet implements Remote
 			
 
 		EntityManager em = injector.getInstance(EntityManager.class);
-		em.getTransaction().begin();
 
        /*
          * Retrieve the current user based from the authorization
@@ -89,6 +88,8 @@ public class RemoteCommandServlet extends RemoteServiceServlet implements Remote
 
             for(Command command : commands) {
 
+                em.getTransaction().begin();
+                
                 /*
                  * Instantiate the handler for this particular command
                  */
@@ -100,21 +101,23 @@ public class RemoteCommandServlet extends RemoteServiceServlet implements Remote
 
                     results.add( etor.execute(command, session.getUser()) );
 
+                    em.getTransaction().commit();
+
                 } catch(CommandException ce) {
+                    em.getTransaction().rollback();
                     ce.printStackTrace();
                     results.add( ce );
                 } catch(Throwable caught) {
+                    em.getTransaction().rollback();
                     caught.printStackTrace();
                     results.add( new UnexpectedCommandException() );
                 }
             }
 
-			em.getTransaction().commit();
 
 			return results;
 
 		} catch (Throwable caught) {
-			em.getTransaction().rollback();
             caught.printStackTrace();
 			throw new CommandException();
 		}

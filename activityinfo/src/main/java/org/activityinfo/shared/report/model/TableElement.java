@@ -11,7 +11,8 @@ import java.util.List;
 public class TableElement extends ReportElement {
 
 
-	public static class Column extends TreeNode<Column>  {
+
+    public static class Column extends TreeNode<Column>  {
 		
 		
 		private boolean orderAscending;
@@ -27,6 +28,11 @@ public class TableElement extends ReportElement {
 
         public Column(String label) {
             this.label = label;
+        }
+
+        public Column(String label, String property) {
+            this.label = label;
+            this.property = property;
         }
 
         @Override
@@ -121,5 +127,9 @@ public class TableElement extends ReportElement {
 
     public void setContent(TableContent content) {
         this.content = content;
+    }
+
+    public void addRootColumn(String label, String property) {
+
     }
 }

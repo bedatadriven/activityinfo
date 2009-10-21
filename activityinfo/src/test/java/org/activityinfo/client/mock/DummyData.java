@@ -1,10 +1,9 @@
 package org.activityinfo.client.mock;
 
-import org.activityinfo.shared.command.result.AdminEntityResult;
-import org.activityinfo.shared.command.result.ListResult;
-import org.activityinfo.shared.command.result.SiteResult;
-import org.activityinfo.shared.command.result.UserResult;
+import org.activityinfo.shared.command.result.*;
 import org.activityinfo.shared.dto.*;
+import org.activityinfo.shared.map.BaseMap;
+import org.activityinfo.shared.map.LocalBaseMap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,6 +52,17 @@ public class DummyData {
         schoolRehab.setDatabase(pear);
         schoolRehab.setLocationTypeId(2);
         pear.getActivities().add(schoolRehab);
+
+        AttributeGroupModel rehabType = new AttributeGroupModel(71);
+        rehabType.setName("Rehab type");
+        rehabType.setMultipleAllowed(false);
+        schoolRehab.getAttributeGroups().add(rehabType);
+        
+        AttributeModel minor = new AttributeModel(711, "Minor");
+        rehabType.getAttributes().add(minor);
+
+        AttributeModel major = new AttributeModel(712, "Major");
+        rehabType.getAttributes().add(major);
 
 
         final Schema schema = new Schema();
@@ -197,6 +207,21 @@ public class DummyData {
 
 
 
+    public static BaseMapResult BaseMaps() {
+
+        BaseMap map = new LocalBaseMap();
+        map.setName("Administrative Map");
+        map.setCopyright("Foobar");
+        map.setId("admin");
+        map.setMinZoom(0);
+        map.setMaxZoom(16);
+
+        List<BaseMap> maps = new ArrayList<BaseMap>();
+        maps.add(map);
+
+        return new BaseMapResult(maps);
+        
+    }
 
 
 

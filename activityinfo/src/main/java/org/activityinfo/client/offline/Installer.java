@@ -21,6 +21,7 @@ package org.activityinfo.client.offline;
 
 import org.activityinfo.client.offline.dao.AuthDAO;
 import org.activityinfo.client.command.Authentication;
+import org.activityinfo.client.Application;
 
 import java.util.Date;
 
@@ -35,9 +36,7 @@ import com.google.gwt.gears.client.localserver.ManagedResourceStoreErrorHandler;
 import com.google.gwt.gears.client.localserver.ManagedResourceStoreCompleteHandler;
 import com.google.gwt.gears.client.GearsException;
 import com.google.gwt.core.client.GWT;
-import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.Info;
-import com.extjs.gxt.ui.client.widget.Dialog;
+import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 
@@ -78,14 +77,12 @@ public class Installer {
      * Downloads the common <code>ManagedResourceStore</code>, which contains the
      * general resources from the public/ folder as well as the host page and selection script
      *
-     * @param callback Callback upon completion of download
      */
     public void downloadCommon() {
 
-        final MessageBox box = new MessageBox();
-        box.setType(MessageBox.MessageBoxType.PROGRESSS);
-        box.setMessage("Chargement de module hors connexion en cours...");  // TODO: i18n
-
+        final ProgressMessageBox box = new ProgressMessageBox();
+        //box.setMessage(Application.CONSTANTS.loadingOfflineModule());
+        box.setMessage("Loading offline module...");
         ManagedResourceStore common = ManagedResourceStores.getCommon();
 
         common.setOnProgressHandler(new ManagedResourceStoreProgressHandler() {
@@ -123,7 +120,7 @@ public class Installer {
     public void promptReload() {
         MessageBox prompt = new MessageBox();
         prompt.setButtons(MessageBox.OKCANCEL);
-        prompt.setType(MessageBox.MessageBoxType.ALERT);
+        prompt.setIcon(MessageBox.INFO);
         prompt.setTitle("Chargement initial complet");
         prompt.setMessage("Chargement initiale de module hors connexion a terminé. " +
                 "Veuillez reactualizer le page pour completer l'installation.");

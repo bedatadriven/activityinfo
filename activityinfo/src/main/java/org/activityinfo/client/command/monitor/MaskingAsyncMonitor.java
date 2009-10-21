@@ -83,14 +83,14 @@ public class MaskingAsyncMonitor implements AsyncMonitor {
 	@Override
 	public void onServerError() {
 
-		MessageBox.alert("Erreur", Application.CONSTANTS.serverError(), null);  // TODO: i18n
+		MessageBox.alert(Application.CONSTANTS.error(), Application.CONSTANTS.serverError(), null);
 
         unmask();
 	}
 
     private void unmask() {
         if(this.panel.isRendered()) {
-		    this.panel.unmask();
+		    this.panel.unmask();                
         }
         maskingText = null;
     }

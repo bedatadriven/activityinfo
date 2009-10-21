@@ -4,6 +4,7 @@ import org.activityinfo.shared.report.content.*;
 import org.activityinfo.shared.report.model.IconMapLayer;
 import org.activityinfo.shared.report.model.MapElement;
 import org.activityinfo.shared.report.model.MapIcon;
+import org.activityinfo.server.domain.SiteData;
 
 import java.util.ArrayList;
 import java.util.List;

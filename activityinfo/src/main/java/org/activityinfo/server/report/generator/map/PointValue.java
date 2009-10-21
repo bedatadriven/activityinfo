@@ -2,7 +2,7 @@ package org.activityinfo.server.report.generator.map;
 
 import org.activityinfo.server.report.generator.MapSymbol;
 import org.activityinfo.shared.report.content.Point;
-import org.activityinfo.shared.report.content.SiteData;
+import org.activityinfo.server.domain.SiteData;
 
 import java.awt.*;
 

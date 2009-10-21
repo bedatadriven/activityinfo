@@ -1,4 +1,4 @@
-package org.activityinfo.server.servlet;
+package org.activityinfo.server;
 
 import com.google.inject.*;
 import com.google.inject.servlet.GuiceServletContextListener;
@@ -7,10 +7,12 @@ import com.google.inject.servlet.ServletModule;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import org.activityinfo.server.ActivityInfoModule;
+import org.activityinfo.server.filter.CacheFilter;
 import org.activityinfo.server.report.generator.MapIconPath;
 import org.activityinfo.server.servlet.kml.KmlDataServlet;
 import org.activityinfo.server.servlet.kml.KmlLinkServlet;
 import org.activityinfo.server.servlet.wfs.WfsServlet;
+import org.activityinfo.server.servlet.*;
 import org.quartz.Job;
 import org.quartz.SchedulerException;
 import org.quartz.spi.JobFactory;
@@ -38,7 +40,7 @@ import java.io.IOException;
  *
  * @author Alex Bertram
  */
-public class DiIInstaller extends GuiceServletContextListener {
+public class StartupListener extends GuiceServletContextListener {
 
     private ServletContext context;
 
@@ -65,16 +67,21 @@ public class DiIInstaller extends GuiceServletContextListener {
 
                 context.log("configureServlets");
 
-                serve("/Application/cmd").with(RemoteCommandServlet.class);
+                serve("/Application/cmd").with(CommandServlet.class);
+                serve("/Application/cmd/download").with(CommandDownloadServlet.class);
+                
                 serve("/").with(RootServlet.class);
                 serve("/auth").with(RootServlet.class);
                 serve("/wfs").with(WfsServlet.class);
                 serve("/wfs*").with(WfsServlet.class);
+                serve("/export*").with(ExportServlet.class);
                 serve("/kml").with(KmlLinkServlet.class);
                 serve("/kml/data").with(KmlDataServlet.class);
                 serve("/icon").with(MapIconServlet.class);
                 serve("/download").with(DownloadServlet.class);
                 serve("/report").with(ReportServlet.class);
+
+                filter("/Application/*").through(CacheFilter.class);
 
                 bind(String.class)
                         .annotatedWith(MapIconPath.class)

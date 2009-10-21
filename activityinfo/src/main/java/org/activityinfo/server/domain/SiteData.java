@@ -1,6 +1,8 @@
-package org.activityinfo.shared.report.content;
+package org.activityinfo.server.domain;
 
 import org.activityinfo.shared.domain.SiteColumn;
+import org.activityinfo.shared.report.content.SiteGeoData;
+import org.activityinfo.server.domain.AdminEntity;
 
 import java.util.*;
 
@@ -14,10 +16,11 @@ import java.util.*;
 public class SiteData implements SiteGeoData {
 
 	public Object[] values;
-	public Map<Integer, String> admin = new HashMap<Integer,String>(0);
+	public Map<Integer, String> adminNames = new HashMap<Integer,String>(0);
+    public Map<Integer, AdminEntity> adminEntities = new HashMap<Integer,AdminEntity>(0);
 	public Map<Integer, Double> indicatorValues = new HashMap<Integer, Double>(0);
-	public Set<Integer> attributes = new HashSet<Integer>(0);                                           
-	
+	public Map<Integer, Boolean> attributes = new HashMap<Integer, Boolean>(0);
+
     public SiteData() {
         this.values = new Object[SiteColumn.values().length+1];
     }
@@ -88,5 +91,13 @@ public class SiteData implements SiteGeoData {
 
     public int getPartnerId() {
         return (Integer)values[SiteColumn.partner_id.index()];
+    }
+
+    public String getComments() {
+        return (String)values[SiteColumn.comments.index()];
+    }
+
+    public Boolean getAttributeValue(int attribId) {
+        return attributes.get(attribId);
     }
 }

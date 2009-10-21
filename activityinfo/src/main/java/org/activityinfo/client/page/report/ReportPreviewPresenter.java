@@ -5,6 +5,8 @@ import com.google.gwt.user.client.Window;
 import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
 import org.activityinfo.client.Place;
+import org.activityinfo.client.EventBus;
+import org.activityinfo.client.event.DownloadEvent;
 import org.activityinfo.client.command.CommandService;
 import org.activityinfo.client.command.Authentication;
 import org.activityinfo.client.command.callback.Got;
@@ -45,15 +47,15 @@ public class ReportPreviewPresenter implements PagePresenter, ActionListener, Ex
         void setActionEnabled(String actionId, boolean enabled);
     }
 
-    private final Authentication auth;
+    private final EventBus eventBus;
     private final CommandService service;
     private final View view;
 
     private ReportTemplateDTO template;
 
     @Inject
-    public ReportPreviewPresenter(Authentication auth, CommandService service, View view) {
-        this.auth = auth;
+    public ReportPreviewPresenter(EventBus eventBus, CommandService service, View view) {
+        this.eventBus = eventBus;
         this.service = service;
         this.view = view;
     }
@@ -93,19 +95,18 @@ public class ReportPreviewPresenter implements PagePresenter, ActionListener, Ex
     public void export(RenderElement.Format format) {
 
         StringBuilder url = new StringBuilder();
-        url.append("../report?auth=").append(auth.getAuthToken())
+        url.append("../report?auth=#AUTH#")
                 .append("&id=").append(template.getId())
                 .append("&format=").append(format.toString());
 
         DateRange range = view.getDateRange();
         if(range.getMinDate() != null) {
-            url.append("&from=").append(range.getMinDate().getTime());
+            url.append("&minDate=").append(range.getMinDate().getTime());
         }
         if(range.getMaxDate() != null) {
-            url.append("&to=").append(range.getMaxDate().getTime());
+            url.append("&maxDate=").append(range.getMaxDate().getTime());
         }
-
-        Window.open(url.toString(), "_downloadFrame", null);
+        eventBus.fireEvent(new DownloadEvent(url.toString()));
     }
 
     public void onUIAction(String actionId) {

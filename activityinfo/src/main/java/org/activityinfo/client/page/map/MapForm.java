@@ -5,8 +5,6 @@ import org.activityinfo.shared.report.model.ReportElement;
 
 public interface MapForm {
 
-    public void setSchema(Schema schema);
-
     public ReportElement getMapElement();
 
 

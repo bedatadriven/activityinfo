@@ -6,10 +6,10 @@ import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.Pages;
 
 import java.util.List;
-/*
+
+/**
  * @author Alex Bertram
  */
-
 public class ReportHomePlace implements Place {
 
     public PageId getPageId() {

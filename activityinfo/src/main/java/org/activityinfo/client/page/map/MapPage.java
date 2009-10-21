@@ -14,7 +14,6 @@ import org.activityinfo.client.page.common.toolbar.ExportCallback;
 import org.activityinfo.client.page.common.toolbar.ExportMenuButton;
 import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.shared.command.RenderElement;
-import org.activityinfo.shared.dto.Schema;
 import org.activityinfo.shared.report.content.Content;
 import org.activityinfo.shared.report.model.ReportElement;
 
@@ -86,10 +85,6 @@ public class MapPage extends ContentPanel implements MapPresenter.View {
 
     public AsyncMonitor getMapLoadingMonitor() {
         return new MaskingAsyncMonitor(previewPanel, Application.CONSTANTS.loading());
-    }
-
-    public void setSchema(Schema schema) {
-        form.setSchema(schema);
     }
 
     public ReportElement getMapElement() {

@@ -7,6 +7,7 @@ import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.Place;
+import org.activityinfo.client.EventBus;
 import org.activityinfo.client.command.CommandService;
 import org.activityinfo.client.command.callback.DownloadCallback;
 import org.activityinfo.client.command.callback.Got;
@@ -62,11 +63,13 @@ public class PivotPresenter implements PagePresenter {
 
     private final CommandService service;
     private final View view;
+    private final EventBus eventBus;
 
     @Inject
-    public PivotPresenter(CommandService service, final View view) {
+    public PivotPresenter(CommandService service, EventBus eventBus, final View view) {
         this.service =  service;
         this.view = view;
+        this.eventBus = eventBus;
         this.view.bindPresenter(this);
 
         ListStore<Dimension> store = view.getRowStore();
@@ -160,8 +163,20 @@ public class PivotPresenter implements PagePresenter {
 
         } else if(UIActions.export.equals(itemId)) {
             service.execute(new RenderElement(createElement(), RenderElement.Format.Excel), view.getMonitor(),
-                    new DownloadCallback());
+                    new DownloadCallback(eventBus));
 
+//             service.export(createElement(), RenderElement.Format.Excel, view.getMonitor(),
+//                     new AsyncCallback<Void>() {
+//                         @Override
+//                         public void onFailure(Throwable caught) {
+//
+//                         }
+//
+//                         @Override
+//                         public void onSuccess(Void result) {
+//
+//                         }
+//                     });
         }
     }
 

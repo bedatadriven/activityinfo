@@ -6,6 +6,8 @@ import org.activityinfo.server.dao.jpa.AuthDAOJPA;
 import org.activityinfo.server.domain.Authentication;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.server.service.impl.DbAuthenticator;
+import org.activityinfo.server.service.impl.NullMailer;
+import org.activityinfo.server.service.impl.CongoPasswordGenerator;
 import org.activityinfo.shared.exception.InvalidAuthTokenException;
 import org.activityinfo.shared.exception.InvalidLoginException;
 import org.junit.Assert;
@@ -45,7 +47,7 @@ public class AuthTest extends DbUnitTestCase {
 	public void testValidAuth() throws InvalidLoginException {
 
 		EntityManager em = emf.createEntityManager();
-        AuthDAO dao = new AuthDAOJPA(em);
+        AuthDAO dao = new AuthDAOJPA(em, new CongoPasswordGenerator(), new NullMailer());
         Authenticator auth = new DbAuthenticator(em, dao);
 
 		auth.authenticate("bavon@nrcdrc.org", "Bavon12");
@@ -59,7 +61,7 @@ public class AuthTest extends DbUnitTestCase {
 	public void testInvalidAuth() throws InvalidLoginException {
 
 		EntityManager em = emf.createEntityManager();
-        AuthDAO dao = new AuthDAOJPA(em);
+        AuthDAO dao = new AuthDAOJPA(em, new CongoPasswordGenerator(), new NullMailer());
         Authenticator auth = new DbAuthenticator(em, dao);
         
 		auth.authenticate("bavon@nrcdrc.org", "Bavon14");
@@ -70,7 +72,7 @@ public class AuthTest extends DbUnitTestCase {
 	public void testInvalidAuth2() throws InvalidLoginException {
 
 		EntityManager em = emf.createEntityManager();
-        AuthDAO dao = new AuthDAOJPA(em);
+        AuthDAO dao = new AuthDAOJPA(em, new CongoPasswordGenerator(), new NullMailer());
         Authenticator auth = new DbAuthenticator(em, dao);
         
 		auth.authenticate("bavon@nrcdrc.org",  null);
@@ -83,7 +85,7 @@ public class AuthTest extends DbUnitTestCase {
 
 
         EntityManager em = emf.createEntityManager();
-        AuthDAO dao = new AuthDAOJPA(em);
+        AuthDAO dao = new AuthDAOJPA(em, new CongoPasswordGenerator(), new NullMailer());
         Authenticator auth = new DbAuthenticator(em, dao);
 
 		Authentication session = auth.authenticate("stefan@irc.org", "Stefan12");
@@ -97,7 +99,7 @@ public class AuthTest extends DbUnitTestCase {
 
 
 		em = emf.createEntityManager();
-		dao = new AuthDAOJPA(em);
+		dao = new AuthDAOJPA(em, new CongoPasswordGenerator(), new NullMailer());
         auth = new DbAuthenticator(em, dao);
 
 		session = auth.getSession(sessionId);
@@ -129,7 +131,7 @@ public class AuthTest extends DbUnitTestCase {
 	public void testBadSession() throws InvalidAuthTokenException {
 
         EntityManager em = emf.createEntityManager();
-        AuthDAO dao = new AuthDAOJPA(em);
+        AuthDAO dao = new AuthDAOJPA(em, new CongoPasswordGenerator(), new NullMailer());
         Authenticator auth = new DbAuthenticator(em, dao);
 
 

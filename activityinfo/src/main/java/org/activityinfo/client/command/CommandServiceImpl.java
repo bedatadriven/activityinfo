@@ -19,13 +19,19 @@ import org.activityinfo.client.event.ConnectionEvent;
 import org.activityinfo.client.util.ITimer;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.RemoteCommandServiceAsync;
+import org.activityinfo.shared.command.RenderElement;
+import org.activityinfo.shared.command.MutatingCommand;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.exception.InvalidAuthTokenException;
 import org.activityinfo.shared.exception.UnexpectedCommandException;
+import org.activityinfo.shared.report.ExportService;
+import org.activityinfo.shared.report.ExportServiceAsync;
+import org.activityinfo.shared.report.model.ReportElement;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Iterator;
 
 /**
  * An implementation of {@link org.activityinfo.client.command.CommandService} that
@@ -36,6 +42,7 @@ public class CommandServiceImpl implements CommandService, CommandEventSource {
 
     protected final EventBus eventBus;
     protected final RemoteCommandServiceAsync service;
+    protected final ExportServiceAsync exportService;
     protected final Authentication authentication;
 
     protected boolean connected = false;
@@ -43,12 +50,16 @@ public class CommandServiceImpl implements CommandService, CommandEventSource {
     protected ProxyManager proxyManager = new ProxyManager();
 
     protected List<CommandRequest> pendingCommands = new ArrayList<CommandRequest>();
+    protected List<CommandRequest> allExecutingCommands = new ArrayList<CommandRequest>();
 
     protected final AsyncMonitor nullMonitor = new NullAsyncMonitor();
 
     @Inject
-    public CommandServiceImpl(RemoteCommandServiceAsync service, EventBus eventBus, ITimer timer, Authentication authentication) {
+    public CommandServiceImpl(RemoteCommandServiceAsync service,
+                              ExportServiceAsync exportService,
+                              EventBus eventBus, ITimer timer, Authentication authentication) {
         this.service = service;
+        this.exportService = exportService;
         this.eventBus = eventBus;
         this.authentication = authentication;
 
@@ -82,20 +93,36 @@ public class CommandServiceImpl implements CommandService, CommandEventSource {
     public <T extends CommandResult> void execute(Command<T> command, AsyncMonitor monitor,
                                                   AsyncCallback<T> callback  ) {
 
-        if(monitor==null) {
-            monitor = new NullAsyncMonitor();
+        if(monitor!=null)
+            monitor.beforeRequest();
+
+        // is this command identical to an existing command?
+        if(tryToPiggyBack(pendingCommands, command, monitor, callback) ||
+           tryToPiggyBack(allExecutingCommands, command, monitor, callback)) {
+
+            return;
         }
 
-        monitor.beforeRequest();
+        // nope. create a new request wrapper
+        pendingCommands.add(new CommandRequest(command, monitor, callback));
+        GWT.log("CommandServiceImpl: Scheduled " + command.toString() + ", now " +
+                pendingCommands.size() + " command(s) pending", null);
+    }
 
-        CommandRequest req = new CommandRequest(command, monitor, callback);
+    private boolean tryToPiggyBack(List<CommandRequest> cmds, Command cmd, AsyncMonitor monitor, AsyncCallback callback) {
+        for(int i=cmds.size()-1;i>=0; --i) {
+            if(cmds.get(i).getCommand() instanceof MutatingCommand)
+                return false;
+            if(cmds.get(i).getCommand().equals(cmd)) {
 
-        if(!tryLocal(req)) {
+                GWT.log("CommandService: merging " + cmd.toString() + " with pending/executing command " +
+                    cmds.get(i).getCommand().toString(), null);
 
-            pendingCommands.add(req);
-
-            GWT.log("CommandServiceImpl: Scheduled " + command.toString() + ", now " + pendingCommands.size() + " command(s) pending", null);
+                cmds.get(i).piggyback(monitor, callback);
+                return true;
+            }
         }
+        return false;
     }
 
     public boolean hasPendingCommands() {
@@ -111,6 +138,7 @@ public class CommandServiceImpl implements CommandService, CommandEventSource {
             return;
 
         final List<CommandRequest> executingCommands = pendingCommands;
+
         pendingCommands = new ArrayList<CommandRequest>();
 
         GWT.log("CommandServiceImpl: " + executingCommands.size() + " are pending.", null);
@@ -133,14 +161,14 @@ public class CommandServiceImpl implements CommandService, CommandEventSource {
                  * are being retried
                  */
 
-                if(cmd.retries > 0 && cmd.getMonitor() != null &&
-                        !cmd.getMonitor().onRetrying()) {
+                if(cmd.retries > 0 && !cmd.fireRetrying()) {
 
-                    GWT.log("CommandService: The monitor of " + cmd.toString() + " (" + cmd.getMonitor().toString() +
-                            ") has denied a retry attempt after " + cmd.retries +
+                    GWT.log("CommandService: The monitor " +
+                            " has denied a retry attempt after " + cmd.retries +
                             " retries, the command is removed from the queue.", null);
 
                     executingCommands.remove(i);
+                    cmd.fireRetriesMaxedOut();
 
                 } else {
 
@@ -156,29 +184,28 @@ public class CommandServiceImpl implements CommandService, CommandEventSource {
         if(executingCommands.size() == 0)
             return;
 
+        allExecutingCommands.addAll(executingCommands);
+
         /*
          * Now contact the server to execute the rest
          */
 
         try {
             service.execute(authentication.getAuthToken(), commandList(executingCommands), new AsyncCallback<List<CommandResult>>() {
-
                 public void onSuccess(List<CommandResult> results) {
-
+                    allExecutingCommands.removeAll(executingCommands);
                     onRemoteCallSuccess(results, executingCommands);
                 }
 
                 public void onFailure(Throwable caught) {
-
+                    allExecutingCommands.removeAll(executingCommands);
                     remoteServiceFailure(executingCommands, caught);
                 }
             });
         } catch(Throwable caught) {
-
+            allExecutingCommands.removeAll(executingCommands);
             GWT.log("CommandService: client side exception thrown during execution of remote command", caught);
-
             onServerError(executingCommands, caught);
-
         }
     }
 
@@ -200,16 +227,12 @@ public class CommandServiceImpl implements CommandService, CommandEventSource {
             CommandResult result = results.get(i);
 
             if(result instanceof CommandException) {
-                if(result instanceof UnexpectedCommandException) {
-                    cmd.getMonitor().onServerError();
-                } else {
-                    cmd.getMonitor().onCompleted();
-                }
-                cmd.getCallback().onFailure((CommandException)result);
+                cmd.fireOnFailure((CommandException)result,
+                        result instanceof UnexpectedCommandException);
+
             } else {
-                cmd.getMonitor().onCompleted();
+                cmd.fireOnSuccess(result);
                 proxyManager.notifyListenersOfSuccess(cmd.getCommand(), result);
-                cmd.getCallback().onSuccess(result);
             }
         }
     }
@@ -250,7 +273,7 @@ public class CommandServiceImpl implements CommandService, CommandEventSource {
             int code = ((StatusCodeException) caught).getStatusCode();
 
             // TODO: handle 404s and other indications of temporary service inavailability
-            // (different than 500 which means we fucked up on the server)
+            // (different than 500 which means we screwed up on the server)
 
             // internal server error. This shouldn't happen so probably
             // indicates a pretty serious error.
@@ -271,21 +294,19 @@ public class CommandServiceImpl implements CommandService, CommandEventSource {
             }
 
             for(CommandRequest cmd : executingCommands) {
-                cmd.getMonitor().onConnectionProblem();
+                cmd.fireOnConnectionProblem();
                 pendingCommands.add(cmd);
             }
         } else {
             for(CommandRequest cmd : executingCommands) {
-                cmd.getMonitor().onCompleted();
-                cmd.getCallback().onFailure(caught);
+                cmd.fireOnFailure(caught, true);
             }
         }
     }
 
     protected void onServerError(List<CommandRequest> executingCommands, Throwable caught) {
         for(CommandRequest cmd : executingCommands) {
-            cmd.getMonitor().onServerError();
-            cmd.getCallback().onFailure(caught);
+            cmd.fireOnFailure(caught, true);
         }
     }
 
@@ -300,9 +321,7 @@ public class CommandServiceImpl implements CommandService, CommandEventSource {
 
         CommandProxyResult r = proxyManager.execute(cmd.getCommand());
         if(r.couldExecute) {
-            cmd.getMonitor().onCompleted();
-            cmd.getCallback().onSuccess(r.result);
-
+            cmd.fireOnSuccess(r.result);
             return true;
         } else {
 
@@ -319,5 +338,19 @@ public class CommandServiceImpl implements CommandService, CommandEventSource {
         return cmds;
     }
 
+    @Override
+    public void export(ReportElement element, RenderElement.Format format, final AsyncMonitor monitor, final AsyncCallback<Void> callback) {
+        exportService.export(authentication.getAuthToken(), element, format, new AsyncCallback<String>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                monitor.onCompleted();
+                callback.onFailure(caught);
+            }
 
+            @Override
+            public void onSuccess(String result) {
+                callback.onSuccess(null);
+            }
+        });
+    }
 }

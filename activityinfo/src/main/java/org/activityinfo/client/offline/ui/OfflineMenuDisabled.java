@@ -13,6 +13,7 @@ import com.google.gwt.user.client.Window;
 import com.google.inject.Singleton;
 import org.activityinfo.client.offline.dao.AuthDAO;
 import org.activityinfo.client.offline.Installer;
+import org.activityinfo.client.Application;
 
 import java.util.Date;
 
@@ -36,10 +37,7 @@ public class OfflineMenuDisabled extends OfflineMenu {
                     Installer installer = new Installer();
                     installer.install(auth);
                 } else {
-                      // TODO: i18n
-                      MessageBox.alert("Mode Hors Connexion", "Le mode hors connexion exige l'installation de" +
-                        " <b>Google Gears</b>. Cliquer <a href='http://tools.google.com/gears/' target='_blank'>ici</a>" +
-                        " à l'installer. ", null);
+                    MessageBox.alert(Application.CONSTANTS.offlineMode(), Application.CONSTANTS.gearsRequired(), null);
                 }
             }
         });

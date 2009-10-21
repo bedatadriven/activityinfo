@@ -5,12 +5,12 @@ import org.activityinfo.server.dao.BaseMapDAO;
 import org.activityinfo.server.dao.hibernate.PivotDAO;
 import org.activityinfo.server.dao.hibernate.SiteTableDAO;
 import org.activityinfo.server.domain.User;
+import org.activityinfo.server.domain.SiteData;
 import org.activityinfo.server.report.generator.map.*;
 import org.activityinfo.shared.map.BaseMap;
 import org.activityinfo.shared.report.content.Extents;
 import org.activityinfo.shared.report.content.MapContent;
 import org.activityinfo.shared.report.content.MapMarker;
-import org.activityinfo.shared.report.content.SiteData;
 import org.activityinfo.shared.report.model.*;
 import org.activityinfo.shared.date.DateRange;
 

@@ -62,7 +62,7 @@ public class OfflineSchemaCache extends SchemaCache {
 
         // otherwise try to load from local DB
         try {
-            Schema schema = schemaDAO.load();
+            schema = schemaDAO.load();
             if(schema == null) {
                 return CommandProxyResult.couldNotExecute();
             } else {

@@ -6,16 +6,14 @@ import org.activityinfo.server.dao.hibernate.PivotDAOHibernateJdbc;
 import org.activityinfo.shared.report.content.DimensionCategory;
 import org.activityinfo.shared.report.content.EntityCategory;
 import org.activityinfo.shared.report.content.QuarterCategory;
+import org.activityinfo.shared.report.content.PivotTableData;
 import org.activityinfo.shared.report.model.*;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -76,6 +74,29 @@ public class PivotDAOTest extends DbUnitTestCase {
     }
 
     @Test
+    public void testIndicatorsSorted() {
+
+        populate("sites-simple1");
+
+        EntityManager em = emf.createEntityManager();
+        PivotDAO dao = new PivotDAOHibernateJdbc(em);
+
+        Set<Dimension> dimensions = new HashSet<Dimension>();
+        Dimension indicatorDim = new Dimension(DimensionType.Indicator);
+        dimensions.add(indicatorDim);
+
+        Filter filter = new Filter();
+        filter.addRestriction(DimensionType.Activity,  1);
+
+        List<PivotDAO.Bucket> buckets = dao.aggregate(filter, dimensions );
+
+        for(PivotDAO.Bucket bucket : buckets) {
+            EntityCategory cat = (EntityCategory) bucket.getCategory(indicatorDim);    
+            Assert.assertNotNull(cat.getSortOrder());
+        }
+    }
+
+    @Test
     public void testAdminFilter() {
 
         EntityManager em = emf.createEntityManager();
@@ -90,7 +111,6 @@ public class PivotDAOTest extends DbUnitTestCase {
         filter.addRestriction(DimensionType.Indicator, 1);
 
         List<PivotDAO.Bucket> buckets = dao.aggregate(filter, dimensions );
-
 
         Assert.assertEquals(1, buckets.size());
         Assert.assertEquals(3600.0, buckets.get(0).doubleValue());

@@ -17,7 +17,7 @@
 
 
     <listener>
-        <listener-class>org.activityinfo.server.servlet.DiIInstaller</listener-class>
+        <listener-class>org.activityinfo.server.StartupListener</listener-class>
     </listener>
 
     <welcome-file-list>

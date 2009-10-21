@@ -1,6 +1,7 @@
 package org.activityinfo.server.report.generator.map;
 
 import org.activityinfo.server.report.generator.MapSymbol;
+import org.activityinfo.server.domain.SiteData;
 import org.activityinfo.shared.report.content.*;
 import org.activityinfo.shared.report.model.*;
 

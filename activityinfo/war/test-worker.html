@@ -1,0 +1,29 @@
+<html>
+<head>
+    <title>WorkerTest</title>
+    <script type="text/javascript" src="Application/gears_init.js"></script>
+    <script type="text/javascript" src="Synchronizer/worker.js"></script>
+    <script type="text/javascript">
+
+        function doTest() {
+            var workerPool = google.gears.factory.create('beta.workerpool');
+
+            workerPool.onmessage = function(a, b, message) {
+              alert('Received message from worker ' + message.sender + ': \n' + message.body);
+            };
+
+            var childWorkerId = workerPool.createWorkerFromUrl('Synchronizer/worker.js');
+
+            workerPool.sendMessage({authToken:"ABCDEF", userDb:"user1"}, childWorkerId);
+
+        }
+
+    </script>
+</head>
+
+    <a href="javascript:doTest()">Test me.</a>
+
+
+
+
+</html>

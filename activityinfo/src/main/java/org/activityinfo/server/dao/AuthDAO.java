@@ -16,12 +16,12 @@ public interface AuthDAO {
 	/**
 	 * Creates a new user in the database
 	 * 
-	 * @param email
-	 * @param name
-	 * @param password
-	 * @return
+	 * @param email The new user's email address
+	 * @param name The new user's name
+     * @param invitingUser The user who has invited this user
+	 * @return The new, persisted <code>User</code> entity
 	 */
-	User createUser(String email, String name, String password, String locale);
+	User createUser(String email, String name, String locale, User invitingUser);
 
 	/**
 	 * Inserts a new session for the given user in the database

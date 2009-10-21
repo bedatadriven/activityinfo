@@ -7,7 +7,9 @@ package org.activityinfo.client.command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.client.command.monitor.AsyncMonitor;
 import org.activityinfo.shared.command.Command;
+import org.activityinfo.shared.command.RenderElement;
 import org.activityinfo.shared.command.result.CommandResult;
+import org.activityinfo.shared.report.model.ReportElement;
 
 /**
  * Executes {@link org.activityinfo.shared.command.Command}s on behalf of client code. The implementation handles
@@ -31,4 +33,9 @@ public interface CommandService {
      */
     <T extends CommandResult> void execute(Command<T> command, AsyncMonitor monitor,
                                                   AsyncCallback<T> callback  );
+
+
+    void export(ReportElement element, RenderElement.Format format,
+                                            AsyncMonitor monitor,
+                                            AsyncCallback<Void> callback );
 }

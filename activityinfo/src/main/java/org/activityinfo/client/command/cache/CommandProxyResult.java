@@ -1,11 +1,13 @@
 package org.activityinfo.client.command.cache;
 
+import org.activityinfo.shared.command.result.CommandResult;
+
 /**
  * Encapsulates the return value of call to a {@link org.activityinfo.client.command.cache.CommandProxy}.
  *
  * @author Alex Bertram
  */
-public class CommandProxyResult<T> {
+public class CommandProxyResult<T extends CommandResult> {
 
     /**
      * True if the proxy was able to execute the command locally

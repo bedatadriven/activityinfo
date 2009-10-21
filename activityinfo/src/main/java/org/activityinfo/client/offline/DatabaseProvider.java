@@ -21,6 +21,12 @@ public class DatabaseProvider implements Provider<Database> {
 
     private void openDatabase() {
 
+
+        userDb = Factory.getInstance().createDatabase();
+        userDb.open(getDatabaseName());
+    }
+
+    public String getDatabaseName() {
         AuthDAO authDAO = new AuthDAO();
         int userId;
         try {
@@ -28,9 +34,7 @@ public class DatabaseProvider implements Provider<Database> {
         } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
-
-        userDb = Factory.getInstance().createDatabase();
-        userDb.open("user" + userId);
+        return "user" + userId;
     }
 
 

@@ -8,6 +8,7 @@ import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.inject.Inject;
 import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.EventBus;
+import org.activityinfo.client.Application;
 import org.activityinfo.client.command.Authentication;
 
 /**
@@ -40,7 +41,8 @@ public class OfflineMenu extends Button {
     }
 
     protected void init() {
-        this.setText("Mode hors Connexion");       // TODO: i18n
+        //this.setText(Application.offlineMode());
+        this.setText("Offline Mode");
 
         Menu menu = new Menu();
         MenuItem statusItem = new MenuItem("Status", new SelectionListener<MenuEvent>() {
