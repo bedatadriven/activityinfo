@@ -35,8 +35,6 @@ public class ManagedResourceStores {
 
     public static String OFFLINE_COOKIE_NAME = "offline";
 
-    public static String REQUIRED_COOKIE = "offline=enabled";
-
     /**
      * Gets the <code>ManagedResourceStore</code> common to all permutations of the app.
      *
@@ -44,7 +42,7 @@ public class ManagedResourceStores {
      */
     public static ManagedResourceStore getCommon() {
         LocalServer server = Factory.getInstance().createLocalServer();
-        ManagedResourceStore store = server.createManagedStore("ActivityInfo", REQUIRED_COOKIE);
+        ManagedResourceStore store = server.createManagedStore("ActivityInfo");
         store.setManifestUrl(GWT.getModuleBaseURL() + GWT.getModuleName() + ".nocache.manifest");
         store.checkForUpdate();
         return store;
@@ -57,7 +55,7 @@ public class ManagedResourceStores {
      */
     public static ManagedResourceStore getPermutation() {
         LocalServer server = Factory.getInstance().createLocalServer();
-        ManagedResourceStore store = server.createManagedStore(GWT.getPermutationStrongName(), REQUIRED_COOKIE);
+        ManagedResourceStore store = server.createManagedStore(GWT.getPermutationStrongName());
         store.setManifestUrl(getPermutationManifestName());
         return store;
     }
@@ -79,7 +77,7 @@ public class ManagedResourceStores {
     }
 
     private static String getPermutationManifestName() {
-        return GWT.getModuleBaseURL() + GWT.getModuleName() +
+        return GWT.getModuleBaseURL() +
             GWT.getPermutationStrongName() + ".cache.html";
     }
 

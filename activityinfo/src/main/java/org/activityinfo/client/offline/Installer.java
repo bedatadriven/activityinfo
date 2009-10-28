@@ -19,26 +19,23 @@
 
 package org.activityinfo.client.offline;
 
-import org.activityinfo.client.offline.dao.AuthDAO;
-import org.activityinfo.client.command.Authentication;
-import org.activityinfo.client.Application;
-
-import java.util.Date;
-
-import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
+import com.extjs.gxt.ui.client.widget.Dialog;
+import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.ProgressMessageBox;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.gears.client.database.DatabaseException;
 import com.google.gwt.gears.client.localserver.ManagedResourceStore;
-import com.google.gwt.gears.client.localserver.ManagedResourceStoreProgressHandler;
-import com.google.gwt.gears.client.localserver.ManagedResourceStoreErrorHandler;
 import com.google.gwt.gears.client.localserver.ManagedResourceStoreCompleteHandler;
-import com.google.gwt.gears.client.GearsException;
-import com.google.gwt.core.client.GWT;
-import com.extjs.gxt.ui.client.widget.*;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
-import com.extjs.gxt.ui.client.event.Listener;
+import com.google.gwt.gears.client.localserver.ManagedResourceStoreErrorHandler;
+import com.google.gwt.gears.client.localserver.ManagedResourceStoreProgressHandler;
+import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.Window;
+import org.activityinfo.client.command.Authentication;
+import org.activityinfo.client.offline.dao.AuthDAO;
+
+import java.util.Date;
 
 /**
  * Installs the offline application
@@ -57,7 +54,7 @@ public class Installer {
             // this cookie tells the startup script to use the GWT permutation
             // that includes the offline implementation of stuff
             Date expiryDate = new Date(60l * 365l * 24 * 60 * 60 * 1000);
-            Cookies.setCookie("offline", "enabled", expiryDate);
+            Cookies.setCookie(ManagedResourceStores.OFFLINE_COOKIE_NAME, "enabled", expiryDate);
 
             // Add a desktop shortcut for ActivityInfo
 //                                 Desktop desktop = Factory.getInstance().createDesktop();
@@ -83,13 +80,16 @@ public class Installer {
         final ProgressMessageBox box = new ProgressMessageBox();
         //box.setMessage(Application.CONSTANTS.loadingOfflineModule());
         box.setMessage("Loading offline module...");
-        ManagedResourceStore common = ManagedResourceStores.getCommon();
+        box.setButtons(MessageBox.CANCEL);
+
+        final ManagedResourceStore common = ManagedResourceStores.getCommon();
 
         common.setOnProgressHandler(new ManagedResourceStoreProgressHandler() {
             @Override
             public void onProgress(ManagedResourceStoreProgressEvent event) {
                 box.updateProgress(event.getFilesComplete() / event.getFilesTotal(),
                         "Chargement de module hors connexion en cours...");
+                box.updateText("Loading offline module... " + event.getFilesComplete() + "/" + event.getFilesTotal());
             }
         });
         common.setOnErrorHandler(new ManagedResourceStoreErrorHandler() {
@@ -111,6 +111,17 @@ public class Installer {
                 promptReload();
             }
         });
+        box.addCallback(new Listener<MessageBoxEvent>() {
+            @Override
+            public void handleEvent(MessageBoxEvent be) {
+                // handle user cancelling
+//                if(be.getButtonClicked() != null && Dialog.CANCEL.equals(be.getButtonClicked().getItemId())) {
+//                    common.setEnabled(false);
+//                    Cookies.removeCookie(ManagedResourceStores.OFFLINE_COOKIE_NAME);
+//                }
+            }
+        });
+        
 
         box.show();
         common.setEnabled(true);

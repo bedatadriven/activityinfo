@@ -140,7 +140,7 @@ public final class ApplicationLinker extends IFrameLinker {
         replaceAll(out, "__ENTRIES__", entries.toString());
 
         artifacts.add(emitBytes(logger, Util.getBytes(out.toString()),
-                context.getModuleName() + "." + compilationResult.getStrongName() + ".cache.manifest"));
+                compilationResult.getStrongName() + ".cache.manifest"));
 
         return artifacts;
     }
