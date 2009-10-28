@@ -125,8 +125,8 @@ public class SiteMap extends ContentPanel implements Shutdownable {
     }
 
     public void onSiteDropped(Record record, double lat, double lng) {
-        record.set("x", lat);
-        record.set("y", lng);
+        record.set("x", lng);
+        record.set("y", lat);
         updateSiteCoords(((SiteModel) record.getModel()).getId(), lat, lng);
         
     }
