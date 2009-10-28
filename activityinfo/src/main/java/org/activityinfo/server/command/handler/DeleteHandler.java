@@ -52,7 +52,7 @@ public class DeleteHandler implements CommandHandler<Delete> {
 
         if("Site".equals(cmd.getEntityName())) {
             entity = siteDAO.findSiteById(cmd.getId());
-        } else if("Database".equals(cmd.getEntityName())) {
+        } else if("UserDatabase".equals(cmd.getEntityName())) {
             entity = schemaDAO.findById(UserDatabase.class, cmd.getId());
         } else if("Activity".equals(cmd.getEntityName())) {
             entity = schemaDAO.findById(Activity.class, cmd.getId());
