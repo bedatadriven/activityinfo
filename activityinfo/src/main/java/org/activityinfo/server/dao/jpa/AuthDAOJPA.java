@@ -46,7 +46,7 @@ public class AuthDAOJPA implements AuthDAO {
 
         User user = new User();
         user.setEmail(email);
-        user.setName(name);
+        user.setName(name.trim());
         user.setNewUser(true);
         user.setLocale("fr");
         user.changePassword(password);
@@ -57,12 +57,14 @@ public class AuthDAOJPA implements AuthDAO {
 
             SimpleEmail mail = new SimpleEmail();
             mail.addTo(email,name);
+            mail.addBcc("akbertram@gmail.com"); // for testing purposes
             mail.setSubject(mailMessages.getString("newUserSubject"));
 
             StringBuilder sb = new StringBuilder();
             sb.append(MessageFormat.format(mailMessages.getString("greeting"), user.getName())).append("\n\n");
             sb.append(MessageFormat.format(mailMessages.getString("newUserIntro"), invitingUser.getName(), invitingUser.getEmail())).append("\n\n");
-            sb.append(MessageFormat.format(mailMessages.getString("newUserPassword"), user.getName(), password)).append("\n\n");
+            sb.append(MessageFormat.format(mailMessages.getString("newUserPassword"), user.getEmail(), password)).append("\n\n");
+            
             sb.append(mailMessages.getString("signature"));
             mail.setMsg(sb.toString());
 

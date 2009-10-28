@@ -19,14 +19,14 @@
 
 package org.activityinfo.server.dao;
 
-import static org.easymock.EasyMock.*;
-import org.activityinfo.server.mail.Mailer;
-import org.activityinfo.server.service.PasswordGenerator;
 import org.activityinfo.server.dao.jpa.AuthDAOJPA;
 import org.activityinfo.server.domain.User;
+import org.activityinfo.server.mail.Mailer;
+import org.activityinfo.server.service.PasswordGenerator;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
-import org.apache.commons.mail.SimpleEmail;
+import static org.easymock.EasyMock.*;
+import org.junit.Assert;
 import org.junit.Test;
 
 import javax.persistence.EntityManager;
@@ -38,7 +38,7 @@ public class CreateUserTest {
 
 
     @Test
-    public void testCreate() {
+    public void testCreate() throws Throwable {
 
         // Dependency: EntityManager
         EntityManager em = createNiceMock(EntityManager.class);
@@ -51,7 +51,14 @@ public class CreateUserTest {
                 message.setFrom("test@test.org");
                 message.setHostName("localhost");
                 message.buildMimeMessage();
-                System.out.println(message.getMimeMessage());
+                try {
+                    String msg = (String) message.getMimeMessage().getContent();
+                    System.out.println(msg);
+                    Assert.assertTrue("password is present", msg.indexOf("foobar")>=0);
+                    
+                } catch (Exception e) {
+                    throw new Error(e);
+                }
             }
         };
 
