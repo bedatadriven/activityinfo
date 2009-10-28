@@ -43,7 +43,7 @@ public class ChartPreviewOFC extends ContentPanel implements ChartPreview {
     }
 
     protected void createChart() {
-        chart = new Chart(GWT.getModuleBaseURL() + "/gxt/chart/open-flash-chart.swf");
+        chart = new Chart(GWT.getModuleBaseURL() + "/gxt201/chart/open-flash-chart.swf");
         chart.setBorders(false);
         chart.setChartModel(chartModel);
 
