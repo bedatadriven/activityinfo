@@ -37,8 +37,7 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
         this.setHeading(Application.CONSTANTS.loading());
 
         add(new LoadingPlaceHolder());
-
-    }
+    }       
 
 
 
