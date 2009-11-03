@@ -19,28 +19,30 @@
 
 package org.activityinfo.server.servlet;
 
-import com.google.inject.Injector;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Singleton;
-
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletException;
-import javax.persistence.EntityManager;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.*;
-import java.net.URLEncoder;
-
+import org.activityinfo.server.command.handler.HandlerUtil;
 import org.activityinfo.server.dao.AuthDAO;
 import org.activityinfo.server.dao.hibernate.SiteTableDAO;
 import org.activityinfo.server.domain.Authentication;
 import org.activityinfo.server.domain.DomainFilters;
-import org.activityinfo.server.command.handler.HandlerUtil;
-import org.activityinfo.shared.dto.*;
 import org.activityinfo.shared.command.GetSchema;
+import org.activityinfo.shared.dto.ActivityModel;
+import org.activityinfo.shared.dto.Schema;
+import org.activityinfo.shared.dto.UserDatabaseDTO;
 import org.activityinfo.shared.exception.CommandException;
+
+import javax.persistence.EntityManager;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -95,7 +97,7 @@ public class ExportServlet extends HttpServlet {
 
             resp.setContentType("application/vnd.ms-excel");
             resp.addHeader("Content-Disposition", "attachment; filename=" +
-                    URLEncoder.encode("ActivityInfo Export " + new Date().toString(), "UTF-8"));
+                    ("ActivityInfo Export " + new Date().toString() + ".xls").replace(" ", "_"));
 
             OutputStream os = resp.getOutputStream();
             export.getBook().write(os);

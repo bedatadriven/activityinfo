@@ -1,16 +1,14 @@
 package org.activityinfo.client.page.report;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.Window;
 import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
-import org.activityinfo.client.Place;
 import org.activityinfo.client.EventBus;
-import org.activityinfo.client.event.DownloadEvent;
+import org.activityinfo.client.Place;
 import org.activityinfo.client.command.CommandService;
-import org.activityinfo.client.command.Authentication;
 import org.activityinfo.client.command.callback.Got;
 import org.activityinfo.client.command.monitor.AsyncMonitor;
+import org.activityinfo.client.event.DownloadEvent;
 import org.activityinfo.client.page.NavigationCallback;
 import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.PagePresenter;
@@ -18,17 +16,17 @@ import org.activityinfo.client.page.Pages;
 import org.activityinfo.client.page.common.dialog.FormDialogCallback;
 import org.activityinfo.client.page.common.dialog.FormDialogImpl;
 import org.activityinfo.client.page.common.toolbar.ActionListener;
-import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.client.page.common.toolbar.ExportCallback;
+import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.shared.command.GetReportDef;
+import org.activityinfo.shared.command.RenderElement;
 import org.activityinfo.shared.command.RenderReportHtml;
 import org.activityinfo.shared.command.UpdateReportDef;
-import org.activityinfo.shared.command.RenderElement;
 import org.activityinfo.shared.command.result.HtmlResult;
 import org.activityinfo.shared.command.result.VoidResult;
 import org.activityinfo.shared.command.result.XmlResult;
+import org.activityinfo.shared.report.model.DateRange;
 import org.activityinfo.shared.dto.ReportTemplateDTO;
-import org.activityinfo.shared.date.DateRange;
 
 /**
  * @author Alex Bertram
@@ -95,7 +93,7 @@ public class ReportPreviewPresenter implements PagePresenter, ActionListener, Ex
     public void export(RenderElement.Format format) {
 
         StringBuilder url = new StringBuilder();
-        url.append("../report?auth=#AUTH#")
+        url.append("report?auth=#AUTH#")
                 .append("&id=").append(template.getId())
                 .append("&format=").append(format.toString());
 

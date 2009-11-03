@@ -12,13 +12,11 @@ import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.Place;
 import org.activityinfo.client.command.CommandService;
-import org.activityinfo.client.command.Authentication;
-import org.activityinfo.client.command.callback.DownloadCallback;
 import org.activityinfo.client.command.loader.CommandLoadEvent;
 import org.activityinfo.client.command.loader.PagingCmdLoader;
 import org.activityinfo.client.command.monitor.NullAsyncMonitor;
-import org.activityinfo.client.event.SiteEvent;
 import org.activityinfo.client.event.DownloadEvent;
+import org.activityinfo.client.event.SiteEvent;
 import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.PagePresenter;
 import org.activityinfo.client.page.Pages;
@@ -36,8 +34,6 @@ import org.activityinfo.shared.dto.ActivityModel;
 import org.activityinfo.shared.dto.AdminLevelModel;
 import org.activityinfo.shared.dto.SiteModel;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
-import org.activityinfo.shared.report.model.TableElement;
-import org.activityinfo.shared.i18n.UIConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,9 +99,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
 
         siteCreatedListener = new Listener<SiteEvent>() {
             public void handleEvent(SiteEvent se) {
-                ((GetSites) loader.getCommand()).setSeekToSiteId(se.getSite().getId());
-                siteIdToSelectOnNextLoad = se.getSite().getId();
-                loader.load();
+                onSiteCreated(se);
             }
         };
         this.eventBus.addListener(AppEvents.SiteCreated, siteCreatedListener);
@@ -122,6 +116,20 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
             }
         };
         this.eventBus.addListener(AppEvents.SiteSelected, siteSelectedListner);
+    }
+
+    private void onSiteCreated(SiteEvent se) {
+        if(store.getCount() < PAGE_SIZE) {
+            // there is only one page, so we can save some time by justing adding this model to directly to
+            //  the store
+            store.add(se.getSite());
+        } else {
+            // there are multiple pages and we don't really know where this site is going
+            // to end up, so do a reload and seek to the page with the new site
+            ((GetSites) loader.getCommand()).setSeekToSiteId(se.getSite().getId());
+            siteIdToSelectOnNextLoad = se.getSite().getId();
+            loader.load();
+        }
     }
 
 
@@ -370,7 +378,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
     }
 
     private void onExport() {
-        String url = "../export?auth=#AUTH#&a=" + currentActivity.getId();
+        String url = "export?auth=#AUTH#&a=" + currentActivity.getId();
         eventBus.fireEvent(new DownloadEvent(url));
    }
 
