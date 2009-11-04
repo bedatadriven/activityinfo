@@ -10,6 +10,7 @@ import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.google.gwt.core.client.GWT;
 import com.google.inject.Inject;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.Place;
@@ -42,12 +43,9 @@ public class GalleryPage extends LayoutContainer implements GalleryView {
         }
     }
 
-    private final EventBus eventBus;
-
     @Inject
     public GalleryPage(final EventBus eventBus) {
 
-        this.eventBus = eventBus;
         this.setStyleName("gallery");
         this.setScrollMode(Style.Scroll.AUTOY);
 
@@ -65,7 +63,7 @@ public class GalleryPage extends LayoutContainer implements GalleryView {
         store = new ListStore<GalleryModel>();
 
         ListView<GalleryModel> view = new ListView<GalleryModel>();
-        view.setTemplate(getTemplate(""));
+        view.setTemplate(getTemplate(GWT.getModuleBaseURL() + "/image/"));
         view.setBorders(false);
         view.setStore(store);
         view.setItemSelector("dd");
@@ -75,10 +73,8 @@ public class GalleryPage extends LayoutContainer implements GalleryView {
             new Listener<ListViewEvent<GalleryModel>>() {
 
                 public void handleEvent(ListViewEvent<GalleryModel> event) {
-
                     eventBus.fireEvent(new NavigationEvent(PageManager.NavigationRequested,
                             event.getModel().getPlace()));
-
                 }
             });
         add(view);
