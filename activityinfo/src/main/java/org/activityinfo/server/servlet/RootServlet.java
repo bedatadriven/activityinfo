@@ -81,7 +81,7 @@ public class RootServlet extends HttpServlet {
         // create our "model"
         HashMap<String,Object> model = new HashMap<String, Object>();
         model.put("loginError", message);
-        model.put("bookmark", bookmark);
+        model.put("bookmark", bookmark == null ? "" : bookmark);
 
         // show the login page
         Template template = templateCfg.getTemplate("login.ftl");
@@ -154,7 +154,9 @@ public class RootServlet extends HttpServlet {
         String password = request.getParameter("password");
 
         String bookmark = request.getParameter("bookmark");
-        if(bookmark!=null && bookmark.length()==0) bookmark = null;
+        if(bookmark == null) {
+            bookmark = "";
+        }
 
         boolean remember = "true".equals(request.getParameter("remember"));
 
@@ -167,7 +169,7 @@ public class RootServlet extends HttpServlet {
             cookie.setMaxAge(remember ? 30*24*60*60 : -1);
             response.addCookie(cookie);
 
-            response.sendRedirect((bookmark == null ? "" : "#" + bookmark));
+            response.sendRedirect((bookmark.length()==0 ? "" : "#" + bookmark));
 
         } catch (InvalidLoginException e) {
 
