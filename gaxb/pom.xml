@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.google.code.gaxb</groupId>
+    <artifactId>gaxb</artifactId>
+    <packaging>jar</packaging>
+    <version>0.1</version>
+    <name>GAXB</name>
+
+    <!--  include pluginRepository and repository for GWT-Maven -->
+    <pluginRepositories>
+        <pluginRepository>
+            <id>Codehaus Mojo Snapshot</id>
+            <url>http://snapshots.repository.codehaus.org/</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>activityinfo</id>
+            <name>ActivityInfo team repository</name>
+            <url>http://www.activityinfo.org/m2/</url>
+            <layout>default</layout>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <properties>
+        <!--  convenience to define GWT version in one place -->
+        <gwtVersion>2.0.0-SNAPSHOT</gwtVersion>
+
+        <!-- 	<gwt.output.directory>${basedir}/target/gwt</gwt.output.directory> -->
+        <gwt.output.directory>${basedir}/war</gwt.output.directory>
+    </properties>
+
+    <dependencies>
+
+        <!--  GWT deps (from central repo) -->
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-servlet</artifactId>
+            <version>${gwtVersion}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
+            <version>${gwtVersion}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-dev</artifactId>
+            <version>${gwtVersion}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.1</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>activityinfo</id>
+            <name>ActivityInfo team repository</name>
+            <url>http://www.activityinfo.org/m2/</url>
+            <layout>default</layout>
+        </repository>
+
+    </repositories>
+
+    <description>GAXB (say "Gatsby") provides a (partial) implementation of the
+        Java-XML-Binding for the Google Web Toolkit</description>
+    <build>
+
+        <!-- Include everything the jar -->
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/emul/**/*.java</include>
+                    <include>**/client/**/*.java</include>
+                    <include>**/*.gwt.xml</include>
+                    <include>**/*.properties</include>
+                </includes>
+            </resource>
+        </resources>
+
+
+        <plugins>
+            <!-- configure the Java Compiler Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.0.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <encoding>UTF-8</encoding>
+
+                    <!-- Don't compile our emulation sources -->
+                    <excludes>
+                        <exclude>**/emul/**/*.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+            <!--  configure the GWT-Maven plugin -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>gwt-maven-plugin</artifactId>
+                <version>1.1-INTERNAL</version>
+                <configuration>
+                    <runTarget>/</runTarget>
+                    <logLevel>INFO</logLevel>
+                    <inplace>false</inplace>
+                    <port>8993</port>
+                    <generateDirectory>${basedir}/src/main/java</generateDirectory>
+                    <extraJvmArgs>-Xmx512M</extraJvmArgs>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <id>gwt-test</id>
+                        <phase>test</phase>
+                        <configuration>
+                            <includes>**/client/**/BindingTest.java</includes>
+                            <extraJvmArgs>-Xmx512M -Xss1024k -Dgwt.args="-logdir target/test-logs -gen target/test-gen"</extraJvmArgs>
+                            <out>target/test-run</out>
+                            <logLevel>DEBUG</logLevel>
+                        </configuration>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.3</version>
+
+                <!-- set encoding to something not platform dependent -->
+
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+
+            </plugin>
+
+            <!-- Disable the surefire plugin for GWT tests -->
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.4.3</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/client/**/*.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+            <!-- include all client and emul sources in packages -->
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-jar-plugin</artifactId>-->
+                <!--<configuration>-->
+                    <!--<-->
+                    <!--<includes>-->
+                        <!--<include>**/*.java</include>-->
+                        <!--<include>**/*.gwt.xml</include>-->
+                        <!--<include>**/*.properties</include>-->
+                    <!--</includes>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
+        </plugins>
+    </build>
+</project>
+

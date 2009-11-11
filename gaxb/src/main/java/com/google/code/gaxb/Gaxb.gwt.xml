@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+    <inherits name='com.google.gwt.user.User'/>
+    <inherits name="com.google.gwt.xml.XML"/>
+    <inherits name="com.google.code.gaxb.Annotations"/>
+
+    <generate-with class="com.google.code.gaxb.rebind.XmlBindingGenerator">
+           <when-type-assignable class="com.google.code.gaxb.client.XmlBinding"/>
+    </generate-with>
+
+
+    <!-- Specify the paths for translatable code  -->
+    <source path='client'/>
+</module>
