@@ -16,7 +16,8 @@ public interface PivotDAO {
 
     List<String> getFilterLabels(DimensionType type, Collection<Integer> ids);
 
-    static class Bucket {
+     
+    public static class Bucket {
 
         private double value;
 
