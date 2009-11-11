@@ -3,10 +3,7 @@ package org.activityinfo.server.report.renderer.excel;
 
 import com.google.inject.Inject;
 import org.activityinfo.server.report.renderer.Renderer;
-import org.activityinfo.shared.report.model.PivotTableElement;
-import org.activityinfo.shared.report.model.Report;
-import org.activityinfo.shared.report.model.ReportElement;
-import org.activityinfo.shared.report.model.TableElement;
+import org.activityinfo.shared.report.model.*;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
 
@@ -18,14 +15,17 @@ public class ExcelReportRenderer implements ExcelRenderer<Report>, Renderer {
 
     private final ExcelPivotTableRenderer pivotTableRenderer;
     private final ExcelTableRenderer tableRenderer;
+    private final ExcelChartRenderer chartRenderer;
 
     @Inject
-    public ExcelReportRenderer(ExcelPivotTableRenderer pivotTableRenderer, ExcelTableRenderer tableRenderer) {
+    public ExcelReportRenderer(ExcelPivotTableRenderer pivotTableRenderer, ExcelTableRenderer tableRenderer, ExcelChartRenderer chartRenderer) {
         this.pivotTableRenderer = pivotTableRenderer;
         this.tableRenderer = tableRenderer;
+        this.chartRenderer = chartRenderer;
     }
 
     public ExcelReportRenderer() {
+        this.chartRenderer = new ExcelChartRenderer();
         this.pivotTableRenderer = new ExcelPivotTableRenderer();
         this.tableRenderer = new ExcelTableRenderer();
     }
@@ -42,6 +42,9 @@ public class ExcelReportRenderer implements ExcelRenderer<Report>, Renderer {
 
         } else if(element instanceof TableElement) {
             tableRenderer.render(book, (TableElement) element);
+
+        } else if(element instanceof PivotChartElement) {
+            chartRenderer.render(book, (PivotChartElement)element);
         }
         book.write(os);
 
