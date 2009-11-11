@@ -1,10 +1,10 @@
 package org.activityinfo.server.command;
 
 import junit.framework.Assert;
+import org.activityinfo.shared.command.BatchCommand;
 import org.activityinfo.shared.command.CreateEntity;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.UpdateEntity;
-import org.activityinfo.shared.command.BatchCommand;
 import org.activityinfo.shared.command.result.CreateResult;
 import org.activityinfo.shared.dto.ActivityModel;
 import org.activityinfo.shared.dto.LocationTypeModel;
@@ -13,8 +13,8 @@ import org.activityinfo.shared.dto.UserDatabaseDTO;
 import org.activityinfo.shared.exception.CommandException;
 import org.junit.Test;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 public class ActivityTest extends CommandTestCase {
 
@@ -74,7 +74,7 @@ public class ActivityTest extends CommandTestCase {
         Map<String,Object> changes1 = new HashMap<String, Object>();
         changes1.put("sortOrder", 2);
         Map<String,Object> changes2 = new HashMap<String, Object>();
-        changes2.put("sortOrder", 2);
+        changes2.put("sortOrder", 1);
 
         execute(new BatchCommand(
                 new UpdateEntity("Activity", 1, changes1),
