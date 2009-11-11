@@ -159,7 +159,7 @@ public class Designer extends AbstractEditorGridPresenter<ModelData> implements 
             AttributeGroupModel group = findAttributeGroupNode(selected);
 
             newEntity = new AttributeModel();
-            newEntity.set("groupId", group.getId());
+            newEntity.set("attributeGroupId", group.getId());
 
             parent = group;
 
