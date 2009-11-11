@@ -3,10 +3,7 @@ package org.activityinfo.client.command.cache;
 import com.google.inject.Inject;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.command.CommandEventSource;
-import org.activityinfo.shared.command.Command;
-import org.activityinfo.shared.command.CreateEntity;
-import org.activityinfo.shared.command.GetSchema;
-import org.activityinfo.shared.command.UpdateEntity;
+import org.activityinfo.shared.command.*;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.dto.Schema;
 
@@ -30,6 +27,8 @@ public class SchemaCache implements CommandProxy<GetSchema>, CommandListener {
         source.registerListener(GetSchema.class, this);
         source.registerListener(UpdateEntity.class, this);
         source.registerListener(CreateEntity.class, this);
+        source.registerListener(AddPartner.class, this);
+        source.registerListener(RemovePartner.class, this);
     }
     @Override
     public CommandProxyResult execute(GetSchema command) {
@@ -43,26 +42,32 @@ public class SchemaCache implements CommandProxy<GetSchema>, CommandListener {
     @Override
     public void beforeCalled(Command command) {
         String entityName;
-        if(command instanceof UpdateEntity) {
-            entityName = ((UpdateEntity)command).getEntityName();
-        } else if(command instanceof CreateEntity) {
-            entityName = ((CreateEntity)command).getEntityName();
-        } else {
-            return;
-        }
-        if("Activity".equals(entityName) ||
-           "AttributeGroup".equals(entityName) ||
-           "Attribute".equals(entityName) ||
-           "Indicator".equals(entityName)) {
-
+        if(command instanceof UpdateEntity &&  isSchemaEntity(((UpdateEntity)command).getEntityName())) {
+            schema = null;
+        } else if(command instanceof CreateEntity && isSchemaEntity(((CreateEntity)command).getEntityName())) {
+            schema = null;
+        } else if(command instanceof AddPartner ||
+                  command instanceof RemovePartner) {
             schema = null;
         }
+    }
+
+    private boolean isSchemaEntity(String entityName) {
+        return ("UserDatabase".equals(entityName) ||
+           "Activity".equals(entityName) ||
+           "AttributeGroup".equals(entityName) ||
+           "Attribute".equals(entityName) ||
+           "Indicator".equals(entityName));
     }
 
     @Override
     public void onSuccess(Command command, CommandResult result) {
         if(command instanceof GetSchema) {
             cache((Schema)result);
+        } else if(schema != null) {
+            if(command instanceof AddPartner) {
+                AddPartner add = (AddPartner)command;
+            }
         }
     }
 
