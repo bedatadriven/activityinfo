@@ -26,16 +26,11 @@ import org.activityinfo.server.domain.Partner;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.server.domain.UserDatabase;
 import org.activityinfo.server.domain.UserPermission;
-import org.activityinfo.server.mail.Mailer;
-import org.activityinfo.server.service.PasswordGenerator;
 import org.activityinfo.shared.command.UpdateUserPermissions;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.dto.UserModel;
 import org.activityinfo.shared.exception.CommandException;
-import org.apache.commons.mail.SimpleEmail;
 
-import java.text.MessageFormat;
-import java.util.ResourceBundle;
 import java.util.Date;
 
 /**
@@ -47,15 +42,11 @@ public class UpdateUserPermissionsHandler implements CommandHandler<UpdateUserPe
 
 	private final AuthDAO authDAO;
     private final SchemaDAO schemaDAO;
-    private final Mailer mailer;
-    private final PasswordGenerator passwordGenerator;
 
     @Inject
-    public UpdateUserPermissionsHandler(AuthDAO authDAO, SchemaDAO schemaDAO, Mailer mailer, PasswordGenerator passwordGenerator) {
+    public UpdateUserPermissionsHandler(AuthDAO authDAO, SchemaDAO schemaDAO) {
         this.authDAO = authDAO;
         this.schemaDAO = schemaDAO;
-        this.mailer = mailer;
-        this.passwordGenerator = passwordGenerator;
     }
 
     @Override
@@ -82,13 +73,7 @@ public class UpdateUserPermissionsHandler implements CommandHandler<UpdateUserPe
 		User user = authDAO.getUserByEmail(model.getEmail());
 		
 		if(user == null) {
-
-		    String password = passwordGenerator.generate();
-
 		    user = authDAO.createUser(model.getEmail(), model.getName(), currentUser.getLocale(), currentUser);
-
-
-
         }
 		
 		/* 
