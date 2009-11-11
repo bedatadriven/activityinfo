@@ -20,7 +20,7 @@ import java.io.ByteArrayOutputStream;
 public class ItextChartRenderer implements ItextRenderer<PivotChartElement> {
 
     private final ChartRendererJC chartRenderer;
-    private static int RESOLUTION = 300;
+    private static int RESOLUTION = 150;
 
     @Inject
     public ItextChartRenderer(ChartRendererJC chartRenderer) {

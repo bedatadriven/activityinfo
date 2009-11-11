@@ -16,6 +16,10 @@ public class PivotTableData implements Serializable {
         
     }
 
+    public interface CellVisitor {
+        void onVisit(Axis row, Axis column, Cell cell);
+    }
+
 	public PivotTableData(List<Dimension> rowDimensions, List<Dimension> columnDimensions) {
 		this.rowDimensions = rowDimensions;
 		this.colDimensions = columnDimensions;
@@ -101,6 +105,10 @@ public class PivotTableData implements Serializable {
         return labels;
     }
 
+
+    public void visitAllCells(CellVisitor visitor) {
+        rootRow.visitAllCells(visitor);
+    }
 	
 	public static class Axis extends TreeNode<Axis> implements Serializable {
 
@@ -244,6 +252,15 @@ public class PivotTableData implements Serializable {
             return sb.toString();
         }
 
+        protected void visitAllCells(CellVisitor visitor) {
+            for(Map.Entry<Axis, Cell> entry : cells.entrySet()) {
+                visitor.onVisit(this, entry.getKey(), entry.getValue());
+            }
+            for(Axis childRow : this.children) {
+                childRow.visitAllCells(visitor);
+            }
+        }
+
         private Map<DimensionCategory, Axis> getChildMap() {
             return childMap;
         }
@@ -291,6 +308,32 @@ public class PivotTableData implements Serializable {
             }
 
             return max;
+        }
+    }
+
+    public static class RangeCalculator implements CellVisitor {
+        private double minValue = Double.MAX_VALUE;
+        private double maxValue = Double.MIN_VALUE;
+
+        @Override
+        public void onVisit(Axis row, Axis column, Cell cell) {
+            if(cell.getValue() != null) {
+                if(cell.getValue() < minValue) {
+                    minValue = cell.getValue();
+                }
+                if(cell.getValue() > maxValue) {
+                    maxValue = cell.getValue();
+                }
+            }
+        }
+
+
+        public double getMinValue() {
+            return minValue;
+        }
+
+        public double getMaxValue() {
+            return maxValue;
         }
     }
 }

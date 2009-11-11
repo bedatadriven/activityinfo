@@ -28,14 +28,17 @@ public class ThemeHelper {
         return para;
     }
 
-
     public static Cell columnHeaderCell(String label, boolean leaf) throws BadElementException {
+        return columnHeaderCell(label, leaf, leaf ? Cell.ALIGN_RIGHT : Cell.ALIGN_CENTER);
+    }
+
+    public static Cell columnHeaderCell(String label, boolean leaf, int hAlign) throws BadElementException {
         Paragraph para = new Paragraph(label);
         para.setFont(new Font(Font.HELVETICA, 10, Font.NORMAL, Color.WHITE));
 
         Cell cell = new Cell();
         cell.addElement(para);
-        cell.setHorizontalAlignment(leaf ? Cell.ALIGN_RIGHT : Cell.ALIGN_CENTER);
+        cell.setHorizontalAlignment(hAlign);
         cell.setHeader(true);
         cell.setVerticalAlignment(Cell.ALIGN_BOTTOM);
         cell.setBackgroundColor(new Color(55, 96, 145));
@@ -53,10 +56,17 @@ public class ThemeHelper {
         return cell;
     }
 
-    public static Cell bodyCell(String label, boolean header, int depth, boolean leaf) throws BadElementException {
+    public static Cell bodyCell(String label, boolean header, int depth, boolean leaf )
+            throws BadElementException {
+
+        return bodyCell(label, header, depth, leaf, header ? Cell.ALIGN_LEFT : Cell.ALIGN_RIGHT);
+    }
+    
+    public static Cell bodyCell(String label, boolean header, int depth, boolean leaf, int horizantalAlignment )
+            throws BadElementException {
 
         Cell cell = new Cell();
-        cell.setHorizontalAlignment(header ? Cell.ALIGN_LEFT : Cell.ALIGN_RIGHT);
+        cell.setHorizontalAlignment(horizantalAlignment);
 
         if(label != null) {
             Paragraph para = new Paragraph(label);
@@ -73,9 +83,9 @@ public class ThemeHelper {
         cell.setBorderWidthTop(0);
 
         if(!leaf &&depth == 0) {
-            cell.setBackgroundColor(new Color(149, 179, 215));
+            cell.setBackgroundColor(new Color(149, 179, 215)); // #95B3D7
             cell.setBorderWidthBottom(0.5f);
-            cell.setBorderColorBottom(new Color(219, 229, 241));
+            cell.setBorderColorBottom(new Color(219, 229, 241)); // #DBE5F1
         } else if(!leaf && depth == 1) {
             cell.setBackgroundColor(new Color(219, 229, 241));
             cell.setBorderWidthBottom(0.5f);
