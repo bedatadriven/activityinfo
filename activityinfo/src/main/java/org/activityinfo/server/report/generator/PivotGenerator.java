@@ -117,6 +117,8 @@ public abstract class PivotGenerator<T extends PivotElement> extends BaseGenerat
             String[] months = format.getDateFormatSymbols().getShortMonths();
 
             return months[((MonthCategory)category).getMonth()-1];
+        } else if(category instanceof SimpleCategory) {
+            return ((SimpleCategory) category).getLabel();
         }
         return "NOIMPL"; // TODO
     }
