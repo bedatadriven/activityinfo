@@ -19,20 +19,17 @@
 
 package org.activityinfo.server.schedule;
 
-import org.junit.Test;
-import org.junit.Assert;
+import org.activityinfo.server.domain.ReportDefinition;
 import org.activityinfo.server.domain.ReportSubscription;
 import org.activityinfo.server.domain.User;
-import org.activityinfo.server.domain.ReportTemplate;
+import org.activityinfo.shared.report.model.DateRange;
 import org.activityinfo.shared.report.model.Report;
-import org.activityinfo.shared.report.model.ParameterizedValue;
-import org.activityinfo.shared.report.model.DateUnit;
 import org.activityinfo.shared.report.model.ReportFrequency;
-import org.activityinfo.shared.date.DateRange;
+import org.junit.Assert;
+import org.junit.Test;
 
-import java.util.Date;
 import java.util.Calendar;
-import java.util.Map;
+import java.util.Date;
 
 /**
  *
@@ -45,7 +42,7 @@ public class ReportMailerTest {
     public void testDailyCheck() {
 
         Report sub = new Report();
-        sub.setFrequency(ReportFrequency.DAILY);
+        sub.setFrequency(ReportFrequency.Daily);
 
         Assert.assertTrue("Daily report always goes out", ReportMailerHelper.mailToday(new Date(), sub));
 
@@ -55,7 +52,7 @@ public class ReportMailerTest {
     public void testWeeklyCheck() {
 
         Report report = new Report();
-        report.setFrequency(ReportFrequency.WEEKLY);
+        report.setFrequency(ReportFrequency.Weekly);
         report.setDay(0); // Sunday
 
         Calendar cal = Calendar.getInstance();
@@ -78,7 +75,7 @@ public class ReportMailerTest {
     public void testMonthly() {
 
         Report report = new Report();
-        report.setFrequency(ReportFrequency.MONTHLY);
+        report.setFrequency(ReportFrequency.Monthly);
         report.setDay(11);
 
         Calendar cal = Calendar.getInstance();
@@ -98,8 +95,8 @@ public class ReportMailerTest {
     public void testLastDayOfMonth() {
 
         Report report = new Report();
-        report.setFrequency(ReportFrequency.MONTHLY);
-        report.setDay(ReportFrequency.LAST_DAY_OF_MONTH);
+        report.setFrequency(ReportFrequency.Monthly);
+        report.setDay(Report.LAST_DAY_OF_MONTH);
 
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, 2009);
@@ -121,7 +118,7 @@ public class ReportMailerTest {
     public void testDateParameters() {
 
         Report report = new Report();
-        report.setFrequency(ReportFrequency.MONTHLY);
+        report.setFrequency(ReportFrequency.Monthly);
 
 
         Calendar today = Calendar.getInstance();
@@ -146,13 +143,13 @@ public class ReportMailerTest {
         User user = new User("akbertram@gmail.com", "Alex", "fr");
 
         ReportSubscription sub = new ReportSubscription();
-        sub.setTemplate(new ReportTemplate());
+        sub.setTemplate(new ReportDefinition());
         sub.getTemplate().setId(1);
         sub.setUser(user);
 
         Report report = new Report();
         report.setTitle("Rapport RRM Mensuelle");
-        report.setFrequency(ReportFrequency.WEEKLY);
+        report.setFrequency(ReportFrequency.Weekly);
         report.setDay(1);
 
         String text = ReportMailerHelper.composeTextEmail(sub, report);

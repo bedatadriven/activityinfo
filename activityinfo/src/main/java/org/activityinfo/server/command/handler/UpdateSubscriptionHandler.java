@@ -20,8 +20,8 @@
 package org.activityinfo.server.command.handler;
 
 import com.google.inject.Inject;
+import org.activityinfo.server.domain.ReportDefinition;
 import org.activityinfo.server.domain.ReportSubscription;
-import org.activityinfo.server.domain.ReportTemplate;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.shared.command.UpdateSubscription;
 import org.activityinfo.shared.command.result.CommandResult;
@@ -64,7 +64,7 @@ public class UpdateSubscriptionHandler implements CommandHandler<UpdateSubscript
             if(cmd.isSubscribed()) {
 
                 ReportSubscription sub = new ReportSubscription(
-                        em.getReference(ReportTemplate.class, cmd.getReportTemplateId()),
+                        em.getReference(ReportDefinition.class, cmd.getReportTemplateId()),
                         em.getReference(User.class, userId));
 
                 sub.setSubscribed(true);

@@ -6,23 +6,23 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.DateField;
+import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import org.activityinfo.client.Application;
-import org.activityinfo.client.util.DateUtilGWTImpl;
 import org.activityinfo.client.command.monitor.AsyncMonitor;
 import org.activityinfo.client.command.monitor.MaskingAsyncMonitor;
 import org.activityinfo.client.page.common.toolbar.ActionToolBar;
 import org.activityinfo.client.page.common.toolbar.ExportMenuButton;
 import org.activityinfo.client.page.common.toolbar.UIActions;
-import org.activityinfo.shared.dto.ReportTemplateDTO;
-import org.activityinfo.shared.command.RenderElement;
+import org.activityinfo.client.util.DateUtilGWTImpl;
 import org.activityinfo.shared.command.Month;
-import org.activityinfo.shared.report.model.ReportFrequency;
-import org.activityinfo.shared.date.DateRange;
+import org.activityinfo.shared.command.RenderElement;
 import org.activityinfo.shared.date.DateUtil;
+import org.activityinfo.shared.dto.ReportTemplateDTO;
+import org.activityinfo.shared.report.model.DateRange;
+import org.activityinfo.shared.report.model.ReportFrequency;
 
 /**
  *
@@ -75,9 +75,9 @@ public class ReportPreview extends ContentPanel implements ReportPreviewPresente
 
         setHeading(template.getTitle());
 
-        if(template.getFrequency() == ReportFrequency.MONTHLY) {
+        if(template.getFrequency() == ReportFrequency.Monthly) {
             addMonthlyFields();
-        } else if(template.getFrequency() == ReportFrequency.ADHOC) {
+        } else if(template.getFrequency() == ReportFrequency.Adhoc) {
             addAddHocFields();
         }
 

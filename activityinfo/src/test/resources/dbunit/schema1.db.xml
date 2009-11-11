@@ -102,18 +102,9 @@
 	
 	<userDatabase databaseId="2" name="RRM" countryId="1" ownerUserId="1" lastSchemaUpdate="2009-01-01"/>
 	
-	<reportTemplate reportTemplateId="1" ownerUserId="1" visibility="1" XML="
-		&lt;report frequency=&quot;monthly&quot; day=&quot;last&quot;&gt;
+	<reportTemplate reportTemplateId="1" ownerUserId="1" visibility="1" title="Report 1" frequency="Monthly" day="28" XML="
+		&lt;report frequency=&quot;Monthly&quot; day=&quot;28&quot;&gt;
 			&lt;title&gt;Report 1&lt;/title&gt;
-			
-			&lt;parameters&gt;
-				&lt;parameter 
-					name=&quot;MONTH&quot; 
-					label=&quot;Mois&quot; 
-					type=&quot;date&quot; 
-					date-unit=&quot;month&quot;/&gt;
-			&lt;/parameters&gt;
-			
 		&lt;/report&gt;"/>
 
     <reportSubscription userId="1" reportTemplateId="1" subscribed="1"/>

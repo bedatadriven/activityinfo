@@ -2,19 +2,13 @@ package org.activityinfo.server.report.generator;
 
 import org.activityinfo.server.domain.User;
 import org.activityinfo.server.util.DateUtilCalendarImpl;
-import org.activityinfo.shared.report.model.DateUnit;
-import org.activityinfo.shared.report.model.Parameter;
-import org.activityinfo.shared.report.model.Report;
-import org.activityinfo.shared.date.DateRange;
 import org.activityinfo.shared.date.DateUtil;
+import org.activityinfo.shared.report.model.DateRange;
+import org.activityinfo.shared.report.model.Report;
 import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.replay;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -37,11 +31,6 @@ public class ReportGeneratorTest {
 
         // Input test data: report model + parameter
 		Report report = new Report();
-		Parameter param = new Parameter();
-		param.setName("MONTH");
-		param.setType(Parameter.Type.DATE);
-		param.setDateUnit(DateUnit.MONTH);
-		report.addParameter(param);
 		report.setFileName("Report ${DATE_RANGE} of Activities");
 
         // Input test data: parameter values

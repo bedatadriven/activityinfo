@@ -6,6 +6,7 @@ import org.activityinfo.shared.command.UpdateSubscription;
 import org.activityinfo.shared.command.result.ReportTemplateResult;
 import org.activityinfo.shared.dto.ReportTemplateDTO;
 import org.activityinfo.shared.exception.CommandException;
+import org.activityinfo.shared.report.model.Report;
 import org.activityinfo.shared.report.model.ReportFrequency;
 import org.junit.Test;
 
@@ -29,8 +30,8 @@ public class ReportTest extends CommandTestCase {
 		
 		Assert.assertEquals("report title", "Report 1", report.getTitle());
 		Assert.assertEquals("owner", "Alex", report.getOwnerName());
-        Assert.assertEquals("frequency", ReportFrequency.MONTHLY, report.getFrequency());
-        Assert.assertEquals("report day", ReportFrequency.LAST_DAY_OF_MONTH, report.getDay());
+        Assert.assertEquals("frequency", ReportFrequency.Monthly, report.getFrequency());
+        Assert.assertEquals("report day", Report.LAST_DAY_OF_MONTH, (int)report.getDay());
         Assert.assertEquals("subscribed", true, report.isSubscribed());
 	}
 

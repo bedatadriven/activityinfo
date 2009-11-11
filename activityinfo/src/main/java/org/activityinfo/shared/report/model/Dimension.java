@@ -3,7 +3,10 @@ package org.activityinfo.shared.report.model;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import org.activityinfo.shared.report.content.DimensionCategory;
 import org.activityinfo.shared.report.content.EntityCategory;
+import org.activityinfo.shared.report.model.typeadapter.DimensionAdapter;
 
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +19,7 @@ import java.util.Map;
  * @author Alex Bertram
  *
  */
+@XmlJavaTypeAdapter(DimensionAdapter.class)
 public class Dimension extends BaseModelData implements Serializable {
 
 
@@ -24,7 +28,7 @@ public class Dimension extends BaseModelData implements Serializable {
 
 	private Map<DimensionCategory, CategoryProperties> categories =
             new HashMap<DimensionCategory, CategoryProperties>(0);
-    
+
 	private List<DimensionCategory> ordering = new ArrayList<DimensionCategory>();
 
 
@@ -50,6 +54,7 @@ public class Dimension extends BaseModelData implements Serializable {
     /**
 	 * @return The <i>type</i> of order applied to this dimension
 	 */
+    @XmlTransient
 	public boolean isOrderDefined() {
 		return ordering.size()!=0;
 	}
@@ -57,6 +62,7 @@ public class Dimension extends BaseModelData implements Serializable {
 	/**
 	 * @return The model-supplied (i.e. specified in the XML) category order of this dimension.
 	 */
+    @XmlTransient
 	public List<DimensionCategory> getOrdering() {
 		return ordering;
 	}
@@ -76,6 +82,7 @@ public class Dimension extends BaseModelData implements Serializable {
         return props == null ? null : props.getLabel();
 	}
 
+    @XmlTransient
     public Map<DimensionCategory, CategoryProperties> getCategories() {
         return categories;
     }
@@ -129,6 +136,16 @@ public class Dimension extends BaseModelData implements Serializable {
 	public void setColor(String color) {
 		this.color = color;
 	}
+
+    public void setCategoryColor(int id, int color) {
+        EntityCategory cat = new EntityCategory(id);
+        CategoryProperties props = categories.get(cat);
+        if(props == null) {
+            props = new CategoryProperties();
+            categories.put(cat, props);
+        }
+        props.setColor(color);
+    }
 
     public class AndCategory {
 

@@ -1,118 +1,42 @@
 package org.activityinfo.shared.report.model;
 
 import org.activityinfo.shared.report.content.TableContent;
-import org.activityinfo.shared.report.content.TreeNode;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 
-public class TableElement extends ReportElement {
+public class TableElement extends ReportElement<TableContent> {
 
+    private TableColumn rootColumn = new TableColumn();
+    private List<TableColumn> sortBy = new ArrayList<TableColumn>();
 
+    private int frozenColumns = 0;
+    private MapElement map;
 
-    public static class Column extends TreeNode<Column>  {
-		
-		
-		private boolean orderAscending;
-		private String label;
-        private String property;
-        private int propertyQualifyingId;
-
-        private List<Column> children = null;
-
-        public Column() {
-
-        }
-
-        public Column(String label) {
-            this.label = label;
-        }
-
-        public Column(String label, String property) {
-            this.label = label;
-            this.property = property;
-        }
-
-        @Override
-		public String getLabel() {
-			return label;
-		}
-
-		public void setLabel(String label) {
-			this.label = label;
-		}
-		
-		public boolean isOrderAscending() {
-			return orderAscending;
-		}
-
-		public void setOrderAscending(boolean orderAscending) {
-			this.orderAscending = orderAscending;
-		}
-
-        @Override
-        public List<Column> getChildren() {
-            if(children == null) {
-                return Collections.emptyList();
-            } else {
-                return children;
-            }
-        }
-
-        public void addChild(Column column) {
-            if(children == null) {
-                children = new ArrayList<Column>();
-            }
-            children.add(column);
-        }
-
-        @Override
-        public boolean isLeaf() {
-            return children == null;
-        }
-
-        public String getProperty() {
-            return property;
-        }
-
-        public int getPropertyQualifyingId() {
-            return propertyQualifyingId;
-        }
-
-        public void setProperty(String property) {
-            this.property = property;
-        }
-
-        public void setPropertyQualifyingId(int propertyQualifyingId) {
-            this.propertyQualifyingId = propertyQualifyingId;
-        }
-    }
-
-	private Column rootColumn = new Column();
-	private List<Column> sortBy = new ArrayList<Column>();
-	private List<Column> panelBy = new ArrayList<Column>();
-	private int frozenColumns = 0;
-    private TableContent content;
-	
-	public Column getRootColumn() {
+    @XmlElement(name="columns")
+	public TableColumn getRootColumn() {
 		return rootColumn;
 	}
-	
-	public List<Column> getSortBy() {
+
+    public void setRootColumn(TableColumn rootColumn) {
+        this.rootColumn = rootColumn;
+    }
+
+    @XmlElement(name="column")
+    @XmlElementWrapper(name="sortBy")
+	public List<TableColumn> getSortBy() {
 		return sortBy;
 	}
-	
-	public List<Column> getPanelBy() {
-		return panelBy;
-	}
 
-	/**
+    /**
 	 * 
 	 * @return The number of left-most columns that should be frozen 
 	 * when the table is presented as a spreadsheet
 	 */
+    @XmlElement(defaultValue = "0")
 	public int getFrozenColumns() {
 		return frozenColumns;
 	}
@@ -121,15 +45,16 @@ public class TableElement extends ReportElement {
 		this.frozenColumns = frozenColumns;
 	}
 
-    public TableContent getContent() {
-        return content;
+    @XmlElement
+    public MapElement getMap() {
+        return map;
     }
 
-    public void setContent(TableContent content) {
-        this.content = content;
+    public void setMap(MapElement map) {
+        this.map = map;
     }
 
-    public void addRootColumn(String label, String property) {
-
+    public void addColumn(TableColumn tableColumn) {
+        getRootColumn().addChild(tableColumn);
     }
 }

@@ -1,7 +1,10 @@
 package org.activityinfo.shared.report.model;
 
-import org.activityinfo.shared.date.DateRange;
+import org.activityinfo.shared.report.model.typeadapter.FilterAdapter;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.util.*;
 
@@ -10,14 +13,14 @@ import java.util.*;
  * <code>Dimensions</code>.
  *
  */
+@XmlJavaTypeAdapter(FilterAdapter.class)
 public class Filter implements Serializable {
 
     // TODO: should be restrictions on DIMENSIONS and not DimensionTypes!!
 
 	private Map<DimensionType, Set<Integer>> restrictions = new HashMap<DimensionType, Set<Integer>>();
-	
-	private Date minDate = null;
-	private Date maxDate = null;
+
+ 	private DateRange dateRange = new DateRange();
 
 
     /**
@@ -38,8 +41,7 @@ public class Filter implements Serializable {
         for(Map.Entry<DimensionType, Set<Integer>> entry : filter.restrictions.entrySet()) {
             this.restrictions.put(entry.getKey(), new HashSet<Integer>(entry.getValue()));
         }
-        this.minDate = filter.minDate;
-        this.maxDate = filter.maxDate;
+        this.dateRange = filter.dateRange;
     }
 
 
@@ -61,30 +63,8 @@ public class Filter implements Serializable {
 					b.getRestrictionSet(type, false)));
 			
 		}
+        this.dateRange = DateRange.intersection(a.getDateRange(), b.getDateRange());
 
-		if(a.minDate == null && b.minDate != null) {
-			minDate = b.minDate;
-		} else if(a.minDate != null && b.minDate == null) {
-			minDate = a.minDate;
-		} else if(a.minDate != null && b.minDate != null) {
-			if(a.minDate.after(b.minDate)) {
-				minDate = a.minDate;
-			} else {
-				minDate = b.minDate;
-			}
-		}
-		
-		if(a.maxDate == null && b.maxDate != null) {
-			maxDate = b.maxDate;
-		} else if(a.maxDate != null && b.maxDate == null) {
-			maxDate = a.maxDate;
-		} else if(a.maxDate != null && b.maxDate != null) {
-			if(a.maxDate.before(b.maxDate)) {
-				maxDate = a.maxDate;
-			} else {
-				maxDate = b.maxDate;
-			}
-		}
 	}
 	
 	private Set<Integer> intersect(Set<Integer> a, Set<Integer> b) {
@@ -136,13 +116,12 @@ public class Filter implements Serializable {
 	}
 	
 	public boolean isDateRestricted() {
-		return minDate!=null || maxDate!=null;
+		return dateRange.getMinDate()!=null || dateRange.getMaxDate()!=null;
 	}
 
     public Set<DimensionType> getRestrictedDimensions() {
         return new HashSet<DimensionType>(restrictions.keySet());
     }
-
 
     private Map<DimensionType, Set<Integer>> getRestrictions() {
         return restrictions;
@@ -152,27 +131,34 @@ public class Filter implements Serializable {
         this.restrictions = restrictions;
     }
 
+    @XmlTransient
     public Date getMinDate() {
-		return minDate;
+		return getDateRange().getMinDate();
 	}
 
 	public void setMinDate(Date minDate) {
-		this.minDate = minDate;
+		getDateRange().setMinDate(minDate);
 	}
 
-
+    @XmlTransient
 	public Date getMaxDate() {
-		return maxDate;
+		return getDateRange().getMaxDate();
 	}
-
 
 	public void setMaxDate(Date maxDate) {
-		this.maxDate = maxDate;
+		getDateRange().setMaxDate(maxDate);
 	}
 
     public void setDateRange(DateRange range) {
-        this.minDate = range.getMinDate();
-        this.maxDate = range.getMaxDate();
+        this.dateRange = range;
+    }
+
+    @XmlElement
+    public DateRange getDateRange() {
+        if(dateRange == null) {
+            dateRange = new DateRange();
+        }
+        return dateRange;
     }
 
     @Override
@@ -187,16 +173,18 @@ public class Filter implements Serializable {
             }
             sb.append(" }");
         }
-        if(minDate!=null || maxDate!=null) {
+        if(dateRange.getMinDate()!=null || dateRange.getMaxDate()!=null) {
             if(sb.length()!=0)
                 sb.append(", ");
             sb.append("date=[");
-            if(minDate!=null)
-                sb.append(minDate);
+            if(dateRange.getMinDate()!=null)
+                sb.append(dateRange.getMinDate());
             sb.append(",");
-            if(maxDate!=null)
-                sb.append(maxDate).append("]");
+            if(dateRange.getMaxDate()!=null)
+                sb.append(dateRange.getMaxDate()).append("]");
         }
         return sb.toString();
     }
+
+
 }

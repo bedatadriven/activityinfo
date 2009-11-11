@@ -4,8 +4,8 @@ import org.activityinfo.shared.command.Month;
 import org.activityinfo.shared.report.content.DimensionCategory;
 import org.activityinfo.shared.report.content.MonthCategory;
 import org.activityinfo.shared.report.content.YearCategory;
+import org.activityinfo.shared.report.model.DateRange;
 import org.activityinfo.shared.report.model.DateUnit;
-import org.activityinfo.server.schedule.ReportMailerHelper;
 
 import java.util.Date;
 

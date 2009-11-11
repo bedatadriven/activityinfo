@@ -6,10 +6,10 @@ import org.activityinfo.server.dao.hibernate.PivotDAO;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.shared.report.content.PivotContent;
 import org.activityinfo.shared.report.content.PivotTableData;
+import org.activityinfo.shared.report.model.DateRange;
 import org.activityinfo.shared.report.model.Dimension;
 import org.activityinfo.shared.report.model.Filter;
 import org.activityinfo.shared.report.model.PivotTableElement;
-import org.activityinfo.shared.date.DateRange;
 
 import java.util.Comparator;
 import java.util.Map;

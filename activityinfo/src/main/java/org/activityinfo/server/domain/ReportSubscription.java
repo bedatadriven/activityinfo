@@ -31,7 +31,7 @@ import java.io.Serializable;
 public class ReportSubscription implements Serializable {
 
     private ReportSubscriptionId id;
-    private ReportTemplate template;
+    private ReportDefinition template;
     private User user;
     private boolean subscribed;
     private User invitingUser;
@@ -39,7 +39,7 @@ public class ReportSubscription implements Serializable {
     public ReportSubscription() {
     }
 
-    public ReportSubscription(ReportTemplate template, User user) {
+    public ReportSubscription(ReportDefinition template, User user) {
         id = new ReportSubscriptionId(template.getId(), user.getId());
         this.template = template;
         this.user = user;
@@ -65,7 +65,7 @@ public class ReportSubscription implements Serializable {
      */
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "reportTemplateId", nullable = false, insertable = false, updatable = false)
-	public ReportTemplate getTemplate() {
+	public ReportDefinition getTemplate() {
 		return this.template;
 	}
 
@@ -74,7 +74,7 @@ public class ReportSubscription implements Serializable {
      *
      * @param template The report template
      */
-    public void setTemplate(ReportTemplate template) {
+    public void setTemplate(ReportDefinition template) {
         this.template = template;
     }
 

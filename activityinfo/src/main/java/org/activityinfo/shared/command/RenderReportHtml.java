@@ -1,10 +1,7 @@
 package org.activityinfo.shared.command;
 
-import com.extjs.gxt.ui.client.data.RpcMap;
 import org.activityinfo.shared.command.result.HtmlResult;
-import org.activityinfo.shared.date.DateRange;
-
-import java.util.Map;
+import org.activityinfo.shared.report.model.DateRange;
 
 public class RenderReportHtml implements Command<HtmlResult> {
 

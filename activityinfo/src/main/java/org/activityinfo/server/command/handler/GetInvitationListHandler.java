@@ -54,7 +54,7 @@ public class GetInvitationListHandler implements CommandHandler<GetInvitationLis
 
     public CommandResult execute(GetInvitationList cmd, User currentUser) throws CommandException {
 
-        ReportTemplate template = em.find(ReportTemplate.class, cmd.getReportTemplateId());
+        ReportDefinition template = em.find(ReportDefinition.class, cmd.getReportTemplateId());
 
         // index subscriptions
         Map<Integer, ReportSubscription> subs = new HashMap<Integer, ReportSubscription>();

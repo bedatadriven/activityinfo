@@ -2,17 +2,17 @@ package org.activityinfo.server.schedule;
 
 import com.google.inject.Inject;
 import org.activityinfo.server.domain.DomainFilters;
+import org.activityinfo.server.domain.ReportDefinition;
 import org.activityinfo.server.domain.ReportSubscription;
-import org.activityinfo.server.domain.ReportTemplate;
 import org.activityinfo.server.mail.Mailer;
-import org.activityinfo.server.report.ReportParser;
+import org.activityinfo.server.report.ReportParserJaxb;
 import org.activityinfo.server.report.generator.ReportGenerator;
 import org.activityinfo.server.report.renderer.itext.RtfReportRenderer;
+import org.activityinfo.shared.report.model.DateRange;
 import org.activityinfo.shared.report.model.Report;
 import org.activityinfo.shared.report.model.ReportFrequency;
-import org.activityinfo.shared.date.DateRange;
-import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.EmailAttachment;
+import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.MultiPartEmail;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -20,13 +20,14 @@ import org.quartz.JobExecutionException;
 import org.xml.sax.SAXException;
 
 import javax.persistence.EntityManager;
+import javax.xml.bind.JAXBException;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.File;
+import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.text.DateFormat;
 
 
 /**
@@ -59,13 +60,13 @@ public class ReportMailerJob implements Job {
     public void execute(JobExecutionContext jobContext) throws JobExecutionException {
 
         Date today = new Date();
-        List<ReportTemplate> reports = em.createQuery("select t from ReportTemplate t")
+        List<ReportDefinition> reports = em.createQuery("select t from ReportDefinition t")
                                             .getResultList();
 
-        for(ReportTemplate template : reports) {
+        for(ReportDefinition template : reports) {
             try {
-                Report report = ReportParser.parseXml(template.getXml());
-                if(report.getFrequency() == ReportFrequency.MONTHLY) {
+                Report report = ReportParserJaxb.parseXml(template.getXml());
+                if(report.getFrequency() == ReportFrequency.Monthly) {
                     if(ReportMailerHelper.mailToday(today, report)) {
                         execute(today, report, template.getSubscriptions());
                     }
@@ -103,7 +104,13 @@ public class ReportMailerJob implements Job {
         DomainFilters.applyUserFilter(sub.getUser(), em);
 
         // load the report definition
-        Report report = ReportParser.parseXml(sub.getTemplate().getXml());
+        Report report = null;
+        try {
+            report = ReportParserJaxb.parseXml(sub.getTemplate().getXml());
+        } catch (JAXBException e) {
+            e.printStackTrace();
+            return;
+        }
 
         // generate the report
         reportGenerator.generate(sub.getUser(), report, null,

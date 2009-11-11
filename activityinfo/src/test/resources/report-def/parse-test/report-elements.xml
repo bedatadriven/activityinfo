@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report frequency="adhoc">
+
+    <title>My Title</title>
+    <sheetTitle>My Sheet Title</sheetTitle>
+    <fileName>My File Name</fileName>
+
+    <elements>
+        <pivotTable>
+            <title>A Pivot Table</title>
+        </pivotTable>
+        <pivotChart>
+            <title>A Pivot Chart</title>
+        </pivotChart>
+        <table>
+            <title>A Table</title>
+        </table>
+        <map>
+            <title>A Map</title>
+        </map>
+    </elements>
+
+</report>

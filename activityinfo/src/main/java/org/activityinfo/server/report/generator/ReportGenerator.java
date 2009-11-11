@@ -6,10 +6,8 @@ import org.activityinfo.server.domain.User;
 import org.activityinfo.shared.report.content.Content;
 import org.activityinfo.shared.report.content.ReportContent;
 import org.activityinfo.shared.report.model.*;
-import org.activityinfo.shared.date.DateRange;
 
 import java.util.Collections;
-import java.util.Map;
 
 public class ReportGenerator extends BaseGenerator<Report> {
 

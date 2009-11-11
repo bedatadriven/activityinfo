@@ -2,6 +2,7 @@ package org.activityinfo.shared.report.model;
 
 import org.activityinfo.shared.report.content.ReportContent;
 
+import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,27 +16,50 @@ import java.util.List;
  *
  * @author Alex Bertram
  */
-public class Report extends ReportElement implements Serializable {
+@XmlRootElement(name="report")
+public class Report extends ReportElement<ReportContent> implements Serializable {
 
 
-	private List<Parameter> parameters = new ArrayList<Parameter>();
-	private List<ReportElement> elements = new ArrayList<ReportElement>();
+    private List<ReportElement> elements = new ArrayList<ReportElement>();
+
 	private String fileName;
-    private int frequency;
-    private int day = 1;
+    private String description;
 
-    private ReportContent content;
-	
-	public Report() {
+    private ReportFrequency frequency;
+    private Integer day = null;
+
+    public static final int LAST_DAY_OF_MONTH = 28;
+
+    public Report() {
 		
 	}
+
+    @XmlElement
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     /**
      * @return The list of report elements included in this report.
      */
+    @XmlElements({
+            @XmlElement(name="pivotTable", type=PivotTableElement.class),
+            @XmlElement(name="pivotChart", type=PivotChartElement.class),
+            @XmlElement(name="table", type=TableElement.class),
+            @XmlElement(name="map", type=MapElement.class)
+    })
+    @XmlElementWrapper(name="elements")
 	public List<ReportElement> getElements() {
 		return elements;
 	}
+
+    public <T extends ReportElement> T getElement(int index) {
+        return (T) elements.get(index);
+    }
 
 	public void setElements(List<ReportElement> elements) {
 		this.elements = elements;
@@ -50,23 +74,12 @@ public class Report extends ReportElement implements Serializable {
 		elements.add(element);
 	}
 
-	public List<Parameter> getParameters() {
-		return parameters;
-	}
-
-	public void setParameters(List<Parameter> parameters) {
-		this.parameters = parameters;
-	}
-
-	public void addParameter(Parameter parameter) {
-		this.parameters.add(parameter);
-	}
-
     /**
      *
      * @return Suggested filename for tbis report if it is saved to disk/downloaded. Does not contain
      * the file extension.
      */
+    @XmlElement
 	public String getFileName() {
 		return fileName;
 	}
@@ -83,22 +96,12 @@ public class Report extends ReportElement implements Serializable {
 	}
 
     /**
-     * @return The generated content of this report.
-     */
-    public ReportContent getContent() {
-        return content;
-    }
-
-    public void setContent(ReportContent content) {
-        this.content = content;
-    }
-
-    /**
      * Gets the frequency of this report
      *
      * @return the frequency of this report
      */
-    public int getFrequency() {
+    @XmlAttribute(name="frequency")
+    public ReportFrequency getFrequency() {
         return frequency;
     }
 
@@ -107,7 +110,7 @@ public class Report extends ReportElement implements Serializable {
      *
      * @param frequency The frequency of this report
      */
-    public void setFrequency(int frequency) {
+    public void setFrequency(ReportFrequency frequency) {
         this.frequency = frequency;
     }
 
@@ -118,13 +121,14 @@ public class Report extends ReportElement implements Serializable {
      * If the subscription frequency is
      * <code>WEEKLY</code>, then this value refers to the
      * day of the week (0=Sunday, 6=Saturday). If the frequency is <code>MONTHLY</code> this refers to the
-     * day of the month (1..28). A value of {@link ReportFrequency#LAST_DAY_OF_MONTH} (28)
+     * day of the month (1..28). A value of {@link Report#LAST_DAY_OF_MONTH} (28)
      * indicats that the report will be mailed on the last day of the month, whether this the 28th, the 30th, or the 31st.
      *
      * @return the day on which the report is to be mailed.
      *
      */
-    public int getDay() {
+    @XmlAttribute
+    public Integer getDay() {
         return day;
     }
 
@@ -134,7 +138,7 @@ public class Report extends ReportElement implements Serializable {
      * @param day For <code>WEEKLY</code> subscriptions, 0=Sunday, 6=Saturday. For <code>MONTHLY</code>,
      * subscriptions, 1=first day of month,2,3,4...28=<code>LAST_DAY_OF_MONTH</code>
      */
-    public void setDay(int day) {
+    public void setDay(Integer day) {
         this.day = day;
     }
 }

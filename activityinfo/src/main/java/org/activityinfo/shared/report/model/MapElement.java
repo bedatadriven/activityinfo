@@ -2,6 +2,9 @@ package org.activityinfo.shared.report.model;
 
 import org.activityinfo.shared.report.content.MapContent;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlElements;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,17 +15,18 @@ import java.util.List;
  * @author Alex Bertram
  *
  */
-public class MapElement extends ReportElement {
+public class MapElement extends ReportElement<MapContent> {
+
 
     private String baseMapId;
     private int width = 640;
     private int height = 480;
-    private MapContent content;
     private List<MapLayer> layers = new ArrayList<MapLayer>(0);
 
     public MapElement() {
     }
 
+    @XmlElement(name="baseMap", required = true)
     public String getBaseMapId() {
         return baseMapId;
     }
@@ -31,6 +35,7 @@ public class MapElement extends ReportElement {
         this.baseMapId = baseMapId;
     }
 
+    @XmlElement(defaultValue="640")
     public int getWidth() {
         return width;
     }
@@ -39,6 +44,7 @@ public class MapElement extends ReportElement {
         this.width = width;
     }
 
+    @XmlElement(defaultValue="480")
     public int getHeight() {
         return height;
     }
@@ -47,18 +53,15 @@ public class MapElement extends ReportElement {
         this.height = height;
     }
 
-    public MapContent getContent() {
-        return content;
-    }
-
-    public void setContent(MapContent content) {
-        this.content = content;
-    }
-
     public void addLayer(MapLayer layer) {
         this.layers.add(layer);
     }
 
+    @XmlElementWrapper(name="layers")
+    @XmlElements({
+            @XmlElement(name="bubbles", type= BubbleMapLayer.class),
+            @XmlElement(name="icons", type=IconMapLayer.class)
+    })
     public List<MapLayer> getLayers() {
         return layers;
     }
@@ -66,4 +69,6 @@ public class MapElement extends ReportElement {
     public void setLayers(List<MapLayer> layers) {
         this.layers = layers;
     }
+
+
 }

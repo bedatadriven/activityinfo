@@ -1,11 +1,9 @@
 package org.activityinfo.server.report.generator;
 
 import org.activityinfo.server.domain.User;
+import org.activityinfo.shared.report.model.DateRange;
 import org.activityinfo.shared.report.model.Filter;
 import org.activityinfo.shared.report.model.ReportElement;
-import org.activityinfo.shared.date.DateRange;
-
-import java.util.Map;
 
 /**
  * Generates the <code>Content</code> for a given <code>ReportElement</code>.

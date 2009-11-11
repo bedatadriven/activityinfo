@@ -19,13 +19,25 @@
 
 package org.activityinfo.server.domain;
 
+import org.activityinfo.server.domain.graph.MemberOf;
+import org.activityinfo.server.domain.graph.ReportList;
+import org.activityinfo.shared.report.model.ReportFrequency;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Defines a Report and its subscriptions.
+ *
+ * @see org.activityinfo.shared.report.model.Report
+ *
+ */
 @Entity
+@MemberOf({ ReportList.class })
+@Table(name="ReportTemplate")
 @org.hibernate.annotations.Filters(
 		{@org.hibernate.annotations.Filter(
 				name="userVisible",
@@ -40,7 +52,7 @@ import java.util.Set;
 			condition="DateDeleted is null"
 		)}
 )
-public class ReportTemplate implements Serializable {
+public class ReportDefinition implements Serializable {
 
 	private int id;
 	private User owner;
@@ -48,9 +60,13 @@ public class ReportTemplate implements Serializable {
 	private int visibility;
 	private String xml;
     private Date dateDeleted;
+    private String title;
+    private String description;
+    private ReportFrequency frequency;
+    private Integer day;
     private Set<ReportSubscription> subscriptions = new HashSet<ReportSubscription>(0);
     
-	public ReportTemplate(){
+	public ReportDefinition(){
 		
 	}
 
@@ -76,7 +92,7 @@ public class ReportTemplate implements Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "DatabaseId", nullable = true)
+	@JoinColumn(name = "DatabaseId", nullable = true, updatable = false)
 	public UserDatabase getDatabase() {
 		return database;
 	}
@@ -85,7 +101,43 @@ public class ReportTemplate implements Serializable {
 		this.database = database;
 	}
 
-	@Column
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    @Lob
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Enumerated(EnumType.STRING)
+    public ReportFrequency getFrequency() {
+        return frequency;
+    }
+
+    public void setFrequency(ReportFrequency frequency) {
+        this.frequency = frequency;
+    }
+
+
+    @Column(nullable = true)
+    public Integer getDay() {
+        return day;
+    }
+
+    public void setDay(Integer day) {
+        this.day = day;
+    }
+
+    @Column
 	public int getVisibility() {
 		return visibility;
 	}
@@ -94,8 +146,8 @@ public class ReportTemplate implements Serializable {
 		this.visibility = visibility;
 	}
 
-	@Column(nullable=false)
     @Lob
+	@Column(nullable=false)
 	public String getXml() {
 		return xml;
 	}
@@ -123,6 +175,4 @@ public class ReportTemplate implements Serializable {
 	public void setDateDeleted(Date dateDeleted) {
 		this.dateDeleted = dateDeleted;
 	}
-
-
 }

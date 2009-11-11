@@ -1,8 +1,8 @@
 package org.activityinfo.server.util;
 
 import org.activityinfo.shared.command.Month;
-import org.activityinfo.shared.date.DateRange;
 import org.activityinfo.shared.date.DateUtil;
+import org.activityinfo.shared.report.model.DateRange;
 import org.activityinfo.shared.report.model.DateUnit;
 
 import java.util.Calendar;

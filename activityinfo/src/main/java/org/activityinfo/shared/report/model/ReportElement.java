@@ -1,6 +1,10 @@
 package org.activityinfo.shared.report.model;
 
-import com.extjs.gxt.ui.client.data.BaseModel;
+import org.activityinfo.shared.report.content.Content;
+
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
+import java.io.Serializable;
 
 /**
  *
@@ -50,11 +54,15 @@ import com.extjs.gxt.ui.client.data.BaseModel;
  * @author Alex Bertram
  *
  */
-public abstract class ReportElement extends BaseModel {
-
+public abstract class ReportElement<ContentT extends Content> implements Serializable {
 
 	private Filter filter = new Filter();
-	
+    private String title;
+    private String sheetTitle;
+    
+    @XmlTransient
+    protected ContentT content;
+
 	public ReportElement() {
 		
 	}
@@ -76,6 +84,7 @@ public abstract class ReportElement extends BaseModel {
 	 * 
 	 * @return The filter applied to the report element.
 	 */
+    @XmlElement
 	public Filter getFilter() {
 		return filter;
 	}
@@ -96,8 +105,9 @@ public abstract class ReportElement extends BaseModel {
 	 *  
 	 * @return the full title of the report element
 	 */
+    @XmlElement
 	public String getTitle() {
-		return get("title");
+		return title;
 	}
 
     /**
@@ -108,7 +118,7 @@ public abstract class ReportElement extends BaseModel {
      * @param title the full title of the report element
      */
 	public void setTitle(String title) {
-		set("title", title);
+		this.title = title;
 	}
 
 	/**
@@ -118,8 +128,9 @@ public abstract class ReportElement extends BaseModel {
 	 * 
 	 * @return The sheet title
 	 */
+    @XmlElement
 	public String getSheetTitle() {
-		return get("sheetTitle");
+		return sheetTitle;
 	}
 
     /**
@@ -130,7 +141,15 @@ public abstract class ReportElement extends BaseModel {
      * @param sheetTitle The sheet title
      */
 	public void setSheetTitle(String sheetTitle) {
-		set("sheetTitle", sheetTitle);
+		this.sheetTitle = sheetTitle;
 	}
 
+    @XmlTransient
+    public ContentT getContent() {
+        return content;
+    }
+
+    public void setContent(ContentT content) {
+        this.content = content;
+    }
 }

@@ -20,13 +20,17 @@
 package org.activityinfo.server.command.handler;
 
 import com.google.inject.Inject;
-import org.activityinfo.server.dao.ReportDAO;
+import org.activityinfo.server.domain.ReportDefinition;
 import org.activityinfo.server.domain.User;
-import org.activityinfo.server.report.ReportParser;
+import org.activityinfo.server.report.ReportParserJaxb;
 import org.activityinfo.shared.command.UpdateReportDef;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.CommandException;
+import org.activityinfo.shared.exception.ParseException;
 import org.activityinfo.shared.report.model.Report;
+
+import javax.persistence.EntityManager;
+import javax.xml.bind.JAXBException;
 
 /**
  * @see org.activityinfo.shared.command.UpdateReportDef
@@ -35,25 +39,35 @@ import org.activityinfo.shared.report.model.Report;
  */
 public class UpdateReportDefHandler implements CommandHandler<UpdateReportDef> {
 
-	private ReportDAO reportDAO;
-	
+	private final EntityManager em;
+
     @Inject
-	public UpdateReportDefHandler(ReportDAO reportDAO) {
-		this.reportDAO = reportDAO;
-	}
-	
+    public UpdateReportDefHandler(EntityManager em) {
+        this.em = em;
+    }
+
 	@Override
 	public CommandResult execute(UpdateReportDef cmd, User user)
 			throws CommandException {
 		
 		try {
-			Report report = ReportParser.parseXml(cmd.getNewXml());
-		} catch(Exception e) {
+			Report report = ReportParserJaxb.parseXml(cmd.getNewXml());
+
+            ReportDefinition def = em.find(ReportDefinition.class, cmd.getId());
+            def.setXml(cmd.getNewXml());
+
+            // push certain properties down into the table so
+            // we don't have to parse the XML when generating a list
+            def.setTitle(report.getTitle());
+            def.setDescription(report.getDescription());
+            def.setFrequency(report.getFrequency());
+            def.setDay(report.getDay());
+
+		} catch(JAXBException e) {
             e.printStackTrace();
-			throw new CommandException();
+			throw new ParseException(e.getMessage());
 		}
-		reportDAO.updateXml(cmd.getId(), cmd.getNewXml());
-		
+
 		return null;
 		
 	}

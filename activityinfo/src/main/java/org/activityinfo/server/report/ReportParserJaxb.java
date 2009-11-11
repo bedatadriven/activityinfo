@@ -17,41 +17,30 @@
  * Copyright 2009 Alex Bertram and contributors.
  */
 
-package org.activityinfo.shared.report.model;
+package org.activityinfo.server.report;
+
+import org.activityinfo.shared.report.model.Report;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import java.io.Reader;
+import java.io.StringReader;
 
 /**
  * @author Alex Bertram
  */
-public enum ReportFrequency {
+public class ReportParserJaxb {
 
-    /**
-     * The report is not bound to a time frame
-     *
-     */
-    NotDateBound,
+    public static Report parseXml(String xml) throws JAXBException {
+        return parseXML(new StringReader(xml));
+    }
 
-    /**
-     *
-     * The time frame of the report will be monthly.
-     */
-    Monthly,
+    public static Report parseXML(Reader reader) throws JAXBException {
 
-    /**
-     * The time frame of the report is weekly
-     */
-    Weekly,
-
-    /**
-     * The time frame of the report is daily
-     */
-    Daily,
-
-    /**
-     * The time frame of the report is to be defined by an arbitrary
-     * date range.
-     *
-     * (These types of reports cannot be "subscribed" to)
-     */
-    Adhoc;
-
+        JAXBContext jc = JAXBContext.newInstance(Report.class.getPackage().getName());
+        Unmarshaller um = jc.createUnmarshaller();
+        um.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
+        return (Report) um.unmarshal(reader);
+    }
 }

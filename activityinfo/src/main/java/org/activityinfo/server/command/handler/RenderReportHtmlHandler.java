@@ -22,7 +22,7 @@ package org.activityinfo.server.command.handler;
 import com.google.inject.Inject;
 import org.activityinfo.server.dao.ReportDAO;
 import org.activityinfo.server.domain.User;
-import org.activityinfo.server.report.ReportParser;
+import org.activityinfo.server.report.ReportParserJaxb;
 import org.activityinfo.server.report.ServletImageStorageProvider;
 import org.activityinfo.server.report.generator.ReportGenerator;
 import org.activityinfo.server.report.renderer.html.HtmlReportRenderer;
@@ -33,9 +33,9 @@ import org.activityinfo.shared.command.result.HtmlResult;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.exception.UnexpectedCommandException;
 import org.activityinfo.shared.report.model.Report;
-import org.xml.sax.SAXException;
 
 import javax.servlet.ServletContext;
+import javax.xml.bind.JAXBException;
 import java.io.IOException;
 
 /**
@@ -63,7 +63,7 @@ public class RenderReportHtmlHandler implements CommandHandler<RenderReportHtml>
         String xml = reportDAO.getXmlById(cmd.getTemplateId());
 
         try {
-            Report report = ReportParser.parseXml(xml);
+            Report report = ReportParserJaxb.parseXml(xml);
 
             generator.generate(user, report, null, cmd.getDateRange());
 
@@ -75,7 +75,7 @@ public class RenderReportHtmlHandler implements CommandHandler<RenderReportHtml>
 
             return new HtmlResult(writer.toString());
 
-        } catch (SAXException e) {
+        } catch (JAXBException e) {
             e.printStackTrace();
             throw new UnexpectedCommandException();
         } catch (IOException e) {

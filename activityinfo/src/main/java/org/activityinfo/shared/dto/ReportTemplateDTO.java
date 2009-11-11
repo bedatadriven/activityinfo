@@ -1,16 +1,14 @@
 package org.activityinfo.shared.dto;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.activityinfo.shared.report.model.ReportFrequency;
 
 public class ReportTemplateDTO extends BaseModelData implements DTO {
 
+    private ReportFrequency freq_;
+
     public ReportTemplateDTO() {
-		setFrequency(ReportFrequency.NOT_DATE_BOUND);        
+		setFrequency(ReportFrequency.NotDateBound);
 	}
 
     public int getId() {
@@ -77,19 +75,19 @@ public class ReportTemplateDTO extends BaseModelData implements DTO {
 		return (Boolean)get("amOwner");
 	}
 
-    public int getFrequency() {
-        return (Integer)get("frequency");
+    public ReportFrequency getFrequency() {
+        return get("frequency");
     }
 
-    public void setFrequency(int frequency) {
+    public void setFrequency(ReportFrequency frequency) {
         set("frequency", frequency);
     }
 
-    public int getDay() {
-        return (Integer)get("day");
+    public Integer getDay() {
+        return get("day");
     }
 
-    public void setDay(int day) {
+    public void setDay(Integer day) {
         set("day", day);
     }
 

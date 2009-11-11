@@ -12,10 +12,8 @@ import java.util.Set;
  * @author Alex Bertram
  *
  */
-public abstract class PivotElement<ContentT extends PivotContent> extends ReportElement {
+public abstract class PivotElement<ContentT extends PivotContent> extends ReportElement<ContentT> {
 
-
-    private ContentT content;
 
 	/**
 	 * Returns the set of all dimensions that figure in the 

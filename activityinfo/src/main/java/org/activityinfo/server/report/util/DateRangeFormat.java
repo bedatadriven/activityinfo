@@ -1,6 +1,6 @@
 package org.activityinfo.server.report.util;
 
-import org.activityinfo.shared.date.DateRange;
+import org.activityinfo.shared.report.model.DateRange;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

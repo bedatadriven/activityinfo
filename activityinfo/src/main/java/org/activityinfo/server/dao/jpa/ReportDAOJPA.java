@@ -2,7 +2,7 @@ package org.activityinfo.server.dao.jpa;
 
 import com.google.inject.Inject;
 import org.activityinfo.server.dao.ReportDAO;
-import org.activityinfo.server.domain.ReportTemplate;
+import org.activityinfo.server.domain.ReportDefinition;
 import org.activityinfo.server.domain.UserDatabase;
 
 import javax.persistence.EntityManager;
@@ -21,7 +21,7 @@ public class ReportDAOJPA implements ReportDAO {
       */
 	public String getXmlById(int reportId) {
 		
-		return (String) em.createQuery("select r.xml from org.activityinfo.server.domain.ReportTemplate r where r.id=?1")
+		return (String) em.createQuery("select r.xml from org.activityinfo.server.domain.ReportDefinition r where r.id=?1")
 				 .setParameter(1, reportId)
 				 .getSingleResult();	
 	}
@@ -31,7 +31,7 @@ public class ReportDAOJPA implements ReportDAO {
 	 */
 	public int createReport(Integer databaseId, String reportXml) {
 		
-		ReportTemplate reportTemplate = new ReportTemplate();
+		ReportDefinition reportTemplate = new ReportDefinition();
 		if(databaseId!=null) {
 			reportTemplate.setDatabase( em.getReference(UserDatabase.class, databaseId ));
 		}
@@ -47,7 +47,7 @@ public class ReportDAOJPA implements ReportDAO {
 	 */
 	public void updateXml(int id, String newXml) {
 		
-		ReportTemplate report = em.find(ReportTemplate.class, id);
+		ReportDefinition report = em.find(ReportDefinition.class, id);
 		report.setXml(newXml);
 		
 	}

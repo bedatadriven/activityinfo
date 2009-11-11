@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report frequency="adhoc">
+
+    <title>My Title</title>
+    <sheetTitle>My Sheet Title</sheetTitle>
+    <fileName>My File Name</fileName>
+
+    <elements>
+        <table>
+            <columns>
+                <column label="Date" source="site.date1"/>
+                <column label="Partner" source="partner.name" />
+                <column label="Province" source="admin" sourceId="1" />
+                <column label="Site" source="location.name"/>
+                <column label="Axe" source="location.axe"/>
+                <column label="Status" source="site.status"/>
+                <column label="Extrants">
+                    <column label="NFI" source="indicator" sourceId="1"/>
+                    <column label="Bache" source="indicator" sourceId="2"/>
+                </column>
+                <column label="Contenu de Kit" source="attributeGroup" sourceId="7"/>
+            </columns>
+            <sortBy>
+                <column source="site.date1" order="descending"/>
+                <column source="location.name" order="ascending"/>
+            </sortBy>
+        </table>
+    </elements>
+</report>
+
+

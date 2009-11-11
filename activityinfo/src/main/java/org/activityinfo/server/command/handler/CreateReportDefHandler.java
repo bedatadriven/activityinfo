@@ -20,16 +20,19 @@
 package org.activityinfo.server.command.handler;
 
 import com.google.inject.Inject;
-import org.activityinfo.server.domain.ReportTemplate;
+import org.activityinfo.server.domain.ReportDefinition;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.server.domain.UserDatabase;
-import org.activityinfo.server.report.ReportParser;
+import org.activityinfo.server.report.ReportParserJaxb;
 import org.activityinfo.shared.command.CreateReportDef;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.command.result.CreateResult;
 import org.activityinfo.shared.exception.CommandException;
+import org.activityinfo.shared.exception.ParseException;
+import org.activityinfo.shared.report.model.Report;
 
 import javax.persistence.EntityManager;
+import javax.xml.bind.JAXBException;
 
 public class CreateReportDefHandler implements CommandHandler<CreateReportDef> {
     private EntityManager em;
@@ -45,23 +48,25 @@ public class CreateReportDefHandler implements CommandHandler<CreateReportDef> {
 
         // verify that the XML is valid
         try {
-            ReportParser.parseXml(cmd.getXml());
-        } catch (Exception e) {
-            throw new CommandException("Invalid XML");
+            Report report = ReportParserJaxb.parseXml(cmd.getXml());
+
+            ReportDefinition reportDef = new ReportDefinition();
+            reportDef.setDatabase(em.getReference(UserDatabase.class, cmd.getDatabaseId()));
+            reportDef.setXml(cmd.getXml());
+            reportDef.setTitle(report.getTitle());
+            reportDef.setDescription(report.getDescription());
+            reportDef.setFrequency(report.getFrequency());
+            reportDef.setDay(report.getDay());
+            reportDef.setOwner(user);
+            reportDef.setVisibility(1);
+
+            em.persist(reportDef);
+
+            return new CreateResult(reportDef.getId());
+
+        } catch (JAXBException e) {
+            throw new ParseException(e.getMessage());
         }
 
-
-        ReportTemplate reportTemplate = new ReportTemplate();
-        if (cmd.getDatabaseId() != null) {
-            reportTemplate.setDatabase(em.getReference(UserDatabase.class, cmd.getDatabaseId()));
-        }
-        reportTemplate.setXml(cmd.getXml());
-        reportTemplate.setOwner(user);
-        reportTemplate.setVisibility(1);
-
-        em.persist(reportTemplate);
-
-
-        return new CreateResult(reportTemplate.getId());
     }
 }

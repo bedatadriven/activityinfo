@@ -19,45 +19,28 @@
 
 package org.activityinfo.server.servlet;
 
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Singleton;
+import org.activityinfo.server.dao.AuthDAO;
 import org.activityinfo.server.domain.Authentication;
 import org.activityinfo.server.domain.DomainFilters;
-import org.activityinfo.server.domain.ReportTemplate;
-import org.activityinfo.server.domain.util.EntropicToken;
-import org.activityinfo.server.dao.AuthDAO;
+import org.activityinfo.server.domain.ReportDefinition;
+import org.activityinfo.server.report.ReportParserJaxb;
 import org.activityinfo.server.report.generator.ReportGenerator;
-import org.activityinfo.server.report.ReportParser;
 import org.activityinfo.server.report.renderer.Renderer;
 import org.activityinfo.server.report.renderer.RendererFactory;
-import org.activityinfo.server.report.renderer.itext.RtfReportRenderer;
-import org.activityinfo.server.report.renderer.itext.PdfReportRenderer;
-import org.activityinfo.server.report.renderer.ppt.PPTRenderer;
-import org.activityinfo.server.report.renderer.excel.ExcelReportRenderer;
-import org.activityinfo.server.report.renderer.excel.ExcelMapDataExporter;
-import org.activityinfo.server.report.renderer.image.ImageReportRenderer;
-import org.activityinfo.server.command.handler.RenderElementHandler;
-import org.activityinfo.shared.report.model.Report;
-import org.activityinfo.shared.report.model.Parameter;
-import org.activityinfo.shared.report.model.MapElement;
 import org.activityinfo.shared.command.RenderElement;
-import org.activityinfo.shared.command.GenerateElement;
-import org.activityinfo.shared.exception.UnexpectedCommandException;
-import org.activityinfo.shared.date.DateRange;
-import org.xml.sax.SAXException;
+import org.activityinfo.shared.report.model.DateRange;
+import org.activityinfo.shared.report.model.Report;
 
+import javax.persistence.EntityManager;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletException;
-import javax.persistence.EntityManager;
 import java.io.IOException;
-import java.io.FileOutputStream;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.Date;
-
-import com.google.inject.Singleton;
-import com.google.inject.Injector;
-import com.google.inject.Inject;
 
 /**
  *
@@ -93,11 +76,11 @@ public class ReportServlet extends HttpServlet {
         DomainFilters.applyUserFilter(auth.getUser(), em);
 
         // load the report definition by id
-        ReportTemplate template = em.find(ReportTemplate.class, Integer.parseInt(req.getParameter("id")));
+        ReportDefinition template = em.find(ReportDefinition.class, Integer.parseInt(req.getParameter("id")));
         Report report = null;
         try {
-            report = ReportParser.parseXml(template.getXml());
-        } catch (SAXException e) {
+            report = ReportParserJaxb.parseXml(template.getXml());
+        } catch (Exception e) {
             e.printStackTrace();
             resp.setStatus(500);
         }

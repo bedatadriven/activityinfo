@@ -20,16 +20,14 @@
 package org.activityinfo.server.command.handler;
 
 import com.google.inject.Inject;
+import org.activityinfo.server.domain.ReportDefinition;
 import org.activityinfo.server.domain.ReportSubscription;
-import org.activityinfo.server.domain.ReportTemplate;
 import org.activityinfo.server.domain.User;
-import org.activityinfo.server.report.ReportMetadataParser;
 import org.activityinfo.shared.command.GetReportTemplates;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.command.result.ReportTemplateResult;
 import org.activityinfo.shared.dto.ReportTemplateDTO;
 import org.activityinfo.shared.exception.CommandException;
-import org.activityinfo.shared.report.model.Report;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -54,22 +52,23 @@ public class GetReportTemplatesHandler implements CommandHandler<GetReportTempla
     @Override
 	public CommandResult execute(GetReportTemplates cmd, User user) throws CommandException {
 
-		Query query = em.createQuery("select r from ReportTemplate r");
+		Query query = em.createQuery("select r from ReportDefinition r");
 
-        
-		List<ReportTemplate> results = query.getResultList();
+		List<ReportDefinition> results = query.getResultList();
 		
 		List<ReportTemplateDTO> dtos = new ArrayList<ReportTemplateDTO>();
 
-		ReportMetadataParser parser = new ReportMetadataParser();
-		
-		for(ReportTemplate template : results) {
+		for(ReportDefinition template : results) {
 
 			ReportTemplateDTO dto = new ReportTemplateDTO();
 			dto.setId(template.getId());
 			dto.setDatabaseName(template.getDatabase() == null ? null : template.getDatabase().getName());
             dto.setOwnerName(template.getOwner().getName());
 			dto.setAmOwner( template.getOwner().getId() == user.getId());
+            dto.setTitle( template.getTitle());
+            dto.setFrequency( template.getFrequency());
+            dto.setDay( template.getDay() );
+            dto.setDescription( template.getDescription());
 			dto.setEditAllowed(dto.getAmOwner());
 
             dto.setSubscribed(false);
@@ -79,18 +78,8 @@ public class GetReportTemplatesHandler implements CommandHandler<GetReportTempla
                     break;
                 }
             }
-
-
-			try {
-				parser.parse(dto, template.getXml());
-			} catch(Exception e) {
-				e.printStackTrace();
-				// do nothing ?
-			}
-
 			dtos.add(dto);
         }
 		return new ReportTemplateResult(dtos);
 	}
-
 }

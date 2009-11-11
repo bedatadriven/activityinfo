@@ -17,15 +17,14 @@
  * Copyright 2009 Alex Bertram and contributors.
  */
 
-package org.activityinfo.clientjre.worker;
-
-import org.activityinfo.server.DbUnitTestCase;
+package org.activityinfo.shared.exception;
 
 /**
  * @author Alex Bertram
  */
-public class SyncTest extends DbUnitTestCase {
+public class ParseException extends CommandException {
 
-
-  
+    public ParseException(String message) {
+        super(message);
+    }
 }

@@ -1,155 +1,294 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<report xmlns="http://www.activityinfo.org/report-def" 
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-		xsi:schemaLocation="http://www.activityinfo.org/report-def report-def.xsd">
-	
-	<parameters>
-		<parameter name="MONTH" label="Mois" type="date" date-unit="month"/>
-	</parameters>
-	
-	<filter>
-		<dimension type="database">
-			<include id="2"/>
-		</dimension>
-	</filter>	
+<report type="adhoc">
 
-	<file-name>PEAR Rapport Mensuelle ${MONTH}</file-name>
+    <filter>
+        <restriction dimension="database">
+            <category>1</category>
+        </restriction>
+    </filter>
 
-	<title>PEAR Rapport Mensuelle</title>
-	
-	<description>Rapport au profondeur des activités de PEAR jusqu'à le mois donnée</description>
+    <title>Rapport RRM</title>
 
-	<body>
-        
-	
-		<pivotTable>
-		
-			<sheet-title>Résumé</sheet-title>
-			
-			<title>Résumé Statistique par Partenaire</title>
-		
-			<filter>
-				<date-range max="${MONTH}" date-unit="month"/>
-			</filter>
-		
-			<dimensions>
-				<row>
-					<dimension type="database"/>
-					<dimension type="activity"/>
-					<dimension type="indicator"/>
-				</row>
-				
-				<column>
-					<dimension type="partner"/>
-				</column>
-	
-			</dimensions>
-		
-		</pivotTable>
-	
-		<chart type="stacked-bar">
-			
-			<title>Beneficiaries by Activity and Partner to Date</title>
-			
-			<filter>
-				<date-range max="${MONTH}" date-unit="month" count="12"/>
-			</filter>
-			
-			<dimensions>
-				<category>
-					<dimension type="date" date-unit="year" />
-					<dimension type="date" date-unit="month"/>
-				</category>
-				<legend>
-					<dimension type="partner"/>
-				</legend>
-			</dimensions>
-			
-			<indicators>
-				<indicator id="5"/>
-			</indicators>
-		</chart>
-		
-		<chart type="clustered-bar">
-		
-			<title>Total Beneficiaries</title>
-			
-			<categoryAxisTitle>Activités</categoryAxisTitle>
-			<valueAxisTitle>Bénéficiaries</valueAxisTitle>
-			
-			<dimensions>
-				<category>
-					<dimension type="indicator">
-						<label category="5" label="NFI"/>
-						<label category="20" label="Kits Scolaires"/>
-						<label category="47" label="Rehab. Ecole"/>
-					</dimension>
-				</category>
-				<legend>
-					<dimension type="partner"/>
-				</legend>
-			</dimensions>
-			
-			<indicators>
-				<indicator id="5"/>
-				<indicator id="20"/>
-				<indicator id="47"/>
-			</indicators>
-		</chart>
-		
-		<table>
-	
-			<sheet-title>Distributions NFI</sheet-title>
-			
-			<title>Distributions NFI derniere 12 mois</title>
-		
-			<filter>
-				<dimension type="activity">
-					<include id="12"/>
-				</dimension>
-				<date-range max="${MONTH}" date-unit="month" count="12"/>
-			</filter>
-			
-			<columns frozen="4">
-				<column label="Date" source="site.date1"/>
-				<column label="Partner" source="partner.name" />
-				<column label="Province" source="admin" sourceId="1" />
-				<column label="Site" source="location.name"/>
-				<column label="Axe" source="location.axe"/>
-				<column label="Status" source="site.status"/>
-				<columnGroup label="Beneficiaries">
-					<column label="Total" source="indicator" sourceId="5"/>
-					<column label="Retournés" source="indicator" sourceId="22"/>
-					<column label="Répatriés" source="indicator" sourceId="24"/>
-				</columnGroup>				
-				<columnGroup label="Contenu de Kit" source="attributeGroup" sourceId="7"/>
-			</columns>
-				
-			<sortBy>
-				<column source="site.date1" order="descending"/>
-			</sortBy>
-			
-			<groupBy>
-			</groupBy>
-			
-			<panelBy>
-				<column source="admin" sourceId="1"/>			
-			</panelBy>			
-		</table>
-		
-		<map>
-		
-			<title>Distributions NFI dans le derniere 3 mois</title>
-		
-			<filter>
-				<dimension type="activity">
-					<include id="12"/>
-				</dimension>
-				<date-range max="${MONTH}" date-unit="month" count="3"/>
-			</filter>
-			
-		
-		</map>
-		
-	</body>	
+    <description>Tableaux, graphiques et cartes pour </description>
+
+    <elements>
+        <pivotTable>
+            <title>Résumé de résultats globales</title>
+            <sheetTitle>Totals</sheetTitle>
+
+            <rows>
+                <dimension type="activity"/>
+                <dimension type="indicator"/>
+            </rows>
+            <columns>
+                <dimension type="admin" levelId="1"/>
+                <dimension type="partner"/>
+            </columns>
+        </pivotTable>
+
+        <table>
+            <title>Evaluations ménées</title>
+            <filter>
+                <restriction dimension="activity">
+                    <category>24</category>
+                </restriction>
+            </filter>
+            <columns frozen="4">
+                <column label="Carte" source="map"/>
+                <column label="Date" source="site.date1"/>
+                <column label="Province/District" source="admin" sourceId="2" />
+                <column label="Partner" source="partner.name" />
+                <column label="Site" source="location.name"/>
+                <column label="Axe" source="location.axe"/>
+                <!--<column label="Commentaire" source="site.comments"/>-->
+            </columns>
+            <map>
+                <baseMap>zs.gray.cd</baseMap>
+                <layers>
+                    <bubbles>
+                        <numbering>arabicNumerals</numbering>
+                        <minRadius>10</minRadius>
+                    </bubbles>
+                </layers>
+            </map>
+        </table>
+
+        <table>
+            <title>Distributions NFI</title>
+            <filter>
+                <restriction dimension="activity">
+                    <category>22</category>
+                </restriction>
+            </filter>
+            <columns>
+                <column label="Période" source="site.date1"/>
+                <column label="Sites d'Intevention" source="location.name"/>
+                <column label="Territoire" source="admin" sourceId="3"/>
+                <!--<column label="Commentaire" source="site.comments"/>-->
+                <column label="Distribution effective NFI">
+                    <column label="# de kits distribués" source="indicator" sourceId="28"/>
+                </column>
+            </columns>
+        </table>
+
+        <map>
+            <title>Carte de distributions NFI</title>
+            <baseMap>zs.gray.cd</baseMap>
+            <layers>
+                <bubbles>
+                    <scaling>Graduated</scaling>
+                    <indicators>
+                        <indicator>29</indicator> <!-- Deplaces -->
+                        <indicator>31</indicator> <!-- Retournees -->
+                        <indicator>33</indicator> <!-- Fam d'acc -->
+                        <indicator>34</indicator> <!-- catostroph -->
+                    </indicators>
+                    <colors>
+                        <dimension type="indicator">
+                            <category name="29" color="#FF0000" label="Déplacés"/>
+                            <category name="31" color="#0000BB" label="Retournés"/>
+                            <category name="33" color="#00BB00" label="Famille d'Accueille"/>
+                            <category name="34" color="#FFFF00" label="Catostrophe Naturelle"/>
+                        </dimension>
+                    </colors>
+                </bubbles>
+            </layers>
+        </map>
+
+        <pivotChart>
+            <title>Répartition de Bénéficiaries par Statut</title>
+            <type>Pie</type>
+            <filter>
+                <restriction dimension="indicator">
+                    <category>29</category> <!-- Deplaces -->
+                    <category>31</category> <!-- Retournees -->
+                    <category>33</category> <!-- Fam d'acc -->
+                    <category>34</category> <!-- catostroph -->
+                </restriction>
+            </filter>
+            <categories>
+                <dimension type="indicator">
+                    <category name="29" color="#FF0000" label="Déplacés"/>
+                    <category name="31" color="#0000BB" label="Retournés"/>
+                    <category name="33" color="#00BB00" label="Famille d'Accueille"/>
+                    <category name="34" color="#FFFF00" label="Catostrophe Naturelle"/>
+                </dimension>
+            </categories>
+        </pivotChart>
+
+        <pivotChart>
+            <title>Répartition de Bénéficiaries par District</title>
+            <type>Pie</type>
+            <filter>
+                <restriction dimension="indicator">
+                    <category>28</category> <!-- Kits total -->
+                </restriction>
+            </filter>
+            <categories>
+                <dimension type="admin" levelId="2"/>
+            </categories>
+        </pivotChart>
+
+        <pivotChart>
+            <title>Répartition de Bénéficiaries par District et Position</title>
+            <type>StackedBar</type>
+            <filter>
+                <restriction dimension="indicator">
+                    <category>29</category> <!-- Deplaces -->
+                    <category>31</category> <!-- Retournees -->
+                    <category>33</category> <!-- Fam d'acc -->
+                    <category>34</category> <!-- catostroph -->
+                </restriction>
+            </filter>
+            <categories>
+                <dimension type="admin" levelId="2"/>
+            </categories>
+            <series>
+                <dimension type="indicator">
+                    <category name="29" color="#FF0000" label="Déplacés"/>
+                    <category name="31" color="#0000BB" label="Retournés"/>
+                    <category name="33" color="#00BB00" label="Famille d'Accueille"/>
+                    <category name="34" color="#FFFF00" label="Catostrophe Naturelle"/>
+                </dimension>
+            </series>
+        </pivotChart>
+
+        <pivotChart>
+            <title>Nombre de kits distribués par mois</title>
+            <type>Line</type>
+            <filter>
+                <restriction dimension="indicator">
+                    <category>28</category> <!-- Total kits -->
+                </restriction>
+            </filter>
+            <categories>
+                <dimension type="date" dateUnit="month"/>
+            </categories>
+        </pivotChart>
+
+        <table>
+            <title>Tableau récapitulatif des Interventions EHA</title>
+            <filter>
+                <restriction dimension="activity">
+                    <category>28</category>
+                </restriction>
+            </filter>
+            <columns>
+                <column label="Périod" source="site.date2"/>
+                <column label="Site d'Intervention">
+                    <column label="Sites" source="location.name"/>
+                    <column label="Territorie" source="admin" sourceId="3"/>
+                    <!--<column label="Cause"/>-->
+                    <column label="# latrines construites (portes)" source="indicator" sourceId="76"/>
+                    <column label="# douches (portes)" source="indicator" sourceId="79"/>
+                    <column label="# kits hygiène distribués" source="indicator" sourceId="82"/>
+                </column>
+            </columns>
+        </table>
+
+        <pivotChart>
+            <title>Répartion Béneficiares par type d'intervention</title>
+            <type>Pie</type>
+            <filter>
+                <restriction dimension="indicator">
+                    <category>100</category>   <!-- Water Trucking -->
+                    <category>101</category>   <!-- Nombre de personnes beneficiares d'assanissment d'urgence -->
+                    <category>102</category>   <!-- Nombre de personnes bénéficiaries de l'eau d'urgence -->
+                    <category>103</category>   <!--Nombre de personnes bénéficiaries de l'eau durable -->
+                    <category>104</category>  <!-- Nombre de personnes bénéficiaries d'assainissement durable -->
+                </restriction>
+            </filter>
+            <categories>
+                <dimension type="indicator">
+                    <category name="100" color="#FFFF00" label="Water-trucking"/>
+                    <category name="103" color="#254061" label="Eau durable"/>
+                    <category name="102" color="#4F81BD" label="Eau d'urgence"/>
+                    <category name="104" color="#77933C" label="Assainissement durable"/>
+                    <category name="101" color="#C3D69B" label="Assainissement d'urgence"/>
+                </dimension>
+            </categories>
+        </pivotChart>
+
+        <pivotChart>
+            <title>Répartion Béneficiares par type d'intervention</title>
+            <type>StackedBar</type>
+            <filter>
+                <restriction dimension="indicator">
+                    <category>100</category>   <!-- Water Trucking -->
+                    <category>101</category>   <!-- Nombre de personnes beneficiares d'assanissment d'urgence -->
+                    <category>102</category>   <!-- Nombre de personnes bénéficiaries de l'eau d'urgence -->
+                    <category>103</category>   <!--Nombre de personnes bénéficiaries de l'eau durable -->
+                    <category>104</category>  <!-- Nombre de personnes bénéficiaries d'assainissement durable -->
+                </restriction>
+            </filter>
+            <categories>
+                <dimension type="admin" levelId="2"/>
+            </categories>
+            <series>
+                <dimension type="indicator">
+                    <category name="100" color="#FFFF00" label="Water-trucking"/>
+                    <category name="103" color="#254061" label="Eau durable"/>
+                    <category name="102" color="#4F81BD" label="Eau d'urgence"/>
+                    <category name="104" color="#77933C" label="Assainissement durable"/>
+                    <category name="101" color="#C3D69B" label="Assainissement d'urgence"/>
+                </dimension>
+            </series>
+        </pivotChart>
+
+        <pivotChart>
+            <title>Nombre de Béneficiares par Mois</title>
+            <type>Line</type>
+            <filter>
+                <restriction dimension="indicator">
+                    <category>100</category>   <!-- Water Trucking -->
+                    <category>101</category>   <!-- Nombre de personnes beneficiares d'assanissment d'urgence -->
+                    <category>102</category>   <!-- Nombre de personnes bénéficiaries de l'eau d'urgence -->
+                    <category>103</category>   <!--Nombre de personnes bénéficiaries de l'eau durable -->
+                    <category>104</category>  <!-- Nombre de personnes bénéficiaries d'assainissement durable -->
+                </restriction>
+            </filter>
+            <categories>
+                <dimension type="date" dateUnit="month"/>
+            </categories>
+            <series>
+                <dimension type="indicator">
+                    <category name="100" color="#FFFF00" label="Water-trucking"/>
+                    <category name="103" color="#254061" label="Eau durable"/>
+                    <category name="102" color="#4F81BD" label="Eau d'urgence"/>
+                    <category name="104" color="#77933C" label="Assainissement durable"/>
+                    <category name="101" color="#C3D69B" label="Assainissement d'urgence"/>
+                </dimension>
+            </series>
+        </pivotChart>
+
+
+        <map>
+            <title>Carte des Interventions EHA</title>
+            <baseMap>zs.gray.cd</baseMap>
+            <layers>
+                <bubbles>
+                    <minRadius>15</minRadius>
+                    <maxRadius>30</maxRadius>
+                    <scaling>Graduated</scaling>
+                    <pie>true</pie>
+                    <indicators>
+                        <indicator>100</indicator>
+                        <indicator>103</indicator>
+                        <indicator>102</indicator>
+                        <indicator>104</indicator>
+                        <indicator>101</indicator>
+                    </indicators>
+                    <colors>
+                        <dimension type="indicator">
+                            <category name="100" color="#FFFF00" label="Water-trucking"/>
+                            <category name="103" color="#254061" label="Eau durable"/>
+                            <category name="102" color="#4F81BD" label="Eau d'urgence"/>
+                            <category name="104" color="#77933C" label="Assainissement durable"/>
+                            <category name="101" color="#C3D69B" label="Assainissement d'urgence"/>
+                        </dimension>
+                    </colors>
+                </bubbles>
+            </layers>
+        </map>
+    </elements>
 </report>

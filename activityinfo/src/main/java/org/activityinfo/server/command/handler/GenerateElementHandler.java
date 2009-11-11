@@ -25,9 +25,7 @@ import org.activityinfo.server.report.generator.ReportGenerator;
 import org.activityinfo.shared.command.GenerateElement;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.CommandException;
-import org.activityinfo.shared.date.DateRange;
-
-import java.util.HashMap;
+import org.activityinfo.shared.report.model.DateRange;
 
 /**
  * @author Alex Bertram

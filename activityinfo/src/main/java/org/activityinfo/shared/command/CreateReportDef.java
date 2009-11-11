@@ -20,7 +20,7 @@ public class CreateReportDef implements Command<CreateResult> {
 		
 	}
 
-	public CreateReportDef(Integer databaseId, String xml) {
+	public CreateReportDef(int databaseId, String xml) {
 		super();
 		this.databaseId = databaseId;
 		this.xml = xml;

@@ -1,6 +1,6 @@
 package org.activityinfo.server.dao.filter;
 
-import org.activityinfo.shared.date.DateRange;
+import org.activityinfo.shared.report.model.DateRange;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 
