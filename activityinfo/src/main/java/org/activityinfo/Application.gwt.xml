@@ -1,8 +1,59 @@
+<!--
+  ~ This file is part of ActivityInfo.
+  ~
+  ~ ActivityInfo is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ ActivityInfo is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with ActivityInfo.  If not, see <http://www.gnu.org/licenses/>.
+  ~
+  ~ Copyright 2009 Alex Bertram and contributors.
+  -->
+
 <module rename-to="Application">
 
-    <inherits name="org.activityinfo.ApplicationBase"/>
+    <!-- Inherit the core Web Toolkit stuff.                        -->
+    <inherits name='com.google.gwt.user.User' />
 
-    <set-property name="locale" value="fr"/>
+    <!-- Inherit additional dependencies  -->
+    <inherits name='com.google.gwt.inject.Inject' />
+    <inherits name="com.google.gwt.i18n.I18N" />
+    <inherits name='com.extjs.gxt.ui.GXT' />
+    <inherits name="com.google.gwt.maps.GoogleMaps" />
+    <inherits name="com.ebessette.maps.core.CoreMaps" />
+    <inherits name="com.google.gwt.gears.Gears" />
+    <inherits name="com.google.gwt.inject.Inject"/>
+    <inherits name="com.extjs.gxt.charts.Chart"/>
+    <inherits name="com.google.code.gaxb.Annotations"/>
+
+    <!-- Include generated sources -->
+    <source path='client'/>
+    <source path='shared'/>
+
+    <!-- Specify the app entry point class.                         -->
+    <entry-point class='org.activityinfo.client.Application' />
+
+    <!-- Enable other locales -->
+    <!--<extend-property name="locale" values="en" />-->
+    <extend-property name="locale" values="fr" />
+
+    <!-- Configure rebinding for the Export Service -->
+
+    <generate-with class="org.activityinfo.rebind.ExportServiceInterfaceProxyGenerator">
+        <when-type-assignable class="org.activityinfo.shared.report.ExportService"/>
+    </generate-with>
+
+    <servlet path="/cmd" class="org.activityinfo.server.servlet.CommandServlet" />
+
+    <!-- Custom Linker that generates Gears manifests -->
+    <define-linker name="std" class="org.activityinfo.linker.ApplicationLinker" />
 
 
 </module>

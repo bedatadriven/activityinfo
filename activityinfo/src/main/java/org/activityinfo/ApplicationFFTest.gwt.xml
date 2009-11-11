@@ -26,7 +26,7 @@
 
 <module rename-to="Application">
 
-    <inherits name="org.activityinfo.ApplicationBase"/>
+    <inherits name="org.activityinfo.Application"/>
 
    
     <!-- ie6, gecko, gecko1_8, safari or opera -->
