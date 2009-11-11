@@ -1,10 +1,13 @@
 package org.activityinfo.server.report.generator.map;
 
-import org.activityinfo.server.report.generator.MapSymbol;
-import org.activityinfo.shared.report.content.Point;
 import org.activityinfo.server.domain.SiteData;
+import org.activityinfo.server.report.generator.MapSymbol;
+import org.activityinfo.shared.report.content.PieMapMarker;
+import org.activityinfo.shared.report.content.Point;
 
 import java.awt.*;
+import java.util.List;
+
 
 public class PointValue {
 
@@ -30,5 +33,6 @@ public class PointValue {
     public double value;
     public Point px;
     public Rectangle iconRect;
+    public List<PieMapMarker.Slice> slices;
 
 }

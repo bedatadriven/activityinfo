@@ -2,13 +2,17 @@ package org.activityinfo.server.report.generator;
 
 import com.google.inject.Inject;
 import org.activityinfo.server.dao.hibernate.PivotDAO;
-import org.activityinfo.server.report.util.DateRangeFormat;
 import org.activityinfo.server.domain.User;
+import org.activityinfo.server.report.util.DateRangeFormat;
 import org.activityinfo.shared.report.content.FilterDescription;
-import org.activityinfo.shared.report.model.*;
-import org.activityinfo.shared.date.DateRange;
+import org.activityinfo.shared.report.model.DateRange;
+import org.activityinfo.shared.report.model.DimensionType;
+import org.activityinfo.shared.report.model.Filter;
+import org.activityinfo.shared.report.model.ReportElement;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Implements functionality common to all generators.

@@ -3,10 +3,9 @@ package org.activityinfo.client.page.map;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.state.StateManager;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Status;
 import com.extjs.gxt.ui.client.widget.Html;
+import com.extjs.gxt.ui.client.widget.Status;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
@@ -22,16 +21,16 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.command.monitor.MaskingAsyncMonitor;
 import org.activityinfo.client.map.GcIconFactory;
-import org.activityinfo.client.map.MapTypeFactory;
 import org.activityinfo.client.map.IconFactory;
 import org.activityinfo.client.map.MapApiLoader;
+import org.activityinfo.client.map.MapTypeFactory;
+import org.activityinfo.shared.map.BaseMap;
 import org.activityinfo.shared.report.content.Content;
 import org.activityinfo.shared.report.content.Extents;
 import org.activityinfo.shared.report.content.MapContent;
 import org.activityinfo.shared.report.content.MapMarker;
 import org.activityinfo.shared.report.model.MapElement;
 import org.activityinfo.shared.report.model.ReportElement;
-import org.activityinfo.shared.map.BaseMap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -214,16 +213,7 @@ public class MapPreview extends ContentPanel {
 
         for(MapMarker marker : content.getMarkers()) {
 
-            Icon icon;
-            if(marker.getIcon() != null) {
-                icon = IconFactory.createIcon(marker.getIcon());
-            } else {
-                iconFactory.width = marker.getRadius() * 2;
-                iconFactory.height = marker.getRadius() * 2;
-                iconFactory.primaryColor = "#" + Integer.toHexString(marker.getColor());
-
-                icon = IconFactory.createBubble(marker.getColor(), marker.getRadius());
-            }
+            Icon icon = IconFactory.createIcon(marker);
 
             LatLng latLng = LatLng.newInstance(marker.getLat(), marker.getLng());
 

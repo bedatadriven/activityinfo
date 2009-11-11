@@ -19,9 +19,12 @@
 
 package org.activityinfo.client.map;
 
-import com.google.gwt.maps.client.overlay.Icon;
-import com.google.gwt.maps.client.geom.Size;
 import com.google.gwt.maps.client.geom.Point;
+import com.google.gwt.maps.client.geom.Size;
+import com.google.gwt.maps.client.overlay.Icon;
+import org.activityinfo.shared.report.content.BubbleMapMarker;
+import org.activityinfo.shared.report.content.IconMapMarker;
+import org.activityinfo.shared.report.content.MapMarker;
 import org.activityinfo.shared.report.model.MapIcon;
 
 /**
@@ -32,14 +35,27 @@ import org.activityinfo.shared.report.model.MapIcon;
  * @author Alex Bertram
  */
 public class IconFactory {
+
+    public static Icon createIcon(MapMarker marker) {
+        if(marker instanceof IconMapMarker) {
+            return createIconMapMarker((IconMapMarker) marker);
+        } else if(marker instanceof BubbleMapMarker) {
+            return createBubbleMapMarker((BubbleMapMarker) marker);
+        } else {
+            return Icon.DEFAULT_ICON;
+        }
+    }
+
+
     /**
      * Creates a Google Maps icon based on an ActivityInfo MapIcon
      *
      * @author Alex Bertram
      */
-    public static Icon createIcon(MapIcon mapIcon) {
+    public static Icon createIconMapMarker(IconMapMarker marker) {
 
-		String iconUrl = "mapicons/" + mapIcon.getName() + ".png";
+        MapIcon mapIcon = marker.getIcon();
+        String iconUrl = "mapicons/" + mapIcon.getName() + ".png";
 
 		Icon icon = Icon.newInstance(Icon.DEFAULT_ICON);
 		icon.setImageURL(iconUrl);
@@ -54,17 +70,17 @@ public class IconFactory {
 		return icon;
     }
 
-    public static Icon createBubble(int color, int radius) {
+    public static Icon createBubbleMapMarker(BubbleMapMarker marker) {
         StringBuilder sb = new StringBuilder();
-        sb.append("icon?t=bubble&r=").append(radius).append("&c=").append(color);
+        sb.append("icon?t=bubble&r=").append(marker.getRadius()).append("&c=").append(marker.getRadius());
         String iconUrl = sb.toString();
-        int size = radius * 2;
+        int size = marker.getRadius() * 2;
 
         Icon icon = Icon.newInstance(Icon.DEFAULT_ICON);
 		icon.setImageURL(iconUrl);
 		icon.setIconSize(Size.newInstance(size, size));
 		icon.setShadowSize(Size.newInstance(0, 0));
-        Point anchor = Point.newInstance(radius, radius);
+        Point anchor = Point.newInstance(marker.getRadius(), marker.getRadius());
         icon.setIconAnchor(anchor);
 		icon.setInfoWindowAnchor(anchor);
 		icon.setPrintImageURL(iconUrl);
@@ -72,4 +88,6 @@ public class IconFactory {
 
         return icon;
     }
+
+
 }

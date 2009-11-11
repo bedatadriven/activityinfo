@@ -7,10 +7,10 @@ import org.activityinfo.shared.report.model.ReportElement;
 
 import java.io.IOException;
 import java.io.OutputStream;
+
 /*
  * @author Alex Bertram
  */
-
 public class ImageReportRenderer implements Renderer {
 
 
@@ -22,6 +22,7 @@ public class ImageReportRenderer implements Renderer {
     }
 
     public void render(ReportElement element, OutputStream os) throws IOException {
+        // TODO: support for other types?
 
         if(element instanceof MapElement) {
             renderer.render((MapElement) element, os);
@@ -31,11 +32,11 @@ public class ImageReportRenderer implements Renderer {
 
     @Override
     public String getMimeType() {
-        return ".png";
+        return "image/png";
     }
 
     @Override
     public String getFileSuffix() {
-        return "image/png";
+        return ".png";
     }
 }

@@ -2,9 +2,10 @@ package org.activityinfo.server.domain;
 
 import org.activityinfo.shared.domain.SiteColumn;
 import org.activityinfo.shared.report.content.SiteGeoData;
-import org.activityinfo.server.domain.AdminEntity;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A "non-tabular" representation of sites used by 
@@ -99,5 +100,9 @@ public class SiteData implements SiteGeoData {
 
     public Boolean getAttributeValue(int attribId) {
         return attributes.get(attribId);
+    }
+
+    public void setIndicatorValue(int indicatorId, Double value) {
+        indicatorValues.put(indicatorId, value);
     }
 }

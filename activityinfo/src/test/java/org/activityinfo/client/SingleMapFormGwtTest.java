@@ -20,14 +20,13 @@
 package org.activityinfo.client;
 
 import com.google.gwt.junit.client.GWTTestCase;
-import org.activityinfo.client.page.map.SingleMapForm;
-import org.activityinfo.client.mock.MockCommandService;
 import org.activityinfo.client.mock.DummyData;
-import org.activityinfo.client.Application;
-import org.activityinfo.shared.command.GetSchema;
+import org.activityinfo.client.mock.MockCommandService;
+import org.activityinfo.client.page.map.SingleMapForm;
 import org.activityinfo.shared.command.GetBaseMaps;
+import org.activityinfo.shared.command.GetSchema;
+import org.activityinfo.shared.report.model.BubbleMapLayer;
 import org.activityinfo.shared.report.model.MapElement;
-import org.activityinfo.shared.report.model.GsMapLayer;
 
 /**
  * @author Alex Bertram
@@ -49,7 +48,7 @@ public class SingleMapFormGwtTest extends GWTTestCase {
                  Application.ICONS);
 
         MapElement element = (MapElement) form.getMapElement();
-        GsMapLayer layer = (GsMapLayer) element.getLayers().get(0);
+        BubbleMapLayer layer = (BubbleMapLayer) element.getLayers().get(0);
 
         assertTrue(layer.getMinRadius() > 0);
         assertTrue(layer.getMaxRadius() > 0);

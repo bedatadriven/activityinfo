@@ -2,10 +2,7 @@ package org.activityinfo.shared.report.content;
 
 import org.activityinfo.shared.map.BaseMap;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 /*
  * @author Alex Bertram
  */
@@ -70,5 +67,17 @@ public class MapContent implements Content {
 
     public void setBaseMap(BaseMap baseMap) {
         this.baseMap = baseMap;
+    }
+
+    public Map<Integer, String> siteLabelMap() {
+        Map<Integer, String> map = new HashMap<Integer, String>();
+        for(MapMarker marker : getMarkers()) {
+            if(marker instanceof BubbleMapMarker && ((BubbleMapMarker) marker).getLabel() != null) {
+                for (Integer siteId : marker.getSiteIds()) {
+                    map.put(siteId, ((BubbleMapMarker) marker).getLabel());
+                }
+            }
+        }
+        return map;
     }
 }

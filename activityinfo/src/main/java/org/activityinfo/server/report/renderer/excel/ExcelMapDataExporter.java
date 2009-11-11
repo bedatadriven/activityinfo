@@ -1,6 +1,8 @@
 package org.activityinfo.server.report.renderer.excel;
 
 import org.activityinfo.server.report.renderer.Renderer;
+import org.activityinfo.shared.report.content.BubbleMapMarker;
+import org.activityinfo.shared.report.content.IconMapMarker;
 import org.activityinfo.shared.report.content.MapContent;
 import org.activityinfo.shared.report.content.MapMarker;
 import org.activityinfo.shared.report.model.MapElement;
@@ -44,11 +46,18 @@ public class ExcelMapDataExporter implements Renderer {
             Row dataRow = sheet.createRow(rowIndex++);
             helper.addCell(dataRow, 0, marker.getLat());
             helper.addCell(dataRow, 1, marker.getLng());
-            helper.addCell(dataRow, 2, marker.getValue());
-            helper.addCell(dataRow, 3, marker.getColor());
-            if(marker.getIcon() != null) {
-                helper.addCell(dataRow, 4, marker.getIcon().getName());
+            if(marker instanceof BubbleMapMarker) {
+                BubbleMapMarker bmarker = (BubbleMapMarker) marker;
+                helper.addCell(dataRow, 2, bmarker.getValue());
+                helper.addCell(dataRow, 3, bmarker.getColor());
             }
+            if(marker instanceof IconMapMarker) {
+                IconMapMarker imarker = (IconMapMarker) marker;
+                if(imarker.getIcon() != null) {
+                    helper.addCell(dataRow, 4, imarker.getIcon().getName());
+                }
+            }
+
         }
 
         book.write(stm);

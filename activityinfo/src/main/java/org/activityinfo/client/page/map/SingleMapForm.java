@@ -12,8 +12,8 @@ import org.activityinfo.client.page.common.filter.IndicatorTreePanel;
 import org.activityinfo.shared.dto.AdminEntityModel;
 import org.activityinfo.shared.dto.IndicatorModel;
 import org.activityinfo.shared.i18n.UIConstants;
+import org.activityinfo.shared.report.model.BubbleMapLayer;
 import org.activityinfo.shared.report.model.DimensionType;
-import org.activityinfo.shared.report.model.GsMapLayer;
 import org.activityinfo.shared.report.model.MapElement;
 import org.activityinfo.shared.report.model.ReportElement;
 
@@ -77,7 +77,7 @@ public class SingleMapForm extends ContentPanel implements MapForm {
         if(sel.size() != 0)
             indicators.add(sel.get(0).getId());
 
-        GsMapLayer layer = new GsMapLayer();
+        BubbleMapLayer layer = new BubbleMapLayer();
         layer.setIndicatorIds(indicators);
 
         symbolForm.updateLayer(layer);

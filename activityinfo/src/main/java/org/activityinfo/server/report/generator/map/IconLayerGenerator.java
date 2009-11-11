@@ -1,17 +1,17 @@
 package org.activityinfo.server.report.generator.map;
 
+import org.activityinfo.server.domain.SiteData;
 import org.activityinfo.shared.report.content.*;
 import org.activityinfo.shared.report.model.IconMapLayer;
 import org.activityinfo.shared.report.model.MapElement;
 import org.activityinfo.shared.report.model.MapIcon;
-import org.activityinfo.server.domain.SiteData;
 
 import java.util.ArrayList;
 import java.util.List;
+
 /*
  * @author Alex Bertram
  */
-
 public class IconLayerGenerator implements LayerGenerator {
 
     private final MapElement element;
@@ -98,26 +98,24 @@ public class IconLayerGenerator implements LayerGenerator {
                     UpperBoundsCalculator.calculate(graph, rectCalculator));
 
             for(Cluster cluster : clusters) {
-                MapMarker marker = new MapMarker();
+                IconMapMarker marker = new IconMapMarker();
                 marker.setX(cluster.getPoint().getX());
                 marker.setY(cluster.getPoint().getY());
                 LatLng latlng = cluster.latLngCentroid();
                 marker.setLat(latlng.getLat());
                 marker.setLng(latlng.getLng());
                 marker.setIcon(icon);
-                marker.setRadius(0);
                 content.getMarkers().add(marker);
             }
         } else {
 
             for(PointValue point : points) {
-                MapMarker marker = new MapMarker();
+                IconMapMarker marker = new IconMapMarker();
                 marker.setX(point.px.getX());
                 marker.setY(point.px.getY());
                 marker.setLat(point.site.getLatitude());
                 marker.setLng(point.site.getLongitude());
                 marker.setIcon(icon);
-                marker.setRadius(0);
                 content.getMarkers().add(marker);
             }
         }

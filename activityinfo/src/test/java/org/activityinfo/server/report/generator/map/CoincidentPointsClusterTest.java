@@ -32,7 +32,7 @@ public class CoincidentPointsClusterTest extends GraphTest {
         // Now build the graph
 
         MarkerGraph graph = new MarkerGraph(points,
-                new GsLayerGenerator.IntersectionCalculator(15));
+                new BubbleLayerGenerator.IntersectionCalculator(15));
 
         GeneticSolver solver = new GeneticSolver();
 
@@ -89,7 +89,7 @@ public class CoincidentPointsClusterTest extends GraphTest {
         // Now build the graph
 
         MarkerGraph graph = new MarkerGraph(points,
-                new GsLayerGenerator.IntersectionCalculator(15));
+                new BubbleLayerGenerator.IntersectionCalculator(15));
 
         // make sure nothing was lost in the merging of coincident points
         double nodeSum = 0;

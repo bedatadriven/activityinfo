@@ -1,9 +1,10 @@
 package org.activityinfo.server.report.generator.map;
 
+import org.activityinfo.server.domain.SiteData;
 import org.activityinfo.shared.domain.SiteColumn;
+import org.activityinfo.shared.report.content.BubbleMapMarker;
 import org.activityinfo.shared.report.content.LatLng;
 import org.activityinfo.shared.report.content.MapContent;
-import org.activityinfo.server.domain.SiteData;
 import org.activityinfo.shared.report.model.*;
 import org.junit.Assert;
 import org.junit.Test;
@@ -13,8 +14,7 @@ import java.util.List;
 /*
  * @author Alex Bertram
  */
-
-public class GsLayerGeneratorTest {
+public class BubbleGeneratorTest {
 
 
     @Test
@@ -22,7 +22,7 @@ public class GsLayerGeneratorTest {
 
         MapElement element = new MapElement();
 
-        GsMapLayer layer = new GsMapLayer();
+        BubbleMapLayer layer = new BubbleMapLayer();
         layer.setClustered(true);
         layer.addIndicator(101);
         layer.addIndicator(102);
@@ -35,6 +35,7 @@ public class GsLayerGeneratorTest {
         List<SiteData> sites = new ArrayList<SiteData>();
 
         SiteData site1 = new SiteData();
+        site1.setValue(SiteColumn.id, 1) ;
         site1.setValue(SiteColumn.x, 29.3 );
         site1.setValue(SiteColumn.y, -1.5);
         site1.indicatorValues.put(101, 35.0);
@@ -47,13 +48,13 @@ public class GsLayerGeneratorTest {
 
         MapContent content = new MapContent();
 
-        GsLayerGenerator gtor = new GsLayerGenerator(element, layer);
+        BubbleLayerGenerator gtor = new BubbleLayerGenerator(element, layer);
         gtor.generate(sites, map, content);
 
         Assert.assertEquals("marker count", 2, content.getMarkers().size());
-        Assert.assertEquals(255, content.getMarkers().get(0).getColor());
-        Assert.assertEquals(0, content.getMarkers().get(1).getColor());
-        Assert.assertTrue(content.getMarkers().get(0).getRadius() >= layer.getMinRadius());
+        Assert.assertEquals(255, ((BubbleMapMarker) content.getMarkers().get(0)).getColor());
+        Assert.assertEquals(0, ((BubbleMapMarker) content.getMarkers().get(1)).getColor());
+        Assert.assertTrue(((BubbleMapMarker) content.getMarkers().get(0)).getRadius() >= layer.getMinRadius());
     }
 
     @Test
@@ -61,7 +62,7 @@ public class GsLayerGeneratorTest {
 
         MapElement element = new MapElement();
 
-        GsMapLayer layer = new GsMapLayer();
+        BubbleMapLayer layer = new BubbleMapLayer();
         layer.setClustered(true);
         layer.addIndicator(101);
 
@@ -73,6 +74,7 @@ public class GsLayerGeneratorTest {
         List<SiteData> sites = new ArrayList<SiteData>();
 
         SiteData site1 = new SiteData();
+        site1.setValue(SiteColumn.id, 1) ;
         site1.setValue(SiteColumn.partner_id, 301);
         site1.setValue(SiteColumn.x, 29.3 );
         site1.setValue(SiteColumn.y, -1.5);
@@ -80,6 +82,7 @@ public class GsLayerGeneratorTest {
         sites.add(site1);
 
         SiteData site2 = new SiteData();
+        site2.setValue(SiteColumn.id, 2) ;
         site2.setValue(SiteColumn.partner_id, 302);
         site2.setValue(SiteColumn.x, 29.3 );
         site2.setValue(SiteColumn.y, -1.5);
@@ -87,6 +90,7 @@ public class GsLayerGeneratorTest {
         sites.add(site2);
 
         SiteData site3 = new SiteData();
+        site3.setValue(SiteColumn.id, 3) ;
         site3.setValue(SiteColumn.partner_id, 302);
         site3.setValue(SiteColumn.x, 29.3 );
         site3.setValue(SiteColumn.y, -1.5);
@@ -99,12 +103,12 @@ public class GsLayerGeneratorTest {
 
         MapContent content = new MapContent();
 
-        GsLayerGenerator gtor = new GsLayerGenerator(element, layer);
+        BubbleLayerGenerator gtor = new BubbleLayerGenerator(element, layer);
         gtor.generate(sites, map, content);
 
         Assert.assertEquals("marker count", 2, content.getMarkers().size());
-        Assert.assertEquals(255, content.getMarkers().get(0).getColor());
-        Assert.assertEquals(0, content.getMarkers().get(1).getColor());
+        Assert.assertEquals(255, ((BubbleMapMarker) content.getMarkers().get(0)).getColor());
+        Assert.assertEquals(0, ((BubbleMapMarker) content.getMarkers().get(1)).getColor());
     }
 
 

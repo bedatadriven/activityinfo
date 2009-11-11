@@ -1,11 +1,13 @@
 package org.activityinfo.shared.report.model;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import java.util.ArrayList;
 import java.util.List;
-/*
+
+/**
  * @author Alex Bertram
  */
-
 public class IconMapLayer extends MapLayer {
 
     private List<Integer> indicatorIds = new ArrayList<Integer>(0);
@@ -17,6 +19,8 @@ public class IconMapLayer extends MapLayer {
     public IconMapLayer() {
     }
 
+    @XmlElement(name="indicator")
+    @XmlElementWrapper(name="indicators")
     public List<Integer> getIndicatorIds() {
         return indicatorIds;
     }
@@ -25,6 +29,8 @@ public class IconMapLayer extends MapLayer {
         this.indicatorIds = indicatorIds;
     }
 
+    @XmlElement(name="activity")
+    @XmlElementWrapper(name="activities")
     public List<Integer> getActivityIds() {
         return activityIds;
     }
@@ -33,6 +39,7 @@ public class IconMapLayer extends MapLayer {
         this.activityIds = activityIds;
     }
 
+    @XmlElement
     public String getIcon() {
         return icon;
     }
@@ -45,6 +52,7 @@ public class IconMapLayer extends MapLayer {
         indicatorIds.add(id);
     }
 
+    @XmlElement
     public boolean isClustered() {
         return clustered;
     }

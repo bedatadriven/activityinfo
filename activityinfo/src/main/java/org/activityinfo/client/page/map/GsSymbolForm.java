@@ -6,7 +6,7 @@ import com.google.gwt.i18n.client.NumberFormat;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.page.common.widget.ColorField;
 import org.activityinfo.client.page.common.widget.MappingComboBox;
-import org.activityinfo.shared.report.model.GsMapLayer;
+import org.activityinfo.shared.report.model.BubbleMapLayer;
 /*
  * @author Alex Bertram
  */
@@ -56,7 +56,7 @@ public class GsSymbolForm extends FormPanel {
 
     }
 
-    public void updateLayer(GsMapLayer layer) {
+    public void updateLayer(BubbleMapLayer layer) {
         layer.setMaxRadius(maxRadiusField.getValue().intValue());
         layer.setMinRadius(minRadiusField.getValue().intValue());
         layer.setDefaultColor(colorField.getIntValue());

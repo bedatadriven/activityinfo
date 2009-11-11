@@ -5,10 +5,10 @@ import org.activityinfo.shared.report.model.MapIcon;
 
 import java.awt.*;
 import java.util.List;
-/*
+
+/**
  * @author Alex Bertram
  */
-
 public class IconRectCalculator implements RadiiCalculator {
 
     private MapIcon icon;
