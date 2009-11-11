@@ -36,4 +36,5 @@ public class Pages {
     
     public static final PageId ReportPreview = new PageId("report");
 
+    public static final PageId DatabaseTargets = new PageId("targets");
 }

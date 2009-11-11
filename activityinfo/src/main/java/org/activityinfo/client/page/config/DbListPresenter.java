@@ -10,7 +10,9 @@ import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.Place;
 import org.activityinfo.client.command.CommandService;
+import org.activityinfo.client.event.NavigationEvent;
 import org.activityinfo.client.page.PageId;
+import org.activityinfo.client.page.PageManager;
 import org.activityinfo.client.page.PagePresenter;
 import org.activityinfo.client.page.Pages;
 import org.activityinfo.client.page.common.dialog.FormDialogCallback;
@@ -65,7 +67,7 @@ public class DbListPresenter extends AbstractGridPresenter<UserDatabaseDTO> impl
     }
 
     public boolean navigate(Place place) {
-        return false;
+        return true;
     }
 
     @Override
@@ -134,7 +136,8 @@ public class DbListPresenter extends AbstractGridPresenter<UserDatabaseDTO> impl
 
     @Override
     public void onEdit(UserDatabaseDTO model) {
-
+        eventBus.fireEvent(new NavigationEvent(PageManager.NavigationRequested,
+                new DbPlace(Pages.DatabaseConfig, model.getId())));
     }
 
     protected class Proxy implements DataProxy {

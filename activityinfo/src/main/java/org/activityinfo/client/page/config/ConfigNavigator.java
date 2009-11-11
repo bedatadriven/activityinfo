@@ -46,8 +46,7 @@ public class ConfigNavigator implements Navigator {
 
     @Override
     public boolean hasChildren(Link parent) {
-        return parent.getPlace() instanceof DbListPlace ||
-                parent.getPlace().getPageId().equals(Pages.DatabaseConfig);
+        return parent.getPlace() instanceof DbListPlace;
     }
 
 
@@ -77,16 +76,16 @@ public class ConfigNavigator implements Navigator {
 
             } else if(link.getPlace().getPageId().equals(Pages.DatabaseConfig)) {
 
-                List<Link> list = new ArrayList<Link>();
-                int dbId = ((DbPlace) link.getPlace()).getDatabaseId();
-                list.add(new Link(messages.design(), new DbPlace(Pages.Design, dbId), icons.design()));
-
-                if(((UserDatabaseDTO) link.get("db")).isDesignAllowed())
-                    list.add(new Link(messages.users(), new DbPlace(Pages.DatabaseUsers, dbId), icons.user()));
-
-                list.add(new Link(messages.partners(), new DbPlace(Pages.DatabasePartners, dbId), icons.group()));
-
-                callback.onSuccess(list);
+//                List<Link> list = new ArrayList<Link>();
+//                int dbId = ((DbPlace) link.getPlace()).getDatabaseId();
+//                list.add(new Link(messages.design(), new DbPlace(Pages.Design, dbId), icons.design()));
+//
+//                if(((UserDatabaseDTO) link.get("db")).isDesignAllowed())
+//                    list.add(new Link(messages.users(), new DbPlace(Pages.DatabaseUsers, dbId), icons.user()));
+//
+//                list.add(new Link(messages.partners(), new DbPlace(Pages.DatabasePartners, dbId), icons.group()));
+//
+//                callback.onSuccess(list);
             }
 
         }

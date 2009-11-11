@@ -20,10 +20,10 @@ import org.activityinfo.shared.i18n.UIConstants;
 
 import java.util.ArrayList;
 import java.util.List;
-/*
+
+/**
  * @author Alex Bertram
  */
-
 public class DbPartnerGrid extends AbstractGridView<PartnerModel, DbPartnerEditor>
                             implements DbPartnerEditor.View {
 

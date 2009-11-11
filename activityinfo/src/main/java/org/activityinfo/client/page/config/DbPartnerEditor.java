@@ -29,10 +29,10 @@ import org.activityinfo.shared.exception.DuplicateException;
 import org.activityinfo.shared.exception.PartnerHasSitesException;
 
 import java.util.ArrayList;
-/*
+
+/**
  * @author Alex Bertram
  */
-
 public class DbPartnerEditor extends AbstractGridPresenter<PartnerModel> {
 
     @ImplementedBy(DbPartnerGrid.class)

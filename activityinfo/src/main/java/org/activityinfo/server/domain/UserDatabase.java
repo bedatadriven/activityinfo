@@ -199,6 +199,7 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
      * @return The list of activities followed by this database
      */
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "database")
+    @org.hibernate.annotations.OrderBy(clause="sortOrder")
 	@org.hibernate.annotations.Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
     @org.hibernate.annotations.Filter(
             name="hideDeleted",
