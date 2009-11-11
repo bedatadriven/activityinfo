@@ -1,0 +1,7 @@
+<module rename-to="RpcCallingWorker">
+
+    <inherits name='com.google.gwt.gears.worker.Worker'/>
+
+    <entry-point class='com.google.gwt.gears.worker.test.client.RpcCallingWorker'/>
+
+</module>

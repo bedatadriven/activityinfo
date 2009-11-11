@@ -1,0 +1,15 @@
+<module>
+
+    <inherits name='com.google.gwt.gears.worker.Worker'/>
+
+
+    <servlet path="/service" class="com.google.gwt.gears.worker.server.WorkerServlet"/>
+
+    <generate-with class="com.google.gwt.gears.worker.rebind.GearsServiceInterfaceProxyGenerator">
+        <when-type-assignable class="com.google.gwt.user.client.rpc.RemoteService"/>
+    </generate-with>
+
+    <public path="workerjs"/>
+
+</module>
+

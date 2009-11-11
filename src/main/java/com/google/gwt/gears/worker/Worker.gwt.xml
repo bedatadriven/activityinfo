@@ -1,0 +1,49 @@
+<!--
+  ~ This file is part of ActivityInfo.
+  ~
+  ~ ActivityInfo is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ ActivityInfo is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with ActivityInfo.  If not, see <http://www.gnu.org/licenses/>.
+  ~
+  ~ Copyright 2009 Alex Bertram and contributors.
+  -->
+<module>
+
+    <!-- Only include modules that can be safely called from a js worker so we get appropriate
+         warnings about what we can't use from the compiler -->
+
+    <inherits name='com.google.gwt.user.User'/>
+    <inherits name="com.google.gwt.gears.Gears"/>
+
+    <!-- Hijack the Proxy Generation process to use Gears' HttpRequest instead of
+         the browser's built in version, which isn't accessible from a Worker -->
+
+    <generate-with class="com.google.gwt.gears.worker.rebind.GearsServiceInterfaceProxyGenerator">
+        <when-type-assignable class="com.google.gwt.user.client.rpc.RemoteService"/>
+    </generate-with>
+
+    <define-linker name="std" class="com.google.gwt.gears.worker.linker.WorkerLinker"/>
+
+    <!-- Need to check whether Gears uses the browser's js implemenation or its own. Either
+         way, the huge differences between browsers are more linked to DOM and various APIs
+         (which we can't access from a worker thread anyway) than in js language itself, so forcing
+         this to FireFox should be OK. -->
+    <set-property name="user.agent" value="gecko1_8"/>
+
+
+    <source path="client"/>
+
+
+    <super-source path='translatable'/>
+
+
+</module>
