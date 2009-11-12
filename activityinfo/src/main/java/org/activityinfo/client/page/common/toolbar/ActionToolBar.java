@@ -1,5 +1,6 @@
 package org.activityinfo.client.page.common.toolbar;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -7,7 +8,6 @@ import com.extjs.gxt.ui.client.widget.button.SplitButton;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import org.activityinfo.client.Application;
 
@@ -125,7 +125,7 @@ public class ActionToolBar extends ToolBar implements Listener<ButtonEvent> {
         if(c!=null) {
             c.setEnabled(enabled);
         } else {
-            GWT.log("ActionToolBar: setActionEnabled(" + actionId + ") was called, but button is not present", null);
+            Log.warn("ActionToolBar: setActionEnabled(" + actionId + ") was called, but button is not present");
         }
     }
 

@@ -33,6 +33,12 @@
     <inherits name="com.extjs.gxt.charts.Chart"/>
     <inherits name="com.google.code.gaxb.Annotations"/>
 
+    <!-- Configure Logging -->
+
+    <!-- For production most teams prefer to set the default log level to `OFF` -->
+    <inherits name="com.allen_sauer.gwt.log.gwt-log-OFF" />
+
+
     <!-- Include generated sources -->
     <source path='client'/>
     <source path='shared'/>

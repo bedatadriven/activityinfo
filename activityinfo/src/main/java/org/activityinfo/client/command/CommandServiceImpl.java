@@ -1,6 +1,6 @@
 package org.activityinfo.client.command;
 
-import com.google.gwt.core.client.GWT;
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException;
@@ -18,20 +18,18 @@ import org.activityinfo.client.command.monitor.NullAsyncMonitor;
 import org.activityinfo.client.event.ConnectionEvent;
 import org.activityinfo.client.util.ITimer;
 import org.activityinfo.shared.command.Command;
+import org.activityinfo.shared.command.MutatingCommand;
 import org.activityinfo.shared.command.RemoteCommandServiceAsync;
 import org.activityinfo.shared.command.RenderElement;
-import org.activityinfo.shared.command.MutatingCommand;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.exception.InvalidAuthTokenException;
 import org.activityinfo.shared.exception.UnexpectedCommandException;
-import org.activityinfo.shared.report.ExportService;
 import org.activityinfo.shared.report.ExportServiceAsync;
 import org.activityinfo.shared.report.model.ReportElement;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Iterator;
 
 /**
  * An implementation of {@link org.activityinfo.client.command.CommandService} that
@@ -63,7 +61,7 @@ public class CommandServiceImpl implements CommandService, CommandEventSource {
         this.eventBus = eventBus;
         this.authentication = authentication;
 
-        GWT.log("CommandServiceImpl created: " + this.toString(), null);
+        Log.debug("CommandServiceImpl created: " + this.toString());
 
         timer.scheduleRepeating(200, new ITimer.Callback() {
             public void run() {
@@ -105,8 +103,8 @@ public class CommandServiceImpl implements CommandService, CommandEventSource {
 
         // nope. create a new request wrapper
         pendingCommands.add(new CommandRequest(command, monitor, callback));
-        GWT.log("CommandServiceImpl: Scheduled " + command.toString() + ", now " +
-                pendingCommands.size() + " command(s) pending", null);
+        Log.debug("CommandServiceImpl: Scheduled " + command.toString() + ", now " +
+                pendingCommands.size() + " command(s) pending");
     }
 
     private boolean tryToPiggyBack(List<CommandRequest> cmds, Command cmd, AsyncMonitor monitor, AsyncCallback callback) {
@@ -115,8 +113,8 @@ public class CommandServiceImpl implements CommandService, CommandEventSource {
                 return false;
             if(cmds.get(i).getCommand().equals(cmd)) {
 
-                GWT.log("CommandService: merging " + cmd.toString() + " with pending/executing command " +
-                    cmds.get(i).getCommand().toString(), null);
+                Log.debug("CommandService: merging " + cmd.toString() + " with pending/executing command " +
+                    cmds.get(i).getCommand().toString());
 
                 cmds.get(i).piggyback(monitor, callback);
                 return true;
@@ -141,7 +139,7 @@ public class CommandServiceImpl implements CommandService, CommandEventSource {
 
         pendingCommands = new ArrayList<CommandRequest>();
 
-        GWT.log("CommandServiceImpl: " + executingCommands.size() + " are pending.", null);
+        Log.debug("CommandServiceImpl: " + executingCommands.size() + " are pending.");
 
         /*
          * Try first to execute the commands locally using
@@ -163,9 +161,9 @@ public class CommandServiceImpl implements CommandService, CommandEventSource {
 
                 if(cmd.retries > 0 && !cmd.fireRetrying()) {
 
-                    GWT.log("CommandService: The monitor " +
+                    Log.debug("CommandService: The monitor " +
                             " has denied a retry attempt after " + cmd.retries +
-                            " retries, the command is removed from the queue.", null);
+                            " retries, the command is removed from the queue.");
 
                     executingCommands.remove(i);
                     cmd.fireRetriesMaxedOut();
@@ -178,7 +176,7 @@ public class CommandServiceImpl implements CommandService, CommandEventSource {
             }
         }
 
-        GWT.log("CommandService: sending "  + executingCommands.size() + " to server.", null);
+        Log.debug("CommandService: sending "  + executingCommands.size() + " to server.");
 
 
         if(executingCommands.size() == 0)
@@ -204,13 +202,13 @@ public class CommandServiceImpl implements CommandService, CommandEventSource {
             });
         } catch(Throwable caught) {
             allExecutingCommands.removeAll(executingCommands);
-            GWT.log("CommandService: client side exception thrown during execution of remote command", caught);
+            Log.error("CommandService: client side exception thrown during execution of remote command", caught);
             onServerError(executingCommands, caught);
         }
     }
 
     protected void onRemoteCallSuccess(List<CommandResult> results, List<CommandRequest> executingCommands) {
-        GWT.log("CommandServiceImpl: remote call succeed", null);
+        Log.debug("CommandServiceImpl: remote call succeed");
 
         if(!connected) {
             connected = true;
@@ -239,7 +237,7 @@ public class CommandServiceImpl implements CommandService, CommandEventSource {
 
     protected void remoteServiceFailure(List<CommandRequest> executingCommands, Throwable caught) {
         
-        GWT.log("CommandServiceImpl: remote call failed", caught);
+        Log.error("CommandServiceImpl: remote call failed", caught);
 
         /*
         * Not all failures are created equal.
@@ -324,7 +322,6 @@ public class CommandServiceImpl implements CommandService, CommandEventSource {
             cmd.fireOnSuccess(r.result);
             return true;
         } else {
-
             return false;
         }
 

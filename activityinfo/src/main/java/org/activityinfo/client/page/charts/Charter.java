@@ -1,6 +1,6 @@
 package org.activityinfo.client.page.charts;
 
-import com.google.gwt.core.client.GWT;
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
@@ -86,7 +86,7 @@ public class Charter implements PagePresenter, ActionListener, ExportCallback {
 
                     @Override
                     public void onFailure(Throwable throwable) {
-                        GWT.log("chart request failed", throwable);
+                        Log.error("chart request failed", throwable);
                     }
 
                     @Override

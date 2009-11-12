@@ -1,5 +1,6 @@
 package org.activityinfo.client.page;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.EventType;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.google.gwt.core.client.GWT;
@@ -54,7 +55,7 @@ public class PageManager {
 			}
 		});
 
-        GWT.log("PageManager: connected to EventBus and listening.", null);
+        Log.debug("PageManager: connected to EventBus and listening.");
 	}
 
 
@@ -97,7 +98,7 @@ public class PageManager {
                         if(requestId == activeRequestId)
                             onNavigationAgreed(requestId, place);
                     } else {
-                        GWT.log("Navigation to '" + place.toString() + "' refused by " + activePage.toString(), null);
+                        Log.debug("Navigation to '" + place.toString() + "' refused by " + activePage.toString());
                     }
                 }
             });
@@ -163,7 +164,7 @@ public class PageManager {
 
                     PageLoader loader = pageLoaders.get(node.pageId);
                     if(loader == null) {
-                        GWT.log("PageManager: no loader for " + node.pageId, null);
+                        Log.error("PageManager: no loader for " + node.pageId);
                         return;
                     }
 
@@ -172,7 +173,7 @@ public class PageManager {
                         @Override
                         public void onFailure(Throwable caught) {
                             placeHolder.onConnectionProblem();
-                            GWT.log("PageManager: could not load page " + node.pageId, caught);
+                            Log.error("PageManager: could not load page " + node.pageId, caught);
                         }
 
                         @Override

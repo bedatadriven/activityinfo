@@ -1,6 +1,6 @@
 package org.activityinfo.client;
 
-import com.google.gwt.core.client.GWT;
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.inject.Singleton;
 import org.activityinfo.client.page.PageId;
 
@@ -58,7 +58,7 @@ public class PlaceSerializer {
             return parser.parse(pageState);
         } else {
 
-            GWT.log("PlaceDeserializer: No parser registered for page '" + pageId + ".", null);
+            Log.warn("PlaceDeserializer: No parser registered for page '" + pageId + ".");
 
             return null;
         }

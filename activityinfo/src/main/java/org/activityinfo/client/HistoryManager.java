@@ -1,9 +1,9 @@
 package org.activityinfo.client;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.util.DateWrapper;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Cookies;
@@ -58,7 +58,7 @@ public class HistoryManager {
     private void fireInitialPage() {
 
         if(History.getToken().length() != 0) {
-            GWT.log("HistoryManager: firing initial placed based on intial token: " + History.getToken(), null);
+            Log.debug("HistoryManager: firing initial placed based on intial token: " + History.getToken());
             History.fireCurrentHistoryState();
 
 //        } else if(Cookies.getCookie("lastPlace") != null) {
@@ -106,7 +106,7 @@ public class HistoryManager {
 
     private void onBrowserMovement(String token) {
 
-        GWT.log("HistoryManager: Browser movement observed (" + token + "), firing NavigationRequested", null) ;
+        Log.debug("HistoryManager: Browser movement observed (" + token + "), firing NavigationRequested") ;
         
         Place place = placeSerializer.deserialize(token);
         if(place != null) {
@@ -114,7 +114,7 @@ public class HistoryManager {
             eventBus.fireEvent(new NavigationEvent(PageManager.NavigationRequested, place));
 
         } else {
-            GWT.log("HistoryManager: Could not deserialize '" + token + "', no action taken.", null);
+            Log.debug("HistoryManager: Could not deserialize '" + token + "', no action taken.");
         }
     }
 

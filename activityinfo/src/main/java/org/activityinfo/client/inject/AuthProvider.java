@@ -1,6 +1,6 @@
 package org.activityinfo.client.inject;
 
-import com.google.gwt.core.client.GWT;
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.user.client.Cookies;
 import com.google.inject.Provider;
@@ -33,7 +33,7 @@ public class AuthProvider implements Provider<Authentication> {
                     userInfo.get("email"));
 
         } catch (Exception e) {
-            GWT.log("DictionaryAuthenticationProvider: exception retrieving dictionary from page", e);
+            Log.fatal("DictionaryAuthenticationProvider: exception retrieving dictionary from page", e);
             throw new Error();
         }
     }

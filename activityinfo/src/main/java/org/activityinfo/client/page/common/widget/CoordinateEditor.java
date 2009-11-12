@@ -1,9 +1,9 @@
 package org.activityinfo.client.page.common.widget;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.PropertyEditor;
 import com.extjs.gxt.ui.client.widget.form.Validator;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.NumberFormat;
 import org.activityinfo.client.Application;
 import org.activityinfo.shared.map.AbstractCoordinateEditor;
@@ -65,7 +65,7 @@ public class CoordinateEditor extends AbstractCoordinateEditor
     @Override
     public String getStringValue(Double value) {
         String s = format(value);
-        GWT.log("CoordinateEditor: " + value + " -> " + s, null);
+        Log.debug("CoordinateEditor: " + value + " -> " + s);
         return s;
     }
 
@@ -76,7 +76,7 @@ public class CoordinateEditor extends AbstractCoordinateEditor
 
         try {
             double d = parse(value);
-            GWT.log("CoordinateEditor: '" + value + "' -> " + d, null);
+            Log.debug("CoordinateEditor: '" + value + "' -> " + d);
             return d;
         } catch (CoordinateFormatException e) {
             return null;

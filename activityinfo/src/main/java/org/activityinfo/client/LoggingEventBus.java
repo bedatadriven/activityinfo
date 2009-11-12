@@ -1,10 +1,10 @@
 package org.activityinfo.client;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.BaseObservable;
 import com.extjs.gxt.ui.client.event.EventType;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.google.gwt.core.client.GWT;
 import com.google.inject.Singleton;
 
 /**
@@ -20,7 +20,7 @@ public class LoggingEventBus extends BaseObservable implements EventBus {
     @Override
     public boolean fireEvent(EventType eventType, BaseEvent be) {
 
-        GWT.log("EventBus: " + eventType.toString() + ": " + be.toString(), null);
+        Log.debug("EventBus: " + eventType.toString() + ": " + be.toString());
 
         boolean doEvent = super.fireEvent(eventType, be);
 
@@ -36,7 +36,7 @@ public class LoggingEventBus extends BaseObservable implements EventBus {
              
             // don't allow one misbehaving component to throw
             // everything off
-            GWT.log("EventBus: " + listener.getClass().toString() + " threw an exception while receiving the event " +
+            Log.error("EventBus: " + listener.getClass().toString() + " threw an exception while receiving the event " +
                     be.toString(), e);
         }
     }

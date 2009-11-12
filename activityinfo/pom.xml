@@ -30,7 +30,7 @@
 
     </pluginRepositories>
 
-a    <properties>
+    <properties>
         <!--  convenience to define GWT version in one place -->
         <gwtVersion>2.0.0-SNAPSHOT</gwtVersion>
         <platform>windows</platform>
@@ -71,6 +71,19 @@ a    <properties>
             <version>${gwtVersion}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.google.code.gaxb</groupId>
+            <artifactId>gaxb</artifactId>
+            <version>0.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.code.gwt-log</groupId>
+            <artifactId>gwt-log</artifactId>
+            <version>2.6.2</version>
+        </dependency>
+
 
         <!--  Other clientside APIs  -->
         <dependency>
@@ -509,13 +522,22 @@ a    <properties>
 
     <profiles>
         <!-- Build the Application Module with only permutations for
-    FireFox for testing purposes -->
+    FireFox and logging enabled for testing purposes -->
         <profile>
             <id>fftest</id>
             <properties>
                 <gwt.module>org.activityinfo.ApplicationFFTest</gwt.module>
             </properties>
         </profile>
+        <!-- Build the Application Module with only permutations for
+    IE6 and logging enabled for testing purposes -->
+        <profile>
+            <id>ie6test</id>
+            <properties>
+                <gwt.module>org.activityinfo.ApplicationIE6Test</gwt.module>
+            </properties>
+        </profile>
+
     </profiles>
 
 

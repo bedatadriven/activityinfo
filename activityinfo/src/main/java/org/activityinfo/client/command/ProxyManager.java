@@ -1,6 +1,6 @@
 package org.activityinfo.client.command;
 
-import com.google.gwt.core.client.GWT;
+import com.allen_sauer.gwt.log.client.Log;
 import org.activityinfo.client.command.cache.CommandListener;
 import org.activityinfo.client.command.cache.CommandProxy;
 import org.activityinfo.client.command.cache.CommandProxyResult;
@@ -57,7 +57,7 @@ public class ProxyManager implements CommandEventSource {
                 try {
                     listener.onSuccess(cmd, result);
                 } catch (Exception e) {
-                    GWT.log("ProxyManager: listener threw exception during onSuccess notification.",e);
+                    Log.error("ProxyManager: listener threw exception during onSuccess notification.",e);
                 }
             }
         }
@@ -71,7 +71,7 @@ public class ProxyManager implements CommandEventSource {
                 try {
                     listener.beforeCalled(cmd);
                 } catch (Exception e) {
-                    GWT.log("ProxyManager: listener threw exception during beforeCalled notification", e);
+                    Log.error("ProxyManager: listener threw exception during beforeCalled notification", e);
                 }
             }
         }
@@ -97,20 +97,20 @@ public class ProxyManager implements CommandEventSource {
                     CommandProxyResult r = proxy.execute(cmd);
                     if (r.couldExecute) {
 
-                        GWT.log("ProxyManager: EXECUTED (!!) " + cmd.toString() + " locally with proxy "
-                                + proxy.getClass().getName(), null);
+                        Log.debug("ProxyManager: EXECUTED (!!) " + cmd.toString() + " locally with proxy "
+                                + proxy.getClass().getName());
 
 
                         return r;
                     } else {
-                           GWT.log("ProxyManager: Failed to execute " + cmd.toString() + " locally with proxy "
-                                + proxy.getClass().getName(), null);
+                           Log.debug("ProxyManager: Failed to execute " + cmd.toString() + " locally with proxy "
+                                + proxy.getClass().getName());
 
 
                         return r;
                     }
                 } catch (Exception e) {
-                    GWT.log("ProxyManager: proxy threw exception during call to execute", e);
+                    Log.error("ProxyManager: proxy threw exception during call to execute", e);
                 }
             }
         }

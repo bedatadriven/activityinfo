@@ -19,19 +19,17 @@
 
 package org.activityinfo.client.page;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.event.EventType;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Window;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.command.Authentication;
 import org.activityinfo.client.event.DownloadEvent;
-import com.extjs.gxt.ui.client.event.EventType;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.Frame;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.inject.Singleton;
-import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram
@@ -87,15 +85,15 @@ public class DownloadManager {
     }
 
     private void onLoad() {
-        GWT.log("DownloadManager: iframe onLoad()", null);
+        Log.debug("DownloadManager: iframe onLoad()");
     }
 
     private void onError() {
-        GWT.log("DownloadManager: iframe onError()", null);
+        Log.debug("DownloadManager: iframe onError()");
     }
 
     private void onReadyStateChanged() {
-        GWT.log("DownloadManager: iframe onReadyStateChange()", null);
+        Log.debug("DownloadManager: iframe onReadyStateChange()");
     }
 
 

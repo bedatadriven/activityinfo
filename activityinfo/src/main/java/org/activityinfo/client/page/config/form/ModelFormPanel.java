@@ -1,5 +1,6 @@
 package org.activityinfo.client.page.config.form;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
@@ -52,7 +53,7 @@ public class ModelFormPanel extends FormPanel {
 
     protected void registerField(Field<?> field) {
 
-        GWT.log("ModelForm: registering " + field.getName(), null);
+        Log.debug("ModelForm: registering " + field.getName());
 
         assert field.getName() != null : "field name cannot be null!";
         
@@ -156,7 +157,7 @@ public class ModelFormPanel extends FormPanel {
             changes.put(property, getFieldValue(field));
         }
 
-        GWT.log(changeLog(changes), null);
+        Log.debug(changeLog(changes));
 
         return changes;
     }

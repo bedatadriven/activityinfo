@@ -1,6 +1,6 @@
 package org.activityinfo.client.command.cache;
 
-import com.google.gwt.core.client.GWT;
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.gears.client.Factory;
 import com.google.gwt.gears.client.GearsException;
 import com.google.gwt.gears.client.database.Database;
@@ -39,10 +39,10 @@ public class AdminEntityGearsCache extends AdminEntityCache {
 	    	db.open("admin");
 	    	db.execute("create table if not exists AdminEntity (AdminLevelId int, AdminEntityId int, Name varchar(50), X1 float, Y1 float, X2 float, Y2 float, int Generation)");
 
-            GWT.log("AdminEntityGearsCache initialized successfully", null);
+            Log.debug("AdminEntityGearsCache initialized successfully");
 
 	    } catch (GearsException e) {
-            GWT.log("AdminEntityGearsCache initialization failed", e);
+            Log.debug("AdminEntityGearsCache initialization failed", e);
 	    }
 	}
 

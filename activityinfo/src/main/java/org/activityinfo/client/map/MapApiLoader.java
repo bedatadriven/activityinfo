@@ -19,13 +19,13 @@
 
 package org.activityinfo.client.map;
 
-import com.google.gwt.maps.client.Maps;
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.ajaxloader.client.AjaxLoader;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.LocaleInfo;
+import com.google.gwt.maps.client.Maps;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.InvocationException;
-import com.google.gwt.user.client.Timer;
 import org.activityinfo.client.command.monitor.AsyncMonitor;
 
 /**
@@ -39,6 +39,7 @@ public class MapApiLoader {
 
     public static void load(final AsyncMonitor monitor, final AsyncCallback<Void> callback) {
 
+        Log.debug("MapApiLoader: load()");
 
         if(monitor!=null)
             monitor.beforeRequest();

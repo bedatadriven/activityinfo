@@ -1,18 +1,12 @@
 package org.activityinfo.client;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.GXT;
-import com.extjs.gxt.ui.client.widget.Viewport;
 import com.extjs.gxt.ui.client.util.Theme;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.ajaxloader.client.AjaxLoader;
-import com.google.gwt.maps.client.Maps;
 import org.activityinfo.client.icon.IconImageBundle;
 import org.activityinfo.client.inject.AppInjector;
-import org.activityinfo.client.page.app.AppFrameSet;
-import org.activityinfo.client.command.Authentication;
-import org.activityinfo.client.offline.ui.OfflineMenu;
 import org.activityinfo.client.map.MapApiLoader;
 import org.activityinfo.shared.i18n.UIConstants;
 import org.activityinfo.shared.i18n.UIMessages;
@@ -35,6 +29,8 @@ public class Application implements EntryPoint {
 	 */
 	public void onModuleLoad() {
 
+        Log.info("Application: onModuleLoad starting");
+
 		GXT.setDefaultTheme(Theme.BLUE, true);
 
         AppInjector injector = GWT.create(AppInjector.class);
@@ -52,9 +48,10 @@ public class Application implements EntryPoint {
 
         createCaches(injector);
 
-        GWT.log("Application: everyone plugged, firing Init event", null);
+        Log.info("Application: everyone plugged, firing Init event");
 
         injector.getEventBus().fireEvent(AppEvents.Init);
+
 
         // preload Maps API
         MapApiLoader.preload();
