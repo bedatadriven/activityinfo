@@ -9,10 +9,11 @@ import org.activityinfo.server.report.renderer.image.ImageMapRenderer;
 import org.activityinfo.shared.report.model.MapElement;
 
 import java.io.ByteArrayOutputStream;
-/*
+
+
+/**
  * @author Alex Bertram
  */
-
 public class ItextMapRenderer extends ImageMapRenderer implements ItextRenderer<MapElement> {
 
     @Inject
@@ -20,11 +21,8 @@ public class ItextMapRenderer extends ImageMapRenderer implements ItextRenderer<
         super(mapIconPath);
     }
 
-    public void render(DocWriter writer, MapElement element, Document doc) {
-
+    public void renderMap(DocWriter writer, MapElement element, Document doc) {
         try {
-            doc.add(ThemeHelper.elementTitle(element.getTitle()));
-
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             this.render(element, baos);
 
@@ -34,7 +32,18 @@ public class ItextMapRenderer extends ImageMapRenderer implements ItextRenderer<
             doc.add(image);
 
         } catch(Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void render(DocWriter writer, MapElement element, Document doc) {
+
+        try {
+            doc.add(ThemeHelper.elementTitle(element.getTitle()));
+            renderMap(writer, element,doc);
+
+        } catch(Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }

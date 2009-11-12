@@ -3,13 +3,12 @@ package org.activityinfo.shared.report.content;
 import java.util.List;
 
 /**
- * @author Alex Bertram (akbertram@gmail.com)
+ * @author Alex Bertram 
  */
 public class TableContent implements Content {
 
     private List<FilterDescription> filterDescriptions;
     private TableData data;
-    private List<Marker> markers;
 
     public TableContent() {
     }
@@ -30,11 +29,4 @@ public class TableContent implements Content {
         this.data = data;
     }
 
-    public List<Marker> getMarkers() {
-        return markers;
-    }
-
-    public void setMarkers(List<Marker> markers) {
-        this.markers = markers;
-    }
 }

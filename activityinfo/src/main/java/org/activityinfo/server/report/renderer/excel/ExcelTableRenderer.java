@@ -2,8 +2,8 @@ package org.activityinfo.server.report.renderer.excel;
 
 import org.activityinfo.shared.report.content.FilterDescription;
 import org.activityinfo.shared.report.content.TableData;
+import org.activityinfo.shared.report.model.TableColumn;
 import org.activityinfo.shared.report.model.TableElement;
-import org.activityinfo.shared.report.model.TableElement.Column;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -19,7 +19,7 @@ public class ExcelTableRenderer implements ExcelRenderer<TableElement> {
 		
 		final TableData tableData = element.getContent().getData();
 
-		new BaseExcelTableRenderer<TableElement, Column>(book, element) {
+		new BaseExcelTableRenderer<TableElement, TableColumn>(book, element) {
 
 			@Override
 			public List<FilterDescription> generateFilterDescriptions() {
@@ -44,7 +44,7 @@ public class ExcelTableRenderer implements ExcelRenderer<TableElement> {
 				
 				/* Prepare the generators and indexes */
 				
-				List<Column> leaves = element.getRootColumn().getLeaves();
+				List<TableColumn> leaves = element.getRootColumn().getLeaves();
 				int[] colIndexes = new int[leaves.size()];
 
 				for(int i=0; i!=leaves.size(); ++i) {	

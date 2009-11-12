@@ -5,7 +5,7 @@ import org.activityinfo.server.dao.hibernate.SiteTableDAOHibernate;
 import org.activityinfo.server.domain.AdminEntity;
 import org.activityinfo.shared.domain.SiteColumn;
 import org.activityinfo.shared.report.content.TableData;
-import org.activityinfo.shared.report.model.TableElement;
+import org.activityinfo.shared.report.model.TableColumn;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,34 +56,36 @@ public class RowBinder implements SiteProjectionBinder<TableData.Row> {
     public RowBinder(TableData tableData) {
         this.tableData = tableData;
 
-
         xIndex = SiteTableDAOHibernate.getColumnIndex(SiteColumn.x);
         yIndex = SiteTableDAOHibernate.getColumnIndex(SiteColumn.y);
 
-        for(TableElement.Column column : tableData.getRootColumn().getLeaves()) {
-
+        for(TableColumn column : tableData.getRootColumn().getLeaves()) {
             int columnIndex = tableData.getColumnIndex(column);
-
             if(column.getProperty().equals("admin")) {
-
                 adminColumns.put(column.getPropertyQualifyingId(), columnIndex);
 
             } else if(column.getProperty().equals("indicator")) {
-
                  indicatorColumns.put(column.getPropertyQualifyingId(), columnIndex);
 
             } else if(column.getProperty().equals("attribute")) {
-
                 attributeColumns.put(column.getPropertyQualifyingId(), columnIndex);
 
+            } else if(column.getProperty().equals("map")) {
+
             } else {
-
-                baseColumns.put(SiteColumn.valueOf(column.getProperty()).index(), columnIndex);
-
+                baseColumns.put(findSiteColumn(column.getProperty()).index(), columnIndex);
             }
         }
     }
 
+    private SiteColumn findSiteColumn(String property) {
+        for(SiteColumn column : SiteColumn.values()) {
+            if(column.property().equals(property)) {
+                return column;
+            }
+        }
+        throw new IllegalArgumentException("Cannot match property " + property);
+    }
 
     @Override
     public TableData.Row newInstance(String[] properties, Object[] values) {
@@ -98,7 +100,7 @@ public class RowBinder implements SiteProjectionBinder<TableData.Row> {
         }
 
         for(Map.Entry<Integer, Integer> entry : baseColumns.entrySet()) {
-            row.values[entry.getKey()] = values[entry.getValue()];
+            row.values[entry.getValue()] = values[entry.getKey()];
         }
 
         return row;

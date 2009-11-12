@@ -18,22 +18,30 @@ public abstract class ItextReportRenderer implements Renderer {
     private final ItextPivotTableRenderer pivotTableRenderer;
     private final ItextChartRenderer chartRenderer;
     private final ItextMapRenderer mapRenderer;
+    private final ItextTableRenderer tableRenderer;
 
     @Inject
-    public ItextReportRenderer(ItextPivotTableRenderer pivotTableRenderer, ItextChartRenderer chartRenderer, ItextMapRenderer mapRenderer) {
+    public ItextReportRenderer(ItextPivotTableRenderer pivotTableRenderer, ItextChartRenderer chartRenderer, ItextMapRenderer mapRenderer, ItextTableRenderer tableRenderer) {
         this.pivotTableRenderer = pivotTableRenderer;
         this.chartRenderer = chartRenderer;
         this.mapRenderer = mapRenderer;
+        this.tableRenderer = tableRenderer;
     }
 
     private void renderElement(DocWriter writer, ReportElement element, Document document) {
 
-        if(element instanceof PivotTableElement) {
-            pivotTableRenderer.render(writer, (PivotTableElement) element, document);
-        } else if(element instanceof PivotChartElement) {
-            chartRenderer.render(writer, (PivotChartElement) element, document);
-        } else if(element instanceof MapElement) {
-            mapRenderer.render(writer, (MapElement) element, document);
+        try {
+            if(element instanceof PivotTableElement) {
+                pivotTableRenderer.render(writer, (PivotTableElement) element, document);
+            } else if(element instanceof PivotChartElement) {
+                chartRenderer.render(writer, (PivotChartElement) element, document);
+            } else if(element instanceof MapElement) {
+                mapRenderer.render(writer, (MapElement) element, document);
+            } else if(element instanceof TableElement) {
+                tableRenderer.render(writer, (TableElement) element, document);
+            }
+        } catch(DocumentException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -51,6 +59,8 @@ public abstract class ItextReportRenderer implements Renderer {
                 for(ReportElement childElement : report.getElements()) {
                     renderElement(writer, childElement, document);
                 }
+            } else {
+                renderElement(writer, element, document);
             }
 
             document.close();

@@ -1,10 +1,11 @@
 package org.activityinfo.server.report.renderer.html;
 
+import com.google.inject.Inject;
 import org.activityinfo.server.report.util.HtmlTableCellTag;
 import org.activityinfo.server.report.util.HtmlWriter;
 import org.activityinfo.shared.report.content.TableData;
+import org.activityinfo.shared.report.model.TableColumn;
 import org.activityinfo.shared.report.model.TableElement;
-import org.activityinfo.shared.report.model.TableElement.Column;
 
 import java.io.IOException;
 import java.text.NumberFormat;
@@ -12,6 +13,12 @@ import java.util.List;
 
 public class HtmlTableRenderer implements HtmlRenderer<TableElement> {
 
+    private final HtmlMapRenderer mapRenderer;
+
+    @Inject
+    public HtmlTableRenderer(HtmlMapRenderer mapRenderer) {
+        this.mapRenderer = mapRenderer;
+    }
 
     protected class CellRenderer {
 		
@@ -50,14 +57,17 @@ public class HtmlTableRenderer implements HtmlRenderer<TableElement> {
 		HtmlReportUtil.generateFilterDescriptionHtml(html,
                 element.getContent().getFilterDescriptions());
 
-		
+
+        if(element.getMap() != null) {
+            mapRenderer.render(html, isp, element.getMap());
+        }
+
 		/*
 		 * Generate the html for the table
 		 */
 
         TableData tableData = element.getContent().getData();
 
-		
 		if(tableData.isEmpty()) {
 			html.div("Aucune données");
 		} else {
@@ -72,7 +82,7 @@ public class HtmlTableRenderer implements HtmlRenderer<TableElement> {
 			
 				html.startTableRow();
 				
-				for(Column column : element.getRootColumn().getDescendantsAtDepth(i)) {
+				for(TableColumn column : element.getRootColumn().getDescendantsAtDepth(i)) {
 					
 					HtmlTableCellTag cell = html.tableCell(column.getLabel());
 					cell.colSpan( column.getLeaves().size() );
@@ -90,7 +100,7 @@ public class HtmlTableRenderer implements HtmlRenderer<TableElement> {
 			
 			html.startTableBody();
 		
-			List<Column> leaves = element.getRootColumn().getLeaves();
+			List<TableColumn> leaves = element.getRootColumn().getLeaves();
 			CellRenderer[] renderers = createRenderers(element, tableData, leaves );
 			int[] colIndexes = calcColIndexes(element, tableData, leaves);
 			
@@ -114,7 +124,7 @@ public class HtmlTableRenderer implements HtmlRenderer<TableElement> {
 		}
 	}
 	
-	protected int[] calcColIndexes(TableElement element, TableData data, List<Column> leaves) {
+	protected int[] calcColIndexes(TableElement element, TableData data, List<TableColumn> leaves) {
 
 		int[] colIndexes = new int[leaves.size()];
 		
@@ -127,7 +137,7 @@ public class HtmlTableRenderer implements HtmlRenderer<TableElement> {
 		return colIndexes;
 	}
 	
-	protected CellRenderer[] createRenderers(TableElement element, TableData tableData, List<Column> leaves) {
+	protected CellRenderer[] createRenderers(TableElement element, TableData tableData, List<TableColumn> leaves) {
 		
 		CellRenderer[] renderers = new CellRenderer[leaves.size()];
 		

@@ -1,6 +1,6 @@
 package org.activityinfo.shared.report.content;
 
-import org.activityinfo.shared.report.model.TableElement.Column;
+import org.activityinfo.shared.report.model.TableColumn;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -9,39 +9,47 @@ import java.util.Map;
 
 public class TableData implements Serializable {
 
-    private Column rootColumn;
+    private TableColumn rootColumn;
     private int leafColumnCount;
 
 	/**
 	 * Maps leaf-columns to their slot in the <code>Row.values</code> array.
 	 */
-	private Map<Column, Integer> columnMap;
+	private Map<TableColumn, Integer> columnMap;
 	private List<Row> rows;
 
 
-	public TableData(Column rootColumn) {
-		this.rootColumn = rootColumn;
 
-        List<Column> leaves = rootColumn.getLeaves();
+	public TableData(TableColumn rootColumn) {
+		this.rootColumn = rootColumn;
+        List<TableColumn> leaves = rootColumn.getLeaves();
         leafColumnCount = leaves.size();
 
+		columnMap = new HashMap<TableColumn, Integer>();
 
-		columnMap = new HashMap<Column, Integer>();
-
-		for(Column leaf : leaves) {
+		for(TableColumn leaf : leaves) {
 			columnMap.put(leaf, columnMap.size());
 		}
 	}
 
-    public Integer getColumnIndex(Column column) {
+    public Integer getColumnIndex(TableColumn column) {
 		return columnMap.get(column);
 	}
+
+    public Integer getColumnIndex(String source) {
+        for(Map.Entry<TableColumn, Integer> entry : columnMap.entrySet()) {
+            if(entry.getKey().getProperty().equals(source)) {
+                return entry.getValue();
+            }
+        }
+        return null;
+    }
 
     public int getLeafColumnCount() {
         return leafColumnCount;
     }
 
-    public Column getRootColumn() {
+    public TableColumn getRootColumn() {
         return rootColumn;
     }
 
@@ -49,15 +57,22 @@ public class TableData implements Serializable {
 		this.rows = rows;
 	}
 
+    public Map<TableColumn, Integer> getColumnMap() {
+        return columnMap;
+    }
 
-	public List<Row> getRows() {
+    public void setColumnMap(Map<TableColumn, Integer> columnMap) {
+        this.columnMap = columnMap;
+    }
+
+
+    public List<Row> getRows() {
 		return rows;
 	}
 
 	public boolean isEmpty() {
 		return rows == null || rows.size() == 0;
 	}
-
 
      /**
      * Data structure that stores the data for each
@@ -81,17 +96,11 @@ public class TableData implements Serializable {
         public double x;
         public double y;
 
-        private Marker<TableData.Row> marker;
+         public int getId() {
+             return id;
+         }
 
-        public void setMarker(Marker marker) {
-            this.marker = marker;
-        }
-
-        public Marker getMarker() {
-            return this.marker;
-        }
-
-        @Override
+         @Override
         public double getLatitude() {
             return y;
         }
