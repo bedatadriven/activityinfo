@@ -3,7 +3,7 @@ package org.activityinfo.client.page.common.filter;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import org.activityinfo.client.Application;
-import org.activityinfo.shared.report.model.ParameterizedFilter;
+import org.activityinfo.shared.report.model.Filter;
 
 import java.util.Date;
 /*
@@ -39,7 +39,7 @@ public class DateRangePanel extends FormPanel {
         return date2.getValue();
     }
 
-    public void updateFilter(ParameterizedFilter filter) {
+    public void updateFilter(Filter filter) {
         filter.setMinDate(date1.getValue());
         filter.setMaxDate(date2.getValue());
     }
