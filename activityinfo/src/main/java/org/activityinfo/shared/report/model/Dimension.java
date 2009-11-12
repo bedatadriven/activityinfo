@@ -168,4 +168,8 @@ public class Dimension extends BaseModelData implements Serializable {
         return new AndCategory(new EntityCategory(id, label));
     }
 
+    public AndCategory category(int id, String label, int sortOrder) {
+        return new AndCategory(new EntityCategory(id, label, sortOrder));
+    }
+
 }

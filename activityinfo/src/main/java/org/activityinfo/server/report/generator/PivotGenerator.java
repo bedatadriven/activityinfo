@@ -60,7 +60,7 @@ public abstract class PivotGenerator<T extends PivotElement> extends BaseGenerat
             if(dimension.isOrderDefined()) {
 
                 map.put(dimension, new DefinedCategoryComparator(dimension.getOrdering()));
-
+                       
             } else {
 
                 map.put(dimension, new CategoryComparator());

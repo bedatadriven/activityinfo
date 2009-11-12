@@ -42,7 +42,8 @@ public class EntityCategory implements LabeledDimensionCategory {
 
     @Override
     public Comparable getSortKey() {
-        return label;
+        // sort by our label if we don't have an explicit sort order
+        return sortOrder == null ? label : sortOrder;
     }
 
     public Integer getSortOrder() {
