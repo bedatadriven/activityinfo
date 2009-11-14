@@ -180,8 +180,8 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View  {
 
     private void createAdminFilter() {
         adminPanel = new AdminFilterPanel(service);
-        adminPanel.setHeading(Application.CONSTANTS.location());
-        adminPanel.setIcon(Application.ICONS.map());
+        adminPanel.setHeading(Application.CONSTANTS.filterByGeography());
+        adminPanel.setIcon(Application.ICONS.filter());
 
         filterPane.add(adminPanel);
     }

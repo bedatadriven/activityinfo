@@ -10,7 +10,6 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import org.activityinfo.client.Application;
@@ -66,7 +65,7 @@ public class AdminFilterPanel extends ContentPanel {
 
     private void createFilterBar() {
         ToolBar toolBar = new ToolBar();
-        toolBar.add(new LabelToolItem(Application.CONSTANTS.filter()));
+        //toolBar.add(new LabelToolItem(Application.CONSTANTS.filter()));
 
         ListLoader<AdminLevelModel> loader = new BaseListLoader(new AdminLevelProxy(service));
         final ListStore<AdminLevelModel> store = new ListStore<AdminLevelModel>(loader);
