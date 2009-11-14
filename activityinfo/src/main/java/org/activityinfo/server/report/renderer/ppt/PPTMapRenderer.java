@@ -4,6 +4,8 @@ import com.google.inject.Inject;
 import org.activityinfo.server.report.generator.MapIconPath;
 import org.activityinfo.server.report.generator.map.IconRectCalculator;
 import org.activityinfo.server.report.renderer.image.ImageMapRenderer;
+import org.activityinfo.shared.report.content.BubbleMapMarker;
+import org.activityinfo.shared.report.content.IconMapMarker;
 import org.activityinfo.shared.report.content.MapMarker;
 import org.activityinfo.shared.report.model.MapElement;
 import org.apache.poi.ddf.EscherProperties;
@@ -23,10 +25,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
-/*
+
+/**
  * @author Alex Bertram
  */
-
 public class PPTMapRenderer extends ImageMapRenderer {
 
     @Inject
@@ -36,17 +38,25 @@ public class PPTMapRenderer extends ImageMapRenderer {
 
     @Override
     public void render(MapElement element, OutputStream stream) throws IOException {
-
-
         //create a new empty slide show
         SlideShow ppt = new SlideShow();
         Dimension pageSize = computePageSize(element);
         ppt.setPageSize(pageSize);
 
+        render(element, ppt);
+
+        // write to stream
+        ppt.write(stream);
+
+    }
+
+    public void render(MapElement element, SlideShow ppt) throws IOException {
+
         //add first slide
         Slide slide = ppt.createSlide();
 
         // calculate map offset
+        Dimension pageSize = ppt.getPageSize();
         int offsetX = ((int)pageSize.getWidth() - element.getWidth())/2;
         int offsetY = ((int)pageSize.getHeight() - element.getHeight())/2;
 
@@ -69,46 +79,50 @@ public class PPTMapRenderer extends ImageMapRenderer {
         // Add the indicator markers to the slide as shapes
         for(MapMarker marker : element.getContent().getMarkers()) {
 
-            if(marker.getIcon() != null) {
-
-                Integer iconIndex = iconPictureIndex.get(marker.getIcon().getName());
-                if(iconIndex == null) {
-                    try {
-                        iconIndex = ppt.addPicture(
-                                new File(mapIconRoot + "/" + marker.getIcon().getName() + ".png"),
-                                Picture.PNG);
-                    } catch (IOException e) {
-                        iconIndex = -1;
-                    }
-                    iconPictureIndex.put(marker.getIcon().getName(), iconIndex);
-                }
-                if(iconIndex != -1) {
-                    IconRectCalculator rectCtor = new IconRectCalculator(marker.getIcon());
-                    Picture icon = new Picture(iconIndex);
-                    icon.setAnchor(rectCtor.iconRect(
-                            offsetX + marker.getX(),
-                            offsetY + marker.getY()));
-                    slide.addShape(icon);
-                }
-            } else {
-
-                AutoShape shape = new AutoShape(ShapeTypes.Ellipse);
-                shape.setAnchor(new Rectangle(
-                        offsetX + marker.getX() - marker.getRadius(),
-                        offsetY + marker.getY() - marker.getRadius(),
-                        marker.getRadius()*2,
-                        marker.getRadius()*2));
-
-                shape.setFillColor(new Color(marker.getColor()));
-                shape.setEscherProperty(EscherProperties.FILL__FILLOPACITY, 49087);
-                shape.setLineColor(bubbleStrokeColor(marker.getColor()));
-                slide.addShape(shape);
+            if(marker instanceof IconMapMarker) {
+                addIconMarker(ppt, slide, offsetX, offsetY, iconPictureIndex, (IconMapMarker) marker);
+            } else if( marker instanceof BubbleMapMarker) {
+                addBubble(slide, offsetX, offsetY, (BubbleMapMarker) marker);
             }
         }
 
-        // write to stream
-        ppt.write(stream);
+    }
 
+    private void addBubble(Slide slide, int offsetX, int offsetY, BubbleMapMarker marker) {
+        AutoShape shape = new AutoShape(ShapeTypes.Ellipse);
+        shape.setAnchor(new Rectangle(
+                offsetX + marker.getX() - marker.getRadius(),
+                offsetY + marker.getY() - marker.getRadius(),
+                marker.getRadius()*2,
+                marker.getRadius()*2));
+
+        shape.setFillColor(new Color(marker.getColor()));
+        shape.setEscherProperty(EscherProperties.FILL__FILLOPACITY, 49087);
+        shape.setLineColor(bubbleStrokeColor(marker.getColor()));
+        slide.addShape(shape);
+    }
+
+    private void addIconMarker(SlideShow ppt, Slide slide, int offsetX, int offsetY,
+                               Map<String, Integer> iconPictureIndex, IconMapMarker marker) {
+        Integer iconIndex = iconPictureIndex.get(marker.getIcon().getName());
+        if(iconIndex == null) {
+            try {
+                iconIndex = ppt.addPicture(
+                        new File(mapIconRoot + "/" + marker.getIcon().getName() + ".png"),
+                        Picture.PNG);
+            } catch (IOException e) {
+                iconIndex = -1;
+            }
+            iconPictureIndex.put(marker.getIcon().getName(), iconIndex);
+        }
+        if(iconIndex != -1) {
+            IconRectCalculator rectCtor = new IconRectCalculator(marker.getIcon());
+            Picture icon = new Picture(iconIndex);
+            icon.setAnchor(rectCtor.iconRect(
+                    offsetX + marker.getX(),
+                    offsetY + marker.getY()));
+            slide.addShape(icon);
+        }
     }
 
     private byte[] renderBasemap(MapElement element) throws IOException {
