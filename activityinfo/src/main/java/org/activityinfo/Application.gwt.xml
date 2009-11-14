@@ -36,7 +36,8 @@
     <!-- Configure Logging -->
 
     <!-- For production most teams prefer to set the default log level to `OFF` -->
-    <inherits name="com.allen_sauer.gwt.log.gwt-log-OFF" />
+    <inherits name="com.allen_sauer.gwt.log.gwt-log-TRACE" />
+    <set-property name="log_DivLogger" value="DISABLED" />
 
 
     <!-- Include generated sources -->
@@ -48,9 +49,9 @@
 
     <!-- Enable other locales -->
     <!--<extend-property name="locale" values="en" />-->
-    <extend-property name="locale" values="fr" />
+    <extend-property name="locale" values="fr" />   
 
-    <!-- Configure rebinding for the Export Service -->
+    <!-- Configure rebinding for the Export Service -->          
 
     <generate-with class="org.activityinfo.rebind.ExportServiceInterfaceProxyGenerator">
         <when-type-assignable class="org.activityinfo.shared.report.ExportService"/>

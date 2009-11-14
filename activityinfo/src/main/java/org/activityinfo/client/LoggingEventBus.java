@@ -13,7 +13,12 @@ import com.google.inject.Singleton;
 @Singleton
 public class LoggingEventBus extends BaseObservable implements EventBus {
 
-	public boolean fireEvent(BaseEvent event) {
+
+    public LoggingEventBus() {
+        Log.trace("LoggingEventBus: initialized");
+    }
+
+    public boolean fireEvent(BaseEvent event) {
 		return fireEvent(event.getType(), event);
 	}
 	

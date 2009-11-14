@@ -52,6 +52,8 @@ public class HistoryManager {
                 onBrowserMovement(event.getValue());
             }
         });
+
+        Log.trace("HistoryManager plugged in");
     }
 
 

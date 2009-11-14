@@ -66,6 +66,7 @@ public class PlaceSerializer {
 
     public void registerParser(PageId pageId, PlaceParser parser) {
         parsers.put(pageId.toString(), parser);
+        Log.debug("PageSerializer: registered page serializer " + parser.toString() + " for pageId '" + pageId + "'");
     }
 
     public void registerStatelessPlace(PageId pageId, final Place place) {

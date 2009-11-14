@@ -7,7 +7,6 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import org.activityinfo.client.icon.IconImageBundle;
 import org.activityinfo.client.inject.AppInjector;
-import org.activityinfo.client.map.MapApiLoader;
 import org.activityinfo.shared.i18n.UIConstants;
 import org.activityinfo.shared.i18n.UIMessages;
 
@@ -31,9 +30,22 @@ public class Application implements EntryPoint {
 
         Log.info("Application: onModuleLoad starting");
 
+//        if(Log.isTraceEnabled())
+//            registerStatsHandler();
+        if(Log.isErrorEnabled())
+            GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
+                @Override
+                public void onUncaughtException(Throwable e) {
+                    Log.error("Uncaught exception", e);
+                }
+            });
+
 		GXT.setDefaultTheme(Theme.BLUE, true);
 
+        Log.trace("Application: GXT theme set");
+
         AppInjector injector = GWT.create(AppInjector.class);
+
 
         injector.createWelcomeLoader();
         injector.createDataEntryLoader();
@@ -54,7 +66,7 @@ public class Application implements EntryPoint {
 
 
         // preload Maps API
-        MapApiLoader.preload();
+        //MapApiLoader.preload();
 
     }
 
@@ -64,5 +76,30 @@ public class Application implements EntryPoint {
     }
 
 
+    /**
+     * Registers an event handler for the GWT stats system
+     *
+     * Events have the form of:
+     *
+     * <code>
+     *     $stats && $stats({
+     *       moduleName:'__MODULE_NAME__',
+     *       sessionId: $sessionId,
+     *       subSystem:'startup',
+     *       evtGroup: 'loadExternalRefs',
+     *       millis:(new Date()).getTime(),
+     *       type: 'begin'
+     *     });
+     */
+    protected native void registerStatsHandler() /*-{
+         $wnd.__appStatsEvent = function(evt) {
+            @org.activityinfo.client.Application::logStatsEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(evt.subSystem, evt.evtGroup, evt[type]);
+         };
+
+    }-*/;
+
+    protected static void logStatsEvent(String subSystem, String evtGroup, String type) {
+        Log.trace(subSystem + ": " + evtGroup + " " + type);
+    }
 
 }

@@ -3,7 +3,6 @@ package org.activityinfo.client.page;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.EventType;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -61,6 +60,7 @@ public class PageManager {
 
     public void registerPageLoader(PageId pageId, PageLoader loader) {
 		pageLoaders.put(pageId, loader);
+        Log.debug("PageManager: Registered loader for pageId '" + pageId + "'");
 	}
 
     protected void recursivelyAskPagesIfItsOkToBeChanged(final int requestId, final FrameSetPresenter frame,

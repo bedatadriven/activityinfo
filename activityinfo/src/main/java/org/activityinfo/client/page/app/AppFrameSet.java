@@ -7,46 +7,41 @@
  */
 package org.activityinfo.client.page.app;
 
-import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.util.Margins;
-import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.TabPanel;
+import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Viewport;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.layout.*;
+import com.extjs.gxt.ui.client.widget.layout.RowData;
+import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
-import com.google.gwt.user.client.Event;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.Place;
-import org.activityinfo.client.event.NavigationEvent;
-import org.activityinfo.client.offline.ui.OfflineMenu;
-import org.activityinfo.client.offline.ManagedResourceStores;
 import org.activityinfo.client.command.Authentication;
 import org.activityinfo.client.command.monitor.AsyncMonitor;
+import org.activityinfo.client.event.NavigationEvent;
+import org.activityinfo.client.offline.ManagedResourceStores;
+import org.activityinfo.client.offline.ui.OfflineMenu;
 import org.activityinfo.client.page.*;
-import org.activityinfo.client.page.config.DbListPlace;
-import org.activityinfo.client.page.table.PivotPlace;
-import org.activityinfo.client.page.report.ReportHomePlace;
-import org.activityinfo.client.page.entry.SiteGridPlace;
-import org.activityinfo.client.page.welcome.WelcomePlace;
-import org.activityinfo.client.page.charts.Charts;
 import org.activityinfo.client.page.charts.ChartPlace;
-import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.client.page.common.widget.LoadingPlaceHolder;
-import org.activityinfo.client.page.map.Maps;
+import org.activityinfo.client.page.config.DbListPlace;
+import org.activityinfo.client.page.entry.SiteGridPlace;
 import org.activityinfo.client.page.map.MapHomePlace;
+import org.activityinfo.client.page.report.ReportHomePlace;
+import org.activityinfo.client.page.table.PivotPlace;
+import org.activityinfo.client.page.welcome.WelcomePlace;
 
 
 @Singleton
@@ -68,6 +63,8 @@ public class AppFrameSet  implements FrameSetPresenter {
     @Inject
     public AppFrameSet(EventBus eventBus, Authentication auth, OfflineMenu offlineMenu) {
 
+        Log.trace("AppFrameSet constructor starting");
+
         this.eventBus = eventBus;
         this.auth = auth;
         this.offlineMenu = offlineMenu;
@@ -77,8 +74,13 @@ public class AppFrameSet  implements FrameSetPresenter {
 
         createToolBar();
         //createCenter();
-        
+
+        Log.trace("AppFrameSet constructor finished, about to add to RootPanel");
+
         RootPanel.get().add(viewport);
+
+        Log.trace("AppFrameSet now added to RootPanel");
+
     }
 
     private void createToolBar() {

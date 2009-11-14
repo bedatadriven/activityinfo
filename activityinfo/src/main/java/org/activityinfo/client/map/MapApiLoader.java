@@ -80,7 +80,6 @@ public class MapApiLoader {
                 }
             };
             timer.schedule(TIMEOUT);
-            timer.run();
         }
 
     }
