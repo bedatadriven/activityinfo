@@ -1,23 +1,30 @@
 package org.activityinfo.client.page.report;
 
-import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
-import com.extjs.gxt.ui.client.widget.ComponentPlugin;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.inject.Inject;
 import org.activityinfo.client.Application;
+import org.activityinfo.client.command.CommandService;
+import org.activityinfo.client.command.callback.Got;
+import org.activityinfo.client.command.monitor.MaskingAsyncMonitor;
 import org.activityinfo.client.page.common.grid.AbstractEditorGridView;
 import org.activityinfo.client.page.common.widget.MappingComboBox;
-import org.activityinfo.client.page.common.toolbar.UIActions;
+import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.dto.ReportTemplateDTO;
+import org.activityinfo.shared.dto.Schema;
+import org.activityinfo.shared.dto.UserDatabaseDTO;
 import org.activityinfo.shared.report.model.ReportFrequency;
 
 import java.util.ArrayList;
@@ -32,9 +39,11 @@ public class ReportGrid extends AbstractEditorGridView<ReportTemplateDTO, Report
     private MappingComboBox<Integer> dayCombo;
     private String[] weekdays;
     private NumberFormat numberFormat;
+    private final CommandService service;
 
     @Inject
-    public ReportGrid() {
+    public ReportGrid(CommandService service) {
+        this.service = service;
 
         setLayout(new FitLayout());
         setHeaderVisible(false);
@@ -53,9 +62,9 @@ public class ReportGrid extends AbstractEditorGridView<ReportTemplateDTO, Report
         grid.addListener(Events.BeforeEdit, new Listener<GridEvent<ReportTemplateDTO>>() {
             public void handleEvent(GridEvent<ReportTemplateDTO> be) {
                 ReportTemplateDTO report = be.getModel();
-                be.setCancelled( ! (report.getFrequency() == ReportFrequency.MONTHLY ||
-                                    report.getFrequency() == ReportFrequency.WEEKLY ||
-                                    report.getFrequency() == ReportFrequency.DAILY) );
+                be.setCancelled( ! (report.getFrequency() == ReportFrequency.Monthly ||
+                                    report.getFrequency() == ReportFrequency.Weekly ||
+                                    report.getFrequency() == ReportFrequency.Daily) );
             }
         });
 
@@ -100,13 +109,13 @@ public class ReportGrid extends AbstractEditorGridView<ReportTemplateDTO, Report
         ColumnConfig frequency = new ColumnConfig("frequency", Application.CONSTANTS.reportingFrequency(), 100);
         frequency.setRenderer(new GridCellRenderer<ReportTemplateDTO>() {
             public Object render(ReportTemplateDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
-                if(model.getFrequency() == ReportFrequency.MONTHLY) {
+                if(model.getFrequency() == ReportFrequency.Monthly) {
                     return Application.CONSTANTS.monthly();
-                } else if(model.getFrequency() == ReportFrequency.WEEKLY) {
+                } else if(model.getFrequency() == ReportFrequency.Weekly) {
                     return Application.CONSTANTS.weekly();
-                } else if(model.getFrequency() == ReportFrequency.DAILY) {
+                } else if(model.getFrequency() == ReportFrequency.Daily) {
                     return Application.CONSTANTS.daily();
-                } else if(model.getFrequency() == ReportFrequency.ADHOC) {
+                } else if(model.getFrequency() == ReportFrequency.Adhoc) {
                     return "ad hoc";
                 }
                 return "-";
@@ -117,10 +126,10 @@ public class ReportGrid extends AbstractEditorGridView<ReportTemplateDTO, Report
         ColumnConfig day = new ColumnConfig("day", "Jour", 100);
         day.setRenderer(new GridCellRenderer<ReportTemplateDTO>() {
             public Object render(ReportTemplateDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<ReportTemplateDTO> store, Grid<ReportTemplateDTO> grid) {
-                if(model.getFrequency() == ReportFrequency.WEEKLY)
+                if(model.getFrequency() == ReportFrequency.Weekly)
                     return model.getDay() < 7 ? weekdays[model.getDay()] :
                             weekdays[6];
-                else if(model.getFrequency() == ReportFrequency.MONTHLY)
+                else if(model.getFrequency() == ReportFrequency.Monthly)
                     return Integer.toString(model.getDay());
                 else
                     return "";
@@ -166,7 +175,37 @@ public class ReportGrid extends AbstractEditorGridView<ReportTemplateDTO, Report
     protected void initToolBar() {
         toolBar.addSaveSplitButton();
         toolBar.add(new SeparatorToolItem());
-        toolBar.addButton(UIActions.add, Application.CONSTANTS.newText(), Application.ICONS.add());
+
+        final Menu dbMenu = new Menu();
+        dbMenu.addListener(Events.BeforeShow, new Listener<BaseEvent>() {
+            @Override
+            public void handleEvent(BaseEvent be) {
+                if(dbMenu.getItemCount() == 0) {
+                    service.execute(new GetSchema(), new MaskingAsyncMonitor(ReportGrid.this,
+                            Application.CONSTANTS.loading()), new Got<Schema>() {
+
+                        @Override
+                        public void got(Schema result) {
+                            for(final UserDatabaseDTO db : result.getDatabases()) {
+                                MenuItem item = new MenuItem(db.getName());
+                                item.setIcon(Application.ICONS.database());
+                                item.addListener(Events.Select, new Listener<BaseEvent>() {
+                                    @Override
+                                    public void handleEvent(BaseEvent be) {
+                                        presenter.onNewReport(db.getId());
+                                    }
+                                });
+                                dbMenu.add(item);
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+        Button newButton = new Button(Application.CONSTANTS.newText(), Application.ICONS.add());
+        newButton.setMenu(dbMenu);
+        toolBar.add(newButton);
     }
 
 
