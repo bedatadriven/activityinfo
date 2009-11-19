@@ -173,7 +173,7 @@ public class SiteFormPresenter implements SiteFormLeash {
             });
         } else {
 
-            Map<String,Object> properties = view.getPropertyMap();
+            final Map<String,Object> properties = view.getPropertyMap();
             properties.putAll(adminPresenter.getPropertyMap());
             properties.put("activityId", currentActivity.getId());
 
@@ -185,7 +185,9 @@ public class SiteFormPresenter implements SiteFormLeash {
 
                 @Override
                 public void onSuccess(CreateResult result) {
+                    currentSite.setProperties(properties);
                     currentSite.setId(result.getNewId());
+
                     eventBus.fireEvent(new SiteEvent(AppEvents.SiteCreated, SiteFormPresenter.this, currentSite));
                     view.hide();
                 }

@@ -267,7 +267,7 @@ public class SiteGridTest {
         // Collaborator: service
         MockCommandService service = new MockCommandService();
         service.setResult(new GetSchema(), DummyData.PEAR());
-        service.setResult(GetSites.class, DummyData.PEAR_Sites_Result());
+        service.setResult(GetSites.class, DummyData.PEAR_Sites_Many_Results(100));
 
         // Collaborator: eventbus
         MockEventBus eventBus = new MockEventBus();

@@ -128,6 +128,21 @@ public class DummyData {
         return sites;
     }
 
+    public static SiteResult PEAR_Sites_Many_Results(int count) {
+        List<SiteModel> sites = new ArrayList<SiteModel>();
+        for(int i=0;i!=count;++i) {
+            SiteModel fargo = new SiteModel(i);
+            fargo.setActivityId(91);
+            fargo.setPartner(new PartnerModel(88, "NRC"));
+            fargo.setLocationName("Fargo");
+            fargo.setAdminEntity(3, Watalina);
+            fargo.setAdminEntity(2, Beni);
+            fargo.setAdminEntity(1, NordKivu);
+            sites.add(fargo);
+        }
+        return new SiteResult(sites);
+    }
+
     public static SiteResult PEAR_Sites_Result() {
         return new SiteResult(new ArrayList<SiteModel>(PEAR_Sites().values()));
     }
