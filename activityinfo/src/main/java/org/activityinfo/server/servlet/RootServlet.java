@@ -52,6 +52,33 @@ public class RootServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+        // there is some sort of enormous problem with IE6 and something
+        // to do with the tomcat isapi redirector.
+        // When *some* IE6 users access the page through the tomcat redirect,
+        // IE6 hangs when images are dynamically added to the page
+        // This does not happen when accessed directly through the tomcat server.
+        //
+        // Until we can figure out what the heck is going on and "fix" the redirector,
+        // we are just going to redirect all IE6 users to port 8080
+
+        if(request.getServerPort() == 80 &&
+                request.getHeader("User-Agent").indexOf("MSIE 6.0") != -1) {
+
+            StringBuilder directUrl = new StringBuilder();
+            directUrl.append("http://");
+            directUrl.append(request.getServerName()).append(":8080");
+            directUrl.append(request.getRequestURI());
+            if(request.getQueryString() != null && request.getQueryString().length() != 0)
+                directUrl.append("?").append(request.getQueryString());
+
+            String bookmark = getBookmark(request);
+            if(bookmark != null && bookmark.length() != 0)
+                directUrl.append("#").append(bookmark);
+
+            response.sendRedirect(directUrl.toString());
+            return;
+        }
+
         if("logout".equals(request.getQueryString())) {
             removeCookie(response, "authToken");
             removeCookie(response, "email");
