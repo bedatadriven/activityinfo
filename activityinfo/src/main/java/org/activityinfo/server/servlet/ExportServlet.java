@@ -96,8 +96,13 @@ public class ExportServlet extends HttpServlet {
             }
 
             resp.setContentType("application/vnd.ms-excel");
-            resp.addHeader("Content-Disposition", "attachment; filename=" +
-                    ("ActivityInfo Export " + new Date().toString() + ".xls").replace(" ", "_"));
+            if(req.getHeader("User-Agent").indexOf("MSIE") != -1) {
+                resp.addHeader("Content-Disposition", "attachment; filename=ActivityInfo.xls");
+            } else {
+                resp.addHeader("Content-Disposition", "attachment; filename=" +
+                        ("ActivityInfo Export " + new Date().toString() + ".xls").replace(" ", "_"));
+            }
+            
 
             OutputStream os = resp.getOutputStream();
             export.getBook().write(os);
