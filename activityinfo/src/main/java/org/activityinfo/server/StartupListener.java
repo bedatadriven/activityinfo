@@ -71,7 +71,6 @@ public class StartupListener extends GuiceServletContextListener {
 
                 filter("/Application/*").through(CacheFilter.class);
                 serve("/Application/cmd").with(CommandServlet.class);
-                serve("/Application/cmd/download").with(CommandDownloadServlet.class);
                 serve("/Application/download").with(DownloadServlet.class);
                 serve("/Application/export*").with(ExportServlet.class);
                 

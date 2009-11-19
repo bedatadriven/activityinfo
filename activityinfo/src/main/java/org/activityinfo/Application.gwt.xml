@@ -51,12 +51,6 @@
     <!--<extend-property name="locale" values="en" />-->
     <extend-property name="locale" values="fr" />   
 
-    <!-- Configure rebinding for the Export Service -->          
-
-    <generate-with class="org.activityinfo.rebind.ExportServiceInterfaceProxyGenerator">
-        <when-type-assignable class="org.activityinfo.shared.report.ExportService"/>
-    </generate-with>
-
     <servlet path="/cmd" class="org.activityinfo.server.servlet.CommandServlet" />
 
     <!-- Custom Linker that generates Gears manifests -->
