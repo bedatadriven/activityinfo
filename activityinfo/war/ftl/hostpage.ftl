@@ -48,8 +48,9 @@
     <div id="loading-box">
         <div class="loading-indicator">
             <img src="Application/gxt201/images/default/shared/large-loading.gif" alt=""/>
-            ActivityInfo 0.5.1<br />
+            ActivityInfo 0.5.5<br />
             <span id="loading-msg">Chargement en cours...</span>
+            
         </div>
     </div>
     <#if offline == true>
@@ -60,5 +61,14 @@
 </div>
 <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
 <iframe src="javascript:''" id="_downloadFrame" name="_downloadFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-11567120-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
 </body>
 </html>

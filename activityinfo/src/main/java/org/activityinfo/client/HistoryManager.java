@@ -102,9 +102,18 @@ public class HistoryManager {
             Cookies.setCookie("lastPlace", token,
                     (new DateWrapper()).addDays(30).asDate() );
 
+            /*
+             * ... And log to Google Analytics
+             */
+
+            trackUrchinHit(token);
         }
     }
 
+    // untested
+    public native void trackUrchinHit (String pageName) /*-{
+      $wnd.pageTracker._trackPageview(pageName);
+    }-*/;
 
     private void onBrowserMovement(String token) {
 

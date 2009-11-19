@@ -14,7 +14,7 @@
 <body class="login" >
 
 <form name="Form1" method="post" id="Form1" action="auth" method="post">
-    <input type="hidden" name="bookmark" value="${bookmark}"></input>
+    <input type="hidden" name="bookmark" value="${bookmark}">
 
     <div id="login">
         <div id="cap-top"></div>
@@ -27,9 +27,7 @@
                         <ul id="twitter_update_list"></ul>
                         <a href="http://twitter.com/activityinfo" id="twitter-link" style="display:block;text-align:right;">suivre ActivityInfo avec Twitter</a>
                     </div>
-
                 </div>
-
             </div>
 
             <div id="branding"><img id="imgLogo" src="static/activityinfo.png" style="border-width:0;" title="ActivityInfo"/></div>
@@ -73,5 +71,14 @@
 </form>
 <script type="text/javascript" src="http://twitter.com/javascripts/blogger.js"></script>
 <script type="text/javascript" src="http://twitter.com/statuses/user_timeline/activityinfo.json?callback=twitterCallback2&amp;count=5"></script>
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-11567120-1");
+pageTracker._trackPageview("login");
+} catch(err) {}</script>
 </body>
 </html>
