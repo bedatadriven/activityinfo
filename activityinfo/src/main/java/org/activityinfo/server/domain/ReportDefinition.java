@@ -19,8 +19,6 @@
 
 package org.activityinfo.server.domain;
 
-import org.activityinfo.server.domain.graph.MemberOf;
-import org.activityinfo.server.domain.graph.ReportList;
 import org.activityinfo.shared.report.model.ReportFrequency;
 
 import javax.persistence.*;
@@ -36,7 +34,6 @@ import java.util.Set;
  *
  */
 @Entity
-@MemberOf({ ReportList.class })
 @Table(name="ReportTemplate")
 @org.hibernate.annotations.Filters(
 		{@org.hibernate.annotations.Filter(
