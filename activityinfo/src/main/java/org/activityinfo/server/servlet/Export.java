@@ -203,7 +203,7 @@ public class Export {
                     createHeaderCell(headerRow1, column, group.getName());
                     sheet.addMergedRegion(new CellRangeAddress(0, 0, column, column+group.getIndicators().size()-1));
                 }
-                for(IndicatorModel indicator : activity.getIndicators()) {
+                for(IndicatorModel indicator : group.getIndicators()) {
                     indicators.add(indicator.getId());
                     createHeaderCell(headerRow2, column, indicator.getName(), indicatorHeaderStyle);
                     sheet.setColumnWidth(column, 16 * 256);

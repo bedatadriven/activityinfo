@@ -6,6 +6,7 @@ import com.extjs.gxt.ui.client.data.SortInfo;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Record;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import org.activityinfo.client.AppEvents;
@@ -378,7 +379,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
     }
 
     private void onExport() {
-        String url = "export?auth=#AUTH#&a=" + currentActivity.getId();
+        String url = GWT.getModuleBaseURL() + "export?auth=#AUTH#&a=" + currentActivity.getId();
         eventBus.fireEvent(new DownloadEvent(url));
    }
 

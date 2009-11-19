@@ -6,13 +6,12 @@ import com.google.inject.servlet.RequestScoped;
 import com.google.inject.servlet.ServletModule;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
-import org.activityinfo.server.ActivityInfoModule;
 import org.activityinfo.server.filter.CacheFilter;
 import org.activityinfo.server.report.generator.MapIconPath;
+import org.activityinfo.server.servlet.*;
 import org.activityinfo.server.servlet.kml.KmlDataServlet;
 import org.activityinfo.server.servlet.kml.KmlLinkServlet;
 import org.activityinfo.server.servlet.wfs.WfsServlet;
-import org.activityinfo.server.servlet.*;
 import org.quartz.Job;
 import org.quartz.SchedulerException;
 import org.quartz.spi.JobFactory;
@@ -67,21 +66,21 @@ public class StartupListener extends GuiceServletContextListener {
 
                 context.log("configureServlets");
 
-                serve("/Application/cmd").with(CommandServlet.class);
-                serve("/Application/cmd/download").with(CommandDownloadServlet.class);
-                
                 serve("/").with(RootServlet.class);
                 serve("/auth").with(RootServlet.class);
+
+                filter("/Application/*").through(CacheFilter.class);
+                serve("/Application/cmd").with(CommandServlet.class);
+                serve("/Application/cmd/download").with(CommandDownloadServlet.class);
+                serve("/Application/download").with(DownloadServlet.class);
+                serve("/Application/export*").with(ExportServlet.class);
+                
                 serve("/wfs").with(WfsServlet.class);
                 serve("/wfs*").with(WfsServlet.class);
-                serve("/export*").with(ExportServlet.class);
                 serve("/kml").with(KmlLinkServlet.class);
                 serve("/kml/data").with(KmlDataServlet.class);
                 serve("/icon").with(MapIconServlet.class);
-                serve("/download").with(DownloadServlet.class);
                 serve("/report").with(ReportServlet.class);
-
-                filter("/Application/*").through(CacheFilter.class);
 
                 bind(String.class)
                         .annotatedWith(MapIconPath.class)

@@ -1,10 +1,10 @@
 package org.activityinfo.client.command.callback;
 
-import com.google.gwt.user.client.Window;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.activityinfo.shared.command.result.RenderResult;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.event.DownloadEvent;
+import org.activityinfo.shared.command.result.RenderResult;
 
 /**
  *
@@ -29,6 +29,6 @@ public class DownloadCallback implements AsyncCallback<RenderResult> {
     }
 
     public void onSuccess(RenderResult result) {
-        eventBus.fireEvent(new DownloadEvent("../download?"+ result.getUrl()));
+        eventBus.fireEvent(new DownloadEvent(GWT.getModuleBaseURL() +  "download?"+ result.getUrl()));
     }
 }

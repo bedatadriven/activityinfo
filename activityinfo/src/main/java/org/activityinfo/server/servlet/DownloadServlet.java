@@ -66,7 +66,8 @@ public class DownloadServlet extends HttpServlet {
         // with the given name rather than try to display it in-line. This usally means the
         // the user will be presented with a "Save As" dialog
         response.setContentType(context.getMimeType(tempPath));
-        response.addHeader("Content-Disposition", "attachment; filename=" + friendlyName);
+        response.setContentLength((int) file.length());
+        response.addHeader("Content-disposition", "attachment; filename=" + friendlyName);
 
         OutputStream out = response.getOutputStream();
 
