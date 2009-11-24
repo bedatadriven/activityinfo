@@ -68,108 +68,11 @@ public class OfflineManager {
         this.auth = auth;
         this.statusWindow = statusWindow;
 
-        // first thing: do a sanity check. If OfflineManager is started, it means that
-        // that we're in the "offline mode enabled" permutations, and to have gotten here,
-        // we had to ask for permissions first. However, the universe is a crazy place,
-        // (See, Douglas, A.) so double check that we have permission to access the database
-
-        if(!Factory.getInstance().hasPermission()) {
-            // au cas contraire, bail with extreme prejudice.
-
-            Cookies.removeCookie("offline");
-            Window.Location.reload();
-            return;
-        }
-
-        // ok, the next thing, verify that make sure that we've got a current
-        // version of the software stored on the client so we start ActivityInfo
-
-        if(GWT.isScript()) // don't screw around with MRS's in hosted mode -- it doesn't seem to work well
-            updateManagedResourceStore();
-
-        // listen for a request to disable offline mode
-        eventBus.addListener(AppEvents.DisableOfflineMode, new Listener<BaseEvent>() {
-            @Override
-            public void handleEvent(BaseEvent baseEvent) {
-                disableOfflineMode();
-            }
-        });
-
-
-        // not ready for prime time :-(
-        //initWorkerPool(auth, databaseProvider);
 
 
     }
 
 
-    /**
-     *
-     * Checks for updates to the common <code>ManagedResourceStore</code> and assures that we
-     * have loaded the permutation-specific ManagedResourceStore
-     *
-     * <ul>
-     * <li>{@link org.activityinfo.linker.ApplicationLinker} for notes on how the manifests are generated
-     * <li>{@link com.google.gwt.gears.client.localserver.ManagedResourceStore}
-     * <li>http://code.google.com/p/gwt-google-apis/wiki/GearsGettingStartedOffline</li>
-     * <li>http://code.google.com/apis/gears/api_localserver.html</li>
-     * </li>
-     */
-    public void updateManagedResourceStore() {
-
-        // first check on the common MRS
-        //ManagedResourceStore common = ManagedResourceStores.getCommon();
-        //TODO: check common store (actually, do we need to? should be done automatically
-        // and we can prompt the user if we get an RPC error)
-
-        // assure that we have the permutation MRS downloaded
-        // (this is not done until the first load)
-        if(!ManagedResourceStores.isPermutationAvailable()) {
-            ManagedResourceStore store = ManagedResourceStores.getPermutation();
-            store.setOnErrorHandler(new ManagedResourceStoreErrorHandler() {
-                @Override
-                public void onError(ManagedResourceStoreErrorEvent error) {
-                    MessageBox.alert("Erreur Chargement Hors Connexion", error.getMessage(), null);
-                }
-            });
-            store.setOnCompleteHandler(new ManagedResourceStoreCompleteHandler() {
-                @Override
-                public void onComplete(ManagedResourceStoreCompleteEvent event) {
-                    MessageBox.alert("Hors Connexion!", "Permutation-specific element is downloaded.", null);
-                }
-            });
-        }
-    }
-
-    private void disableOfflineMode() {
-        // remove the cookie
-        Cookies.removeCookie(ManagedResourceStores.OFFLINE_COOKIE_NAME);
-
-        Window.Location.reload();
-
-        // TODO: prompt for removal of offline database
-    }
-
-    private void initWorkerPool(Authentication auth, DatabaseProvider databaseProvider) {
-          // start the synchro worker pool
-          WorkerPool workerPool = Factory.getInstance().createWorkerPool();
-          workerPool.setMessageHandler(new WorkerPoolMessageHandler() {
-              @Override
-              public void onMessageReceived(MessageEvent event) {
-                  GWT.log("Message from worker " + event.getSender() + ": " + event.getBody(), null);
-              }
-          });
-
-          int workerId = workerPool.createWorkerFromUrl("/Synchronizer/worker.js");
-          GWT.log("Created synchro worker, id = " + workerId, null);
-
-          StartSynchronizing msg = StartSynchronizing.newInstance();
-          msg.setAuthToken(auth.getAuthToken());
-          msg.setEndPoint(GWT.getModuleBaseURL() + "/cmd");
-          msg.setUserDb(databaseProvider.getDatabaseName());
-
-          workerPool.sendMessage(msg, workerId);
-      }
     
 
 }

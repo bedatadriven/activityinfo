@@ -31,7 +31,6 @@ import org.activityinfo.client.Place;
 import org.activityinfo.client.command.Authentication;
 import org.activityinfo.client.command.monitor.AsyncMonitor;
 import org.activityinfo.client.event.NavigationEvent;
-import org.activityinfo.client.offline.ManagedResourceStores;
 import org.activityinfo.client.offline.ui.OfflineMenu;
 import org.activityinfo.client.page.*;
 import org.activityinfo.client.page.charts.ChartPlace;
@@ -115,7 +114,6 @@ public class AppFrameSet  implements FrameSetPresenter {
                 // TODO: this needs to go elsewhere
                 Cookies.removeCookie("authToken");
                 Cookies.removeCookie("email");
-                Cookies.removeCookie(ManagedResourceStores.OFFLINE_COOKIE_NAME);
                 Window.Location.reload();
             }
         });

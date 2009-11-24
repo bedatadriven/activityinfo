@@ -54,7 +54,7 @@ public class Installer {
             // this cookie tells the startup script to use the GWT permutation
             // that includes the offline implementation of stuff
             Date expiryDate = new Date(60l * 365l * 24 * 60 * 60 * 1000);
-            Cookies.setCookie(ManagedResourceStores.OFFLINE_COOKIE_NAME, "enabled", expiryDate);
+       
 
             // Add a desktop shortcut for ActivityInfo
 //                                 Desktop desktop = Factory.getInstance().createDesktop();
@@ -76,56 +76,6 @@ public class Installer {
      *
      */
     public void downloadCommon() {
-
-        final ProgressMessageBox box = new ProgressMessageBox();
-        //box.setMessage(Application.CONSTANTS.loadingOfflineModule());
-        box.setMessage("Loading offline module...");
-        box.setButtons(MessageBox.CANCEL);
-
-        final ManagedResourceStore common = ManagedResourceStores.getCommon();
-
-        common.setOnProgressHandler(new ManagedResourceStoreProgressHandler() {
-            @Override
-            public void onProgress(ManagedResourceStoreProgressEvent event) {
-                box.updateProgress(event.getFilesComplete() / event.getFilesTotal(),
-                        "Chargement de module hors connexion en cours...");
-                box.updateText("Loading offline module... " + event.getFilesComplete() + "/" + event.getFilesTotal());
-            }
-        });
-        common.setOnErrorHandler(new ManagedResourceStoreErrorHandler() {
-            @Override
-            public void onError(final ManagedResourceStoreErrorEvent error) {
-                MessageBox.alert("Chargement", "Il y avait une error lors de chargement de module hors connexion:<br> "
-                        + error.getMessage(), new Listener<MessageBoxEvent>() {
-                    @Override
-                    public void handleEvent(MessageBoxEvent be) {
-                        box.close();
-                  }
-                });
-            }
-        });
-        common.setOnCompleteHandler(new ManagedResourceStoreCompleteHandler() {
-            @Override
-            public void onComplete(ManagedResourceStoreCompleteEvent event) {
-                box.close();
-                promptReload();
-            }
-        });
-        box.addCallback(new Listener<MessageBoxEvent>() {
-            @Override
-            public void handleEvent(MessageBoxEvent be) {
-                // handle user cancelling
-//                if(be.getButtonClicked() != null && Dialog.CANCEL.equals(be.getButtonClicked().getItemId())) {
-//                    common.setEnabled(false);
-//                    Cookies.removeCookie(ManagedResourceStores.OFFLINE_COOKIE_NAME);
-//                }
-            }
-        });
-        
-
-        box.show();
-        common.setEnabled(true);
-        common.checkForUpdate();
     }
 
     public void promptReload() {

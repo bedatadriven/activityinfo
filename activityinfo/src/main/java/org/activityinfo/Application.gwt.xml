@@ -53,8 +53,6 @@
 
     <servlet path="/cmd" class="org.activityinfo.server.servlet.CommandServlet" />
 
-    <!-- Custom Linker that generates Gears manifests -->
-    <define-linker name="std" class="org.activityinfo.linker.ApplicationLinker" />
 
 
 </module>
