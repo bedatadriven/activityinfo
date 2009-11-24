@@ -5,7 +5,7 @@
     <groupId>org.activityinfo</groupId>
     <artifactId>activityinfo</artifactId>
     <packaging>war</packaging>
-    <version>0.5.1</version>
+    <version>0.5.6</version>
     <name>ActivityInfo</name>
 
     <!--  include pluginRepository and repository for GWT-Maven -->
@@ -26,6 +26,12 @@
             <id>googlecode-releases</id>
             <name>Google Code Maven repository of releases</name>
             <url>http://maven-samaxes-repo.googlecode.com/svn/releases</url>
+        </pluginRepository>
+
+        <pluginRepository>
+            <id>JBOSS</id>
+            <name>JBoss Repository</name>
+            <url>http://repository.jboss.org/maven2/</url>
         </pluginRepository>
 
     </pluginRepositories>
@@ -62,12 +68,6 @@
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
-            <version>${gwtVersion}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-dev</artifactId>
             <version>${gwtVersion}</version>
             <scope>provided</scope>
         </dependency>
@@ -109,12 +109,6 @@
             <version>1.2.1</version>
             <scope>provided</scope>
         </dependency>
-        <!--<dependency>-->
-        <!--<groupId>com.google.gwt.google-apis</groupId>-->
-        <!--<artifactId>gwt-ajaxloader</artifactId>-->
-        <!--<version>1.0.0</version>-->
-        <!--<scope>provided</scope>-->
-        <!--</dependency>-->
 
         <!--  Dependency Injection Framework -->
 
@@ -276,9 +270,7 @@
             <version>3.6.2</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
-
 
     <repositories>
         <repository>
@@ -301,7 +293,6 @@
     </organization>
 
     <build>
-
         <!-- Compile classes into the war
                directory for hosted mode live editing -->
 
@@ -325,7 +316,6 @@
             </plugin>
 
             <plugin>
-
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>2.3</version>
@@ -394,32 +384,14 @@
                         <fileset>
                             <directory>war/WEB-INF/lib</directory>
                         </fileset>
+                        <fileset>
+                            <directory>war/Application</directory>
+                        </fileset>
+                        <fileset>
+                            <directory>war/temp</directory>
+                        </fileset>
                     </filesets>
                 </configuration>
-            </plugin>
-
-            <!-- Ideally we'd want to handle this with maven-clean-plugin above
-                 but it chokes on the war/Application/compile-reports folder -
-                 I think it may try to make a list of all 12995 files generated -->
-
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>clean</phase>
-                        <configuration>
-                            <tasks>
-                                <delete includeemptydirs="true" quiet="true">
-                                    <fileset dir="${basedir}/war/Application"/>
-                                    <fileset dir="${basedir}/war/temp" includes="**/*" />
-                                </delete>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
 
             <!-- Exclude GWT integration tests from the test phase -->
@@ -466,57 +438,14 @@
                         <persistenceUnit>activityInfo</persistenceUnit>
                     </componentProperties>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.microsoft</groupId>
+                        <artifactId>sqljdbc</artifactId>
+                        <version>1.1.1501</version>
+                    </dependency>
+                </dependencies>
             </plugin>
-
-            <!-- Prepare AIR package -->
-
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-resources-plugin</artifactId>-->
-                <!--<configuration>-->
-                    <!--<resources>-->
-                        <!--<resource>-->
-                            <!--<directory>${basedir}/src/main</directory>-->
-                        <!--</resource>-->
-                    <!--</resources>                    -->
-                <!--</configuration>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<id>air</id>-->
-                        <!--<phase>generate-resources</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>copy-resources</goal>-->
-                        <!--</goals>-->
-                        <!--<configuration>-->
-                            <!--<outputDirectory>${basedir}/target/air</outputDirectory>-->
-                            <!--<resources>-->
-                                <!--<resource>-->
-                                    <!--<directory>${basedir}/src/main/resources</directory>-->
-                                    <!--<filtering>false</filtering>-->
-                                    <!--<excludes>-->
-                                        <!--<exclude>**/*.html</exclude>-->
-                                        <!--<exclude>**/*.js</exclude>-->
-                                        <!--<exclude>**/*.css</exclude>-->
-                                        <!--<exclude>**/*.xml</exclude>-->
-                                    <!--</excludes>-->
-                                <!--</resource>-->
-                                <!--<resource>-->
-                                    <!--<directory>${basedir}/src/main/resources</directory>-->
-                                    <!--<filtering>true</filtering>-->
-                                    <!--<includes>-->
-                                        <!--<include>**/*.html</include>-->
-                                        <!--<include>**/*.js</include>-->
-                                        <!--<include>**/*.css</include>-->
-                                        <!--<exclude>**/*.xml</exclude>-->
-                                    <!--</includes>-->
-                                <!--</resource>-->
-                            <!--</resources>-->
-                        <!--</configuration>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
-
-
         </plugins>
     </build>
 
@@ -530,17 +459,12 @@
             </properties>
         </profile>
         <!-- Build the Application Module with only permutations for
-    IE6 and logging enabled for testing purposes -->
+              IE6 and logging enabled for testing purposes -->
         <profile>
             <id>ie6test</id>
             <properties>
                 <gwt.module>org.activityinfo.ApplicationIE6Test</gwt.module>
             </properties>
         </profile>
-
     </profiles>
-
-
-
-
 </project>
