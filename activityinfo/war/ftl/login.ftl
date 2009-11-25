@@ -53,7 +53,7 @@
                 </div>
 
                 <div id="marketTitle" class="marketTitle" align="center">Vous n'utilizer pas encore ActivityInfo?</div>
-                <div id="marketBody" class="marketBody" align="center">ActivityInfo est la solution comprehensive pour la suivi de vos activités d'urgence et developpement.<br />
+                <div id="marketBody" class="marketBody" align="center">ActivityInfo est une solution comprehensive pour le suivi de vos activités d'urgence et de développement.<br />
 
                     <div id="buttonGroup" align="left">
 
