@@ -16,6 +16,7 @@ public class AttributeFieldSet extends AbstractFieldSet {
 
 			AttributeCheckBoxGroup boxGroup = new AttributeCheckBoxGroup(attributeGroup);
 			boxGroup.setStyleAttribute("marginBottom", "10px");
+            boxGroup.setStyleAttribute("width", "100%");  // if the width is specified in px, IE6 flips out 
 
             add(boxGroup);
         }
