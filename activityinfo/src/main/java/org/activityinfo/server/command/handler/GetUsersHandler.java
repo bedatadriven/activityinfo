@@ -29,6 +29,7 @@ import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.command.result.UserResult;
 import org.activityinfo.shared.dto.UserModel;
 import org.activityinfo.shared.exception.CommandException;
+import org.activityinfo.shared.exception.IllegalAccessCommandException;
 import org.dozer.Mapper;
 
 import javax.persistence.EntityManager;
@@ -43,11 +44,9 @@ import java.util.List;
  */
 public class GetUsersHandler implements CommandHandler<GetUsers> {
 
-
 	protected EntityManager em;
 	protected Mapper mapper;
-	
-	
+
 	@Inject 
 	public GetUsersHandler(EntityManager em, Mapper mapper) {
 		this.em = em;
@@ -56,12 +55,6 @@ public class GetUsersHandler implements CommandHandler<GetUsers> {
 	
 	@Override
 	public CommandResult execute(GetUsers cmd, User currentUser) throws CommandException {
-
-		UserDatabase database = em.find(UserDatabase.class, cmd.getDatabaseId());
-		
-		if(database.getOwner().getId() != currentUser.getId()) {
-			throw new CommandException();
-		}
 
         String orderByClause="";
 
@@ -83,12 +76,13 @@ public class GetUsersHandler implements CommandHandler<GetUsers> {
             if(property != null) {
                 orderByClause = " order by " + property + " " + dir;
             }                                                             
-
         }
 
-		Query query = em.createQuery("select up from UserPermission up where up.allowView=true and up.database.id = ?1"
-                                                    + orderByClause)
-               	.setParameter(1, database.getId());
+		Query query = em.createQuery("select up from UserPermission up where " +
+                                            "up.database.id = :dbId and " +
+                                            "up.user.id <> :currentUserId "  + orderByClause)
+               	.setParameter("dbId", cmd.getDatabaseId())
+                .setParameter("currentUserId", currentUser.getId());
 
         if(cmd.getOffset()>0) {
             query.setFirstResult(cmd.getOffset());
@@ -98,21 +92,20 @@ public class GetUsersHandler implements CommandHandler<GetUsers> {
         }
 
         List<UserPermission> perms = query.getResultList();
-
-		
 		List<UserModel> models = new ArrayList<UserModel>();
 		
 		for(UserPermission perm : perms) {
 			models.add(mapper.map(perm, UserModel.class));		
 		}
 		
-		int totalCount = ((Number)em.createQuery("select count(up) from UserPermission up where up.database.id = ?1")
-                .setParameter(1, database.getId())
+		int totalCount = ((Number)em.createQuery("select count(up) from UserPermission up where " +
+                        "up.database.id = :dbId and " +
+                        "up.user.id <> :currentUserId ")
+                .setParameter("dbId", cmd.getDatabaseId())
+                .setParameter("currentUserId", currentUser.getId())
                 .getSingleResult())
                 .intValue();
 		
 		return new UserResult(models, cmd.getOffset(), totalCount);
-
 	}
-
 }

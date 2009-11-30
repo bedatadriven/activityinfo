@@ -6,6 +6,9 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.GridEvent;
+import com.extjs.gxt.ui.client.event.Listener;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.page.common.dialog.FormDialogCallback;
 import org.activityinfo.client.page.common.dialog.FormDialogImpl;
@@ -22,7 +25,6 @@ public class DbListGrid extends AbstractGridView<UserDatabaseDTO, DbListPresente
 
     private Grid<UserDatabaseDTO> grid;
     private ListStore<UserDatabaseDTO> store;
-    private DbListPresenter presenter;
 
     public DbListGrid() {
 
@@ -30,6 +32,7 @@ public class DbListGrid extends AbstractGridView<UserDatabaseDTO, DbListPresente
         setHeading(Application.CONSTANTS.databases());
         setIcon(Application.ICONS.database());
     }
+
 
 	protected void initToolBar() {
         toolBar.addButton(UIActions.add, Application.CONSTANTS.newDatabase(), Application.ICONS.addDatabase());
@@ -43,6 +46,13 @@ public class DbListGrid extends AbstractGridView<UserDatabaseDTO, DbListPresente
 		grid = new Grid<UserDatabaseDTO>((ListStore)store, createColumnModel());
 		grid.setAutoExpandColumn("fullName");
         grid.setLoadMask(true);
+
+        grid.addListener(Events.RowDoubleClick, new Listener<GridEvent>() {
+            @Override
+            public void handleEvent(GridEvent be) {
+                presenter.onUIAction(UIActions.edit);
+            }
+        });
 	
 		add(grid);
 

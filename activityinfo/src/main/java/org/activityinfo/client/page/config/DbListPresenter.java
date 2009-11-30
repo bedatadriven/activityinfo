@@ -92,7 +92,8 @@ public class DbListPresenter extends AbstractGridPresenter<UserDatabaseDTO> impl
 
     public void onSelectionChanged(UserDatabaseDTO selectedItem) {
         this.view.setActionEnabled(UIActions.delete, selectedItem != null && selectedItem.getAmOwner());
-        this.view.setActionEnabled(UIActions.edit, selectedItem != null && selectedItem.getAmOwner());
+        this.view.setActionEnabled(UIActions.edit, selectedItem != null &&
+                (selectedItem.isDesignAllowed() || selectedItem.isManageUsersAllowed() ));
     }
 
     @Override

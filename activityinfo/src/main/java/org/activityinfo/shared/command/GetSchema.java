@@ -29,6 +29,4 @@ public class GetSchema implements Command<Schema>  {
         }
         return obj instanceof GetSchema;
     }
-
-
 }

@@ -98,7 +98,9 @@ public class GetSchemaHandler implements CommandHandler<GetSchema> {
 			databaseDTO.setEditAllowed( databaseDTO.getAmOwner() || permission.isAllowEdit() );
 			databaseDTO.setEditAllAllowed( databaseDTO.getAmOwner() || permission.isAllowEditAll() );
 			databaseDTO.setDesignAllowed( databaseDTO.getAmOwner() || permission.isAllowDesign() );
-				
+            databaseDTO.setManageUsersAllowed( databaseDTO.getAmOwner() || permission.isAllowManageUsers());
+			databaseDTO.setManageAllUsersAllowed( databaseDTO.getAmOwner() || permission.isAllowManageAllUsers());
+
 			for(Partner partner : database.getPartners()) {
 				
 				databaseDTO.getPartners().add( mapper.map( partner, PartnerModel.class ));

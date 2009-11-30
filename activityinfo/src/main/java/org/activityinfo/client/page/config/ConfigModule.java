@@ -7,10 +7,10 @@ package org.activityinfo.client.page.config;
 import com.google.gwt.inject.client.AbstractGinModule;
 import org.activityinfo.client.page.config.design.DesignTree;
 import org.activityinfo.client.page.config.design.Designer;
-/*
+
+/**
  * @author Alex Bertram
  */
-
 public class ConfigModule extends AbstractGinModule {
 
     @Override

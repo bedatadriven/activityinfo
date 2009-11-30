@@ -48,6 +48,7 @@ public class GalleryPage extends LayoutContainer implements GalleryView {
 
         this.setStyleName("gallery");
         this.setScrollMode(Style.Scroll.AUTOY);
+        this.setStyleAttribute("background", "white");
 
         setLayout(new FlowLayout());
 

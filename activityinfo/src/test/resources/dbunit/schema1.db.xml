@@ -10,7 +10,7 @@
 	<!-- Indicators -->
 	
 
- 
+
 
 			
 	<attributeGroup attributeGroupId="1" 
@@ -90,16 +90,15 @@
 		databaseId="1"
 		partnerId="1"
 		userId="2"
-		allowView="1" 
-		allowViewAll="0" 
-		allowEdit="1"
-		allowEditAll="0"
+		allowView="1" allowViewAll="0"
+		allowEdit="1" allowEditAll="0"
+        allowManageUsers="1" allowManageAllUsers="0"
 		allowDesign="0"
         lastSchemaUpdate="2009-01-02" />
 		
 		
 	<userLogin userId="3" name="Stefan" email="stefan@irc.org" locale="fr"  newUser="1"/>
-	
+
 	<userDatabase databaseId="2" name="RRM" countryId="1" ownerUserId="1" lastSchemaUpdate="2009-01-01"/>
 	
 	<reportTemplate reportTemplateId="1" ownerUserId="1" visibility="1" title="Report 1" frequency="Monthly" day="28" XML="

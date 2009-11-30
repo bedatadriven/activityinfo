@@ -21,6 +21,9 @@ package org.activityinfo.server.domain;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Map;
+import java.util.Set;
+import java.io.Serializable;
 
 /**
  *
@@ -36,7 +39,22 @@ import java.util.Date;
  *
  */
 @Entity
-public class UserPermission implements java.io.Serializable, SchemaElement {
+@org.hibernate.annotations.Filters({
+@org.hibernate.annotations.Filter(
+		name="userVisible",
+		condition="DatabaseId in " +
+				"(select d.DatabaseId from UserDatabase d where " +
+					  "d.OwnerUserId = :currentUserId or " +
+					  "d.DatabaseId in "  +
+					  	"(select p.DatabaseId from UserPermission p where p.UserId = :currentUserId and p.AllowManageAllUsers = 1) or " +
+					  "d.DatabaseId in " +
+						"(select p.DatabaseId from UserPermission p where p.UserId = :currentUserId and p.AllowManageUsers = 1 and p.PartnerId = PartnerId))"),
+@org.hibernate.annotations.Filter(
+        name="hideDeleted",
+        condition="AllowView = 1"
+)
+})
+public class UserPermission implements Serializable, SchemaElement {
 
 	private int id;
 	private Partner partner;
@@ -47,11 +65,13 @@ public class UserPermission implements java.io.Serializable, SchemaElement {
 	private boolean allowEdit;
 	private boolean allowEditAll;
 	private boolean allowDesign;
+    private boolean allowManageUsers;
+    private boolean allowManageAllUsers;
     private Date lastSchemaUpdate;
 
     public UserPermission() {
 	}
-	
+
 	public UserPermission(UserDatabase database, User user) {
 		this.database = database;
 		this.user= user;
@@ -206,6 +226,8 @@ public class UserPermission implements java.io.Serializable, SchemaElement {
 		this.allowEditAll = allowEditAll;
 	}
 
+
+
     /**
      * Gets the permission to design (create/change indicators, etc) the design of the <code>UserDatabase</code>
      *
@@ -225,6 +247,32 @@ public class UserPermission implements java.io.Serializable, SchemaElement {
 	public void setAllowDesign(boolean allowDesign) {
 		this.allowDesign = allowDesign;
 	}
+
+    /** Gets the permission to add/remove users and modify the View/Edit permissions.
+     *
+      * @return true if the <code>User</code> has permission to add/remove users for <code>Partner</code>
+     * and modify the View/Edit permissions.
+     */
+    public boolean isAllowManageUsers() {
+        return allowManageUsers;
+    }
+
+    /**
+     * Sets the permission to add/remove users and modify the View/Edit permissions.
+     *
+     * @param allowManageUsers
+     */
+    public void setAllowManageUsers(boolean allowManageUsers) {
+        this.allowManageUsers = allowManageUsers;
+    }
+
+    public boolean isAllowManageAllUsers() {
+        return allowManageAllUsers;
+    }
+
+    public void setAllowManageAllUsers(boolean allowManageAllUsers) {
+        this.allowManageAllUsers = allowManageAllUsers;
+    }
 
     /**
      * Gets the timestamp on which the schema, as visible to the <code>user</code>

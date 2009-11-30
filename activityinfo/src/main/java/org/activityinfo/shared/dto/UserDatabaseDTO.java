@@ -12,8 +12,9 @@ public class UserDatabaseDTO extends SchemaModel implements EntityDTO {
 	
 	private List<PartnerModel> partners = new ArrayList<PartnerModel>(0);
 	private List<ActivityModel> activities = new ArrayList<ActivityModel>(0);
-	
-	public UserDatabaseDTO() {
+
+
+    public UserDatabaseDTO() {
 		
 	}
 
@@ -180,6 +181,19 @@ public class UserDatabaseDTO extends SchemaModel implements EntityDTO {
         return null;
     }
 
-  
+    public boolean isManageUsersAllowed() {
+        return (Boolean) get("manageUsersAllowed");
+    }
 
+    public void setManageUsersAllowed(boolean allowed) {
+        set("manageUsersAllowed", allowed);
+    }
+
+    public boolean isManageAllUsersAllowed() {
+        return (Boolean)get("manageAllUsersAllowed");
+    }
+
+    public void setManageAllUsersAllowed(boolean allowed) {
+        set("manageAllUsersAllowed", allowed);
+    }
 }

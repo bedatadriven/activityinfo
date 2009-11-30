@@ -30,6 +30,7 @@ import org.activityinfo.shared.command.UpdateUserPermissions;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.dto.UserModel;
 import org.activityinfo.shared.exception.CommandException;
+import org.activityinfo.shared.exception.IllegalAccessCommandException;
 
 import java.util.Date;
 
@@ -58,20 +59,45 @@ public class UpdateUserPermissionsHandler implements CommandHandler<UpdateUserPe
 		 */
 		
 		UserDatabase database = schemaDAO.findById(UserDatabase.class, cmd.getDatabaseId());
-		if(!database.isAllowedDesign(currentUser)) {
-			throw new CommandException();
-		}
-		
-		/* 
+        Partner partner = schemaDAO.findById(Partner.class, cmd.getModel().getPartner().getId());
+
+        UserPermission currentUserPermission;
+        if(database.getOwner().getId() != currentUser.getId()) {
+            currentUserPermission = database.getPermissionByUser(currentUser);
+
+            // confirm that the user has the right to manage other users
+            if(!currentUserPermission.isAllowManageUsers())
+                throw new IllegalAccessCommandException("Current user does not have the right to manage other users");
+            // confirm that the user has the right to manage this user
+            if(!currentUserPermission.isAllowManageAllUsers() &&
+                       currentUserPermission.getPartner().getId() != partner.getId())
+                throw new IllegalAccessCommandException("Current user does not have the right to manage users from other partners");
+
+            // confirm that the user is not try to assign rights above their paygrade
+            if(!currentUserPermission.isAllowDesign() &&
+                    cmd.getModel().getAllowDesign())
+                throw new IllegalAccessCommandException("Current user does not have the right to grant design priviledges");
+
+            if(!currentUserPermission.isAllowManageAllUsers() &&
+                 (cmd.getModel().getAllowViewAll() || cmd.getModel().getAllowEditAll() ||
+                  cmd.getModel().getAllowManageAllUsers()))
+                throw new IllegalAccessCommandException("Current user does not have the right to grant viewAll, editAll, or manageAllUsers priviledges");
+        } else {
+            // the owner's rights are implict, define relevant rights here for convienance
+            currentUserPermission = new UserPermission();
+            currentUserPermission.setAllowManageUsers(true);
+            currentUserPermission.setAllowManageAllUsers(true);
+            currentUserPermission.setAllowDesign(true);
+        }
+
+		/*
 		 * Does the user (with this email) already exist ?
 		 * 
 		 * If not, create a new login record
 		 * 
 		 */
         UserModel model = cmd.getModel();
-		
 		User user = authDAO.getUserByEmail(model.getEmail());
-		
 		if(user == null) {
 		    user = authDAO.createUser(model.getEmail(), model.getName(), currentUser.getLocale(), currentUser);
         }
@@ -79,31 +105,48 @@ public class UpdateUserPermissionsHandler implements CommandHandler<UpdateUserPe
 		/* 
 		 * Does the permission record exist ?
 		 */
-		
 		UserPermission perm = database.getPermissionByUser(user);
-		
 		if(perm == null ) {
 			perm = new UserPermission(database, user);
-			
-			updatePerm(perm, model);
-			 
+			updatePerm(currentUserPermission, perm, model);
 			schemaDAO.save(perm);
-
 		} else {
-			
-			updatePerm(perm, model);
+			updatePerm(currentUserPermission, perm, model);
 		}
 		
 		return null;
 	}
 
-	protected void updatePerm(UserPermission perm, UserModel model) {
+	protected void updatePerm(UserPermission currentUserPermission, UserPermission perm, UserModel model) {
+
 		perm.setPartner( schemaDAO.findById(Partner.class, model.getPartner().getId()) );
 		perm.setAllowView( model.getAllowView() );
-		perm.setAllowViewAll( model.getAllowViewAll() );
 		perm.setAllowEdit( model.getAllowEdit() );
-		perm.setAllowEditAll( model.getAllowEditAll() );
-		perm.setAllowDesign( model.getAllowDesign() );
+        perm.setAllowManageUsers( model.getAllowManageUsers() );
+
+        // If currentUser does not have the manageAllUsers permission, then
+        // careful not to overwrite permissions that may have been granted by
+        // other users with greater permissions
+
+        // The exception is when a user with partner-level user management rights
+        // (manageUsers but not manageAllUsers) removes view or edit permissions from
+        // an existing user who had been previously granted viewAll or editAll rights
+        // by a user with greater permissions.
+        //
+        // In this case, the only logical outcome (I think) is that
+
+        if( currentUserPermission.isAllowManageAllUsers() || !model.getAllowView())
+            perm.setAllowViewAll( model.getAllowViewAll() );
+
+        if( currentUserPermission.isAllowManageAllUsers() || !model.getAllowEdit())
+            perm.setAllowEditAll( model.getAllowEditAll() );
+
+        if( currentUserPermission.isAllowManageAllUsers() )
+            perm.setAllowManageAllUsers( model.getAllowManageAllUsers() );
+
+        if( currentUserPermission.isAllowDesign())
+            perm.setAllowDesign( model.getAllowDesign() );
+
         perm.setLastSchemaUpdate(new Date());
 	}
 }

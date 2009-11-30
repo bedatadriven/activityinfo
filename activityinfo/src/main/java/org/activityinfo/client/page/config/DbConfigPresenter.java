@@ -21,17 +21,20 @@ public class DbConfigPresenter implements PagePresenter
     }
 
     public void go(UserDatabaseDTO db) {
-        UserDatabaseDTO db1 = db;
         view.setHeading(db.getFullName() == null ? db.getName() : db.getFullName());
 
-        view.add(Application.CONSTANTS.design(), "Créer ou modifier des activités et leurs indicateurs qui fait parti de " +
-                "cette base de données", "db-design.png", new DbPlace(Pages.Design, db.getId()));
-
-        view.add(Application.CONSTANTS.partner(), "Definer les organisations partenaire qui participe dans cette " +
-                "base de données.", "db-partners.png", new DbPlace(Pages.DatabasePartners, db.getId()) );
-
-        view.add(Application.CONSTANTS.users(), "Ajouter des utilistateurs ou controler leur niveau d'accès.",
-                "db-users.png", new DbPlace(Pages.DatabaseUsers, db.getId()));
+        if(db.isDesignAllowed()) {
+            view.add(Application.CONSTANTS.design(), "Créer ou modifier des activités et leurs indicateurs qui fait parti de " +
+                    "cette base de données", "db-design.png", new DbPlace(Pages.Design, db.getId()));
+        }
+        if(db.isManageAllUsersAllowed()) {
+            view.add(Application.CONSTANTS.partner(), "Definer les organisations partenaire qui participe dans cette " +
+                    "base de données.", "db-partners.png", new DbPlace(Pages.DatabasePartners, db.getId()) );
+        }
+        if(db.isManageUsersAllowed()) {
+            view.add(Application.CONSTANTS.users(), "Ajouter des utilistateurs ou controler leur niveau d'accès.",
+                    "db-users.png", new DbPlace(Pages.DatabaseUsers, db.getId()));
+        }
 
 //        view.add("Cibles", "Définer les cibles pour les indicateurs.", "db-targets",
 //                new DbPlace(Pages.DatabaseTargets, db.getId()));

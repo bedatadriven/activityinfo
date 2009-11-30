@@ -8,6 +8,7 @@ import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.data.ModelData;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.page.common.dialog.FormDialogCallback;
 import org.activityinfo.client.page.common.dialog.FormDialogImpl;
@@ -20,10 +21,10 @@ import org.activityinfo.shared.dto.UserModel;
 
 import java.util.ArrayList;
 import java.util.List;
-/*
+
+/**
  * @author Alex Bertram
  */
-
 public class DbUserGrid extends AbstractEditorGridView<UserModel, DbUserEditor>
         implements DbUserEditor.View {
 
@@ -36,10 +37,11 @@ public class DbUserGrid extends AbstractEditorGridView<UserModel, DbUserEditor>
     }
 
     public void init(DbUserEditor presenter, UserDatabaseDTO db, ListStore<UserModel> store) {
-        super.init(presenter, store);
         this.db = db;
+        super.init(presenter, store);
         this.setHeading(db.getName() + " - " + Application.CONSTANTS.users());
     }
+
 
 
     @Override
@@ -65,31 +67,55 @@ public class DbUserGrid extends AbstractEditorGridView<UserModel, DbUserEditor>
         allowEdit.setDataIndex("allowEdit");
         allowEdit.setToolTip(Application.CONSTANTS.allowEditLong());
         columns.add(allowEdit);
-        
-        CheckColumnConfig allowViewAll = new CheckColumnConfig("allowViewAll", Application.CONSTANTS.allowViewAll(), 75);
-        allowViewAll.setToolTip(Application.CONSTANTS.allowViewAllLong());
-        columns.add(allowViewAll);
 
-        CheckColumnConfig allowEditAll = new CheckColumnConfig("allowEditAll", Application.CONSTANTS.allowEditAll(), 75);
-        allowEditAll.setToolTip(Application.CONSTANTS.allowEditAllLong());
-        columns.add(allowEditAll);
+        // only users with the right to manage all users can view/change these attributes
+        CheckColumnConfig allowViewAll = null;
+        CheckColumnConfig allowEditAll = null;
 
-        CheckColumnConfig allowDesign = new CheckColumnConfig("allowDesign", Application.CONSTANTS.allowDesign(), 75);
-        allowDesign.setToolTip(Application.CONSTANTS.allowDesignLong());
-        columns.add(allowDesign);
+        if(db.isManageAllUsersAllowed()) {
+            allowViewAll = new CheckColumnConfig("allowViewAll", Application.CONSTANTS.allowViewAll(), 75);
+            allowViewAll.setToolTip(Application.CONSTANTS.allowViewAllLong());
+            columns.add(allowViewAll);
+
+            allowEditAll = new CheckColumnConfig("allowEditAll", Application.CONSTANTS.allowEditAll(), 75);
+            allowEditAll.setToolTip(Application.CONSTANTS.allowEditAllLong());
+            columns.add(allowEditAll);
+        }
+
+        CheckColumnConfig allowManageUsers = null;
+        if(db.isManageUsersAllowed()) {
+            allowManageUsers = new CheckColumnConfig("allowManageUsers", "Gérér des utilisateurs", 150);
+            columns.add(allowManageUsers);
+        }
+
+        CheckColumnConfig allowManageAllUsers = null;
+        if(db.isManageAllUsersAllowed()) {
+            allowManageAllUsers = new CheckColumnConfig("allowManageAllUsers", "Gérér tout des utilisateurs", 150);
+            columns.add(allowManageAllUsers);
+        }
+
+        // only users with the right to design them selves can change the design attribute
+        CheckColumnConfig allowDesign = null;
+        if(db.isDesignAllowed()) {
+            allowDesign = new CheckColumnConfig("allowDesign", Application.CONSTANTS.allowDesign(), 75);
+            allowDesign.setToolTip(Application.CONSTANTS.allowDesignLong());
+            columns.add(allowDesign);
+        }
 
         final ListStore<UserModel> listStore = (ListStore) store;
         grid = new EditorGrid<UserModel>(listStore, new ColumnModel(columns));
         grid.setLoadMask(true);
-        grid.addPlugin(allowDesign);
-     //   grid.addPlugin(allowView);
-        grid.addPlugin(allowViewAll);
+        if(allowDesign!=null) grid.addPlugin(allowDesign);
+        //   grid.addPlugin(allowView);
+        if(allowViewAll!=null) grid.addPlugin(allowViewAll);
         grid.addPlugin(allowEdit);
-        grid.addPlugin(allowEditAll);
+        if(allowEditAll!=null) grid.addPlugin(allowEditAll);
+        if(allowManageUsers!=null) grid.addPlugin(allowManageUsers);
+        if(allowManageAllUsers!=null) grid.addPlugin(allowManageAllUsers);
         grid.addListener(Events.CellClick, new Listener<GridEvent>() {
 
             public void handleEvent(GridEvent ge) {
-               
+
                 if(ge.getColIndex() >= 4) {
 
                     String property = columns.get(ge.getColIndex()).getDataIndex();

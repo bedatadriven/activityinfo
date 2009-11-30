@@ -17,10 +17,10 @@ import org.activityinfo.shared.dto.Schema;
 import static org.easymock.EasyMock.*;
 import org.junit.Assert;
 import org.junit.Test;
-/*
+
+/**
  * @author Alex Bertram
  */
-
 public class DbUserTest {
 
     @Test

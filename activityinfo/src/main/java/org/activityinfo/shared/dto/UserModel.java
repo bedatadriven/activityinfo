@@ -9,6 +9,8 @@ public class UserModel extends BaseModel implements DTO {
         setAllowViewAll(false);
         setAllowEdit(false);
         setAllowEditAll(false);
+        setAllowManageUsers(false);
+        setAllowManageAllUsers(false);
         setAllowDesign(false);
 
 	}
@@ -68,7 +70,23 @@ public class UserModel extends BaseModel implements DTO {
 	public boolean getAllowEditAll() {
 		return (Boolean)get("allowEditAll");
 	}
-	
+
+    public boolean getAllowManageUsers() {
+        return (Boolean)get("allowManageUsers");
+    }
+
+    public void setAllowManageUsers(boolean allowManageUsers) {
+        set("allowManageUsers", allowManageUsers);
+    }
+
+    public boolean getAllowManageAllUsers() {
+        return (Boolean)get("allowManageAllUsers");
+    }
+
+    public void setAllowManageAllUsers(boolean allowManageAll) {
+        set("allowManageAllUsers", allowManageAll);
+    }
+
 	public PartnerModel getPartner() { 
 		return get("partner");
 	}

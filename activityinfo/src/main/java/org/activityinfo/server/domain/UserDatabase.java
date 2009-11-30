@@ -18,12 +18,10 @@
  */
 package org.activityinfo.server.domain;
 
-
 import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-
 
 /**
  *
@@ -239,7 +237,6 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
 		
 		UserPermission permission = this.getPermissionByUser(user);
         return permission != null && permission.isAllowView();
-
     }
 
     /**
@@ -285,7 +282,21 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
 		
 		UserPermission permission = this.getPermissionByUser(user);
         return permission != null && permission.isAllowDesign();
+    }
 
+    public boolean isAllowedManageUsers(User user, Partner partner) {
+        if(getOwner().getId() == user.getId())
+            return true;
+
+		UserPermission permission = this.getPermissionByUser(user);
+        if(permission == null)
+            return false;
+        if(!permission.isAllowManageUsers())
+            return false;
+        if(!permission.isAllowManageAllUsers() && permission.getPartner().getId() != partner.getId())
+            return false;
+
+        return true;
     }
 
     /**
@@ -371,4 +382,5 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
     public void setLastSchemaUpdate(Date lastSchemaUpdate) {
         this.lastSchemaUpdate = lastSchemaUpdate;
     }
+
 }

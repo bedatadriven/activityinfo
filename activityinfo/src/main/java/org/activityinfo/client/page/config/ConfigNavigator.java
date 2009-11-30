@@ -97,9 +97,11 @@ public class ConfigNavigator implements Navigator {
             public void got(Schema result) {
                 List<Link> list = new ArrayList<Link>();
                 for(UserDatabaseDTO db : result.getDatabases()) {
-                    Link link = new Link(db.getName(), new DbPlace(Pages.DatabaseConfig, db.getId()), icons.database());
-                    link.set("db", db);
-                    list.add(link);
+                    if(db.isDesignAllowed() || db.isManageUsersAllowed()) {
+                        Link link = new Link(db.getName(), new DbPlace(Pages.DatabaseConfig, db.getId()), icons.database());
+                        link.set("db", db);
+                        list.add(link);
+                    }
                 }
                 callback.onSuccess(list);
             }

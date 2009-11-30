@@ -37,6 +37,8 @@ public class DummyData {
         pear.setFullName("Program of Expanded Assistance to Refugees");
         pear.setEditAllAllowed(false);
         pear.setEditAllowed(true);
+        pear.setManageUsersAllowed(true);
+        pear.setManageAllUsersAllowed(false);
         pear.setDesignAllowed(true);
         pear.setMyPartnerId(88);
         pear.setCountry(country);
@@ -77,6 +79,9 @@ public class DummyData {
         typhaine.setName("typhaine");
         typhaine.setEmail("typhaine@sol.net");
         typhaine.setAllowView(true);
+        typhaine.setAllowManageUsers(true);
+        typhaine.setAllowManageAllUsers(false);
+
         users.add(typhaine);
 
         return new UserResult(users);

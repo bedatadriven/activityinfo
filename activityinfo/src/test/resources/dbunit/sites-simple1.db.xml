@@ -211,24 +211,36 @@
 	<!-- Bavon at NRC has access to PEAR -->
  	<userPermission userPermissionId="1"
                      databaseId="1" userId="2" partnerId="1"
-                     allowView="1" allowViewAll="0" allowEdit="1" allowEditAll="0" allowDesign="0"
+                     allowView="1" allowViewAll="0"
+                     allowEdit="1" allowEditAll="0"
+                     allowManageUsers="1" allowManageAllUsers="1"
+                     allowDesign="0"
                      lastSchemaUpdate="2009-01-01"/>
 
 	<!-- Christian at NRC had access, but has been fired -->
 
  	<userPermission userPermissionId="2"
                      databaseId="1" userId="5" partnerId="1"
-                     allowView="0" allowViewAll="0" allowEdit="0" allowEditAll="0" allowDesign="0"
+                     allowView="0" allowViewAll="0"
+                     allowEdit="0" allowEditAll="0"
+                     allowDesign="0"
+                     allowManageUsers="0" allowManageAllUsers="0"
                      lastSchemaUpdate="2009-01-01"/>
 
     <userPermission userPermissionId="3"
                     databaseId="1" userId="3" partnerId="2"
-                    allowView="1" allowViewAll="0" allowEdit="1" allowEditAll="1" allowDesign="1"
+                    allowView="1" allowViewAll="0"
+                    allowEdit="1" allowEditAll="1"
+                    allowDesign="1"
+                    allowManageUsers="1" allowManageAllUsers="0"
                     lastSchemaUpdate="2009-01-01"/>
 
     <userPermission userPermissionId="4"
                     databaseId="1" userId="4" partnerId="2"
-                    allowView="1" allowViewAll="0" allowEdit="0" allowEditAll="1" allowDesign="1"
+                    allowView="1" allowViewAll="0"
+                    allowEdit="0" allowEditAll="1"
+                    allowDesign="1"
+                    allowManageUsers="0" allowManageAllUsers="0"
                     lastSchemaUpdate="2009-01-01"/>
 
 

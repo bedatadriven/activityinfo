@@ -36,7 +36,19 @@ public class LocalBaseMap extends BaseMap {
 
     @Override
     public String getTileUrl(int zoom, int x, int y) {
-        int server = (requestIndex++)%4;
+
+        // certain browsers restrict the number of simultaneous connections
+        // to a single host. This has a negative impact on the performance
+        // of google maps.
+        //
+        // to circumvente this problem, we have added a number of aliases
+        // for the activityinfo.org server, at mt0.activityinfo.org, mt1.activityinfo.org
+        // mt2.activityinfo.org, and mt3.activityinfo.
+        //
+        // choose an arbitrary server here based on the grid coordinates
+
+        int server = (x % 2) + 2*(y % 2);
+
         StringBuilder sb = new StringBuilder();
         sb.append("http://mt").append(server).append(".activityinfo.org/tiles/")
                 .append(getId()).append("/v").append(version).append("/z")

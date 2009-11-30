@@ -17,7 +17,7 @@ public class GetUsers extends PagingGetCommand<UserResult> {
     private int databaseId;
 
     private GetUsers() {
-
+        // required
     }
 
 	public GetUsers(int databaseId) {
@@ -26,14 +26,18 @@ public class GetUsers extends PagingGetCommand<UserResult> {
 	}
 
     /**
+     * Gets the id of the database for which to query the list of UserPermissions.
      *
-     * @return The Id of the database for which to query the list of authorized users.
+     * @return the id of the database for which to query the list of authorized users.
      */
 	public int getDatabaseId() {
 		return databaseId;
 	}
 
-
+    /**
+     * Sets the id of the database for which toquery the list of UserPermissions.
+      * @param databaseId
+     */
 	public void setDatabaseId(int databaseId) {
 		this.databaseId = databaseId;
 	}
