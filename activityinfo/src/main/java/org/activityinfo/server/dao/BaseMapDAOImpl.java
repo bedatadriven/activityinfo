@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-/*
+
+/**
  * @author Alex Bertram
  */
-
 public class BaseMapDAOImpl implements BaseMapDAO {
 
     private Map<String, BaseMap> baseMaps;
@@ -19,10 +19,15 @@ public class BaseMapDAOImpl implements BaseMapDAO {
     public BaseMapDAOImpl() {
         baseMaps = new HashMap<String, BaseMap>();
 
+        // TODO: this must be configurable!!
+        // What about remote sources? This should probably be moved into the
+        // database
         File tileRoot = new File("e://tiles");
         if(!tileRoot.exists()) {
             tileRoot = new File("c://tiles"); // for the development machine
         }
+        if(!tileRoot.exists())
+            return;
 
         for(File tileSet : tileRoot.listFiles()) {
             if(tileSet.isDirectory()) {
