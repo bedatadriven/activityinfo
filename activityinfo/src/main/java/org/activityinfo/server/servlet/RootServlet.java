@@ -61,7 +61,8 @@ public class RootServlet extends HttpServlet {
         // Until we can figure out what the heck is going on and "fix" the redirector,
         // we are just going to redirect all IE6 users to port 8080
 
-        if(request.getServerPort() == 80 &&
+        if(request.getServerPort() == 80  && request.getServerName().endsWith("activityinfo.org") &&
+                !"80".equals(request.getParameter("port")) &&
                 request.getHeader("User-Agent").indexOf("MSIE 6.0") != -1) {
 
             StringBuilder directUrl = new StringBuilder();
