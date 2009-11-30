@@ -55,8 +55,8 @@ public class AddPartnerHandler implements CommandHandler<AddPartner> {
         UserDatabase db = em.find(UserDatabase.class, cmd.getDatabaseId());
         if(db.getOwner().getId() != user.getId()) {
             UserPermission perm = db.getPermissionByUser(user);
-            if(perm == null || perm.isAllowDesign()) {
-                throw new IllegalAccessCommandException();
+            if(perm == null || !perm.isAllowManageAllUsers()) {
+                throw new IllegalAccessCommandException("The user does not have the manageAllUsers permission.");
             }
         }
 
