@@ -84,6 +84,9 @@ public class ReportPreview extends ContentPanel implements ReportPreviewPresente
         toolBar.addRefreshButton();
         toolBar.addEditButton();
 
+        // do initial load
+        presenter.onUIAction(UIActions.refresh);
+
         ExportMenuButton export = new ExportMenuButton(RenderElement.Format.Word, presenter);
         toolBar.add(export);
 
@@ -162,7 +165,6 @@ public class ReportPreview extends ContentPanel implements ReportPreviewPresente
 
         // TODO: most of this should be in the presenter
         dateRange = combo.getValue().getValue();
-        presenter.onUIAction(UIActions.refresh);
     }
 
     public void setPreviewHtml(String html) {
