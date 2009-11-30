@@ -40,6 +40,7 @@ import org.activityinfo.shared.report.model.MapElement;
 import javax.servlet.ServletContext;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.File;
 
 /**
  *
@@ -60,6 +61,15 @@ public class RenderElementHandler implements CommandHandler<RenderElement> {
         this.rendererFactory = rendererFactory;
         this.tempPath = context.getRealPath("/temp");
         this.generator = generator;
+
+        // Assure that the temp folder exists
+        try {
+            File tempFolder = new File(tempPath);
+            tempFolder.mkdirs();
+        } catch(SecurityException e) {
+            throw new RuntimeException("Could not create the temporary folder (your_context\temp). You may need to change " +
+                    "some file permissions.");
+        }
     }
 
     public CommandResult execute(RenderElement cmd, User user) throws CommandException {
