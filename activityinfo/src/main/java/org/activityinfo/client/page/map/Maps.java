@@ -9,6 +9,5 @@ public class Maps {
             super(id);
         }
     }
-    public static final PageId Home = new MapId("maps");
-    public static final PageId Single = new MapId("sindicator");
+    public static final PageId Maps = new MapId("maps");
 }

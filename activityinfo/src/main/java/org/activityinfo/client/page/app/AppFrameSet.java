@@ -37,7 +37,7 @@ import org.activityinfo.client.page.charts.ChartPlace;
 import org.activityinfo.client.page.common.widget.LoadingPlaceHolder;
 import org.activityinfo.client.page.config.DbListPlace;
 import org.activityinfo.client.page.entry.SiteGridPlace;
-import org.activityinfo.client.page.map.MapHomePlace;
+import org.activityinfo.client.page.map.MapPlace;
 import org.activityinfo.client.page.report.ReportHomePlace;
 import org.activityinfo.client.page.table.PivotPlace;
 import org.activityinfo.client.page.welcome.WelcomePlace;
@@ -96,7 +96,7 @@ public class AppFrameSet  implements FrameSetPresenter {
         addNavLink(Application.CONSTANTS.dataEntry(), Application.ICONS.dataEntry(), new SiteGridPlace());
         addNavLink(Application.CONSTANTS.reports(), Application.ICONS.report(), new ReportHomePlace());
         addNavLink("Graphiques", Application.ICONS.barChart(), new ChartPlace());
-        addNavLink(Application.CONSTANTS.maps(), Application.ICONS.map(), new MapHomePlace());
+        addNavLink(Application.CONSTANTS.maps(), Application.ICONS.map(), new MapPlace());
         addNavLink("Tableaux", Application.ICONS.table(), new PivotPlace());
         addNavLink(Application.CONSTANTS.setup(), Application.ICONS.setup(), new DbListPlace());
 

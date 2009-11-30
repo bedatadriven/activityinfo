@@ -7,18 +7,18 @@ import org.activityinfo.client.Application;
 import org.activityinfo.client.page.common.widget.ColorField;
 import org.activityinfo.client.page.common.widget.MappingComboBox;
 import org.activityinfo.shared.report.model.BubbleMapLayer;
-/*
+
+/**
  * @author Alex Bertram
  */
-
-public class GsSymbolForm extends FormPanel {
+public class BubbleLayerForm extends FormPanel {
 
     private NumberField maxRadiusField;
     private NumberField minRadiusField;
     private ColorField colorField;
     private MappingComboBox<Integer> clusterCombo;
 
-    public GsSymbolForm() {
+    public BubbleLayerForm() {
 
         setHeading("Sélectionner le symbol");
         setIcon(Application.ICONS.graduatedSymbol());
@@ -57,6 +57,7 @@ public class GsSymbolForm extends FormPanel {
     }
 
     public void updateLayer(BubbleMapLayer layer) {
+        layer.setScaling(BubbleMapLayer.ScalingType.Graduated);
         layer.setMaxRadius(maxRadiusField.getValue().intValue());
         layer.setMinRadius(minRadiusField.getValue().intValue());
         layer.setDefaultColor(colorField.getIntValue());

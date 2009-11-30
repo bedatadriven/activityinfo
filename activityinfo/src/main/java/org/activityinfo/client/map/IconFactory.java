@@ -72,7 +72,7 @@ public class IconFactory {
 
     public static Icon createBubbleMapMarker(BubbleMapMarker marker) {
         StringBuilder sb = new StringBuilder();
-        sb.append("icon?t=bubble&r=").append(marker.getRadius()).append("&c=").append(marker.getRadius());
+        sb.append("icon?t=bubble&r=").append(marker.getRadius()).append("&c=").append(marker.getColor());
         String iconUrl = sb.toString();
         int size = marker.getRadius() * 2;
 

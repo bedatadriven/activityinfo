@@ -77,6 +77,7 @@ public class SiteGridPlace extends AbstractPagingGridPlace {
     public int hashCode() {
         return activityId;
     }
+    
 
     public static class Parser implements PlaceParser {
 

@@ -1,8 +1,7 @@
 package org.activityinfo.client.page.map;
 
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.Status;
@@ -18,6 +17,8 @@ import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.maps.client.overlay.MarkerOptions;
 import com.google.gwt.maps.client.overlay.Overlay;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.core.client.GWT;
+import com.allen_sauer.gwt.log.client.Log;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.command.monitor.MaskingAsyncMonitor;
 import org.activityinfo.client.map.GcIconFactory;
@@ -82,15 +83,33 @@ public class MapPreview extends ContentPanel {
         
         MapApiLoader.preload();
 
+        addListener(Events.AfterLayout, new Listener<BaseEvent>() {
+            @Override
+            public void handleEvent(BaseEvent be) {
+                if(map!=null)
+                    map.checkResizeAndCenter();
+                if(pendingZoom != null) {
+                    Log.debug("MapPreview: zooming to " + map.getBoundsZoomLevel(pendingZoom));
+                    map.setCenter(pendingZoom.getCenter(), 
+                            map.getBoundsZoomLevel(pendingZoom));
+                }
+            }
+        });
+
+
     }
+
 
     private void zoomToBounds(LatLngBounds bounds) {
 
         int zoomLevel = map.getBoundsZoomLevel(bounds);
         if(zoomLevel == 0) {
+            Log.debug("MapPreview: deferring zoom.");
             pendingZoom = bounds;
         } else {
+            Log.debug("MapPreview: zooming to level " + zoomLevel);
             map.setCenter(bounds.getCenter(), zoomLevel);
+            pendingZoom = null;
         }
     }
 
@@ -127,8 +146,8 @@ public class MapPreview extends ContentPanel {
 
     private LatLngBounds llBoundsForExtents(Extents extents) {
         return LatLngBounds.newInstance(
-            LatLng.newInstance(extents.getMaxLat(), extents.getMinLon()),
-            LatLng.newInstance(extents.getMinLat(), extents.getMaxLon()));
+            LatLng.newInstance(extents.getMinLat(), extents.getMinLon()),
+            LatLng.newInstance(extents.getMaxLat(), extents.getMaxLon()));
     }
 
 
@@ -199,11 +218,14 @@ public class MapPreview extends ContentPanel {
         map.setWidth(element.getWidth()+ "px");
         map.setHeight(element.getHeight() + "px");
 
+        Log.debug("MapPreview: Received content, extents are = " + content.getExtents().toString());
+
+        zoomToBounds(llBoundsForExtents(content.getExtents()));
+
         layout();
 
         map.checkResizeAndCenter();
 
-        zoomToBounds(llBoundsForExtents(content.getExtents()));
 
         // TODO: i18n
         status.setStatus(content.getUnmappedSites().size() + " site(s) ont manqué des coordinées géographique", null);
@@ -216,6 +238,7 @@ public class MapPreview extends ContentPanel {
             Icon icon = IconFactory.createIcon(marker);
 
             LatLng latLng = LatLng.newInstance(marker.getLat(), marker.getLng());
+            
 
             MarkerOptions options = MarkerOptions.newInstance();
             options.setIcon(icon);

@@ -81,4 +81,14 @@ public class Extents implements Serializable {
 	public LatLng center() {
 		return new LatLng( (minLat + maxLat) / 2.0, (minLon + maxLon) / 2.0 );
 	}
+
+    @Override
+    public String toString() {
+        return "Extents{" +
+                "minLat=" + minLat +
+                ", maxLat=" + maxLat +
+                ", minLon=" + minLon +
+                ", maxLon=" + maxLon +
+                '}';
+    }
 }

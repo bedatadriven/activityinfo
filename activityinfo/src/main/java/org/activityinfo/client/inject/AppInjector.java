@@ -24,7 +24,6 @@ import org.activityinfo.client.page.config.design.Designer;
 import org.activityinfo.client.page.entry.DataEntryLoader;
 import org.activityinfo.client.page.entry.DataEntryNavigator;
 import org.activityinfo.client.page.entry.EntryModule;
-import org.activityinfo.client.page.map.MapHomePage;
 import org.activityinfo.client.page.map.MapLoader;
 import org.activityinfo.client.page.map.SingleMapForm;
 import org.activityinfo.client.page.report.ReportHomePresenter;
@@ -80,8 +79,7 @@ public interface AppInjector extends Ginjector {
     
     PivotPresenter getPivotPresenter();
 
-    MapHomePage getMapHome();
-    
+
     SingleMapForm getSingleMapForm();
 
     UIConstants getMessages();

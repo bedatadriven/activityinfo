@@ -23,11 +23,8 @@ public class MapLoader implements PageLoader {
     public MapLoader(AppInjector injector, PageManager pageManager, PlaceSerializer placeSerializer) {
         this.injector = injector;
 
-        pageManager.registerPageLoader(Maps.Home, this);
-        pageManager.registerPageLoader(Maps.Single, this);
-
-        placeSerializer.registerStatelessPlace(Maps.Home, new MapHomePlace());
-        placeSerializer.registerStatelessPlace(Maps.Single, new SingleMapPlace());
+        pageManager.registerPageLoader(Maps.Maps, this);
+        placeSerializer.registerStatelessPlace(Maps.Maps, new MapPlace());
     }
 
     @Override
@@ -42,21 +39,9 @@ public class MapLoader implements PageLoader {
             @Override
             public void onSuccess() {
 
+                if(Maps.Maps.equals(pageId)) {
 
-                if(Maps.Home.equals(pageId)) {
-                    callback.onSuccess(injector.getMapHome());
-
-                } else {
-
-                    MapForm form;
-
-                    if(pageId.equals(Maps.Single)) {
-                        form = injector.getSingleMapForm();
-                    } else {
-                        callback.onFailure(new Exception("Unknown page type" + pageId.toString()));
-                        return;
-                    }
-
+                    MapForm form= injector.getSingleMapForm();
                     MapPage page = new MapPage(form);
                     MapPresenter presenter = new MapPresenter(pageId,
                             injector.getEventBus(),
@@ -65,7 +50,6 @@ public class MapLoader implements PageLoader {
 
                     callback.onSuccess(presenter);
                 }
-
             }
         });
 

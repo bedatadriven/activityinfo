@@ -71,6 +71,9 @@
 </form>
 <script type="text/javascript" src="http://twitter.com/javascripts/blogger.js"></script>
 <script type="text/javascript" src="http://twitter.com/statuses/user_timeline/activityinfo.json?callback=twitterCallback2&amp;count=5"></script>
+<#-- This is the tracking code for Google Analytics. You can remove this if you do not wish to track
+     usage. If you do wish to use Google Analytics to track usage, you will need to replace UA-11567120-1 with your
+     own ID. -->
 <script type="text/javascript">
 var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
 document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));

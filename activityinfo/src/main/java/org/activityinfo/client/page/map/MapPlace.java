@@ -6,14 +6,14 @@ import org.activityinfo.client.ViewPath;
 import org.activityinfo.client.page.PageId;
 
 import java.util.List;
-/*
+
+/**
  * @author Alex Bertram
  */
-
-public class SingleMapPlace implements Place {
+public class MapPlace implements Place {
 
     public PageId getPageId() {
-        return Maps.Single;
+        return Maps.Maps;
     }
 
     public String pageStateToken() {
@@ -26,7 +26,7 @@ public class SingleMapPlace implements Place {
 
     public static class Parser implements PlaceParser {
         public Place parse(String token) {
-            return new SingleMapPlace();
+            return new MapPlace();
         }
     }
 }

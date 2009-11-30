@@ -6,10 +6,10 @@ import org.activityinfo.client.page.NavigationCallback;
 import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.PagePresenter;
 import org.activityinfo.client.page.Pages;
+import org.activityinfo.client.page.map.MapPlace;
 import org.activityinfo.client.page.charts.ChartPlace;
 import org.activityinfo.client.page.common.GalleryView;
 import org.activityinfo.client.page.entry.SiteGridPlace;
-import org.activityinfo.client.page.map.MapHomePlace;
 import org.activityinfo.client.page.table.PivotPlace;
 /*
  * @author Alex Bertram
@@ -47,8 +47,8 @@ public class Welcome implements PagePresenter {
                     "charts/time.png", new ChartPlace());
 
         this.view.add("Cartes",
-                "Sortir rapidement des cartes variés qui parlent beaucoup",
-                    "maps/single.png", new MapHomePlace());
+                "Sortir rapidement de cartographies des indicateurs",
+                    "map.png", new MapPlace());
 
 
 //        this.view.add("Exporter des Données Brutes",
