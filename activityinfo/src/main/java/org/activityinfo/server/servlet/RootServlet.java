@@ -39,7 +39,7 @@ import java.util.Map;
 @Singleton
 public class RootServlet extends HttpServlet {
 
-
+               
     private final Injector injector;
     private final Configuration templateCfg;
 
@@ -97,11 +97,14 @@ public class RootServlet extends HttpServlet {
     }
 
     private String getBookmark(HttpServletRequest req) {
+        StringBuilder sb = new StringBuilder();
+        if(req.getParameter("gwt.hosted") != null && req.getParameter("gwt.hosted").length()!=0)
+            sb.append("?gwt.hosted=").append(req.getParameter("gwt.hosted"));
+
         int hash = req.getRequestURL().lastIndexOf("/#");
-        if(hash == -1)
-            return "";
-        else 
-            return req.getRequestURL().substring(hash+2);
+        if (hash != -1)
+            sb.append(req.getRequestURL().substring(hash+1));
+        return sb.toString();
     }
 
     private void showLogin(HttpServletResponse response, String bookmark, String message) throws IOException {
@@ -196,7 +199,7 @@ public class RootServlet extends HttpServlet {
             cookie.setMaxAge(remember ? 30*24*60*60 : -1);
             response.addCookie(cookie);
 
-            response.sendRedirect((bookmark.length()==0 ? "" : "#" + bookmark));
+            response.sendRedirect(bookmark);
 
         } catch (InvalidLoginException e) {
 
