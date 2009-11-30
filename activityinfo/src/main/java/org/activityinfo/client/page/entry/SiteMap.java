@@ -9,7 +9,9 @@ import com.extjs.gxt.ui.client.state.StateManager;
 import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.maps.client.MapType;
@@ -30,9 +32,11 @@ import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.command.CommandService;
+import org.activityinfo.client.command.monitor.MaskingAsyncMonitor;
 import org.activityinfo.client.event.SiteEvent;
 import org.activityinfo.client.map.GcIconFactory;
 import org.activityinfo.client.map.MapTypeFactory;
+import org.activityinfo.client.map.MapApiLoader;
 import org.activityinfo.client.page.common.AdminBoundsHelper;
 import org.activityinfo.client.page.common.Shutdownable;
 import org.activityinfo.shared.command.GetSitePoints;
@@ -128,7 +132,7 @@ public class SiteMap extends ContentPanel implements Shutdownable {
         record.set("x", lng);
         record.set("y", lat);
         updateSiteCoords(((SiteModel) record.getModel()).getId(), lat, lng);
-        
+
     }
 
     public Bounds getSiteBounds(SiteModel site) {
@@ -137,63 +141,80 @@ public class SiteMap extends ContentPanel implements Shutdownable {
 
 
     @Override
-    protected void onRender(Element parent, int pos) {
+    protected void onRender(final Element parent, final int pos) {
+        SiteMap.super.onRender(parent, pos);
 
-        map = new MapWidget(LatLng.newInstance(-1.0, 28.0), 8);
-
-        MapType adminMap = MapTypeFactory.createLocalisationMapType();
-        map.addMapType(adminMap);
-        map.setCurrentMapType(adminMap);
-        map.removeMapType(MapType.getNormalMap());
-        map.removeMapType(MapType.getHybridMap());
-
-        map.addControl(new SmallMapControl());
-
-        setLayout(new FitLayout());
-        add(map);
-
-        map.addMapClickHandler(new MapClickHandler() {
-            @Override
-            public void onClick(MapClickEvent event) {
-                if(event.getOverlay() != null) {
-                    int siteId = siteIdFromOverlay(event.getOverlay());
-                    highlightSite(siteId, false);
-                    eventBus.fireEvent(new SiteEvent(AppEvents.SiteSelected, SiteMap.this, siteId));
-                }
-
-            }
-        });
-        map.addMapRightClickHandler(new MapRightClickHandler() {
-            public void onRightClick(MapRightClickEvent event) {
-                if(event.getOverlay() != null) {
-                    showContextMenu(event);
-                }
-            }
-        });
-
-        // Listen for when this component is resized/layed out
-        // to assure that map widget is properly restated
-        Listener<BaseEvent> resizeListener = new Listener<BaseEvent>() {
+        MapApiLoader.load(new MaskingAsyncMonitor(this, Application.CONSTANTS.loadingComponent()), new AsyncCallback<Void>() {
 
             @Override
-            public void handleEvent(BaseEvent be) {
-
-                map.checkResizeAndCenter();
-
-                if(pendingZoom != null) {
-                    zoomToBounds(pendingZoom);
-                }
+            public void onFailure(Throwable throwable) {
+                removeAll();
+                setLayout(new CenterLayout());
+                add(new Html(Application.CONSTANTS.connectionProblem()));
+                layout();
             }
-        };
 
-        this.addListener(Events.AfterLayout, resizeListener);
-        this.addListener(Events.Resize, resizeListener);
+            @Override
+            public void onSuccess(Void result) {
+                removeAll();
 
-        new MapDropTarget(this);
+                map = new MapWidget(LatLng.newInstance(-1.0, 28.0), 8);
 
-        super.onRender(parent, pos);
+                MapType adminMap = MapTypeFactory.createLocalisationMapType();
+                map.addMapType(adminMap);
+                map.setCurrentMapType(adminMap);
+                map.removeMapType(MapType.getNormalMap());
+                map.removeMapType(MapType.getHybridMap());
 
-        loadSites();
+                map.addControl(new SmallMapControl());
+
+                setLayout(new FitLayout());
+                add(map);
+
+                map.addMapClickHandler(new MapClickHandler() {
+                    @Override
+                    public void onClick(MapClickEvent event) {
+                        if(event.getOverlay() != null) {
+                            int siteId = siteIdFromOverlay(event.getOverlay());
+                            highlightSite(siteId, false);
+                            eventBus.fireEvent(new SiteEvent(AppEvents.SiteSelected, SiteMap.this, siteId));
+                        }
+
+                    }
+                });
+                map.addMapRightClickHandler(new MapRightClickHandler() {
+                    public void onRightClick(MapRightClickEvent event) {
+                        if(event.getOverlay() != null) {
+                            showContextMenu(event);
+                        }
+                    }
+                });
+
+                // Listen for when this component is resized/layed out
+                // to assure that map widget is properly restated
+                Listener<BaseEvent> resizeListener = new Listener<BaseEvent>() {
+
+                    @Override
+                    public void handleEvent(BaseEvent be) {
+
+                        map.checkResizeAndCenter();
+
+                        if(pendingZoom != null) {
+                            zoomToBounds(pendingZoom);
+                        }
+                    }
+                };
+
+                addListener(Events.AfterLayout, resizeListener);
+                addListener(Events.Resize, resizeListener);
+
+                new MapDropTarget(SiteMap.this);
+
+                layout();
+
+                loadSites();
+            }
+        });
     }
 
     private void loadSites() {
@@ -300,7 +321,7 @@ public class SiteMap extends ContentPanel implements Shutdownable {
             // update existing site
             marker.setLatLng(LatLng.newInstance(lat, lng));
         } else {
-           // create new marker
+            // create new marker
             marker = new Marker(LatLng.newInstance(lat, lng));
             markerIds.put(marker, siteId);
             sites.put(siteId, marker);
@@ -437,12 +458,12 @@ public class SiteMap extends ContentPanel implements Shutdownable {
         }
 
         private SiteModel getSite(DNDEvent event) {
-             if(event.getData() instanceof Record) {
+            if(event.getData() instanceof Record) {
                 Record record = (Record)event.getData();
                 if(record.getModel() instanceof SiteModel) {
                     return (SiteModel)record.getModel();
                 }
-             }
+            }
             return null;
         }
 

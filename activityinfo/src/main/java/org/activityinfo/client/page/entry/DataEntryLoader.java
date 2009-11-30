@@ -105,14 +105,14 @@ public class DataEntryLoader implements PageLoader {
                     editor.addSubComponent(detailsPresenter);
                 }
 
-                if(Maps.isLoaded()) {
+              //  if(Maps.isLoaded()) {     load the maps api on render in SiteMap
                     SiteMap map = new SiteMap(injector.getEventBus(), injector.getService(),
                             activity);
 
                     editor.addSubComponent(map);
                     grid.addSidePanel(Application.CONSTANTS.map(), Application.ICONS.map(), map);
 
-                }
+              //  }
                 editor.go((SiteGridPlace) place, activity);
 
                 callback.onSuccess(editor);
