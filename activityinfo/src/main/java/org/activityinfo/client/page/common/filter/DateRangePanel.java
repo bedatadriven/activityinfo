@@ -2,15 +2,18 @@ package org.activityinfo.client.page.common.filter;
 
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Html;
 import org.activityinfo.client.Application;
 import org.activityinfo.shared.report.model.Filter;
 
 import java.util.Date;
-/*
+
+/**
  * @author Alex Bertram
  */
-
-public class DateRangePanel extends FormPanel {
+public class DateRangePanel extends ContentPanel {
     private DateField date1;
     private DateField date2;
 
@@ -18,16 +21,17 @@ public class DateRangePanel extends FormPanel {
 
         setHeading(Application.CONSTANTS.filterByDate());
         setIcon(Application.ICONS.filter());
+        setBodyStyle("padding:5px");
 
-        setLabelWidth(100);
-        setFieldWidth(100);
-    
+        add(new Html(Application.CONSTANTS.fromDate()));
+
         date1 = new DateField();
-        date1.setFieldLabel(Application.CONSTANTS.fromDate());
+        //date1.setFildLabel(Application.CONSTANTS.fromDate());
         add(date1);
 
+        add(new Html(Application.CONSTANTS.toDate()));
         date2 = new DateField();
-        date2.setFieldLabel(Application.CONSTANTS.toDate());
+        //date2.setFieldLabel(Application.CONSTANTS.toDate());
         add(date2);
     }
 

@@ -14,7 +14,7 @@ public class DateRangeForm extends FormPanel {
 		fromDate = new DateField();
 		fromDate.setFieldLabel(Application.CONSTANTS.fromDate());
 		add(fromDate);
-		
+		                              
 		toDate = new DateField();
 		toDate.setFieldLabel(Application.CONSTANTS.toDate());
 		add(toDate);
