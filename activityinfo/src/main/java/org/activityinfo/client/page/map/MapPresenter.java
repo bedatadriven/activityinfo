@@ -107,7 +107,7 @@ public class MapPresenter implements PagePresenter, ExportCallback, ActionListen
         if(view.validate()) {
 
            service.execute(new RenderElement(view.getMapElement(), format), view.getMapLoadingMonitor(),
-                   new DownloadCallback(eventBus));
+                   new DownloadCallback(eventBus, "map"));
         }
 
     }

@@ -7,6 +7,7 @@ import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.HistoryManager;
+import org.activityinfo.client.UsageTracker;
 import org.activityinfo.client.command.CommandService;
 import org.activityinfo.client.command.cache.AdminEntityCache;
 import org.activityinfo.client.command.cache.CacheModule;
@@ -104,4 +105,7 @@ public interface AppInjector extends Ginjector {
     DownloadManager getDownloadManager();
 
     DbConfigPresenter getDbConfigPresenter();
+
+    UsageTracker getUsageTracker();
+    
 }

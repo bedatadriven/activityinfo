@@ -104,7 +104,7 @@ public class ReportPreviewPresenter implements PagePresenter, ActionListener, Ex
         if(range.getMaxDate() != null) {
             url.append("&maxDate=").append(range.getMaxDate().getTime());
         }
-        eventBus.fireEvent(new DownloadEvent(url.toString()));
+        eventBus.fireEvent(new DownloadEvent("report", url.toString()));
     }
 
     public void onUIAction(String actionId) {

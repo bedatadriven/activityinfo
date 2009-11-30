@@ -55,6 +55,7 @@ public class Application implements EntryPoint {
         injector.createMapLoader();
         injector.createConfigLoader();
 
+        injector.getUsageTracker();
         injector.getHistoryManager();
         injector.getDownloadManager();
 

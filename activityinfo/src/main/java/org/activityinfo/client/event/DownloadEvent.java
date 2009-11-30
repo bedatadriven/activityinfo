@@ -20,7 +20,6 @@
 package org.activityinfo.client.event;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.EventType;
 import org.activityinfo.client.page.DownloadManager;
 
 /**
@@ -28,7 +27,14 @@ import org.activityinfo.client.page.DownloadManager;
  */
 public class DownloadEvent extends BaseEvent {
 
+    private String name;
     private String url;
+
+    public DownloadEvent(String name, String url) {
+        super(DownloadManager.DownloadRequested);
+        this.name = name;
+        this.url = url;
+    }
 
     public DownloadEvent(String url) {
         super(DownloadManager.DownloadRequested);
@@ -43,10 +49,35 @@ public class DownloadEvent extends BaseEvent {
         this.url = url;
     }
 
+    /**
+     * Gets the extension of the URL (the text following the final
+     * ".") or an empty string if there is no dot. 
+     *
+     * @return the file extension of the URL
+     */
+    public String getUrlExtension() {
+        if(url == null)
+            return null;
+        int dot = url.lastIndexOf(".");
+        if(dot == -1)
+            return "";
+        else
+            return url.substring(dot+1);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public String toString() {
         return "DownloadEvent{" +
-                "url='" + url + '\'' +
+                "name='" + name + '\'' +
+                ", url='" + url + '\'' +
                 '}';
     }
 }

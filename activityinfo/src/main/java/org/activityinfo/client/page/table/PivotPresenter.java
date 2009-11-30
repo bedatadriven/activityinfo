@@ -163,7 +163,7 @@ public class PivotPresenter implements PagePresenter {
 
         } else if(UIActions.export.equals(itemId)) {
             service.execute(new RenderElement(createElement(), RenderElement.Format.Excel), view.getMonitor(),
-                    new DownloadCallback(eventBus));
+                    new DownloadCallback(eventBus, "pivotTable"));
 
 //             service.export(createElement(), RenderElement.Format.Excel, view.getMonitor(),
 //                     new AsyncCallback<Void>() {

@@ -78,7 +78,11 @@ document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.
 <script type="text/javascript">
 try {
 var pageTracker = _gat._getTracker("UA-11567120-1");
+<#if loginError?length==0>
 pageTracker._trackPageview("login");
+<#else>
+pageTracker._trackPageview("login/error");
+</#if>
 } catch(err) {}</script>
 </body>
 </html>

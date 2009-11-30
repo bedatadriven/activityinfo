@@ -380,7 +380,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
 
     private void onExport() {
         String url = GWT.getModuleBaseURL() + "export?auth=#AUTH#&a=" + currentActivity.getId();
-        eventBus.fireEvent(new DownloadEvent(url));
+        eventBus.fireEvent(new DownloadEvent("siteExport", url));
    }
 
     public void onFilter(String filter) {

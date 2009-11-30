@@ -10,18 +10,23 @@ import org.activityinfo.shared.command.result.RenderResult;
  *
  * Handles <code>RenderResult</code> command calls.
  *
- * Upon success, starts the download of the renderended element
- * using the hidden iframe with name "_downloadFrame"
- * (should be defined in the hostpage) 
+ * Upon success, fires a DownloadRequestedEvent for the
+ * resulting URL
  *
  * @author Alex Bertram
  */
 public class DownloadCallback implements AsyncCallback<RenderResult> {
 
     private final EventBus eventBus;
+    private String downloadName;
 
     public DownloadCallback(EventBus eventBus) {
         this.eventBus = eventBus;
+    }
+
+    public DownloadCallback(EventBus eventBus, String downloadName) {
+        this.eventBus = eventBus;
+        this.downloadName = downloadName;
     }
 
     public void onFailure(Throwable caught) {
@@ -29,6 +34,6 @@ public class DownloadCallback implements AsyncCallback<RenderResult> {
     }
 
     public void onSuccess(RenderResult result) {
-        eventBus.fireEvent(new DownloadEvent(GWT.getModuleBaseURL() +  "download?"+ result.getUrl()));
+        eventBus.fireEvent(new DownloadEvent(downloadName, GWT.getModuleBaseURL() +  "download?"+ result.getUrl()));
     }
 }
