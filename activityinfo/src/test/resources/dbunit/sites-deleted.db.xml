@@ -29,12 +29,7 @@
 	<!--  User setup -->
 	
 	<userLogin userId="1" name="Alex" email="akbertram@gmail.com" password="$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1." locale="fr" newUser="1"  />
-	<userLogin userId="2" name="Bavon" email="bavon@nrc.org" password="$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1." locale="fr" newUser="1"  />
-	<userLogin userId="5" name="Christian" email="christian@nrc.org" password="xyz" locale="fr" newUser="1"/>
-	<userLogin userId="3" name="Lisa" email="lisa@solidarites" password="xyz" locale="fr" newUser="1"/>
-	
-	<userLogin userId="4" name="Marlene" email="marlene@solidarites" password="xyz" locale="fr" newUser="1"/>	
-	
+
 	<!--  Attributes -->
 		
 	<!--  NFI Attribute 1: Cause -->
@@ -209,9 +204,6 @@
 	
 	<partner partnerId="2" name="Solidarites"  />
 	<partnerInDatabase partnerId="2" databaseId="1"/>
-
-    <!-- Bavon at NRC has access to PEAR -->
-     <userPermission userPermissionId="1" databaseId="1" userId="2" partnerId="1" allowView="1" allowViewAll="0" allowEdit="1" allowEditAll="0" allowDesign="0"/>
 
 
 	<!-- id=1  NFI Distribution at Penekusu, Sud Kivu   2 jan 2009-->
