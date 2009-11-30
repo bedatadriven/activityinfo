@@ -66,6 +66,7 @@ public class AdminFilterPanel extends ContentPanel {
     private void createFilterBar() {
         ToolBar toolBar = new ToolBar();
         //toolBar.add(new LabelToolItem(Application.CONSTANTS.filter()));
+        toolBar.setEnableOverflow(false);
 
         ListLoader<AdminLevelModel> loader = new BaseListLoader(new AdminLevelProxy(service));
         final ListStore<AdminLevelModel> store = new ListStore<AdminLevelModel>(loader);
@@ -85,14 +86,15 @@ public class AdminFilterPanel extends ContentPanel {
 
         toolBar.add(levelCombo);
 
-        Button clear = new Button("Enlever le filtre", Application.ICONS.delete(), new SelectionListener<ButtonEvent>() {
+        // TODO : 118n
+        Button clear = new Button("Enlever", Application.ICONS.delete(), new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 levelCombo.setValue(null);
                 onHierarchyChanged(Collections.<AdminLevelModel>emptyList());
             }
         });
-        toolBar.add(clear);
+        //toolBar.add(clear);    // this button was creating layout problems and is not essential
 
         setTopComponent(toolBar);
     }

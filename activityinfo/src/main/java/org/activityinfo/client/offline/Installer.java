@@ -23,7 +23,6 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.ProgressMessageBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.gears.client.database.DatabaseException;
 import com.google.gwt.gears.client.localserver.ManagedResourceStore;

@@ -73,7 +73,10 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View  {
         this.service = service;
         this.stateMgr = stateMgr;
 
-        setLayout(new BorderLayout());
+        BorderLayout borderLayout = new BorderLayout();
+        borderLayout.setEnableState(true);
+        setStateId("pivotPage");
+        setLayout(borderLayout);
 
         createPane();
         createFilterPane();
@@ -161,6 +164,8 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View  {
         filterPane.setLayout(new AccordionLayout());
 
         BorderLayoutData west = new BorderLayoutData(Style.LayoutRegion.WEST);
+        west.setMinSize(250);
+        west.setSize(250);
         west.setCollapsible(true);
         west.setSplit(true);
         west.setMargins(new Margins(0, 0, 0, 5));

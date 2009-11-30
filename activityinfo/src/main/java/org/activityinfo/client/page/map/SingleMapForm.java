@@ -19,10 +19,10 @@ import org.activityinfo.shared.report.model.ReportElement;
 
 import java.util.ArrayList;
 import java.util.List;
-/*
+
+/**
  * @author Alex Bertram
  */
-
 public class SingleMapForm extends ContentPanel implements MapForm {
 
     protected final CommandService service;
@@ -31,7 +31,7 @@ public class SingleMapForm extends ContentPanel implements MapForm {
 
     protected AccordionLayout accordianLayout;
     protected IndicatorTreePanel indicatorTree;
-    protected GsSymbolForm symbolForm;
+    protected BubbleLayerForm symbolForm;
     protected AdminFilterPanel adminPanel;
     protected LayoutForm layoutForm;
     protected DateRangePanel datePanel;
@@ -47,16 +47,16 @@ public class SingleMapForm extends ContentPanel implements MapForm {
         accordianLayout = new AccordionLayout();
         setLayout(accordianLayout);
 
-        layoutForm = new LayoutForm(service);
-        add(layoutForm);
-
         indicatorTree = new IndicatorTreePanel(service, false);
         indicatorTree.setHeading(messages.indicators());
         indicatorTree.setIcon(icons.indicator());
         indicatorTree.setHeaderVisible(true);
         add(indicatorTree);
 
-        symbolForm = new GsSymbolForm();
+        layoutForm = new LayoutForm(service);
+        add(layoutForm);
+
+        symbolForm = new BubbleLayerForm();
         add(symbolForm);
 
         adminPanel = new AdminFilterPanel(this.service);
@@ -65,7 +65,7 @@ public class SingleMapForm extends ContentPanel implements MapForm {
         datePanel = new DateRangePanel();
         add(datePanel);
 
-        accordianLayout.setActiveItem(indicatorTree);
+//        accordianLayout.setActiveItem(indicatorTree);
     }
 
     public ReportElement getMapElement() {
@@ -81,8 +81,9 @@ public class SingleMapForm extends ContentPanel implements MapForm {
         layer.setIndicatorIds(indicators);
 
         symbolForm.updateLayer(layer);
-
         element.addLayer(layer);
+
+        datePanel.updateFilter(element.getFilter());
 
         for(AdminEntityModel entity : adminPanel.getSelection()) {
             element.getFilter().addRestriction(DimensionType.AdminLevel, entity.getId());

@@ -65,13 +65,12 @@ public class IndicatorTreePanel extends ContentPanel {
                 } else if(model instanceof IndicatorModel){
                     return "i" + ((IndicatorModel) model).getId();
                 } else {
-                    return "";
+                    return model.get("name");
                 }
             }
         });
 
         tree = new TreePanel<ModelData>(store);
-
         tree.setCheckable(true);
         if(multipleSelection) {
             tree.setCheckNodes(TreePanel.CheckNodes.BOTH);
@@ -80,7 +79,6 @@ public class IndicatorTreePanel extends ContentPanel {
             tree.setCheckNodes(TreePanel.CheckNodes.LEAF);
             tree.setCheckStyle(TreePanel.CheckCascade.NONE);
         }
-
         tree.getStyle().setNodeCloseIcon(null);
         tree.getStyle().setNodeOpenIcon(null);
         tree.setLabelProvider(new ModelStringProvider<ModelData>() {

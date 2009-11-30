@@ -79,7 +79,7 @@ public class ActivityForm extends AbstractDesignForm {
         MapIconComboBox mapIconField = new MapIconComboBox(service);
         mapIconField.setFieldLabel(Application.CONSTANTS.mapIcon());
         FieldBinding mapIconBinding = new FieldBinding(mapIconField, "mapIcon");
-        mapIconBinding.setConvertor(new Converter() {
+        mapIconBinding.setConverter(new Converter() {
             @Override
             public Object convertModelValue(Object value) {
                 return value == null ? null : new MapIconModel((String)value);

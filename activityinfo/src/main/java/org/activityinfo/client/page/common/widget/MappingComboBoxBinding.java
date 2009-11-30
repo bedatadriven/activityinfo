@@ -11,7 +11,7 @@ public class MappingComboBoxBinding extends FieldBinding {
 
     public MappingComboBoxBinding(final MappingComboBox field, String property) {
         super(field, property);
-        setConvertor(new Converter() {
+        setConverter(new Converter() {
             @Override
             public Object convertModelValue(Object value) {
                 return field.wrap(value);
