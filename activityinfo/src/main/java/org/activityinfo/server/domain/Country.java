@@ -43,6 +43,11 @@ public class Country implements Serializable, SchemaElement {
 	}
 
 
+    /**
+     * Gets the country's id
+     *
+     * @return the country's id
+     */
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name = "CountryId", unique = true, nullable = false)
@@ -50,6 +55,11 @@ public class Country implements Serializable, SchemaElement {
 		return this.id;
 	}
 
+    /**
+     * Sets the country's id
+     *
+     * @param id the country's id
+     */
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -59,25 +69,55 @@ public class Country implements Serializable, SchemaElement {
 		return this.name;
 	}
 
+    /**
+     * A short, human-readable name of the Country
+     *
+     * @param name A short, human-readable name of the Country
+     */
 	public void setName(String name) {
 		this.name = name;
 	}
 
+    /**
+     * The geographic bounds of this Country. Bounds for the Country cannot be null.
+     *
+     * @return tbe geogaphics bounds of this Country
+     */
 	@Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name="x1", column=@Column(nullable = false)),
+            @AttributeOverride(name="y1", column=@Column(nullable = false)),
+            @AttributeOverride(name="x2", column=@Column(nullable = false)),
+            @AttributeOverride(name="y2", column=@Column(nullable = false))
+    })
 	public Bounds getBounds() {
 		return this.bounds;
 	}
-	
+
+    /**
+     * Sets the country's geographic bounds. Bounds for the Country c
+     * @param bounds
+     */
 	public void setBounds(Bounds bounds) {
 		this.bounds = bounds;
 	}
 
+    /**
+     * Gets all the administrative levels for this Country
+     *
+     * @return a list of all the administrative levels in this Country
+     */
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "country")
 	@org.hibernate.annotations.OrderBy(clause="AdminLevelId")
 	public Set<AdminLevel> getAdminLevels() {
 		return this.adminLevels;
 	}
 
+    /**
+     * Sets the administrative levels for this Country
+     *
+     * @param adminLevels
+     */
 	public void setAdminLevels(Set<AdminLevel> adminLevels) {
 		this.adminLevels = adminLevels;
 	}
