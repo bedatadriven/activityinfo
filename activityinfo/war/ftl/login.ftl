@@ -13,7 +13,7 @@
 </head>
 <body class="login" >
 
-<form name="Form1" method="post" id="Form1" action="auth" method="post">
+<form name="Form1" method="post" id="loginForm" action="auth" method="post">
     <input type="hidden" name="bookmark" value="${bookmark}">
 
     <div id="login">
