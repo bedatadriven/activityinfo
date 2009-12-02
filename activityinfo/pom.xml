@@ -340,7 +340,6 @@
                     <generateDirectory>${basedir}/src/main/java</generateDirectory>
                     <module>${gwt.module}</module>
                     <webappDirectory>${basedir}/war</webappDirectory>
-                    <extraCompilerArgs>-XdisableClassMetadata</extraCompilerArgs>
                     <extraJvmArgs>-Xmx512M</extraJvmArgs>
                 </configuration>
 
@@ -362,8 +361,9 @@
                         <phase>prepare-package</phase>
                         <configuration>
                             <extra>true</extra>
-                            <extraCompilerArgs>-XdisableClassMetadata</extraCompilerArgs>
+                            <extraCompilerArgs>${gwt.extra.args}</extraCompilerArgs>
                             <extraJvmArgs>-Xmx512M -Xss1024k </extraJvmArgs>
+                            <module>${gwt.module}</module>
                         </configuration>
                         <goals>
                             <goal>compile</goal>
@@ -417,7 +417,6 @@
                     <warSourceDirectory>${basedir}/war</warSourceDirectory>
                     <warSourceExcludes>Application/compile-report</warSourceExcludes>
                 </configuration>
-
             </plugin>
 
             <plugin>
@@ -446,7 +445,21 @@
                 </dependencies>
             </plugin>
 
-          
+
+            <!-- Embedded web server for testing -->
+            <!-- You can start by invoking mvn jetty:run -->
+            <plugin>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>maven-jetty-plugin</artifactId>
+                <configuration>
+                    <webAppSourceDirectory>${basedir}/war</webAppSourceDirectory>
+                    <scanIntervalSeconds>10</scanIntervalSeconds>
+                    <scanTargets>
+                        <scanTarget>${basedir}/war/WEB-INF/classes</scanTarget>
+                    </scanTargets>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 
@@ -457,6 +470,7 @@
             <id>fftest</id>
             <properties>
                 <gwt.module>org.activityinfo.ApplicationFFTest</gwt.module>
+                <gwt.extra.args>-draftCompile</gwt.extra.args>
             </properties>
         </profile>
         <!-- Build the Application Module with only permutations for
