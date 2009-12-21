@@ -1,4 +1,4 @@
-package org.activityinfo.server.servlet;
+package org.activityinfo.server.endpoint.gwtrpc;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

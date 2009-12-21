@@ -1,4 +1,4 @@
-package org.activityinfo.server.servlet;
+package org.activityinfo.server.endpoint.gwtrpc;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -113,17 +113,11 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
                     results.add( new UnexpectedCommandException() );
                 }
             }
-
-
 			return results;
 
 		} catch (Throwable caught) {
             caught.printStackTrace();
 			throw new CommandException();
 		}
-				
 	}
-
-
-
 }

@@ -175,6 +175,16 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-email</artifactId>
             <version>1.1</version>
+            <exclusions>
+                <!--
+                Because the JDK1.6 already include the Java Activation API,
+                otherwise this could generate ClassLoading en Linkage errors
+                -->
+                <exclusion>
+                    <groupId>javax.activation</groupId>
+                    <artifactId>activation</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- Database dependencies -->
@@ -231,6 +241,29 @@
             <version>2.3.9</version>
         </dependency>
 
+        <!-- JaxWs services -->
+        <dependency>
+            <groupId>com.sun.xml.ws</groupId>
+            <artifactId>jaxws-rt</artifactId>
+            <version>2.1.3</version>
+            <exclusions>
+                <!--
+                Because the JDK1.6 already include the Java Activation API,
+                otherwise this could generate ClassLoading en Linkage errors
+                -->
+                <exclusion>
+                    <groupId>javax.activation</groupId>
+                    <artifactId>activation</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.jvnet.jax-ws-commons</groupId>
+            <artifactId>jaxws-json</artifactId>
+            <version>1.2</version>
+
+        </dependency>
+
         <!-- Random library for BASE64 decoding (KmlDataServlet) -->
         <dependency>
             <groupId>commons-codec</groupId>
@@ -270,6 +303,12 @@
             <version>3.6.2</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <repositories>
@@ -279,7 +318,17 @@
             <url>http://www.activityinfo.org/m2/</url>
             <layout>default</layout>
         </repository>
-
+        <repository>
+            <id>maven2-repository.dev.java.net</id>
+            <name>Java.net Repository for Maven 2</name>
+            <url>http://download.java.net/maven/2/</url>
+        </repository>
+        <repository>
+            <id>download.java.net</id>
+            <name>Java.net Repository for Maven 1</name>
+            <url>http://download.java.net/maven/1</url>
+            <layout>legacy</layout>
+        </repository>
     </repositories>
 
     <description>Web-based database system for program monitoring</description>
@@ -372,6 +421,7 @@
                 </executions>
             </plugin>
 
+            <!-- Make sure we remove GWT-generated stuff in the war/ folder -->
             <plugin>
                 <artifactId>maven-clean-plugin</artifactId>
                 <version>2.2</version>
@@ -395,7 +445,6 @@
 
             <!-- Exclude GWT integration tests from the test phase -->
             <!-- (they don't run correctly) -->
-
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.4.3</version>
@@ -407,6 +456,20 @@
                 </configuration>
             </plugin>
 
+            <!-- The failsafe plugin helps setup the integration testing -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>failsafe-maven-plugin</artifactId>
+                <version>2.4.3-alpha-1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
@@ -445,21 +508,85 @@
                 </dependencies>
             </plugin>
 
+            <!--  Create WSDL and other artifacts for web services -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxws-maven-plugin</artifactId>
+                <configuration>
+                    <sei>org.activityinfo.server.endpoint.jaxws.ApiService</sei>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>wsgen</goal>
+                        </goals>
+                        <configuration>
+                            <sei>org.activityinfo.server.endpoint.jaxws.ApiService</sei>
+                            <genWsdl>true</genWsdl>
+                            <keep>true</keep>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.sun.xml.ws</groupId>
+                        <artifactId>jaxws-rt</artifactId>
+                        <version>2.1.3</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.sun.xml.bind</groupId>
+                        <artifactId>jaxb-xjc</artifactId>
+                        <version>2.1.10.1</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
 
             <!-- Embedded web server for testing -->
             <!-- You can start by invoking mvn jetty:run -->
+            <!-- The server was also be started for the integration testing phase -->
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>maven-jetty-plugin</artifactId>
                 <configuration>
                     <webAppSourceDirectory>${basedir}/war</webAppSourceDirectory>
-                    <scanIntervalSeconds>10</scanIntervalSeconds>
+                    <scanIntervalSeconds>0</scanIntervalSeconds>
                     <scanTargets>
-                        <scanTarget>${basedir}/war/WEB-INF/classes</scanTarget>
+                        <!--<scanTarget>${basedir}/war/WEB-INF/classes</scanTarget>-->
+                        <scanTarget>${basedir}/war/WEB-INF/web.xml</scanTarget>
+                        <scanTarget>${basedir}/war/WEB-INF/sun-jaxws.xml</scanTarget>
                     </scanTargets>
+                    <connectors>
+                        <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+                            <port>9090</port>
+                            <integralPort>9095</integralPort>
+                        </connector>
+                    </connectors>
+                    <stopPort>9095</stopPort>
+                    <stopKey>STOP</stopKey>
                 </configuration>
+                <executions>
+                    <!-- Start the server for integration tests -->
+                    <execution>
+                        <id>start-jetty</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <scanIntervalSeconds>0</scanIntervalSeconds>
+                            <daemon>true</daemon>
+                        </configuration>
+                    </execution>
+                    <!-- Stop the server when integration tests have completed -->
+                    <execution>
+                        <id>stop-jetty</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
-
         </plugins>
     </build>
 

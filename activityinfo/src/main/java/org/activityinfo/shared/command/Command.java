@@ -19,7 +19,7 @@ import java.io.Serializable;
  * allowing us to handle all manners of cross-cutting
  * concerns, such as batching, error handling, retrying, and failure on the client side (See
  * {@link org.activityinfo.client.command.CommandServiceImpl}) and transactions, logging, and authentication
- * on the server-side. (See {@link org.activityinfo.server.servlet.CommandServlet}).
+ * on the server-side. (See {@link org.activityinfo.server.endpoint.gwtrpc.CommandServlet}).
  *
  * @author Alex Bertram
  *

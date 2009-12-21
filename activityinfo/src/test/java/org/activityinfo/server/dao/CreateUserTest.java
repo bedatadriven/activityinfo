@@ -31,6 +31,10 @@ import org.junit.Test;
 
 import javax.persistence.EntityManager;
 
+import freemarker.template.Configuration;
+
+import java.io.File;
+
 /**
  * @author Alex Bertram
  */
@@ -67,8 +71,13 @@ public class CreateUserTest {
         expect(pgen.generate()).andReturn("foobar");
         replay(pgen);
 
+        // Template configruation
+        Configuration templateCfg = new Configuration();
+        templateCfg.setDirectoryForTemplateLoading(new File("war/ftl"));
+        templateCfg.setDefaultEncoding("UTF-8");
+
         // Class under Test
-        AuthDAO authDAO = new AuthDAOJPA(em, pgen, mailer);
+        AuthDAO authDAO = new AuthDAOJPA(em, templateCfg, pgen, mailer);
         authDAO.createUser("jbisimbwa@gmail.com", "Jean", "fr", new User("akbertram@gmail.com", "Alex", "fr") );
 
 

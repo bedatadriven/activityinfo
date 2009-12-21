@@ -53,7 +53,7 @@ public class CacheFilter implements Filter {
             httpResponse.setDateHeader("Expires", today+31536000000L);
 
         } else if(requestURI.contains(".nocache.")) {
-
+                                
             HttpServletResponse httpResponse = (HttpServletResponse)response;
             httpResponse.addHeader("Pragma", "no-cache");
             httpResponse.setDateHeader("Expires", -1);

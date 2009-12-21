@@ -9,7 +9,7 @@ import org.activityinfo.shared.report.model.ReportElement;
  * specified format, saves the file to the server, and returns the name of the
  * temporary file that can be used to initiate a download.
  *
- * See also: {@link org.activityinfo.server.servlet.DownloadServlet}
+ * See also: {@link org.activityinfo.server.endpoint.gwtrpc.DownloadServlet}
  *
  * @author Alex Bertram
  */
