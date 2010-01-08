@@ -7,11 +7,11 @@
 			<property name="hibernate.dialect"
 				value="org.hibernate.dialect.SQLServerDialect" />
 			<property name="hibernate.connection.driver_class"
-				value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
+				value="net.sourceforge.jtds.jdbc.Driver" />
 			<property name="hibernate.connection.username" value="sa" />
 			<property name="hibernate.connection.password" value="adminpwd" />
 			<property name="hibernate.connection.url"
-				value="jdbc:sqlserver://localhost:1433;databaseName=actinfo" />
+				value="jdbc:jtds:sqlserver://localhost:1433/actinfo" />
 
 			<property name="hibernate.c3p0.min_size" value="5"/>
 			<property name="hibernate.c3p0.max_size" value="20"/>
@@ -30,11 +30,11 @@
 			<property name="hibernate.dialect"
 				value="org.hibernate.dialect.SQLServerDialect" />
 			<property name="hibernate.connection.driver_class"
-				value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
+				value="net.sourceforge.jtds.jdbc.Driver" />
 			<property name="hibernate.connection.username" value="sa" />
 			<property name="hibernate.connection.password" value="adminpwd" />
 			<property name="hibernate.connection.url"
-				value="jdbc:sqlserver://localhost:1433;databaseName=act-test" />
+                      value="jdbc:jtds:sqlserver://localhost:1433/act-test" />
 			<property name="hibernate.show_sql" value="true"/>
 	 		<property name="hibernate.hbm2ddl.auto" value="create" /> 
 			<property name="hibernate.format_sql" value="true"/>

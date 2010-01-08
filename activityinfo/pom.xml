@@ -210,10 +210,13 @@
             <artifactId>geronimo-spec-jta</artifactId>
             <version>1.0.1B-rc4</version>
         </dependency>
+
+        <!-- Open source alternative to Microsoft's SQL driver -->
+        <!--- which was not working with SQL Server 2008 Express -->
         <dependency>
-            <groupId>com.microsoft</groupId>
-            <artifactId>sqljdbc</artifactId>
-            <version>1.1.1501</version>
+            <groupId>net.sourceforge.jtds</groupId>
+            <artifactId>jtds</artifactId>
+            <version>1.2.4</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -493,17 +496,19 @@
                             <implementation>jpaconfiguration</implementation>
                         </component>
                     </components>
-                    <componentProperties>
+                    <componentProperties>       
                         <drop>false</drop>
                         <create>true</create>
                         <persistenceUnit>activityInfo</persistenceUnit>
                     </componentProperties>
                 </configuration>
                 <dependencies>
+                    <!-- Open source alternative to Microsoft's SQL driver -->
+                    <!--- which was not working with SQL Server 2008 Express -->
                     <dependency>
-                        <groupId>com.microsoft</groupId>
-                        <artifactId>sqljdbc</artifactId>
-                        <version>1.1.1501</version>
+                        <groupId>net.sourceforge.jtds</groupId>
+                        <artifactId>jtds</artifactId>
+                        <version>1.2.4</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -597,7 +602,6 @@
             <id>fftest</id>
             <properties>
                 <gwt.module>org.activityinfo.ApplicationFFTest</gwt.module>
-                <gwt.extra.args>-draftCompile</gwt.extra.args>
             </properties>
         </profile>
         <!-- Build the Application Module with only permutations for
