@@ -17,8 +17,15 @@
  * Copyright 2010 Alex Bertram and contributors.
  */
 
-package org.activityinfo.server.dao;
+package org.activityinfo.test;
 
-public @interface OnDataSet {
-    String value();
+import com.google.inject.ScopeAnnotation;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+
+@ScopeAnnotation
+@Retention(RetentionPolicy.RUNTIME)
+public @interface TestScoped {
 }

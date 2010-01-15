@@ -10,18 +10,18 @@ import java.util.Date;
 /*
  * @author Alex Bertram
  */
-public class ScheduleInitializer  {
+public class Jobs {
 
     private JobFactory jobFactory;
     private ServletContext context;
 
     @Inject
-    public ScheduleInitializer(ServletContext context, JobFactory jobFactory) {
+    public Jobs(ServletContext context, JobFactory jobFactory) {
         this.jobFactory = jobFactory;
         this.context = context;
     }
 
-    public void init() {
+    public void schedule() {
 
         SchedulerFactory schedFact = new org.quartz.impl.StdSchedulerFactory();
 
@@ -45,7 +45,5 @@ public class ScheduleInitializer  {
         } catch (SchedulerException e) {
             context.log("Schedulder failed to initialize!", e);
         }
-
-
     }
 }

@@ -19,157 +19,192 @@
 package org.activityinfo.server.domain;
 
 
-import org.activityinfo.server.domain.util.BCrypt;
+import org.activityinfo.server.auth.SecureTokenGenerator;
+import org.activityinfo.server.auth.impl.BCrypt;
 
 import javax.persistence.*;
-import java.util.HashSet;
+import java.util.Date;
 import java.util.Locale;
-import java.util.Set;
 
 /**
- * 
- * @author Alex Bertram
+ * Describes a user
  *
+ * @author Alex Bertram
  */
 @Entity
-@Table(name="UserLogin")	// NOTE: See page 175 in  Bauer/King for info on quoting table names
+@Table(name = "UserLogin")
+// We want to avoid calling this table 'User' as it is a reserved word in some dialects
+// of SQL
+@NamedQueries({
+        @NamedQuery(name = "findUserByEmail", query = "select u from User u where u.email = :email"),
+        @NamedQuery(name = "findUserByChangePasswordKey", query = "select u from User u where u.changePasswordKey = :key")
+})
 public class User implements java.io.Serializable {
+    private int id;
+    private String email;
+    private String name;
+    private boolean newUser;
+    private String locale;
+    private String changePasswordKey;
+    private Date dateChangePasswordKeyIssued;
+    private String hashedPassword;
 
+    public User() {
+    }
 
-	private int id;
-	private String email;
-	private String name;
-	private boolean newUser;
-	private String locale;
-	private String hashedPassword;
-	private Set<UserPermission> userPermissions = new HashSet<UserPermission>(0);
+    /**
+     * Initializes this User as a new User with a secure
+     * changePasswordKey
+     */
+    public static User createNewUser(String email, String name, String locale) {
+        User user = new User();
+        user.setEmail(email);
+        user.setName(name);
+        user.setNewUser(true);
+        user.setLocale(locale);
+        user.setChangePasswordKey(SecureTokenGenerator.generate());
 
-	public User() {
-	}
+        return user;
+    }
 
-    
-	public User(String email, String name, String locale) {
-		this.email = email;
-		this.name = name;
-		this.newUser = true;
-		this.locale = locale;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "UserId", unique = true, nullable = false)
+    public int getId() {
+        return this.id;
+    }
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name = "UserId", unique = true, nullable = false)
-	public int getId() {
-		return this.id;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    @Column(name = "Email", nullable = false, length = 75, unique = true)
+    public String getEmail() {
+        return this.email;
+    }
 
-	@Column(name = "Email", nullable = false, length = 75, unique=true)
-	public String getEmail() {
-		return this.email;
-	}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    @Column(name = "Name", nullable = false, length = 50)
+    public String getName() {
+        return this.name;
+    }
 
-	@Column(name = "Name", nullable = false, length = 50)
-	public String getName() {
-		return this.name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    @Column(name = "NewUser", nullable = false)
+    public boolean isNewUser() {
+        return this.newUser;
+    }
 
-	@Column(name = "NewUser", nullable = false)
-	public boolean isNewUser() {
-		return this.newUser;
-	}
+    public void setNewUser(boolean newUser) {
+        this.newUser = newUser;
+    }
 
-	public void setNewUser(boolean newUser) {
-		this.newUser = newUser;
-	}
+    @Column(name = "Locale", nullable = false, length = 10)
+    public String getLocale() {
+        return this.locale;
+    }
 
-	@Column(name = "Locale", nullable = false, length = 10)
-	public String getLocale() {
-		return this.locale;
-	}
-
-	public void setLocale(String locale) {
-		this.locale = locale;
-	}
+    public void setLocale(String locale) {
+        this.locale = locale;
+    }
 
     @Transient
     public Locale getLocaleObject() {
         Locale[] locales = Locale.getAvailableLocales();
-        for(Locale l : locales) {
-            if(locale.startsWith(l.getLanguage())) {
+        for (Locale l : locales) {
+            if (locale.startsWith(l.getLanguage())) {
                 return l;
             }
         }
         return Locale.getDefault();
     }
 
-	/**
-	 * @return The hashed password
-	 */
-	@SuppressWarnings("unused")
-	@Column(name = "Password", length = 150)
-	private String getHashedPassword() {
-		return this.hashedPassword;
-	}
-	
-	@SuppressWarnings("unused")
-	private void setHashedPassword(String hashed) {
-		this.hashedPassword = hashed;
-	}
-	
-	/**
-	 * Sets a new password for the user, hashing the password
-	 * for security
-	 * 
-	 * @param password the new password in plain text
-	 */
-	
-	public void changePassword(String password) {
-		this.hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-	}
-	
-	/**
-	 * 
-	 * @param password
-	 * @return true if the plain-text password supplies matches the hashed password in the database
-	 */
-	public boolean checkPassword(String password) {
-		
-		// TODO: clean up the mess and remove this hack
-		
-		if(this.hashedPassword == null)
-			return true;
+    /**
+     * Gets the user's password, hashed with the BCrypt algorithm.
+     *
+     * @return The hashed password
+     */
+    @Column(name = "Password", length = 150)
+    public String getHashedPassword() {
+        return this.hashedPassword;
+    }
 
-		return BCrypt.checkpw(password, this.hashedPassword);
-	}
-	
+    /**
+     * Sets the user's password, should be hashed with the BCrypt algorithm
+     *
+     * @param hashed The hashed password
+     */
+    public void setHashedPassword(String hashed) {
+        this.hashedPassword = hashed;
+    }
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object other) {
-		if(this == other) return true;
-		if(!(other instanceof User)) return false;
-		final User that = (User)other;
-		return this.getEmail().equals(that.getEmail());
-	}
+    /**
+     * Sets a new password for the user, hashing the password
+     * for security
+     *
+     * @param password the new password in plain text
+     */
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
+    public void changePassword(String password) {
+        this.hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+    }
+
+    /**
+     * Gets the secure key required to change the user's password. This
+     * is a random 128-bit key that can be safely sent to the user by email.
+     */
+    @Column(length = 34, nullable = true)
+    public String getChangePasswordKey() {
+        return changePasswordKey;
+    }
+
+    public void setChangePasswordKey(String changePasswordKey) {
+        this.changePasswordKey = changePasswordKey;
+    }
+
+    /**
+     * Gets the date on which the password key was issued; the application
+     * should not let users change passwords with really old keys.
+     */
+    public Date getDateChangePasswordKeyIssued() {
+        return dateChangePasswordKeyIssued;
+    }
+
+    public void setDateChangePasswordKeyIssued(Date dateChangePasswordKeyIssued) {
+        this.dateChangePasswordKeyIssued = dateChangePasswordKeyIssued;
+    }
+
+    public void clearChangePasswordKey() {
+        this.setChangePasswordKey(null);
+        this.setDateChangePasswordKeyIssued(null);
+    }
+
+    /* (non-Javadoc)
+      * @see java.lang.Object#equals(java.lang.Object)
+      */
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (!(other instanceof User)) return false;
+        final User that = (User) other;
+        return this.getEmail().equals(that.getEmail());
+    }
+
+    /* (non-Javadoc)
+      * @see java.lang.Object#hashCode()
+      */
+
+    @Override
+    public int hashCode() {
 		return getEmail().hashCode();
 	}
+
+
 }
