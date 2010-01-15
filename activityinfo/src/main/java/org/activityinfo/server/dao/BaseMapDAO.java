@@ -1,21 +1,17 @@
 package org.activityinfo.server.dao;
 
+import com.google.inject.ImplementedBy;
 import org.activityinfo.shared.map.BaseMap;
 
 import java.util.List;
-/*
- * @author Alex Bertram
- */
 
+@ImplementedBy(BaseMapDAOImpl.class)
 public interface BaseMapDAO {
 
-  
 
-       
     BaseMap getBaseMap(String id);
-    
-    List<BaseMap> getBaseMaps();
 
+    List<BaseMap> getBaseMaps();
 
 
 }

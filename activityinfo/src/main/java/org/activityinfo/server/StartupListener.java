@@ -1,22 +1,25 @@
 package org.activityinfo.server;
 
-import com.google.inject.*;
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Provider;
 import com.google.inject.servlet.GuiceServletContextListener;
+import org.activityinfo.server.bootstrap.BootstrapModule;
+import org.activityinfo.server.dao.hibernate.ServletDataModule;
+import org.activityinfo.server.endpoint.kml.KmlModule;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
-import org.activityinfo.server.endpoint.kml.KmlModule;
-
 
 /**
- *
  * A Servlet context listener that initializes the Dependency Injection Framework (Guice)
  * upon startup.
- *
+ * <p/>
  * Most of the bindings are defined in {@link org.activityinfo.server.ActivityInfoModule}, except
  * those that are servlet-specific.
- *
+ * <p/>
  * See http://code.google.com/p/google-guice/wiki/ServletModule for details
  *
  * @author Alex Bertram
@@ -27,11 +30,8 @@ public class StartupListener extends GuiceServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-
         context = servletContextEvent.getServletContext();
-
         context.log("ServletConfig.contextIntialized called.");
-
         super.contextInitialized(servletContextEvent);
     }
 
@@ -42,7 +42,9 @@ public class StartupListener extends GuiceServletContextListener {
         context.log("Injector.getInjector");
 
         Injector injector = Guice.createInjector(
-                new ActivityInfoModule(),
+                new TemplateModule(), new BeanMappingModule(),
+                new ServletDataModule(),
+                new BootstrapModule(),
                 new ActivityInfoServletModule(),
                 new KmlModule());
 

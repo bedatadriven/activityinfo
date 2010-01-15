@@ -20,10 +20,10 @@
 package org.activityinfo.server.report.generator;
 
 import junit.framework.Assert;
+import org.activityinfo.server.dao.PivotDAO;
 import org.activityinfo.server.dao.SchemaDAO;
 import org.activityinfo.server.dao.SiteProjectionBinder;
-import org.activityinfo.server.dao.hibernate.PivotDAO;
-import org.activityinfo.server.dao.hibernate.SiteTableDAO;
+import org.activityinfo.server.dao.SiteTableDAO;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.server.report.generator.map.MockBaseMapDAO;
 import org.activityinfo.shared.domain.SiteColumn;
@@ -34,22 +34,33 @@ import org.activityinfo.shared.report.model.BubbleMapLayer;
 import org.activityinfo.shared.report.model.MapElement;
 import org.activityinfo.shared.report.model.TableColumn;
 import org.activityinfo.shared.report.model.TableElement;
-import static org.easymock.EasyMock.createNiceMock;
-import static org.easymock.EasyMock.replay;
 import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.replay;
+
 /**
  * @author Alex Bertram
  */
-public class TableGeneratorTest  {
-    private User user = new User("alex@test", "alex", "fr");
+public class TableGeneratorTest {
+    private User user;
+
+    @Before
+    public void setUp() {
+        user = new User();
+        user.setName("Alex");
+        user.setEmail("akbertra@mgail.com");
+        user.setLocale("fr");
+    }
+
 
     public class MockSiteTableDAO implements SiteTableDAO {
 
@@ -134,11 +145,11 @@ public class TableGeneratorTest  {
         Assert.assertEquals("marker count", 1, mapContent.getMarkers().size());
         Assert.assertEquals("label on marker", "1", ((BubbleMapMarker) mapContent.getMarkers().get(0)).getLabel());
 
-        Map<Integer,String> siteLabels = mapContent.siteLabelMap();
+        Map<Integer, String> siteLabels = mapContent.siteLabelMap();
         Assert.assertEquals("site id in map", "1", siteLabels.get(1));
 
         TableData.Row row = table.getContent().getData().getRows().get(0);
-        Assert.assertEquals("label on row", "1", row.values[0]);    
+        Assert.assertEquals("label on row", "1", row.values[0]);
     }
 
 }

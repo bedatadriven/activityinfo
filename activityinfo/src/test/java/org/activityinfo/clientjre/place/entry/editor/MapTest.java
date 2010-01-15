@@ -12,6 +12,7 @@ import org.junit.Test;
  */
 public class MapTest {
 
+    private static final double DELTA = 0.001;
 
     @Test
     public void testMapInitialView() {
@@ -31,8 +32,8 @@ public class MapTest {
         presenter.setSite(new SiteModel(), null, bounds);
 
         Assert.assertEquals(bounds, map.getMapView());
-        Assert.assertEquals(bounds.getCenterX(), map.markerX);
-        Assert.assertEquals(bounds.getCenterY(), map.markerY);
+        Assert.assertEquals(bounds.getCenterX(), map.markerX, DELTA);
+        Assert.assertEquals(bounds.getCenterY(), map.markerY, DELTA);
     }
 
 
@@ -56,18 +57,18 @@ public class MapTest {
 
         presenter.onMarkerMoved(50.0, 65.0);
 
-        Assert.assertEquals("y", 50.0, map.getY());
-        Assert.assertEquals("x", 65.0, map.getX());
+        Assert.assertEquals("y", 50.0, map.getY(), DELTA);
+        Assert.assertEquals("x", 65.0, map.getX(), DELTA);
 
         // VERIFY that attempting to move the marker out of the
         // bounds results in clamping
 
         presenter.onMarkerMoved(900, 800);
 
-        Assert.assertEquals("marker x clamped", 300.0, map.markerX);
-        Assert.assertEquals("marker y clamped", 200.0, map.markerY);
-        Assert.assertEquals("coord x clamped", 300.0, map.getX());
-        Assert.assertEquals("coord y clamped", 200.0, map.getY());
+        Assert.assertEquals("marker x clamped", 300.0, map.markerX, DELTA);
+        Assert.assertEquals("marker y clamped", 200.0, map.markerY, DELTA);
+        Assert.assertEquals("coord x clamped", 300.0, map.getX(), DELTA);
+        Assert.assertEquals("coord y clamped", 200.0, map.getY(), DELTA);
     }
 
 

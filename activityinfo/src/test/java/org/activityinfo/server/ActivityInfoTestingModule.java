@@ -3,9 +3,9 @@ package org.activityinfo.server;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import org.activityinfo.server.auth.NullMailer;
+import org.activityinfo.server.mail.MailSender;
 import org.activityinfo.server.report.generator.MapIconPath;
-import org.activityinfo.server.mail.Mailer;
-import org.activityinfo.server.service.impl.NullMailer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -20,8 +20,8 @@ public class ActivityInfoTestingModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(String.class).annotatedWith(MapIconPath.class)
-                        .toInstance("war/mapicons/");
-        bind(Mailer.class).to(NullMailer.class);
+                .toInstance("war/mapicons/");
+        bind(MailSender.class).to(NullMailer.class);
     }
 
     @Provides

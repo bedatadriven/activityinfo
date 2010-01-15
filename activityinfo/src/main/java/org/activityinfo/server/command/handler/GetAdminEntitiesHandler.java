@@ -33,41 +33,35 @@ import org.dozer.Mapper;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @see org.activityinfo.shared.command.GetAdminEntities
- *
- * @author Alex Bertram
- */
-public class GetAdminEntitiesHandler implements CommandHandler<GetAdminEntities>{
+public class GetAdminEntitiesHandler implements CommandHandler<GetAdminEntities> {
 
+    protected AdminDAO adminDAO;
+    protected Mapper mapper;
 
-	protected AdminDAO adminDAO;
-	protected Mapper mapper;
+    @Inject
+    public GetAdminEntitiesHandler(AdminDAO adminDAO, Mapper mapper) {
+        this.adminDAO = adminDAO;
+        this.mapper = mapper;
+    }
 
+    @Override
+    public CommandResult execute(GetAdminEntities cmd, User user) throws CommandException {
 
-	@Inject
-	public GetAdminEntitiesHandler(AdminDAO adminDAO, Mapper mapper) {
-		this.adminDAO = adminDAO;
-		this.mapper = mapper;
-	}
+        AdminDAO.Query query = adminDAO.query().level(cmd.getLevelId());
 
+        if (cmd.getParentId() != null)
+            query.withParentEntityId(cmd.getParentId());
+        if (cmd.getActivityId() != null)
+            query.withSitesOfActivityId(cmd.getActivityId());
 
-	@Override
-	public CommandResult execute(GetAdminEntities cmd, User user) throws CommandException {
-		List<AdminEntity> entities;
-        if(cmd.getActivityId()==null) {
-            entities = adminDAO.getEntities(cmd.getLevelId(), cmd.getParentId());
-        } else {
-            entities = adminDAO.getEntities(cmd.getLevelId(), cmd.getParentId(), cmd.getActivityId());
-        }
+        List<AdminEntity> entities = query.execute();
+
         List<AdminEntityModel> models = new ArrayList<AdminEntityModel>();
 
-		for(AdminEntity entity : entities) {
-			models.add( mapper.map(entity, AdminEntityModel.class) );
-		}
+        for (AdminEntity entity : entities) {
+            models.add(mapper.map(entity, AdminEntityModel.class));
+        }
 
-		return new AdminEntityResult(models);
-	}
-
-
+        return new AdminEntityResult(models);
+    }
 }

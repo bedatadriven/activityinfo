@@ -1,10 +1,10 @@
 package org.activityinfo.server.report.generator;
 
 import org.activityinfo.server.DbUnitTestCase;
-import org.activityinfo.server.dao.hibernate.SiteTableDAO;
+import org.activityinfo.server.dao.SiteTableDAO;
 import org.activityinfo.server.dao.hibernate.SiteTableDAOHibernate;
-import org.activityinfo.server.domain.User;
 import org.activityinfo.server.domain.SiteData;
+import org.activityinfo.server.domain.User;
 import org.hibernate.criterion.Restrictions;
 import org.junit.Assert;
 import org.junit.Test;
@@ -18,7 +18,7 @@ import java.util.List;
 public class SiteDataBinderTest extends DbUnitTestCase {
 
     @Test
-    public void test(){
+    public void test() {
 
         populate("sites-simple1");
 
@@ -27,23 +27,21 @@ public class SiteDataBinderTest extends DbUnitTestCase {
         SiteTableDAOHibernate dao = new SiteTableDAOHibernate(em);
 
 
-
-        List<SiteData> sites = dao.query(new User(), Restrictions.eq("site.id",2),
+        List<SiteData> sites = dao.query(new User(), Restrictions.eq("site.id", 2),
                 null, new SiteDataBinder(), SiteTableDAO.RETRIEVE_ALL, 0, -1);
 
-        Assert.assertEquals("sites returned", 1,sites.size());
+        Assert.assertEquals("sites returned", 1, sites.size());
 
         SiteData site = sites.get(0);
 
         Assert.assertEquals("Ngshwe", site.getLocationName());
         Assert.assertNull(site.getLocationAxe());
         Assert.assertTrue("has coords", site.hasLatLong());
-        Assert.assertEquals(1.323,site.getLongitude());
-        Assert.assertEquals(28.232,site.getLatitude());
+        Assert.assertEquals(1.323, site.getLongitude(), 0.001);
+        Assert.assertEquals(28.232, site.getLatitude(), 0.001);
         Assert.assertEquals("partner", "NRC", site.getPartnerName());
-        Assert.assertEquals("indicator 1", 3600.0, site.getIndicatorValue(1));
-        Assert.assertEquals("indicator 2", 1200.0, site.getIndicatorValue(2));
-                
+        Assert.assertEquals("indicator 1", 3600, site.getIndicatorValue(1).intValue());
+        Assert.assertEquals("indicator 2", 1200, site.getIndicatorValue(2).intValue());
 
 
 //	<location locationId="2" name="Ngshwe" locationTypeId="1" X="1.323" Y="28.232" version="1"/>

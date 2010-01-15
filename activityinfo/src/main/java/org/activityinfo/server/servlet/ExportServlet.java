@@ -23,8 +23,8 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import org.activityinfo.server.command.handler.HandlerUtil;
-import org.activityinfo.server.dao.AuthDAO;
-import org.activityinfo.server.dao.hibernate.SiteTableDAO;
+import org.activityinfo.server.dao.AuthenticationDAO;
+import org.activityinfo.server.dao.SiteTableDAO;
 import org.activityinfo.server.domain.Authentication;
 import org.activityinfo.server.domain.DomainFilters;
 import org.activityinfo.shared.command.GetSchema;
@@ -45,7 +45,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- *
  * Exports complete data to an Excel file
  *
  * @author Alex Bertram
@@ -65,17 +64,16 @@ public class ExportServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        AuthDAO authDAO = injector.getInstance(AuthDAO.class);
-        Authentication auth = authDAO.getSession(req.getParameter("auth"));
-
-        if(auth == null) {
+        AuthenticationDAO authDAO = injector.getInstance(AuthenticationDAO.class);
+        Authentication auth = authDAO.findById(req.getParameter("auth"));
+        if (auth == null) {
             // todo: offer basic authentication?
             resp.setStatus(500);
             return;
         }
 
         Set<Integer> activities = new HashSet<Integer>();
-        for(String activity : req.getParameterValues("a")) {
+        for (String activity : req.getParameterValues("a")) {
             activities.add(Integer.parseInt(activity));
         }
 
@@ -87,22 +85,22 @@ public class ExportServlet extends HttpServlet {
             SiteTableDAO siteDAO = injector.getInstance(SiteTableDAO.class);
 
             Export export = new Export(auth.getUser(), siteDAO);
-            for(UserDatabaseDTO db : schema.getDatabases()) {
-                for(ActivityModel activity : db.getActivities()) {
-                    if(activities.size() == 0 || activities.contains(activity.getId())) {
+            for (UserDatabaseDTO db : schema.getDatabases()) {
+                for (ActivityModel activity : db.getActivities()) {
+                    if (activities.size() == 0 || activities.contains(activity.getId())) {
                         export.export(activity);
                     }
                 }
             }
 
             resp.setContentType("application/vnd.ms-excel");
-            if(req.getHeader("User-Agent").indexOf("MSIE") != -1) {
+            if (req.getHeader("User-Agent").indexOf("MSIE") != -1) {
                 resp.addHeader("Content-Disposition", "attachment; filename=ActivityInfo.xls");
             } else {
                 resp.addHeader("Content-Disposition", "attachment; filename=" +
                         ("ActivityInfo Export " + new Date().toString() + ".xls").replace(" ", "_"));
             }
-            
+
 
             OutputStream os = resp.getOutputStream();
             export.getBook().write(os);
@@ -112,9 +110,5 @@ public class ExportServlet extends HttpServlet {
             e.printStackTrace();
             resp.setStatus(500);
         }
-
     }
-
-
-
 }

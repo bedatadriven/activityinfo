@@ -19,23 +19,26 @@
 
 package org.activityinfo.server.servlet;
 
-import org.activityinfo.server.domain.User;
+import org.activityinfo.server.dao.SiteTableDAO;
 import org.activityinfo.server.domain.AdminEntity;
 import org.activityinfo.server.domain.SiteData;
-import org.activityinfo.server.dao.hibernate.SiteTableDAO;
+import org.activityinfo.server.domain.User;
 import org.activityinfo.server.report.generator.SiteDataBinder;
-import org.activityinfo.shared.dto.*;
 import org.activityinfo.shared.domain.SiteColumn;
-import org.apache.poi.hssf.usermodel.*;
+import org.activityinfo.shared.dto.*;
+import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
+import org.apache.poi.hssf.usermodel.HSSFPatriarch;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author Alex Bertram
@@ -65,7 +68,6 @@ public class Export {
 
 //    private HSSFConditionalFormattingRule attribFalseRule;
 //    private HSSFConditionalFormattingRule attribTrueRule;
-
 
 
     private List<Integer> indicators;
@@ -98,7 +100,7 @@ public class Export {
         headerFont.setBoldweight(Font.BOLDWEIGHT_BOLD);
 
         Font smallFont = book.createFont();
-        smallFont.setFontHeightInPoints((short)8);
+        smallFont.setFontHeightInPoints((short) 8);
 
         headerStyle = book.createCellStyle();
         headerStyle.setFont(headerFont);
@@ -113,7 +115,7 @@ public class Export {
 
         attribHeaderStyle = book.createCellStyle();
         attribHeaderStyle.setFont(smallFont);
-        attribHeaderStyle.setRotation((short)45);
+        attribHeaderStyle.setRotation((short) 45);
         attribHeaderStyle.setWrapText(true);
 
         indicatorHeaderStyle = book.createCellStyle();
@@ -131,7 +133,7 @@ public class Export {
         HSSFSheet sheet = book.createSheet(composeUniqueSheetName(activity));
         sheet.createFreezePane(4, 2);
 
-       // initConditionalFormatting(sheet);
+        // initConditionalFormatting(sheet);
         createHeaders(activity, sheet);
         createDataRows(activity, sheet);
 
@@ -154,21 +156,21 @@ public class Export {
 
     private String composeUniqueSheetName(ActivityModel activity) {
         String sheetName = activity.getDatabase().getName() + " - " + activity.getName();
-      // replace invalid chars: / \ [ ] * ?
-      sheetName = sheetName.replaceAll("[\\Q/\\*?[]\\E]", " ");
+        // replace invalid chars: / \ [ ] * ?
+        sheetName = sheetName.replaceAll("[\\Q/\\*?[]\\E]", " ");
 
-      // sheet names can only be 31 characters long, plus we need about 4-6 chars for disambiguation
-      String shortenedName = sheetName.substring(0, Math.min(25, sheetName.length()));
+        // sheet names can only be 31 characters long, plus we need about 4-6 chars for disambiguation
+        String shortenedName = sheetName.substring(0, Math.min(25, sheetName.length()));
 
-      // assure that the sheet name is unique
-      if(!sheetNames.containsKey(shortenedName)) {
-          sheetNames.put(shortenedName, 1);
-          return sheetName;
-      } else {
-          int index = sheetNames.get(shortenedName);
-          sheetNames.put(shortenedName, index+1);
-          return shortenedName + " (" + index + ")";
-      }
+        // assure that the sheet name is unique
+        if (!sheetNames.containsKey(shortenedName)) {
+            sheetNames.put(shortenedName, 1);
+            return sheetName;
+        } else {
+            int index = sheetNames.get(shortenedName);
+            sheetNames.put(shortenedName, index + 1);
+            return shortenedName + " (" + index + ")";
+        }
 
     }
 
@@ -196,14 +198,14 @@ public class Export {
 
 
         indicators = new ArrayList<Integer>(activity.getIndicators().size());
-        if(activity.getReportingFrequency() == ActivityModel.REPORT_ONCE) {
-            for(IndicatorGroup group : activity.groupIndicators()) {
-                if(group.getName() != null) {
+        if (activity.getReportingFrequency() == ActivityModel.REPORT_ONCE) {
+            for (IndicatorGroup group : activity.groupIndicators()) {
+                if (group.getName() != null) {
                     // create a merged cell on the top row spanning all members of the group
                     createHeaderCell(headerRow1, column, group.getName());
-                    sheet.addMergedRegion(new CellRangeAddress(0, 0, column, column+group.getIndicators().size()-1));
+                    sheet.addMergedRegion(new CellRangeAddress(0, 0, column, column + group.getIndicators().size() - 1));
                 }
-                for(IndicatorModel indicator : group.getIndicators()) {
+                for (IndicatorModel indicator : group.getIndicators()) {
                     indicators.add(indicator.getId());
                     createHeaderCell(headerRow2, column, indicator.getName(), indicatorHeaderStyle);
                     sheet.setColumnWidth(column, 16 * 256);
@@ -213,15 +215,15 @@ public class Export {
         }
         attributes = new ArrayList<Integer>();
         int firstAttributeColumn = column;
-        for(AttributeGroupModel group : activity.getAttributeGroups() ) {
-            if(group.getAttributes().size() != 0) {
+        for (AttributeGroupModel group : activity.getAttributeGroups()) {
+            if (group.getAttributes().size() != 0) {
                 createHeaderCell(headerRow1, column, group.getName(), CellStyle.ALIGN_CENTER);
-                sheet.addMergedRegion(new CellRangeAddress(0, 0,column, column+group.getAttributes().size()-1));
+                sheet.addMergedRegion(new CellRangeAddress(0, 0, column, column + group.getAttributes().size() - 1));
 
-                for(AttributeModel attrib : group.getAttributes()) {
+                for (AttributeModel attrib : group.getAttributes()) {
                     attributes.add(attrib.getId());
                     createHeaderCell(headerRow2, column, attrib.getName(), attribHeaderStyle);
-                    sheet.setColumnWidth(column, 5*256);
+                    sheet.setColumnWidth(column, 5 * 256);
                     column++;
                 }
             }
@@ -232,15 +234,15 @@ public class Export {
 
 
         levels = new ArrayList<Integer>();
-        for(AdminLevelModel level : activity.getAdminLevels()) {
+        for (AdminLevelModel level : activity.getAdminLevels()) {
             createHeaderCell(headerRow2, column++, "Code " + level.getName());
             createHeaderCell(headerRow2, column++, level.getName());
             levels.add(level.getId());
         }
         createHeaderCell(headerRow2, column, "Longitude", CellStyle.ALIGN_RIGHT);
-        createHeaderCell(headerRow2, column+1, "Latitude",  CellStyle.ALIGN_RIGHT);
+        createHeaderCell(headerRow2, column + 1, "Latitude", CellStyle.ALIGN_RIGHT);
         sheet.setColumnWidth(column, 12 * 256);
-        sheet.setColumnWidth(column+1, 12 * 256);
+        sheet.setColumnWidth(column + 1, 12 * 256);
 
     }
 
@@ -257,10 +259,10 @@ public class Export {
 
         // Create the drawing patriarch. This is the top level container for all shapes including
         // cell comments.
-        HSSFPatriarch patr = ((HSSFSheet)sheet).createDrawingPatriarch();
+        HSSFPatriarch patr = ((HSSFSheet) sheet).createDrawingPatriarch();
 
         int rowIndex = 2;
-        for(SiteData site : querySites(activity)) {
+        for (SiteData site : querySites(activity)) {
 
             Row row = sheet.createRow(rowIndex++);
             int column = 0;
@@ -270,8 +272,8 @@ public class Export {
             createCell(row, column++, site.getPartnerName());
 
             Cell locationCell = createCell(row, column++, site.getLocationName());
-            if(site.getComments() != null) {
-                Comment comment = patr.createComment(new HSSFClientAnchor(0, 0, 0, 0, (short)4, 2, (short) 8, 10));
+            if (site.getComments() != null) {
+                Comment comment = patr.createComment(new HSSFClientAnchor(0, 0, 0, 0, (short) 4, 2, (short) 8, 10));
                 comment.setString(creationHelper.createRichTextString(site.getComments()));
 
                 locationCell.setCellComment(comment);
@@ -279,11 +281,11 @@ public class Export {
 
             createCell(row, column++, site.getLocationAxe());
 
-            for(Integer indicatorId : indicators) {
+            for (Integer indicatorId : indicators) {
                 createIndicatorValueCell(row, column++, site.getIndicatorValue(indicatorId));
             }
 
-            for(Integer attribId : attributes ) {
+            for (Integer attribId : attributes) {
 
                 Boolean value = site.getAttributeValue(attribId);
                 if (value != null) {
@@ -293,16 +295,16 @@ public class Export {
                 column++;
             }
 
-            for(Integer levelId : levels) {
+            for (Integer levelId : levels) {
                 AdminEntity entity = site.adminEntities.get(levelId);
-                if(entity != null) {
+                if (entity != null) {
                     createCell(row, column, entity.getCode());
-                    createCell(row, column+1, entity.getName());
+                    createCell(row, column + 1, entity.getName());
                 }
-                column+=2;
+                column += 2;
             }
 
-            if(site.hasLatLong()) {
+            if (site.hasLatLong()) {
                 createCoordCell(row, column++, site.getLongitude());
                 createCoordCell(row, column++, site.getLatitude());
             }
@@ -318,42 +320,42 @@ public class Export {
     }
 
     private Cell createHeaderCell(Row headerRow, int columnIndex, String text) {
-        return createHeaderCell(headerRow, columnIndex, text, CellStyle.ALIGN_LEFT );
+        return createHeaderCell(headerRow, columnIndex, text, CellStyle.ALIGN_LEFT);
     }
 
     private Cell createHeaderCell(Row headerRow, int columnIndex, String text, int align) {
         Cell cell = headerRow.createCell(columnIndex);
         cell.setCellValue(creationHelper.createRichTextString(text));
 
-        switch(align) {
-        case CellStyle.ALIGN_LEFT:
-            cell.setCellStyle(headerStyle);
-            break;
-        case CellStyle.ALIGN_CENTER:
-            cell.setCellStyle(headerStyleCenter);
-            break;
-        case CellStyle.ALIGN_RIGHT:
-            cell.setCellStyle(headerStyleRight);
-            break;
+        switch (align) {
+            case CellStyle.ALIGN_LEFT:
+                cell.setCellStyle(headerStyle);
+                break;
+            case CellStyle.ALIGN_CENTER:
+                cell.setCellStyle(headerStyleCenter);
+                break;
+            case CellStyle.ALIGN_RIGHT:
+                cell.setCellStyle(headerStyleRight);
+                break;
         }
 
         return cell;
     }
 
-    private Cell createCell( Row row, int columnIndex, String text) {
+    private Cell createCell(Row row, int columnIndex, String text) {
         Cell cell = row.createCell(columnIndex);
         cell.setCellValue(creationHelper.createRichTextString(text));
         return cell;
     }
 
-    private Cell createCell( Row row, int columnIndex, String text, CellStyle style) {
-        Cell cell = createCell(row,columnIndex,text);
+    private Cell createCell(Row row, int columnIndex, String text, CellStyle style) {
+        Cell cell = createCell(row, columnIndex, text);
         cell.setCellStyle(style);
         return cell;
     }
 
 
-    private void createCell( Row row, int columnIndex, Date date) {
+    private void createCell(Row row, int columnIndex, Date date) {
         Cell cell = row.createCell(columnIndex);
         cell.setCellValue(date);
         cell.setCellStyle(dateStyle);
@@ -361,7 +363,7 @@ public class Export {
 
     private void createIndicatorValueCell(Row row, int columnIndex, Double value) {
         if (value != null) {
-            Cell cell =  row.createCell(columnIndex);
+            Cell cell = row.createCell(columnIndex);
             cell.setCellValue(value);
             cell.setCellStyle(indicatorValueStyle);
         }

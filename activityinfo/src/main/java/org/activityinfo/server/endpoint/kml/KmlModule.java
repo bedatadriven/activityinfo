@@ -31,4 +31,6 @@ public class KmlModule extends ServletModule {
         serve("/kml").with(KmlLinkServlet.class);
         serve("/kml/data").with(KmlDataServlet.class);
     }
+
+
 }

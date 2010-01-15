@@ -1,6 +1,6 @@
 package org.activityinfo.server.report.generator;
 
-import org.activityinfo.server.dao.hibernate.PivotDAO;
+import org.activityinfo.server.dao.PivotDAO;
 import org.activityinfo.shared.report.content.*;
 import org.activityinfo.shared.report.model.Dimension;
 import org.activityinfo.shared.report.model.Filter;
@@ -33,10 +33,10 @@ public abstract class PivotGenerator<T extends PivotElement> extends BaseGenerat
         Map<Dimension, Comparator<PivotTableData.Axis>> comparators =
                 createComparators(element.allDimensions());
 
-        for(PivotDAO.Bucket bucket : buckets) {
+        for (PivotDAO.Bucket bucket : buckets) {
 
             PivotTableData.Axis column = colDims.isEmpty() ? table.getRootColumn() :
-                    find(locale, table.getRootColumn(),  colDims.iterator(), comparators, bucket);
+                    find(locale, table.getRootColumn(), colDims.iterator(), comparators, bucket);
             PivotTableData.Axis row = rowDims.isEmpty() ? table.getRootRow() :
                     find(locale, table.getRootRow(), rowDims.iterator(), comparators, bucket);
 
@@ -55,12 +55,12 @@ public abstract class PivotGenerator<T extends PivotElement> extends BaseGenerat
         Map<Dimension, Comparator<PivotTableData.Axis>> map =
                 new HashMap<Dimension, Comparator<PivotTableData.Axis>>();
 
-        for(Dimension dimension : dimensions) {
+        for (Dimension dimension : dimensions) {
 
-            if(dimension.isOrderDefined()) {
+            if (dimension.isOrderDefined()) {
 
                 map.put(dimension, new DefinedCategoryComparator(dimension.getOrdering()));
-                       
+
             } else {
 
                 map.put(dimension, new CategoryComparator());
@@ -79,13 +79,13 @@ public abstract class PivotGenerator<T extends PivotElement> extends BaseGenerat
         DimensionCategory category = result.getCategory(childDimension);
 
         PivotTableData.Axis child = axis.getChild(category);
-        if(child == null) {
+        if (child == null) {
 
             String categoryLabel = childDimension.getLabel(category);
 
-            if(categoryLabel == null ) {
-                if(category instanceof LabeledDimensionCategory)
-                    categoryLabel = ((LabeledDimensionCategory)category).getLabel();
+            if (categoryLabel == null) {
+                if (category instanceof LabeledDimensionCategory)
+                    categoryLabel = ((LabeledDimensionCategory) category).getLabel();
                 else
                     categoryLabel = renderLabel(locale, childDimension, category);
             }
@@ -96,7 +96,7 @@ public abstract class PivotGenerator<T extends PivotElement> extends BaseGenerat
                     comparators.get(childDimension));
 
         }
-        if(dimensionIterator.hasNext()) {
+        if (dimensionIterator.hasNext()) {
             return find(locale, child, dimensionIterator, comparators, result);
         } else {
             return child;
@@ -104,20 +104,20 @@ public abstract class PivotGenerator<T extends PivotElement> extends BaseGenerat
     }
 
     private String renderLabel(Locale locale, Dimension childDimension, DimensionCategory category) {
-        if(category instanceof YearCategory) {
-            return Integer.toString(((YearCategory)category).getYear());
+        if (category instanceof YearCategory) {
+            return Integer.toString(((YearCategory) category).getYear());
 
-        } else if(category instanceof QuarterCategory) {
+        } else if (category instanceof QuarterCategory) {
             // TODO: i18n
             QuarterCategory quarter = (QuarterCategory) category;
             return Integer.toString(quarter.getYear()) + "T" + quarter.getQuarter();
 
-        } else if(category instanceof MonthCategory) {
+        } else if (category instanceof MonthCategory) {
             SimpleDateFormat format = (SimpleDateFormat) SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT, locale);
             String[] months = format.getDateFormatSymbols().getShortMonths();
 
-            return months[((MonthCategory)category).getMonth()-1];
-        } else if(category instanceof SimpleCategory) {
+            return months[((MonthCategory) category).getMonth() - 1];
+        } else if (category instanceof SimpleCategory) {
             return ((SimpleCategory) category).getLabel();
         }
         return "NOIMPL"; // TODO
@@ -130,12 +130,12 @@ public abstract class PivotGenerator<T extends PivotElement> extends BaseGenerat
             Comparable c1 = a1.getCategory().getSortKey();
             Comparable c2 = a2.getCategory().getSortKey();
 
-            if(c1==null &&c2==null) {
+            if (c1 == null && c2 == null) {
                 return 0;
             }
-            if(c1==null)
+            if (c1 == null)
                 return -1;
-            if(c2==null)
+            if (c2 == null)
                 return 1;
 
 
@@ -149,7 +149,7 @@ public abstract class PivotGenerator<T extends PivotElement> extends BaseGenerat
         public DefinedCategoryComparator(List<DimensionCategory> order) {
             orderMap = new HashMap<DimensionCategory, Integer>();
 
-            for(int i=0; i!=order.size();++i) {
+            for (int i = 0; i != order.size(); ++i) {
                 orderMap.put(order.get(i), i);
             }
 
@@ -160,10 +160,10 @@ public abstract class PivotGenerator<T extends PivotElement> extends BaseGenerat
             Integer o1 = orderMap.get(a1.getCategory());
             Integer o2 = orderMap.get(a2.getCategory());
 
-            if(o1 == null) {
+            if (o1 == null) {
                 o1 = Integer.MAX_VALUE;
             }
-            if(o2 == null) {
+            if (o2 == null) {
                 o2 = Integer.MAX_VALUE;
             }
 

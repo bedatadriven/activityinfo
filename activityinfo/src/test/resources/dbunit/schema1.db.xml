@@ -1,113 +1,110 @@
 <?xml version="1.0"?>
 <dataset>
 
-	<!--  This is test data used for the SchemaBuilderTest cases -->
+    <!--  This is test data used for the SchemaBuilderTest cases -->
 
-	<country countryId="1" name="Rdc" x1="0" y1="0" x2="0" y2="0" />
-	
-	<locationType locationTypeId="1" countryId="1" name="localite" reuse="1"/>
-	
-	<!-- Indicators -->
-	
+    <country countryId="1" name="Rdc" x1="0" y1="0" x2="0" y2="0"/>
 
+    <locationType locationTypeId="1" countryId="1" name="localite" reuse="1"/>
+
+    <!-- Indicators -->
 
 
-			
-	<attributeGroup attributeGroupId="1" 
-		sortOrder="1"
-		multipleAllowed="1"
-		name="Cause"/>
-		
-	
-	<attribute attributeId="1"
-		attributeGroupId="1"
-		name="Retour"
-		sortOrder="2"/>
-		
-		
-	<attribute attributeId="2"
-		attributeGroupId="1"
-		name="Deplacement"
-		sortOrder="1"/>
-				
-	
-	<userLogin userId="1" name="Alex" email="user1@user.com" locale="fr" newUser="1"  />
-	
-	<userDatabase databaseId="1" name="PEAR" countryId="1" ownerUserId="1" lastSchemaUpdate="2009-01-01"/>
+    <attributeGroup attributeGroupId="1"
+                    sortOrder="1"
+                    multipleAllowed="1"
+                    name="Cause"/>
 
-		<activity activityId="1"
-			databaseId="1"
-			name="NFI"
-			reportingFrequency="0"
-			allowEdit="1"
-			isAssessment="0"
-			sortOrder="1"
-			locationTypeId="1" />
 
-		<activity activityId="2"
-			databaseId="1"
-			name="empty activity"
-			reportingFrequency="0"
-			allowEdit="1"
-			isAssessment="0"
-			sortOrder="2"
-			locationTypeId="1" />
+    <attribute attributeId="1"
+               attributeGroupId="1"
+               name="Retour"
+               sortOrder="2"/>
 
-				<indicator indicatorId="1"
-					activityId="1"
-					name="beneficiaries"
-					units="menages^2"
-					aggregation="0"
-					category="inputs"
-					description="falling in lve"
-					listHeader="no header really"
-					collectIntervention="1"
-					collectMonitoring="1"
-					sortOrder="2"/>
-							
-				<indicator indicatorId="2"
-					activityId="1"
-					name="kits" 
-					units="menages"   
-					aggregation="0"  
-					collectIntervention="1"  
-					collectMonitoring="1"  
-					category="outputs"  
-					listHeader="header"  
-					description="desc"  
-					sortOrder="1"/>
-			
-			<attributeGroupInActivity attributeGroupId="1" activityId="1"/>
-		
-					
-	<partner partnerId="1" name="NRC"  />
-	
-	<partnerInDatabase databaseId="1" partnerId="1"/>
-	
-	<userLogin userId="2" name="Bavon" email="bavon@nrcdrc.org" locale="fr" newUser="1" />
-	<userPermission 
-		userPermissionId="1"
-		databaseId="1"
-		partnerId="1"
-		userId="2"
-		allowView="1" allowViewAll="0"
-		allowEdit="1" allowEditAll="0"
-        allowManageUsers="1" allowManageAllUsers="0"
-		allowDesign="0"
-        lastSchemaUpdate="2009-01-02" />
-		
-		
-	<userLogin userId="3" name="Stefan" email="stefan@irc.org" locale="fr"  newUser="1"/>
 
-	<userDatabase databaseId="2" name="RRM" countryId="1" ownerUserId="1" lastSchemaUpdate="2009-01-01"/>
-	
-	<reportTemplate reportTemplateId="1" ownerUserId="1" visibility="1" title="Report 1" frequency="Monthly" day="28" XML="
+    <attribute attributeId="2"
+               attributeGroupId="1"
+               name="Deplacement"
+               sortOrder="1"/>
+
+
+    <userLogin userId="1" name="Alex" email="user1@user.com" locale="fr" newUser="1"/>
+
+    <userDatabase databaseId="1" name="PEAR" countryId="1" ownerUserId="1" lastSchemaUpdate="2009-01-01"/>
+
+    <activity activityId="1"
+              databaseId="1"
+              name="NFI"
+              reportingFrequency="0"
+              allowEdit="1"
+              isAssessment="0"
+              sortOrder="1"
+              locationTypeId="1"/>
+
+    <activity activityId="2"
+              databaseId="1"
+              name="empty activity"
+              reportingFrequency="0"
+              allowEdit="1"
+              isAssessment="0"
+              sortOrder="2"
+              locationTypeId="1"/>
+
+    <indicator indicatorId="1"
+               activityId="1"
+               name="beneficiaries"
+               units="menages^2"
+               aggregation="0"
+               category="inputs"
+               description="falling in lve"
+               listHeader="no header really"
+               collectIntervention="1"
+               collectMonitoring="1"
+               sortOrder="2"/>
+
+    <indicator indicatorId="2"
+               activityId="1"
+               name="kits"
+               units="menages"
+               aggregation="0"
+               collectIntervention="1"
+               collectMonitoring="1"
+               category="outputs"
+               listHeader="header"
+               description="desc"
+               sortOrder="1"/>
+
+    <attributeGroupInActivity attributeGroupId="1" activityId="1"/>
+
+
+    <partner partnerId="1" name="NRC"/>
+
+    <partnerInDatabase databaseId="1" partnerId="1"/>
+
+    <userLogin userId="2" name="Bavon" email="bavon@nrcdrc.org" locale="fr" newUser="1"/>
+    <userPermission
+            userPermissionId="1"
+            databaseId="1"
+            partnerId="1"
+            userId="2"
+            allowView="1" allowViewAll="0"
+            allowEdit="1" allowEditAll="0"
+            allowManageUsers="1" allowManageAllUsers="0"
+            allowDesign="0"
+            lastSchemaUpdate="2009-01-02"/>
+
+
+    <userLogin userId="3" name="Stefan" email="stefan@irc.org" locale="fr" newUser="1"/>
+
+    <userDatabase databaseId="2" name="RRM" countryId="1" ownerUserId="1" lastSchemaUpdate="2009-01-01"/>
+
+    <reportTemplate reportTemplateId="1" ownerUserId="1" visibility="1" title="Report 1" frequency="Monthly" day="28"
+                    XML="
 		&lt;report frequency=&quot;Monthly&quot; day=&quot;28&quot;&gt;
 			&lt;title&gt;Report 1&lt;/title&gt;
 		&lt;/report&gt;"/>
 
     <reportSubscription userId="1" reportTemplateId="1" subscribed="1"/>
-	
-	
+
 
 </dataset>

@@ -32,8 +32,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- *
- *
  * @author Alex Bertram
  */
 public class ReportMailerTest {
@@ -87,7 +85,6 @@ public class ReportMailerTest {
                 ReportMailerHelper.mailToday(cal.getTime(), report));
 
 
-
         cal.set(Calendar.DATE, 30);
     }
 
@@ -126,7 +123,7 @@ public class ReportMailerTest {
         today.set(Calendar.MONTH, 0);
         today.set(Calendar.YEAR, 2009);
 
-        DateRange dateRange = ReportMailerHelper.computeDateRange(report, today.getTime() );
+        DateRange dateRange = ReportMailerHelper.computeDateRange(report, today.getTime());
 
         Calendar month = Calendar.getInstance();
         month.setTime(dateRange.getMaxDate());
@@ -140,7 +137,10 @@ public class ReportMailerTest {
     @Test
     public void testTextEmail() {
 
-        User user = new User("akbertram@gmail.com", "Alex", "fr");
+        User user = new User();
+        user.setEmail("akbertram@gmail.com");
+        user.setName("alex");
+        user.setLocale("fr");
 
         ReportSubscription sub = new ReportSubscription();
         sub.setTemplate(new ReportDefinition());
@@ -153,7 +153,7 @@ public class ReportMailerTest {
         report.setDay(1);
 
         String text = ReportMailerHelper.composeTextEmail(sub, report);
-        
+
         System.out.println(text);
 
         Assert.assertTrue("user name is present", text.contains(user.getName()));

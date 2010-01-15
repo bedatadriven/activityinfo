@@ -22,7 +22,7 @@ package org.activityinfo.server.servlet;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-import org.activityinfo.server.dao.AuthDAO;
+import org.activityinfo.server.dao.AuthenticationDAO;
 import org.activityinfo.server.domain.Authentication;
 import org.activityinfo.server.domain.DomainFilters;
 import org.activityinfo.server.domain.ReportDefinition;
@@ -43,7 +43,6 @@ import java.io.IOException;
 import java.util.Date;
 
 /**
- *
  * Generates, Renders, and serves a full report based on ID
  *
  * @author Alex Bertram
@@ -63,10 +62,9 @@ public class ReportServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         // first, authenticate the response
-        AuthDAO authDAO = injector.getInstance(AuthDAO.class);
-        Authentication auth = authDAO.getSession(req.getParameter("auth"));
-
-        if(auth == null) {
+        AuthenticationDAO authDAO = injector.getInstance(AuthenticationDAO.class);
+        Authentication auth = authDAO.findById(req.getParameter("auth"));
+        if (auth == null) {
             resp.setStatus(500);
             return;
         }
@@ -87,11 +85,11 @@ public class ReportServlet extends HttpServlet {
 
         // parse parameters
         DateRange dateRange = new DateRange();
-        if(req.getParameter("minDate") != null) {
-            dateRange.setMinDate( new Date(Long.parseLong(req.getParameter("minDate"))));
+        if (req.getParameter("minDate") != null) {
+            dateRange.setMinDate(new Date(Long.parseLong(req.getParameter("minDate"))));
         }
-        if(req.getParameter("maxDate") != null) {
-            dateRange.setMaxDate( new Date(Long.parseLong(req.getParameter("maxDate"))));
+        if (req.getParameter("maxDate") != null) {
+            dateRange.setMaxDate(new Date(Long.parseLong(req.getParameter("maxDate"))));
         }
 
         // generate the report content

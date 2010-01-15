@@ -19,7 +19,7 @@ import java.io.OutputStream;
 public class PivotTableRendererTest {
 
     @Test
-    public void test()  {
+    public void test() {
 
 
         // input test data : element + content
@@ -27,7 +27,7 @@ public class PivotTableRendererTest {
         PivotTableElement element = testData.Foobar1612Element();
 
         // Destination book
-		HSSFWorkbook book = new HSSFWorkbook();
+        HSSFWorkbook book = new HSSFWorkbook();
 
         // CLASS under test
 
@@ -42,7 +42,7 @@ public class PivotTableRendererTest {
                 sheet.getRow(0).getCell(0).getRichStringCellValue().getString());
         Assert.assertEquals("last column header", "Abri",
                 sheet.getRow(4).getCell(5).getRichStringCellValue().getString());
-        Assert.assertEquals("columns headers indentation", (short)0,
+        Assert.assertEquals("columns headers indentation", (short) 0,
                 sheet.getRow(4).getCell(3).getCellStyle().getIndention());
 
         // Write output to disk
@@ -50,7 +50,7 @@ public class PivotTableRendererTest {
             File outputFile = new File("target/report-tests");
             outputFile.mkdirs();
             OutputStream out =
-				new FileOutputStream(outputFile.getAbsoluteFile() + "/PivotTableRendererTest.xls");
+                    new FileOutputStream(outputFile.getAbsoluteFile() + "/PivotTableRendererTest.xls");
 
             book.write(out);
             out.close();
@@ -62,12 +62,12 @@ public class PivotTableRendererTest {
     @Test
     public void testNoColumnDimensions() {
 
-         // input test data : element + content
+        // input test data : element + content
         DummyPivotTableData2 testData = new DummyPivotTableData2();
         PivotTableElement element = testData.testElement();
 
         // Destination book
-		HSSFWorkbook book = new HSSFWorkbook();
+        HSSFWorkbook book = new HSSFWorkbook();
 
         // CLASS under test
 
@@ -79,7 +79,7 @@ public class PivotTableRendererTest {
             File outputFile = new File("target/report-tests");
             outputFile.mkdirs();
             OutputStream out =
-				new FileOutputStream(outputFile.getAbsoluteFile() + "/testNoColumnDimensions.xls");
+                    new FileOutputStream(outputFile.getAbsoluteFile() + "/testNoColumnDimensions.xls");
 
             book.write(out);
             out.close();
@@ -87,12 +87,11 @@ public class PivotTableRendererTest {
             e.printStackTrace();
         }
 
-        
 
         // VERIFY output
 
         Sheet sheet = book.getSheetAt(0);
-        Assert.assertEquals(100.0, sheet.getRow(5).getCell(1).getNumericCellValue());
+        Assert.assertEquals(100, (int) sheet.getRow(5).getCell(1).getNumericCellValue());
 
     }
 

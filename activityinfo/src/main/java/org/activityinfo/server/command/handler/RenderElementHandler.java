@@ -20,33 +20,25 @@
 package org.activityinfo.server.command.handler;
 
 import com.google.inject.Inject;
-import com.google.inject.Injector;
+import org.activityinfo.server.auth.SecureTokenGenerator;
 import org.activityinfo.server.domain.User;
-import org.activityinfo.server.domain.util.EntropicToken;
 import org.activityinfo.server.report.renderer.Renderer;
 import org.activityinfo.server.report.renderer.RendererFactory;
-import org.activityinfo.server.report.renderer.excel.ExcelMapDataExporter;
-import org.activityinfo.server.report.renderer.excel.ExcelReportRenderer;
-import org.activityinfo.server.report.renderer.image.ImageReportRenderer;
-import org.activityinfo.server.report.renderer.ppt.PPTRenderer;
 import org.activityinfo.shared.command.GenerateElement;
 import org.activityinfo.shared.command.RenderElement;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.command.result.RenderResult;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.exception.UnexpectedCommandException;
-import org.activityinfo.shared.report.model.MapElement;
 
 import javax.servlet.ServletContext;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.File;
 
 /**
- *
- * @see org.activityinfo.shared.command.RenderElement
- *
  * @author Alex Bertram
+ * @see org.activityinfo.shared.command.RenderElement
  */
 public class RenderElementHandler implements CommandHandler<RenderElement> {
 
@@ -66,7 +58,7 @@ public class RenderElementHandler implements CommandHandler<RenderElement> {
         try {
             File tempFolder = new File(tempPath);
             tempFolder.mkdirs();
-        } catch(SecurityException e) {
+        } catch (SecurityException e) {
             throw new RuntimeException("Could not create the temporary folder (your_context\temp). You may need to change " +
                     "some file permissions.");
         }
@@ -82,8 +74,8 @@ public class RenderElementHandler implements CommandHandler<RenderElement> {
         Renderer renderer = rendererFactory.get(cmd.getFormat());
 
         // compose temporary file name
-        String filename = EntropicToken.generate() + renderer.getFileSuffix();
-		String path = tempPath + "/" + filename;
+        String filename = SecureTokenGenerator.generate() + renderer.getFileSuffix();
+        String path = tempPath + "/" + filename;
 
         // render to a temporary file
         try {

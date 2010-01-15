@@ -18,7 +18,7 @@ public class MonthlyReportsTest extends CommandTestCase {
     @Test
     public void testMonthCompare() throws Exception {
 
-        Month feb = new Month(2009,2);
+        Month feb = new Month(2009, 2);
 
         Month maxMonth = new Month(2009, 2);
 
@@ -40,8 +40,8 @@ public class MonthlyReportsTest extends CommandTestCase {
         MonthlyReportResult result = execute(cmd);
 
         Assert.assertEquals(1, result.getData().size());
-        Assert.assertEquals(35.0, result.getData().get(0).getValue(2009, 1));
-        Assert.assertEquals(70.0, result.getData().get(0).getValue(2009, 2));
+        Assert.assertEquals(35, result.getData().get(0).getValue(2009, 1).intValue());
+        Assert.assertEquals(70, result.getData().get(0).getValue(2009, 2).intValue());
     }
 
     @Test
@@ -82,9 +82,9 @@ public class MonthlyReportsTest extends CommandTestCase {
         MonthlyReportResult result = execute(cmd);
 
         Assert.assertEquals(1, result.getData().size());
-        Assert.assertEquals(45.0, result.getData().get(0).getValue(2009, 1));
-        Assert.assertEquals(70.0, result.getData().get(0).getValue(2009, 2));
-        Assert.assertEquals(22.0, result.getData().get(0).getValue(2009, 3));
+        Assert.assertEquals(45, result.getData().get(0).getValue(2009, 1).intValue());
+        Assert.assertEquals(70, result.getData().get(0).getValue(2009, 2).intValue());
+        Assert.assertEquals(22, result.getData().get(0).getValue(2009, 3).intValue());
     }
 
 

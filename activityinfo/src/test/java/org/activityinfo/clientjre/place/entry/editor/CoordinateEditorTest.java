@@ -10,19 +10,16 @@ import org.junit.Test;
  * @author Alex Bertram (akbertram@gmail.com)
  */
 public class CoordinateEditorTest {
+    private static final double DELTA = 0.00001;
 
 
     @Test
     public void testDDdParse() throws CoordinateFormatException {
-
         JreCoordinateEditor ed = new JreCoordinateEditor("S", "N");
-        Assert.assertEquals(6.325, ed.parse("+6.325"));
-        Assert.assertEquals(-6.325, ed.parse("6.325 S"));
-        Assert.assertEquals(-2.45, ed.parse("S 2.45"));
-        Assert.assertEquals(+2.0, ed.parse("2N"));
-
-
-
+        Assert.assertEquals(6.325, ed.parse("+6.325"), DELTA);
+        Assert.assertEquals(-6.325, ed.parse("6.325 S"), DELTA);
+        Assert.assertEquals(-2.45, ed.parse("S 2.45"), DELTA);
+        Assert.assertEquals(+2.0, ed.parse("2N"), DELTA);
     }
 
     @Test(expected = CoordinateFormatException.class)
@@ -38,11 +35,11 @@ public class CoordinateEditorTest {
         JreCoordinateEditor ed = new JreCoordinateEditor("W", "E");
         ed.setMinValue(-20);
         ed.setMaxValue(-21);
-        Assert.assertEquals(-20.5, ed.parse("20.5"));
+        Assert.assertEquals(-20.5, ed.parse("20.5"), 0.001);
 
         ed.setMinValue(30);
         ed.setMaxValue(35);
-        Assert.assertEquals(33.3, ed.parse("33.3"));
+        Assert.assertEquals(33.3, ed.parse("33.3"), 0.001);
 
     }
 
@@ -50,9 +47,9 @@ public class CoordinateEditorTest {
     public void testDMd() throws CoordinateFormatException {
         JreCoordinateEditor ed = new JreCoordinateEditor("S", "N");
 
-        Assert.assertEquals(30.25, ed.parse("30 15.00\"  N"));
-        Assert.assertEquals(-30.75, ed.parse("30 45.0000\" S"));
-        Assert.assertEquals(-25.25, ed.parse("S   25 15 "));
+        Assert.assertEquals(30.25, ed.parse("30 15.00\"  N"), DELTA);
+        Assert.assertEquals(-30.75, ed.parse("30 45.0000\" S"), DELTA);
+        Assert.assertEquals(-25.25, ed.parse("S   25 15 "), DELTA);
 
     }
 
@@ -60,14 +57,14 @@ public class CoordinateEditorTest {
     public void testDMS() throws CoordinateFormatException {
         JreCoordinateEditor ed = new JreCoordinateEditor("S", "N");
 
-        Assert.assertEquals(25.18173056, ed.parse("25 10 54.23\"  N"),  0.00000001);
-        Assert.assertEquals(-176.8397222, ed.parse("176 50' 23\" S"), 0.0000001);
+        Assert.assertEquals(25.18173056, ed.parse("25 10 54.23\"  N"), DELTA);
+        Assert.assertEquals(-176.8397222, ed.parse("176 50' 23\" S"), DELTA);
     }
 
     @Test
     public void formatDDd() {
 
-        JreCoordinateEditor ed = new JreCoordinateEditor("S", "N"); 
+        JreCoordinateEditor ed = new JreCoordinateEditor("S", "N");
         ed.setNotation(AbstractCoordinateEditor.Notation.DDd);
         Assert.assertEquals("+2.405000", ed.format(2.405));
     }

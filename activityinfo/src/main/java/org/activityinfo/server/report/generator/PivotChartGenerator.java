@@ -1,8 +1,8 @@
 package org.activityinfo.server.report.generator;
 
 import com.google.inject.Inject;
+import org.activityinfo.server.dao.PivotDAO;
 import org.activityinfo.server.dao.SchemaDAO;
-import org.activityinfo.server.dao.hibernate.PivotDAO;
 import org.activityinfo.server.domain.Indicator;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.shared.report.content.PivotChartContent;
@@ -24,14 +24,14 @@ public class PivotChartGenerator extends PivotGenerator<PivotChartElement> {
     public void generate(User user, PivotChartElement element, Filter inheritedFilter,
                          DateRange dateRange) {
 
-        if(element.getIndicators().size() == 0) {
+        if (element.getIndicators().size() == 0) {
             throw new ModelException("No indicators specified for chart", element);
-        } else if(element.getIndicators().size() > 1 &&
+        } else if (element.getIndicators().size() > 1 &&
                 !element.allDimensionTypes().contains(DimensionType.Indicator)) {
             throw new ModelException("If multiple indicators are provided, either the category or legend dimension must be indicator.", element);
         }
 
-        if(element.getSeriesDimension().size() > 0 &&
+        if (element.getSeriesDimension().size() > 0 &&
                 element.getType() == PivotChartElement.Type.Bar) {
 
             throw new ModelException("Bar charts that are not stacked/clustered cannot have legend dimensions.", element);
@@ -64,7 +64,7 @@ public class PivotChartGenerator extends PivotGenerator<PivotChartElement> {
 
     private ScaleUtil.Scale computeScale(PivotChartElement element, PivotTableData data) {
 
-        if(element.getType() == PivotChartElement.Type.Pie) {
+        if (element.getType() == PivotChartElement.Type.Pie) {
             return new ScaleUtil.Scale();
         }
 
@@ -83,34 +83,33 @@ public class PivotChartGenerator extends PivotGenerator<PivotChartElement> {
      *
      * @param element The <code>PivotChartElement</code> for which to compose the title
      * @return The category axis title, if explicitly specified, otherwise the name
-     * of the dimension type of the last category dimension
+     *         of the dimension type of the last category dimension
      */
     protected String composeXAxisTitle(PivotChartElement element) {
 
-        if(element.getCategoryAxisTitle()!=null) {
+        if (element.getCategoryAxisTitle() != null) {
             return element.getCategoryAxisTitle();
         }
 
-        if(element.getCategoryDimensions().size()==0) {
+        if (element.getCategoryDimensions().size() == 0) {
             return null;
         }
 
 
         // TODO : localize
         return element.getCategoryDimensions()
-                .get(element.getCategoryDimensions().size()-1).getType().toString();
+                .get(element.getCategoryDimensions().size() - 1).getType().toString();
 
     }
 
     /**
-     *
      * @param element
      * @return The value axis title, if specified explicitly, otherwise the units
-     * 			of the first indicator referenced
+     *         of the first indicator referenced
      */
     protected String composeYAxisTitle(PivotChartElement element) {
 
-        if(element.getValueAxisTitle() != null) {
+        if (element.getValueAxisTitle() != null) {
             return element.getValueAxisTitle();
         }
 
@@ -121,8 +120,6 @@ public class PivotChartGenerator extends PivotGenerator<PivotChartElement> {
         return indicator.getUnits();
 
     }
-
-
 
 
 }

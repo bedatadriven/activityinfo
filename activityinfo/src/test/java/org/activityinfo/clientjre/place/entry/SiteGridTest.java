@@ -20,12 +20,13 @@ import org.activityinfo.shared.command.result.SiteResult;
 import org.activityinfo.shared.command.result.VoidResult;
 import org.activityinfo.shared.dto.Schema;
 import org.activityinfo.shared.dto.SiteModel;
-import static org.easymock.EasyMock.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Collections;
+
+import static org.easymock.EasyMock.*;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -65,14 +66,13 @@ public class SiteGridTest {
         presenter.go(new SiteGridPlace(91), schema.getActivityById(91));
 
         GetSites cmd = service.getLastExecuted(GetSites.class);
-        Assert.assertEquals(91, cmd.getActivityId());
-                         
+        Assert.assertEquals(91, cmd.getActivityId().intValue());
+
         // VERIFY that rows are loaded
 
         Assert.assertEquals("number of rows", 2, presenter.getStore().getCount());
 
     }
-
 
 
     @Test
@@ -116,7 +116,7 @@ public class SiteGridTest {
 
         presenter.onSelectionChanged(DummyData.PEAR_Sites().get(4));
 
-        Record record =  presenter.getStore().getRecord(presenter.getStore().getAt(0));
+        Record record = presenter.getStore().getRecord(presenter.getStore().getAt(0));
         Assert.assertTrue(presenter.beforeEdit(record, "foobar"));
 
         verify(view);
@@ -127,7 +127,7 @@ public class SiteGridTest {
         view.setActionEnabled(UIActions.delete, false);
         replay(view);
 
-        record =  presenter.getStore().getRecord(presenter.getStore().getAt(0));
+        record = presenter.getStore().getRecord(presenter.getStore().getAt(0));
         Assert.assertTrue(presenter.beforeEdit(record, "foobar"));
 
         presenter.onSelectionChanged(DummyData.PEAR_Sites().get(5));
@@ -158,7 +158,7 @@ public class SiteGridTest {
         // Class Under Test !!
 
         SiteEditor presenter = new SiteEditor(eventBus, service,
-                new MockStateManager(),view);
+                new MockStateManager(), view);
 
         // VERIFY that the button is enabled on load
         reset(view);
@@ -233,15 +233,12 @@ public class SiteGridTest {
         service.assertExecuteCount(GetSites.class, 1);
 
         GetSites cmd = service.getLastExecuted(GetSites.class);
-        Assert.assertEquals(91, cmd.getActivityId());
+        Assert.assertEquals(91, cmd.getActivityId().intValue());
         Assert.assertEquals("location", cmd.getSortInfo().getSortField());
         Assert.assertEquals(Style.SortDir.DESC, cmd.getSortInfo().getSortDir());
         Assert.assertEquals(SiteEditor.PAGE_SIZE, cmd.getOffset());
 
         service.resetLog();
-
-
-
 
 
         // VERIFY that a second, identical navigation doesn't generate a reload
@@ -251,10 +248,6 @@ public class SiteGridTest {
         service.assertExecuteCount(GetSites.class, 0);
 
 
-
-        
-
-
         // verify that a navigation request for a different activity returns false
 
         Assert.assertFalse(presenter.navigate(new SiteGridPlace(92)));
@@ -262,7 +255,7 @@ public class SiteGridTest {
     }
 
     @Test
-    public void testNewSiteTriggersSeekToPage() {                                       
+    public void testNewSiteTriggersSeekToPage() {
 
         // Collaborator: service
         MockCommandService service = new MockCommandService();
@@ -278,7 +271,7 @@ public class SiteGridTest {
 
         // CLASS UNDER Test
         SiteEditor presenter = new SiteEditor(eventBus, service, new MockStateManager(),
-                 view);
+                view);
 
         // VERIFY that a new site triggers the correct command AND
         //        that the site is selected upon load
@@ -296,7 +289,7 @@ public class SiteGridTest {
         eventBus.fireEvent(new SiteEvent(AppEvents.SiteCreated, this, new SiteModel(3)));
 
         GetSites cmd = service.getLastExecuted(GetSites.class);
-        Assert.assertEquals(3, cmd.getSeekToSiteId());
+        Assert.assertEquals(3, cmd.getSeekToSiteId().intValue());
 
         verify(view);
 
@@ -353,7 +346,7 @@ public class SiteGridTest {
 
         // CLASS UNDER TEST
         SiteEditor editor = new SiteEditor(new MockEventBus(), service, new MockStateManager(),
-                 view);
+                view);
 
         editor.go(new SiteGridPlace(91), schema.getActivityById(91));
 
@@ -369,7 +362,7 @@ public class SiteGridTest {
         Assert.assertEquals(sites.getData().get(0).getId(), cmd.getId());
         Assert.assertEquals("Site", cmd.getEntityName());
         Assert.assertEquals("Freeport Indiana", cmd.getChanges().get("locationName"));
-                
+
     }
 
 }

@@ -27,11 +27,9 @@ import org.activityinfo.shared.command.Delete;
 import org.activityinfo.shared.command.result.CommandResult;
 
 /**
- *
+ * @author Alex Bertram
  * @see org.activityinfo.shared.command.Delete
  * @see org.activityinfo.server.domain.Deleteable
- *
- * @author Alex Bertram
  */
 public class DeleteHandler implements CommandHandler<Delete> {
     private final SchemaDAO schemaDAO;
@@ -50,17 +48,17 @@ public class DeleteHandler implements CommandHandler<Delete> {
 
         // TODO check permissions for delete!
 
-        if("Site".equals(cmd.getEntityName())) {
-            entity = siteDAO.findSiteById(cmd.getId());
-        } else if("UserDatabase".equals(cmd.getEntityName())) {
+        if ("Site".equals(cmd.getEntityName())) {
+            entity = siteDAO.findById(cmd.getId());
+        } else if ("UserDatabase".equals(cmd.getEntityName())) {
             entity = schemaDAO.findById(UserDatabase.class, cmd.getId());
-        } else if("Activity".equals(cmd.getEntityName())) {
+        } else if ("Activity".equals(cmd.getEntityName())) {
             entity = schemaDAO.findById(Activity.class, cmd.getId());
-        } else if("AttributeGroup".equals(cmd.getEntityName())) {
+        } else if ("AttributeGroup".equals(cmd.getEntityName())) {
             entity = schemaDAO.findById(AttributeGroup.class, cmd.getId());
-        } else if("Attribute".equals(cmd.getEntityName())) {
+        } else if ("Attribute".equals(cmd.getEntityName())) {
             entity = schemaDAO.findById(Attribute.class, cmd.getId());
-        } else if("Indicator".equals(cmd.getEntityName())) {
+        } else if ("Indicator".equals(cmd.getEntityName())) {
             entity = schemaDAO.findById(Indicator.class, cmd.getId());
         } else {
             throw new RuntimeException("Cannot delete entity type " + cmd.getEntityName());

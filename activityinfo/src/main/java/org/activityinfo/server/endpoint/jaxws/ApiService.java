@@ -20,14 +20,17 @@
 package org.activityinfo.server.endpoint.jaxws;
 
 import com.google.inject.Inject;
-import org.activityinfo.server.service.Authenticator;
-import org.activityinfo.shared.dto.Schema;
-import org.activityinfo.shared.exception.InvalidLoginException;
+import org.activityinfo.server.auth.Authenticator;
+import org.activityinfo.server.dao.AuthenticationDAO;
+import org.activityinfo.server.dao.UserDAO;
+import org.activityinfo.server.domain.Authentication;
+import org.activityinfo.server.domain.User;
 import org.jvnet.jax_ws_commons.json.JSONBindingID;
 
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
+import javax.persistence.NoResultException;
 import javax.xml.ws.BindingType;
 
 /**
@@ -43,24 +46,40 @@ import javax.xml.ws.BindingType;
 public class ApiService {
 
     @Inject
+    private UserDAO userDAO;
+
+    @Inject
     private Authenticator authenticator;
+
+    @Inject
+    private AuthenticationDAO authDAO;
 
     /**
      * Attempts to authenticate the user and returns a secure token that can be used to
      * access the API.
      *
-     * @param email the user's email
+     * @param email    the user's email
      * @param password the user's password in plain text
      * @return a secure authentication token, or null if the authentication fails.
      */
     @WebMethod
     public String authenticate(
-            @WebParam(name="email") String email,
-            @WebParam(name="password") String password) {
+            @WebParam(name = "email") String email,
+            @WebParam(name = "password") String password) {
+
+        User user = null;
         try {
-            return authenticator.authenticate(email, password).getId();
-        } catch (InvalidLoginException e) {
+            user = userDAO.findUserByEmail(email);
+        } catch (NoResultException e) {
             return null;
         }
+        if (!authenticator.check(user, password))
+            return null;
+
+        Authentication auth = new Authentication(user);
+        authDAO.persist(auth);
+
+        return auth.getId();
+
     }
 }

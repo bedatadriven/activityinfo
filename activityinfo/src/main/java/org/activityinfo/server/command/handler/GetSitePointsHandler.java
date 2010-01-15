@@ -20,9 +20,9 @@
 package org.activityinfo.server.command.handler;
 
 import com.google.inject.Inject;
-import org.activityinfo.server.dao.hibernate.SiteTableDAO;
-import org.activityinfo.server.domain.User;
+import org.activityinfo.server.dao.SiteTableDAO;
 import org.activityinfo.server.domain.SiteData;
+import org.activityinfo.server.domain.User;
 import org.activityinfo.server.report.generator.SiteDataBinder;
 import org.activityinfo.shared.command.GetSitePoints;
 import org.activityinfo.shared.command.result.CommandResult;
@@ -36,10 +36,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
- * @see org.activityinfo.shared.command.GetSitePoints
- *
  * @author Alex Bertram (akbertram@gmail.com)
+ * @see org.activityinfo.shared.command.GetSitePoints
  */
 public class GetSitePointsHandler implements CommandHandler<GetSitePoints> {
 
@@ -54,15 +52,15 @@ public class GetSitePointsHandler implements CommandHandler<GetSitePoints> {
     public CommandResult execute(GetSitePoints cmd, User user) throws CommandException {
 
         // query for the sites
-        List<SiteData> sites = dao.query(user,  Restrictions.eq("activity.id", cmd.getActivityId()), null,
+        List<SiteData> sites = dao.query(user, Restrictions.eq("activity.id", cmd.getActivityId()), null,
                 new SiteDataBinder(), SiteTableDAO.RETRIEVE_NONE, 0, -1);
 
         Bounds bounds = new Bounds();
 
         List<SitePoint> points = new ArrayList<SitePoint>(sites.size());
-        for(SiteData site : sites) {
+        for (SiteData site : sites) {
 
-            if(site.hasLatLong()) {
+            if (site.hasLatLong()) {
 
                 points.add(new SitePoint(site.getLatitude(), site.getLongitude(), site.getId()));
                 bounds.grow(site.getLatitude(), site.getLongitude());

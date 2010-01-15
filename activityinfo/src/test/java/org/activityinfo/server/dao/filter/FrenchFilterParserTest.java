@@ -1,10 +1,10 @@
 package org.activityinfo.server.dao.filter;
 
 import org.activityinfo.server.DbUnitTestCase;
-import org.activityinfo.server.dao.hibernate.SiteTableDAO;
+import org.activityinfo.server.dao.SiteTableDAO;
 import org.activityinfo.server.dao.hibernate.SiteTableDAOHibernate;
-import org.activityinfo.server.domain.User;
 import org.activityinfo.server.domain.SiteData;
+import org.activityinfo.server.domain.User;
 import org.activityinfo.server.report.generator.SiteDataBinder;
 import org.junit.Assert;
 import org.junit.Test;
@@ -86,8 +86,6 @@ public class FrenchFilterParserTest extends DbUnitTestCase {
         Assert.assertEquals(2, results.size());
 
     }
-
-
 
 
 }

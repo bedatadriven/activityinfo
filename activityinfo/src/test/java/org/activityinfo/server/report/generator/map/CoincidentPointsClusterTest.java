@@ -10,24 +10,25 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+
 /*
- * Real example that didn't work.
- *
- * @author Alex Bertram
- */
+* Real example that didn't work.
+*
+* @author Alex Bertram
+*/
 public class CoincidentPointsClusterTest extends GraphTest {
 
 
     @Test
     public void testSimpleData() throws Exception {
         List<PointValue> points = new ArrayList<PointValue>();
-        points.add(new PointValue(null, new MapSymbol(), 7.0, new Point(0,0)));
-        points.add(new PointValue(null, new MapSymbol(), 2.0, new Point(0,0)));
-        points.add(new PointValue(null, new MapSymbol(), 41.0, new Point(100,100)));
-        points.add(new PointValue(null, new MapSymbol(), 9.0, new Point(0,0)));
-        points.add(new PointValue(null, new MapSymbol(), 39.0, new Point(100,100)));
+        points.add(new PointValue(null, new MapSymbol(), 7.0, new Point(0, 0)));
+        points.add(new PointValue(null, new MapSymbol(), 2.0, new Point(0, 0)));
+        points.add(new PointValue(null, new MapSymbol(), 41.0, new Point(100, 100)));
+        points.add(new PointValue(null, new MapSymbol(), 9.0, new Point(0, 0)));
+        points.add(new PointValue(null, new MapSymbol(), 39.0, new Point(100, 100)));
 
-        double originalSum = 7+2+9+41+39;
+        double originalSum = 7 + 2 + 9 + 41 + 39;
 
         // Now build the graph
 
@@ -41,11 +42,11 @@ public class CoincidentPointsClusterTest extends GraphTest {
 
         // check to make sure all values were included
         double sumAfterClustering = 0;
-        for(Cluster cluster : clusters) {
+        for (Cluster cluster : clusters) {
             sumAfterClustering += cluster.sumValues();
         }
 
-        Assert.assertEquals(originalSum, sumAfterClustering);
+        Assert.assertEquals(originalSum, sumAfterClustering, 0.0001);
 
         Assert.assertEquals(2, clusters.size());
 
@@ -68,7 +69,7 @@ public class CoincidentPointsClusterTest extends GraphTest {
         double originalSum = 0;
 
         List<PointValue> points = new ArrayList<PointValue>();
-        while(in.ready()) {
+        while (in.ready()) {
 
             String line = in.readLine();
             String[] columns = line.split(",");
@@ -93,10 +94,10 @@ public class CoincidentPointsClusterTest extends GraphTest {
 
         // make sure nothing was lost in the merging of coincident points
         double nodeSum = 0;
-        for(MarkerGraph.Node node : graph.getNodes()) {
+        for (MarkerGraph.Node node : graph.getNodes()) {
             nodeSum += node.getPointValue().value;
         }
-        Assert.assertEquals("values after construction of grpah", originalSum, nodeSum);
+        Assert.assertEquals("values after construction of graph", originalSum, nodeSum, 0.001);
 
 
         saveGraphImage("clusterTest2", graph, 15);
@@ -108,11 +109,11 @@ public class CoincidentPointsClusterTest extends GraphTest {
 
         // check to make sure all values were included
         double sumAfterClustering = 0;
-        for(Cluster cluster : clusters) {
+        for (Cluster cluster : clusters) {
             sumAfterClustering += cluster.sumValues();
         }
 
-        Assert.assertEquals(originalSum, sumAfterClustering);
+        Assert.assertEquals(originalSum, sumAfterClustering, 0.001);
 
         Assert.assertEquals(16, clusters.size());
 

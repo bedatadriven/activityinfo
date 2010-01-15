@@ -2,8 +2,8 @@ package org.activityinfo.server.report.generator;
 
 import com.google.inject.Inject;
 import org.activityinfo.server.dao.BaseMapDAO;
-import org.activityinfo.server.dao.hibernate.PivotDAO;
-import org.activityinfo.server.dao.hibernate.SiteTableDAO;
+import org.activityinfo.server.dao.PivotDAO;
+import org.activityinfo.server.dao.SiteTableDAO;
 import org.activityinfo.server.domain.SiteData;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.server.report.generator.map.*;
@@ -48,20 +48,20 @@ public class MapGenerator extends ListGenerator<MapElement> {
 
         // Set up layer generators
         List<LayerGenerator> layerGenerators = new ArrayList<LayerGenerator>();
-        for(MapLayer layer : element.getLayers()) {
-            if(layer instanceof BubbleMapLayer) {
+        for (MapLayer layer : element.getLayers()) {
+            if (layer instanceof BubbleMapLayer) {
                 layerGenerators.add(new BubbleLayerGenerator(element,
                         (BubbleMapLayer) layer));
-            } else if(layer instanceof IconMapLayer) {
+            } else if (layer instanceof IconMapLayer) {
                 layerGenerators.add(new IconLayerGenerator(element,
-                        (IconMapLayer)layer));
+                        (IconMapLayer) layer));
             }
         }
 
         // FIRST PASS: calculate extents and margins
         Extents extents = Extents.emptyExtents();
         Margins margins = new Margins(0);
-        for(LayerGenerator layerGtor : layerGenerators) {
+        for (LayerGenerator layerGtor : layerGenerators) {
             extents.grow(layerGtor.calculateExtents(sites));
             margins.grow(layerGtor.calculateMargins());
         }
@@ -69,19 +69,19 @@ public class MapGenerator extends ListGenerator<MapElement> {
         // Now we're ready to calculate the zoom level
         // and the projection
         int width = element.getWidth();
-        int height = element.getHeight() ;
+        int height = element.getHeight();
         int zoom = TileMath.zoomLevelForExtents(extents,
                 width,
                 height);
 
         // Retrieve the basemap and clamp zoom level
         BaseMap baseMap = baseMapDAO.getBaseMap(element.getBaseMapId());
-        if(baseMap == null) {
+        if (baseMap == null) {
             throw new RuntimeException("Could not find base map id=" + element.getBaseMapId());
         }
-        if(zoom < baseMap.getMinZoom())
+        if (zoom < baseMap.getMinZoom())
             zoom = baseMap.getMinZoom();
-        if(zoom > baseMap.getMaxZoom())
+        if (zoom > baseMap.getMaxZoom())
             zoom = baseMap.getMaxZoom();
 
         TiledMap map = new TiledMap(width, height, extents.center(), zoom);
@@ -90,7 +90,7 @@ public class MapGenerator extends ListGenerator<MapElement> {
         content.setExtents(extents);
 
         // Generate the actual content
-        for(LayerGenerator layerGtor : layerGenerators) {
+        for (LayerGenerator layerGtor : layerGenerators) {
             layerGtor.generate(sites, map, content);
         }
 
@@ -99,9 +99,9 @@ public class MapGenerator extends ListGenerator<MapElement> {
         // top of larger ones)
         Collections.sort(content.getMarkers(), new Comparator<MapMarker>() {
             public int compare(MapMarker o1, MapMarker o2) {
-                if(o1.getSize() > o2.getSize())
+                if (o1.getSize() > o2.getSize())
                     return -1;
-                else if(o1.getSize() < o2.getSize())
+                else if (o1.getSize() < o2.getSize())
                     return 1;
                 return 0;
             }

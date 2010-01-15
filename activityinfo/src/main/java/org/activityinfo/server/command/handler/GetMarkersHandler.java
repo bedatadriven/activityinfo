@@ -20,9 +20,9 @@
 package org.activityinfo.server.command.handler;
 
 import com.google.inject.Inject;
-import org.activityinfo.server.dao.hibernate.SiteTableDAO;
-import org.activityinfo.server.domain.User;
+import org.activityinfo.server.dao.SiteTableDAO;
 import org.activityinfo.server.domain.SiteData;
+import org.activityinfo.server.domain.User;
 import org.activityinfo.server.report.generator.SiteDataBinder;
 import org.activityinfo.shared.command.GetMarkers;
 import org.activityinfo.shared.command.result.CommandResult;
@@ -34,9 +34,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @see org.activityinfo.shared.command.GetMarkers
- *
  * @author Alex Bertram (akbertram@gmail.com)
+ * @see org.activityinfo.shared.command.GetMarkers
  */
 public class GetMarkersHandler implements CommandHandler<GetMarkers> {
 
@@ -56,18 +55,18 @@ public class GetMarkersHandler implements CommandHandler<GetMarkers> {
         // define our map
         //TiledMap map = new TiledMap(500, 500, new LatLng(0,0), cmd.getZoomLevel());
 
-       // List<Marker<SiteData>> markers = MarkerUtil.cluster(map, sites, 10);
+        // List<Marker<SiteData>> markers = MarkerUtil.cluster(map, sites, 10);
 
         List<SiteMarker> markers = new ArrayList<SiteMarker>(sites.size());
-        for(SiteData site : sites) {
+        for (SiteData site : sites) {
 
-            if(site.hasLatLong()) {
+            if (site.hasLatLong()) {
 
                 int ids[] = new int[1];
                 ids[0] = site.getId();
 
                 SiteMarker dto = new SiteMarker(ids,
-                        (float)site.getLongitude(), (float)site.getLatitude());
+                        (float) site.getLongitude(), (float) site.getLatitude());
 
                 markers.add(dto);
             }

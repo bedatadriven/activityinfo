@@ -1,18 +1,19 @@
 package org.activityinfo.server.report.generator;
 
-import org.activityinfo.server.dao.hibernate.PivotDAO;
+import org.activityinfo.server.dao.PivotDAO;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.shared.report.content.EntityCategory;
 import org.activityinfo.shared.report.content.PivotTableData;
 import org.activityinfo.shared.report.model.*;
 import org.easymock.EasyMock;
-import static org.easymock.EasyMock.*;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import static org.easymock.EasyMock.*;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -60,13 +61,13 @@ public class PivotTableGeneratorTest {
         Assert.assertNotNull("element content", element.getContent());
 
         PivotTableData data = element.getContent().getData();
-        Assert.assertEquals("rows", 2,  data.getRootRow().getChildCount());
+        Assert.assertEquals("rows", 2, data.getRootRow().getChildCount());
         Assert.assertEquals("rows sorted", "Nord Kivu", data.getRootRow().getChildren().get(0).getLabel());
         Assert.assertEquals("cols", 3, data.getRootColumn().getChildCount());
     }
 
     @Test
-    public void  testIndicatorSortOrder() {
+    public void testIndicatorSortOrder() {
 
         // test input data: user
         User user = new User();

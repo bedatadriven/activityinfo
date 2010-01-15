@@ -1,17 +1,16 @@
 package org.activityinfo.server;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-/*
- * @author Alex Bertram
- */
 
 public class SchemaMigrationTest {
 
     @Test
+    @Ignore("this could be a standalone test for a given sql database")
     public void test() {
 
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("activityInfo");
@@ -35,7 +34,6 @@ public class SchemaMigrationTest {
         em.createQuery("select s from Site s").setMaxResults(10).getResultList();
         em.createQuery("select u from User u").setMaxResults(10).getResultList();
         em.createQuery("select u from UserPermission u").setMaxResults(10).getResultList();
-        
 
 
     }

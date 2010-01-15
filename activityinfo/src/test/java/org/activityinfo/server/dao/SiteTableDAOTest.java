@@ -1,7 +1,6 @@
 package org.activityinfo.server.dao;
 
 import org.activityinfo.server.DbUnitTestCase;
-import org.activityinfo.server.dao.hibernate.SiteTableDAO;
 import org.activityinfo.server.dao.hibernate.SiteTableDAOHibernate;
 import org.activityinfo.server.domain.AdminEntity;
 import org.activityinfo.server.domain.User;
@@ -19,7 +18,7 @@ public class SiteTableDAOTest extends DbUnitTestCase {
     @Test
     public void testNullCriteria() {
 
-		populate("sites-simple1");
+        populate("sites-simple1");
 
         EntityManager em = emf.createEntityManager();
         SiteTableDAO dao = new SiteTableDAOHibernate(em);
@@ -27,10 +26,8 @@ public class SiteTableDAOTest extends DbUnitTestCase {
         SiteProjectionBinder binder = new MockBinder();
 
         User user = em.find(User.class, 1);
-        
+
         List list = dao.query(user, null, null, binder, SiteTableDAO.RETRIEVE_ALL, 0, -1);
-
-
     }
 
     private static class MockBinder implements SiteProjectionBinder {

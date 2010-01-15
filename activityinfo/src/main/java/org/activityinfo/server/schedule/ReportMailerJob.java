@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import org.activityinfo.server.domain.DomainFilters;
 import org.activityinfo.server.domain.ReportDefinition;
 import org.activityinfo.server.domain.ReportSubscription;
-import org.activityinfo.server.mail.Mailer;
+import org.activityinfo.server.mail.MailSender;
 import org.activityinfo.server.report.ReportParserJaxb;
 import org.activityinfo.server.report.generator.ReportGenerator;
 import org.activityinfo.server.report.renderer.itext.RtfReportRenderer;
@@ -31,7 +31,6 @@ import java.util.Set;
 
 
 /**
- *
  * Quartz Job that is run nightly to mail reports to subscribers.
  *
  * @author Alex Bertram
@@ -41,13 +40,13 @@ public class ReportMailerJob implements Job {
     private final EntityManager em;
     private final ReportGenerator reportGenerator;
     private final RtfReportRenderer rtfReportRenderer;
-    private final Mailer mailer;
+    private final MailSender mailer;
 
     private DateFormat reportDateFormat;
 
     @Inject
     public ReportMailerJob(EntityManager em, ReportGenerator reportGenerator,
-                           RtfReportRenderer rtfReportRenderer, Mailer mailer) {
+                           RtfReportRenderer rtfReportRenderer, MailSender mailer) {
         this.em = em;
         this.reportGenerator = reportGenerator;
         this.rtfReportRenderer = rtfReportRenderer;
@@ -61,17 +60,17 @@ public class ReportMailerJob implements Job {
 
         Date today = new Date();
         List<ReportDefinition> reports = em.createQuery("select t from ReportDefinition t")
-                                            .getResultList();
+                .getResultList();
 
-        for(ReportDefinition template : reports) {
+        for (ReportDefinition template : reports) {
             try {
                 Report report = ReportParserJaxb.parseXml(template.getXml());
-                if(report.getFrequency() == ReportFrequency.Monthly) {
-                    if(ReportMailerHelper.mailToday(today, report)) {
+                if (report.getFrequency() == ReportFrequency.Monthly) {
+                    if (ReportMailerHelper.mailToday(today, report)) {
                         execute(today, report, template.getSubscriptions());
                     }
                 }
-            } catch(Throwable caught) {
+            } catch (Throwable caught) {
                 caught.printStackTrace();
             }
         }
@@ -84,11 +83,11 @@ public class ReportMailerJob implements Job {
 
         // loop through report subscriptions that are to be mailed
         // today
-       for(ReportSubscription sub : subs) {
+        for (ReportSubscription sub : subs) {
 
             try {
                 mailReport(sub, today);
-            } catch(Exception e) {
+            } catch (Exception e) {
                 System.out.println("Report mailing of " + sub.getTemplate().getId() + " failed for user "
                         + sub.getUser().getEmail());
                 e.printStackTrace();
@@ -114,7 +113,7 @@ public class ReportMailerJob implements Job {
 
         // generate the report
         reportGenerator.generate(sub.getUser(), report, null,
-               ReportMailerHelper.computeDateRange(report, today));
+                ReportMailerHelper.computeDateRange(report, today));
 
         // render the report to a temporary path and create the
         // attachement
@@ -136,8 +135,8 @@ public class ReportMailerJob implements Job {
 
         // email
         MultiPartEmail email = new MultiPartEmail();
-       // email.setHtmlMsg(ReportMailerHelper.composeHtmlEmail(sub, report ));
-        email.setMsg(ReportMailerHelper.composeTextEmail(sub, report ));
+        // email.setHtmlMsg(ReportMailerHelper.composeHtmlEmail(sub, report ));
+        email.setMsg(ReportMailerHelper.composeTextEmail(sub, report));
         email.addTo(sub.getUser().getEmail(), sub.getUser().getName());
         email.setSubject("ActivityInfo: " + report.getTitle());
         email.attach(attachment);

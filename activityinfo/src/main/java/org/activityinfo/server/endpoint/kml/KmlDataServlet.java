@@ -3,16 +3,16 @@ package org.activityinfo.server.endpoint.kml;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import org.activityinfo.server.auth.Authenticator;
 import org.activityinfo.server.command.handler.GetSchemaHandler;
-import org.activityinfo.server.dao.hibernate.SiteTableDAO;
+import org.activityinfo.server.dao.SiteTableDAO;
+import org.activityinfo.server.dao.UserDAO;
 import org.activityinfo.server.dao.hibernate.SiteTableDAOHibernate;
-import org.activityinfo.server.domain.Authentication;
 import org.activityinfo.server.domain.DomainFilters;
-import org.activityinfo.server.domain.User;
 import org.activityinfo.server.domain.SiteData;
+import org.activityinfo.server.domain.User;
 import org.activityinfo.server.report.generator.SiteDataBinder;
 import org.activityinfo.server.report.util.HtmlWriter;
-import org.activityinfo.server.service.Authenticator;
 import org.activityinfo.server.util.KMLNamespace;
 import org.activityinfo.server.util.XmlBuilder;
 import org.activityinfo.shared.command.GetSchema;
@@ -21,7 +21,6 @@ import org.activityinfo.shared.dto.ActivityModel;
 import org.activityinfo.shared.dto.IndicatorModel;
 import org.activityinfo.shared.dto.Schema;
 import org.activityinfo.shared.exception.CommandException;
-import org.activityinfo.shared.exception.InvalidLoginException;
 import org.apache.commons.codec.binary.Base64;
 import org.hibernate.criterion.Order;
 import org.xml.sax.SAXException;
@@ -41,7 +40,7 @@ import java.util.List;
 /**
  * Serves a KML (Google Earth) file containing the locations of all activities
  * that are visible to the user.
- *
+ * <p/>
  * Users are authenticated using Basic HTTP authentication, and will see a prompt
  * for their username (email) and password when they access from Google Earth.
  *
@@ -53,20 +52,20 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
     @Inject
     private Injector injector;
 
-	public void doGet(HttpServletRequest req, HttpServletResponse res)
-	throws ServletException, IOException {
-		PrintWriter out = res.getWriter();
+    public void doGet(HttpServletRequest req, HttpServletResponse res)
+            throws ServletException, IOException {
+        PrintWriter out = res.getWriter();
 
-		// Get Authorization header
-		String auth = req.getHeader("Authorization");
+        // Get Authorization header
+        String auth = req.getHeader("Authorization");
 
-		// Do we allow that user?
+        // Do we allow that user?
 
         User user = authenticate(auth);
-        if(user == null) {
+        if (user == null) {
             // Not allowed, or no password provided so report unauthorized
-			res.setHeader("WWW-Authenticate", "BASIC realm=\"Utilisateurs authorises\"");
-			res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            res.setHeader("WWW-Authenticate", "BASIC realm=\"Utilisateurs authorises\"");
+            res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
@@ -74,7 +73,7 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
         res.setContentType("application/vnd.google-earth.kml+xml");
 
         try {
-          writeDocument(user, res.getWriter());
+            writeDocument(user, res.getWriter());
 
         } catch (TransformerConfigurationException e) {
             e.printStackTrace();
@@ -86,38 +85,38 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
 
     }
 
-	// This method checks the user information sent in the Authorization
-	// header against the database of users maintained in the users Hashtable.
-	protected User authenticate(String auth) throws IOException {
-		if (auth == null) return null;  // no auth
+    // This method checks the user information sent in the Authorization
+    // header against the database of users maintained in the users Hashtable.
 
-		if (!auth.toUpperCase().startsWith("BASIC "))
-			return null;  // we only do BASIC
+    protected User authenticate(String auth) throws IOException {
+        if (auth == null) return null;  // no auth
 
-		// Get encoded user and password, comes after "BASIC "
-		String emailpassEncoded = auth.substring(6);
+        if (!auth.toUpperCase().startsWith("BASIC "))
+            return null;  // we only do BASIC
 
-		// Decode it, using any base 64 decoder
+        // Get encoded user and password, comes after "BASIC "
+        String emailpassEncoded = auth.substring(6);
+
+        // Decode it, using any base 64 decoder
 
         byte[] emailpassDecodedBytes = Base64.decodeBase64(emailpassEncoded.getBytes());
-		String emailpassDecoded = new String(emailpassDecodedBytes, Charset.defaultCharset() );
-		String[] emailPass = emailpassDecoded.split(":");
+        String emailpassDecoded = new String(emailpassDecodedBytes, Charset.defaultCharset());
+        String[] emailPass = emailpassDecoded.split(":");
 
-        if(emailPass.length != 2)
-                return null;
+        if (emailPass.length != 2)
+            return null;
 
-		// look up the user in the database
+        // look up the user in the database
+        UserDAO userDAO = injector.getInstance(UserDAO.class);
+        User user = userDAO.findUserByEmail(emailPass[0]);
 
-        Authenticator ator = injector.getInstance(Authenticator.class);
-        Authentication authentication = null;
-        try {
-            authentication = ator.authenticate(emailPass[0], emailPass[1]);
-        } catch (InvalidLoginException e) {
+        Authenticator checker = injector.getInstance(Authenticator.class);
+        if (!checker.check(user, emailPass[1])) {
             return null;
         }
+        return user;
 
-        return authentication.getUser();
-	}
+    }
 
     protected void writeDocument(User user, PrintWriter out) throws TransformerConfigurationException, SAXException, CommandException {
 
@@ -126,7 +125,7 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
         EntityManager em = injector.getInstance(EntityManager.class);
         DomainFilters.applyUserFilter(user, em);
 
-		XmlBuilder xml = new XmlBuilder(new StreamResult(out));
+        XmlBuilder xml = new XmlBuilder(new StreamResult(out));
 
         GetSchemaHandler schemaHandler = injector.getInstance(GetSchemaHandler.class);
         Schema schema = (Schema) schemaHandler.execute(new GetSchema(), user);
@@ -147,16 +146,16 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
         int lastActivityId = -1;
         ActivityModel activity = null;
 
-        for(SiteData pm : sites) {
+        for (SiteData pm : sites) {
 
-            if(pm.hasLatLong()) {
+            if (pm.hasLatLong()) {
 
-                if(pm.getActivityId() != lastActivityId && lastActivityId != -1) {
+                if (pm.getActivityId() != lastActivityId && lastActivityId != -1) {
                     xml.close();
                 }
 
-                if(pm.getDatabaseId() != lastDatabaseId) {
-                    if(lastDatabaseId != -1) {
+                if (pm.getDatabaseId() != lastDatabaseId) {
+                    if (lastDatabaseId != -1) {
                         xml.close();
                     }
                     kml.startFolder();
@@ -165,7 +164,7 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
                     lastDatabaseId = pm.getDatabaseId();
                 }
 
-                if(pm.getActivityId() != lastActivityId) {
+                if (pm.getActivityId() != lastActivityId) {
                     kml.startFolder();
                     kml.name(schema.getActivityById(pm.getActivityId()).getName());
                     kml.open(false);
@@ -198,10 +197,10 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
             }
         }
 
-        if(lastActivityId != -1) {
+        if (lastActivityId != -1) {
             xml.close();
         }
-        if(lastDatabaseId != -1) {
+        if (lastDatabaseId != -1) {
             xml.close();
         }
 
@@ -233,8 +232,8 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
 
         html.startTable();
 
-        for(IndicatorModel indicator : activity.getIndicators()) {
-            if(data.getIndicatorValue(indicator.getId()) != null) {
+        for (IndicatorModel indicator : activity.getIndicators()) {
+            if (data.getIndicatorValue(indicator.getId()) != null) {
                 html.startTableRow();
 
                 html.tableCell(indicator.getName());

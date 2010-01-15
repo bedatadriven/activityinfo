@@ -2,7 +2,7 @@ package org.activityinfo.server.report.generator;
 
 
 import com.google.inject.Inject;
-import org.activityinfo.server.dao.hibernate.PivotDAO;
+import org.activityinfo.server.dao.PivotDAO;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.shared.report.content.PivotContent;
 import org.activityinfo.shared.report.content.PivotTableData;
