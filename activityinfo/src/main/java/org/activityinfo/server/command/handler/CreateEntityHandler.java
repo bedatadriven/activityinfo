@@ -20,7 +20,9 @@
 package org.activityinfo.server.command.handler;
 
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import org.activityinfo.server.domain.*;
+import org.activityinfo.server.policy.UserDatabasePolicy;
 import org.activityinfo.shared.command.CreateEntity;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.command.result.CreateResult;
@@ -34,16 +36,17 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- *
- * @see org.activityinfo.shared.command.CreateEntity
- *
  * @author Alex Bertram (akbertram@gmail.com)
+ * @see org.activityinfo.shared.command.CreateEntity
  */
 public class CreateEntityHandler extends BaseEntityHandler implements CommandHandler<CreateEntity> {
 
+    private final Injector injector;
+
     @Inject
-    public CreateEntityHandler(EntityManager em) {
+    public CreateEntityHandler(EntityManager em, Injector injector) {
         super(em);
+        this.injector = injector;
     }
 
     @Override
@@ -51,17 +54,18 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
 
         Map<String, Object> properties = cmd.getProperties().getTransientMap();
 
-        if("UserDatabase".equals(cmd.getEntityName())) {
-            return createDatabase(cmd, properties, user);
-        } else if("Activity".equals(cmd.getEntityName())) {
+        if ("UserDatabase".equals(cmd.getEntityName())) {
+            UserDatabasePolicy bridge = injector.getInstance(UserDatabasePolicy.class);
+            return new CreateResult((Integer) bridge.create(user, properties));
+        } else if ("Activity".equals(cmd.getEntityName())) {
             return createActivity(user, cmd, properties);
-        } else if("AttributeGroup".equals(cmd.getEntityName())) {
+        } else if ("AttributeGroup".equals(cmd.getEntityName())) {
             return createAttributeGroup(cmd, properties);
-        } else if("Attribute".equals(cmd.getEntityName())) {
+        } else if ("Attribute".equals(cmd.getEntityName())) {
             return createAttribute(cmd, properties);
-        } else if("Indicator".equals(cmd.getEntityName())) {
+        } else if ("Indicator".equals(cmd.getEntityName())) {
             return createIndicator(user, cmd, properties);
-        } else if("Site".equals(cmd.getEntityName())) {
+        } else if ("Site".equals(cmd.getEntityName())) {
             return createSite(user, cmd, properties);
         } else {
             throw new CommandException("Invalid entity class " + cmd.getEntityName());
@@ -69,30 +73,29 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
     }
 
 
-
     private CommandResult createActivity(User user, CreateEntity cmd, Map<String, Object> properties) throws IllegalAccessCommandException {
 
-        int databaseId = (Integer)properties.get("databaseId");
-        int locationTypeId = ((Integer)properties.get("locationTypeId"));
+        int databaseId = (Integer) properties.get("databaseId");
+        int locationTypeId = ((Integer) properties.get("locationTypeId"));
 
         UserDatabase database = em.getReference(UserDatabase.class, databaseId);
 
         assertDesignPriviledges(user, database);
 
         // get the next sort order index
-        Integer maxSortOrder = (Integer)em.createQuery("select max(e.sortOrder) from Activity e where e.database.id = ?1")
+        Integer maxSortOrder = (Integer) em.createQuery("select max(e.sortOrder) from Activity e where e.database.id = ?1")
                 .setParameter(1, databaseId)
                 .getSingleResult();
 
-        if(maxSortOrder == null) {
+        if (maxSortOrder == null) {
             maxSortOrder = 0;
         }
 
         // create the entity
         Activity activity = new Activity();
         activity.setDatabase(database);
-		activity.setSortOrder( maxSortOrder + 1 );
-        activity.setLocationType( em.getReference(LocationType.class, locationTypeId));
+        activity.setSortOrder(maxSortOrder + 1);
+        activity.setLocationType(em.getReference(LocationType.class, locationTypeId));
 
         updateActivityProperties(activity, properties);
 
@@ -106,9 +109,9 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
 
 
     protected CommandResult createDatabase(CreateEntity cmd, Map<String, Object> properties, User user) {
-      	UserDatabase database = new UserDatabase();
-		database.setCountry( em.getReference(Country.class, 1) );
-		database.setOwner(user);
+        UserDatabase database = new UserDatabase();
+        database.setCountry(em.getReference(Country.class, 1));
+        database.setOwner(user);
 
         updateDatabaseProperties(database, properties);
 
@@ -121,11 +124,11 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
 
         database.setLastSchemaUpdate(new Date());
 
-        if(properties.containsKey("name"))
-            database.setName((String)properties.get("name"));
+        if (properties.containsKey("name"))
+            database.setName((String) properties.get("name"));
 
-        if(properties.containsKey("fullName"))
-		    database.setFullName((String)properties.get("fullName"));
+        if (properties.containsKey("fullName"))
+            database.setFullName((String) properties.get("fullName"));
     }
 
 
@@ -145,95 +148,95 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
 
     private CommandResult createAttribute(CreateEntity cmd, Map<String, Object> properties) {
 
-  		Attribute attribute = new Attribute();
-		attribute.setGroup( em.getReference(AttributeGroup.class, properties.get("attributeGroupId")));
+        Attribute attribute = new Attribute();
+        attribute.setGroup(em.getReference(AttributeGroup.class, properties.get("attributeGroupId")));
 
         updateAttributeProperties(properties, attribute);
 
-		em.persist(attribute);
+        em.persist(attribute);
 
         return new CreateResult(attribute.getId());
     }
 
     private CommandResult createIndicator(User user, CreateEntity cmd, Map<String, Object> properties) throws IllegalAccessCommandException {
 
-		Indicator indicator = new Indicator();
+        Indicator indicator = new Indicator();
         indicator.setActivity(em.getReference(Activity.class, properties.get("activityId")));
 
         assertDesignPriviledges(user, indicator.getActivity().getDatabase());
 
         updateIndicatorProperties(indicator, properties);
 
-		em.persist(indicator);
+        em.persist(indicator);
 
-		return new CreateResult(indicator.getId());
+        return new CreateResult(indicator.getId());
 
     }
 
     private CommandResult createSite(User user, CreateEntity cmd, Map<String, Object> properties) throws IllegalAccessCommandException {
 
-    	Activity activity = em.find(Activity.class, properties.get("activityId"));
+        Activity activity = em.find(Activity.class, properties.get("activityId"));
         Partner partner = em.getReference(Partner.class, ((PartnerModel) properties.get("partner")).getId());
 
         assertSiteEditPriveleges(user, activity, partner);
 
 
-		/*
-		 * Create and save a new Location object in the database
-		 */
+        /*
+           * Create and save a new Location object in the database
+           */
 
-		Location location = new Location();
+        Location location = new Location();
         location.setLocationType(activity.getLocationType());
-		updateLocationProperties(location, properties);
+        updateLocationProperties(location, properties);
 
-		em.persist(location);
+        em.persist(location);
 
-		updateAdminProperties(location, properties, true);
+        updateAdminProperties(location, properties, true);
 
-		/*
-		 * Create and persist the Site object
-		 */
+        /*
+           * Create and persist the Site object
+           */
 
-		Site site = new Site();
-		site.setLocation(location);
-		site.setActivity(activity);
+        Site site = new Site();
+        site.setLocation(location);
+        site.setActivity(activity);
         site.setPartner(partner);
-		site.setDateCreated( new Date() );
+        site.setDateCreated(new Date());
 
         Integer siteType = (Integer) cmd.getProperties().get("siteType");
-        if(siteType!=null && siteType==1) {
-            
+        if (siteType != null && siteType == 1) {
+
 
         }
 
-		updateSiteProperties(site, properties, true);
+        updateSiteProperties(site, properties, true);
 
-		em.persist(site);
+        em.persist(site);
 
-		updateAttributeValueProperties(site, properties, true);
+        updateAttributeValueProperties(site, properties, true);
 
-		/*
-		 * Create the reporting period object
-		 * IF this is a report-once activity (punctual)
-		 *
-		 * otherwise ReportingPeriods are modeled separately on the client.
-		 */
+        /*
+           * Create the reporting period object
+           * IF this is a report-once activity (punctual)
+           *
+           * otherwise ReportingPeriods are modeled separately on the client.
+           */
 
-		if(activity.getReportingFrequency() == ActivityModel.REPORT_ONCE) {
+        if (activity.getReportingFrequency() == ActivityModel.REPORT_ONCE) {
 
-			ReportingPeriod period = new ReportingPeriod();
-			period.setSite( site );
-			period.setMonitoring( false );
+            ReportingPeriod period = new ReportingPeriod();
+            period.setSite(site);
+            period.setMonitoring(false);
 
-			updatePeriodProperties(period, properties, true);
+            updatePeriodProperties(period, properties, true);
 
-			em.persist(period);
+            em.persist(period);
 
-			updateIndicatorValueProperties(period, properties, true);
+            updateIndicatorValueProperties(period, properties, true);
 
-		}
-		
-		return new CreateResult(site.getId());
+        }
+
+        return new CreateResult(site.getId());
 
     }
 }

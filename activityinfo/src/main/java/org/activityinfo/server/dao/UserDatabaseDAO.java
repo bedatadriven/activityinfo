@@ -17,26 +17,9 @@
  * Copyright 2010 Alex Bertram and contributors.
  */
 
-package org.activityinfo.server.dao.hibernate;
+package org.activityinfo.server.dao;
 
-import com.google.inject.AbstractModule;
-import org.activityinfo.server.dao.CountryDAO;
-import org.activityinfo.server.dao.DAO;
-import org.activityinfo.server.dao.UserDatabaseDAO;
+import org.activityinfo.server.domain.UserDatabase;
 
-public class DataModule extends AbstractModule {
-
-    @Override
-    protected void configure() {
-        bindDAOProxy(CountryDAO.class);
-        bindDAOProxy(UserDatabaseDAO.class);
-    }
-
-    private <T extends DAO> void bindDAOProxy(Class<T> daoClass) {
-        HibernateDAOProvider<T> provider = new HibernateDAOProvider<T>(daoClass);
-        requestInjection(provider);
-
-        bind(daoClass).toProvider(provider);
-    }
-
+public interface UserDatabaseDAO extends DAO<UserDatabase, Integer> {
 }

@@ -19,24 +19,16 @@
 
 package org.activityinfo.server.dao.hibernate;
 
-import com.google.inject.AbstractModule;
+import com.google.inject.Inject;
 import org.activityinfo.server.dao.CountryDAO;
-import org.activityinfo.server.dao.DAO;
-import org.activityinfo.server.dao.UserDatabaseDAO;
+import org.activityinfo.server.domain.Country;
 
-public class DataModule extends AbstractModule {
+import javax.persistence.EntityManager;
 
-    @Override
-    protected void configure() {
-        bindDAOProxy(CountryDAO.class);
-        bindDAOProxy(UserDatabaseDAO.class);
+public class CountryHibernateDAO extends AbstractDAO<Country, Integer> implements CountryDAO {
+
+    @Inject
+    public CountryHibernateDAO(EntityManager em) {
+        super(em);
     }
-
-    private <T extends DAO> void bindDAOProxy(Class<T> daoClass) {
-        HibernateDAOProvider<T> provider = new HibernateDAOProvider<T>(daoClass);
-        requestInjection(provider);
-
-        bind(daoClass).toProvider(provider);
-    }
-
 }

@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<dataset>
+
+    <!--  This is test data used for the SchemaBuilderTest cases -->
+
+    <country countryId="1" name="Rdc" x1="0" y1="0" x2="0" y2="0"/>
+    <country countryId="2" name="Haiti" x1="0" y1="0" x2="0" y2="0"/>
+
+    <userLogin userId="1" name="Alex" email="user1@user.com" locale="fr" newUser="1"/>
+
+
+</dataset>

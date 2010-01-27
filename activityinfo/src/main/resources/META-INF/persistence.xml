@@ -36,7 +36,7 @@
             <property name="hibernate.connection.url"
                       value="jdbc:jtds:sqlserver://localhost:1433/act-test"/>
             <property name="hibernate.show_sql" value="true"/>
-            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+            <property name="hibernate.hbm2ddl.auto" value="create"/>
             <property name="hibernate.format_sql" value="true"/>
 
         </properties>

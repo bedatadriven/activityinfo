@@ -1,15 +1,16 @@
 package org.activityinfo.client.page.welcome;
 
 import com.google.inject.Inject;
+import org.activityinfo.client.Application;
 import org.activityinfo.client.Place;
 import org.activityinfo.client.page.NavigationCallback;
 import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.PagePresenter;
 import org.activityinfo.client.page.Pages;
-import org.activityinfo.client.page.map.MapPlace;
 import org.activityinfo.client.page.charts.ChartPlace;
 import org.activityinfo.client.page.common.GalleryView;
 import org.activityinfo.client.page.entry.SiteGridPlace;
+import org.activityinfo.client.page.map.MapPlace;
 import org.activityinfo.client.page.table.PivotPlace;
 /*
  * @author Alex Bertram
@@ -28,27 +29,27 @@ public class Welcome implements PagePresenter {
         this.view.setIntro("Selectionner une rubrique à partir des onglets ci-dessus, ou bien parcourir  " +
                 "tout les fonctionalities ci-dessous.");
 
-        this.view.add("Saisie de Données",
+        this.view.add(Application.CONSTANTS.dataEntry(),
                 "Saisir les résultants de vos interventions avec l'aide des formulaires, fiches des calcul et " +
                         "cartes interactive.", "form.png", new SiteGridPlace());
 
         this.view.add("Listes des interventions",
                 "Parcourir des listes des sites d'intervention avec une presentation sembable à l'Excel. Trier," +
                         "filtrer, chercher, et cartographier",
-                    "grid.png", new SiteGridPlace());
+                "grid.png", new SiteGridPlace());
 
         this.view.add("Tableaux croisser dynamique",
                 "Croisser tous les dimensions de vos résultats -- activité, periode de temps, partenaires, " +
                         "géographie",
-                    "pivot.png", new PivotPlace());
+                "pivot.png", new PivotPlace());
 
         this.view.add("Graphiques",
                 "Sortir rapidement des graphiques variés qui synthesent vos resultats",
-                    "charts/time.png", new ChartPlace());
+                "charts/time.png", new ChartPlace());
 
         this.view.add("Cartes",
                 "Sortir rapidement de cartographies des indicateurs",
-                    "map.png", new MapPlace());
+                "map.png", new MapPlace());
 
 
 //        this.view.add("Exporter des Données Brutes",

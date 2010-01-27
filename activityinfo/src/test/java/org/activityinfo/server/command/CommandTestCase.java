@@ -6,13 +6,13 @@ import org.activityinfo.server.ActivityInfoModule;
 import org.activityinfo.server.DbUnitTestCase;
 import org.activityinfo.server.command.handler.CommandHandler;
 import org.activityinfo.server.command.handler.HandlerUtil;
+import org.activityinfo.server.dao.hibernate.DataModule;
 import org.activityinfo.server.domain.DomainFilters;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.CommandException;
 import org.junit.AfterClass;
-import org.junit.Before;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -46,12 +46,6 @@ public abstract class CommandTestCase extends DbUnitTestCase {
 
     private int currentUserId = 0;
 
-    @Before
-    public void initInjector() {
-
-        injector = Guice.createInjector(new TestModule(), new ActivityInfoModule());
-
-    }
 
     protected void setUser(int userId) {
         currentUserId = userId;
@@ -59,7 +53,7 @@ public abstract class CommandTestCase extends DbUnitTestCase {
 
     protected <T extends CommandResult> T execute(Command<T> command) throws CommandException {
 
-        injector = Guice.createInjector(new TestModule(), new ActivityInfoModule());
+        injector = Guice.createInjector(new TestModule(), new ActivityInfoModule(), new DataModule());
 
 
         EntityManager em = injector.getInstance(EntityManager.class);

@@ -9,6 +9,9 @@ import org.activityinfo.shared.exception.CommandException;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.assertThat;
+
 public class CreateDatabaseTest extends CommandTestCase {
 
     @Test
@@ -32,8 +35,29 @@ public class CreateDatabaseTest extends CommandTestCase {
         Assert.assertEquals(db.getFullName(), newdb.getFullName());
         Assert.assertNotNull(newdb.getCountry());
         Assert.assertEquals("Alex", newdb.getOwnerName());
+    }
 
-                
+    @Test
+    public void createWithSpecificCountry() throws CommandException {
+
+        populate("multicountry");
+
+        UserDatabaseDTO db = new UserDatabaseDTO();
+        db.setName("Warchild Haiti");
+        db.setFullName("Warchild Haiti");
+
+        setUser(1);
+
+        CreateEntity cmd = new CreateEntity(db);
+        cmd.getProperties().put("countryId", 2);
+        CreateResult cr = execute(cmd);
+
+        Schema schema = execute(new GetSchema());
+
+        UserDatabaseDTO newdb = schema.getDatabaseById(cr.getNewId());
+
+        assertThat(newdb.getCountry(), is(notNullValue()));
+        assertThat(newdb.getCountry().getName(), is(equalTo("Haiti")));
     }
 
 }
