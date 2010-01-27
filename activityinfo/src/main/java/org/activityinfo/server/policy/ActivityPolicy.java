@@ -20,6 +20,8 @@
 package org.activityinfo.server.policy;
 
 import com.google.inject.Inject;
+import org.activityinfo.server.dao.ActivityDAO;
+import org.activityinfo.server.dao.UserDatabaseDAO;
 import org.activityinfo.server.domain.Activity;
 import org.activityinfo.server.domain.LocationType;
 import org.activityinfo.server.domain.User;
@@ -32,42 +34,31 @@ import java.util.Date;
 public class ActivityPolicy implements EntityPolicy<Activity> {
 
     private final EntityManager em;
+    private final ActivityDAO activityDAO;
+    private final UserDatabaseDAO databaseDAO;
 
     @Inject
-    public ActivityPolicy(EntityManager em) {
+    public ActivityPolicy(EntityManager em, ActivityDAO activityDAO, UserDatabaseDAO databaseDAO) {
         this.em = em;
+        this.activityDAO = activityDAO;
+        this.databaseDAO = databaseDAO;
     }
 
     @Override
     public Object create(User user, PropertyMap properties) {
 
-        int databaseId = (Integer) properties.get("databaseId");
-        int locationTypeId = ((Integer) properties.get("locationTypeId"));
-
-        UserDatabase database = em.getReference(UserDatabase.class, databaseId);
-
-        assertDesignPriviledges(user, database);
-
-        // get the next sort order index
-        Integer maxSortOrder = (Integer) em.createQuery("select max(e.sortOrder) from Activity e where e.database.id = ?1")
-                .setParameter(1, databaseId)
-                .getSingleResult();
-
-        if (maxSortOrder == null) {
-            maxSortOrder = 0;
-        }
+        UserDatabase database = getDatabase(properties);
+        assertDesignPrivileges(user, database);
 
         // create the entity
         Activity activity = new Activity();
         activity.setDatabase(database);
-        activity.setSortOrder(maxSortOrder + 1);
-        activity.setLocationType(em.getReference(LocationType.class, locationTypeId));
+        activity.setSortOrder(calculateNextSortOrderIndex(database.getId()));
+        activity.setLocationType(getLocationType(properties));
 
         applyProperties(activity, properties);
 
-        // persist
-
-        em.persist(activity);
+        activityDAO.persist(activity);
 
         return activity.getId();
     }
@@ -76,15 +67,33 @@ public class ActivityPolicy implements EntityPolicy<Activity> {
     public void update(User user, Object entityId, PropertyMap changes) {
         Activity activity = em.find(Activity.class, entityId);
 
-        assertDesignPriviledges(user, activity.getDatabase());
+        assertDesignPrivileges(user, activity.getDatabase());
 
         applyProperties(activity, changes);
     }
 
-    private void assertDesignPriviledges(User user, UserDatabase database) {
+    private void assertDesignPrivileges(User user, UserDatabase database) {
         if (!database.isAllowedDesign(user)) {
             throw new IllegalAccessError();
         }
+    }
+
+    private UserDatabase getDatabase(PropertyMap properties) {
+        int databaseId = (Integer) properties.get("databaseId");
+
+        UserDatabase database = databaseDAO.findById(databaseId);
+        return database;
+    }
+
+    private LocationType getLocationType(PropertyMap properties) {
+        int locationTypeId = ((Integer) properties.get("locationTypeId"));
+        LocationType type = em.getReference(LocationType.class, locationTypeId);
+        return type;
+    }
+
+    private Integer calculateNextSortOrderIndex(int databaseId) {
+        Integer maxSortOrder = activityDAO.queryMaxSortOrder(databaseId);
+        return maxSortOrder == null ? 1 : maxSortOrder + 1;
     }
 
     private void applyProperties(Activity activity, PropertyMap changes) {

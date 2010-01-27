@@ -32,6 +32,7 @@ public class DataModule extends AbstractModule {
         bindDAOProxy(SiteDAO.class);
         bindDAOProxy(AuthenticationDAO.class);
         bindDAOProxy(UserPermissionDAO.class);
+        bindDAOProxy(ActivityDAO.class);
     }
 
     private <T extends DAO> void bindDAOProxy(Class<T> daoClass) {

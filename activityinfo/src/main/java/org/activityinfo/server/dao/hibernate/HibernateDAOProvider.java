@@ -25,7 +25,9 @@ import com.google.inject.Provider;
 import org.activityinfo.server.dao.DAO;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.lang.reflect.*;
+import java.util.List;
 
 /**
  * Provider which dynamically implements an a subclass of DAO
@@ -78,8 +80,7 @@ public class HibernateDAOProvider<T> implements Provider<T> {
             } else if (method.getName().equals("findById")) {
                 return invokeFindById(args[0]);
             } else {
-                throw new UnsupportedOperationException("The hibernate DAO proxy does not know how to handle the method " +
-                        method.getName());
+                return invokeNamedQuery(method.getName(), method, args);
             }
         }
 
@@ -91,5 +92,33 @@ public class HibernateDAOProvider<T> implements Provider<T> {
             em.persist(arg);
             return null;
         }
+
+        private Object invokeNamedQuery(String name, Method method, Object[] args) {
+            Query query = tryCreatingNamedQuery(name, method);
+            applyPositionalParameters(args, query);
+
+            if (method.getReturnType().equals(List.class)) {
+                return query.getResultList();
+            } else {
+                return query.getSingleResult();
+            }
+        }
+
+        private Query tryCreatingNamedQuery(String name, Method method) {
+            try {
+                return em.createNamedQuery(name);
+            } catch (IllegalArgumentException e) {
+                throw new UnsupportedOperationException("The hibernate DAO proxy does not know how to handle the method " +
+                        method.getName());
+            }
+        }
+
+        private void applyPositionalParameters(Object[] args, Query query) {
+            for (int i = 0; i != args.length; ++i) {
+                query.setParameter(i + 1, args[i]);
+            }
+        }
     }
+
+
 }
