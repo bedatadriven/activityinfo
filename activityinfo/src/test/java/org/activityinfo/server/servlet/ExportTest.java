@@ -20,13 +20,13 @@
 package org.activityinfo.server.servlet;
 
 import org.activityinfo.server.BeanMappingModule;
-import org.activityinfo.server.command.handler.GetSchemaHandler;
 import org.activityinfo.server.dao.SchemaDAO;
 import org.activityinfo.server.dao.SiteTableDAO;
 import org.activityinfo.server.dao.hibernate.SchemaDAOJPA;
 import org.activityinfo.server.dao.hibernate.SiteTableDAOHibernate;
 import org.activityinfo.server.domain.DomainFilters;
 import org.activityinfo.server.domain.User;
+import org.activityinfo.server.endpoint.gwtrpc.handler.GetSchemaHandler;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.dto.ActivityModel;
 import org.activityinfo.shared.dto.Schema;

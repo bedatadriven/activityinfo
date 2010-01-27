@@ -5,12 +5,12 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-import org.activityinfo.server.command.handler.CommandHandler;
-import org.activityinfo.server.command.handler.HandlerUtil;
 import org.activityinfo.server.dao.AuthenticationDAO;
 import org.activityinfo.server.dao.Transactional;
 import org.activityinfo.server.domain.Authentication;
 import org.activityinfo.server.domain.DomainFilters;
+import org.activityinfo.server.endpoint.gwtrpc.handler.CommandHandler;
+import org.activityinfo.server.endpoint.gwtrpc.handler.HandlerUtil;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.RemoteCommandService;
 import org.activityinfo.shared.command.result.CommandResult;
@@ -26,7 +26,7 @@ import java.util.List;
  * Process command objects from the client and returns CommandResults.
  * <p/>
  * This servlet is at the heart of the command execution pipeline, but delegates all
- * logic processing to the {@link org.activityinfo.server.command.handler.CommandHandler} corresponding
+ * logic processing to the {@link org.activityinfo.server.endpoint.gwtrpc.handler.CommandHandler} corresponding
  * to the given {@link org.activityinfo.shared.command.Command}s.
  * <p/>
  * CommandHandlers are loaded based on name from the org.activityinfo.server.command.handler package.

@@ -7,16 +7,15 @@ import org.activityinfo.shared.dto.*;
 import java.util.Map;
 
 /**
- *
  * Creates and persists a domain entity on the server.
- *
+ * <p/>
  * Note: Some entities require specialized commands to create or update, such as:
  * <ul>
  * <li>{@link org.activityinfo.shared.command.AddPartner}</li>
  * <li>{@link UpdateUserPermissions}</li>
  * <li>{@link org.activityinfo.shared.command.CreateReportDef}</li>
  * </ul>
- *
+ * <p/>
  * Returns {@link org.activityinfo.shared.command.result.CreateResult}
  *
  * @author Alex Bertram (akbertram@gmail.com)
@@ -49,7 +48,7 @@ public class CreateEntity implements Command<CreateResult> {
 
     /**
      * @return The name of the entity to create. The name should correspond to one of the
-     * classes in {@link org.activityinfo.server.domain}
+     *         classes in {@link org.activityinfo.server.domain}
      */
     public String getEntityName() {
         return entityName;
@@ -61,17 +60,17 @@ public class CreateEntity implements Command<CreateResult> {
 
     /**
      * A map of properties to create.
-     *
+     * <p/>
      * Note: For the most part, references to related entities should be specified
      * by id: for example, {@link org.activityinfo.server.domain.Activity#database}
      * should be entered as databaseId in the property map.
-     *
+     * <p/>
      * There are some exceptions to this that will take some time to fix:
      * <ul>
      * <li>{@link org.activityinfo.server.domain.Site#partner}</li>
      * <li>AdminEntities associated with Sites/Locations</li>
      * </ul>
-     * See {@link org.activityinfo.server.command.handler.CreateEntityHandler} for the last word.
+     * See {@link org.activityinfo.server.endpoint.gwtrpc.handler.CreateEntityHandler} for the last word.
      *
      * @return The properties/fields of the entity to create.
      */
