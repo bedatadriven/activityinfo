@@ -27,6 +27,11 @@ import org.activityinfo.server.dao.DAO;
 import javax.persistence.EntityManager;
 import java.lang.reflect.*;
 
+/**
+ * Provider which dynamically implements an a subclass of DAO
+ *
+ * @param <T> The type of the DAO to provide
+ */
 public class HibernateDAOProvider<T> implements Provider<T> {
 
     @Inject
@@ -69,14 +74,22 @@ public class HibernateDAOProvider<T> implements Provider<T> {
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             if (method.getName().equals("persist")) {
-                em.persist(args[0]);
-                return null;
+                return invokePersist(args[0]);
             } else if (method.getName().equals("findById")) {
-                return em.find(entityClass, args[0]);
+                return invokeFindById(args[0]);
             } else {
                 throw new UnsupportedOperationException("The hibernate DAO proxy does not know how to handle the method " +
                         method.getName());
             }
+        }
+
+        private Object invokeFindById(Object arg) {
+            return em.find(entityClass, arg);
+        }
+
+        private Void invokePersist(Object arg) {
+            em.persist(arg);
+            return null;
         }
     }
 }

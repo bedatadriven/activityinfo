@@ -19,12 +19,7 @@
 
 package org.activityinfo.server.dao;
 
-import com.google.inject.ImplementedBy;
-import org.activityinfo.server.dao.hibernate.UserPermissionDAOImpl;
 import org.activityinfo.server.domain.UserPermission;
 
-@ImplementedBy(UserPermissionDAOImpl.class)
 public interface UserPermissionDAO extends DAO<UserPermission, Integer> {
-
-
 }

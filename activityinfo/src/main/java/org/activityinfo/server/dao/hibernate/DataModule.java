@@ -20,9 +20,7 @@
 package org.activityinfo.server.dao.hibernate;
 
 import com.google.inject.AbstractModule;
-import org.activityinfo.server.dao.CountryDAO;
-import org.activityinfo.server.dao.DAO;
-import org.activityinfo.server.dao.UserDatabaseDAO;
+import org.activityinfo.server.dao.*;
 
 public class DataModule extends AbstractModule {
 
@@ -30,6 +28,10 @@ public class DataModule extends AbstractModule {
     protected void configure() {
         bindDAOProxy(CountryDAO.class);
         bindDAOProxy(UserDatabaseDAO.class);
+        bindDAOProxy(PartnerDAO.class);
+        bindDAOProxy(SiteDAO.class);
+        bindDAOProxy(AuthenticationDAO.class);
+        bindDAOProxy(UserPermissionDAO.class);
     }
 
     private <T extends DAO> void bindDAOProxy(Class<T> daoClass) {

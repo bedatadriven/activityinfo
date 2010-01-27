@@ -8,6 +8,7 @@ import com.google.inject.Singleton;
 import org.activityinfo.server.command.handler.CommandHandler;
 import org.activityinfo.server.command.handler.HandlerUtil;
 import org.activityinfo.server.dao.AuthenticationDAO;
+import org.activityinfo.server.dao.Transactional;
 import org.activityinfo.server.domain.Authentication;
 import org.activityinfo.server.domain.DomainFilters;
 import org.activityinfo.shared.command.Command;
@@ -15,7 +16,6 @@ import org.activityinfo.shared.command.RemoteCommandService;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.exception.InvalidAuthTokenException;
-import org.activityinfo.shared.exception.UnexpectedCommandException;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
@@ -74,11 +74,7 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
 
             DomainFilters.applyUserFilter(session.getUser(), em);
 
-            List<CommandResult> results = new ArrayList<CommandResult>();
-            for (Command command : commands) {
-                results.add(handleCommand(em, session, results, command));
-            }
-            return results;
+            return handleCommands(commands, session);
 
         } catch (Throwable caught) {
             caught.printStackTrace();
@@ -86,28 +82,22 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
         }
     }
 
-    private CommandResult handleCommand(EntityManager em, Authentication auth, List<CommandResult> results, Command command) {
-
-        em.getTransaction().begin();
-
-        try {
-
-            CommandHandler handler = createHandler(command);
-            CommandResult result = handler.execute(command, auth.getUser());
-
-            em.getTransaction().commit();
-
-            return result;
-
-        } catch (CommandException ce) {
-            em.getTransaction().rollback();
-            ce.printStackTrace();
-            return ce;
-        } catch (Throwable caught) {
-            em.getTransaction().rollback();
-            caught.printStackTrace();
-            return new UnexpectedCommandException();
+    private List<CommandResult> handleCommands(List<Command> commands, Authentication auth) {
+        List<CommandResult> results = new ArrayList<CommandResult>();
+        for (Command command : commands) {
+            try {
+                results.add(handleCommand(auth, command));
+            } catch (CommandException e) {
+                // continue executing other commands in the call
+            }
         }
+        return results;
+    }
+
+    @Transactional
+    private CommandResult handleCommand(Authentication auth, Command command) throws CommandException {
+        CommandHandler handler = createHandler(command);
+        return handler.execute(command, auth.getUser());
     }
 
     private CommandHandler createHandler(Command command) {

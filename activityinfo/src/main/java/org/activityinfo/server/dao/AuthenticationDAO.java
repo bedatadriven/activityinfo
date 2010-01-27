@@ -19,12 +19,7 @@
 
 package org.activityinfo.server.dao;
 
-import com.google.inject.ImplementedBy;
-import org.activityinfo.server.dao.hibernate.AuthenticationDAOImpl;
 import org.activityinfo.server.domain.Authentication;
 
-@ImplementedBy(AuthenticationDAOImpl.class)
 public interface AuthenticationDAO extends DAO<Authentication, String> {
-
-
 }
