@@ -27,7 +27,6 @@ import org.activityinfo.server.domain.User;
 import org.activityinfo.server.domain.UserDatabase;
 
 import java.util.Date;
-import java.util.Map;
 
 public class UserDatabasePolicy implements EntityPolicy<UserDatabase> {
 
@@ -41,20 +40,20 @@ public class UserDatabasePolicy implements EntityPolicy<UserDatabase> {
     }
 
     @Override
-    public Object create(User user, Map<String, Object> properties) {
+    public Object create(User user, PropertyMap properties) {
 
         UserDatabase database = new UserDatabase();
         database.setCountry(findCountry(properties));
         database.setOwner(user);
 
-        updateDatabaseProperties(database, properties);
+        applyProperties(database, properties);
 
         databaseDAO.persist(database);
 
         return database.getId();
     }
 
-    private Country findCountry(Map<String, Object> properties) {
+    private Country findCountry(PropertyMap properties) {
         int countryId;
         if (properties.containsKey("countryId")) {
             countryId = (Integer) properties.get("countryId");
@@ -67,11 +66,11 @@ public class UserDatabasePolicy implements EntityPolicy<UserDatabase> {
     }
 
     @Override
-    public void update(User user, Object entityId, Map<String, Object> properties) {
+    public void update(User user, Object entityId, PropertyMap changes) {
 
     }
 
-    private void updateDatabaseProperties(UserDatabase database, Map<String, Object> properties) {
+    private void applyProperties(UserDatabase database, PropertyMap properties) {
 
         database.setLastSchemaUpdate(new Date());
 

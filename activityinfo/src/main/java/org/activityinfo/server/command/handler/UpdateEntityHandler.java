@@ -20,7 +20,10 @@
 package org.activityinfo.server.command.handler;
 
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import org.activityinfo.server.domain.*;
+import org.activityinfo.server.policy.ActivityPolicy;
+import org.activityinfo.server.policy.PropertyMap;
 import org.activityinfo.shared.command.UpdateEntity;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.CommandException;
@@ -31,44 +34,48 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * @see org.activityinfo.shared.command.UpdateEntity
- *
  * @author Alex Bertram
+ * @see org.activityinfo.shared.command.UpdateEntity
  */
 public class UpdateEntityHandler extends BaseEntityHandler implements CommandHandler<UpdateEntity> {
 
+    private final Injector injector;
+
     @Inject
-    public UpdateEntityHandler(EntityManager em) {
+    public UpdateEntityHandler(EntityManager em, Injector injector) {
         super(em);
+        this.injector = injector;
     }
 
     @Override
-	public CommandResult execute(UpdateEntity cmd, User user)
-			throws CommandException {
-	
-		Map<String, Object> changes = cmd.getChanges().getTransientMap();
-		         
-		if("Activity".equals(cmd.getEntityName())) {
-            updateActivity(user, cmd, changes);
-			
-		} else if("AttributeGroup".equals(cmd.getEntityName())) {
+    public CommandResult execute(UpdateEntity cmd, User user)
+            throws CommandException {
+
+        Map<String, Object> changes = cmd.getChanges().getTransientMap();
+        PropertyMap changeMap = new PropertyMap(changes);
+
+        if ("Activity".equals(cmd.getEntityName())) {
+            ActivityPolicy policy = injector.getInstance(ActivityPolicy.class);
+            policy.update(user, cmd.getId(), changeMap);
+
+        } else if ("AttributeGroup".equals(cmd.getEntityName())) {
             updateAttributeGroup(cmd, changes);
-			
-		} else if("Attribute".equals(cmd.getEntityName())) {
-	        updateAttribute(user, cmd, changes);
-			
-		} else if("Indicator".equals(cmd.getEntityName())) {
+
+        } else if ("Attribute".equals(cmd.getEntityName())) {
+            updateAttribute(user, cmd, changes);
+
+        } else if ("Indicator".equals(cmd.getEntityName())) {
             updateIndicator(user, cmd, changes);
 
-        } else if("Site".equals(cmd.getEntityName())) {
+        } else if ("Site".equals(cmd.getEntityName())) {
             updateSite(user, cmd, changes);
 
-		} else {
-			throw new RuntimeException("unknown entity type");
-		}
-		
-		return null;
-	}
+        } else {
+            throw new RuntimeException("unknown entity type");
+        }
+
+        return null;
+    }
 
     private void updateIndicator(User user, UpdateEntity cmd, Map<String, Object> changes) throws IllegalAccessCommandException {
         Indicator indicator = em.find(Indicator.class, cmd.getId());
@@ -82,24 +89,16 @@ public class UpdateEntityHandler extends BaseEntityHandler implements CommandHan
         Attribute attribute = em.find(Attribute.class, cmd.getId());
 
         // TODO: decide where attributes belong and how to manage them
-   //     assertDesignPriviledges(user, attribute.get);
+        //     assertDesignPriviledges(user, attribute.get);
 
         updateAttributeProperties(changes, attribute);
     }
 
     private void updateAttributeGroup(UpdateEntity cmd, Map<String, Object> changes) {
-        AttributeGroup group = em.find(AttributeGroup.class, cmd.getId() );
+        AttributeGroup group = em.find(AttributeGroup.class, cmd.getId());
 
 
         updateAttributeGroupProperties(group, changes);
-    }
-
-    private void updateActivity(User user, UpdateEntity cmd, Map<String, Object> changes) throws IllegalAccessCommandException {
-        Activity activity = em.find(Activity.class, cmd.getId());
-
-        assertDesignPriviledges(user, activity.getDatabase());
-
-        updateActivityProperties(activity, changes);
     }
 
     protected void updateSite(User user, UpdateEntity cmd, Map<String, Object> changes) throws IllegalAccessCommandException {
@@ -116,7 +115,7 @@ public class UpdateEntityHandler extends BaseEntityHandler implements CommandHan
         updateAdminProperties(site.getLocation(), changes, false);
 
         ReportingPeriod period = site.primaryReportingPeriod();
-        if(period != null) {
+        if (period != null) {
             updatePeriodProperties(period, changes, false);
             updateIndicatorValueProperties(period, changes, false);
         }

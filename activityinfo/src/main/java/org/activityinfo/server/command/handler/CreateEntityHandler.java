@@ -22,6 +22,8 @@ package org.activityinfo.server.command.handler;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import org.activityinfo.server.domain.*;
+import org.activityinfo.server.policy.ActivityPolicy;
+import org.activityinfo.server.policy.PropertyMap;
 import org.activityinfo.server.policy.UserDatabasePolicy;
 import org.activityinfo.shared.command.CreateEntity;
 import org.activityinfo.shared.command.result.CommandResult;
@@ -53,12 +55,15 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
     public CommandResult execute(CreateEntity cmd, User user) throws CommandException {
 
         Map<String, Object> properties = cmd.getProperties().getTransientMap();
+        PropertyMap propertyMap = new PropertyMap(cmd.getProperties().getTransientMap());
+
 
         if ("UserDatabase".equals(cmd.getEntityName())) {
-            UserDatabasePolicy bridge = injector.getInstance(UserDatabasePolicy.class);
-            return new CreateResult((Integer) bridge.create(user, properties));
+            UserDatabasePolicy policy = injector.getInstance(UserDatabasePolicy.class);
+            return new CreateResult((Integer) policy.create(user, propertyMap));
         } else if ("Activity".equals(cmd.getEntityName())) {
-            return createActivity(user, cmd, properties);
+            ActivityPolicy policy = injector.getInstance(ActivityPolicy.class);
+            return new CreateResult((Integer) policy.create(user, propertyMap));
         } else if ("AttributeGroup".equals(cmd.getEntityName())) {
             return createAttributeGroup(cmd, properties);
         } else if ("Attribute".equals(cmd.getEntityName())) {
@@ -70,65 +75,6 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
         } else {
             throw new CommandException("Invalid entity class " + cmd.getEntityName());
         }
-    }
-
-
-    private CommandResult createActivity(User user, CreateEntity cmd, Map<String, Object> properties) throws IllegalAccessCommandException {
-
-        int databaseId = (Integer) properties.get("databaseId");
-        int locationTypeId = ((Integer) properties.get("locationTypeId"));
-
-        UserDatabase database = em.getReference(UserDatabase.class, databaseId);
-
-        assertDesignPriviledges(user, database);
-
-        // get the next sort order index
-        Integer maxSortOrder = (Integer) em.createQuery("select max(e.sortOrder) from Activity e where e.database.id = ?1")
-                .setParameter(1, databaseId)
-                .getSingleResult();
-
-        if (maxSortOrder == null) {
-            maxSortOrder = 0;
-        }
-
-        // create the entity
-        Activity activity = new Activity();
-        activity.setDatabase(database);
-        activity.setSortOrder(maxSortOrder + 1);
-        activity.setLocationType(em.getReference(LocationType.class, locationTypeId));
-
-        updateActivityProperties(activity, properties);
-
-        // persist
-
-        em.persist(activity);
-
-        return new CreateResult(activity.getId());
-
-    }
-
-
-    protected CommandResult createDatabase(CreateEntity cmd, Map<String, Object> properties, User user) {
-        UserDatabase database = new UserDatabase();
-        database.setCountry(em.getReference(Country.class, 1));
-        database.setOwner(user);
-
-        updateDatabaseProperties(database, properties);
-
-        em.persist(database);
-
-        return new CreateResult(database.getId());
-    }
-
-    private void updateDatabaseProperties(UserDatabase database, Map<String, Object> properties) {
-
-        database.setLastSchemaUpdate(new Date());
-
-        if (properties.containsKey("name"))
-            database.setName((String) properties.get("name"));
-
-        if (properties.containsKey("fullName"))
-            database.setFullName((String) properties.get("fullName"));
     }
 
 
