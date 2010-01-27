@@ -22,5 +22,4 @@ package org.activityinfo.server.dao;
 import org.activityinfo.server.domain.Country;
 
 public interface CountryDAO extends DAO<Country, Integer> {
-
 }
