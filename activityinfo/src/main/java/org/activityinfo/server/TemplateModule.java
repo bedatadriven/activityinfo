@@ -25,7 +25,7 @@ import com.google.inject.Singleton;
 import freemarker.template.Configuration;
 
 /**
- *
+ * Provides Dependency Injection of the FreeMarker Template Configuration object.
  */
 public class TemplateModule extends AbstractModule {
 

@@ -17,29 +17,25 @@
  * Copyright 2010 Alex Bertram and contributors.
  */
 
-package org.activityinfo.server.dao.hibernate;
+package org.activityinfo.server.report;
 
 import com.google.inject.AbstractModule;
-import org.activityinfo.server.dao.*;
+import com.google.inject.Singleton;
+import org.activityinfo.server.report.generator.MapIconPath;
+import org.activityinfo.server.report.renderer.html.HtmlChartRenderer;
+import org.activityinfo.server.report.renderer.html.HtmlChartRendererJC;
 
-public class DataModule extends AbstractModule {
+public class ReportModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bindDAOProxy(CountryDAO.class);
-        bindDAOProxy(UserDatabaseDAO.class);
-        bindDAOProxy(PartnerDAO.class);
-        bindDAOProxy(SiteDAO.class);
-        bindDAOProxy(AuthenticationDAO.class);
-        bindDAOProxy(UserPermissionDAO.class);
-        bindDAOProxy(ActivityDAO.class);
+
+        bind(String.class)
+                .annotatedWith(MapIconPath.class)
+                .toProvider(MapIconPathProvider.class)
+                .in(Singleton.class);
+
+        /* Renderers */
+        bind(HtmlChartRenderer.class).to(HtmlChartRendererJC.class);
     }
-
-    private <T extends DAO> void bindDAOProxy(Class<T> daoClass) {
-        HibernateDAOProvider<T> provider = new HibernateDAOProvider<T>(daoClass);
-        requestInjection(provider);
-
-        bind(daoClass).toProvider(provider);
-    }
-
 }

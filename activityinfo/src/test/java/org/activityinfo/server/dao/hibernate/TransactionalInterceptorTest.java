@@ -19,7 +19,6 @@
 
 package org.activityinfo.server.dao.hibernate;
 
-import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import org.activityinfo.server.dao.Transactional;
@@ -31,7 +30,7 @@ import javax.persistence.EntityTransaction;
 import static org.easymock.EasyMock.*;
 import static org.junit.Assert.assertNotNull;
 
-public class TransactionInterceptorTest {
+public class TransactionalInterceptorTest {
 
 
     @Test
@@ -113,7 +112,7 @@ public class TransactionInterceptorTest {
     }
 
     private MockClass getMockInstance(EntityTransaction tx) {
-        Injector injector = Guice.createInjector(new TransactionalModule(), new MockEntityManagerModule(tx));
+        Injector injector = Guice.createInjector(new MockEntityManagerModule(tx));
         MockClass mock = injector.getInstance(MockClass.class);
         return mock;
     }
@@ -141,7 +140,7 @@ public class TransactionInterceptorTest {
         }
     }
 
-    private static class MockEntityManagerModule extends AbstractModule {
+    private static class MockEntityManagerModule extends HibernateModule {
         private EntityManager em;
 
         public MockEntityManagerModule(EntityTransaction tx) {
@@ -151,7 +150,7 @@ public class TransactionInterceptorTest {
         }
 
         @Override
-        protected void configure() {
+        protected void configureEm() {
             bind(EntityManager.class).toInstance(em);
         }
     }

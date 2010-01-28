@@ -21,18 +21,18 @@ package org.activityinfo.server.dao.hibernate;
 
 import com.google.inject.Inject;
 import org.activityinfo.server.dao.OnDataSet;
-import org.activityinfo.server.dao.TestingDataModule;
 import org.activityinfo.server.dao.UserDAO;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.test.InjectionSupport;
 import org.activityinfo.test.Modules;
+import org.activityinfo.test.TestingHibernateModule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.junit.Assert.*;
 
 @RunWith(InjectionSupport.class)
-@Modules({TestingDataModule.class})
+@Modules({TestingHibernateModule.class})
 @OnDataSet("/dbunit/schema1.db.xml")
 public class UserDAOImplTest {
 

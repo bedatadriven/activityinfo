@@ -20,7 +20,6 @@
 package org.activityinfo.test;
 
 import com.google.inject.Inject;
-import org.activityinfo.server.dao.TestingDataModule;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +27,7 @@ import org.junit.runner.RunWith;
 import javax.persistence.EntityManager;
 
 @RunWith(InjectionSupport.class)
-@Modules(TestingDataModule.class)
+@Modules(TestingHibernateModule.class)
 public class TestScopeTest {
 
     @Inject

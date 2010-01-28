@@ -48,11 +48,25 @@ public class InjectionSupport extends BlockJUnit4ClassRunner {
 
         modules = new ArrayList<Module>();
 
-
         scopeModule = new TestScopeModule();
         modules.add(scopeModule);
+        addModulesFromClass(klass);
 
-        Modules moduleClasses = klass.getAnnotation(Modules.class);
+        System.err.println("Creating injector for " + klass.getName());
+        injector = Guice.createInjector(modules);
+    }
+
+    private void addModulesFromClass(Class<?> klass) {
+        while (klass != null) {
+            Modules moduleClasses = klass.getAnnotation(Modules.class);
+            if (moduleClasses != null) {
+                addModulesFromAnnotation(klass, moduleClasses);
+            }
+            klass = klass.getSuperclass();
+        }
+    }
+
+    private void addModulesFromAnnotation(Class<?> klass, Modules moduleClasses) {
         for (Class moduleClass : moduleClasses.value()) {
             try {
                 modules.add((Module) moduleClass.getConstructor().newInstance());
@@ -62,7 +76,6 @@ public class InjectionSupport extends BlockJUnit4ClassRunner {
                         moduleClass.getName(), e);
             }
         }
-        injector = Guice.createInjector(modules);
     }
 
     @Override

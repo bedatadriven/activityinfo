@@ -3,13 +3,13 @@ package org.activityinfo.server.dao.hibernate;
 import com.google.inject.Inject;
 import org.activityinfo.server.dao.OnDataSet;
 import org.activityinfo.server.dao.PivotDAO;
-import org.activityinfo.server.dao.TestingDataModule;
 import org.activityinfo.shared.report.content.DimensionCategory;
 import org.activityinfo.shared.report.content.EntityCategory;
 import org.activityinfo.shared.report.content.QuarterCategory;
 import org.activityinfo.shared.report.model.*;
 import org.activityinfo.test.InjectionSupport;
 import org.activityinfo.test.Modules;
+import org.activityinfo.test.TestingHibernateModule;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -20,7 +20,7 @@ import java.util.*;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(InjectionSupport.class)
-@Modules({TestingDataModule.class})
+@Modules({TestingHibernateModule.class})
 @OnDataSet("/dbunit/sites-simple1.db.xml")
 public class PivotDAOImplTest {
 

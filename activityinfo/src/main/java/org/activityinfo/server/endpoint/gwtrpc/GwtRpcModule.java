@@ -17,27 +17,26 @@
  * Copyright 2010 Alex Bertram and contributors.
  */
 
-package org.activityinfo.server.auth.impl;
+package org.activityinfo.server.endpoint.gwtrpc;
 
-import org.activityinfo.server.auth.Authenticator;
-import org.activityinfo.server.domain.User;
+import com.google.inject.servlet.ServletModule;
 
-/**
- * @author Alex Bertram
- */
-public class AuthenticatorImpl implements Authenticator {
+public class GwtRpcModule extends ServletModule {
 
     @Override
-    public boolean check(User user, String plaintextPassword) {
+    protected void configureServlets() {
+        // The CacheFilter assures that static files marked with
+        // .nocache (e.g. strongly named js permutations) get sent with the
+        // appropriate cache header so browsers don't ask for it again.
+        filter("/Application/*").through(CacheFilter.class);
 
-        if (plaintextPassword == null)
-            return true;
+        serve("/Application/cmd").with(CommandServlet.class);
+        serve("/Application/download").with(DownloadServlet.class);
 
-        // TODO: this should not be allowed!
-        if (user.getHashedPassword() == null)
-            return true;
+        // this is here for now but should be probably live elsewhere, if
+        // we really need it at all
+        serve("/icon").with(MapIconServlet.class);
 
-        return BCrypt.checkpw(plaintextPassword, user.getHashedPassword());
+
     }
-
 }

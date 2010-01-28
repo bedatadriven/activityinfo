@@ -1,10 +1,9 @@
-package org.activityinfo.server.endpoint.gwtrpc;
+package org.activityinfo.server.endpoint.gwtrpc.handler;
 
 import org.activityinfo.server.dao.SiteProjectionBinder;
 import org.activityinfo.server.dao.SiteTableDAO;
 import org.activityinfo.server.domain.SiteData;
 import org.activityinfo.server.domain.User;
-import org.activityinfo.server.endpoint.gwtrpc.handler.GetMarkersHandler;
 import org.activityinfo.shared.command.GetMarkers;
 import org.activityinfo.shared.dto.SiteMarkerCollection;
 import org.activityinfo.shared.exception.CommandException;
@@ -20,9 +19,6 @@ import java.util.List;
 
 import static org.easymock.EasyMock.*;
 
-/**
- * @author Alex Bertram (akbertram@gmail.com)
- */
 public class GetMarkersTest {
 
 

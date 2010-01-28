@@ -28,18 +28,17 @@ import org.activityinfo.shared.report.content.MapMarker;
 import org.activityinfo.shared.report.model.MapIcon;
 
 /**
- *
  * Factory for GoogleMap Icons originating from the
- * {@link org.activityinfo.server.servlet.MapIconServlet}
+ * {@link org.activityinfo.server.endpoint.gwtrpc.MapIconServlet}
  *
  * @author Alex Bertram
  */
 public class IconFactory {
 
     public static Icon createIcon(MapMarker marker) {
-        if(marker instanceof IconMapMarker) {
+        if (marker instanceof IconMapMarker) {
             return createIconMapMarker((IconMapMarker) marker);
-        } else if(marker instanceof BubbleMapMarker) {
+        } else if (marker instanceof BubbleMapMarker) {
             return createBubbleMapMarker((BubbleMapMarker) marker);
         } else {
             return Icon.DEFAULT_ICON;
@@ -57,17 +56,17 @@ public class IconFactory {
         MapIcon mapIcon = marker.getIcon();
         String iconUrl = "mapicons/" + mapIcon.getName() + ".png";
 
-		Icon icon = Icon.newInstance(Icon.DEFAULT_ICON);
-		icon.setImageURL(iconUrl);
-		icon.setIconSize(Size.newInstance(mapIcon.getWidth(), mapIcon.getHeight()));
-		icon.setShadowSize(Size.newInstance(0, 0));
+        Icon icon = Icon.newInstance(Icon.DEFAULT_ICON);
+        icon.setImageURL(iconUrl);
+        icon.setIconSize(Size.newInstance(mapIcon.getWidth(), mapIcon.getHeight()));
+        icon.setShadowSize(Size.newInstance(0, 0));
         Point anchor = Point.newInstance(mapIcon.getAnchorX(), mapIcon.getAnchorY());
         icon.setIconAnchor(anchor);
-		icon.setInfoWindowAnchor(anchor);
-		icon.setPrintImageURL(iconUrl + "&chof=gif");
-		icon.setMozPrintImageURL(iconUrl);
+        icon.setInfoWindowAnchor(anchor);
+        icon.setPrintImageURL(iconUrl + "&chof=gif");
+        icon.setMozPrintImageURL(iconUrl);
 
-		return icon;
+        return icon;
     }
 
     public static Icon createBubbleMapMarker(BubbleMapMarker marker) {
@@ -77,14 +76,14 @@ public class IconFactory {
         int size = marker.getRadius() * 2;
 
         Icon icon = Icon.newInstance(Icon.DEFAULT_ICON);
-		icon.setImageURL(iconUrl);
-		icon.setIconSize(Size.newInstance(size, size));
-		icon.setShadowSize(Size.newInstance(0, 0));
+        icon.setImageURL(iconUrl);
+        icon.setIconSize(Size.newInstance(size, size));
+        icon.setShadowSize(Size.newInstance(0, 0));
         Point anchor = Point.newInstance(marker.getRadius(), marker.getRadius());
         icon.setIconAnchor(anchor);
-		icon.setInfoWindowAnchor(anchor);
-		icon.setPrintImageURL(iconUrl);
-		icon.setMozPrintImageURL(iconUrl);
+        icon.setInfoWindowAnchor(anchor);
+        icon.setPrintImageURL(iconUrl);
+        icon.setMozPrintImageURL(iconUrl);
 
         return icon;
     }

@@ -1,20 +1,23 @@
 package org.activityinfo.server.endpoint.gwtrpc;
 
+import org.activityinfo.server.dao.OnDataSet;
 import org.activityinfo.shared.command.GetUsers;
 import org.activityinfo.shared.command.result.UserResult;
 import org.activityinfo.shared.exception.CommandException;
+import org.activityinfo.test.InjectionSupport;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+@RunWith(InjectionSupport.class)
+@OnDataSet("/dbunit/sites-simple1.db.xml")
 public class GetUsersTest extends CommandTestCase {
 
+    private final static int DATABASE_OWNER = 1;
 
     @Test
     public void testUnsorted() throws CommandException {
-
-        populate("sites-simple1");
-
-        setUser(1);
+        setUser(DATABASE_OWNER);
 
         GetUsers cmd = new GetUsers(1);
         UserResult result = (UserResult) execute(cmd);
@@ -30,7 +33,6 @@ public class GetUsersTest extends CommandTestCase {
     public void testManageUsersPermission() throws CommandException {
         // populate with a known state and authenticate as user 3, who
         // has ManageUser permissions for Solidarites
-        populate("sites-simple1");
         setUser(3); // Lisa from Solidarites
 
         // execute
@@ -46,7 +48,6 @@ public class GetUsersTest extends CommandTestCase {
     @Test
     public void testManageAllUsersPermission() throws CommandException {
 
-        populate("sites-simple1");
         setUser(2); // Bavon from NRC(with manageAllUsers) permission
 
         // execute
@@ -54,7 +55,5 @@ public class GetUsersTest extends CommandTestCase {
 
         // VERIFY that we can get can see the two other users from NRC
         Assert.assertEquals("number of results", 2, result.getTotalLength());
-
     }
-
 }

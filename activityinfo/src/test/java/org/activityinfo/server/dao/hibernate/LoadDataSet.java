@@ -19,6 +19,7 @@
 
 package org.activityinfo.server.dao.hibernate;
 
+import org.activityinfo.server.dao.DatabaseCleaner;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.DataSetException;
@@ -33,6 +34,7 @@ import org.hibernate.jdbc.Work;
 import org.junit.internal.runners.model.MultipleFailureException;
 import org.junit.runners.model.Statement;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import java.io.IOException;
 import java.io.InputStream;
@@ -58,6 +60,9 @@ public class LoadDataSet extends Statement {
 
     @Override
     public void evaluate() throws Throwable {
+        System.err.println("DBUnit: removing all rows");
+        removeAllRows();
+
         System.err.println("DBUnit: loading " + name + " into the database.");
         IDataSet data = loadDataSet();
 
@@ -68,24 +73,14 @@ public class LoadDataSet extends Statement {
             next.evaluate();
         } catch (Throwable e) {
             errors.add(e);
-        } finally {
-            try {
-                System.err.println("DBUnit: removing " + name + " from the database");
-                depopulate(data);
-            } catch (Throwable e) {
-                errors.add(e);
-            }
         }
         MultipleFailureException.assertEmpty(errors);
     }
 
-    private void dropAndCreateSchema() {
-        System.err.println("DBUnit: deletion failed, dropping and recreating schema");
-
-    }
-
     private IDataSet loadDataSet() throws IOException, DataSetException {
         InputStream in = target.getClass().getResourceAsStream(name);
+        if (in == null)
+            throw new Error("Could not find resource '" + name + "'");
         return new FlatXmlDataSet(new InputStreamReader(in), false, true, false);
     }
 
@@ -93,8 +88,11 @@ public class LoadDataSet extends Statement {
         executeOperation(InsertIdentityOperation.INSERT, dataSet);
     }
 
-    private void depopulate(IDataSet dataSet) {
-        executeOperation(InsertIdentityOperation.DELETE_ALL, dataSet);
+    private void removeAllRows() {
+        EntityManager em = emf.createEntityManager();
+        DatabaseCleaner cleaner = new DatabaseCleaner(em);
+        cleaner.clean();
+        em.close();
     }
 
     private void executeOperation(final DatabaseOperation op, final IDataSet dataSet) {

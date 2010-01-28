@@ -27,7 +27,6 @@ import org.activityinfo.server.dao.OnDataSet;
 import org.activityinfo.server.dao.ServletTestingDataModule;
 import org.activityinfo.test.InjectionSupport;
 import org.activityinfo.test.Modules;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -83,7 +82,7 @@ public class BootstrapModuleTest {
         response.parse(s);
 
         assertEquals(302, response.getStatus());
-        assertEquals("http://tester/context", response.getHeader("Location"));
+        assertEquals("http://tester/context/", response.getHeader("Location"));
     }
 
     @Test
@@ -96,10 +95,4 @@ public class BootstrapModuleTest {
         assertNotNull("content not present", response.getContent());
         assertEquals(200, this.response.getStatus());
     }
-
-    @After
-    public void tearDown() throws Exception {
-        tester.stop();
-    }
-
 }

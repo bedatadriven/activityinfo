@@ -17,7 +17,7 @@
  * Copyright 2009 Alex Bertram and contributors.
  */
 
-package org.activityinfo.server.servlet;
+package org.activityinfo.server.endpoint.export;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;

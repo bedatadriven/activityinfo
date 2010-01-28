@@ -1,25 +1,22 @@
 package org.activityinfo.server.endpoint.gwtrpc;
 
 
+import org.activityinfo.server.dao.OnDataSet;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.dto.ActivityModel;
 import org.activityinfo.shared.dto.AttributeModel;
 import org.activityinfo.shared.dto.IndicatorModel;
 import org.activityinfo.shared.dto.Schema;
 import org.activityinfo.shared.exception.CommandException;
+import org.activityinfo.test.InjectionSupport;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 
+@RunWith(InjectionSupport.class)
+@OnDataSet("/dbunit/schema1.db.xml")
 public class GetSchemaTest extends CommandTestCase {
-
-    @BeforeClass
-    public static void runBeforeClass() {
-
-        populate("schema1");
-    }
-
 
     @Test
     public void testDatabaseVisibilityForOwners() throws CommandException {
@@ -56,32 +53,13 @@ public class GetSchemaTest extends CommandTestCase {
 
     @Test
     public void testDatabaseVisibilityNone() throws CommandException {
-
         setUser(3); // Stefan
 
         Schema schema = execute(new GetSchema());
 
-
         Assert.assertTrue("STEFAN not in PEAR", schema.getDatabaseById(1) == null);
-
     }
 
-//	@Test 
-//	public void testUserVisibility() {
-//	
-//		// only owners should be able to see the user queries
-//		
-//		EntityManager em = emf.createEntityManager();
-//		
-
-    //		Schema schema = SchemaFactory.build(em, em.find(User.class, 1));
-//		Assert.assertTrue(schema.getDatabases().getById(1).getUsers().size() !=0);
-//		
-//		schema = SchemaFactory.build(em, em.find(User.class, 2));
-//
-//		Assert.assertTrue(schema.getDatabases().getById(1).getUsers().size() ==0);
-//	}
-//	
     @Test
     public void testIndicators() throws CommandException {
 

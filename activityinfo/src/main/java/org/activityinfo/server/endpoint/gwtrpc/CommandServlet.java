@@ -9,6 +9,7 @@ import org.activityinfo.server.dao.AuthenticationDAO;
 import org.activityinfo.server.dao.Transactional;
 import org.activityinfo.server.domain.Authentication;
 import org.activityinfo.server.domain.DomainFilters;
+import org.activityinfo.server.domain.User;
 import org.activityinfo.server.endpoint.gwtrpc.handler.CommandHandler;
 import org.activityinfo.server.endpoint.gwtrpc.handler.HandlerUtil;
 import org.activityinfo.shared.command.Command;
@@ -65,16 +66,9 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
 
     @Override
     public List<CommandResult> execute(String authToken, List<Command> commands) throws CommandException {
-
-        EntityManager em = injector.getInstance(EntityManager.class);
-
-        Authentication session = retrieveAuthentication(authToken);
-
+        Authentication auth = retrieveAuthentication(authToken);
         try {
-
-            DomainFilters.applyUserFilter(session.getUser(), em);
-
-            return handleCommands(commands, session);
+            return handleCommands(auth.getUser(), commands);
 
         } catch (Throwable caught) {
             caught.printStackTrace();
@@ -82,22 +76,34 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
         }
     }
 
-    private List<CommandResult> handleCommands(List<Command> commands, Authentication auth) {
+    /**
+     * Publicly visible for testing *
+     */
+    public List<CommandResult> handleCommands(User user, List<Command> commands) {
+        applyUserFilters(user);
+
         List<CommandResult> results = new ArrayList<CommandResult>();
         for (Command command : commands) {
             try {
-                results.add(handleCommand(auth, command));
+                results.add(handleCommand(user, command));
             } catch (CommandException e) {
-                // continue executing other commands in the call
+                // include this as an error-ful result and
+                // continue executing other commands in the list
+                results.add(e);
             }
         }
         return results;
     }
 
+    private void applyUserFilters(User user) {
+        EntityManager em = injector.getInstance(EntityManager.class);
+        DomainFilters.applyUserFilter(user, em);
+    }
+
     @Transactional
-    private CommandResult handleCommand(Authentication auth, Command command) throws CommandException {
+    protected CommandResult handleCommand(User user, Command command) throws CommandException {
         CommandHandler handler = createHandler(command);
-        return handler.execute(command, auth.getUser());
+        return handler.execute(command, user);
     }
 
     private CommandHandler createHandler(Command command) {

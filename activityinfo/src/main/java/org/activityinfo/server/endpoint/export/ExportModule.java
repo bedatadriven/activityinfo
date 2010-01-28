@@ -17,29 +17,15 @@
  * Copyright 2010 Alex Bertram and contributors.
  */
 
-package org.activityinfo.server.dao.hibernate;
+package org.activityinfo.server.endpoint.export;
 
-import com.google.inject.Provides;
-import com.google.inject.Singleton;
-import com.google.inject.servlet.RequestScoped;
+import com.google.inject.servlet.ServletModule;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+public class ExportModule extends ServletModule {
 
-public class ServletDataModule extends DataModule {
-
-    @Provides
-    @Singleton
-    public EntityManagerFactory provideEntityManagerFactory() {
-        return Persistence.createEntityManagerFactory("activityInfo");
+    @Override
+    protected void configureServlets() {
+        serve("/Application/export*").with(ExportServlet.class);
+        serve("/report").with(ReportServlet.class);
     }
-
-    @Provides
-    @RequestScoped
-    public EntityManager provideEntityManager(EntityManagerFactory emf) {
-        return emf.createEntityManager();
-    }
-
-
 }

@@ -17,27 +17,23 @@
  * Copyright 2010 Alex Bertram and contributors.
  */
 
-package org.activityinfo.acceptance;
+package org.activityinfo.server.report;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import org.junit.Test;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 
-import java.io.IOException;
+import javax.servlet.ServletContext;
 
-import static org.junit.Assert.assertEquals;
+public class MapIconPathProvider implements Provider<String> {
 
-public class SuccessfulLogin {
+    private String path;
 
-    @Test
-    public void userCanLoginWithCorrectCredentials() throws IOException {
-
-        final WebClient webClient = new WebClient();
-        final HtmlPage page = webClient.getPage("http://localhost:9090/activityinfo");
-
-        assertEquals("http://localhost:9090/login", page.getBaseURI());
-
-
+    @Inject
+    public MapIconPathProvider(ServletContext context) {
+        path = context.getRealPath("/mapicons");
     }
 
+    public String get() {
+        return path;
+    }
 }

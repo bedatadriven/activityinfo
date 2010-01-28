@@ -4,28 +4,26 @@ import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.SortInfo;
 import junit.framework.Assert;
+import org.activityinfo.server.dao.OnDataSet;
 import org.activityinfo.shared.command.GetSites;
 import org.activityinfo.shared.dto.IndicatorModel;
 import org.activityinfo.shared.dto.SiteModel;
 import org.activityinfo.shared.exception.CommandException;
-import org.junit.BeforeClass;
+import org.activityinfo.test.InjectionSupport;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+@RunWith(InjectionSupport.class)
+@OnDataSet("/dbunit/sites-simple1.db.xml")
 public class GetSitesTest extends CommandTestCase {
+    private static final int DATABASE_OWNER = 1;
 
-
-    @BeforeClass
-    public static void runBeforeClass() {
-
-        populate("sites-simple1");
-
-    }
 
     @Test
     public void testActivityQueryBasic() throws CommandException {
 
 
-        setUser(1);
+        setUser(DATABASE_OWNER);
 
         GetSites cmd = new GetSites();
         cmd.setActivityId(1);
@@ -54,7 +52,7 @@ public class GetSitesTest extends CommandTestCase {
     @Test
     public void testIndicatorSort() throws CommandException {
 
-        setUser(1);
+        setUser(DATABASE_OWNER);
 
         GetSites cmd = new GetSites();
         cmd.setActivityId(1);
@@ -74,7 +72,7 @@ public class GetSitesTest extends CommandTestCase {
     @Test
     public void testActivityQueryPaged() throws CommandException {
 
-        setUser(1);
+        setUser(DATABASE_OWNER);
 
         GetSites cmd = new GetSites();
         cmd.setActivityId(1);
@@ -111,7 +109,7 @@ public class GetSitesTest extends CommandTestCase {
     @Test
     public void testDatabase() throws CommandException {
 
-        setUser(1);
+        setUser(DATABASE_OWNER);
 
         GetSites cmd = new GetSites();
         cmd.setDatabaseId(2);
@@ -126,7 +124,7 @@ public class GetSitesTest extends CommandTestCase {
     @Test
     public void testDatabasePaged() throws CommandException {
 
-        setUser(1);
+        setUser(DATABASE_OWNER);
 
         GetSites cmd = new GetSites();
         cmd.setDatabaseId(1);
@@ -155,7 +153,7 @@ public class GetSitesTest extends CommandTestCase {
     @Test
     public void testAll() throws CommandException {
 
-        setUser(1);
+        setUser(DATABASE_OWNER);
 
         GetSites cmd = new GetSites();
 
@@ -180,7 +178,7 @@ public class GetSitesTest extends CommandTestCase {
     @Test
     public void testSeekSite() throws Exception {
 
-        setUser(1);
+        setUser(DATABASE_OWNER);
 
         GetSites cmd = new GetSites();
         cmd.setActivityId(1);
@@ -193,7 +191,5 @@ public class GetSitesTest extends CommandTestCase {
         Assert.assertEquals("second page returned", 2, result.getOffset());
         Assert.assertEquals("rows on this page", 1, result.getData().size());
         Assert.assertEquals("correct site returned", 1, result.getData().get(0).getId());
-
     }
-
 }

@@ -26,6 +26,7 @@ import org.activityinfo.server.dao.hibernate.SchemaDAOJPA;
 import org.activityinfo.server.dao.hibernate.SiteTableDAOHibernate;
 import org.activityinfo.server.domain.DomainFilters;
 import org.activityinfo.server.domain.User;
+import org.activityinfo.server.endpoint.export.Export;
 import org.activityinfo.server.endpoint.gwtrpc.handler.GetSchemaHandler;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.dto.ActivityModel;

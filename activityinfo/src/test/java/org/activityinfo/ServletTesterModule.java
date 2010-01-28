@@ -22,9 +22,9 @@ package org.activityinfo;
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
+import com.google.inject.Singleton;
 import com.google.inject.servlet.GuiceFilter;
 import com.google.inject.servlet.GuiceServletContextListener;
-import org.activityinfo.test.TestScoped;
 import org.mortbay.jetty.Handler;
 import org.mortbay.jetty.servlet.DefaultServlet;
 import org.mortbay.jetty.testing.ServletTester;
@@ -39,7 +39,7 @@ public class ServletTesterModule extends AbstractModule {
     }
 
     @Provides
-    @TestScoped
+    @Singleton
     public ServletTester provideTester(final Injector injector) throws Exception {
         StdErrLog log = new StdErrLog();
         log.setDebugEnabled(true);

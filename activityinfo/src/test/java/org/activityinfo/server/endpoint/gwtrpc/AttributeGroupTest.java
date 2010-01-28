@@ -1,5 +1,6 @@
 package org.activityinfo.server.endpoint.gwtrpc;
 
+import org.activityinfo.server.dao.OnDataSet;
 import org.activityinfo.shared.command.CreateEntity;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.UpdateEntity;
@@ -7,23 +8,27 @@ import org.activityinfo.shared.command.result.CreateResult;
 import org.activityinfo.shared.dto.ActivityModel;
 import org.activityinfo.shared.dto.AttributeGroupModel;
 import org.activityinfo.shared.dto.Schema;
+import org.activityinfo.test.InjectionSupport;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.HashMap;
 import java.util.Map;
-/*
- * @author Alex Bertram
- */
 
+@RunWith(InjectionSupport.class)
+@OnDataSet("/dbunit/schema1.db.xml")
 public class AttributeGroupTest extends CommandTestCase {
+
+
+    @Before
+    public void setUp() {
+        setUser(1);
+    }
 
     @Test
     public void testCreate() throws Exception {
-
-        populate("schema1");
-
-        setUser(1);
 
         // execute the command
 
@@ -46,24 +51,17 @@ public class AttributeGroupTest extends CommandTestCase {
         Assert.assertNotNull("attribute group is created", group);
         Assert.assertEquals("name is correct", group.getName(), "Type de Conflit");
         Assert.assertTrue("multiple allowed is set to true", group.isMultipleAllowed());
-
-
     }
 
 
     @Test
     public void testUpdate() throws Exception {
 
-        populate("schema1");
-
-        setUser(1);
-
         // initial data load
 
         Schema schema = execute(new GetSchema());
 
         // change the name of an entity group
-
         ActivityModel activity = schema.getActivityById(1);
         AttributeGroupModel group = activity.getAttributeGroups().get(0);
         group.setName("Foobar");

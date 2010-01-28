@@ -1,30 +1,29 @@
 package org.activityinfo.server.endpoint.gwtrpc;
 
+import org.activityinfo.server.dao.OnDataSet;
 import org.activityinfo.server.domain.Site;
 import org.activityinfo.shared.command.GetSites;
 import org.activityinfo.shared.command.UpdateEntity;
 import org.activityinfo.shared.command.result.ListResult;
 import org.activityinfo.shared.dto.SiteModel;
 import org.activityinfo.shared.exception.CommandException;
+import org.activityinfo.test.InjectionSupport;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import javax.persistence.EntityManager;
 import java.util.HashMap;
 import java.util.Map;
 
 
+@RunWith(InjectionSupport.class)
+@OnDataSet("/dbunit/sites-simple1.db.xml")
 public class UpdateSiteTest extends CommandTestCase {
 
 
     @Test
     public void testUpdate() throws CommandException {
-
-        // reset the state of the database
-        populate("sites-simple1");
-
         // retrieve from the server
-        setUser(1);
         ListResult<SiteModel> result = execute(GetSites.byId(1));
 
         SiteModel model = result.getData().get(0);
@@ -59,12 +58,6 @@ public class UpdateSiteTest extends CommandTestCase {
     }
 
     public void testUpdatePartner() throws CommandException {
-        // reset the state of the database
-        populate("sites-simple1");
-
-        // retrieve from the server
-        setUser(1);
-
         // define changes for site id=2
         Map<String, Object> changes = new HashMap<String, Object>();
         changes.put("partnerId", 2);
@@ -72,7 +65,7 @@ public class UpdateSiteTest extends CommandTestCase {
         execute(new UpdateEntity("site", 2, changes));
 
         // assure that the change has been effected
-        EntityManager em = emf.createEntityManager();
+
         Site site = em.find(Site.class, 2);
         Assert.assertEquals("partnerId", 2, site.getPartner().getId());
     }

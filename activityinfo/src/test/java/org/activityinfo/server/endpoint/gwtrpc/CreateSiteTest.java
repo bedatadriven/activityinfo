@@ -1,6 +1,7 @@
 package org.activityinfo.server.endpoint.gwtrpc;
 
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import org.activityinfo.server.dao.OnDataSet;
 import org.activityinfo.shared.command.CreateEntity;
 import org.activityinfo.shared.command.GetSites;
 import org.activityinfo.shared.command.result.CreateResult;
@@ -8,19 +9,20 @@ import org.activityinfo.shared.dto.AdminEntityModel;
 import org.activityinfo.shared.dto.PartnerModel;
 import org.activityinfo.shared.dto.SiteModel;
 import org.activityinfo.shared.exception.CommandException;
+import org.activityinfo.test.InjectionSupport;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.GregorianCalendar;
 
+@RunWith(InjectionSupport.class)
+@OnDataSet("/dbunit/sites-simple1.db.xml")
 public class CreateSiteTest extends CommandTestCase {
 
 
     @Test
     public void test() throws CommandException {
-        // re'set the state of the database
-        populate("sites-simple1");
-
         // create a new detached, client model
         SiteModel newSite = new SiteModel();
 
@@ -76,9 +78,6 @@ public class CreateSiteTest extends CommandTestCase {
 
     @Test
     public void testAdminBoundCreate() throws CommandException {
-        // re'set the state of the database
-        populate("sites-simple1");
-
         // create a new detached, client model
         SiteModel newSite = new SiteModel();
 
@@ -121,9 +120,6 @@ public class CreateSiteTest extends CommandTestCase {
 
     @Test
     public void testAllAttribsFalse() throws CommandException {
-        // reset the state of the database
-        populate("sites-simple1");
-
         // create a new detached, client model
         SiteModel newSite = new SiteModel();
 

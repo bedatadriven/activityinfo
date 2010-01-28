@@ -1,6 +1,7 @@
 package org.activityinfo.server.endpoint.gwtrpc;
 
 import junit.framework.Assert;
+import org.activityinfo.server.dao.OnDataSet;
 import org.activityinfo.shared.command.BatchCommand;
 import org.activityinfo.shared.command.CreateEntity;
 import org.activityinfo.shared.command.GetSchema;
@@ -11,20 +12,20 @@ import org.activityinfo.shared.dto.LocationTypeModel;
 import org.activityinfo.shared.dto.Schema;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
 import org.activityinfo.shared.exception.CommandException;
+import org.activityinfo.test.InjectionSupport;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@RunWith(InjectionSupport.class)
+@OnDataSet("/dbunit/schema1.db.xml")
 public class ActivityTest extends CommandTestCase {
 
 
     @Test
     public void testActivity() throws CommandException {
-
-        populate("schema1");
-
-        setUser(1);
 
         /*
            * Initial data load
@@ -65,9 +66,6 @@ public class ActivityTest extends CommandTestCase {
 
     @Test
     public void updateSortOrderTest() throws Throwable {
-        populate("schema1");
-
-        setUser(1);
 
         /* Update Sort Order */
         Map<String, Object> changes1 = new HashMap<String, Object>();

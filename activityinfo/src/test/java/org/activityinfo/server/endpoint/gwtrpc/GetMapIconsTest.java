@@ -2,14 +2,17 @@ package org.activityinfo.server.endpoint.gwtrpc;
 
 import org.activityinfo.server.domain.User;
 import org.activityinfo.server.endpoint.gwtrpc.handler.GetMapIconsHandler;
+import org.activityinfo.server.report.ReportModule;
 import org.activityinfo.shared.command.GetMapIcons;
 import org.activityinfo.shared.command.result.MapIconResult;
+import org.activityinfo.test.InjectionSupport;
+import org.activityinfo.test.Modules;
 import org.junit.Assert;
 import org.junit.Test;
-/*
- * @author Alex Bertram
- */
+import org.junit.runner.RunWith;
 
+@RunWith(InjectionSupport.class)
+@Modules({ReportModule.class, GwtRpcModule.class})
 public class GetMapIconsTest {
 
     @Test

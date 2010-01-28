@@ -19,30 +19,28 @@
 
 package org.activityinfo.server.endpoint.jaxws;
 
+import com.google.inject.Injector;
 import com.sun.istack.NotNull;
 import com.sun.xml.ws.api.message.Packet;
 import com.sun.xml.ws.api.server.ResourceInjector;
 import com.sun.xml.ws.api.server.WSEndpoint;
 import com.sun.xml.ws.api.server.WSWebServiceContext;
 import com.sun.xml.ws.server.AbstractMultiInstanceResolver;
-import org.activityinfo.server.ActivityInfoModule;
+import org.activityinfo.server.StartupListener;
 
 import javax.servlet.ServletContext;
 import javax.xml.ws.handler.MessageContext;
-
-import com.google.inject.Injector;
-import com.google.inject.Module;
-import com.google.inject.Guice;
 
 /**
  * This class is based on that of the same name from Jax-Ws commons but ours
  * is modified slightly so we use the injector created by the GuiceContextListener
  * rather than creating our own. This allows us to share singletons between the jaxws
  * web services and the rest of our endpoints, including the gwt-rpc stuff.
- *
+ * <p/>
  * See https://jax-ws-commons.dev.java.net/guice/
- * @see org.activityinfo.server.StartupListener
+ *
  * @author Alex Bertram
+ * @see org.activityinfo.server.StartupListener
  */
 public class GuiceManagedInstanceResolver<T> extends AbstractMultiInstanceResolver<T> {
 
@@ -70,7 +68,7 @@ public class GuiceManagedInstanceResolver<T> extends AbstractMultiInstanceResolv
 
         this.resourceInjector = GuiceManagedInstanceResolver.getResourceInjector(endpoint);
         this.webServiceContext = wsc;
-	}
+    }
 
 
     /**
@@ -90,12 +88,12 @@ public class GuiceManagedInstanceResolver<T> extends AbstractMultiInstanceResolv
         // Retrieve the servlet context where we stored our app-wide injector
         // (See StartupListener)
         ServletContext servletContext =
-            (ServletContext) webServiceContext.getMessageContext().get(MessageContext.SERVLET_CONTEXT);
+                (ServletContext) webServiceContext.getMessageContext().get(MessageContext.SERVLET_CONTEXT);
 
         servletContext.log("Creating " + this.clazz.getName() + " with our Guice injector.");
-        
+
         // Retrieve the injector from the servlet context
-        this.injector = (Injector) servletContext.getAttribute(ActivityInfoModule.INJECTOR_NAME);
+        this.injector = (Injector) servletContext.getAttribute(StartupListener.INJECTOR_NAME);
 
         final T instance = injector.getInstance(this.clazz);
         this.resourceInjector.inject(this.webServiceContext, instance);

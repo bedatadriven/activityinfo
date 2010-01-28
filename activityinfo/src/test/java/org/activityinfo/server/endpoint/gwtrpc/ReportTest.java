@@ -1,6 +1,7 @@
 package org.activityinfo.server.endpoint.gwtrpc;
 
 import junit.framework.Assert;
+import org.activityinfo.server.dao.OnDataSet;
 import org.activityinfo.shared.command.GetReportTemplates;
 import org.activityinfo.shared.command.UpdateSubscription;
 import org.activityinfo.shared.command.result.ReportTemplateResult;
@@ -8,20 +9,17 @@ import org.activityinfo.shared.dto.ReportTemplateDTO;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.report.model.Report;
 import org.activityinfo.shared.report.model.ReportFrequency;
+import org.activityinfo.test.InjectionSupport;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+@RunWith(InjectionSupport.class)
+@OnDataSet("/dbunit/schema1.db.xml")
 public class ReportTest extends CommandTestCase {
 
 
     @Test
     public void testReport() throws CommandException {
-
-
-        populate("schema1");
-
-        setUser(1); // Alex
-
-
         ReportTemplateResult reports = execute(new GetReportTemplates());
 
         Assert.assertEquals("records returned", 1, reports.getData().size());
@@ -38,10 +36,6 @@ public class ReportTest extends CommandTestCase {
 
     @Test
     public void testReportNoSubscription() throws CommandException {
-
-        populate("schema1");
-
-
         setUser(2); // Bavon
 
         ReportTemplateResult reports = execute(new GetReportTemplates());
@@ -56,9 +50,6 @@ public class ReportTest extends CommandTestCase {
 
     @Test
     public void testNewSubscription() throws CommandException {
-
-        populate("schema1");
-
         setUser(2);
 
         // update
@@ -76,11 +67,6 @@ public class ReportTest extends CommandTestCase {
 
     @Test
     public void testUpdateSubscription() throws CommandException {
-
-        populate("schema1");
-
-        setUser(1);
-
         // update
         execute(new UpdateSubscription(1, false));
 

@@ -1,31 +1,35 @@
 package org.activityinfo.server.report.generator;
 
-import org.activityinfo.server.DbUnitTestCase;
+import com.google.inject.Inject;
+import org.activityinfo.server.dao.OnDataSet;
 import org.activityinfo.server.dao.SiteTableDAO;
 import org.activityinfo.server.dao.hibernate.SiteTableDAOHibernate;
 import org.activityinfo.server.domain.SiteData;
 import org.activityinfo.server.domain.User;
+import org.activityinfo.test.InjectionSupport;
+import org.activityinfo.test.Modules;
+import org.activityinfo.test.TestingHibernateModule;
 import org.hibernate.criterion.Restrictions;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import javax.persistence.EntityManager;
 import java.util.List;
-/*
- * @author Alex Bertram
- */
 
-public class SiteDataBinderTest extends DbUnitTestCase {
+@RunWith(InjectionSupport.class)
+@Modules({TestingHibernateModule.class})
+@OnDataSet("/dbunit/sites-simple1.db.xml")
+public class SiteDataBinderTest {
+
+    @Inject
+    private EntityManager em;
+
+    @Inject
+    private SiteTableDAOHibernate dao;
 
     @Test
     public void test() {
-
-        populate("sites-simple1");
-
-        EntityManager em = emf.createEntityManager();
-
-        SiteTableDAOHibernate dao = new SiteTableDAOHibernate(em);
-
 
         List<SiteData> sites = dao.query(new User(), Restrictions.eq("site.id", 2),
                 null, new SiteDataBinder(), SiteTableDAO.RETRIEVE_ALL, 0, -1);

@@ -17,21 +17,15 @@
  * Copyright 2010 Alex Bertram and contributors.
  */
 
-package org.activityinfo.server.dao.hibernate;
+package org.activityinfo.server.endpoint.wfs;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.matcher.Matchers;
-import org.activityinfo.server.dao.Transactional;
+import com.google.inject.servlet.ServletModule;
 
-public class TransactionalModule extends AbstractModule {
-
+public class WfsModule extends ServletModule {
 
     @Override
-    protected void configure() {
-        TransactionalInterceptor interceptor = new TransactionalInterceptor();
-        requestInjection(interceptor);
-
-        bindInterceptor(Matchers.any(), Matchers.annotatedWith(Transactional.class),
-                interceptor);
+    protected void configureServlets() {
+        serve("/wfs").with(WfsServlet.class);
+        serve("/wfs*").with(WfsServlet.class);
     }
 }

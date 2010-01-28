@@ -4,12 +4,12 @@ import com.google.inject.Inject;
 import junit.framework.Assert;
 import org.activityinfo.server.dao.AdminDAO;
 import org.activityinfo.server.dao.OnDataSet;
-import org.activityinfo.server.dao.TestingDataModule;
 import org.activityinfo.server.domain.AdminEntity;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.test.AssertUtils;
 import org.activityinfo.test.InjectionSupport;
 import org.activityinfo.test.Modules;
+import org.activityinfo.test.TestingHibernateModule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -21,7 +21,7 @@ import static junit.framework.Assert.assertEquals;
 
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/adminEntities.db.xml")
-@Modules({TestingDataModule.class})
+@Modules({TestingHibernateModule.class})
 public class AdminDAOImplTest {
 
     private AdminDAO adminDAO;

@@ -17,29 +17,26 @@
  * Copyright 2009 Alex Bertram and contributors.
  */
 
-package org.activityinfo.server.endpoint.gwtrpc.handler;
+package org.activityinfo.server.endpoint.gwtrpc;
 
 import junit.framework.Assert;
-import org.activityinfo.server.endpoint.gwtrpc.CommandTestCase;
+import org.activityinfo.server.dao.OnDataSet;
 import org.activityinfo.shared.command.GetReportTemplates;
 import org.activityinfo.shared.command.UpdateReportDef;
 import org.activityinfo.shared.command.result.ReportTemplateResult;
 import org.activityinfo.shared.dto.ReportTemplateDTO;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.report.model.ReportFrequency;
+import org.activityinfo.test.InjectionSupport;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
-/**
- * @author Alex Bertram
- */
+@RunWith(InjectionSupport.class)
+@OnDataSet("/dbunit/schema1.db.xml")
 public class UpdateReportDefHandlerTest extends CommandTestCase {
 
     @Test
     public void testUpdate() throws CommandException {
-
-        populate("schema1");
-
-        setUser(1);
 
         UpdateReportDef cmd = new UpdateReportDef();
         cmd.setId(1);

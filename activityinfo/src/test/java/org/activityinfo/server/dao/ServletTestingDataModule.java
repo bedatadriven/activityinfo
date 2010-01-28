@@ -19,47 +19,20 @@
 
 package org.activityinfo.server.dao;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
-import com.google.inject.Singleton;
 import com.google.inject.servlet.RequestScoped;
-import org.junit.AfterClass;
+import org.activityinfo.test.TestingHibernateModule;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
-public class ServletTestingDataModule extends AbstractModule {
+public class ServletTestingDataModule extends TestingHibernateModule {
 
     private EntityManagerFactory emf;
 
     @Override
-    protected void configure() {
+    protected void configureEm() {
+        bind(EntityManager.class).toProvider(EntityManagerProvider.class)
+                .in(RequestScoped.class);
     }
 
-    @Provides
-    @Singleton
-    public EntityManagerFactory provideEntityManagerFactory() {
-
-        emf = Persistence.createEntityManagerFactory("activityInfo-test");
-        System.err.println("GUICE: EntityManagerFACTORY created");
-        return emf;
-    }
-
-    @Provides
-    @RequestScoped
-    public EntityManager provideEntityManager(EntityManagerFactory emf) {
-        System.err.println("GUICE: EntityManager created");
-        return emf.createEntityManager();
-    }
-
-
-    @AfterClass
-    public void afterClass() {
-        System.err.println("Shutting down EMF");
-        if (emf != null) {
-            emf.close();
-            emf = null;
-        }
-    }
 }
