@@ -43,7 +43,7 @@ public class MapPage extends ContentPanel implements MapPresenter.View {
         west.setSplit(true);
         west.setMargins(new Margins(0, 5, 0, 0));
 
-        add((Component)form, west);
+        add((Component) form, west);
     }
 
     private void createPreview() {
@@ -62,13 +62,13 @@ public class MapPage extends ContentPanel implements MapPresenter.View {
 
         toolBar.add(new ExportMenuButton(RenderElement.Format.PowerPoint, new ExportCallback() {
             public void export(RenderElement.Format format) {
-                if(presenter!=null) {
+                if (presenter != null) {
                     presenter.export(format);
                 }
             }
         }));
 
-        toolBar.addButton(UIActions.exportData, "Exporter données",
+        toolBar.addButton(UIActions.exportData, Application.CONSTANTS.exportData(),
                 Application.ICONS.excel());
 
         previewPanel.setTopComponent(toolBar);
@@ -96,7 +96,7 @@ public class MapPage extends ContentPanel implements MapPresenter.View {
     }
 
     public boolean validate() {
-        return form.validate(); 
+        return form.validate();
     }
 }
 

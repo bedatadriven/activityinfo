@@ -1,31 +1,22 @@
 package org.activityinfo.client.offline.ui;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.gears.client.database.DatabaseException;
 import com.google.gwt.gears.client.Factory;
-import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.Window;
 import com.google.inject.Singleton;
-import org.activityinfo.client.offline.dao.AuthDAO;
-import org.activityinfo.client.offline.Installer;
 import org.activityinfo.client.Application;
-
-import java.util.Date;
+import org.activityinfo.client.offline.Installer;
 
 @Singleton
 public class OfflineMenuDisabled extends OfflineMenu {
-    
+
     public OfflineMenuDisabled() {
     }
 
     @Override
     protected void init() {
-        this.setText("Activer Mode Hors Connection");
+        this.setText(Application.CONSTANTS.enableOffline());
         this.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
             @Override
@@ -33,7 +24,7 @@ public class OfflineMenuDisabled extends OfflineMenu {
 
                 // check to see if Gears is installed and accessible.
 
-                if(Factory.getInstance() != null) {
+                if (Factory.getInstance() != null) {
                     Installer installer = new Installer();
                     installer.install(auth);
                 } else {

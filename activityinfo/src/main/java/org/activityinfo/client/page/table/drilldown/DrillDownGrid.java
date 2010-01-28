@@ -20,29 +20,29 @@ public class DrillDownGrid extends SiteGrid implements DrillDownEditor.View {
     IndicatorModel currentIndicator;
 
     public DrillDownGrid() {
-        setHeading("Drilldown");
+        setHeading(Application.CONSTANTS.drilldown());
     }
 
     public void show(SiteEditor presenter, ActivityModel activity, IndicatorModel indicator, ListStore<SiteModel> store) {
 
         currentIndicator = indicator;
 
-        if(currentActivity == null) {
+        if (currentActivity == null) {
             currentActivity = activity;
             init(presenter, activity, store);
 
-        } else if(activity.getId() != currentActivity.getId()) {
+        } else if (activity.getId() != currentActivity.getId()) {
             currentActivity = activity;
             grid.reconfigure(store, createColumnModel(activity));
         } else {
             grid.getColumnModel().setDataIndex(grid.getColumnModel().getIndexById("indicator"),
                     indicator.getPropertyName());
-            if(grid.isRendered()) {
+            if (grid.isRendered()) {
                 grid.getView().refresh(true);
             }
         }
 
-        setHeading("Drilldown - " + indicator.getName());
+        setHeading(Application.CONSTANTS.drilldown() + " - " + indicator.getName());
     }
 
 

@@ -85,7 +85,7 @@ public class ChartPage extends LayoutContainer implements Charter.View {
 
         chartTypeButtons = new ArrayList<ToggleButton>();
 
-        toolBar.add(new LabelToolItem("Type de Graphique:"));
+        toolBar.add(new LabelToolItem(Application.CONSTANTS.chartType()));
 
         ToggleButton button = new ToggleButton("", Application.ICONS.barChart());
         button.setToggleGroup("chartType");
@@ -154,7 +154,7 @@ public class ChartPage extends LayoutContainer implements Charter.View {
 
 
     private void createGridPane() {
-        BorderLayoutData south = new BorderLayoutData(Style.LayoutRegion.SOUTH, 0.30f);    
+        BorderLayoutData south = new BorderLayoutData(Style.LayoutRegion.SOUTH, 0.30f);
         south.setCollapsible(true);
         south.setSplit(true);
         south.setMargins(new Margins(5, 0, 0, 0));
@@ -197,8 +197,8 @@ public class ChartPage extends LayoutContainer implements Charter.View {
     }
 
     private PivotChartElement.Type getChartType() {
-        for(ToggleButton button : chartTypeButtons) {
-            if(button.isPressed()) {
+        for (ToggleButton button : chartTypeButtons) {
+            if (button.isPressed()) {
                 return button.getData("chartData");
             }
         }
@@ -211,15 +211,15 @@ public class ChartPage extends LayoutContainer implements Charter.View {
         PivotChartElement element = new PivotChartElement();
         element.setType(getChartType());
 
-        if(categoryCombo.getValue() instanceof DateDimension) {
-            DateDimension dim = (DateDimension)categoryCombo.getValue();
-            if(dim.getUnit() != DateUnit.YEAR)
+        if (categoryCombo.getValue() instanceof DateDimension) {
+            DateDimension dim = (DateDimension) categoryCombo.getValue();
+            if (dim.getUnit() != DateUnit.YEAR)
                 element.addCategoryDimension(new DateDimension(DateUnit.YEAR));
         }
 
         element.addCategoryDimension(categoryCombo.getValue());
 
-        for(Integer indicatorId : indicatorPanel.getSelectedIds()) {
+        for (Integer indicatorId : indicatorPanel.getSelectedIds()) {
             element.addIndicator(indicatorId);
         }
 
@@ -237,7 +237,4 @@ public class ChartPage extends LayoutContainer implements Charter.View {
     }
 
 
-
-
-    
 }

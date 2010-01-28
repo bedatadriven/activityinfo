@@ -18,19 +18,18 @@ public class SiteFormPage extends SiteForm {
     private ToolBar toolBar;
 
 
-
     private void createToolBar() {
 
-        SelectionListener listener = new SelectionListener()  {
+        SelectionListener listener = new SelectionListener() {
             @Override
             public void componentSelected(ComponentEvent ce) {
-                if(presenter!=null) {
+                if (presenter != null) {
                     presenter.onUIAction(ce.getComponent().getItemId());
                 }
             }
         };
 
-        Button gridButton = new Button("Retour au Grille", Application.ICONS.table(), listener);
+        Button gridButton = new Button(Application.CONSTANTS.returnToGrid(), Application.ICONS.table(), listener);
         gridButton.setItemId(UIActions.gotoGrid);
         toolBar.add(gridButton);
 

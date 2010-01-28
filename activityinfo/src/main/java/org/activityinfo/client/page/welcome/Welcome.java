@@ -25,30 +25,21 @@ public class Welcome implements PagePresenter {
     public Welcome(GalleryView view) {
 
         this.view = view;
-        this.view.setHeading("Bienvenue dans l'ActivityInfo");
-        this.view.setIntro("Selectionner une rubrique à partir des onglets ci-dessus, ou bien parcourir  " +
-                "tout les fonctionalities ci-dessous.");
+        this.view.setHeading(Application.CONSTANTS.welcomeMessage());
+        this.view.setIntro(Application.CONSTANTS.selectCategory());
 
-        this.view.add(Application.CONSTANTS.dataEntry(),
-                "Saisir les résultants de vos interventions avec l'aide des formulaires, fiches des calcul et " +
-                        "cartes interactive.", "form.png", new SiteGridPlace());
+        this.view.add(Application.CONSTANTS.dataEntry(), Application.CONSTANTS.dataEntryDescription(), "form.png", new SiteGridPlace());
 
-        this.view.add("Listes des interventions",
-                "Parcourir des listes des sites d'intervention avec une presentation sembable à l'Excel. Trier," +
-                        "filtrer, chercher, et cartographier",
+        this.view.add(Application.CONSTANTS.siteLists(), Application.CONSTANTS.siteListsDescriptions(),
                 "grid.png", new SiteGridPlace());
 
-        this.view.add("Tableaux croisser dynamique",
-                "Croisser tous les dimensions de vos résultats -- activité, periode de temps, partenaires, " +
-                        "géographie",
+        this.view.add(Application.CONSTANTS.pivotTables(), Application.CONSTANTS.pivotTableDescription(),
                 "pivot.png", new PivotPlace());
 
-        this.view.add("Graphiques",
-                "Sortir rapidement des graphiques variés qui synthesent vos resultats",
+        this.view.add(Application.CONSTANTS.charts(), Application.CONSTANTS.chartsDescription(),
                 "charts/time.png", new ChartPlace());
 
-        this.view.add("Cartes",
-                "Sortir rapidement de cartographies des indicateurs",
+        this.view.add(Application.CONSTANTS.maps(), Application.CONSTANTS.mapsDescription(),
                 "map.png", new MapPlace());
 
 

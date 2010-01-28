@@ -3,6 +3,7 @@ package org.activityinfo.client.offline.ui;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
+import org.activityinfo.client.Application;
 
 /**
  * @author Alex Bertram
@@ -13,7 +14,7 @@ public class OfflineStatusWindow extends Window {
 
     public OfflineStatusWindow() {
 
-        setHeading("Status Mode Hors Connexion");
+        setHeading(Application.CONSTANTS.statusOfflineMode());
         setWidth(300);
         setHeight(200);
 
@@ -22,11 +23,11 @@ public class OfflineStatusWindow extends Window {
 
         appStatus = new Text();
 
-        add(new Text("Chargement de logiciel"));
+        add(new Text(Application.CONSTANTS.loadingSoftware()));
         add(appStatus);
 
         schemaStatus = new Text();
-        add(new Text("Schema"));
+        add(new Text(Application.CONSTANTS.schema()));
         add(schemaStatus);
     }
 

@@ -10,8 +10,8 @@ import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.maps.client.MapType;
@@ -35,8 +35,8 @@ import org.activityinfo.client.command.CommandService;
 import org.activityinfo.client.command.monitor.MaskingAsyncMonitor;
 import org.activityinfo.client.event.SiteEvent;
 import org.activityinfo.client.map.GcIconFactory;
-import org.activityinfo.client.map.MapTypeFactory;
 import org.activityinfo.client.map.MapApiLoader;
+import org.activityinfo.client.map.MapTypeFactory;
 import org.activityinfo.client.page.common.AdminBoundsHelper;
 import org.activityinfo.client.page.common.Shutdownable;
 import org.activityinfo.shared.command.GetSitePoints;
@@ -50,10 +50,9 @@ import java.util.Map;
 /**
  * A map panel that serves a counterpart to the SiteGrid, and
  * a drop target for <code>SiteModel</code>.
- *
+ * <p/>
  * Note: this class is not split into presenter-view as nearly all
  * of the logic involves Javascript objects or other GWT entanglements.
- *
  *
  * @author Alex Bertram (akbertram@gmail.com)
  */
@@ -108,12 +107,12 @@ public class SiteMap extends ContentPanel implements Shutdownable {
     }
 
     private void onSiteSelected(SiteEvent se) {
-        if(se.getSource() != this) {
-            if (se.getSite()!=null && !se.getSite().hasCoords()) {
+        if (se.getSource() != this) {
+            if (se.getSite() != null && !se.getSite().hasCoords()) {
                 Bounds bounds = AdminBoundsHelper.calculate(activity, se.getSite());
                 LatLngBounds llBounds = llBoundsForBounds(bounds);
 
-                if(!llBounds.containsBounds(map.getBounds()))
+                if (!llBounds.containsBounds(map.getBounds()))
                     zoomToBounds(llBounds);
             } else {
                 highlightSite(se.getSiteId(), true);
@@ -174,7 +173,7 @@ public class SiteMap extends ContentPanel implements Shutdownable {
                 map.addMapClickHandler(new MapClickHandler() {
                     @Override
                     public void onClick(MapClickEvent event) {
-                        if(event.getOverlay() != null) {
+                        if (event.getOverlay() != null) {
                             int siteId = siteIdFromOverlay(event.getOverlay());
                             highlightSite(siteId, false);
                             eventBus.fireEvent(new SiteEvent(AppEvents.SiteSelected, SiteMap.this, siteId));
@@ -184,7 +183,7 @@ public class SiteMap extends ContentPanel implements Shutdownable {
                 });
                 map.addMapRightClickHandler(new MapRightClickHandler() {
                     public void onRightClick(MapRightClickEvent event) {
-                        if(event.getOverlay() != null) {
+                        if (event.getOverlay() != null) {
                             showContextMenu(event);
                         }
                     }
@@ -199,7 +198,7 @@ public class SiteMap extends ContentPanel implements Shutdownable {
 
                         map.checkResizeAndCenter();
 
-                        if(pendingZoom != null) {
+                        if (pendingZoom != null) {
                             zoomToBounds(pendingZoom);
                         }
                     }
@@ -230,11 +229,11 @@ public class SiteMap extends ContentPanel implements Shutdownable {
 
                 siteListener = new Listener<SiteEvent>() {
                     public void handleEvent(SiteEvent be) {
-                        if(be.getType() == AppEvents.SiteSelected) {
+                        if (be.getType() == AppEvents.SiteSelected) {
                             onSiteSelected(be);
-                        } else if(be.getType() == AppEvents.SiteCreated) {
+                        } else if (be.getType() == AppEvents.SiteCreated) {
                             onSiteCreated(be.getSite());
-                        } else if(be.getType() == AppEvents.SiteChanged) {
+                        } else if (be.getType() == AppEvents.SiteChanged) {
                             onSiteChanged(be.getSite());
                         }
 
@@ -250,7 +249,7 @@ public class SiteMap extends ContentPanel implements Shutdownable {
 
 
     private int siteIdFromOverlay(Overlay overlay) {
-        if(overlay == highlitMarker)
+        if (overlay == highlitMarker)
             return markerIds.get(currentHighlightedMarker);
         else
             return markerIds.get(overlay);
@@ -262,13 +261,12 @@ public class SiteMap extends ContentPanel implements Shutdownable {
      * rendered or is in a funk because of resizing, the zoom
      * is deferred until a Resize or AfterLayout event is received.
      *
-     *
      * @param bounds
      */
     private void zoomToBounds(LatLngBounds bounds) {
 
         int zoomLevel = map.getBoundsZoomLevel(bounds);
-        if(zoomLevel == 0) {
+        if (zoomLevel == 0) {
             pendingZoom = bounds;
         } else {
             map.setCenter(bounds.getCenter(), zoomLevel);
@@ -278,24 +276,24 @@ public class SiteMap extends ContentPanel implements Shutdownable {
 
     public void addSitesToMap(SitePointCollection points) {
 
-        if(markerMgr == null) {
+        if (markerMgr == null) {
             OverlayManagerOptions options = new OverlayManagerOptions();
             options.setMaxZoom(map.getCurrentMapType().getMaximumResolution());
 
             markerMgr = new MarkerManagerImpl(map, options);
         } else {
-            for(Marker marker : markerIds.keySet()) {
+            for (Marker marker : markerIds.keySet()) {
                 markerMgr.removeMarker(marker);
             }
         }
-        markerIds = new HashMap<Marker,Integer>();
+        markerIds = new HashMap<Marker, Integer>();
         sites = new HashMap<Integer, Marker>();
 
         zoomToBounds(llBoundsForBounds(points.getBounds()));
 
         List<Marker> markers = new ArrayList<Marker>(points.getPoints().size());
 
-        for(SitePoint point : points.getPoints()) {
+        for (SitePoint point : points.getPoints()) {
 
             Marker marker = new Marker(LatLng.newInstance(point.getLat(), point.getLng()));
             markerIds.put(marker, point.getSiteId());
@@ -317,7 +315,7 @@ public class SiteMap extends ContentPanel implements Shutdownable {
 
     public void updateSiteCoords(int siteId, double lat, double lng) {
         Marker marker = sites.get(siteId);
-        if(marker != null) {
+        if (marker != null) {
             // update existing site
             marker.setLatLng(LatLng.newInstance(lat, lng));
         } else {
@@ -331,12 +329,12 @@ public class SiteMap extends ContentPanel implements Shutdownable {
 
     public void highlightSite(int siteId, boolean panTo) {
         Marker marker = sites.get(siteId);
-        if(marker != null) {
+        if (marker != null) {
 
             // we can't change the icon ( I don't think )
             // so we'll bring in a ringer for the selected site
 
-            if(highlitMarker == null) {
+            if (highlitMarker == null) {
                 GcIconFactory iconFactory = new GcIconFactory();
                 iconFactory.primaryColor = "#0000FF";
                 MarkerOptions opts = MarkerOptions.newInstance();
@@ -350,20 +348,20 @@ public class SiteMap extends ContentPanel implements Shutdownable {
                 map.addOverlay(highlitMarker);
             }
 
-            if(currentHighlightedMarker != null ) {
+            if (currentHighlightedMarker != null) {
                 currentHighlightedMarker.setVisible(true);
             }
             currentHighlightedMarker = marker;
             currentHighlightedMarker.setVisible(false);
 
-            if(!map.getBounds().containsLatLng(marker.getLatLng()))
+            if (!map.getBounds().containsLatLng(marker.getLatLng()))
                 map.panTo(marker.getLatLng());
         } else {
             // no coords, un highlight existing marker
-            if(currentHighlightedMarker != null) {
+            if (currentHighlightedMarker != null) {
                 currentHighlightedMarker.setVisible(true);
             }
-            if(highlitMarker != null) {
+            if (highlitMarker != null) {
                 map.removeOverlay(highlitMarker);
                 highlitMarker = null;
             }
@@ -371,10 +369,10 @@ public class SiteMap extends ContentPanel implements Shutdownable {
     }
 
     private void showContextMenu(MapRightClickHandler.MapRightClickEvent event) {
-        if(contextMenu == null) {
+        if (contextMenu == null) {
 
             contextMenu = new Menu();
-            contextMenu.add(new MenuItem("Afficher dans le grille",
+            contextMenu.add(new MenuItem(Application.CONSTANTS.showInGrid(),
                     Application.ICONS.table(), new SelectionListener<MenuEvent>() {
                         @Override
                         public void componentSelected(MenuEvent ce) {
@@ -383,7 +381,7 @@ public class SiteMap extends ContentPanel implements Shutdownable {
                         }
                     }));
         }
-        Marker marker = (Marker)event.getOverlay();
+        Marker marker = (Marker) event.getOverlay();
         contextMenu.show(event.getElement(), "tr");
 
     }
@@ -401,7 +399,7 @@ public class SiteMap extends ContentPanel implements Shutdownable {
         protected void onDragEnter(DNDEvent event) {
 
             SiteModel site = getSite(event);
-            if(site == null) {
+            if (site == null) {
                 bounds = null;
             } else {
                 bounds = AdminBoundsHelper.calculate(activity, site);
@@ -412,20 +410,20 @@ public class SiteMap extends ContentPanel implements Shutdownable {
 
         @Override
         protected void onDragMove(DNDEvent event) {
-            if(bounds != null) {
+            if (bounds != null) {
                 updateDragStatus(event);
             }
         }
 
         private void updateDragStatus(DNDEvent event) {
 
-            if(bounds == null) {
+            if (bounds == null) {
                 // not a site that's being dragged
                 event.setCancelled(true);
                 event.getStatus().setStatus(false);
             } else {
                 LatLng latlng = getLatLng(event);
-                if(bounds.contains(latlng.getLongitude(), latlng.getLatitude())) {
+                if (bounds.contains(latlng.getLongitude(), latlng.getLatitude())) {
                     // a site that's within its bounds
                     event.setCancelled(false);
                     event.getStatus().setStatus(true);
@@ -442,11 +440,11 @@ public class SiteMap extends ContentPanel implements Shutdownable {
         @Override
         protected void onDragDrop(DNDEvent event) {
 
-            if(bounds != null) {
+            if (bounds != null) {
                 LatLng latlng = getLatLng(event);
-                if(bounds.contains(latlng.getLongitude(), latlng.getLatitude())) {
+                if (bounds.contains(latlng.getLongitude(), latlng.getLatitude())) {
                     event.setCancelled(false);
-                    onSiteDropped((Record)event.getData(), latlng.getLatitude(), latlng.getLongitude());
+                    onSiteDropped((Record) event.getData(), latlng.getLatitude(), latlng.getLongitude());
                 }
             }
         }
@@ -458,10 +456,10 @@ public class SiteMap extends ContentPanel implements Shutdownable {
         }
 
         private SiteModel getSite(DNDEvent event) {
-            if(event.getData() instanceof Record) {
-                Record record = (Record)event.getData();
-                if(record.getModel() instanceof SiteModel) {
-                    return (SiteModel)record.getModel();
+            if (event.getData() instanceof Record) {
+                Record record = (Record) event.getData();
+                if (record.getModel() instanceof SiteModel) {
+                    return (SiteModel) record.getModel();
                 }
             }
             return null;

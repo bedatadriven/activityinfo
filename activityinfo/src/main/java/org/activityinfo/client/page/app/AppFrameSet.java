@@ -44,12 +44,12 @@ import org.activityinfo.client.page.welcome.WelcomePlace;
 
 
 @Singleton
-public class AppFrameSet  implements FrameSetPresenter {
+public class AppFrameSet implements FrameSetPresenter {
 
     private EventBus eventBus;
     private Viewport viewport;
 //    private TabPanel tabPanel;
-//    private TabItem dataEntryTab;
+    //    private TabItem dataEntryTab;
     private ToolBar topBar;
     private Authentication auth;
     private OfflineMenu offlineMenu;
@@ -86,18 +86,18 @@ public class AppFrameSet  implements FrameSetPresenter {
 
         topBar = new ToolBar();
 
-        LabelToolItem appTitleItem = new LabelToolItem("ActivityInfo");
+        LabelToolItem appTitleItem = new LabelToolItem(Application.CONSTANTS.appTitle());
         appTitleItem.setStyleName("appTitle");
         topBar.add(appTitleItem);
 
         topBar.add(new SeparatorToolItem());
 
-        addNavLink("Bienvenue", null, new WelcomePlace());
+        addNavLink(Application.CONSTANTS.welcome(), null, new WelcomePlace());
         addNavLink(Application.CONSTANTS.dataEntry(), Application.ICONS.dataEntry(), new SiteGridPlace());
         addNavLink(Application.CONSTANTS.reports(), Application.ICONS.report(), new ReportHomePlace());
-        addNavLink("Graphiques", Application.ICONS.barChart(), new ChartPlace());
+        addNavLink(Application.CONSTANTS.charts(), Application.ICONS.barChart(), new ChartPlace());
         addNavLink(Application.CONSTANTS.maps(), Application.ICONS.map(), new MapPlace());
-        addNavLink("Tableaux", Application.ICONS.table(), new PivotPlace());
+        addNavLink(Application.CONSTANTS.tables(), Application.ICONS.table(), new PivotPlace());
         addNavLink(Application.CONSTANTS.setup(), Application.ICONS.setup(), new DbListPlace());
 
         topBar.add(new FillToolItem());
@@ -228,7 +228,7 @@ public class AppFrameSet  implements FrameSetPresenter {
 
     public void setWidget(Widget widget) {
 
-        if(activeWidget!=null) {
+        if (activeWidget != null) {
             viewport.remove(activeWidget);
         }
         viewport.add(widget, new RowData(1.0, 1.0));

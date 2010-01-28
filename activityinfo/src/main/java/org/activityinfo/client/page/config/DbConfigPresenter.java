@@ -10,8 +10,7 @@ import org.activityinfo.client.page.Pages;
 import org.activityinfo.client.page.common.GalleryView;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
 
-public class DbConfigPresenter implements PagePresenter
-{
+public class DbConfigPresenter implements PagePresenter {
 
     private final GalleryView view;
 
@@ -23,16 +22,16 @@ public class DbConfigPresenter implements PagePresenter
     public void go(UserDatabaseDTO db) {
         view.setHeading(db.getFullName() == null ? db.getName() : db.getFullName());
 
-        if(db.isDesignAllowed()) {
-            view.add(Application.CONSTANTS.design(), "Créer ou modifier des activités et leurs indicateurs qui fait parti de " +
-                    "cette base de données", "db-design.png", new DbPlace(Pages.Design, db.getId()));
+        if (db.isDesignAllowed()) {
+            view.add(Application.CONSTANTS.design(), Application.CONSTANTS.designDescription(),
+                    "db-design.png", new DbPlace(Pages.Design, db.getId()));
         }
-        if(db.isManageAllUsersAllowed()) {
-            view.add(Application.CONSTANTS.partner(), "Definer les organisations partenaire qui participe dans cette " +
-                    "base de données.", "db-partners.png", new DbPlace(Pages.DatabasePartners, db.getId()) );
+        if (db.isManageAllUsersAllowed()) {
+            view.add(Application.CONSTANTS.partner(), Application.CONSTANTS.partnerEditorDescription(),
+                    "db-partners.png", new DbPlace(Pages.DatabasePartners, db.getId()));
         }
-        if(db.isManageUsersAllowed()) {
-            view.add(Application.CONSTANTS.users(), "Ajouter des utilistateurs ou controler leur niveau d'accès.",
+        if (db.isManageUsersAllowed()) {
+            view.add(Application.CONSTANTS.users(), Application.CONSTANTS.userManagerDescription(),
                     "db-users.png", new DbPlace(Pages.DatabaseUsers, db.getId()));
         }
 

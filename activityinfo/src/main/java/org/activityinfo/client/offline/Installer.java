@@ -25,12 +25,8 @@ import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.gears.client.database.DatabaseException;
-import com.google.gwt.gears.client.localserver.ManagedResourceStore;
-import com.google.gwt.gears.client.localserver.ManagedResourceStoreCompleteHandler;
-import com.google.gwt.gears.client.localserver.ManagedResourceStoreErrorHandler;
-import com.google.gwt.gears.client.localserver.ManagedResourceStoreProgressHandler;
-import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
+import org.activityinfo.client.Application;
 import org.activityinfo.client.command.Authentication;
 import org.activityinfo.client.offline.dao.AuthDAO;
 
@@ -53,13 +49,13 @@ public class Installer {
             // this cookie tells the startup script to use the GWT permutation
             // that includes the offline implementation of stuff
             Date expiryDate = new Date(60l * 365l * 24 * 60 * 60 * 1000);
-       
+
 
             // Add a desktop shortcut for ActivityInfo
 //                                 Desktop desktop = Factory.getInstance().createDesktop();
 //                    desktop.createShortcut();
 
-            if(GWT.isScript()) {
+            if (GWT.isScript()) {
                 downloadCommon();
             } else {
                 promptReload();
@@ -72,7 +68,6 @@ public class Installer {
     /**
      * Downloads the common <code>ManagedResourceStore</code>, which contains the
      * general resources from the public/ folder as well as the host page and selection script
-     *
      */
     public void downloadCommon() {
     }
@@ -81,13 +76,12 @@ public class Installer {
         MessageBox prompt = new MessageBox();
         prompt.setButtons(MessageBox.OKCANCEL);
         prompt.setIcon(MessageBox.INFO);
-        prompt.setTitle("Chargement initial complet");
-        prompt.setMessage("Chargement initiale de module hors connexion a terminé. " +
-                "Veuillez reactualizer le page pour completer l'installation.");
+        prompt.setTitle(Application.CONSTANTS.loadingComplets());
+        prompt.setMessage(Application.CONSTANTS.loadingCompletsMsg());
         prompt.addCallback(new Listener<MessageBoxEvent>() {
             @Override
             public void handleEvent(MessageBoxEvent be) {
-                if(be.getButtonClicked().getItemId().equals(Dialog.OK)) {
+                if (be.getButtonClicked().getItemId().equals(Dialog.OK)) {
                     Window.Location.reload();
                 }
             }

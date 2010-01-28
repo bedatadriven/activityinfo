@@ -51,7 +51,7 @@ public class AdminFilterPanel extends ContentPanel {
         tree.setCheckable(true);
         tree.setCheckNodes(TreePanel.CheckNodes.BOTH);
         tree.setCheckStyle(TreePanel.CheckCascade.CHILDREN);
-        
+
         tree.setDisplayProperty("name");
         tree.getStyle().setNodeCloseIcon(null);
         tree.getStyle().setNodeOpenIcon(null);
@@ -87,7 +87,7 @@ public class AdminFilterPanel extends ContentPanel {
         toolBar.add(levelCombo);
 
         // TODO : 118n
-        Button clear = new Button("Enlever", Application.ICONS.delete(), new SelectionListener<ButtonEvent>() {
+        Button clear = new Button(Application.CONSTANTS.remove(), Application.ICONS.delete(), new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 levelCombo.setValue(null);
@@ -103,9 +103,9 @@ public class AdminFilterPanel extends ContentPanel {
         List<AdminLevelModel> list = new ArrayList<AdminLevelModel>();
         list.add(selected);
 
-        while(selected.getParentLevelId() != null) {
-            for(AdminLevelModel level : levels) {
-                if(level.getId() == selected.getParentLevelId()) {
+        while (selected.getParentLevelId() != null) {
+            for (AdminLevelModel level : levels) {
+                if (level.getId() == selected.getParentLevelId()) {
                     list.add(level);
                     selected = level;
                     break;
@@ -127,13 +127,13 @@ public class AdminFilterPanel extends ContentPanel {
         List<AdminEntityModel> checked = tree.getCheckedSelection();
         List<AdminEntityModel> selected = new ArrayList<AdminEntityModel>();
 
-        if(levelCombo.getValue() == null) {
+        if (levelCombo.getValue() == null) {
             return selected;
         }
         int filterLevelId = levelCombo.getValue().getId();
 
-        for(AdminEntityModel entity : checked) {
-            if(entity.getLevelId() == filterLevelId) {
+        for (AdminEntityModel entity : checked) {
+            if (entity.getLevelId() == filterLevelId) {
                 selected.add(entity);
             }
         }

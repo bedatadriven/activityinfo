@@ -20,14 +20,14 @@ public class BubbleLayerForm extends FormPanel {
 
     public BubbleLayerForm() {
 
-        setHeading("Sélectionner le symbol");
+        setHeading(Application.CONSTANTS.selectTheSymbol());
         setIcon(Application.ICONS.graduatedSymbol());
 
         setLabelWidth(100);
         setFieldWidth(200);
 
         colorField = new ColorField();
-        colorField.setFieldLabel(Application.CONSTANTS.color()); 
+        colorField.setFieldLabel(Application.CONSTANTS.color());
         colorField.setValue("0000BB");
         this.add(colorField);
 
@@ -36,7 +36,7 @@ public class BubbleLayerForm extends FormPanel {
         minRadiusField.setAllowBlank(false);
         minRadiusField.setFormat(NumberFormat.getFormat("0"));
         minRadiusField.setValue(5);
-        minRadiusField.setFieldLabel("Radius minimum");
+        minRadiusField.setFieldLabel(Application.CONSTANTS.radiusMinimum());
         this.add(minRadiusField);
 
         maxRadiusField = new NumberField();
@@ -44,14 +44,14 @@ public class BubbleLayerForm extends FormPanel {
         maxRadiusField.setAllowBlank(false);
         maxRadiusField.setFormat(NumberFormat.getFormat("0"));
         maxRadiusField.setValue(15);
-        maxRadiusField.setFieldLabel("Radius maximum");
+        maxRadiusField.setFieldLabel(Application.CONSTANTS.radiusMaximum());
         this.add(maxRadiusField);
-                                                                             
+
         clusterCombo = new MappingComboBox<Integer>();
-        clusterCombo.add(0, "Aucune");
-        clusterCombo.add(1, "Automatique");
+        clusterCombo.add(0, Application.CONSTANTS.none());
+        clusterCombo.add(1, Application.CONSTANTS.automatic());
         clusterCombo.setMappedValue(1);
-        clusterCombo.setFieldLabel("Clustering");
+        clusterCombo.setFieldLabel(Application.CONSTANTS.clustering());
         this.add(clusterCombo);
 
     }

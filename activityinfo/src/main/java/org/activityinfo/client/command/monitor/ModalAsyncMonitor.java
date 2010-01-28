@@ -12,92 +12,92 @@ import org.activityinfo.shared.i18n.UIConstants;
 /**
  * Uses a GXT modal dialog box to keep the user updated on
  * the progress of an asynchronous call
- *
+ * <p/>
  * The monitor allows a limited number of retries (defaults to two) before giving up.
  */
 public class ModalAsyncMonitor implements AsyncMonitor {
 
-	protected MessageBox box;
-	protected boolean cancelled;
+    protected MessageBox box;
+    protected boolean cancelled;
     protected boolean inProgress = false;
-	
-	public ModalAsyncMonitor() {
-		
-	}
+
+    public ModalAsyncMonitor() {
+
+    }
 
 
-	@Override
-	public void beforeRequest() {
+    @Override
+    public void beforeRequest() {
 
         inProgress = true;
 
-		box = new MessageBox();
-		box.setTitle("ActivityInfo");
-		box.setModal(true);
+        box = new MessageBox();
+        box.setTitle(Application.CONSTANTS.appTitle());
+        box.setModal(true);
         box.setType(MessageBoxType.WAIT);
-		box.setMessage(Application.CONSTANTS.loading());
-		box.setButtons(MessageBox.CANCEL);
-		
-		box.addCallback(new Listener<MessageBoxEvent>() {
-			public void handleEvent(MessageBoxEvent be) {
-				cancelled = true;
-				
-				/* 
-				 * we can't close the box right away because the 
-				 * call could still succeed at this point, and the monitor
-				 * doesn't have any say over whether the result is sent
-				 * back to the original caller.
-				 */
-                if(!inProgress) {
+        box.setMessage(Application.CONSTANTS.loading());
+        box.setButtons(MessageBox.CANCEL);
+
+        box.addCallback(new Listener<MessageBoxEvent>() {
+            public void handleEvent(MessageBoxEvent be) {
+                cancelled = true;
+
+                /*
+                     * we can't close the box right away because the
+                     * call could still succeed at this point, and the monitor
+                     * doesn't have any say over whether the result is sent
+                     * back to the original caller.
+                     */
+                if (!inProgress) {
                     box.close();
                 }
-			}
-		});
-		box.show();
-	}
+            }
+        });
+        box.show();
+    }
 
-	
-	public void onConnectionProblem() {
+
+    public void onConnectionProblem() {
 
         inProgress = false;
 
-		UIConstants constants = GWT.create(UIConstants.class);
-		
-		box.updateText(constants.connectionProblem());
-	}
+        UIConstants constants = GWT.create(UIConstants.class);
 
-	public boolean onRetrying() {
-		if(cancelled) {
+        box.updateText(constants.connectionProblem());
+    }
 
-			box.close();
-			
-			return false;
-		
-		} else {
+    public boolean onRetrying() {
+        if (cancelled) {
+
+            box.close();
+
+            return false;
+
+        } else {
 
             inProgress = true;
-		
-			UIConstants constants = GWT.create(UIConstants.class);
-			box.updateText(constants.retrying());
-			
-			return true;
-		}
-	}
+
+            UIConstants constants = GWT.create(UIConstants.class);
+            box.updateText(constants.retrying());
+
+            return true;
+        }
+    }
 
 
-	@Override
-	public void onServerError() {
+    @Override
+    public void onServerError() {
 
         inProgress = false;
 
-		box.close();
+        box.close();
 
-		MessageBox.alert("ActivityInfo", Application.CONSTANTS.serverError(), null);
+        MessageBox.alert(Application.CONSTANTS.appTitle(), Application.CONSTANTS.serverError(), null);
 
-	}
+    }
 
-	@Override
-	public void onCompleted() {
-		box.close();
-	}
+    @Override
+    public void onCompleted() {
+        box.close();
+    }
 }

@@ -19,12 +19,12 @@ public class PartnerFieldSet extends AbstractFilterFieldSet {
 
     public PartnerFieldSet(Schema schema) {
 
-        setHeading("Filtrer par Partenaire");
+        setHeading(Application.CONSTANTS.filterByPartner());
 
 
         setLayout(new FieldSetFitLayout());
         setScrollMode(Style.Scroll.AUTO);
-     
+
         TreeStore<PartnerModel> store = new TreeStore<PartnerModel>();
         store.add(schema.getVisiblePartnersList(), false);
 
@@ -41,7 +41,6 @@ public class PartnerFieldSet extends AbstractFilterFieldSet {
         setHeight(250);
 
     }
-
 
 
 }

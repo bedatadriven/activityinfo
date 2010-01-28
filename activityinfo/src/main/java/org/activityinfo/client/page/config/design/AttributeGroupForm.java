@@ -16,19 +16,19 @@ public class AttributeGroupForm extends AbstractDesignForm {
 
         binding = new FormBinding(this);
 
-		TextField<String> nameField = new TextField<String>();
-		nameField.setFieldLabel(Application.CONSTANTS.name());
-		binding.addFieldBinding(new FieldBinding(nameField, "name"));
+        TextField<String> nameField = new TextField<String>();
+        nameField.setFieldLabel(Application.CONSTANTS.name());
+        binding.addFieldBinding(new FieldBinding(nameField, "name"));
 
-		add(nameField);
+        add(nameField);
 
         MappingComboBox typeField = new MappingComboBox();
         typeField.add(true, Application.CONSTANTS.multipleChoice());
         typeField.add(false, Application.CONSTANTS.singleChoice());
-        typeField.setFieldLabel("Type de choix");
+        typeField.setFieldLabel(Application.CONSTANTS.choiceType());
         binding.addFieldBinding(new MappingComboBoxBinding(typeField, "multipleAllowed"));
         add(typeField);
-	}
+    }
 
     @Override
     public FormBinding getBinding() {

@@ -44,7 +44,7 @@ import java.util.List;
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class PivotPage extends LayoutContainer implements PivotPresenter.View  {
+public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 
     protected EventBus eventBus;
     protected CommandService service;
@@ -96,12 +96,12 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View  {
     public void createPane() {
 
         ContentPanel pane = new ContentPanel();
-        pane.setHeading("Dimensions");
+        pane.setHeading(Application.CONSTANTS.dimensions());
 
         VBoxLayout layout = new VBoxLayout();
         layout.setPadding(new Padding(5));
         layout.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
-        
+
         pane.setLayout(layout);
 
         VBoxLayoutData labelLayout = new VBoxLayoutData();
@@ -112,12 +112,12 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View  {
         unusedDims = createStore();
         pane.add(createList(unusedDims), listLayout);
 
-        pane.add(new Text("Lignes"), labelLayout);
+        pane.add(new Text(Application.CONSTANTS.rows()), labelLayout);
 
         rowDims = createStore();
         pane.add(createList(rowDims), listLayout);
 
-        pane.add(new Text("Colonnes"), labelLayout);
+        pane.add(new Text(Application.CONSTANTS.columns()), labelLayout);
 
         colDims = createStore();
         pane.add(createList(colDims), listLayout);
@@ -135,7 +135,7 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View  {
         store.addStoreListener(new StoreListener<Dimension>() {
             @Override
             public void storeDataChanged(StoreEvent<Dimension> se) {
-                if(presenter != null) {
+                if (presenter != null) {
                     presenter.onDimensionsChanged();
                 }
             }
@@ -153,7 +153,7 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View  {
         ListViewDropTarget target = new ListViewDropTarget(list);
         target.setFeedback(DND.Feedback.INSERT);
         target.setAllowSelfAsSource(true);
-        
+
         return list;
     }
 
@@ -213,7 +213,7 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View  {
         SelectionListener<ButtonEvent> listener = new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                if(presenter != null && ce.getButton().getItemId() != null) {
+                if (presenter != null && ce.getButton().getItemId() != null) {
                     presenter.onUIAction(ce.getButton().getItemId());
                 }
             }
@@ -243,7 +243,7 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View  {
         BorderLayoutData layout = new BorderLayoutData(Style.LayoutRegion.SOUTH);
         layout.setSplit(true);
         layout.setCollapsible(true);
-    
+
         drilldownPanel = new DrillDownGrid();
         DrillDownEditor drilldownEditor = new DrillDownEditor(eventBus, service, stateMgr, new DateUtilGWTImpl(), drilldownPanel);
         drilldownEditor.onDrillDown(event);
@@ -253,7 +253,7 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View  {
         // disconnect our initial drilldown listener;
         // subsequent events will be handled by the DrillDownEditor's listener
         eventBus.removeListener(AppEvents.Drilldown, initialDrillDownListener);
-        
+
         layout();
 
     }
@@ -274,7 +274,7 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View  {
     }
 
     public void setSchema(Schema result) {
-    //    indicatorPanel.setSchema(result);
+        //    indicatorPanel.setSchema(result);
 
     }
 
@@ -285,7 +285,7 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View  {
 
     public void enableUIAction(String actionId, boolean enabled) {
         Component button = gridToolBar.getItemByItemId(actionId);
-        if(button != null) {
+        if (button != null) {
             button.setEnabled(enabled);
         }
     }

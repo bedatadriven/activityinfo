@@ -6,8 +6,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
 import org.activityinfo.client.Application;
-import org.activityinfo.client.Place;
 import org.activityinfo.client.EventBus;
+import org.activityinfo.client.Place;
 import org.activityinfo.client.command.CommandService;
 import org.activityinfo.client.command.callback.DownloadCallback;
 import org.activityinfo.client.command.callback.Got;
@@ -42,7 +42,9 @@ public class PivotPresenter implements PagePresenter {
         public void enableUIAction(String actionId, boolean enabled);
 
         public ListStore<Dimension> getRowStore();
+
         public ListStore<Dimension> getColStore();
+
         public ListStore<Dimension> getUnsusedStore();
 
         public void setContent(PivotTableElement element);
@@ -67,7 +69,7 @@ public class PivotPresenter implements PagePresenter {
 
     @Inject
     public PivotPresenter(CommandService service, EventBus eventBus, final View view) {
-        this.service =  service;
+        this.service = service;
         this.view = view;
         this.eventBus = eventBus;
         this.view.bindPresenter(this);
@@ -75,7 +77,7 @@ public class PivotPresenter implements PagePresenter {
         ListStore<Dimension> store = view.getRowStore();
         store.add(createDimension(DimensionType.Database, Application.CONSTANTS.database()));
         store.add(createDimension(DimensionType.Activity, Application.CONSTANTS.activity()));
-        store.add(createDimension(DimensionType.Indicator,  Application.CONSTANTS.indicators()));
+        store.add(createDimension(DimensionType.Indicator, Application.CONSTANTS.indicators()));
 
         store = view.getColStore();
         store.add(createDimension(DimensionType.Partner, Application.CONSTANTS.partner()));
@@ -94,7 +96,7 @@ public class PivotPresenter implements PagePresenter {
                 ListStore<Dimension> store = view.getUnsusedStore();
 
                 CountryModel country = result.getCommonCountry();
-                for(AdminLevelModel level : country.getAdminLevels()) {
+                for (AdminLevelModel level : country.getAdminLevels()) {
                     AdminDimension dimension = new AdminDimension(level.getId());
                     dimension.set("caption", level.getName());
                     store.add(dimension);
@@ -130,38 +132,38 @@ public class PivotPresenter implements PagePresenter {
         table.setColumnDimensions(view.getColStore().getModels());
 
         List<IndicatorModel> selectedIndicators = view.getSelectedIndicators();
-        for(IndicatorModel indicator : selectedIndicators) {
+        for (IndicatorModel indicator : selectedIndicators) {
             table.getFilter().addRestriction(DimensionType.Indicator, indicator.getId());
         }
 
         List<AdminEntityModel> entities = view.getAdminRestrictions();
-        for(AdminEntityModel entity : entities) {
+        for (AdminEntityModel entity : entities) {
             table.getFilter().addRestriction(DimensionType.AdminLevel, entity.getId());
         }
 
-        if(view.getMinDate()!=null)
+        if (view.getMinDate() != null)
             table.getFilter().setMinDate(view.getMinDate());
-        if(view.getMaxDate()!=null)
+        if (view.getMaxDate() != null)
             table.getFilter().setMaxDate(view.getMaxDate());
 
         return table;
     }
 
     public void onUIAction(String itemId) {
-        if(UIActions.refresh.equals(itemId)) {
+        if (UIActions.refresh.equals(itemId)) {
             final PivotTableElement element = createElement();
             service.execute(new GenerateElement(element), view.getMonitor(), new AsyncCallback<Content>() {
                 public void onFailure(Throwable throwable) {
-                    MessageBox.alert("Error", "An error occurred on the server.", null);
+                    MessageBox.alert(Application.CONSTANTS.error(), Application.CONSTANTS.errorOnServer(), null);
                 }
 
                 public void onSuccess(Content content) {
-                    element.setContent((PivotContent)content);
+                    element.setContent((PivotContent) content);
                     view.setContent(element);
                 }
             });
 
-        } else if(UIActions.export.equals(itemId)) {
+        } else if (UIActions.export.equals(itemId)) {
             service.execute(new RenderElement(createElement(), RenderElement.Format.Excel), view.getMonitor(),
                     new DownloadCallback(eventBus, "pivotTable"));
 

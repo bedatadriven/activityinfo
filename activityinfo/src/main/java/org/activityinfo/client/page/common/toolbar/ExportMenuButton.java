@@ -39,23 +39,23 @@ public class ExportMenuButton extends SplitButton {
 
         Menu menu = new Menu();
 
-        MenuItem word = new MenuItem("Word", formatIcon(RenderElement.Format.Word), menuListener);
+        MenuItem word = new MenuItem(Application.CONSTANTS.word(), formatIcon(RenderElement.Format.Word), menuListener);
         word.setData("format", RenderElement.Format.Word);
         menu.add(word);
 
-        MenuItem excel = new MenuItem("Excel", formatIcon(RenderElement.Format.Excel), menuListener);
+        MenuItem excel = new MenuItem(Application.CONSTANTS.excel(), formatIcon(RenderElement.Format.Excel), menuListener);
         excel.setData("format", RenderElement.Format.Excel);
         menu.add(excel);
 
-        MenuItem ppt = new MenuItem("PowerPoint", formatIcon(RenderElement.Format.PowerPoint), menuListener);
+        MenuItem ppt = new MenuItem(Application.CONSTANTS.powerPoint(), formatIcon(RenderElement.Format.PowerPoint), menuListener);
         ppt.setData("format", RenderElement.Format.PowerPoint);
         menu.add(ppt);
 
-        MenuItem pdf = new MenuItem("PDF", formatIcon(RenderElement.Format.PDF), menuListener);
+        MenuItem pdf = new MenuItem(Application.CONSTANTS.pdf(), formatIcon(RenderElement.Format.PDF), menuListener);
         pdf.setData("format", RenderElement.Format.PDF);
         menu.add(pdf);
 
-        MenuItem image = new MenuItem("Image", formatIcon(RenderElement.Format.PNG), menuListener);
+        MenuItem image = new MenuItem(Application.CONSTANTS.image(), formatIcon(RenderElement.Format.PNG), menuListener);
         image.setData("format", RenderElement.Format.PNG);
         menu.add(image);
 
@@ -64,15 +64,15 @@ public class ExportMenuButton extends SplitButton {
     }
 
     private AbstractImagePrototype formatIcon(RenderElement.Format format) {
-        if(format == RenderElement.Format.Excel) {
+        if (format == RenderElement.Format.Excel) {
             return Application.ICONS.excel();
-        } else if(format == RenderElement.Format.PNG) {
+        } else if (format == RenderElement.Format.PNG) {
             return Application.ICONS.image();
-        } else if(format == RenderElement.Format.PowerPoint) {
+        } else if (format == RenderElement.Format.PowerPoint) {
             return Application.ICONS.ppt();
-        } else if(format == RenderElement.Format.Word) {
+        } else if (format == RenderElement.Format.Word) {
             return Application.ICONS.msword();
-        } else if(format == RenderElement.Format.PDF) {
+        } else if (format == RenderElement.Format.PDF) {
             return Application.ICONS.pdf();
         } else {
             return Application.ICONS.report();

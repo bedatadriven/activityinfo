@@ -7,12 +7,11 @@ import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.inject.Inject;
 import org.activityinfo.client.AppEvents;
-import org.activityinfo.client.EventBus;
 import org.activityinfo.client.Application;
+import org.activityinfo.client.EventBus;
 import org.activityinfo.client.command.Authentication;
 
 /**
- *
  * @author Alex Bertram
  */
 public class OfflineMenu extends Button {
@@ -42,10 +41,10 @@ public class OfflineMenu extends Button {
 
     protected void init() {
         //this.setText(Application.offlineMode());
-        this.setText("Offline Mode");
+        this.setText(Application.CONSTANTS.offlineMode());
 
         Menu menu = new Menu();
-        MenuItem statusItem = new MenuItem("Status", new SelectionListener<MenuEvent>() {
+        MenuItem statusItem = new MenuItem(Application.CONSTANTS.status(), new SelectionListener<MenuEvent>() {
             @Override
             public void componentSelected(MenuEvent ce) {
                 eventBus.fireEvent(AppEvents.ShowOfflineStatus);
@@ -54,7 +53,7 @@ public class OfflineMenu extends Button {
         });
         menu.add(statusItem);
 
-        MenuItem disableItem = new MenuItem("Desactiver mode hors connexion", new
+        MenuItem disableItem = new MenuItem(Application.CONSTANTS.disableOffline(), new
                 SelectionListener<MenuEvent>() {
                     @Override
                     public void componentSelected(MenuEvent ce) {

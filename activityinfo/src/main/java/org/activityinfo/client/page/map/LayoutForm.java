@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * Provides user interface for selecting the layout and basemap of the
  * map.
  *
@@ -62,7 +61,7 @@ public class LayoutForm extends FormPanel {
         setFieldWidth(150);
 
         baseMapCombo = new ComboBox();
-        baseMapCombo.setFieldLabel("Carte de Fond");
+        baseMapCombo.setFieldLabel(Application.CONSTANTS.backgroundMap());
         baseMapCombo.setStore(getBaseMapStore());
         baseMapCombo.setDisplayField("name");
         baseMapCombo.setValueField("id");
@@ -82,7 +81,7 @@ public class LayoutForm extends FormPanel {
         loader.load();
 
         pageSizeCombo = new ComboBox<PageSizeModel>();
-        pageSizeCombo.setFieldLabel("Taille de page");
+        pageSizeCombo.setFieldLabel(Application.CONSTANTS.pageSize());
         pageSizeCombo.setStore(getPageSizeStore());
         pageSizeCombo.setDisplayField("name");
         pageSizeCombo.setTriggerAction(ComboBox.TriggerAction.ALL);
@@ -96,7 +95,7 @@ public class LayoutForm extends FormPanel {
         PageSizeModel pageSize = pageSizeCombo.getValue();
         element.setWidth(pageSize.getWidth());
         element.setHeight(pageSize.getHeight());
-        element.setBaseMapId((String)baseMapCombo.getValue().get("id"));
+        element.setBaseMapId((String) baseMapCombo.getValue().get("id"));
     }
 
 
@@ -111,7 +110,7 @@ public class LayoutForm extends FormPanel {
 
                     public void onSuccess(BaseMapResult result) {
                         List<ModelData> list = new ArrayList<ModelData>();
-                        for(BaseMap baseMap : result.getBaseMaps()) {
+                        for (BaseMap baseMap : result.getBaseMaps()) {
                             ModelData data = new BaseModelData();
                             data.set("id", baseMap.getId());
                             data.set("name", baseMap.getName());
@@ -139,21 +138,21 @@ public class LayoutForm extends FormPanel {
         }
 
         public int getWidth() {
-            return (Integer)get("width");
+            return (Integer) get("width");
         }
 
         public int getHeight() {
-            return (Integer)get("height");
+            return (Integer) get("height");
         }
     }
 
     private ListStore<PageSizeModel> getPageSizeStore() {
 
         ListStore<PageSizeModel> store = new ListStore<PageSizeModel>();
-        store.add(new PageSizeModel("Feuille A4 (Portrait)", 492, 690));
-        store.add(new PageSizeModel("Feuille A4 (Paysage)", 534, 474));
-        store.add(new PageSizeModel("Slide PowerPoint", 648, 354));
-        store.add(new PageSizeModel("Demi Slide PowerPoint", 324, 360));
+        store.add(new PageSizeModel(Application.CONSTANTS.sheetA4Portrait(), 492, 690));
+        store.add(new PageSizeModel(Application.CONSTANTS.sheetA4Landscape(), 534, 474));
+        store.add(new PageSizeModel(Application.CONSTANTS.slidePowerPoint(), 648, 354));
+        store.add(new PageSizeModel(Application.CONSTANTS.halfSlidePowerPoint(), 324, 360));
 
         return store;
     }

@@ -62,9 +62,9 @@ public class ReportGrid extends AbstractEditorGridView<ReportTemplateDTO, Report
         grid.addListener(Events.BeforeEdit, new Listener<GridEvent<ReportTemplateDTO>>() {
             public void handleEvent(GridEvent<ReportTemplateDTO> be) {
                 ReportTemplateDTO report = be.getModel();
-                be.setCancelled( ! (report.getFrequency() == ReportFrequency.Monthly ||
-                                    report.getFrequency() == ReportFrequency.Weekly ||
-                                    report.getFrequency() == ReportFrequency.Daily) );
+                be.setCancelled(!(report.getFrequency() == ReportFrequency.Monthly ||
+                        report.getFrequency() == ReportFrequency.Weekly ||
+                        report.getFrequency() == ReportFrequency.Daily));
             }
         });
 
@@ -83,7 +83,7 @@ public class ReportGrid extends AbstractEditorGridView<ReportTemplateDTO, Report
 
         grid.addListener(Events.CellDoubleClick, new Listener<GridEvent<ReportTemplateDTO>>() {
             public void handleEvent(GridEvent<ReportTemplateDTO> event) {
-                if(event.getColIndex() == 1)
+                if (event.getColIndex() == 1)
                     presenter.onTemplateSelected(event.getModel());
             }
         });
@@ -109,13 +109,13 @@ public class ReportGrid extends AbstractEditorGridView<ReportTemplateDTO, Report
         ColumnConfig frequency = new ColumnConfig("frequency", Application.CONSTANTS.reportingFrequency(), 100);
         frequency.setRenderer(new GridCellRenderer<ReportTemplateDTO>() {
             public Object render(ReportTemplateDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
-                if(model.getFrequency() == ReportFrequency.Monthly) {
+                if (model.getFrequency() == ReportFrequency.Monthly) {
                     return Application.CONSTANTS.monthly();
-                } else if(model.getFrequency() == ReportFrequency.Weekly) {
+                } else if (model.getFrequency() == ReportFrequency.Weekly) {
                     return Application.CONSTANTS.weekly();
-                } else if(model.getFrequency() == ReportFrequency.Daily) {
+                } else if (model.getFrequency() == ReportFrequency.Daily) {
                     return Application.CONSTANTS.daily();
-                } else if(model.getFrequency() == ReportFrequency.Adhoc) {
+                } else if (model.getFrequency() == ReportFrequency.Adhoc) {
                     return "ad hoc";
                 }
                 return "-";
@@ -123,13 +123,13 @@ public class ReportGrid extends AbstractEditorGridView<ReportTemplateDTO, Report
         });
         columns.add(frequency);
 
-        ColumnConfig day = new ColumnConfig("day", "Jour", 100);
+        ColumnConfig day = new ColumnConfig("day", Application.CONSTANTS.day(), 100);
         day.setRenderer(new GridCellRenderer<ReportTemplateDTO>() {
             public Object render(ReportTemplateDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<ReportTemplateDTO> store, Grid<ReportTemplateDTO> grid) {
-                if(model.getFrequency() == ReportFrequency.Weekly)
+                if (model.getFrequency() == ReportFrequency.Weekly)
                     return model.getDay() < 7 ? weekdays[model.getDay()] :
                             weekdays[6];
-                else if(model.getFrequency() == ReportFrequency.Monthly)
+                else if (model.getFrequency() == ReportFrequency.Monthly)
                     return Integer.toString(model.getDay());
                 else
                     return "";
@@ -137,11 +137,11 @@ public class ReportGrid extends AbstractEditorGridView<ReportTemplateDTO, Report
         });
         columns.add(day);
 
-        ColumnConfig subscribed = new ColumnConfig("subscribed", "Abonnement Email", 100);
+        ColumnConfig subscribed = new ColumnConfig("subscribed", Application.CONSTANTS.subscribed(), 100);
         subscribed.setRenderer(new GridCellRenderer<ReportTemplateDTO>() {
             @Override
             public Object render(ReportTemplateDTO model, String property, ColumnData columnData, int rowIndex, int colIndex, ListStore<ReportTemplateDTO> store, Grid<ReportTemplateDTO> grid) {
-                if(model.isSubscribed()) {
+                if (model.isSubscribed()) {
                     return Application.CONSTANTS.yes();
                 } else {
                     return "";
@@ -156,12 +156,12 @@ public class ReportGrid extends AbstractEditorGridView<ReportTemplateDTO, Report
         CellEditor subEditor = new CellEditor(subCombo) {
             @Override
             public Object preProcessValue(Object o) {
-                return subCombo.wrap((Boolean)o);
+                return subCombo.wrap((Boolean) o);
             }
 
             @Override
             public Object postProcessValue(Object o) {
-                return ((MappingComboBox.Wrapper)o).getWrappedValue();
+                return ((MappingComboBox.Wrapper) o).getWrappedValue();
             }
         };
         subscribed.setEditor(subEditor);
@@ -180,13 +180,13 @@ public class ReportGrid extends AbstractEditorGridView<ReportTemplateDTO, Report
         dbMenu.addListener(Events.BeforeShow, new Listener<BaseEvent>() {
             @Override
             public void handleEvent(BaseEvent be) {
-                if(dbMenu.getItemCount() == 0) {
+                if (dbMenu.getItemCount() == 0) {
                     service.execute(new GetSchema(), new MaskingAsyncMonitor(ReportGrid.this,
                             Application.CONSTANTS.loading()), new Got<Schema>() {
 
                         @Override
                         public void got(Schema result) {
-                            for(final UserDatabaseDTO db : result.getDatabases()) {
+                            for (final UserDatabaseDTO db : result.getDatabases()) {
                                 MenuItem item = new MenuItem(db.getName());
                                 item.setIcon(Application.ICONS.database());
                                 item.addListener(Events.Select, new Listener<BaseEvent>() {

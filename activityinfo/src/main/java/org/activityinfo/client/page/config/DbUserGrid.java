@@ -8,7 +8,6 @@ import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.data.ModelData;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.page.common.dialog.FormDialogCallback;
 import org.activityinfo.client.page.common.dialog.FormDialogImpl;
@@ -43,7 +42,6 @@ public class DbUserGrid extends AbstractEditorGridView<UserModel, DbUserEditor>
     }
 
 
-
     @Override
     protected Grid<UserModel> createGridAndAddToContainer(Store store) {
 
@@ -72,7 +70,7 @@ public class DbUserGrid extends AbstractEditorGridView<UserModel, DbUserEditor>
         CheckColumnConfig allowViewAll = null;
         CheckColumnConfig allowEditAll = null;
 
-        if(db.isManageAllUsersAllowed()) {
+        if (db.isManageAllUsersAllowed()) {
             allowViewAll = new CheckColumnConfig("allowViewAll", Application.CONSTANTS.allowViewAll(), 75);
             allowViewAll.setToolTip(Application.CONSTANTS.allowViewAllLong());
             columns.add(allowViewAll);
@@ -83,20 +81,20 @@ public class DbUserGrid extends AbstractEditorGridView<UserModel, DbUserEditor>
         }
 
         CheckColumnConfig allowManageUsers = null;
-        if(db.isManageUsersAllowed()) {
-            allowManageUsers = new CheckColumnConfig("allowManageUsers", "Gérér des utilisateurs", 150);
+        if (db.isManageUsersAllowed()) {
+            allowManageUsers = new CheckColumnConfig("allowManageUsers", Application.CONSTANTS.allowManageUsers(), 150);
             columns.add(allowManageUsers);
         }
 
         CheckColumnConfig allowManageAllUsers = null;
-        if(db.isManageAllUsersAllowed()) {
-            allowManageAllUsers = new CheckColumnConfig("allowManageAllUsers", "Gérér tout des utilisateurs", 150);
+        if (db.isManageAllUsersAllowed()) {
+            allowManageAllUsers = new CheckColumnConfig("allowManageAllUsers", Application.CONSTANTS.manageAllUsers(), 150);
             columns.add(allowManageAllUsers);
         }
 
         // only users with the right to design them selves can change the design attribute
         CheckColumnConfig allowDesign = null;
-        if(db.isDesignAllowed()) {
+        if (db.isDesignAllowed()) {
             allowDesign = new CheckColumnConfig("allowDesign", Application.CONSTANTS.allowDesign(), 75);
             allowDesign.setToolTip(Application.CONSTANTS.allowDesignLong());
             columns.add(allowDesign);
@@ -105,22 +103,22 @@ public class DbUserGrid extends AbstractEditorGridView<UserModel, DbUserEditor>
         final ListStore<UserModel> listStore = (ListStore) store;
         grid = new EditorGrid<UserModel>(listStore, new ColumnModel(columns));
         grid.setLoadMask(true);
-        if(allowDesign!=null) grid.addPlugin(allowDesign);
+        if (allowDesign != null) grid.addPlugin(allowDesign);
         //   grid.addPlugin(allowView);
-        if(allowViewAll!=null) grid.addPlugin(allowViewAll);
+        if (allowViewAll != null) grid.addPlugin(allowViewAll);
         grid.addPlugin(allowEdit);
-        if(allowEditAll!=null) grid.addPlugin(allowEditAll);
-        if(allowManageUsers!=null) grid.addPlugin(allowManageUsers);
-        if(allowManageAllUsers!=null) grid.addPlugin(allowManageAllUsers);
+        if (allowEditAll != null) grid.addPlugin(allowEditAll);
+        if (allowManageUsers != null) grid.addPlugin(allowManageUsers);
+        if (allowManageAllUsers != null) grid.addPlugin(allowManageAllUsers);
         grid.addListener(Events.CellClick, new Listener<GridEvent>() {
 
             public void handleEvent(GridEvent ge) {
 
-                if(ge.getColIndex() >= 4) {
+                if (ge.getColIndex() >= 4) {
 
                     String property = columns.get(ge.getColIndex()).getDataIndex();
                     Record record = listStore.getRecord(listStore.getAt(ge.getRowIndex()));
-                    presenter.onRowEdit(property, (Boolean)record.get(property), record);
+                    presenter.onRowEdit(property, (Boolean) record.get(property), record);
                 }
             }
         });
@@ -142,7 +140,7 @@ public class DbUserGrid extends AbstractEditorGridView<UserModel, DbUserEditor>
         UserForm form = new UserForm(db);
         form.getBinding().bind(user);
 
-        FormDialogImpl dlg=  new FormDialogImpl(form);
+        FormDialogImpl dlg = new FormDialogImpl(form);
         dlg.setHeading(Application.CONSTANTS.newUser());
         dlg.setWidth(400);
         dlg.setHeight(300);
