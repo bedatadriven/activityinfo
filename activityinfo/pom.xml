@@ -8,6 +8,12 @@
     <packaging>war</packaging>
     <version>0.5.6</version>
     <name>ActivityInfo</name>
+    <licenses>
+        <license>
+            <name>GPLv3</name>
+            <url>http://www.gnu.org/licenses/gpl.html</url>
+        </license>
+    </licenses>
 
     <!--  include pluginRepository and repository for GWT-Maven -->
     <pluginRepositories>
@@ -64,6 +70,9 @@
 
         <!-- the value of the rename-to attribute in your GWT module configuration -->
         <gwt.module.alias>ActivityInfo</gwt.module.alias>
+
+        <!-- Allow the build to continue even if there are test failures -->
+        <maven.test.failure.ignore>true</maven.test.failure.ignore>
 
     </properties>
 
@@ -360,8 +369,9 @@
 
     <description>Web-based database system for program monitoring</description>
     <scm>
-        <developerConnection>akbertram</developerConnection>
-        <url>https://activity-info.googlecode.com/svn/trunk/</url>
+        <connection>scm:svn:http://activity-info.googlecode.com/svn/trunk/activityinfo</connection>
+        <developerConnection>scm:svn:https://activity-info.googlecode.com/svn/trunk/</developerConnection>
+        <url>http://code.google.com/p/activity-info/source/browse/</url>
     </scm>
 
     <organization>
@@ -440,6 +450,7 @@
                             <disableClassMetadata>true</disableClassMetadata>
                             <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
                             <module>${gwt.module}</module>
+                            <soyc>true</soyc>
                         </configuration>
                         <goals>
                             <goal>compile</goal>
@@ -619,6 +630,32 @@
         </plugins>
     </build>
 
+    <reporting>
+        <plugins>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jxr-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>emma-maven-plugin</artifactId>
+                <configuration>
+                    <sort>+name</sort>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>gwt-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </reporting>
+
     <profiles>
         <!-- Build the Application Module with only permutations for
     FireFox and logging enabled for testing purposes -->
@@ -627,6 +664,7 @@
             <properties>
                 <gwt.module>org.activityinfo.ApplicationFFTest</gwt.module>
             </properties>
+
         </profile>
         <!-- Build the Application Module with only permutations for
               IE6 and logging enabled for testing purposes -->

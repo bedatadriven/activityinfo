@@ -20,7 +20,7 @@
 <!-- This is a drop-in replacement for the ApplicationModule that
      can be used to quickly test a compilation on FireFox
 
-     e.g.:  mvn gwt:compile -P fftest
+     e.g.:  mvn gwt:compile -P fftest    
      
      -->
 
@@ -28,11 +28,13 @@
 
     <inherits name="org.activityinfo.Application"/>
 
+    <entry-point class='org.activityinfo.client.Application'/>
+
     <!-- ie6, gecko, gecko1_8, safari or opera -->
-    <set-property name="user.agent" value="gecko1_8" />
+    <set-property name="user.agent" value="gecko1_8"/>
     <set-property name="locale" value="fr"/>
 
-    <extend-property name="log_level" values="DEBUG" />   
+    <extend-property name="log_level" values="DEBUG"/>
     <set-property name="log_level" value="DEBUG"/>
 
 </module>
