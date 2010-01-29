@@ -4,18 +4,19 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.Place;
 import org.activityinfo.client.ViewPath;
-import org.activityinfo.client.command.monitor.NullAsyncMonitor;
+import org.activityinfo.client.dispatch.monitor.NullAsyncMonitor;
 import org.activityinfo.client.event.NavigationEvent;
 import org.activityinfo.client.page.*;
 import org.activityinfo.clientjre.mock.MockEventBus;
 import org.activityinfo.clientjre.mock.MockTimer;
 import org.easymock.Capture;
 import org.easymock.EasyMock;
-import static org.easymock.EasyMock.*;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.List;
+
+import static org.easymock.EasyMock.*;
 
 public class PageManagerTest {
 
@@ -38,7 +39,7 @@ public class PageManagerTest {
         @Override
         public void load(PageId pageId, Place initialPlaceHint, AsyncCallback<PagePresenter> callback) {
             this.callback = callback;
-            if(payload!=null)
+            if (payload != null)
                 callback.onSuccess(payload);
         }
     }
@@ -116,7 +117,6 @@ public class PageManagerTest {
     public void testRequestInnerNavAway() {
 
 
-
         // collaborator: eventBus
         MockEventBus eventBus = new MockEventBus();
 
@@ -144,7 +144,7 @@ public class PageManagerTest {
         replay(rootFrameSet);
 
         // CLASS UNDER TEST  !!!
-        PageManager pageMgr = new PageManager(eventBus,  new MockTimer(), rootFrameSet);
+        PageManager pageMgr = new PageManager(eventBus, new MockTimer(), rootFrameSet);
         pageMgr.registerPageLoader(OuterFrameSet, new MockLoader(outerFrameSet));
         pageMgr.registerPageLoader(InnerPage, new MockLoader(innerPage));
 
@@ -167,7 +167,7 @@ public class PageManagerTest {
         reset(outerFrameSet);
         expect(outerFrameSet.getPageId()).andReturn(OuterFrameSet).anyTimes();
         expect(outerFrameSet.getActivePage(ViewPath.DefaultRegion)).andReturn(innerPage).anyTimes();
-        
+
         outerFrameSet.showLoadingPlaceHolder(eq(ViewPath.DefaultRegion), isA(PageId.class), isA(Place.class));
         expectLastCall().andReturn(new NullAsyncMonitor());
         expect(outerFrameSet.navigate(isA(Place.class))).andReturn(true);
@@ -207,7 +207,7 @@ public class PageManagerTest {
         // the root application frame is being created and set
         FrameSetPresenter rootFrameSet = createMock("rootFrameSet", FrameSetPresenter.class);
         expect(rootFrameSet.getActivePage(ViewPath.DefaultRegion)).andReturn(null).anyTimes();
-        expect(rootFrameSet.showLoadingPlaceHolder(eq(ViewPath.DefaultRegion), eq(InnerPage), isA(Place.class) ))
+        expect(rootFrameSet.showLoadingPlaceHolder(eq(ViewPath.DefaultRegion), eq(InnerPage), isA(Place.class)))
                 .andReturn(new NullAsyncMonitor());
         expect(rootFrameSet.showLoadingPlaceHolder(eq(ViewPath.DefaultRegion), eq(OtherInnerPageId), isA(Place.class)))
                 .andReturn(new NullAsyncMonitor());
@@ -215,7 +215,7 @@ public class PageManagerTest {
         replay(rootFrameSet);
 
         // CLASS UNDER TEST  !!!
-        PageManager pageMgr = new PageManager(eventBus,  new MockTimer(), rootFrameSet);
+        PageManager pageMgr = new PageManager(eventBus, new MockTimer(), rootFrameSet);
         pageMgr.registerPageLoader(InnerPage, firstLoader);
         pageMgr.registerPageLoader(OtherInnerPageId, secondLoader);
 

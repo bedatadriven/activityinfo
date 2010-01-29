@@ -8,10 +8,10 @@ import com.google.gwt.inject.client.Ginjector;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.HistoryManager;
 import org.activityinfo.client.UsageTracker;
-import org.activityinfo.client.command.CommandService;
-import org.activityinfo.client.command.cache.AdminEntityCache;
-import org.activityinfo.client.command.cache.CacheModule;
-import org.activityinfo.client.command.cache.SchemaCache;
+import org.activityinfo.client.dispatch.Dispatcher;
+import org.activityinfo.client.dispatch.remote.cache.AdminEntityCache;
+import org.activityinfo.client.dispatch.remote.cache.CacheModule;
+import org.activityinfo.client.dispatch.remote.cache.SchemaCache;
 import org.activityinfo.client.offline.DatabaseStateProvider;
 import org.activityinfo.client.offline.OfflineManager;
 import org.activityinfo.client.offline.OfflineModule;
@@ -46,16 +46,18 @@ import org.activityinfo.shared.i18n.UIConstants;
         PivotModule.class,
         ConfigModule.class,
         OfflineModule.class
-        })
+})
 public interface AppInjector extends Ginjector {
 
-    
+
     EventBus getEventBus();
-    CommandService getService();
-    
+
+    Dispatcher getService();
+
     Welcome getWelcomePage();
-    
+
     IStateManager getStateManager();
+
     HistoryManager getHistoryManager();
 
     DataEntryNavigator getDataEntryNavigator();
@@ -63,20 +65,31 @@ public interface AppInjector extends Ginjector {
     ReportHomePresenter getReportHomePresenter();
 
     ConfigNavigator getConfigNavigator();
+
     AccountEditor getAccountEditor();
+
     DbListPresenter getDbListPresenter();
+
     DbUserEditor getDbUserEditor();
+
     DbPartnerEditor getDbPartnerEditor();
+
     Designer getDesigner();
 
     WelcomeLoader createWelcomeLoader();
+
     DataEntryLoader createDataEntryLoader();
+
     MapLoader createMapLoader();
+
     ChartLoader createChartLoader();
+
     ReportLoader createReportLoader();
+
     ConfigLoader createConfigLoader();
+
     PivotPageLoader createPivotLoader();
-    
+
     PivotPresenter getPivotPresenter();
 
 
@@ -91,6 +104,7 @@ public interface AppInjector extends Ginjector {
 
 
     OfflineManager createOfflineManager();
+
     OfflineSchemaCache createOfflineSchemaCache();
 
     SchemaCache createSchemaCache();
@@ -105,5 +119,5 @@ public interface AppInjector extends Ginjector {
     DbConfigPresenter getDbConfigPresenter();
 
     UsageTracker getUsageTracker();
-    
+
 }

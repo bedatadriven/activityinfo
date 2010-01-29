@@ -1,14 +1,12 @@
 package org.activityinfo.client.mock;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.activityinfo.client.command.CommandService;
-import org.activityinfo.client.command.monitor.AsyncMonitor;
+import org.activityinfo.client.dispatch.AsyncMonitor;
+import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.shared.command.BatchCommand;
 import org.activityinfo.shared.command.Command;
-import org.activityinfo.shared.command.RenderElement;
 import org.activityinfo.shared.command.result.BatchResult;
 import org.activityinfo.shared.command.result.CommandResult;
-import org.activityinfo.shared.report.model.ReportElement;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,7 +16,7 @@ import java.util.Map;
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class MockCommandService implements CommandService {
+public class MockCommandService implements Dispatcher {
 
     private Map<Command, CommandResult> results = new HashMap<Command, CommandResult>();
     private Map<Class, CommandResult> resultByClass = new HashMap<Class, CommandResult>();
@@ -32,30 +30,25 @@ public class MockCommandService implements CommandService {
     @Override
     public <T extends CommandResult> void execute(Command<T> command, AsyncMonitor monitor, AsyncCallback<T> callback) {
 
-        if(command instanceof BatchCommand) {
-            BatchCommand batch = (BatchCommand)command;
+        if (command instanceof BatchCommand) {
+            BatchCommand batch = (BatchCommand) command;
             List<CommandResult> results = new ArrayList<CommandResult>();
-            for(Command batchCmd : batch.getCommands()) {
+            for (Command batchCmd : batch.getCommands()) {
                 results.add(findResult(batchCmd));
             }
-            callback.onSuccess((T)new BatchResult(results));
+            callback.onSuccess((T) new BatchResult(results));
         } else {
-           callback.onSuccess((T)findResult(command));
+            callback.onSuccess((T) findResult(command));
         }
-    }
-
-    @Override
-    public void export(ReportElement element, RenderElement.Format format, AsyncMonitor monitor, AsyncCallback<Void> callback) {
-
     }
 
     private CommandResult findResult(Command command) {
         CommandResult result = results.get(command);
-        if(result == null) {
+        if (result == null) {
 
             result = resultByClass.get(command.getClass());
-            if(result == null) {
-               throw new AssertionError("Unexpected command: " + command.toString());
+            if (result == null) {
+                throw new AssertionError("Unexpected command: " + command.toString());
             }
         }
         log.add(command);
@@ -72,22 +65,22 @@ public class MockCommandService implements CommandService {
 
     public void assertExecuteCount(Class commandClass, int expectedCount) {
         int count = 0;
-        for(Command cmd : log) {
-            if(commandClass.equals(cmd.getClass())) {
-                count ++;
+        for (Command cmd : log) {
+            if (commandClass.equals(cmd.getClass())) {
+                count++;
             }
         }
-        if(count != expectedCount) {
+        if (count != expectedCount) {
             throw new AssertionError("Execution count for " + commandClass.getName() + ": expected : " + expectedCount
-                + " actual count: " + count);
-            
+                    + " actual count: " + count);
+
         }
     }
 
     public <T extends Command> T getLastExecuted(Class commandClass) {
-        for(int i= log.size()-1; i>=0; i--) {
-            if(log.get(i).getClass().equals(commandClass)) {
-                return (T)log.get(i);
+        for (int i = log.size() - 1; i >= 0; i--) {
+            if (log.get(i).getClass().equals(commandClass)) {
+                return (T) log.get(i);
             }
         }
         throw new AssertionError(commandClass.getName() + " was not excecuted.");

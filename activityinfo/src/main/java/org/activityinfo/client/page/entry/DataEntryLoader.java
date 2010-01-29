@@ -2,13 +2,12 @@ package org.activityinfo.client.page.entry;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
-import com.google.gwt.maps.client.Maps;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.Place;
 import org.activityinfo.client.PlaceSerializer;
-import org.activityinfo.client.command.callback.Got;
+import org.activityinfo.client.dispatch.callback.Got;
 import org.activityinfo.client.inject.AppInjector;
 import org.activityinfo.client.page.*;
 import org.activityinfo.client.page.common.nav.NavigationPanel;
@@ -41,9 +40,9 @@ public class DataEntryLoader implements PageLoader {
             @Override
             public void onSuccess() {
 
-                if(Pages.DataEntryFrameSet.equals(pageId)) {
+                if (Pages.DataEntryFrameSet.equals(pageId)) {
                     loadFrame(place, callback);
-                } else if(Pages.SiteGrid.equals(pageId)) {
+                } else if (Pages.SiteGrid.equals(pageId)) {
                     loadSiteGrid(place, callback);
                 }
             }
@@ -72,8 +71,8 @@ public class DataEntryLoader implements PageLoader {
             @Override
             public void got(Schema schema) {
 
-                SiteGridPlace sgPlace = (SiteGridPlace)place;
-                if(sgPlace.getActivityId() == 0) {
+                SiteGridPlace sgPlace = (SiteGridPlace) place;
+                if (sgPlace.getActivityId() == 0) {
                     sgPlace.setActivityId(schema.getFirstActivity().getId());
                 }
 
@@ -83,7 +82,7 @@ public class DataEntryLoader implements PageLoader {
                 SiteEditor editor = new SiteEditor(injector.getEventBus(), injector.getService(),
                         injector.getStateManager(), grid);
 
-                if(activity.getReportingFrequency() == ActivityModel.REPORT_MONTHLY) {
+                if (activity.getReportingFrequency() == ActivityModel.REPORT_MONTHLY) {
                     MonthlyGrid monthlyGrid = new MonthlyGrid(activity);
                     MonthlyTab monthlyTab = new MonthlyTab(monthlyGrid);
                     MonthlyPresenter monthlyPresenter = new MonthlyPresenter(
@@ -105,14 +104,14 @@ public class DataEntryLoader implements PageLoader {
                     editor.addSubComponent(detailsPresenter);
                 }
 
-              //  if(Maps.isLoaded()) {     load the maps api on render in SiteMap
-                    SiteMap map = new SiteMap(injector.getEventBus(), injector.getService(),
-                            activity);
+                //  if(Maps.isLoaded()) {     load the maps api on render in SiteMap
+                SiteMap map = new SiteMap(injector.getEventBus(), injector.getService(),
+                        activity);
 
-                    editor.addSubComponent(map);
-                    grid.addSidePanel(Application.CONSTANTS.map(), Application.ICONS.map(), map);
+                editor.addSubComponent(map);
+                grid.addSidePanel(Application.CONSTANTS.map(), Application.ICONS.map(), map);
 
-              //  }
+                //  }
                 editor.go((SiteGridPlace) place, activity);
 
                 callback.onSuccess(editor);

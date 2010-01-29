@@ -20,9 +20,9 @@ import com.google.inject.Inject;
 import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.EventBus;
-import org.activityinfo.client.command.CommandService;
-import org.activityinfo.client.command.monitor.AsyncMonitor;
-import org.activityinfo.client.command.monitor.MaskingAsyncMonitor;
+import org.activityinfo.client.dispatch.AsyncMonitor;
+import org.activityinfo.client.dispatch.Dispatcher;
+import org.activityinfo.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.activityinfo.client.event.PivotCellEvent;
 import org.activityinfo.client.page.common.filter.AdminFilterPanel;
 import org.activityinfo.client.page.common.filter.DateRangePanel;
@@ -47,7 +47,7 @@ import java.util.List;
 public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 
     protected EventBus eventBus;
-    protected CommandService service;
+    protected Dispatcher service;
     protected IStateManager stateMgr;
 
     protected PivotPresenter presenter;
@@ -67,7 +67,7 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
     private Listener<PivotCellEvent> initialDrillDownListener;
 
     @Inject
-    public PivotPage(EventBus eventBus, CommandService service, IStateManager stateMgr) {
+    public PivotPage(EventBus eventBus, Dispatcher service, IStateManager stateMgr) {
 
         this.eventBus = eventBus;
         this.service = service;

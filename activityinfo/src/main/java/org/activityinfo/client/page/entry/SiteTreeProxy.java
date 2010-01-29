@@ -3,7 +3,7 @@ package org.activityinfo.client.page.entry;
 import com.extjs.gxt.ui.client.data.DataProxy;
 import com.extjs.gxt.ui.client.data.DataReader;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.activityinfo.client.command.CommandService;
+import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.shared.command.GetAdminEntities;
 import org.activityinfo.shared.command.GetMonthlyReports;
 import org.activityinfo.shared.command.GetSites;
@@ -20,14 +20,14 @@ import java.util.List;
 
 public class SiteTreeProxy implements DataProxy {
 
-    private CommandService service;
+    private Dispatcher service;
     private List<AdminLevelModel> hierarchy;
     private int activityId;
     private Month startMonth;
     private Month endMonth;
     private boolean multiplePartners;
 
-    public SiteTreeProxy(CommandService service, List<AdminLevelModel> hierarchy, int activityId) {
+    public SiteTreeProxy(Dispatcher service, List<AdminLevelModel> hierarchy, int activityId) {
         this.service = service;
         this.hierarchy = hierarchy;
         this.activityId = activityId;
@@ -51,26 +51,26 @@ public class SiteTreeProxy implements DataProxy {
 
     public void load(DataReader reader, Object parent, AsyncCallback callback) {
 
-        if(parent == null) {
+        if (parent == null) {
             loadAdmin(hierarchy.get(0), null, callback);
-        } else if(parent instanceof AdminEntityModel) {
+        } else if (parent instanceof AdminEntityModel) {
             AdminEntityModel entity = (AdminEntityModel) parent;
             int childLevelIndex = getChildLevel(entity);
-            if(childLevelIndex < hierarchy.size()-1) {
+            if (childLevelIndex < hierarchy.size() - 1) {
                 loadAdmin(hierarchy.get(childLevelIndex), entity.getId(), callback);
             } else {
                 loadSites(entity.getId(), callback);
             }
-        } else if(parent instanceof SiteModel) {
+        } else if (parent instanceof SiteModel) {
             loadIndicators(((SiteModel) parent).getId(), callback);
         }
     }
 
     private int getChildLevel(AdminEntityModel entity) {
-        for(int i=0; i!=hierarchy.size(); ++i) {
-            if(hierarchy.get(i).getId() == entity.getLevelId()) {
-                if(i+1< hierarchy.size()) {
-                    return i+1;
+        for (int i = 0; i != hierarchy.size(); ++i) {
+            if (hierarchy.get(i).getId() == entity.getLevelId()) {
+                if (i + 1 < hierarchy.size()) {
+                    return i + 1;
                 } else {
                     return -1;
                 }
@@ -104,8 +104,8 @@ public class SiteTreeProxy implements DataProxy {
             }
 
             public void onSuccess(SiteResult result) {
-                int lastLevelId = hierarchy.get(hierarchy.size()-1).getId();
-                for(SiteModel site : result.getData()) {
+                int lastLevelId = hierarchy.get(hierarchy.size() - 1).getId();
+                for (SiteModel site : result.getData()) {
                     site.set("name", site.getAdminEntity(lastLevelId).getName());
                 }
                 callback.onSuccess(result.getData());
@@ -124,7 +124,7 @@ public class SiteTreeProxy implements DataProxy {
             }
 
             public void onSuccess(MonthlyReportResult result) {
-                for(IndicatorRow row : result.getData()) {
+                for (IndicatorRow row : result.getData()) {
                     row.set("name", row.getIndicatorName());
                 }
                 callback.onSuccess(result.getData());

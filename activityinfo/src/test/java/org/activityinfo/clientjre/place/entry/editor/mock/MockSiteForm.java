@@ -1,7 +1,7 @@
 package org.activityinfo.clientjre.place.entry.editor.mock;
 
 import com.extjs.gxt.ui.client.store.ListStore;
-import org.activityinfo.client.command.monitor.AsyncMonitor;
+import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.page.entry.editor.AdminFieldSetPresenter;
 import org.activityinfo.client.page.entry.editor.MapPresenter;
 import org.activityinfo.client.page.entry.editor.SiteFormPresenter;
@@ -64,7 +64,7 @@ public class MockSiteForm implements SiteFormPresenter.View {
 
     @Override
     public void setActionEnabled(String actionId, boolean enabled) {
-        if(enabled) {
+        if (enabled) {
             disabledActions.remove(actionId);
         } else {
             disabledActions.add(actionId);

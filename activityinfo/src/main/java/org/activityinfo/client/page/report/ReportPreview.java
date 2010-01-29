@@ -11,8 +11,8 @@ import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import org.activityinfo.client.Application;
-import org.activityinfo.client.command.monitor.AsyncMonitor;
-import org.activityinfo.client.command.monitor.MaskingAsyncMonitor;
+import org.activityinfo.client.dispatch.AsyncMonitor;
+import org.activityinfo.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.activityinfo.client.page.common.toolbar.ActionToolBar;
 import org.activityinfo.client.page.common.toolbar.ExportMenuButton;
 import org.activityinfo.client.page.common.toolbar.UIActions;
@@ -25,8 +25,6 @@ import org.activityinfo.shared.report.model.DateRange;
 import org.activityinfo.shared.report.model.ReportFrequency;
 
 /**
- *
- *
  * @author Alex Bertram
  */
 public class ReportPreview extends ContentPanel implements ReportPreviewPresenter.View {
@@ -75,9 +73,9 @@ public class ReportPreview extends ContentPanel implements ReportPreviewPresente
 
         setHeading(template.getTitle());
 
-        if(template.getFrequency() == ReportFrequency.Monthly) {
+        if (template.getFrequency() == ReportFrequency.Monthly) {
             addMonthlyFields();
-        } else if(template.getFrequency() == ReportFrequency.Adhoc) {
+        } else if (template.getFrequency() == ReportFrequency.Adhoc) {
             addAddHocFields();
         }
 
@@ -135,7 +133,7 @@ public class ReportPreview extends ContentPanel implements ReportPreviewPresente
         DateTimeFormat format = DateTimeFormat.getFormat("MMM yyyy");
         Month month = dateUtil.getCurrentMonth();
 
-        for(int i=36; i!=0; i--) {
+        for (int i = 36; i != 0; i--) {
             DateRange range = dateUtil.monthRange(month);
             store.add(new DateValue(range, format.format(range.getMinDate())));
             month = month.previous();

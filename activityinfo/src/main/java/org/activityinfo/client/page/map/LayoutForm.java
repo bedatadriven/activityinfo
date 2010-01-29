@@ -27,7 +27,7 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import org.activityinfo.client.Application;
-import org.activityinfo.client.command.CommandService;
+import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.shared.command.GetBaseMaps;
 import org.activityinfo.shared.command.result.BaseMapResult;
 import org.activityinfo.shared.map.BaseMap;
@@ -44,13 +44,13 @@ import java.util.List;
  */
 public class LayoutForm extends FormPanel {
 
-    private final CommandService service;
+    private final Dispatcher service;
 
     private ComboBox baseMapCombo;
     private ComboBox<PageSizeModel> pageSizeCombo;
 
     @Inject
-    public LayoutForm(CommandService service) {
+    public LayoutForm(Dispatcher service) {
 
         this.service = service;
 

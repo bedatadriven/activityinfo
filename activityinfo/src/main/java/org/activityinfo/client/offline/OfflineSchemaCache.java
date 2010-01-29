@@ -1,22 +1,16 @@
 package org.activityinfo.client.offline;
 
-import com.google.gwt.gears.client.database.DatabaseException;
-import com.google.gwt.gears.client.database.Database;
-import com.google.gwt.gears.client.database.ResultSet;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.gears.client.database.Database;
+import com.google.gwt.gears.client.database.DatabaseException;
 import com.google.inject.Inject;
-import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.js.JsonConverter;
-
-import org.activityinfo.shared.dto.*;
-import org.activityinfo.shared.command.GetSchema;
-import org.activityinfo.client.command.cache.SchemaCache;
-import org.activityinfo.client.command.cache.CommandProxyResult;
-import org.activityinfo.client.command.CommandEventSource;
 import org.activityinfo.client.EventBus;
+import org.activityinfo.client.dispatch.DispatchEventSource;
+import org.activityinfo.client.dispatch.remote.cache.CommandProxyResult;
+import org.activityinfo.client.dispatch.remote.cache.SchemaCache;
 import org.activityinfo.client.offline.dao.SchemaDAO;
-
-import java.util.*;
+import org.activityinfo.shared.command.GetSchema;
+import org.activityinfo.shared.dto.Schema;
 
 /**
  * Extends the default in-memory cache to persist the schema
@@ -29,8 +23,8 @@ public class OfflineSchemaCache extends SchemaCache {
     private SchemaDAO schemaDAO;
 
     @Inject
-    public OfflineSchemaCache(EventBus eventBus, CommandEventSource source, Database database) {
-        super(eventBus, source);
+    public OfflineSchemaCache(EventBus eventBus, DispatchEventSource source, Database database) {
+        super(source);
 
         try {
             schemaDAO = new SchemaDAO(database);
@@ -43,7 +37,7 @@ public class OfflineSchemaCache extends SchemaCache {
     @Override
     protected void cache(Schema schema) {
         super.cache(schema);
-        if(schema != null) {
+        if (schema != null) {
 
             try {
                 schemaDAO.save(schema);
@@ -57,18 +51,18 @@ public class OfflineSchemaCache extends SchemaCache {
     public CommandProxyResult execute(GetSchema command) {
         // try first from memory, this will be a lot faster
         CommandProxyResult cpr = super.execute(command);
-        if(cpr.couldExecute)
+        if (cpr.couldExecute)
             return cpr;
 
         // otherwise try to load from local DB
         try {
             schema = schemaDAO.load();
-            if(schema == null) {
+            if (schema == null) {
                 return CommandProxyResult.couldNotExecute();
             } else {
                 return new CommandProxyResult(schema);
             }
-        } catch(DatabaseException e) {
+        } catch (DatabaseException e) {
             GWT.log("OfflineSchemaCache: failed to load schema from database", e);
             return CommandProxyResult.couldNotExecute();
         }

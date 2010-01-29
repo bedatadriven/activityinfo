@@ -9,7 +9,7 @@ import com.google.inject.Inject;
 import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.EventBus;
-import org.activityinfo.client.command.Authentication;
+import org.activityinfo.client.dispatch.remote.Authentication;
 
 /**
  * @author Alex Bertram

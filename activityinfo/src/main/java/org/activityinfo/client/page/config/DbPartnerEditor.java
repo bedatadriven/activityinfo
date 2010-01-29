@@ -10,7 +10,7 @@ import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.Place;
-import org.activityinfo.client.command.CommandService;
+import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.Pages;
 import org.activityinfo.client.page.common.dialog.FormDialogCallback;
@@ -43,7 +43,7 @@ public class DbPartnerEditor extends AbstractGridPresenter<PartnerModel> {
         public FormDialogTether showAddDialog(PartnerModel partner, FormDialogCallback callback);
     }
 
-    private final CommandService service;
+    private final Dispatcher service;
     private final EventBus eventBus;
     private final View view;
 
@@ -52,7 +52,7 @@ public class DbPartnerEditor extends AbstractGridPresenter<PartnerModel> {
 
 
     @Inject
-    public DbPartnerEditor(EventBus eventBus, CommandService service,  IStateManager stateMgr, View view) {
+    public DbPartnerEditor(EventBus eventBus, Dispatcher service, IStateManager stateMgr, View view) {
         super(eventBus, stateMgr, view);
         this.service = service;
         this.eventBus = eventBus;
@@ -90,7 +90,7 @@ public class DbPartnerEditor extends AbstractGridPresenter<PartnerModel> {
 
                 service.execute(new AddPartner(db.getId(), newPartner), dlg, new AsyncCallback<CreateResult>() {
                     public void onFailure(Throwable caught) {
-                        if(caught instanceof DuplicateException) {
+                        if (caught instanceof DuplicateException) {
 
                         }
                     }
@@ -110,7 +110,7 @@ public class DbPartnerEditor extends AbstractGridPresenter<PartnerModel> {
     protected void onDeleteConfirmed(final PartnerModel model) {
         service.execute(new RemovePartner(db.getId(), model.getId()), view.getDeletingMonitor(), new AsyncCallback<VoidResult>() {
             public void onFailure(Throwable caught) {
-                if(caught instanceof PartnerHasSitesException) {
+                if (caught instanceof PartnerHasSitesException) {
                     MessageBox.alert(Application.CONSTANTS.removeItem(), Application.MESSAGES.partnerHasDataWarning(model.getName()), null);
                 }
             }

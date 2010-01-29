@@ -1,7 +1,7 @@
 package org.activityinfo.client.page.common.grid;
 
 import com.extjs.gxt.ui.client.data.ModelData;
-import org.activityinfo.client.command.monitor.AsyncMonitor;
+import org.activityinfo.client.dispatch.AsyncMonitor;
 /*
  * @author Alex Bertram
  */

@@ -12,10 +12,10 @@ import com.google.inject.Inject;
 import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.Place;
-import org.activityinfo.client.command.CommandService;
-import org.activityinfo.client.command.loader.CommandLoadEvent;
-import org.activityinfo.client.command.loader.PagingCmdLoader;
-import org.activityinfo.client.command.monitor.NullAsyncMonitor;
+import org.activityinfo.client.dispatch.Dispatcher;
+import org.activityinfo.client.dispatch.loader.CommandLoadEvent;
+import org.activityinfo.client.dispatch.loader.PagingCmdLoader;
+import org.activityinfo.client.dispatch.monitor.NullAsyncMonitor;
 import org.activityinfo.client.event.DownloadEvent;
 import org.activityinfo.client.event.SiteEvent;
 import org.activityinfo.client.page.PageId;
@@ -61,7 +61,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
 
     private final View view;
     private final EventBus eventBus;
-    private final CommandService service;
+    private final Dispatcher service;
     private final SiteFormLoader formLoader;
 
     protected final ListStore<SiteModel> store;
@@ -72,7 +72,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
     private Integer siteIdToSelectOnNextLoad;
 
     @Inject
-    public SiteEditor(EventBus eventBus, CommandService service, IStateManager stateMgr, final View view) {
+    public SiteEditor(EventBus eventBus, Dispatcher service, IStateManager stateMgr, final View view) {
         super(eventBus, service, stateMgr, view);
         this.view = view;
         this.eventBus = eventBus;
@@ -89,7 +89,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
             public void handleEvent(SiteEvent se) {
 
                 SiteModel ourCopy = store.findModel("id", se.getSite().getId());
-                if(ourCopy != null) {
+                if (ourCopy != null) {
                     ourCopy.setProperties(se.getSite().getProperties());
                 }
                 store.update(ourCopy);
@@ -108,9 +108,9 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
         siteSelectedListner = new Listener<SiteEvent>() {
             public void handleEvent(SiteEvent se) {
                 // check to see if this site is on the current page
-                if(se.getSource() != SiteEditor.this) {
+                if (se.getSource() != SiteEditor.this) {
                     SiteModel site = store.findModel("id", se.getSiteId());
-                    if(site != null) {
+                    if (site != null) {
                         view.setSelection(se.getSiteId());
                     }
                 }
@@ -120,7 +120,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
     }
 
     private void onSiteCreated(SiteEvent se) {
-        if(store.getCount() < PAGE_SIZE) {
+        if (store.getCount() < PAGE_SIZE) {
             // there is only one page, so we can save some time by justing adding this model to directly to
             //  the store
             store.add(se.getSite());
@@ -144,7 +144,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
         eventBus.removeListener(AppEvents.SiteCreated, siteCreatedListener);
         eventBus.removeListener(AppEvents.SiteSelected, siteSelectedListner);
 
-        for(Shutdownable subComponet : subComponents) {
+        for (Shutdownable subComponet : subComponents) {
             subComponet.shutdown();
         }
     }
@@ -209,13 +209,13 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
 
     public boolean navigate(final Place place) {
 
-        if(!(place instanceof SiteGridPlace)) {
+        if (!(place instanceof SiteGridPlace)) {
             return false;
         }
-     
-        final SiteGridPlace gridPlace = (SiteGridPlace)place;
 
-        if(currentActivity.getId() != gridPlace.getActivityId()) {
+        final SiteGridPlace gridPlace = (SiteGridPlace) place;
+
+        if (currentActivity.getId() != gridPlace.getActivityId()) {
             return false;
         }
 
@@ -227,7 +227,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
     protected void onLoaded(LoadEvent le) {
         super.onLoaded(le);
 
-        PagingResult result = (PagingResult)le.getData();
+        PagingResult result = (PagingResult) le.getData();
 
         view.setActionEnabled(UIActions.export, result.getTotalLength() != 0);
 
@@ -240,7 +240,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
          * Select a site
          */
 
-        if(siteIdToSelectOnNextLoad != null) {
+        if (siteIdToSelectOnNextLoad != null) {
             view.setSelection(siteIdToSelectOnNextLoad);
             siteIdToSelectOnNextLoad = null;
         }
@@ -248,7 +248,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
 
     public void onSelectionChanged(SiteModel selectedSite) {
 
-        if(selectedSite == null) {
+        if (selectedSite == null) {
             view.setActionEnabled(UIActions.delete, false);
             view.setActionEnabled(UIActions.edit, false);
         } else {
@@ -287,8 +287,8 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
     protected Command createSaveCommand() {
 
         BatchCommand batch = new BatchCommand();
-        for(Record record : store.getModifiedRecords()) {
-            batch.add(new UpdateEntity("Site", (Integer)record.get("id"), getChangedProperties(record)));
+        for (Record record : store.getModifiedRecords()) {
+            batch.add(new UpdateEntity("Site", (Integer) record.get("id"), getChangedProperties(record)));
         }
 
         return batch;
@@ -297,10 +297,10 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
     @Override
     public void onUIAction(String actionId) {
         super.onUIAction(actionId);
-        if(UIActions.export.equals(actionId)) {
+        if (UIActions.export.equals(actionId)) {
             onExport();
-        } else if(UIActions.map.equals(actionId)) {
-           
+        } else if (UIActions.map.equals(actionId)) {
+
         }
     }
 
@@ -334,21 +334,20 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
 //    }
 
 
-
     protected void onAdd() {
 
         SiteModel newSite = new SiteModel();
         newSite.setActivityId(currentActivity.getId());
 
-        if(!currentActivity.getDatabase().isEditAllAllowed()) {
+        if (!currentActivity.getDatabase().isEditAllAllowed()) {
             newSite.setPartner(currentActivity.getDatabase().getMyPartner());
         }
 
         // initialize with defaults
         SiteModel sel = view.getSelection();
-        if(sel != null) {
-            for(Map.Entry<String,Object> prop : sel.getProperties().entrySet()) {
-                if(prop.getKey().startsWith(AdminLevelModel.PROPERTY_PREFIX)) {
+        if (sel != null) {
+            for (Map.Entry<String, Object> prop : sel.getProperties().entrySet()) {
+                if (prop.getKey().startsWith(AdminLevelModel.PROPERTY_PREFIX)) {
                     newSite.set(prop.getKey(), prop.getValue());
                 }
             }
@@ -381,7 +380,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
     private void onExport() {
         String url = GWT.getModuleBaseURL() + "export?auth=#AUTH#&a=" + currentActivity.getId();
         eventBus.fireEvent(new DownloadEvent("siteExport", url));
-   }
+    }
 
     public void onFilter(String filter) {
         GetSites cmd = (GetSites) loader.getCommand();

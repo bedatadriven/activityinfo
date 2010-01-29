@@ -4,7 +4,7 @@ import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import org.activityinfo.client.Application;
-import org.activityinfo.client.command.monitor.AsyncMonitor;
+import org.activityinfo.client.dispatch.AsyncMonitor;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

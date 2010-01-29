@@ -5,7 +5,7 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
 import com.google.inject.Inject;
 import org.activityinfo.client.Application;
-import org.activityinfo.client.command.CommandService;
+import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.icon.IconImageBundle;
 import org.activityinfo.client.page.common.filter.AdminFilterPanel;
 import org.activityinfo.client.page.common.filter.DateRangePanel;
@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class SingleMapForm extends ContentPanel implements MapForm {
 
-    protected final CommandService service;
+    protected final Dispatcher service;
     protected final UIConstants messages;
     protected final IconImageBundle icons;
 
@@ -38,7 +38,7 @@ public class SingleMapForm extends ContentPanel implements MapForm {
     protected DateRangePanel datePanel;
 
     @Inject
-    public SingleMapForm(CommandService service, UIConstants messages, IconImageBundle icons) {
+    public SingleMapForm(Dispatcher service, UIConstants messages, IconImageBundle icons) {
         this.service = service;
         this.messages = messages;
         this.icons = icons;

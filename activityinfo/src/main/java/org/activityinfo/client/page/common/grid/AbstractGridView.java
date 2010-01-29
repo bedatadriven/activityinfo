@@ -13,8 +13,8 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import org.activityinfo.client.Application;
-import org.activityinfo.client.command.monitor.AsyncMonitor;
-import org.activityinfo.client.command.monitor.MaskingAsyncMonitor;
+import org.activityinfo.client.dispatch.AsyncMonitor;
+import org.activityinfo.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.activityinfo.client.page.common.toolbar.ActionToolBar;
 
 /*
@@ -41,10 +41,10 @@ public abstract class AbstractGridView<ModelT extends ModelData, PresenterT exte
 
         initGridListeners(grid);
 
-        if(store instanceof ListStore) {
-            Loader loader = ((ListStore)store).getLoader();
+        if (store instanceof ListStore) {
+            Loader loader = ((ListStore) store).getLoader();
 
-            if(loader instanceof PagingLoader) {
+            if (loader instanceof PagingLoader) {
 
                 pagingBar = new PagingToolBar(presenter.getPageSize());
                 setBottomComponent(pagingBar);
@@ -57,7 +57,7 @@ public abstract class AbstractGridView<ModelT extends ModelData, PresenterT exte
          *  In some cases, there is async call before the user inerface can be
          * loaded. So we have to make sure our new components are rendered
          */
-        if(this.isRendered()) {
+        if (this.isRendered()) {
             this.layout();
         }
 
@@ -97,11 +97,11 @@ public abstract class AbstractGridView<ModelT extends ModelData, PresenterT exte
 
     public ModelT getSelection() {
         GridSelectionModel<ModelT> sm = grid.getSelectionModel();
-        if(sm instanceof CellSelectionModel) {
-           CellSelectionModel<ModelT>.CellSelection cell = ((CellSelectionModel<ModelT>)sm).getSelectCell();
+        if (sm instanceof CellSelectionModel) {
+            CellSelectionModel<ModelT>.CellSelection cell = ((CellSelectionModel<ModelT>) sm).getSelectCell();
             return cell == null ? null : cell.model;
-        } else  {
-           return sm.getSelectedItem();
+        } else {
+            return sm.getSelectedItem();
         }
     }
 

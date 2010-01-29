@@ -6,8 +6,8 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.EventBus;
-import org.activityinfo.client.command.CommandService;
-import org.activityinfo.client.command.callback.Got;
+import org.activityinfo.client.dispatch.Dispatcher;
+import org.activityinfo.client.dispatch.callback.Got;
 import org.activityinfo.client.event.PivotCellEvent;
 import org.activityinfo.client.page.common.grid.AbstractGridPlace;
 import org.activityinfo.client.page.entry.SiteEditor;
@@ -37,13 +37,13 @@ public class DrillDownEditor extends SiteEditor {
     }
 
     private final EventBus eventBus;
-    private final CommandService service;
+    private final Dispatcher service;
     private final DateUtil dateUtil;
     private final View view;
     private Listener<PivotCellEvent> eventListener;
 
-    public DrillDownEditor(EventBus eventBus, CommandService service, IStateManager stateMgr, DateUtil dateUtil,
-                   View view) {
+    public DrillDownEditor(EventBus eventBus, Dispatcher service, IStateManager stateMgr, DateUtil dateUtil,
+                           View view) {
         super(eventBus, service, stateMgr, view);
 
         this.eventBus = eventBus;
@@ -111,12 +111,12 @@ public class DrillDownEditor extends SiteEditor {
     private Filter filterFromAxis(PivotTableData.Axis axis) {
 
         Filter filter = new Filter();
-        while(axis != null) {
-            if(axis.getDimension() != null) {
-                if(axis.getDimension().getType() == DimensionType.Date) {
+        while (axis != null) {
+            if (axis.getDimension() != null) {
+                if (axis.getDimension().getType() == DimensionType.Date) {
                     filter.setDateRange(dateUtil.rangeFromCategory(axis.getCategory()));
-                } else if(axis.getCategory() instanceof EntityCategory) {
-                    filter.addRestriction(axis.getDimension().getType(), ((EntityCategory)axis.getCategory()).getId());
+                } else if (axis.getCategory() instanceof EntityCategory) {
+                    filter.addRestriction(axis.getDimension().getType(), ((EntityCategory) axis.getCategory()).getId());
                 }
             }
             axis = axis.getParent();

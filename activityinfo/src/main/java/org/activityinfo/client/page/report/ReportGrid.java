@@ -16,9 +16,9 @@ import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.inject.Inject;
 import org.activityinfo.client.Application;
-import org.activityinfo.client.command.CommandService;
-import org.activityinfo.client.command.callback.Got;
-import org.activityinfo.client.command.monitor.MaskingAsyncMonitor;
+import org.activityinfo.client.dispatch.Dispatcher;
+import org.activityinfo.client.dispatch.callback.Got;
+import org.activityinfo.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.activityinfo.client.page.common.grid.AbstractEditorGridView;
 import org.activityinfo.client.page.common.widget.MappingComboBox;
 import org.activityinfo.shared.command.GetSchema;
@@ -39,10 +39,10 @@ public class ReportGrid extends AbstractEditorGridView<ReportTemplateDTO, Report
     private MappingComboBox<Integer> dayCombo;
     private String[] weekdays;
     private NumberFormat numberFormat;
-    private final CommandService service;
+    private final Dispatcher service;
 
     @Inject
-    public ReportGrid(CommandService service) {
+    public ReportGrid(Dispatcher service) {
         this.service = service;
 
         setLayout(new FitLayout());

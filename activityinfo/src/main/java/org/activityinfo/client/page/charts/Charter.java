@@ -6,8 +6,8 @@ import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.Place;
-import org.activityinfo.client.command.CommandService;
-import org.activityinfo.client.command.monitor.AsyncMonitor;
+import org.activityinfo.client.dispatch.AsyncMonitor;
+import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.page.NavigationCallback;
 import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.PagePresenter;
@@ -40,12 +40,12 @@ public class Charter implements PagePresenter, ActionListener, ExportCallback {
     }
 
     protected final EventBus eventBus;
-    protected final CommandService service;
+    protected final Dispatcher service;
 
     private final View view;
 
     @Inject
-    public Charter(EventBus eventBus, CommandService service, View view) {
+    public Charter(EventBus eventBus, Dispatcher service, View view) {
         this.eventBus = eventBus;
         this.service = service;
         this.view = view;
@@ -78,23 +78,23 @@ public class Charter implements PagePresenter, ActionListener, ExportCallback {
 
     public void onUIAction(String actionId) {
 
-        if(UIActions.refresh.equals(actionId)) {
+        if (UIActions.refresh.equals(actionId)) {
 
             final PivotChartElement element = view.getChartElement();
             service.execute(new GenerateElement(element), view.getMonitor(),
                     new AsyncCallback<Content>() {
 
-                    @Override
-                    public void onFailure(Throwable throwable) {
-                        Log.error("chart request failed", throwable);
-                    }
+                        @Override
+                        public void onFailure(Throwable throwable) {
+                            Log.error("chart request failed", throwable);
+                        }
 
-                    @Override
-                    public void onSuccess(Content content) {
-                        element.setContent((PivotChartContent) content);
-                        view.setData(element);
-                    }
-                });
+                        @Override
+                        public void onSuccess(Content content) {
+                            element.setContent((PivotChartContent) content);
+                            view.setData(element);
+                        }
+                    });
         }
     }
 

@@ -19,7 +19,7 @@ import com.google.gwt.maps.client.overlay.MarkerOptions;
 import com.google.gwt.maps.client.overlay.Overlay;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.client.Application;
-import org.activityinfo.client.command.monitor.MaskingAsyncMonitor;
+import org.activityinfo.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.activityinfo.client.map.GcIconFactory;
 import org.activityinfo.client.map.IconFactory;
 import org.activityinfo.client.map.MapApiLoader;

@@ -1,17 +1,13 @@
 package org.activityinfo.client.offline.dao;
 
+import com.google.gwt.gears.client.Factory;
 import com.google.gwt.gears.client.database.Database;
 import com.google.gwt.gears.client.database.DatabaseException;
 import com.google.gwt.gears.client.database.ResultSet;
-import com.google.gwt.gears.client.Factory;
-import com.google.gwt.gears.client.GearsException;
-import com.google.gwt.core.client.GWT;
-
-import org.activityinfo.client.command.Authentication;
+import org.activityinfo.client.dispatch.remote.Authentication;
 
 /**
  * Data Access Object
- *
  */
 public class AuthDAO {
 
@@ -39,9 +35,10 @@ public class AuthDAO {
      * Updates a user's authentication token if it exists, or else creates a new
      * record for this user.
      *
-     * @param auth The authentication data to store 
+     * @param auth The authentication data to store
      * @return The user's local id
-     * @throws com.google.gwt.gears.client.database.DatabaseException if an underlying database operation fails.
+     * @throws com.google.gwt.gears.client.database.DatabaseException
+     *          if an underlying database operation fails.
      */
     public int updateOrInsert(Authentication auth) throws DatabaseException {
 
@@ -50,7 +47,7 @@ public class AuthDAO {
         try {
             // Try to update an existing entry with this AuthToken
             authDb.execute("update users set authToken = ? where email = ?", auth.getAuthToken(), auth.getEmail());
-            if(authDb.getRowsAffected() == 0) {
+            if (authDb.getRowsAffected() == 0) {
                 // New User: insert record
                 authDb.execute("insert into users (email, authToken) values (?, ?)", auth.getEmail(), auth.getAuthToken());
                 return authDb.getLastInsertRowId();

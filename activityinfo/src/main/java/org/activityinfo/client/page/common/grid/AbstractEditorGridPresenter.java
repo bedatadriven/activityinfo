@@ -10,8 +10,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.Place;
-import org.activityinfo.client.command.CommandService;
-import org.activityinfo.client.command.loader.CommandLoadEvent;
+import org.activityinfo.client.dispatch.Dispatcher;
+import org.activityinfo.client.dispatch.loader.CommandLoadEvent;
 import org.activityinfo.client.page.NavigationCallback;
 import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.client.util.IStateManager;
@@ -26,10 +26,10 @@ public abstract class AbstractEditorGridPresenter<ModelT extends ModelData>
         extends AbstractGridPresenter<ModelT> {
 
     private GridView view;
-    private CommandService service;
+    private Dispatcher service;
     private boolean isDirty = false;
 
-    protected AbstractEditorGridPresenter(EventBus eventBus, CommandService service, IStateManager stateMgr, GridView view) {
+    protected AbstractEditorGridPresenter(EventBus eventBus, Dispatcher service, IStateManager stateMgr, GridView view) {
         super(eventBus, stateMgr, view);
         this.view = view;
         this.service = service;
@@ -42,7 +42,7 @@ public abstract class AbstractEditorGridPresenter<ModelT extends ModelData>
         store.addListener(Store.Update, new Listener<StoreEvent>() {
             public void handleEvent(StoreEvent be) {
                 boolean isDirtyNow = be.getStore().getModifiedRecords().size() != 0;
-                if(isDirty != isDirtyNow) {
+                if (isDirty != isDirtyNow) {
                     isDirty = isDirtyNow;
                     onDirtyFlagChanged(isDirty);
                 }
@@ -54,9 +54,9 @@ public abstract class AbstractEditorGridPresenter<ModelT extends ModelData>
     public void onUIAction(String actionId) {
         super.onUIAction(actionId);
 
-        if(UIActions.save.equals(actionId)) {
+        if (UIActions.save.equals(actionId)) {
             onSave();
-        } else if(UIActions.discardChanges.equals(actionId)) {
+        } else if (UIActions.discardChanges.equals(actionId)) {
             getStore().rejectChanges();
         }
 
@@ -71,8 +71,8 @@ public abstract class AbstractEditorGridPresenter<ModelT extends ModelData>
      * simply calls <code>getStore().getModifiedRecords()</code> but should
      * be overriden for EditorTree which doesn't appear to track which
      * records have been modified.
-     * 
-     * @return  The list of modified records
+     *
+     * @return The list of modified records
      */
     public List<Record> getModifiedRecords() {
         return getStore().getModifiedRecords();
@@ -106,7 +106,7 @@ public abstract class AbstractEditorGridPresenter<ModelT extends ModelData>
     @Override
     protected void onBeforeLoad(CommandLoadEvent le) {
 
-        if(getModifiedRecords().size()!=0) {
+        if (getModifiedRecords().size() != 0) {
             le.addCommandToBatch(createSaveCommand());
         }
     }
@@ -117,9 +117,10 @@ public abstract class AbstractEditorGridPresenter<ModelT extends ModelData>
      * if it fails, we give the user a choice between retrying and
      * and discarding changes
      */
+
     public void requestToNavigateAway(Place place, final NavigationCallback callback) {
 
-        if(getModifiedRecords().size() == 0) {
+        if (getModifiedRecords().size() == 0) {
             callback.onDecided(true);
         } else {
             service.execute(createSaveCommand(), view.getSavingMonitor(), new AsyncCallback<BatchResult>() {
@@ -137,7 +138,7 @@ public abstract class AbstractEditorGridPresenter<ModelT extends ModelData>
     }
 
     public String beforeWindowCloses() {
-        if(getModifiedRecords().size() == 0) {
+        if (getModifiedRecords().size() == 0) {
             return null;
         } else {
             return Application.CONSTANTS.unsavedChangesWarning();
@@ -148,11 +149,11 @@ public abstract class AbstractEditorGridPresenter<ModelT extends ModelData>
     public void onDirtyFlagChanged(boolean isDirty) {
         view.setActionEnabled(UIActions.save, isDirty);
     }
-    
-    protected Map<String,Object> getChangedProperties(Record record) {
-        Map<String,Object> changes = new HashMap<String, Object>();
 
-        for(String property : record.getChanges().keySet()) {
+    protected Map<String, Object> getChangedProperties(Record record) {
+        Map<String, Object> changes = new HashMap<String, Object>();
+
+        for (String property : record.getChanges().keySet()) {
             changes.put(property, record.get(property));
         }
         return changes;
@@ -161,18 +162,18 @@ public abstract class AbstractEditorGridPresenter<ModelT extends ModelData>
     private String logRecord(Record record) {
         StringBuilder sb = new StringBuilder();
         sb.append("{");
-        for(String p : record.getPropertyNames()) {
-            if(sb.length() >1 ) sb.append(", ");
+        for (String p : record.getPropertyNames()) {
+            if (sb.length() > 1) sb.append(", ");
             sb.append(p).append(": ").append(record.get(p));
-            if(record.isModified(p)) sb.append("[*]");
-            if(!record.isValid(p)) sb.append("[!]");
+            if (record.isModified(p)) sb.append("[*]");
+            if (!record.isValid(p)) sb.append("[!]");
         }
         sb.append("}");
         return sb.toString();
     }
 
     protected void onSaved() {
-        
+
     }
 
 }

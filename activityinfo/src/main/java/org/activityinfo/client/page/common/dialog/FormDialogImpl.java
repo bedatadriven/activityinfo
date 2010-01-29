@@ -9,10 +9,10 @@ import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
 import org.activityinfo.client.Application;
-import org.activityinfo.client.command.monitor.AsyncMonitor;
+import org.activityinfo.client.dispatch.AsyncMonitor;
 
 public class FormDialogImpl<FormT extends FormPanel> extends Window implements AsyncMonitor, FormDialogTether {
 
@@ -49,7 +49,7 @@ public class FormDialogImpl<FormT extends FormPanel> extends Window implements A
            * to fit in nicely with the dialog
            */
         this.form = form;
-        if(!form.isRendered()) {
+        if (!form.isRendered()) {
             form.setHeaderVisible(false);
             form.setFrame(false);
         }
@@ -74,7 +74,7 @@ public class FormDialogImpl<FormT extends FormPanel> extends Window implements A
                 DeferredCommand.addCommand(new Command() {
                     @Override
                     public void execute() {
-                        if(!form.isValid()) {
+                        if (!form.isValid()) {
                             MessageBox.alert(getHeading(),
                                     Application.CONSTANTS.pleaseCompleteForm(), null);
                         } else {
@@ -119,12 +119,12 @@ public class FormDialogImpl<FormT extends FormPanel> extends Window implements A
 
 
     public void onValidated() {
-        if(callback!=null)
+        if (callback != null)
             callback.onValidated(this);
     }
 
     public void onCancel() {
-        if(asyncCallInProgress) {
+        if (asyncCallInProgress) {
             asyncCallCancelled = true;
         } else {
             hide();
@@ -166,7 +166,7 @@ public class FormDialogImpl<FormT extends FormPanel> extends Window implements A
 
     @Override
     public boolean onRetrying() {
-        if(asyncCallCancelled)
+        if (asyncCallCancelled)
             return false;
 
         cancelButton.disable();

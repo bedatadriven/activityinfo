@@ -3,7 +3,7 @@ package org.activityinfo.client.page.common.filter;
 import com.extjs.gxt.ui.client.data.DataProxy;
 import com.extjs.gxt.ui.client.data.DataReader;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.activityinfo.client.command.CommandService;
+import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.shared.command.GetAdminEntities;
 import org.activityinfo.shared.command.result.AdminEntityResult;
 import org.activityinfo.shared.dto.AdminEntityModel;
@@ -18,28 +18,28 @@ import java.util.List;
 
 public class AdminTreeProxy implements DataProxy {
 
-    private final CommandService service;
+    private final Dispatcher service;
 
     private List<AdminLevelModel> hierarchy;
 
-    public AdminTreeProxy(CommandService service, List<AdminLevelModel> hierarchy) {
+    public AdminTreeProxy(Dispatcher service, List<AdminLevelModel> hierarchy) {
         this.service = service;
         this.hierarchy = hierarchy;
     }
 
-    
+
     public void setHierarchy(List<AdminLevelModel> hierarchy) {
         this.hierarchy = hierarchy;
     }
 
     public void load(DataReader dataReader, Object parent, final AsyncCallback callback) {
 
-        if(hierarchy.size() == 0) {
+        if (hierarchy.size() == 0) {
             callback.onSuccess(Collections.emptyList());
             return;
         }
 
-        if(parent == null) {
+        if (parent == null) {
 
             service.execute(new GetAdminEntities(hierarchy.get(0).getId()), null, new AsyncCallback<AdminEntityResult>() {
                 public void onFailure(Throwable caught) {
@@ -56,11 +56,11 @@ public class AdminTreeProxy implements DataProxy {
             assert parent instanceof AdminEntityModel : "expecting AdminEntityModel";
 
             AdminEntityModel parentEntity = (AdminEntityModel) parent;
-            AdminLevelModel childLevel = (AdminLevelModel)findChildLevel(parentEntity);
+            AdminLevelModel childLevel = (AdminLevelModel) findChildLevel(parentEntity);
 
             //find the next child in this hierachy
 
-            if(childLevel == null) {
+            if (childLevel == null) {
                 callback.onSuccess(Collections.emptyList());
             } else {
 
@@ -79,8 +79,8 @@ public class AdminTreeProxy implements DataProxy {
     }
 
     private AdminLevelModel findChildLevel(AdminEntityModel parent) {
-        for(AdminLevelModel level : hierarchy) {
-            if(!level.isRoot() && level.getParentLevelId() == parent.getLevelId()) {
+        for (AdminLevelModel level : hierarchy) {
+            if (!level.isRoot() && level.getParentLevelId() == parent.getLevelId()) {
                 return level;
             }
         }

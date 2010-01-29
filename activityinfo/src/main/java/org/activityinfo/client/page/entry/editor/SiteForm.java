@@ -7,8 +7,8 @@ import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.maps.client.Maps;
 import org.activityinfo.client.Application;
-import org.activityinfo.client.command.monitor.AsyncMonitor;
-import org.activityinfo.client.command.monitor.MaskingAsyncMonitor;
+import org.activityinfo.client.dispatch.AsyncMonitor;
+import org.activityinfo.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.activityinfo.client.page.common.widget.LoadingPlaceHolder;
 import org.activityinfo.client.page.config.form.ModelFormPanel;
 import org.activityinfo.shared.dto.ActivityModel;
@@ -20,7 +20,7 @@ import java.util.Map;
 public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
 
     protected SiteFormPresenter presenter;
-	protected ActivityModel activity;
+    protected ActivityModel activity;
 
     private ActivityFieldSet activityFieldSet;
     private LocationFieldSet locationFieldSet;
@@ -30,15 +30,13 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
     private CommentFieldSet commentFieldSet;
 
 
-    public SiteForm()
-	{
-    	this.setBodyStyle("padding: 3px");
-		this.setIcon(Application.ICONS.editPage());
+    public SiteForm() {
+        this.setBodyStyle("padding: 3px");
+        this.setIcon(Application.ICONS.editPage());
         this.setHeading(Application.CONSTANTS.loading());
 
         add(new LoadingPlaceHolder());
-    }       
-
+    }
 
 
     @Override
@@ -68,18 +66,18 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
 
         // GEO POSITION
 
-        add((FieldSet)mapView);
+        add((FieldSet) mapView);
 
-        if(Maps.isLoaded()) {
+        if (Maps.isLoaded()) {
             registerField(((MapFieldSet) mapView).getLngField());
-            registerField(((MapFieldSet)mapView).getLatField());
+            registerField(((MapFieldSet) mapView).getLatField());
         } else {
-            registerFieldSet((FieldSet)mapView);
+            registerFieldSet((FieldSet) mapView);
         }
-                
+
         // ATTRIBUTE fieldset
 
-        if(activity.getReportingFrequency() == ActivityModel.REPORT_ONCE) {
+        if (activity.getReportingFrequency() == ActivityModel.REPORT_ONCE) {
 
             attributeFieldSet = new AttributeFieldSet(activity);
             registerFieldSet(attributeFieldSet);
@@ -97,7 +95,7 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
             commentFieldSet = new CommentFieldSet();
             add(commentFieldSet);
         }
-            
+
         registerAll();
 
         layout();
@@ -118,14 +116,14 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
     public AdminFieldSetPresenter.View createAdminFieldSetView(ActivityModel activity) {
 
         locationFieldSet = new LocationFieldSet(activity);
-        
+
         return locationFieldSet;
     }
 
     @Override
     public MapPresenter.View createMapView() {
 
-        if(Maps.isLoaded()) {
+        if (Maps.isLoaded()) {
             MapFieldSet mapFieldSet = new MapFieldSet();
             this.mapView = mapFieldSet;
         } else {

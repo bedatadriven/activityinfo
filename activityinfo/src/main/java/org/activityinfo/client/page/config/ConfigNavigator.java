@@ -4,8 +4,8 @@ import com.extjs.gxt.ui.client.data.DataReader;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import org.activityinfo.client.Application;
-import org.activityinfo.client.command.CommandService;
-import org.activityinfo.client.command.callback.Got;
+import org.activityinfo.client.dispatch.Dispatcher;
+import org.activityinfo.client.dispatch.callback.Got;
 import org.activityinfo.client.icon.IconImageBundle;
 import org.activityinfo.client.page.Pages;
 import org.activityinfo.client.page.common.nav.Link;
@@ -19,18 +19,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author Alex Bertram (akbertram@gmail.com)
  */
 public class ConfigNavigator implements Navigator {
 
-    protected final CommandService service;
+    protected final Dispatcher service;
     protected final UIConstants messages;
     protected final IconImageBundle icons;
 
 
     @Inject
-    public ConfigNavigator(CommandService service, UIConstants messages, IconImageBundle icons) {
+    public ConfigNavigator(Dispatcher service, UIConstants messages, IconImageBundle icons) {
         this.service = service;
         this.messages = messages;
         this.icons = icons;
@@ -52,7 +51,7 @@ public class ConfigNavigator implements Navigator {
 
     public void load(DataReader<List<Link>> dataReader, Object parent, AsyncCallback<List<Link>> callback) {
 
-        if(parent == null) {
+        if (parent == null) {
 
             List<Link> list = new ArrayList<Link>();
 
@@ -70,11 +69,11 @@ public class ConfigNavigator implements Navigator {
 
         } else {
 
-            Link link = (Link)parent;
-            if(link.getPlace() instanceof DbListPlace) {
+            Link link = (Link) parent;
+            if (link.getPlace() instanceof DbListPlace) {
                 loadDbList(callback);
 
-            } else if(link.getPlace().getPageId().equals(Pages.DatabaseConfig)) {
+            } else if (link.getPlace().getPageId().equals(Pages.DatabaseConfig)) {
 
 //                List<Link> list = new ArrayList<Link>();
 //                int dbId = ((DbPlace) link.getPlace()).getDatabaseId();
@@ -96,8 +95,8 @@ public class ConfigNavigator implements Navigator {
             @Override
             public void got(Schema result) {
                 List<Link> list = new ArrayList<Link>();
-                for(UserDatabaseDTO db : result.getDatabases()) {
-                    if(db.isDesignAllowed() || db.isManageUsersAllowed()) {
+                for (UserDatabaseDTO db : result.getDatabases()) {
+                    if (db.isDesignAllowed() || db.isManageUsersAllowed()) {
                         Link link = new Link(db.getName(), new DbPlace(Pages.DatabaseConfig, db.getId()), icons.database());
                         link.set("db", db);
                         list.add(link);
@@ -112,7 +111,6 @@ public class ConfigNavigator implements Navigator {
             }
         });
     }
-
 
 
 }

@@ -9,8 +9,8 @@ import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.Place;
-import org.activityinfo.client.command.CommandService;
-import org.activityinfo.client.command.loader.ListCmdLoader;
+import org.activityinfo.client.dispatch.Dispatcher;
+import org.activityinfo.client.dispatch.loader.ListCmdLoader;
 import org.activityinfo.client.event.NavigationEvent;
 import org.activityinfo.client.page.NavigationCallback;
 import org.activityinfo.client.page.PageId;
@@ -37,14 +37,14 @@ public class ReportHomePresenter extends AbstractEditorGridPresenter<ReportTempl
     }
 
     private final EventBus eventBus;
-    private final CommandService service;
+    private final Dispatcher service;
     private final View view;
 
     private ListCmdLoader loader;
     private GroupingStore<ReportTemplateDTO> store;
 
     @Inject
-    public ReportHomePresenter(EventBus eventBus, CommandService service, IStateManager stateMgr, View view) {
+    public ReportHomePresenter(EventBus eventBus, Dispatcher service, IStateManager stateMgr, View view) {
         super(eventBus, service, stateMgr, view);
         this.eventBus = eventBus;
         this.service = service;
@@ -70,7 +70,7 @@ public class ReportHomePresenter extends AbstractEditorGridPresenter<ReportTempl
     @Override
     protected Command createSaveCommand() {
         BatchCommand batch = new BatchCommand();
-        for(Record record : store.getModifiedRecords()) {
+        for (Record record : store.getModifiedRecords()) {
             ReportTemplateDTO report = (ReportTemplateDTO) record.getModel();
             batch.add(new UpdateSubscription(
                     report.getId(),
@@ -130,6 +130,7 @@ public class ReportHomePresenter extends AbstractEditorGridPresenter<ReportTempl
                     public void onFailure(Throwable caught) {
                         dlg.onServerError();
                     }
+
                     public void onSuccess(CreateResult result) {
                         dlg.hide();
                         loader.load();

@@ -2,8 +2,8 @@ package org.activityinfo.client.page.common.widget;
 
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import org.activityinfo.client.command.CommandService;
-import org.activityinfo.client.command.loader.ListCmdLoader;
+import org.activityinfo.client.dispatch.Dispatcher;
+import org.activityinfo.client.dispatch.loader.ListCmdLoader;
 import org.activityinfo.shared.command.GetMapIcons;
 import org.activityinfo.shared.command.result.MapIconResult;
 import org.activityinfo.shared.dto.MapIconModel;
@@ -13,7 +13,7 @@ import org.activityinfo.shared.dto.MapIconModel;
 
 public class MapIconComboBox extends ComboBox<MapIconModel> {
 
-    public MapIconComboBox(CommandService service) {
+    public MapIconComboBox(Dispatcher service) {
 
         ListCmdLoader<MapIconResult> loader = new ListCmdLoader<MapIconResult>(service);
         loader.setCommand(new GetMapIcons());

@@ -9,7 +9,7 @@ import com.google.inject.Inject;
 import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.Place;
-import org.activityinfo.client.command.CommandService;
+import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.event.NavigationEvent;
 import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.PageManager;
@@ -38,17 +38,17 @@ public class DbListPresenter extends AbstractGridPresenter<UserDatabaseDTO> impl
 
         public FormDialogTether showAddDialog(UserDatabaseDTO db, FormDialogCallback callback);
 
-	}
+    }
 
     private final EventBus eventBus;
-    private final CommandService service;
+    private final Dispatcher service;
     private final View view;
 
     private ListStore<UserDatabaseDTO> store;
     private BaseListLoader<ListLoadResult<UserDatabaseDTO>> loader;
 
     @Inject
-    public DbListPresenter(EventBus eventBus, CommandService service, IStateManager stateMgr, View view) {
+    public DbListPresenter(EventBus eventBus, Dispatcher service, IStateManager stateMgr, View view) {
         super(eventBus, stateMgr, view);
         this.eventBus = eventBus;
         this.service = service;
@@ -71,9 +71,9 @@ public class DbListPresenter extends AbstractGridPresenter<UserDatabaseDTO> impl
     }
 
     @Override
-	public PageId getPageId() {
-		return Pages.DatabaseList;
-	}
+    public PageId getPageId() {
+        return Pages.DatabaseList;
+    }
 
     @Override
     protected String getStateId() {
@@ -81,9 +81,9 @@ public class DbListPresenter extends AbstractGridPresenter<UserDatabaseDTO> impl
     }
 
     @Override
-	public Object getWidget() {
-		return view;
-	}
+    public Object getWidget() {
+        return view;
+    }
 
     @Override
     public String beforeWindowCloses() {
@@ -93,7 +93,7 @@ public class DbListPresenter extends AbstractGridPresenter<UserDatabaseDTO> impl
     public void onSelectionChanged(UserDatabaseDTO selectedItem) {
         this.view.setActionEnabled(UIActions.delete, selectedItem != null && selectedItem.getAmOwner());
         this.view.setActionEnabled(UIActions.edit, selectedItem != null &&
-                (selectedItem.isDesignAllowed() || selectedItem.isManageUsersAllowed() ));
+                (selectedItem.isDesignAllowed() || selectedItem.isManageUsersAllowed()));
     }
 
     @Override

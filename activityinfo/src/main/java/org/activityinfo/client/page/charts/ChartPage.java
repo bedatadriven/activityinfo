@@ -17,9 +17,9 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.inject.Inject;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.EventBus;
-import org.activityinfo.client.command.CommandService;
-import org.activityinfo.client.command.monitor.AsyncMonitor;
-import org.activityinfo.client.command.monitor.MaskingAsyncMonitor;
+import org.activityinfo.client.dispatch.AsyncMonitor;
+import org.activityinfo.client.dispatch.Dispatcher;
+import org.activityinfo.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.activityinfo.client.page.common.filter.AdminFilterPanel;
 import org.activityinfo.client.page.common.filter.DateRangePanel;
 import org.activityinfo.client.page.common.filter.IndicatorTreePanel;
@@ -43,7 +43,7 @@ import java.util.List;
 public class ChartPage extends LayoutContainer implements Charter.View {
 
     private final EventBus eventBus;
-    private final CommandService service;
+    private final Dispatcher service;
 
     private Charter presenter;
 
@@ -63,7 +63,7 @@ public class ChartPage extends LayoutContainer implements Charter.View {
     private DateRangePanel dateFilterPanel;
 
     @Inject
-    public ChartPage(EventBus eventBus, CommandService service) {
+    public ChartPage(EventBus eventBus, Dispatcher service) {
         this.eventBus = eventBus;
         this.service = service;
 

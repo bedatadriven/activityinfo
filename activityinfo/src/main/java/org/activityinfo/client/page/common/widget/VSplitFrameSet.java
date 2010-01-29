@@ -8,7 +8,7 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.client.Place;
 import org.activityinfo.client.ViewPath;
-import org.activityinfo.client.command.monitor.AsyncMonitor;
+import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.page.FrameSetPresenter;
 import org.activityinfo.client.page.NavigationCallback;
 import org.activityinfo.client.page.PageId;
@@ -29,13 +29,13 @@ public class VSplitFrameSet implements FrameSetPresenter {
         this.navPanel = navPanel;
         container.setLayout(new BorderLayout());
 
- 		addNavigationPanel();
+        addNavigationPanel();
     }
 
     public void shutdown() {
         navPanel.shutdown();
     }
-    
+
     protected void addNavigationPanel() {
 
         BorderLayoutData layoutData = new BorderLayoutData(Style.LayoutRegion.WEST);
@@ -46,13 +46,13 @@ public class VSplitFrameSet implements FrameSetPresenter {
         container.add(navPanel, layoutData);
     }
 
-	@Override
-	public Widget getWidget() {
-		return container;
-	}
+    @Override
+    public Widget getWidget() {
+        return container;
+    }
 
     private Style.LayoutRegion getLayoutRegion(int regionId) {
-        if(regionId == ViewPath.SideBar) {
+        if (regionId == ViewPath.SideBar) {
             return Style.LayoutRegion.EAST;
         } else {
             return Style.LayoutRegion.CENTER;
@@ -66,14 +66,14 @@ public class VSplitFrameSet implements FrameSetPresenter {
 
     private void setWidget(Widget widget) {
 
-        if(activeWidget!=null) {
+        if (activeWidget != null) {
             container.remove(activeWidget);
         }
 
         container.add(widget, new BorderLayoutData(Style.LayoutRegion.CENTER));
-        activeWidget= widget;
+        activeWidget = widget;
 
-        if(container.isRendered()) {
+        if (container.isRendered()) {
             container.layout();
         }
     }
@@ -88,19 +88,19 @@ public class VSplitFrameSet implements FrameSetPresenter {
     }
 
     @Override
-	public void setActivePage(int regionId, PagePresenter page) {
+    public void setActivePage(int regionId, PagePresenter page) {
 
-		setWidget((Widget)page.getWidget());
-		activePage = page;
-	}
+        setWidget((Widget) page.getWidget());
+        activePage = page;
+    }
 
     @Override
     public void requestToNavigateAway(Place place, NavigationCallback callback) {
-       if(activePage ==null) {
+        if (activePage == null) {
             callback.onDecided(true);
-       } else {
+        } else {
             activePage.requestToNavigateAway(place, callback);
-       }
+        }
     }
 
     @Override

@@ -12,8 +12,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.Place;
-import org.activityinfo.client.command.CommandService;
-import org.activityinfo.client.command.monitor.NullAsyncMonitor;
+import org.activityinfo.client.dispatch.Dispatcher;
+import org.activityinfo.client.dispatch.monitor.NullAsyncMonitor;
 import org.activityinfo.client.event.SiteEvent;
 import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.Pages;
@@ -41,12 +41,13 @@ public class HierSiteEditor extends AbstractEditorGridPresenter<ModelData> {
     public interface View extends GridView<HierSiteEditor, ModelData> {
 
         void init(HierSiteEditor editor, TreeStore<ModelData> store);
+
         void setStartMonth(Month month);
 
     }
 
     private final EventBus eventBus;
-    private final CommandService service;
+    private final Dispatcher service;
     private final IStateManager stateMgr;
     private final ActivityModel activity;
     private final View view;
@@ -60,7 +61,7 @@ public class HierSiteEditor extends AbstractEditorGridPresenter<ModelData> {
 
     private Listener<SiteEvent> siteListener;
 
-    public HierSiteEditor(EventBus eventBus, CommandService service, IStateManager stateMgr,
+    public HierSiteEditor(EventBus eventBus, Dispatcher service, IStateManager stateMgr,
                           DateUtil dateUtil, final ActivityModel activity, View view) {
         super(eventBus, service, stateMgr, view);
         this.eventBus = eventBus;
@@ -71,7 +72,7 @@ public class HierSiteEditor extends AbstractEditorGridPresenter<ModelData> {
         this.activity = activity;
         this.view = view;
 
-        hierarchy =  activity.getAdminLevels();
+        hierarchy = activity.getAdminLevels();
         proxy = new SiteTreeProxy(service, hierarchy, activity.getId());
         initStartMonth();
 
@@ -84,12 +85,12 @@ public class HierSiteEditor extends AbstractEditorGridPresenter<ModelData> {
         store = new TreeStore<ModelData>(loader);
         store.setKeyProvider(new ModelKeyProvider<ModelData>() {
             public String getKey(ModelData model) {
-                if(model instanceof AdminLevelModel) {
+                if (model instanceof AdminLevelModel) {
                     return "A" + ((AdminLevelModel) model).getId();
-                } else if(model instanceof SiteModel) {
-                    return "S" + ((SiteModel)model).getId();
-                } else if(model instanceof IndicatorRow) {
-                    return "I" + ((IndicatorRow)model).getIndicatorId();
+                } else if (model instanceof SiteModel) {
+                    return "S" + ((SiteModel) model).getId();
+                } else if (model instanceof IndicatorRow) {
+                    return "I" + ((IndicatorRow) model).getIndicatorId();
                 }
                 return model.toString();
             }
@@ -104,7 +105,7 @@ public class HierSiteEditor extends AbstractEditorGridPresenter<ModelData> {
 
         siteListener = new Listener<SiteEvent>() {
             public void handleEvent(SiteEvent be) {
-                if(be.getType() == AppEvents.SiteCreated && be.getSite().getActivityId()==activity.getId()) {
+                if (be.getType() == AppEvents.SiteCreated && be.getSite().getActivityId() == activity.getId()) {
                     onSiteAdded(be.getSite());
                 }
             }
@@ -130,17 +131,17 @@ public class HierSiteEditor extends AbstractEditorGridPresenter<ModelData> {
     @Override
     protected String getStateId() {
         return "hierSite" + activity.getId();
-    }                                         
+    }
 
     private void initStartMonth() {
         String stateKey = "monthlyView" + this.activity.getId() + "startMonth";
-        if(stateMgr.getString(stateKey)!=null) {
+        if (stateMgr.getString(stateKey) != null) {
             try {
                 proxy.setStartMonth(Month.parseMonth(stateMgr.getString(stateKey)));
-            } catch(NumberFormatException e) {
+            } catch (NumberFormatException e) {
             }
         }
-        if(proxy.getStartMonth() == null) {
+        if (proxy.getStartMonth() == null) {
             proxy.setStartMonth(dateUtil.getCurrentMonth());
         }
         proxy.setEndMonth(proxy.getStartMonth().plus(7));
@@ -148,7 +149,7 @@ public class HierSiteEditor extends AbstractEditorGridPresenter<ModelData> {
 
     public void onSelectionChanged(ModelData selectedItem) {
 
-        if(selectedItem instanceof SiteModel) {
+        if (selectedItem instanceof SiteModel) {
 
             UserDatabaseDTO db = activity.getDatabase();
             boolean editable = db.isEditAllAllowed() ||
@@ -167,9 +168,9 @@ public class HierSiteEditor extends AbstractEditorGridPresenter<ModelData> {
     }
 
     private AdminEntityModel findEntity(int id, List<ModelData> models) {
-        for(ModelData model : models) {
+        for (ModelData model : models) {
             Integer modelId = model.get("id");
-            if(modelId != null && modelId == id) {
+            if (modelId != null && modelId == id) {
                 return (AdminEntityModel) model;
             }
         }
@@ -215,7 +216,6 @@ public class HierSiteEditor extends AbstractEditorGridPresenter<ModelData> {
     }
 
 
-
     public boolean beforeEdit(Record record, String property) {
         return (record.getModel() instanceof IndicatorRow);
     }
@@ -232,14 +232,14 @@ public class HierSiteEditor extends AbstractEditorGridPresenter<ModelData> {
         SiteModel newSite = new SiteModel();
         newSite.setActivityId(activity.getId());
 
-        if(!activity.getDatabase().isEditAllAllowed()) {
+        if (!activity.getDatabase().isEditAllAllowed()) {
             newSite.setPartner(activity.getDatabase().getMyPartner());
         }
 
         // initialize with defaults
         ModelData sel = view.getSelection();
         ModelData parent = store.getParent(sel);
-        while(parent instanceof AdminEntityModel) {
+        while (parent instanceof AdminEntityModel) {
             AdminEntityModel entity = (AdminEntityModel) parent;
             newSite.setAdminEntity(entity.getLevelId(), entity);
         }
@@ -251,17 +251,17 @@ public class HierSiteEditor extends AbstractEditorGridPresenter<ModelData> {
     @Override
     protected Command createSaveCommand() {
         Map<Integer, ArrayList<UpdateMonthlyReports.Change>> sites = new HashMap<Integer, ArrayList<UpdateMonthlyReports.Change>>();
-        for(Record record : store.getModifiedRecords()) {
-            SiteModel site = (SiteModel)store.getParent(record.getModel());
+        for (Record record : store.getModifiedRecords()) {
+            SiteModel site = (SiteModel) store.getParent(record.getModel());
 
             ArrayList<UpdateMonthlyReports.Change> changes = sites.get(site.getId());
-            if(changes == null) {
+            if (changes == null) {
                 changes = new ArrayList<UpdateMonthlyReports.Change>();
                 sites.put(site.getId(), changes);
             }
 
             IndicatorRow report = (IndicatorRow) record.getModel();
-            for(String property : record.getChanges().keySet()) {
+            for (String property : record.getChanges().keySet()) {
                 UpdateMonthlyReports.Change change = new UpdateMonthlyReports.Change();
                 change.indicatorId = report.getIndicatorId();
                 change.month = IndicatorRow.monthForProperty(property);
@@ -271,7 +271,7 @@ public class HierSiteEditor extends AbstractEditorGridPresenter<ModelData> {
         }
 
         BatchCommand batch = new BatchCommand();
-        for(Map.Entry<Integer, ArrayList<UpdateMonthlyReports.Change>> changes : sites.entrySet()) {
+        for (Map.Entry<Integer, ArrayList<UpdateMonthlyReports.Change>> changes : sites.entrySet()) {
             batch.add(new UpdateMonthlyReports(changes.getKey(), changes.getValue()));
         }
         return batch;

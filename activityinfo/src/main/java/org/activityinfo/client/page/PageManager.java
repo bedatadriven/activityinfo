@@ -9,7 +9,7 @@ import com.google.inject.Singleton;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.Place;
 import org.activityinfo.client.ViewPath;
-import org.activityinfo.client.command.monitor.AsyncMonitor;
+import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.event.NavigationEvent;
 import org.activityinfo.client.inject.Root;
 import org.activityinfo.client.util.ITimer;
@@ -22,9 +22,9 @@ import java.util.Map;
 @Singleton
 public class PageManager {
 
-	private final EventBus eventBus;
-	private final FrameSetPresenter root;
-	private final Map<PageId, PageLoader> pageLoaders = new HashMap<PageId, PageLoader>();
+    private final EventBus eventBus;
+    private final FrameSetPresenter root;
+    private final Map<PageId, PageLoader> pageLoaders = new HashMap<PageId, PageLoader>();
     private final ITimer timer;
 
     public static final EventType NavigationRequested = new EventBus.NamedEventType("NavigationRequested");
@@ -34,68 +34,68 @@ public class PageManager {
 
     @Inject
     public PageManager(final EventBus eventBus, ITimer timer, final @Root FrameSetPresenter root) {
-		this.eventBus = eventBus;
+        this.eventBus = eventBus;
         this.timer = timer;
         this.root = root;
 
-		eventBus.addListener(NavigationRequested, new Listener<NavigationEvent>() {
+        eventBus.addListener(NavigationRequested, new Listener<NavigationEvent>() {
 
-			@Override
-			public void handleEvent(NavigationEvent be) {
+            @Override
+            public void handleEvent(NavigationEvent be) {
 
                 // keep track of the sequence in which requests are received
                 // so that don't load pages that have been superceeded by subsequent
                 // requests
                 activeRequestId++;
- 
+
                 recursivelyAskPagesIfItsOkToBeChanged(activeRequestId, root, be.getPlace(),
                         be.getPlace().getViewPath().iterator());
 
-			}
-		});
+            }
+        });
 
         Log.debug("PageManager: connected to EventBus and listening.");
-	}
+    }
 
 
     public void registerPageLoader(PageId pageId, PageLoader loader) {
-		pageLoaders.put(pageId, loader);
+        pageLoaders.put(pageId, loader);
         Log.debug("PageManager: Registered loader for pageId '" + pageId + "'");
-	}
+    }
 
     protected void recursivelyAskPagesIfItsOkToBeChanged(final int requestId, final FrameSetPresenter frame,
-                                                    final Place place,
-                                                    final Iterator<ViewPath.Node> path) {
+                                                         final Place place,
+                                                         final Iterator<ViewPath.Node> path) {
 
-		final ViewPath.Node node = path.next();
+        final ViewPath.Node node = path.next();
 
         final PagePresenter activePage = frame.getActivePage(node.regionId);
 
 
-        if(activePage == null) {
+        if (activePage == null) {
             // ok, no problems here
             onNavigationAgreed(requestId, place);
 
-        } else if(activePage.getPageId().equals(node.pageId)) {
+        } else if (activePage.getPageId().equals(node.pageId)) {
             // ok, no change required.
             // descend if necessary
 
-            if(path.hasNext()) {
+            if (path.hasNext()) {
                 recursivelyAskPagesIfItsOkToBeChanged(requestId, (FrameSetPresenter) activePage, place, path);
             } else {
 
                 // this is the last one, we're good to go
-                if(requestId == activeRequestId)
+                if (requestId == activeRequestId)
                     onNavigationAgreed(requestId, place);
             }
-        }  else {
+        } else {
             // need to change this page. ask permission
 
             activePage.requestToNavigateAway(place, new NavigationCallback() {
                 @Override
                 public void onDecided(boolean allowed) {
-                    if(allowed) {
-                        if(requestId == activeRequestId)
+                    if (allowed) {
+                        if (requestId == activeRequestId)
                             onNavigationAgreed(requestId, place);
                     } else {
                         Log.debug("Navigation to '" + place.toString() + "' refused by " + activePage.toString());
@@ -108,40 +108,39 @@ public class PageManager {
     private void onNavigationAgreed(int requestId, Place place) {
 
 
-        eventBus.fireEvent(new NavigationEvent(NavigationAgreed,place));
+        eventBus.fireEvent(new NavigationEvent(NavigationAgreed, place));
 
         List<ViewPath.Node> viewPath = place.getViewPath();
 
-        if(viewPath.size() != 0) {
+        if (viewPath.size() != 0) {
             FrameSetPresenter frame = root;
             recursivelyChangePages(requestId, frame, place, viewPath.iterator());
         }
     }
 
 
+    protected void recursivelyChangePages(final int requestId, final FrameSetPresenter frame, final Place place, final Iterator<ViewPath.Node> path) {
 
-	protected void recursivelyChangePages(final int requestId, final FrameSetPresenter frame,  final Place place, final Iterator<ViewPath.Node> path) {
-
-		final ViewPath.Node node = path.next();
+        final ViewPath.Node node = path.next();
 
         PagePresenter activePage = frame.getActivePage(node.regionId);
 
 
-		/*
-		 * First see if this view is already the active view,
-		 * in wehich case we can just descend in the path
-		 */
-		if(activePage != null && 
-           activePage.getPageId().equals(node.pageId) &&
-           activePage.navigate(place)) {
-			
-			if(path.hasNext()) {
-                recursivelyChangePages(requestId, (FrameSetPresenter)frame.getActivePage(node.regionId), place, path);
-			}
-			
-		} else {
+        /*
+           * First see if this view is already the active view,
+           * in wehich case we can just descend in the path
+           */
+        if (activePage != null &&
+                activePage.getPageId().equals(node.pageId) &&
+                activePage.navigate(place)) {
 
-            if(activePage != null) {
+            if (path.hasNext()) {
+                recursivelyChangePages(requestId, (FrameSetPresenter) frame.getActivePage(node.regionId), place, path);
+            }
+
+        } else {
+
+            if (activePage != null) {
                 activePage.shutdown();
             }
 
@@ -157,13 +156,13 @@ public class PageManager {
 
 
                     // verify that this request has not been superceeded
-                    if(requestId != activeRequestId)
+                    if (requestId != activeRequestId)
                         return;
 
                     // obtain the loader for this page
 
                     PageLoader loader = pageLoaders.get(node.pageId);
-                    if(loader == null) {
+                    if (loader == null) {
                         Log.error("PageManager: no loader for " + node.pageId);
                         return;
                     }
@@ -180,17 +179,17 @@ public class PageManager {
                         public void onSuccess(PagePresenter page) {
 
                             // verify that this request has not been superceeded
-                            if(requestId != activeRequestId)
+                            if (requestId != activeRequestId)
                                 return;
 
                             frame.setActivePage(node.regionId, page);
 
-                            if(path.hasNext()) {
+                            if (path.hasNext()) {
                                 assert page instanceof FrameSetPresenter :
                                         "Cannot load page " + path.next().pageId + " into " + page.toString() + " because " +
-                                        page.getClass().getName() + " does not implement the PageFrame interface.";
+                                                page.getClass().getName() + " does not implement the PageFrame interface.";
 
-                                recursivelyChangePages(requestId, (FrameSetPresenter)page, place, path);
+                                recursivelyChangePages(requestId, (FrameSetPresenter) page, place, path);
                             }
                         }
 
@@ -198,6 +197,6 @@ public class PageManager {
                 }
             });
 
-		}	
-	}
+        }
+    }
 }

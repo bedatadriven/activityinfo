@@ -10,7 +10,7 @@ import com.google.inject.Inject;
 import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.Place;
-import org.activityinfo.client.command.CommandService;
+import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.PagePresenter;
 import org.activityinfo.client.page.Pages;
@@ -39,11 +39,12 @@ public class Designer extends AbstractEditorGridPresenter<ModelData> implements 
     @ImplementedBy(DesignTree.class)
     public interface View extends TreeGridView<Designer, ModelData> {
         public void init(Designer presenter, UserDatabaseDTO db, TreeStore store);
+
         public FormDialogTether showNewForm(EntityDTO entity, FormDialogCallback callback);
     }
 
     private final EventBus eventBus;
-    private final CommandService service;
+    private final Dispatcher service;
     private final View view;
     private final UIConstants messages;
 
@@ -52,8 +53,8 @@ public class Designer extends AbstractEditorGridPresenter<ModelData> implements 
 
 
     @Inject
-    public Designer(EventBus eventBus, CommandService service, IStateManager stateMgr,
-                        View view, UIConstants messages) {
+    public Designer(EventBus eventBus, Dispatcher service, IStateManager stateMgr,
+                    View view, UIConstants messages) {
         super(eventBus, service, stateMgr, view);
         this.eventBus = eventBus;
         this.service = service;
@@ -80,18 +81,18 @@ public class Designer extends AbstractEditorGridPresenter<ModelData> implements 
 
     private void fillStore(UIConstants messages) {
 
-        for(ActivityModel activity : db.getActivities()) {
+        for (ActivityModel activity : db.getActivities()) {
             ActivityModel activityNode = new ActivityModel(activity);
             treeStore.add(activityNode, false);
 
             AttributeFolder attributeFolder = new AttributeFolder(activityNode, messages.attributes());
             treeStore.add(activityNode, attributeFolder, false);
 
-            for(AttributeGroupModel group : activity.getAttributeGroups()) {
+            for (AttributeGroupModel group : activity.getAttributeGroups()) {
                 AttributeGroupModel groupNode = new AttributeGroupModel(group);
                 treeStore.add(attributeFolder, groupNode, false);
 
-                for(AttributeModel attribute : group.getAttributes()) {
+                for (AttributeModel attribute : group.getAttributes()) {
                     AttributeModel attributeNode = new AttributeModel(attribute);
                     treeStore.add(groupNode, attributeNode, false);
                 }
@@ -100,7 +101,7 @@ public class Designer extends AbstractEditorGridPresenter<ModelData> implements 
             IndicatorFolder indicatorFolder = new IndicatorFolder(activityNode, messages.indicators());
             treeStore.add(activityNode, indicatorFolder, false);
 
-            for(IndicatorModel indicator : activity.getIndicators()) {
+            for (IndicatorModel indicator : activity.getIndicators()) {
                 IndicatorModel indicatorNode = new IndicatorModel(indicator);
                 treeStore.add(indicatorFolder, indicatorNode, false);
             }
@@ -117,9 +118,9 @@ public class Designer extends AbstractEditorGridPresenter<ModelData> implements 
     }
 
     public boolean navigate(Place place) {
-         return place instanceof DbPlace &&
+        return place instanceof DbPlace &&
                 place.getPageId().equals(Pages.Design) &&
-                 ((DbPlace) place).getDatabaseId() == db.getId();
+                ((DbPlace) place).getDatabaseId() == db.getId();
     }
 
     public void onNodeDropped(ModelData source) {
@@ -129,7 +130,7 @@ public class Designer extends AbstractEditorGridPresenter<ModelData> implements 
         ModelData parent = treeStore.getParent(source);
         List<ModelData> children = parent == null ? treeStore.getRootItems() : treeStore.getChildren(parent);
 
-        for(int i=0; i!=children.size(); ++i) {
+        for (int i = 0; i != children.size(); ++i) {
             Record record = treeStore.getRecord(children.get(i));
             record.set("sortOrder", i);
         }
@@ -143,19 +144,19 @@ public class Designer extends AbstractEditorGridPresenter<ModelData> implements 
 
         ModelData selected = view.getSelection();
 
-        if("Activity".equals(entityName)) {
+        if ("Activity".equals(entityName)) {
             newEntity = new ActivityModel(db);
             newEntity.set("databaseId", db.getId());
             parent = null;
 
-        } else if("AttributeGroup".equals(entityName)) {
+        } else if ("AttributeGroup".equals(entityName)) {
             ActivityModel activity = findActivityFolder(selected);
 
             newEntity = new AttributeGroupModel();
             newEntity.set("activityId", activity.getId());
             parent = treeStore.getChild(activity, 0);
 
-        } else if("Attribute".equals(entityName)) {
+        } else if ("Attribute".equals(entityName)) {
             AttributeGroupModel group = findAttributeGroupNode(selected);
 
             newEntity = new AttributeModel();
@@ -163,7 +164,7 @@ public class Designer extends AbstractEditorGridPresenter<ModelData> implements 
 
             parent = group;
 
-        } else if("Indicator".equals(entityName)) {
+        } else if ("Indicator".equals(entityName)) {
             ActivityModel activity = findActivityFolder(selected);
 
             IndicatorModel newIndicator = new IndicatorModel();
@@ -174,9 +175,9 @@ public class Designer extends AbstractEditorGridPresenter<ModelData> implements 
             newEntity.set("activityId", activity.getId());
 
             parent = treeStore.getChild(activity, 1);
-            
+
         } else {
-            return ; // TODO log error
+            return; // TODO log error
         }
 
         createEntity(parent, newEntity);
@@ -195,17 +196,17 @@ public class Designer extends AbstractEditorGridPresenter<ModelData> implements 
                     public void onSuccess(CreateResult result) {
                         newEntity.set("id", result.getNewId()); // todo add setId to EntityDTO interface
 
-                        if(parent == null) {
+                        if (parent == null) {
                             treeStore.add(newEntity, false);
                         } else {
                             treeStore.add(parent, newEntity, false);
                         }
 
-                        if(newEntity instanceof ActivityModel) {
+                        if (newEntity instanceof ActivityModel) {
                             treeStore.add(newEntity, new AttributeFolder((ActivityModel) newEntity, messages.attributes()), false);
                             treeStore.add(newEntity, new IndicatorFolder((ActivityModel) newEntity, messages.indicators()), false);
                         }
-                        
+
                         tether.hide();
 
                         eventBus.fireEvent(AppEvents.SchemaChanged);
@@ -218,7 +219,7 @@ public class Designer extends AbstractEditorGridPresenter<ModelData> implements 
 
     protected ActivityModel findActivityFolder(ModelData selected) {
 
-        while(!(selected instanceof ActivityModel)) {
+        while (!(selected instanceof ActivityModel)) {
             selected = treeStore.getParent(selected);
         }
 
@@ -226,10 +227,10 @@ public class Designer extends AbstractEditorGridPresenter<ModelData> implements 
     }
 
     protected AttributeGroupModel findAttributeGroupNode(ModelData selected) {
-        if(selected instanceof AttributeGroupModel) {
+        if (selected instanceof AttributeGroupModel) {
             return (AttributeGroupModel) selected;
         }
-        if(selected instanceof AttributeModel) {
+        if (selected instanceof AttributeModel) {
             return (AttributeGroupModel) treeStore.getParent(selected);
         }
         throw new AssertionError("not a valid selection to add an attribute !");
@@ -259,28 +260,28 @@ public class Designer extends AbstractEditorGridPresenter<ModelData> implements 
     protected Command createSaveCommand() {
         BatchCommand batch = new BatchCommand();
 
-        for(ModelData model : treeStore.getRootItems()) {
+        for (ModelData model : treeStore.getRootItems()) {
             prepareBatch(batch, model);
         }
         return batch;
     }
 
-    protected void prepareBatch(BatchCommand batch, ModelData model ) {
-        if(model instanceof EntityDTO) {
+    protected void prepareBatch(BatchCommand batch, ModelData model) {
+        if (model instanceof EntityDTO) {
             Record record = treeStore.getRecord(model);
-            if(record.isDirty()) {
-                batch.add(new UpdateEntity((EntityDTO)model, this.getChangedProperties(record)));
+            if (record.isDirty()) {
+                batch.add(new UpdateEntity((EntityDTO) model, this.getChangedProperties(record)));
             }
         }
-     
-        for(ModelData child : treeStore.getChildren(model)) {
+
+        for (ModelData child : treeStore.getChildren(model)) {
             prepareBatch(batch, child);
         }
     }
 
     public void onSelectionChanged(ModelData selectedItem) {
         view.setActionEnabled(UIActions.delete, this.db.isDesignAllowed() &&
-                                                    selectedItem instanceof EntityDTO);
+                selectedItem instanceof EntityDTO);
     }
 
     public PageId getPageId() {

@@ -1,8 +1,8 @@
 package org.activityinfo.client.page.entry.editor;
 
 import com.extjs.gxt.ui.client.store.ListStore;
-import org.activityinfo.client.command.CommandService;
-import org.activityinfo.client.command.loader.ListCmdLoader;
+import org.activityinfo.client.dispatch.Dispatcher;
+import org.activityinfo.client.dispatch.loader.ListCmdLoader;
 import org.activityinfo.client.page.common.AdminBoundsHelper;
 import org.activityinfo.shared.command.GetAdminEntities;
 import org.activityinfo.shared.command.result.AdminEntityResult;
@@ -54,24 +54,24 @@ public class AdminFieldSetPresenter {
 
     private Listener listener;
 
-    public AdminFieldSetPresenter(CommandService service, ActivityModel activity, View view) {
+    public AdminFieldSetPresenter(Dispatcher service, ActivityModel activity, View view) {
         this.view = view;
         this.view.bindPresenter(this);
         this.currentActivity = activity;
 
         this.levels = activity.getAdminLevels();
 
-        for(AdminLevelModel level : levels) {
+        for (AdminLevelModel level : levels) {
             int levelId = level.getId();
 
-            
+
             ListCmdLoader<AdminEntityResult> loader = new ListCmdLoader<AdminEntityResult>(service);
             loaders.put(levelId, loader);
 
             ListStore<AdminEntityModel> store = new ListStore<AdminEntityModel>(loader);
             stores.put(levelId, store);
 
-            if(level.isRoot()) {
+            if (level.isRoot()) {
                 loader.setCommand(new GetAdminEntities(level.getId()));
             }
 
@@ -86,22 +86,21 @@ public class AdminFieldSetPresenter {
 
     public void onSelectionChanged(int levelId, AdminEntityModel selected) {
 
-        if( (selected == null && selection.get(levelId) != null) ||
-            (selected != null && selection.get(levelId) == null) ||
-            (selected != null && selection.get(levelId) != null &&
-                    selected.getId() != selection.get(levelId).getId())) {
+        if ((selected == null && selection.get(levelId) != null) ||
+                (selected != null && selection.get(levelId) == null) ||
+                (selected != null && selection.get(levelId) != null &&
+                        selected.getId() != selection.get(levelId).getId())) {
 
 
             selection.put(levelId, selected);
 
 
-
-             // clear the value of child levels and
+            // clear the value of child levels and
             // reconfigure loaders
             updateChildren(levelId, selected == null ? null : selected.getId());
 
             // alert the listener this has been modified
-            if(listener != null) {
+            if (listener != null) {
                 listener.onModified();
             }
 
@@ -112,8 +111,8 @@ public class AdminFieldSetPresenter {
 
     protected void updateChildren(int parentLevelId, Integer selectedId) {
 
-        for(AdminLevelModel child : levels) {
-            if(!child.isRoot() && child.getParentLevelId() == parentLevelId) {
+        for (AdminLevelModel child : levels) {
+            if (!child.isRoot() && child.getParentLevelId() == parentLevelId) {
 
                 int childLevelId = child.getId();
                 ListCmdLoader loader = loaders.get(childLevelId);
@@ -135,7 +134,7 @@ public class AdminFieldSetPresenter {
 
         // store values for dirty checking
         originalValues = new HashMap<Integer, Integer>();
-        for(AdminLevelModel level : levels) {
+        for (AdminLevelModel level : levels) {
             AdminEntityModel entity = site.getAdminEntity(level.getId());
             originalValues.put(level.getId(), entity == null ? null : entity.getId());
             selection.put(level.getId(), entity);
@@ -149,7 +148,7 @@ public class AdminFieldSetPresenter {
 
     public boolean isDirty() {
 
-        for(AdminLevelModel level : levels) {
+        for (AdminLevelModel level : levels) {
             if (isDirty(level)) return true;
 
         }
@@ -160,7 +159,7 @@ public class AdminFieldSetPresenter {
         AdminEntityModel selected = selection.get(level.getId());
         Integer originalId = originalValues.get(level.getId());
 
-        if((originalId == null && selected != null) ||
+        if ((originalId == null && selected != null) ||
                 (originalId != null && selected == null) ||
                 (originalId != null && selected != null && selected.getId() != originalId)) {
             return true;
@@ -170,9 +169,9 @@ public class AdminFieldSetPresenter {
 
     public Map<String, Object> getPropertyMap() {
 
-        Map<String,Object> map = new HashMap<String,Object>();
+        Map<String, Object> map = new HashMap<String, Object>();
 
-        for(AdminLevelModel level : levels) {
+        for (AdminLevelModel level : levels) {
 
             map.put(AdminEntityModel.getPropertyName(level.getId()),
                     selection.get(level.getId()));
@@ -184,15 +183,15 @@ public class AdminFieldSetPresenter {
 
     private void recursivelySetSelection(SiteModel site, Integer parentLevelId, Integer parentEntityId) {
 
-        for(AdminLevelModel level : levels) {
-            if(parentLevelId == null && level.isRoot() ||
+        for (AdminLevelModel level : levels) {
+            if (parentLevelId == null && level.isRoot() ||
                     parentLevelId != null && parentLevelId.equals(level.getParentLevelId())) {
 
                 AdminEntityModel entity = site.getAdminEntity(level.getId());
 
                 ListStore<AdminEntityModel> store = stores.get(level.getId());
                 store.removeAll();
-                if(entity!=null) {
+                if (entity != null) {
                     store.add(entity);
                 }
 
@@ -213,18 +212,16 @@ public class AdminFieldSetPresenter {
         view.setEnabled(levelId, parentLevelId == null || parentEntityId != null);
 
         // configure the loader
-        
-        if(parentLevelId == null) {
+
+        if (parentLevelId == null) {
             loaders.get(levelId).setCommand(new GetAdminEntities(levelId));
-        } else if(parentEntityId == null) {
+        } else if (parentEntityId == null) {
             loaders.get(levelId).setCommand(null);
         } else {
             loaders.get(levelId).setCommand(new GetAdminEntities(levelId, parentEntityId));
         }
 
     }
-
-
 
 
 //    private void fillAdminCombosRecursively(SiteModel assessment, AdminEntityCombo parentCombo) {
@@ -263,28 +260,28 @@ public class AdminFieldSetPresenter {
         return boundsName;
     }
 
-   private void checkBounds(boolean fireEvent) {
+    private void checkBounds(boolean fireEvent) {
 
-		// update bounds
-		Bounds oldBounds = bounds;
-		bounds = AdminBoundsHelper.calculate(currentActivity, levels, new AdminBoundsHelper.Getter() {
+        // update bounds
+        Bounds oldBounds = bounds;
+        bounds = AdminBoundsHelper.calculate(currentActivity, levels, new AdminBoundsHelper.Getter() {
             public AdminEntityModel get(int levelId) {
                 return selection.get(levelId);
             }
         });
 
-       	if(((bounds==null) != (oldBounds==null) ||
-                ((bounds!=null && !bounds.equals(oldBounds))))) {
+        if (((bounds == null) != (oldBounds == null) ||
+                ((bounds != null && !bounds.equals(oldBounds))))) {
 
-           boundsName = AdminBoundsHelper.name(currentActivity, bounds, levels, new AdminBoundsHelper.Getter() {
-               public AdminEntityModel get(int levelId) {
-                   return selection.get(levelId);
-               }
-           });
+            boundsName = AdminBoundsHelper.name(currentActivity, bounds, levels, new AdminBoundsHelper.Getter() {
+                public AdminEntityModel get(int levelId) {
+                    return selection.get(levelId);
+                }
+            });
 
-            if(fireEvent && listener != null) {
+            if (fireEvent && listener != null) {
                 listener.onBoundsChanged(boundsName, bounds);
             }
-		}
-	}
+        }
+    }
 }

@@ -28,7 +28,7 @@ import com.google.gwt.user.client.Window;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.activityinfo.client.EventBus;
-import org.activityinfo.client.command.Authentication;
+import org.activityinfo.client.dispatch.remote.Authentication;
 import org.activityinfo.client.event.DownloadEvent;
 
 /**

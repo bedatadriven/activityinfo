@@ -29,7 +29,7 @@ import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.inject.Inject;
 import org.activityinfo.client.Application;
-import org.activityinfo.client.command.CommandService;
+import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.page.common.dialog.FormDialogCallback;
 import org.activityinfo.client.page.common.dialog.FormDialogImpl;
 import org.activityinfo.client.page.common.dialog.FormDialogTether;
@@ -47,7 +47,7 @@ import java.util.List;
 public class DesignTree extends AbstractEditorTreeGridView<ModelData, Designer>
         implements Designer.View {
 
-    protected final CommandService service;
+    protected final Dispatcher service;
 
     protected EditorTreeGrid<ModelData> tree;
     protected ContentPanel formContainer;
@@ -55,7 +55,7 @@ public class DesignTree extends AbstractEditorTreeGridView<ModelData, Designer>
     protected UserDatabaseDTO db;
 
     @Inject
-    public DesignTree(CommandService service) {
+    public DesignTree(Dispatcher service) {
         this.service = service;
     }
 
@@ -74,13 +74,12 @@ public class DesignTree extends AbstractEditorTreeGridView<ModelData, Designer>
     }
 
 
-
     @Override
     protected Grid<ModelData> createGridAndAddToContainer(Store store) {
 
 
         final TreeStore treeStore = (TreeStore) store;
-        
+
         tree = new EditorTreeGrid<ModelData>(treeStore, createColumnModel());
         tree.setSelectionModel(new ImprovedCellTreeGridSelectionModel<ModelData>());
         tree.setClicksToEdit(EditorGrid.ClicksToEdit.TWO);
@@ -91,15 +90,15 @@ public class DesignTree extends AbstractEditorTreeGridView<ModelData, Designer>
 
         tree.setIconProvider(new ModelIconProvider<ModelData>() {
             public AbstractImagePrototype getIcon(ModelData model) {
-                if(model instanceof ActivityModel) {
+                if (model instanceof ActivityModel) {
                     return Application.ICONS.activity();
-                } else if(model instanceof Folder) {
+                } else if (model instanceof Folder) {
                     return GXT.IMAGES.tree_folder_closed();
-                } else if(model instanceof AttributeGroupModel) {
+                } else if (model instanceof AttributeGroupModel) {
                     return Application.ICONS.attributeGroup();
-                } else if(model instanceof AttributeModel) {
+                } else if (model instanceof AttributeModel) {
                     return Application.ICONS.attribute();
-                } else if(model instanceof IndicatorModel) {
+                } else if (model instanceof IndicatorModel) {
                     return Application.ICONS.indicator();
                 } else {
                     return null;
@@ -140,8 +139,8 @@ public class DesignTree extends AbstractEditorTreeGridView<ModelData, Designer>
                 ModelData source = sourceData.get(0).get("model");
                 TreeGrid.TreeNode target = tree.findNode(e.getTarget());
 
-                if(treeStore.getParent(target.getModel()) !=
-                   treeStore.getParent(source)) {
+                if (treeStore.getParent(target.getModel()) !=
+                        treeStore.getParent(source)) {
 
                     e.setCancelled(true);
                     e.getStatus().setStatus(false);
@@ -267,11 +266,11 @@ public class DesignTree extends AbstractEditorTreeGridView<ModelData, Designer>
 
     protected Class formClassForSelection(ModelData sel) {
 
-        if(sel instanceof ActivityModel) {
+        if (sel instanceof ActivityModel) {
             return ActivityForm.class;
-        } else if(sel instanceof AttributeGroupModel) {
+        } else if (sel instanceof AttributeGroupModel) {
             return AttributeGroupForm.class;
-        } else if(sel instanceof IndicatorModel) {
+        } else if (sel instanceof IndicatorModel) {
             return IndicatorForm.class;
         }
 
@@ -280,13 +279,13 @@ public class DesignTree extends AbstractEditorTreeGridView<ModelData, Designer>
     }
 
     protected AbstractDesignForm createForm(ModelData sel) {
-        if(sel instanceof ActivityModel) {
+        if (sel instanceof ActivityModel) {
             return new ActivityForm(service, db);
-        } else if(sel instanceof AttributeGroupModel) {
+        } else if (sel instanceof AttributeGroupModel) {
             return new AttributeGroupForm();
-        } else if(sel instanceof AttributeModel) {
+        } else if (sel instanceof AttributeModel) {
             return new AttributeForm();
-        } else if(sel instanceof IndicatorModel) {
+        } else if (sel instanceof IndicatorModel) {
             return new IndicatorForm();
         }
 
@@ -300,22 +299,22 @@ public class DesignTree extends AbstractEditorTreeGridView<ModelData, Designer>
         Class formClass = formClassForSelection(model);
 
         AbstractDesignForm currentForm = null;
-        if(formContainer.getItemCount() != 0) {
-            currentForm = (AbstractDesignForm)formContainer.getItem(0);
+        if (formContainer.getItemCount() != 0) {
+            currentForm = (AbstractDesignForm) formContainer.getItem(0);
         }
 
-        if(formClass == null) {
-            if(currentForm!=null) {
+        if (formClass == null) {
+            if (currentForm != null) {
                 currentForm.getBinding().unbind();
                 formContainer.removeAll();
             }
             return;
         } else {
 
-            if( currentForm == null ||
+            if (currentForm == null ||
                     (currentForm != null && !formClass.equals(currentForm.getClass()))) {
 
-                if(currentForm != null) {
+                if (currentForm != null) {
                     formContainer.removeAll();
                     currentForm.getBinding().unbind();
                 }
@@ -338,22 +337,22 @@ public class DesignTree extends AbstractEditorTreeGridView<ModelData, Designer>
         AbstractDesignForm form = createForm(entity);
         form.getBinding().bind(entity);
 
-        for(FieldBinding field : form.getBinding().getBindings() ) {
+        for (FieldBinding field : form.getBinding().getBindings()) {
             field.getField().clearInvalid();
         }
 
-        FormDialogImpl dlg=  new FormDialogImpl(form);
+        FormDialogImpl dlg = new FormDialogImpl(form);
         dlg.setWidth(form.getPreferredDialogWidth());
         dlg.setHeight(form.getPreferredDialogHeight());
         dlg.setScrollMode(Style.Scroll.AUTOY);
-        
-        if(entity instanceof ActivityModel) {
+
+        if (entity instanceof ActivityModel) {
             dlg.setHeading(Application.CONSTANTS.newActivity());
-        } else if(entity instanceof AttributeGroupModel) {
+        } else if (entity instanceof AttributeGroupModel) {
             dlg.setHeading(Application.CONSTANTS.newAttributeGroup());
-        } else if(entity instanceof AttributeModel) {
+        } else if (entity instanceof AttributeModel) {
             dlg.setHeading(Application.CONSTANTS.newAttribute());
-        } else if(entity instanceof IndicatorModel) {
+        } else if (entity instanceof IndicatorModel) {
             dlg.setHeading(Application.CONSTANTS.newIndicator());
         }
 

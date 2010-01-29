@@ -2,18 +2,19 @@ package org.activityinfo.clientjre.place.config.design;
 
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.TreeStore;
-import org.activityinfo.client.command.monitor.AsyncMonitor;
+import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.page.common.dialog.FormDialogCallback;
 import org.activityinfo.client.page.common.dialog.FormDialogTether;
 import org.activityinfo.client.page.common.grid.ConfirmCallback;
 import org.activityinfo.client.page.config.design.Designer;
 import org.activityinfo.shared.dto.EntityDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
-import static org.easymock.EasyMock.createNiceMock;
-import static org.easymock.EasyMock.replay;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.replay;
 /*
  * @author Alex Bertram
  */
@@ -29,8 +30,8 @@ public class MockDesignTree implements Designer.View {
 
     public FormDialogTether showNewForm(EntityDTO entity, FormDialogCallback callback) {
 
-        for(String property : newEntityProperties.keySet()) {
-            ((ModelData)entity).set(property, newEntityProperties.get(property));
+        for (String property : newEntityProperties.keySet()) {
+            ((ModelData) entity).set(property, newEntityProperties.get(property));
         }
 
         FormDialogTether tether = createNiceMock(FormDialogTether.class);

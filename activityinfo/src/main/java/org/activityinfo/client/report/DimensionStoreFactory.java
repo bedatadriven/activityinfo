@@ -4,7 +4,7 @@ import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.client.Application;
-import org.activityinfo.client.command.CommandService;
+import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.dto.AdminLevelModel;
 import org.activityinfo.shared.dto.CountryModel;
@@ -19,7 +19,7 @@ import java.util.List;
 
 public class DimensionStoreFactory {
 
-    public static ListStore<Dimension> create(final CommandService service) {
+    public static ListStore<Dimension> create(final Dispatcher service) {
 
         DataProxy<ListLoadResult<Dimension>> proxy = new DataProxy<ListLoadResult<Dimension>>() {
             public void load(DataReader<ListLoadResult<Dimension>> reader,
@@ -29,7 +29,7 @@ public class DimensionStoreFactory {
 
                 list.add(createDimension(DimensionType.Database, Application.CONSTANTS.database()));
                 list.add(createDimension(DimensionType.Activity, Application.CONSTANTS.activity()));
-                list.add(createDimension(DimensionType.Indicator,  Application.CONSTANTS.indicators()));
+                list.add(createDimension(DimensionType.Indicator, Application.CONSTANTS.indicators()));
 
                 list.add(createDimension(DateUnit.YEAR, Application.CONSTANTS.year()));
                 list.add(createDimension(DateUnit.QUARTER, Application.CONSTANTS.quarter()));
@@ -43,7 +43,7 @@ public class DimensionStoreFactory {
                     public void onSuccess(Schema schema) {
 
                         CountryModel country = schema.getCommonCountry();
-                        for(AdminLevelModel level : country.getAdminLevels()) {
+                        for (AdminLevelModel level : country.getAdminLevels()) {
                             AdminDimension dimension = new AdminDimension(level.getId());
                             dimension.set("caption", level.getName());
                             list.add(dimension);

@@ -5,7 +5,7 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import org.activityinfo.client.Application;
-import org.activityinfo.client.command.CommandService;
+import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.page.common.nav.Link;
 import org.activityinfo.client.page.common.nav.Navigator;
 import org.activityinfo.shared.command.GetSchema;
@@ -19,12 +19,11 @@ import java.util.List;
 import java.util.Map;
 
 
-public class DataEntryNavigator implements Navigator
-{
-    private final CommandService service;
+public class DataEntryNavigator implements Navigator {
+    private final Dispatcher service;
 
     @Inject
-    public DataEntryNavigator(CommandService service) {
+    public DataEntryNavigator(Dispatcher service) {
         this.service = service;
     }
 
@@ -42,7 +41,7 @@ public class DataEntryNavigator implements Navigator
 
     public void load(DataReader<List<Link>> dataReader, Object parent, final AsyncCallback<List<Link>> callback) {
 
-        if(parent == null) {
+        if (parent == null) {
             service.execute(new GetSchema(), null, new AsyncCallback<Schema>() {
                 public void onFailure(Throwable caught) {
                     callback.onFailure(caught);
@@ -56,7 +55,7 @@ public class DataEntryNavigator implements Navigator
         } else {
             List<Link> list = new ArrayList<Link>();
             List<ModelData> children = ((Link) parent).getChildren();
-            for(ModelData child : children) {
+            for (ModelData child : children) {
                 list.add((Link) child);
             }
             callback.onSuccess(list);
@@ -65,8 +64,8 @@ public class DataEntryNavigator implements Navigator
 
     private List<Link> buildTree(Schema schema) {
         List<Link> list = new ArrayList<Link>();
-        for(UserDatabaseDTO db : schema.getDatabases()) {
-            if(db.getActivities().size() != 0) {
+        for (UserDatabaseDTO db : schema.getDatabases()) {
+            if (db.getActivities().size() != 0) {
 
                 Link dbLink = new Link(
                         db.getName(),
@@ -74,16 +73,16 @@ public class DataEntryNavigator implements Navigator
                         Application.ICONS.database());
 
                 Map<String, Link> categories = new HashMap<String, Link>();
-                for(ActivityModel activity : db.getActivities()) {
+                for (ActivityModel activity : db.getActivities()) {
 
                     Link actLink = new Link(
                             activity.getName(),
                             new SiteGridPlace(activity),
                             Application.ICONS.table());
 
-                    if(activity.getCategory() != null) {
+                    if (activity.getCategory() != null) {
                         Link category = categories.get(activity.getCategory());
-                        if(category == null) {
+                        if (category == null) {
                             category = new Link(activity.getCategory(), null);
                             categories.put(activity.getCategory(), category);
                             dbLink.add(category);

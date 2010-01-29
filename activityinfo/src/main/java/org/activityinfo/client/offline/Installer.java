@@ -27,7 +27,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.gears.client.database.DatabaseException;
 import com.google.gwt.user.client.Window;
 import org.activityinfo.client.Application;
-import org.activityinfo.client.command.Authentication;
+import org.activityinfo.client.dispatch.remote.Authentication;
 import org.activityinfo.client.offline.dao.AuthDAO;
 
 import java.util.Date;

@@ -1,7 +1,7 @@
 package org.activityinfo.client.page.entry.editor;
 
 import com.extjs.gxt.ui.client.store.ListStore;
-import org.activityinfo.client.command.monitor.AsyncMonitor;
+import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.page.common.dialog.FormDialogImpl;
 import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.shared.dto.ActivityModel;
@@ -21,16 +21,16 @@ public class SiteFormDialog extends FormDialogImpl<SiteForm> implements SiteForm
     public SiteFormDialog(SiteForm form) {
         super(form);
 
-		int clientHeight = com.google.gwt.user.client.Window.getClientHeight();
+        int clientHeight = com.google.gwt.user.client.Window.getClientHeight();
 
-		this.setHeight((int) (clientHeight * 0.95));
-		this.setWidth(450);
+        this.setHeight((int) (clientHeight * 0.95));
+        this.setWidth(450);
     }
 
     @Override
     public void setActionEnabled(String actionId, boolean enabled) {
 
-        if(UIActions.save.equals(actionId)) {
+        if (UIActions.save.equals(actionId)) {
             saveButton.setEnabled(enabled);
         }
     }
@@ -44,17 +44,17 @@ public class SiteFormDialog extends FormDialogImpl<SiteForm> implements SiteForm
         this.presenter = presenter;
         this.activity = activity;
         form.init(presenter, activity, partnerStore, assessmentStore);
-       
+
     }
 
     public void setSite(SiteModel site) {
         form.show();
-        if(site.getLocationName() == null) {
+        if (site.getLocationName() == null) {
             setHeading(activity.getName());
         } else {
             setHeading(activity.getName() + " - " + site.getLocationName());
         }
-        
+
         form.setSite(site);
 
         show();

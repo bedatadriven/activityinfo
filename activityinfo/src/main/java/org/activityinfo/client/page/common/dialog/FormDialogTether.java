@@ -1,6 +1,6 @@
 package org.activityinfo.client.page.common.dialog;
 
-import org.activityinfo.client.command.monitor.AsyncMonitor;
+import org.activityinfo.client.dispatch.AsyncMonitor;
 
 public interface FormDialogTether extends AsyncMonitor {
 

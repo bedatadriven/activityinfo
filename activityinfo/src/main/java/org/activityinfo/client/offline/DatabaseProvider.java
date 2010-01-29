@@ -5,7 +5,7 @@ import com.google.gwt.gears.client.database.Database;
 import com.google.gwt.gears.client.database.DatabaseException;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import org.activityinfo.client.command.Authentication;
+import org.activityinfo.client.dispatch.remote.Authentication;
 import org.activityinfo.client.offline.dao.AuthDAO;
 
 public class DatabaseProvider implements Provider<Database> {
@@ -39,7 +39,7 @@ public class DatabaseProvider implements Provider<Database> {
 
 
     public Database get() {
-        if(userDb == null)
+        if (userDb == null)
             openDatabase();
 
         return userDb;

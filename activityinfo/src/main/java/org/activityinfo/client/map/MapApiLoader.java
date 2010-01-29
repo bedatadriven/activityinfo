@@ -26,7 +26,7 @@ import com.google.gwt.maps.client.Maps;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.InvocationException;
-import org.activityinfo.client.command.monitor.AsyncMonitor;
+import org.activityinfo.client.dispatch.AsyncMonitor;
 
 /**
  * Convience wrapper for loading the Google Maps API
@@ -41,7 +41,7 @@ public class MapApiLoader {
 
         Log.debug("MapApiLoader: load()");
 
-        if(monitor!=null)
+        if (monitor != null)
             monitor.beforeRequest();
 
         AjaxLoader.AjaxLoaderOptions opts = AjaxLoader.AjaxLoaderOptions.newInstance();
@@ -54,24 +54,24 @@ public class MapApiLoader {
         Maps.loadMapsApi(key, "2", false, opts, new Runnable() {
             @Override
             public void run() {
-                if(monitor!=null) {
+                if (monitor != null) {
                     monitor.onCompleted();
                 }
-                if(callback!=null) {
+                if (callback != null) {
                     callback.onSuccess(null);
                 }
             }
         });
         // set up a timer to call onFailed() if things don't work out.
-        if(callback!=null || monitor != null) {
+        if (callback != null || monitor != null) {
             Timer timer = new Timer() {
                 @Override
                 public void run() {
-                    if(!Maps.isLoaded()) {
-                        if(monitor!=null) {
+                    if (!Maps.isLoaded()) {
+                        if (monitor != null) {
                             monitor.onCompleted();
                         }
-                        if(callback!=null) {
+                        if (callback != null) {
                             //noinspection ThrowableInstanceNeverThrown
                             callback.onFailure(
                                     new InvocationException("API Loader timed out."));

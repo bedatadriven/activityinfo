@@ -6,7 +6,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import org.activityinfo.client.Place;
 import org.activityinfo.client.PlaceSerializer;
-import org.activityinfo.client.command.CommandService;
+import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.inject.AppInjector;
 import org.activityinfo.client.page.*;
 import org.activityinfo.shared.command.GetReportTemplates;
@@ -19,10 +19,10 @@ import org.activityinfo.shared.dto.ReportTemplateDTO;
 public class ReportLoader implements PageLoader {
 
     private final AppInjector injector;
-    private final CommandService service;
+    private final Dispatcher service;
 
     @Inject
-    public ReportLoader(AppInjector injector, CommandService service, PageManager pageManager,
+    public ReportLoader(AppInjector injector, Dispatcher service, PageManager pageManager,
                         PlaceSerializer placeSerializer) {
         this.injector = injector;
         this.service = service;
@@ -44,10 +44,10 @@ public class ReportLoader implements PageLoader {
 
             @Override
             public void onSuccess() {
-                if(Pages.ReportPreview.equals(pageId)) {
-                    loadPreview((ReportPreviewPlace)place, callback);
+                if (Pages.ReportPreview.equals(pageId)) {
+                    loadPreview((ReportPreviewPlace) place, callback);
 
-                } else if(Pages.ReportHome.equals(pageId)) {
+                } else if (Pages.ReportHome.equals(pageId)) {
 
                     callback.onSuccess(injector.getReportHomePresenter());
                 } else {
@@ -70,8 +70,8 @@ public class ReportLoader implements PageLoader {
 
             public void onSuccess(final ReportTemplateResult result) {
 
-                for(ReportTemplateDTO dto : result.getData()) {
-                    if(dto.getId() == place.getReportId()) {
+                for (ReportTemplateDTO dto : result.getData()) {
+                    if (dto.getId() == place.getReportId()) {
                         ReportPreviewPresenter presenter = injector.getReportPreviewPresenter();
                         presenter.go(dto);
 

@@ -31,8 +31,8 @@ import com.google.inject.Inject;
 import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.EventBus;
-import org.activityinfo.client.command.CommandService;
-import org.activityinfo.client.command.monitor.MaskingAsyncMonitor;
+import org.activityinfo.client.dispatch.Dispatcher;
+import org.activityinfo.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.activityinfo.client.event.SiteEvent;
 import org.activityinfo.client.map.GcIconFactory;
 import org.activityinfo.client.map.MapApiLoader;
@@ -59,7 +59,7 @@ import java.util.Map;
 public class SiteMap extends ContentPanel implements Shutdownable {
 
     private final EventBus eventBus;
-    private final CommandService service;
+    private final Dispatcher service;
     private final ActivityModel activity;
 
     private MapWidget map = null;
@@ -89,7 +89,7 @@ public class SiteMap extends ContentPanel implements Shutdownable {
     private Menu contextMenu;
 
     @Inject
-    public SiteMap(EventBus eventBus, CommandService service, ActivityModel activity) {
+    public SiteMap(EventBus eventBus, Dispatcher service, ActivityModel activity) {
         this.eventBus = eventBus;
         this.service = service;
         this.activity = activity;

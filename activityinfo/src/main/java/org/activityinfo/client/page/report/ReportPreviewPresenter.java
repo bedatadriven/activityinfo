@@ -5,9 +5,9 @@ import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.Place;
-import org.activityinfo.client.command.CommandService;
-import org.activityinfo.client.command.callback.Got;
-import org.activityinfo.client.command.monitor.AsyncMonitor;
+import org.activityinfo.client.dispatch.AsyncMonitor;
+import org.activityinfo.client.dispatch.Dispatcher;
+import org.activityinfo.client.dispatch.callback.Got;
 import org.activityinfo.client.event.DownloadEvent;
 import org.activityinfo.client.page.NavigationCallback;
 import org.activityinfo.client.page.PageId;
@@ -25,8 +25,8 @@ import org.activityinfo.shared.command.UpdateReportDef;
 import org.activityinfo.shared.command.result.HtmlResult;
 import org.activityinfo.shared.command.result.VoidResult;
 import org.activityinfo.shared.command.result.XmlResult;
-import org.activityinfo.shared.report.model.DateRange;
 import org.activityinfo.shared.dto.ReportTemplateDTO;
+import org.activityinfo.shared.report.model.DateRange;
 
 /**
  * @author Alex Bertram
@@ -36,6 +36,7 @@ public class ReportPreviewPresenter implements PagePresenter, ActionListener, Ex
     @ImplementedBy(ReportPreview.class)
     public interface View {
         void init(ReportPreviewPresenter presenter, ReportTemplateDTO template);
+
         DateRange getDateRange();
 
         void setPreviewHtml(String html);
@@ -46,13 +47,13 @@ public class ReportPreviewPresenter implements PagePresenter, ActionListener, Ex
     }
 
     private final EventBus eventBus;
-    private final CommandService service;
+    private final Dispatcher service;
     private final View view;
 
     private ReportTemplateDTO template;
 
     @Inject
-    public ReportPreviewPresenter(EventBus eventBus, CommandService service, View view) {
+    public ReportPreviewPresenter(EventBus eventBus, Dispatcher service, View view) {
         this.eventBus = eventBus;
         this.service = service;
         this.view = view;
@@ -98,17 +99,17 @@ public class ReportPreviewPresenter implements PagePresenter, ActionListener, Ex
                 .append("&format=").append(format.toString());
 
         DateRange range = view.getDateRange();
-        if(range.getMinDate() != null) {
+        if (range.getMinDate() != null) {
             url.append("&minDate=").append(range.getMinDate().getTime());
         }
-        if(range.getMaxDate() != null) {
+        if (range.getMaxDate() != null) {
             url.append("&maxDate=").append(range.getMaxDate().getTime());
         }
         eventBus.fireEvent(new DownloadEvent("report", url.toString()));
     }
 
     public void onUIAction(String actionId) {
-        if(UIActions.refresh.equals(actionId)) {
+        if (UIActions.refresh.equals(actionId)) {
 
             RenderReportHtml command = new RenderReportHtml(template.getId(), view.getDateRange());
             service.execute(command, view.getLoadingMonitor(), new Got<HtmlResult>() {
@@ -119,7 +120,7 @@ public class ReportPreviewPresenter implements PagePresenter, ActionListener, Ex
                 }
             });
 
-        } else if(UIActions.edit.equals(actionId)) {
+        } else if (UIActions.edit.equals(actionId)) {
 
             service.execute(new GetReportDef(template.getId()), view.getLoadingMonitor(), new Got<XmlResult>() {
                 @Override

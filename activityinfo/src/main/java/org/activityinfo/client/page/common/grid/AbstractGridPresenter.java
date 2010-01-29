@@ -7,7 +7,7 @@ import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.store.Store;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.Place;
-import org.activityinfo.client.command.loader.CommandLoadEvent;
+import org.activityinfo.client.dispatch.loader.CommandLoadEvent;
 import org.activityinfo.client.event.NavigationEvent;
 import org.activityinfo.client.page.NavigationCallback;
 import org.activityinfo.client.page.PageManager;
@@ -41,7 +41,7 @@ public abstract class AbstractGridPresenter<ModelT extends ModelData>
     }
 
     protected void initListeners(Store store, Loader loader) {
-        if(loader != null) {
+        if (loader != null) {
             loader.addLoadListener(new LoadListener() {
                 @Override
                 public void loaderLoad(LoadEvent le) {
@@ -50,7 +50,7 @@ public abstract class AbstractGridPresenter<ModelT extends ModelData>
 
                 @Override
                 public void loaderBeforeLoad(LoadEvent le) {
-                    onBeforeLoad((CommandLoadEvent)le);
+                    onBeforeLoad((CommandLoadEvent) le);
                 }
             });
         }
@@ -61,15 +61,15 @@ public abstract class AbstractGridPresenter<ModelT extends ModelData>
     }
 
     public void onUIAction(String actionId) {
-        if(UIActions.delete.equals(actionId)) {
+        if (UIActions.delete.equals(actionId)) {
             view.confirmDeleteSelected(new ConfirmCallback() {
                 public void confirmed() {
                     onDeleteConfirmed(view.getSelection());
                 }
             });
-        } else if(UIActions.edit.equals(actionId)) {
+        } else if (UIActions.edit.equals(actionId)) {
             onEdit(view.getSelection());
-        } else if(UIActions.add.equals(actionId)) {
+        } else if (UIActions.add.equals(actionId)) {
             onAdd();
         }
     }
@@ -79,18 +79,18 @@ public abstract class AbstractGridPresenter<ModelT extends ModelData>
     }
 
     public int offsetFromPage(int pagenum) {
-        return (pagenum-1) * getPageSize();
+        return (pagenum - 1) * getPageSize();
     }
 
     protected void initLoaderDefaults(PagingLoader loader, AbstractPagingGridPlace place, SortInfo defaultSort) {
         Map<String, Object> stateMap = getState();
-        if(place.getSortInfo() != null) {
+        if (place.getSortInfo() != null) {
             loader.setSortField(place.getSortInfo().getSortField());
             loader.setSortDir(place.getSortInfo().getSortDir());
-        } else if(stateMap.containsKey("sortField")) {
-            loader.setSortField((String)stateMap.get("sortField"));
-            loader.setSortDir( "DESC".equals(stateMap.get("sortDir")) ?
-                    Style.SortDir.DESC : Style.SortDir.ASC );
+        } else if (stateMap.containsKey("sortField")) {
+            loader.setSortField((String) stateMap.get("sortField"));
+            loader.setSortDir("DESC".equals(stateMap.get("sortDir")) ?
+                    Style.SortDir.DESC : Style.SortDir.ASC);
         } else {
             loader.setSortField(defaultSort.getSortField());
             loader.setSortDir(defaultSort.getSortDir());
@@ -98,10 +98,10 @@ public abstract class AbstractGridPresenter<ModelT extends ModelData>
 
         loader.setLimit(getPageSize());
 
-        if(place.getPageNum() > 0) {
-            loader.setOffset( offsetFromPage(place.getPageNum()) );
-        } else if( stateMap.containsKey("offset") ) {
-            loader.setOffset( (Integer) stateMap.get("offset") );
+        if (place.getPageNum() > 0) {
+            loader.setOffset(offsetFromPage(place.getPageNum()));
+        } else if (stateMap.containsKey("offset")) {
+            loader.setOffset((Integer) stateMap.get("offset"));
         } else {
             loader.setOffset(0);
         }
@@ -122,18 +122,18 @@ public abstract class AbstractGridPresenter<ModelT extends ModelData>
 
     protected abstract String getStateId();
 
-    protected Map<String,Object> getState() {
+    protected Map<String, Object> getState() {
 
-        Map<String,Object> map = stateMgr.getMap(getStateId());
-        if(map !=null) {
+        Map<String, Object> map = stateMgr.getMap(getStateId());
+        if (map != null) {
             return map;
         } else {
-            return new HashMap<String,Object>();
+            return new HashMap<String, Object>();
         }
 
     }
 
-    protected void saveState(Map<String,Object> stateMap) {
+    protected void saveState(Map<String, Object> stateMap) {
         stateMgr.set(getStateId(), stateMap);
     }
 
@@ -143,16 +143,16 @@ public abstract class AbstractGridPresenter<ModelT extends ModelData>
 
     protected void onLoaded(LoadEvent le) {
 
-        Map<String,Object> stateMap = new HashMap<String,Object>();
+        Map<String, Object> stateMap = new HashMap<String, Object>();
 
         Object config = le.getConfig();
-        if(config instanceof ListLoadConfig) {
-            SortInfo si= ((ListLoadConfig) config).getSortInfo();
+        if (config instanceof ListLoadConfig) {
+            SortInfo si = ((ListLoadConfig) config).getSortInfo();
             stateMap.put("sortField", si.getSortField());
             stateMap.put("sortDir", si.getSortDir() == Style.SortDir.ASC ? "ASC" : "DESC");
         }
-        if(config instanceof PagingLoadConfig) {
-            int offset = ((PagingLoadConfig)config).getOffset();
+        if (config instanceof PagingLoadConfig) {
+            int offset = ((PagingLoadConfig) config).getOffset();
             stateMap.put("offset", offset);
         }
 
@@ -162,11 +162,11 @@ public abstract class AbstractGridPresenter<ModelT extends ModelData>
     protected void firePageEvent(AbstractGridPlace place, LoadEvent le) {
 
         Object config = le.getConfig();
-        if(config instanceof ListLoadConfig) {
-            place.setSortInfo(((ListLoadConfig) config).getSortInfo() );
+        if (config instanceof ListLoadConfig) {
+            place.setSortInfo(((ListLoadConfig) config).getSortInfo());
         }
-        if(config instanceof PagingLoadConfig && place instanceof AbstractPagingGridPlace) {
-            int offset = ((PagingLoadConfig)config).getOffset();
+        if (config instanceof PagingLoadConfig && place instanceof AbstractPagingGridPlace) {
+            int offset = ((PagingLoadConfig) config).getOffset();
             ((AbstractPagingGridPlace) place).setPageNum(pageFromOffset(offset));
         }
 
@@ -178,27 +178,27 @@ public abstract class AbstractGridPresenter<ModelT extends ModelData>
 
         boolean reloadRequired = false;
 
-        if(gridPlace.getSortInfo() != null &&
+        if (gridPlace.getSortInfo() != null &&
                 !SortInfoHelper.equal(gridPlace.getSortInfo(), new SortInfo(loader.getSortField(), loader.getSortDir()))) {
 
             loader.setSortField(gridPlace.getSortInfo().getSortField());
             loader.setSortDir(gridPlace.getSortInfo().getSortDir());
-            reloadRequired=true;
+            reloadRequired = true;
         }
 
-        if(gridPlace instanceof AbstractPagingGridPlace) {
-            AbstractPagingGridPlace pgPlace = (AbstractPagingGridPlace)gridPlace;
+        if (gridPlace instanceof AbstractPagingGridPlace) {
+            AbstractPagingGridPlace pgPlace = (AbstractPagingGridPlace) gridPlace;
 
-            if(pgPlace.getPageNum()>0) {
+            if (pgPlace.getPageNum() > 0) {
                 int offset = offsetFromPage(pgPlace.getPageNum());
-                if(offset != ((PagingLoader)loader).getOffset()) {
-                    ((PagingLoader)loader).setOffset((pgPlace.getPageNum()-1)*getPageSize());
-                    reloadRequired=true;
+                if (offset != ((PagingLoader) loader).getOffset()) {
+                    ((PagingLoader) loader).setOffset((pgPlace.getPageNum() - 1) * getPageSize());
+                    reloadRequired = true;
                 }
             }
         }
 
-        if(reloadRequired) {
+        if (reloadRequired) {
             loader.load();
         }
     }

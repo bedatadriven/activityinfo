@@ -17,7 +17,7 @@ import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.client.Application;
-import org.activityinfo.client.command.CommandService;
+import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.dto.*;
 
@@ -30,7 +30,7 @@ import java.util.Set;
  */
 public class IndicatorTreePanel extends ContentPanel {
 
-    private final CommandService service;
+    private final Dispatcher service;
 
     private TreeLoader<ModelData> loader;
     private TreeStore<ModelData> store;
@@ -38,7 +38,7 @@ public class IndicatorTreePanel extends ContentPanel {
     private ToolBar toolBar;
     private StoreFilterField filter;
 
-    public IndicatorTreePanel(CommandService service, final boolean multipleSelection) {
+    public IndicatorTreePanel(Dispatcher service, final boolean multipleSelection) {
         this.service = service;
         this.setHeaderVisible(false);
         this.setHeading(Application.CONSTANTS.indicators());
@@ -50,7 +50,7 @@ public class IndicatorTreePanel extends ContentPanel {
             @Override
             public boolean hasChildren(ModelData parent) {
                 return !(parent instanceof IndicatorModel) &&
-                       !(parent instanceof IndicatorGroup);
+                        !(parent instanceof IndicatorGroup);
             }
         };
 
@@ -58,11 +58,11 @@ public class IndicatorTreePanel extends ContentPanel {
         store.setKeyProvider(new ModelKeyProvider<ModelData>() {
             @Override
             public String getKey(ModelData model) {
-                if(model instanceof UserDatabaseDTO) {
+                if (model instanceof UserDatabaseDTO) {
                     return "db" + ((UserDatabaseDTO) model).getId();
-                } else if(model instanceof ActivityModel) {
+                } else if (model instanceof ActivityModel) {
                     return "act" + ((ActivityModel) model).getId();
-                } else if(model instanceof IndicatorModel){
+                } else if (model instanceof IndicatorModel) {
                     return "i" + ((IndicatorModel) model).getId();
                 } else {
                     return model.get("name");
@@ -72,7 +72,7 @@ public class IndicatorTreePanel extends ContentPanel {
 
         tree = new TreePanel<ModelData>(store);
         tree.setCheckable(true);
-        if(multipleSelection) {
+        if (multipleSelection) {
             tree.setCheckNodes(TreePanel.CheckNodes.BOTH);
             tree.setCheckStyle(TreePanel.CheckCascade.CHILDREN);
         } else {
@@ -84,7 +84,7 @@ public class IndicatorTreePanel extends ContentPanel {
         tree.setLabelProvider(new ModelStringProvider<ModelData>() {
             public String getStringValue(ModelData model, String property) {
                 String name = model.get("name");
-                if(model instanceof IndicatorModel) {
+                if (model instanceof IndicatorModel) {
                     return name;
                 } else {
                     return "<b>" + name + "</b>";
@@ -112,11 +112,11 @@ public class IndicatorTreePanel extends ContentPanel {
 
                 // when the user clicks on the label of an indicator, check
                 // the indicator
-                if(tpe.getNode() != null) {
+                if (tpe.getNode() != null) {
                     ModelData model = tpe.getNode().getModel();
-                    if(model instanceof IndicatorModel &&
-                         tpe.within(tree.getView().getTextElement(tpe.getNode())) &&
-                       ! tree.isChecked(model)) {
+                    if (model instanceof IndicatorModel &&
+                            tpe.within(tree.getView().getTextElement(tpe.getNode())) &&
+                            !tree.isChecked(model)) {
 
                         tree.setChecked(model, true);
                     }
@@ -126,8 +126,8 @@ public class IndicatorTreePanel extends ContentPanel {
         tree.addListener(Events.BrowserEvent, new Listener<TreePanelEvent<ModelData>>() {
 
             public void handleEvent(TreePanelEvent<ModelData> be) {
-                if(be.getEventTypeInt() == Event.ONKEYPRESS) {
-                    if(!toolBar.isVisible()) {
+                if (be.getEventTypeInt() == Event.ONKEYPRESS) {
+                    if (!toolBar.isVisible()) {
                         toolBar.setVisible(true);
                     }
 //                    StringBuilder sb = new StringBuilder();
@@ -145,16 +145,16 @@ public class IndicatorTreePanel extends ContentPanel {
 
                 // when a user checks a parent node, expand all
                 // child nodes
-                if(!(event.getItem() instanceof IndicatorModel) &&
-                    event.isChecked()) {
+                if (!(event.getItem() instanceof IndicatorModel) &&
+                        event.isChecked()) {
 
-                    tree.setExpanded(event.getItem(), true );
+                    tree.setExpanded(event.getItem(), true);
                 }
 
                 // for single select, assure that only one indicator is selected
-                if(!multipleSelection && event.isChecked()) {
-                    for(ModelData model : tree.getCheckedSelection()) {
-                        if(model != event.getItem()) {
+                if (!multipleSelection && event.isChecked()) {
+                    for (ModelData model : tree.getCheckedSelection()) {
+                        if (model != event.getItem()) {
                             tree.setChecked(model, false);
                         }
                     }
@@ -180,17 +180,17 @@ public class IndicatorTreePanel extends ContentPanel {
                 String keywords[] = filter.toLowerCase().split("\\s+");
 
                 String name = ((String) record.get("name")).toLowerCase();
-                for(String keyword : keywords) {
-                    if(name.indexOf(keyword) == - 1)
+                for (String keyword : keywords) {
+                    if (name.indexOf(keyword) == -1)
                         return false;
                 }
-                
+
                 return true;
             }
         };
         filter.addListener(Events.Blur, new Listener<BaseEvent>() {
             public void handleEvent(BaseEvent be) {
-                if(filter.getRawValue() == null || filter.getRawValue().length()==0) {
+                if (filter.getRawValue() == null || filter.getRawValue().length() == 0) {
                     toolBar.setVisible(false);
                 }
             }
@@ -207,7 +207,7 @@ public class IndicatorTreePanel extends ContentPanel {
 
         public void load(DataReader<List<ModelData>> listDataReader, Object parent, final AsyncCallback<List<ModelData>> callback) {
 
-            if(parent == null) {
+            if (parent == null) {
                 service.execute(new GetSchema(), null, new AsyncCallback<Schema>() {
                     public void onFailure(Throwable caught) {
                         callback.onFailure(caught);
@@ -218,17 +218,17 @@ public class IndicatorTreePanel extends ContentPanel {
                         callback.onSuccess(new ArrayList<ModelData>(schema.getDatabases()));
                     }
                 });
-            } else if(parent instanceof UserDatabaseDTO) {
+            } else if (parent instanceof UserDatabaseDTO) {
                 callback.onSuccess(new ArrayList<ModelData>(((UserDatabaseDTO) parent).getActivities()));
 
-            } else if(parent instanceof ActivityModel) {
-                ActivityModel activity = ((ActivityModel)parent);
+            } else if (parent instanceof ActivityModel) {
+                ActivityModel activity = ((ActivityModel) parent);
                 ArrayList<ModelData> list = new ArrayList<ModelData>();
 
-                for(IndicatorGroup group : activity.groupIndicators()) {
-                    if(group.getName() != null)
+                for (IndicatorGroup group : activity.groupIndicators()) {
+                    if (group.getName() != null)
                         list.add(group);
-                    for(IndicatorModel indicator : group.getIndicators()) {
+                    for (IndicatorModel indicator : group.getIndicators()) {
                         list.add(indicator);
                     }
                 }
@@ -268,8 +268,8 @@ public class IndicatorTreePanel extends ContentPanel {
 
         List<IndicatorModel> list = new ArrayList<IndicatorModel>();
 
-        for(ModelData model : tree.getCheckedSelection()) {
-            if(model instanceof IndicatorModel) {
+        for (ModelData model : tree.getCheckedSelection()) {
+            if (model instanceof IndicatorModel) {
                 list.add((IndicatorModel) model);
             }
         }
@@ -282,15 +282,15 @@ public class IndicatorTreePanel extends ContentPanel {
 
     public void setSelection(Set<Integer> indicatorIds) {
         List<IndicatorModel> indicators = new ArrayList<IndicatorModel>();
-        
+
     }
 
     public List<Integer> getSelectedIds() {
 
         List<Integer> list = new ArrayList<Integer>();
 
-        for(ModelData model : tree.getCheckedSelection()) {
-            if(model instanceof IndicatorModel) {
+        for (ModelData model : tree.getCheckedSelection()) {
+            if (model instanceof IndicatorModel) {
                 list.add(((IndicatorModel) model).getId());
             }
         }

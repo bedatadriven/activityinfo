@@ -8,10 +8,10 @@ import com.google.inject.Inject;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.Place;
-import org.activityinfo.client.command.CommandService;
-import org.activityinfo.client.command.callback.DownloadCallback;
-import org.activityinfo.client.command.callback.Got;
-import org.activityinfo.client.command.monitor.AsyncMonitor;
+import org.activityinfo.client.dispatch.AsyncMonitor;
+import org.activityinfo.client.dispatch.Dispatcher;
+import org.activityinfo.client.dispatch.callback.DownloadCallback;
+import org.activityinfo.client.dispatch.callback.Got;
 import org.activityinfo.client.page.NavigationCallback;
 import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.PagePresenter;
@@ -63,12 +63,12 @@ public class PivotPresenter implements PagePresenter {
     }
 
 
-    private final CommandService service;
+    private final Dispatcher service;
     private final View view;
     private final EventBus eventBus;
 
     @Inject
-    public PivotPresenter(CommandService service, EventBus eventBus, final View view) {
+    public PivotPresenter(Dispatcher service, EventBus eventBus, final View view) {
         this.service = service;
         this.view = view;
         this.eventBus = eventBus;

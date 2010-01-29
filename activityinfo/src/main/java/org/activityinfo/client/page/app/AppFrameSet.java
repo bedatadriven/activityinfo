@@ -28,8 +28,8 @@ import com.google.inject.Singleton;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.Place;
-import org.activityinfo.client.command.Authentication;
-import org.activityinfo.client.command.monitor.AsyncMonitor;
+import org.activityinfo.client.dispatch.AsyncMonitor;
+import org.activityinfo.client.dispatch.remote.Authentication;
 import org.activityinfo.client.event.NavigationEvent;
 import org.activityinfo.client.offline.ui.OfflineMenu;
 import org.activityinfo.client.page.*;
@@ -48,7 +48,7 @@ public class AppFrameSet implements FrameSetPresenter {
 
     private EventBus eventBus;
     private Viewport viewport;
-//    private TabPanel tabPanel;
+    //    private TabPanel tabPanel;
     //    private TabItem dataEntryTab;
     private ToolBar topBar;
     private Authentication auth;

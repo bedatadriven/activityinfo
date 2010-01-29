@@ -13,7 +13,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import org.activityinfo.client.Application;
-import org.activityinfo.client.command.CommandService;
+import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.page.common.widget.RemoteComboBox;
 import org.activityinfo.shared.dto.AdminEntityModel;
 import org.activityinfo.shared.dto.AdminLevelModel;
@@ -27,14 +27,14 @@ import java.util.List;
 
 public class AdminFilterPanel extends ContentPanel {
 
-    private final CommandService service;
+    private final Dispatcher service;
     private TreeStore<AdminEntityModel> store;
     private AdminTreeLoader loader;
     private ComboBox<AdminLevelModel> levelCombo;
 
     private TreePanel<AdminEntityModel> tree;
 
-    public AdminFilterPanel(CommandService service) {
+    public AdminFilterPanel(Dispatcher service) {
         this.service = service;
 
         this.setLayout(new FitLayout());

@@ -5,8 +5,8 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.EventBus;
-import org.activityinfo.client.command.CommandService;
-import org.activityinfo.client.command.monitor.AsyncMonitor;
+import org.activityinfo.client.dispatch.AsyncMonitor;
+import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.event.SiteEvent;
 import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.shared.command.CreateEntity;
@@ -38,8 +38,10 @@ public class SiteFormPresenter implements SiteFormLeash {
         public boolean validate();
 
         public boolean isDirty();
+
         public Map<String, Object> getChanges();
-        public  Map<String, Object> getPropertyMap();
+
+        public Map<String, Object> getPropertyMap();
 
 
         public AsyncMonitor getMonitor();
@@ -51,7 +53,7 @@ public class SiteFormPresenter implements SiteFormLeash {
     }
 
     private final EventBus eventBus;
-    private final CommandService service;
+    private final Dispatcher service;
 
     private SiteModel currentSite;
     private ActivityModel currentActivity;
@@ -60,7 +62,7 @@ public class SiteFormPresenter implements SiteFormLeash {
     protected AdminFieldSetPresenter adminPresenter;
     private View view;
 
-    public SiteFormPresenter(EventBus eventBus, CommandService service, ActivityModel activity, View view) {
+    public SiteFormPresenter(EventBus eventBus, Dispatcher service, ActivityModel activity, View view) {
         super();
         this.eventBus = eventBus;
         this.service = service;
@@ -73,10 +75,10 @@ public class SiteFormPresenter implements SiteFormLeash {
     protected ListStore<PartnerModel> createPartnerStore() {
         ListStore<PartnerModel> store = new ListStore<PartnerModel>();
 
-        if(currentActivity.getDatabase().isEditAllAllowed()) {
+        if (currentActivity.getDatabase().isEditAllAllowed()) {
 
-            for(PartnerModel partner : currentActivity.getDatabase().getPartners()) {
-                if(partner.isOperational()) {
+            for (PartnerModel partner : currentActivity.getDatabase().getPartners()) {
+                if (partner.isOperational()) {
                     store.add(partner);
                 }
             }
@@ -113,7 +115,7 @@ public class SiteFormPresenter implements SiteFormLeash {
             }
         });
 
-        view.init(this, currentActivity, createPartnerStore(), createAsssessmentStore() );
+        view.init(this, currentActivity, createPartnerStore(), createAsssessmentStore());
 
     }
 
@@ -133,9 +135,9 @@ public class SiteFormPresenter implements SiteFormLeash {
 
     public void onUIAction(String actionId) {
 
-        if(UIActions.save.equals(actionId)) {
+        if (UIActions.save.equals(actionId)) {
             onSave();
-        } else if(UIActions.cancel.equals(actionId)) {
+        } else if (UIActions.cancel.equals(actionId)) {
 
         }
     }
@@ -147,10 +149,10 @@ public class SiteFormPresenter implements SiteFormLeash {
 
     public void onSave() {
 
-        if(currentSite.hasId()) {
+        if (currentSite.hasId()) {
 
             final Map<String, Object> changes = view.getChanges();
-            if(adminPresenter.isDirty()) {
+            if (adminPresenter.isDirty()) {
                 changes.putAll(adminPresenter.getPropertyMap());
             }
 
@@ -163,7 +165,7 @@ public class SiteFormPresenter implements SiteFormLeash {
                 @Override
                 public void onSuccess(VoidResult voidResult) {
                     // update model
-                    for(Map.Entry<String,Object> change : changes.entrySet()) {
+                    for (Map.Entry<String, Object> change : changes.entrySet()) {
                         currentSite.set(change.getKey(), change.getValue());
                     }
 
@@ -173,7 +175,7 @@ public class SiteFormPresenter implements SiteFormLeash {
             });
         } else {
 
-            final Map<String,Object> properties = view.getPropertyMap();
+            final Map<String, Object> properties = view.getPropertyMap();
             properties.putAll(adminPresenter.getPropertyMap());
             properties.put("activityId", currentActivity.getId());
 

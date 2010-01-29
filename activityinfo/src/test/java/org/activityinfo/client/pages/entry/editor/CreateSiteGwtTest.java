@@ -5,15 +5,14 @@ import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import org.activityinfo.client.LoggingEventBus;
-import org.activityinfo.client.command.Authentication;
-import org.activityinfo.client.command.CommandRequest;
-import org.activityinfo.client.command.CommandServiceImpl;
+import org.activityinfo.client.dispatch.remote.Authentication;
+import org.activityinfo.client.dispatch.remote.CommandRequest;
+import org.activityinfo.client.dispatch.remote.RemoteDispatcher;
 import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.client.page.entry.editor.SiteForm;
 import org.activityinfo.client.page.entry.editor.SiteFormDialog;
 import org.activityinfo.client.page.entry.editor.SiteFormLoader;
 import org.activityinfo.client.page.entry.editor.SiteFormPresenter;
-import org.activityinfo.client.util.GWTTimerImpl;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.RemoteCommandService;
 import org.activityinfo.shared.command.RemoteCommandServiceAsync;
@@ -42,17 +41,16 @@ public class CreateSiteGwtTest extends GWTTestCase {
     public void testCreate() throws Throwable {
 
 
-
         RemoteCommandServiceAsync remoteService = (RemoteCommandServiceAsync) GWT.create(RemoteCommandService.class);
-		ServiceDefTarget endpoint = (ServiceDefTarget) remoteService;
-		String moduleRelativeURL = GWT.getModuleBaseURL() + "cmd";
-		endpoint.setServiceEntryPoint(moduleRelativeURL);
+        ServiceDefTarget endpoint = (ServiceDefTarget) remoteService;
+        String moduleRelativeURL = GWT.getModuleBaseURL() + "cmd";
+        endpoint.setServiceEntryPoint(moduleRelativeURL);
 
         LoggingEventBus eventBus = new LoggingEventBus();
 
         Authentication auth = new Authentication("9cdbcf2b2ce45c282f6f0c98ea4a3dea", "user@user.org");
 
-        final CommandServiceImpl service = new CommandServiceImpl(remoteService, null, eventBus, new GWTTimerImpl(), auth) {
+        final RemoteDispatcher service = new RemoteDispatcher(remoteService, eventBus, auth) {
 
             @Override
             protected void onServerError(List<CommandRequest> executingCommands, Throwable caught) {
@@ -63,7 +61,7 @@ public class CreateSiteGwtTest extends GWTTestCase {
             @Override
             protected void onRemoteCallSuccess(List<CommandResult> results, List<CommandRequest> executingCommands) {
 
-                if(results.get(1) instanceof CreateResult) {
+                if (results.get(1) instanceof CreateResult) {
                     finishTest();
                 }
 
@@ -121,18 +119,18 @@ public class CreateSiteGwtTest extends GWTTestCase {
                     public void onServerError() {
 
                     }
-                }) ;
+                });
 
-                service.executePending();
+                service.processPendingCommands();
 
             }
         });
 
 
-        service.executePending();
+        service.processPendingCommands();
 
         delayTestFinish(50000);
-        
+
 
     }
 

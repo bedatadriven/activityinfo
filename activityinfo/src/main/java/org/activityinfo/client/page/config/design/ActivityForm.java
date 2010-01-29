@@ -11,7 +11,7 @@ import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import org.activityinfo.client.Application;
-import org.activityinfo.client.command.CommandService;
+import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.page.common.widget.MapIconComboBox;
 import org.activityinfo.client.page.common.widget.MappingComboBox;
 import org.activityinfo.client.page.common.widget.MappingComboBoxBinding;
@@ -25,7 +25,7 @@ public class ActivityForm extends AbstractDesignForm {
     private ListStore<LocationTypeModel> locationTypeStore;
     private FormBinding binding;
 
-    public ActivityForm(CommandService service, UserDatabaseDTO database) {
+    public ActivityForm(Dispatcher service, UserDatabaseDTO database) {
         super();
 
         binding = new FormBinding(this);

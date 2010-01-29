@@ -3,10 +3,9 @@ package org.activityinfo.client.page.map;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.Place;
-import org.activityinfo.client.command.CommandService;
-import org.activityinfo.client.command.callback.DownloadCallback;
-import org.activityinfo.client.command.callback.Got;
-import org.activityinfo.client.command.monitor.AsyncMonitor;
+import org.activityinfo.client.dispatch.AsyncMonitor;
+import org.activityinfo.client.dispatch.Dispatcher;
+import org.activityinfo.client.dispatch.callback.DownloadCallback;
 import org.activityinfo.client.page.NavigationCallback;
 import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.PagePresenter;
@@ -14,9 +13,7 @@ import org.activityinfo.client.page.common.toolbar.ActionListener;
 import org.activityinfo.client.page.common.toolbar.ExportCallback;
 import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.shared.command.GenerateElement;
-import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.RenderElement;
-import org.activityinfo.shared.dto.Schema;
 import org.activityinfo.shared.report.content.Content;
 import org.activityinfo.shared.report.model.ReportElement;
 /*
@@ -25,7 +22,7 @@ import org.activityinfo.shared.report.model.ReportElement;
 
 public class MapPresenter implements PagePresenter, ExportCallback, ActionListener {
 
-    public interface View  {
+    public interface View {
 
         public void bindPresenter(MapPresenter presenter);
 
@@ -42,10 +39,10 @@ public class MapPresenter implements PagePresenter, ExportCallback, ActionListen
 
     private final PageId pageId;
     private final EventBus eventBus;
-    private final CommandService service;
+    private final Dispatcher service;
     private final View view;
 
-    public MapPresenter(PageId pageId, EventBus eventBus, CommandService service, final View view) {
+    public MapPresenter(PageId pageId, EventBus eventBus, Dispatcher service, final View view) {
         this.pageId = pageId;
         this.eventBus = eventBus;
         this.service = service;
@@ -55,9 +52,9 @@ public class MapPresenter implements PagePresenter, ExportCallback, ActionListen
     }
 
     public void onUIAction(String itemId) {
-        if(UIActions.refresh.equals(itemId)) {
+        if (UIActions.refresh.equals(itemId)) {
             onRefresh();
-        } else if(UIActions.exportData.equals(itemId)) {
+        } else if (UIActions.exportData.equals(itemId)) {
             export(RenderElement.Format.Excel_Data);
         }
     }
@@ -68,7 +65,7 @@ public class MapPresenter implements PagePresenter, ExportCallback, ActionListen
 
     public void onRefresh() {
 
-        if(view.validate()) {
+        if (view.validate()) {
 
             final ReportElement element = this.view.getMapElement();
 
@@ -104,10 +101,10 @@ public class MapPresenter implements PagePresenter, ExportCallback, ActionListen
 
     public void export(RenderElement.Format format) {
 
-        if(view.validate()) {
+        if (view.validate()) {
 
-           service.execute(new RenderElement(view.getMapElement(), format), view.getMapLoadingMonitor(),
-                   new DownloadCallback(eventBus, "map"));
+            service.execute(new RenderElement(view.getMapElement(), format), view.getMapLoadingMonitor(),
+                    new DownloadCallback(eventBus, "map"));
         }
 
     }

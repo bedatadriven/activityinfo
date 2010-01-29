@@ -3,23 +3,23 @@ package org.activityinfo.client.page.entry.editor;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import org.activityinfo.client.EventBus;
+import org.activityinfo.client.dispatch.AsyncMonitor;
+import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.map.MapApiLoader;
-import org.activityinfo.client.command.CommandService;
-import org.activityinfo.client.command.monitor.AsyncMonitor;
 import org.activityinfo.shared.dto.ActivityModel;
 import org.activityinfo.shared.dto.SiteModel;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class SiteFormLoader  {
+public class SiteFormLoader {
 
-    private final CommandService dataConn;
+    private final Dispatcher dataConn;
     private final EventBus eventBus;
 
     private SiteFormLeash leash = null;
 
-    public SiteFormLoader(EventBus eventBus, CommandService service) {
+    public SiteFormLoader(EventBus eventBus, Dispatcher service) {
         this.dataConn = service;
         this.eventBus = eventBus;
     }
@@ -29,11 +29,11 @@ public class SiteFormLoader  {
 
         monitor.beforeRequest();
 
-        if(leash != null && leash.getActivityId() == activity.getId()) {
+        if (leash != null && leash.getActivityId() == activity.getId()) {
             leash.setSite(site);
             monitor.onCompleted();
             return;
-        } else if(leash != null) {
+        } else if (leash != null) {
             leash.destroy();
             leash = null;
         }
@@ -59,8 +59,8 @@ public class SiteFormLoader  {
 
                 monitor.onCompleted();
 
-                if(monitor instanceof TestingMonitor) {
-                    ((TestingMonitor)monitor).onFormLoaded(presenter, form, dlg);
+                if (monitor instanceof TestingMonitor) {
+                    ((TestingMonitor) monitor).onFormLoaded(presenter, form, dlg);
                 }
 
                 leash = presenter;
@@ -68,7 +68,7 @@ public class SiteFormLoader  {
         });
     }
 
-    
+
     public interface TestingMonitor extends AsyncMonitor {
 
         public void onFormLoaded(SiteFormPresenter presenter, SiteForm form, SiteFormDialog dlg);
