@@ -49,7 +49,6 @@ public class StartupListener extends GuiceServletContextListener {
                 new BootstrapModule(),
                 new GwtRpcModule(),
                 new WfsModule(),
-                new MailModule(),
                 new KmlModule());
 
 //        ScheduleInitializer si = injector.getInstance(ScheduleInitializer.class);
