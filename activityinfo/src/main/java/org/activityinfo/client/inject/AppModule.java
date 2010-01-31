@@ -15,10 +15,8 @@ import org.activityinfo.client.page.charts.ChartPage;
 import org.activityinfo.client.page.charts.Charter;
 import org.activityinfo.client.page.common.GalleryPage;
 import org.activityinfo.client.page.common.GalleryView;
-import org.activityinfo.client.util.GWTTimerImpl;
 import org.activityinfo.client.util.GxtStateManagerImpl;
 import org.activityinfo.client.util.IStateManager;
-import org.activityinfo.client.util.ITimer;
 import org.activityinfo.shared.command.RemoteCommandServiceAsync;
 
 public class AppModule extends AbstractGinModule {
@@ -34,7 +32,6 @@ public class AppModule extends AbstractGinModule {
         bind(EventBus.class).to(LoggingEventBus.class).in(Singleton.class);
 
         bind(IStateManager.class).to(GxtStateManagerImpl.class);
-        bind(ITimer.class).to(GWTTimerImpl.class);
 
 //      eager singletson seem to cause program
 //        bind(PageManager.class).asEagerSingleton();

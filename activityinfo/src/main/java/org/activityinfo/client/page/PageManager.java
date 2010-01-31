@@ -3,6 +3,9 @@ package org.activityinfo.client.page;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.EventType;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -12,11 +15,9 @@ import org.activityinfo.client.ViewPath;
 import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.event.NavigationEvent;
 import org.activityinfo.client.inject.Root;
-import org.activityinfo.client.util.ITimer;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 @Singleton
@@ -25,178 +26,259 @@ public class PageManager {
     private final EventBus eventBus;
     private final FrameSetPresenter root;
     private final Map<PageId, PageLoader> pageLoaders = new HashMap<PageId, PageLoader>();
-    private final ITimer timer;
 
     public static final EventType NavigationRequested = new EventBus.NamedEventType("NavigationRequested");
     public static final EventType NavigationAgreed = new EventBus.NamedEventType("NavigationAgreed");
 
-    private int activeRequestId = 0;
+    private Navigation activeNavigation;
 
     @Inject
-    public PageManager(final EventBus eventBus, ITimer timer, final @Root FrameSetPresenter root) {
+    public PageManager(final EventBus eventBus, final @Root FrameSetPresenter root) {
         this.eventBus = eventBus;
-        this.timer = timer;
         this.root = root;
 
         eventBus.addListener(NavigationRequested, new Listener<NavigationEvent>() {
-
             @Override
             public void handleEvent(NavigationEvent be) {
-
-                // keep track of the sequence in which requests are received
-                // so that don't load pages that have been superceeded by subsequent
-                // requests
-                activeRequestId++;
-
-                recursivelyAskPagesIfItsOkToBeChanged(activeRequestId, root, be.getPlace(),
-                        be.getPlace().getViewPath().iterator());
-
+                onNavigationRequested(be);
             }
         });
-
         Log.debug("PageManager: connected to EventBus and listening.");
     }
 
+    private void onNavigationRequested(NavigationEvent be) {
+        if(activeNavigation ==null || !activeNavigation.getPlace().equals(be.getPlace())) {
+            activeNavigation = new Navigation(be.getPlace());
+            activeNavigation.go();
+        }
+    }
 
     public void registerPageLoader(PageId pageId, PageLoader loader) {
         pageLoaders.put(pageId, loader);
         Log.debug("PageManager: Registered loader for pageId '" + pageId + "'");
     }
 
-    protected void recursivelyAskPagesIfItsOkToBeChanged(final int requestId, final FrameSetPresenter frame,
-                                                         final Place place,
-                                                         final Iterator<ViewPath.Node> path) {
+    private PageLoader getPageLoader(PageId pageId) {
+        PageLoader loader = pageLoaders.get(pageId);
+        if (loader == null) {
+            throw new Error("PageManager: no loader for " + pageId);
+        }
+        return loader;
+    }
 
-        final ViewPath.Node node = path.next();
 
-        final PagePresenter activePage = frame.getActivePage(node.regionId);
+    public class Navigation {
+        private final Place place;
+
+        private Iterator<ViewPath.Node> pageHierarchyIt;
+        private FrameSetPresenter frame;
+        private PagePresenter currentPage;
+        private ViewPath.Node targetPage;
+
+        private AsyncMonitor loadingPlaceHolder;
+
+        public Navigation(Place place) {
+            this.place = place;
+        }
+
+        public Place getPlace() {
+            return place;
+        }
+
+        public void go() {
+            startAtRoot();
+            confirmPageChange();
+        }
+
+        private void startAtRoot() {
+            assertViewPathIsNotEmpty();
+            pageHierarchyIt = place.getViewPath().iterator();
+            currentPage = root;
+            descend();
+        }
+
+        private void descend() {
+            assertPageIsFrame(currentPage);
+            frame = (FrameSetPresenter) currentPage;
+            targetPage = pageHierarchyIt.next();
+            currentPage = frame.getActivePage(targetPage.regionId);
+        }
 
 
-        if (activePage == null) {
-            // ok, no problems here
-            onNavigationAgreed(requestId, place);
+        /**
+         * After each asynchronous call we need to check that the user has not
+         * requested to navigate elsewhere.
+         *
+         * For example, a page loader may make an asynchronous call, which means that an additional
+         * JavaScript fragment has to be downloaded from the server and parsed before we can continue.
+         * During that time, the user may have grown tired of waiting and hit the back button or
+         * chosen another place to go to.
+         */
+        private boolean isStillActive() {
+            return this == activeNavigation;
+        }
 
-        } else if (activePage.getPageId().equals(node.pageId)) {
-            // ok, no change required.
-            // descend if necessary
+        protected void confirmPageChange() {
+            if (thereIsNoCurrentPage()) {
+                proceedWithNavigation();
 
-            if (path.hasNext()) {
-                recursivelyAskPagesIfItsOkToBeChanged(requestId, (FrameSetPresenter) activePage, place, path);
+            } else if (targetPageIsAlreadyActive()) {
+                // ok, no change required.
+                // descend if necessary
+
+                if (hasChildPage()) {
+                    descend();
+                    confirmPageChange();
+                } else {
+                    proceedWithNavigation();
+                }
             } else {
-
-                // this is the last one, we're good to go
-                if (requestId == activeRequestId)
-                    onNavigationAgreed(requestId, place);
+                askPermissionToChange();
             }
-        } else {
-            // need to change this page. ask permission
+        }
 
-            activePage.requestToNavigateAway(place, new NavigationCallback() {
+        /**
+         * We need to give the current page an opportunity to cancel the navigation.
+         * For example, the user may have made changes to the page and we don't want
+         * to navigate away until we're sure that they can be saved.
+         */
+        private void askPermissionToChange() {
+            currentPage.requestToNavigateAway(place, new NavigationCallback() {
                 @Override
                 public void onDecided(boolean allowed) {
                     if (allowed) {
-                        if (requestId == activeRequestId)
-                            onNavigationAgreed(requestId, place);
+                        if(isStillActive()) {
+                            proceedWithNavigation();
+                        }
                     } else {
-                        Log.debug("Navigation to '" + place.toString() + "' refused by " + activePage.toString());
+                        Log.debug("Navigation to '" + place.toString() + "' refused by " + currentPage.toString());
                     }
                 }
             });
         }
-    }
 
-    private void onNavigationAgreed(int requestId, Place place) {
-
-
-        eventBus.fireEvent(new NavigationEvent(NavigationAgreed, place));
-
-        List<ViewPath.Node> viewPath = place.getViewPath();
-
-        if (viewPath.size() != 0) {
-            FrameSetPresenter frame = root;
-            recursivelyChangePages(requestId, frame, place, viewPath.iterator());
+        private boolean hasChildPage() {
+            return pageHierarchyIt.hasNext();
         }
-    }
 
+        private boolean targetPageIsAlreadyActive() {
+            return currentPage.getPageId().equals(targetPage.pageId);
+        }
 
-    protected void recursivelyChangePages(final int requestId, final FrameSetPresenter frame, final Place place, final Iterator<ViewPath.Node> path) {
+        private boolean thereIsNoCurrentPage() {
+            return currentPage == null;
+        }
 
-        final ViewPath.Node node = path.next();
-
-        PagePresenter activePage = frame.getActivePage(node.regionId);
-
-
-        /*
-           * First see if this view is already the active view,
-           * in wehich case we can just descend in the path
-           */
-        if (activePage != null &&
-                activePage.getPageId().equals(node.pageId) &&
-                activePage.navigate(place)) {
-
-            if (path.hasNext()) {
-                recursivelyChangePages(requestId, (FrameSetPresenter) frame.getActivePage(node.regionId), place, path);
+        private void proceedWithNavigation() {
+            if(isStillActive()) {
+                fireAgreedEvent();
+                startAtRoot();
+                changePage();
             }
+        }
 
-        } else {
+        private void fireAgreedEvent() {
+            eventBus.fireEvent(new NavigationEvent(NavigationAgreed, place));
+        }
 
-            if (activePage != null) {
-                activePage.shutdown();
+        protected void changePage() {
+            /*
+               * First see if this view is already the active view,
+               * in wehich case we can just descend in the path
+               */
+            if (!thereIsNoCurrentPage() &&
+                 targetPageIsAlreadyActive() &&
+                  currentPage.navigate(place)) {
+
+                changeChildPageIfNecessary();
+
+            } else {
+                shutDownCurrentPageIfThereIsOne();
+                showPlaceHolder();
+                schedulePageLoadAfterEventProcessing();
             }
+        }
 
-            // Display a place holder, this may take a bit of time
-            final AsyncMonitor placeHolder = frame.showLoadingPlaceHolder(node.regionId, node.pageId, place);
+        private void shutDownCurrentPageIfThereIsOne() {
+            if (!thereIsNoCurrentPage()) {
+                currentPage.shutdown();
+            }
+        }
 
-            // wrap this next call in a timer to assure that the browser
-            // shows our place holder
+        private void showPlaceHolder() {
+            loadingPlaceHolder = frame.showLoadingPlaceHolder(targetPage.regionId, targetPage.pageId, place);
+        }
 
-            timer.schedule(1, new ITimer.Callback() {
-
-                public void run() {
-
-
-                    // verify that this request has not been superceeded
-                    if (requestId != activeRequestId)
-                        return;
-
-                    // obtain the loader for this page
-
-                    PageLoader loader = pageLoaders.get(node.pageId);
-                    if (loader == null) {
-                        Log.error("PageManager: no loader for " + node.pageId);
-                        return;
+        /**
+         * Schedules the loadPage() after all UI events in the browser have had
+         * a chance to run. This assures that the loading placeholder has a chance to
+         * be added to the page.
+         */
+        private void schedulePageLoadAfterEventProcessing() {
+            if(GWT.isClient()) {
+                DeferredCommand.addCommand(new Command() {
+                    @Override
+                    public void execute() {
+                        if(isStillActive()) {
+                            loadPage();
+                        }
                     }
+                });
+            } else {
+                loadPage();
+            }
+        }
 
-                    loader.load(node.pageId, place, new AsyncCallback<PagePresenter>() {
-
-                        @Override
-                        public void onFailure(Throwable caught) {
-                            placeHolder.onConnectionProblem();
-                            Log.error("PageManager: could not load page " + node.pageId, caught);
-                        }
-
-                        @Override
-                        public void onSuccess(PagePresenter page) {
-
-                            // verify that this request has not been superceeded
-                            if (requestId != activeRequestId)
-                                return;
-
-                            frame.setActivePage(node.regionId, page);
-
-                            if (path.hasNext()) {
-                                assert page instanceof FrameSetPresenter :
-                                        "Cannot load page " + path.next().pageId + " into " + page.toString() + " because " +
-                                                page.getClass().getName() + " does not implement the PageFrame interface.";
-
-                                recursivelyChangePages(requestId, (FrameSetPresenter) page, place, path);
-                            }
-                        }
-
-                    });
+        /**
+         * Delegates the creation of the Page component to a registered
+         * page loader.
+         */
+        private void loadPage() {
+            PageLoader loader = getPageLoader(targetPage.pageId);
+            loader.load(targetPage.pageId, place, new AsyncCallback<PagePresenter>() {
+                @Override
+                public void onFailure(Throwable caught) {
+                    onPageFailedToLoad(caught);
+                }
+                @Override
+                public void onSuccess(PagePresenter page) {
+                    if(isStillActive()) {
+                        onPageLoaded(page);
+                    }
                 }
             });
+        }
 
+        private void onPageFailedToLoad(Throwable caught) {
+            loadingPlaceHolder.onConnectionProblem();
+            Log.error("PageManager: could not load page " + targetPage.pageId, caught);
+        }
+
+        private void onPageLoaded(PagePresenter page) {
+            makeCurrent(page);
+            changeChildPageIfNecessary();
+        }
+
+        private void makeCurrent(PagePresenter page) {
+            frame.setActivePage(targetPage.regionId, page);
+            currentPage = page;
+        }
+
+        private void changeChildPageIfNecessary() {
+            if (hasChildPage()) {
+                descend();
+                changePage();
+            }
+        }
+
+        private void assertViewPathIsNotEmpty() {
+            assert place.getViewPath().size() != 0 : "Place " + place.toString() + " has an empty viewPath!";
+        }
+
+        private void assertPageIsFrame(PagePresenter page) {
+            assert page instanceof FrameSetPresenter :
+                    "Cannot load page " + pageHierarchyIt.next().pageId + " into " + page.toString() + " because " +
+                            page.getClass().getName() + " does not implement the PageFrame interface.";
         }
     }
 }

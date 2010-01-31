@@ -10,6 +10,8 @@ import org.junit.Assert;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertTrue;
+
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
@@ -62,5 +64,9 @@ public class MockEventBus extends BaseObservable implements EventBus {
             }
         }
         return null;
+    }
+
+    public void assertNotFired(EventType eventType) {
+        assertTrue("eventType" + eventType.toString() + " has not been fired", getEventCount(eventType)==0);
     }
 }
