@@ -21,5 +21,11 @@ package org.activityinfo.server.dao;
 
 import org.activityinfo.server.domain.Country;
 
+import java.util.List;
+
+
 public interface CountryDAO extends DAO<Country, Integer> {
+
+    List<Country> queryAllCountriesAlphabetically();
+
 }

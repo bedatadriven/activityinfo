@@ -1,6 +1,7 @@
 package org.activityinfo.server.report;
 
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import org.activityinfo.server.dao.hibernate.HibernateModule;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.server.report.generator.ReportGenerator;
@@ -10,6 +11,7 @@ import org.activityinfo.shared.command.RenderElement;
 import org.activityinfo.shared.report.model.Report;
 import org.activityinfo.test.InjectionSupport;
 import org.activityinfo.test.Modules;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -18,9 +20,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 
+@Ignore("Needs to be rewritten -- figure out what to do with dependency on the map icons folder")
 @RunWith(InjectionSupport.class)
 @Modules({ReportModule.class, HibernateModule.class})
 public class FullTest {
+
 
     @Inject
     private EntityManager em;
@@ -32,8 +36,12 @@ public class FullTest {
     private RendererFactory factory;
 
 
+
     @Test
     public void test() throws Throwable {
+
+
+
 
         /*
            *

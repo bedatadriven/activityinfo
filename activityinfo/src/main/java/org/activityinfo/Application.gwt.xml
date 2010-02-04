@@ -33,6 +33,9 @@
     <inherits name="com.extjs.gxt.charts.Chart"/>
     <inherits name="com.google.code.gaxb.Annotations"/>
 
+    <!-- Inherit ActivityInfo API module -->
+    <inherits name="org.activityinfo.ActivityInfoApi"/>
+    
     <!-- Configure Logging -->
 
     <!-- For production most teams prefer to set the default log level to `OFF` -->
@@ -42,7 +45,6 @@
 
     <!-- Include generated sources -->
     <source path='client'/>
-    <source path='shared'/>
 
     <!-- Specify the app entry point class.                         -->
     <entry-point class='org.activityinfo.client.Application' />

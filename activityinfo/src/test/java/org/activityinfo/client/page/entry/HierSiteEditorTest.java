@@ -1,11 +1,11 @@
-package org.activityinfo.clientjre.place.entry;
+package org.activityinfo.client.page.entry;
 
 import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.event.SiteEvent;
 import org.activityinfo.client.mock.DummyData;
 import org.activityinfo.client.mock.MockCommandService;
-import org.activityinfo.client.mock.MockEventBus;
 import org.activityinfo.client.page.entry.HierSiteEditor;
+import org.activityinfo.client.mock.MockEventBus;
 import org.activityinfo.client.mock.MockStateManager;
 import org.activityinfo.server.util.DateUtilCalendarImpl;
 import org.activityinfo.shared.command.GetAdminEntities;

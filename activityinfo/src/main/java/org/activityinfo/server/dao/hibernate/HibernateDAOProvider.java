@@ -114,8 +114,10 @@ public class HibernateDAOProvider<T> implements Provider<T> {
         }
 
         private void applyPositionalParameters(Object[] args, Query query) {
-            for (int i = 0; i != args.length; ++i) {
-                query.setParameter(i + 1, args[i]);
+            if(args != null) {
+                for (int i = 0; i != args.length; ++i) {
+                    query.setParameter(i + 1, args[i]);
+                }
             }
         }
     }

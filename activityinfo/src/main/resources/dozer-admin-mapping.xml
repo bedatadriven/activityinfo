@@ -2,6 +2,21 @@
 
 <mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://dozer.sourceforge.net beanmapping.xsd ">
 
+    <!-- This mapping is for the GetCountries command, it maps only the id and
+         name of the Country object, leaving other fields blanks -->
+    <mapping wildcard="false" map-id="countryNameOnly">
+        <class-a>org.activityinfo.server.domain.Country</class-a>
+        <class-b>org.activityinfo.shared.dto.CountryModel</class-b>
+        <field>
+            <a>id</a>
+            <b>id</b>
+        </field>
+        <field>
+            <a>name</a>
+            <b>name</b>
+        </field>
+    </mapping>
+    
 	<mapping wildcard="true">
 		
 		<class-a>org.activityinfo.server.domain.AdminLevel</class-a>

@@ -1,4 +1,4 @@
-package org.activityinfo.clientjre.place.entry;
+package org.activityinfo.client.page.entry;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.SortInfo;
@@ -8,11 +8,11 @@ import org.activityinfo.client.EventBus;
 import org.activityinfo.client.event.SiteEvent;
 import org.activityinfo.client.mock.DummyData;
 import org.activityinfo.client.mock.MockCommandService;
-import org.activityinfo.client.mock.MockEventBus;
-import org.activityinfo.client.mock.MockStateManager;
 import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.client.page.entry.SiteEditor;
 import org.activityinfo.client.page.entry.SiteGridPlace;
+import org.activityinfo.client.mock.MockEventBus;
+import org.activityinfo.client.mock.MockStateManager;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.GetSites;
 import org.activityinfo.shared.command.UpdateEntity;

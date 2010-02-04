@@ -63,7 +63,9 @@ public class HostController extends AbstractController {
 
     @Transactional
     protected Authentication getAuthentication(HttpServletRequest request) throws NoValidAuthentication {
-        String authToken = getCookie(request, AUTH_TOKEN_COOKIE);
+        String authToken = request.getParameter("auth");
+        if(isEmpty(authToken)) 
+            authToken = getCookie(request, AUTH_TOKEN_COOKIE);
         if (isEmpty(authToken))
             throw new NoValidAuthentication();
 

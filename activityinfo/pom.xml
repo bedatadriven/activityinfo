@@ -66,14 +66,11 @@
         <!-- 	<gwt.output.directory>${basedir}/target/gwt</gwt.output.directory> -->
         <gwt.output.directory>${basedir}/war</gwt.output.directory>
 
-        <gwt.module>org.activityinfo.Application</gwt.module>
-
         <!-- the value of the rename-to attribute in your GWT module configuration -->
         <gwt.module.alias>ActivityInfo</gwt.module.alias>
 
         <!-- Allow the build to continue even if there are test failures -->
         <maven.test.failure.ignore>true</maven.test.failure.ignore>
-
     </properties>
 
     <dependencies>
@@ -328,18 +325,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>net.sourceforge.htmlunit</groupId>
-            <artifactId>htmlunit</artifactId>
-            <version>2.6</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mortbay.jetty</groupId>
-            <artifactId>jetty-servlet-tester</artifactId>
-            <version>6.1.22</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
             <version>3.1</version>
@@ -383,6 +368,7 @@
                directory for hosted mode live editing -->
 
         <outputDirectory>${gwt.output.directory}/WEB-INF/classes</outputDirectory>
+        <testSourceDirectory>src/test/java</testSourceDirectory>
 
         <plugins>
 
@@ -417,15 +403,16 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>gwt-maven-plugin</artifactId>
-                <version>1.2-SNAPSHOT</version>
+                <version>1.2</version>
                 <configuration>
                     <runTarget>/</runTarget>
                     <logLevel>INFO</logLevel>
                     <inplace>false</inplace>
-                    <port>8993</port>
-                    <generateDirectory>${basedir}/src/main/java</generateDirectory>
-                    <module>${gwt.module}</module>
+                    <gwtVersion>${gwtVersion}</gwtVersion>
+                    <port>9090</port>
+                    <module>org.activityinfo.Application</module>
                     <webappDirectory>${basedir}/war</webappDirectory>
+                    <warSourceDirectory>${basedir}/war</warSourceDirectory>
                     <extraJvmArgs>-Xmx512M</extraJvmArgs>
                 </configuration>
 
@@ -438,6 +425,7 @@
                         </goals>
                         <configuration>
                             <logLevel>ALL</logLevel>
+                            <generateDirectory>${basedir}/src/main/java</generateDirectory>
                             <i18nConstantsBundle>org.activityinfo.shared.i18n.UIConstants</i18nConstantsBundle>
                             <i18nMessagesBundle>org.activityinfo.shared.i18n.UIMessages</i18nMessagesBundle>
                         </configuration>
@@ -446,11 +434,10 @@
                         <id>gwt-compile</id>
                         <phase>prepare-package</phase>
                         <configuration>
-                            <extra>true</extra>
                             <disableClassMetadata>true</disableClassMetadata>
                             <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
                             <module>${gwt.module}</module>
-                            <soyc>true</soyc>
+                            <soyc>false</soyc>
                         </configuration>
                         <goals>
                             <goal>compile</goal>
@@ -482,7 +469,7 @@
             </plugin>
 
             <!-- Exclude GWT integration tests from the test phase -->
-            <!-- (they don't run correctly) -->
+            <!-- we want to run them during the integration-test phase with the gwt-maven plugin  -->
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.4.3</version>
@@ -491,6 +478,7 @@
                         <exclude>**/*GwtTest.java</exclude>
                         <exclude>**/report/*.java</exclude>
                     </excludes>
+                    <failIfNoTests>false</failIfNoTests>
                 </configuration>
             </plugin>
 
@@ -501,6 +489,9 @@
                 <version>2.4.3-alpha-1</version>
                 <executions>
                     <execution>
+                        <configuration>
+                            <testSourceDirectory>src/it/java</testSourceDirectory>
+                        </configuration>
                         <goals>
                             <goal>integration-test</goal>
                             <goal>verify</goal>
@@ -587,6 +578,7 @@
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>maven-jetty-plugin</artifactId>
+                <version>6.1.22</version>
                 <configuration>
                     <webAppSourceDirectory>${basedir}/war</webAppSourceDirectory>
                     <scanIntervalSeconds>0</scanIntervalSeconds>
@@ -662,17 +654,81 @@
         <profile>
             <id>fftest</id>
             <properties>
-                <gwt.module>org.activityinfo.ApplicationFFTest</gwt.module>
+                <maven.test.skip>true</maven.test.skip>
             </properties>
-
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>gwt-maven-plugin</artifactId>
+                        <version>1.2</version>
+                        <executions>
+                            <execution>
+                                <id>gwt-compile</id>
+                                <configuration>
+                                    <draftCompile>true</draftCompile>
+                                    <module>org.activityinfo.ApplicationFFTest</module>
+                                </configuration>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
         <!-- Build the Application Module with only permutations for
               IE6 and logging enabled for testing purposes -->
         <profile>
             <id>ie6test</id>
-            <properties>
-                <gwt.module>org.activityinfo.ApplicationIE6Test</gwt.module>
-            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>gwt-maven-plugin</artifactId>
+                        <version>1.2</version>
+                        <executions>
+                            <execution>
+                                <id>gwt-compile</id>
+                                <configuration>
+                                    <draftCompile>true</draftCompile>
+                                    <module>org.activityinfo.ApplicationIE6Test</module>
+                                </configuration>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!-- Build the Application Module with a single permutation but with soyc
+             enabled -->
+        <profile>
+            <id>soyc</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>gwt-maven-plugin</artifactId>
+                        <version>1.2</version>
+                        <executions>
+                            <execution>
+                                <id>gwt-compile</id>
+                                <configuration>
+                                    <module>org.activityinfo.ApplicationFFTest</module>
+                                    <soyc>true</soyc>
+                                </configuration>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 </project>

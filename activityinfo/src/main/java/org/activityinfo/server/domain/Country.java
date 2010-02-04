@@ -24,12 +24,9 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * 
- * @author Alex Bertram
- *
- */
 @Entity
+@NamedQuery(name="queryAllCountriesAlphabetically",
+        query="select c from Country c order by c.name")
 public class Country implements Serializable, SchemaElement {
 
 	private int id;
