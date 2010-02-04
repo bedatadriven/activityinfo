@@ -24,8 +24,8 @@ import org.activityinfo.server.dao.CountryDAO;
 import org.activityinfo.server.dao.OnDataSet;
 import org.activityinfo.server.domain.Country;
 import org.activityinfo.test.InjectionSupport;
+import org.activityinfo.test.MockHibernateModule;
 import org.activityinfo.test.Modules;
-import org.activityinfo.test.TestingHibernateModule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -35,7 +35,7 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
 @RunWith(InjectionSupport.class)
-@Modules({TestingHibernateModule.class})
+@Modules({MockHibernateModule.class})
 public class CountryDAOTest {
 
     @Inject

@@ -5,8 +5,8 @@ import org.activityinfo.server.dao.hibernate.SiteTableDAOHibernate;
 import org.activityinfo.server.domain.AdminEntity;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.test.InjectionSupport;
+import org.activityinfo.test.MockHibernateModule;
 import org.activityinfo.test.Modules;
-import org.activityinfo.test.TestingHibernateModule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -15,7 +15,7 @@ import java.util.List;
 
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/sites-simple1.db.xml")
-@Modules({TestingHibernateModule.class})
+@Modules({MockHibernateModule.class})
 public class SiteTableDAOTest {
 
     @Inject

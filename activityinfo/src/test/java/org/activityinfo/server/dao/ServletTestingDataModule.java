@@ -20,12 +20,12 @@
 package org.activityinfo.server.dao;
 
 import com.google.inject.servlet.RequestScoped;
-import org.activityinfo.test.TestingHibernateModule;
+import org.activityinfo.test.MockHibernateModule;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-public class ServletTestingDataModule extends TestingHibernateModule {
+public class ServletTestingDataModule extends MockHibernateModule {
 
     private EntityManagerFactory emf;
 

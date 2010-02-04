@@ -27,7 +27,7 @@ import org.junit.runner.RunWith;
 import javax.persistence.EntityManager;
 
 @RunWith(InjectionSupport.class)
-@Modules(TestingHibernateModule.class)
+@Modules(MockHibernateModule.class)
 public class TestScopeTest {
 
     @Inject

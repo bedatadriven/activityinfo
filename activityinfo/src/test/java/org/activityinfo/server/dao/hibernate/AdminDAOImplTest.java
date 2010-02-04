@@ -9,7 +9,7 @@ import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.test.AssertUtils;
 import org.activityinfo.test.InjectionSupport;
 import org.activityinfo.test.Modules;
-import org.activityinfo.test.TestingHibernateModule;
+import org.activityinfo.test.MockHibernateModule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -21,7 +21,7 @@ import static junit.framework.Assert.assertEquals;
 
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/adminEntities.db.xml")
-@Modules({TestingHibernateModule.class})
+@Modules({MockHibernateModule.class})
 public class AdminDAOImplTest {
 
     private AdminDAO adminDAO;

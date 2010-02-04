@@ -8,7 +8,7 @@ import org.activityinfo.server.domain.SiteData;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.test.InjectionSupport;
 import org.activityinfo.test.Modules;
-import org.activityinfo.test.TestingHibernateModule;
+import org.activityinfo.test.MockHibernateModule;
 import org.hibernate.criterion.Restrictions;
 import org.junit.Assert;
 import org.junit.Test;
@@ -18,7 +18,7 @@ import javax.persistence.EntityManager;
 import java.util.List;
 
 @RunWith(InjectionSupport.class)
-@Modules({TestingHibernateModule.class})
+@Modules({MockHibernateModule.class})
 @OnDataSet("/dbunit/sites-simple1.db.xml")
 public class SiteDataBinderTest {
 

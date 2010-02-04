@@ -8,8 +8,8 @@ import org.activityinfo.shared.report.content.EntityCategory;
 import org.activityinfo.shared.report.content.QuarterCategory;
 import org.activityinfo.shared.report.model.*;
 import org.activityinfo.test.InjectionSupport;
+import org.activityinfo.test.MockHibernateModule;
 import org.activityinfo.test.Modules;
-import org.activityinfo.test.TestingHibernateModule;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -20,7 +20,7 @@ import java.util.*;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(InjectionSupport.class)
-@Modules({TestingHibernateModule.class})
+@Modules({MockHibernateModule.class})
 @OnDataSet("/dbunit/sites-simple1.db.xml")
 public class PivotDAOImplTest {
 

@@ -8,8 +8,8 @@ import org.activityinfo.server.domain.SiteData;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.server.report.generator.SiteDataBinder;
 import org.activityinfo.test.InjectionSupport;
+import org.activityinfo.test.MockHibernateModule;
 import org.activityinfo.test.Modules;
-import org.activityinfo.test.TestingHibernateModule;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +19,7 @@ import java.util.List;
 
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/filter.db.xml")
-@Modules({TestingHibernateModule.class})
+@Modules({MockHibernateModule.class})
 public class FrenchFilterParserTest {
 
     @Inject

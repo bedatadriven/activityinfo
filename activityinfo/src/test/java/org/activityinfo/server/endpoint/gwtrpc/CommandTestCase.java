@@ -10,14 +10,14 @@ import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.test.Modules;
-import org.activityinfo.test.TestingHibernateModule;
+import org.activityinfo.test.MockHibernateModule;
 
 import javax.persistence.EntityManager;
 import java.util.Collections;
 import java.util.List;
 
 @Modules({
-        TestingHibernateModule.class,
+        MockHibernateModule.class,
         TemplateModule.class,
         BeanMappingModule.class,
         GwtRpcModule.class
