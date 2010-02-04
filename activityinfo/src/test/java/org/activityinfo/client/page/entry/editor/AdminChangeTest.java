@@ -17,7 +17,7 @@
  * Copyright 2010 Alex Bertram and contributors.
  */
 
-package org.activityinfo.clientjre.place.entry.editor;
+package org.activityinfo.client.page.entry.editor;
 
 import org.activityinfo.client.mock.DummyData;
 import org.activityinfo.client.mock.MockCommandService;

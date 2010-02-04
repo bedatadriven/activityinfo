@@ -1,4 +1,4 @@
-package org.activityinfo.clientjre.place.entry.editor.mock;
+package org.activityinfo.client.page.entry.editor.mock;
 
 import org.activityinfo.client.page.entry.editor.MapPresenter;
 import org.activityinfo.shared.dto.Bounds;

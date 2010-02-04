@@ -1,11 +1,11 @@
-package org.activityinfo.clientjre.place.entry.editor;
+package org.activityinfo.client.page.entry.editor;
 
 import org.activityinfo.client.mock.DummyData;
 import org.activityinfo.client.mock.MockCommandService;
 import org.activityinfo.client.mock.MockEventBus;
 import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.client.page.entry.editor.SiteFormPresenter;
-import org.activityinfo.clientjre.place.entry.editor.mock.MockSiteForm;
+import org.activityinfo.client.page.entry.editor.mock.MockSiteForm;
 import org.activityinfo.shared.dto.Schema;
 import org.junit.Assert;
 import org.junit.Test;

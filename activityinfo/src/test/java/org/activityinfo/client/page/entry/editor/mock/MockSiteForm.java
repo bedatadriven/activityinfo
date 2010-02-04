@@ -1,4 +1,4 @@
-package org.activityinfo.clientjre.place.entry.editor.mock;
+package org.activityinfo.client.page.entry.editor.mock;
 
 import com.extjs.gxt.ui.client.store.ListStore;
 import org.activityinfo.client.dispatch.AsyncMonitor;

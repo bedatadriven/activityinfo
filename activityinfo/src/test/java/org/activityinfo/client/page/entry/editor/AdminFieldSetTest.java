@@ -1,10 +1,10 @@
-package org.activityinfo.clientjre.place.entry.editor;
+package org.activityinfo.client.page.entry.editor;
 
 import com.extjs.gxt.ui.client.store.ListStore;
 import org.activityinfo.client.mock.DummyData;
 import org.activityinfo.client.mock.MockCommandService;
 import org.activityinfo.client.page.entry.editor.AdminFieldSetPresenter;
-import org.activityinfo.clientjre.place.entry.editor.mock.MockAdminFieldSet;
+import org.activityinfo.client.page.entry.editor.mock.MockAdminFieldSet;
 import org.activityinfo.shared.command.GetAdminEntities;
 import org.activityinfo.shared.dto.ActivityModel;
 import org.activityinfo.shared.dto.AdminEntityModel;
