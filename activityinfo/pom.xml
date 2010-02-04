@@ -478,24 +478,6 @@
                     <failIfNoTests>false</failIfNoTests>
                 </configuration>
             </plugin>
-
-            <!-- The failsafe plugin helps setup the integration testing -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>failsafe-maven-plugin</artifactId>
-                <version>2.4.3-alpha-1</version>
-                <executions>
-                    <execution>
-                        <configuration>
-                            <testSourceDirectory>src/it/java</testSourceDirectory>
-                        </configuration>
-                        <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
@@ -593,28 +575,6 @@
                     <stopPort>9095</stopPort>
                     <stopKey>STOP</stopKey>
                 </configuration>
-                <executions>
-                    <!-- Start the server for integration tests -->
-                    <execution>
-                        <id>start-jetty</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <scanIntervalSeconds>0</scanIntervalSeconds>
-                            <daemon>true</daemon>
-                        </configuration>
-                    </execution>
-                    <!-- Stop the server when integration tests have completed -->
-                    <execution>
-                        <id>stop-jetty</id>
-                        <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>stop</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
