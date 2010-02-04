@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<dataset>
+
+    <userLogin userId="1" name="Alex" email="alex@bertram.com" locale="fr" newUser="0"
+            password="$2a$10$t0A/cmh8igR4Gn5YyhvHYeL3FVIO72HMaUBjJdTv.giX/GR5YxDtC"/>  <!-- password = monday -->
+
+</dataset>

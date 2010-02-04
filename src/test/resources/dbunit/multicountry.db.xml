@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<dataset>
+
+    <userLogin userId="1" name="Alex" email="alex@bertram.com" locale="en" newUser="0"
+            password="$2a$10$t0A/cmh8igR4Gn5YyhvHYeL3FVIO72HMaUBjJdTv.giX/GR5YxDtC"/>  <!-- password = monday -->
+
+    <authentication authToken="XYZ123" userId="1" dateCreated="2010-01-01" dateLastActive="2010-01-01"/>
+
+    <!--  Congo (RDC) --->
+    <country countryId="1" name="RDC" x1="0" y1="0" x2="0" y2="0"/>
+    <adminLevel countryId="1" adminLevelId="1" name="Province" AllowAdd="0"	/>
+    <adminLevel countryId="1" adminLevelId="2" name="Territoire" AllowAdd="0" ParentId="1"/>
+	<locationType locationTypeId="1" countryId="1" name="localite" reuse="1"/>
+
+	<adminEntity adminLevelId="1" adminEntityId="1" name="Kinshasa" code="10" x1="0" y1="0" x2="0" y2="0"/>
+	<adminEntity adminLevelId="1" adminEntityId="2" name="Sud Kivu" code="20" x1="0" y1="0" x2="0" y2="0"/>
+	<adminEntity adminLevelId="1" adminEntityId="3" name="Nord Kivu" code="30" x1="0" y1="0" x2="0" y2="0"/>
+	<adminEntity adminLevelId="1" adminEntityId="4" name="Ituri" code="40" x1="0" y1="0" x2="0" y2="0"/>
+
+    <!-- Afghanistan -->
+    <country countryId="2" name="Afghanistan" x1="0" y1="0" x2="0" y2="0"/>
+    <adminLevel countryId="2" adminLevelId="201" name="Wulyiat" AllowAdd="0"	/>
+    <adminLevel countryId="2" adminLevelId="202" name="Wuluswali" AllowAdd="0" ParentId="1"/>
+
+    <adminEntity adminLevelId="201" adminEntityId="2011" name="Kunduz" code="10" x1="0" y1="0" x2="0" y2="0"/>
+    <adminEntity adminLevelId="202" adminEntityId="2022" name="Kabul" code="20" x1="0" y1="0" x2="0" y2="0"/>
+
+    <country countryId="3" name="Azerbaijan" x1="0" y1="0" x2="0" y2="0"/>
+
+</dataset>
