@@ -22,9 +22,6 @@ import org.activityinfo.shared.dto.IndicatorRow;
 
 import java.util.ArrayList;
 import java.util.List;
-/*
- * @author Alex Bertram
- */
 
 public class MonthlyGrid extends AbstractEditorGridView<IndicatorRow, MonthlyPresenter>
                         implements MonthlyPresenter.View {
@@ -71,7 +68,7 @@ public class MonthlyGrid extends AbstractEditorGridView<IndicatorRow, MonthlyPre
 
         Month month = startMonth;
         for(int i=0; i!=7; ++i) {
-            DateWrapper date = new DateWrapper(month.getYear(), month.getMonth(), 1);
+            DateWrapper date = new DateWrapper(month.getYear(), month.getMonth()-1, 1);
         
             grid.getColumnModel().setColumnHeader(i+1, monthFormat.format(date.asDate()));
             grid.getColumnModel().setDataIndex(i+1, IndicatorRow.propertyName(month));
