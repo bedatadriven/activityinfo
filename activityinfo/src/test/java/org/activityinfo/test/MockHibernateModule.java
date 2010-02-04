@@ -27,7 +27,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-public class TestingHibernateModule extends HibernateModule {
+public class MockHibernateModule extends HibernateModule {
     private static EntityManagerFactory emf = null;
 
     @Override
