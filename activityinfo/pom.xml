@@ -66,9 +66,6 @@
         <!-- 	<gwt.output.directory>${basedir}/target/gwt</gwt.output.directory> -->
         <gwt.output.directory>${basedir}/war</gwt.output.directory>
 
-        <!-- the value of the rename-to attribute in your GWT module configuration -->
-        <gwt.module.alias>ActivityInfo</gwt.module.alias>
-
         <!-- Allow the build to continue even if there are test failures -->
         <maven.test.failure.ignore>true</maven.test.failure.ignore>
     </properties>
@@ -436,7 +433,7 @@
                         <configuration>
                             <disableClassMetadata>true</disableClassMetadata>
                             <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
-                            <module>${gwt.module}</module>
+                            <module>org.activityinfo.Application</module>
                             <soyc>false</soyc>
                         </configuration>
                         <goals>
