@@ -45,6 +45,7 @@ public class AbstractController extends HttpServlet {
     private final Configuration templateCfg;
 
     public static final String AUTH_TOKEN_COOKIE = "authToken";
+    private static final String GWT_CODE_SERVER_HOST = "gwt.codesvr";
 
     @Inject
     public AbstractController(Injector injector, Configuration templateCfg) {
@@ -146,8 +147,8 @@ public class AbstractController extends HttpServlet {
 
     String parseUrlSuffix(HttpServletRequest req) {
         StringBuilder sb = new StringBuilder();
-        if (req.getParameter("gwt.hosted") != null && req.getParameter("gwt.hosted").length() != 0)
-            sb.append("?gwt.hosted=").append(req.getParameter("gwt.hosted"));
+        if (req.getParameter(GWT_CODE_SERVER_HOST) != null && req.getParameter(GWT_CODE_SERVER_HOST).length() != 0)
+            sb.append("?" + GWT_CODE_SERVER_HOST + "=").append(req.getParameter(GWT_CODE_SERVER_HOST));
 
         int hash = req.getRequestURL().lastIndexOf("/#");
         if (hash != -1)
