@@ -24,17 +24,15 @@ import com.google.inject.Injector;
 import org.activityinfo.server.domain.*;
 import org.activityinfo.server.policy.ActivityPolicy;
 import org.activityinfo.server.policy.PropertyMap;
+import org.activityinfo.server.policy.SitePolicy;
 import org.activityinfo.server.policy.UserDatabasePolicy;
 import org.activityinfo.shared.command.CreateEntity;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.command.result.CreateResult;
-import org.activityinfo.shared.dto.ActivityModel;
-import org.activityinfo.shared.dto.PartnerModel;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.exception.IllegalAccessCommandException;
 
 import javax.persistence.EntityManager;
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -71,7 +69,8 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
         } else if ("Indicator".equals(cmd.getEntityName())) {
             return createIndicator(user, cmd, properties);
         } else if ("Site".equals(cmd.getEntityName())) {
-            return createSite(user, cmd, properties);
+            SitePolicy policy = injector.getInstance(SitePolicy.class);
+            return new CreateResult((Integer)policy.create(user, propertyMap));
         } else {
             throw new CommandException("Invalid entity class " + cmd.getEntityName());
         }
@@ -119,70 +118,4 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
 
     }
 
-    private CommandResult createSite(User user, CreateEntity cmd, Map<String, Object> properties) throws IllegalAccessCommandException {
-
-        Activity activity = em.find(Activity.class, properties.get("activityId"));
-        Partner partner = em.getReference(Partner.class, ((PartnerModel) properties.get("partner")).getId());
-
-        assertSiteEditPriveleges(user, activity, partner);
-
-
-        /*
-           * Create and save a new Location object in the database
-           */
-
-        Location location = new Location();
-        location.setLocationType(activity.getLocationType());
-        updateLocationProperties(location, properties);
-
-        em.persist(location);
-
-        updateAdminProperties(location, properties, true);
-
-        /*
-           * Create and persist the Site object
-           */
-
-        Site site = new Site();
-        site.setLocation(location);
-        site.setActivity(activity);
-        site.setPartner(partner);
-        site.setDateCreated(new Date());
-
-        Integer siteType = (Integer) cmd.getProperties().get("siteType");
-        if (siteType != null && siteType == 1) {
-
-
-        }
-
-        updateSiteProperties(site, properties, true);
-
-        em.persist(site);
-
-        updateAttributeValueProperties(site, properties, true);
-
-        /*
-           * Create the reporting period object
-           * IF this is a report-once activity (punctual)
-           *
-           * otherwise ReportingPeriods are modeled separately on the client.
-           */
-
-        if (activity.getReportingFrequency() == ActivityModel.REPORT_ONCE) {
-
-            ReportingPeriod period = new ReportingPeriod();
-            period.setSite(site);
-            period.setMonitoring(false);
-
-            updatePeriodProperties(period, properties, true);
-
-            em.persist(period);
-
-            updateIndicatorValueProperties(period, properties, true);
-
-        }
-
-        return new CreateResult(site.getId());
-
-    }
 }

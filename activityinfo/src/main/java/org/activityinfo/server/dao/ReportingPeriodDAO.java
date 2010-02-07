@@ -17,27 +17,15 @@
  * Copyright 2010 Alex Bertram and contributors.
  */
 
-package org.activityinfo.server.policy;
+package org.activityinfo.server.dao;
 
-import java.util.Map;
-import java.util.Set;
+import org.activityinfo.server.dao.DAO;
+import org.activityinfo.server.domain.ReportingPeriod;
 
-public class PropertyMap {
-    private Map<String, Object> map;
+public interface ReportingPeriodDAO extends DAO<ReportingPeriod, Integer> {
 
-    public PropertyMap(Map<String, Object> map) {
-        this.map = map;
-    }
+    void addIndicatorValue(int reportingPeriodId, int indicatorId, double value);
 
-    public <X> X get(String propertyName) {
-        return (X) map.get(propertyName);
-    }
+    void updateIndicatorValue(int reportingPeriodId, int indicatorId, Double value);    
 
-    public boolean containsKey(String propertyName) {
-        return map.containsKey(propertyName);
-    }
-
-    public Set<Map.Entry<String, Object>> entrySet() {
-        return map.entrySet();
-    }
 }

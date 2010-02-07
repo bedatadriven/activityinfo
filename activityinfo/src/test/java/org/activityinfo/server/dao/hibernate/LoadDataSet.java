@@ -117,6 +117,4 @@ public class LoadDataSet extends Statement {
         con.getConfig().setProperty("http://www.dbunit.org/properties/escapePattern", "[?]");
         return con;
     }
-
-
 }

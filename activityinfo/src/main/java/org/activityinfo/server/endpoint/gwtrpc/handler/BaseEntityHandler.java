@@ -36,307 +36,11 @@ import java.util.Set;
  * @author Alex Bertram (akbertram@gmail.com)
  */
 public class BaseEntityHandler {
+
     protected final EntityManager em;
 
     public BaseEntityHandler(EntityManager em) {
         this.em = em;
-    }
-
-
-    protected void updateSiteProperties(Site site, Map<String, Object> changes, boolean creating) {
-
-        int primaryReportingPeriodId = -1;
-
-        for (Map.Entry<String, Object> change : changes.entrySet()) {
-
-            String property = change.getKey();
-            Object value = change.getValue();
-
-            if ("date1".equals(property)) {
-                site.setDate1((Date) value);
-
-            } else if ("date2".equals(property)) {
-                site.setDate2((Date) value);
-
-            } else if ("assessmentId".equals(property)) {
-                site.setAssessment(em.getReference(Site.class, value));
-
-            } else if ("comments".equals(property)) {
-                site.setComments((String) value);
-
-            } else if ("status".equals(property)) {
-                site.setStatus((Integer) value);
-            }
-        }
-    }
-
-    /**
-     * Asserts that the user has permission to edit a site in a given database
-     * belonging to a given partner
-     *
-     * @param user     The user for whom to check permission
-     * @param activity The activity to which the site belongs
-     * @param partner  The partner who owns the site
-     * @throws IllegalAccessCommandException if the user does not have permission to modify this <code>Site</code>
-     */
-    protected void assertSiteEditPriveleges(User user, Activity activity, Partner partner) throws IllegalAccessCommandException {
-        UserDatabase db = activity.getDatabase();
-
-        if (db.getOwner().getId() == user.getId())
-            return;
-
-        UserPermission perm = db.getPermissionByUser(user);
-        if (perm.isAllowEditAll())
-            return;
-        if (!perm.isAllowEdit())
-            throw new IllegalAccessCommandException();
-        if (perm.getPartner().getId() != partner.getId())
-            throw new IllegalAccessCommandException();
-    }
-
-    /**
-     * Asserts that the user has permission to modify the structure of the given database.
-     *
-     * @param user     THe user for whom to check permissions
-     * @param database The database the user is trying to modify
-     * @throws IllegalAccessCommandException If the user does not have permission
-     */
-    protected void assertDesignPriviledges(User user, UserDatabase database) throws IllegalAccessCommandException {
-
-        if (!database.isAllowedDesign(user)) {
-            throw new IllegalAccessCommandException();
-        }
-
-    }
-
-
-    protected void updateLocationProperties(Location location, Map<String, Object> changes) {
-
-        boolean isAdminBound = location.getLocationType().getBoundAdminLevel() != null;
-
-        for (Map.Entry<String, Object> change : changes.entrySet()) {
-
-            String property = change.getKey();
-            Object value = change.getValue();
-
-            if (!isAdminBound && "locationName".equals(property)) {
-                location.setName((String) value);
-
-            } else if ("locationAxe".equals(property)) {
-                location.setAxe((String) value);
-
-            } else if ("x".equals(property)) {
-                location.setX((Double) value);
-
-            } else if ("y".equals(property)) {
-                location.setY((Double) changes.get("y"));
-
-            } else if (isAdminBound &&
-                    AdminLevelModel.getPropertyName(location.getLocationType().getBoundAdminLevel().getId()).equals(property)) {
-
-                location.setName(em.find(AdminEntity.class, ((AdminEntityModel) value).getId()).getName());
-
-            }
-        }
-    }
-
-    protected void updateAdminProperties(Location location, Map<String, Object> changes, boolean creating) {
-
-        for (Map.Entry<String, Object> change : changes.entrySet()) {
-            String property = change.getKey();
-            Object value = change.getValue();
-
-            if (property.startsWith(AdminLevelModel.PROPERTY_PREFIX)) {
-
-                int levelId = AdminLevelModel.levelIdForProperty(property);
-
-                // clear the existing entity for this level
-
-                if (!creating) {
-
-                    em.createNativeQuery("delete from LocationAdminLink where " +
-                            "LocationId = ?1 and " +
-                            "AdminEntityId in " +
-                            "(select e.AdminEntityId from AdminEntity e where e.AdminLevelId = ?2)")
-                            .setParameter(1, location.getId())
-                            .setParameter(2, levelId)
-                            .executeUpdate();
-                }
-
-                if (value != null) {
-
-                    AdminEntityModel entity = (AdminEntityModel) value;
-
-                    location.getAdminEntities().add(em.getReference(AdminEntity.class, entity.getId()));
-
-                }
-            }
-        }
-    }
-
-    protected void updateAttributeValueProperties(Site site, Map<String, Object> changes, boolean creating) {
-
-
-        Set<Integer> falseValues = new HashSet<Integer>();
-        Set<Integer> trueValues = new HashSet<Integer>();
-        Set<Integer> nullValues = new HashSet<Integer>();
-
-        for (Map.Entry<String, Object> change : changes.entrySet()) {
-
-            String property = change.getKey();
-            Object value = change.getValue();
-
-            if (property.startsWith(AttributeModel.PROPERTY_PREFIX)) {
-
-                int attributeId = AttributeModel.idForPropertyName(property);
-
-                if (value == null) {
-                    nullValues.add(attributeId);
-                } else if ((Boolean) value) {
-                    trueValues.add(attributeId);
-                } else {
-                    falseValues.add(attributeId);
-                }
-            }
-        }
-
-        if (nullValues.size() != 0) {
-
-            // the values for this attribute group are "unknown" and
-            // need to be removed from the database
-
-            em.createQuery("delete AttributeValue v where v.site.id = ?1 and v.attribute.id in " +
-                    attributeList(nullValues))
-                    .setParameter(1, site.getId())
-                    .executeUpdate();
-        }
-
-        if (trueValues.size() != 0 || falseValues.size() != 0) {
-            Set<Integer> knownValues = new HashSet<Integer>();
-            knownValues.addAll(trueValues);
-            knownValues.addAll(falseValues);
-
-
-            em.createNativeQuery("INSERT INTO AttributeValue (SiteId, AttributeId, Value) " +
-                    "SELECT :siteId AS SiteId, AttributeId, 0 AS Value " +
-                    "FROM Attribute AS a " +
-                    "WHERE AttributeId in " + attributeList(knownValues) +
-                    " AND AttributeId NOT IN " +
-                    "(SELECT v.AttributeId FROM AttributeValue AS v WHERE SiteId = :siteId)")
-                    .setParameter("siteId", site.getId())
-                    .executeUpdate();
-
-
-            // now set the values
-
-            if (trueValues.size() != 0) {
-
-                em.createNativeQuery("UPDATE AttributeValue " +
-                        "SET Value = (CASE WHEN (AttributeId IN " + attributeList(trueValues) + ") " +
-                        "THEN 1 ELSE 0 END) " +
-                        "WHERE SiteId = :siteId AND " +
-                        "AttributeId IN " + attributeList(knownValues))
-                        .setParameter("siteId", site.getId())
-                        .executeUpdate();
-            } else {
-                em.createNativeQuery("UPDATE AttributeValue " +
-                        "SET Value = 0 " +
-                        "WHERE SiteId = :siteId AND " +
-                        "AttributeId IN " + attributeList(knownValues))
-                        .setParameter("siteId", site.getId())
-                        .executeUpdate();
-
-            }
-
-        }
-    }
-
-    protected String attributeList(Set<Integer> attributes) {
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("(");
-        for (Integer id : attributes) {
-            if (sb.length() > 1) {
-                sb.append(", ");
-            }
-            sb.append(id);
-        }
-        sb.append(")");
-        return sb.toString();
-    }
-
-
-    protected void updatePeriodProperties(ReportingPeriod period, Map<String, Object> changes, boolean creating) {
-
-        for (Map.Entry<String, Object> change : changes.entrySet()) {
-
-            String property = change.getKey();
-            Object value = change.getValue();
-
-            if ("date1".equals(property)) {
-                period.setDate1((Date) value);
-
-            } else if ("date2".equals(property)) {
-                period.setDate2((Date) value);
-            }
-        }
-
-    }
-
-    public static void updateIndicatorValue(EntityManager em, ReportingPeriod period, int indicatorId, Double value, boolean creating) {
-
-
-        if (value == null && !creating) {
-            int rowsAffected = em.createQuery("delete IndicatorValue v where v.indicator.id = ?1 and v.reportingPeriod.id = ?2")
-                    .setParameter(1, indicatorId)
-                    .setParameter(2, period.getId())
-                    .executeUpdate();
-
-            assert rowsAffected <= 1 : "whoops, deleted too many";
-
-        } else if (value != null) {
-
-            int rowsAffected = 0;
-
-            if (!creating) {
-                rowsAffected = em.createQuery("update IndicatorValue v set v.value = ?1 where " +
-                        "v.indicator.id = ?2 and " +
-                        "v.reportingPeriod.id = ?3")
-                        .setParameter(1, (Double) value)
-                        .setParameter(2, indicatorId)
-                        .setParameter(3, period.getId())
-                        .executeUpdate();
-            }
-
-            if (rowsAffected == 0) {
-
-                IndicatorValue iValue = new IndicatorValue(
-                        period,
-                        em.getReference(Indicator.class, indicatorId),
-                        (Double) value);
-
-                em.persist(iValue);
-
-            }
-        }
-
-    }
-
-    protected void updateIndicatorValueProperties(ReportingPeriod period, Map<String, Object> changes, boolean creating) {
-
-
-        for (Map.Entry<String, Object> change : changes.entrySet()) {
-
-            String property = change.getKey();
-            Object value = change.getValue();
-
-            if (property.startsWith(IndicatorModel.PROPERTY_PREFIX)) {
-
-                int indicatorId = IndicatorModel.indicatorIdForPropertyName(property);
-
-                updateIndicatorValue(em, period, indicatorId, (Double) value, creating);
-            }
-        }
     }
 
     protected void updateIndicatorProperties(Indicator indicator, Map<String, Object> changes) {
@@ -419,4 +123,20 @@ public class BaseEntityHandler {
 
         activity.getDatabase().setLastSchemaUpdate(new Date());
     }
+
+    /**
+     * Asserts that the user has permission to modify the structure of the given database.
+     *
+     * @param user     THe user for whom to check permissions
+     * @param database The database the user is trying to modify
+     * @throws IllegalAccessCommandException If the user does not have permission
+     */
+    protected void assertDesignPriviledges(User user, UserDatabase database) throws IllegalAccessCommandException {
+
+        if (!database.isAllowedDesign(user)) {
+            throw new IllegalAccessCommandException();
+        }
+
+    }
+
 }

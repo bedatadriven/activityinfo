@@ -20,9 +20,7 @@
 package org.activityinfo.server.endpoint.gwtrpc.handler;
 
 import com.google.inject.Inject;
-import org.activityinfo.server.domain.ReportingPeriod;
-import org.activityinfo.server.domain.Site;
-import org.activityinfo.server.domain.User;
+import org.activityinfo.server.domain.*;
 import org.activityinfo.shared.command.Month;
 import org.activityinfo.shared.command.UpdateMonthlyReports;
 import org.activityinfo.shared.command.result.CommandResult;
@@ -77,10 +75,51 @@ public class UpdateMonthlyReportsHandler implements CommandHandler<UpdateMonthly
                 periods.put(change.month, period);
             }
 
-            BaseEntityHandler.updateIndicatorValue(em, period, change.indicatorId, change.value, false);
+            updateIndicatorValue(em, period, change.indicatorId, change.value, false);
         }
 
         return new VoidResult();
 
     }
+
+
+    public void updateIndicatorValue(EntityManager em, ReportingPeriod period, int indicatorId, Double value, boolean creating) {
+
+
+        if (value == null && !creating) {
+            int rowsAffected = em.createQuery("delete IndicatorValue v where v.indicator.id = ?1 and v.reportingPeriod.id = ?2")
+                    .setParameter(1, indicatorId)
+                    .setParameter(2, period.getId())
+                    .executeUpdate();
+
+            assert rowsAffected <= 1 : "whoops, deleted too many";
+
+        } else if (value != null) {
+
+            int rowsAffected = 0;
+
+            if (!creating) {
+                rowsAffected = em.createQuery("update IndicatorValue v set v.value = ?1 where " +
+                        "v.indicator.id = ?2 and " +
+                        "v.reportingPeriod.id = ?3")
+                        .setParameter(1, (Double) value)
+                        .setParameter(2, indicatorId)
+                        .setParameter(3, period.getId())
+                        .executeUpdate();
+            }
+
+            if (rowsAffected == 0) {
+
+                IndicatorValue iValue = new IndicatorValue(
+                        period,
+                        em.getReference(Indicator.class, indicatorId),
+                        (Double) value);
+
+                em.persist(iValue);
+
+            }
+        }
+
+    }
+
 }

@@ -24,6 +24,7 @@ import com.google.inject.Injector;
 import org.activityinfo.server.domain.*;
 import org.activityinfo.server.policy.ActivityPolicy;
 import org.activityinfo.server.policy.PropertyMap;
+import org.activityinfo.server.policy.SitePolicy;
 import org.activityinfo.shared.command.UpdateEntity;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.CommandException;
@@ -68,7 +69,8 @@ public class UpdateEntityHandler extends BaseEntityHandler implements CommandHan
             updateIndicator(user, cmd, changes);
 
         } else if ("Site".equals(cmd.getEntityName())) {
-            updateSite(user, cmd, changes);
+            SitePolicy policy = injector.getInstance(SitePolicy.class);
+            policy.update(user, cmd.getId(), changeMap);             
 
         } else {
             throw new RuntimeException("unknown entity type");
@@ -100,26 +102,5 @@ public class UpdateEntityHandler extends BaseEntityHandler implements CommandHan
 
         updateAttributeGroupProperties(group, changes);
     }
-
-    protected void updateSite(User user, UpdateEntity cmd, Map<String, Object> changes) throws IllegalAccessCommandException {
-
-        Site site = em.find(Site.class, cmd.getId());
-
-        assertSiteEditPriveleges(user, site.getActivity(), site.getPartner());
-
-        site.setDateEdited(new Date());
-
-        updateSiteProperties(site, changes, false);
-        updateAttributeValueProperties(site, changes, false);
-        updateLocationProperties(site.getLocation(), changes);
-        updateAdminProperties(site.getLocation(), changes, false);
-
-        ReportingPeriod period = site.primaryReportingPeriod();
-        if (period != null) {
-            updatePeriodProperties(period, changes, false);
-            updateIndicatorValueProperties(period, changes, false);
-        }
-    }
-
 
 }

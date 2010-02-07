@@ -19,20 +19,20 @@
 
 package org.activityinfo.server.dao;
 
-import com.google.inject.servlet.RequestScoped;
-import org.activityinfo.test.MockHibernateModule;
+import org.activityinfo.server.domain.Location;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
+import java.util.Map;
 
-public class ServletTestingDataModule extends MockHibernateModule {
+public interface LocationDAO extends DAO<Location, Integer> {
 
-    private EntityManagerFactory emf;
+    /**
+     * Updates the membership of a location within the administrative structure
+     *
+     */
+    void updateAdminMembership(int locationId, int adminLevelId, int adminEntityId);
 
-    @Override
-    protected void configureEm() {
-        bind(EntityManager.class).toProvider(EntityManagerProvider.class)
-                .in(RequestScoped.class);
-    }
 
+    void addAdminMembership(int locationId, int adminEntityId);
+
+    
 }
