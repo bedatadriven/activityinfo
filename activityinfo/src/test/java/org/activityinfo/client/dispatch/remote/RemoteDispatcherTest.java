@@ -184,6 +184,44 @@ public class RemoteDispatcherTest {
         verify(service, callback);
     }
 
+    /**
+     * The RemoteDispatcher will group and bundle commands together-- we
+     * need to make sure that different components remain isolated from
+     * failures within other components.
+     */
+    @Test
+    public void exceptionsThrownByCallbacksDoNotDistubOthers() {
+
+        expectRemoteCall(new GetSchema());
+        andCallbackWihSuccess(new Schema());
+        replay(service);
+
+        // Here we set up one component that will call request a command
+        // but something will go wrong when the command return (successfully)
+        // the error is unrelated to the remote command -- it just happens to be
+        // there.
+        dispatcher.execute(new GetSchema(), null, new AsyncCallback<Schema>() {
+            @Override
+            public void onFailure(Throwable caught) {
+
+            }
+
+            @Override
+            public void onSuccess(Schema result) {
+                throw new Error();
+            }
+        });
+
+        // the second command independently requests the same command,
+        // we need to make sure we receive a result
+        AsyncCallback secondCallback = makeCallbackThatExpectsNonNullSuccess();
+        dispatcher.execute(new GetSchema(), null, secondCallback);
+
+        dispatcher.processPendingCommands();
+
+        verify(secondCallback);
+    }
+
 
     private AsyncCallback<Schema> makeNullCallback() {
         return new AsyncCallback<Schema>() {
@@ -210,6 +248,7 @@ public class RemoteDispatcherTest {
         replay(callback);
         return callback;
     }
+
 
     private void expectRemoteCall(GetSchema command) {
         service.execute(

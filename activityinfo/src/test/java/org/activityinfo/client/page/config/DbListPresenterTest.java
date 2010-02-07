@@ -107,6 +107,7 @@ public class DbListPresenterTest {
         replay(view);
 
         createPresenter();
+        presenter.onSelectionChanged(null);
 
         assertThat(disabledActions, hasItems(UIActions.edit, UIActions.delete));
     }

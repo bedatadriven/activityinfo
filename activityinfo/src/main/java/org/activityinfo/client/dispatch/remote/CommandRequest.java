@@ -73,7 +73,11 @@ public class CommandRequest {
     public void fireOnSuccess(CommandResult result) {
         fireCompleted();
         for (AsyncCallback c : callbacks) {
-            c.onSuccess(result);
+            try {
+                c.onSuccess(result);
+            } catch (Throwable e) {
+                Log.error("Exception thrown during callback on AsyncCallback.onSuccess() for " + command.toString(), e);
+            }
         }
     }
 

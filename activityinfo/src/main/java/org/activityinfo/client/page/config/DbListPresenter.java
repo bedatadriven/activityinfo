@@ -59,7 +59,6 @@ public class DbListPresenter implements ActionListener {
         createLoader();
         createStore();
         loader.load();
-        enableActions();
     }
 
     private void createStore() {
