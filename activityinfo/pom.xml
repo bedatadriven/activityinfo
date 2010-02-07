@@ -434,7 +434,7 @@
                             <disableClassMetadata>true</disableClassMetadata>
                             <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
                             <module>org.activityinfo.Application</module>
-                            <soyc>false</soyc>
+                            <soyc>true</soyc>
                         </configuration>
                         <goals>
                             <goal>compile</goal>
