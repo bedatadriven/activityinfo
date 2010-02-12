@@ -36,6 +36,7 @@ import org.activityinfo.shared.report.model.Report;
 
 import javax.servlet.ServletContext;
 import javax.xml.bind.JAXBException;
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -66,20 +67,23 @@ public class RenderReportHtmlHandler implements CommandHandler<RenderReportHtml>
 
             generator.generate(user, report, null, cmd.getDateRange());
 
-            ServletImageStorageProvider isp = new ServletImageStorageProvider("temp/",
-                    servletContext.getRealPath("/temp/"));
-
             HtmlWriter writer = new HtmlWriter();
-            renderer.render(writer, isp, report);
+            renderer.render(writer, createServletImageProvider(), report);
 
             return new HtmlResult(writer.toString());
-
         } catch (JAXBException e) {
-            e.printStackTrace();
-            throw new UnexpectedCommandException();
+            throw new RuntimeException(e);
         } catch (IOException e) {
-            e.printStackTrace();
-            throw new UnexpectedCommandException();
+            throw new RuntimeException(e);
         }
+    }
+
+    private ServletImageStorageProvider createServletImageProvider() {
+        File tempPath = new File(servletContext.getRealPath("/temp/"));
+        if(!tempPath.exists())
+            tempPath.mkdir();
+        ServletImageStorageProvider isp = new ServletImageStorageProvider("temp/",
+                tempPath.getAbsolutePath());
+        return isp;
     }
 }

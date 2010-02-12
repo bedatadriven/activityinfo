@@ -11,6 +11,8 @@ import org.activityinfo.server.endpoint.kml.KmlModule;
 import org.activityinfo.server.endpoint.wfs.WfsModule;
 import org.activityinfo.server.mail.MailModule;
 import org.activityinfo.server.report.ReportModule;
+import org.activityinfo.server.util.logging.LoggingModule;
+import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -24,24 +26,28 @@ import javax.servlet.ServletContextEvent;
  */
 public class StartupListener extends GuiceServletContextListener {
 
+    private static Logger logger = Logger.getLogger(StartupListener.class);
+   
     private ServletContext context;
     public static final String INJECTOR_NAME = StartupListener.class.getName();
 
 
+
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
+        logger.info("ActivityInfo servlet context is initializing");
+
         context = servletContextEvent.getServletContext();
-        context.log("ServletConfig.contextIntialized called.");
         super.contextInitialized(servletContextEvent);
     }
 
 
     @Override
     protected Injector getInjector() {
-
-        context.log("Injector.getInjector");
+        logger.trace("Injector is being created");
 
         Injector injector = Guice.createInjector(
+                new ConfigModule(), new LoggingModule(),
                 new TemplateModule(), new BeanMappingModule(), new MailModule(),
                 new HibernateModule(),
                 new AuthenticationModule(),

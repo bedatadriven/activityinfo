@@ -12,11 +12,14 @@ import org.activityinfo.server.domain.DomainFilters;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.server.endpoint.gwtrpc.handler.CommandHandler;
 import org.activityinfo.server.endpoint.gwtrpc.handler.HandlerUtil;
+import org.activityinfo.server.util.logging.Trace;
+import org.activityinfo.server.util.logging.LogException;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.RemoteCommandService;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.exception.InvalidAuthTokenException;
+import org.activityinfo.shared.exception.UnexpectedCommandException;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
@@ -49,22 +52,14 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
      * @throws SerializationException
      */
     @Override
+    @Trace
     public String processCall(String arg0) throws SerializationException {
-        String result;
-        try {
-            result = super.processCall(arg0);
-        } catch (SerializationException ex) {
-            ex.printStackTrace();
-            throw ex;
-        } catch (Throwable ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        }
-        return result;
+        return super.processCall(arg0);
     }
 
 
     @Override
+    @Trace
     public List<CommandResult> execute(String authToken, List<Command> commands) throws CommandException {
         Authentication auth = retrieveAuthentication(authToken);
         try {
@@ -90,6 +85,11 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
                 // include this as an error-ful result and
                 // continue executing other commands in the list
                 results.add(e);
+            } catch (Throwable e) {
+                // something when wrong while executing the command
+                // this is already logged by the logging interceptor
+                // so just pass a new UnexpectedCommandException to the client
+                results.add(new UnexpectedCommandException());
             }
         }
         return results;
@@ -101,6 +101,7 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
     }
 
     @Transactional
+    @LogException
     protected CommandResult handleCommand(User user, Command command) throws CommandException {
         CommandHandler handler = createHandler(command);
         return handler.execute(command, user);

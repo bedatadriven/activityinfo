@@ -114,6 +114,7 @@ public class LoginControllerTest extends ControllerTestCase {
 
         assertTrue(resp.redirectUrl.endsWith("#map"));
     }
+    
 
 
 }

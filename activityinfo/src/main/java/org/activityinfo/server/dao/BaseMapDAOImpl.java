@@ -1,33 +1,56 @@
 package org.activityinfo.server.dao;
 
+import com.google.inject.Inject;
 import org.activityinfo.shared.map.BaseMap;
 import org.activityinfo.shared.map.LocalBaseMap;
+import org.apache.log4j.Logger;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
- * @author Alex Bertram
+ * Reads a list of base maps (tile sets) from a path on the local disk
+ * Searches the following three paths:
+ * <ul>
+ * <li>The path specified by the "basemaps.root" property in tomcat/conf/activityinfo.conf</li>
+ * <li>e:\tiles</li>
+ * <li>c:\tiles</li>
+ * </ul>
+ * Ultimately needs to be replaced by a database table with URLs to WMS/TMS services.
+ * 
  */
 public class BaseMapDAOImpl implements BaseMapDAO {
 
+    private Logger logger = Logger.getLogger(BaseMapDAOImpl.class);
     private Map<String, BaseMap> baseMaps;
 
-    public BaseMapDAOImpl() {
+    @Inject
+    public BaseMapDAOImpl(Properties serverProperties) {
         baseMaps = new HashMap<String, BaseMap>();
 
-        // TODO: this must be configurable!!
         // What about remote sources? This should probably be moved into the
         // database
-        File tileRoot = new File("e://tiles");
-        if(!tileRoot.exists()) {
-            tileRoot = new File("c://tiles"); // for the development machine
+        File tileRoot = null;
+        if(serverProperties.getProperty("basemaps.root") != null) {
+            tileRoot = new File(serverProperties.getProperty("basemaps.root"));
+            if(!tileRoot.exists()) {
+                logger.warn("Base map folder specified in properties at " + tileRoot.getAbsolutePath() +
+                     " does not exist");
+                return;
+            }
+        } else {
+            logger.warn("No basemap root set, trying defaults at c:\\tiles and e:\\tiles");
+            if(tileRoot == null || !tileRoot.exists()) {
+                tileRoot = new File("e://tiles");
+            }
+            if(!tileRoot.exists()) {
+                tileRoot = new File("c://tiles"); // for the development machine
+            }
+            if(!tileRoot.exists()) {
+                logger.warn("Could not find basemaps folder anywhere!");
+                return;
+            }
         }
-        if(!tileRoot.exists())
-            return;
 
         for(File tileSet : tileRoot.listFiles()) {
             if(tileSet.isDirectory()) {

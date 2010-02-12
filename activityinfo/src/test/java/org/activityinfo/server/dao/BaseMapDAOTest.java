@@ -5,6 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.Properties;
 
 public class BaseMapDAOTest {
 
@@ -16,7 +17,7 @@ public class BaseMapDAOTest {
         if (!tileRoot.isDirectory())
             return;
 
-        BaseMapDAO dao = new BaseMapDAOImpl();
+        BaseMapDAO dao = new BaseMapDAOImpl(new Properties());
         LocalBaseMap gray = (LocalBaseMap) dao.getBaseMap("zs.gray.cd");
 
         Assert.assertEquals("Carte Gris avec Zones de Sante", gray.getName());

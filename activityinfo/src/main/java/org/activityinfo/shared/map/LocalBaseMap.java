@@ -1,8 +1,9 @@
 package org.activityinfo.shared.map;
-/*
- * @author Alex Bertram
- */
 
+/**
+ * Encapsulates a set of 256x256 tiles stored locally on the server.
+ * Part of a structure that ultimately needs to be replaced by WMS/TMS.
+ */
 public class LocalBaseMap extends BaseMap {
 
     private int requestIndex;
