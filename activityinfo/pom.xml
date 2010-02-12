@@ -331,6 +331,11 @@
 
     <repositories>
         <repository>
+            <id>central</id>
+            <name>Central Repository</name>
+            <url>http://repo1.maven.org/maven2/</url>
+        </repository>
+        <repository>
             <id>activityinfo</id>
             <name>ActivityInfo team repository</name>
             <url>http://www.activityinfo.org/m2/</url>
