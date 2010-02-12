@@ -434,7 +434,9 @@
                             <disableClassMetadata>true</disableClassMetadata>
                             <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
                             <module>org.activityinfo.Application</module>
-                            <soyc>true</soyc>
+                            <!-- Takes WAY to long for all 12 permutations -->
+                            <!-- run with profile soyc enabled to generate maps for a single perm-->
+                            <soyc>false</soyc>
                         </configuration>
                         <goals>
                             <goal>compile</goal>
