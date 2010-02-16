@@ -56,7 +56,8 @@ public class DbPlace extends AbstractPagingGridPlace {
         DbPlace dbPlace = (DbPlace) o;
 
         if (databaseId != dbPlace.databaseId) return false;
-
+        if (pageId != dbPlace.pageId) return false;
+        
         return true;
     }
 
