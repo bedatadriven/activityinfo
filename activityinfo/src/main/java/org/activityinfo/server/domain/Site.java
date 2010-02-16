@@ -274,7 +274,7 @@ public class Site implements java.io.Serializable, Deleteable {
 	}
 
 	@Column
-	@Temporal(value = TemporalType.TIME)
+	@Temporal(value = TemporalType.TIMESTAMP)
 	public Date getDateDeleted() {
 		return this.dateDeleted;
 	}
