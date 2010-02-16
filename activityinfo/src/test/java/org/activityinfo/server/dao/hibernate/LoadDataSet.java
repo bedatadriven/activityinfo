@@ -25,6 +25,8 @@ import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
+import org.dbunit.ext.h2.H2Connection;
+import org.dbunit.ext.hsqldb.HsqldbConnection;
 import org.dbunit.ext.mssql.InsertIdentityOperation;
 import org.dbunit.ext.mssql.MsSqlConnection;
 import org.dbunit.operation.DatabaseOperation;
@@ -112,9 +114,18 @@ public class LoadDataSet extends Statement {
         hem.close();
     }
 
-    private IDatabaseConnection createDbUnitConnection(Connection connection) throws DatabaseUnitException {
-        IDatabaseConnection con = new MsSqlConnection(connection);
-        con.getConfig().setProperty("http://www.dbunit.org/properties/escapePattern", "[?]");
-        return con;
+    private IDatabaseConnection createDbUnitConnection(Connection connection) throws DatabaseUnitException, SQLException {
+        String dbName = connection.getMetaData().getDatabaseProductName();
+        if(dbName.equals("Microsoft SQL Server")) {
+            IDatabaseConnection con = new MsSqlConnection(connection);
+            con.getConfig().setProperty("http://www.dbunit.org/properties/escapePattern", "[?]");
+            return con;
+        } else if(dbName.equals("HSQL Database Engine")) {
+            return new HsqldbConnection(connection, null);
+        } else if(dbName.equals("H2")) {
+            return new H2Connection(connection, null);
+        } else {
+            throw new Error("Cannot create dbunit connection for database with productName = " + dbName);
+        }
     }
 }

@@ -38,12 +38,17 @@ public class MockHibernateModule extends HibernateModule {
                 // we are assuming that the tests do not affect the database schema, so there is no
                 // need to restart hiberate for each test class, and we save quite a bit of time
                 if (emf == null) {
-                    emf = Persistence.createEntityManagerFactory("activityInfo-test");
+                    emf = Persistence.createEntityManagerFactory(getPersistenceUnitName());
                     System.err.println("GUICE: EntityManagerFACTORY created");
                 }
                 return emf;
             }
         }).in(Singleton.class);
+    }
+
+    private String getPersistenceUnitName() {
+        String specifiedUnitName = System.getProperty("activityinfo.pu");
+        return specifiedUnitName == null ? "h2-test" : specifiedUnitName;
     }
 
     @Override
