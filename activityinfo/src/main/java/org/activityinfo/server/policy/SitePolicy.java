@@ -24,8 +24,9 @@ import org.activityinfo.server.dao.*;
 import org.activityinfo.server.domain.*;
 import org.activityinfo.shared.dto.*;
 
-import javax.persistence.EntityManager;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SitePolicy implements EntityPolicy<Site> {
     private final ActivityDAO activityDAO;
@@ -161,9 +162,15 @@ public class SitePolicy implements EntityPolicy<Site> {
                 AdminEntityModel entity = (AdminEntityModel) value;
 
                 if (creating) {
-                    locationDAO.addAdminMembership(location.getId(), entity.getId());
+                    if(entity != null) {
+                        locationDAO.addAdminMembership(location.getId(), entity.getId());
+                    }
                 } else {
-                    locationDAO.updateAdminMembership(location.getId(), levelId, entity.getId());
+                    if(entity != null) {
+                        locationDAO.updateAdminMembership(location.getId(), levelId, entity.getId());
+                    } else {
+                        locationDAO.removeMembership(location.getId(), levelId);
+                    }
                 }
             }
         }

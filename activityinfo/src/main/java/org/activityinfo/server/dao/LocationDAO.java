@@ -21,8 +21,6 @@ package org.activityinfo.server.dao;
 
 import org.activityinfo.server.domain.Location;
 
-import java.util.Map;
-
 public interface LocationDAO extends DAO<Location, Integer> {
 
     /**
@@ -34,5 +32,6 @@ public interface LocationDAO extends DAO<Location, Integer> {
 
     void addAdminMembership(int locationId, int adminEntityId);
 
+    void removeMembership(int locationId, int adminLevelId);
     
 }

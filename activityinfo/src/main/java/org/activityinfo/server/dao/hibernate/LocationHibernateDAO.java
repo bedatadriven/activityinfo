@@ -44,6 +44,11 @@ public class LocationHibernateDAO extends AbstractDAO<Location, Integer> impleme
         addRow(locationId, adminEntityId);
     }
 
+    @Override
+    public void removeMembership(int locationId, int adminLevelId) {
+        removeExistingRow(locationId, adminLevelId);
+    }
+
     private void addRow(int locationId, int adminEntityId) {
         Location location = em.find(Location.class, locationId);
         location.getAdminEntities().add(em.getReference(AdminEntity.class, adminEntityId));

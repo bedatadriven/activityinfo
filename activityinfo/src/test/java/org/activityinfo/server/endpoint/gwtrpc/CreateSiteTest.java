@@ -88,6 +88,7 @@ public class CreateSiteTest extends CommandTestCase {
         newSite.setDate2((new GregorianCalendar(2009, 1, 3)).getTime());
         newSite.setAdminEntity(1, new AdminEntityModel(1, 2, "Sud Kivu"));
         newSite.setAdminEntity(2, new AdminEntityModel(2, 11, "Walungu"));
+        newSite.setAdminEntity(3, null);
         newSite.setX(27.432);
         newSite.setY(1.23);
         newSite.setComments("huba huba");

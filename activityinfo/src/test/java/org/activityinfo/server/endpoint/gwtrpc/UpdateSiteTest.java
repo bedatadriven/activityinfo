@@ -36,6 +36,7 @@ public class UpdateSiteTest extends CommandTestCase {
         model.setAttributeValue(3, true);
         model.setAttributeValue(4, false);
         model.setIndicatorValue(2, 995.0);
+        model.setAdminEntity(2, null);
 
 
         execute(new UpdateEntity(model, model.getProperties()));
