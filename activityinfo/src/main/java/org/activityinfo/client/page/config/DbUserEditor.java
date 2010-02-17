@@ -186,7 +186,7 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserModel>
 
         view.showNewForm(newUser, new FormDialogCallback() {
             @Override
-            public void onValidated(FormDialogTether dlg) {
+            public void onValidated(final FormDialogTether dlg) {
                 service.execute(new UpdateUserPermissions(db, newUser), dlg, new AsyncCallback<VoidResult>() {
 
                     public void onFailure(Throwable caught) {
@@ -194,6 +194,7 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserModel>
 
                     public void onSuccess(VoidResult result) {
                         loader.load();
+                        dlg.hide();
                     }
                 });
             }

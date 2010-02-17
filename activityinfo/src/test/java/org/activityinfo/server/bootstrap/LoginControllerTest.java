@@ -35,7 +35,7 @@ public class LoginControllerTest extends ControllerTestCase {
     public void setUp() {
         controller = new LoginController(injector, templateCfg);
 
-        req.setRequestURL("http://activityinfo.org/");
+        req.setRequestURL("http://activityinfo.org/login");
     }
 
     @Test
@@ -50,15 +50,15 @@ public class LoginControllerTest extends ControllerTestCase {
     @Test
     public void urlSuffixIsParsedCorrectly() throws IOException, ServletException {
 
-        get("http://activityinfo.org/#charts");
+        get("http://activityinfo.org/login#charts");
 
         assertEquals("#charts", controller.parseUrlSuffix(req));
     }
 
     @Test
-    public void bookmarkShouldBeSentToLoginForm() throws IOException, ServletException {
+    public void bookmarkShouldBeIncludedInModel() throws IOException, ServletException {
 
-        get("http://activityinfo.org/#charts");
+        get("http://activityinfo.org/login#charts");
 
         assertNull(resp.redirectUrl);
         assertTemplateUsed(LoginPageModel.class);
@@ -114,7 +114,6 @@ public class LoginControllerTest extends ControllerTestCase {
 
         assertTrue(resp.redirectUrl.endsWith("#map"));
     }
-    
 
 
 }

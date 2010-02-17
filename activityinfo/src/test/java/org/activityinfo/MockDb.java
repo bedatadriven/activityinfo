@@ -22,46 +22,38 @@ package org.activityinfo;
 import org.activityinfo.server.dao.DAO;
 
 import javax.persistence.Id;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Proxy;
+import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MockDAO<T, K> implements DAO<T, K> {
+public class MockDb {
 
-    private List<T> entities = new ArrayList<T>(0);
-    private Class<T> persistentClass;
+    private List entities = new ArrayList(0);
 
-    public MockDAO() {
-        this.persistentClass = (Class<T>) ((ParameterizedType) getClass()
-                .getGenericSuperclass()).getActualTypeArguments()[0];
+    public MockDb() {
+
     }
 
-    @Override
-    public T findById(K primaryKey) {
+    public Object findById(Class entityClass, Object primaryKey) {
         if (primaryKey == null)
             return null;
 
-        for (T entity : entities) {
-            if (primaryKey.equals(getId(entity)))
+        for (Object entity : entities) {
+            if (entity.getClass().equals(entityClass) && primaryKey.equals(getId(entity)))
                 return entity;
         }
         return null;
     }
 
-
-    @Override
-    public void persist(T entity) {
+    public void persist(Object entity) {
         entities.add(entity);
     }
 
-    private K getId(T t) {
-        for (Method method : persistentClass.getMethods()) {
+    private Object getId(Object t) {
+        for (Method method : t.getClass().getMethods()) {
             if (method.getAnnotation(Id.class) != null) {
                 try {
-                    return (K) method.invoke(t);
+                    return method.invoke(t);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -70,20 +62,31 @@ public class MockDAO<T, K> implements DAO<T, K> {
         throw new RuntimeException("No @Id field!");
     }
 
-    public <S extends DAO<T, K>> S cast(Class<S> daoType) {
-        ClassLoader cl = daoType.getClassLoader();
-        return (S) Proxy.newProxyInstance(cl, new Class[]{daoType}, new Handler());
+    public <S extends DAO> S getDAO(Class<S> daoSubClass) {
+        ClassLoader cl = daoSubClass.getClassLoader();
+        Type daoClass = daoSubClass.getGenericInterfaces()[0];
+        Class persistentClass = (Class)((ParameterizedType) daoClass).getActualTypeArguments()[0];
+        return (S) Proxy.newProxyInstance(cl, new Class[]{daoSubClass}, new Handler(persistentClass));
     }
 
+
     public class Handler implements InvocationHandler {
+
+        private final Class persistentClass;
+
+        public Handler(Class persistentClass) {
+            this.persistentClass = persistentClass;
+        }
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
             if (method.getName().equals("findById")) {
-                return findById((K) args[0]);
+                return findById(persistentClass, args[0]);
             } else if (method.getName().equals("persist")) {
-                persist((T) args[0]);
+                persist(args[0]);
+            } else if (method.getReturnType().equals(Boolean.TYPE)) {
+                return false;
             }
             return null;
         }

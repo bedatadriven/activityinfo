@@ -116,10 +116,12 @@ public class User implements java.io.Serializable {
 
     @Transient
     public Locale getLocaleObject() {
-        Locale[] locales = Locale.getAvailableLocales();
-        for (Locale l : locales) {
-            if (locale.startsWith(l.getLanguage())) {
-                return l;
+        if(locale != null) {
+            Locale[] locales = Locale.getAvailableLocales();
+            for (Locale l : locales) {
+                if (locale.startsWith(l.getLanguage())) {
+                    return l;
+                }
             }
         }
         return Locale.getDefault();

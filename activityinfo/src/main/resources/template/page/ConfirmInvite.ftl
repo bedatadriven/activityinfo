@@ -15,7 +15,7 @@
 <p>Before we get started, let's set up your account. Confirm your name and preferred language,
     and then choose a password.</p>
 
-<form name="Form1" method="post" id="Form1" action="auth" method="post">
+<form name="Form1" method="post" id="Form1" action="confirm" method="post">
     <input type="hidden" name="key" value="${user.changePasswordKey}"></input>
     <table>
         <tr>

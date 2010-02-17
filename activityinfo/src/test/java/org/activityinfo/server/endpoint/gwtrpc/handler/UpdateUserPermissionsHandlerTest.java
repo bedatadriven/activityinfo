@@ -19,14 +19,27 @@
 
 package org.activityinfo.server.endpoint.gwtrpc.handler;
 
+import org.activityinfo.MockDb;
+import org.activityinfo.server.dao.PartnerDAO;
+import org.activityinfo.server.dao.UserDAO;
+import org.activityinfo.server.dao.UserDatabaseDAO;
+import org.activityinfo.server.dao.UserPermissionDAO;
 import org.activityinfo.server.domain.Partner;
+import org.activityinfo.server.domain.User;
+import org.activityinfo.server.domain.UserDatabase;
 import org.activityinfo.server.domain.UserPermission;
+import org.activityinfo.server.mail.Invitation;
+import org.activityinfo.server.mail.Mailer;
 import org.activityinfo.shared.command.UpdateUserPermissions;
 import org.activityinfo.shared.dto.PartnerModel;
 import org.activityinfo.shared.dto.UserModel;
 import org.activityinfo.shared.exception.IllegalAccessCommandException;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Locale;
+
+import static org.easymock.EasyMock.*;
 
 /**
  * @author Alex Bertram
@@ -37,6 +50,11 @@ public class UpdateUserPermissionsHandlerTest {
     private Partner IRC;
     private PartnerModel NRC_DTO;
 
+    private MockDb db = new MockDb();
+    protected Mailer<Invitation> mailer;
+    protected UpdateUserPermissionsHandler handler;
+    protected User owner;
+
     @Before
     public void setup() {
 
@@ -44,13 +62,50 @@ public class UpdateUserPermissionsHandlerTest {
         NRC.setId(1);
         NRC.setName("NRC");
         NRC.setFullName("Norwegian Refugee Council");
+        db.persist(NRC);
 
         IRC = new Partner();
         IRC.setId(2);
         IRC.setName("IRC");
         IRC.setFullName("International Rescue Committee");
+        db.persist(IRC);
 
         NRC_DTO = new PartnerModel(1, "NRC");
+
+        mailer = createMock("InvitationMailer", Mailer.class);
+
+        handler = new UpdateUserPermissionsHandler(
+                db.getDAO(UserDatabaseDAO.class), db.getDAO(PartnerDAO.class), db.getDAO(UserDAO.class),
+                db.getDAO(UserPermissionDAO.class), mailer);
+
+
+        owner = new User();
+        owner.setId(99);
+        owner.setName("Alex");
+        db.persist(owner);
+
+        UserDatabase udb = new UserDatabase(1, "PEAR");
+        udb.setOwner(owner);
+        db.persist(udb);
+
+    }
+
+    @Test
+    public void ownerCanAddUser() throws Exception {
+
+        mailer.send(isA(Invitation.class), isA(Locale.class));
+        replay(mailer);
+
+        UserModel user = new UserModel();
+        user.setEmail("other@foobar");
+        user.setPartner(NRC_DTO);
+        user.setAllowView(true);
+
+        UpdateUserPermissions cmd = new UpdateUserPermissions(1, user);
+
+        handler.execute(cmd, owner);
+
+        verify(mailer);
     }
 
 

@@ -43,7 +43,7 @@ import static org.activityinfo.server.util.StringUtil.isEmpty;
 
 @Singleton
 public class ConfirmInviteController extends AbstractController {
-    public static final String ENDPOINT = "confirmInvite";
+    public static final String ENDPOINT = "confirm";
 
     @Inject
     public ConfirmInviteController(Injector injector, Configuration templateCfg) {

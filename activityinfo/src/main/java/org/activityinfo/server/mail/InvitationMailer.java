@@ -19,10 +19,12 @@
 
 package org.activityinfo.server.mail;
 
+import com.google.inject.Inject;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import org.activityinfo.server.domain.User;
+import org.activityinfo.server.util.logging.LogException;
+import org.activityinfo.server.util.logging.Trace;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
 
@@ -31,29 +33,31 @@ import java.io.StringWriter;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-public class InvitationMailer {
+public class InvitationMailer implements Mailer<Invitation> {
 
     private final Configuration templateCfg;
     private final MailSender sender;
     static final String TEXT_TEMPLATE = "mail/invite.ftl";
 
+    @Inject
     public InvitationMailer(Configuration templateCfg, MailSender sender) {
         this.templateCfg = templateCfg;
         this.sender = sender;
     }
 
-    public void sendInvitation(User newUser, User invitingUser)
+    @Override
+    @Trace
+    @LogException
+    public void send(Invitation model, Locale locale)
             throws EmailException, TemplateException, IOException {
 
-        Locale locale = newUser.getLocaleObject();
         ResourceBundle mailMessages = getResourceBundle(locale);
 
         SimpleEmail mail = new SimpleEmail();
-        mail.addTo(newUser.getEmail(), newUser.getName());
+        mail.addTo(model.getNewUser().getEmail(), model.getNewUser().getName());
         mail.addBcc("akbertram@gmail.com"); // for testing purposes
         mail.setSubject(mailMessages.getString("newUserSubject"));
 
-        Invitation model = new Invitation(newUser, invitingUser);
         mail.setMsg(composeMessage(model, locale));
 
         sender.send(mail);

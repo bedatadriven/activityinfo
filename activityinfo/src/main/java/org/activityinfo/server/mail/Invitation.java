@@ -23,18 +23,18 @@ import org.activityinfo.server.domain.User;
 
 public class Invitation {
     private User newUser;
-    private User invitingUserUser;
+    private User invitingUser;
 
-    public Invitation(User newUser, User invitingUserUser) {
+    public Invitation(User newUser, User invitingUser) {
         this.newUser = newUser;
-        this.invitingUserUser = invitingUserUser;
+        this.invitingUser = invitingUser;
     }
 
     public User getNewUser() {
         return newUser;
     }
 
-    public User getInvitingUserUser() {
-        return invitingUserUser;
+    public User getInvitingUser() {
+        return invitingUser;
     }
 }

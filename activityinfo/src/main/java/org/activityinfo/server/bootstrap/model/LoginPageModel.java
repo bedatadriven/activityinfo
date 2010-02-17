@@ -21,7 +21,7 @@ package org.activityinfo.server.bootstrap.model;
 
 public class LoginPageModel extends PageModel {
     private String urlSuffix;
-    private boolean loginError;
+    private boolean loginError;         
 
     public LoginPageModel() {
         this.urlSuffix = "";

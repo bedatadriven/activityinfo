@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * @author Alex Bertram
  */
-public class MockMailer implements MailSender {
+public class MockMailSender implements MailSender {
 
     public List<Email> sentMail = new ArrayList<Email>();
 

@@ -50,7 +50,7 @@
     <entry-point class='org.activityinfo.client.Application' />
 
     <!-- Enable other locales -->
-    <!--<extend-property name="locale" values="en" />-->
+    <extend-property name="locale" values="en" />
     <extend-property name="locale" values="fr" />   
 
     <servlet path="/cmd" class="org.activityinfo.server.endpoint.gwtrpc.CommandServlet" />

@@ -20,14 +20,15 @@
 package org.activityinfo.server.endpoint.gwtrpc.handler;
 
 import com.google.inject.Inject;
-import org.activityinfo.server.dao.DatabaseDAO;
 import org.activityinfo.server.dao.PartnerDAO;
+import org.activityinfo.server.dao.UserDAO;
+import org.activityinfo.server.dao.UserDatabaseDAO;
 import org.activityinfo.server.dao.UserPermissionDAO;
-import org.activityinfo.server.dao.hibernate.UserDAOImpl;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.server.domain.UserDatabase;
 import org.activityinfo.server.domain.UserPermission;
-import org.activityinfo.server.mail.InvitationMailer;
+import org.activityinfo.server.mail.Invitation;
+import org.activityinfo.server.mail.Mailer;
 import org.activityinfo.shared.command.UpdateUserPermissions;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.dto.UserModel;
@@ -42,17 +43,18 @@ import java.util.Date;
  */
 public class UpdateUserPermissionsHandler implements CommandHandler<UpdateUserPermissions> {
 
-    private final UserDAOImpl userDAO;
-    private final DatabaseDAO databaseDAO;
+    // TODO: this needs to be pushed down into the domain layer, it doesn't belong here at the endpoint layer
+
+    private final UserDAO userDAO;
+    private final UserDatabaseDAO databaseDAO;
     private final PartnerDAO partnerDAO;
     private final UserPermissionDAO permDAO;
 
-    private final InvitationMailer inviteMailer;
+    private final Mailer<Invitation> inviteMailer;
 
     @Inject
-    public UpdateUserPermissionsHandler(UserDAOImpl userDAO, InvitationMailer inviteMailer,
-                                        PartnerDAO partnerDAO, UserPermissionDAO permDAO,
-                                        DatabaseDAO databaseDAO) {
+    public UpdateUserPermissionsHandler(UserDatabaseDAO databaseDAO, PartnerDAO partnerDAO, UserDAO userDAO,
+                                        UserPermissionDAO permDAO, Mailer<Invitation> inviteMailer) {
         this.userDAO = userDAO;
         this.partnerDAO = partnerDAO;
         this.permDAO = permDAO;
@@ -70,8 +72,8 @@ public class UpdateUserPermissionsHandler implements CommandHandler<UpdateUserPe
            * First check that the current user has permission to
            * add users to to the queries
            */
-        boolean isOwner = executingUser.getId() != database.getOwner().getId();
-        if (isOwner) {
+        boolean isOwner = executingUser.getId() == database.getOwner().getId();
+        if (!isOwner) {
             verifyAuthority(cmd, database.getPermissionByUser(executingUser));
         }
 
@@ -102,7 +104,7 @@ public class UpdateUserPermissionsHandler implements CommandHandler<UpdateUserPe
         user = User.createNewUser(dto.getEmail(), dto.getName(), executingUser.getLocale());
         userDAO.persist(user);
         try {
-            inviteMailer.sendInvitation(user, executingUser);
+            inviteMailer.send(new Invitation(user, executingUser), executingUser.getLocaleObject());
         } catch (Exception e) {
             // ignore, don't abort because mail didn't work
         }

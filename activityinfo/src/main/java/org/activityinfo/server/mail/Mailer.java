@@ -19,14 +19,8 @@
 
 package org.activityinfo.server.mail;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.TypeLiteral;
+import java.util.Locale;
 
-public class MailModule extends AbstractModule {
-
-    @Override
-    protected void configure() {
-        bind(MailSender.class).to(MailSenderImpl.class);
-        bind(new TypeLiteral<Mailer<Invitation>>() {}).to(InvitationMailer.class);
-    }
+public interface Mailer<T> {
+    void send(T model, Locale locale) throws Exception;
 }
