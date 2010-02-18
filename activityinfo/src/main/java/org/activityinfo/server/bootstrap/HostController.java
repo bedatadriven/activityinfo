@@ -28,6 +28,7 @@ import org.activityinfo.server.bootstrap.model.HostPageModel;
 import org.activityinfo.server.dao.AuthenticationDAO;
 import org.activityinfo.server.dao.Transactional;
 import org.activityinfo.server.domain.Authentication;
+import org.activityinfo.server.util.logging.LogException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -46,6 +47,7 @@ public class HostController extends AbstractController {
     }
 
     @Override
+    @LogException(emailAlert = true)
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (requestIsFromIE6OnPort80(req)) {
             redirectToPort(req, resp, 8080);
@@ -62,6 +64,7 @@ public class HostController extends AbstractController {
     }
 
     @Transactional
+    @LogException(emailAlert = true)
     protected Authentication getAuthentication(HttpServletRequest request) throws NoValidAuthentication {
         String authToken = request.getParameter("auth");
         if(isEmpty(authToken)) 

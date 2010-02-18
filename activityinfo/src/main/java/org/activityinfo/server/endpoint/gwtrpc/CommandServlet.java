@@ -12,7 +12,6 @@ import org.activityinfo.server.domain.DomainFilters;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.server.endpoint.gwtrpc.handler.CommandHandler;
 import org.activityinfo.server.endpoint.gwtrpc.handler.HandlerUtil;
-import org.activityinfo.server.util.logging.Trace;
 import org.activityinfo.server.util.logging.LogException;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.RemoteCommandService;
@@ -52,14 +51,13 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
      * @throws SerializationException
      */
     @Override
-    @Trace
+    @LogException(emailAlert = true)
     public String processCall(String arg0) throws SerializationException {
         return super.processCall(arg0);
     }
 
 
     @Override
-    @Trace
     public List<CommandResult> execute(String authToken, List<Command> commands) throws CommandException {
         Authentication auth = retrieveAuthentication(authToken);
         try {
@@ -101,7 +99,7 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
     }
 
     @Transactional
-    @LogException
+    @LogException(emailAlert = true)
     protected CommandResult handleCommand(User user, Command command) throws CommandException {
         CommandHandler handler = createHandler(command);
         return handler.execute(command, user);

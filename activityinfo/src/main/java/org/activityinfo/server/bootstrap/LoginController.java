@@ -26,7 +26,7 @@ import freemarker.template.Configuration;
 import org.activityinfo.server.auth.Authenticator;
 import org.activityinfo.server.bootstrap.model.LoginPageModel;
 import org.activityinfo.server.domain.User;
-import org.activityinfo.server.util.logging.Trace;
+import org.activityinfo.server.util.logging.LogException;
 import org.activityinfo.shared.exception.InvalidLoginException;
 
 import javax.servlet.ServletException;
@@ -45,12 +45,13 @@ public class LoginController extends AbstractController {
     }
 
     @Override
-    @Trace
+    @LogException(emailAlert = true)
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         writeView(resp, new LoginPageModel(parseUrlSuffix(req)));
     }
 
     @Override
+    @LogException(emailAlert = true)
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             User user = findUserByEmail(req.getParameter("email"));

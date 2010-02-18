@@ -27,6 +27,7 @@ public class LoggingModule extends AbstractModule {
     @Override
     protected void configure() {
         LoggingInterceptor interceptor = new LoggingInterceptor();
+        requestInjection(interceptor);
 
         bindInterceptor(Matchers.any(), Matchers.annotatedWith(Trace.class), interceptor);
         bindInterceptor(Matchers.any(), Matchers.annotatedWith(LogException.class), interceptor);

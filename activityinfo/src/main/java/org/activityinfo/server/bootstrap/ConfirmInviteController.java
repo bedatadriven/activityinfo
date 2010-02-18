@@ -31,6 +31,7 @@ import org.activityinfo.server.dao.Transactional;
 import org.activityinfo.server.dao.UserDAO;
 import org.activityinfo.server.domain.Authentication;
 import org.activityinfo.server.domain.User;
+import org.activityinfo.server.util.logging.LogException;
 
 import javax.persistence.NoResultException;
 import javax.servlet.ServletException;
@@ -51,6 +52,7 @@ public class ConfirmInviteController extends AbstractController {
     }
 
     @Override
+    @LogException(emailAlert = true)
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             User user = findUserByKey(req.getQueryString());
@@ -64,6 +66,7 @@ public class ConfirmInviteController extends AbstractController {
     }
 
     @Override
+    @LogException(emailAlert = true)
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         User user = null;
