@@ -37,7 +37,7 @@ public class InvitationMailer implements Mailer<Invitation> {
 
     private final Configuration templateCfg;
     private final MailSender sender;
-    static final String TEXT_TEMPLATE = "mail/invite.ftl";
+    static final String TEXT_TEMPLATE = "mail/Invite.ftl";
 
     @Inject
     public InvitationMailer(Configuration templateCfg, MailSender sender) {
