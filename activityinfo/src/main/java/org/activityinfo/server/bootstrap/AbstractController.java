@@ -150,9 +150,9 @@ public class AbstractController extends HttpServlet {
         if (req.getParameter(GWT_CODE_SERVER_HOST) != null && req.getParameter(GWT_CODE_SERVER_HOST).length() != 0)
             sb.append("?" + GWT_CODE_SERVER_HOST + "=").append(req.getParameter(GWT_CODE_SERVER_HOST));
 
-        int hash = req.getRequestURL().lastIndexOf("/#");
+        int hash = req.getRequestURL().lastIndexOf("#");
         if (hash != -1)
-            sb.append(req.getRequestURL().substring(hash + 1));
+            sb.append(req.getRequestURL().substring(hash));
         return sb.toString();
     }
 }
