@@ -6,11 +6,13 @@ import com.google.inject.servlet.GuiceServletContextListener;
 import org.activityinfo.server.auth.AuthenticationModule;
 import org.activityinfo.server.bootstrap.BootstrapModule;
 import org.activityinfo.server.dao.hibernate.HibernateModule;
+import org.activityinfo.server.endpoint.export.ExportModule;
 import org.activityinfo.server.endpoint.gwtrpc.GwtRpcModule;
 import org.activityinfo.server.endpoint.kml.KmlModule;
 import org.activityinfo.server.endpoint.wfs.WfsModule;
 import org.activityinfo.server.mail.MailModule;
 import org.activityinfo.server.report.ReportModule;
+import org.activityinfo.server.util.TemplateModule;
 import org.activityinfo.server.util.logging.LoggingModule;
 import org.apache.log4j.Logger;
 
@@ -54,6 +56,7 @@ public class StartupListener extends GuiceServletContextListener {
                 new ReportModule(),
                 new BootstrapModule(),
                 new GwtRpcModule(),
+                new ExportModule(),
                 new WfsModule(),
                 new KmlModule());
 
