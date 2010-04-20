@@ -21,7 +21,7 @@ package org.activityinfo.server.mapping;
 
 import com.google.inject.Inject;
 import junit.framework.Assert;
-import org.activityinfo.server.BeanMappingModule;
+import org.activityinfo.server.util.BeanMappingModule;
 import org.activityinfo.server.domain.AdminEntity;
 import org.activityinfo.server.domain.AdminLevel;
 import org.activityinfo.server.domain.Bounds;

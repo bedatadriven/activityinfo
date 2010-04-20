@@ -21,7 +21,7 @@ package org.activityinfo.server.mail;
 
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
-import org.activityinfo.server.TemplateModule;
+import org.activityinfo.server.util.TemplateModule;
 import org.activityinfo.server.domain.User;
 import org.apache.commons.mail.EmailException;
 import org.junit.Test;

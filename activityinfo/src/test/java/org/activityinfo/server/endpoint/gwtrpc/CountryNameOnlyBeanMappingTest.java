@@ -20,7 +20,7 @@
 package org.activityinfo.server.endpoint.gwtrpc;
 
 import com.google.inject.Inject;
-import org.activityinfo.server.BeanMappingModule;
+import org.activityinfo.server.util.BeanMappingModule;
 import org.activityinfo.server.domain.AdminLevel;
 import org.activityinfo.server.domain.Bounds;
 import org.activityinfo.server.domain.Country;

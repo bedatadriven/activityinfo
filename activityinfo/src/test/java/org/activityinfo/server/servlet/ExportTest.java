@@ -19,7 +19,7 @@
 
 package org.activityinfo.server.servlet;
 
-import org.activityinfo.server.BeanMappingModule;
+import org.activityinfo.server.util.BeanMappingModule;
 import org.activityinfo.server.dao.SchemaDAO;
 import org.activityinfo.server.dao.SiteTableDAO;
 import org.activityinfo.server.dao.hibernate.SchemaDAOJPA;

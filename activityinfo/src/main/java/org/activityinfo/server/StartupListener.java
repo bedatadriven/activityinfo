@@ -12,6 +12,7 @@ import org.activityinfo.server.endpoint.kml.KmlModule;
 import org.activityinfo.server.endpoint.wfs.WfsModule;
 import org.activityinfo.server.mail.MailModule;
 import org.activityinfo.server.report.ReportModule;
+import org.activityinfo.server.util.BeanMappingModule;
 import org.activityinfo.server.util.TemplateModule;
 import org.activityinfo.server.util.logging.LoggingModule;
 import org.apache.log4j.Logger;

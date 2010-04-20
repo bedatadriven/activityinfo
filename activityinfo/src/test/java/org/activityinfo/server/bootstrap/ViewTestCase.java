@@ -22,7 +22,7 @@ package org.activityinfo.server.bootstrap;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import org.activityinfo.server.TemplateModule;
+import org.activityinfo.server.util.TemplateModule;
 import org.activityinfo.server.bootstrap.model.PageModel;
 import org.junit.BeforeClass;
 

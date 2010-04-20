@@ -3,8 +3,8 @@ package org.activityinfo.server.endpoint.gwtrpc;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import org.activityinfo.server.BeanMappingModule;
-import org.activityinfo.server.TemplateModule;
+import org.activityinfo.server.util.BeanMappingModule;
+import org.activityinfo.server.util.TemplateModule;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.CommandResult;
