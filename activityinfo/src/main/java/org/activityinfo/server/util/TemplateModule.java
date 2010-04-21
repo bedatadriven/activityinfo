@@ -17,7 +17,7 @@
  * Copyright 2010 Alex Bertram and contributors.
  */
 
-package org.activityinfo.server;
+package org.activityinfo.server.util;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;

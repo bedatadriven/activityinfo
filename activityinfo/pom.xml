@@ -6,7 +6,7 @@
     <groupId>org.activityinfo</groupId>
     <artifactId>activityinfo</artifactId>
     <packaging>war</packaging>
-    <version>0.5.7-SNAPSHOT</version>
+    <version>0.5.9</version>
     <name>ActivityInfo</name>
     <licenses>
         <license>
