@@ -124,7 +124,7 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
     public MapPresenter.View createMapView() {
 
         if (Maps.isLoaded()) {
-            MapFieldSet mapFieldSet = new MapFieldSet();
+            MapFieldSet mapFieldSet = new MapFieldSet(activity.getDatabase().getCountry());
             this.mapView = mapFieldSet;
         } else {
             CoordFieldSet coordFieldSet = new CoordFieldSet();

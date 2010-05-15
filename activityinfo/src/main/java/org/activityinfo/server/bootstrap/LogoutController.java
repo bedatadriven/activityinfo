@@ -23,6 +23,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import freemarker.template.Configuration;
+import org.activityinfo.server.Cookies;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -45,6 +46,6 @@ public class LogoutController extends AbstractController {
     }
 
     protected void logUserOut(HttpServletResponse resp) {
-        removeCookie(resp, AUTH_TOKEN_COOKIE);
+        removeCookie(resp, Cookies.AUTH_TOKEN_COOKIE);
     }
 }

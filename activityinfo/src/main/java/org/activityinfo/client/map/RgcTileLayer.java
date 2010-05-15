@@ -26,8 +26,8 @@ public class RgcTileLayer extends TileLayer {
 	public static Copyright createRgcCopyright() {
 		return new Copyright(1, 
 				LatLngBounds.newInstance(
-						LatLng.newInstance(-90, -180),
-						LatLng.newInstance(90, 180)), 
+						LatLng.newInstance(-13.45599996, 12.18794184),
+						LatLng.newInstance(5.386098154, 31.306)),
 				0, "Le R&eacute;f&eacute;rentiel G&eacute;ographique Commun (RGC)");
 	}
 
@@ -46,5 +46,9 @@ public class RgcTileLayer extends TileLayer {
 	public boolean isPng() {
 		return true;
 	}
+
+    
+
+    
 	
 }

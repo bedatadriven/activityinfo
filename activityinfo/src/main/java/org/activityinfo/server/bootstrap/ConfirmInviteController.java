@@ -23,6 +23,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import freemarker.template.Configuration;
+import org.activityinfo.server.Cookies;
 import org.activityinfo.server.bootstrap.exception.IncompleteFormException;
 import org.activityinfo.server.bootstrap.exception.InvalidKeyException;
 import org.activityinfo.server.bootstrap.model.ConfirmInvitePageModel;
@@ -90,7 +91,7 @@ public class ConfirmInviteController extends AbstractController {
         confirmUserProfile(req, user);
 
         Authentication auth = createNewAuthToken(user);
-        addAuthCookie(resp, auth, false);
+        Cookies.addAuthCookie(resp, auth, false);
     }
 
     @Transactional

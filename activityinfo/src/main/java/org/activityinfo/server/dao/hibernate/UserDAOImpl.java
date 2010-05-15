@@ -24,7 +24,7 @@ import org.activityinfo.server.dao.UserDAO;
 import org.activityinfo.server.domain.User;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
+import javax.persistence.NoResultException;
 
 /**
  * @author Alex Bertram
@@ -44,8 +44,7 @@ public class UserDAOImpl extends AbstractDAO<User, Integer> implements UserDAO {
     }
 
     @Override
-    public User findUserByEmail(String email)
-            throws EntityNotFoundException {
+    public User findUserByEmail(String email) throws NoResultException {
 
         return (User) em.createNamedQuery("findUserByEmail")
                 .setParameter("email", email)

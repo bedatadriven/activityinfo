@@ -668,6 +668,25 @@
                 </plugins>
             </build>
         </profile>
+             <!-- Build the Application Module with only permutations for
+              IE6 and logging enabled for testing purposes -->
+        <profile>
+            <id>login</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>gwt-maven-plugin</artifactId>
+                        <version>1.2</version>
+                        <configuration>
+                            <draftCompile>true</draftCompile>
+                            <module>org.activityinfo.login.Login</module>
+                            <runTarget>login.html</runTarget>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <!-- Build the Application Module with a single permutation but with soyc
              enabled -->
         <profile>

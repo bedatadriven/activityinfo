@@ -157,9 +157,11 @@ public class SiteMap extends ContentPanel implements Shutdownable {
             public void onSuccess(Void result) {
                 removeAll();
 
-                map = new MapWidget(LatLng.newInstance(-1.0, 28.0), 8);
+                CountryModel country = activity.getDatabase().getCountry();
+                Bounds countryBounds = country.getBounds();
+                map = new MapWidget(LatLng.newInstance(countryBounds.getCenterY(), countryBounds.getCenterX()), 8);
 
-                MapType adminMap = MapTypeFactory.createLocalisationMapType();
+                MapType adminMap = MapTypeFactory.createLocalisationMapType(country);
                 map.addMapType(adminMap);
                 map.setCurrentMapType(adminMap);
                 map.removeMapType(MapType.getNormalMap());

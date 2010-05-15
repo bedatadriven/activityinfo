@@ -6,6 +6,7 @@ import com.google.inject.Singleton;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import org.activityinfo.server.Cookies;
 import org.activityinfo.server.bootstrap.exception.IncompleteFormException;
 import org.activityinfo.server.bootstrap.model.PageModel;
 import org.activityinfo.server.dao.AuthenticationDAO;
@@ -44,7 +45,6 @@ public class AbstractController extends HttpServlet {
     protected final Injector injector;
     private final Configuration templateCfg;
 
-    public static final String AUTH_TOKEN_COOKIE = "authToken";
     private static final String GWT_CODE_SERVER_HOST = "gwt.codesvr";
 
     @Inject
@@ -114,7 +114,7 @@ public class AbstractController extends HttpServlet {
 
     protected void createAuthCookie(HttpServletRequest req, HttpServletResponse resp, User user, boolean remember) throws IOException {
         Authentication auth = createNewAuthToken(user);
-        addAuthCookie(resp, auth, remember);
+        Cookies.addAuthCookie(resp, auth, remember);
     }
 
     @Transactional
@@ -123,12 +123,6 @@ public class AbstractController extends HttpServlet {
         AuthenticationDAO authDAO = injector.getInstance(AuthenticationDAO.class);
         authDAO.persist(auth);
         return auth;
-    }
-
-    protected void addAuthCookie(HttpServletResponse response, Authentication auth, boolean remember) {
-        Cookie cookie = new Cookie(AUTH_TOKEN_COOKIE, auth.getId());
-        cookie.setMaxAge(remember ? 30 * 24 * 60 * 60 : -1);
-        response.addCookie(cookie);
     }
 
     protected <T extends AbstractController> void delegateGet(Class<T> controllerClass,

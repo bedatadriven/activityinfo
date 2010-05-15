@@ -17,21 +17,10 @@
  * Copyright 2010 Alex Bertram and contributors.
  */
 
-package org.activityinfo.server.dao;
+package org.activityinfo.login.client;
 
-import com.google.inject.ImplementedBy;
-import org.activityinfo.server.dao.hibernate.UserDAOImpl;
-import org.activityinfo.server.domain.User;
+public class LoginException extends Exception {
 
-import javax.persistence.NoResultException;
-
-@ImplementedBy(UserDAOImpl.class)
-public interface UserDAO extends DAO<User, Integer> {
-
-    boolean doesUserExist(String email);
-
-    User findUserByEmail(String email)
-            throws NoResultException;
-
-    User findUserByChangePasswordKey(String key);
+    public LoginException() {
+    }
 }

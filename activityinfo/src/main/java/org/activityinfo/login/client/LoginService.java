@@ -17,21 +17,20 @@
  * Copyright 2010 Alex Bertram and contributors.
  */
 
-package org.activityinfo.server.dao;
+package org.activityinfo.login.client;
 
-import com.google.inject.ImplementedBy;
-import org.activityinfo.server.dao.hibernate.UserDAOImpl;
-import org.activityinfo.server.domain.User;
+import com.google.gwt.user.client.rpc.RemoteService;
 
-import javax.persistence.NoResultException;
+public interface LoginService extends RemoteService {
 
-@ImplementedBy(UserDAOImpl.class)
-public interface UserDAO extends DAO<User, Integer> {
+    /**
+     * Attempts to establish an authentication and locale cookies for the given
+     * user. 
+     *
+     * @param email
+     * @param password
+     * @throws LoginException
+     */
+    LoginResult login(String email, String password) throws LoginException;
 
-    boolean doesUserExist(String email);
-
-    User findUserByEmail(String email)
-            throws NoResultException;
-
-    User findUserByChangePasswordKey(String key);
 }

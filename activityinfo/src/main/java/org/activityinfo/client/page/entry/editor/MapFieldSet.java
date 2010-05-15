@@ -26,6 +26,7 @@ import org.activityinfo.client.map.MapTypeFactory;
 import org.activityinfo.client.page.common.widget.CoordinateField;
 import org.activityinfo.client.page.config.form.FieldSetFitLayout;
 import org.activityinfo.shared.dto.Bounds;
+import org.activityinfo.shared.dto.CountryModel;
 
 public class MapFieldSet extends FieldSet implements MapPresenter.View {
 
@@ -40,6 +41,11 @@ public class MapFieldSet extends FieldSet implements MapPresenter.View {
     private LatLngBounds pendingZoom = null;
 
     private MapPresenter presenter;
+    private final CountryModel country;
+
+    public MapFieldSet(CountryModel country) {
+        this.country = country;
+    }
 
     public void init(final MapPresenter presenter) {
 
@@ -100,7 +106,7 @@ public class MapFieldSet extends FieldSet implements MapPresenter.View {
         map.setCenter(LatLng.newInstance(-3.85, 23.5));
         map.setZoomLevel(6);
 
-        MapType adminMap = MapTypeFactory.createLocalisationMapType();
+        MapType adminMap = MapTypeFactory.createLocalisationMapType(country);
         map.addMapType(adminMap);
         map.setCurrentMapType(adminMap);
         map.removeMapType(MapType.getNormalMap());

@@ -23,6 +23,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import freemarker.template.Configuration;
+import org.activityinfo.server.Cookies;
 import org.activityinfo.server.bootstrap.exception.NoValidAuthentication;
 import org.activityinfo.server.bootstrap.model.HostPageModel;
 import org.activityinfo.server.dao.AuthenticationDAO;
@@ -49,6 +50,7 @@ public class HostController extends AbstractController {
     @Override
     @LogException(emailAlert = true)
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
         if (requestIsFromIE6OnPort80(req)) {
             redirectToPort(req, resp, 8080);
             return;
@@ -56,19 +58,25 @@ public class HostController extends AbstractController {
 
         try {
             Authentication auth = getAuthentication(req);
-            writeView(resp, new HostPageModel(auth));
-
+            if("true".equals(req.getParameter("redirect"))) {
+                Cookies.addAuthCookie(resp, auth, false);
+                resp.sendRedirect(HostController.ENDPOINT);
+                // sendRedirect() won't include the cookie above
+//                resp.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
+//                resp.setHeader("Location", HostController.ENDPOINT);
+            } else {
+                writeView(resp, new HostPageModel(auth));
+            }
         } catch (NoValidAuthentication noValidAuthentication) {
             resp.sendRedirect(LoginController.ENDPOINT + parseUrlSuffix(req));
         }
     }
 
     @Transactional
-    @LogException(emailAlert = true)
     protected Authentication getAuthentication(HttpServletRequest request) throws NoValidAuthentication {
         String authToken = request.getParameter("auth");
         if(isEmpty(authToken)) 
-            authToken = getCookie(request, AUTH_TOKEN_COOKIE);
+            authToken = getCookie(request, Cookies.AUTH_TOKEN_COOKIE);
         if (isEmpty(authToken))
             throw new NoValidAuthentication();
 

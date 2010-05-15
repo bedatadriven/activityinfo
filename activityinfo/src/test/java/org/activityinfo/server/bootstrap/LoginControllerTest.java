@@ -19,6 +19,7 @@
 
 package org.activityinfo.server.bootstrap;
 
+import org.activityinfo.server.Cookies;
 import org.activityinfo.server.bootstrap.model.LoginPageModel;
 import org.junit.Before;
 import org.junit.Test;
@@ -100,7 +101,7 @@ public class LoginControllerTest extends ControllerTestCase {
         post();
 
         assertNotNull("redirected", resp.redirectUrl);
-        assertEquals("new auth token", NEW_AUTH_TOKEN, resp.getCookie(AbstractController.AUTH_TOKEN_COOKIE));
+        assertEquals("new auth token", NEW_AUTH_TOKEN, resp.getCookie(Cookies.AUTH_TOKEN_COOKIE));
     }
 
     @Test

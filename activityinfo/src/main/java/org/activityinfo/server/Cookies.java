@@ -17,21 +17,25 @@
  * Copyright 2010 Alex Bertram and contributors.
  */
 
-package org.activityinfo.server.dao;
+package org.activityinfo.server;
 
-import com.google.inject.ImplementedBy;
-import org.activityinfo.server.dao.hibernate.UserDAOImpl;
-import org.activityinfo.server.domain.User;
+import org.activityinfo.server.domain.Authentication;
 
-import javax.persistence.NoResultException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 
-@ImplementedBy(UserDAOImpl.class)
-public interface UserDAO extends DAO<User, Integer> {
+public class Cookies {
+    public static final String AUTH_TOKEN_COOKIE = "authToken";
+    
+    private class For {
+        private static final int THIRTY_DAYS = 30 * 24 * 60 * 60;
+        private static final int THIS_SESSION = -1;
+    }
 
-    boolean doesUserExist(String email);
 
-    User findUserByEmail(String email)
-            throws NoResultException;
-
-    User findUserByChangePasswordKey(String key);
+    public static void addAuthCookie(HttpServletResponse response, Authentication auth, boolean remember) {
+        Cookie authCookie = new Cookie(AUTH_TOKEN_COOKIE, auth.getId());
+        authCookie.setMaxAge(remember ? For.THIRTY_DAYS : For.THIS_SESSION);
+        response.addCookie(authCookie);
+    }
 }

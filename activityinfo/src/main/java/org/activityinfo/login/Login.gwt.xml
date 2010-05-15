@@ -1,0 +1,18 @@
+
+<module rename-to="Login">
+
+  <inherits name="com.google.gwt.user.User"/>
+
+    <!-- Include generated sources -->
+    <source path='client'/>
+
+    <!-- Specify the app entry point class.                         -->
+    <entry-point class='org.activityinfo.login.client.LoginEntryPoint' />
+
+    <!-- Enable other locales -->
+    <extend-property name="locale" values="en" />
+    <extend-property name="locale" values="fr" />
+
+    <servlet path="/service" class="org.activityinfo.server.endpoint.gwtrpc.LoginServiceServlet" />
+
+</module>

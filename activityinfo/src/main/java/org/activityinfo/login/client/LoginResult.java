@@ -17,21 +17,25 @@
  * Copyright 2010 Alex Bertram and contributors.
  */
 
-package org.activityinfo.server.dao;
+package org.activityinfo.login.client;
 
-import com.google.inject.ImplementedBy;
-import org.activityinfo.server.dao.hibernate.UserDAOImpl;
-import org.activityinfo.server.domain.User;
+import java.io.Serializable;
 
-import javax.persistence.NoResultException;
+public class LoginResult implements Serializable {
+    private String appUrl;
 
-@ImplementedBy(UserDAOImpl.class)
-public interface UserDAO extends DAO<User, Integer> {
+    public LoginResult() {
+    }
 
-    boolean doesUserExist(String email);
+    public LoginResult(String appUrl) {
+        this.appUrl = appUrl;
+    }
 
-    User findUserByEmail(String email)
-            throws NoResultException;
+    public String getAppUrl() {
+        return appUrl;
+    }
 
-    User findUserByChangePasswordKey(String key);
+    public void setAppUrl(String appUrl) {
+        this.appUrl = appUrl;
+    }
 }

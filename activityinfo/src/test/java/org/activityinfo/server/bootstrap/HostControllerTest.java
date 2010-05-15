@@ -19,6 +19,7 @@
 
 package org.activityinfo.server.bootstrap;
 
+import org.activityinfo.server.Cookies;
 import org.activityinfo.server.bootstrap.model.HostPageModel;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,7 +48,7 @@ public class HostControllerTest extends ControllerTestCase {
 
     @Test
     public void verifyThatRequestWithValidAuthTokensReceiveTheView() throws IOException, ServletException {
-        req.addCookie(AbstractController.AUTH_TOKEN_COOKIE, GOOD_AUTH_TOKEN);
+        req.addCookie(Cookies.AUTH_TOKEN_COOKIE, GOOD_AUTH_TOKEN);
 
         get();
 
@@ -56,7 +57,7 @@ public class HostControllerTest extends ControllerTestCase {
 
     @Test
     public void verifyThatRequestWithFakeAuthTokensAreRedirectedToLogin() throws IOException, ServletException {
-        req.addCookie(AbstractController.AUTH_TOKEN_COOKIE, BAD_AUTH_TOKEN);
+        req.addCookie(Cookies.AUTH_TOKEN_COOKIE, BAD_AUTH_TOKEN);
 
         get();
 
