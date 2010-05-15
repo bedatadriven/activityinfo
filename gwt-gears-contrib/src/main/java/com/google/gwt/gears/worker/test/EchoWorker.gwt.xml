@@ -1,7 +1,0 @@
-<module rename-to="EchoWorker">
-
-    <inherits name='com.google.gwt.gears.worker.Worker'/>
-
-    <entry-point class='com.google.gwt.gears.worker.test.client.EchoWorker'/>
-
-</module>
