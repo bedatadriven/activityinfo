@@ -494,7 +494,7 @@
                 </configuration>
                 <dependencies>
                     <!-- Open source alternative to Microsoft's SQL driver -->
-                    <!--- which was not working with SQL Server 2008 Express -->
+                    <!-- which was not working with SQL Server 2008 Express -->
                     <dependency>
                         <groupId>net.sourceforge.jtds</groupId>
                         <artifactId>jtds</artifactId>
@@ -619,26 +619,26 @@
         <profile>
             <id>mssql-test</id>
             <build>
-            <plugins>
-              <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.5</version>
-                <configuration>
-                  <systemProperties>
-                      <property>
-                          <name>activityinfo.pu</name>
-                          <value>mssql-test</value>
-                      </property>
-                  </systemProperties>
-                </configuration>
-              </plugin>
-            </plugins>
-          </build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.5</version>
+                        <configuration>
+                            <systemProperties>
+                                <property>
+                                    <name>activityinfo.pu</name>
+                                    <value>mssql-test</value>
+                                </property>
+                            </systemProperties>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
 
-             <!-- Build the Application Module with only permutations for
-              IE6 and logging enabled for testing purposes -->
+        <!-- Build the Application Module with only permutations for
+ IE6 and logging enabled for testing purposes -->
         <profile>
             <id>login</id>
             <build>
