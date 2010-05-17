@@ -20,24 +20,30 @@ import java.util.List;
 import java.util.Set;
 
 
+/**
+ * PivotDAO implementation for hibernate using native SQL.
+ *
+ */
 public class PivotDAOImpl implements PivotDAO {
 
-    private EntityManager em;
+    private final EntityManager em;
+    private final SQLDialect dialect;
 
     @Inject
-    public PivotDAOImpl(EntityManager em) {
+    public PivotDAOImpl(EntityManager em, SQLDialect dialect) {
         this.em = em;
+        this.dialect = dialect;
     }
 
-
+    /**
+     * Internal interface to a group of objects that are responsible for
+     * bundling results from the SQL ResultSet object into
+     */
     private interface Bundler {
-
         public void bundle(ResultSet rs, Bucket bucket) throws SQLException;
     }
 
     private static class SumAndAverageBundler implements Bundler {
-
-        @Override
         public void bundle(ResultSet rs, Bucket bucket) throws SQLException {
             int aggMethod = rs.getInt(1);
 
@@ -56,15 +62,12 @@ public class PivotDAOImpl implements PivotDAO {
     }
 
     private static class SiteCountBundler implements Bundler {
-
-        @Override
         public void bundle(ResultSet rs, Bucket bucket) throws SQLException {
             bucket.setDoubleValue((double) rs.getInt(1));
         }
     }
 
     private static class SimpleBundler implements Bundler {
-
         private final Dimension dimension;
         private final int labelColumnIndex;
 
@@ -73,14 +76,12 @@ public class PivotDAOImpl implements PivotDAO {
             this.dimension = dimension;
         }
 
-        @Override
         public void bundle(ResultSet rs, Bucket bucket) throws SQLException {
             bucket.setCategory(dimension, new SimpleCategory(rs.getString(labelColumnIndex)));
         }
     }
 
     private static class EntityBundler implements Bundler {
-
         private final int idColumnIndex;
         private final Dimension dimension;
 
@@ -89,7 +90,6 @@ public class PivotDAOImpl implements PivotDAO {
             this.dimension = key;
         }
 
-        @Override
         public void bundle(ResultSet rs, Bucket bucket) throws SQLException {
             bucket.setCategory(dimension, new EntityCategory(
                     rs.getInt(idColumnIndex),
@@ -99,7 +99,6 @@ public class PivotDAOImpl implements PivotDAO {
 
 
     private static class OrderedEntityBundler implements Bundler {
-
         private final int idColumnIndex;
         private final Dimension dimension;
 
@@ -108,7 +107,6 @@ public class PivotDAOImpl implements PivotDAO {
             this.dimension = dimension;
         }
 
-        @Override
         public void bundle(ResultSet rs, Bucket bucket) throws SQLException {
             bucket.setCategory(dimension, new EntityCategory(
                     rs.getInt(idColumnIndex),
@@ -118,8 +116,6 @@ public class PivotDAOImpl implements PivotDAO {
     }
 
     private static class YearBundler implements Bundler {
-
-
         private final Dimension dimension;
         private final int yearColumnIndex;
 
@@ -136,7 +132,6 @@ public class PivotDAOImpl implements PivotDAO {
     }
 
     private static class MonthBundler implements Bundler {
-
         private final Dimension dimension;
         private final int yearColumnIndex;
 
@@ -155,7 +150,6 @@ public class PivotDAOImpl implements PivotDAO {
     }
 
     private static class QuarterBundler implements Bundler {
-
         private final Dimension dimension;
         private final int yearColumnIndex;
 
@@ -173,24 +167,18 @@ public class PivotDAOImpl implements PivotDAO {
         }
     }
 
-
-    @Override
     public List<Bucket> aggregate(Filter filter, Set<Dimension> dimensions) {
-
-
         final List<Bucket> buckets = new ArrayList<Bucket>();
 
         queryForSumAndAverages(filter, dimensions, buckets);
         queryForSiteCounts(filter, dimensions, buckets);
 
         return buckets;
-
     }
 
     private void queryForSumAndAverages(Filter filter, Set<Dimension> dimensions, List<Bucket> buckets) {
-
         /* We're just going to go ahead and add all the tables we need to the SQL statement;
-        * this saves us some work and hopefully the SQL server will optimze out any unused
+        * this saves us some work and hopefully the SQL server will optimize out any unused
         * tables
         */
 
@@ -205,10 +193,10 @@ public class PivotDAOImpl implements PivotDAO {
                 "LEFT JOIN UserDatabase Db ON (Activity.DatabaseId = Db.DatabaseId) ");
 
 
-        /* First add the indicator to the query: we can't aggregate values from different
-        * indicators so this is a must
-        *
-        */
+        /*
+         * First add the indicator to the query: we can't aggregate values from different
+         * indicators so this is a must
+         */
         StringBuilder columns = new StringBuilder();
         StringBuilder groupBy = new StringBuilder();
 
@@ -278,7 +266,6 @@ public class PivotDAOImpl implements PivotDAO {
         for (Dimension dimension : dimensions) {
 
             if (dimension.getType() == DimensionType.Activity) {
-
                 dimColumns.append(", Site.ActivityId, Activity.Name, Activity.SortOrder");
                 bundlers.add(new OrderedEntityBundler(dimension, nextColumnIndex));
                 nextColumnIndex += 3;
@@ -289,54 +276,46 @@ public class PivotDAOImpl implements PivotDAO {
                 nextColumnIndex += 1;
 
             } else if (dimension.getType() == DimensionType.Database) {
-
                 dimColumns.append(", Activity.DatabaseId, Db.Name");
                 bundlers.add(new EntityBundler(dimension, nextColumnIndex));
                 nextColumnIndex += 2;
 
             } else if (dimension.getType() == DimensionType.Partner) {
-
                 dimColumns.append(", Site.PartnerId, Partner.Name");
                 bundlers.add(new EntityBundler(dimension, nextColumnIndex));
                 nextColumnIndex += 2;
 
             } else if (dimension.getType() == DimensionType.Indicator) {
-
                 dimColumns.append(", Indicator.IndicatorId, Indicator.Name, Indicator.SortOrder");
                 bundlers.add(new OrderedEntityBundler(dimension, nextColumnIndex));
                 nextColumnIndex += 3;
 
             } else if (dimension.getType() == DimensionType.IndicatorCategory) {
-
                 dimColumns.append(", Indicator.Category");
                 bundlers.add(new SimpleBundler(dimension, nextColumnIndex));
                 nextColumnIndex += 1;
 
             } else if (dimension instanceof DateDimension) {
-
                 DateDimension dateDim = (DateDimension) dimension;
 
                 if (dateDim.getUnit() == DateUnit.YEAR) {
-
                     dimColumns.append(", YEAR(Period.Date2) ");
                     bundlers.add(new YearBundler(dimension, nextColumnIndex));
                     nextColumnIndex += 1;
 
                 } else if (dateDim.getUnit() == DateUnit.MONTH) {
-
                     dimColumns.append(", YEAR(Period.Date2), MONTH(Period.Date2)");
                     bundlers.add(new MonthBundler(dimension, nextColumnIndex));
                     nextColumnIndex += 2;
 
                 } else if (dateDim.getUnit() == DateUnit.QUARTER) {
-
-                    dimColumns.append(", YEAR(Period.Date2), FLOOR((MONTH(Period.Date2)-1)/3)+1");
+                    dimColumns.append(", YEAR(Period.Date2), ")
+                            .append(dialect.formatQuarterFunction("Period.Date2"));
                     bundlers.add(new QuarterBundler(nextColumnIndex, dimension));
                     nextColumnIndex += 2;
                 }
 
             } else if (dimension instanceof AdminDimension) {
-
                 AdminDimension adminDim = (AdminDimension) dimension;
 
                 String tableAlias = "AdminLevel" + adminDim.getLevelId();
@@ -360,7 +339,6 @@ public class PivotDAOImpl implements PivotDAO {
         /* add the dimensions to our column and group by list */
         columns.append(dimColumns);
         groupBy.append(dimColumns);
-
 
         /* And start on our where clause... */
 
@@ -405,16 +383,11 @@ public class PivotDAOImpl implements PivotDAO {
         sql.append("SELECT ").append(columns).append(" FROM ").append(from)
                 .append(" WHERE ").append(where).append(" GROUP BY ").append(groupBy);
 
-
         Session session = ((HibernateEntityManager) em).getSession();
-
         System.out.println(sql.toString());
 
-
         session.doWork(new Work() {
-            @Override
             public void execute(Connection connection) throws SQLException {
-
                 PreparedStatement stmt = connection.prepareStatement(sql.toString());
 
                 for (int i = 0; i != parameters.size(); ++i) {
@@ -422,24 +395,19 @@ public class PivotDAOImpl implements PivotDAO {
                 }
 
                 ResultSet rs = stmt.executeQuery();
-
                 while (rs.next()) {
-
                     Bucket bucket = new Bucket();
 
                     for (Bundler bundler : bundlers) {
                         bundler.bundle(rs, bucket);
                     }
-
                     buckets.add(bucket);
                 }
-
             }
         });
     }
 
     private void appendIdCriteria(StringBuilder sb, String fieldName, Set<Integer> ids, List<Object> parameters) {
-
         sb.append(" AND ").append(fieldName);
 
         if (ids.size() == 1) {
@@ -459,8 +427,7 @@ public class PivotDAOImpl implements PivotDAO {
 
     @Override
     public List<String> getFilterLabels(DimensionType type, Collection<Integer> ids) {
-
+        // TODO
         return new ArrayList<String>();
-
     }
 }

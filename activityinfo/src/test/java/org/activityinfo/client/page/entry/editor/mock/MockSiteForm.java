@@ -6,6 +6,7 @@ import org.activityinfo.client.page.entry.editor.AdminFieldSetPresenter;
 import org.activityinfo.client.page.entry.editor.MapPresenter;
 import org.activityinfo.client.page.entry.editor.SiteFormPresenter;
 import org.activityinfo.shared.dto.ActivityModel;
+import org.activityinfo.shared.dto.CountryModel;
 import org.activityinfo.shared.dto.PartnerModel;
 import org.activityinfo.shared.dto.SiteModel;
 
@@ -39,7 +40,7 @@ public class MockSiteForm implements SiteFormPresenter.View {
     }
 
     @Override
-    public MapPresenter.View createMapView() {
+    public MapPresenter.View createMapView(CountryModel country) {
         return mapView;
     }
 

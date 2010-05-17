@@ -205,7 +205,7 @@ public class PivotDAOImplTest {
     @OnDataSet("/dbunit/sites-quarters.db.xml")
     public void testQuarters() {
 
-        Dimension quarterDim = new DateDimension(DateUnit.QUARTER);
+        final Dimension quarterDim = new DateDimension(DateUnit.QUARTER);
         dimensions.add(quarterDim);
 
         Filter filter = new Filter();
@@ -213,18 +213,9 @@ public class PivotDAOImplTest {
         List<PivotDAO.Bucket> buckets = dao.aggregate(filter, dimensions);
 
         assertEquals(3, buckets.size());
-        assertEquals(10000, (int) buckets.get(0).doubleValue());
-        assertEquals(1500, (int) buckets.get(1).doubleValue());
-        assertEquals(3600, (int) buckets.get(2).doubleValue());
-
-        assertEquals(2008, ((QuarterCategory) buckets.get(0).getCategory(quarterDim)).getYear());
-        assertEquals(4, ((QuarterCategory) buckets.get(0).getCategory(quarterDim)).getQuarter());
-
-        assertEquals(2009, ((QuarterCategory) buckets.get(1).getCategory(quarterDim)).getYear());
-        assertEquals(1, ((QuarterCategory) buckets.get(1).getCategory(quarterDim)).getQuarter());
-
-        assertEquals(2009, ((QuarterCategory) buckets.get(2).getCategory(quarterDim)).getYear());
-        assertEquals(2, ((QuarterCategory) buckets.get(2).getCategory(quarterDim)).getQuarter());
+        assertEquals(1500, (int)findBucketByQuarter(buckets, 2009, 1).doubleValue());
+        assertEquals(3600, (int)findBucketByQuarter(buckets, 2009, 2).doubleValue());
+        assertEquals(10000, (int)findBucketByQuarter(buckets, 2008, 4).doubleValue());
     }
 
     private List<PivotDAO.Bucket> findBucketsByCategory(List<PivotDAO.Bucket> buckets, Dimension dim, DimensionCategory cat) {
@@ -235,6 +226,15 @@ public class PivotDAOImplTest {
             }
         }
         return matching;
+    }
+
+    private PivotDAO.Bucket findBucketByQuarter(List<PivotDAO.Bucket> buckets, int year, int quarter) {
+        for(PivotDAO.Bucket bucket : buckets) {
+            QuarterCategory category = (QuarterCategory) bucket.getCategory(new DateDimension(DateUnit.QUARTER));
+            if(category.getYear() == year && category.getQuarter() == quarter)
+                return bucket;
+        }
+        throw new AssertionError("No bucket for " + year + "q" + quarter);
     }
 
 
