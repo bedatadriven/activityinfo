@@ -104,13 +104,7 @@
         <dependency>
             <groupId>com.extjs</groupId>
             <artifactId>gxt</artifactId>
-            <version>2.1.0-INTERNAL</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.google.gwt</groupId>
-                    <artifactId>gwt-user</artifactId>
-                </exclusion>
-            </exclusions>
+            <version>2.1.1</version>
         </dependency>
         <dependency>
             <groupId>com.google.gwt.google-apis</groupId>

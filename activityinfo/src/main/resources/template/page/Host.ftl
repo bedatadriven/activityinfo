@@ -57,9 +57,9 @@
         </#if>
     </script>
 
-    <script language='javascript' src='Application/gxt210/flash/swfobject.js'></script>
+    <script language='javascript' src='Application/gxt211/flash/swfobject.js'></script>
     <script type="text/javascript" language="javascript" src="Application/Application.nocache.js"></script>
-    <link rel="stylesheet" type="text/css" href="Application/gxt210/css/gxt-all.css"/>
+    <link rel="stylesheet" type="text/css" href="Application/gxt211/css/gxt-all.css"/>
     <link rel="stylesheet" type="text/css" href="report.css"/>
 
 </head>
@@ -67,7 +67,7 @@
 <div id="loading">
     <div id="loading-box">
         <div class="loading-indicator">
-            <img src="Application/gxt210/images/default/shared/large-loading.gif" alt=""/>
+            <img src="Application/gxt211/images/default/shared/large-loading.gif" alt=""/>
             ActivityInfo ${pom.version}<br/>
             <span id="loading-msg">Chargement en cours...</span>
 
