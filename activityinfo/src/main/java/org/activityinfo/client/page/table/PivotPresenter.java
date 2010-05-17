@@ -95,11 +95,12 @@ public class PivotPresenter implements PagePresenter {
 
                 ListStore<Dimension> store = view.getUnsusedStore();
 
-                CountryModel country = result.getCommonCountry();
-                for (AdminLevelModel level : country.getAdminLevels()) {
-                    AdminDimension dimension = new AdminDimension(level.getId());
-                    dimension.set("caption", level.getName());
-                    store.add(dimension);
+                for (CountryModel country : result.getCountries()) {
+                    for (AdminLevelModel level : country.getAdminLevels()) {
+                        AdminDimension dimension = new AdminDimension(level.getId());
+                        dimension.set("caption", level.getName());
+                        store.add(dimension);
+                    }
                 }
             }
         });

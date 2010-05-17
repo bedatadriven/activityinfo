@@ -73,6 +73,7 @@ public class Schema extends BaseModel implements DTO {
 	 * @return The common country shared by all visible databases, or null if there are no
 	 * databases or databases in different countries.
 	 */
+    @Deprecated
 	public CountryModel getCommonCountry() {
 		CountryModel country = null;
 		
@@ -83,7 +84,6 @@ public class Schema extends BaseModel implements DTO {
 				return null;
 			}
 		}
-		
 		return country;
 	}
 
