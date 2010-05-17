@@ -68,7 +68,7 @@
     <div id="loading-box">
         <div class="loading-indicator">
             <img src="Application/gxt210/images/default/shared/large-loading.gif" alt=""/>
-            ActivityInfo 0.5.9<br/>
+            ActivityInfo ${pom.version}<br/>
             <span id="loading-msg">Chargement en cours...</span>
 
         </div>

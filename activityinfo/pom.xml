@@ -6,7 +6,7 @@
     <groupId>org.activityinfo</groupId>
     <artifactId>activityinfo</artifactId>
     <packaging>war</packaging>
-    <version>0.5.9</version>
+    <version>0.5.10-SNAPSHOT</version>
     <name>ActivityInfo</name>
     <licenses>
         <license>
@@ -343,9 +343,15 @@
     </organization>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
         <!-- Compile classes into the war
                directory for hosted mode live editing -->
-
         <outputDirectory>${gwt.output.directory}/WEB-INF/classes</outputDirectory>
         <testSourceDirectory>src/test/java</testSourceDirectory>
 
