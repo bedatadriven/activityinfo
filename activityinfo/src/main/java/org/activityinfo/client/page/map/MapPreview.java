@@ -79,7 +79,7 @@ public class MapPreview extends ContentPanel {
         // seems like a good time to preload the MapsApi if
         // we haven't already done so
 
-        MapApiLoader.preload();
+        MapApiLoader.load();
 
         addListener(Events.AfterLayout, new Listener<BaseEvent>() {
             @Override

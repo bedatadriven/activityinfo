@@ -12,6 +12,7 @@ import org.activityinfo.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.activityinfo.client.page.common.widget.LoadingPlaceHolder;
 import org.activityinfo.client.page.config.form.ModelFormPanel;
 import org.activityinfo.shared.dto.ActivityModel;
+import org.activityinfo.shared.dto.CountryModel;
 import org.activityinfo.shared.dto.PartnerModel;
 import org.activityinfo.shared.dto.SiteModel;
 
@@ -121,10 +122,10 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
     }
 
     @Override
-    public MapPresenter.View createMapView() {
+    public MapPresenter.View createMapView(CountryModel country) {
 
         if (Maps.isLoaded()) {
-            MapFieldSet mapFieldSet = new MapFieldSet(activity.getDatabase().getCountry());
+            MapFieldSet mapFieldSet = new MapFieldSet(country);
             this.mapView = mapFieldSet;
         } else {
             CoordFieldSet coordFieldSet = new CoordFieldSet();

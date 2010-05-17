@@ -12,7 +12,6 @@ import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.maps.client.MapType;
 import com.google.gwt.maps.client.MapWidget;
-import com.google.gwt.maps.client.control.MapTypeControl;
 import com.google.gwt.maps.client.control.SmallMapControl;
 import com.google.gwt.maps.client.event.MapMoveEndHandler;
 import com.google.gwt.maps.client.event.MapZoomEndHandler;
@@ -102,15 +101,14 @@ public class MapFieldSet extends FieldSet implements MapPresenter.View {
         panel.add(map);
 
         map.addControl(new SmallMapControl());
-        map.addControl(new MapTypeControl());
-        map.setCenter(LatLng.newInstance(-3.85, 23.5));
+        map.setCenter(LatLng.newInstance(
+                country.getBounds().getCenterY(),
+                country.getBounds().getCenterX()));
         map.setZoomLevel(6);
 
         MapType adminMap = MapTypeFactory.createLocalisationMapType(country);
         map.addMapType(adminMap);
         map.setCurrentMapType(adminMap);
-        map.removeMapType(MapType.getNormalMap());
-        map.removeMapType(MapType.getHybridMap());
 
         map.addMapZoomEndHandler(new MapZoomEndHandler() {
             public void onZoomEnd(MapZoomEndEvent event) {

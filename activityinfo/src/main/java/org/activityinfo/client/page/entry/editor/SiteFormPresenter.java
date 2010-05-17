@@ -13,10 +13,7 @@ import org.activityinfo.shared.command.CreateEntity;
 import org.activityinfo.shared.command.UpdateEntity;
 import org.activityinfo.shared.command.result.CreateResult;
 import org.activityinfo.shared.command.result.VoidResult;
-import org.activityinfo.shared.dto.ActivityModel;
-import org.activityinfo.shared.dto.Bounds;
-import org.activityinfo.shared.dto.PartnerModel;
-import org.activityinfo.shared.dto.SiteModel;
+import org.activityinfo.shared.dto.*;
 
 import java.util.Map;
 
@@ -33,7 +30,7 @@ public class SiteFormPresenter implements SiteFormLeash {
 
         public AdminFieldSetPresenter.View createAdminFieldSetView(ActivityModel activity);
 
-        public MapPresenter.View createMapView();
+        public MapPresenter.View createMapView(CountryModel country);
 
         public boolean validate();
 
@@ -100,7 +97,7 @@ public class SiteFormPresenter implements SiteFormLeash {
 
         this.currentActivity = activity;
 
-        mapPresenter = new MapPresenter(view.createMapView());
+        mapPresenter = new MapPresenter(view.createMapView(activity.getDatabase().getCountry()));
 
         adminPresenter = new AdminFieldSetPresenter(service, currentActivity, view.createAdminFieldSetView(currentActivity));
         adminPresenter.setListener(new AdminFieldSetPresenter.Listener() {

@@ -10,7 +10,6 @@ import org.activityinfo.shared.map.BaseMap;
 
 public class MapTypeFactory {
 
-
     public static MapType createLocalisationMapType(CountryModel country) {
         // TODO: generalize
         // There are probably other cases where we need to add custom tiles
@@ -26,7 +25,6 @@ public class MapTypeFactory {
     }
 
     public static MapType createBaseMapType(BaseMap baseMap) {
-
         TileLayer[] layers = new TileLayer[1];
         layers[0] = new BaseMapLayer(baseMap);
         Projection projection = new MercatorProjection(baseMap.getMaxZoom()+1);
@@ -38,6 +36,5 @@ public class MapTypeFactory {
         for(MapType t : w.getMapTypes()) {
             w.removeMapType(t);
         }
-
     }
 }

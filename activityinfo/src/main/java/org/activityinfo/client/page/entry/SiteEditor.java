@@ -12,10 +12,10 @@ import com.google.inject.Inject;
 import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.Place;
+import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.loader.CommandLoadEvent;
 import org.activityinfo.client.dispatch.loader.PagingCmdLoader;
-import org.activityinfo.client.dispatch.monitor.NullAsyncMonitor;
 import org.activityinfo.client.event.DownloadEvent;
 import org.activityinfo.client.event.SiteEvent;
 import org.activityinfo.client.page.PageId;
@@ -55,6 +55,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
     public interface View extends GridView<SiteEditor, SiteModel> {
 
         public void init(SiteEditor presenter, ActivityModel activity, ListStore<SiteModel> store);
+        public AsyncMonitor getLoadingMonitor();
 
         void setSelection(int siteId);
     }
@@ -353,12 +354,12 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
             }
         }
 
-        formLoader.edit(currentActivity, newSite, new NullAsyncMonitor());
+        formLoader.edit(currentActivity, newSite, view.getLoadingMonitor());
 
     }
 
     protected void onEdit(SiteModel site) {
-        formLoader.edit(currentActivity, site, new NullAsyncMonitor());
+        formLoader.edit(currentActivity, site, view.getLoadingMonitor());
     }
 
 

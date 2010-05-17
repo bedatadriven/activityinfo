@@ -25,66 +25,95 @@ import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.maps.client.Maps;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.rpc.InvocationException;
 import org.activityinfo.client.dispatch.AsyncMonitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Convience wrapper for loading the Google Maps API
+ * Convenience wrapper for loading the Google Maps API asynchronously
  *
  * @author Alex Bertram
  */
 public class MapApiLoader {
+    private static final int TIMEOUT = 10 * 1000;
+    private static final String API_KEY = "ABQIAAAAHxDe2DM8fTqR3KT6JA3uSxQowpcadhvcZvF-AZHbBConS0qRQRSyDoOLQrw76pJeJNUXt2g-yC8FAg";
+    private static final String API_VERSION = "2";
+    private static final boolean USING_SENSOR = false;
 
-    private static final int TIMEOUT = 30000;
+    private static boolean loadInProgress = false;
+    private static List<AsyncMonitor> waitingMonitors;
+    private static List<AsyncCallback> waitingCallbacks;
 
     public static void load(final AsyncMonitor monitor, final AsyncCallback<Void> callback) {
-
-        Log.debug("MapApiLoader: load()");
-
-        if (monitor != null)
-            monitor.beforeRequest();
-
-        AjaxLoader.AjaxLoaderOptions opts = AjaxLoader.AjaxLoaderOptions.newInstance();
-        opts.setLanguage(LocaleInfo.getCurrentLocale().getLocaleName());
-
-        //     <script src="http://maps.google.com/maps?gwt=1&amp;file=api&amp;v=2&amp;key=" />
-
-        String key = "ABQIAAAAHxDe2DM8fTqR3KT6JA3uSxQowpcadhvcZvF-AZHbBConS0qRQRSyDoOLQrw76pJeJNUXt2g-yC8FAg";
-
-        Maps.loadMapsApi(key, "2", false, opts, new Runnable() {
-            @Override
-            public void run() {
-                if (monitor != null) {
-                    monitor.onCompleted();
-                }
-                if (callback != null) {
-                    callback.onSuccess(null);
-                }
+        if(Maps.isLoaded()) {
+            if(monitor != null) monitor.onCompleted();
+            if(callback != null) callback.onSuccess(null);
+        } else {
+            if(!loadInProgress) {
+                startLoad();
             }
-        });
-        // set up a timer to call onFailed() if things don't work out.
-        if (callback != null || monitor != null) {
-            Timer timer = new Timer() {
-                @Override
-                public void run() {
-                    if (!Maps.isLoaded()) {
-                        if (monitor != null) {
-                            monitor.onCompleted();
-                        }
-                        if (callback != null) {
-                            //noinspection ThrowableInstanceNeverThrown
-                            callback.onFailure(
-                                    new InvocationException("API Loader timed out."));
-                        }
-                    }
-                }
-            };
-            timer.schedule(TIMEOUT);
+            addListeners(monitor, callback);
         }
-
+        load();
     }
 
-    public static void preload() {
-        load(null, null);
+    public static void load() {
+        Log.debug("MapApiLoader: load()");
+        if(!Maps.isLoaded() && !loadInProgress) {
+            startLoad();
+        }
+    }
+
+    private static void startLoad() {
+        loadInProgress = true;
+        waitingMonitors = new ArrayList<AsyncMonitor>();
+        waitingCallbacks = new ArrayList<AsyncCallback>();
+
+        AjaxLoader.AjaxLoaderOptions options = AjaxLoader.AjaxLoaderOptions.newInstance();
+        options.setLanguage(LocaleInfo.getCurrentLocale().getLocaleName());
+
+        Maps.loadMapsApi(API_KEY, API_VERSION, USING_SENSOR, options, new Runnable() {
+            @Override
+            public void run() {
+                onApiLoaded();
+            }
+        });
+        startFailureTimer();
+    }
+
+    private static void startFailureTimer() {
+        Timer timer = new Timer() {
+            @Override
+            public void run() {
+                if (!Maps.isLoaded()) {
+                    onApiLoadFailure();
+                }
+            }
+        };
+        timer.schedule(TIMEOUT);
+    }
+
+    private static void onApiLoaded() {
+        loadInProgress = false;
+        for(AsyncMonitor monitor : waitingMonitors)
+            monitor.onCompleted();
+        for(AsyncCallback callback : waitingCallbacks)
+            callback.onSuccess(null);
+    }
+
+    private static void onApiLoadFailure() {
+        loadInProgress = false;
+        for(AsyncMonitor monitor : waitingMonitors)
+            monitor.onCompleted();
+        for(AsyncCallback callback : waitingCallbacks)
+            callback.onSuccess(null);
+    }
+
+    private static void addListeners(AsyncMonitor monitor, AsyncCallback<Void> callback) {
+        if(monitor != null)
+            waitingMonitors.add(monitor);
+        if(callback != null)
+            waitingCallbacks.add(callback);
     }
 }

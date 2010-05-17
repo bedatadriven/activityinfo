@@ -2,9 +2,13 @@ package org.activityinfo.client.page.entry.editor;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.dispatch.Dispatcher;
+import org.activityinfo.client.dispatch.monitor.NullAsyncMonitor;
 import org.activityinfo.client.map.MapApiLoader;
 import org.activityinfo.shared.dto.ActivityModel;
 import org.activityinfo.shared.dto.SiteModel;
@@ -28,6 +32,19 @@ public class SiteFormLoader {
                      final AsyncMonitor monitor) {
 
         monitor.beforeRequest();
+        // It can take awhile to build the form on some browsers,
+        // so give the browser time to update the display to indicate
+        // that loading is in process.
+
+        DeferredCommand.addCommand(new Command() {
+            @Override
+            public void execute() {
+               doEdit(activity, site, monitor);
+            }
+        });
+    }
+
+    private void doEdit(final ActivityModel activity, final SiteModel site, final AsyncMonitor monitor) {
 
         if (leash != null && leash.getActivityId() == activity.getId()) {
             leash.setSite(site);
@@ -39,8 +56,11 @@ public class SiteFormLoader {
         }
 
         // start loading the Maps API in parallel
-        MapApiLoader.preload();
+        MapApiLoader.load();
+        loadCodeFragment(activity, site, monitor);
+    }
 
+    private void loadCodeFragment(final ActivityModel activity, final SiteModel site, final AsyncMonitor monitor) {
         GWT.runAsync(new RunAsyncCallback() {
             @Override
             public void onFailure(Throwable throwable) {
@@ -49,32 +69,34 @@ public class SiteFormLoader {
 
             @Override
             public void onSuccess() {
-
-                SiteForm form = new SiteForm();
-                SiteFormDialog dlg = new SiteFormDialog(form);
-
-                SiteFormPresenter presenter = new SiteFormPresenter(eventBus, dataConn, activity, dlg);
-
-                presenter.setSite(site);
-
-                monitor.onCompleted();
-
-                if (monitor instanceof TestingMonitor) {
-                    ((TestingMonitor) monitor).onFormLoaded(presenter, form, dlg);
-                }
-
-                leash = presenter;
+                onCodeFragmentLoaded(activity, site, monitor);
             }
         });
     }
 
+    private void onCodeFragmentLoaded(final ActivityModel activity, final SiteModel site, final AsyncMonitor monitor) {
+        MapApiLoader.load(new NullAsyncMonitor(), new AsyncCallback<Void>() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                showForm(activity, site, monitor);
+            }
 
-    public interface TestingMonitor extends AsyncMonitor {
-
-        public void onFormLoaded(SiteFormPresenter presenter, SiteForm form, SiteFormDialog dlg);
-
-
+            @Override
+            public void onSuccess(Void aVoid) {
+                showForm(activity, site, monitor);
+            }
+        });
     }
 
+    private void showForm(ActivityModel activity, SiteModel site, AsyncMonitor monitor) {
+        SiteForm form = new SiteForm();
+        SiteFormDialog dlg = new SiteFormDialog(form);
 
+        SiteFormPresenter presenter = new SiteFormPresenter(eventBus, dataConn, activity, dlg);
+        presenter.setSite(site);
+
+        monitor.onCompleted();
+
+        leash = presenter;
+    }
 }

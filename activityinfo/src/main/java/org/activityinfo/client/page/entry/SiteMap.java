@@ -164,9 +164,6 @@ public class SiteMap extends ContentPanel implements Shutdownable {
                 MapType adminMap = MapTypeFactory.createLocalisationMapType(country);
                 map.addMapType(adminMap);
                 map.setCurrentMapType(adminMap);
-                map.removeMapType(MapType.getNormalMap());
-                map.removeMapType(MapType.getHybridMap());
-
                 map.addControl(new SmallMapControl());
 
                 setLayout(new FitLayout());

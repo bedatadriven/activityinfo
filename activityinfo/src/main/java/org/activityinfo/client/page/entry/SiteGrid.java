@@ -19,6 +19,8 @@ import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 import org.activityinfo.client.Application;
+import org.activityinfo.client.dispatch.AsyncMonitor;
+import org.activityinfo.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.activityinfo.client.page.common.grid.AbstractEditorGridView;
 import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.shared.dto.ActivityModel;
@@ -62,6 +64,11 @@ public class SiteGrid extends AbstractEditorGridView<SiteModel, SiteEditor>
 
         super.init(presenter, store);
 
+    }
+
+    @Override
+    public AsyncMonitor getLoadingMonitor() {
+        return new MaskingAsyncMonitor(this, Application.CONSTANTS.loading());
     }
 
 

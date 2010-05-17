@@ -5,6 +5,7 @@ import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.page.common.dialog.FormDialogImpl;
 import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.shared.dto.ActivityModel;
+import org.activityinfo.shared.dto.CountryModel;
 import org.activityinfo.shared.dto.PartnerModel;
 import org.activityinfo.shared.dto.SiteModel;
 
@@ -67,8 +68,8 @@ public class SiteFormDialog extends FormDialogImpl<SiteForm> implements SiteForm
     }
 
     @Override
-    public MapPresenter.View createMapView() {
-        return form.createMapView();
+    public MapPresenter.View createMapView(CountryModel country) {
+        return form.createMapView(country);
     }
 
     @Override
