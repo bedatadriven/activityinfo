@@ -221,7 +221,7 @@
         </dependency>
 
         <!-- Open source alternative to Microsoft's SQL driver -->
-        <!--- which was not working with SQL Server 2008 Express -->
+        <!-- which was not working with SQL Server 2008 Express -->
         <dependency>
             <groupId>net.sourceforge.jtds</groupId>
             <artifactId>jtds</artifactId>
