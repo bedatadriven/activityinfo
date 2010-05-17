@@ -259,28 +259,6 @@
             <version>2.3.9</version>
         </dependency>
 
-        <!-- JaxWs services -->
-        <dependency>
-            <groupId>com.sun.xml.ws</groupId>
-            <artifactId>jaxws-rt</artifactId>
-            <version>2.1.3</version>
-            <exclusions>
-                <!--
-                Because the JDK1.6 already include the Java Activation API,
-                otherwise this could generate ClassLoading en Linkage errors
-                -->
-                <exclusion>
-                    <groupId>javax.activation</groupId>
-                    <artifactId>activation</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.jvnet.jax-ws-commons</groupId>
-            <artifactId>jaxws-json</artifactId>
-            <version>1.2</version>
-
-        </dependency>
 
         <!-- Random library for BASE64 decoding (KmlDataServlet) -->
         <dependency>
@@ -525,38 +503,6 @@
                 </dependencies>
             </plugin>
 
-            <!--  Create WSDL and other artifacts for web services -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jaxws-maven-plugin</artifactId>
-                <configuration>
-                    <sei>org.activityinfo.server.endpoint.jaxws.ApiService</sei>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>wsgen</goal>
-                        </goals>
-                        <configuration>
-                            <sei>org.activityinfo.server.endpoint.jaxws.ApiService</sei>
-                            <genWsdl>true</genWsdl>
-                            <keep>true</keep>
-                        </configuration>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.sun.xml.ws</groupId>
-                        <artifactId>jaxws-rt</artifactId>
-                        <version>2.1.3</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>com.sun.xml.bind</groupId>
-                        <artifactId>jaxb-xjc</artifactId>
-                        <version>2.1.10.1</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
 
             <!-- Embedded web server for testing -->
             <!-- You can start by invoking mvn jetty:run -->
