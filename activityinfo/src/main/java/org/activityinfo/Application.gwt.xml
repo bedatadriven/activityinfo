@@ -22,6 +22,11 @@
     <!-- Inherit the core Web Toolkit stuff.                        -->
     <inherits name='com.google.gwt.user.User' />
 
+    <!-- For production most teams prefer to set the default log level to `OFF` -->
+    <!--<inherits name="com.allen_sauer.gwt.log.gwt-log-TRACE" />-->
+    <!--<set-property name="log_DivLogger" value="DISABLED" />-->
+
+
     <!-- Inherit additional dependencies  -->
     <inherits name='com.google.gwt.inject.Inject' />
     <inherits name="com.google.gwt.i18n.I18N" />
@@ -33,15 +38,14 @@
     <inherits name="com.extjs.gxt.charts.Chart"/>
     <inherits name="com.google.code.gaxb.Annotations"/>
     <inherits name="com.bedatadriven.rebar.modulestore.ModuleStore"/>
-
+    <inherits name="com.bedatadriven.rebar.sql.Sql"/>
+    <inherits name="com.bedatadriven.rebar.sync.Sync"/>
+                                               
     <!-- Inherit ActivityInfo API module -->
     <inherits name="org.activityinfo.ActivityInfoApi"/>
     
     <!-- Configure Logging -->
 
-    <!-- For production most teams prefer to set the default log level to `OFF` -->
-    <inherits name="com.allen_sauer.gwt.log.gwt-log-TRACE" />
-    <set-property name="log_DivLogger" value="DISABLED" />
 
 
     <!-- Include generated sources -->

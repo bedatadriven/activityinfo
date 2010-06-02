@@ -95,7 +95,7 @@
         <dependency>
             <groupId>com.google.code.gwt-log</groupId>
             <artifactId>gwt-log</artifactId>
-            <version>2.6.2</version>
+            <version>3.0.1</version>
         </dependency>
 
 
@@ -128,7 +128,7 @@
         <dependency>
             <groupId>com.bedatadriven.rebar</groupId>
             <artifactId>rebar-sql</artifactId>
-            <version>1.0</version>
+            <version>1.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.bedatadriven.rebar</groupId>
@@ -341,6 +341,11 @@
             <url>http://nexus.bedatadriven.com/content/repositories/oss-snapshots</url>
         </repository>
         <repository>
+            <id>bedatadriven-thirdparty</id>
+            <name>Bedatadriven Thirdparty</name>
+            <url>http://nexus.bedatadriven.com/content/repositories/thirdparty</url>
+        </repository>
+        <repository>
             <id>maven2-repository.dev.java.net</id>
             <name>Java.net Repository for Maven 2</name>
             <url>http://download.java.net/maven/2/</url>
@@ -443,6 +448,10 @@
                             <!-- Takes WAY to long for all 12 permutations -->
                             <!-- run with profile soyc enabled to generate maps for a single perm-->
                             <soyc>false</soyc>
+                            <modules>
+                                <module>org.activityinfo.Application</module>
+                                <module>org.activityinfo.login.Login</module>
+                            </modules>
                         </configuration>
                         <goals>
                             <goal>compile</goal>
