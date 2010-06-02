@@ -14,26 +14,38 @@
  * You should have received a copy of the GNU General Public License
  * along with ActivityInfo.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Copyright 2009 Alex Bertram and contributors.
+ * Copyright 2010 Alex Bertram and contributors.
  */
 
-package org.activityinfo.client.offline;
+package org.activityinfo.shared.sync;
 
-import com.google.gwt.inject.client.AbstractGinModule;
-import org.activityinfo.client.offline.ui.OfflineMenu;
+import java.io.Serializable;
 
-import java.sql.Connection;
+public class SyncRegion implements Serializable {
+    private String id;
+    private long currentVersion;
 
-/**
- * @author Alex Bertram
- */
-public class OfflineModule extends AbstractGinModule {
+    public SyncRegion() {
+    }
 
-    @Override
-    protected void configure() {
+    public SyncRegion(String id, long currentVersion) {
+        this.id = id;
+        this.currentVersion = currentVersion;
+    }
 
-        bind(OfflineManager.View.class).to(OfflineMenu.class);
-        bind(Connection.class).toProvider(ConnectionProvider.class);
+    public String getId() {
+        return id;
+    }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public long getCurrentVersion() {
+        return currentVersion;
+    }
+
+    public void setCurrentVersion(long currentVersion) {
+        this.currentVersion = currentVersion;
     }
 }

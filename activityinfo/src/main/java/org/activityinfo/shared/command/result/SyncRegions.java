@@ -14,26 +14,34 @@
  * You should have received a copy of the GNU General Public License
  * along with ActivityInfo.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Copyright 2009 Alex Bertram and contributors.
+ * Copyright 2010 Alex Bertram and contributors.
  */
 
-package org.activityinfo.client.offline;
+package org.activityinfo.shared.command.result;
 
-import com.google.gwt.inject.client.AbstractGinModule;
-import org.activityinfo.client.offline.ui.OfflineMenu;
+import org.activityinfo.shared.sync.SyncRegion;
 
-import java.sql.Connection;
+import java.util.Iterator;
+import java.util.List;
 
-/**
- * @author Alex Bertram
- */
-public class OfflineModule extends AbstractGinModule {
+public class SyncRegions implements CommandResult, Iterable<SyncRegion> {
+
+    private List<SyncRegion> list;
+
+    public SyncRegions(List<SyncRegion> list) {
+        this.list = list;
+    }
+
+    public List<SyncRegion> getList() {
+        return list;
+    }
+
+    public void setList(List<SyncRegion> list) {
+        this.list = list;
+    }
 
     @Override
-    protected void configure() {
-
-        bind(OfflineManager.View.class).to(OfflineMenu.class);
-        bind(Connection.class).toProvider(ConnectionProvider.class);
-
+    public Iterator<SyncRegion> iterator() {
+        return list.iterator();
     }
 }

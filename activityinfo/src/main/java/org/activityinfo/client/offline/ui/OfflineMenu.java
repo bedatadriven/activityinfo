@@ -1,68 +1,33 @@
 package org.activityinfo.client.offline.ui;
 
-import com.extjs.gxt.ui.client.event.MenuEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.Observable;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
-import com.google.inject.Inject;
-import org.activityinfo.client.AppEvents;
+import com.google.inject.Singleton;
 import org.activityinfo.client.Application;
-import org.activityinfo.client.EventBus;
-import org.activityinfo.client.dispatch.remote.Authentication;
+import org.activityinfo.client.offline.OfflineManager;
 
 /**
  * @author Alex Bertram
  */
-public class OfflineMenu extends Button {
+@Singleton
+public class OfflineMenu extends Button implements OfflineManager.View {
 
-    protected EventBus eventBus;
-    protected Authentication auth;
+    private MenuItem enableOfflineModeMenuItem;
 
     public OfflineMenu() {
+        enableOfflineModeMenuItem = new MenuItem(Application.CONSTANTS.enableOffline());
 
-    }
+        Menu menu = new Menu();
+        menu.add(enableOfflineModeMenuItem);
 
-    @Inject
-    public void setEventBus(EventBus eventBus) {
-        this.eventBus = eventBus;
-    }
-
-    @Inject
-    public void setAuth(Authentication auth) {
-        this.auth = auth;
+        this.setMenu(menu);
+        this.setText(Application.CONSTANTS.offlineMode());
     }
 
     @Override
-    protected void beforeRender() {
-        super.beforeRender();
-        init();
-    }
-
-    protected void init() {
-        //this.setText(Application.offlineMode());
-        this.setText(Application.CONSTANTS.offlineMode());
-
-        Menu menu = new Menu();
-        MenuItem statusItem = new MenuItem(Application.CONSTANTS.status(), new SelectionListener<MenuEvent>() {
-            @Override
-            public void componentSelected(MenuEvent ce) {
-                eventBus.fireEvent(AppEvents.ShowOfflineStatus);
-
-            }
-        });
-        menu.add(statusItem);
-
-        MenuItem disableItem = new MenuItem(Application.CONSTANTS.disableOffline(), new
-                SelectionListener<MenuEvent>() {
-                    @Override
-                    public void componentSelected(MenuEvent ce) {
-                        eventBus.fireEvent(AppEvents.DisableOfflineMode);
-                    }
-                });
-        menu.add(disableItem);
-
-        this.setMenu(menu);
-
+    public Observable getEnableOfflineModeMenuItem() {
+        return enableOfflineModeMenuItem;
     }
 }

@@ -17,7 +17,6 @@ import org.activityinfo.client.offline.OfflineManager;
 import org.activityinfo.client.offline.OfflineModule;
 import org.activityinfo.client.offline.OfflineSchemaCache;
 import org.activityinfo.client.page.DownloadManager;
-import org.activityinfo.client.page.PagePresenter;
 import org.activityinfo.client.page.charts.ChartLoader;
 import org.activityinfo.client.page.charts.Charter;
 import org.activityinfo.client.page.config.*;
@@ -122,4 +121,5 @@ public interface AppInjector extends Ginjector {
     UsageTracker getUsageTracker();
 
     DbListPage getDbListPage();
+
 }

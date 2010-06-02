@@ -13,14 +13,27 @@ public class Authentication {
 
     private String authToken;
     private String email;
+    private int userId;
 
     public Authentication() {
 
     }
 
-    public Authentication(String authToken, String email) {
+    public Authentication(int userId, String authToken, String email) {
+        this.userId = userId;
         this.authToken = authToken;
         this.email = email;
+    }
+
+    /**
+     * @return Unique ID for the user
+     */
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     /**

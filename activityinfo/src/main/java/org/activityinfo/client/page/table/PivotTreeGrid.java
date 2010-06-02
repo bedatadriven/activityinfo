@@ -30,8 +30,8 @@ public class PivotTreeGrid extends TreeGrid<PivotGridPanel.PivotTableRow> {
 
 
     @Override
-    protected void renderChildren(PivotGridPanel.PivotTableRow parent) {
-        super.renderChildren(parent);
+    protected void renderChildren(PivotGridPanel.PivotTableRow parent, boolean auto) {
+        super.renderChildren(parent, auto);
 
         if(parent == null) {
             for(PivotGridPanel.PivotTableRow row : getTreeStore().getRootItems()) {

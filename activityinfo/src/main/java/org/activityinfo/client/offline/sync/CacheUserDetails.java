@@ -14,30 +14,34 @@
  * You should have received a copy of the GNU General Public License
  * along with ActivityInfo.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Copyright 2009 Alex Bertram and contributors.
+ * Copyright 2010 Alex Bertram and contributors.
  */
 
-package org.activityinfo.client.offline;
+package org.activityinfo.client.offline.sync;
 
-import org.activityinfo.client.Application;
-import org.activityinfo.client.inject.AppInjector;
-import com.extjs.gxt.ui.client.GXT;
-import com.extjs.gxt.ui.client.state.StateManager;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.activityinfo.client.dispatch.remote.Authentication;
 
-/**
- * @author Alex Bertram
- */
-public class OfflineApplication extends Application {
+public class CacheUserDetails implements Step {
+
+    private Authentication authentication;
+
+    public CacheUserDetails(Authentication authentication) {
+        this.authentication = authentication;
+    }
 
     @Override
-    protected void createCaches(AppInjector injector) {
+    public boolean isComplete() {
+        return false;
+    }
 
-        StateManager.get().setProvider(injector.getDatabaseStateProvider());
+    @Override
+    public String getDescription() {
+        return "Caching user information";
+    }
 
-        injector.createOfflineManager();        
-        //injector.createOfflineSchemaCache();  not ready for prime time
-        injector.createSchemaCache();
-        injector.createAdminCache();
-
+    @Override
+    public void execute(AsyncCallback<Void> callback) {
+        
     }
 }

@@ -58,6 +58,8 @@ public class Application implements EntryPoint {
         injector.getUsageTracker();
         injector.getHistoryManager();
         injector.getDownloadManager();
+        
+        injector.createOfflineManager();
 
         createCaches(injector);
 

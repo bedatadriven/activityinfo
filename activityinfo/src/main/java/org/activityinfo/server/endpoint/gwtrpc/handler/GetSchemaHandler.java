@@ -62,7 +62,7 @@ public class GetSchemaHandler implements CommandHandler<GetSchema> {
         for (UserDatabase database : databases) {
 
             if (database.getLastSchemaUpdate().after(lastUpdate))
-                lastUpdate = lastUpdate;
+                lastUpdate = database.getLastSchemaUpdate();
 
             UserDatabaseDTO databaseDTO = new UserDatabaseDTO();
 

@@ -1,63 +1,55 @@
 package org.activityinfo.client.offline.dao;
 
-import com.google.gwt.gears.client.Factory;
-import com.google.gwt.gears.client.database.Database;
-import com.google.gwt.gears.client.database.DatabaseException;
-import com.google.gwt.gears.client.database.ResultSet;
 import org.activityinfo.client.dispatch.remote.Authentication;
 
+import java.sql.*;
+
 /**
- * Data Access Object
+ * Data Access Object for the Authentication Database, which
+ * is a local database containing a list of all users with offline data
  */
 public class AuthDAO {
 
     public AuthDAO() {
-
-
     }
 
-    private Database openOrCreateDatabase() throws DatabaseException {
+    private Connection openOrCreateDatabase() throws SQLException {
 
-        Database db;
-
-        db = Factory.getInstance().createDatabase();
-        db.open("users");
-        // The 'int' type will store up to 8 byte ints depending on the magnitude of the
-        // value added.
-        db.execute("create table if not exists users (id integer primary key autoincrement, " +
+        Connection conn = DriverManager.getConnection("jdbc:sqlite:users");
+        Statement ddl = conn.createStatement();
+        ddl.execute("create table if not exists users (id integer primary key autoincrement, " +
                 " Email varchar(75) unique, AuthToken varchar(32))");
+        ddl.close();
 
-        return db;
+        return conn;
     }
-
 
     /**
      * Updates a user's authentication token if it exists, or else creates a new
      * record for this user.
      *
      * @param auth The authentication data to store
-     * @return The user's local id
-     * @throws com.google.gwt.gears.client.database.DatabaseException
-     *          if an underlying database operation fails.
      */
-    public int updateOrInsert(Authentication auth) throws DatabaseException {
+    public void updateOrInsert(Authentication auth) throws SQLException {
 
-        Database authDb = openOrCreateDatabase();
+        Connection conn = openOrCreateDatabase();
 
         try {
             // Try to update an existing entry with this AuthToken
-            authDb.execute("update users set authToken = ? where email = ?", auth.getAuthToken(), auth.getEmail());
-            if (authDb.getRowsAffected() == 0) {
-                // New User: insert record
-                authDb.execute("insert into users (email, authToken) values (?, ?)", auth.getEmail(), auth.getAuthToken());
-                return authDb.getLastInsertRowId();
-            } else {
-                // Existing record: just get local user id that we use to identify the database
-                ResultSet rs = authDb.execute("select id from users where email = ?", auth.getEmail());
-                return rs.getFieldAsInt(0);
+            PreparedStatement update = conn.prepareStatement("update users set authToken = ? where id = ?");
+            update.setString(1, auth.getAuthToken());
+            update.setString(2, auth.getEmail());
+            int rowsUpdated = update.executeUpdate();
+
+            if (rowsUpdated == 0) {
+                PreparedStatement insert = conn.prepareStatement("insert into users (id, email, authToken) values (?, ?, ?)");
+                insert.setInt(1, auth.getUserId());
+                insert.setString(2, auth.getEmail());
+                insert.setString(3, auth.getAuthToken());
+                insert.executeUpdate();
             }
         } finally {
-            authDb.close();
+            conn.close();
         }
     }
 

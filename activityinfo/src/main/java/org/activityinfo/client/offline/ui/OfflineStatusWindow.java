@@ -13,7 +13,6 @@ public class OfflineStatusWindow extends Window {
     private Text schemaStatus;
 
     public OfflineStatusWindow() {
-
         setHeading(Application.CONSTANTS.statusOfflineMode());
         setWidth(300);
         setHeight(200);

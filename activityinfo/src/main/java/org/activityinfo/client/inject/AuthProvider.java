@@ -20,7 +20,9 @@ public class AuthProvider implements Provider<Authentication> {
         if (Cookies.getCookie("authToken") != null &&
                 Cookies.getCookie("email") != null) {
 
-            return new Authentication(Cookies.getCookie("authToken"),
+            return new Authentication(
+                    Integer.parseInt(Cookies.getCookie("userId")),
+                    Cookies.getCookie("authToken"),
                     Cookies.getCookie("email"));
 
         }
@@ -29,9 +31,9 @@ public class AuthProvider implements Provider<Authentication> {
         try {
             userInfo = Dictionary.getDictionary("UserInfo");
             return new Authentication(
+                    Integer.parseInt(userInfo.get("authProvider")),
                     userInfo.get("authToken"),
                     userInfo.get("email"));
-
         } catch (Exception e) {
             Log.fatal("DictionaryAuthenticationProvider: exception retrieving dictionary from page", e);
             throw new Error();

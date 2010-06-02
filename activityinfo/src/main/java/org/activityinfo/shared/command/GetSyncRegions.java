@@ -14,26 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with ActivityInfo.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Copyright 2009 Alex Bertram and contributors.
+ * Copyright 2010 Alex Bertram and contributors.
  */
 
-package org.activityinfo.client.offline;
+package org.activityinfo.shared.command;
 
-import com.google.gwt.inject.client.AbstractGinModule;
-import org.activityinfo.client.offline.ui.OfflineMenu;
+import org.activityinfo.shared.command.result.SyncRegions;
 
-import java.sql.Connection;
-
-/**
- * @author Alex Bertram
- */
-public class OfflineModule extends AbstractGinModule {
-
-    @Override
-    protected void configure() {
-
-        bind(OfflineManager.View.class).to(OfflineMenu.class);
-        bind(Connection.class).toProvider(ConnectionProvider.class);
-
+public class GetSyncRegions implements Command<SyncRegions> {
+    
+    public GetSyncRegions() {
     }
 }

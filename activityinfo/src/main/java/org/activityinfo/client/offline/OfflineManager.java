@@ -4,11 +4,13 @@
 package org.activityinfo.client.offline;
 
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.google.gwt.gears.client.Factory;
+import com.google.gwt.user.client.Window;
 import com.google.inject.Inject;
-import org.activityinfo.client.EventBus;
-import org.activityinfo.client.dispatch.Dispatcher;
-import org.activityinfo.client.dispatch.remote.Authentication;
-import org.activityinfo.client.offline.ui.OfflineStatusWindow;
+import org.activityinfo.client.offline.sync.InstallSteps;
 
 /**
  * With regards to offline functionality, the application can be in one of three
@@ -17,18 +19,13 @@ import org.activityinfo.client.offline.ui.OfflineStatusWindow;
  * <ol>
  * <li>Gears is not installed -- No possibility of going offline. The "Activate Offline Mode" button
  * should simply direct users to Google's Gears web site. See
- * {@link org.activityinfo.client.offline.ui.OfflineMenuDisabled}</li>
  * <p/>
  * <li>Gears is installed, but the user has not initiated offline mode. Just because gears is installed,
  * we can't assume the user is prepared to download their innermost secrets to the computer they happen
  * to be using. When the user clicks "Activate Offline Mode", we set the cookie to the magic value
  * "offline=enabled" and prompt the user to restart.
- * {@link org.activityinfo.client.offline.ui.OfflineMenuDisabled}</li>
  * <p/>
- * <li> Gears is installed, offline is enabled, everything is great! The workaday
- * {@link org.activityinfo.client.Application} class is replaced with
- * {@link org.activityinfo.client.offline.OfflineApplication} Present the user with options to manage
- * offline mode and check the update status.</li>
+ * <li> Gears is installed, offline is enabled, everything is great!
  * </ol>
  * <p/>
  * Note that this state is handled at COMPILE time and GWT will generate a set of permutations for each
@@ -38,22 +35,48 @@ import org.activityinfo.client.offline.ui.OfflineStatusWindow;
  * @author Alex Bertram
  */
 public class OfflineManager {
+    private final View view;
 
-    private final EventBus eventBus;
-    private final Dispatcher service;
-    private final Authentication auth;
-    private final OfflineStatusWindow statusWindow;
+    public interface View {
+        Observable getEnableOfflineModeMenuItem();
+    }
 
     @Inject
-    public OfflineManager(EventBus eventBus, Dispatcher service, Authentication auth,
-                          OfflineStatusWindow statusWindow, DatabaseProvider databaseProvider) {
-        this.eventBus = eventBus;
-        this.service = service;
-        this.auth = auth;
-        this.statusWindow = statusWindow;
-
+    public OfflineManager(View view) {
+        this.view = view;
+        this.view.getEnableOfflineModeMenuItem().addListener(Events.Select, new Listener<BaseEvent>() {
+            @Override
+            public void handleEvent(BaseEvent baseEvent) {
+                enableOffline();
+            }
+        });
 
     }
 
+    private void enableOffline() {
+        Factory gearsFactory = Factory.getInstance();
+        if(gearsFactory == null) {
+            Log.debug("OfflineManager: failing, Gears not installed");
+            gearsNotInstalled();
+        } else if(gearsFactory.hasPermission() || gearsFactory.getPermission()) {
+            Log.debug("OfflineManager: starting offline install");
+            startInstall();
+        }
+    }
 
+    private void startInstall() {
+        Log.debug("Starting offline installation...");
+        InstallSteps steps = new InstallSteps();
+        steps.run();
+    }
+
+    private void gearsNotInstalled() {
+        MessageBox.confirm("Offline Mode", "Activity currently requires the Gears plugin to function offline." +
+                " Would you like to download the plugin now?", new Listener<MessageBoxEvent>() {
+            @Override
+            public void handleEvent(MessageBoxEvent be) {
+                Window.open("http://gears.google.com", "_blank", null);
+            }
+        });
+    }
 }

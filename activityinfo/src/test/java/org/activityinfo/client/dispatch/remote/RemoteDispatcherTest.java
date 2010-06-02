@@ -21,8 +21,6 @@ package org.activityinfo.client.dispatch.remote;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.client.dispatch.CommandProxy;
-import org.activityinfo.client.dispatch.remote.Authentication;
-import org.activityinfo.client.dispatch.remote.RemoteDispatcher;
 import org.activityinfo.client.dispatch.remote.cache.CommandProxyResult;
 import org.activityinfo.client.mock.MockEventBus;
 import org.activityinfo.shared.command.Command;
@@ -57,7 +55,7 @@ public class RemoteDispatcherTest {
         proxy = createMock("proxy", CommandProxy.class);
 
         dispatcher = new RemoteDispatcher(service, new MockEventBus(),
-                new Authentication(AUTH_TOKEN, "alex@alex.com"));
+                new Authentication(1, AUTH_TOKEN, "alex@alex.com"));
     }
 
     @Test

@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.activityinfo</groupId>
     <artifactId>activityinfo</artifactId>
     <packaging>war</packaging>
-    <version>0.5.10-SNAPSHOT</version>
+    <version>0.5.10</version>
     <name>ActivityInfo</name>
     <licenses>
         <license>
@@ -117,6 +116,31 @@
             <artifactId>gwt-gears</artifactId>
             <version>1.2.1</version>
             <scope>provided</scope>
+        </dependency>
+
+        <!-- Rebar- client persistence -->
+
+        <dependency>
+            <groupId>com.bedatadriven.rebar</groupId>
+            <artifactId>rebar-modulestore</artifactId>
+            <version>1.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.bedatadriven.rebar</groupId>
+            <artifactId>rebar-sql</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.bedatadriven.rebar</groupId>
+            <artifactId>rebar-sync</artifactId>
+            <version>0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.6.17</version>
+            <scope>test</scope>
         </dependency>
 
         <!--  Dependency Injection Framework -->
@@ -307,10 +331,14 @@
             <url>http://repo1.maven.org/maven2/</url>
         </repository>
         <repository>
-            <id>activityinfo</id>
-            <name>ActivityInfo team repository</name>
-            <url>http://www.activityinfo.org/m2/</url>
-            <layout>default</layout>
+            <id>bedatadriven-oss-releases</id>
+            <name>Bedatadriven Releases</name>
+            <url>http://nexus.bedatadriven.com/content/repositories/oss-releases</url>
+        </repository>
+        <repository>
+            <id>bedatadriven-oss-releases</id>
+            <name>Bedatadriven Snapshots</name>
+            <url>http://nexus.bedatadriven.com/content/repositories/oss-snapshots</url>
         </repository>
         <repository>
             <id>maven2-repository.dev.java.net</id>
@@ -327,14 +355,10 @@
 
     <description>Web-based database system for program monitoring</description>
     <scm>
-        <connection>scm:svn:http://activity-info.googlecode.com/svn/trunk/activityinfo</connection>
-        <developerConnection>scm:svn:https://activity-info.googlecode.com/svn/trunk/</developerConnection>
-        <url>http://code.google.com/p/activity-info/source/browse/</url>
+        <connection>scm:svn:http://activity-info.googlecode.com/svn/tags/activityinfo-0.5.10</connection>
+        <developerConnection>scm:svn:https://activity-info.googlecode.com/svn/tags/activityinfo-0.5.10</developerConnection>
+        <url>http://code.google.com/p/activity-info/source/browse/tags/activityinfo-0.5.10</url>
     </scm>
-
-    <organization>
-        <name>UNICEF</name>
-    </organization>
 
     <build>
         <resources>
