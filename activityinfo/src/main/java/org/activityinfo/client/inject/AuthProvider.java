@@ -31,7 +31,7 @@ public class AuthProvider implements Provider<Authentication> {
         try {
             userInfo = Dictionary.getDictionary("UserInfo");
             return new Authentication(
-                    Integer.parseInt(userInfo.get("authProvider")),
+                    Integer.parseInt(userInfo.get("userId")),
                     userInfo.get("authToken"),
                     userInfo.get("email"));
         } catch (Exception e) {

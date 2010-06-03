@@ -20,21 +20,26 @@
 package org.activityinfo.login.client;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.FormElement;
 import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 
 public class LoginPanel {
+    private FormElement form;
     private InputElement emailTextBox;
     private InputElement passwordTextBox;
-    private Element loginButton;
     private Element statusElement;
 
     public LoginPanel() {
+        form = DOM.getElementById("loginForm").cast();
         emailTextBox = DOM.getElementById("emailTextBox").cast();
         passwordTextBox = DOM.getElementById("passwordTextBox").cast();
-        loginButton = DOM.getElementById("loginButton");
         statusElement = DOM.getElementById("loginStatus");
+    }
+
+    public FormElement getForm() {
+        return form;
     }
 
     public InputElement getEmailTextBox() {

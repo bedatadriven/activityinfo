@@ -36,6 +36,7 @@ public class Cookies {
     public static void addAuthCookie(HttpServletResponse response, Authentication auth, boolean remember) {
         Cookie authCookie = new Cookie(AUTH_TOKEN_COOKIE, auth.getId());
         authCookie.setMaxAge(remember ? For.THIRTY_DAYS : For.THIS_SESSION);
+        authCookie.setPath("/");
         response.addCookie(authCookie);
     }
 }

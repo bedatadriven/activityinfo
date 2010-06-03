@@ -21,67 +21,51 @@ package org.activityinfo.login.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.*;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.rpc.InvocationException;
-import com.google.gwt.user.client.rpc.ServiceDefTarget;
-import com.google.gwt.user.client.rpc.StatusCodeException;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.FormPanel;
 
 public class LoginEntryPoint implements EntryPoint {
-    private LoginServiceAsync service;
     private LoginPanel panel;
     private LoginMessages messages;
+    protected FormPanel form;
 
     @Override
     public void onModuleLoad() {
         panel = new LoginPanel();
         messages = GWT.create(LoginMessages.class);
-        service = (LoginServiceAsync) GWT.create(LoginService.class);
-	    ((ServiceDefTarget) service).setServiceEntryPoint( GWT.getModuleBaseURL() + "service");
+        form = FormPanel.wrap(panel.getForm(), true);
 
-        Element loginButton = DOM.getElementById("loginButton");
-        DOM.sinkEvents(loginButton, Event.ONCLICK);
-        DOM.setEventListener(loginButton, new EventListener() {
+        bindForm();
+    }
+
+    private void bindForm() {
+        form.addSubmitHandler(new FormPanel.SubmitHandler() {
             @Override
-            public void onBrowserEvent(Event event) {
-                if(event.getTypeInt() == Event.ONCLICK) {
-                    onLoginButtonClicked();
+            public void onSubmit(FormPanel.SubmitEvent event) {
+                if(! validateEmail() || !validatePassword()) {
+                    event.cancel();
+                } else {
+                    panel.setBusy(messages.connecting());
+                }
+            }
+        });
+        form.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
+            @Override
+            public void onSubmitComplete(FormPanel.SubmitCompleteEvent event) {
+                String result = event.getResults();
+                if(result.equals("OK")) {
+                    onLoginSuccessful();
+                } else if(result.equals("BAD LOGIN")) {
+                    panel.setError(messages.invalidLogin());
+                } else {
+                    panel.setError(messages.invocationException());
                 }
             }
         });
     }
 
-    private void onLoginButtonClicked() {
-        String email = panel.getEmailTextBox().getValue();
-        String password = panel.getPasswordTextBox().getValue();
-
-        if (validateEmail(email) && validatePassword(password)) {
-            doLogin(email, password);
-        }
-    }
-
-    private void doLogin(String email, String password) {
-        panel.setBusy(messages.connecting());
-        service.login(email, password, new AsyncCallback<LoginResult>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                onLoginError(caught);
-            }
-
-            @Override
-            public void onSuccess(LoginResult result) {
-                onLoginSuccessful(result);
-            }
-        });
-    }
-
-    private void onLoginSuccessful(LoginResult result) {
-        panel.setBusy(messages.loginSuccessful());
-        Window.Location.assign(result.getAppUrl());
-    }
-
-    private boolean validatePassword(String password) {
-        if(isBlank(password)) {
+    private boolean validatePassword() {
+        if(isBlank(panel.getPasswordTextBox().getValue())) {
             Window.alert(messages.passwordMissing());
             panel.getPasswordTextBox().focus();
             return false;
@@ -89,7 +73,9 @@ public class LoginEntryPoint implements EntryPoint {
         return true;
     }
 
-    private boolean validateEmail(String email) {
+    private boolean validateEmail() {
+        String email = panel.getEmailTextBox().getValue();
+
         if(isBlank(email)) {
             Window.alert(messages.emailAddressMissing());
             panel.getEmailTextBox().focus();
@@ -104,15 +90,9 @@ public class LoginEntryPoint implements EntryPoint {
         return true;
     }
 
-    private void onLoginError(Throwable caught) {
-        panel.clearStatus();
-        if(caught instanceof StatusCodeException) {
-            panel.setError(messages.statusCodeException());
-        } else if(caught instanceof InvocationException) {
-            panel.setError(messages.invocationException());
-        } else if(caught instanceof LoginException) {
-            panel.setError(messages.invalidLogin());
-        }
+    private void onLoginSuccessful() {
+        panel.setBusy(messages.loginSuccessful());
+        Window.Location.assign("http://www.activityinfo.org");
     }
 
     private boolean isBlank(String email) {

@@ -476,6 +476,9 @@
                             <directory>war/Application</directory>
                         </fileset>
                         <fileset>
+                            <directory>war/Login</directory>
+                        </fileset>
+                        <fileset>
                             <directory>war/temp</directory>
                         </fileset>
                     </filesets>

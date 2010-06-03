@@ -46,8 +46,6 @@
     
     <!-- Configure Logging -->
 
-
-
     <!-- Include generated sources -->
     <source path='client'/>
 
@@ -55,8 +53,8 @@
     <entry-point class='org.activityinfo.client.Application' />
 
     <!-- Enable other locales -->
-    <extend-property name="locale" values="en" />
-    <extend-property name="locale" values="fr" />   
+    <extend-property name="locale" values="en,fr" />
+    <set-property-fallback name="locale" value="en"/>
 
     <servlet path="/cmd" class="org.activityinfo.server.endpoint.gwtrpc.CommandServlet" />
 

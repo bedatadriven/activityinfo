@@ -20,6 +20,7 @@
 package org.activityinfo.server.endpoint.gwtrpc;
 
 import com.google.inject.servlet.ServletModule;
+import org.activityinfo.server.endpoint.login.LoginServlet;
 
 public class GwtRpcModule extends ServletModule {
 

@@ -5,7 +5,7 @@
 </head>
 <body>
 
-    <form>
+    <form id="loginForm" action="Login/service" method="post">
         <table>
             <tr>
                 <td>Email:</td>
@@ -16,7 +16,8 @@
                 <td><input name="password" id="passwordTextBox" type="password"></td>
             </tr>
         </table>
-        <div id="loginStatus"></div><div id="loginButton" style="cursor:pointer">Login</div>
+        <div id="loginStatus"></div>
+        <input type="submit" value="Login">
     </form>
 </body>
 

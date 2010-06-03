@@ -19,13 +19,10 @@
 
 package org.activityinfo.server.endpoint.gwtrpc;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import org.activityinfo.login.client.LoginException;
-import org.activityinfo.login.client.LoginResult;
-import org.activityinfo.login.client.LoginService;
 import org.activityinfo.server.Cookies;
 import org.activityinfo.server.auth.Authenticator;
 import org.activityinfo.server.dao.AuthenticationDAO;
@@ -33,14 +30,17 @@ import org.activityinfo.server.dao.Transactional;
 import org.activityinfo.server.dao.UserDAO;
 import org.activityinfo.server.domain.Authentication;
 import org.activityinfo.server.domain.User;
-import org.activityinfo.server.util.logging.LogException;
 
 import javax.persistence.NoResultException;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 @Singleton
-public class LoginServiceServlet extends RemoteServiceServlet implements LoginService {
+public class LoginServiceServlet extends HttpServlet {
 
     private final Injector injector;
     private final Authenticator authenticator;
@@ -52,8 +52,18 @@ public class LoginServiceServlet extends RemoteServiceServlet implements LoginSe
     }
 
     @Override
-    @LogException
-    public LoginResult login(String email, String password) throws LoginException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        try {
+            tryLogin(req, resp);
+        } catch (LoginException e) {
+            writeResponse(resp, "BAD LOGIN");
+        }
+    }
+
+    private void tryLogin(HttpServletRequest req, HttpServletResponse resp) throws LoginException, IOException {
+        String email = req.getParameter("email");
+        String password = req.getParameter("password");
 
         User user = findUser(email);
 
@@ -65,21 +75,7 @@ public class LoginServiceServlet extends RemoteServiceServlet implements LoginSe
         HttpServletResponse response = injector.getInstance(HttpServletResponse.class);
         Cookies.addAuthCookie(response, auth, false);
 
-        return new LoginResult(getAppUrl(auth));
-    }
-
-    private String getAppUrl(Authentication auth) {
-        HttpServletRequest request = injector.getInstance(HttpServletRequest.class);
-
-        StringBuilder url = new StringBuilder();
-        url.append("http://").append(request.getServerName());
-        if(request.getServerPort()!=80)
-            url.append(":").append(request.getServerPort());
-        url.append("/").append(request.getContextPath());
-        url.append("?auth=").append(auth.getId());
-        url.append("&redirect=true");
-
-        return url.toString();
+        writeResponse(resp, "OK");
     }
 
     private User findUser(String email) throws LoginException {
@@ -99,4 +95,16 @@ public class LoginServiceServlet extends RemoteServiceServlet implements LoginSe
 
         return auth;
     }
+
+    private void writeResponse(HttpServletResponse resp, String body) throws IOException {
+        resp.setContentType("text/html");
+        PrintWriter writer = resp.getWriter();
+        writer.print("<html>\n");
+        writer.print("<script type=\"text/javascript\">\n");
+        writer.print("window.name = \"" + body + "\";\n");
+        writer.print("</script>\n");
+        writer.print("</html>");
+        writer.flush();
+    }
 }
+
