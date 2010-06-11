@@ -42,11 +42,12 @@ public class DimensionStoreFactory {
 
                     public void onSuccess(Schema schema) {
 
-                        CountryModel country = schema.getCommonCountry();
-                        for (AdminLevelModel level : country.getAdminLevels()) {
-                            AdminDimension dimension = new AdminDimension(level.getId());
-                            dimension.set("caption", level.getName());
-                            list.add(dimension);
+                        for (CountryModel country : schema.getCountries()) {
+                            for (AdminLevelModel level : country.getAdminLevels()) {
+                                AdminDimension dimension = new AdminDimension(level.getId());
+                                dimension.set("caption", level.getName());
+                                list.add(dimension);
+                            }
                         }
 
                         callback.onSuccess(new BaseListLoadResult(list));
