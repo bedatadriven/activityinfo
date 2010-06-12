@@ -5,7 +5,7 @@
     <groupId>org.activityinfo</groupId>
     <artifactId>activityinfo</artifactId>
     <packaging>war</packaging>
-    <version>0.5.10</version>
+    <version>0.5.11-SNAPSHOT</version>
     <name>ActivityInfo</name>
     <licenses>
         <license>
@@ -123,17 +123,17 @@
         <dependency>
             <groupId>com.bedatadriven.rebar</groupId>
             <artifactId>rebar-modulestore</artifactId>
-            <version>1.1-SNAPSHOT</version>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>com.bedatadriven.rebar</groupId>
             <artifactId>rebar-sql</artifactId>
-            <version>1.1-SNAPSHOT</version>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>com.bedatadriven.rebar</groupId>
             <artifactId>rebar-sync</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.2</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -316,6 +316,8 @@
             <version>3.6.2</version>
             <scope>test</scope>
         </dependency>
+
+        <!--TODO: remove -->
         <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
@@ -414,7 +416,7 @@
                 <version>1.2</version>
                 <configuration>
                     <runTarget>/</runTarget>
-                    <logLevel>INFO</logLevel>
+                    <logLevel>TRACE</logLevel>
                     <inplace>false</inplace>
                     <gwtVersion>${gwtVersion}</gwtVersion>
                     <port>9090</port>
@@ -590,6 +592,11 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>gwt-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>1.0-beta-1</version>
             </plugin>
         </plugins>
     </reporting>

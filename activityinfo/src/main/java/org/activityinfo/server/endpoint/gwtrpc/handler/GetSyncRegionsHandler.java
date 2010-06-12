@@ -21,10 +21,7 @@ package org.activityinfo.server.endpoint.gwtrpc.handler;
 
 import com.google.inject.Inject;
 import org.activityinfo.server.dao.SchemaDAO;
-import org.activityinfo.server.domain.AdminLevel;
-import org.activityinfo.server.domain.User;
-import org.activityinfo.server.domain.UserDatabase;
-import org.activityinfo.server.sync.SchemaUpdateBuilder;
+import org.activityinfo.server.domain.*;
 import org.activityinfo.shared.command.GetSyncRegions;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.command.result.SyncRegions;
@@ -48,8 +45,9 @@ public class GetSyncRegionsHandler implements CommandHandler<GetSyncRegions> {
         List<UserDatabase> databases = schemaDAO.getDatabases(user);
 
         List<SyncRegion> regions = new ArrayList<SyncRegion>();
-        regions.add(new SyncRegion("schema", SchemaUpdateBuilder.getCurrentSchemaVersion(databases, user)));
+        regions.add(new SyncRegion("schema", true));
         regions.addAll(listAdminRegions(databases));
+        regions.add(new SyncRegion("locations"));
 
         return new SyncRegions(regions);
     }
@@ -59,9 +57,9 @@ public class GetSyncRegionsHandler implements CommandHandler<GetSyncRegions> {
         List<SyncRegion> adminRegions = new ArrayList<SyncRegion>();
         Set<Integer> countriesAdded = new HashSet<Integer>();
         for(UserDatabase db : databases) {
-            if(!countriesAdded.contains(db.getCountry().getId())) {
+            if(!countriesAdded.contains(db.getCountry().getId())) {                                
                 for(AdminLevel level : db.getCountry().getAdminLevels()) {
-                    adminRegions.add(new SyncRegion("admin/" + level.getId(), 1));
+                    adminRegions.add(new SyncRegion("admin/" + level.getId(), true));
                 }
                 countriesAdded.add(db.getCountry().getId());
             }

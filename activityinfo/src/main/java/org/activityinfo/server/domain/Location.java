@@ -19,6 +19,7 @@
 package org.activityinfo.server.domain;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,10 +40,11 @@ public class Location implements java.io.Serializable {
 	private String axe;
 	private Set<Site> sites = new HashSet<Site>(0);
 	private Set<AdminEntity> adminEntities = new HashSet<AdminEntity>(0);
+    private Date dateCreated;
+    private Date dateEdited;
 
 	public Location() {
 	}
-
 
     @Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -153,4 +155,34 @@ public class Location implements java.io.Serializable {
 			getAdminEntities().add(newEntity);
 		}
 	}
+
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getDateEdited() {
+        return dateEdited;
+    }
+
+    public void setDateEdited(Date dateEdited) {
+        this.dateEdited = dateEdited;
+    }
+
+    @PrePersist
+    public void onCreate() {
+        Date now = new Date();
+        setDateCreated(now);
+        setDateEdited(now);
+    }
+
+    @PreUpdate
+    public void onUpdate() {
+        setDateEdited(new Date());
+    }
 }

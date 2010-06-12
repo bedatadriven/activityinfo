@@ -20,10 +20,11 @@
 package org.activityinfo.client.offline.sync;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.bedatadriven.rebar.sync.client.BulkUpdater;
+import com.bedatadriven.rebar.sync.client.BulkUpdaterAsync;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import org.activityinfo.client.dispatch.Dispatcher;
+import org.activityinfo.client.dispatch.remote.Authentication;
 import org.activityinfo.shared.command.GetSyncRegionUpdates;
 import org.activityinfo.shared.command.GetSyncRegions;
 import org.activityinfo.shared.command.result.SyncRegionUpdate;
@@ -31,20 +32,25 @@ import org.activityinfo.shared.command.result.SyncRegions;
 import org.activityinfo.shared.sync.SyncRegion;
 
 import java.sql.*;
+import java.util.Iterator;
 
 public class Synchronizer {
 
     private final Dispatcher dispatch;
     private final Connection conn;
-    private final BulkUpdater updater;
+    private final BulkUpdaterAsync updater;
+    private final Authentication auth;
 
-    private SyncRegions regions;
+    private Iterator<SyncRegion> regionIt;
+
+    private AsyncCallback<Void> callback;
 
     @Inject
-    public Synchronizer(Dispatcher dispatch, Connection conn, BulkUpdater updater) {
+    public Synchronizer(Dispatcher dispatch, Connection conn, BulkUpdaterAsync updater, Authentication auth) {
         this.conn = conn;
         this.dispatch = dispatch;
         this.updater = updater;
+        this.auth = auth;
     }
 
     private void createTables() throws SQLException {
@@ -53,88 +59,112 @@ public class Synchronizer {
                 " (id TEXT, localVersion INTEGER) ");
     }
 
-    public void start() throws SQLException {
-        Log.info("Synchronizer: starting.");
-        createTables();
-        dispatch.execute(new GetSyncRegions(), null, new AsyncCallback<SyncRegions>() {
-            @Override
-            public void onFailure(Throwable throwable) {
-                Log.error("Synchronizer: error getting sync regions", throwable);
-            }
+    public void start(AsyncCallback<Void> callback) {
+        this.callback = callback;
+        start();
+    }
 
-            @Override
-            public void onSuccess(SyncRegions syncRegions) {
-                Synchronizer.this.regions = syncRegions;
-                doNextUpdate();
-            }
-        });
+    public void start() {
+        Log.info("Synchronizer: starting.");
+        try {
+            createTables();
+            dispatch.execute(new GetSyncRegions(), null, new AsyncCallback<SyncRegions>() {
+                @Override
+                public void onFailure(Throwable throwable) {
+                    handleException("Error getting sync regions", throwable);
+                }
+
+                @Override
+                public void onSuccess(SyncRegions syncRegions) {
+                    Synchronizer.this.regionIt = syncRegions.iterator();
+                    doNextUpdate();
+                }
+            });
+        } catch (SQLException e) {
+            handleException("Exception thrown whilst creating tables", e);
+        }
     }
 
     private void doNextUpdate() {
-        for(final SyncRegion region : regions) {
-            long localVersion = queryLocalVersion(region.getId());
-            if(region.getCurrentVersion() > localVersion) {
-                dispatch.execute(new GetSyncRegionUpdates(region.getId(), localVersion), null, new AsyncCallback<SyncRegionUpdate>() {
-                    @Override
-                    public void onFailure(Throwable throwable) {
-                        Log.error("GetSyncRegionUpdates for region id " + region.getId() + " failed.", throwable);
-                    }
+        if(regionIt.hasNext()) {
+            final SyncRegion region = regionIt.next();
+            String localVersion = queryLocalVersion(region.getId());
 
-                    @Override
-                    public void onSuccess(SyncRegionUpdate syncRegionUpdate) {
-                        persistUpdates(syncRegionUpdate);
-                    }
-                });
+            Log.info("Synchronizer: Region " + region.getId() + ": localVersion=" + localVersion);
+
+            dispatch.execute(new GetSyncRegionUpdates(region.getId(), localVersion), null, new AsyncCallback<SyncRegionUpdate>() {
+                @Override
+                public void onFailure(Throwable throwable) {
+                    handleException("GetSyncRegionUpdates for region id " + region.getId() + " failed.", throwable);
+                }
+
+                @Override
+                public void onSuccess(SyncRegionUpdate update) {
+                    persistUpdates(region, update);
+                    doNextUpdate();
+                }
+            });
+        } else {
+            if(callback != null) {
+                callback.onSuccess(null);
             }
         }
     }
 
-    private void persistUpdates(final SyncRegionUpdate update) {
-        Log.debug("Synchronizer: got updates for region " + update.getRegionId() + ":\n " + update.getSql());
-        updater.executeUpdates(update.getSql(), new AsyncCallback<Integer>() {
+    private void persistUpdates(final SyncRegion region, final SyncRegionUpdate update) {
+        Log.debug("Synchronizer: got updates for region " + region.getId());
+        updater.executeUpdates(auth.getLocalDbName(), update.getSql(), new AsyncCallback<Integer>() {
             @Override
             public void onFailure(Throwable throwable) {
-                Log.error("Synchronizer: async execution of region updates failed", throwable);
+                handleException("Async execution of region updates failed. \nSQL=" + update.getSql() +
+                        "\nMessage: " + throwable.getMessage(), throwable);
             }
 
             @Override
-            public void onSuccess(Integer integer) {
-                updateLocalVersion(update.getRegionId(), update.getVersion());
+            public void onSuccess(Integer rows) {
+                Log.debug("Synchronizer: updates succeeded, " + rows + " row(s) affected");
+                updateLocalVersion(region.getId(), update.getVersion());
                 doNextUpdate();
             }
         });
     }
 
-    private long queryLocalVersion(String id) {
+    private String queryLocalVersion(String id) {
         try {
             PreparedStatement stmt = conn.prepareStatement("select localVersion from sync_regions where id = ?");
+            stmt.setString(1, id);
             ResultSet rs = stmt.executeQuery();
             if(rs.next()) {
-                return rs.getLong(1);
+                return rs.getString(1);
             } else {
-                return 0;
+                return null;
             }
         } catch (SQLException e) {
-            Log.error("Synchronizer: exception thrown while querying local version", e);
-            return 0;
+            handleException("Exception thrown while querying local version", e);
+            throw new RuntimeException(e);
         }
     }
 
-    private void updateLocalVersion(String id, long version) {
+    private void updateLocalVersion(String id, String version) {
         try {
             PreparedStatement update = conn.prepareStatement(
-                    "update sync_region set localVersion = ? where id = ?");
-            update.setLong(1, version);
+                    "update sync_regions set localVersion = ? where id = ?");
+            update.setString(1, version);
             update.setString(2, id);
             if(update.executeUpdate() == 0) {
                 PreparedStatement insert = conn.prepareStatement(
-                        "insert into sync_region (id, localVersion) values (?, ?)");
+                        "insert into sync_regions (id, localVersion) values (?, ?)");
                 insert.setString(1, id);
-                insert.setLong(2, version);
+                insert.setString(2, version);
+                insert.executeUpdate();
             }
         } catch (SQLException e) {
-            Log.error("Syncrhonizer: SQL exeception thrown while updating local version number", e);
+            handleException("SQL exception thrown while updating local version number", e);
         }
     }
 
+    private void handleException(String message, Throwable throwable) {
+        Log.error("Synchronizer: " + message, throwable);
+        if(callback != null) callback.onFailure(throwable);
+    }
 }

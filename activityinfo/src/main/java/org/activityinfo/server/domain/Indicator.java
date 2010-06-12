@@ -118,7 +118,7 @@ public class Indicator implements java.io.Serializable, Orderable, Deleteable, S
 	public void setActivity(Activity activity) {
 		this.activity = activity;
 	}
-	
+
 	@Column(name = "CollectIntervention", nullable = false)
 	public boolean getCollectIntervention() {
 		return this.collectIntervention;

@@ -20,8 +20,10 @@
 package org.activityinfo.server.sync;
 
 import com.bedatadriven.rebar.sync.server.JpaUpdateBuilder;
+import com.google.inject.Inject;
 import org.activityinfo.server.dao.SchemaDAO;
 import org.activityinfo.server.domain.*;
+import org.activityinfo.shared.command.GetSyncRegionUpdates;
 import org.activityinfo.shared.command.result.SyncRegionUpdate;
 import org.json.JSONException;
 
@@ -30,7 +32,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class SchemaUpdateBuilder {
+public class SchemaUpdateBuilder implements UpdateBuilder {
 
     private final SchemaDAO schemaDAO;
 
@@ -47,33 +49,36 @@ public class SchemaUpdateBuilder {
     private List<Indicator> indicators = new ArrayList<Indicator>();
 
     private Class[] schemaClasses = new Class[] {
-        Country.class,
-        AdminLevel.class,
-        UserDatabase.class,
-        Partner.class,
-        Activity.class,
-        Indicator.class
+            Country.class,
+            AdminLevel.class,
+            UserDatabase.class,
+            Partner.class,
+            Activity.class,
+            Indicator.class
     };
     private static final String REGION_ID = "schema";
 
+    @Inject
     public SchemaUpdateBuilder(SchemaDAO schemaDAO) {
         this.schemaDAO = schemaDAO;
     }
 
-    public SyncRegionUpdate build(User user)  {
+    public SyncRegionUpdate build(User user, GetSyncRegionUpdates request) throws JSONException {
         databases = schemaDAO.getDatabases(user);
 
-        makeEntityLists();
+        long localVersion = request.getLocalVersion() == null ? 0 : Long.parseLong(request.getLocalVersion());
+        long serverVersion = getCurrentSchemaVersion(user);
 
         SyncRegionUpdate update = new SyncRegionUpdate();
-        update.setRegionId(REGION_ID);
-        update.setVersion(getCurrentSchemaVersion(databases, user));
-        try {
-            update.setSql(buildSql());
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
+        update.setVersion(Long.toString(serverVersion));
+        update.setComplete(true);
 
+        if(localVersion == serverVersion) {
+            update.setComplete(true);
+        } else {
+            makeEntityLists();
+            update.setSql(buildSql());
+        }
         return update;
     }
 
@@ -91,7 +96,7 @@ public class SchemaUpdateBuilder {
         builder.insert(Activity.class, activities);
         builder.insert(Indicator.class, indicators);
 
-        return builder.toString();
+        return builder.asJson();
     }
 
     private void makeEntityLists() {
@@ -116,7 +121,7 @@ public class SchemaUpdateBuilder {
         }
     }
 
-    public static long getCurrentSchemaVersion(List<UserDatabase> databases, User user) {
+    public long getCurrentSchemaVersion(User user) {
         long currentVersion = 1;
         for(UserDatabase db : databases) {
             if(db.getLastSchemaUpdate().getTime() > currentVersion)

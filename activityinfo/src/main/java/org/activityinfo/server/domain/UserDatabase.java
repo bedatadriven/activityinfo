@@ -175,6 +175,8 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
 
     /**
      *
+     * // TODO transform to link to Office entity
+     *
      * @return  The list of partner organizations involved in this database.
      * (Partner organizations can own activity sites)
      */
@@ -349,7 +351,9 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
      * Marks this database as deleted. (Though the row is not removed from the database)
      */
 	public void delete() {
-		setDateDeleted(new Date());
+        Date now = new Date();
+        setDateDeleted(now);
+        setLastSchemaUpdate(now);
 	}
 
     /**

@@ -14,29 +14,35 @@
  * You should have received a copy of the GNU General Public License
  * along with ActivityInfo.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Copyright 2009 Alex Bertram and contributors.
+ * Copyright 2010 Alex Bertram and contributors.
  */
 
-package org.activityinfo.client.offline;
+package org.activityinfo.client.offline.sync;
 
-import com.bedatadriven.rebar.sync.client.BulkUpdaterAsync;
-import com.bedatadriven.rebar.sync.client.impl.GearsBulkUpdater;
-import com.google.gwt.inject.client.AbstractGinModule;
-import org.activityinfo.client.offline.ui.OfflineMenu;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Inject;
 
-import java.sql.Connection;
+public class InitialSyncStep implements Step {
 
-/**
- * @author Alex Bertram
- */
-public class OfflineModule extends AbstractGinModule {
+    private final Synchronizer syncro;
+
+    @Inject
+    public InitialSyncStep(Synchronizer syncro) {
+        this.syncro = syncro;
+    }
 
     @Override
-    protected void configure() {
+    public boolean isComplete() {
+        return false;
+    }
 
-        bind(OfflineManager.View.class).to(OfflineMenu.class);
-        bind(Connection.class).toProvider(ConnectionProvider.class);
-        bind(BulkUpdaterAsync.class).to(GearsBulkUpdater.class);
+    @Override
+    public String getDescription() {
+        return "Initial Synchronization";
+    }
 
+    @Override
+    public void execute(AsyncCallback<Void> callback) {
+        syncro.start();
     }
 }

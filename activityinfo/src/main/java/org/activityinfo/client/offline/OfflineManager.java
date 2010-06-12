@@ -10,6 +10,7 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.gears.client.Factory;
 import com.google.gwt.user.client.Window;
 import com.google.inject.Inject;
+import org.activityinfo.client.inject.AppInjector;
 import org.activityinfo.client.offline.sync.InstallSteps;
 
 /**
@@ -36,14 +37,16 @@ import org.activityinfo.client.offline.sync.InstallSteps;
  */
 public class OfflineManager {
     private final View view;
+    private final AppInjector injector;
 
     public interface View {
         Observable getEnableOfflineModeMenuItem();
     }
 
     @Inject
-    public OfflineManager(View view) {
+    public OfflineManager(View view, AppInjector injector) {
         this.view = view;
+        this.injector = injector;
         this.view.getEnableOfflineModeMenuItem().addListener(Events.Select, new Listener<BaseEvent>() {
             @Override
             public void handleEvent(BaseEvent baseEvent) {
@@ -66,12 +69,12 @@ public class OfflineManager {
 
     private void startInstall() {
         Log.debug("Starting offline installation...");
-        InstallSteps steps = new InstallSteps();
+        InstallSteps steps = injector.getInstallSteps();
         steps.run();
     }
 
     private void gearsNotInstalled() {
-        MessageBox.confirm("Offline Mode", "Activity currently requires the Gears plugin to function offline." +
+        MessageBox.confirm("Offline Mode", "ActivityInfo currently requires the Gears plugin to function offline." +
                 " Would you like to download the plugin now?", new Listener<MessageBoxEvent>() {
             @Override
             public void handleEvent(MessageBoxEvent be) {

@@ -57,4 +57,8 @@ public class Authentication {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public String getLocalDbName() {
+        return "user" + userId;
+    }
 }

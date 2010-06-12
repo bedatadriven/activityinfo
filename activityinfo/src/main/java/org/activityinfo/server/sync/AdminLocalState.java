@@ -17,35 +17,36 @@
  * Copyright 2010 Alex Bertram and contributors.
  */
 
-package org.activityinfo.shared.command.result;
+package org.activityinfo.server.sync;
 
-import org.activityinfo.shared.sync.SyncRegion;
+/**
+ * 
+ */
+public class AdminLocalState {
+    int version = 0;
+    boolean complete = false;
+    int lastId;
 
-import java.util.Iterator;
-import java.util.List;
+    public AdminLocalState(String localState) {
+        if(localState != null) {
+            String[] tokens = localState.split(",");
+            version = Integer.parseInt(tokens[0]);
 
-public class SyncRegions implements CommandResult, Iterable<SyncRegion> {
-
-    private List<SyncRegion> list;
-
-    protected SyncRegions() {
-
-    }
-
-    public SyncRegions(List<SyncRegion> list) {
-        this.list = list;
-    }
-
-    public List<SyncRegion> getList() {
-        return list;
-    }
-
-    protected void setList(List<SyncRegion> list) {
-        this.list = list;
+            if(tokens.length == 1) {
+                complete = true;
+            } else {
+                complete = false;
+                lastId = Integer.parseInt(tokens[1]);
+            }
+        }
     }
 
     @Override
-    public Iterator<SyncRegion> iterator() {
-        return list.iterator();
+    public String toString() {
+        if(complete) {
+            return Integer.toString(version);
+        } else {
+            return version + "," + lastId;
+        }
     }
 }

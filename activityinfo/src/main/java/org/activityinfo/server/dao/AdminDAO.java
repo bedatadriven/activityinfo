@@ -45,13 +45,12 @@ public interface AdminDAO extends DAO<AdminEntity, Integer> {
      */
     List<AdminEntity> findChildEntities(int levelId, int parentEntityId);
 
+
     Query query();
 
     public interface Query {
         Query level(int levelId);
-
         Query withParentEntityId(int parentEntityId);
-
         Query withSitesOfActivityId(int activityId);
 
         List<AdminEntity> execute();

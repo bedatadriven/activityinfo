@@ -14,29 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with ActivityInfo.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Copyright 2009 Alex Bertram and contributors.
+ * Copyright 2010 Alex Bertram and contributors.
  */
 
-package org.activityinfo.client.offline;
+package org.activityinfo.server.sync;
 
-import com.bedatadriven.rebar.sync.client.BulkUpdaterAsync;
-import com.bedatadriven.rebar.sync.client.impl.GearsBulkUpdater;
-import com.google.gwt.inject.client.AbstractGinModule;
-import org.activityinfo.client.offline.ui.OfflineMenu;
+import org.activityinfo.server.domain.User;
+import org.activityinfo.shared.command.GetSyncRegionUpdates;
+import org.activityinfo.shared.command.result.SyncRegionUpdate;
+import org.json.JSONException;
 
-import java.sql.Connection;
+public interface UpdateBuilder {
 
-/**
- * @author Alex Bertram
- */
-public class OfflineModule extends AbstractGinModule {
+    SyncRegionUpdate build(User user, GetSyncRegionUpdates request) throws JSONException;
 
-    @Override
-    protected void configure() {
-
-        bind(OfflineManager.View.class).to(OfflineMenu.class);
-        bind(Connection.class).toProvider(ConnectionProvider.class);
-        bind(BulkUpdaterAsync.class).to(GearsBulkUpdater.class);
-
-    }
 }

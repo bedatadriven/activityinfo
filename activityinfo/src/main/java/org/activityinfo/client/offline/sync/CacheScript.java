@@ -19,7 +19,6 @@
 
 package org.activityinfo.client.offline.sync;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.gears.client.localserver.ManagedResourceStore;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -36,7 +35,7 @@ public class CacheScript implements Step {
     public boolean isComplete() {
         // managed resources stores cause no end of problems in hosted mode,
         // so only invoke here if we are actually running in scripted mode
-        return !GWT.isScript() || store.getCurrentVersion() != null;
+        return store.getCurrentVersion() != null;
     }
 
     @Override

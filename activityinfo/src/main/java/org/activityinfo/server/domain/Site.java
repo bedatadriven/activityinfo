@@ -284,7 +284,9 @@ public class Site implements java.io.Serializable, Deleteable {
 	}
 	
 	public void delete() {
-		setDateDeleted(new Date());
+        Date now = new Date();
+        setDateDeleted(now);
+        setDateEdited(now);
 	}
 
 	@Override

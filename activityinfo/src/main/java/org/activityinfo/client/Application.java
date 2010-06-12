@@ -30,6 +30,10 @@ public class Application implements EntryPoint {
 
         Log.info("Application: onModuleLoad starting");
 
+        if(!GWT.isScript()) {
+            Log.setCurrentLogLevel(Log.LOG_LEVEL_TRACE);
+        }
+
 //        if(Log.isTraceEnabled())
 //            registerStatsHandler();
         if(Log.isErrorEnabled())

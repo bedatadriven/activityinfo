@@ -23,14 +23,18 @@ import java.io.Serializable;
 
 public class SyncRegion implements Serializable {
     private String id;
-    private long currentVersion;
+    private boolean required;
 
     public SyncRegion() {
     }
 
-    public SyncRegion(String id, long currentVersion) {
+    public SyncRegion(String id) {
         this.id = id;
-        this.currentVersion = currentVersion;
+    }
+
+    public SyncRegion(String id, boolean required) {
+        this.id = id;
+        this.required = required;
     }
 
     public String getId() {
@@ -41,11 +45,16 @@ public class SyncRegion implements Serializable {
         this.id = id;
     }
 
-    public long getCurrentVersion() {
-        return currentVersion;
+    /**
+     * @return True if this SyncRegion MUST be up to date before the
+     * client can enter offline mode. Generally true for reference data,
+     * schema, etc.
+     */
+    public boolean isRequired() {
+        return required;
     }
 
-    public void setCurrentVersion(long currentVersion) {
-        this.currentVersion = currentVersion;
+    public void setRequired(boolean required) {
+        this.required = required;
     }
 }

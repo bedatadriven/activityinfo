@@ -56,5 +56,4 @@ public class PivotTableElement extends PivotElement<PivotContent> {
 		return set;
 	}
 
-
 }

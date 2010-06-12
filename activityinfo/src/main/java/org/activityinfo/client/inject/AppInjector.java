@@ -16,6 +16,7 @@ import org.activityinfo.client.offline.DatabaseStateProvider;
 import org.activityinfo.client.offline.OfflineManager;
 import org.activityinfo.client.offline.OfflineModule;
 import org.activityinfo.client.offline.OfflineSchemaCache;
+import org.activityinfo.client.offline.sync.InstallSteps;
 import org.activityinfo.client.page.DownloadManager;
 import org.activityinfo.client.page.charts.ChartLoader;
 import org.activityinfo.client.page.charts.Charter;
@@ -122,4 +123,5 @@ public interface AppInjector extends Ginjector {
 
     DbListPage getDbListPage();
 
+    InstallSteps getInstallSteps();
 }

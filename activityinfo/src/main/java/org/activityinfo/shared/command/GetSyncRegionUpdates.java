@@ -23,12 +23,12 @@ import org.activityinfo.shared.command.result.SyncRegionUpdate;
 
 public class GetSyncRegionUpdates implements Command<SyncRegionUpdate> {
     private String regionId;
-    private long localVersion;
+    private String localVersion;
 
     public GetSyncRegionUpdates() {
     }
 
-    public GetSyncRegionUpdates(String regionId, long localVersion) {
+    public GetSyncRegionUpdates(String regionId, String localVersion) {
         this.regionId = regionId;
         this.localVersion = localVersion;
     }
@@ -41,11 +41,11 @@ public class GetSyncRegionUpdates implements Command<SyncRegionUpdate> {
         this.regionId = regionId;
     }
 
-    public long getLocalVersion() {
+    public String getLocalVersion() {
         return localVersion;
     }
 
-    public void setLocalVersion(long localVersion) {
+    public void setLocalVersion(String localVersion) {
         this.localVersion = localVersion;
     }
 }

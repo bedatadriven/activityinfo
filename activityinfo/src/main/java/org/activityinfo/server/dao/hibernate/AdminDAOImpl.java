@@ -40,6 +40,7 @@ public class AdminDAOImpl extends AbstractDAO<AdminEntity, Integer> implements A
                 .getResultList();
     }
 
+
     @Override
     public Query query() {
 

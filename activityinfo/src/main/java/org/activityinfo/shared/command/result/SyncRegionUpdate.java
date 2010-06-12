@@ -5,26 +5,18 @@ package org.activityinfo.shared.command.result;
  */
 public class SyncRegionUpdate implements CommandResult {
 
-    String regionId;
-    long version;
+    String version;
+    boolean complete;
     String sql;
 
     public SyncRegionUpdate() {
     }
 
-    public String getRegionId() {
-        return regionId;
-    }
-
-    public void setRegionId(String regionId) {
-        this.regionId = regionId;
-    }
-
-    public long getVersion() {
+    public String getVersion() {
         return version;
     }
 
-    public void setVersion(long version) {
+    public void setVersion(String version) {
         this.version = version;
     }
 
@@ -34,5 +26,13 @@ public class SyncRegionUpdate implements CommandResult {
 
     public void setSql(String sql) {
         this.sql = sql;
+    }
+
+    public boolean isComplete() {
+        return complete;
+    }
+
+    public void setComplete(boolean complete) {
+        this.complete = complete;
     }
 }
