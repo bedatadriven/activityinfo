@@ -29,6 +29,7 @@ public class PivotDAOImpl implements PivotDAO {
     private final EntityManager em;
     private final SQLDialect dialect;
 
+
     @Inject
     public PivotDAOImpl(EntityManager em, SQLDialect dialect) {
         this.em = em;
@@ -170,13 +171,15 @@ public class PivotDAOImpl implements PivotDAO {
     public List<Bucket> aggregate(Filter filter, Set<Dimension> dimensions) {
         final List<Bucket> buckets = new ArrayList<Bucket>();
 
-        queryForSumAndAverages(filter, dimensions, buckets);
-        queryForSiteCounts(filter, dimensions, buckets);
+        int userId=0;
+
+        queryForSumAndAverages(userId, filter, dimensions, buckets);
+        queryForSiteCounts(userId, filter, dimensions, buckets);
 
         return buckets;
     }
 
-    private void queryForSumAndAverages(Filter filter, Set<Dimension> dimensions, List<Bucket> buckets) {
+    private void queryForSumAndAverages(int userId, Filter filter, Set<Dimension> dimensions, List<Bucket> buckets) {
         /* We're just going to go ahead and add all the tables we need to the SQL statement;
         * this saves us some work and hopefully the SQL server will optimize out any unused
         * tables
@@ -209,11 +212,11 @@ public class PivotDAOImpl implements PivotDAO {
         StringBuilder where = new StringBuilder(
                 "( (V.value <> 0 and Indicator.Aggregation=0) or Indicator.Aggregation=1) ");
 
-        buildAndExecuteRestOfQuery(filter, dimensions, buckets, from, columns, where, groupBy, 4,
+        buildAndExecuteRestOfQuery(userId, filter, dimensions, buckets, from, columns, where, groupBy, 4,
                 new SumAndAverageBundler());
     }
 
-    private void queryForSiteCounts(Filter filter, Set<Dimension> dimensions, List<Bucket> buckets) {
+    private void queryForSiteCounts(int userId, Filter filter, Set<Dimension> dimensions, List<Bucket> buckets) {
 
         /* We're just going to go ahead and add all the tables we need to the SQL statement;
         * this saves us some work and hopefully the SQL server will optimze out any unused
@@ -244,12 +247,12 @@ public class PivotDAOImpl implements PivotDAO {
                 "Indicator.Aggregation=2 and period.Monitoring=0 ");
 
 
-        buildAndExecuteRestOfQuery(filter, dimensions, buckets, from, columns, where, groupBy, 2,
+        buildAndExecuteRestOfQuery(userId, filter, dimensions, buckets, from, columns, where, groupBy, 2,
                 new SiteCountBundler());
     }
 
 
-    protected void buildAndExecuteRestOfQuery(Filter filter, Set<Dimension> dimensions,
+    protected void buildAndExecuteRestOfQuery(int userId, Filter filter, Set<Dimension> dimensions,
                                               final List<Bucket> buckets,
                                               StringBuilder from,
                                               StringBuilder columns,
@@ -348,6 +351,8 @@ public class PivotDAOImpl implements PivotDAO {
                 "indicator.dateDeleted is null and " +
                 "Db.dateDeleted is null ");
 
+        // and only allow results that are visible to this user.
+        appendVisibilityFilter(where, userId);
 
         final List<Object> parameters = new ArrayList<Object>();
 
@@ -405,6 +410,14 @@ public class PivotDAOImpl implements PivotDAO {
                 }
             }
         });
+    }
+
+    private void appendVisibilityFilter(StringBuilder where, int userId) {
+        where.append(" AND ");
+        where.append("(Db.OwnerUserId = ").append(userId).append(" OR ")
+             .append(userId).append(" in (select p.UserId from UserPermission p " +
+                "where p.AllowView=1 and " +
+                "p.UserId=").append(userId).append(" AND p.DatabaseId = Db.DatabaseId))");
     }
 
     private void appendIdCriteria(StringBuilder sb, String fieldName, Set<Integer> ids, List<Object> parameters) {

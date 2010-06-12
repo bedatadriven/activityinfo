@@ -113,6 +113,15 @@ public class Synchronizer {
 
     private void persistUpdates(final SyncRegion region, final SyncRegionUpdate update) {
         Log.debug("Synchronizer: got updates for region " + region.getId());
+        if(update.getSql() != null) {
+            executeUpdates(region, update);
+        } else {
+            updateLocalVersion(region.getId(), update.getVersion());
+            doNextUpdate();
+        }
+    }
+
+    private void executeUpdates(final SyncRegion region, final SyncRegionUpdate update) {
         updater.executeUpdates(auth.getLocalDbName(), update.getSql(), new AsyncCallback<Integer>() {
             @Override
             public void onFailure(Throwable throwable) {

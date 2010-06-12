@@ -33,7 +33,7 @@
     <!-- ie6, gecko, gecko1_8, safari or opera -->
     <set-property name="user.agent" value="gecko1_8"/>
     <set-property name="locale" value="en"/>
+    
     <set-property name="log_level" value="TRACE"/>
-
-
+    <set-property name="log_DivLogger" value="DISABLED" />
 </module>

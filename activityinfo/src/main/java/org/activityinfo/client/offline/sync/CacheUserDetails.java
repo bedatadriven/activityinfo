@@ -19,13 +19,18 @@
 
 package org.activityinfo.client.offline.sync;
 
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Inject;
 import org.activityinfo.client.dispatch.remote.Authentication;
+
+import java.util.Date;
 
 public class CacheUserDetails implements Step {
 
-    private Authentication authentication;
+    private final Authentication authentication;
 
+    @Inject
     public CacheUserDetails(Authentication authentication) {
         this.authentication = authentication;
     }
@@ -42,6 +47,11 @@ public class CacheUserDetails implements Step {
 
     @Override
     public void execute(AsyncCallback<Void> callback) {
-        
+        Date now = new Date();
+        Date expires = new Date(now.getTime() * 1000 * 60 * 60 * 24 * 365);
+        Cookies.setCookie("userId", Integer.toString(authentication.getUserId()), expires);
+        Cookies.setCookie("email", authentication.getEmail(), expires);
+
+        callback.onSuccess(null);
     }
 }

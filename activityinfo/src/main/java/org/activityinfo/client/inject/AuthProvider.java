@@ -18,6 +18,7 @@ public class AuthProvider implements Provider<Authentication> {
     public Authentication get() {
 
         if (Cookies.getCookie("authToken") != null &&
+                Cookies.getCookie("userId") != null &&
                 Cookies.getCookie("email") != null) {
 
             return new Authentication(

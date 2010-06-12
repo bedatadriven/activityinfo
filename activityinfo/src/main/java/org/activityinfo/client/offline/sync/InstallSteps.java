@@ -35,7 +35,8 @@ public class InstallSteps {
     private Iterator<Step> stepIt;
 
     @Inject
-    public InstallSteps(InitialSyncStep syncStep) {
+    public InstallSteps(InitialSyncStep syncStep, CacheUserDetails cacheUserDetails) {
+        steps.add(cacheUserDetails);
         if(GWT.isScript()) {
             steps.add(new CacheScript(ModuleStores.getCommon()));
             steps.add(new CacheScript(ModuleStores.getPermutation()));
@@ -53,6 +54,7 @@ public class InstallSteps {
             final Step step = stepIt.next();
             if(!step.isComplete()) {
                 executeStep(step);
+                return;
             }
         }
         Log.debug("Offline installation done!");

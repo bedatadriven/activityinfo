@@ -133,7 +133,7 @@
         <dependency>
             <groupId>com.bedatadriven.rebar</groupId>
             <artifactId>rebar-sync</artifactId>
-            <version>0.2</version>
+            <version>0.3</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
