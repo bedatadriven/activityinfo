@@ -33,6 +33,7 @@ public class PivotDAOImplTest {
     private AdminDimension territoireDim;
     private List<PivotDAO.Bucket> buckets;
     private Dimension partnerDim;
+    private static final int OWNER_USER_ID = 1;
 
     @Inject
     public PivotDAOImplTest(PivotDAOImpl dao) {
@@ -50,16 +51,16 @@ public class PivotDAOImplTest {
 
         execute();
 
-        assertThat().forIndicator(1).thereIsOneBucketWithValue(15100);
+        assertThat().forIndicator(OWNER_USER_ID).thereIsOneBucketWithValue(15100);
     }
 
 
     @Test
     public void testIndicatorFilter() {
         withIndicatorAsDimension();
-        filter.addRestriction(DimensionType.Database, 1);
-        filter.addRestriction(DimensionType.Activity, 1);
-        filter.addRestriction(DimensionType.Indicator, 1);
+        filter.addRestriction(DimensionType.Database, OWNER_USER_ID);
+        filter.addRestriction(DimensionType.Activity, OWNER_USER_ID);
+        filter.addRestriction(DimensionType.Indicator, OWNER_USER_ID);
         filter.addRestriction(DimensionType.Partner, 2);
 
         execute();
@@ -71,7 +72,7 @@ public class PivotDAOImplTest {
     public void testAdminFilter() {
         withIndicatorAsDimension();
         filter.addRestriction(DimensionType.AdminLevel, 11);
-        filter.addRestriction(DimensionType.Indicator, 1);
+        filter.addRestriction(DimensionType.Indicator, OWNER_USER_ID);
 
         execute();
 
@@ -83,12 +84,12 @@ public class PivotDAOImplTest {
 
         withIndicatorAsDimension();
         withPartnerAsDimension();
-        filter.addRestriction(DimensionType.Indicator, 1);
+        filter.addRestriction(DimensionType.Indicator, OWNER_USER_ID);
 
         execute();
 
         assertThat().thereAre(2).buckets();
-        assertThat().forPartner(1).thereIsOneBucketWithValue(5100).andItsPartnerLabelIs("NRC");
+        assertThat().forPartner(OWNER_USER_ID).thereIsOneBucketWithValue(5100).andItsPartnerLabelIs("NRC");
         assertThat().forPartner(2).thereIsOneBucketWithValue(10000).andItsPartnerLabelIs("Solidarites");
     }
 
@@ -99,7 +100,7 @@ public class PivotDAOImplTest {
         withIndicatorAsDimension();
         withAdminDimension(provinceDim);
         withAdminDimension(territoireDim);
-        filter.addRestriction(DimensionType.Indicator, 1);
+        filter.addRestriction(DimensionType.Indicator, OWNER_USER_ID);
 
         execute();
 
@@ -138,7 +139,7 @@ public class PivotDAOImplTest {
 
         execute();
 
-        int expectedCount = 1;
+        int expectedCount = OWNER_USER_ID;
         assertBucketCount(expectedCount);
         assertEquals(3, (int) buckets.get(0).doubleValue());
 
@@ -153,21 +154,21 @@ public class PivotDAOImplTest {
 
         withIndicatorAsDimension();
 
-        filter.addRestriction(DimensionType.Indicator, 1);
+        filter.addRestriction(DimensionType.Indicator, OWNER_USER_ID);
         filter.addRestriction(DimensionType.Indicator, 2);
 
-        List<PivotDAO.Bucket> buckets = dao.aggregate(filter, dimensions);
+        List<PivotDAO.Bucket> buckets = dao.aggregate(OWNER_USER_ID, filter, dimensions);
 
         assertEquals(2, buckets.size());
 
-        PivotDAO.Bucket indicator1 = findBucketsByCategory(buckets, indicatorDim, new EntityCategory(1)).get(0);
+        PivotDAO.Bucket indicator1 = findBucketsByCategory(buckets, indicatorDim, new EntityCategory(OWNER_USER_ID)).get(0);
         PivotDAO.Bucket indicator2 = findBucketsByCategory(buckets, indicatorDim, new EntityCategory(2)).get(0);
 
         EntityCategory cat1 = (EntityCategory) indicator1.getCategory(indicatorDim);
         EntityCategory cat2 = (EntityCategory) indicator2.getCategory(indicatorDim);
 
         assertEquals(2, cat1.getSortOrder().intValue());
-        assertEquals(1, cat2.getSortOrder().intValue());
+        assertEquals(OWNER_USER_ID, cat2.getSortOrder().intValue());
 
     }
 
@@ -177,9 +178,9 @@ public class PivotDAOImplTest {
 
         withIndicatorAsDimension();
 
-        List<PivotDAO.Bucket> buckets = dao.aggregate(new Filter(), dimensions);
+        List<PivotDAO.Bucket> buckets = dao.aggregate(OWNER_USER_ID, new Filter(), dimensions);
 
-        assertEquals(1, buckets.size());
+        assertEquals(OWNER_USER_ID, buckets.size());
         assertEquals(13600, (int) buckets.get(0).doubleValue());
 
     }
@@ -193,9 +194,9 @@ public class PivotDAOImplTest {
 
         Filter filter = new Filter();
 
-        List<PivotDAO.Bucket> buckets = dao.aggregate(filter, dimensions);
+        List<PivotDAO.Bucket> buckets = dao.aggregate(OWNER_USER_ID, filter, dimensions);
 
-        assertEquals(1, buckets.size());
+        assertEquals(OWNER_USER_ID, buckets.size());
         assertEquals(0, (int) buckets.get(0).doubleValue());
         assertEquals(5, ((EntityCategory) buckets.get(0).getCategory(this.indicatorDim)).getId());
     }
@@ -210,10 +211,10 @@ public class PivotDAOImplTest {
 
         Filter filter = new Filter();
 
-        List<PivotDAO.Bucket> buckets = dao.aggregate(filter, dimensions);
+        List<PivotDAO.Bucket> buckets = dao.aggregate(OWNER_USER_ID, filter, dimensions);
 
         assertEquals(3, buckets.size());
-        assertEquals(1500, (int)findBucketByQuarter(buckets, 2009, 1).doubleValue());
+        assertEquals(1500, (int)findBucketByQuarter(buckets, 2009, OWNER_USER_ID).doubleValue());
         assertEquals(3600, (int)findBucketByQuarter(buckets, 2009, 2).doubleValue());
         assertEquals(10000, (int)findBucketByQuarter(buckets, 2008, 4).doubleValue());
     }
@@ -243,7 +244,7 @@ public class PivotDAOImplTest {
         dimensions = new HashSet<Dimension>();
         filter = new Filter();
 
-        provinceDim = new AdminDimension(1);
+        provinceDim = new AdminDimension(OWNER_USER_ID);
         territoireDim = new AdminDimension(2);
     }
 
@@ -262,7 +263,7 @@ public class PivotDAOImplTest {
     }
 
     private void execute() {
-        buckets = dao.aggregate(filter, dimensions);
+        buckets = dao.aggregate(OWNER_USER_ID, filter, dimensions);
 
         System.err.println("buckets = [");
         for (PivotDAO.Bucket bucket : buckets) {
@@ -360,13 +361,13 @@ public class PivotDAOImplTest {
         }
 
         public AssertionBuilder thereIsOneBucketWithValue(int expectedValue) {
-            bucketCountIs(1);
+            bucketCountIs(OWNER_USER_ID);
             assertEquals(description("value of only bucket"), expectedValue, (int) matching.get(0).doubleValue());
             return this;
         }
 
         public AssertionBuilder andItsPartnerLabelIs(String label) {
-            bucketCountIs(1);
+            bucketCountIs(OWNER_USER_ID);
             with(partnerDim).label(label);
             return this;
         }

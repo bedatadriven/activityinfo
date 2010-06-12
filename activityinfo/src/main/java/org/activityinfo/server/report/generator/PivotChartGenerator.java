@@ -42,6 +42,7 @@ public class PivotChartGenerator extends PivotGenerator<PivotChartElement> {
         Filter effectiveFilter = inheritedFilter == null ? new Filter(filter, new Filter()) : new Filter(inheritedFilter, filter);
 
         PivotTableData data = generateData(
+                user.getId(), 
                 user.getLocaleObject(),
                 element,
                 effectiveFilter,

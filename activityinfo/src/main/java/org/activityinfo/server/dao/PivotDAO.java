@@ -15,7 +15,7 @@ import java.util.*;
 @ImplementedBy(PivotDAOImpl.class)
 public interface PivotDAO {
 
-    List<Bucket> aggregate(Filter filter, Set<Dimension> dimensions);
+    List<Bucket> aggregate(int userId, Filter filter, Set<Dimension> dimensions);
 
     List<String> getFilterLabels(DimensionType type, Collection<Integer> ids);
 

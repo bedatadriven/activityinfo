@@ -67,25 +67,6 @@ public class Schema extends BaseModel implements DTO {
 	public CountryModel getCountryById(int countryId) {
 		return getById(countries, countryId);
 	}
-	
-	/**
-	 * 
-	 * @return The common country shared by all visible databases, or null if there are no
-	 * databases or databases in different countries.
-	 */
-    @Deprecated
-	public CountryModel getCommonCountry() {
-		CountryModel country = null;
-		
-		for(UserDatabaseDTO database : databases) {
-			if(country == null) {
-				country = database.getCountry();
-			} else if(country.getId() != database.getCountry().getId()) {
-				return null;
-			}
-		}
-		return country;
-	}
 
     /**
      * Finds a database in this schema by id.

@@ -36,7 +36,7 @@ public class PivotTableGenerator extends PivotGenerator<PivotTableElement> {
                 generateFilterDescriptions(
                         filter, element.allDimensionTypes(), user));
 
-        content.setData(generateData(user.getLocaleObject(), element, effectiveFilter,
+        content.setData(generateData(user.getId(), user.getLocaleObject(), element, effectiveFilter,
                 element.getRowDimensions(), element.getColumnDimensions()));
 
         element.setContent(content);

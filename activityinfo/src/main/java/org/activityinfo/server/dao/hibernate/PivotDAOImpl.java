@@ -168,10 +168,8 @@ public class PivotDAOImpl implements PivotDAO {
         }
     }
 
-    public List<Bucket> aggregate(Filter filter, Set<Dimension> dimensions) {
+    public List<Bucket> aggregate(int userId, Filter filter, Set<Dimension> dimensions) {
         final List<Bucket> buckets = new ArrayList<Bucket>();
-
-        int userId=0;
 
         queryForSumAndAverages(userId, filter, dimensions, buckets);
         queryForSiteCounts(userId, filter, dimensions, buckets);

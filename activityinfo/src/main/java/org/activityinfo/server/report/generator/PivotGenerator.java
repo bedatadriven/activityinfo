@@ -17,7 +17,8 @@ public abstract class PivotGenerator<T extends PivotElement> extends BaseGenerat
         super(pivotDAO);
     }
 
-    protected PivotTableData generateData(Locale locale, T element,
+    protected PivotTableData generateData(int userId, Locale locale,
+                                          T element,
                                           Filter filter,
                                           List<Dimension> rowDims, List<Dimension> colDims) {
 
@@ -26,7 +27,7 @@ public abstract class PivotGenerator<T extends PivotElement> extends BaseGenerat
 
 
         List<PivotDAO.Bucket> buckets = pivotDAO.aggregate(
-                filter,
+                userId, filter,
                 element.allDimensions());
 
 

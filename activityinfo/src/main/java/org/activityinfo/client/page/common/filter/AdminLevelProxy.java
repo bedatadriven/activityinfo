@@ -6,6 +6,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.dto.AdminLevelModel;
+import org.activityinfo.shared.dto.CountryModel;
 import org.activityinfo.shared.dto.Schema;
 
 import java.util.ArrayList;
@@ -29,7 +30,11 @@ public class AdminLevelProxy implements DataProxy {
             }
 
             public void onSuccess(Schema schema) {
-                callback.onSuccess(new ArrayList<AdminLevelModel>(schema.getCommonCountry().getAdminLevels()));
+                ArrayList<AdminLevelModel> models = new ArrayList<AdminLevelModel>();
+                for(CountryModel country : schema.getCountries()) {
+                    models.addAll(country.getAdminLevels());
+                }
+                callback.onSuccess(models);
             }
         });
 
