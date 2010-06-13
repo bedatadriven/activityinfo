@@ -31,7 +31,7 @@ import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.client.page.table.drilldown.DrillDownEditor;
 import org.activityinfo.client.page.table.drilldown.DrillDownGrid;
 import org.activityinfo.client.util.DateUtilGWTImpl;
-import org.activityinfo.client.util.IStateManager;
+import org.activityinfo.client.util.state.IStateManager;
 import org.activityinfo.shared.dto.AdminEntityDTO;
 import org.activityinfo.shared.dto.IndicatorDTO;
 import org.activityinfo.shared.dto.SchemaDTO;

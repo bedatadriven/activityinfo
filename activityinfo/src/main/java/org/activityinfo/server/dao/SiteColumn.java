@@ -1,4 +1,4 @@
-package org.activityinfo.shared.domain;
+package org.activityinfo.server.dao;
 
 /**
 * @author Alex Bertram (akbertram@gmail.com)

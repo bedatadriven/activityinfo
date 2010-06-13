@@ -7,10 +7,12 @@ import org.activityinfo.shared.report.model.DateRange;
 import org.activityinfo.shared.report.model.DateUnit;
 
 import java.util.Date;
-/*
+
+/**
+ * Client-side implementation of the {@link org.activityinfo.shared.date.DateUtil} interface.
+ *
  * @author Alex Bertram
  */
-
 public class DateUtilGWTImpl extends DateUtil {
 
     public Month getCurrentMonth() {

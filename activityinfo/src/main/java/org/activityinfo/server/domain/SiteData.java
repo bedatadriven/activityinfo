@@ -1,6 +1,6 @@
 package org.activityinfo.server.domain;
 
-import org.activityinfo.shared.domain.SiteColumn;
+import org.activityinfo.server.dao.SiteColumn;
 import org.activityinfo.shared.report.content.SiteGeoData;
 
 import java.util.Date;

@@ -19,7 +19,7 @@ import org.activityinfo.client.page.PagePresenter;
 import org.activityinfo.client.page.Pages;
 import org.activityinfo.client.page.common.toolbar.ActionToolBar;
 import org.activityinfo.client.page.common.toolbar.UIActions;
-import org.activityinfo.client.util.IStateManager;
+import org.activityinfo.client.util.state.IStateManager;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
 
 import java.util.ArrayList;

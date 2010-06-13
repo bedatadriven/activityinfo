@@ -20,13 +20,9 @@
 package org.activityinfo.server.report.generator;
 
 import junit.framework.Assert;
-import org.activityinfo.server.dao.PivotDAO;
-import org.activityinfo.server.dao.SchemaDAO;
-import org.activityinfo.server.dao.SiteProjectionBinder;
-import org.activityinfo.server.dao.SiteTableDAO;
+import org.activityinfo.server.dao.*;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.server.report.generator.map.MockBaseMapDAO;
-import org.activityinfo.shared.domain.SiteColumn;
 import org.activityinfo.shared.report.content.BubbleMapMarker;
 import org.activityinfo.shared.report.content.MapContent;
 import org.activityinfo.shared.report.content.TableData;

@@ -1,12 +1,12 @@
 package org.activityinfo.server.dao.hibernate;
 
 import com.google.inject.Inject;
+import org.activityinfo.server.dao.SiteColumn;
 import org.activityinfo.server.dao.SiteProjectionBinder;
 import org.activityinfo.server.dao.SiteTableDAO;
 import org.activityinfo.server.domain.AdminEntity;
 import org.activityinfo.server.domain.Site;
 import org.activityinfo.server.domain.User;
-import org.activityinfo.shared.domain.SiteColumn;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.Session;

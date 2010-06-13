@@ -21,7 +21,7 @@ import org.activityinfo.client.page.common.grid.AbstractEditorGridPresenter;
 import org.activityinfo.client.page.common.grid.GridView;
 import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.client.page.entry.editor.SiteFormLoader;
-import org.activityinfo.client.util.IStateManager;
+import org.activityinfo.client.util.state.IStateManager;
 import org.activityinfo.shared.command.*;
 import org.activityinfo.shared.command.result.VoidResult;
 import org.activityinfo.shared.date.DateUtil;

@@ -14,7 +14,7 @@ import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.loader.CommandLoadEvent;
 import org.activityinfo.client.page.NavigationCallback;
 import org.activityinfo.client.page.common.toolbar.UIActions;
-import org.activityinfo.client.util.IStateManager;
+import org.activityinfo.client.util.state.IStateManager;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.BatchResult;
 

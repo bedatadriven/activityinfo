@@ -19,12 +19,12 @@
 
 package org.activityinfo.server.endpoint.export;
 
+import org.activityinfo.server.dao.SiteColumn;
 import org.activityinfo.server.dao.SiteTableDAO;
 import org.activityinfo.server.domain.AdminEntity;
 import org.activityinfo.server.domain.SiteData;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.server.report.generator.SiteDataBinder;
-import org.activityinfo.shared.domain.SiteColumn;
 import org.activityinfo.shared.dto.*;
 import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
 import org.apache.poi.hssf.usermodel.HSSFPatriarch;

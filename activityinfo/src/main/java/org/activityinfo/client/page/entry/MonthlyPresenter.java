@@ -16,7 +16,7 @@ import org.activityinfo.client.event.SiteEvent;
 import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.common.grid.AbstractEditorGridPresenter;
 import org.activityinfo.client.page.common.grid.GridView;
-import org.activityinfo.client.util.IStateManager;
+import org.activityinfo.client.util.state.IStateManager;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.GetMonthlyReports;
 import org.activityinfo.shared.command.Month;

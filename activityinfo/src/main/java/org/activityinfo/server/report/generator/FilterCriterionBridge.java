@@ -1,7 +1,7 @@
 package org.activityinfo.server.report.generator;
 
+import org.activityinfo.server.dao.SiteColumn;
 import org.activityinfo.server.domain.Location;
-import org.activityinfo.shared.domain.SiteColumn;
 import org.activityinfo.shared.report.model.DimensionType;
 import org.activityinfo.shared.report.model.Filter;
 import org.hibernate.criterion.*;

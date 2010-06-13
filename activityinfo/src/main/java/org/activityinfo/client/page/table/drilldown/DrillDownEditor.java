@@ -11,7 +11,7 @@ import org.activityinfo.client.dispatch.callback.Got;
 import org.activityinfo.client.event.PivotCellEvent;
 import org.activityinfo.client.page.common.grid.AbstractGridPlace;
 import org.activityinfo.client.page.entry.SiteEditor;
-import org.activityinfo.client.util.IStateManager;
+import org.activityinfo.client.util.state.IStateManager;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.GetSites;
 import org.activityinfo.shared.date.DateUtil;

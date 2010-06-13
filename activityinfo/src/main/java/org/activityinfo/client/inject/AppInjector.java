@@ -36,7 +36,7 @@ import org.activityinfo.client.page.table.PivotPageLoader;
 import org.activityinfo.client.page.table.PivotPresenter;
 import org.activityinfo.client.page.welcome.Welcome;
 import org.activityinfo.client.page.welcome.WelcomeLoader;
-import org.activityinfo.client.util.IStateManager;
+import org.activityinfo.client.util.state.IStateManager;
 
 @GinModules({
         AppModule.class,

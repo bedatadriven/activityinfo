@@ -6,13 +6,14 @@ import java.util.Date;
 import java.util.Map;
 
 /**
+ * 
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class GxtStateManagerImpl implements IStateManager {
+public class GXTStateManager implements IStateManager {
 
     private final StateManager gxtMgr;
 
-    public GxtStateManagerImpl() {
+    public GXTStateManager() {
         gxtMgr = StateManager.get();
     }
 

@@ -5,9 +5,9 @@ import com.extjs.gxt.ui.client.data.SortInfo;
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class SortInfoHelper {
+public class SortInfoEqualityChecker {
 
-    public static boolean equal(SortInfo a, SortInfo b) {
+    public static boolean equals(SortInfo a, SortInfo b) {
         if(a==null && b==null)
             return true;
         if(a==null || b==null)

@@ -1,9 +1,9 @@
 package org.activityinfo.server.report.generator;
 
+import org.activityinfo.server.dao.SiteColumn;
 import org.activityinfo.server.dao.SiteProjectionBinder;
 import org.activityinfo.server.dao.hibernate.SiteTableDAOHibernate;
 import org.activityinfo.server.domain.AdminEntity;
-import org.activityinfo.shared.domain.SiteColumn;
 import org.activityinfo.shared.report.content.TableData;
 import org.activityinfo.shared.report.model.TableColumn;
 

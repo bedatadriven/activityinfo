@@ -18,7 +18,7 @@ import org.activityinfo.client.page.common.dialog.FormDialogTether;
 import org.activityinfo.client.page.common.grid.AbstractGridPresenter;
 import org.activityinfo.client.page.common.grid.GridView;
 import org.activityinfo.client.page.common.toolbar.UIActions;
-import org.activityinfo.client.util.IStateManager;
+import org.activityinfo.client.util.state.IStateManager;
 import org.activityinfo.shared.command.AddPartner;
 import org.activityinfo.shared.command.RemovePartner;
 import org.activityinfo.shared.command.result.CreateResult;

@@ -1,7 +1,7 @@
 package org.activityinfo.server.report.generator.map;
 
+import org.activityinfo.server.dao.SiteColumn;
 import org.activityinfo.server.domain.SiteData;
-import org.activityinfo.shared.domain.SiteColumn;
 import org.activityinfo.shared.report.content.BubbleMapMarker;
 import org.activityinfo.shared.report.content.LatLng;
 import org.activityinfo.shared.report.content.MapContent;

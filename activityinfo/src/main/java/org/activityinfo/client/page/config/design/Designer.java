@@ -21,7 +21,7 @@ import org.activityinfo.client.page.common.grid.AbstractEditorGridPresenter;
 import org.activityinfo.client.page.common.grid.TreeGridView;
 import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.client.page.config.DbPlace;
-import org.activityinfo.client.util.IStateManager;
+import org.activityinfo.client.util.state.IStateManager;
 import org.activityinfo.shared.command.*;
 import org.activityinfo.shared.command.result.CreateResult;
 import org.activityinfo.shared.command.result.VoidResult;

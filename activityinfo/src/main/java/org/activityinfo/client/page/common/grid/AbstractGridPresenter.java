@@ -13,8 +13,8 @@ import org.activityinfo.client.page.NavigationCallback;
 import org.activityinfo.client.page.PageManager;
 import org.activityinfo.client.page.PagePresenter;
 import org.activityinfo.client.page.common.toolbar.UIActions;
-import org.activityinfo.client.util.IStateManager;
-import org.activityinfo.client.util.SortInfoHelper;
+import org.activityinfo.client.util.SortInfoEqualityChecker;
+import org.activityinfo.client.util.state.IStateManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -179,7 +179,7 @@ public abstract class AbstractGridPresenter<ModelT extends ModelData>
         boolean reloadRequired = false;
 
         if (gridPlace.getSortInfo() != null &&
-                !SortInfoHelper.equal(gridPlace.getSortInfo(), new SortInfo(loader.getSortField(), loader.getSortDir()))) {
+                !SortInfoEqualityChecker.equals(gridPlace.getSortInfo(), new SortInfo(loader.getSortField(), loader.getSortDir()))) {
 
             loader.setSortField(gridPlace.getSortInfo().getSortField());
             loader.setSortDir(gridPlace.getSortInfo().getSortDir());
