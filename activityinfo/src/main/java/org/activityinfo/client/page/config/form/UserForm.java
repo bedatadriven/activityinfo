@@ -11,9 +11,9 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.core.client.GWT;
+import org.activityinfo.client.i18n.UIConstants;
 import org.activityinfo.shared.dto.PartnerDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
-import org.activityinfo.shared.i18n.UIConstants;
 
 public class UserForm extends FormPanel {
 

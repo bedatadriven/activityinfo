@@ -6,9 +6,9 @@ import com.google.inject.Inject;
 import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.event.SiteEvent;
+import org.activityinfo.client.i18n.UIConstants;
 import org.activityinfo.client.page.common.Shutdownable;
 import org.activityinfo.shared.dto.*;
-import org.activityinfo.shared.i18n.UIConstants;
 /*
  * @author Alex Bertram
  */

@@ -6,6 +6,7 @@ import com.google.inject.Inject;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.callback.Got;
+import org.activityinfo.client.i18n.UIConstants;
 import org.activityinfo.client.icon.IconImageBundle;
 import org.activityinfo.client.page.Pages;
 import org.activityinfo.client.page.common.nav.Link;
@@ -13,7 +14,6 @@ import org.activityinfo.client.page.common.nav.Navigator;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
-import org.activityinfo.shared.i18n.UIConstants;
 
 import java.util.ArrayList;
 import java.util.List;

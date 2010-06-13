@@ -11,6 +11,7 @@ import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.Place;
 import org.activityinfo.client.dispatch.Dispatcher;
+import org.activityinfo.client.i18n.UIConstants;
 import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.PagePresenter;
 import org.activityinfo.client.page.Pages;
@@ -25,7 +26,6 @@ import org.activityinfo.shared.command.*;
 import org.activityinfo.shared.command.result.CreateResult;
 import org.activityinfo.shared.command.result.VoidResult;
 import org.activityinfo.shared.dto.*;
-import org.activityinfo.shared.i18n.UIConstants;
 
 import java.util.List;
 

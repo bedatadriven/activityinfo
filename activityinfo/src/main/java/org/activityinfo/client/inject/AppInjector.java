@@ -12,6 +12,7 @@ import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.remote.cache.AdminEntityCache;
 import org.activityinfo.client.dispatch.remote.cache.CacheModule;
 import org.activityinfo.client.dispatch.remote.cache.SchemaCache;
+import org.activityinfo.client.i18n.UIConstants;
 import org.activityinfo.client.offline.DatabaseStateProvider;
 import org.activityinfo.client.offline.OfflineManager;
 import org.activityinfo.client.offline.OfflineModule;
@@ -36,7 +37,6 @@ import org.activityinfo.client.page.table.PivotPresenter;
 import org.activityinfo.client.page.welcome.Welcome;
 import org.activityinfo.client.page.welcome.WelcomeLoader;
 import org.activityinfo.client.util.IStateManager;
-import org.activityinfo.shared.i18n.UIConstants;
 
 @GinModules({
         AppModule.class,

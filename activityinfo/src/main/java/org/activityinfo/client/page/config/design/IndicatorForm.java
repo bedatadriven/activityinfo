@@ -9,10 +9,10 @@ import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.core.client.GWT;
+import org.activityinfo.client.i18n.UIConstants;
 import org.activityinfo.client.page.common.widget.MappingComboBox;
 import org.activityinfo.client.page.common.widget.MappingComboBoxBinding;
 import org.activityinfo.shared.dto.IndicatorDTO;
-import org.activityinfo.shared.i18n.UIConstants;
 
 public class IndicatorForm extends AbstractDesignForm {
 

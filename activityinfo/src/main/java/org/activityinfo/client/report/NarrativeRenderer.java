@@ -3,8 +3,8 @@ package org.activityinfo.client.report;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
+import org.activityinfo.client.i18n.UIMessages;
 import org.activityinfo.shared.dto.*;
-import org.activityinfo.shared.i18n.UIMessages;
 
 import java.util.*;
 

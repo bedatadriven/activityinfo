@@ -450,8 +450,8 @@
                         <configuration>
                             <logLevel>ALL</logLevel>
                             <generateDirectory>${basedir}/src/main/java</generateDirectory>
-                            <i18nConstantsBundle>org.activityinfo.shared.i18n.UIConstants</i18nConstantsBundle>
-                            <i18nMessagesBundle>org.activityinfo.shared.i18n.UIMessages</i18nMessagesBundle>
+                            <i18nConstantsBundle>org.activityinfo.client.i18n.UIConstants</i18nConstantsBundle>
+                            <i18nMessagesBundle>org.activityinfo.client.i18n.UIMessages</i18nMessagesBundle>
                         </configuration>
                     </execution>
                     <execution>

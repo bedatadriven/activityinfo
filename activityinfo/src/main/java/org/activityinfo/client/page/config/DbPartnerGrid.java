@@ -7,6 +7,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.inject.Inject;
+import org.activityinfo.client.i18n.UIConstants;
 import org.activityinfo.client.icon.IconImageBundle;
 import org.activityinfo.client.page.common.dialog.FormDialogCallback;
 import org.activityinfo.client.page.common.dialog.FormDialogImpl;
@@ -16,7 +17,6 @@ import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.client.page.config.form.PartnerForm;
 import org.activityinfo.shared.dto.PartnerDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
-import org.activityinfo.shared.i18n.UIConstants;
 
 import java.util.ArrayList;
 import java.util.List;

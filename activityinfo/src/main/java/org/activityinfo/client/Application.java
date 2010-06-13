@@ -5,10 +5,10 @@ import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.util.Theme;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import org.activityinfo.client.i18n.UIConstants;
+import org.activityinfo.client.i18n.UIMessages;
 import org.activityinfo.client.icon.IconImageBundle;
 import org.activityinfo.client.inject.AppInjector;
-import org.activityinfo.shared.i18n.UIConstants;
-import org.activityinfo.shared.i18n.UIMessages;
 
 
 /**
