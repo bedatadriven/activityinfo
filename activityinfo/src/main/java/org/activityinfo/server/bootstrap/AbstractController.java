@@ -79,8 +79,9 @@ public class AbstractController extends HttpServlet {
     }
 
     protected String getCookie(HttpServletRequest request, String name) {
-        if (request.getCookies() == null)
+        if (request.getCookies() == null) {
             return null;
+        }
 
         for (Cookie cookie : request.getCookies()) {
             if (cookie.getName().equals(name)) {
@@ -98,8 +99,9 @@ public class AbstractController extends HttpServlet {
 
 
     protected void assertParameterPresent(String value) {
-        if (value == null || value.length() == 0)
+        if (value == null || value.length() == 0) {
             throw new IncompleteFormException();
+        }
     }
 
     protected User findUserByEmail(String email) throws InvalidLoginException {
@@ -141,12 +143,14 @@ public class AbstractController extends HttpServlet {
 
     String parseUrlSuffix(HttpServletRequest req) {
         StringBuilder sb = new StringBuilder();
-        if (req.getParameter(GWT_CODE_SERVER_HOST) != null && req.getParameter(GWT_CODE_SERVER_HOST).length() != 0)
+        if (req.getParameter(GWT_CODE_SERVER_HOST) != null && req.getParameter(GWT_CODE_SERVER_HOST).length() != 0) {
             sb.append("?" + GWT_CODE_SERVER_HOST + "=").append(req.getParameter(GWT_CODE_SERVER_HOST));
+        }
 
         int hash = req.getRequestURL().lastIndexOf("#");
-        if (hash != -1)
+        if (hash != -1) {
             sb.append(req.getRequestURL().substring(hash));
+        }
         return sb.toString();
     }
 }

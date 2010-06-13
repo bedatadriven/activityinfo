@@ -36,13 +36,14 @@ public class Application implements EntryPoint {
 
 //        if(Log.isTraceEnabled())
 //            registerStatsHandler();
-        if(Log.isErrorEnabled())
+        if(Log.isErrorEnabled()) {
             GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
                 @Override
                 public void onUncaughtException(Throwable e) {
                     Log.error("Uncaught exception", e);
                 }
             });
+        }
 
 		GXT.setDefaultTheme(Theme.BLUE, true);
 

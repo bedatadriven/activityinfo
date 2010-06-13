@@ -73,8 +73,9 @@ public class AdminBoundsHelper {
 					BoundingBoxDTO b = entity.getBounds();
 
 					if(b!=null && (!b.contains(bounds) || b.equals(bounds))) {
-						if(sb.length()!=0)
-							sb.append(", ");
+						if(sb.length()!=0) {
+                            sb.append(", ");
+                        }
 						sb.append(entity.getName());
 
 					}
