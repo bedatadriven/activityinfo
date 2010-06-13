@@ -1,9 +1,8 @@
 package org.activityinfo.client.page.entry.editor;
 
-import org.activityinfo.client.page.entry.editor.MapPresenter;
 import org.activityinfo.client.page.entry.editor.mock.MockMapView;
-import org.activityinfo.shared.dto.Bounds;
-import org.activityinfo.shared.dto.SiteModel;
+import org.activityinfo.shared.dto.BoundingBoxDTO;
+import org.activityinfo.shared.dto.SiteDTO;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -27,9 +26,9 @@ public class MapTest {
         // and that, in the absence of X/Y data, the marker is set to
         // the center of these Bounds
 
-        Bounds bounds = new Bounds(0, 0, 300, 300);
+        BoundingBoxDTO bounds = new BoundingBoxDTO(0, 0, 300, 300);
 
-        presenter.setSite(new SiteModel(), null, bounds);
+        presenter.setSite(new SiteDTO(), null, bounds);
 
         Assert.assertEquals(bounds, map.getMapView());
         Assert.assertEquals(bounds.getCenterX(), map.markerX, DELTA);
@@ -49,8 +48,8 @@ public class MapTest {
 
         // VERIFY that marker movement updates the coordinates
 
-        Bounds bounds = new Bounds(0, 0, 300, 200);
-        SiteModel site = new SiteModel();
+        BoundingBoxDTO bounds = new BoundingBoxDTO(0, 0, 300, 200);
+        SiteDTO site = new SiteDTO();
         site.setX(25.0);
         site.setY(30.0);
         presenter.setSite(site, null, bounds);

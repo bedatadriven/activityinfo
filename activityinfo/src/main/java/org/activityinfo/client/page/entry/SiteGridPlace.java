@@ -6,7 +6,7 @@ import org.activityinfo.client.ViewPath;
 import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.Pages;
 import org.activityinfo.client.page.common.grid.AbstractPagingGridPlace;
-import org.activityinfo.shared.dto.ActivityModel;
+import org.activityinfo.shared.dto.ActivityDTO;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ public class SiteGridPlace extends AbstractPagingGridPlace {
         this.sortInfo = place.sortInfo;
     }
    
-    public SiteGridPlace(ActivityModel activity) {
+    public SiteGridPlace(ActivityDTO activity) {
         this.activityId = activity.getId();
     }
 

@@ -22,53 +22,53 @@ public class AdminFieldSetPresenter {
 
         public void bindPresenter(AdminFieldSetPresenter presenter);
 
-        public void setStore(int levelId, ListStore<AdminEntityModel> store);
+        public void setStore(int levelId, ListStore<AdminEntityDTO> store);
 
         public void setEnabled(int levelId, boolean enabled);
 
-        public void setValue(int levelId, AdminEntityModel value);
+        public void setValue(int levelId, AdminEntityDTO value);
     }
 
     public interface Listener {
 
         public void onModified();
 
-        public void onBoundsChanged(String name, Bounds bounds);
+        public void onBoundsChanged(String name, BoundingBoxDTO bounds);
 
     }
 
     private final View view;
 
-    private ActivityModel currentActivity;
+    private ActivityDTO currentActivity;
 
-    private List<AdminLevelModel> levels;
+    private List<AdminLevelDTO> levels;
     private Map<Integer, ListCmdLoader<AdminEntityResult>> loaders =
             new HashMap<Integer, ListCmdLoader<AdminEntityResult>>();
-    private Map<Integer, ListStore<AdminEntityModel>> stores = new
-            HashMap<Integer, ListStore<AdminEntityModel>>();
+    private Map<Integer, ListStore<AdminEntityDTO>> stores = new
+            HashMap<Integer, ListStore<AdminEntityDTO>>();
     private Map<Integer, Integer> originalValues;
-    private Map<Integer, AdminEntityModel> selection = new HashMap<Integer, AdminEntityModel>();
+    private Map<Integer, AdminEntityDTO> selection = new HashMap<Integer, AdminEntityDTO>();
 
-    private Bounds bounds;
+    private BoundingBoxDTO bounds;
     private String boundsName;
 
     private Listener listener;
 
-    public AdminFieldSetPresenter(Dispatcher service, ActivityModel activity, View view) {
+    public AdminFieldSetPresenter(Dispatcher service, ActivityDTO activity, View view) {
         this.view = view;
         this.view.bindPresenter(this);
         this.currentActivity = activity;
 
         this.levels = activity.getAdminLevels();
 
-        for (AdminLevelModel level : levels) {
+        for (AdminLevelDTO level : levels) {
             int levelId = level.getId();
 
 
             ListCmdLoader<AdminEntityResult> loader = new ListCmdLoader<AdminEntityResult>(service);
             loaders.put(levelId, loader);
 
-            ListStore<AdminEntityModel> store = new ListStore<AdminEntityModel>(loader);
+            ListStore<AdminEntityDTO> store = new ListStore<AdminEntityDTO>(loader);
             stores.put(levelId, store);
 
             if (level.isRoot()) {
@@ -84,7 +84,7 @@ public class AdminFieldSetPresenter {
         this.listener = listener;
     }
 
-    public void onSelectionChanged(int levelId, AdminEntityModel selected) {
+    public void onSelectionChanged(int levelId, AdminEntityDTO selected) {
 
         if ((selected == null && selection.get(levelId) != null) ||
                 (selected != null && selection.get(levelId) == null) ||
@@ -111,7 +111,7 @@ public class AdminFieldSetPresenter {
 
     protected void updateChildren(int parentLevelId, Integer selectedId) {
 
-        for (AdminLevelModel child : levels) {
+        for (AdminLevelDTO child : levels) {
             if (!child.isRoot() && child.getParentLevelId() == parentLevelId) {
 
                 int childLevelId = child.getId();
@@ -130,12 +130,12 @@ public class AdminFieldSetPresenter {
         }
     }
 
-    public void setSite(SiteModel site) {
+    public void setSite(SiteDTO site) {
 
         // store values for dirty checking
         originalValues = new HashMap<Integer, Integer>();
-        for (AdminLevelModel level : levels) {
-            AdminEntityModel entity = site.getAdminEntity(level.getId());
+        for (AdminLevelDTO level : levels) {
+            AdminEntityDTO entity = site.getAdminEntity(level.getId());
             originalValues.put(level.getId(), entity == null ? null : entity.getId());
             selection.put(level.getId(), entity);
         }
@@ -148,15 +148,15 @@ public class AdminFieldSetPresenter {
 
     public boolean isDirty() {
 
-        for (AdminLevelModel level : levels) {
+        for (AdminLevelDTO level : levels) {
             if (isDirty(level)) return true;
 
         }
         return false;
     }
 
-    private boolean isDirty(AdminLevelModel level) {
-        AdminEntityModel selected = selection.get(level.getId());
+    private boolean isDirty(AdminLevelDTO level) {
+        AdminEntityDTO selected = selection.get(level.getId());
         Integer originalId = originalValues.get(level.getId());
 
         if ((originalId == null && selected != null) ||
@@ -171,9 +171,9 @@ public class AdminFieldSetPresenter {
 
         Map<String, Object> map = new HashMap<String, Object>();
 
-        for (AdminLevelModel level : levels) {
+        for (AdminLevelDTO level : levels) {
 
-            map.put(AdminEntityModel.getPropertyName(level.getId()),
+            map.put(AdminEntityDTO.getPropertyName(level.getId()),
                     selection.get(level.getId()));
 
         }
@@ -181,15 +181,15 @@ public class AdminFieldSetPresenter {
     }
 
 
-    private void recursivelySetSelection(SiteModel site, Integer parentLevelId, Integer parentEntityId) {
+    private void recursivelySetSelection(SiteDTO site, Integer parentLevelId, Integer parentEntityId) {
 
-        for (AdminLevelModel level : levels) {
+        for (AdminLevelDTO level : levels) {
             if (parentLevelId == null && level.isRoot() ||
                     parentLevelId != null && parentLevelId.equals(level.getParentLevelId())) {
 
-                AdminEntityModel entity = site.getAdminEntity(level.getId());
+                AdminEntityDTO entity = site.getAdminEntity(level.getId());
 
-                ListStore<AdminEntityModel> store = stores.get(level.getId());
+                ListStore<AdminEntityDTO> store = stores.get(level.getId());
                 store.removeAll();
                 if (entity != null) {
                     store.add(entity);
@@ -224,7 +224,7 @@ public class AdminFieldSetPresenter {
     }
 
 
-//    private void fillAdminCombosRecursively(SiteModel assessment, AdminEntityCombo parentCombo) {
+//    private void fillAdminCombosRecursively(SiteDTO assessment, AdminEntityCombo parentCombo) {
 //
 //        for(AdminEntityCombo combo : levelCombos) {
 //            if(combo.getParentCombo() == parentCombo) {
@@ -232,7 +232,7 @@ public class AdminFieldSetPresenter {
 //                // only fill if this combo is blank or equal to that of the assessment's
 //
 //                int levelId = combo.getLevel().getId();
-//                AdminEntityModel assmEntity = assessment.getAdminEntity(levelId);
+//                AdminEntityDTO assmEntity = assessment.getAdminEntity(levelId);
 //
 //                if(assmEntity != null) {
 //                    if(parentCombo!=null)
@@ -252,7 +252,7 @@ public class AdminFieldSetPresenter {
 //    }
 
 
-    public Bounds getBounds() {
+    public BoundingBoxDTO getBounds() {
         return bounds;
     }
 
@@ -263,9 +263,9 @@ public class AdminFieldSetPresenter {
     private void checkBounds(boolean fireEvent) {
 
         // update bounds
-        Bounds oldBounds = bounds;
+        BoundingBoxDTO oldBounds = bounds;
         bounds = AdminBoundsHelper.calculate(currentActivity, levels, new AdminBoundsHelper.Getter() {
-            public AdminEntityModel get(int levelId) {
+            public AdminEntityDTO get(int levelId) {
                 return selection.get(levelId);
             }
         });
@@ -274,7 +274,7 @@ public class AdminFieldSetPresenter {
                 ((bounds != null && !bounds.equals(oldBounds))))) {
 
             boundsName = AdminBoundsHelper.name(currentActivity, bounds, levels, new AdminBoundsHelper.Getter() {
-                public AdminEntityModel get(int levelId) {
+                public AdminEntityDTO get(int levelId) {
                     return selection.get(levelId);
                 }
             });

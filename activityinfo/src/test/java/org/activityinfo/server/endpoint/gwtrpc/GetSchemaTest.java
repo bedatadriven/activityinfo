@@ -3,10 +3,10 @@ package org.activityinfo.server.endpoint.gwtrpc;
 
 import org.activityinfo.server.dao.OnDataSet;
 import org.activityinfo.shared.command.GetSchema;
-import org.activityinfo.shared.dto.ActivityModel;
-import org.activityinfo.shared.dto.AttributeModel;
-import org.activityinfo.shared.dto.IndicatorModel;
-import org.activityinfo.shared.dto.Schema;
+import org.activityinfo.shared.dto.ActivityDTO;
+import org.activityinfo.shared.dto.AttributeDTO;
+import org.activityinfo.shared.dto.IndicatorDTO;
+import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.test.InjectionSupport;
 import org.junit.Assert;
@@ -25,7 +25,7 @@ public class GetSchemaTest extends CommandTestCase {
 
         setUser(1); // Alex
 
-        Schema schema = execute(new GetSchema());
+        SchemaDTO schema = execute(new GetSchema());
 
         Assert.assertTrue("ALEX(owner) in PEAR", schema.getDatabaseById(1) != null);     // PEAR
         Assert.assertTrue("ALEX can design", schema.getDatabaseById(1).isDesignAllowed());
@@ -42,7 +42,7 @@ public class GetSchemaTest extends CommandTestCase {
 
         setUser(2); // Bavon
 
-        Schema schema = execute(new GetSchema());
+        SchemaDTO schema = execute(new GetSchema());
 
         Assert.assertTrue("BAVON in PEAR", schema.getDatabaseById(1) != null);
 
@@ -55,7 +55,7 @@ public class GetSchemaTest extends CommandTestCase {
     public void testDatabaseVisibilityNone() throws CommandException {
         setUser(3); // Stefan
 
-        Schema schema = execute(new GetSchema());
+        SchemaDTO schema = execute(new GetSchema());
 
         Assert.assertTrue("STEFAN not in PEAR", schema.getDatabaseById(1) == null);
     }
@@ -65,19 +65,19 @@ public class GetSchemaTest extends CommandTestCase {
 
         setUser(1); // Alex
 
-        Schema schema = execute(new GetSchema());
+        SchemaDTO schema = execute(new GetSchema());
 
         Assert.assertTrue("no indicators case",
                 schema.getActivityById(2).getIndicators().size() == 0);
 
-        ActivityModel nfi = schema.getActivityById(1);
-        IndicatorModel[] indicators = nfi.getIndicators().toArray(new IndicatorModel[0]);
+        ActivityDTO nfi = schema.getActivityById(1);
+        IndicatorDTO[] indicators = nfi.getIndicators().toArray(new IndicatorDTO[0]);
 
         Assert.assertEquals("indicators are present", 2, indicators.length);
         //Assert.assertTrue("indicators are sorted",
         //		indicators[0].getSortOrder() <= indicators[1].getSortOrder());
 
-        IndicatorModel test = nfi.getIndicatorById(2);
+        IndicatorDTO test = nfi.getIndicatorById(2);
         Assert.assertEquals("property:name", test.getName(), "kits");
         Assert.assertEquals("property:units", test.getUnits(), "menages");
         Assert.assertEquals("property:aggregation", test.getAggregation(), 0);
@@ -93,16 +93,16 @@ public class GetSchemaTest extends CommandTestCase {
 
         setUser(1); // Alex
 
-        Schema schema = execute(new GetSchema());
+        SchemaDTO schema = execute(new GetSchema());
 
         Assert.assertTrue("no attributes case", schema.getActivityById(2).getAttributeGroups().size() == 0);
 
-        ActivityModel nfi = schema.getActivityById(1);
-        AttributeModel[] attributes = nfi.getAttributeGroups().get(0).getAttributes().toArray(new AttributeModel[0]);
+        ActivityDTO nfi = schema.getActivityById(1);
+        AttributeDTO[] attributes = nfi.getAttributeGroups().get(0).getAttributes().toArray(new AttributeDTO[0]);
 
         Assert.assertTrue("attributes are present", attributes.length == 2);
 
-        AttributeModel test = nfi.getAttributeById(1);
+        AttributeDTO test = nfi.getAttributeById(1);
 
         Assert.assertEquals("property:name", "Retour", test.getName());
     }

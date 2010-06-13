@@ -4,7 +4,7 @@ import org.activityinfo.server.dao.OnDataSet;
 import org.activityinfo.shared.command.CreateEntity;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.result.CreateResult;
-import org.activityinfo.shared.dto.Schema;
+import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.test.InjectionSupport;
@@ -28,7 +28,7 @@ public class CreateDatabaseTest extends CommandTestCase {
 
         CreateResult cr = execute(new CreateEntity(db));
 
-        Schema schema = execute(new GetSchema());
+        SchemaDTO schema = execute(new GetSchema());
 
         UserDatabaseDTO newdb = schema.getDatabaseById(cr.getNewId());
 
@@ -52,7 +52,7 @@ public class CreateDatabaseTest extends CommandTestCase {
         cmd.getProperties().put("countryId", 2);
         CreateResult cr = execute(cmd);
 
-        Schema schema = execute(new GetSchema());
+        SchemaDTO schema = execute(new GetSchema());
 
         UserDatabaseDTO newdb = schema.getDatabaseById(cr.getNewId());
 

@@ -23,12 +23,10 @@ import org.activityinfo.client.page.common.dialog.FormDialogTether;
 import org.activityinfo.client.page.common.toolbar.ActionListener;
 import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.client.page.config.form.DatabaseForm;
-import org.activityinfo.client.util.IStateManager;
 import org.activityinfo.shared.command.CreateEntity;
 import org.activityinfo.shared.command.Delete;
 import org.activityinfo.shared.command.GetSchema;
-import org.activityinfo.shared.command.result.CreateResult;
-import org.activityinfo.shared.dto.Schema;
+import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
 
 import java.util.HashMap;
@@ -176,11 +174,11 @@ public class DbListPresenter implements ActionListener {
 
     protected class Proxy implements DataProxy {
         public void load(DataReader dataReader, Object loadConfig, final AsyncCallback callback) {
-            dispatcher.execute(new GetSchema(), null, new AsyncCallback<Schema>() {
+            dispatcher.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
                 public void onFailure(Throwable caught) {
                     callback.onFailure(caught);
                 }
-                public void onSuccess(Schema schema) {
+                public void onSuccess(SchemaDTO schema) {
                     callback.onSuccess(new BaseListLoadResult<UserDatabaseDTO>(schema.getDatabases()));
                 }
             });

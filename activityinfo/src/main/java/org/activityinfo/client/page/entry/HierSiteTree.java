@@ -30,9 +30,9 @@ import org.activityinfo.client.page.common.grid.AbstractEditorTreeGridView;
 import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.client.page.common.widget.MappingComboBox;
 import org.activityinfo.shared.command.Month;
-import org.activityinfo.shared.dto.ActivityModel;
-import org.activityinfo.shared.dto.IndicatorRow;
-import org.activityinfo.shared.dto.SiteModel;
+import org.activityinfo.shared.dto.ActivityDTO;
+import org.activityinfo.shared.dto.IndicatorRowDTO;
+import org.activityinfo.shared.dto.SiteDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,12 +43,12 @@ import java.util.List;
 public class HierSiteTree extends AbstractEditorTreeGridView<ModelData, HierSiteEditor>
     implements HierSiteEditor.View {
 
-    private ActivityModel activity;
+    private ActivityDTO activity;
     private EditorTreeGrid tree;
     private int firstMonthColumn;
     private MappingComboBox<Month> monthCombo;
 
-    public HierSiteTree(ActivityModel activity) {
+    public HierSiteTree(ActivityDTO activity) {
         this.activity = activity;
         setLayout(new BorderLayout());
         setHeading(activity.getDatabase().getName() + " - " + activity.getName());
@@ -69,10 +69,10 @@ public class HierSiteTree extends AbstractEditorTreeGridView<ModelData, HierSite
 
         tree.setIconProvider(new ModelIconProvider() {
             public AbstractImagePrototype getIcon(ModelData model) {
-                if(model instanceof IndicatorRow) {
+                if(model instanceof IndicatorRowDTO) {
                     return Application.ICONS.indicator();
-                } else if(model instanceof SiteModel) {
-                    SiteModel site = (SiteModel)model;
+                } else if(model instanceof SiteDTO) {
+                    SiteDTO site = (SiteDTO)model;
                     if(site.hasCoords()) {
                         return Application.ICONS.mapped();    
                     } else {
@@ -185,7 +185,7 @@ public class HierSiteTree extends AbstractEditorTreeGridView<ModelData, HierSite
 
             String label = monthFormat.format(date.asDate());
             tree.getColumnModel().setColumnHeader(i+firstMonthColumn, label);
-            tree.getColumnModel().setDataIndex(i+1, IndicatorRow.propertyName(month));
+            tree.getColumnModel().setDataIndex(i+1, IndicatorRowDTO.propertyName(month));
 
             month = month.next();
         }

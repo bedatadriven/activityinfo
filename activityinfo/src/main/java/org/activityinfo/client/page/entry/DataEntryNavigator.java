@@ -9,8 +9,8 @@ import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.page.common.nav.Link;
 import org.activityinfo.client.page.common.nav.Navigator;
 import org.activityinfo.shared.command.GetSchema;
-import org.activityinfo.shared.dto.ActivityModel;
-import org.activityinfo.shared.dto.Schema;
+import org.activityinfo.shared.dto.ActivityDTO;
+import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
 
 import java.util.ArrayList;
@@ -42,12 +42,12 @@ public class DataEntryNavigator implements Navigator {
     public void load(DataReader<List<Link>> dataReader, Object parent, final AsyncCallback<List<Link>> callback) {
 
         if (parent == null) {
-            service.execute(new GetSchema(), null, new AsyncCallback<Schema>() {
+            service.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
                 public void onFailure(Throwable caught) {
                     callback.onFailure(caught);
                 }
 
-                public void onSuccess(Schema schema) {
+                public void onSuccess(SchemaDTO schema) {
                     List<Link> list = buildTree(schema);
                     callback.onSuccess(list);
                 }
@@ -62,7 +62,7 @@ public class DataEntryNavigator implements Navigator {
         }
     }
 
-    private List<Link> buildTree(Schema schema) {
+    private List<Link> buildTree(SchemaDTO schema) {
         List<Link> list = new ArrayList<Link>();
         for (UserDatabaseDTO db : schema.getDatabases()) {
             if (db.getActivities().size() != 0) {
@@ -73,7 +73,7 @@ public class DataEntryNavigator implements Navigator {
                         Application.ICONS.database());
 
                 Map<String, Link> categories = new HashMap<String, Link>();
-                for (ActivityModel activity : db.getActivities()) {
+                for (ActivityDTO activity : db.getActivities()) {
 
                     Link actLink = new Link(
                             activity.getName(),

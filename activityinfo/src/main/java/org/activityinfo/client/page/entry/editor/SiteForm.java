@@ -11,17 +11,17 @@ import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.activityinfo.client.page.common.widget.LoadingPlaceHolder;
 import org.activityinfo.client.page.config.form.ModelFormPanel;
-import org.activityinfo.shared.dto.ActivityModel;
-import org.activityinfo.shared.dto.CountryModel;
-import org.activityinfo.shared.dto.PartnerModel;
-import org.activityinfo.shared.dto.SiteModel;
+import org.activityinfo.shared.dto.ActivityDTO;
+import org.activityinfo.shared.dto.CountryDTO;
+import org.activityinfo.shared.dto.PartnerDTO;
+import org.activityinfo.shared.dto.SiteDTO;
 
 import java.util.Map;
 
 public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
 
     protected SiteFormPresenter presenter;
-    protected ActivityModel activity;
+    protected ActivityDTO activity;
 
     private ActivityFieldSet activityFieldSet;
     private LocationFieldSet locationFieldSet;
@@ -42,9 +42,9 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
 
     @Override
     public void init(SiteFormPresenter presenter,
-                     ActivityModel activity,
-                     ListStore<PartnerModel> partnerStore,
-                     ListStore<SiteModel> assessmentStore) {
+                     ActivityDTO activity,
+                     ListStore<PartnerDTO> partnerStore,
+                     ListStore<SiteDTO> assessmentStore) {
 
         removeAll();
         setLayout(new FlowLayout());
@@ -78,7 +78,7 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
 
         // ATTRIBUTE fieldset
 
-        if (activity.getReportingFrequency() == ActivityModel.REPORT_ONCE) {
+        if (activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE) {
 
             attributeFieldSet = new AttributeFieldSet(activity);
             registerFieldSet(attributeFieldSet);
@@ -103,7 +103,7 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
     }
 
 
-    public void setSite(SiteModel site) {
+    public void setSite(SiteDTO site) {
         updateForm(site);
 
     }
@@ -114,7 +114,7 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
     }
 
     @Override
-    public AdminFieldSetPresenter.View createAdminFieldSetView(ActivityModel activity) {
+    public AdminFieldSetPresenter.View createAdminFieldSetView(ActivityDTO activity) {
 
         locationFieldSet = new LocationFieldSet(activity);
 
@@ -122,7 +122,7 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
     }
 
     @Override
-    public MapPresenter.View createMapView(CountryModel country) {
+    public MapPresenter.View createMapView(CountryDTO country) {
 
         if (Maps.isLoaded()) {
             MapFieldSet mapFieldSet = new MapFieldSet(country);

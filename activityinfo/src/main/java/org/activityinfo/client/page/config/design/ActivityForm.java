@@ -15,14 +15,14 @@ import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.page.common.widget.MapIconComboBox;
 import org.activityinfo.client.page.common.widget.MappingComboBox;
 import org.activityinfo.client.page.common.widget.MappingComboBoxBinding;
-import org.activityinfo.shared.dto.ActivityModel;
-import org.activityinfo.shared.dto.LocationTypeModel;
-import org.activityinfo.shared.dto.MapIconModel;
+import org.activityinfo.shared.dto.ActivityDTO;
+import org.activityinfo.shared.dto.LocationTypeDTO;
+import org.activityinfo.shared.dto.MapIconDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
 
 public class ActivityForm extends AbstractDesignForm {
 
-    private ListStore<LocationTypeModel> locationTypeStore;
+    private ListStore<LocationTypeDTO> locationTypeStore;
     private FormBinding binding;
 
     public ActivityForm(Dispatcher service, UserDatabaseDTO database) {
@@ -49,7 +49,7 @@ public class ActivityForm extends AbstractDesignForm {
 
 
         MappingComboBox<Integer> locationTypeCombo = new MappingComboBox<Integer>();
-        for (LocationTypeModel type : database.getCountry().getLocationTypes()) {
+        for (LocationTypeDTO type : database.getCountry().getLocationTypes()) {
             locationTypeCombo.add(type.getId(), type.getName());
         }
         locationTypeCombo.setAllowBlank(false);
@@ -60,8 +60,8 @@ public class ActivityForm extends AbstractDesignForm {
         MappingComboBox frequencyCombo = new MappingComboBox();
         frequencyCombo.setAllowBlank(false);
         frequencyCombo.setFieldLabel(Application.CONSTANTS.reportingFrequency());
-        frequencyCombo.add(ActivityModel.REPORT_ONCE, Application.CONSTANTS.reportOnce());
-        frequencyCombo.add(ActivityModel.REPORT_MONTHLY, Application.CONSTANTS.monthly());
+        frequencyCombo.add(ActivityDTO.REPORT_ONCE, Application.CONSTANTS.reportOnce());
+        frequencyCombo.add(ActivityDTO.REPORT_MONTHLY, Application.CONSTANTS.monthly());
         binding.addFieldBinding(new MappingComboBoxBinding(frequencyCombo, "reportingFrequency"));
         this.add(frequencyCombo);
 
@@ -82,12 +82,12 @@ public class ActivityForm extends AbstractDesignForm {
         mapIconBinding.setConverter(new Converter() {
             @Override
             public Object convertModelValue(Object value) {
-                return value == null ? null : new MapIconModel((String) value);
+                return value == null ? null : new MapIconDTO((String) value);
             }
 
             @Override
             public Object convertFieldValue(Object value) {
-                return ((MapIconModel) value).getId();
+                return ((MapIconDTO) value).getId();
             }
         });
         binding.addFieldBinding(mapIconBinding);

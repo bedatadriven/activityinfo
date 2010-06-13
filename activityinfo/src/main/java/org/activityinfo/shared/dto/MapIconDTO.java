@@ -1,17 +1,19 @@
 package org.activityinfo.shared.dto;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
-/*
+
+/**
+ * One-to-One DTO for the {@link org.activityinfo.shared.report.model.MapIcon} report class
+ *
  * @author Alex Bertram
  */
+public class MapIconDTO extends BaseModelData {
 
-public class MapIconModel extends BaseModelData {
 
-
-    public MapIconModel() {
+    public MapIconDTO() {
     }
 
-    public MapIconModel(String id) {
+    public MapIconDTO(String id) {
         setId(id);
     }
 

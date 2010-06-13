@@ -3,25 +3,20 @@ package org.activityinfo.shared.dto;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 
-public class PartnerModel extends BaseModelData implements DTO {
+/**
+ * One-to-one DTO of the {@link org.activityinfo.server.domain.Partner} domain class.
+ *
+ * @author Alex Bertram
+ */
+public final class PartnerDTO extends BaseModelData implements DTO {
 
-	/**
-	 * 
-	 */
-	
-	private static final long serialVersionUID = 7436360195956315814L;
-	
-	public static final int MODEL_TYPE = 10;
-		
-	public PartnerModel()
-	{
+	public PartnerDTO() {
 		
 	}
 	
-	public PartnerModel(int id, String name) {
+	public PartnerDTO(int id, String name) {
 		setId(id);
 		setName(name);
-		
 	}
 	
 	public void setId(int id) {
@@ -32,8 +27,7 @@ public class PartnerModel extends BaseModelData implements DTO {
 		return (Integer)get("id");
 	}
 	
-	public String getName()
-	{
+	public String getName()	{
 		return get("name");
 	}
 	
@@ -49,11 +43,7 @@ public class PartnerModel extends BaseModelData implements DTO {
 		return get("fullName");
 	}
 
-	public int getModelTypeId() {
-		return MODEL_TYPE;
-	}
-	
-	public boolean isOperational() {
+    public boolean isOperational() {
 		return true;
 	}
 	
@@ -68,10 +58,10 @@ public class PartnerModel extends BaseModelData implements DTO {
 			return false;
 		if(other == this)
 			return true;
-		if(!(other instanceof PartnerModel))
+		if(!(other instanceof PartnerDTO))
 			return false;
 		
-		PartnerModel that = (PartnerModel)other;
+		PartnerDTO that = (PartnerDTO)other;
 		
 		return that.getId() == this.getId();
 	}

@@ -1,15 +1,15 @@
 package org.activityinfo.shared.command;
 
-import org.activityinfo.shared.dto.Schema;
+import org.activityinfo.shared.dto.SchemaDTO;
 
 
 /**
- * Returns a {@link org.activityinfo.shared.dto.Schema} data transfer object that
+ * Returns a {@link org.activityinfo.shared.dto.SchemaDTO} data transfer object that
  * includes the definitions of a databases visible to the authenticated user.
  *
  * @author Alex Bertram
  */
-public class GetSchema implements Command<Schema>  {
+public class GetSchema implements Command<SchemaDTO>  {
 
 
     @Override

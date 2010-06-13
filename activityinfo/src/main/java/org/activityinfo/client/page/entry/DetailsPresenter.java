@@ -22,19 +22,19 @@ public class DetailsPresenter implements Shutdownable {
     }
 
     private final EventBus eventBus;
-    private final ActivityModel activity;
+    private final ActivityDTO activity;
     private final UIConstants messages;
     private final View view;
     private final NumberFormat indicatorFormat;
 
-    private SiteModel currentSite;
+    private SiteDTO currentSite;
 
     private boolean showEmptyRows = false;
 
     private Listener<SiteEvent> siteListener;
 
     @Inject
-    public DetailsPresenter(EventBus eventBus, ActivityModel activity, UIConstants messages, View view) {
+    public DetailsPresenter(EventBus eventBus, ActivityDTO activity, UIConstants messages, View view) {
         this.eventBus = eventBus;
         this.activity = activity;
         this.messages = messages;
@@ -63,14 +63,14 @@ public class DetailsPresenter implements Shutdownable {
         eventBus.removeListener(AppEvents.SiteChanged, siteListener);
     }
 
-    private void onSiteSelected(SiteModel site) {
+    private void onSiteSelected(SiteDTO site) {
 
         this.currentSite = site;
         view.setSelectionTitle(site.getLocationName());
         view.setHtml(renderSite(site));
     }
 
-    protected String renderSite(SiteModel site) {
+    protected String renderSite(SiteDTO site) {
 
         StringBuilder html = new StringBuilder();
 
@@ -83,7 +83,7 @@ public class DetailsPresenter implements Shutdownable {
         }
 
 
-        for(AttributeGroupModel group : activity.getAttributeGroups()) {
+        for(AttributeGroupDTO group : activity.getAttributeGroups()) {
             renderAttribute(html, group, site);
         }
 
@@ -96,7 +96,7 @@ public class DetailsPresenter implements Shutdownable {
         return html.toString();
     }
 
-    private void renderIndicatorGroup(StringBuilder html, IndicatorGroup group, SiteModel site) {
+    private void renderIndicatorGroup(StringBuilder html, IndicatorGroup group, SiteDTO site) {
         StringBuilder groupHtml = new StringBuilder();
         boolean empty = true;
 
@@ -104,17 +104,17 @@ public class DetailsPresenter implements Shutdownable {
             groupHtml.append("<tr><td class='indicatorGroupHeading'>").append(group.getName()).
                     append("</td><td>&nbsp;</td></tr>");
         }
-        for(IndicatorModel indicator : group.getIndicators()) {
+        for(IndicatorDTO indicator : group.getIndicators()) {
 
             Double value;
-            if(indicator.getAggregation() == IndicatorModel.AGGREGATE_SITE_COUNT)
+            if(indicator.getAggregation() == IndicatorDTO.AGGREGATE_SITE_COUNT)
                 value = 1.0;
             else
                 value = site.getIndicatorValue(indicator);
 
             if(showEmptyRows ||
                     (value != null &&
-                            (indicator.getAggregation() != IndicatorModel.AGGREGATE_SUM || value != 0))) {
+                            (indicator.getAggregation() != IndicatorDTO.AGGREGATE_SUM || value != 0))) {
 
                 groupHtml.append("<tr><td class='indicatorHeading");
                 if(group.getName()!=null) {
@@ -134,7 +134,7 @@ public class DetailsPresenter implements Shutdownable {
         }
     }
 
-    protected String formatValue(IndicatorModel indicator, Double value) {
+    protected String formatValue(IndicatorDTO indicator, Double value) {
         if(value == null) {
             return "-";
         } else {
@@ -142,9 +142,9 @@ public class DetailsPresenter implements Shutdownable {
         }
     }
 
-    protected void renderAttribute(StringBuilder html, AttributeGroupModel group, SiteModel site) {
+    protected void renderAttribute(StringBuilder html, AttributeGroupDTO group, SiteDTO site) {
         int count = 0;
-        for(AttributeModel attribute : group.getAttributes()) {
+        for(AttributeDTO attribute : group.getAttributes()) {
             Boolean value = site.getAttributeValue(attribute.getId());
             if(value != null && value) {
                 if(count ==0 ) {

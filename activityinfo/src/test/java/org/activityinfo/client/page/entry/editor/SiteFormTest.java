@@ -4,9 +4,8 @@ import org.activityinfo.client.mock.DummyData;
 import org.activityinfo.client.mock.MockCommandService;
 import org.activityinfo.client.mock.MockEventBus;
 import org.activityinfo.client.page.common.toolbar.UIActions;
-import org.activityinfo.client.page.entry.editor.SiteFormPresenter;
 import org.activityinfo.client.page.entry.editor.mock.MockSiteForm;
-import org.activityinfo.shared.dto.Schema;
+import org.activityinfo.shared.dto.SchemaDTO;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -20,7 +19,7 @@ public class SiteFormTest {
     public void testAdminInit() {
 
         // Test data
-        Schema schema = DummyData.PEAR();
+        SchemaDTO schema = DummyData.PEAR();
 
         // Collaborator: EventBus
         MockEventBus eventBus = new MockEventBus();
@@ -51,7 +50,7 @@ public class SiteFormTest {
     @Test
     public void testMapBoundsSetOnInit() {
         // Test data
-        Schema schema = DummyData.PEAR();
+        SchemaDTO schema = DummyData.PEAR();
 
         // Collaborator: EventBus
         MockEventBus eventBus = new MockEventBus();

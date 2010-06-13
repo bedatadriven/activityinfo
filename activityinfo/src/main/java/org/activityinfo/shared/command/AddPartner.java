@@ -1,7 +1,7 @@
 package org.activityinfo.shared.command;
 
 import org.activityinfo.shared.command.result.CreateResult;
-import org.activityinfo.shared.dto.PartnerModel;
+import org.activityinfo.shared.dto.PartnerDTO;
 
 /**
  * Adds a {@link org.activityinfo.server.domain.Partner} to the
@@ -14,13 +14,13 @@ import org.activityinfo.shared.dto.PartnerModel;
 public class AddPartner implements Command<CreateResult> {
 
     private int databaseId;
-    private PartnerModel partner;
+    private PartnerDTO partner;
 
     public AddPartner() {
 
     }
 
-    public AddPartner(int databaseId, PartnerModel partner) {
+    public AddPartner(int databaseId, PartnerDTO partner) {
         this.databaseId = databaseId;
         this.partner = partner;
     }
@@ -33,11 +33,11 @@ public class AddPartner implements Command<CreateResult> {
         this.databaseId = databaseId;
     }
 
-    public PartnerModel getPartner() {
+    public PartnerDTO getPartner() {
         return partner;
     }
 
-    public void setPartner(PartnerModel partner) {
+    public void setPartner(PartnerDTO partner) {
         this.partner = partner;
     }
 }

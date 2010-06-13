@@ -51,11 +51,11 @@ public class PivotPresenter implements PagePresenter {
 
         public AsyncMonitor getMonitor();
 
-        void setSchema(Schema schema);
+        void setSchema(SchemaDTO schema);
 
-        List<IndicatorModel> getSelectedIndicators();
+        List<IndicatorDTO> getSelectedIndicators();
 
-        List<AdminEntityModel> getAdminRestrictions();
+        List<AdminEntityDTO> getAdminRestrictions();
 
         Date getMinDate();
 
@@ -87,16 +87,16 @@ public class PivotPresenter implements PagePresenter {
         store.add(createDimension(DateUnit.QUARTER, Application.CONSTANTS.quarter()));
         store.add(createDimension(DateUnit.MONTH, Application.CONSTANTS.month()));
 
-        service.execute(new GetSchema(), view.getMonitor(), new Got<Schema>() {
+        service.execute(new GetSchema(), view.getMonitor(), new Got<SchemaDTO>() {
             @Override
-            public void got(Schema result) {
+            public void got(SchemaDTO result) {
 
                 view.setSchema(result);
 
                 ListStore<Dimension> store = view.getUnsusedStore();
 
-                for (CountryModel country : result.getCountries()) {
-                    for (AdminLevelModel level : country.getAdminLevels()) {
+                for (CountryDTO country : result.getCountries()) {
+                    for (AdminLevelDTO level : country.getAdminLevels()) {
                         AdminDimension dimension = new AdminDimension(level.getId());
                         dimension.set("caption", level.getName());
                         store.add(dimension);
@@ -132,13 +132,13 @@ public class PivotPresenter implements PagePresenter {
         table.setRowDimensions(view.getRowStore().getModels());
         table.setColumnDimensions(view.getColStore().getModels());
 
-        List<IndicatorModel> selectedIndicators = view.getSelectedIndicators();
-        for (IndicatorModel indicator : selectedIndicators) {
+        List<IndicatorDTO> selectedIndicators = view.getSelectedIndicators();
+        for (IndicatorDTO indicator : selectedIndicators) {
             table.getFilter().addRestriction(DimensionType.Indicator, indicator.getId());
         }
 
-        List<AdminEntityModel> entities = view.getAdminRestrictions();
-        for (AdminEntityModel entity : entities) {
+        List<AdminEntityDTO> entities = view.getAdminRestrictions();
+        for (AdminEntityDTO entity : entities) {
             table.getFilter().addRestriction(DimensionType.AdminLevel, entity.getId());
         }
 

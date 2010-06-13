@@ -40,6 +40,7 @@ import org.activityinfo.client.map.MapTypeFactory;
 import org.activityinfo.client.page.common.AdminBoundsHelper;
 import org.activityinfo.client.page.common.Shutdownable;
 import org.activityinfo.shared.command.GetSitePoints;
+import org.activityinfo.shared.command.result.SitePointList;
 import org.activityinfo.shared.dto.*;
 
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ import java.util.Map;
 
 /**
  * A map panel that serves a counterpart to the SiteGrid, and
- * a drop target for <code>SiteModel</code>.
+ * a drop target for <code>SiteDTO</code>.
  * <p/>
  * Note: this class is not split into presenter-view as nearly all
  * of the logic involves Javascript objects or other GWT entanglements.
@@ -60,7 +61,7 @@ public class SiteMap extends ContentPanel implements Shutdownable {
 
     private final EventBus eventBus;
     private final Dispatcher service;
-    private final ActivityModel activity;
+    private final ActivityDTO activity;
 
     private MapWidget map = null;
     private LatLngBounds pendingZoom = null;
@@ -89,7 +90,7 @@ public class SiteMap extends ContentPanel implements Shutdownable {
     private Menu contextMenu;
 
     @Inject
-    public SiteMap(EventBus eventBus, Dispatcher service, ActivityModel activity) {
+    public SiteMap(EventBus eventBus, Dispatcher service, ActivityDTO activity) {
         this.eventBus = eventBus;
         this.service = service;
         this.activity = activity;
@@ -98,18 +99,18 @@ public class SiteMap extends ContentPanel implements Shutdownable {
 
     }
 
-    private void onSiteChanged(SiteModel site) {
+    private void onSiteChanged(SiteDTO site) {
 
     }
 
-    private void onSiteCreated(SiteModel site) {
+    private void onSiteCreated(SiteDTO site) {
 
     }
 
     private void onSiteSelected(SiteEvent se) {
         if (se.getSource() != this) {
             if (se.getSite() != null && !se.getSite().hasCoords()) {
-                Bounds bounds = AdminBoundsHelper.calculate(activity, se.getSite());
+                BoundingBoxDTO bounds = AdminBoundsHelper.calculate(activity, se.getSite());
                 LatLngBounds llBounds = llBoundsForBounds(bounds);
 
                 if (!llBounds.containsBounds(map.getBounds()))
@@ -130,11 +131,11 @@ public class SiteMap extends ContentPanel implements Shutdownable {
     public void onSiteDropped(Record record, double lat, double lng) {
         record.set("x", lng);
         record.set("y", lat);
-        updateSiteCoords(((SiteModel) record.getModel()).getId(), lat, lng);
+        updateSiteCoords(((SiteDTO) record.getModel()).getId(), lat, lng);
 
     }
 
-    public Bounds getSiteBounds(SiteModel site) {
+    public BoundingBoxDTO getSiteBounds(SiteDTO site) {
         return AdminBoundsHelper.calculate(activity, site);
     }
 
@@ -157,8 +158,8 @@ public class SiteMap extends ContentPanel implements Shutdownable {
             public void onSuccess(Void result) {
                 removeAll();
 
-                CountryModel country = activity.getDatabase().getCountry();
-                Bounds countryBounds = country.getBounds();
+                CountryDTO country = activity.getDatabase().getCountry();
+                BoundingBoxDTO countryBounds = country.getBounds();
                 map = new MapWidget(LatLng.newInstance(countryBounds.getCenterY(), countryBounds.getCenterX()), 8);
 
                 MapType adminMap = MapTypeFactory.createLocalisationMapType(country);
@@ -216,14 +217,14 @@ public class SiteMap extends ContentPanel implements Shutdownable {
     }
 
     private void loadSites() {
-        service.execute(new GetSitePoints(activity.getId()), null, new AsyncCallback<SitePointCollection>() {
+        service.execute(new GetSitePoints(activity.getId()), null, new AsyncCallback<SitePointList>() {
             @Override
             public void onFailure(Throwable throwable) {
 
             }
 
             @Override
-            public void onSuccess(SitePointCollection points) {
+            public void onSuccess(SitePointList points) {
                 addSitesToMap(points);
 
                 siteListener = new Listener<SiteEvent>() {
@@ -273,7 +274,7 @@ public class SiteMap extends ContentPanel implements Shutdownable {
         }
     }
 
-    public void addSitesToMap(SitePointCollection points) {
+    public void addSitesToMap(SitePointList points) {
 
         if (markerMgr == null) {
             OverlayManagerOptions options = new OverlayManagerOptions();
@@ -292,9 +293,9 @@ public class SiteMap extends ContentPanel implements Shutdownable {
 
         List<Marker> markers = new ArrayList<Marker>(points.getPoints().size());
 
-        for (SitePoint point : points.getPoints()) {
+        for (SitePointDTO point : points.getPoints()) {
 
-            Marker marker = new Marker(LatLng.newInstance(point.getLat(), point.getLng()));
+            Marker marker = new Marker(LatLng.newInstance(point.getY(), point.getX()));
             markerIds.put(marker, point.getSiteId());
             sites.put(point.getSiteId(), marker);
             markers.add(marker);
@@ -305,7 +306,7 @@ public class SiteMap extends ContentPanel implements Shutdownable {
 
     }
 
-    private LatLngBounds llBoundsForBounds(Bounds bounds) {
+    private LatLngBounds llBoundsForBounds(BoundingBoxDTO bounds) {
         LatLngBounds llbounds = LatLngBounds.newInstance(
                 LatLng.newInstance(bounds.getY2(), bounds.getX1()),
                 LatLng.newInstance(bounds.getY1(), bounds.getX2()));
@@ -387,7 +388,7 @@ public class SiteMap extends ContentPanel implements Shutdownable {
 
     private class MapDropTarget extends DropTarget {
 
-        Bounds bounds;
+        BoundingBoxDTO bounds;
         String boundsName;
 
         private MapDropTarget(Component target) {
@@ -397,7 +398,7 @@ public class SiteMap extends ContentPanel implements Shutdownable {
         @Override
         protected void onDragEnter(DNDEvent event) {
 
-            SiteModel site = getSite(event);
+            SiteDTO site = getSite(event);
             if (site == null) {
                 bounds = null;
             } else {
@@ -454,11 +455,11 @@ public class SiteMap extends ContentPanel implements Shutdownable {
             return map.convertContainerPixelToLatLng(Point.newInstance(x, y));
         }
 
-        private SiteModel getSite(DNDEvent event) {
+        private SiteDTO getSite(DNDEvent event) {
             if (event.getData() instanceof Record) {
                 Record record = (Record) event.getData();
-                if (record.getModel() instanceof SiteModel) {
-                    return (SiteModel) record.getModel();
+                if (record.getModel() instanceof SiteDTO) {
+                    return (SiteDTO) record.getModel();
                 }
             }
             return null;

@@ -26,7 +26,7 @@ import org.activityinfo.server.domain.User;
 import org.activityinfo.shared.command.GetAdminEntities;
 import org.activityinfo.shared.command.result.AdminEntityResult;
 import org.activityinfo.shared.command.result.CommandResult;
-import org.activityinfo.shared.dto.AdminEntityModel;
+import org.activityinfo.shared.dto.AdminEntityDTO;
 import org.activityinfo.shared.exception.CommandException;
 import org.dozer.Mapper;
 
@@ -56,10 +56,10 @@ public class GetAdminEntitiesHandler implements CommandHandler<GetAdminEntities>
 
         List<AdminEntity> entities = query.execute();
 
-        List<AdminEntityModel> models = new ArrayList<AdminEntityModel>();
+        List<AdminEntityDTO> models = new ArrayList<AdminEntityDTO>();
 
         for (AdminEntity entity : entities) {
-            models.add(mapper.map(entity, AdminEntityModel.class));
+            models.add(mapper.map(entity, AdminEntityDTO.class));
         }
 
         return new AdminEntityResult(models);

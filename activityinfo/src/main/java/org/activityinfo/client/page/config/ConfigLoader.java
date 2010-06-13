@@ -14,7 +14,7 @@ import org.activityinfo.client.page.common.nav.NavigationPanel;
 import org.activityinfo.client.page.common.widget.VSplitFrameSet;
 import org.activityinfo.client.page.config.design.Designer;
 import org.activityinfo.shared.command.GetSchema;
-import org.activityinfo.shared.dto.Schema;
+import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
 
 public class ConfigLoader implements PageLoader {
@@ -73,10 +73,10 @@ public class ConfigLoader implements PageLoader {
                     final DbPlace dPlace = (DbPlace) place;
 
                     /// the schema needs to be loaded before we can continue
-                    service.execute(new GetSchema(), null, new Got<Schema>() {
+                    service.execute(new GetSchema(), null, new Got<SchemaDTO>() {
 
                         @Override
-                        public void got(Schema schema) {
+                        public void got(SchemaDTO schema) {
 
                             UserDatabaseDTO db = schema.getDatabaseById(dPlace.getDatabaseId());
 

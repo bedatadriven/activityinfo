@@ -52,12 +52,12 @@ public class GetSchemaHandler implements CommandHandler<GetSchema> {
     @Override
     public CommandResult execute(GetSchema cmd, User user) throws CommandException {
 
-        Schema schema = new Schema();
+        SchemaDTO schema = new SchemaDTO();
         Date lastUpdate = new Date(0);
 
         List<UserDatabase> databases = schemaDAO.getDatabases(user);
 
-        Map<Integer, CountryModel> countries = new HashMap<Integer, CountryModel>();
+        Map<Integer, CountryDTO> countries = new HashMap<Integer, CountryDTO>();
 
         for (UserDatabase database : databases) {
 
@@ -72,9 +72,9 @@ public class GetSchemaHandler implements CommandHandler<GetSchema> {
             databaseDTO.setOwnerName(database.getOwner().getName());
             databaseDTO.setOwnerEmail(database.getOwner().getEmail());
 
-            CountryModel country = countries.get(database.getCountry().getId());
+            CountryDTO country = countries.get(database.getCountry().getId());
             if (country == null) {
-                country = mapper.map(database.getCountry(), CountryModel.class);
+                country = mapper.map(database.getCountry(), CountryDTO.class);
                 countries.put(country.getId(), country);
 
                 schema.getCountries().add(country);
@@ -102,12 +102,12 @@ public class GetSchemaHandler implements CommandHandler<GetSchema> {
 
             for (Partner partner : database.getPartners()) {
 
-                databaseDTO.getPartners().add(mapper.map(partner, PartnerModel.class));
+                databaseDTO.getPartners().add(mapper.map(partner, PartnerDTO.class));
             }
 
             for (Activity activity : database.getActivities()) {
 
-                ActivityModel activityDTO = mapper.map(activity, ActivityModel.class);
+                ActivityDTO activityDTO = mapper.map(activity, ActivityDTO.class);
                 databaseDTO.getActivities().add(activityDTO);
                 activityDTO.setDatabase(databaseDTO);
 

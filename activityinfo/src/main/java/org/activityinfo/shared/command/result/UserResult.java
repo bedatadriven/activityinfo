@@ -1,6 +1,6 @@
 package org.activityinfo.shared.command.result;
 
-import org.activityinfo.shared.dto.UserModel;
+import org.activityinfo.shared.dto.UserPermissionDTO;
 
 import java.util.List;
 
@@ -9,16 +9,16 @@ import java.util.List;
  *
  * @author Alex Bertram
  */
-public class UserResult extends PagingResult<UserModel> {
+public class UserResult extends PagingResult<UserPermissionDTO> {
     
     public UserResult() {
     }
 
-    public UserResult(List<UserModel> data) {
+    public UserResult(List<UserPermissionDTO> data) {
         super(data);
     }
 
-    public UserResult(List<UserModel> data, int offset, int totalCount) {
+    public UserResult(List<UserPermissionDTO> data, int offset, int totalCount) {
         super(data, offset, totalCount);
     }
 }

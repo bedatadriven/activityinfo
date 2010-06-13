@@ -22,8 +22,8 @@ import org.activityinfo.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.activityinfo.client.page.common.grid.AbstractEditorGridView;
 import org.activityinfo.client.page.common.widget.MappingComboBox;
 import org.activityinfo.shared.command.GetSchema;
-import org.activityinfo.shared.dto.ReportTemplateDTO;
-import org.activityinfo.shared.dto.Schema;
+import org.activityinfo.shared.dto.ReportDefinitionDTO;
+import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
 import org.activityinfo.shared.report.model.ReportFrequency;
 
@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class ReportGrid extends AbstractEditorGridView<ReportTemplateDTO, ReportHomePresenter>
+public class ReportGrid extends AbstractEditorGridView<ReportDefinitionDTO, ReportHomePresenter>
         implements ReportHomePresenter.View {
 
     private MappingComboBox<Integer> dayCombo;
@@ -51,17 +51,17 @@ public class ReportGrid extends AbstractEditorGridView<ReportTemplateDTO, Report
         numberFormat = NumberFormat.getFormat("0");
     }
 
-    public void init(ReportHomePresenter presenter, ListStore<ReportTemplateDTO> store) {
+    public void init(ReportHomePresenter presenter, ListStore<ReportDefinitionDTO> store) {
         super.init(presenter, store);
     }
 
     @Override
-    protected Grid<ReportTemplateDTO> createGridAndAddToContainer(Store store) {
+    protected Grid<ReportDefinitionDTO> createGridAndAddToContainer(Store store) {
 
-        EditorGrid<ReportTemplateDTO> grid = new EditorGrid<ReportTemplateDTO>((ListStore) store, createColumnModel());
-        grid.addListener(Events.BeforeEdit, new Listener<GridEvent<ReportTemplateDTO>>() {
-            public void handleEvent(GridEvent<ReportTemplateDTO> be) {
-                ReportTemplateDTO report = be.getModel();
+        EditorGrid<ReportDefinitionDTO> grid = new EditorGrid<ReportDefinitionDTO>((ListStore) store, createColumnModel());
+        grid.addListener(Events.BeforeEdit, new Listener<GridEvent<ReportDefinitionDTO>>() {
+            public void handleEvent(GridEvent<ReportDefinitionDTO> be) {
+                ReportDefinitionDTO report = be.getModel();
                 be.setCancelled(!(report.getFrequency() == ReportFrequency.Monthly ||
                         report.getFrequency() == ReportFrequency.Weekly ||
                         report.getFrequency() == ReportFrequency.Daily));
@@ -81,8 +81,8 @@ public class ReportGrid extends AbstractEditorGridView<ReportTemplateDTO, Report
         grid.setAutoExpandColumn("title");
         grid.setAutoExpandMin(250);
 
-        grid.addListener(Events.CellDoubleClick, new Listener<GridEvent<ReportTemplateDTO>>() {
-            public void handleEvent(GridEvent<ReportTemplateDTO> event) {
+        grid.addListener(Events.CellDoubleClick, new Listener<GridEvent<ReportDefinitionDTO>>() {
+            public void handleEvent(GridEvent<ReportDefinitionDTO> event) {
                 if (event.getColIndex() == 1)
                     presenter.onTemplateSelected(event.getModel());
             }
@@ -99,16 +99,16 @@ public class ReportGrid extends AbstractEditorGridView<ReportTemplateDTO, Report
         columns.add(new ColumnConfig("databaseName", Application.CONSTANTS.database(), 100));
 
         ColumnConfig name = new ColumnConfig("title", Application.CONSTANTS.name(), 250);
-        name.setRenderer(new GridCellRenderer<ReportTemplateDTO>() {
-            public Object render(ReportTemplateDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
+        name.setRenderer(new GridCellRenderer<ReportDefinitionDTO>() {
+            public Object render(ReportDefinitionDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
                 return "<b>" + model.getTitle() + "</b><br>" + model.getDescription();
             }
         });
         columns.add(name);
 
         ColumnConfig frequency = new ColumnConfig("frequency", Application.CONSTANTS.reportingFrequency(), 100);
-        frequency.setRenderer(new GridCellRenderer<ReportTemplateDTO>() {
-            public Object render(ReportTemplateDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
+        frequency.setRenderer(new GridCellRenderer<ReportDefinitionDTO>() {
+            public Object render(ReportDefinitionDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
                 if (model.getFrequency() == ReportFrequency.Monthly) {
                     return Application.CONSTANTS.monthly();
                 } else if (model.getFrequency() == ReportFrequency.Weekly) {
@@ -124,8 +124,8 @@ public class ReportGrid extends AbstractEditorGridView<ReportTemplateDTO, Report
         columns.add(frequency);
 
         ColumnConfig day = new ColumnConfig("day", Application.CONSTANTS.day(), 100);
-        day.setRenderer(new GridCellRenderer<ReportTemplateDTO>() {
-            public Object render(ReportTemplateDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<ReportTemplateDTO> store, Grid<ReportTemplateDTO> grid) {
+        day.setRenderer(new GridCellRenderer<ReportDefinitionDTO>() {
+            public Object render(ReportDefinitionDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<ReportDefinitionDTO> store, Grid<ReportDefinitionDTO> grid) {
                 if (model.getFrequency() == ReportFrequency.Weekly)
                     return model.getDay() < 7 ? weekdays[model.getDay()] :
                             weekdays[6];
@@ -138,9 +138,9 @@ public class ReportGrid extends AbstractEditorGridView<ReportTemplateDTO, Report
         columns.add(day);
 
         ColumnConfig subscribed = new ColumnConfig("subscribed", Application.CONSTANTS.subscribed(), 100);
-        subscribed.setRenderer(new GridCellRenderer<ReportTemplateDTO>() {
+        subscribed.setRenderer(new GridCellRenderer<ReportDefinitionDTO>() {
             @Override
-            public Object render(ReportTemplateDTO model, String property, ColumnData columnData, int rowIndex, int colIndex, ListStore<ReportTemplateDTO> store, Grid<ReportTemplateDTO> grid) {
+            public Object render(ReportDefinitionDTO model, String property, ColumnData columnData, int rowIndex, int colIndex, ListStore<ReportDefinitionDTO> store, Grid<ReportDefinitionDTO> grid) {
                 if (model.isSubscribed()) {
                     return Application.CONSTANTS.yes();
                 } else {
@@ -182,10 +182,10 @@ public class ReportGrid extends AbstractEditorGridView<ReportTemplateDTO, Report
             public void handleEvent(BaseEvent be) {
                 if (dbMenu.getItemCount() == 0) {
                     service.execute(new GetSchema(), new MaskingAsyncMonitor(ReportGrid.this,
-                            Application.CONSTANTS.loading()), new Got<Schema>() {
+                            Application.CONSTANTS.loading()), new Got<SchemaDTO>() {
 
                         @Override
-                        public void got(Schema result) {
+                        public void got(SchemaDTO result) {
                             for (final UserDatabaseDTO db : result.getDatabases()) {
                                 MenuItem item = new MenuItem(db.getName());
                                 item.setIcon(Application.ICONS.database());

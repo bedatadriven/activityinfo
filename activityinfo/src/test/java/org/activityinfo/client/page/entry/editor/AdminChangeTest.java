@@ -22,16 +22,16 @@ package org.activityinfo.client.page.entry.editor;
 import org.activityinfo.client.mock.DummyData;
 import org.activityinfo.client.mock.MockCommandService;
 import org.activityinfo.client.mock.MockEventBus;
-import org.activityinfo.client.page.entry.editor.AdminFieldSetPresenter;
-import org.activityinfo.shared.dto.AdminEntityModel;
-import org.activityinfo.shared.dto.AdminLevelModel;
-import org.activityinfo.shared.dto.Schema;
-import org.activityinfo.shared.dto.SiteModel;
-import static org.easymock.EasyMock.createNiceMock;
+import org.activityinfo.shared.dto.AdminEntityDTO;
+import org.activityinfo.shared.dto.AdminLevelDTO;
+import org.activityinfo.shared.dto.SchemaDTO;
+import org.activityinfo.shared.dto.SiteDTO;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Map;
+
+import static org.easymock.EasyMock.createNiceMock;
 /*
  * @author Alex Bertram
  */
@@ -52,21 +52,21 @@ public class AdminChangeTest {
         AdminFieldSetPresenter.View view = createNiceMock(AdminFieldSetPresenter.View.class);
 
         // test data
-        Schema schema = DummyData.PEAR();
-        SiteModel site = DummyData.PEAR_Sites().get(4);
+        SchemaDTO schema = DummyData.PEAR();
+        SiteDTO site = DummyData.PEAR_Sites().get(4);
 
         // CLASS UNDER TEST
         AdminFieldSetPresenter presenter = new AdminFieldSetPresenter(service, schema.getActivityById(91), view);
 
         // VERIFY: changing one adminlevel works properlty
         presenter.setSite(site);
-        presenter.onSelectionChanged(3, new AdminEntityModel(3, 9221, "Ruizi"));
+        presenter.onSelectionChanged(3, new AdminEntityDTO(3, 9221, "Ruizi"));
 
         Map<String,Object> properties = presenter.getPropertyMap();
 
-        Assert.assertEquals("Nord Kivu", ((AdminEntityModel) properties.get(AdminLevelModel.getPropertyName(1))).getName());
-        Assert.assertEquals("Beni", ((AdminEntityModel) properties.get(AdminLevelModel.getPropertyName(2))).getName());
-        Assert.assertEquals("Ruizi", ((AdminEntityModel) properties.get(AdminLevelModel.getPropertyName(3))).getName());
+        Assert.assertEquals("Nord Kivu", ((AdminEntityDTO) properties.get(AdminLevelDTO.getPropertyName(1))).getName());
+        Assert.assertEquals("Beni", ((AdminEntityDTO) properties.get(AdminLevelDTO.getPropertyName(2))).getName());
+        Assert.assertEquals("Ruizi", ((AdminEntityDTO) properties.get(AdminLevelDTO.getPropertyName(3))).getName());
 
     }
 

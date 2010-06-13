@@ -5,7 +5,7 @@ import org.activityinfo.server.domain.Site;
 import org.activityinfo.shared.command.GetSites;
 import org.activityinfo.shared.command.UpdateEntity;
 import org.activityinfo.shared.command.result.ListResult;
-import org.activityinfo.shared.dto.SiteModel;
+import org.activityinfo.shared.dto.SiteDTO;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.test.InjectionSupport;
 import org.junit.Assert;
@@ -24,9 +24,9 @@ public class UpdateSiteTest extends CommandTestCase {
     @Test
     public void testUpdate() throws CommandException {
         // retrieve from the server
-        ListResult<SiteModel> result = execute(GetSites.byId(1));
+        ListResult<SiteDTO> result = execute(GetSites.byId(1));
 
-        SiteModel model = result.getData().get(0);
+        SiteDTO model = result.getData().get(0);
 
         // modify and generate command
         model.setComments("NEW <b>Commentaire</b>");
@@ -44,7 +44,7 @@ public class UpdateSiteTest extends CommandTestCase {
         // retrieve the old one
 
         result = execute(GetSites.byId(1));
-        SiteModel secondRead = result.getData().get(0);
+        SiteDTO secondRead = result.getData().get(0);
 
         // confirm that the changes are there
         Assert.assertEquals("site.comments", model.getComments(), secondRead.getComments());

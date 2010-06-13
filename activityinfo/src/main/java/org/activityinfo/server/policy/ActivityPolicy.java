@@ -26,7 +26,7 @@ import org.activityinfo.server.domain.Activity;
 import org.activityinfo.server.domain.LocationType;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.server.domain.UserDatabase;
-import org.activityinfo.shared.dto.LocationTypeModel;
+import org.activityinfo.shared.dto.LocationTypeDTO;
 
 import javax.persistence.EntityManager;
 import java.util.Date;
@@ -106,7 +106,7 @@ public class ActivityPolicy implements EntityPolicy<Activity> {
         if (changes.containsKey("locationType"))
             activity.setLocationType(
                     em.getReference(LocationType.class,
-                            ((LocationTypeModel) changes.get("locationType")).getId()));
+                            ((LocationTypeDTO) changes.get("locationType")).getId()));
 
         if (changes.containsKey("category"))
             activity.setCategory((String) changes.get("category"));

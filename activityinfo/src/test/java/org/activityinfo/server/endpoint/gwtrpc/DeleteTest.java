@@ -7,8 +7,8 @@ import org.activityinfo.shared.command.Delete;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.GetSites;
 import org.activityinfo.shared.command.result.PagingResult;
-import org.activityinfo.shared.dto.Schema;
-import org.activityinfo.shared.dto.SiteModel;
+import org.activityinfo.shared.dto.SchemaDTO;
+import org.activityinfo.shared.dto.SiteDTO;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.test.InjectionSupport;
 import org.junit.Test;
@@ -33,7 +33,7 @@ public class DeleteTest extends CommandTestCase {
     @Test
     public void testDeleteSite() throws CommandException {
 
-        PagingResult<SiteModel> sites = execute(GetSites.byId(3));
+        PagingResult<SiteDTO> sites = execute(GetSites.byId(3));
         execute(new Delete(sites.getData().get(0)));
 
         sites = execute(GetSites.byId(3));
@@ -46,20 +46,20 @@ public class DeleteTest extends CommandTestCase {
     @Test
     public void testDeleteIndicator() throws CommandException {
 
-        Schema schema = execute(new GetSchema());
+        SchemaDTO schema = execute(new GetSchema());
         execute(new Delete(schema.getIndicatorById(1)));
 
         schema = execute(new GetSchema());
         Assert.assertNull(schema.getIndicatorById(1));
 
-        PagingResult<SiteModel> sites = execute(GetSites.byId(1));
+        PagingResult<SiteDTO> sites = execute(GetSites.byId(1));
         Assert.assertNull(sites.getData().get(0).getIndicatorValue(1));
     }
 
     @Test
     public void testDeleteAttribute() throws CommandException {
 
-        Schema schema = execute(new GetSchema());
+        SchemaDTO schema = execute(new GetSchema());
         execute(new Delete(schema.getActivityById(1).getAttributeById(1)));
 
         schema = execute(new GetSchema());
@@ -70,7 +70,7 @@ public class DeleteTest extends CommandTestCase {
     @Test
     public void testDeleteActivity() throws CommandException {
 
-        Schema schema = execute(new GetSchema());
+        SchemaDTO schema = execute(new GetSchema());
         execute(new Delete(schema.getActivityById(1)));
         execute(new Delete("Activity", 4));
 

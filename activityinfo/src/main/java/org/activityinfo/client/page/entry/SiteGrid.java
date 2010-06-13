@@ -23,10 +23,10 @@ import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.activityinfo.client.page.common.grid.AbstractEditorGridView;
 import org.activityinfo.client.page.common.toolbar.UIActions;
-import org.activityinfo.shared.dto.ActivityModel;
-import org.activityinfo.shared.dto.AdminLevelModel;
-import org.activityinfo.shared.dto.IndicatorModel;
-import org.activityinfo.shared.dto.SiteModel;
+import org.activityinfo.shared.dto.ActivityDTO;
+import org.activityinfo.shared.dto.AdminLevelDTO;
+import org.activityinfo.shared.dto.IndicatorDTO;
+import org.activityinfo.shared.dto.SiteDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,16 +34,16 @@ import java.util.List;
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class SiteGrid extends AbstractEditorGridView<SiteModel, SiteEditor>
+public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
         implements SiteEditor.View {
 
 
-    private ActivityModel activity;
-    protected EditorGrid<SiteModel> grid;
+    private ActivityDTO activity;
+    protected EditorGrid<SiteDTO> grid;
     private boolean enableDragSource;
 
-//    private Map<String, ComboBox<AdminEntityModel>> adminComboBoxes =
-//            new HashMap<String, ComboBox<AdminEntityModel>>();
+//    private Map<String, ComboBox<AdminEntityDTO>> adminComboBoxes =
+//            new HashMap<String, ComboBox<AdminEntityDTO>>();
 
 
     public SiteGrid(boolean enableDragSource) {
@@ -57,7 +57,7 @@ public class SiteGrid extends AbstractEditorGridView<SiteModel, SiteEditor>
 
 
     @Override
-    public void init(SiteEditor presenter, ActivityModel activity, ListStore<SiteModel> store) {
+    public void init(SiteEditor presenter, ActivityDTO activity, ListStore<SiteDTO> store) {
 
         this.activity = activity;
         setHeading(Application.MESSAGES.activityTitle(activity.getDatabase().getName(), activity.getName()));
@@ -72,16 +72,16 @@ public class SiteGrid extends AbstractEditorGridView<SiteModel, SiteEditor>
     }
 
 
-    public Grid<SiteModel> createGridAndAddToContainer(Store store) {
+    public Grid<SiteDTO> createGridAndAddToContainer(Store store) {
 
-        grid = new EditorGrid<SiteModel>((ListStore)store, createColumnModel(activity));
+        grid = new EditorGrid<SiteDTO>((ListStore)store, createColumnModel(activity));
         grid.setEnableColumnResize(true);
         grid.setLoadMask(true);
         grid.setStateful(true);
         grid.setStateId("SiteGrid" + activity.getId());
 //        grid.addListener(Events.BeforeEdit, new Listener<GridEvent>() {
 //            public void handleEvent(GridEvent be) {
-//                if(be.getProperty().startsWith(AdminLevelModel.PROPERTY_PREFIX)) {
+//                if(be.getProperty().startsWith(AdminLevelDTO.PROPERTY_PREFIX)) {
 //                    prepareAdminEditor(be);
 //                }
 //            }
@@ -100,8 +100,8 @@ public class SiteGrid extends AbstractEditorGridView<SiteModel, SiteEditor>
 //
 //        ComboBox comboBox = adminComboBoxes.get(be.getProperty());
 //
-//        ListStore<AdminEntityModel> store =
-//                presenter.getAdminEntityStore(be.getProperty(), (SiteModel)be.getRecord().getModel());
+//        ListStore<AdminEntityDTO> store =
+//                presenter.getAdminEntityStore(be.getProperty(), (SiteDTO)be.getRecord().getModel());
 //
 //        if(store == null) {
 //            be.setCancelled(true);
@@ -143,14 +143,14 @@ public class SiteGrid extends AbstractEditorGridView<SiteModel, SiteEditor>
         super.setActionEnabled(actionId, enabled);
     }
 
-    protected ColumnModel createColumnModel(ActivityModel activity) {
+    protected ColumnModel createColumnModel(ActivityDTO activity) {
 
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
         ColumnConfig mapColumn = new ColumnConfig("x", "", 25);
-        mapColumn.setRenderer(new GridCellRenderer<SiteModel>() {
+        mapColumn.setRenderer(new GridCellRenderer<SiteDTO>() {
             @Override
-            public Object render(SiteModel model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
+            public Object render(SiteDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
                 if(model.hasCoords()) {
                     return "<div class='mapped'>&nbsp;&nbsp;</div>";
                 } else {
@@ -165,7 +165,7 @@ public class SiteGrid extends AbstractEditorGridView<SiteModel, SiteEditor>
          * Date Column
          */
 
-        if(activity.getReportingFrequency() == ActivityModel.REPORT_ONCE) {
+        if(activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE) {
 
             DateField dateField = new DateField();
             dateField.getPropertyEditor().setFormat(DateTimeFormat.getFormat("MM/dd/y"));
@@ -217,21 +217,21 @@ public class SiteGrid extends AbstractEditorGridView<SiteModel, SiteEditor>
 
         // add the admin columns (province, territoire, etc)
 
-        List<AdminLevelModel> levels ;
+        List<AdminLevelDTO> levels ;
 
         if( activity.getLocationType().isAdminLevel()) {
 
-            levels = activity.getDatabase().getCountry().getAncestors(activity.getLocationType().getBoundAdminLevelId());
+            levels = activity.getDatabase().getCountry().getAdminLevelAncestors(activity.getLocationType().getBoundAdminLevelId());
 
         } else {
 
             levels = activity.getDatabase().getCountry().getAdminLevels();
         }
 
-        for (AdminLevelModel level : levels) {
+        for (AdminLevelDTO level : levels) {
 
 
-//            ComboBox<AdminEntityModel> combo = new RemoteComboBox<AdminEntityModel>();
+//            ComboBox<AdminEntityDTO> combo = new RemoteComboBox<AdminEntityDTO>();
 //            combo.setTypeAheadDelay(50);
 //            combo.setForceSelection(false);
 //            combo.setEditable(false);
@@ -251,12 +251,12 @@ public class SiteGrid extends AbstractEditorGridView<SiteModel, SiteEditor>
         return new ColumnModel(columns);
     }
 
-    protected void addIndicatorColumns(ActivityModel activity, List<ColumnConfig> columns) {
+    protected void addIndicatorColumns(ActivityDTO activity, List<ColumnConfig> columns) {
         /*
         * Add columns for all indicators that have a queries heading
         */
 
-        for (IndicatorModel indicator : activity.getIndicators()) {
+        for (IndicatorDTO indicator : activity.getIndicators()) {
             if(indicator.getListHeader() != null && !indicator.getListHeader().isEmpty()) {
 
                 columns.add(createIndicatorColumn(indicator, indicator.getListHeader()));
@@ -264,7 +264,7 @@ public class SiteGrid extends AbstractEditorGridView<SiteModel, SiteEditor>
         }
     }
 
-    protected ColumnConfig createIndicatorColumn(IndicatorModel indicator, String header) {
+    protected ColumnConfig createIndicatorColumn(IndicatorDTO indicator, String header) {
         final NumberFormat format = NumberFormat.getFormat("0");
 
         NumberField indicatorField = new NumberField();
@@ -279,7 +279,7 @@ public class SiteGrid extends AbstractEditorGridView<SiteModel, SiteEditor>
 
         // For SUM indicators, don't show ZEROs in the Grid
         // (it looks better if we don't)
-        if(indicator.getAggregation() == IndicatorModel.AGGREGATE_SUM) {
+        if(indicator.getAggregation() == IndicatorDTO.AGGREGATE_SUM) {
             indicatorColumn.setRenderer(new GridCellRenderer() {
                 @Override
                 public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {

@@ -17,9 +17,9 @@ import org.activityinfo.server.util.KMLNamespace;
 import org.activityinfo.server.util.XmlBuilder;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.domain.SiteColumn;
-import org.activityinfo.shared.dto.ActivityModel;
-import org.activityinfo.shared.dto.IndicatorModel;
-import org.activityinfo.shared.dto.Schema;
+import org.activityinfo.shared.dto.ActivityDTO;
+import org.activityinfo.shared.dto.IndicatorDTO;
+import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.exception.CommandException;
 import org.apache.commons.codec.binary.Base64;
 import org.hibernate.criterion.Order;
@@ -128,7 +128,7 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
         XmlBuilder xml = new XmlBuilder(new StreamResult(out));
 
         GetSchemaHandler schemaHandler = injector.getInstance(GetSchemaHandler.class);
-        Schema schema = (Schema) schemaHandler.execute(new GetSchema(), user);
+        SchemaDTO schema = (SchemaDTO) schemaHandler.execute(new GetSchema(), user);
 
         List<SiteData> sites = querySites(user, schema);
 
@@ -144,7 +144,7 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
 
         int lastDatabaseId = -1;
         int lastActivityId = -1;
-        ActivityModel activity = null;
+        ActivityDTO activity = null;
 
         for (SiteData pm : sites) {
 
@@ -211,11 +211,11 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
 
     }
 
-    private String renderSnippet(ActivityModel activity, SiteData pm) {
+    private String renderSnippet(ActivityDTO activity, SiteData pm) {
         return activity.getName() + " à " + pm.getLocationName() + " (" + pm.getPartnerName() + ")";
     }
 
-    private List<SiteData> querySites(User user, Schema schema) {
+    private List<SiteData> querySites(User user, SchemaDTO schema) {
 
         List<Order> order = new ArrayList<Order>();
         order.add(Order.asc(SiteColumn.database_name.property()));
@@ -227,12 +227,12 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
 
     }
 
-    private String renderDescription(ActivityModel activity, SiteData data) {
+    private String renderDescription(ActivityDTO activity, SiteData data) {
         HtmlWriter html = new HtmlWriter();
 
         html.startTable();
 
-        for (IndicatorModel indicator : activity.getIndicators()) {
+        for (IndicatorDTO indicator : activity.getIndicators()) {
             if (data.getIndicatorValue(indicator.getId()) != null) {
                 html.startTableRow();
 

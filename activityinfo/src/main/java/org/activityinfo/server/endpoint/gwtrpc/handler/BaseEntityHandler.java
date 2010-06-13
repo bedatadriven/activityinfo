@@ -20,14 +20,12 @@
 package org.activityinfo.server.endpoint.gwtrpc.handler;
 
 import org.activityinfo.server.domain.*;
-import org.activityinfo.shared.dto.*;
+import org.activityinfo.shared.dto.LocationTypeDTO;
 import org.activityinfo.shared.exception.IllegalAccessCommandException;
 
 import javax.persistence.EntityManager;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Provides functionality common to CreateEntityHandler and
@@ -107,7 +105,7 @@ public class BaseEntityHandler {
         if (changes.containsKey("locationType"))
             activity.setLocationType(
                     em.getReference(LocationType.class,
-                            ((LocationTypeModel) changes.get("locationType")).getId()));
+                            ((LocationTypeDTO) changes.get("locationType")).getId()));
 
         if (changes.containsKey("category"))
             activity.setCategory((String) changes.get("category"));

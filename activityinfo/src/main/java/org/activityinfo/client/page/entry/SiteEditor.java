@@ -31,9 +31,9 @@ import org.activityinfo.shared.command.*;
 import org.activityinfo.shared.command.result.PagingResult;
 import org.activityinfo.shared.command.result.SiteResult;
 import org.activityinfo.shared.command.result.VoidResult;
-import org.activityinfo.shared.dto.ActivityModel;
-import org.activityinfo.shared.dto.AdminLevelModel;
-import org.activityinfo.shared.dto.SiteModel;
+import org.activityinfo.shared.dto.ActivityDTO;
+import org.activityinfo.shared.dto.AdminLevelDTO;
+import org.activityinfo.shared.dto.SiteDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
 
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ import java.util.Map;
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implements PagePresenter {
+public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements PagePresenter {
 
     private Listener<SiteEvent> siteChangedListener;
     private Listener<SiteEvent> siteCreatedListener;
@@ -52,9 +52,9 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
 
     public static final int PAGE_SIZE = 25;
 
-    public interface View extends GridView<SiteEditor, SiteModel> {
+    public interface View extends GridView<SiteEditor, SiteDTO> {
 
-        public void init(SiteEditor presenter, ActivityModel activity, ListStore<SiteModel> store);
+        public void init(SiteEditor presenter, ActivityDTO activity, ListStore<SiteDTO> store);
         public AsyncMonitor getLoadingMonitor();
 
         void setSelection(int siteId);
@@ -65,10 +65,10 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
     private final Dispatcher service;
     private final SiteFormLoader formLoader;
 
-    protected final ListStore<SiteModel> store;
+    protected final ListStore<SiteDTO> store;
     protected final PagingCmdLoader<SiteResult> loader;
 
-    protected ActivityModel currentActivity;
+    protected ActivityDTO currentActivity;
 
     private Integer siteIdToSelectOnNextLoad;
 
@@ -82,14 +82,14 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
         formLoader = new SiteFormLoader(eventBus, service);
 
         loader = new PagingCmdLoader<SiteResult>(service);
-        store = new ListStore<SiteModel>(loader);
+        store = new ListStore<SiteDTO>(loader);
 
         initListeners(store, loader);
 
         siteChangedListener = new Listener<SiteEvent>() {
             public void handleEvent(SiteEvent se) {
 
-                SiteModel ourCopy = store.findModel("id", se.getSite().getId());
+                SiteDTO ourCopy = store.findModel("id", se.getSite().getId());
                 if (ourCopy != null) {
                     ourCopy.setProperties(se.getSite().getProperties());
                 }
@@ -110,7 +110,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
             public void handleEvent(SiteEvent se) {
                 // check to see if this site is on the current page
                 if (se.getSource() != SiteEditor.this) {
-                    SiteModel site = store.findModel("id", se.getSiteId());
+                    SiteDTO site = store.findModel("id", se.getSiteId());
                     if (site != null) {
                         view.setSelection(se.getSiteId());
                     }
@@ -151,7 +151,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
     }
 
     @Override
-    public ListStore<SiteModel> getStore() {
+    public ListStore<SiteDTO> getStore() {
         return store;
     }
 
@@ -175,7 +175,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
         return Pages.SiteGrid;
     }
 
-    public ActivityModel getCurrentActivity() {
+    public ActivityDTO getCurrentActivity() {
         return currentActivity;
     }
 
@@ -183,7 +183,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
         return "sitegridpage." + currentActivity.getId();
     }
 
-    public void go(SiteGridPlace place, ActivityModel activity) {
+    public void go(SiteGridPlace place, ActivityDTO activity) {
 
         currentActivity = activity;
 
@@ -247,7 +247,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
         }
     }
 
-    public void onSelectionChanged(SiteModel selectedSite) {
+    public void onSelectionChanged(SiteDTO selectedSite) {
 
         if (selectedSite == null) {
             view.setActionEnabled(UIActions.delete, false);
@@ -272,7 +272,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
         view.setActionEnabled(UIActions.delete, false);
     }
 
-    private boolean isEditable(SiteModel selectedSite) {
+    private boolean isEditable(SiteDTO selectedSite) {
         UserDatabaseDTO db = currentActivity.getDatabase();
         boolean editable = db.isEditAllAllowed() ||
                 (db.isEditAllowed() && db.getMyPartnerId() == selectedSite.getPartner().getId());
@@ -281,7 +281,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
 
     @Override
     public boolean beforeEdit(Record record, String property) {
-        return isEditable((SiteModel) record.getModel());
+        return isEditable((SiteDTO) record.getModel());
     }
 
     @Override
@@ -305,17 +305,17 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
         }
     }
 
-//    public ListStore<AdminEntityModel> getAdminEntityStore(String property, SiteModel site) {
+//    public ListStore<AdminEntityDTO> getAdminEntityStore(String property, SiteDTO site) {
 //
-//        int levelId = AdminLevelModel.levelIdForProperty(property);
-//        AdminLevelModel level = schema.getAdminLevelById(levelId);
+//        int levelId = AdminLevelDTO.levelIdForProperty(property);
+//        AdminLevelDTO level = schema.getAdminLevelById(levelId);
 //
 //        GetAdminEntities cmd;
 //
 //        if(level.isRoot()) {
 //            cmd = new GetAdminEntities(levelId);
 //        } else {
-//            AdminEntityModel parent = site.getAdminEntity( level.getParentLevelId());
+//            AdminEntityDTO parent = site.getAdminEntity( level.getParentLevelId());
 //            if( parent != null ) {
 //                cmd = new GetAdminEntities(levelId, parent.getId());
 //            } else {
@@ -326,9 +326,9 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
 //        ListCmdLoader<AdminEntityResult> loader = new ListCmdLoader<AdminEntityResult>(service);
 //        loader.setCommand(cmd);
 //
-//        ListStore<AdminEntityModel> store = new ListStore<AdminEntityModel>(loader);
+//        ListStore<AdminEntityDTO> store = new ListStore<AdminEntityDTO>(loader);
 //        if(site.get(property) != null) {
-//            store.add((AdminEntityModel) site.get(property));
+//            store.add((AdminEntityDTO) site.get(property));
 //        }
 //
 //        return store;
@@ -337,7 +337,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
 
     protected void onAdd() {
 
-        SiteModel newSite = new SiteModel();
+        SiteDTO newSite = new SiteDTO();
         newSite.setActivityId(currentActivity.getId());
 
         if (!currentActivity.getDatabase().isEditAllAllowed()) {
@@ -345,10 +345,10 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
         }
 
         // initialize with defaults
-        SiteModel sel = view.getSelection();
+        SiteDTO sel = view.getSelection();
         if (sel != null) {
             for (Map.Entry<String, Object> prop : sel.getProperties().entrySet()) {
-                if (prop.getKey().startsWith(AdminLevelModel.PROPERTY_PREFIX)) {
+                if (prop.getKey().startsWith(AdminLevelDTO.PROPERTY_PREFIX)) {
                     newSite.set(prop.getKey(), prop.getValue());
                 }
             }
@@ -358,13 +358,13 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteModel> implement
 
     }
 
-    protected void onEdit(SiteModel site) {
+    protected void onEdit(SiteDTO site) {
         formLoader.edit(currentActivity, site, view.getLoadingMonitor());
     }
 
 
     @Override
-    protected void onDeleteConfirmed(final SiteModel site) {
+    protected void onDeleteConfirmed(final SiteDTO site) {
 
         service.execute(new Delete(site), view.getDeletingMonitor(), new AsyncCallback<VoidResult>() {
 

@@ -31,8 +31,8 @@ import org.activityinfo.server.domain.UserPermission;
 import org.activityinfo.server.mail.Invitation;
 import org.activityinfo.server.mail.Mailer;
 import org.activityinfo.shared.command.UpdateUserPermissions;
-import org.activityinfo.shared.dto.PartnerModel;
-import org.activityinfo.shared.dto.UserModel;
+import org.activityinfo.shared.dto.PartnerDTO;
+import org.activityinfo.shared.dto.UserPermissionDTO;
 import org.activityinfo.shared.exception.IllegalAccessCommandException;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +48,7 @@ public class UpdateUserPermissionsHandlerTest {
 
     private Partner NRC;
     private Partner IRC;
-    private PartnerModel NRC_DTO;
+    private PartnerDTO NRC_DTO;
 
     private MockDb db = new MockDb();
     protected Mailer<Invitation> mailer;
@@ -70,7 +70,7 @@ public class UpdateUserPermissionsHandlerTest {
         IRC.setFullName("International Rescue Committee");
         db.persist(IRC);
 
-        NRC_DTO = new PartnerModel(1, "NRC");
+        NRC_DTO = new PartnerDTO(1, "NRC");
 
         mailer = createMock("InvitationMailer", Mailer.class);
 
@@ -96,7 +96,7 @@ public class UpdateUserPermissionsHandlerTest {
         mailer.send(isA(Invitation.class), isA(Locale.class));
         replay(mailer);
 
-        UserModel user = new UserModel();
+        UserPermissionDTO user = new UserPermissionDTO();
         user.setEmail("other@foobar");
         user.setPartner(NRC_DTO);
         user.setAllowView(true);
@@ -120,7 +120,7 @@ public class UpdateUserPermissionsHandlerTest {
         executingUserPermissions.setPartner(NRC);
         executingUserPermissions.setAllowManageUsers(true);
 
-        UserModel dto = new UserModel();
+        UserPermissionDTO dto = new UserPermissionDTO();
         dto.setPartner(NRC_DTO);
         dto.setAllowView(true);
 
@@ -140,7 +140,7 @@ public class UpdateUserPermissionsHandlerTest {
         executingUserPermissions.setPartner(NRC);
         executingUserPermissions.setAllowManageUsers(true);
 
-        UserModel dto = new UserModel();
+        UserPermissionDTO dto = new UserPermissionDTO();
         dto.setPartner(NRC_DTO);
         dto.setAllowView(true);
         dto.setAllowEdit(true);
@@ -157,7 +157,7 @@ public class UpdateUserPermissionsHandlerTest {
         executingUserPermissions.setPartner(IRC);
         executingUserPermissions.setAllowManageUsers(true);
 
-        UserModel dto = new UserModel();
+        UserPermissionDTO dto = new UserPermissionDTO();
         dto.setPartner(NRC_DTO);
         dto.setAllowView(true);
         dto.setAllowEdit(true);
@@ -175,7 +175,7 @@ public class UpdateUserPermissionsHandlerTest {
         executingUserPermissions.setAllowManageUsers(true);
         executingUserPermissions.setAllowManageAllUsers(true);
 
-        UserModel dto = new UserModel();
+        UserPermissionDTO dto = new UserPermissionDTO();
         dto.setPartner(NRC_DTO);
         dto.setAllowView(true);
         dto.setAllowEdit(true);
@@ -201,10 +201,10 @@ public class UpdateUserPermissionsHandlerTest {
 //
 //        setUser(2);
 //
-//        UserModel user = new UserModel();
+//        UserPermissionDTO user = new UserPermissionDTO();
 //        user.setEmail("ralph@lauren.com");
 //        user.setName("Ralph");
-//        user.setPartner(new PartnerModel(1, "NRC"));
+//        user.setPartner(new PartnerDTO(1, "NRC"));
 //        user.setAllowView(true);
 //        user.setAllowEdit(true);
 //
@@ -228,9 +228,9 @@ public class UpdateUserPermissionsHandlerTest {
 //        populate("schema1");
 //        setUser(1);
 //
-//        UserModel user = new UserModel();
+//        UserPermissionDTO user = new UserPermissionDTO();
 //        user.setEmail("bavon@nrcdrc.org");
-//        user.setPartner(new PartnerModel(1, "NRC"));
+//        user.setPartner(new PartnerDTO(1, "NRC"));
 //        user.setAllowView(true);
 //        user.setAllowViewAll(false);
 //        user.setAllowEdit(true);
@@ -240,7 +240,7 @@ public class UpdateUserPermissionsHandlerTest {
 //        execute(new UpdateUserPermissions(1, user));
 //
 //        UserResult result = execute(new GetUsers(1));
-//        UserModel reUser = result.getData().get(0);
+//        UserPermissionDTO reUser = result.getData().get(0);
 //        Assert.assertEquals("bavon@nrcdrc.org", reUser.getEmail());
 //        Assert.assertTrue("design rights", user.getAllowDesign());
 //

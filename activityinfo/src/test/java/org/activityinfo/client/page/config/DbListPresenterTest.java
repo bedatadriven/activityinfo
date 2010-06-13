@@ -23,15 +23,15 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.dispatch.Dispatcher;
+import org.activityinfo.client.mock.MockEventBus;
 import org.activityinfo.client.page.common.dialog.FormDialogTether;
 import org.activityinfo.client.page.common.toolbar.UIActions;
-import org.activityinfo.client.mock.MockEventBus;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.CreateEntity;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.result.CommandResult;
-import org.activityinfo.shared.dto.CountryModel;
-import org.activityinfo.shared.dto.Schema;
+import org.activityinfo.shared.dto.CountryDTO;
+import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
 import org.easymock.Capture;
 import org.easymock.EasyMock;
@@ -44,7 +44,9 @@ import java.util.Set;
 
 import static org.easymock.EasyMock.*;
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.internal.matchers.IsCollectionContaining.hasItem;
 import static org.junit.internal.matchers.IsCollectionContaining.hasItems;
 
@@ -58,7 +60,7 @@ public class DbListPresenterTest {
     private MockEventBus eventBus = new MockEventBus();
     private DbListPresenter.View view = createMock(DbListPresenter.View.class);
     private DbListPresenter presenter;
-    private Schema schema = new Schema();
+    private SchemaDTO schema = new SchemaDTO();
     protected UserDatabaseDTO ownedDb;
     protected UserDatabaseDTO designableDb;
     protected UserDatabaseDTO viewableDb;
@@ -156,7 +158,7 @@ public class DbListPresenterTest {
         replay(dispatcher);
 
         UserDatabaseDTO newDb = new UserDatabaseDTO();
-        newDb.setCountry(new CountryModel(31, "Haiti"));
+        newDb.setCountry(new CountryDTO(31, "Haiti"));
         newDb.setName("My Db");
 
         createPresenter();

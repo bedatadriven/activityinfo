@@ -11,7 +11,7 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.core.client.GWT;
 import org.activityinfo.client.page.common.widget.MappingComboBox;
 import org.activityinfo.client.page.common.widget.MappingComboBoxBinding;
-import org.activityinfo.shared.dto.IndicatorModel;
+import org.activityinfo.shared.dto.IndicatorDTO;
 import org.activityinfo.shared.i18n.UIConstants;
 
 public class IndicatorForm extends AbstractDesignForm {
@@ -54,9 +54,9 @@ public class IndicatorForm extends AbstractDesignForm {
 		
 		MappingComboBox aggregationCombo = new MappingComboBox();
 		aggregationCombo.setFieldLabel(constants.aggregationMethod());
-		aggregationCombo.add(IndicatorModel.AGGREGATE_SUM, constants.sum());
-		aggregationCombo.add(IndicatorModel.AGGREGATE_AVG, constants.average());
-		aggregationCombo.add(IndicatorModel.AGGREGATE_SITE_COUNT, constants.siteCount());
+		aggregationCombo.add(IndicatorDTO.AGGREGATE_SUM, constants.sum());
+		aggregationCombo.add(IndicatorDTO.AGGREGATE_AVG, constants.average());
+		aggregationCombo.add(IndicatorDTO.AGGREGATE_SITE_COUNT, constants.siteCount());
 		binding.addFieldBinding(new MappingComboBoxBinding(aggregationCombo, "aggregation"));
         this.add(aggregationCombo);
 		

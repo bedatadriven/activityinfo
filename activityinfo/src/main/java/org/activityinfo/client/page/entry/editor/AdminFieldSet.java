@@ -9,9 +9,9 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Event;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.page.common.widget.RemoteComboBox;
-import org.activityinfo.shared.dto.ActivityModel;
-import org.activityinfo.shared.dto.AdminEntityModel;
-import org.activityinfo.shared.dto.AdminLevelModel;
+import org.activityinfo.shared.dto.ActivityDTO;
+import org.activityinfo.shared.dto.AdminEntityDTO;
+import org.activityinfo.shared.dto.AdminLevelDTO;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,18 +20,18 @@ import java.util.Map;
 public class AdminFieldSet extends AbstractFieldSet implements AdminFieldSetPresenter.View  {
 
     private AdminFieldSetPresenter presenter;
-    private Map<Integer, ComboBox<AdminEntityModel>> comboBoxes =
-            new HashMap<Integer, ComboBox<AdminEntityModel>>();
+    private Map<Integer, ComboBox<AdminEntityDTO>> comboBoxes =
+            new HashMap<Integer, ComboBox<AdminEntityDTO>>();
 
-    public AdminFieldSet(ActivityModel activity) {
+    public AdminFieldSet(ActivityDTO activity) {
         super(Application.CONSTANTS.location(), 100, 200);
 
-        for(final AdminLevelModel level : activity.getAdminLevels()) {
+        for(final AdminLevelDTO level : activity.getAdminLevels()) {
             final int levelId = level.getId();
 
-            final ComboBox<AdminEntityModel> comboBox = new RemoteComboBox<AdminEntityModel>();
+            final ComboBox<AdminEntityDTO> comboBox = new RemoteComboBox<AdminEntityDTO>();
             comboBox.setFieldLabel(level.getName());
-            comboBox.setStore(new ListStore<AdminEntityModel>());
+            comboBox.setStore(new ListStore<AdminEntityDTO>());
             comboBox.setTypeAhead(false);
            // comboBox.setQueryDelay(0);
             comboBox.setForceSelection(true);
@@ -44,7 +44,7 @@ public class AdminFieldSet extends AbstractFieldSet implements AdminFieldSetPres
             comboBox.addListener(Events.Select, new Listener<FieldEvent>() {
                 @Override
                 public void handleEvent(FieldEvent be) {
-                    AdminEntityModel selected = (AdminEntityModel) be.getField().getValue();
+                    AdminEntityDTO selected = (AdminEntityDTO) be.getField().getValue();
 
                     presenter.onSelectionChanged(levelId, selected);
 
@@ -84,8 +84,8 @@ public class AdminFieldSet extends AbstractFieldSet implements AdminFieldSetPres
 //                        loader.addListener(Loader.Load, new Listener<LoadEvent>() {
 //                            public void handleEvent(LoadEvent be) {
 //                                loader.removeListener(Loader.Load, this);
-//                                ListLoadResult<AdminEntityModel> result = be.getData();
-//                                AdminEntityModel sel = findEntity(name, result.getData());
+//                                ListLoadResult<AdminEntityDTO> result = be.getData();
+//                                AdminEntityDTO sel = findEntity(name, result.getData());
 //                                if(sel == null) {
 //                                    comboBox.markInvalid("Sélection non-valide");
 //                                } else {
@@ -107,8 +107,8 @@ public class AdminFieldSet extends AbstractFieldSet implements AdminFieldSetPres
 
     }
 
-    private AdminEntityModel findEntity(String name, List<AdminEntityModel> models) {
-        for(AdminEntityModel entity : models) {
+    private AdminEntityDTO findEntity(String name, List<AdminEntityDTO> models) {
+        for(AdminEntityDTO entity : models) {
             if(entity.getName().equalsIgnoreCase(name)) {
                 return entity;
             }
@@ -122,7 +122,7 @@ public class AdminFieldSet extends AbstractFieldSet implements AdminFieldSetPres
     }
 
     @Override
-    public void setStore(int levelId, ListStore<AdminEntityModel> store) {
+    public void setStore(int levelId, ListStore<AdminEntityDTO> store) {
         comboBoxes.get(levelId).setStore(store);
     }
 
@@ -132,7 +132,7 @@ public class AdminFieldSet extends AbstractFieldSet implements AdminFieldSetPres
     }
 
     @Override
-    public void setValue(int levelId, AdminEntityModel value) {
+    public void setValue(int levelId, AdminEntityDTO value) {
         comboBoxes.get(levelId).setValue(value);
     }
 
@@ -166,7 +166,7 @@ public class AdminFieldSet extends AbstractFieldSet implements AdminFieldSetPres
 //		return true;
 //	}
 
-    public ComboBox<AdminEntityModel> getCombo(int levelId) {
+    public ComboBox<AdminEntityDTO> getCombo(int levelId) {
         return comboBoxes.get(levelId);
     }
 }

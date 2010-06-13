@@ -22,15 +22,15 @@ public class SiteFormPresenter implements SiteFormLeash {
     public interface View {
 
         public void init(SiteFormPresenter presenter,
-                         ActivityModel activity,
-                         ListStore<PartnerModel> partnerStore,
-                         ListStore<SiteModel> assessmentStore);
+                         ActivityDTO activity,
+                         ListStore<PartnerDTO> partnerStore,
+                         ListStore<SiteDTO> assessmentStore);
 
-        public void setSite(SiteModel site);
+        public void setSite(SiteDTO site);
 
-        public AdminFieldSetPresenter.View createAdminFieldSetView(ActivityModel activity);
+        public AdminFieldSetPresenter.View createAdminFieldSetView(ActivityDTO activity);
 
-        public MapPresenter.View createMapView(CountryModel country);
+        public MapPresenter.View createMapView(CountryDTO country);
 
         public boolean validate();
 
@@ -52,14 +52,14 @@ public class SiteFormPresenter implements SiteFormLeash {
     private final EventBus eventBus;
     private final Dispatcher service;
 
-    private SiteModel currentSite;
-    private ActivityModel currentActivity;
+    private SiteDTO currentSite;
+    private ActivityDTO currentActivity;
 
     protected MapPresenter mapPresenter;
     protected AdminFieldSetPresenter adminPresenter;
     private View view;
 
-    public SiteFormPresenter(EventBus eventBus, Dispatcher service, ActivityModel activity, View view) {
+    public SiteFormPresenter(EventBus eventBus, Dispatcher service, ActivityDTO activity, View view) {
         super();
         this.eventBus = eventBus;
         this.service = service;
@@ -69,12 +69,12 @@ public class SiteFormPresenter implements SiteFormLeash {
     }
 
 
-    protected ListStore<PartnerModel> createPartnerStore() {
-        ListStore<PartnerModel> store = new ListStore<PartnerModel>();
+    protected ListStore<PartnerDTO> createPartnerStore() {
+        ListStore<PartnerDTO> store = new ListStore<PartnerDTO>();
 
         if (currentActivity.getDatabase().isEditAllAllowed()) {
 
-            for (PartnerModel partner : currentActivity.getDatabase().getPartners()) {
+            for (PartnerDTO partner : currentActivity.getDatabase().getPartners()) {
                 if (partner.isOperational()) {
                     store.add(partner);
                 }
@@ -89,11 +89,11 @@ public class SiteFormPresenter implements SiteFormLeash {
         return store;
     }
 
-    protected ListStore<SiteModel> createAsssessmentStore() {
-        return new ListStore<SiteModel>();
+    protected ListStore<SiteDTO> createAsssessmentStore() {
+        return new ListStore<SiteDTO>();
     }
 
-    public void init(ActivityModel activity) {
+    public void init(ActivityDTO activity) {
 
         this.currentActivity = activity;
 
@@ -102,7 +102,7 @@ public class SiteFormPresenter implements SiteFormLeash {
         adminPresenter = new AdminFieldSetPresenter(service, currentActivity, view.createAdminFieldSetView(currentActivity));
         adminPresenter.setListener(new AdminFieldSetPresenter.Listener() {
             @Override
-            public void onBoundsChanged(String name, Bounds bounds) {
+            public void onBoundsChanged(String name, BoundingBoxDTO bounds) {
                 mapPresenter.setBounds(name, bounds);
             }
 
@@ -116,7 +116,7 @@ public class SiteFormPresenter implements SiteFormLeash {
 
     }
 
-    public void setSite(SiteModel site) {
+    public void setSite(SiteDTO site) {
         currentSite = site;
 
         adminPresenter.setSite(site);
@@ -127,7 +127,7 @@ public class SiteFormPresenter implements SiteFormLeash {
     }
 
     public void newSite() {
-        setSite(new SiteModel());
+        setSite(new SiteDTO());
     }
 
     public void onUIAction(String actionId) {

@@ -1,6 +1,6 @@
 package org.activityinfo.shared.command.result;
 
-import org.activityinfo.shared.dto.SiteModel;
+import org.activityinfo.shared.dto.SiteDTO;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,21 +12,21 @@ import java.util.List;
  *
  * @author Alex Bertram
  */
-public class SiteResult extends PagingResult<SiteModel> {
+public class SiteResult extends PagingResult<SiteDTO> {
     
     public SiteResult() {
 
     }
 
-    public SiteResult(List<SiteModel> data) {
+    public SiteResult(List<SiteDTO> data) {
         super(data);
     }
 
-    public SiteResult(SiteModel... sites) {
+    public SiteResult(SiteDTO... sites) {
         super(Arrays.asList(sites));
     }
 
-    public SiteResult(List<SiteModel> data, int offset, int totalCount) {
+    public SiteResult(List<SiteDTO> data, int offset, int totalCount) {
         super(data, offset, totalCount);
     }
 }

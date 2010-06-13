@@ -19,7 +19,6 @@
 
 package org.activityinfo.server.servlet;
 
-import org.activityinfo.server.util.BeanMappingModule;
 import org.activityinfo.server.dao.SchemaDAO;
 import org.activityinfo.server.dao.SiteTableDAO;
 import org.activityinfo.server.dao.hibernate.SchemaDAOJPA;
@@ -28,9 +27,10 @@ import org.activityinfo.server.domain.DomainFilters;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.server.endpoint.export.Export;
 import org.activityinfo.server.endpoint.gwtrpc.handler.GetSchemaHandler;
+import org.activityinfo.server.util.BeanMappingModule;
 import org.activityinfo.shared.command.GetSchema;
-import org.activityinfo.shared.dto.ActivityModel;
-import org.activityinfo.shared.dto.Schema;
+import org.activityinfo.shared.dto.ActivityDTO;
+import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
 import org.dozer.Mapper;
 import org.junit.Ignore;
@@ -66,13 +66,13 @@ public class ExportTest {
 
         GetSchemaHandler schemaHandler = new GetSchemaHandler(schemaDAO, mapper);
 
-        Schema schema = (Schema) schemaHandler.execute(new GetSchema(), user);
+        SchemaDTO schema = (SchemaDTO) schemaHandler.execute(new GetSchema(), user);
 
         SiteTableDAO siteDAO = new SiteTableDAOHibernate(em);
 
         Export export = new Export(user, siteDAO);
         for (UserDatabaseDTO db : schema.getDatabases()) {
-            for (ActivityModel activity : db.getActivities()) {
+            for (ActivityDTO activity : db.getActivities()) {
                 export.export(activity);
             }
         }

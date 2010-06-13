@@ -49,7 +49,7 @@ public class IndicatorTreePanel extends ContentPanel {
         loader = new BaseTreeLoader<ModelData>(new Proxy()) {
             @Override
             public boolean hasChildren(ModelData parent) {
-                return !(parent instanceof IndicatorModel) &&
+                return !(parent instanceof IndicatorDTO) &&
                         !(parent instanceof IndicatorGroup);
             }
         };
@@ -60,10 +60,10 @@ public class IndicatorTreePanel extends ContentPanel {
             public String getKey(ModelData model) {
                 if (model instanceof UserDatabaseDTO) {
                     return "db" + ((UserDatabaseDTO) model).getId();
-                } else if (model instanceof ActivityModel) {
-                    return "act" + ((ActivityModel) model).getId();
-                } else if (model instanceof IndicatorModel) {
-                    return "i" + ((IndicatorModel) model).getId();
+                } else if (model instanceof ActivityDTO) {
+                    return "act" + ((ActivityDTO) model).getId();
+                } else if (model instanceof IndicatorDTO) {
+                    return "i" + ((IndicatorDTO) model).getId();
                 } else {
                     return model.get("name");
                 }
@@ -84,7 +84,7 @@ public class IndicatorTreePanel extends ContentPanel {
         tree.setLabelProvider(new ModelStringProvider<ModelData>() {
             public String getStringValue(ModelData model, String property) {
                 String name = model.get("name");
-                if (model instanceof IndicatorModel) {
+                if (model instanceof IndicatorDTO) {
                     return name;
                 } else {
                     return "<b>" + name + "</b>";
@@ -97,7 +97,7 @@ public class IndicatorTreePanel extends ContentPanel {
 //            public AbstractImagePrototype getIcon(ModelData model) {
 //                if(model instanceof UserDatabaseDTO) {
 //                    return Application.ICONS.database();
-//                } else if(model instanceof ActivityModel) {
+//                } else if(model instanceof ActivityDTO) {
 //                    return Application.ICONS.activity();
 //                } else {
 //                    return null;
@@ -114,7 +114,7 @@ public class IndicatorTreePanel extends ContentPanel {
                 // the indicator
                 if (tpe.getNode() != null) {
                     ModelData model = tpe.getNode().getModel();
-                    if (model instanceof IndicatorModel &&
+                    if (model instanceof IndicatorDTO &&
                             tpe.within(tree.getView().getTextElement(tpe.getNode())) &&
                             !tree.isChecked(model)) {
 
@@ -145,7 +145,7 @@ public class IndicatorTreePanel extends ContentPanel {
 
                 // when a user checks a parent node, expand all
                 // child nodes
-                if (!(event.getItem() instanceof IndicatorModel) &&
+                if (!(event.getItem() instanceof IndicatorDTO) &&
                         event.isChecked()) {
 
                     tree.setExpanded(event.getItem(), true);
@@ -203,17 +203,17 @@ public class IndicatorTreePanel extends ContentPanel {
 
     private class Proxy implements DataProxy<List<ModelData>> {
 
-        private Schema schema;
+        private SchemaDTO schema;
 
         public void load(DataReader<List<ModelData>> listDataReader, Object parent, final AsyncCallback<List<ModelData>> callback) {
 
             if (parent == null) {
-                service.execute(new GetSchema(), null, new AsyncCallback<Schema>() {
+                service.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
                     public void onFailure(Throwable caught) {
                         callback.onFailure(caught);
                     }
 
-                    public void onSuccess(Schema result) {
+                    public void onSuccess(SchemaDTO result) {
                         schema = result;
                         callback.onSuccess(new ArrayList<ModelData>(schema.getDatabases()));
                     }
@@ -221,14 +221,14 @@ public class IndicatorTreePanel extends ContentPanel {
             } else if (parent instanceof UserDatabaseDTO) {
                 callback.onSuccess(new ArrayList<ModelData>(((UserDatabaseDTO) parent).getActivities()));
 
-            } else if (parent instanceof ActivityModel) {
-                ActivityModel activity = ((ActivityModel) parent);
+            } else if (parent instanceof ActivityDTO) {
+                ActivityDTO activity = ((ActivityDTO) parent);
                 ArrayList<ModelData> list = new ArrayList<ModelData>();
 
                 for (IndicatorGroup group : activity.groupIndicators()) {
                     if (group.getName() != null)
                         list.add(group);
-                    for (IndicatorModel indicator : group.getIndicators()) {
+                    for (IndicatorDTO indicator : group.getIndicators()) {
                         list.add(indicator);
                     }
                 }
@@ -248,11 +248,11 @@ public class IndicatorTreePanel extends ContentPanel {
 //
 //                store.add(db, false);
 //
-//                for(ActivityModel activity : db.getActivities()) {
+//                for(ActivityDTO activity : db.getActivities()) {
 //                    if(activity.getIndicators().size() != 0) {
 //                        store.add(db, activity, false);
 //
-//                        for(IndicatorModel indicator : activity.getIndicators()) {
+//                        for(IndicatorDTO indicator : activity.getIndicators()) {
 //                            store.add(activity, indicator, false);
 //                        }
 //                    }
@@ -264,13 +264,13 @@ public class IndicatorTreePanel extends ContentPanel {
 //        store.fireEvent(Store.DataChanged, new TreeStoreEvent<ModelData>(store));
 //    }
 
-    public List<IndicatorModel> getSelection() {
+    public List<IndicatorDTO> getSelection() {
 
-        List<IndicatorModel> list = new ArrayList<IndicatorModel>();
+        List<IndicatorDTO> list = new ArrayList<IndicatorDTO>();
 
         for (ModelData model : tree.getCheckedSelection()) {
-            if (model instanceof IndicatorModel) {
-                list.add((IndicatorModel) model);
+            if (model instanceof IndicatorDTO) {
+                list.add((IndicatorDTO) model);
             }
         }
         return list;
@@ -281,7 +281,7 @@ public class IndicatorTreePanel extends ContentPanel {
     }
 
     public void setSelection(Set<Integer> indicatorIds) {
-        List<IndicatorModel> indicators = new ArrayList<IndicatorModel>();
+        List<IndicatorDTO> indicators = new ArrayList<IndicatorDTO>();
 
     }
 
@@ -290,8 +290,8 @@ public class IndicatorTreePanel extends ContentPanel {
         List<Integer> list = new ArrayList<Integer>();
 
         for (ModelData model : tree.getCheckedSelection()) {
-            if (model instanceof IndicatorModel) {
-                list.add(((IndicatorModel) model).getId());
+            if (model instanceof IndicatorDTO) {
+                list.add(((IndicatorDTO) model).getId());
             }
         }
         return list;

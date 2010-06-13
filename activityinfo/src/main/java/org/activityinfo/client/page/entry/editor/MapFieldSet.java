@@ -24,8 +24,8 @@ import org.activityinfo.client.Application;
 import org.activityinfo.client.map.MapTypeFactory;
 import org.activityinfo.client.page.common.widget.CoordinateField;
 import org.activityinfo.client.page.config.form.FieldSetFitLayout;
-import org.activityinfo.shared.dto.Bounds;
-import org.activityinfo.shared.dto.CountryModel;
+import org.activityinfo.shared.dto.BoundingBoxDTO;
+import org.activityinfo.shared.dto.CountryDTO;
 
 public class MapFieldSet extends FieldSet implements MapPresenter.View {
 
@@ -40,9 +40,9 @@ public class MapFieldSet extends FieldSet implements MapPresenter.View {
     private LatLngBounds pendingZoom = null;
 
     private MapPresenter presenter;
-    private final CountryModel country;
+    private final CountryDTO country;
 
-    public MapFieldSet(CountryModel country) {
+    public MapFieldSet(CountryDTO country) {
         this.country = country;
     }
 
@@ -140,7 +140,7 @@ public class MapFieldSet extends FieldSet implements MapPresenter.View {
     }
 
     @Override
-    public Bounds getMapView() {
+    public BoundingBoxDTO getMapView() {
         return createBounds(map.getBounds());
     }
 
@@ -166,7 +166,7 @@ public class MapFieldSet extends FieldSet implements MapPresenter.View {
     }
 
     @Override
-    public void setBounds(String name, Bounds bounds) {
+    public void setBounds(String name, BoundingBoxDTO bounds) {
 
         latField.setBounds(name, bounds.y1, bounds.y2);
         lngField.setBounds(name, bounds.x1, bounds.x2);
@@ -186,7 +186,7 @@ public class MapFieldSet extends FieldSet implements MapPresenter.View {
     }
 
     @Override
-    public void setMapView(Bounds bounds) {
+    public void setMapView(BoundingBoxDTO bounds) {
         zoomToBounds(createLatLngBounds(bounds));
     }
 
@@ -231,14 +231,14 @@ public class MapFieldSet extends FieldSet implements MapPresenter.View {
     }
 
 
-    private static LatLngBounds createLatLngBounds(Bounds bounds) {
+    private static LatLngBounds createLatLngBounds(BoundingBoxDTO bounds) {
         return LatLngBounds.newInstance(
                 LatLng.newInstance(bounds.y1, bounds.x1),
                 LatLng.newInstance(bounds.y2, bounds.x2));
     }
 
-    private Bounds createBounds(LatLngBounds latlngbounds) {
-        return new Bounds(latlngbounds.getNorthEast().getLongitude(),
+    private BoundingBoxDTO createBounds(LatLngBounds latlngbounds) {
+        return new BoundingBoxDTO(latlngbounds.getNorthEast().getLongitude(),
                 latlngbounds.getSouthWest().getLatitude(),
                 latlngbounds.getSouthWest().getLongitude(),
                 latlngbounds.getNorthEast().getLatitude());

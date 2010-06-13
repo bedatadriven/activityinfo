@@ -1,23 +1,26 @@
 package org.activityinfo.shared.dto;
 
-import com.extjs.gxt.ui.client.data.BaseModel;
+import com.extjs.gxt.ui.client.data.BaseModelData;
 
-public class AttributeModel extends BaseModel implements EntityDTO {
+/**
+ * One-to-One DTO for the {@link org.activityinfo.shared.dto.AttributeDTO} domain object
+ *
+ * @author Alex Bertram
+ */
+public final class AttributeDTO extends BaseModelData implements EntityDTO {
 
     public static final String PROPERTY_PREFIX = "ATTRIB";
 
-
-    public AttributeModel()
-	{
+    public AttributeDTO() {
 		
 	}
 
-    public AttributeModel(AttributeModel model) {
+    public AttributeDTO(AttributeDTO model) {
         super(model.getProperties());
         
     }
 
-    public AttributeModel(int id, String name) {
+    public AttributeDTO(int id, String name) {
         setId(id);
         setName(name);
     }
@@ -30,12 +33,7 @@ public class AttributeModel extends BaseModel implements EntityDTO {
         set("id", id);
     }
 
-    public void setVersion(int version) {
-		set("version", version);
-	}
-
-	
-	public void setName(String value) {
+    public void setName(String value) {
 		set("name", value);
 	}
 	
@@ -48,7 +46,7 @@ public class AttributeModel extends BaseModel implements EntityDTO {
 		return PROPERTY_PREFIX + attributeId;
 	}
 	
-	public static String getPropertyName(AttributeModel attribute) {
+	public static String getPropertyName(AttributeDTO attribute) {
 		return getPropertyName(attribute.getId());
 	}
 	

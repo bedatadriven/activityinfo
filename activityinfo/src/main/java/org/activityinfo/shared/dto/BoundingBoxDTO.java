@@ -2,34 +2,39 @@ package org.activityinfo.shared.dto;
 
 import java.io.Serializable;
 
-public class Bounds implements Serializable  {
+/**
+ * One-to-one DTO for the {@link org.activityinfo.server.domain.Bounds} domain object.
+ *
+ * @author Alex Bertram
+ */
+public final class BoundingBoxDTO implements Serializable  {
 	public double x1;
 	public double y1;
 	public double x2;
 	public double y2;
 	
-	public Bounds() {
+	public BoundingBoxDTO() {
 		this.x1 = 180;
 		this.y1 = 90;
 		this.x2 = -180;
 		this.y2 = -90;
 	}
 	
-	public Bounds(double x1, double y1, double x2, double y2) {
+	public BoundingBoxDTO(double x1, double y1, double x2, double y2) {
 		this.x1 = x1;
 		this.y1 = y1;
 		this.x2 = x2;
 		this.y2 = y2;
 	}
     
-    public Bounds(Bounds bounds) {
+    public BoundingBoxDTO(BoundingBoxDTO bounds) {
         this.x1 = bounds.getX1();
         this.y1 = bounds.getY1();
         this.x2 = bounds.getX2();
         this.y2 = bounds.getY2();
     }
 	
-	public void grow(Bounds b) {
+	public void grow(BoundingBoxDTO b) {
 		if(b.x1 < x1) x1 = b.x1;
 		if(b.y1 < y1) y1 = b.y1;
 		if(b.x2 > x2) x2 = b.x2;
@@ -54,22 +59,22 @@ public class Bounds implements Serializable  {
 		return (y1+y2)/2;
 	}
 	
-	public Bounds intersect(Bounds b) {
-		return new Bounds(
+	public BoundingBoxDTO intersect(BoundingBoxDTO b) {
+		return new BoundingBoxDTO(
 				Math.max(x1, b.x1),
 				Math.max(y1, b.y1), 
 				Math.min(x2, b.x2),
 				Math.min(y2, b.y2));
 	}
 	
-	public boolean intersects(Bounds b) {
+	public boolean intersects(BoundingBoxDTO b) {
 		return ! (b.x2 < x1 ||
 				  b.x1 > x2 || 
 				  b.y2 < y1 ||
 				  b.y1 > y2 );		
 	}
 	
-	public boolean contains(Bounds b) {
+	public boolean contains(BoundingBoxDTO b) {
 		return b.x1 >= x1 &&
 			   b.x2 <= x2 &&
 			   b.y1 >= y1 &&
@@ -96,7 +101,7 @@ public class Bounds implements Serializable  {
         return y;
     }
 
-	public double distance(Bounds b) {
+	public double distance(BoundingBoxDTO b) {
 		double dx=0, dy=0;
 		
 		if(b.x2 < x1)
@@ -114,8 +119,8 @@ public class Bounds implements Serializable  {
 
 	@Override
 	public boolean equals(Object o) {
-		if(o instanceof Bounds) {
-			Bounds b = (Bounds)o;
+		if(o instanceof BoundingBoxDTO) {
+			BoundingBoxDTO b = (BoundingBoxDTO)o;
 			return b.x1 == x1 && b.y1 == y1 && b.x2 == x2 && b.y2 == y2;
 		}
 		return false;

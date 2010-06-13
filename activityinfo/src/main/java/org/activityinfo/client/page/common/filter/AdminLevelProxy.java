@@ -5,9 +5,9 @@ import com.extjs.gxt.ui.client.data.DataReader;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.shared.command.GetSchema;
-import org.activityinfo.shared.dto.AdminLevelModel;
-import org.activityinfo.shared.dto.CountryModel;
-import org.activityinfo.shared.dto.Schema;
+import org.activityinfo.shared.dto.AdminLevelDTO;
+import org.activityinfo.shared.dto.CountryDTO;
+import org.activityinfo.shared.dto.SchemaDTO;
 
 import java.util.ArrayList;
 /*
@@ -24,14 +24,14 @@ public class AdminLevelProxy implements DataProxy {
 
     public void load(DataReader dataReader, Object loadConfig, final AsyncCallback callback) {
 
-        service.execute(new GetSchema(), null, new AsyncCallback<Schema>() {
+        service.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);
             }
 
-            public void onSuccess(Schema schema) {
-                ArrayList<AdminLevelModel> models = new ArrayList<AdminLevelModel>();
-                for(CountryModel country : schema.getCountries()) {
+            public void onSuccess(SchemaDTO schema) {
+                ArrayList<AdminLevelDTO> models = new ArrayList<AdminLevelDTO>();
+                for(CountryDTO country : schema.getCountries()) {
                     models.addAll(country.getAdminLevels());
                 }
                 callback.onSuccess(models);

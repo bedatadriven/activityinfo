@@ -20,13 +20,13 @@
 package org.activityinfo.shared.command.result;
 
 import com.extjs.gxt.ui.client.data.ListLoadResult;
-import org.activityinfo.shared.dto.CountryModel;
+import org.activityinfo.shared.dto.CountryDTO;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CountryResult implements CommandResult, ListLoadResult<CountryModel> {
-    private List<CountryModel> data;
+public class CountryResult implements CommandResult, ListLoadResult<CountryDTO> {
+    private List<CountryDTO> data;
 
 
     /** Required for serialization */
@@ -34,14 +34,14 @@ public class CountryResult implements CommandResult, ListLoadResult<CountryModel
         
     }
 
-    public CountryResult(ArrayList<CountryModel> data) {
+    public CountryResult(ArrayList<CountryDTO> data) {
         this.data = data;
     }
     @Override
-    public List<CountryModel> getData() {
+    public List<CountryDTO> getData() {
         return data;
     }
-    public void setData(List<CountryModel> data) {
+    public void setData(List<CountryDTO> data) {
         this.data = data;
     }
 }

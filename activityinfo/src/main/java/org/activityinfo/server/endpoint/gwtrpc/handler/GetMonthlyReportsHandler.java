@@ -28,7 +28,7 @@ import org.activityinfo.shared.command.GetMonthlyReports;
 import org.activityinfo.shared.command.Month;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.command.result.MonthlyReportResult;
-import org.activityinfo.shared.dto.IndicatorRow;
+import org.activityinfo.shared.dto.IndicatorRowDTO;
 import org.activityinfo.shared.exception.CommandException;
 
 import javax.persistence.EntityManager;
@@ -63,11 +63,11 @@ public class GetMonthlyReportsHandler implements CommandHandler<GetMonthlyReport
                 .getResultList();
 
 
-        List<IndicatorRow> list = new ArrayList<IndicatorRow>();
+        List<IndicatorRowDTO> list = new ArrayList<IndicatorRowDTO>();
 
         for (Indicator indicator : indicators) {
 
-            IndicatorRow dto = new IndicatorRow();
+            IndicatorRowDTO dto = new IndicatorRowDTO();
             dto.setIndicatorId(indicator.getId());
             dto.setSiteId(cmd.getSiteId());
             dto.setIndicatorName(indicator.getName());

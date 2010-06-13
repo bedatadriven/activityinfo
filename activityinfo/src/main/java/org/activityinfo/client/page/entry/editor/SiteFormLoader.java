@@ -10,8 +10,8 @@ import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.monitor.NullAsyncMonitor;
 import org.activityinfo.client.map.MapApiLoader;
-import org.activityinfo.shared.dto.ActivityModel;
-import org.activityinfo.shared.dto.SiteModel;
+import org.activityinfo.shared.dto.ActivityDTO;
+import org.activityinfo.shared.dto.SiteDTO;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -28,7 +28,7 @@ public class SiteFormLoader {
         this.eventBus = eventBus;
     }
 
-    public void edit(final ActivityModel activity, final SiteModel site,
+    public void edit(final ActivityDTO activity, final SiteDTO site,
                      final AsyncMonitor monitor) {
 
         monitor.beforeRequest();
@@ -44,7 +44,7 @@ public class SiteFormLoader {
         });
     }
 
-    private void doEdit(final ActivityModel activity, final SiteModel site, final AsyncMonitor monitor) {
+    private void doEdit(final ActivityDTO activity, final SiteDTO site, final AsyncMonitor monitor) {
 
         if (leash != null && leash.getActivityId() == activity.getId()) {
             leash.setSite(site);
@@ -60,7 +60,7 @@ public class SiteFormLoader {
         loadCodeFragment(activity, site, monitor);
     }
 
-    private void loadCodeFragment(final ActivityModel activity, final SiteModel site, final AsyncMonitor monitor) {
+    private void loadCodeFragment(final ActivityDTO activity, final SiteDTO site, final AsyncMonitor monitor) {
         GWT.runAsync(new RunAsyncCallback() {
             @Override
             public void onFailure(Throwable throwable) {
@@ -74,7 +74,7 @@ public class SiteFormLoader {
         });
     }
 
-    private void onCodeFragmentLoaded(final ActivityModel activity, final SiteModel site, final AsyncMonitor monitor) {
+    private void onCodeFragmentLoaded(final ActivityDTO activity, final SiteDTO site, final AsyncMonitor monitor) {
         MapApiLoader.load(new NullAsyncMonitor(), new AsyncCallback<Void>() {
             @Override
             public void onFailure(Throwable throwable) {
@@ -88,7 +88,7 @@ public class SiteFormLoader {
         });
     }
 
-    private void showForm(ActivityModel activity, SiteModel site, AsyncMonitor monitor) {
+    private void showForm(ActivityDTO activity, SiteDTO site, AsyncMonitor monitor) {
         SiteForm form = new SiteForm();
         SiteFormDialog dlg = new SiteFormDialog(form);
 

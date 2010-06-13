@@ -24,7 +24,7 @@ import org.activityinfo.server.dao.OnDataSet;
 import org.activityinfo.shared.command.GetReportTemplates;
 import org.activityinfo.shared.command.UpdateReportDef;
 import org.activityinfo.shared.command.result.ReportTemplateResult;
-import org.activityinfo.shared.dto.ReportTemplateDTO;
+import org.activityinfo.shared.dto.ReportDefinitionDTO;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.report.model.ReportFrequency;
 import org.activityinfo.test.InjectionSupport;
@@ -46,7 +46,7 @@ public class UpdateReportDefHandlerTest extends CommandTestCase {
 
         ReportTemplateResult result = execute(new GetReportTemplates());
 
-        ReportTemplateDTO dto = result.getData().get(0);
+        ReportDefinitionDTO dto = result.getData().get(0);
 
         Assert.assertEquals("My new title", dto.getTitle());
         Assert.assertEquals(ReportFrequency.Adhoc, dto.getFrequency());

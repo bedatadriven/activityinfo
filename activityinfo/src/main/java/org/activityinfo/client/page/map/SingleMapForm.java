@@ -10,8 +10,8 @@ import org.activityinfo.client.icon.IconImageBundle;
 import org.activityinfo.client.page.common.filter.AdminFilterPanel;
 import org.activityinfo.client.page.common.filter.DateRangePanel;
 import org.activityinfo.client.page.common.filter.IndicatorTreePanel;
-import org.activityinfo.shared.dto.AdminEntityModel;
-import org.activityinfo.shared.dto.IndicatorModel;
+import org.activityinfo.shared.dto.AdminEntityDTO;
+import org.activityinfo.shared.dto.IndicatorDTO;
 import org.activityinfo.shared.i18n.UIConstants;
 import org.activityinfo.shared.report.model.BubbleMapLayer;
 import org.activityinfo.shared.report.model.DimensionType;
@@ -74,7 +74,7 @@ public class SingleMapForm extends ContentPanel implements MapForm {
         layoutForm.updateElement(element);
 
         List<Integer> indicators = new ArrayList<Integer>();
-        List<IndicatorModel> sel = indicatorTree.getSelection();
+        List<IndicatorDTO> sel = indicatorTree.getSelection();
         if (sel.size() != 0)
             indicators.add(sel.get(0).getId());
 
@@ -86,7 +86,7 @@ public class SingleMapForm extends ContentPanel implements MapForm {
 
         datePanel.updateFilter(element.getFilter());
 
-        for (AdminEntityModel entity : adminPanel.getSelection()) {
+        for (AdminEntityDTO entity : adminPanel.getSelection()) {
             element.getFilter().addRestriction(DimensionType.AdminLevel, entity.getId());
         }
 

@@ -26,7 +26,7 @@ import org.activityinfo.server.domain.User;
 import org.activityinfo.shared.command.GetCountries;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.command.result.CountryResult;
-import org.activityinfo.shared.dto.CountryModel;
+import org.activityinfo.shared.dto.CountryDTO;
 import org.activityinfo.shared.exception.CommandException;
 import org.dozer.Mapper;
 
@@ -51,10 +51,10 @@ public class GetCountriesHandler implements CommandHandler<GetCountries> {
         ));
     }
 
-    private ArrayList<CountryModel> mapToDtos(List<Country> countries) {
-        ArrayList<CountryModel> dtos = new ArrayList<CountryModel>();
+    private ArrayList<CountryDTO> mapToDtos(List<Country> countries) {
+        ArrayList<CountryDTO> dtos = new ArrayList<CountryDTO>();
         for(Country country : countries) {
-            dtos.add(mapper.map(country, CountryModel.class, "countryNameOnly"));
+            dtos.add(mapper.map(country, CountryDTO.class, "countryNameOnly"));
         }
         return dtos;
     }

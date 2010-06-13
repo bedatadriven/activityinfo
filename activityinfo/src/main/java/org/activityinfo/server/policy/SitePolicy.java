@@ -52,7 +52,7 @@ public class SitePolicy implements EntityPolicy<Site> {
     public Integer create(User user, PropertyMap properties) {
 
         Activity activity = activityDAO.findById((Integer) properties.get("activityId"));
-        Partner partner = partnerDAO.findById(((PartnerModel) properties.get("partner")).getId());
+        Partner partner = partnerDAO.findById(((PartnerDTO) properties.get("partner")).getId());
 
         assertSiteEditPrivileges(user, activity, partner);
 
@@ -92,7 +92,7 @@ public class SitePolicy implements EntityPolicy<Site> {
            * otherwise ReportingPeriods are modeled separately on the client.
            */
 
-        if (activity.getReportingFrequency() == ActivityModel.REPORT_ONCE) {
+        if (activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE) {
 
             ReportingPeriod period = new ReportingPeriod();
             period.setSite(site);
@@ -156,10 +156,10 @@ public class SitePolicy implements EntityPolicy<Site> {
             String property = change.getKey();
             Object value = change.getValue();
 
-            if (property.startsWith(AdminLevelModel.PROPERTY_PREFIX)) {
+            if (property.startsWith(AdminLevelDTO.PROPERTY_PREFIX)) {
 
-                int levelId = AdminLevelModel.levelIdForProperty(property);
-                AdminEntityModel entity = (AdminEntityModel) value;
+                int levelId = AdminLevelDTO.levelIdForProperty(property);
+                AdminEntityDTO entity = (AdminEntityDTO) value;
 
                 if (creating) {
                     if(entity != null) {
@@ -181,8 +181,8 @@ public class SitePolicy implements EntityPolicy<Site> {
         Map<Integer, Boolean> attributeValues = new HashMap<Integer, Boolean>();
 
         for (Map.Entry<String, Object> change : changes.entrySet()) {
-            if (change.getKey().startsWith(AttributeModel.PROPERTY_PREFIX)) {
-                attributeValues.put(AttributeModel.idForPropertyName(change.getKey()), (Boolean)change.getValue());
+            if (change.getKey().startsWith(AttributeDTO.PROPERTY_PREFIX)) {
+                attributeValues.put(AttributeDTO.idForPropertyName(change.getKey()), (Boolean)change.getValue());
             }
         }
         if(!attributeValues.isEmpty())
@@ -196,9 +196,9 @@ public class SitePolicy implements EntityPolicy<Site> {
             String property = change.getKey();
             Object value = change.getValue();
 
-            if (property.startsWith(IndicatorModel.PROPERTY_PREFIX)) {
+            if (property.startsWith(IndicatorDTO.PROPERTY_PREFIX)) {
 
-                int indicatorId = IndicatorModel.indicatorIdForPropertyName(property);
+                int indicatorId = IndicatorDTO.indicatorIdForPropertyName(property);
 
                 if(creating) {
                     if(value != null) {
@@ -259,9 +259,9 @@ public class SitePolicy implements EntityPolicy<Site> {
                 location.setY((Double) changes.get("y"));
 
             } else if (isAdminBound &&
-                    AdminLevelModel.getPropertyName(location.getLocationType().getBoundAdminLevel().getId()).equals(property)) {
+                    AdminLevelDTO.getPropertyName(location.getLocationType().getBoundAdminLevel().getId()).equals(property)) {
 
-                location.setName(adminDAO.findById(((AdminEntityModel) value).getId()).getName());
+                location.setName(adminDAO.findById(((AdminEntityDTO) value).getId()).getName());
             }
         }
     }

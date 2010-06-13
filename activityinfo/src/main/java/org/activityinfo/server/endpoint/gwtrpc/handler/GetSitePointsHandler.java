@@ -26,9 +26,9 @@ import org.activityinfo.server.domain.User;
 import org.activityinfo.server.report.generator.SiteDataBinder;
 import org.activityinfo.shared.command.GetSitePoints;
 import org.activityinfo.shared.command.result.CommandResult;
-import org.activityinfo.shared.dto.Bounds;
-import org.activityinfo.shared.dto.SitePoint;
-import org.activityinfo.shared.dto.SitePointCollection;
+import org.activityinfo.shared.command.result.SitePointList;
+import org.activityinfo.shared.dto.BoundingBoxDTO;
+import org.activityinfo.shared.dto.SitePointDTO;
 import org.activityinfo.shared.exception.CommandException;
 import org.hibernate.criterion.Restrictions;
 
@@ -55,21 +55,21 @@ public class GetSitePointsHandler implements CommandHandler<GetSitePoints> {
         List<SiteData> sites = dao.query(user, Restrictions.eq("activity.id", cmd.getActivityId()), null,
                 new SiteDataBinder(), SiteTableDAO.RETRIEVE_NONE, 0, -1);
 
-        Bounds bounds = new Bounds();
+        BoundingBoxDTO bounds = new BoundingBoxDTO();
 
-        List<SitePoint> points = new ArrayList<SitePoint>(sites.size());
+        List<SitePointDTO> points = new ArrayList<SitePointDTO>(sites.size());
         for (SiteData site : sites) {
 
             if (site.hasLatLong()) {
 
-                points.add(new SitePoint(site.getLatitude(), site.getLongitude(), site.getId()));
+                points.add(new SitePointDTO(site.getId(), site.getLongitude(), site.getLatitude()));
                 bounds.grow(site.getLatitude(), site.getLongitude());
 
             }
 
         }
 
-        return new SitePointCollection(bounds, points);
+        return new SitePointList(bounds, points);
 
     }
 }

@@ -13,8 +13,8 @@ import org.activityinfo.client.page.*;
 import org.activityinfo.client.page.common.nav.NavigationPanel;
 import org.activityinfo.client.page.common.widget.VSplitFrameSet;
 import org.activityinfo.shared.command.GetSchema;
-import org.activityinfo.shared.dto.ActivityModel;
-import org.activityinfo.shared.dto.Schema;
+import org.activityinfo.shared.dto.ActivityDTO;
+import org.activityinfo.shared.dto.SchemaDTO;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -67,22 +67,22 @@ public class DataEntryLoader implements PageLoader {
     }
 
     protected void loadSiteGrid(final Place place, final AsyncCallback<PagePresenter> callback) {
-        injector.getService().execute(new GetSchema(), null, new Got<Schema>() {
+        injector.getService().execute(new GetSchema(), null, new Got<SchemaDTO>() {
             @Override
-            public void got(Schema schema) {
+            public void got(SchemaDTO schema) {
 
                 SiteGridPlace sgPlace = (SiteGridPlace) place;
                 if (sgPlace.getActivityId() == 0) {
                     sgPlace.setActivityId(schema.getFirstActivity().getId());
                 }
 
-                ActivityModel activity = schema.getActivityById(sgPlace.getActivityId());
+                ActivityDTO activity = schema.getActivityById(sgPlace.getActivityId());
 
                 SiteGridPage grid = new SiteGridPage(true);
                 SiteEditor editor = new SiteEditor(injector.getEventBus(), injector.getService(),
                         injector.getStateManager(), grid);
 
-                if (activity.getReportingFrequency() == ActivityModel.REPORT_MONTHLY) {
+                if (activity.getReportingFrequency() == ActivityDTO.REPORT_MONTHLY) {
                     MonthlyGrid monthlyGrid = new MonthlyGrid(activity);
                     MonthlyTab monthlyTab = new MonthlyTab(monthlyGrid);
                     MonthlyPresenter monthlyPresenter = new MonthlyPresenter(

@@ -10,12 +10,12 @@ import java.util.*;
 
 public class NarrativeRenderer {
 
-	private Schema schema;
+	private SchemaDTO schema;
 	private DateTimeFormat dateFormat;
 	private NumberFormat indicatorFormat;
 	private UIMessages messages = GWT.create(UIMessages.class);
 	
-	public NarrativeRenderer(Schema schema) {
+	public NarrativeRenderer(SchemaDTO schema) {
 		this.schema = schema;
 		dateFormat = DateTimeFormat.getLongDateFormat();
 		indicatorFormat = NumberFormat.getFormat("#,##0");
@@ -29,34 +29,34 @@ public class NarrativeRenderer {
 		this.dateFormat = format;
 	}
 	
-	public String renderHtml(List<SiteModel> rows) {
+	public String renderHtml(List<SiteDTO> rows) {
 		
 		StringBuilder sb = new StringBuilder();
 			
-		for(SiteModel row : rows) {
+		for(SiteDTO row : rows) {
 			renderHtml(sb, schema.getActivityById(row.getActivityId()), row);
 		}
 		
 		return sb.toString();
 	}
 	
-	public String renderHtml(ActivityModel activity, SiteModel row) {
+	public String renderHtml(ActivityDTO activity, SiteDTO row) {
 		StringBuilder sb = new StringBuilder();
 		renderHtml(sb, activity, row);
 		return sb.toString();
 	}
 	
-	public String renderHtml(SiteModel row) {
+	public String renderHtml(SiteDTO row) {
 				
 		StringBuilder sb = new StringBuilder();
-		ActivityModel activity = schema.getActivityById(row.getActivityId());
+		ActivityDTO activity = schema.getActivityById(row.getActivityId());
 		
 		renderHtml(sb, activity, row);
 		return sb.toString();
 		
 	}
 	
-	protected void renderHtml(StringBuilder sb, ActivityModel activity, SiteModel site) {
+	protected void renderHtml(StringBuilder sb, ActivityDTO activity, SiteDTO site) {
 	
 		Date date = (Date)(site.getDate2() == null ? site.getDate1() : site.getDate2());
 		
@@ -86,7 +86,7 @@ public class NarrativeRenderer {
 		
 		sb.append("<table class='admin'>");
 	
-		for(AdminLevelModel level : activity.getDatabase().getCountry().getAdminLevels()) {
+		for(AdminLevelDTO level : activity.getDatabase().getCountry().getAdminLevels()) {
 			if(site.getAdminEntityName(level.getId()) != null) {
 				sb.append("<tr class='level" + level.getId() + "'>");
 				sb.append("<td class='name'>");
@@ -109,13 +109,13 @@ public class NarrativeRenderer {
 	}
 
 
-	public void renderAttributesHtml(StringBuilder sb, ActivityModel activity, SiteModel site) {
+	public void renderAttributesHtml(StringBuilder sb, ActivityDTO activity, SiteDTO site) {
 
-		for(AttributeGroupModel group : activity.getAttributeGroups()) {
+		for(AttributeGroupDTO group : activity.getAttributeGroups()) {
 				
 			StringBuilder asb = new StringBuilder();
 			
-			for(AttributeModel attribute : group.getAttributes()) {
+			for(AttributeDTO attribute : group.getAttributes()) {
 				
 				Boolean value = (Boolean) site.get(attribute.getPropertyName());;
 				if(value != null && value) {
@@ -136,10 +136,10 @@ public class NarrativeRenderer {
 		}
 	}
 	
-	public void renderIndicatorsHtml(StringBuilder sb, ActivityModel activity, SiteModel site) {
+	public void renderIndicatorsHtml(StringBuilder sb, ActivityDTO activity, SiteDTO site) {
 
 		Categories indicators = new Categories("indicator");
-		for(IndicatorModel indicator : activity.getIndicators()) { 
+		for(IndicatorDTO indicator : activity.getIndicators()) {
 	
 			Double value = (Double) site.get(indicator.getPropertyName());
 			
@@ -155,7 +155,7 @@ public class NarrativeRenderer {
 		sb.append(indicators.getHtml());
 	}
 	
-	public void renderCommentHtml(StringBuilder sb, SiteModel site) {
+	public void renderCommentHtml(StringBuilder sb, SiteDTO site) {
 		String comments = (String)site.getComments();
 		if(comments!=null && comments.length()!=0) {
 			sb.append("<div class='comments'>");

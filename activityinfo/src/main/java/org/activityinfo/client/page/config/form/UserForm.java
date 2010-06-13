@@ -11,7 +11,7 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.core.client.GWT;
-import org.activityinfo.shared.dto.PartnerModel;
+import org.activityinfo.shared.dto.PartnerDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
 import org.activityinfo.shared.i18n.UIConstants;
 
@@ -41,11 +41,11 @@ public class UserForm extends FormPanel {
         binding.addFieldBinding(new FieldBinding(emailField, "email"));
 		this.add(emailField);
 
-        ListStore<PartnerModel> partnerStore = new ListStore<PartnerModel>();
+        ListStore<PartnerDTO> partnerStore = new ListStore<PartnerDTO>();
 		partnerStore.add(database.getPartners());
 		partnerStore.sort("name", SortDir.ASC);
 		
-		ComboBox<PartnerModel> partnerCombo = new ComboBox<PartnerModel>();
+		ComboBox<PartnerDTO> partnerCombo = new ComboBox<PartnerDTO>();
 		partnerCombo.setName("partner");
 		partnerCombo.setFieldLabel(constants.partner());
 		partnerCombo.setDisplayField("name");

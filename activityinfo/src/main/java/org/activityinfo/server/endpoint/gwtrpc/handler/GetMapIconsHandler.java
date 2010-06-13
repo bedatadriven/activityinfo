@@ -25,7 +25,7 @@ import org.activityinfo.server.report.generator.MapIconPath;
 import org.activityinfo.shared.command.GetMapIcons;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.command.result.MapIconResult;
-import org.activityinfo.shared.dto.MapIconModel;
+import org.activityinfo.shared.dto.MapIconDTO;
 import org.activityinfo.shared.exception.CommandException;
 
 import java.io.File;
@@ -49,11 +49,11 @@ public class GetMapIconsHandler implements CommandHandler<GetMapIcons> {
 
         File iconFolder = new File(mapIconPath);
 
-        List<MapIconModel> list = new ArrayList<MapIconModel>();
+        List<MapIconDTO> list = new ArrayList<MapIconDTO>();
 
         for (String file : iconFolder.list()) {
             if (file.endsWith(".png")) {
-                MapIconModel icon = new MapIconModel();
+                MapIconDTO icon = new MapIconDTO();
                 icon.setId(file.substring(0, file.length() - 4));
                 list.add(icon);
             }

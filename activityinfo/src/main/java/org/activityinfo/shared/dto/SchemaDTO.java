@@ -1,6 +1,6 @@
 package org.activityinfo.shared.dto;
 
-import com.extjs.gxt.ui.client.data.BaseModel;
+import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 
 import java.util.ArrayList;
@@ -8,13 +8,22 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class Schema extends BaseModel implements DTO {
+/**
+ * Aggregate DTO for all {@link org.activityinfo.server.domain.UserDatabase}s visible
+ * to the client, along with the UserDatabase's
+ * {@link org.activityinfo.server.domain.Country Country},
+ * and {@link org.activityinfo.server.domain.Attribute} and
+ * {@link org.activityinfo.server.domain.Indicator}
+ *
+ * @author Alex Bertram
+ */
+public final class SchemaDTO extends BaseModelData implements DTO {
 
 	private long version;
 	private List<UserDatabaseDTO> databases = new ArrayList<UserDatabaseDTO>(0);
-	private List<CountryModel> countries = new ArrayList<CountryModel>(0);
+	private List<CountryDTO> countries = new ArrayList<CountryDTO>(0);
 	
-	public Schema()
+	public SchemaDTO()
 	{
 	}
 
@@ -46,25 +55,25 @@ public class Schema extends BaseModel implements DTO {
 		this.databases = databases;
 	}
 
-	public ActivityModel getActivityById(int id) {
+	public ActivityDTO getActivityById(int id) {
 		for(UserDatabaseDTO database : databases) {
-			ActivityModel activity = getById(database.getActivities(), id);
+			ActivityDTO activity = getById(database.getActivities(), id);
 			if(activity!=null)
 				return activity;
 		}
 		return null;
 	}
 
-	public PartnerModel getPartnerById(int partnerId) {
+	public PartnerDTO getPartnerById(int partnerId) {
 		for(UserDatabaseDTO database : databases) {
-			PartnerModel partner = getById(database.getPartners(), partnerId);
+			PartnerDTO partner = getById(database.getPartners(), partnerId);
 			if(partner!=null)
 				return partner;
 		}
 		return null;
 	}
 
-	public CountryModel getCountryById(int countryId) {
+	public CountryDTO getCountryById(int countryId) {
 		return getById(countries, countryId);
 	}
 
@@ -103,27 +112,27 @@ public class Schema extends BaseModel implements DTO {
 		return null;
 	}
 
-	public List<CountryModel> getCountries() {
+	public List<CountryDTO> getCountries() {
 		return countries;
 	}
 
-	public void setCountries(List<CountryModel> countries) {
+	public void setCountries(List<CountryDTO> countries) {
 		this.countries = countries;
 	}
 
-	public AdminLevelModel getAdminLevelById(int parentLevelId) {
-		for(CountryModel country : countries) {
-			AdminLevelModel level = country.getAdminLevelById(parentLevelId);
+	public AdminLevelDTO getAdminLevelById(int parentLevelId) {
+		for(CountryDTO country : countries) {
+			AdminLevelDTO level = country.getAdminLevelById(parentLevelId);
 			if(level!=null)
 				return level;
 		}
 		return null;
 	}
 
-    public ActivityModel getActivityByIndicatorId(int id) {
+    public ActivityDTO getActivityByIndicatorId(int id) {
         for(UserDatabaseDTO db : databases) {
-			for(ActivityModel act:  db.getActivities()) {
-				for(IndicatorModel ind : act.getIndicators()) {
+			for(ActivityDTO act:  db.getActivities()) {
+				for(IndicatorDTO ind : act.getIndicators()) {
 					if(ind.getId() == id) {
 						return act;
 					}
@@ -134,11 +143,11 @@ public class Schema extends BaseModel implements DTO {
 		return null;
     }
 
-	public IndicatorModel getIndicatorById(int id) {
+	public IndicatorDTO getIndicatorById(int id) {
 		for(UserDatabaseDTO db : databases) {
 			
-			for(ActivityModel act:  db.getActivities()) {
-				for(IndicatorModel ind : act.getIndicators()) {
+			for(ActivityDTO act:  db.getActivities()) {
+				for(IndicatorDTO ind : act.getIndicators()) {
 					if(ind.getId() == id) {
 						return ind;
 					}
@@ -149,9 +158,9 @@ public class Schema extends BaseModel implements DTO {
 		return null;
 	}
 
-    public Set<PartnerModel> getVisiblePartners() {
+    public Set<PartnerDTO> getVisiblePartners() {
 
-        Set<PartnerModel> partners = new HashSet<PartnerModel>();
+        Set<PartnerDTO> partners = new HashSet<PartnerDTO>();
 
         for(UserDatabaseDTO database : getDatabases()) {
             partners.addAll(database.getPartners());
@@ -160,21 +169,19 @@ public class Schema extends BaseModel implements DTO {
         return partners;
     }
 
-    public List<PartnerModel> getVisiblePartnersList() {
-        List<PartnerModel> list = new ArrayList<PartnerModel>();
+    public List<PartnerDTO> getVisiblePartnersList() {
+        List<PartnerDTO> list = new ArrayList<PartnerDTO>();
         list.addAll(getVisiblePartners());
         return list;
     }
 
-    public ActivityModel getFirstActivity() {
+    public ActivityDTO getFirstActivity() {
 		for(UserDatabaseDTO database : getDatabases()) {
 
-			for(ActivityModel activity : database.getActivities()) {
+			for(ActivityDTO activity : database.getActivities()) {
 				return activity;
 			}
 		}
 		return null;
 	}
-
-
 }

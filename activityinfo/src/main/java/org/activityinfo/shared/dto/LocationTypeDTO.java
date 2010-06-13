@@ -2,28 +2,19 @@ package org.activityinfo.shared.dto;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
-import java.util.Map;
 
+/**
+ * One-to-one DTO of the {@link org.activityinfo.server.domain.LocationType LocationType}
+ * domain object.
+ *
+ * @author Alex Bertram
+ */
+public class LocationTypeDTO extends BaseModelData implements DTO {
 
-public class LocationTypeModel extends BaseModelData implements DTO {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -2696877826228221255L;
-	
-	public static final int MODEL_TYPE = 992;
-	
-	public LocationTypeModel()
-	{
-	
+	public LocationTypeDTO() {
 	}
 
-    public LocationTypeModel(Map<String, Object> properties) {
-        super(properties);
-    }
-
-    public LocationTypeModel(int id, String name) {
+    public LocationTypeDTO(int id, String name) {
         setId(id);
         setName(name);
     }

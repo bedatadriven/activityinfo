@@ -4,10 +4,10 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.page.common.dialog.FormDialogImpl;
 import org.activityinfo.client.page.common.toolbar.UIActions;
-import org.activityinfo.shared.dto.ActivityModel;
-import org.activityinfo.shared.dto.CountryModel;
-import org.activityinfo.shared.dto.PartnerModel;
-import org.activityinfo.shared.dto.SiteModel;
+import org.activityinfo.shared.dto.ActivityDTO;
+import org.activityinfo.shared.dto.CountryDTO;
+import org.activityinfo.shared.dto.PartnerDTO;
+import org.activityinfo.shared.dto.SiteDTO;
 
 import java.util.Map;
 
@@ -17,7 +17,7 @@ import java.util.Map;
 public class SiteFormDialog extends FormDialogImpl<SiteForm> implements SiteFormPresenter.View {
 
     private SiteFormPresenter presenter;
-    private ActivityModel activity;
+    private ActivityDTO activity;
 
     public SiteFormDialog(SiteForm form) {
         super(form);
@@ -41,14 +41,14 @@ public class SiteFormDialog extends FormDialogImpl<SiteForm> implements SiteForm
         return this;
     }
 
-    public void init(SiteFormPresenter presenter, ActivityModel activity, ListStore<PartnerModel> partnerStore, ListStore<SiteModel> assessmentStore) {
+    public void init(SiteFormPresenter presenter, ActivityDTO activity, ListStore<PartnerDTO> partnerStore, ListStore<SiteDTO> assessmentStore) {
         this.presenter = presenter;
         this.activity = activity;
         form.init(presenter, activity, partnerStore, assessmentStore);
 
     }
 
-    public void setSite(SiteModel site) {
+    public void setSite(SiteDTO site) {
         form.show();
         if (site.getLocationName() == null) {
             setHeading(activity.getName());
@@ -63,12 +63,12 @@ public class SiteFormDialog extends FormDialogImpl<SiteForm> implements SiteForm
     }
 
     @Override
-    public AdminFieldSetPresenter.View createAdminFieldSetView(ActivityModel activity) {
+    public AdminFieldSetPresenter.View createAdminFieldSetView(ActivityDTO activity) {
         return form.createAdminFieldSetView(activity);
     }
 
     @Override
-    public MapPresenter.View createMapView(CountryModel country) {
+    public MapPresenter.View createMapView(CountryDTO country) {
         return form.createMapView(country);
     }
 

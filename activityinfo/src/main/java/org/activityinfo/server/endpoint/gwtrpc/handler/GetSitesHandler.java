@@ -118,17 +118,17 @@ public class GetSitesHandler implements CommandHandler<GetSites> {
                 order.add(order(SiteColumn.partner_name, cmd.getSortInfo()));
             } else if (field.equals("locationAxe")) {
                 order.add(order(SiteColumn.location_axe, cmd.getSortInfo()));
-            } else if (field.startsWith(IndicatorModel.PROPERTY_PREFIX)) {
+            } else if (field.startsWith(IndicatorDTO.PROPERTY_PREFIX)) {
 
                 Indicator indicator = schemaDAO.findById(Indicator.class,
-                        IndicatorModel.indicatorIdForPropertyName(field));
+                        IndicatorDTO.indicatorIdForPropertyName(field));
 
                 order.add(new SiteIndicatorOrder(indicator,
                         cmd.getSortInfo().getSortDir() == SortDir.ASC));
 
             } else if (field.startsWith("a")) {
 
-                int levelId = AdminLevelModel.levelIdForProperty(field);
+                int levelId = AdminLevelDTO.levelIdForProperty(field);
 
                 order.add(new SiteAdminOrder(levelId,
                         cmd.getSortInfo().getSortDir() == SortDir.ASC));
@@ -159,7 +159,7 @@ public class GetSitesHandler implements CommandHandler<GetSites> {
         /*
            * Execute !
            */
-        List<SiteModel> sites = siteDAO.query(user, criteria, order,
+        List<SiteDTO> sites = siteDAO.query(user, criteria, order,
                 new ModelBinder(), SiteTableDAO.RETRIEVE_ALL, offset, cmd.getLimit());
 
 
@@ -176,14 +176,14 @@ public class GetSitesHandler implements CommandHandler<GetSites> {
     }
 
 
-    protected class ModelBinder implements SiteProjectionBinder<SiteModel> {
+    protected class ModelBinder implements SiteProjectionBinder<SiteDTO> {
 
-        private Map<Integer, AdminEntityModel> adminEntities = new HashMap<Integer, AdminEntityModel>();
-        private Map<Integer, PartnerModel> partners = new HashMap<Integer, PartnerModel>();
+        private Map<Integer, AdminEntityDTO> adminEntities = new HashMap<Integer, AdminEntityDTO>();
+        private Map<Integer, PartnerDTO> partners = new HashMap<Integer, PartnerDTO>();
 
         @Override
-        public SiteModel newInstance(String[] properties, Object[] values) {
-            SiteModel model = new SiteModel();
+        public SiteDTO newInstance(String[] properties, Object[] values) {
+            SiteDTO model = new SiteDTO();
             model.setId((Integer) values[SiteColumn.id.index()]);
             model.setActivityId((Integer) values[SiteColumn.activity_id.index()]);
             model.setDate1((Date) values[SiteColumn.date1.index()]);
@@ -196,9 +196,9 @@ public class GetSitesHandler implements CommandHandler<GetSites> {
             model.setComments((String) values[SiteColumn.comments.index()]);
 
             int partnerId = (Integer) values[SiteColumn.partner_id.index()];
-            PartnerModel partner = partners.get(partnerId);
+            PartnerDTO partner = partners.get(partnerId);
             if (partner == null) {
-                partner = new PartnerModel(
+                partner = new PartnerDTO(
                         partnerId,
                         (String) values[SiteColumn.partner_name.index()]);
                 partners.put(partnerId, partner);
@@ -212,17 +212,18 @@ public class GetSitesHandler implements CommandHandler<GetSites> {
         }
 
         @Override
-        public void setAdminEntity(SiteModel site, AdminEntity entity) {
-            AdminEntityModel model = adminEntities.get(entity.getId());
+        public void setAdminEntity(SiteDTO site, AdminEntity entity) {
+            AdminEntityDTO model = adminEntities.get(entity.getId());
             if (model == null) {
-                model = mapper.map(entity, AdminEntityModel.class);
+                model = mapper.map(entity, AdminEntityDTO.class);
                 adminEntities.put(entity.getId(), model);
+
             }
             site.setAdminEntity(entity.getLevel().getId(), model);
         }
 
         @Override
-        public void setAttributeValue(SiteModel site, int attributeId,
+        public void setAttributeValue(SiteDTO site, int attributeId,
                                       boolean value) {
 
             site.setAttributeValue(attributeId, value);
@@ -230,7 +231,7 @@ public class GetSitesHandler implements CommandHandler<GetSites> {
         }
 
         @Override
-        public void addIndicatorValue(SiteModel site, int indicatorId,
+        public void addIndicatorValue(SiteDTO site, int indicatorId,
                                       int aggregationMethod, double value) {
 
             site.setIndicatorValue(indicatorId, value);

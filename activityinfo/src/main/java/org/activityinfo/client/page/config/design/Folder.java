@@ -1,18 +1,18 @@
 package org.activityinfo.client.page.config.design;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
-import org.activityinfo.shared.dto.ActivityModel;
+import org.activityinfo.shared.dto.ActivityDTO;
 
 public class Folder extends BaseModelData {
 
-    private ActivityModel activity;
+    private ActivityDTO activity;
 
-    public Folder(ActivityModel activity, String name) {
+    public Folder(ActivityDTO activity, String name) {
         this.activity = activity;
         set("name", name);
     }
 
-    public ActivityModel getActivity() {
+    public ActivityDTO getActivity() {
         return activity;
     }
 }

@@ -5,12 +5,12 @@ import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.TileLayer;
 import com.google.gwt.maps.client.geom.MercatorProjection;
 import com.google.gwt.maps.client.geom.Projection;
-import org.activityinfo.shared.dto.CountryModel;
+import org.activityinfo.shared.dto.CountryDTO;
 import org.activityinfo.shared.map.BaseMap;
 
 public class MapTypeFactory {
 
-    public static MapType createLocalisationMapType(CountryModel country) {
+    public static MapType createLocalisationMapType(CountryDTO country) {
         // TODO: generalize
         // There are probably other cases where we need to add custom tiles
         // for poorly covered countries

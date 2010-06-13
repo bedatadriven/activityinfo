@@ -27,7 +27,7 @@ import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.RemoteCommandServiceAsync;
 import org.activityinfo.shared.command.result.CommandResult;
-import org.activityinfo.shared.dto.Schema;
+import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.exception.CommandException;
 import org.easymock.Capture;
 import org.easymock.IAnswer;
@@ -109,7 +109,7 @@ public class RemoteDispatcherTest {
     public void mergedCommandsShouldEachReceiveACallback() {
 
         expectRemoteCall(new GetSchema());
-        andCallbackWihSuccess(new Schema());
+        andCallbackWihSuccess(new SchemaDTO());
         replay(service);
 
         AsyncCallback callback1 = makeCallbackThatExpectsNonNullSuccess();
@@ -131,7 +131,7 @@ public class RemoteDispatcherTest {
 
         GetSchema command = new GetSchema();
 
-        expect(proxy.execute(eq(command))).andReturn(new CommandProxyResult(new Schema()));
+        expect(proxy.execute(eq(command))).andReturn(new CommandProxyResult(new SchemaDTO()));
         replay(proxy);
 
         replay(service);   // no calls should be made to the remote service
@@ -155,7 +155,7 @@ public class RemoteDispatcherTest {
         replay(proxy);
 
         expectRemoteCall(command);
-        andCallbackWihSuccess(new Schema());
+        andCallbackWihSuccess(new SchemaDTO());
         replay(service);
 
         AsyncCallback callback = makeCallbackThatExpectsNonNullSuccess();
@@ -191,21 +191,21 @@ public class RemoteDispatcherTest {
     public void exceptionsThrownByCallbacksDoNotDistubOthers() {
 
         expectRemoteCall(new GetSchema());
-        andCallbackWihSuccess(new Schema());
+        andCallbackWihSuccess(new SchemaDTO());
         replay(service);
 
         // Here we set up one component that will call request a command
         // but something will go wrong when the command return (successfully)
         // the error is unrelated to the remote command -- it just happens to be
         // there.
-        dispatcher.execute(new GetSchema(), null, new AsyncCallback<Schema>() {
+        dispatcher.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
             @Override
             public void onFailure(Throwable caught) {
 
             }
 
             @Override
-            public void onSuccess(Schema result) {
+            public void onSuccess(SchemaDTO result) {
                 throw new Error();
             }
         });
@@ -221,14 +221,14 @@ public class RemoteDispatcherTest {
     }
 
 
-    private AsyncCallback<Schema> makeNullCallback() {
-        return new AsyncCallback<Schema>() {
+    private AsyncCallback<SchemaDTO> makeNullCallback() {
+        return new AsyncCallback<SchemaDTO>() {
             @Override
             public void onFailure(Throwable throwable) {
             }
 
             @Override
-            public void onSuccess(Schema o) {
+            public void onSuccess(SchemaDTO o) {
             }
         };
     }

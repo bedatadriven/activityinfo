@@ -23,7 +23,7 @@ import org.activityinfo.shared.command.AddPartner;
 import org.activityinfo.shared.command.RemovePartner;
 import org.activityinfo.shared.command.result.CreateResult;
 import org.activityinfo.shared.command.result.VoidResult;
-import org.activityinfo.shared.dto.PartnerModel;
+import org.activityinfo.shared.dto.PartnerDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
 import org.activityinfo.shared.exception.DuplicateException;
 import org.activityinfo.shared.exception.PartnerHasSitesException;
@@ -33,14 +33,14 @@ import java.util.ArrayList;
 /**
  * @author Alex Bertram
  */
-public class DbPartnerEditor extends AbstractGridPresenter<PartnerModel> {
+public class DbPartnerEditor extends AbstractGridPresenter<PartnerDTO> {
 
     @ImplementedBy(DbPartnerGrid.class)
-    public interface View extends GridView<DbPartnerEditor, PartnerModel> {
+    public interface View extends GridView<DbPartnerEditor, PartnerDTO> {
 
-        public void init(DbPartnerEditor editor, UserDatabaseDTO db, ListStore<PartnerModel> store);
+        public void init(DbPartnerEditor editor, UserDatabaseDTO db, ListStore<PartnerDTO> store);
 
-        public FormDialogTether showAddDialog(PartnerModel partner, FormDialogCallback callback);
+        public FormDialogTether showAddDialog(PartnerDTO partner, FormDialogCallback callback);
     }
 
     private final Dispatcher service;
@@ -48,7 +48,7 @@ public class DbPartnerEditor extends AbstractGridPresenter<PartnerModel> {
     private final View view;
 
     private UserDatabaseDTO db;
-    private ListStore<PartnerModel> store;
+    private ListStore<PartnerDTO> store;
 
 
     @Inject
@@ -62,10 +62,10 @@ public class DbPartnerEditor extends AbstractGridPresenter<PartnerModel> {
     public void go(UserDatabaseDTO db) {
         this.db = db;
 
-        store = new ListStore<PartnerModel>();
+        store = new ListStore<PartnerDTO>();
         store.setSortField("name");
         store.setSortDir(Style.SortDir.ASC);
-        store.add(new ArrayList<PartnerModel>(db.getPartners()));
+        store.add(new ArrayList<PartnerDTO>(db.getPartners()));
 
         view.init(this, db, store);
         view.setActionEnabled(UIActions.delete, false);
@@ -76,13 +76,13 @@ public class DbPartnerEditor extends AbstractGridPresenter<PartnerModel> {
         return "PartnersGrid";
     }
 
-    public void onSelectionChanged(PartnerModel selectedItem) {
+    public void onSelectionChanged(PartnerDTO selectedItem) {
         this.view.setActionEnabled(UIActions.delete, selectedItem != null);
     }
 
     @Override
     protected void onAdd() {
-        final PartnerModel newPartner = new PartnerModel();
+        final PartnerDTO newPartner = new PartnerDTO();
         this.view.showAddDialog(newPartner, new FormDialogCallback() {
 
             @Override
@@ -107,7 +107,7 @@ public class DbPartnerEditor extends AbstractGridPresenter<PartnerModel> {
     }
 
     @Override
-    protected void onDeleteConfirmed(final PartnerModel model) {
+    protected void onDeleteConfirmed(final PartnerDTO model) {
         service.execute(new RemovePartner(db.getId(), model.getId()), view.getDeletingMonitor(), new AsyncCallback<VoidResult>() {
             public void onFailure(Throwable caught) {
                 if (caught instanceof PartnerHasSitesException) {

@@ -4,8 +4,8 @@ import org.activityinfo.server.dao.OnDataSet;
 import org.activityinfo.shared.command.AddPartner;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.result.CreateResult;
-import org.activityinfo.shared.dto.PartnerModel;
-import org.activityinfo.shared.dto.Schema;
+import org.activityinfo.shared.dto.PartnerDTO;
+import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.exception.DuplicateException;
 import org.activityinfo.test.InjectionSupport;
 import org.junit.Assert;
@@ -19,7 +19,7 @@ public class PartnerTest extends CommandTestCase {
 
     @Test
     public void testAddPartner() throws Exception {
-        PartnerModel newPartner = new PartnerModel();
+        PartnerDTO newPartner = new PartnerDTO();
         newPartner.setName("NRC");
         newPartner.setFullName("Norweigen Refugee Committe");
 
@@ -27,8 +27,8 @@ public class PartnerTest extends CommandTestCase {
 
         Assert.assertEquals(1, cr.getNewId());
 
-        Schema schema = execute(new GetSchema());
-        PartnerModel partner = schema.getDatabaseById(2).getPartnerById(1);
+        SchemaDTO schema = execute(new GetSchema());
+        PartnerDTO partner = schema.getDatabaseById(2).getPartnerById(1);
 
         Assert.assertNotNull(partner);
         Assert.assertEquals("NRC", partner.getName());
@@ -36,7 +36,7 @@ public class PartnerTest extends CommandTestCase {
 
     @Test
     public void testAddNewPartner() throws Exception {
-        PartnerModel newPartner = new PartnerModel();
+        PartnerDTO newPartner = new PartnerDTO();
         newPartner.setName("VDE");
         newPartner.setFullName("Vision d'Espoir");
 
@@ -44,8 +44,8 @@ public class PartnerTest extends CommandTestCase {
         CreateResult cr = execute(new AddPartner(1, newPartner));
 
 
-        Schema schema = execute(new GetSchema());
-        PartnerModel partner = schema.getDatabaseById(1).getPartnerById(cr.getNewId());
+        SchemaDTO schema = execute(new GetSchema());
+        PartnerDTO partner = schema.getDatabaseById(1).getPartnerById(cr.getNewId());
 
         Assert.assertNotNull(partner);
         Assert.assertEquals("VDE", partner.getName());
@@ -56,7 +56,7 @@ public class PartnerTest extends CommandTestCase {
 
     @Test(expected = DuplicateException.class)
     public void testAddDuplicatePartner() throws Exception {
-        PartnerModel newPartner = new PartnerModel();
+        PartnerDTO newPartner = new PartnerDTO();
         newPartner.setName("NRC");
         newPartner.setFullName("Norweigen Refugee Committe");
 

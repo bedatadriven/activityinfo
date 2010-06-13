@@ -9,9 +9,9 @@ import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.i18n.client.NumberFormat;
 import org.activityinfo.client.Application;
-import org.activityinfo.shared.dto.ActivityModel;
+import org.activityinfo.shared.dto.ActivityDTO;
+import org.activityinfo.shared.dto.IndicatorDTO;
 import org.activityinfo.shared.dto.IndicatorGroup;
-import org.activityinfo.shared.dto.IndicatorModel;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -19,7 +19,7 @@ import org.activityinfo.shared.dto.IndicatorModel;
 public class IndicatorFieldSet extends FieldSet {
 
 
-    public IndicatorFieldSet(ActivityModel activity) {
+    public IndicatorFieldSet(ActivityDTO activity) {
 
         TableLayout layout = new TableLayout(3);
         layout.setCellPadding(5);
@@ -36,7 +36,7 @@ public class IndicatorFieldSet extends FieldSet {
                 addGroupHeader(group.getName());
             }
 
-            for(IndicatorModel indicator : group.getIndicators()) {
+            for(IndicatorDTO indicator : group.getIndicators()) {
 
                 if(indicator.getCollectIntervention()) {
                     addIndicator(indicator);
@@ -59,7 +59,7 @@ public class IndicatorFieldSet extends FieldSet {
         
     }
 
-    protected void addIndicator(IndicatorModel indicator) {
+    protected void addIndicator(IndicatorDTO indicator) {
 
         Text indicatorLabel = new Text(indicator.getName());
         indicatorLabel.setStyleAttribute("fontSize", "9pt");

@@ -24,7 +24,7 @@ import org.activityinfo.server.domain.AdminEntity;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.shared.command.GetAdminEntities;
 import org.activityinfo.shared.command.result.AdminEntityResult;
-import org.activityinfo.shared.dto.AdminEntityModel;
+import org.activityinfo.shared.dto.AdminEntityDTO;
 import org.activityinfo.shared.exception.CommandException;
 import org.dozer.Mapper;
 import org.junit.Before;
@@ -119,8 +119,8 @@ public class GetAdminEntitiesHandlerTest {
     @Before
     public void setupMapper() {
         mapper = createMock(Mapper.class);
-        expect(mapper.map(isA(AdminEntity.class), eq(AdminEntityModel.class)))
-                .andReturn(new AdminEntityModel())
+        expect(mapper.map(isA(AdminEntity.class), eq(AdminEntityDTO.class)))
+                .andReturn(new AdminEntityDTO())
                 .anyTimes();
         replay(mapper);
     }

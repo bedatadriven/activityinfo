@@ -49,12 +49,12 @@ public class HierSiteEditor extends AbstractEditorGridPresenter<ModelData> {
     private final EventBus eventBus;
     private final Dispatcher service;
     private final IStateManager stateMgr;
-    private final ActivityModel activity;
+    private final ActivityDTO activity;
     private final View view;
     private final SiteFormLoader formLoader;
     private final DateUtil dateUtil;
 
-    private List<AdminLevelModel> hierarchy;
+    private List<AdminLevelDTO> hierarchy;
     private SiteTreeProxy proxy;
     private TreeLoader<ModelData> loader;
     private TreeStore<ModelData> store;
@@ -62,7 +62,7 @@ public class HierSiteEditor extends AbstractEditorGridPresenter<ModelData> {
     private Listener<SiteEvent> siteListener;
 
     public HierSiteEditor(EventBus eventBus, Dispatcher service, IStateManager stateMgr,
-                          DateUtil dateUtil, final ActivityModel activity, View view) {
+                          DateUtil dateUtil, final ActivityDTO activity, View view) {
         super(eventBus, service, stateMgr, view);
         this.eventBus = eventBus;
         this.service = service;
@@ -79,18 +79,18 @@ public class HierSiteEditor extends AbstractEditorGridPresenter<ModelData> {
         loader = new BaseTreeLoader<ModelData>(proxy) {
             @Override
             public boolean hasChildren(ModelData parent) {
-                return !(parent instanceof IndicatorRow);
+                return !(parent instanceof IndicatorRowDTO);
             }
         };
         store = new TreeStore<ModelData>(loader);
         store.setKeyProvider(new ModelKeyProvider<ModelData>() {
             public String getKey(ModelData model) {
-                if (model instanceof AdminLevelModel) {
-                    return "A" + ((AdminLevelModel) model).getId();
-                } else if (model instanceof SiteModel) {
-                    return "S" + ((SiteModel) model).getId();
-                } else if (model instanceof IndicatorRow) {
-                    return "I" + ((IndicatorRow) model).getIndicatorId();
+                if (model instanceof AdminLevelDTO) {
+                    return "A" + ((AdminLevelDTO) model).getId();
+                } else if (model instanceof SiteDTO) {
+                    return "S" + ((SiteDTO) model).getId();
+                } else if (model instanceof IndicatorRowDTO) {
+                    return "I" + ((IndicatorRowDTO) model).getIndicatorId();
                 }
                 return model.toString();
             }
@@ -149,16 +149,16 @@ public class HierSiteEditor extends AbstractEditorGridPresenter<ModelData> {
 
     public void onSelectionChanged(ModelData selectedItem) {
 
-        if (selectedItem instanceof SiteModel) {
+        if (selectedItem instanceof SiteDTO) {
 
             UserDatabaseDTO db = activity.getDatabase();
             boolean editable = db.isEditAllAllowed() ||
-                    (db.isEditAllowed() && db.getMyPartnerId() == ((SiteModel) selectedItem).getPartner().getId());
+                    (db.isEditAllowed() && db.getMyPartnerId() == ((SiteDTO) selectedItem).getPartner().getId());
 
             view.setActionEnabled(UIActions.delete, editable);
             view.setActionEnabled(UIActions.edit, editable);
 
-            eventBus.fireEvent(new SiteEvent(AppEvents.SiteSelected, this, (SiteModel) selectedItem));
+            eventBus.fireEvent(new SiteEvent(AppEvents.SiteSelected, this, (SiteDTO) selectedItem));
 
         } else {
 
@@ -167,26 +167,26 @@ public class HierSiteEditor extends AbstractEditorGridPresenter<ModelData> {
         }
     }
 
-    private AdminEntityModel findEntity(int id, List<ModelData> models) {
+    private AdminEntityDTO findEntity(int id, List<ModelData> models) {
         for (ModelData model : models) {
             Integer modelId = model.get("id");
             if (modelId != null && modelId == id) {
-                return (AdminEntityModel) model;
+                return (AdminEntityDTO) model;
             }
         }
         return null;
     }
 
-    private void onSiteAdded(SiteModel site) {
+    private void onSiteAdded(SiteDTO site) {
 
         loader.load();
 
-//        AdminEntityModel parent = null;
+//        AdminEntityDTO parent = null;
 //        for(int i=0; i!=hierarchy.size()-1; ++i) {
 //
-//            AdminEntityModel entity = site.getAdminEntity(hierarchy.get(i).getId());
+//            AdminEntityDTO entity = site.getAdminEntity(hierarchy.get(i).getId());
 //            int entityId = entity.getId();
-//            AdminEntityModel child =null;
+//            AdminEntityDTO child =null;
 //            if(parent == null) {
 //                child = findEntity(entityId, store.getRootItems());
 //            } else {
@@ -199,7 +199,7 @@ public class HierSiteEditor extends AbstractEditorGridPresenter<ModelData> {
 //            }
 //            parent = child;
 //        }
-//        store.add(parent, new SiteModel(site), false);
+//        store.add(parent, new SiteDTO(site), false);
     }
 
 
@@ -217,7 +217,7 @@ public class HierSiteEditor extends AbstractEditorGridPresenter<ModelData> {
 
 
     public boolean beforeEdit(Record record, String property) {
-        return (record.getModel() instanceof IndicatorRow);
+        return (record.getModel() instanceof IndicatorRowDTO);
     }
 
     public void onMonthSelected(Month month) {
@@ -229,7 +229,7 @@ public class HierSiteEditor extends AbstractEditorGridPresenter<ModelData> {
     @Override
     protected void onAdd() {
 
-        SiteModel newSite = new SiteModel();
+        SiteDTO newSite = new SiteDTO();
         newSite.setActivityId(activity.getId());
 
         if (!activity.getDatabase().isEditAllAllowed()) {
@@ -239,8 +239,8 @@ public class HierSiteEditor extends AbstractEditorGridPresenter<ModelData> {
         // initialize with defaults
         ModelData sel = view.getSelection();
         ModelData parent = store.getParent(sel);
-        while (parent instanceof AdminEntityModel) {
-            AdminEntityModel entity = (AdminEntityModel) parent;
+        while (parent instanceof AdminEntityDTO) {
+            AdminEntityDTO entity = (AdminEntityDTO) parent;
             newSite.setAdminEntity(entity.getLevelId(), entity);
         }
 
@@ -252,7 +252,7 @@ public class HierSiteEditor extends AbstractEditorGridPresenter<ModelData> {
     protected Command createSaveCommand() {
         Map<Integer, ArrayList<UpdateMonthlyReports.Change>> sites = new HashMap<Integer, ArrayList<UpdateMonthlyReports.Change>>();
         for (Record record : store.getModifiedRecords()) {
-            SiteModel site = (SiteModel) store.getParent(record.getModel());
+            SiteDTO site = (SiteDTO) store.getParent(record.getModel());
 
             ArrayList<UpdateMonthlyReports.Change> changes = sites.get(site.getId());
             if (changes == null) {
@@ -260,11 +260,11 @@ public class HierSiteEditor extends AbstractEditorGridPresenter<ModelData> {
                 sites.put(site.getId(), changes);
             }
 
-            IndicatorRow report = (IndicatorRow) record.getModel();
+            IndicatorRowDTO report = (IndicatorRowDTO) record.getModel();
             for (String property : record.getChanges().keySet()) {
                 UpdateMonthlyReports.Change change = new UpdateMonthlyReports.Change();
                 change.indicatorId = report.getIndicatorId();
-                change.month = IndicatorRow.monthForProperty(property);
+                change.month = IndicatorRowDTO.monthForProperty(property);
                 change.value = report.get(property);
                 changes.add(change);
             }

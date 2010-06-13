@@ -5,10 +5,10 @@ import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.page.entry.editor.AdminFieldSetPresenter;
 import org.activityinfo.client.page.entry.editor.MapPresenter;
 import org.activityinfo.client.page.entry.editor.SiteFormPresenter;
-import org.activityinfo.shared.dto.ActivityModel;
-import org.activityinfo.shared.dto.CountryModel;
-import org.activityinfo.shared.dto.PartnerModel;
-import org.activityinfo.shared.dto.SiteModel;
+import org.activityinfo.shared.dto.ActivityDTO;
+import org.activityinfo.shared.dto.CountryDTO;
+import org.activityinfo.shared.dto.PartnerDTO;
+import org.activityinfo.shared.dto.SiteDTO;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,21 +26,21 @@ public class MockSiteForm implements SiteFormPresenter.View {
     public Set<String> disabledActions = new HashSet<String>();
     public Map<String, Object> properties = new HashMap<String, Object>();
 
-    public void init(SiteFormPresenter presenter, ActivityModel activity, ListStore<PartnerModel> partnerStore, ListStore<SiteModel> assessmentStore) {
+    public void init(SiteFormPresenter presenter, ActivityDTO activity, ListStore<PartnerDTO> partnerStore, ListStore<SiteDTO> assessmentStore) {
 
     }
 
-    public void setSite(SiteModel site) {
+    public void setSite(SiteDTO site) {
         properties = site.getProperties();
     }
 
     @Override
-    public AdminFieldSetPresenter.View createAdminFieldSetView(ActivityModel activity) {
+    public AdminFieldSetPresenter.View createAdminFieldSetView(ActivityDTO activity) {
         return adminFieldSet;
     }
 
     @Override
-    public MapPresenter.View createMapView(CountryModel country) {
+    public MapPresenter.View createMapView(CountryDTO country) {
         return mapView;
     }
 

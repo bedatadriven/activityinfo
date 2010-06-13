@@ -11,7 +11,7 @@ import org.activityinfo.client.inject.AppInjector;
 import org.activityinfo.client.page.*;
 import org.activityinfo.shared.command.GetReportTemplates;
 import org.activityinfo.shared.command.result.ReportTemplateResult;
-import org.activityinfo.shared.dto.ReportTemplateDTO;
+import org.activityinfo.shared.dto.ReportDefinitionDTO;
 
 /**
  * @author Alex Bertram
@@ -70,7 +70,7 @@ public class ReportLoader implements PageLoader {
 
             public void onSuccess(final ReportTemplateResult result) {
 
-                for (ReportTemplateDTO dto : result.getData()) {
+                for (ReportDefinitionDTO dto : result.getData()) {
                     if (dto.getId() == place.getReportId()) {
                         ReportPreviewPresenter presenter = injector.getReportPreviewPresenter();
                         presenter.go(dto);

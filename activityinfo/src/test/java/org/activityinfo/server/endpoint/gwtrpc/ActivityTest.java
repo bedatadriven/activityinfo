@@ -7,9 +7,9 @@ import org.activityinfo.shared.command.CreateEntity;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.UpdateEntity;
 import org.activityinfo.shared.command.result.CreateResult;
-import org.activityinfo.shared.dto.ActivityModel;
-import org.activityinfo.shared.dto.LocationTypeModel;
-import org.activityinfo.shared.dto.Schema;
+import org.activityinfo.shared.dto.ActivityDTO;
+import org.activityinfo.shared.dto.LocationTypeDTO;
+import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.test.InjectionSupport;
@@ -31,7 +31,7 @@ public class ActivityTest extends CommandTestCase {
            * Initial data load
            */
 
-        Schema schema = execute(new GetSchema());
+        SchemaDTO schema = execute(new GetSchema());
 
         UserDatabaseDTO db = schema.getDatabaseById(1);
 
@@ -39,12 +39,12 @@ public class ActivityTest extends CommandTestCase {
            * Create a new activity
            */
 
-        LocationTypeModel locType = schema.getCountryById(1).getLocationTypes().get(0);
+        LocationTypeDTO locType = schema.getCountryById(1).getLocationTypes().get(0);
 
-        ActivityModel act = new ActivityModel();
+        ActivityDTO act = new ActivityDTO();
         act.setName("Warshing the dishes");
         act.setLocationTypeId(locType.getId());
-        act.setReportingFrequency(ActivityModel.REPORT_MONTHLY);
+        act.setReportingFrequency(ActivityDTO.REPORT_MONTHLY);
 
         CreateResult cresult = execute(CreateEntity.Activity(db, act));
 
@@ -60,7 +60,7 @@ public class ActivityTest extends CommandTestCase {
 
         Assert.assertEquals("name", "Warshing the dishes", act.getName());
         Assert.assertEquals("locationType", locType.getName(), act.getLocationType().getName());
-        Assert.assertEquals("reportingFrequency", ActivityModel.REPORT_MONTHLY, act.getReportingFrequency());
+        Assert.assertEquals("reportingFrequency", ActivityDTO.REPORT_MONTHLY, act.getReportingFrequency());
 
     }
 
@@ -80,7 +80,7 @@ public class ActivityTest extends CommandTestCase {
 
         /* Confirm the order is changed */
 
-        Schema schema = execute(new GetSchema());
+        SchemaDTO schema = execute(new GetSchema());
         Assert.assertEquals(2, schema.getDatabaseById(1).getActivities().get(0).getId());
         Assert.assertEquals(1, schema.getDatabaseById(1).getActivities().get(1).getId());
     }

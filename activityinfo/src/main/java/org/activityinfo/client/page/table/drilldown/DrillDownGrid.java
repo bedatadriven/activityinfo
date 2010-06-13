@@ -5,9 +5,9 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.page.entry.SiteEditor;
 import org.activityinfo.client.page.entry.SiteGrid;
-import org.activityinfo.shared.dto.ActivityModel;
-import org.activityinfo.shared.dto.IndicatorModel;
-import org.activityinfo.shared.dto.SiteModel;
+import org.activityinfo.shared.dto.ActivityDTO;
+import org.activityinfo.shared.dto.IndicatorDTO;
+import org.activityinfo.shared.dto.SiteDTO;
 
 import java.util.List;
 /*
@@ -16,14 +16,14 @@ import java.util.List;
 
 public class DrillDownGrid extends SiteGrid implements DrillDownEditor.View {
 
-    ActivityModel currentActivity;
-    IndicatorModel currentIndicator;
+    ActivityDTO currentActivity;
+    IndicatorDTO currentIndicator;
 
     public DrillDownGrid() {
         setHeading(Application.CONSTANTS.drilldown());
     }
 
-    public void show(SiteEditor presenter, ActivityModel activity, IndicatorModel indicator, ListStore<SiteModel> store) {
+    public void show(SiteEditor presenter, ActivityDTO activity, IndicatorDTO indicator, ListStore<SiteDTO> store) {
 
         currentIndicator = indicator;
 
@@ -47,7 +47,7 @@ public class DrillDownGrid extends SiteGrid implements DrillDownEditor.View {
 
 
     @Override
-    protected void addIndicatorColumns(ActivityModel activity, List<ColumnConfig> columns) {
+    protected void addIndicatorColumns(ActivityDTO activity, List<ColumnConfig> columns) {
 
         ColumnConfig column = createIndicatorColumn(currentIndicator, Application.CONSTANTS.value());
         column.setId("indicator");

@@ -11,23 +11,23 @@ import org.activityinfo.shared.command.Month;
 import org.activityinfo.shared.command.result.AdminEntityResult;
 import org.activityinfo.shared.command.result.MonthlyReportResult;
 import org.activityinfo.shared.command.result.SiteResult;
-import org.activityinfo.shared.dto.AdminEntityModel;
-import org.activityinfo.shared.dto.AdminLevelModel;
-import org.activityinfo.shared.dto.IndicatorRow;
-import org.activityinfo.shared.dto.SiteModel;
+import org.activityinfo.shared.dto.AdminEntityDTO;
+import org.activityinfo.shared.dto.AdminLevelDTO;
+import org.activityinfo.shared.dto.IndicatorRowDTO;
+import org.activityinfo.shared.dto.SiteDTO;
 
 import java.util.List;
 
 public class SiteTreeProxy implements DataProxy {
 
     private Dispatcher service;
-    private List<AdminLevelModel> hierarchy;
+    private List<AdminLevelDTO> hierarchy;
     private int activityId;
     private Month startMonth;
     private Month endMonth;
     private boolean multiplePartners;
 
-    public SiteTreeProxy(Dispatcher service, List<AdminLevelModel> hierarchy, int activityId) {
+    public SiteTreeProxy(Dispatcher service, List<AdminLevelDTO> hierarchy, int activityId) {
         this.service = service;
         this.hierarchy = hierarchy;
         this.activityId = activityId;
@@ -53,20 +53,20 @@ public class SiteTreeProxy implements DataProxy {
 
         if (parent == null) {
             loadAdmin(hierarchy.get(0), null, callback);
-        } else if (parent instanceof AdminEntityModel) {
-            AdminEntityModel entity = (AdminEntityModel) parent;
+        } else if (parent instanceof AdminEntityDTO) {
+            AdminEntityDTO entity = (AdminEntityDTO) parent;
             int childLevelIndex = getChildLevel(entity);
             if (childLevelIndex < hierarchy.size() - 1) {
                 loadAdmin(hierarchy.get(childLevelIndex), entity.getId(), callback);
             } else {
                 loadSites(entity.getId(), callback);
             }
-        } else if (parent instanceof SiteModel) {
-            loadIndicators(((SiteModel) parent).getId(), callback);
+        } else if (parent instanceof SiteDTO) {
+            loadIndicators(((SiteDTO) parent).getId(), callback);
         }
     }
 
-    private int getChildLevel(AdminEntityModel entity) {
+    private int getChildLevel(AdminEntityDTO entity) {
         for (int i = 0; i != hierarchy.size(); ++i) {
             if (hierarchy.get(i).getId() == entity.getLevelId()) {
                 if (i + 1 < hierarchy.size()) {
@@ -79,7 +79,7 @@ public class SiteTreeProxy implements DataProxy {
         return -1;
     }
 
-    protected void loadAdmin(AdminLevelModel level, Integer parentId, final AsyncCallback<List<AdminEntityModel>> callback) {
+    protected void loadAdmin(AdminLevelDTO level, Integer parentId, final AsyncCallback<List<AdminEntityDTO>> callback) {
 
         service.execute(new GetAdminEntities(level.getId(), parentId, activityId), null, new AsyncCallback<AdminEntityResult>() {
             public void onFailure(Throwable caught) {
@@ -92,7 +92,7 @@ public class SiteTreeProxy implements DataProxy {
         });
     }
 
-    protected void loadSites(int parentEntityId, final AsyncCallback<List<SiteModel>> callback) {
+    protected void loadSites(int parentEntityId, final AsyncCallback<List<SiteDTO>> callback) {
 
         GetSites cmd = new GetSites();
         cmd.setActivityId(activityId);
@@ -105,7 +105,7 @@ public class SiteTreeProxy implements DataProxy {
 
             public void onSuccess(SiteResult result) {
                 int lastLevelId = hierarchy.get(hierarchy.size() - 1).getId();
-                for (SiteModel site : result.getData()) {
+                for (SiteDTO site : result.getData()) {
                     site.set("name", site.getAdminEntity(lastLevelId).getName());
                 }
                 callback.onSuccess(result.getData());
@@ -114,7 +114,7 @@ public class SiteTreeProxy implements DataProxy {
         });
     }
 
-    protected void loadIndicators(int siteId, final AsyncCallback<List<IndicatorRow>> callback) {
+    protected void loadIndicators(int siteId, final AsyncCallback<List<IndicatorRowDTO>> callback) {
 
         GetMonthlyReports cmd = new GetMonthlyReports(siteId, startMonth, endMonth);
 
@@ -124,7 +124,7 @@ public class SiteTreeProxy implements DataProxy {
             }
 
             public void onSuccess(MonthlyReportResult result) {
-                for (IndicatorRow row : result.getData()) {
+                for (IndicatorRowDTO row : result.getData()) {
                     row.set("name", row.getIndicatorName());
                 }
                 callback.onSuccess(result.getData());

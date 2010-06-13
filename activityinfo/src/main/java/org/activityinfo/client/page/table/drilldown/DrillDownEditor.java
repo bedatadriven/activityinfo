@@ -15,10 +15,10 @@ import org.activityinfo.client.util.IStateManager;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.GetSites;
 import org.activityinfo.shared.date.DateUtil;
-import org.activityinfo.shared.dto.ActivityModel;
-import org.activityinfo.shared.dto.IndicatorModel;
-import org.activityinfo.shared.dto.Schema;
-import org.activityinfo.shared.dto.SiteModel;
+import org.activityinfo.shared.dto.ActivityDTO;
+import org.activityinfo.shared.dto.IndicatorDTO;
+import org.activityinfo.shared.dto.SchemaDTO;
+import org.activityinfo.shared.dto.SiteDTO;
 import org.activityinfo.shared.report.content.EntityCategory;
 import org.activityinfo.shared.report.content.PivotTableData;
 import org.activityinfo.shared.report.model.DimensionType;
@@ -31,8 +31,8 @@ public class DrillDownEditor extends SiteEditor {
 
     public interface View extends SiteEditor.View {
 
-        void show(SiteEditor presenter, ActivityModel activity, IndicatorModel indicator,
-                  ListStore<SiteModel> store);
+        void show(SiteEditor presenter, ActivityDTO activity, IndicatorDTO indicator,
+                  ListStore<SiteDTO> store);
 
     }
 
@@ -77,20 +77,20 @@ public class DrillDownEditor extends SiteEditor {
         final int indicatorId = effectiveFilter.getRestrictions(DimensionType.Indicator).iterator().next();
         effectiveFilter.clearRestrictions(DimensionType.Indicator);
 
-        service.execute(new GetSchema(), null, new Got<Schema>() {
+        service.execute(new GetSchema(), null, new Got<SchemaDTO>() {
 
             @Override
-            public void got(Schema schema) {
+            public void got(SchemaDTO schema) {
 
-                ActivityModel activity = schema.getActivityByIndicatorId(indicatorId);
-                IndicatorModel indicator = activity.getIndicatorById(indicatorId);
+                ActivityDTO activity = schema.getActivityByIndicatorId(indicatorId);
+                IndicatorDTO indicator = activity.getIndicatorById(indicatorId);
 
                 drill(activity, indicator, effectiveFilter);
             }
         });
     }
 
-    public void drill(ActivityModel activity, IndicatorModel indicator, Filter filter) {
+    public void drill(ActivityDTO activity, IndicatorDTO indicator, Filter filter) {
 
 
         currentActivity = activity;

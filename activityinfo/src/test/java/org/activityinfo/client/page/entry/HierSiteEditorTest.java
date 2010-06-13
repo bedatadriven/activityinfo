@@ -4,17 +4,17 @@ import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.event.SiteEvent;
 import org.activityinfo.client.mock.DummyData;
 import org.activityinfo.client.mock.MockCommandService;
-import org.activityinfo.client.page.entry.HierSiteEditor;
 import org.activityinfo.client.mock.MockEventBus;
 import org.activityinfo.client.mock.MockStateManager;
 import org.activityinfo.server.util.DateUtilCalendarImpl;
 import org.activityinfo.shared.command.GetAdminEntities;
 import org.activityinfo.shared.command.result.AdminEntityResult;
-import org.activityinfo.shared.dto.AdminEntityModel;
-import org.activityinfo.shared.dto.Schema;
-import org.activityinfo.shared.dto.SiteModel;
-import static org.easymock.EasyMock.createNiceMock;
+import org.activityinfo.shared.dto.AdminEntityDTO;
+import org.activityinfo.shared.dto.SchemaDTO;
+import org.activityinfo.shared.dto.SiteDTO;
 import org.junit.Test;
+
+import static org.easymock.EasyMock.createNiceMock;
 /*
  * @author Alex Bertram
  */
@@ -25,7 +25,7 @@ public class HierSiteEditorTest {
     public void testOnSiteCreated() {
 
         // Test Data
-        Schema schema = DummyData.PEARPlus();
+        SchemaDTO schema = DummyData.PEARPlus();
 
         // Collaborator:
         MockEventBus eventBus = new MockEventBus();
@@ -46,11 +46,11 @@ public class HierSiteEditorTest {
         editor.getTreeStore().getLoader().load();
 
         // VERIFY that when a site is created, it is added to the store
-        SiteModel newSite = new SiteModel(3);
+        SiteDTO newSite = new SiteDTO(3);
         newSite.setActivityId(11);
-        newSite.setAdminEntity(1, new AdminEntityModel(1, 1, "Ituri"));
-        newSite.setAdminEntity(2, new AdminEntityModel(2, 11, 1, "Banana"));
-        newSite.setAdminEntity(3, new AdminEntityModel(3, 113, 11, "Zengo"));
+        newSite.setAdminEntity(1, new AdminEntityDTO(1, 1, "Ituri"));
+        newSite.setAdminEntity(2, new AdminEntityDTO(2, 11, 1, "Banana"));
+        newSite.setAdminEntity(3, new AdminEntityDTO(3, 113, 11, "Zengo"));
 
         eventBus.fireEvent(new SiteEvent(AppEvents.SiteCreated, this, newSite));
 

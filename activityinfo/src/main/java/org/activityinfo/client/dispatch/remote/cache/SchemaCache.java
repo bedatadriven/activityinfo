@@ -6,7 +6,7 @@ import org.activityinfo.client.dispatch.DispatchEventSource;
 import org.activityinfo.client.dispatch.DispatchListener;
 import org.activityinfo.shared.command.*;
 import org.activityinfo.shared.command.result.CommandResult;
-import org.activityinfo.shared.dto.Schema;
+import org.activityinfo.shared.dto.SchemaDTO;
 
 /**
  * Caches the user's schema in-memory for the duration of the session.
@@ -18,7 +18,7 @@ import org.activityinfo.shared.dto.Schema;
  */
 public class SchemaCache implements CommandProxy<GetSchema>, DispatchListener {
 
-    protected Schema schema = null;
+    protected SchemaDTO schema = null;
 
     @Inject
     public SchemaCache(DispatchEventSource source) {
@@ -64,7 +64,7 @@ public class SchemaCache implements CommandProxy<GetSchema>, DispatchListener {
     @Override
     public void onSuccess(Command command, CommandResult result) {
         if (command instanceof GetSchema) {
-            cache((Schema) result);
+            cache((SchemaDTO) result);
         } else if (schema != null) {
             if (command instanceof AddPartner) {
                 AddPartner add = (AddPartner) command;
@@ -79,7 +79,7 @@ public class SchemaCache implements CommandProxy<GetSchema>, DispatchListener {
      *
      * @param schema The schema to cache
      */
-    protected void cache(Schema schema) {
+    protected void cache(SchemaDTO schema) {
         this.schema = schema;
     }
 

@@ -1,6 +1,5 @@
 package org.activityinfo.client.page.config.form;
 
-import com.extjs.gxt.ui.client.binding.Converter;
 import com.extjs.gxt.ui.client.binding.FieldBinding;
 import com.extjs.gxt.ui.client.binding.FormBinding;
 import com.extjs.gxt.ui.client.data.BaseListLoader;
@@ -16,7 +15,7 @@ import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.page.common.widget.RemoteComboBox;
 import org.activityinfo.shared.command.GetCountries;
 import org.activityinfo.shared.command.result.CountryResult;
-import org.activityinfo.shared.dto.CountryModel;
+import org.activityinfo.shared.dto.CountryDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
 
 public class DatabaseForm extends FormPanel {
@@ -38,7 +37,7 @@ public class DatabaseForm extends FormPanel {
         binding.addFieldBinding(new FieldBinding(fullNameField, "fullName"));
 		add(fullNameField);
 
-        ComboBox<CountryModel> countryField = new RemoteComboBox<CountryModel>();
+        ComboBox<CountryDTO> countryField = new RemoteComboBox<CountryDTO>();
         countryField.setStore(createCountryStore(dispatcher));
         countryField.setFieldLabel(Application.CONSTANTS.country());
         countryField.setValueField("id");
@@ -47,15 +46,15 @@ public class DatabaseForm extends FormPanel {
         binding.addFieldBinding( new FieldBinding(countryField, "country") {
             @Override
             public void updateModel() {
-                ((UserDatabaseDTO)model).setCountry((CountryModel) field.getValue());
+                ((UserDatabaseDTO)model).setCountry((CountryDTO) field.getValue());
             }
         });
 
         add(countryField);
 	}
 
-    private static ListStore<CountryModel> createCountryStore(final Dispatcher dispatcher) {
-        return new ListStore<CountryModel>(new BaseListLoader<CountryResult>(new DataProxy<CountryResult>(){
+    private static ListStore<CountryDTO> createCountryStore(final Dispatcher dispatcher) {
+        return new ListStore<CountryDTO>(new BaseListLoader<CountryResult>(new DataProxy<CountryResult>(){
             @Override
             public void load(DataReader<CountryResult> countryResultDataReader, Object loadConfig, final AsyncCallback<CountryResult> callback) {
                 dispatcher.execute(new GetCountries(), null, callback);

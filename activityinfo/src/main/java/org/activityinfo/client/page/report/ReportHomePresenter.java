@@ -23,17 +23,17 @@ import org.activityinfo.client.page.common.grid.GridView;
 import org.activityinfo.client.util.IStateManager;
 import org.activityinfo.shared.command.*;
 import org.activityinfo.shared.command.result.CreateResult;
-import org.activityinfo.shared.dto.ReportTemplateDTO;
+import org.activityinfo.shared.dto.ReportDefinitionDTO;
 /*
  * @author Alex Bertram
  */
 
-public class ReportHomePresenter extends AbstractEditorGridPresenter<ReportTemplateDTO> {
+public class ReportHomePresenter extends AbstractEditorGridPresenter<ReportDefinitionDTO> {
 
 
     @ImplementedBy(ReportGrid.class)
-    public interface View extends GridView<ReportHomePresenter, ReportTemplateDTO> {
-        public void init(ReportHomePresenter presenter, ListStore<ReportTemplateDTO> store);
+    public interface View extends GridView<ReportHomePresenter, ReportDefinitionDTO> {
+        public void init(ReportHomePresenter presenter, ListStore<ReportDefinitionDTO> store);
     }
 
     private final EventBus eventBus;
@@ -41,7 +41,7 @@ public class ReportHomePresenter extends AbstractEditorGridPresenter<ReportTempl
     private final View view;
 
     private ListCmdLoader loader;
-    private GroupingStore<ReportTemplateDTO> store;
+    private GroupingStore<ReportDefinitionDTO> store;
 
     @Inject
     public ReportHomePresenter(EventBus eventBus, Dispatcher service, IStateManager stateMgr, View view) {
@@ -54,7 +54,7 @@ public class ReportHomePresenter extends AbstractEditorGridPresenter<ReportTempl
         loader.setCommand(new GetReportTemplates());
         loader.setRemoteSort(false);
 
-        store = new GroupingStore<ReportTemplateDTO>(loader);
+        store = new GroupingStore<ReportDefinitionDTO>(loader);
         store.groupBy("databaseName");
 
         this.view.init(this, store);
@@ -71,7 +71,7 @@ public class ReportHomePresenter extends AbstractEditorGridPresenter<ReportTempl
     protected Command createSaveCommand() {
         BatchCommand batch = new BatchCommand();
         for (Record record : store.getModifiedRecords()) {
-            ReportTemplateDTO report = (ReportTemplateDTO) record.getModel();
+            ReportDefinitionDTO report = (ReportDefinitionDTO) record.getModel();
             batch.add(new UpdateSubscription(
                     report.getId(),
                     report.isSubscribed()));
@@ -80,7 +80,7 @@ public class ReportHomePresenter extends AbstractEditorGridPresenter<ReportTempl
     }
 
     @Override
-    public Store<ReportTemplateDTO> getStore() {
+    public Store<ReportDefinitionDTO> getStore() {
         return store;
     }
 
@@ -89,7 +89,7 @@ public class ReportHomePresenter extends AbstractEditorGridPresenter<ReportTempl
         return "reportGrid";
     }
 
-    public void onSelectionChanged(ReportTemplateDTO selectedItem) {
+    public void onSelectionChanged(ReportDefinitionDTO selectedItem) {
 
     }
 
@@ -109,7 +109,7 @@ public class ReportHomePresenter extends AbstractEditorGridPresenter<ReportTempl
         return null;
     }
 
-    public void onTemplateSelected(ReportTemplateDTO dto) {
+    public void onTemplateSelected(ReportDefinitionDTO dto) {
         eventBus.fireEvent(new NavigationEvent(PageManager.NavigationRequested,
                 new ReportPreviewPlace(dto.getId())));
     }

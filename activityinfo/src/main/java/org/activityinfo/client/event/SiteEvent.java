@@ -2,7 +2,7 @@ package org.activityinfo.client.event;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.EventType;
-import org.activityinfo.shared.dto.SiteModel;
+import org.activityinfo.shared.dto.SiteDTO;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -10,9 +10,9 @@ import org.activityinfo.shared.dto.SiteModel;
 public class SiteEvent extends BaseEvent {
 
     private int siteId;
-    private SiteModel site;
+    private SiteDTO site;
     
-    public SiteEvent(EventType type, Object source, SiteModel site) {
+    public SiteEvent(EventType type, Object source, SiteDTO site) {
         super(type);
         this.setSource(source);
         this.site = site;
@@ -25,7 +25,7 @@ public class SiteEvent extends BaseEvent {
         this.siteId = siteId;
     }
 
-    public SiteModel getSite() {
+    public SiteDTO getSite() {
         return site;
     }
 

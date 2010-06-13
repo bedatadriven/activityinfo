@@ -22,7 +22,7 @@
     <mapping wildcard="true">
 
 		<class-a>org.activityinfo.server.domain.Activity</class-a>
-		<class-b>org.activityinfo.shared.dto.ActivityModel</class-b>
+		<class-b>org.activityinfo.shared.dto.ActivityDTO</class-b>
 
         <field-exclude>
             <a>database</a>
@@ -39,7 +39,7 @@
 	<mapping wildcard="true">
 		
 		<class-a>org.activityinfo.server.domain.UserPermission</class-a>
-		<class-b>org.activityinfo.shared.dto.UserModel</class-b>
+		<class-b>org.activityinfo.shared.dto.UserPermissionDTO</class-b>
 		
 		<field>
 			<a>user.name</a>
@@ -55,7 +55,7 @@
 	<mapping wildcard="true">
 		
 		<class-a>org.activityinfo.server.domain.Indicator</class-a>
-		<class-b>org.activityinfo.shared.dto.IndicatorModel</class-b>
+		<class-b>org.activityinfo.shared.dto.IndicatorDTO</class-b>
 		
 		<field type="one-way">
 			<a>id</a>

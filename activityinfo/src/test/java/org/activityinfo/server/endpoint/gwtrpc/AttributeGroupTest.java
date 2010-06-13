@@ -5,9 +5,9 @@ import org.activityinfo.shared.command.CreateEntity;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.UpdateEntity;
 import org.activityinfo.shared.command.result.CreateResult;
-import org.activityinfo.shared.dto.ActivityModel;
-import org.activityinfo.shared.dto.AttributeGroupModel;
-import org.activityinfo.shared.dto.Schema;
+import org.activityinfo.shared.dto.ActivityDTO;
+import org.activityinfo.shared.dto.AttributeGroupDTO;
+import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.test.InjectionSupport;
 import org.junit.Assert;
 import org.junit.Before;
@@ -43,10 +43,10 @@ public class AttributeGroupTest extends CommandTestCase {
 
         // check if it has been added
 
-        Schema schema = execute(new GetSchema());
+        SchemaDTO schema = execute(new GetSchema());
 
-        ActivityModel activity = schema.getActivityById(1);
-        AttributeGroupModel group = activity.getAttributeGroupById(result.getNewId());
+        ActivityDTO activity = schema.getActivityById(1);
+        AttributeGroupDTO group = activity.getAttributeGroupById(result.getNewId());
 
         Assert.assertNotNull("attribute group is created", group);
         Assert.assertEquals("name is correct", group.getName(), "Type de Conflit");
@@ -59,11 +59,11 @@ public class AttributeGroupTest extends CommandTestCase {
 
         // initial data load
 
-        Schema schema = execute(new GetSchema());
+        SchemaDTO schema = execute(new GetSchema());
 
         // change the name of an entity group
-        ActivityModel activity = schema.getActivityById(1);
-        AttributeGroupModel group = activity.getAttributeGroups().get(0);
+        ActivityDTO activity = schema.getActivityById(1);
+        AttributeGroupDTO group = activity.getAttributeGroups().get(0);
         group.setName("Foobar");
 
         Map<String, Object> changes = new HashMap<String, Object>();

@@ -2,9 +2,15 @@ package org.activityinfo.shared.dto;
 
 import com.extjs.gxt.ui.client.data.BaseModel;
 
-public class UserModel extends BaseModel implements DTO {
+/**
+ * Projection DTO of the {@link org.activityinfo.server.domain.UserPermission UserPermission}
+ * domain object
+ *
+ * @author Alex Bertram
+ */
+public final class UserPermissionDTO extends BaseModel implements DTO {
 
-    public UserModel() {
+    public UserPermissionDTO() {
         setAllowView(true);
         setAllowViewAll(false);
         setAllowEdit(false);
@@ -18,6 +24,11 @@ public class UserModel extends BaseModel implements DTO {
         set("name", value);
     }
 
+    /**
+     * Returns the User's name.
+     *
+     * @return the user's name
+     */
     public String getName() {
         return get("name");
     }
@@ -26,6 +37,11 @@ public class UserModel extends BaseModel implements DTO {
         set("email", value);
     }
 
+    /**
+     * Returns the User's email
+     *
+     * @return the User's email
+     */
     public String getEmail() {
         return get("email");
     }
@@ -86,11 +102,11 @@ public class UserModel extends BaseModel implements DTO {
         set("allowManageAllUsers", allowManageAll);
     }
 
-    public PartnerModel getPartner() {
+    public PartnerDTO getPartner() {
         return get("partner");
     }
 
-    public void setPartner(PartnerModel value) {
+    public void setPartner(PartnerDTO value) {
         set("partner", value);
     }
 }

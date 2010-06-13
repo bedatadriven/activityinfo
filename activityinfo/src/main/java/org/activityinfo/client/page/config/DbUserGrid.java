@@ -16,7 +16,7 @@ import org.activityinfo.client.page.common.grid.AbstractEditorGridView;
 import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.client.page.config.form.UserForm;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
-import org.activityinfo.shared.dto.UserModel;
+import org.activityinfo.shared.dto.UserPermissionDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,10 +24,10 @@ import java.util.List;
 /**
  * @author Alex Bertram
  */
-public class DbUserGrid extends AbstractEditorGridView<UserModel, DbUserEditor>
+public class DbUserGrid extends AbstractEditorGridView<UserPermissionDTO, DbUserEditor>
         implements DbUserEditor.View {
 
-    protected EditorGrid<UserModel> grid;
+    protected EditorGrid<UserPermissionDTO> grid;
     protected UserDatabaseDTO db;
 
     public DbUserGrid() {
@@ -35,7 +35,7 @@ public class DbUserGrid extends AbstractEditorGridView<UserModel, DbUserEditor>
         setLayout(new FitLayout());
     }
 
-    public void init(DbUserEditor presenter, UserDatabaseDTO db, ListStore<UserModel> store) {
+    public void init(DbUserEditor presenter, UserDatabaseDTO db, ListStore<UserPermissionDTO> store) {
         this.db = db;
         super.init(presenter, store);
         this.setHeading(db.getName() + " - " + Application.CONSTANTS.users());
@@ -43,7 +43,7 @@ public class DbUserGrid extends AbstractEditorGridView<UserModel, DbUserEditor>
 
 
     @Override
-    protected Grid<UserModel> createGridAndAddToContainer(Store store) {
+    protected Grid<UserPermissionDTO> createGridAndAddToContainer(Store store) {
 
         final List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
@@ -100,8 +100,8 @@ public class DbUserGrid extends AbstractEditorGridView<UserModel, DbUserEditor>
             columns.add(allowDesign);
         }
 
-        final ListStore<UserModel> listStore = (ListStore) store;
-        grid = new EditorGrid<UserModel>(listStore, new ColumnModel(columns));
+        final ListStore<UserPermissionDTO> listStore = (ListStore) store;
+        grid = new EditorGrid<UserPermissionDTO>(listStore, new ColumnModel(columns));
         grid.setLoadMask(true);
         if (allowDesign != null) grid.addPlugin(allowDesign);
         //   grid.addPlugin(allowView);
@@ -135,7 +135,7 @@ public class DbUserGrid extends AbstractEditorGridView<UserModel, DbUserEditor>
         toolBar.addButton(UIActions.delete, Application.CONSTANTS.delete(), Application.ICONS.deleteUser());
     }
 
-    public FormDialogTether showNewForm(UserModel user, FormDialogCallback callback) {
+    public FormDialogTether showNewForm(UserPermissionDTO user, FormDialogCallback callback) {
 
         UserForm form = new UserForm(db);
         form.getBinding().bind(user);

@@ -1,7 +1,7 @@
 package org.activityinfo.client.page.entry.editor;
 
-import org.activityinfo.shared.dto.Bounds;
-import org.activityinfo.shared.dto.SiteModel;
+import org.activityinfo.shared.dto.BoundingBoxDTO;
+import org.activityinfo.shared.dto.SiteDTO;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -13,7 +13,7 @@ public class MapPresenter {
 
         public void init(MapPresenter presenter);
 
-        public void setBounds(String name, Bounds bounds);
+        public void setBounds(String name, BoundingBoxDTO bounds);
 
         public void setCoords(Double lat, Double lng);
 
@@ -23,29 +23,29 @@ public class MapPresenter {
 
         public void setMarkerPos(double lat, double lng);
 
-        public void setMapView(Bounds bounds);
+        public void setMapView(BoundingBoxDTO bounds);
 
-        public Bounds getMapView();
+        public BoundingBoxDTO getMapView();
 
         public void panTo(double lat, double lng);
     }
 
-    private Bounds bounds;
+    private BoundingBoxDTO bounds;
     private View view;
 
     public MapPresenter(View view) {
         this.view = view;
         this.view.init(this);
-        this.bounds = new Bounds(-180, -90, 180, 90);
+        this.bounds = new BoundingBoxDTO(-180, -90, 180, 90);
     }
 
-    public void setSite(SiteModel site, String name, Bounds bounds) {
+    public void setSite(SiteDTO site, String name, BoundingBoxDTO bounds) {
 
         setBounds(name, bounds);
 
     }
 
-    public void setBounds(String name, Bounds bounds) {
+    public void setBounds(String name, BoundingBoxDTO bounds) {
         this.bounds = bounds;
         view.setBounds(name, bounds);
         view.setMapView(bounds);
@@ -86,7 +86,7 @@ public class MapPresenter {
         }
     }
 
-    public void onMapViewChanged(Bounds newBounds) {
+    public void onMapViewChanged(BoundingBoxDTO newBounds) {
 
     }
 

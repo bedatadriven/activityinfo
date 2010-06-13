@@ -1,30 +1,33 @@
 package org.activityinfo.shared.dto;
 
-import com.extjs.gxt.ui.client.data.BaseModel;
+import com.extjs.gxt.ui.client.data.BaseModelData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
-public class ActivityModel extends BaseModel implements EntityDTO {
+/**
+ * One-to-one DTO for the {@link org.activityinfo.server.domain.Activity} domain object.
+ *
+ * @author Alex Bertram
+ */
+public final class ActivityDTO extends BaseModelData implements EntityDTO {
 
     public final static int REPORT_ONCE = 0;
     public static final int REPORT_MONTHLY = 1;
 
     private UserDatabaseDTO database;
 
-    private List<IndicatorModel> indicators = new ArrayList<IndicatorModel>(0);
-    private List<AttributeGroupModel> attributeGroups = new ArrayList<AttributeGroupModel>(0);
+    private List<IndicatorDTO> indicators = new ArrayList<IndicatorDTO>(0);
+    private List<AttributeGroupDTO> attributeGroups = new ArrayList<AttributeGroupDTO>(0);
 
-    public ActivityModel() {
+    public ActivityDTO() {
         setAssessment(false);
         setReportingFrequency(REPORT_ONCE);
-        setAllowEdit(true);
     }
 
-    public ActivityModel(Map<String,Object> properties) {
+    public ActivityDTO(Map<String,Object> properties) {
         super(properties);  
     }
 
@@ -33,20 +36,20 @@ public class ActivityModel extends BaseModel implements EntityDTO {
      *
      * @param model
      */
-    public ActivityModel(ActivityModel model) {
+    public ActivityDTO(ActivityDTO model) {
         super(model.getProperties());
         this.database = model.getDatabase();
         this.setIndicators(model.getIndicators());
         this.setAttributeGroups(model.getAttributeGroups());
     }
 
-    public ActivityModel(int id, String name) {
+    public ActivityDTO(int id, String name) {
         this();
         setId(id);
         setName(name);
     }
 
-    public ActivityModel(UserDatabaseDTO db) {
+    public ActivityDTO(UserDatabaseDTO db) {
         setDatabase(db);
     }
 
@@ -75,22 +78,22 @@ public class ActivityModel extends BaseModel implements EntityDTO {
         this.database = database;
     }
 
-    public List<IndicatorModel> getIndicators()
+    public List<IndicatorDTO> getIndicators()
     {
         return indicators;
     }
 
-    public void setIndicators(List<IndicatorModel> indicators)
+    public void setIndicators(List<IndicatorDTO> indicators)
     {
         this.indicators = indicators;
     }
 
-    public List<AttributeGroupModel> getAttributeGroups()
+    public List<AttributeGroupDTO> getAttributeGroups()
     {
         return attributeGroups;
     }
 
-    public void setAttributeGroups(List<AttributeGroupModel> attributes) {
+    public void setAttributeGroups(List<AttributeGroupDTO> attributes) {
         this.attributeGroups = attributes;
     }
 
@@ -111,15 +114,6 @@ public class ActivityModel extends BaseModel implements EntityDTO {
         return (Integer)get("reportingFrequency");
     }
 
-    public void setAllowEdit(boolean value) {
-        set("allowEdit", value);
-    }
-
-    public boolean getAllowEdit()
-    {
-        return (Boolean)get("allowEdit");
-    }
-
 
     public void setLocationTypeId(int id) {
         set("locationTypeId", id);
@@ -130,22 +124,22 @@ public class ActivityModel extends BaseModel implements EntityDTO {
         return (Integer)get("locationTypeId");
     }
 
-    public LocationTypeModel getLocationType() {
+    public LocationTypeDTO getLocationType() {
         return getDatabase().getCountry().getLocationTypeById(getLocationTypeId());
     }
 
 
-    public AttributeModel getAttributeById(int id) {
-        for(AttributeGroupModel group : attributeGroups) {
-            AttributeModel attribute = Schema.getById(group.getAttributes(), id);
+    public AttributeDTO getAttributeById(int id) {
+        for(AttributeGroupDTO group : attributeGroups) {
+            AttributeDTO attribute = SchemaDTO.getById(group.getAttributes(), id);
             if(attribute!=null)
                 return attribute;
         }
         return null;
     }
 
-    public IndicatorModel getIndicatorById(int indicatorId) {
-        for(IndicatorModel indicator : indicators) {
+    public IndicatorDTO getIndicatorById(int indicatorId) {
+        for(IndicatorDTO indicator : indicators) {
             if(indicator.getId() == indicatorId) {
                 return indicator;
             }
@@ -165,7 +159,7 @@ public class ActivityModel extends BaseModel implements EntityDTO {
         List<IndicatorGroup> groups = new ArrayList<IndicatorGroup>();
         Map<String, IndicatorGroup> map = new HashMap<String, IndicatorGroup>();
 
-        for(IndicatorModel indicator : indicators) {
+        for(IndicatorDTO indicator : indicators) {
             String category = indicator.getCategory();
             IndicatorGroup group = map.get(category);
             if(group == null) {
@@ -195,13 +189,13 @@ public class ActivityModel extends BaseModel implements EntityDTO {
      * @return The list of admin levels that are relevant for the
      * level of aggregation of this activity
      */
-    public List<AdminLevelModel> getAdminLevels() {
+    public List<AdminLevelDTO> getAdminLevels() {
         if(getLocationType().isAdminLevel()) {
 
             // if this activity is bound to an administative
             // level, then we need only as far down as this goes
 
-            return getDatabase().getCountry().getAncestors(
+            return getDatabase().getCountry().getAdminLevelAncestors(
                     getLocationType().getBoundAdminLevelId());
         } else {
 
@@ -212,8 +206,8 @@ public class ActivityModel extends BaseModel implements EntityDTO {
     }
 
 
-    public AttributeGroupModel getAttributeGroupById(int id) {
-        for(AttributeGroupModel group : attributeGroups) {
+    public AttributeGroupDTO getAttributeGroupById(int id) {
+        for(AttributeGroupDTO group : attributeGroups) {
             if(group.getId()==id)
                 return group;
 

@@ -20,19 +20,19 @@
 package org.activityinfo.server.endpoint.gwtrpc;
 
 import com.google.inject.Inject;
-import org.activityinfo.server.util.BeanMappingModule;
 import org.activityinfo.server.domain.AdminLevel;
 import org.activityinfo.server.domain.Bounds;
 import org.activityinfo.server.domain.Country;
 import org.activityinfo.server.domain.LocationType;
-import org.activityinfo.shared.dto.CountryModel;
+import org.activityinfo.server.util.BeanMappingModule;
+import org.activityinfo.shared.dto.CountryDTO;
 import org.activityinfo.test.InjectionSupport;
 import org.activityinfo.test.Modules;
 import org.dozer.Mapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -53,7 +53,7 @@ public class CountryNameOnlyBeanMappingTest {
         country.getAdminLevels().add(new AdminLevel(1, country, "Province", false));
         country.setBounds(new Bounds());
 
-        CountryModel dto = mapper.map(country, CountryModel.class, "countryNameOnly");
+        CountryDTO dto = mapper.map(country, CountryDTO.class, "countryNameOnly");
 
         assertThat(dto.getName(), equalTo(country.getName()));
         assertTrue(dto.getAdminLevels().isEmpty());

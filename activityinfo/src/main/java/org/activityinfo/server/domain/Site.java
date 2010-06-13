@@ -80,9 +80,7 @@ public class Site implements java.io.Serializable, Deleteable {
 	private Set<Site> interventions = new HashSet<Site>(0);
 
     public Site() {
-		
 		Date now = new Date();
-		
 		setDateCreated(now);
 		setDateEdited(now);
 	}

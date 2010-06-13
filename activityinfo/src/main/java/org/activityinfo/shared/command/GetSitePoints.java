@@ -1,11 +1,11 @@
 package org.activityinfo.shared.command;
 
-import org.activityinfo.shared.dto.SitePointCollection;
+import org.activityinfo.shared.command.result.SitePointList;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class GetSitePoints implements Command<SitePointCollection> {
+public class GetSitePoints implements Command<SitePointList> {
 
     private int activityId;
 

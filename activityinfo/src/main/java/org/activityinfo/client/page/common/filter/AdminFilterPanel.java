@@ -15,8 +15,8 @@ import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.page.common.widget.RemoteComboBox;
-import org.activityinfo.shared.dto.AdminEntityModel;
-import org.activityinfo.shared.dto.AdminLevelModel;
+import org.activityinfo.shared.dto.AdminEntityDTO;
+import org.activityinfo.shared.dto.AdminLevelDTO;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,11 +28,11 @@ import java.util.List;
 public class AdminFilterPanel extends ContentPanel {
 
     private final Dispatcher service;
-    private TreeStore<AdminEntityModel> store;
+    private TreeStore<AdminEntityDTO> store;
     private AdminTreeLoader loader;
-    private ComboBox<AdminLevelModel> levelCombo;
+    private ComboBox<AdminLevelDTO> levelCombo;
 
-    private TreePanel<AdminEntityModel> tree;
+    private TreePanel<AdminEntityDTO> tree;
 
     public AdminFilterPanel(Dispatcher service) {
         this.service = service;
@@ -44,9 +44,9 @@ public class AdminFilterPanel extends ContentPanel {
 
 
         loader = new AdminTreeLoader(service);
-        store = new TreeStore<AdminEntityModel>(loader);
+        store = new TreeStore<AdminEntityDTO>(loader);
 
-        tree = new TreePanel<AdminEntityModel>(store);
+        tree = new TreePanel<AdminEntityDTO>(store);
 
         tree.setCheckable(true);
         tree.setCheckNodes(TreePanel.CheckNodes.BOTH);
@@ -68,10 +68,10 @@ public class AdminFilterPanel extends ContentPanel {
         //toolBar.add(new LabelToolItem(Application.CONSTANTS.filter()));
         toolBar.setEnableOverflow(false);
 
-        ListLoader<AdminLevelModel> loader = new BaseListLoader(new AdminLevelProxy(service));
-        final ListStore<AdminLevelModel> store = new ListStore<AdminLevelModel>(loader);
+        ListLoader<AdminLevelDTO> loader = new BaseListLoader(new AdminLevelProxy(service));
+        final ListStore<AdminLevelDTO> store = new ListStore<AdminLevelDTO>(loader);
 
-        levelCombo = new RemoteComboBox<AdminLevelModel>();
+        levelCombo = new RemoteComboBox<AdminLevelDTO>();
         levelCombo.setStore(store);
         levelCombo.setDisplayField("name");
         levelCombo.setValueField("id");
@@ -91,7 +91,7 @@ public class AdminFilterPanel extends ContentPanel {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 levelCombo.setValue(null);
-                onHierarchyChanged(Collections.<AdminLevelModel>emptyList());
+                onHierarchyChanged(Collections.<AdminLevelDTO>emptyList());
             }
         });
         //toolBar.add(clear);    // this button was creating layout problems and is not essential
@@ -99,12 +99,12 @@ public class AdminFilterPanel extends ContentPanel {
         setTopComponent(toolBar);
     }
 
-    protected List<AdminLevelModel> buildHierarchy(List<AdminLevelModel> levels, AdminLevelModel selected) {
-        List<AdminLevelModel> list = new ArrayList<AdminLevelModel>();
+    protected List<AdminLevelDTO> buildHierarchy(List<AdminLevelDTO> levels, AdminLevelDTO selected) {
+        List<AdminLevelDTO> list = new ArrayList<AdminLevelDTO>();
         list.add(selected);
 
         while (selected.getParentLevelId() != null) {
-            for (AdminLevelModel level : levels) {
+            for (AdminLevelDTO level : levels) {
                 if (level.getId() == selected.getParentLevelId()) {
                     list.add(level);
                     selected = level;
@@ -117,22 +117,22 @@ public class AdminFilterPanel extends ContentPanel {
         return list;
     }
 
-    protected void onHierarchyChanged(List<AdminLevelModel> hierarchy) {
+    protected void onHierarchyChanged(List<AdminLevelDTO> hierarchy) {
         loader.setHierarchy(hierarchy);
         store.removeAll();
         loader.load();
     }
 
-    public List<AdminEntityModel> getSelection() {
-        List<AdminEntityModel> checked = tree.getCheckedSelection();
-        List<AdminEntityModel> selected = new ArrayList<AdminEntityModel>();
+    public List<AdminEntityDTO> getSelection() {
+        List<AdminEntityDTO> checked = tree.getCheckedSelection();
+        List<AdminEntityDTO> selected = new ArrayList<AdminEntityDTO>();
 
         if (levelCombo.getValue() == null) {
             return selected;
         }
         int filterLevelId = levelCombo.getValue().getId();
 
-        for (AdminEntityModel entity : checked) {
+        for (AdminEntityDTO entity : checked) {
             if (entity.getLevelId() == filterLevelId) {
                 selected.add(entity);
             }

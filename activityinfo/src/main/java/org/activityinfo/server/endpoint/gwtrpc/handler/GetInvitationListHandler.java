@@ -25,7 +25,7 @@ import org.activityinfo.server.domain.*;
 import org.activityinfo.shared.command.GetInvitationList;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.command.result.InvitationList;
-import org.activityinfo.shared.dto.InvitationRow;
+import org.activityinfo.shared.dto.ReportSubscriptionDTO;
 import org.activityinfo.shared.exception.CommandException;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -90,9 +90,9 @@ public class GetInvitationListHandler implements CommandHandler<GetInvitationLis
 
         List<User> users = criteria.list();
 
-        List<InvitationRow> dtos = new ArrayList<InvitationRow>(users.size());
+        List<ReportSubscriptionDTO> dtos = new ArrayList<ReportSubscriptionDTO>(users.size());
         for (User user : users) {
-            InvitationRow dto = new InvitationRow();
+            ReportSubscriptionDTO dto = new ReportSubscriptionDTO();
             dto.setUserId(user.getId());
             dto.setUserName(user.getName());
             dto.setUserEmail(user.getEmail());

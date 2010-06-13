@@ -26,9 +26,9 @@ public class CreateEntity implements Command<CreateResult> {
     private String entityName;
     private RpcMap properties;
 
-    private AdminEntityModel entity_;
-    private PartnerModel partner_;
-    private LocationTypeModel locationType_;
+    private AdminEntityDTO entity_;
+    private PartnerDTO partner_;
+    private LocationTypeDTO locationType_;
 
     public CreateEntity() {
 
@@ -82,13 +82,13 @@ public class CreateEntity implements Command<CreateResult> {
         this.properties = properties;
     }
 
-    public static Command<CreateResult> Activity(UserDatabaseDTO db, ActivityModel act) {
+    public static Command<CreateResult> Activity(UserDatabaseDTO db, ActivityDTO act) {
         CreateEntity cmd = new CreateEntity("Activity", act.getProperties());
         cmd.properties.put("databaseId", db.getId());
         return cmd;
     }
 
-    public static CreateEntity Site(SiteModel newSite) {
+    public static CreateEntity Site(SiteDTO newSite) {
         CreateEntity cmd = new CreateEntity("Site", newSite.getProperties());
         cmd.properties.put("activityId", newSite.getActivityId());
 

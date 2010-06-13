@@ -5,7 +5,7 @@ import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.RemoteCommandServiceAsync;
 import org.activityinfo.shared.command.result.CommandResult;
-import org.activityinfo.shared.dto.Schema;
+import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.exception.CommandException;
 
 import java.util.ArrayList;
@@ -20,13 +20,13 @@ public class MockRemoteCommandService implements RemoteCommandServiceAsync {
 
     public Map<Class, Integer> commandCounts = new HashMap<Class, Integer>();
 
-    public Schema schema;
+    public SchemaDTO schema;
     
     public MockRemoteCommandService() {
     	
     }
     
-    public MockRemoteCommandService(Schema schema) {
+    public MockRemoteCommandService(SchemaDTO schema) {
     	this.schema = schema;
     }
 

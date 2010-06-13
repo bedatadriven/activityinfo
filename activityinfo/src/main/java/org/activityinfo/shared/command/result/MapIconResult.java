@@ -1,6 +1,6 @@
 package org.activityinfo.shared.command.result;
 
-import org.activityinfo.shared.dto.MapIconModel;
+import org.activityinfo.shared.dto.MapIconDTO;
 
 import java.util.List;
 
@@ -10,12 +10,12 @@ import java.util.List;
  *
  * @author Alex Bertram
  */
-public class MapIconResult extends ListResult<MapIconModel> {
+public class MapIconResult extends ListResult<MapIconDTO> {
 
     public MapIconResult() {
     }
 
-    public MapIconResult(List<MapIconModel> data) {
+    public MapIconResult(List<MapIconDTO> data) {
         super(data);
     }
 }

@@ -28,20 +28,20 @@ import org.activityinfo.shared.command.UpdateUserPermissions;
 import org.activityinfo.shared.command.result.UserResult;
 import org.activityinfo.shared.command.result.VoidResult;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
-import org.activityinfo.shared.dto.UserModel;
+import org.activityinfo.shared.dto.UserPermissionDTO;
 /*
  * @author Alex Bertram
  */
 
-public class DbUserEditor extends AbstractEditorGridPresenter<UserModel>
-        implements GridPresenter<UserModel> {
+public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO>
+        implements GridPresenter<UserPermissionDTO> {
 
     @ImplementedBy(DbUserGrid.class)
-    public interface View extends GridView<DbUserEditor, UserModel> {
+    public interface View extends GridView<DbUserEditor, UserPermissionDTO> {
 
-        public void init(DbUserEditor presenter, UserDatabaseDTO db, ListStore<UserModel> store);
+        public void init(DbUserEditor presenter, UserDatabaseDTO db, ListStore<UserPermissionDTO> store);
 
-        public FormDialogTether showNewForm(UserModel user, FormDialogCallback callback);
+        public FormDialogTether showNewForm(UserPermissionDTO user, FormDialogCallback callback);
     }
 
     private final EventBus eventBus;
@@ -50,7 +50,7 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserModel>
 
     private UserDatabaseDTO db;
 
-    private ListStore<UserModel> store;
+    private ListStore<UserPermissionDTO> store;
     private PagingCmdLoader<UserResult> loader;
 
     @Inject
@@ -68,9 +68,9 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserModel>
         loader.setCommand(new GetUsers(db.getId()));
         initLoaderDefaults(loader, place, new SortInfo("name", Style.SortDir.ASC));
 
-        store = new ListStore<UserModel>(loader);
-        store.setKeyProvider(new ModelKeyProvider<UserModel>() {
-            public String getKey(UserModel model) {
+        store = new ListStore<UserPermissionDTO>(loader);
+        store.setKeyProvider(new ModelKeyProvider<UserPermissionDTO>() {
+            public String getKey(UserPermissionDTO model) {
                 return model.getEmail();
             }
         });
@@ -89,7 +89,7 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserModel>
     }
 
     @Override
-    public ListStore<UserModel> getStore() {
+    public ListStore<UserPermissionDTO> getStore() {
         return store;
     }
 
@@ -110,7 +110,7 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserModel>
         }
     }
 
-    public void onSelectionChanged(UserModel selectedItem) {
+    public void onSelectionChanged(UserPermissionDTO selectedItem) {
         if (selectedItem != null) {
             view.setActionEnabled(UIActions.delete, db.isManageAllUsersAllowed() ||
                     (db.isManageUsersAllowed() && db.getMyPartnerId() == selectedItem.getPartner().getId()));
@@ -119,7 +119,7 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserModel>
     }
 
     @Override
-    public void onDeleteConfirmed(final UserModel model) {
+    public void onDeleteConfirmed(final UserPermissionDTO model) {
         model.setAllowView(false);
         model.setAllowViewAll(false);
         model.setAllowEdit(false);
@@ -138,7 +138,7 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserModel>
         });
     }
 
-    public boolean validateChange(UserModel user, String property, boolean value) {
+    public boolean validateChange(UserPermissionDTO user, String property, boolean value) {
 
         // If the user doesn't have the manageUser permission, then it's definitely
         // a no.
@@ -173,7 +173,7 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserModel>
         BatchCommand batch = new BatchCommand();
 
         for (Record record : store.getModifiedRecords()) {
-            batch.add(new UpdateUserPermissions(db.getId(), (UserModel) record.getModel()));
+            batch.add(new UpdateUserPermissions(db.getId(), (UserPermissionDTO) record.getModel()));
         }
         return batch;
     }
@@ -181,7 +181,7 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserModel>
     @Override
     protected void onAdd() {
 
-        final UserModel newUser = new UserModel();
+        final UserPermissionDTO newUser = new UserPermissionDTO();
         newUser.setAllowView(true);
 
         view.showNewForm(newUser, new FormDialogCallback() {

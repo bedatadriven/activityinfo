@@ -11,7 +11,7 @@ import org.activityinfo.client.page.Pages;
 import org.activityinfo.client.page.common.nav.Link;
 import org.activityinfo.client.page.common.nav.Navigator;
 import org.activityinfo.shared.command.GetSchema;
-import org.activityinfo.shared.dto.Schema;
+import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
 import org.activityinfo.shared.i18n.UIConstants;
 
@@ -91,9 +91,9 @@ public class ConfigNavigator implements Navigator {
     }
 
     public void loadDbList(final AsyncCallback<List<Link>> callback) {
-        service.execute(new GetSchema(), null, new Got<Schema>() {
+        service.execute(new GetSchema(), null, new Got<SchemaDTO>() {
             @Override
-            public void got(Schema result) {
+            public void got(SchemaDTO result) {
                 List<Link> list = new ArrayList<Link>();
                 for (UserDatabaseDTO db : result.getDatabases()) {
                     if (db.isDesignAllowed() || db.isManageUsersAllowed()) {

@@ -7,8 +7,8 @@ import org.activityinfo.server.dao.hibernate.SiteTableDAOHibernate;
 import org.activityinfo.server.domain.SiteData;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.test.InjectionSupport;
-import org.activityinfo.test.Modules;
 import org.activityinfo.test.MockHibernateModule;
+import org.activityinfo.test.Modules;
 import org.hibernate.criterion.Restrictions;
 import org.junit.Assert;
 import org.junit.Test;
@@ -46,17 +46,5 @@ public class SiteDataBinderTest {
         Assert.assertEquals("partner", "NRC", site.getPartnerName());
         Assert.assertEquals("indicator 1", 3600, site.getIndicatorValue(1).intValue());
         Assert.assertEquals("indicator 2", 1200, site.getIndicatorValue(2).intValue());
-
-
-//	<location locationId="2" name="Ngshwe" locationTypeId="1" X="1.323" Y="28.232" version="1"/>
-//	<locationAdminLink locationId="2" adminEntityId="2"/>
-//	<locationAdminLink locationId="2" adminEntityId="11"/>
-//
-//	<site siteId="2" activityId="1" locationId="2" partnerId="1" Status="1" Date1="2009-01-15" Date2="2009-01-16" DateCreated="2009-02-01" DateEdited="2009-02-01" version="1"/>
-//	<attributeValue siteId="2" attributeId="1" value="1"/>
-//	<attributeValue siteId="2" attributeId="2" value="1"/>
-//
-
-
     }
 }

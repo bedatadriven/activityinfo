@@ -3,16 +3,16 @@ package org.activityinfo.client.page.entry.editor;
 import com.extjs.gxt.ui.client.store.ListStore;
 import org.activityinfo.client.mock.DummyData;
 import org.activityinfo.client.mock.MockCommandService;
-import org.activityinfo.client.page.entry.editor.AdminFieldSetPresenter;
 import org.activityinfo.client.page.entry.editor.mock.MockAdminFieldSet;
 import org.activityinfo.shared.command.GetAdminEntities;
-import org.activityinfo.shared.dto.ActivityModel;
-import org.activityinfo.shared.dto.AdminEntityModel;
-import org.activityinfo.shared.dto.Schema;
-import org.activityinfo.shared.dto.SiteModel;
-import static org.easymock.EasyMock.*;
+import org.activityinfo.shared.dto.ActivityDTO;
+import org.activityinfo.shared.dto.AdminEntityDTO;
+import org.activityinfo.shared.dto.SchemaDTO;
+import org.activityinfo.shared.dto.SiteDTO;
 import org.junit.Assert;
 import org.junit.Test;
+
+import static org.easymock.EasyMock.*;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -25,8 +25,8 @@ public class AdminFieldSetTest {
     public void testSetSite() throws Exception {
 
         // Test data
-        Schema schema = DummyData.PEAR();
-        ActivityModel nfi = schema.getActivityById(91);
+        SchemaDTO schema = DummyData.PEAR();
+        ActivityDTO nfi = schema.getActivityById(91);
 
         // Collaborator: command service
         MockCommandService service = new MockCommandService();
@@ -51,7 +51,7 @@ public class AdminFieldSetTest {
 
 
         // VERIFY that the correct command has been set for combos
-        ListStore<AdminEntityModel> store = fieldSet.getStore(2);
+        ListStore<AdminEntityDTO> store = fieldSet.getStore(2);
 
         store.getLoader().load();
 
@@ -63,8 +63,8 @@ public class AdminFieldSetTest {
     public void testInitBlank() throws Exception {
 
         // TEST data
-        Schema schema = DummyData.PEAR();
-        ActivityModel nfi = schema.getActivityById(91);
+        SchemaDTO schema = DummyData.PEAR();
+        ActivityDTO nfi = schema.getActivityById(91);
 
         // Collaborator: Command Service
         MockCommandService service = new MockCommandService();
@@ -74,7 +74,7 @@ public class AdminFieldSetTest {
 
         // CLASS under TEST
         AdminFieldSetPresenter presenter = new AdminFieldSetPresenter(service, nfi, fieldSet);
-        presenter.setSite(new SiteModel());
+        presenter.setSite(new SiteDTO());
 
         // verify that the combos are properly enabled
         Assert.assertTrue("province combo is enabled", fieldSet.getEnabled(1));
@@ -87,8 +87,8 @@ public class AdminFieldSetTest {
 
 
         // Test Data
-        Schema schema = DummyData.PEAR();
-        ActivityModel nfi = schema.getActivityById(91);
+        SchemaDTO schema = DummyData.PEAR();
+        ActivityDTO nfi = schema.getActivityById(91);
 
         // Collaborator: Command Service
         MockCommandService service = new MockCommandService();
@@ -106,7 +106,7 @@ public class AdminFieldSetTest {
         // VERIFY that root level loader is properly configured
         presenter.setSite(DummyData.PEAR_Sites().get(5));
 
-        ListStore<AdminEntityModel> store = fieldSet.getStore(1);
+        ListStore<AdminEntityDTO> store = fieldSet.getStore(1);
         store.getLoader().load();
 
         Assert.assertEquals("province store count", 2, store.getCount());
@@ -128,8 +128,8 @@ public class AdminFieldSetTest {
     public void testCascadeReplace() throws Exception {
 
         // Test data
-        Schema schema = DummyData.PEAR();
-        ActivityModel nfi = schema.getActivityById(91);
+        SchemaDTO schema = DummyData.PEAR();
+        ActivityDTO nfi = schema.getActivityById(91);
 
         // Collaborator: command service
         MockCommandService service = new MockCommandService();
@@ -152,7 +152,7 @@ public class AdminFieldSetTest {
         Assert.assertNull("sector is null", fieldSet.getValue(3));
         Assert.assertFalse("sector is disabled", fieldSet.getEnabled(3));
 
-        ListStore<AdminEntityModel> store = fieldSet.getStore(2);
+        ListStore<AdminEntityDTO> store = fieldSet.getStore(2);
         store.getLoader().load();
 
         Assert.assertEquals("territory store count", 2, store.getCount());
@@ -163,8 +163,8 @@ public class AdminFieldSetTest {
     public void testBounds() {
 
         // Test data
-        Schema schema = DummyData.PEAR();
-        ActivityModel nfi = schema.getActivityById(91);
+        SchemaDTO schema = DummyData.PEAR();
+        ActivityDTO nfi = schema.getActivityById(91);
 
         // Collaborator: command service      
         MockCommandService service = new MockCommandService();
@@ -191,8 +191,8 @@ public class AdminFieldSetTest {
     public void testBoundsChange() {
 
         // Test data
-        Schema schema = DummyData.PEAR();
-        ActivityModel nfi = schema.getActivityById(91);
+        SchemaDTO schema = DummyData.PEAR();
+        ActivityDTO nfi = schema.getActivityById(91);
 
         // Collaborator: command service
         MockCommandService service = new MockCommandService();
@@ -227,8 +227,8 @@ public class AdminFieldSetTest {
     public void testDirtyChecking() throws Exception {
 
         // Test data
-        Schema schema = DummyData.PEAR();
-        ActivityModel nfi = schema.getActivityById(91);
+        SchemaDTO schema = DummyData.PEAR();
+        ActivityDTO nfi = schema.getActivityById(91);
 
         // Collaborator: command service
         MockCommandService service = new MockCommandService();
@@ -245,7 +245,7 @@ public class AdminFieldSetTest {
         Assert.assertFalse(presenter.isDirty());
 
         // VERIFY isDirty returns true after a change
-        fieldSet.setValueAndFire(3, new AdminEntityModel(3, 999, DummyData.Beni.getId(), "Ruizi"));
+        fieldSet.setValueAndFire(3, new AdminEntityDTO(3, 999, DummyData.Beni.getId(), "Ruizi"));
 
         Assert.assertTrue(presenter.isDirty());
 

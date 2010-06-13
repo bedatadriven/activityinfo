@@ -6,7 +6,7 @@ import org.activityinfo.shared.command.result.UserResult;
  * Queries the list of users authorized to access a given
  * {@link org.activityinfo.server.domain.UserDatabase}
  *
- * The resulting {@link org.activityinfo.shared.dto.UserModel} are
+ * The resulting {@link org.activityinfo.shared.dto.UserPermissionDTO} are
  * a projection of the {@link org.activityinfo.server.domain.User},
  * {@link org.activityinfo.server.domain.UserPermission}, and
  * {@link org.activityinfo.server.domain.Partner} entities.

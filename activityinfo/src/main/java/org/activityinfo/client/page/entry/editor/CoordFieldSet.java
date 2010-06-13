@@ -2,7 +2,7 @@ package org.activityinfo.client.page.entry.editor;
 
 import org.activityinfo.client.Application;
 import org.activityinfo.client.page.common.widget.CoordinateField;
-import org.activityinfo.shared.dto.Bounds;
+import org.activityinfo.shared.dto.BoundingBoxDTO;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -35,7 +35,7 @@ public class CoordFieldSet extends AbstractFieldSet implements MapPresenter.View
 
 
     @Override
-    public void setBounds(String name, Bounds bounds) {
+    public void setBounds(String name, BoundingBoxDTO bounds) {
         latField.setBounds(name, bounds.getY1(), bounds.getY2());
         lngField.setBounds(name, bounds.getX1(), bounds.getX2());
     }
@@ -61,8 +61,8 @@ public class CoordFieldSet extends AbstractFieldSet implements MapPresenter.View
     }
 
     @Override
-    public Bounds getMapView() {
-        return new Bounds(-180, -90, 180, 90);
+    public BoundingBoxDTO getMapView() {
+        return new BoundingBoxDTO(-180, -90, 180, 90);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class CoordFieldSet extends AbstractFieldSet implements MapPresenter.View
     }
 
     @Override
-    public void setMapView(Bounds bounds) {
+    public void setMapView(BoundingBoxDTO bounds) {
         // nooop
     }
 

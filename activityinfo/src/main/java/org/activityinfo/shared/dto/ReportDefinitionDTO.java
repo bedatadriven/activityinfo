@@ -3,11 +3,20 @@ package org.activityinfo.shared.dto;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import org.activityinfo.shared.report.model.ReportFrequency;
 
-public class ReportTemplateDTO extends BaseModelData implements DTO {
+/**
+ * One-to-one DTO for the {@link org.activityinfo.server.domain.ReportDefinition} domain class
+ *
+ * @author Alex Bertram
+ */
+public final class ReportDefinitionDTO extends BaseModelData implements DTO {
 
+    /**
+     * Dummy reference to assure that GWT includes ReportFrequency is included
+     * in the list of classes to serialize.
+     */
     private ReportFrequency freq_;
 
-    public ReportTemplateDTO() {
+    public ReportDefinitionDTO() {
 		setFrequency(ReportFrequency.NotDateBound);
 	}
 

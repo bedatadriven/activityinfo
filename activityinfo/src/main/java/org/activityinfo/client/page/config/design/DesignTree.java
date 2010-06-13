@@ -90,15 +90,15 @@ public class DesignTree extends AbstractEditorTreeGridView<ModelData, Designer>
 
         tree.setIconProvider(new ModelIconProvider<ModelData>() {
             public AbstractImagePrototype getIcon(ModelData model) {
-                if (model instanceof ActivityModel) {
+                if (model instanceof ActivityDTO) {
                     return Application.ICONS.activity();
                 } else if (model instanceof Folder) {
                     return GXT.IMAGES.tree_folder_closed();
-                } else if (model instanceof AttributeGroupModel) {
+                } else if (model instanceof AttributeGroupDTO) {
                     return Application.ICONS.attributeGroup();
-                } else if (model instanceof AttributeModel) {
+                } else if (model instanceof AttributeDTO) {
                     return Application.ICONS.attribute();
-                } else if (model instanceof IndicatorModel) {
+                } else if (model instanceof IndicatorDTO) {
                     return Application.ICONS.indicator();
                 } else {
                     return null;
@@ -209,7 +209,7 @@ public class DesignTree extends AbstractEditorTreeGridView<ModelData, Designer>
                 ModelData sel = getSelection();
 
                 newAttributeGroup.setEnabled(sel != null);
-                newAttribute.setEnabled(sel instanceof AttributeGroupModel || sel instanceof AttributeModel);
+                newAttribute.setEnabled(sel instanceof AttributeGroupDTO || sel instanceof AttributeDTO);
                 newIndicator.setEnabled(sel != null);
             }
         });
@@ -266,11 +266,11 @@ public class DesignTree extends AbstractEditorTreeGridView<ModelData, Designer>
 
     protected Class formClassForSelection(ModelData sel) {
 
-        if (sel instanceof ActivityModel) {
+        if (sel instanceof ActivityDTO) {
             return ActivityForm.class;
-        } else if (sel instanceof AttributeGroupModel) {
+        } else if (sel instanceof AttributeGroupDTO) {
             return AttributeGroupForm.class;
-        } else if (sel instanceof IndicatorModel) {
+        } else if (sel instanceof IndicatorDTO) {
             return IndicatorForm.class;
         }
 
@@ -279,13 +279,13 @@ public class DesignTree extends AbstractEditorTreeGridView<ModelData, Designer>
     }
 
     protected AbstractDesignForm createForm(ModelData sel) {
-        if (sel instanceof ActivityModel) {
+        if (sel instanceof ActivityDTO) {
             return new ActivityForm(service, db);
-        } else if (sel instanceof AttributeGroupModel) {
+        } else if (sel instanceof AttributeGroupDTO) {
             return new AttributeGroupForm();
-        } else if (sel instanceof AttributeModel) {
+        } else if (sel instanceof AttributeDTO) {
             return new AttributeForm();
-        } else if (sel instanceof IndicatorModel) {
+        } else if (sel instanceof IndicatorDTO) {
             return new IndicatorForm();
         }
 
@@ -346,13 +346,13 @@ public class DesignTree extends AbstractEditorTreeGridView<ModelData, Designer>
         dlg.setHeight(form.getPreferredDialogHeight());
         dlg.setScrollMode(Style.Scroll.AUTOY);
 
-        if (entity instanceof ActivityModel) {
+        if (entity instanceof ActivityDTO) {
             dlg.setHeading(Application.CONSTANTS.newActivity());
-        } else if (entity instanceof AttributeGroupModel) {
+        } else if (entity instanceof AttributeGroupDTO) {
             dlg.setHeading(Application.CONSTANTS.newAttributeGroup());
-        } else if (entity instanceof AttributeModel) {
+        } else if (entity instanceof AttributeDTO) {
             dlg.setHeading(Application.CONSTANTS.newAttribute());
-        } else if (entity instanceof IndicatorModel) {
+        } else if (entity instanceof IndicatorDTO) {
             dlg.setHeading(Application.CONSTANTS.newIndicator());
         }
 

@@ -5,24 +5,28 @@ import com.extjs.gxt.ui.client.data.BaseModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AttributeGroupModel extends BaseModel implements EntityDTO {
+/**
+ * One-to-one DTO for the {@link org.activityinfo.server.domain.AttributeGroup} domain object
+ *
+ * @author Alex Bertram
+ */
+public final class AttributeGroupDTO extends BaseModel implements EntityDTO {
 
-	private List<AttributeModel> attributes = new ArrayList<AttributeModel>(0);
+	private List<AttributeDTO> attributes = new ArrayList<AttributeDTO>(0);
 	
-	public AttributeGroupModel() {
-		
+	public AttributeGroupDTO() {
 	}
 
     /**
      * Creates a shallow clone
      * @param model
      */
-    public AttributeGroupModel(AttributeGroupModel model) {
+    public AttributeGroupDTO(AttributeGroupDTO model) {
         super(model.getProperties());
         setAttributes(model.getAttributes());
     }
 	
-	public AttributeGroupModel(int id) {
+	public AttributeGroupDTO(int id) {
 		this.setId(id);
 	}
 
@@ -42,11 +46,11 @@ public class AttributeGroupModel extends BaseModel implements EntityDTO {
 		return get("name");
 	}
 
-	public List<AttributeModel> getAttributes() {
+	public List<AttributeDTO> getAttributes() {
 		return attributes;
 	}
 	
-	public void setAttributes(List<AttributeModel> attributes) {
+	public void setAttributes(List<AttributeDTO> attributes) {
 		this.attributes = attributes;		
 	}
 
@@ -57,7 +61,6 @@ public class AttributeGroupModel extends BaseModel implements EntityDTO {
 	public void setMultipleAllowed(boolean allowed) {
 		set("multipleAllowed", allowed);
 	}
-
 
     public String getEntityName() {
         return "AttributeGroup";

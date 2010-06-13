@@ -22,19 +22,19 @@ import org.activityinfo.shared.command.GetMonthlyReports;
 import org.activityinfo.shared.command.Month;
 import org.activityinfo.shared.command.UpdateMonthlyReports;
 import org.activityinfo.shared.command.result.MonthlyReportResult;
-import org.activityinfo.shared.dto.ActivityModel;
-import org.activityinfo.shared.dto.IndicatorRow;
-import org.activityinfo.shared.dto.SiteModel;
+import org.activityinfo.shared.dto.ActivityDTO;
+import org.activityinfo.shared.dto.IndicatorRowDTO;
+import org.activityinfo.shared.dto.SiteDTO;
 
 import java.util.ArrayList;
 /*
  * @author Alex Bertram
  */
 
-public class MonthlyPresenter extends AbstractEditorGridPresenter<IndicatorRow> {
+public class MonthlyPresenter extends AbstractEditorGridPresenter<IndicatorRowDTO> {
 
-    public interface View extends GridView<MonthlyPresenter, IndicatorRow> {
-        void init(MonthlyPresenter presenter, ListStore<IndicatorRow> store);
+    public interface View extends GridView<MonthlyPresenter, IndicatorRowDTO> {
+        void init(MonthlyPresenter presenter, ListStore<IndicatorRowDTO> store);
 
         void setStartMonth(Month startMonth);
     }
@@ -43,9 +43,9 @@ public class MonthlyPresenter extends AbstractEditorGridPresenter<IndicatorRow> 
     private final Dispatcher service;
     private final View view;
 
-    private final ActivityModel activity;
+    private final ActivityDTO activity;
 
-    private ListStore<IndicatorRow> store;
+    private ListStore<IndicatorRowDTO> store;
     private ListCmdLoader<MonthlyReportResult> loader;
 
     private Listener<SiteEvent> siteListener;
@@ -53,7 +53,7 @@ public class MonthlyPresenter extends AbstractEditorGridPresenter<IndicatorRow> 
     private int currentSiteId = -1;
     private Month startMonth;
 
-    public MonthlyPresenter(EventBus eventBus, Dispatcher service, IStateManager stateMgr, ActivityModel activity, final View view) {
+    public MonthlyPresenter(EventBus eventBus, Dispatcher service, IStateManager stateMgr, ActivityDTO activity, final View view) {
         super(eventBus, service, stateMgr, view);
         this.service = service;
         this.eventBus = eventBus;
@@ -67,7 +67,7 @@ public class MonthlyPresenter extends AbstractEditorGridPresenter<IndicatorRow> 
                 view.setStartMonth(startMonth);
             }
         });
-        store = new ListStore<IndicatorRow>(loader);
+        store = new ListStore<IndicatorRowDTO>(loader);
         store.setMonitorChanges(true);
         this.view.init(this, store);
 
@@ -104,11 +104,11 @@ public class MonthlyPresenter extends AbstractEditorGridPresenter<IndicatorRow> 
     }
 
     @Override
-    public Store<IndicatorRow> getStore() {
+    public Store<IndicatorRowDTO> getStore() {
         return store;
     }
 
-    private void onSiteSelected(SiteModel site) {
+    private void onSiteSelected(SiteDTO site) {
         currentSiteId = site.getId();
         loader.setCommand(new GetMonthlyReports(currentSiteId, startMonth, 7));
         loader.load();
@@ -131,7 +131,7 @@ public class MonthlyPresenter extends AbstractEditorGridPresenter<IndicatorRow> 
         return "monthView";
     }
 
-    public void onSelectionChanged(IndicatorRow selectedItem) {
+    public void onSelectionChanged(IndicatorRowDTO selectedItem) {
 
     }
 
@@ -147,11 +147,11 @@ public class MonthlyPresenter extends AbstractEditorGridPresenter<IndicatorRow> 
     protected Command createSaveCommand() {
         ArrayList<UpdateMonthlyReports.Change> changes = new ArrayList<UpdateMonthlyReports.Change>();
         for (Record record : store.getModifiedRecords()) {
-            IndicatorRow report = (IndicatorRow) record.getModel();
+            IndicatorRowDTO report = (IndicatorRowDTO) record.getModel();
             for (String property : record.getChanges().keySet()) {
                 UpdateMonthlyReports.Change change = new UpdateMonthlyReports.Change();
                 change.indicatorId = report.getIndicatorId();
-                change.month = IndicatorRow.monthForProperty(property);
+                change.month = IndicatorRowDTO.monthForProperty(property);
                 change.value = report.get(property);
                 changes.add(change);
             }

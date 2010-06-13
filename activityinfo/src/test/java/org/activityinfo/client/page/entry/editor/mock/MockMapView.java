@@ -1,7 +1,7 @@
 package org.activityinfo.client.page.entry.editor.mock;
 
 import org.activityinfo.client.page.entry.editor.MapPresenter;
-import org.activityinfo.shared.dto.Bounds;
+import org.activityinfo.shared.dto.BoundingBoxDTO;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -9,10 +9,10 @@ import org.activityinfo.shared.dto.Bounds;
 public class MockMapView implements MapPresenter.View {
 
     public String boundsName;
-    public Bounds bounds;
+    public BoundingBoxDTO bounds;
     public Double lat;
     public Double lng;
-    public Bounds mapView;
+    public BoundingBoxDTO mapView;
 
     public Double markerX;
     public Double markerY;
@@ -23,7 +23,7 @@ public class MockMapView implements MapPresenter.View {
     }
 
     @Override
-    public void setBounds(String name, Bounds bounds) {
+    public void setBounds(String name, BoundingBoxDTO bounds) {
         this.boundsName = name;
         this.bounds = bounds;
     }
@@ -51,12 +51,12 @@ public class MockMapView implements MapPresenter.View {
     }
 
     @Override
-    public void setMapView(Bounds bounds) {
+    public void setMapView(BoundingBoxDTO bounds) {
         this.mapView = bounds;
     }
 
     @Override
-    public Bounds getMapView() {
+    public BoundingBoxDTO getMapView() {
         return mapView;
     }
 

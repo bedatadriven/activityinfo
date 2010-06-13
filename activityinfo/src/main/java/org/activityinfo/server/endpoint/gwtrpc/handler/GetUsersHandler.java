@@ -26,7 +26,7 @@ import org.activityinfo.server.domain.UserPermission;
 import org.activityinfo.shared.command.GetUsers;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.command.result.UserResult;
-import org.activityinfo.shared.dto.UserModel;
+import org.activityinfo.shared.dto.UserPermissionDTO;
 import org.activityinfo.shared.exception.CommandException;
 import org.dozer.Mapper;
 
@@ -89,10 +89,10 @@ public class GetUsersHandler implements CommandHandler<GetUsers> {
         }
 
         List<UserPermission> perms = query.getResultList();
-        List<UserModel> models = new ArrayList<UserModel>();
+        List<UserPermissionDTO> models = new ArrayList<UserPermissionDTO>();
 
         for (UserPermission perm : perms) {
-            models.add(mapper.map(perm, UserModel.class));
+            models.add(mapper.map(perm, UserPermissionDTO.class));
         }
 
         int totalCount = ((Number) em.createQuery("select count(up) from UserPermission up where " +

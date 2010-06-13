@@ -28,8 +28,8 @@ import org.activityinfo.server.domain.Authentication;
 import org.activityinfo.server.domain.DomainFilters;
 import org.activityinfo.server.endpoint.gwtrpc.handler.HandlerUtil;
 import org.activityinfo.shared.command.GetSchema;
-import org.activityinfo.shared.dto.ActivityModel;
-import org.activityinfo.shared.dto.Schema;
+import org.activityinfo.shared.dto.ActivityDTO;
+import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
 import org.activityinfo.shared.exception.CommandException;
 
@@ -81,12 +81,12 @@ public class ExportServlet extends HttpServlet {
 
             DomainFilters.applyUserFilter(auth.getUser(), injector.getInstance(EntityManager.class));
 
-            Schema schema = HandlerUtil.execute(injector, new GetSchema(), auth.getUser());
+            SchemaDTO schema = HandlerUtil.execute(injector, new GetSchema(), auth.getUser());
             SiteTableDAO siteDAO = injector.getInstance(SiteTableDAO.class);
 
             Export export = new Export(auth.getUser(), siteDAO);
             for (UserDatabaseDTO db : schema.getDatabases()) {
-                for (ActivityModel activity : db.getActivities()) {
+                for (ActivityDTO activity : db.getActivities()) {
                     if (activities.size() == 0 || activities.contains(activity.getId())) {
                         export.export(activity);
                     }

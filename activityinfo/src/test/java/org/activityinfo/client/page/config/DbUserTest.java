@@ -3,20 +3,19 @@ package org.activityinfo.client.page.config;
 import com.extjs.gxt.ui.client.store.Record;
 import org.activityinfo.client.mock.DummyData;
 import org.activityinfo.client.mock.MockCommandService;
+import org.activityinfo.client.mock.MockEventBus;
 import org.activityinfo.client.mock.MockStateManager;
 import org.activityinfo.client.page.Pages;
 import org.activityinfo.client.page.common.toolbar.UIActions;
-import org.activityinfo.client.page.config.DbPlace;
-import org.activityinfo.client.page.config.DbUserEditor;
-import org.activityinfo.client.mock.MockEventBus;
 import org.activityinfo.shared.command.GetUsers;
 import org.activityinfo.shared.command.UpdateUserPermissions;
 import org.activityinfo.shared.command.result.UserResult;
 import org.activityinfo.shared.command.result.VoidResult;
-import org.activityinfo.shared.dto.Schema;
-import static org.easymock.EasyMock.*;
+import org.activityinfo.shared.dto.SchemaDTO;
 import org.junit.Assert;
 import org.junit.Test;
+
+import static org.easymock.EasyMock.*;
 
 /**
  * @author Alex Bertram
@@ -29,7 +28,7 @@ public class DbUserTest {
 
         // Test Data
         UserResult users = DummyData.RRM_Users();
-        Schema schema = DummyData.PEAR();
+        SchemaDTO schema = DummyData.PEAR();
 
         // Collaborator: command service
         MockCommandService service = new MockCommandService();
@@ -64,7 +63,7 @@ public class DbUserTest {
 
         // Test Data
         UserResult users = DummyData.RRM_Users();
-        Schema schema = DummyData.PEAR();
+        SchemaDTO schema = DummyData.PEAR();
 
         // Collaborator: command service
         MockCommandService service = new MockCommandService();
@@ -99,7 +98,7 @@ public class DbUserTest {
 
         // Test Data
         UserResult users = DummyData.RRM_Users();
-        Schema schema = DummyData.PEAR();
+        SchemaDTO schema = DummyData.PEAR();
 
         // Collaborator: command service
         MockCommandService service = new MockCommandService();

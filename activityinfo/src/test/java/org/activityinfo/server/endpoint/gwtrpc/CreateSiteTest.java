@@ -5,9 +5,9 @@ import org.activityinfo.server.dao.OnDataSet;
 import org.activityinfo.shared.command.CreateEntity;
 import org.activityinfo.shared.command.GetSites;
 import org.activityinfo.shared.command.result.CreateResult;
-import org.activityinfo.shared.dto.AdminEntityModel;
-import org.activityinfo.shared.dto.PartnerModel;
-import org.activityinfo.shared.dto.SiteModel;
+import org.activityinfo.shared.dto.AdminEntityDTO;
+import org.activityinfo.shared.dto.PartnerDTO;
+import org.activityinfo.shared.dto.SiteDTO;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.test.InjectionSupport;
 import org.junit.Assert;
@@ -24,11 +24,11 @@ public class CreateSiteTest extends CommandTestCase {
     @Test
     public void test() throws CommandException {
         // create a new detached, client model
-        SiteModel newSite = new SiteModel();
+        SiteDTO newSite = new SiteDTO();
 
         newSite.setActivityId(1);
         newSite.setStatus(-1);
-        newSite.setPartner(new PartnerModel(1, "Foobar"));
+        newSite.setPartner(new PartnerDTO(1, "Foobar"));
         newSite.setDate1((new GregorianCalendar(2008, 12, 1)).getTime());
         newSite.setDate2((new GregorianCalendar(2009, 1, 3)).getTime());
         newSite.setLocationName("Virunga");
@@ -59,11 +59,11 @@ public class CreateSiteTest extends CommandTestCase {
 
         // try to retrieve what we've created
 
-        PagingLoadResult<SiteModel> loadResult = execute(GetSites.byId(newSite.getId()));
+        PagingLoadResult<SiteDTO> loadResult = execute(GetSites.byId(newSite.getId()));
 
         Assert.assertEquals(1, loadResult.getData().size());
 
-        SiteModel secondRead = loadResult.getData().get(0);
+        SiteDTO secondRead = loadResult.getData().get(0);
 
 
         // confirm that the changes are there
@@ -79,15 +79,15 @@ public class CreateSiteTest extends CommandTestCase {
     @Test
     public void testAdminBoundCreate() throws CommandException {
         // create a new detached, client model
-        SiteModel newSite = new SiteModel();
+        SiteDTO newSite = new SiteDTO();
 
         newSite.setActivityId(4);
         newSite.setStatus(1);
-        newSite.setPartner(new PartnerModel(1, "Foobar"));
+        newSite.setPartner(new PartnerDTO(1, "Foobar"));
         newSite.setDate1((new GregorianCalendar(2008, 12, 1)).getTime());
         newSite.setDate2((new GregorianCalendar(2009, 1, 3)).getTime());
-        newSite.setAdminEntity(1, new AdminEntityModel(1, 2, "Sud Kivu"));
-        newSite.setAdminEntity(2, new AdminEntityModel(2, 11, "Walungu"));
+        newSite.setAdminEntity(1, new AdminEntityDTO(1, 2, "Sud Kivu"));
+        newSite.setAdminEntity(2, new AdminEntityDTO(2, 11, "Walungu"));
         newSite.setAdminEntity(3, null);
         newSite.setX(27.432);
         newSite.setY(1.23);
@@ -107,11 +107,11 @@ public class CreateSiteTest extends CommandTestCase {
 
         // try to retrieve what we've created
 
-        PagingLoadResult<SiteModel> loadResult = execute(GetSites.byId(newSite.getId()));
+        PagingLoadResult<SiteDTO> loadResult = execute(GetSites.byId(newSite.getId()));
 
         Assert.assertEquals(1, loadResult.getData().size());
 
-        SiteModel secondRead = loadResult.getData().get(0);
+        SiteDTO secondRead = loadResult.getData().get(0);
 
 
         // confirm that the changes are there
@@ -122,11 +122,11 @@ public class CreateSiteTest extends CommandTestCase {
     @Test
     public void testAllAttribsFalse() throws CommandException {
         // create a new detached, client model
-        SiteModel newSite = new SiteModel();
+        SiteDTO newSite = new SiteDTO();
 
         newSite.setActivityId(1);
         newSite.setStatus(-1);
-        newSite.setPartner(new PartnerModel(1, "Foobar"));
+        newSite.setPartner(new PartnerDTO(1, "Foobar"));
         newSite.setDate1((new GregorianCalendar(2008, 12, 1)).getTime());
         newSite.setDate2((new GregorianCalendar(2009, 1, 3)).getTime());
         newSite.setLocationName("Virunga");
@@ -151,11 +151,11 @@ public class CreateSiteTest extends CommandTestCase {
 
         // try to retrieve what we've created
 
-        PagingLoadResult<SiteModel> loadResult = execute(GetSites.byId(newSite.getId()));
+        PagingLoadResult<SiteDTO> loadResult = execute(GetSites.byId(newSite.getId()));
 
         Assert.assertEquals(1, loadResult.getData().size());
 
-        SiteModel secondRead = loadResult.getData().get(0);
+        SiteDTO secondRead = loadResult.getData().get(0);
 
 
         // confirm that the changes are there

@@ -5,13 +5,19 @@ import org.activityinfo.shared.command.Month;
 
 /**
  *
- * An indicator row is a projection of the {@link org.activityinfo.server.domain.ReportingPeriod},
- * {@link org.activityinfo.server.domain.IndicatorValue} and {@link org.activityinfo.server.domain.Indicator}
+ * Projection DTO of the {@link org.activityinfo.server.domain.ReportingPeriod ReportingPeriod},
+ * {@link org.activityinfo.server.domain.IndicatorValue IndicatorValue} and 
+ * {@link org.activityinfo.server.domain.Indicator Indicator}
  * entities.
+ * 
+ * Each IndicatorRowDTO contains values for a single {@link org.activityinfo.server.domain.Site Site},
+ * and a single Indicator, but values (stored as properties) for a series of 
+ * {@link org.activityinfo.server.domain.ReportingPeriod ReportingPeriod}
+ * 
  *
  * @author Alex Bertram
  */
-public class IndicatorRow extends BaseModel implements DTO {
+public final class IndicatorRowDTO extends BaseModel implements DTO {
 
     private int siteId;
     private int activityId;
@@ -31,7 +37,9 @@ public class IndicatorRow extends BaseModel implements DTO {
 
     /**
      *
-     * @return The id of the activity to which the row's site belongs.
+     * @return The id of the {@link org.activityinfo.server.domain.Activity Activity}
+     * to which the row's {@link org.activityinfo.server.domain.Site Site}
+     * belongs.
      */
     public int getActivityId() {
         return activityId;
@@ -43,7 +51,7 @@ public class IndicatorRow extends BaseModel implements DTO {
 
     /**
      *
-     * @return The id of the indicator
+     * @return The id of the {@link org.activityinfo.server.domain.Indicator Indicator}
      */
     public int getIndicatorId() {
         return indicatorId;
@@ -55,7 +63,7 @@ public class IndicatorRow extends BaseModel implements DTO {
 
     /**
      *
-     * @return The name of the indicator.
+     * @return The name of the {@link org.activityinfo.server.domain.Indicator}.
      */
     public String getIndicatorName() {
         return get("indicatorName");
@@ -66,7 +74,9 @@ public class IndicatorRow extends BaseModel implements DTO {
     }
 
     /**
-     * The value of the 
+     * The value of the Indicator for the
+     * {@link org.activityinfo.server.domain.ReportingPeriod ReportingPeriod} 
+     * corresponding to the given <code>year</code> and <code>month</code>
      *
      * @param year
      * @param month

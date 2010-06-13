@@ -3,21 +3,23 @@ package org.activityinfo.shared.dto;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 
-public class AdminLevelModel extends BaseModelData implements DTO {
-
+/**
+ * One-to-one DTO for the {@link org.activityinfo.server.domain.AdminLevel} domain object.
+ *
+ * @author Alex Bertram
+ */
+public final class AdminLevelDTO extends BaseModelData implements DTO {
 	public static final String PROPERTY_PREFIX = "E";
 
-	public AdminLevelModel()
-	{
-
+	public AdminLevelDTO(){
 	}
 
-    public AdminLevelModel(int id, String name) {
+    public AdminLevelDTO(int id, String name) {
         setId(id);
         setName(name);
     }
 
-    public AdminLevelModel(int id, int parentId, String name) {
+    public AdminLevelDTO(int id, int parentId, String name) {
         setId(id);
         setParentLevelId(parentId);
         setName(name);
@@ -35,18 +37,15 @@ public class AdminLevelModel extends BaseModelData implements DTO {
 		set("name", name);
 	}
 	
-	public String getName()
-	{
+	public String getName() {
 		return get("name");		
 	}
 	
-	public Integer getParentLevelId()
-	{
+	public Integer getParentLevelId() {
 		return get("parentLevelId");
 	}
 	
-	public void setParentLevelId(Integer value)
-	{
+	public void setParentLevelId(Integer value) {
 		set("parentLevelId", value);
 	}
 	
@@ -68,7 +67,7 @@ public class AdminLevelModel extends BaseModelData implements DTO {
 	}
 
 	public static int levelIdForProperty(String field) {
-		return Integer.parseInt(field.substring(AdminLevelModel.PROPERTY_PREFIX.length()));
+		return Integer.parseInt(field.substring(AdminLevelDTO.PROPERTY_PREFIX.length()));
 	}
 
 }

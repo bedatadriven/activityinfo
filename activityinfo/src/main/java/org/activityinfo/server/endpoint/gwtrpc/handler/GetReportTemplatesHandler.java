@@ -26,7 +26,7 @@ import org.activityinfo.server.domain.User;
 import org.activityinfo.shared.command.GetReportTemplates;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.command.result.ReportTemplateResult;
-import org.activityinfo.shared.dto.ReportTemplateDTO;
+import org.activityinfo.shared.dto.ReportDefinitionDTO;
 import org.activityinfo.shared.exception.CommandException;
 
 import javax.persistence.EntityManager;
@@ -54,11 +54,11 @@ public class GetReportTemplatesHandler implements CommandHandler<GetReportTempla
 
         List<ReportDefinition> results = query.getResultList();
 
-        List<ReportTemplateDTO> dtos = new ArrayList<ReportTemplateDTO>();
+        List<ReportDefinitionDTO> dtos = new ArrayList<ReportDefinitionDTO>();
 
         for (ReportDefinition template : results) {
 
-            ReportTemplateDTO dto = new ReportTemplateDTO();
+            ReportDefinitionDTO dto = new ReportDefinitionDTO();
             dto.setId(template.getId());
             dto.setDatabaseName(template.getDatabase() == null ? null : template.getDatabase().getName());
             dto.setOwnerName(template.getOwner().getName());

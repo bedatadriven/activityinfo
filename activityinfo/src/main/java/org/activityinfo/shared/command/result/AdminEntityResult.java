@@ -1,6 +1,6 @@
 package org.activityinfo.shared.command.result;
 
-import org.activityinfo.shared.dto.AdminEntityModel;
+import org.activityinfo.shared.dto.AdminEntityDTO;
 
 import java.util.List;
 
@@ -11,13 +11,13 @@ import java.util.List;
  *
  * @author Alex Bertram
  */
-public class AdminEntityResult extends ListResult<AdminEntityModel> {
+public class AdminEntityResult extends ListResult<AdminEntityDTO> {
 
     public AdminEntityResult() {
         super();
     }
 
-    public AdminEntityResult(List<AdminEntityModel> data) {
+    public AdminEntityResult(List<AdminEntityDTO> data) {
         super(data);
     }
 

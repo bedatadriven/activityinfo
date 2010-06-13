@@ -20,7 +20,7 @@ import org.activityinfo.client.util.DateUtilGWTImpl;
 import org.activityinfo.shared.command.Month;
 import org.activityinfo.shared.command.RenderElement;
 import org.activityinfo.shared.date.DateUtil;
-import org.activityinfo.shared.dto.ReportTemplateDTO;
+import org.activityinfo.shared.dto.ReportDefinitionDTO;
 import org.activityinfo.shared.report.model.DateRange;
 import org.activityinfo.shared.report.model.ReportFrequency;
 
@@ -65,7 +65,7 @@ public class ReportPreview extends ContentPanel implements ReportPreviewPresente
         dateRange = new DateRange();
     }
 
-    public void init(ReportPreviewPresenter presenter, ReportTemplateDTO template) {
+    public void init(ReportPreviewPresenter presenter, ReportDefinitionDTO template) {
 
         toolBar = new ActionToolBar();
         this.presenter = presenter;

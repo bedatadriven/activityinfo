@@ -4,31 +4,23 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 
 import java.util.Date;
 
-public class SiteModel extends BaseModelData implements EntityDTO {
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 7895176170022072389L;
+/**
+ * Projection DTO for the {@link org.activityinfo.server.domain.Site} domain object, including
+ * its {@link org.activityinfo.server.domain.Location Location}, and
+ * {@link org.activityinfo.server.domain.ReportingPeriod ReportingPeriod} totals
+ *
+ * @author Alex Bertram
+ */
+public final class SiteDTO extends BaseModelData implements EntityDTO {
 
-	public static final int STATUS_PLANNED = -2;
-	public static final int STATUS_INPROGRESS = -1;
-	public static final int STATUS_CANCELLED = 0;
-	public static final int STATUS_COMPLETE = 1;
-
-    public static final int REALIZED_SITE = 0;
-    public static final int TARGET_SITE = 1;
-
-
-	public SiteModel()
-	{
+    public SiteDTO() {
 	}
 
-    public SiteModel(int id) {
+    public SiteDTO(int id) {
         setId(id);
     }
 
-    public SiteModel(SiteModel site) {
+    public SiteDTO(SiteDTO site) {
         super(site.getProperties());
     }
 
@@ -73,7 +65,7 @@ public class SiteModel extends BaseModelData implements EntityDTO {
 	}	
 	
 	public String getPartnerName() {
-		PartnerModel partner = getPartner();
+		PartnerDTO partner = getPartner();
 		if(partner == null) {
 			return null;
 		} 
@@ -81,11 +73,11 @@ public class SiteModel extends BaseModelData implements EntityDTO {
 		return partner.getName();
 	}
 	
-	public PartnerModel getPartner() {
+	public PartnerDTO getPartner() {
 		return get("partner");
 	}
 	
-	public void setPartner(PartnerModel partner) {
+	public void setPartner(PartnerDTO partner) {
 		set("partner", partner);
 	}
 	
@@ -105,16 +97,16 @@ public class SiteModel extends BaseModelData implements EntityDTO {
 		set("locationAxe", name);
 	}
 	
-	public void setAdminEntity(int levelId, AdminEntityModel value) {
-		set(AdminLevelModel.getPropertyName(levelId), value);	
+	public void setAdminEntity(int levelId, AdminEntityDTO value) {
+		set(AdminLevelDTO.getPropertyName(levelId), value);
 	}
 
-	public AdminEntityModel getAdminEntity(int levelId) {
-		return get(AdminLevelModel.getPropertyName(levelId));
+	public AdminEntityDTO getAdminEntity(int levelId) {
+		return get(AdminLevelDTO.getPropertyName(levelId));
 	}
 	
 	public Object getAdminEntityName(int levelId) {
-		AdminEntityModel entity = getAdminEntity(levelId);
+		AdminEntityDTO entity = getAdminEntity(levelId);
 		if(entity == null)
 			return null;
 		
@@ -143,18 +135,18 @@ public class SiteModel extends BaseModelData implements EntityDTO {
 	}
 	
 	public void setAttributeValue(int attributeId, Boolean value) {
-		set(AttributeModel.getPropertyName(attributeId), value);
+		set(AttributeDTO.getPropertyName(attributeId), value);
 	}
 	
 	public void setIndicatorValue(int indicatorId, Double value) {
-		set(IndicatorModel.getPropertyName(indicatorId), value);	
+		set(IndicatorDTO.getPropertyName(indicatorId), value);
 	}
 	
 	public Double getIndicatorValue(int indicatorId) {
-		return get(IndicatorModel.getPropertyName(indicatorId));
+		return get(IndicatorDTO.getPropertyName(indicatorId));
 	}
     
-    public Double getIndicatorValue(IndicatorModel indicator) {
+    public Double getIndicatorValue(IndicatorDTO indicator) {
         return getIndicatorValue(indicator.getId());
     }
 
@@ -167,7 +159,7 @@ public class SiteModel extends BaseModelData implements EntityDTO {
 	}
 
 	public Boolean getAttributeValue(int id) {
-		return get(AttributeModel.getPropertyName(id));
+		return get(AttributeDTO.getPropertyName(id));
 	}
 
     @Override
@@ -175,7 +167,7 @@ public class SiteModel extends BaseModelData implements EntityDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        SiteModel siteModel = (SiteModel) o;
+        SiteDTO siteModel = (SiteDTO) o;
 
         if (getId() != siteModel.getId()) return false;
 
@@ -195,14 +187,4 @@ public class SiteModel extends BaseModelData implements EntityDTO {
     public String getEntityName() {
         return "Site";
     }
-
-    public int getSiteType() {
-        Integer siteType = get("siteType");
-        return siteType == null ? REALIZED_SITE : siteType;
-    }
-
-    public void setSiteType(int type) {
-        set("siteType", type);
-    }
-
 }

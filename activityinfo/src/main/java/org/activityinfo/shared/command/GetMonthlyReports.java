@@ -3,7 +3,7 @@ package org.activityinfo.shared.command;
 import org.activityinfo.shared.command.result.MonthlyReportResult;
 
 /**
- * Returns {@link org.activityinfo.shared.dto.IndicatorRow} for a given site and for a given 
+ * Returns {@link org.activityinfo.shared.dto.IndicatorRowDTO} for a given site and for a given
  * range of months.
  *
  * @author Alex Bertram

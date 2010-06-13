@@ -32,9 +32,9 @@ import org.activityinfo.client.page.table.drilldown.DrillDownEditor;
 import org.activityinfo.client.page.table.drilldown.DrillDownGrid;
 import org.activityinfo.client.util.DateUtilGWTImpl;
 import org.activityinfo.client.util.IStateManager;
-import org.activityinfo.shared.dto.AdminEntityModel;
-import org.activityinfo.shared.dto.IndicatorModel;
-import org.activityinfo.shared.dto.Schema;
+import org.activityinfo.shared.dto.AdminEntityDTO;
+import org.activityinfo.shared.dto.IndicatorDTO;
+import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.report.model.Dimension;
 import org.activityinfo.shared.report.model.PivotTableElement;
 
@@ -273,7 +273,7 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
         return unusedDims;
     }
 
-    public void setSchema(Schema result) {
+    public void setSchema(SchemaDTO result) {
         //    indicatorPanel.setSchema(result);
 
     }
@@ -298,11 +298,11 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
         return new MaskingAsyncMonitor(this, Application.CONSTANTS.loading());
     }
 
-    public List<IndicatorModel> getSelectedIndicators() {
+    public List<IndicatorDTO> getSelectedIndicators() {
         return indicatorPanel.getSelection();
     }
 
-    public List<AdminEntityModel> getAdminRestrictions() {
+    public List<AdminEntityDTO> getAdminRestrictions() {
         return adminPanel.getSelection();
     }
 

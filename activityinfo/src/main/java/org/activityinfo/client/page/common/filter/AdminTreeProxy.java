@@ -6,8 +6,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.shared.command.GetAdminEntities;
 import org.activityinfo.shared.command.result.AdminEntityResult;
-import org.activityinfo.shared.dto.AdminEntityModel;
-import org.activityinfo.shared.dto.AdminLevelModel;
+import org.activityinfo.shared.dto.AdminEntityDTO;
+import org.activityinfo.shared.dto.AdminLevelDTO;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,15 +20,15 @@ public class AdminTreeProxy implements DataProxy {
 
     private final Dispatcher service;
 
-    private List<AdminLevelModel> hierarchy;
+    private List<AdminLevelDTO> hierarchy;
 
-    public AdminTreeProxy(Dispatcher service, List<AdminLevelModel> hierarchy) {
+    public AdminTreeProxy(Dispatcher service, List<AdminLevelDTO> hierarchy) {
         this.service = service;
         this.hierarchy = hierarchy;
     }
 
 
-    public void setHierarchy(List<AdminLevelModel> hierarchy) {
+    public void setHierarchy(List<AdminLevelDTO> hierarchy) {
         this.hierarchy = hierarchy;
     }
 
@@ -47,16 +47,16 @@ public class AdminTreeProxy implements DataProxy {
                 }
 
                 public void onSuccess(AdminEntityResult result) {
-                    callback.onSuccess(new ArrayList<AdminEntityModel>(result.getData()));
+                    callback.onSuccess(new ArrayList<AdminEntityDTO>(result.getData()));
                 }
             });
 
         } else {
 
-            assert parent instanceof AdminEntityModel : "expecting AdminEntityModel";
+            assert parent instanceof AdminEntityDTO : "expecting AdminEntityDTO";
 
-            AdminEntityModel parentEntity = (AdminEntityModel) parent;
-            AdminLevelModel childLevel = (AdminLevelModel) findChildLevel(parentEntity);
+            AdminEntityDTO parentEntity = (AdminEntityDTO) parent;
+            AdminLevelDTO childLevel = (AdminLevelDTO) findChildLevel(parentEntity);
 
             //find the next child in this hierachy
 
@@ -78,8 +78,8 @@ public class AdminTreeProxy implements DataProxy {
 
     }
 
-    private AdminLevelModel findChildLevel(AdminEntityModel parent) {
-        for (AdminLevelModel level : hierarchy) {
+    private AdminLevelDTO findChildLevel(AdminEntityDTO parent) {
+        for (AdminLevelDTO level : hierarchy) {
             if (!level.isRoot() && level.getParentLevelId() == parent.getLevelId()) {
                 return level;
             }

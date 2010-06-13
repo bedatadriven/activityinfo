@@ -128,7 +128,7 @@ public class Export {
 
     }
 
-    public void export(ActivityModel activity) {
+    public void export(ActivityDTO activity) {
 
         HSSFSheet sheet = book.createSheet(composeUniqueSheetName(activity));
         sheet.createFreezePane(4, 2);
@@ -154,7 +154,7 @@ public class Export {
 //
 //    }
 
-    private String composeUniqueSheetName(ActivityModel activity) {
+    private String composeUniqueSheetName(ActivityDTO activity) {
         String sheetName = activity.getDatabase().getName() + " - " + activity.getName();
         // replace invalid chars: / \ [ ] * ?
         sheetName = sheetName.replaceAll("[\\Q/\\*?[]\\E]", " ");
@@ -174,7 +174,7 @@ public class Export {
 
     }
 
-    private void createHeaders(ActivityModel activity, HSSFSheet sheet) {
+    private void createHeaders(ActivityDTO activity, HSSFSheet sheet) {
 
         /// The HEADER rows
 
@@ -198,14 +198,14 @@ public class Export {
 
 
         indicators = new ArrayList<Integer>(activity.getIndicators().size());
-        if (activity.getReportingFrequency() == ActivityModel.REPORT_ONCE) {
+        if (activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE) {
             for (IndicatorGroup group : activity.groupIndicators()) {
                 if (group.getName() != null) {
                     // create a merged cell on the top row spanning all members of the group
                     createHeaderCell(headerRow1, column, group.getName());
                     sheet.addMergedRegion(new CellRangeAddress(0, 0, column, column + group.getIndicators().size() - 1));
                 }
-                for (IndicatorModel indicator : group.getIndicators()) {
+                for (IndicatorDTO indicator : group.getIndicators()) {
                     indicators.add(indicator.getId());
                     createHeaderCell(headerRow2, column, indicator.getName(), indicatorHeaderStyle);
                     sheet.setColumnWidth(column, 16 * 256);
@@ -215,12 +215,12 @@ public class Export {
         }
         attributes = new ArrayList<Integer>();
         int firstAttributeColumn = column;
-        for (AttributeGroupModel group : activity.getAttributeGroups()) {
+        for (AttributeGroupDTO group : activity.getAttributeGroups()) {
             if (group.getAttributes().size() != 0) {
                 createHeaderCell(headerRow1, column, group.getName(), CellStyle.ALIGN_CENTER);
                 sheet.addMergedRegion(new CellRangeAddress(0, 0, column, column + group.getAttributes().size() - 1));
 
-                for (AttributeModel attrib : group.getAttributes()) {
+                for (AttributeDTO attrib : group.getAttributes()) {
                     attributes.add(attrib.getId());
                     createHeaderCell(headerRow2, column, attrib.getName(), attribHeaderStyle);
                     sheet.setColumnWidth(column, 5 * 256);
@@ -234,7 +234,7 @@ public class Export {
 
 
         levels = new ArrayList<Integer>();
-        for (AdminLevelModel level : activity.getAdminLevels()) {
+        for (AdminLevelDTO level : activity.getAdminLevels()) {
             createHeaderCell(headerRow2, column++, "Code " + level.getName());
             createHeaderCell(headerRow2, column++, level.getName());
             levels.add(level.getId());
@@ -246,7 +246,7 @@ public class Export {
 
     }
 
-    private List<SiteData> querySites(ActivityModel activity) {
+    private List<SiteData> querySites(ActivityDTO activity) {
 
         List<Order> orderings = new ArrayList<Order>(1);
         orderings.add(Order.desc(SiteColumn.date2.property()));
@@ -255,7 +255,7 @@ public class Export {
                 orderings, new SiteDataBinder(), SiteTableDAO.RETRIEVE_ALL, 0, -1);
     }
 
-    private void createDataRows(ActivityModel activity, Sheet sheet) {
+    private void createDataRows(ActivityDTO activity, Sheet sheet) {
 
         // Create the drawing patriarch. This is the top level container for all shapes including
         // cell comments.

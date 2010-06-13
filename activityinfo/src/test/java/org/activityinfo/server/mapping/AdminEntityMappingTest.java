@@ -21,11 +21,11 @@ package org.activityinfo.server.mapping;
 
 import com.google.inject.Inject;
 import junit.framework.Assert;
-import org.activityinfo.server.util.BeanMappingModule;
 import org.activityinfo.server.domain.AdminEntity;
 import org.activityinfo.server.domain.AdminLevel;
 import org.activityinfo.server.domain.Bounds;
-import org.activityinfo.shared.dto.AdminEntityModel;
+import org.activityinfo.server.util.BeanMappingModule;
+import org.activityinfo.shared.dto.AdminEntityDTO;
 import org.activityinfo.test.InjectionSupport;
 import org.activityinfo.test.Modules;
 import org.dozer.Mapper;
@@ -59,7 +59,7 @@ public class AdminEntityMappingTest {
         entity.setParent(parent);
         entity.setBounds(bounds);
 
-        AdminEntityModel dto = mapper.map(entity, AdminEntityModel.class);
+        AdminEntityDTO dto = mapper.map(entity, AdminEntityDTO.class);
 
         Assert.assertEquals("parentId", parent.getId(), dto.getParentId().intValue());
         Assert.assertEquals("levelId", level.getId(), dto.getLevelId());

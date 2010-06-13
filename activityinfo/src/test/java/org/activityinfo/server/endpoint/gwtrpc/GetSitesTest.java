@@ -6,8 +6,8 @@ import com.extjs.gxt.ui.client.data.SortInfo;
 import junit.framework.Assert;
 import org.activityinfo.server.dao.OnDataSet;
 import org.activityinfo.shared.command.GetSites;
-import org.activityinfo.shared.dto.IndicatorModel;
-import org.activityinfo.shared.dto.SiteModel;
+import org.activityinfo.shared.dto.IndicatorDTO;
+import org.activityinfo.shared.dto.SiteDTO;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.test.InjectionSupport;
 import org.junit.Test;
@@ -29,7 +29,7 @@ public class GetSitesTest extends CommandTestCase {
         cmd.setActivityId(1);
         cmd.setSortInfo(new SortInfo("date2", SortDir.DESC));
 
-        PagingLoadResult<SiteModel> result = execute(cmd);
+        PagingLoadResult<SiteDTO> result = execute(cmd);
 
         Assert.assertEquals("totalLength", 3, result.getData().size());
         Assert.assertEquals("totalLength", 3, result.getTotalLength());
@@ -42,7 +42,7 @@ public class GetSitesTest extends CommandTestCase {
         Assert.assertEquals("sorted", 3, result.getData().get(2).getId());
 
         // assure indicators are present (site id=3)
-        SiteModel s = result.getData().get(2);
+        SiteDTO s = result.getData().get(2);
 
         Assert.assertEquals("entityName", "Ituri", s.getAdminEntity(1).getName());
         Assert.assertNotNull("admin bounds", s.getAdminEntity(1).getBounds());
@@ -56,9 +56,9 @@ public class GetSitesTest extends CommandTestCase {
 
         GetSites cmd = new GetSites();
         cmd.setActivityId(1);
-        cmd.setSortInfo(new SortInfo(IndicatorModel.getPropertyName(1), SortDir.DESC));
+        cmd.setSortInfo(new SortInfo(IndicatorDTO.getPropertyName(1), SortDir.DESC));
 
-        PagingLoadResult<SiteModel> result = execute(cmd);
+        PagingLoadResult<SiteDTO> result = execute(cmd);
 
         // assure sorted
         Assert.assertEquals("sorted", 10000.0, result.getData().get(0).getIndicatorValue(1));
@@ -76,11 +76,11 @@ public class GetSitesTest extends CommandTestCase {
 
         GetSites cmd = new GetSites();
         cmd.setActivityId(1);
-        cmd.setSortInfo(new SortInfo(IndicatorModel.getPropertyName(1), SortDir.DESC));
+        cmd.setSortInfo(new SortInfo(IndicatorDTO.getPropertyName(1), SortDir.DESC));
         cmd.setLimit(2);
         cmd.setOffset(0);
 
-        PagingLoadResult<SiteModel> result = execute(cmd);
+        PagingLoadResult<SiteDTO> result = execute(cmd);
 
         Assert.assertEquals("rows retrieved [0,2]", 2, result.getData().size());
         Assert.assertEquals("total rows [0,2]", 3, result.getTotalLength());
@@ -114,7 +114,7 @@ public class GetSitesTest extends CommandTestCase {
         GetSites cmd = new GetSites();
         cmd.setDatabaseId(2);
 
-        PagingLoadResult<SiteModel> result = execute(cmd);
+        PagingLoadResult<SiteDTO> result = execute(cmd);
 
         Assert.assertEquals("rows", 3, result.getData().size());
         Assert.assertNotNull("activityId", result.getData().get(0).getActivityId());
@@ -130,7 +130,7 @@ public class GetSitesTest extends CommandTestCase {
         cmd.setDatabaseId(1);
         cmd.setLimit(2);
 
-        PagingLoadResult<SiteModel> result = execute(cmd);
+        PagingLoadResult<SiteDTO> result = execute(cmd);
 
 
         Assert.assertEquals("rows", 2, result.getData().size());
@@ -145,7 +145,7 @@ public class GetSitesTest extends CommandTestCase {
         GetSites cmd = new GetSites();
         cmd.setDatabaseId(1);
 
-        PagingLoadResult<SiteModel> result = execute(cmd);
+        PagingLoadResult<SiteDTO> result = execute(cmd);
 
         Assert.assertEquals("rows", 3, result.getData().size());
     }
@@ -157,7 +157,7 @@ public class GetSitesTest extends CommandTestCase {
 
         GetSites cmd = new GetSites();
 
-        PagingLoadResult<SiteModel> result = execute(cmd);
+        PagingLoadResult<SiteDTO> result = execute(cmd);
 
         Assert.assertEquals("rows", 8, result.getData().size());
         Assert.assertNotNull("activityId", result.getData().get(0).getActivityId());
@@ -169,7 +169,7 @@ public class GetSitesTest extends CommandTestCase {
 
         setUser(5); // Christian (Bad guy!)
 
-        PagingLoadResult<SiteModel> result = execute(new GetSites());
+        PagingLoadResult<SiteDTO> result = execute(new GetSites());
 
         Assert.assertEquals("rows", 0, result.getData().size());
 
@@ -182,11 +182,11 @@ public class GetSitesTest extends CommandTestCase {
 
         GetSites cmd = new GetSites();
         cmd.setActivityId(1);
-        cmd.setSortInfo(new SortInfo(IndicatorModel.getPropertyName(1), SortDir.DESC));
+        cmd.setSortInfo(new SortInfo(IndicatorDTO.getPropertyName(1), SortDir.DESC));
         cmd.setLimit(2);
         cmd.setSeekToSiteId(1);
 
-        PagingLoadResult<SiteModel> result = execute(cmd);
+        PagingLoadResult<SiteDTO> result = execute(cmd);
 
         Assert.assertEquals("second page returned", 2, result.getOffset());
         Assert.assertEquals("rows on this page", 1, result.getData().size());

@@ -8,18 +8,16 @@ import org.activityinfo.client.EventBus;
 import org.activityinfo.client.event.SiteEvent;
 import org.activityinfo.client.mock.DummyData;
 import org.activityinfo.client.mock.MockCommandService;
-import org.activityinfo.client.page.common.toolbar.UIActions;
-import org.activityinfo.client.page.entry.SiteEditor;
-import org.activityinfo.client.page.entry.SiteGridPlace;
 import org.activityinfo.client.mock.MockEventBus;
 import org.activityinfo.client.mock.MockStateManager;
+import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.GetSites;
 import org.activityinfo.shared.command.UpdateEntity;
 import org.activityinfo.shared.command.result.SiteResult;
 import org.activityinfo.shared.command.result.VoidResult;
-import org.activityinfo.shared.dto.Schema;
-import org.activityinfo.shared.dto.SiteModel;
+import org.activityinfo.shared.dto.SchemaDTO;
+import org.activityinfo.shared.dto.SiteDTO;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +41,7 @@ public class SiteGridTest {
     @Test
     public void testLoader() {
 
-        Schema schema = DummyData.PEAR();
+        SchemaDTO schema = DummyData.PEAR();
 
         // collaborator: service
         MockCommandService service = new MockCommandService();
@@ -78,7 +76,7 @@ public class SiteGridTest {
     @Test
     public void testPartnerLevelPermissions() {
 
-        Schema schema = DummyData.PEAR();
+        SchemaDTO schema = DummyData.PEAR();
 
         // collaborator: service
         MockCommandService service = new MockCommandService();
@@ -139,7 +137,7 @@ public class SiteGridTest {
 
     @Test
     public void testExportButtonEnabled() {
-        Schema schema = DummyData.PEAR();
+        SchemaDTO schema = DummyData.PEAR();
 
         // collaborator: service
         MockCommandService service = new MockCommandService();
@@ -172,7 +170,7 @@ public class SiteGridTest {
 
     @Test
     public void testExportButtonDisabled() {
-        Schema schema = DummyData.PEAR();
+        SchemaDTO schema = DummyData.PEAR();
 
         // collaborator: service
         MockCommandService service = new MockCommandService();
@@ -204,7 +202,7 @@ public class SiteGridTest {
     @Test
     public void testNavigation() {
 
-        final Schema schema = DummyData.PEAR();
+        final SchemaDTO schema = DummyData.PEAR();
 
         // collaborator: eventBus
         EventBus eventBus = new MockEventBus();
@@ -212,7 +210,7 @@ public class SiteGridTest {
         // collaborator: service
         MockCommandService service = new MockCommandService();
         service.setResult(new GetSchema(), schema);
-        service.setResult(GetSites.class, new SiteResult(Collections.<SiteModel>emptyList()));
+        service.setResult(GetSites.class, new SiteResult(Collections.<SiteDTO>emptyList()));
 
         // collaborator: view
         SiteEditor.View view = createNiceMock(SiteEditor.View.class);
@@ -284,9 +282,9 @@ public class SiteGridTest {
         expectLastCall().anyTimes();
         replay(view);
 
-        service.setResult(GetSites.class, new SiteResult(new SiteModel(3)));
+        service.setResult(GetSites.class, new SiteResult(new SiteDTO(3)));
 
-        eventBus.fireEvent(new SiteEvent(AppEvents.SiteCreated, this, new SiteModel(3)));
+        eventBus.fireEvent(new SiteEvent(AppEvents.SiteCreated, this, new SiteDTO(3)));
 
         GetSites cmd = service.getLastExecuted(GetSites.class);
         Assert.assertEquals(3, cmd.getSeekToSiteId().intValue());
@@ -311,19 +309,19 @@ public class SiteGridTest {
         replay(view);
 
         // CLASS UNDER TEST
-        Schema schema = DummyData.PEAR();
+        SchemaDTO schema = DummyData.PEAR();
         SiteEditor presenter = new SiteEditor(eventBus, service, new MockStateManager(),
                 view);
 
         presenter.go(new SiteGridPlace(91), schema.getActivityById(91));
 
         //VERIFY that an external chnage is propageted to the store
-        SiteModel site = DummyData.PEAR_Sites().get(4);
+        SiteDTO site = DummyData.PEAR_Sites().get(4);
         site.setLocationName("Freeport");
 
         eventBus.fireEvent(new SiteEvent(AppEvents.SiteChanged, this, site));
 
-        SiteModel stored = presenter.getStore().findModel("id", site.getId());
+        SiteDTO stored = presenter.getStore().findModel("id", site.getId());
         Assert.assertEquals("Freeport", stored.get("locationName"));
 
     }
@@ -332,7 +330,7 @@ public class SiteGridTest {
     public void testSave() {
 
         // Dummy data
-        Schema schema = DummyData.PEAR();
+        SchemaDTO schema = DummyData.PEAR();
         SiteResult sites = DummyData.PEAR_Sites_Result();
 
         // Collaborator: service

@@ -17,21 +17,21 @@ import org.activityinfo.client.Application;
 import org.activityinfo.client.page.common.grid.AbstractEditorGridView;
 import org.activityinfo.client.page.common.widget.MappingComboBox;
 import org.activityinfo.shared.command.Month;
-import org.activityinfo.shared.dto.ActivityModel;
-import org.activityinfo.shared.dto.IndicatorRow;
+import org.activityinfo.shared.dto.ActivityDTO;
+import org.activityinfo.shared.dto.IndicatorRowDTO;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MonthlyGrid extends AbstractEditorGridView<IndicatorRow, MonthlyPresenter>
+public class MonthlyGrid extends AbstractEditorGridView<IndicatorRowDTO, MonthlyPresenter>
                         implements MonthlyPresenter.View {
 
     private MonthlyPresenter presenter;
-    private EditorGrid<IndicatorRow> grid;
+    private EditorGrid<IndicatorRowDTO> grid;
 
-    private ActivityModel activity;
+    private ActivityDTO activity;
 
-    public MonthlyGrid(ActivityModel activity) {
+    public MonthlyGrid(ActivityDTO activity) {
         this.activity = activity;
         this.setHeading(Application.CONSTANTS.monthlyReports());
         this.setLayout(new FitLayout());
@@ -40,7 +40,7 @@ public class MonthlyGrid extends AbstractEditorGridView<IndicatorRow, MonthlyPre
 
     }
 
-    public void init(MonthlyPresenter presenter, ListStore<IndicatorRow> store) {
+    public void init(MonthlyPresenter presenter, ListStore<IndicatorRowDTO> store) {
         super.init(presenter, store);
         this.presenter = presenter;
     }
@@ -51,9 +51,9 @@ public class MonthlyGrid extends AbstractEditorGridView<IndicatorRow, MonthlyPre
     }
 
     @Override
-    protected Grid<IndicatorRow> createGridAndAddToContainer(Store store) {
+    protected Grid<IndicatorRowDTO> createGridAndAddToContainer(Store store) {
 
-        grid = new EditorGrid<IndicatorRow>((ListStore)store, createColumnModel());
+        grid = new EditorGrid<IndicatorRowDTO>((ListStore)store, createColumnModel());
         grid.setAutoExpandColumn("indicatorName");
         grid.setLoadMask(true);
 
@@ -71,7 +71,7 @@ public class MonthlyGrid extends AbstractEditorGridView<IndicatorRow, MonthlyPre
             DateWrapper date = new DateWrapper(month.getYear(), month.getMonth()-1, 1);
         
             grid.getColumnModel().setColumnHeader(i+1, monthFormat.format(date.asDate()));
-            grid.getColumnModel().setDataIndex(i+1, IndicatorRow.propertyName(month));
+            grid.getColumnModel().setDataIndex(i+1, IndicatorRowDTO.propertyName(month));
             month = month.next();
         }
     }

@@ -6,25 +6,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Convenience class for groups of Indicators, which are currently not modeled as
+ * entities by as properties of Indicator.
+ *
+ * See {@link ActivityDTO#groupIndicators()}
+ *
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class IndicatorGroup extends BaseModelData {
+public final class IndicatorGroup extends BaseModelData {
 
-    private List<IndicatorModel> indicators = new ArrayList<IndicatorModel>();
+    private List<IndicatorDTO> indicators = new ArrayList<IndicatorDTO>();
 
     public IndicatorGroup(String name) {
         set("name", name);
     }
 
-    public List<IndicatorModel> getIndicators() {
-        return indicators;         
-    }
-
-    public void addIndicator(IndicatorModel indicator) {
-        indicators.add(indicator);
-    }
-
+    /**
+     * Returns the name of the IndicatorGroup; corresponds to
+     * {@link IndicatorDTO#getCategory()}
+     *
+     * @return the name of the IndicatorGroup
+     */
     public String getName() {
         return get("name");
     }
+
+    public List<IndicatorDTO> getIndicators() {
+        return indicators;         
+    }
+
+    public void addIndicator(IndicatorDTO indicator) {
+        indicators.add(indicator);
+    }
+
 }

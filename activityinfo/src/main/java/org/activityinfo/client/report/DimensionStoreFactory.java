@@ -6,9 +6,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.shared.command.GetSchema;
-import org.activityinfo.shared.dto.AdminLevelModel;
-import org.activityinfo.shared.dto.CountryModel;
-import org.activityinfo.shared.dto.Schema;
+import org.activityinfo.shared.dto.AdminLevelDTO;
+import org.activityinfo.shared.dto.CountryDTO;
+import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.report.model.*;
 
 import java.util.ArrayList;
@@ -35,15 +35,15 @@ public class DimensionStoreFactory {
                 list.add(createDimension(DateUnit.QUARTER, Application.CONSTANTS.quarter()));
                 list.add(createDimension(DateUnit.MONTH, Application.CONSTANTS.month()));
 
-                service.execute(new GetSchema(), null, new AsyncCallback<Schema>() {
+                service.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
                     public void onFailure(Throwable caught) {
 
                     }
 
-                    public void onSuccess(Schema schema) {
+                    public void onSuccess(SchemaDTO schema) {
 
-                        for (CountryModel country : schema.getCountries()) {
-                            for (AdminLevelModel level : country.getAdminLevels()) {
+                        for (CountryDTO country : schema.getCountries()) {
+                            for (AdminLevelDTO level : country.getAdminLevels()) {
                                 AdminDimension dimension = new AdminDimension(level.getId());
                                 dimension.set("caption", level.getName());
                                 list.add(dimension);

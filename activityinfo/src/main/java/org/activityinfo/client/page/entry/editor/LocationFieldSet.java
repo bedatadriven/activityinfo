@@ -2,7 +2,7 @@ package org.activityinfo.client.page.entry.editor;
 
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import org.activityinfo.client.Application;
-import org.activityinfo.shared.dto.ActivityModel;
+import org.activityinfo.shared.dto.ActivityDTO;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -10,7 +10,7 @@ import org.activityinfo.shared.dto.ActivityModel;
 public class LocationFieldSet extends AdminFieldSet {
 
 
-    public LocationFieldSet(ActivityModel activity) {
+    public LocationFieldSet(ActivityDTO activity) {
         super(activity);
 
         if (activity.getLocationType().getBoundAdminLevelId() == null) {

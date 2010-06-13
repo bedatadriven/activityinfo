@@ -8,16 +8,16 @@ import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.page.common.FieldSetFitLayout;
-import org.activityinfo.shared.dto.PartnerModel;
-import org.activityinfo.shared.dto.Schema;
+import org.activityinfo.shared.dto.PartnerDTO;
+import org.activityinfo.shared.dto.SchemaDTO;
 /*
  * @author Alex Bertram
  */
 
 public class PartnerFieldSet extends AbstractFilterFieldSet {
-    protected ListView<PartnerModel> checkList;
+    protected ListView<PartnerDTO> checkList;
 
-    public PartnerFieldSet(Schema schema) {
+    public PartnerFieldSet(SchemaDTO schema) {
 
         setHeading(Application.CONSTANTS.filterByPartner());
 
@@ -25,13 +25,13 @@ public class PartnerFieldSet extends AbstractFilterFieldSet {
         setLayout(new FieldSetFitLayout());
         setScrollMode(Style.Scroll.AUTO);
 
-        TreeStore<PartnerModel> store = new TreeStore<PartnerModel>();
+        TreeStore<PartnerDTO> store = new TreeStore<PartnerDTO>();
         store.add(schema.getVisiblePartnersList(), false);
 
-        TreePanel<PartnerModel> tree = new TreePanel<PartnerModel>(store);
+        TreePanel<PartnerDTO> tree = new TreePanel<PartnerDTO>(store);
         tree.setCheckable(true);
-        tree.setIconProvider(new ModelIconProvider<PartnerModel>() {
-            public AbstractImagePrototype getIcon(PartnerModel model) {
+        tree.setIconProvider(new ModelIconProvider<PartnerDTO>() {
+            public AbstractImagePrototype getIcon(PartnerDTO model) {
                 return Application.ICONS.group();
             }
         });

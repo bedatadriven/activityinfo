@@ -31,7 +31,7 @@ import org.activityinfo.server.mail.Invitation;
 import org.activityinfo.server.mail.Mailer;
 import org.activityinfo.shared.command.UpdateUserPermissions;
 import org.activityinfo.shared.command.result.CommandResult;
-import org.activityinfo.shared.dto.UserModel;
+import org.activityinfo.shared.dto.UserPermissionDTO;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.exception.IllegalAccessCommandException;
 
@@ -66,7 +66,7 @@ public class UpdateUserPermissionsHandler implements CommandHandler<UpdateUserPe
     public CommandResult execute(UpdateUserPermissions cmd, User executingUser) throws CommandException {
 
         UserDatabase database = databaseDAO.findById(cmd.getDatabaseId());
-        UserModel dto = cmd.getModel();
+        UserPermissionDTO dto = cmd.getModel();
 
         /*
            * First check that the current user has permission to
@@ -99,7 +99,7 @@ public class UpdateUserPermissionsHandler implements CommandHandler<UpdateUserPe
         return null;
     }
 
-    private User createNewUser(User executingUser, UserModel dto) {
+    private User createNewUser(User executingUser, UserPermissionDTO dto) {
         User user;
         user = User.createNewUser(dto.getEmail(), dto.getName(), executingUser.getLocale());
         userDAO.persist(user);
@@ -144,7 +144,7 @@ public class UpdateUserPermissionsHandler implements CommandHandler<UpdateUserPe
                     "Current user does not have the right to grant viewAll, editAll, or manageAllUsers privileges");
     }
 
-    protected void doUpdate(UserPermission perm, UserModel dto, boolean isOwner, UserPermission executingUserPermissions) {
+    protected void doUpdate(UserPermission perm, UserPermissionDTO dto, boolean isOwner, UserPermission executingUserPermissions) {
 
         perm.setPartner(partnerDAO.findById(dto.getPartner().getId()));
         perm.setAllowView(dto.getAllowView());

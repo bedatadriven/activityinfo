@@ -25,7 +25,7 @@ import org.activityinfo.shared.command.UpdateReportDef;
 import org.activityinfo.shared.command.result.HtmlResult;
 import org.activityinfo.shared.command.result.VoidResult;
 import org.activityinfo.shared.command.result.XmlResult;
-import org.activityinfo.shared.dto.ReportTemplateDTO;
+import org.activityinfo.shared.dto.ReportDefinitionDTO;
 import org.activityinfo.shared.report.model.DateRange;
 
 /**
@@ -35,7 +35,7 @@ public class ReportPreviewPresenter implements PagePresenter, ActionListener, Ex
 
     @ImplementedBy(ReportPreview.class)
     public interface View {
-        void init(ReportPreviewPresenter presenter, ReportTemplateDTO template);
+        void init(ReportPreviewPresenter presenter, ReportDefinitionDTO template);
 
         DateRange getDateRange();
 
@@ -50,7 +50,7 @@ public class ReportPreviewPresenter implements PagePresenter, ActionListener, Ex
     private final Dispatcher service;
     private final View view;
 
-    private ReportTemplateDTO template;
+    private ReportDefinitionDTO template;
 
     @Inject
     public ReportPreviewPresenter(EventBus eventBus, Dispatcher service, View view) {
@@ -59,7 +59,7 @@ public class ReportPreviewPresenter implements PagePresenter, ActionListener, Ex
         this.view = view;
     }
 
-    public void go(ReportTemplateDTO template) {
+    public void go(ReportDefinitionDTO template) {
         this.template = template;
         this.view.init(this, template);
 

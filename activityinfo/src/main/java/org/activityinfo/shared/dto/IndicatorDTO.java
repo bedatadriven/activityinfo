@@ -3,27 +3,27 @@ package	org.activityinfo.shared.dto;
 import com.extjs.gxt.ui.client.data.BaseModel;
 
 
-public class IndicatorModel extends BaseModel implements EntityDTO {
-	
-	
+/**
+ * One-to-one DTO for the {@link org.activityinfo.server.domain.Indicator} domain object.
+ *
+ * @author Alex Bertram
+ */
+public final class IndicatorDTO extends BaseModel implements EntityDTO {
 	public final static int AGGREGATE_SUM = 0;
 	public final static int AGGREGATE_AVG = 1;
 	public final static int AGGREGATE_SITE_COUNT = 2;
+
+    public static final String PROPERTY_PREFIX = "I";
 	
-	public final static int MODEL_TYPE = 7;
-	
-	public static final String PROPERTY_PREFIX = "I";
-	
-	public IndicatorModel()
-	{
+	public IndicatorDTO() {
 	}
 	
-	public IndicatorModel(String name, String units ) {
+	public IndicatorDTO(String name, String units ) {
 		set("name", name);
 		set("units", units);		
 	}
 
-    public IndicatorModel(IndicatorModel model) {
+    public IndicatorDTO(IndicatorDTO model) {
         super(model.getProperties());
     }
 
@@ -39,8 +39,7 @@ public class IndicatorModel extends BaseModel implements EntityDTO {
 		set("name", value);
 	}
 	
-	public String getName()
-	{
+	public String getName() {
 		return get("name");		
 	}
 	
@@ -48,23 +47,19 @@ public class IndicatorModel extends BaseModel implements EntityDTO {
 		set("units",value);
 	}
 	
-	public String getUnits()
-	{
+	public String getUnits() {
 		return get("units");	
 	}
 
-	public String getListHeader()
-	{
+	public String getListHeader() {
 		return get("listHeader");
 	}	
 	
-	public void setDescription(String value) 
-	{
+	public void setDescription(String value) {
 		set("description", value);
 	}
 	
-	public String getDescription()
-	{
+	public String getDescription() {
 		return get("description");
 	}
 
@@ -96,7 +91,6 @@ public class IndicatorModel extends BaseModel implements EntityDTO {
 		return (Integer)get("aggregation");
 	}
 
-
 	public String getCategory() {
 		return get("category");
 	}
@@ -105,11 +99,27 @@ public class IndicatorModel extends BaseModel implements EntityDTO {
 		set("category", value);
 		
 	}
-	
+
+    /**
+     *
+     * @return the name of the property in which values for this indicator are stored, for
+     * example in the {@link org.activityinfo.shared.dto.SiteDTO} object.
+     *
+     */
 	public String getPropertyName() { 
 		return getPropertyName(this.getId());
 	}
-	
+
+    /**
+     * Returns the name of the property in which values for Indicators of this id are stored, for
+     * example in the {@link org.activityinfo.shared.dto.SiteDTO} object.
+     *
+     * For example, an indicator with the id of 3 will be stored as I3 => 1432.32 in a
+     * SiteDTO.
+     *
+     * @param id
+     * @return the property name for
+     */
 	public static String getPropertyName(int id) {
 		return PROPERTY_PREFIX + id;
 	}
