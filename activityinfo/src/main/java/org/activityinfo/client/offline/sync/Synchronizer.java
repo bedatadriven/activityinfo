@@ -27,6 +27,7 @@ import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.remote.Authentication;
 import org.activityinfo.shared.command.GetSyncRegionUpdates;
 import org.activityinfo.shared.command.GetSyncRegions;
+import org.activityinfo.shared.command.result.SyncRegion;
 import org.activityinfo.shared.command.result.SyncRegionUpdate;
 import org.activityinfo.shared.command.result.SyncRegions;
 

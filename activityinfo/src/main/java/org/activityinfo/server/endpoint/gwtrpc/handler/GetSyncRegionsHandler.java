@@ -26,6 +26,7 @@ import org.activityinfo.server.domain.User;
 import org.activityinfo.server.domain.UserDatabase;
 import org.activityinfo.shared.command.GetSyncRegions;
 import org.activityinfo.shared.command.result.CommandResult;
+import org.activityinfo.shared.command.result.SyncRegion;
 import org.activityinfo.shared.command.result.SyncRegions;
 import org.activityinfo.shared.exception.CommandException;
 
