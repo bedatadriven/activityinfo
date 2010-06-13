@@ -129,21 +129,28 @@ public class DateTokenMatcher implements TokenMatcher {
     }
 
     private boolean isPotentialDateToken(String token) {
-        if(intPattern.matcher(token).matches())
+        if(intPattern.matcher(token).matches()) {
             return true;
-        if(monthNames.contains(token))
+        }
+        if(monthNames.contains(token)) {
             return true;
-        if(shortMonthNames.contains(token))
+        }
+        if(shortMonthNames.contains(token)) {
             return true;
-        if(beforeTokens.contains(token))
+        }
+        if(beforeTokens.contains(token)) {
             return true;
-        if(afterTokens.contains(token))
+        }
+        if(afterTokens.contains(token)) {
             return true;
-        if(rangeSeperatorTokens.contains(token))
+        }
+        if(rangeSeperatorTokens.contains(token)) {
             return true;
+        }
 
-        if(tryParseDate(token) != null)
+        if(tryParseDate(token) != null) {
             return true;
+        }
 
         return false;
     }
@@ -174,7 +181,7 @@ public class DateTokenMatcher implements TokenMatcher {
         for(int j = maxEnd; j>startIndex; --j) {
             DateRange range = tryParse(tokens.subList(startIndex, j));
             if(range != null) {
-                return new MatchResult(j-startIndex, createCriterion(range));    
+                return new MatchResult(j-startIndex, createCriterion(range));
             }
         }
 
@@ -192,9 +199,9 @@ public class DateTokenMatcher implements TokenMatcher {
         if(range.getMinDate() != null && range.getMaxDate() !=null) {
 
             return Restrictions.not(
-                Restrictions.or(
-                   Restrictions.lt("site.date2", range.getMinDate()),
-                   Restrictions.gt("site.date1", range.getMaxDate())));
+                    Restrictions.or(
+                            Restrictions.lt("site.date2", range.getMinDate()),
+                            Restrictions.gt("site.date1", range.getMaxDate())));
         } else if(range.getMinDate() != null) {
             return Restrictions.ge("site.date2", range.getMinDate());
 
@@ -212,13 +219,15 @@ public class DateTokenMatcher implements TokenMatcher {
 
         // are we dealing with date a range?
         int rsIndex = findRangeSeperatorIndex(tokens);
-        if(rsIndex == -2)
-            return null;  // too many range tokens here
+        if(rsIndex == -2) {
+            return null;
+        }// too many range tokens here
 
-        if(rsIndex == -1)
+        if(rsIndex == -1) {
             return tryParseSingle(tokens);
-        else
+        } else {
             return tryParseRange(tokens, rsIndex);
+        }
     }
 
     private DateRange tryParseRange(List<String> tokens, int rsIndex) {
@@ -230,12 +239,14 @@ public class DateTokenMatcher implements TokenMatcher {
         }
 
         PartialDate pd1 = parsePartialDateOrFormmatedDate(tokens, 0, rsIndex);
-        if(pd1==null)
+        if(pd1==null) {
             return null;
+        }
 
         PartialDate pd2 = parsePartialDateOrFormmatedDate(tokens, rsIndex+1, tokens.size());
-        if(pd2==null)
+        if(pd2==null) {
             return null;
+        }
 
 
         // e.g. 1 - 3 may
@@ -326,8 +337,9 @@ public class DateTokenMatcher implements TokenMatcher {
         }
 
         PartialDate pd = parsePartialDateOrFormmatedDate(tokens, startIndex, tokens.size());
-        if (pd == null)
+        if (pd == null) {
             return null;
+        }
 
         DateRange range = new DateRange();
 
@@ -335,8 +347,9 @@ public class DateTokenMatcher implements TokenMatcher {
 
             // user has provided a full date
 
-            if(pd.year == -1)
+            if(pd.year == -1) {
                 pd.year = today.get(Calendar.YEAR);
+            }
 
             Calendar c = Calendar.getInstance();
             c.set(Calendar.DATE, pd.day);
@@ -361,14 +374,16 @@ public class DateTokenMatcher implements TokenMatcher {
 
             if(pd.year == -1)
 
-                // if the year is not specified, assume this year
+            // if the year is not specified, assume this year
 
+            {
                 pd.year = today.get(Calendar.YEAR);
+            }
 
-                Calendar c = Calendar.getInstance();
-                c.set(Calendar.DATE, 1);
-                c.set(Calendar.MONTH, pd.month-1);
-                c.set(Calendar.YEAR, pd.year);
+            Calendar c = Calendar.getInstance();
+            c.set(Calendar.DATE, 1);
+            c.set(Calendar.MONTH, pd.month-1);
+            c.set(Calendar.YEAR, pd.year);
 
             if(qualifier == 1) { // before the given month
                 c.add(Calendar.DATE, -1);
@@ -411,15 +426,17 @@ public class DateTokenMatcher implements TokenMatcher {
         PartialDate pd;
         Date point = tryParseDate(FilterHelper.join(tokens, startIndex, endIndex));
         if(point != null) {
-           pd = new PartialDate(point);
+            pd = new PartialDate(point);
 
         } else {
-           pd = parsePartialDate(tokens, startIndex, endIndex);
+            pd = parsePartialDate(tokens, startIndex, endIndex);
 
-            if(pd == null)
+            if(pd == null) {
                 return null;
-            if(pd.year == -1 && pd.month == -1 && pd.day == -1)
+            }
+            if(pd.year == -1 && pd.month == -1 && pd.day == -1) {
                 return null;
+            }
         }
         return pd;
     }
@@ -431,7 +448,7 @@ public class DateTokenMatcher implements TokenMatcher {
             if(intPattern.matcher(tokens.get(ti)).matches()) {
                 int i;
                 try {
-                   i = NumberFormat.getIntegerInstance(locale).parse(tokens.get(ti)).intValue();
+                    i = NumberFormat.getIntegerInstance(locale).parse(tokens.get(ti)).intValue();
                 } catch (ParseException e) {
                     throw new Error("programming logic error");
                 }
@@ -442,8 +459,9 @@ public class DateTokenMatcher implements TokenMatcher {
                 }
             } else {
                 pd.month = parseMonth(tokens.get(ti));
-                if(pd.month == 0)
+                if(pd.month == 0) {
                     return null;
+                }
             }
         }
 

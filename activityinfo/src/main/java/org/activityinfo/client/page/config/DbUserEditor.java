@@ -142,27 +142,35 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO>
 
         // If the user doesn't have the manageUser permission, then it's definitely
         // a no.
-        if (!db.isManageUsersAllowed())
+        if (!db.isManageUsersAllowed()) {
             return false;
+        }
 
         // if the user is only allowed to manager their own partners, then make
         // sure they're changing someone from their own organisation
-        if (!db.isManageAllUsersAllowed() && db.getMyPartner().getId() != user.getPartner().getId())
+        if (!db.isManageAllUsersAllowed() && db.getMyPartner().getId() != user.getPartner().getId()) {
             return false;
+        }
 
         // do not allow users to set rights they themselves do not have
-        if ("allowViewAll".equals(property) && !db.isViewAllAllowed())
+        if ("allowViewAll".equals(property) && !db.isViewAllAllowed()) {
             return false;
-        if ("allowEdit".equals(property) && !db.isEditAllowed())
+        }
+        if ("allowEdit".equals(property) && !db.isEditAllowed()) {
             return false;
-        if ("allowEditAll".equals(property) && !db.isEditAllAllowed())
+        }
+        if ("allowEditAll".equals(property) && !db.isEditAllAllowed()) {
             return false;
-        if ("allowDesign".equals(property) && !db.isDesignAllowed())
+        }
+        if ("allowDesign".equals(property) && !db.isDesignAllowed()) {
             return false;
-        if ("allowManageUsers".equals(property) && !db.isManageUsersAllowed())
+        }
+        if ("allowManageUsers".equals(property) && !db.isManageUsersAllowed()) {
             return false;
-        if ("allowManageAllUsers".equals(property) && !db.isManageAllUsersAllowed())
+        }
+        if ("allowManageAllUsers".equals(property) && !db.isManageAllUsersAllowed()) {
             return false;
+        }
 
         return true;
     }

@@ -3,14 +3,14 @@ package org.activityinfo.server.endpoint.gwtrpc;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import org.activityinfo.server.domain.User;
 import org.activityinfo.server.util.BeanMappingModule;
 import org.activityinfo.server.util.TemplateModule;
-import org.activityinfo.server.domain.User;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.CommandException;
-import org.activityinfo.test.Modules;
 import org.activityinfo.test.MockHibernateModule;
+import org.activityinfo.test.Modules;
 
 import javax.persistence.EntityManager;
 import java.util.Collections;
@@ -57,8 +57,9 @@ public abstract class CommandTestCase {
 
 
         CommandResult result = results.get(0);
-        if (result instanceof CommandException)
+        if (result instanceof CommandException) {
             throw (CommandException) result;
+        }
 
         return (T) result;
     }

@@ -225,8 +225,9 @@ public class SiteTableDAOHibernate implements SiteTableDAO {
 
         criteria.createAlias("activity.database", "database");
 
-        if (criterion != null)
+        if (criterion != null) {
             criteria.add(criterion);
+        }
 
         return criteria;
     }
@@ -253,8 +254,9 @@ public class SiteTableDAOHibernate implements SiteTableDAO {
 
         criteria.createAlias("activity.database", "database");
 
-        if (criterion != null)
+        if (criterion != null) {
             criteria.add(criterion);
+        }
 
         return criteria;
     }

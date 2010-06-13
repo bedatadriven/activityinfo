@@ -8,10 +8,12 @@ import com.extjs.gxt.ui.client.data.SortInfo;
 public class SortInfoEqualityChecker {
 
     public static boolean equals(SortInfo a, SortInfo b) {
-        if(a==null && b==null)
+        if(a==null && b==null) {
             return true;
-        if(a==null || b==null)
+        }
+        if(a==null || b==null) {
             return false;
+        }
         return a.getSortField().equals(b.getSortField()) &&
                a.getSortDir() == b.getSortDir();
     }

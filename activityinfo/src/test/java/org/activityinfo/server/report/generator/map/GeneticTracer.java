@@ -20,7 +20,9 @@ public class GeneticTracer implements GeneticSolver.Tracer {
         for(int i = 0; i!=p.length; ++i) {
             String value = Integer.toString(p[i]);
             int len = value.length();
-            while(len++ < 3) sb.append(' ');
+            while(len++ < 3) {
+                sb.append(' ');
+            }
             sb.append(value);
         }
         return sb.toString();

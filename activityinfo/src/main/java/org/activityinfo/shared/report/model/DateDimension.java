@@ -38,12 +38,15 @@ public class DateDimension extends Dimension {
 
     @Override
 	public boolean equals(Object other) {
-		if(this==other)
-			return true;
-		if(other==null)
-			return false;
-		if(!(other instanceof DateDimension))
-			return false;
+		if(this==other) {
+            return true;
+        }
+		if(other==null) {
+            return false;
+        }
+		if(!(other instanceof DateDimension)) {
+            return false;
+        }
 
 		DateDimension that = (DateDimension)other;
 	

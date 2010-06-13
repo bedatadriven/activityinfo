@@ -72,8 +72,9 @@ public class XmlBuilder {
 			
 			prefix = openTags.get(i).element.getNamespacePrefixes().get(namespace);
 			
-			if(prefix != null)
-				return prefix;
+			if(prefix != null) {
+                return prefix;
+            }
 		}
 		return null;
 	}

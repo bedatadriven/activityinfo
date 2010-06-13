@@ -181,8 +181,9 @@ public class IndicatorTreePanel extends ContentPanel {
 
                 String name = ((String) record.get("name")).toLowerCase();
                 for (String keyword : keywords) {
-                    if (name.indexOf(keyword) == -1)
+                    if (name.indexOf(keyword) == -1) {
                         return false;
+                    }
                 }
 
                 return true;
@@ -226,8 +227,9 @@ public class IndicatorTreePanel extends ContentPanel {
                 ArrayList<ModelData> list = new ArrayList<ModelData>();
 
                 for (IndicatorGroup group : activity.groupIndicators()) {
-                    if (group.getName() != null)
+                    if (group.getName() != null) {
                         list.add(group);
+                    }
                     for (IndicatorDTO indicator : group.getIndicators()) {
                         list.add(indicator);
                     }

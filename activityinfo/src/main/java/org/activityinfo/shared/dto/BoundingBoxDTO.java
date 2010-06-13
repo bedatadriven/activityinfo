@@ -35,17 +35,33 @@ public final class BoundingBoxDTO implements Serializable  {
     }
 	
 	public void grow(BoundingBoxDTO b) {
-		if(b.x1 < x1) x1 = b.x1;
-		if(b.y1 < y1) y1 = b.y1;
-		if(b.x2 > x2) x2 = b.x2;
-		if(b.y2 > y2) y2 = b.y2;
+		if(b.x1 < x1) {
+            x1 = b.x1;
+        }
+		if(b.y1 < y1) {
+            y1 = b.y1;
+        }
+		if(b.x2 > x2) {
+            x2 = b.x2;
+        }
+		if(b.y2 > y2) {
+            y2 = b.y2;
+        }
 	}
 
     public void grow(double x, double y) {
-        if(x < x1) x1 = x;
-        if(x > x2) x2 = x;
-        if(y < y1) y1 = y;
-        if(y > y2) y2 = y;
+        if(x < x1) {
+            x1 = x;
+        }
+        if(x > x2) {
+            x2 = x;
+        }
+        if(y < y1) {
+            y1 = y;
+        }
+        if(y > y2) {
+            y2 = y;
+        }
     }
 	
 	public boolean isEmpty() {
@@ -86,33 +102,39 @@ public final class BoundingBoxDTO implements Serializable  {
     }
 
     public double clampX(double x) {
-        if(x < x1)
+        if(x < x1) {
             return x1;
-        if(x > x2)
+        }
+        if(x > x2) {
             return x2;
+        }
         return x;
     }
 
     public double clampY(double y) {
-        if(y < y1)
+        if(y < y1) {
             return y1;
-        if(y > y2)
+        }
+        if(y > y2) {
             return y2;
+        }
         return y;
     }
 
 	public double distance(BoundingBoxDTO b) {
 		double dx=0, dy=0;
 		
-		if(b.x2 < x1)
-			dx = x1 - b.x2;
-		else if(b.x1 > x2)
-			dx = b.x1 - x2;
+		if(b.x2 < x1) {
+            dx = x1 - b.x2;
+        } else if(b.x1 > x2) {
+            dx = b.x1 - x2;
+        }
 		
-		if(b.y2 < y1) 
-			dy = y1 - b.y2;
-		else if(b.y1 > y2)
-			dy = b.y1 - y2;
+		if(b.y2 < y1) {
+            dy = y1 - b.y2;
+        } else if(b.y1 > y2) {
+            dy = b.y1 - y2;
+        }
 	
 		return Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2));
 	}

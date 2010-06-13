@@ -31,8 +31,9 @@ public class DatabaseStateProvider extends Provider {
 
     @Override
     protected void clearKey(String name) {
-        if(db==null)
+        if(db==null) {
             return;
+        }
         try {
             db.execute("delete from state where key = ?", name);
         } catch (DatabaseException e) {
@@ -42,8 +43,9 @@ public class DatabaseStateProvider extends Provider {
 
     @Override
     protected String getValue(String name) {
-        if(db==null)
+        if(db==null) {
             return null;
+        }
         try {
             ResultSet rs = db.execute("select value from state where key = ?", name);
             if(rs.isValidRow()) {
@@ -59,8 +61,9 @@ public class DatabaseStateProvider extends Provider {
 
     @Override
     protected void setValue(String name, String value) {
-        if(db==null)
+        if(db==null) {
             return;
+        }
         try {
             db.execute("update state set value = ? where key = ?", value, name);
             if(db.getRowsAffected() == 0) {

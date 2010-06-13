@@ -213,8 +213,9 @@ public class ChartPage extends LayoutContainer implements Charter.View {
 
         if (categoryCombo.getValue() instanceof DateDimension) {
             DateDimension dim = (DateDimension) categoryCombo.getValue();
-            if (dim.getUnit() != DateUnit.YEAR)
+            if (dim.getUnit() != DateUnit.YEAR) {
                 element.addCategoryDimension(new DateDimension(DateUnit.YEAR));
+            }
         }
 
         element.addCategoryDimension(categoryCombo.getValue());

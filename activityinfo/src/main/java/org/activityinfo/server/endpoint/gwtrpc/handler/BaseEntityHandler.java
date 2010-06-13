@@ -42,48 +42,60 @@ public class BaseEntityHandler {
     }
 
     protected void updateIndicatorProperties(Indicator indicator, Map<String, Object> changes) {
-        if (changes.containsKey("name"))
+        if (changes.containsKey("name")) {
             indicator.setName((String) changes.get("name"));
+        }
 
-        if (changes.containsKey("aggregation"))
+        if (changes.containsKey("aggregation")) {
             indicator.setAggregation((Integer) changes.get("aggregation"));
+        }
 
-        if (changes.containsKey("category"))
+        if (changes.containsKey("category")) {
             indicator.setCategory((String) changes.get("category"));
+        }
 
-        if (changes.containsKey("collectIntervention"))
+        if (changes.containsKey("collectIntervention")) {
             indicator.setCollectIntervention((Boolean) changes.get("collectIntervention"));
+        }
 
-        if (changes.containsKey("collectMonitoring"))
+        if (changes.containsKey("collectMonitoring")) {
             indicator.setCollectMonitoring((Boolean) changes.get("collectMonitoring"));
+        }
 
-        if (changes.containsKey("listHeader"))
+        if (changes.containsKey("listHeader")) {
             indicator.setListHeader((String) changes.get("listHeader"));
+        }
 
-        if (changes.containsKey("description"))
+        if (changes.containsKey("description")) {
             indicator.setDescription((String) changes.get("description"));
+        }
 
-        if (changes.containsKey("units"))
+        if (changes.containsKey("units")) {
             indicator.setUnits((String) changes.get("units"));
+        }
 
-        if (changes.containsKey("sortOrder"))
+        if (changes.containsKey("sortOrder")) {
             indicator.setSortOrder((Integer) changes.get("sortOrder"));
+        }
 
         indicator.getActivity().getDatabase().setLastSchemaUpdate(new Date());
     }
 
     protected void updateAttributeProperties(Map<String, Object> changes, Attribute attribute) {
-        if (changes.containsKey("name"))
+        if (changes.containsKey("name")) {
             attribute.setName((String) changes.get("name"));
-        if (changes.containsKey("sortOrder"))
+        }
+        if (changes.containsKey("sortOrder")) {
             attribute.setSortOrder((Integer) changes.get("sortOrder"));
+        }
 
         // TODO: update lastSchemaUpdate
     }
 
     protected void updateAttributeGroupProperties(AttributeGroup group, Map<String, Object> changes) {
-        if (changes.containsKey("name"))
+        if (changes.containsKey("name")) {
             group.setName((String) changes.get("name"));
+        }
 
         if (changes.containsKey("multipleAllowed")) {
             group.setMultipleAllowed((Boolean) changes.get("multipleAllowed"));
@@ -96,28 +108,35 @@ public class BaseEntityHandler {
     }
 
     protected void updateActivityProperties(Activity activity, Map<String, Object> changes) {
-        if (changes.containsKey("name"))
+        if (changes.containsKey("name")) {
             activity.setName((String) changes.get("name"));
+        }
 
-        if (changes.containsKey("assessment"))
+        if (changes.containsKey("assessment")) {
             activity.setAssessment((Boolean) changes.get("assessment"));
+        }
 
-        if (changes.containsKey("locationType"))
+        if (changes.containsKey("locationType")) {
             activity.setLocationType(
                     em.getReference(LocationType.class,
                             ((LocationTypeDTO) changes.get("locationType")).getId()));
+        }
 
-        if (changes.containsKey("category"))
+        if (changes.containsKey("category")) {
             activity.setCategory((String) changes.get("category"));
+        }
 
-        if (changes.containsKey("mapIcon"))
+        if (changes.containsKey("mapIcon")) {
             activity.setMapIcon((String) changes.get("mapIcon"));
+        }
 
-        if (changes.containsKey("reportingFrequency"))
+        if (changes.containsKey("reportingFrequency")) {
             activity.setReportingFrequency((Integer) changes.get("reportingFrequency"));
+        }
 
-        if (changes.containsKey("sortOrder"))
+        if (changes.containsKey("sortOrder")) {
             activity.setSortOrder((Integer) changes.get("sortOrder"));
+        }
 
         activity.getDatabase().setLastSchemaUpdate(new Date());
     }

@@ -232,8 +232,9 @@ public class PivotDAOImplTest {
     private PivotDAO.Bucket findBucketByQuarter(List<PivotDAO.Bucket> buckets, int year, int quarter) {
         for(PivotDAO.Bucket bucket : buckets) {
             QuarterCategory category = (QuarterCategory) bucket.getCategory(new DateDimension(DateUnit.QUARTER));
-            if(category.getYear() == year && category.getQuarter() == quarter)
+            if(category.getYear() == year && category.getQuarter() == quarter) {
                 return bucket;
+            }
         }
         throw new AssertionError("No bucket for " + year + "q" + quarter);
     }

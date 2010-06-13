@@ -28,8 +28,9 @@ public class BubbleLayerGenerator implements LayerGenerator {
     protected boolean hasValue(SiteData site, List<Integer> indicatorIds) {
 
         // if no indicators are specified, we count sites
-        if(indicatorIds.size() == 0)
+        if(indicatorIds.size() == 0) {
             return true;
+        }
 
         for(Integer indicatorId : indicatorIds) {
             Double indicatorValue = site.getIndicatorValue(indicatorId);
@@ -43,8 +44,9 @@ public class BubbleLayerGenerator implements LayerGenerator {
     protected Double getValue(SiteData site, List<Integer> indicatorIds) {
 
         // if no indicators are specifid, we count sites.
-        if(indicatorIds.size() == 0)
+        if(indicatorIds.size() == 0) {
             return 1.0;
+        }
 
         Double value = null;
         for(Integer indicatorId : indicatorIds) {
@@ -190,8 +192,9 @@ public class BubbleLayerGenerator implements LayerGenerator {
                         PointValue pv = new PointValue(site,
                                 createSymbol(site, layer.getColorDimensions()),
                                 value, px);
-                        if(layer.isPie())
+                        if(layer.isPie()) {
                             calcSlices(pv, site);
+                        }
 
                         (px==null ? unmapped : mapped).add(pv);
                     }

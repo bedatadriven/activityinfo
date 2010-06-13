@@ -84,8 +84,9 @@ public class MapPreview extends ContentPanel {
         addListener(Events.AfterLayout, new Listener<BaseEvent>() {
             @Override
             public void handleEvent(BaseEvent be) {
-                if (map != null)
+                if (map != null) {
                     map.checkResizeAndCenter();
+                }
                 if (pendingZoom != null) {
                     Log.debug("MapPreview: zooming to " + map.getBoundsZoomLevel(pendingZoom));
                     map.setCenter(pendingZoom.getCenter(),

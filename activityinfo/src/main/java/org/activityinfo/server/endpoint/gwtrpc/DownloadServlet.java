@@ -75,8 +75,9 @@ public class DownloadServlet extends HttpServlet {
         byte[] buffer = new byte[BUFFER_SIZE];
         do {
             bytesRead = in.read(buffer);
-            if (bytesRead > 0)
+            if (bytesRead > 0) {
                 out.write(buffer, 0, bytesRead);
+            }
         } while (bytesRead > 0);
 
     }

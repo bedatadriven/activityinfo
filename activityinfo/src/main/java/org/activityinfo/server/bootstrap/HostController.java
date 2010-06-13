@@ -75,16 +75,19 @@ public class HostController extends AbstractController {
     @Transactional
     protected Authentication getAuthentication(HttpServletRequest request) throws NoValidAuthentication {
         String authToken = request.getParameter("auth");
-        if(isEmpty(authToken)) 
+        if(isEmpty(authToken)) {
             authToken = getCookie(request, Cookies.AUTH_TOKEN_COOKIE);
-        if (isEmpty(authToken))
+        }
+        if (isEmpty(authToken)) {
             throw new NoValidAuthentication();
+        }
 
         AuthenticationDAO authDAO = injector.getInstance(AuthenticationDAO.class);
         Authentication auth = authDAO.findById(authToken);
 
-        if (auth == null)
+        if (auth == null) {
             throw new NoValidAuthentication();
+        }
 
         return auth;
     }
@@ -111,12 +114,14 @@ public class HostController extends AbstractController {
         directUrl.append("http://");
         directUrl.append(request.getServerName()).append(":8080");
         directUrl.append(request.getRequestURI());
-        if (request.getQueryString() != null && request.getQueryString().length() != 0)
+        if (request.getQueryString() != null && request.getQueryString().length() != 0) {
             directUrl.append("?").append(request.getQueryString());
+        }
 
         String bookmark = parseUrlSuffix(request);
-        if (bookmark != null && bookmark.length() != 0)
+        if (bookmark != null && bookmark.length() != 0) {
             directUrl.append("#").append(bookmark);
+        }
 
         response.sendRedirect(directUrl.toString());
     }

@@ -58,8 +58,9 @@ public final class SchemaDTO extends BaseModelData implements DTO {
 	public ActivityDTO getActivityById(int id) {
 		for(UserDatabaseDTO database : databases) {
 			ActivityDTO activity = getById(database.getActivities(), id);
-			if(activity!=null)
-				return activity;
+			if(activity!=null) {
+                return activity;
+            }
 		}
 		return null;
 	}
@@ -67,8 +68,9 @@ public final class SchemaDTO extends BaseModelData implements DTO {
 	public PartnerDTO getPartnerById(int partnerId) {
 		for(UserDatabaseDTO database : databases) {
 			PartnerDTO partner = getById(database.getPartners(), partnerId);
-			if(partner!=null)
-				return partner;
+			if(partner!=null) {
+                return partner;
+            }
 		}
 		return null;
 	}
@@ -123,8 +125,9 @@ public final class SchemaDTO extends BaseModelData implements DTO {
 	public AdminLevelDTO getAdminLevelById(int parentLevelId) {
 		for(CountryDTO country : countries) {
 			AdminLevelDTO level = country.getAdminLevelById(parentLevelId);
-			if(level!=null)
-				return level;
+			if(level!=null) {
+                return level;
+            }
 		}
 		return null;
 	}

@@ -142,10 +142,12 @@ public class PivotPresenter implements Page {
             table.getFilter().addRestriction(DimensionType.AdminLevel, entity.getId());
         }
 
-        if (view.getMinDate() != null)
+        if (view.getMinDate() != null) {
             table.getFilter().setMinDate(view.getMinDate());
-        if (view.getMaxDate() != null)
+        }
+        if (view.getMaxDate() != null) {
             table.getFilter().setMaxDate(view.getMaxDate());
+        }
 
         return table;
     }

@@ -174,12 +174,15 @@ public class ReportingPeriod implements java.io.Serializable, Deleteable {
 	
 	@Override
 	public boolean equals(Object other) {
-		if(this==other)
-			return true;
-		if(other==null)
-			return false;
-		if(!(other instanceof ReportingPeriod))
-			return false;
+		if(this==other) {
+            return true;
+        }
+		if(other==null) {
+            return false;
+        }
+		if(!(other instanceof ReportingPeriod)) {
+            return false;
+        }
 	
 		ReportingPeriod that = (ReportingPeriod)other;
 		

@@ -174,6 +174,8 @@ public class Synchronizer {
 
     private void handleException(String message, Throwable throwable) {
         Log.error("Synchronizer: " + message, throwable);
-        if(callback != null) callback.onFailure(throwable);
+        if(callback != null) {
+            callback.onFailure(throwable);
+        }
     }
 }

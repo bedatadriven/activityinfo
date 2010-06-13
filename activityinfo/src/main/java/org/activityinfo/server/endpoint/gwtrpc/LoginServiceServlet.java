@@ -67,8 +67,9 @@ public class LoginServiceServlet extends HttpServlet {
 
         User user = findUser(email);
 
-        if(!authenticator.check(user, password))
+        if(!authenticator.check(user, password)) {
             throw new LoginException();
+        }
 
         Authentication auth = createAndPersistAuthToken(user);
 

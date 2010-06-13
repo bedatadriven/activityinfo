@@ -124,8 +124,9 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
     public long getCurrentSchemaVersion(User user) {
         long currentVersion = 1;
         for(UserDatabase db : databases) {
-            if(db.getLastSchemaUpdate().getTime() > currentVersion)
+            if(db.getLastSchemaUpdate().getTime() > currentVersion) {
                 currentVersion = db.getLastSchemaUpdate().getTime();
+            }
 
             if(db.getOwner().getId() != user.getId()) {
                 UserPermission permission = db.getPermissionByUser(user);

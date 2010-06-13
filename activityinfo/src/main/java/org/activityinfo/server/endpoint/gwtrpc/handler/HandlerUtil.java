@@ -103,8 +103,9 @@ public class HandlerUtil {
 
         Calendar c2 = Calendar.getInstance();
         c2.setTime(date2);
-        if (c2.get(Calendar.DAY_OF_MONTH) != c2.getActualMaximum(Calendar.DAY_OF_MONTH))
+        if (c2.get(Calendar.DAY_OF_MONTH) != c2.getActualMaximum(Calendar.DAY_OF_MONTH)) {
             return null;
+        }
 
         if (c2.get(Calendar.MONTH) != c1.get(Calendar.MONTH) ||
                 c2.get(Calendar.YEAR) != c2.get(Calendar.YEAR)) {

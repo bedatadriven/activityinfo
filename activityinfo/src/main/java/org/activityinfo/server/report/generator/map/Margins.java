@@ -28,10 +28,18 @@ public class Margins {
     }
 
     public void grow(Margins other) {
-        if(other.left > this.left) this.left = other.left;
-        if(other.right > this.right) this.right = other.right;
-        if(other.top > this.top) this.top = other.top;
-        if(other.bottom > this.bottom) this.bottom = other.bottom;
+        if(other.left > this.left) {
+            this.left = other.left;
+        }
+        if(other.right > this.right) {
+            this.right = other.right;
+        }
+        if(other.top > this.top) {
+            this.top = other.top;
+        }
+        if(other.bottom > this.bottom) {
+            this.bottom = other.bottom;
+        }
     }
 
 }

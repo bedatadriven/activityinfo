@@ -138,16 +138,20 @@ public class SitePolicy implements EntityPolicy<Site> {
     protected void assertSiteEditPrivileges(User user, Activity activity, Partner partner)  {
         UserDatabase db = activity.getDatabase();
 
-        if (db.getOwner().getId() == user.getId())
+        if (db.getOwner().getId() == user.getId()) {
             return;
+        }
 
         UserPermission perm = db.getPermissionByUser(user);
-        if (perm.isAllowEditAll())
+        if (perm.isAllowEditAll()) {
             return;
-        if (!perm.isAllowEdit())
+        }
+        if (!perm.isAllowEdit()) {
             throw new IllegalAccessError();
-        if (perm.getPartner().getId() != partner.getId())
+        }
+        if (perm.getPartner().getId() != partner.getId()) {
             throw new IllegalAccessError();
+        }
     }
 
     protected void updateAdminProperties(Location location, PropertyMap changes, boolean creating) {
@@ -185,8 +189,9 @@ public class SitePolicy implements EntityPolicy<Site> {
                 attributeValues.put(AttributeDTO.idForPropertyName(change.getKey()), (Boolean)change.getValue());
             }
         }
-        if(!attributeValues.isEmpty())
+        if(!attributeValues.isEmpty()) {
             siteDAO.updateAttributeValues(site.getId(), attributeValues);
+        }
    }
 
     protected void updateIndicatorValueProperties(ReportingPeriod period, PropertyMap changes, boolean creating) {

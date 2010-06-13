@@ -29,12 +29,18 @@ public class NavigationEvent extends BaseEvent {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         NavigationEvent that = (NavigationEvent) o;
 
-        if (place != null ? !place.equals(that.place) : that.place != null) return false;
+        if (place != null ? !place.equals(that.place) : that.place != null) {
+            return false;
+        }
 
         return true;
     }

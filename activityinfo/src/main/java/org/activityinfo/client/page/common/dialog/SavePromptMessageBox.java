@@ -112,8 +112,9 @@ public class SavePromptMessageBox extends Window implements AsyncMonitor {
 
     @Override
     public boolean onRetrying() {
-        if (asyncCallCancelled)
+        if (asyncCallCancelled) {
             return false;
+        }
 
         cancelButton.disable();
         status.setBusy(Application.CONSTANTS.retrying());

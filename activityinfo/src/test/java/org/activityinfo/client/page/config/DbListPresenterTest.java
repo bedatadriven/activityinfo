@@ -197,10 +197,11 @@ public class DbListPresenterTest {
             public Void answer() throws Throwable {
                 String actionId = (String) getCurrentArguments()[0];
                 Boolean enabled = (Boolean) getCurrentArguments()[1];
-                if(enabled)
+                if(enabled) {
                     disabledActions.remove(actionId);
-                else
+                } else {
                     disabledActions.add(actionId);
+                }
                 return null;
             }
         }).anyTimes();

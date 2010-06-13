@@ -234,8 +234,9 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
      * @return True if the given user has the right to view this database at all.
      */
 	public boolean isAllowedView(User user) {
-		if(getOwner().getId() == user.getId() || getOwner().equals(user))
-			return true;
+		if(getOwner().getId() == user.getId() || getOwner().equals(user)) {
+            return true;
+        }
 		
 		UserPermission permission = this.getPermissionByUser(user);
         return permission != null && permission.isAllowView();
@@ -248,8 +249,9 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
      * False if they have only the right to view the data from their partner organization
      */
 	public boolean isAllowedViewAll(User user) {
-		if(getOwner().getId() == user.getId() || getOwner().equals(user))
-			return true;
+		if(getOwner().getId() == user.getId() || getOwner().equals(user)) {
+            return true;
+        }
 		
 		UserPermission permission = this.getPermissionByUser(user);
         return permission != null && permission.isAllowViewAll();
@@ -264,8 +266,9 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
      * (partner) organization
      */
 	public boolean isAllowedEdit(User user) {
-		if(getOwner().getId() == user.getId())
-			return true;
+		if(getOwner().getId() == user.getId()) {
+            return true;
+        }
 		
 		UserPermission permission = this.getPermissionByUser(user);
         return permission != null && permission.isAllowEdit();
@@ -279,24 +282,29 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
      * such as adding or removing activities, indicators, etc
      */
     public boolean isAllowedDesign(User user) {
-		if(getOwner().getId() == user.getId())
-			return true;
+		if(getOwner().getId() == user.getId()) {
+            return true;
+        }
 		
 		UserPermission permission = this.getPermissionByUser(user);
         return permission != null && permission.isAllowDesign();
     }
 
     public boolean isAllowedManageUsers(User user, Partner partner) {
-        if(getOwner().getId() == user.getId())
+        if(getOwner().getId() == user.getId()) {
             return true;
+        }
 
 		UserPermission permission = this.getPermissionByUser(user);
-        if(permission == null)
+        if(permission == null) {
             return false;
-        if(!permission.isAllowManageUsers())
+        }
+        if(!permission.isAllowManageUsers()) {
             return false;
-        if(!permission.isAllowManageAllUsers() && permission.getPartner().getId() != partner.getId())
+        }
+        if(!permission.isAllowManageAllUsers() && permission.getPartner().getId() != partner.getId()) {
             return false;
+        }
 
         return true;
     }
@@ -324,8 +332,9 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
      * partner organizations.
      */
 	public boolean isAllowedEditAll(User user) {
-		if(getOwner().getId() == user.getId())
-			return true;
+		if(getOwner().getId() == user.getId()) {
+            return true;
+        }
 		
 		UserPermission permission = this.getPermissionByUser(user);
         return permission != null && permission.isAllowEditAll();

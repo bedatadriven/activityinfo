@@ -163,8 +163,9 @@ public class PivotTableData implements Serializable {
         }
 
 		public Axis nextSibling() {
-			if(parent == null)
-				return null;
+			if(parent == null) {
+                return null;
+            }
 
             int i = parent.children.indexOf(this);
 
@@ -240,8 +241,9 @@ public class PivotTableData implements Serializable {
             Axis axis = this;
             do {
                 if(axis.getLabel() != null) {
-                    if(sb.length()!=0)
+                    if(sb.length()!=0) {
                         sb.append(" ");
+                    }
 
                     sb.append(axis.getLabel());
                 }

@@ -163,10 +163,16 @@ public abstract class AbstractEditorGridPresenter<ModelT extends ModelData>
         StringBuilder sb = new StringBuilder();
         sb.append("{");
         for (String p : record.getPropertyNames()) {
-            if (sb.length() > 1) sb.append(", ");
+            if (sb.length() > 1) {
+                sb.append(", ");
+            }
             sb.append(p).append(": ").append(record.get(p));
-            if (record.isModified(p)) sb.append("[*]");
-            if (!record.isValid(p)) sb.append("[!]");
+            if (record.isModified(p)) {
+                sb.append("[*]");
+            }
+            if (!record.isValid(p)) {
+                sb.append("[!]");
+            }
         }
         sb.append("}");
         return sb.toString();

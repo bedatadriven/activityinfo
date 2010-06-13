@@ -33,10 +33,11 @@ public class MockRemoteCommandService implements RemoteCommandServiceAsync {
 
     public int getCommandCount(Class clazz) {
         Integer count = commandCounts.get(clazz);
-        if(count == null)
+        if(count == null) {
             return 0;
-        else
+        } else {
             return count;
+        }
     }
 
 

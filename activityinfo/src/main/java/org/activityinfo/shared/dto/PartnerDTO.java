@@ -54,12 +54,15 @@ public final class PartnerDTO extends BaseModelData implements DTO {
 	
 	@Override
 	public boolean equals(Object other) {
-		if(other == null)
-			return false;
-		if(other == this)
-			return true;
-		if(!(other instanceof PartnerDTO))
-			return false;
+		if(other == null) {
+            return false;
+        }
+		if(other == this) {
+            return true;
+        }
+		if(!(other instanceof PartnerDTO)) {
+            return false;
+        }
 		
 		PartnerDTO that = (PartnerDTO)other;
 		
@@ -68,10 +71,11 @@ public final class PartnerDTO extends BaseModelData implements DTO {
 	
 	@Override
 	public int hashCode() {
-		if(get("id") == null)
-			return 0;
-		else
-			return getId();
+		if(get("id") == null) {
+            return 0;
+        } else {
+            return getId();
+        }
 	}
 	
 }

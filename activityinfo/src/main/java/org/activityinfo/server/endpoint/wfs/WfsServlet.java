@@ -117,8 +117,9 @@ public class WfsServlet extends HttpServlet {
                 }catch (SAXException sxe)
                 {
                     Exception e = sxe;
-                    if (sxe.getException() != null)
+                    if (sxe.getException() != null) {
                         e = sxe.getException();
+                    }
                     e.printStackTrace();
                     return;
                 } catch (ParserConfigurationException e) {

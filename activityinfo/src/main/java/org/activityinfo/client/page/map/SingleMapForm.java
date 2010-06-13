@@ -75,8 +75,9 @@ public class SingleMapForm extends ContentPanel implements MapForm {
 
         List<Integer> indicators = new ArrayList<Integer>();
         List<IndicatorDTO> sel = indicatorTree.getSelection();
-        if (sel.size() != 0)
+        if (sel.size() != 0) {
             indicators.add(sel.get(0).getId());
+        }
 
         BubbleMapLayer layer = new BubbleMapLayer();
         layer.setIndicatorIds(indicators);

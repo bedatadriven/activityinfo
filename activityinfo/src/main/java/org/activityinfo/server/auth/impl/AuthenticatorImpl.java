@@ -30,12 +30,14 @@ public class AuthenticatorImpl implements Authenticator {
     @Override
     public boolean check(User user, String plaintextPassword) {
 
-        if (plaintextPassword == null)
+        if (plaintextPassword == null) {
             return true;
+        }
 
         // TODO: this should not be allowed!
-        if (user.getHashedPassword() == null)
+        if (user.getHashedPassword() == null) {
             return true;
+        }
 
         return BCrypt.checkpw(plaintextPassword, user.getHashedPassword());
     }

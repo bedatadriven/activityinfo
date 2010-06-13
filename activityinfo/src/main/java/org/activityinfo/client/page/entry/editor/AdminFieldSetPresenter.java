@@ -149,7 +149,9 @@ public class AdminFieldSetPresenter {
     public boolean isDirty() {
 
         for (AdminLevelDTO level : levels) {
-            if (isDirty(level)) return true;
+            if (isDirty(level)) {
+                return true;
+            }
 
         }
         return false;

@@ -103,8 +103,9 @@ public class SyncIntegrationTest {
     private String queryValue(String sql) throws SQLException {
         Statement stmt = localDbConnection.createStatement();
         ResultSet rs = stmt.executeQuery(sql);
-        if(!rs.next())
+        if(!rs.next()) {
             throw new AssertionError("No rows returned for '" + sql + "'");
+        }
 
         return rs.getString(1);
     }
@@ -120,10 +121,11 @@ public class SyncIntegrationTest {
                 System.out.println(((SyncRegionUpdate) result).getSql());
             }
 
-            if(result instanceof Exception)
+            if(result instanceof Exception) {
                 throw new Error((Throwable) result);
-            else
+            } else {
                 callback.onSuccess((T) result);
+            }
         }
     }
 }

@@ -37,12 +37,15 @@ public class DateAxisCompleter implements PivotTableAxisCompleter {
 
 
 	protected boolean isMonthAxis(Axis axis) {
-		if(axis == null)
-			return false;
-		if(axis.getDimension() == null)
-			return false;
-		if(!(axis.getDimension() instanceof DateDimension))
-			return false;
+		if(axis == null) {
+            return false;
+        }
+		if(axis.getDimension() == null) {
+            return false;
+        }
+		if(!(axis.getDimension() instanceof DateDimension)) {
+            return false;
+        }
 		
 		DateDimension dim = (DateDimension)axis.getDimension();
 		
@@ -50,12 +53,15 @@ public class DateAxisCompleter implements PivotTableAxisCompleter {
 	}
 	
 	protected boolean isYearAxis(Axis axis) {
-		if(axis == null)
-			return false;
-		if(axis.getDimension() == null)
-			return false;
-		if(!(axis.getDimension() instanceof DateDimension))
-			return false;
+		if(axis == null) {
+            return false;
+        }
+		if(axis.getDimension() == null) {
+            return false;
+        }
+		if(!(axis.getDimension() instanceof DateDimension)) {
+            return false;
+        }
 		
 		DateDimension dim = (DateDimension)axis.getDimension();
 		

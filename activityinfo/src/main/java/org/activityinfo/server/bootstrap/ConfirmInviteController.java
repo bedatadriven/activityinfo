@@ -97,8 +97,9 @@ public class ConfirmInviteController extends AbstractController {
     @Transactional
     protected User findUserByKey(String key) throws InvalidKeyException {
         try {
-            if (isEmpty(key))
+            if (isEmpty(key)) {
                 throw new InvalidKeyException();
+            }
 
             UserDAO userDAO = injector.getInstance(UserDAO.class);
             return userDAO.findUserByChangePasswordKey(key);
@@ -123,8 +124,9 @@ public class ConfirmInviteController extends AbstractController {
 
     private String getRequiredParameter(HttpServletRequest request, String name) {
         String value = request.getParameter(name);
-        if (isEmpty(value))
+        if (isEmpty(value)) {
             throw new IncompleteFormException();
+        }
 
         return value;
     }

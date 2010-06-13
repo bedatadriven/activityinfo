@@ -79,17 +79,19 @@ public class ComplexPoints {
         List<List<MarkerGraph.Node>> subgraphs = graph.getSubgraphs();
         Collections.sort(subgraphs, new Comparator<List<MarkerGraph.Node>>() {
             public int compare(List<MarkerGraph.Node> o1, List<MarkerGraph.Node> o2) {
-                if(o1.size() > o2.size())
+                if(o1.size() > o2.size()) {
                     return -1;
-                else if(o1.size() < o2.size())
+                } else if(o1.size() < o2.size()) {
                     return +1;
-                else
+                } else {
                     return 0;
+                }
             }
         });
 
-        while(subgraphs.size() > count)
+        while(subgraphs.size() > count) {
             subgraphs.remove(count);
+        }
 
         return subgraphs;
     }

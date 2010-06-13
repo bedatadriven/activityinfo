@@ -71,8 +71,9 @@ public class ThemeHelper {
         if(label != null) {
             Paragraph para = new Paragraph(label);
             Font font = new Font(Font.HELVETICA, 10, Font.NORMAL, Color.BLACK);
-            if(depth == 0 && !leaf)
+            if(depth == 0 && !leaf) {
                 font.setColor(Color.WHITE);
+            }
             para.setFont(font);
             para.setIndentationLeft( 5.4f + (header ? 12 * depth : 0));
             cell.addElement(para);

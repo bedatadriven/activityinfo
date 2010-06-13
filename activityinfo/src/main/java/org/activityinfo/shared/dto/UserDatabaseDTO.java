@@ -188,8 +188,9 @@ public final class UserDatabaseDTO extends BaseModel implements EntityDTO {
 
     public PartnerDTO getPartnerById(int id) {
         for(PartnerDTO partner : getPartners()){
-            if(partner.getId() == id)
+            if(partner.getId() == id) {
                 return partner;
+            }
         }
         return null;
     }

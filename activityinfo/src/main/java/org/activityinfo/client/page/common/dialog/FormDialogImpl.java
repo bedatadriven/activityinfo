@@ -119,8 +119,9 @@ public class FormDialogImpl<FormT extends FormPanel> extends Window implements A
 
 
     public void onValidated() {
-        if (callback != null)
+        if (callback != null) {
             callback.onValidated(this);
+        }
     }
 
     public void onCancel() {
@@ -166,8 +167,9 @@ public class FormDialogImpl<FormT extends FormPanel> extends Window implements A
 
     @Override
     public boolean onRetrying() {
-        if (asyncCallCancelled)
+        if (asyncCallCancelled) {
             return false;
+        }
 
         cancelButton.disable();
         status.setBusy(Application.CONSTANTS.retrying());

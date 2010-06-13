@@ -129,17 +129,33 @@ public class GetSites extends PagingGetCommand<SiteResult> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         GetSites other = (GetSites) o;
 
-        if (assessmentsOnly != other.assessmentsOnly) return false;
-        if (activityId != null ? !activityId.equals(other.activityId) : other.activityId != null) return false;
-        if (databaseId != null ? !databaseId.equals(other.databaseId) : other.databaseId != null) return false;
-        if (siteId != null ? !siteId.equals(other.siteId) : other.siteId != null) return false;
-        if (seekToSiteId != null ? !seekToSiteId.equals(other.seekToSiteId) : other.seekToSiteId != null) return false;
-        if (pivotFilter != null ?  !pivotFilter.equals(other.pivotFilter) : other.pivotFilter != null) return false;
+        if (assessmentsOnly != other.assessmentsOnly) {
+            return false;
+        }
+        if (activityId != null ? !activityId.equals(other.activityId) : other.activityId != null) {
+            return false;
+        }
+        if (databaseId != null ? !databaseId.equals(other.databaseId) : other.databaseId != null) {
+            return false;
+        }
+        if (siteId != null ? !siteId.equals(other.siteId) : other.siteId != null) {
+            return false;
+        }
+        if (seekToSiteId != null ? !seekToSiteId.equals(other.seekToSiteId) : other.seekToSiteId != null) {
+            return false;
+        }
+        if (pivotFilter != null ?  !pivotFilter.equals(other.pivotFilter) : other.pivotFilter != null) {
+            return false;
+        }
         
         return getLimit()==other.getLimit() && getOffset()==other.getOffset();
     }

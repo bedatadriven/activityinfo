@@ -61,8 +61,9 @@ public class GetSchemaHandler implements CommandHandler<GetSchema> {
 
         for (UserDatabase database : databases) {
 
-            if (database.getLastSchemaUpdate().after(lastUpdate))
+            if (database.getLastSchemaUpdate().after(lastUpdate)) {
                 lastUpdate = database.getLastSchemaUpdate();
+            }
 
             UserDatabaseDTO databaseDTO = new UserDatabaseDTO();
 
@@ -89,8 +90,9 @@ public class GetSchemaHandler implements CommandHandler<GetSchema> {
 
                 permission = database.getPermissionByUser(user);
 
-                if (permission.getLastSchemaUpdate().after(lastUpdate))
+                if (permission.getLastSchemaUpdate().after(lastUpdate)) {
                     lastUpdate = permission.getLastSchemaUpdate();
+                }
             }
 
             databaseDTO.setViewAllAllowed(databaseDTO.getAmOwner() || permission.isAllowViewAll());

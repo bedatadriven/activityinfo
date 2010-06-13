@@ -97,28 +97,35 @@ public class ActivityPolicy implements EntityPolicy<Activity> {
     }
 
     private void applyProperties(Activity activity, PropertyMap changes) {
-        if (changes.containsKey("name"))
+        if (changes.containsKey("name")) {
             activity.setName((String) changes.get("name"));
+        }
 
-        if (changes.containsKey("assessment"))
+        if (changes.containsKey("assessment")) {
             activity.setAssessment((Boolean) changes.get("assessment"));
+        }
 
-        if (changes.containsKey("locationType"))
+        if (changes.containsKey("locationType")) {
             activity.setLocationType(
                     em.getReference(LocationType.class,
                             ((LocationTypeDTO) changes.get("locationType")).getId()));
+        }
 
-        if (changes.containsKey("category"))
+        if (changes.containsKey("category")) {
             activity.setCategory((String) changes.get("category"));
+        }
 
-        if (changes.containsKey("mapIcon"))
+        if (changes.containsKey("mapIcon")) {
             activity.setMapIcon((String) changes.get("mapIcon"));
+        }
 
-        if (changes.containsKey("reportingFrequency"))
+        if (changes.containsKey("reportingFrequency")) {
             activity.setReportingFrequency((Integer) changes.get("reportingFrequency"));
+        }
 
-        if (changes.containsKey("sortOrder"))
+        if (changes.containsKey("sortOrder")) {
             activity.setSortOrder((Integer) changes.get("sortOrder"));
+        }
 
         activity.getDatabase().setLastSchemaUpdate(new Date());
     }

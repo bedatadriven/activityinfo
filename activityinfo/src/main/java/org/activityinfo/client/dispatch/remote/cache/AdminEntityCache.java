@@ -26,8 +26,9 @@ public class AdminEntityCache extends AbstractCache implements CommandProxy<GetA
     @Override
     public CommandProxyResult<AdminEntityResult> execute(GetAdminEntities command) {
 
-        if (command.getActivityId() != null)
+        if (command.getActivityId() != null) {
             return CommandProxyResult.couldNotExecute();
+        }
 
         AdminEntityResult result = (AdminEntityResult) fetch(command);
         if (result == null) {
@@ -50,7 +51,8 @@ public class AdminEntityCache extends AbstractCache implements CommandProxy<GetA
     @Override
     public void onSuccess(GetAdminEntities command, CommandResult result) {
 
-        if (command.getActivityId() == null)
+        if (command.getActivityId() == null) {
             cache(command, new AdminEntityResult((AdminEntityResult) result));
+        }
     }
 }

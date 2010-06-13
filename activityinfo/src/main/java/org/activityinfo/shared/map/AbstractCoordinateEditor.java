@@ -37,8 +37,9 @@ public abstract class AbstractCoordinateEditor {
 
     public Double parse(String value) throws CoordinateFormatException {
 
-        if(value == null)
+        if(value == null) {
             return null;
+        }
 
         StringBuffer tokens[] = new StringBuffer[] {
                 new StringBuffer(),
@@ -56,10 +57,11 @@ public abstract class AbstractCoordinateEditor {
          *
          */
         double sign = 0;
-        if(maxValue < 0)
+        if(maxValue < 0) {
             sign = -1;
-        else if(minValue > 0)
+        } else if(minValue > 0) {
             sign = +1;
+        }
 
 
 

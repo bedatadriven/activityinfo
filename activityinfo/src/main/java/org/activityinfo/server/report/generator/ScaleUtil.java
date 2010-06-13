@@ -74,15 +74,18 @@ public class ScaleUtil {
 //    IF (X .EQ. ZERO) X = ONE
 //    IF ((FMAX - FMIN) / X .GT. TOL) GO TO 20
 
-        if( fmax < fmin)
+        if( fmax < fmin) {
             throw new IllegalArgumentException("fmax cannot be less than fmin.");
-        if( n < 1)
+        }
+        if( n < 1) {
             throw new IllegalArgumentException("n must be greater than or equal to n");
+        }
 
         rn = n - 1;
         x = Math.abs(fmax);
-        if(x == 0)
+        if(x == 0) {
             x = 1;
+        }
         if( ! ((fmax - fmin) / x > tol)) {
 
     //  C
@@ -143,8 +146,9 @@ public class ScaleUtil {
 
         x = s - bias;
         for(i=0; i!= unit.length; ++i) {
-            if(x < unit[i])
+            if(x < unit[i]) {
                 break;
+            }
         }
         scale.step = scale.step * unit[i] / s;
         range = scale.step * rn;
@@ -159,7 +163,9 @@ public class ScaleUtil {
 
         x = 0.5 * (1d + (fmin + fmax - range) / scale.step);
         j = (int) (x - bias);
-        if( x < 0) j = j - 1;
+        if( x < 0) {
+            j = j - 1;
+        }
         scale.valmin = scale.step * j;
 
 //  C
@@ -168,7 +174,9 @@ public class ScaleUtil {
 //    IF (FMIN .GE. ZERO .AND. RANGE .GE. FMAX) VALMIN = ZERO
 //    VALMAX = VALMIN + RANGE
 
-        if( fmin > 0 && range > fmax) scale.valmin = 0;
+        if( fmin > 0 && range > fmax) {
+            scale.valmin = 0;
+        }
         scale.valmax = scale.valmin + range;
 
 //  C
@@ -180,7 +188,9 @@ public class ScaleUtil {
 //    RETURN
 //    END
 
-        if(fmax > 0 || range < -fmin) return scale;
+        if(fmax > 0 || range < -fmin) {
+            return scale;
+        }
 
         scale.valmax = 0;
         scale.valmin = -range;

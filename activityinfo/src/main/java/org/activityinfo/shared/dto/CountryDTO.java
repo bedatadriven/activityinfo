@@ -97,16 +97,18 @@ public final class CountryDTO extends BaseModelData implements DTO {
 		
 		AdminLevelDTO level = getAdminLevelById(levelId);
 		
-		if(level == null)
-			return null;
+		if(level == null) {
+            return null;
+        }
 		
 		while(true) {
 			ancestors.add(0, level);
 			
-			if(level.isRoot())
-				return ancestors;
-			else 
-				level = getAdminLevelById(level.getParentLevelId());
+			if(level.isRoot()) {
+                return ancestors;
+            } else {
+                level = getAdminLevelById(level.getParentLevelId());
+            }
 		}
 	}
 
@@ -117,8 +119,9 @@ public final class CountryDTO extends BaseModelData implements DTO {
      */
     public LocationTypeDTO getLocationTypeById(int locationTypeId) {
         for(LocationTypeDTO type : getLocationTypes()) {
-            if(type.getId()==locationTypeId)
+            if(type.getId()==locationTypeId) {
                 return type;
+            }
         }
         return null;
     }

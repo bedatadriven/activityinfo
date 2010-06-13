@@ -29,12 +29,18 @@ public class YearCategory implements DimensionCategory {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         YearCategory that = (YearCategory) o;
 
-        if (year != that.year) return false;
+        if (year != that.year) {
+            return false;
+        }
 
         return true;
     }

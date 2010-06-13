@@ -61,12 +61,18 @@ public class SiteGridPageState extends AbstractPagingGridPageState {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SiteGridPageState that = (SiteGridPageState) o;
 
-        if (activityId != that.activityId) return false;
+        if (activityId != that.activityId) {
+            return false;
+        }
 
         return true;
     }

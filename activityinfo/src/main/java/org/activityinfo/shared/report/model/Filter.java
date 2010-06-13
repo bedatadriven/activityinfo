@@ -68,10 +68,12 @@ public class Filter implements Serializable {
 	}
 	
 	private Set<Integer> intersect(Set<Integer> a, Set<Integer> b) {
-		if(a.size() == 0)
-			return new HashSet<Integer>(b);
-		if(b.size() == 0)
-			return new HashSet<Integer>(a);
+		if(a.size() == 0) {
+            return new HashSet<Integer>(b);
+        }
+		if(b.size() == 0) {
+            return new HashSet<Integer>(a);
+        }
 		
 		Set<Integer> intersection = new HashSet<Integer>(a);
 		intersection.retainAll(b);
@@ -165,8 +167,9 @@ public class Filter implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         for(DimensionType type : getRestrictedDimensions()) {
-            if(sb.length()!=0)
+            if(sb.length()!=0) {
                 sb.append(", ");
+            }
             sb.append(type.toString()).append("={");
             for(Integer id : getRestrictions(type)) {
                 sb.append(' ').append(id);
@@ -174,14 +177,17 @@ public class Filter implements Serializable {
             sb.append(" }");
         }
         if(dateRange.getMinDate()!=null || dateRange.getMaxDate()!=null) {
-            if(sb.length()!=0)
+            if(sb.length()!=0) {
                 sb.append(", ");
+            }
             sb.append("date=[");
-            if(dateRange.getMinDate()!=null)
+            if(dateRange.getMinDate()!=null) {
                 sb.append(dateRange.getMinDate());
+            }
             sb.append(",");
-            if(dateRange.getMaxDate()!=null)
+            if(dateRange.getMaxDate()!=null) {
                 sb.append(dateRange.getMaxDate()).append("]");
+            }
         }
         return sb.toString();
     }

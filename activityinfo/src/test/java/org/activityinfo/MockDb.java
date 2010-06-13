@@ -35,12 +35,14 @@ public class MockDb {
     }
 
     public Object findById(Class entityClass, Object primaryKey) {
-        if (primaryKey == null)
+        if (primaryKey == null) {
             return null;
+        }
 
         for (Object entity : entities) {
-            if (entity.getClass().equals(entityClass) && primaryKey.equals(getId(entity)))
+            if (entity.getClass().equals(entityClass) && primaryKey.equals(getId(entity))) {
                 return entity;
+            }
         }
         return null;
     }

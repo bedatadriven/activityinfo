@@ -73,8 +73,9 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
         new Timer() {
             @Override
             public void run() {
-                if (!pendingCommands.isEmpty())
+                if (!pendingCommands.isEmpty()) {
                     processPendingCommands();
+                }
             }
         }.scheduleRepeating(200);
     }
@@ -168,8 +169,9 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
      */
     private boolean executionWithProxySuccessful(CommandRequest request) {
         CommandProxyResult r = proxyManager.execute(request.getCommand());
-        if (!r.couldExecute)
+        if (!r.couldExecute) {
             return false;
+        }
 
         request.fireOnSuccess(r.result);
         return true;

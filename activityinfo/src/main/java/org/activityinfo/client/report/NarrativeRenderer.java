@@ -226,8 +226,9 @@ public class NarrativeRenderer {
 		}
 		
 		public void addValue(String name, String value, String units, String styleName) {
-			if(count%2!=0)
-				styleName += "alt";
+			if(count%2!=0) {
+                styleName += "alt";
+            }
 			
 			sb.append("<tr class='"+ styleName + "'>");
 			sb.append("<td class='name'>");

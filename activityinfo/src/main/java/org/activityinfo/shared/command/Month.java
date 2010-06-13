@@ -85,14 +85,18 @@ public class Month implements Serializable, Comparable<Month> {
      * earlier than <code>m</code>, or +1 if this month follows <code>m</code>
      */
     public int compareTo(Month m) {
-        if(year < m.year)
+        if(year < m.year) {
             return -1;
-        if(year > m.year)
+        }
+        if(year > m.year) {
             return 1;
-        if(month < m.month)
+        }
+        if(month < m.month) {
             return -1;
-        if(month > m.month)
+        }
+        if(month > m.month) {
             return 1;
+        }
         return 0;
     }
 
@@ -116,8 +120,9 @@ public class Month implements Serializable, Comparable<Month> {
      */
     public static Month parseMonth(String s) {
         String[] tokens = s.split("-");
-        if(tokens.length != 2)
+        if(tokens.length != 2) {
             throw new NumberFormatException();
+        }
 
         return new Month(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]));
     }
@@ -126,13 +131,21 @@ public class Month implements Serializable, Comparable<Month> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Month month1 = (Month) o;
 
-        if (month != month1.month) return false;
-        if (year != month1.year) return false;
+        if (month != month1.month) {
+            return false;
+        }
+        if (year != month1.year) {
+            return false;
+        }
 
         return true;
     }

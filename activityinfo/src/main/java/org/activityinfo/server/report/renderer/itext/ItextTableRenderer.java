@@ -93,12 +93,13 @@ public class ItextTableRenderer implements ItextRenderer<TableElement> {
                     Object value = row.values[data.getColumnIndex(column)];
 
                     String label = "";
-                    if(value instanceof Date)
+                    if(value instanceof Date) {
                         label = dateFormat.format(value);
-                    else if(value instanceof Number)
+                    } else if(value instanceof Number) {
                         label = numberFormat.format(value);
-                    else if(value != null)
+                    } else if(value != null) {
                         label = value.toString();
+                    }
 
                     table.addCell(ThemeHelper.bodyCell(label, false, 0, true, computeHAlign(column)));
                 }

@@ -26,16 +26,19 @@ public class MappingComboBox<T> extends ComboBox<MappingComboBox.Wrapper<T>> {
 
         @Override
         public boolean equals(Object obj) {
-            if(obj == null)
+            if(obj == null) {
                 return false;
-            if(obj instanceof Wrapper)
+            }
+            if(obj instanceof Wrapper) {
                 return false;
+            }
             Wrapper otherWrapper = (Wrapper)obj;
             Object otherValue = otherWrapper.get("value");
             Object value = get("value");
 
-            if(value == null)
+            if(value == null) {
                 return otherValue != null;
+            }
 
             return !value.equals(otherValue);
 
@@ -99,8 +102,9 @@ public class MappingComboBox<T> extends ComboBox<MappingComboBox.Wrapper<T>> {
 
 
 	public T getMappedValue() {
-		if(getValue() == null)
-			return null;
+		if(getValue() == null) {
+            return null;
+        }
 
 		return getValue().getWrappedValue();
 	}

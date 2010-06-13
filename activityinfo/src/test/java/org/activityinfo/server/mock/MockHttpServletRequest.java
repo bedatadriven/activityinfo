@@ -218,8 +218,9 @@ public class MockHttpServletRequest implements HttpServletRequest {
     }
 
     public StringBuffer getRequestURL() {
-        if (requestURL == null)
+        if (requestURL == null) {
             throw new IllegalStateException("RequestURL has not been set");
+        }
 
         return requestURL;
     }

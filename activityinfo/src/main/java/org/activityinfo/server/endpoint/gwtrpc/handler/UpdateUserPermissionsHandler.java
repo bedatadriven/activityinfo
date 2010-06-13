@@ -123,25 +123,29 @@ public class UpdateUserPermissionsHandler implements CommandHandler<UpdateUserPe
      * @throws IllegalAccessCommandException
      */
     public static void verifyAuthority(UpdateUserPermissions cmd, UserPermission executingUserPermissions) throws IllegalAccessCommandException {
-        if (!executingUserPermissions.isAllowManageUsers())
+        if (!executingUserPermissions.isAllowManageUsers()) {
             throw new IllegalAccessCommandException(
                     "Current user does not have the right to manage other users");
+        }
 
         if (!executingUserPermissions.isAllowManageAllUsers() &&
-                executingUserPermissions.getPartner().getId() != cmd.getModel().getPartner().getId())
+                executingUserPermissions.getPartner().getId() != cmd.getModel().getPartner().getId()) {
             throw new IllegalAccessCommandException(
                     "Current user does not have the right to manage users from other partners");
+        }
 
         if (!executingUserPermissions.isAllowDesign() &&
-                cmd.getModel().getAllowDesign())
+                cmd.getModel().getAllowDesign()) {
             throw new IllegalAccessCommandException(
                     "Current user does not have the right to grant design privileges");
+        }
 
         if (!executingUserPermissions.isAllowManageAllUsers() &&
                 (cmd.getModel().getAllowViewAll() || cmd.getModel().getAllowEditAll() ||
-                        cmd.getModel().getAllowManageAllUsers()))
+                        cmd.getModel().getAllowManageAllUsers())) {
             throw new IllegalAccessCommandException(
                     "Current user does not have the right to grant viewAll, editAll, or manageAllUsers privileges");
+        }
     }
 
     protected void doUpdate(UserPermission perm, UserPermissionDTO dto, boolean isOwner, UserPermission executingUserPermissions) {
@@ -162,17 +166,21 @@ public class UpdateUserPermissionsHandler implements CommandHandler<UpdateUserPe
         //
         // In this case, the only logical outcome (I think) is that
 
-        if (isOwner || executingUserPermissions.isAllowManageAllUsers() || !dto.getAllowView())
+        if (isOwner || executingUserPermissions.isAllowManageAllUsers() || !dto.getAllowView()) {
             perm.setAllowViewAll(dto.getAllowViewAll());
+        }
 
-        if (isOwner || executingUserPermissions.isAllowManageAllUsers() || !dto.getAllowEdit())
+        if (isOwner || executingUserPermissions.isAllowManageAllUsers() || !dto.getAllowEdit()) {
             perm.setAllowEditAll(dto.getAllowEditAll());
+        }
 
-        if (isOwner || executingUserPermissions.isAllowManageAllUsers())
+        if (isOwner || executingUserPermissions.isAllowManageAllUsers()) {
             perm.setAllowManageAllUsers(dto.getAllowManageAllUsers());
+        }
 
-        if (isOwner || executingUserPermissions.isAllowDesign())
+        if (isOwner || executingUserPermissions.isAllowDesign()) {
             perm.setAllowDesign(dto.getAllowDesign());
+        }
 
         perm.setLastSchemaUpdate(new Date());
     }

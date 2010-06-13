@@ -69,12 +69,15 @@ public class LocalBaseMap extends BaseMap {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj == this)
+        if(obj == this) {
             return true;
-        if(obj == null)
+        }
+        if(obj == null) {
             return false;
-        if(!(obj instanceof LocalBaseMap))
+        }
+        if(!(obj instanceof LocalBaseMap)) {
             return false;
+        }
         LocalBaseMap other = (LocalBaseMap)obj;
 
         return getId() == other.getId() && version == other.getVersion();

@@ -79,10 +79,12 @@ public class MapGenerator extends ListGenerator<MapElement> {
         if (baseMap == null) {
             throw new RuntimeException("Could not find base map id=" + element.getBaseMapId());
         }
-        if (zoom < baseMap.getMinZoom())
+        if (zoom < baseMap.getMinZoom()) {
             zoom = baseMap.getMinZoom();
-        if (zoom > baseMap.getMaxZoom())
+        }
+        if (zoom > baseMap.getMaxZoom()) {
             zoom = baseMap.getMaxZoom();
+        }
 
         TiledMap map = new TiledMap(width, height, extents.center(), zoom);
         content.setBaseMap(baseMap);
@@ -99,10 +101,11 @@ public class MapGenerator extends ListGenerator<MapElement> {
         // top of larger ones)
         Collections.sort(content.getMarkers(), new Comparator<MapMarker>() {
             public int compare(MapMarker o1, MapMarker o2) {
-                if (o1.getSize() > o2.getSize())
+                if (o1.getSize() > o2.getSize()) {
                     return -1;
-                else if (o1.getSize() < o2.getSize())
+                } else if (o1.getSize() < o2.getSize()) {
                     return 1;
+                }
                 return 0;
             }
         });

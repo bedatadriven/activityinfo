@@ -98,8 +98,9 @@ public class BaseMapDAOImpl implements BaseMapDAO {
         for(File file : tileSet.listFiles()) {
             if(file.isDirectory() && file.getName().startsWith("v")) {
                 int version = Integer.parseInt(file.getName().substring(1));
-                if(version > latestVersion)
+                if(version > latestVersion) {
                     latestVersion = version;
+                }
             }
         }
         return latestVersion;

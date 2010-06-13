@@ -71,8 +71,9 @@ public class CoordinateEditor extends AbstractCoordinateEditor
 
     @Override
     public Double convertStringValue(String value) {
-        if(value == null)
+        if(value == null) {
             return null;
+        }
 
         try {
             double d = parse(value);
@@ -85,14 +86,16 @@ public class CoordinateEditor extends AbstractCoordinateEditor
 
     @Override
     public String validate(Field<?> field, String value) {
-        if(value == null)
+        if(value == null) {
             return null;
+        }
 
         try {
             double coord = parse(value);
 
-            if(coord < minValue || coord > maxValue)
+            if(coord < minValue || coord > maxValue) {
                 return outOfBoundsMessage;
+            }
 
             return null;
         } catch(CoordinateFormatException ex) {

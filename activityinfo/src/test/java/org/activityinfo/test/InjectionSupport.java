@@ -110,8 +110,9 @@ public class InjectionSupport extends BlockJUnit4ClassRunner {
     private Statement withLoadDataSets(FrameworkMethod method, Statement statement, Object target) {
         OnDataSet ods = method.getAnnotation(OnDataSet.class);
 
-        if (ods == null)
+        if (ods == null) {
             ods = target.getClass().getAnnotation(OnDataSet.class);
+        }
 
         return ods == null ? statement :
                 new LoadDataSet(injector.getInstance(EntityManagerFactory.class), statement, ods.value(), target);

@@ -109,12 +109,15 @@ public class IndicatorValue implements java.io.Serializable {
 
 	@Override
 	public boolean equals(Object other) {
-		if(this == other)
-			return true;
-		if(other == null)
-			return false;
-		if(!(other instanceof IndicatorValue))
-			return false;
+		if(this == other) {
+            return true;
+        }
+		if(other == null) {
+            return false;
+        }
+		if(!(other instanceof IndicatorValue)) {
+            return false;
+        }
 
 		IndicatorValue that = (IndicatorValue)other;
 

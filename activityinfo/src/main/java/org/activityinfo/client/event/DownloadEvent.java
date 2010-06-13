@@ -56,13 +56,15 @@ public class DownloadEvent extends BaseEvent {
      * @return the file extension of the URL
      */
     public String getUrlExtension() {
-        if(url == null)
+        if(url == null) {
             return null;
+        }
         int dot = url.lastIndexOf(".");
-        if(dot == -1)
+        if(dot == -1) {
             return "";
-        else
-            return url.substring(dot+1);
+        } else {
+            return url.substring(dot + 1);
+        }
     }
 
     public String getName() {

@@ -89,10 +89,13 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
     // header against the database of users maintained in the users Hashtable.
 
     protected User authenticate(String auth) throws IOException {
-        if (auth == null) return null;  // no auth
+        if (auth == null) {
+            return null;
+        }// no auth
 
-        if (!auth.toUpperCase().startsWith("BASIC "))
-            return null;  // we only do BASIC
+        if (!auth.toUpperCase().startsWith("BASIC ")) {
+            return null;
+        }// we only do BASIC
 
         // Get encoded user and password, comes after "BASIC "
         String emailpassEncoded = auth.substring(6);
@@ -103,8 +106,9 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
         String emailpassDecoded = new String(emailpassDecodedBytes, Charset.defaultCharset());
         String[] emailPass = emailpassDecoded.split(":");
 
-        if (emailPass.length != 2)
+        if (emailPass.length != 2) {
             return null;
+        }
 
         // look up the user in the database
         UserDAO userDAO = injector.getInstance(UserDAO.class);

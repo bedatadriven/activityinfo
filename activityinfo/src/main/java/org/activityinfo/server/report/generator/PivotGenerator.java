@@ -85,10 +85,11 @@ public abstract class PivotGenerator<T extends PivotElement> extends BaseGenerat
             String categoryLabel = childDimension.getLabel(category);
 
             if (categoryLabel == null) {
-                if (category instanceof LabeledDimensionCategory)
+                if (category instanceof LabeledDimensionCategory) {
                     categoryLabel = ((LabeledDimensionCategory) category).getLabel();
-                else
+                } else {
                     categoryLabel = renderLabel(locale, childDimension, category);
+                }
             }
 
             child = axis.addChild(childDimension,
@@ -134,10 +135,12 @@ public abstract class PivotGenerator<T extends PivotElement> extends BaseGenerat
             if (c1 == null && c2 == null) {
                 return 0;
             }
-            if (c1 == null)
+            if (c1 == null) {
                 return -1;
-            if (c2 == null)
+            }
+            if (c2 == null) {
                 return 1;
+            }
 
 
             return c1.compareTo(c2);

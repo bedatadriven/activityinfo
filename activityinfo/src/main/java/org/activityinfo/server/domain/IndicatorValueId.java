@@ -62,12 +62,15 @@ public class IndicatorValueId implements java.io.Serializable {
 	}
 
 	public boolean equals(Object other) {
-		if ((this == other))
-			return true;
-		if ((other == null))
-			return false;
-		if (!(other instanceof IndicatorValueId))
-			return false;
+		if ((this == other)) {
+            return true;
+        }
+		if ((other == null)) {
+            return false;
+        }
+		if (!(other instanceof IndicatorValueId)) {
+            return false;
+        }
 		IndicatorValueId castOther = (IndicatorValueId) other;
 
 		return (this.getReportingPeriodId() == castOther.getReportingPeriodId())

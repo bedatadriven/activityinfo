@@ -27,17 +27,19 @@ public class AssertUtils {
 
     public static <T> void assertSorted(String name, Collection<T> collection,
                                         Comparator<T> comparator) {
-        if (collection.size() <= 1)
+        if (collection.size() <= 1) {
             return;
+        }
 
         Iterator<T> it = collection.iterator();
         T last = it.next();
 
         while (it.hasNext()) {
             T next = it.next();
-            if (comparator.compare(last, next) > 0)
+            if (comparator.compare(last, next) > 0) {
                 throw new AssertionError("The collection '" + name + "' is not sorted, " +
                         last.toString() + " > " + next.toString());
+            }
             last = next;
         }
     }

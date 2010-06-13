@@ -106,12 +106,15 @@ public class Dimension extends BaseModelData implements Serializable {
 
     @Override
     public boolean equals(Object other) {
-        if (this == other)
+        if (this == other) {
             return true;
-        if (other == null)
+        }
+        if (other == null) {
             return false;
-        if (!(other instanceof Dimension))
+        }
+        if (!(other instanceof Dimension)) {
             return false;
+        }
 
 
         Dimension that = (Dimension) other;

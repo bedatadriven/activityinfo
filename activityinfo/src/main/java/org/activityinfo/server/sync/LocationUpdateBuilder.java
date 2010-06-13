@@ -79,8 +79,9 @@ public class LocationUpdateBuilder implements UpdateBuilder {
     }
 
     private String lastVersion() {
-        if(locations.isEmpty())
+        if(locations.isEmpty()) {
             return "0";
+        }
 
         return Long.toString(locations.get(locations.size()-1).getDateEdited().getTime());
     }

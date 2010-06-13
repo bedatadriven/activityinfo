@@ -160,12 +160,15 @@ public class AdminEntity implements java.io.Serializable {
 
     @Override
     public boolean equals(Object other) {
-        if (this == other)
+        if (this == other) {
             return true;
-        if (other == null)
+        }
+        if (other == null) {
             return false;
-        if (!(other instanceof AdminEntity))
+        }
+        if (!(other instanceof AdminEntity)) {
             return false;
+        }
 
         AdminEntity that = (AdminEntity) other;
 

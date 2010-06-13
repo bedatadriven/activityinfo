@@ -58,10 +58,12 @@ public abstract class BaseGenerator<T extends ReportElement> implements ContentG
         Filter filter = new Filter(element.getFilter());
 
         if (dateRange != null) {
-            if (filter.getMinDate() == null)
+            if (filter.getMinDate() == null) {
                 filter.setMinDate(dateRange.getMinDate());
-            if (filter.getMaxDate() == null)
+            }
+            if (filter.getMaxDate() == null) {
                 filter.setMaxDate(dateRange.getMaxDate());
+            }
         }
         return filter;
     }

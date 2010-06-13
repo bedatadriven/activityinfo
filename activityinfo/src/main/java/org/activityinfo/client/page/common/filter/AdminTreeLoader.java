@@ -28,8 +28,9 @@ public class AdminTreeLoader extends BaseTreeLoader<AdminEntityDTO> {
 
     @Override
     public boolean hasChildren(AdminEntityDTO parent) {
-        if (hierarchy.size() <= 1)
+        if (hierarchy.size() <= 1) {
             return false;
+        }
 
         return this.hierarchy.get(hierarchy.size() - 1).getId() != parent.getLevelId();
     }

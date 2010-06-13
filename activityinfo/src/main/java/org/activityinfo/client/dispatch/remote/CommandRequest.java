@@ -33,8 +33,9 @@ public class CommandRequest {
 
     public CommandRequest(Command command, AsyncMonitor monitor, AsyncCallback callback) {
         this.command = command;
-        if (monitor != null)
+        if (monitor != null) {
             this.monitors.add(monitor);
+        }
         this.callbacks.add(callback);
     }
 

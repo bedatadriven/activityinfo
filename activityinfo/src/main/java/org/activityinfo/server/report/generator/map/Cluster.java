@@ -53,10 +53,18 @@ public class Cluster {
         int maxY = Integer.MIN_VALUE;
         for(PointValue pointValue : pointValues) {
             Point p = pointValue.px;
-            if(p.getX() < minX) minX = p.getX();
-            if(p.getY() < minY) minY = p.getY();
-            if(p.getX() > maxX) maxX = p.getX();
-            if(p.getY() > maxY) maxY = p.getY();
+            if(p.getX() < minX) {
+                minX = p.getX();
+            }
+            if(p.getY() < minY) {
+                minY = p.getY();
+            }
+            if(p.getX() > maxX) {
+                maxX = p.getX();
+            }
+            if(p.getY() > maxY) {
+                maxY = p.getY();
+            }
         }
 
         return new Point((minX + maxX)/2, (minY + maxY)/2);

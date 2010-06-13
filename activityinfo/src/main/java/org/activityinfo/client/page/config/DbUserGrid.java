@@ -103,13 +103,23 @@ public class DbUserGrid extends AbstractEditorGridView<UserPermissionDTO, DbUser
         final ListStore<UserPermissionDTO> listStore = (ListStore) store;
         grid = new EditorGrid<UserPermissionDTO>(listStore, new ColumnModel(columns));
         grid.setLoadMask(true);
-        if (allowDesign != null) grid.addPlugin(allowDesign);
+        if (allowDesign != null) {
+            grid.addPlugin(allowDesign);
+        }
         //   grid.addPlugin(allowView);
-        if (allowViewAll != null) grid.addPlugin(allowViewAll);
+        if (allowViewAll != null) {
+            grid.addPlugin(allowViewAll);
+        }
         grid.addPlugin(allowEdit);
-        if (allowEditAll != null) grid.addPlugin(allowEditAll);
-        if (allowManageUsers != null) grid.addPlugin(allowManageUsers);
-        if (allowManageAllUsers != null) grid.addPlugin(allowManageAllUsers);
+        if (allowEditAll != null) {
+            grid.addPlugin(allowEditAll);
+        }
+        if (allowManageUsers != null) {
+            grid.addPlugin(allowManageUsers);
+        }
+        if (allowManageAllUsers != null) {
+            grid.addPlugin(allowManageAllUsers);
+        }
         grid.addListener(Events.CellClick, new Listener<GridEvent>() {
 
             public void handleEvent(GridEvent ge) {

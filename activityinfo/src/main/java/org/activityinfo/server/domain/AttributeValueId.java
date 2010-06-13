@@ -62,12 +62,15 @@ public class AttributeValueId implements java.io.Serializable {
 	}
 
 	public boolean equals(Object other) {
-		if ((this == other))
-			return true;
-		if ((other == null))
-			return false;
-		if (!(other instanceof AttributeValueId))
-			return false;
+		if ((this == other)) {
+            return true;
+        }
+		if ((other == null)) {
+            return false;
+        }
+		if (!(other instanceof AttributeValueId)) {
+            return false;
+        }
 		AttributeValueId castOther = (AttributeValueId) other;
 
 		return (this.getSiteId() == castOther.getSiteId())

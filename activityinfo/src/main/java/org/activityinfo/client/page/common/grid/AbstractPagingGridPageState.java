@@ -32,8 +32,9 @@ public abstract class AbstractPagingGridPageState extends AbstractGridPageState 
     }
 
     public boolean parseGridStateTokens(String t) {
-        if(super.parseGridStateTokens(t))
+        if(super.parseGridStateTokens(t)) {
             return true;
+        }
 
         if(t.startsWith("p")) {
             pageNum = Integer.parseInt(t.substring(1));

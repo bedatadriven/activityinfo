@@ -132,8 +132,9 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO {
     public AttributeDTO getAttributeById(int id) {
         for(AttributeGroupDTO group : attributeGroups) {
             AttributeDTO attribute = SchemaDTO.getById(group.getAttributes(), id);
-            if(attribute!=null)
+            if(attribute!=null) {
                 return attribute;
+            }
         }
         return null;
     }
@@ -208,8 +209,9 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO {
 
     public AttributeGroupDTO getAttributeGroupById(int id) {
         for(AttributeGroupDTO group : attributeGroups) {
-            if(group.getId()==id)
+            if(group.getId()==id) {
                 return group;
+            }
 
         }
 

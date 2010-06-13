@@ -42,8 +42,9 @@ public class TransactionalInterceptor implements MethodInterceptor {
         EntityTransaction tx = em.getTransaction();
 
         //allow joining of transactions if there is an enclosing @Transactional method
-        if (tx.isActive())
+        if (tx.isActive()) {
             return methodInvocation.proceed();
+        }
 
         tx.begin();
         Object result = attemptInvocation(methodInvocation, tx);

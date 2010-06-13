@@ -49,10 +49,12 @@ public class GetAdminEntitiesHandler implements CommandHandler<GetAdminEntities>
 
         AdminDAO.Query query = adminDAO.query().level(cmd.getLevelId());
 
-        if (cmd.getParentId() != null)
+        if (cmd.getParentId() != null) {
             query.withParentEntityId(cmd.getParentId());
-        if (cmd.getActivityId() != null)
+        }
+        if (cmd.getActivityId() != null) {
             query.withSitesOfActivityId(cmd.getActivityId());
+        }
 
         List<AdminEntity> entities = query.execute();
 

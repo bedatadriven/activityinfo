@@ -83,8 +83,9 @@ public class ReportGrid extends AbstractEditorGridView<ReportDefinitionDTO, Repo
 
         grid.addListener(Events.CellDoubleClick, new Listener<GridEvent<ReportDefinitionDTO>>() {
             public void handleEvent(GridEvent<ReportDefinitionDTO> event) {
-                if (event.getColIndex() == 1)
+                if (event.getColIndex() == 1) {
                     presenter.onTemplateSelected(event.getModel());
+                }
             }
         });
 
@@ -126,13 +127,14 @@ public class ReportGrid extends AbstractEditorGridView<ReportDefinitionDTO, Repo
         ColumnConfig day = new ColumnConfig("day", Application.CONSTANTS.day(), 100);
         day.setRenderer(new GridCellRenderer<ReportDefinitionDTO>() {
             public Object render(ReportDefinitionDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<ReportDefinitionDTO> store, Grid<ReportDefinitionDTO> grid) {
-                if (model.getFrequency() == ReportFrequency.Weekly)
+                if (model.getFrequency() == ReportFrequency.Weekly) {
                     return model.getDay() < 7 ? weekdays[model.getDay()] :
                             weekdays[6];
-                else if (model.getFrequency() == ReportFrequency.Monthly)
+                } else if (model.getFrequency() == ReportFrequency.Monthly) {
                     return Integer.toString(model.getDay());
-                else
+                } else {
                     return "";
+                }
             }
         });
         columns.add(day);

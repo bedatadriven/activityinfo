@@ -101,13 +101,17 @@ public abstract class TreeNode<T extends TreeNode> implements Serializable {
 	private void findDescendantsAtDepthRecursively(List<T> list, int depth, boolean placeholders) {
 		if(depth==1) {
 			if(isLeaf()) {
-				if(placeholders) list.add(null);
+				if(placeholders) {
+                    list.add(null);
+                }
 			} else {
 				list.addAll(getChildren());
 			}
 		} else {
 			if(isLeaf()) {
-				if(placeholders) list.add(null);
+				if(placeholders) {
+                    list.add(null);
+                }
 			} else {
 				for(T child : getChildren()) {
 					child.findDescendantsAtDepthRecursively(list, depth-1, placeholders);

@@ -81,8 +81,9 @@ public class LoadDataSet extends Statement {
 
     private IDataSet loadDataSet() throws IOException, DataSetException {
         InputStream in = target.getClass().getResourceAsStream(name);
-        if (in == null)
+        if (in == null) {
             throw new Error("Could not find resource '" + name + "'");
+        }
         return new FlatXmlDataSet(new InputStreamReader(in), false, true, false);
     }
 

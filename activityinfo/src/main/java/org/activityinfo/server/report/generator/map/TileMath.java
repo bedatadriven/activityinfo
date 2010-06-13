@@ -102,13 +102,15 @@ public class TileMath {
 			
 			//assert extentWidth >= 0;
 
-			if(extentWidth > mapWidth) 
-				return zoomLevel - 1;
+			if(extentWidth > mapWidth) {
+                return zoomLevel - 1;
+            }
 
 			int extentHeight = lowerRight.y - upperLeft.y;
 			
-			if(extentHeight > mapHeight)
-				return zoomLevel - 1;
+			if(extentHeight > mapHeight) {
+                return zoomLevel - 1;
+            }
 
 			zoomLevel++;
 			

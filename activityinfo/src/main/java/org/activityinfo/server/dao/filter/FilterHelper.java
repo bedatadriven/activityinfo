@@ -27,8 +27,9 @@ public class FilterHelper {
     public static String join(List<String> tokens, int startIndex, int endIndex) {
         StringBuilder sb = new StringBuilder();
         for(int i=startIndex; i!=endIndex; ++i) {
-            if(i>startIndex)
+            if(i>startIndex) {
                 sb.append(' ');
+            }
             sb.append(tokens.get(i));
         }
         return sb.toString();

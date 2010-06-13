@@ -38,13 +38,21 @@ public class QuarterCategory implements DimensionCategory {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         QuarterCategory that = (QuarterCategory) o;
 
-        if (quarter != that.quarter) return false;
-        if (year != that.year) return false;
+        if (quarter != that.quarter) {
+            return false;
+        }
+        if (year != that.year) {
+            return false;
+        }
 
         return true;
     }

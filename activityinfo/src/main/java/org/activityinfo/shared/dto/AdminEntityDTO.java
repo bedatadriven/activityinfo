@@ -119,12 +119,15 @@ public final class AdminEntityDTO extends BaseModelData implements DTO {
 
     @Override
     public boolean equals(Object other) {
-        if(other==null)
+        if(other==null) {
             return false;
-        if(other==this)
+        }
+        if(other==this) {
             return true;
-        if(!(other instanceof AdminEntityDTO))
+        }
+        if(!(other instanceof AdminEntityDTO)) {
             return false;
+        }
 
         AdminEntityDTO that = (AdminEntityDTO)other;
 

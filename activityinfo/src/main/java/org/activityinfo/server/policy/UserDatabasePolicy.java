@@ -74,11 +74,13 @@ public class UserDatabasePolicy implements EntityPolicy<UserDatabase> {
 
         database.setLastSchemaUpdate(new Date());
 
-        if (properties.containsKey("name"))
+        if (properties.containsKey("name")) {
             database.setName((String) properties.get("name"));
+        }
 
-        if (properties.containsKey("fullName"))
+        if (properties.containsKey("fullName")) {
             database.setFullName((String) properties.get("fullName"));
+        }
     }
 
 }

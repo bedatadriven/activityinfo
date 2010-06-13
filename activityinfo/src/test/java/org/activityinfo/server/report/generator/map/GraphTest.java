@@ -124,8 +124,9 @@ public class GraphTest {
             }
 
             colorIndex++;
-            if(colorIndex == colors.length)
-                colorIndex =0;
+            if(colorIndex == colors.length) {
+                colorIndex = 0;
+            }
 
         }
 

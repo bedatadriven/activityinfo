@@ -31,7 +31,6 @@ import org.activityinfo.shared.command.RenderReportHtml;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.command.result.HtmlResult;
 import org.activityinfo.shared.exception.CommandException;
-import org.activityinfo.shared.exception.UnexpectedCommandException;
 import org.activityinfo.shared.report.model.Report;
 
 import javax.servlet.ServletContext;
@@ -80,8 +79,9 @@ public class RenderReportHtmlHandler implements CommandHandler<RenderReportHtml>
 
     private ServletImageStorageProvider createServletImageProvider() {
         File tempPath = new File(servletContext.getRealPath("/temp/"));
-        if(!tempPath.exists())
+        if(!tempPath.exists()) {
             tempPath.mkdir();
+        }
         ServletImageStorageProvider isp = new ServletImageStorageProvider("temp/",
                 tempPath.getAbsolutePath());
         return isp;

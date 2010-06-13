@@ -72,8 +72,9 @@ public class DimensionAdapter extends XmlAdapter<DimensionAdapter.DimensionEleme
     private <T extends Enum<T>> T findEnumValue(T[] values, String text) {
         String textLowered = text.toLowerCase();
         for(T value : values) {
-            if(value.toString().toLowerCase().equals(textLowered))
+            if(value.toString().toLowerCase().equals(textLowered)) {
                 return value;
+            }
         }
         throw new RuntimeException("'" + text + "' is not a member of " + values[0].getClass().getName());
     }

@@ -14,8 +14,9 @@ public class BaseMapDAOTest {
 
         // check to see if the tiles folder exists; if not, skip this test
         File tileRoot = new File("c:/tiles");
-        if (!tileRoot.isDirectory())
+        if (!tileRoot.isDirectory()) {
             return;
+        }
 
         BaseMapDAO dao = new BaseMapDAOImpl(new Properties());
         LocalBaseMap gray = (LocalBaseMap) dao.getBaseMap("zs.gray.cd");

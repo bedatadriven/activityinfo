@@ -107,8 +107,9 @@ public final class SiteDTO extends BaseModelData implements EntityDTO {
 	
 	public Object getAdminEntityName(int levelId) {
 		AdminEntityDTO entity = getAdminEntity(levelId);
-		if(entity == null)
-			return null;
+		if(entity == null) {
+            return null;
+        }
 		
 		return entity.getName();
 	}
@@ -164,12 +165,18 @@ public final class SiteDTO extends BaseModelData implements EntityDTO {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SiteDTO siteModel = (SiteDTO) o;
 
-        if (getId() != siteModel.getId()) return false;
+        if (getId() != siteModel.getId()) {
+            return false;
+        }
 
         return true;
     }

@@ -51,14 +51,24 @@ public class GetAdminEntities extends GetListCommand<AdminEntityResult> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         GetAdminEntities that = (GetAdminEntities) o;
 
-        if (levelId != that.levelId) return false;
-        if (activityId != null ? !activityId.equals(that.activityId) : that.activityId != null) return false;
-        if (parentId != null ? !parentId.equals(that.parentId) : that.parentId != null) return false;
+        if (levelId != that.levelId) {
+            return false;
+        }
+        if (activityId != null ? !activityId.equals(that.activityId) : that.activityId != null) {
+            return false;
+        }
+        if (parentId != null ? !parentId.equals(that.parentId) : that.parentId != null) {
+            return false;
+        }
 
         return true;
     }

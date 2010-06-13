@@ -27,8 +27,9 @@ public class HtmlMapRenderer extends ImageMapRenderer implements HtmlRenderer<Ma
         this.render(element, out);
         out.close();
 
-        if(element.getTitle() != null)
+        if(element.getTitle() != null) {
             html.header(1, element.getTitle());
+        }
 
         html.image(is.getUrl()).at("width", element.getWidth()).at("height", element.getHeight());
 

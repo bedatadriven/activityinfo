@@ -110,8 +110,9 @@ public class ComplexClusterTest extends GraphTest {
             }
             Assert.assertEquals("originalSum==sumAfterClustering", data.originalSum, sumAfterClustering, DELTA);
 
-            if (count == 0)
+            if (count == 0) {
                 saveClusters(data.graph, "ComplexClusterTest-solution", clusters);
+            }
 
             System.out.println(String.format("pop size = %d", solver.getPopulation().size()));
             System.out.println(String.format("subgraph count = %d", data.graph.getSubgraphs().size()));

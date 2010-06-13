@@ -64,8 +64,9 @@ public class DeleteHandler implements CommandHandler<Delete> {
             throw new RuntimeException("Cannot delete entity type " + cmd.getEntityName());
         }
 
-        if (entity == null)
+        if (entity == null) {
             return null;
+        }
 
 
         ((Deleteable) entity).delete();

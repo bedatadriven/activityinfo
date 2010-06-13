@@ -138,8 +138,9 @@ public class ChartRendererJC  {
         Paint[] paints = getDefaultPaints(categories.size());
         Dimension dim = categories.get(0).getDimension();
         
-        if(dim == null)
+        if(dim == null) {
             return paints;
+        }
 
         for(int i=0; i!=categories.size();++i) {
             CategoryProperties props = dim.getCategories().get(categories.get(i).getCategory());
@@ -236,8 +237,9 @@ public class ChartRendererJC  {
         double[] data = new double[categories.size()];
         for(int i=0; i!=categories.size(); ++i) {
             PivotTableData.Cell cell = categories.get(i).getCell(series);
-            if(cell != null && cell.getValue() != 0)
+            if(cell != null && cell.getValue() != 0) {
                 data[i] = cell.getValue();
+            }
         }
         return data;
     }
@@ -297,8 +299,9 @@ public class ChartRendererJC  {
     protected LegendProperties computeLegendProperties(int dpi, List<PivotTableData.Axis> series) {
 
         // if there is only series, there is no need for a legend
-        if(series.size() <= 1)
+        if(series.size() <= 1) {
             return null;
+        }
 
         ChartFont font = new ChartFont(
                 new Font( Font.SANS_SERIF, Font.PLAIN, fontSize(10, dpi)), Color.BLACK);

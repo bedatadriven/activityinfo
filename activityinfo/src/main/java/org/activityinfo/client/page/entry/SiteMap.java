@@ -113,8 +113,9 @@ public class SiteMap extends ContentPanel implements Shutdownable {
                 BoundingBoxDTO bounds = AdminBoundsHelper.calculate(activity, se.getSite());
                 LatLngBounds llBounds = llBoundsForBounds(bounds);
 
-                if (!llBounds.containsBounds(map.getBounds()))
+                if (!llBounds.containsBounds(map.getBounds())) {
                     zoomToBounds(llBounds);
+                }
             } else {
                 highlightSite(se.getSiteId(), true);
             }
@@ -249,10 +250,11 @@ public class SiteMap extends ContentPanel implements Shutdownable {
 
 
     private int siteIdFromOverlay(Overlay overlay) {
-        if (overlay == highlitMarker)
+        if (overlay == highlitMarker) {
             return markerIds.get(currentHighlightedMarker);
-        else
+        } else {
             return markerIds.get(overlay);
+        }
     }
 
     /**
@@ -354,8 +356,9 @@ public class SiteMap extends ContentPanel implements Shutdownable {
             currentHighlightedMarker = marker;
             currentHighlightedMarker.setVisible(false);
 
-            if (!map.getBounds().containsLatLng(marker.getLatLng()))
+            if (!map.getBounds().containsLatLng(marker.getLatLng())) {
                 map.panTo(marker.getLatLng());
+            }
         } else {
             // no coords, un highlight existing marker
             if (currentHighlightedMarker != null) {

@@ -116,7 +116,9 @@ public class GeneticSolver {
                 popSize += 1 + (int) Math.log(allUpperBounds.get(i) * 32);
             }
         }
-        if(popSize > 50) popSize = 50;
+        if(popSize > 50) {
+            popSize = 50;
+        }
 
         this.population = new ArrayList<Phenotype>(popSize);
         addRandomPhenotypes(this.population, popSize);
@@ -130,8 +132,9 @@ public class GeneticSolver {
 
                 double fitness = evolve(generationsStagnated);
 
-                if(tracer != null)
+                if(tracer != null) {
                     tracer.evolved(this, generation, generationsStagnated);
+                }
 
                 if(fitness != lastFitnessScore) {
                     lastFitnessScore = fitness;
@@ -140,8 +143,9 @@ public class GeneticSolver {
                     generationsStagnated ++;
                 }
 
-                if(generationsStagnated == 8)
+                if(generationsStagnated == 8) {
                     break;
+                }
             }
         }
 
@@ -244,8 +248,9 @@ public class GeneticSolver {
 
         swap(children.get(0), children.get(1), xoverPoint);
 
-        if(tracer != null)
+        if(tracer != null) {
             tracer.crossover(this, p1, p2, xoverPoint, children.get(0), children.get(1));
+        }
 
         return children;
     }
@@ -292,8 +297,9 @@ public class GeneticSolver {
 
         } while(i==j);
 
-        if(tracer != null)
+        if(tracer != null) {
             tracer.breeding(this, i, j);
+        }
 
         List<int[]> parents = new ArrayList<int[]>(2);
         parents.add(population.get(i).getChromosomes());

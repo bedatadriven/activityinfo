@@ -35,8 +35,9 @@ public class ColorField extends TriggerField<String> {
     public void setValue(String value) {
         super.setValue(value);
 
-        if(isRendered())
+        if(isRendered()) {
             input.setStyleAttribute("backgroundColor", "#" + (value == null ? "FFFFFF" : value));
+        }
     }
 
     @Override

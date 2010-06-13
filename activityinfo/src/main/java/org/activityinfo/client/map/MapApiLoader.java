@@ -47,8 +47,12 @@ public class MapApiLoader {
 
     public static void load(final AsyncMonitor monitor, final AsyncCallback<Void> callback) {
         if(Maps.isLoaded()) {
-            if(monitor != null) monitor.onCompleted();
-            if(callback != null) callback.onSuccess(null);
+            if(monitor != null) {
+                monitor.onCompleted();
+            }
+            if(callback != null) {
+                callback.onSuccess(null);
+            }
         } else {
             if(!loadInProgress) {
                 startLoad();
@@ -96,24 +100,30 @@ public class MapApiLoader {
 
     private static void onApiLoaded() {
         loadInProgress = false;
-        for(AsyncMonitor monitor : waitingMonitors)
+        for(AsyncMonitor monitor : waitingMonitors) {
             monitor.onCompleted();
-        for(AsyncCallback callback : waitingCallbacks)
+        }
+        for(AsyncCallback callback : waitingCallbacks) {
             callback.onSuccess(null);
+        }
     }
 
     private static void onApiLoadFailure() {
         loadInProgress = false;
-        for(AsyncMonitor monitor : waitingMonitors)
+        for(AsyncMonitor monitor : waitingMonitors) {
             monitor.onCompleted();
-        for(AsyncCallback callback : waitingCallbacks)
+        }
+        for(AsyncCallback callback : waitingCallbacks) {
             callback.onSuccess(null);
+        }
     }
 
     private static void addListeners(AsyncMonitor monitor, AsyncCallback<Void> callback) {
-        if(monitor != null)
+        if(monitor != null) {
             waitingMonitors.add(monitor);
-        if(callback != null)
+        }
+        if(callback != null) {
             waitingCallbacks.add(callback);
+        }
     }
 }

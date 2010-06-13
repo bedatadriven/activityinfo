@@ -107,10 +107,11 @@ public class DetailsPresenter implements Shutdownable {
         for(IndicatorDTO indicator : group.getIndicators()) {
 
             Double value;
-            if(indicator.getAggregation() == IndicatorDTO.AGGREGATE_SITE_COUNT)
+            if(indicator.getAggregation() == IndicatorDTO.AGGREGATE_SITE_COUNT) {
                 value = 1.0;
-            else
+            } else {
                 value = site.getIndicatorValue(indicator);
+            }
 
             if(showEmptyRows ||
                     (value != null &&

@@ -50,13 +50,21 @@ public class DbPageState extends AbstractPagingGridPageState {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         DbPageState dbPlace = (DbPageState) o;
 
-        if (databaseId != dbPlace.databaseId) return false;
-        if (pageId != dbPlace.pageId) return false;
+        if (databaseId != dbPlace.databaseId) {
+            return false;
+        }
+        if (pageId != dbPlace.pageId) {
+            return false;
+        }
         
         return true;
     }
