@@ -5,7 +5,7 @@
     <groupId>org.activityinfo</groupId>
     <artifactId>activityinfo</artifactId>
     <packaging>war</packaging>
-    <version>0.5.11</version>
+    <version>0.5.12-SNAPSHOT</version>
     <name>ActivityInfo</name>
     <licenses>
         <license>
@@ -362,9 +362,9 @@
 
     <description>Web-based database system for program monitoring</description>
     <scm>
-        <connection>scm:svn:http://activity-info.googlecode.com/svn/tags/activityinfo-0.5.11</connection>
-        <developerConnection>scm:svn:https://activity-info.googlecode.com/svn/tags/activityinfo-0.5.11</developerConnection>
-        <url>http://code.google.com/p/activity-info/source/browse/tags/activityinfo-0.5.11</url>
+        <connection>scm:svn:http://activity-info.googlecode.com/svn/tags/activityinfo-0.5.10</connection>
+        <developerConnection>scm:svn:https://activity-info.googlecode.com/svn/tags/activityinfo-0.5.10</developerConnection>
+        <url>http://code.google.com/p/activity-info/source/browse/tags/activityinfo-0.5.10</url>
     </scm>
 
   <distributionManagement>
