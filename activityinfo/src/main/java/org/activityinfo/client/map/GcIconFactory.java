@@ -19,7 +19,6 @@ package org.activityinfo.client.map;
 import com.google.gwt.maps.client.geom.Point;
 import com.google.gwt.maps.client.geom.Size;
 import com.google.gwt.maps.client.overlay.Icon;
-import org.activityinfo.shared.report.model.MapIcon;
 
 /**
  *  This gives you static functions for creating dynamically
@@ -210,58 +209,6 @@ public class GcIconFactory {
 
 		return imageMap;
 	}
-
-
-	/**
-	 * Creates a labeled marker icon based on the specified options in the
-	 *     following class fields: <code>primaryColor, strokeColor,
-	 *     starPrimaryColor, starStrokeColor, label, labelColor, addStar</code>
-     *
-     * @return Icon object for use in Google Maps
-	 */
-	public Icon createLabeledMarkerIcon() {
-
-		String pinProgram = (addStar) ? "pin_star" : "pin";
-		String baseUrl = "http://chart.apis.google.com/chart?cht=d&chdp=mapsapi&chl=";
-		String iconUrl = baseUrl + pinProgram + "'i\\" + "'[" + escapeUserText(label) +
-		"'-2'f\\"  + "hv'a\\]" + "h\\]o\\" +
-		primaryColor.replace("#", "")  + "'fC\\" +
-		labelColor.replace("#", "")  + "'tC\\" +
-		strokeColor.replace("#", "")  + "'eC\\";
-		if (addStar) {
-			iconUrl += starPrimaryColor.replace("#", "") + "'1C\\" +
-			starStrokeColor.replace("#", "") + "'0C\\";
-		}
-		iconUrl += "Lauto'f\\";
-
-		Icon icon = Icon.newInstance(Icon.DEFAULT_ICON);
-		icon.setImageURL(iconUrl + "&ext=.png");
-		icon.setIconSize((addStar) ? Size.newInstance(23, 39) : Size.newInstance(21, 34));
-		return icon;
-	}
-
-
-	/**
-	 * Utility function for doing special chart API escaping first,
-	 *  and then typical URL escaping. Must be applied to user-supplied text.
-     *
-     * @param text Plain text to escape
-     *
-     * @return Google Charts compatible escaped text
-	 */
-	private static native String escapeUserText(String text) /*-{
-		  if (text === undefined) {
-		    return null;
-		  }
-		  text = text.replace(/@/, "@@");
-		  text = text.replace(/\\/, "@\\");
-		  text = text.replace(/'/, "@'");
-		  text = text.replace(/\[/, "@[");
-		  text = text.replace(/\]/, "@]");
-		  return encodeURIComponent(text);
-	}-*/;
-
-
 
 
 }
