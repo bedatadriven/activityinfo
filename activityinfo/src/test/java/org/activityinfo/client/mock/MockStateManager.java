@@ -1,6 +1,6 @@
 package org.activityinfo.client.mock;
 
-import org.activityinfo.client.util.IStateManager;
+import org.activityinfo.client.util.state.IStateManager;
 
 import java.util.Date;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package org.activityinfo.client.util;
+package org.activityinfo.client.util.state;
 
 import java.util.Date;
 import java.util.Map;
