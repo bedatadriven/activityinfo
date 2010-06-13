@@ -19,8 +19,6 @@
 
 package org.activityinfo.shared.command.result;
 
-import org.activityinfo.shared.sync.SyncRegion;
-
 import java.util.Iterator;
 import java.util.List;
 

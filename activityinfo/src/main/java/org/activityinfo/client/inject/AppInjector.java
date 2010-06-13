@@ -15,7 +15,6 @@ import org.activityinfo.client.dispatch.remote.cache.SchemaCache;
 import org.activityinfo.client.offline.DatabaseStateProvider;
 import org.activityinfo.client.offline.OfflineManager;
 import org.activityinfo.client.offline.OfflineModule;
-import org.activityinfo.client.offline.OfflineSchemaCache;
 import org.activityinfo.client.offline.sync.InstallSteps;
 import org.activityinfo.client.page.DownloadManager;
 import org.activityinfo.client.page.charts.ChartLoader;
@@ -105,8 +104,6 @@ public interface AppInjector extends Ginjector {
 
 
     OfflineManager createOfflineManager();
-
-    OfflineSchemaCache createOfflineSchemaCache();
 
     SchemaCache createSchemaCache();
 

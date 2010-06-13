@@ -21,12 +21,13 @@ package org.activityinfo.server.endpoint.gwtrpc.handler;
 
 import com.google.inject.Inject;
 import org.activityinfo.server.dao.SchemaDAO;
-import org.activityinfo.server.domain.*;
+import org.activityinfo.server.domain.AdminLevel;
+import org.activityinfo.server.domain.User;
+import org.activityinfo.server.domain.UserDatabase;
 import org.activityinfo.shared.command.GetSyncRegions;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.command.result.SyncRegions;
 import org.activityinfo.shared.exception.CommandException;
-import org.activityinfo.shared.sync.SyncRegion;
 
 import java.util.*;
 

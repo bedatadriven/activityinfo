@@ -29,7 +29,6 @@ import org.activityinfo.shared.command.GetSyncRegionUpdates;
 import org.activityinfo.shared.command.GetSyncRegions;
 import org.activityinfo.shared.command.result.SyncRegionUpdate;
 import org.activityinfo.shared.command.result.SyncRegions;
-import org.activityinfo.shared.sync.SyncRegion;
 
 import java.sql.*;
 import java.util.Iterator;
