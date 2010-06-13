@@ -5,7 +5,6 @@ import org.activityinfo.client.mock.DummyData;
 import org.activityinfo.client.mock.MockCommandService;
 import org.activityinfo.client.mock.MockEventBus;
 import org.activityinfo.client.mock.MockStateManager;
-import org.activityinfo.client.page.Pages;
 import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.shared.command.GetUsers;
 import org.activityinfo.shared.command.UpdateUserPermissions;
@@ -43,7 +42,7 @@ public class DbUserTest {
         DbUserEditor editor = new DbUserEditor(new MockEventBus(), service, new MockStateManager(), view);
 
         // VERIFY save button is initially disabled
-        editor.go(schema.getDatabaseById(1), new DbPlace(Pages.DatabaseUsers, 1));
+        editor.go(schema.getDatabaseById(1), new DbPageState(DbUserEditor.DatabaseUsers, 1));
         verify(view);
 
         // VERIFY that following a modification the button is enabled
@@ -76,7 +75,7 @@ public class DbUserTest {
 
         // Class under test
         DbUserEditor editor = new DbUserEditor(new MockEventBus(), service, new MockStateManager(), view);
-        editor.go(schema.getDatabaseById(1), new DbPlace(Pages.DatabaseUsers, 1));
+        editor.go(schema.getDatabaseById(1), new DbPageState(DbUserEditor.DatabaseUsers, 1));
         
         // VERIFY that following a modification a user command to save results in
         // an update user command
@@ -111,7 +110,7 @@ public class DbUserTest {
 
         // Class under test
         DbUserEditor editor = new DbUserEditor(new MockEventBus(), service, new MockStateManager(), view);
-        editor.go(schema.getDatabaseById(1), new DbPlace(Pages.DatabaseUsers, 1));
+        editor.go(schema.getDatabaseById(1), new DbPageState(DbUserEditor.DatabaseUsers, 1));
 
         // VERIFY that following a successful save the save button is disabled
 

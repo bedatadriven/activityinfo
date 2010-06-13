@@ -11,12 +11,11 @@ import com.extjs.gxt.ui.client.store.TreeStore;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.EventBus;
-import org.activityinfo.client.Place;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.monitor.NullAsyncMonitor;
 import org.activityinfo.client.event.SiteEvent;
 import org.activityinfo.client.page.PageId;
-import org.activityinfo.client.page.Pages;
+import org.activityinfo.client.page.PageState;
 import org.activityinfo.client.page.common.grid.AbstractEditorGridPresenter;
 import org.activityinfo.client.page.common.grid.GridView;
 import org.activityinfo.client.page.common.toolbar.UIActions;
@@ -204,14 +203,14 @@ public class HierSiteEditor extends AbstractEditorGridPresenter<ModelData> {
 
 
     public PageId getPageId() {
-        return Pages.SiteGrid;
+        return SiteEditor.ID;
     }
 
     public Object getWidget() {
         return view;
     }
 
-    public boolean navigate(Place place) {
+    public boolean navigate(PageState place) {
         return false;
     }
 

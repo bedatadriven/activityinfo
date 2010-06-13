@@ -2,12 +2,12 @@ package org.activityinfo.client.page.common.grid;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.SortInfo;
-import org.activityinfo.client.Place;
+import org.activityinfo.client.page.PageState;
 /*
  * @author Alex Bertram
  */
 
-public abstract class AbstractGridPlace implements Place {
+public abstract class AbstractGridPageState implements PageState {
     protected SortInfo sortInfo = null;
 
     public SortInfo getSortInfo() {

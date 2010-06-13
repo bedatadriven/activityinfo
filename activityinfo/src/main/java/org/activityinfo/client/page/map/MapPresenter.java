@@ -2,13 +2,13 @@ package org.activityinfo.client.page.map;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.client.EventBus;
-import org.activityinfo.client.Place;
 import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.callback.DownloadCallback;
 import org.activityinfo.client.page.NavigationCallback;
+import org.activityinfo.client.page.Page;
 import org.activityinfo.client.page.PageId;
-import org.activityinfo.client.page.PagePresenter;
+import org.activityinfo.client.page.PageState;
 import org.activityinfo.client.page.common.toolbar.ActionListener;
 import org.activityinfo.client.page.common.toolbar.ExportCallback;
 import org.activityinfo.client.page.common.toolbar.UIActions;
@@ -20,7 +20,8 @@ import org.activityinfo.shared.report.model.ReportElement;
  * @author Alex Bertram
  */
 
-public class MapPresenter implements PagePresenter, ExportCallback, ActionListener {
+public class MapPresenter implements Page, ExportCallback, ActionListener {
+    public static final PageId Maps = new PageId("map");
 
     public interface View {
 
@@ -59,7 +60,7 @@ public class MapPresenter implements PagePresenter, ExportCallback, ActionListen
         }
     }
 
-    public boolean navigate(Place place) {
+    public boolean navigate(PageState place) {
         return false;
     }
 
@@ -91,7 +92,7 @@ public class MapPresenter implements PagePresenter, ExportCallback, ActionListen
         return view;
     }
 
-    public void requestToNavigateAway(Place place, NavigationCallback callback) {
+    public void requestToNavigateAway(PageState place, NavigationCallback callback) {
         callback.onDecided(true);
     }
 

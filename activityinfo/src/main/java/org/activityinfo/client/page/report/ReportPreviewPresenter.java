@@ -4,15 +4,14 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
 import org.activityinfo.client.EventBus;
-import org.activityinfo.client.Place;
 import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.callback.Got;
 import org.activityinfo.client.event.DownloadEvent;
 import org.activityinfo.client.page.NavigationCallback;
+import org.activityinfo.client.page.Page;
 import org.activityinfo.client.page.PageId;
-import org.activityinfo.client.page.PagePresenter;
-import org.activityinfo.client.page.Pages;
+import org.activityinfo.client.page.PageState;
 import org.activityinfo.client.page.common.dialog.FormDialogCallback;
 import org.activityinfo.client.page.common.dialog.FormDialogImpl;
 import org.activityinfo.client.page.common.toolbar.ActionListener;
@@ -31,7 +30,8 @@ import org.activityinfo.shared.report.model.DateRange;
 /**
  * @author Alex Bertram
  */
-public class ReportPreviewPresenter implements PagePresenter, ActionListener, ExportCallback {
+public class ReportPreviewPresenter implements Page, ActionListener, ExportCallback {
+    public static final PageId ReportPreview = new PageId("report");
 
     @ImplementedBy(ReportPreview.class)
     public interface View {
@@ -67,14 +67,14 @@ public class ReportPreviewPresenter implements PagePresenter, ActionListener, Ex
     }
 
     public PageId getPageId() {
-        return Pages.ReportPreview;
+        return ReportPreview;
     }
 
     public Object getWidget() {
         return view;
     }
 
-    public void requestToNavigateAway(Place place, NavigationCallback callback) {
+    public void requestToNavigateAway(PageState place, NavigationCallback callback) {
         callback.onDecided(true);
     }
 
@@ -86,7 +86,7 @@ public class ReportPreviewPresenter implements PagePresenter, ActionListener, Ex
 
     }
 
-    public boolean navigate(Place place) {
+    public boolean navigate(PageState place) {
         return false;
     }
 

@@ -1,15 +1,14 @@
-package org.activityinfo.client;
+package org.activityinfo.client.page;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.inject.Singleton;
-import org.activityinfo.client.page.PageId;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  *
- * Handles serialization/deserialization of {@link org.activityinfo.client.Place}s into/from
+ * Handles serialization/deserialization of {@link org.activityinfo.client.page.PageState}s into/from
  * history tokens.
  *
  * E.g. #site-grid/33 => new SiteGrid{ activityId=33 }
@@ -19,27 +18,27 @@ import java.util.Map;
  * @author Alex Bertram (akbertram@gmail.com)
  */
 @Singleton
-public class PlaceSerializer {
+public class PageStateSerializer {
 
     /**
      * Maps pageIds to place parsers
      */
-    private final Map<String, PlaceParser> parsers = new HashMap<String, PlaceParser>();
+    private final Map<String, PageStateParser> parsers = new HashMap<String, PageStateParser>();
 
 
-    public String serialize(Place place) {
+    public String serialize(PageState place) {
         StringBuilder sb = new StringBuilder();
         sb.append(place.getPageId());
 
-        String pageState = place.pageStateToken();
+        String pageState = place.serializeAsHistoryToken();
         if(pageState!=null) {
-            sb.append("/").append(place.pageStateToken());
+            sb.append("/").append(place.serializeAsHistoryToken());
         }
 
         return sb.toString();
     }
 
-    public Place deserialize(String token) {
+    public PageState deserialize(String token) {
 
         int i = token.indexOf('/');
 
@@ -53,7 +52,7 @@ public class PlaceSerializer {
             pageState = token.substring(i+1);
         }
 
-        PlaceParser parser = parsers.get(pageId);
+        PageStateParser parser = parsers.get(pageId);
         if(parser != null) {
             return parser.parse(pageState);
         } else {
@@ -64,15 +63,15 @@ public class PlaceSerializer {
         }
     }
 
-    public void registerParser(PageId pageId, PlaceParser parser) {
+    public void registerParser(PageId pageId, PageStateParser parser) {
         parsers.put(pageId.toString(), parser);
         Log.debug("PageSerializer: registered page serializer " + parser.toString() + " for pageId '" + pageId + "'");
     }
 
-    public void registerStatelessPlace(PageId pageId, final Place place) {
-        parsers.put(pageId.toString(), new PlaceParser() {
+    public void registerStatelessPlace(PageId pageId, final PageState place) {
+        parsers.put(pageId.toString(), new PageStateParser() {
             @Override
-            public Place parse(String token) {
+            public PageState parse(String token) {
                 return place;
             }
         });

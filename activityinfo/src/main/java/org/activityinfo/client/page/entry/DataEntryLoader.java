@@ -5,8 +5,6 @@ import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import org.activityinfo.client.Application;
-import org.activityinfo.client.Place;
-import org.activityinfo.client.PlaceSerializer;
 import org.activityinfo.client.dispatch.callback.Got;
 import org.activityinfo.client.inject.AppInjector;
 import org.activityinfo.client.page.*;
@@ -24,26 +22,26 @@ public class DataEntryLoader implements PageLoader {
     private final AppInjector injector;
 
     @Inject
-    public DataEntryLoader(AppInjector injector, PageManager pageManager, PlaceSerializer placeSerializer) {
+    public DataEntryLoader(AppInjector injector, NavigationHandler pageManager, PageStateSerializer placeSerializer) {
         this.injector = injector;
 
-        pageManager.registerPageLoader(Pages.DataEntryFrameSet, this);
-        pageManager.registerPageLoader(Pages.SiteGrid, this);
-        placeSerializer.registerParser(Pages.SiteGrid, new SiteGridPlace.Parser());
+        pageManager.registerPageLoader(Frames.DataEntryFrameSet, this);
+        pageManager.registerPageLoader(SiteEditor.ID, this);
+        placeSerializer.registerParser(SiteEditor.ID, new SiteGridPageState.Parser());
     }
 
     @Override
-    public void load(final PageId pageId, final Place place, final AsyncCallback<PagePresenter> callback) {
+    public void load(final PageId pageId, final PageState pageState, final AsyncCallback<Page> callback) {
 
         GWT.runAsync(new RunAsyncCallback() {
 
             @Override
             public void onSuccess() {
 
-                if (Pages.DataEntryFrameSet.equals(pageId)) {
-                    loadFrame(place, callback);
-                } else if (Pages.SiteGrid.equals(pageId)) {
-                    loadSiteGrid(place, callback);
+                if (Frames.DataEntryFrameSet.equals(pageId)) {
+                    loadFrame(pageState, callback);
+                } else if (SiteEditor.ID.equals(pageId)) {
+                    loadSiteGrid(pageState, callback);
                 }
             }
 
@@ -56,22 +54,22 @@ public class DataEntryLoader implements PageLoader {
 
     }
 
-    private void loadFrame(Place place, AsyncCallback<PagePresenter> callback) {
+    private void loadFrame(PageState place, AsyncCallback<Page> callback) {
 
         NavigationPanel navPanel = new NavigationPanel(injector.getEventBus(),
                 injector.getDataEntryNavigator());
 
-        VSplitFrameSet frameSet = new VSplitFrameSet(Pages.DataEntryFrameSet, navPanel);
+        VSplitFrameSet frameSet = new VSplitFrameSet(Frames.DataEntryFrameSet, navPanel);
 
         callback.onSuccess(frameSet);
     }
 
-    protected void loadSiteGrid(final Place place, final AsyncCallback<PagePresenter> callback) {
+    protected void loadSiteGrid(final PageState place, final AsyncCallback<Page> callback) {
         injector.getService().execute(new GetSchema(), null, new Got<SchemaDTO>() {
             @Override
             public void got(SchemaDTO schema) {
 
-                SiteGridPlace sgPlace = (SiteGridPlace) place;
+                SiteGridPageState sgPlace = (SiteGridPageState) place;
                 if (sgPlace.getActivityId() == 0) {
                     sgPlace.setActivityId(schema.getFirstActivity().getId());
                 }
@@ -112,7 +110,7 @@ public class DataEntryLoader implements PageLoader {
                 grid.addSidePanel(Application.CONSTANTS.map(), Application.ICONS.map(), map);
 
                 //  }
-                editor.go((SiteGridPlace) place, activity);
+                editor.go((SiteGridPageState) place, activity);
 
                 callback.onSuccess(editor);
 

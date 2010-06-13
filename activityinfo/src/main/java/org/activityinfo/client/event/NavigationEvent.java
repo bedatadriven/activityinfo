@@ -2,29 +2,29 @@ package org.activityinfo.client.event;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.EventType;
-import org.activityinfo.client.Place;
+import org.activityinfo.client.page.PageState;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
 public class NavigationEvent extends BaseEvent {
 
-    private final Place place;
+    private final PageState place;
 
-    public NavigationEvent(EventType type, Place place) {
+    public NavigationEvent(EventType type, PageState place) {
         super(type);
         this.place = place;
 
         assert this.place != null;
     }
 
-    public Place getPlace() {
+    public PageState getPlace() {
         return place;
     }
 
     @Override
     public String toString() {
-        return place.getPageId() + "/" + place.pageStateToken();
+        return place.getPageId() + "/" + place.serializeAsHistoryToken();
     }
 
     @Override

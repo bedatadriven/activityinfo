@@ -1,45 +1,45 @@
 package org.activityinfo.client.page.entry;
 
-import org.activityinfo.client.Place;
-import org.activityinfo.client.PlaceParser;
-import org.activityinfo.client.ViewPath;
+import org.activityinfo.client.page.Frames;
 import org.activityinfo.client.page.PageId;
-import org.activityinfo.client.page.Pages;
-import org.activityinfo.client.page.common.grid.AbstractPagingGridPlace;
+import org.activityinfo.client.page.PageState;
+import org.activityinfo.client.page.PageStateParser;
+import org.activityinfo.client.page.common.grid.AbstractPagingGridPageState;
 import org.activityinfo.shared.dto.ActivityDTO;
 
+import java.util.Arrays;
 import java.util.List;
 
 
-public class SiteGridPlace extends AbstractPagingGridPlace {
+public class SiteGridPageState extends AbstractPagingGridPageState {
 
     private int activityId;
 
-    public SiteGridPlace() {
+    public SiteGridPageState() {
     	activityId = 0;
     }
 
-    public SiteGridPlace(SiteGridPlace place) {
+    public SiteGridPageState(SiteGridPageState place) {
         this.activityId = place.activityId;
         this.pageNum = place.pageNum;
         this.sortInfo = place.sortInfo;
     }
    
-    public SiteGridPlace(ActivityDTO activity) {
+    public SiteGridPageState(ActivityDTO activity) {
         this.activityId = activity.getId();
     }
 
-    public SiteGridPlace(int activityId) {
+    public SiteGridPageState(int activityId) {
         this.activityId = activityId;
     }
 
     @Override
 	public PageId getPageId() {
-		return Pages.SiteGrid;
+		return SiteEditor.ID;
 	}
 
     @Override
-    public String pageStateToken() {
+    public String serializeAsHistoryToken() {
         StringBuilder sb = new StringBuilder();
         sb.append(activityId);
         appendGridStateToken(sb);
@@ -51,10 +51,8 @@ public class SiteGridPlace extends AbstractPagingGridPlace {
     }
 
 	@Override
-	public List<ViewPath.Node> getViewPath() {
-		return ViewPath.make(
-				new ViewPath.Node(ViewPath.DefaultRegion, Pages.DataEntryFrameSet),
-				new ViewPath.Node(ViewPath.DefaultRegion, Pages.SiteGrid));
+	public List<PageId> getEnclosingFrames() {
+		return Arrays.asList(Frames.DataEntryFrameSet,SiteEditor.ID);
 	}
 
     public void setActivityId(int activityId) {
@@ -66,7 +64,7 @@ public class SiteGridPlace extends AbstractPagingGridPlace {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        SiteGridPlace that = (SiteGridPlace) o;
+        SiteGridPageState that = (SiteGridPageState) o;
 
         if (activityId != that.activityId) return false;
 
@@ -79,12 +77,12 @@ public class SiteGridPlace extends AbstractPagingGridPlace {
     }
     
 
-    public static class Parser implements PlaceParser {
+    public static class Parser implements PageStateParser {
 
         @Override
-        public Place parse(String token) {
+        public PageState parse(String token) {
 
-            SiteGridPlace place = new SiteGridPlace();
+            SiteGridPageState place = new SiteGridPageState();
 
             for(String t : token.split("/")) {
 

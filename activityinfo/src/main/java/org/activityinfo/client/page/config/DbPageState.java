@@ -1,26 +1,26 @@
 package org.activityinfo.client.page.config;
 
-import org.activityinfo.client.Place;
-import org.activityinfo.client.PlaceParser;
-import org.activityinfo.client.ViewPath;
+import org.activityinfo.client.page.Frames;
 import org.activityinfo.client.page.PageId;
-import org.activityinfo.client.page.Pages;
-import org.activityinfo.client.page.common.grid.AbstractPagingGridPlace;
+import org.activityinfo.client.page.PageState;
+import org.activityinfo.client.page.PageStateParser;
+import org.activityinfo.client.page.common.grid.AbstractPagingGridPageState;
 
+import java.util.Arrays;
 import java.util.List;
 /*
  * @author Alex Bertram
  */
 
-public class DbPlace extends AbstractPagingGridPlace {
+public class DbPageState extends AbstractPagingGridPageState {
 
     private PageId pageId;
     private int databaseId;
 
-    protected DbPlace() {
+    protected DbPageState() {
     }
 
-    public DbPlace(PageId pageId, int databaseId) {
+    public DbPageState(PageId pageId, int databaseId) {
         this.pageId = pageId;
         this.databaseId = databaseId;
     }
@@ -37,15 +37,15 @@ public class DbPlace extends AbstractPagingGridPlace {
         return pageId;
     }
 
-    public String pageStateToken() {
+    public String serializeAsHistoryToken() {
         StringBuilder sb = new StringBuilder();
         sb.append(databaseId);
         appendGridStateToken(sb);
         return sb.toString();
     }
 
-    public List<ViewPath.Node> getViewPath() {
-        return ViewPath.make(Pages.ConfigFrameSet, pageId);
+    public List<PageId> getEnclosingFrames() {
+        return Arrays.asList(Frames.ConfigFrameSet, pageId);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class DbPlace extends AbstractPagingGridPlace {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        DbPlace dbPlace = (DbPlace) o;
+        DbPageState dbPlace = (DbPageState) o;
 
         if (databaseId != dbPlace.databaseId) return false;
         if (pageId != dbPlace.pageId) return false;
@@ -66,7 +66,7 @@ public class DbPlace extends AbstractPagingGridPlace {
         return databaseId;
     }
 
-    public static class Parser implements PlaceParser {
+    public static class Parser implements PageStateParser {
 
         private PageId pageId;
 
@@ -74,8 +74,8 @@ public class DbPlace extends AbstractPagingGridPlace {
             this.pageId = pageId;
         }
 
-        public Place parse(String token) {
-            return new DbPlace(pageId, Integer.parseInt(token));
+        public PageState parse(String token) {
+            return new DbPageState(pageId, Integer.parseInt(token));
         }
     }
 

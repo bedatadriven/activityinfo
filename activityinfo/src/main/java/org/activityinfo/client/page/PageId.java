@@ -1,10 +1,11 @@
 package org.activityinfo.client.page;
 
 /**
+ * Uniquely identifies a page within the application.
+ *
  * @author Alex Bertram (akbertram@gmail.com)
  */
 public class PageId {
-
     private final String id;
 
     public PageId(String id) {
@@ -15,7 +16,4 @@ public class PageId {
     public String toString() {
         return id;
     }
-
-    
-
 }

@@ -4,8 +4,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
-import org.activityinfo.client.Place;
-import org.activityinfo.client.PlaceSerializer;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.callback.Got;
 import org.activityinfo.client.inject.AppInjector;
@@ -23,28 +21,28 @@ public class ConfigLoader implements PageLoader {
     private final Dispatcher service;
 
     @Inject
-    public ConfigLoader(AppInjector injector, PageManager pageManager, PlaceSerializer placeSerializer) {
+    public ConfigLoader(AppInjector injector, NavigationHandler pageManager, PageStateSerializer placeSerializer) {
         this.injector = injector;
         this.service = injector.getService();
 
-        pageManager.registerPageLoader(Pages.ConfigFrameSet, this);
-        pageManager.registerPageLoader(Pages.Account, this);
-        pageManager.registerPageLoader(Pages.DatabaseConfig, this);
-        pageManager.registerPageLoader(Pages.DatabaseList, this);
-        pageManager.registerPageLoader(Pages.DatabaseUsers, this);
-        pageManager.registerPageLoader(Pages.DatabasePartners, this);
-        pageManager.registerPageLoader(Pages.Design, this);
+        pageManager.registerPageLoader(Frames.ConfigFrameSet, this);
+        pageManager.registerPageLoader(AccountEditor.Account, this);
+        pageManager.registerPageLoader(DbConfigPresenter.DatabaseConfig, this);
+        pageManager.registerPageLoader(DbListPresenter.DatabaseList, this);
+        pageManager.registerPageLoader(DbUserEditor.DatabaseUsers, this);
+        pageManager.registerPageLoader(DbPartnerEditor.DatabasePartners, this);
+        pageManager.registerPageLoader(Designer.Design, this);
 
-        placeSerializer.registerStatelessPlace(Pages.Account, new AccountPlace());
-        placeSerializer.registerStatelessPlace(Pages.DatabaseList, new DbListPlace());
-        placeSerializer.registerParser(Pages.DatabaseConfig, new DbPlace.Parser(Pages.DatabaseConfig));
-        placeSerializer.registerParser(Pages.DatabaseUsers, new DbPlace.Parser(Pages.DatabaseUsers));
-        placeSerializer.registerParser(Pages.DatabasePartners, new DbPlace.Parser(Pages.DatabasePartners));
-        placeSerializer.registerParser(Pages.Design, new DbPlace.Parser(Pages.Design));
+        placeSerializer.registerStatelessPlace(AccountEditor.Account, new AccountPageState());
+        placeSerializer.registerStatelessPlace(DbListPresenter.DatabaseList, new DbListPageState());
+        placeSerializer.registerParser(DbConfigPresenter.DatabaseConfig, new DbPageState.Parser(DbConfigPresenter.DatabaseConfig));
+        placeSerializer.registerParser(DbUserEditor.DatabaseUsers, new DbPageState.Parser(DbUserEditor.DatabaseUsers));
+        placeSerializer.registerParser(DbPartnerEditor.DatabasePartners, new DbPageState.Parser(DbPartnerEditor.DatabasePartners));
+        placeSerializer.registerParser(Designer.Design, new DbPageState.Parser(Designer.Design));
     }
 
     @Override
-    public void load(final PageId pageId, final Place place, final AsyncCallback<PagePresenter> callback) {
+    public void load(final PageId pageId, final PageState pageState, final AsyncCallback<Page> callback) {
 
 
         GWT.runAsync(new RunAsyncCallback() {
@@ -57,20 +55,20 @@ public class ConfigLoader implements PageLoader {
             @Override
             public void onSuccess() {
 
-                if (Pages.ConfigFrameSet.equals(pageId)) {
+                if (Frames.ConfigFrameSet.equals(pageId)) {
                     NavigationPanel navPanel = new NavigationPanel(injector.getEventBus(),
                             injector.getConfigNavigator());
                     VSplitFrameSet frameSet = new VSplitFrameSet(pageId, navPanel);
                     callback.onSuccess(frameSet);
 
-                } else if (Pages.Account.equals(pageId)) {
+                } else if (AccountEditor.Account.equals(pageId)) {
                     callback.onSuccess(injector.getAccountEditor());
 
-                } else if (Pages.DatabaseList.equals(pageId)) {
+                } else if (DbListPresenter.DatabaseList.equals(pageId)) {
                     callback.onSuccess(injector.getDbListPage());
 
-                } else if (place instanceof DbPlace) {
-                    final DbPlace dPlace = (DbPlace) place;
+                } else if (pageState instanceof DbPageState) {
+                    final DbPageState dPlace = (DbPageState) pageState;
 
                     /// the schema needs to be loaded before we can continue
                     service.execute(new GetSchema(), null, new Got<SchemaDTO>() {
@@ -80,22 +78,22 @@ public class ConfigLoader implements PageLoader {
 
                             UserDatabaseDTO db = schema.getDatabaseById(dPlace.getDatabaseId());
 
-                            if (Pages.DatabaseConfig.equals(pageId)) {
+                            if (DbConfigPresenter.DatabaseConfig.equals(pageId)) {
                                 DbConfigPresenter presenter = injector.getDbConfigPresenter();
                                 presenter.go(db);
                                 callback.onSuccess(presenter);
 
-                            } else if (Pages.Design.equals(pageId)) {
+                            } else if (Designer.Design.equals(pageId)) {
                                 Designer presenter = injector.getDesigner();
                                 presenter.go(db);
                                 callback.onSuccess(presenter);
 
-                            } else if (Pages.DatabaseUsers.equals(pageId)) {
+                            } else if (DbUserEditor.DatabaseUsers.equals(pageId)) {
                                 DbUserEditor editor = injector.getDbUserEditor();
                                 editor.go(db, dPlace);
                                 callback.onSuccess(editor);
 
-                            } else if (Pages.DatabasePartners.equals(pageId)) {
+                            } else if (DbPartnerEditor.DatabasePartners.equals(pageId)) {
                                 DbPartnerEditor presenter = injector.getDbPartnerEditor();
                                 presenter.go(db);
                                 callback.onSuccess(presenter);
@@ -104,12 +102,12 @@ public class ConfigLoader implements PageLoader {
 //                                editor.go(db);
 //                                callback.onSuccess(editor);
                             } else {
-                                callback.onFailure(new Exception("ConfigLoader didn't know how to handle " + place.toString()));
+                                callback.onFailure(new Exception("ConfigLoader didn't know how to handle " + pageState.toString()));
                             }
                         }
                     });
                 } else {
-                    callback.onFailure(new Exception("ConfigLoader didn't know how to handle " + place.toString()));
+                    callback.onFailure(new Exception("ConfigLoader didn't know how to handle " + pageState.toString()));
                 }
             }
         });

@@ -9,14 +9,13 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.inject.Inject;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.EventBus;
-import org.activityinfo.client.Place;
 import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.activityinfo.client.page.NavigationCallback;
+import org.activityinfo.client.page.Page;
 import org.activityinfo.client.page.PageId;
-import org.activityinfo.client.page.PagePresenter;
-import org.activityinfo.client.page.Pages;
+import org.activityinfo.client.page.PageState;
 import org.activityinfo.client.page.common.toolbar.ActionToolBar;
 import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.client.util.state.IStateManager;
@@ -25,7 +24,7 @@ import org.activityinfo.shared.dto.UserDatabaseDTO;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DbListPage extends ContentPanel implements DbListPresenter.View, PagePresenter {
+public class DbListPage extends ContentPanel implements DbListPresenter.View, Page {
 
     private Grid<UserDatabaseDTO> grid;
     private DbListPresenter presenter;
@@ -96,7 +95,7 @@ public class DbListPage extends ContentPanel implements DbListPresenter.View, Pa
 
     @Override
     public PageId getPageId() {
-        return Pages.DatabaseList;
+        return DbListPresenter.DatabaseList;
     }
 
     @Override
@@ -105,7 +104,7 @@ public class DbListPage extends ContentPanel implements DbListPresenter.View, Pa
     }
 
     @Override
-    public void requestToNavigateAway(Place place, NavigationCallback callback) {
+    public void requestToNavigateAway(PageState place, NavigationCallback callback) {
         callback.onDecided(true);
     }
 
@@ -115,7 +114,7 @@ public class DbListPage extends ContentPanel implements DbListPresenter.View, Pa
     }
 
     @Override
-    public boolean navigate(Place place) {
+    public boolean navigate(PageState place) {
         return false;
     }
 

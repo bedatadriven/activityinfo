@@ -11,16 +11,15 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.EventBus;
-import org.activityinfo.client.Place;
 import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.loader.CommandLoadEvent;
 import org.activityinfo.client.dispatch.loader.PagingCmdLoader;
 import org.activityinfo.client.event.DownloadEvent;
 import org.activityinfo.client.event.SiteEvent;
+import org.activityinfo.client.page.Page;
 import org.activityinfo.client.page.PageId;
-import org.activityinfo.client.page.PagePresenter;
-import org.activityinfo.client.page.Pages;
+import org.activityinfo.client.page.PageState;
 import org.activityinfo.client.page.common.Shutdownable;
 import org.activityinfo.client.page.common.grid.AbstractEditorGridPresenter;
 import org.activityinfo.client.page.common.grid.GridView;
@@ -43,7 +42,7 @@ import java.util.Map;
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements PagePresenter {
+public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements Page {
 
     private Listener<SiteEvent> siteChangedListener;
     private Listener<SiteEvent> siteCreatedListener;
@@ -51,6 +50,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
     private List<Shutdownable> subComponents = new ArrayList<Shutdownable>();
 
     public static final int PAGE_SIZE = 25;
+    public static final PageId ID = new PageId("site-grid");
 
     public interface View extends GridView<SiteEditor, SiteDTO> {
 
@@ -172,7 +172,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
 
     @Override
     public PageId getPageId() {
-        return Pages.SiteGrid;
+        return ID;
     }
 
     public ActivityDTO getCurrentActivity() {
@@ -183,7 +183,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
         return "sitegridpage." + currentActivity.getId();
     }
 
-    public void go(SiteGridPlace place, ActivityDTO activity) {
+    public void go(SiteGridPageState place, ActivityDTO activity) {
 
         currentActivity = activity;
 
@@ -208,13 +208,13 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
     }
 
 
-    public boolean navigate(final Place place) {
+    public boolean navigate(final PageState place) {
 
-        if (!(place instanceof SiteGridPlace)) {
+        if (!(place instanceof SiteGridPageState)) {
             return false;
         }
 
-        final SiteGridPlace gridPlace = (SiteGridPlace) place;
+        final SiteGridPageState gridPlace = (SiteGridPageState) place;
 
         if (currentActivity.getId() != gridPlace.getActivityId()) {
             return false;
@@ -235,7 +235,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
         /*
          * Let everyone else know we have navigated
          */
-        firePageEvent(new SiteGridPlace(currentActivity), le);
+        firePageEvent(new SiteGridPageState(currentActivity), le);
 
         /*
          * Select a site

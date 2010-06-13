@@ -27,24 +27,23 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.EventBus;
-import org.activityinfo.client.Place;
 import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.dispatch.remote.Authentication;
 import org.activityinfo.client.event.NavigationEvent;
 import org.activityinfo.client.offline.ui.OfflineMenu;
 import org.activityinfo.client.page.*;
-import org.activityinfo.client.page.charts.ChartPlace;
+import org.activityinfo.client.page.charts.ChartPageState;
 import org.activityinfo.client.page.common.widget.LoadingPlaceHolder;
-import org.activityinfo.client.page.config.DbListPlace;
-import org.activityinfo.client.page.entry.SiteGridPlace;
-import org.activityinfo.client.page.map.MapPlace;
-import org.activityinfo.client.page.report.ReportHomePlace;
-import org.activityinfo.client.page.table.PivotPlace;
-import org.activityinfo.client.page.welcome.WelcomePlace;
+import org.activityinfo.client.page.config.DbListPageState;
+import org.activityinfo.client.page.entry.SiteGridPageState;
+import org.activityinfo.client.page.map.MapPageState;
+import org.activityinfo.client.page.report.ReportHomePageState;
+import org.activityinfo.client.page.table.PivotPageState;
+import org.activityinfo.client.page.welcome.WelcomePageState;
 
 
 @Singleton
-public class AppFrameSet implements FrameSetPresenter {
+public class AppFrameSet implements Frame {
 
     private EventBus eventBus;
     private Viewport viewport;
@@ -55,7 +54,7 @@ public class AppFrameSet implements FrameSetPresenter {
     private OfflineMenu offlineMenu;
 
     private Widget activeWidget;
-    private PagePresenter activePage;
+    private Page activePage;
 //
 //    private boolean isUserTabSelection = true;
 
@@ -92,13 +91,13 @@ public class AppFrameSet implements FrameSetPresenter {
 
         topBar.add(new SeparatorToolItem());
 
-        addNavLink(Application.CONSTANTS.welcome(), null, new WelcomePlace());
-        addNavLink(Application.CONSTANTS.dataEntry(), Application.ICONS.dataEntry(), new SiteGridPlace());
-        addNavLink(Application.CONSTANTS.reports(), Application.ICONS.report(), new ReportHomePlace());
-        addNavLink(Application.CONSTANTS.charts(), Application.ICONS.barChart(), new ChartPlace());
-        addNavLink(Application.CONSTANTS.maps(), Application.ICONS.map(), new MapPlace());
-        addNavLink(Application.CONSTANTS.tables(), Application.ICONS.table(), new PivotPlace());
-        addNavLink(Application.CONSTANTS.setup(), Application.ICONS.setup(), new DbListPlace());
+        addNavLink(Application.CONSTANTS.welcome(), null, new WelcomePageState());
+        addNavLink(Application.CONSTANTS.dataEntry(), Application.ICONS.dataEntry(), new SiteGridPageState());
+        addNavLink(Application.CONSTANTS.reports(), Application.ICONS.report(), new ReportHomePageState());
+        addNavLink(Application.CONSTANTS.charts(), Application.ICONS.barChart(), new ChartPageState());
+        addNavLink(Application.CONSTANTS.maps(), Application.ICONS.map(), new MapPageState());
+        addNavLink(Application.CONSTANTS.tables(), Application.ICONS.table(), new PivotPageState());
+        addNavLink(Application.CONSTANTS.setup(), Application.ICONS.setup(), new DbListPageState());
 
         topBar.add(new FillToolItem());
 
@@ -125,11 +124,11 @@ public class AppFrameSet implements FrameSetPresenter {
         viewport.add(topBar, new RowData(1.0, 30));
     }
 
-    private void addNavLink(String text, AbstractImagePrototype icon, final Place place) {
+    private void addNavLink(String text, AbstractImagePrototype icon, final PageState place) {
         Button button = new Button(text, icon, new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                eventBus.fireEvent(new NavigationEvent(PageManager.NavigationRequested, place));
+                eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, place));
             }
         });
         topBar.add(button);
@@ -237,18 +236,18 @@ public class AppFrameSet implements FrameSetPresenter {
     }
 
     @Override
-    public void setActivePage(int regionId, PagePresenter page) {
+    public void setActivePage(Page page) {
         setWidget((Widget) page.getWidget());
         activePage = page;
     }
 
     @Override
-    public PagePresenter getActivePage(int regionId) {
+    public Page getActivePage() {
         return activePage;
     }
 
     @Override
-    public AsyncMonitor showLoadingPlaceHolder(int regionId, PageId pageId, Place loadingPlace) {
+    public AsyncMonitor showLoadingPlaceHolder(PageId pageId, PageState loadingPlace) {
         activePage = null;
         LoadingPlaceHolder placeHolder = new LoadingPlaceHolder();
         setWidget(placeHolder);
@@ -266,17 +265,17 @@ public class AppFrameSet implements FrameSetPresenter {
     }
 
     @Override
-    public void requestToNavigateAway(Place place, NavigationCallback callback) {
+    public void requestToNavigateAway(PageState place, NavigationCallback callback) {
         callback.onDecided(true);
     }
 
-    @Override
+    @Override                          
     public String beforeWindowCloses() {
         return null;
     }
 
     @Override
-    public boolean navigate(Place place) {
+    public boolean navigate(PageState place) {
         return true;
     }
 

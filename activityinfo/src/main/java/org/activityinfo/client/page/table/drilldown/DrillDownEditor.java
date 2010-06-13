@@ -9,7 +9,7 @@ import org.activityinfo.client.EventBus;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.callback.Got;
 import org.activityinfo.client.event.PivotCellEvent;
-import org.activityinfo.client.page.common.grid.AbstractGridPlace;
+import org.activityinfo.client.page.common.grid.AbstractGridPageState;
 import org.activityinfo.client.page.entry.SiteEditor;
 import org.activityinfo.client.util.state.IStateManager;
 import org.activityinfo.shared.command.GetSchema;
@@ -125,7 +125,7 @@ public class DrillDownEditor extends SiteEditor {
     }
 
     @Override
-    protected void firePageEvent(AbstractGridPlace place, LoadEvent le) {
+    protected void firePageEvent(AbstractGridPageState place, LoadEvent le) {
         // no page events, we're embedded in another page
     }
 }

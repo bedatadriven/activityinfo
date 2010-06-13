@@ -2,17 +2,18 @@ package org.activityinfo.client.page.config;
 
 import com.google.inject.Inject;
 import org.activityinfo.client.Application;
-import org.activityinfo.client.Place;
 import org.activityinfo.client.page.NavigationCallback;
+import org.activityinfo.client.page.Page;
 import org.activityinfo.client.page.PageId;
-import org.activityinfo.client.page.PagePresenter;
-import org.activityinfo.client.page.Pages;
+import org.activityinfo.client.page.PageState;
 import org.activityinfo.client.page.common.GalleryView;
+import org.activityinfo.client.page.config.design.Designer;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
 
-public class DbConfigPresenter implements PagePresenter {
+public class DbConfigPresenter implements Page {
 
     private final GalleryView view;
+    public static final PageId DatabaseConfig =  new PageId("db");
 
     @Inject
     public DbConfigPresenter(GalleryView view) {
@@ -24,24 +25,24 @@ public class DbConfigPresenter implements PagePresenter {
 
         if (db.isDesignAllowed()) {
             view.add(Application.CONSTANTS.design(), Application.CONSTANTS.designDescription(),
-                    "db-design.png", new DbPlace(Pages.Design, db.getId()));
+                    "db-design.png", new DbPageState(Designer.Design, db.getId()));
         }
         if (db.isManageAllUsersAllowed()) {
             view.add(Application.CONSTANTS.partner(), Application.CONSTANTS.partnerEditorDescription(),
-                    "db-partners.png", new DbPlace(Pages.DatabasePartners, db.getId()));
+                    "db-partners.png", new DbPageState(DbPartnerEditor.DatabasePartners, db.getId()));
         }
         if (db.isManageUsersAllowed()) {
             view.add(Application.CONSTANTS.users(), Application.CONSTANTS.userManagerDescription(),
-                    "db-users.png", new DbPlace(Pages.DatabaseUsers, db.getId()));
+                    "db-users.png", new DbPageState(DbUserEditor.DatabaseUsers, db.getId()));
         }
 
 //        view.add("Cibles", "Définer les cibles pour les indicateurs.", "db-targets",
-//                new DbPlace(Pages.DatabaseTargets, db.getId()));
+//                new DbPageState(Pages.DatabaseTargets, db.getId()));
     }
 
     @Override
     public PageId getPageId() {
-        return Pages.DatabaseConfig;
+        return DatabaseConfig;
     }
 
     @Override
@@ -50,7 +51,7 @@ public class DbConfigPresenter implements PagePresenter {
     }
 
     @Override
-    public void requestToNavigateAway(Place place, NavigationCallback callback) {
+    public void requestToNavigateAway(PageState place, NavigationCallback callback) {
         callback.onDecided(true);
     }
 
@@ -60,7 +61,7 @@ public class DbConfigPresenter implements PagePresenter {
     }
 
     @Override
-    public boolean navigate(Place place) {
+    public boolean navigate(PageState place) {
         return false;
     }
 

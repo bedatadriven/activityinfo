@@ -5,12 +5,12 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
 import org.activityinfo.client.EventBus;
-import org.activityinfo.client.Place;
 import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.page.NavigationCallback;
+import org.activityinfo.client.page.Page;
 import org.activityinfo.client.page.PageId;
-import org.activityinfo.client.page.PagePresenter;
+import org.activityinfo.client.page.PageState;
 import org.activityinfo.client.page.common.toolbar.ActionListener;
 import org.activityinfo.client.page.common.toolbar.ExportCallback;
 import org.activityinfo.client.page.common.toolbar.UIActions;
@@ -23,7 +23,7 @@ import org.activityinfo.shared.report.model.PivotChartElement;
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class Charter implements PagePresenter, ActionListener, ExportCallback {
+public class Charter implements Page, ActionListener, ExportCallback {
 
 
     @ImplementedBy(ChartPage.class)
@@ -67,7 +67,7 @@ public class Charter implements PagePresenter, ActionListener, ExportCallback {
     }
 
     @Override
-    public void requestToNavigateAway(Place place, NavigationCallback callback) {
+    public void requestToNavigateAway(PageState place, NavigationCallback callback) {
         callback.onDecided(true);
     }
 
@@ -102,7 +102,7 @@ public class Charter implements PagePresenter, ActionListener, ExportCallback {
 
     }
 
-    public boolean navigate(Place place) {
+    public boolean navigate(PageState place) {
         return false;
     }
 }

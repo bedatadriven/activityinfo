@@ -6,12 +6,12 @@ import com.extjs.gxt.ui.client.event.LoadListener;
 import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.store.Store;
 import org.activityinfo.client.EventBus;
-import org.activityinfo.client.Place;
 import org.activityinfo.client.dispatch.loader.CommandLoadEvent;
 import org.activityinfo.client.event.NavigationEvent;
 import org.activityinfo.client.page.NavigationCallback;
-import org.activityinfo.client.page.PageManager;
-import org.activityinfo.client.page.PagePresenter;
+import org.activityinfo.client.page.NavigationHandler;
+import org.activityinfo.client.page.Page;
+import org.activityinfo.client.page.PageState;
 import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.client.util.SortInfoEqualityChecker;
 import org.activityinfo.client.util.state.IStateManager;
@@ -23,7 +23,7 @@ import java.util.Map;
  */
 
 public abstract class AbstractGridPresenter<ModelT extends ModelData>
-        implements GridPresenter<ModelT>, PagePresenter {
+        implements GridPresenter<ModelT>, Page {
 
     private final EventBus eventBus;
     private final IStateManager stateMgr;
@@ -82,7 +82,7 @@ public abstract class AbstractGridPresenter<ModelT extends ModelData>
         return (pagenum - 1) * getPageSize();
     }
 
-    protected void initLoaderDefaults(PagingLoader loader, AbstractPagingGridPlace place, SortInfo defaultSort) {
+    protected void initLoaderDefaults(PagingLoader loader, AbstractPagingGridPageState place, SortInfo defaultSort) {
         Map<String, Object> stateMap = getState();
         if (place.getSortInfo() != null) {
             loader.setSortField(place.getSortInfo().getSortField());
@@ -159,22 +159,22 @@ public abstract class AbstractGridPresenter<ModelT extends ModelData>
         saveState(stateMap);
     }
 
-    protected void firePageEvent(AbstractGridPlace place, LoadEvent le) {
+    protected void firePageEvent(AbstractGridPageState place, LoadEvent le) {
 
         Object config = le.getConfig();
         if (config instanceof ListLoadConfig) {
             place.setSortInfo(((ListLoadConfig) config).getSortInfo());
         }
-        if (config instanceof PagingLoadConfig && place instanceof AbstractPagingGridPlace) {
+        if (config instanceof PagingLoadConfig && place instanceof AbstractPagingGridPageState) {
             int offset = ((PagingLoadConfig) config).getOffset();
-            ((AbstractPagingGridPlace) place).setPageNum(pageFromOffset(offset));
+            ((AbstractPagingGridPageState) place).setPageNum(pageFromOffset(offset));
         }
 
-        eventBus.fireEvent(new NavigationEvent(PageManager.NavigationAgreed, place));
+        eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationAgreed, place));
     }
 
 
-    protected void handleGridNavigation(ListLoader loader, AbstractGridPlace gridPlace) {
+    protected void handleGridNavigation(ListLoader loader, AbstractGridPageState gridPlace) {
 
         boolean reloadRequired = false;
 
@@ -186,8 +186,8 @@ public abstract class AbstractGridPresenter<ModelT extends ModelData>
             reloadRequired = true;
         }
 
-        if (gridPlace instanceof AbstractPagingGridPlace) {
-            AbstractPagingGridPlace pgPlace = (AbstractPagingGridPlace) gridPlace;
+        if (gridPlace instanceof AbstractPagingGridPageState) {
+            AbstractPagingGridPageState pgPlace = (AbstractPagingGridPageState) gridPlace;
 
             if (pgPlace.getPageNum() > 0) {
                 int offset = offsetFromPage(pgPlace.getPageNum());
@@ -203,7 +203,7 @@ public abstract class AbstractGridPresenter<ModelT extends ModelData>
         }
     }
 
-    public void requestToNavigateAway(Place place, NavigationCallback callback) {
+    public void requestToNavigateAway(PageState place, NavigationCallback callback) {
         callback.onDecided(true);
 
     }

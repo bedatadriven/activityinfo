@@ -1,11 +1,8 @@
 package org.activityinfo.client.page;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.activityinfo.client.Place;
-import org.activityinfo.client.ViewPath;
 import org.activityinfo.client.dispatch.monitor.NullAsyncMonitor;
 import org.activityinfo.client.event.NavigationEvent;
-import org.activityinfo.client.page.*;
 import org.activityinfo.client.mock.MockEventBus;
 import org.easymock.Capture;
 import org.easymock.IAnswer;
@@ -13,37 +10,38 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static org.easymock.EasyMock.*;
 
-public class PageManagerTest {
+public class NavigationHandlerTest {
 
 
     private MockEventBus eventBus = new MockEventBus();
 
-    private FrameSetPresenter rootFrameSet = createMock("rootFrameSet", FrameSetPresenter.class);
+    private Frame rootFrameSet = createMock("rootFrameSet", Frame.class);
 
-    private FrameSetId outerFrameSetId = new FrameSetId("outerFrameSet");
-    private FrameSetPresenter outerFrameSet = createMock("outerFrameSet", FrameSetPresenter.class);
+    private FrameId outerFrameSetId = new FrameId("outerFrameSet");
+    private Frame outerFrameSet = createMock("outerFrameSet", Frame.class);
 
     private PageId firstPageId = new PageId("page1");
-    private PagePresenter firstPage = createMock("firstPage", FrameSetPresenter.class);
+    private Page firstPage = createMock("firstPage", Frame.class);
 
     private PageId secondPageId = new PageId("page2");
-    private PagePresenter secondPage = createMock("secondPage", PagePresenter.class);
+    private Page secondPage = createMock("secondPage", Page.class);
 
     private PageLoader pageLoader = createMock("pageLoader", PageLoader.class);
 
-    private Place innerPlaceWithOuterFrame = new MockPlace(firstPageId, ViewPath.make(outerFrameSetId, firstPageId));
-    private Place secondInnerPlaceWithSameOuterFrame = new MockPlace(secondPageId, ViewPath.make(outerFrameSetId, secondPageId));
+    private PageState innerPlaceWithOuterFrame = new MockPageState(firstPageId, Arrays.asList(outerFrameSetId, firstPageId));
+    private PageState secondInnerPlaceWithSameOuterFrame = new MockPageState(secondPageId, Arrays.asList(outerFrameSetId, secondPageId));
 
-    private Place firstPlace = new MockPlace(firstPageId, ViewPath.make(firstPageId));
-    private Place secondPlace = new MockPlace(secondPageId, ViewPath.make(secondPageId));
+    private PageState firstPlace = new MockPageState(firstPageId, Arrays.asList(firstPageId));
+    private PageState secondPlace = new MockPageState(secondPageId, Arrays.asList(secondPageId));
 
-    private PageManager pageManager;
+    private NavigationHandler pageManager;
 
 
     @Before
@@ -52,7 +50,7 @@ public class PageManagerTest {
         expect(outerFrameSet.getPageId()).andReturn(outerFrameSetId).anyTimes();
         expect(firstPage.getPageId()).andReturn(firstPageId).anyTimes();
 
-        pageManager = new PageManager(eventBus, rootFrameSet );
+        pageManager = new NavigationHandler(eventBus, rootFrameSet );
     }
 
     @Test
@@ -93,7 +91,7 @@ public class PageManagerTest {
 
         verify(outerFrameSet, firstPage);
 
-        eventBus.assertNotFired(PageManager.NavigationAgreed);
+        eventBus.assertNotFired(NavigationHandler.NavigationAgreed);
     }
 
     @Test
@@ -117,7 +115,7 @@ public class PageManagerTest {
         
         verify(outerFrameSet, firstPage, pageLoader);
 
-        Assert.assertEquals(1, eventBus.getEventCount(PageManager.NavigationAgreed));
+        Assert.assertEquals(1, eventBus.getEventCount(NavigationHandler.NavigationAgreed));
     }
 
     @Test
@@ -142,17 +140,17 @@ public class PageManagerTest {
     }
 
 
-    private class MockPlace implements Place {
+    private class MockPageState implements PageState {
         private final PageId pageId;
-        private final List<ViewPath.Node> viewPath;
+        private final List<PageId> viewPath;
 
-        private MockPlace(PageId pageId, List<ViewPath.Node> viewPath) {
+        private MockPageState(PageId pageId, List<PageId> viewPath) {
             this.pageId = pageId;
             this.viewPath = viewPath;
         }
         public PageId getPageId() { return pageId;  }
-        public String pageStateToken() { return null; }
-        public List<ViewPath.Node> getViewPath() { return viewPath; }
+        public String serializeAsHistoryToken() { return null; }
+        public List<PageId> getEnclosingFrames() { return viewPath; }
     }
 
     @Test
@@ -173,69 +171,69 @@ public class PageManagerTest {
     }
 
 
-    private void theRootPageIs(PagePresenter page) {
-        expect(rootFrameSet.getActivePage(ViewPath.DefaultRegion)).andReturn(page).anyTimes();
+    private void theRootPageIs(Page page) {
+        expect(rootFrameSet.getActivePage()).andReturn(page).anyTimes();
     }
 
-    private void theOuterFrameSetIsShowing(PagePresenter page) {
-        expect(outerFrameSet.getActivePage(ViewPath.DefaultRegion)).andReturn(page).anyTimes();
+    private void theOuterFrameSetIsShowing(Page page) {
+        expect(outerFrameSet.getActivePage()).andReturn(page).anyTimes();
     }
 
-    private void requestNavigationTo(Place place) {
-        eventBus.fireEvent(new NavigationEvent(PageManager.NavigationRequested, place));
+    private void requestNavigationTo(PageState place) {
+        eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, place));
     }
 
-    private void thereIsNoActivePageIn(FrameSetPresenter rootFrameSet) {
-        expect(rootFrameSet.getActivePage(ViewPath.DefaultRegion)).andReturn(null).anyTimes();
+    private void thereIsNoActivePageIn(Frame rootFrameSet) {
+        expect(rootFrameSet.getActivePage()).andReturn(null).anyTimes();
     }
 
-    private void expectShutdownCallTo(PagePresenter page) {
+    private void expectShutdownCallTo(Page page) {
         page.shutdown();
     }
 
-    private void expectNavigate(FrameSetPresenter frameSet) {
-        expect(frameSet.navigate(isA(Place.class))).andReturn(true);
+    private void expectNavigate(Frame frameSet) {
+        expect(frameSet.navigate(isA(PageState.class))).andReturn(true);
     }
 
-    private Map<PageId, Capture<AsyncCallback<PagePresenter>>> loadCallbacks = new HashMap();
+    private Map<PageId, Capture<AsyncCallback<Page>>> loadCallbacks = new HashMap();
 
     private void expectAndCaptureLoadRequestFor(PageId pageId) {
-        Capture<AsyncCallback<PagePresenter>> capture = new Capture<AsyncCallback<PagePresenter>>();
+        Capture<AsyncCallback<Page>> capture = new Capture<AsyncCallback<Page>>();
         loadCallbacks.put(pageId, capture);
 
-        pageLoader.load(eq(pageId), isA(Place.class), capture(capture));
+        pageLoader.load(eq(pageId), isA(PageState.class), capture(capture));
         expectLastCall().anyTimes();
     }
 
-    private void pageLoadFinishes(PageId pageId, PagePresenter page) {
+    private void pageLoadFinishes(PageId pageId, Page page) {
         loadCallbacks.get(pageId).getValue().onSuccess(page);
     }
 
-    private void expectPageToBeSetTo(FrameSetPresenter frameSet, PagePresenter page) {
-        frameSet.setActivePage(ViewPath.DefaultRegion, page);
+    private void expectPageToBeSetTo(Frame frameSet, Page page) {
+        frameSet.setActivePage(page);
     }
 
-    private void expectLoadingPlaceHolderToBeShown(FrameSetPresenter frame) {
-        expect(frame.showLoadingPlaceHolder(eq(ViewPath.DefaultRegion), isA(PageId.class), isA(Place.class)))
+    private void expectLoadingPlaceHolderToBeShown(Frame frame) {
+        expect(frame.showLoadingPlaceHolder(isA(PageId.class), isA(PageState.class)))
                 .andReturn(new NullAsyncMonitor());
     }
 
-    private void expectLoadingPlaceHolderToBeShownTwiceIn(FrameSetPresenter frame) {
-        expect(frame.showLoadingPlaceHolder(eq(ViewPath.DefaultRegion), isA(PageId.class), isA(Place.class)))
+    private void expectLoadingPlaceHolderToBeShownTwiceIn(Frame frame) {
+        expect(frame.showLoadingPlaceHolder(isA(PageId.class), isA(PageState.class)))
                 .andReturn(new NullAsyncMonitor())
                 .times(2);
     }
 
-    private void navigationRequestWillBeRefusedBy(PagePresenter page) {
+    private void navigationRequestWillBeRefusedBy(Page page) {
         navigationRequestWillBeAnsweredBy(page, false);
     }
 
-    private void expectAndAgreeToNavigationRequestionOn(PagePresenter page) {
+    private void expectAndAgreeToNavigationRequestionOn(Page page) {
         navigationRequestWillBeAnsweredBy(page, true);
     }
 
-    private void navigationRequestWillBeAnsweredBy(PagePresenter page, final boolean allowed) {
-        page.requestToNavigateAway(isA(Place.class), isA(NavigationCallback.class));
+    private void navigationRequestWillBeAnsweredBy(Page page, final boolean allowed) {
+        page.requestToNavigateAway(isA(PageState.class), isA(NavigationCallback.class));
         expectLastCall().andAnswer(new IAnswer<Void>() {
             @Override
             public Void answer() throws Throwable {

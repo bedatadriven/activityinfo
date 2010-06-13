@@ -4,12 +4,12 @@ import com.google.gwt.inject.client.AbstractGinModule;
 import com.google.inject.Singleton;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.LoggingEventBus;
-import org.activityinfo.client.PlaceSerializer;
 import org.activityinfo.client.dispatch.DispatchEventSource;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.remote.Authentication;
 import org.activityinfo.client.dispatch.remote.RemoteDispatcher;
-import org.activityinfo.client.page.FrameSetPresenter;
+import org.activityinfo.client.page.Frame;
+import org.activityinfo.client.page.PageStateSerializer;
 import org.activityinfo.client.page.app.AppFrameSet;
 import org.activityinfo.client.page.charts.ChartPage;
 import org.activityinfo.client.page.charts.Charter;
@@ -28,7 +28,7 @@ public class AppModule extends AbstractGinModule {
         bind(RemoteCommandServiceAsync.class).toProvider(RemoteServiceProvider.class).in(Singleton.class);
         bind(Dispatcher.class).to(RemoteDispatcher.class);
         bind(DispatchEventSource.class).to(RemoteDispatcher.class);
-        bind(PlaceSerializer.class).in(Singleton.class);
+        bind(PageStateSerializer.class).in(Singleton.class);
         bind(EventBus.class).to(LoggingEventBus.class).in(Singleton.class);
 
         bind(IStateManager.class).to(GXTStateManager.class);
@@ -37,7 +37,7 @@ public class AppModule extends AbstractGinModule {
 //        bind(PageManager.class).asEagerSingleton();
 //        bind(HistoryManager.class).asEagerSingleton();
 
-        bind(FrameSetPresenter.class).annotatedWith(Root.class).to(AppFrameSet.class);
+        bind(Frame.class).annotatedWith(Root.class).to(AppFrameSet.class);
 
         bind(GalleryView.class).to(GalleryPage.class);
 

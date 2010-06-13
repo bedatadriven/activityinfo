@@ -30,7 +30,7 @@ import org.activityinfo.client.dispatch.remote.cache.DefaultCommandListener;
 import org.activityinfo.client.event.DownloadEvent;
 import org.activityinfo.client.event.NavigationEvent;
 import org.activityinfo.client.page.DownloadManager;
-import org.activityinfo.client.page.PageManager;
+import org.activityinfo.client.page.NavigationHandler;
 import org.activityinfo.shared.command.CreateEntity;
 import org.activityinfo.shared.command.Delete;
 import org.activityinfo.shared.command.UpdateEntity;
@@ -55,7 +55,7 @@ public class UsageTracker {
         setCustomVar(1, "gears", isGearsInstalled() ? "installed" : "not installed", VISITOR_SCOPE);
 
         // Track internal page movements
-        eventBus.addListener(PageManager.NavigationAgreed, new Listener<NavigationEvent>() {
+        eventBus.addListener(NavigationHandler.NavigationAgreed, new Listener<NavigationEvent>() {
             public void handleEvent(NavigationEvent event) {
                 trackPageView(event.getPlace().getPageId().toString());
             }

@@ -8,14 +8,13 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
 import org.activityinfo.client.EventBus;
-import org.activityinfo.client.Place;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.loader.ListCmdLoader;
 import org.activityinfo.client.event.NavigationEvent;
 import org.activityinfo.client.page.NavigationCallback;
+import org.activityinfo.client.page.NavigationHandler;
 import org.activityinfo.client.page.PageId;
-import org.activityinfo.client.page.PageManager;
-import org.activityinfo.client.page.Pages;
+import org.activityinfo.client.page.PageState;
 import org.activityinfo.client.page.common.dialog.FormDialogCallback;
 import org.activityinfo.client.page.common.dialog.FormDialogImpl;
 import org.activityinfo.client.page.common.grid.AbstractEditorGridPresenter;
@@ -29,6 +28,7 @@ import org.activityinfo.shared.dto.ReportDefinitionDTO;
  */
 
 public class ReportHomePresenter extends AbstractEditorGridPresenter<ReportDefinitionDTO> {
+    public static final PageId ReportHome = new PageId("reports");
 
 
     @ImplementedBy(ReportGrid.class)
@@ -94,14 +94,14 @@ public class ReportHomePresenter extends AbstractEditorGridPresenter<ReportDefin
     }
 
     public PageId getPageId() {
-        return Pages.ReportHome;
+        return ReportHome;
     }
 
     public Object getWidget() {
         return view;
     }
 
-    public void requestToNavigateAway(Place place, NavigationCallback callback) {
+    public void requestToNavigateAway(PageState place, NavigationCallback callback) {
         callback.onDecided(true);
     }
 
@@ -110,8 +110,8 @@ public class ReportHomePresenter extends AbstractEditorGridPresenter<ReportDefin
     }
 
     public void onTemplateSelected(ReportDefinitionDTO dto) {
-        eventBus.fireEvent(new NavigationEvent(PageManager.NavigationRequested,
-                new ReportPreviewPlace(dto.getId())));
+        eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested,
+                new ReportPreviewPageState(dto.getId())));
     }
 
     public void onNewReport(final int dbId) {
@@ -142,7 +142,7 @@ public class ReportHomePresenter extends AbstractEditorGridPresenter<ReportDefin
 
     }
 
-    public boolean navigate(Place place) {
+    public boolean navigate(PageState place) {
         return true;
     }
 }

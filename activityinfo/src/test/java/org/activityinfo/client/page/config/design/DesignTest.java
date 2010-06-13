@@ -11,7 +11,7 @@ import org.activityinfo.client.mock.MockStateManager;
 import org.activityinfo.client.page.NavigationCallback;
 import org.activityinfo.client.page.common.grid.ConfirmCallback;
 import org.activityinfo.client.page.common.toolbar.UIActions;
-import org.activityinfo.client.page.entry.SiteGridPlace;
+import org.activityinfo.client.page.entry.SiteGridPageState;
 import org.activityinfo.shared.command.CreateEntity;
 import org.activityinfo.shared.command.Delete;
 import org.activityinfo.shared.command.GetSchema;
@@ -113,7 +113,7 @@ public class DesignTest {
 
         record.set("name", "New Name");
 
-        designer.requestToNavigateAway(new SiteGridPlace(), new NavigationCallback() {
+        designer.requestToNavigateAway(new SiteGridPageState(), new NavigationCallback() {
             public void onDecided(boolean allowed) {
 
             }

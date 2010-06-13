@@ -9,10 +9,9 @@ import com.google.inject.Inject;
 import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.EventBus;
-import org.activityinfo.client.Place;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.page.PageId;
-import org.activityinfo.client.page.Pages;
+import org.activityinfo.client.page.PageState;
 import org.activityinfo.client.page.common.dialog.FormDialogCallback;
 import org.activityinfo.client.page.common.dialog.FormDialogTether;
 import org.activityinfo.client.page.common.grid.AbstractGridPresenter;
@@ -34,6 +33,7 @@ import java.util.ArrayList;
  * @author Alex Bertram
  */
 public class DbPartnerEditor extends AbstractGridPresenter<PartnerDTO> {
+    public static final PageId DatabasePartners = new PageId("partners");
 
     @ImplementedBy(DbPartnerGrid.class)
     public interface View extends GridView<DbPartnerEditor, PartnerDTO> {
@@ -123,14 +123,14 @@ public class DbPartnerEditor extends AbstractGridPresenter<PartnerDTO> {
     }
 
     public PageId getPageId() {
-        return Pages.DatabasePartners;
+        return DatabasePartners;
     }
 
     public Object getWidget() {
         return view;
     }
 
-    public boolean navigate(Place place) {
+    public boolean navigate(PageState place) {
         return false;
     }
 

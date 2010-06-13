@@ -9,10 +9,10 @@ import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.EventBus;
-import org.activityinfo.client.Place;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.loader.CommandLoadEvent;
 import org.activityinfo.client.page.NavigationCallback;
+import org.activityinfo.client.page.PageState;
 import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.client.util.state.IStateManager;
 import org.activityinfo.shared.command.Command;
@@ -118,7 +118,7 @@ public abstract class AbstractEditorGridPresenter<ModelT extends ModelData>
      * and discarding changes
      */
 
-    public void requestToNavigateAway(Place place, final NavigationCallback callback) {
+    public void requestToNavigateAway(PageState place, final NavigationCallback callback) {
 
         if (getModifiedRecords().size() == 0) {
             callback.onDecided(true);

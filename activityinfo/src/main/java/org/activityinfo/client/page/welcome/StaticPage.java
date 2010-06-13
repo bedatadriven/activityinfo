@@ -1,34 +1,30 @@
 package org.activityinfo.client.page.welcome;
 
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import org.activityinfo.client.Place;
-import org.activityinfo.client.page.NavigationCallback;
-import org.activityinfo.client.page.PageId;
-import org.activityinfo.client.page.PagePresenter;
-import org.activityinfo.client.page.Pages;
+import org.activityinfo.client.page.*;
 /*
  * @author Alex Bertram
  */
 
-public class StaticPage extends ContentPanel implements PagePresenter {
+public class StaticPage extends ContentPanel implements Page {
 
     public StaticPage() {
         this.setHeaderVisible(false);
     }
 
-    public void navigate(StaticPlace place) {
+    public void navigate(StaticPageState place) {
         this.setUrl("static/" + place.getKeyword() + ".html");
     }
 
     public PageId getPageId() {
-        return Pages.Static;
+        return Frames.Static;
     }
 
     public Object getWidget() {
         return this;
     }
 
-    public void requestToNavigateAway(Place place, NavigationCallback callback) {
+    public void requestToNavigateAway(PageState place, NavigationCallback callback) {
         callback.onDecided(true);
     }
 
@@ -40,7 +36,7 @@ public class StaticPage extends ContentPanel implements PagePresenter {
 
     }
 
-    public boolean navigate(Place place) {
+    public boolean navigate(PageState place) {
         return false;
     }
 }

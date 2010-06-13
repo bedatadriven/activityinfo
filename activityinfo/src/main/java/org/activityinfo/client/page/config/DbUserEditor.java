@@ -9,11 +9,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
 import org.activityinfo.client.EventBus;
-import org.activityinfo.client.Place;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.loader.PagingCmdLoader;
 import org.activityinfo.client.page.PageId;
-import org.activityinfo.client.page.Pages;
+import org.activityinfo.client.page.PageState;
 import org.activityinfo.client.page.common.dialog.FormDialogCallback;
 import org.activityinfo.client.page.common.dialog.FormDialogTether;
 import org.activityinfo.client.page.common.grid.AbstractEditorGridPresenter;
@@ -35,6 +34,7 @@ import org.activityinfo.shared.dto.UserPermissionDTO;
 
 public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO>
         implements GridPresenter<UserPermissionDTO> {
+    public static final PageId DatabaseUsers = new PageId("dbusers");
 
     @ImplementedBy(DbUserGrid.class)
     public interface View extends GridView<DbUserEditor, UserPermissionDTO> {
@@ -61,7 +61,7 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO>
         this.view = view;
     }
 
-    public void go(UserDatabaseDTO db, DbPlace place) {
+    public void go(UserDatabaseDTO db, DbPageState place) {
         this.db = db;
 
         loader = new PagingCmdLoader<UserResult>(service);
@@ -98,8 +98,8 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO>
         return 100;
     }
 
-    public boolean navigate(Place place) {
-        DbPlace userPlace = (DbPlace) place;
+    public boolean navigate(PageState place) {
+        DbPageState userPlace = (DbPageState) place;
 
         if (userPlace.getDatabaseId() == db.getId()) {
             // internal nav
@@ -208,7 +208,7 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO>
     }
 
     public PageId getPageId() {
-        return Pages.DatabaseUsers;
+        return DatabaseUsers;
     }
 
     public Object getWidget() {

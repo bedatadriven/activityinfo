@@ -10,8 +10,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.activityinfo.client.EventBus;
-import org.activityinfo.client.Place;
-import org.activityinfo.client.ViewPath;
 import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.event.NavigationEvent;
 import org.activityinfo.client.inject.Root;
@@ -20,20 +18,26 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ *  Coordinates navigation between pages.
+ *
+ *  PageManager listens for NavigationEvents, fired either by an individual component, or
+ * from the HistoryManager, and
+ */
 @Singleton
-public class PageManager {
+public class NavigationHandler {
 
     private final EventBus eventBus;
-    private final FrameSetPresenter root;
+    private final Frame root;
     private final Map<PageId, PageLoader> pageLoaders = new HashMap<PageId, PageLoader>();
 
     public static final EventType NavigationRequested = new EventBus.NamedEventType("NavigationRequested");
     public static final EventType NavigationAgreed = new EventBus.NamedEventType("NavigationAgreed");
 
-    private Navigation activeNavigation;
+    private NavigationAttempt activeNavigation;
 
     @Inject
-    public PageManager(final EventBus eventBus, final @Root FrameSetPresenter root) {
+    public NavigationHandler(final EventBus eventBus, final @Root Frame root) {
         this.eventBus = eventBus;
         this.root = root;
 
@@ -48,7 +52,7 @@ public class PageManager {
 
     private void onNavigationRequested(NavigationEvent be) {
         if(activeNavigation ==null || !activeNavigation.getPlace().equals(be.getPlace())) {
-            activeNavigation = new Navigation(be.getPlace());
+            activeNavigation = new NavigationAttempt(be.getPlace());
             activeNavigation.go();
         }
     }
@@ -67,21 +71,24 @@ public class PageManager {
     }
 
 
-    public class Navigation {
-        private final Place place;
+    /**
+     * Encapsulates a single navigation attempt.
+     */
+    public class NavigationAttempt {
+        private final PageState place;
 
-        private Iterator<ViewPath.Node> pageHierarchyIt;
-        private FrameSetPresenter frame;
-        private PagePresenter currentPage;
-        private ViewPath.Node targetPage;
+        private Iterator<PageId> pageHierarchyIt;
+        private Frame frame;
+        private Page currentPage;
+        private PageId targetPage;
 
         private AsyncMonitor loadingPlaceHolder;
 
-        public Navigation(Place place) {
+        public NavigationAttempt(PageState place) {
             this.place = place;
         }
 
-        public Place getPlace() {
+        public PageState getPlace() {
             return place;
         }
 
@@ -92,16 +99,16 @@ public class PageManager {
 
         private void startAtRoot() {
             assertViewPathIsNotEmpty();
-            pageHierarchyIt = place.getViewPath().iterator();
+            pageHierarchyIt = place.getEnclosingFrames().iterator();
             currentPage = root;
             descend();
         }
 
         private void descend() {
             assertPageIsFrame(currentPage);
-            frame = (FrameSetPresenter) currentPage;
+            frame = (Frame) currentPage;
             targetPage = pageHierarchyIt.next();
-            currentPage = frame.getActivePage(targetPage.regionId);
+            currentPage = frame.getActivePage();
         }
 
 
@@ -162,7 +169,7 @@ public class PageManager {
         }
 
         private boolean targetPageIsAlreadyActive() {
-            return currentPage.getPageId().equals(targetPage.pageId);
+            return currentPage.getPageId().equals(targetPage);
         }
 
         private boolean thereIsNoCurrentPage() {
@@ -206,7 +213,7 @@ public class PageManager {
         }
 
         private void showPlaceHolder() {
-            loadingPlaceHolder = frame.showLoadingPlaceHolder(targetPage.regionId, targetPage.pageId, place);
+            loadingPlaceHolder = frame.showLoadingPlaceHolder(targetPage, place);
         }
 
         /**
@@ -234,14 +241,14 @@ public class PageManager {
          * page loader.
          */
         private void loadPage() {
-            PageLoader loader = getPageLoader(targetPage.pageId);
-            loader.load(targetPage.pageId, place, new AsyncCallback<PagePresenter>() {
+            PageLoader loader = getPageLoader(targetPage);
+            loader.load(targetPage, place, new AsyncCallback<Page>() {
                 @Override
                 public void onFailure(Throwable caught) {
                     onPageFailedToLoad(caught);
                 }
                 @Override
-                public void onSuccess(PagePresenter page) {
+                public void onSuccess(Page page) {
                     if(isStillActive()) {
                         onPageLoaded(page);
                     }
@@ -251,16 +258,16 @@ public class PageManager {
 
         private void onPageFailedToLoad(Throwable caught) {
             loadingPlaceHolder.onConnectionProblem();
-            Log.error("PageManager: could not load page " + targetPage.pageId, caught);
+            Log.error("PageManager: could not load page " + targetPage, caught);
         }
 
-        private void onPageLoaded(PagePresenter page) {
+        private void onPageLoaded(Page page) {
             makeCurrent(page);
             changeChildPageIfNecessary();
         }
 
-        private void makeCurrent(PagePresenter page) {
-            frame.setActivePage(targetPage.regionId, page);
+        private void makeCurrent(Page page) {
+            frame.setActivePage(page);
             currentPage = page;
         }
 
@@ -272,12 +279,12 @@ public class PageManager {
         }
 
         private void assertViewPathIsNotEmpty() {
-            assert place.getViewPath().size() != 0 : "Place " + place.toString() + " has an empty viewPath!";
+            assert place.getEnclosingFrames().size() != 0 : "PageState " + place.toString() + " has an empty viewPath!";
         }
 
-        private void assertPageIsFrame(PagePresenter page) {
-            assert page instanceof FrameSetPresenter :
-                    "Cannot load page " + pageHierarchyIt.next().pageId + " into " + page.toString() + " because " +
+        private void assertPageIsFrame(Page page) {
+            assert page instanceof Frame :
+                    "Cannot load page " + pageHierarchyIt.next() + " into " + page.toString() + " because " +
                             page.getClass().getName() + " does not implement the PageFrame interface.";
         }
     }

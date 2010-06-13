@@ -13,9 +13,9 @@ import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.EventBus;
-import org.activityinfo.client.Place;
 import org.activityinfo.client.event.NavigationEvent;
-import org.activityinfo.client.page.PageManager;
+import org.activityinfo.client.page.NavigationHandler;
+import org.activityinfo.client.page.PageState;
 
 /**
  * User interface component that provides a hierarchial
@@ -81,7 +81,7 @@ public class NavigationPanel extends ContentPanel {
             public void handleEvent(TreePanelEvent<Link> tpe) {
 
                 if(tpe.getItem().getPlace() != null) {
-                    eventBus.fireEvent(new NavigationEvent(PageManager.NavigationRequested, tpe.getItem().getPlace()));
+                    eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, tpe.getItem().getPlace()));
                 }
             }
         });
@@ -91,7 +91,7 @@ public class NavigationPanel extends ContentPanel {
                 onNavigated(be.getPlace());
             }
         };
-        eventBus.addListener(PageManager.NavigationAgreed, navListener);
+        eventBus.addListener(NavigationHandler.NavigationAgreed, navListener);
 
 
         changeListener = new Listener<BaseEvent>() {
@@ -106,11 +106,11 @@ public class NavigationPanel extends ContentPanel {
 
     
     public void shutdown() {
-        eventBus.removeListener(PageManager.NavigationAgreed, navListener);
+        eventBus.removeListener(NavigationHandler.NavigationAgreed, navListener);
         eventBus.removeListener(AppEvents.SchemaChanged, changeListener);
     }
 
-    private void onNavigated(Place place) {
+    private void onNavigated(PageState place) {
         for(Link link : store.getAllItems()) {
             if(link.getPlace() != null && link.getPlace().equals(place)) {
                 ensureVisible(link);

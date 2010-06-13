@@ -8,7 +8,6 @@ import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.callback.Got;
 import org.activityinfo.client.i18n.UIConstants;
 import org.activityinfo.client.icon.IconImageBundle;
-import org.activityinfo.client.page.Pages;
 import org.activityinfo.client.page.common.nav.Link;
 import org.activityinfo.client.page.common.nav.Navigator;
 import org.activityinfo.shared.command.GetSchema;
@@ -45,7 +44,7 @@ public class ConfigNavigator implements Navigator {
 
     @Override
     public boolean hasChildren(Link parent) {
-        return parent.getPlace() instanceof DbListPlace;
+        return parent.getPlace() instanceof DbListPageState;
     }
 
 
@@ -56,12 +55,12 @@ public class ConfigNavigator implements Navigator {
             List<Link> list = new ArrayList<Link>();
 
             Link accountLink = new Link(messages.mySettings(),
-                    new AccountPlace(), icons.setup());
+                    new AccountPageState(), icons.setup());
 
             list.add(accountLink);
 
             final Link dbListLink = new Link(messages.databases(),
-                    new DbListPlace(), icons.database());
+                    new DbListPageState(), icons.database());
 
             list.add(dbListLink);
 
@@ -70,19 +69,19 @@ public class ConfigNavigator implements Navigator {
         } else {
 
             Link link = (Link) parent;
-            if (link.getPlace() instanceof DbListPlace) {
+            if (link.getPlace() instanceof DbListPageState) {
                 loadDbList(callback);
 
-            } else if (link.getPlace().getPageId().equals(Pages.DatabaseConfig)) {
+            } else if (link.getPlace().getPageId().equals(DbConfigPresenter.DatabaseConfig)) {
 
 //                List<Link> list = new ArrayList<Link>();
-//                int dbId = ((DbPlace) link.getPlace()).getDatabaseId();
-//                list.add(new Link(messages.design(), new DbPlace(Pages.Design, dbId), icons.design()));
+//                int dbId = ((DbPageState) link.getPlace()).getDatabaseId();
+//                list.add(new Link(messages.design(), new DbPageState(Pages.Design, dbId), icons.design()));
 //
 //                if(((UserDatabaseDTO) link.get("db")).isDesignAllowed())
-//                    list.add(new Link(messages.users(), new DbPlace(Pages.DatabaseUsers, dbId), icons.user()));
+//                    list.add(new Link(messages.users(), new DbPageState(Pages.DatabaseUsers, dbId), icons.user()));
 //
-//                list.add(new Link(messages.partners(), new DbPlace(Pages.DatabasePartners, dbId), icons.group()));
+//                list.add(new Link(messages.partners(), new DbPageState(Pages.DatabasePartners, dbId), icons.group()));
 //
 //                callback.onSuccess(list);
             }
@@ -97,7 +96,7 @@ public class ConfigNavigator implements Navigator {
                 List<Link> list = new ArrayList<Link>();
                 for (UserDatabaseDTO db : result.getDatabases()) {
                     if (db.isDesignAllowed() || db.isManageUsersAllowed()) {
-                        Link link = new Link(db.getName(), new DbPlace(Pages.DatabaseConfig, db.getId()), icons.database());
+                        Link link = new Link(db.getName(), new DbPageState(DbConfigPresenter.DatabaseConfig, db.getId()), icons.database());
                         link.set("db", db);
                         list.add(link);
                     }

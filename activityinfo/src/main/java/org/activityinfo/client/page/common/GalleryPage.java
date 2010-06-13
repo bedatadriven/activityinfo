@@ -13,9 +13,9 @@ import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.inject.Inject;
 import org.activityinfo.client.EventBus;
-import org.activityinfo.client.Place;
 import org.activityinfo.client.event.NavigationEvent;
-import org.activityinfo.client.page.PageManager;
+import org.activityinfo.client.page.NavigationHandler;
+import org.activityinfo.client.page.PageState;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -28,9 +28,9 @@ public class GalleryPage extends LayoutContainer implements GalleryView {
 
     public static class GalleryModel extends BaseModelData {
 
-        private Place place;
+        private PageState place;
 
-        public GalleryModel(String name, String desc, String path, Place place) {
+        public GalleryModel(String name, String desc, String path, PageState place) {
             set("name", name);
             set("path", path);
             set("desc", desc);
@@ -38,7 +38,7 @@ public class GalleryPage extends LayoutContainer implements GalleryView {
             this.place = place;
         }
 
-        public Place getPlace() {
+        public PageState getPlace() {
             return place;
         }
     }
@@ -74,7 +74,7 @@ public class GalleryPage extends LayoutContainer implements GalleryView {
             new Listener<ListViewEvent<GalleryModel>>() {
 
                 public void handleEvent(ListViewEvent<GalleryModel> event) {
-                    eventBus.fireEvent(new NavigationEvent(PageManager.NavigationRequested,
+                    eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested,
                             event.getModel().getPlace()));
                 }
             });
@@ -90,7 +90,7 @@ public class GalleryPage extends LayoutContainer implements GalleryView {
     }
 
     @Override
-    public void add(String name, String desc, String path, Place place) {
+    public void add(String name, String desc, String path, PageState place) {
 
         store.add(new GalleryModel(name, desc, path, place));
     }

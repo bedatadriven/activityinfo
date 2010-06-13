@@ -4,8 +4,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
-import org.activityinfo.client.Place;
-import org.activityinfo.client.PlaceSerializer;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.inject.AppInjector;
 import org.activityinfo.client.page.*;
@@ -22,19 +20,19 @@ public class ReportLoader implements PageLoader {
     private final Dispatcher service;
 
     @Inject
-    public ReportLoader(AppInjector injector, Dispatcher service, PageManager pageManager,
-                        PlaceSerializer placeSerializer) {
+    public ReportLoader(AppInjector injector, Dispatcher service, NavigationHandler pageManager,
+                        PageStateSerializer placeSerializer) {
         this.injector = injector;
         this.service = service;
 
-        pageManager.registerPageLoader(Pages.ReportHome, this);
-        pageManager.registerPageLoader(Pages.ReportPreview, this);
+        pageManager.registerPageLoader(ReportHomePresenter.ReportHome, this);
+        pageManager.registerPageLoader(ReportPreviewPresenter.ReportPreview, this);
 
-        placeSerializer.registerStatelessPlace(Pages.ReportHome, new ReportHomePlace());
-        placeSerializer.registerParser(Pages.ReportPreview, new ReportPreviewPlace.Parser());
+        placeSerializer.registerStatelessPlace(ReportHomePresenter.ReportHome, new ReportHomePageState());
+        placeSerializer.registerParser(ReportPreviewPresenter.ReportPreview, new ReportPreviewPageState.Parser());
     }
 
-    public void load(final PageId pageId, final Place place, final AsyncCallback<PagePresenter> callback) {
+    public void load(final PageId pageId, final PageState pageState, final AsyncCallback<Page> callback) {
 
         GWT.runAsync(new RunAsyncCallback() {
             @Override
@@ -44,15 +42,15 @@ public class ReportLoader implements PageLoader {
 
             @Override
             public void onSuccess() {
-                if (Pages.ReportPreview.equals(pageId)) {
-                    loadPreview((ReportPreviewPlace) place, callback);
+                if (ReportPreviewPresenter.ReportPreview.equals(pageId)) {
+                    loadPreview((ReportPreviewPageState) pageState, callback);
 
-                } else if (Pages.ReportHome.equals(pageId)) {
+                } else if (ReportHomePresenter.ReportHome.equals(pageId)) {
 
                     callback.onSuccess(injector.getReportHomePresenter());
                 } else {
                     GWT.log("ReportLoader received a request it didn't know how to handle: " +
-                            place.toString(), null);
+                            pageState.toString(), null);
                 }
             }
         });
@@ -60,7 +58,7 @@ public class ReportLoader implements PageLoader {
 
     }
 
-    private void loadPreview(final ReportPreviewPlace place, final AsyncCallback<PagePresenter> callback) {
+    private void loadPreview(final ReportPreviewPageState place, final AsyncCallback<Page> callback) {
         service.execute(GetReportTemplates.byTemplateId(place.getReportId()), null, new AsyncCallback<ReportTemplateResult>() {
 
             public void onFailure(Throwable caught) {

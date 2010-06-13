@@ -4,13 +4,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
-import org.activityinfo.client.Place;
-import org.activityinfo.client.PlaceSerializer;
 import org.activityinfo.client.inject.AppInjector;
-import org.activityinfo.client.page.PageId;
-import org.activityinfo.client.page.PageLoader;
-import org.activityinfo.client.page.PageManager;
-import org.activityinfo.client.page.PagePresenter;
+import org.activityinfo.client.page.*;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -20,15 +15,15 @@ public class MapLoader implements PageLoader {
     private final AppInjector injector;
 
     @Inject
-    public MapLoader(AppInjector injector, PageManager pageManager, PlaceSerializer placeSerializer) {
+    public MapLoader(AppInjector injector, NavigationHandler pageManager, PageStateSerializer placeSerializer) {
         this.injector = injector;
 
         pageManager.registerPageLoader(Maps.Maps, this);
-        placeSerializer.registerStatelessPlace(Maps.Maps, new MapPlace());
+        placeSerializer.registerStatelessPlace(Maps.Maps, new MapPageState());
     }
 
     @Override
-    public void load(final PageId pageId, final Place place, final AsyncCallback<PagePresenter> callback) {
+    public void load(final PageId pageId, final PageState pageState, final AsyncCallback<Page> callback) {
 
         GWT.runAsync(new RunAsyncCallback() {
             @Override

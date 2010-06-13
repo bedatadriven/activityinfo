@@ -9,18 +9,17 @@ import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
 import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.EventBus;
-import org.activityinfo.client.Place;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.i18n.UIConstants;
+import org.activityinfo.client.page.Page;
 import org.activityinfo.client.page.PageId;
-import org.activityinfo.client.page.PagePresenter;
-import org.activityinfo.client.page.Pages;
+import org.activityinfo.client.page.PageState;
 import org.activityinfo.client.page.common.dialog.FormDialogCallback;
 import org.activityinfo.client.page.common.dialog.FormDialogTether;
 import org.activityinfo.client.page.common.grid.AbstractEditorGridPresenter;
 import org.activityinfo.client.page.common.grid.TreeGridView;
 import org.activityinfo.client.page.common.toolbar.UIActions;
-import org.activityinfo.client.page.config.DbPlace;
+import org.activityinfo.client.page.config.DbPageState;
 import org.activityinfo.client.util.state.IStateManager;
 import org.activityinfo.shared.command.*;
 import org.activityinfo.shared.command.result.CreateResult;
@@ -34,7 +33,8 @@ import java.util.List;
  * @author Alex Bertram
  */
 
-public class Designer extends AbstractEditorGridPresenter<ModelData> implements PagePresenter {
+public class Designer extends AbstractEditorGridPresenter<ModelData> implements Page {
+    public static final PageId Design = new PageId("design");
 
     @ImplementedBy(DesignTree.class)
     public interface View extends TreeGridView<Designer, ModelData> {
@@ -117,10 +117,10 @@ public class Designer extends AbstractEditorGridPresenter<ModelData> implements 
         return treeStore;
     }
 
-    public boolean navigate(Place place) {
-        return place instanceof DbPlace &&
-                place.getPageId().equals(Pages.Design) &&
-                ((DbPlace) place).getDatabaseId() == db.getId();
+    public boolean navigate(PageState place) {
+        return place instanceof DbPageState &&
+                place.getPageId().equals(Design) &&
+                ((DbPageState) place).getDatabaseId() == db.getId();
     }
 
     public void onNodeDropped(ModelData source) {
@@ -285,7 +285,7 @@ public class Designer extends AbstractEditorGridPresenter<ModelData> implements 
     }
 
     public PageId getPageId() {
-        return Pages.Design;
+        return Design;
     }
 
     public Object getWidget() {

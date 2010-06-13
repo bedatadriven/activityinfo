@@ -6,19 +6,14 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.google.gwt.user.client.ui.Widget;
-import org.activityinfo.client.Place;
-import org.activityinfo.client.ViewPath;
 import org.activityinfo.client.dispatch.AsyncMonitor;
-import org.activityinfo.client.page.FrameSetPresenter;
-import org.activityinfo.client.page.NavigationCallback;
-import org.activityinfo.client.page.PageId;
-import org.activityinfo.client.page.PagePresenter;
+import org.activityinfo.client.page.*;
 import org.activityinfo.client.page.common.nav.NavigationPanel;
 
-public class VSplitFrameSet implements FrameSetPresenter {
+public class VSplitFrameSet implements Frame {
 
     protected final LayoutContainer container;
-    private PagePresenter activePage;
+    private Page activePage;
     private Widget activeWidget;
     private NavigationPanel navPanel;
     private PageId pageId;
@@ -51,16 +46,8 @@ public class VSplitFrameSet implements FrameSetPresenter {
         return container;
     }
 
-    private Style.LayoutRegion getLayoutRegion(int regionId) {
-        if (regionId == ViewPath.SideBar) {
-            return Style.LayoutRegion.EAST;
-        } else {
-            return Style.LayoutRegion.CENTER;
-        }
-    }
-
     @Override
-    public PagePresenter getActivePage(int regionId) {
+    public Page getActivePage() {
         return activePage;
     }
 
@@ -79,7 +66,7 @@ public class VSplitFrameSet implements FrameSetPresenter {
     }
 
     @Override
-    public AsyncMonitor showLoadingPlaceHolder(int regionId, PageId page, Place loadingPlace) {
+    public AsyncMonitor showLoadingPlaceHolder(PageId page, PageState loadingPlace) {
 
         LoadingPlaceHolder placeHolder = new LoadingPlaceHolder();
         setWidget(placeHolder);
@@ -88,14 +75,14 @@ public class VSplitFrameSet implements FrameSetPresenter {
     }
 
     @Override
-    public void setActivePage(int regionId, PagePresenter page) {
+    public void setActivePage(Page page) {
 
         setWidget((Widget) page.getWidget());
         activePage = page;
     }
 
     @Override
-    public void requestToNavigateAway(Place place, NavigationCallback callback) {
+    public void requestToNavigateAway(PageState place, NavigationCallback callback) {
         if (activePage == null) {
             callback.onDecided(true);
         } else {
@@ -108,7 +95,7 @@ public class VSplitFrameSet implements FrameSetPresenter {
         return null;
     }
 
-    public boolean navigate(Place place) {
+    public boolean navigate(PageState place) {
         return true;
     }
 

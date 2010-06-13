@@ -5,7 +5,7 @@ import com.extjs.gxt.ui.client.Style;
  * @author Alex Bertram
  */
 
-public abstract class AbstractPagingGridPlace extends AbstractGridPlace {
+public abstract class AbstractPagingGridPageState extends AbstractGridPageState {
     protected int pageNum = -1;
 
     public int getPageNum() {

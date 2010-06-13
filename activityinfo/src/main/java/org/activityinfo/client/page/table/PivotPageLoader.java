@@ -4,8 +4,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
-import org.activityinfo.client.Place;
-import org.activityinfo.client.PlaceSerializer;
 import org.activityinfo.client.inject.AppInjector;
 import org.activityinfo.client.page.*;
 
@@ -17,15 +15,15 @@ public class PivotPageLoader implements PageLoader {
     private AppInjector injector;
 
     @Inject
-    public PivotPageLoader(AppInjector injector, PageManager pageManager, PlaceSerializer placeSerializer) {
+    public PivotPageLoader(AppInjector injector, NavigationHandler pageManager, PageStateSerializer placeSerializer) {
         this.injector = injector;
 
-        pageManager.registerPageLoader(Pages.Pivot, this);
-        placeSerializer.registerParser(Pages.Pivot, new PivotPlace.Parser());
+        pageManager.registerPageLoader(PivotPresenter.Pivot, this);
+        placeSerializer.registerParser(PivotPresenter.Pivot, new PivotPageState.Parser());
     }
 
     @Override
-    public void load(PageId pageId, Place initialPlaceHint, final AsyncCallback<PagePresenter> callback) {
+    public void load(PageId pageId, PageState pageState, final AsyncCallback<Page> callback) {
 
         GWT.runAsync(new RunAsyncCallback() {
             @Override

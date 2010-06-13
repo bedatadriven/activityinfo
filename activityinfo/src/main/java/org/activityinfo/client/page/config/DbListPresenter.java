@@ -15,8 +15,8 @@ import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.callback.Created;
 import org.activityinfo.client.dispatch.callback.Deleted;
 import org.activityinfo.client.event.NavigationEvent;
-import org.activityinfo.client.page.PageManager;
-import org.activityinfo.client.page.Pages;
+import org.activityinfo.client.page.NavigationHandler;
+import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.common.dialog.FormDialogCallback;
 import org.activityinfo.client.page.common.dialog.FormDialogImpl;
 import org.activityinfo.client.page.common.dialog.FormDialogTether;
@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DbListPresenter implements ActionListener {
+    public static final PageId DatabaseList = new PageId("dblist");
 
 
     public interface View  {
@@ -168,8 +169,8 @@ public class DbListPresenter implements ActionListener {
     }
 
     private void requestNavigationToDatabaseEditPage() {
-        eventBus.fireEvent(new NavigationEvent(PageManager.NavigationRequested,
-                new DbPlace(Pages.DatabaseConfig, selection.getId())));
+        eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested,
+                new DbPageState(DbConfigPresenter.DatabaseConfig, selection.getId())));
     }
 
     protected class Proxy implements DataProxy {

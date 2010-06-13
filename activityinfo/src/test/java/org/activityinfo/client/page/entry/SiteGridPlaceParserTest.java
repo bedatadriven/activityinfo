@@ -2,8 +2,7 @@ package org.activityinfo.client.page.entry;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.SortInfo;
-import org.activityinfo.client.PlaceSerializer;
-import org.activityinfo.client.page.Pages;
+import org.activityinfo.client.page.PageStateSerializer;
 import org.activityinfo.shared.dto.ActivityDTO;
 import org.junit.Assert;
 import org.junit.Test;
@@ -16,14 +15,14 @@ public class SiteGridPlaceParserTest {
     @Test
     public void test() {
 
-        PlaceSerializer pmgr = new PlaceSerializer();
-        pmgr.registerParser(Pages.SiteGrid, new SiteGridPlace.Parser());
+        PageStateSerializer pmgr = new PageStateSerializer();
+        pmgr.registerParser(SiteEditor.ID, new SiteGridPageState.Parser());
 
-        SiteGridPlace place = new SiteGridPlace(new ActivityDTO(99, "NFI Dist"));
+        SiteGridPageState place = new SiteGridPageState(new ActivityDTO(99, "NFI Dist"));
 
         String token = pmgr.serialize(place);
 
-        SiteGridPlace pplace = (SiteGridPlace)pmgr.deserialize(token);
+        SiteGridPageState pplace = (SiteGridPageState)pmgr.deserialize(token);
 
         Assert.assertEquals(place.getActivityId(), pplace.getActivityId());
 
@@ -32,10 +31,10 @@ public class SiteGridPlaceParserTest {
     @Test
     public void testHarder() {
 
-        PlaceSerializer pmgr = new PlaceSerializer();
-        pmgr.registerParser(Pages.SiteGrid, new SiteGridPlace.Parser());
+        PageStateSerializer pmgr = new PageStateSerializer();
+        pmgr.registerParser(SiteEditor.ID, new SiteGridPageState.Parser());
 
-        SiteGridPlace place = new SiteGridPlace(new ActivityDTO(99, "NFI Dist"));
+        SiteGridPageState place = new SiteGridPageState(new ActivityDTO(99, "NFI Dist"));
         place.setPageNum(3);
         place.setSortInfo(new SortInfo("date2", Style.SortDir.DESC));
 
@@ -43,7 +42,7 @@ public class SiteGridPlaceParserTest {
         
         System.out.println(token);
 
-        SiteGridPlace pplace = (SiteGridPlace)pmgr.deserialize(token);
+        SiteGridPageState pplace = (SiteGridPageState)pmgr.deserialize(token);
 
         Assert.assertEquals(place.getActivityId(), pplace.getActivityId());
 

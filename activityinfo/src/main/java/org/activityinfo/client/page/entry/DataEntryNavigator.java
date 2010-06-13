@@ -77,7 +77,7 @@ public class DataEntryNavigator implements Navigator {
 
                     Link actLink = new Link(
                             activity.getName(),
-                            new SiteGridPlace(activity),
+                            new SiteGridPageState(activity),
                             Application.ICONS.table());
 
                     if (activity.getCategory() != null) {

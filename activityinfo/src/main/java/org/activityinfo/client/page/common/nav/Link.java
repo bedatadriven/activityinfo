@@ -2,7 +2,7 @@ package org.activityinfo.client.page.common.nav;
 
 import com.extjs.gxt.ui.client.data.BaseTreeModel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import org.activityinfo.client.Place;
+import org.activityinfo.client.page.PageState;
 
 /*
  * @author Alex Bertram
@@ -10,15 +10,15 @@ import org.activityinfo.client.Place;
 
 public class Link extends BaseTreeModel {
 
-    private Place place;
+    private PageState place;
     private AbstractImagePrototype icon;
 
-    public Link(String name, Place place) {
+    public Link(String name, PageState place) {
         set("name", name);
         this.place = place;
     }
 
-    public Link(String name, Place place, AbstractImagePrototype icon) {
+    public Link(String name, PageState place, AbstractImagePrototype icon) {
         this(name, place);
         this.icon = icon;
     }
@@ -27,7 +27,7 @@ public class Link extends BaseTreeModel {
         return get("name");
     }
 
-    public Place getPlace() {
+    public PageState getPlace() {
         return place;
     }
 

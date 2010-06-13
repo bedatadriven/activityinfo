@@ -2,8 +2,6 @@ package org.activityinfo.client.page.welcome;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
-import org.activityinfo.client.Place;
-import org.activityinfo.client.PlaceSerializer;
 import org.activityinfo.client.inject.AppInjector;
 import org.activityinfo.client.page.*;
 /*
@@ -16,14 +14,14 @@ public class WelcomeLoader implements PageLoader {
     private final AppInjector injector;
 
     @Inject
-    public WelcomeLoader(AppInjector injector, PageManager pageManager, PlaceSerializer placeSerializer) {
+    public WelcomeLoader(AppInjector injector, NavigationHandler pageManager, PageStateSerializer placeSerializer) {
         this.injector = injector;
 
-        pageManager.registerPageLoader(Pages.Welcome, this);
-        placeSerializer.registerStatelessPlace(Pages.Welcome, new WelcomePlace());
+        pageManager.registerPageLoader(Welcome.Welcome, this);
+        placeSerializer.registerStatelessPlace(Welcome.Welcome, new WelcomePageState());
     }
 
-    public void load(PageId pageId, Place place, AsyncCallback<PagePresenter> callback) {
+    public void load(PageId pageId, PageState pageState, AsyncCallback<Page> callback) {
         callback.onSuccess(injector.getWelcomePage());
     }
 }

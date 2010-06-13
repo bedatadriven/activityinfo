@@ -7,15 +7,14 @@ import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
 import org.activityinfo.client.Application;
 import org.activityinfo.client.EventBus;
-import org.activityinfo.client.Place;
 import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.callback.DownloadCallback;
 import org.activityinfo.client.dispatch.callback.Got;
 import org.activityinfo.client.page.NavigationCallback;
+import org.activityinfo.client.page.Page;
 import org.activityinfo.client.page.PageId;
-import org.activityinfo.client.page.PagePresenter;
-import org.activityinfo.client.page.Pages;
+import org.activityinfo.client.page.PageState;
 import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.shared.command.GenerateElement;
 import org.activityinfo.shared.command.GetSchema;
@@ -31,7 +30,8 @@ import java.util.List;
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class PivotPresenter implements PagePresenter {
+public class PivotPresenter implements Page {
+    public static final PageId Pivot = new PageId("pivot");
 
 
     @ImplementedBy(PivotPage.class)
@@ -186,7 +186,7 @@ public class PivotPresenter implements PagePresenter {
 
     @Override
     public PageId getPageId() {
-        return Pages.Pivot;
+        return Pivot;
     }
 
     @Override
@@ -195,7 +195,7 @@ public class PivotPresenter implements PagePresenter {
     }
 
     @Override
-    public void requestToNavigateAway(Place place, NavigationCallback callback) {
+    public void requestToNavigateAway(PageState place, NavigationCallback callback) {
         callback.onDecided(true);
     }
 
@@ -204,7 +204,7 @@ public class PivotPresenter implements PagePresenter {
         return null;
     }
 
-    public boolean navigate(Place place) {
+    public boolean navigate(PageState place) {
         return true;
     }
 }

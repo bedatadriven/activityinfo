@@ -9,11 +9,11 @@ import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.util.DateWrapper;
 import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.EventBus;
-import org.activityinfo.client.Place;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.loader.ListCmdLoader;
 import org.activityinfo.client.event.SiteEvent;
 import org.activityinfo.client.page.PageId;
+import org.activityinfo.client.page.PageState;
 import org.activityinfo.client.page.common.grid.AbstractEditorGridPresenter;
 import org.activityinfo.client.page.common.grid.GridView;
 import org.activityinfo.client.util.state.IStateManager;
@@ -122,7 +122,7 @@ public class MonthlyPresenter extends AbstractEditorGridPresenter<IndicatorRowDT
     }
 
 
-    public boolean navigate(Place place) {
+    public boolean navigate(PageState place) {
         return false;
     }
 

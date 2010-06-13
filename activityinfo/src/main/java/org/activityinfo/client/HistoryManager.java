@@ -11,7 +11,9 @@ import com.google.gwt.user.client.History;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.activityinfo.client.event.NavigationEvent;
-import org.activityinfo.client.page.PageManager;
+import org.activityinfo.client.page.NavigationHandler;
+import org.activityinfo.client.page.PageState;
+import org.activityinfo.client.page.PageStateSerializer;
 
 /**
  *
@@ -24,11 +26,11 @@ import org.activityinfo.client.page.PageManager;
 public class HistoryManager {
 
     private final EventBus eventBus;
-    private final PlaceSerializer placeSerializer;
+    private final PageStateSerializer placeSerializer;
 
 
     @Inject
-    public HistoryManager(EventBus eventBus, PlaceSerializer placeSerializer) {
+    public HistoryManager(EventBus eventBus, PageStateSerializer placeSerializer) {
         this.placeSerializer = placeSerializer;
         this.eventBus = eventBus;
 
@@ -39,7 +41,7 @@ public class HistoryManager {
             }
         });
         
-        this.eventBus.addListener(PageManager.NavigationAgreed, new Listener<NavigationEvent>() {
+        this.eventBus.addListener(NavigationHandler.NavigationAgreed, new Listener<NavigationEvent>() {
             @Override
             public void handleEvent(NavigationEvent be) {
                 onNavigationCompleted(be.getPlace());
@@ -67,12 +69,12 @@ public class HistoryManager {
 //
 //            GWT.log("HistoryManager: firing initial placed based on cookie: " + Cookies.getCookie("lastPlace"), null);
 //
-//            Place place = placeSerializer.deserialize(Cookies.getCookie("lastPlace"));
+//            PageState place = placeSerializer.deserialize(Cookies.getCookie("lastPlace"));
 //            if(place != null) {
 //
 //                 eventBus.fireEvent(new NavigationEvent(PageManager.NavigationRequested, place));
 //            } else {
-//                eventBus.fireEvent(new NavigationEvent(PageManager.NavigationRequested, new WelcomePlace()));
+//                eventBus.fireEvent(new NavigationEvent(PageManager.NavigationRequested, new WelcomePageState()));
 //            }
 //        }
         } else {
@@ -81,7 +83,7 @@ public class HistoryManager {
     }
 
 
-    private void onNavigationCompleted(Place place) {
+    private void onNavigationCompleted(PageState place) {
 
         String token = placeSerializer.serialize(place);
 
@@ -110,10 +112,10 @@ public class HistoryManager {
 
         Log.debug("HistoryManager: Browser movement observed (" + token + "), firing NavigationRequested") ;
         
-        Place place = placeSerializer.deserialize(token);
+        PageState place = placeSerializer.deserialize(token);
         if(place != null) {
 
-            eventBus.fireEvent(new NavigationEvent(PageManager.NavigationRequested, place));
+            eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, place));
 
         } else {
             Log.debug("HistoryManager: Could not deserialize '" + token + "', no action taken.");
