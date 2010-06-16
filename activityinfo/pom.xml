@@ -2,11 +2,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.activityinfo</groupId>
-    <artifactId>activityinfo</artifactId>
+    <groupId>org.sigmah</groupId>
+    <artifactId>sigmah</artifactId>
     <packaging>war</packaging>
     <version>0.5.12-SNAPSHOT</version>
-    <name>ActivityInfo</name>
+    <name>SigmaH</name>
     <licenses>
         <license>
             <name>GPLv3</name>
