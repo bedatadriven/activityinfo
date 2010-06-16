@@ -164,6 +164,14 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- aopalliance is a transitive dependency of guice, but it there seems to be
+            a guice-2.0 artifact out there floating around with out a proper pom -->
+        <dependency>
+          <groupId>aopalliance</groupId>
+          <artifactId>aopalliance</artifactId>
+          <version>1.0</version>
+        </dependency>
+
         <!-- Report creation dependencies -->
 
         <dependency>
