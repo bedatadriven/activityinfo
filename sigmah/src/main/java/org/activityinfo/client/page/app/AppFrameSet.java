@@ -42,6 +42,7 @@ import org.activityinfo.client.page.table.PivotPageState;
 import org.activityinfo.client.page.welcome.WelcomePageState;
 
 
+
 @Singleton
 public class AppFrameSet implements Frame {
 

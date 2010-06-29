@@ -28,7 +28,7 @@
     <inherits name="com.google.gwt.i18n.I18N" />
     <inherits name='com.extjs.gxt.ui.GXT' />
     <inherits name="com.google.gwt.maps.GoogleMaps" />
-    <inherits name="com.ebessette.maps.core.CoreMaps" />
+    <inherits name="com.ebessette.maps.core.OverlayManager" />
     <inherits name="com.google.gwt.gears.Gears" />
     <inherits name="com.google.gwt.inject.Inject"/>
     <inherits name="com.extjs.gxt.charts.Chart"/>

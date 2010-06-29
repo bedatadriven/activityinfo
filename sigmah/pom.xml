@@ -112,6 +112,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>com.ebessette.maps</groupId>
+            <artifactId>overlaymanager</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>com.google.gwt.google-apis</groupId>
             <artifactId>gwt-gears</artifactId>
             <version>1.2.1</version>
