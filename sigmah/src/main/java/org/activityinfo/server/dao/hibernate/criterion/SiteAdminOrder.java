@@ -1,4 +1,4 @@
-package org.activityinfo.server.dao.hibernate;
+package org.activityinfo.server.dao.hibernate.criterion;
 
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
@@ -6,6 +6,13 @@ import org.hibernate.criterion.CriteriaQuery;
 import org.hibernate.criterion.Order;
 
 
+/**
+ * Hibernate {@link org.hibernate.criterion.Order Order} clause that orders
+ * {@link org.activityinfo.server.domain.Site}s by AdminEntity membership at
+ * a given {@link org.activityinfo.server.domain.AdminEntity} level.
+ *
+ * @author Alex Bertram
+ */
 public class SiteAdminOrder extends Order {
 
 	private int levelId;
@@ -22,9 +29,6 @@ public class SiteAdminOrder extends Order {
 	@Override
 	public String toSqlString(Criteria criteria, CriteriaQuery criteriaQuery)
 			throws HibernateException {
-	
-	//	Dialect dialect = criteriaQuery.getFactory().getDialect();
-
 		StringBuffer fragment = new StringBuffer();
 		fragment.append("(SELECT Name FROM AdminEntity AS entity " +
                   "  WHERE (AdminLevelId = ");
@@ -37,13 +41,10 @@ public class SiteAdminOrder extends Order {
                   	"   WHERE (LocationId = ");
 		
 		fragment.append(criteriaQuery.getColumn(criteria, "location.id"));
-		
 		fragment.append(")))))");
-
 		fragment.append( ascending ? " asc" : " desc" );
 		
 		return fragment.toString();
-		
 	}
 	
 }

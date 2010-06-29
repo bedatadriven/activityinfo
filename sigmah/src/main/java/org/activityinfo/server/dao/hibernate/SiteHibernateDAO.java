@@ -28,7 +28,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class SiteHibernateDAO extends AbstractDAO<Site, Integer> implements SiteDAO {
+/**
+ * @author Alex Bertram
+ */
+public class SiteHibernateDAO extends GenericDAO<Site, Integer> implements SiteDAO {
 
     @Inject
     public SiteHibernateDAO(EntityManager em) {

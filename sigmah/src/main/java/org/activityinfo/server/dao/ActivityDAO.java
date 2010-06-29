@@ -21,6 +21,12 @@ package org.activityinfo.server.dao;
 
 import org.activityinfo.server.domain.Activity;
 
+/**
+ * DAO for the {@link org.activityinfo.server.domain.Activity} domain object. Implemented automatically by proxy,
+ * see the Activity class for query definitions.
+ *
+ * @author Alex Bertram
+ */
 public interface ActivityDAO extends DAO<Activity, Integer> {
 
     Integer queryMaxSortOrder(int databaseId);

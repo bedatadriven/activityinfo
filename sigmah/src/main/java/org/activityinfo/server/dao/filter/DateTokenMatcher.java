@@ -18,15 +18,15 @@ public class DateTokenMatcher implements TokenMatcher {
 
     private final Locale locale;
 
-    protected List<String> monthNames;
-    protected List<String> shortMonthNames;
-    protected List<String> beforeTokens;
-    protected List<String> afterTokens;
-    protected List<String> rangeSeperatorTokens;
-    protected List<DateFormat> dateFormats;
-    protected Calendar today;
+    private final List<String> monthNames;
+    private final List<String> shortMonthNames;
+    private final List<String> beforeTokens;
+    private final List<String> afterTokens;
+    private final List<String> rangeSeperatorTokens;
+    private final List<DateFormat> dateFormats;
+    private final Calendar today;
 
-    protected Pattern intPattern;
+    private final Pattern intPattern;
 
     public static class PartialDate {
         public int day;
@@ -83,9 +83,9 @@ public class DateTokenMatcher implements TokenMatcher {
         DateFormatSymbols symbols = new DateFormatSymbols(locale);
         monthNames = toLowerList(symbols.getMonths());
         shortMonthNames = toLowerList(symbols.getShortMonths());
-        beforeTokens = makeList("avant", "jusqu'à", "jusqua", "jusqu'a");
-        afterTokens = makeList("apres", "après", "aprés");
-        rangeSeperatorTokens = makeList("-", "à");
+        beforeTokens = Arrays.asList("avant", "jusqu'à", "jusqua", "jusqu'a");
+        afterTokens = Arrays.asList("apres", "après", "aprés");
+        rangeSeperatorTokens = Arrays.asList("-", "à");
 
         dateFormats = new ArrayList<DateFormat>();
         dateFormats.add(DateFormat.getDateInstance(DateFormat.SHORT, locale));
@@ -101,14 +101,6 @@ public class DateTokenMatcher implements TokenMatcher {
         today.set(Calendar.YEAR, year);
         today.set(Calendar.MONTH, month-1);
         today.set(Calendar.DATE, day);
-    }
-
-    private List<String> makeList(String... items) {
-        List<String> list = new ArrayList<String>(items.length);
-        for(String s : items) {
-            list.add(s);
-        }
-        return list;
     }
 
     private List<String> toLowerList(String[] stringArray) {

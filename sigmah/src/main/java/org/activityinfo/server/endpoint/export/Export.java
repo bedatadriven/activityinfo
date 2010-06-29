@@ -19,7 +19,7 @@
 
 package org.activityinfo.server.endpoint.export;
 
-import org.activityinfo.server.dao.SiteColumn;
+import org.activityinfo.server.dao.SiteTableColumn;
 import org.activityinfo.server.dao.SiteTableDAO;
 import org.activityinfo.server.domain.AdminEntity;
 import org.activityinfo.server.domain.SiteData;
@@ -249,9 +249,9 @@ public class Export {
     private List<SiteData> querySites(ActivityDTO activity) {
 
         List<Order> orderings = new ArrayList<Order>(1);
-        orderings.add(Order.desc(SiteColumn.date2.property()));
+        orderings.add(Order.desc(SiteTableColumn.date2.property()));
 
-        return siteDAO.query(user, Restrictions.eq(SiteColumn.activity_id.property(), activity.getId()),
+        return siteDAO.query(user, Restrictions.eq(SiteTableColumn.activity_id.property(), activity.getId()),
                 orderings, new SiteDataBinder(), SiteTableDAO.RETRIEVE_ALL, 0, -1);
     }
 

@@ -1,7 +1,7 @@
 package org.activityinfo.server.report.generator;
 
-import org.activityinfo.server.dao.SiteColumn;
 import org.activityinfo.server.dao.SiteProjectionBinder;
+import org.activityinfo.server.dao.SiteTableColumn;
 import org.activityinfo.server.dao.hibernate.SiteTableDAOHibernate;
 import org.activityinfo.server.domain.AdminEntity;
 import org.activityinfo.shared.report.content.TableData;
@@ -56,8 +56,8 @@ public class RowBinder implements SiteProjectionBinder<TableData.Row> {
     public RowBinder(TableData tableData) {
         this.tableData = tableData;
 
-        xIndex = SiteTableDAOHibernate.getColumnIndex(SiteColumn.x);
-        yIndex = SiteTableDAOHibernate.getColumnIndex(SiteColumn.y);
+        xIndex = SiteTableDAOHibernate.getColumnIndex(SiteTableColumn.x);
+        yIndex = SiteTableDAOHibernate.getColumnIndex(SiteTableColumn.y);
 
         for(TableColumn column : tableData.getRootColumn().getLeaves()) {
             int columnIndex = tableData.getColumnIndex(column);
@@ -78,8 +78,8 @@ public class RowBinder implements SiteProjectionBinder<TableData.Row> {
         }
     }
 
-    private SiteColumn findSiteColumn(String property) {
-        for(SiteColumn column : SiteColumn.values()) {
+    private SiteTableColumn findSiteColumn(String property) {
+        for(SiteTableColumn column : SiteTableColumn.values()) {
             if(column.property().equals(property)) {
                 return column;
             }

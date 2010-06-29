@@ -19,55 +19,51 @@
 
 package org.activityinfo.server.servlet;
 
-import org.activityinfo.server.dao.SchemaDAO;
+import com.google.inject.Inject;
+import org.activityinfo.server.dao.OnDataSet;
 import org.activityinfo.server.dao.SiteTableDAO;
-import org.activityinfo.server.dao.hibernate.SchemaDAOJPA;
 import org.activityinfo.server.dao.hibernate.SiteTableDAOHibernate;
-import org.activityinfo.server.domain.DomainFilters;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.server.endpoint.export.Export;
+import org.activityinfo.server.endpoint.gwtrpc.CommandTestCase;
 import org.activityinfo.server.endpoint.gwtrpc.handler.GetSchemaHandler;
-import org.activityinfo.server.util.BeanMappingModule;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.dto.ActivityDTO;
 import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
-import org.dozer.Mapper;
-import org.junit.Ignore;
+import org.activityinfo.test.InjectionSupport;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import java.io.File;
 import java.io.FileOutputStream;
 
 /**
  * @author Alex Bertram
  */
-public class ExportTest {
+@RunWith(InjectionSupport.class)
+@OnDataSet("/dbunit/sites-simple1.db.xml")
+public class ExportIntegrationTest extends CommandTestCase {
 
-    @Ignore("Needs to be rewritten to use test database")
+    @Inject
+    private EntityManagerFactory emf;
+
+    @Inject
+    private GetSchemaHandler getSchemaHandler;
+
+
     @Test
     public void fullTest() throws Throwable {
 
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("activityInfo");
+
+        User user = new User();
+        user.setId(1);
+        user.setName("Alex");
+
         EntityManager em = emf.createEntityManager();
-
-        User user = (User) em.createQuery("select u from User u where u.email = :email")
-                .setParameter("email", "akbertram@gmail.com")
-                .getResultList()
-                .get(0);
-
-        DomainFilters.applyUserFilter(user, em);
-
-        SchemaDAO schemaDAO = new SchemaDAOJPA(em);
-        Mapper mapper = BeanMappingModule.getMapper();
-
-        GetSchemaHandler schemaHandler = new GetSchemaHandler(schemaDAO, mapper);
-
-        SchemaDTO schema = (SchemaDTO) schemaHandler.execute(new GetSchema(), user);
-
+        SchemaDTO schema = (SchemaDTO) getSchemaHandler.execute(new GetSchema(), user);
         SiteTableDAO siteDAO = new SiteTableDAOHibernate(em);
 
         Export export = new Export(user, siteDAO);

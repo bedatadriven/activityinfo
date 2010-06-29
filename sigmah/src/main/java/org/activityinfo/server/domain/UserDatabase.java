@@ -26,7 +26,7 @@ import java.util.Set;
 /**
  *
  * The UserDatabase is the broadest unit of organization within ActivityInfo.
- * Individual databases each has an owner who controls completely the activites,
+ * Individual databases each has an owner who controls completely the activities,
  * indicators, partner organizations and the rights of other users to view, edit,
  * and design the database.
  * 
@@ -61,6 +61,8 @@ import java.util.Set;
 			condition="DateDeleted is null"
 		)}
 )
+@NamedQuery(name="queryAllUserDatabasesAlphabetically",
+        query="select db from UserDatabase db order by db.name")
 public class UserDatabase implements java.io.Serializable, Deleteable, SchemaElement {
 
 	private int id;
@@ -74,11 +76,6 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
 	private Set<UserPermission> userPermissions = new HashSet<UserPermission>(0);
 	private Date dateDeleted;
     private Date lastSchemaUpdate;
-	
-//	@MapKey(name="user")
-//	@OneToMany(mappedBy="database")
-//	private Map<User, UserPermission> permissionsByUser = new HashMap<User, UserPermission>();
-//	
 	
 	public UserDatabase() {
 	}

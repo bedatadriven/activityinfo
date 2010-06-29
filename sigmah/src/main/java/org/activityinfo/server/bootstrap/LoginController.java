@@ -36,7 +36,6 @@ import java.io.IOException;
 
 @Singleton
 public class LoginController extends AbstractController {
-
     public static final String ENDPOINT = "login";
 
     @Inject

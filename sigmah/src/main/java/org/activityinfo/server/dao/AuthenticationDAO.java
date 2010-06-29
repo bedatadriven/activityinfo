@@ -21,5 +21,10 @@ package org.activityinfo.server.dao;
 
 import org.activityinfo.server.domain.Authentication;
 
+/**
+ * Data Access Objects for the {@link org.activityinfo.server.domain.Authentication} domain object.
+ *
+ * @author Alex Bertram
+ */
 public interface AuthenticationDAO extends DAO<Authentication, String> {
 }

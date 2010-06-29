@@ -21,7 +21,7 @@ package org.activityinfo.server.sync;
 
 import com.bedatadriven.rebar.sync.server.JpaUpdateBuilder;
 import com.google.inject.Inject;
-import org.activityinfo.server.dao.SchemaDAO;
+import org.activityinfo.server.dao.UserDatabaseDAO;
 import org.activityinfo.server.domain.*;
 import org.activityinfo.shared.command.GetSyncRegionUpdates;
 import org.activityinfo.shared.command.result.SyncRegionUpdate;
@@ -34,7 +34,7 @@ import java.util.Set;
 
 public class SchemaUpdateBuilder implements UpdateBuilder {
 
-    private final SchemaDAO schemaDAO;
+    private final UserDatabaseDAO userDatabaseDAO;
 
     private Set<Integer> countryIds = new HashSet<Integer>();
     private List<Country> countries = new ArrayList<Country>();
@@ -59,12 +59,12 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
     private static final String REGION_ID = "schema";
 
     @Inject
-    public SchemaUpdateBuilder(SchemaDAO schemaDAO) {
-        this.schemaDAO = schemaDAO;
+    public SchemaUpdateBuilder(UserDatabaseDAO userDatabaseDAO) {
+        this.userDatabaseDAO = userDatabaseDAO;
     }
 
     public SyncRegionUpdate build(User user, GetSyncRegionUpdates request) throws JSONException {
-        databases = schemaDAO.getDatabases(user);
+        databases = userDatabaseDAO.queryAllUserDatabasesAlphabetically();
 
         long localVersion = request.getLocalVersion() == null ? 0 : Long.parseLong(request.getLocalVersion());
         long serverVersion = getCurrentSchemaVersion(user);

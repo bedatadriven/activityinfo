@@ -20,7 +20,7 @@
 package org.activityinfo.server.endpoint.gwtrpc.handler;
 
 import com.google.inject.Inject;
-import org.activityinfo.server.dao.SchemaDAO;
+import org.activityinfo.server.dao.UserDatabaseDAO;
 import org.activityinfo.server.domain.*;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.result.CommandResult;
@@ -40,12 +40,12 @@ import java.util.Map;
  */
 public class GetSchemaHandler implements CommandHandler<GetSchema> {
 
-    private SchemaDAO schemaDAO;
+    private UserDatabaseDAO userDatabaseDAO;
     private Mapper mapper;
 
     @Inject
-    public GetSchemaHandler(SchemaDAO schemaDAO, Mapper mapper) {
-        this.schemaDAO = schemaDAO;
+    public GetSchemaHandler(UserDatabaseDAO userDatabaseDAO, Mapper mapper) {
+        this.userDatabaseDAO = userDatabaseDAO;
         this.mapper = mapper;
     }
 
@@ -55,7 +55,8 @@ public class GetSchemaHandler implements CommandHandler<GetSchema> {
         SchemaDTO schema = new SchemaDTO();
         Date lastUpdate = new Date(0);
 
-        List<UserDatabase> databases = schemaDAO.getDatabases(user);
+        // Note that hibernate is already filtering by user so it is not necessary to pass the user
+        List<UserDatabase> databases = userDatabaseDAO.queryAllUserDatabasesAlphabetically();
 
         Map<Integer, CountryDTO> countries = new HashMap<Integer, CountryDTO>();
 

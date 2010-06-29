@@ -7,8 +7,8 @@ import org.hibernate.criterion.Criterion;
  */
 public class MatchResult {
 
-    private int tokenCount;
-    private Criterion criterion;
+    private final int tokenCount;
+    private final Criterion criterion;
 
     public MatchResult(int tokenCount, Criterion criterion) {
         this.tokenCount = tokenCount;

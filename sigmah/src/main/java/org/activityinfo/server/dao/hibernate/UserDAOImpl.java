@@ -29,7 +29,7 @@ import javax.persistence.NoResultException;
 /**
  * @author Alex Bertram
  */
-public class UserDAOImpl extends AbstractDAO<User, Integer> implements UserDAO {
+public class UserDAOImpl extends GenericDAO<User, Integer> implements UserDAO {
 
     @Inject
     public UserDAOImpl(EntityManager em) {

@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import org.activityinfo.server.auth.Authenticator;
-import org.activityinfo.server.dao.SiteColumn;
+import org.activityinfo.server.dao.SiteTableColumn;
 import org.activityinfo.server.dao.SiteTableDAO;
 import org.activityinfo.server.dao.UserDAO;
 import org.activityinfo.server.dao.hibernate.SiteTableDAOHibernate;
@@ -222,9 +222,9 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
     private List<SiteData> querySites(User user, SchemaDTO schema) {
 
         List<Order> order = new ArrayList<Order>();
-        order.add(Order.asc(SiteColumn.database_name.property()));
-        order.add(Order.asc(SiteColumn.activity_name.property()));
-        order.add(Order.desc(SiteColumn.date2.property()));
+        order.add(Order.asc(SiteTableColumn.database_name.property()));
+        order.add(Order.asc(SiteTableColumn.activity_name.property()));
+        order.add(Order.desc(SiteTableColumn.date2.property()));
 
         SiteTableDAO siteDAO = injector.getInstance(SiteTableDAOHibernate.class);
         return siteDAO.query(user, null, order, new SiteDataBinder(), SiteTableDAO.RETRIEVE_ALL, 0, -1);

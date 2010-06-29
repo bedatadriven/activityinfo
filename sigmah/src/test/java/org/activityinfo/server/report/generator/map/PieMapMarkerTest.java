@@ -20,7 +20,7 @@
 package org.activityinfo.server.report.generator.map;
 
 import junit.framework.Assert;
-import org.activityinfo.server.dao.SiteColumn;
+import org.activityinfo.server.dao.SiteTableColumn;
 import org.activityinfo.server.domain.SiteData;
 import org.activityinfo.shared.report.content.LatLng;
 import org.activityinfo.shared.report.content.MapContent;
@@ -49,9 +49,9 @@ public class PieMapMarkerTest {
         dim.setCategoryColor(103, 0x0000FF);
 
         SiteData site1 = new SiteData();
-        site1.setValue(SiteColumn.id,  1);
-        site1.setValue(SiteColumn.x, 0d);
-        site1.setValue(SiteColumn.y, 0d);
+        site1.setValue(SiteTableColumn.id,  1);
+        site1.setValue(SiteTableColumn.x, 0d);
+        site1.setValue(SiteTableColumn.y, 0d);
         site1.setIndicatorValue(101, 50d);
         site1.setIndicatorValue(102, 40d);
         site1.setIndicatorValue(103, 10d);

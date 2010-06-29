@@ -27,6 +27,12 @@ import org.aopalliance.intercept.MethodInvocation;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
+/**
+ * MethodInterceptor that implements declarative transaction management.
+ * See {@link org.activityinfo.server.dao.Transactional}
+ *
+ * @author Alex Bertram
+ */
 public class TransactionalInterceptor implements MethodInterceptor {
 
     private Injector injector;

@@ -63,13 +63,13 @@ public class TableGeneratorTest {
         @Override
         public <RowT> List<RowT> query(User user, Criterion criterion, List<Order> orderings, SiteProjectionBinder<RowT> binder, int retrieve, int offset, int limit) {
             List<RowT> rows = new ArrayList<RowT>();
-            Object[] row = new Object[SiteColumn.values().length];
-            String[] properties = new String[SiteColumn.values().length];
+            Object[] row = new Object[SiteTableColumn.values().length];
+            String[] properties = new String[SiteTableColumn.values().length];
 
             row[0] = 1;
-            row[SiteColumn.location_name.index()] = "tampa bay";
-            row[SiteColumn.x.index()] = 28.4;
-            row[SiteColumn.y.index()] = 1.2;
+            row[SiteTableColumn.location_name.index()] = "tampa bay";
+            row[SiteTableColumn.x.index()] = 28.4;
+            row[SiteTableColumn.y.index()] = 1.2;
 
             rows.add(binder.newInstance(properties, row));
             return rows;
@@ -86,10 +86,10 @@ public class TableGeneratorTest {
         }
     }
 
-    private SchemaDAO createSchemaDAO() {
-        SchemaDAO schemaDAO = createNiceMock(SchemaDAO.class);
-        replay(schemaDAO);
-        return schemaDAO;
+    private IndicatorDAO createIndicator() {
+        IndicatorDAO indicatorDAO = createNiceMock(IndicatorDAO.class);
+        replay(indicatorDAO);
+        return indicatorDAO;
     }
 
     private PivotDAO createPivotDAO() {
@@ -104,7 +104,7 @@ public class TableGeneratorTest {
         TableElement table = new TableElement();
         table.addColumn(new TableColumn("Location", "location.name"));
 
-        TableGenerator gtor = new TableGenerator(createPivotDAO(), new MockSiteTableDAO(), createSchemaDAO(), null);
+        TableGenerator gtor = new TableGenerator(createPivotDAO(), new MockSiteTableDAO(), createIndicator(), null);
         gtor.generate(user, table, null, null);
 
         Assert.assertNotNull("content is set", table.getContent());
@@ -132,7 +132,7 @@ public class TableGeneratorTest {
         map.addLayer(layer);
         table.setMap(map);
 
-        TableGenerator gtor = new TableGenerator(createPivotDAO(), new MockSiteTableDAO(), createSchemaDAO(),
+        TableGenerator gtor = new TableGenerator(createPivotDAO(), new MockSiteTableDAO(), createIndicator(),
                 new MapGenerator(createPivotDAO(), new MockSiteTableDAO(), new MockBaseMapDAO()));
         gtor.generate(user, table, null, null);
 

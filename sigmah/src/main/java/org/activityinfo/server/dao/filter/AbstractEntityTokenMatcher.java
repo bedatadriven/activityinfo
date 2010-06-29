@@ -18,7 +18,7 @@ public abstract class AbstractEntityTokenMatcher implements TokenMatcher {
     protected final Locale locale;
 
     private Set<String> names;
-    private Class entityClass;
+    private final Class entityClass;
 
 
     public AbstractEntityTokenMatcher(Session session, Class entityClass, Locale locale) {

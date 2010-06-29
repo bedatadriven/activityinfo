@@ -33,8 +33,11 @@ import java.text.MessageFormat;
  * Utility class that detects and caches required properties of the
  * SQL dialect in use.
  *
- * Note: hibernate also has this
+ * Note: Obviously hibernate manages SQLDialects as well, but I can't figure out
+ * how to access the Dialect Object from the JPA runtime, and it doesn't provide
+ * info on the quarter() function anyway.
  *
+ * @author Alex Bertram
  */
 @Singleton
 public class SQLDialect {

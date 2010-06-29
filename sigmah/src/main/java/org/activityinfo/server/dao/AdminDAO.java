@@ -20,13 +20,18 @@
 package org.activityinfo.server.dao;
 
 import com.google.inject.ImplementedBy;
-import org.activityinfo.server.dao.hibernate.AdminDAOImpl;
+import org.activityinfo.server.dao.hibernate.AdminHibernateDAO;
 import org.activityinfo.server.domain.AdminEntity;
 import org.activityinfo.server.domain.AdminLevel;
 
 import java.util.List;
 
-@ImplementedBy(AdminDAOImpl.class)
+/**
+ * Data Access Object for {@link org.activityinfo.server.domain.AdminEntity} classes.
+ *
+ * @author Alex Bertram
+ */
+@ImplementedBy(AdminHibernateDAO.class)
 public interface AdminDAO extends DAO<AdminEntity, Integer> {
 
     /**
@@ -39,8 +44,8 @@ public interface AdminDAO extends DAO<AdminEntity, Integer> {
     /**
      * Returns
      *
-     * @param levelId        See {@link AdminLevel}
-     * @param parentEntityId
+     * @param levelId id of the {@link AdminLevel} to search
+     * @param parentEntityId the entity parent 
      * @return A list of the children of a given admin entity for at a given level.
      */
     List<AdminEntity> findChildEntities(int levelId, int parentEntityId);

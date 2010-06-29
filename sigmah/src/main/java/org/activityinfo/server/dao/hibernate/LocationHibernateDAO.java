@@ -26,7 +26,10 @@ import org.activityinfo.server.domain.Location;
 
 import javax.persistence.EntityManager;
 
-public class LocationHibernateDAO extends AbstractDAO<Location, Integer> implements LocationDAO {
+/**
+ * @author Alex Bertram
+ */
+public class LocationHibernateDAO extends GenericDAO<Location, Integer> implements LocationDAO {
 
     @Inject
     public LocationHibernateDAO(EntityManager em) {

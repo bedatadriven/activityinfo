@@ -1,6 +1,6 @@
 package org.activityinfo.server.report.generator.map;
 
-import org.activityinfo.server.dao.SiteColumn;
+import org.activityinfo.server.dao.SiteTableColumn;
 import org.activityinfo.server.domain.SiteData;
 import org.activityinfo.shared.report.content.BubbleMapMarker;
 import org.activityinfo.shared.report.content.LatLng;
@@ -35,9 +35,9 @@ public class BubbleGeneratorTest {
         List<SiteData> sites = new ArrayList<SiteData>();
 
         SiteData site1 = new SiteData();
-        site1.setValue(SiteColumn.id, 1) ;
-        site1.setValue(SiteColumn.x, 29.3 );
-        site1.setValue(SiteColumn.y, -1.5);
+        site1.setValue(SiteTableColumn.id, 1) ;
+        site1.setValue(SiteTableColumn.x, 29.3 );
+        site1.setValue(SiteTableColumn.y, -1.5);
         site1.indicatorValues.put(101, 35.0);
         site1.indicatorValues.put(102, 55.0);
         sites.add(site1);
@@ -74,26 +74,26 @@ public class BubbleGeneratorTest {
         List<SiteData> sites = new ArrayList<SiteData>();
 
         SiteData site1 = new SiteData();
-        site1.setValue(SiteColumn.id, 1) ;
-        site1.setValue(SiteColumn.partner_id, 301);
-        site1.setValue(SiteColumn.x, 29.3 );
-        site1.setValue(SiteColumn.y, -1.5);
+        site1.setValue(SiteTableColumn.id, 1) ;
+        site1.setValue(SiteTableColumn.partner_id, 301);
+        site1.setValue(SiteTableColumn.x, 29.3 );
+        site1.setValue(SiteTableColumn.y, -1.5);
         site1.indicatorValues.put(101, 35.0);
         sites.add(site1);
 
         SiteData site2 = new SiteData();
-        site2.setValue(SiteColumn.id, 2) ;
-        site2.setValue(SiteColumn.partner_id, 302);
-        site2.setValue(SiteColumn.x, 29.3 );
-        site2.setValue(SiteColumn.y, -1.5);
+        site2.setValue(SiteTableColumn.id, 2) ;
+        site2.setValue(SiteTableColumn.partner_id, 302);
+        site2.setValue(SiteTableColumn.x, 29.3 );
+        site2.setValue(SiteTableColumn.y, -1.5);
         site2.indicatorValues.put(101, 70.0);
         sites.add(site2);
 
         SiteData site3 = new SiteData();
-        site3.setValue(SiteColumn.id, 3) ;
-        site3.setValue(SiteColumn.partner_id, 302);
-        site3.setValue(SiteColumn.x, 29.3 );
-        site3.setValue(SiteColumn.y, -1.5);
+        site3.setValue(SiteTableColumn.id, 3) ;
+        site3.setValue(SiteTableColumn.partner_id, 302);
+        site3.setValue(SiteTableColumn.x, 29.3 );
+        site3.setValue(SiteTableColumn.y, -1.5);
         site3.indicatorValues.put(101, 100.0);
         sites.add(site3);
 

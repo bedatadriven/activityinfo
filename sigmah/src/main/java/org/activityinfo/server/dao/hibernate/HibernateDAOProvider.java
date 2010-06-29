@@ -20,24 +20,24 @@
 package org.activityinfo.server.dao.hibernate;
 
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Provider;
 import org.activityinfo.server.dao.DAO;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import java.lang.reflect.*;
-import java.util.List;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
 
 /**
  * Provider which dynamically implements an a subclass of DAO
  *
  * @param <T> The type of the DAO to provide
+ *
+ * @author Alex Bertram
  */
 public class HibernateDAOProvider<T> implements Provider<T> {
 
-    @Inject
-    private Injector injector;
+    private Provider<EntityManager> emProvider;
 
     private final Class<T> daoClass;
     private final Class<T> entityClass;
@@ -45,6 +45,11 @@ public class HibernateDAOProvider<T> implements Provider<T> {
     public HibernateDAOProvider(Class<T> daoClass) {
         this.daoClass = daoClass;
         this.entityClass = findDAOInterface();
+    }
+
+    @Inject
+    public void setEntityManagerProvider(Provider<EntityManager> emProvider) {
+        this.emProvider = emProvider;
     }
 
     private Class findDAOInterface() {
@@ -62,64 +67,11 @@ public class HibernateDAOProvider<T> implements Provider<T> {
     @Override
     public T get() {
         ClassLoader cl = daoClass.getClassLoader();
-        return (T) Proxy.newProxyInstance(cl, new Class[]{daoClass}, new DAOHandler());
-    }
-
-    private class DAOHandler implements InvocationHandler {
-
-        private EntityManager em;
-
-        private DAOHandler() {
-            this.em = injector.getInstance(EntityManager.class);
-        }
-
-        @Override
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            if (method.getName().equals("persist")) {
-                return invokePersist(args[0]);
-            } else if (method.getName().equals("findById")) {
-                return invokeFindById(args[0]);
-            } else {
-                return invokeNamedQuery(method.getName(), method, args);
-            }
-        }
-
-        private Object invokeFindById(Object arg) {
-            return em.find(entityClass, arg);
-        }
-
-        private Void invokePersist(Object arg) {
-            em.persist(arg);
-            return null;
-        }
-
-        private Object invokeNamedQuery(String name, Method method, Object[] args) {
-            Query query = tryCreatingNamedQuery(name, method);
-            applyPositionalParameters(args, query);
-
-            if (method.getReturnType().equals(List.class)) {
-                return query.getResultList();
-            } else {
-                return query.getSingleResult();
-            }
-        }
-
-        private Query tryCreatingNamedQuery(String name, Method method) {
-            try {
-                return em.createNamedQuery(name);
-            } catch (IllegalArgumentException e) {
-                throw new UnsupportedOperationException("The hibernate DAO proxy does not know how to handle the method " +
-                        method.getName());
-            }
-        }
-
-        private void applyPositionalParameters(Object[] args, Query query) {
-            if(args != null) {
-                for (int i = 0; i != args.length; ++i) {
-                    query.setParameter(i + 1, args[i]);
-                }
-            }
-        }
+        return (T) Proxy.newProxyInstance(cl,
+            new Class[]{daoClass},
+            new DAOInvocationHandler(
+                emProvider.get(), entityClass
+        ));
     }
 
 

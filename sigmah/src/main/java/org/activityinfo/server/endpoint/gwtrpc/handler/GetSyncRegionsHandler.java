@@ -20,7 +20,7 @@
 package org.activityinfo.server.endpoint.gwtrpc.handler;
 
 import com.google.inject.Inject;
-import org.activityinfo.server.dao.SchemaDAO;
+import org.activityinfo.server.dao.UserDatabaseDAO;
 import org.activityinfo.server.domain.AdminLevel;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.server.domain.UserDatabase;
@@ -34,17 +34,17 @@ import java.util.*;
 
 public class GetSyncRegionsHandler implements CommandHandler<GetSyncRegions> {
 
-    private SchemaDAO schemaDAO;
+    private UserDatabaseDAO schemaDAO;
 
     @Inject
-    public GetSyncRegionsHandler(SchemaDAO schemaDAO) {
+    public GetSyncRegionsHandler(UserDatabaseDAO schemaDAO) {
         this.schemaDAO = schemaDAO;
     }
 
     @Override
     public CommandResult execute(GetSyncRegions cmd, User user) throws CommandException {
 
-        List<UserDatabase> databases = schemaDAO.getDatabases(user);
+        List<UserDatabase> databases = schemaDAO.queryAllUserDatabasesAlphabetically();
 
         List<SyncRegion> regions = new ArrayList<SyncRegion>();
         regions.add(new SyncRegion("schema", true));

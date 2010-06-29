@@ -216,23 +216,6 @@ public class Site implements java.io.Serializable, Deleteable {
 		this.dateSynchronized = dateSynchronized;
 	}
 
-//	/**
-//	 * 
-//	 * @return
-//	 * @see https://forum.hibernate.org/viewtopic.php?t=953403
-//	 */
-//	@org.hibernate.annotations.CollectionOfElements
-//	@JoinTable(name="AttributeValue", joinColumns={@JoinColumn(name="siteId")})
-//	@org.hibernate.annotations.MapKey(columns={@Column(name="attributeId", nullable=false)})
-//	@Column(name="Value", nullable=false, columnDefinition="BIT")   
-//	public Map<Integer, Boolean> getAttributeValues() {
-//		return this.attributeValues;
-//	}
-//
-//	public void setAttributeValues(Map<Integer, Boolean> attributeValues) {
-//		this.attributeValues = attributeValues;
-//	}
-	
 	
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="site")
 	public Set<AttributeValue> getAttributeValues() {

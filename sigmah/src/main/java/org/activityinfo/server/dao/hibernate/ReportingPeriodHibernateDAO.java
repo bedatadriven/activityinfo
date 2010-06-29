@@ -27,7 +27,10 @@ import org.activityinfo.server.domain.ReportingPeriod;
 
 import javax.persistence.EntityManager;
 
-public class ReportingPeriodHibernateDAO extends AbstractDAO<ReportingPeriod, Integer> implements ReportingPeriodDAO {
+/**
+ * @author Alex Bertram
+ */
+public class ReportingPeriodHibernateDAO extends GenericDAO<ReportingPeriod, Integer> implements ReportingPeriodDAO {
 
     @Inject
     public ReportingPeriodHibernateDAO(EntityManager em) {

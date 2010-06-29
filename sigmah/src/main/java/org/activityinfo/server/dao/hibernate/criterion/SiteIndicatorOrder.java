@@ -1,4 +1,4 @@
-package org.activityinfo.server.dao.hibernate;
+package org.activityinfo.server.dao.hibernate.criterion;
 
 import org.activityinfo.server.domain.AggregationMethod;
 import org.activityinfo.server.domain.Indicator;
@@ -8,6 +8,10 @@ import org.hibernate.criterion.CriteriaQuery;
 import org.hibernate.criterion.Order;
 
 
+/**
+ * Hibernate {@link Order} clause that orders Sites by the total
+ * indicator value of the {@link org.activityinfo.server.domain.Site Site}
+ */
 public class SiteIndicatorOrder extends Order {
 	
 	private int indicatorId;

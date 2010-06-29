@@ -17,15 +17,16 @@ import java.util.*;
  * <li>c:\tiles</li>
  * </ul>
  * Ultimately needs to be replaced by a database table with URLs to WMS/TMS services.
- * 
+ *
+ * @author Alex Bertram
  */
-public class BaseMapDAOImpl implements BaseMapDAO {
+public class BaseMapFsDAO implements BaseMapDAO {
 
-    private Logger logger = Logger.getLogger(BaseMapDAOImpl.class);
-    private Map<String, BaseMap> baseMaps;
+    private final static Logger logger = Logger.getLogger(BaseMapFsDAO.class);
+    private final Map<String, BaseMap> baseMaps;
 
     @Inject
-    public BaseMapDAOImpl(Properties serverProperties) {
+    public BaseMapFsDAO(Properties serverProperties) {
         baseMaps = new HashMap<String, BaseMap>();
 
         // What about remote sources? This should probably be moved into the
@@ -40,9 +41,7 @@ public class BaseMapDAOImpl implements BaseMapDAO {
             }
         } else {
             logger.warn("No basemap root set, trying defaults at c:\\tiles and e:\\tiles");
-            if(tileRoot == null || !tileRoot.exists()) {
-                tileRoot = new File("e://tiles");
-            }
+            tileRoot = new File("e://tiles");
             if(!tileRoot.exists()) {
                 tileRoot = new File("c://tiles"); // for the development machine
             }

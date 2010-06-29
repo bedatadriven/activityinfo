@@ -21,17 +21,39 @@ package org.activityinfo.server.dao;
 
 import org.activityinfo.server.domain.Location;
 
+/**
+ * DAO for the {@link org.activityinfo.server.domain.Location} domain object.
+ *
+ * @author Alex Bertram
+ */
 public interface LocationDAO extends DAO<Location, Integer> {
 
     /**
-     * Updates the membership of a location within the administrative structure
+     * Adds a link between the given {@link org.activityinfo.server.domain.Location} and the
+     * given {@link org.activityinfo.server.domain.AdminEntity AdminEntity}. If a link with another
+     * AdminEntity exists belonging to the same {@link org.activityinfo.server.domain.AdminLevel AdminLevel},
+     * it is removed.
      *
      */
     void updateAdminMembership(int locationId, int adminLevelId, int adminEntityId);
 
 
+    /**
+     * Adds a link between the given {@link org.activityinfo.server.domain.Location Location} and
+     * {@link org.activityinfo.server.domain.AdminEntity AdminEntity}
+     * @param locationId
+     * @param adminEntityId
+     */
     void addAdminMembership(int locationId, int adminEntityId);
 
+    /**
+     * Removes the link between the given {@link org.activityinfo.server.domain.Location Location}
+     * and any {@link org.activityinfo.server.domain.AdminEntity AdminEntity} belonging to the
+     * given {@link org.activityinfo.server.domain.AdminLevel}
+     *
+     * @param locationId
+     * @param adminLevelId
+     */
     void removeMembership(int locationId, int adminLevelId);
     
 }

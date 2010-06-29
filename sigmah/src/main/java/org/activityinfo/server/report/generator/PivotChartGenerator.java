@@ -1,8 +1,8 @@
 package org.activityinfo.server.report.generator;
 
 import com.google.inject.Inject;
+import org.activityinfo.server.dao.IndicatorDAO;
 import org.activityinfo.server.dao.PivotDAO;
-import org.activityinfo.server.dao.SchemaDAO;
 import org.activityinfo.server.domain.Indicator;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.shared.report.content.PivotChartContent;
@@ -11,13 +11,13 @@ import org.activityinfo.shared.report.model.*;
 
 public class PivotChartGenerator extends PivotGenerator<PivotChartElement> {
 
-    protected final SchemaDAO schemaDAO;
+    protected final IndicatorDAO indicatorDAO;
 
     @Inject
-    public PivotChartGenerator(PivotDAO pivotDAO, SchemaDAO schemaDAO) {
+    public PivotChartGenerator(PivotDAO pivotDAO, IndicatorDAO indicatorDAO) {
         super(pivotDAO);
 
-        this.schemaDAO = schemaDAO;
+        this.indicatorDAO = indicatorDAO;
     }
 
     @Override
@@ -116,7 +116,7 @@ public class PivotChartGenerator extends PivotGenerator<PivotChartElement> {
 
         int indicatorId = element.getIndicators().get(0);
 
-        Indicator indicator = schemaDAO.findById(Indicator.class, indicatorId);
+        Indicator indicator = indicatorDAO.findById(indicatorId);
 
         return indicator.getUnits();
 

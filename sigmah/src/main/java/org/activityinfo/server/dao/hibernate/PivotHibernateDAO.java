@@ -24,14 +24,14 @@ import java.util.Set;
  * PivotDAO implementation for hibernate using native SQL.
  *
  */
-public class PivotDAOImpl implements PivotDAO {
+public class PivotHibernateDAO implements PivotDAO {
 
     private final EntityManager em;
     private final SQLDialect dialect;
 
 
     @Inject
-    public PivotDAOImpl(EntityManager em, SQLDialect dialect) {
+    public PivotHibernateDAO(EntityManager em, SQLDialect dialect) {
         this.em = em;
         this.dialect = dialect;
     }

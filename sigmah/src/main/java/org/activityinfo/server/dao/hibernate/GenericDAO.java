@@ -24,12 +24,20 @@ import org.activityinfo.server.dao.DAO;
 import javax.persistence.EntityManager;
 import java.lang.reflect.ParameterizedType;
 
-public abstract class AbstractDAO<T, K> implements DAO<T, K> {
+/**
+ * Generic DAO implementation which provides implementation of boiler-plate methods using
+ * generics.
+ *
+ * @param <T> Entity Type
+ * @param <K> Entity Key Type
+ *
+ * @author Alex Bertram
+ */
+public abstract class GenericDAO<T, K> implements DAO<T, K> {
+    private final Class<T> persistentClass;
+    protected final EntityManager em;
 
-    private Class<T> persistentClass;
-    protected EntityManager em;
-
-    protected AbstractDAO(EntityManager em) {
+    protected GenericDAO(EntityManager em) {
         this.em = em;
         this.persistentClass = (Class<T>) ((ParameterizedType) getClass()
                 .getGenericSuperclass()).getActualTypeArguments()[0];

@@ -21,5 +21,11 @@ package org.activityinfo.server.dao;
 
 import org.activityinfo.server.domain.UserPermission;
 
+/**
+ * Data Access Object for the {@link org.activityinfo.server.domain.UserPermission} domain class.
+ * Implemented by {@link org.activityinfo.server.dao.hibernate.DAOInvocationHandler proxy}
+ *
+ * @author Alex Bertram
+ */
 public interface UserPermissionDAO extends DAO<UserPermission, Integer> {
 }

@@ -1,8 +1,8 @@
 package org.activityinfo.server.dao.hibernate;
 
 import com.google.inject.Inject;
-import org.activityinfo.server.dao.SiteColumn;
 import org.activityinfo.server.dao.SiteProjectionBinder;
+import org.activityinfo.server.dao.SiteTableColumn;
 import org.activityinfo.server.dao.SiteTableDAO;
 import org.activityinfo.server.domain.AdminEntity;
 import org.activityinfo.server.domain.Site;
@@ -51,7 +51,7 @@ import java.util.Map;
  */
 public class SiteTableDAOHibernate implements SiteTableDAO {
 
-    private EntityManager em;
+    private final EntityManager em;
 
     @Inject
     public SiteTableDAOHibernate(EntityManager em) {
@@ -64,9 +64,9 @@ public class SiteTableDAOHibernate implements SiteTableDAO {
      * @return The index of the given column in the <code>values</code>
      *         array provided to <code>SiteProjectionBinder.newInstance</code>
      */
-    public static int getColumnIndex(SiteColumn source) {
+    public static int getColumnIndex(SiteTableColumn source) {
         int index = 0;
-        for (SiteColumn col : SiteColumn.values()) {
+        for (SiteTableColumn col : SiteTableColumn.values()) {
             if (col == source) {
                 return index;
             }
@@ -75,10 +75,10 @@ public class SiteTableDAOHibernate implements SiteTableDAO {
         throw new Error();
     }
 
-    public static Map<SiteColumn, Integer> getColumnMap() {
-        Map<SiteColumn, Integer> map = new HashMap<SiteColumn, Integer>();
+    public static Map<SiteTableColumn, Integer> getColumnMap() {
+        Map<SiteTableColumn, Integer> map = new HashMap<SiteTableColumn, Integer>();
         int index = 0;
-        for (SiteColumn col : SiteColumn.values()) {
+        for (SiteTableColumn col : SiteTableColumn.values()) {
             map.put(col, index++);
         }
         return map;
@@ -86,10 +86,6 @@ public class SiteTableDAOHibernate implements SiteTableDAO {
 
     @Override
     public int queryPageNumber(User user, Criterion criterion, List<Order> orderings, int pageSize, int siteId) {
-
-
-        Session session = ((HibernateEntityManager) em).getSession();
-
         Criteria criteria = createBaseCriteria(criterion);
         if (orderings != null) {
             for (Order order : orderings) {
@@ -133,12 +129,9 @@ public class SiteTableDAOHibernate implements SiteTableDAO {
 
         Criteria criteria = createBaseCriteria(criterion);
 
-        Session session = ((HibernateEntityManager) em).getSession();
-
-
         ProjectionList projection = Projections.projectionList();
 
-        for (SiteColumn column : SiteColumn.values()) {
+        for (SiteTableColumn column : SiteTableColumn.values()) {
             projection.add(Projections.property(column.property()), column.alias());
         }
         criteria.setProjection(projection);
@@ -367,6 +360,4 @@ public class SiteTableDAOHibernate implements SiteTableDAO {
             }
         }
     }
-
-
 }

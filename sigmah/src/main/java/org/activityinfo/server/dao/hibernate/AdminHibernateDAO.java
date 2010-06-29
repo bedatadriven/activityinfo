@@ -14,12 +14,15 @@ import org.hibernate.ejb.HibernateEntityManager;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-public class AdminDAOImpl extends AbstractDAO<AdminEntity, Integer> implements AdminDAO {
+/**
+ * @author Alex Bertram
+ */
+public class AdminHibernateDAO extends GenericDAO<AdminEntity, Integer> implements AdminDAO {
 
     private final EntityManager em;
 
     @Inject
-    public AdminDAOImpl(EntityManager em) {
+    public AdminHibernateDAO(EntityManager em) {
         super(em);
         this.em = em;
     }

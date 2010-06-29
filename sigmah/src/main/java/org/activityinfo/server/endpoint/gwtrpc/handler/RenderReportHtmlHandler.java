@@ -20,7 +20,7 @@
 package org.activityinfo.server.endpoint.gwtrpc.handler;
 
 import com.google.inject.Inject;
-import org.activityinfo.server.dao.ReportDAO;
+import org.activityinfo.server.dao.ReportDefinitionDAO;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.server.report.ReportParserJaxb;
 import org.activityinfo.server.report.ServletImageStorageProvider;
@@ -45,12 +45,12 @@ import java.io.IOException;
 public class RenderReportHtmlHandler implements CommandHandler<RenderReportHtml> {
 
     private final ReportGenerator generator;
-    private final ReportDAO reportDAO;
+    private final ReportDefinitionDAO reportDAO;
     private final HtmlReportRenderer renderer;
     private final ServletContext servletContext;
 
     @Inject
-    public RenderReportHtmlHandler(ReportGenerator generator, ReportDAO reportDAO, HtmlReportRenderer renderer, ServletContext servletContext) {
+    public RenderReportHtmlHandler(ReportGenerator generator, ReportDefinitionDAO reportDAO, HtmlReportRenderer renderer, ServletContext servletContext) {
         this.generator = generator;
         this.reportDAO = reportDAO;
         this.renderer = renderer;
@@ -59,7 +59,7 @@ public class RenderReportHtmlHandler implements CommandHandler<RenderReportHtml>
 
     public CommandResult execute(RenderReportHtml cmd, User user) throws CommandException {
 
-        String xml = reportDAO.getXmlById(cmd.getTemplateId());
+        String xml = reportDAO.findById(cmd.getTemplateId()).getXml();
 
         try {
             Report report = ReportParserJaxb.parseXml(xml);

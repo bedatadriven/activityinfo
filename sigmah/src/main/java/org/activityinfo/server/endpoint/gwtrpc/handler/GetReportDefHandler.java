@@ -20,7 +20,7 @@
 package org.activityinfo.server.endpoint.gwtrpc.handler;
 
 import com.google.inject.Inject;
-import org.activityinfo.server.dao.ReportDAO;
+import org.activityinfo.server.dao.ReportDefinitionDAO;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.shared.command.GetReportDef;
 import org.activityinfo.shared.command.result.CommandResult;
@@ -33,19 +33,17 @@ import org.activityinfo.shared.exception.CommandException;
  */
 public class GetReportDefHandler implements CommandHandler<GetReportDef> {
 
-    protected ReportDAO reportDAO;
+    protected ReportDefinitionDAO reportDAO;
 
     @Inject
-    public void setReportDAO(ReportDAO dao) {
+    public void setReportDAO(ReportDefinitionDAO dao) {
         this.reportDAO = dao;
     }
 
     @Override
     public CommandResult execute(GetReportDef cmd, User user)
             throws CommandException {
-
-        return new XmlResult(reportDAO.getXmlById(cmd.getId()));
-
+        return new XmlResult(reportDAO.findById(cmd.getId()).getXml());
     }
 
 }

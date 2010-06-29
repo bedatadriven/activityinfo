@@ -328,7 +328,8 @@
 	<locationAdminLink locationId="6" adminEntityId="11"/>
 
     <site siteId="6" activityId="4" locationId="6" partnerId="1" Status="1" target="0"
-          DateCreated="2009-02-01" DateEdited="2009-02-01" />
+          Date1="2009-01-01" Date2="2009-01-31"
+          DateCreated="2009-02-01" DateEdited="2009-02-01"  />
 
     <reportingPeriod reportingPeriodId="601" siteId="6" monitoring="0" date1="2009-01-01" date2="2009-01-31"
                      DateCreated="2009-01-01" DateEdited="2009-01-01"/>
@@ -345,7 +346,9 @@
     <locationAdminLink locationId="7" adminEntityId="3"/>
     <locationAdminLink locationId="7" adminEntityId="12"/>
 
-    <site siteId="7" activityId="4" locationId="7" partnerId="1" Status="1" target="0"  DateCreated="2009-02-01" DateEdited="2009-02-01"/>
+    <site siteId="7" activityId="4" locationId="7" partnerId="1" Status="1" target="0"
+          Date1="2009-01-01" Date2="2009-01-31"
+          DateCreated="2009-02-01" DateEdited="2009-02-01"/>
 
        
 

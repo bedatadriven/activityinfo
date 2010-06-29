@@ -25,6 +25,11 @@ import org.activityinfo.server.domain.User;
 
 import javax.persistence.NoResultException;
 
+/**
+ * Data Access Object for the {@link org.activityinfo.server.domain.User} domain class.
+ *
+ * @author Alex Bertram
+ */
 @ImplementedBy(UserDAOImpl.class)
 public interface UserDAO extends DAO<User, Integer> {
 

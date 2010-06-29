@@ -31,6 +31,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+/**
+ * Guice module that provides Hibernate-based implementations for the DAO-layer interfaces.
+ *
+ * @author Alex Bertram
+ */
 public class HibernateModule extends AbstractModule {
 
     @Override
@@ -66,8 +71,10 @@ public class HibernateModule extends AbstractModule {
         bindDAOProxy(ActivityDAO.class);
         bindDAOProxy(AuthenticationDAO.class);
         bindDAOProxy(CountryDAO.class);
+        bindDAOProxy(IndicatorDAO.class);
         bind(LocationDAO.class).to(LocationHibernateDAO.class);
         bind(ReportingPeriodDAO.class).to(ReportingPeriodHibernateDAO.class);
+        bindDAOProxy(ReportDefinitionDAO.class);
         bindDAOProxy(PartnerDAO.class);
         bind(SiteDAO.class).to(SiteHibernateDAO.class);
         bindDAOProxy(UserDatabaseDAO.class);

@@ -8,8 +8,8 @@ import org.activityinfo.server.domain.AdminEntity;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.test.AssertUtils;
 import org.activityinfo.test.InjectionSupport;
-import org.activityinfo.test.Modules;
 import org.activityinfo.test.MockHibernateModule;
+import org.activityinfo.test.Modules;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -27,7 +27,7 @@ public class AdminDAOImplTest {
     private AdminDAO adminDAO;
 
     @Inject
-    public AdminDAOImplTest(AdminDAOImpl adminDAO) {
+    public AdminDAOImplTest(AdminHibernateDAO adminDAO) {
         this.adminDAO = adminDAO;
     }
 

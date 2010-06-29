@@ -24,8 +24,21 @@ import org.activityinfo.server.domain.Country;
 import java.util.List;
 
 
+/**
+ * Data Access Object for {@link org.activityinfo.server.domain.Country} objects. Implemented by
+ * {@link org.activityinfo.server.dao.hibernate.DAOInvocationHandler proxy},
+ * see the Country class for query definitions.
+ *
+ * @author Alex Bertram
+ */
 public interface CountryDAO extends DAO<Country, Integer> {
 
+    /**
+     * Returns a list of Countries in alphabetical order.
+     * See {@link org.activityinfo.server.domain.Country} for query definition
+     *
+     * @return  a list of Countries in alphabetical order
+     */
     List<Country> queryAllCountriesAlphabetically();
 
 }

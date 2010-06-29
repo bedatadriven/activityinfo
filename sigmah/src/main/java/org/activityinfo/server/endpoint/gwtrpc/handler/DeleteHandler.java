@@ -20,11 +20,13 @@
 package org.activityinfo.server.endpoint.gwtrpc.handler;
 
 import com.google.inject.Inject;
-import org.activityinfo.server.dao.SchemaDAO;
-import org.activityinfo.server.dao.SiteDAO;
-import org.activityinfo.server.domain.*;
+import org.activityinfo.server.domain.Deleteable;
+import org.activityinfo.server.domain.User;
+import org.activityinfo.server.domain.UserDatabase;
 import org.activityinfo.shared.command.Delete;
 import org.activityinfo.shared.command.result.CommandResult;
+
+import javax.persistence.EntityManager;
 
 /**
  * @author Alex Bertram
@@ -32,45 +34,33 @@ import org.activityinfo.shared.command.result.CommandResult;
  * @see org.activityinfo.server.domain.Deleteable
  */
 public class DeleteHandler implements CommandHandler<Delete> {
-    private final SchemaDAO schemaDAO;
-    private final SiteDAO siteDAO;
+    private EntityManager em;
 
     @Inject
-    public DeleteHandler(SchemaDAO schemaDAO, SiteDAO siteDAO) {
-        this.schemaDAO = schemaDAO;
-        this.siteDAO = siteDAO;
+    public DeleteHandler(EntityManager em) {
+        this.em = em;
     }
 
     @Override
     public CommandResult execute(Delete cmd, User user) {
 
-        Deleteable entity;
-
         // TODO check permissions for delete!
+        // These handler should redirect to one of the Entity policy classes.
+        Class entityClass = entityClassForEntityName(cmd.getEntityName());
+        Deleteable entity = (Deleteable) em.find(entityClass, cmd.getId());
 
-        if ("Site".equals(cmd.getEntityName())) {
-            entity = siteDAO.findById(cmd.getId());
-        } else if ("UserDatabase".equals(cmd.getEntityName())) {
-            entity = schemaDAO.findById(UserDatabase.class, cmd.getId());
-        } else if ("Activity".equals(cmd.getEntityName())) {
-            entity = schemaDAO.findById(Activity.class, cmd.getId());
-        } else if ("AttributeGroup".equals(cmd.getEntityName())) {
-            entity = schemaDAO.findById(AttributeGroup.class, cmd.getId());
-        } else if ("Attribute".equals(cmd.getEntityName())) {
-            entity = schemaDAO.findById(Attribute.class, cmd.getId());
-        } else if ("Indicator".equals(cmd.getEntityName())) {
-            entity = schemaDAO.findById(Indicator.class, cmd.getId());
-        } else {
-            throw new RuntimeException("Cannot delete entity type " + cmd.getEntityName());
-        }
-
-        if (entity == null) {
-            return null;
-        }
-
-
-        ((Deleteable) entity).delete();
+        entity.delete();
 
         return null;
+    }
+
+    private Class<Deleteable> entityClassForEntityName(String entityName) {
+        try {
+            return (Class<Deleteable>) Class.forName(UserDatabase.class.getPackage().getName() + "." + entityName);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("Invalid entity name '" + entityName + "'");
+        } catch (ClassCastException e) {
+            throw new RuntimeException("Entity type '" + entityName + "' not Deletable");
+        }
     }
 }

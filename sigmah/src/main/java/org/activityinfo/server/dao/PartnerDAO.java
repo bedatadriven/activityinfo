@@ -21,5 +21,11 @@ package org.activityinfo.server.dao;
 
 import org.activityinfo.server.domain.Partner;
 
+/**
+ * Data Access Object for the {@link Partner} domain object. Implemented automatically by
+ * {@link org.activityinfo.server.dao.hibernate.DAOInvocationHandler proxy}
+ *
+ * @author Alex Bertram
+ */
 public interface PartnerDAO extends DAO<Partner, Integer> {
 }

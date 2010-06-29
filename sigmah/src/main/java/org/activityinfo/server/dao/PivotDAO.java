@@ -1,7 +1,7 @@
 package org.activityinfo.server.dao;
 
 import com.google.inject.ImplementedBy;
-import org.activityinfo.server.dao.hibernate.PivotDAOImpl;
+import org.activityinfo.server.dao.hibernate.PivotHibernateDAO;
 import org.activityinfo.shared.report.content.DimensionCategory;
 import org.activityinfo.shared.report.model.Dimension;
 import org.activityinfo.shared.report.model.DimensionType;
@@ -10,23 +10,33 @@ import org.activityinfo.shared.report.model.Filter;
 import java.util.*;
 
 /**
- * @author Alex Bertram (akbertram@gmail.com)
+ * PivotDAO is a reporting data access object that provides aggregation ("or pivoting")
+ *  {@link org.activityinfo.server.domain.Site}s by a given set of dimensions.
+ *
+ * @author Alex Bertram
  */
-@ImplementedBy(PivotDAOImpl.class)
+@ImplementedBy(PivotHibernateDAO.class)
 public interface PivotDAO {
 
+    /**
+     *
+     * @param userId the id of the User for whom the data is restricted
+     * @param filter a {@link org.activityinfo.shared.report.model.Filter filter} restricting the sites
+     * @param dimensions
+     * @return
+     */
     List<Bucket> aggregate(int userId, Filter filter, Set<Dimension> dimensions);
 
     List<String> getFilterLabels(DimensionType type, Collection<Integer> ids);
 
+    /**
+     * Contains the aggregate value for an intersection of dimension categories.
+     */
     public static class Bucket {
-
         private double value;
-
         private Map<Dimension, DimensionCategory> categories = new HashMap<Dimension, DimensionCategory>();
 
         public Bucket() {
-
         }
 
         public Bucket(double doubleValue) {

@@ -36,7 +36,7 @@ public class PivotDAOImplTest {
     private static final int OWNER_USER_ID = 1;
 
     @Inject
-    public PivotDAOImplTest(PivotDAOImpl dao) {
+    public PivotDAOImplTest(PivotHibernateDAO dao) {
         this.dao = dao;
     }
 

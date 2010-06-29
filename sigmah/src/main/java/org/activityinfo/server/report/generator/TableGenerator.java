@@ -1,11 +1,11 @@
 package org.activityinfo.server.report.generator;
 
 import com.google.inject.Inject;
+import org.activityinfo.server.dao.IndicatorDAO;
 import org.activityinfo.server.dao.PivotDAO;
-import org.activityinfo.server.dao.SchemaDAO;
 import org.activityinfo.server.dao.SiteTableDAO;
-import org.activityinfo.server.dao.hibernate.SiteAdminOrder;
-import org.activityinfo.server.dao.hibernate.SiteIndicatorOrder;
+import org.activityinfo.server.dao.hibernate.criterion.SiteAdminOrder;
+import org.activityinfo.server.dao.hibernate.criterion.SiteIndicatorOrder;
 import org.activityinfo.server.domain.Indicator;
 import org.activityinfo.server.domain.User;
 import org.activityinfo.shared.report.content.TableContent;
@@ -20,14 +20,14 @@ import java.util.Map;
 
 public class TableGenerator extends ListGenerator<TableElement> {
 
-    protected SchemaDAO schemaDAO;
+    protected IndicatorDAO indicatorDAO;
     protected MapGenerator mapGenerator;
 
     @Inject
-    public TableGenerator(PivotDAO pivotDAO, SiteTableDAO siteDAO, SchemaDAO schemaDAO,
+    public TableGenerator(PivotDAO pivotDAO, SiteTableDAO siteDAO, IndicatorDAO indicatorDAO,
                           MapGenerator mapGenerator) {
         super(pivotDAO, siteDAO);
-        this.schemaDAO = schemaDAO;
+        this.indicatorDAO = indicatorDAO;
         this.mapGenerator = mapGenerator;
     }
 
@@ -66,7 +66,7 @@ public class TableGenerator extends ListGenerator<TableElement> {
                 list.add(new SiteAdminOrder(column.getPropertyQualifyingId(), column.isOrderAscending()));
 
             } else if ("indicator".equals(column.getProperty())) {
-                Indicator indicator = schemaDAO.findById(Indicator.class, column.getPropertyQualifyingId());
+                Indicator indicator = indicatorDAO.findById(column.getPropertyQualifyingId());
                 list.add(new SiteIndicatorOrder(indicator, column.isOrderAscending()));
 
             } else {

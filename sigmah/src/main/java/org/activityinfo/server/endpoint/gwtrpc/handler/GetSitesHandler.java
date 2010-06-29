@@ -22,13 +22,13 @@ package org.activityinfo.server.endpoint.gwtrpc.handler;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.SortInfo;
 import com.google.inject.Inject;
-import org.activityinfo.server.dao.SchemaDAO;
-import org.activityinfo.server.dao.SiteColumn;
+import org.activityinfo.server.dao.IndicatorDAO;
 import org.activityinfo.server.dao.SiteProjectionBinder;
+import org.activityinfo.server.dao.SiteTableColumn;
 import org.activityinfo.server.dao.SiteTableDAO;
 import org.activityinfo.server.dao.filter.FrenchFilterParser;
-import org.activityinfo.server.dao.hibernate.SiteAdminOrder;
-import org.activityinfo.server.dao.hibernate.SiteIndicatorOrder;
+import org.activityinfo.server.dao.hibernate.criterion.SiteAdminOrder;
+import org.activityinfo.server.dao.hibernate.criterion.SiteIndicatorOrder;
 import org.activityinfo.server.domain.AdminEntity;
 import org.activityinfo.server.domain.Indicator;
 import org.activityinfo.server.domain.User;
@@ -52,14 +52,14 @@ import java.util.*;
 public class GetSitesHandler implements CommandHandler<GetSites> {
 
     private final SiteTableDAO siteDAO;
-    private final SchemaDAO schemaDAO;
+    private final IndicatorDAO indicatorDAO;
     private final Mapper mapper;
     private final FrenchFilterParser parser;
 
     @Inject
-    public GetSitesHandler(SiteTableDAO siteDAO, SchemaDAO schemaDAO, Mapper mapper, FrenchFilterParser parser) {
+    public GetSitesHandler(SiteTableDAO siteDAO, IndicatorDAO indicatorDAO, Mapper mapper, FrenchFilterParser parser) {
         this.siteDAO = siteDAO;
-        this.schemaDAO = schemaDAO;
+        this.indicatorDAO = indicatorDAO;
         this.mapper = mapper;
         this.parser = parser;
     }
@@ -74,12 +74,12 @@ public class GetSitesHandler implements CommandHandler<GetSites> {
 
         Conjunction criteria = Restrictions.conjunction();
         if (cmd.getSiteId() != null) {
-            criteria.add(Restrictions.eq(SiteColumn.id.property(), cmd.getSiteId()));
+            criteria.add(Restrictions.eq(SiteTableColumn.id.property(), cmd.getSiteId()));
         } else if (cmd.getActivityId() != null) {
-            criteria.add(Restrictions.eq(SiteColumn.activity_id.property(),
+            criteria.add(Restrictions.eq(SiteTableColumn.activity_id.property(),
                     cmd.getActivityId()));
         } else if (cmd.getDatabaseId() != null) {
-            criteria.add(Restrictions.eq(SiteColumn.database_id.property(),
+            criteria.add(Restrictions.eq(SiteTableColumn.database_id.property(),
                     cmd.getDatabaseId()));
         }
         if (cmd.isAssessmentsOnly()) {
@@ -109,18 +109,18 @@ public class GetSitesHandler implements CommandHandler<GetSites> {
             String field = cmd.getSortInfo().getSortField();
 
             if (field.equals("date1")) {
-                order.add(order(SiteColumn.date1, cmd.getSortInfo()));
+                order.add(order(SiteTableColumn.date1, cmd.getSortInfo()));
             } else if (field.equals("date2")) {
-                order.add(order(SiteColumn.date2, cmd.getSortInfo()));
+                order.add(order(SiteTableColumn.date2, cmd.getSortInfo()));
             } else if (field.equals("locationName")) {
-                order.add(order(SiteColumn.location_name, cmd.getSortInfo()));
+                order.add(order(SiteTableColumn.location_name, cmd.getSortInfo()));
             } else if (field.equals("partner")) {
-                order.add(order(SiteColumn.partner_name, cmd.getSortInfo()));
+                order.add(order(SiteTableColumn.partner_name, cmd.getSortInfo()));
             } else if (field.equals("locationAxe")) {
-                order.add(order(SiteColumn.location_axe, cmd.getSortInfo()));
+                order.add(order(SiteTableColumn.location_axe, cmd.getSortInfo()));
             } else if (field.startsWith(IndicatorDTO.PROPERTY_PREFIX)) {
 
-                Indicator indicator = schemaDAO.findById(Indicator.class,
+                Indicator indicator = indicatorDAO.findById(
                         IndicatorDTO.indicatorIdForPropertyName(field));
 
                 order.add(new SiteIndicatorOrder(indicator,
@@ -167,7 +167,7 @@ public class GetSitesHandler implements CommandHandler<GetSites> {
 
     }
 
-    protected Order order(SiteColumn column, SortInfo si) {
+    protected Order order(SiteTableColumn column, SortInfo si) {
         if (si.getSortDir() == SortDir.ASC) {
             return Order.asc(column.property());
         } else {
@@ -184,23 +184,23 @@ public class GetSitesHandler implements CommandHandler<GetSites> {
         @Override
         public SiteDTO newInstance(String[] properties, Object[] values) {
             SiteDTO model = new SiteDTO();
-            model.setId((Integer) values[SiteColumn.id.index()]);
-            model.setActivityId((Integer) values[SiteColumn.activity_id.index()]);
-            model.setDate1((Date) values[SiteColumn.date1.index()]);
-            model.setDate2((Date) values[SiteColumn.date2.index()]);
-            model.setLocationName((String) values[SiteColumn.location_name.index()]);
-            model.setLocationAxe((String) values[SiteColumn.location_axe.index()]);
-            model.setStatus((Integer) values[SiteColumn.status.index()]);
-            model.setX((Double) values[SiteColumn.x.index()]);
-            model.setY((Double) values[SiteColumn.y.index()]);
-            model.setComments((String) values[SiteColumn.comments.index()]);
+            model.setId((Integer) values[SiteTableColumn.id.index()]);
+            model.setActivityId((Integer) values[SiteTableColumn.activity_id.index()]);
+            model.setDate1((Date) values[SiteTableColumn.date1.index()]);
+            model.setDate2((Date) values[SiteTableColumn.date2.index()]);
+            model.setLocationName((String) values[SiteTableColumn.location_name.index()]);
+            model.setLocationAxe((String) values[SiteTableColumn.location_axe.index()]);
+            model.setStatus((Integer) values[SiteTableColumn.status.index()]);
+            model.setX((Double) values[SiteTableColumn.x.index()]);
+            model.setY((Double) values[SiteTableColumn.y.index()]);
+            model.setComments((String) values[SiteTableColumn.comments.index()]);
 
-            int partnerId = (Integer) values[SiteColumn.partner_id.index()];
+            int partnerId = (Integer) values[SiteTableColumn.partner_id.index()];
             PartnerDTO partner = partners.get(partnerId);
             if (partner == null) {
                 partner = new PartnerDTO(
                         partnerId,
-                        (String) values[SiteColumn.partner_name.index()]);
+                        (String) values[SiteTableColumn.partner_name.index()]);
                 partners.put(partnerId, partner);
             }
 

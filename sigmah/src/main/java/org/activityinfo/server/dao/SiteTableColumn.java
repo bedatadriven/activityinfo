@@ -1,9 +1,13 @@
 package org.activityinfo.server.dao;
 
-/**
+/**  
+ * 
+ * Names of columns that can be used to create a Criterion for 
+ * {@link SiteTableDAO}
+ * 
 * @author Alex Bertram (akbertram@gmail.com)
 */
-public enum SiteColumn {
+public enum SiteTableColumn {
 
     id(0, "site.id"),
     activity_id(1, "activity.id"),
@@ -22,10 +26,10 @@ public enum SiteColumn {
     x(14, "location.x"),
     y(15, "location.y");
 
-    private String property;
-    private int index;
+    private final String property;
+    private final int index;
 
-    SiteColumn(int index, String property) {
+    SiteTableColumn(int index, String property) {
         this.index = index;
         this.property = property;
     }

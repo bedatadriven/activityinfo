@@ -9,8 +9,20 @@ import org.hibernate.criterion.Order;
 
 import java.util.List;
 
-/**
- * @author Alex Bertram (akbertram@gmail.com)
+/**       
+ * 
+ * Data Access Object for projections based on the {@link org.activityinfo.server.domain.Site Site} domain object.
+ * 
+ * Information associated with Sites is stored across several entities, including
+ * {@link org.activityinfo.server.domain.Location Location},
+ * {@link org.activityinfo.server.domain.Partner},
+ * {@link org.activityinfo.server.domain.AttributeValue},
+ * {@link org.activityinfo.server.domain.ReportingPeriod ReportingPeriod}, and
+ * {@link org.activityinfo.server.domain.IndicatorValue}, but often we need this information in
+ * a table format with all the different data in columns, and this class does the heavy lifting.
+ *
+ * 
+ * @author Alex Bertram
  */
 @ImplementedBy(SiteTableDAOHibernate.class)
 public interface SiteTableDAO {

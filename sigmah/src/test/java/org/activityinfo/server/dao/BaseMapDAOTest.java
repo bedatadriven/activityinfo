@@ -18,7 +18,7 @@ public class BaseMapDAOTest {
             return;
         }
 
-        BaseMapDAO dao = new BaseMapDAOImpl(new Properties());
+        BaseMapDAO dao = new BaseMapFsDAO(new Properties());
         LocalBaseMap gray = (LocalBaseMap) dao.getBaseMap("zs.gray.cd");
 
         Assert.assertEquals("Carte Gris avec Zones de Sante", gray.getName());
