@@ -1,4 +1,0 @@
-<module>
-    <inherits name="com.google.code.gaxb.emul.Emulation"/>
-    <source path='no-source'/>
-</module>

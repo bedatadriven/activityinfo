@@ -8411,3 +8411,117 @@ java.lang.RuntimeException: Could not find base map id=colorcast.cd
 	at org.mortbay.io.nio.SelectChannelEndPoint.run(SelectChannelEndPoint.java:395)
 	at org.mortbay.thread.QueuedThreadPool$PoolThread.run(QueuedThreadPool.java:488)
 13:25:46,810  WARN CommandServlet:92 - emailAlert is enabled for handleCommand but no alert recipients are specified. Please set the 'alert.recipients' property in the activityinfo.config file
+10:35:53,875  INFO StartupListener:41 - ActivityInfo servlet context is initializing
+10:35:53,884 TRACE StartupListener:50 - Injector is being created
+10:35:54,726  INFO ConfigModule:50 - Trying to read properties from tomcat conf folder: C:\Users\Owner\dev\p\sigmah\sigmah\conf\activityinfo.conf
+10:36:41,883  INFO Version:15 - Hibernate Annotations 3.4.0.GA
+10:36:41,910  INFO Environment:543 - Hibernate 3.3.0.SP1
+10:36:41,918  INFO Environment:576 - hibernate.properties not found
+10:36:41,929  INFO Environment:709 - Bytecode provider name : javassist
+10:36:41,937  INFO Environment:627 - using JDK 1.4 java.sql.Timestamp handling
+10:36:42,048  INFO Version:14 - Hibernate Commons Annotations 3.1.0.GA
+10:36:42,054  INFO Version:16 - Hibernate EntityManager 3.4.0.GA
+10:36:43,190  INFO AnnotationBinder:419 - Binding entity from annotated class: org.activityinfo.server.domain.Indicator
+10:36:43,240  INFO EntityBinder:422 - Bind entity org.activityinfo.server.domain.Indicator on table Indicator
+10:36:43,314  INFO AnnotationBinder:419 - Binding entity from annotated class: org.activityinfo.server.domain.AdminEntity
+10:36:43,315  INFO EntityBinder:422 - Bind entity org.activityinfo.server.domain.AdminEntity on table AdminEntity
+10:36:43,358  INFO AnnotationBinder:419 - Binding entity from annotated class: org.activityinfo.server.domain.Attribute
+10:36:43,360  INFO EntityBinder:422 - Bind entity org.activityinfo.server.domain.Attribute on table Attribute
+10:36:43,362  INFO AnnotationBinder:419 - Binding entity from annotated class: org.activityinfo.server.domain.User
+10:36:43,365  INFO QueryBinder:64 - Binding Named query: findUserByEmail => select u from User u where u.email = :email
+10:36:43,370  INFO QueryBinder:64 - Binding Named query: findUserByChangePasswordKey => select u from User u where u.changePasswordKey = :key
+10:36:43,371  INFO EntityBinder:422 - Bind entity org.activityinfo.server.domain.User on table UserLogin
+10:36:43,374  INFO AnnotationBinder:419 - Binding entity from annotated class: org.activityinfo.server.domain.LocationType
+10:36:43,375  INFO EntityBinder:422 - Bind entity org.activityinfo.server.domain.LocationType on table LocationType
+10:36:43,378  INFO AnnotationBinder:419 - Binding entity from annotated class: org.activityinfo.server.domain.Country
+10:36:43,379  INFO QueryBinder:64 - Binding Named query: queryAllCountriesAlphabetically => select c from Country c order by c.name
+10:36:43,380  INFO EntityBinder:422 - Bind entity org.activityinfo.server.domain.Country on table Country
+10:36:43,390  INFO AnnotationBinder:419 - Binding entity from annotated class: org.activityinfo.server.domain.Site
+10:36:43,391  INFO EntityBinder:422 - Bind entity org.activityinfo.server.domain.Site on table Site
+10:36:43,403  INFO AnnotationBinder:419 - Binding entity from annotated class: org.activityinfo.server.domain.UserPermission
+10:36:43,404  INFO EntityBinder:422 - Bind entity org.activityinfo.server.domain.UserPermission on table UserPermission
+10:36:43,408  INFO AnnotationBinder:419 - Binding entity from annotated class: org.activityinfo.server.domain.IndicatorValue
+10:36:43,409  INFO EntityBinder:422 - Bind entity org.activityinfo.server.domain.IndicatorValue on table IndicatorValue
+10:36:43,417  INFO AnnotationBinder:419 - Binding entity from annotated class: org.activityinfo.server.domain.Partner
+10:36:43,418  INFO EntityBinder:422 - Bind entity org.activityinfo.server.domain.Partner on table Partner
+10:36:43,421  INFO AnnotationBinder:419 - Binding entity from annotated class: org.activityinfo.server.domain.Authentication
+10:36:43,421  INFO EntityBinder:422 - Bind entity org.activityinfo.server.domain.Authentication on table Authentication
+10:36:43,433  INFO AnnotationBinder:419 - Binding entity from annotated class: org.activityinfo.server.domain.Location
+10:36:43,434  INFO EntityBinder:422 - Bind entity org.activityinfo.server.domain.Location on table Location
+10:36:43,441  INFO AnnotationBinder:419 - Binding entity from annotated class: org.activityinfo.server.domain.ReportSubscription
+10:36:43,442  INFO EntityBinder:422 - Bind entity org.activityinfo.server.domain.ReportSubscription on table ReportSubscription
+10:36:43,446  INFO AnnotationBinder:419 - Binding entity from annotated class: org.activityinfo.server.domain.UserDatabase
+10:36:43,628  INFO AnnotationBinder:947 - Binding filter definition: userVisible
+10:36:43,629  INFO AnnotationBinder:947 - Binding filter definition: hideDeleted
+10:36:43,630  INFO EntityBinder:422 - Bind entity org.activityinfo.server.domain.UserDatabase on table UserDatabase
+10:36:43,634  INFO AnnotationBinder:419 - Binding entity from annotated class: org.activityinfo.server.domain.Activity
+10:36:43,635  INFO QueryBinder:64 - Binding Named query: queryMaxSortOrder => select max(e.sortOrder) from Activity e where e.database.id = ?1
+10:36:43,636  INFO EntityBinder:422 - Bind entity org.activityinfo.server.domain.Activity on table Activity
+10:36:43,643  INFO AnnotationBinder:419 - Binding entity from annotated class: org.activityinfo.server.domain.AdminLevel
+10:36:43,644  INFO EntityBinder:422 - Bind entity org.activityinfo.server.domain.AdminLevel on table AdminLevel
+10:36:43,647  INFO AnnotationBinder:419 - Binding entity from annotated class: org.activityinfo.server.domain.ReportDefinition
+10:36:43,648  INFO EntityBinder:422 - Bind entity org.activityinfo.server.domain.ReportDefinition on table ReportTemplate
+10:36:43,655  INFO AnnotationBinder:419 - Binding entity from annotated class: org.activityinfo.server.domain.ReportingPeriod
+10:36:43,656  INFO EntityBinder:422 - Bind entity org.activityinfo.server.domain.ReportingPeriod on table ReportingPeriod
+10:36:43,660  INFO AnnotationBinder:419 - Binding entity from annotated class: org.activityinfo.server.domain.Phase
+10:36:43,662  INFO EntityBinder:422 - Bind entity org.activityinfo.server.domain.Phase on table Phase
+10:36:43,665  INFO AnnotationBinder:419 - Binding entity from annotated class: org.activityinfo.server.domain.AttributeValue
+10:36:43,666  INFO EntityBinder:422 - Bind entity org.activityinfo.server.domain.AttributeValue on table AttributeValue
+10:36:43,668  INFO AnnotationBinder:419 - Binding entity from annotated class: org.activityinfo.server.domain.AttributeGroup
+10:36:43,669  INFO EntityBinder:422 - Bind entity org.activityinfo.server.domain.AttributeGroup on table AttributeGroup
+10:36:43,683  INFO CollectionBinder:650 - Mapping collection: org.activityinfo.server.domain.AdminEntity.children -> AdminEntity
+10:36:43,686  INFO CollectionBinder:650 - Mapping collection: org.activityinfo.server.domain.LocationType.activities -> Activity
+10:36:43,687  INFO CollectionBinder:650 - Mapping collection: org.activityinfo.server.domain.LocationType.locations -> Location
+10:36:43,687  INFO CollectionBinder:650 - Mapping collection: org.activityinfo.server.domain.Country.adminLevels -> AdminLevel
+10:36:43,688  INFO CollectionBinder:650 - Mapping collection: org.activityinfo.server.domain.Country.locationTypes -> LocationType
+10:36:43,688  INFO CollectionBinder:650 - Mapping collection: org.activityinfo.server.domain.Site.attributeValues -> AttributeValue
+10:36:43,689  INFO CollectionBinder:650 - Mapping collection: org.activityinfo.server.domain.Site.interventions -> Site
+10:36:43,689  INFO CollectionBinder:650 - Mapping collection: org.activityinfo.server.domain.Site.reportingPeriods -> ReportingPeriod
+10:36:43,690  INFO CollectionBinder:650 - Mapping collection: org.activityinfo.server.domain.Location.sites -> Site
+10:36:43,691  INFO CollectionBinder:650 - Mapping collection: org.activityinfo.server.domain.UserDatabase.activities -> Activity
+10:36:43,691  INFO CollectionBinder:650 - Mapping collection: org.activityinfo.server.domain.UserDatabase.userPermissions -> UserPermission
+10:36:43,693  INFO CollectionBinder:650 - Mapping collection: org.activityinfo.server.domain.Activity.indicators -> Indicator
+10:36:43,695  INFO CollectionBinder:650 - Mapping collection: org.activityinfo.server.domain.Activity.sites -> Site
+10:36:43,697  INFO CollectionBinder:650 - Mapping collection: org.activityinfo.server.domain.AdminLevel.childLevels -> AdminLevel
+10:36:43,698  INFO CollectionBinder:650 - Mapping collection: org.activityinfo.server.domain.AdminLevel.entities -> AdminEntity
+10:36:43,698  INFO CollectionBinder:650 - Mapping collection: org.activityinfo.server.domain.ReportDefinition.subscriptions -> ReportSubscription
+10:36:43,699  INFO CollectionBinder:650 - Mapping collection: org.activityinfo.server.domain.ReportingPeriod.indicatorValues -> IndicatorValue
+10:36:43,699  INFO CollectionBinder:650 - Mapping collection: org.activityinfo.server.domain.AttributeGroup.attributes -> Attribute
+10:36:43,701  INFO AnnotationConfiguration:369 - Hibernate Validator not found: ignoring
+10:36:43,756  INFO HibernateSearchEventListenerRegister:53 - Unable to find org.hibernate.search.event.FullTextIndexEventListener on the classpath. Hibernate Search is not enabled.
+10:36:43,782  WARN RootClass:233 - composite-id class does not override equals(): org.activityinfo.server.domain.ReportSubscriptionId
+10:36:43,782  WARN RootClass:238 - composite-id class does not override hashCode(): org.activityinfo.server.domain.ReportSubscriptionId
+10:36:43,797  INFO DriverManagerConnectionProvider:64 - Using Hibernate built-in connection pool (not for production use!)
+10:36:43,797  INFO DriverManagerConnectionProvider:65 - Hibernate connection pool size: 20
+10:36:43,798  INFO DriverManagerConnectionProvider:68 - autocommit mode: true
+10:36:43,806  INFO DriverManagerConnectionProvider:103 - using driver: net.sourceforge.jtds.jdbc.Driver at URL: jdbc:jtds:sqlserver://localhost:1433/actinfo
+10:36:43,806  INFO DriverManagerConnectionProvider:109 - connection properties: {user=sa, password=****, autocommit=true, release_mode=auto}
+10:36:49,030  INFO SettingsFactory:116 - RDBMS: Microsoft SQL Server, version: 09.00.4053
+10:36:49,038  INFO SettingsFactory:117 - JDBC driver: jTDS Type 4 JDBC Driver for MS SQL Server and Sybase, version: 1.2.4
+10:36:49,076  INFO Dialect:175 - Using dialect: org.hibernate.dialect.SQLServerDialect
+10:36:49,090  INFO TransactionFactoryFactory:62 - Transaction strategy: org.hibernate.transaction.JDBCTransactionFactory
+10:36:49,095  INFO TransactionManagerLookupFactory:80 - No TransactionManagerLookup configured (in JTA environment, use of read-write or transactional second-level cache is not recommended)
+10:36:49,096  INFO SettingsFactory:170 - Automatic flush during beforeCompletion(): disabled
+10:36:49,098  INFO SettingsFactory:174 - Automatic session close at end of transaction: disabled
+10:36:49,108  INFO SettingsFactory:189 - Scrollable result sets: enabled
+10:36:49,110  INFO SettingsFactory:197 - JDBC3 getGeneratedKeys(): enabled
+10:36:49,111  INFO SettingsFactory:205 - Connection release mode: auto
+10:36:49,114  INFO SettingsFactory:232 - Default batch fetch size: 1
+10:36:49,115  INFO SettingsFactory:236 - Generate SQL with comments: disabled
+10:36:49,116  INFO SettingsFactory:240 - Order SQL updates by primary key: disabled
+10:36:49,117  INFO SettingsFactory:244 - Order SQL inserts for batching: disabled
+10:36:49,118  INFO SettingsFactory:420 - Query translator: org.hibernate.hql.ast.ASTQueryTranslatorFactory
+10:36:49,124  INFO ASTQueryTranslatorFactory:47 - Using ASTQueryTranslatorFactory
+10:36:49,126  INFO SettingsFactory:252 - Query language substitutions: {}
+10:36:49,136  INFO SettingsFactory:257 - JPA-QL strict compliance: enabled
+10:36:49,138  INFO SettingsFactory:262 - Second-level cache: enabled
+10:36:49,140  INFO SettingsFactory:266 - Query cache: disabled
+10:36:49,143  INFO SettingsFactory:405 - Cache region factory : org.hibernate.cache.impl.NoCachingRegionFactory
+10:36:49,144  INFO SettingsFactory:276 - Optimize cache for minimal puts: disabled
+10:36:49,145  INFO SettingsFactory:285 - Structured second-level cache entries: disabled
+10:36:49,159  INFO SettingsFactory:314 - Statistics: disabled
+10:36:49,161  INFO SettingsFactory:318 - Deleted entity synthetic identifier rollback: disabled
+10:36:49,163  INFO SettingsFactory:333 - Default entity-mode: pojo
+10:36:49,164  INFO SettingsFactory:337 - Named query checking : enabled
+10:36:49,263  INFO SessionFactoryImpl:187 - building session factory
+10:36:50,002  INFO SessionFactoryObjectFactory:105 - Not binding factory to JNDI, no JNDI name configured
