@@ -1,4 +1,9 @@
 
+/*
+ * All Sigmah code is released under the GNU General Public License v3
+ * See COPYRIGHT.txt and LICENSE.txt.
+ */
+
 /**
  * Data Transfer Objects (DTO) for the {@link org.sigmah.server.domain domain} classes.
  *

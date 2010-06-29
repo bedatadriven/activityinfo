@@ -1,3 +1,8 @@
+/*
+ * All Sigmah code is released under the GNU General Public License v3
+ * See COPYRIGHT.txt and LICENSE.txt.
+ */
+
 /**
  * The set of pages comprising the Data Entry module
  */

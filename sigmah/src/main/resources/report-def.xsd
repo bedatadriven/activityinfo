@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ All Sigmah code is released under the GNU General Public License v3
+  ~ See COPYRIGHT.txt and LICENSE.txt.
+  -->
+
 <schema xmlns="http://www.w3.org/2001/XMLSchema"
 		xmlns:rpt="http://www.activityinfo.org/report-def" 
 		targetNamespace="http://www.activityinfo.org/report-def" xmlns:Q1="http://www.activityinfo.org/report-def.xsd">
@@ -41,8 +46,10 @@
             <choice maxOccurs="unbounded" minOccurs="1">
                 <element name="chart" type="rpt:chartType" />
     			<element name="pivotTable" type="rpt:pivotTableType" />
-    			<element name="table" type="rpt:tableType" />
-    		</choice>
+    			<element name="table" type="rpt:tableType" />
+
+    		</choice>
+
     	</sequence>
     </complexType>
 

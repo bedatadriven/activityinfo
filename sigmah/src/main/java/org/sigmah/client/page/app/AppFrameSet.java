@@ -1,10 +1,8 @@
 /*
- * Ext GWT - Ext for GWT
- * Copyright(c) 2007, 2008, Ext JS, LLC.
- * licensing@extjs.com
- * 
- * http://extjs.com/license
+ * All Sigmah code is released under the GNU General Public License v3
+ * See COPYRIGHT.txt and LICENSE.txt.
  */
+
 package org.sigmah.client.page.app;
 
 import com.allen_sauer.gwt.log.client.Log;

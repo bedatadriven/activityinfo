@@ -1,3 +1,8 @@
+/*
+ * All Sigmah code is released under the GNU General Public License v3
+ * See COPYRIGHT.txt and LICENSE.txt.
+ */
+
 /**
  * Supports the execution of {@link org.sigmah.shared.command.Command},
  * either remotely or through local proxies/caches.

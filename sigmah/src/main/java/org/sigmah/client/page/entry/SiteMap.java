@@ -1,3 +1,8 @@
+/*
+ * All Sigmah code is released under the GNU General Public License v3
+ * See COPYRIGHT.txt and LICENSE.txt.
+ */
+
 package org.sigmah.client.page.entry;
 
 import com.ebessette.maps.core.client.overlay.MarkerManagerImpl;

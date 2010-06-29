@@ -1,3 +1,8 @@
+/*
+ * All Sigmah code is released under the GNU General Public License v3
+ * See COPYRIGHT.txt and LICENSE.txt.
+ */
+
 /**
  * JPA/Hibernate implementation of the Data Access layer
  *

@@ -1,20 +1,6 @@
 /*
- * This file is part of ActivityInfo.
- *
- * ActivityInfo is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * ActivityInfo is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with ActivityInfo.  If not, see <http://www.gnu.org/licenses/>.
- *
- * Copyright 2010 Alex Bertram and contributors.
+ * All Sigmah code is released under the GNU General Public License v3
+ * See COPYRIGHT.txt and LICENSE.txt.
  */
 
 package org.sigmah.server.endpoint.gwtrpc;
@@ -28,11 +14,13 @@ public class GwtRpcModule extends ServletModule {
         // The CacheFilter assures that static files marked with
         // .nocache (e.g. strongly named js permutations) get sent with the
         // appropriate cache header so browsers don't ask for it again.
-        filter("/Application/*").through(CacheFilter.class);
+        filter("/ActivityInfo/*").through(CacheFilter.class);
+        filter("/Sigmah/*").through(CacheFilter.class);
         filter("/Login/*").through(CacheFilter.class);
 
-        serve("/Application/cmd").with(CommandServlet.class);
-        serve("/Application/download").with(DownloadServlet.class);
+        serve("/ActivityInfo/cmd").with(CommandServlet.class);
+        serve("/Sigmah/cmd").with(CommandServlet.class);
+        serve("/ActivityInfo/download").with(DownloadServlet.class);
 
         // this is here for now but should be probably live elsewhere, if
         // we really need it at all

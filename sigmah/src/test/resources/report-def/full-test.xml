@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ All Sigmah code is released under the GNU General Public License v3
+  ~ See COPYRIGHT.txt and LICENSE.txt.
+  -->
+
 <report type="adhoc">
 
     <filter>

@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!--
+  ~ All Sigmah code is released under the GNU General Public License v3
+  ~ See COPYRIGHT.txt and LICENSE.txt.
+  -->
+
 <mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://dozer.sourceforge.net beanmapping.xsd ">
 
     <!-- This mapping is for the GetCountries command, it maps only the id and
