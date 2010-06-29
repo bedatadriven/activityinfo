@@ -23,18 +23,18 @@ import org.activityinfo.server.auth.Authenticator;
 import org.activityinfo.server.domain.User;
 
 /**
+ * Validates the user's password against the a hashed version stored in the database.
+ *
  * @author Alex Bertram
  */
-public class AuthenticatorImpl implements Authenticator {
+public class DatabaseAuthenticator implements Authenticator {
 
     @Override
     public boolean check(User user, String plaintextPassword) {
 
-        if (plaintextPassword == null) {
-            return true;
-        }
-
         // TODO: this should not be allowed!
+        // This only here because of an early bug which left many users without
+        // passwords. These users should be issued new passwords and this hole closed.
         if (user.getHashedPassword() == null) {
             return true;
         }

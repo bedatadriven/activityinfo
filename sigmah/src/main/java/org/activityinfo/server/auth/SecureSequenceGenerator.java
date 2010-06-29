@@ -26,8 +26,12 @@ import org.hibernate.id.IdentifierGenerator;
 import java.io.Serializable;
 
 /**
+ * Identifier Generator that generates unique IDs for our authentication that are sufficiently
+ * random so that they cannot be guessed.
+ *
  * @author Alex Bertram
  */
+@SuppressWarnings({"UnusedDeclaration"})  // This class is referenced by name by the Authentication domain object
 public class SecureSequenceGenerator implements IdentifierGenerator {
 
     @Override

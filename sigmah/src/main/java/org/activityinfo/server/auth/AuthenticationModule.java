@@ -20,12 +20,16 @@
 package org.activityinfo.server.auth;
 
 import com.google.inject.AbstractModule;
-import org.activityinfo.server.auth.impl.AuthenticatorImpl;
+import org.activityinfo.server.auth.impl.DatabaseAuthenticator;
 
+/**
+ * Guice Module defining bindings for Authentication interfaces.
+ * (The default is checks the password against the database)
+ */
 public class AuthenticationModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(Authenticator.class).to(AuthenticatorImpl.class);
+        bind(Authenticator.class).to(DatabaseAuthenticator.class);
     }
 }
