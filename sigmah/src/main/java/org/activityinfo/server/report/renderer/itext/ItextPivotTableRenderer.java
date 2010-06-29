@@ -6,18 +6,23 @@ import org.activityinfo.shared.report.model.PivotTableElement;
 
 import java.text.NumberFormat;
 import java.util.List;
-/*
+
+/**
+ * Renders a {@link org.activityinfo.shared.report.model.PivotTableElement} to an iText
+ * document (either PDF or RTF)
+ *
  * @author Alex Bertram
  */
-
 public class ItextPivotTableRenderer implements ItextRenderer<PivotTableElement> {
 
-    public void render(DocWriter writer, PivotTableElement element, Document document) {
+    public void render(DocWriter writer, Document document, PivotTableElement element) {
         try {
 
             document.add(ThemeHelper.elementTitle(element.getTitle()));
+            ItextRendererHelper.addFilterDescription(document, element.getContent().getFilterDescriptions());
 
             PivotTableData data = element.getContent().getData();
+
 
             if(data.isEmpty()) {
                 document.add(new Paragraph("Aucune Données"));  // TODO: i18n

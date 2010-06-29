@@ -12,6 +12,9 @@ import java.io.ByteArrayOutputStream;
 
 
 /**
+ * Renders a {@link org.activityinfo.shared.report.model.MapElement MapElement} into an iText
+ * document
+ *
  * @author Alex Bertram
  */
 public class ItextMapRenderer extends ImageMapRenderer implements ItextRenderer<MapElement> {
@@ -36,10 +39,12 @@ public class ItextMapRenderer extends ImageMapRenderer implements ItextRenderer<
         }
     }
 
-    public void render(DocWriter writer, MapElement element, Document doc) {
+    public void render(DocWriter writer, Document doc, MapElement element) {
 
         try {
             doc.add(ThemeHelper.elementTitle(element.getTitle()));
+            ItextRendererHelper.addFilterDescription(doc, element.getContent().getFilterDescriptions());
+
             renderMap(writer, element,doc);
 
         } catch(Exception e) {

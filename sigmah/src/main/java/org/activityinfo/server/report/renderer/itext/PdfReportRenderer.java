@@ -7,10 +7,13 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.PdfWriter;
 
 import java.io.OutputStream;
-/*
+
+
+/**
+ * iText ReportRenderer targeting PDF output
+ *
  * @author Alex Bertram
  */
-
 public class PdfReportRenderer extends ItextReportRenderer {
 
     @Inject

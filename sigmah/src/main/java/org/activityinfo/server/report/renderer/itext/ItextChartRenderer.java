@@ -13,25 +13,29 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
-/*
+
+/**
+ * Renders {@link org.activityinfo.shared.report.model.PivotChartElement PivotChartElement}s into
+ * an iText document.
+ *
  * @author Alex Bertram
  */
-
 public class ItextChartRenderer implements ItextRenderer<PivotChartElement> {
+    private static final int RESOLUTION = 150;
 
     private final ChartRendererJC chartRenderer;
-    private static int RESOLUTION = 150;
 
     @Inject
     public ItextChartRenderer(ChartRendererJC chartRenderer) {
         this.chartRenderer = chartRenderer;
     }
 
-    public void render(DocWriter writer, PivotChartElement element, Document doc) {
+    public void render(DocWriter writer, Document doc, PivotChartElement element) {
 
 
         try {
             doc.add(ThemeHelper.elementTitle(element.getTitle()));
+            ItextRendererHelper.addFilterDescription(doc, element.getContent().getFilterDescriptions());
 
             float width = doc.getPageSize().getWidth() - doc.rightMargin() - doc.leftMargin();
             float height = (doc.getPageSize().getHeight() - doc.topMargin() - doc.bottomMargin()) / 3f;

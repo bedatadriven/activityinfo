@@ -6,12 +6,13 @@ import com.lowagie.text.Document;
 import com.lowagie.text.rtf.RtfWriter2;
 
 import java.io.OutputStream;
-/*
+
+/**
+ * iText ReportRenderer targeting Rich Text Format (RTF) output
+ *
  * @author Alex Bertram
  */
-
 public class RtfReportRenderer extends ItextReportRenderer {
-
 
     @Inject
     public RtfReportRenderer(ItextPivotTableRenderer pivotTableRenderer,
@@ -19,7 +20,6 @@ public class RtfReportRenderer extends ItextReportRenderer {
                              ItextTableRenderer tableRenderer) {
         super(pivotTableRenderer, chartRenderer, mapRenderer, tableRenderer);
     }
-
 
     @Override
     protected DocWriter createWriter(Document document, OutputStream os) {

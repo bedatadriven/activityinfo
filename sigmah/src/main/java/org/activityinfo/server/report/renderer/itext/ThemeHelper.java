@@ -6,10 +6,14 @@ import com.lowagie.text.Font;
 import com.lowagie.text.Paragraph;
 
 import java.awt.*;
-/*
+
+/**
+ * Centralizes all style-specific code. At the present, there is a single theme hardcoded
+ * here based on the Office 2007 color and font scheme, but this could be refactored in the future
+ * to allow
+ *
  * @author Alex Bertram
  */
-
 public class ThemeHelper {
 
 
@@ -20,6 +24,13 @@ public class ThemeHelper {
 
         return para;
     }
+
+    public static Paragraph filterDescription(String text) {
+        Paragraph para = new Paragraph(text);
+        para.setFont(new Font(Font.HELVETICA, 12, Font.NORMAL, new Color(0, 0, 0)));
+        return para;
+    }
+
 
     public static Paragraph elementTitle(String title) {
         Paragraph para = new Paragraph(title);
@@ -61,7 +72,18 @@ public class ThemeHelper {
 
         return bodyCell(label, header, depth, leaf, header ? Cell.ALIGN_LEFT : Cell.ALIGN_RIGHT);
     }
-    
+
+    /**
+     * Renders a Cell for
+     *
+     * @param label
+     * @param header
+     * @param depth
+     * @param leaf
+     * @param horizantalAlignment
+     * @return
+     * @throws BadElementException
+     */
     public static Cell bodyCell(String label, boolean header, int depth, boolean leaf, int horizantalAlignment )
             throws BadElementException {
 
