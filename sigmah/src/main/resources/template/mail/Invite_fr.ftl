@@ -1,4 +1,4 @@
-<#-- @ftlvariable name="" type="org.activityinfo.server.mail.Invitation" -->
+<#-- @ftlvariable name="" type="org.sigmah.server.mail.Invitation" -->
 Bonjour ${newUser.name},
 
 ${invitingUser.name} (${invitingUser.email}) vous invite à acceder au ActivityInfo. Pour confirmer

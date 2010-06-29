@@ -1,4 +1,4 @@
-<#-- @ftlvariable name="" type="org.activityinfo.server.bootstrap.model.HostPageModel" -->
+<#-- @ftlvariable name="" type="org.sigmah.server.bootstrap.model.HostPageModel" -->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>

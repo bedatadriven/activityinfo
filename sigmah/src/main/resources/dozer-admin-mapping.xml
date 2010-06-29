@@ -5,8 +5,8 @@
     <!-- This mapping is for the GetCountries command, it maps only the id and
          name of the Country object, leaving other fields blanks -->
     <mapping wildcard="false" map-id="countryNameOnly">
-        <class-a>org.activityinfo.server.domain.Country</class-a>
-        <class-b>org.activityinfo.shared.dto.CountryDTO</class-b>
+        <class-a>org.sigmah.server.domain.Country</class-a>
+        <class-b>org.sigmah.shared.dto.CountryDTO</class-b>
         <field>
             <a>id</a>
             <b>id</b>
@@ -19,8 +19,8 @@
     
 	<mapping wildcard="true">
 		
-		<class-a>org.activityinfo.server.domain.AdminLevel</class-a>
-		<class-b>org.activityinfo.shared.dto.AdminLevelDTO</class-b>
+		<class-a>org.sigmah.server.domain.AdminLevel</class-a>
+		<class-b>org.sigmah.shared.dto.AdminLevelDTO</class-b>
 	
 		<field>
 			<a>parent.id</a>
@@ -30,8 +30,8 @@
 
 	<mapping wildcard="true">
 	
-		<class-a>org.activityinfo.server.domain.AdminEntity</class-a>
-		<class-b>org.activityinfo.shared.dto.AdminEntityDTO</class-b>
+		<class-a>org.sigmah.server.domain.AdminEntity</class-a>
+		<class-b>org.sigmah.shared.dto.AdminEntityDTO</class-b>
 		
 		<field>
 			<a>level.id</a>
@@ -45,8 +45,8 @@
 	</mapping>
 	
 	<mapping wildcard="true">
-		<class-a>org.activityinfo.server.domain.LocationType</class-a>
-		<class-b>org.activityinfo.shared.dto.LocationTypeDTO</class-b>
+		<class-a>org.sigmah.server.domain.LocationType</class-a>
+		<class-b>org.sigmah.shared.dto.LocationTypeDTO</class-b>
 	
 		<field>
 			<a>boundAdminLevel.id</a>

@@ -1,4 +1,4 @@
-<#-- @ftlvariable name="" type="org.activityinfo.server.bootstrap.model.LoginPageModel" -->
+<#-- @ftlvariable name="" type="org.sigmah.server.bootstrap.model.LoginPageModel" -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -54,16 +54,16 @@
                 </div>
                 <div class="rememberBox" id="rememberPanel">
                     <label for="remember"><input name="remember" type="checkbox" value="true" id="remember"
-                                                 class="checkBox"/>Rester connecté</label>
+                                                 class="checkBox"/>Rester connectï¿½</label>
 
-                    <div id="loginHelp"><a href="login-problem.html">Vous n'arrivez pas à vous connecter ?</a></div>
+                    <div id="loginHelp"><a href="login-problem.html">Vous n'arrivez pas ï¿½ vous connecter ?</a></div>
                     <span id="loginBox"><input type="image" src="static/login_fr.png"
                                                id="loginButton"></span></a></span>
                 </div>
 
                 <div id="marketTitle" class="marketTitle" align="center">Vous n'utilizer pas encore ActivityInfo?</div>
                 <div id="marketBody" class="marketBody" align="center">ActivityInfo est une solution comprehensive pour
-                    le suivi de vos activités d'urgence et de développement.<br/>
+                    le suivi de vos activitï¿½s d'urgence et de dï¿½veloppement.<br/>
 
                     <div id="buttonGroup" align="left">
 
