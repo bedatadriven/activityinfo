@@ -39,7 +39,7 @@
     <inherits name="com.allen_sauer.gwt.log.gwt-log"/>
 
     <!-- Inherit ActivityInfo API module -->
-    <inherits name="org.activityinfo.ActivityInfoApi"/>
+  <!--    <inherits name="org.activityinfo.ActivityInfoApi"/> -->
 
     <extend-property name="log_level" values="TRACE"/>
     
