@@ -316,7 +316,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.2.126</version>
+            <version>1.2.138</version>
         </dependency>
         <dependency>
             <groupId>org.easymock</groupId>
@@ -562,7 +562,7 @@
                     <dependency>
                         <groupId>com.h2database</groupId>
                         <artifactId>h2</artifactId>
-                        <version>1.2.126</version>
+                        <version>1.2.138</version>
                     </dependency>
                 </dependencies>
             </plugin>
