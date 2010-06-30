@@ -5,7 +5,7 @@
 
 <module rename-to="ActivityInfo">
 
-    <inherits name="org.activityinfo.Application"/>
+    <inherits name="org.sigmah.ActivityInfo"/>
 
 
     <!-- ie6, gecko, gecko1_8, safari or opera -->

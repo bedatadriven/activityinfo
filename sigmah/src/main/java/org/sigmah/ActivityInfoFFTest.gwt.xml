@@ -12,7 +12,7 @@
 
 <module rename-to="ActivityInfo">
 
-    <inherits name="org.activityinfo.Application"/>
+    <inherits name="org.sigmah.ActivityInfo"/>
 
     <entry-point class='org.sigmah.client.Application'/>
 
