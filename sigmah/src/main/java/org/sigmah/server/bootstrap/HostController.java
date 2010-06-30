@@ -80,8 +80,10 @@ public class HostController extends AbstractController {
 
     private boolean requestIsFromIE6OnPort80(HttpServletRequest request) {
         return request.getServerPort() == 80 &&
+                request.getServerName() != null &&
                 request.getServerName().endsWith("activityinfo.org") &&
                 !"80".equals(request.getParameter("port")) &&
+                request.getHeader("User-Agent") != null &&
                 request.getHeader("User-Agent").indexOf("MSIE 6.0") != -1;
     }
 
