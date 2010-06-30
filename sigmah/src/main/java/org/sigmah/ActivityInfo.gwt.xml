@@ -33,6 +33,7 @@
 
     <!-- Include generated sources -->
     <source path='client'/>
+    <source path="shared"/>
 
     <!-- Specify the app entry point class.                         -->
     <entry-point class='org.sigmah.client.Application' />
