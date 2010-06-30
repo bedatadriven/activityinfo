@@ -559,12 +559,10 @@
                     </componentProperties>
                 </configuration>
                 <dependencies>
-                    <!-- Open source alternative to Microsoft's SQL driver -->
-                    <!-- which was not working with SQL Server 2008 Express -->
                     <dependency>
-                        <groupId>net.sourceforge.jtds</groupId>
-                        <artifactId>jtds</artifactId>
-                        <version>1.2.4</version>
+                        <groupId>com.h2database</groupId>
+                        <artifactId>h2</artifactId>
+                        <version>1.2.126</version>
                     </dependency>
                 </dependencies>
             </plugin>
