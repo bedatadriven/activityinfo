@@ -16,7 +16,6 @@ import java.util.Set;
  */
 @Entity
 public class Partner implements java.io.Serializable, SchemaElement {
-
 	private int id;
 	private String name;
 	private String fullName;
@@ -72,7 +71,7 @@ public class Partner implements java.io.Serializable, SchemaElement {
 	public void setDatabases(Set<UserDatabase> databases) {
 		this.databases = databases;
 	}
-	
+
 //	@Column(name = "Operational", nullable = false)
 //	public boolean isOperational() {
 //		return this.operational;
@@ -82,7 +81,7 @@ public class Partner implements java.io.Serializable, SchemaElement {
 //		this.operational = operational;
 //	}
 
-	
+
 
 //	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "partner")
 //	public Set<UserPermission> getUserPermissions() {

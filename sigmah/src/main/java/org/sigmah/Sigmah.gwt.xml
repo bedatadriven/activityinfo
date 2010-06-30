@@ -1,0 +1,48 @@
+<!--
+  ~ All Sigmah code is released under the GNU General Public License v3
+  ~ See COPYRIGHT.txt and LICENSE.txt.
+  -->
+<!--
+  ~ All Sigmah code is released under the GNU General Public License v3
+  ~ See COPYRIGHT.txt and LICENSE.txt.
+  -->
+
+<module rename-to="Sigmah">
+
+    <!-- Inherit the core Web Toolkit stuff.                        -->
+    <inherits name='com.google.gwt.user.User' />
+
+
+    <!-- Inherit additional dependencies  -->
+    <inherits name='com.google.gwt.inject.Inject' />
+    <inherits name="com.google.gwt.i18n.I18N" />
+    <inherits name='com.extjs.gxt.ui.GXT' />
+    <inherits name="com.google.gwt.maps.GoogleMaps" />
+    <inherits name="com.ebessette.maps.core.OverlayManager" />
+    <inherits name="com.google.gwt.gears.Gears" />
+    <inherits name="com.google.gwt.inject.Inject"/>
+    <inherits name="com.extjs.gxt.charts.Chart"/>
+    <inherits name="com.google.code.gaxb.Annotations"/>
+    <inherits name="com.bedatadriven.rebar.modulestore.ModuleStore"/>
+    <inherits name="com.bedatadriven.rebar.sql.Sql"/>
+    <inherits name="com.bedatadriven.rebar.sync.Sync"/>
+    <inherits name="com.allen_sauer.gwt.log.gwt-log"/>
+
+    <extend-property name="log_level" values="TRACE"/>
+
+    <!-- Configure Logging -->
+
+    <!-- Include generated sources -->
+    <source path='client'/>
+    <source path='shared'/>
+
+    <!-- Specify the app entry point class.                         -->
+    <entry-point class='org.sigmah.client.Application' />
+
+    <!-- Enable other locales -->
+    <extend-property name="locale" values="en,fr" />
+    <set-property-fallback name="locale" value="en"/>
+
+    <servlet path="/cmd" class="org.sigmah.server.endpoint.gwtrpc.CommandServlet" />
+</module>
+        
