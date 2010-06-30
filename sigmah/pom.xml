@@ -474,7 +474,7 @@
                         <configuration>
                             <disableClassMetadata>true</disableClassMetadata>
                             <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
-                            <module>org.sigmah.Application</module>
+                            <module>org.sigmah.ActivityInfo</module>
                             <!-- Takes WAY to long for all 12 permutations -->
                             <!-- run with profile soyc enabled to generate maps for a single perm-->
                             <soyc>false</soyc>
@@ -672,7 +672,7 @@
                                 <id>gwt-compile</id>
                                 <configuration>
                                     <draftCompile>true</draftCompile>
-                                    <module>org.sigmah.ApplicationIE6Test</module>
+                                    <module>org.sigmah.ActivityInfoIE6Test</module>
                                 </configuration>
                                 <goals>
                                     <goal>compile</goal>
@@ -739,7 +739,7 @@
                             <execution>
                                 <id>gwt-compile</id>
                                 <configuration>
-                                    <module>org.sigmah.ApplicationFFTest</module>
+                                    <module>org.sigmah.ActivityInfoFFTest</module>
                                     <soyc>true</soyc>
                                 </configuration>
                                 <goals>
