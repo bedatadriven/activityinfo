@@ -32,7 +32,7 @@ public class SchemaMigrationTest {
         em.createQuery("select i from IndicatorValue i").setMaxResults(10).getResultList();
         em.createQuery("select l from Location l").setMaxResults(10).getResultList();
         em.createQuery("select l from LocationType l").setMaxResults(10).getResultList();
-        em.createQuery("select p from Partner p").setMaxResults(10).getResultList();
+        em.createQuery("select p from OrgUnit p").setMaxResults(10).getResultList();
         em.createQuery("select u from UserDatabase u").setMaxResults(10).getResultList();
         em.createQuery("select r from ReportDefinition r").setMaxResults(10).getResultList();
         em.createQuery("select a from Authentication a").setMaxResults(10).getResultList();

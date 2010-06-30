@@ -45,5 +45,4 @@
     <servlet path="/cmd" class="org.sigmah.server.endpoint.gwtrpc.CommandServlet" />
 
 
-
 </module>

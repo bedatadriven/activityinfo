@@ -12,7 +12,7 @@ import org.sigmah.server.dao.PartnerDAO;
 import org.sigmah.server.dao.UserDAO;
 import org.sigmah.server.dao.UserDatabaseDAO;
 import org.sigmah.server.dao.UserPermissionDAO;
-import org.sigmah.server.domain.Partner;
+import org.sigmah.server.domain.OrgUnit;
 import org.sigmah.server.domain.User;
 import org.sigmah.server.domain.UserDatabase;
 import org.sigmah.server.domain.UserPermission;
@@ -32,8 +32,8 @@ import static org.easymock.EasyMock.*;
  */
 public class UpdateUserPermissionsHandlerTest {
 
-    private Partner NRC;
-    private Partner IRC;
+    private OrgUnit NRC;
+    private OrgUnit IRC;
     private PartnerDTO NRC_DTO;
 
     private MockDb db = new MockDb();
@@ -44,13 +44,13 @@ public class UpdateUserPermissionsHandlerTest {
     @Before
     public void setup() {
 
-        NRC = new Partner();
+        NRC = new OrgUnit();
         NRC.setId(1);
         NRC.setName("NRC");
         NRC.setFullName("Norwegian Refugee Council");
         db.persist(NRC);
 
-        IRC = new Partner();
+        IRC = new OrgUnit();
         IRC.setId(2);
         IRC.setName("IRC");
         IRC.setFullName("International Rescue Committee");

@@ -6,7 +6,7 @@
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
 import com.google.inject.Inject;
-import org.sigmah.server.domain.Partner;
+import org.sigmah.server.domain.OrgUnit;
 import org.sigmah.server.domain.User;
 import org.sigmah.server.domain.UserDatabase;
 import org.sigmah.server.domain.UserPermission;
@@ -47,15 +47,15 @@ public class AddPartnerHandler implements CommandHandler<AddPartner> {
         // first check to see if an organization by this name is already
         // a partner
 
-        Set<Partner> dbPartners = db.getPartners();
-        for (Partner partner : dbPartners) {
+        Set<OrgUnit> dbPartners = db.getPartners();
+        for (OrgUnit partner : dbPartners) {
             if (partner.getName().equals(cmd.getPartner().getName())) {
                 throw new DuplicateException();
             }
         }
 
         // now try to match this partner by name
-        List<Partner> allPartners = em.createQuery("select p from Partner p where p.name = ?1")
+        List<OrgUnit> allPartners = em.createQuery("select p from OrgUnit p where p.name = ?1")
                 .setParameter(1, cmd.getPartner().getName())
                 .getResultList();
 
@@ -65,7 +65,7 @@ public class AddPartnerHandler implements CommandHandler<AddPartner> {
         }
 
         // nope, have to create a new record
-        Partner newPartner = new Partner();
+        OrgUnit newPartner = new OrgUnit();
         newPartner.setName(cmd.getPartner().getName());
         newPartner.setFullName(cmd.getPartner().getFullName());
         em.persist(newPartner);

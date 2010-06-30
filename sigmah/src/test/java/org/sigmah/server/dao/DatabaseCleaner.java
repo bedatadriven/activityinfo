@@ -29,7 +29,7 @@ public class DatabaseCleaner {
             AttributeGroup.class,
             Activity.class,
             UserPermission.class,
-            Partner.class,
+            OrgUnit.class,
             ReportSubscription.class,
             ReportDefinition.class,
             UserDatabase.class,

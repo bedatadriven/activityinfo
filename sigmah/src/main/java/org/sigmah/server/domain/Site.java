@@ -42,7 +42,7 @@ public class Site implements java.io.Serializable, Deleteable {
 	private Location location;
 	
 	private String siteGuid;
-	private Partner partner;
+	private OrgUnit partner;
 	private int status;
 	
 	private Date date1;
@@ -124,11 +124,11 @@ public class Site implements java.io.Serializable, Deleteable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PartnerId", nullable = false)
-	public Partner getPartner() {
+	public OrgUnit getPartner() {
 		return this.partner;
 	}
 
-	public void setPartner(Partner partner) {
+	public void setPartner(OrgUnit partner) {
 		this.partner = partner;
 	}
 

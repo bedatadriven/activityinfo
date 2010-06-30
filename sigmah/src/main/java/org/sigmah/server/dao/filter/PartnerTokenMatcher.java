@@ -8,7 +8,7 @@ package org.sigmah.server.dao.filter;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
-import org.sigmah.server.domain.Partner;
+import org.sigmah.server.domain.OrgUnit;
 
 import java.util.Locale;
 
@@ -18,7 +18,7 @@ import java.util.Locale;
 public class PartnerTokenMatcher extends AbstractEntityTokenMatcher {
 
     public PartnerTokenMatcher(Session session, Locale locale) {
-        super(session, Partner.class, locale);
+        super(session, OrgUnit.class, locale);
     }
 
     @Override

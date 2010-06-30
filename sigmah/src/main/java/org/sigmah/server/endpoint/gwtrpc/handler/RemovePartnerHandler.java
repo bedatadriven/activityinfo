@@ -6,7 +6,7 @@
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
 import com.google.inject.Inject;
-import org.sigmah.server.domain.Partner;
+import org.sigmah.server.domain.OrgUnit;
 import org.sigmah.server.domain.User;
 import org.sigmah.server.domain.UserDatabase;
 import org.sigmah.server.domain.UserPermission;
@@ -58,7 +58,7 @@ public class RemovePartnerHandler implements CommandHandler<RemovePartner> {
             throw new PartnerHasSitesException();
         }
 
-        db.getPartners().remove(em.getReference(Partner.class, cmd.getPartnerId()));
+        db.getPartners().remove(em.getReference(OrgUnit.class, cmd.getPartnerId()));
 
 
         return new VoidResult();

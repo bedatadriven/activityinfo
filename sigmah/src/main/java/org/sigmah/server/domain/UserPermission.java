@@ -41,7 +41,7 @@ import java.util.Date;
 public class UserPermission implements Serializable, SchemaElement {
 
 	private int id;
-	private Partner partner;
+	private OrgUnit partner;
 	private UserDatabase database;
 	private User user;
 	private boolean allowView;
@@ -77,9 +77,10 @@ public class UserPermission implements Serializable, SchemaElement {
      *
      * @return  The <code>Partner</code> to which the <code>user</code> belongs
      */
+    @Deprecated
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PartnerId", nullable = false)
-	public Partner getPartner() {
+	public OrgUnit getPartner() {
 		return this.partner;
 	}
 
@@ -88,7 +89,8 @@ public class UserPermission implements Serializable, SchemaElement {
      *
      * @param partner The Partner to which the <code>user</code> belongs.
      */
-	public void setPartner(Partner partner) {
+    @Deprecated
+	public void setPartner(OrgUnit partner) {
 		this.partner = partner;
 	}
 

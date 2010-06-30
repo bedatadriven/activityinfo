@@ -29,7 +29,7 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
     private List<UserDatabase> databases = new ArrayList<UserDatabase>();
 
     private Set<Integer> partnerIds = new HashSet<Integer>();
-    private List<Partner> partners = new ArrayList<Partner>();
+    private List<OrgUnit> partners = new ArrayList<OrgUnit>();
 
     private List<Activity> activities = new ArrayList<Activity>();
     private List<Indicator> indicators = new ArrayList<Indicator>();
@@ -38,7 +38,7 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
             Country.class,
             AdminLevel.class,
             UserDatabase.class,
-            Partner.class,
+            OrgUnit.class,
             Activity.class,
             Indicator.class
     };
@@ -78,7 +78,7 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
         builder.insert(Country.class, countries);
         builder.insert(AdminLevel.class, adminLevels);
         builder.insert(UserDatabase.class, databases);
-        builder.insert(Partner.class, partners);
+        builder.insert(OrgUnit.class, partners);
         builder.insert(Activity.class, activities);
         builder.insert(Indicator.class, indicators);
 
@@ -92,7 +92,7 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
                 adminLevels.addAll(database.getCountry().getAdminLevels());
                 countryIds.add(database.getCountry().getId());
             }
-            for(Partner partner : database.getPartners()) {
+            for(OrgUnit partner : database.getPartners()) {
                 if(!partnerIds.contains(partner.getId())) {
                     partners.add(partner);
                     partnerIds.add(partner.getId());

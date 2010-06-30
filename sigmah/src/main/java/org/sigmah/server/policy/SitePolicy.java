@@ -38,7 +38,7 @@ public class SitePolicy implements EntityPolicy<Site> {
     public Integer create(User user, PropertyMap properties) {
 
         Activity activity = activityDAO.findById((Integer) properties.get("activityId"));
-        Partner partner = partnerDAO.findById(((PartnerDTO) properties.get("partner")).getId());
+        OrgUnit partner = partnerDAO.findById(((PartnerDTO) properties.get("partner")).getId());
 
         assertSiteEditPrivileges(user, activity, partner);
 
@@ -121,7 +121,7 @@ public class SitePolicy implements EntityPolicy<Site> {
      * Asserts that the user has permission to edit a site in a given database
      * belonging to a given partner
      */
-    protected void assertSiteEditPrivileges(User user, Activity activity, Partner partner)  {
+    protected void assertSiteEditPrivileges(User user, Activity activity, OrgUnit partner)  {
         UserDatabase db = activity.getDatabase();
 
         if (db.getOwner().getId() == user.getId()) {

@@ -20,7 +20,7 @@ import java.util.List;
  * 
  * Information associated with Sites is stored across several entities, including
  * {@link org.sigmah.server.domain.Location Location},
- * {@link org.sigmah.server.domain.Partner},
+ * {@link org.sigmah.server.domain.OrgUnit},
  * {@link org.sigmah.server.domain.AttributeValue},
  * {@link org.sigmah.server.domain.ReportingPeriod ReportingPeriod}, and
  * {@link org.sigmah.server.domain.IndicatorValue}, but often we need this information in

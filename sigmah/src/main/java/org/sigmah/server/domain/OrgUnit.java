@@ -15,14 +15,18 @@ import java.util.Set;
  *
  */
 @Entity
-public class Partner implements java.io.Serializable, SchemaElement {
+@Table(name="Partner")
+public class OrgUnit implements java.io.Serializable, SchemaElement {
 	private int id;
 	private String name;
 	private String fullName;
-	private Set<UserPermission> userPermissions = new HashSet<UserPermission>(0);
-	private Set<UserDatabase> databases = new HashSet<UserDatabase>(0);
-	
-	public Partner() {
+    private Set<UserDatabase> databases = new HashSet<UserDatabase>(0);
+    private Location location;
+    private OrgUnit parent;
+    private Set<OrgUnit> children = new HashSet<OrgUnit>(0);
+    private Organization organization;
+
+	public OrgUnit() {
 	}
 
 	@Id
@@ -72,24 +76,54 @@ public class Partner implements java.io.Serializable, SchemaElement {
 		this.databases = databases;
 	}
 
-//	@Column(name = "Operational", nullable = false)
-//	public boolean isOperational() {
-//		return this.operational;
-//	}
-//
-//	public void setOperational(boolean operational) {
-//		this.operational = operational;
-//	}
+
+    @ManyToOne
+    public Organization getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(Organization organization) {
+        this.organization = organization;
+    }
+
+    /**
+     * The point location of the OrgUnit, generally
+     * the city of its head office.
+     *
+     */
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    /**
+     * The parent OrgUnit that manages this OrgUnit
+     */
+    @ManyToOne
+    public OrgUnit getParent() {
+        return parent;
+    }
+
+    public void setParent(OrgUnit parent) {
+        this.parent = parent;
+    }
+
+    /**
+     * The children OrgUnits that are managed by this OrgUnit
+     */
+    @OneToMany(mappedBy = "parent")
+    public Set<OrgUnit> getChildren() {
+        return children;
+    }
+
+    public void setChildren(Set<OrgUnit> children) {
+        this.children = children;
+    }
 
 
 
-//	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "partner")
-//	public Set<UserPermission> getUserPermissions() {
-//		return this.userPermissions;
-//	}
-//
-//	public void setUserPermissions(Set<UserPermission> userPermissions) {
-//		this.userPermissions = userPermissions;
-//	}
-
+    
 }

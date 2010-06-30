@@ -89,7 +89,7 @@ public class GetSchemaHandler implements CommandHandler<GetSchema> {
             databaseDTO.setManageUsersAllowed(databaseDTO.getAmOwner() || permission.isAllowManageUsers());
             databaseDTO.setManageAllUsersAllowed(databaseDTO.getAmOwner() || permission.isAllowManageAllUsers());
 
-            for (Partner partner : database.getPartners()) {
+            for (OrgUnit partner : database.getPartners()) {
 
                 databaseDTO.getPartners().add(mapper.map(partner, PartnerDTO.class));
             }

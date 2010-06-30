@@ -21,6 +21,7 @@ import java.util.Set;
  *
  */
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 @org.hibernate.annotations.FilterDefs(
 		{
 @org.hibernate.annotations.FilterDef(
@@ -35,6 +36,7 @@ import java.util.Set;
 		name="hideDeleted"
 )
 		})
+// TODO: add filtering on organisational level permissions
 @org.hibernate.annotations.Filters(
 		{@org.hibernate.annotations.Filter(
 				name="userVisible",
@@ -58,7 +60,7 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
 	private String fullName;
 	private String name;
 	private User owner;
-	private Set<Partner> partners = new HashSet<Partner>(0);
+	private Set<OrgUnit> partners = new HashSet<OrgUnit>(0);
 	private Set<Activity> activities = new HashSet<Activity>(0);
 	private Set<UserPermission> userPermissions = new HashSet<UserPermission>(0);
 	private Date dateDeleted;
@@ -170,11 +172,11 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
                     @JoinColumn(name = "DatabaseId", nullable = false, updatable = false) },
             inverseJoinColumns = {
                     @JoinColumn(name = "PartnerId", nullable = false, updatable = false) })
-	public Set<Partner> getPartners() {
+	public Set<OrgUnit> getPartners() {
 		return this.partners;
 	}
 
-	public void setPartners(Set<Partner> partners) {
+	public void setPartners(Set<OrgUnit> partners) {
 		this.partners = partners;
 	}
 
@@ -274,7 +276,7 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
         return permission != null && permission.isAllowDesign();
     }
 
-    public boolean isAllowedManageUsers(User user, Partner partner) {
+    public boolean isAllowedManageUsers(User user, OrgUnit partner) {
         if(getOwner().getId() == user.getId()) {
             return true;
         }
