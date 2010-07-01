@@ -8,7 +8,7 @@
     <version>0.5.12-SNAPSHOT</version>
     <name>SigmaH</name>
     <description>Web-based database platform for program monitoring and reporting for the UN,
-    NGOs, and others working in humanitarian, development, and post-conflict contexts.</description>
+        NGOs, and others working in humanitarian, development, and post-conflict contexts.</description>
     <issueManagement>
         <system>mantis</system>
         <url>http://mantis.activityinfo.org</url>
@@ -341,7 +341,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.2.138</version>
+            <version>1.2.137</version>
         </dependency>
         <dependency>
             <groupId>org.easymock</groupId>
@@ -654,6 +654,9 @@
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>gwt-maven-plugin</artifactId>
                         <version>1.2</version>
+                        <configuration>
+                            <module>org.sigmah.ActivityInfoSafariTest</module>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>gwt-compile</id>
@@ -680,6 +683,9 @@
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>gwt-maven-plugin</artifactId>
                         <version>1.2</version>
+                        <configuration>
+                            <module>org.sigmah.ActivityInfoSafariTest</module>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>gwt-compile</id>
@@ -696,9 +702,9 @@
                 </plugins>
             </build>
         </profile>
-        
+
         <!-- Build the Application Module with only permutations for
-    Safari and logging enabled for testing purposes -->
+ Safari and logging enabled for testing purposes -->
         <profile>
             <id>safari</id>
             <build>
@@ -707,6 +713,10 @@
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>gwt-maven-plugin</artifactId>
                         <version>1.2</version>
+                        <configuration>
+                            <module>org.sigmah.ActivityInfoSafariTest</module>
+                        </configuration>
+
                         <executions>
                             <execution>
                                 <id>gwt-compile</id>
