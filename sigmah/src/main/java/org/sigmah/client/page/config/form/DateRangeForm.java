@@ -7,7 +7,7 @@ package org.sigmah.client.page.config.form;
 
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import org.sigmah.client.Application;
+import org.sigmah.client.i18n.I18N;
 
 public class DateRangeForm extends FormPanel {
 
@@ -17,11 +17,11 @@ public class DateRangeForm extends FormPanel {
 	public DateRangeForm() {
 
 		fromDate = new DateField();
-		fromDate.setFieldLabel(Application.CONSTANTS.fromDate());
+		fromDate.setFieldLabel(I18N.CONSTANTS.fromDate());
 		add(fromDate);
 		                              
 		toDate = new DateField();
-		toDate.setFieldLabel(Application.CONSTANTS.toDate());
+		toDate.setFieldLabel(I18N.CONSTANTS.toDate());
 		add(toDate);
 		
 	}

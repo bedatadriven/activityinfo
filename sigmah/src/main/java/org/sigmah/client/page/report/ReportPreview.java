@@ -15,9 +15,9 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import org.sigmah.client.Application;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.common.toolbar.ActionToolBar;
 import org.sigmah.client.page.common.toolbar.ExportMenuButton;
 import org.sigmah.client.page.common.toolbar.UIActions;
@@ -126,9 +126,9 @@ public class ReportPreview extends ContentPanel implements ReportPreviewPresente
         fromField.addListener(Events.Change, listener);
         toField.addListener(Events.Change, listener);
 
-        toolBar.add(new LabelToolItem(Application.CONSTANTS.fromDate()));
+        toolBar.add(new LabelToolItem(I18N.CONSTANTS.fromDate()));
         toolBar.add(fromField);
-        toolBar.add(new LabelToolItem(Application.CONSTANTS.toDate()));
+        toolBar.add(new LabelToolItem(I18N.CONSTANTS.toDate()));
         toolBar.add(toField);
     }
 
@@ -176,6 +176,6 @@ public class ReportPreview extends ContentPanel implements ReportPreviewPresente
     }
 
     public AsyncMonitor getLoadingMonitor() {
-        return new MaskingAsyncMonitor(this, Application.CONSTANTS.loading());
+        return new MaskingAsyncMonitor(this, I18N.CONSTANTS.loading());
     }
 }

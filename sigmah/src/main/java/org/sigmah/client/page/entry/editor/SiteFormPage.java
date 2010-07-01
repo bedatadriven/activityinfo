@@ -9,7 +9,8 @@ import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import org.sigmah.client.Application;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.dialog.SaveChangesCallback;
 import org.sigmah.client.page.common.dialog.SavePromptMessageBox;
 import org.sigmah.client.page.common.toolbar.UIActions;
@@ -34,16 +35,16 @@ public class SiteFormPage extends SiteForm {
             }
         };
 
-        Button gridButton = new Button(Application.CONSTANTS.returnToGrid(), Application.ICONS.table(), listener);
+        Button gridButton = new Button(I18N.CONSTANTS.returnToGrid(), IconImageBundle.ICONS.table(), listener);
         gridButton.setItemId(UIActions.gotoGrid);
         toolBar.add(gridButton);
 
-        Button saveButton = new Button(Application.CONSTANTS.save(), Application.ICONS.save(), listener);
+        Button saveButton = new Button(I18N.CONSTANTS.save(), IconImageBundle.ICONS.save(), listener);
         saveButton.setItemId(UIActions.save);
         toolBar.add(saveButton);
 
-        Button discardButton = new Button(Application.CONSTANTS.discardChanges(),
-                Application.ICONS.cancel(), listener);
+        Button discardButton = new Button(I18N.CONSTANTS.discardChanges(),
+                IconImageBundle.ICONS.cancel(), listener);
         discardButton.setItemId(UIActions.cancel);
         toolBar.add(discardButton);
 

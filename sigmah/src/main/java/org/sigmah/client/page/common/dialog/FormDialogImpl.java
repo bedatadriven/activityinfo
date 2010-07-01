@@ -16,8 +16,9 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
-import org.sigmah.client.Application;
 import org.sigmah.client.dispatch.AsyncMonitor;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 
 public class FormDialogImpl<FormT extends FormPanel> extends Window implements AsyncMonitor, FormDialogTether {
 
@@ -28,7 +29,7 @@ public class FormDialogImpl<FormT extends FormPanel> extends Window implements A
     protected final Button saveButton;
     protected final Button cancelButton;
 
-    private String workingText = Application.CONSTANTS.saving();
+    private String workingText = I18N.CONSTANTS.saving();
 
     private FormDialogCallback callback = null;
 
@@ -70,8 +71,8 @@ public class FormDialogImpl<FormT extends FormPanel> extends Window implements A
         this.getButtonBar().add(status);
         //	this.getButtonBar().add(new FillToolItem());
 
-        saveButton = new Button(Application.CONSTANTS.save());
-        saveButton.setIcon(Application.ICONS.save());
+        saveButton = new Button(I18N.CONSTANTS.save());
+        saveButton.setIcon(IconImageBundle.ICONS.save());
         saveButton.addListener(Events.Select, new Listener<ButtonEvent>() {
             public void handleEvent(ButtonEvent be) {
                 // use a deferred handler to make sure we get any change
@@ -81,7 +82,7 @@ public class FormDialogImpl<FormT extends FormPanel> extends Window implements A
                     public void execute() {
                         if (!form.isValid()) {
                             MessageBox.alert(getHeading(),
-                                    Application.CONSTANTS.pleaseCompleteForm(), null);
+                                    I18N.CONSTANTS.pleaseCompleteForm(), null);
                         } else {
                             onValidated();
                         }
@@ -91,8 +92,8 @@ public class FormDialogImpl<FormT extends FormPanel> extends Window implements A
         });
         addButton(saveButton);
 
-        cancelButton = new Button(Application.CONSTANTS.cancel());
-        cancelButton.setIcon(Application.ICONS.cancel());
+        cancelButton = new Button(I18N.CONSTANTS.cancel());
+        cancelButton.setIcon(IconImageBundle.ICONS.cancel());
         addButton(cancelButton);
 
         cancelButton.addListener(Events.Select, new Listener<ButtonEvent>() {
@@ -166,7 +167,7 @@ public class FormDialogImpl<FormT extends FormPanel> extends Window implements A
 
     @Override
     public void onConnectionProblem() {
-        status.setBusy(Application.CONSTANTS.connectionProblem());
+        status.setBusy(I18N.CONSTANTS.connectionProblem());
     }
 
 
@@ -177,7 +178,7 @@ public class FormDialogImpl<FormT extends FormPanel> extends Window implements A
         }
 
         cancelButton.disable();
-        status.setBusy(Application.CONSTANTS.retrying());
+        status.setBusy(I18N.CONSTANTS.retrying());
 
         return true;
     }
@@ -191,7 +192,7 @@ public class FormDialogImpl<FormT extends FormPanel> extends Window implements A
         cancelButton.enable();
         status.clearStatus("");
 
-        MessageBox.alert(this.getHeading(), Application.CONSTANTS.serverError(), null);
+        MessageBox.alert(this.getHeading(), I18N.CONSTANTS.serverError(), null);
     }
 
 

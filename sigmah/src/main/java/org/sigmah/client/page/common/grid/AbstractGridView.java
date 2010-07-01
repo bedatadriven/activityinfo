@@ -17,9 +17,9 @@ import com.extjs.gxt.ui.client.widget.grid.CellSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
-import org.sigmah.client.Application;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.common.toolbar.ActionToolBar;
 
 /*
@@ -111,10 +111,10 @@ public abstract class AbstractGridView<ModelT extends ModelData, PresenterT exte
     }
 
     public AsyncMonitor getDeletingMonitor() {
-        return new MaskingAsyncMonitor(this, Application.CONSTANTS.deleting());
+        return new MaskingAsyncMonitor(this, I18N.CONSTANTS.deleting());
     }
 
     public AsyncMonitor getSavingMonitor() {
-        return new MaskingAsyncMonitor(this, Application.CONSTANTS.saving());
+        return new MaskingAsyncMonitor(this, I18N.CONSTANTS.saving());
     }
 }

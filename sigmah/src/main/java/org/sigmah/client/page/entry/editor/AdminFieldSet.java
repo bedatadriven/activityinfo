@@ -12,7 +12,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Event;
-import org.sigmah.client.Application;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.common.widget.RemoteComboBox;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.AdminEntityDTO;
@@ -29,7 +29,7 @@ public class AdminFieldSet extends AbstractFieldSet implements AdminFieldSetPres
             new HashMap<Integer, ComboBox<AdminEntityDTO>>();
 
     public AdminFieldSet(ActivityDTO activity) {
-        super(Application.CONSTANTS.location(), 100, 200);
+        super(I18N.CONSTANTS.location(), 100, 200);
 
         for(final AdminLevelDTO level : activity.getAdminLevels()) {
             final int levelId = level.getId();

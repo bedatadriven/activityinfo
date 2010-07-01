@@ -9,8 +9,9 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
-import org.sigmah.client.Application;
 import org.sigmah.client.dispatch.callback.Got;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.inject.AppInjector;
 import org.sigmah.client.page.*;
 import org.sigmah.client.page.common.nav.NavigationPanel;
@@ -112,7 +113,7 @@ public class DataEntryLoader implements PageLoader {
                         activity);
 
                 editor.addSubComponent(map);
-                grid.addSidePanel(Application.CONSTANTS.map(), Application.ICONS.map(), map);
+                grid.addSidePanel(I18N.CONSTANTS.map(), IconImageBundle.ICONS.map(), map);
 
                 //  }
                 editor.go((SiteGridPageState) place, activity);

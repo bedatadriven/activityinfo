@@ -23,11 +23,12 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.sigmah.client.Application;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.event.NavigationEvent;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.offline.ui.OfflineMenu;
 import org.sigmah.client.page.*;
 import org.sigmah.client.page.charts.ChartPageState;
@@ -84,19 +85,19 @@ public class AppFrameSet implements Frame {
 
         topBar = new ToolBar();
 
-        LabelToolItem appTitleItem = new LabelToolItem(Application.CONSTANTS.appTitle());
+        LabelToolItem appTitleItem = new LabelToolItem(I18N.CONSTANTS.appTitle());
         appTitleItem.setStyleName("appTitle");
         topBar.add(appTitleItem);
 
         topBar.add(new SeparatorToolItem());
 
-        addNavLink(Application.CONSTANTS.welcome(), null, new WelcomePageState());
-        addNavLink(Application.CONSTANTS.dataEntry(), Application.ICONS.dataEntry(), new SiteGridPageState());
-        addNavLink(Application.CONSTANTS.reports(), Application.ICONS.report(), new ReportHomePageState());
-        addNavLink(Application.CONSTANTS.charts(), Application.ICONS.barChart(), new ChartPageState());
-        addNavLink(Application.CONSTANTS.maps(), Application.ICONS.map(), new MapPageState());
-        addNavLink(Application.CONSTANTS.tables(), Application.ICONS.table(), new PivotPageState());
-        addNavLink(Application.CONSTANTS.setup(), Application.ICONS.setup(), new DbListPageState());
+        addNavLink(I18N.CONSTANTS.welcome(), null, new WelcomePageState());
+        addNavLink(I18N.CONSTANTS.dataEntry(), IconImageBundle.ICONS.dataEntry(), new SiteGridPageState());
+        addNavLink(I18N.CONSTANTS.reports(), IconImageBundle.ICONS.report(), new ReportHomePageState());
+        addNavLink(I18N.CONSTANTS.charts(), IconImageBundle.ICONS.barChart(), new ChartPageState());
+        addNavLink(I18N.CONSTANTS.maps(), IconImageBundle.ICONS.map(), new MapPageState());
+        addNavLink(I18N.CONSTANTS.tables(), IconImageBundle.ICONS.table(), new PivotPageState());
+        addNavLink(I18N.CONSTANTS.setup(), IconImageBundle.ICONS.setup(), new DbListPageState());
 
         topBar.add(new FillToolItem());
 
@@ -106,7 +107,7 @@ public class AppFrameSet implements Frame {
 
         topBar.add(offlineMenu);
 
-        Button logoutTool = new Button(Application.CONSTANTS.logout(), new SelectionListener<ButtonEvent>() {
+        Button logoutTool = new Button(I18N.CONSTANTS.logout(), new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 // TODO: this needs to go elsewhere

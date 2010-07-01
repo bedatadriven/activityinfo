@@ -15,8 +15,8 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.sigmah.client.Application;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.common.widget.RemoteComboBox;
 import org.sigmah.shared.command.GetCountries;
 import org.sigmah.shared.command.result.CountryResult;
@@ -30,21 +30,21 @@ public class DatabaseForm extends FormPanel {
         binding = new FormBinding(this);
 
 		TextField<String> nameField = new TextField<String>();
-		nameField.setFieldLabel(Application.CONSTANTS.name());
+		nameField.setFieldLabel(I18N.CONSTANTS.name());
 		nameField.setAllowBlank(false);
 		nameField.setMaxLength(16);
         binding.addFieldBinding(new FieldBinding(nameField, "name"));
 		add(nameField);
 		
 		TextField<String> fullNameField = new TextField<String>();
-		fullNameField.setFieldLabel(Application.CONSTANTS.description());
+		fullNameField.setFieldLabel(I18N.CONSTANTS.description());
 		fullNameField.setMaxLength(50);
         binding.addFieldBinding(new FieldBinding(fullNameField, "fullName"));
 		add(fullNameField);
 
         ComboBox<CountryDTO> countryField = new RemoteComboBox<CountryDTO>();
         countryField.setStore(createCountryStore(dispatcher));
-        countryField.setFieldLabel(Application.CONSTANTS.country());
+        countryField.setFieldLabel(I18N.CONSTANTS.country());
         countryField.setValueField("id");
         countryField.setDisplayField("name");
         countryField.setAllowBlank(false);

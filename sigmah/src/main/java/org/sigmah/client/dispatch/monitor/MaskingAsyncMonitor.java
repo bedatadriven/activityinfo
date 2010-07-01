@@ -12,8 +12,8 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Container;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import org.sigmah.client.Application;
 import org.sigmah.client.dispatch.AsyncMonitor;
+import org.sigmah.client.i18n.I18N;
 
 /**
  * Uses a GXT loading mask on a component to keep the user updated on
@@ -74,13 +74,13 @@ public class MaskingAsyncMonitor implements AsyncMonitor {
 
     @Override
     public void onConnectionProblem() {
-        maskingText = Application.CONSTANTS.connectionProblem();
+        maskingText = I18N.CONSTANTS.connectionProblem();
         mask();
     }
 
     @Override
     public boolean onRetrying() {
-        maskingText = Application.CONSTANTS.retrying();
+        maskingText = I18N.CONSTANTS.retrying();
         mask();
         return true;
     }
@@ -89,7 +89,7 @@ public class MaskingAsyncMonitor implements AsyncMonitor {
     @Override
     public void onServerError() {
 
-        MessageBox.alert(Application.CONSTANTS.error(), Application.CONSTANTS.serverError(), null);
+        MessageBox.alert(I18N.CONSTANTS.error(), I18N.CONSTANTS.serverError(), null);
 
         unmask();
     }

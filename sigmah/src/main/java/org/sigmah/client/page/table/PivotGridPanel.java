@@ -23,9 +23,9 @@ import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.inject.Inject;
 import org.sigmah.client.AppEvents;
-import org.sigmah.client.Application;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.event.PivotCellEvent;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.report.content.EntityCategory;
 import org.sigmah.shared.report.content.PivotTableData;
 import org.sigmah.shared.report.model.Dimension;
@@ -162,7 +162,7 @@ public class PivotGridPanel extends ContentPanel {
 
             String label = axis.getLabel();
             if(label == null) {
-                label = Application.CONSTANTS.value();
+                label = I18N.CONSTANTS.value();
             }
             ColumnConfig column = new ColumnConfig(id, label, 75);
             column.setNumberFormat(NumberFormat.getFormat("#,##0"));

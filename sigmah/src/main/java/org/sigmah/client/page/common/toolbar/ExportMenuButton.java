@@ -12,7 +12,8 @@ import com.extjs.gxt.ui.client.widget.button.SplitButton;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import org.sigmah.client.Application;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.shared.command.RenderElement;
 
 public class ExportMenuButton extends SplitButton {
@@ -24,7 +25,7 @@ public class ExportMenuButton extends SplitButton {
 
         this.defaultFormat = defaultFormat;
         this.setIcon(formatIcon(defaultFormat));
-        this.setText(Application.CONSTANTS.export());
+        this.setText(I18N.CONSTANTS.export());
 
         this.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
@@ -44,23 +45,23 @@ public class ExportMenuButton extends SplitButton {
 
         Menu menu = new Menu();
 
-        MenuItem word = new MenuItem(Application.CONSTANTS.word(), formatIcon(RenderElement.Format.Word), menuListener);
+        MenuItem word = new MenuItem(I18N.CONSTANTS.word(), formatIcon(RenderElement.Format.Word), menuListener);
         word.setData("format", RenderElement.Format.Word);
         menu.add(word);
 
-        MenuItem excel = new MenuItem(Application.CONSTANTS.excel(), formatIcon(RenderElement.Format.Excel), menuListener);
+        MenuItem excel = new MenuItem(I18N.CONSTANTS.excel(), formatIcon(RenderElement.Format.Excel), menuListener);
         excel.setData("format", RenderElement.Format.Excel);
         menu.add(excel);
 
-        MenuItem ppt = new MenuItem(Application.CONSTANTS.powerPoint(), formatIcon(RenderElement.Format.PowerPoint), menuListener);
+        MenuItem ppt = new MenuItem(I18N.CONSTANTS.powerPoint(), formatIcon(RenderElement.Format.PowerPoint), menuListener);
         ppt.setData("format", RenderElement.Format.PowerPoint);
         menu.add(ppt);
 
-        MenuItem pdf = new MenuItem(Application.CONSTANTS.pdf(), formatIcon(RenderElement.Format.PDF), menuListener);
+        MenuItem pdf = new MenuItem(I18N.CONSTANTS.pdf(), formatIcon(RenderElement.Format.PDF), menuListener);
         pdf.setData("format", RenderElement.Format.PDF);
         menu.add(pdf);
 
-        MenuItem image = new MenuItem(Application.CONSTANTS.image(), formatIcon(RenderElement.Format.PNG), menuListener);
+        MenuItem image = new MenuItem(I18N.CONSTANTS.image(), formatIcon(RenderElement.Format.PNG), menuListener);
         image.setData("format", RenderElement.Format.PNG);
         menu.add(image);
 
@@ -70,17 +71,17 @@ public class ExportMenuButton extends SplitButton {
 
     private AbstractImagePrototype formatIcon(RenderElement.Format format) {
         if (format == RenderElement.Format.Excel) {
-            return Application.ICONS.excel();
+            return IconImageBundle.ICONS.excel();
         } else if (format == RenderElement.Format.PNG) {
-            return Application.ICONS.image();
+            return IconImageBundle.ICONS.image();
         } else if (format == RenderElement.Format.PowerPoint) {
-            return Application.ICONS.ppt();
+            return IconImageBundle.ICONS.ppt();
         } else if (format == RenderElement.Format.Word) {
-            return Application.ICONS.msword();
+            return IconImageBundle.ICONS.msword();
         } else if (format == RenderElement.Format.PDF) {
-            return Application.ICONS.pdf();
+            return IconImageBundle.ICONS.pdf();
         } else {
-            return Application.ICONS.report();
+            return IconImageBundle.ICONS.report();
         }
     }
 

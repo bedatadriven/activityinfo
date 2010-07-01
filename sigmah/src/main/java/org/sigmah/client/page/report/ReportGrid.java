@@ -20,10 +20,11 @@ import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.inject.Inject;
-import org.sigmah.client.Application;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.callback.Got;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.grid.AbstractEditorGridView;
 import org.sigmah.client.page.common.widget.MappingComboBox;
 import org.sigmah.shared.command.GetSchema;
@@ -102,9 +103,9 @@ public class ReportGrid extends AbstractEditorGridView<ReportDefinitionDTO, Repo
     private ColumnModel createColumnModel() {
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
-        columns.add(new ColumnConfig("databaseName", Application.CONSTANTS.database(), 100));
+        columns.add(new ColumnConfig("databaseName", I18N.CONSTANTS.database(), 100));
 
-        ColumnConfig name = new ColumnConfig("title", Application.CONSTANTS.name(), 250);
+        ColumnConfig name = new ColumnConfig("title", I18N.CONSTANTS.name(), 250);
         name.setRenderer(new GridCellRenderer<ReportDefinitionDTO>() {
             public Object render(ReportDefinitionDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
                 return "<b>" + model.getTitle() + "</b><br>" + model.getDescription();
@@ -112,15 +113,15 @@ public class ReportGrid extends AbstractEditorGridView<ReportDefinitionDTO, Repo
         });
         columns.add(name);
 
-        ColumnConfig frequency = new ColumnConfig("frequency", Application.CONSTANTS.reportingFrequency(), 100);
+        ColumnConfig frequency = new ColumnConfig("frequency", I18N.CONSTANTS.reportingFrequency(), 100);
         frequency.setRenderer(new GridCellRenderer<ReportDefinitionDTO>() {
             public Object render(ReportDefinitionDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
                 if (model.getFrequency() == ReportFrequency.Monthly) {
-                    return Application.CONSTANTS.monthly();
+                    return I18N.CONSTANTS.monthly();
                 } else if (model.getFrequency() == ReportFrequency.Weekly) {
-                    return Application.CONSTANTS.weekly();
+                    return I18N.CONSTANTS.weekly();
                 } else if (model.getFrequency() == ReportFrequency.Daily) {
-                    return Application.CONSTANTS.daily();
+                    return I18N.CONSTANTS.daily();
                 } else if (model.getFrequency() == ReportFrequency.Adhoc) {
                     return "ad hoc";
                 }
@@ -129,7 +130,7 @@ public class ReportGrid extends AbstractEditorGridView<ReportDefinitionDTO, Repo
         });
         columns.add(frequency);
 
-        ColumnConfig day = new ColumnConfig("day", Application.CONSTANTS.day(), 100);
+        ColumnConfig day = new ColumnConfig("day", I18N.CONSTANTS.day(), 100);
         day.setRenderer(new GridCellRenderer<ReportDefinitionDTO>() {
             public Object render(ReportDefinitionDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<ReportDefinitionDTO> store, Grid<ReportDefinitionDTO> grid) {
                 if (model.getFrequency() == ReportFrequency.Weekly) {
@@ -144,12 +145,12 @@ public class ReportGrid extends AbstractEditorGridView<ReportDefinitionDTO, Repo
         });
         columns.add(day);
 
-        ColumnConfig subscribed = new ColumnConfig("subscribed", Application.CONSTANTS.subscribed(), 100);
+        ColumnConfig subscribed = new ColumnConfig("subscribed", I18N.CONSTANTS.subscribed(), 100);
         subscribed.setRenderer(new GridCellRenderer<ReportDefinitionDTO>() {
             @Override
             public Object render(ReportDefinitionDTO model, String property, ColumnData columnData, int rowIndex, int colIndex, ListStore<ReportDefinitionDTO> store, Grid<ReportDefinitionDTO> grid) {
                 if (model.isSubscribed()) {
-                    return Application.CONSTANTS.yes();
+                    return I18N.CONSTANTS.yes();
                 } else {
                     return "";
                 }
@@ -157,8 +158,8 @@ public class ReportGrid extends AbstractEditorGridView<ReportDefinitionDTO, Repo
         });
 
         final MappingComboBox<Boolean> subCombo = new MappingComboBox();
-        subCombo.add(true, Application.CONSTANTS.yes());
-        subCombo.add(false, Application.CONSTANTS.no());
+        subCombo.add(true, I18N.CONSTANTS.yes());
+        subCombo.add(false, I18N.CONSTANTS.no());
 
         CellEditor subEditor = new CellEditor(subCombo) {
             @Override
@@ -189,13 +190,13 @@ public class ReportGrid extends AbstractEditorGridView<ReportDefinitionDTO, Repo
             public void handleEvent(BaseEvent be) {
                 if (dbMenu.getItemCount() == 0) {
                     service.execute(new GetSchema(), new MaskingAsyncMonitor(ReportGrid.this,
-                            Application.CONSTANTS.loading()), new Got<SchemaDTO>() {
+                            I18N.CONSTANTS.loading()), new Got<SchemaDTO>() {
 
                         @Override
                         public void got(SchemaDTO result) {
                             for (final UserDatabaseDTO db : result.getDatabases()) {
                                 MenuItem item = new MenuItem(db.getName());
-                                item.setIcon(Application.ICONS.database());
+                                item.setIcon(IconImageBundle.ICONS.database());
                                 item.addListener(Events.Select, new Listener<BaseEvent>() {
                                     @Override
                                     public void handleEvent(BaseEvent be) {
@@ -210,7 +211,7 @@ public class ReportGrid extends AbstractEditorGridView<ReportDefinitionDTO, Repo
             }
         });
 
-        Button newButton = new Button(Application.CONSTANTS.newText(), Application.ICONS.add());
+        Button newButton = new Button(I18N.CONSTANTS.newText(), IconImageBundle.ICONS.add());
         newButton.setMenu(dbMenu);
         toolBar.add(newButton);
     }

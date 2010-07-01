@@ -12,10 +12,10 @@ import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.sigmah.client.Application;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.loader.CommandLoadEvent;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.common.toolbar.UIActions;
@@ -146,7 +146,7 @@ public abstract class AbstractEditorGridPresenter<ModelT extends ModelData>
         if (getModifiedRecords().size() == 0) {
             return null;
         } else {
-            return Application.CONSTANTS.unsavedChangesWarning();
+            return I18N.CONSTANTS.unsavedChangesWarning();
         }
     }
 

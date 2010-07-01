@@ -11,9 +11,10 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import org.sigmah.client.Application;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.toolbar.ActionToolBar;
 import org.sigmah.client.page.common.toolbar.ExportCallback;
 import org.sigmah.client.page.common.toolbar.ExportMenuButton;
@@ -53,7 +54,7 @@ public class MapPage extends ContentPanel implements MapPresenter.View {
 
     private void createPreview() {
         previewPanel = new MapPreview();
-        previewPanel.setHeading(Application.CONSTANTS.preview());
+        previewPanel.setHeading(I18N.CONSTANTS.preview());
 
         add(previewPanel, new BorderLayoutData(Style.LayoutRegion.CENTER));
     }
@@ -62,8 +63,8 @@ public class MapPage extends ContentPanel implements MapPresenter.View {
 
         toolBar = new ActionToolBar(presenter);
 
-        toolBar.addButton(UIActions.refresh, Application.CONSTANTS.refreshPreview(),
-                Application.ICONS.refresh());
+        toolBar.addButton(UIActions.refresh, I18N.CONSTANTS.refreshPreview(),
+                IconImageBundle.ICONS.refresh());
 
         toolBar.add(new ExportMenuButton(RenderElement.Format.PowerPoint, new ExportCallback() {
             public void export(RenderElement.Format format) {
@@ -73,8 +74,8 @@ public class MapPage extends ContentPanel implements MapPresenter.View {
             }
         }));
 
-        toolBar.addButton(UIActions.exportData, Application.CONSTANTS.exportData(),
-                Application.ICONS.excel());
+        toolBar.addButton(UIActions.exportData, I18N.CONSTANTS.exportData(),
+                IconImageBundle.ICONS.excel());
 
         previewPanel.setTopComponent(toolBar);
     }
@@ -85,11 +86,11 @@ public class MapPage extends ContentPanel implements MapPresenter.View {
     }
 
     public AsyncMonitor getSchemaLoadingMonitor() {
-        return new MaskingAsyncMonitor(this, Application.CONSTANTS.loading());
+        return new MaskingAsyncMonitor(this, I18N.CONSTANTS.loading());
     }
 
     public AsyncMonitor getMapLoadingMonitor() {
-        return new MaskingAsyncMonitor(previewPanel, Application.CONSTANTS.loading());
+        return new MaskingAsyncMonitor(previewPanel, I18N.CONSTANTS.loading());
     }
 
     public ReportElement getMapElement() {

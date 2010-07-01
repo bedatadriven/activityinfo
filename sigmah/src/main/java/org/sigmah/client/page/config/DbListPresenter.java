@@ -13,13 +13,13 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import org.sigmah.client.AppEvents;
-import org.sigmah.client.Application;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.callback.Created;
 import org.sigmah.client.dispatch.callback.Deleted;
 import org.sigmah.client.event.NavigationEvent;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.NavigationHandler;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.common.dialog.FormDialogCallback;
@@ -113,8 +113,8 @@ public class DbListPresenter implements ActionListener {
     }
 
     private void onDelete() {
-        MessageBox.confirm(Application.CONSTANTS.appTitle(),
-                Application.MESSAGES.confirmDeleteDb(selection.getName()),
+        MessageBox.confirm(I18N.CONSTANTS.appTitle(),
+                I18N.MESSAGES.confirmDeleteDb(selection.getName()),
                 new Listener<MessageBoxEvent>() {
                     @Override
                     public void handleEvent(MessageBoxEvent be) {
@@ -146,7 +146,7 @@ public class DbListPresenter implements ActionListener {
         final FormDialogImpl dialog = new FormDialogImpl(form);
         dialog.setWidth(400);
         dialog.setHeight(200);
-        dialog.setHeading(Application.CONSTANTS.newDatabase());
+        dialog.setHeading(I18N.CONSTANTS.newDatabase());
 
         dialog.show(new FormDialogCallback() {
             @Override

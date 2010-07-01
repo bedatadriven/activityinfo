@@ -36,7 +36,7 @@
     <source path="shared"/>
 
     <!-- Specify the app entry point class.                         -->
-    <entry-point class='org.sigmah.client.Application' />
+    <entry-point class='org.sigmah.client.ActivityInfoEntryPoint' />
 
     <!-- Enable other locales -->
     <extend-property name="locale" values="en,fr" />

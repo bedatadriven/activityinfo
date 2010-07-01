@@ -8,7 +8,7 @@ package org.sigmah.client.offline.ui;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
-import org.sigmah.client.Application;
+import org.sigmah.client.i18n.I18N;
 
 /**
  * @author Alex Bertram
@@ -18,7 +18,7 @@ public class OfflineStatusWindow extends Window {
     private Text schemaStatus;
 
     public OfflineStatusWindow() {
-        setHeading(Application.CONSTANTS.statusOfflineMode());
+        setHeading(I18N.CONSTANTS.statusOfflineMode());
         setWidth(300);
         setHeight(200);
 
@@ -27,11 +27,11 @@ public class OfflineStatusWindow extends Window {
 
         appStatus = new Text();
 
-        add(new Text(Application.CONSTANTS.loadingSoftware()));
+        add(new Text(I18N.CONSTANTS.loadingSoftware()));
         add(appStatus);
 
         schemaStatus = new Text();
-        add(new Text(Application.CONSTANTS.schema()));
+        add(new Text(I18N.CONSTANTS.schema()));
         add(schemaStatus);
     }
 

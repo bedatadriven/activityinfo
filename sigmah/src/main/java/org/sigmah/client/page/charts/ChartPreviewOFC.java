@@ -18,7 +18,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.MarginData;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
-import org.sigmah.client.Application;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.report.content.PivotChartContent;
 import org.sigmah.shared.report.content.PivotTableData;
 
@@ -53,7 +53,7 @@ public class ChartPreviewOFC extends ContentPanel implements ChartPreview {
         chart.setChartModel(chartModel);
 
         if(!chart.isLoaded()) {
-            this.el().mask(Application.CONSTANTS.loading());
+            this.el().mask(I18N.CONSTANTS.loading());
             chart.addListener(Events.Ready, new Listener<BaseEvent>() {
                 public void handleEvent(BaseEvent be) {
                     chart.removeListener(Events.Ready, this);

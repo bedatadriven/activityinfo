@@ -6,7 +6,7 @@
 package org.sigmah.client.page.config;
 
 import com.google.inject.Inject;
-import org.sigmah.client.Application;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
@@ -29,15 +29,15 @@ public class DbConfigPresenter implements Page {
         view.setHeading(db.getFullName() == null ? db.getName() : db.getFullName());
 
         if (db.isDesignAllowed()) {
-            view.add(Application.CONSTANTS.design(), Application.CONSTANTS.designDescription(),
+            view.add(I18N.CONSTANTS.design(), I18N.CONSTANTS.designDescription(),
                     "db-design.png", new DbPageState(Designer.Design, db.getId()));
         }
         if (db.isManageAllUsersAllowed()) {
-            view.add(Application.CONSTANTS.partner(), Application.CONSTANTS.partnerEditorDescription(),
+            view.add(I18N.CONSTANTS.partner(), I18N.CONSTANTS.partnerEditorDescription(),
                     "db-partners.png", new DbPageState(DbPartnerEditor.DatabasePartners, db.getId()));
         }
         if (db.isManageUsersAllowed()) {
-            view.add(Application.CONSTANTS.users(), Application.CONSTANTS.userManagerDescription(),
+            view.add(I18N.CONSTANTS.users(), I18N.CONSTANTS.userManagerDescription(),
                     "db-users.png", new DbPageState(DbUserEditor.DatabaseUsers, db.getId()));
         }
 

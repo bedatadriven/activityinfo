@@ -10,7 +10,7 @@ import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.PropertyEditor;
 import com.extjs.gxt.ui.client.widget.form.Validator;
 import com.google.gwt.i18n.client.NumberFormat;
-import org.sigmah.client.Application;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.map.AbstractCoordinateEditor;
 import org.sigmah.shared.map.CoordinateFormatException;
 
@@ -36,11 +36,11 @@ public class CoordinateEditor extends AbstractCoordinateEditor
         this.negHemiChars = negHemiChars;
         this.posHemiChars = posHemiChars;
         this.decimalSeperators = ".,";
-        this.noHemisphereMessage = Application.CONSTANTS.noHemisphere();
-        this.tooManyNumbersErrorMessage = Application.CONSTANTS.tooManyNumbers();
-        this.invalidMinutesMessage = Application.CONSTANTS.invalidMinutes();
-        this.invalidSecondsMessage = Application.CONSTANTS.invalidSeconds();
-        this.noNumberErrorMessage = Application.CONSTANTS.noNumber();
+        this.noHemisphereMessage = I18N.CONSTANTS.noHemisphere();
+        this.tooManyNumbersErrorMessage = I18N.CONSTANTS.tooManyNumbers();
+        this.invalidMinutesMessage = I18N.CONSTANTS.invalidMinutes();
+        this.invalidSecondsMessage = I18N.CONSTANTS.invalidSeconds();
+        this.noNumberErrorMessage = I18N.CONSTANTS.noNumber();
 
         dddFormat = NumberFormat.getFormat("+0.000000;-0.000000");
         shortFracFormat = NumberFormat.getFormat("0.00");

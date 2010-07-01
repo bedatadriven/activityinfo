@@ -9,7 +9,7 @@ package org.sigmah.client.page.config.design;
 import com.extjs.gxt.ui.client.binding.FieldBinding;
 import com.extjs.gxt.ui.client.binding.FormBinding;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import org.sigmah.client.Application;
+import org.sigmah.client.i18n.I18N;
 
 public class AttributeForm extends AbstractDesignForm {
 
@@ -20,7 +20,7 @@ public class AttributeForm extends AbstractDesignForm {
         binding = new FormBinding(this);
 
 		TextField<String> nameField = new TextField<String>();
-		nameField.setFieldLabel(Application.CONSTANTS.name());
+		nameField.setFieldLabel(I18N.CONSTANTS.name());
 		binding.addFieldBinding(new FieldBinding(nameField, "name"));
 
 		add(nameField);

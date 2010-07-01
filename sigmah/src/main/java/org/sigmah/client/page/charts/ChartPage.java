@@ -20,11 +20,12 @@ import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.inject.Inject;
-import org.sigmah.client.Application;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.filter.AdminFilterPanel;
 import org.sigmah.client.page.common.filter.DateRangePanel;
 import org.sigmah.client.page.common.filter.IndicatorTreePanel;
@@ -90,20 +91,20 @@ public class ChartPage extends LayoutContainer implements Charter.View {
 
         chartTypeButtons = new ArrayList<ToggleButton>();
 
-        toolBar.add(new LabelToolItem(Application.CONSTANTS.chartType()));
+        toolBar.add(new LabelToolItem(I18N.CONSTANTS.chartType()));
 
-        ToggleButton button = new ToggleButton("", Application.ICONS.barChart());
+        ToggleButton button = new ToggleButton("", IconImageBundle.ICONS.barChart());
         button.setToggleGroup("chartType");
         button.setData("chartType", PivotChartElement.Type.Bar);
         chartTypeButtons.add(button);
         toolBar.add(button);
 
-        button = new ToggleButton("", Application.ICONS.curveChart());
+        button = new ToggleButton("", IconImageBundle.ICONS.curveChart());
         button.setToggleGroup("chartType");
         chartTypeButtons.add(button);
         toolBar.add(button);
 
-        button = new ToggleButton("", Application.ICONS.pieChart());
+        button = new ToggleButton("", IconImageBundle.ICONS.pieChart());
         button.setToggleGroup("chartType");
         chartTypeButtons.add(button);
         toolBar.add(button);
@@ -123,7 +124,7 @@ public class ChartPage extends LayoutContainer implements Charter.View {
     private void createWest() {
 
         ContentPanel westPanel = new ContentPanel(new AccordionLayout());
-        westPanel.setHeading(Application.CONSTANTS.filter());
+        westPanel.setHeading(I18N.CONSTANTS.filter());
 
         indicatorPanel = new IndicatorTreePanel(service, true);
         indicatorPanel.setHeaderVisible(true);
@@ -174,7 +175,7 @@ public class ChartPage extends LayoutContainer implements Charter.View {
         dimBar = new ToolBar();
         ListStore<Dimension> store = DimensionStoreFactory.create(service);
 
-        dimBar.add(new LabelToolItem(Application.CONSTANTS.categories()));
+        dimBar.add(new LabelToolItem(I18N.CONSTANTS.categories()));
         categoryCombo = new ComboBox<Dimension>();
         categoryCombo.setForceSelection(true);
         categoryCombo.setEditable(false);
@@ -184,7 +185,7 @@ public class ChartPage extends LayoutContainer implements Charter.View {
 
         dimBar.add(new FillToolItem());
 
-        dimBar.add(new LabelToolItem(Application.CONSTANTS.legend()));
+        dimBar.add(new LabelToolItem(I18N.CONSTANTS.legend()));
         legendCombo = new ComboBox<Dimension>();
         legendCombo.setForceSelection(true);
         legendCombo.setEditable(false);
@@ -234,7 +235,7 @@ public class ChartPage extends LayoutContainer implements Charter.View {
 
     @Override
     public AsyncMonitor getMonitor() {
-        return new MaskingAsyncMonitor(preview, Application.CONSTANTS.loading());
+        return new MaskingAsyncMonitor(preview, I18N.CONSTANTS.loading());
     }
 
     public void setData(PivotChartElement element) {

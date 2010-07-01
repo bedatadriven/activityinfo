@@ -10,12 +10,12 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
-import org.sigmah.client.Application;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.callback.DownloadCallback;
 import org.sigmah.client.dispatch.callback.Got;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
@@ -80,17 +80,17 @@ public class PivotPresenter implements Page {
         this.view.bindPresenter(this);
 
         ListStore<Dimension> store = view.getRowStore();
-        store.add(createDimension(DimensionType.Database, Application.CONSTANTS.database()));
-        store.add(createDimension(DimensionType.Activity, Application.CONSTANTS.activity()));
-        store.add(createDimension(DimensionType.Indicator, Application.CONSTANTS.indicators()));
+        store.add(createDimension(DimensionType.Database, I18N.CONSTANTS.database()));
+        store.add(createDimension(DimensionType.Activity, I18N.CONSTANTS.activity()));
+        store.add(createDimension(DimensionType.Indicator, I18N.CONSTANTS.indicators()));
 
         store = view.getColStore();
-        store.add(createDimension(DimensionType.Partner, Application.CONSTANTS.partner()));
+        store.add(createDimension(DimensionType.Partner, I18N.CONSTANTS.partner()));
 
         store = view.getUnsusedStore();
-        store.add(createDimension(DateUnit.YEAR, Application.CONSTANTS.year()));
-        store.add(createDimension(DateUnit.QUARTER, Application.CONSTANTS.quarter()));
-        store.add(createDimension(DateUnit.MONTH, Application.CONSTANTS.month()));
+        store.add(createDimension(DateUnit.YEAR, I18N.CONSTANTS.year()));
+        store.add(createDimension(DateUnit.QUARTER, I18N.CONSTANTS.quarter()));
+        store.add(createDimension(DateUnit.MONTH, I18N.CONSTANTS.month()));
 
         service.execute(new GetSchema(), view.getMonitor(), new Got<SchemaDTO>() {
             @Override
@@ -162,7 +162,7 @@ public class PivotPresenter implements Page {
             final PivotTableElement element = createElement();
             service.execute(new GenerateElement(element), view.getMonitor(), new AsyncCallback<Content>() {
                 public void onFailure(Throwable throwable) {
-                    MessageBox.alert(Application.CONSTANTS.error(), Application.CONSTANTS.errorOnServer(), null);
+                    MessageBox.alert(I18N.CONSTANTS.error(), I18N.CONSTANTS.errorOnServer(), null);
                 }
 
                 public void onSuccess(Content content) {

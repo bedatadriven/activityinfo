@@ -30,7 +30,8 @@ import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import org.sigmah.client.Application;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.grid.AbstractEditorTreeGridView;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.page.common.widget.MappingComboBox;
@@ -75,13 +76,13 @@ public class HierSiteTree extends AbstractEditorTreeGridView<ModelData, HierSite
         tree.setIconProvider(new ModelIconProvider() {
             public AbstractImagePrototype getIcon(ModelData model) {
                 if(model instanceof IndicatorRowDTO) {
-                    return Application.ICONS.indicator();
+                    return IconImageBundle.ICONS.indicator();
                 } else if(model instanceof SiteDTO) {
                     SiteDTO site = (SiteDTO)model;
                     if(site.hasCoords()) {
-                        return Application.ICONS.mapped();    
+                        return IconImageBundle.ICONS.mapped();
                     } else {
-                        return Application.ICONS.unmapped();
+                        return IconImageBundle.ICONS.unmapped();
                     }
                 }
                 return null;
@@ -104,14 +105,14 @@ public class HierSiteTree extends AbstractEditorTreeGridView<ModelData, HierSite
 
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
-        ColumnConfig indicator = new ColumnConfig("name", Application.CONSTANTS.indicators(), 150);
+        ColumnConfig indicator = new ColumnConfig("name", I18N.CONSTANTS.indicators(), 150);
         indicator.setSortable(false);
         indicator.setMenuDisabled(true);
         indicator.setRenderer(new TreeGridCellRenderer());
         columns.add(indicator);
 
         if(activity.getDatabase().isViewAllAllowed()) {
-            columns.add(new ColumnConfig("partner", Application.CONSTANTS.partner(), 100));
+            columns.add(new ColumnConfig("partner", I18N.CONSTANTS.partner(), 100));
         }
 
         firstMonthColumn = columns.size();
@@ -144,14 +145,14 @@ public class HierSiteTree extends AbstractEditorTreeGridView<ModelData, HierSite
         toolBar.addSaveSplitButton();
         toolBar.add(new SeparatorToolItem());
 
-        toolBar.addButton(UIActions.add, Application.MESSAGES.newSite(activity.getLocationType().getName()),
-                Application.ICONS.add());
+        toolBar.addButton(UIActions.add, I18N.MESSAGES.newSite(activity.getLocationType().getName()),
+                IconImageBundle.ICONS.add());
         toolBar.addEditButton();
         toolBar.addDeleteButton();
 
         toolBar.add(new FillToolItem());
 
-        toolBar.add(new LabelToolItem(Application.CONSTANTS.month() + ": "));
+        toolBar.add(new LabelToolItem(I18N.CONSTANTS.month() + ": "));
 
         final MappingComboBox<Month> monthCombo = new MappingComboBox<Month>();
         this.monthCombo = monthCombo;

@@ -23,8 +23,8 @@ import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.maps.client.overlay.MarkerOptions;
 import com.google.gwt.maps.client.overlay.Overlay;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.sigmah.client.Application;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.map.GcIconFactory;
 import org.sigmah.client.map.IconFactory;
 import org.sigmah.client.map.MapApiLoader;
@@ -72,7 +72,7 @@ public class MapPreview extends ContentPanel {
 
     public MapPreview() {
 
-        setHeading(Application.CONSTANTS.preview());
+        setHeading(I18N.CONSTANTS.preview());
         setLayout(new FlowLayout());
         setScrollMode(Style.Scroll.AUTO);
 
@@ -158,7 +158,7 @@ public class MapPreview extends ContentPanel {
     public void createMapIfNeededAndUpdateMapContent() {
 
         if (map == null) {
-            MapApiLoader.load(new MaskingAsyncMonitor(this, Application.CONSTANTS.loadingMap()),
+            MapApiLoader.load(new MaskingAsyncMonitor(this, I18N.CONSTANTS.loadingMap()),
                     new AsyncCallback<Void>() {
                         @Override
                         public void onSuccess(Void result) {
@@ -232,7 +232,7 @@ public class MapPreview extends ContentPanel {
 
 
         // TODO: i18n
-        status.setStatus(content.getUnmappedSites().size() + " " + Application.CONSTANTS.siteLackCoordiantes(), null);
+        status.setStatus(content.getUnmappedSites().size() + " " + I18N.CONSTANTS.siteLackCoordiantes(), null);
 
         GcIconFactory iconFactory = new GcIconFactory();
         iconFactory.primaryColor = "#0000FF";
@@ -263,8 +263,8 @@ public class MapPreview extends ContentPanel {
 
         if (this.getItemCount() == 0) {
 
-            add(new Html(Application.CONSTANTS.cannotLoadMap()));
-            add(new Button(Application.CONSTANTS.retry(), new SelectionListener<ButtonEvent>() {
+            add(new Html(I18N.CONSTANTS.cannotLoadMap()));
+            add(new Button(I18N.CONSTANTS.retry(), new SelectionListener<ButtonEvent>() {
                 @Override
                 public void componentSelected(ButtonEvent ce) {
                     createMapIfNeededAndUpdateMapContent();

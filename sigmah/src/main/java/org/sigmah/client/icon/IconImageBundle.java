@@ -8,6 +8,7 @@
  */
 package org.sigmah.client.icon;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.ImageBundle;
 
@@ -16,6 +17,7 @@ import com.google.gwt.user.client.ui.ImageBundle;
  * GWT's magic ImageBundle generator.
  */
 public interface IconImageBundle extends ImageBundle {
+    IconImageBundle ICONS = (IconImageBundle) GWT.create(IconImageBundle.class);
 
     AbstractImagePrototype add();
 

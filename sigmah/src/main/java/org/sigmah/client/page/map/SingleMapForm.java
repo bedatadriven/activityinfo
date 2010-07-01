@@ -9,8 +9,8 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
 import com.google.inject.Inject;
-import org.sigmah.client.Application;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.filter.AdminFilterPanel;
@@ -48,7 +48,7 @@ public class SingleMapForm extends ContentPanel implements MapForm {
         this.messages = messages;
         this.icons = icons;
 
-        setHeading(Application.CONSTANTS.settings());
+        setHeading(I18N.CONSTANTS.settings());
 
         accordianLayout = new AccordionLayout();
         setLayout(accordianLayout);
@@ -111,7 +111,7 @@ public class SingleMapForm extends ContentPanel implements MapForm {
     public boolean validate() {
         if (indicatorTree.getSelection().size() == 0) {
 
-            MessageBox.alert(Application.CONSTANTS.appTitle(), Application.CONSTANTS.pleaseSelectIndicator(), null);
+            MessageBox.alert(I18N.CONSTANTS.appTitle(), I18N.CONSTANTS.pleaseSelectIndicator(), null);
             return false;
         }
         return true;

@@ -7,7 +7,7 @@ package org.sigmah.client.page.common.widget;
 
 
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import org.sigmah.client.Application;
+import org.sigmah.client.i18n.I18N;
 
 public class CoordinateField extends TextField<Double> {
 
@@ -33,9 +33,9 @@ public class CoordinateField extends TextField<Double> {
 	public CoordinateField(int axis) {
 		super();
         if(axis == LATITUDE) {
-            editor = new CoordinateEditor(Application.CONSTANTS.southHemiChars(), Application.CONSTANTS.northHemiChars());
+            editor = new CoordinateEditor(I18N.CONSTANTS.southHemiChars(), I18N.CONSTANTS.northHemiChars());
         } else {
-            editor = new CoordinateEditor(Application.CONSTANTS.westHemiChars(), Application.CONSTANTS.eastHemiChars());
+            editor = new CoordinateEditor(I18N.CONSTANTS.westHemiChars(), I18N.CONSTANTS.eastHemiChars());
         }
 		this.setPropertyEditor(editor);
         this.setValidator(editor);
@@ -46,6 +46,6 @@ public class CoordinateField extends TextField<Double> {
 	public void setBounds(String name, double minValue, double maxValue) {
 		editor.setMinValue(minValue - DELTA);
 		editor.setMaxValue(maxValue + DELTA);
-        editor.setOutOfBoundsMessage(Application.MESSAGES.coordOutsideBounds(name));
+        editor.setOutOfBoundsMessage(I18N.MESSAGES.coordOutsideBounds(name));
 	}
 }

@@ -34,11 +34,12 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import org.sigmah.client.AppEvents;
-import org.sigmah.client.Application;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.event.SiteEvent;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.map.GcIconFactory;
 import org.sigmah.client.map.MapApiLoader;
 import org.sigmah.client.map.MapTypeFactory;
@@ -150,13 +151,13 @@ public class SiteMap extends ContentPanel implements Shutdownable {
     protected void onRender(final Element parent, final int pos) {
         SiteMap.super.onRender(parent, pos);
 
-        MapApiLoader.load(new MaskingAsyncMonitor(this, Application.CONSTANTS.loadingComponent()), new AsyncCallback<Void>() {
+        MapApiLoader.load(new MaskingAsyncMonitor(this, I18N.CONSTANTS.loadingComponent()), new AsyncCallback<Void>() {
 
             @Override
             public void onFailure(Throwable throwable) {
                 removeAll();
                 setLayout(new CenterLayout());
-                add(new Html(Application.CONSTANTS.connectionProblem()));
+                add(new Html(I18N.CONSTANTS.connectionProblem()));
                 layout();
             }
 
@@ -380,8 +381,8 @@ public class SiteMap extends ContentPanel implements Shutdownable {
         if (contextMenu == null) {
 
             contextMenu = new Menu();
-            contextMenu.add(new MenuItem(Application.CONSTANTS.showInGrid(),
-                    Application.ICONS.table(), new SelectionListener<MenuEvent>() {
+            contextMenu.add(new MenuItem(I18N.CONSTANTS.showInGrid(),
+                    IconImageBundle.ICONS.table(), new SelectionListener<MenuEvent>() {
                         @Override
                         public void componentSelected(MenuEvent ce) {
 
@@ -440,7 +441,7 @@ public class SiteMap extends ContentPanel implements Shutdownable {
                     // a site that's outside it's bounds
                     event.setCancelled(true);
                     event.getStatus().setStatus(false);
-                    event.getStatus().update(Application.MESSAGES.coordOutsideBounds(boundsName));
+                    event.getStatus().update(I18N.MESSAGES.coordOutsideBounds(boundsName));
                 }
             }
         }

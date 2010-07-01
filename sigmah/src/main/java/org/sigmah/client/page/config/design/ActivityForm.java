@@ -15,8 +15,8 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import org.sigmah.client.Application;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.common.widget.MapIconComboBox;
 import org.sigmah.client.page.common.widget.MappingComboBox;
 import org.sigmah.client.page.common.widget.MappingComboBoxBinding;
@@ -42,13 +42,13 @@ public class ActivityForm extends AbstractDesignForm {
 
         TextField<String> nameField = new TextField<String>();
         nameField.setAllowBlank(false);
-        nameField.setFieldLabel(Application.CONSTANTS.name());
+        nameField.setFieldLabel(I18N.CONSTANTS.name());
         nameField.setMaxLength(45);
         binding.addFieldBinding(new FieldBinding(nameField, "name"));
         this.add(nameField);
 
         TextField<String> categoryField = new TextField<String>();
-        categoryField.setFieldLabel(Application.CONSTANTS.category());
+        categoryField.setFieldLabel(I18N.CONSTANTS.category());
         binding.addFieldBinding(new FieldBinding(categoryField, "category"));
         add(categoryField);
 
@@ -58,31 +58,31 @@ public class ActivityForm extends AbstractDesignForm {
             locationTypeCombo.add(type.getId(), type.getName());
         }
         locationTypeCombo.setAllowBlank(false);
-        locationTypeCombo.setFieldLabel(Application.CONSTANTS.locationType());
+        locationTypeCombo.setFieldLabel(I18N.CONSTANTS.locationType());
         binding.addFieldBinding(new MappingComboBoxBinding(locationTypeCombo, "locationTypeId"));
         this.add(locationTypeCombo);
 
         MappingComboBox frequencyCombo = new MappingComboBox();
         frequencyCombo.setAllowBlank(false);
-        frequencyCombo.setFieldLabel(Application.CONSTANTS.reportingFrequency());
-        frequencyCombo.add(ActivityDTO.REPORT_ONCE, Application.CONSTANTS.reportOnce());
-        frequencyCombo.add(ActivityDTO.REPORT_MONTHLY, Application.CONSTANTS.monthly());
+        frequencyCombo.setFieldLabel(I18N.CONSTANTS.reportingFrequency());
+        frequencyCombo.add(ActivityDTO.REPORT_ONCE, I18N.CONSTANTS.reportOnce());
+        frequencyCombo.add(ActivityDTO.REPORT_MONTHLY, I18N.CONSTANTS.monthly());
         binding.addFieldBinding(new MappingComboBoxBinding(frequencyCombo, "reportingFrequency"));
         this.add(frequencyCombo);
 
         CheckBoxGroup checkBoxes = new CheckBoxGroup();
-        checkBoxes.setFieldLabel(Application.CONSTANTS.attributes());
+        checkBoxes.setFieldLabel(I18N.CONSTANTS.attributes());
         checkBoxes.setOrientation(Style.Orientation.VERTICAL);
         this.add(checkBoxes);
 
         CheckBox assessCheckBox = new CheckBox();
-        assessCheckBox.setBoxLabel(Application.CONSTANTS.isAssessment());
-        assessCheckBox.setToolTip(Application.CONSTANTS.isAssessmentToolTip());
+        assessCheckBox.setBoxLabel(I18N.CONSTANTS.isAssessment());
+        assessCheckBox.setToolTip(I18N.CONSTANTS.isAssessmentToolTip());
         binding.addFieldBinding(new FieldBinding(assessCheckBox, "assessment"));
         checkBoxes.add(assessCheckBox);
 
         MapIconComboBox mapIconField = new MapIconComboBox(service);
-        mapIconField.setFieldLabel(Application.CONSTANTS.mapIcon());
+        mapIconField.setFieldLabel(I18N.CONSTANTS.mapIcon());
         FieldBinding mapIconBinding = new FieldBinding(mapIconField, "mapIcon");
         mapIconBinding.setConverter(new Converter() {
             @Override

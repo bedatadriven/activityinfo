@@ -11,7 +11,8 @@ import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import org.sigmah.client.Application;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.FieldSetFitLayout;
 import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.dto.SchemaDTO;
@@ -24,7 +25,7 @@ public class PartnerFieldSet extends AbstractFilterFieldSet {
 
     public PartnerFieldSet(SchemaDTO schema) {
 
-        setHeading(Application.CONSTANTS.filterByPartner());
+        setHeading(I18N.CONSTANTS.filterByPartner());
 
 
         setLayout(new FieldSetFitLayout());
@@ -37,7 +38,7 @@ public class PartnerFieldSet extends AbstractFilterFieldSet {
         tree.setCheckable(true);
         tree.setIconProvider(new ModelIconProvider<PartnerDTO>() {
             public AbstractImagePrototype getIcon(PartnerDTO model) {
-                return Application.ICONS.group();
+                return IconImageBundle.ICONS.group();
             }
         });
 

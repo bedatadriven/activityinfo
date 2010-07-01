@@ -6,7 +6,7 @@
 package org.sigmah.client.page.welcome;
 
 import com.google.inject.Inject;
-import org.sigmah.client.Application;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
@@ -30,21 +30,21 @@ public class Welcome implements Page {
     public Welcome(GalleryView view) {
 
         this.view = view;
-        this.view.setHeading(Application.CONSTANTS.welcomeMessage());
-        this.view.setIntro(Application.CONSTANTS.selectCategory());
+        this.view.setHeading(I18N.CONSTANTS.welcomeMessage());
+        this.view.setIntro(I18N.CONSTANTS.selectCategory());
 
-        this.view.add(Application.CONSTANTS.dataEntry(), Application.CONSTANTS.dataEntryDescription(), "form.png", new SiteGridPageState());
+        this.view.add(I18N.CONSTANTS.dataEntry(), I18N.CONSTANTS.dataEntryDescription(), "form.png", new SiteGridPageState());
 
-        this.view.add(Application.CONSTANTS.siteLists(), Application.CONSTANTS.siteListsDescriptions(),
+        this.view.add(I18N.CONSTANTS.siteLists(), I18N.CONSTANTS.siteListsDescriptions(),
                 "grid.png", new SiteGridPageState());
 
-        this.view.add(Application.CONSTANTS.pivotTables(), Application.CONSTANTS.pivotTableDescription(),
+        this.view.add(I18N.CONSTANTS.pivotTables(), I18N.CONSTANTS.pivotTableDescription(),
                 "pivot.png", new PivotPageState());
 
-        this.view.add(Application.CONSTANTS.charts(), Application.CONSTANTS.chartsDescription(),
+        this.view.add(I18N.CONSTANTS.charts(), I18N.CONSTANTS.chartsDescription(),
                 "charts/time.png", new ChartPageState());
 
-        this.view.add(Application.CONSTANTS.maps(), Application.CONSTANTS.mapsDescription(),
+        this.view.add(I18N.CONSTANTS.maps(), I18N.CONSTANTS.mapsDescription(),
                 "map.png", new MapPageState());
 
 

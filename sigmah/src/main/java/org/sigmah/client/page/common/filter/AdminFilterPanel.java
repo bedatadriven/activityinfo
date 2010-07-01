@@ -17,8 +17,9 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
-import org.sigmah.client.Application;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.widget.RemoteComboBox;
 import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
@@ -44,8 +45,8 @@ public class AdminFilterPanel extends ContentPanel {
 
         this.setLayout(new FitLayout());
         this.setScrollMode(Style.Scroll.AUTO);
-        this.setHeading(Application.CONSTANTS.filterByGeography());
-        this.setIcon(Application.ICONS.filter());
+        this.setHeading(I18N.CONSTANTS.filterByGeography());
+        this.setIcon(IconImageBundle.ICONS.filter());
 
 
         loader = new AdminTreeLoader(service);
@@ -92,7 +93,7 @@ public class AdminFilterPanel extends ContentPanel {
         toolBar.add(levelCombo);
 
         // TODO : 118n
-        Button clear = new Button(Application.CONSTANTS.remove(), Application.ICONS.delete(), new SelectionListener<ButtonEvent>() {
+        Button clear = new Button(I18N.CONSTANTS.remove(), IconImageBundle.ICONS.delete(), new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 levelCombo.setValue(null);

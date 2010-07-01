@@ -14,7 +14,8 @@ import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import org.sigmah.client.Application;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 
 /**
  * Convienence subclass for the GXT toolbar that directs all tool actions
@@ -51,37 +52,37 @@ public class ActionToolBar extends ToolBar implements Listener<ButtonEvent> {
     }
 
     public void addEditButton() {
-        addEditButton(Application.ICONS.editPage());
+        addEditButton(IconImageBundle.ICONS.editPage());
     }
 
     public void addEditButton(AbstractImagePrototype icon) {
-      addButton(UIActions.edit, Application.CONSTANTS.edit(), icon);
+      addButton(UIActions.edit, I18N.CONSTANTS.edit(), icon);
     }
 
     public void addDeleteButton() {
-        addButton(UIActions.delete, Application.CONSTANTS.delete(), Application.ICONS.delete());
+        addButton(UIActions.delete, I18N.CONSTANTS.delete(), IconImageBundle.ICONS.delete());
     }
 
     public void addDeleteButton(String text) {
-        addButton(UIActions.delete, text, Application.ICONS.delete());
+        addButton(UIActions.delete, text, IconImageBundle.ICONS.delete());
     }
 
     public void addExcelExportButton() {
-        addButton(UIActions.export, Application.CONSTANTS.export(), Application.ICONS.excel());
+        addButton(UIActions.export, I18N.CONSTANTS.export(), IconImageBundle.ICONS.excel());
     }
 
     public void addRefreshButton() {
-        addButton(UIActions.refresh, Application.CONSTANTS.refreshPreview(), Application.ICONS.refresh());
+        addButton(UIActions.refresh, I18N.CONSTANTS.refreshPreview(), IconImageBundle.ICONS.refresh());
     }
 
     public void addSaveSplitButton() {
-        saveButton = new SplitButton(Application.CONSTANTS.save());
-        saveButton.setIcon(Application.ICONS.save());
+        saveButton = new SplitButton(I18N.CONSTANTS.save());
+        saveButton.setIcon(IconImageBundle.ICONS.save());
         saveButton.setItemId(UIActions.save);
         saveButton.addListener(Events.Select, this);
 
         Menu menu = new Menu();
-        MenuItem saveItem = new MenuItem(Application.CONSTANTS.save(), Application.ICONS.save(), new SelectionListener<MenuEvent>() {
+        MenuItem saveItem = new MenuItem(I18N.CONSTANTS.save(), IconImageBundle.ICONS.save(), new SelectionListener<MenuEvent>() {
             @Override
             public void componentSelected(MenuEvent ce) {
                 if(listener!=null) {
@@ -91,7 +92,7 @@ public class ActionToolBar extends ToolBar implements Listener<ButtonEvent> {
         });
         menu.add(saveItem);
 
-        MenuItem discardItem = new MenuItem(Application.CONSTANTS.discardChanges(), Application.ICONS.cancel(),
+        MenuItem discardItem = new MenuItem(I18N.CONSTANTS.discardChanges(), IconImageBundle.ICONS.cancel(),
             new SelectionListener<MenuEvent>() {
                 @Override
                 public void componentSelected(MenuEvent ce) {
@@ -109,10 +110,10 @@ public class ActionToolBar extends ToolBar implements Listener<ButtonEvent> {
         if(saveButton != null) {
             saveButton.setEnabled(dirty);
             if(dirty) {
-                saveButton.setText(Application.CONSTANTS.save());
-                saveButton.setIcon(Application.ICONS.save());
+                saveButton.setText(I18N.CONSTANTS.save());
+                saveButton.setIcon(IconImageBundle.ICONS.save());
             } else{
-                saveButton.setText(Application.CONSTANTS.saved());
+                saveButton.setText(I18N.CONSTANTS.saved());
             }
         }
     }

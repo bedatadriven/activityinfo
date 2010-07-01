@@ -8,14 +8,15 @@ package org.sigmah.client.page.entry;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.Element;
-import org.sigmah.client.Application;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 
 public class MonthlyTab extends TabItem {
 
 
     public MonthlyTab(MonthlyGrid grid) {
-        setText(Application.CONSTANTS.monthlyReports());
-        setIcon(Application.ICONS.table());
+        setText(I18N.CONSTANTS.monthlyReports());
+        setIcon(IconImageBundle.ICONS.table());
         setLayout(new FitLayout());
         add(grid);
 

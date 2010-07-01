@@ -12,8 +12,9 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
-import org.sigmah.client.Application;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.shared.command.GetBaseMaps;
 import org.sigmah.shared.command.result.BaseMapResult;
 import org.sigmah.shared.map.BaseMap;
@@ -40,14 +41,14 @@ public class LayoutForm extends FormPanel {
 
         this.service = service;
 
-        setHeading(Application.CONSTANTS.pageLayout());
-        setIcon(Application.ICONS.report());
+        setHeading(I18N.CONSTANTS.pageLayout());
+        setIcon(IconImageBundle.ICONS.report());
 
         setLabelWidth(125);
         setFieldWidth(150);
 
         baseMapCombo = new ComboBox();
-        baseMapCombo.setFieldLabel(Application.CONSTANTS.backgroundMap());
+        baseMapCombo.setFieldLabel(I18N.CONSTANTS.backgroundMap());
         baseMapCombo.setStore(getBaseMapStore());
         baseMapCombo.setDisplayField("name");
         baseMapCombo.setValueField("id");
@@ -67,7 +68,7 @@ public class LayoutForm extends FormPanel {
         loader.load();
 
         pageSizeCombo = new ComboBox<PageSizeModel>();
-        pageSizeCombo.setFieldLabel(Application.CONSTANTS.pageSize());
+        pageSizeCombo.setFieldLabel(I18N.CONSTANTS.pageSize());
         pageSizeCombo.setStore(getPageSizeStore());
         pageSizeCombo.setDisplayField("name");
         pageSizeCombo.setTriggerAction(ComboBox.TriggerAction.ALL);
@@ -135,10 +136,10 @@ public class LayoutForm extends FormPanel {
     private ListStore<PageSizeModel> getPageSizeStore() {
 
         ListStore<PageSizeModel> store = new ListStore<PageSizeModel>();
-        store.add(new PageSizeModel(Application.CONSTANTS.sheetA4Portrait(), 492, 690));
-        store.add(new PageSizeModel(Application.CONSTANTS.sheetA4Landscape(), 534, 474));
-        store.add(new PageSizeModel(Application.CONSTANTS.slidePowerPoint(), 648, 354));
-        store.add(new PageSizeModel(Application.CONSTANTS.halfSlidePowerPoint(), 324, 360));
+        store.add(new PageSizeModel(I18N.CONSTANTS.sheetA4Portrait(), 492, 690));
+        store.add(new PageSizeModel(I18N.CONSTANTS.sheetA4Landscape(), 534, 474));
+        store.add(new PageSizeModel(I18N.CONSTANTS.slidePowerPoint(), 648, 354));
+        store.add(new PageSizeModel(I18N.CONSTANTS.halfSlidePowerPoint(), 324, 360));
 
         return store;
     }

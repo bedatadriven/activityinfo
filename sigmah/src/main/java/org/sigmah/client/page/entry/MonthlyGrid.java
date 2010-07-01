@@ -18,7 +18,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Element;
-import org.sigmah.client.Application;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.common.grid.AbstractEditorGridView;
 import org.sigmah.client.page.common.widget.MappingComboBox;
 import org.sigmah.shared.command.Month;
@@ -38,7 +38,7 @@ public class MonthlyGrid extends AbstractEditorGridView<IndicatorRowDTO, Monthly
 
     public MonthlyGrid(ActivityDTO activity) {
         this.activity = activity;
-        this.setHeading(Application.CONSTANTS.monthlyReports());
+        this.setHeading(I18N.CONSTANTS.monthlyReports());
         this.setLayout(new FitLayout());
         this.setBorders(false);
         this.setFrame(false);
@@ -85,7 +85,7 @@ public class MonthlyGrid extends AbstractEditorGridView<IndicatorRowDTO, Monthly
 
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
-        ColumnConfig indicator = new ColumnConfig("indicatorName", Application.CONSTANTS.indicators(), 150);
+        ColumnConfig indicator = new ColumnConfig("indicatorName", I18N.CONSTANTS.indicators(), 150);
         indicator.setSortable(false);
         indicator.setMenuDisabled(true);
         columns.add(indicator);
@@ -113,7 +113,7 @@ public class MonthlyGrid extends AbstractEditorGridView<IndicatorRowDTO, Monthly
     protected void initToolBar() {
 
         toolBar.addSaveSplitButton();
-        toolBar.add(new LabelToolItem(Application.CONSTANTS.month() + ": "));
+        toolBar.add(new LabelToolItem(I18N.CONSTANTS.month() + ": "));
 
         final MappingComboBox<Month> monthCombo = new MappingComboBox<Month>();
         monthCombo.setEditable(false);

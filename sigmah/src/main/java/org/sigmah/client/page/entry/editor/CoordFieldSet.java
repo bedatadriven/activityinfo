@@ -5,7 +5,7 @@
 
 package org.sigmah.client.page.entry.editor;
 
-import org.sigmah.client.Application;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.common.widget.CoordinateField;
 import org.sigmah.shared.dto.BoundingBoxDTO;
 
@@ -20,7 +20,7 @@ public class CoordFieldSet extends AbstractFieldSet implements MapPresenter.View
 
     public CoordFieldSet() {
 
-        super(Application.CONSTANTS.geoPosition(), 100, 200);
+        super(I18N.CONSTANTS.geoPosition(), 100, 200);
 
     }
 
@@ -28,12 +28,12 @@ public class CoordFieldSet extends AbstractFieldSet implements MapPresenter.View
         this.presenter = presenter;
         
         latField = new CoordinateField(CoordinateField.LATITUDE);
-        latField.setFieldLabel(Application.CONSTANTS.latitude());
+        latField.setFieldLabel(I18N.CONSTANTS.latitude());
         latField.setName("y");
         add(latField);
 
         lngField = new CoordinateField(CoordinateField.LONGITUDE);
-        lngField.setFieldLabel(Application.CONSTANTS.longitude());
+        lngField.setFieldLabel(I18N.CONSTANTS.longitude());
         lngField.setName("x");
         add(lngField);
     }

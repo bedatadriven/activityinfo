@@ -13,7 +13,7 @@ import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.i18n.client.NumberFormat;
-import org.sigmah.client.Application;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.IndicatorGroup;
@@ -30,7 +30,7 @@ public class IndicatorFieldSet extends FieldSet {
         layout.setCellPadding(5);
         layout.setCellVerticalAlign(Style.VerticalAlignment.TOP);
 
-        setHeading(Application.CONSTANTS.indicators());
+        setHeading(I18N.CONSTANTS.indicators());
         setLayout(layout);
         setCollapsible(false);
         setStyleAttribute("fontSize", "8pt");

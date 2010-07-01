@@ -14,8 +14,6 @@
 
     <inherits name="org.sigmah.ActivityInfo"/>
 
-    <entry-point class='org.sigmah.client.Application'/>
-
     <!-- ie6, gecko, gecko1_8, safari or opera -->
     <set-property name="user.agent" value="gecko1_8"/>
     <set-property name="locale" value="en"/>

@@ -23,12 +23,13 @@ import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.inject.Inject;
 import org.sigmah.client.AppEvents;
-import org.sigmah.client.Application;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.event.PivotCellEvent;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.filter.AdminFilterPanel;
 import org.sigmah.client.page.common.filter.DateRangePanel;
 import org.sigmah.client.page.common.filter.IndicatorTreePanel;
@@ -101,7 +102,7 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
     public void createPane() {
 
         ContentPanel pane = new ContentPanel();
-        pane.setHeading(Application.CONSTANTS.dimensions());
+        pane.setHeading(I18N.CONSTANTS.dimensions());
 
         VBoxLayout layout = new VBoxLayout();
         layout.setPadding(new Padding(5));
@@ -117,12 +118,12 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
         unusedDims = createStore();
         pane.add(createList(unusedDims), listLayout);
 
-        pane.add(new Text(Application.CONSTANTS.rows()), labelLayout);
+        pane.add(new Text(I18N.CONSTANTS.rows()), labelLayout);
 
         rowDims = createStore();
         pane.add(createList(rowDims), listLayout);
 
-        pane.add(new Text(Application.CONSTANTS.columns()), labelLayout);
+        pane.add(new Text(I18N.CONSTANTS.columns()), labelLayout);
 
         colDims = createStore();
         pane.add(createList(colDims), listLayout);
@@ -164,8 +165,8 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 
     private void createFilterPane() {
         filterPane = new ContentPanel();
-        filterPane.setHeading(Application.CONSTANTS.filter());
-        filterPane.setIcon(Application.ICONS.filter());
+        filterPane.setHeading(I18N.CONSTANTS.filter());
+        filterPane.setIcon(IconImageBundle.ICONS.filter());
         filterPane.setLayout(new AccordionLayout());
 
         BorderLayoutData west = new BorderLayoutData(Style.LayoutRegion.WEST);
@@ -181,8 +182,8 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
     private void createIndicatorPanel() {
         indicatorPanel = new IndicatorTreePanel(service, true);
         indicatorPanel.setHeaderVisible(true);
-        indicatorPanel.setHeading(Application.CONSTANTS.indicators());
-        indicatorPanel.setIcon(Application.ICONS.indicator());
+        indicatorPanel.setHeading(I18N.CONSTANTS.indicators());
+        indicatorPanel.setIcon(IconImageBundle.ICONS.indicator());
 
         filterPane.add(indicatorPanel);
     }
@@ -190,8 +191,8 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 
     private void createAdminFilter() {
         adminPanel = new AdminFilterPanel(service);
-        adminPanel.setHeading(Application.CONSTANTS.filterByGeography());
-        adminPanel.setIcon(Application.ICONS.filter());
+        adminPanel.setHeading(I18N.CONSTANTS.filterByGeography());
+        adminPanel.setIcon(IconImageBundle.ICONS.filter());
 
         filterPane.add(adminPanel);
     }
@@ -210,7 +211,7 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 
         gridContainer = new PivotGridPanel(eventBus);
         gridContainer.setHeaderVisible(true);
-        gridContainer.setHeading(Application.CONSTANTS.preview());
+        gridContainer.setHeading(I18N.CONSTANTS.preview());
 
         gridToolBar = new ToolBar();
         gridContainer.setTopComponent(gridToolBar);
@@ -224,8 +225,8 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
             }
         };
 
-        Button refresh = new Button(Application.CONSTANTS.refreshPreview(),
-                Application.ICONS.refresh(), listener);
+        Button refresh = new Button(I18N.CONSTANTS.refreshPreview(),
+                IconImageBundle.ICONS.refresh(), listener);
         refresh.setItemId(UIActions.refresh);
         gridToolBar.add(refresh);
 
@@ -235,8 +236,8 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 //        gridToolBar.add(filter);
 
 
-        Button export = new Button(Application.CONSTANTS.export(),
-                Application.ICONS.excel(), listener);
+        Button export = new Button(I18N.CONSTANTS.export(),
+                IconImageBundle.ICONS.excel(), listener);
         export.setItemId(UIActions.export);
         gridToolBar.add(export);
 
@@ -300,7 +301,7 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
     }
 
     public AsyncMonitor getMonitor() {
-        return new MaskingAsyncMonitor(this, Application.CONSTANTS.loading());
+        return new MaskingAsyncMonitor(this, I18N.CONSTANTS.loading());
     }
 
     public List<IndicatorDTO> getSelectedIndicators() {

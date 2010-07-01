@@ -8,8 +8,8 @@ package org.sigmah.client.report;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.sigmah.client.Application;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.CountryDTO;
@@ -32,13 +32,13 @@ public class DimensionStoreFactory {
 
                 final List<Dimension> list = new ArrayList<Dimension>();
 
-                list.add(createDimension(DimensionType.Database, Application.CONSTANTS.database()));
-                list.add(createDimension(DimensionType.Activity, Application.CONSTANTS.activity()));
-                list.add(createDimension(DimensionType.Indicator, Application.CONSTANTS.indicators()));
+                list.add(createDimension(DimensionType.Database, I18N.CONSTANTS.database()));
+                list.add(createDimension(DimensionType.Activity, I18N.CONSTANTS.activity()));
+                list.add(createDimension(DimensionType.Indicator, I18N.CONSTANTS.indicators()));
 
-                list.add(createDimension(DateUnit.YEAR, Application.CONSTANTS.year()));
-                list.add(createDimension(DateUnit.QUARTER, Application.CONSTANTS.quarter()));
-                list.add(createDimension(DateUnit.MONTH, Application.CONSTANTS.month()));
+                list.add(createDimension(DateUnit.YEAR, I18N.CONSTANTS.year()));
+                list.add(createDimension(DateUnit.QUARTER, I18N.CONSTANTS.quarter()));
+                list.add(createDimension(DateUnit.MONTH, I18N.CONSTANTS.month()));
 
                 service.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
                     public void onFailure(Throwable caught) {

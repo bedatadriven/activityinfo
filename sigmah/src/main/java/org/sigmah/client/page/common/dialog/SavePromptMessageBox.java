@@ -14,8 +14,9 @@ import com.extjs.gxt.ui.client.widget.Status;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
-import org.sigmah.client.Application;
 import org.sigmah.client.dispatch.AsyncMonitor;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -47,9 +48,9 @@ public class SavePromptMessageBox extends Window implements AsyncMonitor {
         setBodyStyle("padding: 5px;");
         setWidth(450);
         setHeight(200);
-        setHeading(Application.CONSTANTS.save());
+        setHeading(I18N.CONSTANTS.save());
         setLayout(new CenterLayout());
-        add(new Html(Application.CONSTANTS.promptSave()));
+        add(new Html(I18N.CONSTANTS.promptSave()));
 
 
         /*
@@ -59,8 +60,8 @@ public class SavePromptMessageBox extends Window implements AsyncMonitor {
         status = new Status();
         this.getButtonBar().add(status);
 
-        saveButton = new Button(Application.CONSTANTS.save());
-        saveButton.setIcon(Application.ICONS.save());
+        saveButton = new Button(I18N.CONSTANTS.save());
+        saveButton.setIcon(IconImageBundle.ICONS.save());
         saveButton.addListener(Events.Select, new Listener<ButtonEvent>() {
             public void handleEvent(ButtonEvent be) {
                 callback.save(SavePromptMessageBox.this);
@@ -68,8 +69,8 @@ public class SavePromptMessageBox extends Window implements AsyncMonitor {
         });
         addButton(saveButton);
 
-        discardButton = new Button(Application.CONSTANTS.discardChanges());
-        discardButton.setIcon(Application.ICONS.cancel());
+        discardButton = new Button(I18N.CONSTANTS.discardChanges());
+        discardButton.setIcon(IconImageBundle.ICONS.cancel());
         discardButton.addListener(Events.Select, new Listener<ButtonEvent>() {
             @Override
             public void handleEvent(ButtonEvent be) {
@@ -80,7 +81,7 @@ public class SavePromptMessageBox extends Window implements AsyncMonitor {
         addButton(discardButton);
 
 
-        cancelButton = new Button(Application.CONSTANTS.cancel());
+        cancelButton = new Button(I18N.CONSTANTS.cancel());
         addButton(cancelButton);
 
         cancelButton.addListener(Events.Select, new Listener<ButtonEvent>() {
@@ -105,13 +106,13 @@ public class SavePromptMessageBox extends Window implements AsyncMonitor {
 
         asyncCallCancelled = false;
 
-        status.setBusy(Application.CONSTANTS.saving());
+        status.setBusy(I18N.CONSTANTS.saving());
     }
 
 
     @Override
     public void onConnectionProblem() {
-        status.setBusy(Application.CONSTANTS.connectionProblem());
+        status.setBusy(I18N.CONSTANTS.connectionProblem());
     }
 
 
@@ -122,7 +123,7 @@ public class SavePromptMessageBox extends Window implements AsyncMonitor {
         }
 
         cancelButton.disable();
-        status.setBusy(Application.CONSTANTS.retrying());
+        status.setBusy(I18N.CONSTANTS.retrying());
 
         return true;
     }
@@ -135,7 +136,7 @@ public class SavePromptMessageBox extends Window implements AsyncMonitor {
         cancelButton.enable();
         status.clearStatus("");
 
-        MessageBox.alert(this.getHeading(), Application.CONSTANTS.serverError(), null);
+        MessageBox.alert(this.getHeading(), I18N.CONSTANTS.serverError(), null);
     }
 
 

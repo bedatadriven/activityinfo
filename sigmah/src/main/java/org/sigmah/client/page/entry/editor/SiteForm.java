@@ -11,9 +11,10 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.maps.client.Maps;
-import org.sigmah.client.Application;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.widget.LoadingPlaceHolder;
 import org.sigmah.client.page.config.form.ModelFormPanel;
 import org.sigmah.shared.dto.ActivityDTO;
@@ -38,8 +39,8 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
 
     public SiteForm() {
         this.setBodyStyle("padding: 3px");
-        this.setIcon(Application.ICONS.editPage());
-        this.setHeading(Application.CONSTANTS.loading());
+        this.setIcon(IconImageBundle.ICONS.editPage());
+        this.setHeading(I18N.CONSTANTS.loading());
 
         add(new LoadingPlaceHolder());
     }
@@ -115,7 +116,7 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
 
     @Override
     public AsyncMonitor getMonitor() {
-        return new MaskingAsyncMonitor(this, Application.CONSTANTS.saving());
+        return new MaskingAsyncMonitor(this, I18N.CONSTANTS.saving());
     }
 
     @Override

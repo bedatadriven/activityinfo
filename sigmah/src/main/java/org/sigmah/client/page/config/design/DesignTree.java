@@ -33,8 +33,9 @@ import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.inject.Inject;
-import org.sigmah.client.Application;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.dialog.FormDialogCallback;
 import org.sigmah.client.page.common.dialog.FormDialogImpl;
 import org.sigmah.client.page.common.dialog.FormDialogTether;
@@ -70,8 +71,8 @@ public class DesignTree extends AbstractEditorTreeGridView<ModelData, Designer>
         this.db = db;
 
         setLayout(new BorderLayout());
-        setHeading(Application.CONSTANTS.design() + " - " + db.getName());
-        setIcon(Application.ICONS.design());
+        setHeading(I18N.CONSTANTS.design() + " - " + db.getName());
+        setIcon(IconImageBundle.ICONS.design());
 
         super.init(presenter, store);
 
@@ -96,15 +97,15 @@ public class DesignTree extends AbstractEditorTreeGridView<ModelData, Designer>
         tree.setIconProvider(new ModelIconProvider<ModelData>() {
             public AbstractImagePrototype getIcon(ModelData model) {
                 if (model instanceof ActivityDTO) {
-                    return Application.ICONS.activity();
+                    return IconImageBundle.ICONS.activity();
                 } else if (model instanceof Folder) {
                     return GXT.IMAGES.tree_folder_closed();
                 } else if (model instanceof AttributeGroupDTO) {
-                    return Application.ICONS.attributeGroup();
+                    return IconImageBundle.ICONS.attributeGroup();
                 } else if (model instanceof AttributeDTO) {
-                    return Application.ICONS.attribute();
+                    return IconImageBundle.ICONS.attribute();
                 } else if (model instanceof IndicatorDTO) {
-                    return Application.ICONS.indicator();
+                    return IconImageBundle.ICONS.indicator();
                 } else {
                     return null;
                 }
@@ -179,7 +180,7 @@ public class DesignTree extends AbstractEditorTreeGridView<ModelData, Designer>
         Menu newMenu = new Menu();
         initNewMenu(newMenu, listener);
 
-        Button newButtonMenu = new Button(Application.CONSTANTS.newText(), Application.ICONS.add());
+        Button newButtonMenu = new Button(I18N.CONSTANTS.newText(), IconImageBundle.ICONS.add());
         newButtonMenu.setMenu(newMenu);
         newButtonMenu.setEnabled(db.isDesignAllowed());
         toolBar.add(newButtonMenu);
@@ -191,19 +192,19 @@ public class DesignTree extends AbstractEditorTreeGridView<ModelData, Designer>
 
     protected void initNewMenu(Menu menu, SelectionListener<MenuEvent> listener) {
 
-        MenuItem newActivity = new MenuItem(Application.CONSTANTS.newActivity(), Application.ICONS.activity(), listener);
+        MenuItem newActivity = new MenuItem(I18N.CONSTANTS.newActivity(), IconImageBundle.ICONS.activity(), listener);
         newActivity.setItemId("Activity");
         menu.add(newActivity);
 
-        final MenuItem newAttributeGroup = new MenuItem(Application.CONSTANTS.newAttributeGroup(), Application.ICONS.attributeGroup(), listener);
+        final MenuItem newAttributeGroup = new MenuItem(I18N.CONSTANTS.newAttributeGroup(), IconImageBundle.ICONS.attributeGroup(), listener);
         newAttributeGroup.setItemId("AttributeGroup");
         menu.add(newAttributeGroup);
 
-        final MenuItem newAttribute = new MenuItem(Application.CONSTANTS.newAttribute(), Application.ICONS.attribute(), listener);
+        final MenuItem newAttribute = new MenuItem(I18N.CONSTANTS.newAttribute(), IconImageBundle.ICONS.attribute(), listener);
         newAttribute.setItemId("Attribute");
         menu.add(newAttribute);
 
-        final MenuItem newIndicator = new MenuItem(Application.CONSTANTS.newIndicator(), Application.ICONS.indicator(), listener);
+        final MenuItem newIndicator = new MenuItem(I18N.CONSTANTS.newIndicator(), IconImageBundle.ICONS.indicator(), listener);
         newIndicator.setItemId("Indicator");
         menu.add(newIndicator);
 
@@ -221,7 +222,7 @@ public class DesignTree extends AbstractEditorTreeGridView<ModelData, Designer>
     }
 
     protected void initRemoveMenu(Menu menu) {
-        final MenuItem removeItem = new MenuItem(Application.CONSTANTS.delete(), Application.ICONS.delete());
+        final MenuItem removeItem = new MenuItem(I18N.CONSTANTS.delete(), IconImageBundle.ICONS.delete());
         removeItem.setItemId(UIActions.delete);
         menu.add(removeItem);
 
@@ -260,7 +261,7 @@ public class DesignTree extends AbstractEditorTreeGridView<ModelData, Designer>
         TextField<String> nameField = new TextField<String>();
         nameField.setAllowBlank(false);
 
-        ColumnConfig nameColumn = new ColumnConfig("name", Application.CONSTANTS.name(), 150);
+        ColumnConfig nameColumn = new ColumnConfig("name", I18N.CONSTANTS.name(), 150);
         nameColumn.setEditor(new CellEditor(nameField));
         nameColumn.setRenderer(new TreeGridCellRenderer());
 
@@ -352,13 +353,13 @@ public class DesignTree extends AbstractEditorTreeGridView<ModelData, Designer>
         dlg.setScrollMode(Style.Scroll.AUTOY);
 
         if (entity instanceof ActivityDTO) {
-            dlg.setHeading(Application.CONSTANTS.newActivity());
+            dlg.setHeading(I18N.CONSTANTS.newActivity());
         } else if (entity instanceof AttributeGroupDTO) {
-            dlg.setHeading(Application.CONSTANTS.newAttributeGroup());
+            dlg.setHeading(I18N.CONSTANTS.newAttributeGroup());
         } else if (entity instanceof AttributeDTO) {
-            dlg.setHeading(Application.CONSTANTS.newAttribute());
+            dlg.setHeading(I18N.CONSTANTS.newAttribute());
         } else if (entity instanceof IndicatorDTO) {
-            dlg.setHeading(Application.CONSTANTS.newIndicator());
+            dlg.setHeading(I18N.CONSTANTS.newIndicator());
         }
 
         dlg.show(callback);

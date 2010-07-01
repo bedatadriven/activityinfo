@@ -5,7 +5,7 @@
 
 package org.sigmah.client.page.entry.editor;
 
-import org.sigmah.client.Application;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.AttributeGroupDTO;
 
@@ -15,7 +15,7 @@ import org.sigmah.shared.dto.AttributeGroupDTO;
 public class AttributeFieldSet extends AbstractFieldSet {
 
     public AttributeFieldSet(ActivityDTO activity) {
-        super(Application.CONSTANTS.attributes(), 100, 300);
+        super(I18N.CONSTANTS.attributes(), 100, 300);
 
 		for(AttributeGroupDTO attributeGroup : activity.getAttributeGroups()) {
 

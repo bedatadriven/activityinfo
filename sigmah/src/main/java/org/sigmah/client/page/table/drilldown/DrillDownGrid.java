@@ -7,7 +7,7 @@ package org.sigmah.client.page.table.drilldown;
 
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import org.sigmah.client.Application;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.entry.SiteEditor;
 import org.sigmah.client.page.entry.SiteGrid;
 import org.sigmah.shared.dto.ActivityDTO;
@@ -25,7 +25,7 @@ public class DrillDownGrid extends SiteGrid implements DrillDownEditor.View {
     IndicatorDTO currentIndicator;
 
     public DrillDownGrid() {
-        setHeading(Application.CONSTANTS.drilldown());
+        setHeading(I18N.CONSTANTS.drilldown());
     }
 
     public void show(SiteEditor presenter, ActivityDTO activity, IndicatorDTO indicator, ListStore<SiteDTO> store) {
@@ -47,14 +47,14 @@ public class DrillDownGrid extends SiteGrid implements DrillDownEditor.View {
             }
         }
 
-        setHeading(Application.CONSTANTS.drilldown() + " - " + indicator.getName());
+        setHeading(I18N.CONSTANTS.drilldown() + " - " + indicator.getName());
     }
 
 
     @Override
     protected void addIndicatorColumns(ActivityDTO activity, List<ColumnConfig> columns) {
 
-        ColumnConfig column = createIndicatorColumn(currentIndicator, Application.CONSTANTS.value());
+        ColumnConfig column = createIndicatorColumn(currentIndicator, I18N.CONSTANTS.value());
         column.setId("indicator");
         column.setDataIndex(currentIndicator.getPropertyName());
         columns.add(column);

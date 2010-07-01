@@ -23,9 +23,10 @@ import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
-import org.sigmah.client.Application;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.grid.AbstractEditorGridView;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.shared.dto.ActivityDTO;
@@ -65,7 +66,7 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
     public void init(SiteEditor presenter, ActivityDTO activity, ListStore<SiteDTO> store) {
 
         this.activity = activity;
-        setHeading(Application.MESSAGES.activityTitle(activity.getDatabase().getName(), activity.getName()));
+        setHeading(I18N.MESSAGES.activityTitle(activity.getDatabase().getName(), activity.getName()));
 
         super.init(presenter, store);
 
@@ -73,7 +74,7 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
 
     @Override
     public AsyncMonitor getLoadingMonitor() {
-        return new MaskingAsyncMonitor(this, Application.CONSTANTS.loading());
+        return new MaskingAsyncMonitor(this, I18N.CONSTANTS.loading());
     }
 
 
@@ -123,7 +124,7 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
         toolBar.add(new SeparatorToolItem());
 
                            
-        toolBar.add(new LabelToolItem(Application.CONSTANTS.filter()));
+        toolBar.add(new LabelToolItem(I18N.CONSTANTS.filter()));
         final TriggerField<String> filter = new TriggerField<String>();
         filter.setTriggerStyle("filter-trigger");
         filter.addListener(Events.TriggerClick, new Listener<FieldEvent>() {
@@ -134,9 +135,9 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
         });
         toolBar.add(filter);
 
-        toolBar.addButton(UIActions.add, Application.CONSTANTS.newSite(), Application.ICONS.add());
+        toolBar.addButton(UIActions.add, I18N.CONSTANTS.newSite(), IconImageBundle.ICONS.add());
         toolBar.addEditButton();
-        toolBar.addDeleteButton(Application.CONSTANTS.deleteSite());
+        toolBar.addDeleteButton(I18N.CONSTANTS.deleteSite());
 
         toolBar.add(new SeparatorToolItem());
 
@@ -175,7 +176,7 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
             DateField dateField = new DateField();
             dateField.getPropertyEditor().setFormat(DateTimeFormat.getFormat("MM/dd/y"));
 
-            ColumnConfig dateColumn = new ColumnConfig("date2", Application.CONSTANTS.date(), 100);
+            ColumnConfig dateColumn = new ColumnConfig("date2", I18N.CONSTANTS.date(), 100);
             dateColumn.setDateTimeFormat(DateTimeFormat.getFormat("yyyy-MMM-dd"));
             dateColumn.setEditor(new CellEditor(dateField));
 
@@ -190,7 +191,7 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
          */
 
         if(activity.getDatabase().isViewAllAllowed()) {
-            columns.add(new ColumnConfig("partner", Application.CONSTANTS.partner(), 100));
+            columns.add(new ColumnConfig("partner", I18N.CONSTANTS.partner(), 100));
         }
 
         if(activity.getLocationType().getBoundAdminLevelId() == null) {
@@ -202,7 +203,7 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
             TextField<String> locationField = new TextField<String>();
             locationField.setAllowBlank(false);
 
-            ColumnConfig locationColumn = new ColumnConfig("locationName", Application.CONSTANTS.location(), 100);
+            ColumnConfig locationColumn = new ColumnConfig("locationName", I18N.CONSTANTS.location(), 100);
             locationColumn.setEditor(new CellEditor(locationField));
             columns.add(locationColumn);
 
@@ -212,7 +213,7 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
 
             TextField<String> locationAxeField = new TextField<String>();
 
-            ColumnConfig axeColumn = new ColumnConfig("locationAxe", Application.CONSTANTS.axe(), 75);
+            ColumnConfig axeColumn = new ColumnConfig("locationAxe", I18N.CONSTANTS.axe(), 75);
             axeColumn.setEditor(new CellEditor(locationAxeField));
             columns.add(axeColumn);
         }

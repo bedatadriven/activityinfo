@@ -13,7 +13,8 @@ import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import org.sigmah.client.Application;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.dialog.FormDialogCallback;
 import org.sigmah.client.page.common.dialog.FormDialogImpl;
 import org.sigmah.client.page.common.dialog.FormDialogTether;
@@ -36,14 +37,14 @@ public class DbUserGrid extends AbstractEditorGridView<UserPermissionDTO, DbUser
     protected UserDatabaseDTO db;
 
     public DbUserGrid() {
-        setHeading(Application.CONSTANTS.users());
+        setHeading(I18N.CONSTANTS.users());
         setLayout(new FitLayout());
     }
 
     public void init(DbUserEditor presenter, UserDatabaseDTO db, ListStore<UserPermissionDTO> store) {
         this.db = db;
         super.init(presenter, store);
-        this.setHeading(db.getName() + " - " + Application.CONSTANTS.users());
+        this.setHeading(db.getName() + " - " + I18N.CONSTANTS.users());
     }
 
 
@@ -52,23 +53,23 @@ public class DbUserGrid extends AbstractEditorGridView<UserPermissionDTO, DbUser
 
         final List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
-        ColumnConfig name = new ColumnConfig("name", Application.CONSTANTS.name(), 100);
+        ColumnConfig name = new ColumnConfig("name", I18N.CONSTANTS.name(), 100);
         columns.add(name);
 
-        ColumnConfig email = new ColumnConfig("email", Application.CONSTANTS.email(), 150);
+        ColumnConfig email = new ColumnConfig("email", I18N.CONSTANTS.email(), 150);
         columns.add(email);
 
-        ColumnConfig partner = new ColumnConfig("partner", Application.CONSTANTS.partner(), 150);
+        ColumnConfig partner = new ColumnConfig("partner", I18N.CONSTANTS.partner(), 150);
         columns.add(partner);
 
-        CheckColumnConfig allowView = new CheckColumnConfig("allowViewSimple", Application.CONSTANTS.allowView(), 75);
+        CheckColumnConfig allowView = new CheckColumnConfig("allowViewSimple", I18N.CONSTANTS.allowView(), 75);
         allowView.setDataIndex("allowView");
-        allowView.setToolTip(Application.CONSTANTS.allowViewLong());
+        allowView.setToolTip(I18N.CONSTANTS.allowViewLong());
         columns.add(allowView);
 
-        CheckColumnConfig allowEdit = new CheckColumnConfig("allowEditSimple", Application.CONSTANTS.allowEdit(), 75);
+        CheckColumnConfig allowEdit = new CheckColumnConfig("allowEditSimple", I18N.CONSTANTS.allowEdit(), 75);
         allowEdit.setDataIndex("allowEdit");
-        allowEdit.setToolTip(Application.CONSTANTS.allowEditLong());
+        allowEdit.setToolTip(I18N.CONSTANTS.allowEditLong());
         columns.add(allowEdit);
 
         // only users with the right to manage all users can view/change these attributes
@@ -76,32 +77,32 @@ public class DbUserGrid extends AbstractEditorGridView<UserPermissionDTO, DbUser
         CheckColumnConfig allowEditAll = null;
 
         if (db.isManageAllUsersAllowed()) {
-            allowViewAll = new CheckColumnConfig("allowViewAll", Application.CONSTANTS.allowViewAll(), 75);
-            allowViewAll.setToolTip(Application.CONSTANTS.allowViewAllLong());
+            allowViewAll = new CheckColumnConfig("allowViewAll", I18N.CONSTANTS.allowViewAll(), 75);
+            allowViewAll.setToolTip(I18N.CONSTANTS.allowViewAllLong());
             columns.add(allowViewAll);
 
-            allowEditAll = new CheckColumnConfig("allowEditAll", Application.CONSTANTS.allowEditAll(), 75);
-            allowEditAll.setToolTip(Application.CONSTANTS.allowEditAllLong());
+            allowEditAll = new CheckColumnConfig("allowEditAll", I18N.CONSTANTS.allowEditAll(), 75);
+            allowEditAll.setToolTip(I18N.CONSTANTS.allowEditAllLong());
             columns.add(allowEditAll);
         }
 
         CheckColumnConfig allowManageUsers = null;
         if (db.isManageUsersAllowed()) {
-            allowManageUsers = new CheckColumnConfig("allowManageUsers", Application.CONSTANTS.allowManageUsers(), 150);
+            allowManageUsers = new CheckColumnConfig("allowManageUsers", I18N.CONSTANTS.allowManageUsers(), 150);
             columns.add(allowManageUsers);
         }
 
         CheckColumnConfig allowManageAllUsers = null;
         if (db.isManageAllUsersAllowed()) {
-            allowManageAllUsers = new CheckColumnConfig("allowManageAllUsers", Application.CONSTANTS.manageAllUsers(), 150);
+            allowManageAllUsers = new CheckColumnConfig("allowManageAllUsers", I18N.CONSTANTS.manageAllUsers(), 150);
             columns.add(allowManageAllUsers);
         }
 
         // only users with the right to design them selves can change the design attribute
         CheckColumnConfig allowDesign = null;
         if (db.isDesignAllowed()) {
-            allowDesign = new CheckColumnConfig("allowDesign", Application.CONSTANTS.allowDesign(), 75);
-            allowDesign.setToolTip(Application.CONSTANTS.allowDesignLong());
+            allowDesign = new CheckColumnConfig("allowDesign", I18N.CONSTANTS.allowDesign(), 75);
+            allowDesign.setToolTip(I18N.CONSTANTS.allowDesignLong());
             columns.add(allowDesign);
         }
 
@@ -146,8 +147,8 @@ public class DbUserGrid extends AbstractEditorGridView<UserPermissionDTO, DbUser
     @Override
     protected void initToolBar() {
         toolBar.addSaveSplitButton();
-        toolBar.addButton(UIActions.add, Application.CONSTANTS.addUser(), Application.ICONS.addUser());
-        toolBar.addButton(UIActions.delete, Application.CONSTANTS.delete(), Application.ICONS.deleteUser());
+        toolBar.addButton(UIActions.add, I18N.CONSTANTS.addUser(), IconImageBundle.ICONS.addUser());
+        toolBar.addButton(UIActions.delete, I18N.CONSTANTS.delete(), IconImageBundle.ICONS.deleteUser());
     }
 
     public FormDialogTether showNewForm(UserPermissionDTO user, FormDialogCallback callback) {
@@ -156,7 +157,7 @@ public class DbUserGrid extends AbstractEditorGridView<UserPermissionDTO, DbUser
         form.getBinding().bind(user);
 
         FormDialogImpl dlg = new FormDialogImpl(form);
-        dlg.setHeading(Application.CONSTANTS.newUser());
+        dlg.setHeading(I18N.CONSTANTS.newUser());
         dlg.setWidth(400);
         dlg.setHeight(300);
 

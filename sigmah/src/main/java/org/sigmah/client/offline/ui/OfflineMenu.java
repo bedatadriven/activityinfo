@@ -10,7 +10,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.inject.Singleton;
-import org.sigmah.client.Application;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.offline.OfflineManager;
 
 /**
@@ -22,13 +22,13 @@ public class OfflineMenu extends Button implements OfflineManager.View {
     private MenuItem enableOfflineModeMenuItem;
 
     public OfflineMenu() {
-        enableOfflineModeMenuItem = new MenuItem(Application.CONSTANTS.enableOffline());
+        enableOfflineModeMenuItem = new MenuItem(I18N.CONSTANTS.enableOffline());
 
         Menu menu = new Menu();
         menu.add(enableOfflineModeMenuItem);
 
         this.setMenu(menu);
-        this.setText(Application.CONSTANTS.offlineMode());
+        this.setText(I18N.CONSTANTS.offlineMode());
     }
 
     @Override

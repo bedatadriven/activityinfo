@@ -25,7 +25,7 @@ import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.geom.LatLngBounds;
 import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.maps.client.overlay.MarkerOptions;
-import org.sigmah.client.Application;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.map.MapTypeFactory;
 import org.sigmah.client.page.common.widget.CoordinateField;
 import org.sigmah.client.page.config.form.FieldSetFitLayout;
@@ -55,7 +55,7 @@ public class MapFieldSet extends FieldSet implements MapPresenter.View {
 
         this.presenter = presenter;
 
-        setHeading(Application.CONSTANTS.geoPosition());
+        setHeading(I18N.CONSTANTS.geoPosition());
         setLayout(new FieldSetFitLayout());
         setHeight(250);
 
@@ -93,9 +93,9 @@ public class MapFieldSet extends FieldSet implements MapPresenter.View {
         lngField.addListener(Events.Change, latLngListener);
 
         ToolBar coordBar = new ToolBar();
-        coordBar.add(new LabelToolItem(Application.CONSTANTS.lat()));
+        coordBar.add(new LabelToolItem(I18N.CONSTANTS.lat()));
         coordBar.add(latField);
-        coordBar.add(new LabelToolItem(Application.CONSTANTS.lng()));
+        coordBar.add(new LabelToolItem(I18N.CONSTANTS.lng()));
         coordBar.add(lngField);
 
         panel.setBottomComponent(coordBar);

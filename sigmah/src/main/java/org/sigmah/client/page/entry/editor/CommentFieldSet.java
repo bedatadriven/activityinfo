@@ -7,7 +7,7 @@ package org.sigmah.client.page.entry.editor;
 
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
-import org.sigmah.client.Application;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.common.FieldSetFitLayout;
 
 /**
@@ -18,7 +18,7 @@ public class CommentFieldSet extends FieldSet {
     public CommentFieldSet() {
 
 
-		setHeading(Application.CONSTANTS.comments());
+		setHeading(I18N.CONSTANTS.comments());
 		setLayout(new FieldSetFitLayout());
 		setCollapsible(false);
 		setHeight(200);

@@ -21,8 +21,9 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.sigmah.client.Application;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.*;
 
@@ -46,8 +47,8 @@ public class IndicatorTreePanel extends ContentPanel {
     public IndicatorTreePanel(Dispatcher service, final boolean multipleSelection) {
         this.service = service;
         this.setHeaderVisible(false);
-        this.setHeading(Application.CONSTANTS.indicators());
-        this.setIcon(Application.ICONS.indicator());
+        this.setHeading(I18N.CONSTANTS.indicators());
+        this.setIcon(IconImageBundle.ICONS.indicator());
         this.setLayout(new FitLayout());
         this.setScrollMode(Style.Scroll.AUTO);
 
@@ -175,7 +176,7 @@ public class IndicatorTreePanel extends ContentPanel {
 
     private void createFilterBar() {
         toolBar = new ToolBar();
-        toolBar.add(new LabelToolItem(Application.CONSTANTS.search()));
+        toolBar.add(new LabelToolItem(I18N.CONSTANTS.search()));
         filter = new StoreFilterField() {
 
             @Override

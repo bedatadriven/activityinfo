@@ -10,23 +10,13 @@ import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.util.Theme;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import org.sigmah.client.i18n.UIConstants;
-import org.sigmah.client.i18n.UIMessages;
-import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.inject.AppInjector;
 
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
-public class Application implements EntryPoint {
-
-    public static final UIConstants CONSTANTS = (UIConstants)GWT.create(UIConstants.class);
-	
-	public static final UIMessages MESSAGES = (UIMessages)GWT.create(UIMessages.class);
-
-    public static final IconImageBundle ICONS = (IconImageBundle)GWT.create(IconImageBundle.class);
-
+public class ActivityInfoEntryPoint implements EntryPoint {
 
     /**
 	 * This is the entry point method.

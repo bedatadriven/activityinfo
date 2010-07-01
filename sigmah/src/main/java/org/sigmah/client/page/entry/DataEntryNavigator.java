@@ -9,8 +9,9 @@ import com.extjs.gxt.ui.client.data.DataReader;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
-import org.sigmah.client.Application;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.nav.Link;
 import org.sigmah.client.page.common.nav.Navigator;
 import org.sigmah.shared.command.GetSchema;
@@ -37,7 +38,7 @@ public class DataEntryNavigator implements Navigator {
     }
 
     public String getHeading() {
-        return Application.CONSTANTS.activities();
+        return I18N.CONSTANTS.activities();
     }
 
     public String getStateId() {
@@ -75,7 +76,7 @@ public class DataEntryNavigator implements Navigator {
                 Link dbLink = new Link(
                         db.getName(),
                         null,
-                        Application.ICONS.database());
+                        IconImageBundle.ICONS.database());
 
                 Map<String, Link> categories = new HashMap<String, Link>();
                 for (ActivityDTO activity : db.getActivities()) {
@@ -83,7 +84,7 @@ public class DataEntryNavigator implements Navigator {
                     Link actLink = new Link(
                             activity.getName(),
                             new SiteGridPageState(activity),
-                            Application.ICONS.table());
+                            IconImageBundle.ICONS.table());
 
                     if (activity.getCategory() != null) {
                         Link category = categories.get(activity.getCategory());

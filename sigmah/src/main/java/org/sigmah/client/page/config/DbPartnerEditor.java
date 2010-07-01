@@ -12,9 +12,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
 import org.sigmah.client.AppEvents;
-import org.sigmah.client.Application;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.common.dialog.FormDialogCallback;
@@ -116,7 +116,7 @@ public class DbPartnerEditor extends AbstractGridPresenter<PartnerDTO> {
         service.execute(new RemovePartner(db.getId(), model.getId()), view.getDeletingMonitor(), new AsyncCallback<VoidResult>() {
             public void onFailure(Throwable caught) {
                 if (caught instanceof PartnerHasSitesException) {
-                    MessageBox.alert(Application.CONSTANTS.removeItem(), Application.MESSAGES.partnerHasDataWarning(model.getName()), null);
+                    MessageBox.alert(I18N.CONSTANTS.removeItem(), I18N.MESSAGES.partnerHasDataWarning(model.getName()), null);
                 }
             }
 
