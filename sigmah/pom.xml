@@ -7,6 +7,31 @@
     <packaging>war</packaging>
     <version>0.5.12-SNAPSHOT</version>
     <name>SigmaH</name>
+    <description>Web-based database platform for program monitoring and reporting for the UN,
+    NGOs, and others working in humanitarian, development, and post-conflict contexts.</description>
+    <issueManagement>
+        <system>mantis</system>
+        <url>http://mantis.activityinfo.org</url>
+    </issueManagement>
+    <ciManagement>
+        <system>mikeci</system>
+        <url>https://build.mikeci.com/history.html?name=ActivityInfo&amp;_sub=activityinfo</url>
+    </ciManagement>
+    <inceptionYear>2009</inceptionYear>
+    <scm>
+        <connection>scm:svn:http://sigma-h.googlecode.com/svn/trunk</connection>
+        <developerConnection>scm:svn:https://sigma-h.googlecode.com/svn/trunk</developerConnection>
+        <url>http://code.google.com/p/sigmah/source/browse/trunk</url>
+    </scm>
+    <developers>
+        <developer>
+            <id>akbertram</id>
+            <name>Alex Bertram</name>
+            <email>alex@bedatadriven.com</email>
+            <organization>bedatadriven</organization>
+            <organizationUrl>http://www.bedatadriven.com</organizationUrl>
+        </developer>
+    </developers>
     <licenses>
         <license>
             <name>GPLv3</name>
@@ -173,9 +198,9 @@
         <!-- aopalliance is a transitive dependency of guice, but it there seems to be
             a guice-2.0 artifact out there floating around with out a proper pom -->
         <dependency>
-          <groupId>aopalliance</groupId>
-          <artifactId>aopalliance</artifactId>
-          <version>1.0</version>
+            <groupId>aopalliance</groupId>
+            <artifactId>aopalliance</artifactId>
+            <version>1.0</version>
         </dependency>
 
         <!-- Report creation dependencies -->
@@ -374,25 +399,18 @@
         </repository>
     </repositories>
 
-    <description>Web-based database system for program monitoring</description>
-    <scm>
-        <connection>scm:svn:http://activity-info.googlecode.com/svn/tags/activityinfo-0.5.10</connection>
-        <developerConnection>scm:svn:https://activity-info.googlecode.com/svn/tags/activityinfo-0.5.10</developerConnection>
-        <url>http://code.google.com/p/activity-info/source/browse/tags/activityinfo-0.5.10</url>
-    </scm>
-
-  <distributionManagement>
-    <repository>
-      <id>bedatadriven-oss</id>
-      <name>bedatadriven Open-Source releases</name>
-      <url>http://nexus.bedatadriven.com/content/repositories/oss-releases</url>
-    </repository>
-    <snapshotRepository>
-      <id>bedatadriven-oss</id>
-      <name>bedatadriven Open-Source snapshots</name>
-      <url>http://nexus.bedatadriven.com/content/repositories/oss-snapshots</url>
-    </snapshotRepository>
-  </distributionManagement>
+    <distributionManagement>
+        <repository>
+            <id>bedatadriven-oss</id>
+            <name>bedatadriven Open-Source releases</name>
+            <url>http://nexus.bedatadriven.com/content/repositories/oss-releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>bedatadriven-oss</id>
+            <name>bedatadriven Open-Source snapshots</name>
+            <url>http://nexus.bedatadriven.com/content/repositories/oss-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 
     <build>
@@ -617,10 +635,6 @@
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
-                <artifactId>gwt-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
                 <version>1.0-beta-1</version>
             </plugin>
@@ -706,8 +720,6 @@
             </build>
         </profile>
 
-        <!-- Build the Application Module with only permutations for
- IE6 and logging enabled for testing purposes -->
         <profile>
             <id>login</id>
             <build>
@@ -750,6 +762,17 @@
                     </plugin>
                 </plugins>
             </build>
+            <reporting>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>gwt-maven-plugin</artifactId>
+                        <configuration>
+                            <module>org.sigmah.ActivityInfoFFTest</module>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </reporting>
         </profile>
     </profiles>
 </project>
