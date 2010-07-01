@@ -10,46 +10,21 @@
 			<property name="hibernate.connection.driver_class" value="org.h2.Driver" />
 			<property name="hibernate.connection.username" value="sa" />
 			<property name="hibernate.connection.password" value="" />
-			<property name="hibernate.connection.url" value="jdbc:h2:~/sigmah2;IGNORECASE=TRUE" />
+			<property name="hibernate.connection.url" value="jdbc:h2:sigmah;IGNORECASE=TRUE" />
 			<property name="hibernate.show_sql" value="true" />
-			<property name="hibernate.hbm2ddl.auto" value="update" />
+			<property name="hibernate.hbm2ddl.auto" value="create" />
 			<property name="hibernate.format_sql" value="true" />	
 		</properties>
 	</persistence-unit>
-
-        <persistence-unit name="h2-test">
-        <properties>
-            <property name="hibernate.dialect"
-                      value="org.hibernate.dialect.SQLServerDialect"/>
-            <property name="hibernate.connection.driver_class"
-                      value="net.sourceforge.jtds.jdbc.Driver"/>
-            <property name="hibernate.connection.username" value="sa"/>
-            <property name="hibernate.connection.password" value="adminpwd"/>
-            <property name="hibernate.connection.url"
-                      value="jdbc:jtds:sqlserver://localhost:1433/act-test"/>
-
-            <property name="hibernate.c3p0.min_size" value="5"/>
-            <property name="hibernate.c3p0.max_size" value="20"/>
-            <property name="hibernate.c3p0.timemout" value="300"/>
-            <property name="hibernate.c3p0.max_statements" value="50"/>
-            <property name="hibernate.c3p0.idle_test_period" value="3000"/>
-
-            <property name="hibernate.hbm2ddl.auto" value="update" />
-
-            <property name="hibernate.show_sql" value="true"/>
-            <property name="hibernate.format_sql" value="true"/>
-
-        </properties>
-    </persistence-unit>
 	
-	<persistence-unit name="h2-test-x" transaction-type="RESOURCE_LOCAL">
+	<persistence-unit name="h2-test" transaction-type="RESOURCE_LOCAL">
 		<properties>
 			<property name="hibernate.archive.autodetection" value="class" />
 			<property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
 			<property name="hibernate.connection.driver_class" value="org.h2.Driver" />
 			<property name="hibernate.connection.username" value="sa" />
 			<property name="hibernate.connection.password" value="" />
-			<property name="hibernate.connection.url" value="jdbc:h2:sigmah-test;IGNORECASE=TRUE" />
+			<property name="hibernate.connection.url" value="jdbc:h2:mem:activityinfo;IGNORECASE=TRUE" />
 			<property name="hibernate.show_sql" value="true" />
 			<property name="hibernate.hbm2ddl.auto" value="create" />
 			<property name="hibernate.format_sql" value="true" />
