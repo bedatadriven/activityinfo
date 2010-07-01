@@ -32,6 +32,7 @@ import org.sigmah.client.page.entry.DataEntryNavigator;
 import org.sigmah.client.page.entry.EntryModule;
 import org.sigmah.client.page.map.MapLoader;
 import org.sigmah.client.page.map.SingleMapForm;
+import org.sigmah.client.page.project.ProjectListPresenter;
 import org.sigmah.client.page.report.ReportHomePresenter;
 import org.sigmah.client.page.report.ReportLoader;
 import org.sigmah.client.page.report.ReportModule;
@@ -54,6 +55,7 @@ import org.sigmah.client.util.state.IStateManager;
 })
 public interface AppInjector extends Ginjector {
 
+    ProjectListPresenter getProjectListPresenter();
 
     EventBus getEventBus();
 

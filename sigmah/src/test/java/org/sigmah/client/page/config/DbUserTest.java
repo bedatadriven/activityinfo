@@ -8,8 +8,8 @@ package org.sigmah.client.page.config;
 import com.extjs.gxt.ui.client.store.Record;
 import org.junit.Assert;
 import org.junit.Test;
+import org.sigmah.client.mock.DispatcherStub;
 import org.sigmah.client.mock.DummyData;
-import org.sigmah.client.mock.MockCommandService;
 import org.sigmah.client.mock.MockEventBus;
 import org.sigmah.client.mock.MockStateManager;
 import org.sigmah.client.page.common.toolbar.UIActions;
@@ -35,7 +35,7 @@ public class DbUserTest {
         SchemaDTO schema = DummyData.PEAR();
 
         // Collaborator: command service
-        MockCommandService service = new MockCommandService();
+        DispatcherStub service = new DispatcherStub();
         service.setResult(GetUsers.class, users);
 
         // Collaborator: View
@@ -70,7 +70,7 @@ public class DbUserTest {
         SchemaDTO schema = DummyData.PEAR();
 
         // Collaborator: command service
-        MockCommandService service = new MockCommandService();
+        DispatcherStub service = new DispatcherStub();
         service.setResult(GetUsers.class, users);
         service.setResult(UpdateUserPermissions.class, new VoidResult());
 
@@ -105,7 +105,7 @@ public class DbUserTest {
         SchemaDTO schema = DummyData.PEAR();
 
         // Collaborator: command service
-        MockCommandService service = new MockCommandService();
+        DispatcherStub service = new DispatcherStub();
         service.setResult(GetUsers.class, users);
         service.setResult(UpdateUserPermissions.class, new VoidResult());
 

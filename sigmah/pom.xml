@@ -810,5 +810,34 @@
                 </plugins>
             </reporting>
         </profile>
+        <profile>
+            <id>sigmah</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>gwt-maven-plugin</artifactId>
+                        <version>1.2</version>
+                        <configuration>
+                            <module>org.sigmah.Sigmah</module>
+                            <logLevel>DEBUG</logLevel>
+                            <runTarget>Sigmah/sigmah.html</runTarget>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>gwt-compile</id>
+                                <configuration>
+                                    <module>org.sigmah.Sigmah</module>
+                                    <soyc>true</soyc>
+                                </configuration>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 </project>

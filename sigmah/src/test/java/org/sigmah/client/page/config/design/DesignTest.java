@@ -12,8 +12,8 @@ import org.easymock.IAnswer;
 import org.junit.Assert;
 import org.junit.Test;
 import org.sigmah.client.i18n.UIConstants;
+import org.sigmah.client.mock.DispatcherStub;
 import org.sigmah.client.mock.DummyData;
-import org.sigmah.client.mock.MockCommandService;
 import org.sigmah.client.mock.MockEventBus;
 import org.sigmah.client.mock.MockStateManager;
 import org.sigmah.client.page.NavigationCallback;
@@ -50,7 +50,7 @@ public class DesignTest {
         MockEventBus eventBus = new MockEventBus();
 
         // Collaborator
-        MockCommandService service = new MockCommandService();
+        DispatcherStub service = new DispatcherStub();
         service.setResult(GetSchema.class, schema);
         service.setResult(UpdateEntity.class, new VoidResult());
 
@@ -94,7 +94,7 @@ public class DesignTest {
         MockEventBus eventBus = new MockEventBus();
 
         // Collaborator
-        MockCommandService service = new MockCommandService();
+        DispatcherStub service = new DispatcherStub();
         service.setResult(GetSchema.class, schema);
         service.setResult(UpdateEntity.class, new VoidResult());
 
@@ -139,7 +139,7 @@ public class DesignTest {
         SchemaDTO schema = DummyData.PEAR();
 
         // Collaborator
-        MockCommandService service = new MockCommandService();
+        DispatcherStub service = new DispatcherStub();
         service.setResult(GetSchema.class, schema);
         service.setResult(Delete.class, new VoidResult());
 
@@ -182,7 +182,7 @@ public class DesignTest {
         SchemaDTO schema = DummyData.PEAR();
 
         // Collaborator
-        MockCommandService service = new MockCommandService();
+        DispatcherStub service = new DispatcherStub();
         service.setResult(GetSchema.class, schema);
         service.setResult(Delete.class, new VoidResult());
 
@@ -232,7 +232,7 @@ public class DesignTest {
         MockEventBus eventBus = new MockEventBus();
 
         // Collaborator : Command Service
-        MockCommandService service = new MockCommandService();
+        DispatcherStub service = new DispatcherStub();
         service.setResult(GetSchema.class, schema);
         service.setResult(CreateEntity.class, new CreateResult(991));
 

@@ -14,8 +14,8 @@ import org.junit.Test;
 import org.sigmah.client.AppEvents;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.event.SiteEvent;
+import org.sigmah.client.mock.DispatcherStub;
 import org.sigmah.client.mock.DummyData;
-import org.sigmah.client.mock.MockCommandService;
 import org.sigmah.client.mock.MockEventBus;
 import org.sigmah.client.mock.MockStateManager;
 import org.sigmah.client.page.common.toolbar.UIActions;
@@ -49,7 +49,7 @@ public class SiteGridTest {
         SchemaDTO schema = DummyData.PEAR();
 
         // collaborator: service
-        MockCommandService service = new MockCommandService();
+        DispatcherStub service = new DispatcherStub();
         service.setResult(new GetSchema(), schema);
         service.setResult(GetSites.class, DummyData.PEAR_Sites_Result());
 
@@ -84,7 +84,7 @@ public class SiteGridTest {
         SchemaDTO schema = DummyData.PEAR();
 
         // collaborator: service
-        MockCommandService service = new MockCommandService();
+        DispatcherStub service = new DispatcherStub();
         service.setResult(new GetSchema(), schema);
         service.setResult(GetSites.class, DummyData.PEAR_Sites_Result());
 
@@ -145,7 +145,7 @@ public class SiteGridTest {
         SchemaDTO schema = DummyData.PEAR();
 
         // collaborator: service
-        MockCommandService service = new MockCommandService();
+        DispatcherStub service = new DispatcherStub();
         service.setResult(new GetSchema(), schema);
         service.setResult(GetSites.class, DummyData.PEAR_Sites_Result());
 
@@ -178,7 +178,7 @@ public class SiteGridTest {
         SchemaDTO schema = DummyData.PEAR();
 
         // collaborator: service
-        MockCommandService service = new MockCommandService();
+        DispatcherStub service = new DispatcherStub();
         service.setResult(new GetSchema(), schema);
         service.setResult(GetSites.class, new SiteResult());
 
@@ -213,7 +213,7 @@ public class SiteGridTest {
         EventBus eventBus = new MockEventBus();
 
         // collaborator: service
-        MockCommandService service = new MockCommandService();
+        DispatcherStub service = new DispatcherStub();
         service.setResult(new GetSchema(), schema);
         service.setResult(GetSites.class, new SiteResult(Collections.<SiteDTO>emptyList()));
 
@@ -261,7 +261,7 @@ public class SiteGridTest {
     public void testNewSiteTriggersSeekToPage() {
 
         // Collaborator: service
-        MockCommandService service = new MockCommandService();
+        DispatcherStub service = new DispatcherStub();
         service.setResult(new GetSchema(), DummyData.PEAR());
         service.setResult(GetSites.class, DummyData.PEAR_Sites_Many_Results(100));
 
@@ -302,7 +302,7 @@ public class SiteGridTest {
     public void testSiteUpdate() {
 
         // Collaborator: service
-        MockCommandService service = new MockCommandService();
+        DispatcherStub service = new DispatcherStub();
         service.setResult(new GetSchema(), DummyData.PEAR());
         service.setResult(GetSites.class, DummyData.PEAR_Sites_Result());
 
@@ -339,7 +339,7 @@ public class SiteGridTest {
         SiteResult sites = DummyData.PEAR_Sites_Result();
 
         // Collaborator: service
-        MockCommandService service = new MockCommandService();
+        DispatcherStub service = new DispatcherStub();
         service.setResult(GetSites.class, sites);
         service.setResult(UpdateEntity.class, new VoidResult());
 

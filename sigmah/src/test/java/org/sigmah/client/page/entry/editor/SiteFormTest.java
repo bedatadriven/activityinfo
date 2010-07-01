@@ -7,8 +7,8 @@ package org.sigmah.client.page.entry.editor;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.sigmah.client.mock.DispatcherStub;
 import org.sigmah.client.mock.DummyData;
-import org.sigmah.client.mock.MockCommandService;
 import org.sigmah.client.mock.MockEventBus;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.page.entry.editor.mock.MockSiteForm;
@@ -30,7 +30,7 @@ public class SiteFormTest {
         MockEventBus eventBus = new MockEventBus();
 
         // Collaborator: Command Service
-        MockCommandService service = new MockCommandService();
+        DispatcherStub service = new DispatcherStub();
 
         // Collaborator: View
         MockSiteForm form = new MockSiteForm();
@@ -61,7 +61,7 @@ public class SiteFormTest {
         MockEventBus eventBus = new MockEventBus();
 
         // Collaborator: Command Service
-        MockCommandService service = new MockCommandService();
+        DispatcherStub service = new DispatcherStub();
 
         // Collaborator: View
         MockSiteForm form = new MockSiteForm();

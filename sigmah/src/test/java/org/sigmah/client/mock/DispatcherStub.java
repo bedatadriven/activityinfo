@@ -21,14 +21,14 @@ import java.util.Map;
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class MockCommandService implements Dispatcher {
+public class DispatcherStub implements Dispatcher {
 
     private Map<Command, CommandResult> results = new HashMap<Command, CommandResult>();
     private Map<Class, CommandResult> resultByClass = new HashMap<Class, CommandResult>();
 
     private List<Command> log = new ArrayList<Command>();
 
-    public MockCommandService() {
+    public DispatcherStub() {
 
     }
 

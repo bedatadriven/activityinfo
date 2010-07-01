@@ -7,8 +7,8 @@ package org.sigmah.client.page.entry.editor;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.sigmah.client.mock.DispatcherStub;
 import org.sigmah.client.mock.DummyData;
-import org.sigmah.client.mock.MockCommandService;
 import org.sigmah.client.mock.MockEventBus;
 import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
@@ -32,7 +32,7 @@ public class AdminChangeTest {
         MockEventBus eventBus = new MockEventBus();
 
         // collaborator: command service
-        MockCommandService service = new MockCommandService();
+        DispatcherStub service = new DispatcherStub();
 
         // collaborator: view
         AdminFieldSetPresenter.View view = createNiceMock(AdminFieldSetPresenter.View.class);

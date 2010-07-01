@@ -8,8 +8,8 @@ package org.sigmah.client.page.entry;
 import org.junit.Test;
 import org.sigmah.client.AppEvents;
 import org.sigmah.client.event.SiteEvent;
+import org.sigmah.client.mock.DispatcherStub;
 import org.sigmah.client.mock.DummyData;
-import org.sigmah.client.mock.MockCommandService;
 import org.sigmah.client.mock.MockEventBus;
 import org.sigmah.client.mock.MockStateManager;
 import org.sigmah.server.util.DateUtilCalendarImpl;
@@ -36,7 +36,7 @@ public class HierSiteEditorTest {
         MockEventBus eventBus = new MockEventBus();
 
         // Collaborator
-        MockCommandService service = new MockCommandService();
+        DispatcherStub service = new DispatcherStub();
         service.setResult(new GetAdminEntities(1, null, 11), DummyData.PEARPlus_Provinces());
         service.setResult(new GetAdminEntities(2, null, 11), DummyData.PEARPlus_ZS());
         service.setResult(new GetAdminEntities(3, null, 11), new AdminEntityResult());

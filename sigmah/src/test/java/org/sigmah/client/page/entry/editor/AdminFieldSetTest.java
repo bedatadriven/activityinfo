@@ -8,8 +8,8 @@ package org.sigmah.client.page.entry.editor;
 import com.extjs.gxt.ui.client.store.ListStore;
 import org.junit.Assert;
 import org.junit.Test;
+import org.sigmah.client.mock.DispatcherStub;
 import org.sigmah.client.mock.DummyData;
-import org.sigmah.client.mock.MockCommandService;
 import org.sigmah.client.page.entry.editor.mock.MockAdminFieldSet;
 import org.sigmah.shared.command.GetAdminEntities;
 import org.sigmah.shared.dto.ActivityDTO;
@@ -34,7 +34,7 @@ public class AdminFieldSetTest {
         ActivityDTO nfi = schema.getActivityById(91);
 
         // Collaborator: command service
-        MockCommandService service = new MockCommandService();
+        DispatcherStub service = new DispatcherStub();
         service.setResult(new GetAdminEntities(1), DummyData.getProvinces());
         service.setResult(new GetAdminEntities(2, 100), DummyData.getTerritoires(100));
 
@@ -72,7 +72,7 @@ public class AdminFieldSetTest {
         ActivityDTO nfi = schema.getActivityById(91);
 
         // Collaborator: Command Service
-        MockCommandService service = new MockCommandService();
+        DispatcherStub service = new DispatcherStub();
 
         // Collaborator: View
         MockAdminFieldSet fieldSet = new MockAdminFieldSet();
@@ -96,7 +96,7 @@ public class AdminFieldSetTest {
         ActivityDTO nfi = schema.getActivityById(91);
 
         // Collaborator: Command Service
-        MockCommandService service = new MockCommandService();
+        DispatcherStub service = new DispatcherStub();
         service.setResult(new GetAdminEntities(1), DummyData.getProvinces());
         service.setResult(new GetAdminEntities(2, 100), DummyData.getTerritoires(100));
 
@@ -137,7 +137,7 @@ public class AdminFieldSetTest {
         ActivityDTO nfi = schema.getActivityById(91);
 
         // Collaborator: command service
-        MockCommandService service = new MockCommandService();
+        DispatcherStub service = new DispatcherStub();
         service.setResult(new GetAdminEntities(1), DummyData.getProvinces());
         service.setResult(new GetAdminEntities(2, 200), DummyData.getTerritoires(200));
 
@@ -172,7 +172,7 @@ public class AdminFieldSetTest {
         ActivityDTO nfi = schema.getActivityById(91);
 
         // Collaborator: command service      
-        MockCommandService service = new MockCommandService();
+        DispatcherStub service = new DispatcherStub();
         service.setResult(new GetAdminEntities(1), DummyData.getProvinces());
         service.setResult(new GetAdminEntities(2, 200), DummyData.getTerritoires(200));
 
@@ -200,7 +200,7 @@ public class AdminFieldSetTest {
         ActivityDTO nfi = schema.getActivityById(91);
 
         // Collaborator: command service
-        MockCommandService service = new MockCommandService();
+        DispatcherStub service = new DispatcherStub();
         service.setResult(new GetAdminEntities(1), DummyData.getProvinces());
         service.setResult(new GetAdminEntities(2, 200), DummyData.getTerritoires(200));
 
@@ -236,7 +236,7 @@ public class AdminFieldSetTest {
         ActivityDTO nfi = schema.getActivityById(91);
 
         // Collaborator: command service
-        MockCommandService service = new MockCommandService();
+        DispatcherStub service = new DispatcherStub();
 
         // Collaborator: view
         MockAdminFieldSet fieldSet = new MockAdminFieldSet();

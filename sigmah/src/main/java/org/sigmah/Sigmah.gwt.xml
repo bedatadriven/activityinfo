@@ -10,9 +10,8 @@
     <!-- Inherit the core Web Toolkit stuff.                        -->
     <inherits name='com.google.gwt.user.User' />
 
-
     <!-- Inherit additional dependencies  -->
-    <inherits name='com.google.gwt.inject.Inject' />
+        <inherits name='com.google.gwt.inject.Inject' />
     <inherits name="com.google.gwt.i18n.I18N" />
     <inherits name='com.extjs.gxt.ui.GXT' />
     <inherits name="com.google.gwt.maps.GoogleMaps" />
@@ -27,6 +26,9 @@
     <inherits name="com.allen_sauer.gwt.log.gwt-log"/>
 
     <extend-property name="log_level" values="TRACE"/>
+    <set-property name="log_level" value="TRACE"/>
+    <set-property name="log_DivLogger" value="DISABLED" />
+                                              
 
     <!-- Configure Logging -->
 
@@ -35,7 +37,7 @@
     <source path='shared'/>
 
     <!-- Specify the app entry point class.                         -->
-    <entry-point class='org.sigmah.client.ActivityInfoEntryPoint' />
+    <entry-point class='org.sigmah.client.SigmahEntryPoint' />
 
     <!-- Enable other locales -->
     <extend-property name="locale" values="en,fr" />
