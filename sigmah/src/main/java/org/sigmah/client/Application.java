@@ -38,9 +38,6 @@ public class Application implements EntryPoint {
         if(!GWT.isScript()) {
             Log.setCurrentLogLevel(Log.LOG_LEVEL_TRACE);
         }
-
-//        if(Log.isTraceEnabled())
-//            registerStatsHandler();
         if(Log.isErrorEnabled()) {
             GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
                 @Override
@@ -76,11 +73,6 @@ public class Application implements EntryPoint {
         Log.info("Application: everyone plugged, firing Init event");
 
         injector.getEventBus().fireEvent(AppEvents.Init);
-
-
-        // preload Maps API
-        //MapApiLoader.preload();
-
     }
 
     protected void createCaches(AppInjector injector) {
@@ -88,31 +80,5 @@ public class Application implements EntryPoint {
         injector.createAdminCache();
     }
 
-
-    /**
-     * Registers an event handler for the GWT stats system
-     *
-     * Events have the form of:
-     *
-     * <code>
-     *     $stats && $stats({
-     *       moduleName:'__MODULE_NAME__',
-     *       sessionId: $sessionId,
-     *       subSystem:'startup',
-     *       evtGroup: 'loadExternalRefs',
-     *       millis:(new Date()).getTime(),
-     *       type: 'begin'
-     *     });
-     */
-    protected native void registerStatsHandler() /*-{
-         $wnd.__appStatsEvent = function(evt) {
-            @org.sigmah.client.Application::logStatsEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(evt.subSystem, evt.evtGroup, evt[type]);
-         };
-
-    }-*/;
-
-    protected static void logStatsEvent(String subSystem, String evtGroup, String type) {
-        Log.trace(subSystem + ": " + evtGroup + " " + type);
-    }
 
 }
