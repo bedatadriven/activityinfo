@@ -91,6 +91,7 @@ public class OrgUnit implements java.io.Serializable, SchemaElement {
      * the city of its head office.
      *
      */
+    @ManyToOne
     public Location getLocation() {
         return location;
     }

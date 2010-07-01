@@ -26,6 +26,7 @@ public class OrgUnitPermission {
     }
 
     @ManyToOne
+    @JoinColumn(name="unit_Id")
     public OrgUnit getUnit() {
         return unit;
     }

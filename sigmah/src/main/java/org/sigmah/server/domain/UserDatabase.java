@@ -40,9 +40,12 @@ import java.util.Set;
 @org.hibernate.annotations.Filters(
 		{@org.hibernate.annotations.Filter(
 				name="userVisible",
-				condition="(:currentUserId = OwnerUserId or " +
-						  ":currentUserId in (select p.UserId from UserPermission p " +
-						  						"where p.AllowView=1 and p.UserId=:currentUserId and p.DatabaseId=DatabaseId))"
+				condition="(:currentUserId = OwnerUserId  " +
+						  "or :currentUserId in (select p.UserId from UserPermission p " +
+						  						"where p.AllowView=1 and p.UserId=:currentUserId and p.DatabaseId=DatabaseId)" +
+                          "or :currentUserId in (select p.User_userid from orgunitPermission p " +
+                                                "left join PartnerInDatabase m on (p.unit_id = m.partnerid) where " +
+                                                    "m.databaseId=DatabaseId and p.viewAll=1))"
 		),
 
 		@org.hibernate.annotations.Filter(

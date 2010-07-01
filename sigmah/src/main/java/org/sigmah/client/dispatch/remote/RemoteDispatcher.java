@@ -113,10 +113,10 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
                 !request.mergeSuccessfulInto(pendingCommands) &&
                 !request.mergeSuccessfulInto(executingCommands)) {
 
+            queue(request);
+            
             Log.debug("RemoteDispatcher: Scheduled " + command.toString() + ", now " +
                     pendingCommands.size() + " command(s) pending");
-
-            queue(request);
         }
     }
 
@@ -234,6 +234,7 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
             CommandResult result = results.get(i);
 
             if (result instanceof CommandException) {
+                Log.debug("Remote command failed. Command = " + cmd.getCommand().toString());
                 cmd.fireOnFailure((CommandException) result,
                         result instanceof UnexpectedCommandException);
 

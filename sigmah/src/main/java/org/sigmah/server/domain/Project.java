@@ -12,13 +12,13 @@ import javax.persistence.OneToOne;
 public class Project extends UserDatabase {
 	private static final long serialVersionUID = 3838595995254049090L;
 	
-	@OneToOne
 	private LogFrame logFrame;
 
 	public void setLogFrame(LogFrame logFrame) {
 		this.logFrame = logFrame;
 	}
 
+    @OneToOne
 	public LogFrame getLogFrame() {
 		return logFrame;
 	}

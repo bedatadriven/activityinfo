@@ -17,4 +17,8 @@ public class UnexpectedCommandException extends CommandException {
     public UnexpectedCommandException(String message) {
         super(message);
     }
+
+    public UnexpectedCommandException(Throwable e) {
+        super(e);
+    }
 }

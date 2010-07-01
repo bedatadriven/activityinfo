@@ -63,6 +63,7 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
 
 
     @Override
+    @LogException
     public List<CommandResult> execute(String authToken, List<Command> commands) throws CommandException {
         Authentication auth = retrieveAuthentication(authToken);
         try {
@@ -77,6 +78,7 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
     /**
      * Publicly visible for testing *
      */
+    @LogException
     public List<CommandResult> handleCommands(User user, List<Command> commands) {
         applyUserFilters(user);
 
@@ -92,7 +94,7 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
                 // something when wrong while executing the command
                 // this is already logged by the logging interceptor
                 // so just pass a new UnexpectedCommandException to the client
-                results.add(new UnexpectedCommandException());
+                results.add(new UnexpectedCommandException(e));
             }
         }
         return results;

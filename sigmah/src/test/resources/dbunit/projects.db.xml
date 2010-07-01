@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!--
+  ~ All Sigmah code is released under the GNU General Public License v3
+  ~ See COPYRIGHT.txt and LICENSE.txt.
+  -->
+
+<dataset>
+
+    <!--  This is test data used for the SchemaBuilderTest cases -->
+
+    <country countryId="1" name="Rdc" x1="0" y1="0" x2="0" y2="0"/>
+
+    <locationType locationTypeId="1" countryId="1" name="localite" reuse="1"/>
+
+    <userLogin userId="1" name="Alex" email="user1@user.com" locale="fr" newUser="1"/>
+    <userLogin userId="2" name="Raphael" email="user2@user.com" locale="fr" newUser="1"/>
+    <userLogin userId="3" name="Tom" email="tom@user.com" locale="fr" newUser="1"/>
+
+    <organization id="1" name="Ideia"/>
+    <partner partnerId="1" name="Head Office" organization_id="1"/>
+    <orgUnitPermission id="1" unit_Id="1" user_UserId="3" viewAll="1" editAll="0"/>
+
+
+    <userDatabase databaseId="1" name="PEAR" countryId="1" ownerUserId="1" lastSchemaUpdate="2009-01-01"/>
+    <project databaseId="1"/>
+
+    <userDatabase databaseId="2" name="RRM" countryId="1" ownerUserId="1" lastSchemaUpdate="2009-01-01"/>
+    <project databaseId="2"/>
+
+    <userDatabase databaseId="3" name="RRM" countryId="1" ownerUserId="2" lastSchemaUpdate="2009-01-01"/>
+    <project databaseId="3"/>
+
+    <partnerInDatabase databaseId="3" partnerId="1"/>
+
+</dataset>

@@ -8,10 +8,7 @@ package org.sigmah.server.endpoint.gwtrpc.handler;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import org.sigmah.server.domain.*;
-import org.sigmah.server.policy.ActivityPolicy;
-import org.sigmah.server.policy.PropertyMap;
-import org.sigmah.server.policy.SitePolicy;
-import org.sigmah.server.policy.UserDatabasePolicy;
+import org.sigmah.server.policy.*;
 import org.sigmah.shared.command.CreateEntity;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.CreateResult;
@@ -41,7 +38,6 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
         Map<String, Object> properties = cmd.getProperties().getTransientMap();
         PropertyMap propertyMap = new PropertyMap(cmd.getProperties().getTransientMap());
 
-
         if ("UserDatabase".equals(cmd.getEntityName())) {
             UserDatabasePolicy policy = injector.getInstance(UserDatabasePolicy.class);
             return new CreateResult((Integer) policy.create(user, propertyMap));
@@ -54,6 +50,9 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
             return createAttribute(cmd, properties);
         } else if ("Indicator".equals(cmd.getEntityName())) {
             return createIndicator(user, cmd, properties);
+        } else if ("Project".equals(cmd.getEntityName())) {
+            ProjectPolicy policy = injector.getInstance(ProjectPolicy.class);
+            return new CreateResult((Integer) policy.create(user, propertyMap));
         } else if ("Site".equals(cmd.getEntityName())) {
             SitePolicy policy = injector.getInstance(SitePolicy.class);
             return new CreateResult((Integer)policy.create(user, propertyMap));
