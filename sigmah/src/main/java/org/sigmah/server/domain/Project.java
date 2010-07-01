@@ -6,12 +6,21 @@
 package org.sigmah.server.domain;
 
 import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Project extends UserDatabase {
+	private static final long serialVersionUID = 3838595995254049090L;
+	
+	@OneToOne
+	private LogFrame logFrame;
 
-    
+	public void setLogFrame(LogFrame logFrame) {
+		this.logFrame = logFrame;
+	}
+
+	public LogFrame getLogFrame() {
+		return logFrame;
+	}
 
 }

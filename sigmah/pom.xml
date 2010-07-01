@@ -412,7 +412,6 @@
         </snapshotRepository>
     </distributionManagement>
 
-
     <build>
         <resources>
             <resource>
@@ -497,7 +496,7 @@
                             <!-- run with profile soyc enabled to generate maps for a single perm-->
                             <soyc>false</soyc>
                             <modules>
-                                <module>org.sigmah.Application</module>
+                                <module>org.sigmah.ActivityInfo</module>
                                 <module>org.sigmah.login.Login</module>
                             </modules>
                         </configuration>
@@ -521,7 +520,7 @@
                             <directory>war/WEB-INF/lib</directory>
                         </fileset>
                         <fileset>
-                            <directory>war/Application</directory>
+                            <directory>war/ActivityInfo</directory>
                         </fileset>
                         <fileset>
                             <directory>war/Login</directory>
@@ -555,7 +554,7 @@
 
                 <configuration>
                     <warSourceDirectory>${basedir}/war</warSourceDirectory>
-                    <warSourceExcludes>Application/compile-report</warSourceExcludes>
+                    <warSourceExcludes>ActivityInfo/compile-report</warSourceExcludes>
                 </configuration>
             </plugin>
 
@@ -660,7 +659,7 @@
                                 <id>gwt-compile</id>
                                 <configuration>
                                     <draftCompile>true</draftCompile>
-                                    <module>org.sigmah.ApplicationFFTest</module>
+                                    <module>org.sigmah.ActivityInfoFFTest</module>
                                 </configuration>
                                 <goals>
                                     <goal>compile</goal>
@@ -687,6 +686,33 @@
                                 <configuration>
                                     <draftCompile>true</draftCompile>
                                     <module>org.sigmah.ActivityInfoIE6Test</module>
+                                </configuration>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
+        <!-- Build the Application Module with only permutations for
+    Safari and logging enabled for testing purposes -->
+        <profile>
+            <id>safari</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>gwt-maven-plugin</artifactId>
+                        <version>1.2</version>
+                        <executions>
+                            <execution>
+                                <id>gwt-compile</id>
+                                <configuration>
+                                    <draftCompile>true</draftCompile>
+                                    <module>org.sigmah.ActivityInfoSafariTest</module>
                                 </configuration>
                                 <goals>
                                     <goal>compile</goal>
