@@ -43,7 +43,7 @@ import java.util.Set;
 				condition="(:currentUserId = OwnerUserId  " +
 						  "or :currentUserId in (select p.UserId from UserPermission p " +
 						  						"where p.AllowView=1 and p.UserId=:currentUserId and p.DatabaseId=DatabaseId)" +
-                          "or :currentUserId in (select p.User_userid from orgunitPermission p " +
+                          "or :currentUserId in (select p.User_userid from OrgUnitPermission p " +
                                                 "left join PartnerInDatabase m on (p.unit_id = m.partnerid) where " +
                                                     "m.databaseId=DatabaseId and p.viewAll=1))"
 		),
