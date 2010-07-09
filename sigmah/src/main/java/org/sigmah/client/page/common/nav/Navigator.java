@@ -5,9 +5,9 @@
 
 package org.sigmah.client.page.common.nav;
 
-import com.extjs.gxt.ui.client.data.DataProxy;
-
 import java.util.List;
+
+import com.extjs.gxt.ui.client.data.DataProxy;
 
 /**
  * Provides the data for the contents of a

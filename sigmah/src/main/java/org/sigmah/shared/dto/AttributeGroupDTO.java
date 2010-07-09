@@ -31,6 +31,14 @@ public final class AttributeGroupDTO extends BaseModel implements EntityDTO {
         setAttributes(model.getAttributes());
     }
 	
+    public boolean isEmpty() {
+    	if (this.attributes == null)
+    		return true;
+    	if (this.attributes.size() < 1) 
+    		return true;
+    	return false;
+    }
+    
 	public AttributeGroupDTO(int id) {
 		this.setId(id);
 	}

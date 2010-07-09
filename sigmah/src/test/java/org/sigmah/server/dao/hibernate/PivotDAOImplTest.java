@@ -98,7 +98,23 @@ public class PivotDAOImplTest {
         assertThat().forPartner(2).thereIsOneBucketWithValue(10000).andItsPartnerLabelIs("Solidarites");
     }
 
+/*
+    @Test
+    public void testAttributePivot() {
 
+        withIndicatorAsDimension();
+        withPartnerAsDimension();
+        filter.addRestriction(DimensionType.Indicator, OWNER_USER_ID);
+
+        execute();
+
+        assertThat().thereAre(2).buckets();
+        assertThat().forPartner(OWNER_USER_ID).thereIsOneBucketWithValue(5100).andItsPartnerLabelIs("NRC");
+        assertThat().forPartner(2).thereIsOneBucketWithValue(10000).andItsPartnerLabelIs("Solidarites");
+    }
+*/
+    
+    
     @Test
     public void testAdminPivot() {
 

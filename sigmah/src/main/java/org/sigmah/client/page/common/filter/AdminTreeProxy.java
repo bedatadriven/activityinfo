@@ -32,7 +32,6 @@ public class AdminTreeProxy implements DataProxy {
         this.hierarchy = hierarchy;
     }
 
-
     public void setHierarchy(List<AdminLevelDTO> hierarchy) {
         this.hierarchy = hierarchy;
     }
@@ -63,7 +62,7 @@ public class AdminTreeProxy implements DataProxy {
             AdminEntityDTO parentEntity = (AdminEntityDTO) parent;
             AdminLevelDTO childLevel = (AdminLevelDTO) findChildLevel(parentEntity);
 
-            //find the next child in this hierachy
+            // find the next child in this hierachy
 
             if (childLevel == null) {
                 callback.onSuccess(Collections.emptyList());
@@ -78,6 +77,7 @@ public class AdminTreeProxy implements DataProxy {
                         callback.onSuccess(result.getData());
                     }
                 });
+                
             }
         }
 

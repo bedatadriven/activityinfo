@@ -5,9 +5,10 @@
 
 package org.sigmah.client.page.common.nav;
 
+import org.sigmah.client.page.PageState;
+
 import com.extjs.gxt.ui.client.data.BaseTreeModel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import org.sigmah.client.page.PageState;
 
 /*
  * @author Alex Bertram

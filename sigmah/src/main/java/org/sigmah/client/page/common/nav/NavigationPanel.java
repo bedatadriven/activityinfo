@@ -5,22 +5,27 @@
 
 package org.sigmah.client.page.common.nav;
 
-import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.data.BaseTreeLoader;
-import com.extjs.gxt.ui.client.data.ModelIconProvider;
-import com.extjs.gxt.ui.client.data.ModelKeyProvider;
-import com.extjs.gxt.ui.client.data.TreeLoader;
-import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import org.sigmah.client.AppEvents;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.event.NavigationEvent;
 import org.sigmah.client.page.NavigationHandler;
 import org.sigmah.client.page.PageState;
+
+import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.data.BaseTreeLoader;
+import com.extjs.gxt.ui.client.data.ModelIconProvider;
+import com.extjs.gxt.ui.client.data.ModelKeyProvider;
+import com.extjs.gxt.ui.client.data.TreeLoader;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.TreePanelEvent;
+import com.extjs.gxt.ui.client.store.TreeStore;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 /**
  * User interface component that provides a hierarchial

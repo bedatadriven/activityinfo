@@ -5,7 +5,9 @@
 
 package org.sigmah.client.page.table;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.ImplementedBy;
@@ -50,8 +52,6 @@ public class PivotPresenter implements Page {
 
         public ListStore<Dimension> getColStore();
 
-        public ListStore<Dimension> getUnsusedStore();
-
         public void setContent(PivotTableElement element);
 
         public AsyncMonitor getMonitor();
@@ -65,6 +65,8 @@ public class PivotPresenter implements Page {
         Date getMinDate();
 
         Date getMaxDate();
+        
+        List<PartnerDTO> getPartnerRestrictions();
     }
 
 
@@ -78,54 +80,18 @@ public class PivotPresenter implements Page {
         this.view = view;
         this.eventBus = eventBus;
         this.view.bindPresenter(this);
-
+        
         ListStore<Dimension> store = view.getRowStore();
         store.add(createDimension(DimensionType.Database, I18N.CONSTANTS.database()));
         store.add(createDimension(DimensionType.Activity, I18N.CONSTANTS.activity()));
         store.add(createDimension(DimensionType.Indicator, I18N.CONSTANTS.indicators()));
-
+        
         store = view.getColStore();
         store.add(createDimension(DimensionType.Partner, I18N.CONSTANTS.partner()));
-
-        store = view.getUnsusedStore();
-        store.add(createDimension(DateUnit.YEAR, I18N.CONSTANTS.year()));
-        store.add(createDimension(DateUnit.QUARTER, I18N.CONSTANTS.quarter()));
-        store.add(createDimension(DateUnit.MONTH, I18N.CONSTANTS.month()));
-
-        service.execute(new GetSchema(), view.getMonitor(), new Got<SchemaDTO>() {
-            @Override
-            public void got(SchemaDTO result) {
-
-                view.setSchema(result);
-
-                ListStore<Dimension> store = view.getUnsusedStore();
-
-                for (CountryDTO country : result.getCountries()) {
-                    for (AdminLevelDTO level : country.getAdminLevels()) {
-                        AdminDimension dimension = new AdminDimension(level.getId());
-                        dimension.set("caption", level.getName());
-                        store.add(dimension);
-                    }
-                }
-            }
-        });
-
     }
 
     public void shutdown() {
 
-    }
-
-    private Dimension createDimension(DimensionType type, String caption) {
-        Dimension dim = new Dimension(type);
-        dim.set("caption", caption);
-        return dim;
-    }
-
-    private Dimension createDimension(DateUnit unit, String caption) {
-        Dimension dim = new DateDimension(unit);
-        dim.set("caption", caption);
-        return dim;
     }
 
     public void onDimensionsChanged() {
@@ -147,13 +113,19 @@ public class PivotPresenter implements Page {
             table.getFilter().addRestriction(DimensionType.AdminLevel, entity.getId());
         }
 
-        if (view.getMinDate() != null) {
+        List<PartnerDTO> partners = view.getPartnerRestrictions();
+        for (PartnerDTO entity : partners) {
+            table.getFilter().addRestriction(DimensionType.Partner, entity.getId());
+        }
+        
+        if (view.getMinDate() != null) {	
             table.getFilter().setMinDate(view.getMinDate());
         }
+        
         if (view.getMaxDate() != null) {
             table.getFilter().setMaxDate(view.getMaxDate());
         }
-
+        Log.debug("sending element");
         return table;
     }
 
@@ -166,6 +138,7 @@ public class PivotPresenter implements Page {
                 }
 
                 public void onSuccess(Content content) {
+                	Log.debug("got contnet===>" + content);
                     element.setContent((PivotContent) content);
                     view.setContent(element);
                 }
@@ -213,5 +186,17 @@ public class PivotPresenter implements Page {
 
     public boolean navigate(PageState place) {
         return true;
+    }
+    
+    private Dimension createDimension(DimensionType type, String caption) {
+        Dimension dim = new Dimension(type);
+        dim.set("caption", caption);
+        return dim;
+    }
+
+    private Dimension createDimension(DateUnit unit, String caption) {
+    	Dimension dim = new DateDimension(unit);
+    	dim.set("caption", caption);
+    	return dim;
     }
 }

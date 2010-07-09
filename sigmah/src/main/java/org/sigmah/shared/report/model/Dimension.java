@@ -25,7 +25,7 @@ import java.util.Map;
 @XmlJavaTypeAdapter(DimensionAdapter.class)
 public class Dimension extends BaseModelData implements Serializable {
 
-
+	public final static String CAPTION_PROPERTY = "caption";
     private DimensionType type;
     private String color;
 

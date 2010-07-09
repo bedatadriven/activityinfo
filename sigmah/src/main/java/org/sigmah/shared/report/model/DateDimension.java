@@ -13,14 +13,14 @@ package org.sigmah.shared.report.model;
  *
  */
 public class DateDimension extends Dimension {
-
+	
 	private DateUnit unit;
 	private String format;
-
-    private DateDimension() {
-
-    }
-
+	
+	public DateDimension() {
+		
+	}
+	
 	public DateDimension(DateUnit unit) {
 		super(DimensionType.Date);
 		this.unit = unit;
@@ -28,11 +28,21 @@ public class DateDimension extends Dimension {
 	
 	public DateDimension(DateUnit unit, String format) {
 		super(DimensionType.Date);
-		
 		this.unit = unit;
 		this.format = format;
 	}
 	
+	public DateDimension(DateUnit unit, String format, String id) {
+		super(DimensionType.Date);
+		this.unit = unit;
+		this.format = format;
+		this.set("id",""+id);
+	}
+	
+	public String getId() {
+		return get("id");
+	}
+
 	public DateUnit getUnit() {
 		return unit;
 	}
@@ -54,8 +64,7 @@ public class DateDimension extends Dimension {
         }
 
 		DateDimension that = (DateDimension)other;
-	
-		return this.unit == that.unit;                                  
+		return this.unit == that.unit;
 	}
 
 	/**

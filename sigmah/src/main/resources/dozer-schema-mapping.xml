@@ -22,6 +22,7 @@
 			<a>owner.email</a>
 			<b>ownerEmail</b>
 		</field>	
+		
 	</mapping>
 
     <mapping wildcard="true">
@@ -40,6 +41,22 @@
         </field>
 
     </mapping>
+    
+    
+    <mapping wildcard="true">
+
+		<class-a>org.sigmah.server.domain.AttributeGroup</class-a>
+		<class-b>org.sigmah.shared.dto.AttributeGroupDTO</class-b>
+
+    </mapping>
+    
+    <mapping wildcard="true">
+
+		<class-a>org.sigmah.server.domain.Attribute</class-a>
+		<class-b>org.sigmah.shared.dto.AttributeDTO</class-b>
+
+    </mapping>
+    
 
 	<mapping wildcard="true">
 		

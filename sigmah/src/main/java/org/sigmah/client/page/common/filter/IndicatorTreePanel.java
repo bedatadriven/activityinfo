@@ -139,7 +139,7 @@ public class IndicatorTreePanel extends ContentPanel {
 //                    StringBuilder sb = new StringBuilder();
 //                    if(filter.getRawValue()!=null) {
 //                        sb.append(filter.getRawValue());
-//                    \}
+//                    }
 //                    sb.append((char)be.getEvent().getKeyCode());
 //                    filter.setRawValue(sb.toString());
                     filter.focus();
@@ -153,7 +153,6 @@ public class IndicatorTreePanel extends ContentPanel {
                 // child nodes
                 if (!(event.getItem() instanceof IndicatorDTO) &&
                         event.isChecked()) {
-
                     tree.setExpanded(event.getItem(), true);
                 }
 
