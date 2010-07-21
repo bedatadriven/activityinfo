@@ -29,6 +29,7 @@ import java.util.Locale;
 public class User implements java.io.Serializable {
     private int id;
     private String email;
+    private String firstName;
     private String name;
     private boolean newUser;
     private String locale;
@@ -81,6 +82,15 @@ public class User implements java.io.Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Column(name = "FirstName", nullable = true, length = 50)
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     @Column(name = "NewUser", nullable = false)
