@@ -5,6 +5,7 @@
 
 package org.sigmah.client.page.project;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.Observable;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -18,6 +19,10 @@ import org.sigmah.shared.command.GetProjects;
 import org.sigmah.shared.command.result.ProjectList;
 
 
+/**
+ * Manage the {@link ProjectListView}.
+ * @author rca
+ */
 public class ProjectListPresenter implements Page {
     public static final PageId PAGE_ID = new PageId("projects");
 
@@ -28,10 +33,25 @@ public class ProjectListPresenter implements Page {
     public ProjectListPresenter(Dispatcher dispatcher, View view) {
         this.dispatcher = dispatcher;
         this.view = view;
+
+        // TODO: navigate() should be called by the home screen but since we currently don't have one, it is called explicity here.
+        navigate(null);
     }
 
+    /**
+     * Description of the view managed by this presenter.
+     */
     public interface View {
+        /**
+         * Return the grid used to display the projects.
+         * @return A grid.
+         */
         Observable getGrid();
+        
+        /**
+         * Return the store used by the grid.
+         * @return A project store.
+         */
         ListStore getStore();
     }
 
@@ -58,6 +78,7 @@ public class ProjectListPresenter implements Page {
 
     @Override
     public boolean navigate(PageState place) {
+        Log.debug("Loading projects...");
         dispatcher.execute(new GetProjects(), null, new AsyncCallback<ProjectList>() {
             @Override
             public void onFailure(Throwable throwable) {
@@ -66,6 +87,7 @@ public class ProjectListPresenter implements Page {
 
             @Override
             public void onSuccess(ProjectList projectList) {
+                Log.debug("Projects loaded : "+projectList.getList().size());
                 view.getStore().add(projectList.getList());
             }
         });

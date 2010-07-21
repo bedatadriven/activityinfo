@@ -11,21 +11,28 @@ import org.sigmah.client.dispatch.DispatchEventSource;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.dispatch.remote.RemoteDispatcher;
-import org.sigmah.client.inject.AuthProvider;
 import org.sigmah.client.inject.RemoteServiceProvider;
 import org.sigmah.client.inject.Root;
+import org.sigmah.client.inject.SigmahAuthProvider;
 import org.sigmah.client.page.Frame;
 import org.sigmah.client.page.PageStateSerializer;
 import org.sigmah.client.util.state.GXTStateManager;
 import org.sigmah.client.util.state.IStateManager;
 import org.sigmah.shared.command.RemoteCommandServiceAsync;
 
+/**
+ * Gin configuration module for Sigmah.
+ * @author rca
+ */
 public class SigmahModule extends AbstractGinModule {
 
+    /**
+     * Configures the Gin injector.
+     */
     @Override
     protected void configure() {
 
-        bind(Authentication.class).toProvider(AuthProvider.class).in(Singleton.class);
+        bind(Authentication.class).toProvider(SigmahAuthProvider.class).in(Singleton.class);
         bind(RemoteCommandServiceAsync.class).toProvider(RemoteServiceProvider.class).in(Singleton.class);
         bind(Dispatcher.class).to(RemoteDispatcher.class);
         bind(DispatchEventSource.class).to(RemoteDispatcher.class);

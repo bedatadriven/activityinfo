@@ -18,9 +18,11 @@ import org.sigmah.client.offline.ui.OfflineMenu;
 import org.sigmah.client.page.*;
 import org.sigmah.client.page.common.widget.LoadingPlaceHolder;
 
+/**
+ * Main frame of Sigmah.
+ * @author rca
+ */
 public class SigmahAppFrame implements Frame {
-
-
     private EventBus eventBus;
     private Viewport viewport;
 
@@ -37,6 +39,8 @@ public class SigmahAppFrame implements Frame {
         viewport = new Viewport();
         viewport.setLayout(new RowLayout());
 
+        viewport.addText(auth.getEmail());
+
         Log.trace("AppFrameSet constructor finished, about to add to RootPanel");
 
         RootPanel.get().add(viewport);
@@ -44,6 +48,10 @@ public class SigmahAppFrame implements Frame {
         Log.trace("AppFrameSet now added to RootPanel");
     }
 
+    /**
+     * Defines the current shown widget.
+     * @param widget The widget to display.
+     */
     public void setWidget(Widget widget) {
 
         if (activeWidget != null) {

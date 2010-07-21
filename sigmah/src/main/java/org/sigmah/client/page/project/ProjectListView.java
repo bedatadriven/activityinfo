@@ -5,6 +5,7 @@
 
 package org.sigmah.client.page.project;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.Observable;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -16,11 +17,18 @@ import org.sigmah.shared.dto.ProjectDTO;
 
 import java.util.Arrays;
 
+/**
+ * Display the list of all the projects available to the user.
+ * @author rca
+ */
 public class ProjectListView extends ContentPanel implements ProjectListPresenter.View  {
 
     private Grid<ProjectDTO> grid;
     private ListStore<ProjectDTO> store;
 
+    /**
+     * Create a new ProjectListView object.
+     */
     public ProjectListView() {
         setLayout(new FitLayout());
         setHeading("Projects");
@@ -29,6 +37,10 @@ public class ProjectListView extends ContentPanel implements ProjectListPresente
         add(grid);
     }
 
+    /**
+     * Initialize the columns shown by the grid.
+     * @return A new {@link ColumnModel} configured to display the id, name and owner of the projects.
+     */
     private ColumnModel createColumnModel() {
         ColumnConfig id = new ColumnConfig("id", "ID", 100);
         ColumnConfig name = new ColumnConfig("name", "Name", 200);
