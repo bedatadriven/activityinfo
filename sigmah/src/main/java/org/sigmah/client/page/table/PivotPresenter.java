@@ -33,13 +33,13 @@ import org.sigmah.shared.report.model.*;
 
 import java.util.Date;
 import java.util.List;
+import org.sigmah.client.page.TabPage;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class PivotPresenter implements Page {
+public class PivotPresenter implements Page, TabPage {
     public static final PageId Pivot = new PageId("pivot");
-
 
     @ImplementedBy(PivotPage.class)
     public interface View {
@@ -88,6 +88,11 @@ public class PivotPresenter implements Page {
         
         store = view.getColStore();
         store.add(createDimension(DimensionType.Partner, I18N.CONSTANTS.partner()));
+    }
+
+    @Override
+    public String getTabTitle() {
+        return I18N.CONSTANTS.tables();
     }
 
     public void shutdown() {

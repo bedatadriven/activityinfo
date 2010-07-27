@@ -5,7 +5,6 @@
 
 package org.sigmah.client.page.project;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.Observable;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;

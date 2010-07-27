@@ -10,8 +10,22 @@ import org.sigmah.client.page.PageState;
 
 import java.util.Collections;
 import java.util.List;
+import org.sigmah.client.page.PageStateParser;
 
+/**
+ * Serialized state of the project list page.
+ * @author Raphaël Calabro (rcalabro@ideia.fr)
+ */
 public class ProjectListState implements PageState {
+    
+    public static class Parser implements PageStateParser {
+        private final static ProjectListState instance = new ProjectListState();
+        
+        @Override
+        public PageState parse(String token) {
+            return instance;
+        }
+    }
 
     @Override
     public String serializeAsHistoryToken() {

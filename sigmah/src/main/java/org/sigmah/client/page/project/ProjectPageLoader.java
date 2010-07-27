@@ -16,17 +16,21 @@ public class ProjectPageLoader implements PageLoader {
     private final SigmahInjector injector;
 
     @Inject
-    public ProjectPageLoader(SigmahInjector injector, NavigationHandler navigationHandler) {
+    public ProjectPageLoader(SigmahInjector injector, NavigationHandler navigationHandler, PageStateSerializer placeSerializer) {
         this.injector = injector;
         this.navigationHandler = navigationHandler;
 
         navigationHandler.registerPageLoader(ProjectListPresenter.PAGE_ID, this);
+        placeSerializer.registerParser(ProjectListPresenter.PAGE_ID, new ProjectListState.Parser());
     }
 
     @Override
     public void load(PageId pageId, PageState pageState, AsyncCallback<Page> callback) {
         if(pageId.equals(ProjectListPresenter.PAGE_ID)) {
-            callback.onSuccess(injector.getProjectListPresenter());
+            final ProjectListPresenter projectListPresenter = injector.getProjectListPresenter();
+            projectListPresenter.navigate(pageState);
+            
+            callback.onSuccess(projectListPresenter);
         }
     }
 }

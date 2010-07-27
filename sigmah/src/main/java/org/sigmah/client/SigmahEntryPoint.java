@@ -10,13 +10,11 @@ import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.util.Theme;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import org.sigmah.client.event.NavigationEvent;
-import org.sigmah.client.page.NavigationHandler;
-import org.sigmah.client.page.project.ProjectListState;
 
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
+ * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class SigmahEntryPoint implements EntryPoint {
 
@@ -43,18 +41,27 @@ public class SigmahEntryPoint implements EntryPoint {
         GXT.setDefaultTheme(Theme.GRAY, true);
 
         Log.trace("Application: GXT theme set");
-
+        
+        // Initialization
         SigmahInjector injector = GWT.create(SigmahInjector.class);
 
         injector.getEventBus();
+        injector.getHistoryManager();
         injector.getNavigationHandler();
-        injector.getProjectListPresenter();
-        injector.getProjectPageLoader();
+        
+        injector.registerProjectPageLoader();
+        injector.registerDashboardPageLoader();
+        injector.registerDataEntryLoader();
+        injector.registerMapLoader();
+        injector.registerChartLoader();
+        injector.registerConfigLoader();
+        injector.registerPivotLoader();
+        injector.registerReportLoader();
 
         Log.info("Application: everyone plugged, firing Init event");
 
         injector.getEventBus().fireEvent(AppEvents.Init);
-        injector.getEventBus().fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new ProjectListState()));
+        //injector.getEventBus().fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new ProjectListState()));
     }
 
 }

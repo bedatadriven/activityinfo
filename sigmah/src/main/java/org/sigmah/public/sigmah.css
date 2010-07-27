@@ -1,0 +1,79 @@
+body {
+    font-family: Arial;
+}
+
+.header {
+    background: transparent url('image/logo.png') left bottom no-repeat;
+    padding: 4px;
+    width: 100%;
+    height: 50px;
+}
+
+.header .toolbar td {
+    padding-right: 5px;
+    padding-left: 5px;
+    border-left: 1px solid grey;
+}
+
+.tab-bar {
+    background-color: rgb(155,187,89);
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgb(155,187,89)), to(rgb(119,147,60)));
+    border-top: 1px solid rgb(127,127,127);
+    height: 32px;
+}
+
+.tab {
+    background-color: rgb(119,147,60);
+    color: white;
+    
+    min-width: 150px;
+    height: 26px;
+    line-height: 26px;
+    
+    -moz-border-radius-topleft: 4px;
+    -webkit-border-top-left-radius: 4px;
+    border-top-left-radius: 4px;
+
+    -moz-border-radius-topright: 4px;
+    -webkit-border-top-right-radius: 4px;
+    border-top-right-radius: 4px;
+
+    margin-left: 5px;
+    padding-left: 6px;
+    
+    font-size: 10pt;
+    
+    border-top: 1px solid rgb(119,147,60);
+    border-left: 1px solid rgb(119,147,60);
+    border-right: 1px solid rgb(119,147,60);
+    
+    cursor: default;
+}
+
+.tab:hover {
+    border-top: 1px solid rgb(80,100,50);
+    border-left: 1px solid rgb(80,100,50);
+    border-right: 1px solid rgb(80,100,50);
+}
+
+.tab-active {
+    background-color: white;
+    color: black;
+    
+    border-top: 1px solid white;
+    border-left: 1px solid white;
+    border-right: 1px solid white;
+}
+
+.tab-close {
+    width: 16px;
+    height: 16px;
+    background-image: url('image/close.png');
+    
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+
+.tab-close:hover {
+    background-color: rgb(155,187,89);
+}

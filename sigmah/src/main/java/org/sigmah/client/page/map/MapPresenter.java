@@ -10,10 +10,12 @@ import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.callback.DownloadCallback;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
+import org.sigmah.client.page.TabPage;
 import org.sigmah.client.page.common.toolbar.ActionListener;
 import org.sigmah.client.page.common.toolbar.ExportCallback;
 import org.sigmah.client.page.common.toolbar.UIActions;
@@ -25,7 +27,7 @@ import org.sigmah.shared.report.model.ReportElement;
  * @author Alex Bertram
  */
 
-public class MapPresenter implements Page, ExportCallback, ActionListener {
+public class MapPresenter implements Page, ExportCallback, ActionListener, TabPage {
     public static final PageId Maps = new PageId("map");
 
     public interface View {
@@ -55,6 +57,11 @@ public class MapPresenter implements Page, ExportCallback, ActionListener {
         this.view = view;
         this.view.bindPresenter(this);
 
+    }
+
+    @Override
+    public String getTabTitle() {
+        return I18N.CONSTANTS.maps();
     }
 
     public void onUIAction(String itemId) {

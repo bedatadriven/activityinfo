@@ -16,13 +16,17 @@ import org.sigmah.client.inject.Root;
 import org.sigmah.client.inject.SigmahAuthProvider;
 import org.sigmah.client.page.Frame;
 import org.sigmah.client.page.PageStateSerializer;
+import org.sigmah.client.page.charts.ChartPage;
+import org.sigmah.client.page.charts.Charter;
+import org.sigmah.client.page.common.GalleryPage;
+import org.sigmah.client.page.common.GalleryView;
 import org.sigmah.client.util.state.GXTStateManager;
 import org.sigmah.client.util.state.IStateManager;
 import org.sigmah.shared.command.RemoteCommandServiceAsync;
 
 /**
  * Gin configuration module for Sigmah.
- * @author rca
+ * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class SigmahModule extends AbstractGinModule {
 
@@ -39,7 +43,13 @@ public class SigmahModule extends AbstractGinModule {
         bind(PageStateSerializer.class).in(Singleton.class);
         bind(EventBus.class).to(LoggingEventBus.class).in(Singleton.class);
         bind(IStateManager.class).to(GXTStateManager.class);
-
+        
         bind(Frame.class).annotatedWith(Root.class).to(SigmahAppFrame.class);
+        
+        // Required by the 'Setup' page
+        bind(GalleryView.class).to(GalleryPage.class);
+        
+        // Required by the 'Charts' page
+        bind(Charter.View.class).to(ChartPage.class);
     }
 }

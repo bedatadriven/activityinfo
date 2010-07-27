@@ -16,10 +16,12 @@ import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.loader.ListCmdLoader;
 import org.sigmah.client.event.NavigationEvent;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.NavigationHandler;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
+import org.sigmah.client.page.TabPage;
 import org.sigmah.client.page.common.dialog.FormDialogCallback;
 import org.sigmah.client.page.common.dialog.FormDialogImpl;
 import org.sigmah.client.page.common.grid.AbstractEditorGridPresenter;
@@ -32,9 +34,8 @@ import org.sigmah.shared.dto.ReportDefinitionDTO;
  * @author Alex Bertram
  */
 
-public class ReportHomePresenter extends AbstractEditorGridPresenter<ReportDefinitionDTO> {
+public class ReportHomePresenter extends AbstractEditorGridPresenter<ReportDefinitionDTO> implements TabPage {
     public static final PageId ReportHome = new PageId("reports");
-
 
     @ImplementedBy(ReportGrid.class)
     public interface View extends GridView<ReportHomePresenter, ReportDefinitionDTO> {
@@ -65,6 +66,11 @@ public class ReportHomePresenter extends AbstractEditorGridPresenter<ReportDefin
         this.view.init(this, store);
 
         loader.load();
+    }
+
+    @Override
+    public String getTabTitle() {
+        return I18N.CONSTANTS.reports();
     }
 
     public void shutdown() {

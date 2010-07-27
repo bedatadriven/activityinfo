@@ -15,6 +15,7 @@ import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
+import org.sigmah.client.page.TabPage;
 import org.sigmah.shared.command.GetProjects;
 import org.sigmah.shared.command.result.ProjectList;
 
@@ -23,7 +24,7 @@ import org.sigmah.shared.command.result.ProjectList;
  * Manage the {@link ProjectListView}.
  * @author rca
  */
-public class ProjectListPresenter implements Page {
+public class ProjectListPresenter implements Page, TabPage {
     public static final PageId PAGE_ID = new PageId("projects");
 
     private final Dispatcher dispatcher;
@@ -33,9 +34,11 @@ public class ProjectListPresenter implements Page {
     public ProjectListPresenter(Dispatcher dispatcher, View view) {
         this.dispatcher = dispatcher;
         this.view = view;
+    }
 
-        // TODO: navigate() should be called by the home screen but since we currently don't have one, it is called explicity here.
-        navigate(null);
+    @Override
+    public String getTabTitle() {
+        return "Projets";
     }
 
     /**

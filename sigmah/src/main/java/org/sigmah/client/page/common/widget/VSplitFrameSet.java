@@ -15,16 +15,22 @@ import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.page.*;
 import org.sigmah.client.page.common.nav.NavigationPanel;
 
-public class VSplitFrameSet implements Frame {
+public class VSplitFrameSet implements Frame, TabPage {
 
     protected final LayoutContainer container;
     private Page activePage;
     private Widget activeWidget;
     private NavigationPanel navPanel;
     private PageId pageId;
+    private String tabTitle;
 
     public VSplitFrameSet(PageId pageId, NavigationPanel navPanel) {
+        this(pageId, null, navPanel);
+    }
+
+    public VSplitFrameSet(PageId pageId, String tabTitle, NavigationPanel navPanel) {
         this.pageId = pageId;
+        this.tabTitle = tabTitle;
         this.container = new LayoutContainer();
         this.navPanel = navPanel;
         container.setLayout(new BorderLayout());
@@ -32,6 +38,11 @@ public class VSplitFrameSet implements Frame {
         addNavigationPanel();
     }
 
+    @Override
+    public String getTabTitle() {
+        return tabTitle;
+    }
+    
     public void shutdown() {
         navPanel.shutdown();
     }
