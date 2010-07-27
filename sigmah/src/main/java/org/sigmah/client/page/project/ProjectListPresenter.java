@@ -9,6 +9,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.Observable;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.page.NavigationCallback;
@@ -44,6 +45,7 @@ public class ProjectListPresenter implements Page, TabPage {
     /**
      * Description of the view managed by this presenter.
      */
+    @ImplementedBy(ProjectListView.class)
     public interface View {
         /**
          * Return the grid used to display the projects.
