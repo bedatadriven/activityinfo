@@ -17,13 +17,14 @@ body {
 
 .tab-bar {
     background-color: rgb(155,187,89);
-    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgb(155,187,89)), to(rgb(119,147,60)));
+    background-image: url('image/tab-bar-bg.gif');
     border-top: 1px solid rgb(127,127,127);
     height: 32px;
 }
 
 .tab {
     background-color: rgb(119,147,60);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(rgb(110,140,55)), to(rgb(119,147,60)));
     color: white;
     
     min-width: 150px;
@@ -48,21 +49,28 @@ body {
     border-right: 1px solid rgb(119,147,60);
     
     cursor: default;
+    
+    position: relative;
 }
 
 .tab:hover {
     border-top: 1px solid rgb(80,100,50);
     border-left: 1px solid rgb(80,100,50);
     border-right: 1px solid rgb(80,100,50);
+    
+    z-index: 11;
 }
 
 .tab-active {
     background-color: white;
+    background-image: none;
     color: black;
     
     border-top: 1px solid white;
     border-left: 1px solid white;
     border-right: 1px solid white;
+    
+    z-index: 10;
 }
 
 .tab-close {
@@ -72,6 +80,14 @@ body {
     
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
+    border-radius: 4px;
+    
+    display: none;
+}
+
+.tab-active .tab-close,
+.tab:hover .tab-close {
+    display: inline;
 }
 
 .tab-close:hover {

@@ -6,6 +6,8 @@
 package org.sigmah.client;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -23,6 +25,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.remote.Authentication;
+import org.sigmah.client.event.NavigationEvent;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.offline.ui.OfflineMenu;
 import org.sigmah.client.page.*;
@@ -63,6 +66,9 @@ public class SigmahAppFrame implements Frame {
         
         final Label label = new Label(auth.getEmail());
         toolbar.add(label);
+        
+        final Button reportButton = new Button(I18N.CONSTANTS.bugReport());
+        toolbar.add(reportButton);
         
         final Button helpButton = new Button(I18N.CONSTANTS.help());
         toolbar.add(helpButton);

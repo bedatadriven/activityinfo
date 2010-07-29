@@ -29,7 +29,7 @@ public class ProjectListState implements PageState {
 
     @Override
     public String serializeAsHistoryToken() {
-        return "";
+        return null;
     }
 
     @Override
