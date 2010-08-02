@@ -6,20 +6,32 @@
 package org.sigmah.client.page.dashboard;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.EventType;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.GridEvent;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Padding;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
+import java.util.Arrays;
 import org.sigmah.client.EventBus;
+import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.event.NavigationEvent;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
@@ -33,8 +45,12 @@ import org.sigmah.client.page.charts.ChartPageState;
 import org.sigmah.client.page.config.DbListPageState;
 import org.sigmah.client.page.entry.SiteGridPageState;
 import org.sigmah.client.page.map.MapPageState;
+import org.sigmah.client.page.project.ProjectState;
 import org.sigmah.client.page.report.ReportHomePageState;
 import org.sigmah.client.page.table.PivotPageState;
+import org.sigmah.shared.command.GetProjects;
+import org.sigmah.shared.command.result.ProjectList;
+import org.sigmah.shared.dto.ProjectDTO;
 
 /**
  * Home screen of sigmah. Displays the main menu and a reminder of urgent tasks.
@@ -44,12 +60,16 @@ public class DashboardPresenter implements Page, TabPage {
     public static final PageId PAGE_ID = new PageId("welcome");
     
     private EventBus eventBus;
+    private Dispatcher dispatcher;
     private Widget widget;
+    private ListStore<ProjectDTO> projectStore;
 
     @Inject
-    public DashboardPresenter(EventBus eventBus) {
+    public DashboardPresenter(final EventBus eventBus, final Dispatcher dispatcher) {
         this.eventBus = eventBus;
+        this.dispatcher = dispatcher;
         
+        // The dashboard itself
         final ContentPanel dashboardPanel = new ContentPanel(new BorderLayout());
         dashboardPanel.setHeaderVisible(false);
         dashboardPanel.setBorders(false);
@@ -94,13 +114,48 @@ public class DashboardPresenter implements Page, TabPage {
             
         final BorderLayoutData leftLayoutData = new BorderLayoutData(LayoutRegion.WEST, 250);
         leftLayoutData.setSplit(true);
-//        leftLayoutData.setCollapsible(true);
         dashboardPanel.add(leftPanel, leftLayoutData);
             
         // Main panel
-        final ContentPanel mainPanel = new ContentPanel();
-        mainPanel.setHeading(I18N.CONSTANTS.indicators());
+        final ContentPanel mainPanel = new ContentPanel(new VBoxLayout());
+        final VBoxLayout mainPanelLayout = new VBoxLayout();
+        mainPanelLayout.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
+        mainPanel.setLayout(mainPanelLayout);
+        mainPanel.setHeaderVisible(false);
         mainPanel.setBorders(false);
+        mainPanel.setBodyBorder(false);
+        
+            // Mission tree panel
+            final ContentPanel missionTreePanel = new ContentPanel();
+            missionTreePanel.setHeading(I18N.CONSTANTS.location());
+            final VBoxLayoutData smallVBoxLayoutData = new VBoxLayoutData();
+            smallVBoxLayoutData.setFlex(1.0);
+            mainPanel.add(missionTreePanel, smallVBoxLayoutData);
+            
+            // Project tree panel
+            final ContentPanel projectTreePanel = new ContentPanel(new FitLayout());
+            projectTreePanel.setHeading(I18N.CONSTANTS.projects());
+            final VBoxLayoutData largeVBoxLayoutData = new VBoxLayoutData();
+            largeVBoxLayoutData.setFlex(2.0);
+            mainPanel.add(projectTreePanel, largeVBoxLayoutData);
+            
+                // Project list
+                projectStore = new ListStore<ProjectDTO>();
+                final ColumnConfig id = new ColumnConfig("id", "ID", 100);
+                final ColumnConfig name = new ColumnConfig("name", "Name", 200);
+                final ColumnConfig owner = new ColumnConfig("owner", "Owner", 100);
+                final ColumnModel columnModel = new ColumnModel(Arrays.asList(id, name, owner));
+                final Grid projectGrid = new Grid<ProjectDTO>(projectStore, columnModel);
+                
+                projectGrid.addListener(Events.CellDoubleClick, new Listener<GridEvent>() {
+                    @Override
+                    public void handleEvent(GridEvent be) {
+                        final ProjectDTO project = projectStore.getAt(be.getRowIndex());
+                        eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new ProjectState(project.getId())));
+                    }
+                });
+                
+                projectTreePanel.add(projectGrid);
                 
         final BorderLayoutData mainLayoutData = new BorderLayoutData(LayoutRegion.CENTER);
         dashboardPanel.add(mainPanel, mainLayoutData);
@@ -121,70 +176,6 @@ public class DashboardPresenter implements Page, TabPage {
         panel.add(button, vBoxLayoutData);
     }
     
-//    public static Folder getTreeModel() {
-//    Folder[] folders = new Folder[] {
-//        new Folder("Beethoven", new Folder[] {
-//
-//            new Folder("Quartets", new Music[] {
-//                new Music("Six String Quartets", "Beethoven", "Quartets"),
-//                new Music("Three String Quartets", "Beethoven", "Quartets"),
-//                new Music("Grosse Fugue for String Quartets", "Beethoven", "Quartets"),}),
-//            new Folder("Sonatas", new Music[] {
-//                new Music("Sonata in A Minor", "Beethoven", "Sonatas"),
-//                new Music("Sonata in F Major", "Beethoven", "Sonatas"),}),
-//
-//            new Folder("Concertos", new Music[] {
-//                new Music("No. 1 - C", "Beethoven", "Concertos"),
-//                new Music("No. 2 - B-Flat Major", "Beethoven", "Concertos"),
-//                new Music("No. 3 - C Minor", "Beethoven", "Concertos"),
-//                new Music("No. 4 - G Major", "Beethoven", "Concertos"),
-//                new Music("No. 5 - E-Flat Major", "Beethoven", "Concertos"),}),
-//
-//            new Folder("Symphonies", new Music[] {
-//                new Music("No. 1 - C Major", "Beethoven", "Symphonies"),
-//                new Music("No. 2 - D Major", "Beethoven", "Symphonies"),
-//                new Music("No. 3 - E-Flat Major", "Beethoven", "Symphonies"),
-//                new Music("No. 4 - B-Flat Major", "Beethoven", "Symphonies"),
-//                new Music("No. 5 - C Minor", "Beethoven", "Symphonies"),
-//                new Music("No. 6 - F Major", "Beethoven", "Symphonies"),
-//                new Music("No. 7 - A Major", "Beethoven", "Symphonies"),
-//                new Music("No. 8 - F Major", "Beethoven", "Symphonies"),
-//                new Music("No. 9 - D Minor", "Beethoven", "Symphonies"),}),}),
-//        new Folder("Brahms", new Folder[] {
-//            new Folder("Concertos", new Music[] {
-//                new Music("Violin Concerto", "Brahms", "Concertos"),
-//                new Music("Double Concerto - A Minor", "Brahms", "Concertos"),
-//                new Music("Piano Concerto No. 1 - D Minor", "Brahms", "Concertos"),
-//                new Music("Piano Concerto No. 2 - B-Flat Major", "Brahms", "Concertos"),}),
-//            new Folder("Quartets", new Music[] {
-//                new Music("Piano Quartet No. 1 - G Minor", "Brahms", "Quartets"),
-//                new Music("Piano Quartet No. 2 - A Major", "Brahms", "Quartets"),
-//                new Music("Piano Quartet No. 3 - C Minor", "Brahms", "Quartets"),
-//                new Music("String Quartet No. 3 - B-Flat Minor", "Brahms", "Quartets"),}),
-//            new Folder("Sonatas", new Music[] {
-//                new Music("Two Sonatas for Clarinet - F Minor", "Brahms", "Sonatas"),
-//                new Music("Two Sonatas for Clarinet - E-Flat Major", "Brahms", "Sonatas"),}),
-//            new Folder("Symphonies", new Music[] {
-//                new Music("No. 1 - C Minor", "Brahms", "Symphonies"),
-//                new Music("No. 2 - D Minor", "Brahms", "Symphonies"),
-//                new Music("No. 3 - F Major", "Brahms", "Symphonies"),
-//                new Music("No. 4 - E Minor", "Brahms", "Symphonies"),}),}),
-//        new Folder("Mozart", new Folder[] {new Folder("Concertos", new Music[] {
-//            new Music("Piano Concerto No. 12", "Mozart", "Concertos"),
-//            new Music("Piano Concerto No. 17", "Mozart", "Concertos"),
-//            new Music("Clarinet Concerto", "Mozart", "Concertos"),
-//            new Music("Violin Concerto No. 5", "Mozart", "Concertos"),
-//            new Music("Violin Concerto No. 4", "Mozart", "Concertos"),}),}),};
-//
-//    Folder root = new Folder("root");
-//    for (int i = 0; i < folders.length; i++) {
-//      root.add((Folder) folders[i]);
-//    }
-//
-//    return root;
-//  }
-
-
     @Override
     public PageId getPageId() {
         return PAGE_ID;
@@ -207,6 +198,18 @@ public class DashboardPresenter implements Page, TabPage {
 
     @Override
     public boolean navigate(PageState place) {
+        dispatcher.execute(new GetProjects(), null, new AsyncCallback<ProjectList>() {
+            @Override
+            public void onFailure(Throwable throwable) {
+
+            }
+
+            @Override
+            public void onSuccess(ProjectList projectList) {
+                projectStore.add(projectList.getList());
+            }
+        });
+        
         return true;
     }
 

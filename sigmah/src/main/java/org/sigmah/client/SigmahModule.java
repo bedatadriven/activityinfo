@@ -36,6 +36,8 @@ public class SigmahModule extends AbstractGinModule {
     @Override
     protected void configure() {
 
+//        bind(NavigationHandler.class).to(SigmahNavigationHandler.class);
+        
         bind(Authentication.class).toProvider(SigmahAuthProvider.class).in(Singleton.class);
         bind(RemoteCommandServiceAsync.class).toProvider(RemoteServiceProvider.class).in(Singleton.class);
         bind(Dispatcher.class).to(RemoteDispatcher.class);

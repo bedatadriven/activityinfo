@@ -6,17 +6,13 @@
 package org.sigmah.client;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DockPanel;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -30,8 +26,10 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.offline.ui.OfflineMenu;
 import org.sigmah.client.page.*;
 import org.sigmah.client.page.common.widget.LoadingPlaceHolder;
-import org.sigmah.client.page.dashboard.DashboardPresenter;
+import org.sigmah.client.page.dashboard.DashboardPageState;
+import org.sigmah.client.page.project.ProjectState;
 import org.sigmah.client.ui.SigmahViewport;
+import org.sigmah.client.ui.Tab;
 import org.sigmah.client.ui.TabBar;
 import org.sigmah.client.ui.TabModel;
 
@@ -40,24 +38,14 @@ import org.sigmah.client.ui.TabModel;
  * @author rca
  */
 public class SigmahAppFrame implements Frame {
-    /**
-     * Height of the page header.
-     * TODO: Find a way to calculate this instead of using a constant.
-     */
-    private final static int CLUTTER_HEIGHT = 83;
-    
     private Page activePage;
 
     private SigmahViewport view;
-    private final TabModel tabModel;
     
     @Inject
-    public SigmahAppFrame(EventBus eventBus, Authentication auth, OfflineMenu offlineMenu) {
-        final DockPanel dockPanel = new DockPanel();
-        dockPanel.setSize("100%", "100%");
-        
-        final HorizontalPanel header = new HorizontalPanel();
-        header.setStyleName("header");
+    public SigmahAppFrame(EventBus eventBus, Authentication auth, OfflineMenu offlineMenu, final TabModel tabModel) {
+        final RootPanel header = RootPanel.get("header");
+        header.addStyleName("header");
         
         // Initializing the main toolbar
         final HorizontalPanel toolbar = new HorizontalPanel();
@@ -83,40 +71,61 @@ public class SigmahAppFrame implements Frame {
         });
         toolbar.add(logoutButton);
         
-        header.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-        header.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
         header.add(toolbar);
         
-        header.setHeight("50px");
-        dockPanel.add(header, DockPanel.NORTH);
+        final TabBar tabBar = new TabBar(tabModel, eventBus);
+        tabModel.add(I18N.CONSTANTS.dashboard(), new DashboardPageState(), false);
         
-        final DockPanel mainPanel = new DockPanel();
-        mainPanel.setSize("100%", "100%");
+        final RootPanel tabs = RootPanel.get("tabs");
+        tabs.addStyleName("tab-bar");
+        tabs.add(tabBar);
         
-        tabModel = new TabModel();
-        final TabBar tabBar = new TabBar(tabModel);
-        tabModel.add(I18N.CONSTANTS.dashboard(), DashboardPresenter.PAGE_ID.toString(), false);
-        tabBar.setHeight("32px");
-        mainPanel.add(tabBar, DockPanel.NORTH);
+        eventBus.addListener(NavigationHandler.NavigationAgreed, new Listener<NavigationEvent>() {
+            @Override
+            public void handleEvent(NavigationEvent be) {
+                final PageState state = be.getPlace();
+                final String title;
+                if(state instanceof TabPage)
+                    title = ((TabPage) state).getTabTitle();
+                else
+                    title = I18N.CONSTANTS.title();
+                
+                final Tab tab = tabModel.add(title, be.getPlace(), true);
+                
+                if(state instanceof HasTab)
+                    ((HasTab)state).setTab(tab);
+            }
+        });
         
-        this.view = new SigmahViewport(CLUTTER_HEIGHT);
+        int clutterHeight = getDecorationHeight();
+        
+        this.view = new SigmahViewport(clutterHeight);
         this.view.setLayout(new FitLayout());
         this.view.syncSize();
         
-        mainPanel.add(this.view, DockPanel.CENTER);
-        
-        dockPanel.add(mainPanel, DockPanel.CENTER);
-        
-        RootPanel.get().add(dockPanel);
+        RootPanel.get("content").add(this.view);
     }
+    
+    private native int getDecorationHeight() /*-{
+        var height = 0;
+
+        var elements = $wnd.document.getElementsByClassName("decoration");
+        for(var index = 0; index < elements.length; index++) {
+            var style = $wnd.getComputedStyle(elements[index], null);
+            height += parseInt(style.height) + 
+                      parseInt(style.borderTopWidth) +
+                      parseInt(style.borderBottomWidth) +
+                      parseInt(style.marginTop) +
+                      parseInt(style.marginBottom) +
+                      parseInt(style.paddingTop) +
+                      parseInt(style.paddingBottom);
+        }
+
+        return height;
+    }-*/;
     
     @Override
     public void setActivePage(Page page) {
-        if(page instanceof TabPage)
-            tabModel.add(((TabPage)page).getTabTitle(), page.getPageId().toString(), true);
-        
-        Log.debug("Page courante : " + page.getClass());
-        
         final Widget widget = (Widget) page.getWidget();
         view.removeAll();
         view.add(widget);

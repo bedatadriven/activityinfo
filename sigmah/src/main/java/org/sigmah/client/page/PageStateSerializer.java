@@ -44,8 +44,10 @@ public class PageStateSerializer {
     }
 
     public PageState deserialize(String token) {
-
-        int i = token.indexOf('/');
+        // If an ID separator is found ('!'), uses it instead of the path separator
+        int i = token.indexOf('!');
+        if(i == -1)
+            i = token.indexOf('/');
 
         String pageId;
         String pageState;

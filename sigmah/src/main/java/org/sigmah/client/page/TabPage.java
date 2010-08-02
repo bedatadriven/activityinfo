@@ -6,7 +6,7 @@
 package org.sigmah.client.page;
 
 /**
- * Indicate that the page can be displayed in a tab.
+ * A Page/PageState that implements this interface can be displayed in a tab.
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public interface TabPage {

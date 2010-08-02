@@ -33,7 +33,7 @@ import org.sigmah.client.page.map.SigmahMapLoader;
 import org.sigmah.client.page.map.SingleMapForm;
 import org.sigmah.client.page.project.ProjectListPresenter;
 import org.sigmah.client.page.project.ProjectModule;
-import org.sigmah.client.page.project.ProjectPageLoader;
+import org.sigmah.client.page.project.ProjectPresenter;
 import org.sigmah.client.page.report.ReportHomePresenter;
 import org.sigmah.client.page.report.ReportModule;
 import org.sigmah.client.page.report.ReportPreviewPresenter;
@@ -57,11 +57,7 @@ public interface SigmahInjector extends Ginjector {
     HistoryManager getHistoryManager();
     
     // Pages from Sigmah
-    ProjectPageLoader registerProjectPageLoader();
     DashboardPageLoader registerDashboardPageLoader();
-    
-    // Required by the 'Project List' page
-    ProjectListPresenter getProjectListPresenter();
     
     // Required by the 'Dashboard' page
     DashboardPresenter getDashboardPresenter();

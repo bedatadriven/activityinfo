@@ -2,17 +2,37 @@ body {
     font-family: Arial;
 }
 
+.main-frame {
+    width: 100%;
+    height: 100%;
+    border-spacing: 0px;
+    border-collapse: collapse;
+    padding: 0px;
+}
+
 .header {
     background: transparent url('image/logo.png') left bottom no-repeat;
-    padding: 4px;
+    padding-top: 13px;
+    padding-bottom: 13px;
+    padding-right: 4px;
     width: 100%;
-    height: 50px;
+}
+
+.header .toolbar {
+    height: 24px;
 }
 
 .header .toolbar td {
     padding-right: 5px;
     padding-left: 5px;
     border-left: 1px solid grey;
+    font-size: 10pt;
+}
+
+#footer {
+    height: 32px;
+    line-height: 32px;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(rgb(119,147,60)), to(rgb(160,200,75)));
 }
 
 .tab-bar {
@@ -27,7 +47,7 @@ body {
     background-image: -webkit-gradient(linear, left top, left bottom, from(rgb(110,140,55)), to(rgb(119,147,60)));
     color: white;
     
-    min-width: 150px;
+    min-width: 125px;
     height: 26px;
     line-height: 26px;
     
@@ -41,6 +61,7 @@ body {
 
     margin-left: 5px;
     padding-left: 6px;
+    padding-right: 24px;
     
     font-size: 10pt;
     
@@ -83,6 +104,10 @@ body {
     border-radius: 4px;
     
     display: none;
+    
+    position: absolute;
+    right: 4px;
+    top: 5px;
 }
 
 .tab-active .tab-close,

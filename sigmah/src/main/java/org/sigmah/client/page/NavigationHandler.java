@@ -68,8 +68,15 @@ public class NavigationHandler {
     }
 
     private PageLoader getPageLoader(PageId pageId) {
+        // Looks for an ID separator
+        int index = pageId.toString().indexOf('!');
+        if(index != -1)
+            // Removes the ID from the PageId in order to retrieves the correct PageLoader from the map.
+            pageId = new PageId(pageId.toString().substring(0, index));
+        
         PageLoader loader = pageLoaders.get(pageId);
         if (loader == null) {
+            Log.debug("PageManager: no loader for " + pageId);
             throw new Error("PageManager: no loader for " + pageId);
         }
         return loader;

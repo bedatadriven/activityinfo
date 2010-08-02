@@ -7,15 +7,23 @@ package org.sigmah.client.page.dashboard;
 
 import java.util.Arrays;
 import java.util.List;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.PageStateParser;
+import org.sigmah.client.page.TabPage;
 
 /**
  *
  * @author rca
  */
-public class DashboardPageState implements PageState {
+public class DashboardPageState implements PageState, TabPage {
+
+    @Override
+    public String getTabTitle() {
+        return I18N.CONSTANTS.dashboard();
+    }
+    
     public static class Parser implements PageStateParser {
         private final static DashboardPageState instance = new DashboardPageState();
         

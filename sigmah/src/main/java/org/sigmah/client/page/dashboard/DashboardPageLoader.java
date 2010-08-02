@@ -33,7 +33,9 @@ public class DashboardPageLoader implements PageLoader {
     @Override
     public void load(PageId pageId, PageState pageState, AsyncCallback<Page> callback) {
         if(pageId.equals(DashboardPresenter.PAGE_ID)) {
-            callback.onSuccess(injector.getDashboardPresenter());
+            final DashboardPresenter presenter = injector.getDashboardPresenter();
+            presenter.navigate(pageState);
+            callback.onSuccess(presenter);
         }
     }
 
