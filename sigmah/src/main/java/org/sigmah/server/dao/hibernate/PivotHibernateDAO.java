@@ -190,10 +190,10 @@ public class PivotHibernateDAO implements PivotDAO {
 
         StringBuilder from = new StringBuilder();
         from.append(" IndicatorValue V " +
-                "LEFT JOIN ReportingPeriod period ON (period.ReportingPeriodId=V.ReportingPeriodId) " +
+                "LEFT JOIN ReportingPeriod Period ON (Period.ReportingPeriodId=V.ReportingPeriodId) " +
                 "LEFT JOIN Indicator ON (Indicator.IndicatorId = V.IndicatorId) " +
-                "LEFT JOIN Site ON (period.SiteId = Site.SiteId) " +
-                "LEFT JOIN Partner ON (site.PartnerId = Partner.PartnerId) " +
+                "LEFT JOIN Site ON (Period.SiteId = Site.SiteId) " +
+                "LEFT JOIN Partner ON (Site.PartnerId = Partner.PartnerId) " +
                 "LEFT JOIN Location ON (Location.LocationId = Site.LocationId) " +
                 "LEFT JOIN Activity ON (Activity.ActivityId = Site.ActivityId) " +
                 "LEFT JOIN UserDatabase Db ON (Activity.DatabaseId = Db.DatabaseId) ");
@@ -228,12 +228,12 @@ public class PivotHibernateDAO implements PivotDAO {
 
         StringBuilder from = new StringBuilder();
         from.append(" Site " +
-                "LEFT JOIN Partner ON (site.PartnerId = Partner.PartnerId) " +
+                "LEFT JOIN Partner ON (Site.PartnerId = Partner.PartnerId) " +
                 "LEFT JOIN Location ON (Location.LocationId = Site.LocationId) " +
                 "LEFT JOIN Activity ON (Activity.ActivityId = Site.ActivityId) " +
                 "LEFT JOIN Indicator ON (Indicator.ActivityId = Activity.ActivityId) " +
                 "LEFT JOIN UserDatabase Db ON (Activity.DatabaseId = Db.DatabaseId) " +
-                "LEFT JOIN ReportingPeriod period ON (period.SiteId = Site.SiteId) ");
+                "LEFT JOIN ReportingPeriod Period ON (Period.SiteId = Site.SiteId) ");
 
         /* First add the indicator to the query: we can't aggregate values from different
         * indicators so this is a must
@@ -247,7 +247,7 @@ public class PivotHibernateDAO implements PivotDAO {
         groupBy.append("Indicator.IndicatorId");
 
         StringBuilder where = new StringBuilder(
-                "Indicator.Aggregation=2 and period.Monitoring=0 ");
+                "Indicator.Aggregation=2 and Period.Monitoring=0 ");
 
 
         buildAndExecuteRestOfQuery(userId, filter, dimensions, buckets, from, columns, where, groupBy, 2,
@@ -349,9 +349,9 @@ public class PivotHibernateDAO implements PivotDAO {
         /* And start on our where clause... */
 
         // don't include entities that have been deleted
-        where.append(" and site.dateDeleted is null and " +
-                "activity.dateDeleted is null and " +
-                "indicator.dateDeleted is null and " +
+        where.append(" and Site.dateDeleted is null and " +
+                "Activity.dateDeleted is null and " +
+                "Indicator.dateDeleted is null and " +
                 "Db.dateDeleted is null ");
 
         // and only allow results that are visible to this user.
@@ -361,11 +361,11 @@ public class PivotHibernateDAO implements PivotDAO {
 
 
         if (filter.getMinDate() != null) {
-            where.append(" AND period.date2 >= ?");
+            where.append(" AND Period.date2 >= ?");
             parameters.add(new java.sql.Date(filter.getMinDate().getTime()));
         }
         if (filter.getMaxDate() != null) {
-            where.append(" AND period.date2 <= ?");
+            where.append(" AND Period.date2 <= ?");
             parameters.add(new java.sql.Date(filter.getMaxDate().getTime()));
         }
 
