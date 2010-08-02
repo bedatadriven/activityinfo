@@ -6,9 +6,7 @@
 package org.sigmah.client.page.dashboard;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.EventType;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -45,7 +43,6 @@ import org.sigmah.client.page.charts.ChartPageState;
 import org.sigmah.client.page.config.DbListPageState;
 import org.sigmah.client.page.entry.SiteGridPageState;
 import org.sigmah.client.page.map.MapPageState;
-import org.sigmah.client.page.project.ProjectState;
 import org.sigmah.client.page.report.ReportHomePageState;
 import org.sigmah.client.page.table.PivotPageState;
 import org.sigmah.shared.command.GetProjects;
@@ -151,7 +148,7 @@ public class DashboardPresenter implements Page, TabPage {
                     @Override
                     public void handleEvent(GridEvent be) {
                         final ProjectDTO project = projectStore.getAt(be.getRowIndex());
-                        eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new ProjectState(project.getId())));
+//                        eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new ProjectState(project.getId())));
                     }
                 });
                 
