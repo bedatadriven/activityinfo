@@ -5,7 +5,6 @@
 
 package org.sigmah.client;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -27,7 +26,6 @@ import org.sigmah.client.offline.ui.OfflineMenu;
 import org.sigmah.client.page.*;
 import org.sigmah.client.page.common.widget.LoadingPlaceHolder;
 import org.sigmah.client.page.dashboard.DashboardPageState;
-import org.sigmah.client.page.project.ProjectState;
 import org.sigmah.client.ui.SigmahViewport;
 import org.sigmah.client.ui.Tab;
 import org.sigmah.client.ui.TabBar;
