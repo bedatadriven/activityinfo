@@ -5,6 +5,7 @@
 
 package org.sigmah.server.dao.hibernate;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.inject.Inject;
 import org.hibernate.Session;
 import org.hibernate.ejb.HibernateEntityManager;
@@ -39,7 +40,7 @@ public class PivotHibernateDAO implements PivotDAO {
     public PivotHibernateDAO(EntityManager em, SQLDialect dialect) {
         this.em = em;
         this.dialect = dialect;
-    }
+    }	 
 
     /**
      * Internal interface to a group of objects that are responsible for
@@ -72,7 +73,7 @@ public class PivotHibernateDAO implements PivotDAO {
             bucket.setDoubleValue((double) rs.getInt(1));
         }
     }
-
+    
     private static class SimpleBundler implements Bundler {
         private final Dimension dimension;
         private final int labelColumnIndex;
@@ -339,6 +340,24 @@ public class PivotHibernateDAO implements PivotDAO {
 
                 bundlers.add(new EntityBundler(adminDim, nextColumnIndex));
                 nextColumnIndex += 2;
+            } else if (dimension instanceof AttributeDimension) {
+            	AttributeDimension attrDim = (AttributeDimension) dimension;
+            	
+            	String tableAlias = "Attribute" + attrDim.get("id");
+            	
+            	from.append("LEFT JOIN " + 
+            			"(SELECT AttributeValue.SiteId, AttributeValue.Value, Attribute.Name " + 
+            			"FROM AttributeValue " +
+            			"LEFT JOIN  Attribute ON (Attribute.AttributeId = AttributeValue.AttributeId) " +
+            			"WHERE Attribute.AttributeId = ")
+            			.append(attrDim.get("id")).append(") AS ").append(tableAlias).append(" ON (")
+            			.append(tableAlias).append(".SiteId = Site.SiteId)");
+            	
+            	dimColumns.append(", ").append(tableAlias).append(".Name");
+            	dimColumns.append(", ").append(tableAlias).append(".Value");
+           
+            	bundlers.add(new SimpleBundler(dimension, nextColumnIndex));
+            	nextColumnIndex += 2;
             }
         }
 
@@ -409,6 +428,7 @@ public class PivotHibernateDAO implements PivotDAO {
                     for (Bundler bundler : bundlers) {
                         bundler.bundle(rs, bucket);
                     }
+                  
                     buckets.add(bucket);
                 }
             }

@@ -39,6 +39,7 @@ import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 import org.sigmah.shared.report.model.AdminDimension;
+import org.sigmah.shared.report.model.AttributeDimension;
 import org.sigmah.shared.report.model.DateDimension;
 import org.sigmah.shared.report.model.DateUnit;
 import org.sigmah.shared.report.model.Dimension;
@@ -510,8 +511,8 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 					List<AttributeDTO> attrs =  g.getAttributes();
 					ArrayList<ModelData> list = new ArrayList <ModelData>();
 					for (AttributeDTO a: attrs) {
-						Dimension d = createDimension(DimensionType.Attribute, a.getName());
-						d.set("id", a.getId());
+						Dimension d = createAttributeDimension(a.getName(), a.getId());
+					
 						list.add(d);
 					}
 					callback.onSuccess(list);
@@ -531,6 +532,12 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 		    return dim;
 		}
 		
+		private Dimension createAttributeDimension(String caption, int attributeId) {
+		    AttributeDimension dim = new AttributeDimension(attributeId);
+		    dim.set("caption", caption);
+			dim.set("id", "" + attributeId);
+		    return dim;
+		}
 		private Dimension createDateDimension(DateUnit unit, String caption) {
 		    Dimension dim = new DateDimension(unit);
 		    dim.set("caption", caption);

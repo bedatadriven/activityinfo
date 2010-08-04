@@ -143,7 +143,6 @@ public class PivotPresenter implements Page, TabPage {
                 }
 
                 public void onSuccess(Content content) {
-                	Log.debug("got contnet===>" + content);
                     element.setContent((PivotContent) content);
                     view.setContent(element);
                 }
