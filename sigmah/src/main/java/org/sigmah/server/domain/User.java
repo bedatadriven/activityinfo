@@ -6,12 +6,23 @@
 package org.sigmah.server.domain;
 
 
-import org.sigmah.server.auth.SecureTokenGenerator;
-import org.sigmah.server.auth.impl.BCrypt;
-
-import javax.persistence.*;
 import java.util.Date;
 import java.util.Locale;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.sigmah.server.auth.SecureTokenGenerator;
+import org.sigmah.server.auth.impl.BCrypt;
 
 /**
  * Describes a user
@@ -36,6 +47,7 @@ public class User implements java.io.Serializable {
     private String changePasswordKey;
     private Date dateChangePasswordKeyIssued;
     private String hashedPassword;
+	private PrivacyLevel privacyLevel;
 
     public User() {
     }
@@ -207,6 +219,26 @@ public class User implements java.io.Serializable {
     @Override
     public int hashCode() {
 		return getEmail().hashCode();
+	}
+
+    @ManyToOne(optional = false)
+	@JoinColumn(name = "privacy_level", nullable = false)
+	public PrivacyLevel getPrivacyLevel() {
+		return privacyLevel;
+	}
+	
+	public void setPrivacyLevel(PrivacyLevel privacyLevel) {
+		this.privacyLevel = privacyLevel;
+	}
+
+	@Override
+	public String toString() {
+		if (firstName != null && name != null) {
+			return firstName + " " + name;
+		}
+		else {
+			return "(null user)";
+		}
 	}
 
 

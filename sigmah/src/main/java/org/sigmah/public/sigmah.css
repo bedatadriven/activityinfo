@@ -118,3 +118,23 @@ body {
 .tab-close:hover {
     background-color: rgb(155,187,89);
 }
+
+/* -------------------------------------------------------------- Flexibility */
+
+.sigmah-layout {
+	border-spacing: 0;
+}
+.sigmah-layout td {
+	vertical-align: top;
+}
+
+.sigmah-active-phase span.x-tab-strip-text {
+	color: red;
+}
+
+.sigmah-required-elements-grid {
+	border: 1px solid red;
+}
+.sigmah-element.required label {
+	color: red;
+}

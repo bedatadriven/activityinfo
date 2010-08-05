@@ -5,6 +5,30 @@
 
 package org.sigmah.client.page.dashboard;
 
+import java.util.Arrays;
+
+import org.sigmah.client.EventBus;
+import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.event.NavigationEvent;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.client.page.NavigationCallback;
+import org.sigmah.client.page.NavigationHandler;
+import org.sigmah.client.page.Page;
+import org.sigmah.client.page.PageId;
+import org.sigmah.client.page.PageState;
+import org.sigmah.client.page.TabPage;
+import org.sigmah.client.page.charts.ChartPageState;
+import org.sigmah.client.page.config.DbListPageState;
+import org.sigmah.client.page.entry.SiteGridPageState;
+import org.sigmah.client.page.map.MapPageState;
+import org.sigmah.client.page.project.ProjectState;
+import org.sigmah.client.page.report.ReportHomePageState;
+import org.sigmah.client.page.table.PivotPageState;
+import org.sigmah.shared.command.GetProjects;
+import org.sigmah.shared.command.result.ProjectListResult;
+import org.sigmah.shared.dto.ProjectDTO;
+
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -27,27 +51,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
-import java.util.Arrays;
-import org.sigmah.client.EventBus;
-import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.event.NavigationEvent;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.client.page.NavigationCallback;
-import org.sigmah.client.page.NavigationHandler;
-import org.sigmah.client.page.Page;
-import org.sigmah.client.page.PageId;
-import org.sigmah.client.page.PageState;
-import org.sigmah.client.page.TabPage;
-import org.sigmah.client.page.charts.ChartPageState;
-import org.sigmah.client.page.config.DbListPageState;
-import org.sigmah.client.page.entry.SiteGridPageState;
-import org.sigmah.client.page.map.MapPageState;
-import org.sigmah.client.page.report.ReportHomePageState;
-import org.sigmah.client.page.table.PivotPageState;
-import org.sigmah.shared.command.GetProjects;
-import org.sigmah.shared.command.result.ProjectList;
-import org.sigmah.shared.dto.ProjectDTO;
 
 /**
  * Home screen of sigmah. Displays the main menu and a reminder of urgent tasks.
@@ -148,7 +151,7 @@ public class DashboardPresenter implements Page, TabPage {
                     @Override
                     public void handleEvent(GridEvent be) {
                         final ProjectDTO project = projectStore.getAt(be.getRowIndex());
-//                        eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new ProjectState(project.getId())));
+                        eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new ProjectState(project.getId())));
                     }
                 });
                 
@@ -195,14 +198,14 @@ public class DashboardPresenter implements Page, TabPage {
 
     @Override
     public boolean navigate(PageState place) {
-        dispatcher.execute(new GetProjects(), null, new AsyncCallback<ProjectList>() {
+        dispatcher.execute(new GetProjects(), null, new AsyncCallback<ProjectListResult>() {
             @Override
             public void onFailure(Throwable throwable) {
 
             }
 
             @Override
-            public void onSuccess(ProjectList projectList) {
+            public void onSuccess(ProjectListResult projectList) {
                 projectStore.add(projectList.getList());
             }
         });

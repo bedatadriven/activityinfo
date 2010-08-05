@@ -11,10 +11,12 @@
     <country countryId="1" name="Rdc" x1="0" y1="0" x2="0" y2="0"/>
 
     <locationType locationTypeId="1" countryId="1" name="localite" reuse="1"/>
+    
+    <privacy_level privacy_level="0" />
 
-    <userLogin userId="1" name="Alex" email="user1@user.com" locale="fr" newUser="1"/>
-    <userLogin userId="2" name="Raphael" email="user2@user.com" locale="fr" newUser="1"/>
-    <userLogin userId="3" name="Tom" email="tom@user.com" locale="fr" newUser="1"/>
+    <userLogin userId="1" name="Alex" email="user1@user.com" locale="fr" newUser="1" privacy_level="0" />
+    <userLogin userId="2" name="Raphael" email="user2@user.com" locale="fr" newUser="1" privacy_level="0" />
+    <userLogin userId="3" name="Tom" email="tom@user.com" locale="fr" newUser="1" privacy_level="0" />
 
     <organization id="1" name="Ideia"/>
     <partner partnerId="1" name="Head Office" organization_id="1"/>

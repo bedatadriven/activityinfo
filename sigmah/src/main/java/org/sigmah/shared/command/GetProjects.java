@@ -5,12 +5,12 @@
 
 package org.sigmah.shared.command;
 
-import org.sigmah.shared.command.result.ProjectList;
+import org.sigmah.shared.command.result.ProjectListResult;
 
 /**
  * Retrieves the list of Projects available to the user
  */
-public class GetProjects implements Command<ProjectList> {
+public class GetProjects implements Command<ProjectListResult> {
 
     @Override
     public int hashCode() {

@@ -5,7 +5,10 @@
 
 package org.sigmah.client.page.entry.editor;
 
+import java.util.Locale;
+
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.sigmah.client.mock.JreCoordinateEditor;
 import org.sigmah.shared.map.AbstractCoordinateEditor;
@@ -16,6 +19,11 @@ import org.sigmah.shared.map.CoordinateFormatException;
  */
 public class CoordinateEditorTest {
     private static final double DELTA = 0.00001;
+    
+    @Before
+    public void before() {
+    	Locale.setDefault(Locale.ENGLISH);
+    }
 
 
     @Test

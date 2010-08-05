@@ -86,5 +86,270 @@
 	
 	</mapping>
 	
+	<!-- Project/ProjectDTO Mapping -->
+	<mapping wildcard="true">
+		<class-a>org.sigmah.server.domain.Project</class-a>
+		<class-b>org.sigmah.shared.dto.ProjectDTO</class-b>
+		
+		<field>
+			<a>projectModel</a>
+			<b>projectModelDTO</b>
+		</field>
+		
+		<field>
+			<a>phases</a>
+			<b>phasesDTO</b>
+		</field>
+		
+		<field>
+			<a>values</a>
+			<b>valuesDTO</b>
+		</field>
+		
+		<field>
+			<a>currentPhase</a>
+			<b>currentPhaseDTO</b>
+		</field>
+		
+		<field>
+			<a>owner.name</a>
+			<b>ownerName</b>
+		</field>
+	</mapping>
+	
+	<!-- Phase/PhaseDTO Mapping -->
+	<mapping wildcard="true">
+		<class-a>org.sigmah.server.domain.Phase</class-a>
+		<class-b>org.sigmah.shared.dto.PhaseDTO</class-b>
+		
+		<field>
+			<a>model</a>
+			<b>phaseModelDTO</b>
+		</field>
+		
+		<field>
+			<a>parentProject</a>
+			<b>parentProjectDTO</b>
+		</field>
+	</mapping>
+	
+	<!-- ProjectModel/ProjectModelDTO Mapping -->
+	<mapping wildcard="true">
+		<class-a>org.sigmah.server.domain.ProjectModel</class-a>
+		<class-b>org.sigmah.shared.dto.ProjectModelDTO</class-b>
+		
+		<field>
+			<a>phases</a>
+			<b>phaseModelsDTO</b>
+		</field>
+		
+		<field>
+			<a>rootPhase</a>
+			<b>rootPhaseModelDTO</b>
+		</field>
+		
+		<field>
+			<a>projectBanner</a>
+			<b>projectBannerDTO</b>
+		</field>
+		
+		<field>
+			<a>projectDetails</a>
+			<b>projectDetailsDTO</b>
+		</field>
+		
+		<field>
+			<a>elements</a>
+			<b>flexibleElementsDTO</b>
+			<a-hint>org.sigmah.server.domain.element.MessageElement,org.sigmah.server.domain.element.CheckboxElement,org.sigmah.server.domain.element.TextAreaElement,org.sigmah.server.domain.element.QuestionElement,org.sigmah.server.domain.element.TripletsListElement,org.sigmah.server.domain.element.FilesListElement,org.sigmah.server.domain.element.IndicatorsListElement,org.sigmah.server.domain.element.BudgetDistributionElement</a-hint>
+			<b-hint>org.sigmah.shared.dto.element.MessageElementDTO,org.sigmah.shared.dto.element.CheckboxElementDTO,org.sigmah.shared.dto.element.TextAreaElementDTO,org.sigmah.shared.dto.element.QuestionElementDTO,org.sigmah.shared.dto.element.TripletsListElementDTO,org.sigmah.shared.dto.element.FilesListElementDTO,org.sigmah.shared.dto.element.IndicatorsListElementDTO,org.sigmah.shared.dto.element.BudgetDistributionElementDTO</b-hint>
+		</field>
+	</mapping>
+	
+	<!-- PhaseModel/PhaseModelDTO Mapping -->
+	<mapping wildcard="true">
+		<class-a>org.sigmah.server.domain.PhaseModel</class-a>
+		<class-b>org.sigmah.shared.dto.PhaseModelDTO</class-b>
 
+		<field>
+			<a>parentProjectModel</a>
+			<b>parentProjectModelDTO</b>
+		</field>
+		
+		<field>
+			<a>layout</a>
+			<b>layoutDTO</b>
+		</field>
+		
+		<field>
+			<a>successors</a>
+			<b>successorsDTO</b>
+		</field>
+	</mapping>
+	
+	<!-- Layout/LayoutDTO Mapping -->
+	<mapping wildcard="true">
+		<class-a>org.sigmah.server.domain.layout.Layout</class-a>
+		<class-b>org.sigmah.shared.dto.layout.LayoutDTO</class-b>
+		
+		<field>
+			<a>groups</a>
+			<b>layoutGroupsDTO</b>
+		</field>
+	</mapping>
+	
+	<!-- LayoutGroup/LayoutGroupDTO Mapping -->
+	<mapping wildcard="true">
+		<class-a>org.sigmah.server.domain.layout.LayoutGroup</class-a>
+		<class-b>org.sigmah.shared.dto.layout.LayoutGroupDTO</class-b>
+		
+		<field>
+			<a>parentLayout</a>
+			<b>parentLayoutDTO</b>
+		</field>
+		
+		<field>
+			<a>constraints</a>
+			<b>layoutConstraintsDTO</b>
+		</field>
+	</mapping>
+	
+	<!-- LayoutConstraint/LayoutContraintDTO Mapping -->
+	<mapping wildcard="true">
+		<class-a>org.sigmah.server.domain.layout.LayoutConstraint</class-a>
+		<class-b>org.sigmah.shared.dto.layout.LayoutConstraintDTO</class-b>
+		
+		<field>
+			<a>parentLayoutGroup</a>
+			<b>parentLayoutGroupDTO</b>
+		</field>
+		
+		<field>
+			<a>element</a>
+			<b>flexibleElementDTO</b>
+			<a-hint>org.sigmah.server.domain.element.MessageElement,org.sigmah.server.domain.element.CheckboxElement,org.sigmah.server.domain.element.TextAreaElement,org.sigmah.server.domain.element.QuestionElement,org.sigmah.server.domain.element.TripletsListElement,org.sigmah.server.domain.element.FilesListElement,org.sigmah.server.domain.element.IndicatorsListElement,org.sigmah.server.domain.element.BudgetDistributionElement</a-hint>
+			<b-hint>org.sigmah.shared.dto.element.MessageElementDTO,org.sigmah.shared.dto.element.CheckboxElementDTO,org.sigmah.shared.dto.element.TextAreaElementDTO,org.sigmah.shared.dto.element.QuestionElementDTO,org.sigmah.shared.dto.element.TripletsListElementDTO,org.sigmah.shared.dto.element.FilesListElementDTO,org.sigmah.shared.dto.element.IndicatorsListElementDTO,org.sigmah.shared.dto.element.BudgetDistributionElementDTO</b-hint>
+		</field>
+		
+	</mapping>
+	
+	<!-- FlexibleElement/FlexibleElementDTO Mapping -->
+	<mapping wildcard="true">
+		<class-a>org.sigmah.server.domain.element.FlexibleElement</class-a>
+		<class-b>org.sigmah.shared.dto.element.FlexibleElementDTO</class-b>
+		
+		<field>
+			<a>parentProjectModel</a>
+			<b>parentProjectModelDTO</b>
+		</field>
+	</mapping>
+	
+	<!-- QuestionElement/QuestionElementDTO Mapping -->
+	<mapping wildcard="true">
+		<class-a>org.sigmah.server.domain.element.QuestionElement</class-a>
+		<class-b>org.sigmah.shared.dto.element.QuestionElementDTO</class-b>
+		
+		<field>
+			<a>choices</a>
+			<b>choicesDTO</b>
+		</field>
+	</mapping>
+	
+	<!-- QuestionChoiceElement/QuestionChoiceElementDTO Mapping -->
+	<mapping wildcard="true">
+		<class-a>org.sigmah.server.domain.element.QuestionChoiceElement</class-a>
+		<class-b>org.sigmah.shared.dto.element.QuestionChoiceElementDTO</class-b>
+		
+		<field>
+			<a>parentQuestion</a>
+			<b>parentQuestionDTO</b>
+		</field>
+	</mapping>
+	
+	<!-- ProjectDetails/ProjectDetailsDTO Mapping -->
+	<mapping wildcard="true">
+		<class-a>org.sigmah.server.domain.ProjectDetails</class-a>
+		<class-b>org.sigmah.shared.dto.ProjectDetailsDTO</class-b>
+		
+		<field>
+			<a>layout</a>
+			<b>layoutDTO</b>
+		</field>
+		
+		<field>
+			<a>projectModel</a>
+			<b>projectModelDTO</b>
+		</field>
+	</mapping>
+	
+	<!-- ProjectBanner/ProjectBannerDTO Mapping -->
+	<mapping wildcard="true">
+		<class-a>org.sigmah.server.domain.ProjectBanner</class-a>
+		<class-b>org.sigmah.shared.dto.ProjectBannerDTO</class-b>
+		
+		<field>
+			<a>layout</a>
+			<b>layoutDTO</b>
+		</field>
+		
+		<field>
+			<a>projectModel</a>
+			<b>projectModelDTO</b>
+		</field>
+	</mapping>
+	
+	<!-- Value/ValueDTO Mapping -->
+	<mapping wildcard="true">
+		<class-a>org.sigmah.server.domain.value.Value</class-a>
+		<class-b>org.sigmah.shared.dto.value.ValueDTO</class-b>
+		
+		<field>
+			<a>element</a>
+			<b>flexibleElementDTO</b>
+		</field>
+		
+		<field>
+			<a>parentProject</a>
+			<b>parentProjectDTO</b>
+		</field>
+	</mapping>
+	
+	<!-- IndicatorsListValue/IndicatorsListValueDTO Mapping -->
+	<mapping wildcard="true">
+		<class-a>org.sigmah.server.domain.value.IndicatorsListValue</class-a>
+		<class-b>org.sigmah.shared.dto.value.IndicatorsListValueDTO</class-b>
+		
+		<field>
+			<a>id.idList</a>
+			<b>idList</b>
+		</field>
+		
+		<field>
+			<a>id.indicatorId</a>
+			<b>id</b>
+		</field>
+	</mapping>
+	
+	<!-- BudgetPartsListValue/BudgetPartsListValueDTO Mapping -->
+	<mapping wildcard="true">
+		<class-a>org.sigmah.server.domain.value.BudgetPartsListValue</class-a>
+		<class-b>org.sigmah.shared.dto.value.BudgetPartsListValueDTO</class-b>
+		
+		<field>
+			<a>id</a>
+			<b>id</b>
+		</field>
+	</mapping>
+	
+	<!-- FilesListValue/FilesListValueDTO Mapping -->
+	<mapping wildcard="true">
+		<class-a>org.sigmah.server.domain.value.FilesListValue</class-a>
+		<class-b>org.sigmah.shared.dto.value.FilesListValueDTO</class-b>
+		
+		<field>
+			<a>id.idFile</a>
+			<b>id</b>
+		</field>
+	</mapping>
+	
 </mappings>

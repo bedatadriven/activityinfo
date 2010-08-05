@@ -5,20 +5,21 @@
 
 package org.sigmah.shared.command.result;
 
-import org.sigmah.shared.dto.ProjectDTO;
-
 import java.util.List;
+
+import org.sigmah.shared.dto.ProjectDTO;
 
 /**
  * List of Projects visible to the user
  */
-public class ProjectList implements CommandResult {
+public class ProjectListResult implements CommandResult {
+	
     private List<ProjectDTO> list;
 
-    public ProjectList() {
+    public ProjectListResult() {
     }
 
-    public ProjectList(List<ProjectDTO> list) {
+    public ProjectListResult(List<ProjectDTO> list) {
         this.list = list;
     }
 

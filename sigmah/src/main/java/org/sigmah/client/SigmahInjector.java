@@ -5,8 +5,6 @@
 
 package org.sigmah.client;
 
-import com.google.gwt.inject.client.GinModules;
-import com.google.gwt.inject.client.Ginjector;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.cache.AdminEntityCache;
 import org.sigmah.client.dispatch.remote.cache.SchemaCache;
@@ -31,8 +29,9 @@ import org.sigmah.client.page.entry.EntryModule;
 import org.sigmah.client.page.entry.SigmahDataEntryLoader;
 import org.sigmah.client.page.map.SigmahMapLoader;
 import org.sigmah.client.page.map.SingleMapForm;
-import org.sigmah.client.page.project.ProjectListPresenter;
 import org.sigmah.client.page.project.ProjectModule;
+import org.sigmah.client.page.project.ProjectPageLoader;
+import org.sigmah.client.page.project.ProjectPresenter;
 import org.sigmah.client.page.report.ReportHomePresenter;
 import org.sigmah.client.page.report.ReportModule;
 import org.sigmah.client.page.report.ReportPreviewPresenter;
@@ -41,6 +40,9 @@ import org.sigmah.client.page.table.PivotModule;
 import org.sigmah.client.page.table.PivotPresenter;
 import org.sigmah.client.page.table.SigmahPivotPageLoader;
 import org.sigmah.client.util.state.IStateManager;
+
+import com.google.gwt.inject.client.GinModules;
+import com.google.gwt.inject.client.Ginjector;
 
 @GinModules({SigmahModule.class,
              ProjectModule.class,
@@ -58,16 +60,16 @@ public interface SigmahInjector extends Ginjector {
     // Pages from Sigmah
     DashboardPageLoader registerDashboardPageLoader();
 //    ProjectListPageLoader registerProjectListPageLoader();
-//    ProjectPageLoader registerProjectPageLoader();
+    ProjectPageLoader registerProjectPageLoader();
     
     // Required by the 'Dashboard' page
     DashboardPresenter getDashboardPresenter();
     
-    // Required by the 'Project List' page
-    ProjectListPresenter getProjectListPresenter();
+    // Required by the 'Project' page
+    ProjectPresenter getProjectListPresenter();
 
     // Required by the 'Project' page
-//    ProjectPresenter getProjectPresenter();
+	ProjectPresenter getProjectPresenter();
     
     // Pages from ActivityInfo
     SigmahDataEntryLoader registerDataEntryLoader();

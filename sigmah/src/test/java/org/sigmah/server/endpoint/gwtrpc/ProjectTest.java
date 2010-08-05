@@ -11,7 +11,7 @@ import org.sigmah.server.dao.OnDataSet;
 import org.sigmah.shared.command.CreateEntity;
 import org.sigmah.shared.command.GetProjects;
 import org.sigmah.shared.command.result.CreateResult;
-import org.sigmah.shared.command.result.ProjectList;
+import org.sigmah.shared.command.result.ProjectListResult;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.test.InjectionSupport;
 
@@ -51,7 +51,7 @@ public class ProjectTest extends CommandTestCase {
 
         GetProjects cmd = new GetProjects();
 
-        ProjectList result = execute(cmd);
+        ProjectListResult result = execute(cmd);
 
         assertThat(result.getList().size(), equalTo(2));
     }
@@ -65,7 +65,7 @@ public class ProjectTest extends CommandTestCase {
 
         GetProjects cmd = new GetProjects();
 
-        ProjectList result = execute(cmd);
+        ProjectListResult result = execute(cmd);
 
         assertThat(result.getList().size(), equalTo(1));
     }

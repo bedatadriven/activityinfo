@@ -5,16 +5,40 @@
 
 package org.sigmah.server.dao;
 
-import com.google.inject.Inject;
-import org.hibernate.ejb.HibernateEntityManager;
-import org.hibernate.jdbc.Work;
-import org.sigmah.server.domain.*;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+
+import org.hibernate.ejb.HibernateEntityManager;
+import org.hibernate.jdbc.Work;
+import org.sigmah.server.domain.Activity;
+import org.sigmah.server.domain.AdminEntity;
+import org.sigmah.server.domain.AdminLevel;
+import org.sigmah.server.domain.Attribute;
+import org.sigmah.server.domain.AttributeGroup;
+import org.sigmah.server.domain.AttributeValue;
+import org.sigmah.server.domain.Authentication;
+import org.sigmah.server.domain.Country;
+import org.sigmah.server.domain.Indicator;
+import org.sigmah.server.domain.IndicatorValue;
+import org.sigmah.server.domain.Location;
+import org.sigmah.server.domain.LocationType;
+import org.sigmah.server.domain.OrgUnit;
+import org.sigmah.server.domain.OrgUnitPermission;
+import org.sigmah.server.domain.Organization;
+import org.sigmah.server.domain.PrivacyLevel;
+import org.sigmah.server.domain.ReportDefinition;
+import org.sigmah.server.domain.ReportSubscription;
+import org.sigmah.server.domain.ReportingPeriod;
+import org.sigmah.server.domain.Site;
+import org.sigmah.server.domain.User;
+import org.sigmah.server.domain.UserDatabase;
+import org.sigmah.server.domain.UserPermission;
+
+import com.google.inject.Inject;
 
 public class DatabaseCleaner {
 
@@ -40,7 +64,8 @@ public class DatabaseCleaner {
             LocationType.class,
             AdminEntity.class,
             AdminLevel.class,
-            Country.class
+            Country.class,
+            PrivacyLevel.class
     };
 
     private final EntityManager em;
