@@ -26,13 +26,7 @@ body {
     padding-right: 5px;
     padding-left: 5px;
     border-left: 1px solid grey;
-    font-size: 10pt;
-}
-
-#footer {
-    height: 32px;
-    line-height: 32px;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(rgb(119,147,60)), to(rgb(160,200,75)));
+    font-size: 12pt;
 }
 
 .tab-bar {

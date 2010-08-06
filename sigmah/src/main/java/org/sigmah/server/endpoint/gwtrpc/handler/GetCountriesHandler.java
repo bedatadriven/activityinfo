@@ -18,20 +18,29 @@ import org.sigmah.shared.exception.CommandException;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.EntityManager;
 
 public class GetCountriesHandler implements CommandHandler<GetCountries> {
 
     private final CountryDAO countryDAO;
     private final Mapper mapper;
+    
+    private final EntityManager entityManager;
 
     @Inject
-    public GetCountriesHandler(CountryDAO countryDAO, Mapper mapper) {
+    public GetCountriesHandler(CountryDAO countryDAO, Mapper mapper, EntityManager entityManager) {
         this.countryDAO = countryDAO;
         this.mapper = mapper;
+        
+        this.entityManager = entityManager;
     }
 
     @Override
     public CommandResult execute(GetCountries cmd, User user) throws CommandException {
+        if(cmd.isContainingProjects()) {
+            return new CountryResult(mapToDtos(entityManager.createQuery("SELECT c FROM Country c WHERE c IN (SELECT co.id FROM Project p, IN(p.country) co)").getResultList()));
+        }
+        
         return new CountryResult(mapToDtos(
                 countryDAO.queryAllCountriesAlphabetically()
         ));

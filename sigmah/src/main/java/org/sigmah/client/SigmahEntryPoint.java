@@ -49,6 +49,7 @@ public class SigmahEntryPoint implements EntryPoint {
         injector.getHistoryManager();
         injector.getNavigationHandler();
         
+        injector.registerProjectPageLoader();
         injector.registerDashboardPageLoader();
         injector.registerProjectPageLoader();
         

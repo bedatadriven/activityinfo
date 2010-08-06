@@ -65,7 +65,7 @@ public class SigmahDataEntryLoader implements PageLoader {
         NavigationPanel navPanel = new NavigationPanel(injector.getEventBus(),
                 injector.getDataEntryNavigator());
 
-        VSplitFrameSet frameSet = new VSplitFrameSet(Frames.DataEntryFrameSet, I18N.CONSTANTS.dataEntry(), navPanel);
+        VSplitFrameSet frameSet = new VSplitFrameSet(Frames.DataEntryFrameSet, navPanel);
 
         callback.onSuccess(frameSet);
     }

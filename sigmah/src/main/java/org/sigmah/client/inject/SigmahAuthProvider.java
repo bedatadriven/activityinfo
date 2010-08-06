@@ -20,7 +20,7 @@ public class SigmahAuthProvider implements Provider<Authentication> {
      */
     @Override
     public Authentication get() {
-        return new Authentication(3, "844ff3bd2b7e79e5a65365fd6aa38fc0", "akbertrand@gmail.com");
+        return new Authentication(3, "844ff3bd2b7e79e5a65365fd6aa38fc0", "user@sigmah.org");
     }
 
 }

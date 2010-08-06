@@ -11,11 +11,13 @@ import org.sigmah.client.page.PageStateParser;
 
 import java.util.Arrays;
 import java.util.List;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.page.TabPage;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class PivotPageState implements PageState {
+public class PivotPageState implements PageState, TabPage {
 
     @Override
     public PageId getPageId() {
@@ -30,6 +32,11 @@ public class PivotPageState implements PageState {
     @Override
     public List<PageId> getEnclosingFrames() {
         return Arrays.asList(PivotPresenter.Pivot);
+    }
+
+    @Override
+    public String getTabTitle() {
+        return I18N.CONSTANTS.tables();
     }
 
     public static class Parser implements PageStateParser {

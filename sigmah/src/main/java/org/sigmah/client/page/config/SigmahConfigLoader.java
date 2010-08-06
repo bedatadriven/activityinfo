@@ -64,7 +64,7 @@ public class SigmahConfigLoader implements PageLoader {
                 if (Frames.ConfigFrameSet.equals(pageId)) {
                     NavigationPanel navPanel = new NavigationPanel(injector.getEventBus(),
                             injector.getConfigNavigator());
-                    VSplitFrameSet frameSet = new VSplitFrameSet(pageId, I18N.CONSTANTS.setup(),  navPanel);
+                    VSplitFrameSet frameSet = new VSplitFrameSet(pageId, navPanel);
                     callback.onSuccess(frameSet);
 
                 } else if (AccountEditor.Account.equals(pageId)) {

@@ -5,23 +5,30 @@
 
 package org.sigmah.shared.dto;
 
+import com.extjs.gxt.ui.client.data.BaseTreeModel;
+import java.util.Date;
 import java.util.List;
 
 import org.sigmah.shared.dto.value.ValueDTO;
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
 
-public class ProjectDTO extends BaseModelData implements EntityDTO {
+public final class ProjectDTO extends BaseTreeModel implements EntityDTO {
+
+    public ProjectDTO() {
+        // TODO: Remove this
+        setTopic("Nutrition");
+        setFavorite(new Date().getTime()%10 < 5);
+    }
     
-	private static final long serialVersionUID = -8604264278832531036L;
+    private static final long serialVersionUID = -8604264278832531036L;
 
-	@Override
-	public String getEntityName() {
-		return "Project";
-	}
-	
-	// Project id
-	@Override
+    @Override
+    public String getEntityName() {
+            return "Project";
+    }
+
+    // Project id
+    @Override
     public int getId() {
         return (Integer)get("id");
     }
@@ -84,4 +91,17 @@ public class ProjectDTO extends BaseModelData implements EntityDTO {
     	set("currentPhaseDTO", currentPhaseDTO);
     }
     
+    public boolean isFavorite() {
+        return (Boolean) get("favorite");
+    }
+    public void setFavorite(boolean favorite) {
+        set("favorite", favorite);
+    }
+    
+    public String getTopic() {
+        return get("topic");
+    }
+    public void setTopic(String topic) {
+        set("topic", topic);
+    }
 }

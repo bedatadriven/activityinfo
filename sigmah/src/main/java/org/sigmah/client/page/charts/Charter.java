@@ -12,12 +12,10 @@ import com.google.inject.Inject;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
-import org.sigmah.client.page.TabPage;
 import org.sigmah.client.page.common.toolbar.ActionListener;
 import org.sigmah.client.page.common.toolbar.ExportCallback;
 import org.sigmah.client.page.common.toolbar.UIActions;
@@ -30,7 +28,7 @@ import org.sigmah.shared.report.model.PivotChartElement;
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class Charter implements Page, ActionListener, ExportCallback, TabPage {
+public class Charter implements Page, ActionListener, ExportCallback {
 
     @ImplementedBy(ChartPage.class)
     public interface View {
@@ -56,11 +54,6 @@ public class Charter implements Page, ActionListener, ExportCallback, TabPage {
         this.service = service;
         this.view = view;
         this.view.bindPresenter(this);
-    }
-
-    @Override
-    public String getTabTitle() {
-        return I18N.CONSTANTS.charts();
     }
 
     public void shutdown() {

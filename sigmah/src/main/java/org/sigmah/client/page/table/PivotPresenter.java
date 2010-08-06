@@ -7,7 +7,6 @@ package org.sigmah.client.page.table;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.ImplementedBy;
@@ -16,7 +15,6 @@ import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.callback.DownloadCallback;
-import org.sigmah.client.dispatch.callback.Got;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
@@ -24,7 +22,6 @@ import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.shared.command.GenerateElement;
-import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.command.RenderElement;
 import org.sigmah.shared.dto.*;
 import org.sigmah.shared.report.content.Content;
@@ -33,12 +30,11 @@ import org.sigmah.shared.report.model.*;
 
 import java.util.Date;
 import java.util.List;
-import org.sigmah.client.page.TabPage;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class PivotPresenter implements Page, TabPage {
+public class PivotPresenter implements Page {
     public static final PageId Pivot = new PageId("pivot");
 
     @ImplementedBy(PivotPage.class)
@@ -88,11 +84,6 @@ public class PivotPresenter implements Page, TabPage {
         
         store = view.getColStore();
         store.add(createDimension(DimensionType.Partner, I18N.CONSTANTS.partner()));
-    }
-
-    @Override
-    public String getTabTitle() {
-        return I18N.CONSTANTS.tables();
     }
 
     public void shutdown() {

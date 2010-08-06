@@ -8,6 +8,7 @@ package org.sigmah.client.page.project;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import org.sigmah.client.dispatch.AsyncMonitor;
 
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
@@ -46,19 +47,22 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
+import org.sigmah.client.page.Frame;
 
 /**
  * Project presenter which manages the {@link ProjectView}.
  * 
  * @author Denis Colliot (dcolliot@ideia.fr)
  */
-public class ProjectPresenter implements Page, TabPage {
+public class ProjectPresenter implements Frame, TabPage {
 	
     public static final PageId PAGE_ID = new PageId("project");
     
     private final Dispatcher dispatcher;
     private final View view;
     private final Map<Integer, TabItem> association;
+    
+    private Page activePage;
 
     @Inject
     public ProjectPresenter(Dispatcher dispatcher, View view) {
@@ -201,6 +205,21 @@ public class ProjectPresenter implements Page, TabPage {
         		
         	}
         }
+    }
+
+    @Override
+    public void setActivePage(Page page) {
+        this.activePage = page;
+    }
+
+    @Override
+    public Page getActivePage() {
+        return this.activePage;
+    }
+
+    @Override
+    public AsyncMonitor showLoadingPlaceHolder(PageId pageId, PageState loadingPlace) {
+        return null;
     }
     
     /**

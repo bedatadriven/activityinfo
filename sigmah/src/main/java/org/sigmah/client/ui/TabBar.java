@@ -70,6 +70,8 @@ public class TabBar extends Composite {
                 final AbsolutePanel panel = (AbsolutePanel) tabContainer.getWidget(index);
                 final HTML title = (HTML) panel.getWidget(0);
                 title.setHTML(tab.getTitle()); // Warning, this is code injection sensitive.
+                
+                setSelectedIndex(index);
             }
 
             @Override
@@ -99,6 +101,7 @@ public class TabBar extends Composite {
     
     private void addTab(final Tab tab) {
         // If you change this method, remember to change "linkWith>tabChanged" too.
+        // The current "tabChanged" listener waits for a specific widget organization (AbsolutePanel>HTML)
         
         final AbsolutePanel panel = new AbsolutePanel();
         panel.setStyleName("tab");

@@ -69,7 +69,7 @@ public interface SigmahInjector extends Ginjector {
     ProjectPresenter getProjectListPresenter();
 
     // Required by the 'Project' page
-	ProjectPresenter getProjectPresenter();
+    ProjectPresenter getProjectPresenter();
     
     // Pages from ActivityInfo
     SigmahDataEntryLoader registerDataEntryLoader();
