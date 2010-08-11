@@ -21,22 +21,17 @@ public class DateDimension extends Dimension {
 		
 	}
 	
+	public DateDimension(String name, int id, DateUnit unit, String format) {
+		super(DimensionType.Date);
+		this.unit = unit;
+		this.format = format;
+		set("caption", name);
+		set("id", "dim_date_" + id);
+	}
+	
 	public DateDimension(DateUnit unit) {
 		super(DimensionType.Date);
 		this.unit = unit;
-	}
-	
-	public DateDimension(DateUnit unit, String format) {
-		super(DimensionType.Date);
-		this.unit = unit;
-		this.format = format;
-	}
-	
-	public DateDimension(DateUnit unit, String format, String id) {
-		super(DimensionType.Date);
-		this.unit = unit;
-		this.format = format;
-		this.set("id",""+id);
 	}
 	
 	public String getId() {

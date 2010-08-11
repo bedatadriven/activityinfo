@@ -5,12 +5,10 @@
 
 package org.sigmah.client.page.table;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.ImplementedBy;
-import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
@@ -23,13 +21,25 @@ import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.shared.command.GenerateElement;
 import org.sigmah.shared.command.RenderElement;
-import org.sigmah.shared.dto.*;
+import org.sigmah.shared.dto.AdminEntityDTO;
+import org.sigmah.shared.dto.IndicatorDTO;
+import org.sigmah.shared.dto.PartnerDTO;
+import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.report.content.Content;
 import org.sigmah.shared.report.content.PivotContent;
-import org.sigmah.shared.report.model.*;
+import org.sigmah.shared.report.model.Dimension;
+import org.sigmah.shared.report.model.DimensionFolder;
+import org.sigmah.shared.report.model.DimensionType;
+import org.sigmah.shared.report.model.PivotTableElement;
 
-import java.util.Date;
-import java.util.List;
+import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.TreeStore;
+import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.ImplementedBy;
+import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -47,24 +57,28 @@ public class PivotPresenter implements Page {
         public ListStore<Dimension> getRowStore();
 
         public ListStore<Dimension> getColStore();
+        
+        public TreeStore<ModelData> getDimensionStore();
 
         public void setContent(PivotTableElement element);
 
         public AsyncMonitor getMonitor();
 
-        void setSchema(SchemaDTO schema);
+        public void setSchema(SchemaDTO schema);
 
-        List<IndicatorDTO> getSelectedIndicators();
+        public List<IndicatorDTO> getSelectedIndicators();
 
-        List<AdminEntityDTO> getAdminRestrictions();
+        public List<AdminEntityDTO> getAdminRestrictions();
 
-        Date getMinDate();
+        public Date getMinDate();
 
-        Date getMaxDate();
+        public Date getMaxDate();
         
-        List<PartnerDTO> getPartnerRestrictions();
+        public List<PartnerDTO> getPartnerRestrictions();
+        
+        public void setDimensionChecked(ModelData d, boolean checked);
+        
     }
-
 
     private final Dispatcher service;
     private final View view;
@@ -77,13 +91,25 @@ public class PivotPresenter implements Page {
         this.eventBus = eventBus;
         this.view.bindPresenter(this);
         
-        ListStore<Dimension> store = view.getRowStore();
-        store.add(createDimension(DimensionType.Database, I18N.CONSTANTS.database()));
-        store.add(createDimension(DimensionType.Activity, I18N.CONSTANTS.activity()));
-        store.add(createDimension(DimensionType.Indicator, I18N.CONSTANTS.indicators()));
-        
-        store = view.getColStore();
-        store.add(createDimension(DimensionType.Partner, I18N.CONSTANTS.partner()));
+        /*
+		final ArrayList <ModelData> list = new ArrayList <ModelData> (4);        
+		list.add(new Dimension(I18N.CONSTANTS.database(), DimensionType.Database));
+		list.add(new Dimension(I18N.CONSTANTS.activity(), DimensionType.Activity));
+		list.add(new Dimension(I18N.CONSTANTS.indicators(), DimensionType.Indicator));
+		list.add(new Dimension(I18N.CONSTANTS.partner(), DimensionType.Partner));
+
+		list.add(new DimensionFolder(I18N.CONSTANTS.geography(), DimensionGroup.Geography,0,0));
+		list.add(new DimensionFolder(I18N.CONSTANTS.time(), DimensionGroup.Time,0,0));
+		list.add(new DimensionFolder(I18N.CONSTANTS.attributes(), DimensionGroup.Attribute,0,0));
+		
+		TreeStore<ModelData> treeStore = view.getDimensionStore();
+		treeStore.add(list, false);  
+
+		view.setDimensionChecked(list.get(0), true);
+		view.setDimensionChecked(list.get(1), true);
+		view.setDimensionChecked(list.get(2), true);
+		view.setDimensionChecked(list.get(3), true);
+		*/
     }
 
     public void shutdown() {
@@ -121,7 +147,6 @@ public class PivotPresenter implements Page {
         if (view.getMaxDate() != null) {
             table.getFilter().setMaxDate(view.getMaxDate());
         }
-        Log.debug("sending element");
         return table;
     }
 
@@ -142,19 +167,6 @@ public class PivotPresenter implements Page {
         } else if (UIActions.export.equals(itemId)) {
             service.execute(new RenderElement(createElement(), RenderElement.Format.Excel), view.getMonitor(),
                     new DownloadCallback(eventBus, "pivotTable"));
-
-//             service.export(createElement(), RenderElement.Format.Excel, view.getMonitor(),
-//                     new AsyncCallback<Void>() {
-//                         @Override
-//                         public void onFailure(Throwable caught) {
-//
-//                         }
-//
-//                         @Override
-//                         public void onSuccess(Void result) {
-//
-//                         }
-//                     });
         }
     }
 
@@ -182,16 +194,5 @@ public class PivotPresenter implements Page {
     public boolean navigate(PageState place) {
         return true;
     }
-    
-    private Dimension createDimension(DimensionType type, String caption) {
-        Dimension dim = new Dimension(type);
-        dim.set("caption", caption);
-        return dim;
-    }
-
-    private Dimension createDimension(DateUnit unit, String caption) {
-    	Dimension dim = new DateDimension(unit);
-    	dim.set("caption", caption);
-    	return dim;
-    }
+  
 }

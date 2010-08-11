@@ -22,6 +22,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -30,6 +31,7 @@ import java.util.Set;
  * PivotDAO implementation for hibernate using native SQL.
  *
  */
+
 public class PivotHibernateDAO implements PivotDAO {
 
     private final EntityManager em;
@@ -85,6 +87,43 @@ public class PivotHibernateDAO implements PivotDAO {
 
         public void bundle(ResultSet rs, Bucket bucket) throws SQLException {
             bucket.setCategory(dimension, new SimpleCategory(rs.getString(labelColumnIndex)));
+        }
+    }
+
+   
+    private static class AttributeBundler implements Bundler {
+        private final Dimension dimension;
+        private final int labelColumnIndex;
+        private final int attributeCount;
+
+        private AttributeBundler(Dimension dimension, int labelColumnIndex, int attributeCount) {
+            this.labelColumnIndex = labelColumnIndex;
+            this.dimension = dimension;
+            this.attributeCount = attributeCount;
+        }
+
+        public void bundle(ResultSet rs, Bucket bucket) throws SQLException {
+        	/*
+        	ComplexCategory cat = new ComplexCategory();
+        	for (int i = labelColumnIndex; i < labelColumnIndex + attributeCount; i++) {
+        		if (! "null".equals(rs.getString(i))) {
+        			cat.addCategory(new SimpleCategory(rs.getString(i)), null));
+        		}
+        	}
+        	bucket.setCategory(dimension, cat);
+        	*/
+        	
+        	StringBuilder buff = new StringBuilder();
+        	for (int i = labelColumnIndex; i < labelColumnIndex + attributeCount; i++) {
+        		
+        		if (rs.getString(i) != null && !"null".equals(rs.getString(i))) {
+        			if (buff.length() > 0) {
+        				buff.append(", ");
+        			}
+        			buff.append(rs.getString(i));
+        		}
+        	}
+        	bucket.setCategory(dimension, new SimpleCategory(buff.toString()));
         }
     }
 
@@ -340,27 +379,32 @@ public class PivotHibernateDAO implements PivotDAO {
 
                 bundlers.add(new EntityBundler(adminDim, nextColumnIndex));
                 nextColumnIndex += 2;
-            } else if (dimension instanceof AttributeDimension) {
-            	AttributeDimension attrDim = (AttributeDimension) dimension;
+            } else if (dimension instanceof AttributeGroupDimension) {
+            	AttributeGroupDimension attrGroupDim = (AttributeGroupDimension) dimension;
+            	List < Integer > attributeIds = attrGroupDim.getAttributeIds();
+            	int count = 0;
+            	for (Integer attributeId: attributeIds) {
+            		String tableAlias = "Attribute" + attributeId;
+                	
+                	from.append("LEFT JOIN " + 
+                			"(SELECT AttributeValue.SiteId, Attribute.Name as " + tableAlias + "val " +
+                			"FROM AttributeValue " +
+                			"LEFT JOIN  Attribute ON (Attribute.AttributeId = AttributeValue.AttributeId) " +
+                			"WHERE Attribute.AttributeId = ")
+                			.append(attributeId).append(") AS ").append(tableAlias).append(" ON (")
+                			.append(tableAlias).append(".SiteId = Site.SiteId)");
+                	
+                	dimColumns.append(", ").append(tableAlias).append("." + tableAlias + "val ");
+                	count++;
+            	}
+                Log.debug("Total attribute column count = " + count);
+
+            	bundlers.add(new AttributeBundler(dimension, nextColumnIndex, count));
+            	nextColumnIndex += count;
             	
-            	String tableAlias = "Attribute" + attrDim.get("id");
-            	
-            	from.append("LEFT JOIN " + 
-            			"(SELECT AttributeValue.SiteId, AttributeValue.Value, Attribute.Name " + 
-            			"FROM AttributeValue " +
-            			"LEFT JOIN  Attribute ON (Attribute.AttributeId = AttributeValue.AttributeId) " +
-            			"WHERE Attribute.AttributeId = ")
-            			.append(attrDim.get("id")).append(") AS ").append(tableAlias).append(" ON (")
-            			.append(tableAlias).append(".SiteId = Site.SiteId)");
-            	
-            	dimColumns.append(", ").append(tableAlias).append(".Name");
-            	dimColumns.append(", ").append(tableAlias).append(".Value");
-           
-            	bundlers.add(new SimpleBundler(dimension, nextColumnIndex));
-            	nextColumnIndex += 2;
             }
         }
-
+		
         /* add the dimensions to our column and group by list */
         columns.append(dimColumns);
         groupBy.append(dimColumns);

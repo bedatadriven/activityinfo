@@ -83,26 +83,45 @@ public abstract class PivotGenerator<T extends PivotElement> extends BaseGenerat
 
         Dimension childDimension = dimensionIterator.next();
         DimensionCategory category = result.getCategory(childDimension);
-
-        PivotTableData.Axis child = axis.getChild(category);
-        if (child == null) {
-
-            String categoryLabel = childDimension.getLabel(category);
-
-            if (categoryLabel == null) {
-                if (category instanceof LabeledDimensionCategory) {
-                    categoryLabel = ((LabeledDimensionCategory) category).getLabel();
-                } else {
-                    categoryLabel = renderLabel(locale, childDimension, category);
-                }
-            }
-
-            child = axis.addChild(childDimension,
-                    result.getCategory(childDimension),
-                    categoryLabel,
-                    comparators.get(childDimension));
-
-        }
+        PivotTableData.Axis child = null;
+        /*
+        if (category instanceof ComplexCategory) {
+        	
+        	// handle nested categories (for attribute values) 
+        	for (DimensionCategory cat: ((ComplexCategory) category).getCategories()) {
+	        	child = axis.getChild(cat);
+	        	if (child == null) {
+	        		String categoryLabel = renderLabel(locale, childDimension, cat);
+	  	            child = axis.addChild(childDimension,
+	  	                    cat,
+	  	                    categoryLabel,
+	  	                    comparators.get(cat));
+	  	        }
+        	}
+        		 
+        	
+        } else {
+        */
+	        child = axis.getChild(category);
+	        if (child == null) {
+	
+	            String categoryLabel = childDimension.getLabel(category);
+	
+	            if (categoryLabel == null) {
+	                if (category instanceof LabeledDimensionCategory) {
+	                    categoryLabel = ((LabeledDimensionCategory) category).getLabel();
+	                } else {
+	                    categoryLabel = renderLabel(locale, childDimension, category);
+	                }
+	            }
+	           
+	            child = axis.addChild(childDimension,
+	                    result.getCategory(childDimension),
+	                    categoryLabel,
+	                    comparators.get(childDimension));
+	
+	        }
+        //}
         if (dimensionIterator.hasNext()) {
             return find(locale, child, dimensionIterator, comparators, result);
         } else {

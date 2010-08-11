@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
@@ -42,10 +41,9 @@ public class PartnerFilterPanel extends ContentPanel {
     	this.service = service;
         setHeading(I18N.CONSTANTS.filterByPartner());
         setIcon(IconImageBundle.ICONS.filter());
-        setBodyStyle("padding:5px");
         
         this.setLayout(new FitLayout());
-        this.setScrollMode(Style.Scroll.AUTO);
+        this.setScrollMode(Style.Scroll.NONE);
         this.setHeading(I18N.CONSTANTS.filterByPartner());
         this.setIcon(IconImageBundle.ICONS.filter());
 
@@ -71,8 +69,11 @@ public class PartnerFilterPanel extends ContentPanel {
 
         tree = new TreePanel<ModelData>(store);
         tree.setCheckable(true);
-        tree.setCheckNodes(TreePanel.CheckNodes.BOTH);
-        tree.setCheckStyle(TreePanel.CheckCascade.CHILDREN);
+        tree.setCheckNodes(TreePanel.CheckNodes.LEAF);
+        tree.setCheckStyle(TreePanel.CheckCascade.NONE);
+        tree.getStyle().setNodeCloseIcon(null);
+        tree.getStyle().setNodeOpenIcon(null);
+        tree.setBorders(true);
         tree.setDisplayProperty("name");
  
         add(tree);

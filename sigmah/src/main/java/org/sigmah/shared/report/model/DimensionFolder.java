@@ -3,20 +3,42 @@ package org.sigmah.shared.report.model;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 public class DimensionFolder extends BaseModelData {
-
+	
 	private DimensionType type;
-
-    public DimensionFolder(String name, DimensionType type, String id) {
+	private int depth;
+	private int id;
+	
+    public DimensionFolder(String name, DimensionType type, int depth, int id) {
+    	this.type = type;
+    	this.depth = depth;
+    	this.id = id;
+    	set("caption", name);
+		set("id", "folder_" + type + "_" + depth + "_" + id);
     	set("name", name);
-    	this.type= type;
-    	set("id",id);
     }
-  
-    public DimensionType getType() {
-		return type;
+    
+	public DimensionType getType() {
+		return this.type;
 	}
 
 	public void setType(DimensionType type) {
 		this.type = type;
 	}
+
+	public int getDepth() {
+		return depth;
+	}
+
+	public void setDepth(int depth) {
+		this.depth = depth;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 }

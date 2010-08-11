@@ -21,7 +21,10 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
+import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.shared.command.GetSchema;
@@ -43,14 +46,21 @@ public class IndicatorTreePanel extends ContentPanel {
     private TreePanel<ModelData> tree;
     private ToolBar toolBar;
     private StoreFilterField filter;
-
+    private AsyncMonitor monitor; 
+    
     public IndicatorTreePanel(Dispatcher service, final boolean multipleSelection) {
+    	this(service, multipleSelection, null);
+    }
+    
+    public IndicatorTreePanel(Dispatcher service, final boolean multipleSelection, AsyncMonitor monitor) {
         this.service = service;
-        this.setHeaderVisible(false);
+        //this.setHeaderVisible(false);
         this.setHeading(I18N.CONSTANTS.indicators());
         this.setIcon(IconImageBundle.ICONS.indicator());
         this.setLayout(new FitLayout());
-        this.setScrollMode(Style.Scroll.AUTO);
+        this.setScrollMode(Style.Scroll.NONE);
+        this.monitor = monitor;
+     
 
         loader = new BaseTreeLoader<ModelData>(new Proxy()) {
             @Override
@@ -207,6 +217,9 @@ public class IndicatorTreePanel extends ContentPanel {
         setTopComponent(toolBar);
     }
 
+    
+
+    
     private class Proxy implements DataProxy<List<ModelData>> {
 
         private SchemaDTO schema;
@@ -214,7 +227,7 @@ public class IndicatorTreePanel extends ContentPanel {
         public void load(DataReader<List<ModelData>> listDataReader, Object parent, final AsyncCallback<List<ModelData>> callback) {
 
             if (parent == null) {
-                service.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
+                service.execute(new GetSchema(), monitor, new AsyncCallback<SchemaDTO>() {
                     public void onFailure(Throwable caught) {
                         callback.onFailure(caught);
                     }

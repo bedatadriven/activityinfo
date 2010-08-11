@@ -34,16 +34,20 @@ public class Dimension extends BaseModelData implements Serializable {
 
     private List<DimensionCategory> ordering = new ArrayList<DimensionCategory>();
 
-
     /**
      * Required for GWT serialization
      */
     protected Dimension() {
-
     }
 
     public Dimension(DimensionType type) {
         this.type = type;
+    }
+    
+    public Dimension(String caption, DimensionType type) {
+        this.type = type;
+        set("caption", caption);
+        set("id", "dim_" + type);
     }
 
     public DimensionType getType() {

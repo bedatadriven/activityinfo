@@ -16,7 +16,7 @@ public enum DimensionType {
 	Status(SortOrder.DEFINED),
 	Indicator(SortOrder.DEFINED),
 	IndicatorCategory(SortOrder.DEFINED),
-	Attribute(SortOrder.NATURAL_VALUE);
+	AttributeGroup(SortOrder.NATURAL_VALUE);
 
 	private SortOrder sortOrder;
 
