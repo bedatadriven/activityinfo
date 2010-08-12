@@ -13,7 +13,7 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.common.widget.MappingComboBox;
 import org.sigmah.client.page.common.widget.MappingComboBoxBinding;
 
-public class AttributeGroupForm extends AbstractDesignForm {
+class AttributeGroupForm extends AbstractDesignForm {
 
     private FormBinding binding;
 

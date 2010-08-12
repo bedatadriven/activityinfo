@@ -17,7 +17,7 @@ import org.sigmah.shared.command.result.PagingResult;
  *
  * @param <T> The result class of this command.
  */
-public class PagingGetCommand<T extends PagingResult> extends GetListCommand<T> {
+public class PagingGetCommand<T extends PagingResult> extends GetListCommand<T>   {
 
     private int offset = 0;
     private int limit = -1;

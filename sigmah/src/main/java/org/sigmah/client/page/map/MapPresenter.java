@@ -6,6 +6,8 @@
 package org.sigmah.client.page.map;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.ImplementedBy;
+import com.google.inject.Inject;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
@@ -21,25 +23,22 @@ import org.sigmah.shared.command.GenerateElement;
 import org.sigmah.shared.command.RenderElement;
 import org.sigmah.shared.report.content.Content;
 import org.sigmah.shared.report.model.ReportElement;
-/*
+
+/**
+ * Map page Presenter
+ *
  * @author Alex Bertram
  */
-
 public class MapPresenter implements Page, ExportCallback, ActionListener {
-    public static final PageId Maps = new PageId("map");
 
+    public static final PageId PAGE_ID = new PageId("maps");
+
+    @ImplementedBy(MapPage.class)
     public interface View {
-
         public void bindPresenter(MapPresenter presenter);
-
-        public AsyncMonitor getSchemaLoadingMonitor();
-
         public AsyncMonitor getMapLoadingMonitor();
-
         public ReportElement getMapElement();
-
         void setContent(ReportElement element, Content result);
-
         boolean validate();
     }
 
@@ -48,6 +47,7 @@ public class MapPresenter implements Page, ExportCallback, ActionListener {
     private final Dispatcher service;
     private final View view;
 
+    @Inject
     public MapPresenter(PageId pageId, EventBus eventBus, Dispatcher service, final View view) {
         this.pageId = pageId;
         this.eventBus = eventBus;
@@ -70,23 +70,16 @@ public class MapPresenter implements Page, ExportCallback, ActionListener {
     }
 
     public void onRefresh() {
-
         if (view.validate()) {
-
             final ReportElement element = this.view.getMapElement();
-
             service.execute(new GenerateElement(element), view.getMapLoadingMonitor(), new AsyncCallback<Content>() {
-
                 public void onFailure(Throwable caught) {
-
                 }
-
                 public void onSuccess(Content result) {
                     view.setContent(element, result);
                 }
             });
         }
-
     }
 
     public PageId getPageId() {
@@ -106,16 +99,12 @@ public class MapPresenter implements Page, ExportCallback, ActionListener {
     }
 
     public void export(RenderElement.Format format) {
-
         if (view.validate()) {
-
             service.execute(new RenderElement(view.getMapElement(), format), view.getMapLoadingMonitor(),
                     new DownloadCallback(eventBus, "map"));
         }
-
     }
 
     public void shutdown() {
-
     }
 }

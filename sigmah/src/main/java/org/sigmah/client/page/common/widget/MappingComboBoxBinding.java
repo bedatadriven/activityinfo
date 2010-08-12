@@ -8,10 +8,12 @@ package org.sigmah.client.page.common.widget;
 import com.extjs.gxt.ui.client.binding.Converter;
 import com.extjs.gxt.ui.client.binding.FieldBinding;
 import com.extjs.gxt.ui.client.data.ModelData;
-/*
+
+/**
+ * Extension of FieldBinding to bind 
+ *
  * @author Alex Bertram
  */
-
 public class MappingComboBoxBinding extends FieldBinding {
 
     public MappingComboBoxBinding(final MappingComboBox field, String property) {

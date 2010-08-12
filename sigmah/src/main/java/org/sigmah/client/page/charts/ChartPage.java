@@ -44,23 +44,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Alex Bertram (akbertram@gmail.com)
+ *
+ * Page that allows the user to build and view a PivotChartElement
+ *
+ * @author Alex Bertram
  */
-public class ChartPage extends LayoutContainer implements Charter.View {
+public class ChartPage extends LayoutContainer implements ChartPagePresenter.View {
 
     private final EventBus eventBus;
     private final Dispatcher service;
 
-    private Charter presenter;
+    private ChartPagePresenter presenter;
 
     private ActionToolBar toolBar;
     private List<ToggleButton> chartTypeButtons;
 
-    private ToolBar dimBar;
     private ComboBox<Dimension> categoryCombo;
-    private ComboBox<Dimension> legendCombo;
 
-    private ChartPreviewOFC preview;
+    private ChartOFCView preview;
     private ContentPanel center;
     private PivotGridPanel gridPanel;
 
@@ -154,7 +155,7 @@ public class ChartPage extends LayoutContainer implements Charter.View {
 
     private void createChartPane() {
 
-        preview = new ChartPreviewOFC();
+        preview = new ChartOFCView();
         center.add(preview, new BorderLayoutData(Style.LayoutRegion.CENTER));
     }
 
@@ -172,7 +173,7 @@ public class ChartPage extends LayoutContainer implements Charter.View {
     }
 
     private void createDimBar() {
-        dimBar = new ToolBar();
+        ToolBar dimBar = new ToolBar();
         ListStore<Dimension> store = DimensionStoreFactory.create(service);
 
         dimBar.add(new LabelToolItem(I18N.CONSTANTS.categories()));
@@ -186,7 +187,7 @@ public class ChartPage extends LayoutContainer implements Charter.View {
         dimBar.add(new FillToolItem());
 
         dimBar.add(new LabelToolItem(I18N.CONSTANTS.legend()));
-        legendCombo = new ComboBox<Dimension>();
+        ComboBox<Dimension> legendCombo = new ComboBox<Dimension>();
         legendCombo.setForceSelection(true);
         legendCombo.setEditable(false);
         legendCombo.setStore(store);
@@ -197,7 +198,7 @@ public class ChartPage extends LayoutContainer implements Charter.View {
     }
 
     @Override
-    public void bindPresenter(Charter presenter) {
+    public void bindPresenter(ChartPagePresenter presenter) {
         this.presenter = presenter;
         this.toolBar.setListener(presenter);
     }
@@ -242,6 +243,4 @@ public class ChartPage extends LayoutContainer implements Charter.View {
         preview.setContent(element.getContent());
         gridPanel.setData(element);
     }
-
-
 }

@@ -5,41 +5,25 @@
 
 package org.sigmah.client.page.common.nav;
 
-import org.sigmah.client.AppEvents;
-import org.sigmah.client.EventBus;
-import org.sigmah.client.event.NavigationEvent;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.client.page.NavigationHandler;
-import org.sigmah.client.page.PageState;
-import org.sigmah.client.page.common.filter.AdminFilterPanel;
-import org.sigmah.client.page.common.filter.DateRangePanel;
-import org.sigmah.client.page.common.filter.IndicatorTreePanel;
-import org.sigmah.client.page.common.filter.PartnerFilterPanel;
-
-import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseTreeLoader;
 import com.extjs.gxt.ui.client.data.ModelIconProvider;
 import com.extjs.gxt.ui.client.data.ModelKeyProvider;
 import com.extjs.gxt.ui.client.data.TreeLoader;
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.TreePanelEvent;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import org.sigmah.client.AppEvents;
+import org.sigmah.client.EventBus;
+import org.sigmah.client.event.NavigationEvent;
+import org.sigmah.client.page.NavigationHandler;
+import org.sigmah.client.page.PageState;
 
 /**
- * User interface component that provides a hierarchial
+ * UI component that provides a hierarchial
  * list of navigation links.
  *
  * To use, you must implement {@link org.sigmah.client.page.common.nav.Navigator},
@@ -47,8 +31,6 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
  *
  */
 public class NavigationPanel extends ContentPanel {
-
-
     protected final EventBus eventBus;
 
     protected TreePanel<Link> tree;
@@ -59,7 +41,6 @@ public class NavigationPanel extends ContentPanel {
     protected Listener<BaseEvent> changeListener;
 
     public NavigationPanel(final EventBus eventBus, final Navigator navigator) {
-
         this.eventBus = eventBus;
 
         this.setHeading(navigator.getHeading());
@@ -100,8 +81,8 @@ public class NavigationPanel extends ContentPanel {
         tree.addListener(Events.OnClick, new Listener<TreePanelEvent<Link>>() {
             @Override
             public void handleEvent(TreePanelEvent<Link> tpe) {
-                if(tpe.getItem().getPlace() != null) {
-                    eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, tpe.getItem().getPlace()));
+                if(tpe.getItem().getPageState() != null) {
+                    eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, tpe.getItem().getPageState()));
                 }
             }
         });
@@ -125,7 +106,6 @@ public class NavigationPanel extends ContentPanel {
        
     }
     
-    
     public void shutdown() {
         eventBus.removeListener(NavigationHandler.NavigationAgreed, navListener);
         eventBus.removeListener(AppEvents.SchemaChanged, changeListener);
@@ -133,7 +113,7 @@ public class NavigationPanel extends ContentPanel {
 
     private void onNavigated(PageState place) {
         for(Link link : store.getAllItems()) {
-            if(link.getPlace() != null && link.getPlace().equals(place)) {
+            if(link.getPageState() != null && link.getPageState().equals(place)) {
                 ensureVisible(link);
             }
         }
@@ -163,5 +143,4 @@ public class NavigationPanel extends ContentPanel {
             parent = store.getParent(parent);
         }
     }
-
 }

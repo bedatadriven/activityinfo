@@ -13,7 +13,7 @@ import org.sigmah.client.SigmahInjector;
 import org.sigmah.client.page.*;
 
 /**
- * @author Alex Bertram (akbertram@gmail.com)
+ * @author Alex Bertram 
  */
 public class SigmahChartLoader implements PageLoader {
 
@@ -23,8 +23,8 @@ public class SigmahChartLoader implements PageLoader {
     public SigmahChartLoader(SigmahInjector injector, NavigationHandler pageManager, PageStateSerializer placeSerializer) {
         this.injector = injector;
 
-        pageManager.registerPageLoader(Charts.Charts, this);
-        placeSerializer.registerStatelessPlace(Charts.Charts, new ChartPageState());
+        pageManager.registerPageLoader(ChartPagePresenter.PAGE_ID, this);
+        placeSerializer.registerStatelessPlace(ChartPagePresenter.PAGE_ID, new ChartPageState());
     }
 
     @Override

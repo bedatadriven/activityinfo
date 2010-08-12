@@ -21,6 +21,8 @@ import org.sigmah.shared.report.model.MapIcon;
  */
 public class IconFactory {
 
+    private IconFactory() {}
+
     public static Icon createIcon(MapMarker marker) {
         if (marker instanceof IconMapMarker) {
             return createIconMapMarker((IconMapMarker) marker);
@@ -30,7 +32,6 @@ public class IconFactory {
             return Icon.DEFAULT_ICON;
         }
     }
-
 
     /**
      * Creates a Google Maps icon based on an ActivityInfo MapIcon

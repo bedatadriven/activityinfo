@@ -9,10 +9,18 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 
+/**
+ * ComboBox that wraps primitive values (integers, Strings, etc) with labels.
+ *
+ * This is a common case where we want to present a drop down list to the user so they can
+ * choose from a list of codes. We could use {@link com.extjs.gxt.ui.client.widget.form.SimpleComboBox},
+ * but then the user sees the full
+ *
+ * @param <T> the underlying (boxed) primitive type
+ */
 public class MappingComboBox<T> extends ComboBox<MappingComboBox.Wrapper<T>> {
 
     public static class Wrapper<T> extends BaseModelData {
-
         public Wrapper(T value, String label) {
             set("value", value);
             set("label", label);
@@ -25,7 +33,6 @@ public class MappingComboBox<T> extends ComboBox<MappingComboBox.Wrapper<T>> {
         @Override
         public int hashCode() {
             Object value = get("value");
-
             return value == null ? 0 : value.hashCode();
         }
 
@@ -44,9 +51,7 @@ public class MappingComboBox<T> extends ComboBox<MappingComboBox.Wrapper<T>> {
             if(value == null) {
                 return otherValue != null;
             }
-
             return !value.equals(otherValue);
-
         }
 
         public String getLabel() {
@@ -54,9 +59,7 @@ public class MappingComboBox<T> extends ComboBox<MappingComboBox.Wrapper<T>> {
         }
     }
 
-
 	private ListStore<Wrapper<T>> myStore;
-
 
 	public MappingComboBox() {
 		super();
@@ -104,8 +107,9 @@ public class MappingComboBox<T> extends ComboBox<MappingComboBox.Wrapper<T>> {
         return wrapper == null ? null : wrapper.getLabel();
     }
 
-
-
+    /**
+     * @return  the underlying primitive type
+     */
 	public T getMappedValue() {
 		if(getValue() == null) {
             return null;
@@ -113,5 +117,4 @@ public class MappingComboBox<T> extends ComboBox<MappingComboBox.Wrapper<T>> {
 
 		return getValue().getWrappedValue();
 	}
-
 }

@@ -6,10 +6,12 @@
 package org.sigmah.client.page.charts;
 
 import org.sigmah.shared.report.content.PivotChartContent;
-/*
+
+/**
+ * Interface to a view of a PivotChartElement
+ *
  * @author Alex Bertram
  */
-
-public interface ChartPreview {
+public interface ChartView {
     void setContent(PivotChartContent content);
 }

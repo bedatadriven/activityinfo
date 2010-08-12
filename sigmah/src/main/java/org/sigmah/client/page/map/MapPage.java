@@ -11,6 +11,7 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.google.inject.Inject;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.i18n.I18N;
@@ -23,14 +24,17 @@ import org.sigmah.shared.command.RenderElement;
 import org.sigmah.shared.report.content.Content;
 import org.sigmah.shared.report.model.ReportElement;
 
+/**
+ * Map Page View
+ */
 public class MapPage extends ContentPanel implements MapPresenter.View {
-
     private MapPresenter presenter;
 
     private final MapForm form;
     private MapPreview previewPanel;
     private ActionToolBar toolBar;
 
+    @Inject
     public MapPage(MapForm form) {
 
         setLayout(new BorderLayout());
@@ -40,7 +44,6 @@ public class MapPage extends ContentPanel implements MapPresenter.View {
         createFormPane(form);
         createPreview();
         createToolBar();
-
     }
 
     private void createFormPane(MapForm form) {
@@ -60,12 +63,8 @@ public class MapPage extends ContentPanel implements MapPresenter.View {
     }
 
     protected void createToolBar() {
-
         toolBar = new ActionToolBar(presenter);
-
-        toolBar.addButton(UIActions.refresh, I18N.CONSTANTS.refreshPreview(),
-                IconImageBundle.ICONS.refresh());
-
+        toolBar.addRefreshButton();
         toolBar.add(new ExportMenuButton(RenderElement.Format.PowerPoint, new ExportCallback() {
             public void export(RenderElement.Format format) {
                 if (presenter != null) {
@@ -73,20 +72,14 @@ public class MapPage extends ContentPanel implements MapPresenter.View {
                 }
             }
         }));
-
         toolBar.addButton(UIActions.exportData, I18N.CONSTANTS.exportData(),
                 IconImageBundle.ICONS.excel());
-
         previewPanel.setTopComponent(toolBar);
     }
 
     public void bindPresenter(MapPresenter presenter) {
         this.presenter = presenter;
         toolBar.setListener(presenter);
-    }
-
-    public AsyncMonitor getSchemaLoadingMonitor() {
-        return new MaskingAsyncMonitor(this, I18N.CONSTANTS.loading());
     }
 
     public AsyncMonitor getMapLoadingMonitor() {

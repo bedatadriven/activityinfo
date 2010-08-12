@@ -7,11 +7,13 @@ package org.sigmah.client.page.config.design;
 
 import com.extjs.gxt.ui.client.binding.FormBinding;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
-/*
+
+/**
+ * Base class for design forms 
+ *
  * @author Alex Bertram
  */
-
-public abstract class AbstractDesignForm extends FormPanel {
+abstract class AbstractDesignForm extends FormPanel {
 
 
     public abstract FormBinding getBinding();

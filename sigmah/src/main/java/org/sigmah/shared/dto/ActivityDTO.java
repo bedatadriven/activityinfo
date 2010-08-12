@@ -32,6 +32,9 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO {
         setReportingFrequency(REPORT_ONCE);
     }
 
+    /**
+     * Constructs a DTO with the given properties
+     */
     public ActivityDTO(Map<String,Object> properties) {
         super(properties);  
     }
@@ -48,53 +51,84 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO {
         this.setAttributeGroups(model.getAttributeGroups());
     }
 
+    /**
+     *
+     * @param id the Activity's id
+     * @param name the Activity's name
+     */
     public ActivityDTO(int id, String name) {
         this();
         setId(id);
         setName(name);
     }
 
+    /**
+     *
+     * @param db the UserDatabaseDTO to which this Activity belongs
+     */
     public ActivityDTO(UserDatabaseDTO db) {
         setDatabase(db);
     }
 
+    /**
+     *
+     * @return this Activity's id
+     */
     public int getId() {
         return (Integer)get("id");
     }
 
+    /**
+     * Sets this Activity's id
+     */
     public void setId(int id) {
         set("id", id);
     }
 
 
+    /**
+     * Sets this Activity's name
+     */
     public void setName(String value) {
         set("name", value);
     }
 
+    /**
+     * @return this Activity's name
+     */
     public String getName(){
         return get("name");
     }
 
+    /**
+     * @return the database to which this Activity belongs
+     */
     public UserDatabaseDTO getDatabase() {
         return database;
     }
 
+    /**
+     * Sets the database to which this Activity belongs
+     */
     public void setDatabase(UserDatabaseDTO database) {
         this.database = database;
     }
 
-    public List<IndicatorDTO> getIndicators()
-    {
+    /**
+     * @return a list of this Activity's indicators
+     */
+    public List<IndicatorDTO> getIndicators() {
         return indicators;
     }
 
-    public void setIndicators(List<IndicatorDTO> indicators)
-    {
+    /**
+     * Sets this Activity's Indicator
+     */
+    public void setIndicators(List<IndicatorDTO> indicators) {
         this.indicators = indicators;
     }
 
-    public List<AttributeGroupDTO> getAttributeGroups()
-    {
+    public List<AttributeGroupDTO> getAttributeGroups() {
         return attributeGroups;
     }
 
@@ -110,30 +144,52 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO {
         return (Boolean)get("assessment");
     }
 
-    public void setReportingFrequency(int value) {
-        set("reportingFrequency", value);
+    /**
+     * Sets the ReportingFrequency of this Activity, either
+     * <code>REPORT_ONCE</code> or <code>REPORT_MONTHLY</code>
+     */
+    public void setReportingFrequency(int frequency) {
+        set("reportingFrequency", frequency);
     }
 
-    public int getReportingFrequency()
-    {
+    /**
+     * @return the ReportingFrequency of this Activity, either
+     * <code>REPORT_ONCE</code> or <code>REPORT_MONTHLY</code>
+     */
+    public int getReportingFrequency() {
         return (Integer)get("reportingFrequency");
     }
 
-
-    public void setLocationTypeId(int id) {
-        set("locationTypeId", id);
+    /**
+     * Sets the id of the LocationType of the Location to which this Site
+     * belongs.
+     */
+    public void setLocationTypeId(int locationId) {
+        set("locationTypeId", locationId);
 
     }
 
+    /**
+     * @return  the id of the LocationType of the Location to which this Site belongs
+     */
     public int getLocationTypeId() {
         return (Integer)get("locationTypeId");
     }
 
+    /**
+     *
+     * @return the
+     */
     public LocationTypeDTO getLocationType() {
         return getDatabase().getCountry().getLocationTypeById(getLocationTypeId());
     }
 
 
+    /**
+     * Searches the list of Attributes for the AttributeDTO with the given id
+     *
+     * @return the AttributeDTO matching the given id, or null if no such AttributeDTO was found.
+     */
     public AttributeDTO getAttributeById(int id) {
         for(AttributeGroupDTO group : attributeGroups) {
             AttributeDTO attribute = SchemaDTO.getById(group.getAttributes(), id);
@@ -144,6 +200,11 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO {
         return null;
     }
 
+    /**
+     * Searches this Activity's list of Indicators for the IndicatorDTO with the given id.
+     *
+     * @return the matching IndicatorDTO or null if nothing was found
+     */
     public IndicatorDTO getIndicatorById(int indicatorId) {
         for(IndicatorDTO indicator : indicators) {
             if(indicator.getId() == indicatorId) {
@@ -153,14 +214,26 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO {
         return null;
     }
 
+    /**
+     *
+     * @return this Activity's category
+     */
     public String getCategory() {
         return get("category");
     }
 
+    /**
+     * Sets this Activity's category
+     */
     public void setCategory(String category) {
         set("category", category);
     }
 
+    /**
+     * Convenience method that creates a list of IndicatorGroups from this Activity's list
+     * of Indicators, based on the Indicator's category property.
+     *
+     */
     public List<IndicatorGroup> groupIndicators() {
         List<IndicatorGroup> groups = new ArrayList<IndicatorGroup>();
         Map<String, IndicatorGroup> map = new HashMap<String, IndicatorGroup>();
@@ -178,10 +251,17 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO {
         return groups;
     }
 
+    /**
+     *
+     * @return the id of the MapIcon associated with this Activity
+     */
     public String getMapIcon() {
         return get("mapIcon");
     }
 
+    /**
+     * Sets the id of the MapIcon to be associated with this Activity
+     */
     public void setMapIcon(String mapIcon) {
         set("mapIcon", mapIcon);
     }
@@ -212,14 +292,18 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO {
     }
 
 
+    /**
+     * Searches this Activity's list of AttributeGroups for an AttributeGroupDTO with
+     * the given id
+
+     * @return  the matching AttributeGroupDTO or null if there are no matches
+     */
     public AttributeGroupDTO getAttributeGroupById(int id) {
         for(AttributeGroupDTO group : attributeGroups) {
             if(group.getId()==id) {
                 return group;
             }
-
         }
-
         return null;
     }
 }

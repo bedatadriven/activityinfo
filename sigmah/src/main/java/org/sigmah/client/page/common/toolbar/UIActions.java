@@ -6,9 +6,13 @@
 package org.sigmah.client.page.common.toolbar;
 
 /**
+ * Standardizes ids of common commands throughout the application.
+ *
  * @author Alex Bertram (akbertram@gmail.com)
  */
 public class UIActions {
+
+    private UIActions() {}
 
     public static final String add = "add";
     

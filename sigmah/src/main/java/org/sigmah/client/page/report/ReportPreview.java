@@ -29,10 +29,7 @@ import org.sigmah.shared.dto.ReportDefinitionDTO;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.ReportFrequency;
 
-/**
- * @author Alex Bertram
- */
-public class ReportPreview extends ContentPanel implements ReportPreviewPresenter.View {
+class ReportPreview extends ContentPanel implements ReportPreviewPresenter.View {
     private ReportPreviewPresenter presenter;
 
     private static class DateValue extends BaseModelData {
@@ -63,7 +60,6 @@ public class ReportPreview extends ContentPanel implements ReportPreviewPresente
     private Html previewHtml;
     private DateUtil dateUtil;
     private DateRange dateRange;
-
 
     public ReportPreview() {
         dateUtil = new DateUtilGWTImpl();
@@ -104,7 +100,6 @@ public class ReportPreview extends ContentPanel implements ReportPreviewPresente
 
     public void setActionEnabled(String actionId, boolean enabled) {
         toolBar.setActionEnabled(actionId, enabled);
-
     }
 
     public DateRange getDateRange() {
@@ -172,7 +167,6 @@ public class ReportPreview extends ContentPanel implements ReportPreviewPresente
 
     public void setPreviewHtml(String html) {
         previewHtml.setHtml(html);
-
     }
 
     public AsyncMonitor getLoadingMonitor() {

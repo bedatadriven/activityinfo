@@ -17,7 +17,6 @@ import java.util.List;
  * @author Alex Bertram
  */
 public final class UserDatabaseDTO extends BaseModel implements EntityDTO {
-
     private CountryDTO country;
 	private List<PartnerDTO> partners = new ArrayList<PartnerDTO>(0);
 	private List<ActivityDTO> activities = new ArrayList<ActivityDTO>(0);
@@ -30,84 +29,147 @@ public final class UserDatabaseDTO extends BaseModel implements EntityDTO {
         setName(name);
     }
 
+    /**
+     * @return  this UserDatabase's id
+     */
     public int getId() {
         return (Integer)get("id");
     }
 
+    /**
+     * Sets this UserDatabase's id
+     */
     public void setId(int id) {
         set("id", id);
     }
 
+    /**
+     * 
+     * @return the name of this UserDatabase
+     */
     public String getName() {
 		return get("name");
 	}
-	
-	public void setName(String value) {
-		set("name", value);
+
+    /**
+     * Sets the name of this UserDatabase
+     */
+	public void setName(String name) {
+		set("name", name);
 	}
-	
-	public void setOwnerName(String value) {
-		set("ownerName", value);
+
+    /**
+     * Sets the name of this UserDatabase's owner
+     * @param ownerName
+     */
+	public void setOwnerName(String ownerName) {
+		set("ownerName", ownerName);
 	}
-	
+
+    /**
+     * 
+     * @return the name of this UserDatabase's owner
+     */
 	public String getOwnerName() {
 		return get("ownerName");
 	}
-	
-	public void setOwnerEmail(String value) { 
-		set("ownerEmail", value);
+
+    /**
+     * Sets the email of this UserDatabase's owner
+     */
+	public void setOwnerEmail(String ownerEmail) { 
+		set("ownerEmail", ownerEmail);
 	}
-	
+
+    /**
+     * @return the email of this UserDatabase's owner
+     */
 	public String getOwnerEmail() {
 		return get("ownerEmail");
 	}
 
+    /**
+     * Sets the full, descriptive name of this UserDatabase
+     * 
+     */
 	public void setFullName(String fullName) {
 		set("fullName", fullName);
 	}
-	
+
+    /**
+     * Gets the full, descriptive name of this UserDatabase
+     */
 	public String getFullName() {
 		return get("fullName");
 	}
 
+    /**
+     * @return this list of ActivityDTOs that belong to this UserDatabase
+     */
 	public List<ActivityDTO> getActivities() {
 		return activities;
 	}
-	
+
+    /**
+     * @param activities  sets the list of Activities in this UserDatabase
+     */
 	public void setActivities(List<ActivityDTO> activities) {
 		this.activities = activities;
 	}
-	
+
+    /**
+     * 
+     * @return the Country in which this UserDatabase is set
+     */
 	public CountryDTO getCountry() 	{
 		return country;
 	}
 
-	public void setCountry(CountryDTO value) {
-		country = value;
+    /**
+     * Sets the Country to which this UserDatabase belongs 
+     */
+	public void setCountry(CountryDTO country) {
+		country = country;
 	}
-	
+
+    /**
+     * @return the list of Partners who belong to this UserDatabase
+     */
 	public List<PartnerDTO> getPartners() {
 		return partners;
 	}
-	
+
+    /**
+     * Sets the list of Partners who belong to this UserDatabase
+     */
 	public void setPartners(List<PartnerDTO> partners) {
 		this.partners = partners;
 	}
-		
+
+    /**
+     * Sets the permission of the current user to view all partner's data in this UserDatabase.
+     * See {@link org.sigmah.server.domain.UserPermission#setAllowViewAll(boolean)}
+     */
 	public void setViewAllAllowed(boolean value) {
 		set("viewAllAllowed", value);
 	}
 
     /**
      * @return  true if the client receiving the DTO is authorized to view data
-     * from all partners in this UserDatabase
+     * from all partners in this UserDatabase.
+     * See {@link org.sigmah.server.domain.UserPermission#setAllowViewAll(boolean)}
      */
 	public boolean isViewAllAllowed() {
 		return (Boolean)get("viewAllAllowed");
 	}
 
-	public void setEditAllowed(boolean value) {
-		set("editAllowed", value);		
+    /**
+     * Sets the permission of the current user to edit data on behalf of the Partner
+     * in this UserDatabase to which the current user belongs.
+     * 
+     */
+	public void setEditAllowed(boolean allowed) {
+		set("editAllowed", allowed);		
 	}
 
     /**
@@ -118,8 +180,12 @@ public final class UserDatabaseDTO extends BaseModel implements EntityDTO {
 		return (Boolean)get("editAllowed");
 	}
 
-	public void setDesignAllowed(boolean value) {
-		set("designAllowed", value);                                     
+    /**
+     * Sets the permission of the current user to design this UserDatabase. See
+     * {@link org.sigmah.server.domain.UserPermission#setAllowDesign(boolean)}
+     */
+	public void setDesignAllowed(boolean allowed) {
+		set("designAllowed", allowed);
 	}
 
     /**
@@ -130,6 +196,10 @@ public final class UserDatabaseDTO extends BaseModel implements EntityDTO {
 		return (Boolean)get("designAllowed");
 	}
 
+    /**
+     * Sets the permission of the current user to edit data in this UserDatabase on behalf of all
+     * partners.
+     */
 	public void setEditAllAllowed(boolean value) {
 		set("editAllAllowed", value);
 	}
@@ -142,18 +212,35 @@ public final class UserDatabaseDTO extends BaseModel implements EntityDTO {
 		return (Boolean)get("editAllAllowed");
 	}
 
+    /**
+     * @return true if current user is allowed to make changes to user permissions on behalf of the
+     * Partner to which they belong
+     */
     public boolean isManageUsersAllowed() {
         return (Boolean) get("manageUsersAllowed");
     }
 
+    /**
+     * Sets the permission of the current user to make changes to user permissions on behalf of the
+     * Partner to which they belong in this UserDatabase.
+     *
+     */
     public void setManageUsersAllowed(boolean allowed) {
         set("manageUsersAllowed", allowed);
     }
 
+    /**
+     * @return true if the current user is allowed to make changes to user permissions on behalf of all
+     * Partners in this UserDatabase
+     */
     public boolean isManageAllUsersAllowed() {
         return (Boolean)get("manageAllUsersAllowed");
     }
 
+    /**
+     * Sets the permission of the current user to modify user permissions for this UserDatabase on behalf
+     * of all Partners in this UserDatabase
+     */
     public void setManageAllUsersAllowed(boolean allowed) {
         set("manageAllUsersAllowed", allowed);
     }
@@ -172,8 +259,11 @@ public final class UserDatabaseDTO extends BaseModel implements EntityDTO {
         return (Integer) get("myPartnerId");
     }
 
-    public void setMyPartnerId(int id) {
-        set("myPartnerId",id);
+    /**
+     *  Sets the id of the Partner to which the current user belongs
+     */
+    public void setMyPartnerId(int partnerId) {
+        set("myPartnerId",partnerId);
     }
 
     /**
@@ -182,7 +272,10 @@ public final class UserDatabaseDTO extends BaseModel implements EntityDTO {
 	public boolean getAmOwner() {
 		return (Boolean)get("amOwner");
 	}
-	
+
+    /**
+     * Sets the flag to determine whether the current user is the owner of this database.
+     */
 	public void setAmOwner(boolean value) {
 		set("amOwner", value);
 	}
@@ -191,6 +284,12 @@ public final class UserDatabaseDTO extends BaseModel implements EntityDTO {
         return "UserDatabase";
     }
 
+    /**
+     * Searches this UserDatabase's list of Partners for the PartnerDTO with the given
+     * id.
+     * 
+     * @return  the matching UserDatabaseDTO or null if no matches
+     */
     public PartnerDTO getPartnerById(int id) {
         for(PartnerDTO partner : getPartners()){
             if(partner.getId() == id) {
@@ -199,5 +298,4 @@ public final class UserDatabaseDTO extends BaseModel implements EntityDTO {
         }
         return null;
     }
-
 }

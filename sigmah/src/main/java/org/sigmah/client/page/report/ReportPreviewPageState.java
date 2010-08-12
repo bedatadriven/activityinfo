@@ -11,12 +11,13 @@ import org.sigmah.client.page.PageStateParser;
 
 import java.util.Arrays;
 import java.util.List;
-/*
+
+/**
+ * Page state object for the ReportPreview page
+ *
  * @author Alex Bertram
  */
-
 public class ReportPreviewPageState implements PageState {
-
     private int reportId;
 
     public ReportPreviewPageState(int reportId) {
@@ -39,12 +40,7 @@ public class ReportPreviewPageState implements PageState {
         return reportId;
     }
 
-    public void setReportId(int reportId) {
-        this.reportId = reportId;
-    }
-
     public static class Parser implements PageStateParser {
-
         public PageState parse(String token) {
             return new ReportPreviewPageState(Integer.parseInt(token));
         }

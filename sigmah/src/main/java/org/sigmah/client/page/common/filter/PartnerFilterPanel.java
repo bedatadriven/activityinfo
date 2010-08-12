@@ -1,10 +1,12 @@
 package org.sigmah.client.page.common.filter;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.*;
+import com.extjs.gxt.ui.client.store.TreeStore;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
@@ -13,25 +15,18 @@ import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.BaseTreeLoader;
-import com.extjs.gxt.ui.client.data.DataProxy;
-import com.extjs.gxt.ui.client.data.DataReader;
-import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.data.ModelKeyProvider;
-import com.extjs.gxt.ui.client.data.TreeLoader;
-import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
+ * UI Component that allows the user to choose a list of partens
+ * on which to restrict the query.
+ *
  * @author JDH
  */
-
 public class PartnerFilterPanel extends ContentPanel {
-
 	private TreeLoader<ModelData> loader;
 	private TreeStore<ModelData> store;
 	private TreePanel<ModelData> tree;

@@ -5,6 +5,7 @@
 
 package org.sigmah.shared.report.content;
 
+import org.sigmah.shared.map.HasLatLng;
 import org.sigmah.shared.report.model.TableColumn;
 
 import java.io.Serializable;
@@ -84,7 +85,7 @@ public class TableData implements Serializable {
      * row in the table.
      *
      */
-    public static class Row implements SiteGeoData, Serializable {
+    public static class Row implements HasLatLng, Serializable {
 
         private Row() {
 

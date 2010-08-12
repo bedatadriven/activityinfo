@@ -9,15 +9,15 @@ import com.google.gwt.inject.client.AbstractGinModule;
 import com.google.inject.Singleton;
 import org.sigmah.client.dispatch.DispatchEventSource;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.dispatch.RemoteServiceProvider;
 import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.dispatch.remote.RemoteDispatcher;
-import org.sigmah.client.inject.RemoteServiceProvider;
 import org.sigmah.client.inject.Root;
 import org.sigmah.client.inject.SigmahAuthProvider;
 import org.sigmah.client.page.Frame;
 import org.sigmah.client.page.PageStateSerializer;
 import org.sigmah.client.page.charts.ChartPage;
-import org.sigmah.client.page.charts.Charter;
+import org.sigmah.client.page.charts.ChartPagePresenter;
 import org.sigmah.client.page.common.GalleryPage;
 import org.sigmah.client.page.common.GalleryView;
 import org.sigmah.client.util.state.GXTStateManager;
@@ -52,6 +52,6 @@ public class SigmahModule extends AbstractGinModule {
         bind(GalleryView.class).to(GalleryPage.class);
         
         // Required by the 'Charts' page
-        bind(Charter.View.class).to(ChartPage.class);
+        bind(ChartPagePresenter.View.class).to(ChartPage.class);
     }
 }

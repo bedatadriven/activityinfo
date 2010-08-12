@@ -15,11 +15,9 @@ import com.google.gwt.user.client.rpc.InvocationException;
 import com.google.gwt.user.client.rpc.StatusCodeException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.sigmah.client.AppEvents;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.*;
-import org.sigmah.client.dispatch.remote.cache.CommandProxyResult;
-import org.sigmah.client.event.ConnectionEvent;
+import org.sigmah.client.dispatch.remote.cache.ProxyResult;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.RemoteCommandServiceAsync;
 import org.sigmah.shared.command.result.CommandResult;
@@ -173,7 +171,7 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
      * @return
      */
     private boolean executionWithProxySuccessful(CommandRequest request) {
-        CommandProxyResult r = proxyManager.execute(request.getCommand());
+        ProxyResult r = proxyManager.execute(request.getCommand());
         if (!r.couldExecute) {
             return false;
         }
@@ -221,7 +219,6 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
 
         if (!connected) {
             connected = true;
-            eventBus.fireEvent(AppEvents.ConnectionStatusChange, new ConnectionEvent(connected));
         }
 
         /*
@@ -295,7 +292,6 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
     private void onConnectionProblem(List<CommandRequest> executingCommands) {
         if (connected) {
             connected = false;
-            eventBus.fireEvent(AppEvents.ConnectionStatusChange, new ConnectionEvent(connected));
         }
 
         for (CommandRequest cmd : executingCommands) {

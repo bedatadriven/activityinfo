@@ -27,12 +27,12 @@ public class CoordFieldSet extends AbstractFieldSet implements MapPresenter.View
     public void init(MapPresenter presenter) {
         this.presenter = presenter;
         
-        latField = new CoordinateField(CoordinateField.LATITUDE);
+        latField = new CoordinateField(CoordinateField.Axis.LATITUDE);
         latField.setFieldLabel(I18N.CONSTANTS.latitude());
         latField.setName("y");
         add(latField);
 
-        lngField = new CoordinateField(CoordinateField.LONGITUDE);
+        lngField = new CoordinateField(CoordinateField.Axis.LONGITUDE);
         lngField.setFieldLabel(I18N.CONSTANTS.longitude());
         lngField.setName("x");
         add(lngField);

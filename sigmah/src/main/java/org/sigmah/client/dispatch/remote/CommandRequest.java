@@ -23,7 +23,7 @@ import java.util.List;
  *
  * @author Alex Bertram
  */
-public class CommandRequest {
+class CommandRequest {
 
 
     /**

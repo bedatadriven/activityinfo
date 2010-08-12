@@ -13,13 +13,15 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.google.inject.Singleton;
 
 /**
- * @author Alex Bertram (akbertram@gmail.com)
+ * An EventBus implementation that logs all published events.
+ * 
+ * @author Alex Bertram
  */
 @Singleton
 public class LoggingEventBus extends BaseObservable implements EventBus {
 
-
     public LoggingEventBus() {
+        super();
         Log.trace("LoggingEventBus: initialized");
     }
 
@@ -29,21 +31,15 @@ public class LoggingEventBus extends BaseObservable implements EventBus {
 	
     @Override
     public boolean fireEvent(EventType eventType, BaseEvent be) {
-
         Log.debug("EventBus: " + eventType.toString() + ": " + be.toString());
-
-        boolean doEvent = super.fireEvent(eventType, be);
-
-        return doEvent;
+        return super.fireEvent(eventType, be);
     }
 
     @Override
     protected void callListener(Listener<BaseEvent> listener, BaseEvent be) {
-
         try {
             super.callListener(listener, be);
         } catch (Exception e) {
-             
             // don't allow one misbehaving component to throw
             // everything off
             Log.error("EventBus: " + listener.getClass().toString() + " threw an exception while receiving the event " +

@@ -5,7 +5,6 @@
 
 package org.sigmah.client.page.entry;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -20,7 +19,6 @@ import org.sigmah.client.page.common.filter.DateRangePanel;
 import org.sigmah.client.page.common.filter.PartnerFilterPanel;
 import org.sigmah.client.page.common.nav.NavigationPanel;
 import org.sigmah.client.page.common.widget.VSplitFilteredFrameSet;
-import org.sigmah.client.page.common.widget.VSplitFrameSet;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.SchemaDTO;
@@ -67,7 +65,6 @@ public class DataEntryLoader implements PageLoader {
 
             @Override
             public void onFailure(Throwable throwable) {
-
                 callback.onFailure(throwable);
             }
         });
@@ -125,13 +122,11 @@ public class DataEntryLoader implements PageLoader {
                     grid.addSouthTab(detailsTab);
                     editor.addSubComponent(detailsPresenter);
                 }
-                //  if(Maps.isLoaded()) {     load the maps api on render in SiteMap
                 SiteMap map = new SiteMap(injector.getEventBus(), injector.getService(),
                         activity);
                 editor.addSubComponent(map);
                 grid.addSidePanel(I18N.CONSTANTS.map(), IconImageBundle.ICONS.map(), map);
 
-                //  }
                 editor.go((SiteGridPageState) place, activity);
                 callback.onSuccess(editor);
 

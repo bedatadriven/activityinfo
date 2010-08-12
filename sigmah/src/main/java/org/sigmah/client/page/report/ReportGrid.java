@@ -36,11 +36,8 @@ import org.sigmah.shared.report.model.ReportFrequency;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Alex Bertram (akbertram@gmail.com)
- */
-public class ReportGrid extends AbstractEditorGridView<ReportDefinitionDTO, ReportHomePresenter>
-        implements ReportHomePresenter.View {
+class ReportGrid extends AbstractEditorGridView<ReportDefinitionDTO, ReportListPagePresenter>
+        implements ReportListPagePresenter.View {
 
     private MappingComboBox<Integer> dayCombo;
     private String[] weekdays;
@@ -57,7 +54,7 @@ public class ReportGrid extends AbstractEditorGridView<ReportDefinitionDTO, Repo
         numberFormat = NumberFormat.getFormat("0");
     }
 
-    public void init(ReportHomePresenter presenter, ListStore<ReportDefinitionDTO> store) {
+    public void init(ReportListPagePresenter presenter, ListStore<ReportDefinitionDTO> store) {
         super.init(presenter, store);
     }
 

@@ -9,10 +9,16 @@ package org.sigmah.client.page.common.widget;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import org.sigmah.client.i18n.I18N;
 
+/**
+ * GXT Field for Geographical coordinates. The type of the field is double,
+ * but users can enter coordinates in practically any format, which are converted on the fly.
+ */
 public class CoordinateField extends TextField<Double> {
 
-	public final static int LATITUDE = 1;
-	public final static int LONGITUDE = 2;
+    public enum Axis {
+        LATITUDE,
+        LONGITUDE
+    }
 
     /**
      * Because of the conversion between DMS and degrees decimal,
@@ -28,11 +34,13 @@ public class CoordinateField extends TextField<Double> {
     public final static double DELTA = 0.00001;
 	
 	private CoordinateEditor editor;
-	
-	
-	public CoordinateField(int axis) {
+
+    /**
+     * @param axis
+     */
+	public CoordinateField(Axis axis) {
 		super();
-        if(axis == LATITUDE) {
+        if(axis == Axis.LATITUDE) {
             editor = new CoordinateEditor(I18N.CONSTANTS.southHemiChars(), I18N.CONSTANTS.northHemiChars());
         } else {
             editor = new CoordinateEditor(I18N.CONSTANTS.westHemiChars(), I18N.CONSTANTS.eastHemiChars());
@@ -40,9 +48,15 @@ public class CoordinateField extends TextField<Double> {
 		this.setPropertyEditor(editor);
         this.setValidator(editor);
         this.setValidateOnBlur(true);
-        
 	}
 
+    /**
+     * Sets the bounds for this field 
+     * @param name the name of the bounds to present to users in the event of violation,
+     * (e.g. "Kapisa Province Boundary"
+     * @param minValue minimum allowed value for this field
+     * @param maxValue maximum allowed value for this field
+     */
 	public void setBounds(String name, double minValue, double maxValue) {
 		editor.setMinValue(minValue - DELTA);
 		editor.setMaxValue(maxValue + DELTA);

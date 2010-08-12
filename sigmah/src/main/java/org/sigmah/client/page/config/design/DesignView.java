@@ -46,12 +46,12 @@ import org.sigmah.shared.dto.*;
 
 import java.util.ArrayList;
 import java.util.List;
-/*
+
+/**
  * @author Alex Bertram
  */
-
-public class DesignTree extends AbstractEditorTreeGridView<ModelData, Designer>
-        implements Designer.View {
+public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPresenter>
+        implements DesignPresenter.View {
 
     protected final Dispatcher service;
 
@@ -61,12 +61,12 @@ public class DesignTree extends AbstractEditorTreeGridView<ModelData, Designer>
     protected UserDatabaseDTO db;
 
     @Inject
-    public DesignTree(Dispatcher service) {
+    public DesignView(Dispatcher service) {
         this.service = service;
     }
 
     @Override
-    public void init(Designer presenter, UserDatabaseDTO db, TreeStore store) {
+    public void init(DesignPresenter presenter, UserDatabaseDTO db, TreeStore store) {
 
         this.db = db;
 

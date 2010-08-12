@@ -7,11 +7,17 @@ package org.sigmah.client.dispatch.callback;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+/**
+ * Convenience callback class for commands that do not
+ * expect error. (Connection failures are handled at higher levels)
+ *
+ * @param <T>
+ */
 public abstract class Got<T> implements AsyncCallback<T> {
 
     @Override
     public void onFailure(Throwable arg0) {
-
+      /* No op. Errors are handled at higher levels */
     }
 
     @Override

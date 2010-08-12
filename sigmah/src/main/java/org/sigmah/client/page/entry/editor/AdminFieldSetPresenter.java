@@ -8,7 +8,7 @@ package org.sigmah.client.page.entry.editor;
 import com.extjs.gxt.ui.client.store.ListStore;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.loader.ListCmdLoader;
-import org.sigmah.client.page.common.AdminBoundsHelper;
+import org.sigmah.client.map.AdminBoundsHelper;
 import org.sigmah.shared.command.GetAdminEntities;
 import org.sigmah.shared.command.result.AdminEntityResult;
 import org.sigmah.shared.dto.*;
@@ -271,7 +271,7 @@ public class AdminFieldSetPresenter {
 
         // update bounds
         BoundingBoxDTO oldBounds = bounds;
-        bounds = AdminBoundsHelper.calculate(currentActivity, levels, new AdminBoundsHelper.Getter() {
+        bounds = AdminBoundsHelper.calculate(currentActivity, levels, new AdminBoundsHelper.EntityAccessor() {
             public AdminEntityDTO get(int levelId) {
                 return selection.get(levelId);
             }
@@ -280,7 +280,7 @@ public class AdminFieldSetPresenter {
         if (((bounds == null) != (oldBounds == null) ||
                 ((bounds != null && !bounds.equals(oldBounds))))) {
 
-            boundsName = AdminBoundsHelper.name(currentActivity, bounds, levels, new AdminBoundsHelper.Getter() {
+            boundsName = AdminBoundsHelper.name(bounds, levels, new AdminBoundsHelper.EntityAccessor() {
                 public AdminEntityDTO get(int levelId) {
                     return selection.get(levelId);
                 }

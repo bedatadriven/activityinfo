@@ -32,11 +32,5 @@ public class AccountPanel extends FormPanel implements AccountEditor.View {
         localeCombo.setFieldLabel(I18N.CONSTANTS.locale());
         localeCombo.setDisplayField("name");
         localeCombo.setValueField("code");
-
-        // this.add(userInfoSet);
-
-
     }
-
-
 }

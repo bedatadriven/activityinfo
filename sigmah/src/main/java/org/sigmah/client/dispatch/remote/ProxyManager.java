@@ -9,7 +9,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import org.sigmah.client.dispatch.CommandProxy;
 import org.sigmah.client.dispatch.DispatchEventSource;
 import org.sigmah.client.dispatch.DispatchListener;
-import org.sigmah.client.dispatch.remote.cache.CommandProxyResult;
+import org.sigmah.client.dispatch.remote.cache.ProxyResult;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.result.CommandResult;
 
@@ -20,7 +20,7 @@ import java.util.Map;
 
 /**
  * Utility class that maintains a list of {@link DispatchListener}s and
- * {@link CommandProxy}
+ * {@link org.sigmah.client.dispatch.CommandProxy}
  */
 public class ProxyManager implements DispatchEventSource {
 
@@ -89,7 +89,7 @@ public class ProxyManager implements DispatchEventSource {
      * @param cmd
      * @return
      */
-    public CommandProxyResult execute(Command cmd) {
+    public ProxyResult execute(Command cmd) {
 
         List<CommandProxy> classProxies = proxies.get(cmd.getClass());
 
@@ -99,7 +99,7 @@ public class ProxyManager implements DispatchEventSource {
 
 
                 try {
-                    CommandProxyResult r = proxy.execute(cmd);
+                    ProxyResult r = proxy.maybeExecute(cmd);
                     if (r.couldExecute) {
 
                         Log.debug("ProxyManager: EXECUTED (!!) " + cmd.toString() + " locally with proxy "
@@ -120,6 +120,6 @@ public class ProxyManager implements DispatchEventSource {
             }
         }
 
-        return CommandProxyResult.couldNotExecute();
+        return ProxyResult.couldNotExecute();
     }
 }

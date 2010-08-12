@@ -12,13 +12,16 @@ import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.i18n.I18N;
 
 /**
+ * An AsyncMonitor implementation that shows the "Loading Component"
+ * message
+ *
  * @author Alex Bertram (akbertram@gmail.com)
  */
 public class LoadingPlaceHolder extends LayoutContainer implements AsyncMonitor {
-
-    private Html html;
+    private final Html html;
 
     public LoadingPlaceHolder() {
+        super();
         setLayout(new CenterLayout());
         html = new Html();
         html.addStyleName("loading-placeholder");

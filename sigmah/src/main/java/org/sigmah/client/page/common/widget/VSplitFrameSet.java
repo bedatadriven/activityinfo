@@ -15,6 +15,10 @@ import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.page.*;
 import org.sigmah.client.page.common.nav.NavigationPanel;
 
+/**
+ * Standard 2-column split frame with a left-hand pane for navigation and the center
+ * component for page navigation.
+ */
 public class VSplitFrameSet implements Frame {
 
     protected final LayoutContainer container;
@@ -22,7 +26,6 @@ public class VSplitFrameSet implements Frame {
     private Widget activeWidget;
     private NavigationPanel navPanel;
     private PageId pageId;
-    private String tabTitle;
 
     public VSplitFrameSet(PageId pageId, NavigationPanel navPanel) {
         this.pageId = pageId;

@@ -12,10 +12,12 @@ import org.sigmah.client.dispatch.loader.ListCmdLoader;
 import org.sigmah.shared.command.GetMapIcons;
 import org.sigmah.shared.command.result.MapIconResult;
 import org.sigmah.shared.dto.MapIconDTO;
-/*
+
+/**
+ * ComboBox that allows the visual selection of a MapIcon
+ *
  * @author Alex Bertram
  */
-
 public class MapIconComboBox extends ComboBox<MapIconDTO> {
 
     public MapIconComboBox(Dispatcher service) {

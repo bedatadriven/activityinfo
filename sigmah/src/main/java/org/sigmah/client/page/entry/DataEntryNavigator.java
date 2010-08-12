@@ -34,7 +34,7 @@ public class DataEntryNavigator implements Navigator {
     }
 
     public boolean hasChildren(Link parent) {
-        return parent.getPlace() == null;
+        return parent.getPageState() == null;
     }
 
     public String getHeading() {

@@ -114,7 +114,7 @@ public class GetSitesHandler implements CommandHandler<GetSites> {
 
             } else if (field.startsWith("a")) {
 
-                int levelId = AdminLevelDTO.levelIdForProperty(field);
+                int levelId = AdminLevelDTO.levelIdForPropertyName(field);
 
                 order.add(new SiteAdminOrder(levelId,
                         cmd.getSortInfo().getSortDir() == SortDir.ASC));
@@ -176,7 +176,6 @@ public class GetSitesHandler implements CommandHandler<GetSites> {
             model.setDate2((Date) values[SiteTableColumn.date2.index()]);
             model.setLocationName((String) values[SiteTableColumn.location_name.index()]);
             model.setLocationAxe((String) values[SiteTableColumn.location_axe.index()]);
-            model.setStatus((Integer) values[SiteTableColumn.status.index()]);
             model.setX((Double) values[SiteTableColumn.x.index()]);
             model.setY((Double) values[SiteTableColumn.y.index()]);
             model.setComments((String) values[SiteTableColumn.comments.index()]);

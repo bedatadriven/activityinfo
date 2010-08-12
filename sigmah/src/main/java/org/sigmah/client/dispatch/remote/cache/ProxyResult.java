@@ -12,10 +12,10 @@ import org.sigmah.shared.command.result.CommandResult;
  *
  * @author Alex Bertram
  */
-public class CommandProxyResult<T extends CommandResult> {
+public class ProxyResult<T extends CommandResult> {
 
     /**
-     * True if the proxy was able to execute the command locally
+     * True if the handler was able to execute the command locally
      */
     public final boolean couldExecute;
 
@@ -26,9 +26,9 @@ public class CommandProxyResult<T extends CommandResult> {
      */
     public final T result;
 
-    private static CommandProxyResult failed = new CommandProxyResult();
+    private static ProxyResult failed = new ProxyResult();
 
-    private CommandProxyResult() {
+    private ProxyResult() {
         couldExecute = false;
         result = null;
     }
@@ -39,7 +39,7 @@ public class CommandProxyResult<T extends CommandResult> {
      *
      * @param result The result of the local execution (can be null)
      */
-    public CommandProxyResult(T result) {
+    public ProxyResult(T result) {
         this.couldExecute = true;
         this.result = result;
     }
@@ -50,7 +50,7 @@ public class CommandProxyResult<T extends CommandResult> {
      * @return A {@link org.sigmah.client.dispatch.CommandProxy} return value indicating that
      *         local execution was not possible.
      */
-    public static CommandProxyResult couldNotExecute() {
+    public static ProxyResult couldNotExecute() {
         return failed;
     }
 

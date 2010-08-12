@@ -10,6 +10,8 @@ import com.extjs.gxt.ui.client.event.EventType;
 import org.sigmah.client.page.PageState;
 
 /**
+ * Encapsulates information related to page navigation events.
+ * 
  * @author Alex Bertram (akbertram@gmail.com)
  */
 public class NavigationEvent extends BaseEvent {
@@ -42,11 +44,9 @@ public class NavigationEvent extends BaseEvent {
         }
 
         NavigationEvent that = (NavigationEvent) o;
-
         if (place != null ? !place.equals(that.place) : that.place != null) {
             return false;
         }
-
         return true;
     }
 

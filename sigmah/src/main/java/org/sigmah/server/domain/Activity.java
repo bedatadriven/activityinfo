@@ -16,7 +16,7 @@ import java.util.Set;
 /**
  * After the {@link org.sigmah.server.domain.UserDatabase}, the activity is the second level of organization in ActivityInfo.
  * Each activity has its set of indicators and attributes.
- * <p/>
+
  * Realized activities takes place at {@link org.sigmah.server.domain.Site} sites.
  *
  * @author Alex Bertram

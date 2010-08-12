@@ -18,7 +18,7 @@ import org.sigmah.client.i18n.I18N;
 /**
  * Uses a GXT loading mask on a component to keep the user updated on
  * the progress of an asynchronous call
- * <p/>
+
  * The monitor allows a limited number of retries (defaults to two) before giving up.
  */
 public class MaskingAsyncMonitor implements AsyncMonitor {

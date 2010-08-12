@@ -8,11 +8,12 @@ package org.sigmah.client.page.common.filter;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BaseListLoader;
 import com.extjs.gxt.ui.client.data.ListLoader;
-import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.FieldEvent;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
@@ -27,10 +28,12 @@ import org.sigmah.shared.dto.AdminLevelDTO;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-/*
+
+/**
+ * UI Component for editing Admin restrictions on a {@link org.sigmah.shared.report.model.Filter}
+ *
  * @author Alex Bertram
  */
-
 public class AdminFilterPanel extends ContentPanel {
 
     private final Dispatcher service;
@@ -68,7 +71,6 @@ public class AdminFilterPanel extends ContentPanel {
         createFilterBar();
     }
 
-
     private void createFilterBar() {
         ToolBar toolBar = new ToolBar();
         //toolBar.add(new LabelToolItem(Application.CONSTANTS.filter()));
@@ -91,21 +93,10 @@ public class AdminFilterPanel extends ContentPanel {
         });
 
         toolBar.add(levelCombo);
-
-        // TODO : 118n
-        Button clear = new Button(I18N.CONSTANTS.remove(), IconImageBundle.ICONS.delete(), new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                levelCombo.setValue(null);
-                onHierarchyChanged(Collections.<AdminLevelDTO>emptyList());
-            }
-        });
-        //toolBar.add(clear);    // this button was creating layout problems and is not essential
-
         setTopComponent(toolBar);
     }
 
-    protected List<AdminLevelDTO> buildHierarchy(List<AdminLevelDTO> levels, AdminLevelDTO selected) {
+    private List<AdminLevelDTO> buildHierarchy(List<AdminLevelDTO> levels, AdminLevelDTO selected) {
         List<AdminLevelDTO> list = new ArrayList<AdminLevelDTO>();
         list.add(selected);
 
@@ -119,7 +110,6 @@ public class AdminFilterPanel extends ContentPanel {
             }
         }
         Collections.reverse(list);
-
         return list;
     }
 
@@ -129,6 +119,10 @@ public class AdminFilterPanel extends ContentPanel {
         loader.load();
     }
 
+    /**
+     * @return the list of AdminEntityDTOs that user has selected with which
+     * the filter should be restricted
+     */
     public List<AdminEntityDTO> getSelection() {
         List<AdminEntityDTO> checked = tree.getCheckedSelection();
         List<AdminEntityDTO> selected = new ArrayList<AdminEntityDTO>();
@@ -145,5 +139,4 @@ public class AdminFilterPanel extends ContentPanel {
         }
         return selected;
     }
-
 }

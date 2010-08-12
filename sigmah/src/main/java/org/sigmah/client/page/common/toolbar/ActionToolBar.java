@@ -18,7 +18,7 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
 
 /**
- * Convienence subclass for the GXT toolbar that directs all tool actions
+ * Convenience subclass for the GXT toolbar that directs all tool actions
  * through a common choke point implementing {@link org.sigmah.client.page.common.toolbar.ActionListener}
  *
  * Also centralizes look&feel of common buttons like New, Edit, Refresh, Save, etc.

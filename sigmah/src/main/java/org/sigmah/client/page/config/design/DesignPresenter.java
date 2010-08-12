@@ -34,16 +34,18 @@ import org.sigmah.shared.dto.*;
 import java.util.List;
 
 
-/*
+/**
+ * Presenter for the Design Page, which enables the user to define UserDatabases and their
+ * Activities, Attributes, and Indicators.
+ *
  * @author Alex Bertram
  */
+public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> implements Page {
+    public static final PageId PAGE_ID = new PageId("design");
 
-public class Designer extends AbstractEditorGridPresenter<ModelData> implements Page {
-    public static final PageId Design = new PageId("design");
-
-    @ImplementedBy(DesignTree.class)
-    public interface View extends TreeGridView<Designer, ModelData> {
-        public void init(Designer presenter, UserDatabaseDTO db, TreeStore store);
+    @ImplementedBy(DesignView.class)
+    public interface View extends TreeGridView<DesignPresenter, ModelData> {
+        public void init(DesignPresenter presenter, UserDatabaseDTO db, TreeStore store);
 
         public FormDialogTether showNewForm(EntityDTO entity, FormDialogCallback callback);
     }
@@ -58,7 +60,7 @@ public class Designer extends AbstractEditorGridPresenter<ModelData> implements 
 
 
     @Inject
-    public Designer(EventBus eventBus, Dispatcher service, IStateManager stateMgr,
+    public DesignPresenter(EventBus eventBus, Dispatcher service, IStateManager stateMgr,
                     View view, UIConstants messages) {
         super(eventBus, service, stateMgr, view);
         this.eventBus = eventBus;
@@ -90,7 +92,7 @@ public class Designer extends AbstractEditorGridPresenter<ModelData> implements 
             ActivityDTO activityNode = new ActivityDTO(activity);
             treeStore.add(activityNode, false);
 
-            AttributeFolder attributeFolder = new AttributeFolder(activityNode, messages.attributes());
+            AttributeGroupFolder attributeFolder = new AttributeGroupFolder(activityNode, messages.attributes());
             treeStore.add(activityNode, attributeFolder, false);
 
             for (AttributeGroupDTO group : activity.getAttributeGroups()) {
@@ -124,7 +126,7 @@ public class Designer extends AbstractEditorGridPresenter<ModelData> implements 
 
     public boolean navigate(PageState place) {
         return place instanceof DbPageState &&
-                place.getPageId().equals(Design) &&
+                place.getPageId().equals(PAGE_ID) &&
                 ((DbPageState) place).getDatabaseId() == db.getId();
     }
 
@@ -208,7 +210,7 @@ public class Designer extends AbstractEditorGridPresenter<ModelData> implements 
                         }
 
                         if (newEntity instanceof ActivityDTO) {
-                            treeStore.add(newEntity, new AttributeFolder((ActivityDTO) newEntity, messages.attributes()), false);
+                            treeStore.add(newEntity, new AttributeGroupFolder((ActivityDTO) newEntity, messages.attributes()), false);
                             treeStore.add(newEntity, new IndicatorFolder((ActivityDTO) newEntity, messages.indicators()), false);
                         }
 
@@ -290,7 +292,7 @@ public class Designer extends AbstractEditorGridPresenter<ModelData> implements 
     }
 
     public PageId getPageId() {
-        return Design;
+        return PAGE_ID;
     }
 
     public Object getWidget() {

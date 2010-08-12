@@ -28,12 +28,14 @@ import org.sigmah.shared.report.model.PivotChartElement;
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class Charter implements Page, ActionListener, ExportCallback {
+public class ChartPagePresenter implements Page, ActionListener, ExportCallback {
+
+    public static final PageId PAGE_ID = new PageId("charts");
 
     @ImplementedBy(ChartPage.class)
     public interface View {
 
-        public void bindPresenter(Charter presenter);
+        public void bindPresenter(ChartPagePresenter presenter);
 
         public PivotChartElement getChartElement();
 
@@ -49,7 +51,7 @@ public class Charter implements Page, ActionListener, ExportCallback {
     private final View view;
 
     @Inject
-    public Charter(EventBus eventBus, Dispatcher service, View view) {
+    public ChartPagePresenter(EventBus eventBus, Dispatcher service, View view) {
         this.eventBus = eventBus;
         this.service = service;
         this.view = view;
@@ -62,7 +64,7 @@ public class Charter implements Page, ActionListener, ExportCallback {
 
     @Override
     public PageId getPageId() {
-        return Charts.Charts;
+        return PAGE_ID;
     }
 
     @Override

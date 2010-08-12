@@ -25,7 +25,7 @@ public class SchemaCacheTest {
 
         proxyMgr.notifyListenersOfSuccess(new GetSchema(), schema);
 
-        CommandProxyResult<SchemaDTO> proxyResult = proxyMgr.execute(new GetSchema());
+        ProxyResult<SchemaDTO> proxyResult = proxyMgr.execute(new GetSchema());
 
         Assert.assertTrue("could execute locally", proxyResult.couldExecute);
         Assert.assertEquals("PEAR", proxyResult.result.getDatabaseById(1).getName());

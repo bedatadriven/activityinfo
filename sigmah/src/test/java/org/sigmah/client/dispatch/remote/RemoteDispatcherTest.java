@@ -11,7 +11,7 @@ import org.easymock.IAnswer;
 import org.junit.Before;
 import org.junit.Test;
 import org.sigmah.client.dispatch.CommandProxy;
-import org.sigmah.client.dispatch.remote.cache.CommandProxyResult;
+import org.sigmah.client.dispatch.remote.cache.ProxyResult;
 import org.sigmah.client.mock.MockEventBus;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.GetSchema;
@@ -117,7 +117,7 @@ public class RemoteDispatcherTest {
 
         GetSchema command = new GetSchema();
 
-        expect(proxy.execute(eq(command))).andReturn(new CommandProxyResult(new SchemaDTO()));
+        expect(proxy.maybeExecute(eq(command))).andReturn(new ProxyResult(new SchemaDTO()));
         replay(proxy);
 
         replay(service);   // no calls should be made to the remote service
@@ -137,7 +137,7 @@ public class RemoteDispatcherTest {
 
         GetSchema command = new GetSchema();
 
-        expect(proxy.execute(eq(command))).andReturn(CommandProxyResult.couldNotExecute());
+        expect(proxy.maybeExecute(eq(command))).andReturn(ProxyResult.couldNotExecute());
         replay(proxy);
 
         expectRemoteCall(command);

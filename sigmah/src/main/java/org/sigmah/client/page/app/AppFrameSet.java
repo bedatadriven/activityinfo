@@ -36,7 +36,7 @@ import org.sigmah.client.page.common.widget.LoadingPlaceHolder;
 import org.sigmah.client.page.config.DbListPageState;
 import org.sigmah.client.page.entry.SiteGridPageState;
 import org.sigmah.client.page.map.MapPageState;
-import org.sigmah.client.page.report.ReportHomePageState;
+import org.sigmah.client.page.report.ReportListPageState;
 import org.sigmah.client.page.table.PivotPageState;
 import org.sigmah.client.page.welcome.WelcomePageState;
 
@@ -93,7 +93,7 @@ public class AppFrameSet implements Frame {
 
         addNavLink(I18N.CONSTANTS.welcome(), null, new WelcomePageState());
         addNavLink(I18N.CONSTANTS.dataEntry(), IconImageBundle.ICONS.dataEntry(), new SiteGridPageState());
-        addNavLink(I18N.CONSTANTS.reports(), IconImageBundle.ICONS.report(), new ReportHomePageState());
+        addNavLink(I18N.CONSTANTS.reports(), IconImageBundle.ICONS.report(), new ReportListPageState());
         addNavLink(I18N.CONSTANTS.charts(), IconImageBundle.ICONS.barChart(), new ChartPageState());
         addNavLink(I18N.CONSTANTS.maps(), IconImageBundle.ICONS.map(), new MapPageState());
         addNavLink(I18N.CONSTANTS.tables(), IconImageBundle.ICONS.table(), new PivotPageState());

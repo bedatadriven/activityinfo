@@ -13,12 +13,9 @@ package org.sigmah.client.page;
  */
 public class Frames {
 
-    public static final FrameId AppFrameSet = new FrameId("app");
-
     public static final FrameId DataEntryFrameSet = new FrameId("entry");
 
     public static final FrameId ConfigFrameSet = new FrameId("config");
 
     public static final PageId Static = new PageId("static");
-
 }

@@ -10,13 +10,15 @@ import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.result.CommandResult;
 
 /**
+ * Provides a default, empty implementation of the {@link DispatchListener}
+ *
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class DefaultCommandListener<T extends Command> implements DispatchListener<T> {
+public class DefaultDispatchListener<T extends Command> implements DispatchListener<T> {
 
     @Override
     public void beforeDispatched(T command) {
-
+     
     }
 
     @Override

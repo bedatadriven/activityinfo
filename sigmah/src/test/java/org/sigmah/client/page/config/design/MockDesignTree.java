@@ -23,12 +23,12 @@ import static org.easymock.EasyMock.replay;
  * @author Alex Bertram
  */
 
-public class MockDesignTree implements Designer.View {
+public class MockDesignTree implements DesignPresenter.View {
 
     public ModelData selection = null;
     public Map<String, Object> newEntityProperties = new HashMap<String, Object>();
 
-    public void init(Designer presenter, UserDatabaseDTO db, TreeStore store) {
+    public void init(DesignPresenter presenter, UserDatabaseDTO db, TreeStore store) {
 
     }
 

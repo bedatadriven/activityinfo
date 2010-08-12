@@ -28,16 +28,18 @@ import org.sigmah.client.util.state.IStateManager;
 import org.sigmah.shared.command.*;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.dto.ReportDefinitionDTO;
-/*
+
+/**
+ * Page which presents the list of reports visible to the user
+ *
  * @author Alex Bertram
  */
-
-public class ReportHomePresenter extends AbstractEditorGridPresenter<ReportDefinitionDTO> {
+public class ReportListPagePresenter extends AbstractEditorGridPresenter<ReportDefinitionDTO> {
     public static final PageId ReportHome = new PageId("reports");
 
     @ImplementedBy(ReportGrid.class)
-    public interface View extends GridView<ReportHomePresenter, ReportDefinitionDTO> {
-        public void init(ReportHomePresenter presenter, ListStore<ReportDefinitionDTO> store);
+    public interface View extends GridView<ReportListPagePresenter, ReportDefinitionDTO> {
+        public void init(ReportListPagePresenter presenter, ListStore<ReportDefinitionDTO> store);
     }
 
     private final EventBus eventBus;
@@ -48,7 +50,7 @@ public class ReportHomePresenter extends AbstractEditorGridPresenter<ReportDefin
     private GroupingStore<ReportDefinitionDTO> store;
 
     @Inject
-    public ReportHomePresenter(EventBus eventBus, Dispatcher service, IStateManager stateMgr, View view) {
+    public ReportListPagePresenter(EventBus eventBus, Dispatcher service, IStateManager stateMgr, View view) {
         super(eventBus, service, stateMgr, view);
         this.eventBus = eventBus;
         this.service = service;

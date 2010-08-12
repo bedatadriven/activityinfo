@@ -11,11 +11,14 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-/*
+
+/**
+ *
+ * GIN annotation indicating that the annotated {@link org.sigmah.client.page.Frame} should
+ * be bound to the root frame.
+ *
  * @author Alex Bertram
  */
-
-
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @BindingAnnotation

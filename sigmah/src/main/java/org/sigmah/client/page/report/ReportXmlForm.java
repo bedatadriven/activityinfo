@@ -8,14 +8,13 @@ package org.sigmah.client.page.report;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.xml.client.DOMException;
-import com.google.gwt.xml.client.XMLParser;
 
-public class ReportXmlForm extends FormPanel {
+class ReportXmlForm extends FormPanel {
 
 	private TextArea xmlArea;
 	
 	public ReportXmlForm() {
+        super();
 		setFrame(false);  
 		setLayout(new FitLayout());
 
@@ -36,17 +35,4 @@ public class ReportXmlForm extends FormPanel {
 	public void setXml(String xml) {
 		xmlArea.setValue(xml);
 	}
-
-	public String validateXml() {
-		try {
-			XMLParser.parse(getXml());
-			
-			return null;
-			
-		} catch(DOMException ex) {
-		
-			return ex.getMessage();
-		}
-	}
-	
 }

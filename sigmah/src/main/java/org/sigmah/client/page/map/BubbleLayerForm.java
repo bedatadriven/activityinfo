@@ -14,17 +14,14 @@ import org.sigmah.client.page.common.widget.ColorField;
 import org.sigmah.client.page.common.widget.MappingComboBox;
 import org.sigmah.shared.report.model.BubbleMapLayer;
 
-/**
- * @author Alex Bertram
- */
-public class BubbleLayerForm extends FormPanel {
-
+class BubbleLayerForm extends FormPanel {
     private NumberField maxRadiusField;
     private NumberField minRadiusField;
     private ColorField colorField;
     private MappingComboBox<Integer> clusterCombo;
 
     public BubbleLayerForm() {
+        super();
 
         setHeading(I18N.CONSTANTS.selectTheSymbol());
         setIcon(IconImageBundle.ICONS.graduatedSymbol());
@@ -69,5 +66,4 @@ public class BubbleLayerForm extends FormPanel {
         layer.setDefaultColor(colorField.getIntValue());
         layer.setClustered(clusterCombo.getMappedValue() == 1);
     }
-
 }

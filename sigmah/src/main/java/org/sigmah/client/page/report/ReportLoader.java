@@ -17,6 +17,8 @@ import org.sigmah.shared.command.result.ReportTemplateResult;
 import org.sigmah.shared.dto.ReportDefinitionDTO;
 
 /**
+ * Loader for the Report pages
+ *
  * @author Alex Bertram
  */
 public class ReportLoader implements PageLoader {
@@ -30,10 +32,10 @@ public class ReportLoader implements PageLoader {
         this.injector = injector;
         this.service = service;
 
-        pageManager.registerPageLoader(ReportHomePresenter.ReportHome, this);
+        pageManager.registerPageLoader(ReportListPagePresenter.ReportHome, this);
         pageManager.registerPageLoader(ReportPreviewPresenter.ReportPreview, this);
 
-        placeSerializer.registerStatelessPlace(ReportHomePresenter.ReportHome, new ReportHomePageState());
+        placeSerializer.registerStatelessPlace(ReportListPagePresenter.ReportHome, new ReportListPageState());
         placeSerializer.registerParser(ReportPreviewPresenter.ReportPreview, new ReportPreviewPageState.Parser());
     }
 
@@ -50,7 +52,7 @@ public class ReportLoader implements PageLoader {
                 if (ReportPreviewPresenter.ReportPreview.equals(pageId)) {
                     loadPreview((ReportPreviewPageState) pageState, callback);
 
-                } else if (ReportHomePresenter.ReportHome.equals(pageId)) {
+                } else if (ReportListPagePresenter.ReportHome.equals(pageId)) {
 
                     callback.onSuccess(injector.getReportHomePresenter());
                 } else {

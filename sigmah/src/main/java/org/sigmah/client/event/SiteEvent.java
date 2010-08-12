@@ -10,13 +10,20 @@ import com.extjs.gxt.ui.client.event.EventType;
 import org.sigmah.shared.dto.SiteDTO;
 
 /**
- * @author Alex Bertram (akbertram@gmail.com)
+ * Encapsulates details for {@link org.sigmah.server.domain.Site} related events.
+ *
+ * @author Alex Bertram
  */
 public class SiteEvent extends BaseEvent {
-
     private int siteId;
     private SiteDTO site;
-    
+
+    /**
+     *
+     * @param type
+     * @param source the component which fired the event
+     * @param site
+     */
     public SiteEvent(EventType type, Object source, SiteDTO site) {
         super(type);
         this.setSource(source);

@@ -13,7 +13,10 @@ import com.google.gwt.maps.client.geom.LatLngBounds;
 import com.google.gwt.maps.client.geom.Point;
 import org.sigmah.shared.map.BaseMap;
 
-public class BaseMapLayer extends TileLayer {
+/**
+ * Implementation of GoogleMaps TileLayer for an ActivityInfo BaseMap
+ */
+class BaseMapLayer extends TileLayer {
 
 	private BaseMap baseMap;
 
@@ -42,14 +45,11 @@ public class BaseMapLayer extends TileLayer {
 
 	@Override
 	public String getTileURL(Point tile, int zoomLevel) {
-        String url = baseMap.getTileUrl(zoomLevel, tile.getX(), tile.getY());
-//        GWT.log("Tile: " + url, null);
-        return url;
+        return baseMap.getTileUrl(zoomLevel, tile.getX(), tile.getY());
 	}
 
 	@Override
 	public boolean isPng() {
 		return true;
 	}
-
 }

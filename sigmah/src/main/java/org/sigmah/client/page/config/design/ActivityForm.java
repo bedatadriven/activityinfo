@@ -25,7 +25,10 @@ import org.sigmah.shared.dto.LocationTypeDTO;
 import org.sigmah.shared.dto.MapIconDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 
-public class ActivityForm extends AbstractDesignForm {
+/**
+ * Form for editing ActivityDTO
+ */
+class ActivityForm extends AbstractDesignForm {
 
     private ListStore<LocationTypeDTO> locationTypeStore;
     private FormBinding binding;

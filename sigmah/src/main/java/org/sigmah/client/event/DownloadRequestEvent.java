@@ -9,30 +9,41 @@ import com.extjs.gxt.ui.client.event.BaseEvent;
 import org.sigmah.client.page.DownloadManager;
 
 /**
+ * An event which requests the download of a file.
+ *
  * @author Alex Bertram
  */
-public class DownloadEvent extends BaseEvent {
+public class DownloadRequestEvent extends BaseEvent {
+    private final String name;
+    private final String url;
 
-    private String name;
-    private String url;
-
-    public DownloadEvent(String name, String url) {
+    /**
+     * @param name the name of the download type, used only for usage tracking
+     * @param url  the url from which to download the file
+     */
+    public DownloadRequestEvent(String name, String url) {
         super(DownloadManager.DownloadRequested);
         this.name = name;
         this.url = url;
     }
 
-    public DownloadEvent(String url) {
+    /**
+     * Creates an unnamed DownloadRequestEvent.
+     *
+     * @param url the url from which to download the file
+     */
+    public DownloadRequestEvent(String url) {
         super(DownloadManager.DownloadRequested);
         this.url = url;
+        this.name = null;
     }
 
+    /**
+     *
+     * @return the url from which to download the file
+     */
     public String getUrl() {
         return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
     }
 
     /**
@@ -53,12 +64,11 @@ public class DownloadEvent extends BaseEvent {
         }
     }
 
+    /**
+     * @return the name of the download, for usage-tracking purposes
+     */
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     @Override

@@ -13,16 +13,19 @@ import org.sigmah.shared.command.GetListCommand;
 import org.sigmah.shared.command.PagingGetCommand;
 
 /**
- * @author Alex Bertram (akbertram@gmail.com)
+ * Adapter that exposes {@link GetListCommand} and {@link org.sigmah.shared.command.PagingGetCommand}s as
+ * standard GXT {@link com.extjs.gxt.ui.client.data.PagingLoadConfig}
+ *
+ * @author Alex Bertram 
  */
-public class DummyLoadConfig extends BaseModelData implements PagingLoadConfig {
+public class PagingGetCommandConfig extends BaseModelData implements PagingLoadConfig {
 
     private int offset;
     private int limit;
     private String sortField;
     private Style.SortDir sortDir;
 
-    public DummyLoadConfig(GetListCommand cmd) {
+    public PagingGetCommandConfig(GetListCommand cmd) {
         setSortInfo(cmd.getSortInfo());
 
         if (cmd instanceof PagingGetCommand) {

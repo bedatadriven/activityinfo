@@ -86,8 +86,8 @@ public class GetSchemaTest extends CommandTestCase {
         Assert.assertEquals("property:name", test.getName(), "kits");
         Assert.assertEquals("property:units", test.getUnits(), "menages");
         Assert.assertEquals("property:aggregation", test.getAggregation(), 0);
-        Assert.assertEquals("property:collectIntervention", test.getCollectIntervention(), true);
-        Assert.assertEquals("property:collectMonitoring", test.getCollectMonitoring(), true);
+        Assert.assertEquals("property:collectIntervention", test.isCollectIntervention(), true);
+        Assert.assertEquals("property:collectMonitoring", test.isCollectMonitoring(), true);
         Assert.assertEquals("property:category", test.getCategory(), "outputs");
         Assert.assertEquals("property:listHeader", test.getListHeader(), "header");
         Assert.assertEquals("property:description", test.getDescription(), "desc");

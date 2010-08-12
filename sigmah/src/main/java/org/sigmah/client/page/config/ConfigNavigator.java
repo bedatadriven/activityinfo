@@ -49,7 +49,7 @@ public class ConfigNavigator implements Navigator {
 
     @Override
     public boolean hasChildren(Link parent) {
-        return parent.getPlace() instanceof DbListPageState;
+        return parent.getPageState() instanceof DbListPageState;
     }
 
 
@@ -74,10 +74,10 @@ public class ConfigNavigator implements Navigator {
         } else {
 
             Link link = (Link) parent;
-            if (link.getPlace() instanceof DbListPageState) {
+            if (link.getPageState() instanceof DbListPageState) {
                 loadDbList(callback);
 
-            } else if (link.getPlace().getPageId().equals(DbConfigPresenter.DatabaseConfig)) {
+            } else if (link.getPageState().getPageId().equals(DbConfigPresenter.DatabaseConfig)) {
 
 //                List<Link> list = new ArrayList<Link>();
 //                int dbId = ((DbPageState) link.getPlace()).getDatabaseId();

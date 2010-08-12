@@ -15,7 +15,7 @@ import org.sigmah.client.inject.AppInjector;
 import org.sigmah.client.page.*;
 import org.sigmah.client.page.common.nav.NavigationPanel;
 import org.sigmah.client.page.common.widget.VSplitFrameSet;
-import org.sigmah.client.page.config.design.Designer;
+import org.sigmah.client.page.config.design.DesignPresenter;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
@@ -36,30 +36,25 @@ public class ConfigLoader implements PageLoader {
         pageManager.registerPageLoader(DbListPresenter.DatabaseList, this);
         pageManager.registerPageLoader(DbUserEditor.DatabaseUsers, this);
         pageManager.registerPageLoader(DbPartnerEditor.DatabasePartners, this);
-        pageManager.registerPageLoader(Designer.Design, this);
+        pageManager.registerPageLoader(DesignPresenter.PAGE_ID, this);
 
         placeSerializer.registerStatelessPlace(AccountEditor.Account, new AccountPageState());
         placeSerializer.registerStatelessPlace(DbListPresenter.DatabaseList, new DbListPageState());
         placeSerializer.registerParser(DbConfigPresenter.DatabaseConfig, new DbPageState.Parser(DbConfigPresenter.DatabaseConfig));
         placeSerializer.registerParser(DbUserEditor.DatabaseUsers, new DbPageState.Parser(DbUserEditor.DatabaseUsers));
         placeSerializer.registerParser(DbPartnerEditor.DatabasePartners, new DbPageState.Parser(DbPartnerEditor.DatabasePartners));
-        placeSerializer.registerParser(Designer.Design, new DbPageState.Parser(Designer.Design));
+        placeSerializer.registerParser(DesignPresenter.PAGE_ID, new DbPageState.Parser(DesignPresenter.PAGE_ID));
     }
 
     @Override
     public void load(final PageId pageId, final PageState pageState, final AsyncCallback<Page> callback) {
-
-
         GWT.runAsync(new RunAsyncCallback() {
-
             @Override
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);
             }
-
             @Override
             public void onSuccess() {
-
                 if (Frames.ConfigFrameSet.equals(pageId)) {
                     NavigationPanel navPanel = new NavigationPanel(injector.getEventBus(),
                             injector.getConfigNavigator());
@@ -88,8 +83,8 @@ public class ConfigLoader implements PageLoader {
                                 presenter.go(db);
                                 callback.onSuccess(presenter);
 
-                            } else if (Designer.Design.equals(pageId)) {
-                                Designer presenter = injector.getDesigner();
+                            } else if (DesignPresenter.PAGE_ID.equals(pageId)) {
+                                DesignPresenter presenter = injector.getDesigner();
                                 presenter.go(db);
                                 callback.onSuccess(presenter);
 
@@ -102,10 +97,6 @@ public class ConfigLoader implements PageLoader {
                                 DbPartnerEditor presenter = injector.getDbPartnerEditor();
                                 presenter.go(db);
                                 callback.onSuccess(presenter);
-//                            } else if(Pages.DatabaseTargets.equals(pageId)) {
-//                                TargetEditor editor = injector.getTargetEditor();
-//                                editor.go(db);
-//                                callback.onSuccess(editor);
                             } else {
                                 callback.onFailure(new Exception("ConfigLoader didn't know how to handle " + pageState.toString()));
                             }

@@ -13,11 +13,8 @@ import org.sigmah.shared.dto.AdminLevelDTO;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-/*
- * @author Alex Bertram
- */
 
-public class AdminTreeLoader extends BaseTreeLoader<AdminEntityDTO> {
+class AdminTreeLoader extends BaseTreeLoader<AdminEntityDTO> {
 
     private List<AdminLevelDTO> hierarchy = new ArrayList<AdminLevelDTO>();
 

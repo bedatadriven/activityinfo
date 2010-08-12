@@ -1,0 +1,28 @@
+<!--
+  ~ All Sigmah code is released under the GNU General Public License v3
+  ~ See COPYRIGHT.txt and LICENSE.txt.
+  -->
+
+<!-- This is a drop-in replacement for the ApplicationModule that
+     can be used to quickly test a compilation on FireFox
+
+     e.g.:  mvn gwt:compile -P soyc
+     
+     -->
+
+<module rename-to="ActivityInfo">
+
+    <inherits name="org.sigmah.ActivityInfo"/>
+
+    <!-- This should not be here: it is also defined in the ActivityInfo module
+         meaning it will be called twice, but the maven plugin won't compile modules
+         without entrypoints -->
+    <entry-point class='org.sigmah.client.ActivityInfoEntryPoint' />
+
+    <!-- ie6, gecko, gecko1_8, safari or opera -->
+    <set-property name="user.agent" value="gecko1_8"/>
+    <set-property name="locale" value="en"/>
+    
+    <set-property name="log_level" value="OFF"/>
+    <set-property name="log_DivLogger" value="DISABLED" />
+</module>

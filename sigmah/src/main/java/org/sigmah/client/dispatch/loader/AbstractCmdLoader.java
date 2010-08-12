@@ -18,16 +18,15 @@ import org.sigmah.shared.command.result.ListResult;
 
 
 /**
- * This is a replacement for the BaseLoader shipped with GXT that fits in
- * with the command pattern.
- * <p/>
- * Note that the loadConfig object is ignored.
+ * Base class for command-pattern-based implementations of GXT loader interfaces
  *
+ * Note that the loadConfig object is ignored.
+ * @deprecated Use standard GXT loader with custom {@link com.extjs.gxt.ui.client.data.DataProxy}
  * @author Alex Bertram
  * @param <ResultT>
  * @param <CommandT>
  */
-public abstract class AbstractCmdLoader<ResultT extends ListResult,
+abstract class AbstractCmdLoader<ResultT extends ListResult,
         CommandT extends GetListCommand<ResultT>
         >
         extends AbstractLoader<ResultT> {
@@ -104,7 +103,7 @@ public abstract class AbstractCmdLoader<ResultT extends ListResult,
 
             @Override
             public void onFailure(Throwable caught) {
-                fireEvent(Loader.LoadException, new LoadEvent(AbstractCmdLoader.this, new DummyLoadConfig(command), caught));
+                fireEvent(Loader.LoadException, new LoadEvent(AbstractCmdLoader.this, new PagingGetCommandConfig(command), caught));
             }
 
             @Override
@@ -120,7 +119,7 @@ public abstract class AbstractCmdLoader<ResultT extends ListResult,
                     }
 
                     fireEvent(Loader.Load, new LoadEvent(AbstractCmdLoader.this,
-                            new DummyLoadConfig(command), loadResult));
+                            new PagingGetCommandConfig(command), loadResult));
 
                 }
             }

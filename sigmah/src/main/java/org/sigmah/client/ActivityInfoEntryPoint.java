@@ -69,6 +69,4 @@ public class ActivityInfoEntryPoint implements EntryPoint {
         injector.createSchemaCache();
         injector.createAdminCache();
     }
-
-
 }

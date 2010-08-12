@@ -12,8 +12,8 @@ import com.google.gwt.gears.client.Factory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.sigmah.client.dispatch.DispatchEventSource;
-import org.sigmah.client.dispatch.remote.cache.DefaultCommandListener;
-import org.sigmah.client.event.DownloadEvent;
+import org.sigmah.client.dispatch.remote.cache.DefaultDispatchListener;
+import org.sigmah.client.event.DownloadRequestEvent;
 import org.sigmah.client.event.NavigationEvent;
 import org.sigmah.client.page.DownloadManager;
 import org.sigmah.client.page.NavigationHandler;
@@ -47,28 +47,28 @@ public class UsageTracker {
             }
         });
         // Track downloads
-        eventBus.addListener(DownloadManager.DownloadRequested, new Listener<DownloadEvent>() {
-            public void handleEvent(DownloadEvent event) {
+        eventBus.addListener(DownloadManager.DownloadRequested, new Listener<DownloadRequestEvent>() {
+            public void handleEvent(DownloadRequestEvent event) {
                 trackDownload(event);
             }
         });
 
         // Track successful creates by user
-        commandEventSource.registerListener(CreateEntity.class, new DefaultCommandListener<CreateEntity>() {
+        commandEventSource.registerListener(CreateEntity.class, new DefaultDispatchListener<CreateEntity>() {
             @Override
             public void onSuccess(CreateEntity command, CommandResult result) {
                 trackPageView("/crud/" + command.getEntityName() + "/create");
             }
         });
         // Track successful updates by user
-        commandEventSource.registerListener(UpdateEntity.class, new DefaultCommandListener<UpdateEntity>() {
+        commandEventSource.registerListener(UpdateEntity.class, new DefaultDispatchListener<UpdateEntity>() {
             @Override
             public void onSuccess(UpdateEntity command, CommandResult result) {
                 trackPageView("/crud/" + command.getEntityName() + "/update");
             }
         });
         // Track successful deletes by user
-        commandEventSource.registerListener(Delete.class, new DefaultCommandListener<Delete>() {
+        commandEventSource.registerListener(Delete.class, new DefaultDispatchListener<Delete>() {
             @Override
             public void onSuccess(Delete command, CommandResult result) {
                 trackPageView("/crud/" + command.getEntityName() + "/delete");
@@ -80,7 +80,7 @@ public class UsageTracker {
         return Factory.getInstance() != null;
     }
 
-    private void trackDownload(DownloadEvent event) {
+    private void trackDownload(DownloadRequestEvent event) {
         StringBuilder pageName = new StringBuilder("download/")
                 .append(event.getName() == null ? "unnamed" : event.getName());
         setCustomVar(1, "filetype", event.getUrlExtension(), PAGE_SCOPE);

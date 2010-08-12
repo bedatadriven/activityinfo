@@ -12,8 +12,7 @@ import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.geom.LatLngBounds;
 import com.google.gwt.maps.client.geom.Point;
 
-public class RgcTileLayer extends TileLayer {
-
+class RgcTileLayer extends TileLayer {
 	String baseUrl;
 	
 	public RgcTileLayer(String baseUrl, int minZoom, int maxZoom) {
@@ -51,9 +50,4 @@ public class RgcTileLayer extends TileLayer {
 	public boolean isPng() {
 		return true;
 	}
-
-    
-
-    
-	
 }

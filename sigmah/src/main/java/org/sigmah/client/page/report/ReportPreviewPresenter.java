@@ -12,7 +12,7 @@ import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.callback.Got;
-import org.sigmah.client.event.DownloadEvent;
+import org.sigmah.client.event.DownloadRequestEvent;
 import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
@@ -33,6 +33,8 @@ import org.sigmah.shared.dto.ReportDefinitionDTO;
 import org.sigmah.shared.report.model.DateRange;
 
 /**
+ * Report Preview Page Presenter
+ *
  * @author Alex Bertram
  */
 public class ReportPreviewPresenter implements Page, ActionListener, ExportCallback {
@@ -41,13 +43,9 @@ public class ReportPreviewPresenter implements Page, ActionListener, ExportCallb
     @ImplementedBy(ReportPreview.class)
     public interface View {
         void init(ReportPreviewPresenter presenter, ReportDefinitionDTO template);
-
         DateRange getDateRange();
-
         void setPreviewHtml(String html);
-
         AsyncMonitor getLoadingMonitor();
-
         void setActionEnabled(String actionId, boolean enabled);
     }
 
@@ -97,7 +95,6 @@ public class ReportPreviewPresenter implements Page, ActionListener, ExportCallb
 
     @Override
     public void export(RenderElement.Format format) {
-
         StringBuilder url = new StringBuilder();
         url.append("report?auth=#AUTH#")
                 .append("&id=").append(template.getId())
@@ -110,7 +107,7 @@ public class ReportPreviewPresenter implements Page, ActionListener, ExportCallb
         if (range.getMaxDate() != null) {
             url.append("&maxDate=").append(range.getMaxDate().getTime());
         }
-        eventBus.fireEvent(new DownloadEvent("report", url.toString()));
+        eventBus.fireEvent(new DownloadRequestEvent("report", url.toString()));
     }
 
     public void onUIAction(String actionId) {
@@ -118,7 +115,6 @@ public class ReportPreviewPresenter implements Page, ActionListener, ExportCallb
 
             RenderReportHtml command = new RenderReportHtml(template.getId(), view.getDateRange());
             service.execute(command, view.getLoadingMonitor(), new Got<HtmlResult>() {
-
                 @Override
                 public void got(HtmlResult result) {
                     view.setPreviewHtml(result.getHtml());

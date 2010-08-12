@@ -12,11 +12,10 @@ import com.google.inject.Inject;
 import org.sigmah.client.SigmahInjector;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.callback.Got;
-import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.*;
 import org.sigmah.client.page.common.nav.NavigationPanel;
 import org.sigmah.client.page.common.widget.VSplitFrameSet;
-import org.sigmah.client.page.config.design.Designer;
+import org.sigmah.client.page.config.design.DesignPresenter;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
@@ -37,14 +36,14 @@ public class SigmahConfigLoader implements PageLoader {
         pageManager.registerPageLoader(DbListPresenter.DatabaseList, this);
         pageManager.registerPageLoader(DbUserEditor.DatabaseUsers, this);
         pageManager.registerPageLoader(DbPartnerEditor.DatabasePartners, this);
-        pageManager.registerPageLoader(Designer.Design, this);
+        pageManager.registerPageLoader(DesignPresenter.PAGE_ID, this);
 
         placeSerializer.registerStatelessPlace(AccountEditor.Account, new AccountPageState());
         placeSerializer.registerStatelessPlace(DbListPresenter.DatabaseList, new DbListPageState());
         placeSerializer.registerParser(DbConfigPresenter.DatabaseConfig, new DbPageState.Parser(DbConfigPresenter.DatabaseConfig));
         placeSerializer.registerParser(DbUserEditor.DatabaseUsers, new DbPageState.Parser(DbUserEditor.DatabaseUsers));
         placeSerializer.registerParser(DbPartnerEditor.DatabasePartners, new DbPageState.Parser(DbPartnerEditor.DatabasePartners));
-        placeSerializer.registerParser(Designer.Design, new DbPageState.Parser(Designer.Design));
+        placeSerializer.registerParser(DesignPresenter.PAGE_ID, new DbPageState.Parser(DesignPresenter.PAGE_ID));
     }
 
     @Override
@@ -89,8 +88,8 @@ public class SigmahConfigLoader implements PageLoader {
                                 presenter.go(db);
                                 callback.onSuccess(presenter);
 
-                            } else if (Designer.Design.equals(pageId)) {
-                                Designer presenter = injector.getDesigner();
+                            } else if (DesignPresenter.PAGE_ID.equals(pageId)) {
+                                DesignPresenter presenter = injector.getDesigner();
                                 presenter.go(db);
                                 callback.onSuccess(presenter);
 

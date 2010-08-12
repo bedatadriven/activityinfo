@@ -11,6 +11,12 @@ import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.shared.command.PagingGetCommand;
 import org.sigmah.shared.command.result.PagingResult;
 
+/**
+ * Command-pattern-based implementation of the GXT {@link com.extjs.gxt.ui.client.data.PagingLoader}
+ *
+ * @deprecated Use standard GXT loader with custom {@link com.extjs.gxt.ui.client.data.DataProxy}
+ * @param <ResultT>
+ */
 public class PagingCmdLoader<ResultT extends PagingResult<?>>
         extends AbstractListCmdLoader<ResultT, PagingGetCommand<ResultT>>
         implements PagingLoader<ResultT> {

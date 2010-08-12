@@ -107,7 +107,6 @@ public class IndicatorValue implements java.io.Serializable {
         }
 
 		IndicatorValue that = (IndicatorValue)other;
-
 		return this.getId().equals(that.getId());
 	}
 

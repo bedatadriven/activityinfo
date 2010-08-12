@@ -21,10 +21,8 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.shared.command.GetSchema;
@@ -32,10 +30,11 @@ import org.sigmah.shared.dto.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
- * @author Alex Bertram (akbertram@gmail.com)
+ * UI Component that allows the user to select a list of Indicators
+ *
+ * @author Alex Bertram
  */
 public class IndicatorTreePanel extends ContentPanel {
 
@@ -62,14 +61,7 @@ public class IndicatorTreePanel extends ContentPanel {
         this.monitor = monitor;
      
 
-        loader = new BaseTreeLoader<ModelData>(new Proxy()) {
-            @Override
-            public boolean hasChildren(ModelData parent) {
-                return !(parent instanceof IndicatorDTO) &&
-                        !(parent instanceof IndicatorGroup);
-            }
-        };
-
+        loader = new Loader();
         store = new TreeStore<ModelData>(loader);
         store.setKeyProvider(new ModelKeyProvider<ModelData>() {
             @Override
@@ -107,19 +99,6 @@ public class IndicatorTreePanel extends ContentPanel {
                 }
             }
         });
-//        tree.setIconProvider(new ModelIconProvider<ModelData>() {
-//
-//            @Override
-//            public AbstractImagePrototype getIcon(ModelData model) {
-//                if(model instanceof UserDatabaseDTO) {
-//                    return Application.ICONS.database();
-//                } else if(model instanceof ActivityDTO) {
-//                    return Application.ICONS.activity();
-//                } else {
-//                    return null;
-//                }
-//            }
-//        });
         tree.setStateId("indicatorPanel");
         tree.setStateful(true);
         tree.setAutoSelect(true);
@@ -146,12 +125,6 @@ public class IndicatorTreePanel extends ContentPanel {
                     if (!toolBar.isVisible()) {
                         toolBar.setVisible(true);
                     }
-//                    StringBuilder sb = new StringBuilder();
-//                    if(filter.getRawValue()!=null) {
-//                        sb.append(filter.getRawValue());
-//                    }
-//                    sb.append((char)be.getEvent().getKeyCode());
-//                    filter.setRawValue(sb.toString());
                     filter.focus();
                 }
             }
@@ -176,34 +149,14 @@ public class IndicatorTreePanel extends ContentPanel {
                 }
             }
         });
-
         add(tree);
-
         createFilterBar();
-
     }
 
     private void createFilterBar() {
         toolBar = new ToolBar();
         toolBar.add(new LabelToolItem(I18N.CONSTANTS.search()));
-        filter = new StoreFilterField() {
-
-            @Override
-            protected boolean doSelect(Store store, ModelData parent,
-                                       ModelData record, String property, String filter) {
-
-                String keywords[] = filter.toLowerCase().split("\\s+");
-
-                String name = ((String) record.get("name")).toLowerCase();
-                for (String keyword : keywords) {
-                    if (name.indexOf(keyword) == -1) {
-                        return false;
-                    }
-                }
-
-                return true;
-            }
-        };
+        filter = new FilterField();
         filter.addListener(Events.Blur, new Listener<BaseEvent>() {
             public void handleEvent(BaseEvent be) {
                 if (filter.getRawValue() == null || filter.getRawValue().length() == 0) {
@@ -217,13 +170,8 @@ public class IndicatorTreePanel extends ContentPanel {
         setTopComponent(toolBar);
     }
 
-    
-
-    
     private class Proxy implements DataProxy<List<ModelData>> {
-
         private SchemaDTO schema;
-
         public void load(DataReader<List<ModelData>> listDataReader, Object parent, final AsyncCallback<List<ModelData>> callback) {
 
             if (parent == null) {
@@ -257,37 +205,11 @@ public class IndicatorTreePanel extends ContentPanel {
         }
     }
 
-//
-//    public void setSchema(Schema schema) {
-//
-//        store.removeAll();
-//        store.setFiresEvents(false);
-//
-//        for(UserDatabaseDTO db : schema.getDatabases()) {
-//            if(db.hasIndicators()) {
-//
-//                store.add(db, false);
-//
-//                for(ActivityDTO activity : db.getActivities()) {
-//                    if(activity.getIndicators().size() != 0) {
-//                        store.add(db, activity, false);
-//
-//                        for(IndicatorDTO indicator : activity.getIndicators()) {
-//                            store.add(activity, indicator, false);
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//
-//        store.setFiresEvents(true);
-//        store.fireEvent(Store.DataChanged, new TreeStoreEvent<ModelData>(store));
-//    }
-
+    /**
+     * @return the list of selected indicators
+     */
     public List<IndicatorDTO> getSelection() {
-
         List<IndicatorDTO> list = new ArrayList<IndicatorDTO>();
-
         for (ModelData model : tree.getCheckedSelection()) {
             if (model instanceof IndicatorDTO) {
                 list.add((IndicatorDTO) model);
@@ -296,17 +218,11 @@ public class IndicatorTreePanel extends ContentPanel {
         return list;
     }
 
-    public void setSelection(int indicatorId) {
-
-    }
-
-    public void setSelection(Set<Integer> indicatorIds) {
-        List<IndicatorDTO> indicators = new ArrayList<IndicatorDTO>();
-
-    }
-
+    /**
+     *
+     * @return the list of the ids of selected indicators
+     */
     public List<Integer> getSelectedIds() {
-
         List<Integer> list = new ArrayList<Integer>();
 
         for (ModelData model : tree.getCheckedSelection()) {
@@ -315,5 +231,33 @@ public class IndicatorTreePanel extends ContentPanel {
             }
         }
         return list;
+    }
+
+    private class Loader extends BaseTreeLoader<ModelData> {
+        public Loader() {
+            super(new Proxy());
+        }
+
+        @Override
+        public boolean hasChildren(ModelData parent) {
+            return !(parent instanceof IndicatorDTO) &&
+                    !(parent instanceof IndicatorGroup);
+        }
+    }
+
+    private static class FilterField extends StoreFilterField {
+        @Override
+        protected boolean doSelect(Store store, ModelData parent,
+                                   ModelData record, String property, String filter) {
+
+            String keywords[] = filter.toLowerCase().split("\\s+");
+            String name = ((String) record.get("name")).toLowerCase();
+            for (String keyword : keywords) {
+                if (name.indexOf(keyword) == -1) {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 }

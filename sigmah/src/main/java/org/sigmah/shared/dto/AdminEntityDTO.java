@@ -19,12 +19,25 @@ public final class AdminEntityDTO extends BaseModelData implements DTO {
 	public AdminEntityDTO() {
 	}
 
+    /**
+     *
+     * @param levelId the id of the AdminLevel to which this AdminEntity belongs
+     * @param id  the id of this AdminEntity
+     * @param name  the name of this AdminEntity
+     */
     public AdminEntityDTO(int levelId, int id, String name) {
         setId(id);
         setName(name);
         setLevelId(levelId);
     }
 
+    /**
+     *
+     * @param levelId the id of the AdminLevel to which this AdminEntity belongs
+     * @param id the id of this AdminEntity
+     * @param parentId the id of this AdminEntity's parent
+     * @param name  this AdminEntity's name
+     */
     public AdminEntityDTO(int levelId, int id, int parentId, String name) {
         setId(id);
         setParentId(parentId);
@@ -32,6 +45,12 @@ public final class AdminEntityDTO extends BaseModelData implements DTO {
         setLevelId(levelId);
     }
 
+    /**
+     * @param levelId the id of the AdminLevel to which this AdminEntity belongs
+     * @param id the id of this AdminEntity
+     * @param name  the name of this AdminEntity
+     * @param bounds the geographing BoundingBox of this AdminEntity
+     */
     public AdminEntityDTO(int levelId, int id, String name, BoundingBoxDTO bounds) {
         setId(id);
         setName(name);
@@ -39,6 +58,13 @@ public final class AdminEntityDTO extends BaseModelData implements DTO {
         setBounds(bounds);
     }
 
+    /**
+     * @param levelId the id of the AdminLevel to which this AdminEntity belongs
+     * @param id the id of this AdminEntity
+     * @param parentId the id of this AdminEntity's parent
+     * @param name  the name of this AdminEntity
+     * @param bounds the geographing BoundingBox of this AdminEntity
+     */
     public AdminEntityDTO(int levelId, int id, int parentId, String name, BoundingBoxDTO bounds) {
         setId(id);
         setLevelId(levelId);
@@ -48,20 +74,32 @@ public final class AdminEntityDTO extends BaseModelData implements DTO {
     }
 
 
+    /**
+     * Sets this AdminEntity's id
+     */
     public void setId(int id) {
 		set("id", id);
 	}
-	
+
+    /**
+     * @return  this AdminEntity's id
+     */
 	public int getId() {
 		return (Integer)get("id");
 	}
-	
+
+    /**
+     * @return this AdminEntity's name
+     */
 	public String getName() {
 		return get("name");
 	}
 
-	public void setName(String value) {
-		set("name", value);
+    /**
+     * Sets this AdminEntity's name
+     */
+	public void setName(String name) {
+		set("name", name);
 	}
 
     /**
@@ -72,10 +110,16 @@ public final class AdminEntityDTO extends BaseModelData implements DTO {
 		return (Integer)get("levelId");
 	}
 
-	public void setLevelId(int value) {
-		set("levelId", value);
+    /**
+     * Sets the id of the AdminLevel to which this AdminEntity belongs
+     */
+	public void setLevelId(int levelId) {
+		set("levelId", levelId);
 	}
 
+    /**
+     * Sets the id of this AdminEntity's parent.
+     */
 	public void setParentId(Integer value) {
 		set("parentId", value);
 	}
@@ -88,26 +132,41 @@ public final class AdminEntityDTO extends BaseModelData implements DTO {
 		return get("parentId");
 	}
 
+    /**
+     * @return  true if this AdminEntity has non-null bounds
+     */
 	public boolean hasBounds() {
 		return getBounds() != null;
 	}
 
     /**
      *
-     * @return bounding
+     * @return the geographic BoundingBoxDTO of this AdminEntity
      */
 	public BoundingBoxDTO getBounds() {
 		return bounds;
 	}
-	
+
+    /**
+     * Sets the BoundingBoxDTO of this AdminEntity.
+     */
 	public void setBounds(BoundingBoxDTO bounds) {
 		this.bounds = bounds;
 	}
-	
+
+    /**
+     * Gets the property name for a given AdminLevel when AdminEntities are stored in pivoted form.
+     *
+     * @param levelId the id of the AdminLevel
+     * @return the property name
+     */
 	public static String getPropertyName(int levelId) {
 		return AdminLevelDTO.getPropertyName(levelId);
 	}
-	
+
+    /**
+     * @return the property name used for this AdminEntity's AdminLevel when stored in pivoted form
+     */
 	public String getPropertyName() {
 		return AdminLevelDTO.getPropertyName(this.getLevelId());
 	}
@@ -122,6 +181,9 @@ public final class AdminEntityDTO extends BaseModelData implements DTO {
         return get("id").hashCode();
     }
 
+    /**
+     * Tests for equality based on ID.
+     */
     @Override
     public boolean equals(Object other) {
         if(other==null) {
@@ -135,7 +197,6 @@ public final class AdminEntityDTO extends BaseModelData implements DTO {
         }
 
         AdminEntityDTO that = (AdminEntityDTO)other;
-
         return getId() == that.getId();
     }
 }

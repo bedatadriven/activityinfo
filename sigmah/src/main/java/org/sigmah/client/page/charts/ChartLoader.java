@@ -9,22 +9,25 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
-import org.sigmah.client.inject.AppInjector;
+import com.google.inject.Provider;
 import org.sigmah.client.page.*;
 
 /**
+ *
+ * PageLoader for the Chart page
+ *
  * @author Alex Bertram (akbertram@gmail.com)
  */
 public class ChartLoader implements PageLoader {
-
-    private final AppInjector injector;
+    private final Provider<ChartPagePresenter> chartPageProvider;
 
     @Inject
-    public ChartLoader(AppInjector injector, NavigationHandler pageManager, PageStateSerializer placeSerializer) {
-        this.injector = injector;
+    public ChartLoader(NavigationHandler pageManager, PageStateSerializer placeSerializer,
+                       Provider<ChartPagePresenter> chartPageProvider) {
+        this.chartPageProvider = chartPageProvider;
 
-        pageManager.registerPageLoader(Charts.Charts, this);
-        placeSerializer.registerStatelessPlace(Charts.Charts, new ChartPageState());
+        pageManager.registerPageLoader(ChartPagePresenter.PAGE_ID, this);
+        placeSerializer.registerStatelessPlace(ChartPagePresenter.PAGE_ID, new ChartPageState());
     }
 
     @Override
@@ -38,13 +41,10 @@ public class ChartLoader implements PageLoader {
 
             @Override
             public void onSuccess() {
-
                 if(pageState instanceof ChartPageState) {
-                    callback.onSuccess(injector.getCharter());
+                    callback.onSuccess(chartPageProvider.get());
                 }
             }
         });
-
-
     }
 }

@@ -6,8 +6,6 @@
 package org.sigmah.client.page.dashboard;
 
 
-import org.sigmah.shared.command.result.ProjectListResult;
-
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -17,17 +15,9 @@ import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.util.Padding;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
-import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
 import com.google.gwt.core.client.GWT;
@@ -39,17 +29,12 @@ import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
-import java.util.Arrays;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.event.NavigationEvent;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.client.page.NavigationCallback;
-import org.sigmah.client.page.NavigationHandler;
-import org.sigmah.client.page.Page;
-import org.sigmah.client.page.PageId;
-import org.sigmah.client.page.PageState;
+import org.sigmah.client.page.*;
 import org.sigmah.client.page.charts.ChartPageState;
 import org.sigmah.client.page.common.toolbar.ActionListener;
 import org.sigmah.client.page.common.toolbar.ActionToolBar;
@@ -58,13 +43,16 @@ import org.sigmah.client.page.config.DbListPageState;
 import org.sigmah.client.page.entry.SiteGridPageState;
 import org.sigmah.client.page.map.MapPageState;
 import org.sigmah.client.page.project.ProjectPresenter;
-import org.sigmah.client.page.report.ReportHomePageState;
+import org.sigmah.client.page.report.ReportListPageState;
 import org.sigmah.client.page.table.PivotPageState;
 import org.sigmah.shared.command.GetCountries;
 import org.sigmah.shared.command.GetProjects;
 import org.sigmah.shared.command.result.CountryResult;
+import org.sigmah.shared.command.result.ProjectListResult;
 import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.ProjectDTO;
+
+import java.util.Arrays;
 
 /**
  * Home screen of sigmah. Displays the main menu and a reminder of urgent tasks.
@@ -127,7 +115,7 @@ public class DashboardPresenter implements Page {
             
                 // Menu
                 addNavLink(menuPanel, I18N.CONSTANTS.dataEntry(), IconImageBundle.ICONS.dataEntry(), new SiteGridPageState());
-                addNavLink(menuPanel, I18N.CONSTANTS.reports(), IconImageBundle.ICONS.report(), new ReportHomePageState());
+                addNavLink(menuPanel, I18N.CONSTANTS.reports(), IconImageBundle.ICONS.report(), new ReportListPageState());
                 addNavLink(menuPanel, I18N.CONSTANTS.charts(), IconImageBundle.ICONS.barChart(), new ChartPageState());
                 addNavLink(menuPanel, I18N.CONSTANTS.maps(), IconImageBundle.ICONS.map(), new MapPageState());
                 addNavLink(menuPanel, I18N.CONSTANTS.tables(), IconImageBundle.ICONS.table(), new PivotPageState());

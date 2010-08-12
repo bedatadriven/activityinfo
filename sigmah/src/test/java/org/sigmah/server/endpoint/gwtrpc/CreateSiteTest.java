@@ -32,7 +32,6 @@ public class CreateSiteTest extends CommandTestCase {
         SiteDTO newSite = new SiteDTO();
 
         newSite.setActivityId(1);
-        newSite.setStatus(-1);
         newSite.setPartner(new PartnerDTO(1, "Foobar"));
         newSite.setDate1((new GregorianCalendar(2008, 12, 1)).getTime());
         newSite.setDate2((new GregorianCalendar(2009, 1, 3)).getTime());
@@ -76,7 +75,6 @@ public class CreateSiteTest extends CommandTestCase {
         Assert.assertEquals("site.attribute[1]", true, secondRead.getAttributeValue(1));
         Assert.assertEquals("site.reportingPeriod[0].indicatorValue[0]", 996.0, secondRead.getIndicatorValue(1), 0.1);
         Assert.assertEquals("site.comments", newSite.getComments(), secondRead.getComments());
-        Assert.assertEquals("site.status", newSite.getStatus(), secondRead.getStatus());
         Assert.assertEquals("site.partner", newSite.getPartner().getId(), secondRead.getPartner().getId());
     }
 
@@ -87,7 +85,6 @@ public class CreateSiteTest extends CommandTestCase {
         SiteDTO newSite = new SiteDTO();
 
         newSite.setActivityId(4);
-        newSite.setStatus(1);
         newSite.setPartner(new PartnerDTO(1, "Foobar"));
         newSite.setDate1((new GregorianCalendar(2008, 12, 1)).getTime());
         newSite.setDate2((new GregorianCalendar(2009, 1, 3)).getTime());
@@ -130,7 +127,6 @@ public class CreateSiteTest extends CommandTestCase {
         SiteDTO newSite = new SiteDTO();
 
         newSite.setActivityId(1);
-        newSite.setStatus(-1);
         newSite.setPartner(new PartnerDTO(1, "Foobar"));
         newSite.setDate1((new GregorianCalendar(2008, 12, 1)).getTime());
         newSite.setDate2((new GregorianCalendar(2009, 1, 3)).getTime());

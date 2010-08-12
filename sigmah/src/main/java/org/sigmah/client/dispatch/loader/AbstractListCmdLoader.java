@@ -13,7 +13,15 @@ import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.shared.command.GetListCommand;
 import org.sigmah.shared.command.result.ListResult;
 
-public abstract class AbstractListCmdLoader<
+/**
+ * Base class for command-pattern-based implementations of GXT {@link com.extjs.gxt.ui.client.data.ListLoader}
+ * interfaces
+
+ * @deprecated Use standard GXT loader with custom {@link com.extjs.gxt.ui.client.data.DataProxy}
+ * @param <ResultT>
+ * @param <CommandT>
+ */
+abstract class AbstractListCmdLoader<
         ResultT extends ListResult,
         CommandT extends GetListCommand<ResultT>>
         extends AbstractCmdLoader<ResultT, CommandT>

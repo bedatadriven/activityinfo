@@ -15,11 +15,13 @@ import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.SchemaDTO;
 
 import java.util.ArrayList;
-/*
+
+/**
+ * Loads the list of all AdminLevels for all countries visible to the user.
+ *
  * @author Alex Bertram
  */
-
-public class AdminLevelProxy implements DataProxy {
+class AdminLevelProxy implements DataProxy {
 
     private final Dispatcher service;
 
@@ -28,7 +30,6 @@ public class AdminLevelProxy implements DataProxy {
     }
 
     public void load(DataReader dataReader, Object loadConfig, final AsyncCallback callback) {
-
         service.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);
@@ -42,6 +43,5 @@ public class AdminLevelProxy implements DataProxy {
                 callback.onSuccess(models);
             }
         });
-
     }
 }

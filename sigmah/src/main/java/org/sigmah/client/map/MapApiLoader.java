@@ -23,6 +23,7 @@ import java.util.List;
  */
 public class MapApiLoader {
     private static final int TIMEOUT = 10 * 1000;
+    // TODO: externalize this, should come from page
     private static final String API_KEY = "ABQIAAAAHxDe2DM8fTqR3KT6JA3uSxQowpcadhvcZvF-AZHbBConS0qRQRSyDoOLQrw76pJeJNUXt2g-yC8FAg";
     private static final String API_VERSION = "2";
     private static final boolean USING_SENSOR = false;

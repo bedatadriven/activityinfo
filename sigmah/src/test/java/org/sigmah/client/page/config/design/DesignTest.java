@@ -55,14 +55,14 @@ public class DesignTest {
         service.setResult(UpdateEntity.class, new VoidResult());
 
         // Collaborator
-        Designer.View view = createNiceMock(Designer.View.class);
+        DesignPresenter.View view = createNiceMock(DesignPresenter.View.class);
         replay(view);
 
         // Localisation resources
         UIConstants constants = createNiceMock(UIConstants.class);
         replay(constants);
 
-        Designer designer = new Designer(eventBus, service, new MockStateManager(),
+        DesignPresenter designer = new DesignPresenter(eventBus, service, new MockStateManager(),
                 view, constants);
         designer.go(schema.getDatabaseById(1));
 
@@ -99,14 +99,14 @@ public class DesignTest {
         service.setResult(UpdateEntity.class, new VoidResult());
 
         // Collaborator
-        Designer.View view = createNiceMock(Designer.View.class);
+        DesignPresenter.View view = createNiceMock(DesignPresenter.View.class);
         replay(view);
 
         // Collaborator
         UIConstants constants = createNiceMock(UIConstants.class);
         replay(constants);
 
-        Designer designer = new Designer(eventBus, service, new MockStateManager(),
+        DesignPresenter designer = new DesignPresenter(eventBus, service, new MockStateManager(),
                 view, constants);
         designer.go(schema.getDatabaseById(1));
 
@@ -144,7 +144,7 @@ public class DesignTest {
         service.setResult(Delete.class, new VoidResult());
 
         // Collaborator
-        Designer.View view = createNiceMock(Designer.View.class);
+        DesignPresenter.View view = createNiceMock(DesignPresenter.View.class);
 
         expect(view.getSelection()).andReturn(schema.getActivityById(91));
         view.confirmDeleteSelected(isA(ConfirmCallback.class));
@@ -160,7 +160,7 @@ public class DesignTest {
         UIConstants constants = createNiceMock(UIConstants.class);
         replay(constants);
 
-        Designer designer = new Designer(new MockEventBus(), service, new MockStateManager(),
+        DesignPresenter designer = new DesignPresenter(new MockEventBus(), service, new MockStateManager(),
                 view, constants);
         designer.go(schema.getDatabaseById(1));
 
@@ -187,7 +187,7 @@ public class DesignTest {
         service.setResult(Delete.class, new VoidResult());
 
         // Collaborator
-        Designer.View view = createNiceMock(Designer.View.class);
+        DesignPresenter.View view = createNiceMock(DesignPresenter.View.class);
         view.setActionEnabled(UIActions.delete, false);
         replay(view);
 
@@ -195,7 +195,7 @@ public class DesignTest {
         UIConstants constants = createNiceMock(UIConstants.class);
         replay(constants);
 
-        Designer designer = new Designer(new MockEventBus(), service, new MockStateManager(),
+        DesignPresenter designer = new DesignPresenter(new MockEventBus(), service, new MockStateManager(),
                 view, constants);
         designer.go(schema.getDatabaseById(1));
 
@@ -244,7 +244,7 @@ public class DesignTest {
         replay(constants);
 
         // Class under test
-        Designer designer = new Designer(eventBus, service, new MockStateManager(), view, constants);
+        DesignPresenter designer = new DesignPresenter(eventBus, service, new MockStateManager(), view, constants);
 
         // VERIFY that when an activity is added, it appears at the end of the list with two
         // sub folders

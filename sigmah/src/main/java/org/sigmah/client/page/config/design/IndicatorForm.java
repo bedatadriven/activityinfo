@@ -19,12 +19,12 @@ import org.sigmah.client.page.common.widget.MappingComboBox;
 import org.sigmah.client.page.common.widget.MappingComboBoxBinding;
 import org.sigmah.shared.dto.IndicatorDTO;
 
-public class IndicatorForm extends AbstractDesignForm {
+class IndicatorForm extends AbstractDesignForm {
 
     private FormBinding binding;
 	
 	public IndicatorForm()  {
-
+        super();
 
         binding = new FormBinding(this);
 

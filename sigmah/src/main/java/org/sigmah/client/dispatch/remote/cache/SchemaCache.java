@@ -15,9 +15,9 @@ import org.sigmah.shared.dto.SchemaDTO;
 
 /**
  * Caches the user's schema in-memory for the duration of the session.
- * <p/>
+
  * TODO: we need to peridiodically check the server for updates. Do we do this here
- * or in a seperate class?
+ * or in a separate class?
  *
  * @author Alex Bertram
  */
@@ -37,11 +37,11 @@ public class SchemaCache implements CommandProxy<GetSchema>, DispatchListener {
     }
 
     @Override
-    public CommandProxyResult execute(GetSchema command) {
+    public ProxyResult maybeExecute(GetSchema command) {
         if (schema == null) {
-            return CommandProxyResult.couldNotExecute();
+            return ProxyResult.couldNotExecute();
         } else {
-            return new CommandProxyResult(schema);
+            return new ProxyResult(schema);
         }
     }
 

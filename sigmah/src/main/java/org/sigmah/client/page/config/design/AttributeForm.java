@@ -11,7 +11,7 @@ import com.extjs.gxt.ui.client.binding.FormBinding;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import org.sigmah.client.i18n.I18N;
 
-public class AttributeForm extends AbstractDesignForm {
+class AttributeForm extends AbstractDesignForm {
 
     private FormBinding binding;
 

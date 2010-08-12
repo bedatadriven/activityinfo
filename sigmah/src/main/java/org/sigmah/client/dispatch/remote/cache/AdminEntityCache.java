@@ -15,7 +15,7 @@ import org.sigmah.shared.command.result.AdminEntityResult;
 import org.sigmah.shared.command.result.CommandResult;
 
 /**
- * Caches the results of
+ * Caches the results of {@link org.sigmah.shared.command.GetAdminEntities}
  *
  * @author Alex Bertram
  */
@@ -29,17 +29,17 @@ public class AdminEntityCache extends AbstractCache implements CommandProxy<GetA
     }
 
     @Override
-    public CommandProxyResult<AdminEntityResult> execute(GetAdminEntities command) {
+    public ProxyResult<AdminEntityResult> maybeExecute(GetAdminEntities command) {
 
         if (command.getActivityId() != null) {
-            return CommandProxyResult.couldNotExecute();
+            return ProxyResult.couldNotExecute();
         }
 
         AdminEntityResult result = (AdminEntityResult) fetch(command);
         if (result == null) {
-            return CommandProxyResult.couldNotExecute();
+            return ProxyResult.couldNotExecute();
         } else {
-            return new CommandProxyResult<AdminEntityResult>(new AdminEntityResult(result));
+            return new ProxyResult<AdminEntityResult>(new AdminEntityResult(result));
         }
     }
 

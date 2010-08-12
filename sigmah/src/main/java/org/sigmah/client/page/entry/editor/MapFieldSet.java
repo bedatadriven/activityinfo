@@ -81,11 +81,11 @@ public class MapFieldSet extends FieldSet implements MapPresenter.View {
 
         /* Create the Lat/Lng entry fields */
 
-        latField = new CoordinateField(CoordinateField.LATITUDE);
+        latField = new CoordinateField(CoordinateField.Axis.LATITUDE);
         latField.setName("y");
         latField.setFireChangeEventOnSetValue(true);
 
-        lngField = new CoordinateField(CoordinateField.LONGITUDE);
+        lngField = new CoordinateField(CoordinateField.Axis.LONGITUDE);
         lngField.setName("x");
         lngField.setFireChangeEventOnSetValue(true);
 

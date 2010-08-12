@@ -23,7 +23,7 @@ import org.sigmah.shared.map.CoordinateFormatException;
  *
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class CoordinateEditor extends AbstractCoordinateEditor
+class CoordinateEditor extends AbstractCoordinateEditor
         implements PropertyEditor<Double>, Validator {
 
     private NumberFormat dddFormat;

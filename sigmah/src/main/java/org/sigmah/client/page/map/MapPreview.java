@@ -45,13 +45,9 @@ import java.util.List;
  *
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class MapPreview extends ContentPanel {
-
-    private MapPresenter presenter;
-
+class MapPreview extends ContentPanel {
     private MapWidget map = null;
     private String currentBaseMapId = null;
-
     private LatLngBounds pendingZoom = null;
 
     /**
@@ -99,10 +95,7 @@ public class MapPreview extends ContentPanel {
                 }
             }
         });
-
-
     }
-
 
     private void zoomToBounds(LatLngBounds bounds) {
 
@@ -117,24 +110,7 @@ public class MapPreview extends ContentPanel {
         }
     }
 
-//    @Override
-//    public void init(final MapPresenter presenter) {
-//        this.presenter = presenter;
-//
-//
-//        DelayedTask task = new DelayedTask(new Listener() {
-//            @Override
-//            public void handleEvent(BaseEvent be) {
-//                //presenter.onMapLoaded(map.getZoomLevel(), map.getBounds());
-//
-//            }
-//        });
-//        task.delay(1);
-//    }
-
-
     public void setContent(ReportElement element, Content content) {
-
         this.element = (MapElement) element;
         this.content = (MapContent) content;
 
@@ -193,7 +169,7 @@ public class MapPreview extends ContentPanel {
 
     private void changeBaseMapIfNeeded(BaseMap baseMap) {
         if (currentBaseMapId == null || !currentBaseMapId.equals(baseMap.getId())) {
-            MapType baseMapType = MapTypeFactory.createBaseMapType(baseMap);
+            MapType baseMapType = MapTypeFactory.mapTypeForBaseMap(baseMap);
             map.addMapType(baseMapType);
             map.setCurrentMapType(baseMapType);
             map.removeMapType(MapType.getNormalMap());
@@ -238,11 +214,8 @@ public class MapPreview extends ContentPanel {
         iconFactory.primaryColor = "#0000FF";
 
         for (MapMarker marker : content.getMarkers()) {
-
             Icon icon = IconFactory.createIcon(marker);
-
             LatLng latLng = LatLng.newInstance(marker.getLat(), marker.getLng());
-
 
             MarkerOptions options = MarkerOptions.newInstance();
             options.setIcon(icon);

@@ -29,7 +29,7 @@ import java.util.List;
  *
  * @author Alex Bertram
  */
-public class LayoutForm extends FormPanel {
+class LayoutForm extends FormPanel {
 
     private final Dispatcher service;
 

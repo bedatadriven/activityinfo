@@ -5,25 +5,24 @@
 
 package org.sigmah.client.dispatch.remote;
 
-
 /**
  * Encapsulates user identity and their authorization to access the server.
- * <p/>
+
  * This is normally injected by Gin, see the default {@link org.sigmah.client.inject.AuthProvider}
  *
  * @author Alex Bertram
  */
 public class Authentication {
-
-
     private String authToken;
     private String email;
     private int userId;
 
-    public Authentication() {
-
-    }
-
+    /**
+     * 
+     * @param userId user's id (from the server's database)
+     * @param authToken authentication token, from {@link org.sigmah.server.domain.Authentication}
+     * @param email
+     */
     public Authentication(int userId, String authToken, String email) {
         this.userId = userId;
         this.authToken = authToken;
@@ -31,25 +30,17 @@ public class Authentication {
     }
 
     /**
-     * @return Unique ID for the user
+     * @return Unique ID for the user, from the server's database
      */
     public int getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
     /**
-     * @return The authorization token required for calls to the command service
+     * @return The authentication token required for calls to the command service
      */
     public String getAuthToken() {
         return authToken;
-    }
-
-    public void setAuthToken(String authToken) {
-        this.authToken = authToken;
     }
 
     /**
@@ -59,10 +50,9 @@ public class Authentication {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
+    /**
+     * @return the name of the local Sqlite database for this user
+     */
     public String getLocalDbName() {
         return "user" + userId;
     }

@@ -16,14 +16,16 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.shared.command.RenderElement;
 
+/**
+ * SplitButton that provides users with a choice to export in a number of formats.
+ */
 public class ExportMenuButton extends SplitButton {
 
-    private RenderElement.Format defaultFormat;
-    private ExportCallback callback;
-
+    /**
+     * @param defaultFormat the default format that should appear on the SplitButton
+     * @param callback the object to call back upon selection
+     */
     public ExportMenuButton(final RenderElement.Format defaultFormat, final ExportCallback callback) {
-
-        this.defaultFormat = defaultFormat;
         this.setIcon(formatIcon(defaultFormat));
         this.setText(I18N.CONSTANTS.export());
 
@@ -33,13 +35,10 @@ public class ExportMenuButton extends SplitButton {
                 callback.export(defaultFormat);
             }
         });
-
         SelectionListener<MenuEvent> menuListener = new SelectionListener<MenuEvent>() {
             @Override
             public void componentSelected(MenuEvent ce) {
-
                 callback.export((RenderElement.Format) ce.getItem().getData("format"));
-
             }
         };
 
@@ -84,5 +83,4 @@ public class ExportMenuButton extends SplitButton {
             return IconImageBundle.ICONS.report();
         }
     }
-
 }

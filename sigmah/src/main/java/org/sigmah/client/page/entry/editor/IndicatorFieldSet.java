@@ -43,7 +43,7 @@ public class IndicatorFieldSet extends FieldSet {
 
             for(IndicatorDTO indicator : group.getIndicators()) {
 
-                if(indicator.getCollectIntervention()) {
+                if(indicator.isCollectIntervention()) {
                     addIndicator(indicator);
                 }
             }

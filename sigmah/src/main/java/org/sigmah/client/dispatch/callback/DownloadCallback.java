@@ -8,7 +8,7 @@ package org.sigmah.client.dispatch.callback;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.sigmah.client.EventBus;
-import org.sigmah.client.event.DownloadEvent;
+import org.sigmah.client.event.DownloadRequestEvent;
 import org.sigmah.shared.command.result.RenderResult;
 
 /**
@@ -38,6 +38,6 @@ public class DownloadCallback implements AsyncCallback<RenderResult> {
     }
 
     public void onSuccess(RenderResult result) {
-        eventBus.fireEvent(new DownloadEvent(downloadName, GWT.getModuleBaseURL() + "download?" + result.getUrl()));
+        eventBus.fireEvent(new DownloadRequestEvent(downloadName, GWT.getModuleBaseURL() + "download?" + result.getUrl()));
     }
 }

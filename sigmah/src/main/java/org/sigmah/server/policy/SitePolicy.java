@@ -110,8 +110,9 @@ public class SitePolicy implements EntityPolicy<Site> {
         updateLocationProperties(site.getLocation(), changes);
         updateAdminProperties(site.getLocation(), changes, false);
 
-        ReportingPeriod period = site.primaryReportingPeriod();
-        if (period != null) {
+
+        if (!site.getReportingPeriods().isEmpty()) {
+            ReportingPeriod period = site.getReportingPeriods().iterator().next();
             updatePeriodProperties(period, changes, false);
             updateIndicatorValueProperties(period, changes, false);
         }
@@ -148,7 +149,7 @@ public class SitePolicy implements EntityPolicy<Site> {
 
             if (property.startsWith(AdminLevelDTO.PROPERTY_PREFIX)) {
 
-                int levelId = AdminLevelDTO.levelIdForProperty(property);
+                int levelId = AdminLevelDTO.levelIdForPropertyName(property);
                 AdminEntityDTO entity = (AdminEntityDTO) value;
 
                 if (creating) {

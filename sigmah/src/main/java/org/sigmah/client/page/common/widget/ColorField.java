@@ -12,12 +12,15 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.form.TriggerField;
 import com.extjs.gxt.ui.client.widget.menu.ColorMenu;
 import com.google.gwt.user.client.Element;
-/*
+
+/**
+ * GXT Field that allows users to select a color from a standard palette
+ *
  * @author Alex Bertram
  */
-
 public class ColorField extends TriggerField<String> {
-
+    private static final String WHITE_HEX_STRING = "FFFFFF";
+    private static final int WHITE = 0xFFFFF;
 
     public ColorField() {
         setEditable(false);
@@ -26,7 +29,6 @@ public class ColorField extends TriggerField<String> {
     @Override
     protected void onTriggerClick(ComponentEvent ce) {
         super.onTriggerClick(ce);
-
         ColorMenu menu = new ColorMenu();
         menu.getColorPalette().addListener(Events.Select, new Listener<ColorPaletteEvent>() {
             public void handleEvent(ColorPaletteEvent ce) {
@@ -36,34 +38,30 @@ public class ColorField extends TriggerField<String> {
         menu.show(getElement(), "b");
     }
 
+    /**
+     * Sets the field's current value
+     *
+     * @param value the color value, as a hex string, WITHOUT preceding '#', e.g. FFFFFF
+     */
     @Override
     public void setValue(String value) {
         super.setValue(value);
-
         if(isRendered()) {
-            input.setStyleAttribute("backgroundColor", "#" + (value == null ? "FFFFFF" : value));
+            input.setStyleAttribute("backgroundColor", "#" + (value == null ? WHITE_HEX_STRING : value));
         }
     }
 
     @Override
     public void render(Element target, int index) {
         super.render(target, index);
-
-        input.setStyleAttribute("backgroundColor", "#" + (value == null ? "FFFFFF" : value));
+        input.setStyleAttribute("backgroundColor", "#" + (value == null ? WHITE_HEX_STRING : value));
         input.setStyleAttribute("backgroundImage", "none");
     }
 
-    public void setIntValue(int rgb) {
-        StringBuilder sb = new StringBuilder(6);
-        String hex = Integer.toHexString(rgb);
-        for(int i=hex.length(); i!=6; ++i) {
-            sb.append('0');
-        }
-        sb.append(hex);
-        setValue(sb.toString());
-    }
-    
+    /**
+     * @return the current color value as a 32-bit integer.
+     */
     public int getIntValue() {
-        return value == null ? null : Integer.parseInt(value, 16);
+        return value == null ? WHITE : Integer.parseInt(value, 16);
     }
 }

@@ -17,11 +17,8 @@ import org.sigmah.shared.dto.AdminLevelDTO;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-/*
- * @author Alex Bertram
- */
 
-public class AdminTreeProxy implements DataProxy {
+class AdminTreeProxy implements DataProxy {
 
     private final Dispatcher service;
 

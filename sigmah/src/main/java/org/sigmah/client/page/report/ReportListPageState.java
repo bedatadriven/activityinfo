@@ -12,12 +12,14 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * Page State object
+ *
  * @author Alex Bertram
  */
-public class ReportHomePageState implements PageState {
+public class ReportListPageState implements PageState {
 
     public PageId getPageId() {
-        return ReportHomePresenter.ReportHome;
+        return ReportListPagePresenter.ReportHome;
     }
 
     public String serializeAsHistoryToken() {
@@ -25,6 +27,6 @@ public class ReportHomePageState implements PageState {
     }
 
     public List<PageId> getEnclosingFrames() {
-        return Arrays.asList(ReportHomePresenter.ReportHome);
+        return Arrays.asList(ReportListPagePresenter.ReportHome);
     }
 }
