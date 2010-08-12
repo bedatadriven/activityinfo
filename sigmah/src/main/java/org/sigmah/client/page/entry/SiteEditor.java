@@ -136,7 +136,6 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
             // there are multiple pages and we don't really know where this site is going
             // to end up, so do a reload and seek to the page with the new site
         	GetSites cmd = (GetSites) loader.getCommand();
-        	cmd.setPivotFilter(view.getFilter());
             cmd.setSeekToSiteId(se.getSite().getId());
             siteIdToSelectOnNextLoad = se.getSite().getId();
             loader.load();
