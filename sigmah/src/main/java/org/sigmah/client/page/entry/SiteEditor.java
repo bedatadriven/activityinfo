@@ -5,6 +5,7 @@
 
 package org.sigmah.client.page.entry;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.data.SortInfo;
@@ -39,6 +40,7 @@ import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
+import org.sigmah.shared.report.model.Filter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +63,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
 
         public void init(SiteEditor presenter, ActivityDTO activity, ListStore<SiteDTO> store);
         public AsyncMonitor getLoadingMonitor();
-
+        public Filter getFilter();
         void setSelection(int siteId);
     }
 
@@ -133,7 +135,9 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
         } else {
             // there are multiple pages and we don't really know where this site is going
             // to end up, so do a reload and seek to the page with the new site
-            ((GetSites) loader.getCommand()).setSeekToSiteId(se.getSite().getId());
+        	GetSites cmd = (GetSites) loader.getCommand();
+        	cmd.setPivotFilter(view.getFilter());
+            cmd.setSeekToSiteId(se.getSite().getId());
             siteIdToSelectOnNextLoad = se.getSite().getId();
             loader.load();
         }
@@ -199,10 +203,11 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
         */
 
         initLoaderDefaults(loader, place, new SortInfo("date2", Style.SortDir.DESC));
-
-        loader.setCommand(GetSites.byActivity(currentActivity.getId()));
-
-
+        GetSites cmd = GetSites.byActivity(currentActivity.getId());
+       
+        cmd.setPivotFilter(view.getFilter());
+        
+        loader.setCommand(cmd);
         view.init(SiteEditor.this, currentActivity, store);
 
         view.setActionEnabled(UIActions.add, currentActivity.getDatabase().isEditAllowed());

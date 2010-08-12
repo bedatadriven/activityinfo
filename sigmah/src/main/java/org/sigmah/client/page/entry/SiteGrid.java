@@ -5,6 +5,7 @@
 
 package org.sigmah.client.page.entry;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.Events;
@@ -33,6 +34,7 @@ import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.SiteDTO;
+import org.sigmah.shared.report.model.Filter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -311,4 +313,10 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
             }
         }
     }
+
+	@Override
+	public Filter getFilter() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -5,7 +5,6 @@
 
 package org.sigmah.client.page.table;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,11 +27,9 @@ import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.report.content.Content;
 import org.sigmah.shared.report.content.PivotContent;
 import org.sigmah.shared.report.model.Dimension;
-import org.sigmah.shared.report.model.DimensionFolder;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.PivotTableElement;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.TreeStore;

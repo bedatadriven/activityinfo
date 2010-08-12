@@ -5,6 +5,7 @@
 
 package org.sigmah.client.page.entry;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.util.Margins;
@@ -18,7 +19,16 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.CardLayout;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
+
+import org.sigmah.client.page.common.filter.AdminFilterPanel;
+import org.sigmah.client.page.common.filter.DateRangePanel;
+import org.sigmah.client.page.common.filter.PartnerFilterPanel;
 import org.sigmah.client.page.common.widget.CollapsibleTabPanel;
+import org.sigmah.shared.dto.AdminEntityDTO;
+import org.sigmah.shared.dto.IndicatorDTO;
+import org.sigmah.shared.dto.PartnerDTO;
+import org.sigmah.shared.report.model.DimensionType;
+import org.sigmah.shared.report.model.Filter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,11 +45,74 @@ public class SiteGridPage extends SiteGrid {
     private int tabPanelExandedSize = 200;
     private boolean tabPanelCollapsed;
     private BorderLayoutData tabPanelLayout;
+    private AdminFilterPanel adminPanel;
+    private DateRangePanel datePanel;
+    private PartnerFilterPanel partnerPanel;
+    
+   
 
-    public SiteGridPage(boolean enableDragSource) {
+	public SiteGridPage(boolean enableDragSource) {
         super(enableDragSource);
     }
 
+    public AdminFilterPanel getAdminPanel() {
+		return adminPanel;
+	}
+
+	public void setAdminPanel(AdminFilterPanel adminPanel) {
+		this.adminPanel = adminPanel;
+	}
+
+	public DateRangePanel getDatePanel() {
+		return datePanel;
+	}
+
+	public void setDatePanel(DateRangePanel datePanel) {
+		this.datePanel = datePanel;
+	}
+
+	public PartnerFilterPanel getPartnerPanel() {
+		return partnerPanel;
+	}
+
+	public void setPartnerPanel(PartnerFilterPanel partnerPanel) {
+		this.partnerPanel = partnerPanel;
+	}
+
+	public SiteGridPage(boolean enableDragSource,AdminFilterPanel adminPanel, DateRangePanel datePanel, PartnerFilterPanel partnerPanel) {
+        super(enableDragSource);
+        this.adminPanel = adminPanel;
+        this.datePanel = datePanel;
+        this.partnerPanel = partnerPanel;
+    }
+    
+	 @Override
+	 public Filter getFilter() {
+		 Log.debug("CALLING RIGHT GET FILTER "+ adminPanel.getHeading());
+	 	Filter f = new Filter();
+	 
+		List<AdminEntityDTO> entities = adminPanel.getSelection();
+	    for (AdminEntityDTO entity : entities) {
+	        f.addRestriction(DimensionType.AdminLevel, entity.getId());
+	    }
+	
+	    List<PartnerDTO> partners = partnerPanel.getSelection();
+	    for (PartnerDTO entity : partners) {
+	        f.addRestriction(DimensionType.Partner, entity.getId());
+	    }
+	    
+	    if (datePanel.getMinDate() != null) {	
+	        f.setMinDate(datePanel.getMinDate());
+	    }
+	    
+	    if (datePanel.getMaxDate() != null) {
+	        f.setMaxDate(datePanel.getMaxDate());
+	    }
+		Log.debug("CALLING RIGHT GET FILTER:" + f.toString());
+		 
+		return f;
+	}
+	
     public void addSidePanel(String name, AbstractImagePrototype icon, final Component component) {
 
         final ToggleButton sideBarButton = new ToggleButton(name, icon);

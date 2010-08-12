@@ -8,9 +8,17 @@ package org.sigmah.client.page.common.nav;
 import org.sigmah.client.AppEvents;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.event.NavigationEvent;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.NavigationHandler;
 import org.sigmah.client.page.PageState;
+import org.sigmah.client.page.common.filter.AdminFilterPanel;
+import org.sigmah.client.page.common.filter.DateRangePanel;
+import org.sigmah.client.page.common.filter.IndicatorTreePanel;
+import org.sigmah.client.page.common.filter.PartnerFilterPanel;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseTreeLoader;
 import com.extjs.gxt.ui.client.data.ModelIconProvider;
@@ -22,7 +30,10 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.TreePanelEvent;
 import com.extjs.gxt.ui.client.store.TreeStore;
+import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
@@ -52,10 +63,9 @@ public class NavigationPanel extends ContentPanel {
         this.eventBus = eventBus;
 
         this.setHeading(navigator.getHeading());
-        this.setScrollMode(Scroll.AUTOY);
+        this.setScrollMode(Scroll.NONE);
         this.setLayout(new FitLayout());
         
-
         loader = new BaseTreeLoader<Link>(navigator) {
             @Override
             public boolean hasChildren(Link parent) {
@@ -74,6 +84,7 @@ public class NavigationPanel extends ContentPanel {
                 }
             }
         });
+        
         tree = new TreePanel<Link>(store);
         tree.setStateful(true);
         tree.setStateId(navigator.getStateId());
@@ -89,7 +100,6 @@ public class NavigationPanel extends ContentPanel {
         tree.addListener(Events.OnClick, new Listener<TreePanelEvent<Link>>() {
             @Override
             public void handleEvent(TreePanelEvent<Link> tpe) {
-
                 if(tpe.getItem().getPlace() != null) {
                     eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, tpe.getItem().getPlace()));
                 }
@@ -112,8 +122,9 @@ public class NavigationPanel extends ContentPanel {
         eventBus.addListener(AppEvents.SchemaChanged, changeListener);
 
         this.add(tree);
+       
     }
-
+    
     
     public void shutdown() {
         eventBus.removeListener(NavigationHandler.NavigationAgreed, navListener);

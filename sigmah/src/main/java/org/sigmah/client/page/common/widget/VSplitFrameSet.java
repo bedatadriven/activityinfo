@@ -27,14 +27,14 @@ public class VSplitFrameSet implements Frame {
     public VSplitFrameSet(PageId pageId, NavigationPanel navPanel) {
         this.pageId = pageId;
         this.container = new LayoutContainer();
-        this.navPanel = navPanel;
+        this.setNavPanel(navPanel);
         container.setLayout(new BorderLayout());
 
         addNavigationPanel();
     }
 
     public void shutdown() {
-        navPanel.shutdown();
+        getNavPanel().shutdown();
     }
 
     protected void addNavigationPanel() {
@@ -44,7 +44,7 @@ public class VSplitFrameSet implements Frame {
         layoutData.setCollapsible(true);
         layoutData.setMargins(new Margins(0, 5, 0, 0));
 
-        container.add(navPanel, layoutData);
+        container.add(getNavPanel(), layoutData);
     }
 
     @Override
@@ -108,4 +108,14 @@ public class VSplitFrameSet implements Frame {
     public PageId getPageId() {
         return pageId;
     }
+
+	public void setNavPanel(NavigationPanel navPanel) {
+		this.navPanel = navPanel;
+	}
+
+	public NavigationPanel getNavPanel() {
+		return navPanel;
+	}
+
+
 }
