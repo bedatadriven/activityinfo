@@ -5,15 +5,22 @@
 
 package org.sigmah.server.report.renderer.itext;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
+import org.sigmah.server.report.renderer.Renderer;
+import org.sigmah.shared.report.model.MapElement;
+import org.sigmah.shared.report.model.PivotChartElement;
+import org.sigmah.shared.report.model.PivotTableElement;
+import org.sigmah.shared.report.model.Report;
+import org.sigmah.shared.report.model.ReportElement;
+import org.sigmah.shared.report.model.StaticElement;
+import org.sigmah.shared.report.model.TableElement;
+
 import com.google.inject.Inject;
 import com.lowagie.text.DocWriter;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
-import org.sigmah.server.report.renderer.Renderer;
-import org.sigmah.shared.report.model.*;
-
-import java.io.IOException;
-import java.io.OutputStream;
 
 
 /**
@@ -30,13 +37,15 @@ public abstract class ItextReportRenderer implements Renderer {
     private final ItextChartRenderer chartRenderer;
     private final ItextMapRenderer mapRenderer;
     private final ItextTableRenderer tableRenderer;
+    private final ItextStaticRenderer staticRenderer;
 
     @Inject
-    public ItextReportRenderer(ItextPivotTableRenderer pivotTableRenderer, ItextChartRenderer chartRenderer, ItextMapRenderer mapRenderer, ItextTableRenderer tableRenderer) {
+    public ItextReportRenderer(ItextPivotTableRenderer pivotTableRenderer, ItextChartRenderer chartRenderer, ItextMapRenderer mapRenderer, ItextTableRenderer tableRenderer, ItextStaticRenderer staticRenderer) {
         this.pivotTableRenderer = pivotTableRenderer;
         this.chartRenderer = chartRenderer;
         this.mapRenderer = mapRenderer;
         this.tableRenderer = tableRenderer;
+        this.staticRenderer = staticRenderer;
     }
 
     public void render(ReportElement element, OutputStream os) throws IOException {
@@ -97,6 +106,8 @@ public abstract class ItextReportRenderer implements Renderer {
             return mapRenderer;
         } else if(element instanceof TableElement) {
             return tableRenderer;
+        } else if(element instanceof StaticElement) {
+                return staticRenderer;
         } else {
             return new NullItextRenderer();
         }

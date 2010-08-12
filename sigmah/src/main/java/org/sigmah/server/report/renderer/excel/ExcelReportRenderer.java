@@ -21,18 +21,21 @@ public class ExcelReportRenderer implements ExcelRenderer<Report>, Renderer {
     private final ExcelPivotTableRenderer pivotTableRenderer;
     private final ExcelTableRenderer tableRenderer;
     private final ExcelChartRenderer chartRenderer;
+    private final ExcelStaticRenderer staticRenderer;
 
     @Inject
-    public ExcelReportRenderer(ExcelPivotTableRenderer pivotTableRenderer, ExcelTableRenderer tableRenderer, ExcelChartRenderer chartRenderer) {
+    public ExcelReportRenderer(ExcelPivotTableRenderer pivotTableRenderer, ExcelTableRenderer tableRenderer, ExcelChartRenderer chartRenderer, ExcelStaticRenderer staticRenderer) {
         this.pivotTableRenderer = pivotTableRenderer;
         this.tableRenderer = tableRenderer;
         this.chartRenderer = chartRenderer;
+        this.staticRenderer = staticRenderer;
     }
 
     public ExcelReportRenderer() {
         this.chartRenderer = new ExcelChartRenderer();
         this.pivotTableRenderer = new ExcelPivotTableRenderer();
         this.tableRenderer = new ExcelTableRenderer();
+        this.staticRenderer = new ExcelStaticRenderer();
     }
 
     public void render(ReportElement element, OutputStream os) throws IOException {
@@ -41,7 +44,6 @@ public class ExcelReportRenderer implements ExcelRenderer<Report>, Renderer {
 
         if(element instanceof Report) {
             render(book, (Report) element);
-
         } else if(element instanceof PivotTableElement) {
             pivotTableRenderer.render(book, (PivotTableElement) element);
 
@@ -50,6 +52,9 @@ public class ExcelReportRenderer implements ExcelRenderer<Report>, Renderer {
 
         } else if(element instanceof PivotChartElement) {
             chartRenderer.render(book, (PivotChartElement)element);
+            
+        } else if (element instanceof StaticElement) {
+        	staticRenderer.render(book, (StaticElement)element);
         }
         book.write(os);
 

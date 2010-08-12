@@ -46,12 +46,15 @@ public class JaxbParseTest {
     @Test
     public void testElements() throws JAXBException {
         Report report = parseXml("report-elements.xml");
-        Assert.assertEquals("element count", 4, report.getElements().size());
+        dumpXml(report);
+        Assert.assertEquals("element count", 7, report.getElements().size());
         Assert.assertTrue("pivotTable", report.getElements().get(0) instanceof PivotTableElement);
         Assert.assertTrue("pivotChart", report.getElements().get(1) instanceof PivotChartElement);
         Assert.assertTrue("table", report.getElements().get(2) instanceof TableElement);
         Assert.assertTrue("map", report.getElements().get(3) instanceof MapElement);
-
+        Assert.assertTrue("static", report.getElements().get(4) instanceof StaticElement);
+        Assert.assertTrue("static", report.getElements().get(5) instanceof StaticElement);
+        Assert.assertTrue("static", report.getElements().get(6) instanceof StaticElement);
     }
 
     @Test

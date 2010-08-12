@@ -55,7 +55,8 @@ public class Report extends ReportElement<ReportContent> implements Serializable
             @XmlElement(name="pivotTable", type=PivotTableElement.class),
             @XmlElement(name="pivotChart", type=PivotChartElement.class),
             @XmlElement(name="table", type=TableElement.class),
-            @XmlElement(name="map", type=MapElement.class)
+            @XmlElement(name="map", type=MapElement.class),
+            @XmlElement(name="static", type=StaticElement.class)
     })
     @XmlElementWrapper(name="elements")
 	public List<ReportElement> getElements() {

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ All Sigmah code is released under the GNU General Public License v3
+  ~ See COPYRIGHT.txt and LICENSE.txt.
+  -->
+
+<report frequency="adhoc">
+
+    <title>My Title</title>
+    <sheetTitle>My Sheet Title</sheetTitle>
+    <fileName>My File Name</fileName>
+
+    <elements>
+        <static>
+       	 	<text>This is static text and image.</text>
+       	 	<img>http://www.google.nl/logos/2010/oz10-hp.gif</img>
+       	 </static>
+       	 <static>
+       	 	<text>This is text only</text>
+       	 </static>
+       	<static>
+       	 	<img>http://www.google.nl/logos/2010/oz10-hp.gif</img>
+       	 </static>
+    </elements>
+</report>

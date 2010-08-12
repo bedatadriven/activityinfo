@@ -24,8 +24,9 @@ public class PdfReportRenderer extends ItextReportRenderer {
     @Inject
     public PdfReportRenderer(ItextPivotTableRenderer pivotTableRenderer,
                              ItextChartRenderer chartRenderer, ItextMapRenderer mapRenderer,
-                             ItextTableRenderer tableRenderer) {
-        super(pivotTableRenderer, chartRenderer, mapRenderer, tableRenderer);
+                             ItextTableRenderer tableRenderer,
+                             ItextStaticRenderer staticRenderer) {
+        super(pivotTableRenderer, chartRenderer, mapRenderer, tableRenderer, staticRenderer);
     }
 
     @Override

@@ -22,8 +22,9 @@ public class RtfReportRenderer extends ItextReportRenderer {
     @Inject
     public RtfReportRenderer(ItextPivotTableRenderer pivotTableRenderer,
                              ItextChartRenderer chartRenderer, ItextMapRenderer mapRenderer,
-                             ItextTableRenderer tableRenderer) {
-        super(pivotTableRenderer, chartRenderer, mapRenderer, tableRenderer);
+                             ItextTableRenderer tableRenderer,
+                             ItextStaticRenderer staticRenderer) {
+        super(pivotTableRenderer, chartRenderer, mapRenderer, tableRenderer, staticRenderer);
     }
 
     @Override

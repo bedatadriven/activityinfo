@@ -17,14 +17,16 @@ public class HtmlReportRenderer implements HtmlRenderer<Report> {
     private final HtmlChartRenderer pivotChartRenderer;
     private final HtmlTableRenderer tableRenderer;
     private final HtmlMapRenderer mapRenderer;
+    private final HtmlStaticRenderer staticRenderer;
 
     @Inject
     public HtmlReportRenderer(HtmlPivotTableRenderer pivotTableRenderer, HtmlChartRenderer pivotChartRenderer,
-                              HtmlTableRenderer tableRenderer, HtmlMapRenderer mapRenderer) {
+                              HtmlTableRenderer tableRenderer, HtmlMapRenderer mapRenderer, HtmlStaticRenderer staticRenderer) {
         this.pivotTableRenderer = pivotTableRenderer;
         this.pivotChartRenderer = pivotChartRenderer;
         this.tableRenderer = tableRenderer;
         this.mapRenderer = mapRenderer;
+        this.staticRenderer = staticRenderer;
     }
 
     @Override
@@ -73,6 +75,10 @@ public class HtmlReportRenderer implements HtmlRenderer<Report> {
 			} else if(element instanceof MapElement) {
 
                 mapRenderer.render(html, isp, (MapElement) element);
+                
+            } else if(element instanceof StaticElement) {
+
+                staticRenderer.render(html, isp, (StaticElement) element);
             }
 
 		}

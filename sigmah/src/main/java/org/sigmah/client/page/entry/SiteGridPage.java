@@ -88,7 +88,7 @@ public class SiteGridPage extends SiteGrid {
     
 	 @Override
 	 public Filter getFilter() {
-		 Log.debug("CALLING RIGHT GET FILTER "+ adminPanel.getHeading());
+		
 	 	Filter f = new Filter();
 	 
 		List<AdminEntityDTO> entities = adminPanel.getSelection();
@@ -108,7 +108,6 @@ public class SiteGridPage extends SiteGrid {
 	    if (datePanel.getMaxDate() != null) {
 	        f.setMaxDate(datePanel.getMaxDate());
 	    }
-		Log.debug("CALLING RIGHT GET FILTER:" + f.toString());
 		 
 		return f;
 	}
