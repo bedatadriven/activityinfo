@@ -35,9 +35,9 @@ public class MapPresenter implements Page, ExportCallback, ActionListener {
 
     @ImplementedBy(MapPage.class)
     public interface View {
-        public void bindPresenter(MapPresenter presenter);
-        public AsyncMonitor getMapLoadingMonitor();
-        public ReportElement getMapElement();
+        void bindPresenter(MapPresenter presenter);
+        AsyncMonitor getMapLoadingMonitor();
+        ReportElement getMapElement();
         void setContent(ReportElement element, Content result);
         boolean validate();
     }

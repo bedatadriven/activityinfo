@@ -26,7 +26,10 @@ import org.sigmah.shared.report.model.ReportElement;
 import java.util.ArrayList;
 import java.util.List;
 
-class MapForm extends ContentPanel {
+/**
+ * Form for choosing options related to the MapElement
+ */
+public class MapForm extends ContentPanel {
 
     protected final Dispatcher service;
     protected final UIConstants messages;

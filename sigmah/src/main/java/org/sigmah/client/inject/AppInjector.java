@@ -28,6 +28,7 @@ import org.sigmah.client.page.entry.DataEntryLoader;
 import org.sigmah.client.page.entry.DataEntryNavigator;
 import org.sigmah.client.page.entry.EntryModule;
 import org.sigmah.client.page.map.MapLoader;
+import org.sigmah.client.page.map.MapModule;
 import org.sigmah.client.page.report.ReportListPagePresenter;
 import org.sigmah.client.page.report.ReportLoader;
 import org.sigmah.client.page.report.ReportModule;
@@ -49,6 +50,7 @@ import org.sigmah.client.util.state.IStateManager;
         AppModule.class,
         ReportModule.class,
         EntryModule.class,
+        MapModule.class,
         PivotModule.class,
         ConfigModule.class,
         OfflineModule.class

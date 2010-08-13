@@ -21,6 +21,7 @@ import org.sigmah.client.page.dashboard.DashboardPresenter;
 import org.sigmah.client.page.entry.DataEntryNavigator;
 import org.sigmah.client.page.entry.EntryModule;
 import org.sigmah.client.page.entry.SigmahDataEntryLoader;
+import org.sigmah.client.page.map.MapModule;
 import org.sigmah.client.page.map.SigmahMapLoader;
 import org.sigmah.client.page.project.ProjectModule;
 import org.sigmah.client.page.project.ProjectPageLoader;
@@ -36,6 +37,7 @@ import org.sigmah.client.util.state.IStateManager;
 
 @GinModules({SigmahModule.class,
              ProjectModule.class,
+             MapModule.class,
              PivotModule.class,
              ReportModule.class,
              EntryModule.class,
