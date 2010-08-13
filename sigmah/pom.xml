@@ -341,7 +341,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.2.137</version>
+            <version>1.2.139</version>
         </dependency>
         <dependency>
             <groupId>org.easymock</groupId>
@@ -424,11 +424,8 @@
                directory for hosted mode live editing -->
         <outputDirectory>${gwt.output.directory}/WEB-INF/classes</outputDirectory>
         <testSourceDirectory>src/test/java</testSourceDirectory>
-
         <plugins>
-
             <!-- configure the Java Compiler Plugin -->
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -440,7 +437,6 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -579,7 +575,7 @@
                     <dependency>
                         <groupId>com.h2database</groupId>
                         <artifactId>h2</artifactId>
-                        <version>1.2.138</version>
+                        <version>1.2.126</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -655,7 +651,7 @@
                         <artifactId>gwt-maven-plugin</artifactId>
                         <version>1.2</version>
                         <configuration>
-                            <module>org.sigmah.ActivityInfoSafariTest</module>
+                            <module>org.sigmah.ActivityInfoFFTest</module>
                         </configuration>
                         <executions>
                             <execution>
@@ -684,7 +680,7 @@
                         <artifactId>gwt-maven-plugin</artifactId>
                         <version>1.2</version>
                         <configuration>
-                            <module>org.sigmah.ActivityInfoSafariTest</module>
+                            <module>org.sigmah.ActivityInfoIE6Test</module>
                         </configuration>
                         <executions>
                             <execution>
@@ -776,39 +772,40 @@
         <!-- Build the Application Module with a single permutation but with soyc
              enabled -->
         <profile>
-            <id>soyc</id>
+            <id>ai-soyc</id>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>gwt-maven-plugin</artifactId>
                         <version>1.2</version>
-                        <executions>
-                            <execution>
-                                <id>gwt-compile</id>
-                                <configuration>
-                                    <module>org.sigmah.ActivityInfoFFTest</module>
-                                    <soyc>true</soyc>
-                                </configuration>
-                                <goals>
-                                    <goal>compile</goal>
-                                </goals>
-                            </execution>
-                        </executions>
+                        <configuration>
+                            <module>org.sigmah.ActivityInfoSoyc</module>
+                            <soyc>true</soyc>
+                            <force>true</force>
+                            <logLevel>INFO</logLevel>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
-            <reporting>
+        </profile>
+        <profile>
+            <id>sigmah-soyc</id>
+            <build>
                 <plugins>
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>gwt-maven-plugin</artifactId>
+                        <version>1.2</version>
                         <configuration>
-                            <module>org.sigmah.ActivityInfoFFTest</module>
+                            <module>org.sigmah.SigmahSoyc</module>
+                            <soyc>true</soyc>
+                            <force>true</force>
+                            <logLevel>INFO</logLevel>
                         </configuration>
                     </plugin>
                 </plugins>
-            </reporting>
+            </build>
         </profile>
         <profile>
             <id>sigmah</id>
