@@ -37,7 +37,7 @@ import org.sigmah.shared.dto.ReportDefinitionDTO;
 public class ReportListPagePresenter extends AbstractEditorGridPresenter<ReportDefinitionDTO> {
     public static final PageId ReportHome = new PageId("reports");
 
-    @ImplementedBy(ReportGrid.class)
+    @ImplementedBy(ReportListPageView.class)
     public interface View extends GridView<ReportListPagePresenter, ReportDefinitionDTO> {
         public void init(ReportListPagePresenter presenter, ListStore<ReportDefinitionDTO> store);
     }

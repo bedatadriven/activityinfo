@@ -16,7 +16,7 @@ public class ReportModule extends AbstractGinModule {
     @Override
     protected void configure() {
         // bind views to their implementations
-        bind(ReportListPagePresenter.View.class).to(ReportGrid.class);
+        bind(ReportListPagePresenter.View.class).to(ReportListPageView.class);
         bind(ReportPreviewPresenter.View.class).to(ReportPreview.class);
     }
 }

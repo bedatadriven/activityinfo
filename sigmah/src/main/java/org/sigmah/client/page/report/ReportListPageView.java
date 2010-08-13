@@ -36,7 +36,10 @@ import org.sigmah.shared.report.model.ReportFrequency;
 import java.util.ArrayList;
 import java.util.List;
 
-class ReportGrid extends AbstractEditorGridView<ReportDefinitionDTO, ReportListPagePresenter>
+/**
+ * View of the ReportList Page
+ */
+public class ReportListPageView extends AbstractEditorGridView<ReportDefinitionDTO, ReportListPagePresenter>
         implements ReportListPagePresenter.View {
 
     private MappingComboBox<Integer> dayCombo;
@@ -45,7 +48,8 @@ class ReportGrid extends AbstractEditorGridView<ReportDefinitionDTO, ReportListP
     private final Dispatcher service;
 
     @Inject
-    public ReportGrid(Dispatcher service) {
+    public ReportListPageView(Dispatcher service) {
+        super();
         this.service = service;
 
         setLayout(new FitLayout());
@@ -186,7 +190,7 @@ class ReportGrid extends AbstractEditorGridView<ReportDefinitionDTO, ReportListP
             @Override
             public void handleEvent(BaseEvent be) {
                 if (dbMenu.getItemCount() == 0) {
-                    service.execute(new GetSchema(), new MaskingAsyncMonitor(ReportGrid.this,
+                    service.execute(new GetSchema(), new MaskingAsyncMonitor(ReportListPageView.this,
                             I18N.CONSTANTS.loading()), new Got<SchemaDTO>() {
 
                         @Override

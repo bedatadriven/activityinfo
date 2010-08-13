@@ -29,7 +29,12 @@ import org.sigmah.shared.dto.ReportDefinitionDTO;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.ReportFrequency;
 
-class ReportPreview extends ContentPanel implements ReportPreviewPresenter.View {
+/**
+ * View for the ReportPreview page
+ *
+ * @author Alex Bertram
+ */
+public class ReportPreview extends ContentPanel implements ReportPreviewPresenter.View {
     private ReportPreviewPresenter presenter;
 
     private static class DateValue extends BaseModelData {

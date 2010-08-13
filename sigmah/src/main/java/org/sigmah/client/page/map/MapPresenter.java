@@ -42,19 +42,16 @@ public class MapPresenter implements Page, ExportCallback, ActionListener {
         boolean validate();
     }
 
-    private final PageId pageId;
     private final EventBus eventBus;
     private final Dispatcher service;
     private final View view;
 
     @Inject
-    public MapPresenter(PageId pageId, EventBus eventBus, Dispatcher service, final View view) {
-        this.pageId = pageId;
+    public MapPresenter(EventBus eventBus, Dispatcher service, final View view) {
         this.eventBus = eventBus;
         this.service = service;
         this.view = view;
         this.view.bindPresenter(this);
-
     }
 
     public void onUIAction(String itemId) {
@@ -65,11 +62,12 @@ public class MapPresenter implements Page, ExportCallback, ActionListener {
         }
     }
 
+    @Override
     public boolean navigate(PageState place) {
         return false;
     }
 
-    public void onRefresh() {
+    private void onRefresh() {
         if (view.validate()) {
             final ReportElement element = this.view.getMapElement();
             service.execute(new GenerateElement(element), view.getMapLoadingMonitor(), new AsyncCallback<Content>() {
@@ -82,22 +80,27 @@ public class MapPresenter implements Page, ExportCallback, ActionListener {
         }
     }
 
+    @Override
     public PageId getPageId() {
-        return pageId;
+        return PAGE_ID;
     }
 
+    @Override
     public Object getWidget() {
         return view;
     }
 
+    @Override
     public void requestToNavigateAway(PageState place, NavigationCallback callback) {
         callback.onDecided(true);
     }
 
+    @Override
     public String beforeWindowCloses() {
         return null;
     }
 
+    @Override
     public void export(RenderElement.Format format) {
         if (view.validate()) {
             service.execute(new RenderElement(view.getMapElement(), format), view.getMapLoadingMonitor(),
@@ -105,6 +108,7 @@ public class MapPresenter implements Page, ExportCallback, ActionListener {
         }
     }
 
+    @Override
     public void shutdown() {
     }
 }
