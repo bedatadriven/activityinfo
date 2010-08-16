@@ -11,6 +11,7 @@ import com.google.inject.Singleton;
 import org.apache.log4j.Logger;
 import org.sigmah.server.util.logging.Trace;
 
+import javax.servlet.ServletContext;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -26,24 +27,33 @@ public class ConfigModule extends AbstractModule {
     @Provides
     @Singleton
     @Trace
-    public Properties provideConfigProperties() {
+    public Properties provideConfigProperties(ServletContext context) {
         Properties properties = new Properties();
-        tryToLoadFromTomcatConfDirectory(properties);
+
+        tryToLoadFrom(properties, webInfDirectory(context));
+        tryToLoadFrom(properties, tomcatConfigurationDirectory());
         return properties;
     }
 
-    private boolean tryToLoadFromTomcatConfDirectory(Properties properties) {
+    private boolean tryToLoadFrom(Properties properties, File file) {
         try {
-            File appConfig = new File("conf" + File.separator + "activityinfo.conf");
-            logger.info("Trying to read properties from tomcat conf folder: " + appConfig.getAbsolutePath());
-            if(appConfig.exists()) {
-                logger.info("Reading properties from " + appConfig.getAbsolutePath());
-                properties.load(new FileInputStream(appConfig));
+            logger.info("Trying to read properties from: " + file.getAbsolutePath());
+            if(file.exists()) {
+                logger.info("Reading properties from " + file.getAbsolutePath());
+                properties.load(new FileInputStream(file));
                 return true;
             }
         } catch (IOException e) {
             return false;
         }
         return false;
+    }
+
+    private File webInfDirectory(ServletContext context) {
+        return new File(context.getRealPath("WEB-INF") + File.separator + "sigmah.properties");
+    }
+
+    private File tomcatConfigurationDirectory() {
+        return new File("conf" + File.separator + "sigmah.properties");
     }
 }

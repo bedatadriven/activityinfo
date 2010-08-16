@@ -6,8 +6,7 @@
 package org.sigmah.server.dao.hibernate;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
+import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.servlet.RequestScoped;
@@ -16,6 +15,7 @@ import org.sigmah.server.dao.*;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.util.Properties;
 
 /**
  * Guice module that provides Hibernate-based implementations for the DAO-layer interfaces.
@@ -26,23 +26,8 @@ public class HibernateModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        configureEmf();
-        configureEm();
         configureDAOs();
         configureTransactions();
-    }
-
-    protected void configureEm() {
-        bind(EntityManager.class).toProvider(EntityManagerProvider.class).in(RequestScoped.class);
-    }
-
-    protected void configureEmf() {
-        bind(EntityManagerFactory.class).toProvider(new Provider<EntityManagerFactory>() {
-            @Override
-            public EntityManagerFactory get() {
-                return Persistence.createEntityManagerFactory("activityInfo");
-            }
-        }).in(Singleton.class);
     }
 
     protected void configureTransactions() {
@@ -74,17 +59,16 @@ public class HibernateModule extends AbstractModule {
         bind(daoClass).toProvider(provider);
     }
 
-    protected static class EntityManagerProvider implements Provider<EntityManager> {
-        private final EntityManagerFactory emf;
+    @Provides
+    @Singleton
+    protected EntityManagerFactory provideEntityManager(Properties configProperties) {
+        return Persistence.createEntityManagerFactory("activityInfo", configProperties);
+    }
 
-        @Inject
-        public EntityManagerProvider(EntityManagerFactory emf) {
-            this.emf = emf;
-        }
 
-        @Override
-        public EntityManager get() {
-            return emf.createEntityManager();
-        }
+    @Provides
+    @RequestScoped
+    protected EntityManager provideEntityManager(EntityManagerFactory emf) {
+        return emf.createEntityManager();
     }
 }
