@@ -129,7 +129,7 @@ public final class UserDatabaseDTO extends BaseModel implements EntityDTO {
      * Sets the Country to which this UserDatabase belongs 
      */
 	public void setCountry(CountryDTO country) {
-		country = country;
+		this.country = country;
 	}
 
     /**
