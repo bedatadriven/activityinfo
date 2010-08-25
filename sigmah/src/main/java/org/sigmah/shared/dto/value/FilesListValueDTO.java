@@ -12,19 +12,21 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 /**
  * 
  * @author Denis Colliot (dcolliot@ideia.fr)
- *
+ * 
  */
 public class FilesListValueDTO extends BaseModelData implements EntityDTO {
-    
-	private static final long serialVersionUID = 8520711106031085130L;
-	
-	@Override
-	public String getEntityName() {
-		return "Files list value";
-	}
-	
-	// Files list value id
-	@Override
+
+    private static final long serialVersionUID = 8520711106031085130L;
+
+    @Override
+    public String getEntityName() {
+        // Gets the entity name mapped by the current DTO starting from the
+        // "server.domain" package name.
+        return "value.FilesListValue";
+    }
+
+    // File id
+    @Override
     public int getId() {
         return (Integer) get("id");
     }
@@ -32,14 +34,23 @@ public class FilesListValueDTO extends BaseModelData implements EntityDTO {
     public void setId(int id) {
         set("id", id);
     }
-	
-	// File reference
-//    public int getListId() {
-//        return get("listId");
-//    }
-//
-//    public void setListId(int listId) {
-//        set("listId", listId);
-//    }
-    
+
+    // Files list id
+    public long getIdList() {
+        return (Long) get("idList");
+    }
+
+    public void setIdList(long idList) {
+        set("idList", idList);
+    }
+
+    // File metadata
+    public FileDTO getFileDTO() {
+        return (FileDTO) get("fileDTO");
+    }
+
+    public void setFileDTO(FileDTO fileDTO) {
+        set("fileDTO", fileDTO);
+    }
+
 }

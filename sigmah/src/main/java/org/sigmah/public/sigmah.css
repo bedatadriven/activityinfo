@@ -115,6 +115,42 @@ body {
 
 /* -------------------------------------------------------------- Flexibility */
 
+.sigmah-tabProject, .sigmah-tabPhases {
+	outline: 0;
+}
+.sigmah-tabProject .x-border-layout-ct {
+	background-color: #FFFFEE;
+}
+
+.sigmah-tabProject ul.x-tab-strip-top {
+	background: none white;
+}
+.sigmah-tabProject .x-tab-panel-header {
+	border-top: none;
+	border-left: none;
+	border-right: none;
+}
+.sigmah-tabProject ul.x-tab-strip li {
+	margin-left: 8px;
+}
+
+.sigmah-tabPhases ul.x-tab-strip-top {
+	background: none #FFFFEE;
+	padding-top: 0;
+}
+.sigmah-tabPhases .x-tab-panel-header {
+	border-top: none;
+	border-left: none;
+	border-right: none;
+}
+.sigmah-tabPhases ul.x-tab-strip li {
+	margin-left: 4px;
+}
+
+.sigmah-panelReminders {
+	margin-bottom: 10px;
+}
+
 .sigmah-layout {
 	border-spacing: 0;
 }
@@ -129,6 +165,15 @@ body {
 .sigmah-required-elements-grid {
 	border: 1px solid red;
 }
-.sigmah-element.required label {
+.sigmah-element-label {
+	font-size: 8pt;	
+}
+.sigmah-element-label.required label {
 	color: red;
+}
+.sigmah-element {
+	padding-bottom: 8px;	
+}
+.sigmah-element-fieldName {
+	font-weight: bold;	
 }

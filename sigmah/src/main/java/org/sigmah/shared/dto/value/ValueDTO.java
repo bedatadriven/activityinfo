@@ -14,19 +14,21 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 /**
  * 
  * @author Denis Colliot (dcolliot@ideia.fr)
- *
+ * 
  */
 public class ValueDTO extends BaseModelData implements EntityDTO {
-    
-	private static final long serialVersionUID = 8520711106031085130L;
-	
-	@Override
-	public String getEntityName() {
-		return "Value";
-	}
-	
-	// Value id
-	@Override
+
+    private static final long serialVersionUID = 8520711106031085130L;
+
+    @Override
+    public String getEntityName() {
+        // Gets the entity name mapped by the current DTO starting from the
+        // "server.domain" package name.
+        return "value.Value";
+    }
+
+    // Value id
+    @Override
     public int getId() {
         return (Integer) get("id");
     }
@@ -34,7 +36,7 @@ public class ValueDTO extends BaseModelData implements EntityDTO {
     public void setId(int id) {
         set("id", id);
     }
-    
+
     // Reference to the parent project
     public ProjectDTO getParentProjectDTO() {
         return get("parentProjectDTO");
@@ -43,7 +45,7 @@ public class ValueDTO extends BaseModelData implements EntityDTO {
     public void setParentProjectDTO(ProjectDTO parentProjectDTO) {
         set("parentProjectDTO", parentProjectDTO);
     }
-    
+
     // Reference to the associated flexible element
     public FlexibleElementDTO getFlexibleElementDTO() {
         return get("flexibleElementDTO");
@@ -52,7 +54,7 @@ public class ValueDTO extends BaseModelData implements EntityDTO {
     public void setFlexibleElementDTO(FlexibleElementDTO flexibleElementDTO) {
         set("flexibleElementDTO", flexibleElementDTO);
     }
-    
+
     // Value's inner value
     public String getValue() {
         return get("value");
@@ -61,5 +63,5 @@ public class ValueDTO extends BaseModelData implements EntityDTO {
     public void setValue(String value) {
         set("value", value);
     }
-    
+
 }

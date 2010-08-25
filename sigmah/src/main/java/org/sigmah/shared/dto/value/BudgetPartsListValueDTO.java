@@ -12,19 +12,21 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 /**
  * 
  * @author Denis Colliot (dcolliot@ideia.fr)
- *
+ * 
  */
 public class BudgetPartsListValueDTO extends BaseModelData implements EntityDTO {
-    
-	private static final long serialVersionUID = 8520711106031085130L;
-	
-	@Override
-	public String getEntityName() {
-		return "Budget parts list value";
-	}
-	
-	// Budget parts list value id
-	@Override
+
+    private static final long serialVersionUID = 8520711106031085130L;
+
+    @Override
+    public String getEntityName() {
+        // Gets the entity name mapped by the current DTO starting from the
+        // "server.domain" package name.
+        return "value.BudgetPartsListValue";
+    }
+
+    // Budget parts list value id
+    @Override
     public int getId() {
         return (Integer) get("id");
     }
@@ -32,7 +34,7 @@ public class BudgetPartsListValueDTO extends BaseModelData implements EntityDTO 
     public void setId(int id) {
         set("id", id);
     }
-	
-	// Budget reference
-    
+
+    // Budget reference
+
 }

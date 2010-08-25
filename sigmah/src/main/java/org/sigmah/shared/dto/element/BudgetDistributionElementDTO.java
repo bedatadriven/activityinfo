@@ -13,20 +13,22 @@ import com.extjs.gxt.ui.client.widget.Text;
 /**
  * 
  * @author Denis Colliot (dcolliot@ideia.fr)
- *
+ * 
  */
 public class BudgetDistributionElementDTO extends FlexibleElementDTO {
-    
-	private static final long serialVersionUID = 8520711106031085130L;
 
-	@Override
-	public String getEntityName() {
-		return "Flexible Element > budget distribution";
-	}
-	
-	@Override
-	public Component getComponent(ValueResult valueResult) {
-		return new Text(getLabel());
-	}
-    
+    private static final long serialVersionUID = 8520711106031085130L;
+
+    @Override
+    public String getEntityName() {
+        // Gets the entity name mapped by the current DTO starting from the
+        // "server.domain" package name.
+        return "element.BudgetDistributionElement";
+    }
+
+    @Override
+    public Component getComponent(ValueResult valueResult) {
+        return new Text(getLabel());
+    }
+
 }

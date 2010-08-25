@@ -221,8 +221,8 @@ public class User implements java.io.Serializable {
 		return getEmail().hashCode();
 	}
 
-    @ManyToOne(optional = false)
-	@JoinColumn(name = "privacy_level", nullable = false)
+    @ManyToOne(optional = true)
+	@JoinColumn(name = "privacy_level", nullable = true)
 	public PrivacyLevel getPrivacyLevel() {
 		return privacyLevel;
 	}

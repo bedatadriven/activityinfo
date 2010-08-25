@@ -12,19 +12,21 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 /**
  * 
  * @author Denis Colliot (dcolliot@ideia.fr)
- *
+ * 
  */
 public class TripletValueDTO extends BaseModelData implements EntityDTO {
-    
-	private static final long serialVersionUID = 8520711106031085130L;
-	
-	@Override
-	public String getEntityName() {
-		return "Triplet value";
-	}
-	
-	// Triplet value id
-	@Override
+
+    private static final long serialVersionUID = 8520711106031085130L;
+
+    @Override
+    public String getEntityName() {
+        // Gets the entity name mapped by the current DTO starting from the
+        // "server.domain" package name.
+        return "TripletValue";
+    }
+
+    // Triplet value id
+    @Override
     public int getId() {
         return (Integer) get("id");
     }
@@ -32,8 +34,8 @@ public class TripletValueDTO extends BaseModelData implements EntityDTO {
     public void setId(int id) {
         set("id", id);
     }
-	
-	// Triplets list id
+
+    // Triplets list id
     public int getListId() {
         return (Integer) get("listId");
     }
@@ -41,7 +43,7 @@ public class TripletValueDTO extends BaseModelData implements EntityDTO {
     public void setListId(int listId) {
         set("listId", listId);
     }
-    
+
     // Triplet value code
     public String getCode() {
         return get("code");
@@ -50,7 +52,7 @@ public class TripletValueDTO extends BaseModelData implements EntityDTO {
     public void setCode(String code) {
         set("code", code);
     }
-    
+
     // Triplet value name
     public String getName() {
         return get("name");
@@ -59,7 +61,7 @@ public class TripletValueDTO extends BaseModelData implements EntityDTO {
     public void setName(String name) {
         set("name", name);
     }
-    
+
     // Triplet value period
     public String getPeriod() {
         return get("period");
@@ -68,5 +70,5 @@ public class TripletValueDTO extends BaseModelData implements EntityDTO {
     public void setPeriod(String period) {
         set("period", period);
     }
-    
+
 }

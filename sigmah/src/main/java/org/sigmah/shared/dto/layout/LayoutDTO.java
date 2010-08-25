@@ -17,19 +17,21 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * 
  * @author Denis Colliot (dcolliot@ideia.fr)
- *
+ * 
  */
 public class LayoutDTO extends BaseModelData implements EntityDTO {
-    
-	private static final long serialVersionUID = 8520711106031085130L;
-	
-	@Override
-	public String getEntityName() {
-		return "Layout";
-	}
-	
-	// Layout id
-	@Override
+
+    private static final long serialVersionUID = 8520711106031085130L;
+
+    @Override
+    public String getEntityName() {
+        // Gets the entity name mapped by the current DTO starting from the
+        // "server.domain" package name.
+        return "layout.Layout";
+    }
+
+    // Layout id
+    @Override
     public int getId() {
         return (Integer) get("id");
     }
@@ -37,7 +39,7 @@ public class LayoutDTO extends BaseModelData implements EntityDTO {
     public void setId(int id) {
         set("id", id);
     }
-    
+
     // Rows count
     public int getRowsCount() {
         return (Integer) get("rowsCount");
@@ -46,7 +48,7 @@ public class LayoutDTO extends BaseModelData implements EntityDTO {
     public void setRowsCount(int rowsCount) {
         set("rowsCount", rowsCount);
     }
-    
+
     // Columns count
     public int getColumnsCount() {
         return (Integer) get("columnsCount");
@@ -64,12 +66,11 @@ public class LayoutDTO extends BaseModelData implements EntityDTO {
     public void setLayoutGroupsDTO(List<LayoutGroupDTO> layoutGroupsDTO) {
         set("layoutGroupsDTO", layoutGroupsDTO);
     }
-    
+
     public Widget getWidget() {
-    	Grid grid = new Grid(getRowsCount(), getColumnsCount());
-    	grid.setStyleName(I18N.CONSTANTS.projectPhaseLayoutStyle());
-    	
-    	return grid;
+        final Grid grid = new Grid(getRowsCount(), getColumnsCount());
+        grid.setStyleName(I18N.CONSTANTS.projectPhaseLayoutStyle());
+        return grid;
     }
-    
+
 }
