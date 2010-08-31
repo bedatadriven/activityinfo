@@ -36,7 +36,6 @@ public class CheckboxElementDTO extends FlexibleElementDTO {
         final CheckBox checkbox = new CheckBox();
         checkbox.setBoxLabel(getLabel());
         checkbox.setHideLabel(true);
-        checkbox.addStyleName(getLabelStyle());
 
         if (valueResult != null && valueResult.getValueObject() != null) {
             String value = (String) valueResult.getValueObject();
@@ -46,6 +45,21 @@ public class CheckboxElementDTO extends FlexibleElementDTO {
         checkbox.addListener(Events.OnClick, new CheckBoxListener());
 
         return checkbox;
+    }
+
+    @Override
+    public boolean isCorrectRequiredValue(ValueResult result) {
+
+        if (result == null || result.getValueObject() == null) {
+            return false;
+        }
+
+        try {
+            final String value = (String) result.getValueObject();
+            return value.equalsIgnoreCase("true");
+        } catch (ClassCastException e) {
+            return false;
+        }
     }
 
     private class CheckBoxListener implements Listener<BaseEvent> {

@@ -16,6 +16,7 @@ import com.google.gwt.user.client.ui.ImageBundle;
  * Provides access to the application's icons through
  * GWT's magic ImageBundle generator.
  */
+@SuppressWarnings("deprecation")
 public interface IconImageBundle extends ImageBundle {
     IconImageBundle ICONS = (IconImageBundle) GWT.create(IconImageBundle.class);
 
@@ -113,4 +114,8 @@ public interface IconImageBundle extends ImageBundle {
     AbstractImagePrototype pdf();
 
     AbstractImagePrototype pieChart();
+    
+    AbstractImagePrototype checked();
+    
+    AbstractImagePrototype unchecked();
 }

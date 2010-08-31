@@ -7,7 +7,6 @@ package org.sigmah.shared.dto.layout;
 
 import java.util.List;
 
-import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.dto.EntityDTO;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
@@ -91,7 +90,7 @@ public class LayoutGroupDTO extends BaseModelData implements EntityDTO {
         fieldSet.setHeading(getTitle());
 
         FormPanel formPanel = new FormPanel();
-        formPanel.addStyleName(I18N.CONSTANTS.projectPhaseFormStyle());
+        formPanel.addStyleName("sigmah-phase-form");
         formPanel.setHeaderVisible(false);
         formPanel.setBorders(false);
         formPanel.setBodyBorder(false);

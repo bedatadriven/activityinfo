@@ -56,6 +56,16 @@ public class TripletsListElementDTO extends FlexibleElementDTO {
     }
 
     @Override
+    public boolean isCorrectRequiredValue(ValueResult result) {
+
+        if (result == null || result.getValuesObject() == null) {
+            return false;
+        }
+
+        return !result.getValuesObject().isEmpty();
+    }
+
+    @Override
     public Component getComponent(ValueResult valueResult) {
 
         // Creates actions toolbar to manage the triplets list.

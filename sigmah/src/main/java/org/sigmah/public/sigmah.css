@@ -161,6 +161,10 @@ body {
 .sigmah-active-phase span.x-tab-strip-text {
 	color: red;
 }
+.sigmah-closed-phase span.x-tab-strip-text {
+	color: #777;
+	font-style: italic;	
+}
 
 .sigmah-required-elements-grid {
 	border: 1px solid red;
@@ -168,12 +172,12 @@ body {
 .sigmah-element-label {
 	font-size: 8pt;	
 }
-.sigmah-element-label.required label {
-	color: red;
-}
 .sigmah-element {
 	padding-bottom: 8px;	
 }
 .sigmah-element-fieldName {
 	font-weight: bold;	
+}
+.sigmah-label-10 {
+	font-size: 10pt;	
 }

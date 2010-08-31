@@ -7,7 +7,6 @@ package org.sigmah.shared.dto.layout;
 
 import java.util.List;
 
-import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.dto.EntityDTO;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
@@ -69,7 +68,7 @@ public class LayoutDTO extends BaseModelData implements EntityDTO {
 
     public Widget getWidget() {
         final Grid grid = new Grid(getRowsCount(), getColumnsCount());
-        grid.setStyleName(I18N.CONSTANTS.projectPhaseLayoutStyle());
+        grid.setStyleName("sigmah-layout");
         return grid;
     }
 

@@ -7,6 +7,7 @@ package org.sigmah.shared.dto.element;
 
 import java.util.List;
 
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.command.result.ValueResult;
 import org.sigmah.shared.dto.element.handler.RequiredValueEvent;
 import org.sigmah.shared.dto.element.handler.ValueEvent;
@@ -51,7 +52,7 @@ public class QuestionElementDTO extends FlexibleElementDTO {
         // Empty choice
         QuestionChoiceElementDTO emptyChoice = new QuestionChoiceElementDTO();
         emptyChoice.setId(-1);
-        emptyChoice.setLabel("");
+        emptyChoice.setLabel(I18N.CONSTANTS.flexibleElementQuestionEmptyChoice());
         store.add(emptyChoice);
 
         store.add(getChoicesDTO());
@@ -62,8 +63,6 @@ public class QuestionElementDTO extends FlexibleElementDTO {
         comboBox.setLabelSeparator("");
         comboBox.setTriggerAction(TriggerAction.ALL);
         comboBox.setEditable(false);
-
-        comboBox.addStyleName(getLabelStyle());
 
         comboBox.setAllowBlank(true);
 
@@ -81,6 +80,21 @@ public class QuestionElementDTO extends FlexibleElementDTO {
         comboBox.addSelectionChangedListener(new ComboBoxSelectionListener());
 
         return comboBox;
+    }
+
+    @Override
+    public boolean isCorrectRequiredValue(ValueResult result) {
+
+        if (result == null || result.getValueObject() == null) {
+            return false;
+        }
+
+        try {
+            final String value = (String) result.getValueObject();
+            return value != null && !"".equals(value);
+        } catch (ClassCastException e) {
+            return false;
+        }
     }
 
     /**

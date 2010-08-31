@@ -361,7 +361,14 @@
             <version>3.6.2</version>
             <scope>test</scope>
         </dependency>
-
+        
+		<!-- Apache Commons File Upload -->
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.2.2</version>
+		</dependency>
+		
         <!--TODO: remove -->
         <dependency>
             <groupId>commons-httpclient</groupId>

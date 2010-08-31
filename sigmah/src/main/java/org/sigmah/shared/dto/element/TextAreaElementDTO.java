@@ -36,7 +36,6 @@ public class TextAreaElementDTO extends FlexibleElementDTO {
         TextArea textarea = new TextArea();
         textarea.setFieldLabel(getLabel());
         textarea.setWidth("100%");
-        textarea.addStyleName(getLabelStyle());
 
         if (valueResult != null) {
             textarea.setValue((String) valueResult.getValueObject());
@@ -45,6 +44,21 @@ public class TextAreaElementDTO extends FlexibleElementDTO {
         textarea.addListener(Events.OnKeyUp, new TextAreaListener());
 
         return textarea;
+    }
+
+    @Override
+    public boolean isCorrectRequiredValue(ValueResult result) {
+
+        if (result == null || result.getValueObject() == null) {
+            return false;
+        }
+
+        try {
+            final String value = (String) result.getValueObject();
+            return value != null && !"".equals(value.trim());
+        } catch (ClassCastException e) {
+            return false;
+        }
     }
 
     private class TextAreaListener implements Listener<BaseEvent> {

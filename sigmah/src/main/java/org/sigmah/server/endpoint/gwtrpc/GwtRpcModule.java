@@ -28,5 +28,7 @@ public class GwtRpcModule extends ServletModule {
 
         serve("/Login/service").with(LoginServiceServlet.class);
 
+        // Files upload.
+        serve("/upload").with(UploadServlet.class);
     }
 }

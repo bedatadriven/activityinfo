@@ -6,8 +6,10 @@
 package org.sigmah.shared.dto.element;
 
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.shared.command.result.ValueResult;
 import org.sigmah.shared.dto.EntityDTO;
+import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.ProjectModelDTO;
 import org.sigmah.shared.dto.element.handler.RequiredValueEvent;
 import org.sigmah.shared.dto.element.handler.RequiredValueHandler;
@@ -31,6 +33,10 @@ public abstract class FlexibleElementDTO extends BaseModelData implements Entity
 
     protected transient Dispatcher dispatcher;
 
+    protected transient Authentication authentication;
+
+    protected transient ProjectDTO currentProjectDTO;
+
     /**
      * Sets the dispatcher to be used in the {@link #getComponent(ValueResult)}
      * method.
@@ -40,6 +46,28 @@ public abstract class FlexibleElementDTO extends BaseModelData implements Entity
      */
     public void setService(Dispatcher dispatcher) {
         this.dispatcher = dispatcher;
+    }
+
+    /**
+     * Sets the authentication provider to be used in the
+     * {@link #getComponent(ValueResult)} method.
+     * 
+     * @param authentication
+     *            The authentication provider.
+     */
+    public void setAuthentication(Authentication authentication) {
+        this.authentication = authentication;
+    }
+
+    /**
+     * Sets the current project (not model, but instance) using this flexible
+     * element to be used in the {@link #getComponent(ValueResult)} method.
+     * 
+     * @param currentProjectDTO
+     *            The current project using this flexible element.
+     */
+    public void setCurrentProjectDTO(ProjectDTO currentProjectDTO) {
+        this.currentProjectDTO = currentProjectDTO;
     }
 
     /**
@@ -110,20 +138,6 @@ public abstract class FlexibleElementDTO extends BaseModelData implements Entity
         set("parentProjectModelDTO", parentProjectModelDTO);
     }
 
-    /**
-     * Handles the required flexible elements by adding a specific css style to
-     * the widget. This method is called by the sub classes.
-     * 
-     * @return the flexible elements label style.
-     */
-    protected String getLabelStyle() {
-        String labelStyle = "sigmah-element-label";
-        if (getValidates()) {
-            labelStyle += " required";
-        }
-        return labelStyle;
-    }
-
     public boolean isFilledIn() {
         return (Boolean) get("filledIn");
     }
@@ -131,4 +145,24 @@ public abstract class FlexibleElementDTO extends BaseModelData implements Entity
     public void setFilledIn(boolean filledIn) {
         set("filledIn", filledIn);
     }
+
+    /**
+     * Assigns a value to a flexible element.
+     * 
+     * @param result
+     *            The value.
+     */
+    public void assignValue(ValueResult result) {
+        setFilledIn(isCorrectRequiredValue(result));
+    }
+
+    /**
+     * Returns if a value can be considered as a correct required value for this
+     * specific flexible element.
+     * 
+     * @param result
+     *            The value.
+     * @return If the value can be considered as a correct required value.
+     */
+    public abstract boolean isCorrectRequiredValue(ValueResult result);
 }

@@ -10,12 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.shared.command.Delete;
+import org.sigmah.client.util.NotImplementedMethod;
+import org.sigmah.shared.command.GetValue;
 import org.sigmah.shared.command.result.ValueResult;
-import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.value.FileDTO;
+import org.sigmah.shared.dto.value.FileUploadUtils;
 import org.sigmah.shared.dto.value.FileVersionDTO;
 import org.sigmah.shared.dto.value.FilesListValueDTO;
 
@@ -23,6 +23,7 @@ import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.FormEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
@@ -40,6 +41,9 @@ import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FileUploadField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.FormPanel.Encoding;
+import com.extjs.gxt.ui.client.widget.form.FormPanel.Method;
+import com.extjs.gxt.ui.client.widget.form.HiddenField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
@@ -77,6 +81,21 @@ public class FilesListElementDTO extends FlexibleElementDTO {
     }
 
     @Override
+    public boolean isCorrectRequiredValue(ValueResult result) {
+
+        if (result == null || result.getValuesObject() == null) {
+            return false;
+        }
+
+        return !result.getValuesObject().isEmpty();
+    }
+
+    /**
+     * Files list model data.
+     */
+    private transient ListStore<FileDTO> store = new ListStore<FileDTO>();
+
+    @Override
     public Component getComponent(ValueResult valueResult) {
 
         // Creates actions menu to manage the files list.
@@ -104,7 +123,7 @@ public class FilesListElementDTO extends FlexibleElementDTO {
         // Creates the upload field and upload button.
         final FileUploadField uploadField = new FileUploadField();
         uploadField.setFieldLabel(I18N.CONSTANTS.flexibleElementFilesListUploadVersion());
-        uploadField.setName("upload-file");
+        uploadField.setName(FileUploadUtils.DOCUMENT_CONTENT);
 
         final Button uploadButton = new Button(I18N.CONSTANTS.flexibleElementFilesListUpload());
         uploadButton.setEnabled(false);
@@ -126,14 +145,40 @@ public class FilesListElementDTO extends FlexibleElementDTO {
         uploadFormPanel.setBodyBorder(false);
         uploadFormPanel.setHeaderVisible(false);
         uploadFormPanel.setPadding(0);
+        uploadFormPanel.setEncoding(Encoding.MULTIPART);
+        uploadFormPanel.setMethod(Method.POST);
+        uploadFormPanel.setAction("/upload");
+
+        final HiddenField<String> filesListHidden = new HiddenField<String>();
+        filesListHidden.setName(FileUploadUtils.DOCUMENT_FILES_LIST);
+        if (valueResult != null && valueResult.isValueDefined()) {
+            filesListHidden.setValue(String.valueOf(((FilesListValueDTO) valueResult.getValuesObject().get(0))
+                    .getIdList()));
+        }
+
+        final HiddenField<String> nameHidden = new HiddenField<String>();
+        nameHidden.setName(FileUploadUtils.DOCUMENT_NAME);
+
+        final HiddenField<String> authorHidden = new HiddenField<String>();
+        authorHidden.setName(FileUploadUtils.DOCUMENT_AUTHOR);
+        authorHidden.setValue(String.valueOf(authentication.getUserId()));
+
+        final HiddenField<String> emptyHidden = new HiddenField<String>();
+        emptyHidden.setName(FileUploadUtils.CHECK_EMPTY);
+        emptyHidden.setValue("true");
 
         uploadFormPanel.add(uploadPanel);
+        uploadFormPanel.add(nameHidden);
+        uploadFormPanel.add(authorHidden);
+        uploadFormPanel.add(filesListHidden);
+        uploadFormPanel.add(emptyHidden);
 
         // Manages upload button activations.
         uploadField.addListener(Events.OnChange, new Listener<ComponentEvent>() {
             @Override
             public void handleEvent(ComponentEvent be) {
                 uploadButton.setEnabled(uploadField.getValue() != null && !uploadField.getValue().trim().equals(""));
+                nameHidden.setValue(uploadField.getValue());
             }
         });
 
@@ -146,8 +191,6 @@ public class FilesListElementDTO extends FlexibleElementDTO {
         topPanel.add(actionsToolBar);
 
         // Fills the grid store with the files list.
-        final ListStore<FileDTO> store = new ListStore<FileDTO>();
-
         if (valueResult != null && valueResult.isValueDefined()) {
             for (Serializable s : valueResult.getValuesObject()) {
                 store.add(((FilesListValueDTO) s).getFileDTO());
@@ -212,8 +255,7 @@ public class FilesListElementDTO extends FlexibleElementDTO {
             @Override
             public void handleEvent(ButtonEvent be) {
                 // TODO implements
-                MessageBox.info("Unsupported operation", "Method not yet implemented (download link: "
-                        + selectionModel.getSelectedItem().getLastVersion().getPath() + ").", null);
+                NotImplementedMethod.methodNotImplemented();
             }
         });
 
@@ -257,7 +299,7 @@ public class FilesListElementDTO extends FlexibleElementDTO {
 
                                     // Deletes it.
                                     // TODO implements
-                                    MessageBox.info("Unsupported operation", "Method not yet implemented.", null);
+                                    NotImplementedMethod.methodNotImplemented();
                                 }
                             }
                         });
@@ -268,12 +310,76 @@ public class FilesListElementDTO extends FlexibleElementDTO {
 
             @Override
             public void handleEvent(ButtonEvent be) {
-                // TODO implements
-                MessageBox.info("Unsupported operation", "Method not yet implemented.", null);
+                uploadField.setValue(null);
+                uploadButton.setEnabled(false);
+                uploadField.setEnabled(false);
+                uploadFormPanel.submit();
+            }
+        });
+
+        uploadFormPanel.addListener(Events.Submit, new Listener<FormEvent>() {
+
+            @Override
+            public void handleEvent(FormEvent be) {
+                updateComponentAfterUpload(be);
+                uploadField.setEnabled(true);
             }
         });
 
         return panel;
+    }
+
+    /**
+     * Update files list after an upload.
+     * 
+     * @param be
+     *            Form event after the upload.
+     */
+    private void updateComponentAfterUpload(FormEvent be) {
+
+        final String code = FileUploadUtils.parseUploadResult(be.getResultHtml());
+
+        if (FileUploadUtils.isError(code)) {
+
+            // If an error occurred, informs the user.
+            final StringBuilder sb = new StringBuilder();
+            sb.append(I18N.CONSTANTS.flexibleElementFilesListUploadErrorDetails());
+
+            if (FileUploadUtils.EMPTY_DOC_ERROR_CODE.equals(code)) {
+                sb.append("\n");
+                sb.append(I18N.CONSTANTS.flexibleElementFilesListUploadErrorEmpty());
+            } else if (FileUploadUtils.TOO_BIG_DOC_ERROR_CODE.equals(code)) {
+                sb.append("\n");
+                sb.append(I18N.CONSTANTS.flexibleElementFilesListUploadErrorTooBig());
+            }
+
+            MessageBox.info(I18N.CONSTANTS.flexibleElementFilesListUploadError(), sb.toString(), null);
+        } else {
+
+            final GetValue command = new GetValue(currentProjectDTO.getId(), getId(), FilesListElementDTO.this
+                    .getClass().getName());
+
+            // Server call to obtain elements value
+            dispatcher.execute(command, null, new AsyncCallback<ValueResult>() {
+
+                @Override
+                public void onFailure(Throwable throwable) {
+                    // TODO handle error
+                }
+
+                @Override
+                public void onSuccess(ValueResult valueResult) {
+
+                    if (valueResult != null && valueResult.isValueDefined()) {
+                        store.removeAll();
+                        for (Serializable s : valueResult.getValuesObject()) {
+                            store.add(((FilesListValueDTO) s).getFileDTO());
+                        }
+                    }
+                    store.commitChanges();
+                }
+            });
+        }
     }
 
     /**
@@ -373,7 +479,7 @@ public class FilesListElementDTO extends FlexibleElementDTO {
      * @author tmi
      * 
      */
-    private static final class VersionUploadWindow {
+    private final class VersionUploadWindow {
 
         /**
          * GXT window.
@@ -395,14 +501,34 @@ public class FilesListElementDTO extends FlexibleElementDTO {
          */
         private final Label numberLabel;
 
+        /**
+         * Current logged in user.
+         */
+        private final HiddenField<String> authorHidden;
+
+        /**
+         * Current file id.
+         */
+        private final HiddenField<String> idHidden;
+
+        /**
+         * Next file version number.
+         */
+        private final HiddenField<String> versionHidden;
+
+        /**
+         * The upload button.
+         */
+        private final Button uploadButton;
+
         public VersionUploadWindow() {
 
             // Creates the upload field and upload button.
             uploadField = new FileUploadField();
             uploadField.setFieldLabel(I18N.CONSTANTS.flexibleElementFilesListUploadVersion());
-            uploadField.setName("upload-file");
+            uploadField.setName(FileUploadUtils.DOCUMENT_CONTENT);
 
-            final Button uploadButton = new Button(I18N.CONSTANTS.flexibleElementFilesListUpload());
+            uploadButton = new Button(I18N.CONSTANTS.flexibleElementFilesListUpload());
             uploadButton.setEnabled(false);
 
             final ContentPanel uploadPanel = new ContentPanel();
@@ -423,8 +549,28 @@ public class FilesListElementDTO extends FlexibleElementDTO {
             uploadFormPanel.setBodyBorder(false);
             uploadFormPanel.setHeaderVisible(false);
             uploadFormPanel.setPadding(0);
+            uploadFormPanel.setEncoding(Encoding.MULTIPART);
+            uploadFormPanel.setMethod(Method.POST);
+            uploadFormPanel.setAction("/upload");
+
+            idHidden = new HiddenField<String>();
+            idHidden.setName(FileUploadUtils.DOCUMENT_ID);
+
+            authorHidden = new HiddenField<String>();
+            authorHidden.setName(FileUploadUtils.DOCUMENT_AUTHOR);
+
+            versionHidden = new HiddenField<String>();
+            versionHidden.setName(FileUploadUtils.DOCUMENT_VERSION);
+
+            final HiddenField<String> emptyHidden = new HiddenField<String>();
+            emptyHidden.setName(FileUploadUtils.CHECK_EMPTY);
+            emptyHidden.setValue("true");
 
             uploadFormPanel.add(uploadPanel);
+            uploadFormPanel.add(authorHidden);
+            uploadFormPanel.add(idHidden);
+            uploadFormPanel.add(versionHidden);
+            uploadFormPanel.add(emptyHidden);
 
             // Manages upload button activations.
             uploadField.addListener(Events.OnChange, new Listener<ComponentEvent>() {
@@ -473,9 +619,20 @@ public class FilesListElementDTO extends FlexibleElementDTO {
 
                 @Override
                 public void handleEvent(ButtonEvent be) {
+                    uploadField.setValue(null);
+                    uploadButton.setEnabled(false);
+                    uploadField.setEnabled(false);
+                    uploadFormPanel.submit();
+                }
+            });
 
-                    // TODO implements
-                    MessageBox.info("Unsupported operation", "Method not yet implemented.", null);
+            uploadFormPanel.addListener(Events.Submit, new Listener<FormEvent>() {
+
+                @Override
+                public void handleEvent(FormEvent be) {
+                    updateComponentAfterUpload(be);
+                    uploadField.setEnabled(true);
+                    window.hide();
                 }
             });
         }
@@ -494,8 +651,13 @@ public class FilesListElementDTO extends FlexibleElementDTO {
 
             // Configures the window parameters to be consistent with the new
             // displayed file.
+            final int nextVersionNumber = file.getLastVersion().getVersionNumber() + 1;
+            idHidden.setValue(String.valueOf(file.getId()));
+            authorHidden.setValue(String.valueOf(authentication.getUserId()));
+            versionHidden.setValue(String.valueOf(nextVersionNumber));
             uploadField.setValue(null);
-            numberLabel.setText("#" + String.valueOf(file.getLastVersion().getVersionNumber() + 1));
+            uploadButton.setEnabled(false);
+            numberLabel.setText("#" + String.valueOf(nextVersionNumber));
             window.setHeading(I18N.CONSTANTS.flexibleElementFilesListUploadVersion());
 
             window.show();
@@ -531,16 +693,6 @@ public class FilesListElementDTO extends FlexibleElementDTO {
         private final Label nameFieldLabel;
 
         /**
-         * The upload form.
-         */
-        private final FormPanel uploadFormPanel;
-
-        /**
-         * The upload field.
-         */
-        private final FileUploadField uploadField;
-
-        /**
          * Builds the window.
          */
         public FileDetailsWindow(final Dispatcher dispatcher) {
@@ -556,50 +708,6 @@ public class FilesListElementDTO extends FlexibleElementDTO {
             actionsToolBar.add(downloadButton);
             actionsToolBar.add(new SeparatorToolItem());
             actionsToolBar.add(deleteButton);
-
-            // Creates the upload field and upload button.
-            uploadField = new FileUploadField();
-            uploadField.setFieldLabel(I18N.CONSTANTS.flexibleElementFilesListUploadVersion());
-            uploadField.setName("upload-file");
-
-            final Button uploadButton = new Button(I18N.CONSTANTS.flexibleElementFilesListUpload());
-            uploadButton.setEnabled(false);
-
-            final ContentPanel uploadPanel = new ContentPanel();
-            uploadPanel.setBodyBorder(false);
-            uploadPanel.setHeaderVisible(false);
-            uploadPanel.setLayout(new HBoxLayout());
-
-            final Label addVersionLabel = new Label(I18N.CONSTANTS.flexibleElementFilesListUploadVersion());
-            addVersionLabel.addStyleName("sigmah-element-label");
-            uploadPanel.add(addVersionLabel, new HBoxLayoutData(new Margins(4, 5, 0, 0)));
-            final HBoxLayoutData flex = new HBoxLayoutData(new Margins(0, 5, 0, 0));
-            flex.setFlex(1);
-            uploadPanel.add(uploadField, flex);
-            uploadPanel.add(uploadButton);
-
-            uploadFormPanel = new FormPanel();
-            uploadFormPanel.setBodyBorder(false);
-            uploadFormPanel.setHeaderVisible(false);
-            uploadFormPanel.setPadding(0);
-
-            uploadFormPanel.add(uploadPanel);
-
-            // Manages upload button activations.
-            uploadField.addListener(Events.OnChange, new Listener<ComponentEvent>() {
-                @Override
-                public void handleEvent(ComponentEvent be) {
-                    uploadButton.setEnabled(uploadField.getValue() != null && !uploadField.getValue().trim().equals(""));
-                }
-            });
-
-            // Creates the top panel of the grid.
-            final ContentPanel topPanel = new ContentPanel();
-            topPanel.setHeaderVisible(false);
-            topPanel.setLayout(new FlowLayout());
-
-            topPanel.add(uploadFormPanel, new FlowData(new Margins(3, 2, 3, 2)));
-            topPanel.add(actionsToolBar);
 
             // Grid plugins.
             final CheckBoxSelectionModel<FileVersionDTO> selectionModel = new CheckBoxSelectionModel<FileVersionDTO>();
@@ -619,7 +727,7 @@ public class FilesListElementDTO extends FlexibleElementDTO {
             gridPanel.setHeaderVisible(true);
             gridPanel.setLayout(new FitLayout());
 
-            gridPanel.setTopComponent(topPanel);
+            gridPanel.setTopComponent(actionsToolBar);
             gridPanel.add(versionsGrid);
 
             // Creates the properties panel.
@@ -674,8 +782,7 @@ public class FilesListElementDTO extends FlexibleElementDTO {
                 @Override
                 public void handleEvent(ButtonEvent be) {
                     // TODO implements
-                    MessageBox.info("Unsupported operation", "Method not yet implemented (donwlad link: "
-                            + selectionModel.getSelectedItem().getPath() + ").", null);
+                    NotImplementedMethod.methodNotImplemented();
                 }
             });
 
@@ -683,44 +790,38 @@ public class FilesListElementDTO extends FlexibleElementDTO {
                 @Override
                 public void handleEvent(ButtonEvent be) {
 
-                    // Gets the selected version.
-                    final FileVersionDTO version = selectionModel.getSelectedItem();
-
-                    // Asks the client to confirm the version deletion.
-                    MessageBox.confirm(I18N.CONSTANTS.flexibleElementFilesListVersionDelete(), I18N.MESSAGES
-                            .flexibleElementFilesListConfirmVersionDelete(String.valueOf(version.getVersionNumber())),
-                            new Listener<MessageBoxEvent>() {
-                                public void handleEvent(MessageBoxEvent ce) {
-
-                                    if (Dialog.YES.equals(ce.getButtonClicked().getItemId())) {
-
-                                        // Deletes it.
-                                        dispatcher.execute(new Delete(version), new MaskingAsyncMonitor(versionsGrid,
-                                                I18N.CONSTANTS.loading()), new AsyncCallback<VoidResult>() {
-
-                                            public void onFailure(Throwable caught) {
-                                            }
-
-                                            public void onSuccess(VoidResult result) {
-                                                // TODO the deletion works but
-                                                // the removing entities are
-                                                // still displayed (data filter
-                                                // problem).
-                                                store.remove(version);
-                                            }
-                                        });
-                                    }
-                                }
-                            });
-                }
-            });
-
-            uploadButton.addListener(Events.OnClick, new Listener<ButtonEvent>() {
-
-                @Override
-                public void handleEvent(ButtonEvent be) {
+                    // Deletes it.
                     // TODO implements
-                    MessageBox.info("Unsupported operation", "Method not yet implemented.", null);
+                    NotImplementedMethod.methodNotImplemented();
+
+                    /*
+                     * // Gets the selected version. final FileVersionDTO
+                     * version = selectionModel.getSelectedItem();
+                     * 
+                     * // Asks the client to confirm the version deletion.
+                     * MessageBox
+                     * .confirm(I18N.CONSTANTS.flexibleElementFilesListVersionDelete
+                     * (), I18N.MESSAGES
+                     * .flexibleElementFilesListConfirmVersionDelete
+                     * (String.valueOf(version.getVersionNumber())), new
+                     * Listener<MessageBoxEvent>() { public void
+                     * handleEvent(MessageBoxEvent ce) {
+                     * 
+                     * if (Dialog.YES.equals(ce.getButtonClicked().getItemId()))
+                     * {
+                     * 
+                     * // Deletes it. dispatcher.execute(new Delete(version),
+                     * new MaskingAsyncMonitor(versionsGrid,
+                     * I18N.CONSTANTS.loading()), new
+                     * AsyncCallback<VoidResult>() {
+                     * 
+                     * public void onFailure(Throwable caught) { }
+                     * 
+                     * public void onSuccess(VoidResult result) { // TODO the
+                     * deletion works but // the removing entities are // still
+                     * displayed (data filter // problem).
+                     * store.remove(version); } }); } } });
+                     */
                 }
             });
         }
@@ -776,10 +877,8 @@ public class FilesListElementDTO extends FlexibleElementDTO {
                 @Override
                 public Object render(FileVersionDTO model, String property, ColumnData config, int rowIndex,
                         int colIndex, ListStore<FileVersionDTO> store, Grid<FileVersionDTO> grid) {
-
-                    long size = model.getSize();
-
-                    return size;
+                    final Size size = Size.convertToBestUnit(new Size(model.getSize(), Size.SizeUnit.BYTE));
+                    return Math.round(size.getSize()) + " " + Size.SizeUnit.getTranslation(size.getUnit());
                 }
             });
             columnConfigs.add(column);
@@ -811,11 +910,230 @@ public class FilesListElementDTO extends FlexibleElementDTO {
 
             // Configures the window parameters to be consistent with the new
             // displayed file.
-            uploadField.setValue(null);
             nameFieldLabel.setText(file.getName());
             gridPanel.setHeading(I18N.CONSTANTS.flexibleElementFilesListVersionsList() + " (" + count + ")");
             window.setHeading(I18N.CONSTANTS.flexibleElementFilesListFileDetails() + " - " + file.getName());
             window.show();
+        }
+    }
+
+    /**
+     * Utility class used to manipulate file's sizes.
+     * 
+     * @author tmi
+     * 
+     */
+    public static final class Size {
+
+        private final double size;
+
+        private final SizeUnit unit;
+
+        public Size(double size, SizeUnit unit) {
+            this.size = size;
+            this.unit = unit;
+        }
+
+        public double getSize() {
+            return size;
+        }
+
+        public SizeUnit getUnit() {
+            return unit;
+        }
+
+        @Override
+        public String toString() {
+            final StringBuilder sb = new StringBuilder();
+            sb.append(size);
+            sb.append(unit.name());
+            return sb.toString();
+        }
+
+        /**
+         * Converts a size from one unit to another.
+         * 
+         * @param size
+         *            The size (must be <code>positive</code> and not
+         *            <code>null</code>).
+         * @param targetUnit
+         *            The desired size unit.
+         * @return The size converted.
+         */
+        public static Size convert(Size size, SizeUnit targetUnit) {
+
+            if (targetUnit == null) {
+                throw new IllegalArgumentException("Units cannot be null.");
+            }
+
+            if (size == null) {
+                throw new IllegalArgumentException("Size cannot be null.");
+            }
+
+            if (size.size < 0) {
+                throw new IllegalArgumentException("Size cannot be negative.");
+            }
+
+            if (size.size == 0 || size.unit == targetUnit) {
+                return size;
+            }
+
+            double computedSize;
+
+            if (size.unit.weight < targetUnit.weight) {
+                computedSize = size.size / ((targetUnit.weight - size.unit.weight) * SizeUnit.STEP);
+            } else {
+                computedSize = size.size * Math.pow(SizeUnit.STEP, size.unit.weight - targetUnit.weight);
+            }
+
+            return new Size(computedSize, targetUnit);
+        }
+
+        /**
+         * Converts a size to the best appropriate unit (greater than
+         * <code>0</code>).
+         * 
+         * @param size
+         *            The size (must be <code>positive</code> and not
+         *            <code>null</code>).
+         * @return
+         */
+        public static Size convertToBestUnit(Size size) {
+
+            if (size == null) {
+                throw new IllegalArgumentException("Size cannot be null.");
+            }
+
+            if (size.size < 0) {
+                throw new IllegalArgumentException("Size cannot be negative.");
+            }
+
+            if (size.size == 0) {
+                return size;
+            }
+
+            double computedSize = 0;
+            SizeUnit computedUnit = null;
+
+            double currentSize = size.size;
+            SizeUnit currentUnit = size.unit;
+
+            if (size.size > 1) {
+
+                while (currentSize >= 1 && currentUnit != null) {
+
+                    computedSize = currentSize;
+                    computedUnit = currentUnit;
+
+                    currentSize = currentSize / SizeUnit.STEP;
+                    currentUnit = SizeUnit.getPrevUnit(currentUnit);
+                }
+
+            } else {
+
+                computedSize = size.size;
+                computedUnit = size.unit;
+
+                while (computedSize <= 1 && currentUnit != null) {
+
+                    computedSize = currentSize;
+                    computedUnit = currentUnit;
+
+                    currentSize = currentSize * SizeUnit.STEP;
+                    currentUnit = SizeUnit.getNextUnit(currentUnit);
+                }
+            }
+
+            return new Size(computedSize, computedUnit);
+        }
+
+        /**
+         * Represents size units.
+         * 
+         * @author tmi
+         * 
+         */
+        public static enum SizeUnit {
+
+            BYTE(1), KILOBYTE(2), MEGABYTE(3), GIGABYTE(4), TERABYTE(5);
+
+            private static final int STEP = 1024;
+
+            private final int weight;
+
+            private SizeUnit(int weight) {
+                this.weight = weight;
+            }
+
+            /**
+             * Gets the next unit (the first greater one).
+             * 
+             * @param unit
+             *            The base unit.
+             * @return The next unit.
+             */
+            private static SizeUnit getNextUnit(SizeUnit unit) {
+
+                if (unit == null) {
+                    return null;
+                }
+
+                for (final SizeUnit u : SizeUnit.values()) {
+                    if (u.weight + 1 == unit.weight) {
+                        return u;
+                    }
+                }
+
+                return null;
+            }
+
+            /**
+             * Gets the previous unit (the first lower one).
+             * 
+             * @param unit
+             *            The base unit.
+             * @return The previous unit.
+             */
+            private static SizeUnit getPrevUnit(SizeUnit unit) {
+
+                if (unit == null) {
+                    return null;
+                }
+
+                for (final SizeUnit u : SizeUnit.values()) {
+                    if (u.weight - 1 == unit.weight) {
+                        return u;
+                    }
+                }
+
+                return null;
+            }
+
+            /**
+             * Gets the translation key of this unit specific to the current
+             * application.
+             * 
+             * @param unit
+             *            The unit.
+             * @return The translation key.
+             */
+            public static String getTranslation(SizeUnit unit) {
+
+                switch (unit) {
+                case BYTE:
+                    return I18N.CONSTANTS.flexibleElementFilesListSizeByteUnit();
+                case KILOBYTE:
+                    return I18N.CONSTANTS.flexibleElementFilesListSizeKByteUnit();
+                case MEGABYTE:
+                    return I18N.CONSTANTS.flexibleElementFilesListSizeMByteUnit();
+                case GIGABYTE:
+                    return I18N.CONSTANTS.flexibleElementFilesListSizeGByteUnit();
+                case TERABYTE:
+                    return I18N.CONSTANTS.flexibleElementFilesListSizeTByteUnit();
+                default:
+                    return "";
+                }
+            }
         }
     }
 }

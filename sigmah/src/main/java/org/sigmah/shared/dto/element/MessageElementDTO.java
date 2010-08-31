@@ -8,7 +8,7 @@ package org.sigmah.shared.dto.element;
 import org.sigmah.shared.command.result.ValueResult;
 
 import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.Text;
+import com.extjs.gxt.ui.client.widget.Html;
 
 /**
  * 
@@ -37,8 +37,13 @@ public class MessageElementDTO extends FlexibleElementDTO {
 
     @Override
     public Component getComponent(ValueResult valueResult) {
-        final Text message = new Text(getLabel());
+        final Html message = new Html(getLabel());
         return message;
+    }
+
+    @Override
+    public boolean isCorrectRequiredValue(ValueResult result) {
+        return false;
     }
 
 }

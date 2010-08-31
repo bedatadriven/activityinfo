@@ -31,4 +31,9 @@ public class BudgetDistributionElementDTO extends FlexibleElementDTO {
         return new Text(getLabel());
     }
 
+    @Override
+    public boolean isCorrectRequiredValue(ValueResult result) {
+        return true;
+    }
+
 }

@@ -55,6 +55,16 @@ public class IndicatorsListElementDTO extends FlexibleElementDTO {
     }
 
     @Override
+    public boolean isCorrectRequiredValue(ValueResult result) {
+
+        if (result == null || result.getValuesObject() == null) {
+            return false;
+        }
+
+        return !result.getValuesObject().isEmpty();
+    }
+
+    @Override
     public Component getComponent(ValueResult valueResult) {
 
         // Creates actions menu to manage the files list.

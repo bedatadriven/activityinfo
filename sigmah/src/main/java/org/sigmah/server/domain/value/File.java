@@ -24,69 +24,58 @@ import javax.persistence.TemporalType;
 @Table(name = "file_meta")
 public class File implements Serializable {
 
-	private static final long serialVersionUID = -271699094058979365L;
+    private static final long serialVersionUID = -271699094058979365L;
 
-	private Long id;
-	private String name;
-	private Date removedDate;
-	private List<FileVersion> versions = new ArrayList<FileVersion>();
+    private Long id;
+    private String name;
+    private Date removedDate;
+    private List<FileVersion> versions = new ArrayList<FileVersion>();
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id_file")
-	public Long getId() {
-		return id;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id_file")
+    public Long getId() {
+        return id;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	@Column(name = "name", nullable = false, length = 4096)
-	public String getName() {
-		return name;
-	}
+    @Column(name = "name", nullable = false, length = 4096)
+    public String getName() {
+        return name;
+    }
 
-	public void setRemovedDate(Date removedDate) {
-		this.removedDate = removedDate;
-	}
+    public void setRemovedDate(Date removedDate) {
+        this.removedDate = removedDate;
+    }
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "removed_date", nullable = true)
-	public Date getRemovedDate() {
-		return removedDate;
-	}
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "removed_date", nullable = true)
+    public Date getRemovedDate() {
+        return removedDate;
+    }
 
-	public void setVersions(List<FileVersion> versions) {
-		this.versions = versions;
-	}
+    public void setVersions(List<FileVersion> versions) {
+        this.versions = versions;
+    }
 
-	@OneToMany(mappedBy = "parentFile", cascade = CascadeType.ALL)
-	public List<FileVersion> getVersions() {
-		return versions;
-	}
+    @OneToMany(mappedBy = "parentFile", cascade = CascadeType.ALL)
+    public List<FileVersion> getVersions() {
+        return versions;
+    }
 
-//	/**
-//	 * Adds a dummy new version of the current file.
-//	 *
-//	 * @param currentUser
-//	 *            The author.
-//	 */
-//	public void addVersion(User currentUser) {
-//
-//		final FileVersion version = new FileVersion();
-//		version.setAddedDate(new Date());
-//		version.setAuthor(currentUser);
-//		version.setPath("/somewhere/on/the/hdd");
-//		version.setSize(1024L);
-//		version.setVersionNumber(DummyService.getNextFileVersionNumber(this));
-//
-//		version.setParentFile(this);
-//		versions.add(version);
-//	}
+    /**
+     * Adds a new version of the current file.
+     */
+    public void addVersion(FileVersion version) {
+        version.setParentFile(this);
+        versions.add(version);
+    }
 
 }
