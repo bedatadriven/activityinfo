@@ -124,6 +124,35 @@ public class FilesListElementDTO extends FlexibleElementDTO {
         final Button downloadButton = new Button(I18N.CONSTANTS.flexibleElementFilesListDownload());
         downloadButton.setEnabled(false);
 
+        // Uses a "hidden form" to manages the downloads to be able to catch
+        // server errors.
+        final FormPanel downloadFormPanel = new FormPanel();
+        downloadFormPanel.setBodyBorder(false);
+        downloadFormPanel.setHeaderVisible(false);
+        downloadFormPanel.setPadding(0);
+        downloadFormPanel.setEncoding(Encoding.URLENCODED);
+        downloadFormPanel.setMethod(Method.GET);
+        downloadFormPanel.setAction("/download");
+
+        final HiddenField<String> fileIdHidden = new HiddenField<String>();
+        fileIdHidden.setName(FileUploadUtils.DOCUMENT_ID);
+
+        downloadFormPanel.add(downloadButton);
+        downloadFormPanel.add(fileIdHidden);
+
+        // Submit complete handler to catch server errors.
+        downloadFormPanel.addListener(Events.Submit, new Listener<FormEvent>() {
+
+            @Override
+            public void handleEvent(FormEvent be) {
+
+                if (!"".equals(be.getResultHtml())) {
+                    MessageBox.info(I18N.CONSTANTS.flexibleElementFilesListDownloadError(),
+                            I18N.CONSTANTS.flexibleElementFilesListDownloadErrorDetails(), null);
+                }
+            }
+        });
+
         final Button detailsButton = new Button(I18N.CONSTANTS.flexibleElementFilesListDetails());
         detailsButton.setEnabled(false);
 
@@ -134,13 +163,13 @@ public class FilesListElementDTO extends FlexibleElementDTO {
         deleteButton.setEnabled(false);
 
         final ToolBar actionsToolBar = new ToolBar();
-        actionsToolBar.add(downloadButton);
+        actionsToolBar.add(downloadFormPanel);
         actionsToolBar.add(new SeparatorToolItem());
         actionsToolBar.add(detailsButton);
         actionsToolBar.add(new SeparatorToolItem());
         actionsToolBar.add(addVersionButton);
         actionsToolBar.add(new SeparatorToolItem());
-        actionsToolBar.add(deleteButton);
+        // actionsToolBar.add(deleteButton);
 
         // Creates the upload field and upload button.
         final FileUploadField uploadField = new FileUploadField();
@@ -333,8 +362,12 @@ public class FilesListElementDTO extends FlexibleElementDTO {
         downloadButton.addListener(Events.OnClick, new Listener<ButtonEvent>() {
             @Override
             public void handleEvent(ButtonEvent be) {
-                // TODO implements
-                NotImplementedMethod.methodNotImplemented();
+
+                // Sets the form hidden fields values.
+                fileIdHidden.setValue(String.valueOf(selectionModel.getSelectedItem().getId()));
+
+                // Submits the form.
+                downloadFormPanel.submit();
             }
         });
 
@@ -423,7 +456,7 @@ public class FilesListElementDTO extends FlexibleElementDTO {
 
                 @Override
                 public void onFailure(Throwable throwable) {
-                    // TODO handle error
+                    // The widget cannot be refreshed for the new value state.
                 }
 
                 @Override
@@ -753,7 +786,7 @@ public class FilesListElementDTO extends FlexibleElementDTO {
 
             // Configures the window parameters to be consistent with the new
             // displayed file.
-            nextVersionNumber = file.getLastVersion().getVersionNumber() + 1;
+            nextVersionNumber = this.file.getLastVersion().getVersionNumber() + 1;
 
             numberLabel.setText("#" + String.valueOf(nextVersionNumber));
             window.setHeading(I18N.CONSTANTS.flexibleElementFilesListUploadVersion());
@@ -774,6 +807,11 @@ public class FilesListElementDTO extends FlexibleElementDTO {
          * GXT window.
          */
         private final Window window;
+
+        /**
+         * The current displayed file.
+         */
+        private FileDTO file;
 
         /**
          * Versions store.
@@ -799,13 +837,46 @@ public class FilesListElementDTO extends FlexibleElementDTO {
             final Button downloadButton = new Button(I18N.CONSTANTS.flexibleElementFilesListDownload());
             downloadButton.setEnabled(false);
 
+            // Uses a "hidden form" to manages the downloads to be able to catch
+            // server errors.
+            final FormPanel downloadFormPanel = new FormPanel();
+            downloadFormPanel.setBodyBorder(false);
+            downloadFormPanel.setHeaderVisible(false);
+            downloadFormPanel.setPadding(0);
+            downloadFormPanel.setEncoding(Encoding.URLENCODED);
+            downloadFormPanel.setMethod(Method.GET);
+            downloadFormPanel.setAction("/download");
+
+            final HiddenField<String> fileIdHidden = new HiddenField<String>();
+            fileIdHidden.setName(FileUploadUtils.DOCUMENT_ID);
+
+            final HiddenField<String> versionHidden = new HiddenField<String>();
+            versionHidden.setName(FileUploadUtils.DOCUMENT_VERSION);
+
+            downloadFormPanel.add(downloadButton);
+            downloadFormPanel.add(fileIdHidden);
+            downloadFormPanel.add(versionHidden);
+
+            // Submit complete handler to catch server errors.
+            downloadFormPanel.addListener(Events.Submit, new Listener<FormEvent>() {
+
+                @Override
+                public void handleEvent(FormEvent be) {
+
+                    if (!"".equals(be.getResultHtml())) {
+                        MessageBox.info(I18N.CONSTANTS.flexibleElementFilesListDownloadError(),
+                                I18N.CONSTANTS.flexibleElementFilesListDownloadErrorDetails(), null);
+                    }
+                }
+            });
+
             final Button deleteButton = new Button(I18N.CONSTANTS.remove());
             deleteButton.setEnabled(false);
 
             final ToolBar actionsToolBar = new ToolBar();
-            actionsToolBar.add(downloadButton);
+            actionsToolBar.add(downloadFormPanel);
             actionsToolBar.add(new SeparatorToolItem());
-            actionsToolBar.add(deleteButton);
+            // actionsToolBar.add(deleteButton);
 
             // Grid plugins.
             final CheckBoxSelectionModel<FileVersionDTO> selectionModel = new CheckBoxSelectionModel<FileVersionDTO>();
@@ -879,8 +950,13 @@ public class FilesListElementDTO extends FlexibleElementDTO {
             downloadButton.addListener(Events.OnClick, new Listener<ButtonEvent>() {
                 @Override
                 public void handleEvent(ButtonEvent be) {
-                    // TODO implements
-                    NotImplementedMethod.methodNotImplemented();
+
+                    // Sets the form hidden fields values.
+                    fileIdHidden.setValue(String.valueOf(file.getId()));
+                    versionHidden.setValue(String.valueOf(selectionModel.getSelectedItem().getVersionNumber()));
+
+                    // Submits the form.
+                    downloadFormPanel.submit();
                 }
             });
 
@@ -915,10 +991,8 @@ public class FilesListElementDTO extends FlexibleElementDTO {
                      * 
                      * public void onFailure(Throwable caught) { }
                      * 
-                     * public void onSuccess(VoidResult result) { // TODO the
-                     * deletion works but // the removing entities are // still
-                     * displayed (data filter // problem).
-                     * store.remove(version); } }); } } });
+                     * public void onSuccess(VoidResult result) { (data filter
+                     * // problem). store.remove(version); } }); } } });
                      */
                 }
             });
@@ -996,21 +1070,23 @@ public class FilesListElementDTO extends FlexibleElementDTO {
                 return;
             }
 
+            this.file = file;
+
             // Clears the existing versions.
             store.removeAll();
 
             // Adds each version to the store to be displayed in the grid.
             int count = 0;
-            for (FileVersionDTO version : file.getVersionsDTO()) {
+            for (FileVersionDTO version : this.file.getVersionsDTO()) {
                 store.add(version);
                 count++;
             }
 
             // Configures the window parameters to be consistent with the new
             // displayed file.
-            nameFieldLabel.setText(file.getName());
+            nameFieldLabel.setText(this.file.getName());
             gridPanel.setHeading(I18N.CONSTANTS.flexibleElementFilesListVersionsList() + " (" + count + ")");
-            window.setHeading(I18N.CONSTANTS.flexibleElementFilesListFileDetails() + " - " + file.getName());
+            window.setHeading(I18N.CONSTANTS.flexibleElementFilesListFileDetails() + " - " + this.file.getName());
             window.show();
         }
     }

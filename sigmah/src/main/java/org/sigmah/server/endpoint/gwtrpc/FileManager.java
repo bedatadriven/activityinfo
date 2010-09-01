@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
@@ -32,9 +33,9 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
 @Singleton
-public class UploadManager {
+public class FileManager {
 
-    private static final Log log = LogFactory.getLog(UploadManager.class);
+    private static final Log log = LogFactory.getLog(FileManager.class);
 
     public static final String UPLOADED_FILES_DIR;
 
@@ -45,7 +46,7 @@ public class UploadManager {
         }
 
         // Loads properties.
-        final InputStream input = UploadManager.class.getClassLoader().getResourceAsStream("upload.properties");
+        final InputStream input = FileManager.class.getClassLoader().getResourceAsStream("upload.properties");
         final Properties props = new Properties();
 
         try {
@@ -70,7 +71,7 @@ public class UploadManager {
     private Injector injector;
 
     @Inject
-    public UploadManager(Injector injector) {
+    public FileManager(Injector injector) {
         this.injector = injector;
     }
 
@@ -333,5 +334,146 @@ public class UploadManager {
      */
     private static String generateUniqueName() {
         return UUID.randomUUID().toString();
+    }
+
+    /**
+     * Returns the file for the given id and version number.
+     * 
+     * @param idString
+     *            The file entity id.
+     * @param versionString
+     *            The desired version number.
+     * @return The corresponding file.
+     */
+    public DonwloadableFile getFile(String idString, String versionString) {
+
+        final EntityManager em = injector.getInstance(EntityManager.class);
+
+        // Gets file id.
+        long id;
+
+        try {
+            if (idString == null) {
+                id = 0;
+            } else {
+                id = Integer.valueOf(idString);
+            }
+        } catch (NumberFormatException e) {
+            id = 0;
+        }
+
+        // Gets the file entity.
+        final File file = em.find(File.class, id);
+
+        // Unable to find the file entity -> download error.
+        if (file == null) {
+            return null;
+        }
+
+        if (log.isDebugEnabled()) {
+            log.debug("[getFile] Found file with id=" + file.getId());
+        }
+
+        FileVersion lastVersion = null;
+
+        // Downloads the last version.
+        if (versionString == null || "".equals(versionString)) {
+
+            if (log.isDebugEnabled()) {
+                log.debug("[getFile] Searches last version.");
+            }
+
+            final List<FileVersion> versions = file.getVersions();
+
+            if (versions == null || versions.isEmpty()) {
+                lastVersion = null;
+            } else {
+
+                // Searches the max version number which identifies the last
+                // version.
+                int index = 0;
+                int maxVersionNumber = versions.get(index).getVersionNumber();
+                for (int i = 1; i < versions.size(); i++) {
+                    if (versions.get(i).getVersionNumber() > maxVersionNumber) {
+                        index = i;
+                    }
+                }
+
+                lastVersion = versions.get(index);
+            }
+        }
+        // Downloads a specific version.
+        else {
+
+            // Get desired file version.
+            int version;
+
+            try {
+                version = Integer.valueOf(versionString);
+            } catch (NumberFormatException e) {
+                version = 0;
+            }
+
+            if (log.isDebugEnabled()) {
+                log.debug("[getFile] Searches specific version with number=" + version + ".");
+            }
+
+            // Searches this specific version.
+            final List<FileVersion> versions = file.getVersions();
+
+            if (versions == null || versions.isEmpty()) {
+                lastVersion = null;
+            }
+
+            for (final FileVersion v : versions) {
+                if (v.getVersionNumber() == version) {
+                    lastVersion = v;
+                    break;
+                }
+            }
+        }
+
+        // Unable to find the desired version -> download error.
+        if (lastVersion == null) {
+            return null;
+        }
+
+        if (log.isDebugEnabled()) {
+            log.debug("[getFile] Found version with number=" + lastVersion.getVersionNumber() + ".");
+        }
+
+        // Files repository.
+        final java.io.File repository = new java.io.File(UPLOADED_FILES_DIR);
+
+        // Physical file for the desired version.
+        final java.io.File physicalFile = new java.io.File(repository, lastVersion.getPath());
+
+        return new DonwloadableFile(file.getName(), physicalFile);
+    }
+
+    /**
+     * Utility class to represents a donwloaded file.
+     * 
+     * @author tmi
+     * 
+     */
+    public static class DonwloadableFile {
+
+        private final String name;
+        private final java.io.File physicalFile;
+
+        public DonwloadableFile(String name, java.io.File physicalFile) {
+            super();
+            this.name = name;
+            this.physicalFile = physicalFile;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public java.io.File getPhysicalFile() {
+            return physicalFile;
+        }
     }
 }

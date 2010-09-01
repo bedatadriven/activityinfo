@@ -33,11 +33,11 @@ import com.google.inject.Singleton;
  * 
  */
 @Singleton
-public class UploadServlet extends HttpServlet {
+public class FileUploadServlet extends HttpServlet {
 
     private static final long serialVersionUID = -199302354477098512L;
 
-    private static final Log log = LogFactory.getLog(UploadServlet.class);
+    private static final Log log = LogFactory.getLog(FileUploadServlet.class);
 
     /**
      * Encode a string to UTF-8.
@@ -58,7 +58,7 @@ public class UploadServlet extends HttpServlet {
     private Injector injector;
 
     @Inject
-    public UploadServlet(Injector injector) {
+    public FileUploadServlet(Injector injector) {
         this.injector = injector;
     }
 
@@ -78,8 +78,18 @@ public class UploadServlet extends HttpServlet {
      * <li>{@link FileUploadUtils#DOCUMENT_CONTENT} : (required) the content.</li>
      * <li>{@link FileUploadUtils#DOCUMENT_NAME} : (required) the file name.</li>
      * <li>{@link FileUploadUtils#DOCUMENT_AUTHOR} : (required) the adder.</li>
-     * <li>{@link FileUploadUtils#DOCUMENT_FILES_LIST} : (required) the id of
-     * the flexible element where the file is displayed.</li>
+     * <li>{@link FileUploadUtils#DOCUMENT_FILES_LIST} : (optional) the id of
+     * the flexible element where the file is displayed.<br/>
+     * <br/>
+     * If the file is the first one for this list. This parameter can be
+     * omitted, but the two following parameters must be specified:
+     * <ul>
+     * <li>{@link FileUploadUtils#DOCUMENT_FLEXIBLE_ELEMENT} : (optional) the
+     * files list element id.</li>
+     * <li>{@link FileUploadUtils#DOCUMENT_PROJECT} : (optional) the project id.
+     * </li>
+     * </ul>
+     * </li>
      * </ul>
      * <br/>
      * <br/>
@@ -148,10 +158,7 @@ public class UploadServlet extends HttpServlet {
 
                         addIt = false;
                     } catch (IOException e) {
-
-                        if (log.isDebugEnabled()) {
-                            log.debug("[doPost] HTTP response I/O error.");
-                        }
+                        log.error("[doPost] HTTP response I/O error.");
                         throw e;
                     }
                 }
@@ -222,10 +229,7 @@ public class UploadServlet extends HttpServlet {
                     }
                     // HTTP request I/O error.
                     catch (FileUploadException e) {
-
-                        if (log.isDebugEnabled()) {
-                            log.debug("[doPost] Error while reading the HTTP request elements.", e);
-                        }
+                        log.error("[doPost] Error while reading the HTTP request elements.", e);
                         throw new ServletException("Error while reading the HTTP request elements.", e);
                     }
 
@@ -255,10 +259,7 @@ public class UploadServlet extends HttpServlet {
                                 response.getWriter().write(responseBuilder.toString());
                                 addIt = false;
                             } catch (IOException e) {
-
-                                if (log.isDebugEnabled()) {
-                                    log.debug("[doPost] HTTP response I/O error.");
-                                }
+                                log.error("[doPost] HTTP response I/O error.");
                                 throw e;
                             }
                         }
@@ -275,7 +276,7 @@ public class UploadServlet extends HttpServlet {
                         final StringBuilder responseBuilder = new StringBuilder();
 
                         // Save the uploaded file
-                        final String id = injector.getInstance(UploadManager.class).save(properties, data);
+                        final String id = injector.getInstance(FileManager.class).save(properties, data);
 
                         if (log.isDebugEnabled()) {
                             log.debug("[doPost] File id: " + id + ".");
@@ -289,18 +290,12 @@ public class UploadServlet extends HttpServlet {
                             try {
                                 response.getWriter().write(responseBuilder.toString());
                             } catch (IOException e) {
-
-                                if (log.isDebugEnabled()) {
-                                    log.debug("[doPost] HTTP response I/O error.");
-                                }
+                                log.error("[doPost] HTTP response I/O error.");
                                 throw e;
                             }
 
                         } else {
-
-                            if (log.isDebugEnabled()) {
-                                log.debug("[doPost] HTTP response I/O error.");
-                            }
+                            log.error("[doPost] HTTP response I/O error.");
                             throw new ServletException("Unable to returns the file id.");
                         }
                     }
@@ -309,10 +304,7 @@ public class UploadServlet extends HttpServlet {
         }
         // Catches unknown errors.
         catch (Throwable e) {
-
-            if (log.isDebugEnabled()) {
-                log.debug("[doPost] Error while uploading a file.", e);
-            }
+            log.error("[doPost] Error while uploading a file.", e);
             throw new ServletException("Error while uploading a file.", e);
         }
     }
