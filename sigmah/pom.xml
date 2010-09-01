@@ -630,6 +630,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jxr-maven-plugin</artifactId>
+                <version>1.5</version>
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
