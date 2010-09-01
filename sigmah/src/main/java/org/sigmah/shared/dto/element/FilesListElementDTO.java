@@ -19,6 +19,7 @@ import org.sigmah.shared.dto.value.FileUploadUtils;
 import org.sigmah.shared.dto.value.FileVersionDTO;
 import org.sigmah.shared.dto.value.FilesListValueDTO;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
@@ -73,6 +74,17 @@ public class FilesListElementDTO extends FlexibleElementDTO {
 
     private static final long serialVersionUID = 8520711106031085130L;
 
+    /**
+     * Current value result updated after each upload to keep the consistency of
+     * the widget.
+     */
+    private ValueResult currentValueResult;
+
+    /**
+     * Files list model data.
+     */
+    private transient ListStore<FileDTO> store = new ListStore<FileDTO>();
+
     @Override
     public String getEntityName() {
         // Gets the entity name mapped by the current DTO starting from the
@@ -91,12 +103,22 @@ public class FilesListElementDTO extends FlexibleElementDTO {
     }
 
     /**
-     * Files list model data.
+     * Updates the grid store for the current value.
      */
-    private transient ListStore<FileDTO> store = new ListStore<FileDTO>();
+    private void updateStore() {
+
+        if (currentValueResult != null && currentValueResult.isValueDefined()) {
+            store.removeAll();
+            for (Serializable s : currentValueResult.getValuesObject()) {
+                store.add(((FilesListValueDTO) s).getFileDTO());
+            }
+        }
+    }
 
     @Override
     public Component getComponent(ValueResult valueResult) {
+
+        currentValueResult = valueResult;
 
         // Creates actions menu to manage the files list.
         final Button downloadButton = new Button(I18N.CONSTANTS.flexibleElementFilesListDownload());
@@ -133,7 +155,7 @@ public class FilesListElementDTO extends FlexibleElementDTO {
         uploadPanel.setHeaderVisible(false);
         uploadPanel.setLayout(new HBoxLayout());
 
-        final Label addVersionLabel = new Label(I18N.CONSTANTS.flexibleElementFilesListUploadVersion());
+        final Label addVersionLabel = new Label(I18N.CONSTANTS.flexibleElementFilesListUploadFile());
         addVersionLabel.addStyleName("sigmah-element-label");
         uploadPanel.add(addVersionLabel, new HBoxLayoutData(new Margins(4, 5, 0, 0)));
         final HBoxLayoutData flex = new HBoxLayoutData(new Margins(0, 5, 0, 0));
@@ -149,28 +171,30 @@ public class FilesListElementDTO extends FlexibleElementDTO {
         uploadFormPanel.setMethod(Method.POST);
         uploadFormPanel.setAction("/upload");
 
+        final HiddenField<String> elementIdHidden = new HiddenField<String>();
+        elementIdHidden.setName(FileUploadUtils.DOCUMENT_FLEXIBLE_ELEMENT);
+
+        final HiddenField<String> projectIdHidden = new HiddenField<String>();
+        projectIdHidden.setName(FileUploadUtils.DOCUMENT_PROJECT);
+
         final HiddenField<String> filesListHidden = new HiddenField<String>();
         filesListHidden.setName(FileUploadUtils.DOCUMENT_FILES_LIST);
-        if (valueResult != null && valueResult.isValueDefined()) {
-            filesListHidden.setValue(String.valueOf(((FilesListValueDTO) valueResult.getValuesObject().get(0))
-                    .getIdList()));
-        }
 
         final HiddenField<String> nameHidden = new HiddenField<String>();
         nameHidden.setName(FileUploadUtils.DOCUMENT_NAME);
 
         final HiddenField<String> authorHidden = new HiddenField<String>();
         authorHidden.setName(FileUploadUtils.DOCUMENT_AUTHOR);
-        authorHidden.setValue(String.valueOf(authentication.getUserId()));
 
         final HiddenField<String> emptyHidden = new HiddenField<String>();
         emptyHidden.setName(FileUploadUtils.CHECK_EMPTY);
-        emptyHidden.setValue("true");
 
         uploadFormPanel.add(uploadPanel);
         uploadFormPanel.add(nameHidden);
         uploadFormPanel.add(authorHidden);
         uploadFormPanel.add(filesListHidden);
+        uploadFormPanel.add(elementIdHidden);
+        uploadFormPanel.add(projectIdHidden);
         uploadFormPanel.add(emptyHidden);
 
         // Manages upload button activations.
@@ -178,7 +202,67 @@ public class FilesListElementDTO extends FlexibleElementDTO {
             @Override
             public void handleEvent(ComponentEvent be) {
                 uploadButton.setEnabled(uploadField.getValue() != null && !uploadField.getValue().trim().equals(""));
+            }
+        });
+
+        uploadButton.addListener(Events.OnClick, new Listener<ButtonEvent>() {
+
+            @Override
+            public void handleEvent(ButtonEvent be) {
+
+                // Set hidden fields values.
+                if (currentValueResult != null && currentValueResult.isValueDefined()) {
+                    filesListHidden.setValue(String.valueOf(((FilesListValueDTO) currentValueResult.getValuesObject()
+                            .get(0)).getIdList()));
+                } else {
+                    elementIdHidden.setValue(String.valueOf(getId()));
+                    projectIdHidden.setValue(String.valueOf(currentProjectDTO.getId()));
+                }
                 nameHidden.setValue(uploadField.getValue());
+                authorHidden.setValue(String.valueOf(authentication.getUserId()));
+                emptyHidden.setValue("true");
+
+                // Debug form hidden values.
+                if (Log.isDebugEnabled()) {
+
+                    final StringBuilder sb = new StringBuilder();
+                    sb.append("Upload a new file with parameters: ");
+                    sb.append("name=");
+                    sb.append(nameHidden.getValue());
+                    sb.append(" ; author id=");
+                    sb.append(authorHidden.getValue());
+                    sb.append(" ; file list id=");
+                    sb.append(filesListHidden.getValue());
+                    sb.append(" ; project id=");
+                    sb.append(projectIdHidden.getValue());
+                    sb.append(" ; element id=");
+                    sb.append(elementIdHidden.getValue());
+                    sb.append(" ; allow empty=");
+                    sb.append(emptyHidden.getValue());
+
+                    Log.debug(sb.toString());
+                }
+
+                // Freezes upload fields.
+                uploadField.setEnabled(false);
+                uploadButton.setEnabled(false);
+
+                // Submits the form.
+                uploadFormPanel.submit();
+            }
+        });
+
+        uploadFormPanel.addListener(Events.Submit, new Listener<FormEvent>() {
+
+            @Override
+            public void handleEvent(FormEvent be) {
+
+                // Updates the widget for the new value.
+                updateComponentAfterUpload(be);
+
+                // Reset upload fields.
+                uploadField.setEnabled(true);
+                uploadField.reset();
             }
         });
 
@@ -190,12 +274,7 @@ public class FilesListElementDTO extends FlexibleElementDTO {
         topPanel.add(uploadFormPanel, new FlowData(new Margins(3, 2, 3, 2)));
         topPanel.add(actionsToolBar);
 
-        // Fills the grid store with the files list.
-        if (valueResult != null && valueResult.isValueDefined()) {
-            for (Serializable s : valueResult.getValuesObject()) {
-                store.add(((FilesListValueDTO) s).getFileDTO());
-            }
-        }
+        updateStore();
 
         // Grid plugins.
         final CheckBoxSelectionModel<FileDTO> selectionModel = new CheckBoxSelectionModel<FileDTO>();
@@ -306,26 +385,6 @@ public class FilesListElementDTO extends FlexibleElementDTO {
             }
         });
 
-        uploadButton.addListener(Events.OnClick, new Listener<ButtonEvent>() {
-
-            @Override
-            public void handleEvent(ButtonEvent be) {
-                uploadField.setValue(null);
-                uploadButton.setEnabled(false);
-                uploadField.setEnabled(false);
-                uploadFormPanel.submit();
-            }
-        });
-
-        uploadFormPanel.addListener(Events.Submit, new Listener<FormEvent>() {
-
-            @Override
-            public void handleEvent(FormEvent be) {
-                updateComponentAfterUpload(be);
-                uploadField.setEnabled(true);
-            }
-        });
-
         return panel;
     }
 
@@ -370,13 +429,8 @@ public class FilesListElementDTO extends FlexibleElementDTO {
                 @Override
                 public void onSuccess(ValueResult valueResult) {
 
-                    if (valueResult != null && valueResult.isValueDefined()) {
-                        store.removeAll();
-                        for (Serializable s : valueResult.getValuesObject()) {
-                            store.add(((FilesListValueDTO) s).getFileDTO());
-                        }
-                    }
-                    store.commitChanges();
+                    currentValueResult = valueResult;
+                    updateStore();
                 }
             });
         }
@@ -487,6 +541,16 @@ public class FilesListElementDTO extends FlexibleElementDTO {
         private final Window window;
 
         /**
+         * The current displayed file.
+         */
+        private FileDTO file;
+
+        /**
+         * The next version number to upload.
+         */
+        private int nextVersionNumber;
+
+        /**
          * The upload form.
          */
         private final FormPanel uploadFormPanel;
@@ -515,6 +579,11 @@ public class FilesListElementDTO extends FlexibleElementDTO {
          * Next file version number.
          */
         private final HiddenField<String> versionHidden;
+
+        /**
+         * If empty version are allowed.
+         */
+        private final HiddenField<String> emptyHidden;
 
         /**
          * The upload button.
@@ -562,9 +631,8 @@ public class FilesListElementDTO extends FlexibleElementDTO {
             versionHidden = new HiddenField<String>();
             versionHidden.setName(FileUploadUtils.DOCUMENT_VERSION);
 
-            final HiddenField<String> emptyHidden = new HiddenField<String>();
+            emptyHidden = new HiddenField<String>();
             emptyHidden.setName(FileUploadUtils.CHECK_EMPTY);
-            emptyHidden.setValue("true");
 
             uploadFormPanel.add(uploadPanel);
             uploadFormPanel.add(authorHidden);
@@ -577,6 +645,59 @@ public class FilesListElementDTO extends FlexibleElementDTO {
                 @Override
                 public void handleEvent(ComponentEvent be) {
                     uploadButton.setEnabled(uploadField.getValue() != null && !uploadField.getValue().trim().equals(""));
+                }
+            });
+
+            uploadButton.addListener(Events.OnClick, new Listener<ButtonEvent>() {
+
+                @Override
+                public void handleEvent(ButtonEvent be) {
+
+                    // Set hidden fields values.
+                    idHidden.setValue(String.valueOf(file.getId()));
+                    authorHidden.setValue(String.valueOf(authentication.getUserId()));
+                    versionHidden.setValue(String.valueOf(nextVersionNumber));
+                    emptyHidden.setValue("true");
+
+                    // Debug form hidden values.
+                    if (Log.isDebugEnabled()) {
+
+                        final StringBuilder sb = new StringBuilder();
+                        sb.append("Upload a new version with parameters: ");
+                        sb.append("version number=");
+                        sb.append(versionHidden.getValue());
+                        sb.append(" ; file id=");
+                        sb.append(idHidden.getValue());
+                        sb.append(" ; author id=");
+                        sb.append(authorHidden.getValue());
+                        sb.append(" ; allow empty=");
+                        sb.append(emptyHidden.getValue());
+
+                        Log.debug(sb.toString());
+                    }
+
+                    // Freezes upload fields.
+                    uploadField.setEnabled(false);
+                    uploadButton.setEnabled(false);
+
+                    // Submits the form.
+                    uploadFormPanel.submit();
+                }
+            });
+
+            uploadFormPanel.addListener(Events.Submit, new Listener<FormEvent>() {
+
+                @Override
+                public void handleEvent(FormEvent be) {
+
+                    // Updates the widget for the new value.
+                    updateComponentAfterUpload(be);
+
+                    // Reset upload fields.
+                    uploadField.setEnabled(true);
+                    uploadField.reset();
+
+                    window.hide();
                 }
             });
 
@@ -614,27 +735,6 @@ public class FilesListElementDTO extends FlexibleElementDTO {
             window.setLayout(new FitLayout());
 
             window.add(mainPanel);
-
-            uploadButton.addListener(Events.OnClick, new Listener<ButtonEvent>() {
-
-                @Override
-                public void handleEvent(ButtonEvent be) {
-                    uploadField.setValue(null);
-                    uploadButton.setEnabled(false);
-                    uploadField.setEnabled(false);
-                    uploadFormPanel.submit();
-                }
-            });
-
-            uploadFormPanel.addListener(Events.Submit, new Listener<FormEvent>() {
-
-                @Override
-                public void handleEvent(FormEvent be) {
-                    updateComponentAfterUpload(be);
-                    uploadField.setEnabled(true);
-                    window.hide();
-                }
-            });
         }
 
         /**
@@ -649,14 +749,12 @@ public class FilesListElementDTO extends FlexibleElementDTO {
                 return;
             }
 
+            this.file = file;
+
             // Configures the window parameters to be consistent with the new
             // displayed file.
-            final int nextVersionNumber = file.getLastVersion().getVersionNumber() + 1;
-            idHidden.setValue(String.valueOf(file.getId()));
-            authorHidden.setValue(String.valueOf(authentication.getUserId()));
-            versionHidden.setValue(String.valueOf(nextVersionNumber));
-            uploadField.setValue(null);
-            uploadButton.setEnabled(false);
+            nextVersionNumber = file.getLastVersion().getVersionNumber() + 1;
+
             numberLabel.setText("#" + String.valueOf(nextVersionNumber));
             window.setHeading(I18N.CONSTANTS.flexibleElementFilesListUploadVersion());
 

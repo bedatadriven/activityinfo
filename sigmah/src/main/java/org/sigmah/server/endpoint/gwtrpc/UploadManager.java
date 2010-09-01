@@ -13,14 +13,18 @@ import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.Query;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sigmah.server.domain.Project;
 import org.sigmah.server.domain.User;
+import org.sigmah.server.domain.element.FlexibleElement;
 import org.sigmah.server.domain.value.File;
 import org.sigmah.server.domain.value.FileVersion;
 import org.sigmah.server.domain.value.FilesListValue;
 import org.sigmah.server.domain.value.FilesListValueId;
+import org.sigmah.server.domain.value.Value;
 import org.sigmah.shared.dto.value.FileUploadUtils;
 
 import com.google.inject.Inject;
@@ -116,7 +120,7 @@ public class UploadManager {
 
             // Files list id.
             String filesListIdProp = properties.get(FileUploadUtils.DOCUMENT_FILES_LIST);
-            int filesListId;
+            long filesListId;
 
             try {
                 if (filesListIdProp == null) {
@@ -136,11 +140,75 @@ public class UploadManager {
 
             em.persist(file);
 
+            // If files list id is undefined, the uploaded file is the first one
+            // of this list, we must create the list value.
+            if (filesListId == 0) {
+
+                if (log.isDebugEnabled()) {
+                    log.debug("[save] First file uploaded, creates the list value.");
+                }
+
+                // Finds the max files list value identifier.
+                Query query = em.createQuery("SELECT MAX(flv.idList) FROM FilesListValue flv");
+                final Long currentMaxFilesListValue = (Long) query.getSingleResult();
+
+                filesListId = currentMaxFilesListValue + 1;
+
+                // Creates the list value.
+                final Value value = new Value();
+                value.setLastModificationAction('C');
+                value.setLastModificationDate(new Date());
+                value.setValue(String.valueOf(filesListId));
+
+                final User user = em.find(User.class, authorId);
+                value.setLastModificationUser(user);
+
+                // Element id.
+                String elementIdProp = properties.get(FileUploadUtils.DOCUMENT_FLEXIBLE_ELEMENT);
+                long elementId;
+
+                try {
+                    if (elementIdProp == null) {
+                        elementId = 0;
+                    } else {
+                        elementId = Integer.valueOf(elementIdProp);
+                    }
+                } catch (NumberFormatException e) {
+                    elementId = 0;
+                }
+
+                final FlexibleElement element = em.find(FlexibleElement.class, elementId);
+                value.setElement(element);
+
+                // Project id.
+                String projectIdProp = properties.get(FileUploadUtils.DOCUMENT_PROJECT);
+                int projectId;
+
+                try {
+                    if (projectIdProp == null) {
+                        projectId = 0;
+                    } else {
+                        projectId = Integer.valueOf(projectIdProp);
+                    }
+                } catch (NumberFormatException e) {
+                    projectId = 0;
+                }
+
+                final Project project = em.find(Project.class, projectId);
+                value.setParentProject(project);
+
+                em.persist(value);
+
+                if (log.isDebugEnabled()) {
+                    log.debug("[save] List value created with id: " + filesListId + ".");
+                }
+            }
+
             // Saves the new files list value (file <--> list)
             final FilesListValue value = new FilesListValue();
-            value.setIdList((long) filesListId);
+            value.setIdList(filesListId);
             value.setFile(file);
-            value.setId(new FilesListValueId((long) filesListId, file.getId()));
+            value.setId(new FilesListValueId(filesListId, file.getId()));
 
             em.persist(value);
 
@@ -233,9 +301,11 @@ public class UploadManager {
             // Generates the content file name
             final String uniqueName = generateUniqueName();
 
+            // Files repository.
+            final java.io.File repository = new java.io.File(UPLOADED_FILES_DIR);
+
             // Streams.
-            output = new BufferedOutputStream(new FileOutputStream(UPLOADED_FILES_DIR + java.io.File.separator
-                    + uniqueName));
+            output = new BufferedOutputStream(new FileOutputStream(new java.io.File(repository, uniqueName)));
             input = new BufferedInputStream(new ByteArrayInputStream(content));
 
             // Writes content as bytes.

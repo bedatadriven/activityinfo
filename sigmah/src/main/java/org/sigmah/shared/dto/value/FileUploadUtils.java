@@ -85,6 +85,16 @@ public final class FileUploadUtils {
     public static final String DOCUMENT_FILES_LIST = "list";
 
     /**
+     * Flexible element id to which the uploaded file belongs.
+     */
+    public static final String DOCUMENT_FLEXIBLE_ELEMENT = "element";
+
+    /**
+     * Project id to which the uploaded file belongs.
+     */
+    public static final String DOCUMENT_PROJECT = "project";
+
+    /**
      * Parses the HTTP response from the server after a file upload. The
      * response contains the id of the just saved file if the upload worked
      * fine, or an error code if it didn't.
