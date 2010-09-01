@@ -14,9 +14,11 @@ import org.sigmah.shared.dto.ActivityDTO;
 
 import java.util.Arrays;
 import java.util.List;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.page.TabPage;
 
 
-public class SiteGridPageState extends AbstractPagingGridPageState {
+public class SiteGridPageState extends AbstractPagingGridPageState implements TabPage {
 
     private int activityId;
 
@@ -85,6 +87,11 @@ public class SiteGridPageState extends AbstractPagingGridPageState {
     @Override
     public int hashCode() {
         return activityId;
+    }
+
+    @Override
+    public String getTabTitle() {
+        return I18N.CONSTANTS.dataEntry();
     }
     
 

@@ -18,6 +18,7 @@ import org.sigmah.shared.dto.value.TripletValueDTO;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
@@ -129,6 +130,19 @@ public class TripletsListElementDTO extends FlexibleElementDTO {
             }
         });
 
+        grid.addListener(Events.AfterEdit, new Listener<GridEvent>() {
+
+            @Override
+            public void handleEvent(GridEvent be) {
+                // Edit an existing triplet
+                final TripletValueDTO valueDTO = grid.getStore().getAt(be.getRowIndex());
+                valueDTO.setIndex(be.getRowIndex());
+
+                handlerManager.fireEvent(new ValueEvent(TripletsListElementDTO.this, valueDTO, ValueEvent.ChangeType.EDIT));
+            }
+
+        });
+
         // Manages action buttons activations.
         selectionModel.addSelectionChangedListener(new SelectionChangedListener<TripletValueDTO>() {
 
@@ -231,7 +245,8 @@ public class TripletsListElementDTO extends FlexibleElementDTO {
                 addedValue.setPeriod("-" + I18N.CONSTANTS.flexibleElementTripletsListPeriod() + "-");
 
                 grid.getStore().add(addedValue);
-                handlerManager.fireEvent(new ValueEvent(TripletsListElementDTO.this, addedValue));
+                addedValue.setIndex(grid.getStore().indexOf(addedValue));
+                handlerManager.fireEvent(new ValueEvent(TripletsListElementDTO.this, addedValue, ValueEvent.ChangeType.ADD));
 
                 // Required element ?
                 if (getValidates()) {
@@ -241,9 +256,10 @@ public class TripletsListElementDTO extends FlexibleElementDTO {
             // Remove some existing triplets
             else {
                 for (TripletValueDTO removedValue : grid.getSelectionModel().getSelectedItems()) {
+                    removedValue.setIndex(grid.getStore().indexOf(removedValue));
                     grid.getStore().remove(removedValue);
                     // TODO creates fire method for addition and deletion
-                    handlerManager.fireEvent(new ValueEvent(TripletsListElementDTO.this, removedValue));
+                    handlerManager.fireEvent(new ValueEvent(TripletsListElementDTO.this, removedValue, ValueEvent.ChangeType.REMOVE));
                 }
 
                 if (grid.getStore().getCount() == 0) {

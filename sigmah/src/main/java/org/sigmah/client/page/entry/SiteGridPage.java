@@ -5,7 +5,6 @@
 
 package org.sigmah.client.page.entry;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.util.Margins;
@@ -18,6 +17,7 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.CardLayout;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 import org.sigmah.client.page.common.filter.AdminFilterPanel;
@@ -25,7 +25,6 @@ import org.sigmah.client.page.common.filter.DateRangePanel;
 import org.sigmah.client.page.common.filter.PartnerFilterPanel;
 import org.sigmah.client.page.common.widget.CollapsibleTabPanel;
 import org.sigmah.shared.dto.AdminEntityDTO;
-import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.Filter;
@@ -88,8 +87,12 @@ public class SiteGridPage extends SiteGrid {
     
 	 @Override
 	 public Filter getFilter() {
-		
-	 	Filter f = new Filter();
+             
+            Filter f = new Filter();
+                
+            if(adminPanel == null) {
+                return f;
+            }
 	 
 		List<AdminEntityDTO> entities = adminPanel.getSelection();
 	    for (AdminEntityDTO entity : entities) {

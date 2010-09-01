@@ -27,6 +27,11 @@ public final class ProjectDTO extends BaseTreeModel implements EntityDTO {
             return "Project";
     }
 
+    @Override
+    public String toString() {
+        return "ProjectDTO id:"+getId()+", name:"+getName()+", projectModelDTO: "+getProjectModelDTO()+", owner:"+getOwnerName()+", phaseDTO:"+getPhasesDTO()+", valueDTO:"+getValuesDTO()+", currentPhaseDTO:"+getCurrentPhaseDTO()+", fav:"+isFavorite()+", topic:"+getTopic();
+    }
+
     // Project id
     @Override
     public int getId() {

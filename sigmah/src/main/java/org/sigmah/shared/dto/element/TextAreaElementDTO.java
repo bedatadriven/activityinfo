@@ -67,9 +67,13 @@ public class TextAreaElementDTO extends FlexibleElementDTO {
         public void handleEvent(BaseEvent be) {
             TextArea textArea = (TextArea) be.getSource();
             String value = textArea.getValue();
-            boolean isValueOn = value != null && !value.trim().equals("");
 
-            handlerManager.fireEvent(new ValueEvent(TextAreaElementDTO.this, value));
+            if(value == null)
+                value = "";
+
+            boolean isValueOn = !value.trim().equals("");
+
+            handlerManager.fireEvent(new ValueEvent(TextAreaElementDTO.this, value, ValueEvent.ChangeType.EDIT));
 
             // Required element ?
             if (getValidates()) {

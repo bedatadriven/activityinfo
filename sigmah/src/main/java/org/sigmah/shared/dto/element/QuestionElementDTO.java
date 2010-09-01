@@ -112,7 +112,7 @@ public class QuestionElementDTO extends FlexibleElementDTO {
             // Gets the selected choice.
             final QuestionChoiceElementDTO choice = se.getSelectedItem();
 
-            handlerManager.fireEvent(new ValueEvent(QuestionElementDTO.this, choice));
+            handlerManager.fireEvent(new ValueEvent(QuestionElementDTO.this, choice, ValueEvent.ChangeType.EDIT));
 
             // Required element ?
             if (getValidates()) {

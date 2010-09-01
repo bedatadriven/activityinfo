@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.sigmah.shared.dto.element.FlexibleElementDTO;
+import org.sigmah.shared.dto.element.handler.ValueEvent.ChangeType;
 
 public class ValueEventWrapper implements Serializable {
     private static final long serialVersionUID = 8800087226429558970L;
@@ -13,6 +14,7 @@ public class ValueEventWrapper implements Serializable {
     private FlexibleElementDTO sourceElement;
     private Serializable value;
     private ArrayList<Serializable> values;
+    private ValueEvent.ChangeType changeType;
 
     public ValueEventWrapper() {
     }
@@ -42,5 +44,13 @@ public class ValueEventWrapper implements Serializable {
             this.values = new ArrayList<Serializable>(values);
         else
             this.values = null;
+    }
+
+    public ChangeType getChangeType() {
+        return changeType;
+    }
+
+    public void setChangeType(ChangeType changeType) {
+        this.changeType = changeType;
     }
 }

@@ -13,11 +13,13 @@ import org.sigmah.client.page.common.grid.AbstractPagingGridPageState;
 
 import java.util.Arrays;
 import java.util.List;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.page.TabPage;
 /*
  * @author Alex Bertram
  */
 
-public class DbPageState extends AbstractPagingGridPageState {
+public class DbPageState extends AbstractPagingGridPageState implements TabPage {
 
     private PageId pageId;
     private int databaseId;
@@ -77,6 +79,11 @@ public class DbPageState extends AbstractPagingGridPageState {
     @Override
     public int hashCode() {
         return databaseId;
+    }
+
+    @Override
+    public String getTabTitle() {
+        return I18N.CONSTANTS.database();
     }
 
     public static class Parser implements PageStateParser {

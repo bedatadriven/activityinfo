@@ -12,11 +12,13 @@ import org.sigmah.client.page.PageStateParser;
 
 import java.util.Arrays;
 import java.util.List;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.page.TabPage;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class AccountPageState implements PageState {
+public class AccountPageState implements PageState, TabPage {
 
 
     @Override
@@ -49,5 +51,10 @@ public class AccountPageState implements PageState {
         public PageState parse(String token) {
             return new AccountPageState();
         }
+    }
+    
+    @Override
+    public String getTabTitle() {
+        return I18N.CONSTANTS.users();
     }
 }

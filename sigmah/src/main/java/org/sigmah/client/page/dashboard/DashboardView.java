@@ -5,6 +5,7 @@
 
 package org.sigmah.client.page.dashboard;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -153,8 +154,15 @@ public class DashboardView extends ContentPanel {
 
                                 @Override
                                 public void onSuccess(ProjectListResult projectList) {
+                                    Log.debug("How");
+                                    
                                     projectStore.removeAll();
+                                    
+                                    Log.debug("are you");
+                                    
                                     projectStore.add(projectList.getList(), true);
+                                    
+                                    Log.debug("BONG ?");
                                 }
                             });
                         }

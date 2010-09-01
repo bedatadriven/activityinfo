@@ -19,7 +19,6 @@ import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.TabPage;
-import org.sigmah.client.util.NotImplementedMethod;
 import org.sigmah.shared.command.ChangePhase;
 import org.sigmah.shared.command.GetProject;
 import org.sigmah.shared.command.GetValue;
@@ -32,7 +31,6 @@ import org.sigmah.shared.dto.element.FlexibleElementDTO;
 import org.sigmah.shared.dto.element.handler.RequiredValueEvent;
 import org.sigmah.shared.dto.element.handler.RequiredValueHandler;
 import org.sigmah.shared.dto.element.handler.ValueEvent;
-import org.sigmah.shared.dto.element.handler.ValueEventWrapper;
 import org.sigmah.shared.dto.element.handler.ValueHandler;
 import org.sigmah.shared.dto.layout.LayoutConstraintDTO;
 import org.sigmah.shared.dto.layout.LayoutGroupDTO;
@@ -56,10 +54,14 @@ import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
+import org.sigmah.shared.command.UpdateProject;
+import org.sigmah.shared.command.result.VoidResult;
+import org.sigmah.shared.dto.element.handler.ValueEventWrapper;
 
 /**
  * Project presenter which manages the {@link ProjectView}.
@@ -78,7 +80,7 @@ public class ProjectPresenter implements Frame, TabPage {
     /**
      * List of values changes.
      */
-    private ArrayList<ValueEventWrapper> valueChanges = new ArrayList<ValueEventWrapper>();
+    private ArrayList<ValueEvent> valueChanges = new ArrayList<ValueEvent>();
 
     /**
      * The current displayed project.
@@ -123,7 +125,6 @@ public class ProjectPresenter implements Frame, TabPage {
     public boolean navigate(PageState place) {
         final ProjectState projectState = (ProjectState) place;
         final int projectId = projectState.getProjectId();
-        valueChanges.clear();
 
         if (Log.isDebugEnabled()) {
             Log.debug("Loading project #" + projectId + "...");
@@ -261,6 +262,7 @@ public class ProjectPresenter implements Frame, TabPage {
                                             view.getButtonSavePhase().fireEvent(Events.OnClick);
                                             if (isActivePhase(currentPhaseDTO)) {
                                                 activePhaseRequiredElements.saveState();
+
                                             }
                                         } else if (Dialog.NO.equals(ce.getButtonClicked().getItemId())) {
                                             // If the last displayed phase was
@@ -318,6 +320,7 @@ public class ProjectPresenter implements Frame, TabPage {
 
         // Clears the required elements map for the current displayed phase.
         currentPhaseRequiredElements.clear();
+        valueChanges.clear();
 
         // --
         // -- CLEARS PANELS
@@ -521,8 +524,22 @@ public class ProjectPresenter implements Frame, TabPage {
 
         @Override
         public void handleEvent(ButtonEvent be) {
-            // TODO Save modifications.
-            NotImplementedMethod.methodNotImplemented();
+            view.getButtonSavePhase().disable();
+            final UpdateProject updateProject = new UpdateProject(currentProjectDTO.getId(), valueChanges);
+
+            dispatcher.execute(updateProject, null, new AsyncCallback<VoidResult>() {
+
+                @Override
+                public void onFailure(Throwable caught) {
+                    MessageBox.info(I18N.CONSTANTS.cancelled(), I18N.CONSTANTS.error(), null);
+                }
+
+                @Override
+                public void onSuccess(VoidResult result) {
+                    valueChanges.clear();
+                    MessageBox.info(I18N.CONSTANTS.ok(), I18N.CONSTANTS.saved(), null);
+                }
+            });
         }
     }
 
@@ -672,7 +689,7 @@ public class ProjectPresenter implements Frame, TabPage {
             w.setValue(event.getValue());
             w.setValues(event.getValues());
 
-            valueChanges.add(w);
+            valueChanges.add(event);
 
             // Enables the save action.
             view.getButtonSavePhase().setEnabled(true);

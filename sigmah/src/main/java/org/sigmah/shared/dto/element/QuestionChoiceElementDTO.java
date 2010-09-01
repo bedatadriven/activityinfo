@@ -62,4 +62,8 @@ public class QuestionChoiceElementDTO extends BaseModelData implements EntityDTO
         set("parentQuestionDTO", parentQuestionDTO);
     }
 
+    @Override
+    public String toString() {
+        return Integer.toString(getId());
+    }
 }

@@ -10,11 +10,13 @@ import org.sigmah.client.page.PageState;
 
 import java.util.Arrays;
 import java.util.List;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.page.TabPage;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class ChartPageState implements PageState {
+public class ChartPageState implements PageState, TabPage {
 
     public String serializeAsHistoryToken() {
         return null;
@@ -37,5 +39,10 @@ public class ChartPageState implements PageState {
     @Override
     public int hashCode() {
         return 0;
+    }
+
+    @Override
+    public String getTabTitle() {
+        return I18N.CONSTANTS.charts();
     }
 }

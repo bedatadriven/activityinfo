@@ -11,8 +11,10 @@ import org.sigmah.client.page.PageState;
 
 import java.util.Arrays;
 import java.util.List;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.page.TabPage;
 
-public class DbListPageState implements PageState {
+public class DbListPageState implements PageState, TabPage {
 
     public DbListPageState() {
         
@@ -41,6 +43,11 @@ public class DbListPageState implements PageState {
     @Override
     public int hashCode() {
         return 0;
+    }
+
+    @Override
+    public String getTabTitle() {
+        return I18N.CONSTANTS.databases();
     }
 
 }
