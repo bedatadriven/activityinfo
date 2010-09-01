@@ -1,0 +1,203 @@
+
+/*
+ * All Sigmah code is released under the GNU General Public License v3
+ * See COPYRIGHT.txt and LICENSE.txt.
+ */
+
+div.report {
+    padding:20px;
+}
+
+.report h1 {
+ font-family: Arial;
+}
+
+.report td {
+	border: solid 1px black;
+}
+
+.report td.r-indent1 { padding-left: 0.25in; }
+.reort td.r-indent2 { padding-left: 0.5in; }
+.report td.r-indent3 { padding-left: 0.75in; }
+
+.report td.r-value {
+	text-align: right;
+}
+
+.report tr.r-row-group {
+	background-color: rgb(190,190,190);
+}
+
+.loading-placeholder {
+    color: rgb(192, 192, 192);
+    font-weight: 900;
+    font-size: 15px;
+    background: url("ActivityInfo/gxt/images/default/shared/large-loading.gif") no-repeat;
+    padding-left: 50px;
+    padding-top: 5px;
+    padding-bottom: 8px;
+    width: 300px;
+}
+
+.appTitle {
+    font-weight: bold;
+    font-size: 10pt;
+}
+
+.filter-trigger {
+    cursor: pointer;
+    background-image: url(Applicaton/image/filter.png);
+}
+
+.mapped {
+    background-image: url(ActivityInfo/image/mapped.gif);
+    width: 10px;
+    height: 16px;
+}
+
+.unmapped {
+    background-image: url(ActivityInfo/image/unmapped.gif);
+    width: 10px;
+    height: 16px;
+}
+
+.details {
+    padding-left: 5px;
+    padding-top: 5px;
+}
+
+.details p {
+    margin-top: 5px;
+    font-size: 11px;
+}
+
+.details span.groupName {
+    color: #15428B;
+    font-weight: bold;
+}
+
+.details .indicatorTable {
+    border: 0 none;
+    margin-left: 2px;
+}
+
+.details .indicatorTable td {
+    vertical-align: top;
+    font-size: 11px;
+    border-bottom: 1px solid #C8C8C8;
+    padding-right: 10px;
+}
+
+.details td.indicatorHeading {
+    max-width: 250px;
+}
+
+.details .indicatorGroupHeading {
+    color: #15428B;
+    font-weight: bold;
+    padding-top: 10px;
+}
+
+.details .indicatorValue {
+    text-align: right;
+}
+
+.details .indicatorGroupChild {
+    padding-left: 15px;
+}
+
+.details p.comments {
+    margin-top: 10px;
+}
+
+/* ASSESMENT COMBO */
+
+.search-item {
+    font: normal 11px tahoma, arial, helvetica, sans-serif;
+    padding: 3px 10px 3px 10px;
+    border: 1px solid #fff;
+    border-bottom: 1px solid #eeeeee;
+    white-space: normal;
+    color: #555;
+}
+
+.search-item h3 {
+    display: block;
+    font: inherit;
+    font-weight: bold;
+    color: #222;
+}
+
+.search-item h3 span {
+    float: right;
+    font-weight: normal;
+    margin: 0 0 5px 5px;
+    width: 100px;
+    display: block;
+    clear: none;
+}
+
+.gallery {
+    margin-left: 10px;
+}
+
+.gallery h3 {
+    color: #db7214;
+    font: 18px "Lucida Grande", Helvetica, Arial, Verdana, sans-serif;
+    padding-top: 20px;
+    padding-left: 15px;
+    margin-bottom: 20px;
+
+}
+
+.intro-para {
+    padding-left: 15px;
+    font-size: 14px;
+    color: #777777;
+    margin-bottom: 15px;
+}
+
+.gallery dd {
+    cursor: pointer;
+    float: left;
+    height: 100px;
+    margin: 5px 5px 5px 10px;
+    width: 300px;
+}
+
+.gallery dd img {
+    float: left;
+    height: 90px;
+    margin: 5px 0 0 5px;
+    width: 120px;
+}
+
+.gallery dd div {
+    float: left;
+    margin-left: 10px;
+    width: 160px;
+}
+
+.gallery dd h4 {
+    color: #555555;
+    margin: 5px 0;
+    font-family: tahoma, arial, san-serif;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.gallery dd p {
+    color: #777777;
+    font-size: 11px;
+}
+
+.gallery dd.over {
+    background: #F5FDE3 url(ActivityInfo/image/gallery-over.gif) no-repeat scroll 0 0;
+}
+
+.gallery .loading-indicator {
+    font-size: 11px;
+    background: url('ActivityInfo/gxt/images/default/shared/large-loading.gif') no-repeat left;
+    padding-left: 20px;
+    margin: 10px;
+}
