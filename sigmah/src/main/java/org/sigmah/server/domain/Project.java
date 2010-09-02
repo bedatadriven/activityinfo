@@ -19,59 +19,75 @@ import org.sigmah.server.domain.value.Value;
 
 @Entity
 public class Project extends UserDatabase {
-	private static final long serialVersionUID = 3838595995254049090L;
-	
-	private LogFrame logFrame;
-	private ProjectModel projectModel;
-	private Phase currentPhase;
-	private List<Phase> phases = new ArrayList<Phase>();
-	private List<Value> values = new ArrayList<Value>();
+    private static final long serialVersionUID = 3838595995254049090L;
 
-	public void setLogFrame(LogFrame logFrame) {
-		this.logFrame = logFrame;
-	}
+    private LogFrame logFrame;
+    private ProjectModel projectModel;
+    private Phase currentPhase;
+    private List<Phase> phases = new ArrayList<Phase>();
+    private List<Value> values = new ArrayList<Value>();
+
+    public void setLogFrame(LogFrame logFrame) {
+        this.logFrame = logFrame;
+    }
 
     @OneToOne
-	public LogFrame getLogFrame() {
-		return logFrame;
-	}
+    public LogFrame getLogFrame() {
+        return logFrame;
+    }
 
-	@OneToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "id_project_model")
-	public ProjectModel getProjectModel() {
-		return projectModel;
-	}
-	
-	public void setProjectModel(ProjectModel model) {
-		this.projectModel = model;
-	}
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_project_model")
+    public ProjectModel getProjectModel() {
+        return projectModel;
+    }
 
-	@OneToOne
-	@JoinColumn(name = "id_current_phase")
-	public Phase getCurrentPhase() {
-		return currentPhase;
-	}
-	
-	public void setCurrentPhase(Phase currentPhase) {
-		this.currentPhase = currentPhase;
-	}
+    public void setProjectModel(ProjectModel model) {
+        this.projectModel = model;
+    }
 
-	@OneToMany(mappedBy = "parentProject", cascade = CascadeType.ALL)
-	public List<Phase> getPhases() {
-		return phases;
-	}
+    @OneToOne
+    @JoinColumn(name = "id_current_phase")
+    public Phase getCurrentPhase() {
+        return currentPhase;
+    }
 
-	public void setPhases(List<Phase> phases) {
-		this.phases = phases;
-	}
+    public void setCurrentPhase(Phase currentPhase) {
+        this.currentPhase = currentPhase;
+    }
 
-	@OneToMany(mappedBy = "parentProject", cascade = CascadeType.ALL)
-	public List<Value> getValues() {
-		return values;
-	}
+    @OneToMany(mappedBy = "parentProject", cascade = CascadeType.ALL)
+    public List<Phase> getPhases() {
+        return phases;
+    }
 
-	public void setValues(List<Value> values) {
-		this.values = values;
-	}
+    public void setPhases(List<Phase> phases) {
+        this.phases = phases;
+    }
+
+    @OneToMany(mappedBy = "parentProject", cascade = CascadeType.ALL)
+    public List<Value> getValues() {
+        return values;
+    }
+
+    public void setValues(List<Value> values) {
+        this.values = values;
+    }
+
+    /**
+     * Adds a phase to the project.
+     * 
+     * @param phase
+     *            The new phase.
+     */
+    public void addPhase(Phase phase) {
+
+        if (phase == null) {
+            return;
+        }
+
+        phases.add(phase);
+        phase.setParentProject(this);
+    }
 
 }
