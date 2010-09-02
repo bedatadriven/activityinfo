@@ -116,4 +116,25 @@ public class TripletValue implements Serializable, Deleteable, ListElementItem {
     public boolean isDeleted() {
         return getDateDeleted() == null;
     }
+
+    @Override
+    public boolean isLike(ListElementItem e) {
+        if (e == null) {
+            return false;
+        }
+        if (getClass() != e.getClass()) {
+            return false;
+        }
+        final TripletValue other = (TripletValue) e;
+        if ((this.code == null) ? (other.code != null) : !this.code.equals(other.code)) {
+            return false;
+        }
+        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
+            return false;
+        }
+        if ((this.period == null) ? (other.period != null) : !this.period.equals(other.period)) {
+            return false;
+        }
+        return true;
+    }
 }
