@@ -5,7 +5,9 @@
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
 import com.google.inject.Inject;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,6 +51,8 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
     public CommandResult execute(UpdateProject cmd, User user) throws CommandException {
         // TODO: Break up this method in smaller pieces
         LOG.debug("Update " + cmd.getProjectId() + '/' + cmd.getValues().size() + " : " + cmd.getValues());
+
+        final HashMap<Key, List<ListElementItem>> lists = new HashMap<Key, List<ListElementItem>>();
 
         // Iterating over the value change events
         final List<ValueEventWrapper> values = cmd.getValues();
@@ -99,51 +103,130 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
                         final ListElementItemDTO item = (ListElementItemDTO) valueEvent.getValue();
                         final Class<? extends ListElementItem> clazz = (Class<? extends ListElementItem>) Class.forName(User.class.getPackage().getName() + '.' + item.getEntityName());
 
-                        ListElementItem entity = mapper.map(item, clazz);
+                        List<ListElementItem> list = null;
 
-                        if(valueEvent.getChangeType() == ValueEvent.ChangeType.REMOVE) {
-                            // Removes the object if it is deleteable
-                            if(entity instanceof Deleteable) {
-                                ((Deleteable)entity).delete();
-                            } else {
-                                LOG.debug("Entity not deleteable : " + entity.getClass());
+                        // Retrieving the list id
+                        Long listId = null;
+                        if (currentValue.getValue() != null) {
+                            listId = Long.parseLong(currentValue.getValue());
+
+                        } else if(valueEvent.getChangeType() == ValueEvent.ChangeType.ADD) {
+                            // This is a new list; creating a new list id
+
+                            // Building the entity name
+                            final String entityName;
+                            int packageIndex = item.getEntityName().lastIndexOf('.');
+                            if(packageIndex != -1)
+                                entityName = item.getEntityName().substring(packageIndex+1);
+                            else
+                                entityName = item.getEntityName();
+
+                            final Query listQuery = em.createQuery("SELECT MAX(e.idList) FROM " + entityName + " e");
+                            try {
+                                listId = (Long) listQuery.getSingleResult();
+                            } catch (NoResultException e) {
+                                // No current value
                             }
+
+                            // If no results were found, listId will be NULL
+                            if (listId == null) {
+                                listId = 0L;
+                            }
+
+                            listId++;
+
+                            // Defining the new id
+                            currentValue.setValue(listId.toString());
+
+                            // Initializing the new list
+                            list = new ArrayList<ListElementItem>();
 
                         } else {
-                            // Adding / Editing...
-                            Long listId = null;
-                            if (currentValue.getValue() == null) {
-                                // New triplet list
-                                final String entityName;
-                                int packageIndex = item.getEntityName().lastIndexOf('.');
-                                if(packageIndex != -1)
-                                    entityName = item.getEntityName().substring(packageIndex+1);
-                                else
-                                    entityName = item.getEntityName();
-
-                                final Query listQuery = em.createQuery("SELECT MAX(e.idList) FROM " + entityName + " e");
-                                try {
-                                    listId = (Long) listQuery.getSingleResult();
-                                } catch (NoResultException nre) {
-                                    // No current value
-                                }
-
-                                if (listId == null) {
-                                    listId = 0L;
-                                }
-
-                                listId++;
-
-                                // Defining the new id
-                                currentValue.setValue(listId.toString());
-
-                            } else {
-                                listId = Long.parseLong(currentValue.getValue());
-                            }
-                            entity.setIdList(listId);
+                            // Nothing to do
+                            listId = -1L;
                         }
-                        
-                        em.merge(entity);
+
+                        // Building the list key
+                        final Key currentKey = new Key(clazz, listId.intValue());
+
+                        if(list == null) {
+                            // Retrieving the current values from the cache
+                            list =  lists.get(currentKey);
+                        }
+
+                        if(list == null) {
+                            // Retrieving the current values from the server
+
+                            // Building the entity name
+                            final String entityName;
+                            int packageIndex = item.getEntityName().lastIndexOf('.');
+                            if(packageIndex != -1)
+                                entityName = item.getEntityName().substring(packageIndex+1);
+                            else
+                                entityName = item.getEntityName();
+
+                            final Query listQuery = em.createQuery("SELECT e FROM " + entityName + " e WHERE e.idList = :idList");
+                            listQuery.setParameter("idList", listId);
+
+                            list = (List<ListElementItem>) listQuery.getResultList();
+                            // TODO: Verify the value of "list" ?
+                        }
+
+                        switch(valueEvent.getChangeType()) {
+                            case ADD:
+                                if(item.getIndex() == list.size()) {
+                                    ListElementItem entity = mapper.map(item, clazz);
+                                    entity.setIdList(listId);
+                                    entity = em.merge(entity);
+
+                                    list.add(entity);
+                                } else {
+                                    LOG.debug("Invalid add index");
+                                }
+                                break;
+                            case REMOVE:
+                                int index = item.getIndex();
+                                if(index < list.size()) {
+                                    ListElementItem entity = list.get(index);
+                                    ListElementItem mappedEntity = mapper.map(item, clazz);
+
+                                    if(entity.isLike(mappedEntity)) {
+                                        // Removes the object if it is deleteable
+                                        if(entity instanceof Deleteable) {
+                                            ((Deleteable)entity).delete();
+                                            em.merge(entity);
+                                            list.remove(index);
+                                        } else {
+                                            LOG.debug("Entity not deleteable : " + entity.getClass());
+                                        }
+                                    } else {
+                                        // It may be a mistake; nothing done
+                                        LOG.debug("Invalid request ? Requested delete doesn't feel right.");
+
+                                        // TODO: Correct the multiple add/delete to avoid the following case :
+                                        //      2 add, 1 delete -> result 2 deletes
+                                    }
+                                }
+                                break;
+                            case EDIT:
+                                index = item.getIndex();
+                                if(index < list.size()) {
+                                    ListElementItem entity = list.get(index);
+                                    ListElementItem mappedEntity = mapper.map(item, clazz);
+
+                                    mappedEntity.setId(entity.getId());
+                                    mappedEntity.setIdList(entity.getIdList());
+
+                                    em.merge(mappedEntity);
+
+                                    list.add(index, mappedEntity);
+                                    list.remove(index+1);
+                                }
+                                break;
+                        }
+
+                        // Updating the current list
+                        lists.put(currentKey, list);
 
                     } catch (ClassNotFoundException ex) {
                         Logger.getLogger(UpdateProjectHandler.class.getName()).log(Level.SEVERE, null, ex);
