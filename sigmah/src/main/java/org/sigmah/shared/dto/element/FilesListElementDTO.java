@@ -62,6 +62,7 @@ import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -132,7 +133,7 @@ public class FilesListElementDTO extends FlexibleElementDTO {
         downloadFormPanel.setPadding(0);
         downloadFormPanel.setEncoding(Encoding.URLENCODED);
         downloadFormPanel.setMethod(Method.GET);
-        downloadFormPanel.setAction("/download");
+        downloadFormPanel.setAction(GWT.getModuleBaseURL() + "download");
 
         final HiddenField<String> fileIdHidden = new HiddenField<String>();
         fileIdHidden.setName(FileUploadUtils.DOCUMENT_ID);
@@ -198,7 +199,7 @@ public class FilesListElementDTO extends FlexibleElementDTO {
         uploadFormPanel.setPadding(0);
         uploadFormPanel.setEncoding(Encoding.MULTIPART);
         uploadFormPanel.setMethod(Method.POST);
-        uploadFormPanel.setAction("/upload");
+        uploadFormPanel.setAction(GWT.getModuleBaseURL() + "upload");
 
         final HiddenField<String> elementIdHidden = new HiddenField<String>();
         elementIdHidden.setName(FileUploadUtils.DOCUMENT_FLEXIBLE_ELEMENT);
@@ -653,7 +654,7 @@ public class FilesListElementDTO extends FlexibleElementDTO {
             uploadFormPanel.setPadding(0);
             uploadFormPanel.setEncoding(Encoding.MULTIPART);
             uploadFormPanel.setMethod(Method.POST);
-            uploadFormPanel.setAction("/upload");
+            uploadFormPanel.setAction(GWT.getModuleBaseURL() + "upload");
 
             idHidden = new HiddenField<String>();
             idHidden.setName(FileUploadUtils.DOCUMENT_ID);
@@ -845,7 +846,7 @@ public class FilesListElementDTO extends FlexibleElementDTO {
             downloadFormPanel.setPadding(0);
             downloadFormPanel.setEncoding(Encoding.URLENCODED);
             downloadFormPanel.setMethod(Method.GET);
-            downloadFormPanel.setAction("/download");
+            downloadFormPanel.setAction(GWT.getModuleBaseURL() + "download");
 
             final HiddenField<String> fileIdHidden = new HiddenField<String>();
             fileIdHidden.setName(FileUploadUtils.DOCUMENT_ID);
