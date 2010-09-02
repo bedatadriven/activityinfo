@@ -151,7 +151,13 @@ public class FileManager {
 
                 // Finds the max files list value identifier.
                 Query query = em.createQuery("SELECT MAX(flv.idList) FROM FilesListValue flv");
-                final Long currentMaxFilesListValue = (Long) query.getSingleResult();
+                Long currentMaxFilesListValue = (Long) query.getSingleResult();
+
+                // Considers the very first uploaded file (to generate the first
+                // id = 0).
+                if (currentMaxFilesListValue == null) {
+                    currentMaxFilesListValue = 0L;
+                }
 
                 filesListId = currentMaxFilesListValue + 1;
 
