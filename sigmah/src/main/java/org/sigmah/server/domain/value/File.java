@@ -15,6 +15,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+import org.sigmah.server.domain.Deleteable;
 
 /**
  * 
@@ -22,7 +25,9 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "file_meta")
-public class File implements Serializable {
+@org.hibernate.annotations.FilterDefs({ @org.hibernate.annotations.FilterDef(name = "hideDeleted") })
+@org.hibernate.annotations.Filters({ @org.hibernate.annotations.Filter(name = "hideDeleted", condition = "DateDeleted is null") })
+public class File implements Serializable, Deleteable {
 
     private static final long serialVersionUID = -271699094058979365L;
 
@@ -30,6 +35,8 @@ public class File implements Serializable {
     private String name;
     private Date removedDate;
     private List<FileVersion> versions = new ArrayList<FileVersion>();
+    // Deletion informations.
+    private Date dateDeleted;
 
     public void setId(Long id) {
         this.id = id;
@@ -78,4 +85,24 @@ public class File implements Serializable {
         versions.add(version);
     }
 
+    @Column
+    @Temporal(value = TemporalType.TIMESTAMP)
+    public Date getDateDeleted() {
+        return this.dateDeleted;
+    }
+
+    public void setDateDeleted(Date date) {
+        this.dateDeleted = date;
+    }
+
+    @Override
+    public void delete() {
+        setDateDeleted(new Date());
+    }
+
+    @Override
+    @Transient
+    public boolean isDeleted() {
+        return getDateDeleted() == null;
+    }
 }

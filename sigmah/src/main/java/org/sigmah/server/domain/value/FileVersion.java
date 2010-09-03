@@ -16,8 +16,6 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
-import org.hibernate.annotations.Filter;
-import org.hibernate.annotations.Filters;
 import org.sigmah.server.domain.Deleteable;
 import org.sigmah.server.domain.User;
 
@@ -27,7 +25,8 @@ import org.sigmah.server.domain.User;
  */
 @Entity
 @Table(name = "file_version", uniqueConstraints = { @UniqueConstraint(columnNames = { "id_file", "version_number" }) })
-@Filters({ @Filter(name = "hideDeleted", condition = "deletedDate is null") })
+@org.hibernate.annotations.FilterDefs({ @org.hibernate.annotations.FilterDef(name = "hideDeleted") })
+@org.hibernate.annotations.Filters({ @org.hibernate.annotations.Filter(name = "hideDeleted", condition = "DateDeleted is null") })
 public class FileVersion implements Serializable, Deleteable {
 
     private static final long serialVersionUID = -1143785858180618602L;
@@ -42,7 +41,7 @@ public class FileVersion implements Serializable, Deleteable {
     private Date addedDate;
     private Long size;
     // Deletion informations.
-    private Date deletedDate;
+    private Date dateDeleted;
 
     public void setId(Integer id) {
         this.id = id;
@@ -112,23 +111,24 @@ public class FileVersion implements Serializable, Deleteable {
         return size;
     }
 
-    public void setDeletedDate(Date deletedDate) {
-        this.deletedDate = deletedDate;
+    @Column
+    @Temporal(value = TemporalType.TIMESTAMP)
+    public Date getDateDeleted() {
+        return this.dateDeleted;
     }
 
-    public Date getDeletedDate() {
-        return deletedDate;
+    public void setDateDeleted(Date date) {
+        this.dateDeleted = date;
     }
 
     @Override
     public void delete() {
-        final Date now = new Date();
-        setDeletedDate(now);
+        setDateDeleted(new Date());
     }
 
     @Override
     @Transient
     public boolean isDeleted() {
-        return getDeletedDate() == null;
+        return getDateDeleted() == null;
     }
 }
