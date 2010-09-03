@@ -20,16 +20,21 @@ public class GetValue implements Command<ValueResult> {
 	
 	private int projectId;
 	private long elementId;
-	private String elementClassName;
+	/*
+	 * Do not use the getClass().getName() on client side to identify a 
+	 * flexible element type.
+	 * Always use the getEntityName() !
+	 */
+	private String elementEntityName;
 	
 	public GetValue() {
 		// required, or serialization exception
 	}
 	
-	public GetValue(int projectId, long elementId, String elementClassName) {
+	public GetValue(int projectId, long elementId, String elementEntityName) {
 		this.projectId = projectId;
 		this.elementId = elementId;
-		this.elementClassName = elementClassName;
+		this.elementEntityName = elementEntityName;
 	}
 
 	public int getProjectId() {
@@ -48,12 +53,12 @@ public class GetValue implements Command<ValueResult> {
 		this.elementId = elementId;
 	}
 	
-	public String getElementClassName() {
-		return elementClassName;
+	public String getElementEntityName() {
+		return elementEntityName;
 	}
 	
-	public void setElementClassName(String elementClassName) {
-		this.elementClassName = elementClassName;
+	public void setElementEntityName(String elementClassName) {
+		this.elementEntityName = elementClassName;
 	}
 
 	@Override
@@ -65,10 +70,10 @@ public class GetValue implements Command<ValueResult> {
 		if (getClass() != obj.getClass())
 			return false;
 		GetValue other = (GetValue) obj;
-		if (elementClassName == null) {
-			if (other.elementClassName != null)
+		if (elementEntityName == null) {
+			if (other.elementEntityName != null)
 				return false;
-		} else if (!elementClassName.equals(other.elementClassName))
+		} else if (!elementEntityName.equals(other.elementEntityName))
 			return false;
 		if (elementId != other.elementId)
 			return false;
@@ -82,7 +87,7 @@ public class GetValue implements Command<ValueResult> {
 		StringBuilder toString = new StringBuilder();
 		toString.append("GetValue:[projectId=").append(projectId);
 		toString.append(";elementId=").append(elementId);
-		toString.append(";elementClassName=").append(elementClassName);
+		toString.append(";elementEntityName=").append(elementEntityName);
 		toString.append("]");
 		return toString.toString();
 	}

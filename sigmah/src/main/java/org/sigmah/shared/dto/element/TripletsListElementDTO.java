@@ -115,14 +115,23 @@ public class TripletsListElementDTO extends FlexibleElementDTO {
         // Detects additions and deletions in the store and adjusts the grid
         // height accordingly.
         grid.addListener(Events.ViewReady, new Listener<ComponentEvent>() {
-            public void handleEvent(ComponentEvent be) {
+            @Override
+			public void handleEvent(ComponentEvent be) {
                 grid.getStore().addListener(Store.Add, new Listener<StoreEvent<TripletValueDTO>>() {
-                    public void handleEvent(StoreEvent<TripletValueDTO> be) {
+                    @Override
+					public void handleEvent(StoreEvent<TripletValueDTO> be) {
                         doAutoHeight(grid, panel);
                     }
                 });
                 grid.getStore().addListener(Store.Remove, new Listener<StoreEvent<TripletValueDTO>>() {
-                    public void handleEvent(StoreEvent<TripletValueDTO> be) {
+                    @Override
+					public void handleEvent(StoreEvent<TripletValueDTO> be) {
+                        doAutoHeight(grid, panel);
+                    }
+                });
+                grid.getStore().addListener(Store.Clear, new Listener<StoreEvent<TripletValueDTO>>() {
+                    @Override
+					public void handleEvent(StoreEvent<TripletValueDTO> be) {
                         doAutoHeight(grid, panel);
                     }
                 });
@@ -130,10 +139,10 @@ public class TripletsListElementDTO extends FlexibleElementDTO {
             }
         });
 
-        grid.addListener(Events.AfterEdit, new Listener<GridEvent>() {
+        grid.addListener(Events.AfterEdit, new Listener<GridEvent<TripletValueDTO>>() {
 
             @Override
-            public void handleEvent(GridEvent be) {
+            public void handleEvent(GridEvent<TripletValueDTO> be) {
                 // Edit an existing triplet
                 final TripletValueDTO valueDTO = grid.getStore().getAt(be.getRowIndex());
                 valueDTO.setIndex(be.getRowIndex());

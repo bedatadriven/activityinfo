@@ -122,8 +122,9 @@ public final class FileUploadUtils {
      * @return If the code can be considered as an error.
      */
     public static boolean isError(String code) {
-
-        if (TOO_BIG_DOC_ERROR_CODE.equals(code)) {
+    	if (code == null) {
+    		return true;
+    	} else if (TOO_BIG_DOC_ERROR_CODE.equals(code)) {
             return true;
         } else if (EMPTY_DOC_ERROR_CODE.equals(code)) {
             return true;

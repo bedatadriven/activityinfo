@@ -18,6 +18,7 @@ import org.sigmah.shared.dto.value.FileDTO;
 import org.sigmah.shared.dto.value.FileUploadUtils;
 import org.sigmah.shared.dto.value.FileVersionDTO;
 import org.sigmah.shared.dto.value.FilesListValueDTO;
+import org.sigmah.shared.dto.value.TripletValueDTO;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
@@ -330,14 +331,23 @@ public class FilesListElementDTO extends FlexibleElementDTO {
         // Detects additions and deletions in the store and adjusts the grid
         // height accordingly.
         grid.addListener(Events.ViewReady, new Listener<ComponentEvent>() {
-            public void handleEvent(ComponentEvent be) {
+            @Override
+			public void handleEvent(ComponentEvent be) {
                 grid.getStore().addListener(Store.Add, new Listener<StoreEvent<FileDTO>>() {
-                    public void handleEvent(StoreEvent<FileDTO> be) {
+                    @Override
+					public void handleEvent(StoreEvent<FileDTO> be) {
                         doAutoHeight(grid, panel);
                     }
                 });
                 grid.getStore().addListener(Store.Remove, new Listener<StoreEvent<FileDTO>>() {
-                    public void handleEvent(StoreEvent<FileDTO> be) {
+                    @Override
+					public void handleEvent(StoreEvent<FileDTO> be) {
+                        doAutoHeight(grid, panel);
+                    }
+                });
+                grid.getStore().addListener(Store.Clear, new Listener<StoreEvent<TripletValueDTO>>() {
+                    @Override
+					public void handleEvent(StoreEvent<TripletValueDTO> be) {
                         doAutoHeight(grid, panel);
                     }
                 });
@@ -406,7 +416,8 @@ public class FilesListElementDTO extends FlexibleElementDTO {
                 MessageBox.confirm(I18N.CONSTANTS.flexibleElementFilesListDelete(),
                         I18N.MESSAGES.flexibleElementFilesListConfirmDelete(file.getName()),
                         new Listener<MessageBoxEvent>() {
-                            public void handleEvent(MessageBoxEvent ce) {
+                            @Override
+							public void handleEvent(MessageBoxEvent ce) {
 
                                 if (Dialog.YES.equals(ce.getButtonClicked().getItemId())) {
 
@@ -449,8 +460,7 @@ public class FilesListElementDTO extends FlexibleElementDTO {
             MessageBox.info(I18N.CONSTANTS.flexibleElementFilesListUploadError(), sb.toString(), null);
         } else {
 
-            final GetValue command = new GetValue(currentProjectDTO.getId(), getId(), FilesListElementDTO.this
-                    .getClass().getName());
+            final GetValue command = new GetValue(currentProjectDTO.getId(), getId(), getEntityName());
 
             // Server call to obtain elements value
             dispatcher.execute(command, null, new AsyncCallback<ValueResult>() {

@@ -22,8 +22,10 @@ import org.sigmah.client.page.TabPage;
 import org.sigmah.shared.command.ChangePhase;
 import org.sigmah.shared.command.GetProject;
 import org.sigmah.shared.command.GetValue;
+import org.sigmah.shared.command.UpdateProject;
 import org.sigmah.shared.command.result.ProjectListResult;
 import org.sigmah.shared.command.result.ValueResult;
+import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.PhaseDTO;
 import org.sigmah.shared.dto.PhaseModelDTO;
 import org.sigmah.shared.dto.ProjectDTO;
@@ -31,6 +33,7 @@ import org.sigmah.shared.dto.element.FlexibleElementDTO;
 import org.sigmah.shared.dto.element.handler.RequiredValueEvent;
 import org.sigmah.shared.dto.element.handler.RequiredValueHandler;
 import org.sigmah.shared.dto.element.handler.ValueEvent;
+import org.sigmah.shared.dto.element.handler.ValueEventWrapper;
 import org.sigmah.shared.dto.element.handler.ValueHandler;
 import org.sigmah.shared.dto.layout.LayoutConstraintDTO;
 import org.sigmah.shared.dto.layout.LayoutGroupDTO;
@@ -54,14 +57,10 @@ import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
-import org.sigmah.shared.command.UpdateProject;
-import org.sigmah.shared.command.result.VoidResult;
-import org.sigmah.shared.dto.element.handler.ValueEventWrapper;
 
 /**
  * Project presenter which manages the {@link ProjectView}.
@@ -254,7 +253,8 @@ public class ProjectPresenter implements Frame, TabPage {
                         // switching phases.
                         MessageBox.confirm(I18N.CONSTANTS.projectPhaseChangeAlert(),
                                 I18N.CONSTANTS.projectPhaseChangeAlertDetails(), new Listener<MessageBoxEvent>() {
-                                    public void handleEvent(MessageBoxEvent ce) {
+                                    @Override
+									public void handleEvent(MessageBoxEvent ce) {
 
                                         // If 'YES' is clicked, saves the
                                         // modifications.
@@ -298,13 +298,6 @@ public class ProjectPresenter implements Frame, TabPage {
 
         // Manually fires the first tab selection (active phase).
         loadPhaseOnTab(currentPhaseDTO);
-
-        // --
-        // -- LAYOUT
-        // --
-
-        // View layouts update.
-        ((ProjectView) view).layout();
     }
 
     /**
@@ -369,7 +362,7 @@ public class ProjectPresenter implements Frame, TabPage {
 
                 // Remote call to ask for this element value.
                 final GetValue command = new GetValue(currentProjectDTO.getId(), elementDTO.getId(), elementDTO
-                        .getClass().getName());
+                        .getEntityName());
                 dispatcher.execute(command, null, new AsyncCallback<ValueResult>() {
 
                     @Override
@@ -431,7 +424,7 @@ public class ProjectPresenter implements Frame, TabPage {
                 });
             }
         }
-
+        
         // View layouts update.
         ((ProjectView) view).layout();
     }
