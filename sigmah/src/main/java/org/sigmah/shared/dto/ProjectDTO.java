@@ -5,11 +5,11 @@
 
 package org.sigmah.shared.dto;
 
-import com.extjs.gxt.ui.client.data.BaseTreeModel;
-import java.util.Date;
 import java.util.List;
 
 import org.sigmah.shared.dto.value.ValueDTO;
+
+import com.extjs.gxt.ui.client.data.BaseTreeModel;
 
 
 public final class ProjectDTO extends BaseTreeModel implements EntityDTO {
@@ -17,7 +17,7 @@ public final class ProjectDTO extends BaseTreeModel implements EntityDTO {
     public ProjectDTO() {
         // TODO: Remove this
         setTopic("Nutrition");
-        setFavorite(new Date().getTime()%10 < 5);
+        setFavorite(false);
     }
     
     private static final long serialVersionUID = -8604264278832531036L;
