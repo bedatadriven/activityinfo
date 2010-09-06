@@ -1,4 +1,4 @@
-package org.sigmah.server.endpoint.gwtrpc;
+package org.sigmah.server.endpoint.file;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sigmah.server.endpoint.gwtrpc.FileManager.DonwloadableFile;
+import org.sigmah.server.endpoint.file.FileManager.DonwloadableFile;
 import org.sigmah.shared.dto.value.FileUploadUtils;
 
 import com.google.inject.Inject;
@@ -32,13 +32,16 @@ public class FileDownloadServlet extends HttpServlet {
 
     private static final Log log = LogFactory.getLog(FileDownloadServlet.class);
 
-    private Injector injector;
-
+    /**
+     * To get the download manager.
+     */
+    private final Injector injector;
+    
     @Inject
     public FileDownloadServlet(Injector injector) {
         this.injector = injector;
     }
-
+    
     /**
      * Download a version of a file.
      * 

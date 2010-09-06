@@ -5,6 +5,9 @@
 
 package org.sigmah.server.endpoint.gwtrpc;
 
+import org.sigmah.server.endpoint.file.FileDownloadServlet;
+import org.sigmah.server.endpoint.file.FileUploadServlet;
+
 import com.google.inject.servlet.ServletModule;
 
 public class GwtRpcModule extends ServletModule {

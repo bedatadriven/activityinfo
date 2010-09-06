@@ -1,4 +1,4 @@
-package org.sigmah.server.endpoint.gwtrpc;
+package org.sigmah.server.endpoint.file;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -55,8 +55,11 @@ public class FileUploadServlet extends HttpServlet {
         return new String(string.getBytes(), Charset.forName("UTF-8"));
     }
 
-    private Injector injector;
-
+    /**
+     * To get the upload manager.
+     */
+    private final Injector injector;
+    
     @Inject
     public FileUploadServlet(Injector injector) {
         this.injector = injector;
