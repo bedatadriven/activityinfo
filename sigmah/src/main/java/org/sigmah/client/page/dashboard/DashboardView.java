@@ -72,6 +72,7 @@ import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Hyperlink;
@@ -403,12 +404,27 @@ public class DashboardView extends ContentPanel {
                     }
                 });
                 
-                addNavLink(eventBus, menuPanel, I18N.CONSTANTS.dataEntry(), IconImageBundle.ICONS.dataEntry(), new SiteGridPageState());
-                addNavLink(eventBus, menuPanel, I18N.CONSTANTS.reports(), IconImageBundle.ICONS.report(), new ReportListPageState());
-                addNavLink(eventBus, menuPanel, I18N.CONSTANTS.charts(), IconImageBundle.ICONS.barChart(), new ChartPageState());
-                addNavLink(eventBus, menuPanel, I18N.CONSTANTS.maps(), IconImageBundle.ICONS.map(), new MapPageState());
-                addNavLink(eventBus, menuPanel, I18N.CONSTANTS.tables(), IconImageBundle.ICONS.table(), new PivotPageState());
-                addNavLink(eventBus, menuPanel, I18N.CONSTANTS.setup(), IconImageBundle.ICONS.setup(), new DbListPageState());
+                // Temporary code to hide/show activityInfo menus
+            	Dictionary sigmahParams;
+            	boolean showActivityInfoMenus = false;
+                try {
+                    sigmahParams = Dictionary.getDictionary("SigmahParams");
+                    showActivityInfoMenus = Boolean.parseBoolean(sigmahParams.get("showActivityInfoMenus"));
+                    if (Log.isDebugEnabled()) {
+                    	Log.debug("[DashboardView] Show activityInfo menus ? " + showActivityInfoMenus);
+                    }
+                } catch (Exception e) {
+                    Log.fatal("DictionaryAuthenticationProvider: exception retrieving dictionary 'SigmahParams' from page", e);
+                    throw new Error();
+                }
+                if (showActivityInfoMenus) {
+                	addNavLink(eventBus, menuPanel, I18N.CONSTANTS.dataEntry(), IconImageBundle.ICONS.dataEntry(), new SiteGridPageState());
+                	addNavLink(eventBus, menuPanel, I18N.CONSTANTS.reports(), IconImageBundle.ICONS.report(), new ReportListPageState());
+                	addNavLink(eventBus, menuPanel, I18N.CONSTANTS.charts(), IconImageBundle.ICONS.barChart(), new ChartPageState());
+                	addNavLink(eventBus, menuPanel, I18N.CONSTANTS.maps(), IconImageBundle.ICONS.map(), new MapPageState());
+                	addNavLink(eventBus, menuPanel, I18N.CONSTANTS.tables(), IconImageBundle.ICONS.table(), new PivotPageState());
+                	addNavLink(eventBus, menuPanel, I18N.CONSTANTS.setup(), IconImageBundle.ICONS.setup(), new DbListPageState());
+                }
         
             leftPanel.add(menuPanel, vBoxLayoutData);
             

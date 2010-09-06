@@ -5,22 +5,36 @@
 
 package org.sigmah.client.inject;
 
-import com.google.inject.Provider;
 import org.sigmah.client.dispatch.remote.Authentication;
+
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.i18n.client.Dictionary;
+import com.google.inject.Provider;
 
 /**
  * Temporary class that simulate an authenticated user.
  * @author rca
  */
 public class SigmahAuthProvider implements Provider<Authentication> {
-
+	
     /**
      * Gives a valid authentication object.
      * @return A forged but valid authentication object.
      */
     @Override
     public Authentication get() {
-        return new Authentication(3, "844ff3bd2b7e79e5a65365fd6aa38fc0", "user@sigmah.org");
+    	// Temporary code to read connected user data
+    	Dictionary sigmahParams;
+        try {
+            sigmahParams = Dictionary.getDictionary("SigmahParams");
+            return new Authentication(
+                    Integer.parseInt(sigmahParams.get("connectedUserId")),
+                    sigmahParams.get("connectedUserAuthToken"),
+                    sigmahParams.get("connectedUserEmail"));
+        } catch (Exception e) {
+            Log.fatal("DictionaryAuthenticationProvider: exception retrieving dictionary 'SigmahParams' from page", e);
+            throw new Error();
+        }
     }
 
 }
