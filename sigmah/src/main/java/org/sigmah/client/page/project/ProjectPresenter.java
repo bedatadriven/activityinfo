@@ -489,7 +489,7 @@ public class ProjectPresenter implements Frame, TabPage {
 
                                 // Updates ended phases styles.
                                 for (PhaseDTO phase : currentProjectDTO.getPhasesDTO()) {
-                                    final TabItem successorTabItem = tabItemsMap.get(phase.getId());
+                                    final TabItem successorTabItem = tabItemsMap.get(phase.getPhaseModelDTO().getId());
                                     if (phase.isEnded()) {
                                         successorTabItem.getHeader().setStyleName("sigmah-closed-phase");
                                     }
@@ -525,12 +525,24 @@ public class ProjectPresenter implements Frame, TabPage {
                 @Override
                 public void onFailure(Throwable caught) {
                     MessageBox.info(I18N.CONSTANTS.cancelled(), I18N.CONSTANTS.error(), null);
+                    
+                    currentPhaseRequiredElements.clearState();
+                    
+                    if (isActivePhase(currentPhaseDTO)) {
+                        activePhaseRequiredElements.clearState();
+                    }
                 }
 
                 @Override
                 public void onSuccess(VoidResult result) {
                     valueChanges.clear();
                     MessageBox.info(I18N.CONSTANTS.ok(), I18N.CONSTANTS.saved(), null);
+                    
+                    currentPhaseRequiredElements.saveState();
+                    
+                    if (isActivePhase(currentPhaseDTO)) {
+                        activePhaseRequiredElements.saveState();
+                    }
                 }
             });
         }
