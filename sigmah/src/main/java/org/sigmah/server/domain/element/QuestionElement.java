@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import org.sigmah.server.domain.QualityCriterion;
@@ -37,6 +38,7 @@ public class QuestionElement extends FlexibleElement {
 	}
 
 	@OneToMany(mappedBy = "parentQuestion", cascade = CascadeType.ALL)
+    @OrderBy("sortOrder asc")
 	public List<QuestionChoiceElement> getChoices() {
 		return choices;
 	}
