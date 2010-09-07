@@ -22,16 +22,76 @@
     <partner partnerId="1" name="Head Office" organization_id="1"/>
     <orgUnitPermission id="1" unit_Id="1" user_UserId="3" viewAll="1" editAll="0"/>
 
+    <project_model id_project_model="1" name="Mock model 1" />
+
+    <layout id_layout="1" rows_count="2" columns_count="1" />
+        <layout_group id_layout_group="1" id_layout="1" row_index="0" column_index="0" title="Header" />
+                <flexible_element id_flexible_element="1" id_project_model="1" label="Success" validates="false" privacy_level="0" />
+                <message_element id_flexible_element="1" style="title" />
+            <layout_constraint id_layout_constraint="1" id_layout_group="1" id_flexible_element="1" sort_order="1" />
+                <flexible_element id_flexible_element="2" id_project_model="1" label="Check this" validates="true" privacy_level="0" />
+                <checkbox_element id_flexible_element="2" />
+            <layout_constraint id_layout_constraint="2" id_layout_group="1" id_flexible_element="2" sort_order="2" />
+        <layout_group id_layout_group="2" id_layout="1" row_index="1" column_index="0" title="Questions" />
+                <flexible_element id_flexible_element="3" id_project_model="1" label="Question 1" validates="false" privacy_level="0" />
+                <question_element id_flexible_element="3" />
+                    <question_choice_element id_choice="1" id_question="3" label="Answer 1" sort_order="1" />
+                    <question_choice_element id_choice="2" id_question="3" label="Answer 2" sort_order="2" />
+            <layout_constraint id_layout_constraint="3" id_layout_group="2" id_flexible_element="3" sort_order="1" />
+                <flexible_element id_flexible_element="4" id_project_model="1" label="Comments" validates="false" privacy_level="0" />
+                <textarea_element id_flexible_element="4" />
+            <layout_constraint id_layout_constraint="4" id_layout_group="2" id_flexible_element="4" sort_order="3" />
+                <flexible_element id_flexible_element="5" id_project_model="1" label="Question 2" validates="true" privacy_level="0" />
+                <question_element id_flexible_element="5" />
+                    <question_choice_element id_choice="3" id_question="5" label="Answer 1" sort_order="1" />
+                    <question_choice_element id_choice="4" id_question="5" label="Answer 3" sort_order="3" />
+                    <question_choice_element id_choice="5" id_question="5" label="Answer 2" sort_order="2" />
+            <layout_constraint id_layout_constraint="5" id_layout_group="2" id_flexible_element="5" sort_order="2" />
+    <layout id_layout="2" rows_count="0" columns_count="0" />
+    <layout id_layout="3" rows_count="0" columns_count="0" />
+    <layout id_layout="4" rows_count="0" columns_count="0" />
+    <layout id_layout="5" rows_count="0" columns_count="0" />
+
+    <phase_model id_phase_model="1" name="Step 1" id_project_model="1" id_layout="1" display_order="1" />
+    <phase_model id_phase_model="2" name="Step 2 bis" id_project_model="1" id_layout="2" display_order="3" />
+    <phase_model id_phase_model="3" name="Step 2" id_project_model="1" id_layout="3" display_order="2" />
+    <phase_model id_phase_model="4" name="Step 3" id_project_model="1" id_layout="4" display_order="4" />
+    <phase_model_sucessors id_phase_model="1" id_phase_model_successor="2" />
+    <phase_model_sucessors id_phase_model="1" id_phase_model_successor="3" />
+    <phase_model_sucessors id_phase_model="2" id_phase_model_successor="4" />
+
+    <report id_report="1" id_layout="5" id_phase_model="1" />
 
     <userDatabase databaseId="1" name="PEAR" countryId="1" ownerUserId="1" lastSchemaUpdate="2009-01-01"/>
-    <project databaseId="1"/>
+    <project databaseId="1" id_project_model="1"/>
 
     <userDatabase databaseId="2" name="RRM" countryId="1" ownerUserId="1" lastSchemaUpdate="2009-01-01"/>
-    <project databaseId="2"/>
+    <project databaseId="2" id_project_model="1"/>
 
     <userDatabase databaseId="3" name="RRM" countryId="1" ownerUserId="2" lastSchemaUpdate="2009-01-01"/>
-    <project databaseId="3"/>
+    <project databaseId="3" id_project_model="1"/>
 
     <partnerInDatabase databaseId="3" partnerId="1"/>
 
+    <project_details id="1" id_layout="5" id_project_model="1" />
+    <project_banner id="1" id_layout="5" id_project_model="1" />
+
+    <value id_value="1" id_flexible_element="2" id_project="1" value="true" action_last_modif="C" date_last_modif="2010-09-01" id_user_last_modif="1" />
+    <value id_value="2" id_flexible_element="4" id_project="1" value="Something" action_last_modif="C" date_last_modif="2010-09-01" id_user_last_modif="1" />
+
+    <phase id_phase="1" id_project="1" id_phase_model="1" />
+    <phase id_phase="2" id_project="2" id_phase_model="1" />
+    <phase id_phase="3" id_project="3" id_phase_model="1" />
+
+    <phase id_phase="4" id_project="1" id_phase_model="2" />
+    <phase id_phase="5" id_project="2" id_phase_model="2" />
+    <phase id_phase="6" id_project="3" id_phase_model="2" />
+
+    <phase id_phase="7" id_project="1" id_phase_model="3" />
+    <phase id_phase="8" id_project="2" id_phase_model="3" />
+    <phase id_phase="9" id_project="3" id_phase_model="3" />
+
+    <phase id_phase="10" id_project="1" id_phase_model="4" />
+    <phase id_phase="11" id_project="2" id_phase_model="4" />
+    <phase id_phase="12" id_project="3" id_phase_model="4" />
 </dataset>

@@ -39,6 +39,22 @@ import org.sigmah.server.domain.UserDatabase;
 import org.sigmah.server.domain.UserPermission;
 
 import com.google.inject.Inject;
+import org.sigmah.server.domain.Phase;
+import org.sigmah.server.domain.PhaseModel;
+import org.sigmah.server.domain.Project;
+import org.sigmah.server.domain.ProjectBanner;
+import org.sigmah.server.domain.ProjectDetails;
+import org.sigmah.server.domain.ProjectModel;
+import org.sigmah.server.domain.Report;
+import org.sigmah.server.domain.element.CheckboxElement;
+import org.sigmah.server.domain.element.FlexibleElement;
+import org.sigmah.server.domain.element.MessageElement;
+import org.sigmah.server.domain.element.QuestionChoiceElement;
+import org.sigmah.server.domain.element.QuestionElement;
+import org.sigmah.server.domain.layout.Layout;
+import org.sigmah.server.domain.layout.LayoutConstraint;
+import org.sigmah.server.domain.layout.LayoutGroup;
+import org.sigmah.server.domain.value.Value;
 
 public class DatabaseCleaner {
 
@@ -58,6 +74,8 @@ public class DatabaseCleaner {
             Organization.class,
             ReportSubscription.class,
             ReportDefinition.class,
+            Phase.class,
+            Value.class,
             UserDatabase.class,
             Authentication.class,
             User.class,
@@ -65,6 +83,20 @@ public class DatabaseCleaner {
             AdminEntity.class,
             AdminLevel.class,
             Country.class,
+            Report.class,
+            ProjectBanner.class,
+            ProjectDetails.class,
+            Project.class,
+            PhaseModel.class,
+            LayoutConstraint.class,
+            LayoutGroup.class,
+            Layout.class,
+            QuestionChoiceElement.class,
+            FlexibleElement.class,
+            ProjectModel.class,
+            MessageElement.class,
+            CheckboxElement.class,
+            QuestionElement.class,
             PrivacyLevel.class
     };
 
@@ -87,6 +119,7 @@ public class DatabaseCleaner {
                 stmt.execute("delete from AttributeGroupInActivity");
                 stmt.execute("delete from PartnerInDatabase");
                 stmt.execute("delete from LocationAdminLink");
+                stmt.execute("delete from phase_model_sucessors");
             }
         });
 
