@@ -68,6 +68,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -474,15 +475,8 @@ public class DashboardView extends ContentPanel {
 
                                 @Override
                                 public void onSuccess(ProjectListResult projectList) {
-                                    Log.debug("How");
-                                    
                                     projectStore.removeAll();
-                                    
-                                    Log.debug("are you");
-                                    
                                     projectStore.add(projectList.getList(), true);
-                                    
-                                    Log.debug("BONG ?");
                                 }
                             });
                         }
@@ -535,6 +529,13 @@ public class DashboardView extends ContentPanel {
                 });
         
                 final ColumnConfig phase = new ColumnConfig("phase", "Phase", 100);
+                phase.setRenderer(new GridCellRenderer<ProjectDTO>() {
+                    @Override
+                    public Object render(ProjectDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<ProjectDTO> store, Grid<ProjectDTO> grid) {
+                        return model.getCurrentPhaseDTO().getPhaseModelDTO().getName();
+                    }
+                });
+
                 final ColumnConfig topic = new ColumnConfig("topic", "Topic", 100);
                 final ColumnModel columnModel = new ColumnModel(Arrays.asList(icon, name, phase, topic));
                     
