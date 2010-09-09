@@ -25,14 +25,14 @@ import org.sigmah.client.page.map.MapPageState;
 import org.sigmah.client.page.project.ProjectPresenter;
 import org.sigmah.client.page.report.ReportListPageState;
 import org.sigmah.client.page.table.PivotPageState;
-import org.sigmah.shared.command.CreateProject;
+import org.sigmah.shared.command.CreateEntity;
 import org.sigmah.shared.command.GetCountries;
 import org.sigmah.shared.command.GetProjectModels;
 import org.sigmah.shared.command.GetProjects;
 import org.sigmah.shared.command.result.CountryResult;
+import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.command.result.ProjectListResult;
 import org.sigmah.shared.command.result.ProjectModelListResult;
-import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.ProjectModelDTO;
@@ -40,7 +40,6 @@ import org.sigmah.shared.dto.ProjectModelDTOLight;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -68,7 +67,6 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
-import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -271,8 +269,15 @@ public class DashboardView extends ContentPanel {
                             Log.debug(sb.toString());
                         }
                        
+                        // Stores the project properties in a map to be send to the server.
+                        final HashMap<String, Object> projectProperties = new HashMap<String, Object>();
+                        projectProperties.put("name", name);
+                        projectProperties.put("fullName", fullName);
+                        projectProperties.put("modelId", modelId);
+                        projectProperties.put("countryId", countryId);
+                        
                         // Creates the project.
-                        dispatcher.execute(new CreateProject(name, fullName, modelId, countryId), null, new AsyncCallback<VoidResult>() {
+                        dispatcher.execute(new CreateEntity("Project", projectProperties), null, new AsyncCallback<CreateResult>() {
                             
                             @Override
                             public void onFailure(Throwable arg0) {
@@ -282,7 +287,12 @@ public class DashboardView extends ContentPanel {
                             }
                             
                             @Override
-                            public void onSuccess(VoidResult result) {
+                            public void onSuccess(CreateResult result) {
+                                
+                                if (Log.isDebugEnabled()) {
+                                    Log.debug("Project created with id #" + result.getNewId() + ".");
+                                }
+                                
                                 MessageBox.info(I18N.CONSTANTS.createProjectSucceeded(), 
                                         I18N.CONSTANTS.createProjectSucceededDetails(), 
                                         null);
@@ -455,7 +465,7 @@ public class DashboardView extends ContentPanel {
                 final ColumnConfig countryName = new ColumnConfig("name", I18N.CONSTANTS.name(), 200);
                 final ColumnModel countryColumnModel = new ColumnModel(Arrays.asList(selectionModel.getColumn(), countryName));
                     
-                final Grid countryGrid = new Grid(countryStore, countryColumnModel);
+                final Grid<CountryDTO> countryGrid = new Grid<CountryDTO>(countryStore, countryColumnModel);
                 countryGrid.setAutoExpandColumn("name");
                 countryGrid.setSelectionModel(selectionModel);
                 countryGrid.addPlugin(selectionModel);
@@ -521,9 +531,9 @@ public class DashboardView extends ContentPanel {
                 });
                 
                 final ColumnConfig name = new ColumnConfig("name", I18N.CONSTANTS.name(), 200);
-                name.setRenderer(new WidgetTreeGridCellRenderer() {
+                name.setRenderer(new WidgetTreeGridCellRenderer<ProjectDTO>() {
                     @Override
-                    public Widget getWidget(ModelData model, String property, ColumnData config, int rowIndex, int colIndex, ListStore store, Grid grid) {
+                    public Widget getWidget(ProjectDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<ProjectDTO> store, Grid<ProjectDTO> grid) {
                         return new Hyperlink((String)model.get(property), true, ProjectPresenter.PAGE_ID.toString()+'!'+model.get("id").toString());
                     }
                 });
@@ -539,7 +549,7 @@ public class DashboardView extends ContentPanel {
                 final ColumnConfig topic = new ColumnConfig("topic", "Topic", 100);
                 final ColumnModel columnModel = new ColumnModel(Arrays.asList(icon, name, phase, topic));
                     
-                final TreeGrid projectTreeGrid = new TreeGrid(projectStore, columnModel);
+                final TreeGrid<ProjectDTO> projectTreeGrid = new TreeGrid<ProjectDTO>(projectStore, columnModel);
                 
                 projectTreePanel.add(projectTreeGrid);
                 

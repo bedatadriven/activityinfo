@@ -4,30 +4,25 @@
  */
 package org.sigmah.server.endpoint.gwtrpc;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.sigmah.shared.dto.ProjectDTO;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.dao.OnDataSet;
 import org.sigmah.shared.command.CreateEntity;
+import org.sigmah.shared.command.GetProject;
 import org.sigmah.shared.command.GetProjects;
+import org.sigmah.shared.command.GetValue;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.command.result.ProjectListResult;
-import org.sigmah.shared.exception.CommandException;
-import org.sigmah.test.InjectionSupport;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
-import org.sigmah.server.domain.element.MessageElement;
-import org.sigmah.server.domain.element.QuestionChoiceElement;
-import org.sigmah.shared.command.GetProject;
-import org.sigmah.shared.command.GetValue;
 import org.sigmah.shared.command.result.ValueResult;
 import org.sigmah.shared.dto.PhaseDTO;
 import org.sigmah.shared.dto.PhaseModelDTO;
+import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.ProjectModelDTO;
 import org.sigmah.shared.dto.element.FlexibleElementDTO;
 import org.sigmah.shared.dto.element.QuestionChoiceElementDTO;
@@ -35,6 +30,8 @@ import org.sigmah.shared.dto.element.QuestionElementDTO;
 import org.sigmah.shared.dto.layout.LayoutConstraintDTO;
 import org.sigmah.shared.dto.layout.LayoutDTO;
 import org.sigmah.shared.dto.layout.LayoutGroupDTO;
+import org.sigmah.shared.exception.CommandException;
+import org.sigmah.test.InjectionSupport;
 
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/projects.db.xml")
@@ -58,7 +55,9 @@ public class ProjectTest extends CommandTestCase {
         setUser(1);
 
         Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put("name", "My first project");
+        properties.put("name", "First p name");
+        properties.put("fullName", "First p full");
+        properties.put("modelId", 1L);
         properties.put("countryId", 1);
 
         CreateEntity cmd = new CreateEntity("Project", properties);

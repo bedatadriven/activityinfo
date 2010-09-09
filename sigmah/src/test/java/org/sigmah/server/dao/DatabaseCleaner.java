@@ -26,10 +26,20 @@ import org.sigmah.server.domain.Indicator;
 import org.sigmah.server.domain.IndicatorValue;
 import org.sigmah.server.domain.Location;
 import org.sigmah.server.domain.LocationType;
+import org.sigmah.server.domain.LogFrame;
+import org.sigmah.server.domain.LogFrameRow;
+import org.sigmah.server.domain.LogFrameRowGroup;
 import org.sigmah.server.domain.OrgUnit;
 import org.sigmah.server.domain.OrgUnitPermission;
 import org.sigmah.server.domain.Organization;
+import org.sigmah.server.domain.Phase;
+import org.sigmah.server.domain.PhaseModel;
 import org.sigmah.server.domain.PrivacyLevel;
+import org.sigmah.server.domain.Project;
+import org.sigmah.server.domain.ProjectBanner;
+import org.sigmah.server.domain.ProjectDetails;
+import org.sigmah.server.domain.ProjectModel;
+import org.sigmah.server.domain.Report;
 import org.sigmah.server.domain.ReportDefinition;
 import org.sigmah.server.domain.ReportSubscription;
 import org.sigmah.server.domain.ReportingPeriod;
@@ -37,24 +47,18 @@ import org.sigmah.server.domain.Site;
 import org.sigmah.server.domain.User;
 import org.sigmah.server.domain.UserDatabase;
 import org.sigmah.server.domain.UserPermission;
-
-import com.google.inject.Inject;
-import org.sigmah.server.domain.Phase;
-import org.sigmah.server.domain.PhaseModel;
-import org.sigmah.server.domain.Project;
-import org.sigmah.server.domain.ProjectBanner;
-import org.sigmah.server.domain.ProjectDetails;
-import org.sigmah.server.domain.ProjectModel;
-import org.sigmah.server.domain.Report;
 import org.sigmah.server.domain.element.CheckboxElement;
 import org.sigmah.server.domain.element.FlexibleElement;
 import org.sigmah.server.domain.element.MessageElement;
 import org.sigmah.server.domain.element.QuestionChoiceElement;
 import org.sigmah.server.domain.element.QuestionElement;
+import org.sigmah.server.domain.element.TextAreaElement;
 import org.sigmah.server.domain.layout.Layout;
 import org.sigmah.server.domain.layout.LayoutConstraint;
 import org.sigmah.server.domain.layout.LayoutGroup;
 import org.sigmah.server.domain.value.Value;
+
+import com.google.inject.Inject;
 
 public class DatabaseCleaner {
 
@@ -97,7 +101,11 @@ public class DatabaseCleaner {
             MessageElement.class,
             CheckboxElement.class,
             QuestionElement.class,
-            PrivacyLevel.class
+            TextAreaElement.class,
+            PrivacyLevel.class,
+            LogFrameRow.class,
+            LogFrameRowGroup.class,
+            LogFrame.class
     };
 
     private final EntityManager em;
@@ -116,6 +124,10 @@ public class DatabaseCleaner {
             @Override
             public void execute(Connection connection) throws SQLException {
                 Statement stmt = connection.createStatement();
+                
+                // FIXME H2 compatible only. This statement disables the constraints of the database to perform deletions without integrity problems.
+                stmt.execute("SET REFERENTIAL_INTEGRITY FALSE");
+                
                 stmt.execute("delete from AttributeGroupInActivity");
                 stmt.execute("delete from PartnerInDatabase");
                 stmt.execute("delete from LocationAdminLink");
