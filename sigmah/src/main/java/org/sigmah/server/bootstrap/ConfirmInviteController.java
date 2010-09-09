@@ -10,15 +10,16 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import freemarker.template.Configuration;
 import org.sigmah.server.Cookies;
+import org.sigmah.server.auth.impl.PasswordHelper;
 import org.sigmah.server.bootstrap.exception.IncompleteFormException;
 import org.sigmah.server.bootstrap.exception.InvalidKeyException;
 import org.sigmah.server.bootstrap.model.ConfirmInvitePageModel;
 import org.sigmah.server.bootstrap.model.InvalidInvitePageModel;
 import org.sigmah.server.dao.Transactional;
-import org.sigmah.server.dao.UserDAO;
 import org.sigmah.server.domain.Authentication;
-import org.sigmah.server.domain.User;
 import org.sigmah.server.util.logging.LogException;
+import org.sigmah.shared.dao.UserDAO;
+import org.sigmah.shared.domain.User;
 
 import javax.persistence.NoResultException;
 import javax.servlet.ServletException;
@@ -103,7 +104,8 @@ public class ConfirmInviteController extends AbstractController {
 
         user.setName(name);
         user.setLocale(locale);
-        user.changePassword(password);
+         
+        user.setHashedPassword(PasswordHelper.hashPassword(password));
         user.clearChangePasswordKey();
         user.setNewUser(false);
     }

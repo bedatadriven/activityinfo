@@ -58,8 +58,11 @@ public class LoginControllerTest extends ControllerTestCase {
 
         req.addParameter("email", "notreallyanemail@dot.com");
         req.addParameter("password", WRONG_USER_PASS);
-
-        post();
+        try {
+        	post();
+        }catch (Exception e) {
+        	//ignore
+        }
 
         assertTemplateUsed(LoginPageModel.class);
         assertTrue("error message is displayed", lastLoginPageModel().isLoginError());

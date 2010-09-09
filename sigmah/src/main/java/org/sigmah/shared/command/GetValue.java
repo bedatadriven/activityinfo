@@ -5,7 +5,7 @@
 
 package org.sigmah.shared.command;
 
-import org.sigmah.server.domain.element.FlexibleElement;
+//import org.sigmah.server.domain.element.FlexibleElement;
 import org.sigmah.shared.command.result.ValueResult;
 
 

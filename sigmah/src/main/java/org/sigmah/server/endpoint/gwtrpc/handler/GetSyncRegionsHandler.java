@@ -6,14 +6,15 @@
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
 import com.google.inject.Inject;
-import org.sigmah.server.dao.UserDatabaseDAO;
-import org.sigmah.server.domain.AdminLevel;
-import org.sigmah.server.domain.User;
-import org.sigmah.server.domain.UserDatabase;
 import org.sigmah.shared.command.GetSyncRegions;
+import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.SyncRegion;
 import org.sigmah.shared.command.result.SyncRegions;
+import org.sigmah.shared.dao.UserDatabaseDAO;
+import org.sigmah.shared.domain.AdminLevel;
+import org.sigmah.shared.domain.User;
+import org.sigmah.shared.domain.UserDatabase;
 import org.sigmah.shared.exception.CommandException;
 
 import java.util.*;

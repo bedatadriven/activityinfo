@@ -5,22 +5,23 @@
 
 package org.sigmah.server.endpoint.gwtrpc;
 
-import com.google.inject.Inject;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
 import org.dozer.Mapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.sigmah.server.domain.AdminLevel;
-import org.sigmah.server.domain.Bounds;
-import org.sigmah.server.domain.Country;
-import org.sigmah.server.domain.LocationType;
 import org.sigmah.server.util.BeanMappingModule;
+import org.sigmah.shared.domain.AdminLevel;
+import org.sigmah.shared.domain.Bounds;
+import org.sigmah.shared.domain.Country;
+import org.sigmah.shared.domain.LocationType;
 import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.Modules;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import com.google.inject.Inject;
 
 @RunWith(InjectionSupport.class)
 @Modules({BeanMappingModule.class})

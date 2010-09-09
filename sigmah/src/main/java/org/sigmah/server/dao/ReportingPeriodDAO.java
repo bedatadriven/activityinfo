@@ -5,18 +5,19 @@
 
 package org.sigmah.server.dao;
 
-import org.sigmah.server.domain.ReportingPeriod;
+import org.sigmah.shared.dao.DAO;
+import org.sigmah.shared.domain.ReportingPeriod;
 
 /**
- * Data Access Object for {@link org.sigmah.server.domain.ReportingPeriod} domain classes.
+ * Data Access Object for {@link org.sigmah.shared.domain.ReportingPeriod} domain classes.
  *
  * @author Alex Bertram
  */
 public interface ReportingPeriodDAO extends DAO<ReportingPeriod, Integer> {
 
     /**
-     * Efficiently adds an {@link org.sigmah.server.domain.IndicatorValue IndicatorValue} to the given
-     * {@link org.sigmah.server.domain.ReportingPeriod}
+     * Efficiently adds an {@link org.sigmah.shared.domain.IndicatorValue IndicatorValue} to the given
+     * {@link org.sigmah.shared.domain.ReportingPeriod}
      * @param reportingPeriodId
      * @param indicatorId
      * @param value
@@ -24,8 +25,8 @@ public interface ReportingPeriodDAO extends DAO<ReportingPeriod, Integer> {
     void addIndicatorValue(int reportingPeriodId, int indicatorId, double value);
 
     /**
-     * Efficiently adds updates an {@link org.sigmah.server.domain.IndicatorValue IndicatorValue} to the given
-     * value. If the {@link org.sigmah.server.domain.IndicatorValue IndicatorValue} object does
+     * Efficiently adds updates an {@link org.sigmah.shared.domain.IndicatorValue IndicatorValue} to the given
+     * value. If the {@link org.sigmah.shared.domain.IndicatorValue IndicatorValue} object does
      * not exist it is inserted.
      *
      * @param reportingPeriodId

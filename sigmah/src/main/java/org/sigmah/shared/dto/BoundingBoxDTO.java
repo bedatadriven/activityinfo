@@ -8,7 +8,7 @@ package org.sigmah.shared.dto;
 import java.io.Serializable;
 
 /**
- * One-to-one DTO for the {@link org.sigmah.server.domain.Bounds} domain object.
+ * One-to-one DTO for the {@link org.sigmah.shared.domain.Bounds} domain object.
  *
  * @author Alex Bertram
  */

@@ -10,14 +10,14 @@ import org.sigmah.shared.command.Month;
 
 /**
  *
- * Projection DTO of the {@link org.sigmah.server.domain.ReportingPeriod ReportingPeriod},
- * {@link org.sigmah.server.domain.IndicatorValue IndicatorValue} and
- * {@link org.sigmah.server.domain.Indicator Indicator}
+ * Projection DTO of the {@link org.sigmah.shared.domain.ReportingPeriod ReportingPeriod},
+ * {@link org.sigmah.shared.domain.IndicatorValue IndicatorValue} and
+ * {@link org.sigmah.shared.domain.Indicator Indicator}
  * entities.
  * 
- * Each IndicatorRowDTO contains values for a single {@link org.sigmah.server.domain.Site Site},
+ * Each IndicatorRowDTO contains values for a single {@link org.sigmah.shared.domain.Site Site},
  * and a single Indicator, but values (stored as properties) for a series of 
- * {@link org.sigmah.server.domain.ReportingPeriod ReportingPeriod}
+ * {@link org.sigmah.shared.domain.ReportingPeriod ReportingPeriod}
  * 
  *
  * @author Alex Bertram
@@ -42,8 +42,8 @@ public final class IndicatorRowDTO extends BaseModel implements DTO {
 
     /**
      *
-     * @return The id of the {@link org.sigmah.server.domain.Activity Activity}
-     * to which the row's {@link org.sigmah.server.domain.Site Site}
+     * @return The id of the {@link org.sigmah.shared.domain.Activity Activity}
+     * to which the row's {@link org.sigmah.shared.domain.Site Site}
      * belongs.
      */
     public int getActivityId() {
@@ -56,7 +56,7 @@ public final class IndicatorRowDTO extends BaseModel implements DTO {
 
     /**
      *
-     * @return The id of the {@link org.sigmah.server.domain.Indicator Indicator}
+     * @return The id of the {@link org.sigmah.shared.domain.Indicator Indicator}
      */
     public int getIndicatorId() {
         return indicatorId;
@@ -68,7 +68,7 @@ public final class IndicatorRowDTO extends BaseModel implements DTO {
 
     /**
      *
-     * @return The name of the {@link org.sigmah.server.domain.Indicator}.
+     * @return The name of the {@link org.sigmah.shared.domain.Indicator}.
      */
     public String getIndicatorName() {
         return get("indicatorName");
@@ -80,7 +80,7 @@ public final class IndicatorRowDTO extends BaseModel implements DTO {
 
     /**
      * The value of the Indicator for the
-     * {@link org.sigmah.server.domain.ReportingPeriod ReportingPeriod}
+     * {@link org.sigmah.shared.domain.ReportingPeriod ReportingPeriod}
      * corresponding to the given <code>year</code> and <code>month</code>
      *
      * @param year

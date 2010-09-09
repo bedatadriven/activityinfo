@@ -10,8 +10,14 @@ import com.google.inject.Injector;
 import org.sigmah.server.domain.*;
 import org.sigmah.server.policy.*;
 import org.sigmah.shared.command.CreateEntity;
+import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.CreateResult;
+import org.sigmah.shared.domain.Activity;
+import org.sigmah.shared.domain.Attribute;
+import org.sigmah.shared.domain.AttributeGroup;
+import org.sigmah.shared.domain.Indicator;
+import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.IllegalAccessCommandException;
 

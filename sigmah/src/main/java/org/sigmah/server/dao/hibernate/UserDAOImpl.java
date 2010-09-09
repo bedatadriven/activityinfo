@@ -6,8 +6,12 @@
 package org.sigmah.server.dao.hibernate;
 
 import com.google.inject.Inject;
-import org.sigmah.server.dao.UserDAO;
-import org.sigmah.server.domain.User;
+
+import org.sigmah.server.auth.SecureTokenGenerator;
+import org.sigmah.server.mail.Invitation;
+import org.sigmah.shared.dao.UserDAO;
+import org.sigmah.shared.domain.User;
+import org.sigmah.shared.dto.UserPermissionDTO;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -42,5 +46,19 @@ public class UserDAOImpl extends GenericDAO<User, Integer> implements UserDAO {
         return (User) em.createNamedQuery("findUserByChangePasswordKey")
                 .setParameter("key", key)
                 .getSingleResult();
+    }
+    
+    /**
+     * Initializes this User as a new User with a secure
+     * changePasswordKey
+     */
+    public static User createNewUser(String email, String name, String locale) {
+        User user = new User();
+        user.setEmail(email);
+        user.setName(name);
+        user.setNewUser(true);
+        user.setLocale(locale);
+        user.setChangePasswordKey(SecureTokenGenerator.generate());
+        return user;
     }
 }

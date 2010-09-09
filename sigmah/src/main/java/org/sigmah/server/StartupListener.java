@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import org.sigmah.server.auth.AuthenticationModule;
 import org.sigmah.server.bootstrap.BootstrapModule;
 import org.sigmah.server.dao.hibernate.HibernateModule;
+import org.sigmah.server.endpoint.EndpointModule;
 import org.sigmah.server.endpoint.export.ExportModule;
 import org.sigmah.server.endpoint.file.FileModule;
 import org.sigmah.server.endpoint.gwtrpc.GwtRpcModule;
@@ -59,7 +60,7 @@ public class StartupListener extends GuiceServletContextListener {
         Injector injector = Guice.createInjector(
                 new ConfigModule(), new LoggingModule(),
                 new TemplateModule(), new BeanMappingModule(), new MailModule(),
-                new HibernateModule(),
+                new HibernateModule(), new EndpointModule(),
                 new FileModule(),
                 new AuthenticationModule(),
                 new ReportModule(),

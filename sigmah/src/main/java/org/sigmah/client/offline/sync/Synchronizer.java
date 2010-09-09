@@ -38,9 +38,14 @@ public class Synchronizer {
         this.updater = updater;
         this.auth = auth;
     }
-
+    
     private void createTables() throws SQLException {
         Statement ddl = conn.createStatement();
+        try {
+        	ddl.executeUpdate("select 'drop table ' || name || ';' from sqlite_master where type = 'table';");
+        } catch (SQLException e) {
+        	//ignore
+        }
         ddl.executeUpdate("create table if not exists sync_regions" +
                 " (id TEXT, localVersion INTEGER) ");
     }
@@ -63,6 +68,7 @@ public class Synchronizer {
                 @Override
                 public void onSuccess(SyncRegions syncRegions) {
                     Synchronizer.this.regionIt = syncRegions.iterator();
+                    Log.info("Got SYNC REGIONS");
                     doNextUpdate();
                 }
             });
@@ -100,9 +106,11 @@ public class Synchronizer {
     private void persistUpdates(final SyncRegion region, final SyncRegionUpdate update) {
         Log.debug("Synchronizer: got updates for region " + region.getId());
         if(update.getSql() != null) {
+        	Log.debug(update.getSql());
             executeUpdates(region, update);
         } else {
             updateLocalVersion(region.getId(), update.getVersion());
+            Log.debug("Region is up to date");
             doNextUpdate();
         }
     }

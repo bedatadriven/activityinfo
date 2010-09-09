@@ -5,27 +5,32 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+
+import java.util.Locale;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.sigmah.MockDb;
 import org.sigmah.server.dao.PartnerDAO;
-import org.sigmah.server.dao.UserDAO;
-import org.sigmah.server.dao.UserDatabaseDAO;
-import org.sigmah.server.dao.UserPermissionDAO;
-import org.sigmah.server.domain.OrgUnit;
-import org.sigmah.server.domain.User;
-import org.sigmah.server.domain.UserDatabase;
-import org.sigmah.server.domain.UserPermission;
 import org.sigmah.server.mail.Invitation;
 import org.sigmah.server.mail.Mailer;
 import org.sigmah.shared.command.UpdateUserPermissions;
+import org.sigmah.shared.dao.UserDAO;
+import org.sigmah.shared.dao.DAO;
+import org.sigmah.shared.dao.UserDatabaseDAO;
+import org.sigmah.shared.dao.UserPermissionDAO;
+import org.sigmah.shared.domain.OrgUnit;
+import org.sigmah.shared.domain.User;
+import org.sigmah.shared.domain.UserDatabase;
+import org.sigmah.shared.domain.UserPermission;
 import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.dto.UserPermissionDTO;
 import org.sigmah.shared.exception.IllegalAccessCommandException;
-
-import java.util.Locale;
-
-import static org.easymock.EasyMock.*;
+import org.sigmah.shared.dao.DAO;
 
 /**
  * @author Alex Bertram

@@ -7,13 +7,13 @@ package org.sigmah.server.report.generator;
 
 import com.google.inject.Inject;
 import org.hibernate.criterion.Order;
-import org.sigmah.server.dao.IndicatorDAO;
 import org.sigmah.server.dao.PivotDAO;
 import org.sigmah.server.dao.SiteTableDAO;
 import org.sigmah.server.dao.hibernate.criterion.SiteAdminOrder;
 import org.sigmah.server.dao.hibernate.criterion.SiteIndicatorOrder;
-import org.sigmah.server.domain.Indicator;
-import org.sigmah.server.domain.User;
+import org.sigmah.shared.dao.IndicatorDAO;
+import org.sigmah.shared.domain.Indicator;
+import org.sigmah.shared.domain.User;
 import org.sigmah.shared.report.content.TableContent;
 import org.sigmah.shared.report.content.TableData;
 import org.sigmah.shared.report.model.*;

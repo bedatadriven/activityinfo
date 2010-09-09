@@ -18,7 +18,8 @@ import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.offline.sync.Synchronizer;
 import org.sigmah.server.dao.OnDataSet;
-import org.sigmah.server.domain.User;
+import org.sigmah.shared.domain.User;
+import org.sigmah.server.util.BeanMappingModule;
 import org.sigmah.server.util.logging.LoggingModule;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.result.CommandResult;
@@ -39,6 +40,7 @@ import static org.junit.Assert.assertThat;
 @OnDataSet("/dbunit/sites-simple1.db.xml")
 @Modules({
         MockHibernateModule.class,
+        BeanMappingModule.class,
         GwtRpcModule.class,
         LoggingModule.class
 })
@@ -57,15 +59,8 @@ public class SyncIntegrationTest {
         user.setId(1);
         dispatcher = new MockDispatcher();
         
-        File dbFile = new File("test.db");
-        if(dbFile.exists()) {
-            if(!dbFile.delete()) {
-                throw new AssertionError("Could not delete sqlite database from previous  test");
-            }
-        }
-        
         Class.forName("org.sqlite.JDBC");
-        localDbConnection = DriverManager.getConnection("jdbc:sqlite:test.db");
+        localDbConnection = DriverManager.getConnection("jdbc:sqlite::memory:");
         updater = new MockBulkUpdater(localDbConnection);
 
         Log.setCurrentLogLevel(Log.LOG_LEVEL_DEBUG);

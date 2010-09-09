@@ -9,8 +9,14 @@ import com.google.inject.Inject;
 import org.sigmah.server.domain.*;
 import org.sigmah.shared.command.Month;
 import org.sigmah.shared.command.UpdateMonthlyReports;
+import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.VoidResult;
+import org.sigmah.shared.domain.Indicator;
+import org.sigmah.shared.domain.IndicatorValue;
+import org.sigmah.shared.domain.ReportingPeriod;
+import org.sigmah.shared.domain.Site;
+import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.CommandException;
 
 import javax.persistence.EntityManager;

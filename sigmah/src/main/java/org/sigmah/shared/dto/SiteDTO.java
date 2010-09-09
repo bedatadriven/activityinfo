@@ -10,9 +10,9 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import java.util.Date;
 
 /**
- * Projection DTO for the {@link org.sigmah.server.domain.Site} domain object, including
- * its {@link org.sigmah.server.domain.Location Location}, and
- * {@link org.sigmah.server.domain.ReportingPeriod ReportingPeriod} totals
+ * Projection DTO for the {@link org.sigmah.shared.domain.Site} domain object, including
+ * its {@link org.sigmah.shared.domain.Location Location}, and
+ * {@link org.sigmah.shared.domain.ReportingPeriod ReportingPeriod} totals
  *
  * @author Alex Bertram
  */
@@ -134,7 +134,7 @@ public final class SiteDTO extends BaseModelData implements EntityDTO {
 
     /**
      * Sets the name of Location of this Site.
-     * See {@link org.sigmah.server.domain.Location#getName()}
+     * See {@link org.sigmah.shared.domain.Location#getName()}
      * 
      * @param name the name of the location.
      */

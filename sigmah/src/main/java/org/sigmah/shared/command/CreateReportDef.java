@@ -16,7 +16,7 @@ import org.sigmah.shared.command.result.CreateResult;
  *
  * @author Alex Bertram
  */
-public class CreateReportDef implements Command<CreateResult> {
+public class CreateReportDef implements Command<CreateResult>{
 	
 	private String xml;
 	private Integer databaseId;

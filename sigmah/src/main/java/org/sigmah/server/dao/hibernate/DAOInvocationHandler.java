@@ -12,11 +12,11 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 /**
- * Invocation Handler for {@link org.sigmah.server.dao.DAO} interfaces.
+ * Invocation Handler for {@link org.sigmah.shared.dao.DAO} interfaces.
  * 
  * This InvocationHandler provides implementations for
- * {@link org.sigmah.server.dao.DAO#findById(Object) findById} and
- * {@link org.sigmah.server.dao.DAO#persist(Object) persist}. Any other methods defined in the interface
+ * {@link org.sigmah.shared.dao.DAO#findById(Object) findById} and
+ * {@link org.sigmah.shared.dao.DAO#persist(Object) persist}. Any other methods defined in the interface
  * are matched to named JPA queries, and their parameters as provided to the query as <em>positional</em>
  * parameters.
  *

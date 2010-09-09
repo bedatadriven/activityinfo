@@ -11,7 +11,8 @@ import org.apache.commons.mail.EmailException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.sigmah.server.domain.User;
+import org.sigmah.shared.domain.User;
+import org.sigmah.server.dao.hibernate.UserDAOImpl;
 import org.sigmah.server.util.TemplateModule;
 
 import java.io.IOException;
@@ -37,9 +38,10 @@ public class InvitationMailerTest {
 
     @Test
     public void testExecutes() throws IOException, TemplateException, EmailException {
-
-        User newUser = User.createNewUser("invitee@gmail.com", "Invitee", "en");
-        User invitingUser = User.createNewUser("akbertram@gmail.com", "Inviter", "en");
+    	
+    	
+        User newUser = UserDAOImpl.createNewUser("invitee@gmail.com", "Invitee", "en");
+        User invitingUser = UserDAOImpl.createNewUser("akbertram@gmail.com", "Inviter", "en");
 
         Invitation invitation = new Invitation(newUser, invitingUser);
 

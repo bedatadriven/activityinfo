@@ -7,7 +7,7 @@ package org.sigmah.server.report.generator.map;
 
 import junit.framework.Assert;
 import org.junit.Test;
-import org.sigmah.server.dao.SiteTableColumn;
+import org.sigmah.shared.dao.SiteTableColumn;
 import org.sigmah.server.domain.SiteData;
 import org.sigmah.shared.report.content.LatLng;
 import org.sigmah.shared.report.content.MapContent;

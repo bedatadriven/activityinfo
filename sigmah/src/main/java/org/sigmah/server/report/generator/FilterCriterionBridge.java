@@ -6,8 +6,8 @@
 package org.sigmah.server.report.generator;
 
 import org.hibernate.criterion.*;
-import org.sigmah.server.dao.SiteTableColumn;
-import org.sigmah.server.domain.Location;
+import org.sigmah.shared.dao.SiteTableColumn;
+import org.sigmah.shared.domain.Location;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.Filter;
 

@@ -9,7 +9,7 @@ import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Test;
 import org.sigmah.server.dao.PivotDAO;
-import org.sigmah.server.domain.User;
+import org.sigmah.shared.domain.User;
 import org.sigmah.shared.report.content.EntityCategory;
 import org.sigmah.shared.report.content.PivotTableData;
 import org.sigmah.shared.report.model.*;

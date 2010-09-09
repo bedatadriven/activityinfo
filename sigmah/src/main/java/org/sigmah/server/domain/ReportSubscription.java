@@ -6,6 +6,9 @@
 package org.sigmah.server.domain;
 
 import javax.persistence.*;
+
+import org.sigmah.shared.domain.User;
+
 import java.io.Serializable;
 
 /**

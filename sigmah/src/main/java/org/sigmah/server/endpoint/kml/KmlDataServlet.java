@@ -11,19 +11,20 @@ import com.google.inject.Singleton;
 import org.apache.commons.codec.binary.Base64;
 import org.hibernate.criterion.Order;
 import org.sigmah.server.auth.Authenticator;
-import org.sigmah.server.dao.SiteTableColumn;
 import org.sigmah.server.dao.SiteTableDAO;
-import org.sigmah.server.dao.UserDAO;
 import org.sigmah.server.dao.hibernate.SiteTableDAOHibernate;
 import org.sigmah.server.domain.DomainFilters;
 import org.sigmah.server.domain.SiteData;
-import org.sigmah.server.domain.User;
-import org.sigmah.server.endpoint.gwtrpc.handler.GetSchemaHandler;
 import org.sigmah.server.report.generator.SiteDataBinder;
 import org.sigmah.server.report.util.HtmlWriter;
 import org.sigmah.server.util.KMLNamespace;
 import org.sigmah.server.util.XmlBuilder;
 import org.sigmah.shared.command.GetSchema;
+import org.sigmah.shared.command.handler.GetSchemaHandler;
+import org.sigmah.shared.dao.NoResultException;
+import org.sigmah.shared.dao.SiteTableColumn;
+import org.sigmah.shared.dao.UserDAO;
+import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.SchemaDTO;
@@ -117,8 +118,13 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
 
         // look up the user in the database
         UserDAO userDAO = injector.getInstance(UserDAO.class);
-        User user = userDAO.findUserByEmail(emailPass[0]);
-
+        User user = null; 
+        try {
+        	userDAO.findUserByEmail(emailPass[0]);
+        } catch (NoResultException e) {
+        	return null;
+        }
+        
         Authenticator checker = injector.getInstance(Authenticator.class);
         if (!checker.check(user, emailPass[1])) {
             return null;

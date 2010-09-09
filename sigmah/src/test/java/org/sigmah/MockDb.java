@@ -5,9 +5,12 @@
 
 package org.sigmah;
 
-import org.sigmah.server.dao.DAO;
+
 
 import javax.persistence.Id;
+
+import org.sigmah.shared.dao.DAO;
+
 import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.List;

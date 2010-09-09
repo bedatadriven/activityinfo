@@ -8,11 +8,11 @@ package org.sigmah.server.sync;
 import com.bedatadriven.rebar.sync.server.JpaUpdateBuilder;
 import com.google.inject.Inject;
 import org.json.JSONException;
-import org.sigmah.server.dao.AdminDAO;
-import org.sigmah.server.domain.AdminEntity;
-import org.sigmah.server.domain.User;
 import org.sigmah.shared.command.GetSyncRegionUpdates;
 import org.sigmah.shared.command.result.SyncRegionUpdate;
+import org.sigmah.shared.dao.AdminDAO;
+import org.sigmah.shared.domain.AdminEntity;
+import org.sigmah.shared.domain.User;
 
 import java.util.List;
 

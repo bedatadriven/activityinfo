@@ -17,10 +17,10 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.sigmah.server.domain.Project;
-import org.sigmah.server.domain.User;
 import org.sigmah.server.domain.element.CheckboxElement;
 import org.sigmah.server.domain.element.FlexibleElement;
 import org.sigmah.server.domain.element.TextAreaElement;
+import org.sigmah.shared.domain.User;
 
 /**
  * 

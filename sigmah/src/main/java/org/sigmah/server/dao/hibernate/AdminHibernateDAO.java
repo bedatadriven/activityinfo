@@ -6,6 +6,7 @@
 package org.sigmah.server.dao.hibernate;
 
 import com.google.inject.Inject;
+
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
@@ -13,11 +14,12 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
 import org.hibernate.ejb.HibernateEntityManager;
-import org.sigmah.server.dao.AdminDAO;
-import org.sigmah.server.domain.AdminEntity;
+import org.sigmah.shared.dao.AdminDAO;
+import org.sigmah.shared.domain.AdminEntity;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Alex Bertram
@@ -46,10 +48,24 @@ public class AdminHibernateDAO extends GenericDAO<AdminEntity, Integer> implemen
                 .setParameter("levelId", levelId)
                 .setParameter("parentId", parentEntityId)
                 .getResultList();
+    }    
+    
+
+    public List<AdminEntity> find(int entityLevelId, int parentEntityId, int activityId) {
+    	Query q =  query();
+    	if (activityId > -1) {
+    		q.withSitesOfActivityId(activityId);
+    	} 
+    	if (entityLevelId > -1) {
+    		q.level(entityLevelId);
+    	}
+    	if (parentEntityId > -1) {
+    		q.withParentEntityId(parentEntityId);
+    	}
+    	return q.execute();
     }
-
-
-    @Override
+    
+  
     public Query query() {
 
         final Criteria criteria = createCriteria();
@@ -96,4 +112,10 @@ public class AdminHibernateDAO extends GenericDAO<AdminEntity, Integer> implemen
         Session session = ((HibernateEntityManager) em).getSession();
         return session.createCriteria(AdminEntity.class, "entity");
     }
+
+	@Override
+	public List<AdminEntity> findBySiteIds(Set<Integer> siteIds) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

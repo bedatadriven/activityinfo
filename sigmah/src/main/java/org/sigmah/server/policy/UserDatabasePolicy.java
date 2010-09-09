@@ -6,11 +6,11 @@
 package org.sigmah.server.policy;
 
 import com.google.inject.Inject;
-import org.sigmah.server.dao.CountryDAO;
-import org.sigmah.server.dao.UserDatabaseDAO;
-import org.sigmah.server.domain.Country;
-import org.sigmah.server.domain.User;
-import org.sigmah.server.domain.UserDatabase;
+import org.sigmah.shared.dao.CountryDAO;
+import org.sigmah.shared.dao.UserDatabaseDAO;
+import org.sigmah.shared.domain.Country;
+import org.sigmah.shared.domain.User;
+import org.sigmah.shared.domain.UserDatabase;
 
 import java.util.Date;
 

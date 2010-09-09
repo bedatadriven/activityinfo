@@ -16,8 +16,8 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
-import org.sigmah.server.domain.Deleteable;
-import org.sigmah.server.domain.User;
+import org.sigmah.shared.domain.Deleteable;
+import org.sigmah.shared.domain.User;
 
 /**
  * 

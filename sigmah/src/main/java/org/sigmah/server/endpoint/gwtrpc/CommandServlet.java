@@ -10,17 +10,19 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+
+import org.mortbay.log.Log;
 import org.sigmah.server.dao.AuthenticationDAO;
 import org.sigmah.server.dao.Transactional;
 import org.sigmah.server.domain.Authentication;
 import org.sigmah.server.domain.DomainFilters;
-import org.sigmah.server.domain.User;
-import org.sigmah.server.endpoint.gwtrpc.handler.CommandHandler;
 import org.sigmah.server.endpoint.gwtrpc.handler.HandlerUtil;
 import org.sigmah.server.util.logging.LogException;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.RemoteCommandService;
+import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
+import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.InvalidAuthTokenException;
 import org.sigmah.shared.exception.UnexpectedCommandException;
@@ -34,7 +36,7 @@ import java.util.List;
  * Process command objects from the client and returns CommandResults.
  * <p/>
  * This servlet is at the heart of the command execution pipeline, but delegates all
- * logic processing to the {@link org.sigmah.server.endpoint.gwtrpc.handler.CommandHandler} corresponding
+ * logic processing to the {@link org.sigmah.shared.command.handler.CommandHandler} corresponding
  * to the given {@link org.sigmah.shared.command.Command}s.
  * <p/>
  * CommandHandlers are loaded based on name from the org.sigmah.server.command.handler package.

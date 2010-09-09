@@ -36,7 +36,7 @@ public class CacheFilter implements Filter {
             long today = new Date().getTime();
             HttpServletResponse httpResponse = (HttpServletResponse) response;
             httpResponse.setDateHeader("Expires", today + 31536000000L);
-
+            
         } else if (requestURI.contains(".nocache.")) {
 
             HttpServletResponse httpResponse = (HttpServletResponse) response;

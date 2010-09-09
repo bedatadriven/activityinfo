@@ -5,7 +5,8 @@
 
 package org.sigmah.server.domain;
 
-import org.sigmah.server.dao.SiteTableColumn;
+import org.sigmah.shared.dao.SiteTableColumn;
+import org.sigmah.shared.domain.AdminEntity;
 import org.sigmah.shared.map.HasLatLng;
 
 import java.util.Date;

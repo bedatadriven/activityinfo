@@ -8,6 +8,16 @@ package org.sigmah.server.policy;
 import com.google.inject.Inject;
 import org.sigmah.server.dao.*;
 import org.sigmah.server.domain.*;
+import org.sigmah.shared.dao.ActivityDAO;
+import org.sigmah.shared.dao.AdminDAO;
+import org.sigmah.shared.domain.Activity;
+import org.sigmah.shared.domain.Location;
+import org.sigmah.shared.domain.OrgUnit;
+import org.sigmah.shared.domain.ReportingPeriod;
+import org.sigmah.shared.domain.Site;
+import org.sigmah.shared.domain.User;
+import org.sigmah.shared.domain.UserDatabase;
+import org.sigmah.shared.domain.UserPermission;
 import org.sigmah.shared.dto.*;
 
 import java.util.Date;

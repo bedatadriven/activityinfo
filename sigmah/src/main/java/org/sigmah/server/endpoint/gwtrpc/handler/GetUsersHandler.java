@@ -8,11 +8,12 @@ package org.sigmah.server.endpoint.gwtrpc.handler;
 import com.extjs.gxt.ui.client.Style;
 import com.google.inject.Inject;
 import org.dozer.Mapper;
-import org.sigmah.server.domain.User;
-import org.sigmah.server.domain.UserPermission;
 import org.sigmah.shared.command.GetUsers;
+import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.UserResult;
+import org.sigmah.shared.domain.User;
+import org.sigmah.shared.domain.UserPermission;
 import org.sigmah.shared.dto.UserPermissionDTO;
 import org.sigmah.shared.exception.CommandException;
 

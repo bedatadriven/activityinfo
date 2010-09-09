@@ -6,9 +6,9 @@
 package org.sigmah.server.sync;
 
 import org.json.JSONException;
-import org.sigmah.server.domain.User;
 import org.sigmah.shared.command.GetSyncRegionUpdates;
 import org.sigmah.shared.command.result.SyncRegionUpdate;
+import org.sigmah.shared.domain.User;
 
 public interface UpdateBuilder {
 

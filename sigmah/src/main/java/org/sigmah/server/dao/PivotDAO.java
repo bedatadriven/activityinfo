@@ -16,7 +16,7 @@ import java.util.*;
 
 /**
  * PivotDAO is a reporting data access object that provides aggregation ("or pivoting")
- *  {@link org.sigmah.server.domain.Site}s by a given set of dimensions.
+ *  {@link org.sigmah.shared.domain.Site}s by a given set of dimensions.
  *
  * @author Alex Bertram
  */

@@ -5,18 +5,20 @@
 
 package org.sigmah.server.dao;
 
-import com.google.inject.Inject;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.dao.hibernate.SiteTableDAOHibernate;
-import org.sigmah.server.domain.AdminEntity;
-import org.sigmah.server.domain.User;
+import org.sigmah.shared.domain.AdminEntity;
+import org.sigmah.shared.domain.User;
 import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.MockHibernateModule;
 import org.sigmah.test.Modules;
 
-import javax.persistence.EntityManager;
-import java.util.List;
+import com.google.inject.Inject;
 
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/sites-simple1.db.xml")

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * One-to-one DTO for the {@link org.sigmah.server.domain.AttributeGroup} domain object
+ * One-to-one DTO for the {@link org.sigmah.shared.domain.AttributeGroup} domain object
  *
  * @author Alex Bertram
  */

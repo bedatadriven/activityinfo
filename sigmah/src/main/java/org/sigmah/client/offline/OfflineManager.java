@@ -9,12 +9,21 @@
 package org.sigmah.client.offline;
 
 
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.gears.client.Factory;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.inject.Inject;
+
+import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.inject.AppInjector;
 import org.sigmah.client.offline.sync.InstallSteps;
 
@@ -43,22 +52,26 @@ import org.sigmah.client.offline.sync.InstallSteps;
 public class OfflineManager {
     private final View view;
     private final AppInjector injector;
-
     public interface View {
         Observable getEnableOfflineModeMenuItem();
     }
 
     @Inject
-    public OfflineManager(View view, AppInjector injector) {
+    public OfflineManager(View view, OfflineStatus status, AppInjector injector) {
         this.view = view;
         this.injector = injector;
-        this.view.getEnableOfflineModeMenuItem().addListener(Events.Select, new Listener<BaseEvent>() {
+        
+	//	if (status.isOfflineEnabled()) { 
+			//TODO FIX
+			//this.view.getEnableOfflineModeMenuItem().;
+	//	} else {
+			this.view.getEnableOfflineModeMenuItem().addListener(Events.Select, new Listener<BaseEvent>() {
             @Override
             public void handleEvent(BaseEvent baseEvent) {
                 enableOffline();
             }
-        });
-
+			});
+		//}
     }
 
     private void enableOffline() {
@@ -87,4 +100,5 @@ public class OfflineManager {
             }
         });
     }
+    
 }

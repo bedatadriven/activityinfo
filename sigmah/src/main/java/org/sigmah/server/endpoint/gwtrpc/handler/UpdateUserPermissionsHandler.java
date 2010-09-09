@@ -7,16 +7,20 @@ package org.sigmah.server.endpoint.gwtrpc.handler;
 
 import com.google.inject.Inject;
 import org.sigmah.server.dao.PartnerDAO;
-import org.sigmah.server.dao.UserDAO;
-import org.sigmah.server.dao.UserDatabaseDAO;
-import org.sigmah.server.dao.UserPermissionDAO;
-import org.sigmah.server.domain.User;
-import org.sigmah.server.domain.UserDatabase;
-import org.sigmah.server.domain.UserPermission;
+import org.sigmah.server.dao.hibernate.UserDAOImpl;
 import org.sigmah.server.mail.Invitation;
 import org.sigmah.server.mail.Mailer;
+import org.sigmah.server.util.LocaleHelper;
 import org.sigmah.shared.command.UpdateUserPermissions;
+import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
+import org.sigmah.shared.dao.NoResultException;
+import org.sigmah.shared.dao.UserDAO;
+import org.sigmah.shared.dao.UserDatabaseDAO;
+import org.sigmah.shared.dao.UserPermissionDAO;
+import org.sigmah.shared.domain.User;
+import org.sigmah.shared.domain.UserDatabase;
+import org.sigmah.shared.domain.UserPermission;
 import org.sigmah.shared.dto.UserPermissionDTO;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.IllegalAccessCommandException;
@@ -63,10 +67,17 @@ public class UpdateUserPermissionsHandler implements CommandHandler<UpdateUserPe
             verifyAuthority(cmd, database.getPermissionByUser(executingUser));
         }
 
-        User user;
+        User user = null;
         if (userDAO.doesUserExist(dto.getEmail())) {
-            user = userDAO.findUserByEmail(dto.getEmail());
-        } else {
+            try {
+				user = userDAO.findUserByEmail(dto.getEmail());
+			} catch (NoResultException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
+        
+        if (user == null) {
             user = createNewUser(executingUser, dto);
         }
 
@@ -86,11 +97,10 @@ public class UpdateUserPermissionsHandler implements CommandHandler<UpdateUserPe
     }
 
     private User createNewUser(User executingUser, UserPermissionDTO dto) {
-        User user;
-        user = User.createNewUser(dto.getEmail(), dto.getName(), executingUser.getLocale());
+        User user = UserDAOImpl.createNewUser(dto.getEmail(), dto.getName(), executingUser.getLocale());
         userDAO.persist(user);
         try {
-            inviteMailer.send(new Invitation(user, executingUser), executingUser.getLocaleObject());
+            inviteMailer.send(new Invitation(user, executingUser), LocaleHelper.getLocaleObject(executingUser));
         } catch (Exception e) {
             // ignore, don't abort because mail didn't work
         }

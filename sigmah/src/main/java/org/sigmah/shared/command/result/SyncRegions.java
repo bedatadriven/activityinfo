@@ -12,7 +12,7 @@ public class SyncRegions implements CommandResult, Iterable<SyncRegion> {
 
     private List<SyncRegion> list;
 
-    protected SyncRegions() {
+    public SyncRegions() {
 
     }
 

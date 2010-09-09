@@ -16,7 +16,7 @@ import org.sigmah.shared.dto.EntityDTO;
  *
  * Returns <code>VoidResult</code>
  *
- * @see org.sigmah.server.domain.Deleteable
+ * @see org.sigmah.shared.domain.Deleteable
  *
  */
 public class Delete implements Command<VoidResult> {

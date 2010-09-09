@@ -8,7 +8,7 @@ package org.sigmah.server.bootstrap;
 import org.junit.Test;
 import org.sigmah.server.bootstrap.model.HostPageModel;
 import org.sigmah.server.domain.Authentication;
-import org.sigmah.server.domain.User;
+import org.sigmah.shared.domain.User;
 
 public class HostViewTest extends ViewTestCase {
 

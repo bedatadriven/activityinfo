@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * One-to-one DTO for {@link org.sigmah.server.domain.Country} domain objects.
+ * One-to-one DTO for {@link org.sigmah.shared.domain.Country} domain objects.
  *
  * @author Alex Bertram
  */

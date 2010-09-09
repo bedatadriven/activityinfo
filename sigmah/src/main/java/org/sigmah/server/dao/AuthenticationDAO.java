@@ -6,6 +6,7 @@
 package org.sigmah.server.dao;
 
 import org.sigmah.server.domain.Authentication;
+import org.sigmah.shared.dao.DAO;
 
 /**
  * Data Access Objects for the {@link org.sigmah.server.domain.Authentication} domain object.

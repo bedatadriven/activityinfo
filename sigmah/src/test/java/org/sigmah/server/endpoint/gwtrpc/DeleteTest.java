@@ -5,11 +5,14 @@
 
 package org.sigmah.server.endpoint.gwtrpc;
 
-import com.extjs.gxt.ui.client.data.ModelData;
+import java.util.Collection;
+
 import junit.framework.Assert;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.dao.OnDataSet;
+import org.sigmah.server.endpoint.gwtrpc.handler.CommandHandlerModule;
 import org.sigmah.shared.command.Delete;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.command.GetSites;
@@ -18,11 +21,15 @@ import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.test.InjectionSupport;
+import org.sigmah.test.Modules;
 
-import java.util.Collection;
+import com.extjs.gxt.ui.client.data.ModelData;
 
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/sites-simple1.db.xml")
+@Modules({
+        CommandHandlerModule.class
+})
 public class DeleteTest extends CommandTestCase {
 
 

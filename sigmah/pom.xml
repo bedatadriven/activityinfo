@@ -104,7 +104,15 @@
             <version>${gwtVersion}</version>
             <scope>runtime</scope>
         </dependency>
-        <dependency>
+
+	<dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-dev</artifactId>
+            <version>${gwtVersion}</version>
+	    <scope>compile</scope>
+        </dependency>
+        
+	<dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
             <version>${gwtVersion}</version>
@@ -125,7 +133,7 @@
 
 
         <!--  Other clientside APIs  -->
-        <dependency>                                    
+        <dependency>
             <groupId>com.extjs</groupId>
             <artifactId>gxt</artifactId>
             <version>2.1.1</version>
@@ -154,18 +162,12 @@
         <dependency>
             <groupId>com.bedatadriven.rebar</groupId>
             <artifactId>rebar-modulestore</artifactId>
-            <version>1.1</version>
+            <version>1.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.bedatadriven.rebar</groupId>
             <artifactId>rebar-sql</artifactId>
-            <version>1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.bedatadriven.rebar</groupId>
-            <artifactId>rebar-sync</artifactId>
-            <version>0.3</version>
-            <scope>compile</scope>
+            <version>1.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.xerial</groupId>
@@ -173,6 +175,14 @@
             <version>3.6.17</version>
             <scope>test</scope>
         </dependency>
+        <!-- 
+        <dependency>
+            <groupId>com.betadriven.rebar</groupId>
+            <artifactId>rebar-persistence</artifactId>
+            <version>0.2</version>
+            <scope>test</scope>
+        </dependency>
+ 	-->
 
         <!--  Dependency Injection Framework -->
 
@@ -324,7 +334,7 @@
         <dependency>
             <groupId>freemarker</groupId>
             <artifactId>freemarker</artifactId>
-            <version>2.3.9</version>
+            <version>2.3.16</version>
         </dependency>
 
 
@@ -361,20 +371,32 @@
             <version>3.6.2</version>
             <scope>test</scope>
         </dependency>
-        
-		<!-- Apache Commons File Upload -->
-		<dependency>
-			<groupId>commons-fileupload</groupId>
-			<artifactId>commons-fileupload</artifactId>
-			<version>1.2.2</version>
-		</dependency>
-		
+        <!-- Apache Commons File Upload -->
+ 		<dependency>
+ 			<groupId>commons-fileupload</groupId>
+ 			<artifactId>commons-fileupload</artifactId>
+ 			<version>1.2.2</version>
+ 		</dependency>
+
+
         <!--TODO: remove -->
         <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
             <version>3.1</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+        	<groupId>com.bedatadriven.rebar</groupId>
+        	<artifactId>rebar-persistence</artifactId>
+        	<version>0.2-SNAPSHOT</version>
+        	<type>jar</type>
+        	<scope>compile</scope>
+        </dependency>
+        <dependency>
+        	<groupId>com.bedatadriven.rebar</groupId>
+        	<artifactId>rebar-sync</artifactId>
+        	<version>0.4-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
@@ -503,7 +525,7 @@
                             <module>org.sigmah.ActivityInfo</module>
                             <!-- Takes WAY to long for all 12 permutations -->
                             <!-- run with profile soyc enabled to generate maps for a single perm-->
-                            <soyc>false</soyc>
+                            <soyc>true</soyc>
                             <modules>
                                 <module>org.sigmah.ActivityInfo</module>
                                 <module>org.sigmah.login.Login</module>
@@ -626,6 +648,11 @@
         <plugins>
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jxr-maven-plugin</artifactId>
+                <version>1.5</version>
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>

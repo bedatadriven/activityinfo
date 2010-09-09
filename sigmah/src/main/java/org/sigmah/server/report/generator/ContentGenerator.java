@@ -5,7 +5,7 @@
 
 package org.sigmah.server.report.generator;
 
-import org.sigmah.server.domain.User;
+import org.sigmah.shared.domain.User;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.Filter;
 import org.sigmah.shared.report.model.ReportElement;

@@ -14,9 +14,9 @@ import org.sigmah.server.bootstrap.model.HostPageModel;
 import org.sigmah.server.bootstrap.model.LoginPageModel;
 import org.sigmah.server.bootstrap.model.PageModel;
 import org.sigmah.server.dao.AuthenticationDAO;
-import org.sigmah.server.dao.UserDAO;
+import org.sigmah.shared.dao.UserDAO;
 import org.sigmah.server.domain.Authentication;
-import org.sigmah.server.domain.User;
+import org.sigmah.shared.domain.User;
 import org.sigmah.server.mock.MockHttpServletRequest;
 import org.sigmah.server.mock.MockHttpServletResponse;
 import org.sigmah.server.mock.MockTemplateConfiguration;
@@ -59,7 +59,7 @@ public abstract class ControllerTestCase {
     }
 
     @Before
-    public final void setUpDependencies() {
+    public final void setUpDependencies() throws org.sigmah.shared.dao.NoResultException {
         req = new MockHttpServletRequest();
         resp = new MockHttpServletResponse();
 

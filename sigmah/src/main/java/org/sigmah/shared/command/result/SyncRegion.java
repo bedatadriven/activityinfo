@@ -5,7 +5,9 @@
 
 package org.sigmah.shared.command.result;
 
-public class SyncRegion {
+import java.io.Serializable;
+
+public class SyncRegion implements Serializable{
     private String id;
     private boolean required;
 

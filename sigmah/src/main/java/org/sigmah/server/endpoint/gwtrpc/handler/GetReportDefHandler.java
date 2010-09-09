@@ -7,10 +7,11 @@ package org.sigmah.server.endpoint.gwtrpc.handler;
 
 import com.google.inject.Inject;
 import org.sigmah.server.dao.ReportDefinitionDAO;
-import org.sigmah.server.domain.User;
 import org.sigmah.shared.command.GetReportDef;
+import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.XmlResult;
+import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.CommandException;
 
 /**

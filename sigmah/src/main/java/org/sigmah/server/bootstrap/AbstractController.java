@@ -16,9 +16,9 @@ import org.sigmah.server.bootstrap.exception.IncompleteFormException;
 import org.sigmah.server.bootstrap.model.PageModel;
 import org.sigmah.server.dao.AuthenticationDAO;
 import org.sigmah.server.dao.Transactional;
-import org.sigmah.server.dao.UserDAO;
 import org.sigmah.server.domain.Authentication;
-import org.sigmah.server.domain.User;
+import org.sigmah.shared.dao.UserDAO;
+import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.InvalidLoginException;
 
 import javax.persistence.NoResultException;
@@ -114,7 +114,7 @@ public class AbstractController extends HttpServlet {
             UserDAO userDAO = injector.getInstance(UserDAO.class);
             return userDAO.findUserByEmail(email);
 
-        } catch (NoResultException e) {
+        } catch (org.sigmah.shared.dao.NoResultException e) {
             throw new InvalidLoginException();
         }
     }

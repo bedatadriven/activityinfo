@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * One-to-one DTO for the {@link org.sigmah.server.domain.Activity} domain object.
+ * One-to-one DTO for the {@link org.sigmah.shared.domain.Activity} domain object.
  *
  * @author Alex Bertram
  */

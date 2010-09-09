@@ -6,9 +6,10 @@
 package org.sigmah.server.dao.hibernate;
 
 import com.google.inject.Inject;
+
 import org.sigmah.server.dao.LocationDAO;
-import org.sigmah.server.domain.AdminEntity;
-import org.sigmah.server.domain.Location;
+import org.sigmah.shared.domain.AdminEntity;
+import org.sigmah.shared.domain.Location;
 
 import javax.persistence.EntityManager;
 

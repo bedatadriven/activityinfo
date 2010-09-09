@@ -6,14 +6,16 @@
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
 import com.google.inject.Inject;
+
 import org.sigmah.server.auth.SecureTokenGenerator;
-import org.sigmah.server.domain.User;
 import org.sigmah.server.report.renderer.Renderer;
 import org.sigmah.server.report.renderer.RendererFactory;
 import org.sigmah.shared.command.GenerateElement;
 import org.sigmah.shared.command.RenderElement;
+import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.RenderResult;
+import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.UnexpectedCommandException;
 

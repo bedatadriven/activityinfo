@@ -13,8 +13,12 @@ import org.hibernate.criterion.*;
 import org.hibernate.ejb.HibernateEntityManager;
 import org.sigmah.server.domain.*;
 import org.sigmah.shared.command.GetInvitationList;
+import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.InvitationList;
+import org.sigmah.shared.domain.User;
+import org.sigmah.shared.domain.UserDatabase;
+import org.sigmah.shared.domain.UserPermission;
 import org.sigmah.shared.dto.ReportSubscriptionDTO;
 import org.sigmah.shared.exception.CommandException;
 

@@ -6,10 +6,11 @@
 package org.sigmah.server.dao.hibernate;
 
 import com.google.inject.Inject;
+
 import org.sigmah.server.dao.ReportingPeriodDAO;
-import org.sigmah.server.domain.Indicator;
-import org.sigmah.server.domain.IndicatorValue;
-import org.sigmah.server.domain.ReportingPeriod;
+import org.sigmah.shared.domain.Indicator;
+import org.sigmah.shared.domain.IndicatorValue;
+import org.sigmah.shared.domain.ReportingPeriod;
 
 import javax.persistence.EntityManager;
 

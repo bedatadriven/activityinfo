@@ -23,10 +23,13 @@
          without entrypoints -->
     <entry-point class='org.sigmah.client.ActivityInfoEntryPoint' />
 
-    <!-- ie6, gecko, gecko1_8, safari or opera -->
+    <!-- ie6, gecko, gecko1_8, safari or opera --> 
     <set-property name="user.agent" value="gecko1_8"/>
     <set-property name="locale" value="en"/>
     
     <set-property name="log_level" value="OFF"/>
     <set-property name="log_DivLogger" value="DISABLED" />
+    
+
+    
 </module>

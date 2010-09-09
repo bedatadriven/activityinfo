@@ -12,7 +12,7 @@ import java.util.List;
 
 
 /**
- * One-to-one DTO of the {@link org.sigmah.server.domain.UserDatabase} domain object.
+ * One-to-one DTO of the {@link org.sigmah.shared.domain.UserDatabase} domain object.
  *
  * @author Alex Bertram
  */
@@ -148,7 +148,7 @@ public final class UserDatabaseDTO extends BaseModel implements EntityDTO {
 
     /**
      * Sets the permission of the current user to view all partner's data in this UserDatabase.
-     * See {@link org.sigmah.server.domain.UserPermission#setAllowViewAll(boolean)}
+     * See {@link org.sigmah.shared.domain.UserPermission#setAllowViewAll(boolean)}
      */
 	public void setViewAllAllowed(boolean value) {
 		set("viewAllAllowed", value);
@@ -157,7 +157,7 @@ public final class UserDatabaseDTO extends BaseModel implements EntityDTO {
     /**
      * @return  true if the client receiving the DTO is authorized to view data
      * from all partners in this UserDatabase.
-     * See {@link org.sigmah.server.domain.UserPermission#setAllowViewAll(boolean)}
+     * See {@link org.sigmah.shared.domain.UserPermission#setAllowViewAll(boolean)}
      */
 	public boolean isViewAllAllowed() {
 		return (Boolean)get("viewAllAllowed");
@@ -182,7 +182,7 @@ public final class UserDatabaseDTO extends BaseModel implements EntityDTO {
 
     /**
      * Sets the permission of the current user to design this UserDatabase. See
-     * {@link org.sigmah.server.domain.UserPermission#setAllowDesign(boolean)}
+     * {@link org.sigmah.shared.domain.UserPermission#setAllowDesign(boolean)}
      */
 	public void setDesignAllowed(boolean allowed) {
 		set("designAllowed", allowed);

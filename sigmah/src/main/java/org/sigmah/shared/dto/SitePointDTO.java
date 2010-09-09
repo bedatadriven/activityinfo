@@ -7,8 +7,8 @@ package org.sigmah.shared.dto;
 
 /**
  *
- * Partial DTO of the {@link org.sigmah.server.domain.Site Site} domain object and its
- * {@link org.sigmah.server.domain.Location Location} location that includes only
+ * Partial DTO of the {@link org.sigmah.shared.domain.Site Site} domain object and its
+ * {@link org.sigmah.shared.domain.Location Location} location that includes only
  * the id and geographic position.
  *
  * @author Alex Bertram

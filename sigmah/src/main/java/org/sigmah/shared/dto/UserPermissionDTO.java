@@ -8,7 +8,7 @@ package org.sigmah.shared.dto;
 import com.extjs.gxt.ui.client.data.BaseModel;
 
 /**
- * Projection DTO of the {@link org.sigmah.server.domain.UserPermission UserPermission}
+ * Projection DTO of the {@link org.sigmah.shared.domain.UserPermission UserPermission}
  * domain object
  *
  * @author Alex Bertram

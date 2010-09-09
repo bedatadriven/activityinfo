@@ -7,8 +7,9 @@ package org.sigmah.server.report.generator;
 
 import com.google.inject.Inject;
 import org.sigmah.server.dao.PivotDAO;
-import org.sigmah.server.domain.User;
 import org.sigmah.server.report.util.DateRangeFormat;
+import org.sigmah.server.util.LocaleHelper;
+import org.sigmah.shared.domain.User;
 import org.sigmah.shared.report.content.FilterDescription;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.DimensionType;
@@ -90,7 +91,7 @@ public abstract class BaseGenerator<T extends ReportElement> implements ContentG
         }
 
         if (filter.getMinDate() != null || filter.getMaxDate() != null) {
-            DateRangeFormat format = new DateRangeFormat(user.getLocaleObject());
+            DateRangeFormat format = new DateRangeFormat(LocaleHelper.getLocaleObject(user));
 
             list.add(new FilterDescription(
                     DimensionType.Date,
@@ -115,7 +116,7 @@ public abstract class BaseGenerator<T extends ReportElement> implements ContentG
     protected String resolveTemplate(String template, DateRange range, User user) {
 
         if (template.indexOf("${DATE_RANGE}") != -1) {
-            DateRangeFormat format = new DateRangeFormat(user.getLocaleObject());
+            DateRangeFormat format = new DateRangeFormat(LocaleHelper.getLocaleObject(user));
             String rangeText = format.format(range);
 
             return template.replace("${DATE_RANGE}", rangeText);

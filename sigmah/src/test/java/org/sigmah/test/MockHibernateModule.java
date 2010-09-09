@@ -5,9 +5,20 @@
 
 package org.sigmah.test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.inject.Provider;
+import com.google.inject.Provides;
 import com.google.inject.Singleton;
+
+import org.dozer.DozerBeanMapper;
+import org.dozer.Mapper;
 import org.sigmah.server.dao.hibernate.HibernateModule;
+import org.sigmah.server.endpoint.gwtrpc.handler.GetSitesHandlerHibernate;
+import org.sigmah.server.util.DozerMapper;
+import org.sigmah.shared.command.handler.GetSitesHandler;
+import org.sigmah.shared.dto.DTOMapper;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -16,6 +27,7 @@ import javax.persistence.Persistence;
 public class MockHibernateModule extends HibernateModule {
     private static EntityManagerFactory emf = null;
 
+    
     @Override
     protected void configureEmf() {
         bind(EntityManagerFactory.class).toProvider(new Provider<EntityManagerFactory>() {
@@ -42,4 +54,8 @@ public class MockHibernateModule extends HibernateModule {
         bind(EntityManager.class).toProvider(EntityManagerProvider.class)
                 .in(TestScoped.class);
     }
+    
+
+
+
 }

@@ -13,12 +13,12 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.sigmah.server.dao.SiteTableColumn;
 import org.sigmah.server.dao.SiteTableDAO;
-import org.sigmah.server.domain.AdminEntity;
 import org.sigmah.server.domain.SiteData;
-import org.sigmah.server.domain.User;
 import org.sigmah.server.report.generator.SiteDataBinder;
+import org.sigmah.shared.dao.SiteTableColumn;
+import org.sigmah.shared.domain.AdminEntity;
+import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.*;
 
 import java.util.ArrayList;

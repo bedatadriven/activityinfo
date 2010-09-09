@@ -10,12 +10,12 @@ import org.hibernate.HibernateException;
 import org.hibernate.criterion.CriteriaQuery;
 import org.hibernate.criterion.Order;
 import org.sigmah.server.domain.AggregationMethod;
-import org.sigmah.server.domain.Indicator;
+import org.sigmah.shared.domain.Indicator;
 
 
 /**
  * Hibernate {@link Order} clause that orders Sites by the total
- * indicator value of the {@link org.sigmah.server.domain.Site Site}
+ * indicator value of the {@link org.sigmah.shared.domain.Site Site}
  */
 public class SiteIndicatorOrder extends Order {
 	

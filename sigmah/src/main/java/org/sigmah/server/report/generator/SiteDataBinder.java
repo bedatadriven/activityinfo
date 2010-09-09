@@ -6,8 +6,8 @@
 package org.sigmah.server.report.generator;
 
 import org.sigmah.server.dao.SiteProjectionBinder;
-import org.sigmah.server.domain.AdminEntity;
 import org.sigmah.server.domain.SiteData;
+import org.sigmah.shared.domain.AdminEntity;
 
 public class SiteDataBinder implements SiteProjectionBinder<SiteData>{
 

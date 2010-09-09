@@ -7,7 +7,8 @@ package org.sigmah.server.dao.hibernate;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import org.sigmah.server.dao.DAO;
+
+import org.sigmah.shared.dao.DAO;
 
 import javax.persistence.EntityManager;
 import java.lang.reflect.ParameterizedType;
@@ -41,7 +42,8 @@ public class HibernateDAOProvider<T> implements Provider<T> {
     private Class findDAOInterface() {
         for (Type interfaceType : daoClass.getGenericInterfaces()) {
             ParameterizedType genericType = (ParameterizedType) interfaceType;
-            Class interfaceClass = (Class) genericType.getRawType();
+            @SuppressWarnings("rawtypes")
+			Class interfaceClass = (Class) genericType.getRawType();
             if (interfaceClass.equals(DAO.class)) {
                 return (Class) genericType.getActualTypeArguments()[0];
             }

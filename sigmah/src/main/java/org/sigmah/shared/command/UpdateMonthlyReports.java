@@ -5,13 +5,10 @@
 
 package org.sigmah.shared.command;
 
-import org.sigmah.shared.command.result.VoidResult;
-
 import java.io.Serializable;
 import java.util.ArrayList;
-/*
- * @author Alex Bertram
- */
+
+import org.sigmah.shared.command.result.VoidResult;
 
 public class UpdateMonthlyReports implements Command<VoidResult> {
 

@@ -6,11 +6,12 @@
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
 import com.google.inject.Inject;
-import org.sigmah.server.domain.User;
 import org.sigmah.server.report.generator.MapIconPath;
 import org.sigmah.shared.command.GetMapIcons;
+import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.MapIconResult;
+import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.MapIconDTO;
 import org.sigmah.shared.exception.CommandException;
 

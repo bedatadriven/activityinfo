@@ -7,6 +7,7 @@ package org.sigmah.server.domain;
 
 import org.hibernate.Filter;
 import org.hibernate.ejb.HibernateEntityManager;
+import org.sigmah.shared.domain.User;
 
 import javax.persistence.EntityManager;
 

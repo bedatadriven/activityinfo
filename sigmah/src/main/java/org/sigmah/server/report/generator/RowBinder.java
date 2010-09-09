@@ -6,9 +6,9 @@
 package org.sigmah.server.report.generator;
 
 import org.sigmah.server.dao.SiteProjectionBinder;
-import org.sigmah.server.dao.SiteTableColumn;
 import org.sigmah.server.dao.hibernate.SiteTableDAOHibernate;
-import org.sigmah.server.domain.AdminEntity;
+import org.sigmah.shared.dao.SiteTableColumn;
+import org.sigmah.shared.domain.AdminEntity;
 import org.sigmah.shared.report.content.TableData;
 import org.sigmah.shared.report.model.TableColumn;
 

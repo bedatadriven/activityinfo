@@ -8,6 +8,7 @@ package org.sigmah.server.schedule;
 import org.sigmah.server.domain.ReportSubscription;
 import org.sigmah.server.report.util.HtmlWriter;
 import org.sigmah.server.util.DateUtilCalendarImpl;
+import org.sigmah.server.util.LocaleHelper;
 import org.sigmah.shared.date.DateUtil;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.DateUnit;
@@ -90,7 +91,7 @@ public class ReportMailerHelper {
 
         // load our resource bundle with localized messages
         ResourceBundle mailMessages =
-              ResourceBundle.getBundle("org.sigmah.server.mail.MailMessages", sub.getUser().getLocaleObject());
+              ResourceBundle.getBundle("org.sigmah.server.mail.MailMessages",  LocaleHelper.getLocaleObject(sub.getUser()));
 
         StringBuilder sb = new StringBuilder();
 
@@ -120,7 +121,7 @@ public class ReportMailerHelper {
 
         // load our resource bundle with localized messages
         ResourceBundle mailMessages =
-              ResourceBundle.getBundle("org.sigmah.server.mail.MailMessages", sub.getUser().getLocaleObject());
+              ResourceBundle.getBundle("org.sigmah.server.mail.MailMessages", LocaleHelper.getLocaleObject(sub.getUser()));
 
         HtmlWriter htmlWriter = new HtmlWriter();
 

@@ -5,17 +5,30 @@
 
 package org.sigmah.server.dao.hibernate;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import org.junit.Test;
-import org.sigmah.server.dao.Transactional;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.createStrictMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertNotNull;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
-import static org.easymock.EasyMock.*;
-import static org.junit.Assert.assertNotNull;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.sigmah.server.dao.Transactional;
+import org.sigmah.server.util.BeanMappingModule;
+import org.sigmah.test.InjectionSupport;
+import org.sigmah.test.Modules;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+
+@RunWith(InjectionSupport.class)
+@Modules({
+        BeanMappingModule.class
+})
 public class TransactionalInterceptorTest {
 
 

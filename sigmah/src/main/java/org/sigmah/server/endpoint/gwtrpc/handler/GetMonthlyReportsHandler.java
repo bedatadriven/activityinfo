@@ -6,14 +6,15 @@
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
 import com.google.inject.Inject;
-import org.sigmah.server.domain.Indicator;
-import org.sigmah.server.domain.IndicatorValue;
-import org.sigmah.server.domain.ReportingPeriod;
-import org.sigmah.server.domain.User;
 import org.sigmah.shared.command.GetMonthlyReports;
 import org.sigmah.shared.command.Month;
+import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.MonthlyReportResult;
+import org.sigmah.shared.domain.Indicator;
+import org.sigmah.shared.domain.IndicatorValue;
+import org.sigmah.shared.domain.ReportingPeriod;
+import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.IndicatorRowDTO;
 import org.sigmah.shared.exception.CommandException;
 

@@ -6,12 +6,13 @@
 package org.sigmah.server.policy;
 
 import com.google.inject.Inject;
-import org.sigmah.server.dao.ActivityDAO;
-import org.sigmah.server.dao.UserDatabaseDAO;
-import org.sigmah.server.domain.Activity;
-import org.sigmah.server.domain.LocationType;
-import org.sigmah.server.domain.User;
-import org.sigmah.server.domain.UserDatabase;
+
+import org.sigmah.shared.dao.ActivityDAO;
+import org.sigmah.shared.dao.UserDatabaseDAO;
+import org.sigmah.shared.domain.Activity;
+import org.sigmah.shared.domain.LocationType;
+import org.sigmah.shared.domain.User;
+import org.sigmah.shared.domain.UserDatabase;
 import org.sigmah.shared.dto.LocationTypeDTO;
 
 import javax.persistence.EntityManager;

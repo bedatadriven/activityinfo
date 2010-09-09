@@ -9,9 +9,9 @@ import com.google.inject.Inject;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.sigmah.server.dao.AdminDAO;
+import org.sigmah.shared.dao.AdminDAO;
 import org.sigmah.server.dao.OnDataSet;
-import org.sigmah.server.domain.AdminEntity;
+import org.sigmah.shared.domain.AdminEntity;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.test.AssertUtils;
 import org.sigmah.test.InjectionSupport;
@@ -32,7 +32,7 @@ public class AdminDAOImplTest {
     private AdminDAO adminDAO;
 
     @Inject
-    public AdminDAOImplTest(AdminHibernateDAO adminDAO) {
+    public AdminDAOImplTest(AdminDAO adminDAO) {
         this.adminDAO = adminDAO;
     }
 

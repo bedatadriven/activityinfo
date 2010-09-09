@@ -8,7 +8,7 @@ package org.sigmah.server.endpoint.gwtrpc;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import org.sigmah.server.domain.User;
+import org.sigmah.shared.domain.User;
 import org.sigmah.server.util.BeanMappingModule;
 import org.sigmah.server.util.TemplateModule;
 import org.sigmah.shared.command.Command;

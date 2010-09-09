@@ -10,7 +10,7 @@ import com.extjs.gxt.ui.client.event.EventType;
 import org.sigmah.shared.dto.SiteDTO;
 
 /**
- * Encapsulates details for {@link org.sigmah.server.domain.Site} related events.
+ * Encapsulates details for {@link org.sigmah.shared.domain.Site} related events.
  *
  * @author Alex Bertram
  */

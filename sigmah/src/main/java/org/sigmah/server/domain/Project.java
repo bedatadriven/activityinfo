@@ -16,6 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import org.sigmah.server.domain.value.Value;
+import org.sigmah.shared.domain.UserDatabase;
 
 @Entity
 public class Project extends UserDatabase {

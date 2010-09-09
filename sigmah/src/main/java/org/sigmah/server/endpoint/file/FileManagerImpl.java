@@ -18,7 +18,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sigmah.server.dao.Transactional;
 import org.sigmah.server.domain.Project;
-import org.sigmah.server.domain.User;
+import org.sigmah.shared.domain.User;
 import org.sigmah.server.domain.element.FlexibleElement;
 import org.sigmah.server.domain.value.File;
 import org.sigmah.server.domain.value.FileVersion;

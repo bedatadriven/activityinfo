@@ -14,11 +14,11 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Aggregate DTO for all {@link org.sigmah.server.domain.UserDatabase}s visible
+ * Aggregate DTO for all {@link org.sigmah.shared.domain.UserDatabase}s visible
  * to the client, along with the UserDatabase's
- * {@link org.sigmah.server.domain.Country Country},
- * and {@link org.sigmah.server.domain.Attribute} and
- * {@link org.sigmah.server.domain.Indicator}
+ * {@link org.sigmah.shared.domain.Country Country},
+ * and {@link org.sigmah.shared.domain.Attribute} and
+ * {@link org.sigmah.shared.domain.Indicator}
  *
  * @author Alex Bertram
  */
@@ -44,7 +44,7 @@ public final class SchemaDTO extends BaseModelData implements DTO {
 
     /**
      * Sets the version number of the schema.
-     *
+     * 
      * @param version a numeric version identifier
      */
     public void setVersion(long version) {
@@ -146,7 +146,6 @@ public final class SchemaDTO extends BaseModelData implements DTO {
 					}
 				}
 			}
-
 		}
 		return null;
     }

@@ -5,7 +5,7 @@
 
 package org.sigmah.server.mail;
 
-import org.sigmah.server.domain.User;
+import org.sigmah.shared.domain.User;
 
 public class Invitation {
     private User newUser;

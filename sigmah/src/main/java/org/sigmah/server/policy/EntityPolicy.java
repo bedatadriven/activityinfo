@@ -5,7 +5,7 @@
 
 package org.sigmah.server.policy;
 
-import org.sigmah.server.domain.User;
+import org.sigmah.shared.domain.User;
 
 /**
  * EntityPolicies are responsible for creating and updating entities on behalf of users.

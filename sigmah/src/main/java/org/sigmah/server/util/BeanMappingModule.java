@@ -10,6 +10,7 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
+import org.sigmah.shared.dto.DTOMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ public class BeanMappingModule extends AbstractModule {
 
     @Override
     protected void configure() {
+    	bind(DTOMapper.class).to(DozerMapper.class);
     }
 
     @Provides

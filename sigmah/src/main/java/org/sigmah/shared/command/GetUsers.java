@@ -9,15 +9,15 @@ import org.sigmah.shared.command.result.UserResult;
 
 /**
  * Queries the list of users authorized to access a given
- * {@link org.sigmah.server.domain.UserDatabase}
+ * {@link org.sigmah.shared.domain.UserDatabase}
  *
  * The resulting {@link org.sigmah.shared.dto.UserPermissionDTO} are
- * a projection of the {@link org.sigmah.server.domain.User},
- * {@link org.sigmah.server.domain.UserPermission}, and
- * {@link org.sigmah.server.domain.OrgUnit} entities.
+ * a projection of the {@link org.sigmah.shared.domain.User},
+ * {@link org.sigmah.shared.domain.UserPermission}, and
+ * {@link org.sigmah.shared.domain.OrgUnit} entities.
  *
  */
-public class GetUsers extends PagingGetCommand<UserResult> {
+public class GetUsers extends PagingGetCommand<UserResult>  {
 
     private int databaseId;
 

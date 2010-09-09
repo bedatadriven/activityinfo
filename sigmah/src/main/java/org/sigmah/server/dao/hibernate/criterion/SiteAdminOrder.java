@@ -13,8 +13,8 @@ import org.hibernate.criterion.Order;
 
 /**
  * Hibernate {@link org.hibernate.criterion.Order Order} clause that orders
- * {@link org.sigmah.server.domain.Site}s by AdminEntity membership at
- * a given {@link org.sigmah.server.domain.AdminEntity} level.
+ * {@link org.sigmah.shared.domain.Site}s by AdminEntity membership at
+ * a given {@link org.sigmah.shared.domain.AdminEntity} level.
  *
  * @author Alex Bertram
  */

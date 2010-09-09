@@ -14,7 +14,7 @@ import org.sigmah.shared.dto.SchemaDTO;
  *
  * @author Alex Bertram
  */
-public class GetSchema implements Command<SchemaDTO>  {
+public class GetSchema implements Command<SchemaDTO>, OfflineSupport {
 
 
     @Override

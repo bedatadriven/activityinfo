@@ -10,20 +10,20 @@ import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.sigmah.server.dao.hibernate.SiteTableDAOHibernate;
-import org.sigmah.server.domain.User;
+import org.sigmah.shared.domain.User;
 
 import java.util.List;
 
 /**       
  * 
- * Data Access Object for projections based on the {@link org.sigmah.server.domain.Site Site} domain object.
+ * Data Access Object for projections based on the {@link org.sigmah.shared.domain.Site Site} domain object.
  * 
  * Information associated with Sites is stored across several entities, including
- * {@link org.sigmah.server.domain.Location Location},
- * {@link org.sigmah.server.domain.OrgUnit},
- * {@link org.sigmah.server.domain.AttributeValue},
- * {@link org.sigmah.server.domain.ReportingPeriod ReportingPeriod}, and
- * {@link org.sigmah.server.domain.IndicatorValue}, but often we need this information in
+ * {@link org.sigmah.shared.domain.Location Location},
+ * {@link org.sigmah.shared.domain.OrgUnit},
+ * {@link org.sigmah.shared.domain.AttributeValue},
+ * {@link org.sigmah.shared.domain.ReportingPeriod ReportingPeriod}, and
+ * {@link org.sigmah.shared.domain.IndicatorValue}, but often we need this information in
  * a table format with all the different data in columns, and this class does the heavy lifting.
  *
  * 

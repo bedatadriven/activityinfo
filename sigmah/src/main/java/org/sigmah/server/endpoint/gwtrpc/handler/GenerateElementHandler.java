@@ -6,10 +6,11 @@
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
 import com.google.inject.Inject;
-import org.sigmah.server.domain.User;
 import org.sigmah.server.report.generator.ReportGenerator;
 import org.sigmah.shared.command.GenerateElement;
+import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
+import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.report.model.DateRange;
 

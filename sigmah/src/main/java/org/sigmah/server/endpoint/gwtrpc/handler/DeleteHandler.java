@@ -6,18 +6,19 @@
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
 import com.google.inject.Inject;
-import org.sigmah.server.domain.Deleteable;
-import org.sigmah.server.domain.User;
-import org.sigmah.server.domain.UserDatabase;
 import org.sigmah.shared.command.Delete;
+import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
+import org.sigmah.shared.domain.Deleteable;
+import org.sigmah.shared.domain.User;
+import org.sigmah.shared.domain.UserDatabase;
 
 import javax.persistence.EntityManager;
 
 /**
  * @author Alex Bertram
  * @see org.sigmah.shared.command.Delete
- * @see org.sigmah.server.domain.Deleteable
+ * @see org.sigmah.shared.domain.Deleteable
  */
 public class DeleteHandler implements CommandHandler<Delete> {
     private EntityManager em;

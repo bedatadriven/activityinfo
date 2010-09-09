@@ -92,7 +92,9 @@ public class DataEntryLoader implements PageLoader {
             public void got(SchemaDTO schema) {
                 SiteGridPageState sgPlace = (SiteGridPageState) place;
                 if (sgPlace.getActivityId() == 0) {
-                    sgPlace.setActivityId(schema.getFirstActivity().getId());
+                	if (schema.getFirstActivity() != null) {
+                		sgPlace.setActivityId(schema.getFirstActivity().getId());
+                	}
                 }
 
                 ActivityDTO activity = schema.getActivityById(sgPlace.getActivityId());

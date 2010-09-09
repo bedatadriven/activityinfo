@@ -5,9 +5,13 @@
 
 package org.sigmah.server.dao.hibernate;
 
-import org.sigmah.server.dao.DAO;
+
+import com.google.inject.Inject;
 
 import javax.persistence.EntityManager;
+
+import org.sigmah.shared.dao.DAO;
+
 import java.lang.reflect.ParameterizedType;
 
 /**

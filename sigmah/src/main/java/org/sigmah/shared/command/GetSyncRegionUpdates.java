@@ -7,7 +7,7 @@ package org.sigmah.shared.command;
 
 import org.sigmah.shared.command.result.SyncRegionUpdate;
 
-public class GetSyncRegionUpdates implements Command<SyncRegionUpdate> {
+public class GetSyncRegionUpdates implements Command<SyncRegionUpdate>  {
     private String regionId;
     private String localVersion;
 

@@ -5,8 +5,9 @@
 
 package org.sigmah.server.auth.impl;
 
+import org.mortbay.log.Log;
 import org.sigmah.server.auth.Authenticator;
-import org.sigmah.server.domain.User;
+import org.sigmah.shared.domain.User;
 
 /**
  * Validates the user's password against the a hashed version stored in the database.
@@ -21,10 +22,10 @@ public class DatabaseAuthenticator implements Authenticator {
         // TODO: this should not be allowed!
         // This only here because of an early bug which left many users without
         // passwords. These users should be issued new passwords and this hole closed.
-        if (user.getHashedPassword() == null) {
+        if (user.getHashedPassword() == null || "".equals(user.getHashedPassword())) {
             return true;
+           
         }
-
         return BCrypt.checkpw(plaintextPassword, user.getHashedPassword());
     }
 

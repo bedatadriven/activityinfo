@@ -13,7 +13,7 @@ import org.sigmah.server.dao.OnDataSet;
 import org.sigmah.server.dao.SiteTableDAO;
 import org.sigmah.server.dao.hibernate.SiteTableDAOHibernate;
 import org.sigmah.server.domain.SiteData;
-import org.sigmah.server.domain.User;
+import org.sigmah.shared.domain.User;
 import org.sigmah.server.report.generator.SiteDataBinder;
 import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.MockHibernateModule;

@@ -6,16 +6,23 @@
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
 
-import com.google.inject.Injector;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+
 import org.dozer.Mapper;
-import org.sigmah.server.domain.User;
-import org.sigmah.server.domain.UserDatabase;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.Month;
+import org.sigmah.shared.command.OfflineSupport;
+import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
+import org.sigmah.shared.domain.User;
+import org.sigmah.shared.domain.UserDatabase;
 import org.sigmah.shared.exception.CommandException;
 
-import java.util.*;
+import com.google.inject.Injector;
 
 /**
  * Convienence methods for <code>CommandHandler</code>s
@@ -36,7 +43,7 @@ public class HandlerUtil {
             return UserDatabase.class;
         }
 
-        return CommandHandler.class.getClassLoader().loadClass("org.sigmah.server.domain." + name);
+        return CommandHandler.class.getClassLoader().loadClass("org.sigmah.shared.domain." + name);
     }
 
     /**
@@ -52,16 +59,22 @@ public class HandlerUtil {
 
         String commandName = cmd.getClass().getName().substring(
                 cmd.getClass().getPackage().getName().length() + 1);
-
-        String etorName = CommandHandler.class.getPackage().getName() + "." +
-                commandName + "Handler";
+    	String etorName = null;
+        if (! (cmd instanceof OfflineSupport)) {
+        	etorName = "org.sigmah.server.endpoint.gwtrpc.handler." +
+        		commandName + "Handler";
+        } else {
+        	etorName = CommandHandler.class.getPackage().getName() + "." +
+            	commandName + "Handler";
+        }
 
         try {
             return (Class<CommandHandler<?>>) CommandHandler.class.getClassLoader().loadClass(etorName);
 
         } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException("No handler class for " + commandName, e);
+            throw new IllegalArgumentException("No handler " + etorName + " found for " + commandName, e);
         }
+
     }
 
     public static <T extends CommandResult> T execute(Injector injector, Command<T> cmd, User user) throws CommandException {

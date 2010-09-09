@@ -7,6 +7,9 @@ package org.sigmah.server.domain;
 
 import javax.persistence.*;
 
+import org.sigmah.shared.domain.OrgUnit;
+import org.sigmah.shared.domain.User;
+
 @Entity
 public class OrgUnitPermission {
     private int id;

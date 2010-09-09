@@ -7,15 +7,16 @@ package org.sigmah.server.endpoint.gwtrpc.handler;
 
 import com.google.inject.Inject;
 import org.sigmah.server.dao.ReportDefinitionDAO;
-import org.sigmah.server.domain.User;
 import org.sigmah.server.report.ReportParserJaxb;
 import org.sigmah.server.report.ServletImageStorageProvider;
 import org.sigmah.server.report.generator.ReportGenerator;
 import org.sigmah.server.report.renderer.html.HtmlReportRenderer;
 import org.sigmah.server.report.util.HtmlWriter;
 import org.sigmah.shared.command.RenderReportHtml;
+import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.HtmlResult;
+import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.report.model.Report;
 

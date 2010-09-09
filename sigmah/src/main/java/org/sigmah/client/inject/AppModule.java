@@ -14,6 +14,7 @@ import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.RemoteServiceProvider;
 import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.dispatch.remote.RemoteDispatcher;
+import org.sigmah.client.dispatch.remote.SwitchingDispatcher;
 import org.sigmah.client.page.Frame;
 import org.sigmah.client.page.PageStateSerializer;
 import org.sigmah.client.page.app.AppFrameSet;
@@ -31,17 +32,14 @@ public class AppModule extends AbstractGinModule {
     protected void configure() {
         bind(Authentication.class).toProvider(AuthProvider.class).in(Singleton.class);
         bind(RemoteCommandServiceAsync.class).toProvider(RemoteServiceProvider.class).in(Singleton.class);
-        bind(Dispatcher.class).to(RemoteDispatcher.class);
+        bind(Dispatcher.class).to(SwitchingDispatcher.class).in(Singleton.class);
         bind(DispatchEventSource.class).to(RemoteDispatcher.class);
         bind(PageStateSerializer.class).in(Singleton.class);
         bind(EventBus.class).to(LoggingEventBus.class).in(Singleton.class);
 
         bind(IStateManager.class).to(GXTStateManager.class);
-
         bind(Frame.class).annotatedWith(Root.class).to(AppFrameSet.class);
-
         bind(GalleryView.class).to(GalleryPage.class);
-
         bind(ChartPagePresenter.View.class).to(ChartPage.class);
     }
 }

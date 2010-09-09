@@ -8,7 +8,8 @@ package org.sigmah.server.report.generator;
 
 import com.google.inject.Inject;
 import org.sigmah.server.dao.PivotDAO;
-import org.sigmah.server.domain.User;
+import org.sigmah.server.util.LocaleHelper;
+import org.sigmah.shared.domain.User;
 import org.sigmah.shared.report.content.PivotContent;
 import org.sigmah.shared.report.content.PivotTableData;
 import org.sigmah.shared.report.model.DateRange;
@@ -41,7 +42,7 @@ public class PivotTableGenerator extends PivotGenerator<PivotTableElement> {
                 generateFilterDescriptions(
                         filter, element.allDimensionTypes(), user));
 
-        content.setData(generateData(user.getId(), user.getLocaleObject(), element, effectiveFilter,
+        content.setData(generateData(user.getId(), LocaleHelper.getLocaleObject(user), element, effectiveFilter,
                 element.getRowDimensions(), element.getColumnDimensions()));
 
         element.setContent(content);

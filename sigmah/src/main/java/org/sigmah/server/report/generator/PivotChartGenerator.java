@@ -6,10 +6,11 @@
 package org.sigmah.server.report.generator;
 
 import com.google.inject.Inject;
-import org.sigmah.server.dao.IndicatorDAO;
 import org.sigmah.server.dao.PivotDAO;
-import org.sigmah.server.domain.Indicator;
-import org.sigmah.server.domain.User;
+import org.sigmah.server.util.LocaleHelper;
+import org.sigmah.shared.dao.IndicatorDAO;
+import org.sigmah.shared.domain.Indicator;
+import org.sigmah.shared.domain.User;
 import org.sigmah.shared.report.content.PivotChartContent;
 import org.sigmah.shared.report.content.PivotTableData;
 import org.sigmah.shared.report.model.*;
@@ -48,7 +49,7 @@ public class PivotChartGenerator extends PivotGenerator<PivotChartElement> {
 
         PivotTableData data = generateData(
                 user.getId(), 
-                user.getLocaleObject(),
+                LocaleHelper.getLocaleObject(user),
                 element,
                 effectiveFilter,
                 element.getCategoryDimensions(),

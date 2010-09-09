@@ -12,6 +12,18 @@ import com.google.inject.Singleton;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.servlet.RequestScoped;
 import org.sigmah.server.dao.*;
+import org.sigmah.server.endpoint.gwtrpc.handler.GetSitesHandlerHibernate;
+import org.sigmah.server.util.DozerMapper;
+import org.sigmah.shared.command.handler.GetSitesHandler;
+import org.sigmah.shared.dao.ActivityDAO;
+import org.sigmah.shared.dao.AdminDAO;
+import org.sigmah.shared.dao.CountryDAO;
+import org.sigmah.shared.dao.DAO;
+import org.sigmah.shared.dao.IndicatorDAO;
+import org.sigmah.shared.dao.UserDAO;
+import org.sigmah.shared.dao.UserDatabaseDAO;
+import org.sigmah.shared.dao.UserPermissionDAO;
+import org.sigmah.shared.dto.DTOMapper;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -31,8 +43,14 @@ public class HibernateModule extends AbstractModule {
         configureEm();
         configureDAOs();
         configureTransactions();
+        configureEndPoints();
     }
 
+    
+    protected void configureEndPoints(){
+    	//bind(GetSitesHandler.class).to(GetSitesHandlerHibernate.class);
+    }
+    
     protected void configureEmf() {
         bind(EntityManagerFactory.class).toProvider(EntityManagerFactoryProvider.class).in(Singleton.class);
     }
@@ -50,6 +68,7 @@ public class HibernateModule extends AbstractModule {
     }
 
     protected void configureDAOs() {
+    	bind(AdminDAO.class).to(AdminHibernateDAO.class);
         bindDAOProxy(ActivityDAO.class);
         bindDAOProxy(AuthenticationDAO.class);
         bindDAOProxy(CountryDAO.class);
@@ -61,6 +80,7 @@ public class HibernateModule extends AbstractModule {
         bind(SiteDAO.class).to(SiteHibernateDAO.class);
         bindDAOProxy(UserDatabaseDAO.class);
         bindDAOProxy(UserPermissionDAO.class);
+        bind(UserDAO.class).to(UserDAOImpl.class);
     }
 
     private <T extends DAO> void bindDAOProxy(Class<T> daoClass) {

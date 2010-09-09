@@ -5,7 +5,7 @@
 
 package org.sigmah.server.dao;
 
-import org.sigmah.server.domain.AdminEntity;
+import org.sigmah.shared.domain.AdminEntity;
 
 /**
  *

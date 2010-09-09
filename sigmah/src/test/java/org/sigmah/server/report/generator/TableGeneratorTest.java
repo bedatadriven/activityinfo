@@ -5,15 +5,27 @@
 
 package org.sigmah.server.report.generator;
 
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.replay;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import junit.framework.Assert;
+
 import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.junit.Before;
 import org.junit.Test;
-import org.sigmah.server.dao.*;
-import org.sigmah.server.domain.User;
+import org.sigmah.server.dao.PivotDAO;
+import org.sigmah.server.dao.SiteProjectionBinder;
+import org.sigmah.server.dao.SiteTableDAO;
 import org.sigmah.server.report.generator.map.MockBaseMapDAO;
+import org.sigmah.shared.dao.IndicatorDAO;
+import org.sigmah.shared.dao.SiteTableColumn;
+import org.sigmah.shared.domain.User;
 import org.sigmah.shared.report.content.BubbleMapMarker;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.TableData;
@@ -21,13 +33,6 @@ import org.sigmah.shared.report.model.BubbleMapLayer;
 import org.sigmah.shared.report.model.MapElement;
 import org.sigmah.shared.report.model.TableColumn;
 import org.sigmah.shared.report.model.TableElement;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import static org.easymock.EasyMock.createNiceMock;
-import static org.easymock.EasyMock.replay;
 
 /**
  * @author Alex Bertram

@@ -19,7 +19,7 @@ import org.sigmah.shared.dto.UserPermissionDTO;
  * such as an email message, etc.
  *
  */
-public class UpdateUserPermissions implements Command<VoidResult> {
+public class UpdateUserPermissions implements Command<VoidResult>  {
 
 	private int databaseId;
 	private UserPermissionDTO model;

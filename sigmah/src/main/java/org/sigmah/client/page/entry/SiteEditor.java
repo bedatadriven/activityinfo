@@ -5,6 +5,7 @@
 
 package org.sigmah.client.page.entry;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.data.SortInfo;
@@ -115,6 +116,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
         siteSelectedListner = new Listener<SiteEvent>() {
             public void handleEvent(SiteEvent se) {
                 // check to see if this site is on the current page
+        	
                 if (se.getSource() != SiteEditor.this) {
                     SiteDTO site = store.findModel("id", se.getSiteId());
                     if (site != null) {
@@ -394,6 +396,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
     public void onFilter(String filter) {
         GetSites cmd = (GetSites) loader.getCommand();
         cmd.setFilter(filter);
+        cmd.setPivotFilter(view.getFilter());
         loader.load();
     }
 

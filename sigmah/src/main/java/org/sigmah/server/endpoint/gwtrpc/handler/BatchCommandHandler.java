@@ -7,11 +7,12 @@ package org.sigmah.server.endpoint.gwtrpc.handler;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import org.sigmah.server.domain.User;
 import org.sigmah.shared.command.BatchCommand;
 import org.sigmah.shared.command.Command;
+import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.BatchResult;
 import org.sigmah.shared.command.result.CommandResult;
+import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.CommandException;
 
 import java.util.ArrayList;

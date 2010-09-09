@@ -15,7 +15,7 @@ import org.sigmah.shared.report.model.Filter;
  * @author Alex Bertram
  *
  */
-public class GetSites extends PagingGetCommand<SiteResult> {
+public class GetSites extends PagingGetCommand<SiteResult> implements OfflineSupport {
 
 	private boolean assessmentsOnly;
 	private Integer activityId;
@@ -35,7 +35,7 @@ public class GetSites extends PagingGetCommand<SiteResult> {
 	/**
 	 * 
 	 * Option to query only for the sites of assessment activities.
-	 * See {@link org.sigmah.server.domain.Activity#isAssessment()}
+	 * See {@link org.sigmah.shared.domain.Activity#isAssessment()}
 	 * 
 	 * @return True if the command is to return only sites of assessment activities.
 	 */
@@ -46,7 +46,7 @@ public class GetSites extends PagingGetCommand<SiteResult> {
 	/**
 	 * 
 	 * Option to query only for the sites of assessment activities.
-	 * See {@link org.sigmah.server.domain.Activity#isAssessment()}
+	 * See {@link org.sigmah.shared.domain.Activity#isAssessment()}
 	 * 
 	 * @param assessmentsOnly True if the command is to return only sites of assessment activities.
 	 */

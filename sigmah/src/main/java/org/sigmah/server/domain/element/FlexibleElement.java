@@ -13,8 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.sigmah.server.domain.PrivacyLevel;
 import org.sigmah.server.domain.ProjectModel;
+import org.sigmah.shared.domain.PrivacyLevel;
 
 /**
  * Flexible element entity.

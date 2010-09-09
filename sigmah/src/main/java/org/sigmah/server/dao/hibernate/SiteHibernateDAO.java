@@ -6,8 +6,9 @@
 package org.sigmah.server.dao.hibernate;
 
 import com.google.inject.Inject;
+
 import org.sigmah.server.dao.SiteDAO;
-import org.sigmah.server.domain.Site;
+import org.sigmah.shared.domain.Site;
 
 import javax.persistence.EntityManager;
 import java.util.HashSet;

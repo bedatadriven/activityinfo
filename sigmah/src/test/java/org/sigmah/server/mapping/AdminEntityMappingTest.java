@@ -5,18 +5,20 @@
 
 package org.sigmah.server.mapping;
 
-import com.google.inject.Inject;
 import junit.framework.Assert;
+
 import org.dozer.Mapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.sigmah.server.domain.AdminEntity;
-import org.sigmah.server.domain.AdminLevel;
-import org.sigmah.server.domain.Bounds;
 import org.sigmah.server.util.BeanMappingModule;
+import org.sigmah.shared.domain.AdminEntity;
+import org.sigmah.shared.domain.AdminLevel;
+import org.sigmah.shared.domain.Bounds;
 import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.Modules;
+
+import com.google.inject.Inject;
 
 @RunWith(InjectionSupport.class)
 @Modules({BeanMappingModule.class})

@@ -13,11 +13,11 @@ import org.sigmah.server.Cookies;
 import org.sigmah.server.auth.Authenticator;
 import org.sigmah.server.dao.AuthenticationDAO;
 import org.sigmah.server.dao.Transactional;
-import org.sigmah.server.dao.UserDAO;
 import org.sigmah.server.domain.Authentication;
-import org.sigmah.server.domain.User;
+import org.sigmah.shared.dao.UserDAO;
+import org.sigmah.shared.domain.User;
+import org.sigmah.shared.dao.NoResultException;
 
-import javax.persistence.NoResultException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;

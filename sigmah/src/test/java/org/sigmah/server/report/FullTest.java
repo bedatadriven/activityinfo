@@ -10,7 +10,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.dao.hibernate.HibernateModule;
-import org.sigmah.server.domain.User;
+import org.sigmah.shared.domain.User;
 import org.sigmah.server.report.generator.ReportGenerator;
 import org.sigmah.server.report.renderer.Renderer;
 import org.sigmah.server.report.renderer.RendererFactory;

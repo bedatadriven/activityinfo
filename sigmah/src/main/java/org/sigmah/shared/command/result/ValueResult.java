@@ -8,7 +8,7 @@ package org.sigmah.shared.command.result;
 import java.io.Serializable;
 import java.util.List;
 
-import org.sigmah.server.domain.element.FlexibleElement;
+//import org.sigmah.server.domain.element.FlexibleElement;
 
 /**
  * Value result containing the inner value object or the inner values list object of 

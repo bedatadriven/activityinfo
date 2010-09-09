@@ -11,7 +11,8 @@ import com.google.inject.Singleton;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import org.sigmah.server.domain.Activity;
+
+import org.sigmah.shared.domain.Activity;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;

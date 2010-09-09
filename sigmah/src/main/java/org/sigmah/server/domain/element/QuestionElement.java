@@ -11,7 +11,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
-import org.sigmah.server.domain.QualityCriterion;
+import org.sigmah.shared.domain.QualityCriterion;
 
 /**
  * Question element entity.

@@ -13,11 +13,11 @@ import org.hibernate.criterion.*;
 import org.hibernate.ejb.HibernateEntityManager;
 import org.hibernate.transform.ResultTransformer;
 import org.sigmah.server.dao.SiteProjectionBinder;
-import org.sigmah.server.dao.SiteTableColumn;
 import org.sigmah.server.dao.SiteTableDAO;
-import org.sigmah.server.domain.AdminEntity;
-import org.sigmah.server.domain.Site;
-import org.sigmah.server.domain.User;
+import org.sigmah.shared.dao.SiteTableColumn;
+import org.sigmah.shared.domain.AdminEntity;
+import org.sigmah.shared.domain.Site;
+import org.sigmah.shared.domain.User;
 
 import javax.persistence.EntityManager;
 import java.util.HashMap;
@@ -122,6 +122,7 @@ public class SiteTableDAOHibernate implements SiteTableDAO {
      * @param limit     For paged queries, the maximum number of rows to retrieve
      * @return
      */
+    
     @Override
     public <RowT> List<RowT> query(
             User user,

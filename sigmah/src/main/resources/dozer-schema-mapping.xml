@@ -7,7 +7,7 @@
 	xsi:schemaLocation="http://dozer.sourceforge.net beanmapping.xsd ">
 
 	<mapping wildcard="true">
-		<class-a>org.sigmah.server.domain.UserDatabase</class-a>
+		<class-a>org.sigmah.shared.domain.UserDatabase</class-a>
 		<class-b>org.sigmah.shared.dto.UserDatabaseDTO</class-b>
 
 		<field>
@@ -24,7 +24,7 @@
 
 	<mapping wildcard="true">
 
-		<class-a>org.sigmah.server.domain.Activity</class-a>
+		<class-a>org.sigmah.shared.domain.Activity</class-a>
 		<class-b>org.sigmah.shared.dto.ActivityDTO</class-b>
 
 		<field-exclude>
@@ -42,14 +42,14 @@
 
 	<mapping wildcard="true">
 
-		<class-a>org.sigmah.server.domain.AttributeGroup</class-a>
+		<class-a>org.sigmah.shared.domain.AttributeGroup</class-a>
 		<class-b>org.sigmah.shared.dto.AttributeGroupDTO</class-b>
 
 	</mapping>
 
 	<mapping wildcard="true">
 
-		<class-a>org.sigmah.server.domain.Attribute</class-a>
+		<class-a>org.sigmah.shared.domain.Attribute</class-a>
 		<class-b>org.sigmah.shared.dto.AttributeDTO</class-b>
 
 	</mapping>
@@ -57,7 +57,7 @@
 
 	<mapping wildcard="true">
 
-		<class-a>org.sigmah.server.domain.UserPermission</class-a>
+		<class-a>org.sigmah.shared.domain.UserPermission</class-a>
 		<class-b>org.sigmah.shared.dto.UserPermissionDTO</class-b>
 
 		<field>
@@ -73,7 +73,7 @@
 
 	<mapping wildcard="true">
 
-		<class-a>org.sigmah.server.domain.Indicator</class-a>
+		<class-a>org.sigmah.shared.domain.Indicator</class-a>
 		<class-b>org.sigmah.shared.dto.IndicatorDTO</class-b>
 
 		<field type="one-way">

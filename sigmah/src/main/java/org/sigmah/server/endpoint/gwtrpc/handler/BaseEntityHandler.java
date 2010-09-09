@@ -6,6 +6,13 @@
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
 import org.sigmah.server.domain.*;
+import org.sigmah.shared.domain.Activity;
+import org.sigmah.shared.domain.Attribute;
+import org.sigmah.shared.domain.AttributeGroup;
+import org.sigmah.shared.domain.Indicator;
+import org.sigmah.shared.domain.LocationType;
+import org.sigmah.shared.domain.User;
+import org.sigmah.shared.domain.UserDatabase;
 import org.sigmah.shared.dto.LocationTypeDTO;
 import org.sigmah.shared.exception.IllegalAccessCommandException;
 

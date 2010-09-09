@@ -8,7 +8,7 @@ package org.sigmah.server.dao.filter;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
-import org.sigmah.server.domain.OrgUnit;
+import org.sigmah.shared.domain.OrgUnit;
 
 import java.util.Locale;
 

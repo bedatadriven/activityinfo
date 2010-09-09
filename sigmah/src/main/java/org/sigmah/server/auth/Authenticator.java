@@ -5,7 +5,7 @@
 
 package org.sigmah.server.auth;
 
-import org.sigmah.server.domain.User;
+import org.sigmah.shared.domain.User;
 
 /**
  * Service interface which provides validation of user passwords.
@@ -15,4 +15,6 @@ import org.sigmah.server.domain.User;
  */
 public interface Authenticator {
     boolean check(User user, String plaintextPassword);
+    
+    
 }

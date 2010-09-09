@@ -5,7 +5,7 @@
 
 package org.sigmah.server.bootstrap.model;
 
-import org.sigmah.server.domain.User;
+import org.sigmah.shared.domain.User;
 
 public class ConfirmInvitePageModel extends PageModel {
     private User user;

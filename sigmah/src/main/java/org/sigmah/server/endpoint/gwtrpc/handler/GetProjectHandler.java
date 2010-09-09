@@ -9,9 +9,10 @@ import javax.persistence.EntityManager;
 
 import org.dozer.Mapper;
 import org.sigmah.server.domain.Project;
-import org.sigmah.server.domain.User;
 import org.sigmah.shared.command.GetProject;
+import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
+import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.exception.CommandException;
 

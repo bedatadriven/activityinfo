@@ -5,6 +5,8 @@
 
 package org.sigmah.server.domain;
 
+import org.sigmah.shared.domain.User;
+import org.sigmah.shared.domain.UserDatabase;
 import org.sigmah.shared.report.model.ReportFrequency;
 
 import javax.persistence.*;

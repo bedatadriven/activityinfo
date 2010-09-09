@@ -6,6 +6,7 @@
 package org.sigmah.server.dao;
 
 import org.sigmah.server.domain.ReportDefinition;
+import org.sigmah.shared.dao.DAO;
 
 public interface ReportDefinitionDAO extends DAO<ReportDefinition, Integer> {
 
