@@ -13,7 +13,12 @@ import org.sigmah.shared.domain.User;
 
 import com.google.inject.Inject;
 
-
+/**
+ * A UserDAO implementation for use off-line.
+ * 
+ * @author jon
+ *
+ */
 public class UserLocalDAO extends OfflineDAO<User, Integer> implements UserDAO {
 
 	@Inject

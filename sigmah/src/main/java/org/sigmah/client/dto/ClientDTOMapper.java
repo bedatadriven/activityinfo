@@ -1,3 +1,8 @@
+/*
+ * All Sigmah code is released under the GNU General Public License v3
+ * See COPYRIGHT.txt and LICENSE.txt.
+ */
+
 package org.sigmah.client.dto;
 
 import java.util.ArrayList;
@@ -29,6 +34,12 @@ import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 import org.sigmah.shared.dto.UserPermissionDTO;
 
+
+/**
+ * A tool for mapping domain objects to DTOs. 
+ *
+ * @author JDH
+ */
 public class ClientDTOMapper implements DTOMapper {
 
 	
@@ -213,6 +224,12 @@ public class ClientDTOMapper implements DTOMapper {
 		return d;
 	}
 	
+	/**
+     * Map a domain object to an instance of the given class. 
+     *
+     * @param o The domain object to match.
+     * @param c Class of the target object.
+     */
 	@Override
 	public Object map(Object o, Class c) {
 		if (ActivityDTO.class.equals(c)) {

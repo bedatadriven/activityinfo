@@ -1,3 +1,7 @@
+/*
+ * All Sigmah code is released under the GNU General Public License v3
+ * See COPYRIGHT.txt and LICENSE.txt.
+ */
 package org.sigmah.client.offline.dao;
 
 import java.sql.Connection;
@@ -22,6 +26,13 @@ import com.bedatadriven.rebar.persistence.client.ConnectionProvider;
 import com.extjs.gxt.ui.client.data.SortInfo;
 import com.google.inject.Inject;
 
+/**
+ * 
+ * A dao for fetching sites when off-line.
+ * 
+ * @author jon
+ *
+ */
 public class SiteTableLocalDAO extends OfflineDAO<User, Integer> {
 	
 	private AdminDAO adminEntityDAO;

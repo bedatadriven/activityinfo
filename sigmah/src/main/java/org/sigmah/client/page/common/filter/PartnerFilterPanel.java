@@ -1,3 +1,8 @@
+/*
+ * All Sigmah code is released under the GNU General Public License v3
+ * See COPYRIGHT.txt and LICENSE.txt.
+ */
+
 package org.sigmah.client.page.common.filter;
 
 import com.extjs.gxt.ui.client.Style;
@@ -32,6 +37,11 @@ public class PartnerFilterPanel extends ContentPanel {
 	private TreePanel<ModelData> tree;
 	private final Dispatcher service;	
 	
+    /**
+     * Constructor
+     * 
+     * @param service
+     */
     public PartnerFilterPanel(Dispatcher service) {
     	this.service = service;
         setHeading(I18N.CONSTANTS.filterByPartner());

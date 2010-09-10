@@ -1,3 +1,8 @@
+/*
+ * All Sigmah code is released under the GNU General Public License v3
+ * See COPYRIGHT.txt and LICENSE.txt.
+ */
+
 package org.sigmah.client.offline;
 
 import java.sql.Connection;
@@ -13,7 +18,7 @@ import com.google.gwt.user.client.Cookies;
 import com.google.inject.Inject;
 
 /**
- * A helper class for testing the offline-ready status of the application.
+ * A helper class for testing the off-line status of the application.
  */
 public class OfflineStatus {
     private final Connection conn;

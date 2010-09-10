@@ -1,3 +1,7 @@
+/*
+ * All Sigmah code is released under the GNU General Public License v3
+ * See COPYRIGHT.txt and LICENSE.txt.
+ */
 package org.sigmah.client.offline.dao;
 
 import java.util.List;
@@ -10,6 +14,12 @@ import org.sigmah.shared.domain.Country;
 
 import com.google.inject.Inject;
 
+/**
+ * A CountyDAO implementation for off-line.
+ * 
+ * @author jon
+ *
+ */
 public class CountryLocalDAO extends OfflineDAO<Country, Integer> implements
 		CountryDAO {
 

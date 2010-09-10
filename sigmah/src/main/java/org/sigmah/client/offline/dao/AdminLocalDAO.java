@@ -15,6 +15,12 @@ import org.sigmah.shared.domain.AdminEntity;
 
 import com.google.inject.Inject;
 
+/**
+ * An AdminDAO implementation for off-line.
+ * 
+ * @author jon
+ *
+ */
 public class AdminLocalDAO extends OfflineDAO<AdminEntity, Integer> implements AdminDAO {
 	
 

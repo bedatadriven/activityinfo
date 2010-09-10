@@ -1,3 +1,8 @@
+/*
+ * All Sigmah code is released under the GNU General Public License v3
+ * See COPYRIGHT.txt and LICENSE.txt.
+ */
+
 package org.sigmah.client.offline.dao;
 
 import java.util.HashSet;
@@ -11,6 +16,12 @@ import org.sigmah.shared.domain.Activity;
 
 import com.google.inject.Inject;
 
+/**
+ * An implementation of ActivityDAO for use off-line. 
+ * 
+ * @author jon
+ *
+ */
 public class ActivityLocalDAO extends OfflineDAO<Activity, Integer> implements
 		ActivityDAO {
 
