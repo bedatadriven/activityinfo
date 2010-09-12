@@ -42,40 +42,10 @@
     <!--  include pluginRepository and repository for GWT-Maven -->
     <pluginRepositories>
         <pluginRepository>
-            <id>Codehaus Mojo Snapshot</id>
-            <url>http://snapshots.repository.codehaus.org/</url>
-        </pluginRepository>
-
-        <pluginRepository>
-            <id>activityinfo</id>
-            <name>ActivityInfo team repository</name>
-            <url>http://www.activityinfo.org/m2/</url>
-            <layout>default</layout>
-        </pluginRepository>
-
-        <pluginRepository>
-            <id>googlecode-releases</id>
-            <name>Google Code Maven repository of releases</name>
-            <url>http://maven-samaxes-repo.googlecode.com/svn/releases</url>
-        </pluginRepository>
-
-        <pluginRepository>
             <id>JBOSS</id>
             <name>JBoss Repository</name>
             <url>http://repository.jboss.org/maven2/</url>
         </pluginRepository>
-
-        <pluginRepository>
-            <id>Codehaus Snapshots</id>
-            <url>http://snapshots.repository.codehaus.org/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </pluginRepository>
-
     </pluginRepositories>
 
     <properties>
@@ -104,15 +74,7 @@
             <version>${gwtVersion}</version>
             <scope>runtime</scope>
         </dependency>
-
-	<dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-dev</artifactId>
-            <version>${gwtVersion}</version>
-	    <scope>compile</scope>
-        </dependency>
-        
-	<dependency>
+        <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
             <version>${gwtVersion}</version>
@@ -133,7 +95,7 @@
 
 
         <!--  Other clientside APIs  -->
-        <dependency>
+        <dependency>                                    
             <groupId>com.extjs</groupId>
             <artifactId>gxt</artifactId>
             <version>2.1.1</version>
@@ -175,14 +137,7 @@
             <version>3.6.17</version>
             <scope>test</scope>
         </dependency>
-        <!-- 
-        <dependency>
-            <groupId>com.betadriven.rebar</groupId>
-            <artifactId>rebar-persistence</artifactId>
-            <version>0.2</version>
-            <scope>test</scope>
-        </dependency>
- 	-->
+ 
 
         <!--  Dependency Injection Framework -->
 
@@ -332,7 +287,7 @@
         </dependency>
 
         <dependency>
-            <groupId>freemarker</groupId>
+            <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
             <version>2.3.16</version>
         </dependency>
@@ -377,27 +332,6 @@
  			<artifactId>commons-fileupload</artifactId>
  			<version>1.2.2</version>
  		</dependency>
-
-
-        <!--TODO: remove -->
-        <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-            <version>3.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-        	<groupId>com.bedatadriven.rebar</groupId>
-        	<artifactId>rebar-persistence</artifactId>
-        	<version>0.2-SNAPSHOT</version>
-        	<type>jar</type>
-        	<scope>compile</scope>
-        </dependency>
-        <dependency>
-        	<groupId>com.bedatadriven.rebar</groupId>
-        	<artifactId>rebar-sync</artifactId>
-        	<version>0.4-SNAPSHOT</version>
-        </dependency>
     </dependencies>
 
     <repositories>
@@ -420,17 +354,6 @@
             <id>bedatadriven-thirdparty</id>
             <name>Bedatadriven Thirdparty</name>
             <url>http://nexus.bedatadriven.com/content/repositories/thirdparty</url>
-        </repository>
-        <repository>
-            <id>maven2-repository.dev.java.net</id>
-            <name>Java.net Repository for Maven 2</name>
-            <url>http://download.java.net/maven/2/</url>
-        </repository>
-        <repository>
-            <id>download.java.net</id>
-            <name>Java.net Repository for Maven 1</name>
-            <url>http://download.java.net/maven/1</url>
-            <layout>legacy</layout>
         </repository>
     </repositories>
 
@@ -629,7 +552,6 @@
                     <scanTargets>
                         <!--<scanTarget>${basedir}/war/WEB-INF/classes</scanTarget>-->
                         <scanTarget>${basedir}/war/WEB-INF/web.xml</scanTarget>
-                        <scanTarget>${basedir}/war/WEB-INF/sun-jaxws.xml</scanTarget>
                     </scanTargets>
                     <connectors>
                         <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
@@ -648,11 +570,6 @@
         <plugins>
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jxr-maven-plugin</artifactId>
-                <version>1.5</version>
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
