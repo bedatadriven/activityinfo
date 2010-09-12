@@ -19,7 +19,12 @@ import org.sigmah.client.offline.OfflineManager;
 @Singleton
 public class OfflineMenu extends Button implements OfflineManager.View {
 
-    private MenuItem enableOfflineModeMenuItem;
+    @Override
+	public void setOfflineModeMenuItemText(String text) {
+    	enableOfflineModeMenuItem.setText(text);
+	}
+
+	private MenuItem enableOfflineModeMenuItem;
 
     public OfflineMenu() {
         enableOfflineModeMenuItem = new MenuItem(I18N.CONSTANTS.enableOffline());
@@ -35,4 +40,10 @@ public class OfflineMenu extends Button implements OfflineManager.View {
     public Observable getEnableOfflineModeMenuItem() {
         return enableOfflineModeMenuItem;
     }
+
+	@Override
+	public void setOfflineModeMenuText(String text) {
+		this.setText(text);
+		
+	}
 }

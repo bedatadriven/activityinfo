@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -22,6 +23,7 @@ import org.sigmah.shared.domain.AdminEntity;
 import org.sigmah.shared.domain.Site;
 import org.sigmah.shared.domain.User;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.bedatadriven.rebar.persistence.client.ConnectionProvider;
 import com.extjs.gxt.ui.client.data.SortInfo;
 import com.google.inject.Inject;
@@ -110,6 +112,84 @@ public class SiteTableLocalDAO extends OfflineDAO<User, Integer> {
 		return buff; 
 	}
 
+	public Map<Integer, Map<Integer, Boolean>> getSiteIdToAttributeMap(Set<Integer> siteIds) {
+		Map<Integer, Map<Integer, Boolean>> map = new HashMap<Integer, Map<Integer, Boolean>>(
+				siteIds.size());
+		Connection conn = null;
+		try {
+			conn = provider.getConnection();
+			StringBuilder buff = new StringBuilder();
+			buff.append(SITE_ATTRIBUTES_QUERY);
+			buff.append(" where Site.SiteId in (");
+			append(buff, siteIds);
+			buff.append(")");
+			Statement stmt = conn.createStatement();
+			ResultSet r = stmt.executeQuery(buff.toString());
+			r = stmt.getResultSet();
+
+			while (r.next()) {
+
+				Log.debug("found attribute");
+				Map<Integer, Boolean> attributes;
+				Integer siteId = r.getInt(1);
+				if (map.containsKey(siteId)) {
+					attributes = map.get(siteId);
+				} else {
+					attributes = new HashMap<Integer,Boolean>();
+					map.put(siteId, attributes);
+				}
+				attributes.put(r.getInt(2), r.getBoolean(3));			
+				Log.debug("found attribute " + attributes);
+			}
+
+		} catch (SQLException e) {
+			Log.debug("Query Failed: " + e.getMessage());
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return map;
+	}
+	
+	public Map<Integer, Map<Integer, Double>> getSiteIdToIndicatorMap(Set<Integer> siteIds) {
+		Map<Integer, Map<Integer, Double>> map = new HashMap<Integer, Map<Integer, Double>>(
+				siteIds.size());
+		Connection conn = null;
+		try {
+			conn = provider.getConnection();
+			StringBuilder buff = new StringBuilder();
+			buff.append(SITE_INDICATOR_QUERY);
+			buff.append(" where Site.SiteId in (");
+			append(buff, siteIds);
+			buff.append(")");
+			Statement stmt = conn.createStatement();
+			ResultSet r = stmt.executeQuery(buff.toString());
+			r = stmt.getResultSet();
+
+			while (r.next()) {
+
+				Map<Integer, Double> indicators;
+				Integer siteId = r.getInt(1);
+				if (map.containsKey(siteId)) {
+					indicators = map.get(siteId);
+				} else {
+					indicators = new HashMap<Integer,Double>();
+					map.put(siteId, indicators);
+				}
+				indicators.put(r.getInt(2), r.getDouble(3));		
+
+				Log.debug("found indicator " + indicators);
+			}
+			
+		} catch (SQLException e) {
+			Log.debug("Query Failed: " + e.getMessage());
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return map;
+		
+	}
+	
+	
 	public Map<Integer, Set<AdminEntity>> getSiteIdToEntitiesMap(
 			Set<Integer> siteIds) {
 
@@ -120,14 +200,18 @@ public class SiteTableLocalDAO extends OfflineDAO<User, Integer> {
 				siteIds.size());
 		try {
 			conn = provider.getConnection();
-			PreparedStatement stmt = conn
-					.prepareStatement(ENTITY_TO_SITES_QUERY);
-			ResultSet r;
-			r = stmt.getResultSet();
-
+			StringBuilder buff = new StringBuilder();
+			buff.append(ENTITY_TO_SITES_QUERY);
+			buff.append(" where Site.SiteId in (");
+			append(buff, siteIds);
+			buff.append(")");
+		
+			Statement stmt = conn.createStatement();
+			ResultSet r = stmt.executeQuery(buff.toString());
 			HashMap<Integer, AdminEntity> cache = new HashMap<Integer, AdminEntity>();
 
-			if (r != null && r.next()) {
+			while ( r.next()) {
+				Log.debug("found entity");
 				Integer siteId = r.getInt(1);
 				Set<AdminEntity> adminSet;
 				if (map.containsKey(siteId)) {
@@ -144,48 +228,86 @@ public class SiteTableLocalDAO extends OfflineDAO<User, Integer> {
 					linked = adminEntityDAO.findById(adminId);
 					cache.put(adminId, linked);
 				}
+				Log.debug(linked.toString());
 				adminSet.add(linked);
+				Log.debug("entity set " + adminSet.toString());
 			}
 		} catch (SQLException e) {
+			Log.debug("Query Failed: " + e.getMessage());
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} 
 		return map;
 	}
 		
+    private StringBuilder append(StringBuilder buff, Set l){
+    	boolean first = true;
+    	for (Object o: l) {
+    		if (!first) {
+    			buff.append(", ");
+    		} else {
+    			first = false;
+    		}
+    		buff.append(o.toString());
+    	}
+    	return buff;
+    }
+	
+	private final static String  SITE_ATTRIBUTES_QUERY = 
+			"select"
+		+"      site.SiteId,"
+		+"      attribute7_.AttributeId as attributeId,"
+		+"      attributev6_.Value as attributeValue "
+		+"  from"
+		+"      Site site"
+		+"  inner join"
+		+"      Activity activity4_ "
+		+"          on site.ActivityId=activity4_.ActivityId "
+		+"  inner join"
+		+"      AttributeValue attributev6_ "
+		+"          on site.SiteId=attributev6_.SiteId "
+		+"  inner join"
+		+"      Attribute attribute7_ "
+		+"          on attributev6_.AttributeId=attribute7_.AttributeId ";
+
+	
+	private final static String SITE_INDICATOR_QUERY = 
+			" select"
+		+"       site.SiteId,"
+		+"       indicator8_.IndicatorId as y1_,"
+		+"       indicator8_.Aggregation as y2_,"
+		+"       values7_.Value as y3_ "
+		+"   from"
+		+"       Site site"
+		+"   inner join"
+		+"       ReportingPeriod period6_ "
+		+"           on site.SiteId=period6_.SiteId "
+		+"   inner join"
+		+"       IndicatorValue values7_ "
+		+"           on period6_.ReportingPeriodId=values7_.ReportingPeriodId "
+		+"   inner join"
+		+"       Indicator indicator8_ "
+		+"           on values7_.IndicatorId=indicator8_.IndicatorId";
+	
 		
+	
 	private final static String  ENTITY_TO_SITES_QUERY = 
 		"    select"
-		+"       this_.SiteId as siteId,"
+		+"       site.SiteId as siteId,"
 		+"       entity6_.AdminEntityId as adminId "
 		+"   from"
-		+"       Site this_ "
+		+"       Site site "
 		+"   inner join"
 		+"       Activity activity4_ "
-		+"           on this_.ActivityId=activity4_.ActivityId "
-		+"   inner join"
-		+"       UserDatabase database5_ "
-		+"           on activity4_.DatabaseId=database5_.DatabaseId "
-		+"   left outer join"
-		+"       Project database5_1_ "
-		+"           on database5_.DatabaseId=database5_1_.DatabaseId "
+		+"           on site.ActivityId=activity4_.ActivityId "
 		+"   inner join"
 		+"       Location location2_ "
-		+"           on this_.LocationId=location2_.LocationID "
+		+"           on site.LocationId=location2_.LocationID "
 		+"   inner join"
 		+"       LocationAdminLink adminentit12_ "
 		+"           on location2_.LocationID=adminentit12_.LocationId "
 		+"   inner join"
 		+"       AdminEntity entity6_ "
-		+"           on adminentit12_.AdminEntityId=entity6_.AdminEntityId "
-		+"   inner join"
-		+"       AdminLevel level7_ "
-		+"           on entity6_.AdminLevelId=level7_.AdminLevelId "
-		+"   inner join"
-		+"       LocationType locationty3_ "
-		+"           on location2_.LocationTypeID=locationty3_.LocationTypeId "
-		+"   inner join"
-		+"       Partner partner1_ "
-		+"           on this_.PartnerId=partner1_.PartnerId";
+		+"           on adminentit12_.AdminEntityId=entity6_.AdminEntityId ";
     
 }

@@ -5,7 +5,6 @@
 
 package org.sigmah.shared.dao;
 
-import org.sigmah.server.dao.SiteTableDAO;
 
 
 /**  

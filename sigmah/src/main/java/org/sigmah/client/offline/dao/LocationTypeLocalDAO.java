@@ -33,7 +33,6 @@ public class LocationTypeLocalDAO extends OfflineDAO<LocationType, Integer> {
 	public List<LocationType> findLocationTypesByCountry(Country c) {
 		Query query = em.createNativeQuery(
 				"select * from LocationType where countryid = " + c.getId() , LocationType.class);
-		Log.debug("result size " +query.getResultList().size());
 		return query.getResultList();
 	}
 

@@ -1,6 +1,5 @@
 package org.sigmah.shared.dto;
 
-import org.sigmah.server.domain.ProjectModel;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 

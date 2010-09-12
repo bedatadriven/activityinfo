@@ -12,6 +12,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import org.sigmah.client.dto.ClientDTOMapper;
+import org.sigmah.client.inject.DummyConnection;
 import org.sigmah.client.offline.command.handler.GetSitesHandlerLocal;
 import org.sigmah.client.offline.dao.ActivityLocalDAO;
 import org.sigmah.client.offline.dao.AdminLocalDAO;
@@ -28,6 +29,7 @@ import org.sigmah.shared.dao.UserDatabaseDAO;
 import org.sigmah.shared.domain.ActivityInfoOfflineUnit;
 import org.sigmah.shared.dto.DTOMapper;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.bedatadriven.rebar.persistence.client.ConnectionProvider;
 import com.bedatadriven.rebar.persistence.client.PersistenceUnit;
 import com.bedatadriven.rebar.sync.client.BulkUpdaterAsync;
@@ -43,6 +45,7 @@ public class OfflineModule extends AbstractGinModule {
 
     @Override
     protected void configure() {
+
         bind(OfflineManager.View.class).to(OfflineMenu.class);
         bind(BulkUpdaterAsync.class).to(GearsBulkUpdater.class);
         bind(ConnectionProvider.class).to(LocalConnectionProvider.class).in(Singleton.class);	
@@ -75,7 +78,11 @@ public class OfflineModule extends AbstractGinModule {
   
     @Provides
     protected Connection providesConnection(ConnectionProvider conProvider) throws SQLException {
-    	return conProvider.getConnection();
+    	try {
+    		return conProvider.getConnection();
+    	} catch (Exception e) {
+    		Log.debug("No gears db connection conneciton: using dummy connection msg:" + e.getMessage());
+    	}
+    	return new DummyConnection();
     }
-   
 }

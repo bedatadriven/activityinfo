@@ -42,21 +42,14 @@
     <!-- Enable other locales -->
     <extend-property name="locale" values="en" />
     <set-property-fallback name="locale" value="en"/>
-	<!--  
- 	<generate-with class="com.bedatadriven.rebar.persistence.rebind.PersistenceUnitGenerator">
-        <when-type-assignable class="org.sigmah.shared.domain.ActivityInfoOfflineUnit"/>
-        <when-property-is name="gears.installed" value="true"/>
-    </generate-with>
-    -->
-  	<!-- Use local dispatcher if gears is installed -->
-  	<!--  
-  	<replace-with class="com.example.google.gwt.gearsdatabasetutorial.client.NoGears">
-    	<when-type-is class="com.example.google.gwt.gearsdatabasetutorial.client.GearsOfflineTutorial"/>
-    	<when-property-is name="gears.installed" value="true"/>
-  	</replace-with>
-	-->
-	
-    <servlet path="/cmd" class="org.sigmah.server.endpoint.gwtrpc.CommandServlet" />
 
+  	<!-- A binding for when we can't find gears -->
+  	<!--  
+  	<replace-with class="org.sigmah.client.ActivityInfoEntryPointNoGears">
+    	<when-type-is class="org.sigmah.client.ActivityInfoEntryPoint"/>
+    	<when-property-is name="gears.installed" value="false"/>
+  	</replace-with>
+    <servlet path="/cmd" class="org.sigmah.server.endpoint.gwtrpc.CommandServlet" />
+    -->
 
 </module>

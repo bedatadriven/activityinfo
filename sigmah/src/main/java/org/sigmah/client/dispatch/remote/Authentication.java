@@ -28,6 +28,14 @@ public class Authentication {
         this.authToken = authToken;
         this.email = email;
     }
+    
+    /**
+     * Default constuctor for dummy tokens.
+     * 
+     */
+    public Authentication() {
+ 
+    }
 
     /**
      * @return Unique ID for the user, from the server's database

@@ -24,6 +24,7 @@ import com.google.gwt.user.client.Window;
 import com.google.inject.Inject;
 
 import org.sigmah.client.dispatch.remote.Authentication;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.inject.AppInjector;
 import org.sigmah.client.offline.sync.InstallSteps;
 
@@ -54,24 +55,35 @@ public class OfflineManager {
     private final AppInjector injector;
     public interface View {
         Observable getEnableOfflineModeMenuItem();
+        void setOfflineModeMenuItemText(String text);
+        void setOfflineModeMenuText(String text);
     }
 
     @Inject
-    public OfflineManager(View view, OfflineStatus status, AppInjector injector) {
+    public OfflineManager(final View view, final OfflineStatus status, AppInjector injector) {
         this.view = view;
         this.injector = injector;
         
-	//	if (status.isOfflineEnabled()) { 
-			//TODO FIX
-			//this.view.getEnableOfflineModeMenuItem().;
-	//	} else {
-			this.view.getEnableOfflineModeMenuItem().addListener(Events.Select, new Listener<BaseEvent>() {
-            @Override
-            public void handleEvent(BaseEvent baseEvent) {
-                enableOffline();
-            }
-			});
-		//}
+		if (status.isOfflineEnabled()) { 
+			this.view.setOfflineModeMenuItemText(I18N.CONSTANTS.reloadOffline());
+			this.view.setOfflineModeMenuText(I18N.CONSTANTS.offlineMode());
+		} else {
+			this.view.setOfflineModeMenuItemText(I18N.CONSTANTS.enableOffline());
+			this.view.setOfflineModeMenuText(I18N.CONSTANTS.offlineModeOnlineOnly());
+		}
+			
+		this.view.getEnableOfflineModeMenuItem().addListener(Events.Select, new Listener<BaseEvent>() {
+			@Override
+        	public void handleEvent(BaseEvent baseEvent) {
+				status.flushCache();
+				enableOffline();
+			
+			// TODO use a callback to set status when sync completes	
+			//	view.setOfflineModeMenuItemText(I18N.CONSTANTS.reloadOffline());
+			//	view.setOfflineModeMenuText(I18N.CONSTANTS.offlineMode());
+				
+			}
+        });
     }
 
     private void enableOffline() {

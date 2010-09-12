@@ -48,7 +48,7 @@ public final class CountryDTO extends BaseModelData implements DTO {
 	public void setName(String value) {
 		set("name", value);
 	}
-	
+
 	public List<AdminLevelDTO> getAdminLevels() {
 		return this.adminLevels;
 	}

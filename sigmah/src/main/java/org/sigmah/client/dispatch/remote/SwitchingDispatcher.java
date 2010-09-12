@@ -10,9 +10,9 @@ import org.sigmah.client.offline.OfflineStatus;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.command.GetSites;
+import org.sigmah.shared.command.OfflineSupport;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.dao.UserDAO;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.CommandException;
 
@@ -26,28 +26,26 @@ public class SwitchingDispatcher implements Dispatcher, DispatchEventSource {
 	private RemoteDispatcher remoteDispatcher;
     protected final OfflineStatus status;
     protected final Authentication authentication;
-    private UserDAO userDAO; 
     private AppInjector injector;
     
 	@Inject
-	public SwitchingDispatcher(AppInjector injector, RemoteDispatcher remoteDispatcher, OfflineStatus status, Authentication authentication, UserDAO userDAO) {
+	public SwitchingDispatcher(AppInjector injector, RemoteDispatcher remoteDispatcher, OfflineStatus status, Authentication authentication) {
 		this.remoteDispatcher = remoteDispatcher;
 		this.status = status;
 		this.authentication = authentication;
 		this.injector = injector;
-		this.userDAO = userDAO;
 	}
 	
 	@Override
 	public <T extends CommandResult> void execute(Command<T> command,
 			AsyncMonitor monitor, AsyncCallback<T> callback) {
 		// TODO ; turn this back on when stable
-	//	if (status.isOfflineEnabled() && command instanceof OfflineSupport) {
-	//		runCommandOnLocal(command, monitor, callback);
-	//		Log.debug("Running command on local:" + command.toString());
-	//	} else {
+		if (status.isOfflineEnabled() && command instanceof OfflineSupport) {
+			Log.debug("Running command on local:" + command.toString());
+			runCommandOnLocal(command, monitor, callback);
+		} else {
 			remoteDispatcher.execute(command, monitor, callback);
-	//	}
+		}
 	}
 
 	@SuppressWarnings("unchecked")

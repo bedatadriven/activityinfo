@@ -5,16 +5,24 @@
 
 package org.sigmah.client.offline;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import org.sigmah.client.dispatch.remote.Authentication;
+
 import com.bedatadriven.rebar.persistence.client.ConnectionProvider;
 import com.bedatadriven.rebar.sql.client.GearsConnectionFactory;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import org.sigmah.client.dispatch.remote.Authentication;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
+/**
+ * 
+ * Wraps a gears connection factory.
+ * 
+ * @author jon
+ *
+ */
 @Singleton
 public class LocalConnectionProvider implements Provider<Connection>, ConnectionProvider {
 
@@ -26,16 +34,18 @@ public class LocalConnectionProvider implements Provider<Connection>, Connection
         this.auth = auth;
     }
 
-    public Connection get() {
-        if(conn == null) {
-            try {
-                conn = GearsConnectionFactory.getConnection(auth.getLocalDbName());
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return conn;
-    }
+	public Connection get() {
+
+		if (conn == null) {
+			try {
+				conn = GearsConnectionFactory.getConnection(auth
+						.getLocalDbName());
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		return conn;
+	}
 
 	@Override
 	public Connection getConnection() throws SQLException {

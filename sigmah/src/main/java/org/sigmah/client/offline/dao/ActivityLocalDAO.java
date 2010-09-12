@@ -6,6 +6,7 @@
 package org.sigmah.client.offline.dao;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
@@ -13,6 +14,9 @@ import javax.persistence.Query;
 
 import org.sigmah.shared.dao.ActivityDAO;
 import org.sigmah.shared.domain.Activity;
+import org.sigmah.shared.domain.LocationType;
+
+import com.allen_sauer.gwt.log.client.Log;
 
 import com.google.inject.Inject;
 
@@ -25,9 +29,12 @@ import com.google.inject.Inject;
 public class ActivityLocalDAO extends OfflineDAO<Activity, Integer> implements
 		ActivityDAO {
 
+	LocationTypeLocalDAO locationTypeDAO;
+	
 	@Inject
-	protected ActivityLocalDAO(EntityManager em) {
+	protected ActivityLocalDAO(EntityManager em, LocationTypeLocalDAO locationTypeDAO) {
 		super(em);
+		this.locationTypeDAO = locationTypeDAO;
 	}
 
 	@Override
@@ -51,7 +58,17 @@ public class ActivityLocalDAO extends OfflineDAO<Activity, Integer> implements
 		StringBuilder  buff= new StringBuilder();
 		buff.append(" select * from Activity where databaseId = ").append(databaseId).append(" order by name");
 		Query query = em.createNativeQuery(buff.toString(), Activity.class);
-		return new HashSet<Activity>(query.getResultList());
+		List <Activity> l = query.getResultList();
+		for (Activity a: l) {
+			LocationType t = a.getLocationType();
+			//TODO force load until lazy loading gets fixed
+			t = locationTypeDAO.findById(t.getId());
+			Log.debug(t.getId() + " " + t.getName() + " ===>" + t.getBoundAdminLevel());
+			a.setLocationType(t);
+		}
+		return new HashSet<Activity>(l);
+		
+		//return new HashSet<Activity>(query.getResultList());
 	}
 
 }

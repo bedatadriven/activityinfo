@@ -1,3 +1,8 @@
+/*
+ * All Sigmah code is released under the GNU General Public License v3
+ * See COPYRIGHT.txt and LICENSE.txt.
+ */
+
 package org.sigmah.client.offline.command.handler;
 
 import java.util.ArrayList;
@@ -21,11 +26,18 @@ import org.sigmah.shared.dto.DTOMapper;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.exception.CommandException;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.SortInfo;
 import com.google.inject.Inject;
 
 
+/**
+ * An off-line CommandHandler for the GetSites command.
+ * 
+ * @author jon
+ *
+ */
 public class GetSitesHandlerLocal implements GetSitesHandler<GetSites> {
 
     private final SiteTableLocalDAO siteTableDAO;
@@ -144,31 +156,72 @@ public class GetSitesHandlerLocal implements GetSitesHandler<GetSites> {
         	sites.put(s.getId(), mapper.map(s, SiteDTO.class));
         }
         
-        // add admin entities
-        Map<Integer,Set<AdminEntity>> map = siteTableDAO.getSiteIdToEntitiesMap(sites.keySet());
+        Log.debug("START ADD ENITTIES");
         
-        for (SiteDTO s: sites.values()) {
-        	if (map.containsKey(s.getId())) {
-        		for (AdminEntity ae: map.get(s.getId())) {
-        			s.setAdminEntity(ae.getLevel().getId(), mapper.map(ae, AdminEntityDTO.class));
-        		}
-        	}
-        }
-        
-        
-        // Map<Integer, Set<AdminEntity>> getSiteIdToEntitiesMap(
-    	//		Set<Integer> siteIds)
-        
+        // add entities
+        addEntities(sites);
         
         // add attribute values
-        
-        
-        
+        addAttributes(sites);
+
         // add indicator values
-    
+        addIndicators(sites);
+        
+        Log.debug("END ADD SITES");
         
         return new SiteResult(new ArrayList(sites.values()), offset, totalSize);
 		
     }
+    
+    private void addEntities( Map<Integer, SiteDTO> sites) {
+    	// add admin entities
+        Map<Integer,Set<AdminEntity>> map = siteTableDAO.getSiteIdToEntitiesMap(sites.keySet());
+        Log.debug("got entity size: " + map.size());
+         
+        Map<Integer,AdminEntityDTO> dtoMap = new HashMap<Integer,AdminEntityDTO>();
+        
+        for (SiteDTO s: sites.values()) {
+        	if (map.containsKey(s.getId())) {
+        		for (AdminEntity ae: map.get(s.getId())) {
+        		    AdminEntityDTO dto;
+        		    if (dtoMap.containsKey(ae.getId())) {
+        		    	dto = dtoMap.get(ae.getId());
+        		    } else {
+        		    	dto = mapper.map(ae, AdminEntityDTO.class);
+        		    }
+        		    
+        			s.setAdminEntity(ae.getLevel().getId(), dto);
+        			
+        		}
+        	}
+        }
+        
+    }
 
+	private void addAttributes(Map<Integer, SiteDTO> sites) {
+		Map<Integer, Map<Integer, Boolean>> map = siteTableDAO
+				.getSiteIdToAttributeMap(sites.keySet());
+		  Log.debug("got attr size: " + map.size());
+		for (SiteDTO s : sites.values()) {
+			if (map.containsKey(s.getId())) {
+
+				for (Integer attId : map.get(s.getId()).keySet()) {
+					s.setAttributeValue(attId, map.get(s.getId()).get(attId));
+				}
+			}
+		}
+	}
+
+	private void addIndicators(Map<Integer, SiteDTO> sites) {
+		Map<Integer, Map<Integer, Double>> map = siteTableDAO
+				.getSiteIdToIndicatorMap(sites.keySet());
+		  Log.debug("got indicator size: " + map.size());
+		for (SiteDTO s : sites.values()) {
+			if (map.containsKey(s.getId())) {
+				for (Integer inId : map.get(s.getId()).keySet()) {
+					s.setIndicatorValue(inId, map.get(s.getId()).get(inId));
+				}
+			}
+		}
+	}
 }
