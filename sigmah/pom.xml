@@ -346,9 +346,12 @@
             <url>http://nexus.bedatadriven.com/content/repositories/oss-releases</url>
         </repository>
         <repository>
-            <id>bedatadriven-oss-releases</id>
+            <id>bedatadriven-oss-snapshots</id>
             <name>Bedatadriven Snapshots</name>
             <url>http://nexus.bedatadriven.com/content/repositories/oss-snapshots</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>bedatadriven-thirdparty</id>
