@@ -10,8 +10,6 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-
-import org.mortbay.log.Log;
 import org.sigmah.server.dao.AuthenticationDAO;
 import org.sigmah.server.dao.Transactional;
 import org.sigmah.server.domain.Authentication;

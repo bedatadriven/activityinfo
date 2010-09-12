@@ -5,7 +5,6 @@
 
 package org.sigmah.server.auth.impl;
 
-import org.mortbay.log.Log;
 import org.sigmah.server.auth.Authenticator;
 import org.sigmah.shared.domain.User;
 
