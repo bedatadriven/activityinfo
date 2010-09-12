@@ -95,7 +95,7 @@
 
 
         <!--  Other clientside APIs  -->
-        <dependency>                                    
+        <dependency>
             <groupId>com.extjs</groupId>
             <artifactId>gxt</artifactId>
             <version>2.1.1</version>
@@ -132,12 +132,33 @@
             <version>1.2-SNAPSHOT</version>
         </dependency>
         <dependency>
+            <groupId>com.bedatadriven.rebar</groupId>
+            <artifactId>rebar-persistence</artifactId>
+            <version>0.2-SNAPSHOT</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.bedatadriven.rebar</groupId>
+            <artifactId>rebar-sync</artifactId>
+            <version>0.4-SNAPSHOT</version>
+        </dependency>
+        
+        <!-- GWT DEV is required for MockPersistenceUnitFactory -->
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-dev</artifactId>
+            <version>${gwtVersion}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.6.17</version>
             <scope>test</scope>
         </dependency>
- 
+
 
         <!--  Dependency Injection Framework -->
 
@@ -327,11 +348,11 @@
             <scope>test</scope>
         </dependency>
         <!-- Apache Commons File Upload -->
- 		<dependency>
- 			<groupId>commons-fileupload</groupId>
- 			<artifactId>commons-fileupload</artifactId>
- 			<version>1.2.2</version>
- 		</dependency>
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.2.2</version>
+        </dependency>
     </dependencies>
 
     <repositories>
