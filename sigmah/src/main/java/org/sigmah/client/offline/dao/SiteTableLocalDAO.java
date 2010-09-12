@@ -211,7 +211,6 @@ public class SiteTableLocalDAO extends OfflineDAO<User, Integer> {
 			HashMap<Integer, AdminEntity> cache = new HashMap<Integer, AdminEntity>();
 
 			while ( r.next()) {
-				Log.debug("found entity");
 				Integer siteId = r.getInt(1);
 				Set<AdminEntity> adminSet;
 				if (map.containsKey(siteId)) {

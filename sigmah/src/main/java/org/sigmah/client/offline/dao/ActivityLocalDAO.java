@@ -6,7 +6,6 @@
 package org.sigmah.client.offline.dao;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
@@ -14,9 +13,6 @@ import javax.persistence.Query;
 
 import org.sigmah.shared.dao.ActivityDAO;
 import org.sigmah.shared.domain.Activity;
-import org.sigmah.shared.domain.LocationType;
-
-import com.allen_sauer.gwt.log.client.Log;
 
 import com.google.inject.Inject;
 
@@ -58,6 +54,7 @@ public class ActivityLocalDAO extends OfflineDAO<Activity, Integer> implements
 		StringBuilder  buff= new StringBuilder();
 		buff.append(" select * from Activity where databaseId = ").append(databaseId).append(" order by name");
 		Query query = em.createNativeQuery(buff.toString(), Activity.class);
+		/*
 		List <Activity> l = query.getResultList();
 		for (Activity a: l) {
 			LocationType t = a.getLocationType();
@@ -67,8 +64,8 @@ public class ActivityLocalDAO extends OfflineDAO<Activity, Integer> implements
 			a.setLocationType(t);
 		}
 		return new HashSet<Activity>(l);
-		
-		//return new HashSet<Activity>(query.getResultList());
+		*/
+		return new HashSet<Activity>(query.getResultList());
 	}
 
 }
