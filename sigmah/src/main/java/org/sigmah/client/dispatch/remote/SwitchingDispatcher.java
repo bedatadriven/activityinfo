@@ -1,24 +1,26 @@
+/*
+ * All Sigmah code is released under the GNU General Public License v3
+ * See COPYRIGHT.txt and LICENSE.txt.
+ */
+
 package org.sigmah.client.dispatch.remote;
 
-import org.sigmah.client.dispatch.AsyncMonitor;
-import org.sigmah.client.dispatch.CommandProxy;
-import org.sigmah.client.dispatch.DispatchEventSource;
-import org.sigmah.client.dispatch.DispatchListener;
-import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.inject.AppInjector;
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
+import org.sigmah.client.dispatch.*;
 import org.sigmah.client.offline.OfflineStatus;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.command.OfflineSupport;
 import org.sigmah.shared.command.handler.CommandHandler;
+import org.sigmah.shared.command.handler.GetSchemaHandler;
+import org.sigmah.shared.command.handler.GetSitesHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.CommandException;
-
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.Inject;
 
 
 public class SwitchingDispatcher implements Dispatcher, DispatchEventSource {
@@ -26,15 +28,18 @@ public class SwitchingDispatcher implements Dispatcher, DispatchEventSource {
 	private RemoteDispatcher remoteDispatcher;
     protected final OfflineStatus status;
     protected final Authentication authentication;
-    private AppInjector injector;
-    
-	@Inject
-	public SwitchingDispatcher(AppInjector injector, RemoteDispatcher remoteDispatcher, OfflineStatus status, Authentication authentication) {
+    private final Provider<GetSchemaHandler> getSchemaHandler;
+    private final Provider<GetSitesHandler> getSitesHandler;
+
+    @Inject
+	public SwitchingDispatcher(RemoteDispatcher remoteDispatcher, OfflineStatus status, Authentication authentication,
+                            Provider<GetSchemaHandler> getSchemaHandler, Provider<GetSitesHandler> getSitesHandler) {
 		this.remoteDispatcher = remoteDispatcher;
 		this.status = status;
 		this.authentication = authentication;
-		this.injector = injector;
-	}
+        this.getSchemaHandler = getSchemaHandler;
+        this.getSitesHandler = getSitesHandler;
+    }
 	
 	@Override
 	public <T extends CommandResult> void execute(Command<T> command,
@@ -69,9 +74,9 @@ public class SwitchingDispatcher implements Dispatcher, DispatchEventSource {
 	private <T extends CommandHandler> T getHandler(Command c) {
 		// TODO enable more offline schema handlers
 		if (c instanceof GetSchema) {
-			return (T) injector.createGetSchemaHandler();
+			return (T) getSchemaHandler.get();
 		} else if (c instanceof GetSites) {
-			return (T) injector.createGetSitesHandler();
+			return (T) getSitesHandler.get();
 		} else {				
 			throw new IllegalArgumentException("No handler class for " + c);
 		}
