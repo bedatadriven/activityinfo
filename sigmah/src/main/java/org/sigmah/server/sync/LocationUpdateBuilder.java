@@ -80,15 +80,18 @@ public class LocationUpdateBuilder implements UpdateBuilder {
         }
         builder.finishPreparedStatement();
 
-        List<Object[]> joins = em.createQuery("SELECT loc.id, e.id FROM Location loc JOIN loc.adminEntities e WHERE loc.id IN (:ids)")
-                .setParameter("ids", locationIds)
-                .getResultList();
+        if(!locations.isEmpty()) {
+            List<Object[]> joins = em.createQuery("SELECT loc.id, e.id FROM Location loc JOIN loc.adminEntities e WHERE loc.id IN (:ids)")
+                    .setParameter("ids", locationIds)
+                    .getResultList();
 
-        builder.beginPreparedStatement("insert into LocationAdminLink (LocationId, AdminEntityId) values (?, ?)");
-        for(Object[] join : joins) {
-            builder.addExecution(join[0], join[1]);
+
+            builder.beginPreparedStatement("insert into LocationAdminLink (LocationId, AdminEntityId) values (?, ?)");
+            for(Object[] join : joins) {
+                builder.addExecution(join[0], join[1]);
+            }
+            builder.finishPreparedStatement();
         }
-        builder.finishPreparedStatement();
 
         return builder.asJson();
     }

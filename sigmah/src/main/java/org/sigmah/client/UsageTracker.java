@@ -97,7 +97,9 @@ public class UsageTracker {
     }
 
     private native void doTrackPageView(String pageName) /*-{
-        $wnd.pageTracker._trackPageview(pageName);
+        if($wnd.pageTracker) {
+            $wnd.pageTracker._trackPageview(pageName);
+         }
     }-*/;
 
 
@@ -110,6 +112,8 @@ public class UsageTracker {
     }
 
     private native void doSetCustomVar(int slot, String variableName, String value, int scope) /*-{
-        $wnd.pageTracker._setCustomVar(slot, variableName, value, scope);
+        if($wnd.pageTracker) {
+            $wnd.pageTracker._setCustomVar(slot, variableName, value, scope);
+        }
     }-*/;
 }

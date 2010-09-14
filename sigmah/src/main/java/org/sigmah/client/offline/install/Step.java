@@ -3,7 +3,7 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.client.offline.sync;
+package org.sigmah.client.offline.install;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 

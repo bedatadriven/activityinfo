@@ -73,7 +73,11 @@ public class SiteUpdateBuilder implements UpdateBuilder {
 
         SyncRegionUpdate update = new SyncRegionUpdate();
         update.setComplete(all.size() < MAX_RESULTS);
-        update.setVersion(TimestampHelper.toString(all.get(all.size()-1).getDateEdited()));
+        if(all.isEmpty()) {
+            update.setVersion(request.getLocalVersion());
+        } else {
+            update.setVersion(TimestampHelper.toString(all.get(all.size()-1).getDateEdited()));
+        }
         update.setSql(builder.asJson());
 
         return update;

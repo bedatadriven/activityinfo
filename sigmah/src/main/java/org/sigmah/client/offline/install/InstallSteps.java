@@ -3,7 +3,7 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.client.offline.sync;
+package org.sigmah.client.offline.install;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.bedatadriven.rebar.modulestore.client.ModuleStores;
@@ -19,6 +19,7 @@ public class InstallSteps {
 
     private List<Step> steps = new ArrayList<Step>();
     private Iterator<Step> stepIt;
+    private AsyncCallback callback;
 
     @Inject
     public InstallSteps(InitialSyncStep syncStep, CacheUserDetails cacheUserDetails) {
@@ -28,9 +29,11 @@ public class InstallSteps {
             steps.add(new CacheScript(ModuleStores.getPermutation()));
         }
         steps.add(syncStep);
+        steps.add(new ShortcutStep());
     }
 
-    public void run() {
+    public void run(AsyncCallback callback) {
+        this.callback = callback;
         stepIt = steps.iterator();
         runNext();
     }
@@ -44,6 +47,7 @@ public class InstallSteps {
             }
         }
         Log.debug("Offline installation done!");
+        callback.onSuccess(null);
     }
 
     private void executeStep(final Step step) {
@@ -52,6 +56,7 @@ public class InstallSteps {
             @Override
             public void onFailure(Throwable throwable) {
                 Log.error("Offline installation step failed: " + step.getDescription(), throwable);
+                callback.onFailure(null);
             }
 
             @Override

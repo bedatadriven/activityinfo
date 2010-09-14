@@ -3,7 +3,7 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.client.offline.sync;
+package org.sigmah.client.offline.install;
 
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -15,6 +15,7 @@ import java.util.Date;
 public class CacheUserDetails implements Step {
 
     private final Authentication authentication;
+    public static final long ONE_YEAR = 1000l * 60 * 60 * 24 * 365;
 
     @Inject
     public CacheUserDetails(Authentication authentication) {
@@ -34,7 +35,8 @@ public class CacheUserDetails implements Step {
     @Override
     public void execute(AsyncCallback<Void> callback) {
         Date now = new Date();
-        Date expires = new Date(now.getTime() * 1000 * 60 * 60 * 24 * 365);
+        Date expires = new Date(now.getTime() + ONE_YEAR);
+        Cookies.setCookie("authToken", authentication.getAuthToken(), expires);
         Cookies.setCookie("userId", Integer.toString(authentication.getUserId()), expires);
         Cookies.setCookie("email", authentication.getEmail(), expires);
 

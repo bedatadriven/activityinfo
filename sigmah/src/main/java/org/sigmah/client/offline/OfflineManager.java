@@ -9,24 +9,16 @@
 package org.sigmah.client.offline;
 
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.gears.client.Factory;
-import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
-
-import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.inject.AppInjector;
-import org.sigmah.client.offline.sync.InstallSteps;
+import org.sigmah.client.offline.install.InstallSteps;
 
 /**
  * With regards to offline functionality, the application can be in one of three
@@ -63,6 +55,8 @@ public class OfflineManager {
     public OfflineManager(final View view, final OfflineStatus status, AppInjector injector) {
         this.view = view;
         this.injector = injector;
+
+        Log.trace("OfflineManager: starting");
         
 		if (status.isOfflineEnabled()) { 
 			this.view.setOfflineModeMenuItemText(I18N.CONSTANTS.reloadOffline());
@@ -77,11 +71,6 @@ public class OfflineManager {
         	public void handleEvent(BaseEvent baseEvent) {
 				status.flushCache();
 				enableOffline();
-			
-			// TODO use a callback to set status when sync completes	
-			//	view.setOfflineModeMenuItemText(I18N.CONSTANTS.reloadOffline());
-			//	view.setOfflineModeMenuText(I18N.CONSTANTS.offlineMode());
-				
 			}
         });
     }
@@ -100,7 +89,25 @@ public class OfflineManager {
     private void startInstall() {
         Log.debug("Starting offline installation...");
         InstallSteps steps = injector.getInstallSteps();
-        steps.run();
+        steps.run(new AsyncCallback() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                MessageBox.alert("Offline installation", "Oh no, installation failed. You won't yet" +
+                        "be able to access ActivityInfo without an internet connection.", null);
+            }
+
+            @Override
+            public void onSuccess(Object o) {
+                onInstallSucceeded();
+            }
+        });
+    }
+
+    private void onInstallSucceeded() {
+        view.setOfflineModeMenuItemText(I18N.CONSTANTS.reloadOffline());
+        view.setOfflineModeMenuText(I18N.CONSTANTS.offlineMode());
+        MessageBox.alert("Offline installation", "Success! You are now ready to use ActivityInfo without" +
+                " an internet connection.", null);           
     }
 
     private void gearsNotInstalled() {
@@ -112,5 +119,4 @@ public class OfflineManager {
             }
         });
     }
-    
 }
