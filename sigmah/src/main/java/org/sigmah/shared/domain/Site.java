@@ -387,7 +387,7 @@ public class Site implements java.io.Serializable, Deleteable {
 	@Override
 	@Transient
 	public boolean isDeleted() {
-		return getDateDeleted() == null;
+		return getDateDeleted() != null;
 	}
 
     /**
