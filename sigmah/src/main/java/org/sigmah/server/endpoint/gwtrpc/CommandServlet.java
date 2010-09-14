@@ -5,8 +5,7 @@
 
 package org.sigmah.server.endpoint.gwtrpc;
 
-import com.google.gwt.user.client.rpc.SerializationException;
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.google.gwt.rpc.server.RpcServlet;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
@@ -42,24 +41,10 @@ import java.util.List;
  * E.g. UpdateEntity => org.sigmah.server.command.handler.UpdateEntityHandler
  */
 @Singleton
-public class CommandServlet extends RemoteServiceServlet implements RemoteCommandService {
+public class CommandServlet extends RpcServlet implements RemoteCommandService {
 
     @Inject
     private Injector injector;
-
-    /**
-     * Overrides the default implementation to intercept exceptions (primarily serialization
-     * exceptions at this point) and log them.
-     *
-     * @param arg0
-     * @return
-     * @throws SerializationException
-     */
-    @Override
-    @LogException(emailAlert = true)
-    public String processCall(String arg0) throws SerializationException {
-        return super.processCall(arg0);
-    }
 
 
     @Override
