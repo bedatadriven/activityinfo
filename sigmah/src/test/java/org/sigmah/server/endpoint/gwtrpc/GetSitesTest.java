@@ -157,7 +157,7 @@ public class GetSitesTest extends CommandTestCase {
 
         PagingLoadResult<SiteDTO> result = execute(cmd);
 
-        Assert.assertEquals("rows", 3, result.getData().size());
+        Assert.assertEquals("rows", 5, result.getData().size());
     }
 
     @Test

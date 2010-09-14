@@ -16,6 +16,6 @@
         <property name="connection.url">jdbc:h2:mem:activityinfo;IGNORECASE=TRUE</property>
         <property name="show_sql">true</property>
         <property name="hbm2ddl.auto">create</property>
-        <property name="format_sql">false</property>
+        <property name="format_sql">true</property>
     </session-factory>
 </hibernate-configuration>

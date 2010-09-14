@@ -10,19 +10,19 @@ import com.google.inject.Inject;
 import org.json.JSONException;
 import org.sigmah.shared.command.GetSyncRegionUpdates;
 import org.sigmah.shared.command.result.SyncRegionUpdate;
-import org.sigmah.shared.domain.AdminEntity;
 import org.sigmah.shared.domain.Location;
 import org.sigmah.shared.domain.User;
 
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.sql.Timestamp;
+import java.util.*;
 
 public class LocationUpdateBuilder implements UpdateBuilder {
+    public static final int MAX_UPDATES = 25;
 
     private final EntityManager em;
     private List<Location> locations;
+    private Set<Integer> locationIds = new HashSet<Integer>();
     private List<Location> createdLocations = new ArrayList<Location>();
     private List<Location> updatedLocations = new ArrayList<Location>();
 
@@ -34,42 +34,36 @@ public class LocationUpdateBuilder implements UpdateBuilder {
     @Override
     public SyncRegionUpdate build(User user, GetSyncRegionUpdates request) throws JSONException {
 
-        Date lastUpdate = parseLocalState(request);
+        LocalState localState = new LocalState(request.getLocalVersion());
 
-        locations = em.createQuery("select l from Location l where l.dateEdited > :localVersion" +
-                " order by l.dateEdited")
-                .setParameter("localVersion", lastUpdate)
+        locations = em.createQuery("select loc from Location loc where loc.dateEdited > :localDate")
+                .setParameter("localDate", localState.lastDate)
+                .setMaxResults(MAX_UPDATES)
                 .getResultList();
 
 
         for(Location location : locations) {
-            if(location.getDateCreated().after(lastUpdate)) {
+            if(TimestampHelper.isAfter(location.getDateCreated(), localState.lastDate)) {
                 createdLocations.add(location);
             } else {
                 updatedLocations.add(location);
             }
+            locationIds.add(location.getId());
         }
 
         SyncRegionUpdate update = new SyncRegionUpdate();
         update.setVersion(locations.isEmpty() ? request.getLocalVersion() : lastVersion());
         update.setSql(makeJson());
+        update.setComplete(locations.size() < MAX_UPDATES);
         return update;
-    }
-
-    private Date parseLocalState(GetSyncRegionUpdates request) {
-        if(request.getLocalVersion() == null) {
-            return new Date(0L);
-        } else {
-            return new Date(Long.parseLong(request.getLocalVersion()));
-        }
     }
 
     private String lastVersion() {
         if(locations.isEmpty()) {
-            return "0";
+            return "0,0";
         }
 
-        return Long.toString(locations.get(locations.size()-1).getDateEdited().getTime());
+        return new LocalState(locations.get(locations.size()-1)).toVersionString();
     }
 
     private String makeJson() throws JSONException {
@@ -81,21 +75,46 @@ public class LocationUpdateBuilder implements UpdateBuilder {
         builder.update(Location.class, updatedLocations);
 
         builder.beginPreparedStatement("delete from LocationAdminLink where LocationId = ?");
-        for(Location l : locations) {
-            builder.addExecution(l.getId());
+        for(Location updateLoc : updatedLocations) {
+            builder.addExecution(updateLoc.getId());
         }
         builder.finishPreparedStatement();
 
+        List<Object[]> joins = em.createQuery("SELECT loc.id, e.id FROM Location loc JOIN loc.adminEntities e WHERE loc.id IN (:ids)")
+                .setParameter("ids", locationIds)
+                .getResultList();
+
         builder.beginPreparedStatement("insert into LocationAdminLink (LocationId, AdminEntityId) values (?, ?)");
-        for(Location l : locations) {
-            for(AdminEntity e : l.getAdminEntities()) {
-                builder.addExecution(l.getId(), e.getId());
-            }
+        for(Object[] join : joins) {
+            builder.addExecution(join[0], join[1]);
         }
         builder.finishPreparedStatement();
 
         return builder.asJson();
     }
 
+    private class LocalState {
+        private Timestamp lastDate;
+        private int lastId;
 
+        public LocalState(Location lastLocation) {
+            lastDate = (Timestamp) lastLocation.getDateEdited();
+            lastId = lastLocation.getId();
+        }
+
+        public LocalState(String cookie) {
+            if(cookie == null) {
+                lastDate = new Timestamp(0);
+                lastId = Integer.MIN_VALUE;
+            } else {
+                String[] parts = cookie.split(",");
+                lastDate = TimestampHelper.fromString(parts[0]);
+                lastId = Integer.parseInt(parts[1]);
+            }
+        }
+
+        public String toVersionString() {
+            return TimestampHelper.toString(lastDate) + "," + lastId;
+        }
+    }
 }

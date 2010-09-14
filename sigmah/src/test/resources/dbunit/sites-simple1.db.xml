@@ -215,7 +215,10 @@
 	
 	<partner partnerId="2" name="Solidarites"  />
 	<partnerInDatabase partnerId="2" databaseId="1"/>
-	
+
+    <!-- PEAR Plus Partners -->
+    <partnerInDatabase partnerId="1" databaseId="2"/>
+
 	<!-- Bavon at NRC has access to PEAR -->
  	<userPermission userPermissionId="1"
                      databaseId="1" userId="2" partnerId="1"

@@ -8,10 +8,7 @@ package org.sigmah.server.endpoint.gwtrpc.handler;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import org.json.JSONException;
-import org.sigmah.server.sync.AdminUpdateBuilder;
-import org.sigmah.server.sync.LocationUpdateBuilder;
-import org.sigmah.server.sync.SchemaUpdateBuilder;
-import org.sigmah.server.sync.UpdateBuilder;
+import org.sigmah.server.sync.*;
 import org.sigmah.shared.command.GetSyncRegionUpdates;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
@@ -40,6 +37,9 @@ public class GetSyncRegionUpdatesHandler implements CommandHandler<GetSyncRegion
 
         } else if(cmd.getRegionId().equals("locations")) {
             builder = injector.getInstance(LocationUpdateBuilder.class);
+
+        } else if(cmd.getRegionId().startsWith("site/")) {
+            builder = injector.getInstance(SiteUpdateBuilder.class);
 
         } else {
             throw new CommandException("Unknown sync region: " + cmd.getRegionId());

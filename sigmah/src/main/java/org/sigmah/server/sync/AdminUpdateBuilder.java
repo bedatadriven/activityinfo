@@ -16,7 +16,8 @@ import org.sigmah.shared.domain.User;
 
 import java.util.List;
 
-public class AdminUpdateBuilder implements UpdateBuilder {
+public class
+        AdminUpdateBuilder implements UpdateBuilder {
     private AdminDAO dao;
     protected int levelId;
     private AdminLocalState localState;
@@ -45,7 +46,7 @@ public class AdminUpdateBuilder implements UpdateBuilder {
 
             List<AdminEntity> entities = dao.query().level(levelId).execute();
             update.setSql(makeJson(entities));
-            localState.complete = false;
+            localState.complete = true;
             localState.version = LAST_VERSION_NUMBER;
         }
 

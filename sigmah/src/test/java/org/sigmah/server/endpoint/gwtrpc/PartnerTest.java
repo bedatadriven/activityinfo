@@ -20,23 +20,24 @@ import org.sigmah.test.InjectionSupport;
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/sites-simple1.db.xml")
 public class PartnerTest extends CommandTestCase {
+    public static final int PEAR_PLUS_DB_ID = 2;
+    public static final int SOL_ID = 2;
 
 
     @Test
     public void testAddPartner() throws Exception {
         PartnerDTO newPartner = new PartnerDTO();
-        newPartner.setName("NRC");
-        newPartner.setFullName("Norweigen Refugee Committe");
+        newPartner.setName("Solidarites");
 
-        CreateResult cr = execute(new AddPartner(2, newPartner));
+        CreateResult cr = execute(new AddPartner(PEAR_PLUS_DB_ID, newPartner));
 
-        Assert.assertEquals(1, cr.getNewId());
+        Assert.assertEquals(SOL_ID, cr.getNewId());
 
         SchemaDTO schema = execute(new GetSchema());
-        PartnerDTO partner = schema.getDatabaseById(2).getPartnerById(1);
+        PartnerDTO partner = schema.getDatabaseById(PEAR_PLUS_DB_ID).getPartnerById(SOL_ID);
 
         Assert.assertNotNull(partner);
-        Assert.assertEquals("NRC", partner.getName());
+        Assert.assertEquals(newPartner.getName(), partner.getName());
     }
 
     @Test
@@ -44,7 +45,6 @@ public class PartnerTest extends CommandTestCase {
         PartnerDTO newPartner = new PartnerDTO();
         newPartner.setName("VDE");
         newPartner.setFullName("Vision d'Espoir");
-
 
         CreateResult cr = execute(new AddPartner(1, newPartner));
 

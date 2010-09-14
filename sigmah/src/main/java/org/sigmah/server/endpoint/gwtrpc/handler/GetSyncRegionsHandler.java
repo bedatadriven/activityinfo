@@ -17,15 +17,18 @@ import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.UserDatabase;
 import org.sigmah.shared.exception.CommandException;
 
+import javax.persistence.EntityManager;
 import java.util.*;
 
 public class GetSyncRegionsHandler implements CommandHandler<GetSyncRegions> {
 
     private UserDatabaseDAO schemaDAO;
+    private final EntityManager entityManager;
 
     @Inject
-    public GetSyncRegionsHandler(UserDatabaseDAO schemaDAO) {
+    public GetSyncRegionsHandler(UserDatabaseDAO schemaDAO, EntityManager entityManager) {
         this.schemaDAO = schemaDAO;
+        this.entityManager = entityManager;
     }
 
     @Override
@@ -37,7 +40,7 @@ public class GetSyncRegionsHandler implements CommandHandler<GetSyncRegions> {
         regions.add(new SyncRegion("schema", true));
         regions.addAll(listAdminRegions(databases));
         regions.add(new SyncRegion("locations"));
-
+        regions.addAll(listSiteRegions(databases));
         return new SyncRegions(regions);
     }
 
@@ -55,4 +58,23 @@ public class GetSyncRegionsHandler implements CommandHandler<GetSyncRegions> {
         }
         return adminRegions;
     }
+
+    /**
+     * We need a separate sync region for each OrgUnit/UserDatabase combination
+     * because we may be given permission to view data at different times.
+     *
+     */
+    private Collection<? extends SyncRegion> listSiteRegions(List<UserDatabase> databases) {
+
+        List<Object[]> pairs = entityManager.createQuery(
+                "SELECT db.id, unit.id FROM UserDatabase db JOIN db.partners unit")
+                    .getResultList();
+
+        List<SyncRegion> siteRegions = new ArrayList<SyncRegion>();
+        for(Object[] pair : pairs) {
+            siteRegions.add(new SyncRegion("site/" + pair[0] + "/" + pair[1]));
+        }
+        return siteRegions;
+    }
+
 }

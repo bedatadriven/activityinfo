@@ -5,30 +5,18 @@
 
 package org.sigmah.server.sync;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import com.bedatadriven.rebar.sync.server.JpaUpdateBuilder;
+import com.google.inject.Inject;
 import org.json.JSONException;
 import org.sigmah.shared.command.GetSyncRegionUpdates;
 import org.sigmah.shared.command.result.SyncRegionUpdate;
 import org.sigmah.shared.dao.UserDatabaseDAO;
-import org.sigmah.shared.domain.Activity;
-import org.sigmah.shared.domain.AdminLevel;
-import org.sigmah.shared.domain.Attribute;
-import org.sigmah.shared.domain.AttributeGroup;
-import org.sigmah.shared.domain.Country;
-import org.sigmah.shared.domain.Indicator;
-import org.sigmah.shared.domain.LocationType;
-import org.sigmah.shared.domain.OrgUnit;
-import org.sigmah.shared.domain.Site;
-import org.sigmah.shared.domain.User;
-import org.sigmah.shared.domain.UserDatabase;
-import org.sigmah.shared.domain.UserPermission;
+import org.sigmah.shared.domain.*;
 
-import com.bedatadriven.rebar.sync.server.JpaUpdateBuilder;
-import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class SchemaUpdateBuilder implements UpdateBuilder {
 
@@ -54,9 +42,6 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
     private List<User> users = new ArrayList<User>();
     private List<LocationType> locationTypes  = new ArrayList<LocationType>();
     
-    private Set<Integer> siteIds = new HashSet<Integer>();
-    private List<Site> sites = new ArrayList<Site>();
-    
     private Class[] schemaClasses = new Class[] {
             Country.class,
             AdminLevel.class,
@@ -67,10 +52,8 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
             Indicator.class,
             AttributeGroup.class,
             Attribute.class,
-            Site.class,
             User.class
     };
-    private static final String REGION_ID = "schema";
 
     @Inject
     public SchemaUpdateBuilder(UserDatabaseDAO userDatabaseDAO) {
@@ -113,7 +96,6 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
         builder.insert(Attribute.class, attributes);
         builder.insert(LocationType.class, locationTypes);
         builder.insert(User.class, users);
-        builder.insert(Site.class, sites);
 
         return builder.asJson();
     }
@@ -149,14 +131,10 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
                 for(AttributeGroup g: activity.getAttributeGroups()) {
                 	if (!attributeGroupIds.contains(g.getId())) {
                 		attributeGroups.add(g);
+                        attributeGroupIds.add(g.getId());
                 		for (Attribute a: g.getAttributes()) {
                 			attributes.add(a);
                 		}
-                	}
-                }
-                for (Site s : activity.getSites()) {
-                	if (!siteIds.contains(s)) {
-                		sites.add(s);
                 	}
                 }
             }
