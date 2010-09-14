@@ -17,7 +17,7 @@ import javax.persistence.*;
 @Entity
 @org.hibernate.annotations.Filter(
 		name="hideDeleted",
-		condition="(IndicatorId not in (select i.IndicatorId from Indicator i where i.dateDelete is not null))"
+		condition="(IndicatorId not in (select i.IndicatorId from Indicator i where i.dateDeleted is not null))"
 	)
 public class IndicatorValue implements java.io.Serializable {
 
