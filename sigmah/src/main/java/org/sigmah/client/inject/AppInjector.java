@@ -8,6 +8,8 @@
  */
 package org.sigmah.client.inject;
 
+import com.google.gwt.inject.client.GinModules;
+import com.google.gwt.inject.client.Ginjector;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.HistoryManager;
 import org.sigmah.client.UsageTracker;
@@ -17,17 +19,10 @@ import org.sigmah.client.dispatch.remote.cache.SchemaCache;
 import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.offline.OfflineManager;
 import org.sigmah.client.offline.OfflineModule;
-import org.sigmah.client.offline.sync.InstallSteps;
+import org.sigmah.client.offline.install.InstallSteps;
 import org.sigmah.client.page.DownloadManager;
 import org.sigmah.client.page.charts.ChartLoader;
-import org.sigmah.client.page.config.AccountEditor;
-import org.sigmah.client.page.config.ConfigLoader;
-import org.sigmah.client.page.config.ConfigModule;
-import org.sigmah.client.page.config.ConfigNavigator;
-import org.sigmah.client.page.config.DbConfigPresenter;
-import org.sigmah.client.page.config.DbListPage;
-import org.sigmah.client.page.config.DbPartnerEditor;
-import org.sigmah.client.page.config.DbUserEditor;
+import org.sigmah.client.page.config.*;
 import org.sigmah.client.page.config.design.DesignPresenter;
 import org.sigmah.client.page.entry.DataEntryLoader;
 import org.sigmah.client.page.entry.DataEntryNavigator;
@@ -46,9 +41,6 @@ import org.sigmah.client.page.welcome.WelcomeLoader;
 import org.sigmah.client.util.state.IStateManager;
 import org.sigmah.shared.command.handler.GetSchemaHandler;
 import org.sigmah.shared.command.handler.GetSitesHandler;
-
-import com.google.gwt.inject.client.GinModules;
-import com.google.gwt.inject.client.Ginjector;
 
 /**
  * GIN injector.
