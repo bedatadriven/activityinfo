@@ -103,16 +103,7 @@ public class PivotHibernateDAO implements PivotDAO {
         }
 
         public void bundle(ResultSet rs, Bucket bucket) throws SQLException {
-        	/*
-        	ComplexCategory cat = new ComplexCategory();
-        	for (int i = labelColumnIndex; i < labelColumnIndex + attributeCount; i++) {
-        		if (! "null".equals(rs.getString(i))) {
-        			cat.addCategory(new SimpleCategory(rs.getString(i)), null));
-        		}
-        	}
-        	bucket.setCategory(dimension, cat);
-        	*/
-        	
+  
         	StringBuilder buff = new StringBuilder();
         	for (int i = labelColumnIndex; i < labelColumnIndex + attributeCount; i++) {
         		
@@ -390,11 +381,11 @@ public class PivotHibernateDAO implements PivotDAO {
                 			"(SELECT AttributeValue.SiteId, Attribute.Name as " + tableAlias + "val " +
                 			"FROM AttributeValue " +
                 			"LEFT JOIN  Attribute ON (Attribute.AttributeId = AttributeValue.AttributeId) " +
-                			"WHERE Attribute.AttributeId = ")
+                			"WHERE AttributeValue.value > 0 AND Attribute.AttributeId = ")
                 			.append(attributeId).append(") AS ").append(tableAlias).append(" ON (")
                 			.append(tableAlias).append(".SiteId = Site.SiteId)");
                 	
-                	dimColumns.append(", ").append(tableAlias).append("." + tableAlias + "val ");
+                	dimColumns.append(", ").append(tableAlias).append(".").append(tableAlias).append("val ");
                 	count++;
             	}
                 Log.debug("Total attribute column count = " + count);
@@ -405,8 +396,8 @@ public class PivotHibernateDAO implements PivotDAO {
             }
         }
 		
-        /* add the dimensions to our column and group by list */
         columns.append(dimColumns);
+        /* add the dimensions to our column and group by list */
         groupBy.append(dimColumns);
 
         /* And start on our where clause... */
