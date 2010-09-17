@@ -26,23 +26,16 @@ public class MessageElementDTO extends FlexibleElementDTO {
         return "element.MessageElement";
     }
 
-    // Message element style
-    public String getStyle() {
-        return get("style");
-    }
-
-    public void setStyle(String style) {
-        set("style", style);
-    }
-
     @Override
     public Component getComponent(ValueResult valueResult) {
+        // The label for a message can be considered as HTML code.
         final Html message = new Html(getLabel());
         return message;
     }
 
     @Override
     public boolean isCorrectRequiredValue(ValueResult result) {
+        // A message element cannot be a required element.
         return false;
     }
 
