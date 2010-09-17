@@ -6,12 +6,22 @@
 package org.sigmah.shared.domain;
 
 
-import javax.persistence.*;
-
-
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 
 @Entity
 @NamedQuery(name="queryAllCountriesAlphabetically",
@@ -24,6 +34,8 @@ public class Country implements Serializable, SchemaElement {
 	
 	private Set<AdminLevel> adminLevels = new HashSet<AdminLevel>(0);
 	private Set<LocationType> locationTypes = new HashSet<LocationType>(0);
+	
+	private String codeISO;
 	
 	public Country() {
 	}
@@ -62,6 +74,15 @@ public class Country implements Serializable, SchemaElement {
      */
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	@Column(name = "ISO2", length = 2)
+	public String getCodeISO() {
+	    return this.codeISO;
+	}
+
+	public void setCodeISO(String codeISO) {
+	    this.codeISO = codeISO;
 	}
 
     /**

@@ -6,10 +6,10 @@
 package org.sigmah.shared.dto;
 
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
  * One-to-one DTO for {@link org.sigmah.shared.domain.Country} domain objects.
@@ -71,6 +71,23 @@ public final class CountryDTO extends BaseModelData implements DTO {
 
     public void setBounds(BoundingBoxDTO bounds) {
         this.bounds = bounds;
+    }
+    
+    public String getCodeISO() {
+        return get("codeISO");
+    }
+    
+    public void setCodeISO(String codeISO) {
+        set("codeISO", codeISO);
+        set("completeName", getName() + " (" + codeISO + ")");
+    }
+    
+    /**
+     * Gets the name of this country with the code appended at the end.
+     * @return The name and the code of this country.
+     */
+    public String getCompleteName() {
+        return getName() + " (" + getCodeISO() + ")";
     }
 
     /**

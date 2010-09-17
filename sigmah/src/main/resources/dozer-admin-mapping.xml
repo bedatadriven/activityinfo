@@ -20,6 +20,11 @@
             <a>name</a>
             <b>name</b>
         </field>
+        <!-- Adds the ISO code to this mapping to display countries full name -->
+        <field>
+            <a>codeISO</a>
+            <b>codeISO</b>
+        </field>
     </mapping>
     
 	<mapping wildcard="true">

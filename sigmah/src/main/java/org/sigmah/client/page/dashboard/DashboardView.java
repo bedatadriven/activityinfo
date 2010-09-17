@@ -462,11 +462,11 @@ public class DashboardView extends ContentPanel {
                 // Country list
                 final CheckBoxSelectionModel<CountryDTO> selectionModel = new CheckBoxSelectionModel<CountryDTO>();
                 
-                final ColumnConfig countryName = new ColumnConfig("name", I18N.CONSTANTS.name(), 200);
+                final ColumnConfig countryName = new ColumnConfig("completeName", I18N.CONSTANTS.name(), 200);
                 final ColumnModel countryColumnModel = new ColumnModel(Arrays.asList(selectionModel.getColumn(), countryName));
                     
                 final Grid<CountryDTO> countryGrid = new Grid<CountryDTO>(countryStore, countryColumnModel);
-                countryGrid.setAutoExpandColumn("name");
+                countryGrid.setAutoExpandColumn("completeName");
                 countryGrid.setSelectionModel(selectionModel);
                 countryGrid.addPlugin(selectionModel);
                 
