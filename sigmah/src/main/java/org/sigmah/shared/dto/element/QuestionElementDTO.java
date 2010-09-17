@@ -49,12 +49,8 @@ public class QuestionElementDTO extends FlexibleElementDTO {
         ComboBox<QuestionChoiceElementDTO> comboBox = new ComboBox<QuestionChoiceElementDTO>();
         ListStore<QuestionChoiceElementDTO> store = new ListStore<QuestionChoiceElementDTO>();
 
-        // Empty choice
-        QuestionChoiceElementDTO emptyChoice = new QuestionChoiceElementDTO();
-        emptyChoice.setId(-1);
-        emptyChoice.setLabel(I18N.CONSTANTS.flexibleElementQuestionEmptyChoice());
-        store.add(emptyChoice);
-
+        comboBox.setEmptyText(I18N.CONSTANTS.flexibleElementQuestionEmptyChoice());
+        
         store.add(getChoicesDTO());
         comboBox.setStore(store);
         comboBox.setFieldLabel(getLabel());
