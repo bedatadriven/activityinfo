@@ -1,6 +1,5 @@
 package org.sigmah.shared.dto.value;
 
-import java.util.Date;
 import java.util.List;
 
 import org.sigmah.shared.dto.EntityDTO;
@@ -42,15 +41,6 @@ public class FileDTO extends BaseModelData implements EntityDTO {
 
     public void setName(String name) {
         set("name", name);
-    }
-
-    // File's removal date
-    public Date getRemovedDate() {
-        return (Date) get("removedDate");
-    }
-
-    public void setRemovedDate(Date removedDate) {
-        set("removedDate", removedDate);
     }
 
     // Reference to file's versions list

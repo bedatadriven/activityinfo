@@ -33,7 +33,6 @@ public class File implements Serializable, Deleteable {
 
     private Long id;
     private String name;
-    private Date removedDate;
     private List<FileVersion> versions = new ArrayList<FileVersion>();
     // Deletion informations.
     private Date dateDeleted;
@@ -56,16 +55,6 @@ public class File implements Serializable, Deleteable {
     @Column(name = "name", nullable = false, length = 4096)
     public String getName() {
         return name;
-    }
-
-    public void setRemovedDate(Date removedDate) {
-        this.removedDate = removedDate;
-    }
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "removed_date", nullable = true)
-    public Date getRemovedDate() {
-        return removedDate;
     }
 
     public void setVersions(List<FileVersion> versions) {
