@@ -13,6 +13,7 @@ import org.sigmah.client.page.PageState;
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class Tab {
+    private int id; // Pour le scrolling
     private String title;
     private PageState state;
     private boolean closeable;
@@ -30,6 +31,14 @@ public class Tab {
         this.title = title;
         this.state = state;
         this.closeable = closeable;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitle() {

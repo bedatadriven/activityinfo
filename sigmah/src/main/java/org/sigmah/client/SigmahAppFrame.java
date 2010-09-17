@@ -11,9 +11,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -42,24 +40,16 @@ public class SigmahAppFrame implements Frame {
     
     @Inject
     public SigmahAppFrame(EventBus eventBus, Authentication auth, OfflineMenu offlineMenu, final TabModel tabModel) {
-        final RootPanel header = RootPanel.get("header");
-        header.addStyleName("header");
+        RootPanel.get("username").add(new Label(auth.getEmail()));
         
-        // Initializing the main toolbar
-        final HorizontalPanel toolbar = new HorizontalPanel();
-        toolbar.setStyleName("toolbar");
-        toolbar.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+        final Anchor reportButton = new Anchor(I18N.CONSTANTS.bugReport());
+        RootPanel.get("bugreport").add(reportButton);
         
-        final Label label = new Label(auth.getEmail());
-        toolbar.add(label);
+        final Anchor helpButton = new Anchor(I18N.CONSTANTS.help());
+        RootPanel.get("help").add(helpButton);
         
-        final Button reportButton = new Button(I18N.CONSTANTS.bugReport());
-        toolbar.add(reportButton);
-        
-        final Button helpButton = new Button(I18N.CONSTANTS.help());
-        toolbar.add(helpButton);
-        
-        final Button logoutButton = new Button(I18N.CONSTANTS.logout(), new ClickHandler() {
+        final Anchor logoutButton = new Anchor(I18N.CONSTANTS.logout());
+        logoutButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 Cookies.removeCookie("authToken");
@@ -67,17 +57,16 @@ public class SigmahAppFrame implements Frame {
                 Window.Location.reload();
             }
         });
-        toolbar.add(logoutButton);
+        RootPanel.get("logout").add(logoutButton);
         
-        header.add(toolbar);
         
         final TabBar tabBar = new TabBar(tabModel, eventBus);
-        tabModel.add(I18N.CONSTANTS.dashboard(), new DashboardPageState(), false);
+        final Tab dashboardTab = tabModel.add(I18N.CONSTANTS.dashboard(), new DashboardPageState(), false);
+        tabBar.addTabStyleName(tabModel.indexOf(dashboardTab), "home");
         
         final RootPanel tabs = RootPanel.get("tabs");
-        tabs.addStyleName("tab-bar");
         tabs.add(tabBar);
-        
+
         eventBus.addListener(NavigationHandler.NavigationAgreed, new Listener<NavigationEvent>() {
             @Override
             public void handleEvent(NavigationEvent be) {

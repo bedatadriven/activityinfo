@@ -7,9 +7,7 @@ package org.sigmah.client.ui;
 
 import com.google.inject.Singleton;
 import java.util.ArrayList;
-import java.util.List;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 
 /**
@@ -23,6 +21,8 @@ public class TabModel {
         void tabRemoved(int index);
         void tabChanged(int index);
     }
+
+    private int nextId = 0;
     
     private final ArrayList<Tab> tabs = new ArrayList<Tab>();
     private final ArrayList<Listener> listeners = new ArrayList<Listener>();
@@ -58,6 +58,9 @@ public class TabModel {
             fireTabChanged(index);
         } else {
             // New tab
+            t.setId(nextId);
+            nextId++;
+            
             t.addListener(new Tab.Listener() {
                 @Override
                 public void titleChanged(String title) {

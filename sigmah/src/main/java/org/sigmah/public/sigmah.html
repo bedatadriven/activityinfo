@@ -5,6 +5,14 @@
     <meta name="gwt:property" content="locale=fr" />
     <title>Sigmah</title>
     <style type="text/css">
+        #loading {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            background-color: white;
+        }
         #loading-box {
             position: absolute;
             left: 45%;
@@ -51,6 +59,35 @@
     <link rel="stylesheet" type="text/css" href="sigmah.css"/>
 </head>
 <body>
+<iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1'
+        style="position:absolute;width:0;height:0;border:0"></iframe>
+<iframe src="javascript:''" id="_downloadFrame" name="_downloadFrame" tabIndex='-1'
+        style="position:absolute;width:0;height:0;border:0"></iframe>
+
+<div class="header decoration">
+    <div class="logo">
+        <div id="orglogo"></div>
+    </div>
+    <div class="name">
+        <div id="username"><img src="image/name.png" /> </div>
+	<div id="orgname">IDEIA</div>
+    </div>
+    <div class="sigmah">
+        <div id="logout"><img src="image/deconnexion.png" /> </div>
+        <div class="minimenu"> <span id="bugreport"></span> &#124 <span id="help"></span> </div>
+    </div>
+</div>
+
+<div class="bar decoration">
+    <div id="tabs"></div>
+    <div class="tab-bar-left-decoration"></div>
+    <div class="tab-bar-left-decoration-round"></div>
+    <div id="arrows"></div>
+</div>
+
+<div id="content">
+</div>
+
 <div id="loading">
     <div id="loading-box">
         <div class="loading-indicator">
@@ -60,20 +97,6 @@
         </div>
     </div>
 </div>
-<iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1'
-        style="position:absolute;width:0;height:0;border:0"></iframe>
-<iframe src="javascript:''" id="_downloadFrame" name="_downloadFrame" tabIndex='-1'
-        style="position:absolute;width:0;height:0;border:0"></iframe>
-<table class="main-frame">
-    <tr>
-        <td id="header" align="right" valign="center" class="decoration"></td>
-    </tr>
-    <tr>
-        <td id="tabs" class="decoration"></td>
-    </tr>
-    <tr>
-        <td id="content"></td>
-    </tr>
-</table>
+
 </body>
 </html>

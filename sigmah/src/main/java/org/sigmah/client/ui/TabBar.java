@@ -5,15 +5,18 @@
 
 package org.sigmah.client.ui;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.animation.client.Animation;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.event.NavigationEvent;
@@ -24,11 +27,19 @@ import org.sigmah.client.page.NavigationHandler;
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class TabBar extends Composite {
+    public final static String TAB_ID_PREFIX = "tab";
+    
     private EventBus eventBus;
     private TabModel model;
     private final HorizontalPanel tabContainer;
     
     private int selectedIndex = -1;
+
+    // Scrolling
+    private int direction = 1;
+    private int initialPosition;
+    private double distance;
+    private int leftTabIndex;
 
     /**
      * Creates a new TabBar using the given TabModel.
@@ -36,15 +47,78 @@ public class TabBar extends Composite {
      */
     public TabBar(final TabModel model, EventBus eventBus) {
         this.eventBus = eventBus;
-        
+
+        final AbsolutePanel scrollPanel = new AbsolutePanel();
+        scrollPanel.setSize("100%", "100%");
+
         tabContainer = new HorizontalPanel();
         tabContainer.setVerticalAlignment(HasVerticalAlignment.ALIGN_BOTTOM);
         tabContainer.setHeight("100%");
-        
+
+        scrollPanel.add(tabContainer, 0, 0);
+
+        final Animation animation  = new Animation() {
+            @Override
+            protected void onUpdate(double progress) {
+                int x = (int) (distance * progress) * direction + initialPosition;
+
+                scrollPanel.setWidgetPosition(tabContainer, x, 0);
+            }
+        };
+
+        final Button scrollLeftButton = new Button();
+        scrollLeftButton.addStyleName("tab-button-left");
+        RootPanel.get("arrows").add(scrollLeftButton);
+
+        final Button scrollRightButton = new Button();
+        scrollRightButton.addStyleName("tab-button-right");
+        RootPanel.get("arrows").add(scrollRightButton);
+
+        scrollLeftButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                int currentPosition = scrollPanel.getWidgetLeft(tabContainer);
+                distance = initialPosition + distance*direction - currentPosition;
+                if(distance < 0)
+                    distance = -distance;
+
+                if(leftTabIndex > 0) {
+                    leftTabIndex--;
+                    distance += getTabWidth(TAB_ID_PREFIX, model.get(leftTabIndex).getId());
+                }
+
+                direction = 1;
+
+                initialPosition = currentPosition;
+                animation.run(200);
+            }
+        });
+
+        scrollRightButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                int currentPosition = scrollPanel.getWidgetLeft(tabContainer);
+                distance = initialPosition + distance*direction - currentPosition;
+                if(distance < 0)
+                    distance = -distance;
+
+                if(leftTabIndex < model.size()-1) {
+                    distance += getTabWidth(TAB_ID_PREFIX, model.get(leftTabIndex).getId());
+                    leftTabIndex++;
+                }
+
+                direction = -1;
+
+                initialPosition = currentPosition;
+                animation.run(200);
+            }
+        });
+
         linkWith(model);
         this.model = model;
         
-        initWidget(tabContainer);
+        initWidget(scrollPanel);
+//        initWidget(tabContainer);
     }
 
     public TabModel getModel() {
@@ -68,7 +142,7 @@ public class TabBar extends Composite {
                 final Tab tab = model.get(index);
                 
                 final AbsolutePanel panel = (AbsolutePanel) tabContainer.getWidget(index);
-                final HTML title = (HTML) panel.getWidget(0);
+                final HTML title = (HTML) panel.getWidget(1);
                 title.setHTML(tab.getTitle()); // Warning, this is code injection sensitive.
                 
                 setSelectedIndex(index);
@@ -104,11 +178,18 @@ public class TabBar extends Composite {
         // The current "tabChanged" listener waits for a specific widget organization (AbsolutePanel>HTML)
         
         final AbsolutePanel panel = new AbsolutePanel();
-        panel.setStyleName("tab");
+        panel.setStylePrimaryName("tab");
+
+        panel.getElement().setId(TAB_ID_PREFIX + tab.getId());
+
+        final SimplePanel leftBorder = new SimplePanel();
+        leftBorder.addStyleName("left");
 
         final HTML title = new HTML(tab.getTitle());
-        title.setWidth("100%");
-        title.setHeight("100%");
+        title.addStyleName("center");
+
+        final SimplePanel rightBorder = new SimplePanel();
+        rightBorder.addStyleName("right");
 
         title.addClickHandler(new ClickHandler() {
             @Override
@@ -118,7 +199,9 @@ public class TabBar extends Composite {
             }
         });
 
+        panel.add(leftBorder);
         panel.add(title);
+        panel.add(rightBorder);
 
         if(tab.isCloseable()) {
             final FocusPanel closeButton = new FocusPanel();
@@ -138,9 +221,13 @@ public class TabBar extends Composite {
 
         setSelectedIndex(tabContainer.getWidgetCount()-1);
     }
-    
+
     private void removeTab(final int index) {
         tabContainer.remove(index);
+    }
+
+    public void addTabStyleName(int index, String style) {
+        tabContainer.getWidget(index).addStyleName(style);
     }
 
     public int getSelectedIndex() {
@@ -155,4 +242,20 @@ public class TabBar extends Composite {
         if(index != -1)
             tabContainer.getWidget(selectedIndex).addStyleDependentName("active");
     }
+
+    private native int getTabWidth(String prefix, int id) /*-{
+        var width = 0;
+
+        var element = $wnd.document.getElementById(prefix + id);
+        var style = $wnd.getComputedStyle(element, null);
+        width += parseInt(style.width) +
+                  parseInt(style.borderLeftWidth) +
+                  parseInt(style.borderRightWidth) +
+                  parseInt(style.marginLeft) +
+                  parseInt(style.marginRight) +
+                  parseInt(style.paddingLeft) +
+                  parseInt(style.paddingRight);
+
+        return width;
+    }-*/;
 }
