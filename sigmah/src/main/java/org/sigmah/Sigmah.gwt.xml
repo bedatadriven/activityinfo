@@ -11,8 +11,9 @@
     <inherits name='com.google.gwt.user.User' />
 
     <!-- Inherit additional dependencies  -->
-        <inherits name='com.google.gwt.inject.Inject' />
+	<inherits name='com.google.gwt.inject.Inject' />
     <inherits name="com.google.gwt.i18n.I18N" />
+    <inherits name="com.google.gwt.rpc.RPC" />
     <inherits name='com.extjs.gxt.ui.GXT' />
     <inherits name="com.google.gwt.maps.GoogleMaps" />
     <inherits name="com.ebessette.maps.core.OverlayManager" />
@@ -23,13 +24,13 @@
     <inherits name="com.bedatadriven.rebar.modulestore.ModuleStore"/>
     <inherits name="com.bedatadriven.rebar.sql.Sql"/>
     <inherits name="com.bedatadriven.rebar.sync.Sync"/>
+    <inherits name="com.bedatadriven.rebar.persistence.Persistence"/> 
     <inherits name="com.allen_sauer.gwt.log.gwt-log"/>
 
     <extend-property name="log_level" values="TRACE"/>
     <set-property name="log_level" value="TRACE"/>
     <set-property name="log_DivLogger" value="DISABLED" />
                                               
-
     <!-- Configure Logging -->
 
     <!-- Include generated sources -->
