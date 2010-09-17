@@ -29,13 +29,15 @@ public abstract class FlexibleElementDTO extends BaseModelData implements Entity
 
     private static final long serialVersionUID = 8520711106031085130L;
 
-    protected final HandlerManager handlerManager = new HandlerManager(this);
+    protected transient HandlerManager handlerManager;
 
     protected transient Dispatcher dispatcher;
 
     protected transient Authentication authentication;
 
     protected transient ProjectDTO currentProjectDTO;
+
+    protected transient int preferredWidth;
 
     /**
      * Sets the dispatcher to be used in the {@link #getComponent(ValueResult)}
@@ -71,6 +73,21 @@ public abstract class FlexibleElementDTO extends BaseModelData implements Entity
     }
 
     /**
+     * Method called just before the
+     * {@link FlexibleElementDTO#getComponent(ValueResult)} method to ensure the
+     * instantiation of the attributes used by the client-side.<br/>
+     * This method can be override by subclasses.
+     */
+    public void init() {
+
+        // Checks preconditions.
+        assert dispatcher != null;
+        assert authentication != null;
+        assert currentProjectDTO != null;
+        handlerManager = new HandlerManager(this);
+    }
+
+    /**
      * Gets the widget of a flexible element with its value.
      * 
      * @param valueResult
@@ -99,6 +116,15 @@ public abstract class FlexibleElementDTO extends BaseModelData implements Entity
      */
     public void addRequiredValueHandler(RequiredValueHandler handler) {
         handlerManager.addHandler(RequiredValueEvent.getType(), handler);
+    }
+
+    /**
+     * Gets the most adapted width to display this component.
+     * 
+     * @return The preferred width of this element.
+     */
+    public int getPreferredWidth() {
+        return preferredWidth;
     }
 
     // Flexible element id

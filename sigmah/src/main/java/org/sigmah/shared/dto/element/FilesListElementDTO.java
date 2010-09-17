@@ -85,7 +85,7 @@ public class FilesListElementDTO extends FlexibleElementDTO {
     /**
      * Files list model data.
      */
-    private transient ListStore<FileDTO> store = new ListStore<FileDTO>();
+    private transient ListStore<FileDTO> store;
 
     @Override
     public String getEntityName() {
@@ -115,6 +115,12 @@ public class FilesListElementDTO extends FlexibleElementDTO {
                 store.add(((FilesListValueDTO) s).getFileDTO());
             }
         }
+    }
+
+    @Override
+    public void init() {
+        super.init();
+        store = new ListStore<FileDTO>();
     }
 
     @Override
@@ -332,22 +338,22 @@ public class FilesListElementDTO extends FlexibleElementDTO {
         // height accordingly.
         grid.addListener(Events.ViewReady, new Listener<ComponentEvent>() {
             @Override
-			public void handleEvent(ComponentEvent be) {
+            public void handleEvent(ComponentEvent be) {
                 grid.getStore().addListener(Store.Add, new Listener<StoreEvent<FileDTO>>() {
                     @Override
-					public void handleEvent(StoreEvent<FileDTO> be) {
+                    public void handleEvent(StoreEvent<FileDTO> be) {
                         doAutoHeight(grid, panel);
                     }
                 });
                 grid.getStore().addListener(Store.Remove, new Listener<StoreEvent<FileDTO>>() {
                     @Override
-					public void handleEvent(StoreEvent<FileDTO> be) {
+                    public void handleEvent(StoreEvent<FileDTO> be) {
                         doAutoHeight(grid, panel);
                     }
                 });
                 grid.getStore().addListener(Store.Clear, new Listener<StoreEvent<TripletValueDTO>>() {
                     @Override
-					public void handleEvent(StoreEvent<TripletValueDTO> be) {
+                    public void handleEvent(StoreEvent<TripletValueDTO> be) {
                         doAutoHeight(grid, panel);
                     }
                 });
@@ -417,7 +423,7 @@ public class FilesListElementDTO extends FlexibleElementDTO {
                         I18N.MESSAGES.flexibleElementFilesListConfirmDelete(file.getName()),
                         new Listener<MessageBoxEvent>() {
                             @Override
-							public void handleEvent(MessageBoxEvent ce) {
+                            public void handleEvent(MessageBoxEvent ce) {
 
                                 if (Dialog.YES.equals(ce.getButtonClicked().getItemId())) {
 

@@ -254,7 +254,7 @@ public class ProjectPresenter implements Frame, TabPage {
                         MessageBox.confirm(I18N.CONSTANTS.projectPhaseChangeAlert(),
                                 I18N.CONSTANTS.projectPhaseChangeAlertDetails(), new Listener<MessageBoxEvent>() {
                                     @Override
-									public void handleEvent(MessageBoxEvent ce) {
+                                    public void handleEvent(MessageBoxEvent ce) {
 
                                         // If 'YES' is clicked, saves the
                                         // modifications.
@@ -361,8 +361,8 @@ public class ProjectPresenter implements Frame, TabPage {
                 // --
 
                 // Remote call to ask for this element value.
-                final GetValue command = new GetValue(currentProjectDTO.getId(), elementDTO.getId(), elementDTO
-                        .getEntityName());
+                final GetValue command = new GetValue(currentProjectDTO.getId(), elementDTO.getId(),
+                        elementDTO.getEntityName());
                 dispatcher.execute(command, null, new AsyncCallback<ValueResult>() {
 
                     @Override
@@ -389,9 +389,19 @@ public class ProjectPresenter implements Frame, TabPage {
                         elementDTO.assignValue(valueResult);
 
                         // Generates element component (with the value).
+                        elementDTO.init();
                         final Component elementComponent = elementDTO.getComponent(valueResult);
                         elementComponent.addStyleName("sigmah-element");
-                        formPanel.add(elementComponent, new FormData("100%"));
+
+                        // Component width.
+                        final FormData formData;
+                        if (elementDTO.getPreferredWidth() == 0) {
+                            formData = new FormData("100%");
+                        } else {
+                            formData = new FormData(elementDTO.getPreferredWidth(), -1);
+                        }
+
+                        formPanel.add(elementComponent, formData);
                         formPanel.layout();
 
                         // --
@@ -424,7 +434,7 @@ public class ProjectPresenter implements Frame, TabPage {
                 });
             }
         }
-        
+
         // View layouts update.
         ((ProjectView) view).layout();
     }
@@ -525,9 +535,9 @@ public class ProjectPresenter implements Frame, TabPage {
                 @Override
                 public void onFailure(Throwable caught) {
                     MessageBox.info(I18N.CONSTANTS.cancelled(), I18N.CONSTANTS.error(), null);
-                    
+
                     currentPhaseRequiredElements.clearState();
-                    
+
                     if (isActivePhase(currentPhaseDTO)) {
                         activePhaseRequiredElements.clearState();
                     }
@@ -537,9 +547,9 @@ public class ProjectPresenter implements Frame, TabPage {
                 public void onSuccess(VoidResult result) {
                     valueChanges.clear();
                     MessageBox.info(I18N.CONSTANTS.ok(), I18N.CONSTANTS.saved(), null);
-                    
+
                     currentPhaseRequiredElements.saveState();
-                    
+
                     if (isActivePhase(currentPhaseDTO)) {
                         activePhaseRequiredElements.saveState();
                     }

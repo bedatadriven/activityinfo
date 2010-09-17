@@ -9,10 +9,10 @@ import java.util.List;
 
 import org.sigmah.shared.dto.value.ValueDTO;
 
-import com.extjs.gxt.ui.client.data.BaseTreeModel;
+import com.extjs.gxt.ui.client.data.BaseModelData;
 
 
-public final class ProjectDTO extends BaseTreeModel implements EntityDTO {
+public final class ProjectDTO extends BaseModelData implements EntityDTO {
 
     public ProjectDTO() {
         // TODO: Remove this
