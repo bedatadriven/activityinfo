@@ -58,11 +58,7 @@ public class NavigationPanel extends ContentPanel {
         store.setKeyProvider(new ModelKeyProvider<Link>() {
             @Override
             public String getKey(Link link) {
-                if(link.getParent() == null) {
-                    return link.getName();
-                } else {
-                    return ((Link)link.getParent()).getName() + "/" + link.getName();
-                }
+                return link.getKey();
             }
         });
         

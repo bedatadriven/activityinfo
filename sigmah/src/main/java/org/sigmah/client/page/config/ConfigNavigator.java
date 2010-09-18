@@ -20,6 +20,7 @@ import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -57,40 +58,23 @@ public class ConfigNavigator implements Navigator {
 
         if (parent == null) {
 
-            List<Link> list = new ArrayList<Link>();
+            Link accountLink = Link
+                    .to(new AccountPageState())
+                    .labeled(messages.mySettings())
+                    .withIcon(icons.setup()).build();
 
-            Link accountLink = new Link(messages.mySettings(),
-                    new AccountPageState(), icons.setup());
+            Link dbListLink = Link
+                    .to(new DbListPageState())
+                    .labeled(messages.databases())
+                    .withIcon(icons.database()).build();
 
-            list.add(accountLink);
-
-            final Link dbListLink = new Link(messages.databases(),
-                    new DbListPageState(), icons.database());
-
-            list.add(dbListLink);
-
-            callback.onSuccess(list);
+            callback.onSuccess(Arrays.asList(accountLink, dbListLink));
 
         } else {
-
             Link link = (Link) parent;
             if (link.getPageState() instanceof DbListPageState) {
                 loadDbList(callback);
-
-            } else if (link.getPageState().getPageId().equals(DbConfigPresenter.DatabaseConfig)) {
-
-//                List<Link> list = new ArrayList<Link>();
-//                int dbId = ((DbPageState) link.getPlace()).getDatabaseId();
-//                list.add(new Link(messages.design(), new DbPageState(Pages.Design, dbId), icons.design()));
-//
-//                if(((UserDatabaseDTO) link.get("db")).isDesignAllowed())
-//                    list.add(new Link(messages.users(), new DbPageState(Pages.DatabaseUsers, dbId), icons.user()));
-//
-//                list.add(new Link(messages.partners(), new DbPageState(Pages.DatabasePartners, dbId), icons.group()));
-//
-//                callback.onSuccess(list);
             }
-
         }
     }
 
@@ -101,7 +85,10 @@ public class ConfigNavigator implements Navigator {
                 List<Link> list = new ArrayList<Link>();
                 for (UserDatabaseDTO db : result.getDatabases()) {
                     if (db.isDesignAllowed() || db.isManageUsersAllowed()) {
-                        Link link = new Link(db.getName(), new DbPageState(DbConfigPresenter.DatabaseConfig, db.getId()), icons.database());
+                        Link link = Link
+                                .to(new DbPageState(DbConfigPresenter.DatabaseConfig, db.getId()))
+                                .labeled(db.getName())
+                                .withIcon(icons.database()).build();
                         link.set("db", db);
                         list.add(link);
                     }

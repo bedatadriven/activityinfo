@@ -73,23 +73,24 @@ public class DataEntryNavigator implements Navigator {
         for (UserDatabaseDTO db : schema.getDatabases()) {
             if (db.getActivities().size() != 0) {
 
-                Link dbLink = new Link(
-                        db.getName(),
-                        null,
-                        IconImageBundle.ICONS.database());
+                Link dbLink = Link.folderLabelled(db.getName())
+                        .usingKey(databaseKey(db))
+                        .withIcon(IconImageBundle.ICONS.database())
+                        .build();
 
                 Map<String, Link> categories = new HashMap<String, Link>();
                 for (ActivityDTO activity : db.getActivities()) {
 
-                    Link actLink = new Link(
-                            activity.getName(),
-                            new SiteGridPageState(activity),
-                            IconImageBundle.ICONS.table());
+                    Link actLink = Link
+                            .to(new SiteGridPageState(activity))
+                            .labeled(activity.getName())
+                            .withIcon(IconImageBundle.ICONS.table()).build();
 
                     if (activity.getCategory() != null) {
                         Link category = categories.get(activity.getCategory());
                         if (category == null) {
-                            category = new Link(activity.getCategory(), null);
+                            category = Link.folderLabelled(activity.getCategory())
+                                    .usingKey(categoryKey(activity, categories)).build();
                             categories.put(activity.getCategory(), category);
                             dbLink.add(category);
                         }
@@ -102,5 +103,13 @@ public class DataEntryNavigator implements Navigator {
             }
         }
         return list;
+    }
+
+    private String categoryKey(ActivityDTO activity, Map<String, Link> categories) {
+        return "category" + activity.getDatabase().getId() + activity.getCategory() + categories.size();
+    }
+
+    private String databaseKey(UserDatabaseDTO db) {
+        return "database" + db.getId();
     }
 }

@@ -5,6 +5,7 @@
 
 package org.sigmah.client.page.common.nav;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.data.BaseTreeModel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import org.sigmah.client.page.PageState;
@@ -17,42 +18,108 @@ import org.sigmah.client.page.PageState;
 public class Link extends BaseTreeModel {
     private PageState pageState;
     private AbstractImagePrototype icon;
+    private String key;
 
-    /**
-     * @param name name of the link to appear in the tree
-     * @param pageState the pageState to which to navigate on click
-     */
-    public Link(String name, PageState pageState) {
-        set("name", name);
-        this.pageState = pageState;
+    private Link() {
     }
 
     /**
-     * @param name name of the link to appear in the tree
-     * @param pageState the pageState to which to navigate on click
-     * @param icon the icon to apper in the tree
+     *
+     * @return this Link's label
      */
-    public Link(String name, PageState pageState, AbstractImagePrototype icon) {
-        this(name, pageState);
-        this.icon = icon;
-    }
-
-    public String getName() {
+    public String getLabel() {
         return get("name");
     }
 
+    /**
+     *
+     * @return the PageState to which to link
+     */
     public PageState getPageState() {
         return pageState;
     }
 
+    /**
+     * @return  this Link's icon
+     */
     public AbstractImagePrototype getIcon() {
         return icon;
     }
 
     /**
-     * @return the link's key, to be used for state management
+     *
+     * @return this Link's key, for use in state management
      */
     public String getKey() {
-        return get("key");
+        return key;
+    }
+
+    /**
+     * Creates a new link to a given PageState
+     */
+    public static Builder to(PageState pageState) {
+        return new Builder().to(pageState);
+    }
+
+    /**
+     * Creates a new Link folder with the given name
+     */
+    public static Builder folderLabelled(String label) {
+        return new Builder().labeled(label);
+
+    }
+
+    /**
+     * Builder class for Links
+     */
+    public static class Builder {
+        private Link link;
+
+        private Builder() {
+            link = new Link();
+        }
+
+        /**
+         *  Sets the destination to the given PageState
+         */
+        private Builder to(PageState pageState) {
+            link.pageState = pageState;
+            link.key = pageState.getPageId() + "/" + pageState.serializeAsHistoryToken();
+            return this;
+        }
+
+        /**
+         * Sets the display label to the given string
+         */
+        public Builder labeled(String label) {
+            link.set("name", label);
+            return this;
+        }
+
+        /**
+         * Sets the icon to the given AbstractImagePrototype
+         */
+        public Builder withIcon(AbstractImagePrototype icon) {
+            link.icon = icon;
+            return this;
+        }
+
+        /**
+         * Sets the key using a composite of the parent and this label's name
+         */
+        public Builder usingKey(String key) {
+            this.link.key = key;
+            return this;
+        }
+
+        /**
+         * @return  the Link
+         */
+        public Link build() {
+            assert link.getLabel() != null : "Link models must have a name/label";
+            assert link.getKey() != null : "Link models must have a key";
+            Log.debug("Node label = " + link.getLabel() + ", key = " + link.getKey());
+            return link;
+        }
     }
 }
