@@ -27,7 +27,7 @@
     <layout id_layout="1" rows_count="2" columns_count="1" />
         <layout_group id_layout_group="1" id_layout="1" row_index="0" column_index="0" title="Header" />
                 <flexible_element id_flexible_element="1" id_project_model="1" label="Success" validates="false" privacy_level="0" />
-                <message_element id_flexible_element="1" style="title" />
+                <message_element id_flexible_element="1" />
             <layout_constraint id_layout_constraint="1" id_layout_group="1" id_flexible_element="1" sort_order="1" />
                 <flexible_element id_flexible_element="2" id_project_model="1" label="Check this" validates="true" privacy_level="0" />
                 <checkbox_element id_flexible_element="2" />
