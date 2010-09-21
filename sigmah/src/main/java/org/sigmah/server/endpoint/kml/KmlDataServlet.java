@@ -21,7 +21,6 @@ import org.sigmah.server.util.KMLNamespace;
 import org.sigmah.server.util.XmlBuilder;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.command.handler.GetSchemaHandler;
-import org.sigmah.shared.dao.NoResultException;
 import org.sigmah.shared.dao.SiteTableColumn;
 import org.sigmah.shared.dao.UserDAO;
 import org.sigmah.shared.domain.User;
@@ -32,6 +31,7 @@ import org.sigmah.shared.exception.CommandException;
 import org.xml.sax.SAXException;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

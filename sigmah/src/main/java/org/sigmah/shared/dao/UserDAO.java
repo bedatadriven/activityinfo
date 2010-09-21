@@ -17,7 +17,7 @@ public interface UserDAO extends DAO<User, Integer> {
 
     boolean doesUserExist(String email);
 
-    User findUserByEmail(String email) throws NoResultException;
+    User findUserByEmail(String email);
 
     User findUserByChangePasswordKey(String key);
 

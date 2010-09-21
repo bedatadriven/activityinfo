@@ -14,7 +14,6 @@ import org.sigmah.server.util.LocaleHelper;
 import org.sigmah.shared.command.UpdateUserPermissions;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.dao.NoResultException;
 import org.sigmah.shared.dao.UserDAO;
 import org.sigmah.shared.dao.UserDatabaseDAO;
 import org.sigmah.shared.dao.UserPermissionDAO;
@@ -69,12 +68,7 @@ public class UpdateUserPermissionsHandler implements CommandHandler<UpdateUserPe
 
         User user = null;
         if (userDAO.doesUserExist(dto.getEmail())) {
-            try {
-				user = userDAO.findUserByEmail(dto.getEmail());
-			} catch (NoResultException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+            user = userDAO.findUserByEmail(dto.getEmail());
         }
         
         if (user == null) {

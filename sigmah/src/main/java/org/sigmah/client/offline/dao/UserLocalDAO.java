@@ -5,13 +5,11 @@
 
 package org.sigmah.client.offline.dao;
 
-import javax.persistence.EntityManager;
-
-import org.sigmah.shared.dao.NoResultException;
+import com.google.inject.Inject;
 import org.sigmah.shared.dao.UserDAO;
 import org.sigmah.shared.domain.User;
 
-import com.google.inject.Inject;
+import javax.persistence.EntityManager;
 
 /**
  * A UserDAO implementation for use off-line.
@@ -44,7 +42,7 @@ public class UserLocalDAO extends OfflineDAO<User, Integer> implements UserDAO {
 	}
 
 	@Override
-	public User findUserByEmail(String email) throws NoResultException {
+	public User findUserByEmail(String email)  {
 		// TODO Auto-generated method stub
 		return null;
 	}

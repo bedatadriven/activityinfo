@@ -59,7 +59,7 @@ public abstract class ControllerTestCase {
     }
 
     @Before
-    public final void setUpDependencies() throws org.sigmah.shared.dao.NoResultException {
+    public final void setUpDependencies()  {
         req = new MockHttpServletRequest();
         resp = new MockHttpServletResponse();
 

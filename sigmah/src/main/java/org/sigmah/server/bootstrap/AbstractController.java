@@ -114,7 +114,7 @@ public class AbstractController extends HttpServlet {
             UserDAO userDAO = injector.getInstance(UserDAO.class);
             return userDAO.findUserByEmail(email);
 
-        } catch (org.sigmah.shared.dao.NoResultException e) {
+        } catch (NoResultException e) {
             throw new InvalidLoginException();
         }
     }
