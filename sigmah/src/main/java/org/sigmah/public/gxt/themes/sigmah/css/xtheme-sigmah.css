@@ -1,0 +1,1020 @@
+/*
+ * Ext GWT Library 2.0
+ * Copyright(c) 2006-2009, Ext JS, LLC.
+ * licensing@extjs.com
+ * 
+ * http://extjs.com/license
+ */
+body{
+  background-color:#494748;}
+
+.x-panel {
+  border-style: solid;
+  border-color: #B7A077;
+}
+
+.x-panel-header {
+  color: #482a1e;
+  border: 0 none;
+  background-image: url(../images/sigmah/panel/white-top-bottom.gif);
+}
+
+.x-panel-body {
+  border: 0 none;
+  color: #4B3E2D;
+}
+
+.x-panel-bbar .x-toolbar {
+  border: 0 none;
+}
+
+.x-panel-tbar .x-toolbar {
+  border: 0 none;
+}
+
+.x-panel-tbar-noheader .x-toolbar,.x-panel-mc .x-panel-tbar .x-toolbar {
+  border: 0 none;
+}
+
+.x-panel-body-noheader,.x-panel-mc .x-panel-body {
+  border: 0 none;
+}
+
+.x-panel-tl .x-panel-header {
+  color: #482a1e;
+}
+
+.x-panel-tc {
+  background-image: url(../images/sigmah/panel/top-bottom.gif);
+}
+
+.x-panel-tl {
+  background-image: url(../images/sigmah/panel/corners-sprite.gif);
+  border: 0 none;
+}
+
+.x-panel-tr {
+  background-image: url(../images/sigmah/panel/corners-sprite.gif);
+}
+
+.x-panel-bc {
+  background-image: url(../images/sigmah/panel/top-bottom.gif);
+}
+
+.x-panel-bl {
+  background-image: url(../images/sigmah/panel/corners-sprite.gif);
+}
+
+.x-panel-br {
+  background-image: url(../images/sigmah/panel/corners-sprite.gif);
+}
+
+.x-panel-mc {
+  background: #EFE2C0;
+}
+
+.x-panel-mc .x-panel-body {
+  background: #EFE2C0;
+  border: 0 none;
+}
+
+.x-panel-ml {
+  background-image: url(../images/sigmah/panel/left-right.gif);
+}
+
+.x-panel-mr {
+  background-image: url(../images/sigmah/panel/left-right.gif);
+}
+
+.x-panel-dd-spacer {
+  border: 2px dashed #89a;
+}
+
+.x-tool {
+  background-image: url(../images/sigmah/panel/tool-sprites.gif);
+}
+
+.x-panel-ghost {
+  background: #e0e0e0;
+}
+
+.x-panel-ghost ul {
+  border-color: #b0b0b0;
+}
+
+.x-grid-panel .x-panel-mc .x-panel-body {
+  border: 1px solid #482A1F;
+  
+}
+
+.x-btn button {
+  color: #5D533A;
+}
+
+.x-btn-over button {
+  color: #F29051;
+}
+
+.x-btn-focus button {
+  color: #F29051;
+}
+
+.x-btn-mc em.x-btn-arrow {
+  background-image: url(../images/sigmah/button/arrow.gif);
+}
+
+.x-btn-mc em.x-btn-split {
+  background-image: url(../images/sigmah/button/s-arrow-b-noline.gif);
+}
+
+.x-btn-over .x-btn-mc em.x-btn-split,.x-btn-click .x-btn-mc em.x-btn-split,.x-btn-menu-active .x-btn-mc em.x-btn-split,.x-btn-pressed .x-btn-mc em.x-btn-split {
+  background-image: url(../images/sigmah/button/s-arrow-o.gif);
+}
+
+.x-btn-over .x-btn-mc em.x-btn-split,.x-btn-click .x-btn-mc em.x-btn-split,.x-btn-menu-active .x-btn-mc em.x-btn-split,.x-btn-pressed .x-btn-mc em.x-btn-split,.x-toolbar .x-btn-over .x-btn-mc em.x-btn-split,.x-toolbar .x-btn-click .x-btn-mc em.x-btn-split,.x-toolbar .x-btn-menu-active .x-btn-mc em.x-btn-split,.x-toolbar .x-btn-pressed .x-btn-mc em.x-btn-split
+  {
+  background-image: url(../images/sigmah/button/s-arrow-o.gif);
+}
+
+.x-btn-mc em.x-btn-split-bottom {
+  background-image: url(../images/sigmah/button/s-arrow-b.gif);
+}
+
+.x-btn-over .x-btn-mc em.x-btn-split-bottom,.x-btn-click .x-btn-mc em.x-btn-split-bottom,.x-btn-menu-active .x-btn-mc em.x-btn-split-bottom,.x-btn-pressed .x-btn-mc em.x-btn-split-bottom
+  {
+  background-image: url(../images/sigmah/button/s-arrow-bo.gif);
+}
+
+.x-btn-group-header {
+  color: white !important;
+}
+
+.x-btn-group-tc {
+  background-image: url(../images/sigmah/button/group-tb.gif);
+}
+
+.x-btn-group-tl {
+  background-image: url(../images/sigmah/button/group-cs.gif);
+}
+
+.x-btn-group-tr {
+  background-image: url(../images/sigmah/button/group-cs.gif);
+}
+
+.x-btn-group-bc {
+  background-image: url(../images/sigmah/button/group-tb.gif);
+}
+
+.x-btn-group-bl {
+  background-image: url(../images/sigmah/button/group-cs.gif);
+}
+
+.x-btn-group-br {
+  background-image: url(../images/sigmah/button/group-cs.gif);
+}
+
+.x-btn-group-ml {
+  background-image: url(../images/sigmah/button/group-lr.gif);
+}
+
+.x-btn-group-mr {
+  background-image: url(../images/sigmah/button/group-lr.gif);
+}
+
+.x-btn-group-notitle .x-btn-group-tc {
+  background-image: url(../images/sigmah/button/group-tb.gif);
+}
+
+.x-border-layout-ct {
+  background: #EFE2C2;
+}
+
+.x-accordion-hd {
+  background-image: url(../images/sigmah/panel/light-hd.gif);
+}
+
+.x-layout-collapsed {
+  background-color: #D8C490;
+  border-color: #e0e0e0;
+}
+
+.x-layout-collapsed-over {
+  background-color: #C9AD7D;
+}
+
+.x-toolbar {
+  border-color: #482A1F;
+  background: #f0f4f5 url(../images/sigmah/toolbar/bg.gif) repeat-x top left;
+}
+
+.x-toolbar button {
+  color: #5D533A;
+}
+
+.x-toolbar .ytb-text {
+  color: #5D533A;
+}
+
+.x-btn-tl,.x-btn-tr,.x-btn-tc,.x-btn-ml,.x-btn-mr,.x-btn-mc,.x-btn-bl,.x-btn-br,.x-btn-bc {
+  background-image: url(../images/sigmah/button/btn.gif);
+}
+
+.x-btn-click .x-btn-text,.x-btn-menu-active .x-btn-text,.x-btn-pressed .x-btn-text {
+  color: #F29051;
+}
+
+.x-toolbar .x-btn-menu-arrow-wrap .x-btn-center button {
+  background-image: url(../images/sigmah/toolbar/btn-arrow.gif);
+}
+
+.x-toolbar .x-btn-text-icon .x-btn-menu-arrow-wrap .x-btn-center button {
+  background-image: url(../images/sigmah/toolbar/btn-arrow.gif);
+}
+
+.x-toolbar .x-btn-over .x-btn-left {
+  background-image: url(../images/sigmah/toolbar/tb-btn-sprite.gif);
+}
+
+.x-toolbar .x-btn-over .x-btn-right {
+  background-image: url(../images/sigmah/toolbar/tb-btn-sprite.gif);
+}
+
+.x-toolbar .x-btn-over .x-btn-center {
+  background-image: url(../images/sigmah/toolbar/tb-btn-sprite.gif);
+}
+
+.x-toolbar .x-btn-over button {
+  color: #5D533A;
+}
+
+.x-toolbar .x-btn-click .x-btn-left,.x-toolbar .x-btn-pressed .x-btn-left,.x-toolbar .x-btn-menu-active .x-btn-left {
+  background-image: url(../images/sigmah/toolbar/tb-btn-sprite.gif);
+}
+
+.x-toolbar .x-btn-click .x-btn-right,.x-toolbar .x-btn-pressed .x-btn-right,.x-toolbar .x-btn-menu-active .x-btn-right {
+  background-image: url(../images/sigmah/toolbar/tb-btn-sprite.gif);
+}
+
+.x-toolbar .x-btn-click .x-btn-center,.x-toolbar .x-btn-pressed .x-btn-center,.x-toolbar .x-btn-menu-active .x-btn-center
+  {
+  background-image: url(../images/sigmah/toolbar/tb-btn-sprite.gif);
+}
+
+.x-toolbar .xtb-sep {
+  background-image: url(../images/sigmah/toolbar/sep.gif) !important;
+}
+
+.x-statusbar .x-status-text-panel {
+  border-color: #482A1F #482A1F #482A1F #482A1F;
+}
+
+.x-statusbar .x-status-text {
+  color: #482A1F;
+}
+
+.x-menu {
+  border: 1px solid #48402B;
+  background: #EEE1C1 url(../images/sigmah/menu/menu.gif) repeat-y;
+}
+
+.x-menu-item-active {
+  background: #EFE2C0 url(../images/sigmah/menu/item-over.gif) repeat-x left bottom;
+  border: none;
+}
+
+.x-menu-item-arrow {
+  background: transparent url(../images/sigmah/menu/menu-parent.gif) no-repeat right;
+}
+
+.x-menu-check-item .x-menu-item-icon {
+  background: transparent url(../images/sigmah/menu/unchecked.gif) no-repeat center;
+}
+
+.x-menu-item-checked .x-menu-item-icon {
+  background-image: url(../images/sigmah/menu/checked.gif);
+}
+
+.x-menu-item-checked .x-menu-group-item .x-menu-item-icon {
+  background: transparent url(../images/sigmah/menu/group-checked.gif)
+}
+
+.x-menu-group-item .x-menu-item-icon {
+  background: transparent none repeat scroll 0 0;
+}
+
+.x-tab-panel-header,.x-tab-panel-footer {
+  background: #F0E1C0;
+  border-color: #B6A176;
+}
+
+.x-tab-panel-header {
+  border-color: #fff;
+}
+
+.x-tab-panel-footer {
+  border-color: #482A1F;
+}
+
+ul.x-tab-strip-top {
+  background: #dbdbdb url(../images/sigmah/tabs/tab-strip-bg.gif) repeat-x left top;
+  border-color: #fff;
+  padding-top: 2px;
+}
+
+ul.x-tab-strip-bottom {
+  background-image: url(../images/sigmah/tabs/tab-strip-btm-bg.gif);
+  border-color: #fff;
+}
+
+.x-tab-strip span.x-tab-strip-text {
+  color: #333;
+}
+
+.x-tab-strip-over span.x-tab-strip-text {
+  color: #111;
+}
+
+.x-tab-strip-active span.x-tab-strip-text {
+  color: #5D533A;
+}
+
+.x-tab-strip-disabled .x-tabs-text {
+  color: #482A1F482A1F;
+}
+
+.x-tab-strip-top .x-tab-right {
+  background-image: url(../images/sigmah/tabs/tabs-sprite.gif);
+}
+
+.x-tab-strip-top .x-tab-left {
+  background-image: url(../images/sigmah/tabs/tabs-sprite.gif);
+}
+
+.x-tab-strip-top .x-tab-strip-inner {
+  background-image: url(../images/sigmah/tabs/tabs-sprite.gif);
+}
+
+.x-tab-strip-bottom .x-tab-right {
+  background-image: url(../images/sigmah/tabs/tab-btm-inactive-right-bg.gif);
+}
+
+.x-tab-strip-bottom .x-tab-left {
+  background-image: url(../images/sigmah/tabs/tab-btm-inactive-left-bg.gif);
+}
+
+.x-tab-strip-bottom .x-tab-strip-active .x-tab-right {
+  background-image: url(../images/sigmah/tabs/tab-btm-right-bg.gif);
+}
+
+.x-tab-strip-bottom .x-tab-strip-active .x-tab-left {
+  background-image: url(../images/sigmah/tabs/tab-btm-left-bg.gif);
+}
+
+.x-tab-strip .x-tab-strip-closable a.x-tab-strip-close {
+  background-image: url(../images/sigmah/tabs/tab-close.gif);
+}
+
+.x-tab-strip .x-tab-strip-closable a.x-tab-strip-close:hover {
+  background-image: url(../images/sigmah/tabs/tab-close.gif);
+}
+
+.x-tab-panel-body {
+  border-color: #FFFFFF;
+  background: #494748;
+}
+
+.x-tab-panel-bbar .x-toolbar {
+  border-color: #FFFFFF;
+}
+
+.x-tab-panel-tbar .x-toolbar {
+  border-color: #FFFFFF;
+}
+
+.x-tab-panel-header-plain .x-tab-strip-spacer,.x-tab-panel-footer-plain .x-tab-strip-spacer {
+  border-color: #FFFFFF;
+  background: #FFFFFF;
+}
+
+.x-tab-scroller-left {
+  background-image: url(../images/sigmah/tabs/scroll-left.gif);
+  border-color: #aeaeae;
+}
+
+.x-tab-scroller-right {
+  background-image: url(../images/sigmah/tabs/scroll-right.gif);
+  border-color: #aeaeae;
+}
+
+.x-window-proxy {
+  background: #e4e8ec;
+  border-color: #FFFFFF;
+}
+
+.x-window-tl .html {
+  color: #F0EFEC;
+}
+
+.x-window-tc {
+  background-image: url(../images/sigmah/window/top-bottom.png);
+}
+
+.x-window-tl {
+  background-image: url(../images/sigmah/window/left-corners.png);
+}
+
+.x-window-tr {
+  background-image: url(../images/sigmah/window/right-corners.png);
+}
+
+.x-window-bc {
+  background-image: url(../images/sigmah/window/top-bottom.png);
+}
+
+.x-window-bl {
+  background-image: url(../images/sigmah/window/left-corners.png);
+}
+
+.x-window-br {
+  background-image: url(../images/sigmah/window/right-corners.png);
+}
+
+.x-window-mc {
+  border: 1px solid #D5C499;
+  background: #e8e8e8;
+}
+
+.x-window-ml {
+  background-image: url(../images/sigmah/window/left-right.png);
+}
+
+.x-window-mr {
+  background-image: url(../images/sigmah/window/left-right.png);
+}
+.x-window-header-text {
+  color:4A2A1F;
+}
+
+.x-panel-ghost .x-window-tl {
+  border-color: #482A1F;
+}
+
+.x-panel-collapsed .x-window-tl {
+  border-color: #482A1F;
+}
+
+.x-window-plain .x-window-mc {
+  background: #e8e8e8;
+  border-right: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  border-top: 1px solid #482A1F;
+  border-left: 1px solid #482A1F;
+}
+
+.x-window-plain .x-window-body {
+  border-left: 1px solid #ddd;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #482A1F;
+  border-right: 1px solid #482A1F;
+  background: transparent !important;
+}
+
+body.x-body-masked .x-window-mc,body.x-body-masked .x-window-plain .x-window-mc {
+  background-color: #F0EFEC;
+}
+
+/* HTML Editors */
+.x-html-editor-wrap {
+  border:none;
+}
+
+/* Borders go last for specificity */
+.x-panel-noborder .x-panel-body-noborder {
+  border-width: 0;
+}
+
+.x-panel-noborder .x-panel-header-noborder {
+  border-width: 0;
+  border-bottom: 1px solid #482A1F;
+}
+
+.x-panel-noborder .x-panel-tbar-noborder .x-toolbar {
+  border-width: 0;
+  border-bottom: 1px solid #482A1F;
+}
+
+.x-panel-noborder .x-panel-bbar-noborder .x-toolbar {
+  border-width: 0;
+  border-top: 1px solid #482A1F;
+}
+
+.x-window-noborder .x-window-mc {
+  border-width: 0;
+}
+
+.x-window-plain .x-window-body-noborder {
+  border-width: 0;
+}
+
+.x-tab-panel-noborder .x-tab-panel-body-noborder {
+  border-width: 0;
+}
+
+.x-tab-panel-noborder .x-tab-panel-header-noborder {
+  border-top-width: 0;
+  border-left-width: 0;
+  border-right-width: 0;
+}
+
+.x-tab-panel-noborder .x-tab-panel-footer-noborder {
+  border-bottom-width: 0;
+  border-left-width: 0;
+  border-right-width: 0;
+}
+
+.x-tab-panel-bbar-noborder .x-toolbar {
+  border-width: 0;
+  border-top: 1px solid #482A1F;
+}
+
+.x-tab-panel-tbar-noborder .x-toolbar {
+  border-width: 0;
+  border-bottom: 1px solid #482A1F;
+}
+
+/* Forms */
+.x-form-text,textarea.x-form-field {
+  border: 1px solid #C8BEB5;
+}
+
+.x-trigger-wrap-focus .x-form-trigger {
+  border-bottom: 1px solid #787878;
+}
+
+.x-form-focus,textarea.x-form-focus {
+  border: 1px solid #787878;
+}
+
+.x-form-field-wrap .x-form-trigger {
+  background: transparent url(../images/sigmah/form/trigger.gif) no-repeat 0 0;
+}
+
+.x-form-field-wrap .x-form-date-trigger {
+  background-image: url(../images/sigmah/form/date-trigger.gif);
+}
+
+.x-form-field-wrap .x-form-clear-trigger {
+  background-image: url(../images/sigmah/form/clear-trigger.gif);
+}
+
+.x-form-field-wrap .x-form-search-trigger {
+  background-image: url(../images/sigmah/form/search-trigger.gif);
+}
+
+.x-form-field-wrap .x-form-trigger {
+  border-bottom: 1px solid #778899;
+}
+
+.x-form-field-wrap .x-form-trigger-over {
+  background-position: -17px 0;
+}
+
+.x-form-field-wrap .x-form-trigger-click {
+  background-position: -34px 0;
+}
+
+.x-trigger-wrap-focus .x-form-trigger {
+  background-position: -51px 0;
+}
+
+.x-trigger-wrap-focus .x-form-trigger-over {
+  background-position: -68px 0;
+}
+
+.x-trigger-wrap-focus .x-form-trigger-click {
+  background-position: -85px 0;
+}
+
+.x-form fieldset legend {
+  color: #333;
+}
+
+/* Checkboxes & Radio Buttons */
+.x-form-check {
+  background: url('../images/sigmah/form/checkbox.gif') no-repeat 0 0;
+}
+
+.x-form-radio {
+  background: url('../images/sigmah/form/radio.gif') no-repeat 0 0;
+}
+
+.x-form-check-group-label {
+  border-bottom: 1px solid #99BBE8;
+  color: #15428B;
+  margin-bottom: 5px;
+  padding-left: 3px !important;
+  float: none !important;
+}
+
+/* Grid */
+.x-grid3-row-selected {
+  background: #fbf0d2 !important;
+  border: 1px dotted #ccc;
+}
+
+.x-grid3-hd-btn {
+  background: #f2daa9 url(../images/sigmah/grid/grid3-hd-btn.gif) no-repeat left center;
+}
+
+.x-grid3-header {
+  background: #f9f9f9 url(../images/sigmah/grid/grid3-hrow.gif) repeat-x 0 bottom;
+}
+
+td.x-grid3-hd-over .x-grid3-hd-inner,td.sort-desc .x-grid3-hd-inner,td.sort-asc .x-grid3-hd-inner,td.x-grid3-hd-menu-open .x-grid3-hd-inner
+  {
+  background: #ebf3fd url(../images/sigmah/grid/grid3-hrow-over.gif) repeat-x left bottom;
+}
+
+.sort-asc .x-grid3-sort-icon {
+  background-image: url(../images/sigmah/grid/sort_asc.gif);
+}
+
+.sort-desc .x-grid3-sort-icon {
+  background-image: url(../images/sigmah/grid/sort_desc.gif);
+}
+
+td.x-grid3-hd-over,td.sort-desc,td.sort-asc,td.x-grid3-hd-menu-open {
+  border-left: 1px solid #fff;
+  border-right: 1px solid #ccc;
+}
+
+.x-grid3-check-col {
+  background-image: url(../images/sigmah/menu/unchecked.gif);
+}
+
+.x-grid3-check-col-on {
+  background-image: url(../images/sigmah/menu/checked.gif);
+}
+
+.x-grid3-cell-selected {
+  background-color: #e0eaee !important;
+}
+
+.x-grid3-body .x-grid3-td-expander {
+  background: transparent url(../images/sigmah/grid/grid3-special-col-bg.gif) repeat-y right;
+  color: #482a1e;
+}
+
+.x-grid3-body .x-grid3-td-checker {
+  background: transparent url(../images/sigmah/grid/grid3-special-col-bg.gif) repeat-y right;
+  color: #482a1e;
+}
+
+.x-grid3-body .x-grid3-td-numberer {
+  background: transparent url(../images/sigmah/grid/grid3-special-col-bg.gif) repeat-y right;
+}
+
+.x-grid3-body .x-grid3-row-selected .x-grid3-td-numberer,.x-grid3-body .x-grid3-row-selected .x-grid3-td-checker,.x-grid3-body .x-grid3-row-selected .x-grid3-td-expander
+  {
+  background: transparent url(../images/sigmah/grid/grid3-special-col-sel-bg.gif) repeat-y right;
+  color: #482a1e;
+}
+
+.x-grid-group-hd {
+  border-bottom: 2px solid #494748;
+}
+
+.x-grid-group-hd div {
+  color: #456;
+}
+
+.x-dd-drag-proxy .x-grid3-hd-inner {
+  background: #ebf3fd url(../images/sigmah/grid/grid3-hrow-over.gif) repeat-x left bottom;
+  border: 1px solid #482A1F;
+}
+
+.x-tbar-page-first {
+  background-image: url(../images/sigmah/grid/page-first.gif) !important;
+}
+
+.x-tbar-page-last {
+  background-image: url(../images/sigmah/grid/page-last.gif) !important;
+}
+
+.x-tbar-page-next {
+  background-image: url(../images/sigmah/grid/page-next.gif) !important;
+}
+
+.x-tbar-page-prev {
+  background-image: url(../images/sigmah/grid/page-prev.gif) !important;
+}
+
+.x-paging-info {
+  color: #000000;
+}
+
+/* Progress Bars */
+.x-progress-bar {
+  background: #9CBFEE url(../images/sigmah/progress/progress-bg.gif) repeat-x left center;
+  border-top: 0px solid #4A3F2B;
+  border-bottom: 0px solid #4A3F2B;
+}
+
+.x-progress-inner {
+  background: #F9F2E0 url(../images/sigmah/qtip/bg.gif) repeat-x scroll 0 0;
+}
+
+.x-progress-text {
+  color: #4B402E;
+}
+
+.x-progress-text-back {
+  color: #4B402E;
+}
+
+.x-progress-wrap {
+  border: 1px solid #4A3F2B;
+}
+
+/* Combos */
+.x-combo-list {
+  border: 1px solid #89a;
+}
+
+.x-combo-list .x-combo-selected {
+  border: 1px dotted #ccc !important;
+  background: #fbf0d2;
+}
+
+/* Calendars */
+.x-date-middle,.x-date-left,.x-date-right {
+  background:#494748 url(../images/sigmah/shared/hd-sprite.gif) repeat-x 0 -83px;
+}
+
+
+.x-date-right a {
+  background-image: url(../images/sigmah/shared/right-btn.gif);
+}
+
+.x-date-left a {
+  background-image: url(../images/sigmah/shared/left-btn.gif);
+}
+
+.x-date-bottom {
+  background: #DFECFB url(../images/sigmah/shared/glass-bg.gif) repeat-x scroll left top;
+  border-top: 1px solid #482A1F;
+}
+
+.x-date-right-icon {
+  background-image: url(../images/sigmah/shared/right-btn.gif);
+}
+
+.x-date-left-icon {
+  background-image: url(../images/sigmah/shared/left-btn.gif);
+}
+
+.x-date-inner th {
+  background:#DFECFB url(../images/sigmah/shared/glass-bg.gif) repeat-x left top;
+  border-bottom: 1px solid #482A1F;
+  color: #473F2A;
+}
+
+.x-date-inner .x-date-selected a {
+  background: url(../images/sigmah/shared/glass-bg.gif) repeat-x scroll left top;
+  border: 1px solid #4A3F2B;
+}
+
+.x-date-inner a:hover,.x-date-inner .x-date-disabled a:hover {
+  background: #faedc0;
+}
+
+td.x-date-mp-month a:hover,td.x-date-mp-year a:hover {
+  color: #473F2A;
+  background: #faedc0;
+}
+
+.x-date-mp-ybtn a {
+  background: transparent url(../images/sigmah/panel/tool-sprites.gif) no-repeat;
+}
+
+.x-date-mp-btns {
+  background: #dfecfb url(../images/sigmah/shared/glass-bg.gif) repeat-x scroll left top;
+}
+
+td.x-date-mp-sel a {
+  background: #dfecfb url(../images/sigmah/shared/glass-bg.gif) repeat-x left top;
+  border: 1px solid #482A1F;
+}
+
+.x-date-mp-btns button {
+  background: #494748;
+  border: 1px solid;
+  border-color: #482A1F #482A1F #482A1F #482A1F;
+}
+
+.x-resizable-over .x-resizable-handle-east,.x-resizable-pinned .x-resizable-handle-east {
+  background: url(../images/sigmah/sizer/e-handle.gif);
+  background-position: left;
+}
+
+.x-resizable-over .x-resizable-handle-west,.x-resizable-pinned .x-resizable-handle-west {
+  background: url(../images/sigmah/sizer/e-handle.gif);
+  background-position: left;
+}
+
+.x-resizable-over .x-resizable-handle-south,.x-resizable-pinned .x-resizable-handle-south {
+  background: url(../images/sigmah/sizer/s-handle.gif);
+  background-position: top;
+}
+
+.x-resizable-over .x-resizable-handle-north,.x-resizable-pinned .x-resizable-handle-north {
+  background: url(../images/sigmah/sizer/s-handle.gif);
+  background-position: top;
+}
+
+.x-resizable-over .x-resizable-handle-southeast,.x-resizable-pinned .x-resizable-handle-southeast {
+  background: url(../images/sigmah/sizer/se-handle.gif);
+  background-position: top left;
+}
+
+.x-resizable-over .x-resizable-handle-northwest,.x-resizable-pinned .x-resizable-handle-northwest {
+  background: url(../images/sigmah/sizer/nw-handle.gif);
+  background-position: bottom right;
+}
+
+.x-resizable-over .x-resizable-handle-northeast,.x-resizable-pinned .x-resizable-handle-northeast {
+  background: url(../images/sigmah/sizer/ne-handle.gif);
+  background-position: bottom left;
+}
+
+.x-resizable-over .x-resizable-handle-southwest,.x-resizable-pinned .x-resizable-handle-southwest {
+  background: url(../images/sigmah/sizer/sw-handle.gif);
+  background-position: top right;
+}
+
+.x-tip .x-tip-close {
+  background-image: url(../images/sigmah/qtip/close.gif);
+}
+
+.x-tip .x-tip-tc {
+  background: transparent url(../images/sigmah/qtip/tip-sprite.gif) no-repeat 0 -62px;
+}
+
+.x-tip .x-tip-tl {
+  background: transparent url(../images/sigmah/qtip/tip-sprite.gif) no-repeat 0 0;
+}
+
+.x-tip .x-tip-tr {
+  background: transparent url(../images/sigmah/qtip/tip-sprite.gif) no-repeat right 0;
+}
+
+.x-tip .x-tip-bc {
+  background: transparent url(../images/sigmah/qtip/tip-sprite.gif) no-repeat 0 -121px;
+}
+
+.x-tip .x-tip-bl {
+  background: transparent url(../images/sigmah/qtip/tip-sprite.gif) no-repeat 0 -59px;
+}
+
+.x-tip .x-tip-br {
+  background: transparent url(../images/sigmah/qtip/tip-sprite.gif) no-repeat right -59px;
+}
+
+.x-tip .x-tip-ml {
+  background: #fff url(../images/sigmah/qtip/tip-sprite.gif) no-repeat 0 -124px;
+}
+
+.x-tip .x-tip-mr {
+  background: transparent url(../images/sigmah/qtip/tip-sprite.gif) no-repeat right -124px;
+}
+
+.x-form-invalid-tip .x-tip-tc {
+  background: url(../images/default/form/error-tip-corners.gif) repeat-x 0 -12px;
+  padding-top: 6px;
+}
+
+.x-form-invalid-tip .x-tip-tl {
+  background-image: url(../images/default/form/error-tip-corners.gif);
+}
+
+.x-form-invalid-tip .x-tip-tr {
+  background-image: url(../images/default/form/error-tip-corners.gif);
+}
+
+.x-form-invalid-tip .x-tip-bc {
+  background: url(../images/default/form/error-tip-corners.gif) repeat-x 0 -18px;
+  height: 6px;
+}
+
+.x-form-invalid-tip .x-tip-bl {
+  background: url(../images/default/form/error-tip-corners.gif) no-repeat 0 -6px;
+}
+
+.x-form-invalid-tip .x-tip-br {
+  background: url(../images/default/form/error-tip-corners.gif) no-repeat right -6px;
+}
+
+.x-form-invalid-tip .x-tip-ml {
+  background-image: url(../images/default/form/error-tip-corners.gif);
+}
+
+.x-form-invalid-tip .x-tip-mr {
+  background-image: url(../images/default/form/error-tip-corners.gif);
+}
+
+.x-tree-node .x-tree-selected {
+  background-color: #f2daa9;
+}
+
+.x-tree-node .x-tree-selected a span {
+  background-color: #f2daa9;
+  color: black;
+}
+
+.x-ftree2-selected {
+  background-color: #FBF0D2 !important;
+}
+
+.x-tree-arrows .x-tree-elbow-plus {
+  background: transparent url(../images/sigmah/tree/arrows.gif) no-repeat 0 0;
+}
+
+.x-tree-arrows .x-tree-elbow-minus {
+  background: transparent url(../images/sigmah/tree/arrows.gif) no-repeat -16px 0;
+}
+
+.x-tree-arrows .x-tree-elbow-end-plus {
+  background: transparent url(../images/sigmah/tree/arrows.gif) no-repeat 0 0;
+}
+
+.x-tree-arrows .x-tree-elbow-end-minus {
+  background: transparent url(../images/sigmah/tree/arrows.gif) no-repeat -16px 0;
+}
+
+.x-slider-horz .x-slider-thumb {
+  background: transparent url(../images/sigmah/slider/slider-thumb.png) no-repeat 0 0;
+}
+
+.x-slider-vert .x-slider-thumb {
+  background: transparent url(../images/sigmah/slider/slider-v-thumb.png) no-repeat 0 0;
+}
+
+.x-slider-horz .x-slider-thumb-over {
+  background-position: -14px -15px;
+}
+
+.x-slider-horz .x-slider-thumb-drag {
+  background-position: -28px -30px;
+}
+
+.x-slider-vert .x-slider-thumb-over {
+  background-position: -15px -14px;
+}
+
+.x-slider-vert .x-slider-thumb-drag {
+  background-position: -30px -28px;
+}
+
+.x-slider-horz {
+  background: transparent url(../images/sigmah/slider/slider-bg.png) no-repeat 0 -22px;
+}
+
+.x-slider-horz .x-slider-end {
+  background: transparent url(../images/sigmah/slider/slider-bg.png) no-repeat right -44px;
+}
+
+.x-slider-horz .x-slider-inner {
+  background: transparent url(../images/sigmah/slider/slider-bg.png) repeat-x 0 0;
+}
+
+.x-slider-vert {
+  background: transparent url(../images/sigmah/slider/slider-v-bg.png) no-repeat -44px 0;
+}
+
+.x-slider-vert .x-slider-end {
+  background: transparent url(../images/sigmah/slider/slider-v-bg.png) no-repeat -22px bottom;
+}
+
+.x-slider-vert .x-slider-inner {
+  background: transparent url(../images/sigmah/slider/slider-v-bg.png) repeat-y 0 0;
+}
+
+.x-item-disabled * {
+  color: #333 !important;
+}
+
+.x-form-check {
+  background: none;
+  !
+  important
+}
+
+.x-form-radio {
+  background: none;
+  !
+  important
+}
+
+.x-border {
+  border: 1px solid #C9AD7D;
+}

@@ -83,16 +83,17 @@ public class SigmahAppFrame implements Frame {
                     ((HasTab)state).setTab(tab);
             }
         });
-        
+
         int clutterHeight = getDecorationHeight();
         
-        this.view = new SigmahViewport(clutterHeight);
+        this.view = new SigmahViewport(0, clutterHeight);
         this.view.setLayout(new FitLayout());
         this.view.syncSize();
+        this.view.setBorders(true);
         
         RootPanel.get("content").add(this.view);
     }
-    
+
     private native int getDecorationHeight() /*-{
         var height = 0;
 

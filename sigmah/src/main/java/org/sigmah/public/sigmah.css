@@ -145,16 +145,20 @@ body {
 #tabs {
     width: 100%;
     height: 100%;
-    margin-left: 14px;
+    margin-left: 15px;
     overflow: hidden;
     position: absolute;
 }
 
 .tab {
-    margin-left: 2px;
     cursor: default;
     
     position: relative;
+    float: left;
+}
+
+.tab.home {
+    margin-right: 2px;
 }
 
 .tab .left {
@@ -172,6 +176,10 @@ body {
     background:url(image/panel/panmiddle.png) repeat-x;
     color:#B3B3B3;
     font-size:12px;
+}
+
+.tab:hover .center {
+    color: white;
 }
 
 .tab .right {
@@ -269,6 +277,10 @@ body {
     background: black url('image/tab-buttons.png') 0 -64px;
 }
 
+.tab-button-left[disabled] {
+    background: black url('image/tab-buttons.png') 0 -96px;
+}
+
 .tab-button-left::-moz-focus-inner {
     border: none;
 }
@@ -298,12 +310,24 @@ body {
     background: black url('image/tab-buttons.png') 18px -64px;
 }
 
+.tab-button-right[disabled] {
+    background: black url('image/tab-buttons.png') 18px -96px;
+}
+
 .tab-button-right::-moz-focus-inner {
     border: none;
 }
 
+.content-margins {
+    padding: 10px 15px 10px 15px;
+}
+
 #content {
     clear: both;
+}
+
+.main-background {
+    background-color: #494748;
 }
 
 /* -------------------------------------------------------------- Flexibility */

@@ -14,15 +14,17 @@ public class SigmahViewport extends LayoutContainer {
   private String loadingPanelId = "loading";
   private boolean enableScroll;
 
-  private int clutter;
+  private int clutterWidth;
+  private int clutterHeight;
   
   /**
    * @param clutter Height reserved by other widgets.
    */
-  public SigmahViewport(int clutter) {
+  public SigmahViewport(int clutterWidth, int clutterHeight) {
     monitorWindowResize = true;
     baseStyle = "x-viewport";
-    this.clutter = clutter;
+    this.clutterWidth = clutterWidth;
+    this.clutterHeight = clutterHeight;
   }
 
   /**
@@ -43,9 +45,10 @@ public class SigmahViewport extends LayoutContainer {
     return loadingPanelId;
   }
 
+    @Override
   public void onAttach() {
     setEnableScroll(enableScroll);
-    setSize(Window.getClientWidth(), Window.getClientHeight() - clutter);
+    setSize(Window.getClientWidth() - clutterWidth, Window.getClientHeight() - clutterHeight);
     super.onAttach();
     GXT.hideLoadingPanel(loadingPanelId);
   }
@@ -77,7 +80,7 @@ public class SigmahViewport extends LayoutContainer {
 
   @Override
   protected void onWindowResize(int width, int height) {
-    setSize(width, height - clutter);
+    setSize(width - clutterWidth, height - clutterHeight);
   }
 
 }

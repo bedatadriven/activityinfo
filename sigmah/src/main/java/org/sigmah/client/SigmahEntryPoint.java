@@ -10,6 +10,7 @@ import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.util.Theme;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import org.sigmah.client.ui.SigmahTheme;
 
 
 /**
@@ -38,7 +39,7 @@ public class SigmahEntryPoint implements EntryPoint {
             });
         }
 
-        GXT.setDefaultTheme(Theme.GRAY, true);
+        GXT.setDefaultTheme(SigmahTheme.SIGMAH, true);
 
         Log.trace("Application: GXT theme set");
         

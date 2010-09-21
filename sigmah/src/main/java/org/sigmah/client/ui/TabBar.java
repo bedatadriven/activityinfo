@@ -5,17 +5,15 @@
 
 package org.sigmah.client.ui;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.sigmah.client.EventBus;
@@ -31,7 +29,7 @@ public class TabBar extends Composite {
     
     private EventBus eventBus;
     private TabModel model;
-    private final HorizontalPanel tabContainer;
+    private final FlowPanel tabContainer;
     
     private int selectedIndex = -1;
 
@@ -51,27 +49,59 @@ public class TabBar extends Composite {
         final AbsolutePanel scrollPanel = new AbsolutePanel();
         scrollPanel.setSize("100%", "100%");
 
-        tabContainer = new HorizontalPanel();
-        tabContainer.setVerticalAlignment(HasVerticalAlignment.ALIGN_BOTTOM);
+        tabContainer = new FlowPanel();
+        //tabContainer.setVerticalAlignment(HasVerticalAlignment.ALIGN_BOTTOM);
         tabContainer.setHeight("100%");
 
         scrollPanel.add(tabContainer, 0, 0);
+
+        final Button scrollLeftButton = new Button();
+        final Button scrollRightButton = new Button();
 
         final Animation animation  = new Animation() {
             @Override
             protected void onUpdate(double progress) {
                 int x = (int) (distance * progress) * direction + initialPosition;
 
+                if(x > 0)
+                    x = 0;
+
                 scrollPanel.setWidgetPosition(tabContainer, x, 0);
+            }
+
+            @Override
+            protected void onComplete() {
+                int x = (int) distance * direction + initialPosition;
+                if(x > 0)
+                    x = 0;
+
+                scrollPanel.setWidgetPosition(tabContainer, x, 0);
+
+                scrollLeftButton.setEnabled(leftTabIndex > 0);
+                scrollRightButton.setEnabled(leftTabIndex < model.size()-1);
             }
         };
 
-        final Button scrollLeftButton = new Button();
+        model.addListener(new TabModel.Listener() {
+            @Override
+            public void tabAdded(Tab t) {
+                scrollRightButton.setEnabled(leftTabIndex < model.size()-1);
+            }
+
+            @Override
+            public void tabRemoved(int index) {
+                scrollRightButton.setEnabled(leftTabIndex < model.size()-1);
+            }
+            @Override
+            public void tabChanged(int index) {}
+        });
+
         scrollLeftButton.addStyleName("tab-button-left");
+        scrollLeftButton.setEnabled(false);
         RootPanel.get("arrows").add(scrollLeftButton);
 
-        final Button scrollRightButton = new Button();
         scrollRightButton.addStyleName("tab-button-right");
+        scrollRightButton.setEnabled(false);
         RootPanel.get("arrows").add(scrollRightButton);
 
         scrollLeftButton.addClickHandler(new ClickHandler() {
@@ -182,22 +212,26 @@ public class TabBar extends Composite {
 
         panel.getElement().setId(TAB_ID_PREFIX + tab.getId());
 
-        final SimplePanel leftBorder = new SimplePanel();
+        final HTML leftBorder = new HTML();
         leftBorder.addStyleName("left");
 
         final HTML title = new HTML(tab.getTitle());
         title.addStyleName("center");
 
-        final SimplePanel rightBorder = new SimplePanel();
+        final HTML rightBorder = new HTML();
         rightBorder.addStyleName("right");
 
-        title.addClickHandler(new ClickHandler() {
+        final ClickHandler clickHandler = new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 displayTab(tab);
                 setSelectedIndex(model.indexOf(tab));
             }
-        });
+        };
+
+        leftBorder.addClickHandler(clickHandler);
+        title.addClickHandler(clickHandler);
+        rightBorder.addClickHandler(clickHandler);
 
         panel.add(leftBorder);
         panel.add(title);

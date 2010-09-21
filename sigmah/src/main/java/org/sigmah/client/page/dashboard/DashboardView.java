@@ -47,6 +47,7 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.extjs.gxt.ui.client.store.TreeStore;
+import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.util.Padding;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.MessageBox;
@@ -77,6 +78,7 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
+import org.sigmah.client.ui.StylableVBoxLayout;
 
 /**
  * Displays the dashboard.
@@ -84,15 +86,20 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class DashboardView extends ContentPanel {
+    private final static int BORDER = 10;
+    private final static String STYLE_MAIN_BACKGROUND = "main-background";
+
     public DashboardView(final EventBus eventBus, final Dispatcher dispatcher, final TreeStore<ProjectDTO> projectStore, final ListStore<CountryDTO> countryStore) {
         // The dashboard itself
-        setLayout(new BorderLayout());
+        final BorderLayout borderLayout = new BorderLayout();
+        borderLayout.setContainerStyle("x-border-layout-ct "+STYLE_MAIN_BACKGROUND);
+        setLayout(borderLayout);
         setHeaderVisible(false);
         setBorders(false);
-        
+
         // Left bar
         final ContentPanel leftPanel = new ContentPanel();
-        final VBoxLayout leftPanelLayout = new VBoxLayout();
+        final VBoxLayout leftPanelLayout = new StylableVBoxLayout(STYLE_MAIN_BACKGROUND);
         leftPanelLayout.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
         leftPanelLayout.setPadding(new Padding(0));
         leftPanel.setLayout(leftPanelLayout);
@@ -103,6 +110,7 @@ public class DashboardView extends ContentPanel {
             // Left bar content
             final VBoxLayoutData vBoxLayoutData = new VBoxLayoutData();
             vBoxLayoutData.setFlex(1.0);
+            vBoxLayoutData.setMargins(new Margins(0, 0, BORDER, 0));
         
             final ContentPanel remindersPanel = new ContentPanel(new FitLayout());
             remindersPanel.setHeading(I18N.CONSTANTS.reminders());
@@ -436,16 +444,20 @@ public class DashboardView extends ContentPanel {
                 	addNavLink(eventBus, menuPanel, I18N.CONSTANTS.tables(), IconImageBundle.ICONS.table(), new PivotPageState());
                 	addNavLink(eventBus, menuPanel, I18N.CONSTANTS.setup(), IconImageBundle.ICONS.setup(), new DbListPageState());
                 }
-        
-            leftPanel.add(menuPanel, vBoxLayoutData);
+
+            final VBoxLayoutData bottomVBoxLayoutData = new VBoxLayoutData();
+            bottomVBoxLayoutData.setFlex(1.0);
+            bottomVBoxLayoutData.setMargins(new Margins(0, 0, 0, 0));
+            leftPanel.add(menuPanel, bottomVBoxLayoutData);
             
         final BorderLayoutData leftLayoutData = new BorderLayoutData(LayoutRegion.WEST, 250);
-        leftLayoutData.setSplit(true);
+        leftLayoutData.setMargins(new Margins(0, BORDER/2, 0, 0));
+        //leftLayoutData.setSplit(true);
         add(leftPanel, leftLayoutData);
             
         // Main panel
-        final ContentPanel mainPanel = new ContentPanel(new VBoxLayout());
-        final VBoxLayout mainPanelLayout = new VBoxLayout();
+        final ContentPanel mainPanel = new ContentPanel();
+        final VBoxLayout mainPanelLayout = new StylableVBoxLayout(STYLE_MAIN_BACKGROUND);
         mainPanelLayout.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
         mainPanel.setLayout(mainPanelLayout);
         mainPanel.setHeaderVisible(false);
@@ -457,6 +469,7 @@ public class DashboardView extends ContentPanel {
             missionTreePanel.setHeading(I18N.CONSTANTS.location());
             final VBoxLayoutData smallVBoxLayoutData = new VBoxLayoutData();
             smallVBoxLayoutData.setFlex(1.0);
+            smallVBoxLayoutData.setMargins(new Margins(0, 0, BORDER, 0));
             mainPanel.add(missionTreePanel, smallVBoxLayoutData);
             
                 // Country list
@@ -554,6 +567,7 @@ public class DashboardView extends ContentPanel {
                 projectTreePanel.add(projectTreeGrid);
                 
         final BorderLayoutData mainLayoutData = new BorderLayoutData(LayoutRegion.CENTER);
+        mainLayoutData.setMargins(new Margins(0, 0, 0, BORDER/2));
         add(mainPanel, mainLayoutData);
     }
 
