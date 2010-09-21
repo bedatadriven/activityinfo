@@ -50,7 +50,7 @@
 
     <properties>
         <!--  convenience to define GWT version in one place -->
-        <gwtVersion>2.0.0</gwtVersion>
+        <gwtVersion>2.0.4</gwtVersion>
         <platform>windows</platform>
 
         <!--  tell the compiler we can use 1.6 -->
@@ -143,7 +143,7 @@
             <artifactId>rebar-sync</artifactId>
             <version>0.4-SNAPSHOT</version>
         </dependency>
-        
+
         <!-- GWT DEV is required for MockPersistenceUnitFactory -->
         <dependency>
             <groupId>com.google.gwt</groupId>
@@ -446,7 +446,7 @@
                     <module>org.sigmah.ActivityInfo</module>
                     <webappDirectory>${basedir}/war</webappDirectory>
                     <warSourceDirectory>${basedir}/war</warSourceDirectory>
-                    <extraJvmArgs>-Xmx512M</extraJvmArgs>
+                    <extraJvmArgs>-Xmx512M -Xss1M</extraJvmArgs>
                 </configuration>
 
                 <executions>
