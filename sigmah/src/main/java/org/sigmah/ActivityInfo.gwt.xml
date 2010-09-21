@@ -37,20 +37,9 @@
     <source path='client'/>
     <source path="shared"/>
 
-    <!-- Specify the app entry point class. -->
-    <entry-point class='org.sigmah.client.ActivityInfoEntryPoint' />
 
     <!-- Enable other locales -->
     <extend-property name="locale" values="en" />
     <set-property-fallback name="locale" value="en"/>
-
-  	<!-- A binding for when we can't find gears -->
-  	<!--  
-  	<replace-with class="org.sigmah.client.ActivityInfoEntryPointNoGears">
-    	<when-type-is class="org.sigmah.client.ActivityInfoEntryPoint"/>
-    	<when-property-is name="gears.installed" value="false"/>
-  	</replace-with>
-    <servlet path="/cmd" class="org.sigmah.server.endpoint.gwtrpc.CommandServlet" />
-    -->
 
 </module>

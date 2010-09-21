@@ -21,5 +21,6 @@
     <set-property name="log_level" value="TRACE"/>
     <set-property name="log_DivLogger" value="DISABLED" />
     
-     <set-property name="gears.installed" value="false"/>
+    <entry-point class="org.sigmah.client.ActivityInfoEntryPoint"/>
+
 </module>

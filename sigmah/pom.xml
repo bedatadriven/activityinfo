@@ -443,7 +443,7 @@
                     <inplace>false</inplace>
                     <gwtVersion>${gwtVersion}</gwtVersion>
                     <port>9090</port>
-                    <module>org.sigmah.ActivityInfo</module>
+                    <module>org.sigmah.ActivityInfoProduction</module>
                     <webappDirectory>${basedir}/war</webappDirectory>
                     <warSourceDirectory>${basedir}/war</warSourceDirectory>
                     <extraJvmArgs>-Xmx512M -Xss1M</extraJvmArgs>
