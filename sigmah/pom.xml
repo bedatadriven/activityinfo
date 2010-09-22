@@ -474,12 +474,12 @@
                         <configuration>
                             <disableClassMetadata>true</disableClassMetadata>
                             <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
-                            <module>org.sigmah.ActivityInfo</module>
+                            <logLevel>INFO</logLevel>
                             <!-- Takes WAY to long for all 12 permutations -->
                             <!-- run with profile soyc enabled to generate maps for a single perm-->
                             <soyc>false</soyc>
                             <modules>
-                                <module>org.sigmah.ActivityInfo</module>
+                                <module>org.sigmah.ActivityInfoProduction</module>
                                 <module>org.sigmah.login.Login</module>
                                 <module>org.sigmah.Sigmah</module>
                             </modules>
