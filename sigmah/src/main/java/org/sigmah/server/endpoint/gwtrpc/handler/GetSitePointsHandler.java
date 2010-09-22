@@ -6,7 +6,6 @@
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
 import com.google.inject.Inject;
-import org.hibernate.criterion.Restrictions;
 import org.sigmah.server.dao.SiteTableDAO;
 import org.sigmah.server.domain.SiteData;
 import org.sigmah.server.report.generator.SiteDataBinder;
@@ -14,13 +13,17 @@ import org.sigmah.shared.command.GetSitePoints;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.SitePointList;
+import org.sigmah.shared.dao.SiteOrder;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.BoundingBoxDTO;
 import org.sigmah.shared.dto.SitePointDTO;
 import org.sigmah.shared.exception.CommandException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import static org.sigmah.shared.dao.Filter.filter;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -39,8 +42,11 @@ public class GetSitePointsHandler implements CommandHandler<GetSitePoints> {
     public CommandResult execute(GetSitePoints cmd, User user) throws CommandException {
 
         // query for the sites
-        List<SiteData> sites = dao.query(user, Restrictions.eq("activity.id", cmd.getActivityId()), null,
-                new SiteDataBinder(), SiteTableDAO.RETRIEVE_NONE, 0, -1);
+        List<SiteData> sites = dao.query(user,
+                filter().onActivity(cmd.getActivityId()),
+                Collections.<SiteOrder>emptyList(),
+                new SiteDataBinder(),
+                SiteTableDAO.RETRIEVE_NONE, 0, -1);
 
         BoundingBoxDTO bounds = new BoundingBoxDTO();
 

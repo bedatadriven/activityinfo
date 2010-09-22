@@ -6,10 +6,9 @@
 package org.sigmah.server.dao;
 
 import com.google.inject.ImplementedBy;
-import org.hibernate.criterion.Conjunction;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Order;
 import org.sigmah.server.dao.hibernate.SiteTableDAOHibernate;
+import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.dao.SiteOrder;
 import org.sigmah.shared.domain.User;
 
 import java.util.List;
@@ -40,14 +39,14 @@ public interface SiteTableDAO {
 
     <RowT> List<RowT> query(
             User user,
-            Criterion criterion,
-            List<Order> orderings,
+            Filter filter,
+            List<SiteOrder> orderings,
             SiteProjectionBinder<RowT> binder,
             int retrieve,
             int offset,
             int limit);
 
-    int queryCount(Conjunction criterion);
+    int queryCount(Filter filter);
 
-    int queryPageNumber(User user, Criterion criterion, List<Order> orderings, int pageSize, int siteId);
+    int queryPageNumber(User user, Filter filter, List<SiteOrder> orderings, int pageSize, int siteId);
 }

@@ -5,6 +5,7 @@
 
 package org.sigmah.shared.report.model;
 
+import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.report.content.Content;
 
 import javax.xml.bind.annotation.XmlElement;

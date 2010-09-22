@@ -5,7 +5,7 @@
 
 package org.sigmah.shared.report.content;
 
-import org.sigmah.shared.report.model.Filter;
+import org.sigmah.shared.dao.Filter;
 
 import java.util.ArrayList;
 import java.util.List;

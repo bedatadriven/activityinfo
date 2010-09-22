@@ -11,20 +11,23 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 import org.sigmah.server.dao.SiteTableDAO;
 import org.sigmah.server.domain.SiteData;
 import org.sigmah.server.report.generator.SiteDataBinder;
+import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dao.SiteTableColumn;
 import org.sigmah.shared.domain.AdminEntity;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.*;
+import org.sigmah.shared.report.model.DimensionType;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
+import static java.util.Collections.singletonList;
+import static org.sigmah.shared.dao.SiteOrder.descendingOn;
 
 /**
  * @author Alex Bertram
@@ -234,11 +237,12 @@ public class Export {
 
     private List<SiteData> querySites(ActivityDTO activity) {
 
-        List<Order> orderings = new ArrayList<Order>(1);
-        orderings.add(Order.desc(SiteTableColumn.date2.property()));
+        Filter filter = new Filter();
+        filter.addRestriction(DimensionType.Activity, activity.getId());
 
-        return siteDAO.query(user, Restrictions.eq(SiteTableColumn.activity_id.property(), activity.getId()),
-                orderings, new SiteDataBinder(), SiteTableDAO.RETRIEVE_ALL, 0, -1);
+        return siteDAO.query(user, filter,
+                singletonList(descendingOn(SiteTableColumn.date2.property())),
+                new SiteDataBinder(), SiteTableDAO.RETRIEVE_ALL, 0, -1);
     }
 
     private void createDataRows(ActivityDTO activity, Sheet sheet) {

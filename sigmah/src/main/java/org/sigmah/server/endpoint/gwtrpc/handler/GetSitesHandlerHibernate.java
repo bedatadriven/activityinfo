@@ -10,23 +10,21 @@ import com.extjs.gxt.ui.client.data.SortInfo;
 import com.google.inject.Inject;
 import org.dozer.Mapper;
 import org.hibernate.criterion.Conjunction;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.sigmah.server.dao.SiteProjectionBinder;
 import org.sigmah.server.dao.SiteTableDAO;
-import org.sigmah.server.dao.hibernate.criterion.SiteAdminOrder;
-import org.sigmah.server.dao.hibernate.criterion.SiteIndicatorOrder;
-import org.sigmah.server.report.generator.FilterCriterionBridge;
 import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.command.handler.GetSitesHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.SiteResult;
 import org.sigmah.shared.dao.IndicatorDAO;
+import org.sigmah.shared.dao.SiteOrder;
 import org.sigmah.shared.dao.SiteTableColumn;
 import org.sigmah.shared.domain.AdminEntity;
-import org.sigmah.shared.domain.Indicator;
 import org.sigmah.shared.domain.User;
-import org.sigmah.shared.dto.*;
+import org.sigmah.shared.dto.AdminEntityDTO;
+import org.sigmah.shared.dto.PartnerDTO;
+import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.exception.CommandException;
 
 import java.util.*;
@@ -57,39 +55,22 @@ public class GetSitesHandlerHibernate implements GetSitesHandler<GetSites> {
          */
 
         Conjunction criteria = Restrictions.conjunction();
-        if (cmd.getSiteId() != null) {
-            criteria.add(Restrictions.eq(SiteTableColumn.id.property(), cmd.getSiteId()));
-        } else if (cmd.getActivityId() != null) {
-            criteria.add(Restrictions.eq(SiteTableColumn.activity_id.property(),
-                    cmd.getActivityId()));
-        } else if (cmd.getDatabaseId() != null) {
-            criteria.add(Restrictions.eq(SiteTableColumn.database_id.property(),
-                    cmd.getDatabaseId()));
-        }
-        if (cmd.isAssessmentsOnly()) {
-            criteria.add(Restrictions.eq("activity.assessment", true));
-        }
 
         /*
          * Build the user filter if provided
          */
 
-        if (cmd.getPivotFilter() != null) {
-            criteria.add(FilterCriterionBridge.resolveCriterion(cmd.getPivotFilter()));
-        }
-
         /*
            * And the ordering...
            */
 
-        List<Order> order = new ArrayList<Order>();
+        List<SiteOrder> order = new ArrayList<SiteOrder>();
 
         if (cmd.getSortInfo().getSortDir() != SortDir.NONE) {
-
             String field = cmd.getSortInfo().getSortField();
 
             if (field.equals("date1")) {
-                order.add(order(SiteTableColumn.date1, cmd.getSortInfo()));
+                order.add( order(SiteTableColumn.date1, cmd.getSortInfo()));
             } else if (field.equals("date2")) {
                 order.add(order(SiteTableColumn.date2, cmd.getSortInfo()));
             } else if (field.equals("locationName")) {
@@ -98,23 +79,9 @@ public class GetSitesHandlerHibernate implements GetSitesHandler<GetSites> {
                 order.add(order(SiteTableColumn.partner_name, cmd.getSortInfo()));
             } else if (field.equals("locationAxe")) {
                 order.add(order(SiteTableColumn.location_axe, cmd.getSortInfo()));
-            } else if (field.startsWith(IndicatorDTO.PROPERTY_PREFIX)) {
-
-                Indicator indicator = indicatorDAO.findById(
-                        IndicatorDTO.indicatorIdForPropertyName(field));
-
-                order.add(new SiteIndicatorOrder(indicator,
-                        cmd.getSortInfo().getSortDir() == SortDir.ASC));
-
-            } else if (field.startsWith("a")) {
-
-                int levelId = AdminLevelDTO.levelIdForPropertyName(field);
-
-                order.add(new SiteAdminOrder(levelId,
-                        cmd.getSortInfo().getSortDir() == SortDir.ASC));
-
+            } else {
+                order.add(new SiteOrder(field, cmd.getSortInfo().getSortDir() == SortDir.DESC));
             }
-
         }
 
         /*
@@ -126,7 +93,7 @@ public class GetSitesHandlerHibernate implements GetSitesHandler<GetSites> {
 
         if (cmd.getSeekToSiteId() != null && cmd.getLimit() > 0) {
 
-            int pageNum = siteDAO.queryPageNumber(user, criteria, order, cmd.getLimit(), cmd.getSeekToSiteId());
+            int pageNum = siteDAO.queryPageNumber(user, cmd.getFilter(), order, cmd.getLimit(), cmd.getSeekToSiteId());
 
             offset = pageNum * cmd.getLimit();
 
@@ -139,18 +106,18 @@ public class GetSitesHandlerHibernate implements GetSitesHandler<GetSites> {
         /*
            * Execute !
            */
-        List<SiteDTO> sites = siteDAO.query(user, criteria, order,
+        List<SiteDTO> sites = siteDAO.query(user, cmd.getFilter(), order,
                 new ModelBinder(mapper), SiteTableDAO.RETRIEVE_ALL, offset, cmd.getLimit());
 
-        return new SiteResult(sites, offset, siteDAO.queryCount(criteria));
+        return new SiteResult(sites, offset, siteDAO.queryCount(cmd.getFilter()));
 
     }
 
-    protected Order order(SiteTableColumn column, SortInfo si) {
+    protected SiteOrder order(SiteTableColumn column, SortInfo si) {
         if (si.getSortDir() == SortDir.ASC) {
-            return Order.asc(column.property());
+            return SiteOrder.ascendingOn(column.property());
         } else {
-            return Order.desc(column.property());
+            return SiteOrder.descendingOn(column.property());
         }
     }
 

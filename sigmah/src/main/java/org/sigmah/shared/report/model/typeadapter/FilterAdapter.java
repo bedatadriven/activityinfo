@@ -5,9 +5,9 @@
 
 package org.sigmah.shared.report.model.typeadapter;
 
+import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.DimensionType;
-import org.sigmah.shared.report.model.Filter;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;

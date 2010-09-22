@@ -19,6 +19,7 @@ import org.sigmah.client.page.entry.SiteEditor;
 import org.sigmah.client.util.state.IStateManager;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.command.GetSites;
+import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.date.DateUtil;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
@@ -27,7 +28,6 @@ import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.report.content.EntityCategory;
 import org.sigmah.shared.report.content.PivotTableData;
 import org.sigmah.shared.report.model.DimensionType;
-import org.sigmah.shared.report.model.Filter;
 /*
  * @author Alex Bertram
  */
@@ -101,7 +101,7 @@ public class DrillDownEditor extends SiteEditor {
         currentActivity = activity;
 
         GetSites cmd = GetSites.byActivity(currentActivity.getId());
-        cmd.setPivotFilter(filter);
+        cmd.setFilter(filter);
 
         loader.setCommand(cmd);
         loader.setSortField(indicator.getPropertyName());

@@ -11,6 +11,7 @@ import org.sigmah.server.dao.PivotDAO;
 import org.sigmah.server.dao.SiteTableDAO;
 import org.sigmah.server.domain.SiteData;
 import org.sigmah.server.report.generator.map.*;
+import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.map.BaseMap;
 import org.sigmah.shared.report.content.Extents;
@@ -43,7 +44,7 @@ public class MapGenerator extends ListGenerator<MapElement> {
 
         List<SiteData> sites = siteDAO.query(
                 user,
-                FilterCriterionBridge.resolveCriterion(effectiveFilter),
+                effectiveFilter,
                 null,
                 new SiteDataBinder(),
                 SiteTableDAO.RETRIEVE_ALL, 0, -1);

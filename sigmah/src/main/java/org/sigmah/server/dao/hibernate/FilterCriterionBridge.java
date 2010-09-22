@@ -3,13 +3,13 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.server.report.generator;
+package org.sigmah.server.dao.hibernate;
 
 import org.hibernate.criterion.*;
+import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dao.SiteTableColumn;
 import org.sigmah.shared.domain.Location;
 import org.sigmah.shared.report.model.DimensionType;
-import org.sigmah.shared.report.model.Filter;
 
 public class FilterCriterionBridge {
     /**
@@ -27,6 +27,7 @@ public class FilterCriterionBridge {
         addRestriction(criterion, filter, DimensionType.Database, SiteTableColumn.database_id);
         addRestriction(criterion, filter, DimensionType.Activity, SiteTableColumn.activity_id);
         addRestriction(criterion, filter, DimensionType.Partner, SiteTableColumn.partner_id);
+        addRestriction(criterion, filter, DimensionType.Site, SiteTableColumn.id);
         addAdminRestriction(criterion, filter);
 
         if(filter.isDateRestricted()) {

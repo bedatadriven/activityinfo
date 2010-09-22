@@ -6,7 +6,6 @@
 package org.sigmah.server.report.generator;
 
 import com.google.inject.Inject;
-import org.hibernate.criterion.Restrictions;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,6 +21,8 @@ import org.sigmah.test.Modules;
 import javax.persistence.EntityManager;
 import java.util.List;
 
+import static org.sigmah.shared.dao.Filter.filter;
+
 @RunWith(InjectionSupport.class)
 @Modules({MockHibernateModule.class})
 @OnDataSet("/dbunit/sites-simple1.db.xml")
@@ -36,7 +37,8 @@ public class SiteDataBinderTest {
     @Test
     public void test() {
 
-        List<SiteData> sites = dao.query(new User(), Restrictions.eq("site.id", 2),
+        List<SiteData> sites = dao.query(new User(),
+                filter().onSite(2),
                 null, new SiteDataBinder(), SiteTableDAO.RETRIEVE_ALL, 0, -1);
 
         Assert.assertEquals("sites returned", 1, sites.size());

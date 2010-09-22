@@ -9,11 +9,11 @@ import com.google.inject.Inject;
 import org.sigmah.server.dao.PivotDAO;
 import org.sigmah.server.report.util.DateRangeFormat;
 import org.sigmah.server.util.LocaleHelper;
+import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.report.content.FilterDescription;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.DimensionType;
-import org.sigmah.shared.report.model.Filter;
 import org.sigmah.shared.report.model.ReportElement;
 
 import java.util.ArrayList;

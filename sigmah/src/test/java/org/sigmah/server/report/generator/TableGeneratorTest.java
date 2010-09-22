@@ -5,25 +5,16 @@
 
 package org.sigmah.server.report.generator;
 
-import static org.easymock.EasyMock.createNiceMock;
-import static org.easymock.EasyMock.replay;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import junit.framework.Assert;
-
-import org.hibernate.criterion.Conjunction;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Order;
 import org.junit.Before;
 import org.junit.Test;
 import org.sigmah.server.dao.PivotDAO;
 import org.sigmah.server.dao.SiteProjectionBinder;
 import org.sigmah.server.dao.SiteTableDAO;
 import org.sigmah.server.report.generator.map.MockBaseMapDAO;
+import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dao.IndicatorDAO;
+import org.sigmah.shared.dao.SiteOrder;
 import org.sigmah.shared.dao.SiteTableColumn;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.report.content.BubbleMapMarker;
@@ -33,6 +24,13 @@ import org.sigmah.shared.report.model.BubbleMapLayer;
 import org.sigmah.shared.report.model.MapElement;
 import org.sigmah.shared.report.model.TableColumn;
 import org.sigmah.shared.report.model.TableElement;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.replay;
 
 /**
  * @author Alex Bertram
@@ -52,7 +50,7 @@ public class TableGeneratorTest {
     public class MockSiteTableDAO implements SiteTableDAO {
 
         @Override
-        public <RowT> List<RowT> query(User user, Criterion criterion, List<Order> orderings, SiteProjectionBinder<RowT> binder, int retrieve, int offset, int limit) {
+        public <RowT> List<RowT> query(User user, Filter filter, List<SiteOrder> orderings, SiteProjectionBinder<RowT> binder, int retrieve, int offset, int limit) {
             List<RowT> rows = new ArrayList<RowT>();
             Object[] row = new Object[SiteTableColumn.values().length];
             String[] properties = new String[SiteTableColumn.values().length];
@@ -67,12 +65,12 @@ public class TableGeneratorTest {
         }
 
         @Override
-        public int queryCount(Conjunction criterion) {
+        public int queryCount(Filter filter) {
             return 0;
         }
 
         @Override
-        public int queryPageNumber(User user, Criterion criterion, List<Order> orderings, int pageSize, int siteId) {
+        public int queryPageNumber(User user, Filter filter, List<SiteOrder> orderings, int pageSize, int siteId) {
             return 0;
         }
     }

@@ -10,13 +10,13 @@ import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.shared.report.model.Filter;
+import org.sigmah.shared.dao.Filter;
 
 import java.util.Date;
 
 /**
  * UI Component for selecting a range of dates to be used with
- * a {@link org.sigmah.shared.report.model.Filter}
+ * a {@link org.sigmah.shared.dao.Filter}
  *
  * @author Alex Bertram
  */

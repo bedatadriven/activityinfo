@@ -35,11 +35,12 @@ import org.sigmah.shared.command.*;
 import org.sigmah.shared.command.result.PagingResult;
 import org.sigmah.shared.command.result.SiteResult;
 import org.sigmah.shared.command.result.VoidResult;
+import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
-import org.sigmah.shared.report.model.Filter;
+import org.sigmah.shared.report.model.DimensionType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -202,9 +203,14 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
         */
 
         initLoaderDefaults(loader, place, new SortInfo("date2", Style.SortDir.DESC));
-        GetSites cmd = GetSites.byActivity(currentActivity.getId());
-       
-        cmd.setPivotFilter(view.getFilter());
+        Filter filter = view.getFilter();
+        if(filter == null) {
+            filter = new Filter();
+        }
+        filter.addRestriction(DimensionType.Activity, currentActivity.getId());
+
+        GetSites cmd = new GetSites();
+        cmd.setFilter(filter);
         
         loader.setCommand(cmd);
         view.init(SiteEditor.this, currentActivity, store);

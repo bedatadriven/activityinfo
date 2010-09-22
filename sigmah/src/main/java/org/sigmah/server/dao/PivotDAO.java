@@ -7,10 +7,10 @@ package org.sigmah.server.dao;
 
 import com.google.inject.ImplementedBy;
 import org.sigmah.server.dao.hibernate.PivotHibernateDAO;
+import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.report.content.DimensionCategory;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
-import org.sigmah.shared.report.model.Filter;
 
 import java.util.*;
 
@@ -26,7 +26,7 @@ public interface PivotDAO {
     /**
      *
      * @param userId the id of the User for whom the data is restricted
-     * @param filter a {@link org.sigmah.shared.report.model.Filter filter} restricting the sites
+     * @param filter a {@link org.sigmah.shared.dao.Filter filter} restricting the sites
      * @param dimensions
      * @return
      */

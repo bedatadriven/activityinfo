@@ -6,17 +6,20 @@
 package org.sigmah.server.report.generator;
 
 import com.google.inject.Inject;
-import org.hibernate.criterion.Order;
 import org.sigmah.server.dao.PivotDAO;
 import org.sigmah.server.dao.SiteTableDAO;
-import org.sigmah.server.dao.hibernate.criterion.SiteAdminOrder;
-import org.sigmah.server.dao.hibernate.criterion.SiteIndicatorOrder;
+import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dao.IndicatorDAO;
-import org.sigmah.shared.domain.Indicator;
+import org.sigmah.shared.dao.SiteOrder;
 import org.sigmah.shared.domain.User;
+import org.sigmah.shared.dto.AdminLevelDTO;
+import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.report.content.TableContent;
 import org.sigmah.shared.report.content.TableData;
-import org.sigmah.shared.report.model.*;
+import org.sigmah.shared.report.model.DateRange;
+import org.sigmah.shared.report.model.DimensionType;
+import org.sigmah.shared.report.model.TableColumn;
+import org.sigmah.shared.report.model.TableElement;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -63,23 +66,20 @@ public class TableGenerator extends ListGenerator<TableElement> {
     }
 
 
-    protected List<Order> resolveOrder(TableElement element) {
-        List<Order> list = new ArrayList<Order>();
+    protected List<SiteOrder> resolveOrder(TableElement element) {
+        List<SiteOrder> list = new ArrayList<SiteOrder>();
 
         for (TableColumn column : element.getSortBy()) {
             if ("admin".equals(column.getProperty())) {
-                list.add(new SiteAdminOrder(column.getPropertyQualifyingId(), column.isOrderAscending()));
+                list.add(new SiteOrder(AdminLevelDTO.getPropertyName(column.getPropertyQualifyingId()),
+                        !column.isOrderAscending()));
 
             } else if ("indicator".equals(column.getProperty())) {
-                Indicator indicator = indicatorDAO.findById(column.getPropertyQualifyingId());
-                list.add(new SiteIndicatorOrder(indicator, column.isOrderAscending()));
+                list.add(new SiteOrder(IndicatorDTO.getPropertyName(column.getPropertyQualifyingId()),
+                        !column.isOrderAscending()));
 
             } else {
-                if (column.isOrderAscending()) {
-                    list.add(Order.asc(column.getProperty()));
-                } else {
-                    list.add(Order.desc(column.getProperty()));
-                }
+                list.add(new SiteOrder(column.getProperty(), column.isOrderAscending()));
             }
         }
         return list;
@@ -90,7 +90,7 @@ public class TableGenerator extends ListGenerator<TableElement> {
         TableData data = new TableData(element.getRootColumn());
         List<TableData.Row> rows = siteDAO.query(
                 user,
-                FilterCriterionBridge.resolveCriterion(filter),
+                filter,
                 resolveOrder(element),
                 new RowBinder(data),
                 SiteTableDAO.RETRIEVE_ALL, 0, -1);

@@ -6,9 +6,9 @@
 package org.sigmah.server.report.generator;
 
 import org.sigmah.server.dao.PivotDAO;
+import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.report.content.*;
 import org.sigmah.shared.report.model.Dimension;
-import org.sigmah.shared.report.model.Filter;
 import org.sigmah.shared.report.model.PivotElement;
 
 import java.text.SimpleDateFormat;

@@ -3,8 +3,10 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.shared.report.model;
+package org.sigmah.shared.dao;
 
+import org.sigmah.shared.report.model.DateRange;
+import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.typeadapter.FilterAdapter;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -195,6 +197,20 @@ public class Filter implements Serializable {
             }
         }
         return sb.toString();
+    }
+
+    public Filter onActivity(int activityId) {
+        addRestriction(DimensionType.Activity, activityId);
+        return this;
+    }
+
+    public Filter onSite(int siteId) {
+        addRestriction(DimensionType.Site, siteId);
+        return this;
+    }
+    
+    public static Filter filter() {
+        return new Filter();
     }
 
 

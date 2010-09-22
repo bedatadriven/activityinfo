@@ -30,7 +30,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * UI Component for editing Admin restrictions on a {@link org.sigmah.shared.report.model.Filter}
+ * UI Component for editing Admin restrictions on a {@link org.sigmah.shared.dao.Filter}
  *
  * @author Alex Bertram
  */

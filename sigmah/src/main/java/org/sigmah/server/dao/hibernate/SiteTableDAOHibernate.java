@@ -14,10 +14,17 @@ import org.hibernate.ejb.HibernateEntityManager;
 import org.hibernate.transform.ResultTransformer;
 import org.sigmah.server.dao.SiteProjectionBinder;
 import org.sigmah.server.dao.SiteTableDAO;
+import org.sigmah.server.dao.hibernate.criterion.SiteAdminOrder;
+import org.sigmah.server.dao.hibernate.criterion.SiteIndicatorOrder;
+import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.dao.SiteOrder;
 import org.sigmah.shared.dao.SiteTableColumn;
 import org.sigmah.shared.domain.AdminEntity;
+import org.sigmah.shared.domain.Indicator;
 import org.sigmah.shared.domain.Site;
 import org.sigmah.shared.domain.User;
+import org.sigmah.shared.dto.AdminLevelDTO;
+import org.sigmah.shared.dto.IndicatorDTO;
 
 import javax.persistence.EntityManager;
 import java.util.HashMap;
@@ -90,13 +97,9 @@ public class SiteTableDAOHibernate implements SiteTableDAO {
     }
 
     @Override
-    public int queryPageNumber(User user, Criterion criterion, List<Order> orderings, int pageSize, int siteId) {
-        Criteria criteria = createBaseCriteria(criterion);
-        if (orderings != null) {
-            for (Order order : orderings) {
-                criteria.addOrder(order);
-            }
-        }
+    public int queryPageNumber(User user, Filter filter, List<SiteOrder> orderings, int pageSize, int siteId) {
+        Criteria criteria = createBaseCriteria(filter);
+        addOrderings(criteria, orderings);
 
         criteria.setProjection(Projections.property("site.id"));
         List<Integer> results = criteria.list();
@@ -112,7 +115,7 @@ public class SiteTableDAOHibernate implements SiteTableDAO {
 
     /**
      * @param <RowT>    The type of the data structure used to store the results of the query
-     * @param criterion Hibernate criterion to apply to the "base" query
+     * @param filter    Filter to apply to the "base" query
      * @param orderings Hibernate orderings to apply to the "base" query
      * @param binder    Instanceof {@link SiteProjectionBinder} responsible for
      *                  binding the results of the query to the <code>RowT</code> data structure.
@@ -122,18 +125,18 @@ public class SiteTableDAOHibernate implements SiteTableDAO {
      * @param limit     For paged queries, the maximum number of rows to retrieve
      * @return
      */
-    
+
     @Override
     public <RowT> List<RowT> query(
             User user,
-            Criterion criterion,
-            List<Order> orderings,
+            Filter filter,
+            List<SiteOrder> orderings,
             final SiteProjectionBinder<RowT> binder,
             final int retrieve,
             int offset,
             int limit) {
 
-        Criteria criteria = createBaseCriteria(criterion);
+        Criteria criteria = createBaseCriteria(filter);
 
         ProjectionList projection = Projections.projectionList();
 
@@ -142,11 +145,7 @@ public class SiteTableDAOHibernate implements SiteTableDAO {
         }
         criteria.setProjection(projection);
 
-        if (orderings != null) {
-            for (Order order : orderings) {
-                criteria.addOrder(order);
-            }
-        }
+        addOrderings(criteria, orderings);
 
         if (offset != 0) {
             criteria.setFirstResult(offset);
@@ -179,29 +178,49 @@ public class SiteTableDAOHibernate implements SiteTableDAO {
         List<RowT> sites = criteria.list();
 
         if ((retrieve & RETRIEVE_ADMIN) != 0) {
-            this.addAdminEntities(siteMap, criterion, binder);
+            this.addAdminEntities(siteMap, filter, binder);
         }
         if ((retrieve & RETRIEVE_ATTRIBS) != 0) {
-            this.addAttributeValues(siteMap, criterion, binder);
+            this.addAttributeValues(siteMap, filter, binder);
         }
         if ((retrieve & RETRIEVE_INDICATORS) != 0) {
-            this.addIndicatorValues(siteMap, criterion, binder);
+            this.addIndicatorValues(siteMap, filter, binder);
         }
 
         return sites;
     }
 
-    @Override
-    public int queryCount(Conjunction criterion) {
+    private <RowT> void addOrderings(Criteria criteria, List<SiteOrder> orderings) {
+        if (orderings != null) {
+            for (SiteOrder order : orderings) {
 
-        return ((Number) createBaseCriteria(criterion)
+                if(order.getColumn().startsWith(IndicatorDTO.PROPERTY_PREFIX)) {
+
+                    Indicator indicator = em.find(Indicator.class, IndicatorDTO.indicatorIdForPropertyName(order.getColumn()));
+                    criteria.addOrder(new SiteIndicatorOrder(indicator, !order.isDescending()));
+
+                } else if (order.getColumn().startsWith(AdminLevelDTO.PROPERTY_PREFIX)) {
+                    
+                    int levelId = AdminLevelDTO.levelIdForPropertyName(order.getColumn());
+                    criteria.addOrder(new SiteAdminOrder(levelId, !order.isDescending()));
+
+                } else {
+                    criteria.addOrder(order.isDescending() ? Order.desc(order.getColumn()) : Order.asc(order.getColumn()));
+                }
+            }
+        }
+    }
+
+    @Override
+    public int queryCount(Filter filter) {
+
+        return ((Number) createBaseCriteria(filter)
                 .setProjection(Projections.rowCount())
                 .uniqueResult()).intValue();
 
     }
 
-    private Criteria createBaseCriteria(Criterion criterion) {
-
+    private Criteria createBaseCriteria(Filter filter) {
 
         Session session = ((HibernateEntityManager) em).getSession();
 
@@ -224,15 +243,15 @@ public class SiteTableDAOHibernate implements SiteTableDAO {
 
         criteria.createAlias("activity.database", "database");
 
-        if (criterion != null) {
-            criteria.add(criterion);
+        if (filter != null) {
+            criteria.add(FilterCriterionBridge.resolveCriterion(filter));
         }
 
         return criteria;
     }
 
 
-    private DetachedCriteria createBaseDetachedCriteria(Criterion criterion) {
+    private DetachedCriteria createBaseDetachedCriteria(Filter filter) {
 
         DetachedCriteria criteria = DetachedCriteria.forClass(Site.class, "site");
 
@@ -253,8 +272,8 @@ public class SiteTableDAOHibernate implements SiteTableDAO {
 
         criteria.createAlias("activity.database", "database");
 
-        if (criterion != null) {
-            criteria.add(criterion);
+        if(filter != null) {
+            criteria.add(FilterCriterionBridge.resolveCriterion(filter));
         }
 
         return criteria;
@@ -264,7 +283,7 @@ public class SiteTableDAOHibernate implements SiteTableDAO {
     @SuppressWarnings("unchecked")
     protected <SiteT> void addAdminEntities(
             Map<Integer, SiteT> siteMap,
-            Criterion criterion,
+            Filter filter,
             SiteProjectionBinder<SiteT> binder) {
 
 
@@ -279,7 +298,7 @@ public class SiteTableDAOHibernate implements SiteTableDAO {
                 .createAlias("entity.locations", "location")
                 .createAlias("location.sites", "site")
                 .add(Subqueries.propertyIn("site.id",
-                        createBaseDetachedCriteria(criterion)
+                        createBaseDetachedCriteria(filter)
                                 .setProjection(Property.forName("site.id"))))
                 .list();
 
@@ -291,7 +310,7 @@ public class SiteTableDAOHibernate implements SiteTableDAO {
 
         /* Now query for the link between sites and admin entities */
 
-        List<Object[]> list = createBaseCriteria(criterion)
+        List<Object[]> list = createBaseCriteria(filter)
                 .createAlias("location.adminEntities", "entity")
                 .createAlias("entity.level", "level")
                 .setProjection(Projections.projectionList()
@@ -315,10 +334,10 @@ public class SiteTableDAOHibernate implements SiteTableDAO {
     }
 
     @SuppressWarnings("unchecked")
-    protected <SiteT> void addIndicatorValues(Map<Integer, SiteT> siteMap, Criterion criterion, SiteProjectionBinder<SiteT> transformer) {
+    protected <SiteT> void addIndicatorValues(Map<Integer, SiteT> siteMap, Filter filter, SiteProjectionBinder<SiteT> transformer) {
 
 
-        List<Object[]> list = createBaseCriteria(criterion)
+        List<Object[]> list = createBaseCriteria(filter)
                 .createAlias("site.reportingPeriods", "period")
                 .createAlias("period.indicatorValues", "values")
                 .createAlias("values.indicator", "indicator")
@@ -344,10 +363,10 @@ public class SiteTableDAOHibernate implements SiteTableDAO {
     @SuppressWarnings("unchecked")
     protected <SiteT> void addAttributeValues(
             Map<Integer, SiteT> siteMap,
-            Criterion criterion,
+            Filter filter,
             SiteProjectionBinder<SiteT> transformer) {
 
-        List<Object[]> list = createBaseCriteria(criterion)
+        List<Object[]> list = createBaseCriteria(filter)
                 .createAlias("site.attributeValues", "attributeValue")
                 .createAlias("attributeValue.attribute", "attribute")
                 .setFetchMode("values", FetchMode.JOIN)

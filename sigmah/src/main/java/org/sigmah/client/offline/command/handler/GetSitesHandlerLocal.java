@@ -5,13 +5,10 @@
 
 package org.sigmah.client.offline.command.handler;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.Style.SortDir;
+import com.extjs.gxt.ui.client.data.SortInfo;
+import com.google.inject.Inject;
 import org.sigmah.client.offline.dao.SiteTableLocalDAO;
 import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.command.handler.GetSitesHandler;
@@ -25,11 +22,9 @@ import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.DTOMapper;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.exception.CommandException;
+import org.sigmah.shared.report.model.DimensionType;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.Style.SortDir;
-import com.extjs.gxt.ui.client.data.SortInfo;
-import com.google.inject.Inject;
+import java.util.*;
 
 
 /**
@@ -60,14 +55,13 @@ public class GetSitesHandlerLocal implements GetSitesHandler<GetSites> {
     public CommandResult execute(GetSites cmd, User user) throws CommandException {
 
     	Map <String, Object> criteria = new HashMap<String, Object> ();
-    	criteria.put("site.siteId", cmd.getSiteId());
-    	criteria.put("site.activityId", cmd.getActivityId());
-    	criteria.put("site.databaseId", cmd.getDatabaseId());
-    	//	criteria.put("site.assesment", cmd.isAssessmentsOnly());
-    	
+    	criteria.put("site.siteId", firstOrNull(cmd.getFilter().getRestrictions(DimensionType.Site)));
+    	criteria.put("site.activityId", firstOrNull(cmd.getFilter().getRestrictions(DimensionType.Activity)));
+    	criteria.put("site.databaseId", firstOrNull(cmd.getFilter().getRestrictions(DimensionType.Database)));
+
     	// TODO Filters
     	//criteria.put("filter", cmd.getFilter());
-    	//criteria.put("pivotFilter",cmd.getPivotFilter());
+    	//criteria.put("pivotFilter",cmd.getFilter());
      
         List<SortInfo> order = new ArrayList<SortInfo>();
 
@@ -172,7 +166,15 @@ public class GetSitesHandlerLocal implements GetSitesHandler<GetSites> {
         return new SiteResult(new ArrayList(sites.values()), offset, totalSize);
 		
     }
-    
+
+    private <T> T firstOrNull(Set<T> restrictions) {
+        if(restrictions.isEmpty()) {
+            return null;
+        } else {
+            return restrictions.iterator().next();
+        }
+    }
+
     private void addEntities( Map<Integer, SiteDTO> sites) {
     	// add admin entities
         Map<Integer,Set<AdminEntity>> map = siteTableDAO.getSiteIdToEntitiesMap(sites.keySet());

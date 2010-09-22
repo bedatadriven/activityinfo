@@ -9,10 +9,14 @@ import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Test;
 import org.sigmah.server.dao.PivotDAO;
+import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.report.content.EntityCategory;
 import org.sigmah.shared.report.content.PivotTableData;
-import org.sigmah.shared.report.model.*;
+import org.sigmah.shared.report.model.AdminDimension;
+import org.sigmah.shared.report.model.Dimension;
+import org.sigmah.shared.report.model.DimensionType;
+import org.sigmah.shared.report.model.PivotTableElement;
 
 import java.util.ArrayList;
 import java.util.List;

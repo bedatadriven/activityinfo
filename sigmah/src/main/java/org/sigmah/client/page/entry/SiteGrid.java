@@ -25,11 +25,11 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.grid.AbstractEditorGridView;
 import org.sigmah.client.page.common.toolbar.UIActions;
+import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.SiteDTO;
-import org.sigmah.shared.report.model.Filter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -302,7 +302,6 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
 
 	@Override
 	public Filter getFilter() {
-		// TODO Auto-generated method stub
-		return null;
+		return new Filter();
 	}
 }

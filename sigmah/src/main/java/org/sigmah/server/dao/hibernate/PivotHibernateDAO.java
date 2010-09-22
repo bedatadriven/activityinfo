@@ -12,6 +12,7 @@ import org.hibernate.ejb.HibernateEntityManager;
 import org.hibernate.jdbc.Work;
 import org.sigmah.server.dao.PivotDAO;
 import org.sigmah.server.domain.AggregationMethod;
+import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.report.content.*;
 import org.sigmah.shared.report.model.*;
 
@@ -22,7 +23,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
