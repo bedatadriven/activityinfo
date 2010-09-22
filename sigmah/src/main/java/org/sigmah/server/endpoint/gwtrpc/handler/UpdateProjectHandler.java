@@ -4,33 +4,36 @@
  */
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
-import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dozer.Mapper;
-import org.sigmah.shared.domain.Deleteable;
 import org.sigmah.server.domain.Project;
-import org.sigmah.shared.domain.User;
 import org.sigmah.server.domain.element.FlexibleElement;
 import org.sigmah.server.domain.value.ListElementItem;
 import org.sigmah.server.domain.value.Value;
 import org.sigmah.shared.command.UpdateProject;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
+import org.sigmah.shared.domain.Deleteable;
+import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.element.FlexibleElementDTO;
 import org.sigmah.shared.dto.element.handler.ValueEvent;
 import org.sigmah.shared.dto.element.handler.ValueEventWrapper;
 import org.sigmah.shared.dto.value.ListElementItemDTO;
 import org.sigmah.shared.exception.CommandException;
+
+import com.google.inject.Inject;
 
 /**
  *
@@ -49,6 +52,7 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public CommandResult execute(UpdateProject cmd, User user) throws CommandException {
         // TODO: Break up this method in smaller pieces
         LOG.debug("Update " + cmd.getProjectId() + '/' + cmd.getValues().size() + " : " + cmd.getValues());
@@ -102,7 +106,7 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
                     // TODO: Handle properly the "add" and "remove" methods
                     try {
                         final ListElementItemDTO item = (ListElementItemDTO) valueEvent.getValue();
-                        final Class<? extends ListElementItem> clazz = (Class<? extends ListElementItem>) Class.forName(User.class.getPackage().getName() + '.' + item.getEntityName());
+                        final Class<? extends ListElementItem> clazz = (Class<? extends ListElementItem>) Class.forName(Project.class.getPackage().getName() + '.' + item.getEntityName());
 
                         List<ListElementItem> list = null;
 
