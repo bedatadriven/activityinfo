@@ -33,7 +33,7 @@ public class ShortcutStep implements Step {
 
         try {
             Factory.getInstance().createDesktop().createShortcut("ActivityInfo",
-                   GWT.getModuleBaseURL() + "aioffline.html",
+                   GWT.getModuleBaseURL() + GWT.getModuleName() + ".offline.html",
                    desktopIcons);
         } catch (Exception e) {
             Log.error("Error creating desktop icons", e);
