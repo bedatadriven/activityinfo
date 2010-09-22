@@ -16,7 +16,7 @@ import org.junit.runner.RunWith;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.Authentication;
-import org.sigmah.client.offline.install.Synchronizer;
+import org.sigmah.client.offline.sync.Synchronizer;
 import org.sigmah.server.dao.OnDataSet;
 import org.sigmah.server.sync.TimestampHelper;
 import org.sigmah.server.util.BeanMappingModule;
@@ -40,9 +40,7 @@ import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(InjectionSupport.class)
 @Modules({

@@ -21,8 +21,6 @@ public class CacheScript implements Step {
     @Override
     public boolean isComplete() {
         Log.debug("CacheScript: " + store.getName() + " current version = " + store.getCurrentVersion());
-        // managed resources stores cause no end of problems in hosted mode,
-        // so only invoke here if we are actually running in scripted mode
         return store.getCurrentVersion() != null && store.isEnabled();
     }
 

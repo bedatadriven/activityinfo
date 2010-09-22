@@ -25,6 +25,8 @@ public class InstallSteps {
     public InstallSteps(InitialSyncStep syncStep, CacheUserDetails cacheUserDetails) {
         steps.add(cacheUserDetails);
         if(GWT.isScript()) {
+            // managed resources stores cause no end of problems in hosted mode,
+            // so only invoke here if we are actually running in scripted mode
             steps.add(new CacheScript(ModuleStores.getCommon()));
             steps.add(new CacheScript(ModuleStores.getPermutation()));
         }
@@ -51,7 +53,7 @@ public class InstallSteps {
     }
 
     private void executeStep(final Step step) {
-        Log.debug("Executing offine installation step: " + step.getDescription());
+        Log.debug("Executing offline installation step: " + step.getDescription());
         step.execute(new AsyncCallback<Void>() {
             @Override
             public void onFailure(Throwable throwable) {

@@ -65,12 +65,16 @@ public class GetSyncRegionsHandler implements CommandHandler<GetSyncRegions> {
      *
      */
     private Collection<? extends SyncRegion> listSiteRegions(List<UserDatabase> databases) {
+        List<SyncRegion> siteRegions = new ArrayList<SyncRegion>();
 
+        // our initial sync region manages the table schema
+        siteRegions.add(new SyncRegion("site-tables"));
+
+        // only send sync regions for database / orgUnit pairs that exist
         List<Object[]> pairs = entityManager.createQuery(
-                "SELECT db.id, unit.id FROM UserDatabase db JOIN db.partners unit")
+                "SELECT DISTINCT db.id, unit.id FROM Site s JOIN s.partner unit JOIN s.activity a JOIN a.database db")
                     .getResultList();
 
-        List<SyncRegion> siteRegions = new ArrayList<SyncRegion>();
         for(Object[] pair : pairs) {
             siteRegions.add(new SyncRegion("site/" + pair[0] + "/" + pair[1]));
         }

@@ -3,7 +3,7 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.client.offline.install;
+package org.sigmah.client.offline.sync;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.bedatadriven.rebar.sql.client.DatabaseLockedException;
@@ -11,8 +11,10 @@ import com.bedatadriven.rebar.sync.client.BulkUpdaterAsync;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.Authentication;
+import org.sigmah.client.dispatch.remote.Direct;
 import org.sigmah.shared.command.GetSyncRegionUpdates;
 import org.sigmah.shared.command.GetSyncRegions;
 import org.sigmah.shared.command.result.SyncRegion;
@@ -22,6 +24,7 @@ import org.sigmah.shared.command.result.SyncRegions;
 import java.sql.*;
 import java.util.Iterator;
 
+@Singleton
 public class Synchronizer {
 
     private final Dispatcher dispatch;
@@ -33,23 +36,39 @@ public class Synchronizer {
 
     private AsyncCallback<Void> callback;
 
+    private boolean running = false;
+
     @Inject
-    public Synchronizer(Dispatcher dispatch, Connection conn, BulkUpdaterAsync updater, Authentication auth) {
+    public Synchronizer(@Direct Dispatcher dispatch,
+                        Connection conn,
+                        BulkUpdaterAsync updater,
+                        Authentication auth) {
         this.conn = conn;
         this.dispatch = dispatch;
         this.updater = updater;
         this.auth = auth;
+
+        createTables();
     }
 
-    private void createTables() throws SQLException {
-        Statement ddl = conn.createStatement();
+    private void createTables() {
         try {
+            Statement ddl = conn.createStatement();
+            ddl.executeUpdate("create table if not exists sync_regions" +
+                    " (id TEXT, localVersion INTEGER) ");
+            ddl.executeUpdate("create table if not exists sync_history (lastUpdate INTEGER) ");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void clearDatabase() {
+        try {
+            Statement ddl = conn.createStatement();
             ddl.executeUpdate("select 'drop table ' || name || ';' from sqlite_master where type = 'table';");
         } catch (SQLException e) {
             //ignore
         }
-        ddl.executeUpdate("create table if not exists sync_regions" +
-                " (id TEXT, localVersion INTEGER) ");
     }
 
     public void start(AsyncCallback<Void> callback) {
@@ -59,33 +78,33 @@ public class Synchronizer {
 
     public void start() {
         Log.info("Synchronizer: starting.");
-        try {
-            createTables();
-            dispatch.execute(new GetSyncRegions(), null, new AsyncCallback<SyncRegions>() {
-                @Override
-                public void onFailure(Throwable throwable) {
-                    handleException("Error getting sync regions", throwable);
-                }
+        running = true;
+        dispatch.execute(new GetSyncRegions(), null, new AsyncCallback<SyncRegions>() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                handleException("Error getting sync regions", throwable);
+            }
 
-                @Override
-                public void onSuccess(SyncRegions syncRegions) {
-                    Synchronizer.this.regionIt = syncRegions.iterator();
-                    Log.info("Got SYNC REGIONS");
-                    doNextUpdate();
-                }
-            });
-        } catch (SQLException e) {
-            handleException("Exception thrown whilst creating tables", e);
-        }
+            @Override
+            public void onSuccess(SyncRegions syncRegions) {
+                Synchronizer.this.regionIt = syncRegions.iterator();
+                Log.info("Got SYNC REGIONS");
+                doNextUpdate();
+            }
+        });
     }
 
     private void doNextUpdate() {
+        if(!running) {
+            return;
+        }
         if(regionIt.hasNext()) {
             final SyncRegion region = regionIt.next();
             String localVersion = queryLocalVersion(region.getId());
 
             doUpdate(region, localVersion);
         } else {
+            setLastUpdateTime();
             if(callback != null) {
                 callback.onSuccess(null);
             }
@@ -187,6 +206,37 @@ public class Synchronizer {
         Log.error("Synchronizer: " + message, throwable);
         if(callback != null) {
             callback.onFailure(throwable);
+        }
+    }
+
+    private void setLastUpdateTime() {
+        Date now = new Date(new java.util.Date().getTime());
+        try {
+            PreparedStatement stmt = conn.prepareStatement("update sync_history set lastUpdate = ?");
+            stmt.setDate(1, now);
+            if(stmt.executeUpdate() == 0) {
+                stmt = conn.prepareStatement("insert into sync_history (lastUpdate) values (?)");
+                stmt.setDate(1, now);
+                stmt.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Couldn't set last update time", e);
+        }
+
+
+    }
+
+    public Date getLastUpdateTime() {
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("select lastUpdate from sync_history");
+            if(rs.next()) {
+                return rs.getDate(1);
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Couldn't get update time", e);
         }
     }
 }

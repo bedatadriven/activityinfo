@@ -12,39 +12,28 @@ package org.sigmah.client.offline;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.gears.client.Factory;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.inject.AppInjector;
-import org.sigmah.client.offline.install.InstallSteps;
 
 /**
- * With regards to offline functionality, the application can be in one of three
- * states:
- * <p/>
- * <ol>
- * <li>Gears is not installed -- No possibility of going offline. The "Activate Offline Mode" button
- * should simply direct users to Google's Gears web site. See
- * <p/>
- * <li>Gears is installed, but the user has not initiated offline mode. Just because gears is installed,
- * we can't assume the user is prepared to download their innermost secrets to the computer they happen
- * to be using. When the user clicks "Activate Offline Mode", we set the cookie to the magic value
- * "offline=enabled" and prompt the user to restart.
- * <p/>
- * <li> Gears is installed, offline is enabled, everything is great!
- * </ol>
- * <p/>
- * Note that this state is handled at COMPILE time and GWT will generate a set of permutations for each
- * of the three possibilities, substituting different implementations according to the rules in
- * Application.gwt.xml
+ * This class keeps as much of the offline functionality behind a runAsync clause to
+ * defer downloading the related JavaScript until the user actually goes into offline mode
  *
  * @author Alex Bertram
  */
 public class OfflineManager {
     private final View view;
-    private final AppInjector injector;
+    private final OfflineStatus offlineStatus;
+    private final Provider<OfflineGateway> gateway;
+
+    private boolean offline = false;
+
     public interface View {
         Observable getEnableOfflineModeMenuItem();
         void setOfflineModeMenuItemText(String text);
@@ -52,65 +41,146 @@ public class OfflineManager {
     }
 
     @Inject
-    public OfflineManager(final View view, final OfflineStatus status, AppInjector injector) {
+    public OfflineManager(final View view,
+                          final OfflineStatus status,
+                          OfflineStatus offlineStatus, Provider<OfflineGateway> gateway) {
         this.view = view;
-        this.injector = injector;
+        this.offlineStatus = offlineStatus;
+        this.gateway = gateway;
 
         Log.trace("OfflineManager: starting");
-        
-		if (status.isOfflineEnabled()) { 
-			this.view.setOfflineModeMenuItemText(I18N.CONSTANTS.reloadOffline());
-			this.view.setOfflineModeMenuText(I18N.CONSTANTS.offlineMode());
-		} else {
-			this.view.setOfflineModeMenuItemText(I18N.CONSTANTS.enableOffline());
-			this.view.setOfflineModeMenuText(I18N.CONSTANTS.offlineModeOnlineOnly());
-		}
-			
-		this.view.getEnableOfflineModeMenuItem().addListener(Events.Select, new Listener<BaseEvent>() {
-			@Override
-        	public void handleEvent(BaseEvent baseEvent) {
-				status.flushCache();
-				enableOffline();
-			}
+
+        this.view.setOfflineModeMenuItemText(I18N.CONSTANTS.enableOffline());
+        this.view.setOfflineModeMenuText(I18N.CONSTANTS.offlineModeOnlineOnly());
+
+        // if the user was offline in their last session,
+        // go offline now
+        if(status.isOfflineEnabled()) {
+            goOffline();
+        }
+
+        this.view.getEnableOfflineModeMenuItem().addListener(Events.Select, new Listener<BaseEvent>() {
+            @Override
+            public void handleEvent(BaseEvent baseEvent) {
+                if(!status.isOfflineInstalled()) {
+                    installOffline();
+                } else if(!status.isOfflineEnabled()) {
+                    goOffline();
+                } else {
+                    goOnline();
+                }
+            }
         });
     }
 
-    private void enableOffline() {
-        Factory gearsFactory = Factory.getInstance();
-        if(gearsFactory == null) {
-            Log.debug("OfflineManager: failing, Gears not installed");
-            gearsNotInstalled();
-        } else if(gearsFactory.hasPermission() || gearsFactory.getPermission()) {
-            Log.debug("OfflineManager: starting offline install");
-            startInstall();
-        }
-    }
+    private void goOffline() {
 
-    private void startInstall() {
-        Log.debug("Starting offline installation...");
-        InstallSteps steps = injector.getInstallSteps();
-        steps.run(new AsyncCallback() {
+        loadGateway(new AsyncCallback<OfflineGateway>() {
             @Override
             public void onFailure(Throwable throwable) {
-                MessageBox.alert("Offline installation", "Oh no, installation failed. You won't yet" +
-                        "be able to access ActivityInfo without an internet connection.", null);
+                OfflineManager.this.onFailure(throwable);
             }
 
             @Override
-            public void onSuccess(Object o) {
-                onInstallSucceeded();
+            public void onSuccess(OfflineGateway gateway) {
+                gateway.goOffline(new AsyncCallback<Void>() {
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        OfflineManager.this.onFailure(throwable);
+                    }
+
+                    @Override
+                    public void onSuccess(Void voidValue) {
+                        offlineStatus.setOfflineEnabled(true);
+                        view.setOfflineModeMenuItemText(I18N.CONSTANTS.reloadOffline());
+                        view.setOfflineModeMenuText(I18N.CONSTANTS.offlineMode());
+                    }
+                });
             }
         });
     }
 
-    private void onInstallSucceeded() {
-        view.setOfflineModeMenuItemText(I18N.CONSTANTS.reloadOffline());
-        view.setOfflineModeMenuText(I18N.CONSTANTS.offlineMode());
-        MessageBox.alert("Offline installation", "Success! You are now ready to use ActivityInfo without" +
-                " an internet connection.", null);           
+    private void installOffline() {
+        Factory gearsFactory = Factory.getInstance();
+        if(gearsFactory == null) {
+            offlineNotSupported();
+            return;
+        }
+
+        if(!gearsFactory.hasPermission() && !gearsFactory.hasPermission()) {
+            return;
+        }
+
+        loadGateway(new AsyncCallback<OfflineGateway>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                OfflineManager.this.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(OfflineGateway result) {
+                result.install(new AsyncCallback<Void>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        OfflineManager.this.onFailure(caught);
+                    }
+
+                    @Override
+                    public void onSuccess(Void result) {
+                        offlineStatus.setOfflineEnabled(true);
+                        view.setOfflineModeMenuItemText(I18N.CONSTANTS.enableOffline());
+                        view.setOfflineModeMenuText(I18N.CONSTANTS.offlineModeOnlineOnly());
+                    }
+                });
+            }
+        });
     }
 
-    private void gearsNotInstalled() {
+    private void goOnline() {
+        loadGateway(new AsyncCallback<OfflineGateway>() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                OfflineManager.this.onFailure(throwable);
+            }
+
+            @Override
+            public void onSuccess(OfflineGateway gateway) {
+                gateway.goOnline(new AsyncCallback<Void>() {
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        OfflineManager.this.onFailure(throwable);
+                    }
+
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        offlineStatus.setOfflineEnabled(false);
+                        view.setOfflineModeMenuItemText(I18N.CONSTANTS.enableOffline());
+                        view.setOfflineModeMenuText(I18N.CONSTANTS.offlineModeOnlineOnly());
+                    }
+                });
+            }
+        });
+    }
+
+    private void loadGateway(final AsyncCallback<OfflineGateway> callback) {
+        GWT.runAsync(new RunAsyncCallback() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                callback.onFailure(throwable);
+            }
+
+            @Override
+            public void onSuccess() {
+                callback.onSuccess(gateway.get());
+            }
+        });
+    }
+
+    private boolean isOfflineSupported() {
+        return Factory.getInstance() != null;
+    }
+
+    private void offlineNotSupported() {
         MessageBox.confirm("Offline Mode", "ActivityInfo currently requires the Gears plugin to function offline." +
                 " Would you like to download the plugin now?", new Listener<MessageBoxEvent>() {
             @Override
@@ -118,5 +188,9 @@ public class OfflineManager {
                 Window.open("http://gears.google.com", "_blank", null);
             }
         });
+    }
+
+    private void onFailure(Throwable throwable) {
+        // TODO
     }
 }

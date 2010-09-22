@@ -41,6 +41,9 @@ public class GetSyncRegionUpdatesHandler implements CommandHandler<GetSyncRegion
         } else if(cmd.getRegionId().startsWith("site/")) {
             builder = injector.getInstance(SiteUpdateBuilder.class);
 
+        } else if(cmd.getRegionId().equals("site-tables")) {
+            builder = injector.getInstance(SiteTableUpdateBuilder.class);
+
         } else {
             throw new CommandException("Unknown sync region: " + cmd.getRegionId());
         }

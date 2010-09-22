@@ -13,6 +13,7 @@ import org.sigmah.shared.command.result.SyncRegionUpdate;
 import org.sigmah.shared.domain.*;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,27 +34,27 @@ public class SiteUpdateBuilder implements UpdateBuilder {
     private List<Integer> updatedOrDeleted = new ArrayList<Integer>();
     private List<Integer> createdOrUpdated = new ArrayList<Integer>();
     private final JpaUpdateBuilder builder;
+    private Timestamp localVersion;
 
     @Inject
-    public SiteUpdateBuilder(EntityManager entityManager) {
-        this.entityManager = entityManager;
+    public SiteUpdateBuilder(EntityManagerFactory entityManagerFactory) {
+        // create a new, unfiltered entity manager so we can see deleted records
+
+        this.entityManager = entityManagerFactory.createEntityManager();
         builder = new JpaUpdateBuilder();
     }
 
     @Override
     public SyncRegionUpdate build(User user, GetSyncRegionUpdates request) throws JSONException {
         parseRegion(request.getRegionId());
-        Timestamp localVersion = TimestampHelper.fromString(request.getLocalVersion());
+
+        // todo: check user permissions for access to this db
+
+        localVersion = TimestampHelper.fromString(request.getLocalVersion());
 
         // Retrieve the sites to that have changed in some way since our last call
 
         retrieveNextBatchOfModifiedSites(localVersion);
-
-        builder.createTableIfNotExists(Site.class);
-        builder.createTableIfNotExists(ReportingPeriod.class);
-        // TODO: fix rebar to handle these types of classes correctly
-        builder.executeStatement("create table if not exists AttributeValue (SiteId integer, AttributeId integer, Value integer)");
-        builder.executeStatement("create table if not exists IndicatorValue (ReportingPeriodId integer, IndicatorId integer, Value real)");
 
         if(!updatedOrDeleted.isEmpty()) {
             removeDependentAttributeValuesOfDeletedOrUpdatedSites();
@@ -77,9 +78,11 @@ public class SiteUpdateBuilder implements UpdateBuilder {
             update.setVersion(request.getLocalVersion());
         } else {
             update.setVersion(TimestampHelper.toString(all.get(all.size()-1).getDateEdited()));
+            update.setSql(builder.asJson());
         }
-        update.setSql(builder.asJson());
 
+        entityManager.close();
+        
         return update;
     }
 
@@ -97,6 +100,7 @@ public class SiteUpdateBuilder implements UpdateBuilder {
                 .setParameter("database", entityManager.getReference(UserDatabase.class, databaseId))
                 .setParameter("orgUnit", entityManager.getReference(OrgUnit.class, orgUnitId))
                 .getResultList();
+
 
         for(Site site : all) {
             if(site.isDeleted()) {
@@ -155,7 +159,7 @@ public class SiteUpdateBuilder implements UpdateBuilder {
     private void insertDependentIndicatorValues() throws JSONException {
         List<IndicatorValue> values = entityManager.createQuery(
                 "SELECT v from Site s JOIN s.reportingPeriods p JOIN p.indicatorValues v " +
-                    "WHERE s.id in (:sites)")
+                        "WHERE s.id in (:sites)")
                 .setParameter("sites", createdOrUpdated)
                 .getResultList();
 

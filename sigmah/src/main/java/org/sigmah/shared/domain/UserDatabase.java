@@ -6,8 +6,6 @@
 package org.sigmah.shared.domain;
 
 import javax.persistence.*;
-
-
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -191,7 +189,6 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
      */
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "database")
     @org.hibernate.annotations.OrderBy(clause="sortOrder")
-	@org.hibernate.annotations.Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
     @org.hibernate.annotations.Filter(
             name="hideDeleted",
             condition="DateDeleted is null")

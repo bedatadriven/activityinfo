@@ -35,29 +35,30 @@ import java.util.List;
 @Singleton
 public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
 
-    protected final EventBus eventBus;
-    protected final RemoteCommandServiceAsync service;
-    protected final Authentication authentication;
+    private final RemoteCommandServiceAsync service;
+    private final Authentication authentication;
 
-    protected boolean connected = false;
-    protected ProxyManager proxyManager = new ProxyManager();
+    private boolean connected = false;
+    private ProxyManager proxyManager = new ProxyManager();
 
     /**
      * Pending commands have been requested but not yet sent to the server
      */
-    protected List<CommandRequest> pendingCommands = new ArrayList<CommandRequest>();
+    private List<CommandRequest> pendingCommands = new ArrayList<CommandRequest>();
 
     /**
      * Executing commands have been sent to the server but for which we have
      * not yet received a response.
      */
-    protected List<CommandRequest> executingCommands = new ArrayList<CommandRequest>();
+    private List<CommandRequest> executingCommands = new ArrayList<CommandRequest>();
+
+    private Dispatcher localDispatcher;
+
 
     @Inject
     public RemoteDispatcher(RemoteCommandServiceAsync service,
                             EventBus eventBus, Authentication authentication) {
         this.service = service;
-        this.eventBus = eventBus;
         this.authentication = authentication;
 
         Log.debug("RemoteDispatcher created: " + this.toString());
@@ -84,13 +85,21 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
     }
 
     @Override
-    public <T extends Command> void registerListener(Class<T> commandClass, DispatchListener<T> listener) {
+    public final <T extends Command> void registerListener(Class<T> commandClass, DispatchListener<T> listener) {
         proxyManager.registerListener(commandClass, listener);
     }
 
     @Override
-    public <T extends Command> void registerProxy(Class<T> commandClass, CommandProxy<T> proxy) {
+    public final <T extends Command> void registerProxy(Class<T> commandClass, CommandProxy<T> proxy) {
         proxyManager.registerProxy(commandClass, proxy);
+    }
+
+    public void setLocalHandler(Dispatcher dispatcher) {
+        this.localDispatcher = dispatcher;
+    }
+
+    public void clearLocalHandler() {
+        this.localDispatcher = null;
     }
 
     /**
@@ -101,8 +110,16 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
      * the execution of subsequent commands
      */
     @Override
-    public <T extends CommandResult> void execute(Command<T> command, AsyncMonitor monitor,
-                                                  AsyncCallback<T> callback) {
+    public final <T extends CommandResult> void execute(Command<T> command, AsyncMonitor monitor,
+                                                        AsyncCallback<T> callback) {
+
+        /**
+         * If offline, delegate directly to localDispatcher
+         */
+        if(localDispatcher != null) {
+            localDispatcher.execute(command, monitor, callback);
+            return;
+        }
 
         CommandRequest request = new CommandRequest(command, monitor, callback);
         request.fireBeforeRequest();
@@ -112,7 +129,7 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
                 !request.mergeSuccessfulInto(executingCommands)) {
 
             queue(request);
-            
+
             Log.debug("RemoteDispatcher: Scheduled " + command.toString() + ", now " +
                     pendingCommands.size() + " command(s) pending");
         }
@@ -162,7 +179,6 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
         cmd.fireRetriesMaxedOut();
     }
 
-
     /**
      * Attempts to execute the command locally using one of the registered
      * proxies
@@ -195,26 +211,27 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
         executingCommands.addAll(sent);
         pendingCommands.clear();
 
-        try {
-            service.execute(authentication.getAuthToken(), commandListFromRequestList(sent), new AsyncCallback<List<CommandResult>>() {
-                public void onSuccess(List<CommandResult> results) {
-                    executingCommands.removeAll(sent);
-                    onRemoteCallSuccess(results, sent);
-                }
+        if(!sent.isEmpty()) {
+            try {
+                service.execute(authentication.getAuthToken(), commandListFromRequestList(sent), new AsyncCallback<List<CommandResult>>() {
+                    public void onSuccess(List<CommandResult> results) {
+                        executingCommands.removeAll(sent);
+                        onRemoteCallSuccess(results, sent);
+                    }
 
-                public void onFailure(Throwable caught) {
-                    executingCommands.removeAll(sent);
-                    onRemoteServiceFailure(sent, caught);
-                }
-            });
-        } catch (Throwable caught) {
-            executingCommands.removeAll(sent);
-            onClientSideSerializationError(caught);
+                    public void onFailure(Throwable caught) {
+                        executingCommands.removeAll(sent);
+                        onRemoteServiceFailure(sent, caught);
+                    }
+                });
+            } catch (Exception caught) {
+                executingCommands.removeAll(sent);
+                onClientSideSerializationError(caught);
+            }
         }
     }
 
-
-    protected void onRemoteCallSuccess(List<CommandResult> results, List<CommandRequest> executingCommands) {
+    private void onRemoteCallSuccess(List<CommandResult> results, List<CommandRequest> executingCommands) {
         Log.debug("RemoteDispatcher: remote call succeed");
 
         if (!connected) {
@@ -248,7 +265,7 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
      * something more general has gone wrong with the communication with the server, such as a
      * network failure, or a mismatch between server/client versions.
      */
-    protected void onRemoteServiceFailure(List<CommandRequest> sentCommands, Throwable caught) {
+    private void onRemoteServiceFailure(List<CommandRequest> sentCommands, Throwable caught) {
 
         Log.error("RemoteDispatcher: remote call failed", caught);
 
@@ -325,7 +342,7 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
         onServerError(executingCommands, caught);
     }
 
-    protected void onServerError(List<CommandRequest> executingCommands, Throwable caught) {
+    private void onServerError(List<CommandRequest> executingCommands, Throwable caught) {
         for (CommandRequest cmd : executingCommands) {
             cmd.fireOnFailure(caught, true);
         }
