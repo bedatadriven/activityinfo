@@ -5,7 +5,6 @@
 
 package org.sigmah.client.page.entry;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.data.SortInfo;
@@ -392,12 +391,4 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
         String url = GWT.getModuleBaseURL() + "export?auth=#AUTH#&a=" + currentActivity.getId();
         eventBus.fireEvent(new DownloadRequestEvent("siteExport", url));
     }
-
-    public void onFilter(String filter) {
-        GetSites cmd = (GetSites) loader.getCommand();
-        cmd.setFilter(filter);
-        cmd.setPivotFilter(view.getFilter());
-        loader.load();
-    }
-
 }

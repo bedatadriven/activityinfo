@@ -5,18 +5,13 @@
 
 package org.sigmah.client.page.entry;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.FieldEvent;
-import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.form.TriggerField;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
@@ -127,15 +122,6 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
 
                            
         toolBar.add(new LabelToolItem(I18N.CONSTANTS.filter()));
-        final TriggerField<String> filter = new TriggerField<String>();
-        filter.setTriggerStyle("filter-trigger");
-        filter.addListener(Events.TriggerClick, new Listener<FieldEvent>() {
-            @Override
-            public void handleEvent(FieldEvent be) {
-                presenter.onFilter(filter.getValue());
-            }
-        });
-        toolBar.add(filter);
 
         toolBar.addButton(UIActions.add, I18N.CONSTANTS.newSite(), IconImageBundle.ICONS.add());
         toolBar.addEditButton();

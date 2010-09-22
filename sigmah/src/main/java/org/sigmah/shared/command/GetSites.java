@@ -20,8 +20,7 @@ public class GetSites extends PagingGetCommand<SiteResult> implements OfflineSup
 	private boolean assessmentsOnly;
 	private Integer activityId;
 	private Integer databaseId;
-	private Integer siteId;
-    private String filter;
+	private Integer siteId;             
     private Filter pivotFilter;
 
     private Integer seekToSiteId;
@@ -95,14 +94,6 @@ public class GetSites extends PagingGetCommand<SiteResult> implements OfflineSup
 	public void setSiteId(Integer siteId) {
 		this.siteId = siteId;
 	}
-
-    public String getFilter() {
-        return filter;
-    }
-
-    public void setFilter(String filter) {
-        this.filter = filter;
-    }
 
     public Filter getPivotFilter() {
         return pivotFilter;

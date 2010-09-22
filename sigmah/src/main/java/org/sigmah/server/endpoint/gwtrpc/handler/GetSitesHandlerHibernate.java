@@ -5,19 +5,15 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.extjs.gxt.ui.client.Style.SortDir;
+import com.extjs.gxt.ui.client.data.SortInfo;
+import com.google.inject.Inject;
 import org.dozer.Mapper;
 import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.sigmah.server.dao.SiteProjectionBinder;
 import org.sigmah.server.dao.SiteTableDAO;
-import org.sigmah.server.dao.filter.FrenchFilterParser;
 import org.sigmah.server.dao.hibernate.criterion.SiteAdminOrder;
 import org.sigmah.server.dao.hibernate.criterion.SiteIndicatorOrder;
 import org.sigmah.server.report.generator.FilterCriterionBridge;
@@ -30,16 +26,10 @@ import org.sigmah.shared.dao.SiteTableColumn;
 import org.sigmah.shared.domain.AdminEntity;
 import org.sigmah.shared.domain.Indicator;
 import org.sigmah.shared.domain.User;
-import org.sigmah.shared.dto.AdminEntityDTO;
-import org.sigmah.shared.dto.AdminLevelDTO;
-import org.sigmah.shared.dto.IndicatorDTO;
-import org.sigmah.shared.dto.PartnerDTO;
-import org.sigmah.shared.dto.SiteDTO;
+import org.sigmah.shared.dto.*;
 import org.sigmah.shared.exception.CommandException;
 
-import com.extjs.gxt.ui.client.Style.SortDir;
-import com.extjs.gxt.ui.client.data.SortInfo;
-import com.google.inject.Inject;
+import java.util.*;
 
 /**
  * @author Alex Bertram
@@ -50,14 +40,12 @@ public class GetSitesHandlerHibernate implements GetSitesHandler<GetSites> {
     private final SiteTableDAO siteDAO;
     private final IndicatorDAO indicatorDAO;
     private final Mapper mapper;
-    private final FrenchFilterParser parser;
 
     @Inject
-    public GetSitesHandlerHibernate(SiteTableDAO siteDAO, IndicatorDAO indicatorDAO, Mapper mapper, FrenchFilterParser parser) {
+    public GetSitesHandlerHibernate(SiteTableDAO siteDAO, IndicatorDAO indicatorDAO, Mapper mapper) {
         this.siteDAO = siteDAO;
         this.indicatorDAO = indicatorDAO;
         this.mapper = mapper;
-        this.parser = parser;
     }
 
 
@@ -85,10 +73,6 @@ public class GetSitesHandlerHibernate implements GetSitesHandler<GetSites> {
         /*
          * Build the user filter if provided
          */
-
-        if (cmd.getFilter() != null) {
-            criteria.add(parser.parse(cmd.getFilter()));
-        }
 
         if (cmd.getPivotFilter() != null) {
             criteria.add(FilterCriterionBridge.resolveCriterion(cmd.getPivotFilter()));
