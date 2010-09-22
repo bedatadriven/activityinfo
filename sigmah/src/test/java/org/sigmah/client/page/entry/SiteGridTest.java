@@ -8,9 +8,12 @@ package org.sigmah.client.page.entry;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.SortInfo;
 import com.extjs.gxt.ui.client.store.Record;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.internal.matchers.TypeSafeMatcher;
 import org.sigmah.client.AppEvents;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.event.SiteEvent;
@@ -24,12 +27,17 @@ import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.command.UpdateEntity;
 import org.sigmah.shared.command.result.SiteResult;
 import org.sigmah.shared.command.result.VoidResult;
+import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.SiteDTO;
+import org.sigmah.shared.report.model.DimensionType;
 
 import java.util.Collections;
+import java.util.Set;
 
+import static java.util.Collections.singleton;
 import static org.easymock.EasyMock.*;
+import static org.junit.Assert.assertThat;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -58,6 +66,7 @@ public class SiteGridTest {
 
         // collaborator: view
         SiteEditor.View view = createNiceMock(SiteEditor.View.class);
+        expect(view.getFilter()).andReturn(new Filter());
         replay(view);
 
         // Class Under Test !!
@@ -69,12 +78,27 @@ public class SiteGridTest {
         presenter.go(new SiteGridPageState(91), schema.getActivityById(91));
 
         GetSites cmd = service.getLastExecuted(GetSites.class);
-        Assert.assertEquals(91, cmd.getActivityId().intValue());
+        assertThat(cmd.getFilter().getRestrictions(DimensionType.Activity), hasSingleValueEqualTo(91));
 
         // VERIFY that rows are loaded
 
         Assert.assertEquals("number of rows", 2, presenter.getStore().getCount());
 
+    }
+
+    private <T> Matcher<Set<T>> hasSingleValueEqualTo(final T value) {
+        return new TypeSafeMatcher<Set<T>>() {
+            @Override
+            public boolean matchesSafely(Set<T> item) {
+                return item.size() == 1 && item.iterator().next().equals(value);
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("single value equal to ");
+                description.appendValue(value);
+            }
+        };
     }
 
 
@@ -99,6 +123,7 @@ public class SiteGridTest {
         view.setActionEnabled(UIActions.add, true);
         view.setActionEnabled(UIActions.delete, false);
         view.setActionEnabled(UIActions.edit, false);
+
         replay(view);
 
         // Class Under Test !
@@ -236,7 +261,7 @@ public class SiteGridTest {
         service.assertExecuteCount(GetSites.class, 1);
 
         GetSites cmd = service.getLastExecuted(GetSites.class);
-        Assert.assertEquals(91, cmd.getActivityId().intValue());
+        Assert.assertEquals(singleton(91), cmd.getFilter().getRestrictions(DimensionType.Activity));
         Assert.assertEquals("location", cmd.getSortInfo().getSortField());
         Assert.assertEquals(Style.SortDir.DESC, cmd.getSortInfo().getSortDir());
         Assert.assertEquals(SiteEditor.PAGE_SIZE, cmd.getOffset());

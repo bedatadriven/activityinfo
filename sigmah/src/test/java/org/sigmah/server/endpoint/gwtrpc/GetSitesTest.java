@@ -17,6 +17,7 @@ import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.exception.CommandException;
+import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.Modules;
 
@@ -36,7 +37,7 @@ public class GetSitesTest extends CommandTestCase {
         setUser(DATABASE_OWNER);
 
         GetSites cmd = new GetSites();
-        cmd.setActivityId(1);
+        cmd.filter().onActivity(1);
         cmd.setSortInfo(new SortInfo("date2", SortDir.DESC));
 
         PagingLoadResult<SiteDTO> result = execute(cmd);
@@ -65,7 +66,7 @@ public class GetSitesTest extends CommandTestCase {
         setUser(DATABASE_OWNER);
 
         GetSites cmd = new GetSites();
-        cmd.setActivityId(1);
+        cmd.filter().onActivity(1);
         cmd.setSortInfo(new SortInfo(IndicatorDTO.getPropertyName(1), SortDir.DESC));
 
         PagingLoadResult<SiteDTO> result = execute(cmd);
@@ -85,7 +86,7 @@ public class GetSitesTest extends CommandTestCase {
         setUser(DATABASE_OWNER);
 
         GetSites cmd = new GetSites();
-        cmd.setActivityId(1);
+        cmd.filter().onActivity(1);
         cmd.setSortInfo(new SortInfo(IndicatorDTO.getPropertyName(1), SortDir.DESC));
         cmd.setLimit(2);
         cmd.setOffset(0);
@@ -122,7 +123,7 @@ public class GetSitesTest extends CommandTestCase {
         setUser(DATABASE_OWNER);
 
         GetSites cmd = new GetSites();
-        cmd.setDatabaseId(2);
+        cmd.filter().addRestriction(DimensionType.Database, 2);
 
         PagingLoadResult<SiteDTO> result = execute(cmd);
 
@@ -137,7 +138,7 @@ public class GetSitesTest extends CommandTestCase {
         setUser(DATABASE_OWNER);
 
         GetSites cmd = new GetSites();
-        cmd.setDatabaseId(1);
+        cmd.getFilter().addRestriction(DimensionType.Database, 1);
         cmd.setLimit(2);
 
         PagingLoadResult<SiteDTO> result = execute(cmd);
@@ -153,7 +154,7 @@ public class GetSitesTest extends CommandTestCase {
         setUser(2); // BAVON (can't see other partner's stuff)
 
         GetSites cmd = new GetSites();
-        cmd.setDatabaseId(1);
+        cmd.getFilter().addRestriction(DimensionType.Database, 1);
 
         PagingLoadResult<SiteDTO> result = execute(cmd);
 
@@ -191,7 +192,7 @@ public class GetSitesTest extends CommandTestCase {
         setUser(DATABASE_OWNER);
 
         GetSites cmd = new GetSites();
-        cmd.setActivityId(1);
+        cmd.filter().onActivity(1);
         cmd.setSortInfo(new SortInfo(IndicatorDTO.getPropertyName(1), SortDir.DESC));
         cmd.setLimit(2);
         cmd.setSeekToSiteId(1);
