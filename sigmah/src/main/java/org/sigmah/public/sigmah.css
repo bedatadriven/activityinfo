@@ -330,11 +330,32 @@ body {
     background-color: #494748;
 }
 
+.project-top-bar {
+    font-size: 8pt;
+    font-weight: bold;
+    color: white;
+}
+
+.project-top-bar a {
+    /* font-weight: normal; */
+    color: white;
+}
+
+/* ------------------------------------------------------------------ Ext-GWT */
+.x-panel-header a {
+    color: #482A1E;
+}
+
+.x-panel-header a:hover {
+    color: white;
+}
+
 /* -------------------------------------------------------------- Flexibility */
 
 .sigmah-tabProject, .sigmah-tabPhases {
 	outline: 0;
 }
+/*
 .sigmah-tabProject .x-border-layout-ct {
 	background-color: #FFFFEE;
 }
@@ -363,7 +384,7 @@ body {
 .sigmah-tabPhases ul.x-tab-strip li {
 	margin-left: 4px;
 }
-
+*/
 .sigmah-panelReminders {
 	margin-bottom: 10px;
 }
@@ -376,10 +397,12 @@ body {
 }
 
 .sigmah-active-phase span.x-tab-strip-text {
-	color: red;
+	color: #EE9329;
+        font-weight: bold;
 }
+
 .sigmah-closed-phase span.x-tab-strip-text {
-	color: #777;
+	/* color: #777; */
 	font-style: italic;	
 }
 

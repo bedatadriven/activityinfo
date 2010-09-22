@@ -5,6 +5,7 @@
 
 package org.sigmah.client.page.project;
 
+import com.google.gwt.event.dom.client.ClickEvent;
 import java.util.Arrays;
 
 import org.sigmah.client.i18n.I18N;
@@ -23,7 +24,6 @@ import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -37,10 +37,14 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.HBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.event.dom.client.ClickHandler;
+import org.sigmah.client.ui.StylableHBoxLayout;
+import org.sigmah.client.ui.ToggleAnchor;
 
 /**
  * Initializes the view elements of a project page.
@@ -66,6 +70,8 @@ public class ProjectView extends LayoutContainer implements ProjectPresenter.Vie
     private ContentPanel panelFinancialProjects;
     private ContentPanel panelLocalProjects;
     private Grid<FlexibleElementDTO> gridRequiredElements;
+
+    private ToggleAnchor currentTab;
 
     @SuppressWarnings("unused")
     private final static String[] MAIN_TABS = { I18N.CONSTANTS.projectTabDashboard(),
@@ -95,16 +101,44 @@ public class ProjectView extends LayoutContainer implements ProjectPresenter.Vie
         panelProjectBanner.setLayout(new VBoxLayout());
         panelProjectBanner.addStyleName("sigmah-label-10");
 
-        /* Project tab panel (main tab panel) */
-        tabPanelProject = new TabPanel();
-        tabPanelProject.setHeight("100%");
-        tabPanelProject.setStyleName("sigmah-tabProject");
+        final ContentPanel bottomPanel = new ContentPanel(new BorderLayout());
+        bottomPanel.setHeaderVisible(false);
+        bottomPanel.setBodyBorder(false);
+        bottomPanel.setBorders(false);
 
-        for (String tabTitle : CURRENT_MAIN_TABS) {
-            TabItem tabItem = new TabItem(tabTitle);
-            tabItem.setLayout(new FitLayout());
-            tabPanelProject.add(tabItem);
+        /* Project tab panel (main tab panel) */
+        final ContentPanel tabPanel = new ContentPanel(new StylableHBoxLayout("main-background project-top-bar"));
+        tabPanel.setHeaderVisible(false);
+        tabPanel.setBodyBorder(false);
+        tabPanel.setBorders(false);
+
+        for (int i = 0; i < MAIN_TABS.length; i++) {
+            String tabTitle = MAIN_TABS[i];
+            
+            final HBoxLayoutData layoutData = new HBoxLayoutData();
+            layoutData.setMargins(new Margins(0, 10, 0, 0));
+            
+            final ToggleAnchor anchor = new ToggleAnchor(tabTitle);
+            anchor.setAnchorMode(i != 0);
+
+            if(i == 0)
+                currentTab = anchor;
+
+            anchor.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    if(currentTab != anchor) {
+                        currentTab.toggleAnchorMode();
+                        anchor.toggleAnchorMode();
+                        currentTab = anchor;
+                    }
+                }
+            });
+
+            tabPanel.add(anchor, layoutData);
         }
+
+        bottomPanel.add(tabPanel, new BorderLayoutData(LayoutRegion.NORTH, 20));
 
         LayoutContainer tabProjectContainer = new LayoutContainer(new BorderLayout());
         tabProjectContainer.setHeight("100%");
@@ -219,11 +253,10 @@ public class ProjectView extends LayoutContainer implements ProjectPresenter.Vie
         tabProjectContainer.add(tabPanelPhases, centerData);
         tabProjectContainer.add(southPanel, southData);
 
-        tabPanelProject.setSelection(tabPanelProject.getItem(0));
-        tabPanelProject.getSelectedItem().add(tabProjectContainer);
+        bottomPanel.add(tabProjectContainer, new BorderLayoutData(LayoutRegion.CENTER));
 
         add(panelProjectBanner, new RowData(1, -1, new Margins(0, 0, 10, 0)));
-        add(tabPanelProject, new RowData(1, 1));
+        add(bottomPanel, new RowData(1, 1));
     }
 
     /**

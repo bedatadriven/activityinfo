@@ -5,23 +5,23 @@
 
 package org.sigmah.client.ui;
 
-import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
+import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
 
 /**
- * VBoxLayout that can be customized through css styles.
+ * HBoxLayout that can be customized through css styles.
  * @author Raphaël Calabro (rcalabro@ideia.fr)
- * @see VBoxLayout
+ * @see HBoxLayout
  */
-public class StylableVBoxLayout extends VBoxLayout {
+public class StylableHBoxLayout extends HBoxLayout {
     private String customStyle;
 
     /**
-     * Creates a new VBoxLayout and initializes its style with the default values
+     * Creates a new HBoxLayout and initializes its style with the default values
      * plus the custom style defined here.
      * @param customStyle Name of the style to add to this layout.
-     * @see VBoxLayout#VBoxLayout()
+     * @see HBoxLayout#HBoxLayout()
      */
-    public StylableVBoxLayout(String customStyle) {
+    public StylableHBoxLayout(String customStyle) {
         this.customStyle = customStyle;
     }
 

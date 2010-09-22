@@ -1,6 +1,6 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * All Sigmah code is released under the GNU General Public License v3
+ * See COPYRIGHT.txt and LICENSE.txt.
  */
 
 package org.sigmah.client.page.dashboard;
@@ -86,7 +86,7 @@ import org.sigmah.client.ui.StylableVBoxLayout;
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class DashboardView extends ContentPanel {
-    private final static int BORDER = 10;
+    private final static int BORDER = 8;
     private final static String STYLE_MAIN_BACKGROUND = "main-background";
 
     public DashboardView(final EventBus eventBus, final Dispatcher dispatcher, final TreeStore<ProjectDTO> projectStore, final ListStore<CountryDTO> countryStore) {

@@ -15,7 +15,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.event.NavigationEvent;
 import org.sigmah.client.page.NavigationHandler;
@@ -42,6 +41,7 @@ public class TabBar extends Composite {
     /**
      * Creates a new TabBar using the given TabModel.
      * @param model
+     * @param eventBus 
      */
     public TabBar(final TabModel model, EventBus eventBus) {
         this.eventBus = eventBus;

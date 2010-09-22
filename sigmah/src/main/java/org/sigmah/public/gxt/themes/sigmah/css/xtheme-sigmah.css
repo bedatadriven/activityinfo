@@ -8,6 +8,27 @@
 body{
   background-color:#494748;}
 
+
+.ext-el-mask {
+    background-color: #ccc;
+}
+
+.ext-el-mask-msg {
+    border-color:#484846;
+    background-color:#C9AD7D;
+}
+.ext-el-mask-msg div {
+    background-color: #fff;
+    border-color:#E5D3A3;
+    color:#484846;
+    font:normal 11px tahoma, arial, helvetica, sans-serif;
+}
+
+.x-mask-loading div {
+    background-color:#fbfbfb;
+    background-image:url(../images/sigmah/grid/loading.gif);
+}
+
 .x-panel {
   border-style: solid;
   border-color: #B7A077;
@@ -279,7 +300,8 @@ body{
 
 .x-menu-item-active {
   background: #EFE2C0 url(../images/sigmah/menu/item-over.gif) repeat-x left bottom;
-  border: none;
+  border-top: #EFE2C0 1px solid;
+   border-bottom: #EFE2C0 1px solid;
 }
 
 .x-menu-item-arrow {
@@ -696,6 +718,10 @@ td.x-grid3-hd-over,td.sort-desc,td.sort-asc,td.x-grid3-hd-menu-open {
 .x-tbar-page-first {
   background-image: url(../images/sigmah/grid/page-first.gif) !important;
 }
+.x-tbar-loading{
+	background-image: url(../images/sigmah/grid/refresh.gif) !important;
+}
+
 
 .x-tbar-page-last {
   background-image: url(../images/sigmah/grid/page-last.gif) !important;
@@ -708,6 +734,26 @@ td.x-grid3-hd-over,td.sort-desc,td.sort-asc,td.x-grid3-hd-menu-open {
 .x-tbar-page-prev {
   background-image: url(../images/sigmah/grid/page-prev.gif) !important;
 }
+.x-item-disabled .x-tbar-loading{
+	background-image: url(../images/sigmah/grid/loading.gif) !important;
+}
+
+.x-item-disabled .x-tbar-page-first{
+	background-image: url(../images/sigmah/grid/page-first-disabled.gif) !important;
+}
+
+.x-item-disabled .x-tbar-page-last{
+	background-image: url(../images/sigmah/grid/page-last-disabled.gif) !important;
+}
+
+.x-item-disabled .x-tbar-page-next{
+	background-image: url(../images/sigmah/grid/page-next-disabled.gif) !important;
+}
+
+.x-item-disabled .x-tbar-page-prev{
+	background-image: url(../images/sigmah/grid/page-prev-disabled.gif) !important;
+}
+
 
 .x-paging-info {
   color: #000000;
@@ -725,11 +771,44 @@ td.x-grid3-hd-over,td.sort-desc,td.sort-asc,td.x-grid3-hd-menu-open {
 }
 
 .x-progress-text {
-  color: #4B402E;
+  color: #fff;
+  font-size:11px;
+  font-weight:normal;
 }
 
 .x-progress-text-back {
-  color: #4B402E;
+  color:#574A3A
+}
+.x-list-header{
+    background-color:#fff;
+	background-image:url(../images/sigmah/grid/grid3-hrow.gif);
+}
+
+.x-list-header-inner div em {
+    border-left-color:#666666;
+    font:normal 11px arial, tahoma, helvetica, sans-serif;
+}
+
+.x-list-body dt em {
+    font:normal 11px arial, tahoma, helvetica, sans-serif;
+}
+
+.x-list-over {
+    background-color:#EFE2C0;
+}
+
+.x-list-selected {
+    background-color:#F4F4F4;
+}
+
+.x-list-resizer {
+    border-left-color:#666;
+    border-right-color:#666;
+}
+
+.x-list-header-inner em.sort-asc, .x-list-header-inner em.sort-desc {
+    background-image:url(../images/sigmah/grid/sort-hd.gif);
+    border-color: #D8D8D8;
 }
 
 .x-progress-wrap {
@@ -750,7 +829,13 @@ td.x-grid3-hd-over,td.sort-desc,td.sort-asc,td.x-grid3-hd-menu-open {
 .x-date-middle,.x-date-left,.x-date-right {
   background:#494748 url(../images/sigmah/shared/hd-sprite.gif) repeat-x 0 -83px;
 }
+.x-date-middle .x-btn .x-btn-text {
+    color:#fff;
+}
 
+.x-date-middle .x-btn-mc em.x-btn-arrow {
+    background-image:url(../images/sigmah/toolbar/btn-arrow-light.gif);
+}
 
 .x-date-right a {
   background-image: url(../images/sigmah/shared/right-btn.gif);
@@ -889,37 +974,37 @@ td.x-date-mp-sel a {
 }
 
 .x-form-invalid-tip .x-tip-tc {
-  background: url(../images/default/form/error-tip-corners.gif) repeat-x 0 -12px;
+  background: url(../images/sigmah/form/error-tip-corners.gif) repeat-x 0 -12px;
   padding-top: 6px;
 }
 
 .x-form-invalid-tip .x-tip-tl {
-  background-image: url(../images/default/form/error-tip-corners.gif);
+  background-image: url(../images/sigmah/form/error-tip-corners.gif);
 }
 
 .x-form-invalid-tip .x-tip-tr {
-  background-image: url(../images/default/form/error-tip-corners.gif);
+  background-image: url(../images/sigmah/form/error-tip-corners.gif);
 }
 
 .x-form-invalid-tip .x-tip-bc {
-  background: url(../images/default/form/error-tip-corners.gif) repeat-x 0 -18px;
+  background: url(../images/sigmah/form/error-tip-corners.gif) repeat-x 0 -18px;
   height: 6px;
 }
 
 .x-form-invalid-tip .x-tip-bl {
-  background: url(../images/default/form/error-tip-corners.gif) no-repeat 0 -6px;
+  background: url(../images/sigmah/form/error-tip-corners.gif) no-repeat 0 -6px;
 }
 
 .x-form-invalid-tip .x-tip-br {
-  background: url(../images/default/form/error-tip-corners.gif) no-repeat right -6px;
+  background: url(../images/sigmah/form/error-tip-corners.gif) no-repeat right -6px;
 }
 
 .x-form-invalid-tip .x-tip-ml {
-  background-image: url(../images/default/form/error-tip-corners.gif);
+  background-image: url(../images/sigmah/form/error-tip-corners.gif);
 }
 
 .x-form-invalid-tip .x-tip-mr {
-  background-image: url(../images/default/form/error-tip-corners.gif);
+  background-image: url(../images/sigmah/form/error-tip-corners.gif);
 }
 
 .x-tree-node .x-tree-selected {
