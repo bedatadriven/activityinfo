@@ -6,15 +6,11 @@
 package org.sigmah.server.dao.hibernate;
 
 import com.google.inject.Inject;
-
 import org.sigmah.server.auth.SecureTokenGenerator;
-import org.sigmah.server.mail.Invitation;
 import org.sigmah.shared.dao.UserDAO;
 import org.sigmah.shared.domain.User;
-import org.sigmah.shared.dto.UserPermissionDTO;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 
 /**
  * @author Alex Bertram
@@ -34,7 +30,7 @@ public class UserDAOImpl extends GenericDAO<User, Integer> implements UserDAO {
     }
 
     @Override
-    public User findUserByEmail(String email) throws NoResultException {
+    public User findUserByEmail(String email)  {
 
         return (User) em.createNamedQuery("findUserByEmail")
                 .setParameter("email", email)
