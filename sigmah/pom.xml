@@ -286,7 +286,12 @@
             <artifactId>h2</artifactId>
             <version>1.2.139</version>
         </dependency>
-
+		<dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>8.4-701.jdbc4</version>
+        </dependency>
+        
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
@@ -506,6 +511,9 @@
                         </fileset>
                         <fileset>
                             <directory>war/temp</directory>
+                        </fileset>
+                        <fileset>
+                            <directory>war/Sigmah</directory>
                         </fileset>
                     </filesets>
                 </configuration>
@@ -786,33 +794,40 @@
             </build>
         </profile>
         <profile>
-            <id>sigmah</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>gwt-maven-plugin</artifactId>
-                        <version>1.2</version>
-                        <configuration>
-                            <module>org.sigmah.Sigmah</module>
-                            <logLevel>DEBUG</logLevel>
-                            <runTarget>Sigmah/sigmah.html</runTarget>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>gwt-compile</id>
-                                <configuration>
-                                    <module>org.sigmah.Sigmah</module>
-                                    <soyc>true</soyc>
-                                </configuration>
-                                <goals>
-                                    <goal>compile</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
+			<id>sigmah</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>gwt-maven-plugin</artifactId>
+						<version>1.2</version>
+						<configuration>
+							<module>org.sigmah.Sigmah</module>
+							<logLevel>DEBUG</logLevel>
+							<runTarget>Sigmah/sigmah.html</runTarget>
+						</configuration>
+						<executions>
+							<execution>
+								<id>gwt-compile</id>
+								<configuration>
+									<module>org.sigmah.Sigmah</module>
+								</configuration>
+								<goals>
+									<goal>compile</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<configuration>
+							<skipTests>true</skipTests>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
     </profiles>
 </project>
