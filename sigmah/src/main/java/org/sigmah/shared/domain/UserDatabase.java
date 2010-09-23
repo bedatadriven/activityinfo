@@ -5,10 +5,28 @@
 
 package org.sigmah.shared.domain;
 
-import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 /**
  *
@@ -42,10 +60,10 @@ import java.util.Set;
 				name="userVisible",
 				condition="(:currentUserId = OwnerUserId  " +
 						  "or :currentUserId in (select p.UserId from UserPermission p " +
-						  						"where p.AllowView=1 and p.UserId=:currentUserId and p.DatabaseId=DatabaseId)" +
+						  						"where p.AllowView and p.UserId=:currentUserId and p.DatabaseId=DatabaseId)" +
                           "or :currentUserId in (select p.User_userid from OrgUnitPermission p " +
                                                 "left join PartnerInDatabase m on (p.unit_id = m.partnerid) where " +
-                                                    "m.databaseId=DatabaseId and p.viewAll=1))"
+                                                    "m.databaseId=DatabaseId and p.viewAll))"
 		),
 
 		@org.hibernate.annotations.Filter(

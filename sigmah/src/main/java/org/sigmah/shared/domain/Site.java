@@ -5,12 +5,24 @@
 
 package org.sigmah.shared.domain;
 
-import javax.persistence.*;
-
-
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 /**
  * Concrete realization of
@@ -28,9 +40,9 @@ import java.util.Set;
 				"(select d.DatabaseId from UserDatabase d where " +
 					  "d.OwnerUserId = :currentUserId or " +
 					  "d.DatabaseId in "  +
-					  	"(select p.DatabaseId from UserPermission p where p.UserId = :currentUserId and p.AllowViewAll = 1) or " +
+					  	"(select p.DatabaseId from UserPermission p where p.UserId = :currentUserId and p.AllowViewAll) or " +
 					  "d.DatabaseId in " +
-						"(select p.DatabaseId from UserPermission p where p.UserId = :currentUserId and p.AllowView = 1 and p.PartnerId = PartnerId))))"
+						"(select p.DatabaseId from UserPermission p where p.UserId = :currentUserId and p.AllowView and p.PartnerId = PartnerId))))"
 ),
 @org.hibernate.annotations.Filter(
 		name="hideDeleted",

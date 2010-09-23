@@ -5,11 +5,19 @@
 
 package org.sigmah.shared.domain;
 
-import javax.persistence.*;
-
-
 import java.io.Serializable;
 import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -32,12 +40,12 @@ import java.util.Date;
 				"(select d.DatabaseId from UserDatabase d where " +
 					  "d.OwnerUserId = :currentUserId or " +
 					  "d.DatabaseId in "  +
-					  	"(select p.DatabaseId from UserPermission p where p.UserId = :currentUserId and p.AllowManageAllUsers = 1) or " +
+					  	"(select p.DatabaseId from UserPermission p where p.UserId = :currentUserId and p.AllowManageAllUsers) or " +
 					  "d.DatabaseId in " +
-						"(select p.DatabaseId from UserPermission p where p.UserId = :currentUserId and p.AllowManageUsers = 1 and p.PartnerId = PartnerId))"),
+						"(select p.DatabaseId from UserPermission p where p.UserId = :currentUserId and p.AllowManageUsers and p.PartnerId = PartnerId))"),
 @org.hibernate.annotations.Filter(
         name="hideDeleted",
-        condition="AllowView = 1"
+        condition="AllowView"
 )
 })
 public class UserPermission implements Serializable, SchemaElement {

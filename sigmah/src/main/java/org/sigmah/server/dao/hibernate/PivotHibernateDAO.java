@@ -474,7 +474,7 @@ public class PivotHibernateDAO implements PivotDAO {
         where.append(" AND ");
         where.append("(Db.OwnerUserId = ").append(userId).append(" OR ")
              .append(userId).append(" in (select p.UserId from UserPermission p " +
-                "where p.AllowView=1 and " +
+                "where p.AllowView and " +
                 "p.UserId=").append(userId).append(" AND p.DatabaseId = Db.DatabaseId))");
     }
 

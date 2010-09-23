@@ -5,15 +5,30 @@
 
 package org.sigmah.server.domain;
 
-import org.sigmah.shared.domain.User;
-import org.sigmah.shared.domain.UserDatabase;
-import org.sigmah.shared.report.model.ReportFrequency;
-
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import org.sigmah.shared.domain.User;
+import org.sigmah.shared.domain.UserDatabase;
+import org.sigmah.shared.report.model.ReportFrequency;
 
 /**
  * Defines a Report and its subscriptions.
@@ -29,7 +44,7 @@ import java.util.Set;
 				condition="(:currentUserId = OwnerUserId or " + 
 						  "(Visibility = 1 and (DatabaseId is null or " +
 						  ":currentUserId in (select p.UserId from UserPermission p " +
-						  						"where p.AllowView=1 and p.UserId=:currentUserId and p.DatabaseId=DatabaseId))))"
+						  						"where p.AllowView and p.UserId=:currentUserId and p.DatabaseId=DatabaseId))))"
 		),
 		
 		@org.hibernate.annotations.Filter(
