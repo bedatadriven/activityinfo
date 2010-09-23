@@ -1,10 +1,3 @@
-/*
- * Ext GWT Library 2.0
- * Copyright(c) 2006-2009, Ext JS, LLC.
- * licensing@extjs.com
- * 
- * http://extjs.com/license
- */
 body{
   background-color:#494748;}
 
@@ -1090,16 +1083,32 @@ td.x-date-mp-sel a {
 
 .x-form-check {
   background: none;
-  !
-  important
 }
 
 .x-form-radio {
   background: none;
-  !
-  important
 }
 
 .x-border {
   border: 1px solid #C9AD7D;
+}
+
+/* Manques */
+.x-fieldset {
+    border-color: #b7a178;
+}
+
+.x-fieldset legend {
+    color: #473f2c;
+}
+
+.x-grid3-hd-row .x-grid3-hd {
+    border-left: 1px solid #f8f3e0;
+    border-right: 1px solid #b7a076;
+}
+
+.x-date-days td {
+  background:#DFECFB url(../images/sigmah/shared/glass-bg.gif) repeat-x left top;
+  border-bottom: 1px solid #482A1F;
+  color: #473F2A;
 }
