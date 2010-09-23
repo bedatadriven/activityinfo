@@ -286,12 +286,12 @@
             <artifactId>h2</artifactId>
             <version>1.2.139</version>
         </dependency>
-		<dependency>
+        <dependency>
             <groupId>postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>8.4-701.jdbc4</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
@@ -469,8 +469,11 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>gwt-compile</id>
+                        <id>activityinfo-compile</id>
                         <phase>prepare-package</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
                         <configuration>
                             <disableClassMetadata>true</disableClassMetadata>
                             <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
@@ -478,15 +481,35 @@
                             <!-- Takes WAY to long for all 12 permutations -->
                             <!-- run with profile soyc enabled to generate maps for a single perm-->
                             <soyc>false</soyc>
-                            <modules>
-                                <module>org.sigmah.ActivityInfoProduction</module>
-                                <module>org.sigmah.login.Login</module>
-                                <module>org.sigmah.Sigmah</module>
-                            </modules>
+                            <module>org.sigmah.ActivityInfoProduction</module>
                         </configuration>
+                    </execution>
+                    <execution>
+                        <id>sighma-compile</id>
+                        <phase>prepare-package</phase>
                         <goals>
                             <goal>compile</goal>
                         </goals>
+                        <configuration>
+                            <disableClassMetadata>true</disableClassMetadata>
+                            <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
+                            <logLevel>INFO</logLevel>
+                            <!-- Takes WAY to long for all 12 permutations -->
+                            <!-- run with profile soyc enabled to generate maps for a single perm-->
+                            <soyc>false</soyc>
+                            <module>org.sigmah.Sigmah</module>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>login-compile</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <soyc>false</soyc>
+                            <module>org.sigmah.login.Login</module>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -794,40 +817,40 @@
             </build>
         </profile>
         <profile>
-			<id>sigmah</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>gwt-maven-plugin</artifactId>
-						<version>1.2</version>
-						<configuration>
-							<module>org.sigmah.Sigmah</module>
-							<logLevel>DEBUG</logLevel>
-							<runTarget>Sigmah/sigmah.html</runTarget>
-						</configuration>
-						<executions>
-							<execution>
-								<id>gwt-compile</id>
-								<configuration>
-									<module>org.sigmah.Sigmah</module>
-								</configuration>
-								<goals>
-									<goal>compile</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
+            <id>sigmah</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>gwt-maven-plugin</artifactId>
+                        <version>1.2</version>
+                        <configuration>
+                            <module>org.sigmah.Sigmah</module>
+                            <logLevel>DEBUG</logLevel>
+                            <runTarget>Sigmah/sigmah.html</runTarget>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>gwt-compile</id>
+                                <configuration>
+                                    <module>org.sigmah.Sigmah</module>
+                                </configuration>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
 
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-surefire-plugin</artifactId>
-						<configuration>
-							<skipTests>true</skipTests>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <skipTests>true</skipTests>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 </project>
