@@ -490,9 +490,13 @@ public class DashboardView extends ContentPanel {
                     @Override
                     public void onUIAction(String actionId) {
                         if(UIActions.refresh.equals(actionId)) {
+                            if(Log.isDebugEnabled()) {
+                                Log.debug("Launching the gets projects command.");
+                            }
                             dispatcher.execute(new GetProjects(selectionModel.getSelectedItems()), null, new AsyncCallback<ProjectListResult>() {
                                 @Override
                                 public void onFailure(Throwable throwable) {
+                                    Log.error("Gets projects command failed.", throwable);
                                     // TODO: Handle the failure
                                 }
 

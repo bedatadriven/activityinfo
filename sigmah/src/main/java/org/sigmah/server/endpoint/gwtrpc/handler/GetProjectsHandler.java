@@ -53,6 +53,11 @@ public class GetProjectsHandler implements CommandHandler<GetProjects> {
     @SuppressWarnings("unchecked")
     @Override
     public CommandResult execute(GetProjects cmd, User user) throws CommandException {
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("[execute] Gets projects.");
+        }
+
         /* Initialization */
         List<ProjectDTO> projectDTOList = new ArrayList<ProjectDTO>();
 
@@ -70,19 +75,36 @@ public class GetProjectsHandler implements CommandHandler<GetProjects> {
             projects = em.createQuery("select p from Project p order by p.name").getResultList();
         } else {
             if (countriesDTO.size() > 0) {
+
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("[execute] Gets projects for " + countriesDTO.size() + " countries.");
+                }
+
                 final ArrayList<Country> countries = new ArrayList<Country>();
 
                 for (final CountryDTO countryDTO : countriesDTO) {
-                    countries.add(mapper.map(countryDTO, Country.class));
 
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug("[execute] Gets projects in country " + countryDTO.getName() + ".");
+                        LOG.debug("[execute] Map country name " + countryDTO + ".");
                     }
+
+                    final Country country = mapper.map(countryDTO, Country.class);
+
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("[execute] Gets projects in country " + country + ".");
+                    }
+
+                    countries.add(country);
                 }
 
                 Query q = em.createQuery("SELECT p FROM Project p WHERE p.country IN (:countryList)");
                 q.setParameter("countryList", countries);
                 projects = q.getResultList();
+
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("[execute] Executes selection query.");
+                }
+
             } else {
                 projects = Collections.emptyList();
             }

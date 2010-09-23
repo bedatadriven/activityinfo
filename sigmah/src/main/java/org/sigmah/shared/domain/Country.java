@@ -137,4 +137,17 @@ public class Country implements Serializable, SchemaElement {
 	public void setLocationTypes(Set<LocationType> types) {
 		this.locationTypes = types;
 	}
+	
+	@Override
+	public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("Country");
+        sb.append("\nname:");
+        sb.append(this.getName());
+        sb.append("\niso2:");
+        sb.append(this.getCodeISO());
+        sb.append("\nbounds:");
+        sb.append(this.getBounds());
+        return sb.toString();
+	}
 }

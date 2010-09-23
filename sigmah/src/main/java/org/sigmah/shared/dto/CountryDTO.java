@@ -147,4 +147,17 @@ public final class CountryDTO extends BaseModelData implements DTO {
         }
         return null;
     }
+    
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("CountryDTO");
+        sb.append("\nname:");
+        sb.append(this.getName());
+        sb.append("\niso2:");
+        sb.append(this.getCodeISO());
+        sb.append("\nbounds:");
+        sb.append(this.getBounds());
+        return sb.toString();
+    }
 }

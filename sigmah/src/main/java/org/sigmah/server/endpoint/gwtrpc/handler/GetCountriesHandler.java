@@ -6,6 +6,9 @@
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
 import com.google.inject.Inject;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.dozer.Mapper;
 import org.sigmah.shared.command.GetCountries;
 import org.sigmah.shared.command.handler.CommandHandler;
@@ -23,33 +26,55 @@ import javax.persistence.EntityManager;
 
 public class GetCountriesHandler implements CommandHandler<GetCountries> {
 
+    private final static Log LOG = LogFactory.getLog(GetCountriesHandler.class);
+
     private final CountryDAO countryDAO;
     private final Mapper mapper;
-    
+
     private final EntityManager entityManager;
 
     @Inject
     public GetCountriesHandler(CountryDAO countryDAO, Mapper mapper, EntityManager entityManager) {
         this.countryDAO = countryDAO;
         this.mapper = mapper;
-        
+
         this.entityManager = entityManager;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public CommandResult execute(GetCountries cmd, User user) throws CommandException {
-        if(cmd.isContainingProjects()) {
-            return new CountryResult(mapToDtos(entityManager.createQuery("SELECT c FROM Country c WHERE c IN (SELECT co.id FROM Project p, IN(p.country) co)").getResultList()));
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("[execute] Gets countries command.");
+        }
+
+        if (cmd.isContainingProjects()) {
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("[execute] Gets countries with projects ? " + cmd.isContainingProjects());
+            }
+
+            return new CountryResult(mapToDtos(entityManager.createQuery(
+                    "SELECT c FROM Country c WHERE c IN (SELECT co.id FROM Project p, IN(p.country) co)")
+                    .getResultList()));
+        }
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("[execute] Gets countries with projects ? " + cmd.isContainingProjects());
         }
         
-        return new CountryResult(mapToDtos(
-                countryDAO.queryAllCountriesAlphabetically()
-        ));
+        return new CountryResult(mapToDtos(countryDAO.queryAllCountriesAlphabetically()));
     }
 
     private ArrayList<CountryDTO> mapToDtos(List<Country> countries) {
         ArrayList<CountryDTO> dtos = new ArrayList<CountryDTO>();
-        for(Country country : countries) {
+        for (Country country : countries) {
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("[mapToDtos] Map country name " + country.getName());
+            }
+
             dtos.add(mapper.map(country, CountryDTO.class, "countryNameOnly"));
         }
         return dtos;
