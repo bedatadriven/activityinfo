@@ -54,7 +54,7 @@ public class ConfigModule extends AbstractModule {
     }
 
     private File tomcatConfigurationDirectory() {
-        return  new File(System.getenv("CATALINA_HOME") + File.separator +
+        return  new File(System.getenv("CATALINA_BASE") + File.separator +
                 "conf" + File.separator + "sigmah.properties");
     }
 }
