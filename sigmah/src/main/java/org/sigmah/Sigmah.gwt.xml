@@ -43,7 +43,5 @@
     <!-- Enable other locales -->
     <extend-property name="locale" values="en,fr" />
     <set-property-fallback name="locale" value="en"/>
-
-    <servlet path="/cmd" class="org.sigmah.server.endpoint.gwtrpc.CommandServlet" />
 </module>
         

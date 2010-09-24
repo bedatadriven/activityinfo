@@ -9,7 +9,7 @@ import javax.persistence.Query;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dozer.Mapper;
-import org.sigmah.server.domain.ProjectModel;
+import org.sigmah.shared.domain.ProjectModel;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.command.GetProjectModels;
 import org.sigmah.shared.command.handler.CommandHandler;

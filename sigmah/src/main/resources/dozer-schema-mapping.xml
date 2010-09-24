@@ -85,7 +85,7 @@
 
 	<!-- Project/ProjectDTO Mapping -->
 	<mapping wildcard="true">
-		<class-a>org.sigmah.server.domain.Project</class-a>
+		<class-a>org.sigmah.shared.domain.Project</class-a>
 		<class-b>org.sigmah.shared.dto.ProjectDTO</class-b>
 
 		<field>
@@ -116,7 +116,7 @@
 
 	<!-- Phase/PhaseDTO Mapping -->
 	<mapping wildcard="true">
-		<class-a>org.sigmah.server.domain.Phase</class-a>
+		<class-a>org.sigmah.shared.domain.Phase</class-a>
 		<class-b>org.sigmah.shared.dto.PhaseDTO</class-b>
 
 		<field>
@@ -132,7 +132,7 @@
 
 	<!-- ProjectModel/ProjectModelDTO Mapping -->
 	<mapping wildcard="true">
-		<class-a>org.sigmah.server.domain.ProjectModel</class-a>
+		<class-a>org.sigmah.shared.domain.ProjectModel</class-a>
 		<class-b>org.sigmah.shared.dto.ProjectModelDTO</class-b>
 
 		<field>
@@ -158,7 +158,7 @@
 		<field>
 			<a>elements</a>
 			<b>flexibleElementsDTO</b>
-			<a-hint>org.sigmah.server.domain.element.MessageElement,org.sigmah.server.domain.element.CheckboxElement,org.sigmah.server.domain.element.TextAreaElement,org.sigmah.server.domain.element.QuestionElement,org.sigmah.server.domain.element.TripletsListElement,org.sigmah.server.domain.element.FilesListElement,org.sigmah.server.domain.element.IndicatorsListElement,org.sigmah.server.domain.element.BudgetDistributionElement
+			<a-hint>org.sigmah.shared.domain.element.MessageElement,org.sigmah.shared.domain.element.CheckboxElement,org.sigmah.shared.domain.element.TextAreaElement,org.sigmah.shared.domain.element.QuestionElement,org.sigmah.shared.domain.element.TripletsListElement,org.sigmah.shared.domain.element.FilesListElement,org.sigmah.shared.domain.element.IndicatorsListElement,org.sigmah.shared.domain.element.BudgetDistributionElement
 			</a-hint>
 			<b-hint>org.sigmah.shared.dto.element.MessageElementDTO,org.sigmah.shared.dto.element.CheckboxElementDTO,org.sigmah.shared.dto.element.TextAreaElementDTO,org.sigmah.shared.dto.element.QuestionElementDTO,org.sigmah.shared.dto.element.TripletsListElementDTO,org.sigmah.shared.dto.element.FilesListElementDTO,org.sigmah.shared.dto.element.IndicatorsListElementDTO,org.sigmah.shared.dto.element.BudgetDistributionElementDTO
 			</b-hint>
@@ -167,7 +167,7 @@
 
 	<!-- PhaseModel/PhaseModelDTO Mapping -->
 	<mapping wildcard="true">
-		<class-a>org.sigmah.server.domain.PhaseModel</class-a>
+		<class-a>org.sigmah.shared.domain.PhaseModel</class-a>
 		<class-b>org.sigmah.shared.dto.PhaseModelDTO</class-b>
 
 		<field>
@@ -188,7 +188,7 @@
 
 	<!-- Layout/LayoutDTO Mapping -->
 	<mapping wildcard="true">
-		<class-a>org.sigmah.server.domain.layout.Layout</class-a>
+		<class-a>org.sigmah.shared.domain.layout.Layout</class-a>
 		<class-b>org.sigmah.shared.dto.layout.LayoutDTO</class-b>
 
 		<field>
@@ -199,7 +199,7 @@
 
 	<!-- LayoutGroup/LayoutGroupDTO Mapping -->
 	<mapping wildcard="true">
-		<class-a>org.sigmah.server.domain.layout.LayoutGroup</class-a>
+		<class-a>org.sigmah.shared.domain.layout.LayoutGroup</class-a>
 		<class-b>org.sigmah.shared.dto.layout.LayoutGroupDTO</class-b>
 
 		<field>
@@ -215,7 +215,7 @@
 
 	<!-- LayoutConstraint/LayoutContraintDTO Mapping -->
 	<mapping wildcard="true">
-		<class-a>org.sigmah.server.domain.layout.LayoutConstraint</class-a>
+		<class-a>org.sigmah.shared.domain.layout.LayoutConstraint</class-a>
 		<class-b>org.sigmah.shared.dto.layout.LayoutConstraintDTO</class-b>
 
 		<field>
@@ -226,7 +226,7 @@
 		<field>
 			<a>element</a>
 			<b>flexibleElementDTO</b>
-			<a-hint>org.sigmah.server.domain.element.MessageElement,org.sigmah.server.domain.element.CheckboxElement,org.sigmah.server.domain.element.TextAreaElement,org.sigmah.server.domain.element.QuestionElement,org.sigmah.server.domain.element.TripletsListElement,org.sigmah.server.domain.element.FilesListElement,org.sigmah.server.domain.element.IndicatorsListElement,org.sigmah.server.domain.element.BudgetDistributionElement
+			<a-hint>org.sigmah.shared.domain.element.MessageElement,org.sigmah.shared.domain.element.CheckboxElement,org.sigmah.shared.domain.element.TextAreaElement,org.sigmah.shared.domain.element.QuestionElement,org.sigmah.shared.domain.element.TripletsListElement,org.sigmah.shared.domain.element.FilesListElement,org.sigmah.shared.domain.element.IndicatorsListElement,org.sigmah.shared.domain.element.BudgetDistributionElement
 			</a-hint>
 			<b-hint>org.sigmah.shared.dto.element.MessageElementDTO,org.sigmah.shared.dto.element.CheckboxElementDTO,org.sigmah.shared.dto.element.TextAreaElementDTO,org.sigmah.shared.dto.element.QuestionElementDTO,org.sigmah.shared.dto.element.TripletsListElementDTO,org.sigmah.shared.dto.element.FilesListElementDTO,org.sigmah.shared.dto.element.IndicatorsListElementDTO,org.sigmah.shared.dto.element.BudgetDistributionElementDTO
 			</b-hint>
@@ -236,7 +236,7 @@
 
 	<!-- FlexibleElement/FlexibleElementDTO Mapping -->
 	<mapping wildcard="true">
-		<class-a>org.sigmah.server.domain.element.FlexibleElement</class-a>
+		<class-a>org.sigmah.shared.domain.element.FlexibleElement</class-a>
 		<class-b>org.sigmah.shared.dto.element.FlexibleElementDTO</class-b>
 
 		<field>
@@ -247,7 +247,7 @@
 
 	<!-- QuestionElement/QuestionElementDTO Mapping -->
 	<mapping wildcard="true">
-		<class-a>org.sigmah.server.domain.element.QuestionElement</class-a>
+		<class-a>org.sigmah.shared.domain.element.QuestionElement</class-a>
 		<class-b>org.sigmah.shared.dto.element.QuestionElementDTO</class-b>
 
 		<field>
@@ -258,7 +258,7 @@
 
 	<!-- QuestionChoiceElement/QuestionChoiceElementDTO Mapping -->
 	<mapping wildcard="true">
-		<class-a>org.sigmah.server.domain.element.QuestionChoiceElement
+		<class-a>org.sigmah.shared.domain.element.QuestionChoiceElement
 		</class-a>
 		<class-b>org.sigmah.shared.dto.element.QuestionChoiceElementDTO
 		</class-b>
@@ -271,7 +271,7 @@
 
 	<!-- ProjectDetails/ProjectDetailsDTO Mapping -->
 	<mapping wildcard="true">
-		<class-a>org.sigmah.server.domain.ProjectDetails</class-a>
+		<class-a>org.sigmah.shared.domain.ProjectDetails</class-a>
 		<class-b>org.sigmah.shared.dto.ProjectDetailsDTO</class-b>
 
 		<field>
@@ -287,7 +287,7 @@
 
 	<!-- ProjectBanner/ProjectBannerDTO Mapping -->
 	<mapping wildcard="true">
-		<class-a>org.sigmah.server.domain.ProjectBanner</class-a>
+		<class-a>org.sigmah.shared.domain.ProjectBanner</class-a>
 		<class-b>org.sigmah.shared.dto.ProjectBannerDTO</class-b>
 
 		<field>
@@ -303,7 +303,7 @@
 
 	<!-- Value/ValueDTO Mapping -->
 	<mapping wildcard="true">
-		<class-a>org.sigmah.server.domain.value.Value</class-a>
+		<class-a>org.sigmah.shared.domain.value.Value</class-a>
 		<class-b>org.sigmah.shared.dto.value.ValueDTO</class-b>
 
 		<field>
@@ -319,7 +319,7 @@
 
 	<!-- IndicatorsListValue/IndicatorsListValueDTO Mapping -->
 	<mapping wildcard="true">
-		<class-a>org.sigmah.server.domain.value.IndicatorsListValue</class-a>
+		<class-a>org.sigmah.shared.domain.value.IndicatorsListValue</class-a>
 		<class-b>org.sigmah.shared.dto.value.IndicatorsListValueDTO</class-b>
 
 		<field>
@@ -340,7 +340,7 @@
 
 	<!-- BudgetPartsListValue/BudgetPartsListValueDTO Mapping -->
 	<mapping wildcard="true">
-		<class-a>org.sigmah.server.domain.value.BudgetPartsListValue</class-a>
+		<class-a>org.sigmah.shared.domain.value.BudgetPartsListValue</class-a>
 		<class-b>org.sigmah.shared.dto.value.BudgetPartsListValueDTO</class-b>
 
 		<field>
@@ -351,7 +351,7 @@
 
 	<!-- FilesListValue/FilesListValueDTO Mapping -->
 	<mapping wildcard="true">
-		<class-a>org.sigmah.server.domain.value.FilesListValue</class-a>
+		<class-a>org.sigmah.shared.domain.value.FilesListValue</class-a>
 		<class-b>org.sigmah.shared.dto.value.FilesListValueDTO</class-b>
 
 		<field>
@@ -372,7 +372,7 @@
 
 	<!-- File/FileDTO Mapping -->
 	<mapping wildcard="true">
-		<class-a>org.sigmah.server.domain.value.File</class-a>
+		<class-a>org.sigmah.shared.domain.value.File</class-a>
 		<class-b>org.sigmah.shared.dto.value.FileDTO</class-b>
 
 		<field>
@@ -383,7 +383,7 @@
 
 	<!-- FilesVersion/FilesVersionDTO Mapping -->
 	<mapping wildcard="true">
-		<class-a>org.sigmah.server.domain.value.FileVersion</class-a>
+		<class-a>org.sigmah.shared.domain.value.FileVersion</class-a>
 		<class-b>org.sigmah.shared.dto.value.FileVersionDTO</class-b>
 
 		<field>

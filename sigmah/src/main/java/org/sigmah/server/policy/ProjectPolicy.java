@@ -12,11 +12,11 @@ import javax.persistence.EntityManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sigmah.server.dao.Transactional;
-import org.sigmah.server.domain.Phase;
-import org.sigmah.server.domain.PhaseModel;
-import org.sigmah.server.domain.Project;
-import org.sigmah.server.domain.ProjectModel;
 import org.sigmah.shared.domain.Country;
+import org.sigmah.shared.domain.Phase;
+import org.sigmah.shared.domain.PhaseModel;
+import org.sigmah.shared.domain.Project;
+import org.sigmah.shared.domain.ProjectModel;
 import org.sigmah.shared.domain.User;
 
 import com.google.inject.Inject;

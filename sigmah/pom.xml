@@ -834,6 +834,7 @@
                                 <id>gwt-compile</id>
                                 <configuration>
                                     <module>org.sigmah.Sigmah</module>
+                                    <soyc>false</soyc>
                                 </configuration>
                                 <goals>
                                     <goal>compile</goal>
