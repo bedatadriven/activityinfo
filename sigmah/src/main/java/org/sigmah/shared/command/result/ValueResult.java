@@ -6,79 +6,105 @@
 package org.sigmah.shared.command.result;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
-//import org.sigmah.server.domain.element.FlexibleElement;
+import org.sigmah.shared.domain.element.FlexibleElement;
 
 /**
- * Value result containing the inner value object or the inner values list object of 
- * a {@link FlexibleElement}.
+ * Value result containing the inner value object or the inner values list
+ * object of a {@link FlexibleElement}.
  * 
  * @author Denis Colliot (dcolliot@ideia.fr)
  */
 public class ValueResult implements CommandResult {
-	
-	private static final long serialVersionUID = -2164809792512897349L;
-	
-	private Serializable valueObject; // Inner value object
-	private List<Serializable> valuesObject; // Inner values list object
-	private boolean isListResult;
+
+    private static final long serialVersionUID = -2164809792512897349L;
+
+    /**
+     * Inner values list object.
+     */
+    private List<Serializable> valuesObject;
 
     public ValueResult() {
+        // Serialization.
     }
 
-    public ValueResult(Serializable valueObject) {
-        this.valueObject = valueObject;
+    /**
+     * Instantiates the local if it isn't done yet.
+     */
+    private void ensureListIsNotNull() {
+        if (valuesObject == null) {
+            valuesObject = new ArrayList<Serializable>();
+        }
     }
-    
-    public ValueResult(List<Serializable> valuesObject) {
+
+    /**
+     * Indicates if the current object contains a valid value.
+     * 
+     * @return {@code true} if the current object contains a valid value,
+     *         {@code false} otherwise.
+     */
+    public boolean isValueDefined() {
+        return valuesObject != null && valuesObject.size() > 0;
+    }
+
+    /**
+     * Returns the unique value.
+     * 
+     * @return the unique value.
+     */
+    public Serializable getValueObject() {
+        if (valuesObject == null) {
+            return null;
+        }
+        return valuesObject.get(0);
+    }
+
+    /**
+     * Sets a unique value.
+     * 
+     * @param valueObject
+     *            the value.
+     */
+    public void setValueObject(Serializable valueObject) {
+        ensureListIsNotNull();
+        valuesObject.clear();
+        valuesObject.add(valueObject);
+    }
+
+    /**
+     * Gets the list of values.
+     * 
+     * @return The list of values.
+     */
+    public List<Serializable> getValuesObject() {
+        return valuesObject;
+    }
+
+    /**
+     * Sets the list of values.
+     * 
+     * @param valuesObject
+     *            the new list.
+     */
+    public void setValuesObject(List<Serializable> valuesObject) {
         this.valuesObject = valuesObject;
     }
 
     /**
-     * Indicates if the current object contains an inner value.
+     * Adds a value to the list of values.
      * 
-     * @return {@code true} if the current object contains an inner value, {@code false} otherwise.
+     * @param valueObject
+     *            the new value.
      */
-    public boolean isValueDefined() {
-    	return (valueObject != null) || (valuesObject != null && valuesObject.size() > 0);
+    public void addValueObject(Serializable valueObject) {
+        ensureListIsNotNull();
+        valuesObject.add(valueObject);
     }
-    
-	public Serializable getValueObject() {
-		return valueObject;
-	}
-	
-	public void setValueObject(Serializable valueObject) {
-		this.valueObject = valueObject;
-	}
 
-	public List<Serializable> getValuesObject() {
-		return valuesObject;
-	}
-	
-	public void setValuesObject(List<Serializable> valuesObject) {
-		this.valuesObject = valuesObject;
-	}
-
-	public boolean isListResult() {
-		return isListResult;
-	}
-	
-	public void setListResult(boolean isListResult) {
-		this.isListResult = isListResult;
-	}
-
-	@Override
-	public String toString() {
-		String toString = null;
-		if (isValueDefined()) {
-			if (isListResult) {
-				toString = valuesObject.toString();
-			}
-			else {
-				toString = valueObject.toString();
-			}
-		}
-		return toString;
-	}
+    @Override
+    public String toString() {
+        return "ValueResult\n" + (valuesObject != null ? valuesObject.toString() : "");
+    }
 }

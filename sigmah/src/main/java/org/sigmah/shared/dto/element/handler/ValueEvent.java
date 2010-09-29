@@ -1,10 +1,10 @@
 package org.sigmah.shared.dto.element.handler;
 
 import java.io.Serializable;
-import java.util.List;
 
 import org.sigmah.client.page.project.ProjectPresenter;
 import org.sigmah.shared.dto.element.FlexibleElementDTO;
+import org.sigmah.shared.dto.value.ListEntityDTO;
 
 import com.google.gwt.event.shared.GwtEvent;
 
@@ -16,24 +16,34 @@ import com.google.gwt.event.shared.GwtEvent;
  * 
  */
 public class ValueEvent extends GwtEvent<ValueHandler> implements Serializable {
+
+    private static final long serialVersionUID = -6920472009097129066L;
+
     private final static GwtEvent.Type<ValueHandler> TYPE = new GwtEvent.Type<ValueHandler>();
 
     private FlexibleElementDTO sourceElement;
     private Serializable value;
-    private List<Serializable> values;
+    // Only used for the elements part of a list.
     private ChangeType changeType;
+
+    public ValueEvent(FlexibleElementDTO sourceElement, Serializable value) {
+        this.sourceElement = sourceElement;
+        this.value = value;
+        if (value instanceof ListEntityDTO) {
+            this.changeType = ChangeType.ADD;
+        }
+    }
 
     public ValueEvent(FlexibleElementDTO sourceElement, Serializable value, ChangeType changeType) {
         this.sourceElement = sourceElement;
         this.value = value;
-        this.changeType = changeType;
-    }
-
-    // Not used ?
-    public ValueEvent(FlexibleElementDTO sourceElement, List<Serializable> values) {
-        this.sourceElement = sourceElement;
-        this.values = values;
-        this.changeType = null;
+        if (value instanceof ListEntityDTO) {
+            if (changeType == null) {
+                this.changeType = ChangeType.ADD;
+            } else {
+                this.changeType = changeType;
+            }
+        }
     }
 
     @Override
@@ -58,14 +68,6 @@ public class ValueEvent extends GwtEvent<ValueHandler> implements Serializable {
         this.value = value;
     }
 
-    public List<Serializable> getValues() {
-        return values;
-    }
-
-    public void setValues(List<Serializable> values) {
-        this.values = values;
-    }
-
     public void setSourceElement(FlexibleElementDTO sourceElement) {
         this.sourceElement = sourceElement;
     }
@@ -80,6 +82,20 @@ public class ValueEvent extends GwtEvent<ValueHandler> implements Serializable {
 
     public void setChangeType(ChangeType changeType) {
         this.changeType = changeType;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("ValueEvent [");
+        sb.append("source=#");
+        sb.append(sourceElement.getId());
+        sb.append(",value=");
+        sb.append(value);
+        sb.append(",changeType=");
+        sb.append(changeType);
+        sb.append("]\n");
+        return sb.toString();
     }
 
     public static enum ChangeType {

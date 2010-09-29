@@ -1,9 +1,6 @@
 package org.sigmah.shared.dto.element.handler;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import org.sigmah.shared.dto.element.FlexibleElementDTO;
 import org.sigmah.shared.dto.element.handler.ValueEvent.ChangeType;
@@ -13,7 +10,6 @@ public class ValueEventWrapper implements Serializable {
 
     private FlexibleElementDTO sourceElement;
     private Serializable value;
-    private ArrayList<Serializable> values;
     private ValueEvent.ChangeType changeType;
 
     public ValueEventWrapper() {
@@ -33,17 +29,6 @@ public class ValueEventWrapper implements Serializable {
 
     public void setValue(Serializable value) {
         this.value = value;
-    }
-
-    public List<Serializable> getValues() {
-        return values;
-    }
-
-    public void setValues(Collection<Serializable> values) {
-        if(values != null)
-            this.values = new ArrayList<Serializable>(values);
-        else
-            this.values = null;
     }
 
     public ChangeType getChangeType() {
