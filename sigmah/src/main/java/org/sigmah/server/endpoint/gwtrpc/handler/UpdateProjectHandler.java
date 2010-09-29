@@ -4,12 +4,9 @@
  */
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -21,27 +18,30 @@ import org.dozer.Mapper;
 import org.sigmah.shared.command.UpdateProject;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
+import org.sigmah.shared.command.result.ValueResultUtils;
 import org.sigmah.shared.domain.Deleteable;
 import org.sigmah.shared.domain.Project;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.element.FlexibleElement;
-import org.sigmah.shared.domain.value.ListElementItem;
+import org.sigmah.shared.domain.value.ListEntity;
 import org.sigmah.shared.domain.value.Value;
+import org.sigmah.shared.dto.EntityDTO;
 import org.sigmah.shared.dto.element.FlexibleElementDTO;
-import org.sigmah.shared.dto.element.handler.ValueEvent;
 import org.sigmah.shared.dto.element.handler.ValueEventWrapper;
-import org.sigmah.shared.dto.value.ListElementItemDTO;
+import org.sigmah.shared.dto.value.ListEntityDTO;
 import org.sigmah.shared.exception.CommandException;
 
 import com.google.inject.Inject;
 
 /**
- *
+ * Updates the values of the flexible elements for a specific project.
+ * 
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
 
     private final static Log LOG = LogFactory.getLog(UpdateProjectHandler.class);
+
     private final EntityManager em;
     private final Mapper mapper;
 
@@ -54,245 +54,219 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
     @Override
     @SuppressWarnings("unchecked")
     public CommandResult execute(UpdateProject cmd, User user) throws CommandException {
-        // TODO: Break up this method in smaller pieces
-        LOG.debug("Update " + cmd.getProjectId() + '/' + cmd.getValues().size() + " : " + cmd.getValues());
 
-        final HashMap<Key, List<ListElementItem>> lists = new HashMap<Key, List<ListElementItem>>();
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("[execute] Updates project #" + cmd.getProjectId() + " with following values #"
+                    + cmd.getValues().size() + " : " + cmd.getValues());
+        }
 
         // Iterating over the value change events
         final List<ValueEventWrapper> values = cmd.getValues();
         for (final ValueEventWrapper valueEvent : values) {
-            // The modified object
+
+            // Event parameters.
             final FlexibleElementDTO source = valueEvent.getSourceElement();
+            final Serializable updateValue = valueEvent.getValue();
 
-            LOG.debug("Element " + source.getId() + " (" + source.getEntityName() + ')');
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("[execute] Updates value of element #" + source.getId() + " (" + source.getEntityName() + ')');
+                LOG.debug("[execute] Event of type " + valueEvent.getChangeType() + " with value " + updateValue + " ("
+                        + updateValue.getClass() + ')');
+            }
 
-            if (valueEvent.getValues() == null) {
-                // Single value
-                LOG.debug(valueEvent.getChangeType()+" value " + valueEvent.getValue() + " (" + valueEvent.getValue().getClass() + ')');
+            // Retrieving the current value
+            final Value currentValue = retrieveValue(cmd.getProjectId(), (long) source.getId(), user);
 
-                // Retrieving the current value
-                final Query query = em.createQuery("SELECT v FROM Value v WHERE v.parentProject.id = :projectId and v.element.id = :elementId");
-                query.setParameter("projectId", cmd.getProjectId());
-                query.setParameter("elementId", (long) source.getId());
+            // Unique value of the flexible element.
+            if (!(updateValue instanceof ListEntityDTO)) {
 
-                final Value currentValue;
-                Object object = null;
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("[execute] Basic value case.");
+                }
 
+                currentValue.setValue(updateValue.toString());
+            }
+            // Special case : this value is a part of a list which is the true
+            // value of the flexible element.
+            // (only used for the TripletValue class for the moment)
+            else {
+
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("[execute] List value case.");
+                }
+
+                // The value of the element is a list of ids (default
+                // separated).
+                final List<Long> ids = ValueResultUtils.splitValuesAsLong(currentValue.getValue());
+
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("[execute] The current list of ids is : " + ids + ".");
+                }
+
+                // Cast the update value (as a DTO).
+                final ListEntityDTO item = (ListEntityDTO) updateValue;
+
+                Class<? extends ListEntity> clazz;
                 try {
-                    object = query.getSingleResult();
-                } catch (NoResultException nre) {
-                    // No current value
+                    // Computes the respective entity class name.
+                    clazz = (Class<? extends ListEntity>) Class.forName(Project.class.getPackage().getName() + '.'
+                            + item.getEntityName());
+                } catch (ClassNotFoundException e) {
+                    // Unable to find the entity class, the event is ignored.
+                    LOG.error("[execute] Unable to find the entity class : '" + item.getEntityName() + "'.");
+                    continue;
                 }
 
-                if (object != null) {
-                    currentValue = (Value) object;
-                    currentValue.setLastModificationAction('U'); // Update operation
-                } else {
-                    currentValue = new Value();
-                    currentValue.setLastModificationAction('C'); // Creation of the value
+                switch (valueEvent.getChangeType()) {
+                case ADD: {
 
-                    // Parent element
-                    currentValue.setElement(em.find(FlexibleElement.class, (long) source.getId()));
-
-                    // Parent project
-                    final Project project = new Project();
-                    project.setId(cmd.getProjectId());
-                    currentValue.setParentProject(project);
-                }
-
-                // Special case : TripletsList
-                if (valueEvent.getValue() instanceof ListElementItemDTO) {
-                    // TODO: Handle properly the "add" and "remove" methods
-                    try {
-                        final ListElementItemDTO item = (ListElementItemDTO) valueEvent.getValue();
-                        final Class<? extends ListElementItem> clazz = (Class<? extends ListElementItem>) Class.forName(Project.class.getPackage().getName() + '.' + item.getEntityName());
-
-                        List<ListElementItem> list = null;
-
-                        // Retrieving the list id
-                        Long listId = null;
-                        if (currentValue.getValue() != null) {
-                            listId = Long.parseLong(currentValue.getValue());
-
-                        } else if(valueEvent.getChangeType() == ValueEvent.ChangeType.ADD) {
-                            // This is a new list; creating a new list id
-
-                            // Building the entity name
-                            final String entityName;
-                            int packageIndex = item.getEntityName().lastIndexOf('.');
-                            if(packageIndex != -1)
-                                entityName = item.getEntityName().substring(packageIndex+1);
-                            else
-                                entityName = item.getEntityName();
-
-                            final Query listQuery = em.createQuery("SELECT MAX(e.idList) FROM " + entityName + " e");
-                            try {
-                                listId = (Long) listQuery.getSingleResult();
-                            } catch (NoResultException e) {
-                                // No current value
-                            }
-
-                            // If no results were found, listId will be NULL
-                            if (listId == null) {
-                                listId = 0L;
-                            }
-
-                            listId++;
-
-                            // Defining the new id
-                            currentValue.setValue(listId.toString());
-
-                            // Initializing the new list
-                            list = new ArrayList<ListElementItem>();
-
-                        } else {
-                            // Nothing to do
-                            listId = -1L;
-                        }
-
-                        // Building the list key
-                        final Key currentKey = new Key(clazz, listId.intValue());
-
-                        if(list == null) {
-                            // Retrieving the current values from the cache
-                            list =  lists.get(currentKey);
-                        }
-
-                        if(list == null) {
-                            // Retrieving the current values from the server
-
-                            // Building the entity name
-                            final String entityName;
-                            int packageIndex = item.getEntityName().lastIndexOf('.');
-                            if(packageIndex != -1)
-                                entityName = item.getEntityName().substring(packageIndex+1);
-                            else
-                                entityName = item.getEntityName();
-
-                            final Query listQuery = em.createQuery("SELECT e FROM " + entityName + " e WHERE e.idList = :idList");
-                            listQuery.setParameter("idList", listId);
-
-                            list = (List<ListElementItem>) listQuery.getResultList();
-                            // TODO: Verify the value of "list" ?
-                        }
-
-                        switch(valueEvent.getChangeType()) {
-                            case ADD:
-                                if(item.getIndex() == list.size()) {
-                                    ListElementItem entity = mapper.map(item, clazz);
-                                    entity.setIdList(listId);
-                                    entity = em.merge(entity);
-
-                                    list.add(entity);
-                                } else {
-                                    LOG.debug("Invalid add index");
-                                }
-                                break;
-                            case REMOVE:
-                                int index = item.getIndex();
-                                if(index < list.size()) {
-                                    ListElementItem entity = list.get(index);
-                                    ListElementItem mappedEntity = mapper.map(item, clazz);
-
-                                    if(entity.isLike(mappedEntity)) {
-                                        // Removes the object if it is deleteable
-                                        if(entity instanceof Deleteable) {
-                                            ((Deleteable)entity).delete();
-                                            em.merge(entity);
-                                            list.remove(index);
-                                        } else {
-                                            LOG.debug("Entity not deleteable : " + entity.getClass());
-                                        }
-                                    } else {
-                                        // It may be a mistake; nothing done
-                                        LOG.debug("Invalid request ? Requested delete doesn't feel right.");
-
-                                        // TODO: Correct the multiple add/delete to avoid the following case :
-                                        //      2 add, 1 delete -> result 2 deletes
-                                    }
-                                }
-                                break;
-                            case EDIT:
-                                index = item.getIndex();
-                                if(index < list.size()) {
-                                    ListElementItem entity = list.get(index);
-                                    ListElementItem mappedEntity = mapper.map(item, clazz);
-
-                                    mappedEntity.setId(entity.getId());
-                                    mappedEntity.setIdList(entity.getIdList());
-
-                                    em.merge(mappedEntity);
-
-                                    list.add(index, mappedEntity);
-                                    list.remove(index+1);
-                                }
-                                break;
-                        }
-
-                        // Updating the current list
-                        lists.put(currentKey, list);
-
-                    } catch (ClassNotFoundException ex) {
-                        Logger.getLogger(UpdateProjectHandler.class.getName()).log(Level.SEVERE, null, ex);
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("[execute] Adds a element to the list.");
                     }
 
-                } else {
-                    currentValue.setValue(valueEvent.getValue().toString());
+                    // Adds the element.
+                    ListEntity entity = mapper.map(item, clazz);
+                    entity = em.merge(entity);
+
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("[execute] Successfully create the entity with id #" + entity.getId() + ".");
+                    }
+
+                    // Updates the value.
+                    ids.add(entity.getId());
+                    currentValue.setValue(ValueResultUtils.mergeElements(ids));
+
+                }
+                    break;
+                case REMOVE: {
+
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("[execute] Removes a element from the list.");
+                    }
+
+                    // Retrieves the element.
+                    final EntityDTO asEntityDTO = (EntityDTO) item;
+                    final ListEntity entity = em.find(clazz, (long) asEntityDTO.getId());
+
+                    if (entity instanceof Deleteable) {
+
+                        // Marks the entity as deleted.
+                        ((Deleteable) entity).delete();
+                        em.merge(entity);
+
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("[execute] Successfully remove the entity with id #" + entity.getId() + ".");
+                        }
+
+                        // Updates the value.
+                        ids.remove(entity.getId());
+                        currentValue.setValue(ValueResultUtils.mergeElements(ids));
+
+                    } else {
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("[execute] The element isn't deletable, the event is ignored.");
+                        }
+                        continue;
+                    }
+
+                    break;
+                }
+                case EDIT: {
+
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("[execute] Edits a element from the list.");
+                    }
+
+                    // Retrieves the element.
+                    final ListEntity entity = mapper.map(item, clazz);
+                    em.merge(entity);
+
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("[execute] Successfully edit the entity with id #" + entity.getId() + ".");
+                    }
+                }
+                    break;
+                default:
+
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("[execute] Unknown command " + valueEvent.getChangeType() + ".");
+                    }
+
+                    break;
                 }
 
-                currentValue.setLastModificationDate(new Date());
-                currentValue.setLastModificationUser(user);
-
-                em.merge(currentValue);
-            } else {
-                // Multiple values
-                LOG.debug("Element " + source.getId() + " (" + source.getEntityName() + ')');
-                LOG.debug("List: " + valueEvent.getValues());
-
-                // TODO: Handle or delete this
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("[execute] The new list of ids is : " + ids + ".");
+                }
             }
+
+            // Store the value.
+            em.merge(currentValue);
         }
 
         return null;
     }
 
     /**
-     * List identifier.
+     * Retrieves the value for the given project and the given element. If there
+     * isn't yet a value, it will be created.
+     * 
+     * @param projectId
+     *            The project id.
+     * @param source
+     *            The source element.
+     * @param user
+     *            The user which launch the command.
+     * @return The value.
      */
-    private static class Key {
-        private Class<?> clazz;
-        private int id;
+    private Value retrieveValue(int projectId, long elementId, User user) {
 
-        public Key(Class<?> clazz, int id) {
-            this.clazz = clazz;
-            this.id = id;
+        // Retrieving the current value
+        final Query query = em
+                .createQuery("SELECT v FROM Value v WHERE v.parentProject.id = :projectId and v.element.id = :elementId");
+        query.setParameter("projectId", projectId);
+        query.setParameter("elementId", elementId);
+
+        Value currentValue = null;
+
+        try {
+            currentValue = (Value) query.getSingleResult();
+        } catch (NoResultException nre) {
+            // No current value
         }
 
-        @Override
-        public boolean equals(Object obj) {
-            if (obj == null) {
-                return false;
+        // Update operation.
+        if (currentValue != null) {
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("[execute] Retrieves a value for element #" + elementId + ".");
             }
-            if (getClass() != obj.getClass()) {
-                return false;
+
+            currentValue.setLastModificationAction('U');
+        }
+        // Create operation
+        else {
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("[execute] Creates a value for element #" + elementId + ".");
             }
-            final Key other = (Key) obj;
-            if (this.clazz != other.clazz && (this.clazz == null || !this.clazz.equals(other.clazz))) {
-                return false;
-            }
-            if (this.id != other.id) {
-                return false;
-            }
-            return true;
+
+            currentValue = new Value();
+            currentValue.setLastModificationAction('C');
+
+            // Parent element
+            final FlexibleElement element = em.find(FlexibleElement.class, elementId);
+            currentValue.setElement(element);
+
+            // Parent project
+            final Project project = em.find(Project.class, projectId);
+            currentValue.setParentProject(project);
         }
 
-        @Override
-        public int hashCode() {
-            int hash = 3;
-            hash = 37 * hash + (this.clazz != null ? this.clazz.hashCode() : 0);
-            hash = 37 * hash + this.id;
-            return hash;
-        }
+        // Updates the value's fields.
+        currentValue.setLastModificationDate(new Date());
+        currentValue.setLastModificationUser(user);
+
+        return currentValue;
     }
 }

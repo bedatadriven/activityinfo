@@ -12,18 +12,18 @@ import java.util.Properties;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sigmah.server.dao.Transactional;
+import org.sigmah.shared.command.result.ValueResultUtils;
 import org.sigmah.shared.domain.Project;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.element.FlexibleElement;
 import org.sigmah.shared.domain.value.File;
 import org.sigmah.shared.domain.value.FileVersion;
-import org.sigmah.shared.domain.value.FilesListValue;
-import org.sigmah.shared.domain.value.FilesListValueId;
 import org.sigmah.shared.domain.value.Value;
 import org.sigmah.shared.dto.value.FileUploadUtils;
 
@@ -122,21 +122,15 @@ public class FileManagerImpl implements FileManager {
         final EntityManager em = injector.getInstance(EntityManager.class);
 
         if (log.isDebugEnabled()) {
-            log.debug("[save] New file.");
+            log.debug("[saveNewFile] New file.");
         }
 
-        // Files list id.
-        String filesListIdProp = properties.get(FileUploadUtils.DOCUMENT_FILES_LIST);
-        long filesListId;
+        // --------------------------------------------------------------------
+        // STEP 1 : saves the file.
+        // --------------------------------------------------------------------
 
-        try {
-            if (filesListIdProp == null) {
-                filesListId = 0;
-            } else {
-                filesListId = Integer.valueOf(filesListIdProp);
-            }
-        } catch (NumberFormatException e) {
-            filesListId = 0;
+        if (log.isDebugEnabled()) {
+            log.debug("[saveNewFile] Saves the new file.");
         }
 
         final File file = new File();
@@ -147,83 +141,95 @@ public class FileManagerImpl implements FileManager {
 
         em.persist(file);
 
-        // If files list id is undefined, the uploaded file is the first one
-        // of this list, we must create the list value.
-        if (filesListId == 0) {
+        // --------------------------------------------------------------------
+        // STEP 2 : gets the current value for this list of files.
+        // --------------------------------------------------------------------
 
-            if (log.isDebugEnabled()) {
-                log.debug("[save] First file uploaded, creates the list value.");
-            }
+        // Element id.
+        String elementIdProp = properties.get(FileUploadUtils.DOCUMENT_FLEXIBLE_ELEMENT);
+        long elementId;
 
-            // Finds the max files list value identifier.
-            Query query = em.createQuery("SELECT MAX(flv.idList) FROM FilesListValue flv");
-            Long currentMaxFilesListValue = (Long) query.getSingleResult();
-
-            // Considers the very first uploaded file (to generate the first
-            // id = 0).
-            if (currentMaxFilesListValue == null) {
-                currentMaxFilesListValue = 0L;
-            }
-
-            filesListId = currentMaxFilesListValue + 1;
-
-            // Creates the list value.
-            final Value value = new Value();
-            value.setLastModificationAction('C');
-            value.setLastModificationDate(new Date());
-            value.setValue(String.valueOf(filesListId));
-
-            final User user = em.find(User.class, authorId);
-            value.setLastModificationUser(user);
-
-            // Element id.
-            String elementIdProp = properties.get(FileUploadUtils.DOCUMENT_FLEXIBLE_ELEMENT);
-            long elementId;
-
-            try {
-                if (elementIdProp == null) {
-                    elementId = 0;
-                } else {
-                    elementId = Integer.valueOf(elementIdProp);
-                }
-            } catch (NumberFormatException e) {
+        try {
+            if (elementIdProp == null) {
                 elementId = 0;
+            } else {
+                elementId = Integer.valueOf(elementIdProp);
             }
-
-            final FlexibleElement element = em.find(FlexibleElement.class, elementId);
-            value.setElement(element);
-
-            // Project id.
-            String projectIdProp = properties.get(FileUploadUtils.DOCUMENT_PROJECT);
-            int projectId;
-
-            try {
-                if (projectIdProp == null) {
-                    projectId = 0;
-                } else {
-                    projectId = Integer.valueOf(projectIdProp);
-                }
-            } catch (NumberFormatException e) {
-                projectId = 0;
-            }
-
-            final Project project = em.find(Project.class, projectId);
-            value.setParentProject(project);
-
-            em.persist(value);
-
-            if (log.isDebugEnabled()) {
-                log.debug("[save] List value created with id: " + filesListId + ".");
-            }
+        } catch (NumberFormatException e) {
+            elementId = 0;
         }
 
-        // Saves the new files list value (file <--> list)
-        final FilesListValue value = new FilesListValue();
-        value.setIdList(filesListId);
-        value.setFile(file);
-        value.setId(new FilesListValueId(filesListId, file.getId()));
+        // Project id.
+        String projectIdProp = properties.get(FileUploadUtils.DOCUMENT_PROJECT);
+        int projectId;
 
-        em.persist(value);
+        try {
+            if (projectIdProp == null) {
+                projectId = 0;
+            } else {
+                projectId = Integer.valueOf(projectIdProp);
+            }
+        } catch (NumberFormatException e) {
+            projectId = 0;
+        }
+
+        // Retrieving the current value
+        final Query query = em
+                .createQuery("SELECT v FROM Value v WHERE v.parentProject.id = :projectId and v.element.id = :elementId");
+        query.setParameter("projectId", projectId);
+        query.setParameter("elementId", elementId);
+
+        final Value currentValue;
+        Object object = null;
+
+        try {
+            object = query.getSingleResult();
+        } catch (NoResultException nre) {
+            // No current value
+        }
+
+        // --------------------------------------------------------------------
+        // STEP 3 : creates or updates the value with the new file id.
+        // --------------------------------------------------------------------
+
+        // The value already exists, must update it.
+        if (object != null) {
+            currentValue = (Value) object;
+            currentValue.setLastModificationAction('U');
+
+            // Sets the value (adds a new file id).
+            currentValue.setValue(currentValue.getValue() + ValueResultUtils.DEFAULT_VALUE_SEPARATOR
+                    + String.valueOf(file.getId()));
+        }
+        // The value for this list of files doesn't exist already, must
+        // create it.
+        else {
+            currentValue = new Value();
+
+            // Creation of the value
+            currentValue.setLastModificationAction('C');
+
+            // Parent element
+            final FlexibleElement element = em.find(FlexibleElement.class, elementId);
+            currentValue.setElement(element);
+
+            // Parent project
+            final Project project = em.find(Project.class, projectId);
+            currentValue.setParentProject(project);
+
+            // Sets the value (one file id).
+            currentValue.setValue(String.valueOf(file.getId()));
+        }
+
+        // Modifier
+        final User user = em.find(User.class, authorId);
+        currentValue.setLastModificationUser(user);
+
+        // Last update date
+        currentValue.setLastModificationDate(new Date());
+
+        // Saves or updates the new value.
+        em.merge(currentValue);
 
         return String.valueOf(file.getId());
     }
@@ -269,7 +275,7 @@ public class FileManagerImpl implements FileManager {
         }
 
         // Creates and adds the new version.
-        final File file = em.find(File.class, Long.valueOf(id));
+        final File file = em.find(File.class, Integer.valueOf(id));
 
         if (log.isDebugEnabled()) {
             log.debug("[save] Found file: " + file.getName() + ".");
@@ -295,6 +301,10 @@ public class FileManagerImpl implements FileManager {
      * @throws IOException
      */
     private FileVersion createVersion(int versionNumber, int authorId, byte[] content) throws IOException {
+
+        if (log.isDebugEnabled()) {
+            log.debug("[createVersion] Creates a new file version # + " + versionNumber + ".");
+        }
 
         final FileVersion version = new FileVersion();
 
@@ -333,8 +343,15 @@ public class FileManagerImpl implements FileManager {
             // Files repository.
             final java.io.File repository = new java.io.File(UPLOADED_FILES_REPOSITORY);
 
+            // Content file.
+            final java.io.File contentFile = new java.io.File(repository, uniqueName);
+
+            if (log.isDebugEnabled()) {
+                log.debug("[writeContent] Writes file content to the files repository '" + contentFile + "'.");
+            }
+
             // Streams.
-            output = new BufferedOutputStream(new FileOutputStream(new java.io.File(repository, uniqueName)));
+            output = new BufferedOutputStream(new FileOutputStream(contentFile));
             input = new BufferedInputStream(new ByteArrayInputStream(content));
 
             // Writes content as bytes.
@@ -356,12 +373,13 @@ public class FileManagerImpl implements FileManager {
     }
 
     /**
-     * Computes and returns a unique string identifier to name files
+     * Computes and returns a unique string identifier to name files.
      * 
      * @return A unique string identifier.
      */
     private static String generateUniqueName() {
-        return UUID.randomUUID().toString();
+        // Adds the timestamp to ensure the id uniqueness.
+        return UUID.randomUUID().toString() + new Date().getTime();
     }
 
     @Override

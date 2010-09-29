@@ -20,27 +20,17 @@ import org.sigmah.shared.domain.Deleteable;
  * @author Denis Colliot (dcolliot@ideia.fr)
  */
 @Entity
-@org.hibernate.annotations.FilterDefs({
-    @org.hibernate.annotations.FilterDef(name = "hideDeleted")
-})
-@org.hibernate.annotations.Filters({
-    @org.hibernate.annotations.Filter(name = "hideDeleted",
-    condition = "DateDeleted is null")
-})
+@org.hibernate.annotations.FilterDefs({ @org.hibernate.annotations.FilterDef(name = "hideDeleted") })
+@org.hibernate.annotations.Filters({ @org.hibernate.annotations.Filter(name = "hideDeleted", condition = "DateDeleted is null") })
 @Table(name = "triplet_value")
-public class TripletValue implements Serializable, Deleteable, ListElementItem {
+public class TripletValue implements Serializable, Deleteable, ListEntity {
 
     private static final long serialVersionUID = -6149053567281316649L;
     private Long id;
-    private Long idList;
     private String code;
     private String name;
     private String period;
     private Date dateDeleted;
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -49,13 +39,8 @@ public class TripletValue implements Serializable, Deleteable, ListElementItem {
         return id;
     }
 
-    @Column(name = "id_triplet_list", nullable = false)
-    public Long getIdList() {
-        return idList;
-    }
-
-    public void setIdList(Long idList) {
-        this.idList = idList;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @Column(name = "code", nullable = false, length = 1024)
@@ -86,9 +71,9 @@ public class TripletValue implements Serializable, Deleteable, ListElementItem {
     }
 
     /**
-     *
-     * @return  The date on which this database was deleted by the user, or null if this
-     * database is not deleted.
+     * 
+     * @return The date on which this database was deleted by the user, or null
+     *         if this database is not deleted.
      */
     @Column
     @Temporal(value = TemporalType.TIMESTAMP)
@@ -101,41 +86,20 @@ public class TripletValue implements Serializable, Deleteable, ListElementItem {
     }
 
     /**
-     * Marks this database as deleted. (Though the row is not removed from the database)
+     * Marks this database as deleted. (Though the row is not removed from the
+     * database)
      */
     public void delete() {
-        Date now = new Date();
-        setDateDeleted(now);
+        setDateDeleted(new Date());
     }
 
     /**
-     *
-     * @return  True if this database was deleted by its owner.
+     * 
+     * @return True if this database was deleted by its owner.
      */
     @Override
     @Transient
     public boolean isDeleted() {
-        return getDateDeleted() == null;
-    }
-
-    @Override
-    public boolean isLike(ListElementItem e) {
-        if (e == null) {
-            return false;
-        }
-        if (getClass() != e.getClass()) {
-            return false;
-        }
-        final TripletValue other = (TripletValue) e;
-        if ((this.code == null) ? (other.code != null) : !this.code.equals(other.code)) {
-            return false;
-        }
-        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
-            return false;
-        }
-        if ((this.period == null) ? (other.period != null) : !this.period.equals(other.period)) {
-            return false;
-        }
-        return true;
+        return getDateDeleted() != null;
     }
 }

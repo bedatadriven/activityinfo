@@ -341,6 +341,27 @@ body {
     color: white;
 }
 
+.project-tabPhases {
+	outline: 0;
+}
+
+.project-panelReminders {
+	margin-bottom: 10px;
+}
+
+.project-phase-active span.x-tab-strip-text {
+	color: #EE9329;
+	font-weight: bold;
+}
+
+.project-phase-closed span.x-tab-strip-text {
+	font-style: italic;	
+}
+
+.project-label-10 {
+	font-size: 10pt;	
+}
+
 /* ------------------------------------------------------------------ Ext-GWT */
 .x-panel-header a {
     color: #482A1E;
@@ -352,72 +373,22 @@ body {
 
 /* -------------------------------------------------------------- Flexibility */
 
-.sigmah-tabProject, .sigmah-tabPhases {
-	outline: 0;
-}
-/*
-.sigmah-tabProject .x-border-layout-ct {
-	background-color: #FFFFEE;
-}
-
-.sigmah-tabProject ul.x-tab-strip-top {
-	background: none white;
-}
-.sigmah-tabProject .x-tab-panel-header {
-	border-top: none;
-	border-left: none;
-	border-right: none;
-}
-.sigmah-tabProject ul.x-tab-strip li {
-	margin-left: 8px;
-}
-
-.sigmah-tabPhases ul.x-tab-strip-top {
-	background: none #FFFFEE;
-	padding-top: 0;
-}
-.sigmah-tabPhases .x-tab-panel-header {
-	border-top: none;
-	border-left: none;
-	border-right: none;
-}
-.sigmah-tabPhases ul.x-tab-strip li {
-	margin-left: 4px;
-}
-*/
-.sigmah-panelReminders {
-	margin-bottom: 10px;
-}
-
-.sigmah-layout {
+.flexibility-layout {
 	border-spacing: 0;
 }
-.sigmah-layout td {
+
+.flexibility-layout td {
 	vertical-align: top;
 }
 
-.sigmah-active-phase span.x-tab-strip-text {
-	color: #EE9329;
-        font-weight: bold;
+.flexibility-textarea {
+	padding-bottom: 16px;	
 }
 
-.sigmah-closed-phase span.x-tab-strip-text {
-	/* color: #777; */
-	font-style: italic;	
-}
-
-.sigmah-required-elements-grid {
-	border: 1px solid red;
-}
-.sigmah-element-label {
+.flexibility-element-label {
 	font-size: 8pt;	
 }
-.sigmah-element {
-	padding-bottom: 8px;	
-}
-.sigmah-element-fieldName {
+
+.flexibility-element-field-label {
 	font-weight: bold;	
-}
-.sigmah-label-10 {
-	font-size: 10pt;	
 }

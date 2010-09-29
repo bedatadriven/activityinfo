@@ -40,6 +40,7 @@ public class FileVersion implements Serializable, Deleteable {
     private User author;
     private Date addedDate;
     private Long size;
+    private String comments;
     // Deletion informations.
     private Date dateDeleted;
 
@@ -111,6 +112,15 @@ public class FileVersion implements Serializable, Deleteable {
         return size;
     }
 
+    public void setComments(String comments) {
+        this.comments = comments;
+    }
+
+    @Column(name = "comments", length = 4096, nullable = true)
+    public String getComments() {
+        return comments;
+    }
+
     @Column
     @Temporal(value = TemporalType.TIMESTAMP)
     public Date getDateDeleted() {
@@ -129,6 +139,6 @@ public class FileVersion implements Serializable, Deleteable {
     @Override
     @Transient
     public boolean isDeleted() {
-        return getDateDeleted() == null;
+        return getDateDeleted() != null;
     }
 }

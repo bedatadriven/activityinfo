@@ -6,25 +6,22 @@
 package org.sigmah.shared.dto.element;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.ui.FlexibleGrid;
 import org.sigmah.shared.command.result.ValueResult;
 import org.sigmah.shared.dto.element.handler.RequiredValueEvent;
 import org.sigmah.shared.dto.element.handler.ValueEvent;
 import org.sigmah.shared.dto.value.TripletValueDTO;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.Store;
-import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -32,9 +29,7 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
@@ -59,7 +54,7 @@ public class TripletsListElementDTO extends FlexibleElementDTO {
     @Override
     public boolean isCorrectRequiredValue(ValueResult result) {
 
-        if (result == null || result.getValuesObject() == null) {
+        if (result == null || !result.isValueDefined()) {
             return false;
         }
 
@@ -97,47 +92,19 @@ public class TripletsListElementDTO extends FlexibleElementDTO {
 
         // Creates the grid which contains the triplets list.
         final CheckBoxSelectionModel<TripletValueDTO> selectionModel = new CheckBoxSelectionModel<TripletValueDTO>();
-        final EditorGrid<TripletValueDTO> grid = new EditorGrid<TripletValueDTO>(store, getColumnModel(selectionModel));
-        grid.setSelectionModel(selectionModel);
+        final FlexibleGrid<TripletValueDTO> grid = new FlexibleGrid<TripletValueDTO>(store, selectionModel,
+                getColumnModel(selectionModel));
         grid.setAutoExpandColumn("name");
-        grid.setBorders(false);
-        grid.getView().setForceFit(true);
-        grid.addPlugin(selectionModel);
+        grid.setVisibleElementsCount(5);
 
         // Creates the main panel.
         final ContentPanel panel = new ContentPanel();
         panel.setHeading(getLabel());
+        panel.setBorders(true);
         panel.setLayout(new FitLayout());
 
         panel.setTopComponent(topPanel);
         panel.add(grid);
-
-        // Detects additions and deletions in the store and adjusts the grid
-        // height accordingly.
-        grid.addListener(Events.ViewReady, new Listener<ComponentEvent>() {
-            @Override
-			public void handleEvent(ComponentEvent be) {
-                grid.getStore().addListener(Store.Add, new Listener<StoreEvent<TripletValueDTO>>() {
-                    @Override
-					public void handleEvent(StoreEvent<TripletValueDTO> be) {
-                        doAutoHeight(grid, panel);
-                    }
-                });
-                grid.getStore().addListener(Store.Remove, new Listener<StoreEvent<TripletValueDTO>>() {
-                    @Override
-					public void handleEvent(StoreEvent<TripletValueDTO> be) {
-                        doAutoHeight(grid, panel);
-                    }
-                });
-                grid.getStore().addListener(Store.Clear, new Listener<StoreEvent<TripletValueDTO>>() {
-                    @Override
-					public void handleEvent(StoreEvent<TripletValueDTO> be) {
-                        doAutoHeight(grid, panel);
-                    }
-                });
-                doAutoHeight(grid, panel);
-            }
-        });
 
         grid.addListener(Events.AfterEdit, new Listener<GridEvent<TripletValueDTO>>() {
 
@@ -145,9 +112,11 @@ public class TripletsListElementDTO extends FlexibleElementDTO {
             public void handleEvent(GridEvent<TripletValueDTO> be) {
                 // Edit an existing triplet
                 final TripletValueDTO valueDTO = grid.getStore().getAt(be.getRowIndex());
+
                 valueDTO.setIndex(be.getRowIndex());
 
-                handlerManager.fireEvent(new ValueEvent(TripletsListElementDTO.this, valueDTO, ValueEvent.ChangeType.EDIT));
+                handlerManager.fireEvent(new ValueEvent(TripletsListElementDTO.this, valueDTO,
+                        ValueEvent.ChangeType.EDIT));
             }
 
         });
@@ -178,54 +147,33 @@ public class TripletsListElementDTO extends FlexibleElementDTO {
      *            The grid selection model.
      * @return The column model.
      */
-    private ColumnModel getColumnModel(CheckBoxSelectionModel<TripletValueDTO> selectionModel) {
-        List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
-        columnConfigs.add(selectionModel.getColumn());
+    private ColumnConfig[] getColumnModel(CheckBoxSelectionModel<TripletValueDTO> selectionModel) {
 
-        ColumnConfig column = new ColumnConfig();
-        column.setId("code");
-        column.setHeader(I18N.CONSTANTS.flexibleElementTripletsListCode());
+        final ColumnConfig codeColumn = new ColumnConfig();
+        codeColumn.setId("code");
+        codeColumn.setHeader(I18N.CONSTANTS.flexibleElementTripletsListCode());
         TextField<String> text = new TextField<String>();
         text.setAllowBlank(false);
-        column.setEditor(new CellEditor(text));
-        column.setWidth(100);
-        columnConfigs.add(column);
+        codeColumn.setEditor(new CellEditor(text));
+        codeColumn.setWidth(100);
 
-        column = new ColumnConfig();
-        column.setId("name");
-        column.setHeader(I18N.CONSTANTS.flexibleElementTripletsListName());
+        final ColumnConfig nameColumn = new ColumnConfig();
+        nameColumn.setId("name");
+        nameColumn.setHeader(I18N.CONSTANTS.flexibleElementTripletsListName());
         text = new TextField<String>();
         text.setAllowBlank(false);
-        column.setEditor(new CellEditor(text));
-        column.setWidth(100);
-        columnConfigs.add(column);
+        nameColumn.setEditor(new CellEditor(text));
+        nameColumn.setWidth(100);
 
-        column = new ColumnConfig();
-        column.setId("period");
-        column.setHeader(I18N.CONSTANTS.flexibleElementTripletsListPeriod());
+        final ColumnConfig periodColumn = new ColumnConfig();
+        periodColumn.setId("period");
+        periodColumn.setHeader(I18N.CONSTANTS.flexibleElementTripletsListPeriod());
         text = new TextField<String>();
         text.setAllowBlank(false);
-        column.setEditor(new CellEditor(text));
-        column.setWidth(60);
-        columnConfigs.add(column);
+        periodColumn.setEditor(new CellEditor(text));
+        periodColumn.setWidth(60);
 
-        return new ColumnModel(columnConfigs);
-    }
-
-    /**
-     * Adjusts the grid height for the current elements number.
-     * 
-     * @param grid
-     *            The grid.
-     * @param cp
-     *            The grid's parent panel.
-     */
-    private void doAutoHeight(Grid<TripletValueDTO> grid, ContentPanel cp) {
-        if (grid.isViewReady()) {
-            cp.setHeight((grid.getView().getBody().isScrollableX() ? 20 : 0) + grid.el().getFrameWidth("tb")
-                    + grid.getView().getHeader().getHeight() + cp.getFrameHeight()
-                    + grid.getView().getBody().firstChild().getHeight());
-        }
+        return new ColumnConfig[] { selectionModel.getColumn(), codeColumn, nameColumn, periodColumn };
     }
 
     /**
@@ -246,6 +194,7 @@ public class TripletsListElementDTO extends FlexibleElementDTO {
 
         @Override
         public void handleEvent(ButtonEvent be) {
+
             // Add a new triplet
             if (isAddAction) {
                 TripletValueDTO addedValue = new TripletValueDTO();
@@ -255,27 +204,30 @@ public class TripletsListElementDTO extends FlexibleElementDTO {
 
                 grid.getStore().add(addedValue);
                 addedValue.setIndex(grid.getStore().indexOf(addedValue));
-                handlerManager.fireEvent(new ValueEvent(TripletsListElementDTO.this, addedValue, ValueEvent.ChangeType.ADD));
 
-                // Required element ?
-                if (getValidates()) {
-                    handlerManager.fireEvent(new RequiredValueEvent(true));
-                }
+                // Fires the value change event.
+                handlerManager.fireEvent(new ValueEvent(TripletsListElementDTO.this, addedValue,
+                        ValueEvent.ChangeType.ADD));
+
             }
             // Remove some existing triplets
             else {
+
                 for (TripletValueDTO removedValue : grid.getSelectionModel().getSelectedItems()) {
+
                     removedValue.setIndex(grid.getStore().indexOf(removedValue));
                     grid.getStore().remove(removedValue);
-                    // TODO creates fire method for addition and deletion
-                    handlerManager.fireEvent(new ValueEvent(TripletsListElementDTO.this, removedValue, ValueEvent.ChangeType.REMOVE));
-                }
 
-                if (grid.getStore().getCount() == 0) {
-                    handlerManager.fireEvent(new RequiredValueEvent(false));
+                    // Fires the value change event.
+                    handlerManager.fireEvent(new ValueEvent(TripletsListElementDTO.this, removedValue,
+                            ValueEvent.ChangeType.REMOVE));
                 }
             }
 
+            // Required element ?
+            if (getValidates()) {
+                handlerManager.fireEvent(new RequiredValueEvent(grid.getStore().getCount() > 0));
+            }
         }
     }
 

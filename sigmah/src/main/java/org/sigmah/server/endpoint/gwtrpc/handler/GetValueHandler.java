@@ -20,10 +20,11 @@ import org.sigmah.shared.command.GetValue;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.ValueResult;
+import org.sigmah.shared.command.result.ValueResultUtils;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.element.FlexibleElement;
 import org.sigmah.shared.dto.value.BudgetPartsListValueDTO;
-import org.sigmah.shared.dto.value.FilesListValueDTO;
+import org.sigmah.shared.dto.value.FileDTO;
 import org.sigmah.shared.dto.value.IndicatorsListValueDTO;
 import org.sigmah.shared.dto.value.TripletValueDTO;
 import org.sigmah.shared.exception.CommandException;
@@ -69,7 +70,12 @@ public class GetValueHandler implements CommandHandler<GetValue> {
             LOG.debug("[execute] GetValue command = " + cmd.toString() + ".");
         }
 
+        // Command result.
         final ValueResult valueResult = new ValueResult();
+
+        // --------------------------------------------------------------------
+        // STEP 1 : gets the string value (regardless of the element).
+        // --------------------------------------------------------------------
 
         // Creates the query to get the value for the flexible element (as
         // string) in the Value table.
@@ -84,7 +90,7 @@ public class GetValueHandler implements CommandHandler<GetValue> {
         String valueAsString = null;
         try {
             valueAsString = (String) valueQuery.getSingleResult();
-            if (valueAsString == null) {
+            if (valueAsString == null || valueAsString.equals("")) {
                 isValueExisting = false;
             }
         } catch (NoResultException e) {
@@ -101,92 +107,114 @@ public class GetValueHandler implements CommandHandler<GetValue> {
             return valueResult;
         }
 
-        String queryString = null;
+        // --------------------------------------------------------------------
+        // STEP 2 : gets the true values (depending of the element).
+        // Can be a list of id with requires a sub-select query.
+        // --------------------------------------------------------------------
+
+        Query query = null;
         String elementClassName = cmd.getElementEntityName();
-        Class<? extends Serializable> clazz = null;
+        Class<? extends Serializable> dtoClazz = null;
         boolean isList = false;
 
-        // Creates the sub-select query to get the real value.
+        // Creates the sub-select query to get the true value.
         if (elementClassName.equals("element.TripletsListElement")) {
+
             if (LOG.isDebugEnabled()) {
                 LOG.debug("[execute] Case TripletsListElementDTO.");
             }
-            queryString = "SELECT tv FROM TripletValue tv WHERE tv.idList = :value";
-            clazz = TripletValueDTO.class;
+
+            dtoClazz = TripletValueDTO.class;
             isList = true;
+
+            query = em.createQuery("SELECT tv FROM TripletValue tv WHERE tv.id IN (:idsList)");
+            query.setParameter("idsList", ValueResultUtils.splitValuesAsLong(valueAsString));
+
         } else if (elementClassName.equals("element.IndicatorsListElement")) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("[execute] Case IndicatorsListElementDTO.");
             }
-            queryString = "SELECT ilv FROM IndicatorsListValue ilv WHERE ilv.id.idList = :value";
-            clazz = IndicatorsListValueDTO.class;
+
+            dtoClazz = IndicatorsListValueDTO.class;
             isList = true;
+
+            query = em.createQuery("SELECT ilv FROM IndicatorsListValue ilv WHERE ilv.id.idList = :value");
+            query.setParameter("value", Long.valueOf(valueAsString));
+
         } else if (elementClassName.equals("element.BudgetDistributionElement")) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("[execute] Case BudgetDistributionElementDTO.");
             }
-            queryString = "SELECT bplv FROM BudgetPartsListValue bplv WHERE bplv.id = :value";
-            clazz = BudgetPartsListValueDTO.class;
+
+            dtoClazz = BudgetPartsListValueDTO.class;
             isList = true;
+
+            query = em.createQuery("SELECT bplv FROM BudgetPartsListValue bplv WHERE bplv.id = :value");
+            query.setParameter("value", Long.valueOf(valueAsString));
+
         } else if (elementClassName.equals("element.FilesListElement")) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("[execute] Case FilesListElementDTO.");
             }
-            queryString = "SELECT flv FROM FilesListValue flv WHERE flv.id.idList = :value";
-            clazz = FilesListValueDTO.class;
+
+            dtoClazz = FileDTO.class;
             isList = true;
+
+            query = em.createQuery("SELECT f FROM File f WHERE f.id IN (:idsList)");
+            query.setParameter("idsList", ValueResultUtils.splitValuesAsInteger(valueAsString));
+
         } else if (!(elementClassName.equals("element.MessageElement"))) {
+
             if (LOG.isDebugEnabled()) {
                 LOG.debug("[execute] Case others (but MessageElementDTO).");
             }
-            queryString = "";
-            clazz = String.class;
+
+            dtoClazz = String.class;
             isList = false;
+
         }
 
-        if (queryString != null) {
-            // Multiple results case
-            if (isList) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("[execute] Multiple values for the element #" + cmd.getElementId() + ".");
-                }
+        // --------------------------------------------------------------------
+        // STEP 3 : fill the command result with the values.
+        // --------------------------------------------------------------------
 
-                final Query query = em.createQuery(queryString);
-                // The value is casted as a long to perform the sub-select
-                // query.
-                query.setParameter("value", Long.valueOf(valueAsString));
+        // No value for this kind of elements.
+        if (dtoClazz == null) {
+            return valueResult;
+        }
 
-                @SuppressWarnings("unchecked")
-                final List<Object> objectsList = query.getResultList();
+        // Multiple results case
+        if (isList) {
 
-                final List<Serializable> serializablesList = new ArrayList<Serializable>();
-                for (Object o : objectsList) {
-                    serializablesList.add(mapper.map(o, clazz));
-                }
-
-                valueResult.setValuesObject(serializablesList);
-            }
-            // Single result case
-            else {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("[execute] Single value for the element #" + cmd.getElementId() + ".");
-                }
-
-                if (clazz.equals(String.class)) {
-                    valueResult.setValueObject(valueAsString);
-                } else {
-                    valueResult.setValueObject(mapper.map(valueAsString, clazz));
-                }
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("[execute] Multiple values for the element #" + cmd.getElementId() + ".");
             }
 
-            valueResult.setListResult(isList);
+            @SuppressWarnings("unchecked")
+            final List<Object> objectsList = query.getResultList();
+
+            final List<Serializable> serializablesList = new ArrayList<Serializable>();
+            for (Object o : objectsList) {
+                serializablesList.add(mapper.map(o, dtoClazz));
+            }
+
+            valueResult.setValuesObject(serializablesList);
+        }
+        // Single result case
+        else {
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("[execute] Single value for the element #" + cmd.getElementId() + ".");
+            }
+
+            // A single value is always interpreted as a string.
+            valueResult.setValueObject(valueAsString);
         }
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("[execute] Returned value = " + valueResult.toString() + ".");
+            LOG.debug("[execute] Returned value = " + valueResult + ".");
         }
 
         return valueResult;
-
     }
 }

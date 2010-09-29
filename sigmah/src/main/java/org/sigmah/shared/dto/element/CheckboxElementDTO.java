@@ -69,7 +69,7 @@ public class CheckboxElementDTO extends FlexibleElementDTO {
             CheckBox checkbox = (CheckBox) be.getSource();
             boolean value = checkbox.getValue();
 
-            handlerManager.fireEvent(new ValueEvent(CheckboxElementDTO.this, value, ValueEvent.ChangeType.EDIT));
+            handlerManager.fireEvent(new ValueEvent(CheckboxElementDTO.this, value));
 
             // Required element ?
             if (getValidates()) {

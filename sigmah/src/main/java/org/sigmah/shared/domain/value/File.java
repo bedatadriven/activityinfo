@@ -17,6 +17,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Filter;
 import org.sigmah.shared.domain.Deleteable;
 
 /**
@@ -31,20 +32,20 @@ public class File implements Serializable, Deleteable {
 
     private static final long serialVersionUID = -271699094058979365L;
 
-    private Long id;
+    private Integer id;
     private String name;
     private List<FileVersion> versions = new ArrayList<FileVersion>();
     // Deletion informations.
     private Date dateDeleted;
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_file")
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -62,6 +63,7 @@ public class File implements Serializable, Deleteable {
     }
 
     @OneToMany(mappedBy = "parentFile", cascade = CascadeType.ALL)
+    @Filter(name = "hideDeleted", condition = "DateDeleted is null")
     public List<FileVersion> getVersions() {
         return versions;
     }
@@ -92,6 +94,6 @@ public class File implements Serializable, Deleteable {
     @Override
     @Transient
     public boolean isDeleted() {
-        return getDateDeleted() == null;
+        return getDateDeleted() != null;
     }
 }

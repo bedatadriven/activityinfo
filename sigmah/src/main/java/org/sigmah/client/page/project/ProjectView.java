@@ -73,16 +73,10 @@ public class ProjectView extends LayoutContainer implements ProjectPresenter.Vie
 
     private ToggleAnchor currentTab;
 
-    @SuppressWarnings("unused")
     private final static String[] MAIN_TABS = { I18N.CONSTANTS.projectTabDashboard(),
             I18N.CONSTANTS.projectTabLogFrame(), I18N.CONSTANTS.projectTabIndicators(),
             I18N.CONSTANTS.projectTabCalendar(), I18N.CONSTANTS.projectTabReports(),
             I18N.CONSTANTS.projectTabSecurityIncident() };
-
-    /**
-     * Contains only the implemented tabs (hide others).
-     */
-    private final static String[] CURRENT_MAIN_TABS = { I18N.CONSTANTS.projectTabDashboard() };
 
     /**
      * Initializes a new ProjectView object.
@@ -99,7 +93,7 @@ public class ProjectView extends LayoutContainer implements ProjectPresenter.Vie
         panelProjectBanner.setBorders(false);
         panelProjectBanner.setHeight(100);
         panelProjectBanner.setLayout(new VBoxLayout());
-        panelProjectBanner.addStyleName("sigmah-label-10");
+        panelProjectBanner.addStyleName("project-label-10");
 
         final ContentPanel bottomPanel = new ContentPanel(new BorderLayout());
         bottomPanel.setHeaderVisible(false);
@@ -158,13 +152,12 @@ public class ProjectView extends LayoutContainer implements ProjectPresenter.Vie
             }
         });
         gridRequiredElements = new Grid<FlexibleElementDTO>(storeRequiredElements, getColumModel());
-        gridRequiredElements.setStyleName("sigmah-required-elements-grid");
         gridRequiredElements.setAutoExpandColumn("label");
         gridRequiredElements.getView().setForceFit(true);
 
         // Phases tab panel
         tabPanelPhases = new TabPanel();
-        tabPanelPhases.setStyleName("sigmah-tabPhases");
+        tabPanelPhases.setStyleName("project-tabPhases");
         tabPanelPhases.setHeight("100%");
 
         // Toolbar
@@ -215,7 +208,7 @@ public class ProjectView extends LayoutContainer implements ProjectPresenter.Vie
         panelReminders.setBorders(false);
         panelReminders.setCollapsible(true);
         panelReminders.setWidth(250);
-        panelReminders.setStyleName("sigmah-panelReminders");
+        panelReminders.setStyleName("project-panelReminders");
 
         panelWatchedPoints = new ContentPanel();
         panelWatchedPoints.setHeading(I18N.CONSTANTS.projectWatchedPointsHeader());

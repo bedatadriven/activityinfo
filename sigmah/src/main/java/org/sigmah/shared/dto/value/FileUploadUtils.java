@@ -80,11 +80,6 @@ public final class FileUploadUtils {
     public static final String DOCUMENT_AUTHOR = "author";
 
     /**
-     * Uploaded file list.
-     */
-    public static final String DOCUMENT_FILES_LIST = "list";
-
-    /**
      * Flexible element id to which the uploaded file belongs.
      */
     public static final String DOCUMENT_FLEXIBLE_ELEMENT = "element";

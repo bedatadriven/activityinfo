@@ -59,7 +59,7 @@ public class FileUploadServlet extends HttpServlet {
      * To get the upload manager.
      */
     private final Injector injector;
-    
+
     @Inject
     public FileUploadServlet(Injector injector) {
         this.injector = injector;
@@ -81,20 +81,13 @@ public class FileUploadServlet extends HttpServlet {
      * <li>{@link FileUploadUtils#DOCUMENT_CONTENT} : (required) the content.</li>
      * <li>{@link FileUploadUtils#DOCUMENT_NAME} : (required) the file name.</li>
      * <li>{@link FileUploadUtils#DOCUMENT_AUTHOR} : (required) the adder.</li>
-     * <li>{@link FileUploadUtils#DOCUMENT_FILES_LIST} : (optional) the id of
-     * the flexible element where the file is displayed.<br/>
-     * <br/>
-     * If the file is the first one for this list. This parameter can be
-     * omitted, but the two following parameters must be specified:
-     * <ul>
-     * <li>{@link FileUploadUtils#DOCUMENT_FLEXIBLE_ELEMENT} : (optional) the
+     * <li>{@link FileUploadUtils#DOCUMENT_FLEXIBLE_ELEMENT} : (required) the
      * files list element id.</li>
-     * <li>{@link FileUploadUtils#DOCUMENT_PROJECT} : (optional) the project id.
+     * <li>{@link FileUploadUtils#DOCUMENT_PROJECT} : (required) the project id.
      * </li>
      * </ul>
      * </li>
-     * </ul>
-     * <br/>
+     * </ul> <br/>
      * <br/>
      * <li><b>Adds e new version to an existing file</b>.<br/>
      * The following parameters must be specified in the HTTP request:

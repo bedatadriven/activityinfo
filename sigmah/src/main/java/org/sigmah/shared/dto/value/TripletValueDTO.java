@@ -5,8 +5,6 @@
 
 package org.sigmah.shared.dto.value;
 
-import org.sigmah.shared.dto.EntityDTO;
-
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
@@ -14,7 +12,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  * @author Denis Colliot (dcolliot@ideia.fr)
  * 
  */
-public class TripletValueDTO extends BaseModelData implements EntityDTO, ListElementItemDTO {
+public class TripletValueDTO extends BaseModelData implements ListEntityDTO {
 
     private static final long serialVersionUID = 8520711106031085130L;
 
@@ -34,16 +32,6 @@ public class TripletValueDTO extends BaseModelData implements EntityDTO, ListEle
 
     public void setId(int id) {
         set("id", id);
-    }
-
-    // Triplets list id
-    public int getIdList() {
-        Integer idList = (Integer) get("idList");
-        return idList == null ? 0 : idList;
-    }
-
-    public void setIdList(int listId) {
-        set("idList", listId);
     }
 
     // Triplet value code
@@ -73,11 +61,13 @@ public class TripletValueDTO extends BaseModelData implements EntityDTO, ListEle
         set("period", period);
     }
 
+    @Override
     public int getIndex() {
-        Integer index = (Integer) get("index");
-        return index == null ? 0 : index;
+        final Object index = get("index");
+        return index != null ? (Integer) index : -1;
     }
 
+    @Override
     public void setIndex(int index) {
         set("index", index);
     }

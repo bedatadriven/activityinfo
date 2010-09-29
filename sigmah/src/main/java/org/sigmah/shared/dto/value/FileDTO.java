@@ -82,5 +82,4 @@ public class FileDTO extends BaseModelData implements EntityDTO {
 
         return lastVersion;
     }
-
 }

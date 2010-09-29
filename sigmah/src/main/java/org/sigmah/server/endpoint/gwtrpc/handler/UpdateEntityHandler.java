@@ -45,6 +45,7 @@ public class UpdateEntityHandler extends BaseEntityHandler implements CommandHan
         this.injector = injector;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public CommandResult execute(UpdateEntity cmd, User user) throws CommandException {
 

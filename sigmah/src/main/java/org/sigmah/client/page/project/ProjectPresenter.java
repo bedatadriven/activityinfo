@@ -11,6 +11,7 @@ import java.util.HashMap;
 
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.Frame;
@@ -33,7 +34,6 @@ import org.sigmah.shared.dto.element.FlexibleElementDTO;
 import org.sigmah.shared.dto.element.handler.RequiredValueEvent;
 import org.sigmah.shared.dto.element.handler.RequiredValueHandler;
 import org.sigmah.shared.dto.element.handler.ValueEvent;
-import org.sigmah.shared.dto.element.handler.ValueEventWrapper;
 import org.sigmah.shared.dto.element.handler.ValueHandler;
 import org.sigmah.shared.dto.layout.LayoutConstraintDTO;
 import org.sigmah.shared.dto.layout.LayoutGroupDTO;
@@ -196,7 +196,7 @@ public class ProjectPresenter implements Frame, TabPage {
             if (isActivePhase(phaseDTO)) {
                 // Enables it, apply the correct style and selects it.
                 tabItem.setEnabled(true);
-                tabItem.getHeader().addStyleName("sigmah-active-phase");
+                tabItem.getHeader().addStyleName("project-phase-active");
                 view.getTabPanelPhases().setSelection(tabItem);
             }
 
@@ -204,7 +204,7 @@ public class ProjectPresenter implements Frame, TabPage {
             if (isEndedPhase(phaseDTO)) {
                 // Enables it and apply the correct style.
                 tabItem.setEnabled(true);
-                tabItem.getHeader().addStyleName("sigmah-closed-phase");
+                tabItem.getHeader().addStyleName("project-phase-closed");
             }
         }
 
@@ -308,6 +308,13 @@ public class ProjectPresenter implements Frame, TabPage {
      */
     private void loadPhaseOnTab(final PhaseDTO phaseDTO) {
 
+        // Masks the main panel.
+        int count = 0;
+        for (final LayoutGroupDTO groupDTO : phaseDTO.getPhaseModelDTO().getLayoutDTO().getLayoutGroupsDTO()) {
+            count += groupDTO.getLayoutConstraintsDTO().size();
+        }
+        mask(count);
+
         // Sets current project status.
         currentPhaseDTO = phaseDTO;
 
@@ -368,6 +375,7 @@ public class ProjectPresenter implements Frame, TabPage {
                     @Override
                     public void onFailure(Throwable throwable) {
                         Log.error("Error, element value not loaded.");
+                        unmask();
                     }
 
                     @Override
@@ -430,6 +438,8 @@ public class ProjectPresenter implements Frame, TabPage {
                                 activePhaseRequiredElements.putSaved(elementDTO.getId(), elementDTO.isFilledIn());
                             }
                         }
+
+                        unmask();
                     }
                 });
             }
@@ -437,6 +447,33 @@ public class ProjectPresenter implements Frame, TabPage {
 
         // View layouts update.
         ((ProjectView) view).layout();
+    }
+
+    /**
+     * The counter before the main panel is unmasked.
+     */
+    private int maskCount;
+
+    /**
+     * Mask the main panel and set the mask counter.
+     * 
+     * @param count
+     *            The mask counter.
+     */
+    private void mask(int count) {
+        maskCount = count;
+        view.getTabPanelPhases().mask(I18N.CONSTANTS.loading());
+    }
+
+    /**
+     * Decrements the mask counter and unmask the main panel if the counter
+     * reaches <code>0</code>.
+     */
+    private void unmask() {
+        maskCount--;
+        if (maskCount == 0) {
+            view.getTabPanelPhases().unmask();
+        }
     }
 
     /**
@@ -501,16 +538,16 @@ public class ProjectPresenter implements Frame, TabPage {
                                 for (PhaseDTO phase : currentProjectDTO.getPhasesDTO()) {
                                     final TabItem successorTabItem = tabItemsMap.get(phase.getPhaseModelDTO().getId());
                                     if (phase.isEnded()) {
-                                        successorTabItem.getHeader().setStyleName("sigmah-closed-phase");
+                                        successorTabItem.getHeader().setStyleName("project-phase-closed");
                                     }
                                 }
 
                                 // Updates active phase styles.
                                 for (TabItem item : view.getTabPanelPhases().getItems()) {
-                                    item.getHeader().removeStyleName("sigmah-active-phase");
+                                    item.getHeader().removeStyleName("project-phase-active");
                                 }
                                 tabItemsMap.get(currentPhaseDTO.getPhaseModelDTO().getId()).getHeader()
-                                        .addStyleName("sigmah-active-phase");
+                                        .addStyleName("project-phase-active");
 
                                 // Enables successors tabs of the current phase.
                                 enableSuccessorsTabs();
@@ -527,34 +564,37 @@ public class ProjectPresenter implements Frame, TabPage {
 
         @Override
         public void handleEvent(ButtonEvent be) {
+
             view.getButtonSavePhase().disable();
             final UpdateProject updateProject = new UpdateProject(currentProjectDTO.getId(), valueChanges);
 
-            dispatcher.execute(updateProject, null, new AsyncCallback<VoidResult>() {
+            dispatcher.execute(updateProject,
+                    new MaskingAsyncMonitor(view.getTabPanelPhases(), I18N.CONSTANTS.loading()),
+                    new AsyncCallback<VoidResult>() {
 
-                @Override
-                public void onFailure(Throwable caught) {
-                    MessageBox.info(I18N.CONSTANTS.cancelled(), I18N.CONSTANTS.error(), null);
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            MessageBox.info(I18N.CONSTANTS.cancelled(), I18N.CONSTANTS.error(), null);
 
-                    currentPhaseRequiredElements.clearState();
+                            currentPhaseRequiredElements.clearState();
 
-                    if (isActivePhase(currentPhaseDTO)) {
-                        activePhaseRequiredElements.clearState();
-                    }
-                }
+                            if (isActivePhase(currentPhaseDTO)) {
+                                activePhaseRequiredElements.clearState();
+                            }
+                        }
 
-                @Override
-                public void onSuccess(VoidResult result) {
-                    valueChanges.clear();
-                    MessageBox.info(I18N.CONSTANTS.ok(), I18N.CONSTANTS.saved(), null);
+                        @Override
+                        public void onSuccess(VoidResult result) {
+                            valueChanges.clear();
+                            MessageBox.info(I18N.CONSTANTS.ok(), I18N.CONSTANTS.saved(), null);
 
-                    currentPhaseRequiredElements.saveState();
+                            currentPhaseRequiredElements.saveState();
 
-                    if (isActivePhase(currentPhaseDTO)) {
-                        activePhaseRequiredElements.saveState();
-                    }
-                }
-            });
+                            if (isActivePhase(currentPhaseDTO)) {
+                                activePhaseRequiredElements.saveState();
+                            }
+                        }
+                    });
         }
     }
 
@@ -697,15 +737,9 @@ public class ProjectPresenter implements Frame, TabPage {
 
         @Override
         public void onValueChange(ValueEvent event) {
-
-            // Stores the change to be saved later.
-            final ValueEventWrapper w = new ValueEventWrapper();
-            w.setSourceElement(event.getSourceElement());
-            w.setValue(event.getValue());
-            w.setValues(event.getValues());
-
+        
+        	// Stores the change to be saved later.
             valueChanges.add(event);
-
             // Enables the save action.
             view.getButtonSavePhase().setEnabled(true);
         }

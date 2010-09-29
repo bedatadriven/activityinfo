@@ -316,6 +316,7 @@ public class TextAreaElementDTO extends FlexibleElementDTO {
             default: {
 
                 final TextArea textArea = new TextArea();
+                textArea.addStyleName("flexibility-textarea");
 
                 final Integer length = getLength();
                 // Sets the max length.
@@ -509,7 +510,7 @@ public class TextAreaElementDTO extends FlexibleElementDTO {
      */
     private void fireEvents(String value, boolean isValueOn) {
 
-        handlerManager.fireEvent(new ValueEvent(TextAreaElementDTO.this, value, ValueEvent.ChangeType.EDIT));
+        handlerManager.fireEvent(new ValueEvent(TextAreaElementDTO.this, value));
 
         // Required element ?
         if (getValidates()) {

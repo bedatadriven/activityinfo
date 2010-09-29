@@ -4,21 +4,24 @@
  */
 package org.sigmah.shared.command;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 import org.sigmah.shared.command.result.VoidResult;
-import org.sigmah.shared.dto.element.FlexibleElementDTO;
 import org.sigmah.shared.dto.element.handler.ValueEvent;
+import org.sigmah.shared.dto.element.handler.ValueEvent.ChangeType;
 import org.sigmah.shared.dto.element.handler.ValueEventWrapper;
+import org.sigmah.shared.dto.value.ListEntityDTO;
 
 /**
- *
+ * 
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class UpdateProject implements Command<VoidResult> {
+
+    private static final long serialVersionUID = 3926814696490160032L;
+
     private int projectId;
     private ArrayList<ValueEventWrapper> values = new ArrayList<ValueEventWrapper>();
 
@@ -27,29 +30,57 @@ public class UpdateProject implements Command<VoidResult> {
 
     public UpdateProject(int projectId, List<ValueEvent> values) {
         this.projectId = projectId;
-        final HashMap<FlexibleElementDTO, Serializable> edits = new HashMap<FlexibleElementDTO, Serializable>();
-        for(final ValueEvent value : values) {
-            // Merging edits
-            if(value.getValue() != null && value.getChangeType() == ValueEvent.ChangeType.EDIT) {
-                edits.put(value.getSourceElement(), value.getValue());
-            } else {
-                // Adding other events
-                final ValueEventWrapper wrapper = new ValueEventWrapper();
-                wrapper.setSourceElement(value.getSourceElement());
-                wrapper.setValue(value.getValue());
-                wrapper.setValues(value.getValues());
-                wrapper.setChangeType(value.getChangeType());
-                this.values.add(wrapper);
+
+        this.values.clear();
+
+        final HashMap<Integer, ValueEvent> basicValues = new HashMap<Integer, ValueEvent>();
+        final HashMap<ListEntityDTOKey, ValueEvent> listValues = new HashMap<ListEntityDTOKey, ValueEvent>();
+
+        for (final ValueEvent event : values) {
+
+            // Manages basic values changes.
+            if (!(event.getValue() instanceof ListEntityDTO)) {
+                // Keep only the last modification to avoid events repetition.
+                basicValues.put(event.getSourceElement().getId(), event);
+            }
+            // Manages the elements which are a part of a list.
+            else {
+                final ListEntityDTO element = (ListEntityDTO) event.getValue();
+
+                // Manages only elements which are not stored on the data layer
+                // to keep only the last state of each element before sending
+                // events to the server.
+                if (element.getId() == 0) {
+
+                    switch (event.getChangeType()) {
+                    case ADD:
+                        listValues.put(new ListEntityDTOKey(event.getSourceElement().getId(), element.getIndex()),
+                                event);
+                        break;
+                    case REMOVE:
+                        listValues.remove(new ListEntityDTOKey(event.getSourceElement().getId(), element.getIndex()));
+                        break;
+                    case EDIT:
+                        listValues.put(new ListEntityDTOKey(event.getSourceElement().getId(), element.getIndex()),
+                                event);
+                        break;
+                    default:
+                        break;
+                    }
+                } else {
+                    this.values.add(wrapEvent(event));
+                }
             }
         }
 
-        // Adding the edit events to the list
-        for(final Map.Entry<FlexibleElementDTO, Serializable> edit : edits.entrySet()) {
-            final ValueEventWrapper wrapper = new ValueEventWrapper();
-            wrapper.setSourceElement(edit.getKey());
-            wrapper.setValue(edit.getValue());
-            wrapper.setChangeType(ValueEvent.ChangeType.EDIT);
-            this.values.add(wrapper);
+        for (ValueEvent event : basicValues.values()) {
+            this.values.add(wrapEvent(event));
+        }
+
+        // Store each event for new elements as an 'add' event with the last
+        // state of the element.
+        for (ValueEvent event : listValues.values()) {
+            this.values.add(wrapEvent(new ValueEvent(event.getSourceElement(), event.getValue(), ChangeType.ADD)));
         }
     }
 
@@ -67,13 +98,74 @@ public class UpdateProject implements Command<VoidResult> {
 
     public void setValues(List<ValueEvent> values) {
         this.values.clear();
+        this.values.addAll(wrapEvents(values));
+    }
 
-        for(ValueEvent value : values) {
-            final ValueEventWrapper wrapper = new ValueEventWrapper();
-            wrapper.setSourceElement(value.getSourceElement());
-            wrapper.setValue(value.getValue());
-            wrapper.setValues(value.getValues());
-            this.values.add(wrapper);
+    /**
+     * Wraps a list of events.
+     * 
+     * @param events
+     *            The events list.
+     * @return The events wrapped list.
+     */
+    private static List<ValueEventWrapper> wrapEvents(List<ValueEvent> events) {
+        final ArrayList<ValueEventWrapper> wrappers = new ArrayList<ValueEventWrapper>();
+        for (ValueEvent event : events) {
+            wrappers.add(wrapEvent(event));
         }
+        return wrappers;
+    }
+
+    /**
+     * Wraps a event.
+     * 
+     * @param event
+     *            The event.
+     * @return The event wrapped.
+     */
+    private static ValueEventWrapper wrapEvent(ValueEvent event) {
+        final ValueEventWrapper wrapper = new ValueEventWrapper();
+        wrapper.setSourceElement(event.getSourceElement());
+        wrapper.setValue(event.getValue());
+        wrapper.setChangeType(event.getChangeType());
+        return wrapper;
+    }
+
+    private static class ListEntityDTOKey {
+
+        private int flexibleElement;
+        private int index;
+
+        public ListEntityDTOKey(int flexibleElement, int index) {
+            super();
+            this.flexibleElement = flexibleElement;
+            this.index = index;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + flexibleElement;
+            result = prime * result + index;
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            ListEntityDTOKey other = (ListEntityDTOKey) obj;
+            if (flexibleElement != other.flexibleElement)
+                return false;
+            if (index != other.index)
+                return false;
+            return true;
+        }
+
     }
 }

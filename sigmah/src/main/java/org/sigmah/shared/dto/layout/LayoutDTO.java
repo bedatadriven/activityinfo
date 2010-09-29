@@ -68,7 +68,7 @@ public class LayoutDTO extends BaseModelData implements EntityDTO {
 
     public Widget getWidget() {
         final Grid grid = new Grid(getRowsCount(), getColumnsCount());
-        grid.setStyleName("sigmah-layout");
+        grid.setStyleName("flexibility-layout");
         return grid;
     }
 

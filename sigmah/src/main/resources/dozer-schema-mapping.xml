@@ -349,27 +349,6 @@
 		</field>
 	</mapping>
 
-	<!-- FilesListValue/FilesListValueDTO Mapping -->
-	<mapping wildcard="true">
-		<class-a>org.sigmah.shared.domain.value.FilesListValue</class-a>
-		<class-b>org.sigmah.shared.dto.value.FilesListValueDTO</class-b>
-
-		<field>
-			<a>id.idFile</a>
-			<b>id</b>
-		</field>
-
-		<field>
-			<a>id.idList</a>
-			<b>idList</b>
-		</field>
-
-		<field>
-			<a>file</a>
-			<b>fileDTO</b>
-		</field>
-	</mapping>
-
 	<!-- File/FileDTO Mapping -->
 	<mapping wildcard="true">
 		<class-a>org.sigmah.shared.domain.value.File</class-a>
