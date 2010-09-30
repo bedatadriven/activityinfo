@@ -12,6 +12,7 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.ui.FlexibleGrid;
 import org.sigmah.shared.command.result.ValueResult;
 import org.sigmah.shared.command.result.ValueResultUtils;
+import org.sigmah.shared.dto.category.CategoryTypeDTO;
 import org.sigmah.shared.dto.element.handler.RequiredValueEvent;
 import org.sigmah.shared.dto.element.handler.ValueEvent;
 
@@ -59,6 +60,15 @@ public class QuestionElementDTO extends FlexibleElementDTO {
 
     public void setIsMultiple(Boolean isMultiple) {
         set("isMultiple", isMultiple);
+    }
+
+    // Question category type
+    public CategoryTypeDTO getCategoryTypeDTO() {
+        return get("categoryTypeDTO");
+    }
+
+    public void setCategoryTypeDTO(CategoryTypeDTO categoryTypeDTO) {
+        set("categoryTypeDTO", categoryTypeDTO);
     }
 
     @Override
@@ -146,6 +156,11 @@ public class QuestionElementDTO extends FlexibleElementDTO {
             }
 
             component = cp;
+        }
+
+        // If the component is a category.
+        if (getCategoryTypeDTO() != null) {
+            component.setToolTip("Cet élément est une catégorie de projet (" + getCategoryTypeDTO().getLabel() + ")");
         }
 
         return component;

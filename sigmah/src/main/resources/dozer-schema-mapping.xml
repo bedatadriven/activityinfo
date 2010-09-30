@@ -254,6 +254,11 @@
 			<a>choices</a>
 			<b>choicesDTO</b>
 		</field>
+		
+		<field>
+			<a>categoryType</a>
+			<b>categoryTypeDTO</b>
+		</field>
 	</mapping>
 
 	<!-- QuestionChoiceElement/QuestionChoiceElementDTO Mapping -->
@@ -266,6 +271,11 @@
 		<field>
 			<a>parentQuestion</a>
 			<b>parentQuestionDTO</b>
+		</field>
+		
+		<field>
+			<a>categoryElement</a>
+			<b>categoryElementDTO</b>
 		</field>
 	</mapping>
 
@@ -372,6 +382,30 @@
 		<field>
 			<a>author.firstName</a>
 			<b>authorFirstName</b>
+		</field>
+	</mapping>
+
+	<!-- CategoryType/CategoryTypeDTO Mapping -->
+	<mapping wildcard="true">
+		<class-a>org.sigmah.shared.domain.category.CategoryType</class-a>
+		<class-b>org.sigmah.shared.dto.category.CategoryTypeDTO</class-b>
+
+		<field>
+			<a>elements</a>
+			<b>categoryElementsDTO</b>
+		</field>
+	</mapping>
+
+	<!-- CategoryElement/CategoryElementDTO Mapping -->
+	<mapping wildcard="true">
+		<class-a>org.sigmah.shared.domain.category.CategoryElement
+		</class-a>
+		<class-b>org.sigmah.shared.dto.category.CategoryElementDTO
+		</class-b>
+
+		<field>
+			<a>parentType</a>
+			<b>parentCategoryDTO</b>
 		</field>
 	</mapping>
 

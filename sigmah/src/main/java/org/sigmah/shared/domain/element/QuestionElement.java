@@ -13,6 +13,7 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import org.sigmah.shared.domain.QualityCriterion;
+import org.sigmah.shared.domain.category.CategoryType;
 
 /**
  * Question element entity.
@@ -28,6 +29,7 @@ public class QuestionElement extends FlexibleElement {
     private QualityCriterion qualityCriterion;
     private Boolean isMultiple = Boolean.FALSE;
     private List<QuestionChoiceElement> choices = new ArrayList<QuestionChoiceElement>();
+    private CategoryType categoryType;
 
     public void setQualityCriterion(QualityCriterion qualityCriterion) {
         this.qualityCriterion = qualityCriterion;
@@ -56,6 +58,16 @@ public class QuestionElement extends FlexibleElement {
 
     public void setIsMultiple(Boolean isMultiple) {
         this.isMultiple = isMultiple;
+    }
+
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "id_category_type", nullable = true)
+    public CategoryType getCategoryType() {
+        return categoryType;
+    }
+
+    public void setCategoryType(CategoryType categoryType) {
+        this.categoryType = categoryType;
     }
 
     @Override

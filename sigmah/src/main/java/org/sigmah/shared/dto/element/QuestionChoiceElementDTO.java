@@ -6,6 +6,7 @@
 package org.sigmah.shared.dto.element;
 
 import org.sigmah.shared.dto.EntityDTO;
+import org.sigmah.shared.dto.category.CategoryElementDTO;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
@@ -41,7 +42,9 @@ public class QuestionChoiceElementDTO extends BaseModelData implements EntityDTO
     }
 
     public void setLabel(String label) {
-        set("label", label);
+        if (getCategoryElementDTO() == null) {
+            set("label", label);
+        }
     }
 
     // Question choice sort order
@@ -60,6 +63,16 @@ public class QuestionChoiceElementDTO extends BaseModelData implements EntityDTO
 
     public void setParentQuestionDTO(QuestionElementDTO parentQuestionDTO) {
         set("parentQuestionDTO", parentQuestionDTO);
+    }
+
+    // Question category type
+    public CategoryElementDTO getCategoryElementDTO() {
+        return get("categoryElementDTO");
+    }
+
+    public void setCategoryElementDTO(CategoryElementDTO categoryElementDTO) {
+        set("categoryElementDTO", categoryElementDTO);
+        set("label", categoryElementDTO.getLabel());
     }
 
     @Override

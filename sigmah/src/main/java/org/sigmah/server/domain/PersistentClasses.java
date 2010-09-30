@@ -30,6 +30,8 @@ import org.sigmah.shared.domain.Site;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.UserDatabase;
 import org.sigmah.shared.domain.UserPermission;
+import org.sigmah.shared.domain.category.CategoryElement;
+import org.sigmah.shared.domain.category.CategoryType;
 import org.sigmah.shared.domain.element.CheckboxElement;
 import org.sigmah.shared.domain.element.FlexibleElement;
 import org.sigmah.shared.domain.element.MessageElement;
@@ -86,6 +88,8 @@ public class PersistentClasses {
             PrivacyLevel.class,
             LogFrameRow.class,
             LogFrameRowGroup.class,
-            LogFrame.class
+            LogFrame.class,
+            CategoryElement.class,
+            CategoryType.class
     };
 }
