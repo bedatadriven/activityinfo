@@ -89,7 +89,7 @@ public class FileUploadServlet extends HttpServlet {
      * </li>
      * </ul> <br/>
      * <br/>
-     * <li><b>Adds e new version to an existing file</b>.<br/>
+     * <li><b>Adds a new version to an existing file</b>.<br/>
      * The following parameters must be specified in the HTTP request:
      * <ul>
      * <li>{@link FileUploadUtils#DOCUMENT_ID} : (required) the existing file
@@ -98,6 +98,7 @@ public class FileUploadServlet extends HttpServlet {
      * <li>{@link FileUploadUtils#DOCUMENT_AUTHOR} : (required) the adder.</li>
      * <li>{@link FileUploadUtils#DOCUMENT_VERSION} : (required) the version
      * number.</li>
+     * <li>{@link FileUploadUtils#DOCUMENT_COMMENTS} : (optional) the comments.</li>
      * </ul>
      * </ol>
      * <br/>

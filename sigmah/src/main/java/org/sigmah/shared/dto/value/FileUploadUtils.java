@@ -90,6 +90,11 @@ public final class FileUploadUtils {
     public static final String DOCUMENT_PROJECT = "project";
 
     /**
+     * Comments of a version.
+     */
+    public static final String DOCUMENT_COMMENTS = "comments";
+
+    /**
      * Parses the HTTP response from the server after a file upload. The
      * response contains the id of the just saved file if the upload worked
      * fine, or an error code if it didn't.
@@ -117,9 +122,9 @@ public final class FileUploadUtils {
      * @return If the code can be considered as an error.
      */
     public static boolean isError(String code) {
-    	if (code == null) {
-    		return true;
-    	} else if (TOO_BIG_DOC_ERROR_CODE.equals(code)) {
+        if (code == null) {
+            return true;
+        } else if (TOO_BIG_DOC_ERROR_CODE.equals(code)) {
             return true;
         } else if (EMPTY_DOC_ERROR_CODE.equals(code)) {
             return true;

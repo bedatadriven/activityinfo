@@ -48,6 +48,7 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.Encoding;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.Method;
 import com.extjs.gxt.ui.client.widget.form.HiddenField;
+import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -61,6 +62,8 @@ import com.extjs.gxt.ui.client.widget.layout.FlowData;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
+import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
@@ -638,6 +641,11 @@ public class FilesListElementDTO extends FlexibleElementDTO {
          */
         private final Button uploadButton;
 
+        /**
+         * The comments area.
+         */
+        private final TextArea commentsArea;
+
         public VersionUploadWindow() {
 
             // Creates the upload field and upload button.
@@ -662,6 +670,25 @@ public class FilesListElementDTO extends FlexibleElementDTO {
             uploadPanel.add(uploadField, flex);
             uploadPanel.add(uploadButton);
 
+            final ContentPanel commentsPanel = new ContentPanel();
+            commentsPanel.setBodyBorder(false);
+            commentsPanel.setHeaderVisible(false);
+            commentsPanel.setLayout(new VBoxLayout());
+            commentsPanel.setHeight(75);
+
+            final Label commentsLabel = new Label(I18N.CONSTANTS.flexibleElementFilesListComments());
+            commentsLabel.addStyleName("flexibility-element-label");
+            commentsLabel.setLabelFor("VersionUploadWindowCommentsArea-input");
+
+            commentsArea = new TextArea();
+            commentsArea.setId("VersionUploadWindowCommentsArea");
+            commentsArea.setName(FileUploadUtils.DOCUMENT_COMMENTS);
+            commentsArea.setWidth("100%");
+            commentsArea.setHeight(55);
+
+            commentsPanel.setTopComponent(commentsLabel);
+            commentsPanel.add(commentsArea, new VBoxLayoutData(new Margins(3, 0, 0, 0)));
+
             uploadFormPanel = new FormPanel();
             uploadFormPanel.setBodyBorder(false);
             uploadFormPanel.setHeaderVisible(false);
@@ -683,6 +710,7 @@ public class FilesListElementDTO extends FlexibleElementDTO {
             emptyHidden.setName(FileUploadUtils.CHECK_EMPTY);
 
             uploadFormPanel.add(uploadPanel);
+            uploadFormPanel.add(commentsPanel);
             uploadFormPanel.add(authorHidden);
             uploadFormPanel.add(idHidden);
             uploadFormPanel.add(versionHidden);
@@ -772,11 +800,11 @@ public class FilesListElementDTO extends FlexibleElementDTO {
             mainPanel.setLayout(new FlowLayout());
 
             mainPanel.add(propertiesPanel);
-            mainPanel.add(uploadFormPanel, new FlowData(new Margins(3, 2, 3, 2)));
+            mainPanel.add(uploadFormPanel, new FlowData(new Margins(3, 5, 3, 5)));
 
             // Builds window.
             window = new Window();
-            window.setSize(500, 115);
+            window.setSize(500, 180);
             window.setPlain(true);
             window.setModal(true);
             window.setBlinkModal(true);
@@ -804,6 +832,7 @@ public class FilesListElementDTO extends FlexibleElementDTO {
             nextVersionNumber = this.file.getLastVersion().getVersionNumber() + 1;
 
             numberLabel.setText("#" + String.valueOf(nextVersionNumber));
+            commentsArea.reset();
             window.setHeading(I18N.CONSTANTS.flexibleElementFilesListUploadVersion());
 
             window.show();

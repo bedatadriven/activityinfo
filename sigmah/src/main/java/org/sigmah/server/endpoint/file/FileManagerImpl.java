@@ -281,7 +281,9 @@ public class FileManagerImpl implements FileManager {
             log.debug("[save] Found file: " + file.getName() + ".");
         }
 
-        file.addVersion(createVersion(versionNumber, authorId, content));
+        final FileVersion version = createVersion(versionNumber, authorId, content);
+        version.setComments(properties.get(FileUploadUtils.DOCUMENT_COMMENTS));
+        file.addVersion(version);
 
         em.persist(file);
 
