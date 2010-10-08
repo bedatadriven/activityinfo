@@ -7,6 +7,7 @@ package org.sigmah.client.map;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.ajaxloader.client.AjaxLoader;
+import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.maps.client.Maps;
 import com.google.gwt.user.client.Timer;
@@ -24,7 +25,6 @@ import java.util.List;
 public class MapApiLoader {
     private static final int TIMEOUT = 10 * 1000;
     // TODO: externalize this, should come from page
-    private static final String API_KEY = "ABQIAAAAHxDe2DM8fTqR3KT6JA3uSxQowpcadhvcZvF-AZHbBConS0qRQRSyDoOLQrw76pJeJNUXt2g-yC8FAg";
     private static final String API_VERSION = "2";
     private static final boolean USING_SENSOR = false;
 
@@ -56,6 +56,10 @@ public class MapApiLoader {
         }
     }
 
+    public static String getApiKey() {
+        return Dictionary.getDictionary("GoogleMapsAPI").get("key");
+    }
+
     private static void startLoad() {
         loadInProgress = true;
         waitingMonitors = new ArrayList<AsyncMonitor>();
@@ -64,7 +68,7 @@ public class MapApiLoader {
         AjaxLoader.AjaxLoaderOptions options = AjaxLoader.AjaxLoaderOptions.newInstance();
         options.setLanguage(LocaleInfo.getCurrentLocale().getLocaleName());
 
-        Maps.loadMapsApi(API_KEY, API_VERSION, USING_SENSOR, options, new Runnable() {
+        Maps.loadMapsApi(getApiKey(), API_VERSION, USING_SENSOR, options, new Runnable() {
             @Override
             public void run() {
                 onApiLoaded();

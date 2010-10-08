@@ -50,6 +50,9 @@
             authToken: "${auth.id}",
             email: "${auth.user.email}"
         };
+        var GoogleMapsAPI = {
+            key: "ABQIAAAAHxDe2DM8fTqR3KT6JA3uSxQowpcadhvcZvF-AZHbBConS0qRQRSyDoOLQrw76pJeJNUXt2g-yC8FAg"
+        };
         <#if offline == true>
         function disableOffline() {
             document.cookie = "offline=false;expires=Thu, 01-Jan-1970 00:00:01 GMT";
