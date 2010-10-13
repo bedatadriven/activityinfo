@@ -1,7 +1,5 @@
 package org.sigmah.shared.report.model;
 
-import java.util.List;
-
 /*
  * All Sigmah code is released under the GNU General Public License v3
  * See COPYRIGHT.txt and LICENSE.txt.
@@ -11,30 +9,24 @@ import java.util.List;
 public class AttributeGroupDimension extends Dimension {
 	
 	private int attributeGroupId;
-	private List <Integer> attributeIds;
-	
-	public AttributeGroupDimension() {
+
+    public AttributeGroupDimension() {
 		super();
 	}
+
+    public AttributeGroupDimension(int groupId) {
+        super( DimensionType.AttributeGroup );
+        this.attributeGroupId = groupId;
+    }
 	
-	public AttributeGroupDimension(String name, int groupId, List< Integer > attributeIds)  {
+	public AttributeGroupDimension(String caption, int groupId)  {
 		super( DimensionType.AttributeGroup);
 		this.attributeGroupId = groupId;
-		this.attributeIds = attributeIds;
-		set("caption", name);
+		set("caption", caption);
 		set("id", "attrs_dim" + groupId);
-		
     }
 
-	public List<Integer> getAttributeIds() {
-		return attributeIds;
-	}
-
-	public void setAttributeIds(List<Integer> attributeIds) {
-		this.attributeIds = attributeIds;
-	}
-
-	public int getAttributeGroupId() {
+    public int getAttributeGroupId() {
 		return attributeGroupId;
 	}
 

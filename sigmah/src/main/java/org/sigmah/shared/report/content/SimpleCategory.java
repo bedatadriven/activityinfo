@@ -8,7 +8,7 @@ package org.sigmah.shared.report.content;
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class SimpleCategory implements DimensionCategory {
+public class SimpleCategory implements LabeledDimensionCategory {
 
     private String label;
 
@@ -50,5 +50,12 @@ public class SimpleCategory implements DimensionCategory {
     @Override
     public int hashCode() {
         return label != null ? label.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return "SimpleCategory{" +
+                "label='" + label + '\'' +
+                '}';
     }
 }

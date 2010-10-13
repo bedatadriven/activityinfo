@@ -82,5 +82,10 @@ public class EntityCategory implements LabeledDimensionCategory {
         int result = id;
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "EntityCategory{" + id +  " '" + label + "'}";
+    }
 }
 

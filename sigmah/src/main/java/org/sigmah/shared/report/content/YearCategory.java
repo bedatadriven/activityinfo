@@ -54,4 +54,9 @@ public class YearCategory implements DimensionCategory {
     public int hashCode() {
         return year;
     }
+
+    @Override
+    public String toString() {
+        return "YearCategory{" + year + '}';
+    }
 }

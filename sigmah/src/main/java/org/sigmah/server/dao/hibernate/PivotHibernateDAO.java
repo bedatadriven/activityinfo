@@ -13,6 +13,7 @@ import org.hibernate.jdbc.Work;
 import org.sigmah.server.dao.PivotDAO;
 import org.sigmah.server.domain.AggregationMethod;
 import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.dao.SQLDialect;
 import org.sigmah.shared.report.content.*;
 import org.sigmah.shared.report.model.*;
 
@@ -42,11 +43,11 @@ public class PivotHibernateDAO implements PivotDAO {
     public PivotHibernateDAO(EntityManager em, SQLDialect dialect) {
         this.em = em;
         this.dialect = dialect;
-    }	 
+    }
 
     /**
      * Internal interface to a group of objects that are responsible for
-     * bundling results from the SQL ResultSet object into
+     * bundling results from the SQL ResultSet object into a Bucket
      */
     private interface Bundler {
         public void bundle(ResultSet rs, Bucket bucket) throws SQLException;
@@ -75,7 +76,7 @@ public class PivotHibernateDAO implements PivotDAO {
             bucket.setDoubleValue((double) rs.getInt(1));
         }
     }
-    
+
     private static class SimpleBundler implements Bundler {
         private final Dimension dimension;
         private final int labelColumnIndex;
@@ -90,7 +91,7 @@ public class PivotHibernateDAO implements PivotDAO {
         }
     }
 
-   
+
     private static class AttributeBundler implements Bundler {
         private final Dimension dimension;
         private final int labelColumnIndex;
@@ -103,10 +104,10 @@ public class PivotHibernateDAO implements PivotDAO {
         }
 
         public void bundle(ResultSet rs, Bucket bucket) throws SQLException {
-  
+
         	StringBuilder buff = new StringBuilder();
         	for (int i = labelColumnIndex; i < labelColumnIndex + attributeCount; i++) {
-        		
+
         		if (rs.getString(i) != null && !"null".equals(rs.getString(i))) {
         			if (buff.length() > 0) {
         				buff.append(", ");
@@ -278,7 +279,7 @@ public class PivotHibernateDAO implements PivotDAO {
         groupBy.append("Indicator.IndicatorId");
 
         StringBuilder where = new StringBuilder(
-                "Indicator.Aggregation=2 and Period.Monitoring=0 ");
+                "Indicator.Aggregation=2 and not Period.Monitoring ");
 
 
         buildAndExecuteRestOfQuery(userId, filter, dimensions, buckets, from, columns, where, groupBy, 2,
@@ -336,18 +337,26 @@ public class PivotHibernateDAO implements PivotDAO {
                 DateDimension dateDim = (DateDimension) dimension;
 
                 if (dateDim.getUnit() == DateUnit.YEAR) {
-                    dimColumns.append(", YEAR(Period.Date2) ");
+                    dimColumns.append(", ")
+                              .append(dialect.yearFunction("Period.Date2"));
+
                     bundlers.add(new YearBundler(dimension, nextColumnIndex));
                     nextColumnIndex += 1;
 
                 } else if (dateDim.getUnit() == DateUnit.MONTH) {
-                    dimColumns.append(", YEAR(Period.Date2), MONTH(Period.Date2)");
+                    dimColumns.append(", ")
+                              .append(dialect.yearFunction("Period.Date2"))
+                              .append(", ")
+                              .append(dialect.monthFunction("Period.Date2"));
+
                     bundlers.add(new MonthBundler(dimension, nextColumnIndex));
                     nextColumnIndex += 2;
 
                 } else if (dateDim.getUnit() == DateUnit.QUARTER) {
-                    dimColumns.append(", YEAR(Period.Date2), ")
-                            .append(dialect.formatQuarterFunction("Period.Date2"));
+                    dimColumns.append(", ")
+                              .append(dialect.yearFunction("Period.Date2"))
+                              .append(", ")
+                              .append(dialect.quarterFunction("Period.Date2"));
                     bundlers.add(new QuarterBundler(nextColumnIndex, dimension));
                     nextColumnIndex += 2;
                 }
@@ -372,19 +381,19 @@ public class PivotHibernateDAO implements PivotDAO {
                 nextColumnIndex += 2;
             } else if (dimension instanceof AttributeGroupDimension) {
             	AttributeGroupDimension attrGroupDim = (AttributeGroupDimension) dimension;
-            	List < Integer > attributeIds = attrGroupDim.getAttributeIds();
+            	List < Integer > attributeIds = queryAttributeIds(attrGroupDim);
             	int count = 0;
             	for (Integer attributeId: attributeIds) {
             		String tableAlias = "Attribute" + attributeId;
-                	
-                	from.append("LEFT JOIN " + 
+
+                	from.append("LEFT JOIN " +
                 			"(SELECT AttributeValue.SiteId, Attribute.Name as " + tableAlias + "val " +
                 			"FROM AttributeValue " +
                 			"LEFT JOIN  Attribute ON (Attribute.AttributeId = AttributeValue.AttributeId) " +
-                			"WHERE AttributeValue.value > 0 AND Attribute.AttributeId = ")
+                			"WHERE AttributeValue.value AND Attribute.AttributeId = ")
                 			.append(attributeId).append(") AS ").append(tableAlias).append(" ON (")
                 			.append(tableAlias).append(".SiteId = Site.SiteId)");
-                	
+
                 	dimColumns.append(", ").append(tableAlias).append(".").append(tableAlias).append("val ");
                 	count++;
             	}
@@ -392,10 +401,10 @@ public class PivotHibernateDAO implements PivotDAO {
 
             	bundlers.add(new AttributeBundler(dimension, nextColumnIndex, count));
             	nextColumnIndex += count;
-            	
+
             }
         }
-		
+
         columns.append(dimColumns);
         /* add the dimensions to our column and group by list */
         groupBy.append(dimColumns);
@@ -463,11 +472,17 @@ public class PivotHibernateDAO implements PivotDAO {
                     for (Bundler bundler : bundlers) {
                         bundler.bundle(rs, bucket);
                     }
-                  
+
                     buckets.add(bucket);
                 }
             }
         });
+    }
+
+    private List<Integer> queryAttributeIds(AttributeGroupDimension attrGroupDim) {
+        return em.createQuery("select a.id from Attribute a where a.group.id=?1")
+                .setParameter(1, attrGroupDim.getAttributeGroupId())
+                .getResultList();
     }
 
     private void appendVisibilityFilter(StringBuilder where, int userId) {

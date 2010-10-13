@@ -68,4 +68,9 @@ public class QuarterCategory implements DimensionCategory {
         result = 31 * result + quarter;
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "QuarterCategory{" + year + "Q" + quarter + "}";
+    }
 }

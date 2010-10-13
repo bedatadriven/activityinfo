@@ -63,4 +63,9 @@ public class MonthCategory implements DimensionCategory {
     public int hashCode() {
         return year * 100 + month;
     }
+
+    @Override
+    public String toString() {
+        return "MonthCategory{" + year + "/" + month + "}";
+    }
 }

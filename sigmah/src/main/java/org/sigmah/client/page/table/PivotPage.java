@@ -5,10 +5,25 @@
 
 package org.sigmah.client.page.table;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.*;
+import com.extjs.gxt.ui.client.dnd.DND;
+import com.extjs.gxt.ui.client.dnd.ListViewDragSource;
+import com.extjs.gxt.ui.client.dnd.ListViewDropTarget;
+import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.StoreEvent;
+import com.extjs.gxt.ui.client.store.StoreListener;
+import com.extjs.gxt.ui.client.store.TreeStore;
+import com.extjs.gxt.ui.client.util.Margins;
+import com.extjs.gxt.ui.client.util.Padding;
+import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.layout.*;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Inject;
 import org.sigmah.client.AppEvents;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
@@ -27,62 +42,12 @@ import org.sigmah.client.page.table.drilldown.DrillDownGrid;
 import org.sigmah.client.util.DateUtilGWTImpl;
 import org.sigmah.client.util.state.IStateManager;
 import org.sigmah.shared.command.GetSchema;
-import org.sigmah.shared.dto.ActivityDTO;
-import org.sigmah.shared.dto.AdminEntityDTO;
-import org.sigmah.shared.dto.AdminLevelDTO;
-import org.sigmah.shared.dto.AttributeDTO;
-import org.sigmah.shared.dto.AttributeGroupDTO;
-import org.sigmah.shared.dto.CountryDTO;
-import org.sigmah.shared.dto.IndicatorDTO;
-import org.sigmah.shared.dto.PartnerDTO;
-import org.sigmah.shared.dto.SchemaDTO;
-import org.sigmah.shared.dto.UserDatabaseDTO;
-import org.sigmah.shared.report.model.AdminDimension;
-import org.sigmah.shared.report.model.AttributeGroupDimension;
-import org.sigmah.shared.report.model.DateDimension;
-import org.sigmah.shared.report.model.DateUnit;
-import org.sigmah.shared.report.model.Dimension;
-import org.sigmah.shared.report.model.DimensionFolder;
-import org.sigmah.shared.report.model.DimensionType;
-import org.sigmah.shared.report.model.PivotTableElement;
+import org.sigmah.shared.dto.*;
+import org.sigmah.shared.report.model.*;
 
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.BaseTreeLoader;
-import com.extjs.gxt.ui.client.data.DataProxy;
-import com.extjs.gxt.ui.client.data.DataReader;
-import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.data.ModelKeyProvider;
-import com.extjs.gxt.ui.client.data.ModelStringProvider;
-import com.extjs.gxt.ui.client.data.TreeLoader;
-import com.extjs.gxt.ui.client.dnd.DND;
-import com.extjs.gxt.ui.client.dnd.ListViewDragSource;
-import com.extjs.gxt.ui.client.dnd.ListViewDropTarget;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.CheckChangedEvent;
-import com.extjs.gxt.ui.client.event.CheckChangedListener;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.StoreEvent;
-import com.extjs.gxt.ui.client.store.StoreListener;
-import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.util.Margins;
-import com.extjs.gxt.ui.client.util.Padding;
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.ListView;
-import com.extjs.gxt.ui.client.widget.Text;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
-import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -541,12 +506,7 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 						// attribute groups
 						ActivityDTO act = schema.getActivityById(folder.getId());
 						for (AttributeGroupDTO attrGroup : act.getAttributeGroups()) {
-							ArrayList<Integer> list = new ArrayList<Integer>();
-							for (AttributeDTO attr: attrGroup.getAttributes()) {
-								list.add(new Integer(attr.getId()));
-							}
-							
-							dims.add(new AttributeGroupDimension(attrGroup.getName(), attrGroup.getId(), list));
+							dims.add(new AttributeGroupDimension(attrGroup.getName(), attrGroup.getId()));
 						}
 
 					} else {

@@ -6,6 +6,7 @@
 package org.sigmah.server.dao.hibernate;
 
 import org.dbunit.DatabaseUnitException;
+import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
@@ -79,7 +80,7 @@ public class LoadDataSet extends Statement {
 
     private void removeAllRows() {
         EntityManager em = emf.createEntityManager();
-        DatabaseCleaner cleaner = new DatabaseCleaner(em);
+        DatabaseCleaner cleaner = new DatabaseCleaner(em, SQLDialectProvider.from(em));
         cleaner.clean();
         em.close();
     }
@@ -112,7 +113,7 @@ public class LoadDataSet extends Statement {
         } else if(dbName.equals("H2")) {
             return new H2Connection(connection, null);
         } else {
-            throw new Error("Cannot create dbunit connection for database with productName = " + dbName);
+            return new DatabaseConnection(connection);
         }
     }
 }

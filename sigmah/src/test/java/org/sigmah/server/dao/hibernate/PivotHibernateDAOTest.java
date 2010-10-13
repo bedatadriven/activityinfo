@@ -15,6 +15,7 @@ import org.sigmah.server.dao.PivotDAO;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.report.content.DimensionCategory;
 import org.sigmah.shared.report.content.EntityCategory;
+import org.sigmah.shared.report.content.LabeledDimensionCategory;
 import org.sigmah.shared.report.content.QuarterCategory;
 import org.sigmah.shared.report.model.*;
 import org.sigmah.test.InjectionSupport;
@@ -28,7 +29,7 @@ import static org.junit.Assert.assertEquals;
 @RunWith(InjectionSupport.class)
 @Modules({MockHibernateModule.class})
 @OnDataSet("/dbunit/sites-simple1.db.xml")
-public class PivotDAOImplTest {
+public class PivotHibernateDAOTest {
 
 
     private PivotDAO dao;
@@ -39,10 +40,13 @@ public class PivotDAOImplTest {
     private AdminDimension territoireDim;
     private List<PivotDAO.Bucket> buckets;
     private Dimension partnerDim;
+
+
     private static final int OWNER_USER_ID = 1;
+    private static final int NB_BENEFICIARIES_ID = 1;
 
     @Inject
-    public PivotDAOImplTest(PivotHibernateDAO dao) {
+    public PivotHibernateDAOTest(PivotHibernateDAO dao) {
         this.dao = dao;
     }
 
@@ -64,9 +68,9 @@ public class PivotDAOImplTest {
     @Test
     public void testIndicatorFilter() {
         withIndicatorAsDimension();
-        filter.addRestriction(DimensionType.Database, OWNER_USER_ID);
-        filter.addRestriction(DimensionType.Activity, OWNER_USER_ID);
-        filter.addRestriction(DimensionType.Indicator, OWNER_USER_ID);
+        filter.addRestriction(DimensionType.Database, 1);
+        filter.addRestriction(DimensionType.Activity, 1);
+        filter.addRestriction(DimensionType.Indicator, 1);
         filter.addRestriction(DimensionType.Partner, 2);
 
         execute();
@@ -78,7 +82,7 @@ public class PivotDAOImplTest {
     public void testAdminFilter() {
         withIndicatorAsDimension();
         filter.addRestriction(DimensionType.AdminLevel, 11);
-        filter.addRestriction(DimensionType.Indicator, OWNER_USER_ID);
+        filter.addRestriction(DimensionType.Indicator, 1);
 
         execute();
 
@@ -90,7 +94,7 @@ public class PivotDAOImplTest {
 
         withIndicatorAsDimension();
         withPartnerAsDimension();
-        filter.addRestriction(DimensionType.Indicator, OWNER_USER_ID);
+        filter.addRestriction(DimensionType.Indicator, 1);
 
         execute();
 
@@ -99,22 +103,29 @@ public class PivotDAOImplTest {
         assertThat().forPartner(2).thereIsOneBucketWithValue(10000).andItsPartnerLabelIs("Solidarites");
     }
 
-/*
     @Test
     public void testAttributePivot() {
 
         withIndicatorAsDimension();
         withPartnerAsDimension();
-        filter.addRestriction(DimensionType.Indicator, OWNER_USER_ID);
+        withAttributeGroupDim(1);
+
+        filter.addRestriction(DimensionType.Indicator, 1);
 
         execute();
 
-        assertThat().thereAre(2).buckets();
-        assertThat().forPartner(OWNER_USER_ID).thereIsOneBucketWithValue(5100).andItsPartnerLabelIs("NRC");
-        assertThat().forPartner(2).thereIsOneBucketWithValue(10000).andItsPartnerLabelIs("Solidarites");
+        assertThat().thereAre(3).buckets();
+        assertThat().forAttributeGroupLabeled(1, "Catastrophe Naturelle, Deplacement")
+                        .thereIsOneBucketWithValue(3600);
+
+        assertThat().forAttributeGroupLabeled(1, "Deplacement")
+                        .thereIsOneBucketWithValue(1500);
+
+        assertThat().forAttributeGroupLabeled(1, "Catastrophe Naturelle")
+                        .thereIsOneBucketWithValue(10000);
+
     }
-*/
-    
+
     
     @Test
     public void testAdminPivot() {
@@ -122,7 +133,7 @@ public class PivotDAOImplTest {
         withIndicatorAsDimension();
         withAdminDimension(provinceDim);
         withAdminDimension(territoireDim);
-        filter.addRestriction(DimensionType.Indicator, OWNER_USER_ID);
+        filter.addRestriction(DimensionType.Indicator, 1);
 
         execute();
 
@@ -132,24 +143,6 @@ public class PivotDAOImplTest {
                 .with(provinceDim).label("Sud Kivu")
                 .with(territoireDim).label("Walungu");
         assertThat().forProvince(4).thereIsOneBucketWithValue(10000);
-
-
-//        List<PivotDAO.Bucket> matches = findBucketsByCategory(buckets, provinceDim,
-//                new EntityCategory(2, null));
-//        assertEquals(2, matches.size());
-//
-//        List<PivotDAO.Bucket> subMatches = findBucketsByCategory(matches, territoireDim,
-//                new EntityCategory(11, null));
-//        assertEquals(1, subMatches.size());
-//        assertEquals(3600, (int)subMatches.get(0).doubleValue());
-//        assertEquals("Sud Kivu", ((EntityCategory) subMatches.get(0).getCategory(provinceDim)).getLabel());
-//        assertEquals("Walungu", ((EntityCategory) subMatches.get(0).getCategory(territoireDim)).getLabel());
-//
-//
-//        matches = findBucketsByCategory(buckets, provinceDim,
-//                       new EntityCategory(4, null));
-//       assertEquals(1, matches.size());
-//       assertEquals(10000, (int)matches.get(0).doubleValue());
     }
 
 
@@ -161,7 +154,7 @@ public class PivotDAOImplTest {
 
         execute();
 
-        int expectedCount = OWNER_USER_ID;
+        int expectedCount = 1;
         assertBucketCount(expectedCount);
         assertEquals(3, (int) buckets.get(0).doubleValue());
 
@@ -176,14 +169,14 @@ public class PivotDAOImplTest {
 
         withIndicatorAsDimension();
 
-        filter.addRestriction(DimensionType.Indicator, OWNER_USER_ID);
+        filter.addRestriction(DimensionType.Indicator, 1);
         filter.addRestriction(DimensionType.Indicator, 2);
 
         List<PivotDAO.Bucket> buckets = dao.aggregate(OWNER_USER_ID, filter, dimensions);
 
         assertEquals(2, buckets.size());
 
-        PivotDAO.Bucket indicator1 = findBucketsByCategory(buckets, indicatorDim, new EntityCategory(OWNER_USER_ID)).get(0);
+        PivotDAO.Bucket indicator1 = findBucketsByCategory(buckets, indicatorDim, new EntityCategory(1)).get(0);
         PivotDAO.Bucket indicator2 = findBucketsByCategory(buckets, indicatorDim, new EntityCategory(2)).get(0);
 
         EntityCategory cat1 = (EntityCategory) indicator1.getCategory(indicatorDim);
@@ -202,7 +195,7 @@ public class PivotDAOImplTest {
 
         List<PivotDAO.Bucket> buckets = dao.aggregate(OWNER_USER_ID, new Filter(), dimensions);
 
-        assertEquals(OWNER_USER_ID, buckets.size());
+        assertEquals(1, buckets.size());
         assertEquals(13600, (int) buckets.get(0).doubleValue());
 
     }
@@ -216,9 +209,9 @@ public class PivotDAOImplTest {
 
         Filter filter = new Filter();
 
-        List<PivotDAO.Bucket> buckets = dao.aggregate(OWNER_USER_ID, filter, dimensions);
+        List<PivotDAO.Bucket> buckets = dao.aggregate(1, filter, dimensions);
 
-        assertEquals(OWNER_USER_ID, buckets.size());
+        assertEquals(1, buckets.size());
         assertEquals(0, (int) buckets.get(0).doubleValue());
         assertEquals(5, ((EntityCategory) buckets.get(0).getCategory(this.indicatorDim)).getId());
     }
@@ -236,7 +229,7 @@ public class PivotDAOImplTest {
         List<PivotDAO.Bucket> buckets = dao.aggregate(OWNER_USER_ID, filter, dimensions);
 
         assertEquals(3, buckets.size());
-        assertEquals(1500, (int)findBucketByQuarter(buckets, 2009, OWNER_USER_ID).doubleValue());
+        assertEquals(1500, (int)findBucketByQuarter(buckets, 2009, 1).doubleValue());
         assertEquals(3600, (int)findBucketByQuarter(buckets, 2009, 2).doubleValue());
         assertEquals(10000, (int)findBucketByQuarter(buckets, 2008, 4).doubleValue());
     }
@@ -285,6 +278,10 @@ public class PivotDAOImplTest {
         dimensions.add(partnerDim);
     }
 
+    private void withAttributeGroupDim(int groupId) {
+        dimensions.add(new AttributeGroupDimension(groupId));
+    }
+
     private void execute() {
         buckets = dao.aggregate(OWNER_USER_ID, filter, dimensions);
 
@@ -294,9 +291,7 @@ public class PivotDAOImplTest {
             for (Dimension dim : bucket.dimensions()) {
                 DimensionCategory cat = bucket.getCategory(dim);
                 System.err.print("    " + dim.toString() + ": ");
-                if (cat instanceof EntityCategory) {
-                    System.err.print(((EntityCategory) cat).getId() + " '" + ((EntityCategory) cat).getLabel() + "'");
-                }
+                System.err.print(cat.toString());
                 System.err.println("  ]");
 
             }
@@ -336,6 +331,27 @@ public class PivotDAOImplTest {
             filter(territoireDim, territoireId);
             return this;
         }
+
+        public AssertionBuilder forAttributeGroupLabeled(int groupId, String label) {
+            criteria.append(" with a dimension labeled '").append(label).append("'");
+            filter(new AttributeGroupDimension(groupId), label);
+            return this;
+        }
+
+        private void filter(Dimension dim, String label) {
+            ListIterator<PivotDAO.Bucket> it = matching.listIterator();
+            while (it.hasNext()) {
+                PivotDAO.Bucket bucket = it.next();
+                DimensionCategory category = bucket.getCategory(dim);
+                if (!(category instanceof LabeledDimensionCategory) ||
+                        !((LabeledDimensionCategory) category).getLabel().equals(label)) {
+
+                    it.remove();
+
+                }
+            }
+        }
+
 
         private void filter(Dimension dim, int id) {
             ListIterator<PivotDAO.Bucket> it = matching.listIterator();

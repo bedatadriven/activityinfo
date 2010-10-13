@@ -11,7 +11,7 @@ import org.sigmah.shared.dao.SiteTableColumn;
 import org.sigmah.shared.domain.Location;
 import org.sigmah.shared.report.model.DimensionType;
 
-public class FilterCriterionBridge {
+class FilterCriterionBridge {
     /**
      * Given a filter, creates the Hibernate criteria need to call
      * {@link org.sigmah.server.dao.hibernate.SiteTableDAOHibernate}

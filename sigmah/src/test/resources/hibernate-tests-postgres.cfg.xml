@@ -9,13 +9,13 @@
 <hibernate-configuration>
     <session-factory>
 
-        <property name="dialect">org.hibernate.dialect.H2Dialect</property>
-        <property name="connection.driver_class">org.h2.Driver</property>
-        <property name="connection.username">sa</property>
-        <property name="connection.password"></property>
-        <property name="connection.url">jdbc:h2:mem:activityinfo;IGNORECASE=TRUE</property>
+        <property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+        <property name="connection.driver_class">org.postgresql.Driver</property>
+        <property name="connection.username">postgres</property>
+        <property name="connection.password">adminpwd</property>
+        <property name="connection.url">jdbc:postgresql://localhost:5432/sigmah-test</property>
         <property name="show_sql">true</property>
-        <property name="hbm2ddl.auto">create</property>
+        <property name="hbm2ddl.auto">create-drop</property>
         <property name="format_sql">true</property>
     </session-factory>
 </hibernate-configuration>

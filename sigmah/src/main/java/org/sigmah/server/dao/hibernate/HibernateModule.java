@@ -12,18 +12,7 @@ import com.google.inject.Singleton;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.servlet.RequestScoped;
 import org.sigmah.server.dao.*;
-import org.sigmah.server.endpoint.gwtrpc.handler.GetSitesHandlerHibernate;
-import org.sigmah.server.util.DozerMapper;
-import org.sigmah.shared.command.handler.GetSitesHandler;
-import org.sigmah.shared.dao.ActivityDAO;
-import org.sigmah.shared.dao.AdminDAO;
-import org.sigmah.shared.dao.CountryDAO;
-import org.sigmah.shared.dao.DAO;
-import org.sigmah.shared.dao.IndicatorDAO;
-import org.sigmah.shared.dao.UserDAO;
-import org.sigmah.shared.dao.UserDatabaseDAO;
-import org.sigmah.shared.dao.UserPermissionDAO;
-import org.sigmah.shared.dto.DTOMapper;
+import org.sigmah.shared.dao.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -41,16 +30,11 @@ public class HibernateModule extends AbstractModule {
     protected void configure() {
         configureEmf();
         configureEm();
+        configureDialects();
         configureDAOs();
         configureTransactions();
-        configureEndPoints();
     }
 
-    
-    protected void configureEndPoints(){
-    	//bind(GetSitesHandler.class).to(GetSitesHandlerHibernate.class);
-    }
-    
     protected void configureEmf() {
         bind(EntityManagerFactory.class).toProvider(EntityManagerFactoryProvider.class).in(Singleton.class);
     }
@@ -65,6 +49,10 @@ public class HibernateModule extends AbstractModule {
 
         bindInterceptor(Matchers.any(), Matchers.annotatedWith(Transactional.class),
                 interceptor);
+    }
+
+    private void configureDialects() {
+        bind(SQLDialect.class).toProvider(SQLDialectProvider.class).in(Singleton.class);
     }
 
     protected void configureDAOs() {

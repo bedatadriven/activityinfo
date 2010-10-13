@@ -33,7 +33,7 @@ public class MockHibernateModule extends HibernateModule {
                     for(Class entityClass : PersistentClasses.LIST) {
                         cfg.addAnnotatedClass(entityClass);
                     }
-                    emf = cfg.configure("/hibernate.cfg.xml") //add a regular hibernate.cfg.xml
+                    emf = cfg.configure(getConfigurationFilePath()) //add a regular hibernate.cfg.xml
                             .buildEntityManagerFactory(); //Create the entity manager factory
                     System.err.println("GUICE: EntityManagerFACTORY created");
                 }
@@ -42,14 +42,16 @@ public class MockHibernateModule extends HibernateModule {
         }).in(Singleton.class);
     }
 
-    private String parseClassName(String clazzPath) {
-        int slash = clazzPath.lastIndexOf('/');
-        return clazzPath.substring(slash+1,clazzPath.length()-6);
-    }
-
-    private String getPersistenceUnitName() {
-        String specifiedUnitName = System.getProperty("activityinfo.pu");
-        return specifiedUnitName == null ? "h2-test" : specifiedUnitName;
+    private String getConfigurationFilePath() {
+        String db = "h2";
+        if(System.getProperty("testDatabase") != null) {
+            db = System.getProperty("testDatabase");
+        }
+        String cfgFile = "/hibernate-tests-" + db + ".cfg.xml";
+        if( getClass().getResourceAsStream(cfgFile) == null ) {
+            throw new Error("Cannot find hibernate cfg file for testing: " + cfgFile);
+        }
+        return cfgFile;
     }
 
     @Override
