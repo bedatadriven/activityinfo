@@ -19,7 +19,6 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import fr.ideia.gwt.client.date.Dates;
 import java.util.Arrays;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.project.Presenter;
@@ -69,7 +68,7 @@ public class ProjectCalendarPresenter implements Presenter {
 
             // Calendar
             calendar = new CalendarWidget(true, true);
-            calendar.setFirstDayOfWeek(Dates.getFirstDayOfWeek());
+            calendar.setFirstDayOfWeek(Integer.parseInt(I18N.CONSTANTS.firstDayOfWeek()));
 
             LayoutContainer calendarView = new LayoutContainer(new FitLayout());
             final BorderLayoutData calendarViewData = new BorderLayoutData(LayoutRegion.CENTER);

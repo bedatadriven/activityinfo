@@ -360,12 +360,6 @@
             <artifactId>commons-fileupload</artifactId>
             <version>1.2.2</version>
         </dependency>
-        <dependency>
-            <groupId>fr.ideia.gwt.date-format</groupId>
-            <artifactId>date-format</artifactId>
-            <version>1.0.0</version>
-            <type>jar</type>
-        </dependency>
     </dependencies>
 
     <repositories>
@@ -391,11 +385,6 @@
             <id>bedatadriven-thirdparty</id>
             <name>Bedatadriven Thirdparty</name>
             <url>http://nexus.bedatadriven.com/content/repositories/thirdparty</url>
-        </repository>
-        <repository>
-            <id>ideia-releases</id>
-            <name>Ideia Releases</name>
-            <url>http://sigmah.ideia.fr:8080/nexus/content/repositories/releases</url>
         </repository>
     </repositories>
 

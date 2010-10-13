@@ -1,7 +1,7 @@
 package org.sigmah.client.ui;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -10,8 +10,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import fr.ideia.gwt.client.date.BasicDateFormat;
-import fr.ideia.gwt.client.date.Dates;
 import java.util.ArrayList;
 import org.sigmah.shared.domain.calendar.Calendar;
 import org.sigmah.shared.domain.calendar.Event;
@@ -54,7 +52,7 @@ public class CalendarWidget extends Composite {
         WEEK(7, 1) {
             @Override
             public Date getStartDate(Date date, int firstDay) {
-                return Dates.getFirstDateOfWeek(date, firstDay);
+                return getFirstDateOfWeek(date, firstDay);
             }
 
             @Override
@@ -73,7 +71,7 @@ public class CalendarWidget extends Composite {
                 currentDate.setYear(today.getYear());
                 currentDate.setMonth(today.getMonth());
                 currentDate.setDate(today.getDate() - decal);
-                final Date date = Dates.getFirstDateOfWeek(today, firstDay);
+                final Date date = getFirstDateOfWeek(today, firstDay);
                 currentDate.setTime(date.getTime());
             }
 
@@ -86,7 +84,7 @@ public class CalendarWidget extends Composite {
             @Override
             public Date getStartDate(Date date, int firstDay) {
                 Date firstDayOfMonth = new Date(date.getYear(), date.getMonth(), 1);
-                return Dates.getFirstDateOfWeek(firstDayOfMonth, firstDay);
+                return getFirstDateOfWeek(firstDayOfMonth, firstDay);
             }
 
             @Override
@@ -148,10 +146,10 @@ public class CalendarWidget extends Composite {
     private Date today;
     private Date startDate;
     
-    private BasicDateFormat titleFormatter = new BasicDateFormat("N y");
-    private BasicDateFormat headerFormatter = new BasicDateFormat("E");
-    private BasicDateFormat dayFormatter = new BasicDateFormat("d");
-    private BasicDateFormat hourFormatter = new BasicDateFormat("H:m");
+    private DateTimeFormat titleFormatter = DateTimeFormat.getFormat("MMMM y");
+    private DateTimeFormat headerFormatter = DateTimeFormat.getFormat("EEEE");
+    private DateTimeFormat dayFormatter = DateTimeFormat.getFormat("d");
+    private DateTimeFormat hourFormatter = DateTimeFormat.getFormat("H:mm");
     
     public CalendarWidget(boolean displayHeaders, boolean displayWeekNumber) {
         this.calendars = new ArrayList<Calendar>();
@@ -208,7 +206,7 @@ public class CalendarWidget extends Composite {
      * The default format is "<code>MonthName</code> <code>FullYear</code>" (pattern : "N y").
      * @param titleFormatter The formatter to use to display the title of the calendar.
      */
-    public void setTitleFormatter(BasicDateFormat titleFormatter) {
+    public void setTitleFormatter(DateTimeFormat titleFormatter) {
         this.titleFormatter = titleFormatter;
         drawCalendar();
     }
@@ -219,7 +217,7 @@ public class CalendarWidget extends Composite {
      * The default format is "<code>WeekName</code>" (pattern : "E").
      * @param titleFormatter The formatter to use to display the title of each column.
      */
-    public void setHeaderFormatter(BasicDateFormat headerFormatter) {
+    public void setHeaderFormatter(DateTimeFormat headerFormatter) {
         this.headerFormatter = headerFormatter;
         drawCalendar();
     }
@@ -230,7 +228,7 @@ public class CalendarWidget extends Composite {
      * The default format is "<code>DayNumber</code>" (pattern : "d").
      * @param titleFormatter The formatter to use to display the title of each cell.
      */
-    public void setDayFormatter(BasicDateFormat dayFormatter) {
+    public void setDayFormatter(DateTimeFormat dayFormatter) {
         this.dayFormatter = dayFormatter;
         drawCalendar();
     }
@@ -352,7 +350,7 @@ public class CalendarWidget extends Composite {
         for(int y = displayHeaders?2:0; y < rows; y++) {
             if(displayWeekNumber) {
                 grid.getCellFormatter().addStyleName(y, 0, "calendar-row-header");
-                grid.setText(y, 0, Integer.toString(Dates.getWeekNumber(date, firstDayOfWeek)));
+                grid.setText(y, 0, Integer.toString(getWeekNumber(date, firstDayOfWeek)));
             }
             
             for(int x = displayWeekNumber?1:0; x < columns; x++) {
@@ -432,5 +430,47 @@ public class CalendarWidget extends Composite {
             eventLabel.addStyleName("calendar-event-limit");
             cell.add(eventLabel);
         }
+    }
+
+    /**
+     * Returns the first date of the week that includes the given date.
+     * @param day A date
+     * @param firstDay The first day of the week (such as {@link #SUNDAY}, {@link #MONDAY} or anything else).
+     * @return The first date of the week that includes <code>day</day>, as a {@link Date}.
+     * @see #MONDAY
+     * @see #TUESDAY
+     * @see #WEDNESDAY
+     * @see #THURSDAY
+     * @see #FRIDAY
+     * @see #SATURDAY
+     * @see #SUNDAY
+     */
+    @SuppressWarnings("deprecation")
+    private static Date getFirstDateOfWeek(Date day, int firstDay) {
+        final int decal = (day.getDay()+7-firstDay)%7;
+        return new Date(day.getYear(), day.getMonth(), day.getDate() - decal);
+    }
+
+    /**
+     * Calculates the number of the week that includes the given date.
+     * @param date A date
+     * @param firstDay The first day of the week (such as {@link #SUNDAY}, {@link #MONDAY} or anything else).
+     * @return The number of the week that includes <code>date</code>.
+     */
+    @SuppressWarnings("deprecation")
+    private static int getWeekNumber(Date date, int firstDay) {
+        int daysToThursday = 4 - date.getDay();
+
+        if(date.getDay() < firstDay)
+            daysToThursday -= 7;
+
+        final Date thursday = new Date(date.getYear(), date.getMonth(), date.getDate() + daysToThursday);
+
+        final Date januaryFourth = new Date(thursday.getYear(), 0, 4);
+        final int daysToMonday = 1 - januaryFourth.getDay(); // Essayer avec le 1er jour de la semaine
+        final Date monday = new Date(thursday.getYear(), 0, 4+daysToMonday);
+
+        final double diff = Math.floor((thursday.getTime() - monday.getTime()) / (1000 * 60 * 60 * 24));
+        return (int) Math.ceil(diff / 7.0);
     }
 }
