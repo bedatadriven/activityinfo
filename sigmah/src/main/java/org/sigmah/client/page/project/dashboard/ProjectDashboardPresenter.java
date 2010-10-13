@@ -137,6 +137,9 @@ public class ProjectDashboardPresenter implements Presenter {
         return view;
     }
 
+    @Override
+    public void viewDidAppear() {}
+
     /**
      * Mask the main panel and set the mask counter.
      *

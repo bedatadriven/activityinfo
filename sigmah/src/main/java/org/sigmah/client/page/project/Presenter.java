@@ -13,4 +13,5 @@ import com.extjs.gxt.ui.client.widget.Component;
  */
 public interface Presenter {
     public Component getView();
+    public void viewDidAppear();
 }

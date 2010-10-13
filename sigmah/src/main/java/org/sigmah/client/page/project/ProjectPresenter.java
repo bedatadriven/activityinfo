@@ -85,7 +85,7 @@ public class ProjectPresenter implements Frame, TabPage {
             new ProjectDashboardPresenter(dispatcher, authentication, this), // Dashboard
             null, // Logical Framework
             null, // Indicators
-            null, // Calendar
+            new ProjectCalendarPresenter(), // Calendar
             null, // Reports
             null  // Security incidents
         };
@@ -115,6 +115,7 @@ public class ProjectPresenter implements Frame, TabPage {
                         currentTab = anchor;
 
                         ProjectPresenter.this.view.setMainPanel(presenters[index].getView());
+                        presenters[index].viewDidAppear();
                     }
                 }
             });
@@ -147,6 +148,7 @@ public class ProjectPresenter implements Frame, TabPage {
                 projectState.setTabTitle(projectDTO.getName());
                 loadProjectOnView(projectDTO);
                 view.setMainPanel(presenters[0].getView());
+                presenters[0].viewDidAppear();
             }
         });
 
