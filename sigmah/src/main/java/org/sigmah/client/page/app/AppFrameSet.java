@@ -47,16 +47,14 @@ public class AppFrameSet implements Frame {
 
     private EventBus eventBus;
     private Viewport viewport;
-    //    private TabPanel tabPanel;
-    //    private TabItem dataEntryTab;
+
     private ToolBar topBar;
     private Authentication auth;
     private OfflineMenu offlineMenu;
 
     private Widget activeWidget;
     private Page activePage;
-//
-//    private boolean isUserTabSelection = true;
+
 
     @Inject
     public AppFrameSet(EventBus eventBus, Authentication auth, OfflineMenu offlineMenu) {
@@ -71,7 +69,6 @@ public class AppFrameSet implements Frame {
         viewport.setLayout(new RowLayout());
 
         createToolBar();
-        //createCenter();
 
         Log.trace("AppFrameSet constructor finished, about to add to RootPanel");
 
@@ -118,9 +115,6 @@ public class AppFrameSet implements Frame {
         });
         topBar.add(logoutTool);
 
-//        BorderLayoutData data = new BorderLayoutData(LayoutRegion.NORTH, 25);
-//        data.setMargins(new Margins());
-//
         viewport.add(topBar, new RowData(1.0, 30));
     }
 
@@ -133,97 +127,6 @@ public class AppFrameSet implements Frame {
         });
         topBar.add(button);
     }
-//
-//    private void createCenter() {
-//
-//        tabPanel = new TabPanel();
-//        viewport.add(tabPanel, new BorderLayoutData(LayoutRegion.CENTER));
-//
-//        Listener<ComponentEvent> clickListener = new Listener<ComponentEvent>() {
-//            public void handleEvent(ComponentEvent be) {
-//                if(be.getEventTypeInt() == Event.ONCLICK) {
-//                    if(be.getComponent() == tabPanel.getSelectedItem()) {
-//                        presenter.onTabClicked(be.getComponent().getItemId());
-//                    }
-//                }
-//            }
-//        };
-//
-//        TabItem welcomeTab = new TabItem("Welcome");
-//        welcomeTab.setItemId(Pages.Welcome.toString());
-//        tabPanel.add(welcomeTab);
-//
-//        dataEntryTab = new TabItem(Application.CONSTANTS.dataEntry());
-//        dataEntryTab.setIcon(Application.ICONS.dataEntry());
-//        dataEntryTab.setItemId(Pages.DataEntryFrameSet.toString());
-//        tabPanel.add(dataEntryTab);
-//
-//        TabItem reportTab = new TabItem(Application.CONSTANTS.reports());
-//        reportTab.setIcon(Application.ICONS.report());
-//        reportTab.setItemId(Pages.ReportHome.toString());
-//        tabPanel.add(reportTab);
-//
-//        TabItem chartTab = new TabItem("Graphiques");
-//        chartTab.setIcon(Application.ICONS.barChart());
-//        chartTab.setItemId(Charts.Charts.toString());
-//        chartTab.addListener(Events.BrowserEvent, clickListener);
-//        tabPanel.add(chartTab);
-//
-//        TabItem mapTab = new TabItem(Application.CONSTANTS.maps());
-//        mapTab.setIcon(Application.ICONS.map());
-//        mapTab.setItemId(Maps.Home.toString());
-//        mapTab.addListener(Events.BrowserEvent, clickListener);
-//        tabPanel.add(mapTab);
-//
-//        TabItem tableTab = new TabItem("Tableaux");
-//        tableTab.setIcon(Application.ICONS.table());
-//        tableTab.setItemId(Pages.Pivot.toString());
-//        tabPanel.add(tableTab);
-//
-//        TabItem designTab = new TabItem(Application.CONSTANTS.setup());
-//        designTab.setIcon(Application.ICONS.setup());
-//        designTab.setItemId(Pages.ConfigFrameSet.toString());
-//        tabPanel.add(designTab);
-//
-//        tabPanel.addListener(Events.BeforeSelect, new Listener<TabPanelEvent>() {
-//            @Override
-//            public void handleEvent(TabPanelEvent be) {
-//
-//                /*
-//                 * We want to cancel the event here:
-//                 * if it is ok to navigate away from the current tab then
-//                 * the AppPresenter will call showTab()
-//                 */
-//
-//                if(isUserTabSelection) {
-//                    be.setCancelled(true);
-//                    if(presenter!=null){
-//                    	presenter.onTabClicked(be.getItem().getItemId());
-//                    }
-//                }
-//            }
-//        });
-//    }
-
-//    public String getActiveTabId() {
-//        return tabPanel.getSelectedItem().getItemId();
-//    }
-
-//    public void setTabContent(String id, Widget widget) {
-//        TabItem tab = tabPanel.getSelectedItem();
-//        if(tab!=null)
-//            tab.removeAll();
-//
-//        tab = tabPanel.getItemByItemId(id);
-//        tab.setLayout(new FitLayout());
-//        tab.add(widget);
-//
-//        isUserTabSelection = false;
-//        tabPanel.setSelection(tabPanel.getItemByItemId(id));
-//        isUserTabSelection = true;
-//
-//        tab.layout();
-//    }
 
     public void setWidget(Widget widget) {
 
