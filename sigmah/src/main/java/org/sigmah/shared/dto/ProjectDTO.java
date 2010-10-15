@@ -32,6 +32,24 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO {
         return "ProjectDTO id:"+getId()+", name:"+getName()+", projectModelDTO: "+getProjectModelDTO()+", owner:"+getOwnerName()+", phaseDTO:"+getPhasesDTO()+", valueDTO:"+getValuesDTO()+", currentPhaseDTO:"+getCurrentPhaseDTO()+", fav:"+isFavorite()+", topic:"+getTopic();
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == null)
+            return false;
+        if(!(obj instanceof ProjectDTO))
+            return false;
+        final ProjectDTO other = (ProjectDTO) obj;
+        if(getId() != other.getId())
+            return false;
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        return hash*getId();
+    }
+
     // Project id
     @Override
     public int getId() {
@@ -108,5 +126,12 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO {
     }
     public void setTopic(String topic) {
         set("topic", topic);
+    }
+
+    public Long getCalendarId() {
+        return get("calendarId");
+    }
+    public void setCalendarId(Long calendarId) {
+        set("calendarId", calendarId);
     }
 }

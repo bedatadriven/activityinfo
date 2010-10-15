@@ -29,6 +29,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
+import org.sigmah.client.EventBus;
+import org.sigmah.client.event.NavigationEvent;
+import org.sigmah.client.page.NavigationHandler;
 import org.sigmah.client.page.project.calendar.ProjectCalendarPresenter;
 import org.sigmah.client.page.project.dashboard.ProjectDashboardPresenter;
 import org.sigmah.client.ui.ToggleAnchor;
@@ -58,6 +61,8 @@ public class ProjectPresenter implements Frame, TabPage {
     private final Dispatcher dispatcher;
     private final Authentication authentication;
     private Page activePage;
+    
+    private ProjectState currentState;
     private ToggleAnchor currentTab;
     /**
      * The current displayed project.
@@ -76,19 +81,19 @@ public class ProjectPresenter implements Frame, TabPage {
     private final Presenter[] presenters;
 
     @Inject
-    public ProjectPresenter(final Dispatcher dispatcher, View view, Authentication authentication) {
+    public ProjectPresenter(final Dispatcher dispatcher, View view, Authentication authentication, final EventBus eventBus) {
         this.dispatcher = dispatcher;
         this.view = view;
         this.authentication = authentication;
 
-        this.presenters = new Presenter[] {
-            new ProjectDashboardPresenter(dispatcher, authentication, this), // Dashboard
-            null, // Logical Framework
-            null, // Indicators
-            new ProjectCalendarPresenter(), // Calendar
-            null, // Reports
-            null  // Security incidents
-        };
+        this.presenters = new Presenter[]{
+                    new ProjectDashboardPresenter(dispatcher, authentication, this), // Dashboard
+                    null, // Logical Framework
+                    null, // Indicators
+                    new ProjectCalendarPresenter(dispatcher, this), // Calendar
+                    null, // Reports
+                    null // Security incidents
+                };
 
         for (int i = 0; i < MAIN_TABS.length; i++) {
             final int index = i;
@@ -99,24 +104,13 @@ public class ProjectPresenter implements Frame, TabPage {
             layoutData.setMargins(new Margins(0, 10, 0, 0));
 
             final ToggleAnchor anchor = new ToggleAnchor(tabTitle);
-            anchor.setAnchorMode(i != 0);
-
-            if (i == 0) {
-                currentTab = anchor;
-            }
+            anchor.setAnchorMode(true);
 
             anchor.addClickHandler(new ClickHandler() {
 
                 @Override
                 public void onClick(ClickEvent event) {
-                    if (currentTab != anchor) {
-                        currentTab.toggleAnchorMode();
-                        anchor.toggleAnchorMode();
-                        currentTab = anchor;
-
-                        ProjectPresenter.this.view.setMainPanel(presenters[index].getView());
-                        presenters[index].viewDidAppear();
-                    }
+                    eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, currentState.deriveTo(index)));
                 }
             });
 
@@ -124,8 +118,27 @@ public class ProjectPresenter implements Frame, TabPage {
         }
     }
 
+    private void selectTab(int index, boolean force) {
+        final ToggleAnchor anchor = (ToggleAnchor) this.view.getTabPanel().getWidget(index);
+
+        if (currentTab != anchor) {
+            if(currentTab != null)
+                currentTab.toggleAnchorMode();
+            
+            anchor.toggleAnchorMode();
+            currentTab = anchor;
+
+            ProjectPresenter.this.view.setMainPanel(presenters[index].getView());
+            presenters[index].viewDidAppear();
+        }
+        else if(force) {
+            ProjectPresenter.this.view.setMainPanel(presenters[index].getView());
+            presenters[index].viewDidAppear();
+        }
+    }
+
     @Override
-    public boolean navigate(PageState place) {
+    public boolean navigate(final PageState place) {
         final ProjectState projectState = (ProjectState) place;
         final int projectId = projectState.getProjectId();
 
@@ -145,10 +158,16 @@ public class ProjectPresenter implements Frame, TabPage {
                 if (Log.isDebugEnabled()) {
                     Log.debug("Project loaded : " + projectDTO.getName());
                 }
-                projectState.setTabTitle(projectDTO.getName());
-                loadProjectOnView(projectDTO);
-                view.setMainPanel(presenters[0].getView());
-                presenters[0].viewDidAppear();
+                currentState = projectState;
+
+                boolean projectChanged = !projectDTO.equals(currentProjectDTO);
+
+                if(projectChanged) {
+                    projectState.setTabTitle(projectDTO.getName());
+                    loadProjectOnView(projectDTO);
+                }
+
+                selectTab(projectState.getCurrentSection(), projectChanged);
             }
         });
 

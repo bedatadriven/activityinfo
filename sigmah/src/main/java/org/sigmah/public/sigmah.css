@@ -390,19 +390,28 @@ body {
     width: 2%; /* 20px; */
     padding-right: 4px;
     vertical-align: top;
-    color: #482A1E;
+    color: #EE9329;
     font-weight: bold;
 }
 
 .calendar-cell {
-    /*
-    width: 150px;
-    height: 100px;
-    */
-    width: 14%;
-    height: 15%;
     border: 1px solid lightgrey;
     vertical-align: top;
+}
+
+.calendar-day .calendar-cell {
+    width: 98%;
+    height: 96%;
+}
+
+.calendar-month .calendar-cell {
+    width: 14%;
+    height: 16%;
+}
+
+.calendar-week .calendar-cell {
+    width: 14%;
+    height: 96%;
 }
 
 .calendar-cell-other-month {
@@ -414,6 +423,7 @@ body {
 }
 
 .calendar-cell-header {
+    height: 16px;
     font-weight: bold;
     color: #555;
     padding-right: 4px;
@@ -428,6 +438,19 @@ body {
 .calendar-event {
     overflow: hidden;
     height: 16px;
+}
+
+.calendar-event-date {
+    padding-left: 4px;
+    font-size: 9pt;
+}
+
+.calendar-event-label {
+    padding-left: 4px;
+}
+
+.calendar-event div {
+    float: left;
 }
 
 .calendar-event-1 {
@@ -465,6 +488,14 @@ body {
     color: #482A1E;
     text-align: center;
     font-weight: bold;
+    width: 100%;
+    height: 16px;
+    display: block;
+    text-decoration: none;
+}
+
+.calendar-event-limit:hover {
+    color: #EE9329;
 }
 
 /* ------------------------------------------------------------------ Ext-GWT */

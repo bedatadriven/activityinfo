@@ -20,6 +20,7 @@ public class Calendar implements Serializable, CommandResult {
     private String name;
     private Map<Date, List<Event>> events;
     private Collection<Todo> tasks;
+    private int style;
 
     public String getName() {
         return name;
@@ -42,5 +43,13 @@ public class Calendar implements Serializable, CommandResult {
 
     public void setTasks(Collection<Todo> tasks) {
         this.tasks = tasks;
+    }
+
+    public int getStyle() {
+        return style;
+    }
+
+    public void setStyle(int style) {
+        this.style = style;
     }
 }

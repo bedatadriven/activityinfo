@@ -17,18 +17,17 @@ public class Event implements Serializable {
     private String description;
     private Date dtstart;
     private Date dtend;
-    private Date dateCreated;
+    private Calendar parent;
 
-    public Event(String summary) {
+    public Event() {
+    }
+
+    public Event(String summary, String description, Date dtstart, Date dtend, Calendar parent) {
         this.summary = summary;
-    }
-
-    public Date getDateCreated() {
-        return dateCreated;
-    }
-
-    public void setDateCreated(Date dateCreated) {
-        this.dateCreated = dateCreated;
+        this.description = description;
+        this.dtstart = dtstart;
+        this.dtend = dtend;
+        this.parent = parent;
     }
 
     public String getDescription() {
@@ -63,4 +62,11 @@ public class Event implements Serializable {
         this.summary = summary;
     }
 
+    public Calendar getParent() {
+        return parent;
+    }
+
+    public void setParent(Calendar parent) {
+        this.parent = parent;
+    }
 }
