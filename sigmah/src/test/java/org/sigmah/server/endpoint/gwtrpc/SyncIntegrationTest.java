@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.Authentication;
+import org.sigmah.client.mock.MockEventBus;
 import org.sigmah.client.offline.sync.Synchronizer;
 import org.sigmah.server.dao.OnDataSet;
 import org.sigmah.server.sync.TimestampHelper;
@@ -93,7 +94,7 @@ public class SyncIntegrationTest {
 
 
     private void synchronize() {
-        Synchronizer syncr = new Synchronizer(dispatcher, localDbConnection, updater,
+        Synchronizer syncr = new Synchronizer(new MockEventBus(), dispatcher, localDbConnection, updater,
                 new Authentication(1, "X", "akbertram@gmail.com"));
         syncr.start();
     }

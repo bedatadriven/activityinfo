@@ -55,7 +55,13 @@ public class OfflineImpl implements OfflineGateway {
     public void goOffline(AsyncCallback<Void> callback) {
         switchingDispatcher.setLocalDispatcher(localDispatcher.get());
         callback.onSuccess(null);
-        syncLoop();
+        //syncLoop();
+    }
+
+    @Override
+    public void synchronize(AsyncCallback<Void> callback) {
+        synchronizer.start(callback); 
+
     }
 
     @Override

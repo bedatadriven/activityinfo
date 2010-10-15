@@ -17,7 +17,8 @@ import org.sigmah.client.dto.ClientDTOMapper;
 import org.sigmah.client.inject.DummyConnection;
 import org.sigmah.client.offline.command.handler.GetSitesHandlerLocal;
 import org.sigmah.client.offline.dao.*;
-import org.sigmah.client.offline.ui.OfflineMenu;
+import org.sigmah.client.offline.ui.OfflinePresenter;
+import org.sigmah.client.offline.ui.OfflineView;
 import org.sigmah.shared.command.handler.GetSitesHandler;
 import org.sigmah.shared.dao.*;
 import org.sigmah.shared.domain.ActivityInfoOfflineUnit;
@@ -36,7 +37,7 @@ public class OfflineModule extends AbstractGinModule {
     @Override
     protected void configure() {
 
-        bind(OfflineManager.View.class).to(OfflineMenu.class);
+        bind(OfflinePresenter.View.class).to(OfflineView.class);
         bind(OfflineGateway.class).to(OfflineImpl.class);
         bind(BulkUpdaterAsync.class).to(GearsBulkUpdater.class);
         bind(ConnectionProvider.class).to(LocalConnectionProvider.class).in(Singleton.class);	

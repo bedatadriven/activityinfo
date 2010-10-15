@@ -10,7 +10,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.sigmah.client.dispatch.remote.Authentication;
 
-import java.sql.Connection;
 import java.util.Date;
 
 /**
@@ -18,12 +17,10 @@ import java.util.Date;
  */
 @Singleton
 public class OfflineStatus {
-    private final Connection conn;
     private final String offlineCookieName;
 
     @Inject
-    public OfflineStatus(Connection conn, Authentication auth) {
-        this.conn = conn;
+    public OfflineStatus(Authentication auth) {
         offlineCookieName = auth.getUserId() + "_offline";
     }
 
@@ -37,7 +34,7 @@ public class OfflineStatus {
     }
 
     public boolean isOfflineInstalled() {
-        return "installed".equals(Cookies.getCookie(offlineCookieName));
+        return "installed".equals(Cookies.getCookie(offlineCookieName)) || isOfflineEnabled();
     }
 
     public void setOfflineEnabled(boolean enabled) {

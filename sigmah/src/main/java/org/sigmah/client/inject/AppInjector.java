@@ -17,8 +17,8 @@ import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.cache.AdminEntityCache;
 import org.sigmah.client.dispatch.remote.cache.SchemaCache;
 import org.sigmah.client.i18n.UIConstants;
-import org.sigmah.client.offline.OfflineManager;
 import org.sigmah.client.offline.OfflineModule;
+import org.sigmah.client.offline.ui.OfflinePresenter;
 import org.sigmah.client.page.DownloadManager;
 import org.sigmah.client.page.charts.ChartLoader;
 import org.sigmah.client.page.config.*;
@@ -100,7 +100,7 @@ public interface AppInjector extends Ginjector {
 
     ReportPreviewPresenter getReportPreviewPresenter();
 
-    OfflineManager createOfflineManager();
+    OfflinePresenter createOfflineManager();
 
     SchemaCache createSchemaCache();
 

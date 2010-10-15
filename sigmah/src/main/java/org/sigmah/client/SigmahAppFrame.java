@@ -20,7 +20,7 @@ import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.event.NavigationEvent;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.offline.ui.OfflineMenu;
+import org.sigmah.client.offline.ui.OfflineView;
 import org.sigmah.client.page.*;
 import org.sigmah.client.page.common.widget.LoadingPlaceHolder;
 import org.sigmah.client.page.dashboard.DashboardPageState;
@@ -39,7 +39,7 @@ public class SigmahAppFrame implements Frame {
     private SigmahViewport view;
     
     @Inject
-    public SigmahAppFrame(EventBus eventBus, Authentication auth, OfflineMenu offlineMenu, final TabModel tabModel) {
+    public SigmahAppFrame(EventBus eventBus, Authentication auth, OfflineView offlineMenu, final TabModel tabModel) {
         RootPanel.get("username").add(new Label(auth.getEmail()));
         
         final Anchor reportButton = new Anchor(I18N.CONSTANTS.bugReport());

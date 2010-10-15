@@ -5,38 +5,48 @@
 
 package org.sigmah.client.offline.ui;
 
-import com.extjs.gxt.ui.client.widget.Text;
+import com.extjs.gxt.ui.client.widget.ProgressBar;
 import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.layout.TableLayout;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 
 /**
  * @author Alex Bertram
  */
-public class OfflineStatusWindow extends Window {
-    private Text appStatus;
-    private Text schemaStatus;
+class OfflineStatusWindow extends Window {
+
+    private ProgressBar progressBar;
+    private Button syncNowButton;
+    private Button toggleOfflineButton;
 
     public OfflineStatusWindow() {
         setHeading(I18N.CONSTANTS.statusOfflineMode());
         setWidth(300);
         setHeight(200);
+        setLayout(new CenterLayout());
 
-        TableLayout layout = new TableLayout(2);
-        setLayout(layout);
+        progressBar = new ProgressBar();
+        progressBar.setWidth(200);
+        add(progressBar);
 
-        appStatus = new Text();
+        syncNowButton = new Button("Synchronize Now", IconImageBundle.ICONS.onlineSynced());
+        toggleOfflineButton = new Button(I18N.CONSTANTS.goOffline());
 
-        add(new Text(I18N.CONSTANTS.loadingSoftware()));
-        add(appStatus);
+        addButton(syncNowButton);
+        addButton(toggleOfflineButton);
+   }
 
-        schemaStatus = new Text();
-        add(new Text(I18N.CONSTANTS.schema()));
-        add(schemaStatus);
+    public ProgressBar getProgressBar() {
+        return progressBar;
     }
 
-    public void setAppStatus(String message) {
-        appStatus.setText(message);
+    public Button getSyncNowButton() {
+        return syncNowButton;
     }
 
+    public Button getToggleOfflineButton() {
+        return toggleOfflineButton;
+    }
 }

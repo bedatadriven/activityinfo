@@ -29,7 +29,7 @@ import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.event.NavigationEvent;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.client.offline.ui.OfflineMenu;
+import org.sigmah.client.offline.ui.OfflineView;
 import org.sigmah.client.page.*;
 import org.sigmah.client.page.charts.ChartPageState;
 import org.sigmah.client.page.common.widget.LoadingPlaceHolder;
@@ -50,14 +50,14 @@ public class AppFrameSet implements Frame {
 
     private ToolBar topBar;
     private Authentication auth;
-    private OfflineMenu offlineMenu;
+    private OfflineView offlineMenu;
 
     private Widget activeWidget;
     private Page activePage;
 
 
     @Inject
-    public AppFrameSet(EventBus eventBus, Authentication auth, OfflineMenu offlineMenu) {
+    public AppFrameSet(EventBus eventBus, Authentication auth, OfflineView offlineMenu) {
 
         Log.trace("AppFrameSet constructor starting");
 

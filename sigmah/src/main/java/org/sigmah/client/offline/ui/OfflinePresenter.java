@@ -6,7 +6,7 @@
 /**
  * Permits offline access to ActivityInfo with the help of Gears
  */
-package org.sigmah.client.offline;
+package org.sigmah.client.offline.ui;
 
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -19,7 +19,12 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.EventBus;
+import org.sigmah.client.offline.OfflineGateway;
+import org.sigmah.client.offline.OfflineStatus;
+import org.sigmah.client.offline.sync.SyncStatusEvent;
+
+import java.util.Date;
 
 /**
  * This class keeps as much of the offline functionality behind a runAsync clause to
@@ -27,31 +32,35 @@ import org.sigmah.client.i18n.I18N;
  *
  * @author Alex Bertram
  */
-public class OfflineManager {
+public class OfflinePresenter {
     private final View view;
     private final OfflineStatus offlineStatus;
     private final Provider<OfflineGateway> gateway;
 
-    private boolean offline = false;
-
     public interface View {
-        Observable getEnableOfflineModeMenuItem();
-        void setOfflineModeMenuItemText(String text);
-        void setOfflineModeMenuText(String text);
+        Observable getInstallButton();
+        Observable getSyncNowButton();
+        Observable getToggleOfflineButton();
+
+        void setInstalled(boolean installed);
+        void setOffline(boolean offline);
+        void setProgress(String taskDescription, double percentComplete);
+        void setLastSyncDate(Date date);
     }
 
     @Inject
-    public OfflineManager(final View view,
+    public OfflinePresenter(final View view,
                           final OfflineStatus status,
-                          OfflineStatus offlineStatus, Provider<OfflineGateway> gateway) {
+                          EventBus eventBus,
+                          OfflineStatus offlineStatus,
+                          Provider<OfflineGateway> gateway) {
         this.view = view;
         this.offlineStatus = offlineStatus;
         this.gateway = gateway;
 
         Log.trace("OfflineManager: starting");
 
-        this.view.setOfflineModeMenuItemText(I18N.CONSTANTS.enableOffline());
-        this.view.setOfflineModeMenuText(I18N.CONSTANTS.offlineModeOnlineOnly());
+        this.view.setInstalled(status.isOfflineInstalled());
 
         // if the user was offline in their last session,
         // go offline now
@@ -59,16 +68,61 @@ public class OfflineManager {
             goOffline();
         }
 
-        this.view.getEnableOfflineModeMenuItem().addListener(Events.Select, new Listener<BaseEvent>() {
+        this.view.getInstallButton().addListener(Events.Select, new Listener<BaseEvent>() {
             @Override
             public void handleEvent(BaseEvent baseEvent) {
                 if(!status.isOfflineInstalled()) {
                     installOffline();
-                } else if(!status.isOfflineEnabled()) {
+                }
+            }
+        });
+
+        this.view.getSyncNowButton().addListener(Events.Select, new Listener<BaseEvent>() {
+            @Override
+            public void handleEvent(BaseEvent be) {
+               syncNow();
+            }
+        });
+
+        this.view.getToggleOfflineButton().addListener(Events.Select, new Listener<BaseEvent>() {
+            @Override
+            public void handleEvent(BaseEvent be) {
+                if(!status.isOfflineEnabled()) {
                     goOffline();
                 } else {
                     goOnline();
                 }
+            }
+        });
+
+        eventBus.addListener(SyncStatusEvent.TYPE, new Listener<SyncStatusEvent>() {
+            @Override
+            public void handleEvent(SyncStatusEvent be) {
+                view.setProgress(be.getTask(), be.getPercentComplete());
+            }
+        });
+    }
+
+    private void syncNow() {
+        loadGateway(new AsyncCallback<OfflineGateway>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                OfflinePresenter.this.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(OfflineGateway result) {
+               result.synchronize(new AsyncCallback<Void>() {
+                   @Override
+                   public void onFailure(Throwable caught) {
+
+                   }
+
+                   @Override
+                   public void onSuccess(Void result) {
+
+                   }
+               });
             }
         });
     }
@@ -78,7 +132,7 @@ public class OfflineManager {
         loadGateway(new AsyncCallback<OfflineGateway>() {
             @Override
             public void onFailure(Throwable throwable) {
-                OfflineManager.this.onFailure(throwable);
+                OfflinePresenter.this.onFailure(throwable);
             }
 
             @Override
@@ -86,19 +140,19 @@ public class OfflineManager {
                 gateway.goOffline(new AsyncCallback<Void>() {
                     @Override
                     public void onFailure(Throwable throwable) {
-                        OfflineManager.this.onFailure(throwable);
+                        OfflinePresenter.this.onFailure(throwable);
                     }
 
                     @Override
                     public void onSuccess(Void voidValue) {
                         offlineStatus.setOfflineEnabled(true);
-                        view.setOfflineModeMenuItemText(I18N.CONSTANTS.reloadOffline());
-                        view.setOfflineModeMenuText(I18N.CONSTANTS.offlineMode());
+                        view.setOffline(true);
                     }
                 });
             }
         });
     }
+
 
     private void installOffline() {
         Factory gearsFactory = Factory.getInstance();
@@ -114,7 +168,7 @@ public class OfflineManager {
         loadGateway(new AsyncCallback<OfflineGateway>() {
             @Override
             public void onFailure(Throwable caught) {
-                OfflineManager.this.onFailure(caught);
+                OfflinePresenter.this.onFailure(caught);
             }
 
             @Override
@@ -122,14 +176,14 @@ public class OfflineManager {
                 result.install(new AsyncCallback<Void>() {
                     @Override
                     public void onFailure(Throwable caught) {
-                        OfflineManager.this.onFailure(caught);
+                        OfflinePresenter.this.onFailure(caught);
                     }
 
                     @Override
                     public void onSuccess(Void result) {
                         offlineStatus.setOfflineEnabled(true);
-                        view.setOfflineModeMenuItemText(I18N.CONSTANTS.enableOffline());
-                        view.setOfflineModeMenuText(I18N.CONSTANTS.offlineModeOnlineOnly());
+                        view.setInstalled(true);
+                        view.setOffline(true);
                     }
                 });
             }
@@ -140,7 +194,7 @@ public class OfflineManager {
         loadGateway(new AsyncCallback<OfflineGateway>() {
             @Override
             public void onFailure(Throwable throwable) {
-                OfflineManager.this.onFailure(throwable);
+                OfflinePresenter.this.onFailure(throwable);
             }
 
             @Override
@@ -148,14 +202,13 @@ public class OfflineManager {
                 gateway.goOnline(new AsyncCallback<Void>() {
                     @Override
                     public void onFailure(Throwable throwable) {
-                        OfflineManager.this.onFailure(throwable);
+                        OfflinePresenter.this.onFailure(throwable);
                     }
 
                     @Override
                     public void onSuccess(Void aVoid) {
                         offlineStatus.setOfflineEnabled(false);
-                        view.setOfflineModeMenuItemText(I18N.CONSTANTS.enableOffline());
-                        view.setOfflineModeMenuText(I18N.CONSTANTS.offlineModeOnlineOnly());
+                        view.setOffline(false);
                     }
                 });
             }

@@ -12,6 +12,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.dispatch.remote.Direct;
@@ -22,27 +23,32 @@ import org.sigmah.shared.command.result.SyncRegionUpdate;
 import org.sigmah.shared.command.result.SyncRegions;
 
 import java.sql.*;
+import java.util.Collection;
 import java.util.Iterator;
 
 @Singleton
 public class Synchronizer {
 
     private final Dispatcher dispatch;
+    private final EventBus eventBus;
     private final Connection conn;
     private final BulkUpdaterAsync updater;
     private final Authentication auth;
 
-    private Iterator<SyncRegion> regionIt;
+    private ProgressTrackingIterator<SyncRegion> regionIt;
+
 
     private AsyncCallback<Void> callback;
 
     private boolean running = false;
 
     @Inject
-    public Synchronizer(@Direct Dispatcher dispatch,
+    public Synchronizer(EventBus eventBus,
+                        @Direct Dispatcher dispatch,
                         Connection conn,
                         BulkUpdaterAsync updater,
                         Authentication auth) {
+        this.eventBus = eventBus;
         this.conn = conn;
         this.dispatch = dispatch;
         this.updater = updater;
@@ -77,7 +83,7 @@ public class Synchronizer {
     }
 
     public void start() {
-        Log.info("Synchronizer: starting.");
+        fireStatusEvent("Requesting sync regions...", 0);
         running = true;
         dispatch.execute(new GetSyncRegions(), null, new AsyncCallback<SyncRegions>() {
             @Override
@@ -87,11 +93,16 @@ public class Synchronizer {
 
             @Override
             public void onSuccess(SyncRegions syncRegions) {
-                Synchronizer.this.regionIt = syncRegions.iterator();
-                Log.info("Got SYNC REGIONS");
+                Synchronizer.this.regionIt = new ProgressTrackingIterator(syncRegions.getList());
+                fireStatusEvent("Received sync regions...", 0);
                 doNextUpdate();
             }
         });
+    }
+
+    private void fireStatusEvent(String task, double percentComplete) {
+        Log.info("Synchronizer: " + task + " (" + percentComplete + "%)");
+        eventBus.fireEvent(SyncStatusEvent.TYPE, new SyncStatusEvent(task, percentComplete));
     }
 
     private void doNextUpdate() {
@@ -104,14 +115,20 @@ public class Synchronizer {
 
             doUpdate(region, localVersion);
         } else {
-            setLastUpdateTime();
-            if(callback != null) {
-                callback.onSuccess(null);
-            }
+            onSynchronizationComplete();
+        }
+    }
+
+    private void onSynchronizationComplete() {
+        setLastUpdateTime();
+        fireStatusEvent("Synchronization Complete", 100);
+        if(callback != null) {
+            callback.onSuccess(null);
         }
     }
 
     private void doUpdate(final SyncRegion region, String localVersion) {
+        fireStatusEvent("Requesting updates for " + region.getId(), regionIt.percentComplete());
         Log.info("Synchronizer: Region " + region.getId() + ": localVersion=" + localVersion);
 
         dispatch.execute(new GetSyncRegionUpdates(region.getId(), localVersion), null, new AsyncCallback<SyncRegionUpdate>() {
@@ -222,8 +239,6 @@ public class Synchronizer {
         } catch (SQLException e) {
             throw new RuntimeException("Couldn't set last update time", e);
         }
-
-
     }
 
     public Date getLastUpdateTime() {
@@ -237,6 +252,38 @@ public class Synchronizer {
             }
         } catch (SQLException e) {
             throw new RuntimeException("Couldn't get update time", e);
+        }
+    }
+
+    private static class ProgressTrackingIterator<T> implements Iterator<T> {
+        private double total;
+        private double completed;
+        private Iterator<T> inner;
+
+        private ProgressTrackingIterator(Collection<T> collection) {
+            total = collection.size();
+            completed = 0;
+            inner = collection.iterator();
+        }
+
+        @Override
+        public boolean hasNext() {
+            completed++;
+            return inner.hasNext();
+        }
+
+        @Override
+        public T next() {
+            return inner.next();
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+
+        public double percentComplete() {
+            return completed / total * 100d;
         }
     }
 }

@@ -15,7 +15,10 @@ import org.sigmah.shared.domain.User;
 
 import javax.persistence.EntityManager;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class LocationUpdateBuilder implements UpdateBuilder {
     public static final int MAX_UPDATES = 25;
@@ -36,10 +39,19 @@ public class LocationUpdateBuilder implements UpdateBuilder {
 
         LocalState localState = new LocalState(request.getLocalVersion());
 
-        locations = em.createQuery("select loc from Location loc where loc.dateEdited > :localDate")
-                .setParameter("localDate", localState.lastDate)
-                .setMaxResults(MAX_UPDATES)
-                .getResultList();
+        if(request.getLocalVersion() == null) {
+            locations = em.createQuery("select loc from Location loc order by loc.dateEdited, loc.id")
+                    .setMaxResults(MAX_UPDATES)
+                    .getResultList();
+        } else {
+            locations = em.createQuery("select loc from Location loc where loc.dateEdited > :localDate or " +
+                            "(loc.dateEdited >= :localDate and loc.id > :lastId) " +
+                            "order by loc.dateEdited, loc.id")
+                    .setParameter("localDate", localState.lastDate)
+                    .setParameter("lastId", localState.lastId)
+                    .setMaxResults(MAX_UPDATES)
+                    .getResultList();
+        }
 
 
         for(Location location : locations) {

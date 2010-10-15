@@ -15,4 +15,5 @@ public interface OfflineGateway {
     void install(AsyncCallback<Void> callback);
     void goOffline(AsyncCallback<Void> callback);
     void goOnline(AsyncCallback<Void> callback);
+    void synchronize(AsyncCallback<Void> callback);
 }
