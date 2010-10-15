@@ -10,7 +10,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.dao.OnDataSet;
-import org.sigmah.server.endpoint.EndpointModule;
 import org.sigmah.shared.command.CreateEntity;
 import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.command.result.CreateResult;
@@ -19,15 +18,11 @@ import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.test.InjectionSupport;
-import org.sigmah.test.Modules;
 
 import java.util.GregorianCalendar;
 
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/sites-simple1.db.xml")
-@Modules({
-	EndpointModule.class
-})
 public class CreateSiteTest extends CommandTestCase {
 
 

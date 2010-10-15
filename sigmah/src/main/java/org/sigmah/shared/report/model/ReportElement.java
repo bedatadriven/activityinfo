@@ -50,7 +50,7 @@ import java.io.Serializable;
  * </ol>
  *
  * @author Alex Bertram
- * @see org.sigmah.server.dao.SiteTableDAO
+ * @see org.sigmah.shared.dao.SiteTableDAO
  * @see org.sigmah.server.dao.PivotDAO
  * @see org.sigmah.server.report.generator.ReportGenerator
  * @see org.sigmah.shared.report.content.Content

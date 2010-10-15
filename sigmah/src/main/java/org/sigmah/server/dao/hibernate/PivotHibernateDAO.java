@@ -45,6 +45,53 @@ public class PivotHibernateDAO implements PivotDAO {
         this.dialect = dialect;
     }
 
+    public static void appendVisibilityFilter(StringBuilder where, int userId) {
+        where.append(" AND ");
+        where.append("(UserDatabase.OwnerUserId = ").append(userId).append(" OR ")
+             .append(userId).append(" in (select p.UserId from UserPermission p " +
+                "where p.AllowView and " +
+                "p.UserId=").append(userId).append(" AND p.DatabaseId = UserDatabase.DatabaseId))");
+    }
+
+    public static void appendDimensionRestrictions(StringBuilder where, Filter filter, List<Object> parameters) {
+        for (DimensionType type : filter.getRestrictedDimensions()) {
+            if (type == DimensionType.Indicator) {
+                appendIdCriteria(where, "Indicator.IndicatorId", filter.getRestrictions(type), parameters);
+            } else if (type == DimensionType.Activity) {
+                appendIdCriteria(where, "Site.ActivityId", filter.getRestrictions(type), parameters);
+            } else if (type == DimensionType.Database) {
+                appendIdCriteria(where, "Activity.DatabaseId", filter.getRestrictions(type), parameters);
+            } else if (type == DimensionType.Partner) {
+                appendIdCriteria(where, "Site.PartnerId", filter.getRestrictions(type), parameters);
+            } else if (type == DimensionType.AdminLevel) {
+                where.append(" AND Site.LocationId IN " +
+                        "(SELECT Link.LocationId FROM LocationAdminLink Link WHERE 1=1 ");
+
+                appendIdCriteria(where, "Link.AdminEntityId", filter.getRestrictions(type), parameters);
+                where.append(") ");
+            }
+        }
+    }
+
+    public static void appendIdCriteria(StringBuilder sb, String fieldName, Collection<Integer> ids, List<Object> parameters) {
+        sb.append(" AND ").append(fieldName);
+
+
+        if (ids.size() == 1) {
+            sb.append(" = ?");
+        } else {
+            sb.append(" IN (? ");
+            for (int i = 1; i != ids.size(); ++i) {
+                sb.append(", ?");
+            }
+            sb.append(")");
+        }
+
+        for (Integer id : ids) {
+            parameters.add(id);
+        }
+    }
+
     /**
      * Internal interface to a group of objects that are responsible for
      * bundling results from the SQL ResultSet object into a Bucket
@@ -228,7 +275,7 @@ public class PivotHibernateDAO implements PivotDAO {
                 "LEFT JOIN Partner ON (Site.PartnerId = Partner.PartnerId) " +
                 "LEFT JOIN Location ON (Location.LocationId = Site.LocationId) " +
                 "LEFT JOIN Activity ON (Activity.ActivityId = Site.ActivityId) " +
-                "LEFT JOIN UserDatabase Db ON (Activity.DatabaseId = Db.DatabaseId) ");
+                "LEFT JOIN UserDatabase ON (Activity.DatabaseId = UserDatabase.DatabaseId) ");
 
 
         /*
@@ -264,7 +311,7 @@ public class PivotHibernateDAO implements PivotDAO {
                 "LEFT JOIN Location ON (Location.LocationId = Site.LocationId) " +
                 "LEFT JOIN Activity ON (Activity.ActivityId = Site.ActivityId) " +
                 "LEFT JOIN Indicator ON (Indicator.ActivityId = Activity.ActivityId) " +
-                "LEFT JOIN UserDatabase Db ON (Activity.DatabaseId = Db.DatabaseId) " +
+                "LEFT JOIN UserDatabase ON (Activity.DatabaseId = UserDatabase.DatabaseId) " +
                 "LEFT JOIN ReportingPeriod Period ON (Period.SiteId = Site.SiteId) ");
 
         /* First add the indicator to the query: we can't aggregate values from different
@@ -314,7 +361,7 @@ public class PivotHibernateDAO implements PivotDAO {
                 nextColumnIndex += 1;
 
             } else if (dimension.getType() == DimensionType.Database) {
-                dimColumns.append(", Activity.DatabaseId, Db.Name");
+                dimColumns.append(", Activity.DatabaseId, UserDatabase.Name");
                 bundlers.add(new EntityBundler(dimension, nextColumnIndex));
                 nextColumnIndex += 2;
 
@@ -415,7 +462,7 @@ public class PivotHibernateDAO implements PivotDAO {
         where.append(" and Site.dateDeleted is null and " +
                 "Activity.dateDeleted is null and " +
                 "Indicator.dateDeleted is null and " +
-                "Db.dateDeleted is null ");
+                "UserDatabase.dateDeleted is null ");
 
         // and only allow results that are visible to this user.
         appendVisibilityFilter(where, userId);
@@ -432,23 +479,7 @@ public class PivotHibernateDAO implements PivotDAO {
             parameters.add(new java.sql.Date(filter.getMaxDate().getTime()));
         }
 
-        for (DimensionType type : filter.getRestrictedDimensions()) {
-            if (type == DimensionType.Indicator) {
-                appendIdCriteria(where, "Indicator.IndicatorId", filter.getRestrictions(type), parameters);
-            } else if (type == DimensionType.Activity) {
-                appendIdCriteria(where, "Site.ActivityId", filter.getRestrictions(type), parameters);
-            } else if (type == DimensionType.Database) {
-                appendIdCriteria(where, "Activity.DatabaseId", filter.getRestrictions(type), parameters);
-            } else if (type == DimensionType.Partner) {
-                appendIdCriteria(where, "Site.PartnerId", filter.getRestrictions(type), parameters);
-            } else if (type == DimensionType.AdminLevel) {
-                where.append(" AND Site.LocationId IN " +
-                        "(SELECT Link.LocationId FROM LocationAdminLink Link WHERE 1=1 ");
-
-                appendIdCriteria(where, "Link.AdminEntityId", filter.getRestrictions(type), parameters);
-                where.append(") ");
-            }
-        }
+        appendDimensionRestrictions(where, filter, parameters);
 
         final StringBuilder sql = new StringBuilder();
         sql.append("SELECT ").append(columns).append(" FROM ").append(from)
@@ -483,32 +514,6 @@ public class PivotHibernateDAO implements PivotDAO {
         return em.createQuery("select a.id from Attribute a where a.group.id=?1")
                 .setParameter(1, attrGroupDim.getAttributeGroupId())
                 .getResultList();
-    }
-
-    private void appendVisibilityFilter(StringBuilder where, int userId) {
-        where.append(" AND ");
-        where.append("(Db.OwnerUserId = ").append(userId).append(" OR ")
-             .append(userId).append(" in (select p.UserId from UserPermission p " +
-                "where p.AllowView and " +
-                "p.UserId=").append(userId).append(" AND p.DatabaseId = Db.DatabaseId))");
-    }
-
-    private void appendIdCriteria(StringBuilder sb, String fieldName, Set<Integer> ids, List<Object> parameters) {
-        sb.append(" AND ").append(fieldName);
-
-        if (ids.size() == 1) {
-            sb.append(" = ?");
-        } else {
-            sb.append(" IN (? ");
-            for (int i = 1; i != ids.size(); ++i) {
-                sb.append(", ?");
-            }
-            sb.append(")");
-        }
-
-        for (Integer id : ids) {
-            parameters.add(id);
-        }
     }
 
     @Override

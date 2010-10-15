@@ -5,25 +5,25 @@
 
 package org.sigmah.server.report.generator;
 
-import org.sigmah.server.dao.SiteProjectionBinder;
-import org.sigmah.server.dao.hibernate.SiteTableDAOHibernate;
+import org.sigmah.shared.dao.SiteProjectionBinder;
 import org.sigmah.shared.dao.SiteTableColumn;
 import org.sigmah.shared.domain.AdminEntity;
 import org.sigmah.shared.report.content.TableData;
 import org.sigmah.shared.report.model.TableColumn;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The RowBinder class bridges the SiteDAO object (which
+ * The RowBinder class bridges the SiteTableDAO object (which
  * serves to retrieve data at many points throughout ActivityInfo)
  * with the particular data model of report TableElement.
  *
  * @author Alex Bertram
  *
  */
-
 public class RowBinder implements SiteProjectionBinder<TableData.Row> {
 
     /**
@@ -54,15 +54,10 @@ public class RowBinder implements SiteProjectionBinder<TableData.Row> {
     private Map<Integer, Integer> attributeColumns = new HashMap<Integer, Integer>();
 
 
-    private int xIndex;
-    private int yIndex;
     private TableData tableData;
 
     public RowBinder(TableData tableData) {
         this.tableData = tableData;
-
-        xIndex = SiteTableDAOHibernate.getColumnIndex(SiteTableColumn.x);
-        yIndex = SiteTableDAOHibernate.getColumnIndex(SiteTableColumn.y);
 
         for(TableColumn column : tableData.getRootColumn().getLeaves()) {
             int columnIndex = tableData.getColumnIndex(column);
@@ -93,19 +88,23 @@ public class RowBinder implements SiteProjectionBinder<TableData.Row> {
     }
 
     @Override
-    public TableData.Row newInstance(String[] properties, Object[] values) {
+    public TableData.Row newInstance(String[] properties, ResultSet rs) throws SQLException {
 
         TableData.Row row = new TableData.Row(tableData.getLeafColumnCount());
-        row.id = (Integer)values[0];
+        row.id = (Integer)rs.getInt(SiteTableColumn.id.index());
 
-        if(values[xIndex]!=null && values[yIndex]!=null) {
-            row.hasXY = true;
-            row.x = (Double)values[xIndex];
-            row.y = (Double)values[yIndex];
+        row.hasXY = true;
+        row.x = rs.getDouble(SiteTableColumn.x.index());
+        if(rs.wasNull()) {
+            row.hasXY = false;
+        }
+        row.y = rs.getDouble(SiteTableColumn.y.index());
+        if(rs.wasNull()) {
+            row.hasXY = false;
         }
 
         for(Map.Entry<Integer, Integer> entry : baseColumns.entrySet()) {
-            row.values[entry.getValue()] = values[entry.getKey()];
+            row.values[entry.getValue()] = rs.getObject(entry.getKey());
         }
 
         return row;

@@ -37,6 +37,7 @@ public class Synchronizer {
 
     private ProgressTrackingIterator<SyncRegion> regionIt;
 
+    private int rowsUpdated;
 
     private AsyncCallback<Void> callback;
 
@@ -85,6 +86,7 @@ public class Synchronizer {
     public void start() {
         fireStatusEvent("Requesting sync regions...", 0);
         running = true;
+        rowsUpdated = 0;
         dispatch.execute(new GetSyncRegions(), null, new AsyncCallback<SyncRegions>() {
             @Override
             public void onFailure(Throwable throwable) {
@@ -128,7 +130,8 @@ public class Synchronizer {
     }
 
     private void doUpdate(final SyncRegion region, String localVersion) {
-        fireStatusEvent("Requesting updates for " + region.getId(), regionIt.percentComplete());
+        fireStatusEvent("Synchronizing '" + region.getId() + "' [" + rowsUpdated + " rows updated so far]",
+                regionIt.percentComplete());
         Log.info("Synchronizer: Region " + region.getId() + ": localVersion=" + localVersion);
 
         dispatch.execute(new GetSyncRegionUpdates(region.getId(), localVersion), null, new AsyncCallback<SyncRegionUpdate>() {
@@ -162,6 +165,7 @@ public class Synchronizer {
             @Override
             public void onSuccess(Integer rows) {
                 Log.debug("Synchronizer: updates succeeded, " + rows + " row(s) affected");
+                rowsUpdated += rows;
                 afterUpdatesArePersisted(region, update);
             }
         });

@@ -26,7 +26,7 @@ public class SQLDialectProvider implements Provider<SQLDialect> {
     public SQLDialectProvider(EntityManagerFactory emf)  {
         HibernateEntityManager hem = (HibernateEntityManager) emf.createEntityManager();
         init(hem);
-        hem.close();        
+        hem.close();
     }
 
     private SQLDialectProvider() {
@@ -90,6 +90,11 @@ public class SQLDialectProvider implements Provider<SQLDialect> {
         public String disableReferentialIntegrityStatement(boolean disabled) {
             throw new UnsupportedOperationException();
         }
+
+        @Override
+        public String limitClause(int offset, int limit) {
+            throw new UnsupportedOperationException();
+        }
     }
 
     private static class MSSQLDialect extends DefaultDialect {
@@ -115,6 +120,13 @@ public class SQLDialectProvider implements Provider<SQLDialect> {
         public String disableReferentialIntegrityStatement(boolean disabled) {
             return "SET foreign_key_checks = " + (disabled ? "0" : "1");
         }
+
+        @Override
+        public String limitClause(int offset, int limit) {
+            return new StringBuilder("LIMIT(")
+                    .append(offset).append(',').append(limit == 0 ? Integer.MAX_VALUE : limit)
+                    .append(")").toString();
+        }
     }
 
     private static class PostgresDialect extends DefaultDialect {
@@ -135,6 +147,11 @@ public class SQLDialectProvider implements Provider<SQLDialect> {
         public String quarterFunction(String column) {
             return "EXTRACT(quarter FROM (" + column + "))";
         }
+
+        @Override
+        public String limitClause(int offset, int limit) {
+            return postgresStyleLimitClause(offset, limit);
+        }
     }
 
     private static class H2Dialect extends DefaultDialect {
@@ -150,6 +167,17 @@ public class SQLDialectProvider implements Provider<SQLDialect> {
         public String disableReferentialIntegrityStatement(boolean disabled) {
             return "SET REFERENTIAL_INTEGRITY " + (disabled ? "FALSE" : "TRUE");
         }
+
+        @Override
+        public String limitClause(int offset, int limit) {
+            return postgresStyleLimitClause(offset, limit);
+        }
+    }
+
+    private static String postgresStyleLimitClause(int offset, int limit) {
+        return new StringBuilder("LIMIT ")
+                .append(limit == 0 ? "ALL" : limit)
+                .append(" OFFSET ").append(offset).toString();
     }
 
 

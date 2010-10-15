@@ -1,8 +1,6 @@
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
 
-import org.sigmah.shared.command.handler.GetSitesHandler;
-
 import com.google.inject.AbstractModule;
 
 /**
@@ -15,6 +13,5 @@ public class CommandHandlerModule extends AbstractModule {
     @Override
     protected void configure() {
        
-    	bind(GetSitesHandler.class).to(GetSitesHandlerHibernate.class);
     }
 }

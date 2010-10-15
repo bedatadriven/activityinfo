@@ -6,7 +6,6 @@
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
 import com.google.inject.Inject;
-import org.sigmah.server.dao.SiteTableDAO;
 import org.sigmah.server.domain.SiteData;
 import org.sigmah.server.report.generator.SiteDataBinder;
 import org.sigmah.shared.command.GetSitePoints;
@@ -14,6 +13,7 @@ import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.SitePointList;
 import org.sigmah.shared.dao.SiteOrder;
+import org.sigmah.shared.dao.SiteTableDAO;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.BoundingBoxDTO;
 import org.sigmah.shared.dto.SitePointDTO;

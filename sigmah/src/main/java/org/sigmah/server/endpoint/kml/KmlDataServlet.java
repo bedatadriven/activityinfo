@@ -10,8 +10,6 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import org.apache.commons.codec.binary.Base64;
 import org.sigmah.server.auth.Authenticator;
-import org.sigmah.server.dao.SiteTableDAO;
-import org.sigmah.server.dao.hibernate.SiteTableDAOHibernate;
 import org.sigmah.server.domain.DomainFilters;
 import org.sigmah.server.domain.SiteData;
 import org.sigmah.server.report.generator.SiteDataBinder;
@@ -20,10 +18,7 @@ import org.sigmah.server.util.KMLNamespace;
 import org.sigmah.server.util.XmlBuilder;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.command.handler.GetSchemaHandler;
-import org.sigmah.shared.dao.Filter;
-import org.sigmah.shared.dao.SiteOrder;
-import org.sigmah.shared.dao.SiteTableColumn;
-import org.sigmah.shared.dao.UserDAO;
+import org.sigmah.shared.dao.*;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
@@ -238,7 +233,7 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
         order.add(SiteOrder.ascendingOn(SiteTableColumn.activity_name.property()));
         order.add(SiteOrder.ascendingOn(SiteTableColumn.date2.property()));
 
-        SiteTableDAO siteDAO = injector.getInstance(SiteTableDAOHibernate.class);
+        SiteTableDAO siteDAO = injector.getInstance(SiteTableDAO.class);
         return siteDAO.query(user, new Filter(), order, new SiteDataBinder(), SiteTableDAO.RETRIEVE_ALL, 0, -1);
 
     }

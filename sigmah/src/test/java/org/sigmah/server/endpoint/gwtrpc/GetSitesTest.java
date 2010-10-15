@@ -12,23 +12,18 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.dao.OnDataSet;
-import org.sigmah.server.endpoint.EndpointModule;
 import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.test.InjectionSupport;
-import org.sigmah.test.Modules;
 
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/sites-simple1.db.xml")
-@Modules({
-	EndpointModule.class
-})
 public class GetSitesTest extends CommandTestCase {
     private static final int DATABASE_OWNER = 1;
-
+                
 
     @Test
     public void testActivityQueryBasic() throws CommandException {
@@ -40,7 +35,7 @@ public class GetSitesTest extends CommandTestCase {
         cmd.filter().onActivity(1);
         cmd.setSortInfo(new SortInfo("date2", SortDir.DESC));
 
-        PagingLoadResult<SiteDTO> result = execute(cmd);
+        PagingLoadResult<SiteDTO> result = execute(cmd);    
 
         Assert.assertEquals("totalLength", 3, result.getData().size());
         Assert.assertEquals("totalLength", 3, result.getTotalLength());
@@ -158,7 +153,7 @@ public class GetSitesTest extends CommandTestCase {
 
         PagingLoadResult<SiteDTO> result = execute(cmd);
 
-        Assert.assertEquals("rows", 5, result.getData().size());
+        Assert.assertEquals("rows", 3, result.getData().size());
     }
 
     @Test

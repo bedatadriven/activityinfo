@@ -6,16 +6,18 @@
 package org.sigmah.server.servlet;
 
 import com.google.inject.Inject;
+import org.hibernate.ejb.HibernateEntityManager;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.dao.OnDataSet;
-import org.sigmah.server.dao.SiteTableDAO;
-import org.sigmah.server.dao.hibernate.SiteTableDAOHibernate;
-import org.sigmah.shared.domain.User;
+import org.sigmah.server.dao.hibernate.HibernateSiteTableDAO;
 import org.sigmah.server.endpoint.export.Export;
 import org.sigmah.server.endpoint.gwtrpc.CommandTestCase;
-import org.sigmah.shared.command.handler.GetSchemaHandler;
 import org.sigmah.shared.command.GetSchema;
+import org.sigmah.shared.command.handler.GetSchemaHandler;
+import org.sigmah.shared.dao.SQLDialect;
+import org.sigmah.shared.dao.SiteTableDAO;
+import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
@@ -37,6 +39,9 @@ public class ExportIntegrationTest extends CommandTestCase {
     private EntityManagerFactory emf;
 
     @Inject
+    private SQLDialect dialect;
+
+    @Inject
     private GetSchemaHandler getSchemaHandler;
 
 
@@ -50,7 +55,7 @@ public class ExportIntegrationTest extends CommandTestCase {
 
         EntityManager em = emf.createEntityManager();
         SchemaDTO schema = (SchemaDTO) getSchemaHandler.execute(new GetSchema(), user);
-        SiteTableDAO siteDAO = new SiteTableDAOHibernate(em);
+        SiteTableDAO siteDAO = new HibernateSiteTableDAO((HibernateEntityManager)em, dialect);
 
         Export export = new Export(user, siteDAO);
         for (UserDatabaseDTO db : schema.getDatabases()) {

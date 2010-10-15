@@ -49,4 +49,12 @@ public interface SQLDialect {
      */
     String disableReferentialIntegrityStatement(boolean disabled);
 
+    /**
+     * Returns the database-specific clause for limiting the size of the result list
+     *
+     * @param offset zero-based index of rows to start
+     * @param limit maximum number of rows to return, or zero for no limit
+     * @return
+     */
+    String limitClause(int offset, int limit);
 }

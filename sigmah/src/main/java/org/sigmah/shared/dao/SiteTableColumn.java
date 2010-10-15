@@ -16,22 +16,22 @@ package org.sigmah.shared.dao;
 */
 public enum SiteTableColumn {
 
-    id(0, "site.id"),
-    activity_id(1, "activity.id"),
-    activity_name(2, "activity.name"),
-    database_id(3, "database.id"),
-    database_name(4, "database.name"),
-    date1(5, "site.date1"),
-    date2(6, "site.date2"),
-    status(7, "site.status"),
-    partner_id(8, "partner.id"),
-    partner_name(9, "partner.name"),
-    location_name(10, "location.name"),
-    location_axe(11, "location.axe"),
-    location_type(12, "locationType.name"),
-    comments(13, "site.comments"),
-    x(14, "location.x"),
-    y(15, "location.y");
+    id(1, "site.SiteId"),
+    activity_id(2, "activity.ActivityId"),
+    activity_name(3, "activity.name"),
+    database_id(4, "UserDatabase.DatabaseId"),
+    database_name(5, "UserDatabase.name"),
+    date1(6, "site.date1"),
+    date2(7, "site.date2"),
+    status(8, "site.status"),
+    partner_id(9, "partner.PartnerId"),
+    partner_name(10, "partner.name"),
+    location_name(11, "location.name"),
+    location_axe(12, "location.axe"),
+    location_type(13, "locationType.name"),
+    comments(14, "site.comments"),
+    x(15, "location.x"),
+    y(16, "location.y");
 
     private final String property;
     private final int index;

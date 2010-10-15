@@ -3,12 +3,8 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.server.dao;
+package org.sigmah.shared.dao;
 
-import com.google.inject.ImplementedBy;
-import org.sigmah.server.dao.hibernate.SiteTableDAOHibernate;
-import org.sigmah.shared.dao.Filter;
-import org.sigmah.shared.dao.SiteOrder;
 import org.sigmah.shared.domain.User;
 
 import java.util.List;
@@ -28,8 +24,8 @@ import java.util.List;
  * 
  * @author Alex Bertram
  */
-@ImplementedBy(SiteTableDAOHibernate.class)
 public interface SiteTableDAO {
+
     int RETRIEVE_ALL = 0xFF;
     int RETRIEVE_NONE = 0x00;
     int RETRIEVE_ADMIN = 0x01;
@@ -46,7 +42,7 @@ public interface SiteTableDAO {
             int offset,
             int limit);
 
-    int queryCount(Filter filter);
+    int queryCount(User user, Filter filter);
 
     int queryPageNumber(User user, Filter filter, List<SiteOrder> orderings, int pageSize, int siteId);
 }

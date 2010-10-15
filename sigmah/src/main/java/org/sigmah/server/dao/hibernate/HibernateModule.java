@@ -5,12 +5,10 @@
 
 package org.sigmah.server.dao.hibernate;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
-import com.google.inject.Singleton;
+import com.google.inject.*;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.servlet.RequestScoped;
+import org.hibernate.ejb.HibernateEntityManager;
 import org.sigmah.server.dao.*;
 import org.sigmah.shared.dao.*;
 
@@ -65,6 +63,7 @@ public class HibernateModule extends AbstractModule {
         bind(ReportingPeriodDAO.class).to(ReportingPeriodHibernateDAO.class);
         bindDAOProxy(ReportDefinitionDAO.class);
         bindDAOProxy(PartnerDAO.class);
+        bind(SiteTableDAO.class).to(HibernateSiteTableDAO.class);
         bind(SiteDAO.class).to(SiteHibernateDAO.class);
         bindDAOProxy(UserDatabaseDAO.class);
         bindDAOProxy(UserPermissionDAO.class);
@@ -105,6 +104,11 @@ public class HibernateModule extends AbstractModule {
         public EntityManager get() {
             return emf.createEntityManager();
         }
+    }
+
+    @Provides
+    protected HibernateEntityManager provideHibernateEntityManager(EntityManager entityManager) {
+        return (HibernateEntityManager)entityManager;
     }
 
 }

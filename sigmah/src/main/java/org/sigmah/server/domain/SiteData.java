@@ -40,15 +40,15 @@ public class SiteData implements HasLatLng {
      * @param column
      * @return the value of the given column
      */
-	public Object getValue(SiteTableColumn column) {
-		return values[column.index()];
+	public <X> X getValue(SiteTableColumn column) {
+		return (X) values[column.index()-1];
 	}
 
     /**
      * Sets the value of the given column for this Site
      */
     public void setValue(SiteTableColumn column, Object value) {
-        values[column.index()] = value;
+        values[column.index()-1] = value;
     }
 
     /**
@@ -56,7 +56,7 @@ public class SiteData implements HasLatLng {
      */
 	@Override
 	public double getLongitude() {
-		return (Double) getValue(SiteTableColumn.x);
+		return (Double)getValue(SiteTableColumn.x);
 	}
 
     /**
@@ -73,7 +73,7 @@ public class SiteData implements HasLatLng {
      * @return this Site's ID
      */
     public int getId() {
-        return (Integer) getValue(SiteTableColumn.id);
+        return (Integer)getValue(SiteTableColumn.id);
     }
 
     /**
@@ -91,7 +91,7 @@ public class SiteData implements HasLatLng {
      * @return the id of the Activity to which this Site belongs
      */
     public int getActivityId() {
-        return (Integer)values[SiteTableColumn.activity_id.index()];
+        return (Integer)getValue(SiteTableColumn.activity_id);
     }
 
     /**
@@ -99,7 +99,7 @@ public class SiteData implements HasLatLng {
      * @return the id of the database to which this Site belongs
      */
     public int getDatabaseId() {
-        return (Integer)values[SiteTableColumn.database_id.index()];
+        return (Integer)getValue(SiteTableColumn.database_id);
     }
 
     /**
@@ -107,7 +107,7 @@ public class SiteData implements HasLatLng {
      * @return the name of location with which this Site is associated
      */
     public String getLocationName() {
-        return (String)values[SiteTableColumn.location_name.index()];
+        return getValue(SiteTableColumn.location_name);
     }
 
     /**
@@ -115,7 +115,7 @@ public class SiteData implements HasLatLng {
      * @return the axe routier of the location with which this Site is associated
      */
     public String getLocationAxe() {
-        return (String)values[SiteTableColumn.location_axe.index()];
+        return getValue(SiteTableColumn.location_axe);
     }
 
     /**
@@ -123,7 +123,7 @@ public class SiteData implements HasLatLng {
      * @return  the name of the Partner who owns this Site
      */
     public String getPartnerName() {
-        return (String)values[SiteTableColumn.partner_name.index()];
+        return getValue(SiteTableColumn.partner_name);
     }
 
     /**
@@ -139,7 +139,7 @@ public class SiteData implements HasLatLng {
      * @return  the date on which work at this Site began
      */
     public Date getDate1() {
-        return (Date)values[SiteTableColumn.date1.index()];
+        return getValue(SiteTableColumn.date1);
     }
 
     /**
@@ -147,7 +147,7 @@ public class SiteData implements HasLatLng {
      * @return  the date on which work at this Site ended
      */
     public Date getDate2() {
-        return (Date)values[SiteTableColumn.date2.index()];
+        return getValue(SiteTableColumn.date2);
     }
 
     /**
@@ -155,7 +155,7 @@ public class SiteData implements HasLatLng {
      * @return  the id of the Partner who owns this Site
      */
     public int getPartnerId() {
-        return (Integer)values[SiteTableColumn.partner_id.index()];
+        return (Integer)getValue(SiteTableColumn.partner_id);
     }
 
     /**
@@ -163,7 +163,7 @@ public class SiteData implements HasLatLng {
      * @return  the plain-text comments associated with this Site
      */
     public String getComments() {
-        return (String)values[SiteTableColumn.comments.index()];
+        return getValue(SiteTableColumn.comments);
     }
 
     /**

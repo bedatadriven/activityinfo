@@ -5,20 +5,22 @@
 
 package org.sigmah.server.dao;
 
-import java.util.List;
-
-import javax.persistence.EntityManager;
-
+import com.google.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.sigmah.server.dao.hibernate.SiteTableDAOHibernate;
-import org.sigmah.shared.domain.AdminEntity;
+import org.sigmah.server.dao.hibernate.HibernateSiteTableDAO;
+import org.sigmah.shared.dao.SiteProjectionBinder;
+import org.sigmah.shared.dao.SiteTableDAO;
 import org.sigmah.shared.domain.User;
 import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.MockHibernateModule;
 import org.sigmah.test.Modules;
 
-import com.google.inject.Inject;
+import javax.persistence.EntityManager;
+import java.util.List;
+
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.replay;
 
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/sites-simple1.db.xml")
@@ -29,38 +31,19 @@ public class SiteTableDAOTest {
     private EntityManager em;
 
     @Inject
-    private SiteTableDAOHibernate dao;
+    private HibernateSiteTableDAO dao;
 
 
     @Test
     public void testNullCriteria() {
 
-        SiteProjectionBinder binder = new MockBinder();
 
         User user = em.find(User.class, 1);
+
+        SiteProjectionBinder binder = createNiceMock(SiteProjectionBinder.class);
+        replay(binder);
 
         List list = dao.query(user, null, null, binder, SiteTableDAO.RETRIEVE_ALL, 0, -1);
     }
 
-    private static class MockBinder implements SiteProjectionBinder {
-        @Override
-        public Object newInstance(String[] properties, Object[] values) {
-            return null;
-        }
-
-        @Override
-        public void setAdminEntity(Object site, AdminEntity entity) {
-
-        }
-
-        @Override
-        public void addIndicatorValue(Object site, int indicatorId, int aggregationMethod, double value) {
-
-        }
-
-        @Override
-        public void setAttributeValue(Object site, int attributeId, boolean value) {
-
-        }
-    }
 }

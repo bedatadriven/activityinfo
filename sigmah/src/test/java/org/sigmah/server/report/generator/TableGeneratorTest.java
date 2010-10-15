@@ -9,13 +9,8 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.sigmah.server.dao.PivotDAO;
-import org.sigmah.server.dao.SiteProjectionBinder;
-import org.sigmah.server.dao.SiteTableDAO;
 import org.sigmah.server.report.generator.map.MockBaseMapDAO;
-import org.sigmah.shared.dao.Filter;
-import org.sigmah.shared.dao.IndicatorDAO;
-import org.sigmah.shared.dao.SiteOrder;
-import org.sigmah.shared.dao.SiteTableColumn;
+import org.sigmah.shared.dao.*;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.report.content.BubbleMapMarker;
 import org.sigmah.shared.report.content.MapContent;
@@ -25,12 +20,13 @@ import org.sigmah.shared.report.model.MapElement;
 import org.sigmah.shared.report.model.TableColumn;
 import org.sigmah.shared.report.model.TableElement;
 
-import java.util.ArrayList;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static org.easymock.EasyMock.createNiceMock;
-import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.*;
 
 /**
  * @author Alex Bertram
@@ -44,47 +40,6 @@ public class TableGeneratorTest {
         user.setName("Alex");
         user.setEmail("akbertra@mgail.com");
         user.setLocale("fr");
-    }
-
-
-    public class MockSiteTableDAO implements SiteTableDAO {
-
-        @Override
-        public <RowT> List<RowT> query(User user, Filter filter, List<SiteOrder> orderings, SiteProjectionBinder<RowT> binder, int retrieve, int offset, int limit) {
-            List<RowT> rows = new ArrayList<RowT>();
-            Object[] row = new Object[SiteTableColumn.values().length];
-            String[] properties = new String[SiteTableColumn.values().length];
-
-            row[0] = 1;
-            row[SiteTableColumn.location_name.index()] = "tampa bay";
-            row[SiteTableColumn.x.index()] = 28.4;
-            row[SiteTableColumn.y.index()] = 1.2;
-
-            rows.add(binder.newInstance(properties, row));
-            return rows;
-        }
-
-        @Override
-        public int queryCount(Filter filter) {
-            return 0;
-        }
-
-        @Override
-        public int queryPageNumber(User user, Filter filter, List<SiteOrder> orderings, int pageSize, int siteId) {
-            return 0;
-        }
-    }
-
-    private IndicatorDAO createIndicator() {
-        IndicatorDAO indicatorDAO = createNiceMock(IndicatorDAO.class);
-        replay(indicatorDAO);
-        return indicatorDAO;
-    }
-
-    private PivotDAO createPivotDAO() {
-        PivotDAO pivotDAO = createNiceMock(PivotDAO.class);
-        replay(pivotDAO);
-        return pivotDAO;
     }
 
     @Test
@@ -136,5 +91,50 @@ public class TableGeneratorTest {
         TableData.Row row = table.getContent().getData().getRows().get(0);
         Assert.assertEquals("label on row", "1", row.values[0]);
     }
+
+    private IndicatorDAO createIndicator() {
+        IndicatorDAO indicatorDAO = createNiceMock(IndicatorDAO.class);
+        replay(indicatorDAO);
+        return indicatorDAO;
+    }
+
+    private PivotDAO createPivotDAO() {
+        PivotDAO pivotDAO = createNiceMock(PivotDAO.class);
+        replay(pivotDAO);
+        return pivotDAO;
+    }
+
+    private class MockSiteTableDAO implements SiteTableDAO {
+        @Override
+        public <RowT> List<RowT> query(User user, Filter filter, List<SiteOrder> orderings, SiteProjectionBinder<RowT> binder, int retrieve, int offset, int limit)  {
+            try {
+                final ResultSet rs = createNiceMock(ResultSet.class);
+                expect(rs.getInt(SiteTableColumn.id.index())).andReturn(1);
+                expect(rs.getObject(SiteTableColumn.id.index())).andReturn(1);
+                expect(rs.getObject(SiteTableColumn.location_name.index())).andReturn("tampa bay");
+                expect(rs.getDouble(SiteTableColumn.x.index())).andReturn(28.4);
+                expect(rs.getObject(SiteTableColumn.x.index())).andReturn(28.4);
+                expect(rs.getDouble(SiteTableColumn.y.index())).andReturn(1.2);
+                expect(rs.getObject(SiteTableColumn.y.index())).andReturn(1.2);
+                expect(rs.wasNull()).andReturn(false).anyTimes();
+                replay(rs);
+
+                return Collections.singletonList(binder.newInstance(new String[0], rs));
+            } catch (SQLException e) {
+                throw new AssertionError(e);
+            }
+        }
+
+        @Override
+        public int queryCount(User user, Filter filter) {
+            return 0;
+        }
+
+        @Override
+        public int queryPageNumber(User user, Filter filter, List<SiteOrder> orderings, int pageSize, int siteId) {
+            return 0;
+        }
+    }
+
 
 }

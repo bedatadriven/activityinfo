@@ -5,14 +5,25 @@
 
 package org.sigmah.server.report.generator;
 
-import org.sigmah.server.dao.SiteProjectionBinder;
 import org.sigmah.server.domain.SiteData;
+import org.sigmah.shared.dao.SiteProjectionBinder;
+import org.sigmah.shared.dao.SiteTableColumn;
 import org.sigmah.shared.domain.AdminEntity;
 
-public class SiteDataBinder implements SiteProjectionBinder<SiteData>{
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class SiteDataBinder implements SiteProjectionBinder<SiteData> {
 
 	@Override
-	public SiteData newInstance(String[] properties, Object[] values) {
+	public SiteData newInstance(String[] properties, ResultSet rs) throws SQLException {
+        SiteTableColumn[] columns = SiteTableColumn.values();
+        Object[] values = new Object[columns.length];
+
+        for(int i=0;i!=values.length;++i) {
+            values[i] = rs.getObject(columns[i].index());
+        }
+
 		return new SiteData(values);
 	}
 

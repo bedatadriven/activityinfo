@@ -10,9 +10,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.dao.OnDataSet;
-import org.sigmah.server.dao.SiteTableDAO;
-import org.sigmah.server.dao.hibernate.SiteTableDAOHibernate;
+import org.sigmah.server.dao.hibernate.HibernateSiteTableDAO;
 import org.sigmah.server.domain.SiteData;
+import org.sigmah.shared.dao.SiteTableDAO;
 import org.sigmah.shared.domain.User;
 import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.MockHibernateModule;
@@ -32,12 +32,15 @@ public class SiteDataBinderTest {
     private EntityManager em;
 
     @Inject
-    private SiteTableDAOHibernate dao;
+    private HibernateSiteTableDAO dao;
 
     @Test
     public void test() {
 
-        List<SiteData> sites = dao.query(new User(),
+        User owner = new User();
+        owner.setId(1);
+        
+        List<SiteData> sites = dao.query(owner,
                 filter().onSite(2),
                 null, new SiteDataBinder(), SiteTableDAO.RETRIEVE_ALL, 0, -1);
 

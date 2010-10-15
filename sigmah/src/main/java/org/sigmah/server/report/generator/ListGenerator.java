@@ -7,7 +7,7 @@ package org.sigmah.server.report.generator;
 
 import com.google.inject.Inject;
 import org.sigmah.server.dao.PivotDAO;
-import org.sigmah.server.dao.SiteTableDAO;
+import org.sigmah.shared.dao.SiteTableDAO;
 import org.sigmah.shared.report.model.ReportElement;
 
 /**

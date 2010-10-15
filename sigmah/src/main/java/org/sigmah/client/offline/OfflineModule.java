@@ -15,11 +15,9 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import org.sigmah.client.dto.ClientDTOMapper;
 import org.sigmah.client.inject.DummyConnection;
-import org.sigmah.client.offline.command.handler.GetSitesHandlerLocal;
 import org.sigmah.client.offline.dao.*;
 import org.sigmah.client.offline.ui.OfflinePresenter;
 import org.sigmah.client.offline.ui.OfflineView;
-import org.sigmah.shared.command.handler.GetSitesHandler;
 import org.sigmah.shared.dao.*;
 import org.sigmah.shared.domain.ActivityInfoOfflineUnit;
 import org.sigmah.shared.dto.DTOMapper;
@@ -45,14 +43,13 @@ public class OfflineModule extends AbstractGinModule {
 
 
         //DAOs for off-line
+        bind(SQLDialect.class).to(SqliteDialect.class).in(Singleton.class);
+        bind(SiteTableDAO.class).to(SqlSiteTableDAO.class).in(Singleton.class);
     	bind(CountryDAO.class).to(CountryLocalDAO.class).in(Singleton.class);
     	bind(UserDatabaseDAO.class).to(UserDatabaseLocalDAO.class).in(Singleton.class);
     	bind(AdminDAO.class).to(AdminLocalDAO.class).in(Singleton.class);
     	bind(UserDAO.class).to(UserLocalDAO.class).in(Singleton.class);
     	bind(ActivityDAO.class).to(ActivityLocalDAO.class).in(Singleton.class);
-    	
-    	// handlers
-    	bind(GetSitesHandler.class).to(GetSitesHandlerLocal.class).in(Singleton.class);
     	
     	// DTO mapper
     	bind(DTOMapper.class).to(ClientDTOMapper.class);

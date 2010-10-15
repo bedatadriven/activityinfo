@@ -5,29 +5,19 @@
 
 package org.sigmah.shared.command.handler;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.inject.Inject;
+import org.sigmah.shared.command.GetSchema;
+import org.sigmah.shared.command.result.CommandResult;
+import org.sigmah.shared.dao.UserDatabaseDAO;
+import org.sigmah.shared.domain.*;
+import org.sigmah.shared.dto.*;
+import org.sigmah.shared.exception.CommandException;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.sigmah.shared.command.GetSchema;
-import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.dao.UserDatabaseDAO;
-import org.sigmah.shared.domain.Activity;
-import org.sigmah.shared.domain.OrgUnit;
-import org.sigmah.shared.domain.User;
-import org.sigmah.shared.domain.UserDatabase;
-import org.sigmah.shared.domain.UserPermission;
-import org.sigmah.shared.dto.ActivityDTO;
-import org.sigmah.shared.dto.CountryDTO;
-import org.sigmah.shared.dto.DTOMapper;
-import org.sigmah.shared.dto.PartnerDTO;
-import org.sigmah.shared.dto.SchemaDTO;
-import org.sigmah.shared.dto.UserDatabaseDTO;
-import org.sigmah.shared.exception.CommandException;
-
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.inject.Inject;
 
 
 /**
