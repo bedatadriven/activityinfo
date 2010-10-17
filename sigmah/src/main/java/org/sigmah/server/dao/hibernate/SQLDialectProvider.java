@@ -123,9 +123,9 @@ public class SQLDialectProvider implements Provider<SQLDialect> {
 
         @Override
         public String limitClause(int offset, int limit) {
-            return new StringBuilder("LIMIT(")
+            return new StringBuilder("LIMIT ")
                     .append(offset).append(',').append(limit == 0 ? Integer.MAX_VALUE : limit)
-                    .append(")").toString();
+                    .toString();
         }
     }
 
