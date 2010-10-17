@@ -97,6 +97,26 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
         builder.insert(LocationType.class, locationTypes);
         builder.insert(User.class, users);
 
+        builder.executeStatement("create table if not exists PartnerInDatabase (DatabaseId integer, PartnerId int)");
+        builder.beginPreparedStatement("insert into PartnerInDatabase (DatabaseId, PartnerId) values (?, ?) ");
+        for(UserDatabase db : databases) {
+            for(OrgUnit orgUnit : db.getPartners()) {
+                builder.addExecution(db.getId(), orgUnit.getId());
+            }
+        }
+        builder.finishPreparedStatement();
+
+        builder.executeStatement("create table if not exists AttributeGroupInActivity (ActivityId integer, AttributeGroupId integer)");
+        builder.beginPreparedStatement("insert into AttributeGroupInActivity (ActivityId, AttributeGroupId) values (?,?)");
+        for(UserDatabase db : databases) {
+            for(Activity activity : db.getActivities()) {
+                for(AttributeGroup group : activity.getAttributeGroups()) {
+                    builder.addExecution(activity.getId(), group.getId());
+                }
+            }
+        }
+        builder.finishPreparedStatement();
+
         return builder.asJson();
     }
 

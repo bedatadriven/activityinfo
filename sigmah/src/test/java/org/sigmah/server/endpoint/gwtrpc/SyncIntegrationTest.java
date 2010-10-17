@@ -90,6 +90,11 @@ public class SyncIntegrationTest {
         assertThat(queryString("select Name from Location where LocationId=7"), equalTo("Shabunda"));
         assertThat(queryInt("select value from IndicatorValue where ReportingPeriodId=601 and IndicatorId=6"),
                 equalTo(35));
+
+        assertThat(queryInt("select PartnerId from partnerInDatabase where databaseid=2"), equalTo(1));
+
+        assertThat(queryInt("select AttributeGroupId from AttributeGroupInActivity where ActivityId=2"),
+                equalTo(1));
     }
 
 
