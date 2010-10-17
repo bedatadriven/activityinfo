@@ -12,11 +12,13 @@ import com.google.inject.Provider;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.Authentication;
+import org.sigmah.client.offline.command.handler.LocalGetAdminEntitiesHandler;
+import org.sigmah.client.offline.command.handler.LocalGetSchemaHandler;
 import org.sigmah.shared.command.Command;
+import org.sigmah.shared.command.GetAdminEntities;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.command.handler.CommandHandler;
-import org.sigmah.shared.command.handler.GetSchemaHandler;
 import org.sigmah.shared.command.handler.GetSitesHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.domain.User;
@@ -27,17 +29,19 @@ import org.sigmah.shared.exception.CommandException;
  */
 public class LocalDispatcher implements Dispatcher {
     private final Authentication auth;
-    private final Provider<GetSchemaHandler> getSchemaHandler;
+    private final Provider<LocalGetSchemaHandler> getSchemaHandler;
     private final Provider<GetSitesHandler> getSitesHandler;
+    private final Provider<LocalGetAdminEntitiesHandler> getAdminEntitiesHandler;
 
     @Inject
     public LocalDispatcher(
-            Provider<GetSchemaHandler> getSchemaHandler,
+            Provider<LocalGetSchemaHandler> getSchemaHandler,
             Provider<GetSitesHandler> getSitesHandler,
-            Authentication auth) {
+            Authentication auth, Provider<LocalGetAdminEntitiesHandler> getAdminEntitiesHandler) {
         this.auth = auth;
         this.getSchemaHandler = getSchemaHandler;
         this.getSitesHandler = getSitesHandler;
+        this.getAdminEntitiesHandler = getAdminEntitiesHandler;
     }
 
     @Override
@@ -76,6 +80,8 @@ public class LocalDispatcher implements Dispatcher {
             return (T) getSchemaHandler.get();
         } else if (c instanceof GetSites) {
             return (T) getSitesHandler.get();
+        } else if (c instanceof GetAdminEntities) {
+            return (T) getAdminEntitiesHandler.get();
         } else {
             throw new IllegalArgumentException("No handler class for " + c);
         }

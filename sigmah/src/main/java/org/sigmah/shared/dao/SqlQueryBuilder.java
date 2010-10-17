@@ -76,6 +76,14 @@ public class SqlQueryBuilder {
         return this;
     }
 
+    public SqlQueryBuilder orderBy(String expr) {
+        if(orderByClause.length() > 0) {
+            orderByClause.append(", ");
+        }
+        orderByClause.append(expr);
+        return this;
+    }
+
     public void setLimitClause(String clause) {
         this.limitClause = clause;
     }
@@ -150,11 +158,38 @@ public class SqlQueryBuilder {
 
     public ResultSet executeQuery(Connection connection) throws SQLException {
         String sql = sql();
+        PreparedStatement stmt = prepareStatement(connection, sql);
+        return stmt.executeQuery();
+    }
+
+    private PreparedStatement prepareStatement(Connection connection, String sql) throws SQLException {
         PreparedStatement stmt = connection.prepareStatement(sql);
         for(int i=0;i!=parameters.size();++i) {
             stmt.setObject(i+1, parameters.get(i));
         }
-        return stmt.executeQuery();
+        return stmt;
+    }
+
+    public void forEachResult(Connection connection, ResultHandler handler) {
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        String sql = sql();
+
+        try {
+            stmt = prepareStatement(connection, sql);
+            rs = stmt.executeQuery();
+
+            handler.init(rs);
+
+            while(rs.next()) {
+                handler.handle(rs);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Exception thrown while processing SQL: '" + sql + "'", e);
+        } finally {
+            if(rs != null) { try { rs.close(); } catch(SQLException ignored) {} }
+            if(stmt != null) { try { stmt.close(); } catch(SQLException ignored) {} }
+        }
     }
 
 
@@ -208,5 +243,15 @@ public class SqlQueryBuilder {
             builder.appendField(e);
         }
         return builder;
+    }
+
+    public static abstract class ResultHandler {
+
+        public void init(ResultSet rs) throws SQLException {
+
+        }
+
+        public abstract void handle(ResultSet rs) throws SQLException;
+
     }
 }

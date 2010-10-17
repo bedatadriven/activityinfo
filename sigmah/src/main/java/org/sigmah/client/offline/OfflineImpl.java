@@ -67,7 +67,6 @@ public class OfflineImpl implements OfflineGateway {
     @Override
     public void goOnline(AsyncCallback callback) {
         // TODO: transmit queued changes
-        syncTimer.cancel();
         switchingDispatcher.clearLocalDispatcher();
 
         callback.onSuccess(null);
