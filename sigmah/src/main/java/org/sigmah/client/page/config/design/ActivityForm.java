@@ -14,6 +14,7 @@ import com.extjs.gxt.ui.client.binding.FormBinding;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
+import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
@@ -42,6 +43,12 @@ class ActivityForm extends AbstractDesignForm {
         this.setScrollMode(Scroll.AUTOY);
         this.setLabelWidth(150);
         this.setBorders(false);
+
+        NumberField idField = new NumberField();
+        idField.setFieldLabel("ID");
+        idField.setReadOnly(true);
+        binding.addFieldBinding(new FieldBinding(idField, "id"));
+        add(idField);
 
         TextField<String> nameField = new TextField<String>();
         nameField.setAllowBlank(false);

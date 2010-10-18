@@ -278,7 +278,10 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
             return AttributeGroupForm.class;
         } else if (sel instanceof IndicatorDTO) {
             return IndicatorForm.class;
+        } else if (sel instanceof AttributeDTO) {
+            return AttributeForm.class;
         }
+
 
         return null;
 

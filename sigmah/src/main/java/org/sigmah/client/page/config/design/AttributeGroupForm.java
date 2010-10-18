@@ -8,6 +8,7 @@ package org.sigmah.client.page.config.design;
 
 import com.extjs.gxt.ui.client.binding.FieldBinding;
 import com.extjs.gxt.ui.client.binding.FormBinding;
+import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.common.widget.MappingComboBox;
@@ -20,6 +21,12 @@ class AttributeGroupForm extends AbstractDesignForm {
     public AttributeGroupForm() {
 
         binding = new FormBinding(this);
+
+        NumberField idField = new NumberField();
+        idField.setFieldLabel("ID");
+        idField.setReadOnly(true);
+        binding.addFieldBinding(new FieldBinding(idField, "id"));
+        add(idField);
 
         TextField<String> nameField = new TextField<String>();
         nameField.setFieldLabel(I18N.CONSTANTS.name());
