@@ -117,7 +117,7 @@ public class LocalGetSchemaHandler implements CommandHandler<GetSchema> {
         public void loadDatabases() {
             select("d.DatabaseId, d.Name, d.FullName, d.OwnerUserId, d.CountryId, o.Name, o.Email, " +
                     "p.AllowViewAll, p.AllowEdit, p.AllowEditAll, " +
-                    "p.AllowManageUsers, p.AllowManageAllUsers")
+                    "p.AllowManageUsers, p.AllowManageAllUsers, p.AllowDesign")
                     .from("UserDatabase d " +
                             "LEFT JOIN UserPermission p ON (d.DatabaseId = p.DatabaseId) " +
                             "LEFT JOIN UserLogin o ON (d.OwnerUserId = o.UserId)")
@@ -139,6 +139,7 @@ public class LocalGetSchemaHandler implements CommandHandler<GetSchema> {
                     db.setEditAllAllowed(db.getAmOwner() || rs.getBoolean(10));
                     db.setManageUsersAllowed(db.getAmOwner() || rs.getBoolean(11));
                     db.setManageAllUsersAllowed(db.getAmOwner() || rs.getBoolean(12));
+                    db.setDesignAllowed(db.getAmOwner() || rs.getBoolean(13));
 
                     databaseMap.put(db.getId(), db);
                     databaseList.add(db);
