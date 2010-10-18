@@ -15,6 +15,7 @@ import org.sigmah.shared.command.GetCalendar;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.domain.User;
+import org.sigmah.shared.domain.calendar.CalendarType;
 import org.sigmah.shared.exception.CommandException;
 
 /**
@@ -22,13 +23,13 @@ import org.sigmah.shared.exception.CommandException;
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class GetCalendarHandler implements CommandHandler<GetCalendar> {
-    private final Map<GetCalendar.Type, CalendarHandler> handlers;
+    private final Map<CalendarType, CalendarHandler> handlers;
 
     @Inject
     public GetCalendarHandler(Injector injector) {
-        final EnumMap<GetCalendar.Type, CalendarHandler> map = new EnumMap<GetCalendar.Type, CalendarHandler>(GetCalendar.Type.class);
-        map.put(GetCalendar.Type.Dummy, injector.getInstance(DummyCalendarHandler.class));
-        map.put(GetCalendar.Type.Personal, injector.getInstance(PersonalCalendarHandler.class));
+        final EnumMap<CalendarType, CalendarHandler> map = new EnumMap<CalendarType, CalendarHandler>(CalendarType.class);
+        map.put(CalendarType.Dummy, injector.getInstance(DummyCalendarHandler.class));
+        map.put(CalendarType.Personal, injector.getInstance(PersonalCalendarHandler.class));
 
         handlers = map;
     }

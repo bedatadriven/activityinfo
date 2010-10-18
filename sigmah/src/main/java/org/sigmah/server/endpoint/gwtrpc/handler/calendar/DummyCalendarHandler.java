@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import org.sigmah.shared.domain.calendar.Calendar;
+import org.sigmah.shared.domain.calendar.CalendarType;
 import org.sigmah.shared.domain.calendar.Event;
 
 /**
@@ -22,6 +23,7 @@ public class DummyCalendarHandler implements CalendarHandler {
     @Override
     public Calendar getCalendar(Serializable identifier) {
         final Calendar calendar = new Calendar();
+        calendar.setType(CalendarType.Dummy);
 
         if(identifier != null)
             calendar.setName(identifier.toString());

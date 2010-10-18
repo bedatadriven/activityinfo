@@ -438,6 +438,7 @@ body {
 .calendar-event {
     overflow: hidden;
     height: 16px;
+    cursor: default;
 }
 
 .calendar-event-date {
@@ -496,6 +497,18 @@ body {
 
 .calendar-event-limit:hover {
     color: #EE9329;
+}
+
+/* ----------------------------------------------------------- Calendar Popup */
+
+.gwt-DecoratedPopupPanel {
+    background-color: white;
+    border: 1px solid lightgrey;
+    font-size: 10pt;
+}
+
+.calendar-popup-header {
+    font-weight: bold;
 }
 
 /* ------------------------------------------------------------------ Ext-GWT */

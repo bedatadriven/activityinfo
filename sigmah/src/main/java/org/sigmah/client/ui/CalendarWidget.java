@@ -4,16 +4,19 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -348,6 +351,21 @@ public class CalendarWidget extends Composite {
     }-*/;
 
     /**
+     * Calculates the width of the cell identified by "calendar-cell-calibration".
+     * @return width of a cell.
+     */
+    private native int getCellWidth() /*-{
+        var width = 0;
+
+        var cell = $wnd.document.getElementById('calendar-cell-calibration');
+
+        var style = $wnd.getComputedStyle(cell, null);
+        width += parseInt(style.width);
+
+        return width;
+    }-*/;
+
+    /**
      * Retrieves the current heading of the calendar.
      * @return
      */
@@ -503,7 +521,7 @@ public class CalendarWidget extends Composite {
         for(int i = 0; iterator.hasNext() && i < eventLimit; i++) {
             final Event event = iterator.next();
 
-            final FlowPanel flowPanel = new FlowPanel();
+            final ClickableFlowPanel flowPanel = new ClickableFlowPanel();
             flowPanel.addStyleName("calendar-event");
 
             final StringBuilder eventDate = new StringBuilder();
@@ -523,6 +541,36 @@ public class CalendarWidget extends Composite {
 
             flowPanel.add(dateLabel);
             flowPanel.add(eventLabel);
+
+            final DecoratedPopupPanel detailPopup = new DecoratedPopupPanel(true);
+
+                final Grid popupContent = new Grid(3, 1);
+                popupContent.setText(0, 0, event.getSummary());
+                popupContent.setText(1, 0, eventDate.toString());
+                popupContent.setText(2, 0, event.getDescription());
+                popupContent.getCellFormatter().addStyleName(0, 0, "calendar-popup-header");
+
+            detailPopup.setWidget(popupContent);
+
+            flowPanel.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    final int left = flowPanel.getAbsoluteLeft() - 10;
+                    final int bottom = Window.getClientHeight() - flowPanel.getAbsoluteTop();
+
+                    detailPopup.setWidth((getCellWidth()+20)+"px");
+
+                    // Show the popup
+                    detailPopup.setPopupPositionAndShow(new PositionCallback() {
+                        @Override
+                        public void setPosition(int offsetWidth, int offsetHeight) {
+                            detailPopup.getElement().getStyle().setPropertyPx("left", left);
+                            detailPopup.getElement().getStyle().setProperty("top", "");
+                            detailPopup.getElement().getStyle().setPropertyPx("bottom", bottom);
+                        }
+                    });
+                }
+            });
 
             cell.add(flowPanel);
         }

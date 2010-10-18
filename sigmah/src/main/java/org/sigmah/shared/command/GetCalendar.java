@@ -7,31 +7,37 @@ package org.sigmah.shared.command;
 
 import java.io.Serializable;
 import org.sigmah.shared.domain.calendar.Calendar;
+import org.sigmah.shared.domain.calendar.CalendarType;
 
 /**
  * Command used to ask for events.
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class GetCalendar implements Command<Calendar> {
-    public static enum Type {
-        Activity,
-        Personal,
-        Dummy
-    }
-
-    private Type type;
+    private CalendarType type;
     private Serializable identifier;
 
-    public GetCalendar(Type type, Serializable identifier) {
+    public GetCalendar() {}
+
+    public GetCalendar(CalendarType type, Serializable identifier) {
         this.type = type;
         this.identifier = identifier;
     }
 
-    public Type getType() {
+    public CalendarType getType() {
         return type;
     }
 
+    public void setType(CalendarType type) {
+        this.type = type;
+    }
+
+
     public Serializable getIdentifier() {
         return identifier;
+    }
+
+    public void setIdentifier(Serializable identifier) {
+        this.identifier = identifier;
     }
 }

@@ -17,10 +17,19 @@ import org.sigmah.shared.command.result.CommandResult;
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class Calendar implements Serializable, CommandResult {
+    private CalendarType type;
     private String name;
     private Map<Date, List<Event>> events;
     private Collection<Todo> tasks;
     private int style;
+
+    public CalendarType getType() {
+        return type;
+    }
+
+    public void setType(CalendarType type) {
+        this.type = type;
+    }
 
     public String getName() {
         return name;

@@ -14,6 +14,7 @@ import java.util.List;
 import javax.persistence.Query;
 import javax.persistence.EntityManager;
 import org.sigmah.shared.domain.calendar.Calendar;
+import org.sigmah.shared.domain.calendar.CalendarType;
 import org.sigmah.shared.domain.calendar.Event;
 import org.sigmah.shared.domain.calendar.PersonalEvent;
 
@@ -46,6 +47,7 @@ public class PersonalCalendarHandler implements CalendarHandler {
         final List<PersonalEvent> events = q.getResultList();
 
         final Calendar calendar = new Calendar();
+        calendar.setType(CalendarType.Personal);
         calendar.setName("Evénements");
         if(events != null) {
             final HashMap<Date, List<Event>> eventMap = new HashMap<Date, List<Event>>();
