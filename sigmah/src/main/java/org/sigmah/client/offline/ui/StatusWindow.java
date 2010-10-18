@@ -15,13 +15,13 @@ import org.sigmah.client.icon.IconImageBundle;
 /**
  * @author Alex Bertram
  */
-class OfflineStatusWindow extends Window {
+class StatusWindow extends Window {
 
     private ProgressBar progressBar;
     private Button syncNowButton;
     private Button toggleOfflineButton;
 
-    public OfflineStatusWindow() {
+    public StatusWindow() {
         setHeading(I18N.CONSTANTS.statusOfflineMode());
         setWidth(300);
         setHeight(200);
@@ -32,7 +32,7 @@ class OfflineStatusWindow extends Window {
         add(progressBar);
 
         syncNowButton = new Button("Synchronize Now", IconImageBundle.ICONS.onlineSynced());
-        toggleOfflineButton = new Button(I18N.CONSTANTS.goOffline());
+        toggleOfflineButton = new Button(I18N.CONSTANTS.switchToOnline());
 
         addButton(syncNowButton);
         addButton(toggleOfflineButton);

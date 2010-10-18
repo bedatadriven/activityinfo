@@ -7,12 +7,15 @@ package org.sigmah.client.offline;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+import java.util.Date;
+
 /**
  * Decouples the actual offline implementation from the manager
  * so we can stick all the offline code in a separate js split.
  */
 public interface OfflineGateway {
     void install(AsyncCallback<Void> callback);
+    Date getLastSyncTime();
     void goOffline(AsyncCallback<Void> callback);
     void goOnline(AsyncCallback<Void> callback);
     void synchronize(AsyncCallback<Void> callback);

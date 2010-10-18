@@ -5,72 +5,105 @@
 
 package org.sigmah.client.offline.ui;
 
-import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Observable;
-import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.inject.Singleton;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 
 import java.util.Date;
 
 /**
  * @author Alex Bertram
  */
-@Singleton
+@Singleton                                               
 public class OfflineView extends Button implements OfflinePresenter.View {
 
-    private OfflineStatusWindow window;
+    private StatusWindow window;
+    private ProgressDialog progressDialog;
 
+    private Menu menu;
+    private MenuItem syncNowButton;
+    private MenuItem toggleModeButton;
 
     public OfflineView() {
-        window = new OfflineStatusWindow();
-        addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                window.show();
-            }
-        });
+        window = new StatusWindow();
+
+        syncNowButton = new MenuItem(I18N.CONSTANTS.syncNow(), IconImageBundle.ICONS.onlineSyncing());
+        syncNowButton.setItemId(SYNC_NOW_ID);
+        
+        toggleModeButton = new MenuItem(I18N.CONSTANTS.switchToOnline());
+        toggleModeButton.setItemId(TOGGLE_ID);
+
+        menu = new Menu();
+        menu.add(syncNowButton);
+        menu.add(toggleModeButton);
     }
 
     @Override
-    public void setInstalled(boolean installed) {
-
-    }
-
-    @Override
-    public Observable getInstallButton() {
+    public Observable getButton() {
         return this;
     }
 
+
     @Override
-    public Observable getSyncNowButton() {
-        return window.getSyncNowButton();
+    public void setButtonTextToInstall() {
+        this.setIcon(null);
+        this.setText(I18N.CONSTANTS.installOffline());
     }
 
     @Override
-    public Observable getToggleOfflineButton() {
-        return window.getToggleOfflineButton();
+    public void setButtonTextToInstalling() {
+        this.setIcon(null);
+        this.setText(I18N.CONSTANTS.installingOffline());
     }
 
     @Override
-    public void setOffline(boolean offline) {
-        if(offline) {
-            setText("OFFLINE");
-            window.getToggleOfflineButton().setText("Go Online");
-        } else {
-            setText("ONLINE");
-            window.getToggleOfflineButton().setText("Offline");
+    public void setButtonTextToLastSync(Date lastSyncTime) {
+        this.setIcon(IconImageBundle.ICONS.onlineSynced());
+        this.setText(I18N.MESSAGES.lastSynced(DateTimeFormat.getShortDateTimeFormat().format(lastSyncTime)));
+    }
+
+    @Override
+    public void setButtonTextToSyncing() {
+        this.setIcon(IconImageBundle.ICONS.onlineSyncing());
+        this.setText(I18N.CONSTANTS.synchronizing());
+    }
+
+    @Override
+    public void setButtonTextToLoading() {
+        this.setText(I18N.CONSTANTS.loading());
+    }
+
+    @Override
+    public void showProgressDialog() {
+        if(progressDialog == null) {
+            progressDialog = new ProgressDialog();
+        }
+        progressDialog.show();
+    }
+
+    @Override
+    public void hideProgressDialog() {
+        if(progressDialog != null) {
+            progressDialog.hide();
         }
     }
 
     @Override
-    public void setProgress(String taskDescription, double percentComplete) {
-        window.getProgressBar().updateProgress(percentComplete / 100, taskDescription);
+    public void updateProgress(String taskDescription, double percentComplete) {
+        assert progressDialog != null;
+        progressDialog.getProgressBar().updateProgress(percentComplete / 100, taskDescription);
     }
 
-    @Override
-    public void setLastSyncDate(Date date) {
-
+    public void enableMenu() {
+        setMenu(menu);
     }
 
+    public void disableMenu() {
+        setMenu(null);
+    }
 }
