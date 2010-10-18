@@ -13,6 +13,7 @@ import org.sigmah.shared.command.result.SyncRegionUpdate;
 import org.sigmah.shared.dao.UserDatabaseDAO;
 import org.sigmah.shared.domain.*;
 
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.Set;
 public class SchemaUpdateBuilder implements UpdateBuilder {
 
     private final UserDatabaseDAO userDatabaseDAO;
+    private final EntityManager entityManager;
 
     private Set<Integer> countryIds = new HashSet<Integer>();
     private List<Country> countries = new ArrayList<Country>();
@@ -41,7 +43,8 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
     private Set<Integer> userIds = new HashSet<Integer>();
     private List<User> users = new ArrayList<User>();
     private List<LocationType> locationTypes  = new ArrayList<LocationType>();
-    
+    private List<UserPermission> userPermissions;
+
     private Class[] schemaClasses = new Class[] {
             Country.class,
             AdminLevel.class,
@@ -52,16 +55,21 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
             Indicator.class,
             AttributeGroup.class,
             Attribute.class,
-            User.class
+            User.class,
+            UserPermission.class
     };
 
     @Inject
-    public SchemaUpdateBuilder(UserDatabaseDAO userDatabaseDAO) {
+    public SchemaUpdateBuilder(UserDatabaseDAO userDatabaseDAO, EntityManager entityManager) {
         this.userDatabaseDAO = userDatabaseDAO;
+        this.entityManager = entityManager;
     }
 
     public SyncRegionUpdate build(User user, GetSyncRegionUpdates request) throws JSONException {
         databases = userDatabaseDAO.queryAllUserDatabasesAlphabetically();
+        userPermissions = entityManager.createQuery("select p from UserPermission p where p.user.id = ?1")
+                .setParameter(1, user.getId())
+                .getResultList();
 
         long localVersion = request.getLocalVersion() == null ? 0 : Long.parseLong(request.getLocalVersion());
         long serverVersion = getCurrentSchemaVersion(user);
@@ -73,7 +81,7 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
         if(localVersion == serverVersion) {
             update.setComplete(true);
         } else {
-            makeEntityLists();
+            makeEntityLists(null);
             update.setSql(buildSql());
         }
         return update;
@@ -96,6 +104,7 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
         builder.insert(Attribute.class, attributes);
         builder.insert(LocationType.class, locationTypes);
         builder.insert(User.class, users);
+        builder.insert(UserPermission.class, userPermissions);
 
         builder.executeStatement("create table if not exists PartnerInDatabase (DatabaseId integer, PartnerId int)");
         builder.beginPreparedStatement("insert into PartnerInDatabase (DatabaseId, PartnerId) values (?, ?) ");
@@ -120,7 +129,7 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
         return builder.asJson();
     }
 
-    private void makeEntityLists() {
+    private void makeEntityLists(User user) {
         for(UserDatabase database : databases) {
         	if(!userIds.contains(database.getOwner().getId())) {
         		User u = database.getOwner();
@@ -129,6 +138,7 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
         		users.add(u);
         		userIds.add(u.getId());
         	}
+            
             if(!countryIds.contains(database.getCountry().getId())) {
                 countries.add(database.getCountry());
                 adminLevels.addAll(database.getCountry().getAdminLevels());

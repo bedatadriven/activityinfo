@@ -8,40 +8,32 @@ package org.sigmah.client.offline.command;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.Authentication;
-import org.sigmah.client.offline.command.handler.LocalGetAdminEntitiesHandler;
-import org.sigmah.client.offline.command.handler.LocalGetSchemaHandler;
 import org.sigmah.shared.command.Command;
-import org.sigmah.shared.command.GetAdminEntities;
-import org.sigmah.shared.command.GetSchema;
-import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.command.handler.CommandHandler;
-import org.sigmah.shared.command.handler.GetSitesHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.CommandException;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Dispatches commands to local handlers
  */
 public class LocalDispatcher implements Dispatcher {
     private final Authentication auth;
-    private final Provider<LocalGetSchemaHandler> getSchemaHandler;
-    private final Provider<GetSitesHandler> getSitesHandler;
-    private final Provider<LocalGetAdminEntitiesHandler> getAdminEntitiesHandler;
-
+    private final Map<Class, CommandHandler> registry = new HashMap<Class, CommandHandler>();
+ 
     @Inject
-    public LocalDispatcher(
-            Provider<LocalGetSchemaHandler> getSchemaHandler,
-            Provider<GetSitesHandler> getSitesHandler,
-            Authentication auth, Provider<LocalGetAdminEntitiesHandler> getAdminEntitiesHandler) {
+    public LocalDispatcher(Authentication auth) {
         this.auth = auth;
-        this.getSchemaHandler = getSchemaHandler;
-        this.getSitesHandler = getSitesHandler;
-        this.getAdminEntitiesHandler = getAdminEntitiesHandler;
+    }
+
+    public <T extends Command> void registerHandler(Class<T> commandClass, CommandHandler<T> handler) {
+        registry.put(commandClass, handler);
     }
 
     @Override
@@ -55,8 +47,8 @@ public class LocalDispatcher implements Dispatcher {
             monitor.beforeRequest();
         }
 
-        CommandHandler<Command<?>> handler = getHandler(command);
         try {
+            CommandHandler handler = getHandler(command);
             CommandResult result = handler.execute(command, user);
             Log.debug("Command success");
             if(monitor!=null) {
@@ -73,18 +65,12 @@ public class LocalDispatcher implements Dispatcher {
 
     }
 
-
-    private <T extends CommandHandler> T getHandler(Command c) {
-        // TODO enable more offline schema handlers
-        if (c instanceof GetSchema) {
-            return (T) getSchemaHandler.get();
-        } else if (c instanceof GetSites) {
-            return (T) getSitesHandler.get();
-        } else if (c instanceof GetAdminEntities) {
-            return (T) getAdminEntitiesHandler.get();
-        } else {
-            throw new IllegalArgumentException("No handler class for " + c);
+    private CommandHandler getHandler(Command c) {
+        CommandHandler handler = registry.get(c.getClass());
+        if(handler == null) {
+            throw new IllegalArgumentException("No handler class for " + c.toString());
         }
-    }
 
+        return handler;
+    }
 }

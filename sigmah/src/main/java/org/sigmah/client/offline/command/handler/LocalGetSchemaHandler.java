@@ -9,7 +9,6 @@ import com.google.inject.Inject;
 import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.command.handler.CommandHandler;
-import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.dao.SqlQueryBuilder;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.*;
@@ -37,7 +36,7 @@ public class LocalGetSchemaHandler implements CommandHandler<GetSchema> {
     }
 
     @Override
-    public CommandResult execute(GetSchema cmd, User user) throws CommandException {
+    public SchemaDTO execute(GetSchema cmd, User user) throws CommandException {
         return new SchemaBuilder().build();
     }
 
@@ -116,9 +115,13 @@ public class LocalGetSchemaHandler implements CommandHandler<GetSchema> {
         }
 
         public void loadDatabases() {
-            select("DatabaseId, Name, FullName, OwnerUserId, CountryId ")
-                    .from("UserDatabase")
-                    .orderBy("Name")
+            select("d.DatabaseId, d.Name, d.FullName, d.OwnerUserId, d.CountryId, o.Name, o.Email, " +
+                    "p.AllowViewAll, p.AllowEdit, p.AllowEditAll, " +
+                    "p.AllowManageUsers, p.AllowManageAllUsers")
+                    .from("UserDatabase d " +
+                            "LEFT JOIN UserPermission p ON (d.DatabaseId = p.DatabaseId) " +
+                            "LEFT JOIN UserLogin o ON (d.OwnerUserId = o.UserId)")
+                    .orderBy("d.Name")
                     .forEachResult(connection, new SqlQueryBuilder.ResultHandler() {
                 @Override
                 public void handle(ResultSet rs) throws SQLException {
@@ -128,13 +131,14 @@ public class LocalGetSchemaHandler implements CommandHandler<GetSchema> {
                     db.setFullName(rs.getString(3));
                     db.setAmOwner(rs.getInt(4) == auth.getUserId());
                     db.setCountry(countries.get(rs.getInt(5)));
+                    db.setOwnerName(rs.getString(6));
+                    db.setOwnerEmail(rs.getString(7));
 
-                    // TODO: synchronize user permissions
-                    db.setViewAllAllowed(true);
-                    db.setEditAllowed(true);
-                    db.setEditAllAllowed(true);
-                    db.setManageUsersAllowed(true);
-                    db.setManageAllUsersAllowed(true);
+                    db.setViewAllAllowed(db.getAmOwner() || rs.getBoolean(8));
+                    db.setEditAllowed(db.getAmOwner() || rs.getBoolean(9));
+                    db.setEditAllAllowed(db.getAmOwner() || rs.getBoolean(10));
+                    db.setManageUsersAllowed(db.getAmOwner() || rs.getBoolean(11));
+                    db.setManageAllUsersAllowed(db.getAmOwner() || rs.getBoolean(12));
 
                     databaseMap.put(db.getId(), db);
                     databaseList.add(db);

@@ -5,6 +5,7 @@
 
 package org.sigmah.shared.dao;
 
+import com.google.gwt.core.client.GWT;
 import com.google.inject.Inject;
 import org.sigmah.shared.domain.AdminEntity;
 import org.sigmah.shared.domain.AdminLevel;
@@ -293,16 +294,18 @@ public class SqlSiteTableDAO implements SiteTableDAO {
                     .and("UserDatabase.dateDeleted IS NULL");
 
             // Permissions
-            whereClause.append(
-                    "AND (UserDatabase.OwnerUserId = ? OR " +
-                            "UserDatabase.DatabaseId in "  +
-                            "(SELECT p.DatabaseId from UserPermission p where p.UserId = ? and p.AllowViewAll) or " +
-                            "UserDatabase.DatabaseId in " +
-                            "(select p.DatabaseId from UserPermission p where p.UserId = ? and p.AllowView and p.PartnerId = Site.PartnerId))");
+            if(!GWT.isClient()) {    
+                whereClause.append(
+                        "AND (UserDatabase.OwnerUserId = ? OR " +
+                                "UserDatabase.DatabaseId in "  +
+                                "(SELECT p.DatabaseId from UserPermission p where p.UserId = ? and p.AllowViewAll) or " +
+                                "UserDatabase.DatabaseId in " +
+                                "(select p.DatabaseId from UserPermission p where p.UserId = ? and p.AllowView and p.PartnerId = Site.PartnerId))");
 
-            parameters.add(userId);
-            parameters.add(userId);
-            parameters.add(userId);
+                parameters.add(userId);
+                parameters.add(userId);
+                parameters.add(userId);
+            }
         }
 
         public BaseQueryBuilder appendFieldList(SiteTableColumn[] columns) {

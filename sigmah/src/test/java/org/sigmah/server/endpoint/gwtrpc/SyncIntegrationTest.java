@@ -5,40 +5,26 @@
 
 package org.sigmah.server.endpoint.gwtrpc;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.bedatadriven.rebar.sync.client.BulkUpdaterAsync;
-import com.bedatadriven.rebar.sync.mock.MockBulkUpdater;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.Inject;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.sigmah.client.dispatch.AsyncMonitor;
-import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.dispatch.remote.Authentication;
-import org.sigmah.client.mock.MockEventBus;
-import org.sigmah.client.offline.sync.Synchronizer;
 import org.sigmah.server.dao.OnDataSet;
 import org.sigmah.server.sync.TimestampHelper;
 import org.sigmah.server.util.BeanMappingModule;
 import org.sigmah.server.util.logging.LoggingModule;
-import org.sigmah.shared.command.Command;
-import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.command.result.SyncRegionUpdate;
+import org.sigmah.shared.command.handler.LocalHandlerTestCase;
 import org.sigmah.shared.domain.AdminEntity;
 import org.sigmah.shared.domain.Location;
 import org.sigmah.shared.domain.LocationType;
-import org.sigmah.shared.domain.User;
 import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.MockHibernateModule;
 import org.sigmah.test.Modules;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import java.sql.*;
-import java.util.Collections;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.Date;
-import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.*;
@@ -50,31 +36,7 @@ import static org.junit.Assert.*;
         GwtRpcModule.class,
         LoggingModule.class
 })
-public class SyncIntegrationTest {
-
-    @Inject
-    private CommandServlet servlet;
-
-    @Inject
-    private EntityManagerFactory emf;
-
-    private User user;
-    private Dispatcher dispatcher;
-    private Connection localDbConnection;
-    private BulkUpdaterAsync updater;
-
-    @Before
-    public void setUp() throws SQLException, ClassNotFoundException {
-        user = new User();
-        user.setId(1);
-        dispatcher = new MockDispatcher();
-
-        Class.forName("org.sqlite.JDBC");
-        localDbConnection = DriverManager.getConnection("jdbc:sqlite::memory:");
-        updater = new MockBulkUpdater(localDbConnection);
-
-        Log.setCurrentLogLevel(Log.LOG_LEVEL_DEBUG);
-    }
+public class SyncIntegrationTest extends LocalHandlerTestCase {
 
     @Test
     @OnDataSet("/dbunit/sites-simple1.db.xml")
@@ -95,14 +57,9 @@ public class SyncIntegrationTest {
 
         assertThat(queryInt("select AttributeGroupId from AttributeGroupInActivity where ActivityId=2"),
                 equalTo(1));
+
     }
 
-
-    private void synchronize() {
-        Synchronizer syncr = new Synchronizer(new MockEventBus(), dispatcher, localDbConnection, updater,
-                new Authentication(1, "X", "akbertram@gmail.com"));
-        syncr.start();
-    }
 
     @Test
     @OnDataSet("/dbunit/locations.db.xml")
@@ -116,7 +73,7 @@ public class SyncIntegrationTest {
     @Test
     @OnDataSet("/dbunit/locations.db.xml")
     public void timeStampSurvivesRoundTrip() {
-        EntityManager entityManager = emf.createEntityManager();
+        EntityManager entityManager = serverEntityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
         Date now = new Date();
         Location loc = new Location();
@@ -153,7 +110,7 @@ public class SyncIntegrationTest {
     }
 
     private void addLocationsToServerDatabase(int count) {
-        EntityManager entityManager = emf.createEntityManager();
+        EntityManager entityManager = serverEntityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
         Timestamp now = new Timestamp(new Date().getTime());
         for(int i=1;i<= count;++i) {
@@ -186,31 +143,11 @@ public class SyncIntegrationTest {
     }
 
     private ResultSet querySingleResult(String sql) throws SQLException {
-        Statement stmt = localDbConnection.createStatement();
+        Statement stmt = localConnection.createStatement();
         ResultSet rs = stmt.executeQuery(sql);
         if(!rs.next()) {
             throw new AssertionError("No rows returned for '" + sql + "'");
         }
         return rs;
-    }
-
-
-
-    private class MockDispatcher implements Dispatcher {
-        @Override
-        public <T extends CommandResult> void execute(Command<T> command, AsyncMonitor monitor, AsyncCallback<T> callback) {
-            List<CommandResult> results = servlet.handleCommands(user, Collections.<Command>singletonList(command));
-            CommandResult result = results.get(0);
-
-            if(result instanceof SyncRegionUpdate) {
-                System.out.println(((SyncRegionUpdate) result).getSql());
-            }
-
-            if(result instanceof Exception) {
-                throw new Error((Throwable) result);
-            } else {
-                callback.onSuccess((T) result);
-            }
-        }
     }
 }
