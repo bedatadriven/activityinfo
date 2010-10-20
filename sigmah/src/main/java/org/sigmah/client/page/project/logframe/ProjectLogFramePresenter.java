@@ -69,18 +69,19 @@ public class ProjectLogFramePresenter implements Presenter {
     private final ProjectPresenter projectPresenter;
 
     /**
+     * The current displayed project.
+     */
+    private ProjectDTO currentProjectDTO;
+
+    /**
      * The displayed log frame.
      */
     private LogFrameDTO logFrame;
 
-    /**
-     * The log frame parent project;
-     */
-    private ProjectDTO project;
-
     public ProjectLogFramePresenter(Dispatcher dispatcher, ProjectPresenter projectPresenter) {
         this.dispatcher = dispatcher;
         this.projectPresenter = projectPresenter;
+        this.currentProjectDTO = projectPresenter.getCurrentProjectDTO();
     }
 
     @Override
@@ -89,9 +90,16 @@ public class ProjectLogFramePresenter implements Presenter {
         if (view == null) {
             view = new ProjectLogFrameView();
             logFrame = projectPresenter.getCurrentProjectDTO().getLogFrameDTO();
-            project = projectPresenter.getCurrentProjectDTO();
-            fill();
-            init();
+            currentProjectDTO = projectPresenter.getCurrentProjectDTO();
+            fillAndInit();
+            addListeners();
+        }
+
+        // If the current project has changed, clear the view
+        if (projectPresenter.getCurrentProjectDTO() != currentProjectDTO) {
+            logFrame = projectPresenter.getCurrentProjectDTO().getLogFrameDTO();
+            currentProjectDTO = projectPresenter.getCurrentProjectDTO();
+            fillAndInit();
         }
 
         return view;
@@ -105,14 +113,7 @@ public class ProjectLogFramePresenter implements Presenter {
     /**
      * Initializes the presenter.
      */
-    private void init() {
-
-        // Default buttons states.
-        view.getSaveButton().setEnabled(false);
-        view.getCopyButton().setEnabled(false);
-        view.getPasteButton().setEnabled(false);
-        view.getWordExportButton().setEnabled(false);
-        view.getExcelExportButton().setEnabled(false);
+    private void addListeners() {
 
         // Enable the save button when the log frame is edited.
         view.getLogFrameGrid().addListener(new ProjectLogFrameGrid.LogFrameGridListener() {
@@ -159,8 +160,8 @@ public class ProjectLogFramePresenter implements Presenter {
                 }
 
                 // Sends the merge action to the server.
-                dispatcher.execute(new UpdateLogFrame(logFrame, project.getId()), new MaskingAsyncMonitor(view,
-                        I18N.CONSTANTS.loading()), new AsyncCallback<LogFrameResult>() {
+                dispatcher.execute(new UpdateLogFrame(logFrame, currentProjectDTO.getId()), new MaskingAsyncMonitor(
+                        view, I18N.CONSTANTS.loading()), new AsyncCallback<LogFrameResult>() {
 
                     @Override
                     public void onFailure(Throwable e) {
@@ -180,7 +181,7 @@ public class ProjectLogFramePresenter implements Presenter {
                         // Updates local entities with the new returned log
                         // frame (to get the generated ids).
                         final LogFrameDTO updated = r.getLogFrame();
-                        project.setLogFrameDTO(updated);
+                        currentProjectDTO.setLogFrameDTO(updated);
                         view.getLogFrameGrid().updateLogFrame(updated);
                         logFrame = updated;
 
@@ -212,9 +213,9 @@ public class ProjectLogFramePresenter implements Presenter {
     }
 
     /**
-     * Fills the view with the current log frame.
+     * Fills the view with the current log frame and initializes buttons state.
      */
-    private void fill() {
+    private void fillAndInit() {
 
         if (logFrame != null) {
 
@@ -227,5 +228,12 @@ public class ProjectLogFramePresenter implements Presenter {
             // Fill the grid.
             view.getLogFrameGrid().displayLogFrame(logFrame);
         }
+
+        // Default buttons states.
+        view.getSaveButton().setEnabled(false);
+        view.getCopyButton().setEnabled(false);
+        view.getPasteButton().setEnabled(false);
+        view.getWordExportButton().setEnabled(false);
+        view.getExcelExportButton().setEnabled(false);
     }
 }
