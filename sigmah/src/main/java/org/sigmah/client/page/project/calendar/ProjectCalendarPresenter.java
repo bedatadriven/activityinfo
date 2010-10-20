@@ -40,6 +40,10 @@ public class ProjectCalendarPresenter implements Presenter {
     public static class CalendarWrapper extends BaseModel {
         private Calendar calendar;
         
+        public CalendarWrapper() {
+            
+        }
+        
         public CalendarWrapper(Calendar calendar) {
             this.set("name", calendar.getName());
             this.set("id", calendar.getIdentifier());
@@ -48,6 +52,10 @@ public class ProjectCalendarPresenter implements Presenter {
 
         public Calendar getCalendar() {
             return calendar;
+        }
+        
+        public void setCalendar(Calendar calendar) {
+            this.calendar = calendar;
         }
 
         @Override
