@@ -541,6 +541,7 @@ public class ProjectLogFrameGrid {
         // For the moment, each save action requires rebuilding the whole log
         // frame. Its needed to update the ids of the new entities in the local
         // maps.
+        // TODO optimize this
         displayLogFrame(logFrame);
 
         // this.logFrame = logFrame;
@@ -784,6 +785,7 @@ public class ProjectLogFrameGrid {
                     });
 
                     // Menu.
+                    // TODO shows menu.
                     final Menu menu = new Menu();
                     menu.add(upMenuItem);
                     menu.add(downMenuItem);
@@ -806,7 +808,7 @@ public class ProjectLogFrameGrid {
                     grid.setWidget(0, 0, codeLabel);
                     grid.setWidget(0, 1, anchor);
 
-                    return grid;
+                    return codeLabel;
 
                 case 2:
 
