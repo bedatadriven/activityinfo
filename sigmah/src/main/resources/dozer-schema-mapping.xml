@@ -112,6 +112,11 @@
 			<a>owner.name</a>
 			<b>ownerName</b>
 		</field>
+
+		<field>
+			<a>logFrame</a>
+			<b>logFrameDTO</b>
+		</field>
 	</mapping>
 
 	<!-- Phase/PhaseDTO Mapping -->
@@ -254,7 +259,7 @@
 			<a>choices</a>
 			<b>choicesDTO</b>
 		</field>
-		
+
 		<field>
 			<a>categoryType</a>
 			<b>categoryTypeDTO</b>
@@ -272,7 +277,7 @@
 			<a>parentQuestion</a>
 			<b>parentQuestionDTO</b>
 		</field>
-		
+
 		<field>
 			<a>categoryElement</a>
 			<b>categoryElementDTO</b>
@@ -406,6 +411,130 @@
 		<field>
 			<a>parentType</a>
 			<b>parentCategoryDTO</b>
+		</field>
+	</mapping>
+
+	<!-- Activity/ActivityDTO Mapping -->
+	<mapping wildcard="true">
+		<class-a>org.sigmah.shared.domain.logframe.LogFrameActivity
+		</class-a>
+		<class-b>org.sigmah.shared.dto.logframe.LogFrameActivityDTO
+		</class-b>
+
+		<field>
+			<a>parentExpectedResult</a>
+			<b>parentExpectedResultDTO</b>
+		</field>
+
+		<field>
+			<a>group</a>
+			<b>logFrameGroupDTO</b>
+		</field>
+	</mapping>
+
+	<!-- ExpectedResult/ExpectedResultDTO Mapping -->
+	<mapping wildcard="true">
+		<class-a>org.sigmah.shared.domain.logframe.ExpectedResult
+		</class-a>
+		<class-b>org.sigmah.shared.dto.logframe.ExpectedResultDTO
+		</class-b>
+
+		<field>
+			<a>activities</a>
+			<b>activitiesDTO</b>
+		</field>
+
+		<field>
+			<a>parentSpecificObjective</a>
+			<b>parentSpecificObjectiveDTO</b>
+		</field>
+
+		<field>
+			<a>group</a>
+			<b>logFrameGroupDTO</b>
+		</field>
+	</mapping>
+
+	<!-- SpecificObjective/SpecificObjectiveDTO Mapping -->
+	<mapping wildcard="true">
+		<class-a>org.sigmah.shared.domain.logframe.SpecificObjective
+		</class-a>
+		<class-b>org.sigmah.shared.dto.logframe.SpecificObjectiveDTO
+		</class-b>
+
+		<field>
+			<a>expectedResults</a>
+			<b>expectedResultsDTO</b>
+		</field>
+
+		<field>
+			<a>parentLogFrame</a>
+			<b>parentLogFrameDTO</b>
+		</field>
+
+		<field>
+			<a>group</a>
+			<b>logFrameGroupDTO</b>
+		</field>
+	</mapping>
+
+	<!-- Prerequisite/PrerequisiteDTO Mapping -->
+	<mapping wildcard="true">
+		<class-a>org.sigmah.shared.domain.logframe.Prerequisite
+		</class-a>
+		<class-b>org.sigmah.shared.dto.logframe.PrerequisiteDTO
+		</class-b>
+
+		<field>
+			<a>parentLogFrame</a>
+			<b>parentLogFrameDTO</b>
+		</field>
+
+		<field>
+			<a>group</a>
+			<b>logFrameGroupDTO</b>
+		</field>
+	</mapping>
+
+	<!-- SpecificObjective/SpecificObjectiveDTO Mapping -->
+	<mapping wildcard="true">
+		<class-a>org.sigmah.shared.domain.logframe.LogFrameGroup
+		</class-a>
+		<class-b>org.sigmah.shared.dto.logframe.LogFrameGroupDTO
+		</class-b>
+
+		<field>
+			<a>parentLogFrame</a>
+			<b>parentLogFrameDTO</b>
+		</field>
+
+	</mapping>
+
+	<!-- LogFrame/LogFrameDTO Mapping -->
+	<mapping wildcard="true">
+		<class-a>org.sigmah.shared.domain.logframe.LogFrame
+		</class-a>
+		<class-b>org.sigmah.shared.dto.logframe.LogFrameDTO
+		</class-b>
+
+		<field>
+			<a>logFrameModel</a>
+			<b>logFrameModelDTO</b>
+		</field>
+
+		<field>
+			<a>specificObjectives</a>
+			<b>specificObjectivesDTO</b>
+		</field>
+
+		<field>
+			<a>prerequisites</a>
+			<b>prerequisitesDTO</b>
+		</field>
+
+		<field>
+			<a>groups</a>
+			<b>groupsDTO</b>
 		</field>
 	</mapping>
 

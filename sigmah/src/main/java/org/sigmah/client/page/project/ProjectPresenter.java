@@ -34,6 +34,7 @@ import org.sigmah.client.event.NavigationEvent;
 import org.sigmah.client.page.NavigationHandler;
 import org.sigmah.client.page.project.calendar.ProjectCalendarPresenter;
 import org.sigmah.client.page.project.dashboard.ProjectDashboardPresenter;
+import org.sigmah.client.page.project.logframe.ProjectLogFramePresenter;
 import org.sigmah.client.ui.ToggleAnchor;
 
 /**
@@ -88,7 +89,7 @@ public class ProjectPresenter implements Frame, TabPage {
 
         this.presenters = new Presenter[]{
                     new ProjectDashboardPresenter(dispatcher, authentication, this), // Dashboard
-                    null, // Logical Framework
+                    new ProjectLogFramePresenter(dispatcher, this), // Logical Framework
                     null, // Indicators
                     new ProjectCalendarPresenter(dispatcher, this), // Calendar
                     null, // Reports

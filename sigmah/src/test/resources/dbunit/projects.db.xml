@@ -18,8 +18,8 @@
     <userLogin userId="2" name="Raphael" email="user2@user.com" locale="fr" newUser="1" privacy_level="0" />
     <userLogin userId="3" name="Tom" email="tom@user.com" locale="fr" newUser="1" privacy_level="0" />
 
-    <organization id="1" name="Ideia"/>
-    <partner partnerId="1" name="Head Office" organization_id="1"/>
+    <organization id_organization="1" name="Ideia"/>
+    <partner partnerId="1" name="Head Office" organization_id_organization="1"/>
     <orgUnitPermission id="1" unit_Id="1" user_UserId="3" viewAll="1" editAll="0"/>
 
     <project_model id_project_model="1" name="Mock model 1" />

@@ -119,11 +119,13 @@ public interface IconImageBundle extends ImageBundle {
     
     AbstractImagePrototype unchecked();
 
-
     AbstractImagePrototype offline();
 
     AbstractImagePrototype onlineSynced();
 
     AbstractImagePrototype onlineSyncing();
 
+    AbstractImagePrototype up();
+    
+    AbstractImagePrototype down();
 }

@@ -7,6 +7,7 @@ package org.sigmah.shared.dto;
 
 import java.util.List;
 
+import org.sigmah.shared.dto.logframe.LogFrameDTO;
 import org.sigmah.shared.dto.value.ValueDTO;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
@@ -30,24 +31,6 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO {
     @Override
     public String toString() {
         return "ProjectDTO id:"+getId()+", name:"+getName()+", projectModelDTO: "+getProjectModelDTO()+", owner:"+getOwnerName()+", phaseDTO:"+getPhasesDTO()+", valueDTO:"+getValuesDTO()+", currentPhaseDTO:"+getCurrentPhaseDTO()+", fav:"+isFavorite()+", topic:"+getTopic();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if(obj == null)
-            return false;
-        if(!(obj instanceof ProjectDTO))
-            return false;
-        final ProjectDTO other = (ProjectDTO) obj;
-        if(getId() != other.getId())
-            return false;
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        return hash*getId();
     }
 
     // Project id
@@ -127,11 +110,19 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO {
     public void setTopic(String topic) {
         set("topic", topic);
     }
-
+    
     public Integer getCalendarId() {
         return get("calendarId");
     }
     public void setCalendarId(Integer calendarId) {
         set("calendarId", calendarId);
+    }
+    
+    public LogFrameDTO getLogFrameDTO() {
+        return get("logFrameDTO");
+    }
+    
+    public void setLogFrameDTO(LogFrameDTO logFrameDTO) {
+        set("logFrameDTO", logFrameDTO);
     }
 }

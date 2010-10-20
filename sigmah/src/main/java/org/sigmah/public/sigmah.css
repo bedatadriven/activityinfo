@@ -1,481 +1,472 @@
 body {
-    font-family: Arial;
+	font-family: Arial;
 }
 
 .header {
-    height:56px;
-    width:100%;
-    float:left;
-    background:url(image/bg-grey.jpg) repeat-x;
-    clear:both;
+	height: 56px;
+	width: 100%;
+	float: left;
+	background: url(image/bg-grey.jpg) repeat-x;
+	clear: both;
 }
 
-.logo{
-    height:56px;
-    width:135px;
-    float:left;
-    padding-left:25px;
-    background-color:#E86F00;
-    background:url(image/bg-logo.jpg) no-repeat;
+.logo {
+	height: 56px;
+	width: 135px;
+	float: left;
+	padding-left: 25px;
+	background-color: #E86F00;
+	background: url(image/bg-logo.jpg) no-repeat;
 }
 
-#orglogo{
-    width: 100%;
-    height: 100%;
-    background: transparent url(image/ideia-126.png) left center no-repeat;
-    opacity: 0.5;
+#orglogo {
+	width: 100%;
+	height: 100%;
+	background: transparent url(image/ideia-126.png) left center no-repeat;
+	opacity: 0.5;
 }
 
-.name{
-    height:56px;
-    width:420px;
-    float:left;
-    background:url(image/bg-name.jpg) no-repeat;
+.name {
+	height: 56px;
+	width: 420px;
+	float: left;
+	background: url(image/bg-name.jpg) no-repeat;
 }
 
-#username{
-    height:16px;
-    width:340px;
-    float:right;
-    text-align:right;
-    margin-right:80px;
-    padding-top:1px;
-    font-size:11px;
-    color:#fff;
-    clear:both;
+#username {
+	height: 16px;
+	width: 340px;
+	float: right;
+	text-align: right;
+	margin-right: 80px;
+	padding-top: 1px;
+	font-size: 11px;
+	color: #fff;
+	clear: both;
 }
 
 #username div {
-    display: inline;
+	display: inline;
 }
 
-#orgname{
-    height:40px;
-    width:420px;
-    float:left;
-    padding-top:9px;
-    padding-left:6px;
-    font-size:18px;
-    font-family:Arial, Helvetica, sans-serif;
-    font-weight:bold;
-    color:#fff;
-    clear:both;
+#orgname {
+	height: 40px;
+	width: 420px;
+	float: left;
+	padding-top: 9px;
+	padding-left: 6px;
+	font-size: 18px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	color: #fff;
+	clear: both;
 }
 
-.sigmah{
-    height:56px;
-    width:308px;
-    float:right;
-    background:url(image/sigmah-logo.jpg) no-repeat;
-    overflow:hidden;
+.sigmah {
+	height: 56px;
+	width: 308px;
+	float: right;
+	background: url(image/sigmah-logo.jpg) no-repeat;
+	overflow: hidden;
 }
 
 #logout {
-    font-size:11px;
-    height:16px;
-    width:92px;
-    float:right;
-    text-align:right;
-    padding-top:1px;
-    margin-right:15px;
+	font-size: 11px;
+	height: 16px;
+	width: 92px;
+	float: right;
+	text-align: right;
+	padding-top: 1px;
+	margin-right: 15px;
 }
 
 #logout a {
-    color:#EE9329;
-    text-decoration:none;
+	color: #EE9329;
+	text-decoration: none;
 }
 
-#logout a:hover{
-    text-decoration:underline;
+#logout a:hover {
+	text-decoration: underline;
 }
 
-.minimenu{
-    height:16px;
-    width:200px;
-    float:right;
-    text-align:right;
-    padding-top:1px;
-    color:#C2C1C1;
-    font-size:11px;
-}
-.minimenu a{
-    color:#C2C1C1;
-    font-size:11px;
-    text-decoration:none;
-}
-.minimenu a:hover{
-    text-decoration:underline;
+.minimenu {
+	height: 16px;
+	width: 200px;
+	float: right;
+	text-align: right;
+	padding-top: 1px;
+	color: #C2C1C1;
+	font-size: 11px;
 }
 
-.bar{
-    height:34px;
-    width:100%;
-    float:left;
-    clear:both;
-    background:url(image/bar-repeat.jpg) repeat-x;
-    position: relative;
-    overflow: hidden;
+.minimenu a {
+	color: #C2C1C1;
+	font-size: 11px;
+	text-decoration: none;
+}
+
+.minimenu a:hover {
+	text-decoration: underline;
+}
+
+.bar {
+	height: 34px;
+	width: 100%;
+	float: left;
+	clear: both;
+	background: url(image/bar-repeat.jpg) repeat-x;
+	position: relative;
+	overflow: hidden;
 }
 
 .tab-bar-left-decoration {
-    width: 15px;
-    height: 100%;
-    background-color: #e86f00;
-    position: absolute;
-    left: 0px;
+	width: 15px;
+	height: 100%;
+	background-color: #e86f00;
+	position: absolute;
+	left: 0px;
 }
 
 .tab-bar-left-decoration-round {
-    width: 5px;
-    height: 5px;
-    position: absolute;
-    left: 15px;
-    background-image: url('image/bar-top-left.png');
+	width: 5px;
+	height: 5px;
+	position: absolute;
+	left: 15px;
+	background-image: url('image/bar-top-left.png');
 }
 
-#arrows{
-    height:34px;
-    width:55px;
-    background:url(image/panel/bg-arrows.png) no-repeat;
-    position: absolute;
-    right: 0px;
+#arrows {
+	height: 34px;
+	width: 55px;
+	background: url(image/panel/bg-arrows.png) no-repeat;
+	position: absolute;
+	right: 0px;
 }
-
 
 #tabs {
-    width: 100%;
-    height: 100%;
-    margin-left: 15px;
-    overflow: hidden;
-    position: absolute;
+	width: 100%;
+	height: 100%;
+	margin-left: 15px;
+	overflow: hidden;
+	position: absolute;
 }
 
 .tab {
-    cursor: default;
-    
-    position: relative;
-    float: left;
+	cursor: default;
+	position: relative;
+	float: left;
 }
 
 .tab.home {
-    margin-right: 2px;
+	margin-right: 2px;
 }
 
 .tab .left {
-    height:34px;
-    width:11px;
-    float:left;
-    background:url(image/panel/panleft.png) no-repeat;
+	height: 34px;
+	width: 11px;
+	float: left;
+	background: url(image/panel/panleft.png) no-repeat;
 }
 
 .tab .center {
-    height:34px;
-    padding-top:11px;
-    padding-right:5px;
-    float:left;
-    background:url(image/panel/panmiddle.png) repeat-x;
-    color:#B3B3B3;
-    font-size:12px;
+	height: 34px;
+	padding-top: 11px;
+	padding-right: 5px;
+	float: left;
+	background: url(image/panel/panmiddle.png) repeat-x;
+	color: #B3B3B3;
+	font-size: 12px;
 }
 
 .tab:hover .center {
-    color: white;
+	color: white;
 }
 
 .tab .right {
-    height:34px;
-    float:left;
-    padding-left:3px;
-    padding-top:10px;
-    width:19px;
-    background:url(image/panel/panright.png) no-repeat;
+	height: 34px;
+	float: left;
+	padding-left: 3px;
+	padding-top: 10px;
+	width: 19px;
+	background: url(image/panel/panright.png) no-repeat;
 }
 
 .tab.home .left {
-    height:34px;
-    width:37px;
-    float:left;
-    background:url(image/panel/homeleft2.jpg) no-repeat;
+	height: 34px;
+	width: 37px;
+	float: left;
+	background: url(image/panel/homeleft2.jpg) no-repeat;
 }
 
 .tab.home .right {
-    height:34px;
-    float:left;
-    width:12px;
-    background-position: right top;
+	height: 34px;
+	float: left;
+	width: 12px;
+	background-position: right top;
 }
 
 .tab-active .left {
-    height:34px;
-    width:11px;
-    float:left;
-    background:url(image/panel/panleft-over.jpg) no-repeat;
+	height: 34px;
+	width: 11px;
+	float: left;
+	background: url(image/panel/panleft-over.jpg) no-repeat;
 }
 
 .tab-active .center {
-    height:34px;
-    padding-top:11px;
-    padding-right:5px;
-    float:left;
-    background:url(image/panel/panmiddle-over.jpg) repeat-x;
-    color:#ffffff;
-    font-size:12px;
+	height: 34px;
+	padding-top: 11px;
+	padding-right: 5px;
+	float: left;
+	background: url(image/panel/panmiddle-over.jpg) repeat-x;
+	color: #ffffff;
+	font-size: 12px;
 }
 
 .tab-active .right {
-    height:34px;
-    float:left;
-    padding-left:3px;
-    padding-top:10px;
-    width:19px;
-    background:url(image/panel/panright-over.jpg) no-repeat;
+	height: 34px;
+	float: left;
+	padding-left: 3px;
+	padding-top: 10px;
+	width: 19px;
+	background: url(image/panel/panright-over.jpg) no-repeat;
 }
 
 .tab-active.home .left {
-    height:34px;
-    width:37px;
-    float:left;
-    background:url(image/panel/homeleft.png) no-repeat;
+	height: 34px;
+	width: 37px;
+	float: left;
+	background: url(image/panel/homeleft.png) no-repeat;
 }
 
 .tab-close {
-    width: 11px;
-    height: 11px;
-    background-image: url('image/panel/closes.png');
-    background-position: 0 0;
-    
-    position: absolute;
-    right: 5px;
-    bottom: 21px;
+	width: 11px;
+	height: 11px;
+	background-image: url('image/panel/closes.png');
+	background-position: 0 0;
+	position: absolute;
+	right: 5px;
+	bottom: 21px;
 }
 
 .tab-close:hover {
-    background-position: 0 -11px;
+	background-position: 0 -11px;
 }
 
 .tab-button-left {
-    width: 20px;
-    height: 34px;
-    border: 1px solid #3c3c3e;
-    
-    -moz-border-radius-topleft: 4px;
-    -webkit-border-top-left-radius: 4px;
-    border-top-left-radius: 4px;
-
-    -moz-border-radius-bottomleft: 4px;
-    -webkit-border-bottom-left-radius: 4px;
-    border-bottom-left-radius: 4px;
-
-    background: black url('image/tab-buttons.png') 0 0;
+	width: 20px;
+	height: 34px;
+	border: 1px solid #3c3c3e;
+	-moz-border-radius-topleft: 4px;
+	-webkit-border-top-left-radius: 4px;
+	border-top-left-radius: 4px;
+	-moz-border-radius-bottomleft: 4px;
+	-webkit-border-bottom-left-radius: 4px;
+	border-bottom-left-radius: 4px;
+	background: black url('image/tab-buttons.png') 0 0;
 }
 
 .tab-button-left:hover {
-    background: black url('image/tab-buttons.png') 0 -32px;
+	background: black url('image/tab-buttons.png') 0 -32px;
 }
 
 .tab-button-left:active {
-    background: black url('image/tab-buttons.png') 0 -64px;
+	background: black url('image/tab-buttons.png') 0 -64px;
 }
 
 .tab-button-left[disabled] {
-    background: black url('image/tab-buttons.png') 0 -96px;
+	background: black url('image/tab-buttons.png') 0 -96px;
 }
 
 .tab-button-left::-moz-focus-inner {
-    border: none;
+	border: none;
 }
 
 .tab-button-right {
-    width: 20px;
-    height: 34px;
-    border: 1px solid #3c3c3e;
-    border-left-color: #909090;
-
-    -moz-border-radius-topright: 4px;
-    -webkit-border-top-right-radius: 4px;
-    border-top-right-radius: 4px;
-
-    -moz-border-radius-bottomright: 4px;
-    -webkit-border-bottom-right-radius: 4px;
-    border-bottom-right-radius: 4px;
-
-    background: black url('image/tab-buttons.png') 18px 0;
+	width: 20px;
+	height: 34px;
+	border: 1px solid #3c3c3e;
+	border-left-color: #909090;
+	-moz-border-radius-topright: 4px;
+	-webkit-border-top-right-radius: 4px;
+	border-top-right-radius: 4px;
+	-moz-border-radius-bottomright: 4px;
+	-webkit-border-bottom-right-radius: 4px;
+	border-bottom-right-radius: 4px;
+	background: black url('image/tab-buttons.png') 18px 0;
 }
 
 .tab-button-right:hover {
-    background: black url('image/tab-buttons.png') 18px -32px;
+	background: black url('image/tab-buttons.png') 18px -32px;
 }
 
 .tab-button-right:active {
-    background: black url('image/tab-buttons.png') 18px -64px;
+	background: black url('image/tab-buttons.png') 18px -64px;
 }
 
 .tab-button-right[disabled] {
-    background: black url('image/tab-buttons.png') 18px -96px;
+	background: black url('image/tab-buttons.png') 18px -96px;
 }
 
 .tab-button-right::-moz-focus-inner {
-    border: none;
+	border: none;
 }
 
 .content-margins {
-    padding: 10px 15px 10px 15px;
+	padding: 10px 15px 10px 15px;
 }
 
 #content {
-    clear: both;
+	clear: both;
 }
 
 .main-background {
-    background-color: #494748;
+	background-color: #494748;
 }
 
 .panel-background {
-    background-color: white;
+	background-color: white;
 }
 
 .project-top-bar {
-    font-size: 8pt;
-    font-weight: bold;
-    color: white;
+	font-size: 8pt;
+	font-weight: bold;
+	color: white;
 }
 
-.project-top-bar a {
-    /* font-weight: normal; */
-    color: white;
+.project-top-bar a { /* font-weight: normal; */
+	color: white;
 }
 
 .project-tabPhases {
-    outline: 0;
+	outline: 0;
 }
 
 .project-panelReminders {
-    margin-bottom: 10px;
+	margin-bottom: 10px;
 }
 
 .project-phase-active span.x-tab-strip-text {
-    color: #EE9329;
-    font-weight: bold;
+	color: #EE9329;
+	font-weight: bold;
 }
 
 .project-phase-closed span.x-tab-strip-text {
-    font-style: italic;
+	font-style: italic;
 }
 
 .project-label-10 {
-    font-size: 10pt;
+	font-size: 10pt;
 }
 
 /* ----------------------------------------------------------------- Calendar */
 .calendar {
-    border-collapse: collapse;
-    padding: 0;
-    font-size: 10pt;
-    margin: 16px;
+	border-collapse: collapse;
+	padding: 0;
+	font-size: 10pt;
+	margin: 16px;
 }
 
 .calendar-header {
-    text-align: center;
-    font-weight: bold;
-    font-size: 14pt;
-    padding-bottom: 8px;
+	text-align: center;
+	font-weight: bold;
+	font-size: 14pt;
+	padding-bottom: 8px;
 }
 
 .calendar-column-header {
-    text-align: center;
-    font-weight: bold;
+	text-align: center;
+	font-weight: bold;
 }
 
 .calendar-row-header {
-    width: 2%; /* 20px; */
-    padding-right: 4px;
-    vertical-align: top;
-    color: #EE9329;
-    font-weight: bold;
+	width: 2%; /* 20px; */
+	padding-right: 4px;
+	vertical-align: top;
+	color: #EE9329;
+	font-weight: bold;
 }
 
 .calendar-cell {
-    border: 1px solid lightgrey;
-    vertical-align: top;
+	border: 1px solid lightgrey;
+	vertical-align: top;
 }
 
 .calendar-day .calendar-cell {
-    width: 98%;
-    height: 96%;
+	width: 98%;
+	height: 96%;
 }
 
 .calendar-month .calendar-cell {
-    width: 14%;
-    height: 16%;
+	width: 14%;
+	height: 16%;
 }
 
 .calendar-week .calendar-cell {
-    width: 14%;
-    height: 96%;
+	width: 14%;
+	height: 96%;
 }
 
 .calendar-cell-other-month {
-    background-color: #EFEFEF;
+	background-color: #EFEFEF;
 }
 
 .calendar-cell-other-month .calendar-cell-header {
-    color: lightgrey;
+	color: lightgrey;
 }
 
 .calendar-cell-header {
-    height: 16px;
-    font-weight: bold;
-    color: #555;
-    padding-right: 4px;
-    text-align: right;
+	height: 16px;
+	font-weight: bold;
+	color: #555;
+	padding-right: 4px;
+	text-align: right;
 }
 
-.calendar-cell-today {
-    /* border: 2px solid black; */
-    background-color: #eaeff8;
+.calendar-cell-today { /* border: 2px solid black; */
+	background-color: #eaeff8;
 }
 
 .calendar-event {
-    overflow: hidden;
-    height: 16px;
-    cursor: default;
+	overflow: hidden;
+	height: 16px;
+	cursor: default;
 }
 
 .calendar-event-date {
-    padding-left: 4px;
-    font-size: 9pt;
+	padding-left: 4px;
+	font-size: 9pt;
 }
 
 .calendar-event-label {
-    padding-left: 4px;
+	padding-left: 4px;
 }
 
 .calendar-event div {
-    float: left;
+	float: left;
 }
 
 .calendar-event-1 {
-    color: #EE9329;
+	color: #EE9329;
 }
 
 .calendar-event-2 {
-    color: #1c61d9;
+	color: #1c61d9;
 }
 
 .calendar-event-3 {
-    color: #8cbf40;
+	color: #8cbf40;
 }
 
 .calendar-event-4 {
-    color: #ad2d2d;
+	color: #ad2d2d;
 }
 
 .calendar-event-5 {
-    color: #9643a5;
+	color: #9643a5;
 }
 
 .calendar-event-6 {
-    color: #737373;
+	color: #737373;
 }
 
 /*
@@ -484,44 +475,41 @@ body {
     content: " • ";
 }
 */
-
 .calendar-event-limit {
-    color: #482A1E;
-    text-align: center;
-    font-weight: bold;
-    width: 100%;
-    height: 16px;
-    display: block;
-    text-decoration: none;
+	color: #482A1E;
+	text-align: center;
+	font-weight: bold;
+	width: 100%;
+	height: 16px;
+	display: block;
+	text-decoration: none;
 }
 
 .calendar-event-limit:hover {
-    color: #EE9329;
+	color: #EE9329;
 }
 
 /* ----------------------------------------------------------- Calendar Popup */
-
 .gwt-DecoratedPopupPanel {
-    background-color: white;
-    border: 1px solid lightgrey;
-    font-size: 10pt;
+	background-color: white;
+	border: 1px solid lightgrey;
+	font-size: 10pt;
 }
 
 .calendar-popup-header {
-    font-weight: bold;
+	font-weight: bold;
 }
 
 /* ------------------------------------------------------------------ Ext-GWT */
 .x-panel-header a {
-    color: #482A1E;
+	color: #482A1E;
 }
 
 .x-panel-header a:hover {
-    color: white;
+	color: white;
 }
 
 /* -------------------------------------------------------------- Flexibility */
-
 .flexibility-layout {
 	border-spacing: 0;
 }
@@ -531,13 +519,95 @@ body {
 }
 
 .flexibility-textarea {
-	padding-bottom: 16px;	
+	padding-bottom: 16px;
 }
 
 .flexibility-element-label {
-	font-size: 8pt;	
+	font-size: 8pt;
 }
 
 .flexibility-element-field-label {
-	font-weight: bold;	
+	font-weight: bold;
+}
+
+.flexibility-text-field {
+	padding-left: 0;
+	padding-right: 0;
+}
+
+/* ----------------------------------------------------- GWT HTML Table */
+.html-grid-header-row {
+	border-bottom: solid 1px #B7A076;
+	background: #F9F9F9 url(./image/grid3-hrow-2.gif) repeat scroll 0 bottom;
+	text-align: right;
+	white-space: normal;
+}
+
+.html-grid-header-row div.gwt-Label {
+	white-space: normal;
+}
+
+.html-textbox {
+	padding: 0;
+	border: 0;
+	overflow: auto;
+	line-height: 14px;
+	font-family: arial, tahoma, helvetica, sans-serif;
+	font-size: 11px;
+	color: #4B3E2D;
+}
+
+.html-textbox:focus {
+	background-color: #EFE8D9;
+}
+
+.html-textbox-cell {
+	padding: 3px 3px 3px 5px;
+}
+
+.html-table-cell {
+	border-top: solid 1px #EDEDED;
+	border-right: solid 1px #EDEDED;
+}
+
+.html-table-cell-last {
+}
+
+/* ----------------------------------------------- Flex table view */
+.flextable-view-group-cell {
+	background-color: #E7D2A3;
+}
+
+.flextable-view-group-label {
+	font-weight: bold;
+	line-height: 20px;
+}
+
+.flextable-view-merged-row {
+	border-top: 0;
+}
+
+/* ----------------------------------------------- Log frame */
+.logframe-grid-main-panel .x-box-inner {
+	overflow: auto;
+}
+
+.logframe-grid-add-action,.logframe-grid-add-group-action {
+	text-align: right;
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.logframe-grid-code-label {
+	font-weight: bold;
+}
+
+.logframe-grid-menu-button {
+	color: black;
+	margin-left: 8px;
+	text-decoration: none;
+}
+
+.logframe-grid-menu-button:hover {
+	color: #EE9329;
 }

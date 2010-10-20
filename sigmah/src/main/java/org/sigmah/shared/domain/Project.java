@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import org.sigmah.shared.domain.logframe.LogFrame;
 import org.sigmah.shared.domain.value.Value;
 
 @Entity
@@ -32,7 +33,7 @@ public class Project extends UserDatabase {
         this.logFrame = logFrame;
     }
 
-    @OneToOne
+    @OneToOne(mappedBy = "parentProject", cascade = CascadeType.ALL)
     public LogFrame getLogFrame() {
         return logFrame;
     }

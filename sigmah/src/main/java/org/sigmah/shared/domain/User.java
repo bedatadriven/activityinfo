@@ -43,6 +43,7 @@ public class User implements java.io.Serializable {
     private Date dateChangePasswordKeyIssued;
     private String hashedPassword;
 	private PrivacyLevel privacyLevel;
+	private Organization organization;
 
     public User() {
     }
@@ -186,6 +187,16 @@ public class User implements java.io.Serializable {
 	public void setPrivacyLevel(PrivacyLevel privacyLevel) {
 		this.privacyLevel = privacyLevel;
 	}
+	
+	@ManyToOne(optional = true)
+	@JoinColumn(name = "id_organization", nullable = true)
+	public Organization getOrganization() {
+        return organization;
+    }
+	
+	public void setOrganization(Organization organization) {
+        this.organization = organization;
+    }
 
 	@Override
 	public String toString() {

@@ -95,6 +95,11 @@ public final class FileUploadUtils {
     public static final String DOCUMENT_COMMENTS = "comments";
 
     /**
+     * The url of an image.
+     */
+    public static final String IMAGE_URL = "url";
+    
+    /**
      * Parses the HTTP response from the server after a file upload. The
      * response contains the id of the just saved file if the upload worked
      * fine, or an error code if it didn't.

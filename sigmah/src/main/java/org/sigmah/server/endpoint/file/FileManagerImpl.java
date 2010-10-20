@@ -54,17 +54,38 @@ public class FileManagerImpl implements FileManager {
     private final String UPLOADED_FILES_REPOSITORY;
 
     /**
-     * The property's name expected in the properties file to set the repository
-     * path name.
+     * Directory's path name where the images are stored.
      */
-    private static final String UPLOADED_FILES_REPOSITORY_NAME = "rootDir";
+    private final String IMAGES_REPOSITORY;
+
+    /**
+     * The property's name expected in the properties file to set the uploaded
+     * files repository path name.
+     */
+    private static final String UPLOADED_FILES_REPOSITORY_NAME = "repository.files";
+
+    /**
+     * The property's name expected in the properties file to set the images
+     * repository path name.
+     */
+    private static final String IMAGES_REPOSITORY_NAME = "repository.images";
 
     @Inject
     public FileManagerImpl(Properties configProperties, Injector injector) {
+
+        // Initializes uploaded files repository path.
         UPLOADED_FILES_REPOSITORY = configProperties.getProperty(UPLOADED_FILES_REPOSITORY_NAME);
 
         if (UPLOADED_FILES_REPOSITORY == null) {
             throw new IllegalStateException("Missing reqquired property '" + UPLOADED_FILES_REPOSITORY_NAME
+                    + "' in the upload properties file.");
+        }
+
+        // Initializes images repository path.
+        IMAGES_REPOSITORY = configProperties.getProperty(IMAGES_REPOSITORY_NAME);
+
+        if (IMAGES_REPOSITORY == null) {
+            throw new IllegalStateException("Missing reqquired property '" + IMAGES_REPOSITORY_NAME
                     + "' in the upload properties file.");
         }
 
@@ -489,5 +510,17 @@ public class FileManagerImpl implements FileManager {
         final java.io.File physicalFile = new java.io.File(repository, lastVersion.getPath());
 
         return new DonwloadableFile(file.getName(), physicalFile);
+    }
+
+    @Override
+    public java.io.File getImage(String name) {
+
+        // Images repository.
+        final java.io.File repository = new java.io.File(IMAGES_REPOSITORY);
+
+        // Image file.
+        final java.io.File imageFile = new java.io.File(repository, name);
+
+        return imageFile;
     }
 }

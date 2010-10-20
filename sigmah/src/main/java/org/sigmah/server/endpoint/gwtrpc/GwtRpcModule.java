@@ -7,6 +7,7 @@ package org.sigmah.server.endpoint.gwtrpc;
 
 import org.sigmah.server.endpoint.file.FileDownloadServlet;
 import org.sigmah.server.endpoint.file.FileUploadServlet;
+import org.sigmah.server.endpoint.file.ImageServlet;
 
 import com.google.inject.servlet.ServletModule;
 
@@ -36,5 +37,8 @@ public class GwtRpcModule extends ServletModule {
 
         // Files download.
         serve("/Sigmah/download").with(FileDownloadServlet.class);
+
+        // Image provider.
+        serve("/Sigmah/image-provider").with(ImageServlet.class);
     }
 }

@@ -5,7 +5,6 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
@@ -22,7 +21,6 @@ import org.sigmah.shared.domain.Attribute;
 import org.sigmah.shared.domain.AttributeGroup;
 import org.sigmah.shared.domain.Indicator;
 import org.sigmah.shared.domain.User;
-import org.sigmah.shared.dto.element.handler.ValueEventWrapper;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.IllegalAccessCommandException;
 
@@ -46,9 +44,12 @@ public class UpdateEntityHandler extends BaseEntityHandler implements CommandHan
         this.injector = injector;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public CommandResult execute(UpdateEntity cmd, User user) throws CommandException {
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("[execute] Update command for entity: " + cmd.getEntityName() + ".");
+        }
 
         Map<String, Object> changes = cmd.getChanges().getTransientMap();
         PropertyMap changeMap = new PropertyMap(changes);
@@ -70,8 +71,6 @@ public class UpdateEntityHandler extends BaseEntityHandler implements CommandHan
             SitePolicy policy = injector.getInstance(SitePolicy.class);
             policy.update(user, cmd.getId(), changeMap);
 
-        } else if ("Project".equals(cmd.getEntityName())) {
-            updateProject(cmd, (List<ValueEventWrapper>) changes.get("changes"));
             
         } else if ("PersonalEvent".equals(cmd.getEntityName())) {
             PersonalEventPolicy policy = injector.getInstance(PersonalEventPolicy.class);
@@ -106,12 +105,4 @@ public class UpdateEntityHandler extends BaseEntityHandler implements CommandHan
 
         updateAttributeGroupProperties(group, changes);
     }
-
-    private void updateProject(UpdateEntity cmd, List<ValueEventWrapper> changes) {
-
-        for (final ValueEventWrapper event : changes) {
-            LOG.debug(event.getSourceElement().getLabel() + " - " + event.getValue());
-        }
-    }
-
 }

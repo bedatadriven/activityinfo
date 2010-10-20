@@ -1,5 +1,6 @@
 package org.sigmah.server.endpoint.file;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
@@ -37,7 +38,16 @@ public interface FileManager {
      * @return The corresponding file.
      */
     public DonwloadableFile getFile(String idString, String versionString);
-    
+
+    /**
+     * Retrieves an image with the given.
+     * 
+     * @param name
+     *            The image's name.
+     * @return The image as a file.
+     */
+    public File getImage(String name);
+
     /**
      * Utility class to represents a downloaded file.
      * 
