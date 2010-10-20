@@ -24,6 +24,7 @@ public class DummyCalendarHandler implements CalendarHandler {
     public Calendar getCalendar(Serializable identifier) {
         final Calendar calendar = new Calendar();
         calendar.setType(CalendarType.Dummy);
+        calendar.setIdentifier("dummy");
 
         if(identifier != null)
             calendar.setName(identifier.toString());

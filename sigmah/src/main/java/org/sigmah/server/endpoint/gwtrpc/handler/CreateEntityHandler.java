@@ -7,8 +7,6 @@ package org.sigmah.server.endpoint.gwtrpc.handler;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import org.sigmah.server.domain.*;
-import org.sigmah.server.policy.*;
 import org.sigmah.shared.command.CreateEntity;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
@@ -23,6 +21,12 @@ import org.sigmah.shared.exception.IllegalAccessCommandException;
 
 import javax.persistence.EntityManager;
 import java.util.Map;
+import org.sigmah.server.policy.ActivityPolicy;
+import org.sigmah.server.policy.PersonalEventPolicy;
+import org.sigmah.server.policy.ProjectPolicy;
+import org.sigmah.server.policy.PropertyMap;
+import org.sigmah.server.policy.SitePolicy;
+import org.sigmah.server.policy.UserDatabasePolicy;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -61,6 +65,9 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
             return new CreateResult((Integer) policy.create(user, propertyMap));
         } else if ("Site".equals(cmd.getEntityName())) {
             SitePolicy policy = injector.getInstance(SitePolicy.class);
+            return new CreateResult((Integer)policy.create(user, propertyMap));
+        } else if ("PersonalEvent".equals(cmd.getEntityName())) {
+            PersonalEventPolicy policy = injector.getInstance(PersonalEventPolicy.class);
             return new CreateResult((Integer)policy.create(user, propertyMap));
         } else {
             throw new CommandException("Invalid entity class " + cmd.getEntityName());

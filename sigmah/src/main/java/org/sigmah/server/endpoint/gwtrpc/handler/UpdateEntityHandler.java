@@ -28,6 +28,7 @@ import org.sigmah.shared.exception.IllegalAccessCommandException;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import org.sigmah.server.policy.PersonalEventPolicy;
 
 /**
  * @author Alex Bertram
@@ -71,6 +72,10 @@ public class UpdateEntityHandler extends BaseEntityHandler implements CommandHan
 
         } else if ("Project".equals(cmd.getEntityName())) {
             updateProject(cmd, (List<ValueEventWrapper>) changes.get("changes"));
+            
+        } else if ("PersonalEvent".equals(cmd.getEntityName())) {
+            PersonalEventPolicy policy = injector.getInstance(PersonalEventPolicy.class);
+            policy.update(user, cmd.getId(), changeMap);
         } else {
             throw new RuntimeException("unknown entity type");
         }

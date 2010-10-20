@@ -41,13 +41,15 @@ public class ProjectView extends LayoutContainer implements ProjectPresenter.Vie
         if (Log.isDebugEnabled()) {
             Log.debug("Initializing the ProjectView object.");
         }
-        setLayout(new RowLayout(Orientation.VERTICAL));
+        final BorderLayout borderLayout = new BorderLayout();
+        borderLayout.setContainerStyle("x-border-layout-ct main-background");
+        setLayout(borderLayout);
 
         /* Project banner */
         panelProjectBanner = new ContentPanel();
         panelProjectBanner.setHeading(I18N.CONSTANTS.projectBannerHeader());
         panelProjectBanner.setBorders(false);
-        panelProjectBanner.setHeight(100);
+        //panelProjectBanner.setHeight(100);
         panelProjectBanner.setLayout(new VBoxLayout());
         panelProjectBanner.addStyleName("project-label-10");
 
@@ -64,8 +66,11 @@ public class ProjectView extends LayoutContainer implements ProjectPresenter.Vie
 
         bottomPanel.add(tabPanel, new BorderLayoutData(LayoutRegion.NORTH, 20));
 
-        add(panelProjectBanner, new RowData(1, -1, new Margins(0, 0, 10, 0)));
-        add(bottomPanel, new RowData(1, 1));
+        final BorderLayoutData data = new BorderLayoutData(LayoutRegion.NORTH, 100);
+        data.setCollapsible(true);
+        data.setMargins(new Margins(0, 0, 5, 0));
+        add(panelProjectBanner, data); //new RowData(1, -1, new Margins(0, 0, 10, 0)));
+        add(bottomPanel, new BorderLayoutData(LayoutRegion.CENTER)); //new RowData(1, 1));
     }
 
     @Override

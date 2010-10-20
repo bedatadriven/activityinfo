@@ -13,22 +13,26 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+import org.sigmah.shared.domain.Deleteable;
 
 /**
  * 
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 @Entity
-public class PersonalEvent implements Serializable {
+@org.hibernate.annotations.FilterDefs({ @org.hibernate.annotations.FilterDef(name = "hideDeleted") })
+@org.hibernate.annotations.Filters({ @org.hibernate.annotations.Filter(name = "hideDeleted", condition = "dateDeleted IS null") })
+public class PersonalEvent implements Serializable, Deleteable {
     /**
      * Event identifier.
      */
-    private Long id;
+    private Integer id;
 
     /**
      * Identifier of the parent calendar of this event.
      */
-    private Long calendarId;
+    private Integer calendarId;
     
     /**
      * Title of the event (a short description).
@@ -50,22 +54,26 @@ public class PersonalEvent implements Serializable {
      * Creation date of the event.
      */
     private Date dateCreated;
+    /**
+     * Date of deletion.
+     */
+    private Date dateDeleted;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public Long getCalendarId() {
+    public Integer getCalendarId() {
         return calendarId;
     }
 
-    public void setCalendarId(Long calendarId) {
+    public void setCalendarId(Integer calendarId) {
         this.calendarId = calendarId;
     }
 
@@ -110,5 +118,25 @@ public class PersonalEvent implements Serializable {
 
     public void setSummary(String summary) {
         this.summary = summary;
+    }
+
+    @Temporal(value=TemporalType.TIMESTAMP)
+    public Date getDateDeleted() {
+        return dateDeleted;
+    }
+
+    public void setDateDeleted(Date dateDeleted) {
+        this.dateDeleted = dateDeleted;
+    }
+
+    @Override
+    public void delete() {
+        dateDeleted = new Date();
+    }
+
+    @Override
+    @Transient
+    public boolean isDeleted() {
+        return dateDeleted != null;
     }
 }

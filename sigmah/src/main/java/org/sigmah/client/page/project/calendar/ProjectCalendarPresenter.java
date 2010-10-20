@@ -9,7 +9,6 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.sigmah.client.dispatch.Dispatcher;
@@ -43,11 +42,34 @@ public class ProjectCalendarPresenter implements Presenter {
         
         public CalendarWrapper(Calendar calendar) {
             this.set("name", calendar.getName());
+            this.set("id", calendar.getIdentifier());
             this.calendar = calendar;
         }
 
         public Calendar getCalendar() {
             return calendar;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final CalendarWrapper other = (CalendarWrapper) obj;
+            if (this.calendar != other.calendar && (this.calendar == null || !this.calendar.equals(other.calendar))) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 53 * hash + (this.calendar != null ? this.calendar.hashCode() : 0);
+            return hash;
         }
     }
 
@@ -63,7 +85,7 @@ public class ProjectCalendarPresenter implements Presenter {
             calendarStore = new ListStore<CalendarWrapper>();
             selectionModel = new CheckBoxSelectionModel<CalendarWrapper>();
             
-            view = new ProjectCalendarView(calendar, calendarStore, selectionModel);
+            view = new ProjectCalendarView(calendar, calendarStore, selectionModel, dispatcher);
         }
 
         // If the current project has changed, clear the view
@@ -86,12 +108,15 @@ public class ProjectCalendarPresenter implements Presenter {
             final AsyncCallback<Calendar> callback = new AsyncCallback<Calendar>() {
                 @Override
                 public void onSuccess(Calendar result) {
-                    result.setStyle(calendarIndex++); // Defines the color index of the calendar
+                    // Defines the color index of the calendar
+                    result.setStyle(calendarIndex++);
+
                     calendarStore.add(new CalendarWrapper(result));
                     selectionModel.select(calendarStore.getCount()-1, true);
 
-                    if(result.getType() == CalendarType.Personal)
+                    if(result.isEditable()) {
                         view.getAddEventButton().setEnabled(true);
+                    }
                 }
 
                 @Override
@@ -100,10 +125,7 @@ public class ProjectCalendarPresenter implements Presenter {
                 }
             };
 
-            final GetCalendar getDummyCalendar = new GetCalendar(CalendarType.Dummy, "Dummy");
-            dispatcher.execute(getDummyCalendar, null, callback);
-
-            final Long calendarId = currentProjectDTO.getCalendarId();
+            final Integer calendarId = currentProjectDTO.getCalendarId();
             if(calendarId != null) {
                 final GetCalendar getPersonalCalendar = new GetCalendar(CalendarType.Personal, calendarId);
                 dispatcher.execute(getPersonalCalendar, null, callback);

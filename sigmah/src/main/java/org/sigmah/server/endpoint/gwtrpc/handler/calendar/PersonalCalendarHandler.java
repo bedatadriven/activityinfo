@@ -16,6 +16,7 @@ import javax.persistence.EntityManager;
 import org.sigmah.shared.domain.calendar.Calendar;
 import org.sigmah.shared.domain.calendar.CalendarType;
 import org.sigmah.shared.domain.calendar.Event;
+import org.sigmah.shared.domain.calendar.PersonalCalendar;
 import org.sigmah.shared.domain.calendar.PersonalEvent;
 
 /**
@@ -36,19 +37,26 @@ public class PersonalCalendarHandler implements CalendarHandler {
 
     @Override
     public Calendar getCalendar(Serializable identifier) {
-        if(!(identifier instanceof Long))
+        if(!(identifier instanceof Integer))
             throw new IllegalArgumentException();
 
-        final Long id = (Long) identifier;
+        final Integer id = (Integer) identifier;
+        final Query calendarQuery = em.createQuery("SELECT c FROM PersonalCalendar c WHERE c.id = :calendarId");
+        calendarQuery.setParameter("calendarId", id);
 
-        final Query q = em.createQuery("SELECT p FROM PersonalEvent p WHERE p.calendarId = :calendarId");
-        q.setParameter("calendarId", id);
+        final PersonalCalendar personalCalendar = (PersonalCalendar) calendarQuery.getSingleResult();
 
-        final List<PersonalEvent> events = q.getResultList();
+        final Query eventQuery = em.createQuery("SELECT p FROM PersonalEvent p WHERE p.calendarId = :calendarId");
+        eventQuery.setParameter("calendarId", id);
+
+        final List<PersonalEvent> events = eventQuery.getResultList();
 
         final Calendar calendar = new Calendar();
         calendar.setType(CalendarType.Personal);
-        calendar.setName("Evénements");
+        calendar.setName(personalCalendar.getName());
+        calendar.setIdentifier(identifier);
+        calendar.setEditable(true);
+
         if(events != null) {
             final HashMap<Date, List<Event>> eventMap = new HashMap<Date, List<Event>>();
 
@@ -62,6 +70,7 @@ public class PersonalCalendarHandler implements CalendarHandler {
                 }
                 
                 final Event calendarEvent = new Event();
+                calendarEvent.setIdentifier(event.getId());
                 calendarEvent.setParent(calendar);
                 calendarEvent.setSummary(event.getSummary());
                 calendarEvent.setDescription(event.getDescription());

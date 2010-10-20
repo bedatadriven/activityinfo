@@ -20,6 +20,7 @@ import org.sigmah.shared.domain.ProjectModel;
 import org.sigmah.shared.domain.User;
 
 import com.google.inject.Inject;
+import org.sigmah.shared.domain.calendar.PersonalCalendar;
 
 public class ProjectPolicy implements EntityPolicy<Project> {
 
@@ -45,6 +46,12 @@ public class ProjectPolicy implements EntityPolicy<Project> {
             log.debug("[createProject] Starting project creation.");
         }
 
+        // Creates a new calendar
+        PersonalCalendar calendar = new PersonalCalendar();
+        calendar.setName(properties.<String> get("calendarName"));
+        em.persist(calendar);
+
+        // Creates the new project
         final Project project = new Project();
 
         // Userdatabase attributes.
@@ -54,6 +61,7 @@ public class ProjectPolicy implements EntityPolicy<Project> {
         project.setName(properties.<String> get("name"));
         project.setName(properties.<String> get("fullName"));
         project.setLastSchemaUpdate(new Date());
+        project.setCalendarId(calendar.getId());
 
         // Project attributes.
         final ProjectModel model = em.getReference(ProjectModel.class, properties.<Long> get("modelId"));

@@ -31,6 +31,11 @@ public class CalendarWidget extends Composite {
         public void afterRefresh();
     }
 
+    public interface Delegate {
+        void edit(Event event, CalendarWidget calendarWidget);
+        void delete(Event event, CalendarWidget calendarWidget);
+    }
+
     /**
      * Types of displays availables for a calendar.
      * @author rca
@@ -171,6 +176,7 @@ public class CalendarWidget extends Composite {
     private DateTimeFormat hourFormatter = DateTimeFormat.getFormat("HH:mm");
 
     private CalendarListener listener;
+    private Delegate delegate;
 
     public CalendarWidget(int displayHeaders, boolean displayWeekNumber) {
         this.calendars = new ArrayList<Calendar>();
@@ -190,23 +196,27 @@ public class CalendarWidget extends Composite {
         today();
     }
 
+    public void setDelegate(Delegate delegate) {
+        this.delegate = delegate;
+    }
+
     public void setListener(CalendarListener listener) {
         this.listener = listener;
     }
 
     public void next() {
         displayMode.nextDate(startDate);
-        drawCalendar();
+        refresh();
     }
     
     public void previous() {
         displayMode.previousDate(startDate);
-        drawCalendar();
+        refresh();
     }
     
     public final void today() {
         displayMode.firstDay(startDate, today, firstDayOfWeek);
-        drawCalendar();
+        refresh();
     }
     
     /**
@@ -219,7 +229,7 @@ public class CalendarWidget extends Composite {
 
     public void addCalendar(Calendar calendar) {
         calendars.add(calendar);
-        drawCalendar();
+        refresh();
     }
 
     public List<Calendar> getCalendars() {
@@ -228,7 +238,7 @@ public class CalendarWidget extends Composite {
 
     public void setCalendars(List<Calendar> calendars) {
         this.calendars = calendars;
-        drawCalendar();
+        refresh();
     }
 
     /**
@@ -239,7 +249,7 @@ public class CalendarWidget extends Composite {
      */
     public void setTitleFormatter(DateTimeFormat titleFormatter) {
         this.titleFormatter = titleFormatter;
-        drawCalendar();
+        refresh();
     }
     
     /**
@@ -250,7 +260,7 @@ public class CalendarWidget extends Composite {
      */
     public void setHeaderFormatter(DateTimeFormat headerFormatter) {
         this.headerFormatter = headerFormatter;
-        drawCalendar();
+        refresh();
     }
     
     /**
@@ -261,7 +271,7 @@ public class CalendarWidget extends Composite {
      */
     public void setDayFormatter(DateTimeFormat dayFormatter) {
         this.dayFormatter = dayFormatter;
-        drawCalendar();
+        refresh();
     }
 
     /**
@@ -282,7 +292,7 @@ public class CalendarWidget extends Composite {
         // Applying the CSS style associated with the new display mode
         grid.addStyleName(displayMode.getStyleName());
 
-        drawCalendar();
+        refresh();
     }
     
     /**
@@ -291,7 +301,7 @@ public class CalendarWidget extends Composite {
      */
     public void setFirstDayOfWeek(int firstDayOfWeek) {
         this.firstDayOfWeek = firstDayOfWeek;
-        drawCalendar();
+        refresh();
     }
 
     public int getDisplayHeaders() {
@@ -301,7 +311,7 @@ public class CalendarWidget extends Composite {
     public void setDisplayHeaders(int displayHeaders) {
         clear();
         this.displayHeaders = displayHeaders;
-        drawCalendar();
+        refresh();
     }
     
     public boolean isDisplayWeekNumber() {
@@ -311,7 +321,7 @@ public class CalendarWidget extends Composite {
     public void setDisplayWeekNumber(boolean displayWeekNumber) {
         clear();
         this.displayWeekNumber = displayWeekNumber;
-        drawCalendar();
+        refresh();
     }
 
     /**
@@ -333,6 +343,8 @@ public class CalendarWidget extends Composite {
         cell.setId("calendar-cell-calibration");
 
         eventLimit = (getCellHeight() / EVENT_HEIGHT) - 2;
+        if(eventLimit < 0)
+            eventLimit = 0;
     }
 
     /**
@@ -377,7 +389,7 @@ public class CalendarWidget extends Composite {
     /**
      * Render the calendar.
      */
-    private void drawCalendar() {
+    public void refresh() {
         drawEmptyCells();
         if(isAttached()) {
             calibrateCalendar();
@@ -504,7 +516,13 @@ public class CalendarWidget extends Composite {
         final TreeSet<Event> sortedEvents = new TreeSet<Event>(new Comparator<Event>() {
             @Override
             public int compare(Event o1, Event o2) {
-                return o1.getDtstart().compareTo(o2.getDtstart());
+                int compare = o1.getDtstart().compareTo(o2.getDtstart());
+                if(compare == 0)
+                    compare = o1.getSummary().compareTo(o2.getSummary());
+                if(compare == 0 && o1 != o2)
+                    if(o1.getIdentifier() instanceof Comparable)
+                        compare = ((Comparable)o1).compareTo(o2);
+                return compare;
             }
         });
 
@@ -544,10 +562,31 @@ public class CalendarWidget extends Composite {
 
             final DecoratedPopupPanel detailPopup = new DecoratedPopupPanel(true);
 
-                final Grid popupContent = new Grid(3, 1);
+                final Grid popupContent = new Grid(event.getParent().isEditable()?5:3, 1);
                 popupContent.setText(0, 0, event.getSummary());
                 popupContent.setText(1, 0, eventDate.toString());
                 popupContent.setText(2, 0, event.getDescription());
+                if(event.getParent().isEditable()) {
+                    final Anchor editAnchor = new Anchor("Modifier l'événement");
+                    editAnchor.addClickHandler(new ClickHandler() {
+                    @Override
+                        public void onClick(ClickEvent clickEvent) {
+                            delegate.edit(event, CalendarWidget.this);
+                        }
+                    });
+
+                    final Anchor deleteAnchor = new Anchor("Supprimer l'événement");
+                    deleteAnchor.addClickHandler(new ClickHandler() {
+                    @Override
+                        public void onClick(ClickEvent clickEvent) {
+                            delegate.delete(event, CalendarWidget.this);
+                            detailPopup.hide();
+                        }
+                    });
+
+                    popupContent.setWidget(3, 0, editAnchor);
+                    popupContent.setWidget(4, 0, deleteAnchor);
+                }
                 popupContent.getCellFormatter().addStyleName(0, 0, "calendar-popup-header");
 
             detailPopup.setWidget(popupContent);

@@ -26,7 +26,7 @@ public class Project extends UserDatabase {
     private Phase currentPhase;
     private List<Phase> phases = new ArrayList<Phase>();
     private List<Value> values = new ArrayList<Value>();
-    private Long calendarId;
+    private Integer calendarId;
 
     public void setLogFrame(LogFrame logFrame) {
         this.logFrame = logFrame;
@@ -95,7 +95,7 @@ public class Project extends UserDatabase {
      * Retrieves the ID of the calendar attached to this project.
      * @return the ID of the calendar attached to this project.
      */
-    public Long getCalendarId() {
+    public Integer getCalendarId() {
         return calendarId;
     }
 
@@ -103,7 +103,7 @@ public class Project extends UserDatabase {
      * Defines the ID of the calendar attached to this project.
      * @param calendarId the ID of the calendar to attach.
      */
-    public void setCalendarId(Long calendarId) {
+    public void setCalendarId(Integer calendarId) {
         this.calendarId = calendarId;
     }
 }

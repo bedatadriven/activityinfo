@@ -13,6 +13,7 @@ import java.util.Date;
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class Event implements Serializable {
+    private Serializable identifier;
     private String summary;
     private String description;
     private Date dtstart;
@@ -28,6 +29,36 @@ public class Event implements Serializable {
         this.dtstart = dtstart;
         this.dtend = dtend;
         this.parent = parent;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Event other = (Event) obj;
+        if (this.identifier != other.identifier && (this.identifier == null || !this.identifier.equals(other.identifier))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 71 * hash + (this.identifier != null ? this.identifier.hashCode() : 0);
+        return hash;
+    }
+
+    public Serializable getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(Serializable identifier) {
+        this.identifier = identifier;
     }
 
     public String getDescription() {

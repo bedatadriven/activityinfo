@@ -283,6 +283,7 @@ public class DashboardView extends ContentPanel {
                         projectProperties.put("fullName", fullName);
                         projectProperties.put("modelId", modelId);
                         projectProperties.put("countryId", countryId);
+                        projectProperties.put("calendarName", I18N.CONSTANTS.calendarDefaultName());
                         
                         // Creates the project.
                         dispatcher.execute(new CreateEntity("Project", projectProperties), null, new AsyncCallback<CreateResult>() {
