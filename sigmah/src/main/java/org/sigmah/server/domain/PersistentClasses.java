@@ -28,6 +28,8 @@ import org.sigmah.shared.domain.Site;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.UserDatabase;
 import org.sigmah.shared.domain.UserPermission;
+import org.sigmah.shared.domain.calendar.PersonalCalendar;
+import org.sigmah.shared.domain.calendar.PersonalEvent;
 import org.sigmah.shared.domain.category.CategoryElement;
 import org.sigmah.shared.domain.category.CategoryType;
 import org.sigmah.shared.domain.element.CheckboxElement;
@@ -106,6 +108,8 @@ public class PersistentClasses {
             LogFrameGroup.class,
             LogFrameModel.class,
             CategoryElement.class,
-            CategoryType.class
+            CategoryType.class,
+            PersonalCalendar.class,
+            PersonalEvent.class
     };
 }

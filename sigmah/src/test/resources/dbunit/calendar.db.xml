@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!--
+  ~ All Sigmah code is released under the GNU General Public License v3
+  ~ See COPYRIGHT.txt and LICENSE.txt.
+  -->
+
+<dataset>
+    <PersonalCalendar id="1" name="debug-calendar" />
+    <PersonalEvent id="1" calendarId="1" summary="First" startDate="2010-10-18 8:30:00" />
+    <PersonalEvent id="2" calendarId="1" summary="Second" startDate="2010-10-18 14:00:00" />
+    <PersonalEvent id="3" calendarId="1" summary="Duration" startDate="2010-10-19 9:00:00" endDate="2010-10-19 18:00:00" />
+</dataset>

@@ -9,7 +9,7 @@ import java.io.Serializable;
 import org.sigmah.shared.domain.calendar.Calendar;
 
 /**
- * 
+ * Describes an utility class for fetching a type of Calendar.
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public interface CalendarHandler {

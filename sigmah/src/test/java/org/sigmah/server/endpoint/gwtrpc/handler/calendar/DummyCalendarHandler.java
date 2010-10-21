@@ -15,7 +15,8 @@ import org.sigmah.shared.domain.calendar.CalendarType;
 import org.sigmah.shared.domain.calendar.Event;
 
 /**
- *
+ * Creates a new dummy calendar.
+ * This class is primary used for testing purposes.
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class DummyCalendarHandler implements CalendarHandler {

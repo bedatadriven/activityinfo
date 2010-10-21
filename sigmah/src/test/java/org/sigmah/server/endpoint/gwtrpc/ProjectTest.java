@@ -59,6 +59,7 @@ public class ProjectTest extends CommandTestCase {
         properties.put("fullName", "First p full");
         properties.put("modelId", 1L);
         properties.put("countryId", 1);
+        properties.put("calendarName", "events");
 
         CreateEntity cmd = new CreateEntity("Project", properties);
 
