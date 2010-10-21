@@ -518,12 +518,25 @@ body {
 /* ----------------------------------------------------------- Calendar Popup */
 .gwt-DecoratedPopupPanel {
 	background-color: white;
-	border: 1px solid lightgrey;
+	border: 1px solid darkgrey;
 	font-size: 10pt;
+        padding: 4px;
 }
 
 .calendar-popup-header {
 	font-weight: bold;
+}
+
+.calendar-popup-date {
+    font-size: 9pt;
+    font-weight: bold;
+}
+
+.calendar-popup-description {
+    padding-top: 4px;
+    padding-bottom: 4px;
+
+    whitespace: pre !important;
 }
 
 /* ------------------------------------------------------------------ Ext-GWT */

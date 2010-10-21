@@ -29,8 +29,6 @@ public class PersonalEventPolicy implements EntityPolicy<PersonalEvent> {
     public Object create(User user, PropertyMap properties) {
         final PersonalEvent event = new PersonalEvent();
 
-        final CalendarWrapper calendar = (CalendarWrapper) properties.get("calendarId");
-        event.setCalendarId((Integer) calendar.getCalendar().getIdentifier());
         event.setDateCreated(new Date());
         fillEvent(event, properties);
 
@@ -48,6 +46,9 @@ public class PersonalEventPolicy implements EntityPolicy<PersonalEvent> {
     }
 
     private void fillEvent(PersonalEvent event, PropertyMap properties) {
+        final CalendarWrapper calendar = (CalendarWrapper) properties.get("calendarId");
+        event.setCalendarId((Integer) calendar.getCalendar().getIdentifier());
+        
         event.setSummary((String) properties.get("summary"));
         event.setDescription((String) properties.get("description"));
 

@@ -269,8 +269,6 @@ public class ProjectCalendarView extends LayoutContainer {
             calendarBox.setFieldLabel(I18N.CONSTANTS.projectTabCalendar());
             calendarBox.setStore(calendarBoxStore);
             calendarBox.setAllowBlank(false);
-            calendarBox.setEditable(false);
-            calendarBox.setValueField("id");
             calendarBox.setDisplayField("name");
             calendarBox.setName("calendarId");
             dialog.add(calendarBox);
@@ -449,8 +447,7 @@ public class ProjectCalendarView extends LayoutContainer {
 
             @Override
             public void onSuccess(VoidResult result) {
-                final CalendarWrapper wrapper = (CalendarWrapper) properties.get("calendarId");
-                final Calendar calendar = wrapper.getCalendar();
+                final Calendar calendar = event.getParent();
 
                 final List<Event> oldEventList = calendar.getEvents().get(
                         new Date(event.getDtstart().getYear(), event.getDtstart().getMonth(), event.getDtstart().getDate()));

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.TreeSet;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.domain.calendar.Calendar;
 import org.sigmah.shared.domain.calendar.Event;
 
@@ -577,11 +578,25 @@ public class CalendarWidget extends Composite {
 
                 final Grid popupContent = new Grid(event.getParent().isEditable()?5:3, 1);
                 popupContent.setText(0, 0, event.getSummary());
-                if(!fullDayEvent)
+                popupContent.getCellFormatter().addStyleName(0, 0, "calendar-popup-header");
+
+                if(!fullDayEvent) {
+                    popupContent.getCellFormatter().addStyleName(1, 0, "calendar-popup-date");
+                    popupContent.getCellFormatter().addStyleName(1, 0, "calendar-event-" + event.getParent().getStyle());
                     popupContent.setText(1, 0, eventDate.toString());
-                popupContent.setText(2, 0, event.getDescription());
+                }
+                else
+                    popupContent.setText(1, 0, "");
+
+                if(event.getDescription() != null && !"".equals(event.getDescription())) {
+                    popupContent.getCellFormatter().addStyleName(2, 0, "calendar-popup-description");
+                    popupContent.setText(2, 0, event.getDescription());
+                }
+                else
+                    popupContent.setText(2, 0, "");
+                
                 if(event.getParent().isEditable()) {
-                    final Anchor editAnchor = new Anchor("Modifier l'événement");
+                    final Anchor editAnchor = new Anchor(I18N.CONSTANTS.calendarEditEvent());
                     editAnchor.addClickHandler(new ClickHandler() {
                     @Override
                         public void onClick(ClickEvent clickEvent) {
@@ -589,7 +604,7 @@ public class CalendarWidget extends Composite {
                         }
                     });
 
-                    final Anchor deleteAnchor = new Anchor("Supprimer l'événement");
+                    final Anchor deleteAnchor = new Anchor(I18N.CONSTANTS.calendarDeleteEvent());
                     deleteAnchor.addClickHandler(new ClickHandler() {
                     @Override
                         public void onClick(ClickEvent clickEvent) {
@@ -601,7 +616,6 @@ public class CalendarWidget extends Composite {
                     popupContent.setWidget(3, 0, editAnchor);
                     popupContent.setWidget(4, 0, deleteAnchor);
                 }
-                popupContent.getCellFormatter().addStyleName(0, 0, "calendar-popup-header");
 
             detailPopup.setWidget(popupContent);
 
