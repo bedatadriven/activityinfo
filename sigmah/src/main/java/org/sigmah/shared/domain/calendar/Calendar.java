@@ -5,7 +5,6 @@
 
 package org.sigmah.shared.domain.calendar;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;

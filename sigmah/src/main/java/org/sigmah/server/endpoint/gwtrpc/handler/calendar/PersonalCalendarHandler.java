@@ -40,12 +40,14 @@ public class PersonalCalendarHandler implements CalendarHandler {
         if(!(identifier instanceof Integer))
             throw new IllegalArgumentException();
 
+        // Fetching the calendar
         final Integer id = (Integer) identifier;
         final Query calendarQuery = em.createQuery("SELECT c FROM PersonalCalendar c WHERE c.id = :calendarId");
         calendarQuery.setParameter("calendarId", id);
 
         final PersonalCalendar personalCalendar = (PersonalCalendar) calendarQuery.getSingleResult();
 
+        // Fetching the events
         final Query eventQuery = em.createQuery("SELECT p FROM PersonalEvent p WHERE p.calendarId = :calendarId");
         eventQuery.setParameter("calendarId", id);
 

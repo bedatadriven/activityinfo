@@ -209,6 +209,7 @@ public class ProjectCalendarView extends LayoutContainer {
 
         // Configuring calendar delegate
         calendar.setDelegate(new CalendarWidget.Delegate() {
+
             @Override
             public void edit(Event event, CalendarWidget calendarWidget) {
                 getEditPersonalEventDialog(event, calendarStore, calendar, dispatcher).show();
@@ -216,21 +217,22 @@ public class ProjectCalendarView extends LayoutContainer {
 
             @Override
             public void delete(final Event event, final CalendarWidget calendarWidget) {
-                final Delete delete = new Delete("calendar.PersonalEvent", (Integer)event.getIdentifier());
+                final Delete delete = new Delete("calendar.PersonalEvent", (Integer) event.getIdentifier());
                 dispatcher.execute(delete, null, new AsyncCallback<VoidResult>() {
+
                     @Override
                     public void onFailure(Throwable caught) {
                         MessageBox.alert(I18N.CONSTANTS.error(),
-                            I18N.CONSTANTS.calendarDeleteEventError(),
-                            null);
+                                I18N.CONSTANTS.calendarDeleteEventError(),
+                                null);
                     }
 
                     @Override
                     public void onSuccess(VoidResult result) {
                         final List<Event> oldEventList = event.getParent().getEvents().get(
-                            new Date(event.getDtstart().getYear(), event.getDtstart().getMonth(), event.getDtstart().getDate()));
+                                new Date(event.getDtstart().getYear(), event.getDtstart().getMonth(), event.getDtstart().getDate()));
                         oldEventList.remove(event);
-                        
+
                         calendarWidget.refresh();
                     }
                 });
@@ -290,7 +292,6 @@ public class ProjectCalendarView extends LayoutContainer {
             // Event start time
             final TimeField eventStartHourField = new TimeField();
             eventStartHourField.setFieldLabel(I18N.CONSTANTS.calendarEventStartHour());
-            eventStartHourField.setAllowBlank(false);
             eventStartHourField.setName("startDate");
             dialog.add(eventStartHourField);
 
@@ -319,23 +320,34 @@ public class ProjectCalendarView extends LayoutContainer {
         }
 
         // Cleaning previous entries or setting entries if edit mode
-        if(event == null) {
+        if (event == null) {
             final int size = addPersonalEventDialog.getItemCount();
-            for(int index = 0; index < size; index++) {
+            for (int index = 0; index < size; index++) {
                 final Field<?> field = (Field<?>) addPersonalEventDialog.getWidget(index);
                 field.setValue(null);
                 field.clearInvalid();
             }
         } else {
-            ((ComboBox<CalendarWrapper>)addPersonalEventDialog.getWidget(0)).setValue(new CalendarWrapper(event.getParent()));
-            ((TextField<String>)addPersonalEventDialog.getWidget(1)).setValue(event.getSummary());
-            ((DateField)addPersonalEventDialog.getWidget(2)).setValue(new Date(event.getDtstart().getYear(), event.getDtstart().getMonth(), event.getDtstart().getDate()));
-            ((TimeField)addPersonalEventDialog.getWidget(3)).setValue(((TimeField)addPersonalEventDialog.getWidget(3)).findModel(event.getDtstart()));
-            if(event.getDtend() != null)
-                ((TimeField)addPersonalEventDialog.getWidget(4)).setValue(((TimeField)addPersonalEventDialog.getWidget(4)).findModel(event.getDtend()));
-            else
-                ((TimeField)addPersonalEventDialog.getWidget(4)).setValue(null);
-            ((TextArea)addPersonalEventDialog.getWidget(5)).setValue(event.getDescription());
+            boolean fullDayEvent = event.getDtend() != null && (event.getDtstart().getDate() != event.getDtend().getDate() ||
+                        event.getDtstart().getMonth() != event.getDtend().getMonth() ||
+                        event.getDtstart().getYear() != event.getDtend().getYear());
+
+            ((ComboBox<CalendarWrapper>) addPersonalEventDialog.getWidget(0)).setValue(new CalendarWrapper(event.getParent()));
+            ((TextField<String>) addPersonalEventDialog.getWidget(1)).setValue(event.getSummary());
+            ((DateField) addPersonalEventDialog.getWidget(2)).setValue(new Date(event.getDtstart().getYear(), event.getDtstart().getMonth(), event.getDtstart().getDate()));
+            if (!fullDayEvent) {
+                ((TimeField) addPersonalEventDialog.getWidget(3)).setValue(((TimeField) addPersonalEventDialog.getWidget(3)).findModel(event.getDtstart()));
+
+                if (event.getDtend() != null) {
+                    ((TimeField) addPersonalEventDialog.getWidget(4)).setValue(((TimeField) addPersonalEventDialog.getWidget(4)).findModel(event.getDtend()));
+                } else {
+                    ((TimeField) addPersonalEventDialog.getWidget(4)).setValue(null);
+                }
+            } else {
+                ((TimeField) addPersonalEventDialog.getWidget(3)).setValue(null);
+                ((TimeField) addPersonalEventDialog.getWidget(4)).setValue(null);
+            }
+            ((TextArea) addPersonalEventDialog.getWidget(5)).setValue(event.getDescription());
         }
 
         // Defining the selectable calendars
@@ -419,31 +431,7 @@ public class ProjectCalendarView extends LayoutContainer {
                 // Creating events
                 final Event event = new Event();
                 event.setIdentifier((Integer) result.getNewId());
-
-                event.setSummary((String) properties.get("summary"));
-                event.setDescription((String) properties.get("description"));
-
-                final Date day = (Date) properties.get("date");
-                final Time startHour = (Time) properties.get("startDate");
-                final Time endHour = (Time) properties.get("endDate");
-
-                event.setDtstart(new Date(day.getYear(), day.getMonth(), day.getDate(), startHour.getHour(), startHour.getMinutes()));
-                if (endHour != null) {
-                    event.setDtend(new Date(day.getYear(), day.getMonth(), day.getDate(), endHour.getHour(), endHour.getMinutes()));
-                }
-
-                final CalendarWrapper wrapper = (CalendarWrapper) properties.get("calendarId");
-                final Calendar calendar = wrapper.getCalendar();
-
-                event.setParent(calendar);
-
-                // Adding the new event to the calendar
-                List<Event> events = calendar.getEvents().get(day);
-                if (events == null) {
-                    events = new ArrayList<Event>();
-                    calendar.getEvents().put(day, events);
-                }
-                events.add(event);
+                updateEvent(event, properties);
 
                 callback.onSuccess(event);
             }
@@ -468,29 +456,42 @@ public class ProjectCalendarView extends LayoutContainer {
                         new Date(event.getDtstart().getYear(), event.getDtstart().getMonth(), event.getDtstart().getDate()));
                 oldEventList.remove(event);
 
-                // Creating events
-                event.setSummary((String) properties.get("summary"));
-                event.setDescription((String) properties.get("description"));
-
-                final Date day = (Date) properties.get("date");
-                final Time startHour = (Time) properties.get("startDate");
-                final Time endHour = (Time) properties.get("endDate");
-
-                event.setDtstart(new Date(day.getYear(), day.getMonth(), day.getDate(), startHour.getHour(), startHour.getMinutes()));
-                if (endHour != null) {
-                    event.setDtend(new Date(day.getYear(), day.getMonth(), day.getDate(), endHour.getHour(), endHour.getMinutes()));
-                }
-
-                // Adding the new event to the calendar
-                List<Event> events = calendar.getEvents().get(day);
-                if (events == null) {
-                    events = new ArrayList<Event>();
-                    calendar.getEvents().put(day, events);
-                }
-                events.add(event);
+                updateEvent(event, properties);
 
                 callback.onSuccess(event);
             }
         });
+    }
+
+    private void updateEvent(Event event, final Map<String, ?> properties) {
+        event.setSummary((String) properties.get("summary"));
+        event.setDescription((String) properties.get("description"));
+
+        final Date day = (Date) properties.get("date");
+        final Time startHour = (Time) properties.get("startDate");
+        final Time endHour = (Time) properties.get("endDate");
+
+        if (startHour != null) {
+            event.setDtstart(new Date(day.getYear(), day.getMonth(), day.getDate(), startHour.getHour(), startHour.getMinutes()));
+            if (endHour != null) {
+                event.setDtend(new Date(day.getYear(), day.getMonth(), day.getDate(), endHour.getHour(), endHour.getMinutes()));
+            }
+        } else {
+            event.setDtstart(new Date(day.getYear(), day.getMonth(), day.getDate()));
+            event.setDtend(new Date(day.getYear(), day.getMonth(), day.getDate() + 1));
+        }
+
+        // Adding the new event to the calendar
+        final CalendarWrapper wrapper = (CalendarWrapper) properties.get("calendarId");
+        final Calendar calendar = wrapper.getCalendar();
+
+        event.setParent(calendar);
+
+        List<Event> events = calendar.getEvents().get(day);
+        if (events == null) {
+            events = new ArrayList<Event>();
+            calendar.getEvents().put(day, events);
+        }
+        events.add(event);
     }
 }

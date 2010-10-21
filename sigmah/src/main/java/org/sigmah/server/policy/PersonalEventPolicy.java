@@ -31,17 +31,8 @@ public class PersonalEventPolicy implements EntityPolicy<PersonalEvent> {
 
         final CalendarWrapper calendar = (CalendarWrapper) properties.get("calendarId");
         event.setCalendarId((Integer) calendar.getCalendar().getIdentifier());
-        event.setSummary((String) properties.get("summary"));
-        event.setDescription((String) properties.get("description"));
-
-        final Date day = (Date) properties.get("date");
-        final Time startHour = (Time) properties.get("startDate");
-        final Time endHour = (Time) properties.get("endDate");
-
-        event.setStartDate(new Date(day.getYear(), day.getMonth(), day.getDate(), startHour.getHour(), startHour.getMinutes()));
-        if(endHour != null)
-            event.setEndDate(new Date(day.getYear(), day.getMonth(), day.getDate(), endHour.getHour(), endHour.getMinutes()));
         event.setDateCreated(new Date());
+        fillEvent(event, properties);
 
         dao.persist(event);
 
@@ -51,20 +42,27 @@ public class PersonalEventPolicy implements EntityPolicy<PersonalEvent> {
     @Override
     public void update(User user, Object entityId, PropertyMap changes) {
         final PersonalEvent event = dao.findById((Integer)entityId);
-
-        event.setSummary((String) changes.get("summary"));
-        event.setDescription((String) changes.get("description"));
-
-        final Date day = (Date) changes.get("date");
-        final Time startHour = (Time) changes.get("startDate");
-        final Time endHour = (Time) changes.get("endDate");
-
-        event.setStartDate(new Date(day.getYear(), day.getMonth(), day.getDate(), startHour.getHour(), startHour.getMinutes()));
-        if(endHour != null)
-            event.setEndDate(new Date(day.getYear(), day.getMonth(), day.getDate(), endHour.getHour(), endHour.getMinutes()));
-        event.setDateCreated(new Date());
+        fillEvent(event, changes);
 
         dao.persist(event);
+    }
+
+    private void fillEvent(PersonalEvent event, PropertyMap properties) {
+        event.setSummary((String) properties.get("summary"));
+        event.setDescription((String) properties.get("description"));
+
+        final Date day = (Date) properties.get("date");
+        final Time startHour = (Time) properties.get("startDate");
+        final Time endHour = (Time) properties.get("endDate");
+
+        if(startHour != null) {
+            event.setStartDate(new Date(day.getYear(), day.getMonth(), day.getDate(), startHour.getHour(), startHour.getMinutes()));
+            if(endHour != null)
+                event.setEndDate(new Date(day.getYear(), day.getMonth(), day.getDate(), endHour.getHour(), endHour.getMinutes()));
+        } else {
+            event.setStartDate(new Date(day.getYear(), day.getMonth(), day.getDate()));
+            event.setEndDate(new Date(day.getYear(), day.getMonth(), day.getDate()+1));
+        }
     }
 
 }

@@ -542,11 +542,20 @@ public class CalendarWidget extends Composite {
             final ClickableFlowPanel flowPanel = new ClickableFlowPanel();
             flowPanel.addStyleName("calendar-event");
 
+            boolean fullDayEvent = false;
+
             final StringBuilder eventDate = new StringBuilder();
             eventDate.append(hourFormatter.format(event.getDtstart()));
             if(event.getDtend() != null) {
                 eventDate.append(" ");
                 eventDate.append(hourFormatter.format(event.getDtend()));
+
+                if(event.getDtstart().getDate() != event.getDtend().getDate() ||
+                        event.getDtstart().getMonth() != event.getDtend().getMonth() ||
+                        event.getDtstart().getYear() != event.getDtend().getYear()) {
+                    fullDayEvent = true;
+                    flowPanel.addStyleName("calendar-fullday-event");
+                }
             }
 
             final InlineLabel dateLabel = new InlineLabel(eventDate.toString());
@@ -555,16 +564,21 @@ public class CalendarWidget extends Composite {
             final InlineLabel eventLabel = new InlineLabel(event.getSummary());
             eventLabel.addStyleName("calendar-event-label");
 
-            eventLabel.addStyleName("calendar-event-" + event.getParent().getStyle());
+            if(fullDayEvent)
+                flowPanel.addStyleName("calendar-fullday-event-" + event.getParent().getStyle());
+            else
+                eventLabel.addStyleName("calendar-event-" + event.getParent().getStyle());
 
-            flowPanel.add(dateLabel);
+            if(!fullDayEvent)
+                flowPanel.add(dateLabel);
             flowPanel.add(eventLabel);
 
             final DecoratedPopupPanel detailPopup = new DecoratedPopupPanel(true);
 
                 final Grid popupContent = new Grid(event.getParent().isEditable()?5:3, 1);
                 popupContent.setText(0, 0, event.getSummary());
-                popupContent.setText(1, 0, eventDate.toString());
+                if(!fullDayEvent)
+                    popupContent.setText(1, 0, eventDate.toString());
                 popupContent.setText(2, 0, event.getDescription());
                 if(event.getParent().isEditable()) {
                     final Anchor editAnchor = new Anchor("Modifier l'événement");

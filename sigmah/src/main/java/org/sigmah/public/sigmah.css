@@ -432,6 +432,12 @@ body {
 	cursor: default;
 }
 
+.calendar-fullday-event {
+    font-weight: bold;
+    color: white;
+    background-color: black;
+}
+
 .calendar-event-date {
 	padding-left: 4px;
 	font-size: 9pt;
@@ -441,32 +447,52 @@ body {
 	padding-left: 4px;
 }
 
-.calendar-event div {
-	float: left;
-}
-
 .calendar-event-1 {
 	color: #EE9329;
+}
+
+.calendar-fullday-event-1 {
+    background-color: #EE9329;
 }
 
 .calendar-event-2 {
 	color: #1c61d9;
 }
 
+.calendar-fullday-event-2 {
+    background-color: #1c61d9;
+}
+
 .calendar-event-3 {
 	color: #8cbf40;
+}
+
+.calendar-fullday-event-3 {
+    background-color: #8cbf40;
 }
 
 .calendar-event-4 {
 	color: #ad2d2d;
 }
 
+.calendar-fullday-event-4 {
+    background-color: #ad2d2d;
+}
+
 .calendar-event-5 {
 	color: #9643a5;
 }
 
+.calendar-fullday-event-5 {
+    background-color: #9643a5;
+}
+
 .calendar-event-6 {
 	color: #737373;
+}
+
+.calendar-fullday-event-6 {
+    background-color: #737373;
 }
 
 /*
