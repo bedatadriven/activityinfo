@@ -13,5 +13,5 @@ import org.sigmah.shared.domain.calendar.PersonalEvent;
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public interface PersonalEventDAO extends DAO<PersonalEvent, Integer> {
-
+    void merge(PersonalEvent event);
 }

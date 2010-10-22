@@ -43,6 +43,7 @@ public class ActivityCalendarHandler implements CalendarHandler {
 
         final ActivityCalendarIdentifier activityCalendarIdentifier = (ActivityCalendarIdentifier) identifier;
 
+        em.clear();
         final Query query = em.createQuery("SELECT l FROM LogFrame l WHERE l.parentProject.id = :projectId");
         query.setParameter("projectId", activityCalendarIdentifier.getProjectId());
 

@@ -19,4 +19,8 @@ public class PersonalEventHibernateDAO extends GenericDAO<PersonalEvent, Integer
     public PersonalEventHibernateDAO(EntityManager em) {
         super(em);
     }
+
+    public void merge(PersonalEvent event) {
+        em.merge(event);
+    }
 }

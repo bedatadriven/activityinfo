@@ -42,7 +42,7 @@ public class PersonalEventPolicy implements EntityPolicy<PersonalEvent> {
         final PersonalEvent event = dao.findById((Integer)entityId);
         fillEvent(event, changes);
 
-        dao.persist(event);
+        dao.merge(event);
     }
 
     private void fillEvent(PersonalEvent event, PropertyMap properties) {
@@ -60,6 +60,8 @@ public class PersonalEventPolicy implements EntityPolicy<PersonalEvent> {
             event.setStartDate(new Date(day.getYear(), day.getMonth(), day.getDate(), startHour.getHour(), startHour.getMinutes()));
             if(endHour != null)
                 event.setEndDate(new Date(day.getYear(), day.getMonth(), day.getDate(), endHour.getHour(), endHour.getMinutes()));
+            else
+                event.setEndDate(null);
         } else {
             event.setStartDate(new Date(day.getYear(), day.getMonth(), day.getDate()));
             event.setEndDate(new Date(day.getYear(), day.getMonth(), day.getDate()+1));

@@ -326,9 +326,9 @@ public class ProjectCalendarView extends LayoutContainer {
                 field.clearInvalid();
             }
         } else {
-            boolean fullDayEvent = event.getDtend() != null && (event.getDtstart().getDate() != event.getDtend().getDate() ||
-                        event.getDtstart().getMonth() != event.getDtend().getMonth() ||
-                        event.getDtstart().getYear() != event.getDtend().getYear());
+            boolean fullDayEvent = event.getDtend() != null && (event.getDtstart().getDate() != event.getDtend().getDate()
+                    || event.getDtstart().getMonth() != event.getDtend().getMonth()
+                    || event.getDtstart().getYear() != event.getDtend().getYear());
 
             ((ComboBox<CalendarWrapper>) addPersonalEventDialog.getWidget(0)).setValue(new CalendarWrapper(event.getParent()));
             ((TextField<String>) addPersonalEventDialog.getWidget(1)).setValue(event.getSummary());
@@ -379,8 +379,6 @@ public class ProjectCalendarView extends LayoutContainer {
                 }
 
                 if (valid) {
-                    final CalendarWrapper wrapper = calendarBox.getValue();
-
                     final AsyncCallback<Event> callback = new AsyncCallback<Event>() {
 
                         @Override
@@ -472,7 +470,10 @@ public class ProjectCalendarView extends LayoutContainer {
             event.setDtstart(new Date(day.getYear(), day.getMonth(), day.getDate(), startHour.getHour(), startHour.getMinutes()));
             if (endHour != null) {
                 event.setDtend(new Date(day.getYear(), day.getMonth(), day.getDate(), endHour.getHour(), endHour.getMinutes()));
+            } else {
+                event.setDtend(null);
             }
+
         } else {
             event.setDtstart(new Date(day.getYear(), day.getMonth(), day.getDate()));
             event.setDtend(new Date(day.getYear(), day.getMonth(), day.getDate() + 1));
