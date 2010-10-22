@@ -48,7 +48,7 @@ public class PersonalCalendarHandler implements CalendarHandler {
         final PersonalCalendar personalCalendar = (PersonalCalendar) calendarQuery.getSingleResult();
 
         // Fetching the events
-        final Query eventQuery = em.createQuery("SELECT p FROM PersonalEvent p WHERE p.calendarId = :calendarId");
+        final Query eventQuery = em.createQuery("SELECT p FROM PersonalEvent p WHERE p.calendarId = :calendarId ORDER BY p.startDate");
         eventQuery.setParameter("calendarId", id);
 
         final List<PersonalEvent> events = eventQuery.getResultList();

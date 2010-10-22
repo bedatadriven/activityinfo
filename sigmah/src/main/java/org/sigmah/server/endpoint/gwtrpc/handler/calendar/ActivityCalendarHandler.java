@@ -7,7 +7,6 @@ package org.sigmah.server.endpoint.gwtrpc.handler.calendar;
 
 import com.google.inject.Inject;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -72,7 +71,7 @@ public class ActivityCalendarHandler implements CalendarHandler {
             final List<ExpectedResult> expectedResults = specificObjective.getExpectedResults();
             for(final ExpectedResult expectedResult : expectedResults) {
                 int specificObjectiveSize = codeBuilder.length();
-                codeBuilder.append(specificObjective.getCode());
+                codeBuilder.append(expectedResult.getCode());
                 codeBuilder.append('.');
 
                 // For each activity
@@ -87,7 +86,7 @@ public class ActivityCalendarHandler implements CalendarHandler {
                     // For each day
                     if(startDate != null) {
                         for(Date date = new Date(startDate.getYear(), startDate.getMonth(), startDate.getDate());
-                            date.before(activity.getEndDate()); date.setDate(date.getDate()+1)) {
+                            date.compareTo(activity.getEndDate()) < 1; date.setDate(date.getDate()+1)) {
                             final Date key = new Date(date.getTime());
 
                             final Event event = new Event();
