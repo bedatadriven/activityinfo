@@ -37,7 +37,8 @@ public class Prerequisite implements Serializable, Deleteable {
     private LogFrame parentLogFrame;
     private LogFrameGroup group;
     private Date dateDeleted;
-    
+    private Integer position;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_prerequisite")
@@ -86,7 +87,7 @@ public class Prerequisite implements Serializable, Deleteable {
     public void setGroup(LogFrameGroup group) {
         this.group = group;
     }
-    
+
     @Column
     @Temporal(value = TemporalType.TIMESTAMP)
     public Date getDateDeleted() {
@@ -106,5 +107,14 @@ public class Prerequisite implements Serializable, Deleteable {
     @Transient
     public boolean isDeleted() {
         return getDateDeleted() != null;
+    }
+
+    @Column(name = "position")
+    public Integer getPosition() {
+        return position;
+    }
+
+    public void setPosition(Integer position) {
+        this.position = position;
     }
 }

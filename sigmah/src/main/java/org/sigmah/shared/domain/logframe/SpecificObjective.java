@@ -47,6 +47,7 @@ public class SpecificObjective implements Serializable, Deleteable {
     private List<ExpectedResult> expectedResults = new ArrayList<ExpectedResult>();
     private LogFrameGroup group;
     private Date dateDeleted;
+    private Integer position;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -145,5 +146,14 @@ public class SpecificObjective implements Serializable, Deleteable {
     @Transient
     public boolean isDeleted() {
         return getDateDeleted() != null;
+    }
+
+    @Column(name = "position")
+    public Integer getPosition() {
+        return position;
+    }
+
+    public void setPosition(Integer position) {
+        this.position = position;
     }
 }

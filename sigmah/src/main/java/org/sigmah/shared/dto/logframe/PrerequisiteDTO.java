@@ -2,6 +2,7 @@ package org.sigmah.shared.dto.logframe;
 
 import java.util.Date;
 
+import org.sigmah.client.page.project.logframe.grid.Row.Positionable;
 import org.sigmah.shared.dto.EntityDTO;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
@@ -12,7 +13,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  * @author tmi
  * 
  */
-public class PrerequisiteDTO extends BaseModelData implements EntityDTO {
+public class PrerequisiteDTO extends BaseModelData implements EntityDTO, Positionable {
 
     private static final long serialVersionUID = 2491895571720689312L;
 
@@ -39,6 +40,16 @@ public class PrerequisiteDTO extends BaseModelData implements EntityDTO {
 
     public void setCode(Integer code) {
         set("code", code);
+    }
+
+    // Prerequisite position in its group.
+    public Integer getPosition() {
+        return get("position");
+    }
+
+    @Override
+    public void setPosition(Integer position) {
+        set("position", position);
     }
 
     // Prerequisite content text.
@@ -158,6 +169,8 @@ public class PrerequisiteDTO extends BaseModelData implements EntityDTO {
         sb.append(getLabel());
         sb.append(" ; date deleted = ");
         sb.append(getDateDeleted());
+        sb.append(" ; position = ");
+        sb.append(getPosition());
         sb.append(" ; content = ");
         sb.append(getContent());
         sb.append("]");

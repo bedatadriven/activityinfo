@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.sigmah.client.page.project.logframe.grid.Row.Positionable;
 import org.sigmah.shared.dto.EntityDTO;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
@@ -15,7 +16,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  * @author tmi
  * 
  */
-public class SpecificObjectiveDTO extends BaseModelData implements EntityDTO {
+public class SpecificObjectiveDTO extends BaseModelData implements EntityDTO, Positionable {
 
     private static final long serialVersionUID = -5441820698955180264L;
 
@@ -42,6 +43,16 @@ public class SpecificObjectiveDTO extends BaseModelData implements EntityDTO {
 
     public void setCode(Integer code) {
         set("code", code);
+    }
+
+    // Objective position in its group.
+    public Integer getPosition() {
+        return get("position");
+    }
+
+    @Override
+    public void setPosition(Integer position) {
+        set("position", position);
     }
 
     // Objective intervention logic.

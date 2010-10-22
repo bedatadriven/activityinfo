@@ -548,11 +548,11 @@ public class FlexTableView {
             if (merge.contains(j)) {
 
                 // Gets the top row if any.
-                final Row<?> lastRow;
-                if ((lastRow = group.getRowAtPosition(position - 1)) != null) {
+                final Row<?> topRow;
+                if ((topRow = group.getRowAtPosition(position - 1)) != null) {
 
                     // If the rows properties are similar, removes the widget.
-                    if (row.isSimilar(j, row.getUserObject(), ((Row<T>) lastRow).getUserObject())) {
+                    if (row.isSimilar(j, row.getUserObject(), ((Row<T>) topRow).getUserObject())) {
                         table.setWidget(rowIndex, column, new Label(""));
                         table.getFlexCellFormatter().addStyleName(rowIndex, column, CSS_MERGED_ROWS_STYLE_NAME);
                     }
@@ -564,6 +564,15 @@ public class FlexTableView {
 
         // Adds the row locally.
         group.addRow(row, position);
+
+        try {
+            // Refreshes the direct bottom row of the just inserted row.
+            refreshMergedRow(group, position + 1);
+        }
+        // The row doesn't exist, nothing to do.
+        catch (IndexOutOfBoundsException e) {
+            // Digests exception.
+        }
     }
 
     /**
@@ -592,6 +601,9 @@ public class FlexTableView {
                     + group.getId() + ".");
         }
 
+        // Saves the old position of the removed row.
+        final int oldPosition = group.getRowPosition(row);
+
         // Gets the row index.
         final int index = getRowIndex(row);
 
@@ -600,6 +612,75 @@ public class FlexTableView {
 
         // Removes the row locally.
         group.removeRow(row);
+
+        try {
+            // Refreshes the direct bottom row of the just removed row.
+            refreshMergedRow(group, oldPosition);
+        }
+        // The row doesn't exist, nothing to do.
+        catch (IndexOutOfBoundsException e) {
+            // Digests exception.
+        }
+    }
+
+    /**
+     * Refreshes a row styles and widgets considering the merged columns
+     * indexes.
+     * 
+     * @param group
+     *            The group in which the row is inserted.
+     * @param position
+     *            The position of the row to refresh.
+     * @throws IndexOutOfBoundsException
+     *             If there is no row at the given position.
+     */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private void refreshMergedRow(RowsGroup<?> group, int position) throws IndexOutOfBoundsException {
+
+        // Gets the row to refresh.
+        final Row row = group.getRowAtPosition(position);
+
+        // Computes this row index.
+        int rowIndex = computeRowIndex(group, position) + shift;
+
+        // Indexes of the columns which manage merging.
+        final List<Integer> merge = new ArrayList<Integer>();
+        for (int index : group.getMergedColumnIndexes()) {
+            merge.add(index);
+        }
+
+        int column = 0;
+        // Adds each column widget.
+        for (int j = 0; j < columnsCount; j++) {
+
+            // Gets the widget at this column index.
+            final Widget w = row.getWidgetAt(j);
+
+            if (w == null) {
+                column--;
+            }
+
+            // Checks if this column can be merged.
+            if (merge.contains(j)) {
+
+                // Gets the top row if any.
+                final Row topRow;
+                if ((topRow = group.getRowAtPosition(position - 1)) != null) {
+
+                    // If the rows properties are similar, removes the widget.
+                    if (row.isSimilar(j, row.getUserObject(), topRow.getUserObject())) {
+                        table.setWidget(rowIndex, column, new Label(""));
+                        table.getFlexCellFormatter().addStyleName(rowIndex, column, CSS_MERGED_ROWS_STYLE_NAME);
+                    } else {
+                        table.setWidget(rowIndex, column, w);
+                        HTMLTableUtils.applyCellStyles(table, rowIndex, column, false, false);
+                        table.getFlexCellFormatter().removeStyleName(rowIndex, column, CSS_MERGED_ROWS_STYLE_NAME);
+                    }
+                }
+            }
+
+            column++;
+        }
     }
 
     /**
@@ -681,7 +762,7 @@ public class FlexTableView {
         // Removes the row.
         removeRow(group, rowId);
 
-        // Re-insert it at its new position.
+        // Re-inserts it at its new position.
         insertRow(rowPosition - move, group.getId(), row);
     }
 

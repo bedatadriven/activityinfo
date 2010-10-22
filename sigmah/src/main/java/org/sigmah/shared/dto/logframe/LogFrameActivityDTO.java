@@ -3,6 +3,7 @@ package org.sigmah.shared.dto.logframe;
 import java.util.Date;
 
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.page.project.logframe.grid.Row.Positionable;
 import org.sigmah.shared.dto.EntityDTO;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
@@ -13,7 +14,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  * @author tmi
  * 
  */
-public class LogFrameActivityDTO extends BaseModelData implements EntityDTO {
+public class LogFrameActivityDTO extends BaseModelData implements EntityDTO, Positionable {
 
     private static final long serialVersionUID = 6134012388369233491L;
 
@@ -49,6 +50,16 @@ public class LogFrameActivityDTO extends BaseModelData implements EntityDTO {
 
     public void setCode(Integer code) {
         set("code", code);
+    }
+
+    // Activity position in its group.
+    public Integer getPosition() {
+        return get("position");
+    }
+
+    @Override
+    public void setPosition(Integer position) {
+        set("position", position);
     }
 
     // Activity content text.

@@ -47,7 +47,8 @@ public class ExpectedResult implements Serializable, Deleteable {
     private List<LogFrameActivity> activities;
     private LogFrameGroup group;
     private Date dateDeleted;
-
+    private Integer position;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_result")
@@ -145,5 +146,14 @@ public class ExpectedResult implements Serializable, Deleteable {
     @Transient
     public boolean isDeleted() {
         return getDateDeleted() != null;
+    }
+    
+    @Column(name = "position")
+    public Integer getPosition() {
+        return position;
+    }
+
+    public void setPosition(Integer position) {
+        this.position = position;
     }
 }

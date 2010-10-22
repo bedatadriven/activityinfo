@@ -13,6 +13,23 @@ import com.google.gwt.user.client.ui.Widget;
 public abstract class Row<T> {
 
     /**
+     * Define an element that can be positionable in a group of rows.
+     * 
+     * @author tmi
+     * 
+     */
+    public static interface Positionable {
+
+        /**
+         * Sets the position of this row inside its group.
+         * 
+         * @param position
+         *            The new position.
+         */
+        public void setPosition(Integer position);
+    }
+
+    /**
      * The user object.
      */
     private final T userObject;
@@ -30,6 +47,21 @@ public abstract class Row<T> {
      */
     public Row(T userObject) {
         this.userObject = userObject;
+    }
+
+    /**
+     * Sets the position of this row inside its group.
+     * 
+     * @param position
+     *            The new position, can be <code>null</code> if the row doesn't
+     *            belong to a group anymore.
+     */
+    protected void setPosition(Integer position) {
+        if (userObject != null) {
+            if (userObject instanceof Positionable) {
+                ((Positionable) userObject).setPosition(position);
+            }
+        }
     }
 
     /**

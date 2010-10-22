@@ -587,13 +587,13 @@ public class ProjectLogFrameGrid {
      * 
      * @param group
      *            The specific objectives groups.
+     * @return The just created group.
      */
-    protected void addSpecificObjectivesGroup(final LogFrameGroupDTO group) {
+    protected RowsGroup<LogFrameGroupDTO> addSpecificObjectivesGroup(final LogFrameGroupDTO group) {
 
         ensureLogFrame();
 
-        // Adds a new group.
-        specificObjectivesView.addGroup(new RowsGroup<LogFrameGroupDTO>(group) {
+        final RowsGroup<LogFrameGroupDTO> g = new RowsGroup<LogFrameGroupDTO>(group) {
 
             @Override
             public String getTitle(LogFrameGroupDTO userObject) {
@@ -623,9 +623,14 @@ public class ProjectLogFrameGrid {
             public boolean isVisible(LogFrameGroupDTO userObject) {
                 return logFrameModel.getEnableSpecificObjectivesGroups();
             }
-        });
+        };
+
+        // Adds a new group.
+        specificObjectivesView.addGroup(g);
 
         fireLogFrameEdited();
+
+        return g;
     }
 
     // ------------------------
@@ -701,12 +706,12 @@ public class ProjectLogFrameGrid {
 
         // Retrieves the equivalent rows group.
         @SuppressWarnings("unchecked")
-        final RowsGroup<LogFrameGroupDTO> gridGroup = (RowsGroup<LogFrameGroupDTO>) specificObjectivesView
-                .getGroup(logFrameGroup.getClientSideId());
+        RowsGroup<LogFrameGroupDTO> g = (RowsGroup<LogFrameGroupDTO>) specificObjectivesView.getGroup(logFrameGroup
+                .getClientSideId());
 
         // If the rows hasn't been created already, adds it.
-        if (gridGroup == null) {
-            addSpecificObjectivesGroup(logFrameGroup);
+        if (g == null) {
+            g = addSpecificObjectivesGroup(logFrameGroup);
         }
 
         // Sets the display label.
@@ -716,8 +721,13 @@ public class ProjectLogFrameGrid {
         sb.append(specificObjectivesPolicy.getCode(specificObjective.getCode(), specificObjective));
         specificObjective.setLabel(sb.toString());
 
+        // Sets the position the last if it doesn't exist.
+        if (specificObjective.getPosition() == null) {
+            specificObjective.setPosition(g.getRowsCount() + 1);
+        }
+
         // Adds the row.
-        specificObjectivesView.addRow(logFrameGroup.getClientSideId(),
+        specificObjectivesView.insertRow(specificObjective.getPosition(), logFrameGroup.getClientSideId(),
                 new Row<SpecificObjectiveDTO>(specificObjective) {
 
                     @Override
@@ -845,7 +855,7 @@ public class ProjectLogFrameGrid {
                 });
 
         fireLogFrameEdited();
-        
+
         // Adds sub expected results.
         if (specificObjective.getExpectedResultsDTONotDeleted() != null) {
             for (final ExpectedResultDTO result : specificObjective.getExpectedResultsDTONotDeleted()) {
@@ -895,13 +905,13 @@ public class ProjectLogFrameGrid {
      * 
      * @param group
      *            The expected results groups.
+     * @return The just created group.
      */
-    protected void addExpectedResultsGroup(final LogFrameGroupDTO group) {
+    protected RowsGroup<LogFrameGroupDTO> addExpectedResultsGroup(final LogFrameGroupDTO group) {
 
         ensureLogFrame();
 
-        // Adds a new group.
-        expectedResultsView.addGroup(new RowsGroup<LogFrameGroupDTO>(group) {
+        final RowsGroup<LogFrameGroupDTO> g = new RowsGroup<LogFrameGroupDTO>(group) {
 
             @Override
             public String getTitle(LogFrameGroupDTO userObject) {
@@ -931,9 +941,14 @@ public class ProjectLogFrameGrid {
             public boolean isVisible(LogFrameGroupDTO userObject) {
                 return logFrameModel.getEnableExpectedResultsGroups();
             }
-        });
+        };
+
+        // Adds a new group.
+        expectedResultsView.addGroup(g);
 
         fireLogFrameEdited();
+
+        return g;
     }
 
     // ------------------------
@@ -1047,12 +1062,12 @@ public class ProjectLogFrameGrid {
 
         // Retrieves the equivalent rows group.
         @SuppressWarnings("unchecked")
-        final RowsGroup<LogFrameGroupDTO> g = (RowsGroup<LogFrameGroupDTO>) expectedResultsView.getGroup(group
+        RowsGroup<LogFrameGroupDTO> g = (RowsGroup<LogFrameGroupDTO>) expectedResultsView.getGroup(group
                 .getClientSideId());
 
         // If the rows hasn't been created already, adds it.
         if (g == null) {
-            addExpectedResultsGroup(group);
+            g = addExpectedResultsGroup(group);
         }
 
         // Sets the display label.
@@ -1062,154 +1077,160 @@ public class ProjectLogFrameGrid {
         sb.append(expectedResultsPolicy.getCode(result.getCode(), result));
         result.setLabel(sb.toString());
 
+        // Sets the position the last if it doesn't exist.
+        if (result.getPosition() == null) {
+            result.setPosition(g.getRowsCount() + 1);
+        }
+
         // Adds the row.
-        expectedResultsView.addRow(group.getClientSideId(), new Row<ExpectedResultDTO>(result) {
+        expectedResultsView.insertRow(result.getPosition(), group.getClientSideId(),
+                new Row<ExpectedResultDTO>(result) {
 
-            @Override
-            public boolean isSimilar(int column, ExpectedResultDTO userObject, ExpectedResultDTO other) {
+                    @Override
+                    public boolean isSimilar(int column, ExpectedResultDTO userObject, ExpectedResultDTO other) {
 
-                switch (column) {
-                case 0:
-                    // Parent code.
-                    return userObject.getParentSpecificObjectiveDTO() != null
-                            && other.getParentSpecificObjectiveDTO() != null
-                            && userObject.getParentSpecificObjectiveDTO().getCode() == other
-                                    .getParentSpecificObjectiveDTO().getCode();
-                }
-                return false;
-            }
-
-            @Override
-            public Widget getWidgetAt(int column, final ExpectedResultDTO userObject) {
-
-                switch (column) {
-                case 0:
-
-                    // Parent code.
-                    final Label parentCodeLabel = new Label();
-                    parentCodeLabel.addStyleName(CSS_CODE_LABEL_STYLE_NAME);
-
-                    final SpecificObjectiveDTO parent;
-                    if (userObject != null && (parent = userObject.getParentSpecificObjectiveDTO()) != null) {
-
-                        final StringBuilder sb = new StringBuilder();
-
-                        sb.append(I18N.CONSTANTS.logFrameExceptedResultsCode());
-                        sb.append(" (");
-                        sb.append(I18N.CONSTANTS.logFrameSpecificObjectivesCode());
-                        sb.append(" ");
-                        sb.append(specificObjectivesPolicy.getCode(parent.getCode(), parent));
-                        sb.append(")");
-
-                        parentCodeLabel.setText(sb.toString());
-                    }
-
-                    return parentCodeLabel;
-
-                case 1:
-
-                    // Code.
-                    final Label codeLabel = new Label();
-                    codeLabel.addStyleName(CSS_CODE_LABEL_STYLE_NAME);
-
-                    if (userObject != null) {
-                        codeLabel.setText(userObject.getLabel());
-                    }
-
-                    // Grid.
-                    final Grid grid = new Grid(1, 2);
-                    grid.setCellPadding(0);
-                    grid.setCellSpacing(0);
-                    grid.setWidget(0, 0, codeLabel);
-                    grid.setWidget(0, 1, buildExpectedResultMenu(this));
-
-                    return grid;
-
-                case 2:
-
-                    // Intervention logic.
-                    final TextArea interventionLogicTextBox = new TextArea();
-                    interventionLogicTextBox.setWidth("100%");
-                    interventionLogicTextBox.setHeight("100%");
-                    interventionLogicTextBox.setVisibleLines(3);
-                    interventionLogicTextBox.addStyleName("html-textbox");
-
-                    if (userObject != null) {
-                        interventionLogicTextBox.setText(userObject.getInterventionLogic());
-                    }
-
-                    interventionLogicTextBox.addChangeHandler(new ChangeHandler() {
-                        @Override
-                        public void onChange(ChangeEvent e) {
-                            userObject.setInterventionLogic(interventionLogicTextBox.getText());
-                            fireLogFrameEdited();
+                        switch (column) {
+                        case 0:
+                            // Parent code.
+                            return userObject.getParentSpecificObjectiveDTO() != null
+                                    && other.getParentSpecificObjectiveDTO() != null
+                                    && userObject.getParentSpecificObjectiveDTO().getCode() == other
+                                            .getParentSpecificObjectiveDTO().getCode();
                         }
-                    });
-
-                    return interventionLogicTextBox;
-
-                case 3:
-
-                    // Indicators.
-                    return new Label("");
-
-                case 4:
-
-                    // Risks.
-                    final TextArea risksTextBox = new TextArea();
-                    risksTextBox.setWidth("100%");
-                    risksTextBox.setHeight("100%");
-                    risksTextBox.setVisibleLines(3);
-                    risksTextBox.addStyleName("html-textbox");
-
-                    if (userObject != null) {
-                        risksTextBox.setText(userObject.getRisks());
+                        return false;
                     }
 
-                    risksTextBox.addChangeHandler(new ChangeHandler() {
-                        @Override
-                        public void onChange(ChangeEvent e) {
-                            userObject.setRisks(risksTextBox.getText());
-                            fireLogFrameEdited();
+                    @Override
+                    public Widget getWidgetAt(int column, final ExpectedResultDTO userObject) {
+
+                        switch (column) {
+                        case 0:
+
+                            // Parent code.
+                            final Label parentCodeLabel = new Label();
+                            parentCodeLabel.addStyleName(CSS_CODE_LABEL_STYLE_NAME);
+
+                            final SpecificObjectiveDTO parent;
+                            if (userObject != null && (parent = userObject.getParentSpecificObjectiveDTO()) != null) {
+
+                                final StringBuilder sb = new StringBuilder();
+
+                                sb.append(I18N.CONSTANTS.logFrameExceptedResultsCode());
+                                sb.append(" (");
+                                sb.append(I18N.CONSTANTS.logFrameSpecificObjectivesCode());
+                                sb.append(" ");
+                                sb.append(specificObjectivesPolicy.getCode(parent.getCode(), parent));
+                                sb.append(")");
+
+                                parentCodeLabel.setText(sb.toString());
+                            }
+
+                            return parentCodeLabel;
+
+                        case 1:
+
+                            // Code.
+                            final Label codeLabel = new Label();
+                            codeLabel.addStyleName(CSS_CODE_LABEL_STYLE_NAME);
+
+                            if (userObject != null) {
+                                codeLabel.setText(userObject.getLabel());
+                            }
+
+                            // Grid.
+                            final Grid grid = new Grid(1, 2);
+                            grid.setCellPadding(0);
+                            grid.setCellSpacing(0);
+                            grid.setWidget(0, 0, codeLabel);
+                            grid.setWidget(0, 1, buildExpectedResultMenu(this));
+
+                            return grid;
+
+                        case 2:
+
+                            // Intervention logic.
+                            final TextArea interventionLogicTextBox = new TextArea();
+                            interventionLogicTextBox.setWidth("100%");
+                            interventionLogicTextBox.setHeight("100%");
+                            interventionLogicTextBox.setVisibleLines(3);
+                            interventionLogicTextBox.addStyleName("html-textbox");
+
+                            if (userObject != null) {
+                                interventionLogicTextBox.setText(userObject.getInterventionLogic());
+                            }
+
+                            interventionLogicTextBox.addChangeHandler(new ChangeHandler() {
+                                @Override
+                                public void onChange(ChangeEvent e) {
+                                    userObject.setInterventionLogic(interventionLogicTextBox.getText());
+                                    fireLogFrameEdited();
+                                }
+                            });
+
+                            return interventionLogicTextBox;
+
+                        case 3:
+
+                            // Indicators.
+                            return new Label("");
+
+                        case 4:
+
+                            // Risks.
+                            final TextArea risksTextBox = new TextArea();
+                            risksTextBox.setWidth("100%");
+                            risksTextBox.setHeight("100%");
+                            risksTextBox.setVisibleLines(3);
+                            risksTextBox.addStyleName("html-textbox");
+
+                            if (userObject != null) {
+                                risksTextBox.setText(userObject.getRisks());
+                            }
+
+                            risksTextBox.addChangeHandler(new ChangeHandler() {
+                                @Override
+                                public void onChange(ChangeEvent e) {
+                                    userObject.setRisks(risksTextBox.getText());
+                                    fireLogFrameEdited();
+                                }
+                            });
+
+                            return risksTextBox;
+
+                        case 5:
+
+                            // Assumptions.
+                            final TextArea assumptionsTextBox = new TextArea();
+                            assumptionsTextBox.setWidth("100%");
+                            assumptionsTextBox.setHeight("100%");
+                            assumptionsTextBox.setVisibleLines(3);
+                            assumptionsTextBox.addStyleName("html-textbox");
+
+                            if (userObject != null) {
+                                assumptionsTextBox.setText(userObject.getAssumptions());
+                            }
+
+                            assumptionsTextBox.addChangeHandler(new ChangeHandler() {
+                                @Override
+                                public void onChange(ChangeEvent e) {
+                                    userObject.setAssumptions(assumptionsTextBox.getText());
+                                    fireLogFrameEdited();
+                                }
+                            });
+
+                            return assumptionsTextBox;
+
+                        default:
+                            return null;
                         }
-                    });
-
-                    return risksTextBox;
-
-                case 5:
-
-                    // Assumptions.
-                    final TextArea assumptionsTextBox = new TextArea();
-                    assumptionsTextBox.setWidth("100%");
-                    assumptionsTextBox.setHeight("100%");
-                    assumptionsTextBox.setVisibleLines(3);
-                    assumptionsTextBox.addStyleName("html-textbox");
-
-                    if (userObject != null) {
-                        assumptionsTextBox.setText(userObject.getAssumptions());
                     }
 
-                    assumptionsTextBox.addChangeHandler(new ChangeHandler() {
-                        @Override
-                        public void onChange(ChangeEvent e) {
-                            userObject.setAssumptions(assumptionsTextBox.getText());
-                            fireLogFrameEdited();
-                        }
-                    });
+                    @Override
+                    public int getId(ExpectedResultDTO userObject) {
+                        return userObject.getClientSideId();
+                    }
+                });
 
-                    return assumptionsTextBox;
-
-                default:
-                    return null;
-                }
-            }
-
-            @Override
-            public int getId(ExpectedResultDTO userObject) {
-                return userObject.getClientSideId();
-            }
-        });
-        
         fireLogFrameEdited();
 
         // Adds sub activities.
@@ -1260,13 +1281,13 @@ public class ProjectLogFrameGrid {
      * 
      * @param group
      *            The activities group.
+     * @return The just created group.
      */
-    protected void addActivitiesGroup(final LogFrameGroupDTO group) {
+    protected RowsGroup<LogFrameGroupDTO> addActivitiesGroup(final LogFrameGroupDTO group) {
 
         ensureLogFrame();
 
-        // Adds a new group.
-        activitiesView.addGroup(new RowsGroup<LogFrameGroupDTO>(group) {
+        final RowsGroup<LogFrameGroupDTO> g = new RowsGroup<LogFrameGroupDTO>(group) {
 
             @Override
             public String getTitle(LogFrameGroupDTO userObject) {
@@ -1296,9 +1317,14 @@ public class ProjectLogFrameGrid {
             public boolean isVisible(LogFrameGroupDTO userObject) {
                 return logFrameModel.getEnableActivitiesGroups();
             }
-        });
+        };
+
+        // Adds a new group.
+        activitiesView.addGroup(g);
 
         fireLogFrameEdited();
+
+        return g;
     }
 
     // ------------------------
@@ -1435,12 +1461,11 @@ public class ProjectLogFrameGrid {
 
         // Retrieves the equivalent rows group.
         @SuppressWarnings("unchecked")
-        final RowsGroup<LogFrameGroupDTO> g = (RowsGroup<LogFrameGroupDTO>) activitiesView.getGroup(group
-                .getClientSideId());
+        RowsGroup<LogFrameGroupDTO> g = (RowsGroup<LogFrameGroupDTO>) activitiesView.getGroup(group.getClientSideId());
 
         // If the rows hasn't been created already, adds it.
         if (g == null) {
-            addActivitiesGroup(group);
+            g = addActivitiesGroup(group);
         }
 
         // Sets the display label.
@@ -1450,102 +1475,108 @@ public class ProjectLogFrameGrid {
         sb.append(activitiesPolicy.getCode(activity.getCode(), activity));
         activity.setLabel(sb.toString());
 
+        // Sets the position the last if it doesn't exist.
+        if (activity.getPosition() == null) {
+            activity.setPosition(g.getRowsCount() + 1);
+        }
+
         // Adds the row.
-        activitiesView.addRow(group.getClientSideId(), new Row<LogFrameActivityDTO>(activity) {
+        activitiesView.insertRow(activity.getPosition(), group.getClientSideId(),
+                new Row<LogFrameActivityDTO>(activity) {
 
-            @Override
-            public boolean isSimilar(int column, LogFrameActivityDTO userObject, LogFrameActivityDTO other) {
+                    @Override
+                    public boolean isSimilar(int column, LogFrameActivityDTO userObject, LogFrameActivityDTO other) {
 
-                switch (column) {
-                case 0:
-                    // Parent code.
-                    return userObject.getParentExpectedResultDTO() != null
-                            && other.getParentExpectedResultDTO() != null
-                            && userObject.getParentExpectedResultDTO().getCode() == other.getParentExpectedResultDTO()
-                                    .getCode();
-                }
-                return false;
-            }
-
-            @Override
-            public Widget getWidgetAt(int column, final LogFrameActivityDTO userObject) {
-
-                switch (column) {
-                case 0:
-
-                    // Parent code.
-                    final Label parentCodeLabel = new Label();
-                    parentCodeLabel.addStyleName(CSS_CODE_LABEL_STYLE_NAME);
-
-                    final ExpectedResultDTO parent;
-                    if (userObject != null && (parent = userObject.getParentExpectedResultDTO()) != null) {
-
-                        final StringBuilder sb = new StringBuilder();
-
-                        sb.append(I18N.CONSTANTS.logFrameActivitiesCode());
-                        sb.append(" (");
-                        sb.append(I18N.CONSTANTS.logFrameExceptedResultsCode());
-                        sb.append(" ");
-                        sb.append(expectedResultsPolicy.getCode(parent.getCode(), parent));
-                        sb.append(")");
-
-                        parentCodeLabel.setText(sb.toString());
-                    }
-
-                    return parentCodeLabel;
-
-                case 1:
-
-                    // Code.
-                    final Label codeLabel = new Label();
-                    codeLabel.addStyleName(CSS_CODE_LABEL_STYLE_NAME);
-
-                    if (userObject != null) {
-                        codeLabel.setText(userObject.getLabel());
-                    }
-
-                    // Grid.
-                    final Grid grid = new Grid(1, 2);
-                    grid.setCellPadding(0);
-                    grid.setCellSpacing(0);
-                    grid.setWidget(0, 0, codeLabel);
-                    grid.setWidget(0, 1, buildActivityMenu(this));
-
-                    return grid;
-
-                case 5:
-
-                    // Activity content.
-                    final TextArea contentTextBox = new TextArea();
-                    contentTextBox.setWidth("100%");
-                    contentTextBox.setHeight("100%");
-                    contentTextBox.setVisibleLines(2);
-                    contentTextBox.addStyleName("html-textbox");
-
-                    if (userObject != null) {
-                        contentTextBox.setText(userObject.getContent());
-                    }
-
-                    contentTextBox.addChangeHandler(new ChangeHandler() {
-                        @Override
-                        public void onChange(ChangeEvent e) {
-                            userObject.setContent(contentTextBox.getText());
-                            fireLogFrameEdited();
+                        switch (column) {
+                        case 0:
+                            // Parent code.
+                            return userObject.getParentExpectedResultDTO() != null
+                                    && other.getParentExpectedResultDTO() != null
+                                    && userObject.getParentExpectedResultDTO().getCode() == other
+                                            .getParentExpectedResultDTO().getCode();
                         }
-                    });
+                        return false;
+                    }
 
-                    return contentTextBox;
-                default:
-                    return null;
-                }
-            }
+                    @Override
+                    public Widget getWidgetAt(int column, final LogFrameActivityDTO userObject) {
 
-            @Override
-            public int getId(LogFrameActivityDTO userObject) {
-                return userObject.getClientSideId();
-            }
-        });
-        
+                        switch (column) {
+                        case 0:
+
+                            // Parent code.
+                            final Label parentCodeLabel = new Label();
+                            parentCodeLabel.addStyleName(CSS_CODE_LABEL_STYLE_NAME);
+
+                            final ExpectedResultDTO parent;
+                            if (userObject != null && (parent = userObject.getParentExpectedResultDTO()) != null) {
+
+                                final StringBuilder sb = new StringBuilder();
+
+                                sb.append(I18N.CONSTANTS.logFrameActivitiesCode());
+                                sb.append(" (");
+                                sb.append(I18N.CONSTANTS.logFrameExceptedResultsCode());
+                                sb.append(" ");
+                                sb.append(expectedResultsPolicy.getCode(parent.getCode(), parent));
+                                sb.append(")");
+
+                                parentCodeLabel.setText(sb.toString());
+                            }
+
+                            return parentCodeLabel;
+
+                        case 1:
+
+                            // Code.
+                            final Label codeLabel = new Label();
+                            codeLabel.addStyleName(CSS_CODE_LABEL_STYLE_NAME);
+
+                            if (userObject != null) {
+                                codeLabel.setText(userObject.getLabel());
+                            }
+
+                            // Grid.
+                            final Grid grid = new Grid(1, 2);
+                            grid.setCellPadding(0);
+                            grid.setCellSpacing(0);
+                            grid.setWidget(0, 0, codeLabel);
+                            grid.setWidget(0, 1, buildActivityMenu(this));
+
+                            return grid;
+
+                        case 5:
+
+                            // Activity content.
+                            final TextArea contentTextBox = new TextArea();
+                            contentTextBox.setWidth("100%");
+                            contentTextBox.setHeight("100%");
+                            contentTextBox.setVisibleLines(2);
+                            contentTextBox.addStyleName("html-textbox");
+
+                            if (userObject != null) {
+                                contentTextBox.setText(userObject.getContent());
+                            }
+
+                            contentTextBox.addChangeHandler(new ChangeHandler() {
+                                @Override
+                                public void onChange(ChangeEvent e) {
+                                    userObject.setContent(contentTextBox.getText());
+                                    fireLogFrameEdited();
+                                }
+                            });
+
+                            return contentTextBox;
+                        default:
+                            return null;
+                        }
+                    }
+
+                    @Override
+                    public int getId(LogFrameActivityDTO userObject) {
+                        return userObject.getClientSideId();
+                    }
+                });
+
         fireLogFrameEdited();
     }
 
@@ -1590,13 +1621,13 @@ public class ProjectLogFrameGrid {
      * 
      * @param group
      *            The prerequisites group.
+     * @return The just created group.
      */
-    protected void addPrerequisitesGroup(final LogFrameGroupDTO group) {
+    protected RowsGroup<LogFrameGroupDTO> addPrerequisitesGroup(final LogFrameGroupDTO group) {
 
         ensureLogFrame();
 
-        // Adds a new group.
-        prerequisitesView.addGroup(new RowsGroup<LogFrameGroupDTO>(group) {
+        final RowsGroup<LogFrameGroupDTO> g = new RowsGroup<LogFrameGroupDTO>(group) {
 
             @Override
             public String getTitle(LogFrameGroupDTO userObject) {
@@ -1626,9 +1657,14 @@ public class ProjectLogFrameGrid {
             public boolean isVisible(LogFrameGroupDTO userObject) {
                 return logFrameModel.getEnablePrerequisitesGroups();
             }
-        });
+        };
+
+        // Adds a new group.
+        prerequisitesView.addGroup(g);
 
         fireLogFrameEdited();
+
+        return g;
     }
 
     // ------------------------
@@ -1704,12 +1740,12 @@ public class ProjectLogFrameGrid {
 
         // Retrieves the equivalent rows group.
         @SuppressWarnings("unchecked")
-        final RowsGroup<LogFrameGroupDTO> g = (RowsGroup<LogFrameGroupDTO>) prerequisitesView.getGroup(group
+        RowsGroup<LogFrameGroupDTO> g = (RowsGroup<LogFrameGroupDTO>) prerequisitesView.getGroup(group
                 .getClientSideId());
 
         // If the rows hasn't been created already, adds it.
         if (g == null) {
-            addPrerequisitesGroup(group);
+            g = addPrerequisitesGroup(group);
         }
 
         // Sets the display label.
@@ -1719,8 +1755,14 @@ public class ProjectLogFrameGrid {
         sb.append(prerequisitesPolicy.getCode(prerequisite.getCode(), prerequisite));
         prerequisite.setLabel(sb.toString());
 
+        // Sets the position the last if it doesn't exist.
+        if (prerequisite.getPosition() == null) {
+            prerequisite.setPosition(g.getRowsCount() + 1);
+        }
+
         // Adds the row.
-        prerequisitesView.addRow(group.getClientSideId(), new Row<PrerequisiteDTO>(prerequisite) {
+        prerequisitesView.insertRow(prerequisite.getPosition(), group.getClientSideId(), new Row<PrerequisiteDTO>(
+                prerequisite) {
 
             @Override
             public boolean isSimilar(int column, PrerequisiteDTO userObject, PrerequisiteDTO other) {
@@ -1782,7 +1824,7 @@ public class ProjectLogFrameGrid {
                 return userObject.getClientSideId();
             }
         });
-        
+
         fireLogFrameEdited();
     }
 
@@ -1853,7 +1895,9 @@ public class ProjectLogFrameGrid {
 
             @Override
             public boolean beforeMoveUp() {
-                // TODO Changes the code ?
+
+                // The view updates the position itself, nothing to do.
+                fireLogFrameEdited();
                 return true;
             }
 
@@ -1866,7 +1910,9 @@ public class ProjectLogFrameGrid {
 
             @Override
             public boolean beforeMoveDown() {
-                // TODO Changes the code ?
+
+                // The view updates the position itself, nothing to do.
+                fireLogFrameEdited();
                 return true;
             }
         });
@@ -1913,7 +1959,9 @@ public class ProjectLogFrameGrid {
 
             @Override
             public boolean beforeMoveUp() {
-                // TODO Changes the code ?
+
+                // The view updates the position itself, nothing to do.
+                fireLogFrameEdited();
                 return true;
             }
 
@@ -1926,7 +1974,9 @@ public class ProjectLogFrameGrid {
 
             @Override
             public boolean beforeMoveDown() {
-                // TODO Changes the code ?
+
+                // The view updates the position itself, nothing to do.
+                fireLogFrameEdited();
                 return true;
             }
         });
@@ -1972,7 +2022,9 @@ public class ProjectLogFrameGrid {
 
             @Override
             public boolean beforeMoveUp() {
-                // TODO Changes the code ?
+
+                // The view updates the position itself, nothing to do.
+                fireLogFrameEdited();
                 return true;
             }
 
@@ -1985,7 +2037,9 @@ public class ProjectLogFrameGrid {
 
             @Override
             public boolean beforeMoveDown() {
-                // TODO Changes the code ?
+
+                // The view updates the position itself, nothing to do.
+                fireLogFrameEdited();
                 return true;
             }
         });
@@ -2030,7 +2084,9 @@ public class ProjectLogFrameGrid {
 
             @Override
             public boolean beforeMoveUp() {
-                // TODO Changes the code ?
+
+                // The view updates the position itself, nothing to do.
+                fireLogFrameEdited();
                 return true;
             }
 
@@ -2043,7 +2099,9 @@ public class ProjectLogFrameGrid {
 
             @Override
             public boolean beforeMoveDown() {
-                // TODO Changes the code ?
+
+                // The view updates the position itself, nothing to do.
+                fireLogFrameEdited();
                 return true;
             }
         });

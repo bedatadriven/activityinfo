@@ -40,6 +40,7 @@ public class LogFrameActivity implements Serializable, Deleteable {
     private String title;
     private Date startDate;
     private Date endDate;
+    private Integer position;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -140,4 +141,12 @@ public class LogFrameActivity implements Serializable, Deleteable {
         this.endDate = endDate;
     }
 
+    @Column(name = "position")
+    public Integer getPosition() {
+        return position;
+    }
+
+    public void setPosition(Integer position) {
+        this.position = position;
+    }
 }

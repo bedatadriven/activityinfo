@@ -42,6 +42,17 @@ public abstract class RowsGroup<T> {
     }
 
     /**
+     * Update the position of each rows.
+     */
+    private void updatePositions() {
+
+        for (int i = 0; i < rowsOrderedList.size(); i++) {
+            final Row<?> row = rowsOrderedList.get(i);
+            row.setPosition(i + 1);
+        }
+    }
+
+    /**
      * Gets the user object.
      * 
      * @return The user object.
@@ -100,6 +111,7 @@ public abstract class RowsGroup<T> {
         rowsIdsMap.put(row.getId(), row);
 
         row.setParent(this);
+        updatePositions();
     }
 
     /**
@@ -213,10 +225,12 @@ public abstract class RowsGroup<T> {
 
                 // Detaches the row from this group.
                 row.setParent(null);
+                row.setPosition(null);
 
                 // Removes it locally.
                 rowsOrderedList.remove(row);
                 rowsIdsMap.remove(row.getId());
+                updatePositions();
 
                 return true;
             }
