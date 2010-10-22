@@ -21,6 +21,8 @@ import org.sigmah.shared.domain.User;
 
 import com.google.inject.Inject;
 import org.sigmah.shared.domain.calendar.PersonalCalendar;
+import org.sigmah.shared.domain.logframe.LogFrame;
+import org.sigmah.shared.domain.logframe.LogFrameModel;
 
 public class ProjectPolicy implements EntityPolicy<Project> {
 
@@ -52,7 +54,7 @@ public class ProjectPolicy implements EntityPolicy<Project> {
         em.persist(calendar);
 
         // Creates the new project
-        final Project project = new Project();
+        Project project = new Project();
 
         // Userdatabase attributes.
         project.setStartDate(new Date());
@@ -118,6 +120,19 @@ public class ProjectPolicy implements EntityPolicy<Project> {
         if (log.isDebugEnabled()) {
             log.debug("[createProject] Project successfully created.");
         }
+
+        // Creates a new log frame (with a default model)
+        final LogFrame logFrame = new LogFrame();
+        logFrame.setParentProject(project);
+        final LogFrameModel logFrameModel = new LogFrameModel();
+        logFrameModel.setName("Default logical framework model");
+        logFrame.setLogFrameModel(logFrameModel);
+
+        em.persist(logFrame);
+
+        // Updates the project for the new log frame.
+        project.setLogFrame(logFrame);
+        project = em.merge(project);
 
         return project;
     }
