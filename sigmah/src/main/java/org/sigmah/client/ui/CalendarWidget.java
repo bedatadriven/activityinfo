@@ -26,6 +26,10 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.domain.calendar.Calendar;
 import org.sigmah.shared.domain.calendar.Event;
 
+/**
+ * This widget displays a calendar.
+ * @author Raphaël Calabro (rcalabro@ideia.fr)
+ */
 @SuppressWarnings("deprecation")
 public class CalendarWidget extends Composite {
     public interface CalendarListener {

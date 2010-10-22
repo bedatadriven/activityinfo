@@ -20,7 +20,7 @@ import org.sigmah.shared.domain.calendar.PersonalCalendar;
 import org.sigmah.shared.domain.calendar.PersonalEvent;
 
 /**
- *
+ * Retrieve personal events.
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class PersonalCalendarHandler implements CalendarHandler {

@@ -9,6 +9,7 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import java.util.EnumMap;
 import java.util.Map;
+import org.sigmah.server.endpoint.gwtrpc.handler.calendar.ActivityCalendarHandler;
 import org.sigmah.server.endpoint.gwtrpc.handler.calendar.CalendarHandler;
 import org.sigmah.server.endpoint.gwtrpc.handler.calendar.PersonalCalendarHandler;
 import org.sigmah.shared.command.GetCalendar;
@@ -33,7 +34,7 @@ public class GetCalendarHandler implements CommandHandler<GetCalendar> {
     @Inject
     public GetCalendarHandler(Injector injector) {
         final EnumMap<CalendarType, CalendarHandler> map = new EnumMap<CalendarType, CalendarHandler>(CalendarType.class);
-        //map.put(CalendarType.Dummy, injector.getInstance(DummyCalendarHandler.class));
+        map.put(CalendarType.Activity, injector.getInstance(ActivityCalendarHandler.class));
         map.put(CalendarType.Personal, injector.getInstance(PersonalCalendarHandler.class));
 
         handlers = map;

@@ -12,10 +12,12 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.project.Presenter;
 import org.sigmah.client.page.project.ProjectPresenter;
 import org.sigmah.client.ui.CalendarWidget;
 import org.sigmah.shared.command.GetCalendar;
+import org.sigmah.shared.domain.calendar.ActivityCalendarIdentifier;
 import org.sigmah.shared.domain.calendar.Calendar;
 import org.sigmah.shared.domain.calendar.CalendarType;
 import org.sigmah.shared.dto.ProjectDTO;
@@ -132,6 +134,11 @@ public class ProjectCalendarPresenter implements Presenter {
                     Log.debug("Error while loading a calendar", caught);
                 }
             };
+
+            final ActivityCalendarIdentifier identifier = new ActivityCalendarIdentifier(currentProjectDTO.getId(),
+                    I18N.CONSTANTS.logFrameActivities(), I18N.CONSTANTS.logFrameActivitiesCode());
+            final GetCalendar getActivityCalendar = new GetCalendar(CalendarType.Activity, identifier);
+            dispatcher.execute(getActivityCalendar, null, callback);
 
             final Integer calendarId = currentProjectDTO.getCalendarId();
             if(calendarId != null) {
