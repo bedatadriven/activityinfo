@@ -1,6 +1,8 @@
 package org.sigmah.shared.dto.logframe;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.sigmah.shared.dto.EntityDTO;
@@ -78,6 +80,33 @@ public class SpecificObjectiveDTO extends BaseModelData implements EntityDTO {
         set("expectedResultsDTO", expectedResultsDTO);
     }
 
+    /**
+     * Gets the list of results which aren't deleted.
+     * 
+     * @return The list of results which aren't deleted.
+     */
+    public List<ExpectedResultDTO> getExpectedResultsDTONotDeleted() {
+
+        final List<ExpectedResultDTO> results = get("expectedResultsDTO");
+
+        if (results == null) {
+            return null;
+        }
+
+        // Filters deleted results.
+        // This action is needed because after saving the log frame, the
+        // hibernate filter to hide deleted entities isn't re-applied.
+        for (final Iterator<ExpectedResultDTO> iterator = results.iterator(); iterator.hasNext();) {
+
+            final ExpectedResultDTO expectedResultDTO = iterator.next();
+            if (expectedResultDTO.isDeleted()) {
+                iterator.remove();
+            }
+        }
+
+        return results;
+    }
+
     // Objective parent log frame.
     public LogFrameDTO getParentLogFrameDTO() {
         return get("parentLogFrameDTO");
@@ -109,6 +138,66 @@ public class SpecificObjectiveDTO extends BaseModelData implements EntityDTO {
         return get("label");
     }
 
+    // Objective deleted date.
+    public Date getDateDeleted() {
+        return get("dateDeleted");
+    }
+
+    public void setDateDeleted(Date dateDeleted) {
+        set("dateDeleted", dateDeleted);
+    }
+
+    /**
+     * Deletes this objective.
+     */
+    public void delete() {
+        setDateDeleted(new Date());
+    }
+
+    /**
+     * Returns if this objective is deleted.
+     * 
+     * @return If this objective is deleted.
+     */
+    public boolean isDeleted() {
+        return getDateDeleted() != null;
+    }
+
+    /**
+     * Gets the client-side id for this entity. If this entity has a server-id
+     * id, it's returned. Otherwise, a temporary id is generated and returned.
+     * 
+     * @return The client-side id.
+     */
+    public int getClientSideId() {
+
+        // Server-side id.
+        Integer id = (Integer) get("id");
+
+        if (id == null) {
+
+            // Client-side id.
+            id = (Integer) get("tmpid");
+
+            // Generates the client-side id once.
+            if (id == null) {
+                id = generateClientSideId();
+            }
+        }
+
+        return id;
+    }
+
+    /**
+     * Generate a client-side unique id for this entity and stores it in the
+     * <code>temporaryId</code> attribute.
+     */
+    private int generateClientSideId() {
+        final int id = (int) new Date().getTime();
+        set("tmpid", id);
+        return id;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
@@ -126,6 +215,8 @@ public class SpecificObjectiveDTO extends BaseModelData implements EntityDTO {
         sb.append(getLabel());
         sb.append(" ; code = ");
         sb.append(getCode());
+        sb.append(" ; date deleted = ");
+        sb.append(getDateDeleted());
         sb.append(" ; intervention logic = ");
         sb.append(getInterventionLogic());
         sb.append(" ; risks = ");
@@ -141,6 +232,26 @@ public class SpecificObjectiveDTO extends BaseModelData implements EntityDTO {
         }
         sb.append(")]");
         return sb.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return getClientSideId();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (obj == null) {
+            return false;
+        }
+
+        if (!(obj instanceof SpecificObjectiveDTO)) {
+            return false;
+        }
+
+        final SpecificObjectiveDTO other = (SpecificObjectiveDTO) obj;
+        return getClientSideId() == other.getClientSideId();
     }
 
     /**
@@ -174,5 +285,31 @@ public class SpecificObjectiveDTO extends BaseModelData implements EntityDTO {
         setExpectedResultsDTO(expectedResults);
 
         return newResult;
+    }
+
+    /**
+     * Removes an expected result from this objective.
+     * 
+     * @param result
+     *            The result to remove.
+     * @return If the result has been removed.
+     */
+    public boolean removeExpectedResult(ExpectedResultDTO result) {
+
+        // Gets the current results list.
+        final List<ExpectedResultDTO> results = getExpectedResultsDTO();
+
+        // If the list is empty, do nothing.
+        if (results == null) {
+            return false;
+        }
+
+        // Tries to remove the result from the local list.
+        if (results.contains(result)) {
+            result.delete();
+            return true;
+        }
+
+        return false;
     }
 }

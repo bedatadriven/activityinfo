@@ -1,6 +1,8 @@
 package org.sigmah.shared.dto.logframe;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.sigmah.shared.dto.EntityDTO;
@@ -78,6 +80,33 @@ public class ExpectedResultDTO extends BaseModelData implements EntityDTO {
         set("activitiesDTO", activitiesDTO);
     }
 
+    /**
+     * Gets the list of activities which aren't deleted.
+     * 
+     * @return The list of activities which aren't deleted.
+     */
+    public List<LogFrameActivityDTO> getActivitiesDTONotDeleted() {
+
+        final List<LogFrameActivityDTO> activities = get("activitiesDTO");
+
+        if (activities == null) {
+            return null;
+        }
+
+        // Filters deleted activities.
+        // This action is needed because after saving the log frame, the
+        // hibernate filter to hide deleted entities isn't re-applied.
+        for (final Iterator<LogFrameActivityDTO> iterator = activities.iterator(); iterator.hasNext();) {
+
+            final LogFrameActivityDTO logFrameActivityDTO = iterator.next();
+            if (logFrameActivityDTO.isDeleted()) {
+                iterator.remove();
+            }
+        }
+
+        return activities;
+    }
+
     // Result parent objective.
     public SpecificObjectiveDTO getParentSpecificObjectiveDTO() {
         return get("parentSpecificObjectiveDTO");
@@ -107,6 +136,66 @@ public class ExpectedResultDTO extends BaseModelData implements EntityDTO {
 
     public String getLabel() {
         return get("label");
+    }
+
+    // Result deleted date.
+    public Date getDateDeleted() {
+        return get("dateDeleted");
+    }
+
+    public void setDateDeleted(Date dateDeleted) {
+        set("dateDeleted", dateDeleted);
+    }
+
+    /**
+     * Deletes this result.
+     */
+    public void delete() {
+        setDateDeleted(new Date());
+    }
+
+    /**
+     * Returns if this result is deleted.
+     * 
+     * @return If this result is deleted.
+     */
+    public boolean isDeleted() {
+        return getDateDeleted() != null;
+    }
+
+    /**
+     * Gets the client-side id for this entity. If this entity has a server-id
+     * id, it's returned. Otherwise, a temporary id is generated and returned.
+     * 
+     * @return The client-side id.
+     */
+    public int getClientSideId() {
+
+        // Server-side id.
+        Integer id = (Integer) get("id");
+
+        if (id == null) {
+
+            // Client-side id.
+            id = (Integer) get("tmpid");
+
+            // Generates the client-side id once.
+            if (id == null) {
+                id = generateClientSideId();
+            }
+        }
+
+        return id;
+    }
+
+    /**
+     * Generate a client-side unique id for this entity and stores it in the
+     * <code>temporaryId</code> attribute.
+     */
+    private int generateClientSideId() {
+        final int id = (int) new Date().getTime();
+        set("tmpid", id);
+        return id;
     }
 
     @Override
@@ -143,6 +232,26 @@ public class ExpectedResultDTO extends BaseModelData implements EntityDTO {
         return sb.toString();
     }
 
+    @Override
+    public int hashCode() {
+        return getClientSideId();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (obj == null) {
+            return false;
+        }
+
+        if (!(obj instanceof ExpectedResultDTO)) {
+            return false;
+        }
+
+        final ExpectedResultDTO other = (ExpectedResultDTO) obj;
+        return getClientSideId() == other.getClientSideId();
+    }
+
     /**
      * Adds a new activity to this log frame.
      * 
@@ -174,5 +283,31 @@ public class ExpectedResultDTO extends BaseModelData implements EntityDTO {
         setActivitiesDTO(activities);
 
         return newActivity;
+    }
+
+    /**
+     * Removes an activity from this result.
+     * 
+     * @param activity
+     *            The activity to remove.
+     * @return If the activity has been removed.
+     */
+    public boolean removeActivity(LogFrameActivityDTO activity) {
+
+        // Gets the current activities list.
+        final List<LogFrameActivityDTO> activities = getActivitiesDTO();
+
+        // If the list is empty, do nothing.
+        if (activities == null) {
+            return false;
+        }
+
+        // Tries to remove the activity from the local list.
+        if (activities.contains(activity)) {
+            activity.delete();
+            return true;
+        }
+
+        return false;
     }
 }

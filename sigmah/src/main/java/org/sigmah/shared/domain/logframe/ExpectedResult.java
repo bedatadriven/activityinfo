@@ -1,6 +1,7 @@
 package org.sigmah.shared.domain.logframe;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -14,6 +15,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+import org.hibernate.annotations.Filter;
+import org.sigmah.shared.domain.Deleteable;
 
 /**
  * Represents an item of the expected results of a specific objective of a log
@@ -25,7 +32,9 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "log_frame_expected_result")
-public class ExpectedResult implements Serializable {
+@org.hibernate.annotations.FilterDefs({ @org.hibernate.annotations.FilterDef(name = "hideDeleted") })
+@org.hibernate.annotations.Filters({ @org.hibernate.annotations.Filter(name = "hideDeleted", condition = "DateDeleted is null") })
+public class ExpectedResult implements Serializable, Deleteable {
 
     private static final long serialVersionUID = -4913269192377942381L;
 
@@ -37,6 +46,7 @@ public class ExpectedResult implements Serializable {
     private SpecificObjective parentSpecificObjective;
     private List<LogFrameActivity> activities;
     private LogFrameGroup group;
+    private Date dateDeleted;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -97,6 +107,7 @@ public class ExpectedResult implements Serializable {
 
     @OneToMany(mappedBy = "parentExpectedResult", cascade = CascadeType.ALL)
     @OrderBy(value = "code asc")
+    @Filter(name = "hideDeleted", condition = "DateDeleted is null")
     public List<LogFrameActivity> getActivities() {
         return activities;
     }
@@ -113,5 +124,26 @@ public class ExpectedResult implements Serializable {
 
     public void setGroup(LogFrameGroup group) {
         this.group = group;
+    }
+
+    @Column
+    @Temporal(value = TemporalType.TIMESTAMP)
+    public Date getDateDeleted() {
+        return this.dateDeleted;
+    }
+
+    public void setDateDeleted(Date date) {
+        this.dateDeleted = date;
+    }
+
+    @Override
+    public void delete() {
+        setDateDeleted(new Date());
+    }
+
+    @Override
+    @Transient
+    public boolean isDeleted() {
+        return getDateDeleted() != null;
     }
 }

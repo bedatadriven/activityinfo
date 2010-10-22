@@ -1,7 +1,6 @@
 package org.sigmah.client.page.project.logframe;
 
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.project.logframe.grid.ProjectLogFrameGrid;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.util.Margins;

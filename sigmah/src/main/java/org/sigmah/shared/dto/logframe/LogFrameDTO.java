@@ -3,6 +3,7 @@ package org.sigmah.shared.dto.logframe;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 import org.sigmah.shared.domain.logframe.LogFrameGroupType;
@@ -72,6 +73,33 @@ public class LogFrameDTO extends BaseModelData implements EntityDTO {
         set("specificObjectivesDTO", specificObjectivesDTO);
     }
 
+    /**
+     * Gets the list of specific objectives which aren't deleted.
+     * 
+     * @return The list of specific objectives which aren't deleted.
+     */
+    public List<SpecificObjectiveDTO> getSpecificObjectivesDTONotDeleted() {
+
+        final List<SpecificObjectiveDTO> objectives = get("specificObjectivesDTO");
+
+        if (objectives == null) {
+            return null;
+        }
+
+        // Filters deleted objectives.
+        // This action is needed because after saving the log frame, the
+        // hibernate filter to hide deleted entities isn't re-applied.
+        for (final Iterator<SpecificObjectiveDTO> iterator = objectives.iterator(); iterator.hasNext();) {
+
+            final SpecificObjectiveDTO specificObjectiveDTO = iterator.next();
+            if (specificObjectiveDTO.isDeleted()) {
+                iterator.remove();
+            }
+        }
+
+        return objectives;
+    }
+
     // Log frame prerequisites.
     public List<PrerequisiteDTO> getPrerequisitesDTO() {
         return get("prerequisitesDTO");
@@ -79,6 +107,33 @@ public class LogFrameDTO extends BaseModelData implements EntityDTO {
 
     public void setPrerequisitesDTO(List<PrerequisiteDTO> prerequisitesDTO) {
         set("prerequisitesDTO", prerequisitesDTO);
+    }
+
+    /**
+     * Gets the list of prerequisites which aren't deleted.
+     * 
+     * @return The list of prerequisites which aren't deleted.
+     */
+    public List<PrerequisiteDTO> getPrerequisitesDTONotDeleted() {
+
+        final List<PrerequisiteDTO> prerequisites = get("prerequisitesDTO");
+
+        if (prerequisites == null) {
+            return null;
+        }
+
+        // Filters deleted prerequisites.
+        // This action is needed because after saving the log frame, the
+        // hibernate filter to hide deleted entities isn't re-applied.
+        for (final Iterator<PrerequisiteDTO> iterator = prerequisites.iterator(); iterator.hasNext();) {
+
+            final PrerequisiteDTO prerequisiteDTO = iterator.next();
+            if (prerequisiteDTO.isDeleted()) {
+                iterator.remove();
+            }
+        }
+
+        return prerequisites;
     }
 
     // Log frame group.
@@ -254,6 +309,32 @@ public class LogFrameDTO extends BaseModelData implements EntityDTO {
     }
 
     /**
+     * Removes a specific objective from this log frame.
+     * 
+     * @param objective
+     *            The objective to remove.
+     * @return If the objective has been removed.
+     */
+    public boolean removeSpecificObjective(SpecificObjectiveDTO objective) {
+
+        // Gets the current objectives list.
+        final List<SpecificObjectiveDTO> specificObjectives = getSpecificObjectivesDTO();
+
+        // If the list is empty, do nothing.
+        if (specificObjectives == null) {
+            return false;
+        }
+
+        // Tries to remove the objective from the local list.
+        if (specificObjectives.contains(objective)) {
+            objective.delete();
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Adds a new prerequisite to this log frame.
      * 
      * @return The new prerequisite.
@@ -262,12 +343,21 @@ public class LogFrameDTO extends BaseModelData implements EntityDTO {
 
         List<PrerequisiteDTO> prerequisites = getPrerequisitesDTO();
 
+        // Retrieves the higher code.
+        int max = 0;
+        if (prerequisites != null) {
+            for (final PrerequisiteDTO prerequisite : prerequisites) {
+                max = prerequisite.getCode() > max ? prerequisite.getCode() : max;
+            }
+        }
+
         if (prerequisites == null) {
             prerequisites = new ArrayList<PrerequisiteDTO>();
         }
 
         // Creates the new objective.
         final PrerequisiteDTO newPrerequisite = new PrerequisiteDTO();
+        newPrerequisite.setCode(max + 1);
         newPrerequisite.setParentLogFrameDTO(this);
 
         // Adds it to the local list.
@@ -275,6 +365,32 @@ public class LogFrameDTO extends BaseModelData implements EntityDTO {
         setPrerequisitesDTO(prerequisites);
 
         return newPrerequisite;
+    }
+
+    /**
+     * Removes a prerequisite from this log frame.
+     * 
+     * @param prerequisite
+     *            The prerequisite to remove.
+     * @return If the prerequisite has been removed.
+     */
+    public boolean removePrerequisite(PrerequisiteDTO prerequisite) {
+
+        // Gets the current prerequisites list.
+        final List<PrerequisiteDTO> prerequisites = getPrerequisitesDTO();
+
+        // If the list is empty, do nothing.
+        if (prerequisites == null) {
+            return false;
+        }
+
+        // Tries to remove the prerequisite from the local list.
+        if (prerequisites.contains(prerequisite)) {
+            prerequisite.delete();
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -288,8 +404,8 @@ public class LogFrameDTO extends BaseModelData implements EntityDTO {
 
         // Retrieves the expected results for each objective.
         List<ExpectedResultDTO> list;
-        for (final SpecificObjectiveDTO objective : getSpecificObjectivesDTO()) {
-            if ((list = objective.getExpectedResultsDTO()) != null) {
+        for (final SpecificObjectiveDTO objective : getSpecificObjectivesDTONotDeleted()) {
+            if ((list = objective.getExpectedResultsDTONotDeleted()) != null) {
                 results.addAll(list);
             }
         }
@@ -309,7 +425,7 @@ public class LogFrameDTO extends BaseModelData implements EntityDTO {
         // Retrieves the activities for each expected result.
         List<LogFrameActivityDTO> list;
         for (final ExpectedResultDTO result : getAllExpectedResultsDTO()) {
-            if ((list = result.getActivitiesDTO()) != null) {
+            if ((list = result.getActivitiesDTONotDeleted()) != null) {
                 activities.addAll(list);
             }
         }

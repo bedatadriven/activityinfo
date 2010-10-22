@@ -1,5 +1,7 @@
 package org.sigmah.shared.dto.logframe;
 
+import java.util.Date;
+
 import org.sigmah.shared.dto.EntityDTO;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
@@ -30,13 +32,13 @@ public class PrerequisiteDTO extends BaseModelData implements EntityDTO {
         set("id", id);
     }
 
-    // Result code.
+    // Prerequisite code.
     public Integer getCode() {
-        return 0;
+        return get("code");
     }
 
     public void setCode(Integer code) {
-        // set("code", code);
+        set("code", code);
     }
 
     // Prerequisite content text.
@@ -66,6 +68,31 @@ public class PrerequisiteDTO extends BaseModelData implements EntityDTO {
         set("logFrameGroupDTO", logFrameGroupDTO);
     }
 
+    // Prerequisite deleted date.
+    public Date getDateDeleted() {
+        return get("dateDeleted");
+    }
+
+    public void setDateDeleted(Date dateDeleted) {
+        set("dateDeleted", dateDeleted);
+    }
+
+    /**
+     * Deletes this prerequisite.
+     */
+    public void delete() {
+        setDateDeleted(new Date());
+    }
+
+    /**
+     * Returns if this prerequisite is deleted.
+     * 
+     * @return If this prerequisite is deleted.
+     */
+    public boolean isDeleted() {
+        return getDateDeleted() != null;
+    }
+
     // Display label.
     /**
      * Sets the attribute <code>label</code> to display this element in a
@@ -77,6 +104,41 @@ public class PrerequisiteDTO extends BaseModelData implements EntityDTO {
 
     public String getLabel() {
         return get("label");
+    }
+
+    /**
+     * Gets the client-side id for this entity. If this entity has a server-id
+     * id, it's returned. Otherwise, a temporary id is generated and returned.
+     * 
+     * @return The client-side id.
+     */
+    public int getClientSideId() {
+
+        // Server-side id.
+        Integer id = (Integer) get("id");
+
+        if (id == null) {
+
+            // Client-side id.
+            id = (Integer) get("tmpid");
+
+            // Generates the client-side id once.
+            if (id == null) {
+                id = generateClientSideId();
+            }
+        }
+
+        return id;
+    }
+
+    /**
+     * Generate a client-side unique id for this entity and stores it in the
+     * <code>temporaryId</code> attribute.
+     */
+    private int generateClientSideId() {
+        final int id = (int) new Date().getTime();
+        set("tmpid", id);
+        return id;
     }
 
     @Override
@@ -94,9 +156,31 @@ public class PrerequisiteDTO extends BaseModelData implements EntityDTO {
         }
         sb.append(" ; dlabel = ");
         sb.append(getLabel());
+        sb.append(" ; date deleted = ");
+        sb.append(getDateDeleted());
         sb.append(" ; content = ");
         sb.append(getContent());
         sb.append("]");
         return sb.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return getClientSideId();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (obj == null) {
+            return false;
+        }
+
+        if (!(obj instanceof PrerequisiteDTO)) {
+            return false;
+        }
+
+        final PrerequisiteDTO other = (PrerequisiteDTO) obj;
+        return getClientSideId() == other.getClientSideId();
     }
 }

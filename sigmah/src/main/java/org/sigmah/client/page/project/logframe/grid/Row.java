@@ -18,6 +18,11 @@ public abstract class Row<T> {
     private final T userObject;
 
     /**
+     * The group in which this row is inserted.
+     */
+    private RowsGroup<?> parent;
+
+    /**
      * Initializes the row.
      * 
      * @param userObject
@@ -32,8 +37,27 @@ public abstract class Row<T> {
      * 
      * @return The user object.
      */
-    protected T getUserObject() {
+    public T getUserObject() {
         return userObject;
+    }
+
+    /**
+     * Gets the parent group.
+     * 
+     * @return The parent group.
+     */
+    public RowsGroup<?> getParent() {
+        return parent;
+    }
+
+    /**
+     * Sets the parent group.
+     * 
+     * @param parent
+     *            The new parent group.
+     */
+    public void setParent(RowsGroup<?> parent) {
+        this.parent = parent;
     }
 
     @Override
@@ -68,7 +92,7 @@ public abstract class Row<T> {
      * 
      * @return The unique code to identify the row.
      */
-    protected int getId() {
+    public int getId() {
         return getId(userObject);
     }
 
@@ -93,7 +117,7 @@ public abstract class Row<T> {
      *            The column index.
      * @return The widget if any, <code>null</code> otherwise.
      */
-    protected Widget getWidgetAt(int column) {
+    public Widget getWidgetAt(int column) {
         return getWidgetAt(column, userObject);
     }
 

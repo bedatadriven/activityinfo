@@ -1,12 +1,15 @@
-package org.sigmah.client.page.project.logframe.grid;
+package org.sigmah.client.page.project.logframe;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.client.page.project.logframe.CodePolicy;
-import org.sigmah.client.page.project.logframe.SelectWindow;
 import org.sigmah.client.page.project.logframe.SelectWindow.SelectListener;
+import org.sigmah.client.page.project.logframe.grid.FlexTableView;
+import org.sigmah.client.page.project.logframe.grid.FlexTableViewActionsMenu;
+import org.sigmah.client.page.project.logframe.grid.HTMLTableUtils;
+import org.sigmah.client.page.project.logframe.grid.Row;
+import org.sigmah.client.page.project.logframe.grid.RowsGroup;
 import org.sigmah.shared.domain.logframe.LogFrameGroupType;
 import org.sigmah.shared.dto.logframe.ExpectedResultDTO;
 import org.sigmah.shared.dto.logframe.LogFrameActivityDTO;
@@ -17,19 +20,14 @@ import org.sigmah.shared.dto.logframe.PrerequisiteDTO;
 import org.sigmah.shared.dto.logframe.SpecificObjectiveDTO;
 
 import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.menu.Menu;
-import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Grid;
@@ -521,11 +519,11 @@ public class ProjectLogFrameGrid {
         initTable();
         initCodePolicies();
 
-        for (final SpecificObjectiveDTO objective : logFrame.getSpecificObjectivesDTO()) {
+        for (final SpecificObjectiveDTO objective : logFrame.getSpecificObjectivesDTONotDeleted()) {
             addSpecificObjective(objective);
         }
 
-        for (final PrerequisiteDTO prerequisite : logFrame.getPrerequisitesDTO()) {
+        for (final PrerequisiteDTO prerequisite : logFrame.getPrerequisitesDTONotDeleted()) {
             addPrerequisite(prerequisite);
         }
     }
@@ -699,16 +697,16 @@ public class ProjectLogFrameGrid {
         }
 
         // Retrieves the group.
-        final LogFrameGroupDTO group = specificObjective.getLogFrameGroupDTO();
+        final LogFrameGroupDTO logFrameGroup = specificObjective.getLogFrameGroupDTO();
 
         // Retrieves the equivalent rows group.
         @SuppressWarnings("unchecked")
-        final RowsGroup<LogFrameGroupDTO> g = (RowsGroup<LogFrameGroupDTO>) specificObjectivesView.getGroup(group
-                .getClientSideId());
+        final RowsGroup<LogFrameGroupDTO> gridGroup = (RowsGroup<LogFrameGroupDTO>) specificObjectivesView
+                .getGroup(logFrameGroup.getClientSideId());
 
         // If the rows hasn't been created already, adds it.
-        if (g == null) {
-            addSpecificObjectivesGroup(group);
+        if (gridGroup == null) {
+            addSpecificObjectivesGroup(logFrameGroup);
         }
 
         // Sets the display label.
@@ -719,185 +717,136 @@ public class ProjectLogFrameGrid {
         specificObjective.setLabel(sb.toString());
 
         // Adds the row.
-        specificObjectivesView.addRow(group.getClientSideId(), new Row<SpecificObjectiveDTO>(specificObjective) {
+        specificObjectivesView.addRow(logFrameGroup.getClientSideId(),
+                new Row<SpecificObjectiveDTO>(specificObjective) {
 
-            @Override
-            public boolean isSimilar(int column, SpecificObjectiveDTO userObject, SpecificObjectiveDTO other) {
+                    @Override
+                    public boolean isSimilar(int column, SpecificObjectiveDTO userObject, SpecificObjectiveDTO other) {
 
-                switch (column) {
-                case 1:
-                    // Code.
-                    return userObject.getCode() == other.getCode();
-                }
-                return false;
-            }
-
-            @Override
-            public Widget getWidgetAt(int column, final SpecificObjectiveDTO userObject) {
-
-                switch (column) {
-                case 0:
-
-                    // Parent code.
-                    return null;
-
-                case 1:
-
-                    // Code.
-                    final Label codeLabel = new Label();
-                    codeLabel.addStyleName(CSS_CODE_LABEL_STYLE_NAME);
-
-                    if (userObject != null) {
-                        codeLabel.setText(userObject.getLabel());
+                        switch (column) {
+                        case 1:
+                            // Code.
+                            return userObject.getCode() == other.getCode();
+                        }
+                        return false;
                     }
 
-                    // Up action.
-                    final MenuItem upMenuItem = new MenuItem(I18N.CONSTANTS.logFrameActionUp(), IconImageBundle.ICONS
-                            .up());
-                    upMenuItem.addListener(Events.Select, new Listener<BaseEvent>() {
+                    @Override
+                    public Widget getWidgetAt(int column, final SpecificObjectiveDTO userObject) {
 
-                        @Override
-                        public void handleEvent(BaseEvent be) {
-                            specificObjectivesView.moveRow(g.getId(), getId(userObject), +1);
+                        switch (column) {
+                        case 0:
+
+                            // Parent code.
+                            return null;
+
+                        case 1:
+
+                            // Code.
+                            final Label codeLabel = new Label();
+                            codeLabel.addStyleName(CSS_CODE_LABEL_STYLE_NAME);
+
+                            if (userObject != null) {
+                                codeLabel.setText(userObject.getLabel());
+                            }
+
+                            // Grid.
+                            final Grid grid = new Grid(1, 2);
+                            grid.setCellPadding(0);
+                            grid.setCellSpacing(0);
+                            grid.setWidget(0, 0, codeLabel);
+                            grid.setWidget(0, 1, buildSpecificObjectiveMenu(this));
+
+                            return grid;
+
+                        case 2:
+
+                            // Intervention logic.
+                            final TextArea interventionLogicTextBox = new TextArea();
+                            interventionLogicTextBox.setWidth("100%");
+                            interventionLogicTextBox.setHeight("100%");
+                            interventionLogicTextBox.setVisibleLines(3);
+                            interventionLogicTextBox.addStyleName("html-textbox");
+
+                            if (userObject != null) {
+                                interventionLogicTextBox.setText(userObject.getInterventionLogic());
+                            }
+
+                            interventionLogicTextBox.addChangeHandler(new ChangeHandler() {
+                                @Override
+                                public void onChange(ChangeEvent e) {
+                                    userObject.setInterventionLogic(interventionLogicTextBox.getText());
+                                    fireLogFrameEdited();
+                                }
+                            });
+
+                            return interventionLogicTextBox;
+
+                        case 3:
+
+                            // Indicators.
+                            return new Label("");
+
+                        case 4:
+
+                            // Risks.
+                            final TextArea risksTextBox = new TextArea();
+                            risksTextBox.setWidth("100%");
+                            risksTextBox.setHeight("100%");
+                            risksTextBox.setVisibleLines(3);
+                            risksTextBox.addStyleName("html-textbox");
+
+                            if (userObject != null) {
+                                risksTextBox.setText(userObject.getRisks());
+                            }
+
+                            risksTextBox.addChangeHandler(new ChangeHandler() {
+                                @Override
+                                public void onChange(ChangeEvent e) {
+                                    userObject.setRisks(risksTextBox.getText());
+                                    fireLogFrameEdited();
+                                }
+                            });
+
+                            return risksTextBox;
+
+                        case 5:
+
+                            // Assumptions.
+                            final TextArea assumptionsTextBox = new TextArea();
+                            assumptionsTextBox.setWidth("100%");
+                            assumptionsTextBox.setHeight("100%");
+                            assumptionsTextBox.setVisibleLines(3);
+                            assumptionsTextBox.addStyleName("html-textbox");
+
+                            if (userObject != null) {
+                                assumptionsTextBox.setText(userObject.getAssumptions());
+                            }
+
+                            assumptionsTextBox.addChangeHandler(new ChangeHandler() {
+                                @Override
+                                public void onChange(ChangeEvent e) {
+                                    userObject.setAssumptions(assumptionsTextBox.getText());
+                                    fireLogFrameEdited();
+                                }
+                            });
+
+                            return assumptionsTextBox;
+
+                        default:
+                            return null;
                         }
-                    });
-
-                    // Down action.
-                    final MenuItem downMenuItem = new MenuItem(I18N.CONSTANTS.logFrameActionDown(),
-                            IconImageBundle.ICONS.down());
-                    downMenuItem.addListener(Events.Select, new Listener<BaseEvent>() {
-
-                        @Override
-                        public void handleEvent(BaseEvent be) {
-                            specificObjectivesView.moveRow(g.getId(), getId(userObject), -1);
-                        }
-                    });
-
-                    // Delete action.
-                    final MenuItem deleteMenuItem = new MenuItem(I18N.CONSTANTS.logFrameActionDelete(),
-                            IconImageBundle.ICONS.delete());
-                    deleteMenuItem.addListener(Events.Select, new Listener<BaseEvent>() {
-
-                        @Override
-                        public void handleEvent(BaseEvent be) {
-                            Window.alert("erasor");
-                        }
-                    });
-
-                    // Menu.
-                    // TODO shows menu.
-                    final Menu menu = new Menu();
-                    menu.add(upMenuItem);
-                    menu.add(downMenuItem);
-                    menu.add(deleteMenuItem);
-
-                    final Anchor anchor = new Anchor("\u25BC");
-                    anchor.addStyleName(CSS_MENU_BUTTON_STYLE_NAME);
-                    anchor.addClickHandler(new ClickHandler() {
-
-                        @Override
-                        public void onClick(ClickEvent event) {
-                            menu.show(anchor);
-                        }
-                    });
-
-                    // Grid.
-                    final Grid grid = new Grid(1, 2);
-                    grid.setCellPadding(0);
-                    grid.setCellSpacing(0);
-                    grid.setWidget(0, 0, codeLabel);
-                    grid.setWidget(0, 1, anchor);
-
-                    return codeLabel;
-
-                case 2:
-
-                    // Intervention logic.
-                    final TextArea interventionLogicTextBox = new TextArea();
-                    interventionLogicTextBox.setWidth("100%");
-                    interventionLogicTextBox.setHeight("100%");
-                    interventionLogicTextBox.setVisibleLines(3);
-                    interventionLogicTextBox.addStyleName("html-textbox");
-
-                    if (userObject != null) {
-                        interventionLogicTextBox.setText(userObject.getInterventionLogic());
                     }
 
-                    interventionLogicTextBox.addChangeHandler(new ChangeHandler() {
-                        @Override
-                        public void onChange(ChangeEvent e) {
-                            userObject.setInterventionLogic(interventionLogicTextBox.getText());
-                            fireLogFrameEdited();
-                        }
-                    });
-
-                    return interventionLogicTextBox;
-
-                case 3:
-
-                    // Indicators.
-                    return new Label("");
-
-                case 4:
-
-                    // Risks.
-                    final TextArea risksTextBox = new TextArea();
-                    risksTextBox.setWidth("100%");
-                    risksTextBox.setHeight("100%");
-                    risksTextBox.setVisibleLines(3);
-                    risksTextBox.addStyleName("html-textbox");
-
-                    if (userObject != null) {
-                        risksTextBox.setText(userObject.getRisks());
+                    @Override
+                    public int getId(SpecificObjectiveDTO userObject) {
+                        return userObject.getClientSideId();
                     }
-
-                    risksTextBox.addChangeHandler(new ChangeHandler() {
-                        @Override
-                        public void onChange(ChangeEvent e) {
-                            userObject.setRisks(risksTextBox.getText());
-                            fireLogFrameEdited();
-                        }
-                    });
-
-                    return risksTextBox;
-
-                case 5:
-
-                    // Assumptions.
-                    final TextArea assumptionsTextBox = new TextArea();
-                    assumptionsTextBox.setWidth("100%");
-                    assumptionsTextBox.setHeight("100%");
-                    assumptionsTextBox.setVisibleLines(3);
-                    assumptionsTextBox.addStyleName("html-textbox");
-
-                    if (userObject != null) {
-                        assumptionsTextBox.setText(userObject.getAssumptions());
-                    }
-
-                    assumptionsTextBox.addChangeHandler(new ChangeHandler() {
-                        @Override
-                        public void onChange(ChangeEvent e) {
-                            userObject.setAssumptions(assumptionsTextBox.getText());
-                            fireLogFrameEdited();
-                        }
-                    });
-
-                    return assumptionsTextBox;
-
-                default:
-                    return null;
-                }
-            }
-
-            @Override
-            public int getId(SpecificObjectiveDTO userObject) {
-                return userObject.getId();
-            }
-        });
+                });
 
         // Adds sub expected results.
-        if (specificObjective.getExpectedResultsDTO() != null) {
-            for (final ExpectedResultDTO result : specificObjective.getExpectedResultsDTO()) {
+        if (specificObjective.getExpectedResultsDTONotDeleted() != null) {
+            for (final ExpectedResultDTO result : specificObjective.getExpectedResultsDTONotDeleted()) {
                 addExpectedResult(result);
             }
         }
@@ -996,13 +945,21 @@ public class ProjectLogFrameGrid {
 
         ensureLogFrame();
 
+        final List<SpecificObjectiveDTO> objectives = logFrame.getSpecificObjectivesDTONotDeleted();
+
+        // Checks if there is at least one available specific objective.
+        if (objectives == null || objectives.isEmpty()) {
+            MessageBox.alert(I18N.CONSTANTS.logFrameNoSpecificObjective(),
+                    I18N.CONSTANTS.logFrameNoSpecificObjectiveDetails(), null);
+            return;
+        }
+
         // Must select a group.
         if (logFrameModel.getEnableExpectedResultsGroups()) {
 
             // Sets the selection window.
             selectionWindow.clear();
-            selectionWindow.addChoicesList(I18N.CONSTANTS.logFrameSpecificObjective(),
-                    logFrame.getSpecificObjectivesDTO(), false, "label");
+            selectionWindow.addChoicesList(I18N.CONSTANTS.logFrameSpecificObjective(), objectives, false, "label");
             selectionWindow.addChoicesList(I18N.CONSTANTS.logFrameGroup(),
                     logFrame.getAllGroups(LogFrameGroupType.EXPECTED_RESULT), false, "label");
             selectionWindow.addSelectListener(new SelectListener() {
@@ -1041,7 +998,7 @@ public class ProjectLogFrameGrid {
             // Sets the selection window.
             selectionWindow.clear();
             selectionWindow.addChoicesList(I18N.CONSTANTS.logFrameSpecificObjective(),
-                    logFrame.getSpecificObjectivesDTO(), false, "label");
+                    logFrame.getSpecificObjectivesDTONotDeleted(), false, "label");
             selectionWindow.addSelectListener(new SelectListener() {
 
                 @Override
@@ -1157,7 +1114,14 @@ public class ProjectLogFrameGrid {
                         codeLabel.setText(userObject.getLabel());
                     }
 
-                    return codeLabel;
+                    // Grid.
+                    final Grid grid = new Grid(1, 2);
+                    grid.setCellPadding(0);
+                    grid.setCellSpacing(0);
+                    grid.setWidget(0, 0, codeLabel);
+                    grid.setWidget(0, 1, buildExpectedResultMenu(this));
+
+                    return grid;
 
                 case 2:
 
@@ -1240,13 +1204,13 @@ public class ProjectLogFrameGrid {
 
             @Override
             public int getId(ExpectedResultDTO userObject) {
-                return userObject.getId();
+                return userObject.getClientSideId();
             }
         });
 
         // Adds sub activities.
-        if (result.getActivitiesDTO() != null) {
-            for (final LogFrameActivityDTO activity : result.getActivitiesDTO()) {
+        if (result.getActivitiesDTONotDeleted() != null) {
+            for (final LogFrameActivityDTO activity : result.getActivitiesDTONotDeleted()) {
                 addActivity(activity);
             }
         }
@@ -1344,13 +1308,21 @@ public class ProjectLogFrameGrid {
 
         ensureLogFrame();
 
+        final List<ExpectedResultDTO> results = logFrame.getAllExpectedResultsDTO();
+
+        // Checks if there is at least one available result.
+        if (results == null || results.isEmpty()) {
+            MessageBox.alert(I18N.CONSTANTS.logFrameNoExceptedResults(),
+                    I18N.CONSTANTS.logFrameNoExceptedResultsDetails(), null);
+            return;
+        }
+
         // Must select a group.
         if (logFrameModel.getEnableActivitiesGroups()) {
 
             // Sets the selection window.
             selectionWindow.clear();
-            selectionWindow.addChoicesList(I18N.CONSTANTS.logFrameExceptedResult(),
-                    logFrame.getAllExpectedResultsDTO(), false, "label");
+            selectionWindow.addChoicesList(I18N.CONSTANTS.logFrameExceptedResult(), results, false, "label");
             selectionWindow.addChoicesList(I18N.CONSTANTS.logFrameGroup(),
                     logFrame.getAllGroups(LogFrameGroupType.ACTIVITY), false, "label");
             selectionWindow.addSelectListener(new SelectListener() {
@@ -1388,8 +1360,7 @@ public class ProjectLogFrameGrid {
 
             // Sets the selection window.
             selectionWindow.clear();
-            selectionWindow.addChoicesList(I18N.CONSTANTS.logFrameExceptedResult(),
-                    logFrame.getAllExpectedResultsDTO(), false, "label");
+            selectionWindow.addChoicesList(I18N.CONSTANTS.logFrameExceptedResult(), results, false, "label");
             selectionWindow.addSelectListener(new SelectListener() {
 
                 @Override
@@ -1505,7 +1476,14 @@ public class ProjectLogFrameGrid {
                         codeLabel.setText(userObject.getLabel());
                     }
 
-                    return codeLabel;
+                    // Grid.
+                    final Grid grid = new Grid(1, 2);
+                    grid.setCellPadding(0);
+                    grid.setCellSpacing(0);
+                    grid.setWidget(0, 0, codeLabel);
+                    grid.setWidget(0, 1, buildActivityMenu(this));
+
+                    return grid;
 
                 case 5:
 
@@ -1536,7 +1514,7 @@ public class ProjectLogFrameGrid {
 
             @Override
             public int getId(LogFrameActivityDTO userObject) {
-                return userObject.getId();
+                return userObject.getClientSideId();
             }
         });
     }
@@ -1723,6 +1701,25 @@ public class ProjectLogFrameGrid {
             public Widget getWidgetAt(int column, final PrerequisiteDTO userObject) {
 
                 switch (column) {
+                case 0:
+
+                    // Code.
+                    final Label codeLabel = new Label();
+                    codeLabel.addStyleName(CSS_CODE_LABEL_STYLE_NAME);
+
+                    if (userObject != null) {
+                        codeLabel.setText(userObject.getLabel());
+                    }
+
+                    // Grid.
+                    final Grid grid = new Grid(1, 2);
+                    grid.setCellPadding(0);
+                    grid.setCellSpacing(0);
+                    grid.setWidget(0, 0, codeLabel);
+                    grid.setWidget(0, 1, buildPrerequisiteMenu(this));
+
+                    return grid;
+
                 case 5:
 
                     // Activity content.
@@ -1752,7 +1749,270 @@ public class ProjectLogFrameGrid {
 
             @Override
             public int getId(PrerequisiteDTO userObject) {
-                return userObject.getId();
+                return userObject.getClientSideId();
+            }
+        });
+    }
+
+    // ------------------------------------------------------------------------
+    // - MENUS
+    // ------------------------------------------------------------------------
+
+    /**
+     * Builds the widget of the menus.
+     * 
+     * @param menu
+     *            The actions menu.
+     * @return The widget to display this menu.
+     */
+    private Widget buildMenuWidget(final FlexTableViewActionsMenu menu) {
+
+        // Menu button.
+        final Anchor anchor = new Anchor("\u25BC");
+        anchor.addStyleName(CSS_MENU_BUTTON_STYLE_NAME);
+        anchor.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                menu.show(anchor);
+            }
+        });
+
+        return anchor;
+    }
+
+    /**
+     * Builds an actions menu for a specific objective.
+     * 
+     * @param row
+     *            The specific objective row.
+     * @return The menu.
+     */
+    private Widget buildSpecificObjectiveMenu(final Row<SpecificObjectiveDTO> row) {
+
+        // Actions menu.
+        return buildMenuWidget(new FlexTableViewActionsMenu(specificObjectivesView, row) {
+
+            @Override
+            public boolean canBeRemoved() {
+                // Gets the sub results list.
+                final List<ExpectedResultDTO> results = row.getUserObject().getExpectedResultsDTONotDeleted();
+                return results == null || results.isEmpty();
+            }
+
+            @Override
+            public boolean beforeRemove() {
+
+                final boolean removed = logFrame.removeSpecificObjective(row.getUserObject());
+
+                if (removed) {
+                    fireLogFrameEdited();
+                }
+
+                return removed;
+            }
+
+            @Override
+            public boolean canBeMovedUp() {
+                // No functional restriction (the view
+                // manages the row bounds itself).
+                return true;
+            }
+
+            @Override
+            public boolean beforeMoveUp() {
+                // TODO Changes the code ?
+                return true;
+            }
+
+            @Override
+            public boolean canBeMovedDown() {
+                // No functional restriction (the view
+                // manages the row bounds itself).
+                return true;
+            }
+
+            @Override
+            public boolean beforeMoveDown() {
+                // TODO Changes the code ?
+                return true;
+            }
+        });
+    }
+
+    /**
+     * Builds an actions menu for an expected result.
+     * 
+     * @param row
+     *            The expected result row.
+     * @return The menu.
+     */
+    private Widget buildExpectedResultMenu(final Row<ExpectedResultDTO> row) {
+
+        // Actions menu.
+        return buildMenuWidget(new FlexTableViewActionsMenu(expectedResultsView, row) {
+
+            @Override
+            public boolean canBeRemoved() {
+                // Gets the sub activities list.
+                final List<LogFrameActivityDTO> activities = row.getUserObject().getActivitiesDTONotDeleted();
+                return activities == null || activities.isEmpty();
+            }
+
+            @Override
+            public boolean beforeRemove() {
+
+                final boolean removed = row.getUserObject().getParentSpecificObjectiveDTO()
+                        .removeExpectedResult(row.getUserObject());
+
+                if (removed) {
+                    fireLogFrameEdited();
+                }
+
+                return removed;
+            }
+
+            @Override
+            public boolean canBeMovedUp() {
+                // No functional restriction (the view
+                // manages the row bounds itself).
+                return true;
+            }
+
+            @Override
+            public boolean beforeMoveUp() {
+                // TODO Changes the code ?
+                return true;
+            }
+
+            @Override
+            public boolean canBeMovedDown() {
+                // No functional restriction (the view
+                // manages the row bounds itself).
+                return true;
+            }
+
+            @Override
+            public boolean beforeMoveDown() {
+                // TODO Changes the code ?
+                return true;
+            }
+        });
+    }
+
+    /**
+     * Builds an actions menu for an activity.
+     * 
+     * @param row
+     *            The activity row.
+     * @return The menu.
+     */
+    private Widget buildActivityMenu(final Row<LogFrameActivityDTO> row) {
+
+        // Actions menu.
+        return buildMenuWidget(new FlexTableViewActionsMenu(activitiesView, row) {
+
+            @Override
+            public boolean canBeRemoved() {
+                // No functional restriction.
+                return true;
+            }
+
+            @Override
+            public boolean beforeRemove() {
+
+                final boolean removed = row.getUserObject().getParentExpectedResultDTO()
+                        .removeActivity(row.getUserObject());
+
+                if (removed) {
+                    fireLogFrameEdited();
+                }
+
+                return removed;
+            }
+
+            @Override
+            public boolean canBeMovedUp() {
+                // No functional restriction (the view
+                // manages the row bounds itself).
+                return true;
+            }
+
+            @Override
+            public boolean beforeMoveUp() {
+                // TODO Changes the code ?
+                return true;
+            }
+
+            @Override
+            public boolean canBeMovedDown() {
+                // No functional restriction (the view
+                // manages the row bounds itself).
+                return true;
+            }
+
+            @Override
+            public boolean beforeMoveDown() {
+                // TODO Changes the code ?
+                return true;
+            }
+        });
+    }
+
+    /**
+     * Builds an actions menu for a prerequisite.
+     * 
+     * @param row
+     *            The prerequisite row.
+     * @return The menu.
+     */
+    private Widget buildPrerequisiteMenu(final Row<PrerequisiteDTO> row) {
+
+        // Actions menu.
+        return buildMenuWidget(new FlexTableViewActionsMenu(prerequisitesView, row) {
+
+            @Override
+            public boolean canBeRemoved() {
+                // No functional restriction.
+                return true;
+            }
+
+            @Override
+            public boolean beforeRemove() {
+
+                final boolean removed = logFrame.removePrerequisite(row.getUserObject());
+
+                if (removed) {
+                    fireLogFrameEdited();
+                }
+
+                return removed;
+            }
+
+            @Override
+            public boolean canBeMovedUp() {
+                // No functional restriction (the view
+                // manages the row bounds itself).
+                return true;
+            }
+
+            @Override
+            public boolean beforeMoveUp() {
+                // TODO Changes the code ?
+                return true;
+            }
+
+            @Override
+            public boolean canBeMovedDown() {
+                // No functional restriction (the view
+                // manages the row bounds itself).
+                return true;
+            }
+
+            @Override
+            public boolean beforeMoveDown() {
+                // TODO Changes the code ?
+                return true;
             }
         });
     }

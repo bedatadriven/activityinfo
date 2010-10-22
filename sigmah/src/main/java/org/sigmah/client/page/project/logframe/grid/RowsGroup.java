@@ -60,20 +60,46 @@ public abstract class RowsGroup<T> {
     }
 
     /**
-     * Adds a row to this group.
+     * Adds a row at the end of this group.
      * 
      * @param row
      *            The new row.
+     * @throws NullPointerException
+     *             If the row is <code>null</code>.
      */
     protected void addRow(Row<?> row) {
+        addRow(row, rowsOrderedList.size());
+    }
+
+    /**
+     * Adds a row at the given position in this group.
+     * 
+     * @param row
+     *            The new row.
+     * @param position
+     *            The row position in this group.
+     * @throws NullPointerException
+     *             If the row is <code>null</code>.
+     * @throws IndexOutOfBoundsException
+     *             If the position ins't included in the interval
+     *             [1;ROWS_COUNT].
+     */
+    protected void addRow(Row<?> row, int position) {
 
         // Checks if the row is not null.
         if (row == null) {
-            throw new NullPointerException("row must not be null");
+            throw new NullPointerException("The row must not be null.");
         }
 
-        rowsOrderedList.add(row);
+        // Checks if the position is correct.
+        if (position < 1 || position > getRowsCount() + 1) {
+            throw new IndexOutOfBoundsException("The position #" + position + " doesn't exist.");
+        }
+
+        rowsOrderedList.add(position - 1, row);
         rowsIdsMap.put(row.getId(), row);
+
+        row.setParent(this);
     }
 
     /**
@@ -91,6 +117,29 @@ public abstract class RowsGroup<T> {
     }
 
     /**
+     * Gets the row at the given position. If the group is empty or if there
+     * isn't a row at this position, <code>null</code> is returned.
+     * 
+     * @param position
+     *            The row position in this group in the interval
+     *            [1;GROUPS_COUNT].
+     * @return The row at the given position, <code>null</code> otherwise.
+     */
+    protected Row<?> getRowAtPosition(int position) {
+        if (rowsOrderedList.isEmpty()) {
+            return null;
+        } else {
+
+            // This position doen't exist.
+            if (position < 1 || position > rowsOrderedList.size() + 1) {
+                return null;
+            }
+
+            return rowsOrderedList.get(position - 1);
+        }
+    }
+
+    /**
      * Gets the row with the given id if it exists, <code>null</code> otherwise.
      * 
      * @param rowId
@@ -99,6 +148,37 @@ public abstract class RowsGroup<T> {
      */
     protected Row<?> getRow(int rowId) {
         return rowsIdsMap.get(rowId);
+    }
+
+    /**
+     * Gets the row position in this group. The position is included in the
+     * interval [1;ROWS_COUNT]. If the row doesn't exist, an exception is
+     * thrown.
+     * 
+     * @param row
+     *            The row.
+     * @return The row position in the interval [1;GROUPS_COUNT].
+     * @throws NullPointerException
+     *             If the row is <code>null</code>.
+     * @throws IllegalArgumentException
+     *             If this row doesn't exist in this group.
+     */
+    protected int getRowPosition(final Row<?> row) {
+
+        // Checks if the group is valid.
+        if (row == null) {
+            throw new NullPointerException("The row must not be null.");
+        }
+
+        // Gets the row index in the ordered list.
+        final int position = rowsOrderedList.indexOf(row);
+
+        // The row doesn't exist.
+        if (position == -1) {
+            throw new IllegalArgumentException("The row with id #" + row.getId() + " doesn't exist in this group.");
+        }
+
+        return position + 1;
     }
 
     /**
@@ -124,14 +204,20 @@ public abstract class RowsGroup<T> {
      *            The row.
      * @return If the row has been removed.
      */
-    protected boolean removeRow(Row<?> row) {
+    protected boolean removeRow(final Row<?> row) {
 
         if (row != null) {
 
             // Removes it if it exists.
             if (rowsIdsMap.get(row.getId()) != null) {
+
+                // Detaches the row from this group.
+                row.setParent(null);
+
+                // Removes it locally.
                 rowsOrderedList.remove(row);
                 rowsIdsMap.remove(row.getId());
+
                 return true;
             }
         }

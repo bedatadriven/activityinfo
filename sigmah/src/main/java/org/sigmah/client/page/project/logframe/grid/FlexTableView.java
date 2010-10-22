@@ -184,9 +184,11 @@ public class FlexTableView {
         // Inserts the new row.
         int row = table.insertRow(beforeRow + shift);
 
-        // Applies the row styles.
+        // Adjusts the row span.
         table.getFlexCellFormatter().setRowSpan(shift, groupColumnIndex,
                 table.getFlexCellFormatter().getRowSpan(shift, groupColumnIndex) + 1);
+
+        // Applies the row styles.
         HTMLTableUtils.applyRowStyles(table, row);
 
         // Impacts the adding of row on dependencies.
@@ -205,6 +207,10 @@ public class FlexTableView {
 
         // Removes the row.
         table.removeRow(row + shift);
+
+        // Adjusts the row span.
+        table.getFlexCellFormatter().setRowSpan(shift, groupColumnIndex,
+                table.getFlexCellFormatter().getRowSpan(shift, groupColumnIndex) - 1);
 
         // Impacts the removing of row on dependencies.
         decrementDependencies();
@@ -229,15 +235,15 @@ public class FlexTableView {
     }
 
     /**
-     * Adds a new group of rows at the last position.
+     * Inserts a new group of rows at the last position.
      * 
      * @param group
-     *            The group. Must not be <code>null</code>.
+     *            The group.
      * 
      * @throws NullPointerException
      *             If the group is <code>null</code>.
      * @throws IllegalArgumentException
-     *             If the code is already used by another group.
+     *             If a group with the same id already exists.
      */
     public void addGroup(final RowsGroup<?> group) {
         insertGroup(groupsOrderedList.size() + 1, group);
@@ -247,27 +253,32 @@ public class FlexTableView {
      * Inserts a new group of rows at the given position.
      * 
      * @param position
-     *            The desired position. Must be included in the interval
-     *            [1;GROUPS_COUNT].
+     *            The position at which the group will be inserted among the
+     *            groups list (for example, a index equals to <code>2</code>
+     *            means that the group will be the second one).<br/>
+     *            If this index is lower or equal than <code>0</code>, the group
+     *            will be the first one. An index greater than the number of
+     *            group will insert the group at the last position.
+     * 
      * @param group
-     *            The group. Must not be <code>null</code>.
+     *            The group.
      * 
      * @throws NullPointerException
      *             If the group is <code>null</code>.
      * @throws IllegalArgumentException
-     *             If the code is already used by another group.
+     *             If a group with the same id already exists.
      */
     public void insertGroup(int position, final RowsGroup<?> group) {
 
         // Checks if the group is valid.
         if (group == null) {
-            throw new NullPointerException("group must not be null");
+            throw new NullPointerException("The group must not be null.");
         }
 
-        final int code = group.getId();
+        final int id = group.getId();
         // Checks if the group doesn't exist already.
-        if (groupsCodesMap.get(code) != null) {
-            throw new IllegalArgumentException("a group with code '" + code + "' already exist");
+        if (groupsCodesMap.get(id) != null) {
+            throw new IllegalArgumentException("The group with id #" + id + " already exists.");
         }
 
         // Re-adjusts the position to avoid out of bounds errors.
@@ -278,7 +289,7 @@ public class FlexTableView {
         }
 
         if (Log.isDebugEnabled()) {
-            Log.debug("[addGroupAtIndex] Inserts a new group at position # " + position + " : " + group);
+            Log.debug("[insertGroup] Inserts the new group #" + id + " at position # " + position + ".");
         }
 
         // Computes new group indexes.
@@ -300,12 +311,7 @@ public class FlexTableView {
         groupsOrderedList.add(position - 1, group);
         groupsCodesMap.put(group.getId(), group);
 
-        if (Log.isDebugEnabled()) {
-            Log.debug("[addGroupAtIndex] Groups list: " + groupsOrderedList);
-            Log.debug("[addGroupAtIndex] Groups map: " + groupsOrderedList);
-        }
-
-        // Hide the group header if needed.
+        // Hides the group header if needed.
         if (!group.isVisible()) {
             widget.setVisible(false);
         }
@@ -330,9 +336,9 @@ public class FlexTableView {
      * considering the shift.
      * 
      * @param position
-     *            The index at which the group will be inserted among the groups
-     *            number (for example, a index equals to <code>2</code> means
-     *            that the group will be the second one).<br/>
+     *            The position at which the group will be inserted among the
+     *            groups list (for example, a index equals to <code>2</code>
+     *            means that the group will be the second one).<br/>
      *            If this index is lower or equal than <code>0</code>, the group
      *            will be the first one. An index greater than the number of
      *            group will insert the group at the last position.
@@ -352,48 +358,81 @@ public class FlexTableView {
             // For each group, increments the index with the number of elements
             // it contains.
             group = groupsOrderedList.get(i);
-            index += 1 + groupsCodesMap.get(group.getId()).getRowsCount();
-        }
-
-        if (Log.isDebugEnabled()) {
-            Log.debug("[computeGroupIndex] The group computed row index is #" + index + ".");
+            index += 1 + group.getRowsCount();
         }
 
         return index;
     }
 
     /**
-     * Gets a group position. The group must be added in the local groups list
-     * before asking its position.
+     * Gets the position of a group. The position is included in the interval
+     * [1;GROUPS_COUNT]. If the group doesn't exist, an exception is thrown.
      * 
      * @param group
      *            The group.
-     * @return The group position.
+     * @return The group position in the interval [1;GROUPS_COUNT].
+     * @throws NullPointerException
+     *             If the group is <code>null</code>.
+     * @throws IllegalArgumentException
+     *             If the group doesn't exist.
      */
-    protected int getGroupPosition(RowsGroup<?> group) {
+    protected int getGroupPosition(final RowsGroup<?> group) {
+
+        // Checks if the group is valid.
+        if (group == null) {
+            throw new NullPointerException("The group must not be null.");
+        }
+
+        // Gets the group index in the ordered list.
+        final int position = groupsOrderedList.indexOf(group);
+
+        // The group doesn't exist.
+        if (position == -1) {
+            throw new IllegalArgumentException("The group with id #" + group.getId() + " doesn't exist.");
+        }
+
+        return position + 1;
+    }
+
+    /**
+     * Gets the row index of a group. If the group doesn't exist, an exception
+     * is thrown.
+     * 
+     * @param group
+     *            The group.
+     * @return The row index of this group.
+     * @throws NullPointerException
+     *             If the group is <code>null</code>.
+     * @throws IllegalArgumentException
+     *             If the group doesn't exist.
+     */
+    protected int getGroupRowIndex(final RowsGroup<?> group) {
+
+        // Checks if the group is valid.
+        if (group == null) {
+            throw new NullPointerException("The group must not be null.");
+        }
 
         // Default index (no group already displayed).
-        int position = 0;
+        int index = 0;
 
         // Browses the list of existing groups until the searched group is
         // reached.
         for (final RowsGroup<?> g : groupsOrderedList) {
 
-            position++;
+            index++;
 
             if (g.equals(group)) {
-
-                if (Log.isDebugEnabled()) {
-                    Log.debug("[getGroupPosition] Found the position #" + position + " for the group: '"
-                            + group.getId() + "'.");
-                }
-
-                return position;
+                return index;
             }
+
+            // For each group, increments the index with the number of elements
+            // it contains.
+            index += g.getRowsCount();
         }
 
         // The group hasn't been found.
-        throw new IllegalArgumentException("the group with code '" + group.getId() + "' isn't already displayed");
+        throw new IllegalArgumentException("The group with id #" + group.getId() + " doesn't exist.");
     }
 
     // ------------------------------------------------------------------------
@@ -404,15 +443,21 @@ public class FlexTableView {
      * Inserts a row in the given group at the last position.
      * 
      * @param <T>
-     *            The type of the object displayed by the row.
+     *            The type of the user object contained in this row.
      * @param groupId
-     *            The group id.
+     *            The id of the group in which the row will be inserted.
      * @param row
      *            The row.
+     * @throws NullPointerException
+     *             If the row is <code>null</code>.
+     * @throws IllegalArgumentException
+     *             If there isn't a group with the given id.
      */
     public <T> void addRow(final int groupId, final Row<T> row) {
 
         // By default the row is inserted at the end of the group.
+        // (sets the position to the infinite value to avoid group searching
+        // which is done by the sub method).
         insertRow(Integer.MAX_VALUE, groupId, row);
     }
 
@@ -420,26 +465,35 @@ public class FlexTableView {
      * Inserts a row in the given group at the given position.
      * 
      * @param <T>
-     *            The type of the object displayed by the row.
+     *            The type of the user object contained in this row.
      * @param position
-     *            The row position in its group.
+     *            The row position in its group (for example, a index equals to
+     *            <code>2</code> means that the row will be the second one in
+     *            its group).<br/>
+     *            If this index is lower or equal than <code>0</code>, the row
+     *            will be the first one. An index greater than the number of
+     *            rows in this group will insert the row at the last position.
      * @param groupId
-     *            The group id.
+     *            The id of the group in which the row will be inserted.
      * @param row
      *            The row.
+     * @throws NullPointerException
+     *             If the row is <code>null</code>.
+     * @throws IllegalArgumentException
+     *             If there isn't a group with the given id.
      */
     @SuppressWarnings("unchecked")
     public <T> void insertRow(int position, final int groupId, final Row<T> row) {
 
+        // Checks if the row is valid.
+        if (row == null) {
+            throw new NullPointerException("The row must not be null.");
+        }
+
         // Checks if the group code is valid.
         final RowsGroup<?> group;
         if ((group = groupsCodesMap.get(groupId)) == null) {
-            throw new IllegalArgumentException("group with code '" + groupId + "' does'nt exist");
-        }
-
-        // Checks if the row is valid.
-        if (row == null) {
-            throw new NullPointerException("row must not be null");
+            throw new IllegalArgumentException("The group #" + groupId + " does'nt exist.");
         }
 
         // Re-adjusts the position to avoid out of bounds errors.
@@ -450,16 +504,13 @@ public class FlexTableView {
         }
 
         if (Log.isDebugEnabled()) {
-            Log.debug("[insertRow] Inserts a new row in group #" + groupId + " at position #" + position + " : " + row);
+            Log.debug("[insertRow] Inserts the new row #" + row.getId() + " in group #" + groupId + " at position #"
+                    + position + ".");
         }
 
         // Computes new row indexes.
         int rowIndex = computeRowIndex(group, position);
         rowIndex = insertTableRow(rowIndex);
-
-        if (Log.isDebugEnabled()) {
-            Log.debug("[insertRow] Inserts a new row in group # " + groupId + " : " + row);
-        }
 
         // Indexes of the columns which manage merging.
         final List<Integer> merge = new ArrayList<Integer>();
@@ -498,7 +549,7 @@ public class FlexTableView {
 
                 // Gets the top row if any.
                 final Row<?> lastRow;
-                if ((lastRow = group.getLastRow()) != null) {
+                if ((lastRow = group.getRowAtPosition(position - 1)) != null) {
 
                     // If the rows properties are similar, removes the widget.
                     if (row.isSimilar(j, row.getUserObject(), ((Row<T>) lastRow).getUserObject())) {
@@ -512,57 +563,37 @@ public class FlexTableView {
         }
 
         // Adds the row locally.
-        group.addRow(row);
+        group.addRow(row, position);
     }
 
     /**
-     * Gets the index at which a row must be inserted to be contained in the
-     * given group at the given position. This index <strong>does'nt</strong>
-     * consider the shift.<br/>
-     * Use the {@link FlexTableView#insertTableRow(int)} method to insert a row
-     * considering the shift.
+     * Removes the given row from the given group.
      * 
      * @param group
-     *            The group at which the row belongs.
-     * @param position
-     *            The position of the row in this group.
-     * @see FlexTableView#insertTableRow(int)
-     */
-    protected int computeRowIndex(RowsGroup<?> group, int position) {
-
-        // Computes group row index.
-        final int groupPosition = getGroupPosition(group);
-        final int groupRow = computeGroupIndex(groupPosition);
-
-        // The row position is added to the group row index.
-        return groupRow + position;
-    }
-
-    /**
-     * Removes a row from the given group.
-     * 
-     * @param groupId
-     *            The row id.
+     *            The group in which the row is inserted.
      * @param rowId
      *            The row id.
+     * @throws NullPointerException
+     *             If the group is <code>null</code>.
+     * @throws IllegalArgumentException
+     *             If the row doesn't exist.
      */
-    public void removeRow(final int groupId, final int rowId) {
+    public void removeRow(final RowsGroup<?> group, final int rowId) {
 
-        // Checks if the group exists.
-        final RowsGroup<?> group;
-        if ((group = groupsCodesMap.get(groupId)) == null) {
-            throw new IllegalArgumentException("group with id #" + groupId + " does'nt exist");
+        // Checks if the group is valid.
+        if (group == null) {
+            throw new IllegalArgumentException("The group must not be null.");
         }
 
         // Checks if the row exists in this group.
         final Row<?> row;
         if ((row = group.getRow(rowId)) == null) {
-            throw new IllegalArgumentException("row with id #" + rowId + " does'nt exist in group #" + groupId + "");
+            throw new IllegalArgumentException("The row with id #" + rowId + " does'nt exist in group #"
+                    + group.getId() + ".");
         }
 
         // Gets the row index.
-        // TODO search correct index
-        final int index = 0;
+        final int index = getRowIndex(row);
 
         // Removes the row in the table.
         removeTableRow(index);
@@ -574,8 +605,8 @@ public class FlexTableView {
     /**
      * Moves a row inside its group.
      * 
-     * @param groupId
-     *            The group id.
+     * @param group
+     *            The group in which the row is inserted.
      * @param rowId
      *            The id of the row to move.
      * @param move
@@ -585,27 +616,204 @@ public class FlexTableView {
      *            A null integer has no effect. <br/>
      *            A positive integer will move the row upward.<br/>
      *            A negative integer will move the row downward.
+     * @throws NullPointerException
+     *             If the group is <code>null</code>.
+     * @throws IllegalArgumentException
+     *             If the row doesn't exist.
      */
-    @SuppressWarnings("unused")
-    public void moveRow(final int groupId, final int rowId, final int move) {
+    public void moveRow(final RowsGroup<?> group, final int rowId, int move) {
 
-        // Nothing to do.
+        // No move.
         if (move == 0) {
             return;
         }
 
-        // Checks if the group exists.
-        final RowsGroup<?> group;
-        if ((group = groupsCodesMap.get(groupId)) == null) {
-            throw new IllegalArgumentException("group with id #" + groupId + " does'nt exist");
+        // Checks if the group is valid.
+        if (group == null) {
+            throw new IllegalArgumentException("The group must not be null.");
+        }
+
+        // The group contains no or only one row, nothing to do.
+        final int rowsCount = group.getRowsCount();
+        if (group.getRowsCount() <= 1) {
+            return;
         }
 
         // Checks if the row exists in this group.
         final Row<?> row;
         if ((row = group.getRow(rowId)) == null) {
-            throw new IllegalArgumentException("row with id #" + rowId + " does'nt exist in group #" + groupId + "");
+            throw new IllegalArgumentException("The row #" + rowId + " does'nt exist in group #" + group.getId() + ".");
         }
 
-        // TODO move row
+        // Gets the row position in its group.
+        final int rowPosition = row.getParent().getRowPosition(row);
+
+        // Checks if the row can be moved.
+        if (move > 0) {
+
+            // The row is already the first one, nothing to do.
+            if (rowPosition == 1) {
+                return;
+            }
+        } else {
+
+            // The row is already the last one, nothing to do.
+            if (rowPosition == rowsCount) {
+                return;
+            }
+        }
+
+        // Re-adjusts the moves count to avoid out of bounds errors.
+        if (move > 0) {
+
+            final int avalaibleMovesCount = rowPosition - 1;
+            if (move > avalaibleMovesCount) {
+                move = avalaibleMovesCount;
+            }
+        } else {
+
+            final int avalaibleMovesCount = rowsCount - rowPosition;
+            if (Math.abs(move) > avalaibleMovesCount) {
+                move = -avalaibleMovesCount;
+            }
+        }
+
+        // Removes the row.
+        removeRow(group, rowId);
+
+        // Re-insert it at its new position.
+        insertRow(rowPosition - move, group.getId(), row);
+    }
+
+    /**
+     * Returns if a row can be moved for the given moves count.
+     * 
+     * @param group
+     *            The group in which the row is inserted.
+     * @param rowId
+     *            The id of the row to move.
+     * @param move
+     *            The number of moves to execute. If this count is higher than
+     *            the available moves inside the row's group, the excess is
+     *            ignored. <br/>
+     *            A null integer has no effect. <br/>
+     *            A positive integer will move the row upward.<br/>
+     *            A negative integer will move the row downward.
+     * @return If the row can be moved for the given moves count.
+     * @throws NullPointerException
+     *             If the group is <code>null</code>.
+     * @throws IllegalArgumentException
+     *             If the row doesn't exist.
+     */
+    public boolean canBeMoved(final RowsGroup<?> group, final int rowId, int move) {
+
+        // No move.
+        if (move == 0) {
+            return false;
+        }
+
+        // Checks if the group is valid.
+        if (group == null) {
+            throw new IllegalArgumentException("The group must not be null.");
+        }
+
+        // The group contains no or only one row, nothing to do.
+        final int rowsCount = group.getRowsCount();
+        if (group.getRowsCount() <= 1) {
+            return false;
+        }
+
+        // Checks if the row exists in this group.
+        final Row<?> row;
+        if ((row = group.getRow(rowId)) == null) {
+            throw new IllegalArgumentException("The row #" + rowId + " does'nt exist in group #" + group.getId() + ".");
+        }
+
+        // Gets the row position in its group.
+        final int rowPosition = row.getParent().getRowPosition(row);
+
+        // Checks if the row can be moved.
+        if (move > 0) {
+
+            // The row is already the first one, nothing to do.
+            if (rowPosition == 1) {
+                return false;
+            }
+        } else {
+
+            // The row is already the last one, nothing to do.
+            if (rowPosition == rowsCount) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Gets the index at which a row must be inserted to be contained in the
+     * given group at the given position. This index <strong>does'nt</strong>
+     * consider the shift.<br/>
+     * Use the {@link FlexTableView#insertTableRow(int)} method to insert a row
+     * considering the shift.
+     * 
+     * @param group
+     *            The group in which the row will be inserted.
+     * @param position
+     *            The row position in its group (for example, a index equals to
+     *            <code>2</code> means that the row will be the second one in
+     *            its group).<br/>
+     *            If this index is lower or equal than <code>0</code>, the row
+     *            will be the first one. An index greater than the number of
+     *            rows in this group will insert the row at the last position.
+     * @throws NullPointerException
+     *             If the group is <code>null</code>.
+     * @throws IllegalArgumentException
+     *             If the group doesn't exist.
+     * @see FlexTableView#insertTableRow(int)
+     */
+    protected int computeRowIndex(final RowsGroup<?> group, int position) {
+
+        // Computes group row index.
+        final int groupRowIndex = getGroupRowIndex(group);
+
+        // Re-adjusts the position to avoid out of bounds errors.
+        if (position <= 0 || group.getRowsCount() == 0) {
+            position = 1;
+        } else if (position > group.getRowsCount()) {
+            position = group.getRowsCount() + 1;
+        }
+
+        // The row position is added to the group row index.
+        return groupRowIndex + position;
+    }
+
+    /**
+     * Gets the row index of a row.
+     * 
+     * @param row
+     *            The row.
+     * @throws NullPointerException
+     *             If the row is <code>null</code>.
+     * @throws IllegalArgumentException
+     *             If this row doesn't exist.
+     */
+    protected int getRowIndex(final Row<?> row) {
+
+        // Checks if the row is valid.
+        if (row == null) {
+            throw new NullPointerException("The row must not be null.");
+        }
+
+        // Gets the row group.
+        final RowsGroup<?> parent = row.getParent();
+
+        // Computes group row index.
+        final int groupRowIndex = getGroupRowIndex(parent);
+
+        // Gets the row position.
+        final int rowPosition = parent.getRowPosition(row);
+
+        return groupRowIndex + rowPosition;
     }
 }

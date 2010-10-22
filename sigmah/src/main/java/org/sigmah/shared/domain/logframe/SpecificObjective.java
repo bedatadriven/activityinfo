@@ -2,6 +2,7 @@ package org.sigmah.shared.domain.logframe;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -15,6 +16,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+import org.hibernate.annotations.Filter;
+import org.sigmah.shared.domain.Deleteable;
 
 /**
  * Represents an item of the specific objectives of a log frame.<br/>
@@ -25,7 +32,9 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "log_frame_specific_objective")
-public class SpecificObjective implements Serializable {
+@org.hibernate.annotations.FilterDefs({ @org.hibernate.annotations.FilterDef(name = "hideDeleted") })
+@org.hibernate.annotations.Filters({ @org.hibernate.annotations.Filter(name = "hideDeleted", condition = "DateDeleted is null") })
+public class SpecificObjective implements Serializable, Deleteable {
 
     private static final long serialVersionUID = 7534655171979110984L;
 
@@ -37,6 +46,7 @@ public class SpecificObjective implements Serializable {
     private LogFrame parentLogFrame;
     private List<ExpectedResult> expectedResults = new ArrayList<ExpectedResult>();
     private LogFrameGroup group;
+    private Date dateDeleted;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -97,6 +107,7 @@ public class SpecificObjective implements Serializable {
 
     @OneToMany(mappedBy = "parentSpecificObjective", cascade = CascadeType.ALL)
     @OrderBy(value = "code asc")
+    @Filter(name = "hideDeleted", condition = "DateDeleted is null")
     public List<ExpectedResult> getExpectedResults() {
         return expectedResults;
     }
@@ -113,5 +124,26 @@ public class SpecificObjective implements Serializable {
 
     public void setGroup(LogFrameGroup group) {
         this.group = group;
+    }
+
+    @Column
+    @Temporal(value = TemporalType.TIMESTAMP)
+    public Date getDateDeleted() {
+        return this.dateDeleted;
+    }
+
+    public void setDateDeleted(Date date) {
+        this.dateDeleted = date;
+    }
+
+    @Override
+    public void delete() {
+        setDateDeleted(new Date());
+    }
+
+    @Override
+    @Transient
+    public boolean isDeleted() {
+        return getDateDeleted() != null;
     }
 }

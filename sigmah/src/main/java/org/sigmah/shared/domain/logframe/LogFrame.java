@@ -17,6 +17,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Filter;
 import org.sigmah.shared.domain.Project;
 
 /**
@@ -83,6 +84,7 @@ public class LogFrame implements Serializable {
 
     @OneToMany(mappedBy = "parentLogFrame", cascade = CascadeType.ALL)
     @OrderBy(value = "code asc")
+    @Filter(name = "hideDeleted", condition = "DateDeleted is null")
     public List<SpecificObjective> getSpecificObjectives() {
         return specificObjectives;
     }
@@ -92,6 +94,8 @@ public class LogFrame implements Serializable {
     }
 
     @OneToMany(mappedBy = "parentLogFrame", cascade = CascadeType.ALL)
+    @OrderBy(value = "code asc")
+    @Filter(name = "hideDeleted", condition = "DateDeleted is null")
     public List<Prerequisite> getPrerequisites() {
         return prerequisites;
     }
