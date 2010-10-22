@@ -1,10 +1,11 @@
 package org.sigmah.client.page.project.logframe;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.project.logframe.SelectWindow.SelectListener;
+import org.sigmah.client.page.project.logframe.FormWindow.FormSubmitListener;
 import org.sigmah.client.page.project.logframe.grid.FlexTableView;
 import org.sigmah.client.page.project.logframe.grid.FlexTableViewActionsMenu;
 import org.sigmah.client.page.project.logframe.grid.HTMLTableUtils;
@@ -19,7 +20,6 @@ import org.sigmah.shared.dto.logframe.LogFrameModelDTO;
 import org.sigmah.shared.dto.logframe.PrerequisiteDTO;
 import org.sigmah.shared.dto.logframe.SpecificObjectiveDTO;
 
-import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.widget.Dialog;
@@ -109,9 +109,9 @@ public class ProjectLogFrameGrid {
     private int columnsCount = 0;
 
     /**
-     * The selection window for adding elements.
+     * The form window for adding elements.
      */
-    private final SelectWindow selectionWindow;
+    private final FormWindow formWindow;
 
     /**
      * A view of the flex table in charge of the specific objectives.
@@ -159,7 +159,7 @@ public class ProjectLogFrameGrid {
     public ProjectLogFrameGrid() {
         listeners = new ArrayList<LogFrameGridListener>();
         table = new FlexTable();
-        selectionWindow = new SelectWindow();
+        formWindow = new FormWindow();
     }
 
     /**
@@ -642,17 +642,17 @@ public class ProjectLogFrameGrid {
         // Must select a group.
         if (logFrameModel.getEnableSpecificObjectivesGroups()) {
 
-            // Sets the selection window.
-            selectionWindow.clear();
-            selectionWindow.addChoicesList(I18N.CONSTANTS.logFrameGroup(),
+            // Sets the form window.
+            formWindow.clear();
+            formWindow.addChoicesList(I18N.CONSTANTS.logFrameGroup(),
                     logFrame.getAllGroups(LogFrameGroupType.SPECIFIC_OBJECTIVE), false, "label");
-            selectionWindow.addSelectListener(new SelectListener() {
+            formWindow.addFormSubmitListener(new FormSubmitListener() {
 
                 @Override
-                public void elementsSelected(ModelData... elements) {
+                public void formSubmitted(Object... elements) {
 
-                    // Checks that the selected elements are correct.
-                    final ModelData element = elements[0];
+                    // Checks that the values are correct.
+                    final Object element = elements[0];
                     if (!(element instanceof LogFrameGroupDTO)) {
                         return;
                     }
@@ -667,7 +667,7 @@ public class ProjectLogFrameGrid {
                 }
             });
 
-            selectionWindow.show(I18N.CONSTANTS.logFrameAddOS(), I18N.CONSTANTS.logFrameSelectGroupOS());
+            formWindow.show(I18N.CONSTANTS.logFrameAddOS(), I18N.CONSTANTS.logFrameSelectGroupOS());
         }
         // Groups are disabled, no need to select a group, the default one will
         // be selected.
@@ -844,6 +844,8 @@ public class ProjectLogFrameGrid {
                     }
                 });
 
+        fireLogFrameEdited();
+        
         // Adds sub expected results.
         if (specificObjective.getExpectedResultsDTONotDeleted() != null) {
             for (final ExpectedResultDTO result : specificObjective.getExpectedResultsDTONotDeleted()) {
@@ -957,23 +959,23 @@ public class ProjectLogFrameGrid {
         // Must select a group.
         if (logFrameModel.getEnableExpectedResultsGroups()) {
 
-            // Sets the selection window.
-            selectionWindow.clear();
-            selectionWindow.addChoicesList(I18N.CONSTANTS.logFrameSpecificObjective(), objectives, false, "label");
-            selectionWindow.addChoicesList(I18N.CONSTANTS.logFrameGroup(),
+            // Sets the form window.
+            formWindow.clear();
+            formWindow.addChoicesList(I18N.CONSTANTS.logFrameSpecificObjective(), objectives, false, "label");
+            formWindow.addChoicesList(I18N.CONSTANTS.logFrameGroup(),
                     logFrame.getAllGroups(LogFrameGroupType.EXPECTED_RESULT), false, "label");
-            selectionWindow.addSelectListener(new SelectListener() {
+            formWindow.addFormSubmitListener(new FormSubmitListener() {
 
                 @Override
-                public void elementsSelected(ModelData... elements) {
+                public void formSubmitted(Object... elements) {
 
-                    // Checks that the selected elements are correct.
-                    final ModelData element0 = elements[0];
+                    // Checks that the values are correct.
+                    final Object element0 = elements[0];
                     if (!(element0 instanceof SpecificObjectiveDTO)) {
                         return;
                     }
 
-                    final ModelData element1 = elements[1];
+                    final Object element1 = elements[1];
                     if (!(element1 instanceof LogFrameGroupDTO)) {
                         return;
                     }
@@ -989,23 +991,23 @@ public class ProjectLogFrameGrid {
                 }
             });
 
-            selectionWindow.show(I18N.CONSTANTS.logFrameAddER(), I18N.CONSTANTS.logFrameSelectGroupER());
+            formWindow.show(I18N.CONSTANTS.logFrameAddER(), I18N.CONSTANTS.logFrameSelectGroupER());
         }
         // Groups are disabled, no need to select a group, the default one will
         // be selected.
         else {
 
-            // Sets the selection window.
-            selectionWindow.clear();
-            selectionWindow.addChoicesList(I18N.CONSTANTS.logFrameSpecificObjective(),
+            // Sets the form window.
+            formWindow.clear();
+            formWindow.addChoicesList(I18N.CONSTANTS.logFrameSpecificObjective(),
                     logFrame.getSpecificObjectivesDTONotDeleted(), false, "label");
-            selectionWindow.addSelectListener(new SelectListener() {
+            formWindow.addFormSubmitListener(new FormSubmitListener() {
 
                 @Override
-                public void elementsSelected(ModelData... elements) {
+                public void formSubmitted(Object... elements) {
 
-                    // Checks that the selected elements are correct.
-                    final ModelData element0 = elements[0];
+                    // Checks that the values are correct.
+                    final Object element0 = elements[0];
                     if (!(element0 instanceof SpecificObjectiveDTO)) {
                         return;
                     }
@@ -1023,7 +1025,7 @@ public class ProjectLogFrameGrid {
                 }
             });
 
-            selectionWindow.show(I18N.CONSTANTS.logFrameAddER(), I18N.CONSTANTS.logFrameSelectGroup2ER());
+            formWindow.show(I18N.CONSTANTS.logFrameAddER(), I18N.CONSTANTS.logFrameSelectGroup2ER());
         }
     }
 
@@ -1207,6 +1209,8 @@ public class ProjectLogFrameGrid {
                 return userObject.getClientSideId();
             }
         });
+        
+        fireLogFrameEdited();
 
         // Adds sub activities.
         if (result.getActivitiesDTONotDeleted() != null) {
@@ -1320,54 +1324,78 @@ public class ProjectLogFrameGrid {
         // Must select a group.
         if (logFrameModel.getEnableActivitiesGroups()) {
 
-            // Sets the selection window.
-            selectionWindow.clear();
-            selectionWindow.addChoicesList(I18N.CONSTANTS.logFrameExceptedResult(), results, false, "label");
-            selectionWindow.addChoicesList(I18N.CONSTANTS.logFrameGroup(),
+            // Sets the form window.
+            formWindow.clear();
+            formWindow.addChoicesList(I18N.CONSTANTS.logFrameExceptedResult(), results, false, "label");
+            formWindow.addChoicesList(I18N.CONSTANTS.logFrameGroup(),
                     logFrame.getAllGroups(LogFrameGroupType.ACTIVITY), false, "label");
-            selectionWindow.addSelectListener(new SelectListener() {
+            formWindow.addTextField(I18N.CONSTANTS.logFrameActivityTitle(), false);
+            formWindow.addDateField(I18N.CONSTANTS.logFrameActivityStartDate(), false);
+            formWindow.addDateField(I18N.CONSTANTS.logFrameActivityEndDate(), false);
+            formWindow.addFormSubmitListener(new FormSubmitListener() {
 
                 @Override
-                public void elementsSelected(ModelData... elements) {
+                public void formSubmitted(Object... elements) {
 
-                    // Checks that the selected elements are correct.
-                    final ModelData element0 = elements[0];
+                    // Checks that the values are correct.
+                    final Object element0 = elements[0];
                     if (!(element0 instanceof ExpectedResultDTO)) {
                         return;
                     }
 
-                    final ModelData element1 = elements[1];
+                    final Object element1 = elements[1];
                     if (!(element1 instanceof LogFrameGroupDTO)) {
                         return;
                     }
 
-                    // Retrieves the selected ER and group.
+                    final Object element2 = elements[2];
+                    if (!(element2 instanceof String)) {
+                        return;
+                    }
+
+                    final Object element3 = elements[3];
+                    if (!(element3 instanceof Date)) {
+                        return;
+                    }
+
+                    final Object element4 = elements[4];
+                    if (!(element4 instanceof Date)) {
+                        return;
+                    }
+
+                    // Retrieves the selected ER and group and activity params.
                     final ExpectedResultDTO expectedResult = (ExpectedResultDTO) element0;
                     final LogFrameGroupDTO group = (LogFrameGroupDTO) element1;
+                    final String title = (String) element2;
+                    final Date startDate = (Date) element3;
+                    final Date endDate = (Date) element4;
 
                     // Creates and displays a new activity.
                     final LogFrameActivityDTO activity = expectedResult.addActivity();
                     activity.setLogFrameGroupDTO(group);
+                    activity.setTitle(title);
+                    activity.setStartDate(startDate);
+                    activity.setEndDate(endDate);
                     addActivity(activity);
                 }
             });
 
-            selectionWindow.show(I18N.CONSTANTS.logFrameAddA(), I18N.CONSTANTS.logFrameSelectGroupA());
+            formWindow.show(I18N.CONSTANTS.logFrameAddA(), I18N.CONSTANTS.logFrameSelectGroupA());
         }
         // Groups are disabled, no need to select a group, the default one will
         // be selected.
         else {
 
-            // Sets the selection window.
-            selectionWindow.clear();
-            selectionWindow.addChoicesList(I18N.CONSTANTS.logFrameExceptedResult(), results, false, "label");
-            selectionWindow.addSelectListener(new SelectListener() {
+            // Sets the form window.
+            formWindow.clear();
+            formWindow.addChoicesList(I18N.CONSTANTS.logFrameExceptedResult(), results, false, "label");
+            formWindow.addFormSubmitListener(new FormSubmitListener() {
 
                 @Override
-                public void elementsSelected(ModelData... elements) {
+                public void formSubmitted(Object... elements) {
 
-                    // Checks that the selected elements are correct.
-                    final ModelData element0 = elements[0];
+                    // Checks that the values are correct.
+                    final Object element0 = elements[0];
                     if (!(element0 instanceof ExpectedResultDTO)) {
                         return;
                     }
@@ -1385,7 +1413,7 @@ public class ProjectLogFrameGrid {
                 }
             });
 
-            selectionWindow.show(I18N.CONSTANTS.logFrameAddA(), I18N.CONSTANTS.logFrameSelectGroup2A());
+            formWindow.show(I18N.CONSTANTS.logFrameAddA(), I18N.CONSTANTS.logFrameSelectGroup2A());
         }
     }
 
@@ -1517,6 +1545,8 @@ public class ProjectLogFrameGrid {
                 return userObject.getClientSideId();
             }
         });
+        
+        fireLogFrameEdited();
     }
 
     // ------------------------------------------------------------------------
@@ -1615,17 +1645,17 @@ public class ProjectLogFrameGrid {
         // Must select a group.
         if (logFrameModel.getEnablePrerequisitesGroups()) {
 
-            // Sets the selection window.
-            selectionWindow.clear();
-            selectionWindow.addChoicesList(I18N.CONSTANTS.logFrameGroup(),
+            // Sets the form window.
+            formWindow.clear();
+            formWindow.addChoicesList(I18N.CONSTANTS.logFrameGroup(),
                     logFrame.getAllGroups(LogFrameGroupType.PREREQUISITE), false, "label");
-            selectionWindow.addSelectListener(new SelectListener() {
+            formWindow.addFormSubmitListener(new FormSubmitListener() {
 
                 @Override
-                public void elementsSelected(ModelData... elements) {
+                public void formSubmitted(Object... elements) {
 
-                    // Checks that the selected elements are correct.
-                    final ModelData element0 = elements[0];
+                    // Checks that the values are correct.
+                    final Object element0 = elements[0];
                     if (!(element0 instanceof LogFrameGroupDTO)) {
                         return;
                     }
@@ -1640,7 +1670,7 @@ public class ProjectLogFrameGrid {
                 }
             });
 
-            selectionWindow.show(I18N.CONSTANTS.logFrameAddP(), I18N.CONSTANTS.logFrameSelectGroupP());
+            formWindow.show(I18N.CONSTANTS.logFrameAddP(), I18N.CONSTANTS.logFrameSelectGroupP());
         }
         // Groups are disabled, no need to select a group, the default one will
         // be selected.
@@ -1752,6 +1782,8 @@ public class ProjectLogFrameGrid {
                 return userObject.getClientSideId();
             }
         });
+        
+        fireLogFrameEdited();
     }
 
     // ------------------------------------------------------------------------
