@@ -33,6 +33,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
@@ -202,10 +203,9 @@ public class ProjectCalendarView extends LayoutContainer {
 
         calendarView.setTopComponent(toolbar);
 
-        final BorderLayoutData calendarViewData = new BorderLayoutData(LayoutRegion.CENTER);
-        calendarViewData.setMargins(new Margins(0, 0, 0, 8));
+        final FitData fitData = new FitData(16);
         calendarView.addStyleName("panel-background");
-        calendarView.add(calendar);
+        calendarView.add(calendar, fitData);
 
         // Configuring calendar delegate
         calendar.setDelegate(new CalendarWidget.Delegate() {
@@ -238,6 +238,9 @@ public class ProjectCalendarView extends LayoutContainer {
                 });
             }
         });
+
+        final BorderLayoutData calendarViewData = new BorderLayoutData(LayoutRegion.CENTER);
+        calendarViewData.setMargins(new Margins(0, 0, 0, 8));
 
         add(calendarView, calendarViewData);
     }

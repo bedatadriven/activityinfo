@@ -344,6 +344,9 @@ public class CalendarWidget extends Composite {
     public void calibrateCalendar() {
         final FlexTable grid = (FlexTable) getWidget();
 
+        final Element row = grid.getRowFormatter().getElement(displayHeaders);
+        row.setId("calendar-row-calibration");
+
         final Element cell = grid.getCellFormatter().getElement(displayHeaders, displayWeekNumber?1:0);
         cell.setId("calendar-cell-calibration");
 
@@ -359,9 +362,9 @@ public class CalendarWidget extends Composite {
     private native int getCellHeight() /*-{
         var height = 0;
 
-        var cell = $wnd.document.getElementById('calendar-cell-calibration');
+        var row = $wnd.document.getElementById('calendar-row-calibration');
 
-        var style = $wnd.getComputedStyle(cell, null);
+        var style = $wnd.getComputedStyle(row, null);
         height += parseInt(style.height);
 
         return height;
