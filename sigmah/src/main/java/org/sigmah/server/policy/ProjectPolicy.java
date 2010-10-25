@@ -5,6 +5,7 @@
 
 package org.sigmah.server.policy;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.persistence.EntityManager;
@@ -22,6 +23,8 @@ import org.sigmah.shared.domain.User;
 import com.google.inject.Inject;
 import org.sigmah.shared.domain.calendar.PersonalCalendar;
 import org.sigmah.shared.domain.logframe.LogFrame;
+import org.sigmah.shared.domain.logframe.LogFrameGroup;
+import org.sigmah.shared.domain.logframe.LogFrameGroupType;
 import org.sigmah.shared.domain.logframe.LogFrameModel;
 
 public class ProjectPolicy implements EntityPolicy<Project> {
@@ -121,20 +124,64 @@ public class ProjectPolicy implements EntityPolicy<Project> {
             log.debug("[createProject] Project successfully created.");
         }
 
-        // Creates a new log frame (with a default model)
-        final LogFrame logFrame = new LogFrame();
-        logFrame.setParentProject(project);
-        final LogFrameModel logFrameModel = new LogFrameModel();
-        logFrameModel.setName("Default logical framework model");
-        logFrame.setLogFrameModel(logFrameModel);
-
-        em.persist(logFrame);
-
-        // Updates the project for the new log frame.
+        // Updates the project with a default log frame.
+        final LogFrame logFrame = createDefauktLogFrame(project);
         project.setLogFrame(logFrame);
         project = em.merge(project);
 
         return project;
+    }
+
+    /**
+     * Creates a well-configured default log frame for the new project.
+     * 
+     * @param project
+     *            The project.
+     * @return The log frame.
+     */
+    private LogFrame createDefauktLogFrame(Project project) {
+
+        // Creates a new log frame (with a default model)
+        final LogFrame logFrame = new LogFrame();
+        logFrame.setParentProject(project);
+
+        // Default groups.
+        final ArrayList<LogFrameGroup> groups = new ArrayList<LogFrameGroup>();
+
+        LogFrameGroup group = new LogFrameGroup();
+        group.setType(LogFrameGroupType.SPECIFIC_OBJECTIVE);
+        group.setParentLogFrame(logFrame);
+        group.setLabel("-");
+        groups.add(group);
+
+        group = new LogFrameGroup();
+        group.setType(LogFrameGroupType.EXPECTED_RESULT);
+        group.setParentLogFrame(logFrame);
+        group.setLabel("-");
+        groups.add(group);
+
+        group = new LogFrameGroup();
+        group.setType(LogFrameGroupType.ACTIVITY);
+        group.setParentLogFrame(logFrame);
+        group.setLabel("-");
+        groups.add(group);
+
+        group = new LogFrameGroup();
+        group.setType(LogFrameGroupType.PREREQUISITE);
+        group.setParentLogFrame(logFrame);
+        group.setLabel("-");
+        groups.add(group);
+
+        logFrame.setGroups(groups);
+
+        // A default model.
+        final LogFrameModel logFrameModel = new LogFrameModel();
+        logFrameModel.setName("Default logical framework model - " + new Date().getTime());
+        logFrame.setLogFrameModel(logFrameModel);
+
+        em.persist(logFrame);
+
+        return logFrame;
     }
 
     @Override

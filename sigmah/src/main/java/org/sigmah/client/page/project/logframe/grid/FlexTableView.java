@@ -19,6 +19,42 @@ import com.google.gwt.user.client.ui.Widget;
 public class FlexTableView {
 
     /**
+     * Listen to view events.
+     * 
+     * @author tmi
+     */
+    public static interface FlexTableViewListener {
+
+        /**
+         * Method called when a group is added to this view.
+         * 
+         * @param group
+         *            The new group.
+         */
+        public void groupAdded(RowsGroup<?> group);
+
+        /**
+         * Method called when a row is added to a group.
+         * 
+         * @param group
+         *            The group.
+         * @param row
+         *            The new row.
+         */
+        public void rowAdded(RowsGroup<?> group, Row<?> row);
+
+        /**
+         * Method called when a row is removed from a group.
+         * 
+         * @param group
+         *            The group.
+         * @param row
+         *            The old row.
+         */
+        public void rowRemoved(RowsGroup<?> group, Row<?> row);
+    }
+
+    /**
      * CSS style name for the entire view.
      */
     private static final String CSS_FLEX_TABLE_VIEW_STYLE_NAME = "flextable-view";
@@ -79,6 +115,11 @@ public class FlexTableView {
     private final HashMap<Integer, RowsGroup<?>> groupsCodesMap;
 
     /**
+     * Listeners.
+     */
+    private final ArrayList<FlexTableViewListener> listeners;
+
+    /**
      * Initializes this group of rows.
      * 
      * @param table
@@ -112,6 +153,7 @@ public class FlexTableView {
         groupsOrderedList = new ArrayList<RowsGroup<?>>();
         groupsCodesMap = new HashMap<Integer, RowsGroup<?>>();
         dependencies = new ArrayList<FlexTableView>();
+        listeners = new ArrayList<FlexTableViewListener>();
 
         // At the beginning, the shift count is equals to the row index.
         shift = row;
@@ -121,6 +163,70 @@ public class FlexTableView {
 
         // The number of the others columns with can contains widgets.
         this.columnsCount = columnsCount - 1;
+    }
+
+    // ------------------------------------------------------------------------
+    // -- LISTENERS
+    // ------------------------------------------------------------------------
+
+    /**
+     * Adds a listener.
+     * 
+     * @param l
+     *            The new listener.
+     */
+    public void addFlexTableViewListener(FlexTableViewListener l) {
+        this.listeners.add(l);
+    }
+
+    /**
+     * Removes a listener.
+     * 
+     * @param l
+     *            The old listener.
+     */
+    public void removeFlexTableViewListener(FlexTableViewListener l) {
+        this.listeners.remove(l);
+    }
+
+    /**
+     * Method called when a group is added to this view.
+     * 
+     * @param group
+     *            The new group.
+     */
+    protected void fireGroupAdded(final RowsGroup<?> group) {
+        for (final FlexTableViewListener l : listeners) {
+            l.groupAdded(group);
+        }
+    }
+
+    /**
+     * Method called when a row is added to a group.
+     * 
+     * @param group
+     *            The group.
+     * @param row
+     *            The new row.
+     */
+    protected void fireRowAdded(RowsGroup<?> group, Row<?> row) {
+        for (final FlexTableViewListener l : listeners) {
+            l.rowAdded(group, row);
+        }
+    }
+
+    /**
+     * Method called when a row is removed from a group.
+     * 
+     * @param group
+     *            The group.
+     * @param row
+     *            The old row.
+     */
+    protected void fireRowRemoved(RowsGroup<?> group, Row<?> row) {
+        for (final FlexTableViewListener l : listeners) {
+            l.rowRemoved(group, row);
+        }
     }
 
     // ------------------------------------------------------------------------
@@ -315,6 +421,8 @@ public class FlexTableView {
         if (!group.isVisible()) {
             widget.setVisible(false);
         }
+
+        fireGroupAdded(group);
     }
 
     /**
@@ -433,6 +541,15 @@ public class FlexTableView {
 
         // The group hasn't been found.
         throw new IllegalArgumentException("The group with id #" + group.getId() + " doesn't exist.");
+    }
+
+    /**
+     * Gets the number of groups in this view.
+     * 
+     * @return The number of groups in this view.
+     */
+    public int getGroupsCount() {
+        return groupsOrderedList.size();
     }
 
     // ------------------------------------------------------------------------
@@ -573,6 +690,8 @@ public class FlexTableView {
         catch (IndexOutOfBoundsException e) {
             // Digests exception.
         }
+
+        fireRowAdded(group, row);
     }
 
     /**
@@ -621,6 +740,8 @@ public class FlexTableView {
         catch (IndexOutOfBoundsException e) {
             // Digests exception.
         }
+
+        fireRowRemoved(group, row);
     }
 
     /**
@@ -896,5 +1017,20 @@ public class FlexTableView {
         final int rowPosition = parent.getRowPosition(row);
 
         return groupRowIndex + rowPosition;
+    }
+
+    /**
+     * Gets the number of rows in this view.
+     * 
+     * @return The number of rows in this view.
+     */
+    public int getRowsCount() {
+
+        int count = 0;
+        for (final RowsGroup<?> group : groupsOrderedList) {
+            count += group.getRowsCount();
+        }
+
+        return count;
     }
 }

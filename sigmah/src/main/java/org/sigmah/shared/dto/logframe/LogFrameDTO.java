@@ -216,7 +216,9 @@ public class LogFrameDTO extends BaseModelData implements EntityDTO {
     }
 
     /**
-     * Gets the only default group of this type (can be <code>null</code>).
+     * Gets the only default group of this type. The default group is never
+     * <code>null</code>. An empty project log frame contains always one group
+     * of each type.
      * 
      * @param type
      *            The type.

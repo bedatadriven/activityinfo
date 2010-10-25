@@ -7,6 +7,7 @@ import java.util.List;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.project.logframe.FormWindow.FormSubmitListener;
 import org.sigmah.client.page.project.logframe.grid.FlexTableView;
+import org.sigmah.client.page.project.logframe.grid.FlexTableView.FlexTableViewListener;
 import org.sigmah.client.page.project.logframe.grid.FlexTableViewActionsMenu;
 import org.sigmah.client.page.project.logframe.grid.HTMLTableUtils;
 import org.sigmah.client.page.project.logframe.grid.Row;
@@ -295,19 +296,19 @@ public class ProjectLogFrameGrid {
         final Label exceptedResultsLabel = new Label(I18N.CONSTANTS.logFrameExceptedResults() + " ("
                 + I18N.CONSTANTS.logFrameExceptedResultsCode() + ")");
 
-        final Label exceptedResultsButton = new Label(I18N.CONSTANTS.logFrameAddRow());
-        exceptedResultsButton.addStyleName(CSS_ADD_ACTION_STYLE_NAME);
-        exceptedResultsButton.setTitle(I18N.CONSTANTS.logFrameAddER());
-        exceptedResultsButton.addClickHandler(new ClickHandler() {
+        final Label expectedResultsButton = new Label(I18N.CONSTANTS.logFrameAddRow());
+        expectedResultsButton.addStyleName(CSS_ADD_ACTION_STYLE_NAME);
+        expectedResultsButton.setTitle(I18N.CONSTANTS.logFrameAddER());
+        expectedResultsButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent e) {
                 addExpectedResult();
             }
         });
 
-        final Label exceptedResultsGroupsButton = new Label(I18N.CONSTANTS.logFrameAddGroup());
-        exceptedResultsGroupsButton.addStyleName(CSS_ADD_GROUP_ACTION_STYLE_NAME);
-        exceptedResultsGroupsButton.addClickHandler(new ClickHandler() {
+        final Label expectedResultsGroupsButton = new Label(I18N.CONSTANTS.logFrameAddGroup());
+        expectedResultsGroupsButton.addStyleName(CSS_ADD_GROUP_ACTION_STYLE_NAME);
+        expectedResultsGroupsButton.addClickHandler(new ClickHandler() {
 
             @Override
             public void onClick(ClickEvent e) {
@@ -317,7 +318,7 @@ public class ProjectLogFrameGrid {
 
         // Are groups enabled ?
         if (!logFrameModel.getEnableExpectedResultsGroups()) {
-            exceptedResultsGroupsButton.setVisible(false);
+            expectedResultsGroupsButton.setVisible(false);
         }
 
         final Grid exceptedResultsGrid = new Grid(3, 1);
@@ -325,8 +326,8 @@ public class ProjectLogFrameGrid {
         exceptedResultsGrid.setCellPadding(0);
         exceptedResultsGrid.setCellSpacing(0);
         exceptedResultsGrid.setWidget(0, 0, exceptedResultsLabel);
-        exceptedResultsGrid.setWidget(1, 0, exceptedResultsButton);
-        exceptedResultsGrid.setWidget(2, 0, exceptedResultsGroupsButton);
+        exceptedResultsGrid.setWidget(1, 0, expectedResultsButton);
+        exceptedResultsGrid.setWidget(2, 0, expectedResultsGroupsButton);
 
         // Activities.
         final Label activitiesLabel = new Label(I18N.CONSTANTS.logFrameActivities());
@@ -423,6 +424,140 @@ public class ProjectLogFrameGrid {
         expectedResultsView.addDependency(prerequisitesView);
 
         activitiesView.addDependency(prerequisitesView);
+
+        // Views listeners.
+
+        specificObjectivesView.addFlexTableViewListener(new FlexTableViewListener() {
+
+            @Override
+            public void rowRemoved(RowsGroup<?> group, Row<?> row) {
+
+                // Checks if the max number of elements is reached.
+                final Integer max = logFrameModel.getSpecificObjectivesMax();
+                if (max != null && max > 0 && max > specificObjectivesView.getRowsCount()) {
+                    specificObjectivesButton.setVisible(true);
+                }
+            }
+
+            @Override
+            public void rowAdded(RowsGroup<?> group, Row<?> row) {
+
+                // Checks if the max number of elements is reached.
+                final Integer max = logFrameModel.getSpecificObjectivesMax();
+                if (max != null && max > 0 && max <= specificObjectivesView.getRowsCount()) {
+                    specificObjectivesButton.setVisible(false);
+                }
+            }
+
+            @Override
+            public void groupAdded(RowsGroup<?> group) {
+
+                // Checks if the max number of groups is reached.
+                final Integer max = logFrameModel.getSpecificObjectivesGroupsMax();
+                if (max != null && max > 1 && max <= specificObjectivesView.getGroupsCount()) {
+                    specificObjectivesGroupsButton.setVisible(false);
+                }
+            }
+        });
+
+        expectedResultsView.addFlexTableViewListener(new FlexTableViewListener() {
+
+            @Override
+            public void rowRemoved(RowsGroup<?> group, Row<?> row) {
+
+                // Checks if the max number of elements is reached.
+                final Integer max = logFrameModel.getExpectedResultsMax();
+                if (max != null && max > 0 && max > expectedResultsView.getRowsCount()) {
+                    expectedResultsButton.setVisible(true);
+                }
+            }
+
+            @Override
+            public void rowAdded(RowsGroup<?> group, Row<?> row) {
+
+                // Checks if the max number of elements is reached.
+                final Integer max = logFrameModel.getExpectedResultsMax();
+                if (max != null && max > 0 && max <= expectedResultsView.getRowsCount()) {
+                    expectedResultsButton.setVisible(false);
+                }
+            }
+
+            @Override
+            public void groupAdded(RowsGroup<?> group) {
+
+                // Checks if the max number of groups is reached.
+                final Integer max = logFrameModel.getExpectedResultsGroupsMax();
+                if (max != null && max > 1 && max <= expectedResultsView.getGroupsCount()) {
+                    expectedResultsGroupsButton.setVisible(false);
+                }
+            }
+        });
+
+        activitiesView.addFlexTableViewListener(new FlexTableViewListener() {
+
+            @Override
+            public void rowRemoved(RowsGroup<?> group, Row<?> row) {
+
+                // Checks if the max number of elements is reached.
+                final Integer max = logFrameModel.getActivitiesMax();
+                if (max != null && max > 0 && max > activitiesView.getRowsCount()) {
+                    activitiesButton.setVisible(true);
+                }
+            }
+
+            @Override
+            public void rowAdded(RowsGroup<?> group, Row<?> row) {
+
+                // Checks if the max number of elements is reached.
+                final Integer max = logFrameModel.getActivitiesMax();
+                if (max != null && max > 0 && max <= activitiesView.getRowsCount()) {
+                    activitiesButton.setVisible(false);
+                }
+            }
+
+            @Override
+            public void groupAdded(RowsGroup<?> group) {
+
+                // Checks if the max number of groups is reached.
+                final Integer max = logFrameModel.getActivitiesGroupsMax();
+                if (max != null && max > 1 && max <= activitiesView.getGroupsCount()) {
+                    activitiesGroupsButton.setVisible(false);
+                }
+            }
+        });
+
+        prerequisitesView.addFlexTableViewListener(new FlexTableViewListener() {
+
+            @Override
+            public void rowRemoved(RowsGroup<?> group, Row<?> row) {
+
+                // Checks if the max number of elements is reached.
+                final Integer max = logFrameModel.getPrerequisitesMax();
+                if (max != null && max > 0 && max > prerequisitesView.getRowsCount()) {
+                    prerequisitesButton.setVisible(true);
+                }
+            }
+
+            @Override
+            public void rowAdded(RowsGroup<?> group, Row<?> row) {
+
+                // Checks if the max number of elements is reached.
+                final Integer max = logFrameModel.getPrerequisitesMax();
+                if (max != null && max > 0 && max <= prerequisitesView.getRowsCount()) {
+                    prerequisitesButton.setVisible(false);
+                }
+            }
+
+            @Override
+            public void groupAdded(RowsGroup<?> group) {
+
+                // Checks if the max number of groups is reached.
+                final Integer max = logFrameModel.getPrerequisitesGroupsMax();
+                if (max != null && max > 1 && max <= prerequisitesView.getGroupsCount()) {
+                    prerequisitesGroupButton.setVisible(false);
+                }
+            }
+        });
     }
 
     /**
@@ -561,6 +696,21 @@ public class ProjectLogFrameGrid {
 
         ensureLogFrame();
 
+        // Checks if the model allows groups.
+        if (!logFrameModel.getEnableSpecificObjectivesGroups()) {
+            MessageBox.alert(I18N.CONSTANTS.logFrameUnauthorizedAction(), I18N.CONSTANTS.logFrameGroupsDisabledOS(),
+                    null);
+            return;
+        }
+
+        // Checks if the max number of groups is reached.
+        final Integer max = logFrameModel.getSpecificObjectivesGroupsMax();
+        if (max != null && max > 1 && max <= specificObjectivesView.getGroupsCount()) {
+            MessageBox.alert(I18N.CONSTANTS.logFrameUnauthorizedAction(), I18N.CONSTANTS.logFrameGroupsMaxReachedOS(),
+                    null);
+            return;
+        }
+
         // Asks for the new group label.
         MessageBox.prompt(I18N.CONSTANTS.logFrameAddGroup(), I18N.CONSTANTS.logFrameAddGroupToOS(), false,
                 new Listener<MessageBoxEvent>() {
@@ -589,7 +739,7 @@ public class ProjectLogFrameGrid {
      *            The specific objectives groups.
      * @return The just created group.
      */
-    protected RowsGroup<LogFrameGroupDTO> addSpecificObjectivesGroup(final LogFrameGroupDTO group) {
+    private RowsGroup<LogFrameGroupDTO> addSpecificObjectivesGroup(final LogFrameGroupDTO group) {
 
         ensureLogFrame();
 
@@ -644,6 +794,13 @@ public class ProjectLogFrameGrid {
 
         ensureLogFrame();
 
+        // Checks if the max number of elements is reached.
+        final Integer max = logFrameModel.getSpecificObjectivesMax();
+        if (max != null && max > 0 && max <= specificObjectivesView.getRowsCount()) {
+            MessageBox.alert(I18N.CONSTANTS.logFrameUnauthorizedAction(), I18N.CONSTANTS.logFrameMaxReachedOS(), null);
+            return;
+        }
+
         // Must select a group.
         if (logFrameModel.getEnableSpecificObjectivesGroups()) {
 
@@ -694,7 +851,7 @@ public class ProjectLogFrameGrid {
      * @param specificObjective
      *            The specific objective. Must not be <code>null</code>.
      */
-    protected void addSpecificObjective(final SpecificObjectiveDTO specificObjective) {
+    private void addSpecificObjective(final SpecificObjectiveDTO specificObjective) {
 
         // Checks if the objective is correct.
         if (specificObjective == null) {
@@ -879,6 +1036,21 @@ public class ProjectLogFrameGrid {
 
         ensureLogFrame();
 
+        // Checks if the model allows groups.
+        if (!logFrameModel.getEnableExpectedResultsGroups()) {
+            MessageBox.alert(I18N.CONSTANTS.logFrameUnauthorizedAction(), I18N.CONSTANTS.logFrameGroupsDisabledER(),
+                    null);
+            return;
+        }
+
+        // Checks if the max number of groups is reached.
+        final Integer max = logFrameModel.getExpectedResultsGroupsMax();
+        if (max != null && max > 1 && max <= expectedResultsView.getGroupsCount()) {
+            MessageBox.alert(I18N.CONSTANTS.logFrameUnauthorizedAction(), I18N.CONSTANTS.logFrameGroupsMaxReachedER(),
+                    null);
+            return;
+        }
+
         // Asks for the new group label.
         MessageBox.prompt(I18N.CONSTANTS.logFrameAddGroup(), I18N.CONSTANTS.logFrameAddGroupToER(), false,
                 new Listener<MessageBoxEvent>() {
@@ -907,7 +1079,7 @@ public class ProjectLogFrameGrid {
      *            The expected results groups.
      * @return The just created group.
      */
-    protected RowsGroup<LogFrameGroupDTO> addExpectedResultsGroup(final LogFrameGroupDTO group) {
+    private RowsGroup<LogFrameGroupDTO> addExpectedResultsGroup(final LogFrameGroupDTO group) {
 
         ensureLogFrame();
 
@@ -961,6 +1133,13 @@ public class ProjectLogFrameGrid {
     protected void addExpectedResult() {
 
         ensureLogFrame();
+
+        // Checks if the max number of elements is reached.
+        final Integer max = logFrameModel.getExpectedResultsMax();
+        if (max != null && max > 0 && max <= expectedResultsView.getRowsCount()) {
+            MessageBox.alert(I18N.CONSTANTS.logFrameUnauthorizedAction(), I18N.CONSTANTS.logFrameMaxReachedER(), null);
+            return;
+        }
 
         final List<SpecificObjectiveDTO> objectives = logFrame.getSpecificObjectivesDTONotDeleted();
 
@@ -1050,7 +1229,7 @@ public class ProjectLogFrameGrid {
      * @param result
      *            The expected result. Must not be <code>null</code>.
      */
-    protected void addExpectedResult(final ExpectedResultDTO result) {
+    private void addExpectedResult(final ExpectedResultDTO result) {
 
         // Checks if the result is correct.
         if (result == null) {
@@ -1256,6 +1435,21 @@ public class ProjectLogFrameGrid {
 
         ensureLogFrame();
 
+        // Checks if the model allows groups.
+        if (!logFrameModel.getEnableActivitiesGroups()) {
+            MessageBox.alert(I18N.CONSTANTS.logFrameUnauthorizedAction(), I18N.CONSTANTS.logFrameGroupsDisabledA(),
+                    null);
+            return;
+        }
+
+        // Checks if the max number of groups is reached.
+        final Integer max = logFrameModel.getActivitiesGroupsMax();
+        if (max != null && max > 1 && max <= activitiesView.getGroupsCount()) {
+            MessageBox.alert(I18N.CONSTANTS.logFrameUnauthorizedAction(), I18N.CONSTANTS.logFrameGroupsMaxReachedA(),
+                    null);
+            return;
+        }
+
         // Asks for the new group label.
         MessageBox.prompt(I18N.CONSTANTS.logFrameAddGroup(), I18N.CONSTANTS.logFrameAddGroupToA(), false,
                 new Listener<MessageBoxEvent>() {
@@ -1283,7 +1477,7 @@ public class ProjectLogFrameGrid {
      *            The activities group.
      * @return The just created group.
      */
-    protected RowsGroup<LogFrameGroupDTO> addActivitiesGroup(final LogFrameGroupDTO group) {
+    private RowsGroup<LogFrameGroupDTO> addActivitiesGroup(final LogFrameGroupDTO group) {
 
         ensureLogFrame();
 
@@ -1337,6 +1531,13 @@ public class ProjectLogFrameGrid {
     protected void addActivity() {
 
         ensureLogFrame();
+
+        // Checks if the max number of elements is reached.
+        final Integer max = logFrameModel.getActivitiesMax();
+        if (max != null && max > 0 && max <= activitiesView.getRowsCount()) {
+            MessageBox.alert(I18N.CONSTANTS.logFrameUnauthorizedAction(), I18N.CONSTANTS.logFrameMaxReachedA(), null);
+            return;
+        }
 
         final List<ExpectedResultDTO> results = logFrame.getAllExpectedResultsDTO();
 
@@ -1449,7 +1650,7 @@ public class ProjectLogFrameGrid {
      * @param activity
      *            The activity. Must not be <code>null</code>.
      */
-    protected void addActivity(final LogFrameActivityDTO activity) {
+    private void addActivity(final LogFrameActivityDTO activity) {
 
         // Checks if the activity is correct.
         if (activity == null) {
@@ -1595,6 +1796,21 @@ public class ProjectLogFrameGrid {
 
         ensureLogFrame();
 
+        // Checks if the model allows groups.
+        if (!logFrameModel.getEnablePrerequisitesGroups()) {
+            MessageBox.alert(I18N.CONSTANTS.logFrameUnauthorizedAction(), I18N.CONSTANTS.logFrameGroupsDisabledP(),
+                    null);
+            return;
+        }
+
+        // Checks if the max number of groups is reached.
+        final Integer max = logFrameModel.getPrerequisitesGroupsMax();
+        if (max != null && max > 1 && max <= prerequisitesView.getGroupsCount()) {
+            MessageBox.alert(I18N.CONSTANTS.logFrameUnauthorizedAction(), I18N.CONSTANTS.logFrameGroupsMaxReachedP(),
+                    null);
+            return;
+        }
+
         // Asks for the new group label.
         MessageBox.prompt(I18N.CONSTANTS.logFrameAddGroup(), I18N.CONSTANTS.logFrameAddGroupToP(), false,
                 new Listener<MessageBoxEvent>() {
@@ -1623,7 +1839,7 @@ public class ProjectLogFrameGrid {
      *            The prerequisites group.
      * @return The just created group.
      */
-    protected RowsGroup<LogFrameGroupDTO> addPrerequisitesGroup(final LogFrameGroupDTO group) {
+    private RowsGroup<LogFrameGroupDTO> addPrerequisitesGroup(final LogFrameGroupDTO group) {
 
         ensureLogFrame();
 
@@ -1678,6 +1894,13 @@ public class ProjectLogFrameGrid {
 
         ensureLogFrame();
 
+        // Checks if the max number of elements is reached.
+        final Integer max = logFrameModel.getPrerequisitesMax();
+        if (max != null && max > 0 && max <= prerequisitesView.getRowsCount()) {
+            MessageBox.alert(I18N.CONSTANTS.logFrameUnauthorizedAction(), I18N.CONSTANTS.logFrameMaxReachedP(), null);
+            return;
+        }
+
         // Must select a group.
         if (logFrameModel.getEnablePrerequisitesGroups()) {
 
@@ -1728,7 +1951,7 @@ public class ProjectLogFrameGrid {
      * @param prerequisite
      *            The prerequisite. Must not be <code>null</code>.
      */
-    protected void addPrerequisite(final PrerequisiteDTO prerequisite) {
+    private void addPrerequisite(final PrerequisiteDTO prerequisite) {
 
         // Checks if the prerequisite is correct.
         if (prerequisite == null) {
