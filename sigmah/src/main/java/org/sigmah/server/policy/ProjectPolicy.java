@@ -63,8 +63,31 @@ public class ProjectPolicy implements EntityPolicy<Project> {
         project.setStartDate(new Date());
         project.setCountry(em.getReference(Country.class, properties.<Integer> get("countryId")));
         project.setOwner(em.getReference(User.class, user.getId()));
-        project.setName(properties.<String> get("name"));
-        project.setName(properties.<String> get("fullName"));
+
+        // Considers name length constraints.
+        final String name = properties.<String> get("name");
+        if (name != null) {
+            if (name.length() > 16) {
+                project.setName(name.substring(0, 16));
+            } else {
+                project.setName(name);
+            }
+        } else {
+            project.setName("noname");
+        }
+
+        // Considers name length constraints.
+        final String fullName = properties.<String> get("fullName");
+        if (fullName != null) {
+            if (fullName.length() > 50) {
+                project.setFullName(fullName.substring(0, 50));
+            } else {
+                project.setFullName(fullName);
+            }
+        } else {
+            project.setFullName("");
+        }
+
         project.setLastSchemaUpdate(new Date());
         project.setCalendarId(calendar.getId());
 
