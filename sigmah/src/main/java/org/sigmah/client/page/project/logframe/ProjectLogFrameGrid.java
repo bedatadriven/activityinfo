@@ -198,7 +198,7 @@ public class ProjectLogFrameGrid {
      * @return the main widget.
      */
     public Widget getWidget() {
-        return new ScrollPanel(table);
+        return table;
     }
 
     /**
@@ -229,7 +229,6 @@ public class ProjectLogFrameGrid {
         resetTable();
 
         // Table parameters.
-        table.setWidth("100%");
         table.setCellPadding(0);
         table.setCellSpacing(0);
 

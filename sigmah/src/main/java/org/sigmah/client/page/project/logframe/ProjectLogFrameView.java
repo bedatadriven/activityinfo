@@ -3,12 +3,14 @@ package org.sigmah.client.page.project.logframe;
 import org.sigmah.client.i18n.I18N;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.core.El;
 import com.extjs.gxt.ui.client.util.Margins;
+import com.extjs.gxt.ui.client.util.Padding;
+import com.extjs.gxt.ui.client.widget.Container;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
@@ -46,6 +48,25 @@ public class ProjectLogFrameView extends ProjectLogFramePresenter.View {
      */
     public ProjectLogFrameView() {
 
+        // Configuration
+        VBoxLayout layout = new VBoxLayout() {
+            @Override
+            protected void onLayout(Container<?> container, El target) {
+                super.onLayout(container, target);
+                innerCt.addStyleName("logframe-body");
+            }
+        };
+        layout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
+        layout.setPadding(new Padding(0, 20, 0, 0));
+        setLayout(layout);
+        setHeaderVisible(true);
+        setBorders(true);
+        setHeading(I18N.CONSTANTS.logFrame());
+
+        addStyleName("logframe-grid-main-panel");
+
+        //setScrollMode(Scroll.AUTOY);
+
         // Title panel.
         final ContentPanel titlePanel = buildTitlePanel();
 
@@ -58,17 +79,10 @@ public class ProjectLogFrameView extends ProjectLogFramePresenter.View {
         // Toolbar.
         final ToolBar toolBar = buildToolbar();
 
-        // Log frame main panel.
-        final ContentPanel mainPanel = buildMainPanel();
-
-        mainPanel.setTopComponent(toolBar);
-        mainPanel.add(titlePanel, new VBoxLayoutData(new Margins(4, 8, 0, 8)));
-        mainPanel.add(mainObjectivePanel, new VBoxLayoutData(new Margins(4, 8, 4, 8)));
-        mainPanel.add(logFrameGrid.getWidget(), new VBoxLayoutData(new Margins(0, 8, 0, 8)));
-
-        // Adds the main panel.
-        setLayout(new FitLayout());
-        add(mainPanel);
+        setTopComponent(toolBar);
+        add(titlePanel, new VBoxLayoutData(4, 8, 0, 8));
+        add(mainObjectivePanel, new VBoxLayoutData(4, 8, 4, 8));
+        add(logFrameGrid.getWidget(), new VBoxLayoutData(0, 8, 0, 8));
     }
 
     /**
@@ -179,27 +193,6 @@ public class ProjectLogFrameView extends ProjectLogFramePresenter.View {
         toolBar.add(excelButton);
 
         return toolBar;
-    }
-
-    /**
-     * Builds the view main panel.
-     * 
-     * @return The view main panel.
-     */
-    private ContentPanel buildMainPanel() {
-
-        final ContentPanel mainPanel = new ContentPanel();
-        final VBoxLayout layout = new VBoxLayout();
-        layout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
-        mainPanel.setLayout(layout);
-        mainPanel.setHeaderVisible(true);
-        mainPanel.setBorders(true);
-        mainPanel.setHeading(I18N.CONSTANTS.logFrame());
-        mainPanel.setWidth("100%");
-
-        mainPanel.addStyleName("logframe-grid-main-panel");
-
-        return mainPanel;
     }
 
     @Override

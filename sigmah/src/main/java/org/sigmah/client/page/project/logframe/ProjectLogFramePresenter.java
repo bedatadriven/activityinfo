@@ -16,7 +16,7 @@ import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.TextField;
@@ -33,7 +33,7 @@ public class ProjectLogFramePresenter implements Presenter {
     /**
      * Description of the view managed by this presenter.
      */
-    public static abstract class View extends LayoutContainer {
+    public static abstract class View extends ContentPanel {
 
         public abstract ProjectLogFrameGrid getLogFrameGrid();
 
