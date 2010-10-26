@@ -7,6 +7,7 @@ package org.sigmah.client.offline.ui;
 
 import com.extjs.gxt.ui.client.event.BaseObservable;
 import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.Observable;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Provider;
@@ -88,20 +89,45 @@ public class OfflinePresenterTest {
 
         OfflinePresenter presenter = new OfflinePresenter(view, eventBus, gatewayProvider, stateManager);
 
+        // offline async fragment finishes loading
+        assertThat(offlineImpl.lastCall, equalTo("goOffline"));
+        offlineImpl.lastCallback.onSuccess(null);
+
         assertThat(view.defaultButtonText, equalTo("Last Sync'd: <date>"));
         assertThat(offlineImpl.lastCall, equalTo("goOffline"));
+    }
+
+    @Test
+    public void reinstallWhileOffline() {
+
+        stateManager.set(OfflinePresenter.OFFLINE_MODE_KEY, OfflinePresenter.OfflineMode.OFFLINE.toString());
+
+        new OfflinePresenter(view, eventBus, gatewayProvider, stateManager);
+
+        // offline async fragment finishes loading
+        offlineImpl.lastCallback.onSuccess(null);
+
+        // now click the reinstall menu item
+        view.reinstallItem.fireEvent(Events.Select, new MenuEvent(null));
+
+        // we should be in install mode
+        assertThat(offlineImpl.lastCall, equalTo("install"));
+        assertThat(view.defaultButtonText, equalTo("Installing..."));
     }
 
 
     private static class ViewStub implements OfflinePresenter.View {
 
         public BaseObservable defaultButton = new BaseObservable();
-        public BaseObservable menu = new BaseObservable();
         public String defaultButtonText;
         public boolean progressDialogVisible = false;
         public String taskDescription;
         public double percentComplete;
         public boolean menuEnabled = false;
+
+        private BaseObservable reinstallItem = new BaseObservable();
+        private BaseObservable toggleItem = new BaseObservable();
+        private BaseObservable syncNowItem = new BaseObservable();
 
         @Override
         public Observable getButton() {
@@ -109,8 +135,18 @@ public class OfflinePresenterTest {
         }
 
         @Override
-        public Observable getMenu() {
-            return menu;    
+        public Observable getReinstallItem() {
+            return reinstallItem;
+        }
+
+        @Override
+        public Observable getToggleItem() {
+            return toggleItem;
+        }
+
+        @Override
+        public Observable getSyncNowItem() {
+            return syncNowItem;
         }
 
         @Override
@@ -137,6 +173,11 @@ public class OfflinePresenterTest {
         @Override
         public void setButtonTextToLastSync(Date lastSyncTime) {
             this.defaultButtonText = "Last Sync'd: <date>";
+        }
+
+        @Override
+        public void setButtonTextToOnline() {
+            this.defaultButtonText = "Online";
         }
 
         @Override

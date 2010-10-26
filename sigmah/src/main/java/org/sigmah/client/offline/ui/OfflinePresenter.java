@@ -10,7 +10,10 @@ package org.sigmah.client.offline.ui;
 
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.Observable;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -53,17 +56,17 @@ public class OfflinePresenter {
     }
 
     public interface View {
-        static String SYNC_NOW_ID = "syncNow";
-        static String TOGGLE_ID = "toggle";
-
         Observable getButton();
-        Observable getMenu();
+        Observable getSyncNowItem();
+        Observable getToggleItem();
+        Observable getReinstallItem();
 
         void setButtonTextToInstall();
         void setButtonTextToInstalling();
         void setButtonTextToLastSync(Date lastSyncTime);
         void setButtonTextToLoading();
         void setButtonTextToSyncing();
+        void setButtonTextToOnline();
 
         void showProgressDialog();
         void updateProgress(String taskDescription, double percentComplete);
@@ -99,10 +102,10 @@ public class OfflinePresenter {
         Log.trace("OfflineManager: starting");
 
         if(!installed) {
-            activeStrategy = new NotInstalledStrategy().activate();
+            activateStrategy(new NotInstalledStrategy());
 
         } else {
-            activeStrategy = new LoadingStrategy();
+            activateStrategy(new LoadingOfflineStrategy());
         }
 
         view.getButton().addListener(Events.Select, new Listener<BaseEvent>() {
@@ -112,10 +115,24 @@ public class OfflinePresenter {
             }
         });
 
-        view.getButton().addListener(Events.Select, new Listener<MenuEvent>() {
+        view.getSyncNowItem().addListener(Events.Select, new Listener<BaseEvent>() {
             @Override
-            public void handleEvent(MenuEvent event) {
-                activeStrategy.onMenuItemSelected(event.getItem().getItemId());
+            public void handleEvent(BaseEvent be) {
+                activeStrategy.onSyncNow();
+            }
+        });
+
+        view.getToggleItem().addListener(Events.Select, new Listener<BaseEvent>() {
+            @Override
+            public void handleEvent(BaseEvent be) {
+                activeStrategy.onToggle();
+            }
+        });
+
+        view.getReinstallItem().addListener(Events.Select, new Listener<BaseEvent>() {
+            @Override
+            public void handleEvent(BaseEvent be) {
+                activeStrategy.onReinstall();
             }
         });
 
@@ -141,28 +158,9 @@ public class OfflinePresenter {
         stateManager.set(OFFLINE_MODE_KEY, state.toString());
     }
 
-    private void syncNow() {
-        loadGateway(new AsyncCallback<OfflineGateway>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                OfflinePresenter.this.onFailure(caught);
-            }
-
-            @Override
-            public void onSuccess(OfflineGateway result) {
-                result.synchronize(new AsyncCallback<Void>() {
-                    @Override
-                    public void onFailure(Throwable caught) {
-
-                    }
-
-                    @Override
-                    public void onSuccess(Void result) {
-
-                    }
-                });
-            }
-        });
+    private void activateStrategy(Strategy strategy) {
+        this.activeStrategy = strategy;
+        this.activeStrategy.activate();
     }
 
     private void loadGateway(final AsyncCallback<OfflineGateway> callback) {
@@ -179,14 +177,16 @@ public class OfflinePresenter {
         });
     }
 
-    private void onFailure(Throwable throwable) {
+    private void reportFailure(Throwable throwable) {
         // TODO
     }
 
     private abstract class Strategy {
         Strategy activate() { return this; }
         void onDefaultButton() {}
-        void onMenuItemSelected(String itemId) {}
+        void onSyncNow() {}
+        void onToggle() {}
+        void onReinstall() {}
     }
 
 
@@ -200,33 +200,7 @@ public class OfflinePresenter {
 
         @Override
         public void onDefaultButton() {
-
-            activeStrategy = new InstallingStrategy();
-
-            loadGateway(new AsyncCallback<OfflineGateway>() {
-                @Override
-                public void onFailure(Throwable caught) {
-                    activeStrategy = activate();
-                    OfflinePresenter.this.onFailure(caught);
-                }
-
-                @Override
-                public void onSuccess(final OfflineGateway gateway) {
-                    gateway.install(new AsyncCallback<Void>() {
-                        @Override
-                        public void onFailure(Throwable caught) {
-                            activeStrategy = activate();
-                            OfflinePresenter.this.onFailure(caught);
-                        }
-
-                        @Override
-                        public void onSuccess(Void result) {
-                            view.hideProgressDialog();
-                            activeStrategy = new OfflineStrategy(gateway).activate();
-                        }
-                    });
-                }
-            });
+            activateStrategy(new InstallingStrategy());
         }
     }
 
@@ -235,21 +209,60 @@ public class OfflinePresenter {
      */
     private class InstallingStrategy extends Strategy {
 
-        private InstallingStrategy() {
+        @Override
+        Strategy activate() {
             view.setButtonTextToInstalling();
             view.disableMenu();
+            view.showProgressDialog();
+
+            loadGateway(new AsyncCallback<OfflineGateway>() {
+                @Override
+                public void onFailure(Throwable caught) {
+                    activateStrategy(new NotInstalledStrategy());
+                    reportFailure(caught);
+                }
+
+                @Override
+                public void onSuccess(final OfflineGateway gateway) {
+                    gateway.install(new AsyncCallback<Void>() {
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            activateStrategy(new NotInstalledStrategy());
+                            OfflinePresenter.this.reportFailure(caught);
+                        }
+
+                        @Override
+                        public void onSuccess(Void result) {
+                            view.hideProgressDialog();
+                            activateStrategy(new OfflineStrategy(gateway));
+                        }
+                    });
+                }
+            });
+            return this;
+        }
+
+        @Override
+        void onDefaultButton() {
             view.showProgressDialog();
         }
     }
 
-    private class LoadingStrategy extends Strategy {
+    /**
+     * This is a sort of purgatory state that occurs immediately after
+     * application load when we've determined that we should go offline but
+     * we haven't yet loaded the async fragment with the code.
+     */
+    private class LoadingOfflineStrategy extends Strategy {
 
-        private LoadingStrategy() {
+        @Override
+        Strategy activate() {
             view.setButtonTextToLoading();
             loadGateway(new AsyncCallback<OfflineGateway>() {
                 @Override
                 public void onFailure(Throwable caught) {
-                    //TODO
+                    activateStrategy(new NotInstalledStrategy());
+                    reportFailure(caught);
                 }
 
                 @Override
@@ -258,17 +271,45 @@ public class OfflinePresenter {
                         gateway.goOffline(new AsyncCallback<Void>() {
                             @Override
                             public void onFailure(Throwable caught) {
-                                // TODO
+                                activateStrategy(new NotInstalledStrategy());
+                                reportFailure(caught);
                             }
 
                             @Override
                             public void onSuccess(Void result) {
-                                activeStrategy = new OfflineStrategy(gateway).activate();
+                                activateStrategy(new OfflineStrategy(gateway));
                             }
                         });
                     }
                 }
             });
+            return this;
+        }
+    }
+
+    private class GoingOffline extends Strategy {
+        private OfflineGateway offlineManager;
+
+        private GoingOffline(OfflineGateway offlineManager) {
+            this.offlineManager = offlineManager;
+        }
+
+        @Override
+        Strategy activate() {
+            view.setButtonTextToSyncing();
+            view.disableMenu();
+            offlineManager.goOffline(new AsyncCallback<Void>() {
+                @Override
+                public void onFailure(Throwable caught) {
+                    activateStrategy(new OnlineStrategy(offlineManager));
+                }
+
+                @Override
+                public void onSuccess(Void result) {
+                    activateStrategy(new OfflineStrategy(offlineManager));
+                }
+            });
+            return this;
         }
     }
 
@@ -287,29 +328,111 @@ public class OfflinePresenter {
         }
 
         @Override
-        void onMenuItemSelected(String itemId) {
-            if(View.SYNC_NOW_ID.equals(itemId)) {
-                activeStrategy = new SyncingStrategy(this, offlineManger);
-            }
+        void onSyncNow() {
+            activateStrategy(new SyncingStrategy(this, offlineManger));
+        }
+
+        @Override
+        void onToggle() {
+            activateStrategy(new GoingOnlineStrategy(offlineManger));
+        }
+
+        @Override
+        void onReinstall() {
+            activateStrategy(new InstallingStrategy());
         }
     }
 
-    private class SyncingStrategy extends Strategy {
-        private SyncingStrategy(final Strategy parentStrategy, OfflineGateway offlineManager) {
+    private class GoingOnlineStrategy extends Strategy {
+        private final OfflineGateway offlineManager;
+
+        private GoingOnlineStrategy(final OfflineGateway offlineManager) {
+            this.offlineManager = offlineManager;
+        }
+
+        @Override
+        Strategy activate() {
             view.setButtonTextToSyncing();
             view.disableMenu();
 
-            offlineManager.synchronize(new AsyncCallback<Void>() {
+            offlineManager.goOnline(new AsyncCallback<Void>() {
                 @Override
                 public void onFailure(Throwable caught) {
-                    activeStrategy = parentStrategy.activate();
+                    OfflinePresenter.this.reportFailure(caught);
+                    activateStrategy(new OfflineStrategy(offlineManager));
                 }
 
                 @Override
                 public void onSuccess(Void result) {
-                    activeStrategy = parentStrategy.activate();
+                    activateStrategy(new OnlineStrategy(offlineManager));
                 }
             });
+            return this;
+        }
+    }
+
+    private class OnlineStrategy extends Strategy {
+        private OfflineGateway offlineManager;
+
+        private OnlineStrategy(OfflineGateway offlineManager) {
+            this.offlineManager = offlineManager;
+        }
+
+        @Override
+        Strategy activate() {
+            view.setButtonTextToOnline();
+            view.enableMenu();
+            return this;
+        }
+
+        @Override
+        void onSyncNow() {
+            activateStrategy(new SyncingStrategy(this, offlineManager));
+        }
+
+        @Override
+        void onToggle() {
+            activateStrategy(new GoingOffline(offlineManager));
+        }
+
+        @Override
+        void onReinstall() {
+            activateStrategy(new InstallingStrategy());
+        }
+    }
+
+    private class SyncingStrategy extends Strategy {
+        private final Strategy parentStrategy;
+        private final OfflineGateway offlineManager;
+
+        private SyncingStrategy(final Strategy parentStrategy, OfflineGateway offlineManager) {
+            this.parentStrategy = parentStrategy;
+            this.offlineManager = offlineManager;
+        }
+
+        @Override
+        Strategy activate() {
+            view.setButtonTextToSyncing();
+            view.disableMenu();
+            view.showProgressDialog();
+
+            offlineManager.synchronize(new AsyncCallback<Void>() {
+                @Override
+                public void onFailure(Throwable caught) {
+                    activateStrategy(parentStrategy);
+                }
+
+                @Override
+                public void onSuccess(Void result) {
+                    activateStrategy(parentStrategy);
+                }
+            });
+            return this;
+        }
+
+        @Override                                                 
+        void onDefaultButton() {
+            view.showProgressDialog();
         }
     }
 }

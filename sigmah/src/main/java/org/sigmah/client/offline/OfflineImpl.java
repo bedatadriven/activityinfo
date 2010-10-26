@@ -38,6 +38,10 @@ public class OfflineImpl implements OfflineGateway {
 
     @Override
     public void install(final AsyncCallback<Void> callback) {
+
+        // just in case we are re-installing 
+        switchingDispatcher.clearLocalDispatcher();
+
         installSteps.get().run(new AsyncCallback() {
             @Override
             public void onFailure(Throwable throwable) {

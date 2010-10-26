@@ -9,6 +9,7 @@ import com.extjs.gxt.ui.client.event.Observable;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.inject.Singleton;
 import org.sigmah.client.i18n.I18N;
@@ -28,19 +29,20 @@ public class OfflineView extends Button implements OfflinePresenter.View {
     private Menu menu;
     private MenuItem syncNowButton;
     private MenuItem toggleModeButton;
+    private MenuItem reinstallOffline;
 
     public OfflineView() {
         window = new StatusWindow();
 
         syncNowButton = new MenuItem(I18N.CONSTANTS.syncNow(), IconImageBundle.ICONS.onlineSyncing());
-        syncNowButton.setItemId(SYNC_NOW_ID);
-        
         toggleModeButton = new MenuItem(I18N.CONSTANTS.switchToOnline());
-        toggleModeButton.setItemId(TOGGLE_ID);
+        reinstallOffline = new MenuItem(I18N.CONSTANTS.reinstallOfflineMode());
 
         menu = new Menu();
         menu.add(syncNowButton);
         menu.add(toggleModeButton);
+        menu.add(new SeparatorMenuItem());
+        menu.add(reinstallOffline);
     }
 
     @Override
@@ -48,6 +50,20 @@ public class OfflineView extends Button implements OfflinePresenter.View {
         return this;
     }
 
+    @Override
+    public Observable getSyncNowItem() {
+        return syncNowButton;
+    }
+
+    @Override
+    public Observable getToggleItem() {
+        return toggleModeButton;
+    }
+
+    @Override
+    public Observable getReinstallItem() {
+        return reinstallOffline;
+    }
 
     @Override
     public void setButtonTextToInstall() {
@@ -63,7 +79,7 @@ public class OfflineView extends Button implements OfflinePresenter.View {
 
     @Override
     public void setButtonTextToLastSync(Date lastSyncTime) {
-        this.setIcon(IconImageBundle.ICONS.onlineSynced());
+        this.setIcon(IconImageBundle.ICONS.offline());
         this.setText(I18N.MESSAGES.lastSynced(DateTimeFormat.getShortDateTimeFormat().format(lastSyncTime)));
     }
 
@@ -71,6 +87,12 @@ public class OfflineView extends Button implements OfflinePresenter.View {
     public void setButtonTextToSyncing() {
         this.setIcon(IconImageBundle.ICONS.onlineSyncing());
         this.setText(I18N.CONSTANTS.synchronizing());
+    }
+
+    @Override
+    public void setButtonTextToOnline() {
+        this.setIcon(IconImageBundle.ICONS.onlineSynced());
+        this.setText(I18N.CONSTANTS.online());
     }
 
     @Override

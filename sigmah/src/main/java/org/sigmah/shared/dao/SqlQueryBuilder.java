@@ -7,10 +7,7 @@ package org.sigmah.shared.dao;
 
 import org.sigmah.shared.report.model.DimensionType;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -135,7 +132,7 @@ public class SqlQueryBuilder {
         }
         return this;
     }
-    
+
     public String sql() {
         StringBuilder sql = new StringBuilder("SELECT ")
                 .append(fieldList.toString())
@@ -144,11 +141,11 @@ public class SqlQueryBuilder {
 
         if(whereClause.length() > 0) {
             sql.append(" WHERE ")
-               .append(whereClause.toString());
+                    .append(whereClause.toString());
         }
         if(orderByClause.length() > 0) {
             sql.append(" ORDER BY ")
-               .append(orderByClause.toString());
+                    .append(orderByClause.toString());
         }
         sql.append(" ")
                 .append(limitClause);
@@ -190,6 +187,35 @@ public class SqlQueryBuilder {
             if(rs != null) { try { rs.close(); } catch(SQLException ignored) {} }
             if(stmt != null) { try { stmt.close(); } catch(SQLException ignored) {} }
         }
+    }
+
+    /**
+     * Executes the statement and returns the value of the first column of the first row,
+     * or null if there are no results.
+     *
+     * @param conn JDBC connection
+     */
+    public Date singleDateResultOrNull(Connection conn) {
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        String sql = sql();
+
+        try {
+            stmt = prepareStatement(conn, sql);
+            rs = stmt.executeQuery();
+
+            if(rs.next()) {
+                return rs.getDate(1);
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Exception thrown while processing SQL: '" + sql + "'", e);
+        } finally {
+            if(rs != null) { try { rs.close(); } catch(SQLException ignored) {} }
+            if(stmt != null) { try { stmt.close(); } catch(SQLException ignored) {} }
+        }
+
     }
 
 

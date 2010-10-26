@@ -21,10 +21,15 @@ import org.sigmah.shared.command.GetSyncRegions;
 import org.sigmah.shared.command.result.SyncRegion;
 import org.sigmah.shared.command.result.SyncRegionUpdate;
 import org.sigmah.shared.command.result.SyncRegions;
+import org.sigmah.shared.dao.SqlQueryBuilder;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
+
+import static org.sigmah.shared.dao.SqlQueryBuilder.select;
 
 @Singleton
 public class Synchronizer {
@@ -54,27 +59,31 @@ public class Synchronizer {
         this.dispatch = dispatch;
         this.updater = updater;
         this.auth = auth;
+        createSyncMetaTables();
+   }
 
-        createTables();
+    private void createSyncMetaTables() {
+        execute("create table if not exists sync_regions (id TEXT, localVersion INTEGER)",
+                "create table if not exists sync_history (lastUpdate INTEGER) ");
     }
 
-    private void createTables() {
-        try {
-            Statement ddl = conn.createStatement();
-            ddl.executeUpdate("create table if not exists sync_regions" +
-                    " (id TEXT, localVersion INTEGER) ");
-            ddl.executeUpdate("create table if not exists sync_history (lastUpdate INTEGER) ");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    public void clearDatabase() {
+        dropAllTables();
+        createSyncMetaTables();
     }
 
-    private void clearDatabase() {
-        try {
-            Statement ddl = conn.createStatement();
-            ddl.executeUpdate("select 'drop table ' || name || ';' from sqlite_master where type = 'table';");
-        } catch (SQLException e) {
-            //ignore
+    private void dropAllTables() {
+        final List<String> tableNames = new ArrayList<String>();
+        select("name").from("sqlite_master where type = 'table'")
+                .forEachResult(conn, new SqlQueryBuilder.ResultHandler() {
+                    @Override
+                    public void handle(ResultSet rs) throws SQLException {
+                        tableNames.add(rs.getString(1));
+                    }
+                });
+
+        for(String tableName : tableNames) {
+            execute("drop table " + tableName);
         }
     }
 
@@ -246,17 +255,9 @@ public class Synchronizer {
     }
 
     public Date getLastUpdateTime() {
-        try {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("select lastUpdate from sync_history");
-            if(rs.next()) {
-                return rs.getDate(1);
-            } else {
-                return null;
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Couldn't get update time", e);
-        }
+        return select("lastUpdate").from("sync_history")
+                 .singleDateResultOrNull(conn);
+
     }
 
     private static class ProgressTrackingIterator<T> implements Iterator<T> {
@@ -288,6 +289,21 @@ public class Synchronizer {
 
         public double percentComplete() {
             return completed / total * 100d;
+        }
+    }
+
+
+    private void execute(String... sql) {
+        Statement stmt = null;
+        try {
+            stmt = conn.createStatement();
+            for(String statement : sql) {
+                stmt.executeUpdate(statement);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if(stmt != null) { try { stmt.close(); } catch( SQLException ignored) {} }
         }
     }
 }
