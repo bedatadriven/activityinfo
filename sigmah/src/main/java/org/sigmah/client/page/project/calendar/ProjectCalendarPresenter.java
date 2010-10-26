@@ -13,7 +13,7 @@ import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.project.Presenter;
+import org.sigmah.client.page.project.SubPresenter;
 import org.sigmah.client.page.project.ProjectPresenter;
 import org.sigmah.client.ui.CalendarWidget;
 import org.sigmah.shared.command.GetCalendar;
@@ -26,7 +26,7 @@ import org.sigmah.shared.dto.ProjectDTO;
  *
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
-public class ProjectCalendarPresenter implements Presenter {
+public class ProjectCalendarPresenter implements SubPresenter {
     private final ProjectPresenter projectPresenter;
     private ProjectDTO currentProjectDTO;
 

@@ -8,10 +8,10 @@ package org.sigmah.client.page.project;
 import com.extjs.gxt.ui.client.widget.Component;
 
 /**
- *
- * @author rca
+ * Describes a sub-presenter of the Project page.
+ * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
-public interface Presenter {
+public interface SubPresenter {
     public Component getView();
     public void viewDidAppear();
 }

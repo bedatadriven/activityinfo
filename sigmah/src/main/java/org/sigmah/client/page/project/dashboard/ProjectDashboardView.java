@@ -39,7 +39,8 @@ import org.sigmah.shared.dto.element.FlexibleElementType;
 
 /**
  *
- * @author rca
+ * @author Denis Colliot (dcolliot@ideia.fr)
+ * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class ProjectDashboardView extends ProjectDashboardPresenter.View  {
     private final ToolBar toolBar;

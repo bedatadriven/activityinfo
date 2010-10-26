@@ -31,7 +31,7 @@ import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.project.Presenter;
+import org.sigmah.client.page.project.SubPresenter;
 import org.sigmah.client.page.project.ProjectPresenter;
 import org.sigmah.shared.command.ChangePhase;
 import org.sigmah.shared.command.GetValue;
@@ -52,9 +52,10 @@ import org.sigmah.shared.dto.layout.LayoutGroupDTO;
 
 /**
  *
+ * @author Denis Colliot (dcolliot@ideia.fr)
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
-public class ProjectDashboardPresenter implements Presenter {
+public class ProjectDashboardPresenter implements SubPresenter {
 
     public static abstract class View extends LayoutContainer {
 

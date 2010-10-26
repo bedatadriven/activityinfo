@@ -3,7 +3,7 @@ package org.sigmah.client.page.project.logframe;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.project.Presenter;
+import org.sigmah.client.page.project.SubPresenter;
 import org.sigmah.client.page.project.ProjectPresenter;
 import org.sigmah.client.util.NotImplementedMethod;
 import org.sigmah.shared.command.UpdateLogFrame;
@@ -28,7 +28,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @author tmi
  * 
  */
-public class ProjectLogFramePresenter implements Presenter {
+public class ProjectLogFramePresenter implements SubPresenter {
 
     /**
      * Description of the view managed by this presenter.

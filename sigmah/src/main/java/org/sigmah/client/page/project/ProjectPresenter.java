@@ -79,7 +79,7 @@ public class ProjectPresenter implements Frame, TabPage {
         I18N.CONSTANTS.projectTabCalendar(), I18N.CONSTANTS.projectTabReports(),
         I18N.CONSTANTS.projectTabSecurityIncident()
     };
-    private final Presenter[] presenters;
+    private final SubPresenter[] presenters;
 
     @Inject
     public ProjectPresenter(final Dispatcher dispatcher, View view, Authentication authentication, final EventBus eventBus) {
@@ -87,7 +87,7 @@ public class ProjectPresenter implements Frame, TabPage {
         this.view = view;
         this.authentication = authentication;
 
-        this.presenters = new Presenter[]{
+        this.presenters = new SubPresenter[]{
                     new ProjectDashboardPresenter(dispatcher, authentication, this), // Dashboard
                     new ProjectLogFramePresenter(dispatcher, this), // Logical Framework
                     null, // Indicators
