@@ -53,6 +53,30 @@ public class FileDTO extends BaseModelData implements EntityDTO {
     }
 
     /**
+     * Returns the version with the given number or <code>null</code> if there
+     * isn't a version with this number.
+     * 
+     * @return The version with the given number, <code>null</code> otherwise.
+     */
+    public FileVersionDTO getVersion(int versionNumber) {
+
+        final List<FileVersionDTO> versions = getVersionsDTO();
+
+        if (versions == null || versions.isEmpty() || versionNumber <= 0) {
+            return null;
+        }
+
+        // Searches the version number.
+        for (final FileVersionDTO version : versions) {
+            if (version.getVersionNumber() == versionNumber) {
+                return version;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Returns the last version (with the higher version number).
      * 
      * @return the last version.

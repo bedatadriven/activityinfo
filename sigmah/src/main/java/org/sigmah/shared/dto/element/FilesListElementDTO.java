@@ -7,11 +7,12 @@ package org.sigmah.shared.dto.element;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.client.ui.ButtonFileUploadField;
 import org.sigmah.client.ui.FlexibleGrid;
 import org.sigmah.shared.command.Delete;
 import org.sigmah.shared.command.GetValue;
@@ -23,52 +24,38 @@ import org.sigmah.shared.dto.value.FileUploadUtils;
 import org.sigmah.shared.dto.value.FileVersionDTO;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.Style.SelectionMode;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.Style.SortDir;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FormEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreSorter;
-import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
-import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.FileUploadField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.Encoding;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.Method;
 import com.extjs.gxt.ui.client.widget.form.HiddenField;
-import com.extjs.gxt.ui.client.widget.form.TextArea;
-import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
-import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.FlowData;
-import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
-import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
-import com.extjs.gxt.ui.client.widget.layout.HBoxLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
-import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
-import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Image;
 
 /**
  * 
@@ -84,6 +71,11 @@ public class FilesListElementDTO extends FlexibleElementDTO {
      * the widget.
      */
     private ValueResult currentValueResult;
+
+    /**
+     * The component main panel.
+     */
+    private transient ContentPanel mainPanel;
 
     /**
      * Files list model data.
@@ -117,6 +109,7 @@ public class FilesListElementDTO extends FlexibleElementDTO {
             for (Serializable s : currentValueResult.getValuesObject()) {
                 store.add((FileDTO) s);
             }
+            store.sort("date", SortDir.DESC);
         }
     }
 
@@ -131,79 +124,14 @@ public class FilesListElementDTO extends FlexibleElementDTO {
 
         currentValueResult = valueResult;
 
-        // Creates actions menu to manage the files list.
-        final Button downloadButton = new Button(I18N.CONSTANTS.flexibleElementFilesListDownload());
-        downloadButton.setEnabled(false);
-
-        // Uses a "hidden form" to manages the downloads to be able to catch
-        // server errors.
-        final FormPanel downloadFormPanel = new FormPanel();
-        downloadFormPanel.setBodyBorder(false);
-        downloadFormPanel.setHeaderVisible(false);
-        downloadFormPanel.setPadding(0);
-        downloadFormPanel.setEncoding(Encoding.URLENCODED);
-        downloadFormPanel.setMethod(Method.GET);
-        downloadFormPanel.setAction(GWT.getModuleBaseURL() + "download");
-
-        final HiddenField<String> fileIdHidden = new HiddenField<String>();
-        fileIdHidden.setName(FileUploadUtils.DOCUMENT_ID);
-
-        downloadFormPanel.add(downloadButton);
-        downloadFormPanel.add(fileIdHidden);
-
-        // Submit complete handler to catch server errors.
-        downloadFormPanel.addListener(Events.Submit, new Listener<FormEvent>() {
-
-            @Override
-            public void handleEvent(FormEvent be) {
-
-                if (!"".equals(be.getResultHtml())) {
-                    MessageBox.info(I18N.CONSTANTS.flexibleElementFilesListDownloadError(),
-                            I18N.CONSTANTS.flexibleElementFilesListDownloadErrorDetails(), null);
-                }
-            }
-        });
-
-        final Button detailsButton = new Button(I18N.CONSTANTS.flexibleElementFilesListDetails());
-        detailsButton.setEnabled(false);
-
-        final Button addVersionButton = new Button(I18N.CONSTANTS.flexibleElementFilesListUploadVersion());
-        addVersionButton.setEnabled(false);
-
-        final Button deleteButton = new Button(I18N.CONSTANTS.remove());
-        deleteButton.setEnabled(false);
-
-        final ToolBar actionsToolBar = new ToolBar();
-        actionsToolBar.add(downloadFormPanel);
-        actionsToolBar.add(new SeparatorToolItem());
-        actionsToolBar.add(detailsButton);
-        actionsToolBar.add(new SeparatorToolItem());
-        actionsToolBar.add(addVersionButton);
-        actionsToolBar.add(new SeparatorToolItem());
-        actionsToolBar.add(deleteButton);
-
-        // Creates the upload field and upload button.
-        final FileUploadField uploadField = new FileUploadField();
-        uploadField.setFieldLabel(I18N.CONSTANTS.flexibleElementFilesListUploadVersion());
+        // Creates the upload button (with a hidden form panel).
+        final ButtonFileUploadField uploadField = new ButtonFileUploadField();
+        uploadField.setButtonCaption(I18N.CONSTANTS.flexibleElementFilesListAddDocument());
         uploadField.setName(FileUploadUtils.DOCUMENT_CONTENT);
-
-        final Button uploadButton = new Button(I18N.CONSTANTS.flexibleElementFilesListUpload());
-        uploadButton.setEnabled(false);
-
-        final ContentPanel uploadPanel = new ContentPanel();
-        uploadPanel.setBodyBorder(false);
-        uploadPanel.setHeaderVisible(false);
-        uploadPanel.setLayout(new HBoxLayout());
-
-        final Label addVersionLabel = new Label(I18N.CONSTANTS.flexibleElementFilesListUploadFile());
-        addVersionLabel.addStyleName("flexibility-element-label");
-        uploadPanel.add(addVersionLabel, new HBoxLayoutData(new Margins(4, 5, 0, 0)));
-        final HBoxLayoutData flex = new HBoxLayoutData(new Margins(0, 5, 0, 0));
-        flex.setFlex(1);
-        uploadPanel.add(uploadField, flex);
-        uploadPanel.add(uploadButton);
+        uploadField.setButtonIcon(IconImageBundle.ICONS.attach());
 
         final FormPanel uploadFormPanel = new FormPanel();
+        uploadFormPanel.setLayout(new FitLayout());
         uploadFormPanel.setBodyBorder(false);
         uploadFormPanel.setHeaderVisible(false);
         uploadFormPanel.setPadding(0);
@@ -226,25 +154,25 @@ public class FilesListElementDTO extends FlexibleElementDTO {
         final HiddenField<String> emptyHidden = new HiddenField<String>();
         emptyHidden.setName(FileUploadUtils.CHECK_EMPTY);
 
-        uploadFormPanel.add(uploadPanel);
+        uploadFormPanel.add(uploadField);
         uploadFormPanel.add(nameHidden);
         uploadFormPanel.add(authorHidden);
         uploadFormPanel.add(elementIdHidden);
         uploadFormPanel.add(projectIdHidden);
         uploadFormPanel.add(emptyHidden);
 
-        // Manages upload button activations.
-        uploadField.addListener(Events.OnChange, new Listener<ComponentEvent>() {
-            @Override
-            public void handleEvent(ComponentEvent be) {
-                uploadButton.setEnabled(uploadField.getValue() != null && !uploadField.getValue().trim().equals(""));
-            }
-        });
+        // Creates actions tool bar.
+        final ToolBar actionsToolBar = new ToolBar();
+        actionsToolBar.setAlignment(HorizontalAlignment.LEFT);
 
-        uploadButton.addListener(Events.OnClick, new Listener<ButtonEvent>() {
+        actionsToolBar.add(uploadFormPanel);
 
+        // Upload the selected file immediately after it's selected.
+        uploadField.addListener(Events.OnChange, new Listener<BaseEvent>() {
             @Override
-            public void handleEvent(ButtonEvent be) {
+            public void handleEvent(BaseEvent be) {
+
+                mainPanel.mask(I18N.CONSTANTS.loading());
 
                 // Set hidden fields values.
                 elementIdHidden.setValue(String.valueOf(getId()));
@@ -262,8 +190,6 @@ public class FilesListElementDTO extends FlexibleElementDTO {
                     sb.append(nameHidden.getValue());
                     sb.append(" ; author id=");
                     sb.append(authorHidden.getValue());
-                    // sb.append(" ; file list id=");
-                    // sb.append(filesListHidden.getValue());
                     sb.append(" ; project id=");
                     sb.append(projectIdHidden.getValue());
                     sb.append(" ; element id=");
@@ -273,10 +199,6 @@ public class FilesListElementDTO extends FlexibleElementDTO {
 
                     Log.debug(sb.toString());
                 }
-
-                // Freezes upload fields.
-                uploadField.setEnabled(false);
-                uploadButton.setEnabled(false);
 
                 // Submits the form.
                 uploadFormPanel.submit();
@@ -292,30 +214,18 @@ public class FilesListElementDTO extends FlexibleElementDTO {
                 updateComponentAfterUpload(be);
 
                 // Reset upload fields.
-                uploadField.setEnabled(true);
                 uploadField.reset();
 
                 handlerManager.fireEvent(new RequiredValueEvent(true));
+
+                mainPanel.unmask();
             }
         });
 
-        // Creates the top panel of the grid.
-        final ContentPanel topPanel = new ContentPanel();
-        topPanel.setHeaderVisible(false);
-        topPanel.setLayout(new FlowLayout());
-
-        topPanel.add(uploadFormPanel, new FlowData(new Margins(3, 2, 3, 2)));
-        topPanel.add(actionsToolBar);
-
         updateStore();
 
-        // Grid plugins.
-        final CheckBoxSelectionModel<FileDTO> selectionModel = new CheckBoxSelectionModel<FileDTO>();
-        selectionModel.setSelectionMode(SelectionMode.SINGLE);
-
         // Creates the grid which contains the files list.
-        final FlexibleGrid<FileDTO> filesGrid = new FlexibleGrid<FileDTO>(store, selectionModel,
-                getColumnModel(selectionModel));
+        final FlexibleGrid<FileDTO> filesGrid = new FlexibleGrid<FileDTO>(store, null, getColumnModel());
         filesGrid.setAutoExpandColumn("name");
         filesGrid.setVisibleElementsCount(5);
 
@@ -346,118 +256,33 @@ public class FilesListElementDTO extends FlexibleElementDTO {
                     final FileVersionDTO last2 = m2.getLastVersion();
 
                     return new Integer(last1.getVersionNumber()).compareTo(last2.getVersionNumber());
-                } else {
+                } else if ("name".equals(property)) {
+
+                    final FileVersionDTO last1 = m1.getLastVersion();
+                    final FileVersionDTO last2 = m2.getLastVersion();
+
+                    final String title1 = last1.getName() + '.' + last1.getExtension();
+                    final String title2 = last2.getName() + '.' + last2.getExtension();
+
+                    return title1.compareTo(title2);
+                }
+
+                else {
                     return super.compare(store, m1, m2, property);
                 }
             }
         });
 
         // Creates the main panel.
-        final ContentPanel panel = new ContentPanel();
-        panel.setHeaderVisible(true);
-        panel.setBorders(true);
-        panel.setHeading(getLabel());
+        mainPanel = new ContentPanel();
+        mainPanel.setHeaderVisible(true);
+        mainPanel.setBorders(true);
+        mainPanel.setHeading(getLabel());
 
-        panel.setTopComponent(topPanel);
-        panel.add(filesGrid);
+        mainPanel.setTopComponent(actionsToolBar);
+        mainPanel.add(filesGrid);
 
-        // Manages action buttons activations.
-        selectionModel.addSelectionChangedListener(new SelectionChangedListener<FileDTO>() {
-            @Override
-            public void selectionChanged(SelectionChangedEvent<FileDTO> se) {
-                final List<FileDTO> selection = se.getSelection();
-                final boolean enabledState = selection != null && !selection.isEmpty();
-                downloadButton.setEnabled(enabledState);
-                detailsButton.setEnabled(enabledState);
-                addVersionButton.setEnabled(enabledState);
-                deleteButton.setEnabled(enabledState);
-            }
-        });
-
-        // Buttons listeners.
-        downloadButton.addListener(Events.OnClick, new Listener<ButtonEvent>() {
-            @Override
-            public void handleEvent(ButtonEvent be) {
-
-                // Sets the form hidden fields values.
-                fileIdHidden.setValue(String.valueOf(selectionModel.getSelectedItem().getId()));
-
-                // Submits the form.
-                downloadFormPanel.submit();
-            }
-        });
-
-        // Builds the file's details window to show the file's versions.
-        final FileDetailsWindow versionsWindow = new FileDetailsWindow(dispatcher);
-        versionsWindow.addListener(new FileDetailsWindow.FileDetailsWindowListener() {
-            @Override
-            public void versionDeleted(FileVersionDTO version) {
-                updateComponent();
-            }
-        });
-
-        detailsButton.addListener(Events.OnClick, new Listener<ButtonEvent>() {
-            @Override
-            public void handleEvent(ButtonEvent be) {
-
-                // Loads and shows the details window.
-                final FileDTO file = selectionModel.getSelectedItem();
-                versionsWindow.show(file);
-            }
-        });
-
-        addVersionButton.addListener(Events.OnClick, new Listener<ButtonEvent>() {
-
-            private final VersionUploadWindow window = new VersionUploadWindow();
-
-            @Override
-            public void handleEvent(ButtonEvent be) {
-                final FileDTO file = selectionModel.getSelectedItem();
-                window.show(file);
-            }
-        });
-
-        deleteButton.addListener(Events.OnClick, new Listener<ButtonEvent>() {
-            @Override
-            public void handleEvent(ButtonEvent be) {
-
-                final FileDTO file = selectionModel.getSelectedItem();
-
-                // Asks the client to confirm the file removal.
-                MessageBox.confirm(I18N.CONSTANTS.flexibleElementFilesListDelete(),
-                        I18N.MESSAGES.flexibleElementFilesListConfirmDelete(file.getName()),
-                        new Listener<MessageBoxEvent>() {
-                            @Override
-                            public void handleEvent(MessageBoxEvent ce) {
-
-                                if (Dialog.YES.equals(ce.getButtonClicked().getItemId())) {
-
-                                    // Deletes it.
-                                    dispatcher.execute(new Delete(file),
-                                            new MaskingAsyncMonitor(panel, I18N.CONSTANTS.loading()),
-                                            new AsyncCallback<VoidResult>() {
-
-                                                public void onFailure(Throwable caught) {
-                                                    MessageBox.alert(
-                                                            I18N.CONSTANTS.flexibleElementFilesListDeleteError(),
-                                                            I18N.CONSTANTS.flexibleElementFilesListDeleteErrorDetails(),
-                                                            null);
-                                                }
-
-                                                public void onSuccess(VoidResult result) {
-                                                    store.remove(file);
-                                                    if (store.getCount() == 0) {
-                                                        handlerManager.fireEvent(new RequiredValueEvent(false));
-                                                    }
-                                                }
-                                            });
-                                }
-                            }
-                        });
-            }
-        });
-
-        return panel;
+        return mainPanel;
     }
 
     /**
@@ -516,11 +341,9 @@ public class FilesListElementDTO extends FlexibleElementDTO {
     /**
      * Defines the column model for the files list grid.
      * 
-     * @param selectionModel
-     *            The grid selection model.
      * @return The column model.
      */
-    private ColumnConfig[] getColumnModel(CheckBoxSelectionModel<FileDTO> selectionModel) {
+    private ColumnConfig[] getColumnModel() {
 
         // File's add date.
         final ColumnConfig dateColumn = new ColumnConfig();
@@ -529,7 +352,7 @@ public class FilesListElementDTO extends FlexibleElementDTO {
         dateColumn.setWidth(60);
         dateColumn.setRenderer(new GridCellRenderer<FileDTO>() {
 
-            final DateTimeFormat format = DateTimeFormat.getFormat("dd/MM/yyyy HH:mm");
+            final DateTimeFormat format = DateTimeFormat.getFormat("dd/MM/yyyy");
 
             @Override
             public Object render(FileDTO model, String property, ColumnData config, int rowIndex, int colIndex,
@@ -543,9 +366,15 @@ public class FilesListElementDTO extends FlexibleElementDTO {
         final ColumnConfig nameColumn = new ColumnConfig();
         nameColumn.setId("name");
         nameColumn.setHeader(I18N.CONSTANTS.flexibleElementFilesListName());
-        TextField<String> text = new TextField<String>();
-        text.setAllowBlank(false);
         nameColumn.setWidth(100);
+        nameColumn.setRenderer(new GridCellRenderer<FileDTO>() {
+
+            @Override
+            public Object render(final FileDTO model, String property, ColumnData config, int rowIndex, int colIndex,
+                    ListStore<FileDTO> store, Grid<FileDTO> grid) {
+                return createDownloadLink(model, null);
+            }
+        });
 
         // File's author.
         final ColumnConfig authorColumn = new ColumnConfig();
@@ -563,280 +392,212 @@ public class FilesListElementDTO extends FlexibleElementDTO {
         });
 
         // File's last version number.
-        final ColumnConfig versioncolumn = new ColumnConfig();
-        versioncolumn.setId("version");
-        versioncolumn.setHeader(I18N.CONSTANTS.flexibleElementFilesListVersion());
-        versioncolumn.setWidth(20);
-        versioncolumn.setRenderer(new GridCellRenderer<FileDTO>() {
+        final ColumnConfig versionColumn = new ColumnConfig();
+        versionColumn.setId("version");
+        versionColumn.setHeader(I18N.CONSTANTS.flexibleElementFilesListVersion());
+        versionColumn.setWidth(20);
+        versionColumn.setRenderer(new GridCellRenderer<FileDTO>() {
             @Override
-            public Object render(FileDTO model, String property, ColumnData config, int rowIndex, int colIndex,
+            public Object render(final FileDTO model, String property, ColumnData config, int rowIndex, int colIndex,
                     ListStore<FileDTO> store, Grid<FileDTO> grid) {
                 final FileVersionDTO last = model.getLastVersion();
                 return last.getVersionNumber();
             }
         });
 
-        return new ColumnConfig[] { selectionModel.getColumn(), dateColumn, nameColumn, authorColumn, versioncolumn };
-    }
+        // Upload new version.
+        final ColumnConfig addVersionColumn = new ColumnConfig();
+        addVersionColumn.setId("addVersion");
+        addVersionColumn.setHeader(null);
+        addVersionColumn.setWidth(60);
+        addVersionColumn.setSortable(false);
+        addVersionColumn.setRenderer(new GridCellRenderer<FileDTO>() {
+            @Override
+            public Object render(final FileDTO model, String property, ColumnData config, int rowIndex, int colIndex,
+                    ListStore<FileDTO> store, Grid<FileDTO> grid) {
 
-    /**
-     * Builds and shows a window to upload a new version.
-     * 
-     * @author tmi
-     */
-    private final class VersionUploadWindow {
+                final ButtonFileUploadField uploadField = new ButtonFileUploadField();
+                uploadField.setButtonCaption(I18N.CONSTANTS.flexibleElementFilesListUploadVersion());
+                uploadField.setName(FileUploadUtils.DOCUMENT_CONTENT);
+                uploadField.setButtonIcon(IconImageBundle.ICONS.attach());
 
-        /**
-         * GXT window.
-         */
-        private final Window window;
+                final FormPanel uploadFormPanel = new FormPanel();
+                uploadFormPanel.setLayout(new FitLayout());
+                uploadFormPanel.setBodyBorder(false);
+                uploadFormPanel.setHeaderVisible(false);
+                uploadFormPanel.setPadding(0);
+                uploadFormPanel.setEncoding(Encoding.MULTIPART);
+                uploadFormPanel.setMethod(Method.POST);
+                uploadFormPanel.setAction(GWT.getModuleBaseURL() + "upload");
 
-        /**
-         * The current displayed file.
-         */
-        private FileDTO file;
+                final HiddenField<String> idHidden = new HiddenField<String>();
+                idHidden.setName(FileUploadUtils.DOCUMENT_ID);
 
-        /**
-         * The next version number to upload.
-         */
-        private int nextVersionNumber;
+                final HiddenField<String> nameHidden = new HiddenField<String>();
+                nameHidden.setName(FileUploadUtils.DOCUMENT_NAME);
 
-        /**
-         * The upload form.
-         */
-        private final FormPanel uploadFormPanel;
+                final HiddenField<String> authorHidden = new HiddenField<String>();
+                authorHidden.setName(FileUploadUtils.DOCUMENT_AUTHOR);
 
-        /**
-         * The upload field.
-         */
-        private final FileUploadField uploadField;
+                final HiddenField<String> versionHidden = new HiddenField<String>();
+                versionHidden.setName(FileUploadUtils.DOCUMENT_VERSION);
 
-        /**
-         * The label containing the next version number.
-         */
-        private final Label numberLabel;
+                final HiddenField<String> emptyHidden = new HiddenField<String>();
+                emptyHidden.setName(FileUploadUtils.CHECK_EMPTY);
 
-        /**
-         * Current logged in user.
-         */
-        private final HiddenField<String> authorHidden;
+                uploadFormPanel.add(uploadField);
+                uploadFormPanel.add(authorHidden);
+                uploadFormPanel.add(idHidden);
+                uploadFormPanel.add(nameHidden);
+                uploadFormPanel.add(versionHidden);
+                uploadFormPanel.add(emptyHidden);
 
-        /**
-         * Current file id.
-         */
-        private final HiddenField<String> idHidden;
+                uploadField.addListener(Events.OnChange, new Listener<BaseEvent>() {
 
-        /**
-         * Next file version number.
-         */
-        private final HiddenField<String> versionHidden;
+                    @Override
+                    public void handleEvent(BaseEvent be) {
 
-        /**
-         * If empty version are allowed.
-         */
-        private final HiddenField<String> emptyHidden;
+                        // Set hidden fields values.
+                        idHidden.setValue(String.valueOf(model.getId()));
+                        nameHidden.setValue(uploadField.getValue());
+                        authorHidden.setValue(String.valueOf(authentication.getUserId()));
+                        versionHidden.setValue(String.valueOf(model.getLastVersion().getVersionNumber() + 1));
+                        emptyHidden.setValue("true");
 
-        /**
-         * The upload button.
-         */
-        private final Button uploadButton;
+                        // Debug form hidden values.
+                        if (Log.isDebugEnabled()) {
 
-        /**
-         * The comments area.
-         */
-        private final TextArea commentsArea;
+                            final StringBuilder sb = new StringBuilder();
+                            sb.append("Upload a new version with parameters: ");
+                            sb.append("version number=");
+                            sb.append(versionHidden.getValue());
+                            sb.append(" ; file id=");
+                            sb.append(idHidden.getValue());
+                            sb.append(" ; file name=");
+                            sb.append(nameHidden.getValue());
+                            sb.append(" ; author id=");
+                            sb.append(authorHidden.getValue());
+                            sb.append(" ; allow empty=");
+                            sb.append(emptyHidden.getValue());
 
-        public VersionUploadWindow() {
+                            Log.debug(sb.toString());
+                        }
 
-            // Creates the upload field and upload button.
-            uploadField = new FileUploadField();
-            uploadField.setFieldLabel(I18N.CONSTANTS.flexibleElementFilesListUploadVersion());
-            uploadField.setName(FileUploadUtils.DOCUMENT_CONTENT);
-
-            uploadButton = new Button(I18N.CONSTANTS.flexibleElementFilesListUpload());
-            uploadButton.setEnabled(false);
-
-            final ContentPanel uploadPanel = new ContentPanel();
-            uploadPanel.setBodyBorder(false);
-            uploadPanel.setHeaderVisible(false);
-            uploadPanel.setLayout(new HBoxLayout());
-
-            final Label addVersionLabel = new Label(I18N.CONSTANTS.flexibleElementFilesListUploadVersion());
-            addVersionLabel.addStyleName("flexibility-element-label");
-            uploadPanel.add(addVersionLabel, new HBoxLayoutData(new Margins(4, 5, 0, 0)));
-            final HBoxLayoutData flex = new HBoxLayoutData(new Margins(0, 5, 0, 0));
-            flex.setFlex(1);
-
-            uploadPanel.add(uploadField, flex);
-            uploadPanel.add(uploadButton);
-
-            final ContentPanel commentsPanel = new ContentPanel();
-            commentsPanel.setBodyBorder(false);
-            commentsPanel.setHeaderVisible(false);
-            commentsPanel.setLayout(new VBoxLayout());
-            commentsPanel.setHeight(75);
-
-            final Label commentsLabel = new Label(I18N.CONSTANTS.flexibleElementFilesListComments());
-            commentsLabel.addStyleName("flexibility-element-label");
-            commentsLabel.setLabelFor("VersionUploadWindowCommentsArea-input");
-
-            commentsArea = new TextArea();
-            commentsArea.setId("VersionUploadWindowCommentsArea");
-            commentsArea.setName(FileUploadUtils.DOCUMENT_COMMENTS);
-            commentsArea.setWidth("100%");
-            commentsArea.setHeight(55);
-
-            commentsPanel.setTopComponent(commentsLabel);
-            commentsPanel.add(commentsArea, new VBoxLayoutData(new Margins(3, 0, 0, 0)));
-
-            uploadFormPanel = new FormPanel();
-            uploadFormPanel.setBodyBorder(false);
-            uploadFormPanel.setHeaderVisible(false);
-            uploadFormPanel.setPadding(0);
-            uploadFormPanel.setEncoding(Encoding.MULTIPART);
-            uploadFormPanel.setMethod(Method.POST);
-            uploadFormPanel.setAction(GWT.getModuleBaseURL() + "upload");
-
-            idHidden = new HiddenField<String>();
-            idHidden.setName(FileUploadUtils.DOCUMENT_ID);
-
-            authorHidden = new HiddenField<String>();
-            authorHidden.setName(FileUploadUtils.DOCUMENT_AUTHOR);
-
-            versionHidden = new HiddenField<String>();
-            versionHidden.setName(FileUploadUtils.DOCUMENT_VERSION);
-
-            emptyHidden = new HiddenField<String>();
-            emptyHidden.setName(FileUploadUtils.CHECK_EMPTY);
-
-            uploadFormPanel.add(uploadPanel);
-            uploadFormPanel.add(commentsPanel);
-            uploadFormPanel.add(authorHidden);
-            uploadFormPanel.add(idHidden);
-            uploadFormPanel.add(versionHidden);
-            uploadFormPanel.add(emptyHidden);
-
-            // Manages upload button activations.
-            uploadField.addListener(Events.OnChange, new Listener<ComponentEvent>() {
-                @Override
-                public void handleEvent(ComponentEvent be) {
-                    uploadButton.setEnabled(uploadField.getValue() != null && !uploadField.getValue().trim().equals(""));
-                }
-            });
-
-            uploadButton.addListener(Events.OnClick, new Listener<ButtonEvent>() {
-
-                @Override
-                public void handleEvent(ButtonEvent be) {
-
-                    // Set hidden fields values.
-                    idHidden.setValue(String.valueOf(file.getId()));
-                    authorHidden.setValue(String.valueOf(authentication.getUserId()));
-                    versionHidden.setValue(String.valueOf(nextVersionNumber));
-                    emptyHidden.setValue("true");
-
-                    // Debug form hidden values.
-                    if (Log.isDebugEnabled()) {
-
-                        final StringBuilder sb = new StringBuilder();
-                        sb.append("Upload a new version with parameters: ");
-                        sb.append("version number=");
-                        sb.append(versionHidden.getValue());
-                        sb.append(" ; file id=");
-                        sb.append(idHidden.getValue());
-                        sb.append(" ; author id=");
-                        sb.append(authorHidden.getValue());
-                        sb.append(" ; allow empty=");
-                        sb.append(emptyHidden.getValue());
-
-                        Log.debug(sb.toString());
+                        // Submits the form.
+                        uploadFormPanel.submit();
                     }
+                });
 
-                    // Freezes upload fields.
-                    uploadField.setEnabled(false);
-                    uploadButton.setEnabled(false);
+                uploadFormPanel.addListener(Events.Submit, new Listener<FormEvent>() {
 
-                    // Submits the form.
-                    uploadFormPanel.submit();
-                }
-            });
+                    @Override
+                    public void handleEvent(FormEvent be) {
 
-            uploadFormPanel.addListener(Events.Submit, new Listener<FormEvent>() {
+                        // Updates the widget for the new value.
+                        updateComponentAfterUpload(be);
 
-                @Override
-                public void handleEvent(FormEvent be) {
+                        // Reset upload fields.
+                        uploadField.reset();
+                    }
+                });
 
-                    // Updates the widget for the new value.
-                    updateComponentAfterUpload(be);
-
-                    // Reset upload fields.
-                    uploadField.setEnabled(true);
-                    uploadField.reset();
-
-                    window.hide();
-                }
-            });
-
-            // Creates the properties panel.
-            final ContentPanel propertiesPanel = new ContentPanel();
-            propertiesPanel.setHeading(I18N.CONSTANTS.flexibleElementFilesListProperties());
-            propertiesPanel.setLayout(new FlowLayout());
-
-            final com.google.gwt.user.client.ui.Grid grid = new com.google.gwt.user.client.ui.Grid(1, 2);
-            grid.getColumnFormatter().setWidth(0, "128px");
-            grid.setWidth("100%");
-
-            // Displays file's name.
-            final Label nameLabel = new Label(I18N.CONSTANTS.flexibleElementFilesListNextVersion() + ": ");
-            nameLabel.addStyleName("flexibility-element-field-label");
-            grid.setWidget(0, 0, nameLabel);
-            numberLabel = new Label();
-            grid.setWidget(0, 1, numberLabel);
-            propertiesPanel.add(grid);
-
-            // Creates the main panel of the window.
-            final ContentPanel mainPanel = new ContentPanel();
-            mainPanel.setHeaderVisible(false);
-            mainPanel.setLayout(new FlowLayout());
-
-            mainPanel.add(propertiesPanel);
-            mainPanel.add(uploadFormPanel, new FlowData(new Margins(3, 5, 3, 5)));
-
-            // Builds window.
-            window = new Window();
-            window.setSize(500, 180);
-            window.setPlain(true);
-            window.setModal(true);
-            window.setBlinkModal(true);
-            window.setLayout(new FitLayout());
-
-            window.add(mainPanel);
-        }
-
-        /**
-         * Shows the windows for the given file.
-         * 
-         * @param file
-         *            The file.
-         */
-        public void show(FileDTO file) {
-
-            if (file == null) {
-                return;
+                return uploadFormPanel;
             }
+        });
 
-            this.file = file;
+        // Versions list.
+        final ColumnConfig historyColumn = new ColumnConfig();
+        historyColumn.setId("history");
+        historyColumn.setHeader(null);
+        historyColumn.setWidth(20);
+        historyColumn.setSortable(false);
+        historyColumn.setRenderer(new GridCellRenderer<FileDTO>() {
+            @Override
+            public Object render(final FileDTO model, String property, ColumnData config, int rowIndex, int colIndex,
+                    ListStore<FileDTO> store, Grid<FileDTO> grid) {
 
-            // Configures the window parameters to be consistent with the new
-            // displayed file.
-            nextVersionNumber = this.file.getLastVersion().getVersionNumber() + 1;
+                final com.google.gwt.user.client.ui.Label historyButton = new com.google.gwt.user.client.ui.Label(
+                        I18N.CONSTANTS.flexibleElementFilesListHistory());
+                historyButton.addStyleName("flexibility-action");
+                historyButton.addClickHandler(new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent e) {
 
-            numberLabel.setText("#" + String.valueOf(nextVersionNumber));
-            commentsArea.reset();
-            window.setHeading(I18N.CONSTANTS.flexibleElementFilesListUploadVersion());
+                        final FileDetailsWindow versionsWindow = new FileDetailsWindow(dispatcher);
+                        versionsWindow.addListener(new FileDetailsWindow.FileDetailsWindowListener() {
+                            @Override
+                            public void versionDeleted(FileVersionDTO version) {
+                                updateComponent();
+                            }
+                        });
 
-            window.show();
-        }
+                        versionsWindow.show(model);
+                    }
+                });
+
+                return historyButton;
+            }
+        });
+
+        // Delete.
+        final ColumnConfig deleteColumn = new ColumnConfig();
+        deleteColumn.setId("delete");
+        deleteColumn.setHeader(null);
+        deleteColumn.setWidth(10);
+        deleteColumn.setSortable(false);
+        deleteColumn.setRenderer(new GridCellRenderer<FileDTO>() {
+            @Override
+            public Object render(final FileDTO model, String property, ColumnData config, int rowIndex, int colIndex,
+                    final ListStore<FileDTO> store, Grid<FileDTO> grid) {
+
+                final Image image = IconImageBundle.ICONS.remove().createImage();
+                image.setTitle(I18N.CONSTANTS.remove());
+                image.addStyleName("flexibility-action");
+                image.addClickHandler(new ClickHandler() {
+
+                    @Override
+                    public void onClick(ClickEvent event) {
+
+                        // Asks the client to confirm the file removal.
+                        MessageBox.confirm(I18N.CONSTANTS.flexibleElementFilesListDelete(),
+                                I18N.MESSAGES.flexibleElementFilesListConfirmDelete(model.getName()),
+                                new Listener<MessageBoxEvent>() {
+                                    @Override
+                                    public void handleEvent(MessageBoxEvent ce) {
+
+                                        if (Dialog.YES.equals(ce.getButtonClicked().getItemId())) {
+
+                                            // Deletes it.
+                                            dispatcher.execute(new Delete(model), new MaskingAsyncMonitor(mainPanel,
+                                                    I18N.CONSTANTS.loading()), new AsyncCallback<VoidResult>() {
+
+                                                public void onFailure(Throwable caught) {
+                                                    MessageBox.alert(
+                                                            I18N.CONSTANTS.flexibleElementFilesListDeleteError(),
+                                                            I18N.CONSTANTS.flexibleElementFilesListDeleteErrorDetails(),
+                                                            null);
+                                                }
+
+                                                public void onSuccess(VoidResult result) {
+                                                    store.remove(model);
+                                                    if (store.getCount() == 0) {
+                                                        handlerManager.fireEvent(new RequiredValueEvent(false));
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    }
+                                });
+
+                    }
+                });
+
+                return image;
+            }
+        });
+
+        return new ColumnConfig[] { dateColumn, nameColumn, authorColumn, versionColumn, addVersionColumn,
+                historyColumn, deleteColumn };
     }
 
     /**
@@ -847,14 +608,39 @@ public class FilesListElementDTO extends FlexibleElementDTO {
      */
     private static final class FileDetailsWindow {
 
+        /**
+         * Listener.
+         * 
+         * @author tmi
+         * 
+         */
         private interface FileDetailsWindowListener {
+
+            /**
+             * Method called when a version is deleted.
+             * 
+             * @param version
+             *            The deleted version.
+             */
             public void versionDeleted(FileVersionDTO version);
         }
+
+        private final Dispatcher dispatcher;
 
         /**
          * GXT window.
          */
         private final Window window;
+
+        /**
+         * Window main panel.
+         */
+        private final ContentPanel mainPanel;
+
+        /**
+         * The versiions grid.
+         */
+        private final FlexibleGrid<FileVersionDTO> grid;
 
         /**
          * The current displayed file.
@@ -867,15 +653,8 @@ public class FilesListElementDTO extends FlexibleElementDTO {
         private final ListStore<FileVersionDTO> store;
 
         /**
-         * The grid's content panel.
+         * Listeners
          */
-        private final ContentPanel gridPanel;
-
-        /**
-         * The label containing the file's name.
-         */
-        private final Label nameFieldLabel;
-
         private final ArrayList<FileDetailsWindowListener> listeners = new ArrayList<FileDetailsWindowListener>();
 
         /**
@@ -883,151 +662,157 @@ public class FilesListElementDTO extends FlexibleElementDTO {
          */
         public FileDetailsWindow(final Dispatcher dispatcher) {
 
-            // Creates actions menu to manage the files list.
-            final Button downloadButton = new Button(I18N.CONSTANTS.flexibleElementFilesListDownload());
-            downloadButton.setEnabled(false);
+            this.dispatcher = dispatcher;
 
-            // Uses a "hidden form" to manages the downloads to be able to catch
-            // server errors.
-            final FormPanel downloadFormPanel = new FormPanel();
-            downloadFormPanel.setBodyBorder(false);
-            downloadFormPanel.setHeaderVisible(false);
-            downloadFormPanel.setPadding(0);
-            downloadFormPanel.setEncoding(Encoding.URLENCODED);
-            downloadFormPanel.setMethod(Method.GET);
-            downloadFormPanel.setAction(GWT.getModuleBaseURL() + "download");
+            store = new ListStore<FileVersionDTO>();
 
-            final HiddenField<String> fileIdHidden = new HiddenField<String>();
-            fileIdHidden.setName(FileUploadUtils.DOCUMENT_ID);
+            grid = new FlexibleGrid<FileVersionDTO>(store, null, 10, getColumnModel());
+            grid.setAutoExpandColumn("name");
 
-            final HiddenField<String> versionHidden = new HiddenField<String>();
-            versionHidden.setName(FileUploadUtils.DOCUMENT_VERSION);
-
-            downloadFormPanel.add(downloadButton);
-            downloadFormPanel.add(fileIdHidden);
-            downloadFormPanel.add(versionHidden);
-
-            // Submit complete handler to catch server errors.
-            downloadFormPanel.addListener(Events.Submit, new Listener<FormEvent>() {
-
+            store.setStoreSorter(new StoreSorter<FileVersionDTO>() {
                 @Override
-                public void handleEvent(FormEvent be) {
+                public int compare(Store<FileVersionDTO> store, FileVersionDTO m1, FileVersionDTO m2, String property) {
 
-                    if (!"".equals(be.getResultHtml())) {
-                        MessageBox.info(I18N.CONSTANTS.flexibleElementFilesListDownloadError(),
-                                I18N.CONSTANTS.flexibleElementFilesListDownloadErrorDetails(), null);
+                    if ("author".equals(property)) {
+
+                        final String authorM1 = m1.getAuthorFirstName() != null ? m1.getAuthorFirstName() + " "
+                                + m1.getAuthorName() : m1.getAuthorName();
+                        final String authorM2 = m2.getAuthorFirstName() != null ? m2.getAuthorFirstName() + " "
+                                + m2.getAuthorName() : m2.getAuthorName();
+
+                        return authorM1.compareTo(authorM2);
+                    } else if ("name".equals(property)) {
+
+                        final String title1 = m1.getName() + '.' + m1.getExtension();
+                        final String title2 = m2.getName() + '.' + m2.getExtension();
+
+                        return title1.compareTo(title2);
+                    } else if ("size".equals(property)) {
+
+                        return new Long(m1.getSize()).compareTo(m2.getSize());
+                    }
+
+                    else {
+                        return super.compare(store, m1, m2, property);
                     }
                 }
             });
 
-            final Button deleteButton = new Button(I18N.CONSTANTS.remove());
-            deleteButton.setEnabled(false);
-
-            final ToolBar actionsToolBar = new ToolBar();
-            actionsToolBar.add(downloadFormPanel);
-            actionsToolBar.add(new SeparatorToolItem());
-            actionsToolBar.add(deleteButton);
-
-            // Grid plugins.
-            final CheckBoxSelectionModel<FileVersionDTO> selectionModel = new CheckBoxSelectionModel<FileVersionDTO>();
-            selectionModel.setSelectionMode(SelectionMode.SINGLE);
-
-            // Builds the versions grid.
-            store = new ListStore<FileVersionDTO>();
-            final Grid<FileVersionDTO> versionsGrid = new Grid<FileVersionDTO>(store, getColumnModel(selectionModel));
-            versionsGrid.setAutoExpandColumn("author");
-            versionsGrid.setBorders(false);
-            versionsGrid.getView().setForceFit(true);
-            versionsGrid.setSelectionModel(selectionModel);
-            versionsGrid.addPlugin(selectionModel);
-
-            // Creates the grid main panel.
-            gridPanel = new ContentPanel();
-            gridPanel.setHeaderVisible(true);
-            gridPanel.setLayout(new FitLayout());
-
-            gridPanel.setTopComponent(actionsToolBar);
-            gridPanel.add(versionsGrid);
-
-            // Creates the properties panel.
-            final ContentPanel propertiesPanel = new ContentPanel();
-            propertiesPanel.setHeading(I18N.CONSTANTS.flexibleElementFilesListProperties());
-            propertiesPanel.setLayout(new FlowLayout());
-
-            final com.google.gwt.user.client.ui.Grid grid = new com.google.gwt.user.client.ui.Grid(1, 2);
-            grid.getColumnFormatter().setWidth(0, "100px");
-            grid.setWidth("100%");
-
-            // Displays file's name.
-            final Label nameLabel = new Label(I18N.CONSTANTS.flexibleElementFilesListName() + ": ");
-            nameLabel.addStyleName("flexibility-element-field-label");
-            grid.setWidget(0, 0, nameLabel);
-            nameFieldLabel = new Label();
-            grid.setWidget(0, 1, nameFieldLabel);
-            propertiesPanel.add(grid);
-
-            // Creates the main panel.
-            final ContentPanel mainPanel = new ContentPanel();
+            mainPanel = new ContentPanel();
             mainPanel.setHeaderVisible(false);
-            mainPanel.setLayout(new FitLayout());
-
-            mainPanel.setTopComponent(propertiesPanel);
-            mainPanel.add(gridPanel, new FitData(new Margins(0, 0, 0, 0)));
-
+            mainPanel.setBodyBorder(false);
+            mainPanel.add(grid);
+            mainPanel.setScrollMode(Scroll.AUTOY);
+            
             // Builds window.
             window = new Window();
-            window.setSize(500, 300);
+            window.setSize(550, 250);
             window.setPlain(true);
             window.setModal(true);
             window.setBlinkModal(true);
+            window.setResizable(false);
             window.setLayout(new FitLayout());
 
             window.add(mainPanel);
+        }
 
-            // Manages action buttons activations.
-            selectionModel.addSelectionChangedListener(new SelectionChangedListener<FileVersionDTO>() {
+        /**
+         * Defines the column model for the versions list grid.
+         * 
+         * @return The column model.
+         */
+        private ColumnConfig[] getColumnModel() {
 
+            // Version's number.
+            final ColumnConfig versionColumn = new ColumnConfig();
+            versionColumn.setId("versionNumber");
+            versionColumn.setHeader(I18N.CONSTANTS.flexibleElementFilesListVersionNumber());
+            versionColumn.setWidth(55);
+
+            // Version's add date.
+            final ColumnConfig dateColumn = new ColumnConfig();
+            dateColumn.setId("addedDate");
+            dateColumn.setHeader(I18N.CONSTANTS.flexibleElementFilesListDate());
+            dateColumn.setWidth(110);
+            dateColumn.setDateTimeFormat(DateTimeFormat.getFormat("dd/MM/yyyy HH:mm"));
+
+            // Version's author.
+            final ColumnConfig authorColumn = new ColumnConfig();
+            authorColumn.setId("author");
+            authorColumn.setHeader(I18N.CONSTANTS.flexibleElementFilesListAuthor());
+            authorColumn.setWidth(100);
+            authorColumn.setRenderer(new GridCellRenderer<FileVersionDTO>() {
                 @Override
-                public void selectionChanged(SelectionChangedEvent<FileVersionDTO> se) {
-                    final List<FileVersionDTO> selection = se.getSelection();
-                    final boolean enabledState = selection != null && !selection.isEmpty();
-                    downloadButton.setEnabled(enabledState);
-                    // A version can be deleted only if it isn't the only one.
-                    deleteButton.setEnabled(enabledState && file.getVersionsDTO().size() > 1);
+                public Object render(FileVersionDTO model, String property, ColumnData config, int rowIndex,
+                        int colIndex, ListStore<FileVersionDTO> store, Grid<FileVersionDTO> grid) {
+                    return model.getAuthorFirstName() != null ? model.getAuthorFirstName() + " "
+                            + model.getAuthorName() : model.getAuthorName();
                 }
             });
 
-            // Buttons listeners.
-            downloadButton.addListener(Events.OnClick, new Listener<ButtonEvent>() {
+            // Version's name.
+            final ColumnConfig nameColumn = new ColumnConfig();
+            nameColumn.setId("name");
+            nameColumn.setHeader(I18N.CONSTANTS.flexibleElementFilesListName());
+            nameColumn.setWidth(100);
+            nameColumn.setRenderer(new GridCellRenderer<FileVersionDTO>() {
                 @Override
-                public void handleEvent(ButtonEvent be) {
-
-                    // Sets the form hidden fields values.
-                    fileIdHidden.setValue(String.valueOf(file.getId()));
-                    versionHidden.setValue(String.valueOf(selectionModel.getSelectedItem().getVersionNumber()));
-
-                    // Submits the form.
-                    downloadFormPanel.submit();
+                public Object render(FileVersionDTO model, String property, ColumnData config, int rowIndex,
+                        int colIndex, ListStore<FileVersionDTO> store, Grid<FileVersionDTO> grid) {
+                    return createDownloadLink(file, model.getVersionNumber());
                 }
             });
 
-            deleteButton.addListener(Events.OnClick, new Listener<ButtonEvent>() {
+            // Version's size.
+            final ColumnConfig sizeColumn = new ColumnConfig();
+            sizeColumn.setId("size");
+            sizeColumn.setHeader(I18N.CONSTANTS.flexibleElementFilesListSize());
+            sizeColumn.setWidth(60);
+            sizeColumn.setRenderer(new GridCellRenderer<FileVersionDTO>() {
                 @Override
-                public void handleEvent(ButtonEvent be) {
+                public Object render(FileVersionDTO model, String property, ColumnData config, int rowIndex,
+                        int colIndex, ListStore<FileVersionDTO> store, Grid<FileVersionDTO> grid) {
+                    final Size size = Size.convertToBestUnit(new Size(model.getSize(), Size.SizeUnit.BYTE));
+                    return Math.round(size.getSize()) + " " + Size.SizeUnit.getTranslation(size.getUnit());
+                }
+            });
 
-                    // Gets the selected version.
-                    final FileVersionDTO version = selectionModel.getSelectedItem();
+            // Delete.
+            final ColumnConfig deleteColumn = new ColumnConfig();
+            deleteColumn.setId("delete");
+            deleteColumn.setHeader(null);
+            deleteColumn.setWidth(25);
+            deleteColumn.setSortable(false);
+            deleteColumn.setRenderer(new GridCellRenderer<FileVersionDTO>() {
+                @Override
+                public Object render(final FileVersionDTO model, String property, ColumnData config, int rowIndex,
+                        int colIndex, final ListStore<FileVersionDTO> store, Grid<FileVersionDTO> grid) {
 
-                    // Asks the client to confirm the version deletion.
-                    MessageBox.confirm(I18N.CONSTANTS.flexibleElementFilesListVersionDelete(), I18N.MESSAGES
-                            .flexibleElementFilesListConfirmVersionDelete(String.valueOf(version.getVersionNumber())),
-                            new Listener<MessageBoxEvent>() {
+                    final Image image = IconImageBundle.ICONS.remove().createImage();
+                    image.setTitle(I18N.CONSTANTS.remove());
+                    image.addStyleName("flexibility-action");
+                    image.addClickHandler(new ClickHandler() {
+
+                        @Override
+                        public void onClick(ClickEvent event) {
+
+                            // Do not delete a single version.
+                            if (store.getCount() <= 1) {
+                                MessageBox.alert(I18N.CONSTANTS.flexibleElementFilesListVersionDeleteForbidden(),
+                                        I18N.CONSTANTS.flexibleElementFilesListVersionDeleteForbiddenDetails(), null);
+                                return;
+                            }
+
+                            // Asks the client to confirm the version deletion.
+                            MessageBox.confirm(I18N.CONSTANTS.flexibleElementFilesListVersionDelete(), I18N.MESSAGES
+                                    .flexibleElementFilesListConfirmVersionDelete(String.valueOf(model
+                                            .getVersionNumber())), new Listener<MessageBoxEvent>() {
                                 public void handleEvent(MessageBoxEvent ce) {
 
                                     if (Dialog.YES.equals(ce.getButtonClicked().getItemId())) {
 
                                         // Deletes it.
-                                        dispatcher.execute(new Delete(version), new MaskingAsyncMonitor(versionsGrid,
+                                        dispatcher.execute(new Delete(model), new MaskingAsyncMonitor(window,
                                                 I18N.CONSTANTS.loading()), new AsyncCallback<VoidResult>() {
 
                                             public void onFailure(Throwable caught) {
@@ -1037,75 +822,22 @@ public class FilesListElementDTO extends FlexibleElementDTO {
                                             }
 
                                             public void onSuccess(VoidResult result) {
-                                                store.remove(version);
-                                                fireVersionDeleted(version);
+                                                store.remove(model);
+                                                fireVersionDeleted(model);
                                             }
                                         });
                                     }
                                 }
                             });
+
+                        }
+                    });
+
+                    return image;
                 }
             });
-        }
 
-        /**
-         * Defines the column model for the versions list grid.
-         * 
-         * @param selectionModel
-         *            The grid's selection model.
-         * @return The column model.
-         */
-        private ColumnModel getColumnModel(CheckBoxSelectionModel<FileVersionDTO> selectionModel) {
-
-            final List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
-
-            columnConfigs.add(selectionModel.getColumn());
-
-            // Version's number.
-            ColumnConfig column = new ColumnConfig();
-            column.setId("versionNumber");
-            column.setHeader(I18N.CONSTANTS.flexibleElementFilesListVersionNumber());
-            column.setWidth(55);
-            columnConfigs.add(column);
-
-            // Version's add date.
-            column = new ColumnConfig();
-            column.setId("addedDate");
-            column.setHeader(I18N.CONSTANTS.flexibleElementFilesListDate());
-            column.setWidth(110);
-            column.setDateTimeFormat(DateTimeFormat.getFormat("dd/MM/yyyy HH:mm"));
-            columnConfigs.add(column);
-
-            // File's author.
-            column = new ColumnConfig();
-            column.setId("author");
-            column.setHeader(I18N.CONSTANTS.flexibleElementFilesListAuthor());
-            column.setWidth(100);
-            column.setRenderer(new GridCellRenderer<FileVersionDTO>() {
-                @Override
-                public Object render(FileVersionDTO model, String property, ColumnData config, int rowIndex,
-                        int colIndex, ListStore<FileVersionDTO> store, Grid<FileVersionDTO> grid) {
-                    return model.getAuthorFirstName() + " " + model.getAuthorName();
-                }
-            });
-            columnConfigs.add(column);
-
-            // Version's size.
-            column = new ColumnConfig();
-            column.setId("size");
-            column.setHeader(I18N.CONSTANTS.flexibleElementFilesListSize());
-            column.setWidth(60);
-            column.setRenderer(new GridCellRenderer<FileVersionDTO>() {
-                @Override
-                public Object render(FileVersionDTO model, String property, ColumnData config, int rowIndex,
-                        int colIndex, ListStore<FileVersionDTO> store, Grid<FileVersionDTO> grid) {
-                    final Size size = Size.convertToBestUnit(new Size(model.getSize(), Size.SizeUnit.BYTE));
-                    return Math.round(size.getSize()) + " " + Size.SizeUnit.getTranslation(size.getUnit());
-                }
-            });
-            columnConfigs.add(column);
-
-            return new ColumnModel(columnConfigs);
+            return new ColumnConfig[] { versionColumn, dateColumn, authorColumn, nameColumn, sizeColumn, deleteColumn };
         }
 
         /**
@@ -1121,34 +853,124 @@ public class FilesListElementDTO extends FlexibleElementDTO {
             }
 
             this.file = file;
+            final FileVersionDTO lastVersion = file.getLastVersion();
 
             // Clears the existing versions.
             store.removeAll();
 
             // Adds each version to the store to be displayed in the grid.
-            int count = 0;
-            for (FileVersionDTO version : this.file.getVersionsDTO()) {
+            for (final FileVersionDTO version : this.file.getVersionsDTO()) {
                 store.add(version);
-                count++;
             }
+
+            store.sort("versionNumber", SortDir.DESC);
 
             // Configures the window parameters to be consistent with the new
             // displayed file.
-            nameFieldLabel.setText(this.file.getName());
-            gridPanel.setHeading(I18N.CONSTANTS.flexibleElementFilesListVersionsList() + " (" + count + ")");
-            window.setHeading(I18N.CONSTANTS.flexibleElementFilesListFileDetails() + " - " + this.file.getName());
+            window.setHeading(I18N.CONSTANTS.flexibleElementFilesListHistory() + " - " + lastVersion.getName() + '.'
+                    + lastVersion.getExtension());
             window.show();
         }
 
+        /**
+         * Adds a listener to the window.
+         * 
+         * @param listener
+         *            The new listener.
+         */
         public void addListener(FileDetailsWindowListener listener) {
             listeners.add(listener);
         }
 
+        /**
+         * Method called when a version is deleted.
+         * 
+         * @param version
+         *            The deleted version.
+         */
         protected void fireVersionDeleted(FileVersionDTO version) {
             for (final FileDetailsWindowListener listener : listeners) {
                 listener.versionDeleted(version);
             }
         }
+    }
+
+    /**
+     * Create a download link for the given file.
+     * 
+     * @param file
+     *            The file to download.
+     * @return The download link.
+     */
+    private static Component createDownloadLink(final FileDTO file, final Integer version) {
+
+        final FileVersionDTO versionDTO;
+        if (version != null) {
+            versionDTO = file.getVersion(version);
+        } else {
+            versionDTO = file.getLastVersion();
+        }
+
+        if (versionDTO == null) {
+            return null;
+        }
+
+        // Uses a "hidden form" to manages the downloads to be able to
+        // catch server errors.
+        final FormPanel downloadFormPanel = new FormPanel();
+        downloadFormPanel.setBodyBorder(false);
+        downloadFormPanel.setHeaderVisible(false);
+        downloadFormPanel.setPadding(0);
+        downloadFormPanel.setEncoding(Encoding.URLENCODED);
+        downloadFormPanel.setMethod(Method.GET);
+        downloadFormPanel.setAction(GWT.getModuleBaseURL() + "download");
+
+        final com.google.gwt.user.client.ui.Label downloadButton = new com.google.gwt.user.client.ui.Label(
+                versionDTO.getName() + '.' + versionDTO.getExtension());
+        downloadButton.addStyleName("flexibility-action");
+
+        // File's id.
+        final HiddenField<String> fileIdHidden = new HiddenField<String>();
+        fileIdHidden.setName(FileUploadUtils.DOCUMENT_ID);
+        fileIdHidden.setValue(String.valueOf(file.getId()));
+
+        downloadFormPanel.add(downloadButton);
+        downloadFormPanel.add(fileIdHidden);
+
+        // File's version if any.
+        if (version != null) {
+
+            final HiddenField<String> versionHidden = new HiddenField<String>();
+            versionHidden.setName(FileUploadUtils.DOCUMENT_VERSION);
+            versionHidden.setValue(String.valueOf(version));
+
+            downloadFormPanel.add(versionHidden);
+        }
+
+        // Submit complete handler to catch server errors.
+        downloadFormPanel.addListener(Events.Submit, new Listener<FormEvent>() {
+
+            @Override
+            public void handleEvent(FormEvent be) {
+
+                if (!"".equals(be.getResultHtml())) {
+                    MessageBox.info(I18N.CONSTANTS.flexibleElementFilesListDownloadError(),
+                            I18N.CONSTANTS.flexibleElementFilesListDownloadErrorDetails(), null);
+                }
+            }
+        });
+
+        // Buttons listeners.
+        downloadButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent e) {
+
+                // Submits the form.
+                downloadFormPanel.submit();
+            }
+        });
+
+        return downloadFormPanel;
     }
 
     /**

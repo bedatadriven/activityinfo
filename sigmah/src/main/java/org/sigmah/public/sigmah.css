@@ -432,9 +432,9 @@ body {
 }
 
 .calendar-fullday-event {
-    font-weight: bold;
-    color: white;
-    background-color: black;
+	font-weight: bold;
+	color: white;
+	background-color: black;
 }
 
 .calendar-event-date {
@@ -451,7 +451,7 @@ body {
 }
 
 .calendar-fullday-event-1 {
-    background-color: #EE9329;
+	background-color: #EE9329;
 }
 
 .calendar-event-2 {
@@ -459,7 +459,7 @@ body {
 }
 
 .calendar-fullday-event-2 {
-    background-color: #1c61d9;
+	background-color: #1c61d9;
 }
 
 .calendar-event-3 {
@@ -467,7 +467,7 @@ body {
 }
 
 .calendar-fullday-event-3 {
-    background-color: #8cbf40;
+	background-color: #8cbf40;
 }
 
 .calendar-event-4 {
@@ -475,7 +475,7 @@ body {
 }
 
 .calendar-fullday-event-4 {
-    background-color: #ad2d2d;
+	background-color: #ad2d2d;
 }
 
 .calendar-event-5 {
@@ -483,7 +483,7 @@ body {
 }
 
 .calendar-fullday-event-5 {
-    background-color: #9643a5;
+	background-color: #9643a5;
 }
 
 .calendar-event-6 {
@@ -491,7 +491,7 @@ body {
 }
 
 .calendar-fullday-event-6 {
-    background-color: #737373;
+	background-color: #737373;
 }
 
 /*
@@ -519,7 +519,7 @@ body {
 	background-color: white;
 	border: 1px solid darkgrey;
 	font-size: 10pt;
-        padding: 4px;
+	padding: 4px;
 }
 
 .calendar-popup-header {
@@ -527,15 +527,14 @@ body {
 }
 
 .calendar-popup-date {
-    font-size: 9pt;
-    font-weight: bold;
+	font-size: 9pt;
+	font-weight: bold;
 }
 
 .calendar-popup-description {
-    padding-top: 4px;
-    padding-bottom: 4px;
-
-    whitespace: pre !important;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	whitespace: pre !important;
 }
 
 /* ------------------------------------------------------------------ Ext-GWT */
@@ -571,6 +570,15 @@ body {
 .flexibility-text-field {
 	padding-left: 0;
 	padding-right: 0;
+}
+
+.flexibility-action {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.flexibility-action-iconable {
+	padding-left: 4px;
 }
 
 /* ----------------------------------------------------- GWT HTML Table */
@@ -609,6 +617,7 @@ body {
 }
 
 .html-table-cell-last {
+	
 }
 
 /* ----------------------------------------------- Flex table view */
@@ -625,15 +634,13 @@ body {
 	border-top: 0;
 }
 
-/* ----------------------------------------------- Log frame */
-/*
+/* ----------------------------------------------- Log frame */ /*
 .logframe-grid-main-panel .x-box-inner {
 	overflow-y: scroll;
 }
 */
-
 .logframe-body {
-    overflow-y: scroll;
+	overflow-y: scroll;
 }
 
 .logframe-grid-add-action,.logframe-grid-add-group-action {

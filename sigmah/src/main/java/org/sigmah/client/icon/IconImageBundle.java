@@ -128,4 +128,8 @@ public interface IconImageBundle extends ImageBundle {
     AbstractImagePrototype up();
     
     AbstractImagePrototype down();
+    
+    AbstractImagePrototype attach();
+    
+    AbstractImagePrototype remove();
 }

@@ -41,6 +41,8 @@ public class FileVersion implements Serializable, Deleteable {
     private Date addedDate;
     private Long size;
     private String comments;
+    private String name;
+    private String extension;
     // Deletion informations.
     private Date dateDeleted;
 
@@ -119,6 +121,24 @@ public class FileVersion implements Serializable, Deleteable {
     @Column(name = "comments", length = 4096, nullable = true)
     public String getComments() {
         return comments;
+    }
+
+    @Column(name = "name", nullable = false, length = 4096)
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Column(name = "extension", nullable = true, length = 16)
+    public String getExtension() {
+        return extension;
+    }
+
+    public void setExtension(String extension) {
+        this.extension = extension;
     }
 
     @Column

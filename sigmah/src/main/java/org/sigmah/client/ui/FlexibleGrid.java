@@ -43,14 +43,37 @@ public class FlexibleGrid<M extends ModelData> extends EditorGrid<M> {
      *            The columns model configurations.
      */
     public FlexibleGrid(ListStore<M> store, GridSelectionModel<M> selectionModel, ColumnConfig... columns) {
+        this(store, selectionModel, -1, columns);
+    }
+
+    /**
+     * Creates a new grid.
+     * 
+     * @param store
+     *            The data store.
+     * @param selectionModel
+     *            If the grid must implements a default checkbox selection
+     *            model.
+     * @param visibleElementsCount
+     *            The number of elements displayed.
+     * @param columns
+     *            The columns model configurations.
+     */
+    public FlexibleGrid(ListStore<M> store, GridSelectionModel<M> selectionModel, int visibleElementsCount,
+            ColumnConfig... columns) {
         super(store, new ColumnModel(Arrays.asList(columns)));
+
+        this.visibleElementsCount = visibleElementsCount;
 
         // Some default values.
         this.getView().setForceFit(true);
         setBorders(false);
-        setSelectionModel(selectionModel);
-        if (selectionModel instanceof CheckBoxSelectionModel) {
-            addPlugin((CheckBoxSelectionModel<M>) selectionModel);
+
+        if (selectionModel != null) {
+            setSelectionModel(selectionModel);
+            if (selectionModel instanceof CheckBoxSelectionModel) {
+                addPlugin((CheckBoxSelectionModel<M>) selectionModel);
+            }
         }
 
         // Manages the grid's height adjustments.

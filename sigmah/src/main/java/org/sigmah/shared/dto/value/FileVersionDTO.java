@@ -7,6 +7,7 @@ import org.sigmah.shared.dto.EntityDTO;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
+ * DTO mapping class for entity element.FileVersion.
  * 
  * @author tmi
  * 
@@ -84,5 +85,23 @@ public class FileVersionDTO extends BaseModelData implements EntityDTO {
 
     public void setAuthorFirstName(String authorFirstName) {
         set("authorFirstName", authorFirstName);
+    }
+
+    // Version's name.
+    public String getName() {
+        return get("name");
+    }
+
+    public void setName(String name) {
+        set("name", name);
+    }
+
+    // Version's extension.
+    public String getExtension() {
+        return get("extension");
+    }
+
+    public void setExtension(String extension) {
+        set("extension", extension);
     }
 }

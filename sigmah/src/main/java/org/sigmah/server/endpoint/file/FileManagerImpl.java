@@ -155,10 +155,16 @@ public class FileManagerImpl implements FileManager {
         }
 
         final File file = new File();
-        file.setName(properties.get(FileUploadUtils.DOCUMENT_NAME));
+
+        // Gets the details of the name of the file.
+        final String fullName = properties.get(FileUploadUtils.DOCUMENT_NAME);
+        final String name = getFileCanonicalName(fullName);
+        final String extension = getFileExtension(fullName);
+
+        file.setName(name);
 
         // Creates and adds the new version.
-        file.addVersion(createVersion(1, authorId, content));
+        file.addVersion(createVersion(1, name, extension, authorId, content));
 
         em.persist(file);
 
@@ -295,6 +301,11 @@ public class FileManagerImpl implements FileManager {
             versionNumber = 0;
         }
 
+        // Gets the details of the name of the file.
+        final String fullName = properties.get(FileUploadUtils.DOCUMENT_NAME);
+        final String name = getFileCanonicalName(fullName);
+        final String extension = getFileExtension(fullName);
+
         // Creates and adds the new version.
         final File file = em.find(File.class, Integer.valueOf(id));
 
@@ -302,7 +313,7 @@ public class FileManagerImpl implements FileManager {
             log.debug("[save] Found file: " + file.getName() + ".");
         }
 
-        final FileVersion version = createVersion(versionNumber, authorId, content);
+        final FileVersion version = createVersion(versionNumber, name, extension, authorId, content);
         version.setComments(properties.get(FileUploadUtils.DOCUMENT_COMMENTS));
         file.addVersion(version);
 
@@ -316,14 +327,19 @@ public class FileManagerImpl implements FileManager {
      * 
      * @param versionNumber
      *            The version number.
-     * @param user
+     * @param name
+     *            The version name.
+     * @param extension
+     *            The version extension.
+     * @param authorId
      *            The author id.
      * @param content
      *            The version content.
      * @return The version just created.
      * @throws IOException
      */
-    private FileVersion createVersion(int versionNumber, int authorId, byte[] content) throws IOException {
+    private FileVersion createVersion(int versionNumber, String name, String extension, int authorId, byte[] content)
+            throws IOException {
 
         if (log.isDebugEnabled()) {
             log.debug("[createVersion] Creates a new file version # + " + versionNumber + ".");
@@ -333,6 +349,8 @@ public class FileManagerImpl implements FileManager {
 
         // Sets attributes.
         version.setVersionNumber(versionNumber);
+        version.setName(name);
+        version.setExtension(extension);
         version.setAddedDate(new Date());
         version.setSize(Long.valueOf(content.length));
         final User user = new User();
@@ -411,7 +429,7 @@ public class FileManagerImpl implements FileManager {
         final EntityManager em = injector.getInstance(EntityManager.class);
 
         // Gets file id.
-        long id;
+        int id;
 
         try {
             if (idString == null) {
@@ -509,7 +527,7 @@ public class FileManagerImpl implements FileManager {
         // Physical file for the desired version.
         final java.io.File physicalFile = new java.io.File(repository, lastVersion.getPath());
 
-        return new DonwloadableFile(file.getName(), physicalFile);
+        return new DonwloadableFile(lastVersion.getName() + '.' + lastVersion.getExtension(), physicalFile);
     }
 
     @Override
@@ -522,5 +540,69 @@ public class FileManagerImpl implements FileManager {
         final java.io.File imageFile = new java.io.File(repository, name);
 
         return imageFile;
+    }
+
+    /**
+     * Returns the canonical name of a file. <br/>
+     * For example:
+     * <ul>
+     * <li>myfile.txt -> myfile</li>
+     * <li>myfile.txt.other -> myfile.txt</li>
+     * <li>myfile. -> myfile</li>
+     * <li>myfile -> myfile</li>
+     * </ul>
+     * 
+     * @param fullName
+     *            The file name.
+     * @return The file canonical name.
+     */
+    private static String getFileCanonicalName(String fullName) {
+
+        // Invalid name.
+        if (fullName == null) {
+            return null;
+        }
+
+        // Searches for the last '.' (before the extension).
+        final int index = fullName.lastIndexOf('.');
+
+        // If the file doesn't have an extension, the name is the entire string.
+        if (index == -1) {
+            return fullName;
+        }
+
+        return fullName.substring(0, index);
+    }
+
+    /**
+     * Returns the extension of a file. <br/>
+     * For example:
+     * <ul>
+     * <li>myfile.txt -> txt</li>
+     * <li>myfile.txt.other -> other</li>
+     * <li>myfile. -> <code>null</code></li>
+     * <li>myfile -> <code>null</code></li>
+     * </ul>
+     * 
+     * @param fullName
+     *            The file name.
+     * @return The file extension.
+     */
+    private static String getFileExtension(String fullName) {
+
+        // Invalid name.
+        if (fullName == null) {
+            return null;
+        }
+
+        // Searches for the last '.' (before the extension).
+        final int index = fullName.lastIndexOf('.');
+
+        // The file doesn't have an extension.
+        if (index == -1 || index + 1 == fullName.length()) {
+            return null;
+        }
+
+        return fullName.substring(index + 1);
     }
 }
