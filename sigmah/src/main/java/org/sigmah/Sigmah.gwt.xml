@@ -24,7 +24,6 @@
     <inherits name="com.bedatadriven.rebar.modulestore.ModuleStore"/>
     <inherits name="com.bedatadriven.rebar.sql.Sql"/>
     <inherits name="com.bedatadriven.rebar.sync.Sync"/>
-    <inherits name="com.bedatadriven.rebar.persistence.Persistence"/> 
     <inherits name="com.allen_sauer.gwt.log.gwt-log"/>
 
     <extend-property name="log_level" values="TRACE"/>

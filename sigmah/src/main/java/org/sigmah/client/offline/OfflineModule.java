@@ -5,17 +5,13 @@
 
 package org.sigmah.client.offline;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.bedatadriven.rebar.persistence.client.ConnectionProvider;
-import com.bedatadriven.rebar.persistence.client.PersistenceUnit;
+import com.bedatadriven.rebar.sql.client.GearsConnectionFactory;
 import com.bedatadriven.rebar.sync.client.BulkUpdaterAsync;
 import com.bedatadriven.rebar.sync.client.impl.GearsBulkUpdater;
 import com.google.gwt.inject.client.AbstractGinModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import org.sigmah.client.dispatch.remote.Authentication;
-import org.sigmah.client.dto.ClientDTOMapper;
-import org.sigmah.client.inject.DummyConnection;
 import org.sigmah.client.offline.command.LocalDispatcher;
 import org.sigmah.client.offline.command.handler.LocalGetAdminEntitiesHandler;
 import org.sigmah.client.offline.command.handler.LocalGetSchemaHandler;
@@ -29,11 +25,7 @@ import org.sigmah.shared.dao.SQLDialect;
 import org.sigmah.shared.dao.SiteTableDAO;
 import org.sigmah.shared.dao.SqlSiteTableDAO;
 import org.sigmah.shared.dao.SqliteDialect;
-import org.sigmah.shared.domain.ActivityInfoOfflineUnit;
-import org.sigmah.shared.dto.DTOMapper;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -48,38 +40,21 @@ public class OfflineModule extends AbstractGinModule {
         bind(OfflinePresenter.View.class).to(OfflineView.class);
         bind(OfflineGateway.class).to(OfflineImpl.class);
         bind(BulkUpdaterAsync.class).to(GearsBulkUpdater.class);
-        bind(ConnectionProvider.class).to(LocalConnectionProvider.class).in(Singleton.class);	
-        bind(PersistenceUnit.class).to(ActivityInfoOfflineUnit.class).in(Singleton.class);
-
 
         //DAOs for off-line
         bind(SQLDialect.class).to(SqliteDialect.class).in(Singleton.class);
         bind(SiteTableDAO.class).to(SqlSiteTableDAO.class).in(Singleton.class);
-    	
-    	
-    	// DTO mapper
-    	bind(DTOMapper.class).to(ClientDTOMapper.class);
-    }
-    
-    
-    @Provides
-    protected EntityManagerFactory provideEntityManagerFactory (PersistenceUnit unit, ConnectionProvider conProvider) {
-    	return unit.createEntityManagerFactory( conProvider );
+
     }
 
     @Provides
-    protected EntityManager providesEntityManager(EntityManagerFactory factory){
-    	return factory.createEntityManager();
-    }
-  
-    @Provides
-    protected Connection providesConnection(ConnectionProvider conProvider) throws SQLException {
-    	try {
-    		return conProvider.getConnection();
-    	} catch (Exception e) {
-    		Log.debug("No gears db connection conneciton: using dummy connection msg:" + e.getMessage());
-    	}
-    	return new DummyConnection();
+    @Singleton
+    protected Connection provideConnection(Authentication auth) {
+        try {
+            return GearsConnectionFactory.getConnection(auth.getLocalDbName());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Provides
@@ -95,4 +70,7 @@ public class OfflineModule extends AbstractGinModule {
 
         return dispatcher;
     }
+
+
+
 }
