@@ -531,7 +531,6 @@ public class CalendarWidget extends Composite {
             public int compare(Event o1, Event o2) {
                 int compare = 0;
 
-                Log.debug("Test NULL");
                 if(o1 == null && o2 == null)
                     return 0;
                 else if(o2 == null)
@@ -539,7 +538,6 @@ public class CalendarWidget extends Composite {
                 else if(o1 == null)
                     return -1;
 
-                Log.debug("Test Date");
                 if(compare == 0 && o1.getDtstart() != null && o2.getDtstart() != null) {
                     long o1Start = o1.getDtstart().getTime();
                     long o2Start = o2.getDtstart().getTime();
@@ -550,11 +548,9 @@ public class CalendarWidget extends Composite {
                         compare = 1;
                 }
 
-                Log.debug("Test Label");
                 if(compare == 0 && o1.getSummary() != null && o2.getSummary() != null)
                     compare = o1.getSummary().compareTo(o2.getSummary());
 
-                Log.debug("Fin");
                 return compare;
             }
         });
