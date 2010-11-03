@@ -1,5 +1,6 @@
 package org.sigmah.client.ui;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -13,11 +14,11 @@ import java.util.Map;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -187,7 +188,9 @@ public class CalendarWidget extends Composite {
         this.calendars = new ArrayList<Calendar>();
         this.displayHeaders = displayHeaders;
         this.displayWeekNumber = displayWeekNumber;
-        
+
+//        final SimplePanel container;
+
         final FlexTable grid = new FlexTable();
         grid.addStyleName("calendar");
         grid.addStyleName(displayMode.getStyleName());
@@ -399,6 +402,7 @@ public class CalendarWidget extends Composite {
      */
     public void refresh() {
         drawEmptyCells();
+        
         if(isAttached()) {
             calibrateCalendar();
             drawEvents();
@@ -484,10 +488,10 @@ public class CalendarWidget extends Composite {
         
         grid.getCellFormatter().setStyleName(row, column, "calendar-cell");
         
-        VerticalPanel cell = (VerticalPanel) grid.getWidget(row, column);
+        FlowPanel cell = (FlowPanel) grid.getWidget(row, column);
         if(cell == null) {
             // New cell
-            cell = new VerticalPanel();
+            cell = new FlowPanel();
             cell.setWidth("100%");
     
             grid.setWidget(row, column, cell);
@@ -515,7 +519,8 @@ public class CalendarWidget extends Composite {
     private void drawEvents(int row, int column, final Date date) {
         final FlexTable grid = (FlexTable) getWidget();
 
-        final VerticalPanel cell = (VerticalPanel) grid.getWidget(row, column);
+//        final VerticalPanel cell = (VerticalPanel) grid.getWidget(row, column);
+        final FlowPanel cell = (FlowPanel) grid.getWidget(row, column);
 
         if(cell == null)
             throw new NullPointerException("The specified cell ("+row+','+column+") doesn't exist.");
@@ -524,12 +529,32 @@ public class CalendarWidget extends Composite {
         final TreeSet<Event> sortedEvents = new TreeSet<Event>(new Comparator<Event>() {
             @Override
             public int compare(Event o1, Event o2) {
-                int compare = o1.getDtstart().compareTo(o2.getDtstart());
-                if(compare == 0)
+                int compare = 0;
+
+                Log.debug("Test NULL");
+                if(o1 == null && o2 == null)
+                    return 0;
+                else if(o2 == null)
+                    return 1;
+                else if(o1 == null)
+                    return -1;
+
+                Log.debug("Test Date");
+                if(compare == 0 && o1.getDtstart() != null && o2.getDtstart() != null) {
+                    long o1Start = o1.getDtstart().getTime();
+                    long o2Start = o2.getDtstart().getTime();
+                    
+                    if(o1Start < o2Start)
+                        compare = -1;
+                    else if(o1Start > o2Start)
+                        compare = 1;
+                }
+
+                Log.debug("Test Label");
+                if(compare == 0 && o1.getSummary() != null && o2.getSummary() != null)
                     compare = o1.getSummary().compareTo(o2.getSummary());
-                if(compare == 0 && o1 != o2)
-                    if(o1.getIdentifier() instanceof Comparable)
-                        compare = ((Comparable)o1).compareTo(o2);
+
+                Log.debug("Fin");
                 return compare;
             }
         });

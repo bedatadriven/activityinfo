@@ -39,13 +39,21 @@ public class ProjectCalendarPresenter implements SubPresenter {
 
     private int calendarIndex = 1;
 
+    /**
+     * Wrapper class that allow the use of {@link Calendar}s objects with Ext-GWT.
+     */
     public static class CalendarWrapper extends BaseModel {
         private Calendar calendar;
-        
-        public CalendarWrapper() {
-            
-        }
-        
+
+        /**
+         * Empty constructor, needed by the serialization process.
+         */
+        public CalendarWrapper() {}
+
+        /**
+         * Wrap the given Calendar as a BaseModel object.
+         * @param calendar the calendar to wrap.
+         */
         public CalendarWrapper(Calendar calendar) {
             this.set("name", calendar.getName());
             this.set("id", calendar.getIdentifier());

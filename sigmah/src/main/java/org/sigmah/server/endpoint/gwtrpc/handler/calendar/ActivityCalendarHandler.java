@@ -96,8 +96,14 @@ public class ActivityCalendarHandler implements CalendarHandler {
                                 final Event event = new Event();
                                 event.setSummary(codeBuilder.toString());
                                 event.setDescription(activity.getContent());
-                                event.setDtstart(startDate);
-                                event.setDtend(activity.getEndDate());
+                                event.setDtstart(new Date(startDate.getTime()));
+
+                                if(startDate.equals(activity.getEndDate())) {
+                                    event.setDtend(new Date(startDate.getYear(), startDate.getMonth(), startDate.getDay()+1));
+                                } else {
+                                    event.setDtend(new Date(activity.getEndDate().getTime()));
+                                }
+                                
                                 event.setParent(calendar);
                                 event.setIdentifier(activity.getId());
 

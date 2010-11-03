@@ -12,6 +12,14 @@ import com.extjs.gxt.ui.client.widget.Component;
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public interface SubPresenter {
+    /**
+     * Retrieves the view of the presenter.
+     * @return The current view.
+     */
     public Component getView();
+
+    /**
+     * Allows the component to perform custom initialization just after it has been rendered.
+     */
     public void viewDidAppear();
 }

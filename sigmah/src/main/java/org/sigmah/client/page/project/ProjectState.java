@@ -26,6 +26,7 @@ public class ProjectState implements PageState, TabPage, HasTab {
     private Tab tab;
 
     private Integer currentSection;
+    private String argument;
 
     public ProjectState(int projectId) {
         this.projectId = projectId;
@@ -41,6 +42,10 @@ public class ProjectState implements PageState, TabPage, HasTab {
 
             if(tokens.length > 1) {
                 state.setCurrentSection(Integer.parseInt(tokens[1]));
+
+                if(tokens.length > 2) {
+                    state.setArgument(tokens[2]);
+                }
             }
 
             return state;
@@ -110,5 +115,13 @@ public class ProjectState implements PageState, TabPage, HasTab {
     @Override
     public void setTab(Tab tab) {
         this.tab = tab;
+    }
+
+    public String getArgument() {
+        return argument;
+    }
+
+    public void setArgument(String argument) {
+        this.argument = argument;
     }
 }

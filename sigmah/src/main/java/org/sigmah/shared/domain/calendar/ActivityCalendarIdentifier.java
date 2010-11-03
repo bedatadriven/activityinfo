@@ -47,4 +47,26 @@ public class ActivityCalendarIdentifier implements Serializable {
     public void setActivityPrefix(String activityPrefix) {
         this.activityPrefix = activityPrefix;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ActivityCalendarIdentifier other = (ActivityCalendarIdentifier) obj;
+        if (this.projectId != other.projectId) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 41 * hash + this.projectId;
+        return hash;
+    }
 }
