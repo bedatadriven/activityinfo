@@ -5,8 +5,8 @@
     <groupId>org.sigmah</groupId>
     <artifactId>sigmah</artifactId>
     <packaging>war</packaging>
-    <version>0.5.12-SNAPSHOT</version>
-    <name>SigmaH</name>
+    <version>0.6.1-SNAPSHOT</version>
+    <name>Sigmah</name>
     <description>Web-based database platform for program monitoring and reporting for the UN,
         NGOs, and others working in humanitarian, development, and post-conflict contexts.</description>
     <issueManagement>
