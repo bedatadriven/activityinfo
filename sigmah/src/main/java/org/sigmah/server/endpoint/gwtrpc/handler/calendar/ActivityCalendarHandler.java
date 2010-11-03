@@ -87,6 +87,11 @@ public class ActivityCalendarHandler implements CalendarHandler {
 
                         final Date startDate = activity.getStartDate();
 
+                        if(activity.getTitle() != null) {
+                            codeBuilder.append(' ');
+                            codeBuilder.append(activity.getTitle());
+                        }
+
                         // For each day
                         if (startDate != null) {
                             for (Date date = new Date(startDate.getYear(), startDate.getMonth(), startDate.getDate());
