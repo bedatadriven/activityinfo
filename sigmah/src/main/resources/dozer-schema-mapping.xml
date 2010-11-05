@@ -189,6 +189,11 @@
 			<a>successors</a>
 			<b>successorsDTO</b>
 		</field>
+		
+		<field>
+			<a>definition</a>
+			<b>definitionDTO</b>
+		</field>
 	</mapping>
 
 	<!-- Layout/LayoutDTO Mapping -->

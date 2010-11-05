@@ -326,6 +326,12 @@ public class ProjectDashboardPresenter implements SubPresenter {
      */
     private void loadPhaseOnTab(final PhaseDTO phaseDTO) {
 
+        if (Log.isDebugEnabled()) {
+            Log.debug("[loadPhaseOnTab] Loading phase #" + phaseDTO.getId() + " with model #"
+                    + phaseDTO.getPhaseModelDTO().getId() + " and definition #"
+                    + phaseDTO.getPhaseModelDTO().getDefinitionDTO().getId() + ".");
+        }
+
         // Masks the main panel.
         int count = 0;
         for (final LayoutGroupDTO groupDTO : phaseDTO.getPhaseModelDTO().getLayoutDTO().getLayoutGroupsDTO()) {

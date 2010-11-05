@@ -52,10 +52,15 @@
     <layout id_layout="4" rows_count="0" columns_count="0" />
     <layout id_layout="5" rows_count="0" columns_count="0" />
 
-    <phase_model id_phase_model="1" name="Step 1" id_project_model="1" id_layout="1" display_order="1" />
-    <phase_model id_phase_model="2" name="Step 2 bis" id_project_model="1" id_layout="2" display_order="3" />
-    <phase_model id_phase_model="3" name="Step 2" id_project_model="1" id_layout="3" display_order="2" />
-    <phase_model id_phase_model="4" name="Step 3" id_project_model="1" id_layout="4" display_order="4" />
+	<phase_model_definition id_phase_model_definition="1" />
+	<phase_model_definition id_phase_model_definition="2" />
+	<phase_model_definition id_phase_model_definition="3" />
+	<phase_model_definition id_phase_model_definition="4" />
+
+    <phase_model id_phase_model="1" name="Step 1" id_project_model="1" id_layout="1" display_order="1" definition_id="1" />
+    <phase_model id_phase_model="2" name="Step 2 bis" id_project_model="1" id_layout="2" display_order="3" definition_id="2" />
+    <phase_model id_phase_model="3" name="Step 2" id_project_model="1" id_layout="3" display_order="2" definition_id="3" />
+    <phase_model id_phase_model="4" name="Step 3" id_project_model="1" id_layout="4" display_order="4" definition_id="4" />
     <phase_model_sucessors id_phase_model="1" id_phase_model_successor="2" />
     <phase_model_sucessors id_phase_model="1" id_phase_model_successor="3" />
     <phase_model_sucessors id_phase_model="2" id_phase_model_successor="4" />

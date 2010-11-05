@@ -76,6 +76,15 @@ public class PhaseModelDTO extends BaseModelData implements EntityDTO {
         set("displayOrder", displayOrder);
     }
 
+    // Definition
+    public PhaseModelDefinitionDTO getDefinitionDTO() {
+        return get("definitionDTO");
+    }
+
+    public void setDefinitionDTO(PhaseModelDefinitionDTO definitionDTO) {
+        set("definitionDTO", definitionDTO);
+    }
+
     public Widget getWidget() {
         return getLayoutDTO().getWidget();
     }

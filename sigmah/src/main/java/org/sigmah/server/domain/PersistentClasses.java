@@ -15,6 +15,7 @@ import org.sigmah.shared.domain.OrgUnit;
 import org.sigmah.shared.domain.Organization;
 import org.sigmah.shared.domain.Phase;
 import org.sigmah.shared.domain.PhaseModel;
+import org.sigmah.shared.domain.PhaseModelDefinition;
 import org.sigmah.shared.domain.PrivacyLevel;
 import org.sigmah.shared.domain.Project;
 import org.sigmah.shared.domain.ProjectBanner;
@@ -86,6 +87,7 @@ public class PersistentClasses {
             ProjectBanner.class,
             ProjectDetails.class,
             Project.class,
+            PhaseModelDefinition.class,
             PhaseModel.class,
             LayoutConstraint.class,
             LayoutGroup.class,
