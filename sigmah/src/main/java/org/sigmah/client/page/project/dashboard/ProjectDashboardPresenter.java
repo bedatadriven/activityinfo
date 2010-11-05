@@ -4,35 +4,18 @@
  */
 package org.sigmah.client.page.project.dashboard;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Dialog;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.TabPanel;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.FormData;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Grid;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.project.SubPresenter;
+import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.project.ProjectPresenter;
+import org.sigmah.client.page.project.SubPresenter;
 import org.sigmah.shared.command.ChangePhase;
 import org.sigmah.shared.command.GetValue;
 import org.sigmah.shared.command.UpdateProject;
@@ -50,8 +33,32 @@ import org.sigmah.shared.dto.element.handler.ValueHandler;
 import org.sigmah.shared.dto.layout.LayoutConstraintDTO;
 import org.sigmah.shared.dto.layout.LayoutGroupDTO;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MenuEvent;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
+import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Dialog;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.TabItem;
+import com.extjs.gxt.ui.client.widget.TabPanel;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.FieldSet;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.FormData;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Grid;
+
 /**
- *
+ * 
  * @author Denis Colliot (dcolliot@ideia.fr)
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
@@ -82,7 +89,12 @@ public class ProjectDashboardPresenter implements SubPresenter {
         public abstract Button getButtonPhaseGuide();
 
         public abstract TabPanel getTabPanelProject();
+
+        public abstract void flushToolbar();
+
+        public abstract void fillToolbar();
     }
+
     /**
      * The view managed by this presenter.
      */
@@ -90,6 +102,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
     private ProjectPresenter projectPresenter;
     private Dispatcher dispatcher;
     private final Authentication authentication;
+
     /**
      * List of values changes.
      */
@@ -111,7 +124,8 @@ public class ProjectDashboardPresenter implements SubPresenter {
      */
     private int maskCount;
 
-    public ProjectDashboardPresenter(Dispatcher dispatcher, Authentication authentication, ProjectPresenter projectPresenter) {
+    public ProjectDashboardPresenter(Dispatcher dispatcher, Authentication authentication,
+            ProjectPresenter projectPresenter) {
         this.authentication = authentication;
         this.dispatcher = dispatcher;
         this.projectPresenter = projectPresenter;
@@ -132,18 +146,19 @@ public class ProjectDashboardPresenter implements SubPresenter {
         }
 
         valueChanges.clear();
-        view.getButtonSavePhase().setEnabled(false);
+        view.getButtonSavePhase().disable();
         loadProjectDashboard(projectPresenter.getCurrentProjectDTO());
 
         return view;
     }
 
     @Override
-    public void viewDidAppear() {}
+    public void viewDidAppear() {
+    }
 
     /**
      * Mask the main panel and set the mask counter.
-     *
+     * 
      * @param count
      *            The mask counter.
      */
@@ -160,15 +175,13 @@ public class ProjectDashboardPresenter implements SubPresenter {
         maskCount--;
         if (maskCount == 0) {
             view.getTabPanelPhases().unmask();
+
+            // Refreshes the toolbar.
+            refreshActionsToolbar();
         }
     }
 
-    public void loadProjectDashboard(final ProjectDTO projectDTO) { 
-        // Sets current project status (for the first display, the active phase
-        // is rendered).
-        final PhaseDTO currentPhaseDTO = projectDTO.getCurrentPhaseDTO();
-
-        projectPresenter.setCurrentPhaseDTO(currentPhaseDTO);
+    public void loadProjectDashboard(final ProjectDTO projectDTO) {
 
         // Clears the required elements maps .
         activePhaseRequiredElements.clear();
@@ -240,7 +253,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
                 private PhaseDTO retrievePhaseDTO() {
                     // Loads the phase of the selected tab (loaded from the
                     // current project instance).
-                    for (final PhaseDTO p : projectDTO.getPhasesDTO()) {
+                    for (final PhaseDTO p : projectPresenter.getCurrentProjectDTO().getPhasesDTO()) {
                         if (p.getId() == phaseDTOId) {
                             return p;
                         }
@@ -256,39 +269,40 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
                     // If the current phase has been modified and it isn't
                     // ended.
-                    if (view.getButtonSavePhase().isEnabled() && !isEndedPhase(currentPhaseDTO)) {
+                    if (view.getButtonSavePhase().isEnabled()
+                            && !isEndedPhase(projectPresenter.getCurrentDisplayedPhaseDTO())) {
 
                         // Asks the client to save the unsaved elements before
                         // switching phases.
                         MessageBox.confirm(I18N.CONSTANTS.projectPhaseChangeAlert(),
                                 I18N.CONSTANTS.projectPhaseChangeAlertDetails(), new Listener<MessageBoxEvent>() {
 
-                            @Override
-                            public void handleEvent(MessageBoxEvent ce) {
+                                    @Override
+                                    public void handleEvent(MessageBoxEvent ce) {
 
-                                // If 'YES' is clicked, saves the
-                                // modifications.
-                                if (Dialog.YES.equals(ce.getButtonClicked().getItemId())) {
-                                    view.getButtonSavePhase().fireEvent(Events.OnClick);
-                                    if (isActivePhase(currentPhaseDTO)) {
-                                        activePhaseRequiredElements.saveState();
+                                        // If 'YES' is clicked, saves the
+                                        // modifications.
+                                        if (Dialog.YES.equals(ce.getButtonClicked().getItemId())) {
+                                            view.getButtonSavePhase().fireEvent(Events.OnClick);
+                                            if (isActivePhase(projectPresenter.getCurrentDisplayedPhaseDTO())) {
+                                                activePhaseRequiredElements.saveState();
 
+                                            }
+                                        } else if (Dialog.NO.equals(ce.getButtonClicked().getItemId())) {
+                                            // If the last displayed phase was
+                                            // the active one, modifications are
+                                            // discarded then the required
+                                            // elements map is cleared (to
+                                            // prevent inconsistent successor
+                                            // activation).
+                                            if (isActivePhase(projectPresenter.getCurrentDisplayedPhaseDTO())) {
+                                                activePhaseRequiredElements.clearState();
+                                            }
+                                        }
+
+                                        loadPhaseOnTab(toDisplayPhase);
                                     }
-                                } else if (Dialog.NO.equals(ce.getButtonClicked().getItemId())) {
-                                    // If the last displayed phase was
-                                    // the active one, modifications are
-                                    // discarded then the required
-                                    // elements map is cleared (to
-                                    // prevent inconsistent successor
-                                    // activation).
-                                    if (isActivePhase(currentPhaseDTO)) {
-                                        activePhaseRequiredElements.clearState();
-                                    }
-                                }
-
-                                loadPhaseOnTab(toDisplayPhase);
-                            }
-                        });
+                                });
                     } else {
                         loadPhaseOnTab(toDisplayPhase);
                     }
@@ -306,11 +320,12 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
     /**
      * Loads a project phase into the selected tab panel.
-     *
+     * 
      * @param phaseDTO
      *            The phase to display.
      */
     private void loadPhaseOnTab(final PhaseDTO phaseDTO) {
+
         // Masks the main panel.
         int count = 0;
         for (final LayoutGroupDTO groupDTO : phaseDTO.getPhaseModelDTO().getLayoutDTO().getLayoutGroupsDTO()) {
@@ -319,7 +334,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
         mask(count);
 
         // Sets current project status.
-        projectPresenter.setCurrentPhaseDTO(phaseDTO);
+        projectPresenter.setCurrentDisplayedPhaseDTO(phaseDTO);
 
         // Clears the required elements map for the current displayed phase.
         currentPhaseRequiredElements.clear();
@@ -338,12 +353,6 @@ public class ProjectDashboardPresenter implements SubPresenter {
         view.getPanelSelectedPhase().removeAll();
         view.getGridRequiredElements().getStore().removeAll();
         view.getTabPanelPhases().getSelectedItem().add(view.getPanelProjectModel());
-
-        // --
-        // -- TOOLBAR
-        // --
-
-        refreshActionsToolbar();
 
         // --
         // -- PHASE LAYOUT
@@ -371,8 +380,8 @@ public class ProjectDashboardPresenter implements SubPresenter {
                 // --
 
                 // Remote call to ask for this element value.
-                final GetValue command = new GetValue(projectPresenter.getCurrentProjectDTO().getId(), elementDTO.getId(),
-                        elementDTO.getEntityName());
+                final GetValue command = new GetValue(projectPresenter.getCurrentProjectDTO().getId(),
+                        elementDTO.getId(), elementDTO.getEntityName());
                 dispatcher.execute(command, null, new AsyncCallback<ValueResult>() {
 
                     @Override
@@ -402,7 +411,6 @@ public class ProjectDashboardPresenter implements SubPresenter {
                         // Generates element component (with the value).
                         elementDTO.init();
                         final Component elementComponent = elementDTO.getComponent(valueResult);
-                        elementComponent.addStyleName("sigmah-element");
 
                         // Component width.
                         final FormData formData;
@@ -449,7 +457,11 @@ public class ProjectDashboardPresenter implements SubPresenter {
         }
 
         // View layouts update.
-        view.getTabPanelPhases().addStyleName("x-border-panel"); //FIXME: This should be done by Ext, not be the developer!
+        view.getTabPanelPhases().addStyleName("x-border-panel"); // FIXME: This
+                                                                 // should be
+                                                                 // done by Ext,
+                                                                 // not be the
+                                                                 // developer!
         view.layout();
     }
 
@@ -463,8 +475,11 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
             // Stores the change to be saved later.
             valueChanges.add(event);
-            // Enables the save action.
-            view.getButtonSavePhase().setEnabled(true);
+
+            if (!projectPresenter.getCurrentDisplayedPhaseDTO().isEnded()) {
+                // Enables the save action.
+                view.getButtonSavePhase().enable();
+            }
         }
     }
 
@@ -502,22 +517,108 @@ public class ProjectDashboardPresenter implements SubPresenter {
      */
     private void refreshActionsToolbar() {
 
+        // If the current displayed phase is ended, the toolbar is hidden.
+        if (isEndedPhase(projectPresenter.getCurrentDisplayedPhaseDTO())) {
+            view.flushToolbar();
+            return;
+        }
+
+        view.fillToolbar();
+
         // --
-        // -- ACTION: ACTIVE PHASE
+        // -- ACTION: ACTIVATE OR CLOSE PHASE
         // --
 
-        // Always enabled (the listener is in charge of this action validation).
-        view.getButtonActivatePhase().setEnabled(activePhaseRequiredElements.isTrue());
+        boolean enabled = activePhaseRequiredElements.isTrue();
+        view.getButtonActivatePhase().setEnabled(enabled);
         view.getButtonActivatePhase().removeAllListeners();
 
-        // If the current displayed phase is the active one or it is ended, hide
-        if (isCurrentPhase(projectPresenter.getCurrentProjectDTO().getCurrentPhaseDTO())
-                || isEndedPhase(projectPresenter.getCurrentPhaseDTO())) {
-            view.getButtonActivatePhase().setVisible(false);
-        } // Else shows it for the current displayed phase successors.
+        // If the current displayed phase is the active one or it is ended, the
+        // close action is displayed.
+        if (isCurrentPhase(projectPresenter.getCurrentProjectDTO().getCurrentPhaseDTO())) {
+
+            view.getButtonActivatePhase().setText(I18N.CONSTANTS.projectClosePhaseButton());
+            view.getButtonActivatePhase().setIcon(IconImageBundle.ICONS.close());
+
+            if (!enabled) {
+                view.getButtonActivatePhase().setTitle(I18N.CONSTANTS.projectCannotClose());
+            } else {
+                view.getButtonActivatePhase().setTitle("");
+            }
+
+            view.getButtonActivatePhase().addListener(Events.Select, new Listener<ButtonEvent>() {
+
+                @Override
+                public void handleEvent(ButtonEvent be) {
+                    view.getButtonActivatePhase().showMenu();
+                }
+            });
+
+            // Builds the button menu to select the next phase after closing the
+            // current displayed one.
+            final Menu successorsMenu = new Menu();
+
+            final List<PhaseDTO> successors = projectPresenter.getCurrentProjectDTO().getSuccessors(
+                    projectPresenter.getCurrentDisplayedPhaseDTO());
+
+            // If the current displayed phase hasn't successor, the close action
+            // ends the project.
+            if (successors == null || successors.isEmpty()) {
+
+                final MenuItem endItem = new MenuItem(I18N.CONSTANTS.projectEnd(), IconImageBundle.ICONS.activate());
+                endItem.addListener(Events.Select, new Listener<MenuEvent>() {
+
+                    @Override
+                    public void handleEvent(MenuEvent me) {
+
+                        activatePhase(null);
+                    }
+                });
+
+                successorsMenu.add(endItem);
+            }
+            // Each successor is added to the list of choices.
+            else {
+
+                for (final PhaseDTO successor : successors) {
+
+                    final MenuItem successorItem = new MenuItem(I18N.MESSAGES.projectActivate(successor
+                            .getPhaseModelDTO().getName()), IconImageBundle.ICONS.activate());
+                    successorItem.addListener(Events.Select, new Listener<MenuEvent>() {
+
+                        @Override
+                        public void handleEvent(MenuEvent me) {
+
+                            activatePhase(successor);
+                        }
+                    });
+                    successorsMenu.add(successorItem);
+                }
+            }
+
+            view.getButtonActivatePhase().setMenu(successorsMenu);
+        }
+        // Else the active action is displayed.
         else {
-            view.getButtonActivatePhase().setVisible(true);
-            view.getButtonActivatePhase().addListener(Events.Select, new ActivatePhaseListener());
+
+            if (!enabled) {
+                view.getButtonActivatePhase().setTitle(I18N.CONSTANTS.projectCannotActivate());
+            } else {
+                view.getButtonActivatePhase().setTitle("");
+            }
+
+            view.getButtonActivatePhase().setMenu(null);
+
+            view.getButtonActivatePhase().setText(I18N.CONSTANTS.projectActivatePhaseButton());
+            view.getButtonActivatePhase().setIcon(IconImageBundle.ICONS.activate());
+
+            view.getButtonActivatePhase().addListener(Events.Select, new Listener<ButtonEvent>() {
+
+                @Override
+                public void handleEvent(ButtonEvent be) {
+                    activatePhase(projectPresenter.getCurrentDisplayedPhaseDTO());
+                }
+            });
         }
 
         // --
@@ -528,12 +629,8 @@ public class ProjectDashboardPresenter implements SubPresenter {
         view.getButtonSavePhase().setEnabled(false);
         view.getButtonSavePhase().removeAllListeners();
 
-        // If the phase is ended, hide the save action.
-        if (projectPresenter.getCurrentPhaseDTO().isEnded()) {
-            view.getButtonSavePhase().setVisible(false);
-        } // Else shows it (for the active phase and its successors).
-        else {
-            view.getButtonSavePhase().setVisible(true);
+        // If the phase isn't ended, adds the save action.
+        if (!isEndedPhase(projectPresenter.getCurrentDisplayedPhaseDTO())) {
             view.getButtonSavePhase().addListener(Events.OnClick, new SaveListener());
         }
 
@@ -550,19 +647,19 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
     /**
      * Returns if a phase is the current displayed phase.
-     *
+     * 
      * @param phaseDTO
      *            The phase to test.
      * @return If the phase is currently displayed.
      */
     public boolean isCurrentPhase(PhaseDTO phaseDTO) {
-        final PhaseDTO currentPhaseDTO = projectPresenter.getCurrentPhaseDTO();
+        final PhaseDTO currentPhaseDTO = projectPresenter.getCurrentDisplayedPhaseDTO();
         return currentPhaseDTO != null && phaseDTO != null && currentPhaseDTO.getId() == phaseDTO.getId();
     }
 
     /**
      * Returns if a phase is the active phase of the current project.
-     *
+     * 
      * @param phaseDTO
      *            The phase to test.
      * @return If the phase is active.
@@ -576,7 +673,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
     /**
      * Returns if a phase is ended.
-     *
+     * 
      * @param phaseDTO
      *            The phase to test.
      * @return If the phase is ended.
@@ -587,7 +684,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
     /**
      * Returns if the active phase of the current project is filled in.
-     *
+     * 
      * @return If the active phase of the current project is filled in.
      */
     public boolean isActivePhaseFilledIn() {
@@ -602,7 +699,8 @@ public class ProjectDashboardPresenter implements SubPresenter {
      */
     private void enableSuccessorsTabs() {
 
-        for (final PhaseModelDTO successor : projectPresenter.getCurrentPhaseDTO().getPhaseModelDTO().getSuccessorsDTO()) {
+        for (final PhaseModelDTO successor : projectPresenter.getCurrentProjectDTO().getCurrentPhaseDTO()
+                .getPhaseModelDTO().getSuccessorsDTO()) {
             final TabItem successorTabItem = tabItemsMap.get(successor.getId());
             if (successorTabItem != null) {
                 successorTabItem.setEnabled(true);
@@ -611,84 +709,187 @@ public class ProjectDashboardPresenter implements SubPresenter {
     }
 
     /**
-     * Internal class handling the phases activation.
+     * Activates a phase.
+     * 
+     * @param phase
+     *            The phase to activate.
      */
-    private class ActivatePhaseListener implements Listener<ButtonEvent> {
+    private void activatePhase(final PhaseDTO phase) {
 
-        @Override
-        public void handleEvent(ButtonEvent be) {
+        // If the active phase required elements aren't filled, shows an
+        // alert and returns.
+        if (!isActivePhaseFilledIn()) {
+            MessageBox.info(I18N.CONSTANTS.projectPhaseActivationError(),
+                    I18N.CONSTANTS.projectPhaseActivationErrorDetails(), null);
+            return;
+        }
 
-            // If the active phase required elements aren't filled, shows an
-            // alert.
-            if (!isActivePhaseFilledIn()) {
-                MessageBox.info(I18N.CONSTANTS.projectPhaseActivationError(),
-                        I18N.CONSTANTS.projectPhaseActivationErrorDetails(), null);
-            } // Else, remote call to ask a new phase activation.
-            else {
-                final ProjectDTO currentProjectDTO = projectPresenter.getCurrentProjectDTO();
-                final PhaseDTO currentPhaseDTO = projectPresenter.getCurrentPhaseDTO();
+        // If the phase to activate is null, the active phase will only be
+        // closed.
+        if (phase == null) {
 
-                // Activates the current displayed phase.
-                dispatcher.execute(new ChangePhase(currentProjectDTO.getId(), currentPhaseDTO.getId()), null,
-                        new AsyncCallback<ProjectListResult>() {
+            // Confirms that the user wants to end the project.
+            MessageBox.confirm(
+                    I18N.CONSTANTS.projectEnd(),
+                    I18N.MESSAGES.projectEnd(projectPresenter.getCurrentProjectDTO().getCurrentPhaseDTO()
+                            .getPhaseModelDTO().getName()), new Listener<MessageBoxEvent>() {
 
-                            @Override
-                            public void onFailure(Throwable throwable) {
-                                Log.error("Error, phase #" + currentPhaseDTO.getId() + " not activated.");
-                            }
+                        @Override
+                        public void handleEvent(MessageBoxEvent be) {
 
-                            @Override
-                            public void onSuccess(ProjectListResult result) {
+                            if (Dialog.YES.equals(be.getButtonClicked().getItemId())) {
 
-                                if (Log.isDebugEnabled()) {
-                                    Log.debug("Phase activated : " + currentPhaseDTO.getId());
-                                }
+                                // Activates the current displayed phase.
+                                dispatcher.execute(new ChangePhase(projectPresenter.getCurrentProjectDTO().getId(),
+                                        null), null, new AsyncCallback<ProjectListResult>() {
 
-                                // Sets current project status.
-                                final ProjectDTO newProjectDTO = result.getList().get(0);
-                                projectPresenter.setCurrentProjectDTO(newProjectDTO);
-                                projectPresenter.setCurrentPhaseDTO(newProjectDTO.getCurrentPhaseDTO());
+                                    @Override
+                                    public void onFailure(Throwable e) {
 
-                                // Map the required element for the active phase
-                                // from the current displayed phase map.
-                                activePhaseRequiredElements.clear();
-                                activePhaseRequiredElements.putAll(currentPhaseRequiredElements);
-
-                                // --
-                                // -- BANNER
-                                // --
-
-                                projectPresenter.refreshBanner();
-
-                                // --
-                                // -- TOOLBAR
-                                // --
-
-                                refreshActionsToolbar();
-
-                                // --
-                                // -- UPDATES TABS
-                                // --
-
-                                // Updates ended phases styles.
-                                for (PhaseDTO phase : currentProjectDTO.getPhasesDTO()) {
-                                    final TabItem successorTabItem = tabItemsMap.get(phase.getPhaseModelDTO().getId());
-                                    if (phase.isEnded()) {
-                                        successorTabItem.getHeader().setStyleName("sigmah-closed-phase");
+                                        Log.error("[activatePhase] The project hasn't be ended.", e);
+                                        MessageBox.alert(I18N.CONSTANTS.projectEndError(),
+                                                I18N.CONSTANTS.projectEndErrorDetails(), null);
                                     }
-                                }
 
-                                // Updates active phase styles.
-                                for (TabItem item : view.getTabPanelPhases().getItems()) {
-                                    item.getHeader().removeStyleName("sigmah-active-phase");
-                                }
-                                tabItemsMap.get(currentPhaseDTO.getPhaseModelDTO().getId()).getHeader().addStyleName("sigmah-active-phase");
+                                    @Override
+                                    public void onSuccess(ProjectListResult result) {
 
-                                // Enables successors tabs of the current phase.
-                                enableSuccessorsTabs();
+                                        if (Log.isDebugEnabled()) {
+                                            Log.debug("[activatePhase] Project successfully ended.");
+                                        }
+
+                                        // Sets the new current project (after
+                                        // update).
+                                        final ProjectDTO newProjectDTO = result.getList().get(0);
+                                        projectPresenter.setCurrentProjectDTO(newProjectDTO);
+
+                                        // Sets the new current displayed phase
+                                        // (not necessary the active one).
+                                        for (final PhaseDTO phase : projectPresenter.getCurrentProjectDTO()
+                                                .getPhasesDTO()) {
+                                            if (phase.getId() == projectPresenter.getCurrentDisplayedPhaseDTO().getId()) {
+                                                projectPresenter.setCurrentDisplayedPhaseDTO(phase);
+                                            }
+                                        }
+
+                                        refreshDashboardAfterUpdate();
+                                    }
+                                });
                             }
-                        });
+                        }
+                    });
+        }
+        // Else the active will be closed and the new phase will be activated.
+        else {
+
+            // Confirms that the user wants to close the active phase and
+            // activate the given one.
+            MessageBox.confirm(
+                    I18N.CONSTANTS.projectCloseAndActivate(),
+                    I18N.MESSAGES.projectCloseAndActivate(projectPresenter.getCurrentProjectDTO().getCurrentPhaseDTO()
+                            .getPhaseModelDTO().getName(), phase.getPhaseModelDTO().getName()),
+                    new Listener<MessageBoxEvent>() {
+
+                        @Override
+                        public void handleEvent(MessageBoxEvent be) {
+
+                            if (Dialog.YES.equals(be.getButtonClicked().getItemId())) {
+
+                                // Activates the current displayed phase.
+                                dispatcher.execute(new ChangePhase(projectPresenter.getCurrentProjectDTO().getId(),
+                                        phase.getId()), null, new AsyncCallback<ProjectListResult>() {
+
+                                    @Override
+                                    public void onFailure(Throwable e) {
+
+                                        Log.error("[activatePhase] The phase #" + phase.getId()
+                                                + " hasn't be activated.", e);
+                                        MessageBox.alert(I18N.CONSTANTS.projectActivatePhaseError(),
+                                                I18N.CONSTANTS.projectActivatePhaseErrorDetails(), null);
+                                    }
+
+                                    @Override
+                                    public void onSuccess(ProjectListResult result) {
+
+                                        if (Log.isDebugEnabled()) {
+                                            Log.debug("[activatePhase] Phase #" + phase.getId()
+                                                    + " successfully activated.");
+                                        }
+
+                                        // Sets the new current project (after
+                                        // update).
+                                        final ProjectDTO newProjectDTO = result.getList().get(0);
+                                        projectPresenter.setCurrentProjectDTO(newProjectDTO);
+
+                                        // Sets the new current displayed phase
+                                        // (not necessary the active one).
+                                        for (final PhaseDTO phase : projectPresenter.getCurrentProjectDTO()
+                                                .getPhasesDTO()) {
+                                            if (phase.getId() == projectPresenter.getCurrentDisplayedPhaseDTO().getId()) {
+                                                projectPresenter.setCurrentDisplayedPhaseDTO(phase);
+                                            }
+                                        }
+
+                                        refreshDashboardAfterUpdate();
+                                    }
+                                });
+                            }
+                        }
+                    });
+        }
+    }
+
+    /**
+     * Refreshes the dashboard after an update of the project instance.
+     */
+    private void refreshDashboardAfterUpdate() {
+
+        if (Log.isDebugEnabled()) {
+            Log.debug("[refreshDashboardAfterUpdate] Refreshes the dashboard.");
+        }
+
+        // Map the required element for the active phase from the current
+        // displayed phase map.
+        activePhaseRequiredElements.clear();
+        activePhaseRequiredElements.putAll(currentPhaseRequiredElements);
+
+        // --
+        // -- BANNER
+        // --
+
+        projectPresenter.refreshBanner();
+
+        // --
+        // -- TOOLBAR
+        // --
+
+        refreshActionsToolbar();
+
+        // --
+        // -- UPDATES TABS
+        // --
+
+        // Updates closed phases styles.
+        for (final PhaseDTO phase : projectPresenter.getCurrentProjectDTO().getPhasesDTO()) {
+            final TabItem successorTabItem = tabItemsMap.get(phase.getPhaseModelDTO().getId());
+            if (phase.isEnded()) {
+                successorTabItem.getHeader().addStyleName("project-phase-closed");
             }
+        }
+
+        // Updates active phase styles.
+        for (final TabItem item : view.getTabPanelPhases().getItems()) {
+            item.getHeader().removeStyleName("project-phase-active");
+        }
+
+        final PhaseDTO phase;
+        if ((phase = projectPresenter.getCurrentProjectDTO().getCurrentPhaseDTO()) != null) {
+
+            // Updates active phase styles.
+            tabItemsMap.get(phase.getPhaseModelDTO().getId()).getHeader().addStyleName("project-phase-active");
+
+            // Enables successors tabs of the current phase.
+            enableSuccessorsTabs();
         }
     }
 
@@ -700,7 +901,8 @@ public class ProjectDashboardPresenter implements SubPresenter {
         @Override
         public void handleEvent(ButtonEvent be) {
             view.getButtonSavePhase().disable();
-            final UpdateProject updateProject = new UpdateProject(projectPresenter.getCurrentProjectDTO().getId(), valueChanges);
+            final UpdateProject updateProject = new UpdateProject(projectPresenter.getCurrentProjectDTO().getId(),
+                    valueChanges);
 
             dispatcher.execute(updateProject,
                     new MaskingAsyncMonitor(view.getTabPanelPhases(), I18N.CONSTANTS.loading()),
@@ -712,7 +914,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
                             currentPhaseRequiredElements.clearState();
 
-                            if (isActivePhase(projectPresenter.getCurrentPhaseDTO())) {
+                            if (isActivePhase(projectPresenter.getCurrentDisplayedPhaseDTO())) {
                                 activePhaseRequiredElements.clearState();
                             }
                         }
@@ -724,9 +926,11 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
                             currentPhaseRequiredElements.saveState();
 
-                            if (isActivePhase(projectPresenter.getCurrentPhaseDTO())) {
+                            if (isActivePhase(projectPresenter.getCurrentDisplayedPhaseDTO())) {
                                 activePhaseRequiredElements.saveState();
                             }
+
+                            refreshActionsToolbar();
                         }
                     });
         }

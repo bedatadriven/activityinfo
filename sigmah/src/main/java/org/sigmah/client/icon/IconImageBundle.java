@@ -132,4 +132,16 @@ public interface IconImageBundle extends ImageBundle {
     AbstractImagePrototype attach();
     
     AbstractImagePrototype remove();
+    
+    @Resource(value = "bullet_green.png")
+    AbstractImagePrototype elementCompleted();
+    
+    @Resource(value = "bullet_red.png")
+    AbstractImagePrototype elementUncompleted();
+    
+    @Resource(value = "bullet_star_new.png")
+    AbstractImagePrototype activate();
+    
+    @Resource(value = "bullet_star_black.png")
+    AbstractImagePrototype close();
 }

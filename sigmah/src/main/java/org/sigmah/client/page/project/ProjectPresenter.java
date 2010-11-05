@@ -72,7 +72,7 @@ public class ProjectPresenter implements Frame, TabPage {
     /**
      * The current displayed phase.
      */
-    private PhaseDTO currentPhaseDTO;
+    private PhaseDTO currentDisplayedPhaseDTO;
     private final static String[] MAIN_TABS = {
         I18N.CONSTANTS.projectTabDashboard(),
         I18N.CONSTANTS.projectTabLogFrame(), I18N.CONSTANTS.projectTabIndicators(),
@@ -183,7 +183,7 @@ public class ProjectPresenter implements Frame, TabPage {
      */
     private void loadProjectOnView(ProjectDTO projectDTO) {
         currentProjectDTO = projectDTO;
-        currentPhaseDTO = projectDTO.getCurrentPhaseDTO();
+        currentDisplayedPhaseDTO = projectDTO.getCurrentPhaseDTO();
 
         refreshBanner();
 
@@ -198,12 +198,12 @@ public class ProjectPresenter implements Frame, TabPage {
         this.currentProjectDTO = currentProjectDTO;
     }
 
-    public PhaseDTO getCurrentPhaseDTO() {
-        return currentPhaseDTO;
+    public PhaseDTO getCurrentDisplayedPhaseDTO() {
+        return currentDisplayedPhaseDTO;
     }
 
-    public void setCurrentPhaseDTO(PhaseDTO currentPhaseDTO) {
-        this.currentPhaseDTO = currentPhaseDTO;
+    public void setCurrentDisplayedPhaseDTO(PhaseDTO currentPhaseDTO) {
+        this.currentDisplayedPhaseDTO = currentPhaseDTO;
     }
 
     /**

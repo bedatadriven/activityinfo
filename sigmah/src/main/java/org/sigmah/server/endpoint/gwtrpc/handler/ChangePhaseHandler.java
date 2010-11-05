@@ -20,6 +20,12 @@ import org.sigmah.shared.exception.CommandException;
 
 import com.google.inject.Inject;
 
+/**
+ * The handler for {@link ChangePhase} command.
+ * 
+ * @author tmi
+ * 
+ */
 public class ChangePhaseHandler implements CommandHandler<ChangePhase> {
 
     private final static Log LOG = LogFactory.getLog(ChangePhaseHandler.class);
@@ -36,37 +42,52 @@ public class ChangePhaseHandler implements CommandHandler<ChangePhase> {
     @Override
     public CommandResult execute(ChangePhase cmd, User user) throws CommandException {
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("[execute] Changing project active phase.");
-        }
-
-        // Gets project.
+        // Gets the project.
         Project project = em.find(Project.class, cmd.getProjectId());
+
+        // Gets the current phase.
         final Phase currentPhase = project.getCurrentPhase();
 
-        // Searches the new active phase.
-        Phase newActivePhase = null;
-        for (final Phase phase : project.getPhases()) {
-            if (phase.getId() == cmd.getPhaseId()) {
-                newActivePhase = phase;
-            }
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("[execute] Closing the current phase #" + currentPhase.getId() + ".");
         }
 
-        if (newActivePhase == null) {
-            // The activated phase cannot be found: error.
-            throw new CommandException("The activated phase doesn't exist.");
+        // Closes the current phase.
+        currentPhase.setEndDate(new Date());
+
+        // If the id of the phase to activate isn't null, activates it.
+        if (cmd.getPhaseId() != null) {
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("[execute] Try to activate phase #" + cmd.getPhaseId() + ".");
+            }
+
+            // Searches for the given phase phase.
+            Phase newCurrentPhase = null;
+            for (final Phase phase : project.getPhases()) {
+                if (phase.getId() == (long) cmd.getPhaseId()) {
+                    newCurrentPhase = phase;
+                }
+            }
+
+            if (newCurrentPhase == null) {
+                // The activated phase cannot be found: error.
+                LOG.error("[execute] The phase with id #" + cmd.getPhaseId() + " doesn't exist.");
+                throw new CommandException("The phase to activate doesn't exist.");
+            }
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("[execute] Activates the new phase #" + cmd.getPhaseId() + ".");
+            }
+
+            // Activates the new phase.
+            newCurrentPhase.setStartDate(new Date());
+            project.setCurrentPhase(newCurrentPhase);
         }
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("[execute] Find the activated phase ; id: " + newActivePhase.getId() + ".");
+            LOG.debug("[execute] Saves modifications.");
         }
-
-        // Activates the new phase.
-        newActivePhase.setStartDate(new Date());
-        project.setCurrentPhase(newActivePhase);
-
-        // Marks the last active phase as ended.
-        currentPhase.setEndDate(new Date());
 
         // Saves the new project state.
         project = em.merge(project);

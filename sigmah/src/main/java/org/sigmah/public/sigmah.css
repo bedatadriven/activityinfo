@@ -341,17 +341,22 @@ body {
 	outline: 0;
 }
 
+.project-current-phase-panel {
+	background-color: white;	
+}
+
 .project-panelReminders {
 	margin-bottom: 10px;
 }
 
 .project-phase-active span.x-tab-strip-text {
-	color: #EE9329;
-	font-weight: bold;
+	padding-left: 14px;
+	background: transparent url(./image/bullet_star.png) no-repeat left center;
 }
 
 .project-phase-closed span.x-tab-strip-text {
-	font-style: italic;
+	padding-left: 14px;
+	background: transparent url(./image/bullet_star_black.png) no-repeat left center;
 }
 
 .project-label-10 {

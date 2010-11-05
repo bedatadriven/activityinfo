@@ -2,18 +2,34 @@ package org.sigmah.shared.command;
 
 import org.sigmah.shared.command.result.ProjectListResult;
 
+/**
+ * The command to change the current phase of a project. This command can be
+ * used to ends a project too.
+ * 
+ * @author tmi
+ * 
+ */
 public class ChangePhase implements Command<ProjectListResult> {
 
     private static final long serialVersionUID = -8923839444770227946L;
 
+    /**
+     * The project id.
+     */
     private int projectId;
-    private int phaseId;
+
+    /**
+     * The id of the phase to activate. If this id is <code>null</code>, the
+     * current phase will be ended and no other phase will be activated (closes
+     * the project).
+     */
+    private Integer phaseId;
 
     public ChangePhase() {
         // required, or serialization exception
     }
 
-    public ChangePhase(int projectId, int phaseId) {
+    public ChangePhase(int projectId, Integer phaseId) {
         this.projectId = projectId;
         this.phaseId = phaseId;
     }
@@ -26,11 +42,11 @@ public class ChangePhase implements Command<ProjectListResult> {
         this.projectId = projectId;
     }
 
-    public int getPhaseId() {
+    public Integer getPhaseId() {
         return phaseId;
     }
 
-    public void setPhaseId(int phaseId) {
+    public void setPhaseId(Integer phaseId) {
         this.phaseId = phaseId;
     }
 

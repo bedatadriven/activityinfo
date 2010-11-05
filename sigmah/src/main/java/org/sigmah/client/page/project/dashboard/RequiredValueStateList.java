@@ -8,9 +8,9 @@ import java.util.HashMap;
 
 /**
  * Useful internal class to manage the required elements completions list.
- *
+ * 
  * @author tmi
- *
+ * 
  */
 public class RequiredValueStateList {
 
@@ -33,7 +33,7 @@ public class RequiredValueStateList {
 
     /**
      * Copies a list of required elements from another manager.
-     *
+     * 
      * @param other
      *            The other required elements manager.
      */
@@ -44,7 +44,7 @@ public class RequiredValueStateList {
     /**
      * Sets a required element saved value completion (in db). Adds it if
      * necessary.
-     *
+     * 
      * @param elementDTOId
      *            The required element id.
      * @param savedState
@@ -60,12 +60,14 @@ public class RequiredValueStateList {
         }
 
         state.setSavedState(savedState);
+        
+        putActual(elementDTOId, savedState);
     }
 
     /**
-     * Sets a required element actual value completion (in local). Adds it
-     * if necessary.
-     *
+     * Sets a required element actual value completion (in local). Adds it if
+     * necessary.
+     * 
      * @param elementDTOId
      *            The required element id.
      * @param actualState
@@ -104,12 +106,26 @@ public class RequiredValueStateList {
 
     /**
      * Returns if all saved values completions are valid.
-     *
+     * 
      * @return If all saved values completions are valid.
      */
     public boolean isTrue() {
         for (final RequiredValueState state : list.values()) {
             if (!state.isTrue()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Returns if all actual values completions are valid.
+     * 
+     * @return If all actual values completions are valid.
+     */
+    public boolean isActuallyTrue() {
+        for (final RequiredValueState state : list.values()) {
+            if (!state.isActuallyTrue()) {
                 return false;
             }
         }

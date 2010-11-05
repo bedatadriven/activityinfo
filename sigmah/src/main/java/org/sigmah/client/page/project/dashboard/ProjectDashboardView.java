@@ -5,6 +5,13 @@
 
 package org.sigmah.client.page.project.dashboard;
 
+import java.util.Arrays;
+
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.shared.dto.element.FlexibleElementDTO;
+import org.sigmah.shared.dto.element.FlexibleElementType;
+
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Orientation;
@@ -30,21 +37,17 @@ import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import java.util.Arrays;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.shared.dto.element.FlexibleElementDTO;
-import org.sigmah.shared.dto.element.FlexibleElementType;
 
 /**
- *
+ * 
  * @author Denis Colliot (dcolliot@ideia.fr)
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
-public class ProjectDashboardView extends ProjectDashboardPresenter.View  {
+public class ProjectDashboardView extends ProjectDashboardPresenter.View {
     private final ToolBar toolBar;
-    
+
     private TabPanel tabPanelPhases;
     private LayoutContainer panelProjectModel;
     private LayoutContainer panelSelectedPhase;
@@ -61,7 +64,8 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View  {
 
     public ProjectDashboardView() {
         final BorderLayout borderLayout = new BorderLayout();
-        //borderLayout.setContainerStyle("x-border-layout-ct panel-background"); -- White background
+        // borderLayout.setContainerStyle("x-border-layout-ct panel-background");
+        // -- White background
         setLayout(borderLayout);
         setHeight("100%");
 
@@ -80,36 +84,40 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View  {
             }
         });
         gridRequiredElements = new Grid<FlexibleElementDTO>(storeRequiredElements, getColumModel());
-        gridRequiredElements.addStyleName("sigmah-required-elements-grid");
         gridRequiredElements.setAutoExpandColumn("label");
         gridRequiredElements.getView().setForceFit(true);
 
         // Phases tab panel
         tabPanelPhases = new TabPanel();
         tabPanelPhases.setPlain(true);
-        tabPanelPhases.addStyleName("sigmah-tabPhases");
+        tabPanelPhases.addStyleName("project-tabPhases");
         tabPanelPhases.setHeight("100%");
         tabPanelPhases.setBorders(false);
         tabPanelPhases.setBodyBorder(false);
 
         // Toolbar
         toolBar = new ToolBar();
-        toolBar.setAlignment(HorizontalAlignment.RIGHT);
+        toolBar.setAlignment(HorizontalAlignment.LEFT);
         toolBar.setBorders(false);
 
         buttonSavePhase = new Button(I18N.CONSTANTS.projectSavePhaseButton());
-        buttonActivatePhase = new Button(I18N.CONSTANTS.projectActivatePhaseButton());
+        buttonActivatePhase = new Button(I18N.CONSTANTS.projectClosePhaseButton(), IconImageBundle.ICONS.activate());
         buttonPhaseGuide = new Button(I18N.CONSTANTS.projectPhaseGuideHeader());
 
+        buttonActivatePhase.setEnabled(false);
         buttonSavePhase.setEnabled(false);
+        buttonPhaseGuide.setEnabled(false);
 
-        toolBar.add(buttonSavePhase);
         toolBar.add(buttonActivatePhase);
+        toolBar.add(new SeparatorToolItem());
+        toolBar.add(buttonSavePhase);
+        toolBar.add(new SeparatorToolItem());
         toolBar.add(buttonPhaseGuide);
 
         // Tab item main panel
         panelProjectModel = new LayoutContainer(new BorderLayout());
         panelProjectModel.setBorders(false);
+        panelProjectModel.addStyleName("project-current-phase-panel");
 
         panelSelectedPhase = new LayoutContainer(new FitLayout());
 
@@ -187,7 +195,7 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View  {
 
     /**
      * Generates the {@link ColumnModel} for the required elements grid.
-     *
+     * 
      * @return the {@link ColumnModel} for the required elements grid.
      */
     private ColumnModel getColumModel() {
@@ -206,9 +214,9 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View  {
             public Object render(FlexibleElementDTO model, String property, ColumnData config, int rowIndex,
                     int colIndex, ListStore<FlexibleElementDTO> store, Grid<FlexibleElementDTO> grid) {
                 if (model.isFilledIn()) {
-                    return IconImageBundle.ICONS.checked().createImage();
+                    return IconImageBundle.ICONS.elementCompleted().createImage();
                 } else {
-                    return IconImageBundle.ICONS.unchecked().createImage();
+                    return IconImageBundle.ICONS.elementUncompleted().createImage();
                 }
             }
         });
@@ -285,5 +293,23 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View  {
     @Override
     public TabPanel getTabPanelProject() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void flushToolbar() {
+        toolBar.removeAll();
+        toolBar.removeAllListeners();
+    }
+
+    @Override
+    public void fillToolbar() {
+        
+        flushToolbar();
+        
+        toolBar.add(buttonActivatePhase);
+        toolBar.add(new SeparatorToolItem());
+        toolBar.add(buttonSavePhase);
+        toolBar.add(new SeparatorToolItem());
+        toolBar.add(buttonPhaseGuide);
     }
 }

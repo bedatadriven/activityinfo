@@ -56,6 +56,15 @@ public class RequiredValueState {
     public boolean isTrue() {
         return !Boolean.FALSE.equals(savedState);
     }
+    
+    /**
+     * Returns if the actual value completion is valid.
+     *
+     * @return If the actual value completion is valid.
+     */
+    public boolean isActuallyTrue() {
+        return !Boolean.FALSE.equals(actualState);
+    }
 
     @Override
     public String toString() {
