@@ -8,6 +8,8 @@ package org.sigmah.shared.domain;
 
 import javax.persistence.*;
 
+import org.sigmah.shared.domain.quality.QualityCriterion;
+
 
 import java.util.Date;
 

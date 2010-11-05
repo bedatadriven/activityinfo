@@ -15,6 +15,7 @@ import org.sigmah.shared.command.result.ValueResultUtils;
 import org.sigmah.shared.dto.category.CategoryTypeDTO;
 import org.sigmah.shared.dto.element.handler.RequiredValueEvent;
 import org.sigmah.shared.dto.element.handler.ValueEvent;
+import org.sigmah.shared.dto.quality.QualityCriterionDTO;
 
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.event.Events;
@@ -69,6 +70,15 @@ public class QuestionElementDTO extends FlexibleElementDTO {
 
     public void setCategoryTypeDTO(CategoryTypeDTO categoryTypeDTO) {
         set("categoryTypeDTO", categoryTypeDTO);
+    }
+
+    // Question quality criterion
+    public QualityCriterionDTO getQualityCriterionDTO() {
+        return get("qualityCriterionDTO");
+    }
+
+    public void setQualityCriterionDTO(QualityCriterionDTO qualityCriterionDTO) {
+        set("qualityCriterionDTO", qualityCriterionDTO);
     }
 
     @Override
@@ -158,9 +168,18 @@ public class QuestionElementDTO extends FlexibleElementDTO {
             component = cp;
         }
 
-        // If the component is a category.
+        // If the component is a category and/or a quality criterion.
         if (getCategoryTypeDTO() != null) {
-            component.setToolTip("Cet élément est une catégorie de projet (" + getCategoryTypeDTO().getLabel() + ")");
+
+            if (getQualityCriterionDTO() != null) {
+                component.setToolTip(I18N.MESSAGES.flexibleElementQuestionCategory(getCategoryTypeDTO().getLabel())
+                        + "<br/>" + I18N.MESSAGES.flexibleElementQuestionQuality(getQualityCriterionDTO().getLabel()));
+            } else {
+                component.setToolTip(I18N.MESSAGES.flexibleElementQuestionCategory(getCategoryTypeDTO().getLabel()));
+            }
+
+        } else if (getQualityCriterionDTO() != null) {
+            component.setToolTip(I18N.MESSAGES.flexibleElementQuestionQuality(getQualityCriterionDTO().getLabel()));
         }
 
         return component;

@@ -20,8 +20,6 @@ import org.sigmah.shared.domain.Project;
 import org.sigmah.shared.domain.ProjectBanner;
 import org.sigmah.shared.domain.ProjectDetails;
 import org.sigmah.shared.domain.ProjectModel;
-import org.sigmah.shared.domain.QualityCriterion;
-import org.sigmah.shared.domain.QualityFramework;
 import org.sigmah.shared.domain.Report;
 import org.sigmah.shared.domain.ReportingPeriod;
 import org.sigmah.shared.domain.Site;
@@ -48,6 +46,8 @@ import org.sigmah.shared.domain.logframe.LogFrameGroup;
 import org.sigmah.shared.domain.logframe.LogFrameModel;
 import org.sigmah.shared.domain.logframe.Prerequisite;
 import org.sigmah.shared.domain.logframe.SpecificObjective;
+import org.sigmah.shared.domain.quality.QualityCriterion;
+import org.sigmah.shared.domain.quality.QualityFramework;
 import org.sigmah.shared.domain.value.Value;
 
 /**

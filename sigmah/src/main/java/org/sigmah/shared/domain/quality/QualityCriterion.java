@@ -1,4 +1,4 @@
-package org.sigmah.shared.domain;
+package org.sigmah.shared.domain.quality;
 
 import java.io.Serializable;
 import java.util.List;
@@ -10,7 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -28,8 +27,7 @@ public class QualityCriterion implements Serializable {
 
     private Integer id;
     private String label;
-    private QualityFramework parentFramework;
-    private List<QualityCriterion> subCriterions;
+    private List<QualityCriterion> subCriteria;
 
     public void setId(Integer id) {
         this.id = id;
@@ -51,24 +49,14 @@ public class QualityCriterion implements Serializable {
         this.label = label;
     }
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "id_quality_framework", nullable = false)
-    public QualityFramework getParentFramework() {
-        return parentFramework;
-    }
-
-    public void setParentFramework(QualityFramework parentFramework) {
-        this.parentFramework = parentFramework;
-    }
-
     @OneToMany
     @JoinTable(name = "quality_criterion_children", joinColumns = { @JoinColumn(name = "id_quality_criterion") }, inverseJoinColumns = { @JoinColumn(name = "id_quality_criterion_child") }, uniqueConstraints = { @UniqueConstraint(columnNames = {
             "id_quality_criterion", "id_quality_criterion_child" }) })
-    public List<QualityCriterion> getSubCriterions() {
-        return subCriterions;
+    public List<QualityCriterion> getSubCriteria() {
+        return subCriteria;
     }
 
-    public void setSubCriterions(List<QualityCriterion> subCriterions) {
-        this.subCriterions = subCriterions;
+    public void setSubCriteria(List<QualityCriterion> subCriteria) {
+        this.subCriteria = subCriteria;
     }
 }

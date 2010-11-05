@@ -1,17 +1,12 @@
-package org.sigmah.shared.domain;
+package org.sigmah.shared.domain.quality;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 /**
@@ -28,7 +23,6 @@ public class QualityFramework implements Serializable {
 
     private Integer id;
     private String label;
-    private List<QualityCriterion> criterions = new ArrayList<QualityCriterion>();
 
     public void setId(Integer id) {
         this.id = id;
@@ -48,15 +42,5 @@ public class QualityFramework implements Serializable {
 
     public void setLabel(String label) {
         this.label = label;
-    }
-
-    @OneToMany(mappedBy = "parentFramework", cascade = CascadeType.ALL)
-    @OrderBy("label asc")
-    public List<QualityCriterion> getCriterions() {
-        return criterions;
-    }
-
-    public void setCriterions(List<QualityCriterion> criterions) {
-        this.criterions = criterions;
     }
 }

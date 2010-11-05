@@ -264,6 +264,11 @@
 			<a>categoryType</a>
 			<b>categoryTypeDTO</b>
 		</field>
+		
+		<field>
+			<a>qualityCriterion</a>
+			<b>qualityCriterionDTO</b>
+		</field>
 	</mapping>
 
 	<!-- QuestionChoiceElement/QuestionChoiceElementDTO Mapping -->
