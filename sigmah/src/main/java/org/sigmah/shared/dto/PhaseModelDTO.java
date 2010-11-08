@@ -85,6 +85,25 @@ public class PhaseModelDTO extends BaseModelData implements EntityDTO {
         set("definitionDTO", definitionDTO);
     }
 
+    // Guide
+    public String getGuide() {
+        return get("guide");
+    }
+
+    public void setGuide(String guide) {
+        set("guide", guide);
+    }
+
+    /**
+     * Returns if a guide is available for this phase model.
+     * 
+     * @return If a guide is available for this phase model.
+     */
+    public boolean isGuideAvailable() {
+        final String guide = get("guide");
+        return guide != null && !"".equals(guide.trim());
+    }
+
     public Widget getWidget() {
         return getLayoutDTO().getWidget();
     }

@@ -34,6 +34,7 @@ import org.sigmah.shared.dto.layout.LayoutConstraintDTO;
 import org.sigmah.shared.dto.layout.LayoutGroupDTO;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -54,6 +55,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Grid;
 
@@ -644,11 +646,26 @@ public class ProjectDashboardPresenter implements SubPresenter {
         // -- ACTION: PHASE GUIDE
         // --
 
-        // For the moment, always visible and disabled.
-        // TODO Check guide availability to enable this action.
-        view.getButtonPhaseGuide().setVisible(true);
+        // Check guide availability.
         view.getButtonPhaseGuide().removeAllListeners();
-        view.getButtonPhaseGuide().setEnabled(false);
+
+        if (projectPresenter.getCurrentDisplayedPhaseDTO().getPhaseModelDTO().isGuideAvailable()) {
+
+            final String guide = projectPresenter.getCurrentDisplayedPhaseDTO().getPhaseModelDTO().getGuide();
+
+            view.getButtonPhaseGuide().setEnabled(true);
+            view.getButtonPhaseGuide().setTitle(guide);
+            view.getButtonPhaseGuide().addListener(Events.OnClick, new Listener<BaseEvent>() {
+
+                @Override
+                public void handleEvent(BaseEvent be) {
+                    Window.open(guide, "_blank", null);
+                }
+            });
+        } else {
+            view.getButtonPhaseGuide().setEnabled(false);
+            view.getButtonPhaseGuide().setTitle(I18N.CONSTANTS.projectPhaseGuideUnavailable());
+        }
     }
 
     /**

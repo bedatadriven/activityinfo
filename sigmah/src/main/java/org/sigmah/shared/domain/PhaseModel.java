@@ -39,6 +39,7 @@ public class PhaseModel implements Serializable {
     private List<Report> reports = new ArrayList<Report>();
     private Integer displayOrder;
     private PhaseModelDefinition definition;
+    private String guide;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -123,5 +124,14 @@ public class PhaseModel implements Serializable {
 
     public void setDefinition(PhaseModelDefinition definition) {
         this.definition = definition;
+    }
+
+    @Column(name = "guide")
+    public String getGuide() {
+        return guide;
+    }
+
+    public void setGuide(String guide) {
+        this.guide = guide;
     }
 }
