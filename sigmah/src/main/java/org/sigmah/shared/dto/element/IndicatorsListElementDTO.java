@@ -65,7 +65,7 @@ public class IndicatorsListElementDTO extends FlexibleElementDTO {
     }
 
     @Override
-    public Component getComponent(ValueResult valueResult) {
+    public Component getComponent(ValueResult valueResult, boolean enabled) {
 
         // Creates actions menu to manage the files list.
         final Button addButton = new Button(I18N.CONSTANTS.flexibleElementIndicatorsListAdd());
@@ -167,6 +167,8 @@ public class IndicatorsListElementDTO extends FlexibleElementDTO {
                         });
             }
         });
+        
+        panel.setEnabled(enabled);
 
         return panel;
     }

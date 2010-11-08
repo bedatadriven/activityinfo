@@ -56,6 +56,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
 
 /**
  * 
@@ -120,7 +121,7 @@ public class FilesListElementDTO extends FlexibleElementDTO {
     }
 
     @Override
-    public Component getComponent(ValueResult valueResult) {
+    public Component getComponent(ValueResult valueResult, boolean enabled) {
 
         currentValueResult = valueResult;
 
@@ -129,6 +130,7 @@ public class FilesListElementDTO extends FlexibleElementDTO {
         uploadField.setButtonCaption(I18N.CONSTANTS.flexibleElementFilesListAddDocument());
         uploadField.setName(FileUploadUtils.DOCUMENT_CONTENT);
         uploadField.setButtonIcon(IconImageBundle.ICONS.attach());
+        uploadField.setEnabled(enabled);
 
         final FormPanel uploadFormPanel = new FormPanel();
         uploadFormPanel.setLayout(new FitLayout());
@@ -225,7 +227,7 @@ public class FilesListElementDTO extends FlexibleElementDTO {
         updateStore();
 
         // Creates the grid which contains the files list.
-        final FlexibleGrid<FileDTO> filesGrid = new FlexibleGrid<FileDTO>(store, null, getColumnModel());
+        final FlexibleGrid<FileDTO> filesGrid = new FlexibleGrid<FileDTO>(store, null, getColumnModel(enabled));
         filesGrid.setAutoExpandColumn("name");
         filesGrid.setVisibleElementsCount(5);
 
@@ -341,9 +343,11 @@ public class FilesListElementDTO extends FlexibleElementDTO {
     /**
      * Defines the column model for the files list grid.
      * 
+     * @param enabled
+     *            If the component is enabled.
      * @return The column model.
      */
-    private ColumnConfig[] getColumnModel() {
+    private ColumnConfig[] getColumnModel(final boolean enabled) {
 
         // File's add date.
         final ColumnConfig dateColumn = new ColumnConfig();
@@ -420,6 +424,7 @@ public class FilesListElementDTO extends FlexibleElementDTO {
                 uploadField.setButtonCaption(I18N.CONSTANTS.flexibleElementFilesListUploadVersion());
                 uploadField.setName(FileUploadUtils.DOCUMENT_CONTENT);
                 uploadField.setButtonIcon(IconImageBundle.ICONS.attach());
+                uploadField.setEnabled(enabled);
 
                 final FormPanel uploadFormPanel = new FormPanel();
                 uploadFormPanel.setLayout(new FitLayout());
@@ -523,7 +528,7 @@ public class FilesListElementDTO extends FlexibleElementDTO {
                     @Override
                     public void onClick(ClickEvent e) {
 
-                        final FileDetailsWindow versionsWindow = new FileDetailsWindow(dispatcher);
+                        final FileDetailsWindow versionsWindow = new FileDetailsWindow(dispatcher, enabled);
                         versionsWindow.addListener(new FileDetailsWindow.FileDetailsWindowListener() {
                             @Override
                             public void versionDeleted(FileVersionDTO version) {
@@ -550,49 +555,57 @@ public class FilesListElementDTO extends FlexibleElementDTO {
             public Object render(final FileDTO model, String property, ColumnData config, int rowIndex, int colIndex,
                     final ListStore<FileDTO> store, Grid<FileDTO> grid) {
 
-                final Image image = IconImageBundle.ICONS.remove().createImage();
-                image.setTitle(I18N.CONSTANTS.remove());
-                image.addStyleName("flexibility-action");
-                image.addClickHandler(new ClickHandler() {
+                if (enabled) {
+                    final Image image = IconImageBundle.ICONS.remove().createImage();
+                    image.setTitle(I18N.CONSTANTS.remove());
+                    image.addStyleName("flexibility-action");
+                    image.addClickHandler(new ClickHandler() {
 
-                    @Override
-                    public void onClick(ClickEvent event) {
+                        @Override
+                        public void onClick(ClickEvent event) {
 
-                        // Asks the client to confirm the file removal.
-                        MessageBox.confirm(I18N.CONSTANTS.flexibleElementFilesListDelete(),
-                                I18N.MESSAGES.flexibleElementFilesListConfirmDelete(model.getName()),
-                                new Listener<MessageBoxEvent>() {
-                                    @Override
-                                    public void handleEvent(MessageBoxEvent ce) {
+                            // Asks the client to confirm the file removal.
+                            MessageBox.confirm(I18N.CONSTANTS.flexibleElementFilesListDelete(),
+                                    I18N.MESSAGES.flexibleElementFilesListConfirmDelete(model.getName()),
+                                    new Listener<MessageBoxEvent>() {
+                                        @Override
+                                        public void handleEvent(MessageBoxEvent ce) {
 
-                                        if (Dialog.YES.equals(ce.getButtonClicked().getItemId())) {
+                                            if (Dialog.YES.equals(ce.getButtonClicked().getItemId())) {
 
-                                            // Deletes it.
-                                            dispatcher.execute(new Delete(model), new MaskingAsyncMonitor(mainPanel,
-                                                    I18N.CONSTANTS.loading()), new AsyncCallback<VoidResult>() {
+                                                // Deletes it.
+                                                dispatcher.execute(new Delete(model), new MaskingAsyncMonitor(
+                                                        mainPanel, I18N.CONSTANTS.loading()),
+                                                        new AsyncCallback<VoidResult>() {
 
-                                                public void onFailure(Throwable caught) {
-                                                    MessageBox.alert(
-                                                            I18N.CONSTANTS.flexibleElementFilesListDeleteError(),
-                                                            I18N.CONSTANTS.flexibleElementFilesListDeleteErrorDetails(),
-                                                            null);
-                                                }
+                                                            public void onFailure(Throwable caught) {
+                                                                MessageBox.alert(
+                                                                        I18N.CONSTANTS
+                                                                                .flexibleElementFilesListDeleteError(),
+                                                                        I18N.CONSTANTS
+                                                                                .flexibleElementFilesListDeleteErrorDetails(),
+                                                                        null);
+                                                            }
 
-                                                public void onSuccess(VoidResult result) {
-                                                    store.remove(model);
-                                                    if (store.getCount() == 0) {
-                                                        handlerManager.fireEvent(new RequiredValueEvent(false));
-                                                    }
-                                                }
-                                            });
+                                                            public void onSuccess(VoidResult result) {
+                                                                store.remove(model);
+                                                                if (store.getCount() == 0) {
+                                                                    handlerManager.fireEvent(new RequiredValueEvent(
+                                                                            false));
+                                                                }
+                                                            }
+                                                        });
+                                            }
                                         }
-                                    }
-                                });
+                                    });
 
-                    }
-                });
+                        }
+                    });
 
-                return image;
+                    return image;
+                } else {
+                    return new Label("-");
+                }
             }
         });
 
@@ -659,14 +672,18 @@ public class FilesListElementDTO extends FlexibleElementDTO {
 
         /**
          * Builds the window.
+         * 
+         * @param dispatcher
+         * @param enabled
+         *            If the component is enabled.
          */
-        public FileDetailsWindow(final Dispatcher dispatcher) {
+        public FileDetailsWindow(final Dispatcher dispatcher, boolean enabled) {
 
             this.dispatcher = dispatcher;
 
             store = new ListStore<FileVersionDTO>();
 
-            grid = new FlexibleGrid<FileVersionDTO>(store, null, 10, getColumnModel());
+            grid = new FlexibleGrid<FileVersionDTO>(store, null, 10, getColumnModel(enabled));
             grid.setAutoExpandColumn("name");
 
             store.setStoreSorter(new StoreSorter<FileVersionDTO>() {
@@ -703,7 +720,7 @@ public class FilesListElementDTO extends FlexibleElementDTO {
             mainPanel.setBodyBorder(false);
             mainPanel.add(grid);
             mainPanel.setScrollMode(Scroll.AUTOY);
-            
+
             // Builds window.
             window = new Window();
             window.setSize(550, 250);
@@ -719,9 +736,11 @@ public class FilesListElementDTO extends FlexibleElementDTO {
         /**
          * Defines the column model for the versions list grid.
          * 
+         * @param enabled
+         *            If the component is enabled.
          * @return The column model.
          */
-        private ColumnConfig[] getColumnModel() {
+        private ColumnConfig[] getColumnModel(final boolean enabled) {
 
             // Version's number.
             final ColumnConfig versionColumn = new ColumnConfig();
@@ -788,52 +807,62 @@ public class FilesListElementDTO extends FlexibleElementDTO {
                 public Object render(final FileVersionDTO model, String property, ColumnData config, int rowIndex,
                         int colIndex, final ListStore<FileVersionDTO> store, Grid<FileVersionDTO> grid) {
 
-                    final Image image = IconImageBundle.ICONS.remove().createImage();
-                    image.setTitle(I18N.CONSTANTS.remove());
-                    image.addStyleName("flexibility-action");
-                    image.addClickHandler(new ClickHandler() {
+                    if (enabled) {
+                        final Image image = IconImageBundle.ICONS.remove().createImage();
+                        image.setTitle(I18N.CONSTANTS.remove());
+                        image.addStyleName("flexibility-action");
+                        image.addClickHandler(new ClickHandler() {
 
-                        @Override
-                        public void onClick(ClickEvent event) {
+                            @Override
+                            public void onClick(ClickEvent event) {
 
-                            // Do not delete a single version.
-                            if (store.getCount() <= 1) {
-                                MessageBox.alert(I18N.CONSTANTS.flexibleElementFilesListVersionDeleteForbidden(),
-                                        I18N.CONSTANTS.flexibleElementFilesListVersionDeleteForbiddenDetails(), null);
-                                return;
-                            }
+                                // Do not delete a single version.
+                                if (store.getCount() <= 1) {
+                                    MessageBox.alert(I18N.CONSTANTS.flexibleElementFilesListVersionDeleteForbidden(),
+                                            I18N.CONSTANTS.flexibleElementFilesListVersionDeleteForbiddenDetails(),
+                                            null);
+                                    return;
+                                }
 
-                            // Asks the client to confirm the version deletion.
-                            MessageBox.confirm(I18N.CONSTANTS.flexibleElementFilesListVersionDelete(), I18N.MESSAGES
-                                    .flexibleElementFilesListConfirmVersionDelete(String.valueOf(model
-                                            .getVersionNumber())), new Listener<MessageBoxEvent>() {
-                                public void handleEvent(MessageBoxEvent ce) {
+                                // Asks the client to confirm the version
+                                // deletion.
+                                MessageBox.confirm(I18N.CONSTANTS.flexibleElementFilesListVersionDelete(),
+                                        I18N.MESSAGES.flexibleElementFilesListConfirmVersionDelete(String.valueOf(model
+                                                .getVersionNumber())), new Listener<MessageBoxEvent>() {
+                                            public void handleEvent(MessageBoxEvent ce) {
 
-                                    if (Dialog.YES.equals(ce.getButtonClicked().getItemId())) {
+                                                if (Dialog.YES.equals(ce.getButtonClicked().getItemId())) {
 
-                                        // Deletes it.
-                                        dispatcher.execute(new Delete(model), new MaskingAsyncMonitor(window,
-                                                I18N.CONSTANTS.loading()), new AsyncCallback<VoidResult>() {
+                                                    // Deletes it.
+                                                    dispatcher.execute(new Delete(model), new MaskingAsyncMonitor(
+                                                            window, I18N.CONSTANTS.loading()),
+                                                            new AsyncCallback<VoidResult>() {
 
-                                            public void onFailure(Throwable caught) {
-                                                MessageBox.alert(I18N.CONSTANTS.flexibleElementFilesListDeleteError(),
-                                                        I18N.CONSTANTS.flexibleElementFilesListDeleteErrorDetails(),
-                                                        null);
-                                            }
+                                                                public void onFailure(Throwable caught) {
+                                                                    MessageBox.alert(
+                                                                            I18N.CONSTANTS
+                                                                                    .flexibleElementFilesListDeleteError(),
+                                                                            I18N.CONSTANTS
+                                                                                    .flexibleElementFilesListDeleteErrorDetails(),
+                                                                            null);
+                                                                }
 
-                                            public void onSuccess(VoidResult result) {
-                                                store.remove(model);
-                                                fireVersionDeleted(model);
+                                                                public void onSuccess(VoidResult result) {
+                                                                    store.remove(model);
+                                                                    fireVersionDeleted(model);
+                                                                }
+                                                            });
+                                                }
                                             }
                                         });
-                                    }
-                                }
-                            });
 
-                        }
-                    });
+                            }
+                        });
 
-                    return image;
+                        return image;
+                    } else {
+                        return new Label("-");
+                    }
                 }
             });
 

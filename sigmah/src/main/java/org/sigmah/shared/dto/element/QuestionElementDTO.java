@@ -82,7 +82,7 @@ public class QuestionElementDTO extends FlexibleElementDTO {
     }
 
     @Override
-    public Component getComponent(ValueResult valueResult) {
+    public Component getComponent(ValueResult valueResult, boolean enabled) {
 
         // Question's component.
         final Component component;
@@ -124,6 +124,8 @@ public class QuestionElementDTO extends FlexibleElementDTO {
             // Listens to the selection changes.
             comboBox.addSelectionChangedListener(listener);
 
+            comboBox.setEnabled(enabled);
+
             component = comboBox;
         }
         // Multiple selection case.
@@ -140,7 +142,7 @@ public class QuestionElementDTO extends FlexibleElementDTO {
                             I18N.CONSTANTS.flexibleElementQuestionMutiple(), 500));
             multipleQuestion.setAutoExpandColumn("label");
             multipleQuestion.setVisibleElementsCount(5);
-
+            
             final ContentPanel cp = new ContentPanel();
             cp.setHeaderVisible(true);
             cp.setBorders(true);
@@ -164,6 +166,8 @@ public class QuestionElementDTO extends FlexibleElementDTO {
 
                 sm.select(selectedChoices, false);
             }
+            
+            multipleQuestion.getSelectionModel().setLocked(!enabled);
 
             component = cp;
         }

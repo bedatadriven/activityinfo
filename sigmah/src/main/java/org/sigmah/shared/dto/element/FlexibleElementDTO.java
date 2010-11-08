@@ -96,7 +96,22 @@ public abstract class FlexibleElementDTO extends BaseModelData implements Entity
      * 
      * @return the widget corresponding to the flexible element.
      */
-    public abstract Component getComponent(ValueResult valueResult);
+    public Component getComponent(ValueResult valueResult) {
+        return getComponent(valueResult, true);
+    }
+
+    /**
+     * Gets the widget of a flexible element with its value.
+     * 
+     * @param valueResult
+     *            value of the flexible element, or {@code null} to display the
+     *            element without its value.
+     * @param enabled
+     *            If the component is enabled.
+     * 
+     * @return the widget corresponding to the flexible element.
+     */
+    public abstract Component getComponent(ValueResult valueResult, boolean enabled);
 
     /**
      * Adds a {@link ValueHandler} to the flexible element.

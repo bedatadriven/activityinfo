@@ -32,7 +32,7 @@ public class CheckboxElementDTO extends FlexibleElementDTO {
     }
 
     @Override
-    public Component getComponent(ValueResult valueResult) {
+    public Component getComponent(ValueResult valueResult, boolean enabled) {
         final CheckBox checkbox = new CheckBox();
         checkbox.setBoxLabel(getLabel());
         checkbox.setHideLabel(true);
@@ -43,6 +43,8 @@ public class CheckboxElementDTO extends FlexibleElementDTO {
         }
 
         checkbox.addListener(Events.OnClick, new CheckBoxListener());
+
+        checkbox.setEnabled(enabled);
 
         return checkbox;
     }

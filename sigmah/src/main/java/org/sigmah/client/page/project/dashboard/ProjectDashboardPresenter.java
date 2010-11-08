@@ -334,6 +334,9 @@ public class ProjectDashboardPresenter implements SubPresenter {
                     + phaseDTO.getPhaseModelDTO().getDefinitionDTO().getId() + ".");
         }
 
+        // Phase ended state
+        final boolean isEnded = isEndedPhase(phaseDTO);
+
         // Masks the main panel.
         int count = 0;
         for (final LayoutGroupDTO groupDTO : phaseDTO.getPhaseModelDTO().getLayoutDTO().getLayoutGroupsDTO()) {
@@ -418,7 +421,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
                         // Generates element component (with the value).
                         elementDTO.init();
-                        final Component elementComponent = elementDTO.getComponent(valueResult);
+                        final Component elementComponent = elementDTO.getComponent(valueResult, !isEnded);
 
                         // Component width.
                         final FormData formData;
@@ -579,7 +582,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
                     @Override
                     public void handleEvent(MenuEvent me) {
 
-                        activatePhase(null);
+                        activatePhase(null, true);
                     }
                 });
 
@@ -597,7 +600,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
                         @Override
                         public void handleEvent(MenuEvent me) {
 
-                            activatePhase(successor);
+                            activatePhase(successor, true);
                         }
                     });
                     successorsMenu.add(successorItem);
@@ -624,7 +627,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
                 @Override
                 public void handleEvent(ButtonEvent be) {
-                    activatePhase(projectPresenter.getCurrentDisplayedPhaseDTO());
+                    activatePhase(projectPresenter.getCurrentDisplayedPhaseDTO(), false);
                 }
             });
         }
@@ -736,8 +739,10 @@ public class ProjectDashboardPresenter implements SubPresenter {
      * 
      * @param phase
      *            The phase to activate.
+     * @param reload
+     *            If the current displayed phase must be reloaded.
      */
-    private void activatePhase(final PhaseDTO phase) {
+    private void activatePhase(final PhaseDTO phase, final boolean reload) {
 
         // If the active phase required elements aren't filled, shows an
         // alert and returns.
@@ -795,7 +800,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
                                             }
                                         }
 
-                                        refreshDashboardAfterUpdate();
+                                        refreshDashboardAfterUpdate(reload);
                                     }
                                 });
                             }
@@ -853,7 +858,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
                                             }
                                         }
 
-                                        refreshDashboardAfterUpdate();
+                                        refreshDashboardAfterUpdate(reload);
                                     }
                                 });
                             }
@@ -864,8 +869,11 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
     /**
      * Refreshes the dashboard after an update of the project instance.
+     * 
+     * @param reload
+     *            If the current displayed phase must be reloaded.
      */
-    private void refreshDashboardAfterUpdate() {
+    private void refreshDashboardAfterUpdate(boolean reload) {
 
         if (Log.isDebugEnabled()) {
             Log.debug("[refreshDashboardAfterUpdate] Refreshes the dashboard.");
@@ -913,6 +921,10 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
             // Enables successors tabs of the current phase.
             enableSuccessorsTabs();
+        }
+
+        if (reload) {
+            loadPhaseOnTab(projectPresenter.getCurrentDisplayedPhaseDTO());
         }
     }
 

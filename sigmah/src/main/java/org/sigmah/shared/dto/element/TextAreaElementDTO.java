@@ -86,7 +86,7 @@ public class TextAreaElementDTO extends FlexibleElementDTO {
     }
 
     @Override
-    public Component getComponent(ValueResult valueResult) {
+    public Component getComponent(ValueResult valueResult, boolean enabled) {
 
         final DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat(I18N.CONSTANTS.flexibleElementDateFormat());
 
@@ -401,6 +401,8 @@ public class TextAreaElementDTO extends FlexibleElementDTO {
         field.setAllowBlank(true);
         field.setFieldLabel(getLabel());
 
+        field.setEnabled(enabled);
+        
         return field;
     }
 

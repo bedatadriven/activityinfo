@@ -62,10 +62,12 @@ public class TripletsListElementDTO extends FlexibleElementDTO {
     }
 
     @Override
-    public Component getComponent(ValueResult valueResult) {
+    public Component getComponent(ValueResult valueResult, final boolean enabled) {
 
         // Creates actions toolbar to manage the triplets list.
         final Button addButton = new Button(I18N.CONSTANTS.addItem());
+        addButton.setEnabled(enabled);
+
         final Button deleteButton = new Button(I18N.CONSTANTS.remove());
         deleteButton.setEnabled(false);
 
@@ -128,7 +130,7 @@ public class TripletsListElementDTO extends FlexibleElementDTO {
             public void selectionChanged(SelectionChangedEvent<TripletValueDTO> se) {
                 final List<TripletValueDTO> selection = se.getSelection();
 
-                final boolean enabledState = selection != null && !selection.isEmpty();
+                final boolean enabledState = enabled && selection != null && !selection.isEmpty();
                 deleteButton.setEnabled(enabledState);
             }
         });
