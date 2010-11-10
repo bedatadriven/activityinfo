@@ -758,6 +758,11 @@ public class FlexTableView {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private void refreshMergedRow(RowsGroup<?> group, int position) throws IndexOutOfBoundsException {
 
+        // If the row was the last one, nothing to do.
+        if (group.getRowsCount() == 0) {
+            return;
+        }
+
         // Gets the row to refresh.
         final Row row = group.getRowAtPosition(position);
 
