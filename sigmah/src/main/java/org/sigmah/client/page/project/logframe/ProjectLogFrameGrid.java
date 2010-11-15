@@ -33,7 +33,6 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -1615,6 +1614,9 @@ public class ProjectLogFrameGrid {
             // Sets the form window.
             formWindow.clear();
             formWindow.addChoicesList(I18N.CONSTANTS.logFrameExceptedResult(), results, false, "label");
+            formWindow.addTextField(I18N.CONSTANTS.logFrameActivityTitle(), false);
+            formWindow.addDateField(I18N.CONSTANTS.logFrameActivityStartDate(), false);
+            formWindow.addDateField(I18N.CONSTANTS.logFrameActivityEndDate(), false);
             formWindow.addFormSubmitListener(new FormSubmitListener() {
 
                 @Override
@@ -1626,15 +1628,34 @@ public class ProjectLogFrameGrid {
                         return;
                     }
 
-                    // Retrieves the selected ER and group.
-                    final ExpectedResultDTO expectedResult = (ExpectedResultDTO) element0;
+                    final Object element1 = elements[1];
+                    if (!(element1 instanceof String)) {
+                        return;
+                    }
 
-                    // Retrieves the default group.
+                    final Object element2 = elements[2];
+                    if (!(element2 instanceof Date)) {
+                        return;
+                    }
+
+                    final Object element3 = elements[3];
+                    if (!(element3 instanceof Date)) {
+                        return;
+                    }
+
+                    // Retrieves the selected ER and group and activity params.
+                    final ExpectedResultDTO expectedResult = (ExpectedResultDTO) element0;
                     final LogFrameGroupDTO group = logFrame.getDefaultGroup(LogFrameGroupType.ACTIVITY);
+                    final String title = (String) element1;
+                    final Date startDate = (Date) element2;
+                    final Date endDate = (Date) element3;
 
                     // Creates and displays a new activity.
                     final LogFrameActivityDTO activity = expectedResult.addActivity();
                     activity.setLogFrameGroupDTO(group);
+                    activity.setTitle(title);
+                    activity.setStartDate(startDate);
+                    activity.setEndDate(endDate);
                     addActivity(activity);
                 }
             });
