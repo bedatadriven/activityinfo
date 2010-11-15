@@ -18,13 +18,14 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  */
 public final class CountryDTO extends BaseModelData implements DTO {
 
-	private List<AdminLevelDTO> adminLevels = new ArrayList<AdminLevelDTO>(0);
+    private static final long serialVersionUID = 3189552164304073119L;
+    
+    private List<AdminLevelDTO> adminLevels = new ArrayList<AdminLevelDTO>(0);
 	private List<LocationTypeDTO> locationTypes = new ArrayList<LocationTypeDTO>(0);
     private BoundingBoxDTO bounds;
 
     
-	public CountryDTO()
-	{
+	public CountryDTO() {
 	}
 
     public CountryDTO(int id, String name) {

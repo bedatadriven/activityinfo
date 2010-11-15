@@ -19,6 +19,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.Field;
+import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
@@ -224,7 +225,7 @@ public class FormWindow {
 
         // Builds window.
         window = new Window();
-        window.setWidth(380);
+        window.setWidth(445);
         window.setPlain(true);
         window.setModal(true);
         window.setBlinkModal(true);
@@ -287,6 +288,31 @@ public class FormWindow {
 
         // Builds the text field.
         final TextField<String> field = new TextField<String>();
+        field.setAllowBlank(allowBlank);
+        field.setFieldLabel(fieldLabelString);
+
+        fields.add(new FieldWrapper(field, allowBlank));
+
+        addField(field, fieldLabelString);
+    }
+
+    /**
+     * Adds a number field in the window.
+     * 
+     * @param fieldLabelString
+     *            The label of the number field. Can be <code>null</code>.
+     * @param allowBlank
+     *            If the field is required.
+     */
+    public void addNumberField(String fieldLabelString, boolean allowBlank) {
+
+        // Lazy building.
+        if (window == null) {
+            init();
+        }
+
+        // Builds the text field.
+        final NumberField field = new NumberField();
         field.setAllowBlank(allowBlank);
         field.setFieldLabel(fieldLabelString);
 
@@ -386,7 +412,7 @@ public class FormWindow {
 
         // Builds the field label.
         final Label fieldLabel = new Label(fieldLabelString);
-        fieldLabel.setWidth("100px");
+        fieldLabel.setWidth("165px");
         fieldLabel.addStyleName("flexibility-element-label");
 
         // Builds the field panel.

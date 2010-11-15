@@ -41,7 +41,7 @@ public class ProjectPolicy implements EntityPolicy<Project> {
     @Override
     public Object create(User user, PropertyMap properties) {
         Project project = createProject(properties, user);
-        return project.getId();
+        return project;
     }
 
     @Transactional
@@ -95,6 +95,7 @@ public class ProjectPolicy implements EntityPolicy<Project> {
         final ProjectModel model = em.getReference(ProjectModel.class, properties.<Long> get("modelId"));
         project.setProjectModel(model);
         project.setLogFrame(null);
+        project.setBudget(properties.<Double> get("budget"));
 
         // Creates and adds phases.
         for (final PhaseModel phaseModel : model.getPhases()) {

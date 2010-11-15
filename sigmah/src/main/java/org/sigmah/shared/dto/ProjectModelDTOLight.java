@@ -1,5 +1,9 @@
 package org.sigmah.shared.dto;
 
+import java.util.List;
+
+import org.sigmah.shared.domain.ProjectModel;
+import org.sigmah.shared.domain.ProjectModelType;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
@@ -36,5 +40,38 @@ public class ProjectModelDTOLight extends BaseModelData implements EntityDTO {
 
     public void setName(String name) {
         set("name", name);
+    }
+
+    // Project visibilities
+    public List<ProjectModelVisibilityDTO> getVisibilities() {
+        return get("visibilities");
+    }
+
+    public void setVisibilities(List<ProjectModelVisibilityDTO> visibilities) {
+        set("visibilities", visibilities);
+    }
+
+    /**
+     * Gets the type of this model for the given organization. If this model
+     * isn't visible for this organization, <code>null</code> is returned.
+     * 
+     * @param organizationId
+     *            The organization.
+     * @return The type of this model for the given organization,
+     *         <code>null</code> otherwise.
+     */
+    public ProjectModelType getVisibility(int organizationId) {
+
+        if (getVisibilities() == null) {
+            return null;
+        }
+
+        for (final ProjectModelVisibilityDTO visibility : getVisibilities()) {
+            if (visibility.getOrganizationId() == organizationId) {
+                return visibility.getType();
+            }
+        }
+
+        return null;
     }
 }

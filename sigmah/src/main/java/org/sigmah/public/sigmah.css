@@ -327,6 +327,17 @@ body {
 	background-color: white;
 }
 
+.hyperlink a,
+.hyperlink a:active,
+.hyperlink a:hover,
+.hyperlink a:focus,
+.hyperlink a:link,
+.hyperlink a:visited {
+	text-decoration: underline;
+	cursor: pointer;
+	color: black;
+}
+
 .project-top-bar {
 	font-size: 8pt;
 	font-weight: bold;

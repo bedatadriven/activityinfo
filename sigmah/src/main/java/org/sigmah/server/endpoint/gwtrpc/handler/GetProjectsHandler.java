@@ -8,6 +8,7 @@ package org.sigmah.server.endpoint.gwtrpc.handler;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -21,9 +22,10 @@ import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.ProjectListResult;
 import org.sigmah.shared.domain.Country;
 import org.sigmah.shared.domain.Project;
+import org.sigmah.shared.domain.ProjectModelType;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.CountryDTO;
-import org.sigmah.shared.dto.ProjectDTO;
+import org.sigmah.shared.dto.ProjectDTOLight;
 import org.sigmah.shared.exception.CommandException;
 
 import com.google.inject.Inject;
@@ -55,24 +57,21 @@ public class GetProjectsHandler implements CommandHandler<GetProjects> {
     public CommandResult execute(GetProjects cmd, User user) throws CommandException {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("[execute] Gets projects.");
+            LOG.debug("[execute] Gets projects: " + cmd + ".");
         }
 
-        /* Initialization */
-        List<ProjectDTO> projectDTOList = new ArrayList<ProjectDTO>();
-
-        /* Recovery of the projects list from the DB */
         List<Project> projects;
-
         final List<CountryDTO> countriesDTO = cmd.getCountries();
+        final ProjectModelType modelType = cmd.getModelType();
 
+        // Filters by country.
         if (countriesDTO == null) {
 
             if (LOG.isDebugEnabled()) {
                 LOG.debug("[execute] No country specified, gets all projects.");
             }
 
-            projects = em.createQuery("select p from Project p order by p.name").getResultList();
+            projects = em.createQuery("SELECT p FROM Project p ORDER BY p.name").getResultList();
         } else {
             if (countriesDTO.size() > 0) {
 
@@ -110,9 +109,30 @@ public class GetProjectsHandler implements CommandHandler<GetProjects> {
             }
         }
 
-        /* Transformation into DTO objects */
+        // Filters by model type.
+        if (modelType != null) {
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("[execute] Filter project by model type '" + modelType + "'.");
+            }
+
+            for (final ListIterator<Project> it = projects.listIterator(); it.hasNext();) {
+                final Project p = it.next();
+                if (p.getProjectModel().getVisibility(user.getOrganization()) != modelType) {
+                    it.remove();
+                }
+            }
+        } else {
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("[execute] No model type specified, no filter applied.");
+            }
+        }
+
+        // Mapping into DTO objects
+        final ArrayList<ProjectDTOLight> projectDTOList = new ArrayList<ProjectDTOLight>();
         for (Project project : projects) {
-            ProjectDTO p = mapper.map(project, ProjectDTO.class);
+            final ProjectDTOLight p = mapper.map(project, ProjectDTOLight.class);
             projectDTOList.add(p);
         }
 

@@ -29,144 +29,120 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 @Table(name = "project_model")
 public class ProjectModel extends BaseModelData implements Serializable {
 
-	private static final long serialVersionUID = -1266259112071917788L;
+    private static final long serialVersionUID = -1266259112071917788L;
 
-	private Long id;
-	private String name;
-	private PhaseModel rootPhase;
-	private List<PhaseModel> phases = new ArrayList<PhaseModel>();
-	private List<FlexibleElement> elements = new ArrayList<FlexibleElement>();
-	private ProjectBanner projectBanner;
-	private ProjectDetails projectDetails;
+    private Long id;
+    private String name;
+    private PhaseModel rootPhase;
+    private List<PhaseModel> phases = new ArrayList<PhaseModel>();
+    private List<FlexibleElement> elements = new ArrayList<FlexibleElement>();
+    private ProjectBanner projectBanner;
+    private ProjectDetails projectDetails;
+    private List<ProjectModelVisibility> visibilities;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id_project_model")
-	public Long getId() {
-		return id;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id_project_model")
+    public Long getId() {
+        return id;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	@Column(name = "name", nullable = false, length = 512)
-	public String getName() {
-		return name;
-	}
+    @Column(name = "name", nullable = false, length = 512)
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	@OneToOne(optional = true)
-	@JoinColumn(name = "id_root_phase_model", nullable = true)
-	public PhaseModel getRootPhase() {
-		return rootPhase;
-	}
+    @OneToOne(optional = true)
+    @JoinColumn(name = "id_root_phase_model", nullable = true)
+    public PhaseModel getRootPhase() {
+        return rootPhase;
+    }
 
-	public void setRootPhase(PhaseModel rootPhase) {
-		this.rootPhase = rootPhase;
-	}
+    public void setRootPhase(PhaseModel rootPhase) {
+        this.rootPhase = rootPhase;
+    }
 
-	@OneToMany(mappedBy = "parentProjectModel", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	public List<PhaseModel> getPhases() {
-		return phases;
-	}
+    @OneToMany(mappedBy = "parentProjectModel", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    public List<PhaseModel> getPhases() {
+        return phases;
+    }
 
-	public void setPhases(List<PhaseModel> phases) {
-		this.phases = phases;
-	}
+    public void setPhases(List<PhaseModel> phases) {
+        this.phases = phases;
+    }
 
-	public void addPhase(PhaseModel phase) {
-		if (phase != null) {
-			phase.setParentProjectModel(this);
-			phases.add(phase);
-		}
-	}
+    public void addPhase(PhaseModel phase) {
+        if (phase != null) {
+            phase.setParentProjectModel(this);
+            phases.add(phase);
+        }
+    }
 
-	public void setElements(List<FlexibleElement> elements) {
-		this.elements = elements;
-	}
+    public void setElements(List<FlexibleElement> elements) {
+        this.elements = elements;
+    }
 
-	@OneToMany(mappedBy = "parentProjectModel", cascade = CascadeType.ALL)
-	public List<FlexibleElement> getElements() {
-		return elements;
-	}
+    @OneToMany(mappedBy = "parentProjectModel", cascade = CascadeType.ALL)
+    public List<FlexibleElement> getElements() {
+        return elements;
+    }
 
-	@OneToOne(mappedBy = "projectModel", cascade = CascadeType.ALL)
-	public ProjectBanner getProjectBanner() {
-		return projectBanner;
-	}
+    @OneToOne(mappedBy = "projectModel", cascade = CascadeType.ALL)
+    public ProjectBanner getProjectBanner() {
+        return projectBanner;
+    }
 
-	public void setProjectBanner(ProjectBanner projectBanner) {
-		this.projectBanner = projectBanner;
-	}
+    public void setProjectBanner(ProjectBanner projectBanner) {
+        this.projectBanner = projectBanner;
+    }
 
-	@OneToOne(mappedBy = "projectModel", cascade = CascadeType.ALL)
-	public ProjectDetails getProjectDetails() {
-		return projectDetails;
-	}
+    @OneToOne(mappedBy = "projectModel", cascade = CascadeType.ALL)
+    public ProjectDetails getProjectDetails() {
+        return projectDetails;
+    }
 
-	public void setProjectDetails(ProjectDetails projectDetails) {
-		this.projectDetails = projectDetails;
-	}
+    public void setProjectDetails(ProjectDetails projectDetails) {
+        this.projectDetails = projectDetails;
+    }
 
-	public void addFlexibleElement(FlexibleElement element) {
-		if (element != null) {
-			element.setParentProjectModel(this);
-			elements.add(element);
-		}
-	}
+    @OneToMany(mappedBy = "model", cascade = CascadeType.ALL)
+    public List<ProjectModelVisibility> getVisibilities() {
+        return visibilities;
+    }
 
-	@Override
-	public String toString() {
-		
-		return this.id.toString();
-		
-		/*
-		final StringBuilder sb = new StringBuilder();
+    public void setVisibilities(List<ProjectModelVisibility> visibilities) {
+        this.visibilities = visibilities;
+    }
 
-		sb.append(this.getClass().getSimpleName());
-		sb.append(" (");
-		sb.append("id -> ");
-		sb.append(id);
-		sb.append(", ");
-		sb.append("name -> ");
-		sb.append(name);
-		sb.append(", ");
-		sb.append("rootPhase -> ");
-		sb.append(rootPhase != null ? rootPhase.getId() : "null");
-		sb.append(")\n\n");
-		sb.append("phases count -> ");
-		sb.append(phases.size());
-		sb.append("\n\n");
+    /**
+     * Gets the type of this model for the given organization. If this model
+     * isn't visible for this organization, <code>null</code> is returned.
+     * 
+     * @param organization
+     *            The organization.
+     * @return The type of this model for the given organization,
+     *         <code>null</code> otherwise.
+     */
+    public ProjectModelType getVisibility(Organization organization) {
 
-		int i = 1;
-		for (final PhaseModel phase : phases) {
-			sb.append("- phase ");
-			sb.append(i);
-			sb.append(": ");
-			sb.append(phase);
-			sb.append("\n");
-			i++;
-		}
+        if (organization == null || visibilities == null) {
+            return null;
+        }
 
-		sb.append("elements count -> ");
-		sb.append(elements.size());
-		sb.append("\n\n");
+        for (final ProjectModelVisibility visibility : visibilities) {
+            if (visibility.getOrganization().getId() == organization.getId()) {
+                return visibility.getType();
+            }
+        }
 
-		i = 1;
-		for (final FlexibleElement element : elements) {
-			sb.append("- element ");
-			sb.append(i);
-			sb.append(": ");
-			sb.append(element);
-			sb.append("\n");
-			i++;
-		}
-
-		return sb.toString();*/
-	}
-
+        return null;
+    }
 }

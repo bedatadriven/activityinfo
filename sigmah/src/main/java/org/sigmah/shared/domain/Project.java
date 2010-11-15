@@ -9,9 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
@@ -28,6 +30,9 @@ public class Project extends UserDatabase {
     private List<Phase> phases = new ArrayList<Phase>();
     private List<Value> values = new ArrayList<Value>();
     private Integer calendarId;
+    private Double budget;
+    private List<ProjectFunding> funding;
+    private List<ProjectFunding> funded;
 
     public void setLogFrame(LogFrame logFrame) {
         this.logFrame = logFrame;
@@ -94,6 +99,7 @@ public class Project extends UserDatabase {
 
     /**
      * Retrieves the ID of the calendar attached to this project.
+     * 
      * @return the ID of the calendar attached to this project.
      */
     public Integer getCalendarId() {
@@ -102,9 +108,38 @@ public class Project extends UserDatabase {
 
     /**
      * Defines the ID of the calendar attached to this project.
-     * @param calendarId the ID of the calendar to attach.
+     * 
+     * @param calendarId
+     *            the ID of the calendar to attach.
      */
     public void setCalendarId(Integer calendarId) {
         this.calendarId = calendarId;
+    }
+
+    @Column(name = "budget", nullable = true)
+    public Double getBudget() {
+        return budget;
+    }
+
+    public void setBudget(Double budget) {
+        this.budget = budget;
+    }
+
+    @ManyToMany(mappedBy = "funded", cascade = CascadeType.ALL)
+    public List<ProjectFunding> getFunding() {
+        return funding;
+    }
+
+    public void setFunding(List<ProjectFunding> funding) {
+        this.funding = funding;
+    }
+
+    @ManyToMany(mappedBy = "funding", cascade = CascadeType.ALL)
+    public List<ProjectFunding> getFunded() {
+        return funded;
+    }
+
+    public void setFunded(List<ProjectFunding> funded) {
+        this.funded = funded;
     }
 }

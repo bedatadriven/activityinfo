@@ -7,20 +7,25 @@ package org.sigmah.client.dispatch.remote;
 
 /**
  * Encapsulates user identity and their authorization to access the server.
-
- * This is normally injected by Gin, see the default {@link org.sigmah.client.inject.AuthProvider}
- *
+ * 
+ * This is normally injected by Gin, see the default
+ * {@link org.sigmah.client.inject.AuthProvider}
+ * 
  * @author Alex Bertram
  */
 public class Authentication {
     private String authToken;
     private String email;
     private int userId;
+    private int organizationId;
 
     /**
      * 
-     * @param userId user's id (from the server's database)
-     * @param authToken authentication token, from {@link org.sigmah.server.domain.Authentication}
+     * @param userId
+     *            user's id (from the server's database)
+     * @param authToken
+     *            authentication token, from
+     *            {@link org.sigmah.server.domain.Authentication}
      * @param email
      */
     public Authentication(int userId, String authToken, String email) {
@@ -28,13 +33,13 @@ public class Authentication {
         this.authToken = authToken;
         this.email = email;
     }
-    
+
     /**
      * Default constuctor for dummy tokens.
      * 
      */
     public Authentication() {
- 
+
     }
 
     /**
@@ -45,7 +50,8 @@ public class Authentication {
     }
 
     /**
-     * @return The authentication token required for calls to the command service
+     * @return The authentication token required for calls to the command
+     *         service
      */
     public String getAuthToken() {
         return authToken;
@@ -56,6 +62,22 @@ public class Authentication {
      */
     public String getEmail() {
         return email;
+    }
+
+    /**
+     * 
+     * @return The organization id.
+     */
+    public int getOrganizationId() {
+        return organizationId;
+    }
+
+    /**
+     * 
+     * @return The organization id.
+     */
+    public void setOrganizationId(int organizationId) {
+        this.organizationId = organizationId;
     }
 
     /**

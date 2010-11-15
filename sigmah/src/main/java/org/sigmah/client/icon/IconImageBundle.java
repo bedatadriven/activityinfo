@@ -144,4 +144,7 @@ public interface IconImageBundle extends ImageBundle {
     
     @Resource(value = "bullet_star_black.png")
     AbstractImagePrototype close();
+    
+    @Resource(value = "cog.png")
+    AbstractImagePrototype create();
 }

@@ -13,13 +13,13 @@ import org.sigmah.shared.dto.value.ValueDTO;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
+/**
+ * DTO mapping class for entity Project.
+ * 
+ * @author tmi
+ * 
+ */
 public final class ProjectDTO extends BaseModelData implements EntityDTO {
-
-    public ProjectDTO() {
-        // TODO: Remove this
-        setTopic("Nutrition");
-        setFavorite(false);
-    }
 
     private static final long serialVersionUID = -8604264278832531036L;
 
@@ -32,7 +32,7 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO {
     public String toString() {
         return "ProjectDTO id:" + getId() + ", name:" + getName() + ", projectModelDTO: " + getProjectModelDTO()
                 + ", owner:" + getOwnerName() + ", phaseDTO:" + getPhasesDTO() + ", valueDTO:" + getValuesDTO()
-                + ", currentPhaseDTO:" + getCurrentPhaseDTO() + ", fav:" + isFavorite() + ", topic:" + getTopic();
+                + ", currentPhaseDTO:" + getCurrentPhaseDTO();
     }
 
     // Project id
@@ -99,22 +99,6 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO {
         set("currentPhaseDTO", currentPhaseDTO);
     }
 
-    public boolean isFavorite() {
-        return (Boolean) get("favorite");
-    }
-
-    public void setFavorite(boolean favorite) {
-        set("favorite", favorite);
-    }
-
-    public String getTopic() {
-        return get("topic");
-    }
-
-    public void setTopic(String topic) {
-        set("topic", topic);
-    }
-
     public Integer getCalendarId() {
         return get("calendarId");
     }
@@ -129,6 +113,22 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO {
 
     public void setLogFrameDTO(LogFrameDTO logFrameDTO) {
         set("logFrameDTO", logFrameDTO);
+    }
+
+    public List<ProjectFundingDTO> getFunding() {
+        return get("funding");
+    }
+
+    public void setFunding(List<ProjectFundingDTO> funding) {
+        set("funding", funding);
+    }
+
+    public List<ProjectFundingDTO> getFunded() {
+        return get("funded");
+    }
+
+    public void setFunded(List<ProjectFundingDTO> funded) {
+        set("funded", funded);
     }
 
     /**

@@ -1,6 +1,5 @@
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 import javax.persistence.EntityManager;
@@ -8,13 +7,12 @@ import javax.persistence.EntityManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dozer.Mapper;
-import org.sigmah.shared.domain.Phase;
-import org.sigmah.shared.domain.Project;
-import org.sigmah.shared.domain.User;
 import org.sigmah.shared.command.ChangePhase;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.command.result.ProjectListResult;
+import org.sigmah.shared.domain.Phase;
+import org.sigmah.shared.domain.Project;
+import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.exception.CommandException;
 
@@ -92,10 +90,6 @@ public class ChangePhaseHandler implements CommandHandler<ChangePhase> {
         // Saves the new project state.
         project = em.merge(project);
 
-        final ArrayList<ProjectDTO> l = new ArrayList<ProjectDTO>();
-        l.add(mapper.map(project, ProjectDTO.class));
-
-        return new ProjectListResult(l);
+        return mapper.map(project, ProjectDTO.class);
     }
-
 }

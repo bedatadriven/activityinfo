@@ -10,6 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dozer.Mapper;
 import org.sigmah.shared.domain.ProjectModel;
+import org.sigmah.shared.domain.ProjectModelType;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.command.GetProjectModels;
 import org.sigmah.shared.command.handler.CommandHandler;
@@ -42,6 +43,10 @@ public class GetProjectModelsHandler implements CommandHandler<GetProjectModels>
     @Override
     public CommandResult execute(GetProjectModels cmd, User user) throws CommandException {
 
+        if (log.isDebugEnabled()) {
+            log.debug("[execute] Retrieving project models with type '" + cmd.getModelType() + "'.");
+        }
+
         final ArrayList<ProjectModelDTOLight> projectModelDTOList = new ArrayList<ProjectModelDTOLight>();
 
         // Creates selection query.
@@ -53,13 +58,23 @@ public class GetProjectModelsHandler implements CommandHandler<GetProjectModels>
 
         // Mapping (entity -> dto).
         if (models != null) {
-            for (ProjectModel model : models) {
-                projectModelDTOList.add(mapper.map(model, ProjectModelDTOLight.class));
+            for (final ProjectModel model : models) {
+
+                final ProjectModelType type = model.getVisibility(user.getOrganization());
+
+                // Filters only visible models.
+                if (type != null) {
+
+                    // Filters with the command type is any.
+                    if (cmd.getModelType() == null || type == cmd.getModelType()) {
+                        projectModelDTOList.add(mapper.map(model, ProjectModelDTOLight.class));
+                    }
+                }
             }
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("[execute] found " + projectModelDTOList.size() + " project models.");
+            log.debug("[execute] Found " + projectModelDTOList.size() + " project models.");
         }
 
         return new ProjectModelListResult(projectModelDTOList);

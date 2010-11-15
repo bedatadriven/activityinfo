@@ -7,6 +7,8 @@ package org.sigmah.server.endpoint.gwtrpc.handler;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+
+import org.dozer.Mapper;
 import org.sigmah.shared.command.CreateEntity;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
@@ -15,7 +17,11 @@ import org.sigmah.shared.domain.Activity;
 import org.sigmah.shared.domain.Attribute;
 import org.sigmah.shared.domain.AttributeGroup;
 import org.sigmah.shared.domain.Indicator;
+import org.sigmah.shared.domain.Project;
+import org.sigmah.shared.domain.ProjectFunding;
 import org.sigmah.shared.domain.User;
+import org.sigmah.shared.dto.ProjectDTOLight;
+import org.sigmah.shared.dto.ProjectFundingDTO;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.IllegalAccessCommandException;
 
@@ -61,19 +67,21 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
         } else if ("Indicator".equals(cmd.getEntityName())) {
             return createIndicator(user, cmd, properties);
         } else if ("Project".equals(cmd.getEntityName())) {
-            ProjectPolicy policy = injector.getInstance(ProjectPolicy.class);
-            return new CreateResult((Integer) policy.create(user, propertyMap));
+            final ProjectPolicy policy = injector.getInstance(ProjectPolicy.class);
+            return new CreateResult(injector.getInstance(Mapper.class).map((Project) policy.create(user, propertyMap),
+                    ProjectDTOLight.class));
         } else if ("Site".equals(cmd.getEntityName())) {
             SitePolicy policy = injector.getInstance(SitePolicy.class);
-            return new CreateResult((Integer)policy.create(user, propertyMap));
+            return new CreateResult((Integer) policy.create(user, propertyMap));
         } else if ("PersonalEvent".equals(cmd.getEntityName())) {
             PersonalEventPolicy policy = injector.getInstance(PersonalEventPolicy.class);
-            return new CreateResult((Integer)policy.create(user, propertyMap));
+            return new CreateResult((Integer) policy.create(user, propertyMap));
+        } else if ("ProjectFunding".equals(cmd.getEntityName())) {
+            return createFunding(properties);
         } else {
             throw new CommandException("Invalid entity class " + cmd.getEntityName());
         }
     }
-
 
     private CommandResult createAttributeGroup(CreateEntity cmd, Map<String, Object> properties) {
 
@@ -88,7 +96,6 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
         return new CreateResult(group.getId());
     }
 
-
     private CommandResult createAttribute(CreateEntity cmd, Map<String, Object> properties) {
 
         Attribute attribute = new Attribute();
@@ -101,7 +108,8 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
         return new CreateResult(attribute.getId());
     }
 
-    private CommandResult createIndicator(User user, CreateEntity cmd, Map<String, Object> properties) throws IllegalAccessCommandException {
+    private CommandResult createIndicator(User user, CreateEntity cmd, Map<String, Object> properties)
+            throws IllegalAccessCommandException {
 
         Indicator indicator = new Indicator();
         indicator.setActivity(em.getReference(Activity.class, properties.get("activityId")));
@@ -116,4 +124,20 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
 
     }
 
+    private CommandResult createFunding(Map<String, Object> properties) {
+
+        final ProjectFunding funding = new ProjectFunding();
+
+        Object fundingId = properties.get("fundingId");
+        Object fundedId = properties.get("fundedId");
+        Object percentage = properties.get("percentage");
+
+        funding.setFunding(em.find(Project.class, fundingId));
+        funding.setFunded(em.find(Project.class, fundedId));
+        funding.setPercentage((Double) percentage);
+
+        em.persist(funding);
+
+        return new CreateResult(injector.getInstance(Mapper.class).map(funding, ProjectFundingDTO.class));
+    }
 }

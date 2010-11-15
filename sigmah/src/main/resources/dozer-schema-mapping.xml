@@ -119,6 +119,22 @@
 		</field>
 	</mapping>
 
+	<!-- Project/ProjectDTO Mapping -->
+	<mapping wildcard="true">
+		<class-a>org.sigmah.shared.domain.Project</class-a>
+		<class-b>org.sigmah.shared.dto.ProjectDTOLight</class-b>
+		
+		<field>
+			<a>currentPhase</a>
+			<b>currentPhaseDTO</b>
+		</field>
+		
+		<field>
+			<a>projectModel.visibilities</a>
+			<b>visibilities</b>
+		</field>
+	</mapping>
+
 	<!-- Phase/PhaseDTO Mapping -->
 	<mapping wildcard="true">
 		<class-a>org.sigmah.shared.domain.Phase</class-a>
@@ -189,7 +205,7 @@
 			<a>successors</a>
 			<b>successorsDTO</b>
 		</field>
-		
+
 		<field>
 			<a>definition</a>
 			<b>definitionDTO</b>
@@ -269,7 +285,7 @@
 			<a>categoryType</a>
 			<b>categoryTypeDTO</b>
 		</field>
-		
+
 		<field>
 			<a>qualityCriterion</a>
 			<b>qualityCriterionDTO</b>
@@ -545,6 +561,19 @@
 		<field>
 			<a>groups</a>
 			<b>groupsDTO</b>
+		</field>
+	</mapping>
+
+	<!-- ProjectModelVisibility/ProjectModelVisibilityDTO Mapping -->
+	<mapping wildcard="true">
+		<class-a>org.sigmah.shared.domain.ProjectModelVisibility
+		</class-a>
+		<class-b>org.sigmah.shared.dto.ProjectModelVisibilityDTO
+		</class-b>
+
+		<field>
+			<a>organization.id</a>
+			<b>organizationId</b>
 		</field>
 	</mapping>
 

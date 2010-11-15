@@ -57,6 +57,7 @@ public class ProjectTest extends CommandTestCase {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("name", "First p name");
         properties.put("fullName", "First p full");
+        properties.put("budget", 150000.0);
         properties.put("modelId", 1L);
         properties.put("countryId", 1);
         properties.put("calendarName", "events");
@@ -65,7 +66,7 @@ public class ProjectTest extends CommandTestCase {
 
         CreateResult createResult = execute(cmd);
 
-        Assert.assertThat(createResult.getNewId(), CoreMatchers.not(CoreMatchers.equalTo(0)));
+        Assert.assertThat(createResult.getEntity(), CoreMatchers.not(CoreMatchers.nullValue()));
 
     }
 

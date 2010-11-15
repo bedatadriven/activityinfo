@@ -20,7 +20,9 @@ import org.sigmah.shared.domain.PrivacyLevel;
 import org.sigmah.shared.domain.Project;
 import org.sigmah.shared.domain.ProjectBanner;
 import org.sigmah.shared.domain.ProjectDetails;
+import org.sigmah.shared.domain.ProjectFunding;
 import org.sigmah.shared.domain.ProjectModel;
+import org.sigmah.shared.domain.ProjectModelVisibility;
 import org.sigmah.shared.domain.Report;
 import org.sigmah.shared.domain.ReportingPeriod;
 import org.sigmah.shared.domain.Site;
@@ -86,6 +88,8 @@ public class PersistentClasses {
             Report.class,
             ProjectBanner.class,
             ProjectDetails.class,
+            ProjectModelVisibility.class,
+            ProjectFunding.class,
             Project.class,
             PhaseModelDefinition.class,
             PhaseModel.class,
