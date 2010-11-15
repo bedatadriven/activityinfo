@@ -1,6 +1,6 @@
 package org.sigmah.shared.command;
 
-import org.sigmah.shared.command.result.ProjectListResult;
+import org.sigmah.shared.dto.ProjectDTO;
 
 /**
  * The command to change the current phase of a project. This command can be
@@ -9,7 +9,7 @@ import org.sigmah.shared.command.result.ProjectListResult;
  * @author tmi
  * 
  */
-public class ChangePhase implements Command<ProjectListResult> {
+public class ChangePhase implements Command<ProjectDTO> {
 
     private static final long serialVersionUID = -8923839444770227946L;
 

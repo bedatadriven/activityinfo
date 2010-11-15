@@ -7,8 +7,13 @@ package org.sigmah.client.page.project.dashboard;
 
 import java.util.Arrays;
 
+import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.client.page.project.ProjectPresenter;
+import org.sigmah.client.page.project.dashboard.funding.FundingIconProvider;
+import org.sigmah.client.ui.FlexibleGrid;
+import org.sigmah.shared.dto.ProjectFundingDTO;
 import org.sigmah.shared.dto.element.FlexibleElementDTO;
 import org.sigmah.shared.dto.element.FlexibleElementType;
 
@@ -21,6 +26,7 @@ import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
@@ -39,6 +45,7 @@ import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.user.client.ui.Hyperlink;
 
 /**
  * 
@@ -46,6 +53,9 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class ProjectDashboardView extends ProjectDashboardPresenter.View {
+
+    private final Authentication authentication;
+
     private final ToolBar toolBar;
 
     private TabPanel tabPanelPhases;
@@ -62,7 +72,17 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
     private ContentPanel panelLocalProjects;
     private Grid<FlexibleElementDTO> gridRequiredElements;
 
-    public ProjectDashboardView() {
+    private FlexibleGrid<ProjectFundingDTO> financialGrid;
+    private Button addFinancialProjectButton;
+    private Button createFinancialProjectButton;
+    private FlexibleGrid<ProjectFundingDTO> localGrid;
+    private Button addLocalPartnerProjectButton;
+    private Button createLocalPartnerProjectButton;
+
+    public ProjectDashboardView(Authentication authentication) {
+
+        this.authentication = authentication;
+
         final BorderLayout borderLayout = new BorderLayout();
         // borderLayout.setContainerStyle("x-border-layout-ct panel-background");
         // -- White background
@@ -167,21 +187,16 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
         westPanel.add(panelWatchedPoints);
 
         /* South panel */
-        LayoutContainer southPanel = new LayoutContainer(new RowLayout(Orientation.VERTICAL));
-        panelFinancialProjects = new ContentPanel();
-        panelFinancialProjects.setBorders(false);
-        panelFinancialProjects.setHeading(I18N.CONSTANTS.projectFinancialProjectsHeader());
-        panelFinancialProjects.addText("This panel displays the financial projects.");
 
-        panelLocalProjects = new ContentPanel();
-        panelLocalProjects.setHeading(I18N.CONSTANTS.projectLocalPartnerProjectsHeader());
-        panelLocalProjects.setBorders(false);
-        panelLocalProjects.addText("This panel displays the local partner projects.");
+        buildFinancialProjectsPanel();
+        buildLocalPartnerProjectsPanel();
+
+        final LayoutContainer southPanel = new LayoutContainer(new RowLayout(Orientation.VERTICAL));
         southPanel.add(panelFinancialProjects, new RowData(1, 0.5, new Margins(0, 0, 10, 0)));
         southPanel.add(panelLocalProjects, new RowData(1, 0.5));
 
         /* BorderLayoutData */
-        BorderLayoutData southData = new BorderLayoutData(LayoutRegion.SOUTH, 170);
+        BorderLayoutData southData = new BorderLayoutData(LayoutRegion.SOUTH, 280);
         southData.setMargins(new Margins(5));
         BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST, 250);
         westData.setMargins(new Margins(5));
@@ -303,13 +318,306 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
 
     @Override
     public void fillToolbar() {
-        
+
         flushToolbar();
-        
+
         toolBar.add(buttonActivatePhase);
         toolBar.add(new SeparatorToolItem());
         toolBar.add(buttonSavePhase);
         toolBar.add(new SeparatorToolItem());
         toolBar.add(buttonPhaseGuide);
+    }
+
+    @Override
+    public FlexibleGrid<ProjectFundingDTO> getFinancialProjectGrid() {
+        return financialGrid;
+    }
+
+    @Override
+    public Button getAddFinancialProjectButton() {
+        return addFinancialProjectButton;
+    }
+
+    @Override
+    public Button getCreateFinancialProjectButton() {
+        return createFinancialProjectButton;
+    }
+
+    @Override
+    public FlexibleGrid<ProjectFundingDTO> getLocalPartnerProjectGrid() {
+        return localGrid;
+    }
+
+    @Override
+    public Button getAddLocalPartnerProjectButton() {
+        return addLocalPartnerProjectButton;
+    }
+
+    @Override
+    public Button getCreateLocalPartnerProjectButton() {
+        return createLocalPartnerProjectButton;
+    }
+
+    /**
+     * Builds the grid to display financial projects.
+     */
+    private void buildFinancialProjectsPanel() {
+
+        // The grid sorter.
+        final StoreSorter<ProjectFundingDTO> storeSorter = new StoreSorter<ProjectFundingDTO>() {
+
+            @Override
+            public int compare(Store<ProjectFundingDTO> store, ProjectFundingDTO m1, ProjectFundingDTO m2,
+                    String property) {
+
+                if ("name".equals(property)) {
+                    return m1.getFunding().getName().compareTo(m2.getFunding().getName());
+                } else if ("fullName".equals(property)) {
+                    return m1.getFunding().getFullName().compareTo(m2.getFunding().getFullName());
+                } else {
+                    return super.compare(store, m1, m2, property);
+                }
+            }
+        };
+
+        // Builds the grid.
+        final ListStore<ProjectFundingDTO> financialStore = new ListStore<ProjectFundingDTO>();
+        financialStore.setStoreSorter(storeSorter);
+        financialGrid = new FlexibleGrid<ProjectFundingDTO>(financialStore, null, 2, getFinancialColumnModel());
+        financialGrid.setAutoExpandColumn("name");
+
+        // Builds the panel tool bar.
+        addFinancialProjectButton = new Button(I18N.CONSTANTS.createProjectTypeFundingSelect(),
+                IconImageBundle.ICONS.add());
+        addFinancialProjectButton.setTitle(I18N.CONSTANTS.createProjectTypeFundingSelectDetails());
+
+        createFinancialProjectButton = new Button(I18N.CONSTANTS.createProjectTypeFundingCreate(),
+                IconImageBundle.ICONS.create());
+        createFinancialProjectButton.setTitle(I18N.CONSTANTS.createProjectTypeFundingCreateDetails());
+
+        final ToolBar toolbar = new ToolBar();
+        toolbar.add(addFinancialProjectButton);
+        toolbar.add(new SeparatorToolItem());
+        toolbar.add(createFinancialProjectButton);
+
+        // Builds the grid panel.
+        panelFinancialProjects = new ContentPanel();
+        panelFinancialProjects.setBorders(false);
+        panelFinancialProjects.setHeading(I18N.CONSTANTS.projectFinancialProjectsHeader());
+        panelFinancialProjects.setCollapsible(true);
+
+        panelFinancialProjects.setTopComponent(toolbar);
+        panelFinancialProjects.add(financialGrid);
+    }
+
+    /**
+     * Builds the grid to display local partner projects.
+     */
+    private void buildLocalPartnerProjectsPanel() {
+
+        // The grid sorter.
+        final StoreSorter<ProjectFundingDTO> storeSorter = new StoreSorter<ProjectFundingDTO>() {
+
+            @Override
+            public int compare(Store<ProjectFundingDTO> store, ProjectFundingDTO m1, ProjectFundingDTO m2,
+                    String property) {
+
+                if ("name".equals(property)) {
+                    return m1.getFunding().getName().compareTo(m2.getFunding().getName());
+                } else if ("fullName".equals(property)) {
+                    return m1.getFunding().getFullName().compareTo(m2.getFunding().getFullName());
+                } else {
+                    return super.compare(store, m1, m2, property);
+                }
+            }
+        };
+
+        // Builds the grid.
+        final ListStore<ProjectFundingDTO> localStore = new ListStore<ProjectFundingDTO>();
+        localStore.setStoreSorter(storeSorter);
+        localGrid = new FlexibleGrid<ProjectFundingDTO>(new ListStore<ProjectFundingDTO>(), null, 2,
+                getLocalPartnerColumnModel());
+        localGrid.setAutoExpandColumn("name");
+
+        // Builds the panel tool bar.
+        addLocalPartnerProjectButton = new Button(I18N.CONSTANTS.createProjectTypePartnerSelect(),
+                IconImageBundle.ICONS.add());
+        addLocalPartnerProjectButton.setTitle(I18N.CONSTANTS.createProjectTypePartnerSelectDetails());
+
+        createLocalPartnerProjectButton = new Button(I18N.CONSTANTS.createProjectTypePartnerCreate(),
+                IconImageBundle.ICONS.create());
+        createLocalPartnerProjectButton.setTitle(I18N.CONSTANTS.createProjectTypePartnerCreateDetails());
+
+        final ToolBar toolbar = new ToolBar();
+        toolbar.add(addLocalPartnerProjectButton);
+        toolbar.add(new SeparatorToolItem());
+        toolbar.add(createLocalPartnerProjectButton);
+
+        // Builds the grid panel.
+        panelLocalProjects = new ContentPanel();
+        panelLocalProjects.setHeading(I18N.CONSTANTS.projectLocalPartnerProjectsHeader());
+        panelLocalProjects.setBorders(false);
+        panelLocalProjects.setCollapsible(true);
+
+        panelLocalProjects.setTopComponent(toolbar);
+        panelLocalProjects.add(localGrid);
+    }
+
+    /**
+     * Gets the columns for the funding projects grid.
+     * 
+     * @return The columns for the funding projects grid.
+     */
+    private ColumnConfig[] getFinancialColumnModel() {
+
+        // Icon.
+        final ColumnConfig iconColumn = new ColumnConfig();
+        iconColumn.setId("icon");
+        iconColumn.setSortable(false);
+        iconColumn.setWidth(15);
+        iconColumn.setAlignment(HorizontalAlignment.CENTER);
+        iconColumn.setRenderer(new GridCellRenderer<ProjectFundingDTO>() {
+
+            @Override
+            public Object render(ProjectFundingDTO model, String property, ColumnData config, int rowIndex,
+                    int colIndex, ListStore<ProjectFundingDTO> store, Grid<ProjectFundingDTO> grid) {
+                return FundingIconProvider.getProjectTypeIcon(
+                        model.getFunding().getProjectModelType(authentication.getOrganizationId())).createImage();
+            }
+        });
+
+        // Name.
+        final ColumnConfig nameColumn = new ColumnConfig();
+        nameColumn.setId("name");
+        nameColumn.setHeader(I18N.CONSTANTS.projectName());
+        nameColumn.setWidth(150);
+        nameColumn.setRenderer(new GridCellRenderer<ProjectFundingDTO>() {
+
+            @Override
+            public Object render(ProjectFundingDTO model, String property, ColumnData config, int rowIndex,
+                    int colIndex, ListStore<ProjectFundingDTO> store, Grid<ProjectFundingDTO> grid) {
+
+                final Hyperlink nameHyperlink = new Hyperlink(model.getFunding().getName(), true,
+                        ProjectPresenter.PAGE_ID.toString() + '!' + model.getFunding().getId());
+                nameHyperlink.addStyleName("hyperlink");
+
+                return nameHyperlink;
+            }
+        });
+
+        // Full name.
+        final ColumnConfig fullNameColumn = new ColumnConfig();
+        fullNameColumn.setId("fullName");
+        fullNameColumn.setHeader(I18N.CONSTANTS.projectFullName());
+        fullNameColumn.setWidth(300);
+        fullNameColumn.setRenderer(new GridCellRenderer<ProjectFundingDTO>() {
+
+            @Override
+            public Object render(ProjectFundingDTO model, String property, ColumnData config, int rowIndex,
+                    int colIndex, ListStore<ProjectFundingDTO> store, Grid<ProjectFundingDTO> grid) {
+
+                final Label fullNameLabel = new Label(model.getFunding().getFullName());
+
+                return fullNameLabel;
+            }
+        });
+
+        // Percentage.
+        final ColumnConfig percentageColumn = new ColumnConfig();
+        percentageColumn.setId("percentage");
+        percentageColumn.setHeader(I18N.CONSTANTS.projectFundedBy());
+        percentageColumn.setWidth(100);
+        percentageColumn.setRenderer(new GridCellRenderer<ProjectFundingDTO>() {
+
+            @Override
+            public Object render(ProjectFundingDTO model, String property, ColumnData config, int rowIndex,
+                    int colIndex, ListStore<ProjectFundingDTO> store, Grid<ProjectFundingDTO> grid) {
+
+                final Label percentageLabel = new Label(model.get(property) + "%");
+
+                return percentageLabel;
+            }
+        });
+
+        return new ColumnConfig[] { iconColumn, nameColumn, fullNameColumn, percentageColumn };
+    }
+
+    /**
+     * Gets the columns for the funded projects grid.
+     * 
+     * @return The columns for the funded projects grid.
+     */
+    private ColumnConfig[] getLocalPartnerColumnModel() {
+
+        // Icon.
+        final ColumnConfig iconColumn = new ColumnConfig();
+        iconColumn.setId("icon");
+        iconColumn.setSortable(false);
+        iconColumn.setWidth(15);
+        iconColumn.setAlignment(HorizontalAlignment.CENTER);
+        iconColumn.setRenderer(new GridCellRenderer<ProjectFundingDTO>() {
+
+            @Override
+            public Object render(ProjectFundingDTO model, String property, ColumnData config, int rowIndex,
+                    int colIndex, ListStore<ProjectFundingDTO> store, Grid<ProjectFundingDTO> grid) {
+                return FundingIconProvider.getProjectTypeIcon(
+                        model.getFunded().getProjectModelType(authentication.getOrganizationId())).createImage();
+            }
+        });
+
+        // Name.
+        final ColumnConfig nameColumn = new ColumnConfig();
+        nameColumn.setId("name");
+        nameColumn.setHeader(I18N.CONSTANTS.projectName());
+        nameColumn.setWidth(150);
+        nameColumn.setRenderer(new GridCellRenderer<ProjectFundingDTO>() {
+
+            @Override
+            public Object render(ProjectFundingDTO model, String property, ColumnData config, int rowIndex,
+                    int colIndex, ListStore<ProjectFundingDTO> store, Grid<ProjectFundingDTO> grid) {
+
+                final Hyperlink nameHyperlink = new Hyperlink(model.getFunded().getName(), true,
+                        ProjectPresenter.PAGE_ID.toString() + '!' + model.getFunded().getId());
+                nameHyperlink.addStyleName("hyperlink");
+
+                return nameHyperlink;
+            }
+        });
+
+        // Full name.
+        final ColumnConfig fullNameColumn = new ColumnConfig();
+        fullNameColumn.setId("fullName");
+        fullNameColumn.setHeader(I18N.CONSTANTS.projectFullName());
+        fullNameColumn.setWidth(300);
+        fullNameColumn.setRenderer(new GridCellRenderer<ProjectFundingDTO>() {
+
+            @Override
+            public Object render(ProjectFundingDTO model, String property, ColumnData config, int rowIndex,
+                    int colIndex, ListStore<ProjectFundingDTO> store, Grid<ProjectFundingDTO> grid) {
+
+                final Label fullNameLabel = new Label(model.getFunded().getFullName());
+
+                return fullNameLabel;
+            }
+        });
+
+        // Percentage.
+        final ColumnConfig percentageColumn = new ColumnConfig();
+        percentageColumn.setId("percentage");
+        percentageColumn.setHeader(I18N.CONSTANTS.projectFinances());
+        percentageColumn.setWidth(100);
+        percentageColumn.setRenderer(new GridCellRenderer<ProjectFundingDTO>() {
+
+            @Override
+            public Object render(ProjectFundingDTO model, String property, ColumnData config, int rowIndex,
+                    int colIndex, ListStore<ProjectFundingDTO> store, Grid<ProjectFundingDTO> grid) {
+
+                final Label percentageLabel = new Label(model.get(property) + "%");
+
+                return percentageLabel;
+            }
+        });
+
+        return new ColumnConfig[] { iconColumn, nameColumn, fullNameColumn, percentageColumn };
     }
 }

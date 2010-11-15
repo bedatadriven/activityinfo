@@ -14,17 +14,29 @@ import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.client.page.dashboard.CreateProjectWindow;
+import org.sigmah.client.page.dashboard.CreateProjectWindow.CreateProjectListener;
+import org.sigmah.client.page.dashboard.CreateProjectWindow.Mode;
 import org.sigmah.client.page.project.ProjectPresenter;
 import org.sigmah.client.page.project.SubPresenter;
+import org.sigmah.client.page.project.logframe.FormWindow;
+import org.sigmah.client.page.project.logframe.FormWindow.FormSubmitListener;
+import org.sigmah.client.ui.FlexibleGrid;
+import org.sigmah.client.util.Notification;
 import org.sigmah.shared.command.ChangePhase;
+import org.sigmah.shared.command.CreateEntity;
+import org.sigmah.shared.command.GetProjects;
 import org.sigmah.shared.command.GetValue;
 import org.sigmah.shared.command.UpdateProject;
+import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.command.result.ProjectListResult;
 import org.sigmah.shared.command.result.ValueResult;
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.PhaseDTO;
 import org.sigmah.shared.dto.PhaseModelDTO;
 import org.sigmah.shared.dto.ProjectDTO;
+import org.sigmah.shared.dto.ProjectDTOLight;
+import org.sigmah.shared.dto.ProjectFundingDTO;
 import org.sigmah.shared.dto.element.FlexibleElementDTO;
 import org.sigmah.shared.dto.element.handler.RequiredValueEvent;
 import org.sigmah.shared.dto.element.handler.RequiredValueHandler;
@@ -95,6 +107,18 @@ public class ProjectDashboardPresenter implements SubPresenter {
         public abstract void flushToolbar();
 
         public abstract void fillToolbar();
+
+        public abstract FlexibleGrid<ProjectFundingDTO> getFinancialProjectGrid();
+
+        public abstract FlexibleGrid<ProjectFundingDTO> getLocalPartnerProjectGrid();
+
+        public abstract Button getAddFinancialProjectButton();
+
+        public abstract Button getAddLocalPartnerProjectButton();
+
+        public abstract Button getCreateFinancialProjectButton();
+
+        public abstract Button getCreateLocalPartnerProjectButton();
     }
 
     /**
@@ -137,12 +161,15 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
     @Override
     public View getView() {
+
         if (view == null) {
-            view = new ProjectDashboardView(); // Inject this ?
+
+            // Inject this ?
+            view = new ProjectDashboardView(authentication);
+
+            addLinkedProjectsListeners();
 
             // Hides unimplemented panels and actions.
-            view.getPanelFinancialProjects().setVisible(false);
-            view.getPanelLocalProjects().setVisible(false);
             view.getPanelReminders().setVisible(false);
             view.getPanelWatchedPoints().setVisible(false);
         }
@@ -191,6 +218,9 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
         // Sorts phases to be displayed in the correct order.
         Collections.sort(projectDTO.getPhasesDTO());
+
+        view.getFinancialProjectGrid().getStore().removeAll();
+        view.getLocalPartnerProjectGrid().getStore().removeAll();
 
         // --
         // -- TABS CREATION
@@ -312,12 +342,26 @@ public class ProjectDashboardPresenter implements SubPresenter {
             });
         }
 
-        // --
-        // -- ACTIVE PHASE SELECTION
-        // --
+        loadLinkedProjects(projectDTO);
+    }
 
-        // Manually fires the first tab selection (active phase).
-        // loadPhaseOnTab(currentPhaseDTO);
+    /**
+     * Loads linked projects
+     * 
+     * @param projectDTO
+     *            The project.
+     */
+    private void loadLinkedProjects(final ProjectDTO projectDTO) {
+
+        // Adds funding.
+        for (final ProjectFundingDTO funding : projectDTO.getFunding()) {
+            view.getFinancialProjectGrid().getStore().add(funding);
+        }
+
+        // Adds funded.
+        for (final ProjectFundingDTO funded : projectDTO.getFunded()) {
+            view.getLocalPartnerProjectGrid().getStore().add(funded);
+        }
     }
 
     /**
@@ -468,11 +512,8 @@ public class ProjectDashboardPresenter implements SubPresenter {
         }
 
         // View layouts update.
-        view.getTabPanelPhases().addStyleName("x-border-panel"); // FIXME: This
-                                                                 // should be
-                                                                 // done by Ext,
-                                                                 // not be the
-                                                                 // developer!
+        // FIXME: This should be done by Ext, not be the developer!
+        view.getTabPanelPhases().addStyleName("x-border-panel");
         view.layout();
     }
 
@@ -769,7 +810,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
                                 // Activates the current displayed phase.
                                 dispatcher.execute(new ChangePhase(projectPresenter.getCurrentProjectDTO().getId(),
-                                        null), null, new AsyncCallback<ProjectListResult>() {
+                                        null), null, new AsyncCallback<ProjectDTO>() {
 
                                     @Override
                                     public void onFailure(Throwable e) {
@@ -780,7 +821,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
                                     }
 
                                     @Override
-                                    public void onSuccess(ProjectListResult result) {
+                                    public void onSuccess(ProjectDTO result) {
 
                                         if (Log.isDebugEnabled()) {
                                             Log.debug("[activatePhase] Project successfully ended.");
@@ -788,8 +829,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
                                         // Sets the new current project (after
                                         // update).
-                                        final ProjectDTO newProjectDTO = result.getList().get(0);
-                                        projectPresenter.setCurrentProjectDTO(newProjectDTO);
+                                        projectPresenter.setCurrentProjectDTO(result);
 
                                         // Sets the new current displayed phase
                                         // (not necessary the active one).
@@ -825,7 +865,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
                                 // Activates the current displayed phase.
                                 dispatcher.execute(new ChangePhase(projectPresenter.getCurrentProjectDTO().getId(),
-                                        phase.getId()), null, new AsyncCallback<ProjectListResult>() {
+                                        phase.getId()), null, new AsyncCallback<ProjectDTO>() {
 
                                     @Override
                                     public void onFailure(Throwable e) {
@@ -837,7 +877,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
                                     }
 
                                     @Override
-                                    public void onSuccess(ProjectListResult result) {
+                                    public void onSuccess(ProjectDTO result) {
 
                                         if (Log.isDebugEnabled()) {
                                             Log.debug("[activatePhase] Phase #" + phase.getId()
@@ -846,8 +886,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
                                         // Sets the new current project (after
                                         // update).
-                                        final ProjectDTO newProjectDTO = result.getList().get(0);
-                                        projectPresenter.setCurrentProjectDTO(newProjectDTO);
+                                        projectPresenter.setCurrentProjectDTO(result);
 
                                         // Sets the new current displayed phase
                                         // (not necessary the active one).
@@ -969,5 +1008,411 @@ public class ProjectDashboardPresenter implements SubPresenter {
                         }
                     });
         }
+    }
+
+    /**
+     * Create the actions to add and create financial projects and local partner
+     * projects.
+     */
+    private void addLinkedProjectsListeners() {
+
+        // ------------------------
+        // -- FINANCIAL
+        // ------------------------
+
+        // Adds the add financial project actions.
+        view.getAddFinancialProjectButton().addListener(Events.OnClick, new Listener<ButtonEvent>() {
+
+            final FormWindow window = new FormWindow();
+
+            @Override
+            public void handleEvent(ButtonEvent be) {
+
+                // TODO Set or avoid model type filter ?
+
+                // Gets all potential financial projects.
+                dispatcher.execute(new GetProjects(), null, new AsyncCallback<ProjectListResult>() {
+
+                    @Override
+                    public void onFailure(Throwable e) {
+
+                        Log.error("[execute] Error while getting the projects list with type " + null + ".", e);
+                        MessageBox.alert(I18N.CONSTANTS.createProjectTypeError(),
+                                I18N.CONSTANTS.createProjectTypeErrorDetails(), null);
+                    }
+
+                    @Override
+                    public void onSuccess(ProjectListResult result) {
+
+                        // Filters the already linked funding projects.
+                        for (final ProjectFundingDTO funding : view.getFinancialProjectGrid().getStore().getModels()) {
+                            result.getList().remove(funding.getFunding());
+                        }
+
+                        // Checks if there is at least one funding
+                        // project available.
+                        if (result.getList().isEmpty()) {
+                            MessageBox.alert(I18N.CONSTANTS.createProjectTypeFundingSelectNone(),
+                                    I18N.CONSTANTS.createProjectTypeFundingSelectNoneDetails(), null);
+                            return;
+                        }
+
+                        // Generates a human-readable name to select a
+                        // project.
+                        for (final ProjectDTOLight p : result.getList()) {
+                            p.generateCompleteName();
+                        }
+
+                        // Resets the window.
+                        window.clear();
+
+                        // Adds the choices list.
+                        window.addChoicesList(I18N.CONSTANTS.createProjectTypeFunding(), result.getList(), false,
+                                "completeName");
+                        window.addNumberField(I18N.CONSTANTS.projectFundedByDetails(), true);
+
+                        // Adds the submit listener.
+                        window.addFormSubmitListener(new FormSubmitListener() {
+
+                            @Override
+                            public void formSubmitted(Object... values) {
+
+                                // Checks that the values are correct.
+                                if (values == null || values.length < 2) {
+                                    return;
+                                }
+
+                                final Object value0 = values[0];
+                                if (!(value0 instanceof ProjectDTOLight)) {
+                                    return;
+                                }
+
+                                final Object value1 = values[1];
+                                if (!(value1 instanceof Number)) {
+                                    return;
+                                }
+
+                                // Adjusts the percentage to keep
+                                // consistency.
+                                double percentage = ((Number) value1).doubleValue();
+                                if (percentage < 0) {
+                                    percentage = 0;
+                                } else if (percentage > 100) {
+                                    percentage = 100;
+                                }
+
+                                // Retrieves the selected project and
+                                // adds it as a new funding.
+                                final ProjectDTOLight p = (ProjectDTOLight) value0;
+
+                                // Sets the funding parameters.
+                                final HashMap<String, Object> parameters = new HashMap<String, Object>();
+                                parameters.put("fundingId", p.getId());
+                                parameters.put("fundedId", projectPresenter.getCurrentProjectDTO().getId());
+                                parameters.put("percentage", percentage);
+
+                                // Create the new funding.
+                                dispatcher.execute(new CreateEntity("ProjectFunding", parameters), null,
+                                        new AsyncCallback<CreateResult>() {
+
+                                            @Override
+                                            public void onFailure(Throwable e) {
+                                                Log.error("[execute] Error while creating a new funding.", e);
+                                                MessageBox.alert(
+                                                        I18N.CONSTANTS.createProjectTypeFundingCreationError(),
+                                                        I18N.CONSTANTS.createProjectTypeFundingCreationDetails(), null);
+                                            }
+
+                                            @Override
+                                            public void onSuccess(CreateResult result) {
+
+                                                Notification.show(I18N.CONSTANTS.infoConfirmation(),
+                                                        I18N.CONSTANTS.createProjectTypeFundingSelectOk());
+
+                                                // Adds the just created
+                                                // funding to the list.
+                                                view.getFinancialProjectGrid().getStore()
+                                                        .add((ProjectFundingDTO) result.getEntity());
+                                            }
+                                        });
+                            }
+                        });
+
+                        // Show the selection window.
+                        window.show(I18N.CONSTANTS.createProjectTypeFunding(),
+                                I18N.CONSTANTS.createProjectTypeFundingSelectDetails() + " '"
+                                        + projectPresenter.getCurrentProjectDTO().getName() + "'.");
+                    }
+                });
+            };
+        });
+
+        // Adds the create financial project actions.
+        view.getCreateFinancialProjectButton().addListener(Events.OnClick, new Listener<ButtonEvent>() {
+
+            private final CreateProjectWindow window = new CreateProjectWindow(dispatcher, authentication);
+
+            {
+                window.addListener(new CreateProjectListener() {
+
+                    @Override
+                    public void projectCreated(ProjectDTOLight project) {
+                        // nothing to do (must not be called).
+                    }
+
+                    @Override
+                    public void projectCreatedAsFunding(ProjectDTOLight project, double percentage) {
+
+                        // Adjusts the percentage to keep consistency.
+                        if (percentage < 0) {
+                            percentage = 0;
+                        } else if (percentage > 100) {
+                            percentage = 100;
+                        }
+
+                        // Sets the funding parameters.
+                        final HashMap<String, Object> parameters = new HashMap<String, Object>();
+                        parameters.put("fundingId", project.getId());
+                        parameters.put("fundedId", projectPresenter.getCurrentProjectDTO().getId());
+                        parameters.put("percentage", percentage);
+
+                        // Create the new funding.
+                        dispatcher.execute(new CreateEntity("ProjectFunding", parameters), null,
+                                new AsyncCallback<CreateResult>() {
+
+                                    @Override
+                                    public void onFailure(Throwable e) {
+                                        Log.error("[execute] Error while creating a new funding.", e);
+                                        MessageBox.alert(I18N.CONSTANTS.createProjectTypeFundingCreationError(),
+                                                I18N.CONSTANTS.createProjectTypeFundingCreationDetails(), null);
+                                    }
+
+                                    @Override
+                                    public void onSuccess(CreateResult result) {
+
+                                        Notification.show(I18N.CONSTANTS.infoConfirmation(),
+                                                I18N.CONSTANTS.createProjectTypeFundingSelectOk());
+
+                                        // Adds the just created funding to the
+                                        // list.
+                                        view.getFinancialProjectGrid().getStore()
+                                                .add((ProjectFundingDTO) result.getEntity());
+                                    }
+                                });
+                    }
+
+                    @Override
+                    public void projectCreatedAsFunded(ProjectDTOLight project, double percentage) {
+                        // nothing to do (must not be called).
+                    }
+                });
+            }
+
+            @Override
+            public void handleEvent(ButtonEvent be) {
+                window.show(Mode.FUNDING);
+            }
+        });
+
+        // ------------------------
+        // -- LOCAL PARTNER
+        // ------------------------
+
+        // Adds the add local partner project action.
+        view.getAddLocalPartnerProjectButton().addListener(Events.OnClick, new Listener<ButtonEvent>() {
+
+            final FormWindow window = new FormWindow();
+
+            @Override
+            public void handleEvent(ButtonEvent be) {
+
+                // TODO Set or avoid model type filter ?
+
+                // Gets all potential local partner projects.
+                dispatcher.execute(new GetProjects(), null, new AsyncCallback<ProjectListResult>() {
+
+                    @Override
+                    public void onFailure(Throwable e) {
+
+                        Log.error("[execute] Error while getting the projects list with type " + null + ".", e);
+                        MessageBox.alert(I18N.CONSTANTS.createProjectTypeError(),
+                                I18N.CONSTANTS.createProjectTypeErrorDetails(), null);
+                    }
+
+                    @Override
+                    public void onSuccess(ProjectListResult result) {
+
+                        // Filters the already linked local partner
+                        // projects.
+                        for (final ProjectFundingDTO partner : view.getLocalPartnerProjectGrid().getStore().getModels()) {
+                            result.getList().remove(partner.getFunding());
+                        }
+
+                        // Checks if there is at least one local partner
+                        // project available.
+                        if (result.getList().isEmpty()) {
+                            MessageBox.alert(I18N.CONSTANTS.createProjectTypePartnerSelectNone(),
+                                    I18N.CONSTANTS.createProjectTypePartnerSelectNoneDetails(), null);
+                            return;
+                        }
+
+                        // Generates a human-readable name to select a
+                        // project.
+                        for (final ProjectDTOLight p : result.getList()) {
+                            p.generateCompleteName();
+                        }
+
+                        // Resets the window.
+                        window.clear();
+
+                        // Adds the choices list.
+                        window.addChoicesList(I18N.CONSTANTS.createProjectTypePartner(), result.getList(), false,
+                                "completeName");
+                        window.addNumberField(I18N.CONSTANTS.projectFinancesDetails(), true);
+
+                        // Adds the submit listener.
+                        window.addFormSubmitListener(new FormSubmitListener() {
+
+                            @Override
+                            public void formSubmitted(Object... values) {
+
+                                // Checks that the values are correct.
+                                if (values == null || values.length < 2) {
+                                    return;
+                                }
+
+                                final Object value0 = values[0];
+                                if (!(value0 instanceof ProjectDTOLight)) {
+                                    return;
+                                }
+
+                                final Object value1 = values[1];
+                                if (!(value1 instanceof Number)) {
+                                    return;
+                                }
+
+                                // Adjusts the percentage to keep
+                                // consistency.
+                                double percentage = ((Number) value1).doubleValue();
+                                if (percentage < 0) {
+                                    percentage = 0;
+                                } else if (percentage > 100) {
+                                    percentage = 100;
+                                }
+
+                                // Retrieves the selected project and
+                                // adds it as a new partner.
+                                final ProjectDTOLight p = (ProjectDTOLight) value0;
+
+                                // Sets the local partner parameters.
+                                final HashMap<String, Object> parameters = new HashMap<String, Object>();
+                                parameters.put("fundingId", projectPresenter.getCurrentProjectDTO().getId());
+                                parameters.put("fundedId", p.getId());
+                                parameters.put("percentage", percentage);
+
+                                // Create the new funding.
+                                dispatcher.execute(new CreateEntity("ProjectFunding", parameters), null,
+                                        new AsyncCallback<CreateResult>() {
+
+                                            @Override
+                                            public void onFailure(Throwable e) {
+                                                Log.error("[execute] Error while creating a new funding.", e);
+                                                MessageBox.alert(
+                                                        I18N.CONSTANTS.createProjectTypeFundingCreationError(),
+                                                        I18N.CONSTANTS.createProjectTypeFundingCreationDetails(), null);
+                                            }
+
+                                            @Override
+                                            public void onSuccess(CreateResult result) {
+
+                                                Notification.show(I18N.CONSTANTS.infoConfirmation(),
+                                                        I18N.CONSTANTS.createProjectTypePartnerSelectOk());
+
+                                                // Adds the just created
+                                                // local partner to the
+                                                // list.
+                                                view.getLocalPartnerProjectGrid().getStore()
+                                                        .add((ProjectFundingDTO) result.getEntity());
+                                            }
+                                        });
+
+                            }
+                        });
+
+                        // Show the selection window.
+                        window.show(I18N.CONSTANTS.createProjectTypePartner(),
+                                I18N.CONSTANTS.createProjectTypePartnerSelectDetails() + " '"
+                                        + projectPresenter.getCurrentProjectDTO().getName() + "'.");
+                    }
+                });
+            }
+        });
+
+        // Adds the create local partner project actions.
+        view.getCreateLocalPartnerProjectButton().addListener(Events.OnClick, new Listener<ButtonEvent>() {
+
+            private final CreateProjectWindow window = new CreateProjectWindow(dispatcher, authentication);
+
+            {
+                window.addListener(new CreateProjectListener() {
+
+                    @Override
+                    public void projectCreated(ProjectDTOLight project) {
+                        // nothing to do (must not be called).
+                    }
+
+                    @Override
+                    public void projectCreatedAsFunding(ProjectDTOLight project, double percentage) {
+                        // nothing to do (must not be called).
+                    }
+
+                    @Override
+                    public void projectCreatedAsFunded(ProjectDTOLight project, double percentage) {
+
+                        // Adjusts the percentage to keep consistency.
+                        if (percentage < 0) {
+                            percentage = 0;
+                        } else if (percentage > 100) {
+                            percentage = 100;
+                        }
+
+                        // Sets the local partner parameters.
+                        final HashMap<String, Object> parameters = new HashMap<String, Object>();
+                        parameters.put("fundingId", projectPresenter.getCurrentProjectDTO().getId());
+                        parameters.put("fundedId", project.getId());
+                        parameters.put("percentage", percentage);
+
+                        // Create the new funding.
+                        dispatcher.execute(new CreateEntity("ProjectFunding", parameters), null,
+                                new AsyncCallback<CreateResult>() {
+
+                                    @Override
+                                    public void onFailure(Throwable e) {
+                                        Log.error("[execute] Error while creating a new funding.", e);
+                                        MessageBox.alert(I18N.CONSTANTS.createProjectTypeFundingCreationError(),
+                                                I18N.CONSTANTS.createProjectTypeFundingCreationDetails(), null);
+                                    }
+
+                                    @Override
+                                    public void onSuccess(CreateResult result) {
+
+                                        Notification.show(I18N.CONSTANTS.infoConfirmation(),
+                                                I18N.CONSTANTS.createProjectTypePartnerSelectOk());
+
+                                        // Adds the just created local partner
+                                        // to the list.
+                                        view.getLocalPartnerProjectGrid().getStore()
+                                                .add((ProjectFundingDTO) result.getEntity());
+                                    }
+                                });
+                    }
+                });
+            }
+
+            @Override
+            public void handleEvent(ButtonEvent be) {
+                window.show(Mode.FUNDED);
+            }
+        });
     }
 }
