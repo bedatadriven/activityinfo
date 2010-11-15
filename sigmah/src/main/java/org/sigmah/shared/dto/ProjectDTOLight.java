@@ -69,7 +69,7 @@ public class ProjectDTOLight extends BaseModelData implements EntityDTO {
 
     // Favorite
     public boolean isFavorite() {
-        return get("favorite");
+        return (Boolean) get("favorite");
     }
 
     public void setFavorite(boolean favorite) {

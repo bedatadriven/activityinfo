@@ -47,7 +47,7 @@ public class ProjectFundingDTO extends BaseModelData implements EntityDTO {
 
     // Funding percentage.
     public Double getPercentage() {
-        return get("percentage");
+        return (Double) get("percentage");
     }
 
     public void setPercentage(Double percentage) {

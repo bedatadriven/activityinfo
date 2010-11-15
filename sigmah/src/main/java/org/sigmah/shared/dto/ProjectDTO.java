@@ -100,7 +100,7 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO {
     }
 
     public Integer getCalendarId() {
-        return get("calendarId");
+        return (Integer) get("calendarId");
     }
 
     public void setCalendarId(Integer calendarId) {
