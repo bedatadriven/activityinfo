@@ -802,6 +802,10 @@ public class FlexTableView {
                         HTMLTableUtils.applyCellStyles(table, rowIndex, column, false, false);
                         table.getFlexCellFormatter().removeStyleName(rowIndex, column, CSS_MERGED_ROWS_STYLE_NAME);
                     }
+                } else {
+                    table.setWidget(rowIndex, column, w);
+                    HTMLTableUtils.applyCellStyles(table, rowIndex, column, false, false);
+                    table.getFlexCellFormatter().removeStyleName(rowIndex, column, CSS_MERGED_ROWS_STYLE_NAME);
                 }
             }
 
