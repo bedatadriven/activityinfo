@@ -6,6 +6,7 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.project.SubPresenter;
 import org.sigmah.client.page.project.ProjectPresenter;
 import org.sigmah.client.util.NotImplementedMethod;
+import org.sigmah.client.util.Notification;
 import org.sigmah.shared.command.UpdateLogFrame;
 import org.sigmah.shared.command.result.LogFrameResult;
 import org.sigmah.shared.dto.ProjectDTO;
@@ -167,7 +168,7 @@ public class ProjectLogFramePresenter implements SubPresenter {
 
                         // Informs of the error.
                         Log.error("[execute] Error when saving the log frame.", e);
-                        MessageBox.alert(I18N.CONSTANTS.error(), I18N.CONSTANTS.error(), null);
+                        MessageBox.alert(I18N.CONSTANTS.save(), I18N.CONSTANTS.saveError(), null);
                     }
 
                     @Override
@@ -185,7 +186,7 @@ public class ProjectLogFramePresenter implements SubPresenter {
                         logFrame = updated;
 
                         // Informs of the success.
-                        MessageBox.info(I18N.CONSTANTS.save(), I18N.CONSTANTS.saved(), null);
+                        Notification.show(I18N.CONSTANTS.infoConfirmation(), I18N.CONSTANTS.saveConfirm());
                         view.getSaveButton().setEnabled(false);
                     }
                 });
