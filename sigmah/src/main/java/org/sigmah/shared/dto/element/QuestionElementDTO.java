@@ -142,7 +142,7 @@ public class QuestionElementDTO extends FlexibleElementDTO {
                             I18N.CONSTANTS.flexibleElementQuestionMutiple(), 500));
             multipleQuestion.setAutoExpandColumn("label");
             multipleQuestion.setVisibleElementsCount(5);
-            
+
             final ContentPanel cp = new ContentPanel();
             cp.setHeaderVisible(true);
             cp.setBorders(true);
@@ -166,7 +166,7 @@ public class QuestionElementDTO extends FlexibleElementDTO {
 
                 sm.select(selectedChoices, false);
             }
-            
+
             multipleQuestion.getSelectionModel().setLocked(!enabled);
 
             component = cp;
@@ -177,13 +177,13 @@ public class QuestionElementDTO extends FlexibleElementDTO {
 
             if (getQualityCriterionDTO() != null) {
                 component.setToolTip(I18N.MESSAGES.flexibleElementQuestionCategory(getCategoryTypeDTO().getLabel())
-                        + "<br/>" + I18N.MESSAGES.flexibleElementQuestionQuality(getQualityCriterionDTO().getLabel()));
+                        + "<br/>" + I18N.MESSAGES.flexibleElementQuestionQuality(getQualityCriterionDTO().getInfo()));
             } else {
                 component.setToolTip(I18N.MESSAGES.flexibleElementQuestionCategory(getCategoryTypeDTO().getLabel()));
             }
 
         } else if (getQualityCriterionDTO() != null) {
-            component.setToolTip(I18N.MESSAGES.flexibleElementQuestionQuality(getQualityCriterionDTO().getLabel()));
+            component.setToolTip(I18N.MESSAGES.flexibleElementQuestionQuality(getQualityCriterionDTO().getInfo()));
         }
 
         return component;

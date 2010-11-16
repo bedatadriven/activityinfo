@@ -49,6 +49,7 @@ import org.sigmah.shared.domain.logframe.LogFrameGroup;
 import org.sigmah.shared.domain.logframe.LogFrameModel;
 import org.sigmah.shared.domain.logframe.Prerequisite;
 import org.sigmah.shared.domain.logframe.SpecificObjective;
+import org.sigmah.shared.domain.quality.CriterionType;
 import org.sigmah.shared.domain.quality.QualityCriterion;
 import org.sigmah.shared.domain.quality.QualityFramework;
 import org.sigmah.shared.domain.value.Value;
@@ -98,6 +99,7 @@ public class PersistentClasses {
             Layout.class,
             QuestionChoiceElement.class,
             QualityCriterion.class,
+            CriterionType.class,
             QualityFramework.class,
             FlexibleElement.class,
             ProjectModel.class,
