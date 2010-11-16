@@ -447,21 +447,7 @@ public class CreateProjectWindow {
         });
 
         // Retrieves project models (with an optional filter on the type).
-        final GetProjectModels command;
-
-        // TODO Set or avoid model type filter ?
-
-        // if (currentMode == Mode.FUNDING) {
-        // command = new GetProjectModels(ProjectModelType.FUNDING);
-        // } else if (currentMode == Mode.FUNDED) {
-        // command = new GetProjectModels(ProjectModelType.LOCAL_PARTNER);
-        // } else {
-        // command = new GetProjectModels();
-        // }
-
-        command = new GetProjectModels();
-
-        dispatcher.execute(command, null, new AsyncCallback<ProjectModelListResult>() {
+        dispatcher.execute(new GetProjectModels(), null, new AsyncCallback<ProjectModelListResult>() {
 
             @Override
             public void onFailure(Throwable arg0) {

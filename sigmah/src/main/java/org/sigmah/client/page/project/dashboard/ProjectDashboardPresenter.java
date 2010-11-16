@@ -788,7 +788,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
         // If the active phase required elements aren't filled, shows an
         // alert and returns.
         if (!isActivePhaseFilledIn()) {
-            MessageBox.info(I18N.CONSTANTS.projectPhaseActivationError(),
+            MessageBox.alert(I18N.CONSTANTS.projectPhaseActivationError(),
                     I18N.CONSTANTS.projectPhaseActivationErrorDetails(), null);
             return;
         }
@@ -984,7 +984,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
                         @Override
                         public void onFailure(Throwable caught) {
-                            MessageBox.info(I18N.CONSTANTS.cancelled(), I18N.CONSTANTS.error(), null);
+                            MessageBox.alert(I18N.CONSTANTS.save(), I18N.CONSTANTS.saveError(), null);
 
                             currentPhaseRequiredElements.clearState();
 
@@ -996,7 +996,8 @@ public class ProjectDashboardPresenter implements SubPresenter {
                         @Override
                         public void onSuccess(VoidResult result) {
                             valueChanges.clear();
-                            MessageBox.info(I18N.CONSTANTS.ok(), I18N.CONSTANTS.saved(), null);
+                            
+                            Notification.show(I18N.CONSTANTS.infoConfirmation(), I18N.CONSTANTS.saveConfirm());
 
                             currentPhaseRequiredElements.saveState();
 
@@ -1027,8 +1028,6 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
             @Override
             public void handleEvent(ButtonEvent be) {
-
-                // TODO Set or avoid model type filter ?
 
                 // Gets all potential financial projects.
                 dispatcher.execute(new GetProjects(), null, new AsyncCallback<ProjectListResult>() {
@@ -1225,8 +1224,6 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
             @Override
             public void handleEvent(ButtonEvent be) {
-
-                // TODO Set or avoid model type filter ?
 
                 // Gets all potential local partner projects.
                 dispatcher.execute(new GetProjects(), null, new AsyncCallback<ProjectListResult>() {
