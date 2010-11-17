@@ -8,6 +8,7 @@ package org.sigmah.shared.domain.report;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -82,7 +83,7 @@ public class ProjectReport implements Serializable {
         this.phaseName = phaseName;
     }
 
-    @OneToMany(mappedBy = "projectId")
+    @OneToMany(mappedBy = "report", cascade = CascadeType.ALL)
     @OrderBy(value = "sectionId, index ASC")
     public List<RichTextElement> getTexts() {
         return texts;

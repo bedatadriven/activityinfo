@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 /**
  *
@@ -18,7 +19,7 @@ import javax.persistence.Id;
 @Entity
 public class RichTextElement implements Serializable {
     private Integer id;
-    private Integer projectId;
+    private ProjectReport report;
     private Integer sectionId;
     private Integer index;
     private String text;
@@ -33,12 +34,13 @@ public class RichTextElement implements Serializable {
         this.id = id;
     }
 
-    public Integer getProjectId() {
-        return projectId;
+    @ManyToOne
+    public ProjectReport getReport() {
+        return report;
     }
 
-    public void setProjectId(Integer projectId) {
-        this.projectId = projectId;
+    public void setReport(ProjectReport report) {
+        this.report = report;
     }
 
     public Integer getIndex() {

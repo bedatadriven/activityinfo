@@ -9,14 +9,38 @@ import com.google.inject.Inject;
 import javax.persistence.EntityManager;
 import org.sigmah.server.dao.ProjectReportDAO;
 import org.sigmah.shared.domain.report.ProjectReport;
+import org.sigmah.shared.domain.report.ProjectReportModel;
+import org.sigmah.shared.domain.report.RichTextElement;
 
 /**
  *
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
-public class ProjectReportHibernateDAO extends GenericDAO<ProjectReport, Integer> implements ProjectReportDAO {
+public class ProjectReportHibernateDAO implements ProjectReportDAO {
+    protected final EntityManager em;
+    
     @Inject
     public ProjectReportHibernateDAO(EntityManager em) {
-        super(em);
+        this.em = em;
+    }
+
+    @Override
+    public void merge(RichTextElement element) {
+        em.merge(element);
+    }
+
+    @Override
+    public ProjectReportModel findModelById(Integer id) {
+        return em.find(ProjectReportModel.class, id);
+    }
+
+    @Override
+    public RichTextElement findRichTextElementById(Integer id) {
+        return em.find(RichTextElement.class, id);
+    }
+
+    @Override
+    public void persist(ProjectReport report) {
+        em.persist(report);
     }
 }

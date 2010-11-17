@@ -9,21 +9,27 @@ import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
@@ -32,13 +38,18 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RichTextArea;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.sigmah.client.EventBus;
+import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.event.NavigationEvent;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
@@ -46,24 +57,41 @@ import org.sigmah.client.page.NavigationHandler;
 import org.sigmah.client.page.project.ProjectState;
 import org.sigmah.client.page.project.reports.images.ToolbarImages;
 import org.sigmah.client.ui.FoldPanel;
+import org.sigmah.client.util.Notification;
+import org.sigmah.shared.command.CreateEntity;
+import org.sigmah.shared.command.GetProjectReportModels;
+import org.sigmah.shared.command.GetProjectReportModels.ModelReference;
 import org.sigmah.shared.command.GetProjectReports;
+import org.sigmah.shared.command.UpdateEntity;
+import org.sigmah.shared.command.result.CreateResult;
+import org.sigmah.shared.command.result.ProjectReportModelListResult;
+import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.report.ProjectReportDTO;
 import org.sigmah.shared.dto.report.ProjectReportSectionDTO;
 import org.sigmah.shared.dto.report.RichTextElementDTO;
 
 /**
- *
+ * Displays the reports attached to a project.
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class ProjectReportsView extends LayoutContainer {
 
     private EventBus eventBus;
+    private Dispatcher dispatcher;
+
     private ProjectState currentState;
     private LayoutContainer mainPanel;
     private RichTextArea.Formatter currentFormatter;
 
-    public ProjectReportsView(EventBus eventBus, ListStore<GetProjectReports.ReportReference> store) {
+    private HashMap<Integer, RichTextArea> textAreas;
+
+    private Dialog createReportDialog;
+
+    public ProjectReportsView(EventBus eventBus, Dispatcher dispatcher, ListStore<GetProjectReports.ReportReference> store) {
         this.eventBus = eventBus;
+        this.dispatcher = dispatcher;
+        this.textAreas = new HashMap<Integer, RichTextArea>();
+
         final BorderLayout layout = new BorderLayout();
         layout.setContainerStyle("x-border-layout-ct main-background"); // Adds a dark background between objects managed by this layout
         setLayout(layout);
@@ -81,6 +109,114 @@ public class ProjectReportsView extends LayoutContainer {
         add(mainPanel, layoutData);
     }
 
+    private Dialog getCreateReportDialog(final ListStore<GetProjectReports.ReportReference> store) {
+        if(createReportDialog == null) {
+            final Dialog dialog = new Dialog();
+            dialog.setButtons(Dialog.OKCANCEL);
+            dialog.setHeading(I18N.CONSTANTS.calendarAddEvent());
+            dialog.setModal(true);
+
+            dialog.setResizable(false);
+            dialog.setWidth("340px");
+
+            dialog.setLayout(new FormLayout());
+
+            // Report name
+            final TextField<String> nameField = new TextField<String>();
+            nameField.setFieldLabel("Nom du rapport");
+            nameField.setAllowBlank(false);
+            nameField.setName("name");
+            dialog.add(nameField);
+
+            // Model list
+            final ListStore<GetProjectReportModels.ModelReference> modelBoxStore = new ListStore<GetProjectReportModels.ModelReference>();
+            final ComboBox<GetProjectReportModels.ModelReference> modelBox = new ComboBox<GetProjectReportModels.ModelReference>();
+            modelBox.setFieldLabel("Modèle");
+            modelBox.setStore(modelBoxStore);
+            modelBox.setAllowBlank(false);
+            modelBox.setDisplayField("name");
+            modelBox.setName("model");
+            dialog.add(modelBox);
+
+            // Cancel button
+            dialog.getButtonById(Dialog.CANCEL).addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    dialog.hide();
+                }
+            });
+
+            createReportDialog = dialog;
+        }
+
+        final ComboBox<GetProjectReportModels.ModelReference> modelBox = (ComboBox<ModelReference>) createReportDialog.getWidget(1);
+        final ListStore<GetProjectReportModels.ModelReference> modelBoxStore = modelBox.getStore();
+        modelBoxStore.removeAll();
+
+        dispatcher.execute(new GetProjectReportModels(), null, new AsyncCallback<ProjectReportModelListResult>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+
+            @Override
+            public void onSuccess(ProjectReportModelListResult result) {
+                modelBoxStore.add(result.getData());
+            }
+            
+        });
+
+        // OK Button
+        final Button okButton = createReportDialog.getButtonById(Dialog.OK);
+
+        okButton.removeAllListeners();
+        okButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                final HashMap<String, Serializable> properties = new HashMap<String, Serializable>();
+
+                final String name = ((TextField<String>) createReportDialog.getWidget(0)).getValue();
+                final String phaseName = "TODO";
+                final String editorName = "TODO";
+                final Date lastEditDate = new Date();
+
+                properties.put("name", name);
+                properties.put("reportModelId", modelBox.getSelection().get(0).getId());
+                properties.put("phaseName", phaseName);
+                properties.put("projectId", Integer.valueOf(currentState.getProjectId()));
+
+                final CreateEntity createEntity = new CreateEntity("ProjectReport", properties);
+                dispatcher.execute(createEntity, null, new AsyncCallback<CreateResult>() {
+
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        throw new UnsupportedOperationException("Not supported yet.");
+                    }
+
+                    @Override
+                    public void onSuccess(CreateResult result) {
+                        final GetProjectReports.ReportReference report = new GetProjectReports.ReportReference();
+                        report.setId(result.getNewId());
+                        report.setName(name);
+                        report.setPhaseName(phaseName);
+                        report.setEditorName(editorName);
+                        report.setLastEditDate(lastEditDate);
+
+                        store.add(report);
+                    }
+                });
+
+                createReportDialog.hide();
+            }
+
+        });
+
+        return createReportDialog;
+    }
+
     private ContentPanel createDocumentList(final ListStore<GetProjectReports.ReportReference> store) {
         final ContentPanel panel = new ContentPanel(new FitLayout());
         panel.setHeading(I18N.CONSTANTS.projectTabReports());
@@ -89,7 +225,17 @@ public class ProjectReportsView extends LayoutContainer {
         final ToolBar toolBar = new ToolBar();
         toolBar.setAlignment(HorizontalAlignment.RIGHT);
         final IconImageBundle icons = GWT.create(IconImageBundle.class);
-        toolBar.add(new Button(I18N.CONSTANTS.newText(), icons.add()));
+
+        final Button newButton = new Button(I18N.CONSTANTS.newText(), icons.add());
+        newButton.addListener(Events.Select, new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+                getCreateReportDialog(store).show();
+            }
+        });
+
+        toolBar.add(newButton);
 
         panel.setTopComponent(toolBar);
 
@@ -105,6 +251,7 @@ public class ProjectReportsView extends LayoutContainer {
         documentGrid.setAutoExpandColumn("name");
         documentGrid.getView().setForceFit(true);
 
+        // Opening a report
         documentGrid.addListener(Events.RowDoubleClick, new Listener<GridEvent>() {
 
             @Override
@@ -160,6 +307,7 @@ public class ProjectReportsView extends LayoutContainer {
                 });
 
                 sectionPanel.add(textArea);
+                textAreas.put(((RichTextElementDTO) object).getId(), textArea);
 
             } else {
                 Log.warn("Report : object type unknown (" + object.getClass() + ")");
@@ -169,8 +317,9 @@ public class ProjectReportsView extends LayoutContainer {
         parent.add(sectionPanel);
     }
 
-    public void setReport(ProjectReportDTO report) {
+    public void setReport(final ProjectReportDTO report) {
         mainPanel.removeAll();
+        textAreas.clear();
 
         if (report == null) {
             return;
@@ -220,8 +369,33 @@ public class ProjectReportsView extends LayoutContainer {
         // Save button
         final IconImageBundle icons = GWT.create(IconImageBundle.class);
         final Button saveButton = new Button(I18N.CONSTANTS.save(), icons.save());
-        toolBar.add(saveButton);
+        saveButton.addListener(Events.Select, new Listener<BaseEvent>() {
 
+            @Override
+            public void handleEvent(BaseEvent be) {
+                final HashMap<String, String> changes = new HashMap<String, String>();
+
+                for(final Map.Entry<Integer, RichTextArea> entry : textAreas.entrySet())
+                    changes.put(entry.getKey().toString(), entry.getValue().getText());
+
+                final UpdateEntity updateEntity = new UpdateEntity("ProjectReport", report.getId(), (Map<String, Object>) (Map<String, ?>) changes);
+                dispatcher.execute(updateEntity, null, new AsyncCallback<VoidResult>() {
+
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        throw new UnsupportedOperationException("Not supported yet.");
+                    }
+
+                    @Override
+                    public void onSuccess(VoidResult result) {
+                        Notification.show("OhYeah!", "Modifications enregistrées.");
+                    }
+                    
+                });
+            }
+        });
+
+        toolBar.add(saveButton);
         toolBar.add(new SeparatorToolItem());
 
         // Overview mode
@@ -260,6 +434,7 @@ public class ProjectReportsView extends LayoutContainer {
     private void createRichTextToolbar(final ToolBar toolbar) {
         final ToolbarImages images = GWT.create(ToolbarImages.class);
 
+        // Fonts
         final ListBox fontListBox = new ListBox();
         fontListBox.addItem("Font");
         fontListBox.addItem("Arial");
@@ -278,6 +453,7 @@ public class ProjectReportsView extends LayoutContainer {
         fontListBoxWrapper.add(fontListBox);
         toolbar.add(fontListBoxWrapper);
 
+        // Bold
         final Button boldButton = new Button();
         boldButton.setIcon(AbstractImagePrototype.create(images.textBold()));
         boldButton.addListener(Events.Select, new Listener<BaseEvent>() {
@@ -289,6 +465,7 @@ public class ProjectReportsView extends LayoutContainer {
         });
         toolbar.add(boldButton);
 
+        // Italic
         final Button italicButton = new Button();
         italicButton.setIcon(AbstractImagePrototype.create(images.textItalic()));
         italicButton.addListener(Events.Select, new Listener<BaseEvent>() {
@@ -300,6 +477,7 @@ public class ProjectReportsView extends LayoutContainer {
         });
         toolbar.add(italicButton);
 
+        // Underline
         final Button underlineButton = new Button();
         underlineButton.setIcon(AbstractImagePrototype.create(images.textUnderline()));
         underlineButton.addListener(Events.Select, new Listener<BaseEvent>() {
@@ -311,6 +489,7 @@ public class ProjectReportsView extends LayoutContainer {
         });
         toolbar.add(underlineButton);
 
+        // Strike
         final Button strikeButton = new Button();
         strikeButton.setIcon(AbstractImagePrototype.create(images.textStrike()));
         strikeButton.addListener(Events.Select, new Listener<BaseEvent>() {
@@ -322,6 +501,7 @@ public class ProjectReportsView extends LayoutContainer {
         });
         toolbar.add(strikeButton);
 
+        // Align left
         final Button alignLeftButton = new Button();
         alignLeftButton.setIcon(AbstractImagePrototype.create(images.textAlignLeft()));
         alignLeftButton.addListener(Events.Select, new Listener<BaseEvent>() {
@@ -333,6 +513,7 @@ public class ProjectReportsView extends LayoutContainer {
         });
         toolbar.add(alignLeftButton);
 
+        // Align center
         final Button alignCenterButton = new Button();
         alignCenterButton.setIcon(AbstractImagePrototype.create(images.textAlignCenter()));
         alignCenterButton.addListener(Events.Select, new Listener<BaseEvent>() {
@@ -344,6 +525,7 @@ public class ProjectReportsView extends LayoutContainer {
         });
         toolbar.add(alignCenterButton);
 
+        // Align right
         final Button alignRightButton = new Button();
         alignRightButton.setIcon(AbstractImagePrototype.create(images.textAlignRight()));
         alignRightButton.addListener(Events.Select, new Listener<BaseEvent>() {
@@ -355,6 +537,7 @@ public class ProjectReportsView extends LayoutContainer {
         });
         toolbar.add(alignRightButton);
 
+        // Justify
         final Button alignJustifyButton = new Button();
         alignJustifyButton.setIcon(AbstractImagePrototype.create(images.textAlignJustify()));
         alignJustifyButton.addListener(Events.Select, new Listener<BaseEvent>() {
@@ -366,6 +549,7 @@ public class ProjectReportsView extends LayoutContainer {
         });
         toolbar.add(alignJustifyButton);
 
+        // List with numbers
         final Button listNumbersButton = new Button();
         listNumbersButton.setIcon(AbstractImagePrototype.create(images.textListNumbers()));
         listNumbersButton.addListener(Events.Select, new Listener<BaseEvent>() {
@@ -377,6 +561,7 @@ public class ProjectReportsView extends LayoutContainer {
         });
         toolbar.add(listNumbersButton);
 
+        // List with bullets
         final Button listBulletsButton = new Button();
         listBulletsButton.setIcon(AbstractImagePrototype.create(images.textListBullets()));
         listBulletsButton.addListener(Events.Select, new Listener<BaseEvent>() {

@@ -262,9 +262,8 @@ public class ProjectCalendarView extends LayoutContainer {
             dialog.setWidth("340px");
 
             // Dialog content
-            FormLayout formLayout = new FormLayout();
+            final FormLayout formLayout = new FormLayout();
             dialog.setLayout(formLayout);
-
 
             // Calendar list
             final ListStore<CalendarWrapper> calendarBoxStore = new ListStore<CalendarWrapper>();

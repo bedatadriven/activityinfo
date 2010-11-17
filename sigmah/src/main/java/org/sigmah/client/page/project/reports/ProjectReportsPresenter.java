@@ -46,9 +46,10 @@ public class ProjectReportsPresenter implements SubPresenter {
         // Creates the view
         if(view == null) {
             reportStore = new ListStore<GetProjectReports.ReportReference>();
-            view = new ProjectReportsView(eventBus, reportStore);
+            view = new ProjectReportsView(eventBus, dispatcher, reportStore);
         }
 
+        // Calculating the report id
         int reportId = currentReportId;
         final String arg = projectPresenter.getCurrentState().getArgument();
         if(arg != null)
@@ -63,6 +64,7 @@ public class ProjectReportsPresenter implements SubPresenter {
                 reportId = -1;
         }
 
+        // If the report id has changed
         if(currentReportId != reportId) {
             currentReportId = reportId;
 
@@ -87,6 +89,7 @@ public class ProjectReportsPresenter implements SubPresenter {
 
     @Override
     public void viewDidAppear() {
+        // Updating the current state
         view.setCurrentState(projectPresenter.getCurrentState());
         
         if(reportStore.getCount() == 0) {

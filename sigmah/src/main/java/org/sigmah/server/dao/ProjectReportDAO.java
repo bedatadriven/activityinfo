@@ -5,13 +5,18 @@
 
 package org.sigmah.server.dao;
 
-import org.sigmah.shared.dao.DAO;
 import org.sigmah.shared.domain.report.ProjectReport;
+import org.sigmah.shared.domain.report.ProjectReportModel;
+import org.sigmah.shared.domain.report.RichTextElement;
 
 /**
  *
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
-public interface ProjectReportDAO extends DAO<ProjectReport, Integer> {
-    
+public interface ProjectReportDAO {
+    void persist(ProjectReport report);
+    void merge(RichTextElement element);
+
+    public ProjectReportModel findModelById(Integer id);
+    public RichTextElement findRichTextElementById(Integer id);
 }
