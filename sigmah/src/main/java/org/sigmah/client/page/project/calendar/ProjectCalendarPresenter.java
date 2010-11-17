@@ -107,7 +107,7 @@ public class ProjectCalendarPresenter implements SubPresenter {
         }
 
         // If the current project has changed, clear the view
-        if(projectPresenter.getCurrentProjectDTO() != currentProjectDTO) {
+        if(!projectPresenter.getCurrentProjectDTO().equals(currentProjectDTO)) {
             view.getAddEventButton().setEnabled(false);
             calendarStore.removeAll(); // Reset the calendar list
             calendar.today(); // Reset the current date
@@ -143,11 +143,13 @@ public class ProjectCalendarPresenter implements SubPresenter {
                 }
             };
 
+            // Retrieving the activities
             final ActivityCalendarIdentifier identifier = new ActivityCalendarIdentifier(currentProjectDTO.getId(),
                     I18N.CONSTANTS.logFrameActivities(), I18N.CONSTANTS.logFrameActivitiesCode());
             final GetCalendar getActivityCalendar = new GetCalendar(CalendarType.Activity, identifier);
             dispatcher.execute(getActivityCalendar, null, callback);
 
+            // Retrieving the events linked to the current project
             final Integer calendarId = currentProjectDTO.getCalendarId();
             if(calendarId != null) {
                 final GetCalendar getPersonalCalendar = new GetCalendar(CalendarType.Personal, calendarId);

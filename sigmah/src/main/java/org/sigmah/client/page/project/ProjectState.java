@@ -45,7 +45,10 @@ public class ProjectState implements PageState, TabPage, HasTab {
 
                 if(tokens.length > 2) {
                     state.setArgument(tokens[2]);
+                } else {
+                    state.argument = null;
                 }
+
             }
 
             return state;
@@ -54,10 +57,18 @@ public class ProjectState implements PageState, TabPage, HasTab {
 
     @Override
     public String serializeAsHistoryToken() {
+        StringBuilder tokenBuilder = new StringBuilder();
+
         if(currentSection != null)
-            return currentSection.toString();
-        else
+            tokenBuilder.append(currentSection.toString());
+
+        if(argument != null)
+            tokenBuilder.append('/').append(argument);
+
+        if(tokenBuilder.length() == 0)
             return null;
+        else
+            return tokenBuilder.toString();
     }
 
     public ProjectState deriveTo(int section) {
@@ -123,5 +134,35 @@ public class ProjectState implements PageState, TabPage, HasTab {
 
     public void setArgument(String argument) {
         this.argument = argument;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ProjectState other = (ProjectState) obj;
+        if (this.projectId != other.projectId) {
+            return false;
+        }
+        if (this.currentSection != other.currentSection && (this.currentSection == null || !this.currentSection.equals(other.currentSection))) {
+            return false;
+        }
+        if ((this.argument == null) ? (other.argument != null) : !this.argument.equals(other.argument)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 83 * hash + this.projectId;
+        hash = 83 * hash + (this.currentSection != null ? this.currentSection.hashCode() : 0);
+        hash = 83 * hash + (this.argument != null ? this.argument.hashCode() : 0);
+        return hash;
     }
 }

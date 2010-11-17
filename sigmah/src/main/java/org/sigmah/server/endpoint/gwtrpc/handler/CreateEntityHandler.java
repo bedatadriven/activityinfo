@@ -30,6 +30,7 @@ import java.util.Map;
 import org.sigmah.server.policy.ActivityPolicy;
 import org.sigmah.server.policy.PersonalEventPolicy;
 import org.sigmah.server.policy.ProjectPolicy;
+import org.sigmah.server.policy.ProjectReportPolicy;
 import org.sigmah.server.policy.PropertyMap;
 import org.sigmah.server.policy.SitePolicy;
 import org.sigmah.server.policy.UserDatabasePolicy;
@@ -78,6 +79,9 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
             return new CreateResult((Integer) policy.create(user, propertyMap));
         } else if ("ProjectFunding".equals(cmd.getEntityName())) {
             return createFunding(properties);
+        } else if ("ProjectReport".equals(cmd.getEntityName())) {
+            ProjectReportPolicy policy = injector.getInstance(ProjectReportPolicy.class);
+            return new CreateResult((Integer)policy.create(user, propertyMap));
         } else {
             throw new CommandException("Invalid entity class " + cmd.getEntityName());
         }

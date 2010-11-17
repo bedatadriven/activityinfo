@@ -35,6 +35,7 @@ import org.sigmah.client.page.NavigationHandler;
 import org.sigmah.client.page.project.calendar.ProjectCalendarPresenter;
 import org.sigmah.client.page.project.dashboard.ProjectDashboardPresenter;
 import org.sigmah.client.page.project.logframe.ProjectLogFramePresenter;
+import org.sigmah.client.page.project.reports.ProjectReportsPresenter;
 import org.sigmah.client.ui.ToggleAnchor;
 
 /**
@@ -75,8 +76,10 @@ public class ProjectPresenter implements Frame, TabPage {
     private PhaseDTO currentDisplayedPhaseDTO;
     private final static String[] MAIN_TABS = {
         I18N.CONSTANTS.projectTabDashboard(),
-        I18N.CONSTANTS.projectTabLogFrame(), I18N.CONSTANTS.projectTabIndicators(),
-        I18N.CONSTANTS.projectTabCalendar(), I18N.CONSTANTS.projectTabReports(),
+        I18N.CONSTANTS.projectTabLogFrame(),
+        I18N.CONSTANTS.projectTabIndicators(),
+        I18N.CONSTANTS.projectTabCalendar(),
+        I18N.CONSTANTS.projectTabReports(),
         I18N.CONSTANTS.projectTabSecurityIncident()
     };
     private final SubPresenter[] presenters;
@@ -87,13 +90,15 @@ public class ProjectPresenter implements Frame, TabPage {
         this.view = view;
         this.authentication = authentication;
 
-        this.presenters = new SubPresenter[]{
+        final DummyPresenter dummyPresenter = new DummyPresenter(); // For development
+        
+        this.presenters = new SubPresenter[] {
                     new ProjectDashboardPresenter(dispatcher, authentication, this), // Dashboard
                     new ProjectLogFramePresenter(dispatcher, this), // Logical Framework
-                    null, // Indicators
+                    dummyPresenter, // Indicators
                     new ProjectCalendarPresenter(dispatcher, this), // Calendar
-                    null, // Reports
-                    null // Security incidents
+                    new ProjectReportsPresenter(dispatcher, eventBus, this), // Reports
+                    dummyPresenter // Security incidents
                 };
 
         for (int i = 0; i < MAIN_TABS.length; i++) {
@@ -143,34 +148,44 @@ public class ProjectPresenter implements Frame, TabPage {
         final ProjectState projectState = (ProjectState) place;
         final int projectId = projectState.getProjectId();
 
-        if (Log.isDebugEnabled()) {
-            Log.debug("Loading project #" + projectId + "...");
-        }
-
-        dispatcher.execute(new GetProject(projectId), null, new AsyncCallback<ProjectDTO>() {
-
-            @Override
-            public void onFailure(Throwable throwable) {
-                Log.error("Error, project #" + projectId + " not loaded.");
+        if(currentProjectDTO == null || projectId != currentProjectDTO.getId()) {
+            if (Log.isDebugEnabled()) {
+                Log.debug("Loading project #" + projectId + "...");
             }
 
-            @Override
-            public void onSuccess(ProjectDTO projectDTO) {
-                if (Log.isDebugEnabled()) {
-                    Log.debug("Project loaded : " + projectDTO.getName());
+            dispatcher.execute(new GetProject(projectId), null, new AsyncCallback<ProjectDTO>() {
+
+                @Override
+                public void onFailure(Throwable throwable) {
+                    Log.error("Error, project #" + projectId + " not loaded.");
                 }
-                currentState = projectState;
 
-                boolean projectChanged = !projectDTO.equals(currentProjectDTO);
+                @Override
+                public void onSuccess(ProjectDTO projectDTO) {
+                    if (Log.isDebugEnabled()) {
+                        Log.debug("Project loaded : " + projectDTO.getName());
+                    }
+                    currentState = projectState;
 
-                if(projectChanged) {
+                    boolean projectChanged = !projectDTO.equals(currentProjectDTO);
+
                     projectState.setTabTitle(projectDTO.getName());
                     loadProjectOnView(projectDTO);
-                }
 
-                selectTab(projectState.getCurrentSection(), projectChanged);
+                    selectTab(projectState.getCurrentSection(), projectChanged);
+                }
+            });
+        }
+        else {
+            boolean change = false;
+
+            if(!currentState.equals(projectState)) {
+                change = true;
+                currentState = projectState;
             }
-        });
+
+            selectTab(projectState.getCurrentSection(), change);
+        }
 
         return true;
     }
@@ -264,6 +279,10 @@ public class ProjectPresenter implements Frame, TabPage {
     @Override
     public Page getActivePage() {
         return this.activePage;
+    }
+
+    public ProjectState getCurrentState() {
+        return currentState;
     }
 
     @Override

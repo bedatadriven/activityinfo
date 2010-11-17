@@ -35,6 +35,28 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO {
                 + ", currentPhaseDTO:" + getCurrentPhaseDTO();
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ProjectDTO other = (ProjectDTO) obj;
+        if (this.getId() != other.getId()) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 41 * hash + this.getId();
+        return hash;
+    }
+
     // Project id
     @Override
     public int getId() {

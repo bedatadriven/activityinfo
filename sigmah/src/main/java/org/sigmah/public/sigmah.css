@@ -678,3 +678,52 @@ body {
 .logframe-grid-menu-button:hover {
 	color: #EE9329;
 }
+
+/* --------------------------------------------- Reports */
+.project-report {
+    padding-top: 4px;
+    padding-left: 8px;
+    font-size: 10pt;
+}
+
+.project-report-level-1 {
+    margin-bottom: 16px !important;
+    width: 95%;
+}
+
+.project-report-level-1 .fold-title {
+    text-transform: uppercase;
+    font-size: 14pt;
+    font-weight: bold;
+    color: black;
+}
+
+.project-report-level-2 .fold-title {
+    text-transform: none;
+    font-size: 12pt;
+}
+
+.project-report-level-3 .fold-title {
+    font-size: 10pt;
+}
+
+.gwt-RichTextArea {
+	border: 1px solid black;
+	display: block;
+	margin-top: 4px;
+	margin-bottom: 4px;
+	width: 100%;
+}
+
+.fold {
+	margin-top: 4px;
+	margin-bottom: 4px;
+}
+
+.fold-title {
+	cursor: pointer;
+}
+
+.fold-content {
+	padding-left: 20px;
+}
