@@ -88,7 +88,8 @@ public class LayoutGroupDTO extends BaseModelData implements EntityDTO {
     public Widget getWidget() {
         final FieldSet fieldSet = new FieldSet();
         fieldSet.setHeading(getTitle());
-
+        fieldSet.setCollapsible(true);
+        
         final FormPanel formPanel = new FormPanel();
         formPanel.addStyleName("sigmah-phase-form");
         formPanel.setHeaderVisible(false);
