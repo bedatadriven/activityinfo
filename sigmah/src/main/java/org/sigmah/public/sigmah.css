@@ -727,3 +727,18 @@ body {
 .fold-content {
 	padding-left: 20px;
 }
+
+/* --------------------------------------------- Banner */
+
+.banner {
+	padding: 4px;
+}
+
+.banner-logo {
+	padding-left: 12px;
+	width: 70px;	
+}
+
+.banner-flex {
+	padding-left: 10px;
+}

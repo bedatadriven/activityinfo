@@ -37,6 +37,14 @@ public final class UserPermissionDTO extends BaseModel implements DTO {
     public String getName() {
         return get("name");
     }
+    
+    public String getFirstName() {
+        return get("firstName");
+    }
+
+    public void setFirstName(String firstName) {
+        set("firstName", firstName);
+    }
 
     public void setEmail(String value) {
         set("email", value);

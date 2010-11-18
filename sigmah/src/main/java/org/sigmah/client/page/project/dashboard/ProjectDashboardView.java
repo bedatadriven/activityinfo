@@ -237,7 +237,7 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
         });
 
         // Element's type.
-        final ColumnConfig typeColumn = new ColumnConfig("type", I18N.CONSTANTS.projectRequiredElementsElementType(),
+        final ColumnConfig typeColumn = new ColumnConfig("typeOfElement", I18N.CONSTANTS.projectRequiredElementsElementType(),
                 75);
         typeColumn.setRenderer(new GridCellRenderer<FlexibleElementDTO>() {
             @Override

@@ -34,6 +34,7 @@ import org.sigmah.shared.domain.calendar.PersonalEvent;
 import org.sigmah.shared.domain.category.CategoryElement;
 import org.sigmah.shared.domain.category.CategoryType;
 import org.sigmah.shared.domain.element.CheckboxElement;
+import org.sigmah.shared.domain.element.DefaultFlexibleElement;
 import org.sigmah.shared.domain.element.FlexibleElement;
 import org.sigmah.shared.domain.element.MessageElement;
 import org.sigmah.shared.domain.element.QuestionChoiceElement;
@@ -107,6 +108,7 @@ public class PersistentClasses {
             CheckboxElement.class,
             QuestionElement.class,
             TextAreaElement.class,
+            DefaultFlexibleElement.class,
             PrivacyLevel.class,
             Prerequisite.class,
             LogFrameActivity.class,

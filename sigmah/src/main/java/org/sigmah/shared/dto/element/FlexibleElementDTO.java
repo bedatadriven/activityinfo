@@ -38,7 +38,7 @@ public abstract class FlexibleElementDTO extends BaseModelData implements Entity
     protected transient ProjectDTO currentProjectDTO;
 
     protected transient int preferredWidth;
-
+    
     /**
      * Sets the dispatcher to be used in the {@link #getComponent(ValueResult)}
      * method.

@@ -6,6 +6,7 @@
 package org.sigmah.shared.domain;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -16,6 +17,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.sigmah.shared.domain.logframe.LogFrame;
 import org.sigmah.shared.domain.value.Value;
@@ -30,9 +33,22 @@ public class Project extends UserDatabase {
     private List<Phase> phases = new ArrayList<Phase>();
     private List<Value> values = new ArrayList<Value>();
     private Integer calendarId;
-    private Double budget;
+    private Double plannedBudget;
+    private Double spendBudget;
+    private Double receivedBudget;
     private List<ProjectFunding> funding;
     private List<ProjectFunding> funded;
+    private Date endDate;
+
+    @Temporal(TemporalType.DATE)
+    @Column(name = "end_date", length = 23)
+    public Date getEndDate() {
+        return this.endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
 
     public void setLogFrame(LogFrame logFrame) {
         this.logFrame = logFrame;
@@ -116,13 +132,31 @@ public class Project extends UserDatabase {
         this.calendarId = calendarId;
     }
 
-    @Column(name = "budget", nullable = true)
-    public Double getBudget() {
-        return budget;
+    @Column(name = "planned_budget", nullable = true)
+    public Double getPlannedBudget() {
+        return plannedBudget;
     }
 
-    public void setBudget(Double budget) {
-        this.budget = budget;
+    public void setPlannedBudget(Double plannedBudget) {
+        this.plannedBudget = plannedBudget;
+    }
+
+    @Column(name = "spend_budget", nullable = true)
+    public Double getSpendBudget() {
+        return spendBudget;
+    }
+
+    public void setSpendBudget(Double spendBudget) {
+        this.spendBudget = spendBudget;
+    }
+
+    @Column(name = "received_budget", nullable = true)
+    public Double getReceivedBudget() {
+        return receivedBudget;
+    }
+
+    public void setReceivedBudget(Double receivedBudget) {
+        this.receivedBudget = receivedBudget;
     }
 
     @ManyToMany(mappedBy = "funded", cascade = CascadeType.ALL)

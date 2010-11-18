@@ -64,6 +64,11 @@
 			<a>user.name</a>
 			<b>name</b>
 		</field>
+		
+		<field>
+			<a>user.firstName</a>
+			<b>firstName</b>
+		</field>
 
 		<field>
 			<a>user.email</a>
@@ -108,11 +113,22 @@
 			<b>currentPhaseDTO</b>
 		</field>
 
+
 		<field>
 			<a>owner.name</a>
 			<b>ownerName</b>
 		</field>
+		
+		<field>
+			<a>owner.firstName</a>
+			<b>ownerFirstName</b>
+		</field>
 
+		<field>
+			<a>owner.email</a>
+			<b>ownerEmail</b>
+		</field>
+		
 		<field>
 			<a>logFrame</a>
 			<b>logFrameDTO</b>
@@ -179,9 +195,9 @@
 		<field>
 			<a>elements</a>
 			<b>flexibleElementsDTO</b>
-			<a-hint>org.sigmah.shared.domain.element.MessageElement,org.sigmah.shared.domain.element.CheckboxElement,org.sigmah.shared.domain.element.TextAreaElement,org.sigmah.shared.domain.element.QuestionElement,org.sigmah.shared.domain.element.TripletsListElement,org.sigmah.shared.domain.element.FilesListElement,org.sigmah.shared.domain.element.IndicatorsListElement,org.sigmah.shared.domain.element.BudgetDistributionElement
+			<a-hint>org.sigmah.shared.domain.element.DefaultFlexibleElement,org.sigmah.shared.domain.element.MessageElement,org.sigmah.shared.domain.element.CheckboxElement,org.sigmah.shared.domain.element.TextAreaElement,org.sigmah.shared.domain.element.QuestionElement,org.sigmah.shared.domain.element.TripletsListElement,org.sigmah.shared.domain.element.FilesListElement,org.sigmah.shared.domain.element.IndicatorsListElement,org.sigmah.shared.domain.element.BudgetDistributionElement
 			</a-hint>
-			<b-hint>org.sigmah.shared.dto.element.MessageElementDTO,org.sigmah.shared.dto.element.CheckboxElementDTO,org.sigmah.shared.dto.element.TextAreaElementDTO,org.sigmah.shared.dto.element.QuestionElementDTO,org.sigmah.shared.dto.element.TripletsListElementDTO,org.sigmah.shared.dto.element.FilesListElementDTO,org.sigmah.shared.dto.element.IndicatorsListElementDTO,org.sigmah.shared.dto.element.BudgetDistributionElementDTO
+			<b-hint>org.sigmah.shared.dto.element.DefaultFlexibleElementDTO,org.sigmah.shared.dto.element.MessageElementDTO,org.sigmah.shared.dto.element.CheckboxElementDTO,org.sigmah.shared.dto.element.TextAreaElementDTO,org.sigmah.shared.dto.element.QuestionElementDTO,org.sigmah.shared.dto.element.TripletsListElementDTO,org.sigmah.shared.dto.element.FilesListElementDTO,org.sigmah.shared.dto.element.IndicatorsListElementDTO,org.sigmah.shared.dto.element.BudgetDistributionElementDTO
 			</b-hint>
 		</field>
 	</mapping>
@@ -252,9 +268,9 @@
 		<field>
 			<a>element</a>
 			<b>flexibleElementDTO</b>
-			<a-hint>org.sigmah.shared.domain.element.MessageElement,org.sigmah.shared.domain.element.CheckboxElement,org.sigmah.shared.domain.element.TextAreaElement,org.sigmah.shared.domain.element.QuestionElement,org.sigmah.shared.domain.element.TripletsListElement,org.sigmah.shared.domain.element.FilesListElement,org.sigmah.shared.domain.element.IndicatorsListElement,org.sigmah.shared.domain.element.BudgetDistributionElement
+			<a-hint>org.sigmah.shared.domain.element.DefaultFlexibleElement,org.sigmah.shared.domain.element.MessageElement,org.sigmah.shared.domain.element.CheckboxElement,org.sigmah.shared.domain.element.TextAreaElement,org.sigmah.shared.domain.element.QuestionElement,org.sigmah.shared.domain.element.TripletsListElement,org.sigmah.shared.domain.element.FilesListElement,org.sigmah.shared.domain.element.IndicatorsListElement,org.sigmah.shared.domain.element.BudgetDistributionElement
 			</a-hint>
-			<b-hint>org.sigmah.shared.dto.element.MessageElementDTO,org.sigmah.shared.dto.element.CheckboxElementDTO,org.sigmah.shared.dto.element.TextAreaElementDTO,org.sigmah.shared.dto.element.QuestionElementDTO,org.sigmah.shared.dto.element.TripletsListElementDTO,org.sigmah.shared.dto.element.FilesListElementDTO,org.sigmah.shared.dto.element.IndicatorsListElementDTO,org.sigmah.shared.dto.element.BudgetDistributionElementDTO
+			<b-hint>org.sigmah.shared.dto.element.DefaultFlexibleElementDTO,org.sigmah.shared.dto.element.MessageElementDTO,org.sigmah.shared.dto.element.CheckboxElementDTO,org.sigmah.shared.dto.element.TextAreaElementDTO,org.sigmah.shared.dto.element.QuestionElementDTO,org.sigmah.shared.dto.element.TripletsListElementDTO,org.sigmah.shared.dto.element.FilesListElementDTO,org.sigmah.shared.dto.element.IndicatorsListElementDTO,org.sigmah.shared.dto.element.BudgetDistributionElementDTO
 			</b-hint>
 		</field>
 

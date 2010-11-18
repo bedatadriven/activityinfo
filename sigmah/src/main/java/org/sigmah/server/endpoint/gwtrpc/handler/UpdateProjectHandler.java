@@ -19,13 +19,16 @@ import org.sigmah.shared.command.UpdateProject;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.ValueResultUtils;
+import org.sigmah.shared.domain.Country;
 import org.sigmah.shared.domain.Deleteable;
 import org.sigmah.shared.domain.Project;
 import org.sigmah.shared.domain.User;
+import org.sigmah.shared.domain.element.DefaultFlexibleElementType;
 import org.sigmah.shared.domain.element.FlexibleElement;
 import org.sigmah.shared.domain.value.ListEntity;
 import org.sigmah.shared.domain.value.Value;
 import org.sigmah.shared.dto.EntityDTO;
+import org.sigmah.shared.dto.element.DefaultFlexibleElementDTO;
 import org.sigmah.shared.dto.element.FlexibleElementDTO;
 import org.sigmah.shared.dto.element.handler.ValueEventWrapper;
 import org.sigmah.shared.dto.value.ListEntityDTO;
@@ -72,6 +75,21 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
                 LOG.debug("[execute] Updates value of element #" + source.getId() + " (" + source.getEntityName() + ')');
                 LOG.debug("[execute] Event of type " + valueEvent.getChangeType() + " with value " + updateValue + " ("
                         + updateValue.getClass() + ')');
+            }
+
+            // Case of the default flexible element which values arent't stored
+            // like other values. These values impact directly the project.
+            if (source instanceof DefaultFlexibleElementDTO) {
+
+                final DefaultFlexibleElementDTO defaultElement = (DefaultFlexibleElementDTO) source;
+
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("[execute] Default element case '" + defaultElement.getType() + "'.");
+                }
+
+                // Saves the value and switch to the next value.
+                saveDefaultElement(cmd.getProjectId(), defaultElement.getType(), updateValue);
+                continue;
             }
 
             // Retrieving the current value
@@ -268,5 +286,137 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
         currentValue.setLastModificationUser(user);
 
         return currentValue;
+    }
+
+    /**
+     * Updates the current project with the new value of a default element.
+     * 
+     * @param projectId
+     *            The project id.
+     * @param type
+     *            The type of the default element.
+     * @param value
+     *            The new value.
+     */
+    private void saveDefaultElement(int projectId, DefaultFlexibleElementType type, Serializable value) {
+
+        // All default values are managed as strings.
+        // See DefaultFlexibleElementDTO.getComponent();
+        if (value == null || !(value instanceof String)) {
+            LOG.error("[saveDefaultElement] The value isn't a string and cannot be considered.");
+            return;
+        }
+
+        final String stringValue = (String) value;
+
+        // Retrieves project.
+        final Project project = em.find(Project.class, projectId);
+
+        if (project == null) {
+            LOG.error("[saveDefaultElement] Project with id '" + projectId + "' not found.");
+            return;
+        }
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("[saveDefaultElement] Found project with code '" + project.getName() + "'.");
+        }
+
+        switch (type) {
+        case CODE:
+            project.setName(stringValue);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("[saveDefaultElement] Set project code to '" + stringValue + "'.");
+            }
+            break;
+        case TITLE:
+            project.setFullName(stringValue);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("[saveDefaultElement] Set project full name to '" + stringValue + "'.");
+            }
+            break;
+        case START_DATE: {
+            // Decodes timestamp.
+            final long timestamp = Long.valueOf(stringValue);
+            final Date date = new Date(timestamp);
+            project.setStartDate(date);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("[saveDefaultElement] Set project start date to '" + date + "'.");
+            }
+        }
+            break;
+        case END_DATE: {
+            // Decodes timestamp.
+            if ("".equals(stringValue)) {
+                project.setEndDate(null);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("[saveDefaultElement] Set project end date to null.");
+                }
+            } else {
+                final long timestamp = Long.valueOf(stringValue);
+                final Date date = new Date(timestamp);
+                project.setEndDate(date);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("[saveDefaultElement] Set project end date to '" + date + "'.");
+                }
+            }
+        }
+            break;
+        case BUDGET: {
+            // Decodes doubles.
+            final String[] budgets = stringValue.split("\\|");
+            final double plannedBudget = Double.parseDouble(budgets[0]);
+            final double spendBudget = Double.parseDouble(budgets[1]);
+            final double receivedBudget = Double.parseDouble(budgets[2]);
+
+            project.setPlannedBudget(plannedBudget);
+            project.setSpendBudget(spendBudget);
+            project.setReceivedBudget(receivedBudget);
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("[saveDefaultElement] Set project budget to '" + plannedBudget + "|" + spendBudget + "|"
+                        + receivedBudget + "'.");
+            }
+        }
+            break;
+        case COUNTRY: {
+            // Retrieves country.
+            final Country country = em.find(Country.class, Integer.valueOf(stringValue));
+            project.setCountry(country);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("[saveDefaultElement] Set project country to '" + country.getName() + "'.");
+            }
+        }
+            break;
+        case OWNER: {
+            // Retrieves user.
+            final Query q = em.createQuery("SELECT u from User u WHERE u.email = :emailVal");
+            q.setParameter("emailVal", stringValue);
+
+            final User user;
+            try {
+                user = (User) q.getSingleResult();
+            } catch (NoResultException e) {
+                LOG.error("[saveDefaultElement] Unknown user with email '" + stringValue + "'.", e);
+                return;
+            }
+
+            project.setOwner(user);
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("[saveDefaultElement] Set project owner to '" + user.getEmail() + "'.");
+            }
+        }
+            break;
+        default:
+            LOG.error("[saveDefaultElement] Unknown type '" + type + "' for the default flexible elements.");
+            return;
+        }
+
+        // Updates project.
+        em.merge(project);
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("[saveDefaultElement] Updates the project.");
+        }
     }
 }

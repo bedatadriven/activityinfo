@@ -6,6 +6,7 @@
 package org.sigmah.shared.dto;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.sigmah.shared.dto.logframe.LogFrameDTO;
@@ -76,6 +77,33 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO {
         set("name", name);
     }
 
+    // Project full name
+    public String getFullName() {
+        return get("fullName");
+    }
+
+    public void setFullName(String fullName) {
+        set("fullName", fullName);
+    }
+
+    // Project start date
+    public Date getStartDate() {
+        return get("startDate");
+    }
+
+    public void setStartDate(Date startDate) {
+        set("startDate", startDate);
+    }
+
+    // Project end date
+    public Date getEndDate() {
+        return get("endDate");
+    }
+
+    public void setEndDate(Date endDate) {
+        set("endDate", endDate);
+    }
+
     // Reference to the Project Model
     public ProjectModelDTO getProjectModelDTO() {
         return get("projectModelDTO");
@@ -92,6 +120,24 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO {
 
     public void setOwnerName(String ownerName) {
         set("ownerName", ownerName);
+    }
+
+    // Owner project first name
+    public String getOwnerFirstName() {
+        return get("ownerFirstName");
+    }
+
+    public void setOwnerFirstName(String ownerFirstName) {
+        set("ownerFirstName", ownerFirstName);
+    }
+
+    // Owner project email
+    public String getOwnerEmail() {
+        return get("email");
+    }
+
+    public void setOwnerEmail(String email) {
+        set("email", email);
     }
 
     // Reference to the project phases list
@@ -137,6 +183,33 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO {
         set("logFrameDTO", logFrameDTO);
     }
 
+    public Double getPlannedBudget() {
+        final Double b = (Double) get("plannedBudget");
+        return b != null ? b : 0.0;
+    }
+
+    public void setPlannedBudget(Double plannedBudget) {
+        set("plannedBudget", plannedBudget);
+    }
+
+    public Double getSpendBudget() {
+        final Double b = (Double) get("spendBudget");
+        return b != null ? b : 0.0;
+    }
+
+    public void setSpendBudget(Double spendBudget) {
+        set("spendBudget", spendBudget);
+    }
+
+    public Double getReceivedBudget() {
+        final Double b = (Double) get("receivedBudget");
+        return b != null ? b : 0.0;
+    }
+
+    public void setReceivedBudget(Double receivedBudget) {
+        set("receivedBudget", receivedBudget);
+    }
+
     public List<ProjectFundingDTO> getFunding() {
         return get("funding");
     }
@@ -151,6 +224,14 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO {
 
     public void setFunded(List<ProjectFundingDTO> funded) {
         set("funded", funded);
+    }
+
+    public CountryDTO getCountry() {
+        return get("country");
+    }
+
+    public void setCountry(CountryDTO country) {
+        set("country", country);
     }
 
     /**

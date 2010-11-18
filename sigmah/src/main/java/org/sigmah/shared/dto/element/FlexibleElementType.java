@@ -40,6 +40,26 @@ public final class FlexibleElementType {
      * @return The flexible element type name (translation key).
      */
     public static <E extends FlexibleElementDTO> String getFlexibleElementTypeName(E fe) {
+        if (fe instanceof DefaultFlexibleElementDTO) {
+            return getDefaultFlexibleElementTypeName((DefaultFlexibleElementDTO) fe);
+        }
         return types.get(fe.getClass());
+    }
+
+    private static String getDefaultFlexibleElementTypeName(DefaultFlexibleElementDTO element) {
+        switch (element.getType()) {
+        case CODE:
+        case TITLE:
+        case START_DATE:
+        case END_DATE:
+            return types.get(TextAreaElementDTO.class);
+        case COUNTRY:
+        case OWNER:
+            return types.get(QuestionElementDTO.class);
+        case BUDGET:
+            return types.get(BudgetDistributionElementDTO.class);
+        default:
+            return "???";
+        }
     }
 }

@@ -155,7 +155,7 @@ public class CreateProjectWindow {
 
         // Budget field.
         budgetField = new NumberField();
-        budgetField.setFieldLabel(I18N.CONSTANTS.projectBudget());
+        budgetField.setFieldLabel(I18N.CONSTANTS.projectPlannedBudget());
         budgetField.setValue(0);
         budgetField.setAllowBlank(false);
 

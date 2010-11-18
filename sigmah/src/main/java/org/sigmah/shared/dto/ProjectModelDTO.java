@@ -96,19 +96,19 @@ public class ProjectModelDTO extends BaseModelData implements EntityDTO {
      * Gets the type of this model for the given organization. If this model
      * isn't visible for this organization, <code>null</code> is returned.
      * 
-     * @param organization
+     * @param organizationId
      *            The organization.
      * @return The type of this model for the given organization,
      *         <code>null</code> otherwise.
      */
-    public ProjectModelType getVisibility(OrganizationDTO organization) {
+    public ProjectModelType getVisibility(int organizationId) {
 
-        if (organization == null || getVisibilities() == null) {
+        if (getVisibilities() == null) {
             return null;
         }
 
         for (final ProjectModelVisibilityDTO visibility : getVisibilities()) {
-            if (visibility.getOrganizationId() == organization.getId()) {
+            if (visibility.getOrganizationId() == organizationId) {
                 return visibility.getType();
             }
         }

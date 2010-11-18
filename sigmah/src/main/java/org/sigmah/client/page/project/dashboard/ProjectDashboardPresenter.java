@@ -6,6 +6,7 @@ package org.sigmah.client.page.project.dashboard;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -32,11 +33,13 @@ import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.command.result.ProjectListResult;
 import org.sigmah.shared.command.result.ValueResult;
 import org.sigmah.shared.command.result.VoidResult;
+import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.PhaseDTO;
 import org.sigmah.shared.dto.PhaseModelDTO;
 import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.ProjectDTOLight;
 import org.sigmah.shared.dto.ProjectFundingDTO;
+import org.sigmah.shared.dto.element.DefaultFlexibleElementDTO;
 import org.sigmah.shared.dto.element.FlexibleElementDTO;
 import org.sigmah.shared.dto.element.handler.RequiredValueEvent;
 import org.sigmah.shared.dto.element.handler.RequiredValueHandler;
@@ -995,9 +998,21 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
                         @Override
                         public void onSuccess(VoidResult result) {
-                            valueChanges.clear();
-                            
+
                             Notification.show(I18N.CONSTANTS.infoConfirmation(), I18N.CONSTANTS.saveConfirm());
+
+                            // Checks if there is any update needed to the local
+                            // project instance.
+                            boolean refreshBanner = false;
+                            for (ValueEvent event : valueChanges) {
+                                if (event.getSource() instanceof DefaultFlexibleElementDTO) {
+                                    updateCurrentProject(((DefaultFlexibleElementDTO) event.getSource()),
+                                            (String) event.getValue());
+                                    refreshBanner = true;
+                                }
+                            }
+
+                            valueChanges.clear();
 
                             currentPhaseRequiredElements.saveState();
 
@@ -1006,8 +1021,97 @@ public class ProjectDashboardPresenter implements SubPresenter {
                             }
 
                             refreshActionsToolbar();
+                            if (refreshBanner) {
+                                projectPresenter.refreshBanner();
+                            }
                         }
                     });
+        }
+    }
+
+    /**
+     * Updates locally the DTO to avoid a remote server call.
+     * 
+     * @param element
+     *            The default flexible element.
+     * @param value
+     *            The new value.
+     */
+    private void updateCurrentProject(DefaultFlexibleElementDTO element, String value) {
+
+        final ProjectDTO currentProjectDTO = projectPresenter.getCurrentProjectDTO();
+
+        switch (element.getType()) {
+        case CODE:
+            currentProjectDTO.setName(value);
+            break;
+        case TITLE:
+            currentProjectDTO.setFullName(value);
+            break;
+        case START_DATE:
+            if ("".equals(value)) {
+                currentProjectDTO.setStartDate(null);
+            } else {
+                try {
+                    final long timestamp = Long.parseLong(value);
+                    currentProjectDTO.setStartDate(new Date(timestamp));
+                } catch (NumberFormatException e) {
+                    // nothing, invalid date.
+                }
+            }
+            break;
+        case END_DATE:
+            if ("".equals(value)) {
+                currentProjectDTO.setEndDate(null);
+            } else {
+                try {
+                    final long timestamp = Long.parseLong(value);
+                    currentProjectDTO.setEndDate(new Date(timestamp));
+                } catch (NumberFormatException e) {
+                    // nothing, invalid date.
+                }
+            }
+            break;
+        case BUDGET:
+            try {
+
+                final String[] budgets = value.split("\\|");
+                final double plannedBudget = Double.parseDouble(budgets[0]);
+                final double spendBudget = Double.parseDouble(budgets[1]);
+                final double receivedBudget = Double.parseDouble(budgets[2]);
+
+                currentProjectDTO.setPlannedBudget(plannedBudget);
+                currentProjectDTO.setSpendBudget(spendBudget);
+                currentProjectDTO.setReceivedBudget(receivedBudget);
+
+            } catch (Exception e) {
+                // nothing, invalid budget.
+            }
+            break;
+        case COUNTRY:
+            final CountryDTO country = element.getCountriesStore().findModel("id", Integer.parseInt(value));
+            if (country != null) {
+                currentProjectDTO.setCountry(country);
+            } else {
+                // nothing, invalid country.
+            }
+            break;
+        case OWNER:
+
+            // The owner component doesn't fire any event for now.
+
+            /*
+             * final UserPermissionDTO user =
+             * element.getUsersStore().findModel("email", value); if (user !=
+             * null) { currentProjectDTO.setOwnerName(user.getName());
+             * currentProjectDTO.setOwnerFirstName(user.getFirstName());
+             * currentProjectDTO.setOwnerEmail(user.getEmail()); } else { //
+             * nothing, invalid user. }
+             */
+            break;
+        default:
+            // Nothing, unknown type.
+            break;
         }
     }
 

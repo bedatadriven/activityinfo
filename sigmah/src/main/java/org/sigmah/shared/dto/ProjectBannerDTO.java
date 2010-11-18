@@ -21,7 +21,7 @@ public class ProjectBannerDTO extends BaseModelData implements EntityDTO {
 	
 	@Override
     public int getId() {
-        return (Integer)get("id");
+        return (Integer) get("id");
     }
 
     public void setId(int id) {

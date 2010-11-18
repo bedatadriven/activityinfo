@@ -7,20 +7,17 @@ package org.sigmah.client.page.project;
 
 
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.ui.StylableHBoxLayout;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.RowData;
-import com.extjs.gxt.ui.client.widget.layout.RowLayout;
-import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.ui.Widget;
-import org.sigmah.client.ui.StylableHBoxLayout;
 
 /**
  * Initializes the view elements of a project page.
@@ -50,7 +47,7 @@ public class ProjectView extends LayoutContainer implements ProjectPresenter.Vie
         panelProjectBanner.setHeading(I18N.CONSTANTS.projectBannerHeader());
         panelProjectBanner.setBorders(false);
         //panelProjectBanner.setHeight(100);
-        panelProjectBanner.setLayout(new VBoxLayout());
+        panelProjectBanner.setLayout(new FitLayout());
         panelProjectBanner.addStyleName("project-label-10");
 
         bottomPanel = new ContentPanel(new BorderLayout());

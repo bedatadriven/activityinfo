@@ -15,7 +15,7 @@ import com.google.gwt.event.shared.GwtEvent;
  * @author Denis Colliot (dcolliot@ideia.fr)
  * 
  */
-public class ValueEvent extends GwtEvent<ValueHandler> implements Serializable {
+public class ValueEvent extends GWTImmortalEvent<ValueHandler> implements Serializable {
 
     private static final long serialVersionUID = -6920472009097129066L;
 

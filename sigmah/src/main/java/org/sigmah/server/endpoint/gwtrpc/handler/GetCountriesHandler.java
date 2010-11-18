@@ -70,11 +70,6 @@ public class GetCountriesHandler implements CommandHandler<GetCountries> {
     private ArrayList<CountryDTO> mapToDtos(List<Country> countries) {
         ArrayList<CountryDTO> dtos = new ArrayList<CountryDTO>();
         for (Country country : countries) {
-
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("[mapToDtos] Map country name " + country.getName());
-            }
-
             dtos.add(mapper.map(country, CountryDTO.class, "countryNameOnly"));
         }
         return dtos;
