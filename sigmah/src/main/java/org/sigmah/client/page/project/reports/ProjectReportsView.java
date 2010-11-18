@@ -80,6 +80,9 @@ public class ProjectReportsView extends LayoutContainer {
     private Dispatcher dispatcher;
 
     private ProjectState currentState;
+    private String phaseName;
+
+    private ListStore<GetProjectReports.ReportReference> store;
     private LayoutContainer mainPanel;
     private RichTextArea.Formatter currentFormatter;
 
@@ -91,6 +94,8 @@ public class ProjectReportsView extends LayoutContainer {
         this.eventBus = eventBus;
         this.dispatcher = dispatcher;
         this.textAreas = new HashMap<Integer, RichTextArea>();
+
+        this.store = store;
 
         final BorderLayout layout = new BorderLayout();
         layout.setContainerStyle("x-border-layout-ct main-background"); // Adds a dark background between objects managed by this layout
@@ -123,7 +128,7 @@ public class ProjectReportsView extends LayoutContainer {
 
             // Report name
             final TextField<String> nameField = new TextField<String>();
-            nameField.setFieldLabel("Nom du rapport");
+            nameField.setFieldLabel(I18N.CONSTANTS.reportName());
             nameField.setAllowBlank(false);
             nameField.setName("name");
             dialog.add(nameField);
@@ -131,7 +136,7 @@ public class ProjectReportsView extends LayoutContainer {
             // Model list
             final ListStore<GetProjectReportModels.ModelReference> modelBoxStore = new ListStore<GetProjectReportModels.ModelReference>();
             final ComboBox<GetProjectReportModels.ModelReference> modelBox = new ComboBox<GetProjectReportModels.ModelReference>();
-            modelBox.setFieldLabel("Modèle");
+            modelBox.setFieldLabel(I18N.CONSTANTS.reportModel());
             modelBox.setStore(modelBoxStore);
             modelBox.setAllowBlank(false);
             modelBox.setDisplayField("name");
@@ -179,8 +184,8 @@ public class ProjectReportsView extends LayoutContainer {
                 final HashMap<String, Serializable> properties = new HashMap<String, Serializable>();
 
                 final String name = ((TextField<String>) createReportDialog.getWidget(0)).getValue();
-                final String phaseName = "TODO";
-                final String editorName = "TODO";
+                final String phaseName = ProjectReportsView.this.phaseName;
+                final String editorName = I18N.CONSTANTS.you();
                 final Date lastEditDate = new Date();
 
                 properties.put("name", name);
@@ -193,7 +198,7 @@ public class ProjectReportsView extends LayoutContainer {
 
                     @Override
                     public void onFailure(Throwable caught) {
-                        throw new UnsupportedOperationException("Not supported yet.");
+                        Notification.show(I18N.CONSTANTS.projectTabReports(), I18N.CONSTANTS.reportCreateError());
                     }
 
                     @Override
@@ -206,6 +211,8 @@ public class ProjectReportsView extends LayoutContainer {
                         report.setLastEditDate(lastEditDate);
 
                         store.add(report);
+                        
+                        Notification.show(I18N.CONSTANTS.projectTabReports(), I18N.CONSTANTS.reportCreateSuccess());
                     }
                 });
 
@@ -226,7 +233,7 @@ public class ProjectReportsView extends LayoutContainer {
         toolBar.setAlignment(HorizontalAlignment.RIGHT);
         final IconImageBundle icons = GWT.create(IconImageBundle.class);
 
-        final Button newButton = new Button(I18N.CONSTANTS.newText(), icons.add());
+        final Button newButton = new Button(I18N.CONSTANTS.reportCreateReport(), icons.add());
         newButton.addListener(Events.Select, new Listener<BaseEvent>() {
 
             @Override
@@ -240,12 +247,12 @@ public class ProjectReportsView extends LayoutContainer {
         panel.setTopComponent(toolBar);
 
         // Report list
-        final ColumnConfig editDate = new ColumnConfig("lastEditDate", I18N.CONSTANTS.date(), 200);
+        final ColumnConfig editDate = new ColumnConfig("lastEditDate", I18N.CONSTANTS.reportLastEditDate(), 200);
         editDate.setDateTimeFormat(DateTimeFormat.getShortDateFormat());
-        final ColumnConfig editorName = new ColumnConfig("editorName", I18N.CONSTANTS.users(), 200);
-        final ColumnConfig reportName = new ColumnConfig("name", I18N.CONSTANTS.name(), 200);
-        final ColumnConfig phaseName = new ColumnConfig("phaseName", I18N.CONSTANTS.projectActivePhase(), 200);
-        final ColumnModel reportColumnModel = new ColumnModel(Arrays.asList(editDate, editorName, reportName, phaseName));
+        final ColumnConfig editorName = new ColumnConfig("editorName", I18N.CONSTANTS.reportEditor(), 200);
+        final ColumnConfig reportName = new ColumnConfig("name", I18N.CONSTANTS.reportName(), 200);
+        final ColumnConfig phaseNameColumn = new ColumnConfig("phaseName", I18N.CONSTANTS.reportPhase(), 200);
+        final ColumnModel reportColumnModel = new ColumnModel(Arrays.asList(editDate, editorName, reportName, phaseNameColumn));
 
         final Grid documentGrid = new Grid(store, reportColumnModel);
         documentGrid.setAutoExpandColumn("name");
@@ -296,7 +303,7 @@ public class ProjectReportsView extends LayoutContainer {
 
             } else if (object.getClass() == RichTextElementDTO.class) {
                 final RichTextArea textArea = new RichTextArea();
-                textArea.setText(((RichTextElementDTO) object).getText());
+                textArea.setHTML(((RichTextElementDTO) object).getText());
 
                 textArea.addFocusHandler(new FocusHandler() {
 
@@ -375,20 +382,39 @@ public class ProjectReportsView extends LayoutContainer {
             public void handleEvent(BaseEvent be) {
                 final HashMap<String, String> changes = new HashMap<String, String>();
 
+                changes.put("currentPhase", phaseName);
+
                 for(final Map.Entry<Integer, RichTextArea> entry : textAreas.entrySet())
-                    changes.put(entry.getKey().toString(), entry.getValue().getText());
+                    changes.put(entry.getKey().toString(), entry.getValue().getHTML());
 
                 final UpdateEntity updateEntity = new UpdateEntity("ProjectReport", report.getId(), (Map<String, Object>) (Map<String, ?>) changes);
                 dispatcher.execute(updateEntity, null, new AsyncCallback<VoidResult>() {
 
                     @Override
                     public void onFailure(Throwable caught) {
-                        throw new UnsupportedOperationException("Not supported yet.");
+                        Notification.show(I18N.CONSTANTS.projectTabReports(), I18N.CONSTANTS.reportSaveError());
                     }
 
                     @Override
                     public void onSuccess(VoidResult result) {
-                        Notification.show("OhYeah!", "Modifications enregistrées.");
+                        Notification.show(I18N.CONSTANTS.projectTabReports(), I18N.CONSTANTS.reportSaveSuccess());
+
+                        boolean found = false;
+                        for(int index = 0; !found && index < store.getCount(); index++) {
+                            final GetProjectReports.ReportReference reference = store.getAt(index);
+
+                            if(reference.getId().equals(report.getId())) {
+                                store.remove(reference);
+                                
+                                reference.setEditorName(I18N.CONSTANTS.you());
+                                reference.setPhaseName(phaseName);
+                                reference.setLastEditDate(new Date());
+
+                                store.add(reference);
+
+                                found = true;
+                            }
+                        }
                     }
                     
                 });
@@ -399,7 +425,7 @@ public class ProjectReportsView extends LayoutContainer {
         toolBar.add(new SeparatorToolItem());
 
         // Overview mode
-        final Button foldButton = new Button("Mode plan");
+        final Button foldButton = new Button(I18N.CONSTANTS.reportOverviewMode());
         foldButton.addListener(Events.Select, new Listener<BaseEvent>() {
 
             @Override
@@ -409,7 +435,7 @@ public class ProjectReportsView extends LayoutContainer {
             }
         });
         // Expanded mode
-        final Button expandButton = new Button("Mode complet");
+        final Button expandButton = new Button(I18N.CONSTANTS.reportFullMode());
         expandButton.addListener(Events.Select, new Listener<BaseEvent>() {
 
             @Override
@@ -436,7 +462,7 @@ public class ProjectReportsView extends LayoutContainer {
 
         // Fonts
         final ListBox fontListBox = new ListBox();
-        fontListBox.addItem("Font");
+        fontListBox.addItem(I18N.CONSTANTS.font());
         fontListBox.addItem("Arial");
         fontListBox.addItem("Times New Roman");
         fontListBox.addItem("Courier New");
@@ -572,5 +598,13 @@ public class ProjectReportsView extends LayoutContainer {
             }
         });
         toolbar.add(listBulletsButton);
+    }
+
+    public String getPhaseName() {
+        return phaseName;
+    }
+
+    public void setPhaseName(String phaseName) {
+        this.phaseName = phaseName;
     }
 }

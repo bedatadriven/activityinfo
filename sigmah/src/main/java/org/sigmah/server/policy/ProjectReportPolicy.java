@@ -107,10 +107,20 @@ public class ProjectReportPolicy implements EntityPolicy<ProjectReport> {
 
     @Override
     public void update(User user, Object entityId, PropertyMap changes) {
+        
         for(Map.Entry<String, Object> entry : changes.entrySet()) {
-            final RichTextElement element = dao.findRichTextElementById(new Integer(entry.getKey()));
-            element.setText((String) entry.getValue());
-            dao.merge(element);
+            if("currentPhase".equals(entry.getKey())) {
+                final ProjectReport report = dao.findReportById((Integer) entityId);
+                report.setPhaseName((String) entry.getValue());
+                report.setEditor(user);
+                report.setLastEditDate(new Date());
+                dao.merge(report);
+
+            } else {
+                final RichTextElement element = dao.findRichTextElementById(new Integer(entry.getKey()));
+                element.setText((String) entry.getValue());
+                dao.merge(element);
+            }
         }
     }
     

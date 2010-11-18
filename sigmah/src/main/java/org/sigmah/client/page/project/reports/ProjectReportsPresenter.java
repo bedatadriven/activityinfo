@@ -11,6 +11,7 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.page.project.ProjectPresenter;
 import org.sigmah.client.page.project.SubPresenter;
 import org.sigmah.shared.command.GetProjectReport;
@@ -46,6 +47,7 @@ public class ProjectReportsPresenter implements SubPresenter {
         // Creates the view
         if(view == null) {
             reportStore = new ListStore<GetProjectReports.ReportReference>();
+            reportStore.setMonitorChanges(true);
             view = new ProjectReportsView(eventBus, dispatcher, reportStore);
         }
 
@@ -91,6 +93,7 @@ public class ProjectReportsPresenter implements SubPresenter {
     public void viewDidAppear() {
         // Updating the current state
         view.setCurrentState(projectPresenter.getCurrentState());
+        view.setPhaseName(projectPresenter.getCurrentProjectDTO().getCurrentPhaseDTO().getPhaseModelDTO().getName());
         
         if(reportStore.getCount() == 0) {
             GetProjectReports getProjectReports = new GetProjectReports(currentProjectDTO.getId());

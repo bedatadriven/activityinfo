@@ -43,4 +43,14 @@ public class ProjectReportHibernateDAO implements ProjectReportDAO {
     public void persist(ProjectReport report) {
         em.persist(report);
     }
+
+    @Override
+    public ProjectReport findReportById(Integer id) {
+        return em.find(ProjectReport.class, id);
+    }
+
+    @Override
+    public void merge(ProjectReport report) {
+        em.merge(report);
+    }
 }

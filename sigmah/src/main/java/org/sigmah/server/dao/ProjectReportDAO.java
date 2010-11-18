@@ -15,8 +15,10 @@ import org.sigmah.shared.domain.report.RichTextElement;
  */
 public interface ProjectReportDAO {
     void persist(ProjectReport report);
+    void merge(ProjectReport report);
     void merge(RichTextElement element);
 
+    public ProjectReport findReportById(Integer id);
     public ProjectReportModel findModelById(Integer id);
     public RichTextElement findRichTextElementById(Integer id);
 }
