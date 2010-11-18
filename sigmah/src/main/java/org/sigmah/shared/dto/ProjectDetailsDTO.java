@@ -16,12 +16,12 @@ public class ProjectDetailsDTO extends BaseModelData implements EntityDTO {
 
 	@Override
 	public String getEntityName() {
-		return "Project details";
+		return "ProjectDetails";
 	}
 	
 	@Override
     public int getId() {
-        return (Integer)get("id");
+        return (Integer) get("id");
     }
 
     public void setId(int id) {
@@ -49,5 +49,4 @@ public class ProjectDetailsDTO extends BaseModelData implements EntityDTO {
 	public Widget getWidget() {
 		return getLayoutDTO().getWidget();
 	}
-    
 }

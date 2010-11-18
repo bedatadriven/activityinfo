@@ -22,40 +22,39 @@ import org.sigmah.shared.domain.layout.Layout;
 @Table(name = "project_details")
 public class ProjectDetails implements Serializable {
 
-	private static final long serialVersionUID = -1266259112071917788L;
+    private static final long serialVersionUID = -1266259112071917788L;
 
-	private Long id;
-	private ProjectModel projectModel;
-	private Layout layout;
+    private Integer id;
+    private ProjectModel projectModel;
+    private Layout layout;
 
-	@OneToOne
-	@JoinColumn(name = "id_project_model")
-	public ProjectModel getProjectModel() {
-		return projectModel;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public Integer getId() {
+        return id;
+    }
 
-	public void setProjectModel(ProjectModel projectModel) {
-		this.projectModel = projectModel;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "id_layout", nullable = false)
-	public Layout getLayout() {
-		return layout;
-	}
+    @OneToOne
+    @JoinColumn(name = "id_project_model")
+    public ProjectModel getProjectModel() {
+        return projectModel;
+    }
 
-	public void setLayout(Layout layout) {
-		this.layout = layout;
-	}
+    public void setProjectModel(ProjectModel projectModel) {
+        this.projectModel = projectModel;
+    }
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	public Long getId() {
-		return id;
-	}
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_layout", nullable = false)
+    public Layout getLayout() {
+        return layout;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-
+    public void setLayout(Layout layout) {
+        this.layout = layout;
+    }
 }

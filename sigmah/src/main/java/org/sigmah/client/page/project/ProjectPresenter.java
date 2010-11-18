@@ -20,6 +20,7 @@ import org.sigmah.client.page.TabPage;
 import org.sigmah.client.page.project.calendar.ProjectCalendarPresenter;
 import org.sigmah.client.page.project.dashboard.ProjectDashboardPresenter;
 import org.sigmah.client.page.project.dashboard.funding.FundingIconProvider;
+import org.sigmah.client.page.project.details.ProjectDetailsPresenter;
 import org.sigmah.client.page.project.logframe.ProjectLogFramePresenter;
 import org.sigmah.client.page.project.reports.ProjectReportsPresenter;
 import org.sigmah.client.ui.ToggleAnchor;
@@ -87,6 +88,7 @@ public class ProjectPresenter implements Frame, TabPage {
      */
     private PhaseDTO currentDisplayedPhaseDTO;
     private final static String[] MAIN_TABS = { I18N.CONSTANTS.projectTabDashboard(),
+            I18N.CONSTANTS.projectDetails(),
             I18N.CONSTANTS.projectTabLogFrame(), I18N.CONSTANTS.projectTabIndicators(),
             I18N.CONSTANTS.projectTabCalendar(), I18N.CONSTANTS.projectTabReports(),
             I18N.CONSTANTS.projectTabSecurityIncident() };
@@ -102,9 +104,10 @@ public class ProjectPresenter implements Frame, TabPage {
         final DummyPresenter dummyPresenter = new DummyPresenter(); // For
                                                                     // development
 
-        this.presenters = new SubPresenter[] { new ProjectDashboardPresenter(dispatcher, authentication, this), // Dashboard
-                new ProjectLogFramePresenter(dispatcher, this), // Logical
-                                                                // Framework
+        this.presenters = new SubPresenter[] { 
+                new ProjectDashboardPresenter(dispatcher, authentication, this), // Dashboard
+                new ProjectDetailsPresenter(dispatcher, authentication, this), // Details,
+                new ProjectLogFramePresenter(dispatcher, this), // Logical Framework
                 dummyPresenter, // Indicators
                 new ProjectCalendarPresenter(dispatcher, this), // Calendar
                 new ProjectReportsPresenter(dispatcher, eventBus, this), // Reports

@@ -16,7 +16,7 @@ public class ProjectBannerDTO extends BaseModelData implements EntityDTO {
 
 	@Override
 	public String getEntityName() {
-		return "Project details";
+		return "ProjectBanner";
 	}
 	
 	@Override
