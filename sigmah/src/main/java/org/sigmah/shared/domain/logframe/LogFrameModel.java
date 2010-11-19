@@ -7,7 +7,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import org.sigmah.shared.domain.ProjectModel;
 
 /**
  * Contains some attributes to parameterize a log frame.<br/>
@@ -20,6 +24,8 @@ import javax.persistence.Table;
 public class LogFrameModel implements Serializable {
 
     private static final long serialVersionUID = -8714555958028249713L;
+
+    private ProjectModel projectModel;
 
     private Integer id;
     private String name;
@@ -59,6 +65,16 @@ public class LogFrameModel implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    @OneToOne
+    @JoinColumn(name = "id_project_model")
+    public ProjectModel getProjectModel() {
+        return projectModel;
+    }
+
+    public void setProjectModel(ProjectModel projectModel) {
+        this.projectModel = projectModel;
     }
 
     @Column(name = "name", nullable = false, length = 512)

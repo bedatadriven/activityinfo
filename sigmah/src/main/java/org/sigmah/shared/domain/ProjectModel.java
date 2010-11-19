@@ -17,6 +17,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.sigmah.shared.domain.element.FlexibleElement;
+import org.sigmah.shared.domain.logframe.LogFrameModel;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
@@ -39,6 +40,7 @@ public class ProjectModel extends BaseModelData implements Serializable {
     private ProjectBanner projectBanner;
     private ProjectDetails projectDetails;
     private List<ProjectModelVisibility> visibilities;
+    private LogFrameModel logFrameModel;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -120,6 +122,15 @@ public class ProjectModel extends BaseModelData implements Serializable {
 
     public void setVisibilities(List<ProjectModelVisibility> visibilities) {
         this.visibilities = visibilities;
+    }
+
+    @OneToOne(mappedBy = "projectModel", cascade = CascadeType.ALL)
+    public LogFrameModel getLogFrameModel() {
+        return logFrameModel;
+    }
+
+    public void setLogFrameModel(LogFrameModel logFrameModel) {
+        this.logFrameModel = logFrameModel;
     }
 
     /**

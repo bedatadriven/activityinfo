@@ -19,13 +19,13 @@ import org.sigmah.shared.domain.PhaseModel;
 import org.sigmah.shared.domain.Project;
 import org.sigmah.shared.domain.ProjectModel;
 import org.sigmah.shared.domain.User;
-
-import com.google.inject.Inject;
 import org.sigmah.shared.domain.calendar.PersonalCalendar;
 import org.sigmah.shared.domain.logframe.LogFrame;
 import org.sigmah.shared.domain.logframe.LogFrameGroup;
 import org.sigmah.shared.domain.logframe.LogFrameGroupType;
 import org.sigmah.shared.domain.logframe.LogFrameModel;
+
+import com.google.inject.Inject;
 
 public class ProjectPolicy implements EntityPolicy<Project> {
 
@@ -149,7 +149,7 @@ public class ProjectPolicy implements EntityPolicy<Project> {
         }
 
         // Updates the project with a default log frame.
-        final LogFrame logFrame = createDefauktLogFrame(project);
+        final LogFrame logFrame = createDefaultLogFrame(project);
         project.setLogFrame(logFrame);
         project = em.merge(project);
 
@@ -163,7 +163,9 @@ public class ProjectPolicy implements EntityPolicy<Project> {
      *            The project.
      * @return The log frame.
      */
-    private LogFrame createDefauktLogFrame(Project project) {
+    private LogFrame createDefaultLogFrame(Project project) {
+
+        final String defaultGroupLabel = "-";
 
         // Creates a new log frame (with a default model)
         final LogFrame logFrame = new LogFrame();
@@ -175,33 +177,39 @@ public class ProjectPolicy implements EntityPolicy<Project> {
         LogFrameGroup group = new LogFrameGroup();
         group.setType(LogFrameGroupType.SPECIFIC_OBJECTIVE);
         group.setParentLogFrame(logFrame);
-        group.setLabel("-");
+        group.setLabel(defaultGroupLabel);
         groups.add(group);
 
         group = new LogFrameGroup();
         group.setType(LogFrameGroupType.EXPECTED_RESULT);
         group.setParentLogFrame(logFrame);
-        group.setLabel("-");
+        group.setLabel(defaultGroupLabel);
         groups.add(group);
 
         group = new LogFrameGroup();
         group.setType(LogFrameGroupType.ACTIVITY);
         group.setParentLogFrame(logFrame);
-        group.setLabel("-");
+        group.setLabel(defaultGroupLabel);
         groups.add(group);
 
         group = new LogFrameGroup();
         group.setType(LogFrameGroupType.PREREQUISITE);
         group.setParentLogFrame(logFrame);
-        group.setLabel("-");
+        group.setLabel(defaultGroupLabel);
         groups.add(group);
 
         logFrame.setGroups(groups);
 
-        // A default model.
-        final LogFrameModel logFrameModel = new LogFrameModel();
-        logFrameModel.setName("Default logical framework model - " + new Date().getTime());
-        logFrame.setLogFrameModel(logFrameModel);
+        // Links to the log frame model.
+        LogFrameModel model = project.getProjectModel().getLogFrameModel();
+
+        if (model == null) {
+            model = new LogFrameModel();
+            model.setName("Auto-created default model at " + new Date());
+            logFrame.setLogFrameModel(model);
+        }
+
+        logFrame.setLogFrameModel(model);
 
         em.persist(logFrame);
 
