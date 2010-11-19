@@ -5,8 +5,8 @@
 var SigmahParams = {
     connectedUserId: 4,
     connectedUserAuthToken: "6b18af1b85653a4fe44f357aaa3f1071",
-    connectedUserEmail: "pmartin@sigmah.org",
-    connectedUserOrgId: 1000111,
+    connectedUserEmail: "smazuret@sigmah.org",
+    connectedUserOrgId: 99,
     showActivityInfoMenus: true
 };
 
