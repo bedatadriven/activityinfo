@@ -10,6 +10,7 @@ import org.sigmah.server.endpoint.file.FileUploadServlet;
 import org.sigmah.server.endpoint.file.ImageServlet;
 
 import com.google.inject.servlet.ServletModule;
+import org.sigmah.server.auth.SigmahAuthDictionaryServlet;
 
 public class GwtRpcModule extends ServletModule {
 
@@ -32,13 +33,10 @@ public class GwtRpcModule extends ServletModule {
 
         serve("/Login/service").with(LoginServiceServlet.class);
 
-        // Files upload.
-        serve("/Sigmah/upload").with(FileUploadServlet.class);
-
-        // Files download.
-        serve("/Sigmah/download").with(FileDownloadServlet.class);
-
-        // Image provider.
-        serve("/Sigmah/image-provider").with(ImageServlet.class);
+        // Sigmah services
+        serve("/SigmahAuthToken").with(SigmahAuthDictionaryServlet.class); // Authentication
+        serve("/Sigmah/upload").with(FileUploadServlet.class); // Files upload.
+        serve("/Sigmah/download").with(FileDownloadServlet.class); // Files download.
+        serve("/Sigmah/image-provider").with(ImageServlet.class); // Image provider.
     }
 }

@@ -7,9 +7,9 @@ package org.sigmah.client;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.GXT;
-import com.extjs.gxt.ui.client.util.Theme;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.ui.SigmahTheme;
 
 
@@ -49,17 +49,23 @@ public class SigmahEntryPoint implements EntryPoint {
         injector.getEventBus();
         injector.getHistoryManager();
         injector.getNavigationHandler();
-        
-        injector.registerProjectPageLoader();
-        injector.registerDashboardPageLoader();
-        injector.registerProjectPageLoader();
-        
-        injector.registerDataEntryLoader();
-        injector.registerMapLoader();
-        injector.registerChartLoader();
-        injector.registerConfigLoader();
-        injector.registerPivotLoader();
-        injector.registerReportLoader();
+
+        final Authentication authentication = injector.getAuthentication();
+
+        if(authentication != null) {
+            // Sigmah
+            injector.registerProjectPageLoader();
+            injector.registerDashboardPageLoader();
+            injector.registerProjectPageLoader();
+
+            // ActivityInfo
+            injector.registerDataEntryLoader();
+            injector.registerMapLoader();
+            injector.registerChartLoader();
+            injector.registerConfigLoader();
+            injector.registerPivotLoader();
+            injector.registerReportLoader();
+        }
 
         Log.info("Application: everyone plugged, firing Init event");
 

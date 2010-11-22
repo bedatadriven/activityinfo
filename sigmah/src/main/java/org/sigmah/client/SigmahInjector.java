@@ -8,6 +8,7 @@ package org.sigmah.client;
 import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.dispatch.remote.cache.AdminEntityCache;
 import org.sigmah.client.dispatch.remote.cache.SchemaCache;
 import org.sigmah.client.i18n.UIConstants;
@@ -43,6 +44,7 @@ import org.sigmah.client.util.state.IStateManager;
              EntryModule.class,
              ConfigModule.class})
 public interface SigmahInjector extends Ginjector {
+    Authentication getAuthentication();
 
     EventBus getEventBus();
     Dispatcher getService();

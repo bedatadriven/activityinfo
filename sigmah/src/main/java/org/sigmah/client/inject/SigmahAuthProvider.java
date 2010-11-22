@@ -7,35 +7,42 @@ package org.sigmah.client.inject;
 
 import org.sigmah.client.dispatch.remote.Authentication;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.i18n.client.Dictionary;
 import com.google.inject.Provider;
+import java.util.MissingResourceException;
 
 /**
- * Temporary class that simulate an authenticated user.
+ * Retrieves the current authenticated user.
  * 
- * @author rca
+ * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class SigmahAuthProvider implements Provider<Authentication> {
 
     /**
-     * Gives a valid authentication object.
-     * 
-     * @return A forged but valid authentication object.
+     * Retrieves the authentication object.
+     * @return An authentication object if the user is connected, <code>null</code> otherwise.
      */
     @Override
     public Authentication get() {
-        // Temporary code to read connected user data
-        Dictionary sigmahParams;
+        Authentication auth = null;
+
         try {
-            sigmahParams = Dictionary.getDictionary("SigmahParams");
-            final Authentication aut = new Authentication(Integer.parseInt(sigmahParams.get("connectedUserId")),
-                    sigmahParams.get("connectedUserAuthToken"), sigmahParams.get("connectedUserEmail"));
-            aut.setOrganizationId(Integer.parseInt(sigmahParams.get("connectedUserOrgId")));
-            return aut;
-        } catch (Exception e) {
-            Log.fatal("DictionaryAuthenticationProvider: exception retrieving dictionary 'SigmahParams' from page", e);
-            throw new Error();
+            final Dictionary sigmahParams = Dictionary.getDictionary("SigmahParams");
+
+            final String userId = sigmahParams.get("connectedUserId");
+            if(userId != null) {
+                auth = new Authentication(
+                        Integer.parseInt(userId),
+                        sigmahParams.get("connectedUserAuthToken"),
+                        sigmahParams.get("connectedUserEmail"));
+
+                auth.setOrganizationId(Integer.parseInt(sigmahParams.get("connectedUserOrgId")));
+            }
+
+        } catch (MissingResourceException e) {
+            return null;
         }
+
+        return auth;
     }
 }
