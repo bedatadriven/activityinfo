@@ -6,7 +6,6 @@
 package org.sigmah.client.page.project;
 
 
-import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.ui.StylableHBoxLayout;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -44,7 +43,6 @@ public class ProjectView extends LayoutContainer implements ProjectPresenter.Vie
 
         /* Project banner */
         panelProjectBanner = new ContentPanel();
-        panelProjectBanner.setHeading(I18N.CONSTANTS.projectBannerHeader());
         panelProjectBanner.setBorders(false);
         //panelProjectBanner.setHeight(100);
         panelProjectBanner.setLayout(new FitLayout());

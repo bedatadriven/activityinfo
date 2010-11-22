@@ -87,8 +87,7 @@ public class ProjectPresenter implements Frame, TabPage {
      * The current displayed phase.
      */
     private PhaseDTO currentDisplayedPhaseDTO;
-    private final static String[] MAIN_TABS = { I18N.CONSTANTS.projectTabDashboard(),
-            I18N.CONSTANTS.projectDetails(),
+    private final static String[] MAIN_TABS = { I18N.CONSTANTS.projectTabDashboard(), I18N.CONSTANTS.projectDetails(),
             I18N.CONSTANTS.projectTabLogFrame(), I18N.CONSTANTS.projectTabIndicators(),
             I18N.CONSTANTS.projectTabCalendar(), I18N.CONSTANTS.projectTabReports(),
             I18N.CONSTANTS.projectTabSecurityIncident() };
@@ -104,10 +103,10 @@ public class ProjectPresenter implements Frame, TabPage {
         final DummyPresenter dummyPresenter = new DummyPresenter(); // For
                                                                     // development
 
-        this.presenters = new SubPresenter[] { 
-                new ProjectDashboardPresenter(dispatcher, authentication, this), // Dashboard
+        this.presenters = new SubPresenter[] { new ProjectDashboardPresenter(dispatcher, authentication, this), // Dashboard
                 new ProjectDetailsPresenter(dispatcher, authentication, this), // Details,
-                new ProjectLogFramePresenter(dispatcher, this), // Logical Framework
+                new ProjectLogFramePresenter(dispatcher, this), // Logical
+                                                                // Framework
                 dummyPresenter, // Indicators
                 new ProjectCalendarPresenter(dispatcher, this), // Calendar
                 new ProjectReportsPresenter(dispatcher, eventBus, this), // Reports
@@ -240,6 +239,8 @@ public class ProjectPresenter implements Frame, TabPage {
 
         // Panel.
         final ContentPanel panel = view.getPanelProjectBanner();
+        panel.setHeading(I18N.CONSTANTS.projectMainTabTitle() + ' ' + currentProjectDTO.getName() + " ("
+                + currentProjectDTO.getFullName() + ") : " + I18N.CONSTANTS.projectInfos());
         panel.removeAll();
 
         final Grid gridPanel = new Grid(1, 2);
