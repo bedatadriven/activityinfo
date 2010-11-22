@@ -76,7 +76,7 @@ public class SigmahAppFrame implements Frame {
                 @Override
                 public void onClick(ClickEvent event) {
                     try {
-                        final RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, "/SigmahAuthToken?remove");
+                        final RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, "../SigmahAuthToken?remove");
                         requestBuilder.setCallback(new RequestCallback() {
 
                             @Override

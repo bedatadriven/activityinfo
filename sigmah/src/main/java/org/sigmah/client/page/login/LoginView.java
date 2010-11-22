@@ -10,6 +10,7 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
@@ -88,7 +89,7 @@ public class LoginView extends Composite {
             @Override
             public void handleEvent(BaseEvent be) {
                 final String query = "email="+loginTextBox.getText()+"&password="+passwordTextBox.getText();
-                final RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.POST, "/Login/service?"+query);
+                final RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.POST,"../Login/service?"+query);
                 requestBuilder.setHeader("email", loginTextBox.getText());
                 requestBuilder.setCallback(new RequestCallback() {
                     @Override
