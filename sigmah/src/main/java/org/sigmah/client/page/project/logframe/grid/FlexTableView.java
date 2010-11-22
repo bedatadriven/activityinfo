@@ -327,20 +327,6 @@ public class FlexTableView {
     // ------------------------------------------------------------------------
 
     /**
-     * Builds and returns the widget of a group.
-     * 
-     * @param group
-     *            The group.
-     * @return The widget.
-     */
-    protected Widget buildGroupWidget(RowsGroup<?> group) {
-
-        // Displays the group's label.
-        final Label label = new Label(group.getTitle());
-        return label;
-    }
-
-    /**
      * Inserts a new group of rows at the last position.
      * 
      * @param group
@@ -404,7 +390,7 @@ public class FlexTableView {
         int column = 0;
 
         // Builds group's widget.
-        final Widget widget = buildGroupWidget(group);
+        final Widget widget = group.getWidget();
 
         // Adds widget and sets row.
         table.setWidget(row, column, widget);
@@ -550,6 +536,38 @@ public class FlexTableView {
      */
     public int getGroupsCount() {
         return groupsOrderedList.size();
+    }
+
+    /**
+     * Refreshes the group widget.
+     * 
+     * @param group
+     *            The group.
+     */
+    public void refreshGroupWidget(final RowsGroup<?> group) {
+
+        // Checks if the group is valid.
+        if (group == null) {
+            throw new NullPointerException("The group must not be null.");
+        }
+
+        if (Log.isDebugEnabled()) {
+            Log.debug("[refreshGroupWidget] Refreshes the group #" + group.getId() + ".");
+        }
+
+        // Computes new group indexes.
+        int row = getGroupRowIndex(group) + shift;
+        int column = 0;
+
+        // Builds group's widget.
+        final Widget widget = group.getWidget();
+
+        // Sets the new widget.
+        table.setWidget(row, column, widget);
+
+        // Applies style names.
+        HTMLTableUtils.applyCellStyles(table, row, column, false, true);
+        widget.addStyleName(CSS_GROUP_LABEL_STYLE_NAME);
     }
 
     // ------------------------------------------------------------------------

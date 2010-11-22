@@ -13,8 +13,8 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.ImageBundle;
 
 /**
- * Provides access to the application's icons through
- * GWT's magic ImageBundle generator.
+ * Provides access to the application's icons through GWT's magic ImageBundle
+ * generator.
  */
 @SuppressWarnings("deprecation")
 public interface IconImageBundle extends ImageBundle {
@@ -56,8 +56,8 @@ public interface IconImageBundle extends ImageBundle {
     AbstractImagePrototype deleteUser();
 
     /**
-     *
-     * @return  Icon for a user group
+     * 
+     * @return Icon for a user group
      */
     AbstractImagePrototype group();
 
@@ -94,7 +94,7 @@ public interface IconImageBundle extends ImageBundle {
     AbstractImagePrototype attribute();
 
     AbstractImagePrototype refresh();
-    
+
     @Resource(value = "wrench_orange.png")
     AbstractImagePrototype setup();
 
@@ -114,9 +114,9 @@ public interface IconImageBundle extends ImageBundle {
     AbstractImagePrototype pdf();
 
     AbstractImagePrototype pieChart();
-    
+
     AbstractImagePrototype checked();
-    
+
     AbstractImagePrototype unchecked();
 
     AbstractImagePrototype offline();
@@ -126,25 +126,28 @@ public interface IconImageBundle extends ImageBundle {
     AbstractImagePrototype onlineSyncing();
 
     AbstractImagePrototype up();
-    
+
     AbstractImagePrototype down();
-    
+
     AbstractImagePrototype attach();
-    
+
     AbstractImagePrototype remove();
-    
+
     @Resource(value = "bullet_green.png")
     AbstractImagePrototype elementCompleted();
-    
+
     @Resource(value = "bullet_red.png")
     AbstractImagePrototype elementUncompleted();
-    
+
     @Resource(value = "bullet_star_new.png")
     AbstractImagePrototype activate();
-    
+
     @Resource(value = "bullet_star_black.png")
     AbstractImagePrototype close();
-    
+
     @Resource(value = "cog.png")
     AbstractImagePrototype create();
+
+    @Resource(value = "page_edit.png")
+    AbstractImagePrototype rename();
 }

@@ -6,9 +6,11 @@ import java.util.List;
 
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.project.logframe.FormWindow.FormSubmitListener;
+import org.sigmah.client.page.project.logframe.grid.ActionsMenu;
 import org.sigmah.client.page.project.logframe.grid.FlexTableView;
 import org.sigmah.client.page.project.logframe.grid.FlexTableView.FlexTableViewListener;
-import org.sigmah.client.page.project.logframe.grid.FlexTableViewActionsMenu;
+import org.sigmah.client.page.project.logframe.grid.RowActionsMenu;
+import org.sigmah.client.page.project.logframe.grid.GroupActionMenu;
 import org.sigmah.client.page.project.logframe.grid.HTMLTableUtils;
 import org.sigmah.client.page.project.logframe.grid.Row;
 import org.sigmah.client.page.project.logframe.grid.RowsGroup;
@@ -29,6 +31,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Grid;
@@ -652,10 +655,39 @@ public class ProjectLogFrameGrid {
         initTable();
         initCodePolicies();
 
+        // Displays all the groups (even the empty ones).
+        for (final LogFrameGroupDTO group : logFrame.getGroupsDTO()) {
+            switch (group.getType()) {
+            case SPECIFIC_OBJECTIVE:
+                if (logFrameModel.getEnableSpecificObjectivesGroups()) {
+                    addSpecificObjectivesGroup(group);
+                }
+                break;
+            case EXPECTED_RESULT:
+                if (logFrameModel.getEnableExpectedResultsGroups()) {
+                    addExpectedResultsGroup(group);
+                }
+                break;
+            case PREREQUISITE:
+                if (logFrameModel.getEnablePrerequisitesGroups()) {
+                    addPrerequisitesGroup(group);
+                }
+                break;
+            case ACTIVITY:
+                if (logFrameModel.getEnableActivitiesGroups()) {
+                    addActivitiesGroup(group);
+                }
+                break;
+            }
+        }
+
+        // Displays the specific objectives (and recursively the expected
+        // results and the activities).
         for (final SpecificObjectiveDTO objective : logFrame.getSpecificObjectivesDTONotDeleted()) {
             addSpecificObjective(objective);
         }
 
+        // Displays the prerequisietes.
         for (final PrerequisiteDTO prerequisite : logFrame.getPrerequisitesDTONotDeleted()) {
             addPrerequisite(prerequisite);
         }
@@ -719,8 +751,13 @@ public class ProjectLogFrameGrid {
                         // OK.
                         if (Dialog.OK.equals(be.getButtonClicked().getItemId())) {
 
+                            String label = ProjectLogFramePresenter.DEFAULT_GROUP_LABEL;
+                            if (be.getValue() != null) {
+                                label = be.getValue();
+                            }
+
                             // Creates the new group.
-                            final LogFrameGroupDTO group = logFrame.addGroup(be.getValue(),
+                            final LogFrameGroupDTO group = logFrame.addGroup(label,
                                     LogFrameGroupType.SPECIFIC_OBJECTIVE);
 
                             // Displays it.
@@ -770,6 +807,22 @@ public class ProjectLogFrameGrid {
             @Override
             public boolean isVisible(LogFrameGroupDTO userObject) {
                 return logFrameModel.getEnableSpecificObjectivesGroups();
+            }
+
+            @Override
+            public Widget getWidget() {
+
+                // Displays the group's label.
+                final Label label = new Label(getTitle());
+
+                // Grid.
+                final Grid grid = new Grid(1, 2);
+                grid.setCellPadding(0);
+                grid.setCellSpacing(0);
+                grid.setWidget(0, 0, label);
+                grid.setWidget(0, 1, buildGroupMenu(specificObjectivesView, this));
+
+                return grid;
             }
         };
 
@@ -1059,9 +1112,13 @@ public class ProjectLogFrameGrid {
                         // OK.
                         if (Dialog.OK.equals(be.getButtonClicked().getItemId())) {
 
+                            String label = ProjectLogFramePresenter.DEFAULT_GROUP_LABEL;
+                            if (be.getValue() != null) {
+                                label = be.getValue();
+                            }
+
                             // Creates the new group.
-                            final LogFrameGroupDTO group = logFrame.addGroup(be.getValue(),
-                                    LogFrameGroupType.EXPECTED_RESULT);
+                            final LogFrameGroupDTO group = logFrame.addGroup(label, LogFrameGroupType.EXPECTED_RESULT);
 
                             // Displays it.
                             addExpectedResultsGroup(group);
@@ -1110,6 +1167,21 @@ public class ProjectLogFrameGrid {
             @Override
             public boolean isVisible(LogFrameGroupDTO userObject) {
                 return logFrameModel.getEnableExpectedResultsGroups();
+            }
+
+            @Override
+            public Widget getWidget() {
+                // Displays the group's label.
+                final Label label = new Label(getTitle());
+
+                // Grid.
+                final Grid grid = new Grid(1, 2);
+                grid.setCellPadding(0);
+                grid.setCellSpacing(0);
+                grid.setWidget(0, 0, label);
+                grid.setWidget(0, 1, buildGroupMenu(expectedResultsView, this));
+
+                return grid;
             }
         };
 
@@ -1458,8 +1530,13 @@ public class ProjectLogFrameGrid {
                         // OK.
                         if (Dialog.OK.equals(be.getButtonClicked().getItemId())) {
 
+                            String label = ProjectLogFramePresenter.DEFAULT_GROUP_LABEL;
+                            if (be.getValue() != null) {
+                                label = be.getValue();
+                            }
+
                             // Creates the new group.
-                            final LogFrameGroupDTO group = logFrame.addGroup(be.getValue(), LogFrameGroupType.ACTIVITY);
+                            final LogFrameGroupDTO group = logFrame.addGroup(label, LogFrameGroupType.ACTIVITY);
 
                             // Displays it.
                             addActivitiesGroup(group);
@@ -1508,6 +1585,21 @@ public class ProjectLogFrameGrid {
             @Override
             public boolean isVisible(LogFrameGroupDTO userObject) {
                 return logFrameModel.getEnableActivitiesGroups();
+            }
+
+            @Override
+            public Widget getWidget() {
+                // Displays the group's label.
+                final Label label = new Label(getTitle());
+
+                // Grid.
+                final Grid grid = new Grid(1, 2);
+                grid.setCellPadding(0);
+                grid.setCellSpacing(0);
+                grid.setWidget(0, 0, label);
+                grid.setWidget(0, 1, buildGroupMenu(activitiesView, this));
+
+                return grid;
             }
         };
 
@@ -1841,9 +1933,13 @@ public class ProjectLogFrameGrid {
                         // OK.
                         if (Dialog.OK.equals(be.getButtonClicked().getItemId())) {
 
+                            String label = ProjectLogFramePresenter.DEFAULT_GROUP_LABEL;
+                            if (be.getValue() != null) {
+                                label = be.getValue();
+                            }
+
                             // Creates the new group.
-                            final LogFrameGroupDTO group = logFrame.addGroup(be.getValue(),
-                                    LogFrameGroupType.PREREQUISITE);
+                            final LogFrameGroupDTO group = logFrame.addGroup(label, LogFrameGroupType.PREREQUISITE);
 
                             // Displays it.
                             addPrerequisitesGroup(group);
@@ -1892,6 +1988,21 @@ public class ProjectLogFrameGrid {
             @Override
             public boolean isVisible(LogFrameGroupDTO userObject) {
                 return logFrameModel.getEnablePrerequisitesGroups();
+            }
+
+            @Override
+            public Widget getWidget() {
+                // Displays the group's label.
+                final Label label = new Label(getTitle());
+
+                // Grid.
+                final Grid grid = new Grid(1, 2);
+                grid.setCellPadding(0);
+                grid.setCellSpacing(0);
+                grid.setWidget(0, 0, label);
+                grid.setWidget(0, 1, buildGroupMenu(prerequisitesView, this));
+
+                return grid;
             }
         };
 
@@ -2082,7 +2193,7 @@ public class ProjectLogFrameGrid {
      *            The actions menu.
      * @return The widget to display this menu.
      */
-    private Widget buildMenuWidget(final FlexTableViewActionsMenu menu) {
+    private Widget buildMenuWidget(final ActionsMenu menu) {
 
         // Menu button.
         final Anchor anchor = new Anchor("\u25BC");
@@ -2108,7 +2219,7 @@ public class ProjectLogFrameGrid {
     private Widget buildSpecificObjectiveMenu(final Row<SpecificObjectiveDTO> row) {
 
         // Actions menu.
-        return buildMenuWidget(new FlexTableViewActionsMenu(specificObjectivesView, row) {
+        return buildMenuWidget(new RowActionsMenu(specificObjectivesView, row) {
 
             @Override
             public boolean canBeRemoved() {
@@ -2171,7 +2282,7 @@ public class ProjectLogFrameGrid {
     private Widget buildExpectedResultMenu(final Row<ExpectedResultDTO> row) {
 
         // Actions menu.
-        return buildMenuWidget(new FlexTableViewActionsMenu(expectedResultsView, row) {
+        return buildMenuWidget(new RowActionsMenu(expectedResultsView, row) {
 
             @Override
             public boolean canBeRemoved() {
@@ -2235,7 +2346,7 @@ public class ProjectLogFrameGrid {
     private Widget buildActivityMenu(final Row<LogFrameActivityDTO> row) {
 
         // Actions menu.
-        return buildMenuWidget(new FlexTableViewActionsMenu(activitiesView, row) {
+        return buildMenuWidget(new RowActionsMenu(activitiesView, row) {
 
             @Override
             public boolean canBeRemoved() {
@@ -2298,7 +2409,7 @@ public class ProjectLogFrameGrid {
     private Widget buildPrerequisiteMenu(final Row<PrerequisiteDTO> row) {
 
         // Actions menu.
-        return buildMenuWidget(new FlexTableViewActionsMenu(prerequisitesView, row) {
+        return buildMenuWidget(new RowActionsMenu(prerequisitesView, row) {
 
             @Override
             public boolean canBeRemoved() {
@@ -2346,6 +2457,53 @@ public class ProjectLogFrameGrid {
                 // The view updates the position itself, nothing to do.
                 fireLogFrameEdited();
                 return true;
+            }
+        });
+    }
+
+    /**
+     * Builds an actions menu for a group.
+     * 
+     * @param group
+     *            The group.
+     * @return The menu.
+     */
+    private Widget buildGroupMenu(final FlexTableView view, final RowsGroup<LogFrameGroupDTO> group) {
+
+        // Actions menu.
+        return buildMenuWidget(new GroupActionMenu(view, group) {
+
+            @Override
+            public boolean canBeRemaned() {
+                // No restriction for renaming.
+                return true;
+            }
+
+            @Override
+            public void beforeRename(final AsyncCallback<String> callback) {
+
+                // Asks for the group new label.
+                MessageBox.prompt(I18N.CONSTANTS.logFrameActionRenameGroup(),
+                        I18N.CONSTANTS.logFrameActionRenameNewName(), false, new Listener<MessageBoxEvent>() {
+
+                            @Override
+                            public void handleEvent(MessageBoxEvent be) {
+
+                                // OK.
+                                if (Dialog.OK.equals(be.getButtonClicked().getItemId())) {
+
+                                    String label = ProjectLogFramePresenter.DEFAULT_GROUP_LABEL;
+                                    if (be.getValue() != null) {
+                                        label = be.getValue();
+                                    }
+
+                                    group.getUserObject().setLabel(label);
+
+                                    fireLogFrameEdited();
+                                    callback.onSuccess(label);
+                                }
+                            }
+                        });
             }
         });
     }

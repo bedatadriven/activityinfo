@@ -1,18 +1,10 @@
 package org.sigmah.client.page.project.logframe.grid;
 
-import java.util.ArrayList;
-
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.client.page.project.logframe.grid.MenuAction.InactivationPolicy;
 
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Represents an actions menu for a row in the log frame grid.
@@ -20,32 +12,12 @@ import com.google.gwt.user.client.ui.Widget;
  * @author tmi
  * 
  */
-public abstract class FlexTableViewActionsMenu {
-
-    /**
-     * The view.
-     */
-    private final FlexTableView view;
+public abstract class RowActionsMenu extends ActionsMenu {
 
     /**
      * The row.
      */
     private final Row<?> row;
-
-    /**
-     * The menu.
-     */
-    private final Menu menu;
-
-    /**
-     * The inactivation policy.
-     */
-    private InactivationPolicy inactivationPolicy;
-
-    /**
-     * All menu actions.
-     */
-    private final ArrayList<MenuAction> actions = new ArrayList<MenuAction>();
 
     /**
      * Builds this menu.
@@ -55,14 +27,12 @@ public abstract class FlexTableViewActionsMenu {
      * @param row
      *            The row managed by this menu.
      */
-    public FlexTableViewActionsMenu(final FlexTableView view, final Row<?> row) {
+    public RowActionsMenu(final FlexTableView view, final Row<?> row) {
+
+        super(view);
 
         // Sets local attributes.
-        this.view = view;
         this.row = row;
-
-        // Defines the default policy.
-        inactivationPolicy = InactivationPolicy.DISABLE_POLICY;
 
         // Move up action.
         final MenuItem upMenuItem = createMoveUpAction();
@@ -74,34 +44,9 @@ public abstract class FlexTableViewActionsMenu {
         final MenuItem deleteMenuItem = createDeleteAction();
 
         // Menu.
-        menu = new Menu();
         menu.add(upMenuItem);
         menu.add(downMenuItem);
         menu.add(deleteMenuItem);
-
-        // Adds a listener to update the menu each time it is shown.
-        menu.addListener(Events.BeforeShow, new Listener<BaseEvent>() {
-
-            @Override
-            public void handleEvent(BaseEvent be) {
-
-                for (final MenuAction action : actions) {
-
-                    // Checks if this action can be performed in the current
-                    // state.
-                    final String msg = action.canBePerformed();
-
-                    // The action can be performed.
-                    if (msg == null || "".equals(msg.trim())) {
-                        action.active();
-                    }
-                    // The action cannot be performed.
-                    else {
-                        action.inactive(msg);
-                    }
-                }
-            }
-        });
     }
 
     /**
@@ -258,36 +203,6 @@ public abstract class FlexTableViewActionsMenu {
         actions.add(action);
 
         return action.getMenuItem();
-    }
-
-    /**
-     * Sets the inactivation policy.
-     * 
-     * @param inactivationPolicy
-     *            The new inactivation policy.
-     */
-    public void setInactivationPolicy(InactivationPolicy inactivationPolicy) {
-
-        if (inactivationPolicy == null) {
-            return;
-        }
-
-        this.inactivationPolicy = inactivationPolicy;
-
-        // Updates each item policy.
-        for (final MenuAction action : actions) {
-            action.setInactivationPolicy(inactivationPolicy);
-        }
-    }
-
-    /**
-     * Displays this menu relative to the widget using the default alignment.
-     * 
-     * @param widget
-     *            the align widget
-     */
-    public void show(Widget widget) {
-        menu.show(widget);
     }
 
     /**

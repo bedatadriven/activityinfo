@@ -32,6 +32,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class ProjectLogFramePresenter implements SubPresenter {
 
     /**
+     * The label used for the no-name groups.
+     */
+    public static final String DEFAULT_GROUP_LABEL = "-";
+    
+    /**
      * Description of the view managed by this presenter.
      */
     public static abstract class View extends ContentPanel {

@@ -12,6 +12,7 @@ import javax.persistence.EntityManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sigmah.client.page.project.logframe.ProjectLogFramePresenter;
 import org.sigmah.server.dao.Transactional;
 import org.sigmah.shared.domain.Country;
 import org.sigmah.shared.domain.Phase;
@@ -165,8 +166,6 @@ public class ProjectPolicy implements EntityPolicy<Project> {
      */
     private LogFrame createDefaultLogFrame(Project project) {
 
-        final String defaultGroupLabel = "-";
-
         // Creates a new log frame (with a default model)
         final LogFrame logFrame = new LogFrame();
         logFrame.setParentProject(project);
@@ -177,25 +176,25 @@ public class ProjectPolicy implements EntityPolicy<Project> {
         LogFrameGroup group = new LogFrameGroup();
         group.setType(LogFrameGroupType.SPECIFIC_OBJECTIVE);
         group.setParentLogFrame(logFrame);
-        group.setLabel(defaultGroupLabel);
+        group.setLabel(ProjectLogFramePresenter.DEFAULT_GROUP_LABEL);
         groups.add(group);
 
         group = new LogFrameGroup();
         group.setType(LogFrameGroupType.EXPECTED_RESULT);
         group.setParentLogFrame(logFrame);
-        group.setLabel(defaultGroupLabel);
+        group.setLabel(ProjectLogFramePresenter.DEFAULT_GROUP_LABEL);
         groups.add(group);
 
         group = new LogFrameGroup();
         group.setType(LogFrameGroupType.ACTIVITY);
         group.setParentLogFrame(logFrame);
-        group.setLabel(defaultGroupLabel);
+        group.setLabel(ProjectLogFramePresenter.DEFAULT_GROUP_LABEL);
         groups.add(group);
 
         group = new LogFrameGroup();
         group.setType(LogFrameGroupType.PREREQUISITE);
         group.setParentLogFrame(logFrame);
-        group.setLabel(defaultGroupLabel);
+        group.setLabel(ProjectLogFramePresenter.DEFAULT_GROUP_LABEL);
         groups.add(group);
 
         logFrame.setGroups(groups);

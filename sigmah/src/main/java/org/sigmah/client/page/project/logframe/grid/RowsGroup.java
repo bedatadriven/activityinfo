@@ -3,6 +3,8 @@ package org.sigmah.client.page.project.logframe.grid;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.google.gwt.user.client.ui.Widget;
+
 /**
  * Represents a group of rows currently displayed.
  * 
@@ -57,7 +59,7 @@ public abstract class RowsGroup<T> {
      * 
      * @return The user object.
      */
-    protected T getUserObject() {
+    public T getUserObject() {
         return userObject;
     }
 
@@ -300,6 +302,13 @@ public abstract class RowsGroup<T> {
      * @return The group title.
      */
     public abstract String getTitle(T userObject);
+
+    /**
+     * Builds and returns the widget of a group.
+     * 
+     * @return The widget.
+     */
+    public abstract Widget getWidget();
 
     /**
      * Gets the indexes of the columns which rows will be merged if their cells
