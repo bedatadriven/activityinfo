@@ -19,7 +19,6 @@ import org.sigmah.shared.dto.element.FlexibleElementType;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
@@ -41,8 +40,9 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.RowData;
-import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
+import com.extjs.gxt.ui.client.widget.layout.HBoxLayout.HBoxLayoutAlign;
+import com.extjs.gxt.ui.client.widget.layout.HBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.ui.Hyperlink;
@@ -191,12 +191,19 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
         buildFinancialProjectsPanel();
         buildLocalPartnerProjectsPanel();
 
-        final LayoutContainer southPanel = new LayoutContainer(new RowLayout(Orientation.VERTICAL));
-        southPanel.add(panelFinancialProjects, new RowData(1, 0.5, new Margins(0, 0, 10, 0)));
-        southPanel.add(panelLocalProjects, new RowData(1, 0.5));
+        final HBoxLayout layout = new HBoxLayout();
+        layout.setHBoxLayoutAlign(HBoxLayoutAlign.STRETCH);
+        final ContentPanel southPanel = new ContentPanel(layout);
+        southPanel.setCollapsible(true);
+        southPanel.setWidth("100%");
+
+        panelFinancialProjects.setWidth("50%");
+        southPanel.add(panelFinancialProjects);
+        panelLocalProjects.setWidth("50%");
+        southPanel.add(panelLocalProjects, new HBoxLayoutData(0, 0, 0, 1));
 
         /* BorderLayoutData */
-        BorderLayoutData southData = new BorderLayoutData(LayoutRegion.SOUTH, 280);
+        BorderLayoutData southData = new BorderLayoutData(LayoutRegion.SOUTH, 140);
         southData.setMargins(new Margins(5));
         BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST, 250);
         westData.setMargins(new Margins(5));
@@ -237,8 +244,8 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
         });
 
         // Element's type.
-        final ColumnConfig typeColumn = new ColumnConfig("typeOfElement", I18N.CONSTANTS.projectRequiredElementsElementType(),
-                75);
+        final ColumnConfig typeColumn = new ColumnConfig("typeOfElement",
+                I18N.CONSTANTS.projectRequiredElementsElementType(), 75);
         typeColumn.setRenderer(new GridCellRenderer<FlexibleElementDTO>() {
             @Override
             public Object render(FlexibleElementDTO model, String property, ColumnData config, int rowIndex,
@@ -388,11 +395,11 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
 
         // Builds the panel tool bar.
         addFinancialProjectButton = new Button(I18N.CONSTANTS.createProjectTypeFundingSelect(),
-                IconImageBundle.ICONS.add());
+                IconImageBundle.ICONS.select());
         addFinancialProjectButton.setTitle(I18N.CONSTANTS.createProjectTypeFundingSelectDetails());
 
         createFinancialProjectButton = new Button(I18N.CONSTANTS.createProjectTypeFundingCreate(),
-                IconImageBundle.ICONS.create());
+                IconImageBundle.ICONS.add());
         createFinancialProjectButton.setTitle(I18N.CONSTANTS.createProjectTypeFundingCreateDetails());
 
         final ToolBar toolbar = new ToolBar();
@@ -404,7 +411,6 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
         panelFinancialProjects = new ContentPanel();
         panelFinancialProjects.setBorders(false);
         panelFinancialProjects.setHeading(I18N.CONSTANTS.projectFinancialProjectsHeader());
-        panelFinancialProjects.setCollapsible(true);
 
         panelFinancialProjects.setTopComponent(toolbar);
         panelFinancialProjects.add(financialGrid);
@@ -441,11 +447,11 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
 
         // Builds the panel tool bar.
         addLocalPartnerProjectButton = new Button(I18N.CONSTANTS.createProjectTypePartnerSelect(),
-                IconImageBundle.ICONS.add());
+                IconImageBundle.ICONS.select());
         addLocalPartnerProjectButton.setTitle(I18N.CONSTANTS.createProjectTypePartnerSelectDetails());
 
         createLocalPartnerProjectButton = new Button(I18N.CONSTANTS.createProjectTypePartnerCreate(),
-                IconImageBundle.ICONS.create());
+                IconImageBundle.ICONS.add());
         createLocalPartnerProjectButton.setTitle(I18N.CONSTANTS.createProjectTypePartnerCreateDetails());
 
         final ToolBar toolbar = new ToolBar();
@@ -457,7 +463,6 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
         panelLocalProjects = new ContentPanel();
         panelLocalProjects.setHeading(I18N.CONSTANTS.projectLocalPartnerProjectsHeader());
         panelLocalProjects.setBorders(false);
-        panelLocalProjects.setCollapsible(true);
 
         panelLocalProjects.setTopComponent(toolbar);
         panelLocalProjects.add(localGrid);

@@ -150,4 +150,7 @@ public interface IconImageBundle extends ImageBundle {
 
     @Resource(value = "page_edit.png")
     AbstractImagePrototype rename();
+
+    @Resource(value = "table_edit.png")
+    AbstractImagePrototype select();
 }
