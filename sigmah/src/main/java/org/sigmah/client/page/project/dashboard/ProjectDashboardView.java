@@ -525,7 +525,7 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
         // Percentage.
         final ColumnConfig percentageColumn = new ColumnConfig();
         percentageColumn.setId("percentage");
-        percentageColumn.setHeader(I18N.CONSTANTS.projectFundedBy());
+        percentageColumn.setHeader(I18N.CONSTANTS.projectFinances());
         percentageColumn.setWidth(100);
         percentageColumn.setRenderer(new GridCellRenderer<ProjectFundingDTO>() {
 
@@ -604,7 +604,7 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
         // Percentage.
         final ColumnConfig percentageColumn = new ColumnConfig();
         percentageColumn.setId("percentage");
-        percentageColumn.setHeader(I18N.CONSTANTS.projectFinances());
+        percentageColumn.setHeader(I18N.CONSTANTS.projectFundedBy());
         percentageColumn.setWidth(100);
         percentageColumn.setRenderer(new GridCellRenderer<ProjectFundingDTO>() {
 
