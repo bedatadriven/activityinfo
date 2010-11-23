@@ -32,7 +32,9 @@ public class FoldPanel extends FlowPanel {
                     expand(true);
             }
         });
-        
+
+        heading.addStyleName("fold-expanded");
+
         final FlowPanel content = new FlowPanel();
         
         super.add(heading);
@@ -61,7 +63,7 @@ public class FoldPanel extends FlowPanel {
         for(final Widget widget : list)
             content.remove(widget);
         
-        state = STATE_COLLAPSED;
+        setState(STATE_COLLAPSED);
     }
     
     public void fold(boolean propagate) {
@@ -82,7 +84,7 @@ public class FoldPanel extends FlowPanel {
             }
         }
         
-        state = collapse?STATE_COLLAPSED:STATE_FOLDED;
+        setState(collapse?STATE_COLLAPSED:STATE_FOLDED);
     }
     
     public void expand(boolean propagate) {
@@ -110,6 +112,38 @@ public class FoldPanel extends FlowPanel {
                 ((FoldPanel) widget).expand(propagate);
         }
         
-        state = STATE_EXPANDED;
+        setState(STATE_EXPANDED);
+    }
+
+    private void setState(int state) {
+        // Removing the previous style
+        final Widget header = getWidget(0);
+        
+        switch(this.state) {
+            case STATE_EXPANDED:
+                header.removeStyleName("fold-expanded");
+                break;
+            case STATE_FOLDED:
+                header.removeStyleName("fold-folded");
+                break;
+            case STATE_COLLAPSED:
+                header.removeStyleName("fold-collapsed");
+                break;
+        }
+
+        // Adding the new style
+        switch(state) {
+            case STATE_EXPANDED:
+                header.addStyleName("fold-expanded");
+                break;
+            case STATE_FOLDED:
+                header.addStyleName("fold-folded");
+                break;
+            case STATE_COLLAPSED:
+                header.addStyleName("fold-collapsed");
+                break;
+        }
+
+        this.state = state;
     }
 }

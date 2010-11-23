@@ -722,10 +722,23 @@ body {
 
 .fold-title {
 	cursor: pointer;
+        padding-left: 16px;
 }
 
 .fold-content {
 	padding-left: 20px;
+}
+
+.fold-folded {
+    background: url('image/fold-folded.png') transparent no-repeat left center;
+}
+
+.fold-collapsed {
+    background: url('image/fold-expand.png') transparent no-repeat left center;
+}
+
+.fold-expanded {
+    background: url('image/fold-collapse.png') transparent no-repeat left center;
 }
 
 /* --------------------------------------------- Banner */

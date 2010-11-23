@@ -8,10 +8,10 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -24,8 +24,10 @@ import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -35,13 +37,17 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RichTextArea;
+import com.google.gwt.user.client.ui.Widget;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
@@ -118,7 +124,7 @@ public class ProjectReportsView extends LayoutContainer {
         if(createReportDialog == null) {
             final Dialog dialog = new Dialog();
             dialog.setButtons(Dialog.OKCANCEL);
-            dialog.setHeading(I18N.CONSTANTS.calendarAddEvent());
+            dialog.setHeading(I18N.CONSTANTS.reportCreateReport());
             dialog.setModal(true);
 
             dialog.setResizable(false);
@@ -254,22 +260,31 @@ public class ProjectReportsView extends LayoutContainer {
         final ColumnConfig phaseNameColumn = new ColumnConfig("phaseName", I18N.CONSTANTS.reportPhase(), 200);
         final ColumnModel reportColumnModel = new ColumnModel(Arrays.asList(editDate, editorName, reportName, phaseNameColumn));
 
-        final Grid documentGrid = new Grid(store, reportColumnModel);
-        documentGrid.setAutoExpandColumn("name");
-        documentGrid.getView().setForceFit(true);
-
-        // Opening a report
-        documentGrid.addListener(Events.RowDoubleClick, new Listener<GridEvent>() {
-
+        reportName.setRenderer(new GridCellRenderer<GetProjectReports.ReportReference>() {
             @Override
-            public void handleEvent(GridEvent e) {
-                final ProjectState state = new ProjectState(currentState.getProjectId());
-                state.setCurrentSection(currentState.getCurrentSection());
-                state.setArgument(store.getAt(e.getRowIndex()).getId().toString());
+            public Object render(final GetProjectReports.ReportReference model, String property, ColumnData config, int rowIndex, int colIndex, ListStore store, Grid grid) {
+                final Anchor link = new Anchor((String) model.get(property));
 
-                eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, state));
+                link.addClickHandler(new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        // Opening a report
+
+                        final ProjectState state = new ProjectState(currentState.getProjectId());
+                        state.setCurrentSection(currentState.getCurrentSection());
+                        state.setArgument(model.getId().toString());
+
+                        eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, state));
+                    }
+                });
+
+                return link;
             }
         });
+
+        final Grid<GetProjectReports.ReportReference> documentGrid = new Grid<GetProjectReports.ReportReference>(store, reportColumnModel);
+        documentGrid.setAutoExpandColumn("name");
+        documentGrid.getView().setForceFit(true);
 
         panel.add(documentGrid);
 
