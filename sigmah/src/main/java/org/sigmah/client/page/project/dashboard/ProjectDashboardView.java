@@ -195,7 +195,7 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
         final HBoxLayout layout = new HBoxLayout();
         layout.setHBoxLayoutAlign(HBoxLayoutAlign.STRETCH);
         final ContentPanel southPanel = new ContentPanel(layout);
-        southPanel.setCollapsible(true);
+        southPanel.setHeading(I18N.CONSTANTS.projectLinkedProjects());
         southPanel.setWidth("100%");
 
         panelFinancialProjects.setWidth("50%");
@@ -205,6 +205,7 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
 
         /* BorderLayoutData */
         BorderLayoutData southData = new BorderLayoutData(LayoutRegion.SOUTH, 140);
+        southData.setCollapsible(true);
         southData.setMargins(new Margins(5));
         BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST, 250);
         westData.setMargins(new Margins(5));
