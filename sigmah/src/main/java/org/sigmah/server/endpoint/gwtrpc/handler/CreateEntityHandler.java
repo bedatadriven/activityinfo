@@ -5,10 +5,20 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
-import com.google.inject.Inject;
-import com.google.inject.Injector;
+import java.util.Map;
+
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
 
 import org.dozer.Mapper;
+import org.sigmah.server.policy.ActivityPolicy;
+import org.sigmah.server.policy.PersonalEventPolicy;
+import org.sigmah.server.policy.ProjectPolicy;
+import org.sigmah.server.policy.ProjectReportPolicy;
+import org.sigmah.server.policy.PropertyMap;
+import org.sigmah.server.policy.SitePolicy;
+import org.sigmah.server.policy.UserDatabasePolicy;
 import org.sigmah.shared.command.CreateEntity;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
@@ -25,15 +35,8 @@ import org.sigmah.shared.dto.ProjectFundingDTO;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.IllegalAccessCommandException;
 
-import javax.persistence.EntityManager;
-import java.util.Map;
-import org.sigmah.server.policy.ActivityPolicy;
-import org.sigmah.server.policy.PersonalEventPolicy;
-import org.sigmah.server.policy.ProjectPolicy;
-import org.sigmah.server.policy.ProjectReportPolicy;
-import org.sigmah.server.policy.PropertyMap;
-import org.sigmah.server.policy.SitePolicy;
-import org.sigmah.server.policy.UserDatabasePolicy;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -81,7 +84,7 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
             return createFunding(properties);
         } else if ("ProjectReport".equals(cmd.getEntityName())) {
             ProjectReportPolicy policy = injector.getInstance(ProjectReportPolicy.class);
-            return new CreateResult((Integer)policy.create(user, propertyMap));
+            return new CreateResult((Integer) policy.create(user, propertyMap));
         } else {
             throw new CommandException("Invalid entity class " + cmd.getEntityName());
         }
@@ -130,18 +133,44 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
 
     private CommandResult createFunding(Map<String, Object> properties) {
 
-        final ProjectFunding funding = new ProjectFunding();
-
+        // Retrieves parameters.
         Object fundingId = properties.get("fundingId");
         Object fundedId = properties.get("fundedId");
         Object percentage = properties.get("percentage");
 
-        funding.setFunding(em.find(Project.class, fundingId));
-        funding.setFunded(em.find(Project.class, fundedId));
+        // Retrieves projects.
+        final Project fundingProject = em.find(Project.class, fundingId);
+        final Project fundedProject = em.find(Project.class, fundedId);
+
+        // Retrieves the eventual already existing link.
+        final Query query = em.createQuery("SELECT f FROM ProjectFunding f WHERE f.funding = :p1 AND f.funded = :p2");
+        query.setParameter("p1", fundingProject);
+        query.setParameter("p2", fundedProject);
+
+        ProjectFunding funding;
+
+        // Updates or creates the link.
+        boolean create = false;
+        try {
+            funding = (ProjectFunding) query.getSingleResult();
+        } catch (NoResultException e) {
+            funding = new ProjectFunding();
+            funding.setFunding(fundingProject);
+            funding.setFunded(fundedProject);
+            create = true;
+        }
+
         funding.setPercentage((Double) percentage);
 
+        // Saves.
         em.persist(funding);
 
-        return new CreateResult(injector.getInstance(Mapper.class).map(funding, ProjectFundingDTO.class));
+        final CreateResult result = new CreateResult(injector.getInstance(Mapper.class).map(funding,
+                ProjectFundingDTO.class));
+
+        // Sets update or create to inform the client-side.
+        result.setNewId(create ? -1 : 1);
+
+        return result;
     }
 }

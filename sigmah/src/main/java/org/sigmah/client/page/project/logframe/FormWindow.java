@@ -19,6 +19,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.Field;
+import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -278,8 +279,9 @@ public class FormWindow {
      *            The label of the text field. Can be <code>null</code>.
      * @param allowBlank
      *            If the field is required.
+     * @return The field.
      */
-    public void addTextField(String fieldLabelString, boolean allowBlank) {
+    public TextField<String> addTextField(String fieldLabelString, boolean allowBlank) {
 
         // Lazy building.
         if (window == null) {
@@ -294,6 +296,8 @@ public class FormWindow {
         fields.add(new FieldWrapper(field, allowBlank));
 
         addField(field, fieldLabelString);
+
+        return field;
     }
 
     /**
@@ -303,8 +307,9 @@ public class FormWindow {
      *            The label of the number field. Can be <code>null</code>.
      * @param allowBlank
      *            If the field is required.
+     * @return The field.
      */
-    public void addNumberField(String fieldLabelString, boolean allowBlank) {
+    public NumberField addNumberField(String fieldLabelString, boolean allowBlank) {
 
         // Lazy building.
         if (window == null) {
@@ -319,6 +324,8 @@ public class FormWindow {
         fields.add(new FieldWrapper(field, allowBlank));
 
         addField(field, fieldLabelString);
+
+        return field;
     }
 
     /**
@@ -328,8 +335,9 @@ public class FormWindow {
      *            The label of the date field. Can be <code>null</code>.
      * @param allowBlank
      *            If the field is required.
+     * @return The field.
      */
-    public void addDateField(String fieldLabelString, boolean allowBlank) {
+    public DateField addDateField(String fieldLabelString, boolean allowBlank) {
 
         // Lazy building.
         if (window == null) {
@@ -344,6 +352,33 @@ public class FormWindow {
         fields.add(new FieldWrapper(field, allowBlank));
 
         addField(field, fieldLabelString);
+
+        return field;
+    }
+
+    /**
+     * Adds a label field in the window.
+     * 
+     * @param fieldLabelString
+     *            The label of the date field. Can be <code>null</code>.
+     * @return The field.
+     */
+    public LabelField addLabelField(String fieldLabelString) {
+
+        // Lazy building.
+        if (window == null) {
+            init();
+        }
+
+        // Builds the text field.
+        final LabelField field = new LabelField();
+        field.setFieldLabel(fieldLabelString);
+
+        fields.add(new FieldWrapper(field, true));
+
+        addField(field, fieldLabelString);
+
+        return field;
     }
 
     /**
@@ -362,8 +397,9 @@ public class FormWindow {
      * @param displayField
      *            The underlying data field name to bind to this list. Must not
      *            be <code>null</code>.
+     * @return The field.
      */
-    public <E extends ModelData> void addChoicesList(String fieldLabelString, Collection<E> choices,
+    public <E extends ModelData> ComboBox<E> addChoicesList(String fieldLabelString, Collection<E> choices,
             boolean allowBlank, String displayField) {
 
         // Checks if the display field is specified.
@@ -398,6 +434,8 @@ public class FormWindow {
         fields.add(new FieldWrapper(combobox, allowBlank));
 
         addField(combobox, fieldLabelString);
+
+        return combobox;
     }
 
     /**

@@ -94,6 +94,16 @@ public class ProjectDTOLight extends BaseModelData implements EntityDTO {
         set("visibilities", visibilities);
     }
 
+    // Project planned budget
+    public Double getPlannedBudget() {
+        final Double b = (Double) get("plannedBudget");
+        return b != null ? b : 0.0;
+    }
+
+    public void setPlannedBudget(Double plannedBudget) {
+        set("plannedBudget", plannedBudget);
+    }
+
     /**
      * Gets the type of this model for the given organization. If this model
      * isn't visible for this organization, <code>null</code> is returned.

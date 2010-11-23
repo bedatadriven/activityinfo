@@ -13,6 +13,7 @@ import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.project.ProjectPresenter;
 import org.sigmah.client.page.project.dashboard.funding.FundingIconProvider;
 import org.sigmah.client.ui.FlexibleGrid;
+import org.sigmah.client.util.NumberUtils;
 import org.sigmah.shared.dto.ProjectFundingDTO;
 import org.sigmah.shared.dto.element.FlexibleElementDTO;
 import org.sigmah.shared.dto.element.FlexibleElementType;
@@ -527,10 +528,16 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
             }
         });
 
+        // Amount.
+        final ColumnConfig amountColumn = new ColumnConfig();
+        amountColumn.setId("percentage");
+        amountColumn.setHeader(I18N.CONSTANTS.projectFinances() + " (" + I18N.CONSTANTS.currencyEuro() + ')');
+        amountColumn.setWidth(150);
+
         // Percentage.
         final ColumnConfig percentageColumn = new ColumnConfig();
-        percentageColumn.setId("percentage");
-        percentageColumn.setHeader(I18N.CONSTANTS.projectFinances());
+        percentageColumn.setId("percentage2");
+        percentageColumn.setHeader(I18N.CONSTANTS.createProjectPercentage());
         percentageColumn.setWidth(100);
         percentageColumn.setRenderer(new GridCellRenderer<ProjectFundingDTO>() {
 
@@ -538,13 +545,18 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
             public Object render(ProjectFundingDTO model, String property, ColumnData config, int rowIndex,
                     int colIndex, ListStore<ProjectFundingDTO> store, Grid<ProjectFundingDTO> grid) {
 
-                final Label percentageLabel = new Label(model.get(property) + "%");
+                // The amount of the funding.
+                final Double amount = model.getPercentage();
 
+                // The current project budget.
+                final Double budget = model.getFunded().getPlannedBudget();
+
+                final Label percentageLabel = new Label(NumberUtils.ratioAsString(amount, budget));
                 return percentageLabel;
             }
         });
 
-        return new ColumnConfig[] { iconColumn, nameColumn, fullNameColumn, percentageColumn };
+        return new ColumnConfig[] { iconColumn, nameColumn, fullNameColumn, amountColumn, percentageColumn };
     }
 
     /**
@@ -606,10 +618,16 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
             }
         });
 
+        // Amount.
+        final ColumnConfig amountColumn = new ColumnConfig();
+        amountColumn.setId("percentage");
+        amountColumn.setHeader(I18N.CONSTANTS.projectFundedBy() + " (" + I18N.CONSTANTS.currencyEuro() + ')');
+        amountColumn.setWidth(150);
+
         // Percentage.
         final ColumnConfig percentageColumn = new ColumnConfig();
-        percentageColumn.setId("percentage");
-        percentageColumn.setHeader(I18N.CONSTANTS.projectFundedBy());
+        percentageColumn.setId("percentage2");
+        percentageColumn.setHeader(I18N.CONSTANTS.createProjectPercentage());
         percentageColumn.setWidth(100);
         percentageColumn.setRenderer(new GridCellRenderer<ProjectFundingDTO>() {
 
@@ -617,12 +635,17 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
             public Object render(ProjectFundingDTO model, String property, ColumnData config, int rowIndex,
                     int colIndex, ListStore<ProjectFundingDTO> store, Grid<ProjectFundingDTO> grid) {
 
-                final Label percentageLabel = new Label(model.get(property) + "%");
+                // The amount of the funding.
+                final Double amount = model.getPercentage();
 
+                // The funded project budget.
+                final Double budget = model.getFunded().getPlannedBudget();
+
+                final Label percentageLabel = new Label(NumberUtils.ratioAsString(amount, budget));
                 return percentageLabel;
             }
         });
 
-        return new ColumnConfig[] { iconColumn, nameColumn, fullNameColumn, percentageColumn };
+        return new ColumnConfig[] { iconColumn, nameColumn, fullNameColumn, amountColumn, percentageColumn };
     }
 }

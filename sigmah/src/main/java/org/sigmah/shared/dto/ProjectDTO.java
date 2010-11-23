@@ -218,12 +218,48 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO {
         set("funding", funding);
     }
 
+    public void addFunding(ProjectFundingDTO funding) {
+
+        if (funding == null) {
+            return;
+        }
+
+        List<ProjectFundingDTO> fundings = getFunding();
+
+        if (fundings == null) {
+            fundings = new ArrayList<ProjectFundingDTO>();
+        }
+
+        fundings.remove(funding);
+        fundings.add(funding);
+
+        setFunding(fundings);
+    }
+
     public List<ProjectFundingDTO> getFunded() {
         return get("funded");
     }
 
     public void setFunded(List<ProjectFundingDTO> funded) {
         set("funded", funded);
+    }
+
+    public void addFunded(ProjectFundingDTO funded) {
+
+        if (funded == null) {
+            return;
+        }
+
+        List<ProjectFundingDTO> fundeds = getFunding();
+
+        if (fundeds == null) {
+            fundeds = new ArrayList<ProjectFundingDTO>();
+        }
+
+        fundeds.remove(funded);
+        fundeds.add(funded);
+
+        setFunded(fundeds);
     }
 
     public CountryDTO getCountry() {
@@ -264,5 +300,25 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO {
         }
 
         return successors;
+    }
+
+    /**
+     * Map this project entity in a lightweight project.
+     * 
+     * @return The lightweight project.
+     */
+    public ProjectDTOLight light() {
+
+        final ProjectDTOLight light = new ProjectDTOLight();
+        light.setId(getId());
+        light.setName(getName());
+        light.setFullName(getFullName());
+        light.generateCompleteName();
+        light.setFavorite(false);
+        light.setCurrentPhaseDTO(getCurrentPhaseDTO());
+        light.setVisibilities(getProjectModelDTO().getVisibilities());
+        light.setPlannedBudget(getPlannedBudget());
+
+        return light;
     }
 }

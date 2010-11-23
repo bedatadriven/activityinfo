@@ -20,10 +20,13 @@ import org.sigmah.client.page.dashboard.CreateProjectWindow.CreateProjectListene
 import org.sigmah.client.page.dashboard.CreateProjectWindow.Mode;
 import org.sigmah.client.page.project.ProjectPresenter;
 import org.sigmah.client.page.project.SubPresenter;
+import org.sigmah.client.page.project.dashboard.funding.FundingIconProvider;
+import org.sigmah.client.page.project.dashboard.funding.FundingIconProvider.IconSize;
 import org.sigmah.client.page.project.logframe.FormWindow;
 import org.sigmah.client.page.project.logframe.FormWindow.FormSubmitListener;
 import org.sigmah.client.ui.FlexibleGrid;
 import org.sigmah.client.util.Notification;
+import org.sigmah.client.util.NumberUtils;
 import org.sigmah.shared.command.ChangePhase;
 import org.sigmah.shared.command.CreateEntity;
 import org.sigmah.shared.command.GetProjects;
@@ -33,6 +36,7 @@ import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.command.result.ProjectListResult;
 import org.sigmah.shared.command.result.ValueResult;
 import org.sigmah.shared.command.result.VoidResult;
+import org.sigmah.shared.domain.ProjectModelType;
 import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.PhaseDTO;
 import org.sigmah.shared.dto.PhaseModelDTO;
@@ -64,12 +68,16 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.LabelField;
+import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Grid;
@@ -1147,10 +1155,8 @@ public class ProjectDashboardPresenter implements SubPresenter {
                     @Override
                     public void onSuccess(ProjectListResult result) {
 
-                        // Filters the already linked funding projects.
-                        for (final ProjectFundingDTO funding : view.getFinancialProjectGrid().getStore().getModels()) {
-                            result.getList().remove(funding.getFunding());
-                        }
+                        // Filters the project itself.
+                        result.getList().remove(projectPresenter.getCurrentProjectDTO().light());
 
                         // Checks if there is at least one funding
                         // project available.
@@ -1169,10 +1175,56 @@ public class ProjectDashboardPresenter implements SubPresenter {
                         // Resets the window.
                         window.clear();
 
-                        // Adds the choices list.
-                        window.addChoicesList(I18N.CONSTANTS.createProjectTypeFunding(), result.getList(), false,
-                                "completeName");
-                        window.addNumberField(I18N.CONSTANTS.projectFundedByDetails(), true);
+                        // Adds fields.
+                        final ComboBox<ProjectDTOLight> projects = window.addChoicesList(
+                                I18N.CONSTANTS.createProjectTypeFunding(), result.getList(), false, "completeName");
+
+                        final LabelField modelTypeLabel = window.addLabelField(I18N.CONSTANTS.createProjectType());
+                        modelTypeLabel.setHeight(25);
+
+                        final NumberField amountField = window.addNumberField(I18N.CONSTANTS.projectFundedByDetails()
+                                + " (" + I18N.CONSTANTS.currencyEuro() + ')', true);
+
+                        final LabelField percentageField = window.addLabelField(I18N.CONSTANTS
+                                .createProjectPercentage());
+                        percentageField.setValue("0 %");
+
+                        projects.addListener(Events.Select, new Listener<BaseEvent>() {
+
+                            @Override
+                            public void handleEvent(BaseEvent be) {
+
+                                final ProjectModelType type = projects.getSelection().get(0)
+                                        .getProjectModelType(authentication.getOrganizationId());
+
+                                final Grid iconGrid = new Grid(1, 2);
+                                iconGrid.setCellPadding(0);
+                                iconGrid.setCellSpacing(0);
+
+                                iconGrid.setWidget(0, 0, FundingIconProvider.getProjectTypeIcon(type, IconSize.MEDIUM)
+                                        .createImage());
+                                DOM.setStyleAttribute(iconGrid.getCellFormatter().getElement(0, 0), "paddingTop", "2px");
+                                iconGrid.setText(0, 1, ProjectModelType.getName(type));
+                                DOM.setStyleAttribute(iconGrid.getCellFormatter().getElement(0, 1), "paddingLeft",
+                                        "5px");
+
+                                modelTypeLabel.setText(iconGrid.getElement().getString());
+                            }
+                        });
+
+                        amountField.addListener(Events.Change, new Listener<BaseEvent>() {
+
+                            @Override
+                            public void handleEvent(BaseEvent be) {
+
+                                if (amountField.getValue() == null) {
+                                    amountField.setValue(0);
+                                }
+
+                                percentageField.setText(NumberUtils.ratioAsString(amountField.getValue(),
+                                        projectPresenter.getCurrentProjectDTO().getPlannedBudget()));
+                            }
+                        });
 
                         // Adds the submit listener.
                         window.addFormSubmitListener(new FormSubmitListener() {
@@ -1181,7 +1233,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
                             public void formSubmitted(Object... values) {
 
                                 // Checks that the values are correct.
-                                if (values == null || values.length < 2) {
+                                if (values == null || values.length < 4) {
                                     return;
                                 }
 
@@ -1190,29 +1242,20 @@ public class ProjectDashboardPresenter implements SubPresenter {
                                     return;
                                 }
 
-                                final Object value1 = values[1];
+                                final Object value1 = values[2];
                                 if (!(value1 instanceof Number)) {
                                     return;
                                 }
 
-                                // Adjusts the percentage to keep
-                                // consistency.
-                                double percentage = ((Number) value1).doubleValue();
-                                if (percentage < 0) {
-                                    percentage = 0;
-                                } else if (percentage > 100) {
-                                    percentage = 100;
-                                }
-
-                                // Retrieves the selected project and
-                                // adds it as a new funding.
+                                // Retrieves the selected project and adds it as
+                                // a new funding.
                                 final ProjectDTOLight p = (ProjectDTOLight) value0;
 
                                 // Sets the funding parameters.
                                 final HashMap<String, Object> parameters = new HashMap<String, Object>();
                                 parameters.put("fundingId", p.getId());
                                 parameters.put("fundedId", projectPresenter.getCurrentProjectDTO().getId());
-                                parameters.put("percentage", percentage);
+                                parameters.put("percentage", ((Number) value1).doubleValue());
 
                                 // Create the new funding.
                                 dispatcher.execute(new CreateEntity("ProjectFunding", parameters), null,
@@ -1232,10 +1275,18 @@ public class ProjectDashboardPresenter implements SubPresenter {
                                                 Notification.show(I18N.CONSTANTS.infoConfirmation(),
                                                         I18N.CONSTANTS.createProjectTypeFundingSelectOk());
 
-                                                // Adds the just created
-                                                // funding to the list.
-                                                view.getFinancialProjectGrid().getStore()
-                                                        .add((ProjectFundingDTO) result.getEntity());
+                                                final ProjectFundingDTO r = (ProjectFundingDTO) result.getEntity();
+
+                                                // Updates.
+                                                if (result.getNewId() != -1) {
+                                                    view.getFinancialProjectGrid().getStore().update(r);
+                                                }
+                                                // Creates.
+                                                else {
+                                                    view.getFinancialProjectGrid().getStore().add(r);
+                                                }
+
+                                                projectPresenter.getCurrentProjectDTO().addFunding(r);
                                             }
                                         });
                             }
@@ -1266,13 +1317,6 @@ public class ProjectDashboardPresenter implements SubPresenter {
                     @Override
                     public void projectCreatedAsFunding(ProjectDTOLight project, double percentage) {
 
-                        // Adjusts the percentage to keep consistency.
-                        if (percentage < 0) {
-                            percentage = 0;
-                        } else if (percentage > 100) {
-                            percentage = 100;
-                        }
-
                         // Sets the funding parameters.
                         final HashMap<String, Object> parameters = new HashMap<String, Object>();
                         parameters.put("fundingId", project.getId());
@@ -1296,10 +1340,13 @@ public class ProjectDashboardPresenter implements SubPresenter {
                                         Notification.show(I18N.CONSTANTS.infoConfirmation(),
                                                 I18N.CONSTANTS.createProjectTypeFundingSelectOk());
 
+                                        final ProjectFundingDTO r = (ProjectFundingDTO) result.getEntity();
+
                                         // Adds the just created funding to the
                                         // list.
-                                        view.getFinancialProjectGrid().getStore()
-                                                .add((ProjectFundingDTO) result.getEntity());
+                                        view.getFinancialProjectGrid().getStore().add(r);
+
+                                        projectPresenter.getCurrentProjectDTO().addFunding(r);
                                     }
                                 });
                     }
@@ -1313,7 +1360,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
             @Override
             public void handleEvent(ButtonEvent be) {
-                window.show(Mode.FUNDING);
+                window.show(Mode.FUNDING, projectPresenter.getCurrentProjectDTO().light());
             }
         });
 
@@ -1343,11 +1390,8 @@ public class ProjectDashboardPresenter implements SubPresenter {
                     @Override
                     public void onSuccess(ProjectListResult result) {
 
-                        // Filters the already linked local partner
-                        // projects.
-                        for (final ProjectFundingDTO partner : view.getLocalPartnerProjectGrid().getStore().getModels()) {
-                            result.getList().remove(partner.getFunding());
-                        }
+                        // Filters the project itself.
+                        result.getList().remove(projectPresenter.getCurrentProjectDTO().light());
 
                         // Checks if there is at least one local partner
                         // project available.
@@ -1366,10 +1410,62 @@ public class ProjectDashboardPresenter implements SubPresenter {
                         // Resets the window.
                         window.clear();
 
-                        // Adds the choices list.
-                        window.addChoicesList(I18N.CONSTANTS.createProjectTypePartner(), result.getList(), false,
-                                "completeName");
-                        window.addNumberField(I18N.CONSTANTS.projectFinancesDetails(), true);
+                        // Adds fields.
+                        final ComboBox<ProjectDTOLight> projects = window.addChoicesList(
+                                I18N.CONSTANTS.createProjectTypeFunding(), result.getList(), false, "completeName");
+
+                        final LabelField modelTypeLabel = window.addLabelField(I18N.CONSTANTS.createProjectType());
+                        modelTypeLabel.setHeight(25);
+
+                        final NumberField amountField = window.addNumberField(I18N.CONSTANTS.projectFinancesDetails()
+                                + " (" + I18N.CONSTANTS.currencyEuro() + ')', true);
+
+                        final LabelField percentageField = window.addLabelField(I18N.CONSTANTS
+                                .createProjectPercentage());
+                        percentageField.setValue("0 %");
+
+                        projects.addListener(Events.Select, new Listener<BaseEvent>() {
+
+                            @Override
+                            public void handleEvent(BaseEvent be) {
+
+                                final ProjectModelType type = projects.getSelection().get(0)
+                                        .getProjectModelType(authentication.getOrganizationId());
+
+                                final Grid iconGrid = new Grid(1, 2);
+                                iconGrid.setCellPadding(0);
+                                iconGrid.setCellSpacing(0);
+
+                                iconGrid.setWidget(0, 0, FundingIconProvider.getProjectTypeIcon(type, IconSize.MEDIUM)
+                                        .createImage());
+                                DOM.setStyleAttribute(iconGrid.getCellFormatter().getElement(0, 0), "paddingTop", "2px");
+                                iconGrid.setText(0, 1, ProjectModelType.getName(type));
+                                DOM.setStyleAttribute(iconGrid.getCellFormatter().getElement(0, 1), "paddingLeft",
+                                        "5px");
+
+                                modelTypeLabel.setText(iconGrid.getElement().getString());
+                            }
+                        });
+
+                        amountField.addListener(Events.Change, new Listener<BaseEvent>() {
+
+                            @Override
+                            public void handleEvent(BaseEvent be) {
+
+                                if (amountField.getValue() == null) {
+                                    amountField.setValue(0);
+                                }
+
+                                final List<ProjectDTOLight> selection = projects.getSelection();
+
+                                if (selection == null || selection.isEmpty()) {
+                                    percentageField.setText(I18N.CONSTANTS.createProjectPercentageNotAvailable());
+                                } else {
+                                    percentageField.setText(NumberUtils.ratioAsString(amountField.getValue(), selection
+                                            .get(0).getPlannedBudget()));
+                                }
+                            }
+                        });
 
                         // Adds the submit listener.
                         window.addFormSubmitListener(new FormSubmitListener() {
@@ -1387,29 +1483,20 @@ public class ProjectDashboardPresenter implements SubPresenter {
                                     return;
                                 }
 
-                                final Object value1 = values[1];
+                                final Object value1 = values[2];
                                 if (!(value1 instanceof Number)) {
                                     return;
                                 }
 
-                                // Adjusts the percentage to keep
-                                // consistency.
-                                double percentage = ((Number) value1).doubleValue();
-                                if (percentage < 0) {
-                                    percentage = 0;
-                                } else if (percentage > 100) {
-                                    percentage = 100;
-                                }
-
-                                // Retrieves the selected project and
-                                // adds it as a new partner.
+                                // Retrieves the selected project and adds it as
+                                // a new partner.
                                 final ProjectDTOLight p = (ProjectDTOLight) value0;
 
                                 // Sets the local partner parameters.
                                 final HashMap<String, Object> parameters = new HashMap<String, Object>();
                                 parameters.put("fundingId", projectPresenter.getCurrentProjectDTO().getId());
                                 parameters.put("fundedId", p.getId());
-                                parameters.put("percentage", percentage);
+                                parameters.put("percentage", ((Number) value1).doubleValue());
 
                                 // Create the new funding.
                                 dispatcher.execute(new CreateEntity("ProjectFunding", parameters), null,
@@ -1429,14 +1516,20 @@ public class ProjectDashboardPresenter implements SubPresenter {
                                                 Notification.show(I18N.CONSTANTS.infoConfirmation(),
                                                         I18N.CONSTANTS.createProjectTypePartnerSelectOk());
 
-                                                // Adds the just created
-                                                // local partner to the
-                                                // list.
-                                                view.getLocalPartnerProjectGrid().getStore()
-                                                        .add((ProjectFundingDTO) result.getEntity());
+                                                final ProjectFundingDTO r = (ProjectFundingDTO) result.getEntity();
+
+                                                // Updates.
+                                                if (result.getNewId() != -1) {
+                                                    view.getLocalPartnerProjectGrid().getStore().update(r);
+                                                }
+                                                // Creates.
+                                                else {
+                                                    view.getLocalPartnerProjectGrid().getStore().add(r);
+                                                }
+
+                                                projectPresenter.getCurrentProjectDTO().addFunded(r);
                                             }
                                         });
-
                             }
                         });
 
@@ -1470,13 +1563,6 @@ public class ProjectDashboardPresenter implements SubPresenter {
                     @Override
                     public void projectCreatedAsFunded(ProjectDTOLight project, double percentage) {
 
-                        // Adjusts the percentage to keep consistency.
-                        if (percentage < 0) {
-                            percentage = 0;
-                        } else if (percentage > 100) {
-                            percentage = 100;
-                        }
-
                         // Sets the local partner parameters.
                         final HashMap<String, Object> parameters = new HashMap<String, Object>();
                         parameters.put("fundingId", projectPresenter.getCurrentProjectDTO().getId());
@@ -1500,10 +1586,13 @@ public class ProjectDashboardPresenter implements SubPresenter {
                                         Notification.show(I18N.CONSTANTS.infoConfirmation(),
                                                 I18N.CONSTANTS.createProjectTypePartnerSelectOk());
 
+                                        final ProjectFundingDTO r = (ProjectFundingDTO) result.getEntity();
+
                                         // Adds the just created local partner
                                         // to the list.
-                                        view.getLocalPartnerProjectGrid().getStore()
-                                                .add((ProjectFundingDTO) result.getEntity());
+                                        view.getLocalPartnerProjectGrid().getStore().add(r);
+
+                                        projectPresenter.getCurrentProjectDTO().addFunded(r);
                                     }
                                 });
                     }
@@ -1512,7 +1601,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
             @Override
             public void handleEvent(ButtonEvent be) {
-                window.show(Mode.FUNDED);
+                window.show(Mode.FUNDED, projectPresenter.getCurrentProjectDTO().light());
             }
         });
     }

@@ -6,6 +6,9 @@ import java.util.HashMap;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.page.project.dashboard.funding.FundingIconProvider;
+import org.sigmah.client.page.project.dashboard.funding.FundingIconProvider.IconSize;
+import org.sigmah.client.util.NumberUtils;
 import org.sigmah.shared.command.CreateEntity;
 import org.sigmah.shared.command.GetCountries;
 import org.sigmah.shared.command.GetProjectModels;
@@ -31,10 +34,13 @@ import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Grid;
 
 /**
  * Manages a pop-up window to create a new project.
@@ -117,12 +123,14 @@ public class CreateProjectWindow {
     private final TextField<String> nameField;
     private final TextField<String> fullNameField;
     private final ComboBox<ProjectModelDTOLight> modelsField;
-    private final TextField<String> modelType;
+    private final LabelField modelType;
     private final ListStore<ProjectModelDTOLight> modelsStore;
     private final ListStore<CountryDTO> countriesStore;
     private final ComboBox<CountryDTO> countriesField;
     private final NumberField budgetField;
-    private final NumberField percentageField;
+    private final NumberField amountField;
+    private final LabelField percentageField;
+    private ProjectDTOLight currentFunding;
     private Mode currentMode;
 
     /**
@@ -155,7 +163,7 @@ public class CreateProjectWindow {
 
         // Budget field.
         budgetField = new NumberField();
-        budgetField.setFieldLabel(I18N.CONSTANTS.projectPlannedBudget());
+        budgetField.setFieldLabel(I18N.CONSTANTS.projectPlannedBudget() + " (" + I18N.CONSTANTS.currencyEuro() + ')');
         budgetField.setValue(0);
         budgetField.setAllowBlank(false);
 
@@ -168,17 +176,27 @@ public class CreateProjectWindow {
         modelsField.setEditable(true);
 
         // Model type
-        modelType = new TextField<String>();
+        modelType = new LabelField();
         modelType.setFieldLabel(I18N.CONSTANTS.createProjectType());
-        modelType.setEnabled(false);
-        modelType.setAllowBlank(true);
 
         modelsField.addListener(Events.Select, new Listener<BaseEvent>() {
 
             @Override
             public void handleEvent(BaseEvent be) {
-                modelType.setValue(ProjectModelType.getName(modelsField.getSelection().get(0)
-                        .getVisibility(authentication.getOrganizationId())));
+
+                final ProjectModelType type = modelsField.getSelection().get(0)
+                        .getVisibility(authentication.getOrganizationId());
+
+                final Grid iconGrid = new Grid(1, 2);
+                iconGrid.setCellPadding(0);
+                iconGrid.setCellSpacing(0);
+
+                iconGrid.setWidget(0, 0, FundingIconProvider.getProjectTypeIcon(type, IconSize.MEDIUM).createImage());
+                DOM.setStyleAttribute(iconGrid.getCellFormatter().getElement(0, 0), "paddingTop", "2px");
+                iconGrid.setText(0, 1, ProjectModelType.getName(type));
+                DOM.setStyleAttribute(iconGrid.getCellFormatter().getElement(0, 1), "paddingLeft", "5px");
+
+                modelType.setText(iconGrid.getElement().getString());
             }
         });
 
@@ -201,8 +219,83 @@ public class CreateProjectWindow {
         });
         modelsField.setStore(modelsStore);
 
+        // Amount for funding.
+        amountField = new NumberField();
+        amountField.addListener(Events.Change, new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+
+                // Checks that values are filled.
+                if (amountField.getValue() == null || amountField.getValue().doubleValue() < 0) {
+                    amountField.setValue(0);
+                }
+
+                if (budgetField.getValue() == null || budgetField.getValue().doubleValue() < 0) {
+                    budgetField.setValue(0);
+                    amountField.setValue(0);
+                }
+
+                // Computes the ratio between the allocated amount and the
+                // funding project.
+                if (currentFunding == null) {
+                    percentageField.setText(I18N.CONSTANTS.createProjectPercentageNotAvailable());
+                } else {
+
+                    switch (currentMode) {
+                    case FUNDED: {
+
+                        final double fundingBudget = currentFunding.getPlannedBudget();
+                        final double budget = budgetField.getValue().doubleValue();
+
+                        // Checks the budget bounds and adjusts the allocated
+                        // amount.
+                        double min;
+                        if (budget <= 0) {
+                            amountField.setValue(0);
+                            percentageField.setText("0.0 %");
+                            break;
+                        } else if ((min = Math.min(fundingBudget, budget)) < amountField.getValue().doubleValue()) {
+                            amountField.setValue(min);
+                        }
+
+                        percentageField.setText(NumberUtils.ratioAsString(amountField.getValue().doubleValue(), budget));
+                    }
+                        break;
+                    case FUNDING: {
+
+                        final double fundingBudget = currentFunding.getPlannedBudget();
+                        final double budget = budgetField.getValue().doubleValue();
+
+                        if (fundingBudget <= 0) {
+                            percentageField.setText("0.0 %");
+                            return;
+                        }
+
+                        double min;
+                        if (budget <= 0) {
+                            amountField.setValue(0);
+                            percentageField.setText("0.0 %");
+                            break;
+                        } else if ((min = Math.min(fundingBudget, budget)) < amountField.getValue().doubleValue()) {
+                            amountField.setValue(min);
+                        }
+
+                        percentageField.setText(NumberUtils.ratioAsString(amountField.getValue().doubleValue(),
+                                fundingBudget));
+                    }
+                        break;
+                    default:
+                        percentageField.setText(I18N.CONSTANTS.createProjectPercentageNotAvailable());
+                        break;
+                    }
+                }
+            }
+        });
+
         // Percentage for funding.
-        percentageField = new NumberField();
+        percentageField = new LabelField();
+        percentageField.setFieldLabel(I18N.CONSTANTS.createProjectPercentage());
 
         // Countries list.
         countriesField = new ComboBox<CountryDTO>();
@@ -252,6 +345,7 @@ public class CreateProjectWindow {
         formPanel.add(countriesField);
         formPanel.add(modelsField);
         formPanel.add(modelType);
+        formPanel.add(amountField);
         formPanel.add(percentageField);
         formPanel.addButton(createButton);
 
@@ -266,7 +360,7 @@ public class CreateProjectWindow {
         // Window.
         window = new Window();
         window.setHeading(I18N.CONSTANTS.createProject());
-        window.setSize(415, 280);
+        window.setSize(415, 290);
         window.setPlain(true);
         window.setModal(true);
         window.setBlinkModal(true);
@@ -339,11 +433,11 @@ public class CreateProjectWindow {
                 // Manages the display mode.
                 switch (currentMode) {
                 case FUNDING:
-                    fireProjectCreatedAsFunding((ProjectDTOLight) result.getEntity(), percentageField.getValue()
+                    fireProjectCreatedAsFunding((ProjectDTOLight) result.getEntity(), amountField.getValue()
                             .doubleValue());
                     break;
                 case FUNDED:
-                    fireProjectCreatedAsFunded((ProjectDTOLight) result.getEntity(), percentageField.getValue()
+                    fireProjectCreatedAsFunded((ProjectDTOLight) result.getEntity(), amountField.getValue()
                             .doubleValue());
                     break;
                 default:
@@ -377,7 +471,7 @@ public class CreateProjectWindow {
      * Initializes and show the window.
      */
     public void show() {
-        show(Mode.SIMPLE);
+        show(Mode.SIMPLE, null);
     }
 
     /**
@@ -385,17 +479,23 @@ public class CreateProjectWindow {
      * 
      * @param mode
      *            The display mode.
+     * @param funding
+     *            The current project which is linked to the created project.
      */
-    public void show(Mode mode) {
+    public void show(Mode mode, ProjectDTOLight funding) {
 
         currentMode = mode;
+        currentFunding = funding;
 
         // Resets window state.
-        nameField.setValue(null);
-        fullNameField.setValue(null);
-        modelsField.setValue(null);
-        countriesField.setValue(null);
-        modelType.setValue(null);
+        nameField.reset();
+        fullNameField.reset();
+        modelsField.reset();
+        countriesField.reset();
+        modelType.setValue("");
+        amountField.setValue(0);
+        budgetField.setValue(0);
+        percentageField.setText("0 %");
         modelsStore.removeAll();
         countriesStore.removeAll();
         alert = false;
@@ -403,20 +503,25 @@ public class CreateProjectWindow {
         // Manages the display mode.
         switch (currentMode) {
         case FUNDING:
+            amountField.setVisible(true);
+            amountField.setValue(0);
+            amountField.setAllowBlank(false);
+            amountField.setFieldLabel(I18N.CONSTANTS.projectFundedByDetails() + " (" + I18N.CONSTANTS.currencyEuro()
+                    + ')');
             percentageField.setVisible(true);
-            percentageField.setValue(0);
-            percentageField.setAllowBlank(false);
-            percentageField.setFieldLabel(I18N.CONSTANTS.projectFundedByDetails());
             break;
         case FUNDED:
+            amountField.setVisible(true);
+            amountField.setValue(0);
+            amountField.setAllowBlank(false);
+            amountField.setFieldLabel(I18N.CONSTANTS.projectFinancesDetails() + " (" + I18N.CONSTANTS.currencyEuro()
+                    + ')');
             percentageField.setVisible(true);
-            percentageField.setValue(0);
-            percentageField.setAllowBlank(false);
-            percentageField.setFieldLabel(I18N.CONSTANTS.projectFinancesDetails());
             break;
         default:
+            amountField.setVisible(false);
+            amountField.setAllowBlank(true);
             percentageField.setVisible(false);
-            percentageField.setAllowBlank(true);
             break;
         }
 
