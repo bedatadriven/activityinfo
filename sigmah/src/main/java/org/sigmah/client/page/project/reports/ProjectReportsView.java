@@ -598,6 +598,58 @@ public class ProjectReportsView extends LayoutContainer {
             }
         });
         toolbar.add(listBulletsButton);
+
+        // Images
+        final Button imageAddButton = new Button();
+        imageAddButton.setIcon(AbstractImagePrototype.create(images.imageAdd()));
+        imageAddButton.addListener(Events.Select, new Listener<BaseEvent>() {
+            private Dialog imageAddDialog;
+            private TextField<String> imageURLField;
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+                if(imageAddDialog == null) {
+                    imageAddDialog = new Dialog();
+
+                    imageAddDialog.setButtons(Dialog.OKCANCEL);
+                    imageAddDialog.setHeading(I18N.CONSTANTS.reportAddImageDialogTitle());
+                    imageAddDialog.setModal(true);
+
+                    imageAddDialog.setResizable(false);
+                    imageAddDialog.setWidth("340px");
+
+                    imageAddDialog.setLayout(new FormLayout());
+
+                    // Report name
+                    imageURLField = new TextField<String>();
+                    imageURLField.setFieldLabel(I18N.CONSTANTS.reportImageURL());
+                    imageURLField.setAllowBlank(false);
+                    imageURLField.setName("url");
+                    imageAddDialog.add(imageURLField);
+
+                    // OK button
+                    imageAddDialog.getButtonById(Dialog.OK).addSelectionListener(new SelectionListener<ButtonEvent>() {
+                        @Override
+                        public void componentSelected(ButtonEvent ce) {
+                            currentFormatter.insertImage(imageURLField.getValue());
+                            imageAddDialog.hide();
+                        }
+                    });
+
+                    // Cancel button
+                    imageAddDialog.getButtonById(Dialog.CANCEL).addSelectionListener(new SelectionListener<ButtonEvent>() {
+                        @Override
+                        public void componentSelected(ButtonEvent ce) {
+                            imageAddDialog.hide();
+                        }
+                    });
+                }
+                
+                imageURLField.setValue(null);
+                imageAddDialog.show();
+            }
+        });
+        toolbar.add(imageAddButton);
     }
 
     public String getPhaseName() {
