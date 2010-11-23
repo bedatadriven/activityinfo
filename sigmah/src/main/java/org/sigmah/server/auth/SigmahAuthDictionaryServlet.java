@@ -46,6 +46,7 @@ public class SigmahAuthDictionaryServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if(req.getParameter("remove") != null) {
             final Cookie cookie = new Cookie("authToken", "");
+            cookie.setPath("/");
             cookie.setMaxAge(0);
             resp.addCookie(cookie);
             

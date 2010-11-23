@@ -17,6 +17,7 @@ import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
@@ -75,25 +76,8 @@ public class SigmahAppFrame implements Frame {
             logoutButton.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
-                    try {
-                        final RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, "../SigmahAuthToken?remove");
-                        requestBuilder.setCallback(new RequestCallback() {
-
-                            @Override
-                            public void onResponseReceived(Request request, Response response) {
-                                Window.Location.reload();
-                            }
-
-                            @Override
-                            public void onError(Request request, Throwable exception) {
-                                MessageBox.alert(I18N.CONSTANTS.logoutErrorTitle(), exception.getMessage(), null);
-                            }
-                        });
-                        
-                        requestBuilder.send();
-                    } catch (RequestException ex) {
-                        MessageBox.alert(I18N.CONSTANTS.logoutErrorTitle(), ex.getMessage(), null);
-                    }
+                    Cookies.removeCookie("authToken", "/");
+                    Window.Location.reload();
                 }
             });
             RootPanel.get("logout").add(logoutButton);
