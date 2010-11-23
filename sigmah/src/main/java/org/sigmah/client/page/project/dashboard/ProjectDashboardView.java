@@ -121,9 +121,9 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
         toolBar.setAlignment(HorizontalAlignment.LEFT);
         toolBar.setBorders(false);
 
-        buttonSavePhase = new Button(I18N.CONSTANTS.projectSavePhaseButton());
+        buttonSavePhase = new Button(I18N.CONSTANTS.projectSavePhaseButton(), IconImageBundle.ICONS.save());
         buttonActivatePhase = new Button(I18N.CONSTANTS.projectClosePhaseButton(), IconImageBundle.ICONS.activate());
-        buttonPhaseGuide = new Button(I18N.CONSTANTS.projectPhaseGuideHeader());
+        buttonPhaseGuide = new Button(I18N.CONSTANTS.projectPhaseGuideHeader(), IconImageBundle.ICONS.info());
 
         buttonActivatePhase.setEnabled(false);
         buttonSavePhase.setEnabled(false);

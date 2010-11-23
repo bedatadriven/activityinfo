@@ -1,6 +1,7 @@
 package org.sigmah.client.page.project.details;
 
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.core.El;
@@ -53,7 +54,7 @@ public class ProjectDetailsView extends ProjectDetailsPresenter.View {
     private ToolBar buildToolbar() {
 
         // Save button.
-        saveButton = new Button(I18N.CONSTANTS.save());
+        saveButton = new Button(I18N.CONSTANTS.save(), IconImageBundle.ICONS.save());
         saveButton.setEnabled(false);
 
         // Actions toolbar.

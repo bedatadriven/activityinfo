@@ -1,6 +1,7 @@
 package org.sigmah.client.page.project.logframe;
 
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.core.El;
@@ -65,7 +66,7 @@ public class ProjectLogFrameView extends ProjectLogFramePresenter.View {
 
         addStyleName("logframe-grid-main-panel");
 
-        //setScrollMode(Scroll.AUTOY);
+        // setScrollMode(Scroll.AUTOY);
 
         // Title panel.
         final ContentPanel titlePanel = buildTitlePanel();
@@ -157,27 +158,27 @@ public class ProjectLogFrameView extends ProjectLogFramePresenter.View {
     private ToolBar buildToolbar() {
 
         // Save button.
-        saveButton = new Button(I18N.CONSTANTS.save());
+        saveButton = new Button(I18N.CONSTANTS.save(), IconImageBundle.ICONS.save());
         saveButton.setEnabled(false);
 
         // Copy button.
         copyButton = new Button(I18N.CONSTANTS.copy());
         copyButton.setEnabled(true);
-        //TODO unmask it.
+        // TODO unmask it.
         copyButton.setVisible(false);
-        
+
         // Paste button.
         pasteButton = new Button(I18N.CONSTANTS.paste());
         pasteButton.setEnabled(true);
-        //TODO unmask it.
+        // TODO unmask it.
         pasteButton.setVisible(false);
-        
+
         // Export to Word button.
-        wordButton = new Button(I18N.CONSTANTS.exportToWord());
+        wordButton = new Button(I18N.CONSTANTS.exportToWord(), IconImageBundle.ICONS.msword());
         wordButton.setEnabled(true);
 
         // Export to Excel button.
-        excelButton = new Button(I18N.CONSTANTS.exportToExcel());
+        excelButton = new Button(I18N.CONSTANTS.exportToExcel(), IconImageBundle.ICONS.excel());
         excelButton.setEnabled(false);
 
         // Actions toolbar.
