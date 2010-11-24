@@ -471,7 +471,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
                         // application state before generating its component.
                         elementDTO.setService(dispatcher);
                         elementDTO.setAuthentication(authentication);
-                        elementDTO.setCurrentProjectDTO(projectPresenter.getCurrentProjectDTO());
+                        elementDTO.setCurrentContainerDTO(projectPresenter.getCurrentProjectDTO());
                         elementDTO.assignValue(valueResult);
 
                         // Generates element component (with the value).

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.sigmah.shared.dto.element.DefaultFlexibleElementContainer;
 import org.sigmah.shared.dto.logframe.LogFrameDTO;
 import org.sigmah.shared.dto.value.ValueDTO;
 
@@ -20,7 +21,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  * @author tmi
  * 
  */
-public final class ProjectDTO extends BaseModelData implements EntityDTO {
+public final class ProjectDTO extends BaseModelData implements EntityDTO, DefaultFlexibleElementContainer {
 
     private static final long serialVersionUID = -8604264278832531036L;
 
@@ -69,6 +70,7 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO {
     }
 
     // Project name
+    @Override
     public String getName() {
         return get("name");
     }
@@ -78,6 +80,7 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO {
     }
 
     // Project full name
+    @Override
     public String getFullName() {
         return get("fullName");
     }
@@ -87,6 +90,7 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO {
     }
 
     // Project start date
+    @Override
     public Date getStartDate() {
         return get("startDate");
     }
@@ -96,6 +100,7 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO {
     }
 
     // Project end date
+    @Override
     public Date getEndDate() {
         return get("endDate");
     }
@@ -114,6 +119,7 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO {
     }
 
     // Owner project name
+    @Override
     public String getOwnerName() {
         return get("ownerName");
     }
@@ -123,6 +129,7 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO {
     }
 
     // Owner project first name
+    @Override
     public String getOwnerFirstName() {
         return get("ownerFirstName");
     }
@@ -183,6 +190,7 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO {
         set("logFrameDTO", logFrameDTO);
     }
 
+    @Override
     public Double getPlannedBudget() {
         final Double b = (Double) get("plannedBudget");
         return b != null ? b : 0.0;
@@ -192,6 +200,7 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO {
         set("plannedBudget", plannedBudget);
     }
 
+    @Override
     public Double getSpendBudget() {
         final Double b = (Double) get("spendBudget");
         return b != null ? b : 0.0;
@@ -201,6 +210,7 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO {
         set("spendBudget", spendBudget);
     }
 
+    @Override
     public Double getReceivedBudget() {
         final Double b = (Double) get("receivedBudget");
         return b != null ? b : 0.0;
@@ -262,6 +272,7 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO {
         setFunded(fundeds);
     }
 
+    @Override
     public CountryDTO getCountry() {
         return get("country");
     }

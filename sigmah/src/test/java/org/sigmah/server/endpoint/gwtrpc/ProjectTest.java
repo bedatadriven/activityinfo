@@ -188,7 +188,7 @@ public class ProjectTest extends CommandTestCase {
                 final GetValue command = new GetValue(projectId, element.getId(), element.getEntityName());
                 final ValueResult result = execute(command);
 
-                element.setCurrentProjectDTO(project);
+                element.setCurrentContainerDTO(project);
                 element.assignValue(result);
 
                 final ElementDefinition definition = definitions[index];

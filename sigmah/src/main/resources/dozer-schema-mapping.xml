@@ -104,11 +104,6 @@
 		</field>
 
 		<field>
-			<a>values</a>
-			<b>valuesDTO</b>
-		</field>
-
-		<field>
 			<a>currentPhase</a>
 			<b>currentPhaseDTO</b>
 		</field>
@@ -276,17 +271,6 @@
 
 	</mapping>
 
-	<!-- FlexibleElement/FlexibleElementDTO Mapping -->
-	<mapping wildcard="true">
-		<class-a>org.sigmah.shared.domain.element.FlexibleElement</class-a>
-		<class-b>org.sigmah.shared.dto.element.FlexibleElementDTO</class-b>
-
-		<field>
-			<a>parentProjectModel</a>
-			<b>parentProjectModelDTO</b>
-		</field>
-	</mapping>
-
 	<!-- QuestionElement/QuestionElementDTO Mapping -->
 	<mapping wildcard="true">
 		<class-a>org.sigmah.shared.domain.element.QuestionElement</class-a>
@@ -358,22 +342,6 @@
 		</field>
 	</mapping>
 
-	<!-- Value/ValueDTO Mapping -->
-	<mapping wildcard="true">
-		<class-a>org.sigmah.shared.domain.value.Value</class-a>
-		<class-b>org.sigmah.shared.dto.value.ValueDTO</class-b>
-
-		<field>
-			<a>element</a>
-			<b>flexibleElementDTO</b>
-		</field>
-
-		<field>
-			<a>parentProject</a>
-			<b>parentProjectDTO</b>
-		</field>
-	</mapping>
-
 	<!-- IndicatorsListValue/IndicatorsListValueDTO Mapping -->
 	<mapping wildcard="true">
 		<class-a>org.sigmah.shared.domain.value.IndicatorsListValue</class-a>
@@ -426,6 +394,7 @@
 			<a>author.name</a>
 			<b>authorName</b>
 		</field>
+		
 		<field>
 			<a>author.firstName</a>
 			<b>authorFirstName</b>
@@ -591,6 +560,22 @@
 			<a>organization.id</a>
 			<b>organizationId</b>
 		</field>
+	</mapping>
+	
+	<mapping wildcard="true">
+		<class-a>org.sigmah.shared.domain.OrgUnit</class-a>
+		<class-b>org.sigmah.shared.dto.OrgUnitDTOLight</class-b>
+	
+		<field>
+			<a>parent</a>
+			<b>parentDTO</b>
+		</field>
+		
+		<field>
+			<a>children</a>
+			<b>childrenDTO</b>
+		</field>
+	
 	</mapping>
 
 </mappings>

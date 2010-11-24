@@ -6,8 +6,6 @@
 package org.sigmah.shared.dto.value;
 
 import org.sigmah.shared.dto.EntityDTO;
-import org.sigmah.shared.dto.ProjectDTO;
-import org.sigmah.shared.dto.element.FlexibleElementDTO;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
@@ -35,24 +33,6 @@ public class ValueDTO extends BaseModelData implements EntityDTO {
 
     public void setId(int id) {
         set("id", id);
-    }
-
-    // Reference to the parent project
-    public ProjectDTO getParentProjectDTO() {
-        return get("parentProjectDTO");
-    }
-
-    public void setParentProjectDTO(ProjectDTO parentProjectDTO) {
-        set("parentProjectDTO", parentProjectDTO);
-    }
-
-    // Reference to the associated flexible element
-    public FlexibleElementDTO getFlexibleElementDTO() {
-        return get("flexibleElementDTO");
-    }
-
-    public void setFlexibleElementDTO(FlexibleElementDTO flexibleElementDTO) {
-        set("flexibleElementDTO", flexibleElementDTO);
     }
 
     // Value's inner value

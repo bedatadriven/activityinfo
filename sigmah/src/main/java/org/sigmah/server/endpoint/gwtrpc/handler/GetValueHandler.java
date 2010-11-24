@@ -80,7 +80,7 @@ public class GetValueHandler implements CommandHandler<GetValue> {
         // Creates the query to get the value for the flexible element (as
         // string) in the Value table.
         final Query valueQuery = em
-                .createQuery("SELECT v.value FROM Value v WHERE v.parentProject.id = :projectId AND v.element.id = :elementId");
+                .createQuery("SELECT v.value FROM Value v WHERE v.containerId = :projectId AND v.element.id = :elementId");
         valueQuery.setParameter("projectId", cmd.getProjectId());
         valueQuery.setParameter("elementId", cmd.getElementId());
 

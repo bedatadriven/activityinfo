@@ -24,6 +24,9 @@ import org.sigmah.client.page.entry.EntryModule;
 import org.sigmah.client.page.entry.SigmahDataEntryLoader;
 import org.sigmah.client.page.map.MapModule;
 import org.sigmah.client.page.map.SigmahMapLoader;
+import org.sigmah.client.page.orgunit.OrgUnitModule;
+import org.sigmah.client.page.orgunit.OrgUnitPageLoader;
+import org.sigmah.client.page.orgunit.OrgUnitPresenter;
 import org.sigmah.client.page.project.ProjectModule;
 import org.sigmah.client.page.project.ProjectPageLoader;
 import org.sigmah.client.page.project.ProjectPresenter;
@@ -38,6 +41,7 @@ import org.sigmah.client.util.state.IStateManager;
 
 @GinModules({SigmahModule.class,
              ProjectModule.class,
+             OrgUnitModule.class,
              MapModule.class,
              PivotModule.class,
              ReportModule.class,
@@ -64,6 +68,10 @@ public interface SigmahInjector extends Ginjector {
 
     // Required by the 'Project' page
     ProjectPresenter getProjectPresenter();
+    
+    // Required by the 'Org unit' page
+    OrgUnitPresenter getOrgUnitPresenter();
+    OrgUnitPageLoader registerOrgUnitPageLoader();
     
     // Pages from ActivityInfo
     SigmahDataEntryLoader registerDataEntryLoader();

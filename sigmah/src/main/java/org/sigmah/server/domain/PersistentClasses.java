@@ -12,6 +12,9 @@ import org.sigmah.shared.domain.IndicatorValue;
 import org.sigmah.shared.domain.Location;
 import org.sigmah.shared.domain.LocationType;
 import org.sigmah.shared.domain.OrgUnit;
+import org.sigmah.shared.domain.OrgUnitBanner;
+import org.sigmah.shared.domain.OrgUnitDetails;
+import org.sigmah.shared.domain.OrgUnitModel;
 import org.sigmah.shared.domain.Organization;
 import org.sigmah.shared.domain.Phase;
 import org.sigmah.shared.domain.PhaseModel;
@@ -70,6 +73,9 @@ public class PersistentClasses {
             OrgUnitPermission.class,
             Organization.class,
             UserPermission.class,
+            OrgUnitBanner.class,
+            OrgUnitDetails.class,
+            OrgUnitModel.class,
             OrgUnit.class,
             Location.class,
             Indicator.class,

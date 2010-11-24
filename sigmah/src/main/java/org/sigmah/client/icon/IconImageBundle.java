@@ -153,7 +153,11 @@ public interface IconImageBundle extends ImageBundle {
 
     @Resource(value = "table_edit.png")
     AbstractImagePrototype select();
-    
+
     @Resource(value = "information.png")
     AbstractImagePrototype info();
+
+    AbstractImagePrototype expand();
+
+    AbstractImagePrototype collapse();
 }

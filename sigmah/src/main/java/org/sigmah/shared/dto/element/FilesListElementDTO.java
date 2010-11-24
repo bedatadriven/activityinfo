@@ -178,7 +178,7 @@ public class FilesListElementDTO extends FlexibleElementDTO {
 
                 // Set hidden fields values.
                 elementIdHidden.setValue(String.valueOf(getId()));
-                projectIdHidden.setValue(String.valueOf(currentProjectDTO.getId()));
+                projectIdHidden.setValue(String.valueOf(currentContainerDTO.getId()));
                 nameHidden.setValue(uploadField.getValue());
                 authorHidden.setValue(String.valueOf(authentication.getUserId()));
                 emptyHidden.setValue("true");
@@ -321,7 +321,7 @@ public class FilesListElementDTO extends FlexibleElementDTO {
      * Refreshes files list
      */
     private void updateComponent() {
-        final GetValue command = new GetValue(currentProjectDTO.getId(), getId(), getEntityName());
+        final GetValue command = new GetValue(currentContainerDTO.getId(), getId(), getEntityName());
 
         // Server call to obtain elements value
         dispatcher.execute(command, null, new AsyncCallback<ValueResult>() {

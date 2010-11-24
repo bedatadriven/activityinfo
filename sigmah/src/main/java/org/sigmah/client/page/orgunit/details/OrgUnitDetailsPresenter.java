@@ -1,22 +1,20 @@
-package org.sigmah.client.page.project.details;
+package org.sigmah.client.page.orgunit.details;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.project.ProjectPresenter;
+import org.sigmah.client.page.orgunit.OrgUnitPresenter;
 import org.sigmah.client.page.project.SubPresenter;
 import org.sigmah.client.util.Notification;
 import org.sigmah.shared.command.GetValue;
 import org.sigmah.shared.command.UpdateProject;
 import org.sigmah.shared.command.result.ValueResult;
 import org.sigmah.shared.command.result.VoidResult;
-import org.sigmah.shared.dto.CountryDTO;
-import org.sigmah.shared.dto.ProjectDTO;
-import org.sigmah.shared.dto.ProjectDetailsDTO;
+import org.sigmah.shared.dto.OrgUnitDTO;
+import org.sigmah.shared.dto.OrgUnitDetailsDTO;
 import org.sigmah.shared.dto.element.DefaultFlexibleElementDTO;
 import org.sigmah.shared.dto.element.FlexibleElementDTO;
 import org.sigmah.shared.dto.element.handler.ValueEvent;
@@ -40,7 +38,7 @@ import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Grid;
 
-public class ProjectDetailsPresenter implements SubPresenter {
+public class OrgUnitDetailsPresenter implements SubPresenter {
 
     /**
      * Description of the view managed by this presenter.
@@ -65,9 +63,9 @@ public class ProjectDetailsPresenter implements SubPresenter {
     private final Authentication authentication;
 
     /**
-     * The main project presenter.
+     * The main presenter.
      */
-    private final ProjectPresenter projectPresenter;
+    private final OrgUnitPresenter mainPresenter;
 
     /**
      * List of values changes.
@@ -79,10 +77,9 @@ public class ProjectDetailsPresenter implements SubPresenter {
      */
     private int maskCount;
 
-    public ProjectDetailsPresenter(Dispatcher dispatcher, Authentication authentication,
-            ProjectPresenter projectPresenter) {
+    public OrgUnitDetailsPresenter(Dispatcher dispatcher, Authentication authentication, OrgUnitPresenter mainPrsenter) {
         this.dispatcher = dispatcher;
-        this.projectPresenter = projectPresenter;
+        this.mainPresenter = mainPrsenter;
         this.authentication = authentication;
     }
 
@@ -90,14 +87,14 @@ public class ProjectDetailsPresenter implements SubPresenter {
     public Component getView() {
 
         if (view == null) {
-            view = new ProjectDetailsView();
+            view = new OrgUnitDetailsView();
             addListeners();
         }
 
         valueChanges.clear();
         view.getSaveButton().disable();
 
-        load(projectPresenter.getCurrentProjectDTO().getProjectModelDTO().getProjectDetailsDTO());
+        load(mainPresenter.getCurrentOrgUnitDTO().getOrgUnitModel().getDetails());
 
         return view;
     }
@@ -120,7 +117,7 @@ public class ProjectDetailsPresenter implements SubPresenter {
 
                 view.getSaveButton().disable();
 
-                final UpdateProject updateProject = new UpdateProject(projectPresenter.getCurrentProjectDTO().getId(),
+                final UpdateProject updateProject = new UpdateProject(mainPresenter.getCurrentOrgUnitDTO().getId(),
                         valueChanges);
 
                 dispatcher.execute(updateProject,
@@ -152,7 +149,7 @@ public class ProjectDetailsPresenter implements SubPresenter {
                                 valueChanges.clear();
 
                                 if (refreshBanner) {
-                                    projectPresenter.refreshBanner();
+                                    mainPresenter.refreshBanner();
                                 }
                             }
                         });
@@ -161,18 +158,18 @@ public class ProjectDetailsPresenter implements SubPresenter {
     }
 
     /**
-     * Loads the presenter with the project details.
+     * Loads the presenter with the org unit details.
      * 
      * @param details
      *            The details.
      */
-    private void load(ProjectDetailsDTO details) {
+    private void load(OrgUnitDetailsDTO details) {
 
         // Clear panel.
         view.getMainPanel().removeAll();
 
         // Layout.
-        final LayoutDTO layout = details.getLayoutDTO();
+        final LayoutDTO layout = details.getLayout();
 
         // Counts elements.
         int count = 0;
@@ -210,7 +207,7 @@ public class ProjectDetailsPresenter implements SubPresenter {
                         // --
 
                         // Remote call to ask for this element value.
-                        final GetValue command = new GetValue(projectPresenter.getCurrentProjectDTO().getId(),
+                        final GetValue command = new GetValue(mainPresenter.getCurrentOrgUnitDTO().getId(),
                                 elementDTO.getId(), elementDTO.getEntityName());
                         dispatcher.execute(command, null, new AsyncCallback<ValueResult>() {
 
@@ -236,7 +233,7 @@ public class ProjectDetailsPresenter implements SubPresenter {
                                 // its component.
                                 elementDTO.setService(dispatcher);
                                 elementDTO.setAuthentication(authentication);
-                                elementDTO.setCurrentContainerDTO(projectPresenter.getCurrentProjectDTO());
+                                elementDTO.setCurrentContainerDTO(mainPresenter.getCurrentOrgUnitDTO());
                                 elementDTO.assignValue(valueResult);
 
                                 // Generates element component (with the value).
@@ -317,38 +314,14 @@ public class ProjectDetailsPresenter implements SubPresenter {
      */
     private void updateCurrentProject(DefaultFlexibleElementDTO element, String value) {
 
-        final ProjectDTO currentProjectDTO = projectPresenter.getCurrentProjectDTO();
+        final OrgUnitDTO currentOrgUnitDTO = mainPresenter.getCurrentOrgUnitDTO();
 
         switch (element.getType()) {
         case CODE:
-            currentProjectDTO.setName(value);
+            currentOrgUnitDTO.setName(value);
             break;
         case TITLE:
-            currentProjectDTO.setFullName(value);
-            break;
-        case START_DATE:
-            if ("".equals(value)) {
-                currentProjectDTO.setStartDate(null);
-            } else {
-                try {
-                    final long timestamp = Long.parseLong(value);
-                    currentProjectDTO.setStartDate(new Date(timestamp));
-                } catch (NumberFormatException e) {
-                    // nothing, invalid date.
-                }
-            }
-            break;
-        case END_DATE:
-            if ("".equals(value)) {
-                currentProjectDTO.setEndDate(null);
-            } else {
-                try {
-                    final long timestamp = Long.parseLong(value);
-                    currentProjectDTO.setEndDate(new Date(timestamp));
-                } catch (NumberFormatException e) {
-                    // nothing, invalid date.
-                }
-            }
+            currentOrgUnitDTO.setFullName(value);
             break;
         case BUDGET:
             try {
@@ -358,37 +331,16 @@ public class ProjectDetailsPresenter implements SubPresenter {
                 final double spendBudget = Double.parseDouble(budgets[1]);
                 final double receivedBudget = Double.parseDouble(budgets[2]);
 
-                currentProjectDTO.setPlannedBudget(plannedBudget);
-                currentProjectDTO.setSpendBudget(spendBudget);
-                currentProjectDTO.setReceivedBudget(receivedBudget);
+                currentOrgUnitDTO.setPlannedBudget(plannedBudget);
+                currentOrgUnitDTO.setSpendBudget(spendBudget);
+                currentOrgUnitDTO.setReceivedBudget(receivedBudget);
 
             } catch (Exception e) {
                 // nothing, invalid budget.
             }
             break;
-        case COUNTRY:
-            final CountryDTO country = element.getCountriesStore().findModel("id", Integer.parseInt(value));
-            if (country != null) {
-                currentProjectDTO.setCountry(country);
-            } else {
-                // nothing, invalid country.
-            }
-            break;
-        case OWNER:
-
-            // The owner component doesn't fire any event for now.
-
-            /*
-             * final UserPermissionDTO user =
-             * element.getUsersStore().findModel("email", value); if (user !=
-             * null) { currentProjectDTO.setOwnerName(user.getName());
-             * currentProjectDTO.setOwnerFirstName(user.getFirstName());
-             * currentProjectDTO.setOwnerEmail(user.getEmail()); } else { //
-             * nothing, invalid user. }
-             */
-            break;
         default:
-            // Nothing, unknown type.
+            // Nothing, non managed type.
             break;
         }
     }
@@ -403,12 +355,8 @@ public class ProjectDetailsPresenter implements SubPresenter {
 
             // Stores the change to be saved later.
             valueChanges.add(event);
-
-            if (!projectPresenter.getCurrentDisplayedPhaseDTO().isEnded()) {
-
-                // Enables the save action.
-                view.getSaveButton().enable();
-            }
+            // Enables the save action.
+            view.getSaveButton().enable();
         }
     }
 }

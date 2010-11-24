@@ -21,6 +21,7 @@ import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.ValueResultUtils;
 import org.sigmah.shared.domain.Country;
 import org.sigmah.shared.domain.Deleteable;
+import org.sigmah.shared.domain.OrgUnit;
 import org.sigmah.shared.domain.Project;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.element.DefaultFlexibleElementType;
@@ -241,7 +242,7 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
 
         // Retrieving the current value
         final Query query = em
-                .createQuery("SELECT v FROM Value v WHERE v.parentProject.id = :projectId and v.element.id = :elementId");
+                .createQuery("SELECT v FROM Value v WHERE v.containerId = :projectId and v.element.id = :elementId");
         query.setParameter("projectId", projectId);
         query.setParameter("elementId", elementId);
 
@@ -276,9 +277,8 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
             final FlexibleElement element = em.find(FlexibleElement.class, elementId);
             currentValue.setElement(element);
 
-            // Parent project
-            final Project project = em.find(Project.class, projectId);
-            currentValue.setParentProject(project);
+            // Container
+            currentValue.setContainerId(projectId);
         }
 
         // Updates the value's fields.
@@ -291,14 +291,14 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
     /**
      * Updates the current project with the new value of a default element.
      * 
-     * @param projectId
+     * @param id
      *            The project id.
      * @param type
      *            The type of the default element.
      * @param value
      *            The new value.
      */
-    private void saveDefaultElement(int projectId, DefaultFlexibleElementType type, Serializable value) {
+    private void saveDefaultElement(int id, DefaultFlexibleElementType type, Serializable value) {
 
         // All default values are managed as strings.
         // See DefaultFlexibleElementDTO.getComponent();
@@ -309,54 +309,94 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
 
         final String stringValue = (String) value;
 
-        // Retrieves project.
-        final Project project = em.find(Project.class, projectId);
+        // Retrieves container.
+        final Project project = em.find(Project.class, id);
+        final OrgUnit orgUnit = em.find(OrgUnit.class, id);
 
-        if (project == null) {
-            LOG.error("[saveDefaultElement] Project with id '" + projectId + "' not found.");
+        if (project == null && orgUnit == null) {
+            LOG.error("[saveDefaultElement] Container with id '" + id + "' not found.");
             return;
         }
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("[saveDefaultElement] Found project with code '" + project.getName() + "'.");
+        if (project != null) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("[saveDefaultElement] Found project with code '" + project.getName() + "'.");
+            }
+        } else {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("[saveDefaultElement] Found org unit with code '" + orgUnit.getName() + "'.");
+            }
         }
 
         switch (type) {
         case CODE:
-            project.setName(stringValue);
+
+            if (project != null) {
+                project.setName(stringValue);
+            } else {
+                orgUnit.setName(stringValue);
+            }
+
             if (LOG.isDebugEnabled()) {
-                LOG.debug("[saveDefaultElement] Set project code to '" + stringValue + "'.");
+                LOG.debug("[saveDefaultElement] Set container code to '" + stringValue + "'.");
             }
             break;
         case TITLE:
-            project.setFullName(stringValue);
+
+            if (project != null) {
+                project.setFullName(stringValue);
+            } else {
+                orgUnit.setFullName(stringValue);
+            }
+
             if (LOG.isDebugEnabled()) {
-                LOG.debug("[saveDefaultElement] Set project full name to '" + stringValue + "'.");
+                LOG.debug("[saveDefaultElement] Set container full name to '" + stringValue + "'.");
             }
             break;
         case START_DATE: {
+
             // Decodes timestamp.
-            final long timestamp = Long.valueOf(stringValue);
-            final Date date = new Date(timestamp);
-            project.setStartDate(date);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("[saveDefaultElement] Set project start date to '" + date + "'.");
+            if (project != null) {
+                if ("".equals(stringValue)) {
+
+                    project.setStartDate(null);
+
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("[saveDefaultElement] Set container start date to null.");
+                    }
+                } else {
+
+                    final long timestamp = Long.valueOf(stringValue);
+                    final Date date = new Date(timestamp);
+                    project.setStartDate(date);
+
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("[saveDefaultElement] Set container start date to '" + date + "'.");
+                    }
+                }
             }
         }
             break;
         case END_DATE: {
+
             // Decodes timestamp.
-            if ("".equals(stringValue)) {
-                project.setEndDate(null);
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("[saveDefaultElement] Set project end date to null.");
-                }
-            } else {
-                final long timestamp = Long.valueOf(stringValue);
-                final Date date = new Date(timestamp);
-                project.setEndDate(date);
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("[saveDefaultElement] Set project end date to '" + date + "'.");
+            if (project != null) {
+                if ("".equals(stringValue)) {
+
+                    project.setEndDate(null);
+
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("[saveDefaultElement] Set container end date to null.");
+                    }
+                } else {
+
+                    final long timestamp = Long.valueOf(stringValue);
+                    final Date date = new Date(timestamp);
+                    project.setEndDate(date);
+
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("[saveDefaultElement] Set container end date to '" + date + "'.");
+                    }
                 }
             }
         }
@@ -368,42 +408,57 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
             final double spendBudget = Double.parseDouble(budgets[1]);
             final double receivedBudget = Double.parseDouble(budgets[2]);
 
-            project.setPlannedBudget(plannedBudget);
-            project.setSpendBudget(spendBudget);
-            project.setReceivedBudget(receivedBudget);
+            if (project != null) {
+                project.setPlannedBudget(plannedBudget);
+                project.setSpendBudget(spendBudget);
+                project.setReceivedBudget(receivedBudget);
+            } else {
+                orgUnit.setPlannedBudget(plannedBudget);
+                orgUnit.setSpendBudget(spendBudget);
+                orgUnit.setReceivedBudget(receivedBudget);
+            }
 
             if (LOG.isDebugEnabled()) {
-                LOG.debug("[saveDefaultElement] Set project budget to '" + plannedBudget + "|" + spendBudget + "|"
+                LOG.debug("[saveDefaultElement] Set container budget to '" + plannedBudget + "|" + spendBudget + "|"
                         + receivedBudget + "'.");
             }
         }
             break;
         case COUNTRY: {
-            // Retrieves country.
-            final Country country = em.find(Country.class, Integer.valueOf(stringValue));
-            project.setCountry(country);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("[saveDefaultElement] Set project country to '" + country.getName() + "'.");
+
+            if (project != null) {
+
+                // Retrieves country.
+                final Country country = em.find(Country.class, Integer.valueOf(stringValue));
+                project.setCountry(country);
+
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("[saveDefaultElement] Set container country to '" + country.getName() + "'.");
+                }
             }
         }
             break;
         case OWNER: {
-            // Retrieves user.
-            final Query q = em.createQuery("SELECT u from User u WHERE u.email = :emailVal");
-            q.setParameter("emailVal", stringValue);
 
-            final User user;
-            try {
-                user = (User) q.getSingleResult();
-            } catch (NoResultException e) {
-                LOG.error("[saveDefaultElement] Unknown user with email '" + stringValue + "'.", e);
-                return;
-            }
+            if (project != null) {
 
-            project.setOwner(user);
+                // Retrieves user.
+                final Query q = em.createQuery("SELECT u from User u WHERE u.email = :emailVal");
+                q.setParameter("emailVal", stringValue);
 
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("[saveDefaultElement] Set project owner to '" + user.getEmail() + "'.");
+                final User user;
+                try {
+                    user = (User) q.getSingleResult();
+                } catch (NoResultException e) {
+                    LOG.error("[saveDefaultElement] Unknown user with email '" + stringValue + "'.", e);
+                    return;
+                }
+
+                project.setOwner(user);
+
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("[saveDefaultElement] Set container owner to '" + user.getEmail() + "'.");
+                }
             }
         }
             break;
@@ -412,11 +467,15 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
             return;
         }
 
-        // Updates project.
-        em.merge(project);
+        // Updates container.
+        if (project != null) {
+            em.merge(project);
+        } else {
+            em.merge(orgUnit);
+        }
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("[saveDefaultElement] Updates the project.");
+            LOG.debug("[saveDefaultElement] Updates the container.");
         }
     }
 }

@@ -57,6 +57,7 @@ public class SigmahEntryPoint implements EntryPoint {
             injector.registerProjectPageLoader();
             injector.registerDashboardPageLoader();
             injector.registerProjectPageLoader();
+            injector.registerOrgUnitPageLoader();
 
             // ActivityInfo
             injector.registerDataEntryLoader();

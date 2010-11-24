@@ -8,7 +8,6 @@ import org.sigmah.shared.command.result.CountryResult;
 import org.sigmah.shared.command.result.ValueResult;
 import org.sigmah.shared.domain.element.DefaultFlexibleElementType;
 import org.sigmah.shared.dto.CountryDTO;
-import org.sigmah.shared.dto.UserPermissionDTO;
 import org.sigmah.shared.dto.element.handler.RequiredValueEvent;
 import org.sigmah.shared.dto.element.handler.ValueEvent;
 
@@ -46,7 +45,8 @@ public class DefaultFlexibleElementDTO extends FlexibleElementDTO {
     private static final long serialVersionUID = 3746586633233053639L;
 
     private transient ListStore<CountryDTO> countriesStore;
-    private transient ListStore<UserPermissionDTO> usersStore;
+
+    private transient DefaultFlexibleElementContainer container;
 
     @Override
     public String getEntityName() {
@@ -66,12 +66,15 @@ public class DefaultFlexibleElementDTO extends FlexibleElementDTO {
         return countriesStore;
     }
 
-    public ListStore<UserPermissionDTO> getUsersStore() {
-        return usersStore;
-    }
-
     @Override
     public Component getComponent(ValueResult valueResult, boolean enabled) {
+
+        if (currentContainerDTO instanceof DefaultFlexibleElementContainer) {
+            container = (DefaultFlexibleElementContainer) currentContainerDTO;
+        } else {
+            throw new IllegalArgumentException(
+                    "The flexible elements container isn't an instance of DefaultFlexibleElementContainer. The default flexible element connot be instanciated.");
+        }
 
         final DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat(I18N.CONSTANTS.flexibleElementDateFormat());
         final Component component;
@@ -85,12 +88,12 @@ public class DefaultFlexibleElementDTO extends FlexibleElementDTO {
             // Builds the field and sets its value.
             if (enabled) {
                 final TextField<String> textField = createStringField(16, false);
-                textField.setValue(currentProjectDTO.getName());
+                textField.setValue(container.getName());
                 field = textField;
 
             } else {
                 final LabelField labelField = createLabelField();
-                labelField.setValue(currentProjectDTO.getName());
+                labelField.setValue(container.getName());
                 field = labelField;
             }
 
@@ -109,12 +112,12 @@ public class DefaultFlexibleElementDTO extends FlexibleElementDTO {
             // Builds the field and sets its value.
             if (enabled) {
                 final TextField<String> textField = createStringField(50, false);
-                textField.setValue(currentProjectDTO.getFullName());
+                textField.setValue(container.getFullName());
                 field = textField;
 
             } else {
                 final LabelField labelField = createLabelField();
-                labelField.setValue(currentProjectDTO.getFullName());
+                labelField.setValue(container.getFullName());
                 field = labelField;
             }
 
@@ -129,18 +132,19 @@ public class DefaultFlexibleElementDTO extends FlexibleElementDTO {
         case START_DATE: {
 
             final Field<?> field;
+            final Date sd = container.getStartDate();
 
             // Builds the field and sets its value.
             if (enabled) {
                 final DateField dateField = createDateField(false);
-                dateField.setValue(currentProjectDTO.getStartDate());
+                dateField.setValue(sd);
                 field = dateField;
 
             } else {
 
                 final LabelField labelField = createLabelField();
-                if (currentProjectDTO.getStartDate() != null) {
-                    labelField.setValue(DATE_FORMAT.format(currentProjectDTO.getStartDate()));
+                if (sd != null) {
+                    labelField.setValue(DATE_FORMAT.format(sd));
                 }
                 field = labelField;
             }
@@ -155,18 +159,19 @@ public class DefaultFlexibleElementDTO extends FlexibleElementDTO {
         case END_DATE: {
 
             final Field<?> field;
+            final Date ed = container.getEndDate();
 
             // Builds the field and sets its value.
             if (enabled) {
                 final DateField dateField = createDateField(true);
-                dateField.setValue(currentProjectDTO.getEndDate());
+                dateField.setValue(ed);
                 field = dateField;
 
             } else {
 
                 final LabelField labelField = createLabelField();
-                if (currentProjectDTO.getEndDate() != null) {
-                    labelField.setValue(DATE_FORMAT.format(currentProjectDTO.getEndDate()));
+                if (ed != null) {
+                    labelField.setValue(DATE_FORMAT.format(ed));
                 }
                 field = labelField;
             }
@@ -183,6 +188,10 @@ public class DefaultFlexibleElementDTO extends FlexibleElementDTO {
             final Field<?> plannedBudgetField;
             final Field<?> spendBudgetField;
             final Field<?> receivedBudgetField;
+
+            final Double pb = container.getPlannedBudget();
+            final Double sb = container.getSpendBudget();
+            final Double rb = container.getReceivedBudget();
 
             // Spent ratio.
             final Label ratioLabel = new Label();
@@ -244,9 +253,9 @@ public class DefaultFlexibleElementDTO extends FlexibleElementDTO {
                 receivedBudgetNumberField.addListener(Events.Change, listener);
 
                 // Sets the value to the fields.
-                plannedBudgetNumberField.setValue(currentProjectDTO.getPlannedBudget());
-                spendBudgetNumberField.setValue(currentProjectDTO.getSpendBudget());
-                receivedBudgetNumberField.setValue(currentProjectDTO.getReceivedBudget());
+                plannedBudgetNumberField.setValue(pb);
+                spendBudgetNumberField.setValue(sb);
+                receivedBudgetNumberField.setValue(rb);
 
                 plannedBudgetField = plannedBudgetNumberField;
                 spendBudgetField = spendBudgetNumberField;
@@ -259,16 +268,16 @@ public class DefaultFlexibleElementDTO extends FlexibleElementDTO {
                 final LabelField receivedBudgetLabelField = createLabelField();
 
                 // Sets the value to the fields.
-                plannedBudgetLabelField.setValue(currentProjectDTO.getPlannedBudget());
-                spendBudgetLabelField.setValue(currentProjectDTO.getSpendBudget());
-                receivedBudgetLabelField.setValue(currentProjectDTO.getReceivedBudget());
+                plannedBudgetLabelField.setValue(pb);
+                spendBudgetLabelField.setValue(sb);
+                receivedBudgetLabelField.setValue(rb);
 
                 plannedBudgetField = plannedBudgetLabelField;
                 spendBudgetField = spendBudgetLabelField;
                 receivedBudgetField = receivedBudgetLabelField;
             }
 
-            final Double ratio = currentProjectDTO.getSpendBudget() / currentProjectDTO.getPlannedBudget() * 100;
+            final Double ratio = sb / pb * 100;
             ratioLabel
                     .setText(I18N.CONSTANTS.flexibleElementBudgetDistributionRatio() + ": " + ratio.intValue() + " %");
 
@@ -292,6 +301,7 @@ public class DefaultFlexibleElementDTO extends FlexibleElementDTO {
         case COUNTRY: {
 
             final Field<?> field;
+            final CountryDTO c = container.getCountry();
 
             if (enabled) {
                 final ComboBox<CountryDTO> comboBox = new ComboBox<CountryDTO>();
@@ -324,7 +334,7 @@ public class DefaultFlexibleElementDTO extends FlexibleElementDTO {
                             countriesStore.add(result.getData());
 
                             // Sets the value to the field.
-                            comboBox.setValue(currentProjectDTO.getCountry());
+                            comboBox.setValue(c);
 
                             // Listens to the selection changes.
                             comboBox.addSelectionChangedListener(new SelectionChangedListener<CountryDTO>() {
@@ -363,7 +373,7 @@ public class DefaultFlexibleElementDTO extends FlexibleElementDTO {
                 } else {
 
                     // Sets the value to the field.
-                    comboBox.setValue(currentProjectDTO.getCountry());
+                    comboBox.setValue(c);
 
                     // Listens to the selection changes.
                     comboBox.addSelectionChangedListener(new SelectionChangedListener<CountryDTO>() {
@@ -402,7 +412,7 @@ public class DefaultFlexibleElementDTO extends FlexibleElementDTO {
             } else {
 
                 final LabelField labelField = createLabelField();
-                labelField.setValue(currentProjectDTO.getCountry().getName());
+                labelField.setValue(c.getName());
 
                 field = labelField;
             }
@@ -423,109 +433,10 @@ public class DefaultFlexibleElementDTO extends FlexibleElementDTO {
             labelField.setFieldLabel(getLabel());
 
             // Sets the value to the field.
-            labelField.setValue(currentProjectDTO.getOwnerFirstName() != null ? currentProjectDTO.getOwnerFirstName()
-                    + " " + currentProjectDTO.getOwnerName() : currentProjectDTO.getOwnerName());
+            labelField.setValue(container.getOwnerFirstName() != null ? container.getOwnerFirstName() + " "
+                    + container.getOwnerName() : container.getOwnerName());
 
             component = labelField;
-
-            /*
-             * final ComboBox<UserPermissionDTO> comboBox = new
-             * ComboBox<UserPermissionDTO>();
-             * comboBox.setEmptyText("Select a manager...");
-             * 
-             * if (usersStore == null) { usersStore = new
-             * ListStore<UserPermissionDTO>(); }
-             * 
-             * comboBox.setStore(usersStore); comboBox.setDisplayField("name");
-             * comboBox.setValueField("email");
-             * comboBox.setTriggerAction(TriggerAction.ALL);
-             * comboBox.setEditable(true); comboBox.setAllowBlank(false);
-             * 
-             * // Sets the field label.
-             * setLabel(I18N.CONSTANTS.projectManager());
-             * comboBox.setFieldLabel(getLabel());
-             * 
-             * // Retrieves the users list. if (usersStore.getCount() == 0) {
-             * dispatcher.execute(new GetUsers(currentProjectDTO.getId()), null,
-             * new AsyncCallback<UserResult>() {
-             * 
-             * @Override public void onFailure(Throwable e) {
-             * Log.error("[getComponent] Error while getting users list.", e); }
-             * 
-             * @Override public void onSuccess(UserResult result) {
-             * 
-             * // Owner permission. final UserPermissionDTO perm = new
-             * UserPermissionDTO();
-             * perm.setName(currentProjectDTO.getOwnerName());
-             * perm.setFirstName(currentProjectDTO.getOwnerFirstName());
-             * perm.setEmail(currentProjectDTO.getOwnerEmail());
-             * 
-             * // Fills the store. usersStore.add(perm);
-             * usersStore.add(result.getData());
-             * 
-             * // Sets the value to the field. comboBox.setValue(perm);
-             * 
-             * // Listens to the selection changes.
-             * comboBox.addSelectionChangedListener(new
-             * SelectionChangedListener<UserPermissionDTO>() {
-             * 
-             * @Override public void
-             * selectionChanged(SelectionChangedEvent<UserPermissionDTO> se) {
-             * 
-             * String value = null; final boolean isValueOn;
-             * 
-             * // Gets the selected choice. final UserPermissionDTO choice =
-             * se.getSelectedItem();
-             * 
-             * // Checks if the choice isn't the default empty // choice.
-             * isValueOn = choice != null && !"".equals(choice.getEmail());
-             * 
-             * if (choice != null) { value = choice.getEmail(); }
-             * 
-             * if (value != null) { // Fires value change event.
-             * handlerManager.fireEvent(new
-             * ValueEvent(DefaultFlexibleElementDTO.this, value)); }
-             * 
-             * // Required element ? if (getValidates()) {
-             * handlerManager.fireEvent(new RequiredValueEvent(isValueOn)); } }
-             * }); } }); } else {
-             * 
-             * // Owner permission. final UserPermissionDTO perm = new
-             * UserPermissionDTO();
-             * perm.setName(currentProjectDTO.getOwnerName());
-             * perm.setFirstName(currentProjectDTO.getOwnerFirstName());
-             * perm.setEmail(currentProjectDTO.getOwnerEmail());
-             * 
-             * // Sets the value to the field. comboBox.setValue(perm);
-             * 
-             * // Listens to the selection changes.
-             * comboBox.addSelectionChangedListener(new
-             * SelectionChangedListener<UserPermissionDTO>() {
-             * 
-             * @Override public void
-             * selectionChanged(SelectionChangedEvent<UserPermissionDTO> se) {
-             * 
-             * String value = null; final boolean isValueOn;
-             * 
-             * // Gets the selected choice. final UserPermissionDTO choice =
-             * se.getSelectedItem();
-             * 
-             * // Checks if the choice isn't the default empty // choice.
-             * isValueOn = choice != null && !"".equals(choice.getEmail());
-             * 
-             * if (choice != null) { value = String.valueOf(choice.getEmail());
-             * }
-             * 
-             * if (value != null) { // Fires value change event.
-             * handlerManager.fireEvent(new
-             * ValueEvent(DefaultFlexibleElementDTO.this, value)); }
-             * 
-             * // Required element ? if (getValidates()) {
-             * handlerManager.fireEvent(new RequiredValueEvent(isValueOn)); } }
-             * }); }
-             * 
-             * component = comboBox;
-             */
         }
             break;
         default:

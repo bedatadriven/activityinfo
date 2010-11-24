@@ -21,7 +21,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.sigmah.shared.domain.logframe.LogFrame;
-import org.sigmah.shared.domain.value.Value;
 
 @Entity
 public class Project extends UserDatabase {
@@ -31,7 +30,6 @@ public class Project extends UserDatabase {
     private ProjectModel projectModel;
     private Phase currentPhase;
     private List<Phase> phases = new ArrayList<Phase>();
-    private List<Value> values = new ArrayList<Value>();
     private Integer calendarId;
     private Double plannedBudget;
     private Double spendBudget;
@@ -86,15 +84,6 @@ public class Project extends UserDatabase {
 
     public void setPhases(List<Phase> phases) {
         this.phases = phases;
-    }
-
-    @OneToMany(mappedBy = "parentProject", cascade = CascadeType.ALL)
-    public List<Value> getValues() {
-        return values;
-    }
-
-    public void setValues(List<Value> values) {
-        this.values = values;
     }
 
     /**

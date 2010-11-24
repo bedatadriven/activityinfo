@@ -1,8 +1,4 @@
-/*
- * All Sigmah code is released under the GNU General Public License v3
- * See COPYRIGHT.txt and LICENSE.txt.
- */
-package org.sigmah.client.page.project;
+package org.sigmah.client.page.orgunit;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
@@ -17,17 +13,15 @@ import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.TabPage;
-import org.sigmah.client.page.project.calendar.ProjectCalendarPresenter;
-import org.sigmah.client.page.project.dashboard.ProjectDashboardPresenter;
-import org.sigmah.client.page.project.dashboard.funding.FundingIconProvider;
-import org.sigmah.client.page.project.details.ProjectDetailsPresenter;
-import org.sigmah.client.page.project.logframe.ProjectLogFramePresenter;
-import org.sigmah.client.page.project.reports.ProjectReportsPresenter;
+import org.sigmah.client.page.orgunit.calendar.OrgUnitCalendarPresenter;
+import org.sigmah.client.page.orgunit.dashboard.OrgUnitDashboardPresenter;
+import org.sigmah.client.page.orgunit.details.OrgUnitDetailsPresenter;
+import org.sigmah.client.page.project.DummyPresenter;
+import org.sigmah.client.page.project.SubPresenter;
 import org.sigmah.client.ui.ToggleAnchor;
-import org.sigmah.shared.command.GetProject;
-import org.sigmah.shared.dto.PhaseDTO;
-import org.sigmah.shared.dto.ProjectBannerDTO;
-import org.sigmah.shared.dto.ProjectDTO;
+import org.sigmah.shared.command.GetOrgUnit;
+import org.sigmah.shared.dto.OrgUnitBannerDTO;
+import org.sigmah.shared.dto.OrgUnitDTO;
 import org.sigmah.shared.dto.element.DefaultFlexibleElementDTO;
 import org.sigmah.shared.dto.element.FlexibleElementDTO;
 import org.sigmah.shared.dto.layout.LayoutConstraintDTO;
@@ -50,22 +44,17 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
 
-/**
- * Project presenter which manages the {@link ProjectView}.
- * 
- * @author Denis Colliot (dcolliot@ideia.fr)
- */
-public class ProjectPresenter implements Frame, TabPage {
+public class OrgUnitPresenter implements Frame, TabPage {
 
-    public static final PageId PAGE_ID = new PageId("project");
+    public static final PageId PAGE_ID = new PageId("orgunit");
 
     /**
      * Description of the view managed by this presenter.
      */
-    @ImplementedBy(ProjectView.class)
+    @ImplementedBy(OrgUnitView.class)
     public interface View {
 
-        public ContentPanel getPanelProjectBanner();
+        public ContentPanel getPanelBanner();
 
         public ContentPanel getTabPanel();
 
@@ -76,41 +65,28 @@ public class ProjectPresenter implements Frame, TabPage {
     private final Dispatcher dispatcher;
     private final Authentication authentication;
     private Page activePage;
-
-    private ProjectState currentState;
+    private OrgUnitState currentState;
     private ToggleAnchor currentTab;
-    /**
-     * The current displayed project.
-     */
-    private ProjectDTO currentProjectDTO;
-    /**
-     * The current displayed phase.
-     */
-    private PhaseDTO currentDisplayedPhaseDTO;
-    private final static String[] MAIN_TABS = { I18N.CONSTANTS.projectTabDashboard(), I18N.CONSTANTS.projectDetails(),
-            I18N.CONSTANTS.projectTabLogFrame(), I18N.CONSTANTS.projectTabIndicators(),
-            I18N.CONSTANTS.projectTabCalendar(), I18N.CONSTANTS.projectTabReports(),
-            I18N.CONSTANTS.projectTabSecurityIncident() };
+    private OrgUnitDTO currentOrgUnitDTO;
     private final SubPresenter[] presenters;
 
+    private final static String[] MAIN_TABS = { I18N.CONSTANTS.dashboard(), I18N.CONSTANTS.projectDetails(),
+            I18N.CONSTANTS.projectTabCalendar(), I18N.CONSTANTS.projectTabReports() };
+
     @Inject
-    public ProjectPresenter(final Dispatcher dispatcher, View view, Authentication authentication,
+    public OrgUnitPresenter(final Dispatcher dispatcher, View view, Authentication authentication,
             final EventBus eventBus) {
+
         this.dispatcher = dispatcher;
         this.view = view;
         this.authentication = authentication;
 
-        final DummyPresenter dummyPresenter = new DummyPresenter(); // For
-                                                                    // development
+        final DummyPresenter dummyPresenter = new DummyPresenter();
 
-        this.presenters = new SubPresenter[] { new ProjectDashboardPresenter(dispatcher, authentication, this), // Dashboard
-                new ProjectDetailsPresenter(dispatcher, authentication, this), // Details,
-                new ProjectLogFramePresenter(dispatcher, this), // Logical
-                                                                // Framework
-                dummyPresenter, // Indicators
-                new ProjectCalendarPresenter(dispatcher, this), // Calendar
-                new ProjectReportsPresenter(dispatcher, eventBus, this), // Reports
-                dummyPresenter // Security incidents
+        this.presenters = new SubPresenter[] { new OrgUnitDashboardPresenter(dispatcher, eventBus, this),
+                new OrgUnitDetailsPresenter(dispatcher, authentication, this),
+                new OrgUnitCalendarPresenter(dispatcher, this), dummyPresenter
+
         };
 
         for (int i = 0; i < MAIN_TABS.length; i++) {
@@ -147,100 +123,84 @@ public class ProjectPresenter implements Frame, TabPage {
             anchor.toggleAnchorMode();
             currentTab = anchor;
 
-            ProjectPresenter.this.view.setMainPanel(presenters[index].getView());
+            OrgUnitPresenter.this.view.setMainPanel(presenters[index].getView());
             presenters[index].viewDidAppear();
         } else if (force) {
-            ProjectPresenter.this.view.setMainPanel(presenters[index].getView());
+            OrgUnitPresenter.this.view.setMainPanel(presenters[index].getView());
             presenters[index].viewDidAppear();
         }
     }
 
     @Override
     public boolean navigate(final PageState place) {
-        final ProjectState projectState = (ProjectState) place;
-        final int projectId = projectState.getProjectId();
 
-        if (currentProjectDTO == null || projectId != currentProjectDTO.getId()) {
+        final OrgUnitState state = (OrgUnitState) place;
+        final int id = state.getOrgUnitId();
+
+        if (currentOrgUnitDTO == null || id != currentOrgUnitDTO.getId()) {
             if (Log.isDebugEnabled()) {
-                Log.debug("Loading project #" + projectId + "...");
+                Log.debug("Loading org unit #" + id + "...");
             }
 
-            dispatcher.execute(new GetProject(projectId), null, new AsyncCallback<ProjectDTO>() {
+            dispatcher.execute(new GetOrgUnit(id), null, new AsyncCallback<OrgUnitDTO>() {
 
                 @Override
                 public void onFailure(Throwable throwable) {
-                    Log.error("Error, project #" + projectId + " not loaded.");
+                    Log.error("Error, org unit #" + id + " not loaded.");
                 }
 
                 @Override
-                public void onSuccess(ProjectDTO projectDTO) {
+                public void onSuccess(OrgUnitDTO orgUnitDTO) {
+
                     if (Log.isDebugEnabled()) {
-                        Log.debug("Project loaded : " + projectDTO.getName());
+                        Log.debug("Org unit loaded : " + orgUnitDTO.getName());
                     }
-                    currentState = projectState;
 
-                    boolean projectChanged = !projectDTO.equals(currentProjectDTO);
+                    currentState = state;
 
-                    projectState.setTabTitle(projectDTO.getName());
-                    loadProjectOnView(projectDTO);
+                    boolean orgUnitChanged = !orgUnitDTO.equals(currentOrgUnitDTO);
 
-                    selectTab(projectState.getCurrentSection(), projectChanged);
+                    state.setTabTitle(orgUnitDTO.getName());
+                    loadOrgUnitOnView(orgUnitDTO);
+
+                    selectTab(state.getCurrentSection(), orgUnitChanged);
                 }
             });
         } else {
             boolean change = false;
 
-            if (!currentState.equals(projectState)) {
+            if (!currentState.equals(state)) {
                 change = true;
-                currentState = projectState;
+                currentState = state;
             }
 
-            selectTab(projectState.getCurrentSection(), change);
+            selectTab(state.getCurrentSection(), change);
         }
 
         return true;
     }
 
     /**
-     * Loads a {@link ProjectDTO} object on the view.
+     * Loads a {@link OrgUnitDTO} object on the view.
      * 
-     * @param projectDTO
-     *            the {@link ProjectDTO} object loaded on the view
+     * @param orgUnitDTO
+     *            the {@link OrgUnitDTO} object loaded on the view
      */
-    private void loadProjectOnView(ProjectDTO projectDTO) {
-        currentProjectDTO = projectDTO;
-        currentDisplayedPhaseDTO = projectDTO.getCurrentPhaseDTO();
+    private void loadOrgUnitOnView(OrgUnitDTO orgUnitDTO) {
 
+        currentOrgUnitDTO = orgUnitDTO;
         refreshBanner();
-
-        // TODO: Call the sub-presenter
-    }
-
-    public ProjectDTO getCurrentProjectDTO() {
-        return currentProjectDTO;
-    }
-
-    public void setCurrentProjectDTO(ProjectDTO currentProjectDTO) {
-        this.currentProjectDTO = currentProjectDTO;
-    }
-
-    public PhaseDTO getCurrentDisplayedPhaseDTO() {
-        return currentDisplayedPhaseDTO;
-    }
-
-    public void setCurrentDisplayedPhaseDTO(PhaseDTO currentPhaseDTO) {
-        this.currentDisplayedPhaseDTO = currentPhaseDTO;
     }
 
     /**
-     * Refreshes the project banner for the current project.
+     * Refreshes the org unit banner for the current org unit.
      */
     public void refreshBanner() {
 
         // Panel.
-        final ContentPanel panel = view.getPanelProjectBanner();
-        panel.setHeading(I18N.CONSTANTS.projectMainTabTitle() + ' ' + currentProjectDTO.getName() + " ("
-                + currentProjectDTO.getFullName() + ") : " + I18N.CONSTANTS.projectInfos());
+        final ContentPanel panel = view.getPanelBanner();
+        panel.setHeading(I18N.CONSTANTS.orgunit() + ' ' + currentOrgUnitDTO.getName() + " ("
+                + currentOrgUnitDTO.getFullName() + ") : " + I18N.CONSTANTS.projectInfos());
         panel.removeAll();
 
         final Grid gridPanel = new Grid(1, 2);
@@ -251,15 +211,13 @@ public class ProjectPresenter implements Frame, TabPage {
         gridPanel.setHeight("100%");
 
         // Logo.
-        final Image logo = FundingIconProvider.getProjectTypeIcon(
-                currentProjectDTO.getProjectModelDTO().getVisibility(authentication.getOrganizationId()),
-                FundingIconProvider.IconSize.LARGE).createImage();
+        final Image logo = OrgUnitImageBundle.ICONS.orgUnitLarge().createImage();
         gridPanel.setWidget(0, 0, logo);
         gridPanel.getCellFormatter().addStyleName(0, 0, "banner-logo");
 
         // Banner.
-        final ProjectBannerDTO banner = currentProjectDTO.getProjectModelDTO().getProjectBannerDTO();
-        final LayoutDTO layout = banner.getLayoutDTO();
+        final OrgUnitBannerDTO banner = currentOrgUnitDTO.getOrgUnitModel().getBanner();
+        final LayoutDTO layout = banner.getLayout();
 
         // Executes layout.
         if (banner != null && layout != null && layout.getLayoutGroupsDTO() != null
@@ -309,7 +267,7 @@ public class ProjectPresenter implements Frame, TabPage {
                         final DefaultFlexibleElementDTO defaultElement = (DefaultFlexibleElementDTO) element;
                         defaultElement.setService(dispatcher);
                         defaultElement.setAuthentication(authentication);
-                        defaultElement.setCurrentContainerDTO(currentProjectDTO);
+                        defaultElement.setCurrentContainerDTO(currentOrgUnitDTO);
 
                         final Component component = defaultElement.getComponent(null, false);
                         groupPanel.add(component);
@@ -331,7 +289,7 @@ public class ProjectPresenter implements Frame, TabPage {
             codeField.setReadOnly(true);
             codeField.setFieldLabel(I18N.CONSTANTS.projectName());
             codeField.setLabelSeparator(":");
-            codeField.setValue(currentProjectDTO.getName());
+            codeField.setValue(currentOrgUnitDTO.getName());
 
             gridPanel.setWidget(0, 1, codeField);
         }
@@ -340,9 +298,17 @@ public class ProjectPresenter implements Frame, TabPage {
         panel.layout();
     }
 
+    public OrgUnitDTO getCurrentOrgUnitDTO() {
+        return currentOrgUnitDTO;
+    }
+
+    public void setCurrentOrgUnitDTO(OrgUnitDTO currentOrgUnitDTO) {
+        this.currentOrgUnitDTO = currentOrgUnitDTO;
+    }
+
     @Override
     public String getTabTitle() {
-        return I18N.CONSTANTS.projectMainTabTitle();
+        return I18N.CONSTANTS.orgunit();
     }
 
     @Override
@@ -379,7 +345,7 @@ public class ProjectPresenter implements Frame, TabPage {
         return this.activePage;
     }
 
-    public ProjectState getCurrentState() {
+    public OrgUnitState getCurrentState() {
         return currentState;
     }
 

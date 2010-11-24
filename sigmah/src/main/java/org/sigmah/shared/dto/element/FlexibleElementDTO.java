@@ -9,8 +9,6 @@ import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.shared.command.result.ValueResult;
 import org.sigmah.shared.dto.EntityDTO;
-import org.sigmah.shared.dto.ProjectDTO;
-import org.sigmah.shared.dto.ProjectModelDTO;
 import org.sigmah.shared.dto.element.handler.RequiredValueEvent;
 import org.sigmah.shared.dto.element.handler.RequiredValueHandler;
 import org.sigmah.shared.dto.element.handler.ValueEvent;
@@ -35,10 +33,10 @@ public abstract class FlexibleElementDTO extends BaseModelData implements Entity
 
     protected transient Authentication authentication;
 
-    protected transient ProjectDTO currentProjectDTO;
+    protected transient FlexibleElementContainer currentContainerDTO;
 
     protected transient int preferredWidth;
-    
+
     /**
      * Sets the dispatcher to be used in the {@link #getComponent(ValueResult)}
      * method.
@@ -62,14 +60,14 @@ public abstract class FlexibleElementDTO extends BaseModelData implements Entity
     }
 
     /**
-     * Sets the current project (not model, but instance) using this flexible
+     * Sets the current container (not model, but instance) using this flexible
      * element to be used in the {@link #getComponent(ValueResult)} method.
      * 
-     * @param currentProjectDTO
-     *            The current project using this flexible element.
+     * @param currentContainerDTO
+     *            The current container using this flexible element.
      */
-    public void setCurrentProjectDTO(ProjectDTO currentProjectDTO) {
-        this.currentProjectDTO = currentProjectDTO;
+    public void setCurrentContainerDTO(FlexibleElementContainer currentContainerDTO) {
+        this.currentContainerDTO = currentContainerDTO;
     }
 
     /**
@@ -83,7 +81,7 @@ public abstract class FlexibleElementDTO extends BaseModelData implements Entity
         // Checks preconditions.
         assert dispatcher != null;
         assert authentication != null;
-        assert currentProjectDTO != null;
+        assert currentContainerDTO != null;
         handlerManager = new HandlerManager(this);
     }
 
@@ -168,15 +166,6 @@ public abstract class FlexibleElementDTO extends BaseModelData implements Entity
 
     public void setValidates(boolean validates) {
         set("validates", validates);
-    }
-
-    // Reference to the parent project model
-    public ProjectModelDTO getParentProjectModelDTO() {
-        return get("parentProjectModelDTO");
-    }
-
-    public void setParentProjectModelDTO(ProjectModelDTO parentProjectModelDTO) {
-        set("parentProjectModelDTO", parentProjectModelDTO);
     }
 
     public boolean isFilledIn() {

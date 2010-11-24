@@ -19,7 +19,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sigmah.server.dao.Transactional;
 import org.sigmah.shared.command.result.ValueResultUtils;
-import org.sigmah.shared.domain.Project;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.element.FlexibleElement;
 import org.sigmah.shared.domain.value.File;
@@ -202,7 +201,7 @@ public class FileManagerImpl implements FileManager {
 
         // Retrieving the current value
         final Query query = em
-                .createQuery("SELECT v FROM Value v WHERE v.parentProject.id = :projectId and v.element.id = :elementId");
+                .createQuery("SELECT v FROM Value v WHERE v.containerId = :projectId and v.element.id = :elementId");
         query.setParameter("projectId", projectId);
         query.setParameter("elementId", elementId);
 
@@ -240,9 +239,8 @@ public class FileManagerImpl implements FileManager {
             final FlexibleElement element = em.find(FlexibleElement.class, elementId);
             currentValue.setElement(element);
 
-            // Parent project
-            final Project project = em.find(Project.class, projectId);
-            currentValue.setParentProject(project);
+            // Container
+            currentValue.setContainerId(projectId);
 
             // Sets the value (one file id).
             currentValue.setValue(String.valueOf(file.getId()));
