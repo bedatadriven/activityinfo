@@ -24,24 +24,31 @@ import org.sigmah.client.page.config.DbListPageState;
 import org.sigmah.client.page.dashboard.CreateProjectWindow.CreateProjectListener;
 import org.sigmah.client.page.entry.SiteGridPageState;
 import org.sigmah.client.page.map.MapPageState;
+import org.sigmah.client.page.orgunit.OrgUnitImageBundle;
+import org.sigmah.client.page.orgunit.OrgUnitState;
 import org.sigmah.client.page.project.ProjectPresenter;
 import org.sigmah.client.page.report.ReportListPageState;
 import org.sigmah.client.page.table.PivotPageState;
 import org.sigmah.client.ui.StylableVBoxLayout;
 import org.sigmah.client.util.Notification;
 import org.sigmah.shared.command.GetCountries;
+import org.sigmah.shared.command.GetOrganization;
 import org.sigmah.shared.command.GetProjects;
 import org.sigmah.shared.command.result.CountryResult;
 import org.sigmah.shared.command.result.ProjectListResult;
 import org.sigmah.shared.dto.CountryDTO;
+import org.sigmah.shared.dto.OrgUnitDTOLight;
+import org.sigmah.shared.dto.OrganizationDTO;
 import org.sigmah.shared.dto.ProjectDTOLight;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.TreePanelEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreSorter;
@@ -61,8 +68,10 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
+import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -250,10 +259,99 @@ public class DashboardView extends ContentPanel {
         mainPanel.setBorders(false);
         mainPanel.setBodyBorder(false);
 
+        // Org Unit list panel
+        final ContentPanel orgUnitsTreePanel = new ContentPanel(new FitLayout());
+        orgUnitsTreePanel.setHeading(I18N.CONSTANTS.orgunitTree());
+        VBoxLayoutData smallVBoxLayoutData = new VBoxLayoutData();
+        smallVBoxLayoutData.setFlex(1.0);
+        smallVBoxLayoutData.setMargins(new Margins(0, 0, BORDER, 0));
+        mainPanel.add(orgUnitsTreePanel, smallVBoxLayoutData);
+
+        // Tree store
+        final TreeStore<OrgUnitDTOLight> treeStore = new TreeStore<OrgUnitDTOLight>();
+
+        // Tree
+        final TreePanel<OrgUnitDTOLight> tree = new TreePanel<OrgUnitDTOLight>(treeStore);
+        tree.setDisplayProperty("completeName");
+        tree.setToolTip(I18N.CONSTANTS.orgunitTreeOpen());
+        tree.getStyle().setLeafIcon(OrgUnitImageBundle.ICONS.orgUnitSmall());
+        tree.getStyle().setNodeCloseIcon(OrgUnitImageBundle.ICONS.orgUnitSmall());
+        tree.getStyle().setNodeOpenIcon(OrgUnitImageBundle.ICONS.orgUnitSmallTransparent());
+
+        final Button expandButton = new Button(I18N.CONSTANTS.expandAll(), IconImageBundle.ICONS.expand(),
+                new SelectionListener<ButtonEvent>() {
+
+                    @Override
+                    public void componentSelected(ButtonEvent ce) {
+                        tree.expandAll();
+                    }
+                });
+
+        final Button collapseButton = new Button(I18N.CONSTANTS.collapseAll(), IconImageBundle.ICONS.collapse(),
+                new SelectionListener<ButtonEvent>() {
+
+                    @Override
+                    public void componentSelected(ButtonEvent ce) {
+                        tree.collapseAll();
+                    }
+                });
+
+        // Toolbar
+        final ToolBar toolbar = new ToolBar();
+        toolbar.setAlignment(HorizontalAlignment.LEFT);
+
+        toolbar.add(expandButton);
+        toolbar.add(collapseButton);
+
+        orgUnitsTreePanel.setTopComponent(toolbar);
+        orgUnitsTreePanel.add(tree);
+
+        // Gets user's organization.
+        final int userId = authentication.getUserId();
+        final GetOrganization command = new GetOrganization();
+        command.setUserId(userId);
+        dispatcher.execute(command, null, new AsyncCallback<OrganizationDTO>() {
+
+            @Override
+            public void onFailure(Throwable e) {
+                Log.error("[execute] Error while getting the organization for user #id " + userId + ".", e);
+            }
+
+            @Override
+            public void onSuccess(OrganizationDTO r) {
+
+                if (r != null && r.getRoot() != null) {
+
+                    final OrgUnitDTOLight orgunit = r.getRoot().light(null);
+
+                    treeStore.removeAll();
+                    treeStore.add(orgunit, true);
+
+                    // Expand/collapse on click.
+                    tree.addListener(Events.OnClick, new Listener<TreePanelEvent<OrgUnitDTOLight>>() {
+                        @Override
+                        public void handleEvent(TreePanelEvent<OrgUnitDTOLight> tpe) {
+                            tree.setExpanded(tpe.getItem(), !tree.isExpanded(tpe.getItem()));
+                        }
+                    });
+
+                    // Go to the org unit page on double-click.
+                    tree.addListener(Events.OnDoubleClick, new Listener<TreePanelEvent<OrgUnitDTOLight>>() {
+                        @Override
+                        public void handleEvent(TreePanelEvent<OrgUnitDTOLight> tpe) {
+                            tree.setExpanded(tpe.getItem(), tree.isExpanded(tpe.getItem()));
+                            eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested,
+                                    new OrgUnitState(tpe.getItem().getId())));
+                        }
+                    });
+                }
+            }
+        });
+
         // Country list panel
         final ContentPanel missionTreePanel = new ContentPanel(new FitLayout());
         missionTreePanel.setHeading(I18N.CONSTANTS.location());
-        final VBoxLayoutData smallVBoxLayoutData = new VBoxLayoutData();
+        smallVBoxLayoutData = new VBoxLayoutData();
         smallVBoxLayoutData.setFlex(1.0);
         smallVBoxLayoutData.setMargins(new Margins(0, 0, BORDER, 0));
         mainPanel.add(missionTreePanel, smallVBoxLayoutData);

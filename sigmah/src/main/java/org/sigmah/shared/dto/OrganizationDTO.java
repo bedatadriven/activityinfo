@@ -45,4 +45,13 @@ public class OrganizationDTO extends BaseModelData implements EntityDTO {
     public void setLogo(String logo) {
         set("logo", logo);
     }
+
+    // Root org unit
+    public OrgUnitDTO getRoot() {
+        return get("root");
+    }
+
+    public void setRoot(OrgUnitDTO root) {
+        set("root", root);
+    }
 }
