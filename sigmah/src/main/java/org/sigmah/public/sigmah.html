@@ -17,39 +17,26 @@
             position: absolute;
             left: 50%;
             top: 50%;
-            
-            width: 180px;
-            height: 52px;
-            
-            margin-left: -90px;
-            margin-top: -26px;
 
-            padding: 2px;
+            text-align: center;
+            
+            width: 224px;
+            height: 90px;
+            
+            margin-left: -112px;
+            margin-top: -45px;
+
             z-index: 20001;
-            border: 1px solid #B7A076;
 
-            -moz-border-radius: 10px;
-            -webkit-border-radius: 10px;
-            border-radius: 10px;
+            color: white;
+            font-family: tahoma;
+            font-weight: bold;
+            font-size: 10pt;
         }
 
-        #loading-box .loading-indicator {
-            background: white;
-            font: bold 13px tahoma, arial, helvetica;
-            padding: 10px;
-            margin: 0;
-            height: auto;
-            color: #444;
-
-            -moz-border-radius: 8px;
-            -webkit-border-radius: 8px;
-            border-radius: 8px;
-        }
-
-        #loading-box .loading-indicator img {
-            margin-right: 8px;
-            float: left;
-            vertical-align: top;
+        #loading-box .version {
+            font-weight: normal;
+            font-size: 9pt;
         }
 
         #loading-msg {
@@ -119,10 +106,10 @@
 
 <div id="loading">
     <div id="loading-box">
-        <div class="loading-indicator">
-            <img src="gxt/images/default/shared/large-loading.gif" alt=""/>
-            Sigmah 0.6.2<br/>
-            <span id="loading-msg">Chargement en cours...</span>
+        <img src="image/login-logo.png" alt="Sigmah"/><br/>
+        <div>
+            <img src="image/loader.gif" alt="Loading..." style="vertical-align: middle"/>
+            <span class="version">Version 0.6.2</span>
         </div>
     </div>
 </div>
