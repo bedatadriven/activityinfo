@@ -6,6 +6,7 @@
 package org.sigmah.shared.domain.report;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -59,6 +60,7 @@ public class RichTextElement implements Serializable {
         this.sectionId = sectionId;
     }
 
+    @Column(columnDefinition="TEXT")
     public String getText() {
         return text;
     }
