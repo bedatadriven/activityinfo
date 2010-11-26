@@ -255,8 +255,9 @@ public class ProjectReportsView extends LayoutContainer {
         editDate.setDateTimeFormat(DateTimeFormat.getShortDateFormat());
         final ColumnConfig editorName = new ColumnConfig("editorName", I18N.CONSTANTS.reportEditor(), 200);
         final ColumnConfig reportName = new ColumnConfig("name", I18N.CONSTANTS.reportName(), 200);
+        final ColumnConfig typeColumn = new ColumnConfig("flexibleElementLabel", I18N.CONSTANTS.reportType(), 200);
         final ColumnConfig phaseNameColumn = new ColumnConfig("phaseName", I18N.CONSTANTS.reportPhase(), 200);
-        final ColumnModel reportColumnModel = new ColumnModel(Arrays.asList(editDate, editorName, reportName, phaseNameColumn));
+        final ColumnModel reportColumnModel = new ColumnModel(Arrays.asList(editDate, editorName, reportName, typeColumn, phaseNameColumn));
 
         reportName.setRenderer(new GridCellRenderer<GetProjectReports.ReportReference>() {
             @Override

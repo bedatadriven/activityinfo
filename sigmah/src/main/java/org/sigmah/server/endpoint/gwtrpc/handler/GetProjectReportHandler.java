@@ -19,6 +19,7 @@ import org.sigmah.shared.command.GetProjectReport;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.domain.User;
+import org.sigmah.shared.domain.element.FlexibleElement;
 import org.sigmah.shared.domain.report.ProjectReport;
 import org.sigmah.shared.domain.report.ProjectReportModel;
 import org.sigmah.shared.domain.report.ProjectReportModelSection;

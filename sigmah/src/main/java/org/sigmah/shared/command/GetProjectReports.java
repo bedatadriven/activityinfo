@@ -23,6 +23,9 @@ public class GetProjectReports implements Command<ProjectReportListResult> {
             this.set("lastEditDate", report.getLastEditDate());
             this.set("editorName", report.getEditorShortName());
             this.set("phaseName", report.getPhaseName());
+
+            if(report.getFlexibleElement() != null)
+                this.set("flexibleElementLabel", report.getFlexibleElement().getLabel());
         }
 
         public Integer getId() {
@@ -44,6 +47,13 @@ public class GetProjectReports implements Command<ProjectReportListResult> {
         }
         public void setPhaseName(String phaseName) {
             this.set("phaseName", phaseName);
+        }
+
+        public String getFlexibleElementLabel() {
+           return get("flexibleElementLabel");
+        }
+        public void setFlexibleElementLabel(String label) {
+            this.set("flexibleElementLabel", label);
         }
 
         public Date getLastEditDate() {

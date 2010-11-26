@@ -70,6 +70,8 @@ public class ProjectReportsPresenter implements SubPresenter {
         if(currentReportId != reportId) {
             currentReportId = reportId;
 
+            reportStore.removeAll();
+
             // Configuring the view to display the given report
             Log.debug("Loading report #"+reportId);
             final GetProjectReport getProjectReport = new GetProjectReport(reportId);
@@ -85,7 +87,7 @@ public class ProjectReportsPresenter implements SubPresenter {
                 }
             });
         }
-        
+
         return view;
     }
 

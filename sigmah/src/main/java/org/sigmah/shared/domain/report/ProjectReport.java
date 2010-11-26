@@ -15,11 +15,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
 import org.sigmah.shared.domain.Project;
 import org.sigmah.shared.domain.User;
+import org.sigmah.shared.domain.element.FlexibleElement;
 
 /**
  *
@@ -32,6 +34,7 @@ public class ProjectReport implements Serializable {
     private ProjectReportModel model;
     private String phaseName;
     private String name;
+    private FlexibleElement flexibleElement;
 
     private List<RichTextElement> texts;
 
@@ -73,6 +76,15 @@ public class ProjectReport implements Serializable {
 
     public void setProject(Project project) {
         this.project = project;
+    }
+
+    @OneToOne
+    public FlexibleElement getFlexibleElement() {
+        return flexibleElement;
+    }
+
+    public void setFlexibleElement(FlexibleElement flexibleElement) {
+        this.flexibleElement = flexibleElement;
     }
 
     public String getPhaseName() {

@@ -16,6 +16,8 @@ import org.sigmah.server.dao.Transactional;
 import org.sigmah.server.endpoint.gwtrpc.handler.UpdateProjectHandler;
 import org.sigmah.shared.domain.Project;
 import org.sigmah.shared.domain.User;
+import org.sigmah.shared.domain.element.FlexibleElement;
+import org.sigmah.shared.domain.element.ReportElement;
 import org.sigmah.shared.domain.report.ProjectReport;
 import org.sigmah.shared.domain.report.ProjectReportModel;
 import org.sigmah.shared.domain.report.ProjectReportModelSection;
@@ -98,6 +100,13 @@ public class ProjectReportPolicy implements EntityPolicy<ProjectReport> {
             report.setProject(project);
         }
 
+        final Integer flexibleElementId = (Integer) properties.get("flexibleElementId");
+        if(flexibleElementId != null) {
+            final ReportElement element = new ReportElement();
+            element.setId(flexibleElementId.longValue());
+            report.setFlexibleElement(element);
+        }
+
         // RichTextElements
         final ArrayList<RichTextElement> elements = new ArrayList<RichTextElement>();
 
@@ -110,7 +119,6 @@ public class ProjectReportPolicy implements EntityPolicy<ProjectReport> {
         dao.persist(report);
 
         // Updating the flexible element
-        final Integer flexibleElementId = (Integer) properties.get("flexibleElementId");
         final Integer containerId = (Integer) properties.get("containerId");
         if(flexibleElementId != null && containerId != null) {
             final Value value = updateProjectHandler.retrieveValue(containerId, flexibleElementId, user);
