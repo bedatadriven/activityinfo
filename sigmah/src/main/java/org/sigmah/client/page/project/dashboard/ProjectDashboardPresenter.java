@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.sigmah.client.UserInfo;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.dispatch.remote.Authentication;
@@ -138,10 +139,11 @@ public class ProjectDashboardPresenter implements SubPresenter {
      * The view managed by this presenter.
      */
     private View view;
-    private ProjectPresenter projectPresenter;
+    private final ProjectPresenter projectPresenter;
     private final Dispatcher dispatcher;
     private final EventBus eventBus;
     private final Authentication authentication;
+    private final UserInfo info;
 
     /**
      * List of values changes.
@@ -164,12 +166,13 @@ public class ProjectDashboardPresenter implements SubPresenter {
      */
     private int maskCount;
 
-    public ProjectDashboardPresenter(Dispatcher dispatcher, EventBus eventBus,
-            Authentication authentication, ProjectPresenter projectPresenter) {
+    public ProjectDashboardPresenter(Dispatcher dispatcher, EventBus eventBus, Authentication authentication,
+            ProjectPresenter projectPresenter, UserInfo info) {
         this.authentication = authentication;
         this.dispatcher = dispatcher;
         this.eventBus = eventBus;
         this.projectPresenter = projectPresenter;
+        this.info = info;
 
         this.tabItemsMap = new HashMap<Integer, TabItem>();
     }
@@ -1309,7 +1312,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
         // Adds the create financial project actions.
         view.getCreateFinancialProjectButton().addListener(Events.OnClick, new Listener<ButtonEvent>() {
 
-            private final CreateProjectWindow window = new CreateProjectWindow(dispatcher, authentication);
+            private final CreateProjectWindow window = new CreateProjectWindow(dispatcher, authentication, info);
 
             {
                 window.addListener(new CreateProjectListener() {
@@ -1550,7 +1553,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
         // Adds the create local partner project actions.
         view.getCreateLocalPartnerProjectButton().addListener(Events.OnClick, new Listener<ButtonEvent>() {
 
-            private final CreateProjectWindow window = new CreateProjectWindow(dispatcher, authentication);
+            private final CreateProjectWindow window = new CreateProjectWindow(dispatcher, authentication, info);
 
             {
                 window.addListener(new CreateProjectListener() {

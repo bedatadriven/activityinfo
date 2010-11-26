@@ -6,6 +6,7 @@
 package org.sigmah.shared.command;
 
 import java.util.List;
+
 import org.sigmah.shared.command.result.ProjectListResult;
 import org.sigmah.shared.domain.ProjectModelType;
 import org.sigmah.shared.dto.CountryDTO;
@@ -29,20 +30,27 @@ public class GetProjects implements Command<ProjectListResult> {
      */
     private ProjectModelType modelType;
 
-    public GetProjects() {
-    }
+    /**
+     * List of organizational units ids in which the projects will be searched
+     * (set to <code>null</code> to ignore this filter).
+     */
+    private List<Integer> orgUnitsIds;
 
-    public GetProjects(List<CountryDTO> countries) {
-        this(countries, null);
+    public GetProjects() {
     }
 
     public GetProjects(ProjectModelType modelType) {
         this(null, modelType);
     }
 
-    public GetProjects(List<CountryDTO> countries, ProjectModelType modelType) {
-        this.countries = countries;
+    public GetProjects(List<Integer> orgUnitsIds) {
+        this(orgUnitsIds, null);
+    }
+
+    public GetProjects(List<Integer> orgUnitsIds, ProjectModelType modelType) {
+        this.countries = null;
         this.modelType = modelType;
+        this.orgUnitsIds = orgUnitsIds;
     }
 
     public List<CountryDTO> getCountries() {
@@ -75,12 +83,28 @@ public class GetProjects implements Command<ProjectListResult> {
         this.modelType = modelType;
     }
 
+    public List<Integer> getOrgUnitsIds() {
+        return orgUnitsIds;
+    }
+
+    /**
+     * Sets the list of organizational units ids in which the projects will be
+     * searched (set to <code>null</code> to ignore this filter).
+     * 
+     * @param orgUnits
+     *            The list.
+     */
+    public void setOrgUnitsIds(List<Integer> orgUnitsIds) {
+        this.orgUnitsIds = orgUnitsIds;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((countries == null) ? 0 : countries.hashCode());
         result = prime * result + ((modelType == null) ? 0 : modelType.hashCode());
+        result = prime * result + ((orgUnitsIds == null) ? 0 : orgUnitsIds.hashCode());
         return result;
     }
 
@@ -99,6 +123,11 @@ public class GetProjects implements Command<ProjectListResult> {
         } else if (!countries.equals(other.countries))
             return false;
         if (modelType != other.modelType)
+            return false;
+        if (orgUnitsIds == null) {
+            if (other.orgUnitsIds != null)
+                return false;
+        } else if (!orgUnitsIds.equals(other.orgUnitsIds))
             return false;
         return true;
     }

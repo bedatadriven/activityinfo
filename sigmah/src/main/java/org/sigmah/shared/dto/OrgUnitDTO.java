@@ -137,7 +137,7 @@ public class OrgUnitDTO extends BaseModelData implements EntityDTO, DefaultFlexi
 
     @Override
     public CountryDTO getCountry() {
-        return null;
+        return getOfficeLocationCountry();
     }
 
     @Override
@@ -150,12 +150,24 @@ public class OrgUnitDTO extends BaseModelData implements EntityDTO, DefaultFlexi
         return null;
     }
 
+    public CountryDTO getOfficeLocationCountry() {
+        return get("country");
+    }
+
+    public void setOfficeLocationCountry(CountryDTO officeLocationCountry) {
+        set("country", officeLocationCountry);
+    }
+
     /**
      * Transforms this entity into a {@link OrgUnitDTOLight} entity.
      * 
      * @return The {@link OrgUnitDTOLight} entity.
      */
-    public OrgUnitDTOLight light(OrgUnitDTOLight parent) {
+    public OrgUnitDTOLight light() {
+        return light(null);
+    }
+
+    private OrgUnitDTOLight light(OrgUnitDTOLight parent) {
 
         final OrgUnitDTOLight light = new OrgUnitDTOLight();
         light.setId(getId());
@@ -163,6 +175,7 @@ public class OrgUnitDTO extends BaseModelData implements EntityDTO, DefaultFlexi
         light.setFullName(getFullName());
         light.generateCompleteName();
         light.setParentDTO(parent);
+        light.setOfficeLocationCountry(getOfficeLocationCountry());
         final HashSet<OrgUnitDTOLight> children = new HashSet<OrgUnitDTOLight>();
         for (final OrgUnitDTO c : getChildren()) {
             children.add(c.light(light));

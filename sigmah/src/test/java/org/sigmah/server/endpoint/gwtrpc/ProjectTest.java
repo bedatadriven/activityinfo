@@ -55,11 +55,11 @@ public class ProjectTest extends CommandTestCase {
         setUser(1);
 
         Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put("name", "First p name");
+        properties.put("name", "1234567890123456");
         properties.put("fullName", "First p full");
         properties.put("budget", 150000.0);
         properties.put("modelId", 1L);
-        properties.put("countryId", 1);
+        properties.put("orgUnitId", 1);
         properties.put("calendarName", "events");
 
         CreateEntity cmd = new CreateEntity("Project", properties);

@@ -3,6 +3,7 @@ package org.sigmah.shared.dto;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 
 import com.extjs.gxt.ui.client.data.BaseTreeModel;
@@ -60,19 +61,32 @@ public class OrgUnitDTOLight extends BaseTreeModel implements EntityDTO {
     }
 
     // Children
-    public Set<OrgUnitDTOLight> getChildrenDTO() {
+    public List<OrgUnitDTOLight> getChildrenDTO() {
         return get("children");
     }
 
+    // Country
+    public CountryDTO getOfficeLocationCountry() {
+        return get("country");
+    }
+
+    public void setOfficeLocationCountry(CountryDTO officeLocationCountry) {
+        set("country", officeLocationCountry);
+    }
+
     public void setChildrenDTO(Set<OrgUnitDTOLight> children) {
-        final ArrayList<ModelData> l = new ArrayList<ModelData>(children);
-        Collections.sort(l, new Comparator<ModelData>() {
+
+        final Comparator<ModelData> comp = new Comparator<ModelData>() {
             @Override
             public int compare(ModelData o1, ModelData o2) {
                 return ((String) o1.get("name")).compareToIgnoreCase((String) o2.get("name"));
             }
-        });
+        };
+
+        final ArrayList<ModelData> l = new ArrayList<ModelData>(children);
+        Collections.sort(l, comp);
         setChildren(l);
-        set("children", children);
+
+        set("children", l);
     }
 }

@@ -5,6 +5,7 @@
 package org.sigmah.client.page.project;
 
 import org.sigmah.client.EventBus;
+import org.sigmah.client.UserInfo;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.Authentication;
@@ -49,7 +50,6 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
-import org.sigmah.client.page.PageStateSerializer;
 
 /**
  * Project presenter which manages the {@link ProjectView}.
@@ -98,15 +98,14 @@ public class ProjectPresenter implements Frame, TabPage {
 
     @Inject
     public ProjectPresenter(final Dispatcher dispatcher, View view, Authentication authentication,
-            final EventBus eventBus) {
+            final EventBus eventBus, final UserInfo info) {
         this.dispatcher = dispatcher;
         this.view = view;
         this.authentication = authentication;
 
         final DummyPresenter dummyPresenter = new DummyPresenter(); // For development
 
-        this.presenters = new SubPresenter[] {
-                new ProjectDashboardPresenter(dispatcher, eventBus, authentication, this), // Dashboard
+        this.presenters = new SubPresenter[] { new ProjectDashboardPresenter(dispatcher, eventBus, authentication, this, info), // Dashboard
                 new ProjectDetailsPresenter(dispatcher, authentication, this), // Details,
                 new ProjectLogFramePresenter(dispatcher, this), // Logical Framework
                 dummyPresenter, // Indicators

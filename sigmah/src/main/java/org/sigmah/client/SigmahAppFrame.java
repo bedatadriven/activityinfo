@@ -5,6 +5,31 @@
 
 package org.sigmah.client;
 
+import org.sigmah.client.dispatch.AsyncMonitor;
+import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.dispatch.remote.Authentication;
+import org.sigmah.client.event.NavigationEvent;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.offline.ui.OfflineView;
+import org.sigmah.client.page.Frame;
+import org.sigmah.client.page.HasTab;
+import org.sigmah.client.page.NavigationCallback;
+import org.sigmah.client.page.NavigationHandler;
+import org.sigmah.client.page.Page;
+import org.sigmah.client.page.PageId;
+import org.sigmah.client.page.PageState;
+import org.sigmah.client.page.TabPage;
+import org.sigmah.client.page.common.widget.LoadingPlaceHolder;
+import org.sigmah.client.page.dashboard.DashboardPageState;
+import org.sigmah.client.page.login.LoginView;
+import org.sigmah.client.ui.SigmahViewport;
+import org.sigmah.client.ui.Tab;
+import org.sigmah.client.ui.TabBar;
+import org.sigmah.client.ui.TabModel;
+import org.sigmah.shared.command.GetUserInfo;
+import org.sigmah.shared.dto.UserInfoDTO;
+import org.sigmah.shared.dto.value.FileUploadUtils;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -19,23 +44,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
-import org.sigmah.client.dispatch.AsyncMonitor;
-import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.dispatch.remote.Authentication;
-import org.sigmah.client.event.NavigationEvent;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.offline.ui.OfflineView;
-import org.sigmah.client.page.*;
-import org.sigmah.client.page.common.widget.LoadingPlaceHolder;
-import org.sigmah.client.page.dashboard.DashboardPageState;
-import org.sigmah.client.page.login.LoginView;
-import org.sigmah.client.ui.SigmahViewport;
-import org.sigmah.client.ui.Tab;
-import org.sigmah.client.ui.TabBar;
-import org.sigmah.client.ui.TabModel;
-import org.sigmah.shared.command.GetOrganization;
-import org.sigmah.shared.dto.OrganizationDTO;
-import org.sigmah.shared.dto.value.FileUploadUtils;
 
 /**
  * Main frame of Sigmah.
@@ -48,10 +56,10 @@ public class SigmahAppFrame implements Frame {
     private SigmahViewport view;
 
     @Inject
-    public SigmahAppFrame(EventBus eventBus, Authentication auth, OfflineView offlineMenu, final TabModel tabModel,
-            final Dispatcher dispatcher) {
+    public SigmahAppFrame(EventBus eventBus, final Authentication auth, OfflineView offlineMenu,
+            final TabModel tabModel, final Dispatcher dispatcher, final UserInfo info) {
 
-        if(auth == null) {
+        if (auth == null) {
             RootPanel.get().add(new LoginView());
             RootPanel.get("loading").getElement().removeFromParent();
 
@@ -111,31 +119,33 @@ public class SigmahAppFrame implements Frame {
 
             RootPanel.get("content").add(this.view);
 
-            // Gets user's organization.
-            final int userId = auth.getUserId();
-            final GetOrganization command = new GetOrganization();
-            command.setUserId(userId);
-            dispatcher.execute(command, null, new AsyncCallback<OrganizationDTO>() {
+            // Gets user's info.
+            dispatcher.execute(new GetUserInfo(auth.getUserId()), null, new AsyncCallback<UserInfoDTO>() {
 
                 @Override
                 public void onFailure(Throwable e) {
-                    Log.error("[execute] Error while getting the organization for user #id " + userId + ".", e);
+                    Log.error("[execute] Error while getting the organization for user #id " + auth.getUserId() + ".",
+                            e);
                 }
 
                 @Override
-                public void onSuccess(OrganizationDTO r) {
+                public void onSuccess(UserInfoDTO result) {
 
-                    if (r != null) {
+                    if (result != null) {
+
+                        info.setUserInfo(result);
 
                         // Sets organization parameters.
-                        RootPanel.get("orgname").getElement().setInnerHTML(r.getName().toUpperCase());
+                        RootPanel.get("orgname").getElement()
+                                .setInnerHTML(result.getOrganization().getName().toUpperCase());
                         RootPanel
                                 .get("orglogo")
                                 .getElement()
                                 .setAttribute(
                                         "style",
                                         "background-image: url(" + GWT.getModuleBaseURL() + "image-provider?"
-                                                + FileUploadUtils.IMAGE_URL + "=" + r.getLogo() + ")");
+                                                + FileUploadUtils.IMAGE_URL + "=" + result.getOrganization().getLogo()
+                                                + ")");
                     }
                 }
             });

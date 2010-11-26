@@ -18,6 +18,8 @@ public class Authentication {
     private String email;
     private int userId;
     private int organizationId;
+    private int orgUnitId;
+    private boolean showMenus;
 
     /**
      * 
@@ -49,6 +51,10 @@ public class Authentication {
         return userId;
     }
 
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
     /**
      * @return The authentication token required for calls to the command
      *         service
@@ -57,11 +63,19 @@ public class Authentication {
         return authToken;
     }
 
+    public void setAuthToken(String authToken) {
+        this.authToken = authToken;
+    }
+
     /**
      * @return The email address of the currently authenticated user
      */
     public String getEmail() {
         return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     /**
@@ -72,12 +86,32 @@ public class Authentication {
         return organizationId;
     }
 
-    /**
-     * 
-     * @return The organization id.
-     */
     public void setOrganizationId(int organizationId) {
         this.organizationId = organizationId;
+    }
+
+    /**
+     * 
+     * @return The organizational unit id.
+     */
+    public int getOrgUnitId() {
+        return orgUnitId;
+    }
+
+    public void setOrgUnitId(int orgUnitId) {
+        this.orgUnitId = orgUnitId;
+    }
+
+    /**
+     * 
+     * @return If the activityInfo menus has to been shown.
+     */
+    public boolean isShowMenus() {
+        return showMenus;
+    }
+
+    public void setShowMenus(boolean showMenus) {
+        this.showMenus = showMenus;
     }
 
     /**

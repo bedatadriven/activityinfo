@@ -5,7 +5,6 @@
 
 package org.sigmah.shared.domain;
 
-
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -21,18 +20,21 @@ import javax.persistence.Table;
 
 /**
  * Describes a user
- *
+ * 
  * @author Alex Bertram
  */
 @Entity
 @Table(name = "UserLogin")
-// We want to avoid calling this table 'User' as it is a reserved word in some dialects
+// We want to avoid calling this table 'User' as it is a reserved word in some
+// dialects
 // of SQL
 @NamedQueries({
         @NamedQuery(name = "findUserByEmail", query = "select u from User u where u.email = :email"),
-        @NamedQuery(name = "findUserByChangePasswordKey", query = "select u from User u where u.changePasswordKey = :key")
-})
+        @NamedQuery(name = "findUserByChangePasswordKey", query = "select u from User u where u.changePasswordKey = :key") })
 public class User implements java.io.Serializable {
+
+    private static final long serialVersionUID = 6486007767204653799L;
+    
     private int id;
     private String email;
     private String firstName;
@@ -42,8 +44,9 @@ public class User implements java.io.Serializable {
     private String changePasswordKey;
     private Date dateChangePasswordKeyIssued;
     private String hashedPassword;
-	private PrivacyLevel privacyLevel;
-	private Organization organization;
+    private PrivacyLevel privacyLevel;
+    private Organization organization;
+    private OrgUnit orgUnit;
 
     public User() {
     }
@@ -106,7 +109,7 @@ public class User implements java.io.Serializable {
 
     /**
      * Gets the user's password, hashed with the BCrypt algorithm.
-     *
+     * 
      * @return The hashed password
      */
     @Column(name = "Password", length = 150)
@@ -116,16 +119,17 @@ public class User implements java.io.Serializable {
 
     /**
      * Sets the user's password, should be hashed with the BCrypt algorithm
-     *
-     * @param hashed The hashed password
+     * 
+     * @param hashed
+     *            The hashed password
      */
     public void setHashedPassword(String hashed) {
         this.hashedPassword = hashed;
     }
 
     /**
-     * Gets the secure key required to change the user's password. This
-     * is a random 128-bit key that can be safely sent to the user by email.
+     * Gets the secure key required to change the user's password. This is a
+     * random 128-bit key that can be safely sent to the user by email.
      */
     @Column(length = 34, nullable = true)
     public String getChangePasswordKey() {
@@ -153,9 +157,11 @@ public class User implements java.io.Serializable {
         this.setDateChangePasswordKeyIssued(null);
     }
 
-    /* (non-Javadoc)
-      * @see java.lang.Object#equals(java.lang.Object)
-      */
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
 
     @Override
     public boolean equals(Object other) {
@@ -169,42 +175,53 @@ public class User implements java.io.Serializable {
         return this.getEmail().equals(that.getEmail());
     }
 
-    /* (non-Javadoc)
-      * @see java.lang.Object#hashCode()
-      */
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
 
     @Override
     public int hashCode() {
-		return getEmail().hashCode();
-	}
+        return getEmail().hashCode();
+    }
 
     @ManyToOne(optional = true)
-	@JoinColumn(name = "privacy_level", nullable = true)
-	public PrivacyLevel getPrivacyLevel() {
-		return privacyLevel;
-	}
-	
-	public void setPrivacyLevel(PrivacyLevel privacyLevel) {
-		this.privacyLevel = privacyLevel;
-	}
-	
-	@ManyToOne(optional = true)
-	@JoinColumn(name = "id_organization", nullable = true)
-	public Organization getOrganization() {
+    @JoinColumn(name = "privacy_level", nullable = true)
+    public PrivacyLevel getPrivacyLevel() {
+        return privacyLevel;
+    }
+
+    public void setPrivacyLevel(PrivacyLevel privacyLevel) {
+        this.privacyLevel = privacyLevel;
+    }
+
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "id_organization", nullable = true)
+    public Organization getOrganization() {
         return organization;
     }
-	
-	public void setOrganization(Organization organization) {
+
+    public void setOrganization(Organization organization) {
         this.organization = organization;
     }
 
-	@Override
-	public String toString() {
-		if (firstName != null && name != null) {
-			return firstName + " " + name;
-		}
-		else {
-			return "(null user)";
-		}
-	}
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "id_org_unit", nullable = true)
+    public OrgUnit getOrgUnit() {
+        return orgUnit;
+    }
+
+    public void setOrgUnit(OrgUnit orgUnit) {
+        this.orgUnit = orgUnit;
+    }
+
+    @Override
+    public String toString() {
+        if (firstName != null && name != null) {
+            return firstName + " " + name;
+        } else {
+            return "(null user)";
+        }
+    }
 }

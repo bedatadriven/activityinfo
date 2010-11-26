@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import org.sigmah.client.EventBus;
+import org.sigmah.client.UserInfo;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.event.NavigationEvent;
@@ -17,47 +18,36 @@ import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.NavigationHandler;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.charts.ChartPageState;
-import org.sigmah.client.page.common.toolbar.ActionListener;
-import org.sigmah.client.page.common.toolbar.ActionToolBar;
-import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.page.config.DbListPageState;
 import org.sigmah.client.page.dashboard.CreateProjectWindow.CreateProjectListener;
 import org.sigmah.client.page.entry.SiteGridPageState;
 import org.sigmah.client.page.map.MapPageState;
-import org.sigmah.client.page.orgunit.OrgUnitImageBundle;
-import org.sigmah.client.page.orgunit.OrgUnitState;
 import org.sigmah.client.page.project.ProjectPresenter;
 import org.sigmah.client.page.report.ReportListPageState;
 import org.sigmah.client.page.table.PivotPageState;
 import org.sigmah.client.ui.StylableVBoxLayout;
 import org.sigmah.client.util.Notification;
 import org.sigmah.shared.command.GetCountries;
-import org.sigmah.shared.command.GetOrganization;
-import org.sigmah.shared.command.GetProjects;
 import org.sigmah.shared.command.result.CountryResult;
-import org.sigmah.shared.command.result.ProjectListResult;
 import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.OrgUnitDTOLight;
-import org.sigmah.shared.dto.OrganizationDTO;
 import org.sigmah.shared.dto.ProjectDTOLight;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.event.TreePanelEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.util.Padding;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -68,31 +58,66 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
-import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
 
 /**
  * Displays the dashboard.
  * 
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
-public class DashboardView extends ContentPanel {
+public class DashboardView extends ContentPanel implements DashboardPresenter.View {
+
     private final static int BORDER = 8;
     private final static String STYLE_MAIN_BACKGROUND = "main-background";
 
+    /**
+     * The service.
+     */
+    private final Dispatcher dispatcher;
+    private final EventBus eventBus;
+    private final Authentication authentication;
+    private final UserInfo info;
+
+    /**
+     * Model containing the displayed projects
+     */
+    private final TreeStore<ProjectDTOLight> projectStore;
+
+    /**
+     * Model containing the countries available to the user.
+     */
+    private final ListStore<CountryDTO> countryStore;
+
+    private Button loadProjectsButton;
+    private ContentPanel projectsPanel;
+    private OrgUnitTreeGrid orgUnitsTreeGrid;
+    private ContentPanel orgUnitsPanel;
+
+    @Inject
     public DashboardView(final EventBus eventBus, final Dispatcher dispatcher, final Authentication authentication,
-            final TreeStore<ProjectDTOLight> projectStore, final ListStore<CountryDTO> countryStore) {
+            final UserInfo info) {
+
+        this.dispatcher = dispatcher;
+        this.eventBus = eventBus;
+        this.authentication = authentication;
+        this.info = info;
+
+        // Initialization of the models
+        projectStore = new TreeStore<ProjectDTOLight>();
+        projectStore.setMonitorChanges(true);
+
+        countryStore = new ListStore<CountryDTO>();
+
         // The dashboard itself
         final BorderLayout borderLayout = new BorderLayout();
         borderLayout.setContainerStyle("x-border-layout-ct " + STYLE_MAIN_BACKGROUND);
@@ -129,11 +154,58 @@ public class DashboardView extends ContentPanel {
         menuPanel.setLayout(menuPanelLayout);
         menuPanel.setHeading(I18N.CONSTANTS.menu());
 
+        buildNavLinks(menuPanel);
+
+        final VBoxLayoutData bottomVBoxLayoutData = new VBoxLayoutData();
+        bottomVBoxLayoutData.setFlex(1.0);
+        bottomVBoxLayoutData.setMargins(new Margins(0, 0, 0, 0));
+        leftPanel.add(menuPanel, bottomVBoxLayoutData);
+
+        final BorderLayoutData leftLayoutData = new BorderLayoutData(LayoutRegion.WEST, 250);
+        leftLayoutData.setMargins(new Margins(0, BORDER / 2, 0, 0));
+        add(leftPanel, leftLayoutData);
+
+        // Main panel
+        final ContentPanel mainPanel = new ContentPanel();
+        final VBoxLayout mainPanelLayout = new StylableVBoxLayout(STYLE_MAIN_BACKGROUND);
+        mainPanelLayout.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
+        mainPanel.setLayout(mainPanelLayout);
+        mainPanel.setHeaderVisible(false);
+        mainPanel.setBorders(false);
+        mainPanel.setBodyBorder(false);
+
+        // Org units panel
+        final VBoxLayoutData smallVBoxLayoutData = new VBoxLayoutData();
+        smallVBoxLayoutData.setFlex(1.0);
+        smallVBoxLayoutData.setMargins(new Margins(0, 0, BORDER, 0));
+        mainPanel.add(buildOrgUnitsPanel(), smallVBoxLayoutData);
+
+        // Country list panel
+        // mainPanel.add(buildCountriesPanel(), smallVBoxLayoutData);
+
+        // Project tree panel
+        final VBoxLayoutData largeVBoxLayoutData = new VBoxLayoutData();
+        largeVBoxLayoutData.setFlex(2.0);
+        mainPanel.add(buildProjectPanel(), largeVBoxLayoutData);
+
+        final BorderLayoutData mainLayoutData = new BorderLayoutData(LayoutRegion.CENTER);
+        mainLayoutData.setMargins(new Margins(0, 0, 0, BORDER / 2));
+        add(mainPanel, mainLayoutData);
+    }
+
+    /**
+     * Builds the nevigation links.
+     * 
+     * @param menuPanel
+     *            The menu panel.
+     */
+    private void buildNavLinks(final ContentPanel menuPanel) {
+
         // Menu
         addNavLink(eventBus, menuPanel, I18N.CONSTANTS.createProjectNewProject(), IconImageBundle.ICONS.add(),
                 new Listener<ButtonEvent>() {
 
-                    private final CreateProjectWindow window = new CreateProjectWindow(dispatcher, authentication);
+                    private final CreateProjectWindow window = new CreateProjectWindow(dispatcher, authentication, info);
 
                     {
                         window.addListener(new CreateProjectListener() {
@@ -214,19 +286,7 @@ public class DashboardView extends ContentPanel {
                 });
 
         // Temporary code to hide/show activityInfo menus
-        Dictionary sigmahParams;
-        boolean showActivityInfoMenus = false;
-        try {
-            sigmahParams = Dictionary.getDictionary("SigmahParams");
-            showActivityInfoMenus = Boolean.parseBoolean(sigmahParams.get("showActivityInfoMenus"));
-            if (Log.isDebugEnabled()) {
-                Log.debug("[DashboardView] Show activityInfo menus ? " + showActivityInfoMenus);
-            }
-        } catch (Exception e) {
-            Log.fatal("DictionaryAuthenticationProvider: exception retrieving dictionary 'SigmahParams' from page", e);
-            throw new Error();
-        }
-        if (showActivityInfoMenus) {
+        if (authentication.isShowMenus()) {
             addNavLink(eventBus, menuPanel, I18N.CONSTANTS.dataEntry(), IconImageBundle.ICONS.dataEntry(),
                     new SiteGridPageState());
             addNavLink(eventBus, menuPanel, I18N.CONSTANTS.reports(), IconImageBundle.ICONS.report(),
@@ -239,243 +299,6 @@ public class DashboardView extends ContentPanel {
             addNavLink(eventBus, menuPanel, I18N.CONSTANTS.setup(), IconImageBundle.ICONS.setup(),
                     new DbListPageState());
         }
-
-        final VBoxLayoutData bottomVBoxLayoutData = new VBoxLayoutData();
-        bottomVBoxLayoutData.setFlex(1.0);
-        bottomVBoxLayoutData.setMargins(new Margins(0, 0, 0, 0));
-        leftPanel.add(menuPanel, bottomVBoxLayoutData);
-
-        final BorderLayoutData leftLayoutData = new BorderLayoutData(LayoutRegion.WEST, 250);
-        leftLayoutData.setMargins(new Margins(0, BORDER / 2, 0, 0));
-        // leftLayoutData.setSplit(true);
-        add(leftPanel, leftLayoutData);
-
-        // Main panel
-        final ContentPanel mainPanel = new ContentPanel();
-        final VBoxLayout mainPanelLayout = new StylableVBoxLayout(STYLE_MAIN_BACKGROUND);
-        mainPanelLayout.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
-        mainPanel.setLayout(mainPanelLayout);
-        mainPanel.setHeaderVisible(false);
-        mainPanel.setBorders(false);
-        mainPanel.setBodyBorder(false);
-
-        // Org Unit list panel
-        final ContentPanel orgUnitsTreePanel = new ContentPanel(new FitLayout());
-        orgUnitsTreePanel.setHeading(I18N.CONSTANTS.orgunitTree());
-        VBoxLayoutData smallVBoxLayoutData = new VBoxLayoutData();
-        smallVBoxLayoutData.setFlex(1.0);
-        smallVBoxLayoutData.setMargins(new Margins(0, 0, BORDER, 0));
-        mainPanel.add(orgUnitsTreePanel, smallVBoxLayoutData);
-
-        // Tree store
-        final TreeStore<OrgUnitDTOLight> treeStore = new TreeStore<OrgUnitDTOLight>();
-
-        // Tree
-        final TreePanel<OrgUnitDTOLight> tree = new TreePanel<OrgUnitDTOLight>(treeStore);
-        tree.setDisplayProperty("completeName");
-        tree.setToolTip(I18N.CONSTANTS.orgunitTreeOpen());
-        tree.getStyle().setLeafIcon(OrgUnitImageBundle.ICONS.orgUnitSmall());
-        tree.getStyle().setNodeCloseIcon(OrgUnitImageBundle.ICONS.orgUnitSmall());
-        tree.getStyle().setNodeOpenIcon(OrgUnitImageBundle.ICONS.orgUnitSmallTransparent());
-
-        final Button expandButton = new Button(I18N.CONSTANTS.expandAll(), IconImageBundle.ICONS.expand(),
-                new SelectionListener<ButtonEvent>() {
-
-                    @Override
-                    public void componentSelected(ButtonEvent ce) {
-                        tree.expandAll();
-                    }
-                });
-
-        final Button collapseButton = new Button(I18N.CONSTANTS.collapseAll(), IconImageBundle.ICONS.collapse(),
-                new SelectionListener<ButtonEvent>() {
-
-                    @Override
-                    public void componentSelected(ButtonEvent ce) {
-                        tree.collapseAll();
-                    }
-                });
-
-        // Toolbar
-        final ToolBar toolbar = new ToolBar();
-        toolbar.setAlignment(HorizontalAlignment.LEFT);
-
-        toolbar.add(expandButton);
-        toolbar.add(collapseButton);
-
-        orgUnitsTreePanel.setTopComponent(toolbar);
-        orgUnitsTreePanel.add(tree);
-
-        // Gets user's organization.
-        final int userId = authentication.getUserId();
-        final GetOrganization command = new GetOrganization();
-        command.setUserId(userId);
-        dispatcher.execute(command, null, new AsyncCallback<OrganizationDTO>() {
-
-            @Override
-            public void onFailure(Throwable e) {
-                Log.error("[execute] Error while getting the organization for user #id " + userId + ".", e);
-            }
-
-            @Override
-            public void onSuccess(OrganizationDTO r) {
-
-                if (r != null && r.getRoot() != null) {
-
-                    final OrgUnitDTOLight orgunit = r.getRoot().light(null);
-
-                    treeStore.removeAll();
-                    treeStore.add(orgunit, true);
-
-                    // Expand/collapse on click.
-                    tree.addListener(Events.OnClick, new Listener<TreePanelEvent<OrgUnitDTOLight>>() {
-                        @Override
-                        public void handleEvent(TreePanelEvent<OrgUnitDTOLight> tpe) {
-                            tree.setExpanded(tpe.getItem(), !tree.isExpanded(tpe.getItem()));
-                        }
-                    });
-
-                    // Go to the org unit page on double-click.
-                    tree.addListener(Events.OnDoubleClick, new Listener<TreePanelEvent<OrgUnitDTOLight>>() {
-                        @Override
-                        public void handleEvent(TreePanelEvent<OrgUnitDTOLight> tpe) {
-                            tree.setExpanded(tpe.getItem(), tree.isExpanded(tpe.getItem()));
-                            eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested,
-                                    new OrgUnitState(tpe.getItem().getId())));
-                        }
-                    });
-                }
-            }
-        });
-
-        // Country list panel
-        final ContentPanel missionTreePanel = new ContentPanel(new FitLayout());
-        missionTreePanel.setHeading(I18N.CONSTANTS.location());
-        smallVBoxLayoutData = new VBoxLayoutData();
-        smallVBoxLayoutData.setFlex(1.0);
-        smallVBoxLayoutData.setMargins(new Margins(0, 0, BORDER, 0));
-        mainPanel.add(missionTreePanel, smallVBoxLayoutData);
-
-        // Country list
-        final CheckBoxSelectionModel<CountryDTO> selectionModel = new CheckBoxSelectionModel<CountryDTO>();
-
-        final ColumnConfig countryName = new ColumnConfig("completeName", I18N.CONSTANTS.name(), 200);
-        final ColumnModel countryColumnModel = new ColumnModel(Arrays.asList(selectionModel.getColumn(), countryName));
-
-        final Grid<CountryDTO> countryGrid = new Grid<CountryDTO>(countryStore, countryColumnModel);
-        countryGrid.setAutoExpandColumn("completeName");
-        countryGrid.setSelectionModel(selectionModel);
-        countryGrid.addPlugin(selectionModel);
-
-        missionTreePanel.add(countryGrid);
-
-        // Refresh button
-        final ActionToolBar countryToolbar = new ActionToolBar(new ActionListener() {
-            @Override
-            public void onUIAction(String actionId) {
-                if (UIActions.refresh.equals(actionId)) {
-                    if (Log.isDebugEnabled()) {
-                        Log.debug("Launching the gets projects command.");
-                    }
-                    dispatcher.execute(new GetProjects(selectionModel.getSelectedItems()), null,
-                            new AsyncCallback<ProjectListResult>() {
-                                @Override
-                                public void onFailure(Throwable throwable) {
-                                    Log.error("Gets projects command failed.", throwable);
-                                    // TODO: Handle the failure
-                                }
-
-                                @Override
-                                public void onSuccess(ProjectListResult projectList) {
-                                    projectStore.removeAll();
-                                    projectStore.add(projectList.getList(), true);
-                                }
-                            });
-                }
-            }
-        });
-
-        countryToolbar.addRefreshButton();
-
-        missionTreePanel.setTopComponent(countryToolbar);
-
-        // Project tree panel
-        final ContentPanel projectTreePanel = new ContentPanel(new FitLayout());
-        projectTreePanel.setHeading(I18N.CONSTANTS.projects());
-        final VBoxLayoutData largeVBoxLayoutData = new VBoxLayoutData();
-        largeVBoxLayoutData.setFlex(2.0);
-        mainPanel.add(projectTreePanel, largeVBoxLayoutData);
-
-        // Project list
-        final ColumnConfig icon = new ColumnConfig("favorite", "-", 24);
-        icon.setRenderer(new GridCellRenderer<ProjectDTOLight>() {
-            private final DashboardImageBundle imageBundle = GWT.create(DashboardImageBundle.class);
-
-            @Override
-            public Object render(final ProjectDTOLight model, String property, ColumnData config, int rowIndex,
-                    int colIndex, final ListStore<ProjectDTOLight> store, final Grid<ProjectDTOLight> grid) {
-                final Image icon;
-
-                if (model.isFavorite())
-                    icon = imageBundle.star().createImage();
-                else
-                    icon = imageBundle.emptyStar().createImage();
-
-                icon.addClickHandler(new ClickHandler() {
-                    @Override
-                    public void onClick(ClickEvent event) {
-                        model.setFavorite(!model.isFavorite());
-                        // TODO: Save the changes
-                    }
-                });
-
-                return icon;
-            }
-        });
-
-        final ColumnConfig name = new ColumnConfig("name", I18N.CONSTANTS.projectName(), 200);
-        name.setRenderer(new WidgetTreeGridCellRenderer<ProjectDTOLight>() {
-            @Override
-            public Widget getWidget(ProjectDTOLight model, String property, ColumnData config, int rowIndex,
-                    int colIndex, ListStore<ProjectDTOLight> store, Grid<ProjectDTOLight> grid) {
-                return new Hyperlink((String) model.get(property), true, ProjectPresenter.PAGE_ID.toString() + '!'
-                        + model.get("id").toString());
-            }
-        });
-
-        final ColumnConfig phase = new ColumnConfig("phase", I18N.CONSTANTS.projectActivePhase(), 100);
-        phase.setRenderer(new GridCellRenderer<ProjectDTOLight>() {
-            @Override
-            public Object render(ProjectDTOLight model, String property, ColumnData config, int rowIndex, int colIndex,
-                    ListStore<ProjectDTOLight> store, Grid<ProjectDTOLight> grid) {
-                return model.getCurrentPhaseDTO().getPhaseModelDTO().getName();
-            }
-        });
-
-        final ColumnModel columnModel = new ColumnModel(Arrays.asList(icon, name, phase));
-
-        final TreeGrid<ProjectDTOLight> projectTreeGrid = new TreeGrid<ProjectDTOLight>(projectStore, columnModel);
-
-        projectStore.setStoreSorter(new StoreSorter<ProjectDTOLight>() {
-            @Override
-            public int compare(Store<ProjectDTOLight> store, ProjectDTOLight m1, ProjectDTOLight m2, String property) {
-
-                if ("name".equals(property)) {
-                    return m1.getName().compareToIgnoreCase(m2.getName());
-                } else if ("phase".equals(property)) {
-                    return m1.getCurrentPhaseDTO().getPhaseModelDTO().getName()
-                            .compareToIgnoreCase(m2.getCurrentPhaseDTO().getPhaseModelDTO().getName());
-                } else {
-                    return super.compare(store, m1, m2, property);
-                }
-            }
-        });
-
-        projectTreePanel.add(projectTreeGrid);
-
-        final BorderLayoutData mainLayoutData = new BorderLayoutData(LayoutRegion.CENTER);
-        mainLayoutData.setMargins(new Margins(0, 0, 0, BORDER / 2));
-        add(mainPanel, mainLayoutData);
     }
 
     /**
@@ -529,5 +352,144 @@ public class DashboardView extends ContentPanel {
         final VBoxLayoutData vBoxLayoutData = new VBoxLayoutData();
         vBoxLayoutData.setFlex(1.0);
         panel.add(button, vBoxLayoutData);
+    }
+
+    /**
+     * Builds the org units panel.
+     * 
+     * @return The panel;
+     */
+    private Component buildOrgUnitsPanel() {
+
+        orgUnitsTreeGrid = new OrgUnitTreeGrid(eventBus, true);
+
+        // Refresh button.
+        loadProjectsButton = new Button(I18N.CONSTANTS.refreshPreview(), IconImageBundle.ICONS.refresh());
+        orgUnitsTreeGrid.addToolbarButton(loadProjectsButton);
+
+        final ContentPanel panel = new ContentPanel(new FitLayout());
+        panel.setHeading(I18N.CONSTANTS.orgunitTree());
+
+        panel.setTopComponent(orgUnitsTreeGrid.getToolbar());
+        panel.add(orgUnitsTreeGrid.getTreeGrid());
+
+        orgUnitsPanel = panel;
+
+        return panel;
+    }
+
+    /**
+     * Builds the projects panel.
+     * 
+     * @return The panel.
+     */
+    private Component buildProjectPanel() {
+
+        // Project list
+        final ColumnConfig icon = new ColumnConfig("favorite", "-", 24);
+        icon.setRenderer(new GridCellRenderer<ProjectDTOLight>() {
+            private final DashboardImageBundle imageBundle = GWT.create(DashboardImageBundle.class);
+
+            @Override
+            public Object render(final ProjectDTOLight model, String property, ColumnData config, int rowIndex,
+                    int colIndex, final ListStore<ProjectDTOLight> store, final Grid<ProjectDTOLight> grid) {
+                final Image icon;
+
+                if (model.isFavorite())
+                    icon = imageBundle.star().createImage();
+                else
+                    icon = imageBundle.emptyStar().createImage();
+
+                icon.addClickHandler(new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        model.setFavorite(!model.isFavorite());
+                        // TODO: Save the changes
+                    }
+                });
+
+                return icon;
+            }
+        });
+
+        final ColumnConfig name = new ColumnConfig("name", I18N.CONSTANTS.projectName(), 200);
+        name.setRenderer(new WidgetTreeGridCellRenderer<ProjectDTOLight>() {
+            @Override
+            public Widget getWidget(ProjectDTOLight model, String property, ColumnData config, int rowIndex,
+                    int colIndex, ListStore<ProjectDTOLight> store, Grid<ProjectDTOLight> grid) {
+                return new Hyperlink((String) model.get(property), true, ProjectPresenter.PAGE_ID.toString() + '!'
+                        + model.get("id").toString());
+            }
+        });
+
+        final ColumnConfig phase = new ColumnConfig("phase", I18N.CONSTANTS.projectActivePhase(), 100);
+        phase.setRenderer(new GridCellRenderer<ProjectDTOLight>() {
+            @Override
+            public Object render(ProjectDTOLight model, String property, ColumnData config, int rowIndex, int colIndex,
+                    ListStore<ProjectDTOLight> store, Grid<ProjectDTOLight> grid) {
+                return model.getCurrentPhaseDTO().getPhaseModelDTO().getName();
+            }
+        });
+
+        final TreeGrid<ProjectDTOLight> projectTreeGrid = new TreeGrid<ProjectDTOLight>(projectStore, new ColumnModel(
+                Arrays.asList(icon, name, phase)));
+
+        projectStore.setStoreSorter(new StoreSorter<ProjectDTOLight>() {
+            @Override
+            public int compare(Store<ProjectDTOLight> store, ProjectDTOLight m1, ProjectDTOLight m2, String property) {
+
+                if ("name".equals(property)) {
+                    return m1.getName().compareToIgnoreCase(m2.getName());
+                } else if ("phase".equals(property)) {
+                    return m1.getCurrentPhaseDTO().getPhaseModelDTO().getName()
+                            .compareToIgnoreCase(m2.getCurrentPhaseDTO().getPhaseModelDTO().getName());
+                } else {
+                    return super.compare(store, m1, m2, property);
+                }
+            }
+        });
+
+        final ContentPanel projectTreePanel = new ContentPanel(new FitLayout());
+        projectTreePanel.setHeading(I18N.CONSTANTS.projects());
+
+        projectTreePanel.add(projectTreeGrid);
+        projectsPanel = projectTreePanel;
+
+        return projectTreePanel;
+    }
+
+    @Override
+    public ListStore<CountryDTO> getCountriesStore() {
+        return countryStore;
+    }
+
+    @Override
+    public TreeStore<ProjectDTOLight> getProjectsStore() {
+        return projectStore;
+    }
+
+    @Override
+    public TreeStore<OrgUnitDTOLight> getOrgUnitsStore() {
+        return orgUnitsTreeGrid.getStore();
+    }
+
+    @Override
+    public TreeGrid<OrgUnitDTOLight> getOrgUnitsTree() {
+        return orgUnitsTreeGrid.getTreeGrid();
+    }
+
+    @Override
+    public Button getLoadProjectsButton() {
+        return loadProjectsButton;
+    }
+
+    @Override
+    public ContentPanel getProjectsPanel() {
+        return projectsPanel;
+    }
+
+    @Override
+    public ContentPanel getOrgUnitsPanel() {
+        return orgUnitsPanel;
     }
 }

@@ -5,22 +5,36 @@
 
 package org.sigmah.client.page.dashboard;
 
-import org.sigmah.client.EventBus;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.sigmah.client.UserInfo;
 import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.dispatch.remote.Authentication;
+import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.shared.command.GetCountries;
+import org.sigmah.shared.command.GetProjects;
 import org.sigmah.shared.command.result.CountryResult;
+import org.sigmah.shared.command.result.ProjectListResult;
 import org.sigmah.shared.dto.CountryDTO;
+import org.sigmah.shared.dto.OrgUnitDTOLight;
 import org.sigmah.shared.dto.ProjectDTOLight;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.TreeStore;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
 
 /**
@@ -29,35 +43,93 @@ import com.google.inject.Inject;
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class DashboardPresenter implements Page {
+
     public static final PageId PAGE_ID = new PageId("welcome");
 
-    private Dispatcher dispatcher;
-    private Widget widget;
+    /**
+     * Description of the view managed by this presenter.
+     */
+    @ImplementedBy(DashboardView.class)
+    public interface View {
+
+        public ListStore<CountryDTO> getCountriesStore();
+
+        public TreeStore<ProjectDTOLight> getProjectsStore();
+
+        public TreeStore<OrgUnitDTOLight> getOrgUnitsStore();
+
+        public TreeGrid<OrgUnitDTOLight> getOrgUnitsTree();
+
+        public Button getLoadProjectsButton();
+
+        public ContentPanel getProjectsPanel();
+
+        public ContentPanel getOrgUnitsPanel();
+    }
 
     /**
-     * Model containing the displayed projects
+     * The service.
      */
-    private TreeStore<ProjectDTOLight> projectStore;
+    private final Dispatcher dispatcher;
 
     /**
-     * Model containing the countries available to the user.
+     * The view.
      */
-    private ListStore<CountryDTO> countryStore;
+    private final View view;
+
+    /**
+     * The user's info.
+     */
+    private final UserInfo info;
 
     @Inject
-    public DashboardPresenter(final EventBus eventBus, final Dispatcher dispatcher, final Authentication authentication) {
+    public DashboardPresenter(final Dispatcher dispatcher, final View view, final UserInfo info) {
+
+        this.view = view;
         this.dispatcher = dispatcher;
+        this.info = info;
 
-        // Initialization of the models
-        projectStore = new TreeStore<ProjectDTOLight>();
-        projectStore.setMonitorChanges(true);
+        // Adds the load projects action.
+        view.getLoadProjectsButton().addListener(Events.Select, new SelectionListener<ButtonEvent>() {
 
-        countryStore = new ListStore<CountryDTO>();
+            @Override
+            public void componentSelected(ButtonEvent ce) {
 
-        // Creation of the view
-        final DashboardView view = new DashboardView(eventBus, dispatcher, authentication, projectStore, countryStore);
+                // Retreives all selected org units.
+                final ArrayList<Integer> orgUnitsIds = new ArrayList<Integer>();
+                final List<OrgUnitDTOLight> orgUnits = view.getOrgUnitsTree().getSelectionModel().getSelectedItems();
 
-        this.widget = view;
+                // Gets the selected org units ids.
+                if (orgUnits != null) {
+                    for (final OrgUnitDTOLight orgUnit : orgUnits) {
+                        orgUnitsIds.add(orgUnit.getId());
+                    }
+                }
+
+                // Retrieves the projects for these org units.
+                dispatcher.execute(new GetProjects(orgUnitsIds), new MaskingAsyncMonitor(view.getProjectsPanel(),
+                        I18N.CONSTANTS.loading()), new AsyncCallback<ProjectListResult>() {
+
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        Log.error("[GetProjects command] Error while getting projects.");
+                        // nothing
+                    }
+
+                    @Override
+                    public void onSuccess(ProjectListResult result) {
+                        int count = 0;
+                        view.getProjectsStore().removeAll();
+                        if (result != null && result.getList() != null) {
+                            view.getProjectsStore().add(result.getList(), false);
+                            count = result.getList().size();
+                        }
+
+                        view.getProjectsPanel().setHeading(I18N.CONSTANTS.projects() + " (" + count + ')');
+                    }
+                });
+            }
+        });
     }
 
     @Override
@@ -67,7 +139,7 @@ public class DashboardPresenter implements Page {
 
     @Override
     public Object getWidget() {
-        return widget;
+        return view;
     }
 
     @Override
@@ -82,6 +154,7 @@ public class DashboardPresenter implements Page {
 
     @Override
     public boolean navigate(PageState place) {
+
         dispatcher.execute(new GetCountries(true), null, new AsyncCallback<CountryResult>() {
             @Override
             public void onFailure(Throwable throwable) {
@@ -90,7 +163,31 @@ public class DashboardPresenter implements Page {
 
             @Override
             public void onSuccess(CountryResult countryResult) {
-                countryStore.add(countryResult.getData());
+                view.getCountriesStore().add(countryResult.getData());
+            }
+        });
+
+        // Gets user's organization.
+        info.getOrgUnit(new AsyncCallback<OrgUnitDTOLight>() {
+
+            @Override
+            public void onFailure(Throwable e) {
+                // nothing
+            }
+
+            @Override
+            public void onSuccess(OrgUnitDTOLight result) {
+
+                if (result != null) {
+
+                    view.getOrgUnitsStore().removeAll();
+                    view.getOrgUnitsPanel().setHeading(
+                            result.getName() + " (" + result.getFullName() + ") : " + I18N.CONSTANTS.orgunitTree());
+
+                    for (final OrgUnitDTOLight child : result.getChildrenDTO()) {
+                        view.getOrgUnitsStore().add(child, true);
+                    }
+                }
             }
         });
 

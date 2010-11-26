@@ -7,20 +7,13 @@ package org.sigmah.client.page.orgunit.dashboard;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.event.NavigationEvent;
-import org.sigmah.client.page.NavigationHandler;
 import org.sigmah.client.page.orgunit.OrgUnitPresenter;
-import org.sigmah.client.page.orgunit.OrgUnitState;
 import org.sigmah.client.page.project.SubPresenter;
 import org.sigmah.shared.dto.OrgUnitDTOLight;
 
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.TreePanelEvent;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 
 /**
  * 
@@ -34,8 +27,6 @@ public class OrgUnitDashboardPresenter implements SubPresenter {
     public static abstract class View extends ContentPanel {
 
         public abstract TreeStore<OrgUnitDTOLight> getTreeStore();
-
-        public abstract TreePanel<OrgUnitDTOLight> getTree();
     }
 
     /**
@@ -56,33 +47,18 @@ public class OrgUnitDashboardPresenter implements SubPresenter {
     public Component getView() {
 
         if (view == null) {
-            view = new OrgUnitDashboardView();
+            view = new OrgUnitDashboardView(eventBus);
         }
 
         // If the current org unit has changed, clear the view
         if (!mainPresenter.getCurrentOrgUnitDTO().equals(currentOrgUnitDTO)) {
-            currentOrgUnitDTO = mainPresenter.getCurrentOrgUnitDTO().light(null);
+
+            currentOrgUnitDTO = mainPresenter.getCurrentOrgUnitDTO().light();
 
             view.getTreeStore().removeAll();
-            view.getTreeStore().add(currentOrgUnitDTO, true);
-
-            // Expand/collapse on click.
-            view.getTree().addListener(Events.OnClick, new Listener<TreePanelEvent<OrgUnitDTOLight>>() {
-                @Override
-                public void handleEvent(TreePanelEvent<OrgUnitDTOLight> tpe) {
-                    view.getTree().setExpanded(tpe.getItem(), !view.getTree().isExpanded(tpe.getItem()));
-                }
-            });
-
-            // Go to the org unit page on double-click.
-            view.getTree().addListener(Events.OnDoubleClick, new Listener<TreePanelEvent<OrgUnitDTOLight>>() {
-                @Override
-                public void handleEvent(TreePanelEvent<OrgUnitDTOLight> tpe) {
-                    view.getTree().setExpanded(tpe.getItem(), view.getTree().isExpanded(tpe.getItem()));
-                    eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new OrgUnitState(tpe
-                            .getItem().getId())));
-                }
-            });
+            for (final OrgUnitDTOLight child : currentOrgUnitDTO.getChildrenDTO()) {
+                view.getTreeStore().add(child, true);
+            }
         }
 
         return view;

@@ -3,6 +3,7 @@ package org.sigmah.client.page.dashboard;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.sigmah.client.UserInfo;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.i18n.I18N;
@@ -10,13 +11,11 @@ import org.sigmah.client.page.project.dashboard.funding.FundingIconProvider;
 import org.sigmah.client.page.project.dashboard.funding.FundingIconProvider.IconSize;
 import org.sigmah.client.util.NumberUtils;
 import org.sigmah.shared.command.CreateEntity;
-import org.sigmah.shared.command.GetCountries;
 import org.sigmah.shared.command.GetProjectModels;
-import org.sigmah.shared.command.result.CountryResult;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.command.result.ProjectModelListResult;
 import org.sigmah.shared.domain.ProjectModelType;
-import org.sigmah.shared.dto.CountryDTO;
+import org.sigmah.shared.dto.OrgUnitDTOLight;
 import org.sigmah.shared.dto.ProjectDTOLight;
 import org.sigmah.shared.dto.ProjectModelDTO;
 import org.sigmah.shared.dto.ProjectModelDTOLight;
@@ -118,6 +117,7 @@ public class CreateProjectWindow {
 
     private final ArrayList<CreateProjectListener> listeners;
     private final Dispatcher dispatcher;
+    private final UserInfo info;
     private final Window window;
     private final FormPanel formPanel;
     private final TextField<String> nameField;
@@ -125,13 +125,15 @@ public class CreateProjectWindow {
     private final ComboBox<ProjectModelDTOLight> modelsField;
     private final LabelField modelType;
     private final ListStore<ProjectModelDTOLight> modelsStore;
-    private final ListStore<CountryDTO> countriesStore;
-    private final ComboBox<CountryDTO> countriesField;
+    // private final ListStore<CountryDTO> countriesStore;
+    // private final ComboBox<CountryDTO> countriesField;
     private final NumberField budgetField;
     private final NumberField amountField;
     private final LabelField percentageField;
     private ProjectDTOLight currentFunding;
     private Mode currentMode;
+    private final ListStore<OrgUnitDTOLight> orgUnitsStore;
+    private final ComboBox<OrgUnitDTOLight> orgUnitsField;
 
     /**
      * Counter to wait that required data are loaded before showing the window.
@@ -143,11 +145,12 @@ public class CreateProjectWindow {
      */
     private boolean alert = false;
 
-    public CreateProjectWindow(final Dispatcher dispatcher, final Authentication authentication) {
+    public CreateProjectWindow(final Dispatcher dispatcher, final Authentication authentication, final UserInfo info) {
 
         listeners = new ArrayList<CreateProjectListener>();
 
         this.dispatcher = dispatcher;
+        this.info = info;
 
         // Name field.
         nameField = new TextField<String>();
@@ -297,32 +300,63 @@ public class CreateProjectWindow {
         percentageField = new LabelField();
         percentageField.setFieldLabel(I18N.CONSTANTS.createProjectPercentage());
 
-        // Countries list.
-        countriesField = new ComboBox<CountryDTO>();
-        countriesField.setFieldLabel(I18N.CONSTANTS.projectCountry());
-        countriesField.setAllowBlank(false);
-        countriesField.setValueField("id");
-        countriesField.setDisplayField("name");
-        countriesField.setEditable(true);
+        // // Countries list.
+        // countriesField = new ComboBox<CountryDTO>();
+        // countriesField.setFieldLabel(I18N.CONSTANTS.projectCountry());
+        // countriesField.setAllowBlank(false);
+        // countriesField.setValueField("id");
+        // countriesField.setDisplayField("name");
+        // countriesField.setEditable(true);
+        //
+        // // Countries list store.
+        // countriesStore = new ListStore<CountryDTO>();
+        // countriesStore.addListener(Events.Add, new
+        // Listener<StoreEvent<CountryDTO>>() {
+        //
+        // @Override
+        // public void handleEvent(StoreEvent<CountryDTO> be) {
+        // countriesField.setEnabled(true);
+        // }
+        // });
+        //
+        // countriesStore.addListener(Events.Clear, new
+        // Listener<StoreEvent<CountryDTO>>() {
+        //
+        // @Override
+        // public void handleEvent(StoreEvent<CountryDTO> be) {
+        // countriesField.setEnabled(false);
+        // }
+        // });
+        //
+        // countriesField.setStore(countriesStore);
 
-        // Countries list store.
-        countriesStore = new ListStore<CountryDTO>();
-        countriesStore.addListener(Events.Add, new Listener<StoreEvent<CountryDTO>>() {
+        // Org units list.
+        orgUnitsField = new ComboBox<OrgUnitDTOLight>();
+        orgUnitsField.setFieldLabel(I18N.CONSTANTS.orgunit());
+        orgUnitsField.setAllowBlank(false);
+        orgUnitsField.setValueField("id");
+        orgUnitsField.setDisplayField("completeName");
+        orgUnitsField.setEditable(true);
+
+        // Org units list store.
+        orgUnitsStore = new ListStore<OrgUnitDTOLight>();
+        orgUnitsStore.addListener(Events.Add, new Listener<StoreEvent<OrgUnitDTOLight>>() {
 
             @Override
-            public void handleEvent(StoreEvent<CountryDTO> be) {
-                countriesField.setEnabled(true);
+            public void handleEvent(StoreEvent<OrgUnitDTOLight> be) {
+                orgUnitsField.setEnabled(true);
             }
         });
 
-        countriesStore.addListener(Events.Clear, new Listener<StoreEvent<CountryDTO>>() {
+        orgUnitsStore.addListener(Events.Clear, new Listener<StoreEvent<OrgUnitDTOLight>>() {
 
             @Override
-            public void handleEvent(StoreEvent<CountryDTO> be) {
-                countriesField.setEnabled(false);
+            public void handleEvent(StoreEvent<OrgUnitDTOLight> be) {
+                orgUnitsField.setEnabled(false);
             }
         });
-        countriesField.setStore(countriesStore);
+
+        orgUnitsField.setStore(orgUnitsStore);
 
         // Create button.
         final Button createButton = new Button(I18N.CONSTANTS.createProjectCreateButton());
@@ -342,7 +376,8 @@ public class CreateProjectWindow {
         formPanel.add(nameField);
         formPanel.add(fullNameField);
         formPanel.add(budgetField);
-        formPanel.add(countriesField);
+        // formPanel.add(countriesField);
+        formPanel.add(orgUnitsField);
         formPanel.add(modelsField);
         formPanel.add(modelType);
         formPanel.add(amountField);
@@ -385,7 +420,8 @@ public class CreateProjectWindow {
         final String fullName = fullNameField.getValue();
         final Double budget = budgetField.getValue().doubleValue();
         final long modelId = modelsField.getValue().getId();
-        final int countryId = countriesField.getValue().getId();
+        // final int countryId = countriesField.getValue().getId();
+        final int orgUnitId = orgUnitsField.getValue().getId();
 
         if (Log.isDebugEnabled()) {
 
@@ -399,8 +435,8 @@ public class CreateProjectWindow {
             sb.append(budget);
             sb.append(" ; model id=");
             sb.append(modelId);
-            sb.append(" ; country id=");
-            sb.append(countryId);
+            sb.append(" ; org unit id=");
+            sb.append(orgUnitId);
 
             Log.debug(sb.toString());
         }
@@ -411,7 +447,7 @@ public class CreateProjectWindow {
         projectProperties.put("fullName", fullName);
         projectProperties.put("budget", budget);
         projectProperties.put("modelId", modelId);
-        projectProperties.put("countryId", countryId);
+        projectProperties.put("orgUnitId", orgUnitId);
         projectProperties.put("calendarName", I18N.CONSTANTS.calendarDefaultName());
 
         // Creates the project.
@@ -491,13 +527,12 @@ public class CreateProjectWindow {
         nameField.reset();
         fullNameField.reset();
         modelsField.reset();
-        countriesField.reset();
+        // countriesField.reset();
+        orgUnitsField.reset();
         modelType.setValue("");
         amountField.setValue(0);
         budgetField.setValue(0);
         percentageField.setText("0 %");
-        modelsStore.removeAll();
-        countriesStore.removeAll();
         alert = false;
 
         // Manages the display mode.
@@ -528,51 +563,76 @@ public class CreateProjectWindow {
         // There are two remote calls.
         countBeforeShow = 2;
 
+        if (orgUnitsStore.getCount() == 0) {
+
+            info.getOrgUnit(new AsyncCallback<OrgUnitDTOLight>() {
+
+                @Override
+                public void onSuccess(OrgUnitDTOLight result) {
+                    fillOrgUnitsList(result);
+                    countBeforeShow();
+                }
+
+                @Override
+                public void onFailure(Throwable caught) {
+                    missingRequiredData();
+                }
+            });
+        } else {
+            countBeforeShow();
+        }
+
         // Retrieves countries.
-        dispatcher.execute(new GetCountries(), null, new AsyncCallback<CountryResult>() {
+        // dispatcher.execute(new GetCountries(), null, new
+        // AsyncCallback<CountryResult>() {
+        //
+        // @Override
+        // public void onFailure(Throwable arg0) {
+        // missingRequiredData();
+        // }
+        //
+        // @Override
+        // public void onSuccess(CountryResult result) {
+        //
+        // if (result.getData() == null || result.getData().isEmpty()) {
+        // missingRequiredData();
+        // return;
+        // }
+        //
+        // countriesStore.add(result.getData());
+        // countriesStore.commitChanges();
+        //
+        // countBeforeShow();
+        // }
+        // });
 
-            @Override
-            public void onFailure(Throwable arg0) {
-                missingRequiredData();
-            }
+        if (modelsStore.getCount() == 0) {
 
-            @Override
-            public void onSuccess(CountryResult result) {
+            // Retrieves project models (with an optional filter on the type).
+            dispatcher.execute(new GetProjectModels(), null, new AsyncCallback<ProjectModelListResult>() {
 
-                if (result.getData() == null || result.getData().isEmpty()) {
+                @Override
+                public void onFailure(Throwable arg0) {
                     missingRequiredData();
-                    return;
                 }
 
-                countriesStore.add(result.getData());
-                countriesStore.commitChanges();
+                @Override
+                public void onSuccess(ProjectModelListResult result) {
 
-                countBeforeShow();
-            }
-        });
+                    if (result.getList() == null || result.getList().isEmpty()) {
+                        missingRequiredData();
+                        return;
+                    }
 
-        // Retrieves project models (with an optional filter on the type).
-        dispatcher.execute(new GetProjectModels(), null, new AsyncCallback<ProjectModelListResult>() {
+                    modelsStore.add(result.getList());
+                    modelsStore.commitChanges();
 
-            @Override
-            public void onFailure(Throwable arg0) {
-                missingRequiredData();
-            }
-
-            @Override
-            public void onSuccess(ProjectModelListResult result) {
-
-                if (result.getList() == null || result.getList().isEmpty()) {
-                    missingRequiredData();
-                    return;
+                    countBeforeShow();
                 }
-
-                modelsStore.add(result.getList());
-                modelsStore.commitChanges();
-
-                countBeforeShow();
-            }
-        });
+            });
+        } else {
+            countBeforeShow();
+        }
     }
 
     /**
@@ -584,6 +644,34 @@ public class CreateProjectWindow {
 
         if (countBeforeShow == 0) {
             window.show();
+        }
+    }
+
+    /**
+     * Fills combobox with the children of the given root org units.
+     * 
+     * @param root
+     *            The root org unit.
+     */
+    private void fillOrgUnitsList(OrgUnitDTOLight root) {
+
+        for (final OrgUnitDTOLight child : root.getChildrenDTO()) {
+            recursiveFillOrgUnitsList(child);
+        }
+    }
+
+    /**
+     * Fills recursively the combobox from the given root org unit.
+     * 
+     * @param root
+     *            The root org unit.
+     */
+    private void recursiveFillOrgUnitsList(OrgUnitDTOLight root) {
+
+        orgUnitsStore.add(root);
+
+        for (final OrgUnitDTOLight child : root.getChildrenDTO()) {
+            recursiveFillOrgUnitsList(child);
         }
     }
 

@@ -6,9 +6,8 @@
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
-import java.util.ListIterator;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -20,11 +19,10 @@ import org.sigmah.shared.command.GetProjects;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.ProjectListResult;
-import org.sigmah.shared.domain.Country;
+import org.sigmah.shared.domain.OrgUnit;
 import org.sigmah.shared.domain.Project;
 import org.sigmah.shared.domain.ProjectModelType;
 import org.sigmah.shared.domain.User;
-import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.ProjectDTOLight;
 import org.sigmah.shared.exception.CommandException;
 
@@ -52,80 +50,53 @@ public class GetProjectsHandler implements CommandHandler<GetProjects> {
      * @return a {@link CommandResult} object containing the
      *         {@link ProjectListResult} object.
      */
-    @SuppressWarnings("unchecked")
     @Override
+    @SuppressWarnings("unchecked")
     public CommandResult execute(GetProjects cmd, User user) throws CommandException {
 
         if (LOG.isDebugEnabled()) {
             LOG.debug("[execute] Gets projects: " + cmd + ".");
         }
 
-        List<Project> projects;
-        final List<CountryDTO> countriesDTO = cmd.getCountries();
+        // Retrieves command parameters.
+        final HashSet<Project> projects = new HashSet<Project>();
         final ProjectModelType modelType = cmd.getModelType();
+        List<Integer> ids = cmd.getOrgUnitsIds();
 
-        // Filters by country.
-        if (countriesDTO == null) {
+        // Checks if there is at least one org unit id specified.
+        if (ids == null || ids.isEmpty()) {
 
             if (LOG.isDebugEnabled()) {
-                LOG.debug("[execute] No country specified, gets all projects.");
+                LOG.debug("[execute] No org unit specified, gets all projects for the user org unit.");
             }
 
-            projects = em.createQuery("SELECT p FROM Project p ORDER BY p.name").getResultList();
-        } else {
-            if (countriesDTO.size() > 0) {
-
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("[execute] Gets projects for " + countriesDTO.size() + " countries.");
-                }
-
-                final ArrayList<Country> countries = new ArrayList<Country>();
-
-                for (final CountryDTO countryDTO : countriesDTO) {
-
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("[execute] Map country name " + countryDTO + ".");
-                    }
-
-                    final Country country = mapper.map(countryDTO, Country.class);
-
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("[execute] Gets projects in country " + country + ".");
-                    }
-
-                    countries.add(country);
-                }
-
-                Query q = em.createQuery("SELECT p FROM Project p WHERE p.country IN (:countryList)");
-                q.setParameter("countryList", countries);
-                projects = q.getResultList();
-
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("[execute] Executes selection query.");
-                }
-
-            } else {
-                projects = Collections.emptyList();
-            }
+            // Adds the user org unit as default.
+            ids = new ArrayList<Integer>();
+            ids.add(user.getOrgUnit().getId());
         }
 
-        // Filters by model type.
-        if (modelType != null) {
+        // Retrieves all the corresponding org units.
+        OrgUnit unit;
+        for (final Integer id : ids) {
+            if ((unit = em.find(OrgUnit.class, id)) != null) {
 
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("[execute] Filter project by model type '" + modelType + "'.");
-            }
+                // Builds and executes the query.
+                final Query query = em
+                        .createQuery("SELECT p FROM Project p WHERE :unit MEMBER OF p.partners ORDER BY p.name");
+                query.setParameter("unit", unit);
 
-            for (final ListIterator<Project> it = projects.listIterator(); it.hasNext();) {
-                final Project p = it.next();
-                if (p.getProjectModel().getVisibility(user.getOrganization()) != modelType) {
-                    it.remove();
+                for (final Project p : (List<Project>) query.getResultList()) {
+
+                    if (modelType == null) {
+                        projects.add(p);
+                    }
+                    // Filters by model type.
+                    else {
+                        if (p.getProjectModel().getVisibility(user.getOrganization()) == modelType) {
+                            projects.add(p);
+                        }
+                    }
                 }
-            }
-        } else {
-
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("[execute] No model type specified, no filter applied.");
             }
         }
 

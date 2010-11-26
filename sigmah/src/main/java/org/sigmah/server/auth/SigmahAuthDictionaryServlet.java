@@ -17,6 +17,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.sigmah.client.inject.SigmahAuthProvider;
 import org.sigmah.server.domain.Authentication;
 import org.sigmah.server.Cookies;
 import org.sigmah.server.dao.AuthenticationDAO;
@@ -24,17 +26,20 @@ import org.sigmah.shared.domain.User;
 
 /**
  * Creates and returns the current user informations.
+ * 
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 @Singleton
 public class SigmahAuthDictionaryServlet extends HttpServlet {
 
+    private static final long serialVersionUID = -1298849337754771926L;
+
     @Inject
     private Injector injector;
 
     private String getAuthToken(Cookie[] cookies) {
-        for(final Cookie cookie : cookies) {
-            if(Cookies.AUTH_TOKEN_COOKIE.equals(cookie.getName())) {
+        for (final Cookie cookie : cookies) {
+            if (Cookies.AUTH_TOKEN_COOKIE.equals(cookie.getName())) {
                 return cookie.getValue();
             }
         }
@@ -44,40 +49,41 @@ public class SigmahAuthDictionaryServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if(req.getParameter("remove") != null) {
+        if (req.getParameter("remove") != null) {
             final Cookie cookie = new Cookie("authToken", "");
             cookie.setPath("/");
             cookie.setMaxAge(0);
             resp.addCookie(cookie);
-            
+
         } else {
             final HashMap<String, String> parameters = new HashMap<String, String>();
-            parameters.put("showActivityInfoMenus", "true");
+            parameters.put(SigmahAuthProvider.SHOW_MENUS, String.valueOf(true));
 
             final String authToken = getAuthToken(req.getCookies());
-            if(authToken != null) {
+            if (authToken != null) {
                 AuthenticationDAO authDAO = injector.getInstance(AuthenticationDAO.class);
                 Authentication auth = authDAO.findById(authToken);
 
                 final User user = auth.getUser();
 
-                parameters.put("connectedUserId", Integer.toString(user.getId()));
-                parameters.put("connectedUserAuthToken", '"'+authToken+'"');
-                parameters.put("connectedUserEmail", '"'+user.getEmail()+'"');
-                parameters.put("connectedUserOrgId", Integer.toString(user.getOrganization().getId()));
+                parameters.put(SigmahAuthProvider.USER_ID, Integer.toString(user.getId()));
+                parameters.put(SigmahAuthProvider.USER_TOKEN, '"' + authToken + '"');
+                parameters.put(SigmahAuthProvider.USER_EMAIL, '"' + user.getEmail() + '"');
+                parameters.put(SigmahAuthProvider.USER_ORG_ID, Integer.toString(user.getOrganization().getId()));
+                parameters.put(SigmahAuthProvider.USER_ORG_UNIT_ID, Integer.toString(user.getOrgUnit().getId()));
             }
 
             final ServletOutputStream output = resp.getOutputStream();
-            output.println("var SigmahParams = {");
+            output.println("var " + SigmahAuthProvider.DICTIONARY_NAME + " = {");
 
             boolean first = true;
-            for(Map.Entry<String, String> entry : parameters.entrySet()) {
-                if(first)
+            for (Map.Entry<String, String> entry : parameters.entrySet()) {
+                if (first)
                     first = false;
                 else
                     output.println(",");
 
-                output.print(entry.getKey()+": "+entry.getValue());
+                output.print(entry.getKey() + ": " + entry.getValue());
             }
 
             output.println("};");

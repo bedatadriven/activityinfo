@@ -316,7 +316,7 @@ public class DefaultFlexibleElementDTO extends FlexibleElementDTO {
                 comboBox.setValueField("id");
                 comboBox.setTriggerAction(TriggerAction.ALL);
                 comboBox.setEditable(true);
-                comboBox.setAllowBlank(false);
+                comboBox.setAllowBlank(true);
 
                 // Retrieves the county list.
                 if (countriesStore.getCount() == 0) {
@@ -334,7 +334,9 @@ public class DefaultFlexibleElementDTO extends FlexibleElementDTO {
                             countriesStore.add(result.getData());
 
                             // Sets the value to the field.
-                            comboBox.setValue(c);
+                            if (c != null) {
+                                comboBox.setValue(c);
+                            }
 
                             // Listens to the selection changes.
                             comboBox.addSelectionChangedListener(new SelectionChangedListener<CountryDTO>() {
@@ -373,7 +375,9 @@ public class DefaultFlexibleElementDTO extends FlexibleElementDTO {
                 } else {
 
                     // Sets the value to the field.
-                    comboBox.setValue(c);
+                    if (c != null) {
+                        comboBox.setValue(c);
+                    }
 
                     // Listens to the selection changes.
                     comboBox.addSelectionChangedListener(new SelectionChangedListener<CountryDTO>() {
@@ -412,7 +416,12 @@ public class DefaultFlexibleElementDTO extends FlexibleElementDTO {
             } else {
 
                 final LabelField labelField = createLabelField();
-                labelField.setValue(c.getName());
+
+                if (c == null) {
+                    labelField.setValue("-");
+                } else {
+                    labelField.setValue(c.getName());
+                }
 
                 field = labelField;
             }

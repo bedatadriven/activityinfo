@@ -17,6 +17,7 @@ import org.sigmah.client.page.charts.ChartPagePresenter;
 import org.sigmah.client.page.charts.SigmahChartLoader;
 import org.sigmah.client.page.config.*;
 import org.sigmah.client.page.config.design.DesignPresenter;
+import org.sigmah.client.page.dashboard.DashboardModule;
 import org.sigmah.client.page.dashboard.DashboardPageLoader;
 import org.sigmah.client.page.dashboard.DashboardPresenter;
 import org.sigmah.client.page.entry.DataEntryNavigator;
@@ -40,6 +41,7 @@ import org.sigmah.client.page.table.SigmahPivotPageLoader;
 import org.sigmah.client.util.state.IStateManager;
 
 @GinModules({SigmahModule.class,
+             DashboardModule.class,
              ProjectModule.class,
              OrgUnitModule.class,
              MapModule.class,

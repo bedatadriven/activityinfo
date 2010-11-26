@@ -18,25 +18,40 @@ import java.util.MissingResourceException;
  */
 public class SigmahAuthProvider implements Provider<Authentication> {
 
+    public static final String DICTIONARY_NAME = "SigmahParams";
+
+    public static final String USER_ID = "connectedUserId";
+    public static final String USER_TOKEN = "connectedUserAuthToken";
+    public static final String USER_EMAIL = "connectedUserEmail";
+    public static final String USER_ORG_ID = "connectedUserOrgId";
+    public static final String USER_ORG_UNIT_ID = "connectedUserOrgUnitId";
+    public static final String SHOW_MENUS = "showActivityInfoMenus";
+
     /**
      * Retrieves the authentication object.
-     * @return An authentication object if the user is connected, <code>null</code> otherwise.
+     * 
+     * @return An authentication object if the user is connected,
+     *         <code>null</code> otherwise.
      */
     @Override
     public Authentication get() {
         Authentication auth = null;
 
         try {
-            final Dictionary sigmahParams = Dictionary.getDictionary("SigmahParams");
+            final Dictionary sigmahParams = Dictionary.getDictionary(DICTIONARY_NAME);
 
-            final String userId = sigmahParams.get("connectedUserId");
-            if(userId != null) {
-                auth = new Authentication(
-                        Integer.parseInt(userId),
-                        sigmahParams.get("connectedUserAuthToken"),
-                        sigmahParams.get("connectedUserEmail"));
+            final String userId = sigmahParams.get(USER_ID);
+            if (userId != null) {
 
-                auth.setOrganizationId(Integer.parseInt(sigmahParams.get("connectedUserOrgId")));
+                auth = new Authentication();
+
+                auth.setUserId((Integer.parseInt(userId)));
+                auth.setAuthToken(sigmahParams.get(USER_TOKEN));
+                auth.setEmail(sigmahParams.get(USER_EMAIL));
+
+                auth.setOrganizationId(Integer.parseInt(sigmahParams.get(USER_ORG_ID)));
+                auth.setOrgUnitId(Integer.parseInt(sigmahParams.get(USER_ORG_UNIT_ID)));
+                auth.setShowMenus(Boolean.parseBoolean(sigmahParams.get(SHOW_MENUS)));
             }
 
         } catch (MissingResourceException e) {

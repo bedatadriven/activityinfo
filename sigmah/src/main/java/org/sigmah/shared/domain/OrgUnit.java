@@ -48,6 +48,7 @@ public class OrgUnit implements java.io.Serializable, SchemaElement {
     private Double receivedBudget;
     private OrgUnitModel orgUnitModel;
     private Integer calendarId;
+    private Country officeLocationCountry;
 
     public OrgUnit() {
     }
@@ -186,5 +187,15 @@ public class OrgUnit implements java.io.Serializable, SchemaElement {
 
     public void setCalendarId(Integer calendarId) {
         this.calendarId = calendarId;
+    }
+
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "office_country_id", nullable = true)
+    public Country getOfficeLocationCountry() {
+        return officeLocationCountry;
+    }
+
+    public void setOfficeLocationCountry(Country officeLocationCountry) {
+        this.officeLocationCountry = officeLocationCountry;
     }
 }

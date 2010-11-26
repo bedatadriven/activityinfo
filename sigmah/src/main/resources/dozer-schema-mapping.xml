@@ -562,20 +562,4 @@
 		</field>
 	</mapping>
 	
-	<mapping wildcard="true">
-		<class-a>org.sigmah.shared.domain.OrgUnit</class-a>
-		<class-b>org.sigmah.shared.dto.OrgUnitDTOLight</class-b>
-	
-		<field>
-			<a>parent</a>
-			<b>parentDTO</b>
-		</field>
-		
-		<field>
-			<a>children</a>
-			<b>childrenDTO</b>
-		</field>
-	
-	</mapping>
-
 </mappings>

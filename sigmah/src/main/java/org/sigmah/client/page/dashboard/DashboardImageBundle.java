@@ -12,6 +12,7 @@ import com.google.gwt.user.client.ui.ImageBundle;
  *
  * @author rca
  */
+@SuppressWarnings("deprecation")
 public interface DashboardImageBundle extends ImageBundle {
     AbstractImagePrototype star();
     AbstractImagePrototype emptyStar();

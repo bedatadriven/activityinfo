@@ -9,12 +9,15 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sigmah.client.page.project.logframe.ProjectLogFramePresenter;
 import org.sigmah.server.dao.Transactional;
 import org.sigmah.shared.domain.Country;
+import org.sigmah.shared.domain.OrgUnit;
 import org.sigmah.shared.domain.Phase;
 import org.sigmah.shared.domain.PhaseModel;
 import org.sigmah.shared.domain.Project;
@@ -62,8 +65,20 @@ public class ProjectPolicy implements EntityPolicy<Project> {
 
         // Userdatabase attributes.
         project.setStartDate(new Date());
-        project.setCountry(em.getReference(Country.class, properties.<Integer> get("countryId")));
         project.setOwner(em.getReference(User.class, user.getId()));
+
+        // Org unit.
+        final OrgUnit orgunit = em.find(OrgUnit.class, properties.<Integer> get("orgUnitId"));
+        project.getPartners().add(orgunit);
+
+        // Country
+
+        final Country country = getProjectCountry(orgunit);
+        project.setCountry(country);
+
+        if (log.isDebugEnabled()) {
+            log.debug("[createProject] Selected country: " + country.getName() + ".");
+        }
 
         // Considers name length constraints.
         final String name = properties.<String> get("name");
@@ -215,8 +230,63 @@ public class ProjectPolicy implements EntityPolicy<Project> {
         return logFrame;
     }
 
+    /**
+     * Searches the country for the given org unit.
+     * 
+     * @param orgUnit
+     *            The org unit.
+     * @return The country
+     */
+    private Country getProjectCountry(OrgUnit orgUnit) {
+
+        if (orgUnit == null) {
+            return getDefaultCountry();
+        }
+
+        Country country = null;
+        OrgUnit current = orgUnit;
+
+        while (country == null || current != null) {
+
+            if ((country = current.getOfficeLocationCountry()) != null) {
+                return country;
+            } else {
+                current = current.getParent();
+            }
+
+            // Root reached
+            if (current == null) {
+                break;
+            }
+        }
+
+        return getDefaultCountry();
+    }
+
+    /**
+     * Gets the default country for all the application.
+     * 
+     * @return The default country.
+     */
+    private Country getDefaultCountry() {
+
+        final Query q = em.createQuery("SELECT c FROM Country c WHERE c.name = :defaultName");
+        // FIXME France by default
+        q.setParameter("defaultName", "France");
+
+        try {
+            return (Country) q.getSingleResult();
+        } catch (NoResultException e) {
+
+            try {
+                return (Country) em.createQuery("SELECT c FROM Country c").getResultList().get(0);
+            } catch (Throwable e2) {
+                throw new IllegalStateException("There is no country in database, unable to create a project.", e2);
+            }
+        }
+    }
+
     @Override
     public void update(User user, Object entityId, PropertyMap changes) {
-
     }
 }

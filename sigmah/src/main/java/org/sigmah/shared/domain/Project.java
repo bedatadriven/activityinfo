@@ -165,4 +165,20 @@ public class Project extends UserDatabase {
     public void setFunded(List<ProjectFunding> funded) {
         this.funded = funded;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (obj == null) {
+            return false;
+        }
+
+        if (!(obj instanceof Project)) {
+            return false;
+        }
+
+        final Project other = (Project) obj;
+
+        return getId() == other.getId();
+    }
 }
