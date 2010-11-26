@@ -10,7 +10,11 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Visibility;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
@@ -25,6 +29,11 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.FlowPanel;
 import org.sigmah.client.i18n.I18N;
 
 /**
@@ -74,8 +83,28 @@ public class LoginView extends Composite {
             form.getCellFormatter().setStyleName(3, i, "login-box-form-separator");
 
         // Password forgotten link
-        form.setText(4, 0, I18N.CONSTANTS.loginPasswordForgotten());
-        form.getCellFormatter().setStyleName(4, 0, "login-box-form-forgotten");
+        final FlowPanel bottomPanel = new FlowPanel();
+        bottomPanel.getElement().getStyle().setPosition(Position.RELATIVE);
+
+        final Anchor label = new Anchor(I18N.CONSTANTS.loginPasswordForgotten());
+        label.setStyleName("login-box-form-forgotten");
+        label.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                MessageBox.alert("Error", "Not Implemented Yet.", null);
+            }
+        });
+        bottomPanel.add(label);
+
+        final Image loader = new Image("image/login-loader.gif");
+        loader.getElement().getStyle().setVisibility(Visibility.HIDDEN);
+        loader.getElement().getStyle().setMarginTop(-8, Unit.PX);
+        loader.getElement().getStyle().setPosition(Position.ABSOLUTE);
+        loader.getElement().getStyle().setTop(50, Unit.PCT);
+        loader.getElement().getStyle().setRight(2, Unit.PX);
+        bottomPanel.add(loader);
+
+        form.setWidget(4, 0, bottomPanel);
         form.getFlexCellFormatter().setColSpan(4, 0, 2);
 
         // Login button
@@ -84,38 +113,23 @@ public class LoginView extends Composite {
         form.setWidget(4, 1, loginButton);
         form.getCellFormatter().setHorizontalAlignment(4, 1, HasHorizontalAlignment.ALIGN_RIGHT);
 
-        // Login action
+        // Login actions
         loginButton.addListener(Events.Select, new Listener<BaseEvent>() {
             @Override
             public void handleEvent(BaseEvent be) {
-                final String query = "email="+loginTextBox.getText()+"&password="+passwordTextBox.getText();
-                final RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.POST,"../Login/service?"+query);
-                requestBuilder.setHeader("email", loginTextBox.getText());
-                requestBuilder.setCallback(new RequestCallback() {
-                    @Override
-                    public void onResponseReceived(Request request, Response response) {
-                        if(response.getText().contains("OK"))
-                            Window.Location.reload();
-                        else {
-                            MessageBox.alert(I18N.CONSTANTS.loginConnectErrorTitle(), I18N.CONSTANTS.loginConnectErrorBadLogin(), null);
-                            loginButton.setEnabled(true);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Request request, Throwable exception) {
-                        MessageBox.alert(I18N.CONSTANTS.loginConnectErrorTitle(), exception.getMessage(), null);
-                    }
-                });
-                
-                loginButton.setEnabled(false);
-                try {
-                    requestBuilder.send();
-                } catch (RequestException ex) {
-                   MessageBox.alert(I18N.CONSTANTS.loginConnectErrorTitle(), ex.getMessage(), null);
-                }
+                doLogin(loginTextBox.getText(), passwordTextBox.getText(), loginButton, loader);
             }
         });
+
+        final KeyDownHandler handler = new KeyDownHandler() {
+            @Override
+            public void onKeyDown(KeyDownEvent event) {
+                if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
+                    doLogin(loginTextBox.getText(), passwordTextBox.getText(), loginButton, loader);
+            }
+        };
+        loginTextBox.addKeyDownHandler(handler);
+        passwordTextBox.addKeyDownHandler(handler);
         
         // Adding the form to the orange box
         grid.getCellFormatter().setHorizontalAlignment(0, 1, HasHorizontalAlignment.ALIGN_CENTER);
@@ -129,5 +143,36 @@ public class LoginView extends Composite {
 
         initWidget(panel);
     }
-    
+
+    private void doLogin(final String login, final String password, final Button loginButton, final Image loader) {
+        final String query = "email="+login+"&password="+password;
+        final RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.POST,"../Login/service?"+query);
+        requestBuilder.setCallback(new RequestCallback() {
+            @Override
+            public void onResponseReceived(Request request, Response response) {
+                if(response.getText().contains("OK"))
+                    Window.Location.reload();
+                else {
+                    MessageBox.alert(I18N.CONSTANTS.loginConnectErrorTitle(), I18N.CONSTANTS.loginConnectErrorBadLogin(), null);
+                    loginButton.setEnabled(true);
+                    loader.getElement().getStyle().setVisibility(Visibility.HIDDEN);
+                }
+            }
+
+            @Override
+            public void onError(Request request, Throwable exception) {
+                MessageBox.alert(I18N.CONSTANTS.loginConnectErrorTitle(), exception.getMessage(), null);
+                loginButton.setEnabled(true);
+                loader.getElement().getStyle().setVisibility(Visibility.HIDDEN);
+            }
+        });
+
+        loginButton.setEnabled(false);
+        loader.getElement().getStyle().setVisibility(Visibility.VISIBLE);
+        try {
+            requestBuilder.send();
+        } catch (RequestException ex) {
+           MessageBox.alert(I18N.CONSTANTS.loginConnectErrorTitle(), ex.getMessage(), null);
+        }
+    }
 }
