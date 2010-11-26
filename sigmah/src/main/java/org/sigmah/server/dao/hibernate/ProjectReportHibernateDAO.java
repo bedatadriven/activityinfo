@@ -11,6 +11,7 @@ import org.sigmah.server.dao.ProjectReportDAO;
 import org.sigmah.shared.domain.report.ProjectReport;
 import org.sigmah.shared.domain.report.ProjectReportModel;
 import org.sigmah.shared.domain.report.RichTextElement;
+import org.sigmah.shared.domain.value.Value;
 
 /**
  *
@@ -52,5 +53,10 @@ public class ProjectReportHibernateDAO implements ProjectReportDAO {
     @Override
     public void merge(ProjectReport report) {
         em.merge(report);
+    }
+
+    @Override
+    public void merge(Value value) {
+        em.merge(value);
     }
 }

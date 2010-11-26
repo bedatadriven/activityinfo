@@ -238,7 +238,7 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
      *            The user which launch the command.
      * @return The value.
      */
-    private Value retrieveValue(int projectId, long elementId, User user) {
+    public Value retrieveValue(int projectId, long elementId, User user) {
 
         // Retrieving the current value
         final Query query = em

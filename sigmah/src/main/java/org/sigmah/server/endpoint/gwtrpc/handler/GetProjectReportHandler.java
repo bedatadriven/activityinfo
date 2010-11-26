@@ -52,11 +52,13 @@ public class GetProjectReportHandler implements CommandHandler<GetProjectReport>
 
             reportDTO = new ProjectReportDTO();
             reportDTO.setId(report.getId());
-            reportDTO.setProjectId(report.getProject().getId());
             reportDTO.setName(report.getName());
             reportDTO.setPhaseName(report.getPhaseName());
             reportDTO.setLastEditDate(report.getLastEditDate());
             reportDTO.setEditorName(report.getEditorShortName());
+
+            if(report.getProject() != null)
+                reportDTO.setProjectId(report.getProject().getId());
 
             final ProjectReportModel model = report.getModel();
 

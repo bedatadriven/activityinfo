@@ -35,8 +35,18 @@ public class GetProjectReportsHandler implements CommandHandler<GetProjectReport
     public CommandResult execute(GetProjectReports cmd, User user) throws CommandException {
         final ArrayList<GetProjectReports.ReportReference> references = new ArrayList<GetProjectReports.ReportReference>();
 
-        final Query query = em.createQuery("SELECT r FROM ProjectReport r WHERE r.project.id = :projectId");
-        query.setParameter("projectId", cmd.getProjectId());
+        final Query query;
+
+        if(cmd.getProjectId() != null) {
+            query = em.createQuery("SELECT r FROM ProjectReport r WHERE r.project.id = :projectId");
+            query.setParameter("projectId", cmd.getProjectId());
+
+        } else if(cmd.getReportId() != null) {
+            query = em.createQuery("SELECT r FROM ProjectReport r WHERE r.id = :reportId");
+            query.setParameter("reportId", cmd.getReportId());
+            
+        } else
+            throw new IllegalArgumentException("GetProjectReports should either specify a project id or a report id.");
 
         try {
             final List<ProjectReport> reports = query.getResultList();

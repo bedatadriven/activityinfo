@@ -49,6 +49,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
+import org.sigmah.client.page.PageStateSerializer;
 
 /**
  * Project presenter which manages the {@link ProjectView}.
@@ -58,6 +59,8 @@ import com.google.inject.Inject;
 public class ProjectPresenter implements Frame, TabPage {
 
     public static final PageId PAGE_ID = new PageId("project");
+
+    public static final int REPORT_TAB_INDEX = 5;
 
     /**
      * Description of the view managed by this presenter.
@@ -100,13 +103,12 @@ public class ProjectPresenter implements Frame, TabPage {
         this.view = view;
         this.authentication = authentication;
 
-        final DummyPresenter dummyPresenter = new DummyPresenter(); // For
-                                                                    // development
+        final DummyPresenter dummyPresenter = new DummyPresenter(); // For development
 
-        this.presenters = new SubPresenter[] { new ProjectDashboardPresenter(dispatcher, authentication, this), // Dashboard
+        this.presenters = new SubPresenter[] {
+                new ProjectDashboardPresenter(dispatcher, eventBus, authentication, this), // Dashboard
                 new ProjectDetailsPresenter(dispatcher, authentication, this), // Details,
-                new ProjectLogFramePresenter(dispatcher, this), // Logical
-                                                                // Framework
+                new ProjectLogFramePresenter(dispatcher, this), // Logical Framework
                 dummyPresenter, // Indicators
                 new ProjectCalendarPresenter(dispatcher, this), // Calendar
                 new ProjectReportsPresenter(dispatcher, eventBus, this), // Reports

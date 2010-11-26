@@ -61,19 +61,29 @@ public class GetProjectReports implements Command<ProjectReportListResult> {
         }
     }
 
-    private int projectId;
+    private Integer projectId;
+    private Integer reportId;
 
     public GetProjectReports() {}
 
-    public GetProjectReports(int projectId) {
+    public GetProjectReports(Integer projectId) {
         this.projectId = projectId;
     }
 
-    public int getProjectId() {
+    public Integer getProjectId() {
         return projectId;
     }
 
-    public void setProjectId(int projectId) {
+    public void setProjectId(Integer projectId) {
         this.projectId = projectId;
     }
+
+    public Integer getReportId() {
+        return reportId;
+    }
+
+    public void setReportId(Integer reportId) {
+        this.reportId = reportId;
+    }
+
 }

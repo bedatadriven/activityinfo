@@ -17,6 +17,7 @@ import org.sigmah.shared.dto.element.handler.ValueHandler;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.google.gwt.event.shared.HandlerManager;
+import org.sigmah.client.EventBus;
 
 /**
  * 
@@ -30,6 +31,8 @@ public abstract class FlexibleElementDTO extends BaseModelData implements Entity
     protected transient HandlerManager handlerManager;
 
     protected transient Dispatcher dispatcher;
+
+    protected transient EventBus eventBus;
 
     protected transient Authentication authentication;
 
@@ -46,6 +49,15 @@ public abstract class FlexibleElementDTO extends BaseModelData implements Entity
      */
     public void setService(Dispatcher dispatcher) {
         this.dispatcher = dispatcher;
+    }
+
+    /**
+     * Sets the event bus to be used by {@link #getComponent(ValueResult)}.
+     * @param eventBus
+     *          The presenter's event bus.
+     */
+    public void setEventBus(EventBus eventBus) {
+        this.eventBus = eventBus;
     }
 
     /**

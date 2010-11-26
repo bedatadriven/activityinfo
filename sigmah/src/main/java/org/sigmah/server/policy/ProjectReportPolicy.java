@@ -13,23 +13,27 @@ import java.util.List;
 import java.util.Map;
 import org.sigmah.server.dao.ProjectReportDAO;
 import org.sigmah.server.dao.Transactional;
+import org.sigmah.server.endpoint.gwtrpc.handler.UpdateProjectHandler;
 import org.sigmah.shared.domain.Project;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.report.ProjectReport;
 import org.sigmah.shared.domain.report.ProjectReportModel;
 import org.sigmah.shared.domain.report.ProjectReportModelSection;
 import org.sigmah.shared.domain.report.RichTextElement;
+import org.sigmah.shared.domain.value.Value;
 
 /**
  *
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class ProjectReportPolicy implements EntityPolicy<ProjectReport> {
-    final ProjectReportDAO dao;
+    private final ProjectReportDAO dao;
+    private final UpdateProjectHandler updateProjectHandler;
 
     @Inject
-    public ProjectReportPolicy(ProjectReportDAO dao) {
+    public ProjectReportPolicy(ProjectReportDAO dao, UpdateProjectHandler updateProjectHandler) {
         this.dao = dao;
+        this.updateProjectHandler = updateProjectHandler;
     }
 
     @Override
@@ -87,9 +91,12 @@ public class ProjectReportPolicy implements EntityPolicy<ProjectReport> {
         final ProjectReportModel model = dao.findModelById((Integer) properties.get("reportModelId"));
         report.setModel(model);
 
-        final Project project = new Project();
-        project.setId((Integer) properties.get("projectId"));
-        report.setProject(project);
+        final Integer projectId = (Integer) properties.get("projectId");
+        if(projectId != null) {
+            final Project project = new Project();
+            project.setId(projectId);
+            report.setProject(project);
+        }
 
         // RichTextElements
         final ArrayList<RichTextElement> elements = new ArrayList<RichTextElement>();
@@ -101,6 +108,15 @@ public class ProjectReportPolicy implements EntityPolicy<ProjectReport> {
 
         // Saving
         dao.persist(report);
+
+        // Updating the flexible element
+        final Integer flexibleElementId = (Integer) properties.get("flexibleElementId");
+        final Integer containerId = (Integer) properties.get("containerId");
+        if(flexibleElementId != null && containerId != null) {
+            final Value value = updateProjectHandler.retrieveValue(containerId, flexibleElementId, user);
+            value.setValue(report.getId().toString());
+            dao.merge(value);
+        }
 
         return report;
     }

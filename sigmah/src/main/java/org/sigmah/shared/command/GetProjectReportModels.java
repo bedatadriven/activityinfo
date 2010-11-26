@@ -6,15 +6,16 @@
 package org.sigmah.shared.command;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.ProjectReportModelListResult;
 import org.sigmah.shared.domain.report.ProjectReportModel;
 
 /**
- *
+ * Retrieves every report model available to the user.
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class GetProjectReportModels implements Command<ProjectReportModelListResult> {
-    public static class ModelReference extends BaseModelData {
+    public static class ModelReference extends BaseModelData implements CommandResult {
         public ModelReference() {}
 
         public ModelReference(ProjectReportModel model) {

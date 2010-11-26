@@ -15,21 +15,35 @@
         }
         #loading-box {
             position: absolute;
-            left: 45%;
-            top: 40%;
+            left: 50%;
+            top: 50%;
+            
+            width: 180px;
+            height: 52px;
+            
+            margin-left: -90px;
+            margin-top: -26px;
+
             padding: 2px;
-            margin-left: -45px;
             z-index: 20001;
-            border: 1px solid #ccc;
+            border: 1px solid #B7A076;
+
+            -moz-border-radius: 10px;
+            -webkit-border-radius: 10px;
+            border-radius: 10px;
         }
 
         #loading-box .loading-indicator {
-            background: #eef;
+            background: white;
             font: bold 13px tahoma, arial, helvetica;
             padding: 10px;
             margin: 0;
             height: auto;
             color: #444;
+
+            -moz-border-radius: 8px;
+            -webkit-border-radius: 8px;
+            border-radius: 8px;
         }
 
         #loading-box .loading-indicator img {
@@ -107,7 +121,7 @@
     <div id="loading-box">
         <div class="loading-indicator">
             <img src="gxt/images/default/shared/large-loading.gif" alt=""/>
-            Sigmah<br/>
+            Sigmah 0.6.2<br/>
             <span id="loading-msg">Chargement en cours...</span>
         </div>
     </div>

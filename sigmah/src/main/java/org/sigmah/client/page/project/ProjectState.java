@@ -71,6 +71,12 @@ public class ProjectState implements PageState, TabPage, HasTab {
             return tokenBuilder.toString();
     }
 
+    /**
+     * Creates a new <code>ProjectState</code> object using the same project but with a different section.
+     * The argument is also setted to null.
+     * @param section Id of the section.
+     * @return A new <code>ProjectState</code> object.
+     */
     public ProjectState deriveTo(int section) {
         final ProjectState derivation = new ProjectState(projectId);
         derivation.setCurrentSection(section);

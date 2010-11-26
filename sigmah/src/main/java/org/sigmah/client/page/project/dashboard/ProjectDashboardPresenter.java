@@ -81,6 +81,8 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Grid;
+import org.sigmah.client.EventBus;
+import org.sigmah.client.page.PageStateSerializer;
 
 /**
  * 
@@ -137,7 +139,8 @@ public class ProjectDashboardPresenter implements SubPresenter {
      */
     private View view;
     private ProjectPresenter projectPresenter;
-    private Dispatcher dispatcher;
+    private final Dispatcher dispatcher;
+    private final EventBus eventBus;
     private final Authentication authentication;
 
     /**
@@ -161,10 +164,11 @@ public class ProjectDashboardPresenter implements SubPresenter {
      */
     private int maskCount;
 
-    public ProjectDashboardPresenter(Dispatcher dispatcher, Authentication authentication,
-            ProjectPresenter projectPresenter) {
+    public ProjectDashboardPresenter(Dispatcher dispatcher, EventBus eventBus,
+            Authentication authentication, ProjectPresenter projectPresenter) {
         this.authentication = authentication;
         this.dispatcher = dispatcher;
+        this.eventBus = eventBus;
         this.projectPresenter = projectPresenter;
 
         this.tabItemsMap = new HashMap<Integer, TabItem>();
@@ -470,6 +474,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
                         // Configures the flexible element for the current
                         // application state before generating its component.
                         elementDTO.setService(dispatcher);
+                        elementDTO.setEventBus(eventBus);
                         elementDTO.setAuthentication(authentication);
                         elementDTO.setCurrentContainerDTO(projectPresenter.getCurrentProjectDTO());
                         elementDTO.assignValue(valueResult);
