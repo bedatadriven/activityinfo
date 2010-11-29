@@ -25,6 +25,8 @@ import org.sigmah.shared.dto.OrgUnitDTOLight;
 import org.sigmah.shared.dto.ProjectDTOLight;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.Style.SortDir;
+import com.extjs.gxt.ui.client.data.SortInfo;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -89,6 +91,9 @@ public class DashboardPresenter implements Page {
         this.dispatcher = dispatcher;
         this.info = info;
 
+        // Default sort order.
+        view.getProjectsStore().setSortInfo(new SortInfo("name", SortDir.ASC));
+
         // Adds the load projects action.
         view.getLoadProjectsButton().addListener(Events.Select, new SelectionListener<ButtonEvent>() {
 
@@ -120,9 +125,10 @@ public class DashboardPresenter implements Page {
                     public void onSuccess(ProjectListResult result) {
                         int count = 0;
                         view.getProjectsStore().removeAll();
-                        if (result != null && result.getList() != null) {
-                            view.getProjectsStore().add(result.getList(), false);
-                            count = result.getList().size();
+                        if (result != null) {
+                            final List<ProjectDTOLight> resultList = result.getList();
+                            view.getProjectsStore().add(resultList, false);
+                            count = resultList.size();
                         }
 
                         view.getProjectsPanel().setHeading(I18N.CONSTANTS.projects() + " (" + count + ')');

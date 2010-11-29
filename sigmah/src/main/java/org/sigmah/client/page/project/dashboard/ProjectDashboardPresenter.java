@@ -1163,12 +1163,15 @@ public class ProjectDashboardPresenter implements SubPresenter {
                     @Override
                     public void onSuccess(ProjectListResult result) {
 
+                        final List<ProjectDTOLight> resultList = result
+                                .getOrderedList(ProjectListResult.CODE_COMPARATOR);
+
                         // Filters the project itself.
-                        result.getList().remove(projectPresenter.getCurrentProjectDTO().light());
+                        resultList.remove(projectPresenter.getCurrentProjectDTO().light());
 
                         // Checks if there is at least one funding
                         // project available.
-                        if (result.getList().isEmpty()) {
+                        if (resultList.isEmpty()) {
                             MessageBox.alert(I18N.CONSTANTS.createProjectTypeFundingSelectNone(),
                                     I18N.CONSTANTS.createProjectTypeFundingSelectNoneDetails(), null);
                             return;
@@ -1176,7 +1179,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
                         // Generates a human-readable name to select a
                         // project.
-                        for (final ProjectDTOLight p : result.getList()) {
+                        for (final ProjectDTOLight p : resultList) {
                             p.generateCompleteName();
                         }
 
@@ -1185,7 +1188,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
                         // Adds fields.
                         final ComboBox<ProjectDTOLight> projects = window.addChoicesList(
-                                I18N.CONSTANTS.createProjectTypeFunding(), result.getList(), false, "completeName");
+                                I18N.CONSTANTS.createProjectTypeFunding(), resultList, false, "completeName");
 
                         final LabelField modelTypeLabel = window.addLabelField(I18N.CONSTANTS.createProjectType());
                         modelTypeLabel.setHeight(25);
@@ -1398,12 +1401,15 @@ public class ProjectDashboardPresenter implements SubPresenter {
                     @Override
                     public void onSuccess(ProjectListResult result) {
 
+                        final List<ProjectDTOLight> resultList = result
+                                .getOrderedList(ProjectListResult.CODE_COMPARATOR);
+
                         // Filters the project itself.
-                        result.getList().remove(projectPresenter.getCurrentProjectDTO().light());
+                        resultList.remove(projectPresenter.getCurrentProjectDTO().light());
 
                         // Checks if there is at least one local partner
                         // project available.
-                        if (result.getList().isEmpty()) {
+                        if (resultList.isEmpty()) {
                             MessageBox.alert(I18N.CONSTANTS.createProjectTypePartnerSelectNone(),
                                     I18N.CONSTANTS.createProjectTypePartnerSelectNoneDetails(), null);
                             return;
@@ -1411,7 +1417,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
                         // Generates a human-readable name to select a
                         // project.
-                        for (final ProjectDTOLight p : result.getList()) {
+                        for (final ProjectDTOLight p : resultList) {
                             p.generateCompleteName();
                         }
 
@@ -1420,7 +1426,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
                         // Adds fields.
                         final ComboBox<ProjectDTOLight> projects = window.addChoicesList(
-                                I18N.CONSTANTS.createProjectTypeFunding(), result.getList(), false, "completeName");
+                                I18N.CONSTANTS.createProjectTypeFunding(), resultList, false, "completeName");
 
                         final LabelField modelTypeLabel = window.addLabelField(I18N.CONSTANTS.createProjectType());
                         modelTypeLabel.setHeight(25);
