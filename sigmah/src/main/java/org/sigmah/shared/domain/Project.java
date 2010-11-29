@@ -181,4 +181,9 @@ public class Project extends UserDatabase {
 
         return getId() == other.getId();
     }
+    
+    @Override
+    public int hashCode() {
+        return getId();
+    }
 }

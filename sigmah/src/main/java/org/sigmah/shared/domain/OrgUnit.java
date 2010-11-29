@@ -198,4 +198,25 @@ public class OrgUnit implements java.io.Serializable, SchemaElement {
     public void setOfficeLocationCountry(Country officeLocationCountry) {
         this.officeLocationCountry = officeLocationCountry;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (obj == null) {
+            return false;
+        }
+
+        if (!(obj instanceof OrgUnit)) {
+            return false;
+        }
+
+        final OrgUnit other = (OrgUnit) obj;
+
+        return id == other.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
 }

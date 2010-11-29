@@ -6,8 +6,10 @@
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -61,42 +63,58 @@ public class GetProjectsHandler implements CommandHandler<GetProjects> {
         // Retrieves command parameters.
         final HashSet<Project> projects = new HashSet<Project>();
         final ProjectModelType modelType = cmd.getModelType();
-        List<Integer> ids = cmd.getOrgUnitsIds();
+        final List<Integer> ids = cmd.getOrgUnitsIds();
+
+        // Use a set to be avoid duplicated entries.
+        final HashSet<OrgUnit> units = new HashSet<OrgUnit>();
 
         // Checks if there is at least one org unit id specified.
-        if (ids == null || ids.isEmpty()) {
+        if (ids == null) {
 
             if (LOG.isDebugEnabled()) {
                 LOG.debug("[execute] No org unit specified, gets all projects for the user org unit.");
             }
 
-            // Adds the user org unit as default.
-            ids = new ArrayList<Integer>();
-            ids.add(user.getOrgUnit().getId());
+            // Crawl the org units hierarchy from the user root org unit.
+            crawlUnits(user.getOrgUnit(), units, false);
+        } else {
+
+            // Crawl the org units hierarchy from each specified org unit.
+            OrgUnit unit;
+            for (final Integer id : ids) {
+                if ((unit = em.find(OrgUnit.class, id)) != null) {
+                    crawlUnits(unit, units, true);
+                }
+            }
         }
 
         // Retrieves all the corresponding org units.
-        OrgUnit unit;
-        for (final Integer id : ids) {
-            if ((unit = em.find(OrgUnit.class, id)) != null) {
+        for (final OrgUnit unit : units) {
 
-                // Builds and executes the query.
-                final Query query = em
-                        .createQuery("SELECT p FROM Project p WHERE :unit MEMBER OF p.partners ORDER BY p.name");
-                query.setParameter("unit", unit);
+            // Builds and executes the query.
+            final Query query = em.createQuery("SELECT p FROM Project p WHERE :unit MEMBER OF p.partners");
+            query.setParameter("unit", unit);
 
-                for (final Project p : (List<Project>) query.getResultList()) {
+            int count = 0;
+            final List<Project> listResults = (List<Project>) query.getResultList();
+            for (final Project p : listResults) {
 
-                    if (modelType == null) {
+                if (modelType == null) {
+                    projects.add(p);
+                    count++;
+                }
+                // Filters by model type.
+                else {
+                    if (p.getProjectModel().getVisibility(user.getOrganization()) == modelType) {
                         projects.add(p);
-                    }
-                    // Filters by model type.
-                    else {
-                        if (p.getProjectModel().getVisibility(user.getOrganization()) == modelType) {
-                            projects.add(p);
-                        }
+                        count++;
                     }
                 }
+            }
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("[execute] Found " + count + "/" + listResults.size() + " projects for org unit #"
+                        + unit.getName() + ".");
             }
         }
 
@@ -113,5 +131,29 @@ public class GetProjectsHandler implements CommandHandler<GetProjects> {
 
         return new ProjectListResult(projectDTOList);
 
+    }
+
+    /**
+     * Adds recursively all the children of an unit in a collection.
+     * 
+     * @param root
+     *            The root unit from which the hierarchy is traversed.
+     * @param units
+     *            The current collection in which the units are added.
+     * @param addRoot
+     *            If the root must be added too.
+     */
+    private static void crawlUnits(OrgUnit root, Collection<OrgUnit> units, boolean addRoot) {
+
+        if (addRoot) {
+            units.add(root);
+        }
+
+        final Set<OrgUnit> children = root.getChildren();
+        if (children != null) {
+            for (OrgUnit child : children) {
+                crawlUnits(child, units, true);
+            }
+        }
     }
 }
