@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.sigmah.client.EventBus;
 import org.sigmah.client.UserInfo;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
@@ -82,8 +83,6 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Grid;
-import org.sigmah.client.EventBus;
-import org.sigmah.client.page.PageStateSerializer;
 
 /**
  * 
@@ -283,6 +282,9 @@ public class ProjectDashboardPresenter implements SubPresenter {
         // Enables successors tabs of the current phase.
         enableSuccessorsTabs();
 
+        // Load linked projects.
+        loadLinkedProjects(projectDTO);
+
         // --
         // -- TABS LISTENERS
         // --
@@ -359,8 +361,6 @@ public class ProjectDashboardPresenter implements SubPresenter {
                 }
             });
         }
-
-        loadLinkedProjects(projectDTO);
     }
 
     /**
