@@ -80,7 +80,7 @@ public class FileVersion implements Serializable, Deleteable {
         this.path = path;
     }
 
-    @Column(name = "path", nullable = false, length = 4096)
+    @Column(name = "path", nullable = false, columnDefinition = "TEXT")
     public String getPath() {
         return path;
     }
@@ -118,12 +118,12 @@ public class FileVersion implements Serializable, Deleteable {
         this.comments = comments;
     }
 
-    @Column(name = "comments", length = 4096, nullable = true)
+    @Column(name = "comments", nullable = true, columnDefinition = "TEXT")
     public String getComments() {
         return comments;
     }
 
-    @Column(name = "name", nullable = false, length = 4096)
+    @Column(name = "name", nullable = false, columnDefinition = "TEXT")
     public String getName() {
         return name;
     }
@@ -132,7 +132,7 @@ public class FileVersion implements Serializable, Deleteable {
         this.name = name;
     }
 
-    @Column(name = "extension", nullable = true, length = 16)
+    @Column(name = "extension", nullable = true, length = 1024)
     public String getExtension() {
         return extension;
     }

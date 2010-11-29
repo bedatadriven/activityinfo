@@ -52,7 +52,7 @@ public class PhaseModel implements Serializable {
         this.id = id;
     }
 
-    @Column(name = "name", nullable = false, length = 512)
+    @Column(name = "name", nullable = false, length = 8192)
     public String getName() {
         return name;
     }
@@ -126,7 +126,7 @@ public class PhaseModel implements Serializable {
         this.definition = definition;
     }
 
-    @Column(name = "guide")
+    @Column(name = "guide", columnDefinition = "TEXT", nullable = true)
     public String getGuide() {
         return guide;
     }

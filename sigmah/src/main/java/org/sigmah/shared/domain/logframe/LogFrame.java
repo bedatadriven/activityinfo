@@ -63,7 +63,7 @@ public class LogFrame implements Serializable {
         this.logFrameModel = logFrameModel;
     }
 
-    @Column(name = "title", length = 2048)
+    @Column(name = "title", columnDefinition = "TEXT")
     public String getTitle() {
         return title;
     }
@@ -72,7 +72,7 @@ public class LogFrame implements Serializable {
         this.title = title;
     }
 
-    @Column(name = "main_objective", length = 2048)
+    @Column(name = "main_objective", columnDefinition = "TEXT")
     public String getMainObjective() {
         return mainObjective;
     }

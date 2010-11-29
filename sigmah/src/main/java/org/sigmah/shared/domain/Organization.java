@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 /**
  * Represents a NGO.
@@ -24,6 +25,7 @@ import javax.persistence.OneToOne;
  * 
  */
 @Entity
+@Table(name = "organization")
 public class Organization {
 
     private int id;
@@ -46,7 +48,7 @@ public class Organization {
         this.id = id;
     }
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, columnDefinition = "TEXT")
     public String getName() {
         return name;
     }
@@ -55,7 +57,7 @@ public class Organization {
         this.name = name;
     }
 
-    @Column(name = "logo", nullable = true)
+    @Column(name = "logo", nullable = true, columnDefinition = "TEXT")
     public String getLogo() {
         return logo;
     }

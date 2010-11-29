@@ -41,7 +41,7 @@ public class CategoryType implements Serializable {
         this.id = id;
     }
 
-    @Column(name = "label", length = 2048, nullable = false)
+    @Column(name = "label", nullable = false, length = 8192)
     public String getLabel() {
         return label;
     }

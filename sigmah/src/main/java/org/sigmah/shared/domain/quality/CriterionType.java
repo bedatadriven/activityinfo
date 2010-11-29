@@ -33,7 +33,7 @@ public class CriterionType implements Serializable {
         this.id = id;
     }
 
-    @Column(name = "label", nullable = false, length = 1024)
+    @Column(name = "label", nullable = false, length = 8192)
     public String getLabel() {
         return label;
     }

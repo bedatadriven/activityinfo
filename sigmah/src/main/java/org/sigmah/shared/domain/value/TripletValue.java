@@ -43,7 +43,7 @@ public class TripletValue implements Serializable, Deleteable, ListEntity {
         this.id = id;
     }
 
-    @Column(name = "code", nullable = false, length = 1024)
+    @Column(name = "code", nullable = false, columnDefinition = "TEXT")
     public String getCode() {
         return code;
     }
@@ -52,7 +52,7 @@ public class TripletValue implements Serializable, Deleteable, ListEntity {
         this.code = code;
     }
 
-    @Column(name = "name", nullable = false, length = 4096)
+    @Column(name = "name", nullable = false, columnDefinition = "TEXT")
     public String getName() {
         return name;
     }
@@ -61,7 +61,7 @@ public class TripletValue implements Serializable, Deleteable, ListEntity {
         this.name = name;
     }
 
-    @Column(name = "period", nullable = false, length = 1024)
+    @Column(name = "period", nullable = false, columnDefinition = "TEXT")
     public String getPeriod() {
         return period;
     }

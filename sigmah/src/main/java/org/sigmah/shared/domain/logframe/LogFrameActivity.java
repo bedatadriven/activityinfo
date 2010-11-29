@@ -62,7 +62,7 @@ public class LogFrameActivity implements Serializable, Deleteable {
         this.code = code;
     }
 
-    @Column(name = "content", length = 8192)
+    @Column(name = "content", columnDefinition = "TEXT")
     public String getContent() {
         return content;
     }
@@ -112,7 +112,7 @@ public class LogFrameActivity implements Serializable, Deleteable {
         return getDateDeleted() != null;
     }
 
-    @Column(name = "title", length = 1024)
+    @Column(name = "title", columnDefinition = "TEXT")
     public String getTitle() {
         return title;
     }

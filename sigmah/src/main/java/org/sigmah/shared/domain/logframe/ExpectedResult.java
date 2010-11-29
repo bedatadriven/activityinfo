@@ -69,7 +69,7 @@ public class ExpectedResult implements Serializable, Deleteable {
         this.code = code;
     }
 
-    @Column(name = "intervention_logic", length = 8192)
+    @Column(name = "intervention_logic", columnDefinition = "TEXT")
     public String getInterventionLogic() {
         return interventionLogic;
     }
@@ -78,7 +78,7 @@ public class ExpectedResult implements Serializable, Deleteable {
         this.interventionLogic = interventionLogic;
     }
 
-    @Column(name = "risks", length = 8192)
+    @Column(name = "risks", columnDefinition = "TEXT")
     public String getRisks() {
         return risks;
     }
@@ -87,7 +87,7 @@ public class ExpectedResult implements Serializable, Deleteable {
         this.risks = risks;
     }
 
-    @Column(name = "assumptions", length = 8192)
+    @Column(name = "assumptions", columnDefinition = "TEXT")
     public String getAssumptions() {
         return assumptions;
     }

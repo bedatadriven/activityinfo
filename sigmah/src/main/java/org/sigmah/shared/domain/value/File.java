@@ -53,7 +53,7 @@ public class File implements Serializable, Deleteable {
         this.name = name;
     }
 
-    @Column(name = "name", nullable = false, length = 4096)
+    @Column(name = "name", nullable = false, columnDefinition = "TEXT")
     public String getName() {
         return name;
     }

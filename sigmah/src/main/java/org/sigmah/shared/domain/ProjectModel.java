@@ -53,7 +53,7 @@ public class ProjectModel extends BaseModelData implements Serializable {
         this.id = id;
     }
 
-    @Column(name = "name", nullable = false, length = 512)
+    @Column(name = "name", nullable = false, length = 8192)
     public String getName() {
         return name;
     }

@@ -59,7 +59,7 @@ public abstract class FlexibleElement implements Serializable {
 		return parentProjectModel;
 	}
 
-	@Column(name = "label", nullable = true, length = 8192)
+	@Column(name = "label", nullable = true, columnDefinition = "TEXT")
 	public String getLabel() {
 		return label;
 	}

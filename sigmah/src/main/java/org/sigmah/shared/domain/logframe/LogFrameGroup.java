@@ -51,7 +51,7 @@ public class LogFrameGroup implements Serializable {
         this.type = type;
     }
 
-    @Column(name = "label", length = 2048)
+    @Column(name = "label", columnDefinition = "TEXT")
     public String getLabel() {
         return label;
     }

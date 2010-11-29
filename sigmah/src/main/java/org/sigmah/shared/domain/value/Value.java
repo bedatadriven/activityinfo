@@ -64,7 +64,7 @@ public class Value implements Serializable {
         this.value = value;
     }
 
-    @Column(name = "value", nullable = true, length = 8192)
+    @Column(name = "value", nullable = true, columnDefinition = "TEXT")
     public String getValue() {
         return value;
     }

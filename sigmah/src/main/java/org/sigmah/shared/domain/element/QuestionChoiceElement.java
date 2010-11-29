@@ -51,7 +51,7 @@ public class QuestionChoiceElement implements Serializable {
         this.parentQuestion = parentQuestion;
     }
 
-    @Column(name = "label", nullable = false, length = 2048)
+    @Column(name = "label", nullable = false, length = 8192)
     public String getLabel() {
         return label;
     }

@@ -38,7 +38,7 @@ public class CategoryElement implements Serializable {
         this.id = id;
     }
 
-    @Column(name = "label", length = 2048, nullable = false)
+    @Column(name = "label", columnDefinition = "TEXT", nullable = false)
     public String getLabel() {
         return label;
     }

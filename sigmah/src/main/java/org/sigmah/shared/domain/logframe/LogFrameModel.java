@@ -77,7 +77,7 @@ public class LogFrameModel implements Serializable {
         this.projectModel = projectModel;
     }
 
-    @Column(name = "name", nullable = false, length = 512)
+    @Column(name = "name", nullable = false, length = 8192)
     public String getName() {
         return name;
     }

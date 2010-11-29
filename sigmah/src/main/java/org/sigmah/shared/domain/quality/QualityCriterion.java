@@ -45,7 +45,7 @@ public class QualityCriterion implements Serializable {
         return id;
     }
 
-    @Column(name = "label", nullable = false, length = 1024)
+    @Column(name = "label", nullable = false, columnDefinition = "TEXT")
     public String getLabel() {
         return label;
     }
@@ -54,7 +54,7 @@ public class QualityCriterion implements Serializable {
         this.label = label;
     }
 
-    @Column(name = "code", nullable = false, length = 1024)
+    @Column(name = "code", nullable = false, length = 8192)
     public String getCode() {
         return code;
     }

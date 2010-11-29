@@ -59,7 +59,7 @@ public class Prerequisite implements Serializable, Deleteable {
         this.code = code;
     }
 
-    @Column(name = "content", length = 8192)
+    @Column(name = "content", columnDefinition = "TEXT")
     public String getContent() {
         return content;
     }
