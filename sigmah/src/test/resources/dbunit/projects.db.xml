@@ -16,13 +16,15 @@
 
     <organization id_organization="1" name="Ideia"/>
     <partner partnerId="1" name="Head Office" organization_id_organization="1" office_country_id="1" />
-    <partner partnerId="2" name="Head Office II" organization_id_organization="1" office_country_id="1" />
+    <partner partnerId="2" name="Sub Office I" organization_id_organization="1" office_country_id="1" parent_partnerid="1" />
+    <partner partnerId="3" name="Sub sub Office 1" organization_id_organization="1" office_country_id="1" parent_partnerid="2" />
+	<partner partnerId="4" name="Sub sub Office 2" organization_id_organization="1" office_country_id="1" parent_partnerid="2" />
 
     <userLogin userId="1" name="Alex" email="user1@user.com" locale="fr" newUser="1" privacy_level="0" id_organization="1" id_org_unit="1" />
     <userLogin userId="2" name="Raphael" email="user2@user.com" locale="fr" newUser="1" privacy_level="0" id_organization="1" id_org_unit="1" />
     <userLogin userId="3" name="Tom" email="tom@user.com" locale="fr" newUser="1" privacy_level="0" id_organization="1" id_org_unit="2" />
     
-    <orgUnitPermission id="1" unit_Id="2" user_UserId="3" viewAll="1" editAll="0"/>
+    <orgUnitPermission id="1" unit_Id="4" user_UserId="3" viewAll="1" editAll="0"/>
     
     <project_model id_project_model="1" name="Mock model 1" />
 
@@ -78,9 +80,9 @@
     <userDatabase databaseId="3" name="RRM" countryId="1" ownerUserId="2" lastSchemaUpdate="2009-01-01"/>
     <project databaseId="3" id_project_model="1"/>
 
-	<partnerInDatabase databaseId="1" partnerId="1"/>
-	<partnerInDatabase databaseId="2" partnerId="1"/>
-	<partnerInDatabase databaseId="3" partnerId="2"/>
+	<partnerInDatabase databaseId="1" partnerId="2"/>
+	<partnerInDatabase databaseId="2" partnerId="3"/>
+	<partnerInDatabase databaseId="3" partnerId="4"/>
 
     <project_details id="1" id_layout="5" id_project_model="1" />
     <project_banner id="1" id_layout="5" id_project_model="1" />
