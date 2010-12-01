@@ -160,4 +160,10 @@ public interface IconImageBundle extends ImageBundle {
     AbstractImagePrototype expand();
 
     AbstractImagePrototype collapse();
+
+    @Resource(value = "filter-check.png")
+    AbstractImagePrototype checkboxChecked();
+
+    @Resource(value = "filter-uncheck.png")
+    AbstractImagePrototype checkboxUnchecked();
 }

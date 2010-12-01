@@ -21,6 +21,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.sigmah.shared.domain.logframe.LogFrame;
+import org.sigmah.shared.domain.reminder.MonitoredPointList;
 
 @Entity
 public class Project extends UserDatabase {
@@ -37,6 +38,7 @@ public class Project extends UserDatabase {
     private List<ProjectFunding> funding;
     private List<ProjectFunding> funded;
     private Date endDate;
+    private MonitoredPointList pointsList;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "end_date", length = 23)
@@ -166,6 +168,16 @@ public class Project extends UserDatabase {
         this.funded = funded;
     }
 
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_monitored_points_list", nullable = true)
+    public MonitoredPointList getPointsList() {
+        return pointsList;
+    }
+
+    public void setPointsList(MonitoredPointList pointsList) {
+        this.pointsList = pointsList;
+    }
+
     @Override
     public boolean equals(Object obj) {
 
@@ -181,7 +193,7 @@ public class Project extends UserDatabase {
 
         return getId() == other.getId();
     }
-    
+
     @Override
     public int hashCode() {
         return getId();

@@ -16,9 +16,7 @@ import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
-import org.sigmah.shared.command.GetCountries;
 import org.sigmah.shared.command.GetProjects;
-import org.sigmah.shared.command.result.CountryResult;
 import org.sigmah.shared.command.result.ProjectListResult;
 import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.OrgUnitDTOLight;
@@ -112,28 +110,29 @@ public class DashboardPresenter implements Page {
                 }
 
                 // Retrieves the projects for these org units.
-                dispatcher.execute(new GetProjects(orgUnitsIds), new MaskingAsyncMonitor(view.getProjectsPanel(),
-                        I18N.CONSTANTS.loading()), new AsyncCallback<ProjectListResult>() {
+                DashboardPresenter.this.dispatcher.execute(new GetProjects(orgUnitsIds),
+                        new MaskingAsyncMonitor(view.getProjectsPanel(), I18N.CONSTANTS.loading()),
+                        new AsyncCallback<ProjectListResult>() {
 
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        Log.error("[GetProjects command] Error while getting projects.");
-                        // nothing
-                    }
+                            @Override
+                            public void onFailure(Throwable caught) {
+                                Log.error("[GetProjects command] Error while getting projects.");
+                                // nothing
+                            }
 
-                    @Override
-                    public void onSuccess(ProjectListResult result) {
-                        int count = 0;
-                        view.getProjectsStore().removeAll();
-                        if (result != null) {
-                            final List<ProjectDTOLight> resultList = result.getList();
-                            view.getProjectsStore().add(resultList, false);
-                            count = resultList.size();
-                        }
+                            @Override
+                            public void onSuccess(ProjectListResult result) {
+                                int count = 0;
+                                view.getProjectsStore().removeAll();
+                                if (result != null) {
+                                    final List<ProjectDTOLight> resultList = result.getList();
+                                    view.getProjectsStore().add(resultList, false);
+                                    count = resultList.size();
+                                }
 
-                        view.getProjectsPanel().setHeading(I18N.CONSTANTS.projects() + " (" + count + ')');
-                    }
-                });
+                                view.getProjectsPanel().setHeading(I18N.CONSTANTS.projects() + " (" + count + ')');
+                            }
+                        });
             }
         });
     }
@@ -160,18 +159,6 @@ public class DashboardPresenter implements Page {
 
     @Override
     public boolean navigate(PageState place) {
-
-        dispatcher.execute(new GetCountries(true), null, new AsyncCallback<CountryResult>() {
-            @Override
-            public void onFailure(Throwable throwable) {
-
-            }
-
-            @Override
-            public void onSuccess(CountryResult countryResult) {
-                view.getCountriesStore().add(countryResult.getData());
-            }
-        });
 
         // Gets user's organization.
         info.getOrgUnit(new AsyncCallback<OrgUnitDTOLight>() {

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.util.Date;
 import java.util.HashMap;
 
 import javax.servlet.ServletException;
@@ -19,6 +20,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.util.Streams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sigmah.shared.domain.reminder.MonitoredPoint;
 import org.sigmah.shared.dto.value.FileUploadUtils;
 
 import com.google.inject.Inject;
@@ -105,10 +107,10 @@ public class FileUploadServlet extends HttpServlet {
      * <br/>
      * If the upload works fine, the file id is returned in the HTTP response as
      * following
-     * <code>{@link FileUploadUtils#TAG_START}id{@link FileUploadUtils#TAG_END}</code>
+     * <code>{@link FileUploadUtils#TAG_START_CODE}id{@link FileUploadUtils#TAG_END_CODE}</code>
      * . <br/>
      * Else an error code is returned as following
-     * <code>{@link FileUploadUtils#TAG_START}error_code{@link FileUploadUtils#TAG_END}</code>
+     * <code>{@link FileUploadUtils#TAG_START_CODE}error_code{@link FileUploadUtils#TAG_END_CODE}</code>
      * .
      * 
      * @param request
@@ -145,9 +147,9 @@ public class FileUploadServlet extends HttpServlet {
                     // HTTP response.
                     final StringBuilder responseBuilder = new StringBuilder();
 
-                    responseBuilder.append(FileUploadUtils.TAG_START);
+                    responseBuilder.append(FileUploadUtils.TAG_START_CODE);
                     responseBuilder.append(FileUploadUtils.TOO_BIG_DOC_ERROR_CODE);
-                    responseBuilder.append(FileUploadUtils.TAG_END);
+                    responseBuilder.append(FileUploadUtils.TAG_END_CODE);
 
                     try {
 
@@ -247,9 +249,9 @@ public class FileUploadServlet extends HttpServlet {
                             // HTTP response.
                             final StringBuilder responseBuilder = new StringBuilder();
 
-                            responseBuilder.append(FileUploadUtils.TAG_START);
+                            responseBuilder.append(FileUploadUtils.TAG_START_CODE);
                             responseBuilder.append(FileUploadUtils.EMPTY_DOC_ERROR_CODE);
-                            responseBuilder.append(FileUploadUtils.TAG_END);
+                            responseBuilder.append(FileUploadUtils.TAG_END_CODE);
 
                             try {
 
@@ -272,17 +274,40 @@ public class FileUploadServlet extends HttpServlet {
                         // HTTP response.
                         final StringBuilder responseBuilder = new StringBuilder();
 
+                        // Files manager.
+                        final FileManager manager = injector.getInstance(FileManager.class);
+
                         // Save the uploaded file
-                        final String id = injector.getInstance(FileManager.class).save(properties, data);
+                        final String id = manager.save(properties, data);
 
                         if (log.isDebugEnabled()) {
                             log.debug("[doPost] File id: " + id + ".");
                         }
 
+                        // If a monitored point must be added.
+                        final String monitoredPointLabel = properties.get(FileUploadUtils.MONITORED_POINT_LABEL);
+                        if (monitoredPointLabel != null && !"".equals(monitoredPointLabel.trim())) {
+
+                            final Date monitoredPointDate = new Date(Long.valueOf(properties
+                                    .get(FileUploadUtils.MONITORED_POINT_DATE)));
+
+                            final MonitoredPoint point = manager.createMonitoredPoint(
+                                    Integer.valueOf(properties.get(FileUploadUtils.DOCUMENT_PROJECT)),
+                                    monitoredPointLabel, monitoredPointDate, Integer.valueOf(id));
+
+                            responseBuilder.append(FileUploadUtils.TAG_START_MONITORED_POINT);
+                            responseBuilder.append(point.getId());
+                            responseBuilder.append(FileUploadUtils.TAG_SEPARATOR_MONITORED_POINT);
+                            responseBuilder.append(point.getLabel());
+                            responseBuilder.append(FileUploadUtils.TAG_SEPARATOR_MONITORED_POINT);
+                            responseBuilder.append(point.getExpectedDate().getTime());
+                            responseBuilder.append(FileUploadUtils.TAG_END_MONITORED_POINT);
+                        }
+
                         // Returns the file id.
                         if (id != null) {
 
-                            responseBuilder.append(FileUploadUtils.TAG_START + id + FileUploadUtils.TAG_END);
+                            responseBuilder.append(FileUploadUtils.TAG_START_CODE + id + FileUploadUtils.TAG_END_CODE);
 
                             try {
                                 response.getWriter().write(responseBuilder.toString());

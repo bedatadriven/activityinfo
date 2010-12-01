@@ -6,6 +6,7 @@
 package org.sigmah.client.page.project.dashboard;
 
 import java.util.Arrays;
+import java.util.Date;
 
 import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.i18n.I18N;
@@ -13,24 +14,31 @@ import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.project.ProjectPresenter;
 import org.sigmah.client.page.project.dashboard.funding.FundingIconProvider;
 import org.sigmah.client.ui.FlexibleGrid;
+import org.sigmah.client.util.DateUtils;
 import org.sigmah.client.util.NumberUtils;
 import org.sigmah.shared.dto.ProjectFundingDTO;
 import org.sigmah.shared.dto.element.FlexibleElementDTO;
 import org.sigmah.shared.dto.element.FlexibleElementType;
+import org.sigmah.shared.dto.reminder.MonitoredPointDTO;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.event.MenuEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.store.StoreFilter;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.TabPanel;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.CheckColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
@@ -44,8 +52,15 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout.HBoxLayoutAlign;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
+import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
+import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.Hyperlink;
 
 /**
@@ -68,7 +83,9 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
     private Button buttonPhaseGuide;
 
     private ContentPanel panelReminders;
-    private ContentPanel panelWatchedPoints;
+
+    private ContentPanel panelMonitoredPoints;
+
     private ContentPanel panelFinancialProjects;
     private ContentPanel panelLocalProjects;
     private Grid<FlexibleElementDTO> gridRequiredElements;
@@ -79,6 +96,8 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
     private FlexibleGrid<ProjectFundingDTO> localGrid;
     private Button addLocalPartnerProjectButton;
     private Button createLocalPartnerProjectButton;
+
+    private FlexibleGrid<MonitoredPointDTO> monitoredPointsGrid;
 
     public ProjectDashboardView(Authentication authentication) {
 
@@ -167,25 +186,18 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
 
         panelProjectModel.add(cp2, cd);
 
-        /* West panel */
-        VerticalPanel westPanel = new VerticalPanel();
-        panelReminders = new ContentPanel();
-        panelReminders.setHeading(I18N.CONSTANTS.projectRemindersHeader());
-        panelReminders.addText("This panel displays the reminders.");
-        panelReminders.setBorders(false);
-        panelReminders.setCollapsible(true);
-        panelReminders.setWidth(250);
-        panelReminders.addStyleName("sigmah-panelReminders");
+        panelReminders = getRemindersPanel();
+        panelMonitoredPoints = getMonitoredPointsPanel();
 
-        panelWatchedPoints = new ContentPanel();
-        panelWatchedPoints.setHeading(I18N.CONSTANTS.projectWatchedPointsHeader());
-        panelWatchedPoints.addText("This panel displays the watched points.");
-        panelWatchedPoints.setBorders(false);
-        panelWatchedPoints.setCollapsible(true);
-        panelWatchedPoints.setWidth(250);
+        final VBoxLayout vLayout = new VBoxLayout();
+        vLayout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
+        final ContentPanel westPanel = new ContentPanel(vLayout);
+        westPanel.setHeading("");
 
-        westPanel.add(panelReminders);
-        westPanel.add(panelWatchedPoints);
+        final VBoxLayoutData flex = new VBoxLayoutData(new Margins(0, 0, 5, 0));
+        flex.setFlex(1);
+        westPanel.add(panelReminders, flex);
+        westPanel.add(panelMonitoredPoints, flex);
 
         /* South panel */
 
@@ -209,6 +221,7 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
         southData.setMargins(new Margins(5));
         BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST, 250);
         westData.setMargins(new Margins(5));
+        westData.setCollapsible(true);
         BorderLayoutData centerData = new BorderLayoutData(LayoutRegion.CENTER);
         centerData.setMargins(new Margins(5));
 
@@ -306,7 +319,7 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
 
     @Override
     public ContentPanel getPanelWatchedPoints() {
-        return panelWatchedPoints;
+        return panelMonitoredPoints;
     }
 
     @Override
@@ -365,6 +378,11 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
     @Override
     public Button getCreateLocalPartnerProjectButton() {
         return createLocalPartnerProjectButton;
+    }
+
+    @Override
+    public FlexibleGrid<MonitoredPointDTO> getMonitoredPointsGrid() {
+        return monitoredPointsGrid;
     }
 
     /**
@@ -648,5 +666,253 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
         });
 
         return new ColumnConfig[] { iconColumn, nameColumn, fullNameColumn, amountColumn, percentageColumn };
+    }
+
+    /**
+     * Gets the panel which displays the reminders.
+     * 
+     * @return The panel which displays the reminders.
+     */
+    private ContentPanel getRemindersPanel() {
+
+        final ContentPanel panel = new ContentPanel();
+        panel.setHeading(I18N.CONSTANTS.projectRemindersHeader());
+        panel.setBorders(false);
+
+        return panel;
+    }
+
+    /**
+     * Gets the panel which displays the monitored points.
+     * 
+     * @return The panel which displays the monitored points.
+     */
+    private ContentPanel getMonitoredPointsPanel() {
+
+        // Store filters.
+
+        final StoreFilter<MonitoredPointDTO> notCompletedFilter = new StoreFilter<MonitoredPointDTO>() {
+
+            @Override
+            public boolean select(Store<MonitoredPointDTO> store, MonitoredPointDTO parent, MonitoredPointDTO item,
+                    String property) {
+                return !item.isCompleted();
+            }
+        };
+
+        final StoreFilter<MonitoredPointDTO> completedFilter = new StoreFilter<MonitoredPointDTO>() {
+
+            @Override
+            public boolean select(Store<MonitoredPointDTO> store, MonitoredPointDTO parent, MonitoredPointDTO item,
+                    String property) {
+                return item.isCompleted();
+            }
+        };
+
+        final StoreFilter<MonitoredPointDTO> exceededFilter = new StoreFilter<MonitoredPointDTO>() {
+
+            @Override
+            public boolean select(Store<MonitoredPointDTO> store, MonitoredPointDTO parent, MonitoredPointDTO item,
+                    String property) {
+                return !item.isCompleted() && DateUtils.DAY_COMPARATOR.compare(new Date(), item.getExpectedDate()) > 0;
+            }
+        };
+
+        // Store
+        final ListStore<MonitoredPointDTO> monitoredPointsStore = new ListStore<MonitoredPointDTO>();
+
+        // Grid.
+        monitoredPointsGrid = new FlexibleGrid<MonitoredPointDTO>(monitoredPointsStore, null,
+                getMonitoredPointsColumnModel());
+        monitoredPointsGrid.addPlugin((CheckColumnConfig) monitoredPointsGrid.getColumnModel().getColumn(0));
+        monitoredPointsGrid.setAutoExpandColumn("label");
+
+        // Filter menu.
+
+        final FilterSelectionListener<MonitoredPointDTO> filterListener = new FilterSelectionListener<MonitoredPointDTO>(
+                monitoredPointsStore);
+
+        final MenuItem noFilterItem = new MenuItem(I18N.CONSTANTS.monitoredPointAll());
+        noFilterItem.addSelectionListener(new SelectionListener<MenuEvent>() {
+            @Override
+            public void componentSelected(MenuEvent ce) {
+                filterListener.filter(noFilterItem, null);
+            }
+        });
+
+        final MenuItem completedFilterItem = new MenuItem(I18N.CONSTANTS.monitoredPointCompleted());
+        completedFilterItem.addSelectionListener(new SelectionListener<MenuEvent>() {
+            @Override
+            public void componentSelected(MenuEvent ce) {
+                filterListener.filter(completedFilterItem, completedFilter);
+            }
+        });
+
+        final MenuItem notCompletedFilterItem = new MenuItem(I18N.CONSTANTS.monitoredPointUncompleted());
+        notCompletedFilterItem.addSelectionListener(new SelectionListener<MenuEvent>() {
+            @Override
+            public void componentSelected(MenuEvent ce) {
+                filterListener.filter(notCompletedFilterItem, notCompletedFilter);
+            }
+        });
+
+        final MenuItem exceededFilterItem = new MenuItem(I18N.CONSTANTS.monitoredPointExceeded());
+        exceededFilterItem.addSelectionListener(new SelectionListener<MenuEvent>() {
+            @Override
+            public void componentSelected(MenuEvent ce) {
+                filterListener.filter(exceededFilterItem, exceededFilter);
+            }
+        });
+
+        final Menu filterMenu = new Menu();
+        filterMenu.add(noFilterItem);
+        filterMenu.add(new SeparatorMenuItem());
+        filterMenu.add(completedFilterItem);
+        filterMenu.add(notCompletedFilterItem);
+        filterMenu.add(exceededFilterItem);
+
+        // Fires manually the first filter (no filter).
+        filterListener.filter(noFilterItem, null);
+
+        // Filter button.
+        final Button filterButton = new Button(I18N.CONSTANTS.filter(), IconImageBundle.ICONS.filter());
+        filterButton.setMenu(filterMenu);
+        // Toolbar.
+        final ToolBar toolbar = new ToolBar();
+        toolbar.setAlignment(HorizontalAlignment.LEFT);
+
+        toolbar.add(filterButton);
+
+        // Panel.
+        final ContentPanel panel = new ContentPanel(new FitLayout());
+        panel.setHeading(I18N.CONSTANTS.monitoredPoints());
+        panel.setBorders(false);
+
+        panel.setTopComponent(toolbar);
+        panel.add(monitoredPointsGrid);
+
+        return panel;
+    }
+
+    /**
+     * Define a listener to apply a one filter at a time and manage the menu
+     * item state.
+     * 
+     * @author tmi
+     * 
+     * @param <E>
+     */
+    private static class FilterSelectionListener<E extends ModelData> {
+
+        private MenuItem currentItem;
+        private StoreFilter<E> currentFilter;
+        private final Store<E> store;
+
+        private FilterSelectionListener(Store<E> store) {
+            this.store = store;
+        }
+
+        public void filter(MenuItem item, StoreFilter<E> filter) {
+            activate();
+            currentItem = item;
+            filter(filter);
+            desactivate();
+        }
+
+        private void activate() {
+            if (currentItem != null) {
+                currentItem.setEnabled(true);
+            }
+        }
+
+        private void desactivate() {
+            if (currentItem != null) {
+                currentItem.setEnabled(false);
+            }
+        }
+
+        private void filter(StoreFilter<E> filter) {
+
+            if (store == null) {
+                return;
+            }
+
+            store.removeFilter(currentFilter);
+
+            if (filter != null) {
+                store.addFilter(filter);
+            }
+
+            store.applyFilters(null);
+            currentFilter = filter;
+        }
+    }
+
+    /**
+     * Gets the columns for the monitored points grid.
+     * 
+     * @return The columns for the monitored points grid.
+     */
+    private ColumnConfig[] getMonitoredPointsColumnModel() {
+
+        final DateTimeFormat format = DateTimeFormat.getFormat(I18N.CONSTANTS.monitoredPointDateFormat());
+        final Date now = new Date();
+
+        // Completed ?
+        final CheckColumnConfig completedColumn = new CheckColumnConfig();
+        completedColumn.setId("completed");
+        completedColumn.setHeader(I18N.CONSTANTS.monitoredPointClose() + "?");
+        completedColumn.setWidth(20);
+        completedColumn.setSortable(false);
+        final CellEditor checkBoxEditor = new CellEditor(new CheckBox());
+        completedColumn.setEditor(checkBoxEditor);
+
+        // Label.
+        final ColumnConfig labelColumn = new ColumnConfig();
+        labelColumn.setId("label");
+        labelColumn.setHeader(I18N.CONSTANTS.monitoredPointLabel());
+        labelColumn.setWidth(60);
+        labelColumn.setRenderer(new GridCellRenderer<MonitoredPointDTO>() {
+
+            @Override
+            public Object render(MonitoredPointDTO model, String property, ColumnData config, int rowIndex,
+                    int colIndex, ListStore<MonitoredPointDTO> store, Grid<MonitoredPointDTO> grid) {
+
+                final Label l = new Label(model.getLabel());
+                if (model.isCompleted()) {
+                    l.addStyleName("points-completed");
+                }
+                return l;
+            }
+        });
+
+        // Expected date.
+        final ColumnConfig expectedDateColumn = new ColumnConfig();
+        expectedDateColumn.setId("expectedDate");
+        expectedDateColumn.setHeader(I18N.CONSTANTS.monitoredPointExpectedDate());
+        expectedDateColumn.setWidth(60);
+        expectedDateColumn.setDateTimeFormat(format);
+        expectedDateColumn.setRenderer(new GridCellRenderer<MonitoredPointDTO>() {
+
+            @Override
+            public Object render(MonitoredPointDTO model, String property, ColumnData config, int rowIndex,
+                    int colIndex, ListStore<MonitoredPointDTO> store, Grid<MonitoredPointDTO> grid) {
+
+                final Label l = new Label(format.format(model.getExpectedDate()));
+                if (!model.isCompleted() && DateUtils.DAY_COMPARATOR.compare(now, model.getExpectedDate()) > 0) {
+                    l.addStyleName("points-date-exceeded");
+                }
+                return l;
+            }
+        });
+
+        // Completion date.
+        final ColumnConfig completionDateColumn = new ColumnConfig();
+        completionDateColumn.setId("completionDate");
+        completionDateColumn.setHeader(I18N.CONSTANTS.monitoredPointCompletionDate());
+        completionDateColumn.setWidth(60);
+        completionDateColumn.setDateTimeFormat(format);
+
+        return new ColumnConfig[] { completedColumn, labelColumn, expectedDateColumn, completionDateColumn };
     }
 }

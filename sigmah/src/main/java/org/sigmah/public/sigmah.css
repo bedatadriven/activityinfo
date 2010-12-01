@@ -812,3 +812,13 @@ body {
     width: 33%;
     height: 8px;
 }
+
+/* ---------------------------------------------- Monitored points */
+
+.points-date-exceeded {
+	color: red;	
+}
+
+.points-completed {
+	text-decoration: line-through;
+}

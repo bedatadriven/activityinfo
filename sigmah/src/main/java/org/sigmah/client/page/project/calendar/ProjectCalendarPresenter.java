@@ -20,10 +20,11 @@ import org.sigmah.shared.command.GetCalendar;
 import org.sigmah.shared.domain.calendar.ActivityCalendarIdentifier;
 import org.sigmah.shared.domain.calendar.Calendar;
 import org.sigmah.shared.domain.calendar.CalendarType;
+import org.sigmah.shared.domain.calendar.MonitoredPointCalendarIdentifier;
 import org.sigmah.shared.dto.ProjectDTO;
 
 /**
- *
+ * 
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class ProjectCalendarPresenter implements SubPresenter {
@@ -40,19 +41,26 @@ public class ProjectCalendarPresenter implements SubPresenter {
     private int calendarIndex = 1;
 
     /**
-     * Wrapper class that allow the use of {@link Calendar}s objects with Ext-GWT.
+     * Wrapper class that allow the use of {@link Calendar}s objects with
+     * Ext-GWT.
      */
     public static class CalendarWrapper extends BaseModel {
+
+        private static final long serialVersionUID = 1017103235263407544L;
+
         private Calendar calendar;
 
         /**
          * Empty constructor, needed by the serialization process.
          */
-        public CalendarWrapper() {}
+        public CalendarWrapper() {
+        }
 
         /**
          * Wrap the given Calendar as a BaseModel object.
-         * @param calendar the calendar to wrap.
+         * 
+         * @param calendar
+         *            the calendar to wrap.
          */
         public CalendarWrapper(Calendar calendar) {
             this.set("name", calendar.getName());
@@ -63,7 +71,7 @@ public class ProjectCalendarPresenter implements SubPresenter {
         public Calendar getCalendar() {
             return calendar;
         }
-        
+
         public void setCalendar(Calendar calendar) {
             this.calendar = calendar;
         }
@@ -98,16 +106,16 @@ public class ProjectCalendarPresenter implements SubPresenter {
 
     @Override
     public Component getView() {
-        if(view == null) {
+        if (view == null) {
             calendar = new CalendarWidget(CalendarWidget.COLUMN_HEADERS, true);
             calendarStore = new ListStore<CalendarWrapper>();
             selectionModel = new CheckBoxSelectionModel<CalendarWrapper>();
-            
+
             view = new ProjectCalendarView(calendar, calendarStore, selectionModel, dispatcher);
         }
 
         // If the current project has changed, clear the view
-        if(!projectPresenter.getCurrentProjectDTO().equals(currentProjectDTO)) {
+        if (!projectPresenter.getCurrentProjectDTO().equals(currentProjectDTO)) {
             view.getAddEventButton().setEnabled(false);
             calendarStore.removeAll(); // Reset the calendar list
             calendar.today(); // Reset the current date
@@ -122,7 +130,7 @@ public class ProjectCalendarPresenter implements SubPresenter {
     @Override
     public void viewDidAppear() {
         // Fetching the calendars
-        if(calendarStore.getCount() == 0) {
+        if (calendarStore.getCount() == 0) {
             final AsyncCallback<Calendar> callback = new AsyncCallback<Calendar>() {
                 @Override
                 public void onSuccess(Calendar result) {
@@ -130,9 +138,9 @@ public class ProjectCalendarPresenter implements SubPresenter {
                     result.setStyle(calendarIndex++);
 
                     calendarStore.add(new CalendarWrapper(result));
-                    selectionModel.select(calendarStore.getCount()-1, true);
+                    selectionModel.select(calendarStore.getCount() - 1, true);
 
-                    if(result.isEditable()) {
+                    if (result.isEditable()) {
                         view.getAddEventButton().setEnabled(true);
                     }
                 }
@@ -151,10 +159,19 @@ public class ProjectCalendarPresenter implements SubPresenter {
 
             // Retrieving the events linked to the current project
             final Integer calendarId = currentProjectDTO.getCalendarId();
-            if(calendarId != null) {
+            if (calendarId != null) {
                 final GetCalendar getPersonalCalendar = new GetCalendar(CalendarType.Personal, calendarId);
                 dispatcher.execute(getPersonalCalendar, null, callback);
             }
+
+            // Retrieving the monitored points
+            final MonitoredPointCalendarIdentifier monitoredPointIdentifier = new MonitoredPointCalendarIdentifier(
+                    currentProjectDTO.getPointsList().getId(), I18N.CONSTANTS.monitoredPoints(),
+                    I18N.CONSTANTS.monitoredPointClosed(), I18N.CONSTANTS.monitoredPointExpectedDate(),
+                    I18N.CONSTANTS.monitoredPointDateFormat());
+            final GetCalendar getMonitoredPointCalendar = new GetCalendar(CalendarType.MonitoredPoint,
+                    monitoredPointIdentifier);
+            dispatcher.execute(getMonitoredPointCalendar, null, callback);
         }
     }
 

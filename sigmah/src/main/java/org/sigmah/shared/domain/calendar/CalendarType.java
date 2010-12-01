@@ -11,5 +11,6 @@ package org.sigmah.shared.domain.calendar;
 public enum CalendarType {
     Activity,
     Personal,
+    MonitoredPoint,
     Dummy
 }

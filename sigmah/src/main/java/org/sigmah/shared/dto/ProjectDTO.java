@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.sigmah.shared.dto.element.DefaultFlexibleElementContainer;
 import org.sigmah.shared.dto.logframe.LogFrameDTO;
+import org.sigmah.shared.dto.reminder.MonitoredPointListDTO;
 import org.sigmah.shared.dto.value.ValueDTO;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
@@ -279,6 +280,14 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO, Defaul
 
     public void setCountry(CountryDTO country) {
         set("country", country);
+    }
+
+    public MonitoredPointListDTO getPointsList() {
+        return get("pointsList");
+    }
+
+    public void setPointsList(MonitoredPointListDTO pointsList) {
+        set("pointsList", pointsList);
     }
 
     /**

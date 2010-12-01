@@ -33,8 +33,10 @@ import org.sigmah.shared.command.ChangePhase;
 import org.sigmah.shared.command.CreateEntity;
 import org.sigmah.shared.command.GetProjects;
 import org.sigmah.shared.command.GetValue;
+import org.sigmah.shared.command.UpdateMonitoredPoints;
 import org.sigmah.shared.command.UpdateProject;
 import org.sigmah.shared.command.result.CreateResult;
+import org.sigmah.shared.command.result.MonitoredPointsResultList;
 import org.sigmah.shared.command.result.ProjectListResult;
 import org.sigmah.shared.command.result.ValueResult;
 import org.sigmah.shared.command.result.VoidResult;
@@ -46,6 +48,7 @@ import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.ProjectDTOLight;
 import org.sigmah.shared.dto.ProjectFundingDTO;
 import org.sigmah.shared.dto.element.DefaultFlexibleElementDTO;
+import org.sigmah.shared.dto.element.FilesListElementDTO;
 import org.sigmah.shared.dto.element.FlexibleElementDTO;
 import org.sigmah.shared.dto.element.handler.RequiredValueEvent;
 import org.sigmah.shared.dto.element.handler.RequiredValueHandler;
@@ -53,8 +56,11 @@ import org.sigmah.shared.dto.element.handler.ValueEvent;
 import org.sigmah.shared.dto.element.handler.ValueHandler;
 import org.sigmah.shared.dto.layout.LayoutConstraintDTO;
 import org.sigmah.shared.dto.layout.LayoutGroupDTO;
+import org.sigmah.shared.dto.reminder.MonitoredPointDTO;
+import org.sigmah.shared.dto.reminder.MonitoredPointListDTO;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
@@ -62,6 +68,9 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
+import com.extjs.gxt.ui.client.store.Record.RecordUpdate;
+import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
@@ -132,6 +141,8 @@ public class ProjectDashboardPresenter implements SubPresenter {
         public abstract Button getCreateFinancialProjectButton();
 
         public abstract Button getCreateLocalPartnerProjectButton();
+
+        public abstract FlexibleGrid<MonitoredPointDTO> getMonitoredPointsGrid();
     }
 
     /**
@@ -180,15 +191,9 @@ public class ProjectDashboardPresenter implements SubPresenter {
     public View getView() {
 
         if (view == null) {
-
-            // Inject this ?
             view = new ProjectDashboardView(authentication);
-
             addLinkedProjectsListeners();
-
-            // Hides unimplemented panels and actions.
-            view.getPanelReminders().setVisible(false);
-            view.getPanelWatchedPoints().setVisible(false);
+            addMonitoredPointsListeners();
         }
 
         valueChanges.clear();
@@ -236,9 +241,6 @@ public class ProjectDashboardPresenter implements SubPresenter {
         // Sorts phases to be displayed in the correct order.
         Collections.sort(projectDTO.getPhasesDTO());
 
-        view.getFinancialProjectGrid().getStore().removeAll();
-        view.getLocalPartnerProjectGrid().getStore().removeAll();
-
         // --
         // -- TABS CREATION
         // --
@@ -284,6 +286,9 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
         // Load linked projects.
         loadLinkedProjects(projectDTO);
+
+        // Load monitored points.
+        loadMonitoredPoints(projectDTO);
 
         // --
         // -- TABS LISTENERS
@@ -364,22 +369,47 @@ public class ProjectDashboardPresenter implements SubPresenter {
     }
 
     /**
-     * Loads linked projects
+     * Loads linked projects.
      * 
      * @param projectDTO
      *            The project.
      */
     private void loadLinkedProjects(final ProjectDTO projectDTO) {
 
+        view.getFinancialProjectGrid().getStore().removeAll();
+
         // Adds funding.
         for (final ProjectFundingDTO funding : projectDTO.getFunding()) {
             view.getFinancialProjectGrid().getStore().add(funding);
         }
 
+        view.getLocalPartnerProjectGrid().getStore().removeAll();
+
         // Adds funded.
         for (final ProjectFundingDTO funded : projectDTO.getFunded()) {
             view.getLocalPartnerProjectGrid().getStore().add(funded);
         }
+    }
+
+    /**
+     * Loads monitored points.
+     * 
+     * @param projectDTO
+     *            The project.
+     */
+    private void loadMonitoredPoints(final ProjectDTO projectDTO) {
+
+        view.getMonitoredPointsGrid().getStore().removeAll();
+
+        final MonitoredPointListDTO list = projectDTO.getPointsList();
+        if (list != null) {
+            for (final MonitoredPointDTO point : list.getPoints()) {
+                point.setIsCompleted();
+                view.getMonitoredPointsGrid().getStore().add(point);
+            }
+        }
+
+        view.getMonitoredPointsGrid().getStore().sort("expectedDate", SortDir.ASC);
     }
 
     /**
@@ -481,6 +511,12 @@ public class ProjectDashboardPresenter implements SubPresenter {
                         elementDTO.setAuthentication(authentication);
                         elementDTO.setCurrentContainerDTO(projectPresenter.getCurrentProjectDTO());
                         elementDTO.assignValue(valueResult);
+
+                        // Links the files lists to the monitored points panel.
+                        if (elementDTO instanceof FilesListElementDTO) {
+                            ((FilesListElementDTO) elementDTO).setMonitoredPointsStore(view.getMonitoredPointsGrid()
+                                    .getStore());
+                        }
 
                         // Generates element component (with the value).
                         elementDTO.init();
@@ -1618,5 +1654,70 @@ public class ProjectDashboardPresenter implements SubPresenter {
                 window.show(Mode.FUNDED, projectPresenter.getCurrentProjectDTO().light());
             }
         });
+    }
+
+    /**
+     * Adds listeners to the monitored points toolbar.
+     */
+    private void addMonitoredPointsListeners() {
+
+        view.getMonitoredPointsGrid().getStore()
+                .addListener(Store.Update, new Listener<StoreEvent<MonitoredPointDTO>>() {
+
+                    @Override
+                    public void handleEvent(StoreEvent<MonitoredPointDTO> se) {
+
+                        // Manages only edit event.
+                        if (se.getOperation() == RecordUpdate.EDIT) {
+
+                            final Date editedDate = new Date();
+
+                            final ArrayList<MonitoredPointDTO> editedModels = new ArrayList<MonitoredPointDTO>();
+
+                            // The 'completed' field has been edited by the grid
+                            // editor, but the actual property which is saved in
+                            // data-layer is 'completionDate'. we have to do the
+                            // changes manually.
+                            final MonitoredPointDTO edited = se.getModel();
+                            if (edited.getIsCompleted()) {
+                                edited.setCompletionDate(editedDate);
+                            } else {
+                                edited.setCompletionDate(null);
+                            }
+
+                            editedModels.add(edited);
+
+                            // Updates points.
+                            dispatcher.execute(new UpdateMonitoredPoints(editedModels),
+                                    new MaskingAsyncMonitor(view.getMonitoredPointsGrid(), I18N.CONSTANTS.loading()),
+                                    new AsyncCallback<MonitoredPointsResultList>() {
+
+                                        @Override
+                                        public void onFailure(Throwable e) {
+
+                                            view.getMonitoredPointsGrid().getStore().rejectChanges();
+
+                                            Log.error("[execute] Error while merging the monitored points.", e);
+                                            MessageBox.alert(I18N.CONSTANTS.monitoredPointUpdateError(),
+                                                    I18N.CONSTANTS.monitoredPointUpdateErrorDetails(), null);
+                                        }
+
+                                        @Override
+                                        public void onSuccess(MonitoredPointsResultList result) {
+
+                                            view.getMonitoredPointsGrid().getStore().commitChanges();
+
+                                            for (MonitoredPointDTO point : result.getList()) {
+                                                point.setIsCompleted();
+                                                view.getMonitoredPointsGrid().getStore().update(point);
+                                            }
+
+                                            Notification.show(I18N.CONSTANTS.infoConfirmation(),
+                                                    I18N.CONSTANTS.monitoredPointUpdateConfirm());
+                                        }
+                                    });
+                        }
+                    }
+                });
     }
 }

@@ -5,6 +5,7 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -19,8 +20,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sigmah.server.dao.Transactional;
 import org.sigmah.shared.command.result.ValueResultUtils;
+import org.sigmah.shared.domain.Project;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.element.FlexibleElement;
+import org.sigmah.shared.domain.reminder.MonitoredPoint;
+import org.sigmah.shared.domain.reminder.MonitoredPointList;
 import org.sigmah.shared.domain.value.File;
 import org.sigmah.shared.domain.value.FileVersion;
 import org.sigmah.shared.domain.value.Value;
@@ -538,6 +542,40 @@ public class FileManagerImpl implements FileManager {
         final java.io.File imageFile = new java.io.File(repository, name);
 
         return imageFile;
+    }
+
+    @Transactional
+    @Override
+    public MonitoredPoint createMonitoredPoint(Integer projetId, String label, Date expectedDate, Integer fileId) {
+
+        final EntityManager em = injector.getInstance(EntityManager.class);
+
+        // Retrieves parent project and points list.
+        final Project p = em.find(Project.class, projetId);
+        MonitoredPointList list = p.getPointsList();
+
+        if (list == null) {
+            list = new MonitoredPointList();
+            p.setPointsList(list);
+        }
+
+        if (list.getPoints() == null) {
+            list.setPoints(new ArrayList<MonitoredPoint>());
+        }
+
+        // Creates point.
+        final MonitoredPoint point = new MonitoredPoint();
+        point.setLabel(label);
+        point.setExpectedDate(expectedDate);
+        point.setFile(em.find(File.class, fileId));
+
+        // Adds the point to the list.
+        list.addMonitoredPoint(point);
+
+        // Saves.
+        em.persist(p);
+
+        return point;
     }
 
     /**

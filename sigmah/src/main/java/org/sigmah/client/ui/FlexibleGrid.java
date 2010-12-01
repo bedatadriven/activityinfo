@@ -98,6 +98,12 @@ public class FlexibleGrid<M extends ModelData> extends EditorGrid<M> {
                         doAutoHeight();
                     }
                 });
+                getStore().addListener(Store.Filter, new Listener<StoreEvent<M>>() {
+                    @Override
+                    public void handleEvent(StoreEvent<M> be) {
+                        doAutoHeight();
+                    }
+                });
                 doAutoHeight();
             }
         });

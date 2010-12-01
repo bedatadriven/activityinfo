@@ -11,6 +11,7 @@ import java.util.EnumMap;
 import java.util.Map;
 import org.sigmah.server.endpoint.gwtrpc.handler.calendar.ActivityCalendarHandler;
 import org.sigmah.server.endpoint.gwtrpc.handler.calendar.CalendarHandler;
+import org.sigmah.server.endpoint.gwtrpc.handler.calendar.MonitoredPointCalendarHandler;
 import org.sigmah.server.endpoint.gwtrpc.handler.calendar.PersonalCalendarHandler;
 import org.sigmah.shared.command.GetCalendar;
 import org.sigmah.shared.command.handler.CommandHandler;
@@ -21,21 +22,27 @@ import org.sigmah.shared.exception.CommandException;
 
 /**
  * Retrieves calendars and events.
+ * 
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 @Singleton
 public class GetCalendarHandler implements CommandHandler<GetCalendar> {
+
     /**
-     * List of converters. They convert model objects to <code>Calendar</code>s and <code>Event</code>s objects.
+     * List of converters. They convert model objects to <code>Calendar</code>s
+     * and <code>Event</code>s objects.
+     * 
      * @see CalendarHandler
      */
     private final Map<CalendarType, CalendarHandler> handlers;
 
     @Inject
     public GetCalendarHandler(Injector injector) {
-        final EnumMap<CalendarType, CalendarHandler> map = new EnumMap<CalendarType, CalendarHandler>(CalendarType.class);
+        final EnumMap<CalendarType, CalendarHandler> map = new EnumMap<CalendarType, CalendarHandler>(
+                CalendarType.class);
         map.put(CalendarType.Activity, injector.getInstance(ActivityCalendarHandler.class));
         map.put(CalendarType.Personal, injector.getInstance(PersonalCalendarHandler.class));
+        map.put(CalendarType.MonitoredPoint, injector.getInstance(MonitoredPointCalendarHandler.class));
 
         handlers = map;
     }

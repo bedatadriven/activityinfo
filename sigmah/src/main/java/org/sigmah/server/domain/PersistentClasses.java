@@ -56,6 +56,10 @@ import org.sigmah.shared.domain.logframe.SpecificObjective;
 import org.sigmah.shared.domain.quality.CriterionType;
 import org.sigmah.shared.domain.quality.QualityCriterion;
 import org.sigmah.shared.domain.quality.QualityFramework;
+import org.sigmah.shared.domain.reminder.MonitoredPoint;
+import org.sigmah.shared.domain.reminder.MonitoredPointList;
+import org.sigmah.shared.domain.value.File;
+import org.sigmah.shared.domain.value.FileVersion;
 import org.sigmah.shared.domain.value.Value;
 
 /**
@@ -66,6 +70,10 @@ import org.sigmah.shared.domain.value.Value;
  */
 public class PersistentClasses {
     public static final Class<?>[] LIST = {
+            FileVersion.class,
+            File.class,
+            MonitoredPoint.class,
+            MonitoredPointList.class,
             IndicatorValue.class,
             AttributeValue.class,
             ReportingPeriod.class,

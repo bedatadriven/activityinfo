@@ -2,8 +2,10 @@ package org.sigmah.server.endpoint.file;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Map;
 
+import org.sigmah.shared.domain.reminder.MonitoredPoint;
 import org.sigmah.shared.dto.value.FileUploadUtils;
 
 /**
@@ -47,6 +49,21 @@ public interface FileManager {
      * @return The image as a file.
      */
     public File getImage(String name);
+
+    /**
+     * Creates a monitored point.
+     * 
+     * @param projetId
+     *            The project at which the point belongs.
+     * @param label
+     *            The point's label.
+     * @param expectedDate
+     *            The point's expected date.
+     * @param fileId
+     *            The point's file id.
+     * @return The just created point.
+     */
+    public MonitoredPoint createMonitoredPoint(Integer projetId, String label, Date expectedDate, Integer fileId);
 
     /**
      * Utility class to represents a downloaded file.
