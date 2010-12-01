@@ -104,7 +104,7 @@ public class ActivityCalendarHandler implements CalendarHandler {
                                 event.setDtstart(new Date(startDate.getTime()));
 
                                 if(startDate.equals(activity.getEndDate())) {
-                                    event.setDtend(new Date(startDate.getYear(), startDate.getMonth(), startDate.getDay()+1));
+                                    event.setDtend(new Date(startDate.getYear(), startDate.getMonth(), startDate.getDate()+1));
                                 } else {
                                     event.setDtend(new Date(activity.getEndDate().getTime()));
                                 }
