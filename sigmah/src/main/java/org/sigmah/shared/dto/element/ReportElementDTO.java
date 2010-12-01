@@ -13,7 +13,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Image;
 import java.io.Serializable;
@@ -135,10 +134,10 @@ public class ReportElementDTO extends FlexibleElementDTO {
                 Log.debug("ReportElementDTO does not know how to render properly from the '"+History.getToken()+"' page.");
             }
 
+            field.setEnabled(enabled);
         }
 
         field.setFieldLabel(getLabel());
-        field.setEnabled(enabled);
 
         return field;
     }

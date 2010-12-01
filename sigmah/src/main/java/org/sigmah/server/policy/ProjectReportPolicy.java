@@ -18,6 +18,7 @@ import org.sigmah.shared.domain.Project;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.element.FlexibleElement;
 import org.sigmah.shared.domain.element.ReportElement;
+import org.sigmah.shared.domain.report.KeyQuestion;
 import org.sigmah.shared.domain.report.ProjectReport;
 import org.sigmah.shared.domain.report.ProjectReportModel;
 import org.sigmah.shared.domain.report.ProjectReportModelSection;
@@ -44,9 +45,24 @@ public class ProjectReportPolicy implements EntityPolicy<ProjectReport> {
     }
 
     private void iterateOnSection(ProjectReportModelSection section, List<RichTextElement> elements, ProjectReport report) {
-        int index = 0;
         int areaCount = section.getNumberOfTextarea();
 
+        // Key questions
+        List<KeyQuestion> keyQuestions = section.getKeyQuestions();
+        if(keyQuestions == null)
+            keyQuestions = Collections.emptyList();
+
+        for(int index = 0; index < keyQuestions.size(); index++) {
+            final RichTextElement element = new RichTextElement();
+            element.setIndex(index);
+            element.setSectionId(section.getId());
+            element.setReport(report);
+            elements.add(element);
+        }
+
+        int index = 0;
+        
+        // Sub sections and rich text elements
         List<ProjectReportModelSection> subSections = section.getSubSections();
         if(subSections == null)
             subSections = Collections.emptyList();
@@ -55,7 +71,7 @@ public class ProjectReportPolicy implements EntityPolicy<ProjectReport> {
             while(index < subSection.getIndex() && areaCount > 0) {
                 // New rich text element
                 final RichTextElement element = new RichTextElement();
-                element.setIndex(index);
+                element.setIndex(index + keyQuestions.size());
                 element.setSectionId(section.getId());
                 element.setReport(report);
                 elements.add(element);
@@ -70,7 +86,7 @@ public class ProjectReportPolicy implements EntityPolicy<ProjectReport> {
         while(areaCount > 0) {
             // New rich text element
             final RichTextElement element = new RichTextElement();
-            element.setIndex(index);
+            element.setIndex(index + keyQuestions.size());
             element.setSectionId(section.getId());
             element.setReport(report);
             elements.add(element);

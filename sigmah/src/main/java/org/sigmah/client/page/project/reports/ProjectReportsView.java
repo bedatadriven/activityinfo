@@ -17,6 +17,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
+import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
@@ -41,6 +42,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Anchor;
@@ -70,6 +72,7 @@ import org.sigmah.shared.command.UpdateEntity;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.command.result.ProjectReportModelListResult;
 import org.sigmah.shared.command.result.VoidResult;
+import org.sigmah.shared.dto.report.KeyQuestionDTO;
 import org.sigmah.shared.dto.report.ProjectReportDTO;
 import org.sigmah.shared.dto.report.ProjectReportSectionDTO;
 import org.sigmah.shared.dto.report.RichTextElementDTO;
@@ -91,6 +94,7 @@ public class ProjectReportsView extends LayoutContainer {
     private RichTextArea.Formatter currentFormatter;
 
     private HashMap<Integer, RichTextArea> textAreas;
+    private KeyQuestionState keyQuestionState;
 
     private Dialog createReportDialog;
 
@@ -100,6 +104,8 @@ public class ProjectReportsView extends LayoutContainer {
         this.textAreas = new HashMap<Integer, RichTextArea>();
 
         this.store = store;
+
+        this.keyQuestionState = new KeyQuestionState();
 
         final BorderLayout layout = new BorderLayout();
         layout.setContainerStyle("x-border-layout-ct main-background"); // Adds a dark background between objects managed by this layout
@@ -330,6 +336,41 @@ public class ProjectReportsView extends LayoutContainer {
                 sectionPanel.add(textArea);
                 textAreas.put(((RichTextElementDTO) object).getId(), textArea);
 
+            } else if (object.getClass() == KeyQuestionDTO.class) {
+                final KeyQuestionDTO keyQuestion = (KeyQuestionDTO) object;
+                keyQuestionState.increaseCount();
+
+                // Rich text field
+                final RichTextArea textArea = new RichTextArea();
+                final RichTextElementDTO richTextElementDTO = keyQuestion.getRichTextElementDTO();
+                if(richTextElementDTO != null) {
+                    textArea.setHTML(richTextElementDTO.getText());
+                    textAreas.put(richTextElementDTO.getId(), textArea);
+                    
+                } else {
+                    Log.error("No text area is attached to the key question #"+keyQuestion.getId());
+                }
+
+                // Compas icon
+                final ToolbarImages images = GWT.create(ToolbarImages.class);
+                
+                final ImageResource icon;
+                if("".equals(textArea.getText()))
+                    icon = images.compasRed();
+                else {
+                    icon = images.compasGreen();
+                    keyQuestionState.increaseValids();
+                }
+
+                final int toolButtonIndex = sectionPanel.getToolButtonCount();
+
+                sectionPanel.addToolButton(icon, new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        KeyQuestionDialog.getDialog(keyQuestion, textArea, sectionPanel, toolButtonIndex, keyQuestionState).show();
+                    }
+                });
+
             } else {
                 Log.warn("Report : object type unknown (" + object.getClass() + ")");
             }
@@ -340,11 +381,13 @@ public class ProjectReportsView extends LayoutContainer {
 
     public void setReport(final ProjectReportDTO report) {
         mainPanel.removeAll();
-        textAreas.clear();
-
-        if (report == null) {
+        
+        if(report == null)
             return;
-        }
+
+        // Preparing the view for the new report
+        textAreas.clear();
+        keyQuestionState.clear();
 
         // Title bar
         final ContentPanel reportPanel = new ContentPanel(new FitLayout()); //new RowLayout(Orientation.VERTICAL));
@@ -436,6 +479,11 @@ public class ProjectReportsView extends LayoutContainer {
         });
 
         toolBar.add(saveButton);
+        toolBar.add(new SeparatorToolItem());
+
+        // Key question info
+        final Label keyQuestionLabel = keyQuestionState.getLabel();
+        toolBar.add(keyQuestionLabel);
         toolBar.add(new SeparatorToolItem());
 
         // Overview mode

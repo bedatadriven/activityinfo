@@ -19,11 +19,12 @@ import org.sigmah.shared.command.GetProjectReport;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.domain.User;
-import org.sigmah.shared.domain.element.FlexibleElement;
+import org.sigmah.shared.domain.report.KeyQuestion;
 import org.sigmah.shared.domain.report.ProjectReport;
 import org.sigmah.shared.domain.report.ProjectReportModel;
 import org.sigmah.shared.domain.report.ProjectReportModelSection;
 import org.sigmah.shared.domain.report.RichTextElement;
+import org.sigmah.shared.dto.report.KeyQuestionDTO;
 import org.sigmah.shared.dto.report.ProjectReportDTO;
 import org.sigmah.shared.dto.report.ProjectReportSectionDTO;
 import org.sigmah.shared.dto.report.RichTextElementDTO;
@@ -106,6 +107,7 @@ public class GetProjectReportHandler implements CommandHandler<GetProjectReport>
            elementList = Collections.emptyList();
 
        final Iterator<RichTextElement> elementIterator = elementList.iterator();
+       final Iterator<KeyQuestion> keyQuestionIterator = sectionModel.getKeyQuestions().iterator();
        final Iterator<ProjectReportModelSection> subSectionIterator = sectionModel.getSubSections().iterator();
 
        // Children of this section
@@ -118,10 +120,35 @@ public class GetProjectReportHandler implements CommandHandler<GetProjectReport>
        else
            nextElement = null;
 
+       // Key questions
+       int keys = 0;
+       while(keyQuestionIterator.hasNext()) {
+           final KeyQuestion keyQuestion = keyQuestionIterator.next();
+           final KeyQuestionDTO keyQuestionDTO = new KeyQuestionDTO();
+
+           keyQuestionDTO.setId(keyQuestion.getId());
+           keyQuestionDTO.setLabel(keyQuestion.getLabel());
+
+           final RichTextElementDTO elementDTO = new RichTextElementDTO();
+           elementDTO.setId(nextElement.getId());
+           elementDTO.setText(nextElement.getText());
+
+           keyQuestionDTO.setRichTextElementDTO(elementDTO);
+
+           if(elementIterator.hasNext())
+               nextElement = elementIterator.next();
+           else
+               nextElement = null;
+
+           children.add(keyQuestionDTO);
+           keys++;
+       }
+
+       // Sub sections
        while(subSectionIterator.hasNext()) {
            final ProjectReportModelSection subSectionModel = subSectionIterator.next();
            
-           while(nextElement != null && nextElement.getIndex() < subSectionModel.getIndex()) {
+           while(nextElement != null && nextElement.getIndex()-keys < subSectionModel.getIndex()) {
                final RichTextElementDTO elementDTO = new RichTextElementDTO();
                elementDTO.setId(nextElement.getId());
                elementDTO.setText(nextElement.getText());
@@ -137,6 +164,7 @@ public class GetProjectReportHandler implements CommandHandler<GetProjectReport>
            children.add(subSectionDTO);
        }
 
+       // Remaining elements
        while(nextElement != null) {
            final RichTextElementDTO elementDTO = new RichTextElementDTO();
            elementDTO.setId(nextElement.getId());

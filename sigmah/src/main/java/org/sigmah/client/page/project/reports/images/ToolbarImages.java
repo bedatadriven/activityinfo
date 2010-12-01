@@ -39,4 +39,13 @@ public interface ToolbarImages extends ClientBundle {
     
     @Source("image_add.png")
     ImageResource imageAdd();
+
+    @Source("compas.png")
+    ImageResource compas();
+
+    @Source("compas_green.png")
+    ImageResource compasGreen();
+
+    @Source("compas_red.png")
+    ImageResource compasRed();
 }

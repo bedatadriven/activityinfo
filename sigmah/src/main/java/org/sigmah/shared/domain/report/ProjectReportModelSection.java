@@ -20,6 +20,8 @@ import javax.persistence.OrderBy;
  */
 @Entity
 public class ProjectReportModelSection implements Serializable {
+    private final static long serialVersionUID = 1L;
+    
     private Integer id;
     private Integer projectModelId;
     private Integer parentSectionModelId;
@@ -27,6 +29,7 @@ public class ProjectReportModelSection implements Serializable {
     private Integer index;
     private Integer numberOfTextarea;
     private List<ProjectReportModelSection> subSections;
+    private List<KeyQuestion> keyQuestions;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -86,5 +89,15 @@ public class ProjectReportModelSection implements Serializable {
 
     public void setSubSections(List<ProjectReportModelSection> subSections) {
         this.subSections = subSections;
+    }
+
+    @OneToMany(mappedBy = "sectionId")
+    @OrderBy("index ASC")
+    public List<KeyQuestion> getKeyQuestions() {
+        return keyQuestions;
+    }
+    
+    public void setKeyQuestions(List<KeyQuestion> keyQuestions) {
+        this.keyQuestions = keyQuestions;
     }
 }

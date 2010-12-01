@@ -11,7 +11,6 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.page.project.ProjectPresenter;
 import org.sigmah.client.page.project.SubPresenter;
 import org.sigmah.shared.command.GetProjectReport;
@@ -33,6 +32,7 @@ public class ProjectReportsPresenter implements SubPresenter {
 
     private ProjectReportsView view;
     private ListStore<GetProjectReports.ReportReference> reportStore;
+    private boolean reportStoreNeedsRefresh = false;
 
     int currentReportId = -1;
 
@@ -70,7 +70,7 @@ public class ProjectReportsPresenter implements SubPresenter {
         if(currentReportId != reportId) {
             currentReportId = reportId;
 
-            reportStore.removeAll();
+            reportStoreNeedsRefresh = true;
 
             // Configuring the view to display the given report
             Log.debug("Loading report #"+reportId);
@@ -97,11 +97,16 @@ public class ProjectReportsPresenter implements SubPresenter {
         view.setCurrentState(projectPresenter.getCurrentState());
         view.setPhaseName(projectPresenter.getCurrentProjectDTO().getCurrentPhaseDTO().getPhaseModelDTO().getName());
         
-        if(reportStore.getCount() == 0) {
+        if(reportStore.getCount() == 0 || reportStoreNeedsRefresh) {
             GetProjectReports getProjectReports = new GetProjectReports(currentProjectDTO.getId());
             dispatcher.execute(getProjectReports, null, new AsyncCallback<ProjectReportListResult>() {
                 @Override
                 public void onSuccess(ProjectReportListResult result) {
+                    if(reportStoreNeedsRefresh) {
+                        reportStore.removeAll();
+                        reportStoreNeedsRefresh = false;
+                    }
+
                     reportStore.add(result.getData());
                 }
                 @Override

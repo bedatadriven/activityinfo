@@ -12,12 +12,10 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import java.io.Serializable;
 import java.util.Map;
 import org.sigmah.client.EventBus;
-import org.sigmah.client.SigmahInjector;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.event.NavigationEvent;
 import org.sigmah.client.i18n.I18N;
@@ -25,7 +23,9 @@ import org.sigmah.client.page.NavigationHandler;
 import org.sigmah.client.page.project.ProjectState;
 import org.sigmah.client.util.Notification;
 import org.sigmah.shared.command.CreateEntity;
+import org.sigmah.shared.command.UpdateEntity;
 import org.sigmah.shared.command.result.CreateResult;
+import org.sigmah.shared.command.result.VoidResult;
 
 /**
  *
@@ -55,7 +55,6 @@ public class EditReportDialog {
 
             // Cancel button
             dialog.getButtonById(Dialog.CANCEL).addSelectionListener(new SelectionListener<ButtonEvent>() {
-
                 @Override
                 public void componentSelected(ButtonEvent ce) {
                     dialog.hide();
@@ -69,8 +68,10 @@ public class EditReportDialog {
 
     /**
      * Dialog used to <b>create</b> a report from outside the "Report & Documents" page.
-     * @param projectModelId Id of the report model to use (should not be null).
-     * @param phaseName Name of the phase the report is being created in (can be null).
+     * @param properties Base properties of the new report (should contain the report model id).
+     * @param targetPage Page to display after the creation.
+     * @param eventBus
+     * @param dispatcher
      * @return The create report dialog.
      */
     public static Dialog getDialog(final Map<String, Serializable> properties,
@@ -114,5 +115,36 @@ public class EditReportDialog {
         return dialog;
     }
 
-    
+    /**
+     * Dialog used to <b>rename</b> a report from the "Report & Documents" page.
+     * @param properties Base properties of the report (may be empty but not null).
+     * @param dispatcher
+     * @return The rename report dialog.
+     */
+    public static Dialog getDialog(final Map<String, Serializable> properties, final Integer reportId,
+            final Dispatcher dispatcher, final AsyncCallback<VoidResult> callback) {
+        final Dialog dialog = getDialog();
+
+        // OK Button
+        final Button okButton = dialog.getButtonById(Dialog.OK);
+
+        okButton.removeAllListeners();
+        okButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                final String name = ((TextField<String>) dialog.getWidget(0)).getValue();
+
+                properties.put("name", name);
+
+                final UpdateEntity updateEntity = new UpdateEntity("ProjectReport", reportId, (Map<String, Object>) (Map<String, ?>) properties);
+                dispatcher.execute(updateEntity, null, callback);
+
+                dialog.hide();
+            }
+
+        });
+
+        return dialog;
+    }
 }
