@@ -3,7 +3,9 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.shared.report.model;
+package org.sigmah.shared.exception;
+
+import org.sigmah.shared.report.model.ReportElement;
 
 /**
  * Exception relating to the (mal)definition of a report model
@@ -11,21 +13,21 @@ package org.sigmah.shared.report.model;
  * @author Alex Bertram
  *
  */
-public class ModelException extends RuntimeException  {
+public class ReportModelException extends RuntimeException  {
 
-	public ModelException() {
+	public ReportModelException() {
 		super();
 	}
 
-	public ModelException(String message, Throwable cause, ReportElement element) {
+	public ReportModelException(String message, Throwable cause, ReportElement element) {
 		super(appendElementDetails(message, element), cause);
 	}
 
-	public ModelException(String message, ReportElement element) {
+	public ReportModelException(String message, ReportElement element) {
 		super(appendElementDetails(message, element));
 	}
 
-	public ModelException(Throwable cause, ReportElement element) {
+	public ReportModelException(Throwable cause, ReportElement element) {
 		super(appendElementDetails("", element), cause);
 	}
 

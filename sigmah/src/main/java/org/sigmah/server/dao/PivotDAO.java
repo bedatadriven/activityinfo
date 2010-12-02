@@ -48,13 +48,6 @@ public interface PivotDAO {
             this.value = doubleValue;
         }
 
-        public Bucket(double value, Dimension.AndCategory... pairs) {
-            this.value = value;
-            for (Dimension.AndCategory pair : pairs) {
-                categories.put(pair.getDimension(), pair.getCategory());
-            }
-        }
-
         public Collection<Dimension> dimensions() {
             return categories.keySet();
         }

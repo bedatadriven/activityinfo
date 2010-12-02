@@ -21,12 +21,12 @@ import org.krysalis.jcharts.types.ChartType;
 import org.krysalis.jcharts.types.PieLabelType;
 import org.sigmah.server.report.renderer.html.ImageStorage;
 import org.sigmah.server.report.renderer.html.ImageStorageProvider;
+import org.sigmah.shared.exception.ReportModelException;
 import org.sigmah.shared.report.Theme;
 import org.sigmah.shared.report.content.PivotChartContent;
 import org.sigmah.shared.report.content.PivotTableData;
 import org.sigmah.shared.report.model.CategoryProperties;
 import org.sigmah.shared.report.model.Dimension;
-import org.sigmah.shared.report.model.ModelException;
 import org.sigmah.shared.report.model.PivotChartElement;
 
 import java.awt.*;
@@ -71,11 +71,11 @@ public class ChartRendererJC  {
             return bufferedImage;
 
         } catch (IOException e) {
-            throw new ModelException(e, element);
+            throw new ReportModelException(e, element);
         } catch (ChartDataException e) {
-            throw new ModelException(e, element);
+            throw new ReportModelException(e, element);
         } catch (PropertyException e) {
-            throw new ModelException(e, element);
+            throw new ReportModelException(e, element);
         }
     }
 

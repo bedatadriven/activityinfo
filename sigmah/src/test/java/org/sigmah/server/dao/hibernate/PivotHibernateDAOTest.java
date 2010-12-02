@@ -411,4 +411,5 @@ public class PivotHibernateDAOTest {
             return this;
         }
     }
+
 }

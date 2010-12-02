@@ -156,31 +156,6 @@ public class Dimension extends BaseModelData implements Serializable {
         props.setColor(color);
     }
 
-    public class AndCategory {
-
-        private DimensionCategory category;
-
-        public AndCategory(DimensionCategory category) {
-            this.category = category;
-        }
-
-        public DimensionCategory getCategory() {
-            return category;
-        }
-
-        public Dimension getDimension() {
-            return Dimension.this;
-        }
-    }
-
-    public AndCategory category(int id, String label) {
-        return new AndCategory(new EntityCategory(id, label));
-    }
-
-    public AndCategory category(int id, String label, int sortOrder) {
-        return new AndCategory(new EntityCategory(id, label, sortOrder));
-    }
-
     @Override
     public String toString() {
         return type.toString();

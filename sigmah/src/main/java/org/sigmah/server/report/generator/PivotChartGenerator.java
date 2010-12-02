@@ -12,11 +12,11 @@ import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dao.IndicatorDAO;
 import org.sigmah.shared.domain.Indicator;
 import org.sigmah.shared.domain.User;
+import org.sigmah.shared.exception.ReportModelException;
 import org.sigmah.shared.report.content.PivotChartContent;
 import org.sigmah.shared.report.content.PivotTableData;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.DimensionType;
-import org.sigmah.shared.report.model.ModelException;
 import org.sigmah.shared.report.model.PivotChartElement;
 
 public class PivotChartGenerator extends PivotGenerator<PivotChartElement> {
@@ -35,16 +35,16 @@ public class PivotChartGenerator extends PivotGenerator<PivotChartElement> {
                          DateRange dateRange) {
 
         if (element.getIndicators().size() == 0) {
-            throw new ModelException("No indicators specified for chart", element);
+            throw new ReportModelException("No indicators specified for chart", element);
         } else if (element.getIndicators().size() > 1 &&
                 !element.allDimensionTypes().contains(DimensionType.Indicator)) {
-            throw new ModelException("If multiple indicators are provided, either the category or legend dimension must be indicator.", element);
+            throw new ReportModelException("If multiple indicators are provided, either the category or legend dimension must be indicator.", element);
         }
 
         if (element.getSeriesDimension().size() > 0 &&
                 element.getType() == PivotChartElement.Type.Bar) {
 
-            throw new ModelException("Bar charts that are not stacked/clustered cannot have legend dimensions.", element);
+            throw new ReportModelException("Bar charts that are not stacked/clustered cannot have legend dimensions.", element);
         }
 
 

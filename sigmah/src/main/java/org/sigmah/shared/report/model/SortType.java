@@ -5,7 +5,7 @@
 
 package org.sigmah.shared.report.model;
 
-public enum SortOrder {
+public enum SortType {
 	DEFINED,
 	NATURAL_VALUE,
 	NATURAL_LABEL,

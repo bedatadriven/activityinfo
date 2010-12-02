@@ -7,25 +7,25 @@ package org.sigmah.shared.report.model;
 
 public enum DimensionType {
 
-	Partner(SortOrder.NATURAL_LABEL),
-	Activity(SortOrder.DEFINED),
-	ActivityCategory(SortOrder.DEFINED),
-	Database(SortOrder.NATURAL_LABEL),
-	AdminLevel(SortOrder.NATURAL_LABEL),
-	Date(SortOrder.NATURAL_VALUE),
-	Status(SortOrder.DEFINED),
-	Indicator(SortOrder.DEFINED),
-	IndicatorCategory(SortOrder.DEFINED),
-	AttributeGroup(SortOrder.NATURAL_VALUE),
-    Site(SortOrder.NATURAL_LABEL);
+	Partner(SortType.NATURAL_LABEL),
+	Activity(SortType.DEFINED),
+	ActivityCategory(SortType.DEFINED),
+	Database(SortType.NATURAL_LABEL),
+	AdminLevel(SortType.NATURAL_LABEL),
+	Date(SortType.NATURAL_VALUE),
+	Status(SortType.DEFINED),
+	Indicator(SortType.DEFINED),
+	IndicatorCategory(SortType.DEFINED),
+	AttributeGroup(SortType.NATURAL_VALUE),
+    Site(SortType.NATURAL_LABEL);
 
-	private SortOrder sortOrder;
+	private SortType sortOrder;
 
-	DimensionType(SortOrder sortOrder) {
+	DimensionType(SortType sortOrder) {
 	this.sortOrder = sortOrder;
 	}
 
-	public SortOrder getSortOrder() {
+	public SortType getSortOrder() {
 	return this.sortOrder;
 	}
 	

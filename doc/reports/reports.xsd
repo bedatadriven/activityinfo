@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="report" type="report"/>
+
+  <xs:complexType name="adminDimension">
+    <xs:complexContent>
+      <xs:extension base="dimension">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="dimension">
+    <xs:complexContent>
+      <xs:extension base="baseModelData">
+        <xs:sequence>
+          <xs:element name="color" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="baseModelData">
+    <xs:sequence>
+      <xs:element name="allowNestedValues" type="xs:boolean"/>
+      <xs:element name="properties">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="key" minOccurs="0" type="xs:string"/>
+                  <xs:element name="value" minOccurs="0" type="xs:anyType"/>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="attributeGroupDimension">
+    <xs:complexContent>
+      <xs:extension base="dimension">
+        <xs:sequence>
+          <xs:element name="attributeGroupId" type="xs:int"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="bubbleMapLayer">
+    <xs:complexContent>
+      <xs:extension base="mapLayer">
+        <xs:sequence>
+          <xs:element name="alpha" type="xs:double"/>
+          <xs:element name="clustered" type="xs:boolean"/>
+          <xs:element name="colors" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="dimension" type="dimensionElement" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="defaultColor" type="xs:int"/>
+          <xs:element name="indicators" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="indicator" type="xs:int" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="labelColor" type="xs:int"/>
+          <xs:element name="maxRadius" type="xs:int"/>
+          <xs:element name="minRadius" type="xs:int"/>
+          <xs:element name="numbering" type="numberingType" default="none" minOccurs="0"/>
+          <xs:element name="pie" type="xs:boolean"/>
+          <xs:element name="scaling" type="scalingType" default="none" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="mapLayer" abstract="true">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="dimensionElement">
+    <xs:sequence>
+      <xs:element name="category" type="categoryElement" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="type" type="xs:string"/>
+    <xs:attribute name="levelId" type="xs:int"/>
+    <xs:attribute name="dateUnit" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="categoryElement">
+    <xs:sequence/>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="label" type="xs:string"/>
+    <xs:attribute name="color" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="categoryProperties">
+    <xs:sequence>
+      <xs:element name="color" type="xs:int" minOccurs="0"/>
+      <xs:element name="label" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="dateDimension">
+    <xs:complexContent>
+      <xs:extension base="dimension">
+        <xs:sequence>
+          <xs:element name="format" type="xs:string" minOccurs="0"/>
+          <xs:element name="unit" type="dateUnit" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="dateRange">
+    <xs:sequence/>
+    <xs:attribute name="max" type="xs:dateTime"/>
+    <xs:attribute name="min" type="xs:dateTime"/>
+  </xs:complexType>
+
+  <xs:complexType name="iconMapLayer">
+    <xs:complexContent>
+      <xs:extension base="mapLayer">
+        <xs:sequence>
+          <xs:element name="activities" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="activity" type="xs:int" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="clustered" type="xs:boolean"/>
+          <xs:element name="icon" type="xs:string" minOccurs="0"/>
+          <xs:element name="indicators" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="indicator" type="xs:int" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="mapElement">
+    <xs:complexContent>
+      <xs:extension base="reportElement">
+        <xs:sequence>
+          <xs:element name="baseMap" type="xs:string"/>
+          <xs:element name="height" type="xs:int" default="480"/>
+          <xs:element name="layers" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                  <xs:element name="bubbles" type="bubbleMapLayer"/>
+                  <xs:element name="icons" type="iconMapLayer"/>
+                </xs:choice>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="width" type="xs:int" default="640"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="reportElement" abstract="true">
+    <xs:sequence>
+      <xs:element name="filter" type="filterElement" minOccurs="0"/>
+      <xs:element name="sheetTitle" type="xs:string" minOccurs="0"/>
+      <xs:element name="title" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="filterElement">
+    <xs:sequence>
+      <xs:element name="restriction" type="restriction" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="dateRange" type="dateRange" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="restriction">
+    <xs:sequence>
+      <xs:element name="category" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="dimension" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="mapIcon">
+    <xs:sequence>
+      <xs:element name="anchorX" type="xs:int"/>
+      <xs:element name="anchorY" type="xs:int"/>
+      <xs:element name="height" type="xs:int"/>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="width" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="report">
+    <xs:complexContent>
+      <xs:extension base="reportElement">
+        <xs:sequence>
+          <xs:element name="description" type="xs:string" minOccurs="0"/>
+          <xs:element name="elements" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                  <xs:element name="pivotTable" type="pivotTableElement"/>
+                  <xs:element name="pivotChart" type="pivotChartElement"/>
+                  <xs:element name="table" type="tableElement"/>
+                  <xs:element name="map" type="mapElement"/>
+                  <xs:element name="static" type="staticElement"/>
+                </xs:choice>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="fileName" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="day" type="xs:int"/>
+        <xs:attribute name="frequency" type="reportFrequency"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pivotTableElement">
+    <xs:complexContent>
+      <xs:extension base="pivotElement">
+        <xs:sequence>
+          <xs:element name="columns" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="dimension" type="dimensionElement" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="rows" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="dimension" type="dimensionElement" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pivotElement" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="reportElement">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pivotChartElement">
+    <xs:complexContent>
+      <xs:extension base="pivotElement">
+        <xs:sequence>
+          <xs:element name="categoryAxisTitle" type="xs:string" minOccurs="0"/>
+          <xs:element name="categories" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="dimension" type="dimensionElement" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="series" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="dimension" type="dimensionElement" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="type" type="type"/>
+          <xs:element name="valueAxisTitle" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="tableElement">
+    <xs:complexContent>
+      <xs:extension base="reportElement">
+        <xs:sequence>
+          <xs:element name="frozenColumns" type="xs:int" default="0"/>
+          <xs:element name="map" type="mapElement" minOccurs="0"/>
+          <xs:element name="columns" type="tableColumn" minOccurs="0"/>
+          <xs:element name="sortBy" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="column" type="tableColumn" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="tableColumn">
+    <xs:complexContent>
+      <xs:extension base="treeNode">
+        <xs:sequence>
+          <xs:element name="column" type="tableColumn" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="label" type="xs:string"/>
+        <xs:attribute name="order" type="sortOrder"/>
+        <xs:attribute name="source" type="xs:string"/>
+        <xs:attribute name="sourceId" type="xs:int"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="treeNode" abstract="true">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="staticElement">
+    <xs:complexContent>
+      <xs:extension base="reportElement">
+        <xs:sequence>
+          <xs:element name="img" type="xs:string" minOccurs="0"/>
+          <xs:element name="text" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="category">
+    <xs:sequence/>
+    <xs:attribute name="id" type="xs:int"/>
+  </xs:complexType>
+
+  <xs:complexType name="categoryAdapter">
+    <xs:complexContent>
+      <xs:extension base="xmlAdapter">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="xmlAdapter" abstract="true">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="dimensionAdapter">
+    <xs:complexContent>
+      <xs:extension base="xmlAdapter">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="filterAdapter">
+    <xs:complexContent>
+      <xs:extension base="xmlAdapter">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:simpleType name="numberingType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="None"/>
+      <xs:enumeration value="ArabicNumerals"/>
+      <xs:enumeration value="LatinAlphabet"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="scalingType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="None"/>
+      <xs:enumeration value="Graduated"/>
+      <xs:enumeration value="Proportional"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="dateUnit">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="YEAR"/>
+      <xs:enumeration value="QUARTER"/>
+      <xs:enumeration value="MONTH"/>
+      <xs:enumeration value="WEEK"/>
+      <xs:enumeration value="DAY"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="dimensionSortOrder">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="DEFINED"/>
+      <xs:enumeration value="NATURAL_VALUE"/>
+      <xs:enumeration value="NATURAL_LABEL"/>
+      <xs:enumeration value="CUSTOM"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="dimensionType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Partner"/>
+      <xs:enumeration value="Activity"/>
+      <xs:enumeration value="ActivityCategory"/>
+      <xs:enumeration value="Database"/>
+      <xs:enumeration value="AdminLevel"/>
+      <xs:enumeration value="Date"/>
+      <xs:enumeration value="Status"/>
+      <xs:enumeration value="Indicator"/>
+      <xs:enumeration value="IndicatorCategory"/>
+      <xs:enumeration value="AttributeGroup"/>
+      <xs:enumeration value="Site"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="type">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Bar"/>
+      <xs:enumeration value="StackedBar"/>
+      <xs:enumeration value="Line"/>
+      <xs:enumeration value="ClusteredBar"/>
+      <xs:enumeration value="Pie"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="sortOrder">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Ascending"/>
+      <xs:enumeration value="Descending"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="reportFrequency">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="NotDateBound"/>
+      <xs:enumeration value="Monthly"/>
+      <xs:enumeration value="Weekly"/>
+      <xs:enumeration value="Daily"/>
+      <xs:enumeration value="Adhoc"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="sortType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="DEFINED"/>
+      <xs:enumeration value="NATURAL_VALUE"/>
+      <xs:enumeration value="NATURAL_LABEL"/>
+      <xs:enumeration value="CUSTOM"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>
+
