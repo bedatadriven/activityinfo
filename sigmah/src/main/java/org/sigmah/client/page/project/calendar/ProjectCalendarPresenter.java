@@ -38,6 +38,8 @@ public class ProjectCalendarPresenter implements SubPresenter {
     private ListStore<CalendarWrapper> calendarStore;
     private CheckBoxSelectionModel<CalendarWrapper> selectionModel;
 
+    private boolean needsRefresh;
+
     private int calendarIndex = 1;
 
     /**
@@ -122,7 +124,9 @@ public class ProjectCalendarPresenter implements SubPresenter {
             calendar.setDisplayMode(CalendarWidget.DisplayMode.MONTH);
             calendarIndex = 1; // Reset the styles
             currentProjectDTO = projectPresenter.getCurrentProjectDTO();
-        }
+
+        } else
+            needsRefresh = true;
 
         return view;
     }
@@ -130,10 +134,16 @@ public class ProjectCalendarPresenter implements SubPresenter {
     @Override
     public void viewDidAppear() {
         // Fetching the calendars
-        if (calendarStore.getCount() == 0) {
+        if (calendarStore.getCount() == 0 || needsRefresh) {
             final AsyncCallback<Calendar> callback = new AsyncCallback<Calendar>() {
                 @Override
                 public void onSuccess(Calendar result) {
+                    if(needsRefresh) {
+                        calendarIndex = 1;
+                        calendarStore.removeAll();
+                        needsRefresh = false;
+                    }
+
                     // Defines the color index of the calendar
                     result.setStyle(calendarIndex++);
 
