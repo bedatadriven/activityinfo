@@ -85,6 +85,7 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
     private ContentPanel panelReminders;
 
     private ContentPanel panelMonitoredPoints;
+    private Button addMonitoredPointButton;
 
     private ContentPanel panelFinancialProjects;
     private ContentPanel panelLocalProjects;
@@ -383,6 +384,11 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
     @Override
     public FlexibleGrid<MonitoredPointDTO> getMonitoredPointsGrid() {
         return monitoredPointsGrid;
+    }
+
+    @Override
+    public Button getAddMonitoredPointButton() {
+        return addMonitoredPointButton;
     }
 
     /**
@@ -777,10 +783,14 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
         // Filter button.
         final Button filterButton = new Button(I18N.CONSTANTS.filter(), IconImageBundle.ICONS.filter());
         filterButton.setMenu(filterMenu);
+
+        addMonitoredPointButton = new Button(I18N.CONSTANTS.addItem(), IconImageBundle.ICONS.add());
+
         // Toolbar.
         final ToolBar toolbar = new ToolBar();
         toolbar.setAlignment(HorizontalAlignment.LEFT);
 
+        toolbar.add(addMonitoredPointButton);
         toolbar.add(filterButton);
 
         // Panel.

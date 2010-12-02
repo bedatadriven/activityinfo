@@ -273,6 +273,15 @@ public class FormWindow {
     }
 
     /**
+     * Cleans all fields.
+     */
+    public void clean() {
+        for (final FieldWrapper field : fields) {
+            field.field.reset();
+        }
+    }
+
+    /**
      * Adds a text field in the window.
      * 
      * @param fieldLabelString

@@ -5,12 +5,16 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.dozer.Mapper;
 import org.sigmah.server.policy.ActivityPolicy;
 import org.sigmah.server.policy.PersonalEventPolicy;
@@ -30,8 +34,11 @@ import org.sigmah.shared.domain.Indicator;
 import org.sigmah.shared.domain.Project;
 import org.sigmah.shared.domain.ProjectFunding;
 import org.sigmah.shared.domain.User;
+import org.sigmah.shared.domain.reminder.MonitoredPoint;
+import org.sigmah.shared.domain.reminder.MonitoredPointList;
 import org.sigmah.shared.dto.ProjectDTOLight;
 import org.sigmah.shared.dto.ProjectFundingDTO;
+import org.sigmah.shared.dto.reminder.MonitoredPointDTO;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.IllegalAccessCommandException;
 
@@ -45,6 +52,8 @@ import com.google.inject.Injector;
 public class CreateEntityHandler extends BaseEntityHandler implements CommandHandler<CreateEntity> {
 
     private final Injector injector;
+
+    private static final Log log = LogFactory.getLog(CreateEntityHandler.class);
 
     @Inject
     public CreateEntityHandler(EntityManager em, Injector injector) {
@@ -85,6 +94,8 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
         } else if ("ProjectReport".equals(cmd.getEntityName())) {
             ProjectReportPolicy policy = injector.getInstance(ProjectReportPolicy.class);
             return new CreateResult((Integer) policy.create(user, propertyMap));
+        } else if ("MonitoredPoint".equals(cmd.getEntityName())) {
+            return createMonitoredPoint(properties);
         } else {
             throw new CommandException("Invalid entity class " + cmd.getEntityName());
         }
@@ -172,5 +183,60 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
         result.setNewId(create ? -1 : 1);
 
         return result;
+    }
+
+    private CommandResult createMonitoredPoint(Map<String, Object> properties) {
+
+        if (log.isDebugEnabled()) {
+            log.debug("[createMonitoredPoint] Starts monitored point creation.");
+        }
+
+        // Retrieves parameters.
+        Object expectedDate = properties.get("expectedDate");
+        Object label = properties.get("label");
+        Object projectId = properties.get("projectId");
+
+        // Retrieves project.
+        final Project project = em.find(Project.class, projectId);
+
+        if (log.isDebugEnabled()) {
+            log.debug("[createMonitoredPoint] Retrieves the project #" + project.getId() + ".");
+        }
+
+        // Retrieves list.
+        MonitoredPointList list = project.getPointsList();
+
+        // Creates the list if needed.
+        if (list == null) {
+
+            if (log.isDebugEnabled()) {
+                log.debug("[createMonitoredPoint] The project #" + project.getId()
+                        + " doesn't have a points list. Creates it.");
+            }
+
+            list = new MonitoredPointList();
+            list.setPoints(new ArrayList<MonitoredPoint>());
+            project.setPointsList(list);
+        }
+
+        // Creates point.
+        final MonitoredPoint point = new MonitoredPoint();
+        point.setLabel((String) label);
+        point.setExpectedDate(new Date((Long) expectedDate));
+        point.setCompletionDate(null);
+        point.setFile(null);
+
+        // Adds it to the list.
+        list.addMonitoredPoint(point);
+
+        // Saves it.
+        em.persist(project);
+
+        if (log.isDebugEnabled()) {
+            log.debug("[createMonitoredPoint] Ends monitored point creation #" + point.getId() + " in list #"
+                    + list.getId() + ".");
+        }
+
+        return new CreateResult(injector.getInstance(Mapper.class).map(point, MonitoredPointDTO.class));
     }
 }

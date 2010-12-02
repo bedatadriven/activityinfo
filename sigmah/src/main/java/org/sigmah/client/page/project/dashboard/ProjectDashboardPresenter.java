@@ -68,6 +68,7 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.Record.RecordUpdate;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreEvent;
@@ -143,6 +144,8 @@ public class ProjectDashboardPresenter implements SubPresenter {
         public abstract Button getCreateLocalPartnerProjectButton();
 
         public abstract FlexibleGrid<MonitoredPointDTO> getMonitoredPointsGrid();
+
+        public abstract Button getAddMonitoredPointButton();
     }
 
     /**
@@ -1660,6 +1663,91 @@ public class ProjectDashboardPresenter implements SubPresenter {
      * Adds listeners to the monitored points toolbar.
      */
     private void addMonitoredPointsListeners() {
+
+        view.getAddMonitoredPointButton().addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+            // Builds the monitored points window.
+            final FormWindow window = new FormWindow();
+
+            {
+                window.addTextField(I18N.CONSTANTS.monitoredPointLabel(), false);
+                window.addDateField(I18N.CONSTANTS.monitoredPointExpectedDate(), false);
+
+                window.addFormSubmitListener(new FormSubmitListener() {
+
+                    @Override
+                    public void formSubmitted(Object... values) {
+
+                        // Checks that the values are correct.
+                        final Object element0 = values[1];
+                        if (!(element0 instanceof Date)) {
+                            return;
+                        }
+
+                        final Object element1 = values[0];
+                        if (!(element1 instanceof String)) {
+                            return;
+                        }
+
+                        final Date pointExpectedDate = (Date) element0;
+                        final String pointLabel = (String) element1;
+
+                        final HashMap<String, Object> properties = new HashMap<String, Object>();
+                        properties.put("expectedDate", pointExpectedDate.getTime());
+                        properties.put("label", pointLabel);
+                        properties.put("projectId", projectPresenter.getCurrentProjectDTO().getId());
+
+                        dispatcher.execute(new CreateEntity("MonitoredPoint", properties),
+                                new MaskingAsyncMonitor(view.getMonitoredPointsGrid(), I18N.CONSTANTS.loading()),
+                                new AsyncCallback<CreateResult>() {
+
+                                    @Override
+                                    public void onFailure(Throwable e) {
+                                        Log.error("[execute] Error while creating the monitored points.", e);
+                                        MessageBox.alert(I18N.CONSTANTS.monitoredPointAddError(),
+                                                I18N.CONSTANTS.monitoredPointAddErrorDetails(), null);
+                                    }
+
+                                    @Override
+                                    public void onSuccess(CreateResult result) {
+
+                                        Notification.show(I18N.CONSTANTS.infoConfirmation(),
+                                                I18N.CONSTANTS.monitoredPointAddConfirm());
+
+                                        // Gets the created point.
+                                        final MonitoredPointDTO point = (MonitoredPointDTO) result.getEntity();
+
+                                        // Gets the project list and creates it
+                                        // if needed.
+                                        MonitoredPointListDTO list = projectPresenter.getCurrentProjectDTO()
+                                                .getPointsList();
+
+                                        if (list == null) {
+
+                                            if (Log.isDebugEnabled()) {
+                                                Log.debug("[execute] The project points list doesn't exist, creates it.");
+                                            }
+
+                                            list = new MonitoredPointListDTO();
+                                            list.setPoints(new ArrayList<MonitoredPointDTO>());
+                                            projectPresenter.getCurrentProjectDTO().setPointsList(list);
+                                        }
+
+                                        // Adds the point locally.
+                                        list.getPoints().add(point);
+                                        view.getMonitoredPointsGrid().getStore().add(point);
+                                    }
+                                });
+                    }
+                });
+            }
+
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                window.clean();
+                window.show(I18N.CONSTANTS.monitoredPointAdd(), I18N.CONSTANTS.monitoredPointAddDetails());
+            }
+        });
 
         view.getMonitoredPointsGrid().getStore()
                 .addListener(Store.Update, new Listener<StoreEvent<MonitoredPointDTO>>() {
