@@ -17,6 +17,8 @@ public class KeyQuestionDTO implements Serializable {
     private Integer id;
     private String label;
     private RichTextElementDTO richTextElementDTO;
+    
+    private int number;
 
     public Integer getId() {
         return id;
@@ -40,5 +42,13 @@ public class KeyQuestionDTO implements Serializable {
 
     public void setRichTextElementDTO(RichTextElementDTO richTextElementDTO) {
         this.richTextElementDTO = richTextElementDTO;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
     }
 }

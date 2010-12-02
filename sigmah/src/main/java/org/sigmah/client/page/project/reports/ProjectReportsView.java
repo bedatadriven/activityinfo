@@ -340,6 +340,8 @@ public class ProjectReportsView extends LayoutContainer {
                 final KeyQuestionDTO keyQuestion = (KeyQuestionDTO) object;
                 keyQuestionState.increaseCount();
 
+                keyQuestion.setNumber(keyQuestionState.getCount());
+
                 // Rich text field
                 final RichTextArea textArea = new RichTextArea();
                 final RichTextElementDTO richTextElementDTO = keyQuestion.getRichTextElementDTO();

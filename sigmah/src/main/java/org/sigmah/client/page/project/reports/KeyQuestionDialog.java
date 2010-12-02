@@ -30,7 +30,6 @@ public class KeyQuestionDialog {
         if(keyQuestionDialog == null) {
             final Dialog dialog = new Dialog();
             dialog.setButtons(Dialog.OKCANCEL);
-            dialog.setHeading(I18N.CONSTANTS.reportCreateReport());
             dialog.setModal(true);
 
             dialog.setWidth("640px");
@@ -64,6 +63,7 @@ public class KeyQuestionDialog {
     public static Dialog getDialog(final KeyQuestionDTO keyQuestion, final RichTextArea textArea,
             final FoldPanel panel, final int toolButtonIndex, final KeyQuestionState keyQuestionState) {
         final Dialog dialog = getDialog();
+        dialog.setHeading(I18N.MESSAGES.reportKeyQuestionDialogTitle(Integer.toString(keyQuestion.getNumber())));
 
         // Question label
         final Label question = (Label) dialog.getWidget(0);

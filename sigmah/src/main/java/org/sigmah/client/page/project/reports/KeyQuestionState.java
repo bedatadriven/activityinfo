@@ -35,6 +35,10 @@ public class KeyQuestionState {
         this.count++;
     }
 
+    public int getCount() {
+        return count;
+    }
+
     public void increaseValids() {
         this.valids++;
 
