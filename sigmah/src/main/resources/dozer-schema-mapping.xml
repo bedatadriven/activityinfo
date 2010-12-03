@@ -562,4 +562,27 @@
 		</field>
 	</mapping>
 	
+	<!-- HistoryToken/HistoryTokenDTO Mapping -->
+	<mapping wildcard="true">
+		<class-a>org.sigmah.shared.domain.history.HistoryToken
+		</class-a>
+		<class-b>org.sigmah.shared.dto.history.HistoryTokenDTO
+		</class-b>
+
+		<field>
+			<a>user.name</a>
+			<b>userName</b>
+		</field>
+		
+		<field>
+			<a>user.firstName</a>
+			<b>userFirstName</b>
+		</field>
+
+		<field>
+			<a>user.email</a>
+			<b>userEmail</b>
+		</field>
+	</mapping>
+	
 </mappings>

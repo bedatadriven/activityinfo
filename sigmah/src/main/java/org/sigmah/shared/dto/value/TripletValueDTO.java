@@ -5,6 +5,7 @@
 
 package org.sigmah.shared.dto.value;
 
+
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
@@ -12,7 +13,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  * @author Denis Colliot (dcolliot@ideia.fr)
  * 
  */
-public class TripletValueDTO extends BaseModelData implements ListEntityDTO {
+public class TripletValueDTO extends BaseModelData implements ListEntityDTO, ListableValue {
 
     private static final long serialVersionUID = 8520711106031085130L;
 

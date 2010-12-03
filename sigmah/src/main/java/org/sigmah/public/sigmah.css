@@ -848,3 +848,18 @@ body {
 .points-completed {
 	text-decoration: line-through;
 }
+
+/* ---------------------------------------------- History */
+
+.history-empty-string {
+	font-style: italic;	
+}
+
+.history-textarea {
+	padding: 0;
+	border: 0;
+	overflow: auto;
+	line-height: 14px;
+	font-family: arial, tahoma, helvetica, sans-serif;
+	font-size: 11px;
+}

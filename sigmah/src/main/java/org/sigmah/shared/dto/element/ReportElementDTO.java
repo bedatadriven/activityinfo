@@ -48,7 +48,7 @@ public class ReportElementDTO extends FlexibleElementDTO {
     }
 
     @Override
-    public Component getComponent(ValueResult valueResult, boolean enabled) {
+    protected Component getComponent(ValueResult valueResult, boolean enabled) {
         final Button button = new Button();
         final WidgetField<Button, String> field = new WidgetField<Button, String>(button);
 

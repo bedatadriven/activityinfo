@@ -30,7 +30,7 @@ public final class ValueResultUtils {
      *            The values list as a single string.
      * @return The values.
      */
-    public static List<Long> splitValuesAsLong(Serializable values) {
+    public static List<Long> splitValuesAsLong(Object values) {
 
         final ArrayList<Long> list = new ArrayList<Long>();
 

@@ -166,4 +166,7 @@ public interface IconImageBundle extends ImageBundle {
 
     @Resource(value = "filter-uncheck.png")
     AbstractImagePrototype checkboxUnchecked();
+    
+    @Resource(value = "hourglass.png")
+    AbstractImagePrototype history();
 }

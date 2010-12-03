@@ -5,7 +5,6 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +25,7 @@ import org.sigmah.shared.domain.element.FlexibleElement;
 import org.sigmah.shared.dto.value.BudgetPartsListValueDTO;
 import org.sigmah.shared.dto.value.FileDTO;
 import org.sigmah.shared.dto.value.IndicatorsListValueDTO;
+import org.sigmah.shared.dto.value.ListableValue;
 import org.sigmah.shared.dto.value.TripletValueDTO;
 import org.sigmah.shared.exception.CommandException;
 
@@ -114,7 +114,7 @@ public class GetValueHandler implements CommandHandler<GetValue> {
 
         Query query = null;
         String elementClassName = cmd.getElementEntityName();
-        Class<? extends Serializable> dtoClazz = null;
+        Class<? extends ListableValue> dtoClazz = null;
         boolean isList = false;
 
         // Creates the sub-select query to get the true value.
@@ -169,7 +169,7 @@ public class GetValueHandler implements CommandHandler<GetValue> {
                 LOG.debug("[execute] Case others (but MessageElementDTO).");
             }
 
-            dtoClazz = String.class;
+            dtoClazz = ListableValue.class;
             isList = false;
 
         }
@@ -193,7 +193,7 @@ public class GetValueHandler implements CommandHandler<GetValue> {
             @SuppressWarnings("unchecked")
             final List<Object> objectsList = query.getResultList();
 
-            final List<Serializable> serializablesList = new ArrayList<Serializable>();
+            final List<ListableValue> serializablesList = new ArrayList<ListableValue>();
             for (Object o : objectsList) {
                 serializablesList.add(mapper.map(o, dtoClazz));
             }

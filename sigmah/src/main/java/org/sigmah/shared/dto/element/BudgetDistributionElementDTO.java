@@ -27,7 +27,7 @@ public class BudgetDistributionElementDTO extends FlexibleElementDTO {
     }
 
     @Override
-    public Component getComponent(ValueResult valueResult, boolean enabled) {
+    protected Component getComponent(ValueResult valueResult, boolean enabled) {
         return new Text(getLabel());
     }
 

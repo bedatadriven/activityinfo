@@ -141,7 +141,7 @@ public class OrgUnitDetailsPresenter implements SubPresenter {
                                 for (ValueEvent event : valueChanges) {
                                     if (event.getSource() instanceof DefaultFlexibleElementDTO) {
                                         updateCurrentProject(((DefaultFlexibleElementDTO) event.getSource()),
-                                                (String) event.getValue());
+                                                event.getSingleValue());
                                         refreshBanner = true;
                                     }
                                 }
@@ -238,7 +238,7 @@ public class OrgUnitDetailsPresenter implements SubPresenter {
 
                                 // Generates element component (with the value).
                                 elementDTO.init();
-                                final Component elementComponent = elementDTO.getComponent(valueResult);
+                                final Component elementComponent = elementDTO.getElementComponent(valueResult);
 
                                 // Component width.
                                 final FormData formData;

@@ -269,7 +269,7 @@ public class OrgUnitPresenter implements Frame, TabPage {
                         defaultElement.setAuthentication(authentication);
                         defaultElement.setCurrentContainerDTO(currentOrgUnitDTO);
 
-                        final Component component = defaultElement.getComponent(null, false);
+                        final Component component = defaultElement.getElementComponent(null, false);
                         groupPanel.add(component);
 
                         // Only one element per cell.

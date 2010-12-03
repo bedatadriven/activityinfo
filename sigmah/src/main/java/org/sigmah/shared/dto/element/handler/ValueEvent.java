@@ -22,27 +22,29 @@ public class ValueEvent extends GWTImmortalEvent<ValueHandler> implements Serial
     private final static GwtEvent.Type<ValueHandler> TYPE = new GwtEvent.Type<ValueHandler>();
 
     private FlexibleElementDTO sourceElement;
-    private Serializable value;
+    private ListEntityDTO listValue;
+    private String singleValue;
     // Only used for the elements part of a list.
     private ChangeType changeType;
 
-    public ValueEvent(FlexibleElementDTO sourceElement, Serializable value) {
+    public ValueEvent(FlexibleElementDTO sourceElement, String singleValue) {
         this.sourceElement = sourceElement;
-        this.value = value;
-        if (value instanceof ListEntityDTO) {
-            this.changeType = ChangeType.ADD;
-        }
+        this.singleValue = singleValue;
     }
 
-    public ValueEvent(FlexibleElementDTO sourceElement, Serializable value, ChangeType changeType) {
+    public ValueEvent(FlexibleElementDTO sourceElement, ListEntityDTO listValue) {
         this.sourceElement = sourceElement;
-        this.value = value;
-        if (value instanceof ListEntityDTO) {
-            if (changeType == null) {
-                this.changeType = ChangeType.ADD;
-            } else {
-                this.changeType = changeType;
-            }
+        this.listValue = listValue;
+        this.changeType = ChangeType.ADD;
+    }
+
+    public ValueEvent(FlexibleElementDTO sourceElement, ListEntityDTO listValue, ChangeType changeType) {
+        this.sourceElement = sourceElement;
+        this.listValue = listValue;
+        if (changeType == null) {
+            this.changeType = ChangeType.ADD;
+        } else {
+            this.changeType = changeType;
         }
     }
 
@@ -58,14 +60,6 @@ public class ValueEvent extends GWTImmortalEvent<ValueHandler> implements Serial
 
     public static Type<ValueHandler> getType() {
         return TYPE;
-    }
-
-    public Serializable getValue() {
-        return value;
-    }
-
-    public void setValue(Serializable value) {
-        this.value = value;
     }
 
     public void setSourceElement(FlexibleElementDTO sourceElement) {
@@ -84,6 +78,22 @@ public class ValueEvent extends GWTImmortalEvent<ValueHandler> implements Serial
         this.changeType = changeType;
     }
 
+    public ListEntityDTO getListValue() {
+        return listValue;
+    }
+
+    public void setListValue(ListEntityDTO listValue) {
+        this.listValue = listValue;
+    }
+
+    public String getSingleValue() {
+        return singleValue;
+    }
+
+    public void setSingleValue(String singleValue) {
+        this.singleValue = singleValue;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
@@ -91,7 +101,9 @@ public class ValueEvent extends GWTImmortalEvent<ValueHandler> implements Serial
         sb.append("source=#");
         sb.append(sourceElement.getId());
         sb.append(",value=");
-        sb.append(value);
+        sb.append(singleValue);
+        sb.append(",values=");
+        sb.append(listValue);
         sb.append(",changeType=");
         sb.append(changeType);
         sb.append("]\n");

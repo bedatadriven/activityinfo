@@ -14,7 +14,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  * @author Denis Colliot (dcolliot@ideia.fr)
  * 
  */
-public class BudgetPartsListValueDTO extends BaseModelData implements EntityDTO {
+public class BudgetPartsListValueDTO extends BaseModelData implements EntityDTO, ListableValue {
 
     private static final long serialVersionUID = 8520711106031085130L;
 

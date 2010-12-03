@@ -39,13 +39,13 @@ public class UpdateProject implements Command<VoidResult> {
         for (final ValueEvent event : values) {
 
             // Manages basic values changes.
-            if (!(event.getValue() instanceof ListEntityDTO)) {
+            if (event.getListValue() == null) {
                 // Keep only the last modification to avoid events repetition.
                 basicValues.put(event.getSourceElement().getId(), event);
             }
             // Manages the elements which are a part of a list.
             else {
-                final ListEntityDTO element = (ListEntityDTO) event.getValue();
+                final ListEntityDTO element = event.getListValue();
 
                 // Manages only elements which are not stored on the data layer
                 // to keep only the last state of each element before sending
@@ -80,7 +80,7 @@ public class UpdateProject implements Command<VoidResult> {
         // Store each event for new elements as an 'add' event with the last
         // state of the element.
         for (ValueEvent event : listValues.values()) {
-            this.values.add(wrapEvent(new ValueEvent(event.getSourceElement(), event.getValue(), ChangeType.ADD)));
+            this.values.add(wrapEvent(new ValueEvent(event.getSourceElement(), event.getListValue(), ChangeType.ADD)));
         }
     }
 
@@ -126,7 +126,8 @@ public class UpdateProject implements Command<VoidResult> {
     private static ValueEventWrapper wrapEvent(ValueEvent event) {
         final ValueEventWrapper wrapper = new ValueEventWrapper();
         wrapper.setSourceElement(event.getSourceElement());
-        wrapper.setValue(event.getValue());
+        wrapper.setSingleValue(event.getSingleValue());
+        wrapper.setListValue(event.getListValue());
         wrapper.setChangeType(event.getChangeType());
         return wrapper;
     }

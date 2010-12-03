@@ -5,11 +5,11 @@
 
 package org.sigmah.shared.command.result;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.sigmah.shared.domain.element.FlexibleElement;
+import org.sigmah.shared.dto.value.ListableValue;
 
 /**
  * Value result containing the inner value object or the inner values list
@@ -24,7 +24,12 @@ public class ValueResult implements CommandResult {
     /**
      * Inner values list object.
      */
-    private List<Serializable> valuesObject;
+    private List<ListableValue> valuesObject;
+
+    /**
+     * Single value.
+     */
+    private String valueObject;
 
     public ValueResult() {
         // Serialization.
@@ -35,7 +40,7 @@ public class ValueResult implements CommandResult {
      */
     private void ensureListIsNotNull() {
         if (valuesObject == null) {
-            valuesObject = new ArrayList<Serializable>();
+            valuesObject = new ArrayList<ListableValue>();
         }
     }
 
@@ -46,7 +51,7 @@ public class ValueResult implements CommandResult {
      *         {@code false} otherwise.
      */
     public boolean isValueDefined() {
-        return valuesObject != null && valuesObject.size() > 0;
+        return (valueObject != null) || (valuesObject != null && valuesObject.size() > 0);
     }
 
     /**
@@ -54,11 +59,8 @@ public class ValueResult implements CommandResult {
      * 
      * @return the unique value.
      */
-    public Serializable getValueObject() {
-        if (valuesObject == null) {
-            return null;
-        }
-        return valuesObject.get(0);
+    public String getValueObject() {
+        return valueObject;
     }
 
     /**
@@ -67,10 +69,8 @@ public class ValueResult implements CommandResult {
      * @param valueObject
      *            the value.
      */
-    public void setValueObject(Serializable valueObject) {
-        ensureListIsNotNull();
-        valuesObject.clear();
-        valuesObject.add(valueObject);
+    public void setValueObject(String valueObject) {
+        this.valueObject = valueObject;
     }
 
     /**
@@ -78,7 +78,7 @@ public class ValueResult implements CommandResult {
      * 
      * @return The list of values.
      */
-    public List<Serializable> getValuesObject() {
+    public List<ListableValue> getValuesObject() {
         return valuesObject;
     }
 
@@ -88,7 +88,7 @@ public class ValueResult implements CommandResult {
      * @param valuesObject
      *            the new list.
      */
-    public void setValuesObject(List<Serializable> valuesObject) {
+    public void setValuesObject(List<ListableValue> valuesObject) {
         this.valuesObject = valuesObject;
     }
 
@@ -98,13 +98,14 @@ public class ValueResult implements CommandResult {
      * @param valueObject
      *            the new value.
      */
-    public void addValueObject(Serializable valueObject) {
+    public void addValueObject(ListableValue valueObject) {
         ensureListIsNotNull();
         valuesObject.add(valueObject);
     }
 
     @Override
     public String toString() {
-        return "ValueResult\n" + (valuesObject != null ? valuesObject.toString() : "");
+        return "ValueResult\n" + (valuesObject != null ? valuesObject.toString() : "") + " "
+                + (valueObject != null ? valueObject.toString() : "");
     }
 }

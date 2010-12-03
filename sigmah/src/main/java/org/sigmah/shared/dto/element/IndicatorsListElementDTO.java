@@ -5,7 +5,6 @@
 
 package org.sigmah.shared.dto.element;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +12,7 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.command.result.ValueResult;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.value.IndicatorsListValueDTO;
+import org.sigmah.shared.dto.value.ListableValue;
 
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -65,7 +65,7 @@ public class IndicatorsListElementDTO extends FlexibleElementDTO {
     }
 
     @Override
-    public Component getComponent(ValueResult valueResult, boolean enabled) {
+    protected Component getComponent(ValueResult valueResult, boolean enabled) {
 
         // Creates actions menu to manage the files list.
         final Button addButton = new Button(I18N.CONSTANTS.flexibleElementIndicatorsListAdd());
@@ -81,7 +81,7 @@ public class IndicatorsListElementDTO extends FlexibleElementDTO {
         final ListStore<IndicatorDTO> store = new ListStore<IndicatorDTO>();
 
         if (valueResult != null && valueResult.isValueDefined()) {
-            for (Serializable s : valueResult.getValuesObject()) {
+            for (ListableValue s : valueResult.getValuesObject()) {
                 store.add(((IndicatorsListValueDTO) s).getIndicatorDTO());
             }
         }

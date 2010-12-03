@@ -27,7 +27,7 @@ public class MessageElementDTO extends FlexibleElementDTO {
     }
 
     @Override
-    public Component getComponent(ValueResult valueResult, boolean enabled) {
+    protected Component getComponent(ValueResult valueResult, boolean enabled) {
         // The label for a message can be considered as HTML code.
         final Html message = new Html(getLabel());
         return message;

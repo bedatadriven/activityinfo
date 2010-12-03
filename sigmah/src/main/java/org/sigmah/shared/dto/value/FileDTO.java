@@ -11,7 +11,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  * @author tmi
  * 
  */
-public class FileDTO extends BaseModelData implements EntityDTO {
+public class FileDTO extends BaseModelData implements EntityDTO, ListableValue {
 
     private static final long serialVersionUID = -4655699567620520204L;
 

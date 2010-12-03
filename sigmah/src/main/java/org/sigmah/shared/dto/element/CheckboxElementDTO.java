@@ -8,6 +8,7 @@ package org.sigmah.shared.dto.element;
 import org.sigmah.shared.command.result.ValueResult;
 import org.sigmah.shared.dto.element.handler.RequiredValueEvent;
 import org.sigmah.shared.dto.element.handler.ValueEvent;
+import org.sigmah.shared.dto.history.HistoryTokenDTO;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -32,7 +33,7 @@ public class CheckboxElementDTO extends FlexibleElementDTO {
     }
 
     @Override
-    public Component getComponent(ValueResult valueResult, boolean enabled) {
+    protected Component getComponent(ValueResult valueResult, boolean enabled) {
         final CheckBox checkbox = new CheckBox();
         checkbox.setBoxLabel(getLabel());
         checkbox.setHideLabel(true);
@@ -57,7 +58,7 @@ public class CheckboxElementDTO extends FlexibleElementDTO {
         }
 
         try {
-            final String value = (String) result.getValueObject();
+            final String value = result.getValueObject();
             return value.equalsIgnoreCase("true");
         } catch (ClassCastException e) {
             return false;
@@ -68,10 +69,10 @@ public class CheckboxElementDTO extends FlexibleElementDTO {
 
         @Override
         public void handleEvent(BaseEvent be) {
-            CheckBox checkbox = (CheckBox) be.getSource();
+            final CheckBox checkbox = (CheckBox) be.getSource();
             boolean value = checkbox.getValue();
 
-            handlerManager.fireEvent(new ValueEvent(CheckboxElementDTO.this, value));
+            handlerManager.fireEvent(new ValueEvent(CheckboxElementDTO.this, String.valueOf(value)));
 
             // Required element ?
             if (getValidates()) {
@@ -81,4 +82,15 @@ public class CheckboxElementDTO extends FlexibleElementDTO {
 
     }
 
+    @Override
+    public Object renderHistoryToken(HistoryTokenDTO token) {
+
+        ensureHistorable();
+
+        final CheckBox c = new CheckBox();
+        c.setHeight(16);
+        c.setReadOnly(true);
+        c.setValue(Boolean.valueOf(token.getValue()));
+        return c;
+    }
 }

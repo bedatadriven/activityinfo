@@ -5,7 +5,6 @@
 
 package org.sigmah.shared.dto.element;
 
-import java.io.Serializable;
 import java.util.List;
 
 import org.sigmah.client.i18n.I18N;
@@ -13,6 +12,7 @@ import org.sigmah.client.ui.FlexibleGrid;
 import org.sigmah.shared.command.result.ValueResult;
 import org.sigmah.shared.dto.element.handler.RequiredValueEvent;
 import org.sigmah.shared.dto.element.handler.ValueEvent;
+import org.sigmah.shared.dto.value.ListableValue;
 import org.sigmah.shared.dto.value.TripletValueDTO;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -62,7 +62,7 @@ public class TripletsListElementDTO extends FlexibleElementDTO {
     }
 
     @Override
-    public Component getComponent(ValueResult valueResult, final boolean enabled) {
+    protected Component getComponent(ValueResult valueResult, final boolean enabled) {
 
         // Creates actions toolbar to manage the triplets list.
         final Button addButton = new Button(I18N.CONSTANTS.addItem());
@@ -87,7 +87,7 @@ public class TripletsListElementDTO extends FlexibleElementDTO {
         final ListStore<TripletValueDTO> store = new ListStore<TripletValueDTO>();
 
         if (valueResult != null && valueResult.isValueDefined()) {
-            for (Serializable s : valueResult.getValuesObject()) {
+            for (ListableValue s : valueResult.getValuesObject()) {
                 store.add((TripletValueDTO) s);
             }
         }

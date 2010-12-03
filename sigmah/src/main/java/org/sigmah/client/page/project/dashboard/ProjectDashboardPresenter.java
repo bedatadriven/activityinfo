@@ -523,7 +523,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
                         // Generates element component (with the value).
                         elementDTO.init();
-                        final Component elementComponent = elementDTO.getComponent(valueResult, !isEnded);
+                        final Component elementComponent = elementDTO.getElementComponent(valueResult, !isEnded);
 
                         // Component width.
                         final FormData formData;
@@ -1062,7 +1062,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
                             for (ValueEvent event : valueChanges) {
                                 if (event.getSource() instanceof DefaultFlexibleElementDTO) {
                                     updateCurrentProject(((DefaultFlexibleElementDTO) event.getSource()),
-                                            (String) event.getValue());
+                                            event.getSingleValue());
                                     refreshBanner = true;
                                 }
                             }

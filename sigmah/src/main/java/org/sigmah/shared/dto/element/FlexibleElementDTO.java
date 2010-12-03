@@ -5,26 +5,40 @@
 
 package org.sigmah.shared.dto.element;
 
+import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.Authentication;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.client.ui.HistoryWindow;
+import org.sigmah.shared.command.GetHistory;
+import org.sigmah.shared.command.result.HistoryResult;
 import org.sigmah.shared.command.result.ValueResult;
 import org.sigmah.shared.dto.EntityDTO;
 import org.sigmah.shared.dto.element.handler.RequiredValueEvent;
 import org.sigmah.shared.dto.element.handler.RequiredValueHandler;
 import org.sigmah.shared.dto.element.handler.ValueEvent;
 import org.sigmah.shared.dto.element.handler.ValueHandler;
+import org.sigmah.shared.dto.history.HistoryTokenDTO;
+import org.sigmah.shared.dto.history.HistoryTokenManager;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.extjs.gxt.ui.client.event.MenuEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.event.shared.HandlerManager;
-import org.sigmah.client.EventBus;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * 
  * @author Denis Colliot (dcolliot@ideia.fr)
  * 
  */
-public abstract class FlexibleElementDTO extends BaseModelData implements EntityDTO {
+public abstract class FlexibleElementDTO extends BaseModelData implements EntityDTO, HistoryTokenManager {
 
     private static final long serialVersionUID = 8520711106031085130L;
 
@@ -40,9 +54,11 @@ public abstract class FlexibleElementDTO extends BaseModelData implements Entity
 
     protected transient int preferredWidth;
 
+    private transient Menu historyMenu;
+
     /**
-     * Sets the dispatcher to be used in the {@link #getComponent(ValueResult)}
-     * method.
+     * Sets the dispatcher to be used in the
+     * {@link #getElementComponent(ValueResult)} method.
      * 
      * @param dispatcher
      *            The presenter's dispatcher.
@@ -52,9 +68,11 @@ public abstract class FlexibleElementDTO extends BaseModelData implements Entity
     }
 
     /**
-     * Sets the event bus to be used by {@link #getComponent(ValueResult)}.
+     * Sets the event bus to be used by
+     * {@link #getElementComponent(ValueResult)}.
+     * 
      * @param eventBus
-     *          The presenter's event bus.
+     *            The presenter's event bus.
      */
     public void setEventBus(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -62,7 +80,7 @@ public abstract class FlexibleElementDTO extends BaseModelData implements Entity
 
     /**
      * Sets the authentication provider to be used in the
-     * {@link #getComponent(ValueResult)} method.
+     * {@link #getElementComponent(ValueResult)} method.
      * 
      * @param authentication
      *            The authentication provider.
@@ -73,7 +91,8 @@ public abstract class FlexibleElementDTO extends BaseModelData implements Entity
 
     /**
      * Sets the current container (not model, but instance) using this flexible
-     * element to be used in the {@link #getComponent(ValueResult)} method.
+     * element to be used in the {@link #getElementComponent(ValueResult)}
+     * method.
      * 
      * @param currentContainerDTO
      *            The current container using this flexible element.
@@ -84,8 +103,8 @@ public abstract class FlexibleElementDTO extends BaseModelData implements Entity
 
     /**
      * Method called just before the
-     * {@link FlexibleElementDTO#getComponent(ValueResult)} method to ensure the
-     * instantiation of the attributes used by the client-side.<br/>
+     * {@link FlexibleElementDTO#getElementComponent(ValueResult)} method to
+     * ensure the instantiation of the attributes used by the client-side.<br/>
      * This method can be override by subclasses.
      */
     public void init() {
@@ -106,8 +125,8 @@ public abstract class FlexibleElementDTO extends BaseModelData implements Entity
      * 
      * @return the widget corresponding to the flexible element.
      */
-    public Component getComponent(ValueResult valueResult) {
-        return getComponent(valueResult, true);
+    public Component getElementComponent(ValueResult valueResult) {
+        return getComponentWithHistory(valueResult, true);
     }
 
     /**
@@ -121,7 +140,78 @@ public abstract class FlexibleElementDTO extends BaseModelData implements Entity
      * 
      * @return the widget corresponding to the flexible element.
      */
-    public abstract Component getComponent(ValueResult valueResult, boolean enabled);
+    public Component getElementComponent(ValueResult valueResult, boolean enabled) {
+        return getComponentWithHistory(valueResult, enabled);
+    }
+
+    /**
+     * Gets the widget of a flexible element with its value. This method manages
+     * the history of the element.
+     * 
+     * @param valueResult
+     *            value of the flexible element, or {@code null} to display the
+     *            element without its value.
+     * @param enabled
+     *            If the component is enabled.
+     * @return
+     */
+    private Component getComponentWithHistory(ValueResult valueResult, boolean enabled) {
+
+        final Component component = getComponent(valueResult, enabled);
+
+        // Adds the history menu if needed.
+        if (isHistorable()) {
+
+            // Builds the menu.
+            if (historyMenu == null) {
+
+                final MenuItem historyItem = new MenuItem(I18N.CONSTANTS.historyShow(),
+                        IconImageBundle.ICONS.history(), new SelectionListener<MenuEvent>() {
+
+                            @Override
+                            public void componentSelected(MenuEvent ce) {
+
+                                dispatcher.execute(new GetHistory(getId()), null, new AsyncCallback<HistoryResult>() {
+
+                                    @Override
+                                    public void onFailure(Throwable e) {
+
+                                        Log.error("[execute] The history cannot be fetched.", e);
+                                        MessageBox.alert(I18N.CONSTANTS.historyError(),
+                                                I18N.CONSTANTS.historyErrorDetails(), null);
+                                    }
+
+                                    @Override
+                                    public void onSuccess(HistoryResult result) {
+                                        HistoryWindow.show(result.getTokens(), FlexibleElementDTO.this);
+                                    }
+                                });
+                            }
+                        });
+
+                historyMenu = new Menu();
+                historyMenu.add(historyItem);
+            }
+
+            // Attaches it to the element.
+            component.setContextMenu(historyMenu);
+        }
+
+        return component;
+    }
+
+    /**
+     * Gets the widget of a flexible element with its value.
+     * 
+     * @param valueResult
+     *            value of the flexible element, or {@code null} to display the
+     *            element without its value.
+     * @param enabled
+     *            If the component is enabled.
+     * 
+     * @return the widget corresponding to the flexible element.
+     */
+    protected abstract Component getComponent(ValueResult valueResult, boolean enabled);
 
     /**
      * Adds a {@link ValueHandler} to the flexible element.
@@ -188,6 +278,21 @@ public abstract class FlexibleElementDTO extends BaseModelData implements Entity
         set("filledIn", filledIn);
     }
 
+    public boolean isHistorable() {
+        return (Boolean) get("historable");
+    }
+
+    public void setHistorable(boolean historable) {
+        set("historable", historable);
+    }
+
+    protected void ensureHistorable() {
+        if (!isHistorable()) {
+            throw new IllegalStateException("The current flexible element '" + getClass().getName() + "' #" + getId()
+                    + " doesn't manage an history.");
+        }
+    }
+
     /**
      * Assigns a value to a flexible element.
      * 
@@ -207,4 +312,15 @@ public abstract class FlexibleElementDTO extends BaseModelData implements Entity
      * @return If the value can be considered as a correct required value.
      */
     public abstract boolean isCorrectRequiredValue(ValueResult result);
+
+    @Override
+    public String getElementLabel() {
+        return getLabel();
+    }
+
+    @Override
+    public Object renderHistoryToken(HistoryTokenDTO token) {
+        ensureHistorable();
+        return token.getValue();
+    }
 }

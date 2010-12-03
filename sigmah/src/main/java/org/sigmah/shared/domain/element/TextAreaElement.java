@@ -3,6 +3,7 @@ package org.sigmah.shared.domain.element;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * Text area element entity.
@@ -99,5 +100,11 @@ public class TextAreaElement extends FlexibleElement {
 
     public void setLength(Integer length) {
         this.length = length;
+    }
+    
+    @Override
+    @Transient
+    public boolean isHistorable() {
+        return true;
     }
 }

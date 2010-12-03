@@ -5,7 +5,6 @@
 
 package org.sigmah.shared.dto.element;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -27,6 +26,7 @@ import org.sigmah.shared.dto.reminder.MonitoredPointDTO;
 import org.sigmah.shared.dto.value.FileDTO;
 import org.sigmah.shared.dto.value.FileUploadUtils;
 import org.sigmah.shared.dto.value.FileVersionDTO;
+import org.sigmah.shared.dto.value.ListableValue;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -122,7 +122,7 @@ public class FilesListElementDTO extends FlexibleElementDTO {
 
         if (currentValueResult != null && currentValueResult.isValueDefined()) {
             store.removeAll();
-            for (Serializable s : currentValueResult.getValuesObject()) {
+            for (ListableValue s : currentValueResult.getValuesObject()) {
                 store.add((FileDTO) s);
             }
             store.sort("date", SortDir.DESC);
@@ -140,7 +140,7 @@ public class FilesListElementDTO extends FlexibleElementDTO {
     }
 
     @Override
-    public Component getComponent(ValueResult valueResult, boolean enabled) {
+    protected Component getComponent(ValueResult valueResult, boolean enabled) {
 
         currentValueResult = valueResult;
 

@@ -4,7 +4,6 @@
  */
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -26,6 +25,7 @@ import org.sigmah.shared.domain.Project;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.element.DefaultFlexibleElementType;
 import org.sigmah.shared.domain.element.FlexibleElement;
+import org.sigmah.shared.domain.history.HistoryToken;
 import org.sigmah.shared.domain.value.ListEntity;
 import org.sigmah.shared.domain.value.Value;
 import org.sigmah.shared.dto.EntityDTO;
@@ -70,12 +70,14 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
 
             // Event parameters.
             final FlexibleElementDTO source = valueEvent.getSourceElement();
-            final Serializable updateValue = valueEvent.getValue();
+            final FlexibleElement element = em.find(FlexibleElement.class, (long) source.getId());
+            final ListEntityDTO updateListValue = valueEvent.getListValue();
+            final String updateSingleValue = valueEvent.getSingleValue();
 
             if (LOG.isDebugEnabled()) {
                 LOG.debug("[execute] Updates value of element #" + source.getId() + " (" + source.getEntityName() + ')');
-                LOG.debug("[execute] Event of type " + valueEvent.getChangeType() + " with value " + updateValue + " ("
-                        + updateValue.getClass() + ')');
+                LOG.debug("[execute] Event of type " + valueEvent.getChangeType() + " with value " + updateSingleValue
+                        + " and list value " + updateListValue + ".");
             }
 
             // Case of the default flexible element which values arent't stored
@@ -89,25 +91,38 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
                 }
 
                 // Saves the value and switch to the next value.
-                saveDefaultElement(cmd.getProjectId(), defaultElement.getType(), updateValue);
+                saveDefaultElement(cmd.getProjectId(), defaultElement.getType(), updateSingleValue);
                 continue;
             }
 
             // Retrieving the current value
             final Value currentValue = retrieveValue(cmd.getProjectId(), (long) source.getId(), user);
 
+            // Manages history.
+            if (element.isHistorable()) {
+
+                final HistoryToken historyToken = new HistoryToken();
+
+                historyToken.setElementId(element.getId());
+                historyToken.setValue(element.asHistoryToken(updateSingleValue));
+                historyToken.setDate(new Date());
+                historyToken.setUser(user);
+
+                em.persist(historyToken);
+            }
+
             // Unique value of the flexible element.
-            if (!(updateValue instanceof ListEntityDTO)) {
+            if (updateListValue == null) {
 
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("[execute] Basic value case.");
                 }
 
-                currentValue.setValue(updateValue.toString());
+                currentValue.setValue(updateSingleValue);
             }
-            // Special case : this value is a part of a list which is the true
-            // value of the flexible element.
-            // (only used for the TripletValue class for the moment)
+            // Special case : this value is a part of a list which is the
+            // true value of the flexible element. (only used for the
+            // TripletValue class for the moment)
             else {
 
                 if (LOG.isDebugEnabled()) {
@@ -123,7 +138,7 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
                 }
 
                 // Cast the update value (as a DTO).
-                final ListEntityDTO item = (ListEntityDTO) updateValue;
+                final ListEntityDTO item = updateListValue;
 
                 Class<? extends ListEntity> clazz;
                 try {
@@ -131,7 +146,8 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
                     clazz = (Class<? extends ListEntity>) Class.forName(Project.class.getPackage().getName() + '.'
                             + item.getEntityName());
                 } catch (ClassNotFoundException e) {
-                    // Unable to find the entity class, the event is ignored.
+                    // Unable to find the entity class, the event is
+                    // ignored.
                     LOG.error("[execute] Unable to find the entity class : '" + item.getEntityName() + "'.");
                     continue;
                 }
@@ -298,16 +314,16 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
      * @param value
      *            The new value.
      */
-    private void saveDefaultElement(int id, DefaultFlexibleElementType type, Serializable value) {
+    private void saveDefaultElement(int id, DefaultFlexibleElementType type, String value) {
 
         // All default values are managed as strings.
         // See DefaultFlexibleElementDTO.getComponent();
-        if (value == null || !(value instanceof String)) {
+        if (value == null) {
             LOG.error("[saveDefaultElement] The value isn't a string and cannot be considered.");
             return;
         }
 
-        final String stringValue = (String) value;
+        final String stringValue = value;
 
         // Retrieves container.
         final Project project = em.find(Project.class, id);

@@ -82,7 +82,7 @@ public class QuestionElementDTO extends FlexibleElementDTO {
     }
 
     @Override
-    public Component getComponent(ValueResult valueResult, boolean enabled) {
+    protected Component getComponent(ValueResult valueResult, boolean enabled) {
 
         // Question's component.
         final Component component;

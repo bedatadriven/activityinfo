@@ -23,7 +23,7 @@ import org.sigmah.shared.domain.Deleteable;
 @org.hibernate.annotations.FilterDefs({ @org.hibernate.annotations.FilterDef(name = "hideDeleted") })
 @org.hibernate.annotations.Filters({ @org.hibernate.annotations.Filter(name = "hideDeleted", condition = "DateDeleted is null") })
 @Table(name = "triplet_value")
-public class TripletValue implements Serializable, Deleteable, ListEntity {
+public class TripletValue implements Serializable, Deleteable, ListEntity  {
 
     private static final long serialVersionUID = -6149053567281316649L;
     private Long id;

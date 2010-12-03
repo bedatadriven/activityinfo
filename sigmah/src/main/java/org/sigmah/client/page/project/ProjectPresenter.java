@@ -312,7 +312,7 @@ public class ProjectPresenter implements Frame, TabPage {
                         defaultElement.setAuthentication(authentication);
                         defaultElement.setCurrentContainerDTO(currentProjectDTO);
 
-                        final Component component = defaultElement.getComponent(null, false);
+                        final Component component = defaultElement.getElementComponent(null, false);
                         groupPanel.add(component);
 
                         // Only one element per cell.

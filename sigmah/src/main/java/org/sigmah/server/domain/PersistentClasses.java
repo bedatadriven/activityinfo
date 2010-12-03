@@ -43,6 +43,7 @@ import org.sigmah.shared.domain.element.MessageElement;
 import org.sigmah.shared.domain.element.QuestionChoiceElement;
 import org.sigmah.shared.domain.element.QuestionElement;
 import org.sigmah.shared.domain.element.TextAreaElement;
+import org.sigmah.shared.domain.history.HistoryToken;
 import org.sigmah.shared.domain.layout.Layout;
 import org.sigmah.shared.domain.layout.LayoutConstraint;
 import org.sigmah.shared.domain.layout.LayoutGroup;
@@ -134,6 +135,7 @@ public class PersistentClasses {
             CategoryElement.class,
             CategoryType.class,
             PersonalCalendar.class,
-            PersonalEvent.class
+            PersonalEvent.class,
+            HistoryToken.class
     };
 }

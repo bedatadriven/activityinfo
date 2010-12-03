@@ -67,7 +67,7 @@ public class DefaultFlexibleElementDTO extends FlexibleElementDTO {
     }
 
     @Override
-    public Component getComponent(ValueResult valueResult, boolean enabled) {
+    protected Component getComponent(ValueResult valueResult, boolean enabled) {
 
         if (currentContainerDTO instanceof DefaultFlexibleElementContainer) {
             container = (DefaultFlexibleElementContainer) currentContainerDTO;
