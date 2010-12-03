@@ -5,23 +5,24 @@
 
 package org.sigmah.shared.dto.report;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
- *
+ * Section of a project report.
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
-public class ProjectReportSectionDTO implements Serializable {
+public class ProjectReportSectionDTO implements ProjectReportContent {
+    public final static long serialVersionUID = 1L;
+    
     private Integer id;
     private String name;
-    private List<Serializable> children;
+    private List<ProjectReportContent> children;
 
-    public List<Serializable> getChildren() {
+    public List<ProjectReportContent> getChildren() {
         return children;
     }
 
-    public void setChildren(List<Serializable> children) {
+    public void setChildren(List<ProjectReportContent> children) {
         this.children = children;
     }
 

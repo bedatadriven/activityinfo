@@ -11,10 +11,12 @@ import java.util.List;
 import org.sigmah.shared.command.result.CommandResult;
 
 /**
- *
+ * Represents a project report.
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class ProjectReportDTO implements Serializable, CommandResult {
+    public final static long serialVersionUID = 1L;
+    
     private Integer id;
     private Integer projectId;
     private String phaseName;

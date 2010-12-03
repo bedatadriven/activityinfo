@@ -73,6 +73,7 @@ import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.command.result.ProjectReportModelListResult;
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.report.KeyQuestionDTO;
+import org.sigmah.shared.dto.report.ProjectReportContent;
 import org.sigmah.shared.dto.report.ProjectReportDTO;
 import org.sigmah.shared.dto.report.ProjectReportSectionDTO;
 import org.sigmah.shared.dto.report.RichTextElementDTO;
@@ -312,7 +313,7 @@ public class ProjectReportsView extends LayoutContainer {
 
         int index = 1;
         int prefixLength = prefix.length();
-        for (final Serializable object : section.getChildren()) {
+        for (final ProjectReportContent object : section.getChildren()) {
             if (object.getClass() == ProjectReportSectionDTO.class) {
                 prefix.append(index).append('.');
 

@@ -6,7 +6,6 @@
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
 import com.google.inject.Inject;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,6 +24,7 @@ import org.sigmah.shared.domain.report.ProjectReportModel;
 import org.sigmah.shared.domain.report.ProjectReportModelSection;
 import org.sigmah.shared.domain.report.RichTextElement;
 import org.sigmah.shared.dto.report.KeyQuestionDTO;
+import org.sigmah.shared.dto.report.ProjectReportContent;
 import org.sigmah.shared.dto.report.ProjectReportDTO;
 import org.sigmah.shared.dto.report.ProjectReportSectionDTO;
 import org.sigmah.shared.dto.report.RichTextElementDTO;
@@ -111,7 +111,7 @@ public class GetProjectReportHandler implements CommandHandler<GetProjectReport>
        final Iterator<ProjectReportModelSection> subSectionIterator = sectionModel.getSubSections().iterator();
 
        // Children of this section
-       final ArrayList<Serializable> children = new ArrayList<Serializable>();
+       final ArrayList<ProjectReportContent> children = new ArrayList<ProjectReportContent>();
 
        // Next rich text element
        RichTextElement nextElement;

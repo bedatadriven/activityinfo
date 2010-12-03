@@ -5,14 +5,12 @@
 
 package org.sigmah.shared.dto.report;
 
-import java.io.Serializable;
-
 /**
  * Represents a key question associated with a project report section.
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
-public class KeyQuestionDTO implements Serializable {
-    private final static long serialVersionUID = 1L;
+public class KeyQuestionDTO implements ProjectReportContent {
+    public final static long serialVersionUID = 1L;
 
     private Integer id;
     private String label;

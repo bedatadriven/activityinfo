@@ -5,13 +5,13 @@
 
 package org.sigmah.shared.dto.report;
 
-import java.io.Serializable;
-
 /**
- *
+ * Editable html field of a project report.
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
-public class RichTextElementDTO implements Serializable {
+public class RichTextElementDTO implements ProjectReportContent {
+    public final static long serialVersionUID = 1L;
+    
     private Integer id;
     private String text;
 
