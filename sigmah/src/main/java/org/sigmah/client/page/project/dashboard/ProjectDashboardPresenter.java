@@ -62,6 +62,7 @@ import org.sigmah.shared.dto.reminder.MonitoredPointListDTO;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.BoxComponentEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -82,7 +83,6 @@ import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -267,6 +267,13 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
             // Adds the tab to the view.
             view.getTabPanelPhases().add(tabItem);
+
+            view.getTabPanelPhases().addListener(Events.Resize, new Listener<BoxComponentEvent>() {
+                @Override
+                public void handleEvent(BoxComponentEvent event) {
+                    tabItem.setSize(event.getWidth(), event.getHeight() - 25); // 25 is the default height of the tab bar
+                }
+            });
 
             // If the phase is the active one.
             if (isActivePhase(phaseDTO)) {
@@ -471,9 +478,8 @@ public class ProjectDashboardPresenter implements SubPresenter {
         for (final LayoutGroupDTO groupDTO : phaseDTO.getPhaseModelDTO().getLayoutDTO().getLayoutGroupsDTO()) {
 
             // Creates the fieldset and positions it.
-            final FieldSet fieldSet = (FieldSet) groupDTO.getWidget();
-            final FormPanel formPanel = (FormPanel) fieldSet.getWidget(0);
-            layoutGrid.setWidget(groupDTO.getRow(), groupDTO.getColumn(), fieldSet);
+            final FieldSet formPanel = (FieldSet) groupDTO.getWidget();
+            layoutGrid.setWidget(groupDTO.getRow(), groupDTO.getColumn(), formPanel);
 
             // For each constraint in the current layout group.
             for (LayoutConstraintDTO constraintDTO : groupDTO.getLayoutConstraintsDTO()) {

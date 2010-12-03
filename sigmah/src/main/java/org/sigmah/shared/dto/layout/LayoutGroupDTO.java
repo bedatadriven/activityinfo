@@ -12,6 +12,7 @@ import org.sigmah.shared.dto.EntityDTO;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -89,16 +90,12 @@ public class LayoutGroupDTO extends BaseModelData implements EntityDTO {
         final FieldSet fieldSet = new FieldSet();
         fieldSet.setHeading(getTitle());
         fieldSet.setCollapsible(true);
-        
-        final FormPanel formPanel = new FormPanel();
-        formPanel.addStyleName("sigmah-phase-form");
-        formPanel.setHeaderVisible(false);
-        formPanel.setBorders(false);
-        formPanel.setBodyBorder(false);
-        formPanel.setPadding(0);
-        formPanel.setLabelWidth(250);
 
-        fieldSet.add(formPanel);
+        final FormLayout formLayout = new FormLayout();
+        formLayout.setLabelWidth(250);
+
+        fieldSet.setLayout(formLayout);
+        
         return fieldSet;
     }
 

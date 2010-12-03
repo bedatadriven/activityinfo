@@ -62,6 +62,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.Hyperlink;
+import org.sigmah.client.ui.StylableHBoxLayout;
 
 /**
  * 
@@ -105,10 +106,8 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
         this.authentication = authentication;
 
         final BorderLayout borderLayout = new BorderLayout();
-        // borderLayout.setContainerStyle("x-border-layout-ct panel-background");
-        // -- White background
+         borderLayout.setContainerStyle("x-border-layout-ct main-background");
         setLayout(borderLayout);
-        setHeight("100%");
 
         /* Center panel */
         ListStore<FlexibleElementDTO> storeRequiredElements = new ListStore<FlexibleElementDTO>();
@@ -131,10 +130,9 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
         // Phases tab panel
         tabPanelPhases = new TabPanel();
         tabPanelPhases.setPlain(true);
-        tabPanelPhases.addStyleName("project-tabPhases");
-        tabPanelPhases.setHeight("100%");
-        tabPanelPhases.setBorders(false);
-        tabPanelPhases.setBodyBorder(false);
+//        tabPanelPhases.addStyleName("project-tabPhases");
+//        tabPanelPhases.setBorders(false);
+//        tabPanelPhases.setBodyBorder(false);
 
         // Toolbar
         toolBar = new ToolBar();
@@ -163,24 +161,20 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
         panelSelectedPhase = new LayoutContainer(new FitLayout());
 
         final BorderLayoutData wd = new BorderLayoutData(LayoutRegion.WEST, 250);
-        wd.setMargins(new Margins(4));
+        wd.setMargins(new Margins(0, 4, 4, 4));
 
         final ContentPanel cp = new ContentPanel(new FitLayout());
-        cp.setBorders(false);
-        cp.setBodyBorder(false);
         cp.setHeading(I18N.CONSTANTS.projectRequiredElements());
 
         cp.add(gridRequiredElements);
         panelProjectModel.add(cp, wd);
 
         final BorderLayoutData cd = new BorderLayoutData(LayoutRegion.CENTER);
-        cd.setMargins(new Margins(4));
+        cd.setMargins(new Margins(0, 4, 4, 0));
 
         final ContentPanel cp2 = new ContentPanel(new FitLayout());
-        cp2.setBorders(false);
-        cp2.setBodyBorder(false);
         cp2.setHeading(I18N.CONSTANTS.phaseDetails());
-        cp2.setScrollMode(Scroll.AUTO);
+        cp2.setScrollMode(Scroll.AUTOY);
 
         cp2.setTopComponent(toolBar);
         cp2.add(panelSelectedPhase, new FitData(new Margins(4)));
@@ -205,26 +199,27 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
         buildFinancialProjectsPanel();
         buildLocalPartnerProjectsPanel();
 
-        final HBoxLayout layout = new HBoxLayout();
+        final HBoxLayout layout = new StylableHBoxLayout("join-background");
         layout.setHBoxLayoutAlign(HBoxLayoutAlign.STRETCH);
         final ContentPanel southPanel = new ContentPanel(layout);
         southPanel.setHeading(I18N.CONSTANTS.projectLinkedProjects());
-        southPanel.setWidth("100%");
 
         panelFinancialProjects.setWidth("50%");
-        southPanel.add(panelFinancialProjects);
         panelLocalProjects.setWidth("50%");
-        southPanel.add(panelLocalProjects, new HBoxLayoutData(0, 0, 0, 1));
+        southPanel.add(panelFinancialProjects, new HBoxLayoutData(0, 2, 0, 0));
+        southPanel.add(panelLocalProjects, new HBoxLayoutData(0, 0, 0, 2));
 
         /* BorderLayoutData */
-        BorderLayoutData southData = new BorderLayoutData(LayoutRegion.SOUTH, 140);
+        final BorderLayoutData southData = new BorderLayoutData(LayoutRegion.SOUTH, 140);
         southData.setCollapsible(true);
-        southData.setMargins(new Margins(5));
-        BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST, 250);
-        westData.setMargins(new Margins(5));
+        southData.setMargins(new Margins(4, 0, 0, 0));
+
+        final BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST, 250);
+        westData.setMargins(new Margins(0, 4, 4, 0));
         westData.setCollapsible(true);
-        BorderLayoutData centerData = new BorderLayoutData(LayoutRegion.CENTER);
-        centerData.setMargins(new Margins(5));
+        
+        final BorderLayoutData centerData = new BorderLayoutData(LayoutRegion.CENTER);
+        centerData.setMargins(new Margins(0, 0, 4, 4));
 
         add(westPanel, westData);
         add(tabPanelPhases, centerData);
@@ -428,15 +423,19 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
                 IconImageBundle.ICONS.add());
         createFinancialProjectButton.setTitle(I18N.CONSTANTS.createProjectTypeFundingCreateDetails());
 
+        final Label title = new Label(I18N.CONSTANTS.projectFinancialProjectsHeader());
+        title.addStyleName("toolbar-title");
+
         final ToolBar toolbar = new ToolBar();
+        toolbar.add(title);
+        toolbar.add(new SeparatorToolItem());
         toolbar.add(addFinancialProjectButton);
         toolbar.add(new SeparatorToolItem());
         toolbar.add(createFinancialProjectButton);
 
         // Builds the grid panel.
         panelFinancialProjects = new ContentPanel();
-        panelFinancialProjects.setBorders(false);
-        panelFinancialProjects.setHeading(I18N.CONSTANTS.projectFinancialProjectsHeader());
+        panelFinancialProjects.setHeaderVisible(false);
 
         panelFinancialProjects.setTopComponent(toolbar);
         panelFinancialProjects.add(financialGrid);
@@ -480,15 +479,19 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
                 IconImageBundle.ICONS.add());
         createLocalPartnerProjectButton.setTitle(I18N.CONSTANTS.createProjectTypePartnerCreateDetails());
 
+        final Label title = new Label(I18N.CONSTANTS.projectLocalPartnerProjectsHeader());
+        title.addStyleName("toolbar-title");
+
         final ToolBar toolbar = new ToolBar();
+        toolbar.add(title);
+        toolbar.add(new SeparatorToolItem());
         toolbar.add(addLocalPartnerProjectButton);
         toolbar.add(new SeparatorToolItem());
         toolbar.add(createLocalPartnerProjectButton);
 
         // Builds the grid panel.
         panelLocalProjects = new ContentPanel();
-        panelLocalProjects.setHeading(I18N.CONSTANTS.projectLocalPartnerProjectsHeader());
-        panelLocalProjects.setBorders(false);
+        panelLocalProjects.setHeaderVisible(false);
 
         panelLocalProjects.setTopComponent(toolbar);
         panelLocalProjects.add(localGrid);
