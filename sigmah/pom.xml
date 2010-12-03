@@ -532,22 +532,12 @@
 			<plugin>
 				<groupId>com.sun.tools.jxc.maven2</groupId>
 				<artifactId>maven-jaxb-schemagen-plugin</artifactId>
-				<version>1.3-SNAPSHOT</version>
-				<executions>
-					<execution>
-						<phase>process-classes</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-					</execution>
-				</executions>
-		
+				<version>1.3-SNAPSHOT</version>		
 				<configuration>
 					<project>${project}</project>
 					<destdir>${project.build.directory}/schemas</destdir>
 					<srcdir>${project.build.sourceDirectory}/org/sigmah/shared/report/model</srcdir>
 					<verbose>true</verbose>
-			
 				</configuration>
 				
 			</plugin>
