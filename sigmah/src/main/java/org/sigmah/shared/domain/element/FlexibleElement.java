@@ -17,6 +17,7 @@ import javax.persistence.Transient;
 import org.sigmah.shared.domain.PrivacyLevel;
 import org.sigmah.shared.domain.ProjectModel;
 import org.sigmah.shared.domain.history.Historable;
+import org.sigmah.shared.domain.value.ListEntity;
 
 /**
  * Flexible element entity.
@@ -103,6 +104,12 @@ public abstract class FlexibleElement implements Serializable, Historable {
     @Transient
     public String asHistoryToken(String value) {
         return value;
+    }
+    
+    @Override
+    @Transient
+    public String asHistoryToken(ListEntity value) {
+        return value != null ? value.toString() : null;
     }
 
     @Override

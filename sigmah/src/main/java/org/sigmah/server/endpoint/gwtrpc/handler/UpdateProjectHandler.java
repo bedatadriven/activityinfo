@@ -31,6 +31,7 @@ import org.sigmah.shared.domain.value.Value;
 import org.sigmah.shared.dto.EntityDTO;
 import org.sigmah.shared.dto.element.DefaultFlexibleElementDTO;
 import org.sigmah.shared.dto.element.FlexibleElementDTO;
+import org.sigmah.shared.dto.element.handler.ValueEvent.ChangeType;
 import org.sigmah.shared.dto.element.handler.ValueEventWrapper;
 import org.sigmah.shared.dto.value.ListEntityDTO;
 import org.sigmah.shared.exception.CommandException;
@@ -63,6 +64,9 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
             LOG.debug("[execute] Updates project #" + cmd.getProjectId() + " with following values #"
                     + cmd.getValues().size() + " : " + cmd.getValues());
         }
+
+        // This date must be the same for all the saved values !
+        final Date historyDate = new Date();
 
         // Iterating over the value change events
         final List<ValueEventWrapper> values = cmd.getValues();
@@ -98,19 +102,6 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
             // Retrieving the current value
             final Value currentValue = retrieveValue(cmd.getProjectId(), (long) source.getId(), user);
 
-            // Manages history.
-            if (element.isHistorable()) {
-
-                final HistoryToken historyToken = new HistoryToken();
-
-                historyToken.setElementId(element.getId());
-                historyToken.setValue(element.asHistoryToken(updateSingleValue));
-                historyToken.setDate(new Date());
-                historyToken.setUser(user);
-
-                em.persist(historyToken);
-            }
-
             // Unique value of the flexible element.
             if (updateListValue == null) {
 
@@ -119,6 +110,9 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
                 }
 
                 currentValue.setValue(updateSingleValue);
+
+                // Historize the value.
+                historize(historyDate, element, user, ChangeType.EDIT, updateSingleValue, null);
             }
             // Special case : this value is a part of a list which is the
             // true value of the flexible element. (only used for the
@@ -171,6 +165,8 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
                     ids.add(entity.getId());
                     currentValue.setValue(ValueResultUtils.mergeElements(ids));
 
+                    // Historize the value.
+                    historize(historyDate, element, user, ChangeType.ADD, null, entity);
                 }
                     break;
                 case REMOVE: {
@@ -197,10 +193,16 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
                         ids.remove(entity.getId());
                         currentValue.setValue(ValueResultUtils.mergeElements(ids));
 
+                        // Historize the value.
+                        historize(historyDate, element, user, ChangeType.REMOVE, null, entity);
+
                     } else {
                         if (LOG.isDebugEnabled()) {
                             LOG.debug("[execute] The element isn't deletable, the event is ignored.");
                         }
+
+                        // Do not historize, the value hasn't been changed.
+
                         continue;
                     }
 
@@ -219,6 +221,9 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("[execute] Successfully edit the entity with id #" + entity.getId() + ".");
                     }
+
+                    // Historize the value.
+                    historize(historyDate, element, user, ChangeType.EDIT, null, entity);
                 }
                     break;
                 default:
@@ -240,6 +245,30 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
         }
 
         return null;
+    }
+
+    private void historize(Date date, FlexibleElement element, User user, ChangeType type, String singleValue,
+            ListEntity listValue) {
+
+        // Manages history.
+        if (element.isHistorable()) {
+
+            final HistoryToken historyToken = new HistoryToken();
+
+            historyToken.setElementId(element.getId());
+            historyToken.setDate(date);
+            historyToken.setUser(user);
+            historyToken.setType(type);
+
+            // Sets the value or list value.
+            if (listValue == null) {
+                historyToken.setValue(element.asHistoryToken(singleValue));
+            } else {
+                historyToken.setValue(element.asHistoryToken(listValue));
+            }
+
+            em.persist(historyToken);
+        }
     }
 
     /**

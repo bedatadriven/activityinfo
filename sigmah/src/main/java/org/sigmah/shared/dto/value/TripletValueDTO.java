@@ -5,6 +5,7 @@
 
 package org.sigmah.shared.dto.value;
 
+import org.sigmah.shared.dto.element.handler.ValueEvent.ChangeType;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
@@ -71,5 +72,14 @@ public class TripletValueDTO extends BaseModelData implements ListEntityDTO, Lis
     @Override
     public void setIndex(int index) {
         set("index", index);
+    }
+
+    // Chnage type for history.
+    public ChangeType getType() {
+        return get("type");
+    }
+
+    public void setType(ChangeType type) {
+        set("type", type);
     }
 }

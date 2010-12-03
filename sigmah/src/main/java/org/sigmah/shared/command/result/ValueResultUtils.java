@@ -153,4 +153,66 @@ public final class ValueResultUtils {
         return sb.toString();
     }
 
+    /**
+     * Merges a list of elements as a single string.<br/>
+     * <br/>
+     * The <code>null</code> values are ignored.
+     * 
+     * @param <T>
+     *            The type of the elements.
+     * @param values
+     *            The values list.
+     * @return The values list as a single string.
+     */
+    public static <T extends Serializable> String mergeElements(T... values) {
+
+        final StringBuilder sb = new StringBuilder();
+
+        if (values != null && values.length > 0) {
+            for (int i = 0; i < values.length; i++) {
+
+                final T value = values[i];
+
+                if (value != null) {
+                    sb.append(String.valueOf(value));
+                    if (i < values.length - 1) {
+                        sb.append(DEFAULT_VALUE_SEPARATOR);
+                    }
+                }
+            }
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * Split a list of values.
+     * 
+     * @param values
+     *            The values list as a single string.
+     * @return The values.
+     */
+    public static List<String> splitElements(String values) {
+
+        final ArrayList<String> list = new ArrayList<String>();
+
+        try {
+            if (values != null) {
+
+                final String[] split = values.trim().split(DEFAULT_VALUE_SEPARATOR);
+
+                if (split != null && split.length != 0) {
+                    for (final String value : split) {
+                        if (value != null) {
+                            list.add(String.valueOf(value));
+                        }
+                    }
+                }
+            }
+        } catch (ClassCastException e) {
+            // digest exception.
+        }
+
+        return list;
+    }
 }

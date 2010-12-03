@@ -35,6 +35,7 @@ public class UpdateProject implements Command<VoidResult> {
 
         final HashMap<Integer, ValueEvent> basicValues = new HashMap<Integer, ValueEvent>();
         final HashMap<ListEntityDTOKey, ValueEvent> listValues = new HashMap<ListEntityDTOKey, ValueEvent>();
+        final HashMap<ListEntityDTOKey, ValueEvent> editedValues = new HashMap<ListEntityDTOKey, ValueEvent>();
 
         for (final ValueEvent event : values) {
 
@@ -68,7 +69,18 @@ public class UpdateProject implements Command<VoidResult> {
                         break;
                     }
                 } else {
-                    this.values.add(wrapEvent(event));
+
+                    // Keep only the last state of each edited element before
+                    // sending events to the server.
+                    switch (event.getChangeType()) {
+                    case EDIT:
+                        editedValues.put(new ListEntityDTOKey(event.getSourceElement().getId(), element.getIndex()),
+                                event);
+                        break;
+                    default:
+                        this.values.add(wrapEvent(event));
+                        break;
+                    }
                 }
             }
         }
@@ -81,6 +93,10 @@ public class UpdateProject implements Command<VoidResult> {
         // state of the element.
         for (ValueEvent event : listValues.values()) {
             this.values.add(wrapEvent(new ValueEvent(event.getSourceElement(), event.getListValue(), ChangeType.ADD)));
+        }
+
+        for (ValueEvent event : editedValues.values()) {
+            this.values.add(wrapEvent(new ValueEvent(event.getSourceElement(), event.getListValue(), ChangeType.EDIT)));
         }
     }
 

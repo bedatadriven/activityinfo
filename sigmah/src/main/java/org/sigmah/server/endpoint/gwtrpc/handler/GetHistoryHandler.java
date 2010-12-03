@@ -2,12 +2,12 @@ package org.sigmah.server.endpoint.gwtrpc.handler;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.dozer.Mapper;
 import org.sigmah.shared.command.GetHistory;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
@@ -15,18 +15,17 @@ import org.sigmah.shared.command.result.HistoryResult;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.history.HistoryToken;
 import org.sigmah.shared.dto.history.HistoryTokenDTO;
+import org.sigmah.shared.dto.history.HistoryTokenListDTO;
 import org.sigmah.shared.exception.CommandException;
 
 import com.google.inject.Inject;
 
 public class GetHistoryHandler implements CommandHandler<GetHistory> {
 
-    private final Mapper mapper;
     private final EntityManager em;
 
     @Inject
-    public GetHistoryHandler(EntityManager em, Mapper mapper) {
-        this.mapper = mapper;
+    public GetHistoryHandler(EntityManager em) {
         this.em = em;
     }
 
@@ -54,11 +53,31 @@ public class GetHistoryHandler implements CommandHandler<GetHistory> {
         // Retrieves query results and map results.
         @SuppressWarnings("unchecked")
         final List<HistoryToken> tokens = (List<HistoryToken>) query.getResultList();
-        final ArrayList<HistoryTokenDTO> tokensDTO = new ArrayList<HistoryTokenDTO>();
+
+        final HashMap<Date, HistoryTokenListDTO> mappedTokensDTO = new HashMap<Date, HistoryTokenListDTO>();
+        final ArrayList<HistoryTokenListDTO> tokensDTO = new ArrayList<HistoryTokenListDTO>();
 
         if (tokens != null) {
             for (final HistoryToken token : tokens) {
-                tokensDTO.add(mapper.map(token, HistoryTokenDTO.class));
+
+                HistoryTokenListDTO list = mappedTokensDTO.get(token.getDate());
+
+                if (list == null) {
+                    list = new HistoryTokenListDTO();
+                    list.setDate(token.getDate());
+                    list.setUserEmail(token.getUser().getEmail());
+                    list.setUserFirstName(token.getUser().getFirstName());
+                    list.setUserName(token.getUser().getName());
+
+                    mappedTokensDTO.put(token.getDate(), list);
+                    tokensDTO.add(list);
+                }
+
+                if (list.getTokens() == null) {
+                    list.setTokens(new ArrayList<HistoryTokenDTO>());
+                }
+
+                list.getTokens().add(new HistoryTokenDTO(token.getValue(), token.getType()));
             }
         }
 

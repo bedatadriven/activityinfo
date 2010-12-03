@@ -10,11 +10,13 @@ import java.util.List;
 
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.ui.FlexibleGrid;
+import org.sigmah.client.util.HistoryTokenText;
 import org.sigmah.shared.command.result.ValueResult;
 import org.sigmah.shared.command.result.ValueResultUtils;
 import org.sigmah.shared.dto.category.CategoryTypeDTO;
 import org.sigmah.shared.dto.element.handler.RequiredValueEvent;
 import org.sigmah.shared.dto.element.handler.ValueEvent;
+import org.sigmah.shared.dto.history.HistoryTokenListDTO;
 import org.sigmah.shared.dto.quality.QualityCriterionDTO;
 
 import com.extjs.gxt.ui.client.Style.SelectionMode;
@@ -264,5 +266,61 @@ public class QuestionElementDTO extends FlexibleElementDTO {
             }
         }
 
+    }
+
+    @Override
+    public Object renderHistoryToken(HistoryTokenListDTO token) {
+
+        final String value;
+
+        // Single selection case.
+        if (!Boolean.TRUE.equals(getIsMultiple())) {
+
+            final QuestionChoiceElementDTO singleChoice = pickChoice(Integer.valueOf(token.getTokens().get(0)
+                    .getValue()));
+
+            if (singleChoice != null) {
+                value = singleChoice.getLabel();
+            } else {
+                value = "";
+            }
+
+            return new HistoryTokenText(value);
+        }
+        // Multiple selection case.
+        else {
+            final List<Long> selectedChoicesId = ValueResultUtils
+                    .splitValuesAsLong(token.getTokens().get(0).getValue());
+
+            final ArrayList<String> labels = new ArrayList<String>();
+            for (final Long id : selectedChoicesId) {
+                final QuestionChoiceElementDTO choice = pickChoice(id.intValue());
+                if (choice != null) {
+                    labels.add(choice.getLabel());
+                }
+            }
+
+            return new HistoryTokenText(labels);
+        }
+    }
+
+    /**
+     * Select a choice among the list of the choices.
+     * 
+     * @param id
+     *            The wanted choice's id.
+     * @return The choice if it exists, <code>null</code> otherwise.
+     */
+    private QuestionChoiceElementDTO pickChoice(int id) {
+
+        if (getChoicesDTO() != null) {
+            for (final QuestionChoiceElementDTO choice : getChoicesDTO()) {
+                if (choice.getId() == id) {
+                    return choice;
+                }
+            }
+        }
+
+        return null;
     }
 }

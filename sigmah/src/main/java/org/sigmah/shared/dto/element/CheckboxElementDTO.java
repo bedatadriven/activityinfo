@@ -8,7 +8,7 @@ package org.sigmah.shared.dto.element;
 import org.sigmah.shared.command.result.ValueResult;
 import org.sigmah.shared.dto.element.handler.RequiredValueEvent;
 import org.sigmah.shared.dto.element.handler.ValueEvent;
-import org.sigmah.shared.dto.history.HistoryTokenDTO;
+import org.sigmah.shared.dto.history.HistoryTokenListDTO;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -83,14 +83,14 @@ public class CheckboxElementDTO extends FlexibleElementDTO {
     }
 
     @Override
-    public Object renderHistoryToken(HistoryTokenDTO token) {
+    public Object renderHistoryToken(HistoryTokenListDTO token) {
 
         ensureHistorable();
 
         final CheckBox c = new CheckBox();
         c.setHeight(16);
         c.setReadOnly(true);
-        c.setValue(Boolean.valueOf(token.getValue()));
+        c.setValue(Boolean.valueOf(token.getTokens().get(0).getValue()));
         return c;
     }
 }

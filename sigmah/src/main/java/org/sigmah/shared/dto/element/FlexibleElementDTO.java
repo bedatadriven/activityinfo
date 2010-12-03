@@ -11,6 +11,7 @@ import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.ui.HistoryWindow;
+import org.sigmah.client.util.HistoryTokenText;
 import org.sigmah.shared.command.GetHistory;
 import org.sigmah.shared.command.result.HistoryResult;
 import org.sigmah.shared.command.result.ValueResult;
@@ -19,7 +20,7 @@ import org.sigmah.shared.dto.element.handler.RequiredValueEvent;
 import org.sigmah.shared.dto.element.handler.RequiredValueHandler;
 import org.sigmah.shared.dto.element.handler.ValueEvent;
 import org.sigmah.shared.dto.element.handler.ValueHandler;
-import org.sigmah.shared.dto.history.HistoryTokenDTO;
+import org.sigmah.shared.dto.history.HistoryTokenListDTO;
 import org.sigmah.shared.dto.history.HistoryTokenManager;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -319,8 +320,8 @@ public abstract class FlexibleElementDTO extends BaseModelData implements Entity
     }
 
     @Override
-    public Object renderHistoryToken(HistoryTokenDTO token) {
+    public Object renderHistoryToken(HistoryTokenListDTO token) {
         ensureHistorable();
-        return token.getValue();
+        return new HistoryTokenText(token);
     }
 }

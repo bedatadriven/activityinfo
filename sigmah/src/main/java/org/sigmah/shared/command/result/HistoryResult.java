@@ -2,27 +2,27 @@ package org.sigmah.shared.command.result;
 
 import java.util.List;
 
-import org.sigmah.shared.dto.history.HistoryTokenDTO;
+import org.sigmah.shared.dto.history.HistoryTokenListDTO;
 
 public class HistoryResult implements CommandResult {
 
     private static final long serialVersionUID = -238246727737468100L;
 
-    private List<HistoryTokenDTO> tokens;
+    private List<HistoryTokenListDTO> tokens;
 
     public HistoryResult() {
         // Serialization.
     }
 
-    public HistoryResult(List<HistoryTokenDTO> tokens) {
+    public HistoryResult(List<HistoryTokenListDTO> tokens) {
         this.tokens = tokens;
     }
 
-    public List<HistoryTokenDTO> getTokens() {
+    public List<HistoryTokenListDTO> getTokens() {
         return tokens;
     }
 
-    public void setTokens(List<HistoryTokenDTO> tokens) {
+    public void setTokens(List<HistoryTokenListDTO> tokens) {
         this.tokens = tokens;
     }
 
@@ -50,5 +50,4 @@ public class HistoryResult implements CommandResult {
             return false;
         return true;
     }
-
 }

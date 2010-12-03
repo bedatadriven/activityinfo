@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.shared.dto.history.HistoryTokenDTO;
+import org.sigmah.shared.dto.history.HistoryTokenListDTO;
 import org.sigmah.shared.dto.history.HistoryTokenManager;
 
 import com.extjs.gxt.ui.client.Style.SortDir;
@@ -43,7 +43,7 @@ public final class HistoryWindow {
      * @param manager
      *            The history manager.
      */
-    public static void show(List<HistoryTokenDTO> tokens, HistoryTokenManager manager) {
+    public static void show(List<HistoryTokenListDTO> tokens, HistoryTokenManager manager) {
 
         if (instance == null) {
             instance = new HistoryWindow();
@@ -59,14 +59,14 @@ public final class HistoryWindow {
      *            The history token.
      * @return The display name;
      */
-    private static String getUserDisplayName(HistoryTokenDTO token) {
+    private static String getUserDisplayName(HistoryTokenListDTO token) {
         return token.getUserFirstName() != null ? token.getUserFirstName() + ' ' + token.getUserName() : token
                 .getUserName();
     }
 
     private final Window window;
-    private final ListStore<HistoryTokenDTO> store;
-    private final Grid<HistoryTokenDTO> grid;
+    private final ListStore<HistoryTokenListDTO> store;
+    private final Grid<HistoryTokenListDTO> grid;
     private HistoryTokenManager manager;
     private final Label noHistoryLabel;
 
@@ -76,11 +76,12 @@ public final class HistoryWindow {
     private HistoryWindow() {
 
         // Store.
-        store = new ListStore<HistoryTokenDTO>();
-        store.setStoreSorter(new StoreSorter<HistoryTokenDTO>() {
+        store = new ListStore<HistoryTokenListDTO>();
+        store.setStoreSorter(new StoreSorter<HistoryTokenListDTO>() {
 
             @Override
-            public int compare(Store<HistoryTokenDTO> store, HistoryTokenDTO m1, HistoryTokenDTO m2, String property) {
+            public int compare(Store<HistoryTokenListDTO> store, HistoryTokenListDTO m1, HistoryTokenListDTO m2,
+                    String property) {
 
                 if ("user".equals(property)) {
                     return getUserDisplayName(m1).compareToIgnoreCase(getUserDisplayName(m2));
@@ -94,7 +95,7 @@ public final class HistoryWindow {
         final RowNumberer countColumn = new RowNumberer();
 
         // Grid.
-        grid = new Grid<HistoryTokenDTO>(store, new ColumnModel(Arrays.asList(getColumnModel(countColumn))));
+        grid = new Grid<HistoryTokenListDTO>(store, new ColumnModel(Arrays.asList(getColumnModel(countColumn))));
         grid.getView().setForceFit(true);
         grid.setBorders(false);
         grid.setAutoExpandColumn("value");
@@ -138,26 +139,26 @@ public final class HistoryWindow {
         userColumn.setId("user");
         userColumn.setHeader(I18N.CONSTANTS.historyUser());
         userColumn.setWidth(135);
-        userColumn.setRenderer(new GridCellRenderer<HistoryTokenDTO>() {
+        userColumn.setRenderer(new GridCellRenderer<HistoryTokenListDTO>() {
 
             @Override
-            public Object render(HistoryTokenDTO model, String property, ColumnData config, int rowIndex, int colIndex,
-                    ListStore<HistoryTokenDTO> store, Grid<HistoryTokenDTO> grid) {
+            public Object render(HistoryTokenListDTO model, String property, ColumnData config, int rowIndex,
+                    int colIndex, ListStore<HistoryTokenListDTO> store, Grid<HistoryTokenListDTO> grid) {
                 return getUserDisplayName(model);
             }
         });
 
         // Value.
         final ColumnConfig valueColumn = new ColumnConfig();
-        valueColumn.setId("value");
+        valueColumn.setId("tokens");
         valueColumn.setHeader(I18N.CONSTANTS.historyValue());
         valueColumn.setSortable(false);
         valueColumn.setWidth(490);
-        valueColumn.setRenderer(new GridCellRenderer<HistoryTokenDTO>() {
+        valueColumn.setRenderer(new GridCellRenderer<HistoryTokenListDTO>() {
 
             @Override
-            public Object render(HistoryTokenDTO model, String property, ColumnData config, int rowIndex, int colIndex,
-                    ListStore<HistoryTokenDTO> store, Grid<HistoryTokenDTO> grid) {
+            public Object render(HistoryTokenListDTO model, String property, ColumnData config, int rowIndex,
+                    int colIndex, ListStore<HistoryTokenListDTO> store, Grid<HistoryTokenListDTO> grid) {
 
                 if (manager != null) {
                     return manager.renderHistoryToken(model);
@@ -178,7 +179,7 @@ public final class HistoryWindow {
      * @param manager
      *            The history manager.
      */
-    private void showHistory(List<HistoryTokenDTO> tokens, HistoryTokenManager manager) {
+    private void showHistory(List<HistoryTokenListDTO> tokens, HistoryTokenManager manager) {
 
         // Hides if shown.
         window.hide();
@@ -202,7 +203,7 @@ public final class HistoryWindow {
         else {
             window.add(noHistoryLabel);
         }
-        
+
         window.layout();
 
         // Shows window.

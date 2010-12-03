@@ -11,7 +11,6 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.command.result.ValueResult;
 import org.sigmah.shared.dto.element.handler.RequiredValueEvent;
 import org.sigmah.shared.dto.element.handler.ValueEvent;
-import org.sigmah.shared.dto.history.HistoryTokenDTO;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.DatePickerEvent;
@@ -24,7 +23,6 @@ import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
-import com.google.gwt.user.client.ui.HTML;
 
 /**
  * 
@@ -520,27 +518,5 @@ public class TextAreaElementDTO extends FlexibleElementDTO {
         if (getValidates()) {
             handlerManager.fireEvent(new RequiredValueEvent(isValueOn));
         }
-    }
-
-    @Override
-    public Object renderHistoryToken(HistoryTokenDTO token) {
-
-        ensureHistorable();
-
-        final HTML t = new HTML();
-        t.addStyleName("history-textarea");
-        t.setSize("100%", "100%");
-
-        String value = token.getValue();
-        value = value.replaceAll("\n", "<br/>");
-
-        if (value == null || "".equals(value)) {
-            t.setHTML(I18N.CONSTANTS.historyEmptyString());
-            t.addStyleName("history-empty-string");
-        } else {
-            t.setHTML(value);
-        }
-
-        return t;
     }
 }

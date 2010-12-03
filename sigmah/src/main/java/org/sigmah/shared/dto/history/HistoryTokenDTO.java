@@ -1,79 +1,38 @@
 package org.sigmah.shared.dto.history;
 
-import java.util.Date;
+import java.io.Serializable;
 
-import org.sigmah.shared.dto.EntityDTO;
+import org.sigmah.shared.dto.element.handler.ValueEvent.ChangeType;
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
+public class HistoryTokenDTO implements Serializable {
 
-/**
- * DTO mapping class for entity history.HistoryToken.
- * 
- * @author tmi
- * 
- */
-public class HistoryTokenDTO extends BaseModelData implements EntityDTO {
+    private static final long serialVersionUID = -2644629638564832900L;
 
-    private static final long serialVersionUID = -93910171075526494L;
+    private String value;
+    private ChangeType type;
 
-    @Override
-    public String getEntityName() {
-        return "history.HistoryToken";
+    public HistoryTokenDTO() {
     }
 
-    // Token id.
-    @Override
-    public int getId() {
-        final Integer id = (Integer) get("id");
-        return id != null ? id : -1;
+    public HistoryTokenDTO(String value, ChangeType type) {
+        this.value = value;
+        this.type = type;
     }
 
-    public void setId(int id) {
-        set("id", id);
-    }
-
-    // Token date.
-    public Date getDate() {
-        return get("date");
-    }
-
-    public void setDate(Date date) {
-        set("date", date);
-    }
-
-    // Token raw value.
     public String getValue() {
-        return get("value");
+        return value;
     }
 
     public void setValue(String value) {
-        set("value", value);
+        this.value = value;
     }
 
-    // User email.
-    public String getUserEmail() {
-        return get("email");
+    public ChangeType getType() {
+        return type;
     }
 
-    public void setUserEmail(String email) {
-        set("email", email);
+    public void setType(ChangeType type) {
+        this.type = type;
     }
 
-    // User first name.
-    public String getUserFirstName() {
-        return get("firstName");
-    }
-
-    public void setUserFirstName(String firstName) {
-        set("firstName", firstName);
-    }
-
-    // User name.
-    public String getUserName() {
-        return get("name");
-    }
-
-    public void setUserName(String name) {
-        set("name", name);
-    }
 }

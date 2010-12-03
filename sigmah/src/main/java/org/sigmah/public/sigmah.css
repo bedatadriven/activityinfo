@@ -877,3 +877,8 @@ body {
 	font-family: arial, tahoma, helvetica, sans-serif;
 	font-size: 11px;
 }
+
+.history-details {
+	text-decoration: underline;
+	cursor: pointer;
+}

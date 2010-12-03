@@ -24,5 +24,5 @@ public interface HistoryTokenManager {
      *            The token
      * @return The rendered token (can be a {@link Widget}).
      */
-    public Object renderHistoryToken(HistoryTokenDTO token);
+    public Object renderHistoryToken(HistoryTokenListDTO token);
 }

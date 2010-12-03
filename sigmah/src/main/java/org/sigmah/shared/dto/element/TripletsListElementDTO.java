@@ -5,13 +5,17 @@
 
 package org.sigmah.shared.dto.element;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.ui.FlexibleGrid;
 import org.sigmah.shared.command.result.ValueResult;
+import org.sigmah.shared.command.result.ValueResultUtils;
 import org.sigmah.shared.dto.element.handler.RequiredValueEvent;
 import org.sigmah.shared.dto.element.handler.ValueEvent;
+import org.sigmah.shared.dto.history.HistoryTokenDTO;
+import org.sigmah.shared.dto.history.HistoryTokenListDTO;
 import org.sigmah.shared.dto.value.ListableValue;
 import org.sigmah.shared.dto.value.TripletValueDTO;
 
@@ -24,16 +28,24 @@ import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
+import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Label;
 
 /**
  * 
@@ -233,4 +245,122 @@ public class TripletsListElementDTO extends FlexibleElementDTO {
         }
     }
 
+    @Override
+    public Object renderHistoryToken(final HistoryTokenListDTO token) {
+
+        final Label details = new Label();
+        details.addStyleName("history-details");
+
+        if (token.getTokens().size() == 1) {
+            details.setText("1 " + I18N.CONSTANTS.historyModification());
+        } else {
+            details.setText(token.getTokens().size() + " " + I18N.CONSTANTS.historyModifications());
+        }
+
+        details.addClickHandler(new ClickHandler() {
+
+            private Window window;
+
+            @Override
+            public void onClick(ClickEvent e) {
+
+                if (window == null) {
+
+                    // Builds window.
+                    window = new Window();
+                    window.setAutoHide(true);
+                    window.setModal(false);
+                    window.setPlain(true);
+                    window.setHeaderVisible(true);
+                    window.setClosable(true);
+                    window.setLayout(new FitLayout());
+                    window.setWidth(750);
+                    window.setHeight(400);
+                    window.setBorders(false);
+                    window.setResizable(true);
+
+                    // Builds grid.
+                    final ListStore<TripletValueDTO> store = new ListStore<TripletValueDTO>();
+                    final com.extjs.gxt.ui.client.widget.grid.Grid<TripletValueDTO> grid = new com.extjs.gxt.ui.client.widget.grid.Grid<TripletValueDTO>(
+                            store, new ColumnModel(Arrays.asList(getColumnModel())));
+                    grid.getView().setForceFit(true);
+                    grid.setBorders(false);
+                    grid.setAutoExpandColumn("name");
+
+                    window.add(grid);
+
+                    // Fills store.
+                    for (final HistoryTokenDTO t : token.getTokens()) {
+
+                        final List<String> l = ValueResultUtils.splitElements(t.getValue());
+
+                        final TripletValueDTO triplet = new TripletValueDTO();
+                        triplet.setCode(l.get(0));
+                        triplet.setName(l.get(1));
+                        triplet.setPeriod(l.get(2));
+                        triplet.setType(t.getType());
+
+                        store.add(triplet);
+                    }
+                }
+
+                window.setPagePosition(e.getNativeEvent().getClientX(), e.getNativeEvent().getClientY());
+                window.show();
+            }
+
+            private ColumnConfig[] getColumnModel() {
+
+                // Change type.
+                final ColumnConfig typeColumn = new ColumnConfig();
+                typeColumn.setId("type");
+                typeColumn.setHeader(I18N.CONSTANTS.historyModificationType());
+                typeColumn.setWidth(150);
+                typeColumn.setSortable(false);
+                typeColumn.setRenderer(new GridCellRenderer<TripletValueDTO>() {
+
+                    @Override
+                    public Object render(TripletValueDTO model, String property, ColumnData config, int rowIndex,
+                            int colIndex, ListStore<TripletValueDTO> store, Grid<TripletValueDTO> grid) {
+
+                        if (model.getType() != null) {
+                            switch (model.getType()) {
+                            case ADD:
+                                return I18N.CONSTANTS.historyAdd();
+                            case EDIT:
+                                return I18N.CONSTANTS.historyEdit();
+                            case REMOVE:
+                                return I18N.CONSTANTS.historyRemove();
+                            default:
+                                return "-";
+                            }
+                        } else {
+                            return "-";
+                        }
+                    }
+                });
+
+                // Code.
+                final ColumnConfig codeColumn = new ColumnConfig();
+                codeColumn.setId("code");
+                codeColumn.setHeader(I18N.CONSTANTS.flexibleElementTripletsListCode());
+                codeColumn.setWidth(200);
+
+                // Name.
+                final ColumnConfig nameColumn = new ColumnConfig();
+                nameColumn.setId("name");
+                nameColumn.setHeader(I18N.CONSTANTS.flexibleElementTripletsListName());
+                nameColumn.setWidth(200);
+
+                // Period.
+                final ColumnConfig periodColumn = new ColumnConfig();
+                periodColumn.setId("period");
+                periodColumn.setHeader(I18N.CONSTANTS.flexibleElementTripletsListPeriod());
+                periodColumn.setWidth(200);
+
+                return new ColumnConfig[] { typeColumn, codeColumn, nameColumn, periodColumn };
+            }
+        });
+
+        return details;
+    }
 }

@@ -5,6 +5,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,6 +17,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.sigmah.shared.domain.User;
+import org.sigmah.shared.dto.element.handler.ValueEvent.ChangeType;
 
 /**
  * Represents an history value.
@@ -33,6 +36,7 @@ public class HistoryToken implements Serializable {
     private Date date;
     private String value;
     private User user;
+    private ChangeType type;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -81,5 +85,15 @@ public class HistoryToken implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @Column(name = "change_type", nullable = true)
+    @Enumerated(value = EnumType.STRING)
+    public ChangeType getType() {
+        return type;
+    }
+
+    public void setType(ChangeType type) {
+        this.type = type;
     }
 }

@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.sigmah.shared.domain.category.CategoryType;
 import org.sigmah.shared.domain.quality.QualityCriterion;
@@ -111,4 +112,9 @@ public class QuestionElement extends FlexibleElement {
         choices.add(choice);
     }
 
+    @Override
+    @Transient
+    public boolean isHistorable() {
+        return true;
+    }
 }
