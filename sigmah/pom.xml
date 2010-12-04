@@ -39,15 +39,6 @@
         </license>
     </licenses>
 
-    <!--  include pluginRepository and repository for GWT-Maven -->
-    <pluginRepositories>
-        <pluginRepository>
-            <id>JBOSS</id>
-            <name>JBoss Repository</name>
-            <url>http://repository.jboss.org/maven2/</url>
-        </pluginRepository>
-    </pluginRepositories>
-
     <properties>
         <netbeans.hint.license>gpl3</netbeans.hint.license>
 
@@ -65,6 +56,48 @@
         <!-- Allow the build to continue even if there are test failures -->
         <maven.test.failure.ignore>true</maven.test.failure.ignore>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>central</id>
+            <name>Central Repository</name>
+            <url>http://repo1.maven.org/maven2/</url>
+        </repository>
+        <repository>
+            <id>bedatadriven-public</id>
+            <name>Bedatadriven Public Repo</name>
+            <url>http://nexus.bedatadriven.com/content/groups/public</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>JBOSS</id>
+            <name>JBoss Repository</name>
+            <url>http://repository.jboss.org/maven2/</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>bedatadriven-public</id>
+            <name>Bedatadriven Public Repo</name>
+            <url>http://nexus.bedatadriven.com/content/groups/public</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <distributionManagement>
+        <repository>
+            <id>bedatadriven-oss</id>
+            <name>bedatadriven Open-Source releases</name>
+            <url>http://nexus.bedatadriven.com/content/repositories/oss-releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>bedatadriven-oss</id>
+            <name>bedatadriven Open-Source snapshots</name>
+            <url>http://nexus.bedatadriven.com/content/repositories/oss-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <dependencies>
 
@@ -295,7 +328,7 @@
 
         <dependency>
             <groupId>xerces</groupId>
-            <artifactId>xerces</artifactId>
+            <artifactId>xercesImpl</artifactId>
             <version>2.4.0</version>
         </dependency>
 
@@ -346,45 +379,6 @@
             <version>1.2.2</version>
         </dependency>
     </dependencies>
-
-    <repositories>
-        <repository>
-            <id>central</id>
-            <name>Central Repository</name>
-            <url>http://repo1.maven.org/maven2/</url>
-        </repository>
-        <repository>
-            <id>bedatadriven-oss-releases</id>
-            <name>Bedatadriven Releases</name>
-            <url>http://nexus.bedatadriven.com/content/repositories/oss-releases</url>
-        </repository>
-        <repository>
-            <id>bedatadriven-oss-snapshots</id>
-            <name>Bedatadriven Snapshots</name>
-            <url>http://nexus.bedatadriven.com/content/repositories/oss-snapshots</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>bedatadriven-thirdparty</id>
-            <name>Bedatadriven Thirdparty</name>
-            <url>http://nexus.bedatadriven.com/content/repositories/thirdparty</url>
-        </repository>
-    </repositories>
-
-    <distributionManagement>
-        <repository>
-            <id>bedatadriven-oss</id>
-            <name>bedatadriven Open-Source releases</name>
-            <url>http://nexus.bedatadriven.com/content/repositories/oss-releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>bedatadriven-oss</id>
-            <name>bedatadriven Open-Source snapshots</name>
-            <url>http://nexus.bedatadriven.com/content/repositories/oss-snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
 
     <build>
         <resources>
@@ -787,7 +781,6 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>gwt-maven-plugin</artifactId>
-                        <version>1.2</version>
                         <configuration>
                             <module>org.sigmah.ActivityInfoSoyc</module>
                             <soyc>true</soyc>
