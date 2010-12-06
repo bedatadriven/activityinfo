@@ -1,5 +1,6 @@
 package org.sigmah.client.page.orgunit;
 
+import org.sigmah.client.CountriesList;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
@@ -64,6 +65,7 @@ public class OrgUnitPresenter implements Frame, TabPage {
     private final View view;
     private final Dispatcher dispatcher;
     private final Authentication authentication;
+    private final CountriesList countriesList;
     private Page activePage;
     private OrgUnitState currentState;
     private ToggleAnchor currentTab;
@@ -75,16 +77,17 @@ public class OrgUnitPresenter implements Frame, TabPage {
 
     @Inject
     public OrgUnitPresenter(final Dispatcher dispatcher, View view, Authentication authentication,
-            final EventBus eventBus) {
+            final EventBus eventBus, final CountriesList countriesList) {
 
         this.dispatcher = dispatcher;
         this.view = view;
         this.authentication = authentication;
-
+        this.countriesList = countriesList;
+        
         final DummyPresenter dummyPresenter = new DummyPresenter();
 
         this.presenters = new SubPresenter[] { new OrgUnitDashboardPresenter(dispatcher, eventBus, this),
-                new OrgUnitDetailsPresenter(dispatcher, authentication, this),
+                new OrgUnitDetailsPresenter(dispatcher, authentication, this, countriesList),
                 new OrgUnitCalendarPresenter(dispatcher, this), dummyPresenter
 
         };
@@ -267,6 +270,7 @@ public class OrgUnitPresenter implements Frame, TabPage {
                         final DefaultFlexibleElementDTO defaultElement = (DefaultFlexibleElementDTO) element;
                         defaultElement.setService(dispatcher);
                         defaultElement.setAuthentication(authentication);
+                        defaultElement.setCountries(countriesList);
                         defaultElement.setCurrentContainerDTO(currentOrgUnitDTO);
 
                         final Component component = defaultElement.getElementComponent(null, false);

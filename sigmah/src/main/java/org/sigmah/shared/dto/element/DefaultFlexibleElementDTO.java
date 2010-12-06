@@ -1,15 +1,20 @@
 package org.sigmah.shared.dto.element;
 
 import java.util.Date;
+import java.util.List;
 
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.util.HistoryTokenText;
+import org.sigmah.client.util.NumberUtils;
 import org.sigmah.shared.command.GetCountries;
 import org.sigmah.shared.command.result.CountryResult;
 import org.sigmah.shared.command.result.ValueResult;
+import org.sigmah.shared.command.result.ValueResultUtils;
 import org.sigmah.shared.domain.element.DefaultFlexibleElementType;
 import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.element.handler.RequiredValueEvent;
 import org.sigmah.shared.dto.element.handler.ValueEvent;
+import org.sigmah.shared.dto.history.HistoryTokenListDTO;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -237,12 +242,11 @@ public class DefaultFlexibleElementDTO extends FlexibleElementDTO {
                         final String plannedBudgetRawValue = String.valueOf(plannedBudgetAsDouble);
                         final String spendBudgetRawValue = String.valueOf(spendBudgetAsDouble);
                         final String receivedBudgetRawValue = String.valueOf(receivedBudgetAsDouble);
-                        final String rawValue = plannedBudgetRawValue + '|' + spendBudgetRawValue + '|'
-                                + receivedBudgetRawValue;
+                        final String rawValue = ValueResultUtils.mergeElements(plannedBudgetRawValue,
+                                spendBudgetRawValue, receivedBudgetRawValue);
 
-                        final Double ratio = spendBudgetAsDouble / plannedBudgetAsDouble * 100;
                         ratioLabel.setText(I18N.CONSTANTS.flexibleElementBudgetDistributionRatio() + ": "
-                                + ratio.intValue() + " %");
+                                + NumberUtils.ratioAsString(spendBudgetAsDouble, plannedBudgetAsDouble));
 
                         fireEvents(rawValue, isValueOn);
                     }
@@ -277,9 +281,8 @@ public class DefaultFlexibleElementDTO extends FlexibleElementDTO {
                 receivedBudgetField = receivedBudgetLabelField;
             }
 
-            final Double ratio = sb / pb * 100;
-            ratioLabel
-                    .setText(I18N.CONSTANTS.flexibleElementBudgetDistributionRatio() + ": " + ratio.intValue() + " %");
+            ratioLabel.setText(I18N.CONSTANTS.flexibleElementBudgetDistributionRatio() + ": "
+                    + NumberUtils.ratioAsString(sb, pb));
 
             // Fieldset.
             final FieldSet fieldset = new FieldSet();
@@ -320,58 +323,117 @@ public class DefaultFlexibleElementDTO extends FlexibleElementDTO {
 
                 // Retrieves the county list.
                 if (countriesStore.getCount() == 0) {
-                    dispatcher.execute(new GetCountries(), null, new AsyncCallback<CountryResult>() {
 
-                        @Override
-                        public void onFailure(Throwable e) {
-                            Log.error("[getComponent] Error while getting countries list.", e);
-                        }
+                    if (countries != null) {
 
-                        @Override
-                        public void onSuccess(CountryResult result) {
+                        countries.getCountries(new AsyncCallback<List<CountryDTO>>() {
 
-                            // Fills the store.
-                            countriesStore.add(result.getData());
-
-                            // Sets the value to the field.
-                            if (c != null) {
-                                comboBox.setValue(c);
+                            @Override
+                            public void onFailure(Throwable e) {
+                                Log.error("[getComponent] Error while getting countries list.", e);
                             }
 
-                            // Listens to the selection changes.
-                            comboBox.addSelectionChangedListener(new SelectionChangedListener<CountryDTO>() {
+                            @Override
+                            public void onSuccess(List<CountryDTO> result) {
 
-                                @Override
-                                public void selectionChanged(SelectionChangedEvent<CountryDTO> se) {
+                                // Fills the store.
+                                countriesStore.add(result);
 
-                                    String value = null;
-                                    final boolean isValueOn;
-
-                                    // Gets the selected choice.
-                                    final CountryDTO choice = se.getSelectedItem();
-
-                                    // Checks if the choice isn't the default
-                                    // empty
-                                    // choice.
-                                    isValueOn = choice != null && choice.getId() != -1;
-
-                                    if (choice != null) {
-                                        value = String.valueOf(choice.getId());
-                                    }
-
-                                    if (value != null) {
-                                        // Fires value change event.
-                                        handlerManager.fireEvent(new ValueEvent(DefaultFlexibleElementDTO.this, value));
-                                    }
-
-                                    // Required element ?
-                                    if (getValidates()) {
-                                        handlerManager.fireEvent(new RequiredValueEvent(isValueOn));
-                                    }
+                                // Sets the value to the field.
+                                if (c != null) {
+                                    comboBox.setValue(c);
                                 }
-                            });
-                        }
-                    });
+
+                                // Listens to the selection changes.
+                                comboBox.addSelectionChangedListener(new SelectionChangedListener<CountryDTO>() {
+
+                                    @Override
+                                    public void selectionChanged(SelectionChangedEvent<CountryDTO> se) {
+
+                                        String value = null;
+                                        final boolean isValueOn;
+
+                                        // Gets the selected choice.
+                                        final CountryDTO choice = se.getSelectedItem();
+
+                                        // Checks if the choice isn't the
+                                        // default empty choice.
+                                        isValueOn = choice != null && choice.getId() != -1;
+
+                                        if (choice != null) {
+                                            value = String.valueOf(choice.getId());
+                                        }
+
+                                        if (value != null) {
+                                            // Fires value change event.
+                                            handlerManager.fireEvent(new ValueEvent(DefaultFlexibleElementDTO.this,
+                                                    value));
+                                        }
+
+                                        // Required element ?
+                                        if (getValidates()) {
+                                            handlerManager.fireEvent(new RequiredValueEvent(isValueOn));
+                                        }
+                                    }
+                                });
+                            }
+                        });
+
+                    } else {
+
+                        dispatcher.execute(new GetCountries(), null, new AsyncCallback<CountryResult>() {
+
+                            @Override
+                            public void onFailure(Throwable e) {
+                                Log.error("[getComponent] Error while getting countries list.", e);
+                            }
+
+                            @Override
+                            public void onSuccess(CountryResult result) {
+
+                                // Fills the store.
+                                countriesStore.add(result.getData());
+
+                                // Sets the value to the field.
+                                if (c != null) {
+                                    comboBox.setValue(c);
+                                }
+
+                                // Listens to the selection changes.
+                                comboBox.addSelectionChangedListener(new SelectionChangedListener<CountryDTO>() {
+
+                                    @Override
+                                    public void selectionChanged(SelectionChangedEvent<CountryDTO> se) {
+
+                                        String value = null;
+                                        final boolean isValueOn;
+
+                                        // Gets the selected choice.
+                                        final CountryDTO choice = se.getSelectedItem();
+
+                                        // Checks if the choice isn't the
+                                        // default empty choice.
+                                        isValueOn = choice != null && choice.getId() != -1;
+
+                                        if (choice != null) {
+                                            value = String.valueOf(choice.getId());
+                                        }
+
+                                        if (value != null) {
+                                            // Fires value change event.
+                                            handlerManager.fireEvent(new ValueEvent(DefaultFlexibleElementDTO.this,
+                                                    value));
+                                        }
+
+                                        // Required element ?
+                                        if (getValidates()) {
+                                            handlerManager.fireEvent(new RequiredValueEvent(isValueOn));
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
                 } else {
 
                     // Sets the value to the field.
@@ -631,5 +693,46 @@ public class DefaultFlexibleElementDTO extends FlexibleElementDTO {
         labelField.setLabelSeparator(":");
 
         return labelField;
+    }
+
+    @Override
+    public Object renderHistoryToken(HistoryTokenListDTO token) {
+
+        ensureHistorable();
+
+        final String value = token.getTokens().get(0).getValue();
+
+        if (getType() != null) {
+            switch (getType()) {
+            case COUNTRY:
+                if (countries != null) {
+                    final CountryDTO c = countries.getCountry(Integer.valueOf(value));
+                    if (c != null) {
+                        return new HistoryTokenText(c.getName());
+                    } else {
+                        return new HistoryTokenText("#" + value);
+                    }
+                } else {
+                    return new HistoryTokenText("#" + value);
+                }
+            case BUDGET:
+                final List<String> budgets = ValueResultUtils.splitElements(value);
+                final double plannedBudget = Double.parseDouble(budgets.get(0));
+                final double spendBudget = Double.parseDouble(budgets.get(1));
+                final double receivedBudget = Double.parseDouble(budgets.get(2));
+                return new HistoryTokenText(I18N.CONSTANTS.projectPlannedBudget() + ": " + plannedBudget,
+                        I18N.CONSTANTS.projectReceivedBudget() + ": " + receivedBudget,
+                        I18N.CONSTANTS.projectSpendBudget() + ": " + spendBudget);
+            case START_DATE:
+            case END_DATE:
+                final DateTimeFormat format = DateTimeFormat.getFormat(I18N.CONSTANTS.flexibleElementDateFormat());
+                final long time = Long.valueOf(value);
+                return new HistoryTokenText(format.format(new Date(time)));
+            default:
+                return super.renderHistoryToken(token);
+            }
+        } else {
+            return super.renderHistoryToken(token);
+        }
     }
 }

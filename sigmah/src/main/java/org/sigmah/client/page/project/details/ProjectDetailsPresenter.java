@@ -3,6 +3,7 @@ package org.sigmah.client.page.project.details;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.sigmah.client.CountriesList;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.dispatch.remote.Authentication;
@@ -35,7 +36,6 @@ import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Grid;
@@ -64,6 +64,8 @@ public class ProjectDetailsPresenter implements SubPresenter {
 
     private final Authentication authentication;
 
+    private final CountriesList countriesList;
+
     /**
      * The main project presenter.
      */
@@ -80,10 +82,11 @@ public class ProjectDetailsPresenter implements SubPresenter {
     private int maskCount;
 
     public ProjectDetailsPresenter(Dispatcher dispatcher, Authentication authentication,
-            ProjectPresenter projectPresenter) {
+            ProjectPresenter projectPresenter, CountriesList countriesList) {
         this.dispatcher = dispatcher;
         this.projectPresenter = projectPresenter;
         this.authentication = authentication;
+        this.countriesList = countriesList;
     }
 
     @Override
@@ -186,17 +189,13 @@ public class ProjectDetailsPresenter implements SubPresenter {
             // Masks the main panel.
             mask(count);
 
-            final Grid gridLayout = new Grid(layout.getRowsCount(), layout.getColumnsCount());
-            gridLayout.setCellPadding(0);
-            gridLayout.setCellSpacing(0);
-            gridLayout.setWidth("100%");
+            final Grid gridLayout = (Grid) layout.getWidget();
 
             for (final LayoutGroupDTO groupLayout : layout.getLayoutGroupsDTO()) {
 
-                final FieldSet groupPanel = (FieldSet) groupLayout.getWidget();
-                gridLayout.setWidget(groupLayout.getRow(), groupLayout.getColumn(), groupPanel);
-
-                final FormPanel formPanel = (FormPanel) groupPanel.getWidget(0);
+                // Creates the fieldset and positions it.
+                final FieldSet formPanel = (FieldSet) groupLayout.getWidget();
+                gridLayout.setWidget(groupLayout.getRow(), groupLayout.getColumn(), formPanel);
 
                 // For each constraint in the current layout group.
                 if (groupLayout.getLayoutConstraintsDTO() != null) {
@@ -236,6 +235,7 @@ public class ProjectDetailsPresenter implements SubPresenter {
                                 // its component.
                                 elementDTO.setService(dispatcher);
                                 elementDTO.setAuthentication(authentication);
+                                elementDTO.setCountries(countriesList);
                                 elementDTO.setCurrentContainerDTO(projectPresenter.getCurrentProjectDTO());
                                 elementDTO.assignValue(valueResult);
 

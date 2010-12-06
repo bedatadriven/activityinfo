@@ -26,7 +26,9 @@ import org.sigmah.client.ui.SigmahViewport;
 import org.sigmah.client.ui.Tab;
 import org.sigmah.client.ui.TabBar;
 import org.sigmah.client.ui.TabModel;
+import org.sigmah.shared.command.GetCountries;
 import org.sigmah.shared.command.GetUserInfo;
+import org.sigmah.shared.command.result.CountryResult;
 import org.sigmah.shared.dto.UserInfoDTO;
 import org.sigmah.shared.dto.value.FileUploadUtils;
 
@@ -57,7 +59,7 @@ public class SigmahAppFrame implements Frame {
 
     @Inject
     public SigmahAppFrame(EventBus eventBus, final Authentication auth, OfflineView offlineMenu,
-            final TabModel tabModel, final Dispatcher dispatcher, final UserInfo info) {
+            final TabModel tabModel, final Dispatcher dispatcher, final UserInfo info, final CountriesList countries) {
 
         if (auth == null) {
             RootPanel.get().add(new LoginView());
@@ -147,6 +149,20 @@ public class SigmahAppFrame implements Frame {
                                                 + FileUploadUtils.IMAGE_URL + "=" + result.getOrganization().getLogo()
                                                 + ")");
                     }
+                }
+            });
+
+            // Gets countries list.
+            dispatcher.execute(new GetCountries(), null, new AsyncCallback<CountryResult>() {
+
+                @Override
+                public void onFailure(Throwable e) {
+                    Log.error("[execute] Error while getting the countries list.", e);
+                }
+
+                @Override
+                public void onSuccess(CountryResult result) {
+                    countries.setCountries(result.getData());
                 }
             });
         }

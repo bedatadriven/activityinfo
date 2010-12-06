@@ -5,6 +5,7 @@
 
 package org.sigmah.shared.dto.element;
 
+import org.sigmah.client.CountriesList;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.Authentication;
@@ -57,6 +58,8 @@ public abstract class FlexibleElementDTO extends BaseModelData implements Entity
 
     private transient Menu historyMenu;
 
+    protected transient CountriesList countries;
+
     /**
      * Sets the dispatcher to be used in the
      * {@link #getElementComponent(ValueResult)} method.
@@ -100,6 +103,17 @@ public abstract class FlexibleElementDTO extends BaseModelData implements Entity
      */
     public void setCurrentContainerDTO(FlexibleElementContainer currentContainerDTO) {
         this.currentContainerDTO = currentContainerDTO;
+    }
+
+    /**
+     * Sets the countries list to be used in the
+     * {@link #getElementComponent(ValueResult)} method.
+     * 
+     * @param countries
+     *            The countries list.
+     */
+    public void setCountries(CountriesList countries) {
+        this.countries = countries;
     }
 
     /**

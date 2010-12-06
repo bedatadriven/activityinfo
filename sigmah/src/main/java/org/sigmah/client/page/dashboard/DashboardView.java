@@ -6,7 +6,6 @@
 package org.sigmah.client.page.dashboard;
 
 import java.util.Arrays;
-import java.util.HashMap;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.UserInfo;
@@ -27,13 +26,10 @@ import org.sigmah.client.page.report.ReportListPageState;
 import org.sigmah.client.page.table.PivotPageState;
 import org.sigmah.client.ui.StylableVBoxLayout;
 import org.sigmah.client.util.Notification;
-import org.sigmah.shared.command.GetCountries;
-import org.sigmah.shared.command.result.CountryResult;
 import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.OrgUnitDTOLight;
 import org.sigmah.shared.dto.ProjectDTOLight;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -63,7 +59,6 @@ import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Image;
@@ -216,55 +211,6 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
                                 // Show notification.
                                 Notification.show(I18N.CONSTANTS.createProjectSucceeded(),
                                         I18N.CONSTANTS.createProjectSucceededDetails());
-
-                                // Refreshes the countries list if needed.
-                                dispatcher.execute(new GetCountries(true), null, new AsyncCallback<CountryResult>() {
-
-                                    @Override
-                                    public void onFailure(Throwable throwable) {
-                                        // Nothing to do, need hard refreshing.
-                                    }
-
-                                    @Override
-                                    public void onSuccess(CountryResult countryResult) {
-
-                                        if (countryResult == null || countryResult.getData() == null
-                                                || countryResult.getData().isEmpty()) {
-                                            return;
-                                        }
-
-                                        if (Log.isDebugEnabled()) {
-                                            Log.debug("Refreshes the countries list.");
-                                        }
-
-                                        // Checks if some new countries have
-                                        // projects.
-                                        if (countryStore.getCount() != countryResult.getData().size()) {
-
-                                            if (Log.isDebugEnabled()) {
-                                                Log.debug("Some new countries have been added.");
-                                            }
-
-                                            // Temporally stores the actual
-                                            // displayed countries.
-                                            final HashMap<Integer, CountryDTO> refreshedCountries = new HashMap<Integer, CountryDTO>();
-                                            for (final CountryDTO country : countryStore.getModels()) {
-                                                refreshedCountries.put(country.getId(), country);
-                                            }
-
-                                            // The widget needs to be refreshed.
-                                            for (final CountryDTO country : countryResult.getData()) {
-                                                // New country.
-                                                if (refreshedCountries.get(country.getId()) == null) {
-                                                    countryStore.add(country);
-                                                    if (Log.isDebugEnabled()) {
-                                                        Log.debug("Adds the country: " + country.getName() + ".");
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                });
                             }
 
                             @Override

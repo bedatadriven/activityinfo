@@ -65,6 +65,8 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
                     + cmd.getValues().size() + " : " + cmd.getValues());
         }
 
+        final Project project = em.find(Project.class, cmd.getProjectId());
+
         // This date must be the same for all the saved values !
         final Date historyDate = new Date();
 
@@ -95,7 +97,33 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
                 }
 
                 // Saves the value and switch to the next value.
-                saveDefaultElement(cmd.getProjectId(), defaultElement.getType(), updateSingleValue);
+                final String oldValue = saveDefaultElement(cmd.getProjectId(), defaultElement.getType(),
+                        updateSingleValue);
+
+                // Checks if the first value as been already historized or not.
+                final Query query = em.createQuery("SELECT h FROM HistoryToken h WHERE h.elementId = :elementId");
+                query.setParameter("elementId", element.getId());
+                final List<Object> results = query.getResultList();
+
+                if (results == null || results.isEmpty()) {
+
+                    final Date oldDate;
+                    final User oldOwner;
+                    if (project != null) {
+                        oldDate = project.getLastSchemaUpdate();
+                        oldOwner = project.getOwner();
+                    } else {
+                        oldDate = new Date(historyDate.getTime() - 1);
+                        oldOwner = null;
+                    }
+
+                    // Historize the first value.
+                    historize(oldDate, element, oldOwner, ChangeType.ADD, oldValue, null);
+                }
+
+                // Historize the value.
+                historize(historyDate, element, user, ChangeType.EDIT, updateSingleValue, null);
+
                 continue;
             }
 
@@ -342,14 +370,15 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
      *            The type of the default element.
      * @param value
      *            The new value.
+     * @return The old value.
      */
-    private void saveDefaultElement(int id, DefaultFlexibleElementType type, String value) {
+    private String saveDefaultElement(int id, DefaultFlexibleElementType type, String value) {
 
         // All default values are managed as strings.
         // See DefaultFlexibleElementDTO.getComponent();
         if (value == null) {
             LOG.error("[saveDefaultElement] The value isn't a string and cannot be considered.");
-            return;
+            return null;
         }
 
         final String stringValue = value;
@@ -360,7 +389,7 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
 
         if (project == null && orgUnit == null) {
             LOG.error("[saveDefaultElement] Container with id '" + id + "' not found.");
-            return;
+            return null;
         }
 
         if (project != null) {
@@ -373,12 +402,16 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
             }
         }
 
+        final String oldValue;
+
         switch (type) {
         case CODE:
 
             if (project != null) {
+                oldValue = project.getName();
                 project.setName(stringValue);
             } else {
+                oldValue = orgUnit.getName();
                 orgUnit.setName(stringValue);
             }
 
@@ -389,8 +422,10 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
         case TITLE:
 
             if (project != null) {
+                oldValue = project.getFullName();
                 project.setFullName(stringValue);
             } else {
+                oldValue = orgUnit.getFullName();
                 orgUnit.setFullName(stringValue);
             }
 
@@ -402,6 +437,7 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
 
             // Decodes timestamp.
             if (project != null) {
+                oldValue = String.valueOf(project.getStartDate().getTime());
                 if ("".equals(stringValue)) {
 
                     project.setStartDate(null);
@@ -419,6 +455,8 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
                         LOG.debug("[saveDefaultElement] Set container start date to '" + date + "'.");
                     }
                 }
+            } else {
+                oldValue = null;
             }
         }
             break;
@@ -426,6 +464,7 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
 
             // Decodes timestamp.
             if (project != null) {
+                oldValue = String.valueOf(project.getEndDate().getTime());
                 if ("".equals(stringValue)) {
 
                     project.setEndDate(null);
@@ -443,21 +482,31 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
                         LOG.debug("[saveDefaultElement] Set container end date to '" + date + "'.");
                     }
                 }
+            } else {
+                oldValue = null;
             }
         }
             break;
         case BUDGET: {
             // Decodes doubles.
-            final String[] budgets = stringValue.split("\\|");
-            final double plannedBudget = Double.parseDouble(budgets[0]);
-            final double spendBudget = Double.parseDouble(budgets[1]);
-            final double receivedBudget = Double.parseDouble(budgets[2]);
+            final List<String> budgets = ValueResultUtils.splitElements(value);
+            final double plannedBudget = Double.parseDouble(budgets.get(0));
+            final double spendBudget = Double.parseDouble(budgets.get(1));
+            final double receivedBudget = Double.parseDouble(budgets.get(2));
 
             if (project != null) {
+
+                oldValue = ValueResultUtils.mergeElements(project.getPlannedBudget(), project.getSpendBudget(),
+                        project.getReceivedBudget());
+
                 project.setPlannedBudget(plannedBudget);
                 project.setSpendBudget(spendBudget);
                 project.setReceivedBudget(receivedBudget);
             } else {
+
+                oldValue = ValueResultUtils.mergeElements(orgUnit.getPlannedBudget(), orgUnit.getSpendBudget(),
+                        orgUnit.getReceivedBudget());
+
                 orgUnit.setPlannedBudget(plannedBudget);
                 orgUnit.setSpendBudget(spendBudget);
                 orgUnit.setReceivedBudget(receivedBudget);
@@ -473,6 +522,8 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
 
             if (project != null) {
 
+                oldValue = String.valueOf(project.getCountry().getId());
+
                 // Retrieves country.
                 final Country country = em.find(Country.class, Integer.valueOf(stringValue));
                 project.setCountry(country);
@@ -480,36 +531,14 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("[saveDefaultElement] Set container country to '" + country.getName() + "'.");
                 }
-            }
-        }
-            break;
-        case OWNER: {
-
-            if (project != null) {
-
-                // Retrieves user.
-                final Query q = em.createQuery("SELECT u from User u WHERE u.email = :emailVal");
-                q.setParameter("emailVal", stringValue);
-
-                final User user;
-                try {
-                    user = (User) q.getSingleResult();
-                } catch (NoResultException e) {
-                    LOG.error("[saveDefaultElement] Unknown user with email '" + stringValue + "'.", e);
-                    return;
-                }
-
-                project.setOwner(user);
-
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("[saveDefaultElement] Set container owner to '" + user.getEmail() + "'.");
-                }
+            } else {
+                oldValue = null;
             }
         }
             break;
         default:
             LOG.error("[saveDefaultElement] Unknown type '" + type + "' for the default flexible elements.");
-            return;
+            return null;
         }
 
         // Updates container.
@@ -522,5 +551,7 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
         if (LOG.isDebugEnabled()) {
             LOG.debug("[saveDefaultElement] Updates the container.");
         }
+
+        return oldValue;
     }
 }

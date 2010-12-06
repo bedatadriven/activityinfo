@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * Defines a flexible element which has no proper value but which is directly
@@ -29,5 +30,21 @@ public class DefaultFlexibleElement extends FlexibleElement {
 
     public void setType(DefaultFlexibleElementType type) {
         this.type = type;
+    }
+
+    @Override
+    @Transient
+    public boolean isHistorable() {
+
+        if (type != null) {
+            switch (type) {
+            case OWNER:
+                return false;
+            default:
+                return true;
+            }
+        }
+
+        return false;
     }
 }

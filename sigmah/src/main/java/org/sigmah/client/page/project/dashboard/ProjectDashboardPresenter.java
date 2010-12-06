@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.sigmah.client.CountriesList;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.UserInfo;
 import org.sigmah.client.dispatch.Dispatcher;
@@ -157,6 +158,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
     private final EventBus eventBus;
     private final Authentication authentication;
     private final UserInfo info;
+    private final CountriesList countriesList;
 
     /**
      * List of values changes.
@@ -180,12 +182,13 @@ public class ProjectDashboardPresenter implements SubPresenter {
     private int maskCount;
 
     public ProjectDashboardPresenter(Dispatcher dispatcher, EventBus eventBus, Authentication authentication,
-            ProjectPresenter projectPresenter, UserInfo info) {
+            ProjectPresenter projectPresenter, UserInfo info, CountriesList countriesList) {
         this.authentication = authentication;
         this.dispatcher = dispatcher;
         this.eventBus = eventBus;
         this.projectPresenter = projectPresenter;
         this.info = info;
+        this.countriesList = countriesList;
 
         this.tabItemsMap = new HashMap<Integer, TabItem>();
     }
@@ -271,7 +274,15 @@ public class ProjectDashboardPresenter implements SubPresenter {
             view.getTabPanelPhases().addListener(Events.Resize, new Listener<BoxComponentEvent>() {
                 @Override
                 public void handleEvent(BoxComponentEvent event) {
-                    tabItem.setSize(event.getWidth(), event.getHeight() - 25); // 25 is the default height of the tab bar
+                    tabItem.setSize(event.getWidth(), event.getHeight() - 25); // 25
+                                                                               // is
+                                                                               // the
+                                                                               // default
+                                                                               // height
+                                                                               // of
+                                                                               // the
+                                                                               // tab
+                                                                               // bar
                 }
             });
 
@@ -518,6 +529,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
                         elementDTO.setService(dispatcher);
                         elementDTO.setEventBus(eventBus);
                         elementDTO.setAuthentication(authentication);
+                        elementDTO.setCountries(countriesList);
                         elementDTO.setCurrentContainerDTO(projectPresenter.getCurrentProjectDTO());
                         elementDTO.assignValue(valueResult);
 

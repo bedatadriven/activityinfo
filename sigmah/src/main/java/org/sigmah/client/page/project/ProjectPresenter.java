@@ -4,6 +4,7 @@
  */
 package org.sigmah.client.page.project;
 
+import org.sigmah.client.CountriesList;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.UserInfo;
 import org.sigmah.client.dispatch.AsyncMonitor;
@@ -78,6 +79,7 @@ public class ProjectPresenter implements Frame, TabPage {
     private final View view;
     private final Dispatcher dispatcher;
     private final Authentication authentication;
+    private final CountriesList countriesList;
     private Page activePage;
 
     private ProjectState currentState;
@@ -98,16 +100,20 @@ public class ProjectPresenter implements Frame, TabPage {
 
     @Inject
     public ProjectPresenter(final Dispatcher dispatcher, View view, Authentication authentication,
-            final EventBus eventBus, final UserInfo info) {
+            final EventBus eventBus, final UserInfo info, final CountriesList countriesList) {
         this.dispatcher = dispatcher;
         this.view = view;
         this.authentication = authentication;
+        this.countriesList = countriesList;
 
-        final DummyPresenter dummyPresenter = new DummyPresenter(); // For development
+        final DummyPresenter dummyPresenter = new DummyPresenter(); // For
+                                                                    // development
 
-        this.presenters = new SubPresenter[] { new ProjectDashboardPresenter(dispatcher, eventBus, authentication, this, info), // Dashboard
-                new ProjectDetailsPresenter(dispatcher, authentication, this), // Details,
-                new ProjectLogFramePresenter(dispatcher, this), // Logical Framework
+        this.presenters = new SubPresenter[] {
+                new ProjectDashboardPresenter(dispatcher, eventBus, authentication, this, info, countriesList), // Dashboard
+                new ProjectDetailsPresenter(dispatcher, authentication, this, countriesList), // Details,
+                new ProjectLogFramePresenter(dispatcher, this), // Logical
+                                                                // Framework
                 dummyPresenter, // Indicators
                 new ProjectCalendarPresenter(dispatcher, this), // Calendar
                 new ProjectReportsPresenter(dispatcher, eventBus, this), // Reports
@@ -310,6 +316,7 @@ public class ProjectPresenter implements Frame, TabPage {
                         final DefaultFlexibleElementDTO defaultElement = (DefaultFlexibleElementDTO) element;
                         defaultElement.setService(dispatcher);
                         defaultElement.setAuthentication(authentication);
+                        defaultElement.setCountries(countriesList);
                         defaultElement.setCurrentContainerDTO(currentProjectDTO);
 
                         final Component component = defaultElement.getElementComponent(null, false);

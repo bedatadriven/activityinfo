@@ -43,6 +43,11 @@ public class HistoryTokenText extends HTML {
         setHistoryTokenValue(values);
     }
 
+    public HistoryTokenText(Object value) {
+        this();
+        setHistoryTokenValue(value);
+    }
+
     /**
      * Display a history token in this element.
      * 
@@ -125,6 +130,18 @@ public class HistoryTokenText extends HTML {
         }
 
         setHTML(sb.toString());
+    }
+
+    /**
+     * Display a history value in this element.
+     * 
+     * @param value
+     *            The value.
+     */
+    public void setHistoryTokenValue(Object value) {
+        if (value != null) {
+            setHTML(value.toString());
+        }
     }
 
     @Override

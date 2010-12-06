@@ -8,9 +8,11 @@ package org.sigmah.shared.dto.element;
 import java.util.Date;
 
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.util.HistoryTokenText;
 import org.sigmah.shared.command.result.ValueResult;
 import org.sigmah.shared.dto.element.handler.RequiredValueEvent;
 import org.sigmah.shared.dto.element.handler.ValueEvent;
+import org.sigmah.shared.dto.history.HistoryTokenListDTO;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.DatePickerEvent;
@@ -517,6 +519,22 @@ public class TextAreaElementDTO extends FlexibleElementDTO {
         // Required element ?
         if (getValidates()) {
             handlerManager.fireEvent(new RequiredValueEvent(isValueOn));
+        }
+    }
+
+    @Override
+    public Object renderHistoryToken(HistoryTokenListDTO token) {
+
+        if (getType() != null && getType() == 'D') {
+            final String value = token.getTokens().get(0).getValue();
+            if (value != null) {
+                final DateTimeFormat format = DateTimeFormat.getFormat(I18N.CONSTANTS.flexibleElementDateFormat());
+                return new HistoryTokenText(format.format(new Date(Long.valueOf(value))));
+            } else {
+                return new HistoryTokenText("");
+            }
+        } else {
+            return super.renderHistoryToken(token);
         }
     }
 }

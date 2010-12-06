@@ -65,9 +65,13 @@ public class GetHistoryHandler implements CommandHandler<GetHistory> {
                 if (list == null) {
                     list = new HistoryTokenListDTO();
                     list.setDate(token.getDate());
-                    list.setUserEmail(token.getUser().getEmail());
-                    list.setUserFirstName(token.getUser().getFirstName());
-                    list.setUserName(token.getUser().getName());
+
+                    final User owner = token.getUser();
+                    if (owner != null) {
+                        list.setUserEmail(owner.getEmail());
+                        list.setUserFirstName(owner.getFirstName());
+                        list.setUserName(owner.getName());
+                    }
 
                     mappedTokensDTO.put(token.getDate(), list);
                     tokensDTO.add(list);

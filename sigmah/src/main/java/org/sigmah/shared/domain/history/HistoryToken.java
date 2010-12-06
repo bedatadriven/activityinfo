@@ -77,8 +77,8 @@ public class HistoryToken implements Serializable {
         this.value = value;
     }
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "id_user", nullable = false)
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "id_user", nullable = true)
     public User getUser() {
         return user;
     }
