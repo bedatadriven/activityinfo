@@ -36,6 +36,15 @@ public class OrgUnitDTOLight extends BaseTreeModel implements EntityDTO {
     public void setName(String name) {
         set("name", name);
     }
+    
+    // Title
+    public String getTitle() {
+        return get("title");
+    }
+
+    public void setTitle(String title) {
+        set("title", title);
+    }
 
     // Full name
     public String getFullName() {
@@ -72,6 +81,20 @@ public class OrgUnitDTOLight extends BaseTreeModel implements EntityDTO {
 
     public void setOfficeLocationCountry(CountryDTO officeLocationCountry) {
         set("country", officeLocationCountry);
+    }
+
+    // Can contain projects
+    public Boolean getCanContainProjects() {
+        final Boolean b = (Boolean) get("canContainProjects");
+        if (b == null) {
+            return false;
+        } else {
+            return b;
+        }
+    }
+
+    public void setCanContainProjects(Boolean canContainProjects) {
+        set("canContainProjects", canContainProjects);
     }
 
     public void setChildrenDTO(Set<OrgUnitDTOLight> children) {

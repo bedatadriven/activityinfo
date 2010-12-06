@@ -173,6 +173,8 @@ public class OrgUnitDTO extends BaseModelData implements EntityDTO, DefaultFlexi
         light.setId(getId());
         light.setName(getName());
         light.setFullName(getFullName());
+        light.setTitle(getOrgUnitModel().getTitle());
+        light.setCanContainProjects(getOrgUnitModel().getCanContainProjects());
         light.generateCompleteName();
         light.setParentDTO(parent);
         light.setOfficeLocationCountry(getOfficeLocationCountry());

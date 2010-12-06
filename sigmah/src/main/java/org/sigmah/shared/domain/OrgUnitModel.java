@@ -32,6 +32,7 @@ public class OrgUnitModel implements Serializable {
     private Integer minLevel;
     private Integer maxLevel;
     private String title;
+    private Boolean canContainProjects = true;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -114,5 +115,14 @@ public class OrgUnitModel implements Serializable {
 
     public void setMaxLevel(Integer maxLevel) {
         this.maxLevel = maxLevel;
+    }
+
+    @Column(name = "can_contain_projects", nullable = false)
+    public Boolean getCanContainProjects() {
+        return canContainProjects;
+    }
+
+    public void setCanContainProjects(Boolean canContainProjects) {
+        this.canContainProjects = canContainProjects;
     }
 }

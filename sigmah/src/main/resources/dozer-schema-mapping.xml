@@ -64,7 +64,7 @@
 			<a>user.name</a>
 			<b>name</b>
 		</field>
-		
+
 		<field>
 			<a>user.firstName</a>
 			<b>firstName</b>
@@ -113,7 +113,7 @@
 			<a>owner.name</a>
 			<b>ownerName</b>
 		</field>
-		
+
 		<field>
 			<a>owner.firstName</a>
 			<b>ownerFirstName</b>
@@ -123,7 +123,7 @@
 			<a>owner.email</a>
 			<b>ownerEmail</b>
 		</field>
-		
+
 		<field>
 			<a>logFrame</a>
 			<b>logFrameDTO</b>
@@ -134,12 +134,12 @@
 	<mapping wildcard="true">
 		<class-a>org.sigmah.shared.domain.Project</class-a>
 		<class-b>org.sigmah.shared.dto.ProjectDTOLight</class-b>
-		
+
 		<field>
 			<a>currentPhase</a>
 			<b>currentPhaseDTO</b>
 		</field>
-		
+
 		<field>
 			<a>projectModel.visibilities</a>
 			<b>visibilities</b>
@@ -303,7 +303,7 @@
 			<a>id</a>
 			<b>id</b>
 		</field>
-		
+
 		<field>
 			<a>parentQuestion</a>
 			<b>parentQuestionDTO</b>
@@ -399,7 +399,7 @@
 			<a>author.name</a>
 			<b>authorName</b>
 		</field>
-		
+
 		<field>
 			<a>author.firstName</a>
 			<b>authorFirstName</b>
@@ -566,5 +566,21 @@
 			<b>organizationId</b>
 		</field>
 	</mapping>
-	
+
+	<!-- OrgUnit/ProjectModelVisibilityDTO Mapping -->
+	<mapping wildcard="true">
+		<class-a>org.sigmah.shared.domain.OrgUnit</class-a>
+		<class-b>org.sigmah.shared.dto.OrgUnitDTOLight</class-b>
+
+		<field>
+			<a>orgUnitModel.title</a>
+			<b>title</b>
+		</field>
+		
+		<field>
+			<a>orgUnitModel.canContainProjects</a>
+			<b>canContainProjects</b>
+		</field>
+	</mapping>
+
 </mappings>

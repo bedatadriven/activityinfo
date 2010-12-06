@@ -125,8 +125,6 @@ public class CreateProjectWindow {
     private final ComboBox<ProjectModelDTOLight> modelsField;
     private final LabelField modelType;
     private final ListStore<ProjectModelDTOLight> modelsStore;
-    // private final ListStore<CountryDTO> countriesStore;
-    // private final ComboBox<CountryDTO> countriesField;
     private final NumberField budgetField;
     private final NumberField amountField;
     private final LabelField percentageField;
@@ -299,36 +297,6 @@ public class CreateProjectWindow {
         // Percentage for funding.
         percentageField = new LabelField();
         percentageField.setFieldLabel(I18N.CONSTANTS.createProjectPercentage());
-
-        // // Countries list.
-        // countriesField = new ComboBox<CountryDTO>();
-        // countriesField.setFieldLabel(I18N.CONSTANTS.projectCountry());
-        // countriesField.setAllowBlank(false);
-        // countriesField.setValueField("id");
-        // countriesField.setDisplayField("name");
-        // countriesField.setEditable(true);
-        //
-        // // Countries list store.
-        // countriesStore = new ListStore<CountryDTO>();
-        // countriesStore.addListener(Events.Add, new
-        // Listener<StoreEvent<CountryDTO>>() {
-        //
-        // @Override
-        // public void handleEvent(StoreEvent<CountryDTO> be) {
-        // countriesField.setEnabled(true);
-        // }
-        // });
-        //
-        // countriesStore.addListener(Events.Clear, new
-        // Listener<StoreEvent<CountryDTO>>() {
-        //
-        // @Override
-        // public void handleEvent(StoreEvent<CountryDTO> be) {
-        // countriesField.setEnabled(false);
-        // }
-        // });
-        //
-        // countriesField.setStore(countriesStore);
 
         // Org units list.
         orgUnitsField = new ComboBox<OrgUnitDTOLight>();
@@ -570,6 +538,12 @@ public class CreateProjectWindow {
                 @Override
                 public void onSuccess(OrgUnitDTOLight result) {
                     fillOrgUnitsList(result);
+
+                    if (orgUnitsStore.getCount() == 0) {
+                        missingRequiredData();
+                        return;
+                    }
+
                     countBeforeShow();
                 }
 
@@ -581,30 +555,6 @@ public class CreateProjectWindow {
         } else {
             countBeforeShow();
         }
-
-        // Retrieves countries.
-        // dispatcher.execute(new GetCountries(), null, new
-        // AsyncCallback<CountryResult>() {
-        //
-        // @Override
-        // public void onFailure(Throwable arg0) {
-        // missingRequiredData();
-        // }
-        //
-        // @Override
-        // public void onSuccess(CountryResult result) {
-        //
-        // if (result.getData() == null || result.getData().isEmpty()) {
-        // missingRequiredData();
-        // return;
-        // }
-        //
-        // countriesStore.add(result.getData());
-        // countriesStore.commitChanges();
-        //
-        // countBeforeShow();
-        // }
-        // });
 
         if (modelsStore.getCount() == 0) {
 
@@ -668,7 +618,9 @@ public class CreateProjectWindow {
      */
     private void recursiveFillOrgUnitsList(OrgUnitDTOLight root) {
 
-        orgUnitsStore.add(root);
+        if (root.getCanContainProjects()) {
+            orgUnitsStore.add(root);
+        }
 
         for (final OrgUnitDTOLight child : root.getChildrenDTO()) {
             recursiveFillOrgUnitsList(child);

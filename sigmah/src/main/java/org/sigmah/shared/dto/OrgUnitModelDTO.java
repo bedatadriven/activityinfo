@@ -92,4 +92,13 @@ public class OrgUnitModelDTO extends BaseModelData implements EntityDTO {
     public void setMaxLevel(Integer maxLevel) {
         set("maxLevel", maxLevel);
     }
+
+    // Can contain projects
+    public Boolean getCanContainProjects() {
+        return (Boolean) get("canContainProjects");
+    }
+
+    public void setCanContainProjects(Boolean canContainProjects) {
+        set("canContainProjects", canContainProjects);
+    }
 }
