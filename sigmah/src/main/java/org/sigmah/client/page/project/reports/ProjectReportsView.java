@@ -170,7 +170,11 @@ public class ProjectReportsView extends LayoutContainer {
             createReportDialog = dialog;
         }
         
+        final TextField<String> textField = (TextField<String>) createReportDialog.getWidget(0);
+        textField.reset();
+        
         final ComboBox<GetProjectReportModels.ModelReference> modelBox = (ComboBox<ModelReference>) createReportDialog.getWidget(1);
+        modelBox.reset();
         final ListStore<GetProjectReportModels.ModelReference> modelBoxStore = modelBox.getStore();
         modelBoxStore.removeAll();
 
