@@ -611,6 +611,10 @@ body {
 	padding-left: 4px;
 }
 
+.flexibility-label {
+	font-family: tahoma,arial,helvetica,sans-serif;
+}
+
 /* ----------------------------------------------------- GWT HTML Table */
 .html-grid-header-row {
 	border-bottom: solid 1px #B7A076;

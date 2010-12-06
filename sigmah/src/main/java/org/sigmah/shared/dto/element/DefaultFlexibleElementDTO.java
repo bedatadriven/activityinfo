@@ -201,7 +201,8 @@ public class DefaultFlexibleElementDTO extends FlexibleElementDTO {
             // Spent ratio.
             final Label ratioLabel = new Label();
             ratioLabel.addStyleName("project-label-10");
-
+            ratioLabel.addStyleName("flexibility-label");
+            
             if (enabled) {
 
                 // Planned budget.
