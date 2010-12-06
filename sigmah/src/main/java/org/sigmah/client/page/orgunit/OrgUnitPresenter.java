@@ -83,7 +83,7 @@ public class OrgUnitPresenter implements Frame, TabPage {
         this.view = view;
         this.authentication = authentication;
         this.countriesList = countriesList;
-        
+
         final DummyPresenter dummyPresenter = new DummyPresenter();
 
         this.presenters = new SubPresenter[] { new OrgUnitDashboardPresenter(dispatcher, eventBus, this),
@@ -202,7 +202,7 @@ public class OrgUnitPresenter implements Frame, TabPage {
 
         // Panel.
         final ContentPanel panel = view.getPanelBanner();
-        panel.setHeading(I18N.CONSTANTS.orgunit() + ' ' + currentOrgUnitDTO.getName() + " ("
+        panel.setHeading(currentOrgUnitDTO.getOrgUnitModel().getTitle() + ' ' + currentOrgUnitDTO.getName() + " ("
                 + currentOrgUnitDTO.getFullName() + ") : " + I18N.CONSTANTS.projectInfos());
         panel.removeAll();
 

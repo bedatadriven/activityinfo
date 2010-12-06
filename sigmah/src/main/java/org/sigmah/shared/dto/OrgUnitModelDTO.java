@@ -30,6 +30,15 @@ public class OrgUnitModelDTO extends BaseModelData implements EntityDTO {
         set("name", name);
     }
 
+    // Title
+    public String getTitle() {
+        return get("title");
+    }
+
+    public void setTitle(String title) {
+        set("title", title);
+    }
+
     // Banner
     public OrgUnitBannerDTO getBanner() {
         return get("banner");

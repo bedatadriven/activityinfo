@@ -31,6 +31,7 @@ public class OrgUnitModel implements Serializable {
     private Boolean hasSite = false;
     private Integer minLevel;
     private Integer maxLevel;
+    private String title;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -43,13 +44,22 @@ public class OrgUnitModel implements Serializable {
         this.id = id;
     }
 
-    @Column(name = "name", nullable = false, length = 512)
+    @Column(name = "name", nullable = false, length = 8192)
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Column(name = "title", nullable = false, length = 8192)
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     @OneToOne(mappedBy = "orgUnitModel", cascade = CascadeType.ALL)
