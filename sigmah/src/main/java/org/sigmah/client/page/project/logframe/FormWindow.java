@@ -17,6 +17,7 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
@@ -439,6 +440,7 @@ public class FormWindow {
         combobox.setLoadingText(I18N.CONSTANTS.loading());
         combobox.setFieldLabel(fieldLabelString);
         combobox.setDisplayField(displayField.trim());
+        combobox.setTriggerAction(TriggerAction.ALL);
 
         fields.add(new FieldWrapper(combobox, allowBlank));
 

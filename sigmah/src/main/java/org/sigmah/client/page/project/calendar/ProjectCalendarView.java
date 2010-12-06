@@ -21,6 +21,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
@@ -64,6 +65,7 @@ import org.sigmah.shared.domain.calendar.Event;
  *
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
+@SuppressWarnings({"deprecation", "unchecked"})
 public class ProjectCalendarView extends LayoutContainer {
 
     private Button addEventButton;
@@ -273,6 +275,8 @@ public class ProjectCalendarView extends LayoutContainer {
             calendarBox.setAllowBlank(false);
             calendarBox.setDisplayField("name");
             calendarBox.setName("calendarId");
+            calendarBox.setTriggerAction(TriggerAction.ALL);
+            calendarBox.setEmptyText(I18N.CONSTANTS.calendarEmptyChoice());
             dialog.add(calendarBox);
 
             // Event summary

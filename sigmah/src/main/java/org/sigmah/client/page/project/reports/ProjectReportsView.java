@@ -22,6 +22,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
@@ -82,6 +83,7 @@ import org.sigmah.shared.dto.report.RichTextElementDTO;
  * Displays the reports attached to a project.
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class ProjectReportsView extends LayoutContainer {
 
     private EventBus eventBus;
@@ -152,6 +154,8 @@ public class ProjectReportsView extends LayoutContainer {
             modelBox.setAllowBlank(false);
             modelBox.setDisplayField("name");
             modelBox.setName("model");
+            modelBox.setTriggerAction(TriggerAction.ALL);
+            modelBox.setEmptyText(I18N.CONSTANTS.reportEmptyChoice());
             dialog.add(modelBox);
 
             // Cancel button
@@ -165,7 +169,7 @@ public class ProjectReportsView extends LayoutContainer {
 
             createReportDialog = dialog;
         }
-
+        
         final ComboBox<GetProjectReportModels.ModelReference> modelBox = (ComboBox<ModelReference>) createReportDialog.getWidget(1);
         final ListStore<GetProjectReportModels.ModelReference> modelBoxStore = modelBox.getStore();
         modelBoxStore.removeAll();

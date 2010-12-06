@@ -32,6 +32,7 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
@@ -175,6 +176,8 @@ public class CreateProjectWindow {
         modelsField.setValueField("id");
         modelsField.setDisplayField("name");
         modelsField.setEditable(true);
+        modelsField.setEmptyText(I18N.CONSTANTS.projectModelEmptyChoice());
+        modelsField.setTriggerAction(TriggerAction.ALL);
 
         // Model type
         modelType = new LabelField();
@@ -305,6 +308,8 @@ public class CreateProjectWindow {
         orgUnitsField.setValueField("id");
         orgUnitsField.setDisplayField("completeName");
         orgUnitsField.setEditable(true);
+        orgUnitsField.setEmptyText(I18N.CONSTANTS.orgunitEmptyChoice());
+        orgUnitsField.setTriggerAction(TriggerAction.ALL);
 
         // Org units list store.
         orgUnitsStore = new ListStore<OrgUnitDTOLight>();
@@ -340,19 +345,18 @@ public class CreateProjectWindow {
         formPanel.setBodyBorder(false);
         formPanel.setHeaderVisible(false);
         formPanel.setPadding(5);
+        formPanel.setLabelWidth(165);
+        formPanel.setFieldWidth(350);
 
         formPanel.add(nameField);
         formPanel.add(fullNameField);
         formPanel.add(budgetField);
-        // formPanel.add(countriesField);
         formPanel.add(orgUnitsField);
         formPanel.add(modelsField);
         formPanel.add(modelType);
         formPanel.add(amountField);
         formPanel.add(percentageField);
         formPanel.addButton(createButton);
-
-        formPanel.setLabelWidth(165);
 
         // Main window panel.
         final ContentPanel mainPanel = new ContentPanel();
@@ -363,7 +367,7 @@ public class CreateProjectWindow {
         // Window.
         window = new Window();
         window.setHeading(I18N.CONSTANTS.createProject());
-        window.setSize(415, 290);
+        window.setSize(550, 290);
         window.setPlain(true);
         window.setModal(true);
         window.setBlinkModal(true);
