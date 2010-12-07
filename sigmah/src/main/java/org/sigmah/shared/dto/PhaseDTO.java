@@ -6,6 +6,7 @@
 package org.sigmah.shared.dto;
 
 import java.util.Date;
+import java.util.List;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
@@ -66,6 +67,32 @@ public class PhaseDTO extends BaseModelData implements EntityDTO, Comparable<Pha
         return getEndDate() != null;
     }
 
+    /**
+     * Returns if this phase is a successor of the given phase.
+     * 
+     * @param phase
+     *            The phase.
+     * @return If this phase is a successor of the given phase.
+     */
+    public boolean isSuccessor(PhaseDTO phase) {
+
+        if (phase == null) {
+            return false;
+        }
+
+        final List<PhaseModelDTO> successors = phase.getPhaseModelDTO().getSuccessorsDTO();
+        if (successors != null) {
+            for (final PhaseModelDTO successor : successors) {
+                final PhaseDTO p = getParentProjectDTO().getPhaseFromModel(successor);
+                if (this.equals(p)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     @Override
     public int compareTo(PhaseDTO o) {
         if (getPhaseModelDTO() != null && o.getPhaseModelDTO() != null) {
@@ -78,6 +105,22 @@ public class PhaseDTO extends BaseModelData implements EntityDTO, Comparable<Pha
             }
         }
         return 0;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (obj == null) {
+            return false;
+        }
+
+        if (!(obj instanceof PhaseDTO)) {
+            return false;
+        }
+
+        final PhaseDTO other = (PhaseDTO) obj;
+
+        return getId() == other.getId();
     }
 
 }

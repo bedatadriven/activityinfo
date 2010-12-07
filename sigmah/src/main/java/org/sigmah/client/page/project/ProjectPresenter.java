@@ -116,7 +116,7 @@ public class ProjectPresenter implements Frame, TabPage {
                                                                 // Framework
                 dummyPresenter, // Indicators
                 new ProjectCalendarPresenter(dispatcher, this), // Calendar
-                new ProjectReportsPresenter(dispatcher, eventBus, this), // Reports
+                new ProjectReportsPresenter(authentication, dispatcher, eventBus, this), // Reports
                 dummyPresenter // Security incidents
         };
 

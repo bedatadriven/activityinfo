@@ -4,16 +4,58 @@
 
 package org.sigmah.shared.dto;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.sigmah.shared.domain.ProjectModelType;
 import org.sigmah.shared.dto.element.FlexibleElementDTO;
+import org.sigmah.shared.dto.layout.LayoutConstraintDTO;
+import org.sigmah.shared.dto.layout.LayoutGroupDTO;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 public class ProjectModelDTO extends BaseModelData implements EntityDTO {
 
     private static final long serialVersionUID = 8508466949743884046L;
+
+    /**
+     * Localizes an flexible element in the project model.
+     * 
+     * @author tmi
+     * 
+     */
+    protected static class LocalizedElement {
+
+        private final PhaseModelDTO phaseModel;
+        private final FlexibleElementDTO element;
+
+        protected LocalizedElement(PhaseModelDTO phaseModel, FlexibleElementDTO element) {
+            this.phaseModel = phaseModel;
+            this.element = element;
+        }
+
+        /**
+         * Gets the flexible element.
+         * 
+         * @return The flexible element.
+         */
+        public FlexibleElementDTO getElement() {
+            return element;
+        }
+
+        /**
+         * Get the phase model in which the element is displayed, or
+         * <code>null</code> if the element is in the details page.
+         * 
+         * @return The phase model of the element or <code>null</code>.
+         */
+        public PhaseModelDTO getPhaseModel() {
+            return phaseModel;
+        }
+    }
+
+    private transient HashMap<Class<? extends FlexibleElementDTO>, List<LocalizedElement>> localizedElements;
 
     @Override
     public String getEntityName() {
@@ -114,5 +156,69 @@ public class ProjectModelDTO extends BaseModelData implements EntityDTO {
         }
 
         return null;
+    }
+
+    /**
+     * Gets all the flexible elements instances of the given class in this model
+     * (phases and details page). The banner is ignored cause the elements in it
+     * are read-only.
+     * 
+     * @param clazz
+     *            The class of the searched flexible elements.
+     * @return The elements localized for the given class, or <code>null</code>
+     *         if there is no element of this class.
+     */
+    public List<LocalizedElement> getLocalizedElements(Class<? extends FlexibleElementDTO> clazz) {
+
+        if (localizedElements == null) {
+
+            localizedElements = new HashMap<Class<? extends FlexibleElementDTO>, List<LocalizedElement>>();
+
+            // Details.
+            for (final LayoutGroupDTO group : getProjectDetailsDTO().getLayoutDTO().getLayoutGroupsDTO()) {
+
+                // For each constraint.
+                for (final LayoutConstraintDTO constraint : group.getLayoutConstraintsDTO()) {
+
+                    // Gets the element and its class.
+                    final FlexibleElementDTO element = constraint.getFlexibleElementDTO();
+                    List<LocalizedElement> elements = localizedElements.get(element.getClass());
+
+                    // First element for this class.
+                    if (elements == null) {
+                        elements = new ArrayList<LocalizedElement>();
+                        localizedElements.put(element.getClass(), elements);
+                    }
+
+                    // Maps the element.
+                    elements.add(new LocalizedElement(null, element));
+                }
+            }
+
+            // For each phase.
+            for (final PhaseModelDTO phaseModel : getPhaseModelsDTO()) {
+                // For each group.
+                for (final LayoutGroupDTO group : phaseModel.getLayoutDTO().getLayoutGroupsDTO()) {
+                    // For each constraint.
+                    for (final LayoutConstraintDTO constraint : group.getLayoutConstraintsDTO()) {
+
+                        // Gets the element and its class.
+                        final FlexibleElementDTO element = constraint.getFlexibleElementDTO();
+                        List<LocalizedElement> elements = localizedElements.get(element.getClass());
+
+                        // First element for this class.
+                        if (elements == null) {
+                            elements = new ArrayList<LocalizedElement>();
+                            localizedElements.put(element.getClass(), elements);
+                        }
+
+                        // Maps the element.
+                        elements.add(new LocalizedElement(phaseModel, element));
+                    }
+                }
+            }
+        }
+
+        return localizedElements.get(clazz);
     }
 }

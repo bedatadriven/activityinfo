@@ -99,14 +99,14 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
     private Button addLocalPartnerProjectButton;
     private Button createLocalPartnerProjectButton;
 
-    private FlexibleGrid<MonitoredPointDTO> monitoredPointsGrid;
+    private Grid<MonitoredPointDTO> monitoredPointsGrid;
 
     public ProjectDashboardView(Authentication authentication) {
 
         this.authentication = authentication;
 
         final BorderLayout borderLayout = new BorderLayout();
-         borderLayout.setContainerStyle("x-border-layout-ct main-background");
+        borderLayout.setContainerStyle("x-border-layout-ct main-background");
         setLayout(borderLayout);
 
         /* Center panel */
@@ -130,9 +130,9 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
         // Phases tab panel
         tabPanelPhases = new TabPanel();
         tabPanelPhases.setPlain(true);
-//        tabPanelPhases.addStyleName("project-tabPhases");
-//        tabPanelPhases.setBorders(false);
-//        tabPanelPhases.setBodyBorder(false);
+        // tabPanelPhases.addStyleName("project-tabPhases");
+        // tabPanelPhases.setBorders(false);
+        // tabPanelPhases.setBodyBorder(false);
 
         // Toolbar
         toolBar = new ToolBar();
@@ -217,7 +217,7 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
         final BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST, 250);
         westData.setMargins(new Margins(0, 4, 4, 0));
         westData.setCollapsible(true);
-        
+
         final BorderLayoutData centerData = new BorderLayoutData(LayoutRegion.CENTER);
         centerData.setMargins(new Margins(0, 0, 4, 4));
 
@@ -377,7 +377,7 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
     }
 
     @Override
-    public FlexibleGrid<MonitoredPointDTO> getMonitoredPointsGrid() {
+    public Grid<MonitoredPointDTO> getMonitoredPointsGrid() {
         return monitoredPointsGrid;
     }
 
@@ -731,8 +731,11 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
         final ListStore<MonitoredPointDTO> monitoredPointsStore = new ListStore<MonitoredPointDTO>();
 
         // Grid.
-        monitoredPointsGrid = new FlexibleGrid<MonitoredPointDTO>(monitoredPointsStore, null,
-                getMonitoredPointsColumnModel());
+        monitoredPointsGrid = new Grid<MonitoredPointDTO>(monitoredPointsStore, new ColumnModel(
+                Arrays.asList(getMonitoredPointsColumnModel())));
+        monitoredPointsGrid.getView().setForceFit(true);
+        monitoredPointsGrid.setBorders(false);
+
         monitoredPointsGrid.addPlugin((CheckColumnConfig) monitoredPointsGrid.getColumnModel().getColumn(0));
         monitoredPointsGrid.setAutoExpandColumn("label");
 

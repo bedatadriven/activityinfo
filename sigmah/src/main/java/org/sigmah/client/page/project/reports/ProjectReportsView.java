@@ -4,6 +4,37 @@
  */
 package org.sigmah.client.page.project.reports;
 
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.sigmah.client.EventBus;
+import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.event.NavigationEvent;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.client.page.NavigationHandler;
+import org.sigmah.client.page.project.ProjectState;
+import org.sigmah.client.page.project.reports.images.ToolbarImages;
+import org.sigmah.client.ui.FoldPanel;
+import org.sigmah.client.util.Notification;
+import org.sigmah.shared.command.CreateEntity;
+import org.sigmah.shared.command.GetProjectReportModels;
+import org.sigmah.shared.command.GetProjectReportModels.ModelReference;
+import org.sigmah.shared.command.GetProjectReports;
+import org.sigmah.shared.command.UpdateEntity;
+import org.sigmah.shared.command.result.CreateResult;
+import org.sigmah.shared.command.result.ProjectReportModelListResult;
+import org.sigmah.shared.command.result.VoidResult;
+import org.sigmah.shared.dto.report.KeyQuestionDTO;
+import org.sigmah.shared.dto.report.ProjectReportContent;
+import org.sigmah.shared.dto.report.ProjectReportDTO;
+import org.sigmah.shared.dto.report.ProjectReportSectionDTO;
+import org.sigmah.shared.dto.report.RichTextElementDTO;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
@@ -49,35 +80,6 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RichTextArea;
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.sigmah.client.EventBus;
-import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.event.NavigationEvent;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.client.page.NavigationHandler;
-import org.sigmah.client.page.project.ProjectState;
-import org.sigmah.client.page.project.reports.images.ToolbarImages;
-import org.sigmah.client.ui.FoldPanel;
-import org.sigmah.client.util.Notification;
-import org.sigmah.shared.command.CreateEntity;
-import org.sigmah.shared.command.GetProjectReportModels;
-import org.sigmah.shared.command.GetProjectReportModels.ModelReference;
-import org.sigmah.shared.command.GetProjectReports;
-import org.sigmah.shared.command.UpdateEntity;
-import org.sigmah.shared.command.result.CreateResult;
-import org.sigmah.shared.command.result.ProjectReportModelListResult;
-import org.sigmah.shared.command.result.VoidResult;
-import org.sigmah.shared.dto.report.KeyQuestionDTO;
-import org.sigmah.shared.dto.report.ProjectReportContent;
-import org.sigmah.shared.dto.report.ProjectReportDTO;
-import org.sigmah.shared.dto.report.ProjectReportSectionDTO;
-import org.sigmah.shared.dto.report.RichTextElementDTO;
 
 /**
  * Displays the reports attached to a project.
@@ -91,7 +93,7 @@ public class ProjectReportsView extends LayoutContainer {
 
     private ProjectState currentState;
     private String phaseName;
-
+    
     private ListStore<GetProjectReports.ReportReference> store;
     private LayoutContainer mainPanel;
     private RichTextArea.Formatter currentFormatter;
@@ -100,6 +102,8 @@ public class ProjectReportsView extends LayoutContainer {
     private KeyQuestionState keyQuestionState;
 
     private Dialog createReportDialog;
+    
+    private Button attachButton;
 
     public ProjectReportsView(EventBus eventBus, Dispatcher dispatcher, ListStore<GetProjectReports.ReportReference> store) {
         this.eventBus = eventBus;
@@ -260,7 +264,11 @@ public class ProjectReportsView extends LayoutContainer {
                 getCreateReportDialog(store).show();
             }
         });
+        
+        attachButton = new Button(I18N.CONSTANTS.flexibleElementFilesListAddDocument(), icons.attach());
 
+        toolBar.add(attachButton);
+        toolBar.add(new SeparatorToolItem());
         toolBar.add(newButton);
 
         panel.setTopComponent(toolBar);
@@ -731,5 +739,9 @@ public class ProjectReportsView extends LayoutContainer {
 
     public void setPhaseName(String phaseName) {
         this.phaseName = phaseName;
+    }
+    
+    public Button getAttachButton() {
+        return attachButton;
     }
 }

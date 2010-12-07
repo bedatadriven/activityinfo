@@ -49,7 +49,6 @@ import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.ProjectDTOLight;
 import org.sigmah.shared.dto.ProjectFundingDTO;
 import org.sigmah.shared.dto.element.DefaultFlexibleElementDTO;
-import org.sigmah.shared.dto.element.FilesListElementDTO;
 import org.sigmah.shared.dto.element.FlexibleElementDTO;
 import org.sigmah.shared.dto.element.handler.RequiredValueEvent;
 import org.sigmah.shared.dto.element.handler.RequiredValueHandler;
@@ -144,7 +143,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
         public abstract Button getCreateLocalPartnerProjectButton();
 
-        public abstract FlexibleGrid<MonitoredPointDTO> getMonitoredPointsGrid();
+        public abstract com.extjs.gxt.ui.client.widget.grid.Grid<MonitoredPointDTO> getMonitoredPointsGrid();
 
         public abstract Button getAddMonitoredPointButton();
     }
@@ -310,6 +309,15 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
         // Load monitored points.
         loadMonitoredPoints(projectDTO);
+
+        projectDTO.removeAllListeners();
+        projectDTO.addListener(new ProjectDTO.MonitoredPointListener() {
+
+            @Override
+            public void pointAdded(MonitoredPointDTO point) {
+                view.getMonitoredPointsGrid().getStore().add(point);
+            }
+        });
 
         // --
         // -- TABS LISTENERS
@@ -532,12 +540,6 @@ public class ProjectDashboardPresenter implements SubPresenter {
                         elementDTO.setCountries(countriesList);
                         elementDTO.setCurrentContainerDTO(projectPresenter.getCurrentProjectDTO());
                         elementDTO.assignValue(valueResult);
-
-                        // Links the files lists to the monitored points panel.
-                        if (elementDTO instanceof FilesListElementDTO) {
-                            ((FilesListElementDTO) elementDTO).setMonitoredPointsStore(view.getMonitoredPointsGrid()
-                                    .getStore());
-                        }
 
                         // Generates element component (with the value).
                         elementDTO.init();

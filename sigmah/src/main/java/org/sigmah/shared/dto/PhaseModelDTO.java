@@ -109,6 +109,11 @@ public class PhaseModelDTO extends BaseModelData implements EntityDTO {
     }
 
     @Override
+    public int hashCode() {
+        return getId();
+    }
+
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == null) {

@@ -7,10 +7,13 @@ package org.sigmah.shared.dto;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.sigmah.shared.dto.element.DefaultFlexibleElementContainer;
+import org.sigmah.shared.dto.element.FlexibleElementDTO;
 import org.sigmah.shared.dto.logframe.LogFrameDTO;
+import org.sigmah.shared.dto.reminder.MonitoredPointDTO;
 import org.sigmah.shared.dto.reminder.MonitoredPointListDTO;
 import org.sigmah.shared.dto.value.ValueDTO;
 
@@ -25,6 +28,41 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 public final class ProjectDTO extends BaseModelData implements EntityDTO, DefaultFlexibleElementContainer {
 
     private static final long serialVersionUID = -8604264278832531036L;
+
+    /**
+     * Localizes an flexible element in the project model.
+     * 
+     * @author tmi
+     * 
+     */
+    public static final class LocalizedElement extends ProjectModelDTO.LocalizedElement {
+
+        private final PhaseDTO phase;
+
+        private LocalizedElement(ProjectModelDTO.LocalizedElement localized, PhaseDTO phase) {
+            super(localized.getPhaseModel(), localized.getElement());
+            this.phase = phase;
+        }
+
+        /**
+         * Get the phase model in which the element is displayed, or
+         * <code>null</code> if the element is in the details page.
+         * 
+         * @return The phase model of the element or <code>null</code>.
+         */
+        public PhaseDTO getPhase() {
+            return phase;
+        }
+    }
+
+    public static interface MonitoredPointListener {
+
+        public void pointAdded(MonitoredPointDTO point);
+    }
+
+    private transient HashMap<PhaseModelDTO, PhaseDTO> mappedPhases;
+
+    private transient ArrayList<MonitoredPointListener> listeners;
 
     @Override
     public String getEntityName() {
@@ -290,6 +328,37 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO, Defaul
         set("pointsList", pointsList);
     }
 
+    public void addListener(MonitoredPointListener l) {
+
+        if (listeners == null) {
+            listeners = new ArrayList<ProjectDTO.MonitoredPointListener>();
+        }
+
+        listeners.add(l);
+    }
+
+    public void removeAllListeners() {
+        listeners = null;
+    }
+
+    public void addMonitoredPoint(MonitoredPointDTO point) {
+
+        final MonitoredPointListDTO list = getPointsList();
+
+        // Must not happened.
+        if (list == null) {
+            return;
+        }
+
+        list.getPoints().add(point);
+
+        if (listeners != null) {
+            for (final MonitoredPointListener l : listeners) {
+                l.pointAdded(point);
+            }
+        }
+    }
+
     /**
      * Gets the following phases of the given phase.
      * 
@@ -340,5 +409,51 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO, Defaul
         light.setPlannedBudget(getPlannedBudget());
 
         return light;
+    }
+
+    /**
+     * Gets all the flexible elements instances of the given class in this
+     * project (phases and details page). The banner is ignored cause the
+     * elements in it are read-only.
+     * 
+     * @param clazz
+     *            The class of the searched flexible elements.
+     * @return The elements localized for the given class, or <code>null</code>
+     *         if there is no element of this class.
+     */
+    public List<LocalizedElement> getLocalizedElements(Class<? extends FlexibleElementDTO> clazz) {
+
+        final List<ProjectModelDTO.LocalizedElement> localizedElements = getProjectModelDTO().getLocalizedElements(
+                clazz);
+
+        if (localizedElements == null) {
+            return null;
+        }
+
+        final ArrayList<LocalizedElement> elements = new ArrayList<LocalizedElement>();
+        for (final ProjectModelDTO.LocalizedElement localized : localizedElements) {
+            elements.add(new LocalizedElement(localized, getPhaseFromModel(localized.getPhaseModel())));
+        }
+
+        return elements;
+    }
+
+    /**
+     * Gets the phase which implements the given model for the current project.
+     * 
+     * @param model
+     *            The phase model.
+     * @return The corresponding phase.
+     */
+    public PhaseDTO getPhaseFromModel(PhaseModelDTO model) {
+
+        if (mappedPhases == null) {
+            mappedPhases = new HashMap<PhaseModelDTO, PhaseDTO>();
+            for (final PhaseDTO phase : getPhasesDTO()) {
+                mappedPhases.put(phase.getPhaseModelDTO(), phase);
+            }
+        }
+
+        return mappedPhases.get(model);
     }
 }
