@@ -887,3 +887,33 @@ body {
 	text-decoration: underline;
 	cursor: pointer;
 }
+
+/* ---------------------------------------------- Block stat */
+
+.blockStat {
+	border: 1px solid #1D2A3D;
+	padding: 1px;
+}
+
+.blockStat div {
+	height: 13px;
+	color: white;
+	font-size: 80%;
+	text-align: center;
+}
+
+.blockStatBgRed {
+	background-color: red;
+}
+
+.blockStatBgYellow {
+	background-color: #FFD000;
+}
+
+.blockStatBgOrange {
+	background-color: #FF6600;
+}
+
+.blockStatBgBlack {
+	background-color: black;
+}

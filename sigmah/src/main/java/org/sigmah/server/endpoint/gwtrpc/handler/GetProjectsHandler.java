@@ -122,6 +122,14 @@ public class GetProjectsHandler implements CommandHandler<GetProjects> {
         final ArrayList<ProjectDTOLight> projectDTOList = new ArrayList<ProjectDTOLight>();
         for (Project project : projects) {
             final ProjectDTOLight p = mapper.map(project, ProjectDTOLight.class);
+
+            if (project.getPartners() != null) {
+                for (final OrgUnit orgUnit : project.getPartners()) {
+                    p.setOrgUnitName(orgUnit.getName());
+                    break;
+                }
+            }
+
             projectDTOList.add(p);
         }
 

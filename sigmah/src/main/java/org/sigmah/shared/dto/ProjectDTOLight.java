@@ -94,7 +94,7 @@ public class ProjectDTOLight extends BaseModelData implements EntityDTO {
         set("visibilities", visibilities);
     }
 
-    // Project planned budget
+    // Budget
     public Double getPlannedBudget() {
         final Double b = (Double) get("plannedBudget");
         return b != null ? b : 0.0;
@@ -102,6 +102,33 @@ public class ProjectDTOLight extends BaseModelData implements EntityDTO {
 
     public void setPlannedBudget(Double plannedBudget) {
         set("plannedBudget", plannedBudget);
+    }
+
+    public Double getSpendBudget() {
+        final Double b = (Double) get("spendBudget");
+        return b != null ? b : 0.0;
+    }
+
+    public void setSpendBudget(Double spendBudget) {
+        set("spendBudget", spendBudget);
+    }
+
+    public Double getReceivedBudget() {
+        final Double b = (Double) get("receivedBudget");
+        return b != null ? b : 0.0;
+    }
+
+    public void setReceivedBudget(Double receivedBudget) {
+        set("receivedBudget", receivedBudget);
+    }
+
+    // Org Unit
+    public String getOrgUnitName() {
+        return get("orgUnitName");
+    }
+
+    public void setOrgUnitName(String orgUnitName) {
+        set("orgUnitName", orgUnitName);
     }
 
     /**

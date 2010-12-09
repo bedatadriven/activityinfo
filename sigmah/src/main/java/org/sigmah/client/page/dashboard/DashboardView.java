@@ -24,9 +24,10 @@ import org.sigmah.client.page.map.MapPageState;
 import org.sigmah.client.page.project.ProjectPresenter;
 import org.sigmah.client.page.report.ReportListPageState;
 import org.sigmah.client.page.table.PivotPageState;
+import org.sigmah.client.ui.RatioBar;
 import org.sigmah.client.ui.StylableVBoxLayout;
 import org.sigmah.client.util.Notification;
-import org.sigmah.shared.dto.CountryDTO;
+import org.sigmah.client.util.NumberUtils;
 import org.sigmah.shared.dto.OrgUnitDTOLight;
 import org.sigmah.shared.dto.ProjectDTOLight;
 
@@ -88,11 +89,6 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
      */
     private final TreeStore<ProjectDTOLight> projectStore;
 
-    /**
-     * Model containing the countries available to the user.
-     */
-    private final ListStore<CountryDTO> countryStore;
-
     private Button loadProjectsButton;
     private ContentPanel projectsPanel;
     private OrgUnitTreeGrid orgUnitsTreeGrid;
@@ -110,8 +106,6 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
         // Initialization of the models
         projectStore = new TreeStore<ProjectDTOLight>();
         projectStore.setMonitorChanges(true);
-
-        countryStore = new ListStore<CountryDTO>();
 
         // The dashboard itself
         final BorderLayout borderLayout = new BorderLayout();
@@ -331,9 +325,47 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
      */
     private Component buildProjectPanel() {
 
-        // Project list
-        final ColumnConfig icon = new ColumnConfig("favorite", "-", 24);
-        icon.setRenderer(new GridCellRenderer<ProjectDTOLight>() {
+        // Grid.
+        final TreeGrid<ProjectDTOLight> projectTreeGrid = new TreeGrid<ProjectDTOLight>(projectStore,
+                getProjectGridColumnModel());
+
+        // Store.
+        projectStore.setStoreSorter(new StoreSorter<ProjectDTOLight>() {
+            @Override
+            public int compare(Store<ProjectDTOLight> store, ProjectDTOLight m1, ProjectDTOLight m2, String property) {
+
+                if ("name".equals(property)) {
+                    return m1.getName().compareToIgnoreCase(m2.getName());
+                } else if ("phase".equals(property)) {
+                    return m1.getCurrentPhaseDTO().getPhaseModelDTO().getName()
+                            .compareToIgnoreCase(m2.getCurrentPhaseDTO().getPhaseModelDTO().getName());
+                } else {
+                    return super.compare(store, m1, m2, property);
+                }
+            }
+        });
+
+        // Panel
+        final ContentPanel projectTreePanel = new ContentPanel(new FitLayout());
+        projectTreePanel.setHeading(I18N.CONSTANTS.projects());
+
+        projectTreePanel.add(projectTreeGrid);
+        projectsPanel = projectTreePanel;
+
+        return projectTreePanel;
+    }
+
+    /**
+     * Builds and returns the columns model for the projects tree grid.
+     * 
+     * @return The project tree grid columns model.
+     */
+    private ColumnModel getProjectGridColumnModel() {
+
+        // Starred icon
+        final ColumnConfig starredIconColumn = new ColumnConfig("favorite", "", 24);
+        starredIconColumn.setSortable(false);
+        starredIconColumn.setRenderer(new GridCellRenderer<ProjectDTOLight>() {
             private final DashboardImageBundle imageBundle = GWT.create(DashboardImageBundle.class);
 
             @Override
@@ -358,8 +390,9 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
             }
         });
 
-        final ColumnConfig name = new ColumnConfig("name", I18N.CONSTANTS.projectName(), 200);
-        name.setRenderer(new WidgetTreeGridCellRenderer<ProjectDTOLight>() {
+        // Code
+        final ColumnConfig codeColumn = new ColumnConfig("name", I18N.CONSTANTS.projectName(), 200);
+        codeColumn.setRenderer(new WidgetTreeGridCellRenderer<ProjectDTOLight>() {
             @Override
             public Widget getWidget(ProjectDTOLight model, String property, ColumnData config, int rowIndex,
                     int colIndex, ListStore<ProjectDTOLight> store, Grid<ProjectDTOLight> grid) {
@@ -368,8 +401,12 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
             }
         });
 
-        final ColumnConfig phase = new ColumnConfig("phase", I18N.CONSTANTS.projectActivePhase(), 100);
-        phase.setRenderer(new GridCellRenderer<ProjectDTOLight>() {
+        // Title
+        final ColumnConfig titleColumn = new ColumnConfig("fullName", I18N.CONSTANTS.projectFullName(), 200);
+
+        // Current phase
+        final ColumnConfig currentPhaseName = new ColumnConfig("phase", I18N.CONSTANTS.projectActivePhase(), 100);
+        currentPhaseName.setRenderer(new GridCellRenderer<ProjectDTOLight>() {
             @Override
             public Object render(ProjectDTOLight model, String property, ColumnData config, int rowIndex, int colIndex,
                     ListStore<ProjectDTOLight> store, Grid<ProjectDTOLight> grid) {
@@ -377,36 +414,22 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
             }
         });
 
-        final TreeGrid<ProjectDTOLight> projectTreeGrid = new TreeGrid<ProjectDTOLight>(projectStore, new ColumnModel(
-                Arrays.asList(icon, name, phase)));
+        // Org Unit
+        final ColumnConfig orgUnitColumn = new ColumnConfig("orgUnitName", I18N.CONSTANTS.orgunit(), 200);
 
-        projectStore.setStoreSorter(new StoreSorter<ProjectDTOLight>() {
+        // Spent budget
+        final ColumnConfig spentBudgetColumn = new ColumnConfig("spentBudget", I18N.CONSTANTS.projectSpendBudget(), 100);
+        spentBudgetColumn.setRenderer(new GridCellRenderer<ProjectDTOLight>() {
+
             @Override
-            public int compare(Store<ProjectDTOLight> store, ProjectDTOLight m1, ProjectDTOLight m2, String property) {
-
-                if ("name".equals(property)) {
-                    return m1.getName().compareToIgnoreCase(m2.getName());
-                } else if ("phase".equals(property)) {
-                    return m1.getCurrentPhaseDTO().getPhaseModelDTO().getName()
-                            .compareToIgnoreCase(m2.getCurrentPhaseDTO().getPhaseModelDTO().getName());
-                } else {
-                    return super.compare(store, m1, m2, property);
-                }
+            public Object render(ProjectDTOLight model, String property, ColumnData config, int rowIndex, int colIndex,
+                    ListStore<ProjectDTOLight> store, Grid<ProjectDTOLight> grid) {
+                return new RatioBar(NumberUtils.ratio(model.getSpendBudget(), model.getPlannedBudget()));
             }
         });
 
-        final ContentPanel projectTreePanel = new ContentPanel(new FitLayout());
-        projectTreePanel.setHeading(I18N.CONSTANTS.projects());
-
-        projectTreePanel.add(projectTreeGrid);
-        projectsPanel = projectTreePanel;
-
-        return projectTreePanel;
-    }
-
-    @Override
-    public ListStore<CountryDTO> getCountriesStore() {
-        return countryStore;
+        return new ColumnModel(Arrays.asList(starredIconColumn, codeColumn, titleColumn, currentPhaseName,
+                orgUnitColumn, spentBudgetColumn));
     }
 
     @Override

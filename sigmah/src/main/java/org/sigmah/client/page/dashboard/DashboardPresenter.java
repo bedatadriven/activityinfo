@@ -18,7 +18,6 @@ import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.shared.command.GetProjects;
 import org.sigmah.shared.command.result.ProjectListResult;
-import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.OrgUnitDTOLight;
 import org.sigmah.shared.dto.ProjectDTOLight;
 
@@ -28,7 +27,6 @@ import com.extjs.gxt.ui.client.data.SortInfo;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -51,8 +49,6 @@ public class DashboardPresenter implements Page {
      */
     @ImplementedBy(DashboardView.class)
     public interface View {
-
-        public ListStore<CountryDTO> getCountriesStore();
 
         public TreeStore<ProjectDTOLight> getProjectsStore();
 
