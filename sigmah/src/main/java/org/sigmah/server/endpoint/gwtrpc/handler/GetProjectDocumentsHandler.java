@@ -74,9 +74,7 @@ public class GetProjectDocumentsHandler implements CommandHandler<GetProjectDocu
                             r.setDocument(true);
                             r.setName(lastVersion.getName() + '.' + lastVersion.getExtension());
                             r.setLastEditDate(lastVersion.getAddedDate());
-                            r.setEditorName(lastVersion.getAuthor().getFirstName() != null ? lastVersion.getAuthor()
-                                    .getFirstName() + ' ' + lastVersion.getAuthor().getName() : lastVersion.getAuthor()
-                                    .getName());
+                            r.setEditorName(User.getUserShortName(lastVersion.getAuthor()));
                             r.setPhaseName(fle.getPhaseName());
                             r.setFlexibleElementLabel(fle.getElementLabel());
 

@@ -34,7 +34,7 @@ import javax.persistence.Table;
 public class User implements java.io.Serializable {
 
     private static final long serialVersionUID = 6486007767204653799L;
-    
+
     private int id;
     private String email;
     private String firstName;
@@ -223,5 +223,125 @@ public class User implements java.io.Serializable {
         } else {
             return "(null user)";
         }
+    }
+
+    /**
+     * Gets the formatted complete name of a user.
+     * <ul>
+     * <li>If the user has a first name and a last name, returns '<i>John
+     * Doe</i>'.</li>
+     * <li>If the user hasn't a first name and has a last name, returns
+     * '<i>Doe</i>'.</li>
+     * <li>If the user has neither a first name or a last name, returns an empty
+     * string.</li>
+     * </ul>
+     * 
+     * @param user
+     *            The user
+     * @return The complete name.
+     */
+    public static String getUserCompleteName(final User user) {
+
+        final StringBuilder sb = new StringBuilder();
+        if (user.firstName != null) {
+            sb.append(user.firstName);
+            sb.append(' ');
+        }
+        if (user.name != null) {
+            sb.append(user.name);
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * Gets the formatted complete name of a user.
+     * <ul>
+     * <li>If the user has a first name and a last name, returns '<i>John
+     * Doe</i>'.</li>
+     * <li>If the user hasn't a first name and has a last name, returns
+     * '<i>Doe</i>'.</li>
+     * <li>If the user has neither a first name or a last name, returns an empty
+     * string.</li>
+     * </ul>
+     * 
+     * @param firstName
+     *            The user first name.
+     * @param lastName
+     *            The user last name.
+     * @return The complete name.
+     */
+    public static String getUserCompleteName(final String firstName, final String lastName) {
+
+        final StringBuilder sb = new StringBuilder();
+        if (firstName != null) {
+            sb.append(firstName);
+            sb.append(' ');
+        }
+        if (lastName != null) {
+            sb.append(lastName);
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * Gets the formatted short name of a user.
+     * <ul>
+     * <li>If the user has a first name and a last name, returns '<i>J.
+     * Doe</i>'.</li>
+     * <li>If the user hasn't a first name and has a last name, returns
+     * '<i>Doe</i>'.</li>
+     * <li>If the user has neither a first name or a last name, returns an empty
+     * string.</li>
+     * </ul>
+     * 
+     * @param user
+     *            The user
+     * @return The short name.
+     */
+    public static String getUserShortName(final User user) {
+
+        final StringBuilder sb = new StringBuilder();
+        if (user.firstName != null) {
+            sb.append(user.firstName.charAt(0));
+            sb.append(". ");
+        }
+        if (user.name != null) {
+            sb.append(user.name);
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * Gets the formatted short name of a user.
+     * <ul>
+     * <li>If the user has a first name and a last name, returns '<i>J.
+     * Doe</i>'.</li>
+     * <li>If the user hasn't a first name and has a last name, returns
+     * '<i>Doe</i>'.</li>
+     * <li>If the user has neither a first name or a last name, returns an empty
+     * string.</li>
+     * </ul>
+     * 
+     * @param firstName
+     *            The user first name.
+     * @param lastName
+     *            The user last name.
+     * @return The short name.
+     */
+    public static String getUserShortName(final String firstName, final String lastName) {
+
+        final StringBuilder sb = new StringBuilder();
+        if (firstName != null) {
+            sb.append(firstName.charAt(0));
+            sb.append(". ");
+        }
+        if (lastName != null) {
+            sb.append(lastName);
+        }
+
+        return sb.toString();
     }
 }

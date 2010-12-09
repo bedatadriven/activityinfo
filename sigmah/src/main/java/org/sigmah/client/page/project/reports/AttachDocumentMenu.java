@@ -236,7 +236,7 @@ public class AttachDocumentMenu {
                 currentCreatedDocument = new GetProjectReports.ReportReference();
                 currentCreatedDocument.setName(uploadField.getValue());
                 currentCreatedDocument.setLastEditDate(new Date());
-                currentCreatedDocument.setEditorName(I18N.CONSTANTS.you());
+                currentCreatedDocument.setEditorName(authentication.getUserShortName());
                 currentCreatedDocument.setDocument(true);
                 currentCreatedDocument.setFlexibleElementLabel(elementField.getText());
                 currentCreatedDocument.setPhaseName(phaseField.getText());

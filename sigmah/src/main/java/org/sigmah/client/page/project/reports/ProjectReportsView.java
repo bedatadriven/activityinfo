@@ -13,6 +13,7 @@ import java.util.Map;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.event.NavigationEvent;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
@@ -96,6 +97,7 @@ import com.google.gwt.user.client.ui.RichTextArea;
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class ProjectReportsView extends LayoutContainer {
 
+    private Authentication authentication;
     private EventBus eventBus;
     private Dispatcher dispatcher;
 
@@ -113,8 +115,10 @@ public class ProjectReportsView extends LayoutContainer {
 
     private Button attachButton;
 
-    public ProjectReportsView(EventBus eventBus, Dispatcher dispatcher,
+    public ProjectReportsView(Authentication authentication, EventBus eventBus, Dispatcher dispatcher,
             ListStore<GetProjectReports.ReportReference> store) {
+        
+        this.authentication = authentication;
         this.eventBus = eventBus;
         this.dispatcher = dispatcher;
         this.textAreas = new HashMap<Integer, RichTextArea>();
@@ -227,7 +231,7 @@ public class ProjectReportsView extends LayoutContainer {
 
                 final String name = ((TextField<String>) createReportDialog.getWidget(0)).getValue();
                 final String phaseName = ProjectReportsView.this.phaseName;
-                final String editorName = I18N.CONSTANTS.you();
+                final String editorName = authentication.getUserShortName();
                 final Date lastEditDate = new Date();
 
                 properties.put("name", name);
@@ -578,7 +582,7 @@ public class ProjectReportsView extends LayoutContainer {
                             if (reference.getId().equals(report.getId())) {
                                 store.remove(reference);
 
-                                reference.setEditorName(I18N.CONSTANTS.you());
+                                reference.setEditorName(authentication.getUserShortName());
                                 reference.setPhaseName(phaseName);
                                 reference.setLastEditDate(new Date());
 

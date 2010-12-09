@@ -69,6 +69,8 @@ public class SigmahAuthDictionaryServlet extends HttpServlet {
                 parameters.put(SigmahAuthProvider.USER_ID, Integer.toString(user.getId()));
                 parameters.put(SigmahAuthProvider.USER_TOKEN, '"' + authToken + '"');
                 parameters.put(SigmahAuthProvider.USER_EMAIL, '"' + user.getEmail() + '"');
+                parameters.put(SigmahAuthProvider.USER_NAME, '"' + user.getName() + '"');
+                parameters.put(SigmahAuthProvider.USER_FIRST_NAME, '"' + user.getFirstName() + '"');
                 parameters.put(SigmahAuthProvider.USER_ORG_ID, Integer.toString(user.getOrganization().getId()));
                 parameters.put(SigmahAuthProvider.USER_ORG_UNIT_ID, Integer.toString(user.getOrgUnit().getId()));
             }

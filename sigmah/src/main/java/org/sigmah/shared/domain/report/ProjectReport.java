@@ -24,11 +24,14 @@ import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.element.FlexibleElement;
 
 /**
- *
+ * 
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 @Entity
 public class ProjectReport implements Serializable {
+
+    private static final long serialVersionUID = -7388489166961720683L;
+
     private Integer id;
     private Project project;
     private ProjectReportModel model;
@@ -40,7 +43,6 @@ public class ProjectReport implements Serializable {
 
     private Date lastEditDate;
     private User editor;
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -125,14 +127,6 @@ public class ProjectReport implements Serializable {
 
     @Transient
     public String getEditorShortName() {
-        final String firstName = editor.getFirstName();
-        final String editorName;
-        
-        if(firstName != null)
-            editorName = firstName.charAt(0)+". "+editor.getName();
-        else
-            editorName = editor.getName();
-
-        return editorName;
+        return User.getUserShortName(editor);
     }
 }

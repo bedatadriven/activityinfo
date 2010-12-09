@@ -61,7 +61,7 @@ public class ProjectReportsPresenter implements SubPresenter {
         if (view == null) {
             reportStore = new ListStore<GetProjectReports.ReportReference>();
             reportStore.setMonitorChanges(true);
-            view = new ProjectReportsView(eventBus, dispatcher, reportStore);
+            view = new ProjectReportsView(authentication, eventBus, dispatcher, reportStore);
         }
 
         // Calculating the report id
