@@ -605,6 +605,7 @@ body {
 .flexibility-action {
 	text-decoration: underline;
 	cursor: pointer;
+	color: black;
 }
 
 .flexibility-action-iconable {

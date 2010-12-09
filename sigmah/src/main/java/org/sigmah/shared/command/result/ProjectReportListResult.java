@@ -10,12 +10,15 @@ import java.util.List;
 import org.sigmah.shared.command.GetProjectReports;
 
 /**
- *
+ * 
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class ProjectReportListResult extends ListResult<GetProjectReports.ReportReference> implements Serializable {
 
+    private static final long serialVersionUID = -4386277858499888179L;
+
     public ProjectReportListResult() {
+        // Serialization.
     }
 
     public ProjectReportListResult(List<GetProjectReports.ReportReference> data) {

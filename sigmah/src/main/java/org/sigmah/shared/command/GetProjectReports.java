@@ -5,18 +5,29 @@
 
 package org.sigmah.shared.command;
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
 import java.util.Date;
+
 import org.sigmah.shared.command.result.ProjectReportListResult;
 import org.sigmah.shared.domain.report.ProjectReport;
 
+import com.extjs.gxt.ui.client.data.BaseModelData;
+
 /**
- *
+ * 
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class GetProjectReports implements Command<ProjectReportListResult> {
+
+    private static final long serialVersionUID = -5074144662654783191L;
+
     public static class ReportReference extends BaseModelData {
-        public ReportReference() {}
+
+        private static final long serialVersionUID = 1736989091550004973L;
+
+        public ReportReference() {
+            // Serialization.
+        }
+
         public ReportReference(ProjectReport report) {
             this.set("id", report.getId());
             this.set("name", report.getName());
@@ -24,13 +35,14 @@ public class GetProjectReports implements Command<ProjectReportListResult> {
             this.set("editorName", report.getEditorShortName());
             this.set("phaseName", report.getPhaseName());
 
-            if(report.getFlexibleElement() != null)
+            if (report.getFlexibleElement() != null)
                 this.set("flexibleElementLabel", report.getFlexibleElement().getLabel());
         }
 
         public Integer getId() {
             return get("id");
         }
+
         public void setId(Integer id) {
             this.set("id", id);
         }
@@ -38,6 +50,7 @@ public class GetProjectReports implements Command<ProjectReportListResult> {
         public String getName() {
             return get("name");
         }
+
         public void setName(String name) {
             this.set("name", name);
         }
@@ -45,13 +58,15 @@ public class GetProjectReports implements Command<ProjectReportListResult> {
         public String getPhaseName() {
             return get("phaseName");
         }
+
         public void setPhaseName(String phaseName) {
             this.set("phaseName", phaseName);
         }
 
         public String getFlexibleElementLabel() {
-           return get("flexibleElementLabel");
+            return get("flexibleElementLabel");
         }
+
         public void setFlexibleElementLabel(String label) {
             this.set("flexibleElementLabel", label);
         }
@@ -59,6 +74,7 @@ public class GetProjectReports implements Command<ProjectReportListResult> {
         public Date getLastEditDate() {
             return get("lastEditDate");
         }
+
         public void setLastEditDate(Date date) {
             this.set("lastEditDate", date);
         }
@@ -66,15 +82,26 @@ public class GetProjectReports implements Command<ProjectReportListResult> {
         public String getEditorName() {
             return get("editorName");
         }
+
         public void setEditorName(String editorName) {
             this.set("editorName", editorName);
+        }
+
+        public boolean isDocument() {
+            final Boolean is = (Boolean) get("isDocument");
+            return is == null ? false : is;
+        }
+
+        public void setDocument(boolean isDocument) {
+            this.set("isDocument", isDocument);
         }
     }
 
     private Integer projectId;
     private Integer reportId;
 
-    public GetProjectReports() {}
+    public GetProjectReports() {
+    }
 
     public GetProjectReports(Integer projectId) {
         this.projectId = projectId;

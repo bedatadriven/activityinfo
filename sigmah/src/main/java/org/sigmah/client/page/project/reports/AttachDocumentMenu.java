@@ -10,6 +10,7 @@ import org.sigmah.client.page.project.logframe.FormWindow;
 import org.sigmah.client.page.project.logframe.FormWindow.FormSubmitListener;
 import org.sigmah.client.ui.ButtonFileUploadField;
 import org.sigmah.client.util.Notification;
+import org.sigmah.shared.command.GetProjectReports;
 import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.ProjectDTO.LocalizedElement;
 import org.sigmah.shared.dto.element.FilesListElementDTO;
@@ -25,6 +26,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -55,6 +57,8 @@ public class AttachDocumentMenu {
     private LabelField phaseField;
     private LabelField elementField;
     private FlexibleElementDTO currentFlexibleElement;
+    private final ListStore<GetProjectReports.ReportReference> documentsStore;
+    private GetProjectReports.ReportReference currentCreatedDocument;
 
     /**
      * Creates a menu for attaching documents.
@@ -66,13 +70,12 @@ public class AttachDocumentMenu {
      * @param button
      *            The button at which this menu is attached.
      */
-    public AttachDocumentMenu(Authentication authentication, ProjectDTO project, Button button) {
-
-        Log.error("" + project.getPointsList());
-        Log.error("" + project.getPointsList().getPoints());
+    public AttachDocumentMenu(Authentication authentication, ProjectDTO project, Button button,
+            ListStore<GetProjectReports.ReportReference> documentsStore) {
 
         this.authentication = authentication;
         this.project = project;
+        this.documentsStore = documentsStore;
 
         boolean enabled = false;
 
@@ -228,6 +231,15 @@ public class AttachDocumentMenu {
                 nameHidden.setValue(uploadField.getValue());
                 authorHidden.setValue(String.valueOf(authentication.getUserId()));
                 emptyHidden.setValue("true");
+
+                // Create the local document.
+                currentCreatedDocument = new GetProjectReports.ReportReference();
+                currentCreatedDocument.setName(uploadField.getValue());
+                currentCreatedDocument.setLastEditDate(new Date());
+                currentCreatedDocument.setEditorName(I18N.CONSTANTS.you());
+                currentCreatedDocument.setDocument(true);
+                currentCreatedDocument.setFlexibleElementLabel(elementField.getText());
+                currentCreatedDocument.setPhaseName(phaseField.getText());
 
                 // Debug form hidden values.
                 if (Log.isDebugEnabled()) {
@@ -391,6 +403,8 @@ public class AttachDocumentMenu {
 
             dialog.hide();
 
+            currentCreatedDocument.setId(Integer.valueOf(code));
+
             Notification.show(I18N.CONSTANTS.infoConfirmation(),
                     I18N.CONSTANTS.flexibleElementFilesListUploadFileConfirm());
 
@@ -412,12 +426,14 @@ public class AttachDocumentMenu {
 
             updateComponent();
         }
+
+        currentCreatedDocument = null;
     }
 
     /**
      * Refreshes files list
      */
     private void updateComponent() {
-        // TODO implement
+        documentsStore.add(currentCreatedDocument);
     }
 }

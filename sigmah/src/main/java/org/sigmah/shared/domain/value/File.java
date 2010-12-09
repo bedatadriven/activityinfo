@@ -96,4 +96,28 @@ public class File implements Serializable, Deleteable {
     public boolean isDeleted() {
         return getDateDeleted() != null;
     }
+
+    /**
+     * Returns the last version (with the higher version number).
+     * 
+     * @return the last version.
+     */
+    @Transient
+    public FileVersion getLastVersion() {
+
+        if (versions == null || versions.isEmpty()) {
+            return null;
+        }
+
+        // Searches the max version number which identifies the last version.
+        int index = 0;
+        int maxVersionNumber = versions.get(index).getVersionNumber();
+        for (int i = 1; i < versions.size(); i++) {
+            if (versions.get(i).getVersionNumber() > maxVersionNumber) {
+                index = i;
+            }
+        }
+
+        return versions.get(index);
+    }
 }

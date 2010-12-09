@@ -34,6 +34,7 @@ import org.sigmah.shared.dto.report.ProjectReportContent;
 import org.sigmah.shared.dto.report.ProjectReportDTO;
 import org.sigmah.shared.dto.report.ProjectReportSectionDTO;
 import org.sigmah.shared.dto.report.RichTextElementDTO;
+import org.sigmah.shared.dto.value.FileUploadUtils;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -42,6 +43,7 @@ import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.FormEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -50,10 +52,15 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.FormPanel.Encoding;
+import com.extjs.gxt.ui.client.widget.form.FormPanel.Method;
+import com.extjs.gxt.ui.client.widget.form.HiddenField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
@@ -83,9 +90,10 @@ import com.google.gwt.user.client.ui.RichTextArea;
 
 /**
  * Displays the reports attached to a project.
+ * 
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
-@SuppressWarnings({"unchecked", "rawtypes"})
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class ProjectReportsView extends LayoutContainer {
 
     private EventBus eventBus;
@@ -93,7 +101,7 @@ public class ProjectReportsView extends LayoutContainer {
 
     private ProjectState currentState;
     private String phaseName;
-    
+
     private ListStore<GetProjectReports.ReportReference> store;
     private LayoutContainer mainPanel;
     private RichTextArea.Formatter currentFormatter;
@@ -102,10 +110,11 @@ public class ProjectReportsView extends LayoutContainer {
     private KeyQuestionState keyQuestionState;
 
     private Dialog createReportDialog;
-    
+
     private Button attachButton;
 
-    public ProjectReportsView(EventBus eventBus, Dispatcher dispatcher, ListStore<GetProjectReports.ReportReference> store) {
+    public ProjectReportsView(EventBus eventBus, Dispatcher dispatcher,
+            ListStore<GetProjectReports.ReportReference> store) {
         this.eventBus = eventBus;
         this.dispatcher = dispatcher;
         this.textAreas = new HashMap<Integer, RichTextArea>();
@@ -115,7 +124,16 @@ public class ProjectReportsView extends LayoutContainer {
         this.keyQuestionState = new KeyQuestionState();
 
         final BorderLayout layout = new BorderLayout();
-        layout.setContainerStyle("x-border-layout-ct main-background"); // Adds a dark background between objects managed by this layout
+        layout.setContainerStyle("x-border-layout-ct main-background"); // Adds
+                                                                        // a
+                                                                        // dark
+                                                                        // background
+                                                                        // between
+                                                                        // objects
+                                                                        // managed
+                                                                        // by
+                                                                        // this
+                                                                        // layout
         setLayout(layout);
 
         BorderLayoutData layoutData;
@@ -132,7 +150,7 @@ public class ProjectReportsView extends LayoutContainer {
     }
 
     private Dialog getCreateReportDialog(final ListStore<GetProjectReports.ReportReference> store) {
-        if(createReportDialog == null) {
+        if (createReportDialog == null) {
             final Dialog dialog = new Dialog();
             dialog.setButtons(Dialog.OKCANCEL);
             dialog.setHeading(I18N.CONSTANTS.reportCreateReport());
@@ -173,11 +191,12 @@ public class ProjectReportsView extends LayoutContainer {
 
             createReportDialog = dialog;
         }
-        
+
         final TextField<String> textField = (TextField<String>) createReportDialog.getWidget(0);
         textField.reset();
-        
-        final ComboBox<GetProjectReportModels.ModelReference> modelBox = (ComboBox<ModelReference>) createReportDialog.getWidget(1);
+
+        final ComboBox<GetProjectReportModels.ModelReference> modelBox = (ComboBox<ModelReference>) createReportDialog
+                .getWidget(1);
         modelBox.reset();
         final ListStore<GetProjectReportModels.ModelReference> modelBoxStore = modelBox.getStore();
         modelBoxStore.removeAll();
@@ -193,7 +212,7 @@ public class ProjectReportsView extends LayoutContainer {
             public void onSuccess(ProjectReportModelListResult result) {
                 modelBoxStore.add(result.getData());
             }
-            
+
         });
 
         // OK Button
@@ -234,7 +253,7 @@ public class ProjectReportsView extends LayoutContainer {
                         report.setLastEditDate(lastEditDate);
 
                         store.add(report);
-                        
+
                         Notification.show(I18N.CONSTANTS.projectTabReports(), I18N.CONSTANTS.reportCreateSuccess());
                     }
                 });
@@ -264,7 +283,7 @@ public class ProjectReportsView extends LayoutContainer {
                 getCreateReportDialog(store).show();
             }
         });
-        
+
         attachButton = new Button(I18N.CONSTANTS.flexibleElementFilesListAddDocument(), icons.attach());
 
         toolBar.add(attachButton);
@@ -277,34 +296,107 @@ public class ProjectReportsView extends LayoutContainer {
         final ColumnConfig editDate = new ColumnConfig("lastEditDate", I18N.CONSTANTS.reportLastEditDate(), 200);
         editDate.setDateTimeFormat(DateTimeFormat.getShortDateFormat());
         final ColumnConfig editorName = new ColumnConfig("editorName", I18N.CONSTANTS.reportEditor(), 200);
+        final ColumnConfig iconColumn = new ColumnConfig("icon", "", 20);
         final ColumnConfig reportName = new ColumnConfig("name", I18N.CONSTANTS.reportName(), 200);
         final ColumnConfig typeColumn = new ColumnConfig("flexibleElementLabel", I18N.CONSTANTS.reportType(), 200);
         final ColumnConfig phaseNameColumn = new ColumnConfig("phaseName", I18N.CONSTANTS.reportPhase(), 200);
-        final ColumnModel reportColumnModel = new ColumnModel(Arrays.asList(editDate, editorName, reportName, typeColumn, phaseNameColumn));
+        final ColumnModel reportColumnModel = new ColumnModel(Arrays.asList(editDate, editorName, iconColumn,
+                reportName, typeColumn, phaseNameColumn));
 
-        reportName.setRenderer(new GridCellRenderer<GetProjectReports.ReportReference>() {
+        iconColumn.setRenderer(new GridCellRenderer<GetProjectReports.ReportReference>() {
+
             @Override
-            public Object render(final GetProjectReports.ReportReference model, String property, ColumnData config, int rowIndex, int colIndex, ListStore store, Grid grid) {
-                final Anchor link = new Anchor((String) model.get(property));
+            public Object render(GetProjectReports.ReportReference model, String property, ColumnData config,
+                    int rowIndex, int colIndex, ListStore<GetProjectReports.ReportReference> store,
+                    Grid<GetProjectReports.ReportReference> grid) {
 
-                link.addClickHandler(new ClickHandler() {
-                    @Override
-                    public void onClick(ClickEvent event) {
-                        // Opening a report
-
-                        final ProjectState state = new ProjectState(currentState.getProjectId());
-                        state.setCurrentSection(currentState.getCurrentSection());
-                        state.setArgument(model.getId().toString());
-
-                        eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, state));
-                    }
-                });
-
-                return link;
+                if (model.isDocument()) {
+                    return IconImageBundle.ICONS.attach().createImage();
+                } else {
+                    return IconImageBundle.ICONS.report().createImage();
+                }
             }
         });
 
-        final Grid<GetProjectReports.ReportReference> documentGrid = new Grid<GetProjectReports.ReportReference>(store, reportColumnModel);
+        reportName.setRenderer(new GridCellRenderer<GetProjectReports.ReportReference>() {
+            @Override
+            public Object render(final GetProjectReports.ReportReference model, String property, ColumnData config,
+                    int rowIndex, int colIndex, ListStore store, Grid grid) {
+
+                if (model.isDocument()) {
+
+                    // Uses a "hidden form" to manages the downloads to be able
+                    // to catch server errors.
+                    final FormPanel downloadFormPanel = new FormPanel();
+                    downloadFormPanel.setBodyBorder(false);
+                    downloadFormPanel.setHeaderVisible(false);
+                    downloadFormPanel.setPadding(0);
+                    downloadFormPanel.setEncoding(Encoding.URLENCODED);
+                    downloadFormPanel.setMethod(Method.GET);
+                    downloadFormPanel.setAction(GWT.getModuleBaseURL() + "download");
+
+                    final com.google.gwt.user.client.ui.Label downloadButton = new com.google.gwt.user.client.ui.Label(
+                            (String) model.get(property));
+                    downloadButton.addStyleName("flexibility-action");
+
+                    // File's id.
+                    final HiddenField<String> fileIdHidden = new HiddenField<String>();
+                    fileIdHidden.setName(FileUploadUtils.DOCUMENT_ID);
+                    fileIdHidden.setValue(String.valueOf(model.getId()));
+
+                    downloadFormPanel.add(downloadButton);
+                    downloadFormPanel.add(fileIdHidden);
+
+                    // Submit complete handler to catch server errors.
+                    downloadFormPanel.addListener(Events.Submit, new Listener<FormEvent>() {
+
+                        @Override
+                        public void handleEvent(FormEvent be) {
+
+                            if (!"".equals(be.getResultHtml())) {
+                                MessageBox.info(I18N.CONSTANTS.flexibleElementFilesListDownloadError(),
+                                        I18N.CONSTANTS.flexibleElementFilesListDownloadErrorDetails(), null);
+                            }
+                        }
+                    });
+
+                    // Buttons listeners.
+                    downloadButton.addClickHandler(new ClickHandler() {
+                        @Override
+                        public void onClick(ClickEvent e) {
+
+                            // Submits the form.
+                            downloadFormPanel.submit();
+                        }
+                    });
+
+                    return downloadFormPanel;
+
+                } else {
+
+                    final Anchor link = new Anchor((String) model.get(property));
+                    link.addStyleName("flexibility-action");
+
+                    link.addClickHandler(new ClickHandler() {
+                        @Override
+                        public void onClick(ClickEvent event) {
+                            // Opening a report
+
+                            final ProjectState state = new ProjectState(currentState.getProjectId());
+                            state.setCurrentSection(currentState.getCurrentSection());
+                            state.setArgument(model.getId().toString());
+
+                            eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, state));
+                        }
+                    });
+
+                    return link;
+                }
+            }
+        });
+
+        final Grid<GetProjectReports.ReportReference> documentGrid = new Grid<GetProjectReports.ReportReference>(store,
+                reportColumnModel);
         documentGrid.setAutoExpandColumn("name");
         documentGrid.getView().setForceFit(true);
 
@@ -322,7 +414,8 @@ public class ProjectReportsView extends LayoutContainer {
         this.currentState = currentState;
     }
 
-    private void displaySection(final ProjectReportSectionDTO section, final FoldPanel parent, final StringBuilder prefix, int level) {
+    private void displaySection(final ProjectReportSectionDTO section, final FoldPanel parent,
+            final StringBuilder prefix, int level) {
         final FoldPanel sectionPanel = new FoldPanel();
         sectionPanel.setHeading(prefix.toString() + ' ' + section.getName());
         sectionPanel.addStyleName("project-report-level-" + level);
@@ -362,19 +455,19 @@ public class ProjectReportsView extends LayoutContainer {
                 // Rich text field
                 final RichTextArea textArea = new RichTextArea();
                 final RichTextElementDTO richTextElementDTO = keyQuestion.getRichTextElementDTO();
-                if(richTextElementDTO != null) {
+                if (richTextElementDTO != null) {
                     textArea.setHTML(richTextElementDTO.getText());
                     textAreas.put(richTextElementDTO.getId(), textArea);
-                    
+
                 } else {
-                    Log.error("No text area is attached to the key question #"+keyQuestion.getId());
+                    Log.error("No text area is attached to the key question #" + keyQuestion.getId());
                 }
 
                 // Compas icon
                 final ToolbarImages images = GWT.create(ToolbarImages.class);
-                
+
                 final ImageResource icon;
-                if("".equals(textArea.getText()))
+                if ("".equals(textArea.getText()))
                     icon = images.compasRed();
                 else {
                     icon = images.compasGreen();
@@ -386,7 +479,8 @@ public class ProjectReportsView extends LayoutContainer {
                 sectionPanel.addToolButton(icon, new ClickHandler() {
                     @Override
                     public void onClick(ClickEvent event) {
-                        KeyQuestionDialog.getDialog(keyQuestion, textArea, sectionPanel, toolButtonIndex, keyQuestionState).show();
+                        KeyQuestionDialog.getDialog(keyQuestion, textArea, sectionPanel, toolButtonIndex,
+                                keyQuestionState).show();
                     }
                 });
 
@@ -400,8 +494,8 @@ public class ProjectReportsView extends LayoutContainer {
 
     public void setReport(final ProjectReportDTO report) {
         mainPanel.removeAll();
-        
-        if(report == null)
+
+        if (report == null)
             return;
 
         // Preparing the view for the new report
@@ -409,7 +503,8 @@ public class ProjectReportsView extends LayoutContainer {
         keyQuestionState.clear();
 
         // Title bar
-        final ContentPanel reportPanel = new ContentPanel(new FitLayout()); //new RowLayout(Orientation.VERTICAL));
+        final ContentPanel reportPanel = new ContentPanel(new FitLayout()); // new
+                                                                            // RowLayout(Orientation.VERTICAL));
         reportPanel.setScrollMode(Scroll.AUTOY);
         reportPanel.setHeading(report.getName());
 
@@ -460,10 +555,11 @@ public class ProjectReportsView extends LayoutContainer {
 
                 changes.put("currentPhase", phaseName);
 
-                for(final Map.Entry<Integer, RichTextArea> entry : textAreas.entrySet())
+                for (final Map.Entry<Integer, RichTextArea> entry : textAreas.entrySet())
                     changes.put(entry.getKey().toString(), entry.getValue().getHTML());
 
-                final UpdateEntity updateEntity = new UpdateEntity("ProjectReport", report.getId(), (Map<String, Object>) (Map<String, ?>) changes);
+                final UpdateEntity updateEntity = new UpdateEntity("ProjectReport", report.getId(),
+                        (Map<String, Object>) (Map<String, ?>) changes);
                 dispatcher.execute(updateEntity, null, new AsyncCallback<VoidResult>() {
 
                     @Override
@@ -476,12 +572,12 @@ public class ProjectReportsView extends LayoutContainer {
                         Notification.show(I18N.CONSTANTS.projectTabReports(), I18N.CONSTANTS.reportSaveSuccess());
 
                         boolean found = false;
-                        for(int index = 0; !found && index < store.getCount(); index++) {
+                        for (int index = 0; !found && index < store.getCount(); index++) {
                             final GetProjectReports.ReportReference reference = store.getAt(index);
 
-                            if(reference.getId().equals(report.getId())) {
+                            if (reference.getId().equals(report.getId())) {
                                 store.remove(reference);
-                                
+
                                 reference.setEditorName(I18N.CONSTANTS.you());
                                 reference.setPhaseName(phaseName);
                                 reference.setLastEditDate(new Date());
@@ -492,7 +588,7 @@ public class ProjectReportsView extends LayoutContainer {
                             }
                         }
                     }
-                    
+
                 });
             }
         });
@@ -689,7 +785,7 @@ public class ProjectReportsView extends LayoutContainer {
 
             @Override
             public void handleEvent(BaseEvent be) {
-                if(imageAddDialog == null) {
+                if (imageAddDialog == null) {
                     imageAddDialog = new Dialog();
 
                     imageAddDialog.setButtons(Dialog.OKCANCEL);
@@ -718,14 +814,15 @@ public class ProjectReportsView extends LayoutContainer {
                     });
 
                     // Cancel button
-                    imageAddDialog.getButtonById(Dialog.CANCEL).addSelectionListener(new SelectionListener<ButtonEvent>() {
-                        @Override
-                        public void componentSelected(ButtonEvent ce) {
-                            imageAddDialog.hide();
-                        }
-                    });
+                    imageAddDialog.getButtonById(Dialog.CANCEL).addSelectionListener(
+                            new SelectionListener<ButtonEvent>() {
+                                @Override
+                                public void componentSelected(ButtonEvent ce) {
+                                    imageAddDialog.hide();
+                                }
+                            });
                 }
-                
+
                 imageURLField.setValue(null);
                 imageAddDialog.show();
             }
@@ -740,7 +837,7 @@ public class ProjectReportsView extends LayoutContainer {
     public void setPhaseName(String phaseName) {
         this.phaseName = phaseName;
     }
-    
+
     public Button getAttachButton() {
         return attachButton;
     }

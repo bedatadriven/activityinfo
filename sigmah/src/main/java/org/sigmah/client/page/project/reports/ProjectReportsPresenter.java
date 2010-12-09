@@ -5,20 +5,28 @@
 
 package org.sigmah.client.page.project.reports;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.Component;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.Authentication;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.project.ProjectPresenter;
 import org.sigmah.client.page.project.SubPresenter;
+import org.sigmah.shared.command.GetProjectDocuments;
 import org.sigmah.shared.command.GetProjectReport;
 import org.sigmah.shared.command.GetProjectReports;
 import org.sigmah.shared.command.result.ProjectReportListResult;
 import org.sigmah.shared.dto.ProjectDTO;
+import org.sigmah.shared.dto.ProjectDTO.LocalizedElement;
+import org.sigmah.shared.dto.element.FilesListElementDTO;
 import org.sigmah.shared.dto.report.ProjectReportDTO;
+
+import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.Component;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Sub presenter that manage the "reports" view from the project page.
@@ -103,9 +111,12 @@ public class ProjectReportsPresenter implements SubPresenter {
         view.setPhaseName(projectPresenter.getCurrentProjectDTO().getCurrentPhaseDTO().getPhaseModelDTO().getName());
 
         // Reset the attach documents menu.
-        new AttachDocumentMenu(authentication, projectPresenter.getCurrentProjectDTO(), view.getAttachButton());
+        new AttachDocumentMenu(authentication, projectPresenter.getCurrentProjectDTO(), view.getAttachButton(),
+                reportStore);
 
         if (reportStore.getCount() == 0 || reportStoreNeedsRefresh) {
+
+            // Retrieves reports.
             GetProjectReports getProjectReports = new GetProjectReports(currentProjectDTO.getId());
             dispatcher.execute(getProjectReports, null, new AsyncCallback<ProjectReportListResult>() {
                 @Override
@@ -123,6 +134,35 @@ public class ProjectReportsPresenter implements SubPresenter {
                     throw new UnsupportedOperationException("Not supported yet.");
                 }
             });
+
+            // Retrieves all the files lists elements in the current project.
+            final List<GetProjectDocuments.FilesListElement> filesLists = new ArrayList<GetProjectDocuments.FilesListElement>();
+            final List<LocalizedElement> filesLists2 = currentProjectDTO
+                    .getLocalizedElements(FilesListElementDTO.class);
+            for (LocalizedElement e : filesLists2) {
+                filesLists.add(new GetProjectDocuments.FilesListElement((long) e.getElement().getId(), e
+                        .getPhaseModel() != null ? e.getPhaseModel().getName() : I18N.CONSTANTS.projectDetails(), e
+                        .getElement().getLabel()));
+            }
+
+            // Retrieves documents.
+            dispatcher.execute(new GetProjectDocuments(currentProjectDTO.getId(), filesLists), null,
+                    new AsyncCallback<ProjectReportListResult>() {
+                        @Override
+                        public void onSuccess(ProjectReportListResult result) {
+                            if (reportStoreNeedsRefresh) {
+                                reportStore.removeAll();
+                                reportStoreNeedsRefresh = false;
+                            }
+
+                            reportStore.add(result.getData());
+                        }
+
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            throw new UnsupportedOperationException("Not supported yet.");
+                        }
+                    });
         }
     }
 }
