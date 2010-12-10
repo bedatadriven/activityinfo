@@ -45,9 +45,9 @@ public final class DateUtils {
                 } else if (d1.getMonth() > d2.getMonth()) {
                     return 1;
                 } else {
-                    if (d1.getDay() < d2.getDay()) {
+                    if (d1.getDate() < d2.getDate()) {
                         return -1;
-                    } else if (d1.getDay() > d2.getDay()) {
+                    } else if (d1.getDate() > d2.getDate()) {
                         return 1;
                     } else {
                         return 0;

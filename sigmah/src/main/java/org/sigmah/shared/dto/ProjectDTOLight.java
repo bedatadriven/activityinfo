@@ -1,8 +1,12 @@
 package org.sigmah.shared.dto;
 
+import java.util.Date;
 import java.util.List;
 
+import org.sigmah.client.util.DateUtils;
+import org.sigmah.client.util.NumberUtils;
 import org.sigmah.shared.domain.ProjectModelType;
+import org.sigmah.shared.dto.category.CategoryTypeDTO;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
@@ -15,11 +19,6 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 public class ProjectDTOLight extends BaseModelData implements EntityDTO {
 
     private static final long serialVersionUID = -4898072895587927460L;
-
-    public ProjectDTOLight() {
-        // TODO remove this.
-        setFavorite(false);
-    }
 
     @Override
     public String getEntityName() {
@@ -65,15 +64,6 @@ public class ProjectDTOLight extends BaseModelData implements EntityDTO {
 
     public void generateCompleteName() {
         setCompleteName(getName() + " - " + getFullName());
-    }
-
-    // Favorite
-    public boolean isFavorite() {
-        return (Boolean) get("favorite");
-    }
-
-    public void setFavorite(boolean favorite) {
-        set("favorite", favorite);
     }
 
     // Reference to the current phase
@@ -131,6 +121,56 @@ public class ProjectDTOLight extends BaseModelData implements EntityDTO {
         set("orgUnitName", orgUnitName);
     }
 
+    // Project start date
+    public Date getStartDate() {
+        return get("startDate");
+    }
+
+    public void setStartDate(Date startDate) {
+        set("startDate", startDate);
+    }
+
+    // Project end date
+    public Date getEndDate() {
+        return get("endDate");
+    }
+
+    public void setEndDate(Date endDate) {
+        set("endDate", endDate);
+    }
+
+    // Starred project.
+    public void setStarred(Boolean starred) {
+        set("starred", starred);
+    }
+
+    public Boolean getStarred() {
+        final Boolean b = (Boolean) get("starred");
+        return b == null ? false : b;
+    }
+
+    // Closed date.
+    public void setCloseDate(Date closeDate) {
+        set("closeDate", closeDate);
+    }
+
+    public Date getCloseDate() {
+        return get("closeDate");
+    }
+
+    public boolean isClosed() {
+        return getCloseDate() != null;
+    }
+
+    // Categories.
+    public List<CategoryTypeDTO> getCategories() {
+        return get("categories");
+    }
+
+    public void setCategories(List<CategoryTypeDTO> categories) {
+        set("categories", categories);
+    }
+
     /**
      * Gets the type of this model for the given organization. If this model
      * isn't visible for this organization, <code>null</code> is returned.
@@ -169,5 +209,88 @@ public class ProjectDTOLight extends BaseModelData implements EntityDTO {
         final ProjectDTOLight other = (ProjectDTOLight) obj;
 
         return getId() == other.getId();
+    }
+
+    /**
+     * Gets the percentage of the elapsed time for the given project.
+     * 
+     * @param model
+     *            The project.
+     * @return The percentage of the elapsed time.
+     */
+    @SuppressWarnings("deprecation")
+    public double getElapsedTime() {
+
+        final double ratio;
+        final Date start = getStartDate();
+        final Date end = getEndDate();
+        final Date close = getCloseDate();
+        final Date today = new Date();
+        final Date comparison;
+
+        if (isClosed()) {
+            comparison = new Date(close.getYear(), close.getMonth(), close.getDate());
+        } else {
+            comparison = new Date(today.getYear(), today.getMonth(), today.getDate());
+        }
+
+        // No end date
+        if (end == null) {
+            ratio = 0d;
+        }
+        // No start date but with a end date.
+        else if (start == null) {
+
+            if (DateUtils.DAY_COMPARATOR.compare(comparison, end) < 0) {
+                ratio = 0d;
+            } else {
+                ratio = 100d;
+            }
+        }
+        // Start date and end date.
+        else {
+
+            // The start date is after the end date -> 100%.
+            if (DateUtils.DAY_COMPARATOR.compare(start, end) >= 0) {
+                ratio = 100d;
+            }
+            // The start date is after today -> 0%.
+            else if (DateUtils.DAY_COMPARATOR.compare(comparison, start) <= 0) {
+                ratio = 0d;
+            }
+            // The start date is before the end date -> x%.
+            else {
+                final Date sd = new Date(start.getYear(), start.getMonth(), start.getDate());
+                final Date ed = new Date(end.getYear(), end.getMonth(), end.getDate());
+                final double elapsedTime = comparison.getTime() - sd.getTime();
+                final double estimatedTime = ed.getTime() - sd.getTime();
+                ratio = NumberUtils.ratio(elapsedTime, estimatedTime);
+            }
+        }
+
+        return NumberUtils.adjustRatio(ratio);
+    }
+
+    /**
+     * Gets all the categories type of this project.
+     * 
+     * @return The categories type as string.
+     */
+    public String getCategoriesString() {
+
+        final List<CategoryTypeDTO> categories = getCategories();
+
+        final StringBuilder sb = new StringBuilder();
+
+        if (categories != null) {
+            for (int i = 0; i < categories.size(); i++) {
+                sb.append(categories.get(i).getLabel());
+                if (i + 1 != categories.size()) {
+                    sb.append(" / ");
+                }
+            }
+        }
+
+        return sb.toString();
     }
 }

@@ -25,7 +25,10 @@ import org.sigmah.shared.domain.OrgUnit;
 import org.sigmah.shared.domain.Project;
 import org.sigmah.shared.domain.ProjectModelType;
 import org.sigmah.shared.domain.User;
+import org.sigmah.shared.domain.element.FlexibleElement;
+import org.sigmah.shared.domain.element.QuestionElement;
 import org.sigmah.shared.dto.ProjectDTOLight;
+import org.sigmah.shared.dto.category.CategoryTypeDTO;
 import org.sigmah.shared.exception.CommandException;
 
 import com.google.inject.Inject;
@@ -123,10 +126,23 @@ public class GetProjectsHandler implements CommandHandler<GetProjects> {
         for (Project project : projects) {
             final ProjectDTOLight p = mapper.map(project, ProjectDTOLight.class);
 
+            // Fill the org unit.
             if (project.getPartners() != null) {
                 for (final OrgUnit orgUnit : project.getPartners()) {
                     p.setOrgUnitName(orgUnit.getName());
                     break;
+                }
+            }
+
+            // Fill categories.
+            p.setCategories(new ArrayList<CategoryTypeDTO>());
+            for (final FlexibleElement element : project.getProjectModel().getElements()) {
+
+                if (element instanceof QuestionElement) {
+                    final QuestionElement question = (QuestionElement) element;
+                    if (question.getCategoryType() != null) {
+                        p.getCategories().add(mapper.map(question.getCategoryType(), CategoryTypeDTO.class));
+                    }
                 }
             }
 

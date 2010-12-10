@@ -5,11 +5,13 @@
 
 package org.sigmah.client.page.dashboard;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.UserInfo;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.event.NavigationEvent;
 import org.sigmah.client.i18n.I18N;
@@ -22,15 +24,23 @@ import org.sigmah.client.page.dashboard.CreateProjectWindow.CreateProjectListene
 import org.sigmah.client.page.entry.SiteGridPageState;
 import org.sigmah.client.page.map.MapPageState;
 import org.sigmah.client.page.project.ProjectPresenter;
+import org.sigmah.client.page.project.dashboard.funding.FundingIconProvider;
+import org.sigmah.client.page.project.dashboard.funding.FundingIconProvider.IconSize;
 import org.sigmah.client.page.report.ReportListPageState;
 import org.sigmah.client.page.table.PivotPageState;
 import org.sigmah.client.ui.RatioBar;
 import org.sigmah.client.ui.StylableVBoxLayout;
 import org.sigmah.client.util.Notification;
 import org.sigmah.client.util.NumberUtils;
+import org.sigmah.shared.command.UpdateProject;
+import org.sigmah.shared.command.result.VoidResult;
+import org.sigmah.shared.domain.ProjectModelType;
 import org.sigmah.shared.dto.OrgUnitDTOLight;
 import org.sigmah.shared.dto.ProjectDTOLight;
+import org.sigmah.shared.dto.element.DefaultFlexibleElementDTO;
+import org.sigmah.shared.dto.element.handler.ValueEvent;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -44,7 +54,11 @@ import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.util.Padding;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.WidgetComponent;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.Radio;
+import com.extjs.gxt.ui.client.widget.form.RadioGroup;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -55,14 +69,18 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -336,19 +354,118 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
 
                 if ("name".equals(property)) {
                     return m1.getName().compareToIgnoreCase(m2.getName());
+                } else if ("fullName".equals(property)) {
+                    return m1.getFullName().compareToIgnoreCase(m2.getFullName());
                 } else if ("phase".equals(property)) {
                     return m1.getCurrentPhaseDTO().getPhaseModelDTO().getName()
                             .compareToIgnoreCase(m2.getCurrentPhaseDTO().getPhaseModelDTO().getName());
+                } else if ("orgUnitName".equals(property)) {
+                    return m1.getOrgUnitName().compareToIgnoreCase(m2.getOrgUnitName());
+                } else if ("spentBudget".equals(property)) {
+                    final Double d1 = NumberUtils.adjustRatio(NumberUtils.ratio(m1.getSpendBudget(),
+                            m1.getPlannedBudget()));
+                    final Double d2 = NumberUtils.adjustRatio(NumberUtils.ratio(m2.getSpendBudget(),
+                            m2.getPlannedBudget()));
+                    return d1.compareTo(d2);
+                } else if ("time".equals(property)) {
+                    final Double d1 = m1.getElapsedTime();
+                    final Double d2 = m2.getElapsedTime();
+                    return d1.compareTo(d2);
+                } else if ("activity".equals(property)) {
+                    return 0;
+                } else if ("category".equals(property)) {
+                    return m1.getCategoriesString().compareToIgnoreCase(m2.getCategoriesString());
                 } else {
                     return super.compare(store, m1, m2, property);
                 }
             }
         });
 
+        // Top panel
+        final ToolBar toolbar = new ToolBar();
+
+        final Radio ngoRadio = new Radio();
+        ngoRadio.setValue(true);
+        ngoRadio.setFieldLabel(I18N.CONSTANTS.createProjectTypeNGO());
+        ngoRadio.addStyleName("toolbar-radio");
+
+        final WidgetComponent ngoIcon = new WidgetComponent(FundingIconProvider.getProjectTypeIcon(
+                ProjectModelType.NGO, IconSize.SMALL).createImage());
+        ngoIcon.addStyleName("toolbar-icon");
+
+        final Label ngoLabel = new Label(I18N.CONSTANTS.createProjectTypeNGO());
+        ngoLabel.addStyleName("flexibility-element-label");
+        ngoLabel.addStyleName("project-starred-icon");
+        ngoLabel.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                ngoRadio.setValue(true);
+            }
+        });
+
+        final Radio fundingRadio = new Radio();
+        fundingRadio.setFieldLabel(I18N.CONSTANTS.createProjectTypeFunding());
+        fundingRadio.addStyleName("toolbar-radio");
+
+        final WidgetComponent fundingIcon = new WidgetComponent(FundingIconProvider.getProjectTypeIcon(
+                ProjectModelType.FUNDING, IconSize.SMALL).createImage());
+        fundingIcon.addStyleName("toolbar-icon");
+
+        final Label fundingLabel = new Label(I18N.CONSTANTS.createProjectTypeFunding());
+        fundingLabel.addStyleName("flexibility-element-label");
+        fundingLabel.addStyleName("project-starred-icon");
+        fundingLabel.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                fundingRadio.setValue(true);
+            }
+        });
+
+        final Radio partnerRadio = new Radio();
+        partnerRadio.setFieldLabel(I18N.CONSTANTS.createProjectTypePartner());
+        partnerRadio.addStyleName("toolbar-radio");
+
+        final WidgetComponent partnerIcon = new WidgetComponent(FundingIconProvider.getProjectTypeIcon(
+                ProjectModelType.LOCAL_PARTNER, IconSize.SMALL).createImage());
+        partnerIcon.addStyleName("toolbar-icon");
+
+        final Label partnerLabel = new Label(I18N.CONSTANTS.createProjectTypePartner());
+        partnerLabel.addStyleName("flexibility-element-label");
+        partnerLabel.addStyleName("project-starred-icon");
+        partnerLabel.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                partnerRadio.setValue(true);
+            }
+        });
+
+        final Label headLabel = new Label(I18N.CONSTANTS.projectTypeFilter() + ": ");
+        headLabel.addStyleName("flexibility-element-label");
+
+        final RadioGroup group = new RadioGroup("projectTypeFilter");
+        group.add(ngoRadio);
+        group.add(fundingRadio);
+        group.add(partnerRadio);
+
+        toolbar.add(new WidgetComponent(headLabel));
+        toolbar.add(ngoRadio);
+        toolbar.add(ngoIcon);
+        toolbar.add(new WidgetComponent(ngoLabel));
+        toolbar.add(fundingRadio);
+        toolbar.add(fundingIcon);
+        toolbar.add(new WidgetComponent(fundingLabel));
+        toolbar.add(partnerRadio);
+        toolbar.add(partnerIcon);
+        toolbar.add(new WidgetComponent(partnerLabel));
+
         // Panel
         final ContentPanel projectTreePanel = new ContentPanel(new FitLayout());
         projectTreePanel.setHeading(I18N.CONSTANTS.projects());
 
+        projectTreePanel.setTopComponent(toolbar);
         projectTreePanel.add(projectTreeGrid);
         projectsPanel = projectTreePanel;
 
@@ -362,9 +479,10 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
      */
     private ColumnModel getProjectGridColumnModel() {
 
+        final DateTimeFormat format = DateTimeFormat.getFormat(I18N.CONSTANTS.flexibleElementDateFormat());
+
         // Starred icon
-        final ColumnConfig starredIconColumn = new ColumnConfig("favorite", "", 24);
-        starredIconColumn.setSortable(false);
+        final ColumnConfig starredIconColumn = new ColumnConfig("starred", "", 24);
         starredIconColumn.setRenderer(new GridCellRenderer<ProjectDTOLight>() {
             private final DashboardImageBundle imageBundle = GWT.create(DashboardImageBundle.class);
 
@@ -373,39 +491,72 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
                     int colIndex, final ListStore<ProjectDTOLight> store, final Grid<ProjectDTOLight> grid) {
                 final Image icon;
 
-                if (model.isFavorite())
+                if (model.getStarred()) {
                     icon = imageBundle.star().createImage();
-                else
+                } else {
                     icon = imageBundle.emptyStar().createImage();
+                }
 
                 icon.addClickHandler(new ClickHandler() {
+
                     @Override
                     public void onClick(ClickEvent event) {
-                        model.setFavorite(!model.isFavorite());
-                        // TODO: Save the changes
+
+                        final ArrayList<ValueEvent> events = new ArrayList<ValueEvent>();
+                        final DefaultFlexibleElementDTO dto = new DefaultFlexibleElementDTO();
+                        dto.setId(-1);
+                        final ValueEvent starredEvent = new ValueEvent(dto, String.valueOf(!model.getStarred()));
+                        events.add(starredEvent);
+
+                        dispatcher.execute(new UpdateProject(model.getId(), events), new MaskingAsyncMonitor(
+                                projectsPanel, I18N.CONSTANTS.loading()), new AsyncCallback<VoidResult>() {
+
+                            @Override
+                            public void onFailure(Throwable e) {
+                                Log.error(
+                                        "[execute] Error while setting the favorite status of the project #"
+                                                + model.getId(), e);
+                                MessageBox.alert(I18N.CONSTANTS.projectStarredError(),
+                                        I18N.CONSTANTS.projectStarredErrorDetails(), null);
+                            }
+
+                            @Override
+                            public void onSuccess(VoidResult result) {
+                                model.setStarred(!model.getStarred());
+                                store.update(model);
+                                if (model.getStarred()) {
+                                    Notification.show(I18N.CONSTANTS.infoConfirmation(),
+                                            I18N.CONSTANTS.projectStarred());
+                                }
+                            }
+                        });
                     }
                 });
+
+                icon.addStyleName("project-starred-icon");
 
                 return icon;
             }
         });
 
         // Code
-        final ColumnConfig codeColumn = new ColumnConfig("name", I18N.CONSTANTS.projectName(), 200);
+        final ColumnConfig codeColumn = new ColumnConfig("name", I18N.CONSTANTS.projectName(), 110);
         codeColumn.setRenderer(new WidgetTreeGridCellRenderer<ProjectDTOLight>() {
             @Override
             public Widget getWidget(ProjectDTOLight model, String property, ColumnData config, int rowIndex,
                     int colIndex, ListStore<ProjectDTOLight> store, Grid<ProjectDTOLight> grid) {
-                return new Hyperlink((String) model.get(property), true, ProjectPresenter.PAGE_ID.toString() + '!'
-                        + model.get("id").toString());
+                final Hyperlink h = new Hyperlink((String) model.get(property), true, ProjectPresenter.PAGE_ID
+                        .toString() + '!' + model.get("id").toString());
+                h.getElement().addClassName("flexibility-action");
+                return h;
             }
         });
 
         // Title
-        final ColumnConfig titleColumn = new ColumnConfig("fullName", I18N.CONSTANTS.projectFullName(), 200);
+        final ColumnConfig titleColumn = new ColumnConfig("fullName", I18N.CONSTANTS.projectFullName(), 230);
 
         // Current phase
-        final ColumnConfig currentPhaseName = new ColumnConfig("phase", I18N.CONSTANTS.projectActivePhase(), 100);
+        final ColumnConfig currentPhaseName = new ColumnConfig("phase", I18N.CONSTANTS.projectActivePhase(), 150);
         currentPhaseName.setRenderer(new GridCellRenderer<ProjectDTOLight>() {
             @Override
             public Object render(ProjectDTOLight model, String property, ColumnData config, int rowIndex, int colIndex,
@@ -415,7 +566,7 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
         });
 
         // Org Unit
-        final ColumnConfig orgUnitColumn = new ColumnConfig("orgUnitName", I18N.CONSTANTS.orgunit(), 200);
+        final ColumnConfig orgUnitColumn = new ColumnConfig("orgUnitName", I18N.CONSTANTS.orgunit(), 150);
 
         // Spent budget
         final ColumnConfig spentBudgetColumn = new ColumnConfig("spentBudget", I18N.CONSTANTS.projectSpendBudget(), 100);
@@ -428,8 +579,55 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
             }
         });
 
+        // Time
+        final ColumnConfig timeColumn = new ColumnConfig("time", I18N.CONSTANTS.projectTime(), 100);
+        timeColumn.setRenderer(new GridCellRenderer<ProjectDTOLight>() {
+
+            @Override
+            public Object render(ProjectDTOLight model, String property, ColumnData config, int rowIndex, int colIndex,
+                    ListStore<ProjectDTOLight> store, Grid<ProjectDTOLight> grid) {
+                return new RatioBar(model.getElapsedTime());
+            }
+        });
+
+        // Start date
+        final ColumnConfig startDateColumn = new ColumnConfig("startDate", I18N.CONSTANTS.projectStartDate(), 75);
+        startDateColumn.setDateTimeFormat(format);
+
+        // End date
+        final ColumnConfig endDateColumn = new ColumnConfig("endDate", I18N.CONSTANTS.projectEndDate(), 75);
+        endDateColumn.setDateTimeFormat(format);
+
+        // Close date
+        final ColumnConfig closeDateColumn = new ColumnConfig("closeDate", I18N.CONSTANTS.projectClosedDate(), 75);
+        closeDateColumn.setDateTimeFormat(format);
+
+        // Activity
+        final ColumnConfig activityColumn = new ColumnConfig("activity", I18N.CONSTANTS.logFrameActivity(), 100);
+        activityColumn.setSortable(false);
+        activityColumn.setRenderer(new GridCellRenderer<ProjectDTOLight>() {
+
+            @Override
+            public Object render(ProjectDTOLight model, String property, ColumnData config, int rowIndex, int colIndex,
+                    ListStore<ProjectDTOLight> store, Grid<ProjectDTOLight> grid) {
+                return new RatioBar(0);
+            }
+        });
+
+        // Category
+        final ColumnConfig categoryColumn = new ColumnConfig("category", I18N.CONSTANTS.category(), 150);
+        categoryColumn.setRenderer(new GridCellRenderer<ProjectDTOLight>() {
+
+            @Override
+            public Object render(ProjectDTOLight model, String property, ColumnData config, int rowIndex, int colIndex,
+                    ListStore<ProjectDTOLight> store, Grid<ProjectDTOLight> grid) {
+                return model.getCategoriesString();
+            }
+        });
+
         return new ColumnModel(Arrays.asList(starredIconColumn, codeColumn, titleColumn, currentPhaseName,
-                orgUnitColumn, spentBudgetColumn));
+                orgUnitColumn, spentBudgetColumn, startDateColumn, endDateColumn, closeDateColumn, timeColumn,
+                activityColumn, categoryColumn));
     }
 
     @Override

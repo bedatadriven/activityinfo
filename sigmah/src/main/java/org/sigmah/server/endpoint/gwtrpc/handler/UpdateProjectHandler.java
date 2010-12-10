@@ -90,6 +90,13 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
             // like other values. These values impact directly the project.
             if (source instanceof DefaultFlexibleElementDTO) {
 
+                // Starred case.
+                if (source.getId() == -1) {
+                    project.setStarred(Boolean.valueOf(valueEvent.getSingleValue()));
+                    em.merge(project);
+                    continue;
+                }
+
                 final DefaultFlexibleElementDTO defaultElement = (DefaultFlexibleElementDTO) source;
 
                 if (LOG.isDebugEnabled()) {
@@ -118,7 +125,9 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
                     }
 
                     // Historize the first value.
-                    historize(oldDate, element, oldOwner, ChangeType.ADD, oldValue, null);
+                    if (oldValue != null) {
+                        historize(oldDate, element, oldOwner, ChangeType.ADD, oldValue, null);
+                    }
                 }
 
                 // Historize the value.
@@ -437,7 +446,7 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
 
             // Decodes timestamp.
             if (project != null) {
-                oldValue = String.valueOf(project.getStartDate().getTime());
+                oldValue = project.getStartDate() == null ? null : String.valueOf(project.getStartDate().getTime());
                 if ("".equals(stringValue)) {
 
                     project.setStartDate(null);
@@ -464,7 +473,7 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
 
             // Decodes timestamp.
             if (project != null) {
-                oldValue = String.valueOf(project.getEndDate().getTime());
+                oldValue = project.getEndDate() == null ? null : String.valueOf(project.getEndDate().getTime());
                 if ("".equals(stringValue)) {
 
                     project.setEndDate(null);

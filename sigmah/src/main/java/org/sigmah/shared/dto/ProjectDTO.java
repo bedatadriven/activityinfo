@@ -328,6 +328,27 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO, Defaul
         set("pointsList", pointsList);
     }
 
+    public void setStarred(Boolean starred) {
+        set("starred", starred);
+    }
+
+    public Boolean getStarred() {
+        final Boolean b = (Boolean) get("starred");
+        return b == null ? false : b;
+    }
+
+    public void setCloseDate(Date closeDate) {
+        set("closeDate", closeDate);
+    }
+
+    public Date getCloseDate() {
+        return get("closeDate");
+    }
+
+    public boolean isClosed() {
+        return getCloseDate() != null;
+    }
+
     public void addListener(MonitoredPointListener l) {
 
         if (listeners == null) {
@@ -400,13 +421,18 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO, Defaul
 
         final ProjectDTOLight light = new ProjectDTOLight();
         light.setId(getId());
+        light.setStarred(getStarred());
+        light.setStartDate(getStartDate());
+        light.setEndDate(getEndDate());
         light.setName(getName());
         light.setFullName(getFullName());
         light.generateCompleteName();
-        light.setFavorite(false);
         light.setCurrentPhaseDTO(getCurrentPhaseDTO());
         light.setVisibilities(getProjectModelDTO().getVisibilities());
         light.setPlannedBudget(getPlannedBudget());
+        light.setSpendBudget(getSpendBudget());
+        light.setReceivedBudget(getReceivedBudget());
+        light.setCloseDate(getCloseDate());
 
         return light;
     }

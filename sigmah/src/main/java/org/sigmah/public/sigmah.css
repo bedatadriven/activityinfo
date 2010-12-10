@@ -22,7 +22,8 @@ body {
 #orglogo {
 	width: 100%;
 	height: 100%;
-	background: transparent url(image/default-logo.png) left center no-repeat;
+	background: transparent url(image/default-logo.png) left center
+		no-repeat;
 	opacity: 0.5;
 }
 
@@ -331,12 +332,8 @@ body {
 	background-color: rgb(167, 143, 100);
 }
 
-.hyperlink a,
-.hyperlink a:active,
-.hyperlink a:hover,
-.hyperlink a:focus,
-.hyperlink a:link,
-.hyperlink a:visited {
+.hyperlink a,.hyperlink a:active,.hyperlink a:hover,.hyperlink a:focus,.hyperlink a:link,.hyperlink a:visited
+	{
 	text-decoration: underline;
 	cursor: pointer;
 	color: black;
@@ -357,7 +354,7 @@ body {
 }
 
 .project-current-phase-panel {
-	background-color: white;	
+	background-color: white;
 }
 
 .project-panelReminders {
@@ -366,22 +363,37 @@ body {
 
 .project-phase-active span.x-tab-strip-text {
 	padding-left: 14px;
-	background: transparent url(./image/bullet_star.png) no-repeat left center;
+	background: transparent url(./image/bullet_star.png) no-repeat left
+		center;
 }
 
 .project-phase-closed span.x-tab-strip-text {
 	padding-left: 14px;
-	background: transparent url(./image/bullet_star_black.png) no-repeat left center;
+	background: transparent url(./image/bullet_star_black.png) no-repeat
+		left center;
 }
 
 .project-label-10 {
 	font-size: 10pt;
 }
 
+.project-starred-icon {
+	cursor: pointer;
+}
+
 .toolbar-title {
-    font-weight: bold !important;
-    margin-left: 4px;
-    margin-right: 4px !important;
+	font-weight: bold !important;
+	margin-left: 4px;
+	margin-right: 4px !important;
+}
+
+.toolbar-radio {
+	padding-left: 20px;
+}
+
+.toolbar-icon {
+	padding-right: 3px;
+	margin-top: 2px;
 }
 
 /* ----------------------------------------------------------------- Calendar */
@@ -573,12 +585,11 @@ body {
 }
 
 /* -------------------------------------------------------------- Flexibility */
-.flexibility-layout {
-    /*
+.flexibility-layout { /*
 	border-spacing: 0;
         margin: 4px 20px 0 0;
     */
-    padding: 4px 20px 0 0;
+	padding: 4px 20px 0 0;
 }
 
 .flexibility-layout td {
@@ -608,12 +619,19 @@ body {
 	color: black;
 }
 
+.flexibility-action a {
+	text-decoration: underline;
+	cursor: pointer;
+	color: black;
+}
+
+
 .flexibility-action-iconable {
 	padding-left: 4px;
 }
 
 .flexibility-label {
-	font-family: tahoma,arial,helvetica,sans-serif;
+	font-family: tahoma, arial, helvetica, sans-serif;
 }
 
 /* ----------------------------------------------------- GWT HTML Table */
@@ -700,44 +718,44 @@ body {
 
 /* --------------------------------------------- Reports */
 .project-report {
-    padding-top: 4px;
-    padding-left: 8px;
-    font-size: 10pt;
+	padding-top: 4px;
+	padding-left: 8px;
+	font-size: 10pt;
 }
 
 .project-report-level-1 {
-    margin-bottom: 16px !important;
-    width: 95%;
+	margin-bottom: 16px !important;
+	width: 95%;
 }
 
 .project-report-level-1 .fold-title {
-    text-transform: uppercase;
-    font-size: 14pt;
-    font-weight: bold;
-    color: black;
+	text-transform: uppercase;
+	font-size: 14pt;
+	font-weight: bold;
+	color: black;
 }
 
 .project-report-level-2 .fold-title {
-    text-transform: none;
-    font-size: 12pt;
+	text-transform: none;
+	font-size: 12pt;
 }
 
 .project-report-level-3 .fold-title {
-    font-size: 10pt;
+	font-size: 10pt;
 }
 
 .project-report-key-question-label {
-    font-size: 12px;
-    font-weight: bold;
+	font-size: 12px;
+	font-weight: bold;
 }
 
 .project-report-key-question {
-    margin: 0;
-    border: 0;
-    border-top: 1px solid black;
-    background-color: white;
-    display: block;
-    width: 100%;
+	margin: 0;
+	border: 0;
+	border-top: 1px solid black;
+	background-color: white;
+	display: block;
+	width: 100%;
 }
 
 .gwt-RichTextArea {
@@ -755,19 +773,19 @@ body {
 
 .fold-title {
 	cursor: pointer;
-        padding-left: 16px;
+	padding-left: 16px;
 }
 
 .fold-tool-button {
-    float: left;
-    cursor: pointer;
+	float: left;
+	cursor: pointer;
 }
 
 .fold-tool-button:hover {
-    background-color: rgb(231,210,163) !important;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    border-radius: 3px;
+	background-color: rgb(231, 210, 163) !important;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
 }
 
 .fold-content {
@@ -775,26 +793,28 @@ body {
 }
 
 .fold-folded {
-    background: url('image/fold-folded.png') transparent no-repeat left center;
+	background: url('image/fold-folded.png') transparent no-repeat left
+		center;
 }
 
 .fold-collapsed {
-    background: url('image/fold-expand.png') transparent no-repeat left center;
+	background: url('image/fold-expand.png') transparent no-repeat left
+		center;
 }
 
 .fold-expanded {
-    background: url('image/fold-collapse.png') transparent no-repeat left center;
+	background: url('image/fold-collapse.png') transparent no-repeat left
+		center;
 }
 
 /* --------------------------------------------- Banner */
-
 .banner {
 	padding: 4px;
 }
 
 .banner-logo {
 	padding-left: 12px;
-	width: 70px;	
+	width: 70px;
 }
 
 .banner-flex {
@@ -802,66 +822,64 @@ body {
 }
 
 /* ---------------------------------------------- Login */
-
 .login-background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgb(73,71,72);
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgb(73, 71, 72);
 }
 
 .login-box {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 650px;
-    height: 150px;
-    margin-left: -325px;
-    margin-top: -75px;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 650px;
+	height: 150px;
+	margin-left: -325px;
+	margin-top: -75px;
 }
 
 .login-box-logo {
-    width: 250px;
-    height: 150px;
-    text-align: left;
+	width: 250px;
+	height: 150px;
+	text-align: left;
 }
 
 .login-box-form {
-    width: 400px;
-    height: 150px;
-    background-color: #e96f00;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
-    border-radius: 4px;
+	width: 400px;
+	height: 150px;
+	background-color: #e96f00;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
 }
 
 .login-box-form-label {
-    font-family: tahoma,arial,helvetica,sans-serif;
-    font-size: 12px;
-    color: white;
-    text-align: right;
-    width: 120px;
-    padding-right: 8px;
+	font-family: tahoma, arial, helvetica, sans-serif;
+	font-size: 12px;
+	color: white;
+	text-align: right;
+	width: 120px;
+	padding-right: 8px;
 }
 
 .login-box-form-forgotten {
-    font-family: tahoma,arial,helvetica,sans-serif;
-    font-size: 11px;
-    font-weight: bold;
-    color: white;
+	font-family: tahoma, arial, helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: bold;
+	color: white;
 }
 
 .login-box-form-separator {
-    width: 33%;
-    height: 8px;
+	width: 33%;
+	height: 8px;
 }
 
 /* ---------------------------------------------- Monitored points */
-
 .points-date-exceeded {
-	color: red;	
+	color: red;
 }
 
 .points-completed {
@@ -869,9 +887,8 @@ body {
 }
 
 /* ---------------------------------------------- History */
-
 .history-empty-string {
-	font-style: italic;	
+	font-style: italic;
 }
 
 .history-textarea {
@@ -889,7 +906,6 @@ body {
 }
 
 /* ---------------------------------------------- Block stat */
-
 .blockStat {
 	border: 1px solid #1D2A3D;
 	padding: 1px;

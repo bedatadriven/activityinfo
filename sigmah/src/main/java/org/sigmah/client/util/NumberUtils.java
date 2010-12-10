@@ -113,4 +113,24 @@ public final class NumberUtils {
 
         return n.doubleValue() / in.doubleValue() * 100;
     }
+
+    public static double adjustRatio(Double r) {
+
+        final double ratio;
+
+        // Adjusts the ration.
+        if (Double.compare(Double.NaN, r) == 0) {
+            ratio = 0;
+        } else if (r < 0) {
+            ratio = 0;
+        } else if (r == Double.POSITIVE_INFINITY) {
+            ratio = 100;
+        } else if (r == Double.NEGATIVE_INFINITY) {
+            ratio = 0;
+        } else {
+            ratio = r;
+        }
+
+        return ratio;
+    }
 }

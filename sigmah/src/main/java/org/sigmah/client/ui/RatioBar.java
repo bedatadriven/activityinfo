@@ -1,5 +1,7 @@
 package org.sigmah.client.ui;
 
+import org.sigmah.client.util.NumberUtils;
+
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.ui.Widget;
@@ -7,31 +9,25 @@ import com.google.gwt.user.client.ui.Widget;
 public class RatioBar extends Widget {
 
     private final DivElement innerDiv;
+    private final DivElement outterDiv;
 
     public RatioBar(final double ratio) {
 
         innerDiv = Document.get().createDivElement();
-        updateRatioStyle(ratio);
+        final int r = updateRatioStyle(ratio);
 
-        final DivElement outterDiv = Document.get().createDivElement();
+        outterDiv = Document.get().createDivElement();
         outterDiv.addClassName("blockStat");
         outterDiv.appendChild(innerDiv);
 
         setElement(outterDiv);
+        setTitle(r + "%");
     }
 
-    private void updateRatioStyle(double ratio) {
+    private int updateRatioStyle(double ratio) {
 
         // Adjusts the ration.
-        if (Double.compare(Double.NaN, ratio) == 0) {
-            ratio = 0;
-        } else if (ratio < 0) {
-            ratio = 0;
-        } else if (ratio == Double.POSITIVE_INFINITY) {
-            ratio = 100;
-        } else if (ratio == Double.NEGATIVE_INFINITY) {
-            ratio = 0;
-        }
+        ratio = NumberUtils.adjustRatio(ratio);
 
         // Computes the style name.
         final String className;
@@ -56,5 +52,7 @@ public class RatioBar extends Widget {
         } else {
             innerDiv.setInnerText("");
         }
+
+        return ratioAsInt;
     }
 }

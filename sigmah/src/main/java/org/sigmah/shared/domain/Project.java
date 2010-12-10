@@ -38,7 +38,9 @@ public class Project extends UserDatabase {
     private List<ProjectFunding> funding;
     private List<ProjectFunding> funded;
     private Date endDate;
+    private Date closeDate;
     private MonitoredPointList pointsList;
+    private Boolean starred = false;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "end_date", length = 23)
@@ -197,5 +199,24 @@ public class Project extends UserDatabase {
     @Override
     public int hashCode() {
         return getId();
+    }
+
+    public void setStarred(Boolean starred) {
+        this.starred = starred;
+    }
+
+    @Column(name = "starred", nullable = true)
+    public Boolean getStarred() {
+        return starred;
+    }
+
+    public void setCloseDate(Date closeDate) {
+        this.closeDate = closeDate;
+    }
+
+    @Temporal(TemporalType.DATE)
+    @Column(name = "close_date", length = 23)
+    public Date getCloseDate() {
+        return closeDate;
     }
 }
