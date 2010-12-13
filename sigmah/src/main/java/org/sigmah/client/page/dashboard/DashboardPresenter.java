@@ -17,7 +17,6 @@ import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
-import org.sigmah.client.util.Notification;
 import org.sigmah.shared.command.GetProjects;
 import org.sigmah.shared.command.result.ProjectListResult;
 import org.sigmah.shared.domain.ProjectModelType;
@@ -98,8 +97,6 @@ public class DashboardPresenter implements Page {
      */
     private final UserInfo info;
 
-    private final Authentication authentication;
-
     // Current projects grid parameters.
     private ProjectModelType currentModelType;
     private final ArrayList<Integer> orgUnitsIds;
@@ -111,7 +108,6 @@ public class DashboardPresenter implements Page {
         this.view = view;
         this.dispatcher = dispatcher;
         this.info = info;
-        this.authentication = authentication;
 
         // Default sort order of the projects grid.
         view.getProjectsStore().setSortInfo(new SortInfo("name", SortDir.ASC));
@@ -158,7 +154,6 @@ public class DashboardPresenter implements Page {
                 @Override
                 public void handleEvent(FieldEvent be) {
                     if (Boolean.TRUE.equals(be.getValue())) {
-                        Notification.show("", "Change to " + type);
                         currentModelType = type;
                         applyProjectFilters();
                     }
