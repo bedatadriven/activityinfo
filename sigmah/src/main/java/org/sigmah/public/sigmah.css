@@ -918,8 +918,9 @@ body {
 
 /* ---------------------------------------------- Block stat */
 .blockStat {
-	border: 1px solid #1D2A3D;
-	padding: 1px;
+	border: 1px solid #4B3E2D;
+	-moz-border-radius: 5px;
+	background: transparent url(image/ratio-bar-bg.png) repeat-x scroll 0 0
 }
 
 .blockStat div {
@@ -927,20 +928,27 @@ body {
 	color: white;
 	font-size: 80%;
 	text-align: center;
+	background-color: transparent;
+	background-repeat: repeat-x;
+	background-position: 0 0;
+	-moz-border-radius-topLeft: 4px;
+	-moz-border-radius-bottomLeft: 4px;
 }
 
 .blockStatBgRed {
-	background-color: red;
+	background-image: url(image/ratio-bar-bg-red.png);
+	-moz-border-radius-topRight: 4px;
+	-moz-border-radius-bottomRight: 4px;
 }
 
 .blockStatBgYellow {
-	background-color: #FFD000;
+	background-image: url(image/ratio-bar-bg-yellow.png);
 }
 
 .blockStatBgOrange {
-	background-color: #FF6600;
+	background-image: url(image/ratio-bar-bg-orange.png);
 }
 
 .blockStatBgBlack {
-	background-color: black;
+	background-image: url(image/ratio-bar-bg-black.png);
 }
