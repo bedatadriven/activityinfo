@@ -396,6 +396,24 @@ body {
 	margin-top: 2px;
 }
 
+.project-grid-node {
+	font-weight: bold;
+}
+
+.project-grid-leaf {
+	font-weight: normal;
+}
+
+.project-grid-code a {
+	text-decoration: underline;
+	cursor: pointer;
+	color: #4B3E2D;
+}
+
+.project-grid-code-icon {
+	padding-right:5px;
+}
+
 /* ----------------------------------------------------------------- Calendar */
 .calendar {
 	border-collapse: collapse;
@@ -618,13 +636,6 @@ body {
 	cursor: pointer;
 	color: black;
 }
-
-.flexibility-action a {
-	text-decoration: underline;
-	cursor: pointer;
-	color: black;
-}
-
 
 .flexibility-action-iconable {
 	padding-left: 4px;

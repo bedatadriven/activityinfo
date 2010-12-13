@@ -23,6 +23,7 @@ import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.ProjectListResult;
 import org.sigmah.shared.domain.OrgUnit;
 import org.sigmah.shared.domain.Project;
+import org.sigmah.shared.domain.ProjectFunding;
 import org.sigmah.shared.domain.ProjectModelType;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.element.FlexibleElement;
@@ -123,30 +124,9 @@ public class GetProjectsHandler implements CommandHandler<GetProjects> {
 
         // Mapping into DTO objects
         final ArrayList<ProjectDTOLight> projectDTOList = new ArrayList<ProjectDTOLight>();
-        for (Project project : projects) {
-            final ProjectDTOLight p = mapper.map(project, ProjectDTOLight.class);
-
-            // Fill the org unit.
-            if (project.getPartners() != null) {
-                for (final OrgUnit orgUnit : project.getPartners()) {
-                    p.setOrgUnitName(orgUnit.getName());
-                    break;
-                }
-            }
-
-            // Fill categories.
-            p.setCategories(new ArrayList<CategoryTypeDTO>());
-            for (final FlexibleElement element : project.getProjectModel().getElements()) {
-
-                if (element instanceof QuestionElement) {
-                    final QuestionElement question = (QuestionElement) element;
-                    if (question.getCategoryType() != null) {
-                        p.getCategories().add(mapper.map(question.getCategoryType(), CategoryTypeDTO.class));
-                    }
-                }
-            }
-
-            projectDTOList.add(p);
+        for (final Project project : projects) {
+            final ProjectDTOLight pLight = mapProject(project, true);
+            projectDTOList.add(pLight);
         }
 
         if (LOG.isDebugEnabled()) {
@@ -155,6 +135,62 @@ public class GetProjectsHandler implements CommandHandler<GetProjects> {
 
         return new ProjectListResult(projectDTOList);
 
+    }
+
+    /**
+     * Map a project into a project light DTO.
+     * 
+     * @param project
+     *            The project.
+     * @param mapChildren
+     *            If the children projects must be retrieved.
+     * @return The light DTO.
+     */
+    private ProjectDTOLight mapProject(final Project project, final boolean mapChildren) {
+
+        final ProjectDTOLight pLight = mapper.map(project, ProjectDTOLight.class);
+
+        // Fill the org unit.
+        if (project.getPartners() != null) {
+            for (final OrgUnit orgUnit : project.getPartners()) {
+                pLight.setOrgUnitName(orgUnit.getName());
+                break;
+            }
+        }
+
+        // Fill categories.
+        pLight.setCategories(new ArrayList<CategoryTypeDTO>());
+        for (final FlexibleElement element : project.getProjectModel().getElements()) {
+
+            if (element instanceof QuestionElement) {
+                final QuestionElement question = (QuestionElement) element;
+                if (question.getCategoryType() != null) {
+                    pLight.getCategories().add(mapper.map(question.getCategoryType(), CategoryTypeDTO.class));
+                }
+            }
+        }
+
+        // Fill children.
+        final ArrayList<ProjectDTOLight> children = new ArrayList<ProjectDTOLight>();
+        if (mapChildren && project.getFunded() != null) {
+            for (final ProjectFunding funded : project.getFunded()) {
+
+                final Project pFunded = funded.getFunded();
+
+                if (pFunded != null) {
+                    // Recursive call to retrieve the child (without its
+                    // children).
+                    children.add(mapProject(pFunded, false));
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("[execute] Attached funded project " + pFunded.getName() + " - '"
+                                + pFunded.getFullName() + "'.");
+                    }
+                }
+            }
+        }
+        pLight.setChildrenProjects(children);
+
+        return pLight;
     }
 
     /**
@@ -180,4 +216,5 @@ public class GetProjectsHandler implements CommandHandler<GetProjects> {
             }
         }
     }
+
 }

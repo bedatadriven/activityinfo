@@ -1,5 +1,6 @@
 package org.sigmah.shared.dto;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -8,7 +9,8 @@ import org.sigmah.client.util.NumberUtils;
 import org.sigmah.shared.domain.ProjectModelType;
 import org.sigmah.shared.dto.category.CategoryTypeDTO;
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.extjs.gxt.ui.client.data.BaseTreeModel;
+import com.extjs.gxt.ui.client.data.ModelData;
 
 /**
  * Light DTO mapping class for entity Project.
@@ -16,7 +18,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  * @author tmi
  * 
  */
-public class ProjectDTOLight extends BaseModelData implements EntityDTO {
+public class ProjectDTOLight extends BaseTreeModel implements EntityDTO {
 
     private static final long serialVersionUID = -4898072895587927460L;
 
@@ -82,6 +84,30 @@ public class ProjectDTOLight extends BaseModelData implements EntityDTO {
 
     public void setVisibilities(List<ProjectModelVisibilityDTO> visibilities) {
         set("visibilities", visibilities);
+    }
+
+    /**
+     * Gets the type of this model for the given organization. If this model
+     * isn't visible for this organization, <code>null</code> is returned.
+     * 
+     * @param organizationId
+     *            The organization.
+     * @return The type of this model for the given organization,
+     *         <code>null</code> otherwise.
+     */
+    public ProjectModelType getVisibility(int organizationId) {
+
+        if (getVisibilities() == null) {
+            return null;
+        }
+
+        for (final ProjectModelVisibilityDTO visibility : getVisibilities()) {
+            if (visibility.getOrganizationId() == organizationId) {
+                return visibility.getType();
+            }
+        }
+
+        return null;
     }
 
     // Budget
@@ -169,6 +195,20 @@ public class ProjectDTOLight extends BaseModelData implements EntityDTO {
 
     public void setCategories(List<CategoryTypeDTO> categories) {
         set("categories", categories);
+    }
+
+    // Children (projects funded by this project)
+    public List<ProjectDTOLight> getChildrenProjects() {
+        return get("childrenProjects");
+    }
+
+    public void setChildrenProjects(List<ProjectDTOLight> childrenProjects) {
+
+        // Base tree model.
+        final ArrayList<ModelData> children = new ArrayList<ModelData>(childrenProjects);
+        setChildren(children);
+
+        set("childrenProjects", childrenProjects);
     }
 
     /**

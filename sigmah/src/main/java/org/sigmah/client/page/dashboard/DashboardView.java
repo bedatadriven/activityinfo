@@ -7,6 +7,7 @@ package org.sigmah.client.page.dashboard;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.UserInfo;
@@ -55,6 +56,7 @@ import com.extjs.gxt.ui.client.util.Padding;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.WidgetComponent;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.Radio;
@@ -105,12 +107,16 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
     /**
      * Model containing the displayed projects
      */
-    private final TreeStore<ProjectDTOLight> projectStore;
+    private final DashboardPresenter.ProjectStore projectStore;
 
     private Button loadProjectsButton;
     private ContentPanel projectsPanel;
     private OrgUnitTreeGrid orgUnitsTreeGrid;
     private ContentPanel orgUnitsPanel;
+
+    private Radio ngoRadio;
+    private Radio fundingRadio;
+    private Radio partnerRadio;
 
     @Inject
     public DashboardView(final EventBus eventBus, final Dispatcher dispatcher, final Authentication authentication,
@@ -122,7 +128,7 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
         this.info = info;
 
         // Initialization of the models
-        projectStore = new TreeStore<ProjectDTOLight>();
+        projectStore = new DashboardPresenter.ProjectStore();
         projectStore.setMonitorChanges(true);
 
         // The dashboard itself
@@ -322,7 +328,7 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
         orgUnitsTreeGrid = new OrgUnitTreeGrid(eventBus, true);
 
         // Refresh button.
-        loadProjectsButton = new Button(I18N.CONSTANTS.refreshPreview(), IconImageBundle.ICONS.refresh());
+        loadProjectsButton = new Button(I18N.CONSTANTS.projectViewAll(), IconImageBundle.ICONS.refresh());
         orgUnitsTreeGrid.addToolbarButton(loadProjectsButton);
 
         final ContentPanel panel = new ContentPanel(new FitLayout());
@@ -346,6 +352,13 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
         // Grid.
         final TreeGrid<ProjectDTOLight> projectTreeGrid = new TreeGrid<ProjectDTOLight>(projectStore,
                 getProjectGridColumnModel());
+        projectTreeGrid.setBorders(true);
+        projectTreeGrid.getStyle().setNodeOpenIcon(null);
+        projectTreeGrid.getStyle().setNodeCloseIcon(null);
+        projectTreeGrid.getStyle().setLeafIcon(null);
+        projectTreeGrid.setAutoExpandColumn("fullName");
+        projectTreeGrid.setTrackMouseOver(false);
+        projectTreeGrid.expandAll();
 
         // Store.
         projectStore.setStoreSorter(new StoreSorter<ProjectDTOLight>() {
@@ -384,7 +397,11 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
         // Top panel
         final ToolBar toolbar = new ToolBar();
 
-        final Radio ngoRadio = new Radio();
+        final RadioGroup group = new RadioGroup("projectTypeFilter");
+        group.setFireChangeEventOnSetValue(true);
+
+        ngoRadio = new Radio();
+        ngoRadio.setFireChangeEventOnSetValue(true);
         ngoRadio.setValue(true);
         ngoRadio.setFieldLabel(I18N.CONSTANTS.createProjectTypeNGO());
         ngoRadio.addStyleName("toolbar-radio");
@@ -401,10 +418,13 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
             @Override
             public void onClick(ClickEvent event) {
                 ngoRadio.setValue(true);
+                fundingRadio.setValue(false);
+                partnerRadio.setValue(false);
             }
         });
 
-        final Radio fundingRadio = new Radio();
+        fundingRadio = new Radio();
+        fundingRadio.setFireChangeEventOnSetValue(true);
         fundingRadio.setFieldLabel(I18N.CONSTANTS.createProjectTypeFunding());
         fundingRadio.addStyleName("toolbar-radio");
 
@@ -419,11 +439,14 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
 
             @Override
             public void onClick(ClickEvent event) {
+                ngoRadio.setValue(false);
                 fundingRadio.setValue(true);
+                partnerRadio.setValue(false);
             }
         });
 
-        final Radio partnerRadio = new Radio();
+        partnerRadio = new Radio();
+        partnerRadio.setFireChangeEventOnSetValue(true);
         partnerRadio.setFieldLabel(I18N.CONSTANTS.createProjectTypePartner());
         partnerRadio.addStyleName("toolbar-radio");
 
@@ -438,6 +461,8 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
 
             @Override
             public void onClick(ClickEvent event) {
+                ngoRadio.setValue(false);
+                fundingRadio.setValue(false);
                 partnerRadio.setValue(true);
             }
         });
@@ -445,7 +470,6 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
         final Label headLabel = new Label(I18N.CONSTANTS.projectTypeFilter() + ": ");
         headLabel.addStyleName("flexibility-element-label");
 
-        final RadioGroup group = new RadioGroup("projectTypeFilter");
         group.add(ngoRadio);
         group.add(fundingRadio);
         group.add(partnerRadio);
@@ -545,15 +569,43 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
             @Override
             public Widget getWidget(ProjectDTOLight model, String property, ColumnData config, int rowIndex,
                     int colIndex, ListStore<ProjectDTOLight> store, Grid<ProjectDTOLight> grid) {
+
                 final Hyperlink h = new Hyperlink((String) model.get(property), true, ProjectPresenter.PAGE_ID
                         .toString() + '!' + model.get("id").toString());
-                h.getElement().addClassName("flexibility-action");
-                return h;
+                if (!model.isLeaf()) {
+                    h.addStyleName("project-grid-node");
+                } else {
+                    h.addStyleName("project-grid-leaf");
+                }
+
+                final com.google.gwt.user.client.ui.Grid panel = new com.google.gwt.user.client.ui.Grid(1, 2);
+                panel.setCellPadding(0);
+                panel.setCellSpacing(0);
+
+                panel.setWidget(
+                        0,
+                        0,
+                        FundingIconProvider.getProjectTypeIcon(
+                                model.getProjectModelType(authentication.getOrganizationId()), IconSize.SMALL)
+                                .createImage());
+                panel.getCellFormatter().addStyleName(0, 0, "project-grid-code-icon");
+                panel.setWidget(0, 1, h);
+                panel.getCellFormatter().addStyleName(0, 1, "project-grid-code");
+
+                return panel;
             }
         });
 
         // Title
         final ColumnConfig titleColumn = new ColumnConfig("fullName", I18N.CONSTANTS.projectFullName(), 230);
+        titleColumn.setRenderer(new GridCellRenderer<ProjectDTOLight>() {
+
+            @Override
+            public Object render(ProjectDTOLight model, String property, ColumnData config, int rowIndex, int colIndex,
+                    ListStore<ProjectDTOLight> store, Grid<ProjectDTOLight> grid) {
+                return createProjectGridText(model, (String) model.get(property));
+            }
+        });
 
         // Current phase
         final ColumnConfig currentPhaseName = new ColumnConfig("phase", I18N.CONSTANTS.projectActivePhase(), 150);
@@ -561,12 +613,20 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
             @Override
             public Object render(ProjectDTOLight model, String property, ColumnData config, int rowIndex, int colIndex,
                     ListStore<ProjectDTOLight> store, Grid<ProjectDTOLight> grid) {
-                return model.getCurrentPhaseDTO().getPhaseModelDTO().getName();
+                return createProjectGridText(model, model.getCurrentPhaseDTO().getPhaseModelDTO().getName());
             }
         });
 
         // Org Unit
         final ColumnConfig orgUnitColumn = new ColumnConfig("orgUnitName", I18N.CONSTANTS.orgunit(), 150);
+        orgUnitColumn.setRenderer(new GridCellRenderer<ProjectDTOLight>() {
+
+            @Override
+            public Object render(ProjectDTOLight model, String property, ColumnData config, int rowIndex, int colIndex,
+                    ListStore<ProjectDTOLight> store, Grid<ProjectDTOLight> grid) {
+                return createProjectGridText(model, (String) model.get(property));
+            }
+        });
 
         // Spent budget
         final ColumnConfig spentBudgetColumn = new ColumnConfig("spentBudget", I18N.CONSTANTS.projectSpendBudget(), 100);
@@ -593,14 +653,41 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
         // Start date
         final ColumnConfig startDateColumn = new ColumnConfig("startDate", I18N.CONSTANTS.projectStartDate(), 75);
         startDateColumn.setDateTimeFormat(format);
+        startDateColumn.setRenderer(new GridCellRenderer<ProjectDTOLight>() {
+
+            @Override
+            public Object render(ProjectDTOLight model, String property, ColumnData config, int rowIndex, int colIndex,
+                    ListStore<ProjectDTOLight> store, Grid<ProjectDTOLight> grid) {
+                final Date d = (Date) model.get(property);
+                return createProjectGridText(model, d != null ? format.format(d) : "");
+            }
+        });
 
         // End date
         final ColumnConfig endDateColumn = new ColumnConfig("endDate", I18N.CONSTANTS.projectEndDate(), 75);
         endDateColumn.setDateTimeFormat(format);
+        endDateColumn.setRenderer(new GridCellRenderer<ProjectDTOLight>() {
+
+            @Override
+            public Object render(ProjectDTOLight model, String property, ColumnData config, int rowIndex, int colIndex,
+                    ListStore<ProjectDTOLight> store, Grid<ProjectDTOLight> grid) {
+                final Date d = (Date) model.get(property);
+                return createProjectGridText(model, d != null ? format.format(d) : "");
+            }
+        });
 
         // Close date
         final ColumnConfig closeDateColumn = new ColumnConfig("closeDate", I18N.CONSTANTS.projectClosedDate(), 75);
         closeDateColumn.setDateTimeFormat(format);
+        closeDateColumn.setRenderer(new GridCellRenderer<ProjectDTOLight>() {
+
+            @Override
+            public Object render(ProjectDTOLight model, String property, ColumnData config, int rowIndex, int colIndex,
+                    ListStore<ProjectDTOLight> store, Grid<ProjectDTOLight> grid) {
+                final Date d = (Date) model.get(property);
+                return createProjectGridText(model, d != null ? format.format(d) : "");
+            }
+        });
 
         // Activity
         final ColumnConfig activityColumn = new ColumnConfig("activity", I18N.CONSTANTS.logFrameActivity(), 100);
@@ -621,7 +708,7 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
             @Override
             public Object render(ProjectDTOLight model, String property, ColumnData config, int rowIndex, int colIndex,
                     ListStore<ProjectDTOLight> store, Grid<ProjectDTOLight> grid) {
-                return model.getCategoriesString();
+                return createProjectGridText(model, model.getCategoriesString());
             }
         });
 
@@ -630,8 +717,18 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
                 activityColumn, categoryColumn));
     }
 
+    private Object createProjectGridText(ProjectDTOLight model, String content) {
+        final Text label = new Text(content);
+        if (!model.isLeaf()) {
+            label.addStyleName("project-grid-node");
+        } else {
+            label.addStyleName("project-grid-leaf");
+        }
+        return label;
+    }
+
     @Override
-    public TreeStore<ProjectDTOLight> getProjectsStore() {
+    public DashboardPresenter.ProjectStore getProjectsStore() {
         return projectStore;
     }
 
@@ -658,5 +755,22 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
     @Override
     public ContentPanel getOrgUnitsPanel() {
         return orgUnitsPanel;
+    }
+
+    @Override
+    public Radio getRadioFilter(ProjectModelType type) {
+
+        if (type != null) {
+            switch (type) {
+            case NGO:
+                return ngoRadio;
+            case FUNDING:
+                return fundingRadio;
+            case LOCAL_PARTNER:
+                return partnerRadio;
+            }
+        }
+
+        return null;
     }
 }

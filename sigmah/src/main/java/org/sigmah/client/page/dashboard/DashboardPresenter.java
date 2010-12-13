@@ -11,13 +11,16 @@ import java.util.List;
 import org.sigmah.client.UserInfo;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
+import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
+import org.sigmah.client.util.Notification;
 import org.sigmah.shared.command.GetProjects;
 import org.sigmah.shared.command.result.ProjectListResult;
+import org.sigmah.shared.domain.ProjectModelType;
 import org.sigmah.shared.dto.OrgUnitDTOLight;
 import org.sigmah.shared.dto.ProjectDTOLight;
 
@@ -26,10 +29,16 @@ import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.SortInfo;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.FieldEvent;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.store.StoreEvent;
+import com.extjs.gxt.ui.client.store.StoreFilter;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.Radio;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.ImplementedBy;
@@ -50,7 +59,7 @@ public class DashboardPresenter implements Page {
     @ImplementedBy(DashboardView.class)
     public interface View {
 
-        public TreeStore<ProjectDTOLight> getProjectsStore();
+        public ProjectStore getProjectsStore();
 
         public TreeStore<OrgUnitDTOLight> getOrgUnitsStore();
 
@@ -61,6 +70,17 @@ public class DashboardPresenter implements Page {
         public ContentPanel getProjectsPanel();
 
         public ContentPanel getOrgUnitsPanel();
+
+        public Radio getRadioFilter(ProjectModelType type);
+    }
+
+    /**
+     * A tree store with some useful dedicated methods.
+     * 
+     * @author tmi
+     * 
+     */
+    public static class ProjectStore extends TreeStore<ProjectDTOLight> {
     }
 
     /**
@@ -78,24 +98,32 @@ public class DashboardPresenter implements Page {
      */
     private final UserInfo info;
 
+    private final Authentication authentication;
+
+    // Current projects grid parameters.
+    private ProjectModelType currentModelType;
+    private final ArrayList<Integer> orgUnitsIds;
+
     @Inject
-    public DashboardPresenter(final Dispatcher dispatcher, final View view, final UserInfo info) {
+    public DashboardPresenter(final Dispatcher dispatcher, final View view, final UserInfo info,
+            final Authentication authentication) {
 
         this.view = view;
         this.dispatcher = dispatcher;
         this.info = info;
+        this.authentication = authentication;
 
-        // Default sort order.
+        // Default sort order of the projects grid.
         view.getProjectsStore().setSortInfo(new SortInfo("name", SortDir.ASC));
 
-        // Adds the load projects action.
+        // Adds the refresh projects action.
         view.getLoadProjectsButton().addListener(Events.Select, new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
 
                 // Retreives all selected org units.
-                final ArrayList<Integer> orgUnitsIds = new ArrayList<Integer>();
+                orgUnitsIds.clear();
                 final List<OrgUnitDTOLight> orgUnits = view.getOrgUnitsTree().getSelectionModel().getSelectedItems();
 
                 // Gets the selected org units ids.
@@ -105,32 +133,104 @@ public class DashboardPresenter implements Page {
                     }
                 }
 
-                // Retrieves the projects for these org units.
-                DashboardPresenter.this.dispatcher.execute(new GetProjects(orgUnitsIds),
-                        new MaskingAsyncMonitor(view.getProjectsPanel(), I18N.CONSTANTS.loading()),
-                        new AsyncCallback<ProjectListResult>() {
-
-                            @Override
-                            public void onFailure(Throwable caught) {
-                                Log.error("[GetProjects command] Error while getting projects.");
-                                // nothing
-                            }
-
-                            @Override
-                            public void onSuccess(ProjectListResult result) {
-                                int count = 0;
-                                view.getProjectsStore().removeAll();
-                                if (result != null) {
-                                    final List<ProjectDTOLight> resultList = result.getList();
-                                    view.getProjectsStore().add(resultList, false);
-                                    count = resultList.size();
-                                }
-
-                                view.getProjectsPanel().setHeading(I18N.CONSTANTS.projects() + " (" + count + ')');
-                            }
-                        });
+                refreshProjectGrid();
             }
         });
+
+        // Default filters parameters.
+        orgUnitsIds = new ArrayList<Integer>();
+        currentModelType = ProjectModelType.NGO;
+
+        // Updates the projects grid heading when the store is filtered.
+        view.getProjectsStore().addListener(Store.Filter, new Listener<StoreEvent<ProjectDTOLight>>() {
+
+            @Override
+            public void handleEvent(StoreEvent<ProjectDTOLight> be) {
+                view.getProjectsPanel().setHeading(
+                        I18N.CONSTANTS.projects() + " (" + view.getProjectsStore().getChildCount() + ')');
+            }
+        });
+
+        // Adds actions on filter by model type.
+        for (final ProjectModelType type : ProjectModelType.values()) {
+            view.getRadioFilter(type).addListener(Events.Change, new Listener<FieldEvent>() {
+
+                @Override
+                public void handleEvent(FieldEvent be) {
+                    if (Boolean.TRUE.equals(be.getValue())) {
+                        Notification.show("", "Change to " + type);
+                        currentModelType = type;
+                        applyProjectFilters();
+                    }
+                }
+            });
+        }
+
+        // The filter by model type.
+        final StoreFilter<ProjectDTOLight> typeFilter = new StoreFilter<ProjectDTOLight>() {
+
+            @Override
+            public boolean select(Store<ProjectDTOLight> store, ProjectDTOLight parent, ProjectDTOLight item,
+                    String property) {
+
+                boolean selected = false;
+
+                // Root item.
+                if (item.getParent() == null) {
+                    // A root item is filtered if its type doesn't match the
+                    // current type.
+                    selected = item.getVisibility(authentication.getOrganizationId()) == currentModelType;
+                }
+                // Child item
+                else {
+                    // A child item is filtered if its parent is filtered.
+                    selected = ((ProjectDTOLight) item.getParent()).getVisibility(authentication.getOrganizationId()) == currentModelType;
+                }
+
+                return selected;
+            }
+        };
+
+        view.getProjectsStore().addFilter(typeFilter);
+    }
+
+    /**
+     * Refreshes the projects grid with the current parameters.
+     */
+    private void refreshProjectGrid() {
+
+        // Retrieves all the projects in the org units. The filters on type,
+        // etc. are applied locally.
+        final GetProjects cmd = new GetProjects();
+        cmd.setOrgUnitsIds(orgUnitsIds);
+
+        dispatcher.execute(cmd, new MaskingAsyncMonitor(view.getProjectsPanel(), I18N.CONSTANTS.loading()),
+                new AsyncCallback<ProjectListResult>() {
+
+                    @Override
+                    public void onFailure(Throwable e) {
+                        Log.error("[GetProjects command] Error while getting projects.", e);
+                        // nothing
+                    }
+
+                    @Override
+                    public void onSuccess(ProjectListResult result) {
+
+                        view.getProjectsStore().removeAll();
+                        view.getProjectsStore().clearFilters();
+
+                        if (result != null) {
+                            final List<ProjectDTOLight> resultList = result.getList();
+                            view.getProjectsStore().add(resultList, true);
+                        }
+
+                        applyProjectFilters();
+                    }
+                });
+    }
+
+    private void applyProjectFilters() {
+        view.getProjectsStore().applyFilters(null);
     }
 
     @Override
