@@ -461,8 +461,11 @@ public class CreateProjectWindow {
     /**
      * Informs the user that some required data cannot be recovered. The project
      * cannot be created.
+     * 
+     * @param msg
+     *            The alert message.
      */
-    private void missingRequiredData() {
+    private void missingRequiredData(String msg) {
 
         if (alert) {
             return;
@@ -470,7 +473,7 @@ public class CreateProjectWindow {
 
         alert = true;
 
-        MessageBox.alert(I18N.CONSTANTS.createProjectDisable(), I18N.CONSTANTS.createProjectDisableDetails(), null);
+        MessageBox.alert(I18N.CONSTANTS.createProjectDisable(), msg, null);
 
         window.hide();
     }
@@ -544,7 +547,8 @@ public class CreateProjectWindow {
                     fillOrgUnitsList(result);
 
                     if (orgUnitsStore.getCount() == 0) {
-                        missingRequiredData();
+                        Log.error("[show] No available org unit.");
+                        missingRequiredData(I18N.CONSTANTS.createProjectDisableOrgUnit());
                         return;
                     }
 
@@ -553,7 +557,8 @@ public class CreateProjectWindow {
 
                 @Override
                 public void onFailure(Throwable caught) {
-                    missingRequiredData();
+                    Log.error("[show] Error while getting the org units.", caught);
+                    missingRequiredData(I18N.CONSTANTS.createProjectDisableOrgUnitError());
                 }
             });
         } else {
@@ -566,15 +571,16 @@ public class CreateProjectWindow {
             dispatcher.execute(new GetProjectModels(), null, new AsyncCallback<ProjectModelListResult>() {
 
                 @Override
-                public void onFailure(Throwable arg0) {
-                    missingRequiredData();
+                public void onFailure(Throwable caught) {
+                    missingRequiredData(I18N.CONSTANTS.createProjectDisableModelError());
                 }
 
                 @Override
                 public void onSuccess(ProjectModelListResult result) {
 
                     if (result.getList() == null || result.getList().isEmpty()) {
-                        missingRequiredData();
+                        Log.error("[missingRequiredData] No available project model.");
+                        missingRequiredData(I18N.CONSTANTS.createProjectDisableModel());
                         return;
                     }
 
