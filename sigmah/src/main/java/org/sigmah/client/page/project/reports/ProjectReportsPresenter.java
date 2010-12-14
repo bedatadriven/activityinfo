@@ -27,6 +27,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.sigmah.shared.dto.element.ReportElementDTO;
 
 /**
  * Sub presenter that manage the "reports" view from the project page.
@@ -111,8 +112,11 @@ public class ProjectReportsPresenter implements SubPresenter {
         view.setPhaseName(projectPresenter.getCurrentProjectDTO().getCurrentPhaseDTO().getPhaseModelDTO().getName());
 
         // Reset the attach documents menu.
-        new AttachDocumentMenu(authentication, projectPresenter.getCurrentProjectDTO(), view.getAttachButton(),
-                reportStore);
+        AttachMenuBuilder.createMenu(currentProjectDTO, FilesListElementDTO.class,
+                view.getAttachButton(), reportStore, authentication, dispatcher, eventBus);
+        
+        AttachMenuBuilder.createMenu(currentProjectDTO, ReportElementDTO.class,
+                view.getCreateReportButton(), reportStore, authentication, dispatcher, eventBus);
 
         if (reportStore.getCount() == 0 || reportStoreNeedsRefresh) {
 

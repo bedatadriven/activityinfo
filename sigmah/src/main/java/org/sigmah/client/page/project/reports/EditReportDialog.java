@@ -12,6 +12,9 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import java.io.Serializable;
 import java.util.Map;
@@ -20,6 +23,7 @@ import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.event.NavigationEvent;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.NavigationHandler;
+import org.sigmah.client.page.project.ProjectPresenter;
 import org.sigmah.client.page.project.ProjectState;
 import org.sigmah.client.util.Notification;
 import org.sigmah.shared.command.CreateEntity;
@@ -75,7 +79,9 @@ public class EditReportDialog {
      * @return The create report dialog.
      */
     public static Dialog getDialog(final Map<String, Serializable> properties,
-            final ProjectState targetPage, final EventBus eventBus, final Dispatcher dispatcher) {
+            final com.google.gwt.user.client.ui.Button reportButton,
+            final HandlerRegistration[] registrations,
+            final EventBus eventBus, final Dispatcher dispatcher) {
         final Dialog dialog = getDialog();
 
         // OK Button
@@ -99,11 +105,22 @@ public class EditReportDialog {
                     }
 
                     @Override
-                    public void onSuccess(CreateResult result) {
-                        Notification.show(I18N.CONSTANTS.projectTabReports(), I18N.CONSTANTS.reportCreateSuccess());
-                        targetPage.setArgument(Integer.toString(result.getNewId()));
+                    public void onSuccess(final CreateResult result) {
+                        reportButton.setText(I18N.MESSAGES.reportOpenReport(name));
+                        registrations[0].removeHandler();
 
-                        eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, targetPage));
+                        reportButton.addClickHandler(new ClickHandler() {
+                            @Override
+                            public void onClick(ClickEvent event) {
+                                final ProjectState targetState = new ProjectState((Integer) properties.get("projectId"));
+                                targetState.setCurrentSection(ProjectPresenter.REPORT_TAB_INDEX);
+                                targetState.setArgument(Integer.toString(result.getNewId()));
+                                
+                                eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, targetState));
+                            }
+                        });
+
+                        Notification.show(I18N.CONSTANTS.projectTabReports(), I18N.CONSTANTS.reportCreateSuccess());
                     }
                 });
 

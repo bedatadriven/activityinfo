@@ -11,6 +11,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.VerticalAlign;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -112,11 +113,9 @@ public class ReportElementDTO extends FlexibleElementDTO {
                 // This element is displayed in a project
                 final ProjectDTO projectDTO = (ProjectDTO) currentContainerDTO;
 
-                final ProjectState state = new ProjectState(currentContainerDTO.getId());
-                state.setCurrentSection(ProjectPresenter.REPORT_TAB_INDEX);
-                state.setArgument((String) valueResult.getValueObject());
+                final HandlerRegistration[] registrations = new HandlerRegistration[1];
 
-                button.addClickHandler(new ClickHandler() {
+                registrations[0] = button.addClickHandler(new ClickHandler() {
                     @Override
                     public void onClick(ClickEvent event) {
                         final HashMap<String, Serializable> properties = new HashMap<String, Serializable>();
@@ -126,7 +125,7 @@ public class ReportElementDTO extends FlexibleElementDTO {
                         properties.put("phaseName", projectDTO.getCurrentPhaseDTO().getPhaseModelDTO().getName());
                         properties.put("projectId", projectDTO.getId());
 
-                        EditReportDialog.getDialog(properties, state, eventBus, dispatcher).show();
+                        EditReportDialog.getDialog(properties, button, registrations, eventBus, dispatcher).show();
                     }
                 });
                 

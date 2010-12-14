@@ -114,6 +114,7 @@ public class ProjectReportsView extends LayoutContainer {
     private Dialog createReportDialog;
 
     private Button attachButton;
+    private Button createReportButton;
 
     public ProjectReportsView(Authentication authentication, EventBus eventBus, Dispatcher dispatcher,
             ListStore<GetProjectReports.ReportReference> store) {
@@ -128,18 +129,12 @@ public class ProjectReportsView extends LayoutContainer {
         this.keyQuestionState = new KeyQuestionState();
 
         final BorderLayout layout = new BorderLayout();
-        layout.setContainerStyle("x-border-layout-ct main-background"); // Adds
-                                                                        // a
-                                                                        // dark
-                                                                        // background
-                                                                        // between
-                                                                        // objects
-                                                                        // managed
-                                                                        // by
-                                                                        // this
-                                                                        // layout
+        // Adding a dark background between objects managed by this layout.
+        layout.setContainerStyle("x-border-layout-ct main-background");
+        
         setLayout(layout);
 
+        // Layout data object used to define constraints for every widget.
         BorderLayoutData layoutData;
 
         final ContentPanel documentList = createDocumentList(store);
@@ -199,8 +194,8 @@ public class ProjectReportsView extends LayoutContainer {
         final TextField<String> textField = (TextField<String>) createReportDialog.getWidget(0);
         textField.reset();
 
-        final ComboBox<GetProjectReportModels.ModelReference> modelBox = (ComboBox<ModelReference>) createReportDialog
-                .getWidget(1);
+        final ComboBox<GetProjectReportModels.ModelReference> modelBox = (ComboBox<GetProjectReportModels.ModelReference>)
+                                                                          createReportDialog.getWidget(1);
         modelBox.reset();
         final ListStore<GetProjectReportModels.ModelReference> modelBoxStore = modelBox.getStore();
         modelBoxStore.removeAll();
@@ -244,7 +239,7 @@ public class ProjectReportsView extends LayoutContainer {
 
                     @Override
                     public void onFailure(Throwable caught) {
-                        Notification.show(I18N.CONSTANTS.projectTabReports(), I18N.CONSTANTS.reportCreateError());
+                        MessageBox.alert(I18N.CONSTANTS.projectTabReports(), I18N.CONSTANTS.reportCreateError(), null);
                     }
 
                     @Override
@@ -270,6 +265,11 @@ public class ProjectReportsView extends LayoutContainer {
         return createReportDialog;
     }
 
+    /**
+     * Creates left panel of the view. It displays the document list.
+     * @param store The document store to use.
+     * @return The document list panel.
+     */
     private ContentPanel createDocumentList(final ListStore<GetProjectReports.ReportReference> store) {
         final ContentPanel panel = new ContentPanel(new FitLayout());
         panel.setHeading(I18N.CONSTANTS.projectTabReports());
@@ -279,20 +279,20 @@ public class ProjectReportsView extends LayoutContainer {
         toolBar.setAlignment(HorizontalAlignment.RIGHT);
         final IconImageBundle icons = GWT.create(IconImageBundle.class);
 
-        final Button newButton = new Button(I18N.CONSTANTS.reportCreateReport(), icons.add());
-        newButton.addListener(Events.Select, new Listener<BaseEvent>() {
-
-            @Override
-            public void handleEvent(BaseEvent be) {
-                getCreateReportDialog(store).show();
-            }
-        });
+        createReportButton = new Button(I18N.CONSTANTS.reportCreateReport(), icons.add());
+//        createReportButton.addListener(Events.Select, new Listener<BaseEvent>() {
+//
+//            @Override
+//            public void handleEvent(BaseEvent be) {
+//                getCreateReportDialog(store).show();
+//            }
+//        });
 
         attachButton = new Button(I18N.CONSTANTS.flexibleElementFilesListAddDocument(), icons.attach());
 
         toolBar.add(attachButton);
         toolBar.add(new SeparatorToolItem());
-        toolBar.add(newButton);
+        toolBar.add(createReportButton);
 
         panel.setTopComponent(toolBar);
 
@@ -844,5 +844,9 @@ public class ProjectReportsView extends LayoutContainer {
 
     public Button getAttachButton() {
         return attachButton;
+    }
+
+    public Button getCreateReportButton() {
+        return createReportButton;
     }
 }
