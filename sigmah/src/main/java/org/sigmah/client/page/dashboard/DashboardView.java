@@ -157,11 +157,11 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
         vBoxLayoutData.setMargins(new Margins(0, 0, BORDER, 0));
 
         final ContentPanel remindersPanel = new ContentPanel(new FitLayout());
-        remindersPanel.setHeading(I18N.CONSTANTS.reminders());
+        remindersPanel.setHeading(I18N.CONSTANTS.reminderPoints());
         leftPanel.add(remindersPanel, vBoxLayoutData);
 
         final ContentPanel importantPointsPanel = new ContentPanel(new FitLayout());
-        importantPointsPanel.setHeading(I18N.CONSTANTS.importantPoints());
+        importantPointsPanel.setHeading(I18N.CONSTANTS.monitoredPoints());
         leftPanel.add(importantPointsPanel, vBoxLayoutData);
 
         final ContentPanel menuPanel = new ContentPanel();

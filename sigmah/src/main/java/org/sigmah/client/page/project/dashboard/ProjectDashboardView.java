@@ -187,7 +187,7 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
         final VBoxLayout vLayout = new VBoxLayout();
         vLayout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
         final ContentPanel westPanel = new ContentPanel(vLayout);
-        westPanel.setHeading("");
+        westPanel.setHeading(I18N.CONSTANTS.reminders());
 
         final VBoxLayoutData flex = new VBoxLayoutData(new Margins(0, 0, 5, 0));
         flex.setFlex(1);
@@ -685,7 +685,7 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
     private ContentPanel getRemindersPanel() {
 
         final ContentPanel panel = new ContentPanel();
-        panel.setHeading(I18N.CONSTANTS.projectRemindersHeader());
+        panel.setHeading(I18N.CONSTANTS.reminderPoints());
         panel.setBorders(false);
 
         return panel;
