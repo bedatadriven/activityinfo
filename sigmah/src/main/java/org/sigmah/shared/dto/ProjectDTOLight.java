@@ -204,6 +204,10 @@ public class ProjectDTOLight extends BaseTreeModel implements EntityDTO {
 
     public void setChildrenProjects(List<ProjectDTOLight> childrenProjects) {
 
+        for (final ProjectDTOLight child : childrenProjects) {
+            child.setParent(this);
+        }
+
         // Base tree model.
         final ArrayList<ModelData> children = new ArrayList<ModelData>(childrenProjects);
         setChildren(children);

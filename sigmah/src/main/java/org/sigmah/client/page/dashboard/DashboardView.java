@@ -71,6 +71,7 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
+import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
@@ -80,6 +81,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -109,7 +111,6 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
      */
     private final DashboardPresenter.ProjectStore projectStore;
 
-    private Button loadProjectsButton;
     private ContentPanel projectsPanel;
     private OrgUnitTreeGrid orgUnitsTreeGrid;
     private ContentPanel orgUnitsPanel;
@@ -117,6 +118,8 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
     private Radio ngoRadio;
     private Radio fundingRadio;
     private Radio partnerRadio;
+
+    private Button filterButton;
 
     @Inject
     public DashboardView(final EventBus eventBus, final Dispatcher dispatcher, final Authentication authentication,
@@ -218,7 +221,8 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
         addNavLink(eventBus, menuPanel, I18N.CONSTANTS.createProjectNewProject(), IconImageBundle.ICONS.add(),
                 new Listener<ButtonEvent>() {
 
-                    private final CreateProjectWindow window = new CreateProjectWindow(dispatcher, authentication, info);
+                    private final CreateProjectWindow window = CreateProjectWindow.getInstance(dispatcher,
+                            authentication, info);
 
                     {
                         window.addListener(new CreateProjectListener() {
@@ -226,6 +230,10 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
                             @Override
                             public void projectCreated(ProjectDTOLight project) {
 
+                                projectStore.clearFilters();
+                                projectStore.add(project, false);
+                                projectStore.applyFilters(null);
+                                
                                 // Show notification.
                                 Notification.show(I18N.CONSTANTS.createProjectSucceeded(),
                                         I18N.CONSTANTS.createProjectSucceededDetails());
@@ -325,11 +333,7 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
      */
     private Component buildOrgUnitsPanel() {
 
-        orgUnitsTreeGrid = new OrgUnitTreeGrid(eventBus, true);
-
-        // Refresh button.
-        loadProjectsButton = new Button(I18N.CONSTANTS.projectViewAll(), IconImageBundle.ICONS.refresh());
-        orgUnitsTreeGrid.addToolbarButton(loadProjectsButton);
+        orgUnitsTreeGrid = new OrgUnitTreeGrid(eventBus, false);
 
         final ContentPanel panel = new ContentPanel(new FitLayout());
         panel.setHeading(I18N.CONSTANTS.orgunitTree());
@@ -358,7 +362,7 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
         projectTreeGrid.getStyle().setLeafIcon(null);
         projectTreeGrid.setAutoExpandColumn("fullName");
         projectTreeGrid.setTrackMouseOver(false);
-        projectTreeGrid.expandAll();
+        projectTreeGrid.setAutoExpand(true);
 
         // Store.
         projectStore.setStoreSorter(new StoreSorter<ProjectDTOLight>() {
@@ -395,22 +399,20 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
         });
 
         // Top panel
-        final ToolBar toolbar = new ToolBar();
-
         final RadioGroup group = new RadioGroup("projectTypeFilter");
         group.setFireChangeEventOnSetValue(true);
 
         ngoRadio = new Radio();
         ngoRadio.setFireChangeEventOnSetValue(true);
         ngoRadio.setValue(true);
-        ngoRadio.setFieldLabel(I18N.CONSTANTS.createProjectTypeNGO());
+        ngoRadio.setFieldLabel(ProjectModelType.getName(ProjectModelType.NGO));
         ngoRadio.addStyleName("toolbar-radio");
 
         final WidgetComponent ngoIcon = new WidgetComponent(FundingIconProvider.getProjectTypeIcon(
                 ProjectModelType.NGO, IconSize.SMALL).createImage());
         ngoIcon.addStyleName("toolbar-icon");
 
-        final Label ngoLabel = new Label(I18N.CONSTANTS.createProjectTypeNGO());
+        final Label ngoLabel = new Label(ProjectModelType.getName(ProjectModelType.NGO));
         ngoLabel.addStyleName("flexibility-element-label");
         ngoLabel.addStyleName("project-starred-icon");
         ngoLabel.addClickHandler(new ClickHandler() {
@@ -425,14 +427,14 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
 
         fundingRadio = new Radio();
         fundingRadio.setFireChangeEventOnSetValue(true);
-        fundingRadio.setFieldLabel(I18N.CONSTANTS.createProjectTypeFunding());
+        fundingRadio.setFieldLabel(ProjectModelType.getName(ProjectModelType.FUNDING));
         fundingRadio.addStyleName("toolbar-radio");
 
         final WidgetComponent fundingIcon = new WidgetComponent(FundingIconProvider.getProjectTypeIcon(
                 ProjectModelType.FUNDING, IconSize.SMALL).createImage());
         fundingIcon.addStyleName("toolbar-icon");
 
-        final Label fundingLabel = new Label(I18N.CONSTANTS.createProjectTypeFunding());
+        final Label fundingLabel = new Label(ProjectModelType.getName(ProjectModelType.FUNDING));
         fundingLabel.addStyleName("flexibility-element-label");
         fundingLabel.addStyleName("project-starred-icon");
         fundingLabel.addClickHandler(new ClickHandler() {
@@ -447,14 +449,14 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
 
         partnerRadio = new Radio();
         partnerRadio.setFireChangeEventOnSetValue(true);
-        partnerRadio.setFieldLabel(I18N.CONSTANTS.createProjectTypePartner());
+        partnerRadio.setFieldLabel(ProjectModelType.getName(ProjectModelType.LOCAL_PARTNER));
         partnerRadio.addStyleName("toolbar-radio");
 
         final WidgetComponent partnerIcon = new WidgetComponent(FundingIconProvider.getProjectTypeIcon(
                 ProjectModelType.LOCAL_PARTNER, IconSize.SMALL).createImage());
         partnerIcon.addStyleName("toolbar-icon");
 
-        final Label partnerLabel = new Label(I18N.CONSTANTS.createProjectTypePartner());
+        final Label partnerLabel = new Label(ProjectModelType.getName(ProjectModelType.LOCAL_PARTNER));
         partnerLabel.addStyleName("flexibility-element-label");
         partnerLabel.addStyleName("project-starred-icon");
         partnerLabel.addClickHandler(new ClickHandler() {
@@ -467,13 +469,41 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
             }
         });
 
-        final Label headLabel = new Label(I18N.CONSTANTS.projectTypeFilter() + ": ");
+        final HTML headLabel = new HTML("&nbsp;&nbsp;" + I18N.CONSTANTS.projectTypeFilter() + ": ");
         headLabel.addStyleName("flexibility-element-label");
 
         group.add(ngoRadio);
         group.add(fundingRadio);
         group.add(partnerRadio);
 
+        // Expand all button.
+        final Button expandButton = new Button(I18N.CONSTANTS.expandAll(), IconImageBundle.ICONS.expand(),
+                new SelectionListener<ButtonEvent>() {
+
+                    @Override
+                    public void componentSelected(ButtonEvent ce) {
+                        projectTreeGrid.expandAll();
+                    }
+                });
+
+        // Collapse all button.
+        final Button collapseButton = new Button(I18N.CONSTANTS.collapseAll(), IconImageBundle.ICONS.collapse(),
+                new SelectionListener<ButtonEvent>() {
+
+                    @Override
+                    public void componentSelected(ButtonEvent ce) {
+                        projectTreeGrid.collapseAll();
+                    }
+                });
+
+        // Collapse all button.
+        filterButton = new Button(I18N.CONSTANTS.filter(), IconImageBundle.ICONS.filter());
+
+        final ToolBar toolbar = new ToolBar();
+        toolbar.add(expandButton);
+        toolbar.add(collapseButton);
+        toolbar.add(new SeparatorToolItem());
+        toolbar.add(filterButton);
         toolbar.add(new WidgetComponent(headLabel));
         toolbar.add(ngoRadio);
         toolbar.add(ngoIcon);
@@ -603,7 +633,11 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
             @Override
             public Object render(ProjectDTOLight model, String property, ColumnData config, int rowIndex, int colIndex,
                     ListStore<ProjectDTOLight> store, Grid<ProjectDTOLight> grid) {
-                return createProjectGridText(model, (String) model.get(property));
+                String title = (String) model.get(property);
+                if (model.getParent() != null) {
+                    title = "&nbsp;&nbsp;&nbsp;&nbsp;" + title;
+                }
+                return createProjectGridText(model, title);
             }
         });
 
@@ -743,11 +777,6 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
     }
 
     @Override
-    public Button getLoadProjectsButton() {
-        return loadProjectsButton;
-    }
-
-    @Override
     public ContentPanel getProjectsPanel() {
         return projectsPanel;
     }
@@ -772,5 +801,10 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
         }
 
         return null;
+    }
+
+    @Override
+    public Button getFilterButton() {
+        return filterButton;
     }
 }

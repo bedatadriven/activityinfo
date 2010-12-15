@@ -26,11 +26,9 @@ import org.sigmah.shared.dto.ProjectDTOLight;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.SortInfo;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.extjs.gxt.ui.client.store.StoreFilter;
@@ -64,13 +62,13 @@ public class DashboardPresenter implements Page {
 
         public TreeGrid<OrgUnitDTOLight> getOrgUnitsTree();
 
-        public Button getLoadProjectsButton();
-
         public ContentPanel getProjectsPanel();
 
         public ContentPanel getOrgUnitsPanel();
 
         public Radio getRadioFilter(ProjectModelType type);
+
+        public Button getFilterButton();
     }
 
     /**
@@ -111,27 +109,6 @@ public class DashboardPresenter implements Page {
 
         // Default sort order of the projects grid.
         view.getProjectsStore().setSortInfo(new SortInfo("name", SortDir.ASC));
-
-        // Adds the refresh projects action.
-        view.getLoadProjectsButton().addListener(Events.Select, new SelectionListener<ButtonEvent>() {
-
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-
-                // Retreives all selected org units.
-                orgUnitsIds.clear();
-                final List<OrgUnitDTOLight> orgUnits = view.getOrgUnitsTree().getSelectionModel().getSelectedItems();
-
-                // Gets the selected org units ids.
-                if (orgUnits != null) {
-                    for (final OrgUnitDTOLight orgUnit : orgUnits) {
-                        orgUnitsIds.add(orgUnit.getId());
-                    }
-                }
-
-                refreshProjectGrid();
-            }
-        });
 
         // Default filters parameters.
         orgUnitsIds = new ArrayList<Integer>();
@@ -187,6 +164,9 @@ public class DashboardPresenter implements Page {
         };
 
         view.getProjectsStore().addFilter(typeFilter);
+
+        // Filters aren't used for the moment.
+        view.getFilterButton().setVisible(false);
     }
 
     /**
@@ -251,6 +231,9 @@ public class DashboardPresenter implements Page {
     @Override
     public boolean navigate(PageState place) {
 
+        // Reloads the list of projects each time the navigation is done to be
+        // sure to show the last modifications.
+
         // Gets user's organization.
         info.getOrgUnit(new AsyncCallback<OrgUnitDTOLight>() {
 
@@ -271,6 +254,10 @@ public class DashboardPresenter implements Page {
                     for (final OrgUnitDTOLight child : result.getChildrenDTO()) {
                         view.getOrgUnitsStore().add(child, true);
                     }
+
+                    orgUnitsIds.clear();
+                    orgUnitsIds.add(result.getId());
+                    refreshProjectGrid();
                 }
             }
         });

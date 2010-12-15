@@ -32,8 +32,8 @@ public enum ProjectModelType {
         if (translationMap == null) {
             translationMap = new HashMap<ProjectModelType, String>();
             translationMap.put(NGO, I18N.CONSTANTS.createProjectTypeNGO());
-            translationMap.put(FUNDING, I18N.CONSTANTS.createProjectTypeFunding());
-            translationMap.put(LOCAL_PARTNER, I18N.CONSTANTS.createProjectTypePartner());
+            translationMap.put(FUNDING, I18N.CONSTANTS.createProjectTypeFunding2());
+            translationMap.put(LOCAL_PARTNER, I18N.CONSTANTS.createProjectTypePartner2());
         }
 
         return translationMap.get(type);

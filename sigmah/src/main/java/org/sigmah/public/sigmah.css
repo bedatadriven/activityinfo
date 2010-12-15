@@ -926,7 +926,7 @@ body {
 .blockStat div {
 	height: 13px;
 	color: white;
-	font-size: 80%;
+	font-weight: bold;
 	text-align: center;
 	background-color: transparent;
 	background-repeat: repeat-x;

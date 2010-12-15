@@ -116,6 +116,16 @@ public class CreateProjectWindow {
         public void projectCreatedAsFunded(ProjectDTOLight project, double percentage);
     }
 
+    private static CreateProjectWindow instance;
+
+    public static CreateProjectWindow getInstance(final Dispatcher dispatcher, final Authentication authentication,
+            final UserInfo info) {
+        if (instance == null) {
+            instance = new CreateProjectWindow(dispatcher, authentication, info);
+        }
+        return instance;
+    }
+
     private final ArrayList<CreateProjectListener> listeners;
     private final Dispatcher dispatcher;
     private final UserInfo info;
@@ -144,7 +154,7 @@ public class CreateProjectWindow {
      */
     private boolean alert = false;
 
-    public CreateProjectWindow(final Dispatcher dispatcher, final Authentication authentication, final UserInfo info) {
+    private CreateProjectWindow(final Dispatcher dispatcher, final Authentication authentication, final UserInfo info) {
 
         listeners = new ArrayList<CreateProjectListener>();
 

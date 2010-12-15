@@ -1374,7 +1374,8 @@ public class ProjectDashboardPresenter implements SubPresenter {
         // Adds the create financial project actions.
         view.getCreateFinancialProjectButton().addListener(Events.OnClick, new Listener<ButtonEvent>() {
 
-            private final CreateProjectWindow window = new CreateProjectWindow(dispatcher, authentication, info);
+            private final CreateProjectWindow window = CreateProjectWindow
+                    .getInstance(dispatcher, authentication, info);
 
             {
                 window.addListener(new CreateProjectListener() {
@@ -1618,7 +1619,8 @@ public class ProjectDashboardPresenter implements SubPresenter {
         // Adds the create local partner project actions.
         view.getCreateLocalPartnerProjectButton().addListener(Events.OnClick, new Listener<ButtonEvent>() {
 
-            private final CreateProjectWindow window = new CreateProjectWindow(dispatcher, authentication, info);
+            private final CreateProjectWindow window = CreateProjectWindow
+                    .getInstance(dispatcher, authentication, info);
 
             {
                 window.addListener(new CreateProjectListener() {

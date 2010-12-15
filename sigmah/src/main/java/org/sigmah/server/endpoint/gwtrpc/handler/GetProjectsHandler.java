@@ -125,7 +125,7 @@ public class GetProjectsHandler implements CommandHandler<GetProjects> {
         // Mapping into DTO objects
         final ArrayList<ProjectDTOLight> projectDTOList = new ArrayList<ProjectDTOLight>();
         for (final Project project : projects) {
-            final ProjectDTOLight pLight = mapProject(project, true);
+            final ProjectDTOLight pLight = mapProject(mapper, project, true);
             projectDTOList.add(pLight);
         }
 
@@ -140,13 +140,15 @@ public class GetProjectsHandler implements CommandHandler<GetProjects> {
     /**
      * Map a project into a project light DTO.
      * 
+     * @param mapper
+     *            The entities mapper.
      * @param project
      *            The project.
      * @param mapChildren
      *            If the children projects must be retrieved.
      * @return The light DTO.
      */
-    private ProjectDTOLight mapProject(final Project project, final boolean mapChildren) {
+    public static ProjectDTOLight mapProject(final Mapper mapper, final Project project, final boolean mapChildren) {
 
         final ProjectDTOLight pLight = mapper.map(project, ProjectDTOLight.class);
 
@@ -180,7 +182,7 @@ public class GetProjectsHandler implements CommandHandler<GetProjects> {
                 if (pFunded != null) {
                     // Recursive call to retrieve the child (without its
                     // children).
-                    children.add(mapProject(pFunded, false));
+                    children.add(mapProject(mapper, pFunded, false));
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("[execute] Attached funded project " + pFunded.getName() + " - '"
                                 + pFunded.getFullName() + "'.");
