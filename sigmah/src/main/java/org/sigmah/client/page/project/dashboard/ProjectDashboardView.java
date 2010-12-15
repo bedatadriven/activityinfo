@@ -752,7 +752,8 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
             }
         });
 
-        final MenuItem completedFilterItem = new MenuItem(I18N.CONSTANTS.monitoredPointCompleted());
+        final MenuItem completedFilterItem = new MenuItem(I18N.CONSTANTS.monitoredPointCompleted(),
+                IconImageBundle.ICONS.closedPoint());
         completedFilterItem.addSelectionListener(new SelectionListener<MenuEvent>() {
             @Override
             public void componentSelected(MenuEvent ce) {
@@ -760,7 +761,8 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
             }
         });
 
-        final MenuItem notCompletedFilterItem = new MenuItem(I18N.CONSTANTS.monitoredPointUncompleted());
+        final MenuItem notCompletedFilterItem = new MenuItem(I18N.CONSTANTS.monitoredPointUncompleted(),
+                IconImageBundle.ICONS.openedPoint());
         notCompletedFilterItem.addSelectionListener(new SelectionListener<MenuEvent>() {
             @Override
             public void componentSelected(MenuEvent ce) {
@@ -768,7 +770,8 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
             }
         });
 
-        final MenuItem exceededFilterItem = new MenuItem(I18N.CONSTANTS.monitoredPointExceeded());
+        final MenuItem exceededFilterItem = new MenuItem(I18N.CONSTANTS.monitoredPointExceeded(),
+                IconImageBundle.ICONS.overduePoint());
         exceededFilterItem.addSelectionListener(new SelectionListener<MenuEvent>() {
             @Override
             public void componentSelected(MenuEvent ce) {
@@ -883,6 +886,27 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
         final CellEditor checkBoxEditor = new CellEditor(new CheckBox());
         completedColumn.setEditor(checkBoxEditor);
 
+        // Icojn
+        final ColumnConfig iconColumn = new ColumnConfig();
+        iconColumn.setId("icon");
+        iconColumn.setHeader("");
+        iconColumn.setWidth(16);
+        iconColumn.setRenderer(new GridCellRenderer<MonitoredPointDTO>() {
+
+            @Override
+            public Object render(MonitoredPointDTO model, String property, ColumnData config, int rowIndex,
+                    int colIndex, ListStore<MonitoredPointDTO> store, Grid<MonitoredPointDTO> grid) {
+
+                if (model.isCompleted()) {
+                    return IconImageBundle.ICONS.closedPoint().createImage();
+                } else if (DateUtils.DAY_COMPARATOR.compare(now, model.getExpectedDate()) > 0) {
+                    return IconImageBundle.ICONS.overduePoint().createImage();
+                } else {
+                    return IconImageBundle.ICONS.openedPoint().createImage();
+                }
+            }
+        });
+
         // Label.
         final ColumnConfig labelColumn = new ColumnConfig();
         labelColumn.setId("label");
@@ -929,6 +953,6 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
         completionDateColumn.setWidth(60);
         completionDateColumn.setDateTimeFormat(format);
 
-        return new ColumnConfig[] { completedColumn, labelColumn, expectedDateColumn, completionDateColumn };
+        return new ColumnConfig[] { completedColumn, iconColumn, labelColumn, expectedDateColumn, completionDateColumn };
     }
 }

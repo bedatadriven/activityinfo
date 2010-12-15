@@ -166,7 +166,16 @@ public interface IconImageBundle extends ImageBundle {
 
     @Resource(value = "filter-uncheck.png")
     AbstractImagePrototype checkboxUnchecked();
-    
+
     @Resource(value = "hourglass.png")
     AbstractImagePrototype history();
+
+    @Resource(value = "points2.png")
+    AbstractImagePrototype openedPoint();
+
+    @Resource(value = "points3.png")
+    AbstractImagePrototype overduePoint();
+
+    @Resource(value = "points1.png")
+    AbstractImagePrototype closedPoint();
 }
