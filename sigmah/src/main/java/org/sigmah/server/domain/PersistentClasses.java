@@ -59,6 +59,8 @@ import org.sigmah.shared.domain.quality.QualityCriterion;
 import org.sigmah.shared.domain.quality.QualityFramework;
 import org.sigmah.shared.domain.reminder.MonitoredPoint;
 import org.sigmah.shared.domain.reminder.MonitoredPointList;
+import org.sigmah.shared.domain.reminder.Reminder;
+import org.sigmah.shared.domain.reminder.ReminderList;
 import org.sigmah.shared.domain.value.File;
 import org.sigmah.shared.domain.value.FileVersion;
 import org.sigmah.shared.domain.value.Value;
@@ -75,6 +77,8 @@ public class PersistentClasses {
             File.class,
             MonitoredPoint.class,
             MonitoredPointList.class,
+            Reminder.class,
+            ReminderList.class,
             IndicatorValue.class,
             AttributeValue.class,
             ReportingPeriod.class,

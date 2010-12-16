@@ -21,6 +21,7 @@ import org.sigmah.shared.domain.calendar.ActivityCalendarIdentifier;
 import org.sigmah.shared.domain.calendar.Calendar;
 import org.sigmah.shared.domain.calendar.CalendarType;
 import org.sigmah.shared.domain.calendar.MonitoredPointCalendarIdentifier;
+import org.sigmah.shared.domain.calendar.ReminderCalendarIdentifier;
 import org.sigmah.shared.dto.ProjectDTO;
 
 /**
@@ -138,7 +139,7 @@ public class ProjectCalendarPresenter implements SubPresenter {
             final AsyncCallback<Calendar> callback = new AsyncCallback<Calendar>() {
                 @Override
                 public void onSuccess(Calendar result) {
-                    if(needsRefresh) {
+                    if (needsRefresh) {
                         calendarIndex = 1;
                         calendarStore.removeAll();
                         needsRefresh = false;
@@ -173,6 +174,14 @@ public class ProjectCalendarPresenter implements SubPresenter {
                 final GetCalendar getPersonalCalendar = new GetCalendar(CalendarType.Personal, calendarId);
                 dispatcher.execute(getPersonalCalendar, null, callback);
             }
+
+            // Retrieving the reminders
+            final ReminderCalendarIdentifier reminderIdentifier = new ReminderCalendarIdentifier(currentProjectDTO
+                    .getRemindersList().getId(), I18N.CONSTANTS.reminderPoints(),
+                    I18N.CONSTANTS.monitoredPointClosed(), I18N.CONSTANTS.monitoredPointExpectedDate(),
+                    I18N.CONSTANTS.monitoredPointDateFormat());
+            final GetCalendar getReminderCalendar = new GetCalendar(CalendarType.Reminder, reminderIdentifier);
+            dispatcher.execute(getReminderCalendar, null, callback);
 
             // Retrieving the monitored points
             final MonitoredPointCalendarIdentifier monitoredPointIdentifier = new MonitoredPointCalendarIdentifier(

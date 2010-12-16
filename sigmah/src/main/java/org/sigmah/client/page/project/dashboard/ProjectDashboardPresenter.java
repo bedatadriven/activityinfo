@@ -36,9 +36,11 @@ import org.sigmah.shared.command.GetProjects;
 import org.sigmah.shared.command.GetValue;
 import org.sigmah.shared.command.UpdateMonitoredPoints;
 import org.sigmah.shared.command.UpdateProject;
+import org.sigmah.shared.command.UpdateReminders;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.command.result.MonitoredPointsResultList;
 import org.sigmah.shared.command.result.ProjectListResult;
+import org.sigmah.shared.command.result.RemindersResultList;
 import org.sigmah.shared.command.result.ValueResult;
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.domain.ProjectModelType;
@@ -58,6 +60,8 @@ import org.sigmah.shared.dto.layout.LayoutConstraintDTO;
 import org.sigmah.shared.dto.layout.LayoutGroupDTO;
 import org.sigmah.shared.dto.reminder.MonitoredPointDTO;
 import org.sigmah.shared.dto.reminder.MonitoredPointListDTO;
+import org.sigmah.shared.dto.reminder.ReminderDTO;
+import org.sigmah.shared.dto.reminder.ReminderListDTO;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.SortDir;
@@ -146,6 +150,10 @@ public class ProjectDashboardPresenter implements SubPresenter {
         public abstract com.extjs.gxt.ui.client.widget.grid.Grid<MonitoredPointDTO> getMonitoredPointsGrid();
 
         public abstract Button getAddMonitoredPointButton();
+
+        public abstract Button getAddReminderButton();
+
+        public abstract com.extjs.gxt.ui.client.widget.grid.Grid<ReminderDTO> getRemindersGrid();
     }
 
     /**
@@ -199,6 +207,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
             view = new ProjectDashboardView(authentication);
             addLinkedProjectsListeners();
             addMonitoredPointsListeners();
+            addRemindersListeners();
         }
 
         valueChanges.clear();
@@ -310,12 +319,24 @@ public class ProjectDashboardPresenter implements SubPresenter {
         // Load monitored points.
         loadMonitoredPoints(projectDTO);
 
+        // Load reminders.
+        loadReminders(projectDTO);
+
         projectDTO.removeAllListeners();
+
         projectDTO.addListener(new ProjectDTO.MonitoredPointListener() {
 
             @Override
             public void pointAdded(MonitoredPointDTO point) {
                 view.getMonitoredPointsGrid().getStore().add(point);
+            }
+        });
+
+        projectDTO.addListener(new ProjectDTO.ReminderListener() {
+
+            @Override
+            public void reminderAdded(ReminderDTO reminder) {
+                view.getRemindersGrid().getStore().add(reminder);
             }
         });
 
@@ -439,6 +460,27 @@ public class ProjectDashboardPresenter implements SubPresenter {
         }
 
         view.getMonitoredPointsGrid().getStore().sort("expectedDate", SortDir.ASC);
+    }
+
+    /**
+     * Loads reminders.
+     * 
+     * @param projectDTO
+     *            The project.
+     */
+    private void loadReminders(final ProjectDTO projectDTO) {
+
+        view.getRemindersGrid().getStore().removeAll();
+
+        final ReminderListDTO list = projectDTO.getRemindersList();
+        if (list != null) {
+            for (final ReminderDTO reminder : list.getReminders()) {
+                reminder.setIsCompleted();
+                view.getRemindersGrid().getStore().add(reminder);
+            }
+        }
+
+        view.getRemindersGrid().getStore().sort("expectedDate", SortDir.ASC);
     }
 
     /**
@@ -1829,5 +1871,154 @@ public class ProjectDashboardPresenter implements SubPresenter {
                         }
                     }
                 });
+    }
+
+    /**
+     * Adds listeners to the reminder toolbar.
+     */
+    private void addRemindersListeners() {
+
+        view.getAddReminderButton().addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+            // Builds the monitored points window.
+            final FormWindow window = new FormWindow();
+
+            {
+                window.addTextField(I18N.CONSTANTS.monitoredPointLabel(), false);
+                window.addDateField(I18N.CONSTANTS.monitoredPointExpectedDate(), false);
+
+                window.addFormSubmitListener(new FormSubmitListener() {
+
+                    @Override
+                    public void formSubmitted(Object... values) {
+
+                        // Checks that the values are correct.
+                        final Object element0 = values[1];
+                        if (!(element0 instanceof Date)) {
+                            return;
+                        }
+
+                        final Object element1 = values[0];
+                        if (!(element1 instanceof String)) {
+                            return;
+                        }
+
+                        final Date pointExpectedDate = (Date) element0;
+                        final String pointLabel = (String) element1;
+
+                        final HashMap<String, Object> properties = new HashMap<String, Object>();
+                        properties.put("expectedDate", pointExpectedDate.getTime());
+                        properties.put("label", pointLabel);
+                        properties.put("projectId", projectPresenter.getCurrentProjectDTO().getId());
+
+                        dispatcher.execute(new CreateEntity("Reminder", properties),
+                                new MaskingAsyncMonitor(view.getRemindersGrid(), I18N.CONSTANTS.loading()),
+                                new AsyncCallback<CreateResult>() {
+
+                                    @Override
+                                    public void onFailure(Throwable e) {
+                                        Log.error("[execute] Error while creating the reminder.", e);
+                                        MessageBox.alert(I18N.CONSTANTS.monitoredPointAddError(),
+                                                I18N.CONSTANTS.reminderAddErrorDetails(), null);
+                                    }
+
+                                    @Override
+                                    public void onSuccess(CreateResult result) {
+
+                                        Notification.show(I18N.CONSTANTS.infoConfirmation(),
+                                                I18N.CONSTANTS.reminderAddConfirm());
+
+                                        // Gets the created point.
+                                        final ReminderDTO reminder = (ReminderDTO) result.getEntity();
+
+                                        // Gets the project list and creates it
+                                        // if needed.
+                                        ReminderListDTO list = projectPresenter.getCurrentProjectDTO()
+                                                .getRemindersList();
+
+                                        if (list == null) {
+
+                                            if (Log.isDebugEnabled()) {
+                                                Log.debug("[execute] The project reminders list doesn't exist, creates it.");
+                                            }
+
+                                            list = new ReminderListDTO();
+                                            list.setReminders(new ArrayList<ReminderDTO>());
+                                            projectPresenter.getCurrentProjectDTO().setRemindersList(list);
+                                        }
+
+                                        // Adds the point locally.
+                                        list.getReminders().add(reminder);
+                                        view.getRemindersGrid().getStore().add(reminder);
+                                    }
+                                });
+                    }
+                });
+            }
+
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                window.clean();
+                window.show(I18N.CONSTANTS.reminderAdd(), I18N.CONSTANTS.reminderAddDetails());
+            }
+        });
+
+        view.getRemindersGrid().getStore().addListener(Store.Update, new Listener<StoreEvent<ReminderDTO>>() {
+
+            @Override
+            public void handleEvent(StoreEvent<ReminderDTO> se) {
+
+                // Manages only edit event.
+                if (se.getOperation() == RecordUpdate.EDIT) {
+
+                    final Date editedDate = new Date();
+
+                    final ArrayList<ReminderDTO> editedModels = new ArrayList<ReminderDTO>();
+
+                    // The 'completed' field has been edited by the grid
+                    // editor, but the actual property which is saved in
+                    // data-layer is 'completionDate'. we have to do the
+                    // changes manually.
+                    final ReminderDTO edited = se.getModel();
+                    if (edited.getIsCompleted()) {
+                        edited.setCompletionDate(editedDate);
+                    } else {
+                        edited.setCompletionDate(null);
+                    }
+
+                    editedModels.add(edited);
+
+                    // Updates points.
+                    dispatcher.execute(new UpdateReminders(editedModels),
+                            new MaskingAsyncMonitor(view.getRemindersGrid(), I18N.CONSTANTS.loading()),
+                            new AsyncCallback<RemindersResultList>() {
+
+                                @Override
+                                public void onFailure(Throwable e) {
+
+                                    view.getRemindersGrid().getStore().rejectChanges();
+
+                                    Log.error("[execute] Error while merging the reminders.", e);
+                                    MessageBox.alert(I18N.CONSTANTS.monitoredPointUpdateError(),
+                                            I18N.CONSTANTS.reminderUpdateErrorDetails(), null);
+                                }
+
+                                @Override
+                                public void onSuccess(RemindersResultList result) {
+
+                                    view.getRemindersGrid().getStore().commitChanges();
+
+                                    for (ReminderDTO reminder : result.getList()) {
+                                        reminder.setIsCompleted();
+                                        view.getRemindersGrid().getStore().update(reminder);
+                                    }
+
+                                    Notification.show(I18N.CONSTANTS.infoConfirmation(),
+                                            I18N.CONSTANTS.reminderUpdateConfirm());
+                                }
+                            });
+                }
+            }
+        });
     }
 }

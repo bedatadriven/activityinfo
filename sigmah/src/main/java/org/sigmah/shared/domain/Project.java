@@ -22,6 +22,7 @@ import javax.persistence.TemporalType;
 
 import org.sigmah.shared.domain.logframe.LogFrame;
 import org.sigmah.shared.domain.reminder.MonitoredPointList;
+import org.sigmah.shared.domain.reminder.ReminderList;
 
 @Entity
 public class Project extends UserDatabase {
@@ -40,6 +41,7 @@ public class Project extends UserDatabase {
     private Date endDate;
     private Date closeDate;
     private MonitoredPointList pointsList;
+    private ReminderList remindersList;
     private Boolean starred = false;
 
     @Temporal(TemporalType.DATE)
@@ -178,6 +180,16 @@ public class Project extends UserDatabase {
 
     public void setPointsList(MonitoredPointList pointsList) {
         this.pointsList = pointsList;
+    }
+
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_reminder_list", nullable = true)
+    public ReminderList getRemindersList() {
+        return remindersList;
+    }
+
+    public void setRemindersList(ReminderList remindersList) {
+        this.remindersList = remindersList;
     }
 
     @Override

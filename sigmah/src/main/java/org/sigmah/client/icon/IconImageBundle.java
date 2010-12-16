@@ -178,4 +178,13 @@ public interface IconImageBundle extends ImageBundle {
 
     @Resource(value = "points1.png")
     AbstractImagePrototype closedPoint();
+    
+    @Resource(value = "rappels2.png")
+    AbstractImagePrototype openedReminder();
+
+    @Resource(value = "rappels3.png")
+    AbstractImagePrototype overdueReminder();
+
+    @Resource(value = "rappels1.png")
+    AbstractImagePrototype closedReminder();
 }

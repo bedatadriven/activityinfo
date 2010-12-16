@@ -15,6 +15,8 @@ import org.sigmah.shared.dto.element.FlexibleElementDTO;
 import org.sigmah.shared.dto.logframe.LogFrameDTO;
 import org.sigmah.shared.dto.reminder.MonitoredPointDTO;
 import org.sigmah.shared.dto.reminder.MonitoredPointListDTO;
+import org.sigmah.shared.dto.reminder.ReminderDTO;
+import org.sigmah.shared.dto.reminder.ReminderListDTO;
 import org.sigmah.shared.dto.value.ValueDTO;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
@@ -60,9 +62,16 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO, Defaul
         public void pointAdded(MonitoredPointDTO point);
     }
 
+    public static interface ReminderListener {
+
+        public void reminderAdded(ReminderDTO reminder);
+    }
+
     private transient HashMap<PhaseModelDTO, PhaseDTO> mappedPhases;
 
     private transient ArrayList<MonitoredPointListener> listeners;
+
+    private transient ArrayList<ReminderListener> listenersReminders;
 
     @Override
     public String getEntityName() {
@@ -328,6 +337,14 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO, Defaul
         set("pointsList", pointsList);
     }
 
+    public ReminderListDTO getRemindersList() {
+        return get("remindersList");
+    }
+
+    public void setRemindersList(ReminderListDTO remindersList) {
+        set("remindersList", remindersList);
+    }
+
     public void setStarred(Boolean starred) {
         set("starred", starred);
     }
@@ -352,14 +369,24 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO, Defaul
     public void addListener(MonitoredPointListener l) {
 
         if (listeners == null) {
-            listeners = new ArrayList<ProjectDTO.MonitoredPointListener>();
+            listeners = new ArrayList<MonitoredPointListener>();
         }
 
         listeners.add(l);
     }
 
+    public void addListener(ReminderListener l) {
+
+        if (listenersReminders == null) {
+            listenersReminders = new ArrayList<ReminderListener>();
+        }
+
+        listenersReminders.add(l);
+    }
+
     public void removeAllListeners() {
         listeners = null;
+        listenersReminders = null;
     }
 
     public void addMonitoredPoint(MonitoredPointDTO point) {
@@ -376,6 +403,24 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO, Defaul
         if (listeners != null) {
             for (final MonitoredPointListener l : listeners) {
                 l.pointAdded(point);
+            }
+        }
+    }
+
+    public void addReminder(ReminderDTO reminder) {
+
+        final ReminderListDTO list = getRemindersList();
+
+        // Must not happened.
+        if (list == null) {
+            return;
+        }
+
+        list.getReminders().add(reminder);
+
+        if (listenersReminders != null) {
+            for (final ReminderListener l : listenersReminders) {
+                l.reminderAdded(reminder);
             }
         }
     }

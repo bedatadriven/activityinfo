@@ -13,6 +13,7 @@ import org.sigmah.server.endpoint.gwtrpc.handler.calendar.ActivityCalendarHandle
 import org.sigmah.server.endpoint.gwtrpc.handler.calendar.CalendarHandler;
 import org.sigmah.server.endpoint.gwtrpc.handler.calendar.MonitoredPointCalendarHandler;
 import org.sigmah.server.endpoint.gwtrpc.handler.calendar.PersonalCalendarHandler;
+import org.sigmah.server.endpoint.gwtrpc.handler.calendar.ReminderCalendarHandler;
 import org.sigmah.shared.command.GetCalendar;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
@@ -43,6 +44,7 @@ public class GetCalendarHandler implements CommandHandler<GetCalendar> {
         map.put(CalendarType.Activity, injector.getInstance(ActivityCalendarHandler.class));
         map.put(CalendarType.Personal, injector.getInstance(PersonalCalendarHandler.class));
         map.put(CalendarType.MonitoredPoint, injector.getInstance(MonitoredPointCalendarHandler.class));
+        map.put(CalendarType.Reminder, injector.getInstance(ReminderCalendarHandler.class));
 
         handlers = map;
     }

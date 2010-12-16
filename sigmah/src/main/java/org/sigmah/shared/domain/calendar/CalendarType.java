@@ -12,5 +12,6 @@ public enum CalendarType {
     Activity,
     Personal,
     MonitoredPoint,
+    Reminder,
     Dummy
 }

@@ -14,12 +14,14 @@ import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.project.ProjectPresenter;
 import org.sigmah.client.page.project.dashboard.funding.FundingIconProvider;
 import org.sigmah.client.ui.FlexibleGrid;
+import org.sigmah.client.ui.StylableHBoxLayout;
 import org.sigmah.client.util.DateUtils;
 import org.sigmah.client.util.NumberUtils;
 import org.sigmah.shared.dto.ProjectFundingDTO;
 import org.sigmah.shared.dto.element.FlexibleElementDTO;
 import org.sigmah.shared.dto.element.FlexibleElementType;
 import org.sigmah.shared.dto.reminder.MonitoredPointDTO;
+import org.sigmah.shared.dto.reminder.ReminderDTO;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
@@ -62,7 +64,6 @@ import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.Hyperlink;
-import org.sigmah.client.ui.StylableHBoxLayout;
 
 /**
  * 
@@ -83,11 +84,6 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
     private Button buttonActivatePhase;
     private Button buttonPhaseGuide;
 
-    private ContentPanel panelReminders;
-
-    private ContentPanel panelMonitoredPoints;
-    private Button addMonitoredPointButton;
-
     private ContentPanel panelFinancialProjects;
     private ContentPanel panelLocalProjects;
     private Grid<FlexibleElementDTO> gridRequiredElements;
@@ -99,6 +95,12 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
     private Button addLocalPartnerProjectButton;
     private Button createLocalPartnerProjectButton;
 
+    private ContentPanel panelReminders;
+    private Button addReminderButton;
+    private Grid<ReminderDTO> remindersGrid;
+
+    private ContentPanel panelMonitoredPoints;
+    private Button addMonitoredPointButton;
     private Grid<MonitoredPointDTO> monitoredPointsGrid;
 
     public ProjectDashboardView(Authentication authentication) {
@@ -306,6 +308,16 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
     @Override
     public ContentPanel getPanelReminders() {
         return panelReminders;
+    }
+
+    @Override
+    public Button getAddReminderButton() {
+        return addReminderButton;
+    }
+
+    @Override
+    public Grid<ReminderDTO> getRemindersGrid() {
+        return remindersGrid;
     }
 
     @Override
@@ -684,9 +696,113 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
      */
     private ContentPanel getRemindersPanel() {
 
-        final ContentPanel panel = new ContentPanel();
+        // Store filters.
+
+        final StoreFilter<ReminderDTO> notCompletedFilter = new StoreFilter<ReminderDTO>() {
+
+            @Override
+            public boolean select(Store<ReminderDTO> store, ReminderDTO parent, ReminderDTO item, String property) {
+                return !item.isCompleted();
+            }
+        };
+
+        final StoreFilter<ReminderDTO> completedFilter = new StoreFilter<ReminderDTO>() {
+
+            @Override
+            public boolean select(Store<ReminderDTO> store, ReminderDTO parent, ReminderDTO item, String property) {
+                return item.isCompleted();
+            }
+        };
+
+        final StoreFilter<ReminderDTO> exceededFilter = new StoreFilter<ReminderDTO>() {
+
+            @Override
+            public boolean select(Store<ReminderDTO> store, ReminderDTO parent, ReminderDTO item, String property) {
+                return !item.isCompleted() && DateUtils.DAY_COMPARATOR.compare(new Date(), item.getExpectedDate()) > 0;
+            }
+        };
+
+        // Store
+        final ListStore<ReminderDTO> remindersStore = new ListStore<ReminderDTO>();
+
+        // Grid.
+        remindersGrid = new Grid<ReminderDTO>(remindersStore, new ColumnModel(Arrays.asList(getRemindersColumnModel())));
+        remindersGrid.getView().setForceFit(true);
+        remindersGrid.setBorders(false);
+
+        remindersGrid.addPlugin((CheckColumnConfig) remindersGrid.getColumnModel().getColumn(0));
+        remindersGrid.setAutoExpandColumn("label");
+
+        // Filter menu.
+
+        final FilterSelectionListener<ReminderDTO> filterListener = new FilterSelectionListener<ReminderDTO>(
+                remindersStore);
+
+        final MenuItem noFilterItem = new MenuItem(I18N.CONSTANTS.monitoredPointAll());
+        noFilterItem.addSelectionListener(new SelectionListener<MenuEvent>() {
+            @Override
+            public void componentSelected(MenuEvent ce) {
+                filterListener.filter(noFilterItem, null);
+            }
+        });
+
+        final MenuItem completedFilterItem = new MenuItem(I18N.CONSTANTS.monitoredPointCompleted(),
+                IconImageBundle.ICONS.closedReminder());
+        completedFilterItem.addSelectionListener(new SelectionListener<MenuEvent>() {
+            @Override
+            public void componentSelected(MenuEvent ce) {
+                filterListener.filter(completedFilterItem, completedFilter);
+            }
+        });
+
+        final MenuItem notCompletedFilterItem = new MenuItem(I18N.CONSTANTS.monitoredPointUncompleted(),
+                IconImageBundle.ICONS.openedReminder());
+        notCompletedFilterItem.addSelectionListener(new SelectionListener<MenuEvent>() {
+            @Override
+            public void componentSelected(MenuEvent ce) {
+                filterListener.filter(notCompletedFilterItem, notCompletedFilter);
+            }
+        });
+
+        final MenuItem exceededFilterItem = new MenuItem(I18N.CONSTANTS.monitoredPointExceeded(),
+                IconImageBundle.ICONS.overdueReminder());
+        exceededFilterItem.addSelectionListener(new SelectionListener<MenuEvent>() {
+            @Override
+            public void componentSelected(MenuEvent ce) {
+                filterListener.filter(exceededFilterItem, exceededFilter);
+            }
+        });
+
+        final Menu filterMenu = new Menu();
+        filterMenu.add(noFilterItem);
+        filterMenu.add(new SeparatorMenuItem());
+        filterMenu.add(completedFilterItem);
+        filterMenu.add(notCompletedFilterItem);
+        filterMenu.add(exceededFilterItem);
+
+        // Fires manually the first filter (no filter).
+        filterListener.filter(noFilterItem, null);
+
+        // Filter button.
+        final Button filterButton = new Button(I18N.CONSTANTS.filter(), IconImageBundle.ICONS.filter());
+        filterButton.setMenu(filterMenu);
+
+        addReminderButton = new Button(I18N.CONSTANTS.addItem(), IconImageBundle.ICONS.add());
+
+        // Toolbar.
+        final ToolBar toolbar = new ToolBar();
+        toolbar.setAlignment(HorizontalAlignment.LEFT);
+
+        toolbar.add(addReminderButton);
+        toolbar.add(filterButton);
+
+        // Panel.
+        final ContentPanel panel = new ContentPanel(new FitLayout());
         panel.setHeading(I18N.CONSTANTS.reminderPoints());
         panel.setBorders(false);
+
+        panel.setTopComponent(toolbar);
+        panel.add(remindersGrid);
 
         return panel;
     }
@@ -937,6 +1053,95 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
             @Override
             public Object render(MonitoredPointDTO model, String property, ColumnData config, int rowIndex,
                     int colIndex, ListStore<MonitoredPointDTO> store, Grid<MonitoredPointDTO> grid) {
+
+                final Label l = new Label(format.format(model.getExpectedDate()));
+                if (!model.isCompleted() && DateUtils.DAY_COMPARATOR.compare(now, model.getExpectedDate()) > 0) {
+                    l.addStyleName("points-date-exceeded");
+                }
+                return l;
+            }
+        });
+
+        // Completion date.
+        final ColumnConfig completionDateColumn = new ColumnConfig();
+        completionDateColumn.setId("completionDate");
+        completionDateColumn.setHeader(I18N.CONSTANTS.monitoredPointCompletionDate());
+        completionDateColumn.setWidth(60);
+        completionDateColumn.setDateTimeFormat(format);
+
+        return new ColumnConfig[] { completedColumn, iconColumn, labelColumn, expectedDateColumn, completionDateColumn };
+    }
+
+    /**
+     * Gets the columns for the reminders grid.
+     * 
+     * @return The columns for the reminders grid.
+     */
+    private ColumnConfig[] getRemindersColumnModel() {
+
+        final DateTimeFormat format = DateTimeFormat.getFormat(I18N.CONSTANTS.monitoredPointDateFormat());
+        final Date now = new Date();
+
+        // Completed ?
+        final CheckColumnConfig completedColumn = new CheckColumnConfig();
+        completedColumn.setId("completed");
+        completedColumn.setHeader(I18N.CONSTANTS.monitoredPointClose() + "?");
+        completedColumn.setWidth(20);
+        completedColumn.setSortable(false);
+        final CellEditor checkBoxEditor = new CellEditor(new CheckBox());
+        completedColumn.setEditor(checkBoxEditor);
+
+        // Icojn
+        final ColumnConfig iconColumn = new ColumnConfig();
+        iconColumn.setId("icon");
+        iconColumn.setHeader("");
+        iconColumn.setWidth(16);
+        iconColumn.setRenderer(new GridCellRenderer<ReminderDTO>() {
+
+            @Override
+            public Object render(ReminderDTO model, String property, ColumnData config, int rowIndex, int colIndex,
+                    ListStore<ReminderDTO> store, Grid<ReminderDTO> grid) {
+
+                if (model.isCompleted()) {
+                    return IconImageBundle.ICONS.closedReminder().createImage();
+                } else if (DateUtils.DAY_COMPARATOR.compare(now, model.getExpectedDate()) > 0) {
+                    return IconImageBundle.ICONS.overdueReminder().createImage();
+                } else {
+                    return IconImageBundle.ICONS.openedReminder().createImage();
+                }
+            }
+        });
+
+        // Label.
+        final ColumnConfig labelColumn = new ColumnConfig();
+        labelColumn.setId("label");
+        labelColumn.setHeader(I18N.CONSTANTS.monitoredPointLabel());
+        labelColumn.setWidth(60);
+        labelColumn.setRenderer(new GridCellRenderer<ReminderDTO>() {
+
+            @Override
+            public Object render(ReminderDTO model, String property, ColumnData config, int rowIndex, int colIndex,
+                    ListStore<ReminderDTO> store, Grid<ReminderDTO> grid) {
+
+                final Label l = new Label(model.getLabel());
+                if (model.isCompleted()) {
+                    l.addStyleName("points-completed");
+                }
+                return l;
+            }
+        });
+
+        // Expected date.
+        final ColumnConfig expectedDateColumn = new ColumnConfig();
+        expectedDateColumn.setId("expectedDate");
+        expectedDateColumn.setHeader(I18N.CONSTANTS.monitoredPointExpectedDate());
+        expectedDateColumn.setWidth(60);
+        expectedDateColumn.setDateTimeFormat(format);
+        expectedDateColumn.setRenderer(new GridCellRenderer<ReminderDTO>() {
+
+            @Override
+            public Object render(ReminderDTO model, String property, ColumnData config, int rowIndex, int colIndex,
+                    ListStore<ReminderDTO> store, Grid<ReminderDTO> grid) {
 
                 final Label l = new Label(format.format(model.getExpectedDate()));
                 if (!model.isCompleted() && DateUtils.DAY_COMPARATOR.compare(now, model.getExpectedDate()) > 0) {

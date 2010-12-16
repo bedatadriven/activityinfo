@@ -36,9 +36,12 @@ import org.sigmah.shared.domain.ProjectFunding;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.reminder.MonitoredPoint;
 import org.sigmah.shared.domain.reminder.MonitoredPointList;
+import org.sigmah.shared.domain.reminder.Reminder;
+import org.sigmah.shared.domain.reminder.ReminderList;
 import org.sigmah.shared.dto.ProjectDTOLight;
 import org.sigmah.shared.dto.ProjectFundingDTO;
 import org.sigmah.shared.dto.reminder.MonitoredPointDTO;
+import org.sigmah.shared.dto.reminder.ReminderDTO;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.IllegalAccessCommandException;
 
@@ -98,6 +101,8 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
             return new CreateResult((Integer) policy.create(user, propertyMap));
         } else if ("MonitoredPoint".equals(cmd.getEntityName())) {
             return createMonitoredPoint(properties);
+        } else if ("Reminder".equals(cmd.getEntityName())) {
+            return createReminder(properties);
         } else {
             throw new CommandException("Invalid entity class " + cmd.getEntityName());
         }
@@ -240,5 +245,59 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
         }
 
         return new CreateResult(injector.getInstance(Mapper.class).map(point, MonitoredPointDTO.class));
+    }
+
+    private CommandResult createReminder(Map<String, Object> properties) {
+
+        if (log.isDebugEnabled()) {
+            log.debug("[createReminder] Starts reminder creation.");
+        }
+
+        // Retrieves parameters.
+        Object expectedDate = properties.get("expectedDate");
+        Object label = properties.get("label");
+        Object projectId = properties.get("projectId");
+
+        // Retrieves project.
+        final Project project = em.find(Project.class, projectId);
+
+        if (log.isDebugEnabled()) {
+            log.debug("[createReminder] Retrieves the project #" + project.getId() + ".");
+        }
+
+        // Retrieves list.
+        ReminderList list = project.getRemindersList();
+
+        // Creates the list if needed.
+        if (list == null) {
+
+            if (log.isDebugEnabled()) {
+                log.debug("[createReminder] The project #" + project.getId()
+                        + " doesn't have a reminders list. Creates it.");
+            }
+
+            list = new ReminderList();
+            list.setReminders(new ArrayList<Reminder>());
+            project.setRemindersList(list);
+        }
+
+        // Creates point.
+        final Reminder reminder = new Reminder();
+        reminder.setLabel((String) label);
+        reminder.setExpectedDate(new Date((Long) expectedDate));
+        reminder.setCompletionDate(null);
+
+        // Adds it to the list.
+        list.addReminder(reminder);
+
+        // Saves it.
+        em.persist(project);
+
+        if (log.isDebugEnabled()) {
+            log.debug("[createReminder] Ends reminder creation #" + reminder.getId() + " in list #" + list.getId()
+                    + ".");
+        }
+
+        return new CreateResult(injector.getInstance(Mapper.class).map(reminder, ReminderDTO.class));
     }
 }

@@ -29,6 +29,7 @@ import org.sigmah.shared.domain.logframe.LogFrameGroup;
 import org.sigmah.shared.domain.logframe.LogFrameGroupType;
 import org.sigmah.shared.domain.logframe.LogFrameModel;
 import org.sigmah.shared.domain.reminder.MonitoredPointList;
+import org.sigmah.shared.domain.reminder.ReminderList;
 
 import com.google.inject.Inject;
 
@@ -68,8 +69,11 @@ public class ProjectPolicy implements EntityPolicy<Project> {
         project.setStartDate(new Date());
         project.setOwner(em.getReference(User.class, user.getId()));
 
-        // Monitored point.
+        // Monitored points.
         project.setPointsList(new MonitoredPointList());
+
+        // Reminders.
+        project.setRemindersList(new ReminderList());
 
         // Org unit.
         final OrgUnit orgunit = em.find(OrgUnit.class, properties.<Integer> get("orgUnitId"));
