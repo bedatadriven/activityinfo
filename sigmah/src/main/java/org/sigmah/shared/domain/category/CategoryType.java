@@ -7,6 +7,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,6 +31,7 @@ public class CategoryType implements Serializable {
     private Integer id;
     private String label;
     private List<CategoryElement> elements = new ArrayList<CategoryElement>();
+    private CategoryIcon icon;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -58,5 +61,15 @@ public class CategoryType implements Serializable {
 
     public void setElements(List<CategoryElement> elements) {
         this.elements = elements;
+    }
+
+    @Column(name = "icon_name", nullable = false, length = 8192)
+    @Enumerated(value = EnumType.STRING)
+    public CategoryIcon getIcon() {
+        return icon;
+    }
+
+    public void setIcon(CategoryIcon icon) {
+        this.icon = icon;
     }
 }

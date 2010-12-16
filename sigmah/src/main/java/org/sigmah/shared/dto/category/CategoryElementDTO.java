@@ -40,4 +40,42 @@ public class CategoryElementDTO extends BaseModelData implements EntityDTO {
     public void setParentCategoryDTO(CategoryTypeDTO parentCategoryDTO) {
         set("parentCategoryDTO", parentCategoryDTO);
     }
+
+    // Color
+    public String getColor() {
+        return get("color");
+    }
+
+    public void setColor(String color) {
+        set("color", color);
+    }
+
+    public void setIconHtml(String iconHtml) {
+        set("iconHtml", iconHtml);
+    }
+
+    public String getIconHtml() {
+        return get("iconHtml");
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (obj == null) {
+            return false;
+        }
+
+        if (!(obj instanceof CategoryElementDTO)) {
+            return false;
+        }
+
+        final CategoryElementDTO other = (CategoryElementDTO) obj;
+
+        return getId() == other.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return getId();
+    }
 }

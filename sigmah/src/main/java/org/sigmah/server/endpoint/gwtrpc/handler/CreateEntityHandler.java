@@ -82,8 +82,8 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
         } else if ("Project".equals(cmd.getEntityName())) {
             final ProjectPolicy policy = injector.getInstance(ProjectPolicy.class);
             final Project createdProject = (Project) policy.create(user, propertyMap);
-            final ProjectDTOLight mappedProject = GetProjectsHandler.mapProject(injector.getInstance(Mapper.class),
-                    createdProject, false);
+            final ProjectDTOLight mappedProject = GetProjectsHandler.mapProject(em, injector.getInstance(Mapper.class),
+                    user, createdProject, false);
             return new CreateResult(mappedProject);
         } else if ("Site".equals(cmd.getEntityName())) {
             SitePolicy policy = injector.getInstance(SitePolicy.class);

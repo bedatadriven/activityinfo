@@ -26,6 +26,7 @@ public class CategoryElement implements Serializable {
     private Integer id;
     private String label;
     private CategoryType parentType;
+    private String color;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -55,5 +56,14 @@ public class CategoryElement implements Serializable {
 
     public void setParentType(CategoryType parentType) {
         this.parentType = parentType;
+    }
+
+    @Column(name = "color_hex", nullable = false, length = 6)
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 }

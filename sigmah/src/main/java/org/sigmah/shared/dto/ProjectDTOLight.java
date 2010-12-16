@@ -3,10 +3,13 @@ package org.sigmah.shared.dto;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.sigmah.client.util.DateUtils;
 import org.sigmah.client.util.NumberUtils;
 import org.sigmah.shared.domain.ProjectModelType;
+import org.sigmah.shared.dto.category.CategoryElementDTO;
 import org.sigmah.shared.dto.category.CategoryTypeDTO;
 
 import com.extjs.gxt.ui.client.data.BaseTreeModel;
@@ -189,12 +192,12 @@ public class ProjectDTOLight extends BaseTreeModel implements EntityDTO {
     }
 
     // Categories.
-    public List<CategoryTypeDTO> getCategories() {
-        return get("categories");
+    public Map<CategoryTypeDTO, Set<CategoryElementDTO>> getCategoriesMap() {
+        return get("categoriesMap");
     }
 
-    public void setCategories(List<CategoryTypeDTO> categories) {
-        set("categories", categories);
+    public void setCategoriesMap(Map<CategoryTypeDTO, Set<CategoryElementDTO>> categoriesMap) {
+        set("categoriesMap", categoriesMap);
     }
 
     // Children (projects funded by this project)
@@ -316,25 +319,23 @@ public class ProjectDTOLight extends BaseTreeModel implements EntityDTO {
     }
 
     /**
-     * Gets all the categories type of this project.
+     * Gets all the category elements of this project.
      * 
-     * @return The categories type as string.
+     * @return The category elements of this project.
      */
-    public String getCategoriesString() {
+    public List<CategoryElementDTO> getCategoryElements() {
 
-        final List<CategoryTypeDTO> categories = getCategories();
-
-        final StringBuilder sb = new StringBuilder();
+        final Map<CategoryTypeDTO, Set<CategoryElementDTO>> categories = getCategoriesMap();
+        final ArrayList<CategoryElementDTO> elements = new ArrayList<CategoryElementDTO>();
 
         if (categories != null) {
-            for (int i = 0; i < categories.size(); i++) {
-                sb.append(categories.get(i).getLabel());
-                if (i + 1 != categories.size()) {
-                    sb.append(" / ");
+            for (final Set<CategoryElementDTO> set : categories.values()) {
+                for (final CategoryElementDTO element : set) {
+                    elements.add(element);
                 }
             }
         }
 
-        return sb.toString();
+        return elements;
     }
 }

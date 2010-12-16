@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.page.project.category.CategoryIconProvider;
 import org.sigmah.client.ui.FlexibleGrid;
 import org.sigmah.client.util.HistoryTokenText;
 import org.sigmah.shared.command.result.ValueResult;
@@ -30,6 +31,10 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
+import com.google.gwt.user.client.DOM;
 
 /**
  * 
@@ -111,6 +116,18 @@ public class QuestionElementDTO extends FlexibleElementDTO {
             comboBox.setEditable(false);
             comboBox.setAllowBlank(true);
 
+            if (getCategoryTypeDTO() != null) {
+
+                for (final QuestionChoiceElementDTO choiceDTO : store.getModels()) {
+                    if (choiceDTO.getCategoryElementDTO() != null) {
+                        choiceDTO.getCategoryElementDTO().setIconHtml(
+                                CategoryIconProvider.getIconHtml(choiceDTO.getCategoryElementDTO(), false));
+                    }
+                }
+
+                comboBox.setTemplate(CategoryIconProvider.getComboboxIconTemplate());
+            }
+
             if (valueResult != null && valueResult.isValueDefined()) {
 
                 final String idChoice = (String) valueResult.getValueObject();
@@ -138,10 +155,37 @@ public class QuestionElementDTO extends FlexibleElementDTO {
             sm.setSelectionMode(SelectionMode.MULTI);
             sm.addListener(Events.SelectionChange, listener);
 
+            // Defines grid column model.
+            final ColumnConfig labelColumn = new ColumnConfig();
+            labelColumn.setId("label");
+            labelColumn.setHeader(I18N.CONSTANTS.flexibleElementQuestionMutiple());
+            labelColumn.setWidth(500);
+            if (getCategoryTypeDTO() != null) {
+                labelColumn.setRenderer(new GridCellRenderer<QuestionChoiceElementDTO>() {
+
+                    @Override
+                    public Object render(QuestionChoiceElementDTO model, String property, ColumnData config,
+                            int rowIndex, int colIndex, ListStore<QuestionChoiceElementDTO> store,
+                            Grid<QuestionChoiceElementDTO> grid) {
+
+                        final com.google.gwt.user.client.ui.Grid panel = new com.google.gwt.user.client.ui.Grid(1, 2);
+                        panel.setCellPadding(0);
+                        panel.setCellSpacing(0);
+
+                        panel.setWidget(0, 0, CategoryIconProvider.getIcon(model.getCategoryElementDTO()));
+                        panel.setText(0, 1, (String) model.get(property));
+
+                        DOM.setStyleAttribute(panel.getCellFormatter().getElement(0, 1), "paddingLeft", "5px");
+                        DOM.setStyleAttribute(panel.getCellFormatter().getElement(0, 1), "paddingTop", "1px");
+
+                        return panel;
+                    }
+                });
+            }
+
             // Grid used as a list box.
             final FlexibleGrid<QuestionChoiceElementDTO> multipleQuestion = new FlexibleGrid<QuestionChoiceElementDTO>(
-                    store, sm, sm.getColumn(), new ColumnConfig("label",
-                            I18N.CONSTANTS.flexibleElementQuestionMutiple(), 500));
+                    store, sm, sm.getColumn(), labelColumn);
             multipleQuestion.setAutoExpandColumn("label");
             multipleQuestion.setVisibleElementsCount(5);
 

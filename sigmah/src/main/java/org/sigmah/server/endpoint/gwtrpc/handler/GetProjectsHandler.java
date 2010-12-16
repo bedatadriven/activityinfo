@@ -7,6 +7,7 @@ package org.sigmah.server.endpoint.gwtrpc.handler;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,17 +19,22 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dozer.Mapper;
 import org.sigmah.shared.command.GetProjects;
+import org.sigmah.shared.command.GetValue;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.ProjectListResult;
+import org.sigmah.shared.command.result.ValueResult;
+import org.sigmah.shared.command.result.ValueResultUtils;
 import org.sigmah.shared.domain.OrgUnit;
 import org.sigmah.shared.domain.Project;
 import org.sigmah.shared.domain.ProjectFunding;
 import org.sigmah.shared.domain.ProjectModelType;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.element.FlexibleElement;
+import org.sigmah.shared.domain.element.QuestionChoiceElement;
 import org.sigmah.shared.domain.element.QuestionElement;
 import org.sigmah.shared.dto.ProjectDTOLight;
+import org.sigmah.shared.dto.category.CategoryElementDTO;
 import org.sigmah.shared.dto.category.CategoryTypeDTO;
 import org.sigmah.shared.exception.CommandException;
 
@@ -125,7 +131,7 @@ public class GetProjectsHandler implements CommandHandler<GetProjects> {
         // Mapping into DTO objects
         final ArrayList<ProjectDTOLight> projectDTOList = new ArrayList<ProjectDTOLight>();
         for (final Project project : projects) {
-            final ProjectDTOLight pLight = mapProject(mapper, project, true);
+            final ProjectDTOLight pLight = mapProject(em, mapper, user, project, true);
             projectDTOList.add(pLight);
         }
 
@@ -140,15 +146,20 @@ public class GetProjectsHandler implements CommandHandler<GetProjects> {
     /**
      * Map a project into a project light DTO.
      * 
+     * @param em
+     *            The entity manager.
      * @param mapper
      *            The entities mapper.
+     * @param user
+     *            The current user.
      * @param project
      *            The project.
      * @param mapChildren
      *            If the children projects must be retrieved.
      * @return The light DTO.
      */
-    public static ProjectDTOLight mapProject(final Mapper mapper, final Project project, final boolean mapChildren) {
+    public static ProjectDTOLight mapProject(final EntityManager em, final Mapper mapper, final User user,
+            final Project project, final boolean mapChildren) {
 
         final ProjectDTOLight pLight = mapper.map(project, ProjectDTOLight.class);
 
@@ -161,16 +172,57 @@ public class GetProjectsHandler implements CommandHandler<GetProjects> {
         }
 
         // Fill categories.
-        pLight.setCategories(new ArrayList<CategoryTypeDTO>());
+
+        final GetValueHandler valuesHandler = new GetValueHandler(em, mapper);
+        final GetValue cmd = new GetValue();
+        cmd.setProjectId(pLight.getId());
+        cmd.setElementEntityName("element.QuestionElement");
+
+        final HashMap<CategoryTypeDTO, Set<CategoryElementDTO>> categories = new HashMap<CategoryTypeDTO, Set<CategoryElementDTO>>();
+
+        // Retrieves each flexible element.
         for (final FlexibleElement element : project.getProjectModel().getElements()) {
 
+            // Tests if the element is a question.
             if (element instanceof QuestionElement) {
+
                 final QuestionElement question = (QuestionElement) element;
+
+                // Tests if the question has a category.
                 if (question.getCategoryType() != null) {
-                    pLight.getCategories().add(mapper.map(question.getCategoryType(), CategoryTypeDTO.class));
+
+                    // Retrieves category values.
+                    cmd.setElementId(question.getId());
+                    ValueResult valueResult = null;
+                    try {
+                        valueResult = (ValueResult) valuesHandler.execute(cmd, user);
+                    } catch (CommandException e) {
+                        LOG.error("[mapProject] Error while retrieving que question values.", e);
+                    }
+
+                    // Tests if the categories has selected values.
+                    if (valueResult != null) {
+
+                        final CategoryTypeDTO type = mapper.map(question.getCategoryType(), CategoryTypeDTO.class);
+                        Set<CategoryElementDTO> elements = categories.get(type);
+
+                        if (elements == null) {
+                            elements = new HashSet<CategoryElementDTO>();
+                            categories.put(type, elements);
+                        }
+
+                        final List<Long> selectedChoicesId = ValueResultUtils.splitValuesAsLong(valueResult
+                                .getValueObject());
+                        for (final Long id : selectedChoicesId) {
+                            final QuestionChoiceElement choice = em.find(QuestionChoiceElement.class, id);
+                            elements.add(mapper.map(choice.getCategoryElement(), CategoryElementDTO.class));
+                        }
+
+                    }
                 }
             }
         }
+        pLight.setCategoriesMap(categories);
 
         // Fill children.
         final ArrayList<ProjectDTOLight> children = new ArrayList<ProjectDTOLight>();
@@ -182,7 +234,7 @@ public class GetProjectsHandler implements CommandHandler<GetProjects> {
                 if (pFunded != null) {
                     // Recursive call to retrieve the child (without its
                     // children).
-                    children.add(mapProject(mapper, pFunded, false));
+                    children.add(mapProject(em, mapper, user, pFunded, false));
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("[execute] Attached funded project " + pFunded.getName() + " - '"
                                 + pFunded.getFullName() + "'.");

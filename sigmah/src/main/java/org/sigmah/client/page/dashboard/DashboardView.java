@@ -8,6 +8,7 @@ package org.sigmah.client.page.dashboard;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.UserInfo;
@@ -25,6 +26,7 @@ import org.sigmah.client.page.dashboard.CreateProjectWindow.CreateProjectListene
 import org.sigmah.client.page.entry.SiteGridPageState;
 import org.sigmah.client.page.map.MapPageState;
 import org.sigmah.client.page.project.ProjectPresenter;
+import org.sigmah.client.page.project.category.CategoryIconProvider;
 import org.sigmah.client.page.project.dashboard.funding.FundingIconProvider;
 import org.sigmah.client.page.project.dashboard.funding.FundingIconProvider.IconSize;
 import org.sigmah.client.page.report.ReportListPageState;
@@ -38,6 +40,7 @@ import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.domain.ProjectModelType;
 import org.sigmah.shared.dto.OrgUnitDTOLight;
 import org.sigmah.shared.dto.ProjectDTOLight;
+import org.sigmah.shared.dto.category.CategoryElementDTO;
 import org.sigmah.shared.dto.element.DefaultFlexibleElementDTO;
 import org.sigmah.shared.dto.element.handler.ValueEvent;
 
@@ -55,6 +58,7 @@ import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.util.Padding;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.WidgetComponent;
@@ -69,6 +73,8 @@ import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.FlowData;
+import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
@@ -233,7 +239,7 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
                                 projectStore.clearFilters();
                                 projectStore.add(project, false);
                                 projectStore.applyFilters(null);
-                                
+
                                 // Show notification.
                                 Notification.show(I18N.CONSTANTS.createProjectSucceeded(),
                                         I18N.CONSTANTS.createProjectSucceededDetails());
@@ -391,7 +397,7 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
                 } else if ("activity".equals(property)) {
                     return 0;
                 } else if ("category".equals(property)) {
-                    return m1.getCategoriesString().compareToIgnoreCase(m2.getCategoriesString());
+                    return 0;
                 } else {
                     return super.compare(store, m1, m2, property);
                 }
@@ -737,12 +743,25 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
 
         // Category
         final ColumnConfig categoryColumn = new ColumnConfig("category", I18N.CONSTANTS.category(), 150);
+        categoryColumn.setSortable(false);
         categoryColumn.setRenderer(new GridCellRenderer<ProjectDTOLight>() {
 
             @Override
             public Object render(ProjectDTOLight model, String property, ColumnData config, int rowIndex, int colIndex,
                     ListStore<ProjectDTOLight> store, Grid<ProjectDTOLight> grid) {
-                return createProjectGridText(model, model.getCategoriesString());
+
+                final List<CategoryElementDTO> elements = model.getCategoryElements();
+                final LayoutContainer panel = new LayoutContainer();
+                panel.setLayout(new FlowLayout());
+                final FlowData data = new FlowData(new Margins(0, 5, 0, 0));
+                
+                if (elements != null) {
+                    for (final CategoryElementDTO element : elements) {
+                        panel.add(CategoryIconProvider.getIcon(element), data);
+                    }
+                }
+
+                return panel;
             }
         });
 
