@@ -23,6 +23,14 @@ public final class FileUploadUtils {
      */
     public static final int MAX_UPLOAD_FILE_SIZE = 20971520;
 
+    // ! \\
+    // A tag code is used to parse the response of the HTTP request.
+    //
+    // Each code which is printed is this response should not contain entirely
+    // another code to avoid collisions in regular expressions.
+    // Bad example: code 1 = BAD ; code 2 = ITSBAD
+    // ! \\
+
     /**
      * HTTP response start tag for the response code.
      */
@@ -36,7 +44,7 @@ public final class FileUploadUtils {
     /**
      * HTTP response start tag for the monitored point.
      */
-    public static final String TAG_START_MONITORED_POINT = "MPSTART:";
+    public static final String TAG_START_MONITORED_POINT = "MPST:";
 
     /**
      * HTTP response separator.
@@ -46,7 +54,7 @@ public final class FileUploadUtils {
     /**
      * HTTP response end tag for the monitored point.
      */
-    public static final String TAG_END_MONITORED_POINT = "?MPEND";
+    public static final String TAG_END_MONITORED_POINT = "?MPEN";
 
     /**
      * Error code: empty file.
