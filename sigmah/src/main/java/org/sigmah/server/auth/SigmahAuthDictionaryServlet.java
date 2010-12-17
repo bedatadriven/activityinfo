@@ -5,12 +5,11 @@
 
 package org.sigmah.server.auth;
 
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.google.inject.Singleton;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
@@ -19,10 +18,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.sigmah.client.inject.SigmahAuthProvider;
-import org.sigmah.server.domain.Authentication;
 import org.sigmah.server.Cookies;
 import org.sigmah.server.dao.AuthenticationDAO;
+import org.sigmah.server.domain.Authentication;
 import org.sigmah.shared.domain.User;
+
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Singleton;
 
 /**
  * Creates and returns the current user informations.
@@ -75,6 +78,9 @@ public class SigmahAuthDictionaryServlet extends HttpServlet {
                 parameters.put(SigmahAuthProvider.USER_ORG_UNIT_ID, Integer.toString(user.getOrgUnit().getId()));
             }
 
+            final Charset utf8 = Charset.forName("UTF-8");
+            resp.setCharacterEncoding("UTF-8");
+
             final ServletOutputStream output = resp.getOutputStream();
             output.println("var " + SigmahAuthProvider.DICTIONARY_NAME + " = {");
 
@@ -85,11 +91,11 @@ public class SigmahAuthDictionaryServlet extends HttpServlet {
                 else
                     output.println(",");
 
-                output.print(entry.getKey() + ": " + entry.getValue());
+                output.print(entry.getKey() + ": ");
+                output.write(entry.getValue().getBytes(utf8));
             }
 
             output.println("};");
         }
     }
-
 }
