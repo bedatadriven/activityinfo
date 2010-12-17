@@ -99,6 +99,9 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
         } else if ("ProjectReport".equals(cmd.getEntityName())) {
             ProjectReportPolicy policy = injector.getInstance(ProjectReportPolicy.class);
             return new CreateResult((Integer) policy.create(user, propertyMap));
+        } else if ("ProjectReportDraft".equals(cmd.getEntityName())) {
+            ProjectReportPolicy policy = injector.getInstance(ProjectReportPolicy.class);
+            return new CreateResult(policy.createDraft(user, propertyMap));
         } else if ("MonitoredPoint".equals(cmd.getEntityName())) {
             return createMonitoredPoint(properties);
         } else if ("Reminder".equals(cmd.getEntityName())) {

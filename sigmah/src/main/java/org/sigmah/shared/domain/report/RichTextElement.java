@@ -20,10 +20,25 @@ import javax.persistence.ManyToOne;
 @Entity
 public class RichTextElement implements Serializable {
     private Integer id;
-    private ProjectReport report;
+    private ProjectReportVersion version;
     private Integer sectionId;
     private Integer index;
     private String text;
+
+    /**
+     * Creates a new RichTextElement and fill some of its values.<br>
+     * <br>
+     * Not similar to the clone method since it doesn't copy every fields.
+     * @return A new RichTextElement object.
+     */
+    public RichTextElement duplicate() {
+        final RichTextElement duplicate = new RichTextElement();
+        duplicate.sectionId = this.sectionId;
+        duplicate.index = this.index;
+        duplicate.text = this.text;
+
+        return duplicate;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -36,12 +51,12 @@ public class RichTextElement implements Serializable {
     }
 
     @ManyToOne
-    public ProjectReport getReport() {
-        return report;
+    public ProjectReportVersion getVersion() {
+        return version;
     }
 
-    public void setReport(ProjectReport report) {
-        this.report = report;
+    public void setVersion(ProjectReportVersion version) {
+        this.version = version;
     }
 
     public Integer getIndex() {

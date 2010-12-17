@@ -731,12 +731,38 @@ body {
 .project-report {
 	padding-top: 4px;
 	padding-left: 8px;
+        padding-right: 32px;
 	font-size: 10pt;
+}
+
+.project-report-draft {
+    font-size: 10pt;
+    color: white;
+    background-color: rgb(74, 63, 43);
+    padding-left: 8px;
+    padding-right: 24px;
+    line-height: 32px;
+}
+
+.project-report-draft-button {
+    float:right;
+    height: 100%;
+}
+
+.project-report-field {
+    margin-top: 4px;
+    margin-bottom: 16px;
+}
+
+.project-report-field-empty {
+    color: #888;
+    margin-top: 4px;
+    margin-bottom: 16px;
 }
 
 .project-report-level-1 {
 	margin-bottom: 16px !important;
-	width: 95%;
+	width: 100%;
 }
 
 .project-report-level-1 .fold-title {

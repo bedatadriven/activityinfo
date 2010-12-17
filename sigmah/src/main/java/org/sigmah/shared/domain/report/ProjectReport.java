@@ -6,21 +6,14 @@
 package org.sigmah.shared.domain.report;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.OrderBy;
-import javax.persistence.Temporal;
-import javax.persistence.Transient;
 import org.sigmah.shared.domain.Project;
-import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.element.FlexibleElement;
 
 /**
@@ -33,16 +26,11 @@ public class ProjectReport implements Serializable {
     private static final long serialVersionUID = -7388489166961720683L;
 
     private Integer id;
-    private Project project;
-    private ProjectReportModel model;
-    private String phaseName;
     private String name;
+    private ProjectReportModel model;
+    private ProjectReportVersion currentVersion;
+    private Project project;
     private FlexibleElement flexibleElement;
-
-    private List<RichTextElement> texts;
-
-    private Date lastEditDate;
-    private User editor;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -54,6 +42,14 @@ public class ProjectReport implements Serializable {
         this.id = id;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @ManyToOne
     public ProjectReportModel getModel() {
         return model;
@@ -63,12 +59,13 @@ public class ProjectReport implements Serializable {
         this.model = model;
     }
 
-    public String getName() {
-        return name;
+    @OneToOne(cascade = CascadeType.ALL)
+    public ProjectReportVersion getCurrentVersion() {
+        return currentVersion;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCurrentVersion(ProjectReportVersion currentVersion) {
+        this.currentVersion = currentVersion;
     }
 
     @ManyToOne
@@ -87,46 +84,5 @@ public class ProjectReport implements Serializable {
 
     public void setFlexibleElement(FlexibleElement flexibleElement) {
         this.flexibleElement = flexibleElement;
-    }
-
-    public String getPhaseName() {
-        return phaseName;
-    }
-
-    public void setPhaseName(String phaseName) {
-        this.phaseName = phaseName;
-    }
-
-    @OneToMany(mappedBy = "report", cascade = CascadeType.ALL)
-    @OrderBy(value = "sectionId, index ASC")
-    public List<RichTextElement> getTexts() {
-        return texts;
-    }
-
-    public void setTexts(List<RichTextElement> texts) {
-        this.texts = texts;
-    }
-
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    public Date getLastEditDate() {
-        return lastEditDate;
-    }
-
-    public void setLastEditDate(Date lastEditDate) {
-        this.lastEditDate = lastEditDate;
-    }
-
-    @ManyToOne
-    public User getEditor() {
-        return editor;
-    }
-
-    public void setEditor(User editor) {
-        this.editor = editor;
-    }
-
-    @Transient
-    public String getEditorShortName() {
-        return User.getUserShortName(editor);
     }
 }

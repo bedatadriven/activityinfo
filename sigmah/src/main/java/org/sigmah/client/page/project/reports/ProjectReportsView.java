@@ -4,7 +4,6 @@
  */
 package org.sigmah.client.page.project.reports;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -22,13 +21,8 @@ import org.sigmah.client.page.project.ProjectState;
 import org.sigmah.client.page.project.reports.images.ToolbarImages;
 import org.sigmah.client.ui.FoldPanel;
 import org.sigmah.client.util.Notification;
-import org.sigmah.shared.command.CreateEntity;
-import org.sigmah.shared.command.GetProjectReportModels;
-import org.sigmah.shared.command.GetProjectReportModels.ModelReference;
 import org.sigmah.shared.command.GetProjectReports;
 import org.sigmah.shared.command.UpdateEntity;
-import org.sigmah.shared.command.result.CreateResult;
-import org.sigmah.shared.command.result.ProjectReportModelListResult;
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.report.KeyQuestionDTO;
 import org.sigmah.shared.dto.report.ProjectReportContent;
@@ -56,8 +50,6 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.Encoding;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.Method;
@@ -86,8 +78,19 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RichTextArea;
+import com.google.gwt.user.client.ui.SimplePanel;
+import org.sigmah.client.dispatch.AsyncCallbacks;
+import org.sigmah.shared.command.CreateEntity;
+import org.sigmah.shared.command.GetProjectReport;
+import org.sigmah.shared.command.PromoteProjectReportDraft;
+import org.sigmah.shared.command.RemoveProjectReportDraft;
+import org.sigmah.shared.command.result.CreateResult;
 
 /**
  * Displays the reports attached to a project.
@@ -108,10 +111,9 @@ public class ProjectReportsView extends LayoutContainer {
     private LayoutContainer mainPanel;
     private RichTextArea.Formatter currentFormatter;
 
+    private ProjectReportDTO currentReport;
     private HashMap<Integer, RichTextArea> textAreas;
     private KeyQuestionState keyQuestionState;
-
-    private Dialog createReportDialog;
 
     private Button attachButton;
     private Button createReportButton;
@@ -148,123 +150,6 @@ public class ProjectReportsView extends LayoutContainer {
         add(mainPanel, layoutData);
     }
 
-    private Dialog getCreateReportDialog(final ListStore<GetProjectReports.ReportReference> store) {
-        if (createReportDialog == null) {
-            final Dialog dialog = new Dialog();
-            dialog.setButtons(Dialog.OKCANCEL);
-            dialog.setHeading(I18N.CONSTANTS.reportCreateReport());
-            dialog.setModal(true);
-
-            dialog.setResizable(false);
-            dialog.setWidth("340px");
-
-            dialog.setLayout(new FormLayout());
-
-            // Report name
-            final TextField<String> nameField = new TextField<String>();
-            nameField.setFieldLabel(I18N.CONSTANTS.reportName());
-            nameField.setAllowBlank(false);
-            nameField.setName("name");
-            dialog.add(nameField);
-
-            // Model list
-            final ListStore<GetProjectReportModels.ModelReference> modelBoxStore = new ListStore<GetProjectReportModels.ModelReference>();
-            final ComboBox<GetProjectReportModels.ModelReference> modelBox = new ComboBox<GetProjectReportModels.ModelReference>();
-            modelBox.setFieldLabel(I18N.CONSTANTS.reportModel());
-            modelBox.setStore(modelBoxStore);
-            modelBox.setAllowBlank(false);
-            modelBox.setDisplayField("name");
-            modelBox.setName("model");
-            modelBox.setTriggerAction(TriggerAction.ALL);
-            modelBox.setEmptyText(I18N.CONSTANTS.reportEmptyChoice());
-            dialog.add(modelBox);
-
-            // Cancel button
-            dialog.getButtonById(Dialog.CANCEL).addSelectionListener(new SelectionListener<ButtonEvent>() {
-
-                @Override
-                public void componentSelected(ButtonEvent ce) {
-                    dialog.hide();
-                }
-            });
-
-            createReportDialog = dialog;
-        }
-
-        final TextField<String> textField = (TextField<String>) createReportDialog.getWidget(0);
-        textField.reset();
-
-        final ComboBox<GetProjectReportModels.ModelReference> modelBox = (ComboBox<GetProjectReportModels.ModelReference>)
-                                                                          createReportDialog.getWidget(1);
-        modelBox.reset();
-        final ListStore<GetProjectReportModels.ModelReference> modelBoxStore = modelBox.getStore();
-        modelBoxStore.removeAll();
-
-        dispatcher.execute(new GetProjectReportModels(), null, new AsyncCallback<ProjectReportModelListResult>() {
-
-            @Override
-            public void onFailure(Throwable caught) {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public void onSuccess(ProjectReportModelListResult result) {
-                modelBoxStore.add(result.getData());
-            }
-
-        });
-
-        // OK Button
-        final Button okButton = createReportDialog.getButtonById(Dialog.OK);
-
-        okButton.removeAllListeners();
-        okButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
-
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                final HashMap<String, Serializable> properties = new HashMap<String, Serializable>();
-
-                final String name = ((TextField<String>) createReportDialog.getWidget(0)).getValue();
-                final String phaseName = ProjectReportsView.this.phaseName;
-                final String editorName = authentication.getUserShortName();
-                final Date lastEditDate = new Date();
-
-                properties.put("name", name);
-                properties.put("reportModelId", modelBox.getSelection().get(0).getId());
-                properties.put("phaseName", phaseName);
-                properties.put("projectId", Integer.valueOf(currentState.getProjectId()));
-
-                final CreateEntity createEntity = new CreateEntity("ProjectReport", properties);
-                dispatcher.execute(createEntity, null, new AsyncCallback<CreateResult>() {
-
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        MessageBox.alert(I18N.CONSTANTS.projectTabReports(), I18N.CONSTANTS.reportCreateError(), null);
-                    }
-
-                    @Override
-                    public void onSuccess(CreateResult result) {
-                        final GetProjectReports.ReportReference report = new GetProjectReports.ReportReference();
-                        report.setId(result.getNewId());
-                        report.setName(name);
-                        report.setPhaseName(phaseName);
-                        report.setEditorName(editorName);
-                        report.setLastEditDate(lastEditDate);
-
-                        store.add(report);
-
-                        Notification.show(I18N.CONSTANTS.projectTabReports(), I18N.CONSTANTS.reportCreateSuccess());
-                    }
-                });
-
-                createReportDialog.hide();
-            }
-
-        });
-
-        return createReportDialog;
-    }
-
     /**
      * Creates left panel of the view. It displays the document list.
      * @param store The document store to use.
@@ -280,13 +165,6 @@ public class ProjectReportsView extends LayoutContainer {
         final IconImageBundle icons = GWT.create(IconImageBundle.class);
 
         createReportButton = new Button(I18N.CONSTANTS.reportCreateReport(), icons.add());
-//        createReportButton.addListener(Events.Select, new Listener<BaseEvent>() {
-//
-//            @Override
-//            public void handleEvent(BaseEvent be) {
-//                getCreateReportDialog(store).show();
-//            }
-//        });
 
         attachButton = new Button(I18N.CONSTANTS.flexibleElementFilesListAddDocument(), icons.attach());
 
@@ -419,7 +297,8 @@ public class ProjectReportsView extends LayoutContainer {
     }
 
     private void displaySection(final ProjectReportSectionDTO section, final FoldPanel parent,
-            final StringBuilder prefix, int level) {
+            final StringBuilder prefix, int level, final boolean draftMode) {
+        
         final FoldPanel sectionPanel = new FoldPanel();
         sectionPanel.setHeading(prefix.toString() + ' ' + section.getName());
         sectionPanel.addStyleName("project-report-level-" + level);
@@ -430,25 +309,43 @@ public class ProjectReportsView extends LayoutContainer {
             if (object.getClass() == ProjectReportSectionDTO.class) {
                 prefix.append(index).append('.');
 
-                displaySection((ProjectReportSectionDTO) object, sectionPanel, prefix, level + 1);
+                displaySection((ProjectReportSectionDTO) object, sectionPanel, prefix, level + 1, draftMode);
                 index++;
 
                 prefix.setLength(prefixLength);
 
             } else if (object.getClass() == RichTextElementDTO.class) {
-                final RichTextArea textArea = new RichTextArea();
-                textArea.setHTML(((RichTextElementDTO) object).getText());
 
-                textArea.addFocusHandler(new FocusHandler() {
+                if(draftMode) {
+                    final RichTextArea textArea = new RichTextArea();
+                    textArea.setHTML(((RichTextElementDTO) object).getText());
 
-                    @Override
-                    public void onFocus(FocusEvent event) {
-                        currentFormatter = textArea.getFormatter();
+                    textArea.addFocusHandler(new FocusHandler() {
+
+                        @Override
+                        public void onFocus(FocusEvent event) {
+                            currentFormatter = textArea.getFormatter();
+                        }
+                    });
+
+                    sectionPanel.add(textArea);
+                    textAreas.put(((RichTextElementDTO) object).getId(), textArea);
+
+                } else {
+                    final HTML html = new HTML();
+
+                    final String value = ((RichTextElementDTO) object).getText();
+                    if(value == null || "".equals(value)) {
+                        html.setText(I18N.CONSTANTS.reportEmptySection());
+                        html.addStyleName("project-report-field-empty");
+                        
+                    } else {
+                        html.setHTML(value);
+                        html.addStyleName("project-report-field");
                     }
-                });
 
-                sectionPanel.add(textArea);
-                textAreas.put(((RichTextElementDTO) object).getId(), textArea);
+                    sectionPanel.add(html);
+                }
 
             } else if (object.getClass() == KeyQuestionDTO.class) {
                 final KeyQuestionDTO keyQuestion = (KeyQuestionDTO) object;
@@ -484,7 +381,7 @@ public class ProjectReportsView extends LayoutContainer {
                     @Override
                     public void onClick(ClickEvent event) {
                         KeyQuestionDialog.getDialog(keyQuestion, textArea, sectionPanel, toolButtonIndex,
-                                keyQuestionState).show();
+                                keyQuestionState, draftMode).show();
                     }
                 });
 
@@ -498,6 +395,7 @@ public class ProjectReportsView extends LayoutContainer {
 
     public void setReport(final ProjectReportDTO report) {
         mainPanel.removeAll();
+        currentReport = report;
 
         if (report == null)
             return;
@@ -507,8 +405,7 @@ public class ProjectReportsView extends LayoutContainer {
         keyQuestionState.clear();
 
         // Title bar
-        final ContentPanel reportPanel = new ContentPanel(new FitLayout()); // new
-                                                                            // RowLayout(Orientation.VERTICAL));
+        final ContentPanel reportPanel = new ContentPanel(new FitLayout());
         reportPanel.setScrollMode(Scroll.AUTOY);
         reportPanel.setHeading(report.getName());
 
@@ -526,6 +423,9 @@ public class ProjectReportsView extends LayoutContainer {
         });
         reportPanel.getHeader().addTool(closeButton);
 
+        // Report container
+        final FlowPanel flowPanel = new FlowPanel();
+
         // Report
         final FoldPanel root = new FoldPanel();
         root.addStyleName("project-report");
@@ -538,67 +438,188 @@ public class ProjectReportsView extends LayoutContainer {
             final ProjectReportSectionDTO section = sections.get(index);
 
             prefix.append(index + 1).append('.');
-            displaySection(section, root, prefix, 1);
+            displaySection(section, root, prefix, 1, report.isDraft());
 
             prefix.setLength(0);
         }
 
-        reportPanel.add(root);
-
         // Toolbar
         final ToolBar toolBar = new ToolBar();
 
-        // Save button
         final IconImageBundle icons = GWT.create(IconImageBundle.class);
-        final Button saveButton = new Button(I18N.CONSTANTS.save(), icons.save());
-        saveButton.addListener(Events.Select, new Listener<BaseEvent>() {
+        
+        if(report.isDraft()) {
+            // Draft banner
+            final SimplePanel header = new SimplePanel();
+            header.addStyleName("project-report-draft");
 
-            @Override
-            public void handleEvent(BaseEvent be) {
-                final HashMap<String, String> changes = new HashMap<String, String>();
+            final DateTimeFormat dateFormat = DateTimeFormat.getMediumDateFormat();
+            final DateTimeFormat timeFormat = DateTimeFormat.getMediumTimeFormat();
+            header.getElement().setInnerText(I18N.MESSAGES.reportDraftHeader(dateFormat.format(report.getLastEditDate()), timeFormat.format(report.getLastEditDate())));
 
-                changes.put("currentPhase", phaseName);
+            final Button cancelButton = new Button(I18N.CONSTANTS.delete());
+            final Button sendButton = new Button(I18N.CONSTANTS.send());
 
-                for (final Map.Entry<Integer, RichTextArea> entry : textAreas.entrySet())
-                    changes.put(entry.getKey().toString(), entry.getValue().getHTML());
+            cancelButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
-                final UpdateEntity updateEntity = new UpdateEntity("ProjectReport", report.getId(),
-                        (Map<String, Object>) (Map<String, ?>) changes);
-                dispatcher.execute(updateEntity, null, new AsyncCallback<VoidResult>() {
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    final RemoveProjectReportDraft removeDraft = new RemoveProjectReportDraft(report.getVersionId());
+                    final GetProjectReport getReport = new GetProjectReport(report.getId());
 
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        Notification.show(I18N.CONSTANTS.projectTabReports(), I18N.CONSTANTS.reportSaveError());
-                    }
+                    final AsyncCallback<VoidResult> callback = AsyncCallbacks.emptyCallback();
+                    dispatcher.execute(removeDraft, null, callback);
+                    dispatcher.execute(getReport, null, new AsyncCallback<ProjectReportDTO>() {
 
-                    @Override
-                    public void onSuccess(VoidResult result) {
-                        Notification.show(I18N.CONSTANTS.projectTabReports(), I18N.CONSTANTS.reportSaveSuccess());
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            MessageBox.alert(I18N.CONSTANTS.projectTabReports(), I18N.CONSTANTS.reportEditError(), null);
+                        }
 
-                        boolean found = false;
-                        for (int index = 0; !found && index < store.getCount(); index++) {
-                            final GetProjectReports.ReportReference reference = store.getAt(index);
+                        @Override
+                        public void onSuccess(ProjectReportDTO result) {
+                            Notification.show(I18N.CONSTANTS.projectTabReports(), I18N.CONSTANTS.reportEditCancelSuccess());
+                            setReport(result);
+                        }
 
-                            if (reference.getId().equals(report.getId())) {
-                                store.remove(reference);
+                    });
+                }
+            });
 
-                                reference.setEditorName(authentication.getUserShortName());
-                                reference.setPhaseName(phaseName);
-                                reference.setLastEditDate(new Date());
+            sendButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
-                                store.add(reference);
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    final HashMap<String, Object> changes = new HashMap<String, Object>();
+                    changes.put("currentPhase", phaseName);
 
-                                found = true;
+                    for (final Map.Entry<Integer, RichTextArea> entry : textAreas.entrySet())
+                        changes.put(entry.getKey().toString(), entry.getValue().getHTML());
+
+                    final UpdateEntity updateEntity = new UpdateEntity("ProjectReport", report.getVersionId(), changes);
+                    final PromoteProjectReportDraft promoteDraft = new PromoteProjectReportDraft(report.getId(), report.getVersionId());
+
+                    final AsyncCallback<VoidResult> callback = AsyncCallbacks.emptyCallback();
+                    dispatcher.execute(updateEntity, null, callback);
+                    dispatcher.execute(promoteDraft, null, new AsyncCallback<ProjectReportDTO>() {
+
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            MessageBox.alert(I18N.CONSTANTS.projectTabReports(), I18N.CONSTANTS.reportSaveError(), null);
+                        }
+
+                        @Override
+                        public void onSuccess(ProjectReportDTO result) {
+                            Notification.show(I18N.CONSTANTS.projectTabReports(), I18N.CONSTANTS.reportSaveSuccess());
+                            setReport(result);
+                        }
+
+                    });
+                }
+            });
+
+            final HorizontalPanel buttons = new HorizontalPanel();
+            buttons.setSpacing(5);
+            buttons.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+            buttons.addStyleName("project-report-draft-button");
+            buttons.add(cancelButton);
+            buttons.add(sendButton);
+
+            header.add(buttons);
+
+            flowPanel.add(header);
+
+            // Save button
+            final Button saveButton = new Button(I18N.CONSTANTS.save(), icons.save());
+            saveButton.addListener(Events.Select, new Listener<BaseEvent>() {
+
+                @Override
+                public void handleEvent(BaseEvent be) {
+                    final HashMap<String, String> changes = new HashMap<String, String>();
+
+                    changes.put("currentPhase", phaseName);
+
+                    for (final Map.Entry<Integer, RichTextArea> entry : textAreas.entrySet())
+                        changes.put(entry.getKey().toString(), entry.getValue().getHTML());
+
+                    final UpdateEntity updateEntity = new UpdateEntity("ProjectReport", report.getVersionId(),
+                            (Map<String, Object>) (Map<String, ?>) changes);
+                    dispatcher.execute(updateEntity, null, new AsyncCallback<VoidResult>() {
+
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            MessageBox.alert(I18N.CONSTANTS.projectTabReports(), I18N.CONSTANTS.reportSaveError(), null);
+                        }
+
+                        @Override
+                        public void onSuccess(VoidResult result) {
+                            Notification.show(I18N.CONSTANTS.projectTabReports(), I18N.CONSTANTS.reportSaveSuccess());
+
+                            final Date now = new Date();
+                            header.clear();
+                            header.getElement().setInnerText(I18N.MESSAGES.reportDraftHeader(dateFormat.format(now), timeFormat.format(now)));
+                            header.add(buttons);
+
+                            boolean found = false;
+                            for (int index = 0; !found && index < store.getCount(); index++) {
+                                final GetProjectReports.ReportReference reference = store.getAt(index);
+
+                                if (reference.getId().equals(report.getId())) {
+                                    store.remove(reference);
+
+                                    reference.setEditorName(authentication.getUserShortName());
+                                    reference.setPhaseName(phaseName);
+                                    reference.setLastEditDate(new Date());
+
+                                    store.add(reference);
+
+                                    found = true;
+                                }
                             }
                         }
-                    }
 
-                });
-            }
-        });
+                    });
+                }
+            });
 
-        toolBar.add(saveButton);
-        toolBar.add(new SeparatorToolItem());
+            toolBar.add(saveButton);
+            toolBar.add(new SeparatorToolItem());
+            
+        } else {
+            final Button editReportButton = new Button(I18N.CONSTANTS.edit(), icons.editPage());
+            toolBar.add(editReportButton);
+
+            editReportButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    // Draft creation
+                    final HashMap<String, Object> properties = new HashMap<String, Object>();
+                    properties.put("reportId", report.getId());
+                    properties.put("phaseName", phaseName);
+                    final CreateEntity createDraft = new CreateEntity("ProjectReportDraft", properties);
+
+                    // Retrieving the new draft
+                    final GetProjectReport getReportDraft = new GetProjectReport(report.getId());
+
+                    final AsyncCallback<CreateResult> callback = AsyncCallbacks.emptyCallback();
+                    dispatcher.execute(createDraft, null, callback);
+                    dispatcher.execute(getReportDraft, null, new AsyncCallback<ProjectReportDTO>() {
+
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            MessageBox.alert(I18N.CONSTANTS.projectTabReports(), I18N.CONSTANTS.reportEditError(), null);
+                        }
+
+                        @Override
+                        public void onSuccess(ProjectReportDTO result) {
+                            setReport(result);
+                        }
+
+                    });
+                }
+            });
+        }
 
         // Key question info
         final Label keyQuestionLabel = keyQuestionState.getLabel();
@@ -627,9 +648,14 @@ public class ProjectReportsView extends LayoutContainer {
 
         toolBar.add(foldButton);
         toolBar.add(expandButton);
-        toolBar.add(new SeparatorToolItem());
-        createRichTextToolbar(toolBar);
 
+        if(report.isDraft()) {
+            toolBar.add(new SeparatorToolItem());
+            createRichTextToolbar(toolBar);
+        }
+
+        flowPanel.add(root);
+        reportPanel.add(flowPanel);
         reportPanel.setTopComponent(toolBar);
 
         // Display
@@ -639,6 +665,10 @@ public class ProjectReportsView extends LayoutContainer {
     }
 
     private void createRichTextToolbar(final ToolBar toolbar) {
+        createRichTextToolbar(toolbar, currentFormatter);
+    }
+
+    public static void createRichTextToolbar(final ToolBar toolbar, final RichTextArea.Formatter formatter) {
         final ToolbarImages images = GWT.create(ToolbarImages.class);
 
         // Fonts
@@ -653,7 +683,7 @@ public class ProjectReportsView extends LayoutContainer {
         fontListBox.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent event) {
-                currentFormatter.setFontName(fontListBox.getValue(fontListBox.getSelectedIndex()));
+                formatter.setFontName(fontListBox.getValue(fontListBox.getSelectedIndex()));
             }
         });
         final LayoutContainer fontListBoxWrapper = new LayoutContainer(new FitLayout());
@@ -667,7 +697,7 @@ public class ProjectReportsView extends LayoutContainer {
 
             @Override
             public void handleEvent(BaseEvent be) {
-                currentFormatter.toggleBold();
+                formatter.toggleBold();
             }
         });
         toolbar.add(boldButton);
@@ -679,7 +709,7 @@ public class ProjectReportsView extends LayoutContainer {
 
             @Override
             public void handleEvent(BaseEvent be) {
-                currentFormatter.toggleItalic();
+                formatter.toggleItalic();
             }
         });
         toolbar.add(italicButton);
@@ -691,7 +721,7 @@ public class ProjectReportsView extends LayoutContainer {
 
             @Override
             public void handleEvent(BaseEvent be) {
-                currentFormatter.toggleUnderline();
+                formatter.toggleUnderline();
             }
         });
         toolbar.add(underlineButton);
@@ -703,7 +733,7 @@ public class ProjectReportsView extends LayoutContainer {
 
             @Override
             public void handleEvent(BaseEvent be) {
-                currentFormatter.toggleStrikethrough();
+                formatter.toggleStrikethrough();
             }
         });
         toolbar.add(strikeButton);
@@ -715,7 +745,7 @@ public class ProjectReportsView extends LayoutContainer {
 
             @Override
             public void handleEvent(BaseEvent be) {
-                currentFormatter.setJustification(RichTextArea.Justification.LEFT);
+                formatter.setJustification(RichTextArea.Justification.LEFT);
             }
         });
         toolbar.add(alignLeftButton);
@@ -727,7 +757,7 @@ public class ProjectReportsView extends LayoutContainer {
 
             @Override
             public void handleEvent(BaseEvent be) {
-                currentFormatter.setJustification(RichTextArea.Justification.CENTER);
+                formatter.setJustification(RichTextArea.Justification.CENTER);
             }
         });
         toolbar.add(alignCenterButton);
@@ -739,7 +769,7 @@ public class ProjectReportsView extends LayoutContainer {
 
             @Override
             public void handleEvent(BaseEvent be) {
-                currentFormatter.setJustification(RichTextArea.Justification.RIGHT);
+                formatter.setJustification(RichTextArea.Justification.RIGHT);
             }
         });
         toolbar.add(alignRightButton);
@@ -751,7 +781,7 @@ public class ProjectReportsView extends LayoutContainer {
 
             @Override
             public void handleEvent(BaseEvent be) {
-                currentFormatter.setJustification(RichTextArea.Justification.FULL);
+                formatter.setJustification(RichTextArea.Justification.FULL);
             }
         });
         toolbar.add(alignJustifyButton);
@@ -763,7 +793,7 @@ public class ProjectReportsView extends LayoutContainer {
 
             @Override
             public void handleEvent(BaseEvent be) {
-                currentFormatter.insertOrderedList();
+                formatter.insertOrderedList();
             }
         });
         toolbar.add(listNumbersButton);
@@ -775,7 +805,7 @@ public class ProjectReportsView extends LayoutContainer {
 
             @Override
             public void handleEvent(BaseEvent be) {
-                currentFormatter.insertUnorderedList();
+                formatter.insertUnorderedList();
             }
         });
         toolbar.add(listBulletsButton);
@@ -812,7 +842,7 @@ public class ProjectReportsView extends LayoutContainer {
                     imageAddDialog.getButtonById(Dialog.OK).addSelectionListener(new SelectionListener<ButtonEvent>() {
                         @Override
                         public void componentSelected(ButtonEvent ce) {
-                            currentFormatter.insertImage(imageURLField.getValue());
+                            formatter.insertImage(imageURLField.getValue());
                             imageAddDialog.hide();
                         }
                     });

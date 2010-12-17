@@ -7,6 +7,7 @@ package org.sigmah.server.dao;
 
 import org.sigmah.shared.domain.report.ProjectReport;
 import org.sigmah.shared.domain.report.ProjectReportModel;
+import org.sigmah.shared.domain.report.ProjectReportVersion;
 import org.sigmah.shared.domain.report.RichTextElement;
 import org.sigmah.shared.domain.value.Value;
 
@@ -16,11 +17,14 @@ import org.sigmah.shared.domain.value.Value;
  */
 public interface ProjectReportDAO {
     void persist(ProjectReport report);
+    void persist(ProjectReportVersion version);
     void merge(ProjectReport report);
+    void merge(ProjectReportVersion version);
     void merge(RichTextElement element);
     void merge(Value value);
 
     public ProjectReport findReportById(Integer id);
+    public ProjectReportVersion findReportVersionById(Integer id);
     public ProjectReportModel findModelById(Integer id);
     public RichTextElement findRichTextElementById(Integer id);
 }

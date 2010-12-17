@@ -18,10 +18,13 @@ public class ProjectReportDTO implements Serializable, CommandResult {
     public final static long serialVersionUID = 1L;
     
     private Integer id;
+    private Integer versionId;
     private Integer projectId;
-    private String phaseName;
     private String name;
+    private String phaseName;
     private List<ProjectReportSectionDTO> sections;
+
+    private boolean draft;
 
     private Date lastEditDate;
     private String editorName;
@@ -32,6 +35,14 @@ public class ProjectReportDTO implements Serializable, CommandResult {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getVersionId() {
+        return versionId;
+    }
+
+    public void setVersionId(Integer versionId) {
+        this.versionId = versionId;
     }
 
     public String getName() {
@@ -64,6 +75,14 @@ public class ProjectReportDTO implements Serializable, CommandResult {
 
     public void setSections(List<ProjectReportSectionDTO> sections) {
         this.sections = sections;
+    }
+
+    public boolean isDraft() {
+        return draft;
+    }
+
+    public void setDraft(boolean draft) {
+        this.draft = draft;
     }
 
     public Date getLastEditDate() {

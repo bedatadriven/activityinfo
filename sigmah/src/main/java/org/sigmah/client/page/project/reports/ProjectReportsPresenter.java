@@ -24,6 +24,7 @@ import org.sigmah.shared.dto.element.FilesListElementDTO;
 import org.sigmah.shared.dto.report.ProjectReportDTO;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -84,22 +85,25 @@ public class ProjectReportsPresenter implements SubPresenter {
         if (currentReportId != reportId) {
             currentReportId = reportId;
 
-            reportStoreNeedsRefresh = true;
+            if(reportId != -1) {
+                // Configuring the view to display the given report
+                Log.debug("Loading report #" + reportId);
+                final GetProjectReport getProjectReport = new GetProjectReport(reportId);
+                dispatcher.execute(getProjectReport, null, new AsyncCallback<ProjectReportDTO>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        throw new UnsupportedOperationException("Not supported yet.");
+                    }
 
-            // Configuring the view to display the given report
-            Log.debug("Loading report #" + reportId);
-            final GetProjectReport getProjectReport = new GetProjectReport(reportId);
-            dispatcher.execute(getProjectReport, null, new AsyncCallback<ProjectReportDTO>() {
-                @Override
-                public void onFailure(Throwable caught) {
-                    throw new UnsupportedOperationException("Not supported yet.");
-                }
+                    @Override
+                    public void onSuccess(ProjectReportDTO result) {
+                        view.setReport(result);
+                    }
+                });
 
-                @Override
-                public void onSuccess(ProjectReportDTO result) {
-                    view.setReport(result);
-                }
-            });
+            } else {
+                view.setReport(null);
+            }
         }
 
         return view;
@@ -118,55 +122,50 @@ public class ProjectReportsPresenter implements SubPresenter {
         AttachMenuBuilder.createMenu(currentProjectDTO, ReportElementDTO.class,
                 view.getCreateReportButton(), reportStore, authentication, dispatcher, eventBus);
 
-        if (reportStore.getCount() == 0 || reportStoreNeedsRefresh) {
-
-            // Retrieves reports.
-            GetProjectReports getProjectReports = new GetProjectReports(currentProjectDTO.getId());
-            dispatcher.execute(getProjectReports, null, new AsyncCallback<ProjectReportListResult>() {
-                @Override
-                public void onSuccess(ProjectReportListResult result) {
-                    if (reportStoreNeedsRefresh) {
-                        reportStore.removeAll();
-                        reportStoreNeedsRefresh = false;
-                    }
-
-                    reportStore.add(result.getData());
+        
+        // Updates the report & document list
+        
+        // Retrieves reports.
+        GetProjectReports getProjectReports = new GetProjectReports(currentProjectDTO.getId());
+        dispatcher.execute(getProjectReports, null, new AsyncCallback<ProjectReportListResult>() {
+            @Override
+            public void onSuccess(ProjectReportListResult result) {
+                if (reportStore.getCount() > 0) {
+                    reportStore.removeAll();
                 }
 
-                @Override
-                public void onFailure(Throwable caught) {
-                    throw new UnsupportedOperationException("Not supported yet.");
-                }
-            });
-
-            // Retrieves all the files lists elements in the current project.
-            final List<GetProjectDocuments.FilesListElement> filesLists = new ArrayList<GetProjectDocuments.FilesListElement>();
-            final List<LocalizedElement> filesLists2 = currentProjectDTO
-                    .getLocalizedElements(FilesListElementDTO.class);
-            for (LocalizedElement e : filesLists2) {
-                filesLists.add(new GetProjectDocuments.FilesListElement((long) e.getElement().getId(), e
-                        .getPhaseModel() != null ? e.getPhaseModel().getName() : I18N.CONSTANTS.projectDetails(), e
-                        .getElement().getLabel()));
+                reportStore.add(result.getData());
             }
 
-            // Retrieves documents.
-            dispatcher.execute(new GetProjectDocuments(currentProjectDTO.getId(), filesLists), null,
-                    new AsyncCallback<ProjectReportListResult>() {
-                        @Override
-                        public void onSuccess(ProjectReportListResult result) {
-                            if (reportStoreNeedsRefresh) {
-                                reportStore.removeAll();
-                                reportStoreNeedsRefresh = false;
-                            }
+            @Override
+            public void onFailure(Throwable caught) {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        });
 
-                            reportStore.add(result.getData());
-                        }
-
-                        @Override
-                        public void onFailure(Throwable caught) {
-                            throw new UnsupportedOperationException("Not supported yet.");
-                        }
-                    });
+        // Retrieves all the files lists elements in the current project.
+        final List<GetProjectDocuments.FilesListElement> filesLists = new ArrayList<GetProjectDocuments.FilesListElement>();
+        final List<LocalizedElement> filesLists2 = currentProjectDTO
+                .getLocalizedElements(FilesListElementDTO.class);
+        for (LocalizedElement e : filesLists2) {
+            filesLists.add(new GetProjectDocuments.FilesListElement((long) e.getElement().getId(), e
+                    .getPhaseModel() != null ? e.getPhaseModel().getName() : I18N.CONSTANTS.projectDetails(), e
+                    .getElement().getLabel()));
         }
+
+        // Retrieves documents.
+        dispatcher.execute(new GetProjectDocuments(currentProjectDTO.getId(), filesLists), null,
+                new AsyncCallback<ProjectReportListResult>() {
+                    @Override
+                    public void onSuccess(ProjectReportListResult result) {
+                        reportStore.add(result.getData());
+                        reportStore.sort("name", SortDir.ASC);
+                    }
+
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        throw new UnsupportedOperationException("Not supported yet.");
+                    }
+                });
     }
 }

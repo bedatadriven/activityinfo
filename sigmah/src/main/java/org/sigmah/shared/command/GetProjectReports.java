@@ -13,7 +13,7 @@ import org.sigmah.shared.domain.report.ProjectReport;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
- * 
+ * Request to retrieves the reports attached to a given project.
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class GetProjectReports implements Command<ProjectReportListResult> {
@@ -31,9 +31,9 @@ public class GetProjectReports implements Command<ProjectReportListResult> {
         public ReportReference(ProjectReport report) {
             this.set("id", report.getId());
             this.set("name", report.getName());
-            this.set("lastEditDate", report.getLastEditDate());
-            this.set("editorName", report.getEditorShortName());
-            this.set("phaseName", report.getPhaseName());
+            this.set("lastEditDate", report.getCurrentVersion().getEditDate());
+            this.set("editorName", report.getCurrentVersion().getEditorShortName());
+            this.set("phaseName", report.getCurrentVersion().getPhaseName());
 
             if (report.getFlexibleElement() != null)
                 this.set("flexibleElementLabel", report.getFlexibleElement().getLabel());

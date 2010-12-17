@@ -22,6 +22,7 @@ import org.sigmah.shared.domain.report.KeyQuestion;
 import org.sigmah.shared.domain.report.ProjectReport;
 import org.sigmah.shared.domain.report.ProjectReportModel;
 import org.sigmah.shared.domain.report.ProjectReportModelSection;
+import org.sigmah.shared.domain.report.ProjectReportVersion;
 import org.sigmah.shared.domain.report.RichTextElement;
 import org.sigmah.shared.dto.report.KeyQuestionDTO;
 import org.sigmah.shared.dto.report.ProjectReportContent;
@@ -44,34 +45,27 @@ public class GetProjectReportHandler implements CommandHandler<GetProjectReport>
 
     @Override
     public CommandResult execute(GetProjectReport cmd, User user) throws CommandException {
-        final Query query = em.createQuery("SELECT r FROM ProjectReport r WHERE r.id = :reportId");
+        Query query = em.createQuery("SELECT r FROM ProjectReport r WHERE r.id = :reportId");
         query.setParameter("reportId", cmd.getReportId());
 
         ProjectReportDTO reportDTO = null;
 
         try {
             final ProjectReport report = (ProjectReport) query.getSingleResult();
+            ProjectReportVersion version = report.getCurrentVersion();
 
-            reportDTO = new ProjectReportDTO();
-            reportDTO.setId(report.getId());
-            reportDTO.setName(report.getName());
-            reportDTO.setPhaseName(report.getPhaseName());
-            reportDTO.setLastEditDate(report.getLastEditDate());
-            reportDTO.setEditorName(report.getEditorShortName());
+            // Looking for a draft
+            query = em.createQuery("SELECT v FROM ProjectReportVersion v WHERE v.report.id = :reportId AND v.editor = :user AND v.version IS NULL");
+            query.setParameter("reportId", cmd.getReportId());
+            query.setParameter("user", user);
 
-            if(report.getProject() != null)
-                reportDTO.setProjectId(report.getProject().getId());
+            try {
+                version = (ProjectReportVersion) query.getSingleResult();
+            } catch (NoResultException e) {
+                // No draft for the current user
+            }
 
-            final ProjectReportModel model = report.getModel();
-
-            final List<ProjectReportModelSection> sectionModels = model.getSections();
-            final HashMap<Integer, List<RichTextElement>> richTextElements = organizeElementsBySection(report.getTexts());
-
-            final ArrayList<ProjectReportSectionDTO> sectionDTOs = new ArrayList<ProjectReportSectionDTO>();
-            for(ProjectReportModelSection sectionModel : sectionModels)
-                sectionDTOs.add(iterateOnSection(sectionModel, richTextElements));
-
-            reportDTO.setSections(sectionDTOs);
+            reportDTO = toDTO(report, version);
 
         } catch (NoResultException e) {
             // Bad report id
@@ -80,7 +74,46 @@ public class GetProjectReportHandler implements CommandHandler<GetProjectReport>
         return reportDTO;
     }
 
-    private HashMap<Integer, List<RichTextElement>> organizeElementsBySection(List<RichTextElement> elements) {
+    /**
+     * Convert the given report into a ProjectReportDTO.
+     * @param report A project report.
+     * @param version A version of this report.
+     * @return A ProjectReportDTO.
+     */
+    public static ProjectReportDTO toDTO(ProjectReport report, ProjectReportVersion version) {
+        final ProjectReportDTO reportDTO = new ProjectReportDTO();
+        
+        reportDTO.setId(report.getId());
+        reportDTO.setVersionId(version.getId());
+        reportDTO.setName(report.getName());
+        reportDTO.setPhaseName(version.getPhaseName());
+        reportDTO.setDraft(version.getVersion() == null);
+        reportDTO.setLastEditDate(version.getEditDate());
+        reportDTO.setEditorName(version.getEditorShortName());
+
+        if(report.getProject() != null)
+                reportDTO.setProjectId(report.getProject().getId());
+
+        final ProjectReportModel model = report.getModel();
+
+        final List<ProjectReportModelSection> sectionModels = model.getSections();
+        final HashMap<Integer, List<RichTextElement>> richTextElements = organizeElementsBySection(version.getTexts());
+
+        final ArrayList<ProjectReportSectionDTO> sectionDTOs = new ArrayList<ProjectReportSectionDTO>();
+        for(ProjectReportModelSection sectionModel : sectionModels)
+            sectionDTOs.add(iterateOnSection(sectionModel, richTextElements));
+
+        reportDTO.setSections(sectionDTOs);
+
+        return reportDTO;
+    }
+
+    /**
+     * Order the rich text elements by section.
+     * @param elements Rich text elements.
+     * @return A map containing lists of rich text elements.
+     */
+    private static HashMap<Integer, List<RichTextElement>> organizeElementsBySection(List<RichTextElement> elements) {
         final HashMap<Integer, List<RichTextElement>> map = new HashMap<Integer, List<RichTextElement>>();
 
         for(final RichTextElement element : elements) {
@@ -97,7 +130,7 @@ public class GetProjectReportHandler implements CommandHandler<GetProjectReport>
         return map;
     }
 
-    private ProjectReportSectionDTO iterateOnSection(ProjectReportModelSection sectionModel, HashMap<Integer, List<RichTextElement>> richTextElements) {
+    private static ProjectReportSectionDTO iterateOnSection(ProjectReportModelSection sectionModel, HashMap<Integer, List<RichTextElement>> richTextElements) {
        final ProjectReportSectionDTO sectionDTO = new ProjectReportSectionDTO();
        sectionDTO.setId(sectionModel.getId());
        sectionDTO.setName(sectionModel.getName());

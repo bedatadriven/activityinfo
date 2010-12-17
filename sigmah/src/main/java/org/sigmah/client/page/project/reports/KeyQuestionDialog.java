@@ -12,6 +12,7 @@ import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.RichTextArea;
 import org.sigmah.client.i18n.I18N;
@@ -47,6 +48,11 @@ public class KeyQuestionDialog {
             textArea.setStyleName("project-report-key-question");
             dialog.add(textArea);
 
+            // Toolbar
+            final ToolBar toolBar = new ToolBar();
+            ProjectReportsView.createRichTextToolbar(toolBar, textArea.getFormatter());
+            dialog.setTopComponent(toolBar);
+
             // Cancel button
             dialog.getButtonById(Dialog.CANCEL).addSelectionListener(new SelectionListener<ButtonEvent>() {
                 @Override
@@ -61,7 +67,8 @@ public class KeyQuestionDialog {
     }
 
     public static Dialog getDialog(final KeyQuestionDTO keyQuestion, final RichTextArea textArea,
-            final FoldPanel panel, final int toolButtonIndex, final KeyQuestionState keyQuestionState) {
+            final FoldPanel panel, final int toolButtonIndex, final KeyQuestionState keyQuestionState,
+            boolean enabled) {
         final Dialog dialog = getDialog();
         dialog.setHeading(I18N.MESSAGES.reportKeyQuestionDialogTitle(Integer.toString(keyQuestion.getNumber())));
 
@@ -79,29 +86,44 @@ public class KeyQuestionDialog {
         final Button okButton = dialog.getButtonById(Dialog.OK);
 
         okButton.removeAllListeners();
-        okButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                dialog.hide();
-                textArea.setHTML(dialogTextArea.getHTML());
+        
+        if(enabled) {
 
-                final boolean isValid = !"".equals(dialogTextArea.getText());
-                
-                final ToolbarImages images = GWT.create(ToolbarImages.class);
-                if(isValid) {
-                    panel.setToolButtonImage(toolButtonIndex, images.compasGreen());
-                    
-                    if(!wasValid)
-                        keyQuestionState.increaseValids();
+            dialog.getTopComponent().enable();
+            dialogTextArea.setEnabled(true);
 
-                } else {
-                    panel.setToolButtonImage(toolButtonIndex, images.compasRed());
+            okButton.setVisible(true);
+            okButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    dialog.hide();
+                    textArea.setHTML(dialogTextArea.getHTML());
 
-                    if(wasValid)
-                        keyQuestionState.decreaseValids();
+                    final boolean isValid = !"".equals(dialogTextArea.getText());
+
+                    final ToolbarImages images = GWT.create(ToolbarImages.class);
+                    if(isValid) {
+                        panel.setToolButtonImage(toolButtonIndex, images.compasGreen());
+
+                        if(!wasValid)
+                            keyQuestionState.increaseValids();
+
+                    } else {
+                        panel.setToolButtonImage(toolButtonIndex, images.compasRed());
+
+                        if(wasValid)
+                            keyQuestionState.decreaseValids();
+                    }
                 }
-            }
-        });
+            });
+
+        } else {
+
+            okButton.setVisible(false);
+
+            dialog.getTopComponent().disable();
+            dialogTextArea.setEnabled(false);
+        }
 
         return dialog;
     }
