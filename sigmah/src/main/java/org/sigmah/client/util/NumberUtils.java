@@ -119,7 +119,7 @@ public final class NumberUtils {
         final double ratio;
 
         // Adjusts the ration.
-        if (Double.compare(Double.NaN, r) == 0) {
+        if (Double.isNaN(r)) {
             ratio = 0;
         } else if (r < 0) {
             ratio = 0;
