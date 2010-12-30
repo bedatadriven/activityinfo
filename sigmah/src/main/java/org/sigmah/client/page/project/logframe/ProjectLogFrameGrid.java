@@ -1867,13 +1867,13 @@ public class ProjectLogFrameGrid {
                             contentTextBox.addStyleName("html-textbox");
 
                             if (userObject != null) {
-                                contentTextBox.setText(userObject.getContent());
+                                contentTextBox.setText(userObject.getTitle());
                             }
 
                             contentTextBox.addChangeHandler(new ChangeHandler() {
                                 @Override
                                 public void onChange(ChangeEvent e) {
-                                    userObject.setContent(contentTextBox.getText());
+                                    userObject.setTitle(contentTextBox.getText());
                                     fireLogFrameEdited();
                                 }
                             });
