@@ -86,7 +86,8 @@ public class OrgUnitPresenter implements Frame, TabPage {
 
         final DummyPresenter dummyPresenter = new DummyPresenter();
 
-        this.presenters = new SubPresenter[] { new OrgUnitDashboardPresenter(dispatcher, eventBus, this),
+        this.presenters = new SubPresenter[] {
+                new OrgUnitDashboardPresenter(dispatcher, eventBus, authentication, this),
                 new OrgUnitDetailsPresenter(dispatcher, authentication, this, countriesList),
                 new OrgUnitCalendarPresenter(dispatcher, this), dummyPresenter
 
