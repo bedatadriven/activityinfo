@@ -17,9 +17,11 @@ import org.sigmah.client.ui.FlexibleGrid;
 import org.sigmah.client.ui.StylableHBoxLayout;
 import org.sigmah.client.util.DateUtils;
 import org.sigmah.client.util.NumberUtils;
+import org.sigmah.shared.domain.profile.GlobalPermissionEnum;
 import org.sigmah.shared.dto.ProjectFundingDTO;
 import org.sigmah.shared.dto.element.FlexibleElementDTO;
 import org.sigmah.shared.dto.element.FlexibleElementType;
+import org.sigmah.shared.dto.profile.ProfileUtils;
 import org.sigmah.shared.dto.reminder.MonitoredPointDTO;
 import org.sigmah.shared.dto.reminder.ReminderDTO;
 
@@ -351,8 +353,10 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
 
         flushToolbar();
 
-        toolBar.add(buttonActivatePhase);
-        toolBar.add(new SeparatorToolItem());
+        if (ProfileUtils.isGranted(authentication, GlobalPermissionEnum.CHANGE_PHASE)) {
+            toolBar.add(buttonActivatePhase);
+            toolBar.add(new SeparatorToolItem());
+        }
         toolBar.add(buttonSavePhase);
         toolBar.add(new SeparatorToolItem());
         toolBar.add(buttonPhaseGuide);
