@@ -6,6 +6,7 @@
 package org.sigmah.client.dispatch.remote;
 
 import org.sigmah.shared.domain.User;
+import org.sigmah.shared.dto.profile.ProfileDTO;
 
 /**
  * Encapsulates user identity and their authorization to access the server.
@@ -26,6 +27,7 @@ public class Authentication {
     private String userFirstName;
     private String completeName;
     private String shortName;
+    private ProfileDTO aggregatedProfile;
 
     /**
      * 
@@ -134,6 +136,14 @@ public class Authentication {
 
     public void setUserFirstName(String userFirstName) {
         this.userFirstName = userFirstName;
+    }
+
+    public ProfileDTO getAggregatedProfile() {
+        return aggregatedProfile;
+    }
+
+    public void setAggregatedProfile(ProfileDTO aggregatedProfile) {
+        this.aggregatedProfile = aggregatedProfile;
     }
 
     /**

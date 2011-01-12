@@ -17,11 +17,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sigmah.client.inject.SigmahAuthProvider;
 import org.sigmah.server.Cookies;
 import org.sigmah.server.dao.AuthenticationDAO;
 import org.sigmah.server.domain.Authentication;
+import org.sigmah.server.endpoint.gwtrpc.handler.GetUserInfoHandler;
 import org.sigmah.shared.domain.User;
+import org.sigmah.shared.dto.profile.ProfileDTO;
+import org.sigmah.shared.dto.profile.ProfileUtils;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -34,6 +39,8 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class SigmahAuthDictionaryServlet extends HttpServlet {
+
+    private static final Log log = LogFactory.getLog(SigmahAuthDictionaryServlet.class);
 
     private static final long serialVersionUID = -1298849337754771926L;
 
@@ -64,8 +71,8 @@ public class SigmahAuthDictionaryServlet extends HttpServlet {
 
             final String authToken = getAuthToken(req.getCookies());
             if (authToken != null) {
-                AuthenticationDAO authDAO = injector.getInstance(AuthenticationDAO.class);
-                Authentication auth = authDAO.findById(authToken);
+                final AuthenticationDAO authDAO = injector.getInstance(AuthenticationDAO.class);
+                final Authentication auth = authDAO.findById(authToken);
 
                 final User user = auth.getUser();
 
@@ -75,7 +82,18 @@ public class SigmahAuthDictionaryServlet extends HttpServlet {
                 parameters.put(SigmahAuthProvider.USER_NAME, '"' + user.getName() + '"');
                 parameters.put(SigmahAuthProvider.USER_FIRST_NAME, '"' + user.getFirstName() + '"');
                 parameters.put(SigmahAuthProvider.USER_ORG_ID, Integer.toString(user.getOrganization().getId()));
-                parameters.put(SigmahAuthProvider.USER_ORG_UNIT_ID, Integer.toString(user.getOrgUnit().getId()));
+                parameters.put(SigmahAuthProvider.USER_ORG_UNIT_ID,
+                        Integer.toString(user.getOrgUnitWithProfiles().getOrgUnit().getId()));
+
+                // Custom serialization of the profile.
+                final GetUserInfoHandler infoHandler = injector.getInstance(GetUserInfoHandler.class);
+                final ProfileDTO aggregatedProfile = infoHandler.aggregateProfiles(user, null);
+                final String aggregatedProfileAsString = ProfileUtils.writeProfile(aggregatedProfile);
+                parameters.put(SigmahAuthProvider.USER_AG_PROFILE, '"' + aggregatedProfileAsString + '"');
+                if (log.isDebugEnabled()) {
+                    log.debug("[doGet] Writes aggregated profile: " + aggregatedProfile);
+                    log.debug("[doGet] String representation of the profile: " + aggregatedProfileAsString);
+                }
             }
 
             final Charset utf8 = Charset.forName("UTF-8");

@@ -6,7 +6,10 @@
 package org.sigmah.client.inject;
 
 import org.sigmah.client.dispatch.remote.Authentication;
+import org.sigmah.shared.dto.profile.ProfileDTO;
+import org.sigmah.shared.dto.profile.ProfileUtils;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.i18n.client.Dictionary;
 import com.google.inject.Provider;
 import java.util.MissingResourceException;
@@ -28,6 +31,7 @@ public class SigmahAuthProvider implements Provider<Authentication> {
     public static final String USER_ORG_ID = "connectedUserOrgId";
     public static final String USER_ORG_UNIT_ID = "connectedUserOrgUnitId";
     public static final String SHOW_MENUS = "showActivityInfoMenus";
+    public static final String USER_AG_PROFILE = "connectedUserProfile";
 
     /**
      * Retrieves the authentication object.
@@ -54,9 +58,17 @@ public class SigmahAuthProvider implements Provider<Authentication> {
                 auth.setOrganizationId(Integer.parseInt(sigmahParams.get(USER_ORG_ID)));
                 auth.setOrgUnitId(Integer.parseInt(sigmahParams.get(USER_ORG_UNIT_ID)));
                 auth.setShowMenus(Boolean.parseBoolean(sigmahParams.get(SHOW_MENUS)));
-                
+
                 auth.setUserName(sigmahParams.get(USER_NAME));
                 auth.setUserFirstName(sigmahParams.get(USER_FIRST_NAME));
+
+                final String aggregatedProfileAsString = sigmahParams.get(USER_AG_PROFILE);
+                final ProfileDTO aggregatedProfile = ProfileUtils.readProfile(aggregatedProfileAsString);
+                auth.setAggregatedProfile(aggregatedProfile);
+                if (Log.isDebugEnabled()) {
+                    Log.debug("[get] String representation of the profile: " + aggregatedProfileAsString);
+                    Log.debug("[get] Reads aggreated profile: " + aggregatedProfile);
+                }
             }
 
         } catch (MissingResourceException e) {

@@ -6,15 +6,13 @@
 
 <dataset>
 
-	<privacy_level privacy_level="0" />
-
     <userLogin userId="2"
                name="Bavon"
                email="bavon@nrcdrc.org"
                locale="fr"
                newUser="1"
                password="$2a$10$/A6O/S4jDQMCXtP8dicJL.0LJmg9PjqKmrk1dn9F58kitlHQIzyRS"
-               privacy_level="0" />
+               />
     <!-- "monday" -->
 
     <userLogin userId="3"
@@ -23,7 +21,7 @@
                locale="fr"
                newUser="1"
                password="$2a$10$EtQt1mcO7CXwBfIORjsN5OByNMzc48I2LfUjDa9iKfE2FVxaIBPwq"
-               privacy_level="0" />
+               />
     <!-- tuesday -->
 
     <!--  Our expired session here -->

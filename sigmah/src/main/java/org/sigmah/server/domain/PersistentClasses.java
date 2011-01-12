@@ -19,7 +19,6 @@ import org.sigmah.shared.domain.Organization;
 import org.sigmah.shared.domain.Phase;
 import org.sigmah.shared.domain.PhaseModel;
 import org.sigmah.shared.domain.PhaseModelDefinition;
-import org.sigmah.shared.domain.PrivacyLevel;
 import org.sigmah.shared.domain.Project;
 import org.sigmah.shared.domain.ProjectBanner;
 import org.sigmah.shared.domain.ProjectDetails;
@@ -54,6 +53,11 @@ import org.sigmah.shared.domain.logframe.LogFrameGroup;
 import org.sigmah.shared.domain.logframe.LogFrameModel;
 import org.sigmah.shared.domain.logframe.Prerequisite;
 import org.sigmah.shared.domain.logframe.SpecificObjective;
+import org.sigmah.shared.domain.profile.GlobalPermission;
+import org.sigmah.shared.domain.profile.OrgUnitProfile;
+import org.sigmah.shared.domain.profile.PrivacyGroup;
+import org.sigmah.shared.domain.profile.PrivacyGroupPermission;
+import org.sigmah.shared.domain.profile.Profile;
 import org.sigmah.shared.domain.quality.CriterionType;
 import org.sigmah.shared.domain.quality.QualityCriterion;
 import org.sigmah.shared.domain.quality.QualityFramework;
@@ -73,6 +77,11 @@ import org.sigmah.shared.domain.value.Value;
  */
 public class PersistentClasses {
     public static final Class<?>[] LIST = {
+            OrgUnitProfile.class,
+            PrivacyGroupPermission.class,
+            PrivacyGroup.class,
+            GlobalPermission.class,
+            Profile.class,
             FileVersion.class,
             File.class,
             MonitoredPoint.class,
@@ -128,7 +137,6 @@ public class PersistentClasses {
             QuestionElement.class,
             TextAreaElement.class,
             DefaultFlexibleElement.class,
-            PrivacyLevel.class,
             Prerequisite.class,
             LogFrameActivity.class,
             ExpectedResult.class,

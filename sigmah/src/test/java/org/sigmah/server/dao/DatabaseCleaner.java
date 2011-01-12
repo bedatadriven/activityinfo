@@ -47,6 +47,7 @@ public class DatabaseCleaner {
                 executeSafe(stmt, removeAllRows("PartnerInDatabase"));
                 executeSafe(stmt, removeAllRows("LocationAdminLink"));
                 executeSafe(stmt, removeAllRows("phase_model_sucessors"));
+                executeSafe(stmt, removeAllRows("user_unit_profiles"));
 
                 for(Class<?> entityClass : PersistentClasses.LIST) {
                     executeSafe(stmt, removeAllRows(tableName(entityClass)));

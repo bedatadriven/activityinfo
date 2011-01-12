@@ -86,7 +86,7 @@ public class GetProjectsHandler implements CommandHandler<GetProjects> {
             }
 
             // Crawl the org units hierarchy from the user root org unit.
-            crawlUnits(user.getOrgUnit(), units, false);
+            crawlUnits(user.getOrgUnitWithProfiles().getOrgUnit(), units, false);
         } else {
 
             // Crawl the org units hierarchy from each specified org unit.

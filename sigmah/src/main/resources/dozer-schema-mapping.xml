@@ -567,7 +567,7 @@
 		</field>
 	</mapping>
 
-	<!-- OrgUnit/ProjectModelVisibilityDTO Mapping -->
+	<!-- OrgUnit/OrgUnitDTO Mapping -->
 	<mapping wildcard="true">
 		<class-a>org.sigmah.shared.domain.OrgUnit</class-a>
 		<class-b>org.sigmah.shared.dto.OrgUnitDTOLight</class-b>
@@ -576,11 +576,10 @@
 			<a>orgUnitModel.title</a>
 			<b>title</b>
 		</field>
-		
+
 		<field>
 			<a>orgUnitModel.canContainProjects</a>
 			<b>canContainProjects</b>
 		</field>
 	</mapping>
-
 </mappings>

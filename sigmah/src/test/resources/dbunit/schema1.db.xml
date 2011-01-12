@@ -33,9 +33,7 @@
                sortOrder="1"/>
 
 
-	<privacy_level privacy_level="0" />
-	
-    <userLogin userId="1" name="Alex" email="user1@user.com" locale="fr" newUser="1" privacy_level="0" />
+    <userLogin userId="1" name="Alex" email="user1@user.com" locale="fr" newUser="1" />
 
     <userDatabase databaseId="1" name="PEAR" countryId="1" ownerUserId="1" lastSchemaUpdate="2009-01-01"/>
 
@@ -88,7 +86,7 @@
 
     <partnerInDatabase databaseId="1" partnerId="1"/>
 
-    <userLogin userId="2" name="Bavon" email="bavon@nrcdrc.org" locale="fr" newUser="1" privacy_level="0" />
+    <userLogin userId="2" name="Bavon" email="bavon@nrcdrc.org" locale="fr" newUser="1" />
     <userPermission
             userPermissionId="1"
             databaseId="1"
@@ -101,7 +99,7 @@
             lastSchemaUpdate="2009-01-02"/>
 
 
-    <userLogin userId="3" name="Stefan" email="stefan@irc.org" locale="fr" newUser="1" privacy_level="0" />
+    <userLogin userId="3" name="Stefan" email="stefan@irc.org" locale="fr" newUser="1" />
 
     <userDatabase databaseId="2" name="RRM" countryId="1" ownerUserId="1" lastSchemaUpdate="2009-01-01"/>
 

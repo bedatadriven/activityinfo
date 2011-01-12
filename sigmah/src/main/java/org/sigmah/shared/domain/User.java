@@ -16,7 +16,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import org.sigmah.shared.domain.profile.OrgUnitProfile;
 
 /**
  * Describes a user
@@ -44,9 +47,8 @@ public class User implements java.io.Serializable {
     private String changePasswordKey;
     private Date dateChangePasswordKeyIssued;
     private String hashedPassword;
-    private PrivacyLevel privacyLevel;
     private Organization organization;
-    private OrgUnit orgUnit;
+    private OrgUnitProfile orgUnitWithProfiles;
 
     public User() {
     }
@@ -187,16 +189,6 @@ public class User implements java.io.Serializable {
     }
 
     @ManyToOne(optional = true)
-    @JoinColumn(name = "privacy_level", nullable = true)
-    public PrivacyLevel getPrivacyLevel() {
-        return privacyLevel;
-    }
-
-    public void setPrivacyLevel(PrivacyLevel privacyLevel) {
-        this.privacyLevel = privacyLevel;
-    }
-
-    @ManyToOne(optional = true)
     @JoinColumn(name = "id_organization", nullable = true)
     public Organization getOrganization() {
         return organization;
@@ -206,14 +198,13 @@ public class User implements java.io.Serializable {
         this.organization = organization;
     }
 
-    @ManyToOne(optional = true)
-    @JoinColumn(name = "id_org_unit", nullable = true)
-    public OrgUnit getOrgUnit() {
-        return orgUnit;
+    @OneToOne(mappedBy = "user", optional = true)
+    public OrgUnitProfile getOrgUnitWithProfiles() {
+        return orgUnitWithProfiles;
     }
 
-    public void setOrgUnit(OrgUnit orgUnit) {
-        this.orgUnit = orgUnit;
+    public void setOrgUnitWithProfiles(OrgUnitProfile orgUnitWithProfiles) {
+        this.orgUnitWithProfiles = orgUnitWithProfiles;
     }
 
     @Override

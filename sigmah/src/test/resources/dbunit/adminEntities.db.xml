@@ -7,10 +7,8 @@
 <dataset>
 
 	<!--  This is test data used for the SchemaBuilderTest cases -->
-	
-	<privacy_level privacy_level="0" />
 
-	<userLogin userId="1" name="Alex" email="akbertram@gmail.com" password="$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1." locale="fr" newUser="1" privacy_level="0" />
+	<userLogin userId="1" name="Alex" email="akbertram@gmail.com" password="$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1." locale="fr" newUser="1" />
 	
 	<country countryId="1" name="Rdc" x1="0" y1="0" x2="0" y2="0" />
 

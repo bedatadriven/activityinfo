@@ -23,8 +23,10 @@ import org.sigmah.client.page.report.ReportListPageState;
 import org.sigmah.client.page.table.PivotPageState;
 import org.sigmah.client.ui.StylableVBoxLayout;
 import org.sigmah.client.util.Notification;
+import org.sigmah.shared.domain.profile.GlobalPermissionEnum;
 import org.sigmah.shared.dto.OrgUnitDTOLight;
 import org.sigmah.shared.dto.ProjectDTOLight;
+import org.sigmah.shared.dto.profile.ProfileUtils;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -162,44 +164,46 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
     private void buildNavLinks(final ContentPanel menuPanel) {
 
         // Menu
-        addNavLink(eventBus, menuPanel, I18N.CONSTANTS.createProjectNewProject(), IconImageBundle.ICONS.add(),
-                new Listener<ButtonEvent>() {
+        if (ProfileUtils.isGranted(authentication, GlobalPermissionEnum.CREATE_PROJECT)) {
+            addNavLink(eventBus, menuPanel, I18N.CONSTANTS.createProjectNewProject(), IconImageBundle.ICONS.add(),
+                    new Listener<ButtonEvent>() {
 
-                    private final CreateProjectWindow window = CreateProjectWindow.getInstance(dispatcher,
-                            authentication, info);
+                        private final CreateProjectWindow window = CreateProjectWindow.getInstance(dispatcher,
+                                authentication, info);
 
-                    {
-                        window.addListener(new CreateProjectListener() {
+                        {
+                            window.addListener(new CreateProjectListener() {
 
-                            @Override
-                            public void projectCreated(ProjectDTOLight project) {
+                                @Override
+                                public void projectCreated(ProjectDTOLight project) {
 
-                                projectsListPanel.getProjectsStore().clearFilters();
-                                projectsListPanel.getProjectsStore().add(project, false);
-                                projectsListPanel.getProjectsStore().applyFilters(null);
+                                    projectsListPanel.getProjectsStore().clearFilters();
+                                    projectsListPanel.getProjectsStore().add(project, false);
+                                    projectsListPanel.getProjectsStore().applyFilters(null);
 
-                                // Show notification.
-                                Notification.show(I18N.CONSTANTS.createProjectSucceeded(),
-                                        I18N.CONSTANTS.createProjectSucceededDetails());
-                            }
+                                    // Show notification.
+                                    Notification.show(I18N.CONSTANTS.createProjectSucceeded(),
+                                            I18N.CONSTANTS.createProjectSucceededDetails());
+                                }
 
-                            @Override
-                            public void projectCreatedAsFunded(ProjectDTOLight project, double percentage) {
-                                // nothing to do (must not be called).
-                            }
+                                @Override
+                                public void projectCreatedAsFunded(ProjectDTOLight project, double percentage) {
+                                    // nothing to do (must not be called).
+                                }
 
-                            @Override
-                            public void projectCreatedAsFunding(ProjectDTOLight project, double percentage) {
-                                // nothing to do (must not be called).
-                            }
-                        });
-                    }
+                                @Override
+                                public void projectCreatedAsFunding(ProjectDTOLight project, double percentage) {
+                                    // nothing to do (must not be called).
+                                }
+                            });
+                        }
 
-                    @Override
-                    public void handleEvent(ButtonEvent be) {
-                        window.show();
-                    }
-                });
+                        @Override
+                        public void handleEvent(ButtonEvent be) {
+                            window.show();
+                        }
+                    });
+        }
 
         // Temporary code to hide/show activityInfo menus
         if (authentication.isShowMenus()) {

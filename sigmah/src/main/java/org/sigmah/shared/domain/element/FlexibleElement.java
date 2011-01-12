@@ -14,7 +14,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.sigmah.shared.domain.PrivacyLevel;
 import org.sigmah.shared.domain.ProjectModel;
 import org.sigmah.shared.domain.history.Historable;
 import org.sigmah.shared.domain.value.ListEntity;
@@ -42,7 +41,6 @@ public abstract class FlexibleElement implements Serializable, Historable {
     private ProjectModel parentProjectModel;
     private String label;
     private Boolean validates = false;
-    private PrivacyLevel privacyLevel;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -81,16 +79,6 @@ public abstract class FlexibleElement implements Serializable, Historable {
 
     public void setValidates(boolean validates) {
         this.validates = validates;
-    }
-
-    @ManyToOne(optional = true)
-    @JoinColumn(name = "privacy_level", nullable = true)
-    public PrivacyLevel getPrivacyLevel() {
-        return privacyLevel;
-    }
-
-    public void setPrivacyLevel(PrivacyLevel privacyLevel) {
-        this.privacyLevel = privacyLevel;
     }
 
     @Override

@@ -12,40 +12,48 @@
 
     <locationType locationTypeId="1" countryId="1" name="localite" reuse="1"/>
     
-    <privacy_level privacy_level="0" />
-
     <organization id_organization="1" name="Ideia"/>
     <partner partnerId="1" name="Head Office" organization_id_organization="1" office_country_id="1" />
     <partner partnerId="2" name="Sub Office I" organization_id_organization="1" office_country_id="1" parent_partnerid="1" />
     <partner partnerId="3" name="Sub sub Office 1" organization_id_organization="1" office_country_id="1" parent_partnerid="2" />
 	<partner partnerId="4" name="Sub sub Office 2" organization_id_organization="1" office_country_id="1" parent_partnerid="2" />
 
-    <userLogin userId="1" name="Alex" email="user1@user.com" locale="fr" newUser="1" privacy_level="0" id_organization="1" id_org_unit="1" />
-    <userLogin userId="2" name="Raphael" email="user2@user.com" locale="fr" newUser="1" privacy_level="0" id_organization="1" id_org_unit="1" />
-    <userLogin userId="3" name="Tom" email="tom@user.com" locale="fr" newUser="1" privacy_level="0" id_organization="1" id_org_unit="2" />
+    <userLogin userId="1" name="Alex" email="user1@user.com" locale="fr" newUser="1" id_organization="1" />
+    <userLogin userId="2" name="Raphael" email="user2@user.com" locale="fr" newUser="1" id_organization="1" />
+    <userLogin userId="3" name="Tom" email="tom@user.com" locale="fr" newUser="1" id_organization="1" />
     
+    <profile id_profile="1" name="prof1" />
+	
+	<user_unit id_user_unit="1" id_org_unit="1" id_user="1" />
+	<user_unit id_user_unit="2" id_org_unit="1" id_user="2" />
+	<user_unit id_user_unit="3" id_org_unit="2" id_user="3" />
+	
+	<user_unit_profiles id_user_unit="1" id_profile="1" />
+	<user_unit_profiles id_user_unit="2" id_profile="1" />
+	<user_unit_profiles id_user_unit="3" id_profile="1" />
+	
     <orgUnitPermission id="1" unit_Id="4" user_UserId="3" viewAll="1" editAll="0"/>
     
     <project_model id_project_model="1" name="Mock model 1" />
 
     <layout id_layout="1" rows_count="2" columns_count="1" />
         <layout_group id_layout_group="1" id_layout="1" row_index="0" column_index="0" title="Header" />
-                <flexible_element id_flexible_element="1" id_project_model="1" label="Success" validates="false" privacy_level="0" />
+                <flexible_element id_flexible_element="1" id_project_model="1" label="Success" validates="false" />
                 <message_element id_flexible_element="1" />
             <layout_constraint id_layout_constraint="1" id_layout_group="1" id_flexible_element="1" sort_order="1" />
-                <flexible_element id_flexible_element="2" id_project_model="1" label="Check this" validates="true" privacy_level="0" />
+                <flexible_element id_flexible_element="2" id_project_model="1" label="Check this" validates="true" />
                 <checkbox_element id_flexible_element="2" />
             <layout_constraint id_layout_constraint="2" id_layout_group="1" id_flexible_element="2" sort_order="2" />
         <layout_group id_layout_group="2" id_layout="1" row_index="1" column_index="0" title="Questions" />
-                <flexible_element id_flexible_element="3" id_project_model="1" label="Question 1" validates="false" privacy_level="0" />
+                <flexible_element id_flexible_element="3" id_project_model="1" label="Question 1" validates="false" />
                 <question_element id_flexible_element="3" />
                     <question_choice_element id_choice="1" id_question="3" label="Answer 1" sort_order="1" />
                     <question_choice_element id_choice="2" id_question="3" label="Answer 2" sort_order="2" />
             <layout_constraint id_layout_constraint="3" id_layout_group="2" id_flexible_element="3" sort_order="1" />
-                <flexible_element id_flexible_element="4" id_project_model="1" label="Comments" validates="false" privacy_level="0" />
+                <flexible_element id_flexible_element="4" id_project_model="1" label="Comments" validates="false" />
                 <textarea_element id_flexible_element="4" />
             <layout_constraint id_layout_constraint="4" id_layout_group="2" id_flexible_element="4" sort_order="3" />
-                <flexible_element id_flexible_element="5" id_project_model="1" label="Question 2" validates="true" privacy_level="0" />
+                <flexible_element id_flexible_element="5" id_project_model="1" label="Question 2" validates="true" />
                 <question_element id_flexible_element="5" />
                     <question_choice_element id_choice="3" id_question="5" label="Answer 1" sort_order="1" />
                     <question_choice_element id_choice="4" id_question="5" label="Answer 3" sort_order="3" />
