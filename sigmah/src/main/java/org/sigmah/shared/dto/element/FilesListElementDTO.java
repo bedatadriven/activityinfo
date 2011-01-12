@@ -21,8 +21,10 @@ import org.sigmah.shared.command.Delete;
 import org.sigmah.shared.command.GetValue;
 import org.sigmah.shared.command.result.ValueResult;
 import org.sigmah.shared.command.result.VoidResult;
+import org.sigmah.shared.domain.profile.GlobalPermissionEnum;
 import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.element.handler.RequiredValueEvent;
+import org.sigmah.shared.dto.profile.ProfileUtils;
 import org.sigmah.shared.dto.reminder.MonitoredPointDTO;
 import org.sigmah.shared.dto.value.FileDTO;
 import org.sigmah.shared.dto.value.FileUploadUtils;
@@ -700,8 +702,13 @@ public class FilesListElementDTO extends FlexibleElementDTO {
             }
         });
 
-        return new ColumnConfig[] { dateColumn, nameColumn, authorColumn, versionColumn, addVersionColumn,
-                historyColumn, deleteColumn };
+        if (ProfileUtils.isGranted(authentication, GlobalPermissionEnum.REMOVE_FILE)) {
+            return new ColumnConfig[] { dateColumn, nameColumn, authorColumn, versionColumn, addVersionColumn,
+                    historyColumn, deleteColumn };
+        } else {
+            return new ColumnConfig[] { dateColumn, nameColumn, authorColumn, versionColumn, addVersionColumn,
+                    historyColumn };
+        }
     }
 
     /**
