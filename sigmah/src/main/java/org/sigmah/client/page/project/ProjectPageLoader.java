@@ -18,17 +18,17 @@ import com.google.inject.Inject;
 
 /**
  * Page loader of a project details page.
+ * 
  * @author Denis Colliot (dcolliot@ideia.fr)
  */
 public class ProjectPageLoader implements PageLoader {
 
-    private final NavigationHandler navigationHandler;
     private final SigmahInjector injector;
 
     @Inject
-    public ProjectPageLoader(SigmahInjector injector, NavigationHandler navigationHandler, PageStateSerializer placeSerializer) {
+    public ProjectPageLoader(SigmahInjector injector, NavigationHandler navigationHandler,
+            PageStateSerializer placeSerializer) {
         this.injector = injector;
-        this.navigationHandler = navigationHandler;
 
         navigationHandler.registerPageLoader(ProjectPresenter.PAGE_ID, this);
         placeSerializer.registerParser(ProjectPresenter.PAGE_ID, new ProjectState.Parser());
@@ -36,10 +36,9 @@ public class ProjectPageLoader implements PageLoader {
 
     @Override
     public void load(PageId pageId, PageState pageState, AsyncCallback<Page> callback) {
-        if(pageId.equals(ProjectPresenter.PAGE_ID)) {
+        if (pageId.equals(ProjectPresenter.PAGE_ID)) {
             final ProjectPresenter projectPresenter = injector.getProjectPresenter();
             projectPresenter.navigate(pageState);
-            
             callback.onSuccess(projectPresenter);
         }
     }

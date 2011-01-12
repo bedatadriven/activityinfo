@@ -22,10 +22,12 @@ import org.sigmah.shared.command.UpdateProject;
 import org.sigmah.shared.command.result.ProjectListResult;
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.domain.ProjectModelType;
+import org.sigmah.shared.domain.profile.GlobalPermissionEnum;
 import org.sigmah.shared.dto.ProjectDTOLight;
 import org.sigmah.shared.dto.category.CategoryElementDTO;
 import org.sigmah.shared.dto.element.DefaultFlexibleElementDTO;
 import org.sigmah.shared.dto.element.handler.ValueEvent;
+import org.sigmah.shared.dto.profile.ProfileUtils;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.SortDir;
@@ -285,7 +287,14 @@ public class ProjectsListPanel {
         projectTreePanel.setHeading(I18N.CONSTANTS.projects());
 
         projectTreePanel.setTopComponent(toolbar);
-        projectTreePanel.add(projectTreeGrid);
+
+        if (ProfileUtils.isGranted(authentication, GlobalPermissionEnum.VIEW_PROJECT)) {
+            projectTreePanel.add(projectTreeGrid);
+        } else {
+            final HTML insufficient = new HTML(I18N.CONSTANTS.permViewProjectInsufficient());
+            insufficient.addStyleName("important-label");
+            projectTreePanel.add(insufficient);
+        }
 
         addListeners();
         addFilters();
@@ -623,6 +632,11 @@ public class ProjectsListPanel {
      * Refreshes the projects grid with the current parameters.
      */
     private void refreshProjectGrid() {
+
+        // Checks that the user can view projects.
+        if (!ProfileUtils.isGranted(authentication, GlobalPermissionEnum.VIEW_PROJECT)) {
+            return;
+        }
 
         // Retrieves all the projects in the org units. The filters on type,
         // etc. are applied locally.

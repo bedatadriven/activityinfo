@@ -5,7 +5,7 @@
 
 package org.sigmah.client.page.project;
 
-
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.ui.StylableHBoxLayout;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -16,6 +16,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -27,7 +28,8 @@ public class ProjectView extends LayoutContainer implements ProjectPresenter.Vie
     private final ContentPanel panelProjectBanner;
     private final ContentPanel tabPanel;
     private final ContentPanel bottomPanel;
-
+    private final HTML insufficient;
+    private Boolean viewDisplayed = null;
     private Widget widget;
 
     /**
@@ -44,7 +46,7 @@ public class ProjectView extends LayoutContainer implements ProjectPresenter.Vie
         /* Project banner */
         panelProjectBanner = new ContentPanel();
         panelProjectBanner.setBorders(false);
-        //panelProjectBanner.setHeight(100);
+        // panelProjectBanner.setHeight(100);
         panelProjectBanner.setLayout(new FitLayout());
         panelProjectBanner.addStyleName("project-label-10");
 
@@ -61,11 +63,8 @@ public class ProjectView extends LayoutContainer implements ProjectPresenter.Vie
 
         bottomPanel.add(tabPanel, new BorderLayoutData(LayoutRegion.NORTH, 20));
 
-        final BorderLayoutData data = new BorderLayoutData(LayoutRegion.NORTH, 100);
-        data.setCollapsible(true);
-        data.setMargins(new Margins(0, 0, 5, 0));
-        add(panelProjectBanner, data); //new RowData(1, -1, new Margins(0, 0, 10, 0)));
-        add(bottomPanel, new BorderLayoutData(LayoutRegion.CENTER)); //new RowData(1, 1));
+        insufficient = new HTML(I18N.CONSTANTS.permViewProjectInsufficient());
+        insufficient.addStyleName("important-label-white");
     }
 
     @Override
@@ -79,8 +78,45 @@ public class ProjectView extends LayoutContainer implements ProjectPresenter.Vie
     }
 
     @Override
+    public void insufficient() {
+
+        if (viewDisplayed != null && !viewDisplayed) {
+            return;
+        }
+
+        if (viewDisplayed != null) {
+            remove(panelProjectBanner);
+            remove(bottomPanel);
+        }
+
+        add(insufficient, new BorderLayoutData(LayoutRegion.CENTER));
+
+        viewDisplayed = false;
+    }
+
+    @Override
+    public void sufficient() {
+
+        if (viewDisplayed != null && viewDisplayed) {
+            return;
+        }
+
+        if (viewDisplayed != null) {
+            remove(insufficient);
+        }
+
+        final BorderLayoutData data = new BorderLayoutData(LayoutRegion.NORTH, 100);
+        data.setCollapsible(true);
+        data.setMargins(new Margins(0, 0, 5, 0));
+        add(panelProjectBanner, data);
+        add(bottomPanel, new BorderLayoutData(LayoutRegion.CENTER));
+
+        viewDisplayed = true;
+    }
+
+    @Override
     public void setMainPanel(Widget widget) {
-        if(this.widget != null)
+        if (this.widget != null)
             bottomPanel.remove(this.widget);
 
         bottomPanel.add(widget, new BorderLayoutData(LayoutRegion.CENTER));

@@ -414,6 +414,18 @@ body {
 	padding-right:5px;
 }
 
+.important-label {
+	font-size: 8pt;
+	padding: 5px;
+}
+
+.important-label-white {
+	font-size: 8pt;
+	padding: 5px;
+	color: white;
+}
+
+
 /* ----------------------------------------------------------------- Calendar */
 .calendar {
 	border-collapse: collapse;

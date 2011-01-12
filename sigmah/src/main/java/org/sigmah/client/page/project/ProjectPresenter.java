@@ -27,6 +27,7 @@ import org.sigmah.client.page.project.logframe.ProjectLogFramePresenter;
 import org.sigmah.client.page.project.reports.ProjectReportsPresenter;
 import org.sigmah.client.ui.ToggleAnchor;
 import org.sigmah.shared.command.GetProject;
+import org.sigmah.shared.domain.profile.GlobalPermissionEnum;
 import org.sigmah.shared.dto.PhaseDTO;
 import org.sigmah.shared.dto.ProjectBannerDTO;
 import org.sigmah.shared.dto.ProjectDTO;
@@ -35,6 +36,7 @@ import org.sigmah.shared.dto.element.FlexibleElementDTO;
 import org.sigmah.shared.dto.layout.LayoutConstraintDTO;
 import org.sigmah.shared.dto.layout.LayoutDTO;
 import org.sigmah.shared.dto.layout.LayoutGroupDTO;
+import org.sigmah.shared.dto.profile.ProfileUtils;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.util.Margins;
@@ -74,6 +76,10 @@ public class ProjectPresenter implements Frame, TabPage {
         public ContentPanel getTabPanel();
 
         public void setMainPanel(Widget widget);
+
+        public void insufficient();
+
+        public void sufficient();
     }
 
     private final View view;
@@ -167,42 +173,49 @@ public class ProjectPresenter implements Frame, TabPage {
         final ProjectState projectState = (ProjectState) place;
         final int projectId = projectState.getProjectId();
 
-        if (currentProjectDTO == null || projectId != currentProjectDTO.getId()) {
-            if (Log.isDebugEnabled()) {
-                Log.debug("Loading project #" + projectId + "...");
-            }
+        if (ProfileUtils.isGranted(authentication, GlobalPermissionEnum.VIEW_PROJECT)) {
 
-            dispatcher.execute(new GetProject(projectId), null, new AsyncCallback<ProjectDTO>() {
+            view.sufficient();
 
-                @Override
-                public void onFailure(Throwable throwable) {
-                    Log.error("Error, project #" + projectId + " not loaded.");
+            if (currentProjectDTO == null || projectId != currentProjectDTO.getId()) {
+                if (Log.isDebugEnabled()) {
+                    Log.debug("Loading project #" + projectId + "...");
                 }
 
-                @Override
-                public void onSuccess(ProjectDTO projectDTO) {
-                    if (Log.isDebugEnabled()) {
-                        Log.debug("Project loaded : " + projectDTO.getName());
+                dispatcher.execute(new GetProject(projectId), null, new AsyncCallback<ProjectDTO>() {
+
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        Log.error("Error, project #" + projectId + " not loaded.");
                     }
+
+                    @Override
+                    public void onSuccess(ProjectDTO projectDTO) {
+                        if (Log.isDebugEnabled()) {
+                            Log.debug("Project loaded : " + projectDTO.getName());
+                        }
+                        currentState = projectState;
+
+                        boolean projectChanged = !projectDTO.equals(currentProjectDTO);
+
+                        projectState.setTabTitle(projectDTO.getName());
+                        loadProjectOnView(projectDTO);
+
+                        selectTab(projectState.getCurrentSection(), projectChanged);
+                    }
+                });
+            } else {
+                boolean change = false;
+
+                if (!currentState.equals(projectState)) {
+                    change = true;
                     currentState = projectState;
-
-                    boolean projectChanged = !projectDTO.equals(currentProjectDTO);
-
-                    projectState.setTabTitle(projectDTO.getName());
-                    loadProjectOnView(projectDTO);
-
-                    selectTab(projectState.getCurrentSection(), projectChanged);
                 }
-            });
-        } else {
-            boolean change = false;
 
-            if (!currentState.equals(projectState)) {
-                change = true;
-                currentState = projectState;
+                selectTab(projectState.getCurrentSection(), change);
             }
-
-            selectTab(projectState.getCurrentSection(), change);
+        } else {
+            view.insufficient();
         }
 
         return true;
