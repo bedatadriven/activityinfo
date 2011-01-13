@@ -24,6 +24,8 @@ import org.sigmah.client.util.Notification;
 import org.sigmah.shared.command.GetProjectReports;
 import org.sigmah.shared.command.UpdateEntity;
 import org.sigmah.shared.command.result.VoidResult;
+import org.sigmah.shared.domain.profile.GlobalPermissionEnum;
+import org.sigmah.shared.dto.profile.ProfileUtils;
 import org.sigmah.shared.dto.report.KeyQuestionDTO;
 import org.sigmah.shared.dto.report.ProjectReportContent;
 import org.sigmah.shared.dto.report.ProjectReportDTO;
@@ -120,7 +122,7 @@ public class ProjectReportsView extends LayoutContainer {
 
     public ProjectReportsView(Authentication authentication, EventBus eventBus, Dispatcher dispatcher,
             ListStore<GetProjectReports.ReportReference> store) {
-        
+
         this.authentication = authentication;
         this.eventBus = eventBus;
         this.dispatcher = dispatcher;
@@ -133,7 +135,7 @@ public class ProjectReportsView extends LayoutContainer {
         final BorderLayout layout = new BorderLayout();
         // Adding a dark background between objects managed by this layout.
         layout.setContainerStyle("x-border-layout-ct main-background");
-        
+
         setLayout(layout);
 
         // Layout data object used to define constraints for every widget.
@@ -152,7 +154,9 @@ public class ProjectReportsView extends LayoutContainer {
 
     /**
      * Creates left panel of the view. It displays the document list.
-     * @param store The document store to use.
+     * 
+     * @param store
+     *            The document store to use.
      * @return The document list panel.
      */
     private ContentPanel createDocumentList(final ListStore<GetProjectReports.ReportReference> store) {
@@ -168,9 +172,11 @@ public class ProjectReportsView extends LayoutContainer {
 
         attachButton = new Button(I18N.CONSTANTS.flexibleElementFilesListAddDocument(), icons.attach());
 
-        toolBar.add(attachButton);
-        toolBar.add(new SeparatorToolItem());
-        toolBar.add(createReportButton);
+        if (ProfileUtils.isGranted(authentication, GlobalPermissionEnum.EDIT_PROJECT)) {
+            toolBar.add(attachButton);
+            toolBar.add(new SeparatorToolItem());
+            toolBar.add(createReportButton);
+        }
 
         panel.setTopComponent(toolBar);
 
@@ -298,7 +304,7 @@ public class ProjectReportsView extends LayoutContainer {
 
     private void displaySection(final ProjectReportSectionDTO section, final FoldPanel parent,
             final StringBuilder prefix, int level, final boolean draftMode) {
-        
+
         final FoldPanel sectionPanel = new FoldPanel();
         sectionPanel.setHeading(prefix.toString() + ' ' + section.getName());
         sectionPanel.addStyleName("project-report-level-" + level);
@@ -316,7 +322,7 @@ public class ProjectReportsView extends LayoutContainer {
 
             } else if (object.getClass() == RichTextElementDTO.class) {
 
-                if(draftMode) {
+                if (draftMode) {
                     final RichTextArea textArea = new RichTextArea();
                     textArea.setHTML(((RichTextElementDTO) object).getText());
 
@@ -335,10 +341,10 @@ public class ProjectReportsView extends LayoutContainer {
                     final HTML html = new HTML();
 
                     final String value = ((RichTextElementDTO) object).getText();
-                    if(value == null || "".equals(value)) {
+                    if (value == null || "".equals(value)) {
                         html.setText(I18N.CONSTANTS.reportEmptySection());
                         html.addStyleName("project-report-field-empty");
-                        
+
                     } else {
                         html.setHTML(value);
                         html.addStyleName("project-report-field");
@@ -447,15 +453,17 @@ public class ProjectReportsView extends LayoutContainer {
         final ToolBar toolBar = new ToolBar();
 
         final IconImageBundle icons = GWT.create(IconImageBundle.class);
-        
-        if(report.isDraft()) {
+
+        if (report.isDraft()) {
             // Draft banner
             final SimplePanel header = new SimplePanel();
             header.addStyleName("project-report-draft");
 
             final DateTimeFormat dateFormat = DateTimeFormat.getMediumDateFormat();
             final DateTimeFormat timeFormat = DateTimeFormat.getMediumTimeFormat();
-            header.getElement().setInnerText(I18N.MESSAGES.reportDraftHeader(dateFormat.format(report.getLastEditDate()), timeFormat.format(report.getLastEditDate())));
+            header.getElement().setInnerText(
+                    I18N.MESSAGES.reportDraftHeader(dateFormat.format(report.getLastEditDate()),
+                            timeFormat.format(report.getLastEditDate())));
 
             final Button cancelButton = new Button(I18N.CONSTANTS.delete());
             final Button sendButton = new Button(I18N.CONSTANTS.send());
@@ -478,7 +486,8 @@ public class ProjectReportsView extends LayoutContainer {
 
                         @Override
                         public void onSuccess(ProjectReportDTO result) {
-                            Notification.show(I18N.CONSTANTS.projectTabReports(), I18N.CONSTANTS.reportEditCancelSuccess());
+                            Notification.show(I18N.CONSTANTS.projectTabReports(),
+                                    I18N.CONSTANTS.reportEditCancelSuccess());
                             setReport(result);
                         }
 
@@ -497,7 +506,8 @@ public class ProjectReportsView extends LayoutContainer {
                         changes.put(entry.getKey().toString(), entry.getValue().getHTML());
 
                     final UpdateEntity updateEntity = new UpdateEntity("ProjectReport", report.getVersionId(), changes);
-                    final PromoteProjectReportDraft promoteDraft = new PromoteProjectReportDraft(report.getId(), report.getVersionId());
+                    final PromoteProjectReportDraft promoteDraft = new PromoteProjectReportDraft(report.getId(), report
+                            .getVersionId());
 
                     final AsyncCallback<VoidResult> callback = AsyncCallbacks.emptyCallback();
                     dispatcher.execute(updateEntity, null, callback);
@@ -557,7 +567,8 @@ public class ProjectReportsView extends LayoutContainer {
 
                             final Date now = new Date();
                             header.clear();
-                            header.getElement().setInnerText(I18N.MESSAGES.reportDraftHeader(dateFormat.format(now), timeFormat.format(now)));
+                            header.getElement().setInnerText(
+                                    I18N.MESSAGES.reportDraftHeader(dateFormat.format(now), timeFormat.format(now)));
                             header.add(buttons);
 
                             boolean found = false;
@@ -584,10 +595,13 @@ public class ProjectReportsView extends LayoutContainer {
 
             toolBar.add(saveButton);
             toolBar.add(new SeparatorToolItem());
-            
+
         } else {
             final Button editReportButton = new Button(I18N.CONSTANTS.edit(), icons.editPage());
-            toolBar.add(editReportButton);
+
+            if (ProfileUtils.isGranted(authentication, GlobalPermissionEnum.EDIT_PROJECT)) {
+                toolBar.add(editReportButton);
+            }
 
             editReportButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
@@ -649,7 +663,7 @@ public class ProjectReportsView extends LayoutContainer {
         toolBar.add(foldButton);
         toolBar.add(expandButton);
 
-        if(report.isDraft()) {
+        if (report.isDraft()) {
             toolBar.add(new SeparatorToolItem());
             createRichTextToolbar(toolBar);
         }

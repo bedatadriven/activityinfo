@@ -202,7 +202,7 @@ public class DefaultFlexibleElementDTO extends FlexibleElementDTO {
             final Label ratioLabel = new Label();
             ratioLabel.addStyleName("project-label-10");
             ratioLabel.addStyleName("flexibility-label");
-            
+
             if (enabled) {
 
                 // Planned budget.
@@ -269,8 +269,13 @@ public class DefaultFlexibleElementDTO extends FlexibleElementDTO {
             } else {
 
                 final LabelField plannedBudgetLabelField = createLabelField();
+                plannedBudgetLabelField.setFieldLabel(I18N.CONSTANTS.projectPlannedBudget());
+
                 final LabelField spendBudgetLabelField = createLabelField();
+                spendBudgetLabelField.setFieldLabel(I18N.CONSTANTS.projectSpendBudget());
+
                 final LabelField receivedBudgetLabelField = createLabelField();
+                receivedBudgetLabelField.setFieldLabel(I18N.CONSTANTS.projectReceivedBudget());
 
                 // Sets the value to the fields.
                 plannedBudgetLabelField.setValue(pb);

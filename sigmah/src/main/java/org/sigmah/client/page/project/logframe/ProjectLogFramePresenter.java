@@ -2,6 +2,7 @@ package org.sigmah.client.page.project.logframe;
 
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
+import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.project.SubPresenter;
 import org.sigmah.client.page.project.ProjectPresenter;
@@ -9,8 +10,10 @@ import org.sigmah.client.util.NotImplementedMethod;
 import org.sigmah.client.util.Notification;
 import org.sigmah.shared.command.UpdateLogFrame;
 import org.sigmah.shared.command.result.LogFrameResult;
+import org.sigmah.shared.domain.profile.GlobalPermissionEnum;
 import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.logframe.LogFrameDTO;
+import org.sigmah.shared.dto.profile.ProfileUtils;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -35,7 +38,7 @@ public class ProjectLogFramePresenter implements SubPresenter {
      * The label used for the no-name groups.
      */
     public static final String DEFAULT_GROUP_LABEL = "-";
-    
+
     /**
      * Description of the view managed by this presenter.
      */
@@ -69,6 +72,11 @@ public class ProjectLogFramePresenter implements SubPresenter {
     private final Dispatcher dispatcher;
 
     /**
+     * The authentication.
+     */
+    private final Authentication authentication;
+
+    /**
      * The main project presenter.
      */
     private final ProjectPresenter projectPresenter;
@@ -83,8 +91,10 @@ public class ProjectLogFramePresenter implements SubPresenter {
      */
     private LogFrameDTO logFrame;
 
-    public ProjectLogFramePresenter(Dispatcher dispatcher, ProjectPresenter projectPresenter) {
+    public ProjectLogFramePresenter(Dispatcher dispatcher, Authentication authentication,
+            ProjectPresenter projectPresenter) {
         this.dispatcher = dispatcher;
+        this.authentication = authentication;
         this.projectPresenter = projectPresenter;
         this.currentProjectDTO = projectPresenter.getCurrentProjectDTO();
     }
@@ -230,8 +240,14 @@ public class ProjectLogFramePresenter implements SubPresenter {
             // Fill the log frame main objective.
             view.getLogFrameMainObjectiveTextBox().setValue(logFrame.getMainObjective());
 
+            if (!ProfileUtils.isGranted(authentication, GlobalPermissionEnum.EDIT_PROJECT)) {
+                view.getLogFrameTitleTextBox().setEnabled(false);
+                view.getLogFrameMainObjectiveTextBox().setEnabled(false);
+            }
+
             // Fill the grid.
-            view.getLogFrameGrid().displayLogFrame(logFrame);
+            view.getLogFrameGrid().displayLogFrame(logFrame,
+                    ProfileUtils.isGranted(authentication, GlobalPermissionEnum.EDIT_PROJECT));
         }
 
         // Default buttons states.

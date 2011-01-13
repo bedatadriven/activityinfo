@@ -102,6 +102,11 @@ public class ProjectLogFrameGrid {
     private LogFrameModelDTO logFrameModel;
 
     /**
+     * If the log frame is read only or not.
+     */
+    private boolean readOnly;
+
+    /**
      * The grid used to manage the log frame.
      */
     public final FlexTable table;
@@ -290,8 +295,11 @@ public class ProjectLogFrameGrid {
         specificObjectivesGrid.setCellPadding(0);
         specificObjectivesGrid.setCellSpacing(0);
         specificObjectivesGrid.setWidget(0, 0, specificObjectivesLabel);
-        specificObjectivesGrid.setWidget(1, 0, specificObjectivesButton);
-        specificObjectivesGrid.setWidget(2, 0, specificObjectivesGroupsButton);
+
+        if (!readOnly) {
+            specificObjectivesGrid.setWidget(1, 0, specificObjectivesButton);
+            specificObjectivesGrid.setWidget(2, 0, specificObjectivesGroupsButton);
+        }
 
         // Expected results.
         final Label exceptedResultsLabel = new Label(I18N.CONSTANTS.logFrameExceptedResults() + " ("
@@ -327,8 +335,11 @@ public class ProjectLogFrameGrid {
         exceptedResultsGrid.setCellPadding(0);
         exceptedResultsGrid.setCellSpacing(0);
         exceptedResultsGrid.setWidget(0, 0, exceptedResultsLabel);
-        exceptedResultsGrid.setWidget(1, 0, expectedResultsButton);
-        exceptedResultsGrid.setWidget(2, 0, expectedResultsGroupsButton);
+
+        if (!readOnly) {
+            exceptedResultsGrid.setWidget(1, 0, expectedResultsButton);
+            exceptedResultsGrid.setWidget(2, 0, expectedResultsGroupsButton);
+        }
 
         // Activities.
         final Label activitiesLabel = new Label(I18N.CONSTANTS.logFrameActivities());
@@ -363,8 +374,11 @@ public class ProjectLogFrameGrid {
         activitiesGrid.setCellPadding(0);
         activitiesGrid.setCellSpacing(0);
         activitiesGrid.setWidget(0, 0, activitiesLabel);
-        activitiesGrid.setWidget(1, 0, activitiesButton);
-        activitiesGrid.setWidget(2, 0, activitiesGroupsButton);
+
+        if (!readOnly) {
+            activitiesGrid.setWidget(1, 0, activitiesButton);
+            activitiesGrid.setWidget(2, 0, activitiesGroupsButton);
+        }
 
         // Prerequisites.
         final Label prerequisitesLabel = new Label(I18N.CONSTANTS.logFramePrerequisites());
@@ -398,8 +412,11 @@ public class ProjectLogFrameGrid {
         prerequisitesGrid.setCellPadding(0);
         prerequisitesGrid.setCellSpacing(0);
         prerequisitesGrid.setWidget(0, 0, prerequisitesLabel);
-        prerequisitesGrid.setWidget(1, 0, prerequisitesButton);
-        prerequisitesGrid.setWidget(2, 0, prerequisitesGroupButton);
+
+        if (!readOnly) {
+            prerequisitesGrid.setWidget(1, 0, prerequisitesButton);
+            prerequisitesGrid.setWidget(2, 0, prerequisitesGroupButton);
+        }
 
         table.setWidget(1, 0, specificObjectivesGrid);
         table.setWidget(2, 0, exceptedResultsGrid);
@@ -645,9 +662,25 @@ public class ProjectLogFrameGrid {
      *            The log frame.
      */
     public void displayLogFrame(LogFrameDTO logFrame) {
+        displayLogFrame(logFrame, true);
+    }
+
+    /**
+     * Displays the log frame content in the log frame grid (specific
+     * objectives, expected results, prerequisites, activities);
+     * 
+     * @param table
+     *            The log frame grid.
+     * @param enabled
+     *            If the log frame is read only or not.
+     * @param logFrame
+     *            The log frame.
+     */
+    public void displayLogFrame(LogFrameDTO logFrame, boolean enabled) {
 
         this.logFrame = logFrame;
         this.logFrameModel = logFrame.getLogFrameModelDTO();
+        this.readOnly = !enabled;
 
         ensureLogFrame();
 
@@ -820,7 +853,9 @@ public class ProjectLogFrameGrid {
                 grid.setCellPadding(0);
                 grid.setCellSpacing(0);
                 grid.setWidget(0, 0, label);
-                grid.setWidget(0, 1, buildGroupMenu(specificObjectivesView, this));
+                if (!readOnly) {
+                    grid.setWidget(0, 1, buildGroupMenu(specificObjectivesView, this));
+                }
 
                 return grid;
             }
@@ -973,7 +1008,10 @@ public class ProjectLogFrameGrid {
                             grid.setCellPadding(0);
                             grid.setCellSpacing(0);
                             grid.setWidget(0, 0, codeLabel);
-                            grid.setWidget(0, 1, buildSpecificObjectiveMenu(this));
+
+                            if (!readOnly) {
+                                grid.setWidget(0, 1, buildSpecificObjectiveMenu(this));
+                            }
 
                             return grid;
 
@@ -985,6 +1023,7 @@ public class ProjectLogFrameGrid {
                             interventionLogicTextBox.setHeight("100%");
                             interventionLogicTextBox.setVisibleLines(3);
                             interventionLogicTextBox.addStyleName("html-textbox");
+                            interventionLogicTextBox.setEnabled(!readOnly);
 
                             if (userObject != null) {
                                 interventionLogicTextBox.setText(userObject.getInterventionLogic());
@@ -1013,6 +1052,7 @@ public class ProjectLogFrameGrid {
                             risksTextBox.setHeight("100%");
                             risksTextBox.setVisibleLines(3);
                             risksTextBox.addStyleName("html-textbox");
+                            risksTextBox.setEnabled(!readOnly);
 
                             if (userObject != null) {
                                 risksTextBox.setText(userObject.getRisks());
@@ -1036,6 +1076,7 @@ public class ProjectLogFrameGrid {
                             assumptionsTextBox.setHeight("100%");
                             assumptionsTextBox.setVisibleLines(3);
                             assumptionsTextBox.addStyleName("html-textbox");
+                            assumptionsTextBox.setEnabled(!readOnly);
 
                             if (userObject != null) {
                                 assumptionsTextBox.setText(userObject.getAssumptions());
@@ -1179,7 +1220,9 @@ public class ProjectLogFrameGrid {
                 grid.setCellPadding(0);
                 grid.setCellSpacing(0);
                 grid.setWidget(0, 0, label);
-                grid.setWidget(0, 1, buildGroupMenu(expectedResultsView, this));
+                if (!readOnly) {
+                    grid.setWidget(0, 1, buildGroupMenu(expectedResultsView, this));
+                }
 
                 return grid;
             }
@@ -1391,7 +1434,9 @@ public class ProjectLogFrameGrid {
                             grid.setCellPadding(0);
                             grid.setCellSpacing(0);
                             grid.setWidget(0, 0, codeLabel);
-                            grid.setWidget(0, 1, buildExpectedResultMenu(this));
+                            if (!readOnly) {
+                                grid.setWidget(0, 1, buildExpectedResultMenu(this));
+                            }
 
                             return grid;
 
@@ -1403,6 +1448,7 @@ public class ProjectLogFrameGrid {
                             interventionLogicTextBox.setHeight("100%");
                             interventionLogicTextBox.setVisibleLines(3);
                             interventionLogicTextBox.addStyleName("html-textbox");
+                            interventionLogicTextBox.setEnabled(!readOnly);
 
                             if (userObject != null) {
                                 interventionLogicTextBox.setText(userObject.getInterventionLogic());
@@ -1431,6 +1477,7 @@ public class ProjectLogFrameGrid {
                             risksTextBox.setHeight("100%");
                             risksTextBox.setVisibleLines(3);
                             risksTextBox.addStyleName("html-textbox");
+                            risksTextBox.setEnabled(!readOnly);
 
                             if (userObject != null) {
                                 risksTextBox.setText(userObject.getRisks());
@@ -1454,6 +1501,7 @@ public class ProjectLogFrameGrid {
                             assumptionsTextBox.setHeight("100%");
                             assumptionsTextBox.setVisibleLines(3);
                             assumptionsTextBox.addStyleName("html-textbox");
+                            assumptionsTextBox.setEnabled(!readOnly);
 
                             if (userObject != null) {
                                 assumptionsTextBox.setText(userObject.getAssumptions());
@@ -1597,7 +1645,9 @@ public class ProjectLogFrameGrid {
                 grid.setCellPadding(0);
                 grid.setCellSpacing(0);
                 grid.setWidget(0, 0, label);
-                grid.setWidget(0, 1, buildGroupMenu(activitiesView, this));
+                if (!readOnly) {
+                    grid.setWidget(0, 1, buildGroupMenu(activitiesView, this));
+                }
 
                 return grid;
             }
@@ -1853,7 +1903,9 @@ public class ProjectLogFrameGrid {
                             grid.setCellPadding(0);
                             grid.setCellSpacing(0);
                             grid.setWidget(0, 0, codeLabel);
-                            grid.setWidget(0, 1, buildActivityMenu(this));
+                            if (!readOnly) {
+                                grid.setWidget(0, 1, buildActivityMenu(this));
+                            }
 
                             return grid;
 
@@ -1865,6 +1917,7 @@ public class ProjectLogFrameGrid {
                             contentTextBox.setHeight("100%");
                             contentTextBox.setVisibleLines(2);
                             contentTextBox.addStyleName("html-textbox");
+                            contentTextBox.setEnabled(!readOnly);
 
                             if (userObject != null) {
                                 contentTextBox.setText(userObject.getTitle());
@@ -2000,7 +2053,9 @@ public class ProjectLogFrameGrid {
                 grid.setCellPadding(0);
                 grid.setCellSpacing(0);
                 grid.setWidget(0, 0, label);
-                grid.setWidget(0, 1, buildGroupMenu(prerequisitesView, this));
+                if (!readOnly) {
+                    grid.setWidget(0, 1, buildGroupMenu(prerequisitesView, this));
+                }
 
                 return grid;
             }
@@ -2142,7 +2197,9 @@ public class ProjectLogFrameGrid {
                     grid.setCellPadding(0);
                     grid.setCellSpacing(0);
                     grid.setWidget(0, 0, codeLabel);
-                    grid.setWidget(0, 1, buildPrerequisiteMenu(this));
+                    if (!readOnly) {
+                        grid.setWidget(0, 1, buildPrerequisiteMenu(this));
+                    }
 
                     return grid;
 
@@ -2154,6 +2211,7 @@ public class ProjectLogFrameGrid {
                     contentTextBox.setHeight("100%");
                     contentTextBox.setVisibleLines(2);
                     contentTextBox.addStyleName("html-textbox");
+                    contentTextBox.setEnabled(!readOnly);
 
                     if (userObject != null) {
                         contentTextBox.setText(userObject.getContent());

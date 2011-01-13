@@ -44,6 +44,7 @@ import org.sigmah.shared.command.result.RemindersResultList;
 import org.sigmah.shared.command.result.ValueResult;
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.domain.ProjectModelType;
+import org.sigmah.shared.domain.profile.GlobalPermissionEnum;
 import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.PhaseDTO;
 import org.sigmah.shared.dto.PhaseModelDTO;
@@ -58,6 +59,7 @@ import org.sigmah.shared.dto.element.handler.ValueEvent;
 import org.sigmah.shared.dto.element.handler.ValueHandler;
 import org.sigmah.shared.dto.layout.LayoutConstraintDTO;
 import org.sigmah.shared.dto.layout.LayoutGroupDTO;
+import org.sigmah.shared.dto.profile.ProfileUtils;
 import org.sigmah.shared.dto.reminder.MonitoredPointDTO;
 import org.sigmah.shared.dto.reminder.MonitoredPointListDTO;
 import org.sigmah.shared.dto.reminder.ReminderDTO;
@@ -497,8 +499,9 @@ public class ProjectDashboardPresenter implements SubPresenter {
                     + phaseDTO.getPhaseModelDTO().getDefinitionDTO().getId() + ".");
         }
 
-        // Phase ended state
-        final boolean isEnded = isEndedPhase(phaseDTO);
+        // If the element are read only.
+        final boolean readOnly = isEndedPhase(phaseDTO)
+                || !ProfileUtils.isGranted(authentication, GlobalPermissionEnum.EDIT_PROJECT);
 
         // Masks the main panel.
         int count = 0;
@@ -585,7 +588,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
                         // Generates element component (with the value).
                         elementDTO.init();
-                        final Component elementComponent = elementDTO.getElementComponent(valueResult, !isEnded);
+                        final Component elementComponent = elementDTO.getElementComponent(valueResult, !readOnly);
 
                         // Component width.
                         final FormData formData;

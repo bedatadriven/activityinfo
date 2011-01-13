@@ -444,10 +444,17 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
 
         final ToolBar toolbar = new ToolBar();
         toolbar.add(title);
-        toolbar.add(new SeparatorToolItem());
-        toolbar.add(addFinancialProjectButton);
-        toolbar.add(new SeparatorToolItem());
-        toolbar.add(createFinancialProjectButton);
+
+        if (ProfileUtils.isGranted(authentication, GlobalPermissionEnum.EDIT_PROJECT)) {
+            toolbar.add(new SeparatorToolItem());
+            toolbar.add(addFinancialProjectButton);
+        }
+
+        if (ProfileUtils.isGranted(authentication, GlobalPermissionEnum.CREATE_PROJECT,
+                GlobalPermissionEnum.EDIT_PROJECT)) {
+            toolbar.add(new SeparatorToolItem());
+            toolbar.add(createFinancialProjectButton);
+        }
 
         // Builds the grid panel.
         panelFinancialProjects = new ContentPanel();
@@ -500,10 +507,17 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
 
         final ToolBar toolbar = new ToolBar();
         toolbar.add(title);
-        toolbar.add(new SeparatorToolItem());
-        toolbar.add(addLocalPartnerProjectButton);
-        toolbar.add(new SeparatorToolItem());
-        toolbar.add(createLocalPartnerProjectButton);
+
+        if (ProfileUtils.isGranted(authentication, GlobalPermissionEnum.EDIT_PROJECT)) {
+            toolbar.add(new SeparatorToolItem());
+            toolbar.add(addLocalPartnerProjectButton);
+        }
+
+        if (ProfileUtils.isGranted(authentication, GlobalPermissionEnum.CREATE_PROJECT,
+                GlobalPermissionEnum.EDIT_PROJECT)) {
+            toolbar.add(new SeparatorToolItem());
+            toolbar.add(createLocalPartnerProjectButton);
+        }
 
         // Builds the grid panel.
         panelLocalProjects = new ContentPanel();
@@ -797,7 +811,9 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
         final ToolBar toolbar = new ToolBar();
         toolbar.setAlignment(HorizontalAlignment.LEFT);
 
-        toolbar.add(addReminderButton);
+        if (ProfileUtils.isGranted(authentication, GlobalPermissionEnum.EDIT_PROJECT)) {
+            toolbar.add(addReminderButton);
+        }
         toolbar.add(filterButton);
 
         // Panel.
@@ -919,7 +935,9 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
         final ToolBar toolbar = new ToolBar();
         toolbar.setAlignment(HorizontalAlignment.LEFT);
 
-        toolbar.add(addMonitoredPointButton);
+        if (ProfileUtils.isGranted(authentication, GlobalPermissionEnum.EDIT_PROJECT)) {
+            toolbar.add(addMonitoredPointButton);
+        }
         toolbar.add(filterButton);
 
         // Panel.

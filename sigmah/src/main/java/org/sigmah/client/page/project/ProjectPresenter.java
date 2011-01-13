@@ -118,10 +118,10 @@ public class ProjectPresenter implements Frame, TabPage {
         this.presenters = new SubPresenter[] {
                 new ProjectDashboardPresenter(dispatcher, eventBus, authentication, this, info, countriesList), // Dashboard
                 new ProjectDetailsPresenter(dispatcher, authentication, this, countriesList), // Details,
-                new ProjectLogFramePresenter(dispatcher, this), // Logical
-                                                                // Framework
+                new ProjectLogFramePresenter(dispatcher, authentication, this), // Logical
+                // Framework
                 dummyPresenter, // Indicators
-                new ProjectCalendarPresenter(dispatcher, this), // Calendar
+                new ProjectCalendarPresenter(dispatcher, authentication, this), // Calendar
                 new ProjectReportsPresenter(authentication, dispatcher, eventBus, this), // Reports
                 dummyPresenter // Security incidents
         };

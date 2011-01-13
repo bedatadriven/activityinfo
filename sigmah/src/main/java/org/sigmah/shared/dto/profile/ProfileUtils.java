@@ -194,12 +194,25 @@ public final class ProfileUtils {
      * @return If the profile is granted for this permission.
      */
     public static boolean isGranted(Authentication authentication, GlobalPermissionEnum permission) {
+        return isGranted(authentication, new GlobalPermissionEnum[] { permission });
+    }
+
+    /**
+     * Returns if the authentication is granted for all the given permissions.
+     * 
+     * @param authentication
+     *            The authentication.
+     * @param permissions
+     *            The list of permissions.
+     * @return If the profile is granted for this list of permissions.
+     */
+    public static boolean isGranted(Authentication authentication, GlobalPermissionEnum... permissions) {
 
         if (authentication == null) {
             return false;
         }
 
-        return isGranted(authentication.getAggregatedProfile(), permission);
+        return isGranted(authentication.getAggregatedProfile(), permissions);
     }
 
     /**
@@ -212,6 +225,19 @@ public final class ProfileUtils {
      * @return If the profile is granted for this permission.
      */
     public static boolean isGranted(ProfileDTO profile, GlobalPermissionEnum permission) {
+        return isGranted(profile, new GlobalPermissionEnum[] { permission });
+    }
+
+    /**
+     * Returns if the given profile is granted for all the given permissions.
+     * 
+     * @param profile
+     *            The profile.
+     * @param permissions
+     *            The list of permissions.
+     * @return If the profile is granted for this list of permissions.
+     */
+    public static boolean isGranted(ProfileDTO profile, GlobalPermissionEnum... permissions) {
 
         boolean granted = false;
 
@@ -219,14 +245,18 @@ public final class ProfileUtils {
         if (profile != null) {
 
             // No permission needed.
-            if (permission == null) {
+            if (permissions == null || permissions.length == 0) {
                 granted = true;
             }
             // Checks if the permissions is contained in the profile.
             else {
                 if (profile.getGlobalPermissions() != null) {
-                    if (profile.getGlobalPermissions().contains(permission)) {
-                        granted = true;
+                    granted = true;
+                    for (final GlobalPermissionEnum p : permissions) {
+                        if (!profile.getGlobalPermissions().contains(p)) {
+                            granted = false;
+                            break;
+                        }
                     }
                 }
             }

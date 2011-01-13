@@ -6,6 +6,7 @@
 package org.sigmah.client.page.orgunit.calendar;
 
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.page.orgunit.OrgUnitPresenter;
 import org.sigmah.client.page.project.SubPresenter;
 import org.sigmah.client.page.project.calendar.ProjectCalendarPresenter.CalendarWrapper;
@@ -34,14 +35,16 @@ public class OrgUnitCalendarPresenter implements SubPresenter {
     private ProjectCalendarView view;
     private CalendarWidget calendar;
     private Dispatcher dispatcher;
+    private Authentication authentication;
 
     private ListStore<CalendarWrapper> calendarStore;
     private CheckBoxSelectionModel<CalendarWrapper> selectionModel;
 
     private int calendarIndex = 1;
 
-    public OrgUnitCalendarPresenter(Dispatcher dispatcher, OrgUnitPresenter mainPresenter) {
+    public OrgUnitCalendarPresenter(Dispatcher dispatcher, Authentication authentication, OrgUnitPresenter mainPresenter) {
         this.dispatcher = dispatcher;
+        this.authentication = authentication;
         this.mainPresenter = mainPresenter;
     }
 
@@ -52,7 +55,7 @@ public class OrgUnitCalendarPresenter implements SubPresenter {
             calendarStore = new ListStore<CalendarWrapper>();
             selectionModel = new CheckBoxSelectionModel<CalendarWrapper>();
 
-            view = new ProjectCalendarView(calendar, calendarStore, selectionModel, dispatcher);
+            view = new ProjectCalendarView(calendar, calendarStore, selectionModel, dispatcher, authentication);
         }
 
         // If the current org unit has changed, clear the view

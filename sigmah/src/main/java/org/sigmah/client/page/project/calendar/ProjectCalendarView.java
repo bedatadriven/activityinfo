@@ -50,6 +50,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.project.calendar.ProjectCalendarPresenter.CalendarWrapper;
 import org.sigmah.client.ui.CalendarWidget;
@@ -60,19 +61,22 @@ import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.domain.calendar.Calendar;
 import org.sigmah.shared.domain.calendar.Event;
+import org.sigmah.shared.domain.profile.GlobalPermissionEnum;
+import org.sigmah.shared.dto.profile.ProfileUtils;
 
 /**
- *
+ * 
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
-@SuppressWarnings({"deprecation", "unchecked"})
+@SuppressWarnings({ "deprecation", "unchecked" })
 public class ProjectCalendarView extends LayoutContainer {
 
     private Button addEventButton;
     private Dialog addPersonalEventDialog;
 
     public ProjectCalendarView(final CalendarWidget calendar, final ListStore<CalendarWrapper> calendarStore,
-            final CheckBoxSelectionModel<CalendarWrapper> selectionModel, final Dispatcher dispatcher) {
+            final CheckBoxSelectionModel<CalendarWrapper> selectionModel, final Dispatcher dispatcher,
+            final Authentication authentication) {
 
         final BorderLayout borderLayout = new BorderLayout();
         borderLayout.setContainerStyle("x-border-layout-ct main-background");
@@ -112,7 +116,8 @@ public class ProjectCalendarView extends LayoutContainer {
         });
 
         // Defining the first day of the week
-        // LocaleInfo uses 1 for Sunday and 2 for Monday. Substracting 1 since Date starts with 0 for Sunday.
+        // LocaleInfo uses 1 for Sunday and 2 for Monday. Substracting 1 since
+        // Date starts with 0 for Sunday.
         final DateTimeConstants constants = LocaleInfo.getCurrentLocale().getDateTimeConstants();
         calendar.setFirstDayOfWeek(Integer.parseInt(constants.firstDayOfTheWeek()) - 1);
 
@@ -201,7 +206,10 @@ public class ProjectCalendarView extends LayoutContainer {
                 getEditPersonalEventDialog(null, calendarStore, calendar, dispatcher).show();
             }
         });
-        toolbar.add(addEventButton);
+
+        if (ProfileUtils.isGranted(authentication, GlobalPermissionEnum.EDIT_PROJECT)) {
+            toolbar.add(addEventButton);
+        }
 
         calendarView.setTopComponent(toolbar);
 
@@ -224,15 +232,16 @@ public class ProjectCalendarView extends LayoutContainer {
 
                     @Override
                     public void onFailure(Throwable caught) {
-                        MessageBox.alert(I18N.CONSTANTS.error(),
-                                I18N.CONSTANTS.calendarDeleteEventError(),
-                                null);
+                        MessageBox.alert(I18N.CONSTANTS.error(), I18N.CONSTANTS.calendarDeleteEventError(), null);
                     }
 
                     @Override
                     public void onSuccess(VoidResult result) {
-                        final List<Event> oldEventList = event.getParent().getEvents().get(
-                                new Date(event.getDtstart().getYear(), event.getDtstart().getMonth(), event.getDtstart().getDate()));
+                        final List<Event> oldEventList = event
+                                .getParent()
+                                .getEvents()
+                                .get(new Date(event.getDtstart().getYear(), event.getDtstart().getMonth(), event
+                                        .getDtstart().getDate()));
                         oldEventList.remove(event);
 
                         calendarWidget.refresh();
@@ -251,8 +260,7 @@ public class ProjectCalendarView extends LayoutContainer {
         return addEventButton;
     }
 
-    public Dialog getEditPersonalEventDialog(final Event event,
-            final ListStore<CalendarWrapper> calendarStore,
+    public Dialog getEditPersonalEventDialog(final Event event, final ListStore<CalendarWrapper> calendarStore,
             final CalendarWidget calendarWidget, final Dispatcher dispatcher) {
         if (addPersonalEventDialog == null) {
             final Dialog dialog = new Dialog();
@@ -332,18 +340,23 @@ public class ProjectCalendarView extends LayoutContainer {
                 field.clearInvalid();
             }
         } else {
-            boolean fullDayEvent = event.getDtend() != null && (event.getDtstart().getDate() != event.getDtend().getDate()
-                    || event.getDtstart().getMonth() != event.getDtend().getMonth()
-                    || event.getDtstart().getYear() != event.getDtend().getYear());
+            boolean fullDayEvent = event.getDtend() != null
+                    && (event.getDtstart().getDate() != event.getDtend().getDate()
+                            || event.getDtstart().getMonth() != event.getDtend().getMonth() || event.getDtstart()
+                            .getYear() != event.getDtend().getYear());
 
-            ((ComboBox<CalendarWrapper>) addPersonalEventDialog.getWidget(0)).setValue(new CalendarWrapper(event.getParent()));
+            ((ComboBox<CalendarWrapper>) addPersonalEventDialog.getWidget(0)).setValue(new CalendarWrapper(event
+                    .getParent()));
             ((TextField<String>) addPersonalEventDialog.getWidget(1)).setValue(event.getSummary());
-            ((DateField) addPersonalEventDialog.getWidget(2)).setValue(new Date(event.getDtstart().getYear(), event.getDtstart().getMonth(), event.getDtstart().getDate()));
+            ((DateField) addPersonalEventDialog.getWidget(2)).setValue(new Date(event.getDtstart().getYear(), event
+                    .getDtstart().getMonth(), event.getDtstart().getDate()));
             if (!fullDayEvent) {
-                ((TimeField) addPersonalEventDialog.getWidget(3)).setValue(((TimeField) addPersonalEventDialog.getWidget(3)).findModel(event.getDtstart()));
+                ((TimeField) addPersonalEventDialog.getWidget(3)).setValue(((TimeField) addPersonalEventDialog
+                        .getWidget(3)).findModel(event.getDtstart()));
 
                 if (event.getDtend() != null) {
-                    ((TimeField) addPersonalEventDialog.getWidget(4)).setValue(((TimeField) addPersonalEventDialog.getWidget(4)).findModel(event.getDtend()));
+                    ((TimeField) addPersonalEventDialog.getWidget(4)).setValue(((TimeField) addPersonalEventDialog
+                            .getWidget(4)).findModel(event.getDtend()));
                 } else {
                     ((TimeField) addPersonalEventDialog.getWidget(4)).setValue(null);
                 }
@@ -391,9 +404,7 @@ public class ProjectCalendarView extends LayoutContainer {
                         public void onFailure(Throwable caught) {
                             addPersonalEventDialog.hide();
                             Log.error(I18N.CONSTANTS.calendarAddEventError(), caught);
-                            MessageBox.alert(I18N.CONSTANTS.error(),
-                                    I18N.CONSTANTS.calendarAddEventError(),
-                                    null);
+                            MessageBox.alert(I18N.CONSTANTS.error(), I18N.CONSTANTS.calendarAddEventError(), null);
                         }
 
                         @Override
@@ -409,9 +420,7 @@ public class ProjectCalendarView extends LayoutContainer {
                         editPersonalEvent(event, properties, dispatcher, callback);
                     }
                 } else {
-                    MessageBox.alert(I18N.CONSTANTS.error(),
-                            I18N.CONSTANTS.calendarAddEventEmptyFields(),
-                            null);
+                    MessageBox.alert(I18N.CONSTANTS.error(), I18N.CONSTANTS.calendarAddEventEmptyFields(), null);
                 }
             }
         });
@@ -419,7 +428,8 @@ public class ProjectCalendarView extends LayoutContainer {
         return addPersonalEventDialog;
     }
 
-    private void addPersonalEvent(final Map<String, Serializable> properties, final Dispatcher dispatcher, final AsyncCallback<Event> callback) {
+    private void addPersonalEvent(final Map<String, Serializable> properties, final Dispatcher dispatcher,
+            final AsyncCallback<Event> callback) {
         final CreateEntity createEntity = new CreateEntity("PersonalEvent", properties);
         dispatcher.execute(createEntity, null, new AsyncCallback<CreateResult>() {
 
@@ -440,8 +450,10 @@ public class ProjectCalendarView extends LayoutContainer {
         });
     }
 
-    private void editPersonalEvent(final Event event, final Map<String, ?> properties, final Dispatcher dispatcher, final AsyncCallback<Event> callback) {
-        final UpdateEntity updateEntity = new UpdateEntity("PersonalEvent", (Integer) event.getIdentifier(), (Map<String, Object>) properties);
+    private void editPersonalEvent(final Event event, final Map<String, ?> properties, final Dispatcher dispatcher,
+            final AsyncCallback<Event> callback) {
+        final UpdateEntity updateEntity = new UpdateEntity("PersonalEvent", (Integer) event.getIdentifier(),
+                (Map<String, Object>) properties);
         dispatcher.execute(updateEntity, null, new AsyncCallback<VoidResult>() {
 
             @Override
@@ -454,7 +466,8 @@ public class ProjectCalendarView extends LayoutContainer {
                 final Calendar calendar = event.getParent();
 
                 final List<Event> oldEventList = calendar.getEvents().get(
-                        new Date(event.getDtstart().getYear(), event.getDtstart().getMonth(), event.getDtstart().getDate()));
+                        new Date(event.getDtstart().getYear(), event.getDtstart().getMonth(), event.getDtstart()
+                                .getDate()));
                 oldEventList.remove(event);
 
                 updateEvent(event, properties);
@@ -473,9 +486,11 @@ public class ProjectCalendarView extends LayoutContainer {
         final Time endHour = (Time) properties.get("endDate");
 
         if (startHour != null) {
-            event.setDtstart(new Date(day.getYear(), day.getMonth(), day.getDate(), startHour.getHour(), startHour.getMinutes()));
+            event.setDtstart(new Date(day.getYear(), day.getMonth(), day.getDate(), startHour.getHour(), startHour
+                    .getMinutes()));
             if (endHour != null) {
-                event.setDtend(new Date(day.getYear(), day.getMonth(), day.getDate(), endHour.getHour(), endHour.getMinutes()));
+                event.setDtend(new Date(day.getYear(), day.getMonth(), day.getDate(), endHour.getHour(), endHour
+                        .getMinutes()));
             } else {
                 event.setDtend(null);
             }

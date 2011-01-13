@@ -12,6 +12,7 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.project.SubPresenter;
 import org.sigmah.client.page.project.ProjectPresenter;
@@ -35,6 +36,7 @@ public class ProjectCalendarPresenter implements SubPresenter {
     private ProjectCalendarView view;
     private CalendarWidget calendar;
     private Dispatcher dispatcher;
+    private Authentication authentication;
 
     private ListStore<CalendarWrapper> calendarStore;
     private CheckBoxSelectionModel<CalendarWrapper> selectionModel;
@@ -102,8 +104,9 @@ public class ProjectCalendarPresenter implements SubPresenter {
         }
     }
 
-    public ProjectCalendarPresenter(Dispatcher dispatcher, ProjectPresenter projectPresenter) {
+    public ProjectCalendarPresenter(Dispatcher dispatcher, Authentication authentication, ProjectPresenter projectPresenter) {
         this.dispatcher = dispatcher;
+        this.authentication=authentication;
         this.projectPresenter = projectPresenter;
     }
 
@@ -114,7 +117,7 @@ public class ProjectCalendarPresenter implements SubPresenter {
             calendarStore = new ListStore<CalendarWrapper>();
             selectionModel = new CheckBoxSelectionModel<CalendarWrapper>();
 
-            view = new ProjectCalendarView(calendar, calendarStore, selectionModel, dispatcher);
+            view = new ProjectCalendarView(calendar, calendarStore, selectionModel, dispatcher, authentication);
         }
 
         // If the current project has changed, clear the view
