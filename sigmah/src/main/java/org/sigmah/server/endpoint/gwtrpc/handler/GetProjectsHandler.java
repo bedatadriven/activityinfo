@@ -166,7 +166,7 @@ public class GetProjectsHandler implements CommandHandler<GetProjects> {
         // Fill the org unit.
         if (project.getPartners() != null) {
             for (final OrgUnit orgUnit : project.getPartners()) {
-                pLight.setOrgUnitName(orgUnit.getName());
+                pLight.setOrgUnitName(orgUnit.getName() + " - " + orgUnit.getFullName());
                 break;
             }
         }
