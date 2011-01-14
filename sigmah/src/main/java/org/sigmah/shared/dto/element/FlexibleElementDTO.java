@@ -16,6 +16,7 @@ import org.sigmah.client.util.HistoryTokenText;
 import org.sigmah.shared.command.GetHistory;
 import org.sigmah.shared.command.result.HistoryResult;
 import org.sigmah.shared.command.result.ValueResult;
+import org.sigmah.shared.domain.profile.PrivacyGroupPermissionEnum;
 import org.sigmah.shared.dto.EntityDTO;
 import org.sigmah.shared.dto.element.handler.RequiredValueEvent;
 import org.sigmah.shared.dto.element.handler.RequiredValueHandler;
@@ -23,6 +24,8 @@ import org.sigmah.shared.dto.element.handler.ValueEvent;
 import org.sigmah.shared.dto.element.handler.ValueHandler;
 import org.sigmah.shared.dto.history.HistoryTokenListDTO;
 import org.sigmah.shared.dto.history.HistoryTokenManager;
+import org.sigmah.shared.dto.profile.PrivacyGroupDTO;
+import org.sigmah.shared.dto.profile.ProfileUtils;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.data.BaseModelData;
@@ -138,7 +141,8 @@ public abstract class FlexibleElementDTO extends BaseModelData implements Entity
      *            value of the flexible element, or {@code null} to display the
      *            element without its value.
      * 
-     * @return the widget corresponding to the flexible element.
+     * @return the widget corresponding to the flexible element (can be
+     *         <code>null</code> if the user cannot see this element).
      */
     public Component getElementComponent(ValueResult valueResult) {
         return getComponentWithHistory(valueResult, true);
@@ -153,7 +157,8 @@ public abstract class FlexibleElementDTO extends BaseModelData implements Entity
      * @param enabled
      *            If the component is enabled.
      * 
-     * @return the widget corresponding to the flexible element.
+     * @return The widget corresponding to the flexible element (can be
+     *         <code>null</code> if the user cannot see this element).
      */
     public Component getElementComponent(ValueResult valueResult, boolean enabled) {
         return getComponentWithHistory(valueResult, enabled);
@@ -171,6 +176,27 @@ public abstract class FlexibleElementDTO extends BaseModelData implements Entity
      * @return
      */
     private Component getComponentWithHistory(ValueResult valueResult, boolean enabled) {
+
+        // The permission for this element.
+        final PrivacyGroupPermissionEnum perm = ProfileUtils.getPermission(authentication, getPrivacyGroup());
+
+        if (Log.isDebugEnabled()) {
+            Log.debug("[getComponentWithHistory] Permission '" + perm + "' for the element '" + getLabel() + "'");
+        }
+
+        switch (perm) {
+        case NONE:
+            // Element not visible.
+            return null;
+        case READ:
+            // Read-only mode.
+            enabled = enabled && false;
+        case WRITE:
+            // Edit mode.
+            enabled = enabled && true;
+        default:
+            break;
+        }
 
         final Component component = getComponent(valueResult, enabled);
 
@@ -299,6 +325,14 @@ public abstract class FlexibleElementDTO extends BaseModelData implements Entity
 
     public void setHistorable(boolean historable) {
         set("historable", historable);
+    }
+
+    public PrivacyGroupDTO getPrivacyGroup() {
+        return get("privacyGroup");
+    }
+
+    public void setPrivacyGroup(PrivacyGroupDTO privacyGroup) {
+        set("privacyGroup", privacyGroup);
     }
 
     protected void ensureHistorable() {

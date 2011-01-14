@@ -191,7 +191,7 @@ public final class ProfileUtils {
      *            The authentication.
      * @param permission
      *            The permission.
-     * @return If the profile is granted for this permission.
+     * @return If the authentication is granted for this permission.
      */
     public static boolean isGranted(Authentication authentication, GlobalPermissionEnum permission) {
         return isGranted(authentication, new GlobalPermissionEnum[] { permission });
@@ -204,7 +204,7 @@ public final class ProfileUtils {
      *            The authentication.
      * @param permissions
      *            The list of permissions.
-     * @return If the profile is granted for this list of permissions.
+     * @return If the authentication is granted for this list of permissions.
      */
     public static boolean isGranted(Authentication authentication, GlobalPermissionEnum... permissions) {
 
@@ -263,5 +263,59 @@ public final class ProfileUtils {
         }
 
         return granted;
+    }
+
+    /**
+     * Returns the permission {@link PrivacyGroupPermissionEnum} for the given
+     * authentication and the given privacy group.
+     * 
+     * @param authentication
+     *            The authentication.
+     * @param group
+     *            The privacy group.
+     * @return The permission for the authentication and this privacy group.
+     */
+    public static PrivacyGroupPermissionEnum getPermission(Authentication authentication, PrivacyGroupDTO group) {
+
+        if (authentication == null) {
+            return PrivacyGroupPermissionEnum.NONE;
+        }
+
+        return getPermission(authentication.getAggregatedProfile(), group);
+    }
+
+    /**
+     * Returns the permission {@link PrivacyGroupPermissionEnum} for the given
+     * profile and the given privacy group.
+     * 
+     * @param profile
+     *            The profile.
+     * @param group
+     *            The privacy group.
+     * @return The permission for the profile and this privacy group.
+     */
+    public static PrivacyGroupPermissionEnum getPermission(ProfileDTO profile, PrivacyGroupDTO group) {
+
+        PrivacyGroupPermissionEnum permission = PrivacyGroupPermissionEnum.NONE;
+
+        // The profile must not be null.
+        if (profile != null) {
+
+            // No permission needed.
+            if (group == null) {
+                permission = PrivacyGroupPermissionEnum.WRITE;
+            }
+            // Checks if the privacy group is contained in the profile.
+            else {
+                if (profile.getPrivacyGroups() != null) {
+                    final PrivacyGroupPermissionEnum p = profile.getPrivacyGroups().get(group);
+                    if (p != null) {
+                        permission = p;
+                    }
+                }
+            }
+        }
+
+        return permission;
     }
 }

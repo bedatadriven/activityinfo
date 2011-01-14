@@ -246,7 +246,8 @@ public class ProjectDetailsPresenter implements SubPresenter {
 
                                 // Generates element component (with the value).
                                 elementDTO.init();
-                                final Component elementComponent = elementDTO.getElementComponent(valueResult, !readOnly);
+                                final Component elementComponent = elementDTO.getElementComponent(valueResult,
+                                        !readOnly);
 
                                 // Component width.
                                 final FormData formData;
@@ -256,7 +257,9 @@ public class ProjectDetailsPresenter implements SubPresenter {
                                     formData = new FormData(elementDTO.getPreferredWidth(), -1);
                                 }
 
-                                formPanel.add(elementComponent, formData);
+                                if (elementComponent != null) {
+                                    formPanel.add(elementComponent, formData);
+                                }
                                 formPanel.layout();
 
                                 // --

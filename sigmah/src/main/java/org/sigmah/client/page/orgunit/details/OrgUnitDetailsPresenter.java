@@ -197,7 +197,7 @@ public class OrgUnitDetailsPresenter implements SubPresenter {
                 // Creates the fieldset and positions it.
                 final FieldSet formPanel = (FieldSet) groupLayout.getWidget();
                 gridLayout.setWidget(groupLayout.getRow(), groupLayout.getColumn(), formPanel);
-                
+
                 // For each constraint in the current layout group.
                 if (groupLayout.getLayoutConstraintsDTO() != null) {
                     for (final LayoutConstraintDTO constraintDTO : groupLayout.getLayoutConstraintsDTO()) {
@@ -252,7 +252,9 @@ public class OrgUnitDetailsPresenter implements SubPresenter {
                                     formData = new FormData(elementDTO.getPreferredWidth(), -1);
                                 }
 
-                                formPanel.add(elementComponent, formData);
+                                if (elementComponent != null) {
+                                    formPanel.add(elementComponent, formData);
+                                }
                                 formPanel.layout();
 
                                 // --

@@ -7,5 +7,19 @@ package org.sigmah.shared.domain.profile;
  * 
  */
 public enum PrivacyGroupPermissionEnum {
-    READ, WRITE;
+
+    /**
+     * Forbids all actions.
+     */
+    NONE,
+
+    /**
+     * Allows to view.
+     */
+    READ,
+
+    /**
+     * Allows to view and edit.
+     */
+    WRITE;
 }

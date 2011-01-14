@@ -16,6 +16,7 @@ import javax.persistence.Transient;
 
 import org.sigmah.shared.domain.ProjectModel;
 import org.sigmah.shared.domain.history.Historable;
+import org.sigmah.shared.domain.profile.PrivacyGroup;
 import org.sigmah.shared.domain.value.ListEntity;
 
 /**
@@ -41,6 +42,7 @@ public abstract class FlexibleElement implements Serializable, Historable {
     private ProjectModel parentProjectModel;
     private String label;
     private Boolean validates = false;
+    private PrivacyGroup privacyGroup;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -81,6 +83,16 @@ public abstract class FlexibleElement implements Serializable, Historable {
         this.validates = validates;
     }
 
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "id_privacy_group", nullable = true)
+    public PrivacyGroup getPrivacyGroup() {
+        return privacyGroup;
+    }
+
+    public void setPrivacyGroup(PrivacyGroup privacyGroup) {
+        this.privacyGroup = privacyGroup;
+    }
+
     @Override
     @Transient
     public boolean isHistorable() {
@@ -93,7 +105,7 @@ public abstract class FlexibleElement implements Serializable, Historable {
     public String asHistoryToken(String value) {
         return value;
     }
-    
+
     @Override
     @Transient
     public String asHistoryToken(ListEntity value) {

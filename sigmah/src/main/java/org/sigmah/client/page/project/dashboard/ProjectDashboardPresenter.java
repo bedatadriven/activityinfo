@@ -598,7 +598,10 @@ public class ProjectDashboardPresenter implements SubPresenter {
                             formData = new FormData(elementDTO.getPreferredWidth(), -1);
                         }
 
-                        formPanel.add(elementComponent, formData);
+                        if (elementComponent != null) {
+                            formPanel.add(elementComponent, formData);
+                        }
+
                         formPanel.layout();
 
                         // --
