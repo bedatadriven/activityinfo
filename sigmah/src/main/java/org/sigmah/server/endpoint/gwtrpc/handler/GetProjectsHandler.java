@@ -226,6 +226,24 @@ public class GetProjectsHandler implements CommandHandler<GetProjects> {
 
         // Fill children.
         final ArrayList<ProjectDTOLight> children = new ArrayList<ProjectDTOLight>();
+        // Maps the funding projects.
+        if (mapChildren && project.getFunding() != null) {
+            for (final ProjectFunding funding : project.getFunding()) {
+
+                final Project pFunding = funding.getFunding();
+
+                if (pFunding != null) {
+                    // Recursive call to retrieve the child (without its
+                    // children).
+                    children.add(mapProject(em, mapper, user, pFunding, false));
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("[execute] Attached funding project " + pFunding.getName() + " - '"
+                                + pFunding.getFullName() + "'.");
+                    }
+                }
+            }
+        }
+        // Maps the funded projects.
         if (mapChildren && project.getFunded() != null) {
             for (final ProjectFunding funded : project.getFunded()) {
 
