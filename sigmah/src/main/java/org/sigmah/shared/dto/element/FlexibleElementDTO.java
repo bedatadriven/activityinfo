@@ -212,21 +212,22 @@ public abstract class FlexibleElementDTO extends BaseModelData implements Entity
                             @Override
                             public void componentSelected(MenuEvent ce) {
 
-                                dispatcher.execute(new GetHistory(getId()), null, new AsyncCallback<HistoryResult>() {
+                                dispatcher.execute(new GetHistory(getId(), currentContainerDTO.getId()), null,
+                                        new AsyncCallback<HistoryResult>() {
 
-                                    @Override
-                                    public void onFailure(Throwable e) {
+                                            @Override
+                                            public void onFailure(Throwable e) {
 
-                                        Log.error("[execute] The history cannot be fetched.", e);
-                                        MessageBox.alert(I18N.CONSTANTS.historyError(),
-                                                I18N.CONSTANTS.historyErrorDetails(), null);
-                                    }
+                                                Log.error("[execute] The history cannot be fetched.", e);
+                                                MessageBox.alert(I18N.CONSTANTS.historyError(),
+                                                        I18N.CONSTANTS.historyErrorDetails(), null);
+                                            }
 
-                                    @Override
-                                    public void onSuccess(HistoryResult result) {
-                                        HistoryWindow.show(result.getTokens(), FlexibleElementDTO.this);
-                                    }
-                                });
+                                            @Override
+                                            public void onSuccess(HistoryResult result) {
+                                                HistoryWindow.show(result.getTokens(), FlexibleElementDTO.this);
+                                            }
+                                        });
                             }
                         });
 

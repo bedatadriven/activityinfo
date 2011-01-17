@@ -33,6 +33,7 @@ public class HistoryToken implements Serializable {
 
     private Integer id;
     private Long elementId;
+    private Integer projectId;
     private Date date;
     private String value;
     private User user;
@@ -56,6 +57,15 @@ public class HistoryToken implements Serializable {
 
     public void setElementId(Long elementId) {
         this.elementId = elementId;
+    }
+
+    @Column(name = "id_project", nullable = false)
+    public Integer getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(Integer projectId) {
+        this.projectId = projectId;
     }
 
     @Column(name = "history_date", nullable = false)

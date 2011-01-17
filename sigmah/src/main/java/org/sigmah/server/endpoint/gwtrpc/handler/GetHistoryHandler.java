@@ -34,11 +34,12 @@ public class GetHistoryHandler implements CommandHandler<GetHistory> {
 
         // Gets query parameters.
         final long elementId = cmd.getElementId();
+        final int projectId = cmd.getProjectId();
         final Date maxDate = cmd.getMaxDate();
 
         // Builds query.
         final StringBuilder sb = new StringBuilder();
-        sb.append("SELECT h FROM HistoryToken h WHERE h.elementId = :elementId");
+        sb.append("SELECT h FROM HistoryToken h WHERE h.elementId = :elementId AND h.projectId = :projectId");
         if (maxDate != null) {
             sb.append(" AND h.date >= :maxDate");
         }
@@ -46,6 +47,7 @@ public class GetHistoryHandler implements CommandHandler<GetHistory> {
 
         final Query query = em.createQuery(sb.toString());
         query.setParameter("elementId", elementId);
+        query.setParameter("projectId", projectId);
         if (maxDate != null) {
             query.setParameter("maxDate", maxDate);
         }

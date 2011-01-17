@@ -69,6 +69,7 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
 
         // This date must be the same for all the saved values !
         final Date historyDate = new Date();
+        final Integer historableId = cmd.getProjectId();
 
         // Iterating over the value change events
         final List<ValueEventWrapper> values = cmd.getValues();
@@ -92,9 +93,11 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
 
                 // Starred case.
                 if (source.getId() == -1) {
-                    project.setStarred(Boolean.valueOf(valueEvent.getSingleValue()));
-                    em.merge(project);
-                    continue;
+                    if (project != null) {
+                        project.setStarred(Boolean.valueOf(valueEvent.getSingleValue()));
+                        em.merge(project);
+                        continue;
+                    }
                 }
 
                 final DefaultFlexibleElementDTO defaultElement = (DefaultFlexibleElementDTO) source;
@@ -108,8 +111,10 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
                         updateSingleValue);
 
                 // Checks if the first value as been already historized or not.
-                final Query query = em.createQuery("SELECT h FROM HistoryToken h WHERE h.elementId = :elementId");
+                final Query query = em
+                        .createQuery("SELECT h FROM HistoryToken h WHERE h.elementId = :elementId AND h.projectId = :projectId");
                 query.setParameter("elementId", element.getId());
+                query.setParameter("projectId", historableId);
                 final List<Object> results = query.getResultList();
 
                 if (results == null || results.isEmpty()) {
@@ -126,12 +131,12 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
 
                     // Historize the first value.
                     if (oldValue != null) {
-                        historize(oldDate, element, oldOwner, ChangeType.ADD, oldValue, null);
+                        historize(oldDate, element, historableId, oldOwner, ChangeType.ADD, oldValue, null);
                     }
                 }
 
                 // Historize the value.
-                historize(historyDate, element, user, ChangeType.EDIT, updateSingleValue, null);
+                historize(historyDate, element, historableId, user, ChangeType.EDIT, updateSingleValue, null);
 
                 continue;
             }
@@ -149,7 +154,7 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
                 currentValue.setValue(updateSingleValue);
 
                 // Historize the value.
-                historize(historyDate, element, user, ChangeType.EDIT, updateSingleValue, null);
+                historize(historyDate, element, historableId, user, ChangeType.EDIT, updateSingleValue, null);
             }
             // Special case : this value is a part of a list which is the
             // true value of the flexible element. (only used for the
@@ -203,7 +208,7 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
                     currentValue.setValue(ValueResultUtils.mergeElements(ids));
 
                     // Historize the value.
-                    historize(historyDate, element, user, ChangeType.ADD, null, entity);
+                    historize(historyDate, element, historableId, user, ChangeType.ADD, null, entity);
                 }
                     break;
                 case REMOVE: {
@@ -231,7 +236,7 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
                         currentValue.setValue(ValueResultUtils.mergeElements(ids));
 
                         // Historize the value.
-                        historize(historyDate, element, user, ChangeType.REMOVE, null, entity);
+                        historize(historyDate, element, historableId, user, ChangeType.REMOVE, null, entity);
 
                     } else {
                         if (LOG.isDebugEnabled()) {
@@ -260,7 +265,7 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
                     }
 
                     // Historize the value.
-                    historize(historyDate, element, user, ChangeType.EDIT, null, entity);
+                    historize(historyDate, element, historableId, user, ChangeType.EDIT, null, entity);
                 }
                     break;
                 default:
@@ -284,8 +289,8 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
         return null;
     }
 
-    private void historize(Date date, FlexibleElement element, User user, ChangeType type, String singleValue,
-            ListEntity listValue) {
+    private void historize(Date date, FlexibleElement element, Integer projectId, User user, ChangeType type,
+            String singleValue, ListEntity listValue) {
 
         // Manages history.
         if (element.isHistorable()) {
@@ -293,6 +298,7 @@ public class UpdateProjectHandler implements CommandHandler<UpdateProject> {
             final HistoryToken historyToken = new HistoryToken();
 
             historyToken.setElementId(element.getId());
+            historyToken.setProjectId(projectId);
             historyToken.setDate(date);
             historyToken.setUser(user);
             historyToken.setType(type);

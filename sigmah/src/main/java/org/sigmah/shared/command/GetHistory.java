@@ -20,6 +20,11 @@ public class GetHistory implements Command<HistoryResult> {
     private long elementId;
 
     /**
+     * The project id.
+     */
+    private int projectId;
+
+    /**
      * The date before which the history is ignored. Set to <code>null</code> to
      * retrieves the complete history.
      */
@@ -29,13 +34,15 @@ public class GetHistory implements Command<HistoryResult> {
         // Serialization
     }
 
-    public GetHistory(long elementId) {
+    public GetHistory(long elementId, int projectId) {
         this.elementId = elementId;
+        this.projectId = projectId;
     }
 
-    public GetHistory(long elementId, Date maxDate) {
+    public GetHistory(long elementId, int projectId, Date maxDate) {
         this.elementId = elementId;
         this.maxDate = maxDate;
+        this.projectId = projectId;
     }
 
     public long getElementId() {
@@ -54,12 +61,21 @@ public class GetHistory implements Command<HistoryResult> {
         this.maxDate = maxDate;
     }
 
+    public int getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(int projectId) {
+        this.projectId = projectId;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + (int) (elementId ^ (elementId >>> 32));
         result = prime * result + ((maxDate == null) ? 0 : maxDate.hashCode());
+        result = prime * result + (int) (projectId ^ (projectId >>> 32));
         return result;
     }
 
@@ -78,6 +94,8 @@ public class GetHistory implements Command<HistoryResult> {
             if (other.maxDate != null)
                 return false;
         } else if (!maxDate.equals(other.maxDate))
+            return false;
+        if (projectId != other.projectId)
             return false;
         return true;
     }
