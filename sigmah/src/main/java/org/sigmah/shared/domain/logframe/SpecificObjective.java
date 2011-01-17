@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -48,6 +49,31 @@ public class SpecificObjective implements Serializable, Deleteable {
     private LogFrameGroup group;
     private Date dateDeleted;
     private Integer position;
+
+    /**
+     * Duplicates this objective (omits its ID).
+     * @param parentLogFrame Log frame that will contains this copy.
+     * @param groupMap Map of copied groups.
+     * @return A copy of this specific objective.
+     */
+    public SpecificObjective copy(final LogFrame parentLogFrame, final Map<Integer, LogFrameGroup> groupMap) {
+        final SpecificObjective copy = new SpecificObjective();
+        copy.code = this.code;
+        copy.interventionLogic = this.interventionLogic;
+        copy.risks = this.risks;
+        copy.assumptions = this.assumptions;
+        copy.parentLogFrame = parentLogFrame;
+
+        copy.expectedResults = new ArrayList<ExpectedResult>();
+        for(final ExpectedResult result : this.expectedResults)
+            copy.expectedResults.add(result.copy(copy, groupMap));
+        
+        copy.group = groupMap.get(this.group.getId());
+        copy.dateDeleted = this.dateDeleted;
+        copy.position = this.position;
+
+        return copy;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

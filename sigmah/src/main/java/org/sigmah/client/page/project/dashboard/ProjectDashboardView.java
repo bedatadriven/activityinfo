@@ -134,9 +134,6 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
         // Phases tab panel
         tabPanelPhases = new TabPanel();
         tabPanelPhases.setPlain(true);
-        // tabPanelPhases.addStyleName("project-tabPhases");
-        // tabPanelPhases.setBorders(false);
-        // tabPanelPhases.setBodyBorder(false);
 
         // Toolbar
         toolBar = new ToolBar();

@@ -428,8 +428,13 @@ public class ProjectCalendarView extends LayoutContainer {
         return addPersonalEventDialog;
     }
 
-    private void addPersonalEvent(final Map<String, Serializable> properties, final Dispatcher dispatcher,
-            final AsyncCallback<Event> callback) {
+    /**
+     * Creates a new "Personal" event.
+     * @param properties Properties of the new event.
+     * @param dispatcher
+     * @param callback
+     */
+    private void addPersonalEvent(final Map<String, Serializable> properties, final Dispatcher dispatcher, final AsyncCallback<Event> callback) {
         final CreateEntity createEntity = new CreateEntity("PersonalEvent", properties);
         dispatcher.execute(createEntity, null, new AsyncCallback<CreateResult>() {
 
@@ -450,10 +455,14 @@ public class ProjectCalendarView extends LayoutContainer {
         });
     }
 
-    private void editPersonalEvent(final Event event, final Map<String, ?> properties, final Dispatcher dispatcher,
-            final AsyncCallback<Event> callback) {
-        final UpdateEntity updateEntity = new UpdateEntity("PersonalEvent", (Integer) event.getIdentifier(),
-                (Map<String, Object>) properties);
+    /**
+     * Edits the events 
+     * @param properties Properties of the new event.
+     * @param dispatcher
+     * @param callback
+     */
+    private void editPersonalEvent(final Event event, final Map<String, ?> properties, final Dispatcher dispatcher, final AsyncCallback<Event> callback) {
+        final UpdateEntity updateEntity = new UpdateEntity("PersonalEvent", (Integer) event.getIdentifier(), (Map<String, Object>) properties);
         dispatcher.execute(updateEntity, null, new AsyncCallback<VoidResult>() {
 
             @Override

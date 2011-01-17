@@ -2,6 +2,7 @@ package org.sigmah.shared.domain.logframe;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -38,6 +39,24 @@ public class Prerequisite implements Serializable, Deleteable {
     private LogFrameGroup group;
     private Date dateDeleted;
     private Integer position;
+
+    /**
+     * Duplicates this prerequisite (omits the ID).
+     * @param parentLogFrame Log frame that will contains this copy.
+     * @param groupMap Map of copied groups.
+     * @return A copy of this prerequisite.
+     */
+    public Prerequisite copy(final LogFrame parentLogFrame, final Map<Integer, LogFrameGroup> groupMap) {
+        final Prerequisite copy = new Prerequisite();
+        copy.code = this.code;
+        copy.content = this.content;
+        copy.parentLogFrame = parentLogFrame;
+        copy.group = groupMap.get(this.group.getId());
+        copy.dateDeleted = this.dateDeleted;
+        copy.position = this.position;
+
+        return copy;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

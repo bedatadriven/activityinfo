@@ -110,6 +110,11 @@ public class ProjectReportsPresenter implements SubPresenter {
     }
 
     @Override
+    public void discardView() {
+        this.view = null;
+    }
+
+    @Override
     public void viewDidAppear() {
         // Updating the current state
         view.setCurrentState(projectPresenter.getCurrentState());

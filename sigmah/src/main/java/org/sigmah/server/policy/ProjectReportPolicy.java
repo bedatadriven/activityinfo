@@ -26,7 +26,7 @@ import org.sigmah.shared.domain.report.RichTextElement;
 import org.sigmah.shared.domain.value.Value;
 
 /**
- *
+ * Handle the creation and the update procedure of the project reports.
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class ProjectReportPolicy implements EntityPolicy<ProjectReport> {
@@ -152,12 +152,22 @@ public class ProjectReportPolicy implements EntityPolicy<ProjectReport> {
             report.setProject(project);
         }
 
+        // Parent
         final Integer flexibleElementId = (Integer) properties.get("flexibleElementId");
-        if(flexibleElementId != null) {
+        final Integer containerId = (Integer) properties.get("containerId");
+
+        final Value flexibleElementValue;
+        if(flexibleElementId != null && containerId != null) {
             final ReportElement element = new ReportElement();
             element.setId(flexibleElementId.longValue());
             report.setFlexibleElement(element);
+
+            flexibleElementValue = updateProjectHandler.retrieveValue(containerId, flexibleElementId, user);
+            if(!(flexibleElementValue == null || flexibleElementValue.getValue() == null || "".equals(flexibleElementValue.getValue())))
+                throw new IllegalStateException("A report has already been created for the flexible element "+flexibleElementId);
         }
+        else
+            flexibleElementValue = null;
 
         // RichTextElements
         final ArrayList<RichTextElement> elements = new ArrayList<RichTextElement>();
@@ -171,11 +181,9 @@ public class ProjectReportPolicy implements EntityPolicy<ProjectReport> {
         dao.persist(report);
 
         // Updating the flexible element
-        final Integer containerId = (Integer) properties.get("containerId");
-        if(flexibleElementId != null && containerId != null) {
-            final Value value = updateProjectHandler.retrieveValue(containerId, flexibleElementId, user);
-            value.setValue(report.getId().toString());
-            dao.merge(value);
+        if(flexibleElementValue != null) {
+            flexibleElementValue.setValue(report.getId().toString());
+            dao.merge(flexibleElementValue);
         }
 
         return report;

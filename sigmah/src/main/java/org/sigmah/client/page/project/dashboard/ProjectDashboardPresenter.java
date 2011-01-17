@@ -220,6 +220,11 @@ public class ProjectDashboardPresenter implements SubPresenter {
     }
 
     @Override
+    public void discardView() {
+        this.view = null;
+    }
+
+    @Override
     public void viewDidAppear() {
     }
 

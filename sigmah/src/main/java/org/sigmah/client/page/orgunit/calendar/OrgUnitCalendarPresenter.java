@@ -72,6 +72,11 @@ public class OrgUnitCalendarPresenter implements SubPresenter {
     }
 
     @Override
+    public void discardView() {
+        this.view = null;
+    }
+
+    @Override
     public void viewDidAppear() {
         // Fetching the calendars
         if (calendarStore.getCount() == 0) {

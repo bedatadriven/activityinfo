@@ -12,6 +12,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
@@ -19,6 +21,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import org.sigmah.shared.domain.Amendment.State;
 
 import org.sigmah.shared.domain.logframe.LogFrame;
 import org.sigmah.shared.domain.reminder.MonitoredPointList;
@@ -43,6 +46,10 @@ public class Project extends UserDatabase {
     private MonitoredPointList pointsList;
     private ReminderList remindersList;
     private Boolean starred = false;
+    private Amendment.State amendmentState;
+    private List<Amendment> amendments = new ArrayList<Amendment>();
+    private Integer amendmentVersion;
+    private Integer amendmentRevision;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "end_date", length = 23)
@@ -230,5 +237,42 @@ public class Project extends UserDatabase {
     @Column(name = "close_date", length = 23)
     public Date getCloseDate() {
         return closeDate;
+    }
+
+    @Column(name = "amendment_status", nullable = true)
+    @Enumerated(EnumType.STRING)
+    public State getAmendmentState() {
+        return amendmentState;
+    }
+
+    public void setAmendmentState(State state) {
+        this.amendmentState = state;
+    }
+
+    @OneToMany(mappedBy = "parentProject", cascade = CascadeType.ALL)
+    public List<Amendment> getAmendments() {
+        return amendments;
+    }
+
+    public void setAmendments(List<Amendment> amendments) {
+        this.amendments = amendments;
+    }
+
+    @Column(name = "amendment_version", nullable = true)
+    public Integer getAmendmentVersion() {
+        return amendmentVersion;
+    }
+
+    public void setAmendmentVersion(Integer amendmentVersion) {
+        this.amendmentVersion = amendmentVersion;
+    }
+
+    @Column(name = "amendment_revision", nullable = true)
+    public Integer getAmendmentRevision() {
+        return amendmentRevision;
+    }
+
+    public void setAmendmentRevision(Integer amendmentRevision) {
+        this.amendmentRevision = amendmentRevision;
     }
 }

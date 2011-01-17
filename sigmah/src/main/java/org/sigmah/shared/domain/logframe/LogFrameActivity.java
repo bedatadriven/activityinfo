@@ -2,6 +2,7 @@ package org.sigmah.shared.domain.logframe;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -41,6 +42,27 @@ public class LogFrameActivity implements Serializable, Deleteable {
     private Date startDate;
     private Date endDate;
     private Integer position;
+
+    /**
+     * Duplicates this activity (omits its ID).
+     * @param parentExpectedResult Expected result that will contains this copy.
+     * @param groupMap Map of copied groups.
+     * @return A copy of this activity.
+     */
+    public LogFrameActivity copy(final ExpectedResult parentExpectedResult, final Map<Integer, LogFrameGroup> groupMap) {
+        final LogFrameActivity copy = new LogFrameActivity();
+        copy.code = this.code;
+        copy.content = this.content;
+        copy.parentExpectedResult = parentExpectedResult;
+        copy.group = groupMap.get(this.group.getId());
+        copy.dateDeleted = this.dateDeleted;
+        copy.title = this.title;
+        copy.startDate = this.startDate;
+        copy.endDate = this.endDate;
+        copy.position = this.position;
+
+        return copy;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

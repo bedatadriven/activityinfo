@@ -2,6 +2,7 @@ package org.sigmah.shared.domain.logframe;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -41,6 +42,38 @@ public class LogFrame implements Serializable {
     private List<Prerequisite> prerequisites = new ArrayList<Prerequisite>();
     private Project parentProject;
     private List<LogFrameGroup> groups = new ArrayList<LogFrameGroup>();
+
+    /**
+     * Duplicates this log frame (omits IDs).<br>
+     * @return A copy of this log frame.
+     */
+    public LogFrame copy() {
+        final LogFrame copy = new LogFrame();
+        copy.logFrameModel = this.logFrameModel;
+        copy.title = this.title;
+        copy.mainObjective = this.mainObjective;
+
+        // Copying groups
+        copy.groups = new ArrayList<LogFrameGroup>();
+        final HashMap<Integer, LogFrameGroup> groupMap = new HashMap<Integer, LogFrameGroup>();
+        for(final LogFrameGroup group : this.groups) {
+            final LogFrameGroup groupCopy = group.copy(copy);
+            groupMap.put(group.getId(), groupCopy);
+            copy.groups.add(groupCopy);
+        }
+
+        // Copying objectives
+        copy.specificObjectives = new ArrayList<SpecificObjective>();
+        for(final SpecificObjective objective : this.specificObjectives)
+            copy.specificObjectives.add(objective.copy(copy, groupMap));
+
+        // Copying prerequisites
+        copy.prerequisites = new ArrayList<Prerequisite>();
+        for(final Prerequisite prerequisite : this.prerequisites)
+            copy.prerequisites.add(prerequisite.copy(copy, groupMap));
+
+        return copy;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -103,8 +136,8 @@ public class LogFrame implements Serializable {
         this.prerequisites = prerequisites;
     }
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "id_project", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "id_project")
     public Project getParentProject() {
         return parentProject;
     }

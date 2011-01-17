@@ -54,13 +54,37 @@
     
     <script type="text/javascript" language="javascript" src="../SigmahAuthToken"></script>
     <script type="text/javascript" language="javascript" src="gxt/flash/swfobject.js"></script>
-    <script type="text/javascript" language="javascript" src="Sigmah.nocache.js"></script>
 
     <script type="text/javascript" language="javascript">
         var GoogleMapsAPI = {
             key: "ABQIAAAAXuJI8nlwhKSLw--j5pSKGBSiRl6-Jfr_hL3O5U9p5tEakHeQvxSC4C7_Vf4hoMTUN6AMnB8SINe6JA"
         };
+
+        // Patch IE
+        if (!document.getElementsByClassName) {
+            document.getElementsByClassName = function (className, tag, elm) {
+                var testClass = new RegExp("(^|\\s)" + className + "(\\s|$)");
+                var tag = tag || "*";
+                var elm = elm || document;
+                var elements = (tag == "*" && elm.all)? elm.all : elm.getElementsByTagName(tag);
+                var returnElements = [];
+                var current;
+                var length = elements.length;
+                
+                for(var i=0; i<length; i++) {
+                    current = elements[i];
+                    if(testClass.test(current.className)){
+                        returnElements.push(current);
+                    }
+                }
+
+                return returnElements;
+            }
+        }
+
     </script>
+
+    <script type="text/javascript" language="javascript" src="Sigmah.nocache.js"></script>
 
     <style type="text/css">
         .x-viewport.x-border {

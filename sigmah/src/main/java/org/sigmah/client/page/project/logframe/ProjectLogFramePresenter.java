@@ -25,6 +25,7 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.sigmah.shared.domain.Amendment;
 
 /**
  * Presenter for the project log frame.
@@ -118,6 +119,11 @@ public class ProjectLogFramePresenter implements SubPresenter {
         }
 
         return view;
+    }
+
+    @Override
+    public void discardView() {
+        this.view = null;
     }
 
     @Override
@@ -240,14 +246,16 @@ public class ProjectLogFramePresenter implements SubPresenter {
             // Fill the log frame main objective.
             view.getLogFrameMainObjectiveTextBox().setValue(logFrame.getMainObjective());
 
-            if (!ProfileUtils.isGranted(authentication, GlobalPermissionEnum.EDIT_PROJECT)) {
+            final boolean editable = currentProjectDTO.getAmendmentState() == Amendment.State.DRAFT &&
+                                     ProfileUtils.isGranted(authentication, GlobalPermissionEnum.EDIT_PROJECT);
+
+            if (!editable) {
                 view.getLogFrameTitleTextBox().setEnabled(false);
                 view.getLogFrameMainObjectiveTextBox().setEnabled(false);
             }
 
             // Fill the grid.
-            view.getLogFrameGrid().displayLogFrame(logFrame,
-                    ProfileUtils.isGranted(authentication, GlobalPermissionEnum.EDIT_PROJECT));
+            view.getLogFrameGrid().displayLogFrame(logFrame, editable);
         }
 
         // Default buttons states.

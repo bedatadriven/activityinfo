@@ -1,8 +1,10 @@
 package org.sigmah.shared.domain.logframe;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -48,6 +50,30 @@ public class ExpectedResult implements Serializable, Deleteable {
     private LogFrameGroup group;
     private Date dateDeleted;
     private Integer position;
+
+    /**
+     * Duplicates this expected result (omits its ID).
+     * @param parentSpecificObjective Specific objective that will contains this copy.
+     * @param groupMap Map of copied groups.
+     * @return A copy of this expected result.
+     */
+    public ExpectedResult copy(final SpecificObjective parentSpecificObjective, final Map<Integer, LogFrameGroup> groupMap) {
+        final ExpectedResult copy = new ExpectedResult();
+        copy.code = this.code;
+        copy.risks = this.risks;
+        copy.assumptions = this.assumptions;
+        copy.parentSpecificObjective = parentSpecificObjective;
+
+        copy.activities = new ArrayList<LogFrameActivity>();
+        for(final LogFrameActivity activity : activities)
+            copy.activities.add(activity.copy(copy, groupMap));
+
+        copy.group = groupMap.get(this.group.getId());
+        copy.dateDeleted = this.dateDeleted;
+        copy.position = this.position;
+
+        return copy;
+    }
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

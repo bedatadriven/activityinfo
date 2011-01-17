@@ -30,6 +30,20 @@ public class LogFrameGroup implements Serializable {
     private String label;
     private LogFrame parentLogFrame;
 
+    /**
+     * Duplicates this group.
+     * @param parentLogFrame Log frame that will contains this group.
+     * @return A copy of this group.
+     */
+    public LogFrameGroup copy(final LogFrame parentLogFrame) {
+        final LogFrameGroup copy = new LogFrameGroup();
+        copy.type = type;
+        copy.label = label;
+        copy.parentLogFrame = parentLogFrame;
+
+        return copy;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_group")

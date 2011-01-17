@@ -20,6 +20,7 @@ import org.sigmah.shared.dto.reminder.ReminderListDTO;
 import org.sigmah.shared.dto.value.ValueDTO;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import org.sigmah.shared.domain.Amendment;
 
 /**
  * DTO mapping class for entity Project.
@@ -364,6 +365,38 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO, Defaul
 
     public boolean isClosed() {
         return getCloseDate() != null;
+    }
+
+    public Amendment.State getAmendmentState() {
+        return get("amendmentState");
+    }
+
+    public void setAmendmentState(Amendment.State amendmentState) {
+        set("amendmentState", amendmentState);
+    }
+
+    public Integer getAmendmentVersion() {
+        return get("amendmentVersion");
+    }
+
+    public void setAmendmentVersion(Integer amendmentVersion) {
+        set("amendmentVersion", amendmentVersion);
+    }
+
+    public Integer getAmendmentRevision() {
+        return get("amendmentRevision");
+    }
+
+    public void setAmendmentRevision(Integer amendmentRevision) {
+        set("amendmentRevision", amendmentRevision);
+    }
+
+    public List<AmendmentDTO> getAmendments() {
+        return get("amendments");
+    }
+
+    public void setAmendments(List<AmendmentDTO> amendments) {
+        set("amendments", amendments);
     }
 
     public void addListener(MonitoredPointListener l) {

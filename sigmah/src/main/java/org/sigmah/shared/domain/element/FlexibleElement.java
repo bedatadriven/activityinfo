@@ -89,13 +89,11 @@ public abstract class FlexibleElement implements Serializable, Historable {
     }
 
     @Override
-    @Transient
     public String asHistoryToken(String value) {
         return value;
     }
 
     @Override
-    @Transient
     public String asHistoryToken(ListEntity value) {
         return value != null ? value.toString() : null;
     }

@@ -4,6 +4,7 @@
  */
 package org.sigmah.client.page.project;
 
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import org.sigmah.client.CountriesList;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.UserInfo;
@@ -39,20 +40,35 @@ import org.sigmah.shared.dto.layout.LayoutGroupDTO;
 import org.sigmah.shared.dto.profile.ProfileUtils;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
+import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
+import java.util.EnumMap;
+import java.util.Map;
+import org.sigmah.shared.command.AmendmentAction;
+import org.sigmah.shared.command.result.VoidResult;
+import org.sigmah.shared.domain.Amendment;
+import org.sigmah.shared.dto.AmendmentDTO;
 
 /**
  * Project presenter which manages the {@link ProjectView}.
@@ -74,6 +90,8 @@ public class ProjectPresenter implements Frame, TabPage {
         public ContentPanel getPanelProjectBanner();
 
         public ContentPanel getTabPanel();
+
+        public ContentPanel getAmendmentBox();
 
         public void setMainPanel(Widget widget);
 
@@ -98,6 +116,20 @@ public class ProjectPresenter implements Frame, TabPage {
      * The current displayed phase.
      */
     private PhaseDTO currentDisplayedPhaseDTO;
+
+    private final static Map<Amendment.Action, String> amendmentActionDisplayNames;
+
+    static {
+        final EnumMap<Amendment.Action, String> map = new EnumMap<Amendment.Action, String>(Amendment.Action.class);
+        map.put(Amendment.Action.CREATE, I18N.CONSTANTS.amendmentCreate());
+        map.put(Amendment.Action.LOCK, I18N.CONSTANTS.amendmentLock());
+        map.put(Amendment.Action.UNLOCK, I18N.CONSTANTS.amendmentUnlock());
+        map.put(Amendment.Action.REJECT, I18N.CONSTANTS.amendmentReject());
+        map.put(Amendment.Action.VALIDATE, I18N.CONSTANTS.amendmentValidate());
+
+        amendmentActionDisplayNames = map;
+    }
+
     private final static String[] MAIN_TABS = { I18N.CONSTANTS.projectTabDashboard(), I18N.CONSTANTS.projectDetails(),
             I18N.CONSTANTS.projectTabLogFrame(), I18N.CONSTANTS.projectTabIndicators(),
             I18N.CONSTANTS.projectTabCalendar(), I18N.CONSTANTS.projectTabReports(),
@@ -232,6 +264,7 @@ public class ProjectPresenter implements Frame, TabPage {
         currentDisplayedPhaseDTO = projectDTO.getCurrentPhaseDTO();
 
         refreshBanner();
+        refreshAmendment();
 
         // TODO: Call the sub-presenter
     }
@@ -362,6 +395,111 @@ public class ProjectPresenter implements Frame, TabPage {
 
         panel.add(gridPanel);
         panel.layout();
+    }
+
+    private void refreshAmendment() {
+        Log.debug("Loading amendments for project '" + currentProjectDTO.getName() + "'...");
+        
+        final ContentPanel amendmentBox = view.getAmendmentBox();
+        amendmentBox.removeAll();
+
+        // Prepare the amendment store
+        final ListStore<AmendmentDTO> store = new ListStore<AmendmentDTO>();
+        final AmendmentDTO currentAmendment = new AmendmentDTO(currentProjectDTO);
+        store.add(currentAmendment);
+
+        for(final AmendmentDTO amendmentDTO : currentProjectDTO.getAmendments()) {
+            amendmentDTO.prepareName();
+            store.add(amendmentDTO);
+        }
+
+        // Creating the amendment list
+        final ComboBox<AmendmentDTO> versionList = new ComboBox<AmendmentDTO>();
+        versionList.setStore(store);
+        versionList.setTriggerAction(ComboBox.TriggerAction.ALL);
+        
+        versionList.setValue(currentAmendment); // Selecting the currentAmendment
+
+        Log.debug(store.getCount()+" amendment(s).");
+
+        final Button displayAmendmentButton = new Button(I18N.CONSTANTS.amendmentDisplay());
+        displayAmendmentButton.setEnabled(false);
+        
+        versionList.addSelectionChangedListener(new SelectionChangedListener<AmendmentDTO>() {
+            @Override
+            public void selectionChanged(SelectionChangedEvent<AmendmentDTO> se) {
+                displayAmendmentButton.setEnabled(se.getSelectedItem().getId() != 0);
+            }
+        });
+
+        final LayoutContainer amendmentListContainer = new LayoutContainer(new HBoxLayout());
+        amendmentListContainer.add(versionList);
+        amendmentListContainer.add(displayAmendmentButton, new HBoxLayoutData(0, 0, 0, 4));
+
+        amendmentBox.add(amendmentListContainer, new VBoxLayoutData(0, 0, 3, 0));
+
+        // Displaying the available actions
+        final Amendment.Action[] actions = currentProjectDTO.getAmendmentState().getActions();
+        final Anchor[] anchors = new Anchor[actions.length];
+
+        for(int index = 0; index < actions.length; index++) {
+            final Amendment.Action action = actions[index];
+            Log.debug("Adding the "+action+" amendment action.");
+
+            final Anchor actionAnchor = new Anchor(amendmentActionDisplayNames.get(action));
+            actionAnchor.addStyleName("amendment-action");
+
+            actionAnchor.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    // Disabling every actions before sending the request
+                    amendmentBox.mask(I18N.CONSTANTS.loading());
+
+                    for(final Anchor anchor : anchors)
+                        anchor.setEnabled(false);
+
+                    final AmendmentAction amendmentAction = new AmendmentAction(currentProjectDTO.getId(), action);
+                    dispatcher.execute(amendmentAction, null, new AsyncCallback<Amendment.State>() {
+
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            // Failures may happen if an other user changes the amendment state.
+                            // TODO: we should maybe refresh the project or tell the user to refresh the page.
+                            MessageBox.alert(amendmentActionDisplayNames.get(action), I18N.CONSTANTS.amendmentActionError(), null);
+                            for(final Anchor anchor : anchors)
+                                anchor.setEnabled(true);
+                            amendmentBox.unmask();
+                        }
+
+                        @Override
+                        public void onSuccess(Amendment.State result) {
+                            for(final Anchor anchor : anchors)
+                                anchor.setEnabled(true);
+
+                            // Refreshing the whole view
+                            currentProjectDTO.setAmendmentState(result);
+                            discardAllViews();
+                            selectTab(currentState.getCurrentSection(), true);
+                            refreshAmendment();
+
+                            amendmentBox.unmask();
+                        }
+                        
+                    });
+                }
+            });
+
+            // TOM: This is were the amendment actions are added to the view
+            amendmentBox.add(actionAnchor, new VBoxLayoutData());
+            anchors[index] = actionAnchor;
+        }
+
+        amendmentBox.layout();
+    }
+
+    private void discardAllViews() {
+        for(final SubPresenter presenter : presenters)
+            presenter.discardView();;
     }
 
     @Override

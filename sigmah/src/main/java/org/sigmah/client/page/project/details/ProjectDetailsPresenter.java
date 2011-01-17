@@ -108,6 +108,11 @@ public class ProjectDetailsPresenter implements SubPresenter {
     }
 
     @Override
+    public void discardView() {
+        this.view = null;
+    }
+
+    @Override
     public void viewDidAppear() {
         // nothing to do.
     }

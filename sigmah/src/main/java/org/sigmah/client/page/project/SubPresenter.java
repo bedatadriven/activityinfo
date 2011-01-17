@@ -19,6 +19,11 @@ public interface SubPresenter {
     public Component getView();
 
     /**
+     * Free the current view.
+     */
+    public void discardView();
+
+    /**
      * Allows the component to perform custom initialization just after it has been rendered.
      */
     public void viewDidAppear();

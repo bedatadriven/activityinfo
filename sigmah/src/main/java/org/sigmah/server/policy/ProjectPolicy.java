@@ -32,6 +32,7 @@ import org.sigmah.shared.domain.reminder.MonitoredPointList;
 import org.sigmah.shared.domain.reminder.ReminderList;
 
 import com.google.inject.Inject;
+import org.sigmah.shared.domain.Amendment;
 
 public class ProjectPolicy implements EntityPolicy<Project> {
 
@@ -64,7 +65,7 @@ public class ProjectPolicy implements EntityPolicy<Project> {
 
         // Creates the new project
         Project project = new Project();
-
+        
         // Userdatabase attributes.
         project.setStartDate(new Date());
         project.setOwner(em.getReference(User.class, user.getId()));
@@ -82,6 +83,11 @@ public class ProjectPolicy implements EntityPolicy<Project> {
         // Country
         final Country country = getProjectCountry(orgunit);
         project.setCountry(country);
+
+        // Amendment
+        project.setAmendmentState(Amendment.State.DRAFT);
+        project.setAmendmentVersion(1);
+        project.setAmendmentRevision(1);
 
         if (log.isDebugEnabled()) {
             log.debug("[createProject] Selected country: " + country.getName() + ".");

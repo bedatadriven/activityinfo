@@ -45,6 +45,11 @@ public class ProjectCalendarPresenter implements SubPresenter {
 
     private int calendarIndex = 1;
 
+    @Override
+    public void discardView() {
+        this.view = null;
+    }
+
     /**
      * Wrapper class that allow the use of {@link Calendar}s objects with
      * Ext-GWT.

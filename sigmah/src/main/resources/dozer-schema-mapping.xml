@@ -573,4 +573,11 @@
 			<b>canContainProjects</b>
 		</field>
 	</mapping>
+
+        <!-- Amendments -->
+        <mapping wildcard="true">
+		<class-a>org.sigmah.shared.domain.Amendment</class-a>
+		<class-b>org.sigmah.shared.dto.AmendmentDTO</class-b>
+	</mapping>
+        
 </mappings>
