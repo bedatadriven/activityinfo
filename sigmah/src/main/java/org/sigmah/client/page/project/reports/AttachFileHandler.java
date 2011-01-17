@@ -42,13 +42,13 @@ import org.sigmah.shared.dto.value.FileUploadUtils;
 
 /**
  * Creates and maintains the "attach file" dialog.
- *
+ * 
  * @author Tom Miette(tmiette@ideia.fr)
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class AttachFileHandler implements AttachMenuBuilder.AttachDocumentHandler {
     private Dialog dialog;
-    
+
     private FormPanel uploadFormPanel;
     private ButtonFileUploadField uploadField;
     private LabelField phaseField;
@@ -66,17 +66,12 @@ public class AttachFileHandler implements AttachMenuBuilder.AttachDocumentHandle
     private HiddenField<String> pointLabelHidden;
 
     @Override
-    public Dialog getDialog(
-            final ListStore<GetProjectReports.ReportReference> documentsStore,
-            final ProjectDTO project,
-            final FlexibleElementDTO flexibleElement,
-            final MenuItem menuItem,
-            final String phaseName,
-            final Authentication authentication,
-            final Dispatcher dispatcher,
+    public Dialog getDialog(final ListStore<GetProjectReports.ReportReference> documentsStore,
+            final ProjectDTO project, final FlexibleElementDTO flexibleElement, final MenuItem menuItem,
+            final String phaseName, final Authentication authentication, final Dispatcher dispatcher,
             final EventBus eventBus) {
-        
-        if(dialog == null) {
+
+        if (dialog == null) {
             dialog = createDialog();
         }
 
@@ -294,9 +289,9 @@ public class AttachFileHandler implements AttachMenuBuilder.AttachDocumentHandle
         return dialogBox;
     }
 
-     /**
+    /**
      * Update files list after an upload.
-     *
+     * 
      * @param be
      *            Form event after the upload.
      */
@@ -338,6 +333,8 @@ public class AttachFileHandler implements AttachMenuBuilder.AttachDocumentHandle
                     if (Log.isDebugEnabled()) {
                         Log.debug("[updateComponentAfterUpload] Adds a monitored point '" + point.getLabel() + "'");
                     }
+
+                    Notification.show(I18N.CONSTANTS.infoConfirmation(), I18N.CONSTANTS.monitoredPointAddConfirm());
 
                     project.addMonitoredPoint(point);
                 }

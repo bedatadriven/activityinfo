@@ -400,6 +400,8 @@ public class FilesListElementDTO extends FlexibleElementDTO {
                         Log.debug("[updateComponentAfterUpload] Adds a monitored point '" + point.getLabel() + "'");
                     }
 
+                    Notification.show(I18N.CONSTANTS.infoConfirmation(), I18N.CONSTANTS.monitoredPointAddConfirm());
+
                     ((ProjectDTO) currentContainerDTO).addMonitoredPoint(point);
                 }
 
