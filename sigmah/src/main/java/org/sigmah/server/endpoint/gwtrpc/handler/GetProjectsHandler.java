@@ -26,6 +26,7 @@ import org.sigmah.shared.command.result.ProjectListResult;
 import org.sigmah.shared.command.result.ValueResult;
 import org.sigmah.shared.command.result.ValueResultUtils;
 import org.sigmah.shared.domain.OrgUnit;
+import org.sigmah.shared.domain.PhaseModel;
 import org.sigmah.shared.domain.Project;
 import org.sigmah.shared.domain.ProjectFunding;
 import org.sigmah.shared.domain.ProjectModelType;
@@ -33,6 +34,8 @@ import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.element.FlexibleElement;
 import org.sigmah.shared.domain.element.QuestionChoiceElement;
 import org.sigmah.shared.domain.element.QuestionElement;
+import org.sigmah.shared.domain.layout.LayoutConstraint;
+import org.sigmah.shared.domain.layout.LayoutGroup;
 import org.sigmah.shared.dto.ProjectDTOLight;
 import org.sigmah.shared.dto.category.CategoryElementDTO;
 import org.sigmah.shared.dto.category.CategoryTypeDTO;
@@ -181,43 +184,95 @@ public class GetProjectsHandler implements CommandHandler<GetProjects> {
         final HashMap<CategoryTypeDTO, Set<CategoryElementDTO>> categories = new HashMap<CategoryTypeDTO, Set<CategoryElementDTO>>();
 
         // Retrieves each flexible element.
-        for (final FlexibleElement element : project.getProjectModel().getElements()) {
+        for (final LayoutGroup group : project.getProjectModel().getProjectDetails().getLayout().getGroups()) {
+            for (final LayoutConstraint constraint : group.getConstraints()) {
 
-            // Tests if the element is a question.
-            if (element instanceof QuestionElement) {
+                final FlexibleElement element = constraint.getElement();
 
-                final QuestionElement question = (QuestionElement) element;
+                // Tests if the element is a question.
+                if (element instanceof QuestionElement) {
 
-                // Tests if the question has a category.
-                if (question.getCategoryType() != null) {
+                    final QuestionElement question = (QuestionElement) element;
 
-                    // Retrieves category values.
-                    cmd.setElementId(question.getId());
-                    ValueResult valueResult = null;
-                    try {
-                        valueResult = (ValueResult) valuesHandler.execute(cmd, user);
-                    } catch (CommandException e) {
-                        LOG.error("[mapProject] Error while retrieving que question values.", e);
+                    // Tests if the question has a category.
+                    if (question.getCategoryType() != null) {
+
+                        // Retrieves category values.
+                        cmd.setElementId(question.getId());
+                        ValueResult valueResult = null;
+                        try {
+                            valueResult = (ValueResult) valuesHandler.execute(cmd, user);
+                        } catch (CommandException e) {
+                            LOG.error("[mapProject] Error while retrieving que question values.", e);
+                        }
+
+                        // Tests if the categories has selected values.
+                        if (valueResult != null) {
+
+                            final CategoryTypeDTO type = mapper.map(question.getCategoryType(), CategoryTypeDTO.class);
+                            Set<CategoryElementDTO> elements = categories.get(type);
+
+                            if (elements == null) {
+                                elements = new HashSet<CategoryElementDTO>();
+                                categories.put(type, elements);
+                            }
+
+                            final List<Long> selectedChoicesId = ValueResultUtils.splitValuesAsLong(valueResult
+                                    .getValueObject());
+                            for (final Long id : selectedChoicesId) {
+                                final QuestionChoiceElement choice = em.find(QuestionChoiceElement.class, id);
+                                elements.add(mapper.map(choice.getCategoryElement(), CategoryElementDTO.class));
+                            }
+
+                        }
                     }
+                }
+            }
+        }
+        for (final PhaseModel phase : project.getProjectModel().getPhases()) {
+            for (final LayoutGroup group : phase.getLayout().getGroups()) {
+                for (final LayoutConstraint constraint : group.getConstraints()) {
 
-                    // Tests if the categories has selected values.
-                    if (valueResult != null) {
+                    final FlexibleElement element = constraint.getElement();
 
-                        final CategoryTypeDTO type = mapper.map(question.getCategoryType(), CategoryTypeDTO.class);
-                        Set<CategoryElementDTO> elements = categories.get(type);
+                    // Tests if the element is a question.
+                    if (element instanceof QuestionElement) {
 
-                        if (elements == null) {
-                            elements = new HashSet<CategoryElementDTO>();
-                            categories.put(type, elements);
+                        final QuestionElement question = (QuestionElement) element;
+
+                        // Tests if the question has a category.
+                        if (question.getCategoryType() != null) {
+
+                            // Retrieves category values.
+                            cmd.setElementId(question.getId());
+                            ValueResult valueResult = null;
+                            try {
+                                valueResult = (ValueResult) valuesHandler.execute(cmd, user);
+                            } catch (CommandException e) {
+                                LOG.error("[mapProject] Error while retrieving que question values.", e);
+                            }
+
+                            // Tests if the categories has selected values.
+                            if (valueResult != null) {
+
+                                final CategoryTypeDTO type = mapper.map(question.getCategoryType(),
+                                        CategoryTypeDTO.class);
+                                Set<CategoryElementDTO> elements = categories.get(type);
+
+                                if (elements == null) {
+                                    elements = new HashSet<CategoryElementDTO>();
+                                    categories.put(type, elements);
+                                }
+
+                                final List<Long> selectedChoicesId = ValueResultUtils.splitValuesAsLong(valueResult
+                                        .getValueObject());
+                                for (final Long id : selectedChoicesId) {
+                                    final QuestionChoiceElement choice = em.find(QuestionChoiceElement.class, id);
+                                    elements.add(mapper.map(choice.getCategoryElement(), CategoryElementDTO.class));
+                                }
+
+                            }
                         }
-
-                        final List<Long> selectedChoicesId = ValueResultUtils.splitValuesAsLong(valueResult
-                                .getValueObject());
-                        for (final Long id : selectedChoicesId) {
-                            final QuestionChoiceElement choice = em.find(QuestionChoiceElement.class, id);
-                            elements.add(mapper.map(choice.getCategoryElement(), CategoryElementDTO.class));
-                        }
-
                     }
                 }
             }

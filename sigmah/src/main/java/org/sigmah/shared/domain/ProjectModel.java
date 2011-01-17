@@ -16,7 +16,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import org.sigmah.shared.domain.element.FlexibleElement;
 import org.sigmah.shared.domain.logframe.LogFrameModel;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
@@ -36,7 +35,6 @@ public class ProjectModel extends BaseModelData implements Serializable {
     private String name;
     private PhaseModel rootPhase;
     private List<PhaseModel> phases = new ArrayList<PhaseModel>();
-    private List<FlexibleElement> elements = new ArrayList<FlexibleElement>();
     private ProjectBanner projectBanner;
     private ProjectDetails projectDetails;
     private List<ProjectModelVisibility> visibilities;
@@ -86,15 +84,6 @@ public class ProjectModel extends BaseModelData implements Serializable {
             phase.setParentProjectModel(this);
             phases.add(phase);
         }
-    }
-
-    public void setElements(List<FlexibleElement> elements) {
-        this.elements = elements;
-    }
-
-    @OneToMany(mappedBy = "parentProjectModel", cascade = CascadeType.ALL)
-    public List<FlexibleElement> getElements() {
-        return elements;
     }
 
     @OneToOne(mappedBy = "projectModel", cascade = CascadeType.ALL)

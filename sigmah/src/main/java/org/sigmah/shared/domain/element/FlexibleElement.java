@@ -14,7 +14,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.sigmah.shared.domain.ProjectModel;
 import org.sigmah.shared.domain.history.Historable;
 import org.sigmah.shared.domain.profile.PrivacyGroup;
 import org.sigmah.shared.domain.value.ListEntity;
@@ -39,7 +38,6 @@ public abstract class FlexibleElement implements Serializable, Historable {
     private static final long serialVersionUID = -8754613123116586106L;
 
     private Long id;
-    private ProjectModel parentProjectModel;
     private String label;
     private Boolean validates = false;
     private PrivacyGroup privacyGroup;
@@ -53,16 +51,6 @@ public abstract class FlexibleElement implements Serializable, Historable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public void setParentProjectModel(ProjectModel parentProjectModel) {
-        this.parentProjectModel = parentProjectModel;
-    }
-
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "id_project_model", nullable = false)
-    public ProjectModel getParentProjectModel() {
-        return parentProjectModel;
     }
 
     @Column(name = "label", nullable = true, columnDefinition = "TEXT")

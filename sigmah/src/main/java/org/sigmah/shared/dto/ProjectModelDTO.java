@@ -116,15 +116,6 @@ public class ProjectModelDTO extends BaseModelData implements EntityDTO {
         set("projectDetailsDTO", projectDetailsDTO);
     }
 
-    // Flexible elements list
-    public List<FlexibleElementDTO> getFlexibleElementsDTO() {
-        return get("flexibleElementsDTO");
-    }
-
-    public void setFlexibleElementsDTO(List<FlexibleElementDTO> flexibleElementsDTO) {
-        set("flexibleElementsDTO", flexibleElementsDTO);
-    }
-
     // Project visibilities
     public List<ProjectModelVisibilityDTO> getVisibilities() {
         return get("visibilities");
