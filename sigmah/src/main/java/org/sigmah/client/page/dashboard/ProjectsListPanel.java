@@ -390,7 +390,7 @@ public class ProjectsListPanel {
                         0,
                         0,
                         FundingIconProvider.getProjectTypeIcon(
-                                model.getProjectModelType(authentication.getOrganizationId()), IconSize.SMALL)
+                                model.getProjectModelType(authentication.getOrganizationId()), IconSize.SMALL_MEIDUM)
                                 .createImage());
                 panel.getCellFormatter().addStyleName(0, 0, "project-grid-code-icon");
                 panel.setWidget(0, 1, h);

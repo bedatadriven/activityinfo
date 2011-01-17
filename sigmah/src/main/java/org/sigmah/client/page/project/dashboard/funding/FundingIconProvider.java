@@ -25,7 +25,7 @@ public final class FundingIconProvider {
      * 
      */
     public static enum IconSize {
-        SMALL, MEDIUM, LARGE;
+        SMALL, SMALL_MEIDUM, MEDIUM, LARGE;
     }
 
     /**
@@ -61,6 +61,8 @@ public final class FundingIconProvider {
                 return FundingIconImageBundle.ICONS.fundingMedium();
             case LARGE:
                 return FundingIconImageBundle.ICONS.fundingLarge();
+            case SMALL_MEIDUM:
+                return FundingIconImageBundle.ICONS.fundingMediumTransparent();
             default:
                 return FundingIconImageBundle.ICONS.fundingSmall();
             }
@@ -70,6 +72,8 @@ public final class FundingIconProvider {
                 return FundingIconImageBundle.ICONS.localPartnerMedium();
             case LARGE:
                 return FundingIconImageBundle.ICONS.localPartnerLarge();
+            case SMALL_MEIDUM:
+                return FundingIconImageBundle.ICONS.localPartnerMediumTransparent();
             default:
                 return FundingIconImageBundle.ICONS.localPartnerSmall();
             }
@@ -79,11 +83,13 @@ public final class FundingIconProvider {
                 return FundingIconImageBundle.ICONS.ngoMedium();
             case LARGE:
                 return FundingIconImageBundle.ICONS.ngoLarge();
+            case SMALL_MEIDUM:
+                return FundingIconImageBundle.ICONS.ngoMediumTransparent();
             default:
                 return FundingIconImageBundle.ICONS.ngoSmall();
             }
         default:
-            return FundingIconImageBundle.ICONS.localPartnerSmall();
+            return FundingIconImageBundle.ICONS.ngoSmall();
         }
     }
 }
