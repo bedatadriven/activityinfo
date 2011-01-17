@@ -59,7 +59,7 @@ public class OrgUnitDetailsView extends OrgUnitDetailsPresenter.View {
 
         // Actions toolbar.
         final ToolBar toolBar = new ToolBar();
-        toolBar.setAlignment(HorizontalAlignment.RIGHT);
+        toolBar.setAlignment(HorizontalAlignment.LEFT);
         toolBar.setBorders(false);
 
         toolBar.add(saveButton);
