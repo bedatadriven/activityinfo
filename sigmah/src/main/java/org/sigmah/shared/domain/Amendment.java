@@ -6,6 +6,7 @@
 package org.sigmah.shared.domain;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -19,6 +20,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.domain.history.HistoryToken;
 import org.sigmah.shared.domain.logframe.LogFrame;
@@ -72,7 +74,8 @@ public class Amendment implements Serializable {
     private Integer revision;
     private State state;
     private LogFrame logFrame;
-    private List<HistoryToken> values;
+     private List<HistoryToken> values;
+    private Date date;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -135,4 +138,13 @@ public class Amendment implements Serializable {
         this.values = values;
     }
 
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    @Column(name = "history_date", nullable = true)
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
 }

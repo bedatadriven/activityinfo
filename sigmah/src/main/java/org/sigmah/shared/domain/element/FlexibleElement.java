@@ -41,6 +41,7 @@ public abstract class FlexibleElement implements Serializable, Historable {
     private String label;
     private Boolean validates = false;
     private PrivacyGroup privacyGroup;
+    private Boolean amendable;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -79,6 +80,15 @@ public abstract class FlexibleElement implements Serializable, Historable {
 
     public void setPrivacyGroup(PrivacyGroup privacyGroup) {
         this.privacyGroup = privacyGroup;
+    }
+
+    @Column(name = "amendable", nullable = true)
+    public Boolean isAmendable() {
+        return amendable;
+    }
+
+    public void setAmendable(Boolean amendable) {
+        this.amendable = amendable;
     }
 
     @Override
