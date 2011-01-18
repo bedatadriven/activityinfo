@@ -267,6 +267,12 @@ public class FilesListElementDTO extends FlexibleElementDTO {
 
                                 if (Dialog.YES.equals(be.getButtonClicked().getItemId())) {
                                     monitoredPointGenerated = true;
+
+                                    if (Log.isDebugEnabled()) {
+                                        Log.debug("[handleEvent] Sets the monitoredPointGenerated flag to "
+                                                + monitoredPointGenerated + ".");
+                                    }
+
                                     window.show(I18N.CONSTANTS.monitoredPointAdd(),
                                             I18N.CONSTANTS.monitoredPointAddDetails());
                                 } else {
@@ -390,12 +396,26 @@ public class FilesListElementDTO extends FlexibleElementDTO {
             Notification.show(I18N.CONSTANTS.infoConfirmation(),
                     I18N.CONSTANTS.flexibleElementFilesListUploadFileConfirm());
 
+            if (Log.isDebugEnabled()) {
+                Log.debug("[updateComponentAfterUpload] File successfully uploaded.");
+                Log.debug("[updateComponentAfterUpload] Monitored point generated? -> '" + monitoredPointGenerated
+                        + "' ; current container DTO -> '" + currentContainerDTO
+                        + "' ; container instanceof ProjectDTO? -> '" + (currentContainerDTO instanceof ProjectDTO)
+                        + "'.");
+            }
+
             // Adds the monitored point.
             if (monitoredPointGenerated && currentContainerDTO != null && currentContainerDTO instanceof ProjectDTO) {
+
+                if (Log.isDebugEnabled()) {
+                    Log.debug("[updateComponentAfterUpload] Adds a monitored point with response '"
+                            + be.getResultHtml() + "'.");
+                }
 
                 final MonitoredPointDTO point = FileUploadUtils.parseUploadResultMonitoredPoint(be.getResultHtml());
 
                 if (point != null) {
+
                     if (Log.isDebugEnabled()) {
                         Log.debug("[updateComponentAfterUpload] Adds a monitored point '" + point.getLabel() + "'");
                     }

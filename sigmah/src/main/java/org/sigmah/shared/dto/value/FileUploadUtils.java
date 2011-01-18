@@ -4,6 +4,8 @@ import java.util.Date;
 
 import org.sigmah.shared.dto.reminder.MonitoredPointDTO;
 
+import com.allen_sauer.gwt.log.client.Log;
+
 /**
  * Constants to manage files upload.
  * 
@@ -166,20 +168,68 @@ public final class FileUploadUtils {
         int beginIndex = results.indexOf(TAG_START_MONITORED_POINT);
         if (beginIndex != -1) {
 
+            if (Log.isDebugEnabled()) {
+                Log.debug("[parseUploadResultMonitoredPoint] Tag '" + TAG_START_MONITORED_POINT + "' found.");
+            }
+
             try {
+
                 int endIndex = results.lastIndexOf(TAG_END_MONITORED_POINT);
+
+                if (endIndex == -1) {
+                    if (Log.isDebugEnabled()) {
+                        Log.debug("[parseUploadResultMonitoredPoint] Tag '" + TAG_END_MONITORED_POINT + "' not found.");
+                    }
+                }
+
                 final String content = results.substring(beginIndex + TAG_START_MONITORED_POINT.length(), endIndex);
+
+                if (Log.isDebugEnabled()) {
+                    Log.debug("[parseUploadResultMonitoredPoint] Substring '" + content + "'.");
+                }
 
                 final String[] tokens = content.split(TAG_SEPARATOR_MONITORED_POINT);
 
+                if (Log.isDebugEnabled()) {
+                    Log.debug("[parseUploadResultMonitoredPoint] Splited tokens (" + tokens.length + ") '" + tokens
+                            + "'.");
+                }
+
                 point = new MonitoredPointDTO();
+
+                if (Log.isDebugEnabled()) {
+                    Log.debug("[parseUploadResultMonitoredPoint] Point id -> '" + tokens[0] + "'.");
+                }
+
                 point.setId(Integer.valueOf(tokens[0]));
+
+                if (Log.isDebugEnabled()) {
+                    Log.debug("[parseUploadResultMonitoredPoint] Point label -> '" + tokens[1] + "'.");
+                }
+
                 point.setLabel(tokens[1]);
+
+                if (Log.isDebugEnabled()) {
+                    Log.debug("[parseUploadResultMonitoredPoint] Point date -> '" + tokens[2] + "'.");
+                }
+
                 point.setExpectedDate(new Date(Long.valueOf(tokens[2])));
 
+                if (Log.isDebugEnabled()) {
+                    Log.debug("[parseUploadResultMonitoredPoint] Point label -> '" + point.getId()
+                            + "' ; point id -> '" + point.getLabel() + "' ; point date -> '" + point.getExpectedDate()
+                            + "'.");
+                }
             } catch (Throwable e) {
                 // digest exception.
+                if (Log.isDebugEnabled()) {
+                    Log.debug("[parseUploadResultMonitoredPoint] Error while parsing the http result.", e);
+                }
                 point = null;
+            }
+        } else {
+            if (Log.isDebugEnabled()) {
+                Log.debug("[parseUploadResultMonitoredPoint] Tag '" + TAG_START_MONITORED_POINT + "' not found.");
             }
         }
 
