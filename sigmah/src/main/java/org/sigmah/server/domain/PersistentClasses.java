@@ -3,6 +3,7 @@ package org.sigmah.server.domain;
 import org.sigmah.shared.domain.Activity;
 import org.sigmah.shared.domain.AdminEntity;
 import org.sigmah.shared.domain.AdminLevel;
+import org.sigmah.shared.domain.Amendment;
 import org.sigmah.shared.domain.Attribute;
 import org.sigmah.shared.domain.AttributeGroup;
 import org.sigmah.shared.domain.AttributeValue;
@@ -148,6 +149,7 @@ public class PersistentClasses {
             CategoryType.class,
             PersonalCalendar.class,
             PersonalEvent.class,
-            HistoryToken.class
+            HistoryToken.class,
+            Amendment.class
     };
 }
