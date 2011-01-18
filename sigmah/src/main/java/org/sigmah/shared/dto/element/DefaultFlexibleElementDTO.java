@@ -722,10 +722,36 @@ public class DefaultFlexibleElementDTO extends FlexibleElementDTO {
                     return new HistoryTokenText("#" + value);
                 }
             case BUDGET:
+
+                if (Log.isDebugEnabled()) {
+                    Log.debug("[renderHistoryToken] Case BUDGET ; value to split '" + value + "'.");
+                }
+
                 final List<String> budgets = ValueResultUtils.splitElements(value);
+
+                if (Log.isDebugEnabled()) {
+                    Log.debug("[renderHistoryToken] Case BUDGET ; splitted values (" + budgets.size() + ") '" + budgets
+                            + "'.");
+                }
+
+                if (Log.isDebugEnabled()) {
+                    Log.debug("[renderHistoryToken] Case BUDGET ; planned budget '" + budgets.get(0) + "'.");
+                }
+
                 final double plannedBudget = Double.parseDouble(budgets.get(0));
+
+                if (Log.isDebugEnabled()) {
+                    Log.debug("[renderHistoryToken] Case BUDGET ; spent budget '" + budgets.get(1) + "'.");
+                }
+
                 final double spendBudget = Double.parseDouble(budgets.get(1));
+
+                if (Log.isDebugEnabled()) {
+                    Log.debug("[renderHistoryToken] Case BUDGET ; received budget '" + budgets.get(2) + "'.");
+                }
+
                 final double receivedBudget = Double.parseDouble(budgets.get(2));
+
                 return new HistoryTokenText(I18N.CONSTANTS.projectPlannedBudget() + ": " + plannedBudget,
                         I18N.CONSTANTS.projectReceivedBudget() + ": " + receivedBudget,
                         I18N.CONSTANTS.projectSpendBudget() + ": " + spendBudget);

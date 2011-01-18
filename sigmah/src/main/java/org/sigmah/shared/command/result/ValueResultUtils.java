@@ -14,7 +14,7 @@ import org.sigmah.shared.dto.EntityDTO;
  */
 public final class ValueResultUtils {
 
-    public static final String DEFAULT_VALUE_SEPARATOR = "¤";
+    public static final String DEFAULT_VALUE_SEPARATOR = "~";
 
     /**
      * Provides only static methods.
