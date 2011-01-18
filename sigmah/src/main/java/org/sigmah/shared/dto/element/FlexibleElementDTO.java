@@ -320,6 +320,14 @@ public abstract class FlexibleElementDTO extends BaseModelData implements Entity
         set("filledIn", filledIn);
     }
 
+    public Boolean isAmendable() {
+        return (Boolean) get("amendable");
+    }
+
+    public void setAmendable(Boolean amendable) {
+        set("amendable", amendable);
+    }
+
     public boolean isHistorable() {
         return (Boolean) get("historable");
     }

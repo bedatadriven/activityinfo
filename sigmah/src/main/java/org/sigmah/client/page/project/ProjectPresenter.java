@@ -66,7 +66,6 @@ import com.google.inject.Inject;
 import java.util.EnumMap;
 import java.util.Map;
 import org.sigmah.shared.command.AmendmentAction;
-import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.domain.Amendment;
 import org.sigmah.shared.dto.AmendmentDTO;
 
@@ -405,13 +404,15 @@ public class ProjectPresenter implements Frame, TabPage {
 
         // Prepare the amendment store
         final ListStore<AmendmentDTO> store = new ListStore<AmendmentDTO>();
-        final AmendmentDTO currentAmendment = new AmendmentDTO(currentProjectDTO);
-        store.add(currentAmendment);
 
         for(final AmendmentDTO amendmentDTO : currentProjectDTO.getAmendments()) {
             amendmentDTO.prepareName();
             store.add(amendmentDTO);
         }
+
+        // Adding the current amendment
+        final AmendmentDTO currentAmendment = new AmendmentDTO(currentProjectDTO);
+        store.add(currentAmendment);
 
         // Creating the amendment list
         final ComboBox<AmendmentDTO> versionList = new ComboBox<AmendmentDTO>();
@@ -459,7 +460,7 @@ public class ProjectPresenter implements Frame, TabPage {
                         anchor.setEnabled(false);
 
                     final AmendmentAction amendmentAction = new AmendmentAction(currentProjectDTO.getId(), action);
-                    dispatcher.execute(amendmentAction, null, new AsyncCallback<Amendment.State>() {
+                    dispatcher.execute(amendmentAction, null, new AsyncCallback<ProjectDTO>() {
 
                         @Override
                         public void onFailure(Throwable caught) {
@@ -472,12 +473,14 @@ public class ProjectPresenter implements Frame, TabPage {
                         }
 
                         @Override
-                        public void onSuccess(Amendment.State result) {
+                        public void onSuccess(ProjectDTO result) {
                             for(final Anchor anchor : anchors)
                                 anchor.setEnabled(true);
 
+                            // Updating the current project
+                            currentProjectDTO = result;
+
                             // Refreshing the whole view
-                            currentProjectDTO.setAmendmentState(result);
                             discardAllViews();
                             selectTab(currentState.getCurrentSection(), true);
                             refreshAmendment();
@@ -499,7 +502,7 @@ public class ProjectPresenter implements Frame, TabPage {
 
     private void discardAllViews() {
         for(final SubPresenter presenter : presenters)
-            presenter.discardView();;
+            presenter.discardView();
     }
 
     @Override

@@ -111,9 +111,9 @@ public class ProjectReportsView extends LayoutContainer {
 
     private ListStore<GetProjectReports.ReportReference> store;
     private LayoutContainer mainPanel;
-    private RichTextArea.Formatter currentFormatter;
+    private RichTextArea.Formatter[] globalFormatterArray = new RichTextArea.Formatter[1];
 
-    private ProjectReportDTO currentReport;
+//    private ProjectReportDTO currentReport;
     private HashMap<Integer, RichTextArea> textAreas;
     private KeyQuestionState keyQuestionState;
 
@@ -330,7 +330,7 @@ public class ProjectReportsView extends LayoutContainer {
 
                         @Override
                         public void onFocus(FocusEvent event) {
-                            currentFormatter = textArea.getFormatter();
+                            globalFormatterArray[0] = textArea.getFormatter();
                         }
                     });
 
@@ -401,7 +401,7 @@ public class ProjectReportsView extends LayoutContainer {
 
     public void setReport(final ProjectReportDTO report) {
         mainPanel.removeAll();
-        currentReport = report;
+//        currentReport = report;
 
         if (report == null)
             return;
@@ -679,10 +679,10 @@ public class ProjectReportsView extends LayoutContainer {
     }
 
     private void createRichTextToolbar(final ToolBar toolbar) {
-        createRichTextToolbar(toolbar, currentFormatter);
+        createRichTextToolbar(toolbar, globalFormatterArray);
     }
 
-    public static void createRichTextToolbar(final ToolBar toolbar, final RichTextArea.Formatter formatter) {
+    public static void createRichTextToolbar(final ToolBar toolbar, final RichTextArea.Formatter[] formatter) {
         final ToolbarImages images = GWT.create(ToolbarImages.class);
 
         // Fonts
@@ -697,7 +697,7 @@ public class ProjectReportsView extends LayoutContainer {
         fontListBox.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent event) {
-                formatter.setFontName(fontListBox.getValue(fontListBox.getSelectedIndex()));
+                formatter[0].setFontName(fontListBox.getValue(fontListBox.getSelectedIndex()));
             }
         });
         final LayoutContainer fontListBoxWrapper = new LayoutContainer(new FitLayout());
@@ -711,7 +711,7 @@ public class ProjectReportsView extends LayoutContainer {
 
             @Override
             public void handleEvent(BaseEvent be) {
-                formatter.toggleBold();
+                formatter[0].toggleBold();
             }
         });
         toolbar.add(boldButton);
@@ -723,7 +723,7 @@ public class ProjectReportsView extends LayoutContainer {
 
             @Override
             public void handleEvent(BaseEvent be) {
-                formatter.toggleItalic();
+                formatter[0].toggleItalic();
             }
         });
         toolbar.add(italicButton);
@@ -735,7 +735,7 @@ public class ProjectReportsView extends LayoutContainer {
 
             @Override
             public void handleEvent(BaseEvent be) {
-                formatter.toggleUnderline();
+                formatter[0].toggleUnderline();
             }
         });
         toolbar.add(underlineButton);
@@ -747,7 +747,7 @@ public class ProjectReportsView extends LayoutContainer {
 
             @Override
             public void handleEvent(BaseEvent be) {
-                formatter.toggleStrikethrough();
+                formatter[0].toggleStrikethrough();
             }
         });
         toolbar.add(strikeButton);
@@ -759,7 +759,7 @@ public class ProjectReportsView extends LayoutContainer {
 
             @Override
             public void handleEvent(BaseEvent be) {
-                formatter.setJustification(RichTextArea.Justification.LEFT);
+                formatter[0].setJustification(RichTextArea.Justification.LEFT);
             }
         });
         toolbar.add(alignLeftButton);
@@ -771,7 +771,7 @@ public class ProjectReportsView extends LayoutContainer {
 
             @Override
             public void handleEvent(BaseEvent be) {
-                formatter.setJustification(RichTextArea.Justification.CENTER);
+                formatter[0].setJustification(RichTextArea.Justification.CENTER);
             }
         });
         toolbar.add(alignCenterButton);
@@ -783,7 +783,7 @@ public class ProjectReportsView extends LayoutContainer {
 
             @Override
             public void handleEvent(BaseEvent be) {
-                formatter.setJustification(RichTextArea.Justification.RIGHT);
+                formatter[0].setJustification(RichTextArea.Justification.RIGHT);
             }
         });
         toolbar.add(alignRightButton);
@@ -795,7 +795,7 @@ public class ProjectReportsView extends LayoutContainer {
 
             @Override
             public void handleEvent(BaseEvent be) {
-                formatter.setJustification(RichTextArea.Justification.FULL);
+                formatter[0].setJustification(RichTextArea.Justification.FULL);
             }
         });
         toolbar.add(alignJustifyButton);
@@ -807,7 +807,7 @@ public class ProjectReportsView extends LayoutContainer {
 
             @Override
             public void handleEvent(BaseEvent be) {
-                formatter.insertOrderedList();
+                formatter[0].insertOrderedList();
             }
         });
         toolbar.add(listNumbersButton);
@@ -819,7 +819,7 @@ public class ProjectReportsView extends LayoutContainer {
 
             @Override
             public void handleEvent(BaseEvent be) {
-                formatter.insertUnorderedList();
+                formatter[0].insertUnorderedList();
             }
         });
         toolbar.add(listBulletsButton);
@@ -856,7 +856,7 @@ public class ProjectReportsView extends LayoutContainer {
                     imageAddDialog.getButtonById(Dialog.OK).addSelectionListener(new SelectionListener<ButtonEvent>() {
                         @Override
                         public void componentSelected(ButtonEvent ce) {
-                            formatter.insertImage(imageURLField.getValue());
+                            formatter[0].insertImage(imageURLField.getValue());
                             imageAddDialog.hide();
                         }
                     });

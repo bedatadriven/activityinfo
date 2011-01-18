@@ -86,7 +86,7 @@ public class LogFrame implements Serializable {
         this.id = id;
     }
 
-    @ManyToOne(optional = false, cascade = CascadeType.ALL)
+    @ManyToOne(optional = false, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "id_log_frame_model", nullable = false)
     public LogFrameModel getLogFrameModel() {
         return logFrameModel;

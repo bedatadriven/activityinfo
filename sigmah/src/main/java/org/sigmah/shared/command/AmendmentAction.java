@@ -7,12 +7,13 @@ package org.sigmah.shared.command;
 
 import org.sigmah.shared.domain.Amendment;
 import org.sigmah.shared.domain.Amendment.Action;
+import org.sigmah.shared.dto.ProjectDTO;
 
 /**
  *
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
-public class AmendmentAction implements Command<Amendment.State> {
+public class AmendmentAction implements Command<ProjectDTO> {
     private Amendment.Action action;
     private int projectId;
 

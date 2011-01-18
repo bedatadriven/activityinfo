@@ -19,6 +19,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import org.sigmah.shared.domain.Amendment.State;
@@ -250,6 +251,7 @@ public class Project extends UserDatabase {
     }
 
     @OneToMany(mappedBy = "parentProject", cascade = CascadeType.ALL)
+    @OrderBy("date ASC")
     public List<Amendment> getAmendments() {
         return amendments;
     }

@@ -6,11 +6,19 @@
 package org.sigmah.server.policy;
 
 import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.Date;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import org.sigmah.server.dao.Transactional;
 import org.sigmah.shared.domain.Amendment;
+import org.sigmah.shared.domain.PhaseModel;
 import org.sigmah.shared.domain.Project;
 import org.sigmah.shared.domain.User;
+import org.sigmah.shared.domain.element.FlexibleElement;
+import org.sigmah.shared.domain.history.HistoryToken;
+import org.sigmah.shared.domain.layout.LayoutConstraint;
+import org.sigmah.shared.domain.layout.LayoutGroup;
 
 /**
  * Creates and updates project amendments.
@@ -46,38 +54,42 @@ public class AmendmentPolicy implements EntityPolicy<Amendment> {
         amendment.setState(project.getAmendmentState());
         amendment.setVersion(project.getAmendmentVersion());
         amendment.setRevision(project.getAmendmentRevision());
+        amendment.setDate(new Date());
 
-        em.merge(amendment);
-
-        // TODO: run through every flexible element attached to the project [...]
-        // and saves the last history token in the values property.
+        // Running through every flexible element attached to the project [...]
+        // and saving the last history token in the values property.
         // @see GetHistoryHandler
+        final ArrayList<HistoryToken> historyTokens = new ArrayList<HistoryToken>();
 
-        // Updating the current amendment version/revision number
-        int version  = project.getAmendmentVersion();
-        int revision = project.getAmendmentRevision();
+        for(final PhaseModel phaseModel : project.getProjectModel().getPhases()) {
+            for(final LayoutGroup group : phaseModel.getLayout().getGroups()) {
+                for(final LayoutConstraint constraint : group.getConstraints()) {
+                    final FlexibleElement element = constraint.getElement();
+                    if(element.isAmendable() != null && element.isAmendable()) {
+                        // The value of the current flexible element must be saved.
+                        final Query maxDateQuery = em.createQuery("SELECT MAX(h.date) FROM HistoryToken h WHERE h.elementId = :elementId AND h.projectId = :projectId");
+                        maxDateQuery.setParameter("projectId", project.getId());
+                        maxDateQuery.setParameter("elementId", element.getId());
 
-        if(project.getAmendmentState() == Amendment.State.ACTIVE) {
-            version++;
-            revision = 1;
-        } else {
-            revision++;
+                        final Date maxDate = (Date) maxDateQuery.getSingleResult();
+
+                        final Query query = em.createQuery("SELECT h FROM HistoryToken h WHERE h.elementId = :elementId AND h.projectId = :projectId AND h.date = :maxDate");
+                        query.setParameter("projectId", project.getId());
+                        query.setParameter("elementId", element.getId());
+                        query.setParameter("maxDate", maxDate);
+
+                        final HistoryToken token = (HistoryToken) query.getSingleResult();
+                        if(token != null)
+                            historyTokens.add(token);
+                    }
+                }
+            }
         }
-        
-        // REM: Amendement en cours : toujours ACTIF donc toujours version++
-        // Pour révision : 1 par défaut, si amendement précédent est en état REJECTED
-        // mettre rev à précédent + 1
 
-        // Updating the project
-        project.setAmendmentState(Amendment.State.DRAFT);
-        project.setAmendmentVersion(version);
-        project.setAmendmentRevision(revision);
-        em.merge(project);
+        amendment.setValues(historyTokens);
 
         return amendment;
     }
-
-
 
     @Override
     public void update(User user, Object entityId, PropertyMap changes) {

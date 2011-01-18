@@ -50,7 +50,7 @@ public class KeyQuestionDialog {
 
             // Toolbar
             final ToolBar toolBar = new ToolBar();
-            ProjectReportsView.createRichTextToolbar(toolBar, textArea.getFormatter());
+            ProjectReportsView.createRichTextToolbar(toolBar, new RichTextArea.Formatter[] {textArea.getFormatter()});
             dialog.setTopComponent(toolBar);
 
             // Cancel button
