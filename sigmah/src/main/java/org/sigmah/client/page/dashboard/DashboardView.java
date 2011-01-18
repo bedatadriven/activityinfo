@@ -205,8 +205,9 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
                     });
         }
 
-        // Temporary code to hide/show activityInfo menus
-        if (authentication.isShowMenus()) {
+        // There are two ways to show these menus (authentication / profile).
+        if (authentication.isShowMenus()
+                || ProfileUtils.isGranted(authentication, GlobalPermissionEnum.VIEW_ACTIVITYINFO)) {
             addNavLink(eventBus, menuPanel, I18N.CONSTANTS.dataEntry(), IconImageBundle.ICONS.dataEntry(),
                     new SiteGridPageState());
             addNavLink(eventBus, menuPanel, I18N.CONSTANTS.reports(), IconImageBundle.ICONS.report(),

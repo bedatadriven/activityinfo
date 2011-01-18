@@ -6,6 +6,7 @@
 package org.sigmah.client.dispatch.remote;
 
 import org.sigmah.shared.domain.User;
+import org.sigmah.shared.domain.profile.GlobalPermissionEnum;
 import org.sigmah.shared.dto.profile.ProfileDTO;
 
 /**
@@ -113,6 +114,7 @@ public class Authentication {
     /**
      * 
      * @return If the activityInfo menus has to been shown.
+     * @see {@link GlobalPermissionEnum#VIEW_ACTIVITYINFO}.
      */
     public boolean isShowMenus() {
         return showMenus;

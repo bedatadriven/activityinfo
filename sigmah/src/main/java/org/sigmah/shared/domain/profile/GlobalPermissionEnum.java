@@ -47,5 +47,10 @@ public enum GlobalPermissionEnum {
     /**
      * Remove a file (in the files list flexible element).
      */
-    REMOVE_FILE;
+    REMOVE_FILE,
+
+    /**
+     * View the ActivityInfo menu.
+     */
+    VIEW_ACTIVITYINFO;
 }
