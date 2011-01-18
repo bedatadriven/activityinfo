@@ -291,7 +291,7 @@ public class FilesListElementDTO extends FlexibleElementDTO {
                 // Reset upload fields.
                 uploadField.reset();
 
-                handlerManager.fireEvent(new RequiredValueEvent(true));
+                handlerManager.fireEvent(new RequiredValueEvent(true, true));
 
                 mainPanel.unmask();
             }
@@ -686,7 +686,7 @@ public class FilesListElementDTO extends FlexibleElementDTO {
                                                                 store.remove(model);
                                                                 if (store.getCount() == 0) {
                                                                     handlerManager.fireEvent(new RequiredValueEvent(
-                                                                            false));
+                                                                            false, true));
                                                                 }
                                                             }
                                                         });

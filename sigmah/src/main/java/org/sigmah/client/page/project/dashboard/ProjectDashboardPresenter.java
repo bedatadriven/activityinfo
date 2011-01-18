@@ -692,6 +692,12 @@ public class ProjectDashboardPresenter implements SubPresenter {
             if (isCurrentPhase(projectPresenter.getCurrentProjectDTO().getCurrentPhaseDTO())) {
                 activePhaseRequiredElements.putActual(elementDTO.getId(), event.isValueOn());
             }
+
+            // The element is in charge of the saving of its values. The state
+            // of the current project must be refreshed here.
+            if (event.isImmediate()) {
+                view.getButtonSavePhase().fireEvent(Events.OnClick);
+            }
         }
     }
 
