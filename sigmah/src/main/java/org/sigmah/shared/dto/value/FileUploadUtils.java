@@ -51,7 +51,7 @@ public final class FileUploadUtils {
     /**
      * HTTP response separator.
      */
-    public static final String TAG_SEPARATOR_MONITORED_POINT = "%~¤%~¤~%¤~%";
+    public static final String TAG_SEPARATOR_MONITORED_POINT = "%~%~%~%";
 
     /**
      * HTTP response end tag for the monitored point.
