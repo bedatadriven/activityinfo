@@ -57,7 +57,8 @@ public class AmendmentActionHandler implements CommandHandler<AmendmentAction> {
                 // If the previous amendment is in the REJECTED state, then the current amendment is a new revision.
                 if(project.getAmendments() != null &&
                         project.getAmendments().size() > 0 && 
-                        project.getAmendments().get(project.getAmendments().size()-1).getState() == Amendment.State.REJECTED)
+                        project.getAmendments().get(project.getAmendments().size()-1).getState() == Amendment.State.REJECTED &&
+                        project.getAmendments().get(project.getAmendments().size()-1).getVersion() == version)
                     revision = project.getAmendments().get(project.getAmendments().size()-1).getRevision() + 1;
 
                 // Updating the project
