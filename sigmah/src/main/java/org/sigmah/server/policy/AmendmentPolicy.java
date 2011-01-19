@@ -9,6 +9,7 @@ import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import org.sigmah.server.dao.Transactional;
 import org.sigmah.shared.domain.Amendment;
@@ -71,16 +72,20 @@ public class AmendmentPolicy implements EntityPolicy<Amendment> {
                         maxDateQuery.setParameter("projectId", project.getId());
                         maxDateQuery.setParameter("elementId", element.getId());
 
-                        final Date maxDate = (Date) maxDateQuery.getSingleResult();
+                        try {
+                            final Date maxDate = (Date) maxDateQuery.getSingleResult();
 
-                        final Query query = em.createQuery("SELECT h FROM HistoryToken h WHERE h.elementId = :elementId AND h.projectId = :projectId AND h.date = :maxDate");
-                        query.setParameter("projectId", project.getId());
-                        query.setParameter("elementId", element.getId());
-                        query.setParameter("maxDate", maxDate);
+                            final Query query = em.createQuery("SELECT h FROM HistoryToken h WHERE h.elementId = :elementId AND h.projectId = :projectId AND h.date = :maxDate");
+                            query.setParameter("projectId", project.getId());
+                            query.setParameter("elementId", element.getId());
+                            query.setParameter("maxDate", maxDate);
 
-                        final HistoryToken token = (HistoryToken) query.getSingleResult();
-                        if(token != null)
+                            final HistoryToken token = (HistoryToken) query.getSingleResult();
                             historyTokens.add(token);
+                            
+                        } catch(NoResultException e) {
+                            // There is no history token for the given element. No action.
+                        }
                     }
                 }
             }
