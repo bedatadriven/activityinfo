@@ -958,6 +958,7 @@ body {
 .blockStat {
 	border: 1px solid #4B3E2D;
 	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
 	background: transparent url(image/ratio-bar-bg.png) repeat-x scroll 0 0
 }
 
@@ -971,12 +972,16 @@ body {
 	background-position: 0 0;
 	-moz-border-radius-topLeft: 4px;
 	-moz-border-radius-bottomLeft: 4px;
+	-webkit-border-top-left-radius: 4px;
+	-webkit-border-bottom-left-radius: 4px;
 }
 
 .blockStatBgRed {
 	background-image: url(image/ratio-bar-bg-red.png);
 	-moz-border-radius-topRight: 4px;
 	-moz-border-radius-bottomRight: 4px;
+	-webkit-border-top-right-radius: 4px;
+	-webkit-border-bottom-right-radius: 4px;
 }
 
 .blockStatBgYellow {
