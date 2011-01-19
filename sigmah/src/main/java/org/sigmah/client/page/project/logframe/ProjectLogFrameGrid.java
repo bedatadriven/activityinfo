@@ -9,10 +9,10 @@ import org.sigmah.client.page.project.logframe.FormWindow.FormSubmitListener;
 import org.sigmah.client.page.project.logframe.grid.ActionsMenu;
 import org.sigmah.client.page.project.logframe.grid.FlexTableView;
 import org.sigmah.client.page.project.logframe.grid.FlexTableView.FlexTableViewListener;
-import org.sigmah.client.page.project.logframe.grid.RowActionsMenu;
 import org.sigmah.client.page.project.logframe.grid.GroupActionMenu;
 import org.sigmah.client.page.project.logframe.grid.HTMLTableUtils;
 import org.sigmah.client.page.project.logframe.grid.Row;
+import org.sigmah.client.page.project.logframe.grid.RowActionsMenu;
 import org.sigmah.client.page.project.logframe.grid.RowsGroup;
 import org.sigmah.shared.domain.logframe.LogFrameGroupType;
 import org.sigmah.shared.dto.logframe.ExpectedResultDTO;
@@ -1696,9 +1696,9 @@ public class ProjectLogFrameGrid {
             formWindow.addChoicesList(I18N.CONSTANTS.logFrameExceptedResult(), results, false, "label");
             formWindow.addChoicesList(I18N.CONSTANTS.logFrameGroup(),
                     logFrame.getAllGroups(LogFrameGroupType.ACTIVITY), false, "label");
-            formWindow.addTextField(I18N.CONSTANTS.logFrameActivityTitle(), false);
             formWindow.addDateField(I18N.CONSTANTS.logFrameActivityStartDate(), false);
             formWindow.addDateField(I18N.CONSTANTS.logFrameActivityEndDate(), false);
+            formWindow.addTextField(I18N.CONSTANTS.logFrameActivityContent(), true);
             formWindow.addFormSubmitListener(new FormSubmitListener() {
 
                 @Override
@@ -1716,7 +1716,7 @@ public class ProjectLogFrameGrid {
                     }
 
                     final Object element2 = elements[2];
-                    if (!(element2 instanceof String)) {
+                    if (!(element2 instanceof Date)) {
                         return;
                     }
 
@@ -1726,21 +1726,21 @@ public class ProjectLogFrameGrid {
                     }
 
                     final Object element4 = elements[4];
-                    if (!(element4 instanceof Date)) {
+                    if (element4 != null && !(element4 instanceof String)) {
                         return;
                     }
 
                     // Retrieves the selected ER and group and activity params.
                     final ExpectedResultDTO expectedResult = (ExpectedResultDTO) element0;
                     final LogFrameGroupDTO group = (LogFrameGroupDTO) element1;
-                    final String title = (String) element2;
-                    final Date startDate = (Date) element3;
-                    final Date endDate = (Date) element4;
+                    final Date startDate = (Date) element2;
+                    final Date endDate = (Date) element3;
+                    final String title = (String) element4;
 
                     // Creates and displays a new activity.
                     final LogFrameActivityDTO activity = expectedResult.addActivity();
                     activity.setLogFrameGroupDTO(group);
-                    activity.setTitle(title);
+                    activity.setTitle(title != null ? title : "");
                     activity.setStartDate(startDate);
                     activity.setEndDate(endDate);
                     addActivity(activity);
