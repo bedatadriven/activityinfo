@@ -85,6 +85,7 @@ public class AmendmentActionHandler implements CommandHandler<AmendmentAction> {
                 project.setAmendmentState(Amendment.State.REJECTED);
                 final Amendment rejectedAmendment = policy.createAmendment(project);
 
+                boolean found = false;
                 if(project.getAmendments() != null) {
                     final Iterator<Amendment> iterator = project.getAmendments().iterator();
 
@@ -92,6 +93,8 @@ public class AmendmentActionHandler implements CommandHandler<AmendmentAction> {
                         final Amendment amendment = iterator.next();
 
                         if(amendment.getState() == Amendment.State.ACTIVE) {
+                            found = true;
+
                             final LogFrame previousLogFrame = project.getLogFrame();
                             final LogFrame currentLogFrame = amendment.getLogFrame();
 
@@ -114,7 +117,11 @@ public class AmendmentActionHandler implements CommandHandler<AmendmentAction> {
                             em.remove(amendment);
                         }
                     }
-                    
+                }
+
+                if(!found) {
+                    project.setAmendmentRevision(project.getAmendmentRevision() + 1);
+                    project.setAmendmentState(Amendment.State.DRAFT);
                 }
                 
                 if(project.getAmendments() == null)
