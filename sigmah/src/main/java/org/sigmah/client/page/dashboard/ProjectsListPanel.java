@@ -291,7 +291,7 @@ public class ProjectsListPanel {
         if (ProfileUtils.isGranted(authentication, GlobalPermissionEnum.VIEW_PROJECT)) {
             projectTreePanel.add(projectTreeGrid);
         } else {
-            final HTML insufficient = new HTML(I18N.CONSTANTS.permViewProjectInsufficient());
+            final HTML insufficient = new HTML(I18N.CONSTANTS.permViewProjectsInsufficient());
             insufficient.addStyleName("important-label");
             projectTreePanel.add(insufficient);
         }

@@ -6,7 +6,6 @@
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -18,6 +17,7 @@ import javax.persistence.Query;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dozer.Mapper;
+import org.hibernate.ejb.HibernateEntityManager;
 import org.sigmah.shared.command.GetProjects;
 import org.sigmah.shared.command.GetValue;
 import org.sigmah.shared.command.handler.CommandHandler;
@@ -69,6 +69,10 @@ public class GetProjectsHandler implements CommandHandler<GetProjects> {
     @SuppressWarnings("unchecked")
     public CommandResult execute(GetProjects cmd, User user) throws CommandException {
 
+        // Disable the ActivityInfo filter on Userdatabase.
+        org.hibernate.Session session = ((HibernateEntityManager) em).getSession();
+        session.disableFilter("userVisible");
+
         if (LOG.isDebugEnabled()) {
             LOG.debug("[execute] Gets projects: " + cmd + ".");
         }
@@ -89,14 +93,14 @@ public class GetProjectsHandler implements CommandHandler<GetProjects> {
             }
 
             // Crawl the org units hierarchy from the user root org unit.
-            crawlUnits(user.getOrgUnitWithProfiles().getOrgUnit(), units, false);
+            GetProjectHandler.crawlUnits(user.getOrgUnitWithProfiles().getOrgUnit(), units, false);
         } else {
 
             // Crawl the org units hierarchy from each specified org unit.
             OrgUnit unit;
             for (final Integer id : ids) {
                 if ((unit = em.find(OrgUnit.class, id)) != null) {
-                    crawlUnits(unit, units, true);
+                    GetProjectHandler.crawlUnits(unit, units, true);
                 }
             }
         }
@@ -319,29 +323,4 @@ public class GetProjectsHandler implements CommandHandler<GetProjects> {
 
         return pLight;
     }
-
-    /**
-     * Adds recursively all the children of an unit in a collection.
-     * 
-     * @param root
-     *            The root unit from which the hierarchy is traversed.
-     * @param units
-     *            The current collection in which the units are added.
-     * @param addRoot
-     *            If the root must be added too.
-     */
-    private static void crawlUnits(OrgUnit root, Collection<OrgUnit> units, boolean addRoot) {
-
-        if (addRoot) {
-            units.add(root);
-        }
-
-        final Set<OrgUnit> children = root.getChildren();
-        if (children != null) {
-            for (OrgUnit child : children) {
-                crawlUnits(child, units, true);
-            }
-        }
-    }
-
 }

@@ -124,13 +124,15 @@ public class ProjectView extends LayoutContainer implements ProjectPresenter.Vie
         }
 
         if (viewDisplayed != null) {
-            remove(panelProjectBanner);
+            remove(topPanel);
             remove(bottomPanel);
         }
 
         add(insufficient, new BorderLayoutData(LayoutRegion.CENTER));
 
         viewDisplayed = false;
+        
+        layout();
     }
 
     @Override
@@ -150,6 +152,8 @@ public class ProjectView extends LayoutContainer implements ProjectPresenter.Vie
         add(bottomPanel, new BorderLayoutData(LayoutRegion.CENTER));
 
         viewDisplayed = true;
+        
+        layout();
     }
 
     @Override

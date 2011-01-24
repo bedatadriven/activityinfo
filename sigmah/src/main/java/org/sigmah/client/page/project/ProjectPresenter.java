@@ -222,17 +222,25 @@ public class ProjectPresenter implements Frame, TabPage {
 
                     @Override
                     public void onSuccess(ProjectDTO projectDTO) {
-                        if (Log.isDebugEnabled()) {
-                            Log.debug("Project loaded : " + projectDTO.getName());
+
+                        if (projectDTO == null) {
+                            Log.error("Project not loaded : " + projectId);
+                            view.insufficient();
+                        } else {
+
+                            if (Log.isDebugEnabled()) {
+                                Log.debug("Project loaded : " + projectDTO.getName());
+                            }
+
+                            currentState = projectState;
+
+                            boolean projectChanged = !projectDTO.equals(currentProjectDTO);
+
+                            projectState.setTabTitle(projectDTO.getName());
+                            loadProjectOnView(projectDTO);
+
+                            selectTab(projectState.getCurrentSection(), projectChanged);
                         }
-                        currentState = projectState;
-
-                        boolean projectChanged = !projectDTO.equals(currentProjectDTO);
-
-                        projectState.setTabTitle(projectDTO.getName());
-                        loadProjectOnView(projectDTO);
-
-                        selectTab(projectState.getCurrentSection(), projectChanged);
                     }
                 });
             } else {
@@ -365,7 +373,7 @@ public class ProjectPresenter implements Frame, TabPage {
                         defaultElement.setCurrentContainerDTO(currentProjectDTO);
 
                         final Component component = defaultElement.getElementComponent(null, false);
-                        
+
                         if (component != null) {
                             groupPanel.add(component);
                         }
@@ -398,14 +406,14 @@ public class ProjectPresenter implements Frame, TabPage {
 
     private void refreshAmendment() {
         Log.debug("Loading amendments for project '" + currentProjectDTO.getName() + "'...");
-        
+
         final ContentPanel amendmentBox = view.getAmendmentBox();
         amendmentBox.removeAll();
 
         // Prepare the amendment store
         final ListStore<AmendmentDTO> store = new ListStore<AmendmentDTO>();
 
-        for(final AmendmentDTO amendmentDTO : currentProjectDTO.getAmendments()) {
+        for (final AmendmentDTO amendmentDTO : currentProjectDTO.getAmendments()) {
             amendmentDTO.prepareName();
             store.add(amendmentDTO);
         }
@@ -418,14 +426,15 @@ public class ProjectPresenter implements Frame, TabPage {
         final ComboBox<AmendmentDTO> versionList = new ComboBox<AmendmentDTO>();
         versionList.setStore(store);
         versionList.setTriggerAction(ComboBox.TriggerAction.ALL);
-        
-        versionList.setValue(currentAmendment); // Selecting the currentAmendment
 
-        Log.debug(store.getCount()+" amendment(s).");
+        versionList.setValue(currentAmendment); // Selecting the
+                                                // currentAmendment
+
+        Log.debug(store.getCount() + " amendment(s).");
 
         final Button displayAmendmentButton = new Button(I18N.CONSTANTS.amendmentDisplay());
         displayAmendmentButton.setEnabled(false);
-        
+
         versionList.addSelectionChangedListener(new SelectionChangedListener<AmendmentDTO>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<AmendmentDTO> se) {
@@ -443,9 +452,9 @@ public class ProjectPresenter implements Frame, TabPage {
         final Amendment.Action[] actions = currentProjectDTO.getAmendmentState().getActions();
         final Anchor[] anchors = new Anchor[actions.length];
 
-        for(int index = 0; index < actions.length; index++) {
+        for (int index = 0; index < actions.length; index++) {
             final Amendment.Action action = actions[index];
-            Log.debug("Adding the "+action+" amendment action.");
+            Log.debug("Adding the " + action + " amendment action.");
 
             final Anchor actionAnchor = new Anchor(amendmentActionDisplayNames.get(action));
             actionAnchor.addStyleName("amendment-action");
@@ -456,7 +465,7 @@ public class ProjectPresenter implements Frame, TabPage {
                     // Disabling every actions before sending the request
                     amendmentBox.mask(I18N.CONSTANTS.loading());
 
-                    for(final Anchor anchor : anchors)
+                    for (final Anchor anchor : anchors)
                         anchor.setEnabled(false);
 
                     final AmendmentAction amendmentAction = new AmendmentAction(currentProjectDTO.getId(), action);
@@ -464,17 +473,20 @@ public class ProjectPresenter implements Frame, TabPage {
 
                         @Override
                         public void onFailure(Throwable caught) {
-                            // Failures may happen if an other user changes the amendment state.
-                            // TODO: we should maybe refresh the project or tell the user to refresh the page.
-                            MessageBox.alert(amendmentActionDisplayNames.get(action), I18N.CONSTANTS.amendmentActionError(), null);
-                            for(final Anchor anchor : anchors)
+                            // Failures may happen if an other user changes the
+                            // amendment state.
+                            // TODO: we should maybe refresh the project or tell
+                            // the user to refresh the page.
+                            MessageBox.alert(amendmentActionDisplayNames.get(action),
+                                    I18N.CONSTANTS.amendmentActionError(), null);
+                            for (final Anchor anchor : anchors)
                                 anchor.setEnabled(true);
                             amendmentBox.unmask();
                         }
 
                         @Override
                         public void onSuccess(ProjectDTO result) {
-                            for(final Anchor anchor : anchors)
+                            for (final Anchor anchor : anchors)
                                 anchor.setEnabled(true);
 
                             // Updating the current project
@@ -487,7 +499,7 @@ public class ProjectPresenter implements Frame, TabPage {
 
                             amendmentBox.unmask();
                         }
-                        
+
                     });
                 }
             });
@@ -501,7 +513,7 @@ public class ProjectPresenter implements Frame, TabPage {
     }
 
     private void discardAllViews() {
-        for(final SubPresenter presenter : presenters)
+        for (final SubPresenter presenter : presenters)
             presenter.discardView();
     }
 

@@ -1,5 +1,6 @@
 package org.sigmah.client.page.orgunit;
 
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.ui.StylableHBoxLayout;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -10,6 +11,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 
 public class OrgUnitView extends LayoutContainer implements OrgUnitPresenter.View {
@@ -19,6 +21,9 @@ public class OrgUnitView extends LayoutContainer implements OrgUnitPresenter.Vie
     private final ContentPanel bottomPanel;
 
     private Widget widget;
+
+    private final HTML insufficient;
+    private Boolean viewDisplayed = null;
 
     public OrgUnitView() {
 
@@ -54,6 +59,9 @@ public class OrgUnitView extends LayoutContainer implements OrgUnitPresenter.Vie
         data.setMargins(new Margins(0, 0, 5, 0));
         add(panelBanner, data);
         add(bottomPanel, new BorderLayoutData(LayoutRegion.CENTER));
+
+        insufficient = new HTML(I18N.CONSTANTS.permViewOrgUnitInsufficient());
+        insufficient.addStyleName("important-label-white");
     }
 
     @Override
@@ -75,5 +83,45 @@ public class OrgUnitView extends LayoutContainer implements OrgUnitPresenter.Vie
         this.widget = widget;
 
         bottomPanel.layout();
+    }
+
+    @Override
+    public void insufficient() {
+
+        if (viewDisplayed != null && !viewDisplayed) {
+            return;
+        }
+
+        if (viewDisplayed != null) {
+            remove(panelBanner);
+            remove(bottomPanel);
+        }
+
+        add(insufficient, new BorderLayoutData(LayoutRegion.CENTER));
+
+        viewDisplayed = false;
+
+        layout();
+    }
+
+    @Override
+    public void sufficient() {
+
+        if (viewDisplayed != null && viewDisplayed) {
+            return;
+        }
+
+        if (viewDisplayed != null) {
+            remove(insufficient);
+        }
+
+        final BorderLayoutData data = new BorderLayoutData(LayoutRegion.NORTH, 100);
+        data.setMargins(new Margins(0, 0, 5, 0));
+        add(panelBanner, data);
+        add(bottomPanel, new BorderLayoutData(LayoutRegion.CENTER));
+
+        viewDisplayed = true;
+
+        layout();
     }
 }

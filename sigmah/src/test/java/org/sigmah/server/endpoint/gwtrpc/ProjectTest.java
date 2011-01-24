@@ -46,7 +46,7 @@ public class ProjectTest extends CommandTestCase {
 
         ProjectListResult result = execute(cmd);
 
-        Assert.assertThat(result.getList().size(), CoreMatchers.equalTo(2));
+        Assert.assertThat(result.getList().size(), CoreMatchers.equalTo(3));
     }
 
     @Test
@@ -79,7 +79,7 @@ public class ProjectTest extends CommandTestCase {
 
         ProjectListResult result = execute(cmd);
 
-        Assert.assertThat(result.getList().size(), CoreMatchers.equalTo(1));
+        Assert.assertThat(result.getList().size(), CoreMatchers.equalTo(2));
     }
 
     @Test

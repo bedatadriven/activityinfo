@@ -60,6 +60,10 @@ public class OrgUnitPresenter implements Frame, TabPage {
         public ContentPanel getTabPanel();
 
         public void setMainPanel(Widget widget);
+
+        public void insufficient();
+
+        public void sufficient();
     }
 
     private final View view;
@@ -141,7 +145,10 @@ public class OrgUnitPresenter implements Frame, TabPage {
         final OrgUnitState state = (OrgUnitState) place;
         final int id = state.getOrgUnitId();
 
+        view.sufficient();
+
         if (currentOrgUnitDTO == null || id != currentOrgUnitDTO.getId()) {
+
             if (Log.isDebugEnabled()) {
                 Log.debug("Loading org unit #" + id + "...");
             }
@@ -156,18 +163,24 @@ public class OrgUnitPresenter implements Frame, TabPage {
                 @Override
                 public void onSuccess(OrgUnitDTO orgUnitDTO) {
 
-                    if (Log.isDebugEnabled()) {
-                        Log.debug("Org unit loaded : " + orgUnitDTO.getName());
+                    if (orgUnitDTO == null) {
+                        Log.error("Org unit not loaded : " + id);
+                        view.insufficient();
+                    } else {
+
+                        if (Log.isDebugEnabled()) {
+                            Log.debug("Org unit loaded : " + orgUnitDTO.getName());
+                        }
+
+                        currentState = state;
+
+                        boolean orgUnitChanged = !orgUnitDTO.equals(currentOrgUnitDTO);
+
+                        state.setTabTitle(orgUnitDTO.getName());
+                        loadOrgUnitOnView(orgUnitDTO);
+
+                        selectTab(state.getCurrentSection(), orgUnitChanged);
                     }
-
-                    currentState = state;
-
-                    boolean orgUnitChanged = !orgUnitDTO.equals(currentOrgUnitDTO);
-
-                    state.setTabTitle(orgUnitDTO.getName());
-                    loadOrgUnitOnView(orgUnitDTO);
-
-                    selectTab(state.getCurrentSection(), orgUnitChanged);
                 }
             });
         } else {
