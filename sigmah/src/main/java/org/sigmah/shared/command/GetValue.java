@@ -26,6 +26,8 @@ public class GetValue implements Command<ValueResult> {
 	 * Always use the getEntityName() !
 	 */
 	private String elementEntityName;
+
+        private Integer amendmentId;
 	
 	public GetValue() {
 		// required, or serialization exception
@@ -35,6 +37,11 @@ public class GetValue implements Command<ValueResult> {
 		this.projectId = projectId;
 		this.elementId = elementId;
 		this.elementEntityName = elementEntityName;
+	}
+
+        public GetValue(int projectId, long elementId, String elementEntityName, Integer amendmentId) {
+		this(projectId, elementId, elementEntityName);
+                this.amendmentId = amendmentId;
 	}
 
 	public int getProjectId() {
@@ -60,6 +67,17 @@ public class GetValue implements Command<ValueResult> {
 	public void setElementEntityName(String elementClassName) {
 		this.elementEntityName = elementClassName;
 	}
+
+	public Integer getAmendmentId() {
+		return amendmentId;
+	}
+
+
+	public void setAmendmentId(Integer amendmentId) {
+		this.amendmentId = amendmentId;
+	}
+
+
 
 	@Override
 	public boolean equals(Object obj) {

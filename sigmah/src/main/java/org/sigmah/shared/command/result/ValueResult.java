@@ -31,6 +31,11 @@ public class ValueResult implements CommandResult {
      */
     private String valueObject;
 
+    /**
+     * Indicates the origin of the value.
+     */
+    private boolean amendment;
+
     public ValueResult() {
         // Serialization.
     }
@@ -101,6 +106,23 @@ public class ValueResult implements CommandResult {
     public void addValueObject(ListableValue valueObject) {
         ensureListIsNotNull();
         valuesObject.add(valueObject);
+    }
+
+    /**
+     * Determine if the current value comes from an amendment.
+     * @return <code>true</code> if the value comes from an amendment, <code>false</code> otherwise.
+     */
+    public boolean isAmendment() {
+        return amendment;
+    }
+
+    /**
+     * Defines the amendment value.
+     * @param amendment the value to set.
+     * @see #isAmendment()
+     */
+    public void setAmendment(boolean amendment) {
+        this.amendment = amendment;
     }
 
     @Override

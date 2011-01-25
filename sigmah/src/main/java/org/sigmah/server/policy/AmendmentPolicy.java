@@ -62,30 +62,35 @@ public class AmendmentPolicy implements EntityPolicy<Amendment> {
         // @see GetHistoryHandler
         final ArrayList<HistoryToken> historyTokens = new ArrayList<HistoryToken>();
 
-        for(final PhaseModel phaseModel : project.getProjectModel().getPhases()) {
-            for(final LayoutGroup group : phaseModel.getLayout().getGroups()) {
-                for(final LayoutConstraint constraint : group.getConstraints()) {
-                    final FlexibleElement element = constraint.getElement();
-                    if(element.isAmendable() != null && element.isAmendable()) {
-                        // The value of the current flexible element must be saved.
-                        final Query maxDateQuery = em.createQuery("SELECT MAX(h.date) FROM HistoryToken h WHERE h.elementId = :elementId AND h.projectId = :projectId");
-                        maxDateQuery.setParameter("projectId", project.getId());
-                        maxDateQuery.setParameter("elementId", element.getId());
+        // Looking for all groups
+        final ArrayList<LayoutGroup> groups = new ArrayList<LayoutGroup>();
+        for(final PhaseModel phaseModel : project.getProjectModel().getPhases())
+            groups.addAll(phaseModel.getLayout().getGroups());
+        groups.addAll(project.getProjectModel().getProjectDetails().getLayout().getGroups());
 
-                        try {
-                            final Date maxDate = (Date) maxDateQuery.getSingleResult();
+        // Iterating on groups
+        for(final LayoutGroup group : groups) {
+            for(final LayoutConstraint constraint : group.getConstraints()) {
+                final FlexibleElement element = constraint.getElement();
+                if(element.isAmendable() != null && element.isAmendable()) {
+                    // The value of the current flexible element must be saved.
+                    final Query maxDateQuery = em.createQuery("SELECT MAX(h.date) FROM HistoryToken h WHERE h.elementId = :elementId AND h.projectId = :projectId");
+                    maxDateQuery.setParameter("projectId", project.getId());
+                    maxDateQuery.setParameter("elementId", element.getId());
 
-                            final Query query = em.createQuery("SELECT h FROM HistoryToken h WHERE h.elementId = :elementId AND h.projectId = :projectId AND h.date = :maxDate");
-                            query.setParameter("projectId", project.getId());
-                            query.setParameter("elementId", element.getId());
-                            query.setParameter("maxDate", maxDate);
+                    try {
+                        final Date maxDate = (Date) maxDateQuery.getSingleResult();
 
-                            final HistoryToken token = (HistoryToken) query.getSingleResult();
-                            historyTokens.add(token);
-                            
-                        } catch(NoResultException e) {
-                            // There is no history token for the given element. No action.
-                        }
+                        final Query query = em.createQuery("SELECT h FROM HistoryToken h WHERE h.elementId = :elementId AND h.projectId = :projectId AND h.date = :maxDate");
+                        query.setParameter("projectId", project.getId());
+                        query.setParameter("elementId", element.getId());
+                        query.setParameter("maxDate", maxDate);
+
+                        final HistoryToken token = (HistoryToken) query.getSingleResult();
+                        historyTokens.add(token);
+
+                    } catch(NoResultException e) {
+                        // There is no history token for the given element. No action.
                     }
                 }
             }

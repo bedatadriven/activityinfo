@@ -399,6 +399,14 @@ public final class ProjectDTO extends BaseModelData implements EntityDTO, Defaul
         set("amendments", amendments);
     }
 
+    public AmendmentDTO getCurrentAmendment() {
+        return (AmendmentDTO) get("currentAmendment");
+    }
+
+    public void setCurrentAmendment(AmendmentDTO currentAmendment) {
+        set("currentAmendment", currentAmendment);
+    }
+
     public void addListener(MonitoredPointListener l) {
 
         if (listeners == null) {

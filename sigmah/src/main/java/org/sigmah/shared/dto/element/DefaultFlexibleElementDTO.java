@@ -38,6 +38,7 @@ import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.sigmah.shared.command.GetCountry;
 
 /**
  * DTO mapping class for entity element.DefaultFlexibleElement.
@@ -73,6 +74,13 @@ public class DefaultFlexibleElementDTO extends FlexibleElementDTO {
 
     @Override
     protected Component getComponent(ValueResult valueResult, boolean enabled) {
+        if(valueResult != null && valueResult.isValueDefined())
+            return getComponentWithValue(valueResult, enabled);
+        else
+            return getComponent(enabled);
+    }
+
+    protected Component getComponent(boolean enabled) {
 
         if (currentContainerDTO instanceof DefaultFlexibleElementContainer) {
             container = (DefaultFlexibleElementContainer) currentContainerDTO;
@@ -512,6 +520,297 @@ public class DefaultFlexibleElementDTO extends FlexibleElementDTO {
             // Sets the value to the field.
             labelField.setValue(container.getOwnerFirstName() != null ? container.getOwnerFirstName() + " "
                     + container.getOwnerName() : container.getOwnerName());
+
+            component = labelField;
+        }
+            break;
+        default:
+            throw new IllegalArgumentException("[getComponent] The type '" + getType()
+                    + "' for the default flexible element doen't exist.");
+        }
+
+        return component;
+    }
+
+    protected Component getComponentWithValue(ValueResult valueResult, boolean enabled) {
+
+        final DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat(I18N.CONSTANTS.flexibleElementDateFormat());
+        final Component component;
+
+        switch (getType()) {
+        // Project code.
+        case CODE: {
+
+            final Field<?> field;
+
+            // Builds the field and sets its value.
+            if (enabled) {
+                final TextField<String> textField = createStringField(16, false);
+                textField.setValue(valueResult.getValueObject());
+                field = textField;
+
+            } else {
+                final LabelField labelField = createLabelField();
+                labelField.setValue(valueResult.getValueObject());
+                field = labelField;
+            }
+
+            // Sets the field label.
+            setLabel(I18N.CONSTANTS.projectName());
+            field.setFieldLabel(getLabel());
+
+            component = field;
+        }
+            break;
+        // Project title.
+        case TITLE: {
+
+            final Field<?> field;
+
+            // Builds the field and sets its value.
+            if (enabled) {
+                final TextField<String> textField = createStringField(50, false);
+                textField.setValue(valueResult.getValueObject());
+                field = textField;
+
+            } else {
+                final LabelField labelField = createLabelField();
+                labelField.setValue(valueResult.getValueObject());
+                field = labelField;
+            }
+
+            // Sets the field label.
+            setLabel(I18N.CONSTANTS.projectFullName());
+            field.setFieldLabel(getLabel());
+
+            component = field;
+        }
+            break;
+
+        case START_DATE: {
+
+            final Field<?> field;
+            final Date sd = new Date(Long.parseLong(valueResult.getValueObject()));
+
+            // Builds the field and sets its value.
+            if (enabled) {
+                final DateField dateField = createDateField(false);
+                dateField.setValue(sd);
+                field = dateField;
+
+            } else {
+
+                final LabelField labelField = createLabelField();
+                if (sd != null) {
+                    labelField.setValue(DATE_FORMAT.format(sd));
+                }
+                field = labelField;
+            }
+
+            // Sets the field label.
+            setLabel(I18N.CONSTANTS.projectStartDate());
+            field.setFieldLabel(getLabel());
+
+            component = field;
+        }
+            break;
+        case END_DATE: {
+
+            final Field<?> field;
+            final Date ed = new Date(Long.parseLong(valueResult.getValueObject()));
+
+            // Builds the field and sets its value.
+            if (enabled) {
+                final DateField dateField = createDateField(true);
+                dateField.setValue(ed);
+                field = dateField;
+
+            } else {
+
+                final LabelField labelField = createLabelField();
+                if (ed != null) {
+                    labelField.setValue(DATE_FORMAT.format(ed));
+                }
+                field = labelField;
+            }
+
+            // Sets the field label.
+            setLabel(I18N.CONSTANTS.projectEndDate());
+            field.setFieldLabel(getLabel());
+
+            component = field;
+        }
+            break;
+        case BUDGET: {
+
+            final Field<?> plannedBudgetField;
+            final Field<?> spendBudgetField;
+            final Field<?> receivedBudgetField;
+
+            final String[] parts = valueResult.getValueObject().split("~");
+
+            final Double pb = Double.parseDouble(parts[0]);
+            final Double sb = Double.parseDouble(parts[1]);
+            final Double rb = Double.parseDouble(parts[2]);
+
+            // Spent ratio.
+            final Label ratioLabel = new Label();
+            ratioLabel.addStyleName("project-label-10");
+            ratioLabel.addStyleName("flexibility-label");
+
+            if (enabled) {
+
+                // Planned budget.
+                final NumberField plannedBudgetNumberField = createNumberField(false);
+                plannedBudgetNumberField.setFieldLabel(I18N.CONSTANTS.projectPlannedBudget());
+
+                // Spend budget.
+                final NumberField spendBudgetNumberField = createNumberField(false);
+                spendBudgetNumberField.setFieldLabel(I18N.CONSTANTS.projectSpendBudget());
+
+                // Received budget.
+                final NumberField receivedBudgetNumberField = createNumberField(false);
+                receivedBudgetNumberField.setFieldLabel(I18N.CONSTANTS.projectReceivedBudget());
+
+                // Listener.
+                final Listener<BaseEvent> listener = new Listener<BaseEvent>() {
+
+                    final double minValue = 0.0;
+
+                    @Override
+                    public void handleEvent(BaseEvent be) {
+
+                        // Retrieves values.
+                        final Number plannedBudget = plannedBudgetNumberField.getValue();
+                        final Double plannedBudgetAsDouble = plannedBudget.doubleValue();
+
+                        final Number spendBudget = spendBudgetNumberField.getValue();
+                        final Double spendBudgetAsDouble = spendBudget.doubleValue();
+
+                        final Number receivedBudget = receivedBudgetNumberField.getValue();
+                        final Double receivedBudgetAsDouble = receivedBudget.doubleValue();
+
+                        // Checks the numbers intervals.
+                        final boolean isValueOn = plannedBudgetAsDouble >= minValue && spendBudgetAsDouble >= minValue
+                                && receivedBudgetAsDouble >= minValue;
+
+                        // The numbers are saved as strings.
+                        final String plannedBudgetRawValue = String.valueOf(plannedBudgetAsDouble);
+                        final String spendBudgetRawValue = String.valueOf(spendBudgetAsDouble);
+                        final String receivedBudgetRawValue = String.valueOf(receivedBudgetAsDouble);
+                        final String rawValue = ValueResultUtils.mergeElements(plannedBudgetRawValue,
+                                spendBudgetRawValue, receivedBudgetRawValue);
+
+                        ratioLabel.setText(I18N.CONSTANTS.flexibleElementBudgetDistributionRatio() + ": "
+                                + NumberUtils.ratioAsString(spendBudgetAsDouble, plannedBudgetAsDouble));
+
+                        fireEvents(rawValue, isValueOn);
+                    }
+                };
+
+                plannedBudgetNumberField.addListener(Events.Change, listener);
+                spendBudgetNumberField.addListener(Events.Change, listener);
+                receivedBudgetNumberField.addListener(Events.Change, listener);
+
+                // Sets the value to the fields.
+                plannedBudgetNumberField.setValue(pb);
+                spendBudgetNumberField.setValue(sb);
+                receivedBudgetNumberField.setValue(rb);
+
+                plannedBudgetField = plannedBudgetNumberField;
+                spendBudgetField = spendBudgetNumberField;
+                receivedBudgetField = receivedBudgetNumberField;
+
+            } else {
+
+                final LabelField plannedBudgetLabelField = createLabelField();
+                plannedBudgetLabelField.setFieldLabel(I18N.CONSTANTS.projectPlannedBudget());
+
+                final LabelField spendBudgetLabelField = createLabelField();
+                spendBudgetLabelField.setFieldLabel(I18N.CONSTANTS.projectSpendBudget());
+
+                final LabelField receivedBudgetLabelField = createLabelField();
+                receivedBudgetLabelField.setFieldLabel(I18N.CONSTANTS.projectReceivedBudget());
+
+                // Sets the value to the fields.
+                plannedBudgetLabelField.setValue(pb);
+                spendBudgetLabelField.setValue(sb);
+                receivedBudgetLabelField.setValue(rb);
+
+                plannedBudgetField = plannedBudgetLabelField;
+                spendBudgetField = spendBudgetLabelField;
+                receivedBudgetField = receivedBudgetLabelField;
+            }
+
+            ratioLabel.setText(I18N.CONSTANTS.flexibleElementBudgetDistributionRatio() + ": "
+                    + NumberUtils.ratioAsString(sb, pb));
+
+            // Fieldset.
+            final FieldSet fieldset = new FieldSet();
+            fieldset.setCollapsible(true);
+            fieldset.setLayout(new FormLayout());
+
+            fieldset.add(plannedBudgetField);
+            fieldset.add(receivedBudgetField);
+            fieldset.add(spendBudgetField);
+            fieldset.add(ratioLabel);
+
+            // Sets the field label.
+            setLabel(I18N.CONSTANTS.projectBudget());
+            fieldset.setHeading(getLabel());
+
+            component = fieldset;
+        }
+            break;
+        case COUNTRY: {
+            // TODO
+
+            final Field<Object> field;
+            final int countryId = Integer.parseInt(valueResult.getValueObject());
+
+            // Builds the field and sets its value.
+            if (enabled) {
+                final TextField<Object> textField = new TextField<Object>();
+                field = textField;
+
+            } else {
+                final LabelField labelField = createLabelField();
+                field = labelField;
+            }
+
+            dispatcher.execute(new GetCountry(countryId), null, new AsyncCallback<CountryDTO>() {
+
+                @Override
+                public void onFailure(Throwable caught) {
+                    field.setValue("-");
+                }
+
+                @Override
+                public void onSuccess(CountryDTO result) {
+                    field.setValue(result.getName());
+                }
+                
+            });
+            
+
+            // Sets the field label.
+            setLabel(I18N.CONSTANTS.projectCountry());
+            field.setFieldLabel(getLabel());
+
+            component = field;
+
+        }
+            break;
+        case OWNER: {
+
+            final LabelField labelField = createLabelField();
+
+            // Sets the field label.
+            setLabel(I18N.CONSTANTS.projectManager());
+            labelField.setFieldLabel(getLabel());
+
+            // Sets the value to the field.
+            labelField.setValue(valueResult.getValueObject());
 
             component = labelField;
         }

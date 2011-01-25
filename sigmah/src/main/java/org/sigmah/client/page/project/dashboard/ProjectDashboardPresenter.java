@@ -560,9 +560,14 @@ public class ProjectDashboardPresenter implements SubPresenter {
                 // -- ELEMENT VALUE
                 // --
 
+                // Retrieving the current amendment id
+                Integer amendmentId = null;
+                if(projectPresenter.getCurrentProjectDTO().getCurrentAmendment() != null)
+                    amendmentId = projectPresenter.getCurrentProjectDTO().getCurrentAmendment().getId();
+
                 // Remote call to ask for this element value.
                 final GetValue command = new GetValue(projectPresenter.getCurrentProjectDTO().getId(),
-                        elementDTO.getId(), elementDTO.getEntityName());
+                        elementDTO.getId(), elementDTO.getEntityName(), amendmentId);
                 dispatcher.execute(command, null, new AsyncCallback<ValueResult>() {
 
                     @Override
@@ -593,7 +598,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
                         // Generates element component (with the value).
                         elementDTO.init();
-                        final Component elementComponent = elementDTO.getElementComponent(valueResult, !readOnly);
+                        final Component elementComponent = elementDTO.getElementComponent(valueResult, !readOnly && !valueResult.isAmendment());
 
                         // Component width.
                         final FormData formData;

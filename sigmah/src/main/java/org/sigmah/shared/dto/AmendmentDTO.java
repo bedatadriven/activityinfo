@@ -8,6 +8,7 @@ package org.sigmah.shared.dto;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.domain.Amendment;
+import org.sigmah.shared.dto.logframe.LogFrameDTO;
 
 /**
  * DTO mapping class for {@link Amendment}s.
@@ -36,15 +37,10 @@ public class AmendmentDTO extends BaseModelData implements EntityDTO {
 
     @Override
     public int getId() {
-        final Integer id = (Integer) get("id");
-
-        if(id == null)
-            return -1;
-        else
-            return id;
+        return (Integer) get("id");
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         set("id", id);
     }
 
@@ -71,10 +67,28 @@ public class AmendmentDTO extends BaseModelData implements EntityDTO {
         set("state", state);
     }
 
+    public LogFrameDTO getLogFrameDTO() {
+        return get("logFrameDTO");
+    }
+
+    public void setLogFrameDTO(LogFrameDTO logFrameDTO) {
+        set("logFrameDTO", logFrameDTO);
+    }
+
     /**
      * Initialize the "name" property with the version and revision numbers.
      */
     public final void prepareName() {
-        set("text", I18N.MESSAGES.amendmentName(Integer.toString(getVersion()), Integer.toString(getRevision())));
+        String version = "0";
+        String revision = "0";
+
+        try {
+            version = Integer.toString(getVersion());
+            revision = Integer.toString(getRevision());
+            
+        } catch (NullPointerException e) {
+        }
+
+        set("text", I18N.MESSAGES.amendmentName(version, revision));
     }
 }

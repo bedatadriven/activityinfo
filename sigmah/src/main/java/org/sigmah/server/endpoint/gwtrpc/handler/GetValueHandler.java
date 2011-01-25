@@ -30,6 +30,7 @@ import org.sigmah.shared.dto.value.TripletValueDTO;
 import org.sigmah.shared.exception.CommandException;
 
 import com.google.inject.Inject;
+import org.sigmah.shared.domain.history.HistoryToken;
 
 /**
  * Handler getting the value of a {@link FlexibleElement}.
@@ -73,6 +74,21 @@ public class GetValueHandler implements CommandHandler<GetValue> {
         // Command result.
         final ValueResult valueResult = new ValueResult();
 
+        // Amendment
+        String historyValue = null;
+        if(cmd.getAmendmentId() != null) {
+            final Query tokenQuery = em.createQuery("SELECT a.values FROM Amendment a WHERE a.id = :amendmentId");
+            tokenQuery.setParameter("amendmentId", cmd.getAmendmentId());
+
+            final List<HistoryToken> tokens = (List<HistoryToken>) tokenQuery.getResultList();
+            if(tokens != null) {
+                for(final HistoryToken token : tokens) {
+                    if(token.getElementId() == cmd.getElementId())
+                        historyValue = token.getValue();
+                }
+            }
+        }
+
         // --------------------------------------------------------------------
         // STEP 1 : gets the string value (regardless of the element).
         // --------------------------------------------------------------------
@@ -97,6 +113,14 @@ public class GetValueHandler implements CommandHandler<GetValue> {
             isValueExisting = false;
         } catch (ClassCastException e) {
             isValueExisting = false;
+        }
+
+        // Overriding the value by the old one if we have to display an amendment
+        if(historyValue != null) {
+            valueAsString = historyValue;
+            isValueExisting = true;
+            
+            valueResult.setAmendment(true);
         }
 
         // No value exists for the flexible element.

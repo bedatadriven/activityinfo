@@ -74,7 +74,7 @@ public class Amendment implements Serializable {
     private Integer revision;
     private State state;
     private LogFrame logFrame;
-     private List<HistoryToken> values;
+    private List<HistoryToken> values;
     private Date date;
 
     @Id

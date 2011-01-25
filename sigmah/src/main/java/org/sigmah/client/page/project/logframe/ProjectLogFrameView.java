@@ -165,13 +165,13 @@ public class ProjectLogFrameView extends ProjectLogFramePresenter.View {
         copyButton = new Button(I18N.CONSTANTS.copy());
         copyButton.setEnabled(true);
         // TODO unmask it.
-        copyButton.setVisible(false);
+//        copyButton.setVisible(false);
 
         // Paste button.
         pasteButton = new Button(I18N.CONSTANTS.paste());
-        pasteButton.setEnabled(true);
+        pasteButton.setEnabled(false);
         // TODO unmask it.
-        pasteButton.setVisible(false);
+//        pasteButton.setVisible(false);
 
         // Export to Word button.
         wordButton = new Button(I18N.CONSTANTS.exportToWord(), IconImageBundle.ICONS.msword());

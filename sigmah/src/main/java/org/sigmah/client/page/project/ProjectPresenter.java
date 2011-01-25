@@ -40,7 +40,9 @@ import org.sigmah.shared.dto.layout.LayoutGroupDTO;
 import org.sigmah.shared.dto.profile.ProfileUtils;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.Component;
@@ -438,7 +440,33 @@ public class ProjectPresenter implements Frame, TabPage {
         versionList.addSelectionChangedListener(new SelectionChangedListener<AmendmentDTO>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<AmendmentDTO> se) {
-                displayAmendmentButton.setEnabled(se.getSelectedItem().getId() != 0);
+                int currentAmendmentId = 0;
+                if(currentProjectDTO.getCurrentAmendment() != null)
+                    currentAmendmentId = currentProjectDTO.getCurrentAmendment().getId();
+
+                Log.debug("Current "+currentAmendmentId+" / Selected "+se.getSelectedItem().getId());
+                
+                displayAmendmentButton.setEnabled(se.getSelectedItem().getId() != currentAmendmentId);
+            }
+        });
+
+        displayAmendmentButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                AmendmentDTO amendmentDTO = versionList.getSelection().get(0);
+                if(amendmentDTO.getId() == 0)
+                    amendmentDTO = null;
+                else
+                    Log.debug("Back to "+amendmentDTO.getId());
+
+                currentProjectDTO.setCurrentAmendment(amendmentDTO);
+
+                
+                // Refreshing the whole view
+                discardAllViews();
+                selectTab(currentState.getCurrentSection(), true);
+                displayAmendmentButton.setEnabled(false);
             }
         });
 
@@ -449,7 +477,11 @@ public class ProjectPresenter implements Frame, TabPage {
         amendmentBox.add(amendmentListContainer, new VBoxLayoutData(0, 0, 3, 0));
 
         // Displaying the available actions
-        final Amendment.Action[] actions = currentProjectDTO.getAmendmentState().getActions();
+        final Amendment.Action[] actions;
+        if(currentProjectDTO.getAmendmentState() != null)
+            actions = currentProjectDTO.getAmendmentState().getActions();
+        else
+            actions = new Amendment.Action[0];
         final Anchor[] anchors = new Anchor[actions.length];
 
         for (int index = 0; index < actions.length; index++) {

@@ -6,7 +6,6 @@ import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.project.SubPresenter;
 import org.sigmah.client.page.project.ProjectPresenter;
-import org.sigmah.client.util.NotImplementedMethod;
 import org.sigmah.client.util.Notification;
 import org.sigmah.shared.command.UpdateLogFrame;
 import org.sigmah.shared.command.result.LogFrameResult;
@@ -19,12 +18,15 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.sigmah.shared.command.CopyLogFrame;
 import org.sigmah.shared.domain.Amendment;
 
 /**
@@ -61,6 +63,8 @@ public class ProjectLogFramePresenter implements SubPresenter {
 
         public abstract TextField<String> getLogFrameMainObjectiveTextBox();
     }
+
+    private static Integer logFrameIdCopySource;
 
     /**
      * This presenter view.
@@ -105,7 +109,12 @@ public class ProjectLogFramePresenter implements SubPresenter {
 
         if (view == null) {
             view = new ProjectLogFrameView();
-            logFrame = projectPresenter.getCurrentProjectDTO().getLogFrameDTO();
+            
+            if(projectPresenter.getCurrentProjectDTO().getCurrentAmendment() == null)
+                logFrame = projectPresenter.getCurrentProjectDTO().getLogFrameDTO();
+            else
+                logFrame = projectPresenter.getCurrentProjectDTO().getCurrentAmendment().getLogFrameDTO();
+            
             currentProjectDTO = projectPresenter.getCurrentProjectDTO();
             fillAndInit();
             addListeners();
@@ -113,7 +122,11 @@ public class ProjectLogFramePresenter implements SubPresenter {
 
         // If the current project has changed, clear the view
         if (projectPresenter.getCurrentProjectDTO() != currentProjectDTO) {
-            logFrame = projectPresenter.getCurrentProjectDTO().getLogFrameDTO();
+            if(projectPresenter.getCurrentProjectDTO().getCurrentAmendment() == null)
+                logFrame = projectPresenter.getCurrentProjectDTO().getLogFrameDTO();
+            else
+                logFrame = projectPresenter.getCurrentProjectDTO().getCurrentAmendment().getLogFrameDTO();
+
             currentProjectDTO = projectPresenter.getCurrentProjectDTO();
             fillAndInit();
         }
@@ -219,7 +232,10 @@ public class ProjectLogFramePresenter implements SubPresenter {
 
             @Override
             public void handleEvent(BaseEvent be) {
-                NotImplementedMethod.methodNotImplemented();
+                logFrameIdCopySource = logFrame.getId();
+                view.getPasteButton().setEnabled(isEditable() && currentProjectDTO.getCurrentAmendment() == null);
+
+                Notification.show(I18N.CONSTANTS.copy(), I18N.CONSTANTS.logFrameCopied());
             }
         });
 
@@ -228,9 +244,42 @@ public class ProjectLogFramePresenter implements SubPresenter {
 
             @Override
             public void handleEvent(BaseEvent be) {
-                NotImplementedMethod.methodNotImplemented();
+                MessageBox.confirm(I18N.CONSTANTS.paste(), I18N.CONSTANTS.logFramePasteConfirm(), new Listener<MessageBoxEvent>() {
+
+                    @Override
+                    public void handleEvent(MessageBoxEvent be) {
+                        if(Dialog.YES.equals(be.getButtonClicked().getItemId())) {
+                            final CopyLogFrame copyLogFrame = new CopyLogFrame(logFrameIdCopySource, currentProjectDTO.getId());
+                            dispatcher.execute(copyLogFrame, null, new AsyncCallback<LogFrameDTO>() {
+
+                                @Override
+                                public void onFailure(Throwable caught) {
+                                    MessageBox.alert(I18N.CONSTANTS.paste(), I18N.CONSTANTS.logFramePasteError(), null);
+                                }
+
+                                @Override
+                                public void onSuccess(LogFrameDTO result) {
+                                    logFrame = result;
+                                    currentProjectDTO.setLogFrameDTO(result);
+
+                                    fillAndInit();
+                                    Notification.show(I18N.CONSTANTS.paste(), I18N.CONSTANTS.logFramePasted());
+                                }
+
+                            });
+                        }
+                    }
+                });
+                
             }
         });
+    }
+
+    private boolean isEditable() {
+        return logFrame != null &&
+               currentProjectDTO.getAmendmentState() == Amendment.State.DRAFT &&
+               currentProjectDTO.getCurrentAmendment() == null &&
+               ProfileUtils.isGranted(authentication, GlobalPermissionEnum.EDIT_PROJECT);
     }
 
     /**
@@ -246,8 +295,7 @@ public class ProjectLogFramePresenter implements SubPresenter {
             // Fill the log frame main objective.
             view.getLogFrameMainObjectiveTextBox().setValue(logFrame.getMainObjective());
 
-            final boolean editable = currentProjectDTO.getAmendmentState() == Amendment.State.DRAFT &&
-                                     ProfileUtils.isGranted(authentication, GlobalPermissionEnum.EDIT_PROJECT);
+            final boolean editable = isEditable();
 
             if (!editable) {
                 view.getLogFrameTitleTextBox().setEnabled(false);
@@ -260,8 +308,8 @@ public class ProjectLogFramePresenter implements SubPresenter {
 
         // Default buttons states.
         view.getSaveButton().setEnabled(false);
-        view.getCopyButton().setEnabled(false);
-        view.getPasteButton().setEnabled(false);
+        view.getCopyButton().setEnabled(true);
+        view.getPasteButton().setEnabled(isEditable() && logFrameIdCopySource != null && currentProjectDTO.getCurrentAmendment() == null);
         view.getWordExportButton().setEnabled(false);
         view.getExcelExportButton().setEnabled(false);
     }
