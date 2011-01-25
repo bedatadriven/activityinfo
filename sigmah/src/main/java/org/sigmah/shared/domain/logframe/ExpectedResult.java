@@ -60,6 +60,7 @@ public class ExpectedResult implements Serializable, Deleteable {
     public ExpectedResult copy(final SpecificObjective parentSpecificObjective, final Map<Integer, LogFrameGroup> groupMap) {
         final ExpectedResult copy = new ExpectedResult();
         copy.code = this.code;
+        copy.interventionLogic = this.interventionLogic;
         copy.risks = this.risks;
         copy.assumptions = this.assumptions;
         copy.parentSpecificObjective = parentSpecificObjective;
