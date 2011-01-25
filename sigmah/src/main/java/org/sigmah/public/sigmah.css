@@ -1003,3 +1003,9 @@ body {
     font-family: tahoma,arial,helvetica,sans-serif;
     color: #482A1E;
 }
+
+/* ---------------------------------------------- Help */
+
+.help-content {
+	padding: 5px;
+}

@@ -57,6 +57,8 @@ public class SigmahAppFrame implements Frame {
 
     private SigmahViewport view;
 
+    private PageState activePageState;
+
     @Inject
     public SigmahAppFrame(EventBus eventBus, final Authentication auth, OfflineView offlineMenu,
             final TabModel tabModel, final Dispatcher dispatcher, final UserInfo info, final CountriesList countries) {
@@ -73,6 +75,13 @@ public class SigmahAppFrame implements Frame {
             RootPanel.get("bugreport").add(reportButton);
 
             final Anchor helpButton = new Anchor(I18N.CONSTANTS.help());
+            helpButton.addClickHandler(new ClickHandler() {
+
+                @Override
+                public void onClick(ClickEvent event) {
+                    SigmahHelpWindow.show(activePageState.getPageId());
+                }
+            });
             RootPanel.get("help").add(helpButton);
 
             // Logout action
@@ -88,7 +97,8 @@ public class SigmahAppFrame implements Frame {
 
             // Tab bar
             final TabBar tabBar = new TabBar(tabModel, eventBus);
-            final Tab dashboardTab = tabModel.add(I18N.CONSTANTS.dashboard(), new DashboardPageState(), false);
+            activePageState = new DashboardPageState();
+            final Tab dashboardTab = tabModel.add(I18N.CONSTANTS.dashboard(), activePageState, false);
             tabBar.addTabStyleName(tabModel.indexOf(dashboardTab), "home");
 
             final RootPanel tabs = RootPanel.get("tabs");
@@ -98,6 +108,7 @@ public class SigmahAppFrame implements Frame {
                 @Override
                 public void handleEvent(NavigationEvent be) {
                     final PageState state = be.getPlace();
+                    activePageState = state;
                     final String title;
                     if (state instanceof TabPage)
                         title = ((TabPage) state).getTabTitle();
