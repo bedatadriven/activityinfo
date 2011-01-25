@@ -168,7 +168,7 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
             addNavLink(eventBus, menuPanel, I18N.CONSTANTS.createProjectNewProject(), IconImageBundle.ICONS.add(),
                     new Listener<ButtonEvent>() {
 
-                        private final CreateProjectWindow window = CreateProjectWindow.getInstance(dispatcher,
+                        private final CreateProjectWindow window = new CreateProjectWindow(dispatcher,
                                 authentication, info);
 
                         {
