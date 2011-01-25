@@ -32,8 +32,10 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.ListBox;
 import org.sigmah.client.i18n.I18N;
 
 /**
@@ -56,31 +58,54 @@ public class LoginView extends Composite {
         final FlexTable form = new FlexTable();
         form.setWidth("90%");
 
+        int y = 0;
+
         // E-Mail field
-        form.setText(0, 0, I18N.CONSTANTS.loginLoginField());
-        form.getCellFormatter().setStyleName(0, 0, "login-box-form-label");
+        form.setText(y, 0, I18N.CONSTANTS.loginLoginField());
+        form.getCellFormatter().setStyleName(y, 0, "login-box-form-label");
 
         final TextBox loginTextBox = new TextBox();
         loginTextBox.setWidth("100%");
-        form.setWidget(0, 1, loginTextBox);
-        form.getFlexCellFormatter().setColSpan(0, 1, 2);
+        form.setWidget(y, 1, loginTextBox);
+        form.getFlexCellFormatter().setColSpan(y, 1, 2);
+        y++;
 
         // Separator
         for(int i = 0; i < 3; i++)
-            form.getCellFormatter().setStyleName(1, i, "login-box-form-separator");
+            form.getCellFormatter().setStyleName(y, i, "login-box-form-separator");
+        y++;
 
         // Password field
-        form.setText(2, 0, I18N.CONSTANTS.loginPasswordField());
-        form.getCellFormatter().setStyleName(2, 0, "login-box-form-label");
+        form.setText(y, 0, I18N.CONSTANTS.loginPasswordField());
+        form.getCellFormatter().setStyleName(y, 0, "login-box-form-label");
 
         final PasswordTextBox passwordTextBox = new PasswordTextBox();
         passwordTextBox.setWidth("100%");
-        form.setWidget(2, 1, passwordTextBox);
-        form.getFlexCellFormatter().setColSpan(2, 1, 2);
+        form.setWidget(y, 1, passwordTextBox);
+        form.getFlexCellFormatter().setColSpan(y, 1, 2);
+        y++;
 
         // Separator
         for(int i = 0; i < 3; i++)
-            form.getCellFormatter().setStyleName(3, i, "login-box-form-separator");
+            form.getCellFormatter().setStyleName(y, i, "login-box-form-separator");
+        y++;
+
+        // Language field
+        form.setText(y, 0, I18N.CONSTANTS.loginLanguageField());
+        form.getCellFormatter().setStyleName(y, 0, "login-box-form-label");
+
+        final ListBox languageListBox = new ListBox(false);
+        languageListBox.addItem(I18N.CONSTANTS.languageFrench(), "fr");
+        languageListBox.addItem(I18N.CONSTANTS.languageEnglish(), "en");
+        languageListBox.setWidth("100%");
+        form.setWidget(y, 1, languageListBox);
+        form.getFlexCellFormatter().setColSpan(y, 1, 2);
+        y++;
+
+        // Separator
+        for(int i = 0; i < 3; i++)
+            form.getCellFormatter().setStyleName(y, i, "login-box-form-separator");
+        y++;
 
         // Password forgotten link
         final FlowPanel bottomPanel = new FlowPanel();
@@ -104,19 +129,21 @@ public class LoginView extends Composite {
         loader.getElement().getStyle().setRight(2, Unit.PX);
         bottomPanel.add(loader);
 
-        form.setWidget(4, 0, bottomPanel);
-        form.getFlexCellFormatter().setColSpan(4, 0, 2);
+        form.setWidget(y, 0, bottomPanel);
+        form.getFlexCellFormatter().setColSpan(y, 0, 2);
 
         // Login button
         final Button loginButton = new Button(I18N.CONSTANTS.loginConnectButton());
         loginButton.setWidth("120px");
-        form.setWidget(4, 1, loginButton);
-        form.getCellFormatter().setHorizontalAlignment(4, 1, HasHorizontalAlignment.ALIGN_RIGHT);
+        form.setWidget(y, 1, loginButton);
+        form.getCellFormatter().setHorizontalAlignment(y, 1, HasHorizontalAlignment.ALIGN_RIGHT);
+        y++;
 
         // Login actions
         loginButton.addListener(Events.Select, new Listener<BaseEvent>() {
             @Override
             public void handleEvent(BaseEvent be) {
+                Cookies.setCookie(org.sigmah.shared.Cookies.LOCALE_COOKIE, languageListBox.getValue(languageListBox.getSelectedIndex()));
                 doLogin(loginTextBox.getText(), passwordTextBox.getText(), loginButton, loader);
             }
         });
@@ -124,8 +151,10 @@ public class LoginView extends Composite {
         final KeyDownHandler handler = new KeyDownHandler() {
             @Override
             public void onKeyDown(KeyDownEvent event) {
-                if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
+                if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+                    Cookies.setCookie(org.sigmah.shared.Cookies.LOCALE_COOKIE, languageListBox.getValue(languageListBox.getSelectedIndex()));
                     doLogin(loginTextBox.getText(), passwordTextBox.getText(), loginButton, loader);
+                }
             }
         };
         loginTextBox.addKeyDownHandler(handler);

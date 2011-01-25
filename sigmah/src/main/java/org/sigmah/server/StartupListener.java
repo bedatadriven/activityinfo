@@ -25,6 +25,7 @@ import org.sigmah.server.util.logging.LoggingModule;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
+import org.sigmah.server.bootstrap.SigmahBootstrapModule;
 
 
 /**
@@ -63,6 +64,7 @@ public class StartupListener extends GuiceServletContextListener {
                 new AuthenticationModule(),
                 new ReportModule(),
                 new BootstrapModule(),
+                new SigmahBootstrapModule(),
                 new GwtRpcModule(),
                 new ExportModule(),
                 new WfsModule(),

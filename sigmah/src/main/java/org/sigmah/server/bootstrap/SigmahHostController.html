@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<!--Locale-->
+    <title>Sigmah 0.8</title>
+    <style type="text/css">
+        #loading {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            background-color: rgb(73,71,72);
+        }
+        #loading-box {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+
+            text-align: center;
+            
+            width: 224px;
+            height: 90px;
+            
+            margin-left: -112px;
+            margin-top: -45px;
+
+            z-index: 20001;
+
+            color: white;
+            font-family: tahoma;
+            font-weight: bold;
+            font-size: 10pt;
+        }
+
+        #loading-box .version {
+            font-weight: normal;
+            font-size: 9pt;
+        }
+
+        #loading-msg {
+            font: normal 10px tahoma, arial, sans-serif;
+        }
+
+        #loading-options {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            font: normal 13px tahoma, arial, sans-serif;
+            text-align: right;
+        }
+
+        .x-viewport.x-border {
+            border: 0;
+            padding: 10px 15px 10px 15px;
+        }
+    </style>
+    
+    <script type="text/javascript" language="javascript" src="../SigmahAuthToken"></script>
+    <script type="text/javascript" language="javascript" src="gxt/flash/swfobject.js"></script>
+    <script type="text/javascript" language="javascript">
+        var GoogleMapsAPI = {
+            key: "ABQIAAAAXuJI8nlwhKSLw--j5pSKGBSiRl6-Jfr_hL3O5U9p5tEakHeQvxSC4C7_Vf4hoMTUN6AMnB8SINe6JA"
+        };
+    </script>
+    <script type="text/javascript" language="javascript" src="Sigmah.nocache.js"></script>
+    
+    <link rel="stylesheet" type="text/css" href="gxt/css/gxt-all.css"/>
+    <link rel="stylesheet" type="text/css" href="activityInfo.css"/>
+    <link rel="stylesheet" type="text/css" href="sigmah.css"/>
+    <link rel="shortcut icon" type="image/ico" href="../favicon.ico" />
+</head>
+<body>
+<iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1'
+        style="position:absolute;width:0;height:0;border:0"></iframe>
+<iframe src="javascript:''" id="_downloadFrame" name="_downloadFrame" tabIndex='-1'
+        style="position:absolute;width:0;height:0;border:0"></iframe>
+
+<div class="header decoration">
+    <div class="logo">
+        <div id="orglogo"></div>
+    </div>
+    <div class="name">
+        <div id="username"><img src="image/name.png" alt=""/> </div>
+	<div id="orgname">SIGMAH</div>
+    </div>
+    <div class="sigmah">
+        <div id="logout"><img src="image/deconnexion.png" alt="" /> </div>
+        <div class="minimenu"> <span id="bugreport"></span> &#124 <span id="help"></span> </div>
+    </div>
+</div>
+
+<div class="bar decoration">
+    <div id="tabs"></div>
+    <div class="tab-bar-left-decoration"></div>
+    <div class="tab-bar-left-decoration-round"></div>
+    <div id="arrows"></div>
+</div>
+
+<div id="content">
+</div>
+
+<div id="loading">
+    <div id="loading-box">
+        <img src="image/login-logo.png" alt="Sigmah"/><br/>
+        <div>
+            <img src="image/loader.gif" alt="Loading..." style="vertical-align: middle"/>
+            <span class="version">Version 0.8</span>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

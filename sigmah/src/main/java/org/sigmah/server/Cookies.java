@@ -10,8 +10,7 @@ import org.sigmah.server.domain.Authentication;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
-public class Cookies {
-    public static final String AUTH_TOKEN_COOKIE = "authToken";
+public class Cookies extends org.sigmah.shared.Cookies {
     
     private class For {
         private static final int THIRTY_DAYS = 30 * 24 * 60 * 60;
@@ -20,7 +19,7 @@ public class Cookies {
 
 
     public static void addAuthCookie(HttpServletResponse response, Authentication auth, boolean remember) {
-        Cookie authCookie = new Cookie(AUTH_TOKEN_COOKIE, auth.getId());
+        Cookie authCookie = new Cookie(Cookies.AUTH_TOKEN_COOKIE, auth.getId());
         authCookie.setMaxAge(remember ? For.THIRTY_DAYS : For.THIS_SESSION);
         authCookie.setPath("/");
         response.addCookie(authCookie);

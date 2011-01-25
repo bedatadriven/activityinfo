@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sigmah.client.inject.SigmahAuthProvider;
-import org.sigmah.server.Cookies;
+import org.sigmah.shared.Cookies;
 import org.sigmah.server.dao.AuthenticationDAO;
 import org.sigmah.server.domain.Authentication;
 import org.sigmah.server.endpoint.gwtrpc.handler.GetUserInfoHandler;

@@ -89,7 +89,7 @@ public class SigmahAppFrame implements Frame {
             logoutButton.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
-                    Cookies.removeCookie("authToken", "/");
+                    Cookies.removeCookie(org.sigmah.shared.Cookies.AUTH_TOKEN_COOKIE, "/");
                     Window.Location.reload();
                 }
             });
