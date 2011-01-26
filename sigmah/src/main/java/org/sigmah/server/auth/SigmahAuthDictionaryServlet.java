@@ -48,9 +48,11 @@ public class SigmahAuthDictionaryServlet extends HttpServlet {
     private Injector injector;
 
     private String getAuthToken(Cookie[] cookies) {
-        for (final Cookie cookie : cookies) {
-            if (Cookies.AUTH_TOKEN_COOKIE.equals(cookie.getName())) {
-                return cookie.getValue();
+        if(cookies != null) {
+            for (final Cookie cookie : cookies) {
+                if (Cookies.AUTH_TOKEN_COOKIE.equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
             }
         }
 

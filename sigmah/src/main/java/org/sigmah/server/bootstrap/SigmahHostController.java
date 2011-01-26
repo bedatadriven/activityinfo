@@ -32,9 +32,11 @@ public class SigmahHostController extends HttpServlet {
     public static final String DEFAULT_LOCALE = "fr";
 
     private String getLocale(Cookie[] cookies) {
-        for (final Cookie cookie : cookies) {
-            if (Cookies.LOCALE_COOKIE.equals(cookie.getName())) {
-                return cookie.getValue();
+        if(cookies != null) {
+            for (final Cookie cookie : cookies) {
+                if (Cookies.LOCALE_COOKIE.equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
             }
         }
 
