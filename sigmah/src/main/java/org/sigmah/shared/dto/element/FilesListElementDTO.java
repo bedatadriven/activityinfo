@@ -397,8 +397,14 @@ public class FilesListElementDTO extends FlexibleElementDTO {
         mainPanel = new ContentPanel();
         mainPanel.setHeaderVisible(true);
         mainPanel.setBorders(true);
-        mainPanel.setHeading(getLabel() + " ("
-                + I18N.MESSAGES.flexibleElementFilesListLimitReached(String.valueOf(getAdjustedLimit())) + ")");
+
+        int max = getAdjustedLimit();
+        if (max != -1) {
+            mainPanel.setHeading(getLabel() + " ("
+                    + I18N.MESSAGES.flexibleElementFilesListLimitReached(String.valueOf(getAdjustedLimit())) + ")");
+        } else {
+            mainPanel.setHeading(getLabel());
+        }
 
         mainPanel.setTopComponent(actionsToolBar);
         mainPanel.add(filesGrid);
