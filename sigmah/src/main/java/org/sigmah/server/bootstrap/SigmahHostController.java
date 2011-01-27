@@ -13,13 +13,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sigmah.shared.Cookies;
 
 /**
@@ -30,6 +30,8 @@ import org.sigmah.shared.Cookies;
 public class SigmahHostController extends HttpServlet {
     public static final String ENDPOINT = "Sigmah/";
     public static final String DEFAULT_LOCALE = "fr";
+
+    private static final Log LOG = LogFactory.getLog(SigmahHostController.class);
 
     private String getLocale(Cookie[] cookies) {
         if(cookies != null) {
@@ -46,12 +48,18 @@ public class SigmahHostController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         final String localeMetaTag = "<meta name='gwt:property' content='locale="+getLocale(req.getCookies())+"'>";
+        final String charset = "UTF-8";
         
         try {
             final BufferedReader inputStream = new BufferedReader(new FileReader(new File(SigmahHostController.class.getResource("SigmahHostController.html").toURI())));
             final OutputStream outputStream = resp.getOutputStream();
 
-            final Charset utf8 = Charset.forName("UTF-8");
+            // Headers
+            resp.setContentType("text/html");
+            resp.setCharacterEncoding(charset);
+
+            // Streaming the host page
+            final Charset utf8 = Charset.forName(charset);
             boolean edited = false;
 
             String line = inputStream.readLine();
@@ -68,7 +76,7 @@ public class SigmahHostController extends HttpServlet {
             inputStream.close();
             outputStream.close();
         } catch (URISyntaxException ex) {
-            Logger.getLogger(SigmahHostController.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.fatal("Error while opening the sigmah host page.", ex);
         }
     }
 
