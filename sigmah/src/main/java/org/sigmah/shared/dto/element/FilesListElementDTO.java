@@ -96,6 +96,33 @@ public class FilesListElementDTO extends FlexibleElementDTO {
      */
     private transient boolean monitoredPointGenerated = false;
 
+    /**
+     * The upload button.
+     */
+    private transient ButtonFileUploadField uploadField;
+
+    public Integer getLimit() {
+        return get("limit");
+    }
+
+    public void setLimit(Integer limit) {
+        set("limit", limit);
+    }
+
+    private int getAdjustedLimit() {
+        final Integer limit = getLimit();
+
+        if (limit == null) {
+            return -1;
+        }
+
+        if (limit <= 0) {
+            return -1;
+        }
+
+        return limit;
+    }
+
     @Override
     public String getEntityName() {
         // Gets the entity name mapped by the current DTO starting from the
@@ -120,8 +147,20 @@ public class FilesListElementDTO extends FlexibleElementDTO {
 
         if (currentValueResult != null && currentValueResult.isValueDefined()) {
             store.removeAll();
+            int max = getAdjustedLimit();
+            int count = 0;
             for (ListableValue s : currentValueResult.getValuesObject()) {
                 store.add((FileDTO) s);
+                count++;
+                if (count == max) {
+                    if (uploadField != null) {
+                        uploadField.setEnabled(false);
+                        if (uploadField.isRendered()) {
+                            uploadField.reset();
+                        }
+                    }
+                    break;
+                }
             }
             store.sort("date", SortDir.DESC);
         }
@@ -139,7 +178,7 @@ public class FilesListElementDTO extends FlexibleElementDTO {
         currentValueResult = valueResult;
 
         // Creates the upload button (with a hidden form panel).
-        final ButtonFileUploadField uploadField = new ButtonFileUploadField();
+        uploadField = new ButtonFileUploadField();
         uploadField.setButtonCaption(I18N.CONSTANTS.flexibleElementFilesListAddDocument());
         uploadField.setName(FileUploadUtils.DOCUMENT_CONTENT);
         uploadField.setButtonIcon(IconImageBundle.ICONS.attach());
@@ -358,7 +397,8 @@ public class FilesListElementDTO extends FlexibleElementDTO {
         mainPanel = new ContentPanel();
         mainPanel.setHeaderVisible(true);
         mainPanel.setBorders(true);
-        mainPanel.setHeading(getLabel());
+        mainPanel.setHeading(getLabel() + " ("
+                + I18N.MESSAGES.flexibleElementFilesListLimitReached(String.valueOf(getAdjustedLimit())) + ")");
 
         mainPanel.setTopComponent(actionsToolBar);
         mainPanel.add(filesGrid);
@@ -704,6 +744,8 @@ public class FilesListElementDTO extends FlexibleElementDTO {
 
                                                             public void onSuccess(VoidResult result) {
                                                                 store.remove(model);
+                                                                uploadField.setEnabled(true);
+                                                                uploadField.reset();
                                                                 if (store.getCount() == 0) {
                                                                     handlerManager.fireEvent(new RequiredValueEvent(
                                                                             false, true));
