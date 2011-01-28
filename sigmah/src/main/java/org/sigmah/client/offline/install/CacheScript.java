@@ -21,7 +21,9 @@ public class CacheScript implements Step {
     @Override
     public boolean isComplete() {
         Log.debug("CacheScript: " + store.getName() + " current version = " + store.getCurrentVersion());
-        return store.getCurrentVersion() != null && store.isEnabled();
+        return store.getCurrentVersion() != null &&
+                store.getCurrentVersion().length() !=0 &&
+                store.isEnabled();
     }
 
     @Override
