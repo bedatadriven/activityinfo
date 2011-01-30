@@ -23,6 +23,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.sigmah.client.ActivityInfoVersion;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.remote.Authentication;
@@ -82,7 +83,8 @@ public class AppFrameSet implements Frame {
 
         topBar = new ToolBar();
 
-        LabelToolItem appTitleItem = new LabelToolItem(I18N.CONSTANTS.appTitle());
+        LabelToolItem appTitleItem = new LabelToolItem(
+                I18N.MESSAGES.versionedActivityInfoTitle(ActivityInfoVersion.REVISION_NUMBER));
         appTitleItem.setStyleName("appTitle");
         topBar.add(appTitleItem);
 

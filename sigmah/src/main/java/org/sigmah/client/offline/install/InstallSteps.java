@@ -10,6 +10,7 @@ import com.bedatadriven.rebar.modulestore.client.ModuleStores;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
+import org.sigmah.client.EventBus;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -19,16 +20,18 @@ public class InstallSteps {
 
     private List<Step> steps = new ArrayList<Step>();
     private Iterator<Step> stepIt;
+    private EventBus eventBus;
     private AsyncCallback callback;
 
     @Inject
-    public InstallSteps(InitialSyncStep syncStep, CacheUserDetails cacheUserDetails) {
+    public InstallSteps(EventBus eventBus, InitialSyncStep syncStep, CacheUserDetails cacheUserDetails) {
+        this.eventBus = eventBus;
         steps.add(cacheUserDetails);
         if(GWT.isScript()) {
             // managed resources stores cause no end of problems in hosted mode,
             // so only invoke here if we are actually running in scripted mode
-            steps.add(new CacheScript(ModuleStores.getCommon()));
-            steps.add(new CacheScript(ModuleStores.getPermutation()));
+            steps.add(new CacheScript(this.eventBus, ModuleStores.getCommon()));
+            steps.add(new CacheScript(this.eventBus, ModuleStores.getPermutation()));
         }
         steps.add(syncStep);
         steps.add(new ShortcutStep());

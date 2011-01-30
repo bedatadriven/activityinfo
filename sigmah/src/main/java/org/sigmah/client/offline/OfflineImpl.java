@@ -67,6 +67,11 @@ public class OfflineImpl implements OfflineGateway {
     }
 
     @Override
+    public boolean validateOfflineInstalled() {
+        return synchronizer.getLastUpdateTime() != null;
+    }
+
+    @Override
     public void synchronize(AsyncCallback<Void> callback) {
         synchronizer.start(callback); 
 

@@ -15,7 +15,20 @@ import java.util.Date;
  */
 public interface OfflineGateway {
     void install(AsyncCallback<Void> callback);
+
+    /**
+     * @return  the date of the last successful synchronization to the client
+     */
     Date getLastSyncTime();
+
+    /**
+     * Conducts sanity checks to be sure that we are really prepared to go
+     * offline. (It's possible that the Offline "state" flag was mis-set in the past.)
+     *
+     * @return true if we are ready
+     */
+    boolean validateOfflineInstalled();
+
     void goOffline(AsyncCallback<Void> callback);
     void goOnline(AsyncCallback<Void> callback);
     void synchronize(AsyncCallback<Void> callback);

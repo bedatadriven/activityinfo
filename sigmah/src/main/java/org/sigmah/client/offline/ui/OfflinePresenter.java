@@ -159,8 +159,15 @@ public class OfflinePresenter {
     }
 
     private void activateStrategy(Strategy strategy) {
-        this.activeStrategy = strategy;
-        this.activeStrategy.activate();
+        try {
+            this.activeStrategy = strategy;
+            this.activeStrategy.activate();
+        } catch(Exception caught) {
+            // errors really ought to be handled by the strategy that is passing control to us
+            // but we can't afford to let an uncaught exception go as it could leave the app
+            // in a state of limbo
+            activateStrategy(new NotInstalledStrategy());
+        }
     }
 
     private void loadGateway(final AsyncCallback<OfflineGateway> callback) {
@@ -261,8 +268,7 @@ public class OfflinePresenter {
             loadGateway(new AsyncCallback<OfflineGateway>() {
                 @Override
                 public void onFailure(Throwable caught) {
-                    activateStrategy(new NotInstalledStrategy());
-                    reportFailure(caught);
+                    abandonShip(caught);
                 }
 
                 @Override
@@ -271,19 +277,34 @@ public class OfflinePresenter {
                         gateway.goOffline(new AsyncCallback<Void>() {
                             @Override
                             public void onFailure(Throwable caught) {
-                                activateStrategy(new NotInstalledStrategy());
-                                reportFailure(caught);
+                                abandonShip(caught);
                             }
 
                             @Override
                             public void onSuccess(Void result) {
-                                activateStrategy(new OfflineStrategy(gateway));
+                                if(gateway.validateOfflineInstalled()) {
+                                    activateStrategy(new OfflineStrategy(gateway));
+                                } else {
+                                    abandonShip();
+                                }
                             }
                         });
                     }
                 }
             });
             return this;
+        }
+
+        void abandonShip(Throwable caught) {
+            reportFailure(caught);
+            abandonShip();
+        }
+
+        // something went wrong while loading the async fragment or
+        // in the boot up, revert to the uninstalled state. the user
+        // can always reinstall. (not ideal, obviously)
+        void abandonShip() {
+            activateStrategy(new NotInstalledStrategy());
         }
     }
 
@@ -430,7 +451,7 @@ public class OfflinePresenter {
             return this;
         }
 
-        @Override                                                 
+        @Override
         void onDefaultButton() {
             view.showProgressDialog();
         }
