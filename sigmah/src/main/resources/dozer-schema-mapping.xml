@@ -573,8 +573,8 @@
 			<b>canContainProjects</b>
 		</field>
 	</mapping>
-
-        <!-- Amendments -->
+	
+	        <!-- Amendments -->
         <mapping wildcard="true">
 		<class-a>org.sigmah.shared.domain.Amendment</class-a>
 		<class-b>org.sigmah.shared.dto.AmendmentDTO</class-b>
@@ -605,5 +605,20 @@
 			<b>phaseName</b>
 		</field>
 	</mapping>
+	
+	<!-- User/UserDTO Mapping -->
+	<mapping wildcard="true">
+		<class-a>org.sigmah.shared.domain.User</class-a>
+		<class-b>org.sigmah.shared.dto.UserDTO</class-b>
+		<field-exclude>
+			<a>orgUnitWithProfiles</a>
+			<b>orgUnitWithProfiles</b>
+		</field-exclude>
+	</mapping>
+	<mapping wildcard="true">
 
+		<class-a>org.sigmah.shared.domain.profile.Profile</class-a>
+		<class-b>org.sigmah.shared.dto.profile.ProfileDTOLight</class-b>
+
+	</mapping>
 </mappings>

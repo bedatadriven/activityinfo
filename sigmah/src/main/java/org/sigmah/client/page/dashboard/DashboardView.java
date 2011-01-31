@@ -14,6 +14,7 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.NavigationHandler;
 import org.sigmah.client.page.PageState;
+import org.sigmah.client.page.admin.AdminPageState;
 import org.sigmah.client.page.charts.ChartPageState;
 import org.sigmah.client.page.config.DbListPageState;
 import org.sigmah.client.page.dashboard.CreateProjectWindow.CreateProjectListener;
@@ -208,7 +209,9 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
         // There are two ways to show these menus (authentication / profile).
         if (authentication.isShowMenus()
                 || ProfileUtils.isGranted(authentication, GlobalPermissionEnum.VIEW_ACTIVITYINFO)) {
-            addNavLink(eventBus, menuPanel, I18N.CONSTANTS.dataEntry(), IconImageBundle.ICONS.dataEntry(),
+        	addNavLink(eventBus, menuPanel, I18N.CONSTANTS.adminboard(), IconImageBundle.ICONS.setup(),
+                    new AdminPageState());
+        	addNavLink(eventBus, menuPanel, I18N.CONSTANTS.dataEntry(), IconImageBundle.ICONS.dataEntry(),
                     new SiteGridPageState());
             addNavLink(eventBus, menuPanel, I18N.CONSTANTS.reports(), IconImageBundle.ICONS.report(),
                     new ReportListPageState());
@@ -218,7 +221,7 @@ public class DashboardView extends ContentPanel implements DashboardPresenter.Vi
             addNavLink(eventBus, menuPanel, I18N.CONSTANTS.tables(), IconImageBundle.ICONS.table(),
                     new PivotPageState());
             addNavLink(eventBus, menuPanel, I18N.CONSTANTS.setup(), IconImageBundle.ICONS.setup(),
-                    new DbListPageState());
+                    new DbListPageState());                      
         }
     }
 

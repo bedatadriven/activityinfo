@@ -13,6 +13,9 @@ import org.sigmah.client.dispatch.remote.cache.AdminEntityCache;
 import org.sigmah.client.dispatch.remote.cache.SchemaCache;
 import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.page.NavigationHandler;
+import org.sigmah.client.page.admin.AdminModule;
+import org.sigmah.client.page.admin.AdminPageLoader;
+import org.sigmah.client.page.admin.AdminPresenter;
 import org.sigmah.client.page.charts.ChartPagePresenter;
 import org.sigmah.client.page.charts.SigmahChartLoader;
 import org.sigmah.client.page.config.*;
@@ -39,11 +42,13 @@ import org.sigmah.client.page.table.PivotModule;
 import org.sigmah.client.page.table.PivotPresenter;
 import org.sigmah.client.page.table.SigmahPivotPageLoader;
 import org.sigmah.client.util.state.IStateManager;
+import org.sigmah.server.mail.MailModule;
 
 @GinModules({SigmahModule.class,
              DashboardModule.class,
              ProjectModule.class,
              OrgUnitModule.class,
+             AdminModule.class,
              MapModule.class,
              PivotModule.class,
              ReportModule.class,
@@ -74,6 +79,10 @@ public interface SigmahInjector extends Ginjector {
     // Required by the 'Org unit' page
     OrgUnitPresenter getOrgUnitPresenter();
     OrgUnitPageLoader registerOrgUnitPageLoader();
+    
+    // Required by the 'Admin' page
+    AdminPresenter getAdminPresenter();
+    AdminPageLoader registerAdminPageLoader();
     
     // Pages from ActivityInfo
     SigmahDataEntryLoader registerDataEntryLoader();

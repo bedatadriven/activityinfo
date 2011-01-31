@@ -23,6 +23,7 @@ import org.sigmah.server.policy.ProjectReportPolicy;
 import org.sigmah.server.policy.PropertyMap;
 import org.sigmah.server.policy.SitePolicy;
 import org.sigmah.server.policy.UserDatabasePolicy;
+import org.sigmah.server.policy.UserPolicy;
 import org.sigmah.shared.command.CreateEntity;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
@@ -106,11 +107,21 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
             return createMonitoredPoint(properties);
         } else if ("Reminder".equals(cmd.getEntityName())) {
             return createReminder(properties);
-        } else {
+        } else if ("User".equals(cmd.getEntityName())) {
+            return createUser(user, propertyMap);
+        }else {
             throw new CommandException("Invalid entity class " + cmd.getEntityName());
         }
     }
 
+    private CommandResult createUser(User user, PropertyMap propertyMap) {
+    	UserPolicy policy = injector.getInstance(UserPolicy.class);
+    	User newUser = (User) policy.create(user, propertyMap);
+    	if(newUser != null)
+    		return new CreateResult(newUser.getId());
+    	else
+    		return null;
+    }
     private CommandResult createAttributeGroup(CreateEntity cmd, Map<String, Object> properties) {
 
         AttributeGroup group = new AttributeGroup();
@@ -249,7 +260,7 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
 
         return new CreateResult(injector.getInstance(Mapper.class).map(point, MonitoredPointDTO.class));
     }
-
+    
     private CommandResult createReminder(Map<String, Object> properties) {
 
         if (log.isDebugEnabled()) {
