@@ -42,6 +42,8 @@ import org.sigmah.shared.domain.element.FlexibleElement;
 import org.sigmah.shared.domain.element.MessageElement;
 import org.sigmah.shared.domain.element.QuestionChoiceElement;
 import org.sigmah.shared.domain.element.QuestionElement;
+import org.sigmah.shared.domain.element.ReportElement;
+import org.sigmah.shared.domain.element.ReportListElement;
 import org.sigmah.shared.domain.element.TextAreaElement;
 import org.sigmah.shared.domain.history.HistoryToken;
 import org.sigmah.shared.domain.layout.Layout;
@@ -137,6 +139,8 @@ public class PersistentClasses {
             CheckboxElement.class,
             QuestionElement.class,
             TextAreaElement.class,
+            ReportElement.class,
+            ReportListElement.class,
             DefaultFlexibleElement.class,
             Prerequisite.class,
             LogFrameActivity.class,

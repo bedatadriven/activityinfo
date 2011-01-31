@@ -14,6 +14,7 @@ import java.util.Map;
 import org.sigmah.server.dao.ProjectReportDAO;
 import org.sigmah.server.dao.Transactional;
 import org.sigmah.server.endpoint.gwtrpc.handler.UpdateProjectHandler;
+import org.sigmah.shared.command.result.ValueResultUtils;
 import org.sigmah.shared.domain.Project;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.element.ReportElement;
@@ -24,6 +25,7 @@ import org.sigmah.shared.domain.report.ProjectReportModelSection;
 import org.sigmah.shared.domain.report.ProjectReportVersion;
 import org.sigmah.shared.domain.report.RichTextElement;
 import org.sigmah.shared.domain.value.Value;
+import org.sigmah.shared.dto.report.ReportReference;
 
 /**
  * Handle the creation and the update procedure of the project reports.
@@ -156,6 +158,12 @@ public class ProjectReportPolicy implements EntityPolicy<ProjectReport> {
         final Integer flexibleElementId = (Integer) properties.get("flexibleElementId");
         final Integer containerId = (Integer) properties.get("containerId");
 
+        final boolean multiple;
+        if(properties.get("multiple") == null)
+            multiple = false;
+        else
+            multiple = (Boolean) properties.get("multiple");
+
         final Value flexibleElementValue;
         if(flexibleElementId != null && containerId != null) {
             final ReportElement element = new ReportElement();
@@ -163,7 +171,7 @@ public class ProjectReportPolicy implements EntityPolicy<ProjectReport> {
             report.setFlexibleElement(element);
 
             flexibleElementValue = updateProjectHandler.retrieveValue(containerId, flexibleElementId, user);
-            if(!(flexibleElementValue == null || flexibleElementValue.getValue() == null || "".equals(flexibleElementValue.getValue())))
+            if(!multiple && !(flexibleElementValue == null || flexibleElementValue.getValue() == null || "".equals(flexibleElementValue.getValue())))
                 throw new IllegalStateException("A report has already been created for the flexible element "+flexibleElementId);
         }
         else
@@ -182,7 +190,18 @@ public class ProjectReportPolicy implements EntityPolicy<ProjectReport> {
 
         // Updating the flexible element
         if(flexibleElementValue != null) {
-            flexibleElementValue.setValue(report.getId().toString());
+            final String value;
+
+            if(multiple && flexibleElementValue.getValue() != null) {
+                // Multiple values mode
+                value = flexibleElementValue.getValue() + ValueResultUtils.DEFAULT_VALUE_SEPARATOR + report.getId().toString();
+
+            } else {
+                // Single value mode
+                value = report.getId().toString();
+            }
+            
+            flexibleElementValue.setValue(value);
             dao.merge(flexibleElementValue);
         }
 

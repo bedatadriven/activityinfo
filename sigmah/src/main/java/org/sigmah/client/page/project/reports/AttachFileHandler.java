@@ -33,7 +33,7 @@ import org.sigmah.client.page.project.logframe.FormWindow;
 import org.sigmah.client.page.project.logframe.FormWindow.FormSubmitListener;
 import org.sigmah.client.ui.ButtonFileUploadField;
 import org.sigmah.client.util.Notification;
-import org.sigmah.shared.command.GetProjectReports;
+import org.sigmah.shared.dto.report.ReportReference;
 import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.ProjectDTO.LocalizedElement;
 import org.sigmah.shared.dto.element.FlexibleElementDTO;
@@ -54,7 +54,7 @@ public class AttachFileHandler implements AttachMenuBuilder.AttachDocumentHandle
     private LabelField phaseField;
     private LabelField elementField;
 
-    private GetProjectReports.ReportReference currentCreatedDocument;
+    private ReportReference currentCreatedDocument;
     private boolean monitoredPointGenerated;
 
     private HiddenField<String> elementIdHidden;
@@ -66,7 +66,7 @@ public class AttachFileHandler implements AttachMenuBuilder.AttachDocumentHandle
     private HiddenField<String> pointLabelHidden;
 
     @Override
-    public Dialog getDialog(final ListStore<GetProjectReports.ReportReference> documentsStore,
+    public Dialog getDialog(final ListStore<ReportReference> documentsStore,
             final ProjectDTO project, final FlexibleElementDTO flexibleElement, final MenuItem menuItem,
             final String phaseName, final Authentication authentication, final Dispatcher dispatcher,
             final EventBus eventBus) {
@@ -95,7 +95,7 @@ public class AttachFileHandler implements AttachMenuBuilder.AttachDocumentHandle
                 emptyHidden.setValue("true");
 
                 // Create the local document.
-                currentCreatedDocument = new GetProjectReports.ReportReference();
+                currentCreatedDocument = new ReportReference();
                 currentCreatedDocument.setName(uploadField.getValue());
                 currentCreatedDocument.setLastEditDate(new Date());
                 currentCreatedDocument.setEditorName(authentication.getUserShortName());
@@ -296,7 +296,7 @@ public class AttachFileHandler implements AttachMenuBuilder.AttachDocumentHandle
      *            Form event after the upload.
      */
     private void updateComponentAfterUpload(FormEvent be, final ProjectDTO project,
-            final ListStore<GetProjectReports.ReportReference> documentsStore) {
+            final ListStore<ReportReference> documentsStore) {
 
         final String code = FileUploadUtils.parseUploadResultCode(be.getResultHtml());
 

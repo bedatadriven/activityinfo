@@ -20,7 +20,7 @@ import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.shared.command.GetProjectReports;
+import org.sigmah.shared.dto.report.ReportReference;
 import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.ProjectDTO.LocalizedElement;
 import org.sigmah.shared.dto.element.FilesListElementDTO;
@@ -40,7 +40,7 @@ public class AttachMenuBuilder {
          * @return The dialog box, cleared.
          */
         Dialog getDialog(
-                ListStore<GetProjectReports.ReportReference> documentsStore,
+                ListStore<ReportReference> documentsStore,
                 ProjectDTO project,
                 FlexibleElementDTO flexibleElement,
                 MenuItem menuItem,
@@ -73,7 +73,7 @@ public class AttachMenuBuilder {
             final ProjectDTO project,
             final Class<? extends FlexibleElementDTO> type,
             final Button button,
-            final ListStore<GetProjectReports.ReportReference> documentsStore,
+            final ListStore<ReportReference> documentsStore,
             final Authentication authentication,
             final Dispatcher dispatcher,
             final EventBus eventBus) {
@@ -166,7 +166,7 @@ public class AttachMenuBuilder {
             final FlexibleElementDTO element,
             final MenuItem menuItem,
             final ProjectDTO project,
-            final ListStore<GetProjectReports.ReportReference> documentsStore,
+            final ListStore<ReportReference> documentsStore,
             final Authentication authentication,
             final Dispatcher dispatcher,
             final EventBus eventBus) {

@@ -28,6 +28,7 @@ import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.sigmah.shared.dto.report.ReportReference;
 import org.sigmah.shared.dto.element.ReportElementDTO;
 
 /**
@@ -44,7 +45,7 @@ public class ProjectReportsPresenter implements SubPresenter {
     private ProjectDTO currentProjectDTO;
 
     private ProjectReportsView view;
-    private ListStore<GetProjectReports.ReportReference> reportStore;
+    private ListStore<ReportReference> reportStore;
     private boolean reportStoreNeedsRefresh = false;
 
     int currentReportId = -1;
@@ -61,7 +62,7 @@ public class ProjectReportsPresenter implements SubPresenter {
     public Component getView() {
         // Creates the view
         if (view == null) {
-            reportStore = new ListStore<GetProjectReports.ReportReference>();
+            reportStore = new ListStore<ReportReference>();
             reportStore.setMonitorChanges(true);
             view = new ProjectReportsView(authentication, eventBus, dispatcher, reportStore);
         }

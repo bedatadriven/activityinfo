@@ -646,7 +646,7 @@ body {
 .flexibility-action {
 	text-decoration: underline;
 	cursor: pointer;
-	color: black;
+	color: #4B3E2D;
 }
 
 .flexibility-action-iconable {
@@ -655,6 +655,10 @@ body {
 
 .flexibility-label {
 	font-family: tahoma, arial, helvetica, sans-serif;
+}
+
+.flexibility-link {
+    color: #4B3E2D;
 }
 
 /* ----------------------------------------------------- GWT HTML Table */
@@ -1001,7 +1005,7 @@ body {
     font-size: 11px;
     font-weight: bold;
     font-family: tahoma,arial,helvetica,sans-serif;
-    color: #482A1E;
+    color: #4B3E2D;
 }
 
 /* ---------------------------------------------- Help */

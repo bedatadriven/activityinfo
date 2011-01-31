@@ -29,6 +29,7 @@ import org.sigmah.client.page.project.ProjectState;
 import org.sigmah.client.page.project.reports.EditReportDialog;
 import org.sigmah.client.ui.WidgetField;
 import org.sigmah.shared.command.GetProjectReports;
+import org.sigmah.shared.dto.report.ReportReference;
 import org.sigmah.shared.command.result.ProjectReportListResult;
 import org.sigmah.shared.command.result.ValueResult;
 import org.sigmah.shared.dto.ProjectDTO;
@@ -71,7 +72,7 @@ public class ReportElementDTO extends FlexibleElementDTO {
 
                 @Override
                 public void onSuccess(ProjectReportListResult result) {
-                    final List<GetProjectReports.ReportReference> results = result.getData();
+                    final List<ReportReference> results = result.getData();
 
                     if(results.size() == 1)
                         button.setText(I18N.MESSAGES.reportOpenReport(results.get(0).getName()));

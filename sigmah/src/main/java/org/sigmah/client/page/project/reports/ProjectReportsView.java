@@ -21,7 +21,6 @@ import org.sigmah.client.page.project.ProjectState;
 import org.sigmah.client.page.project.reports.images.ToolbarImages;
 import org.sigmah.client.ui.FoldPanel;
 import org.sigmah.client.util.Notification;
-import org.sigmah.shared.command.GetProjectReports;
 import org.sigmah.shared.command.UpdateEntity;
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.domain.profile.GlobalPermissionEnum;
@@ -92,6 +91,7 @@ import org.sigmah.shared.command.CreateEntity;
 import org.sigmah.shared.command.GetProjectReport;
 import org.sigmah.shared.command.PromoteProjectReportDraft;
 import org.sigmah.shared.command.RemoveProjectReportDraft;
+import org.sigmah.shared.dto.report.ReportReference;
 import org.sigmah.shared.command.result.CreateResult;
 
 /**
@@ -109,7 +109,7 @@ public class ProjectReportsView extends LayoutContainer {
     private ProjectState currentState;
     private String phaseName;
 
-    private ListStore<GetProjectReports.ReportReference> store;
+    private ListStore<ReportReference> store;
     private LayoutContainer mainPanel;
     private RichTextArea.Formatter[] globalFormatterArray = new RichTextArea.Formatter[1];
 
@@ -121,7 +121,7 @@ public class ProjectReportsView extends LayoutContainer {
     private Button createReportButton;
 
     public ProjectReportsView(Authentication authentication, EventBus eventBus, Dispatcher dispatcher,
-            ListStore<GetProjectReports.ReportReference> store) {
+            ListStore<ReportReference> store) {
 
         this.authentication = authentication;
         this.eventBus = eventBus;
@@ -159,7 +159,7 @@ public class ProjectReportsView extends LayoutContainer {
      *            The document store to use.
      * @return The document list panel.
      */
-    private ContentPanel createDocumentList(final ListStore<GetProjectReports.ReportReference> store) {
+    private ContentPanel createDocumentList(final ListStore<ReportReference> store) {
         final ContentPanel panel = new ContentPanel(new FitLayout());
         panel.setHeading(I18N.CONSTANTS.projectTabReports());
 
@@ -191,12 +191,12 @@ public class ProjectReportsView extends LayoutContainer {
         final ColumnModel reportColumnModel = new ColumnModel(Arrays.asList(editDate, editorName, iconColumn,
                 reportName, typeColumn, phaseNameColumn));
 
-        iconColumn.setRenderer(new GridCellRenderer<GetProjectReports.ReportReference>() {
+        iconColumn.setRenderer(new GridCellRenderer<ReportReference>() {
 
             @Override
-            public Object render(GetProjectReports.ReportReference model, String property, ColumnData config,
-                    int rowIndex, int colIndex, ListStore<GetProjectReports.ReportReference> store,
-                    Grid<GetProjectReports.ReportReference> grid) {
+            public Object render(ReportReference model, String property, ColumnData config,
+                    int rowIndex, int colIndex, ListStore<ReportReference> store,
+                    Grid<ReportReference> grid) {
 
                 if (model.isDocument()) {
                     return IconImageBundle.ICONS.attach().createImage();
@@ -206,9 +206,9 @@ public class ProjectReportsView extends LayoutContainer {
             }
         });
 
-        reportName.setRenderer(new GridCellRenderer<GetProjectReports.ReportReference>() {
+        reportName.setRenderer(new GridCellRenderer<ReportReference>() {
             @Override
-            public Object render(final GetProjectReports.ReportReference model, String property, ColumnData config,
+            public Object render(final ReportReference model, String property, ColumnData config,
                     int rowIndex, int colIndex, ListStore store, Grid grid) {
 
                 if (model.isDocument()) {
@@ -283,7 +283,7 @@ public class ProjectReportsView extends LayoutContainer {
             }
         });
 
-        final Grid<GetProjectReports.ReportReference> documentGrid = new Grid<GetProjectReports.ReportReference>(store,
+        final Grid<ReportReference> documentGrid = new Grid<ReportReference>(store,
                 reportColumnModel);
         documentGrid.setAutoExpandColumn("name");
         documentGrid.getView().setForceFit(true);
@@ -573,7 +573,7 @@ public class ProjectReportsView extends LayoutContainer {
 
                             boolean found = false;
                             for (int index = 0; !found && index < store.getCount(); index++) {
-                                final GetProjectReports.ReportReference reference = store.getAt(index);
+                                final ReportReference reference = store.getAt(index);
 
                                 if (reference.getId().equals(report.getId())) {
                                     store.remove(reference);

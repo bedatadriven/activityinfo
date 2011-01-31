@@ -12,6 +12,7 @@ import javax.persistence.Query;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import org.sigmah.shared.command.GetProjectReports;
+import org.sigmah.shared.dto.report.ReportReference;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.ProjectReportListResult;
@@ -33,7 +34,7 @@ public class GetProjectReportsHandler implements CommandHandler<GetProjectReport
 
     @Override
     public CommandResult execute(GetProjectReports cmd, User user) throws CommandException {
-        final ArrayList<GetProjectReports.ReportReference> references = new ArrayList<GetProjectReports.ReportReference>();
+        final ArrayList<ReportReference> references = new ArrayList<ReportReference>();
 
         final Query query;
 
@@ -52,7 +53,7 @@ public class GetProjectReportsHandler implements CommandHandler<GetProjectReport
             final List<ProjectReport> reports = query.getResultList();
 
             for(final ProjectReport report : reports)
-                references.add(new GetProjectReports.ReportReference(report));
+                references.add(new ReportReference(report));
 
         } catch (NoResultException e) {
             // No reports in the current project

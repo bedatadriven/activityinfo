@@ -73,7 +73,7 @@ public class EditReportDialog {
     /**
      * Dialog used to <b>create</b> a report from outside the "Report & Documents" page.
      * @param properties Base properties of the new report (should contain the report model id).
-     * @param targetPage Page to display after the creation.
+     * @param reportButton
      * @param eventBus
      * @param dispatcher
      * @return The create report dialog.

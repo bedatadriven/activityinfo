@@ -30,8 +30,8 @@ import org.sigmah.client.page.project.ProjectPresenter;
 import org.sigmah.client.page.project.ProjectState;
 import org.sigmah.client.util.Notification;
 import org.sigmah.shared.command.CreateEntity;
-import org.sigmah.shared.command.GetProjectReports;
 import org.sigmah.shared.command.GetValue;
+import org.sigmah.shared.dto.report.ReportReference;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.command.result.ValueResult;
 import org.sigmah.shared.dto.ProjectDTO;
@@ -95,7 +95,7 @@ public class AttachReportHandler implements AttachMenuBuilder.AttachDocumentHand
 
     @Override
     public Dialog getDialog(
-            final ListStore<GetProjectReports.ReportReference> documentsStore,
+            final ListStore<ReportReference> documentsStore,
             final ProjectDTO project,
             final FlexibleElementDTO flexibleElement,
             final MenuItem menuItem,
@@ -144,7 +144,7 @@ public class AttachReportHandler implements AttachMenuBuilder.AttachDocumentHand
 
                     @Override
                     public void onSuccess(CreateResult result) {
-                        final GetProjectReports.ReportReference reportReference = new GetProjectReports.ReportReference();
+                        final ReportReference reportReference = new ReportReference();
                         reportReference.setId(result.getNewId());
                         reportReference.setName(nameField.getValue());
                         reportReference.setFlexibleElementLabel(reportElementDTO.getElementLabel());

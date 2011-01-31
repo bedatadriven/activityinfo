@@ -30,6 +30,7 @@ import org.sigmah.shared.dto.value.TripletValueDTO;
 import org.sigmah.shared.exception.CommandException;
 
 import com.google.inject.Inject;
+import org.sigmah.shared.dto.report.ReportReference;
 import org.sigmah.shared.domain.history.HistoryToken;
 
 /**
@@ -187,6 +188,17 @@ public class GetValueHandler implements CommandHandler<GetValue> {
             query = em.createQuery("SELECT f FROM File f WHERE f.id IN (:idsList)");
             query.setParameter("idsList", ValueResultUtils.splitValuesAsInteger(valueAsString));
 
+        } else if (elementClassName.equals("element.ReportListElement")) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("[execute] Case ReportListElementDTO.");
+            }
+
+            dtoClazz = ReportReference.class;
+            isList = true;
+
+            query = em.createQuery("SELECT r FROM ProjectReport r WHERE r.id IN (:idList)");
+            query.setParameter("idList", ValueResultUtils.splitValuesAsInteger(valueAsString));
+
         } else if (!(elementClassName.equals("element.MessageElement"))) {
 
             if (LOG.isDebugEnabled()) {
@@ -241,4 +253,5 @@ public class GetValueHandler implements CommandHandler<GetValue> {
 
         return valueResult;
     }
+
 }

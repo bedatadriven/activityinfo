@@ -7,7 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.sigmah.shared.command.GetProjectDocuments;
-import org.sigmah.shared.command.GetProjectReports.ReportReference;
+import org.sigmah.shared.dto.report.ReportReference;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.ProjectReportListResult;
