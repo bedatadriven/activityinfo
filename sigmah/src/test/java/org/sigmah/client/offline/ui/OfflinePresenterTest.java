@@ -243,6 +243,10 @@ public class OfflinePresenterTest {
             lastCallback = callback;
         }
 
+        @Override
+        public boolean validateOfflineInstalled() {
+            return true;
+        }
     }
 
 }
