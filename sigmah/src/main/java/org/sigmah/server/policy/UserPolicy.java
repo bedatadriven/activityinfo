@@ -52,7 +52,7 @@ public class UserPolicy implements EntityPolicy<User> {
 		String name = properties.get("name");
 		String firstName = properties.get("firstName");
 		String locale = properties.get("locale");
-		int orgUnitId = properties.get("orgUnit");
+		int orgUnitId = (Integer)properties.get("orgUnit");
 		List<Integer> profilesIds = properties.get("profiles");
 		
 		//Save user
