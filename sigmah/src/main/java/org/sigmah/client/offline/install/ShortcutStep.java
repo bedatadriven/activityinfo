@@ -32,8 +32,7 @@ public class ShortcutStep implements Step {
         .set16x16(GWT.getModuleBaseURL() + "desktopicons/16x16.png");
 
         try {
-            Factory.getInstance().createDesktop().createShortcut("ActivityInfo",
-                   GWT.getModuleBaseURL() + GWT.getModuleName() + ".offline.html",
+            Factory.getInstance().createDesktop().createShortcut("ActivityInfo", "/",
                    desktopIcons);
         } catch (Exception e) {
             Log.error("Error creating desktop icons", e);

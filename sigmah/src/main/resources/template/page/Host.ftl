@@ -53,6 +53,9 @@
         var GoogleMapsAPI = {
             key: "ABQIAAAAHxDe2DM8fTqR3KT6JA3uSxQowpcadhvcZvF-AZHbBConS0qRQRSyDoOLQrw76pJeJNUXt2g-yC8FAg"
         };
+        var VersionInfo = {
+            revision: ${activityinfo.revision}
+        };
         <#if offline == true>
         function disableOffline() {
             document.cookie = "offline=false;expires=Thu, 01-Jan-1970 00:00:01 GMT";
@@ -62,7 +65,7 @@
     </script>
 
     <script language='javascript' src='ActivityInfo/gxt/flash/swfobject.js'></script>
-    <script type="text/javascript" language="javascript" src="ActivityInfo/ActivityInfo.nocache.js"></script>
+    <script type="text/javascript" language="javascript" src="ActivityInfo/bootstrap.js"></script>
     <link rel="stylesheet" type="text/css" href="ActivityInfo/gxt/css/gxt-all.css"/>
     <link rel="stylesheet" type="text/css" href="report.css"/>
 

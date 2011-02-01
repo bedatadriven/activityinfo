@@ -16,6 +16,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
@@ -23,7 +24,6 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.sigmah.client.ActivityInfoVersion;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.remote.Authentication;
@@ -84,7 +84,7 @@ public class AppFrameSet implements Frame {
         topBar = new ToolBar();
 
         LabelToolItem appTitleItem = new LabelToolItem(
-                I18N.MESSAGES.versionedActivityInfoTitle(ActivityInfoVersion.REVISION_NUMBER));
+                I18N.MESSAGES.versionedActivityInfoTitle(getRevision()));
         appTitleItem.setStyleName("appTitle");
         topBar.add(appTitleItem);
 
@@ -118,6 +118,11 @@ public class AppFrameSet implements Frame {
         topBar.add(logoutTool);
 
         viewport.add(topBar, new RowData(1.0, 30));
+    }
+
+    private String getRevision() {
+        Dictionary versionInfo = Dictionary.getDictionary("VersionInfo");
+        return versionInfo.get("revision");
     }
 
     private void addNavLink(String text, AbstractImagePrototype icon, final PageState place) {

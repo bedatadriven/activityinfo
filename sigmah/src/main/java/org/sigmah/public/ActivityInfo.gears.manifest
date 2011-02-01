@@ -1,0 +1,9 @@
+{
+ "name" : "__NAME__",
+ "betaManifestVersion" : 1,
+ "version" : "__VERSION__",
+ "entries" : [
+     { "url": "../" },
+     __ENTRIES__
+    ]
+}

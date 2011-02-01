@@ -9,12 +9,10 @@
     <extend-property name="locale" values="en,fr"/>
     <set-property-fallback name="locale" value="en"/>
 
-    <!-- This generates a second set of permutations with tracing
-         enabled for debugging deployments -->
-    <extend-property name="log_level" values="OFF,TRACE" />
+    <!-- Turn all logging off  -->
+    <extend-property name="log_level" values="OFF" />
     <set-property-fallback name="log_level" value="OFF"/>
     <set-property name="log_DivLogger" value="DISABLED" />
-
 
     <entry-point class="org.sigmah.client.ActivityInfoEntryPoint"/>
 </module>

@@ -50,5 +50,4 @@ public class OfflineStatus {
         // jest remove our cookies
         Cookies.removeCookie(offlineCookieName);
     }
-                           
 }

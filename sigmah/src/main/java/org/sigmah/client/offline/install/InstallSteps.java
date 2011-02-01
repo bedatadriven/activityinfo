@@ -6,7 +6,6 @@
 package org.sigmah.client.offline.install;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.bedatadriven.rebar.modulestore.client.ModuleStores;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
@@ -30,8 +29,7 @@ public class InstallSteps {
         if(GWT.isScript()) {
             // managed resources stores cause no end of problems in hosted mode,
             // so only invoke here if we are actually running in scripted mode
-            steps.add(new CacheScript(this.eventBus, ModuleStores.getCommon()));
-            steps.add(new CacheScript(this.eventBus, ModuleStores.getPermutation()));
+            steps.add(new CacheScript(this.eventBus));
         }
         steps.add(syncStep);
         steps.add(new ShortcutStep());
