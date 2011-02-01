@@ -36,13 +36,24 @@ import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.ListBox;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.sigmah.client.i18n.I18N;
 
 /**
- *
+ * Login form displayed by Sigmah when no user is connected or when a session has expired.
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class LoginView extends Composite {
+    public static final Map<String, String> languageMap;
+
+    static {
+        final LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
+        map.put(I18N.CONSTANTS.languageFrench(), "fr");
+        map.put(I18N.CONSTANTS.languageEnglish(), "en");
+
+        languageMap = map;
+    }
 
     public LoginView() {
         final SimplePanel panel = new SimplePanel();
@@ -94,9 +105,18 @@ public class LoginView extends Composite {
         form.setText(y, 0, I18N.CONSTANTS.loginLanguageField());
         form.getCellFormatter().setStyleName(y, 0, "login-box-form-label");
 
+        int selection = 0;
+        final String currentLanguage = Cookies.getCookie(org.sigmah.shared.Cookies.LOCALE_COOKIE);
+        
         final ListBox languageListBox = new ListBox(false);
-        languageListBox.addItem(I18N.CONSTANTS.languageFrench(), "fr");
-        languageListBox.addItem(I18N.CONSTANTS.languageEnglish(), "en");
+        int index = 0;
+        for(final Map.Entry<String, String> entry : languageMap.entrySet()) {
+            languageListBox.addItem(entry.getKey(), entry.getValue());
+            if(entry.getValue().equals(currentLanguage))
+                selection = index;
+            index++;
+        }
+        languageListBox.setSelectedIndex(selection);
         languageListBox.setWidth("100%");
         form.setWidget(y, 1, languageListBox);
         form.getFlexCellFormatter().setColSpan(y, 1, 2);
