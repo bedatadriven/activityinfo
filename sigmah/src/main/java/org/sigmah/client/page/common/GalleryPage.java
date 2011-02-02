@@ -69,7 +69,7 @@ public class GalleryPage extends LayoutContainer implements GalleryView {
         store = new ListStore<GalleryModel>();
 
         ListView<GalleryModel> view = new ListView<GalleryModel>();
-        view.setTemplate(getTemplate(GWT.getModuleBaseURL() + "/image/"));
+        view.setTemplate(getTemplate(GWT.getModuleBaseURL() + "image/"));
         view.setBorders(false);
         view.setStore(store);
         view.setItemSelector("dd");
