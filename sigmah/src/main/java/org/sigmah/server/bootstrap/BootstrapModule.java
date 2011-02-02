@@ -20,6 +20,7 @@ public class BootstrapModule extends ServletModule {
         serve("/" + ConfirmInviteController.ENDPOINT).with(ConfirmInviteController.class);
         serve("/" + LogoutController.ENDPOINT).with(LogoutController.class);
         serve("/ActivityInfo/bootstrap.js").with(BootstrapScriptServlet.class);
+        serve("/ActivityInfo/html5.manifest").with(BootstrapScriptServlet.class);
         serve("/ActivityInfo/gears.manifest").with(BootstrapScriptServlet.class);
     }
 

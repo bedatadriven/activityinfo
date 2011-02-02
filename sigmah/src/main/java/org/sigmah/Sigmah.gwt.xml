@@ -21,7 +21,6 @@
     <inherits name="com.google.gwt.inject.Inject"/>
     <inherits name="com.extjs.gxt.charts.Chart"/>
     <inherits name="com.google.code.gaxb.Annotations"/>
-    <inherits name="com.bedatadriven.rebar.appcache.AppCache"/>
     <inherits name="com.bedatadriven.rebar.sql.Sql"/>
     <inherits name="com.bedatadriven.rebar.sync.Sync"/>
     <inherits name="com.allen_sauer.gwt.log.gwt-log"/>

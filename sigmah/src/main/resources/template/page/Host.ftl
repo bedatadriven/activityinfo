@@ -1,9 +1,17 @@
 <#-- @ftlvariable name="" type="org.sigmah.server.bootstrap.model.HostPageModel" -->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
+<html manifest="ActivityInfo/html5.manifest">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <meta name="gwt:property" content="locale=${auth.user.locale}"/>
+    <meta name="application-name" content="ActivityInfo"/>
+    <meta name="description" content="ActivityInfo"/>
+    <meta name="application-url" content="${appUrl}"/>
+    <link rel="icon" href="ActivityInfo/desktopicons/16x16.png" sizes="16x16"/>
+    <link rel="icon" href="ActivityInfo/desktopicons/32x32.png" sizes="32x32"/>
+    <link rel="icon" href="ActivityInfo/desktopicons/48x48.png" sizes="48x48"/>
+    <link rel="icon" href="ActivityInfo/desktopicons/64x64.png" sizes="64x64"/>
+    <link rel="icon" href="ActivityInfo/desktopicons/128x128.png" sizes="128x128"/>
+
     <title>ActivityInfo</title>
     <style type="text/css">
         #loading-box {

@@ -47,11 +47,8 @@ public class HostController extends AbstractController {
             if("true".equals(req.getParameter("redirect"))) {
                 Cookies.addAuthCookie(resp, auth, false);
                 resp.sendRedirect(HostController.ENDPOINT);
-                // sendRedirect() won't include the cookie above
-//                resp.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
-//                resp.setHeader("Location", HostController.ENDPOINT);
             } else {
-                writeView(resp, new HostPageModel(auth));
+                writeView(resp, new HostPageModel(auth, computeAppUrl(req)));
             }
         } catch (NoValidAuthentication noValidAuthentication) {
             resp.sendRedirect(LoginController.ENDPOINT + parseUrlSuffix(req));
@@ -112,5 +109,19 @@ public class HostController extends AbstractController {
         }
 
         response.sendRedirect(directUrl.toString());
+    }
+
+    /**
+     * @return  The url used for the desktop shortcut
+     */
+    private String computeAppUrl(HttpServletRequest request) {
+        StringBuilder url = new StringBuilder();
+        url.append("http://");
+        if(request.getServerPort() != 80) {
+            url.append(request.getServerName()).append(":").append(request.getServerPort());
+        }
+        url.append(request.getRequestURI());
+        return url.toString();
+
     }
 }

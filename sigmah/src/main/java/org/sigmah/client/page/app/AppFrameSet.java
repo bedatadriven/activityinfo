@@ -16,7 +16,6 @@ import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
@@ -30,6 +29,7 @@ import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.event.NavigationEvent;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.client.offline.ui.AppCacheMenu;
 import org.sigmah.client.offline.ui.OfflineView;
 import org.sigmah.client.page.*;
 import org.sigmah.client.page.charts.ChartPageState;
@@ -83,10 +83,9 @@ public class AppFrameSet implements Frame {
 
         topBar = new ToolBar();
 
-        LabelToolItem appTitleItem = new LabelToolItem(
-                I18N.MESSAGES.versionedActivityInfoTitle(getRevision()));
-        appTitleItem.setStyleName("appTitle");
-        topBar.add(appTitleItem);
+        AppCacheMenu appCacheMenu = new AppCacheMenu();
+        appCacheMenu.setStyleName("appTitle");
+        topBar.add(appCacheMenu);
 
         topBar.add(new SeparatorToolItem());
 
@@ -118,11 +117,6 @@ public class AppFrameSet implements Frame {
         topBar.add(logoutTool);
 
         viewport.add(topBar, new RowData(1.0, 30));
-    }
-
-    private String getRevision() {
-        Dictionary versionInfo = Dictionary.getDictionary("VersionInfo");
-        return versionInfo.get("revision");
     }
 
     private void addNavLink(String text, AbstractImagePrototype icon, final PageState place) {

@@ -25,6 +25,6 @@ public class HostViewTest extends ViewTestCase {
         auth.setId("XYZ12345");
         auth.setUser(user);
 
-        assertProcessable(new HostPageModel(auth));
+        assertProcessable(new HostPageModel(auth,  "http://www.activityinfo.org"));
     }
 }

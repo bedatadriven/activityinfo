@@ -10,14 +10,20 @@ import org.sigmah.server.domain.Authentication;
 public class HostPageModel extends PageModel {
     private Authentication auth;
     private boolean offline;
+    private String appUrl;
 
-    public HostPageModel(Authentication auth) {
+    public HostPageModel(Authentication auth, String appUrl) {
         this.auth = auth;
+        this.appUrl = appUrl;
     }
 
 
     public Authentication getAuth() {
         return auth;
+    }
+
+    public String getAppUrl() {
+        return appUrl;
     }
 
     public boolean isOffline() {
