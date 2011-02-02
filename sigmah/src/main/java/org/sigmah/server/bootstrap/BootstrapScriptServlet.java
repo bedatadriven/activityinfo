@@ -22,6 +22,7 @@ public class BootstrapScriptServlet extends BootstrapServlet {
     @Inject
     public BootstrapScriptServlet(Provider<EntityManager> entityManager) {
         registerProvider("locale", new LocaleProvider(entityManager));
+        registerProvider("log_level", new LogLevelProvider());
     }
 
     private class LocaleProvider implements PropertyProvider {
@@ -35,7 +36,9 @@ public class BootstrapScriptServlet extends BootstrapServlet {
         @Override
         public String get(HttpServletRequest req) {
             Authentication auth = entityManager.get().find(Authentication.class, getAuthToken(req));
-            return auth.getUser().getLocale();
+            String locale = auth.getUser().getLocale();
+            // todo: update rebar-appcache so we can get a list of possible property values
+            return locale;
         }
 
         private String getAuthToken(HttpServletRequest req) {
@@ -45,6 +48,24 @@ public class BootstrapScriptServlet extends BootstrapServlet {
                 }
             }
             throw new IllegalStateException("User is not authenticated");
+        }
+    }
+
+    /**
+     * Set the log_level to be used based on the host name
+     */
+    private class LogLevelProvider implements PropertyProvider {
+        @Override
+        public String get(HttpServletRequest request) {
+            if(request.getServerName().contains("localhost") ||
+               request.getServerName().contains("127.0.0.1") ||
+               request.getServerName().contains("nightly.")) {
+
+                return "TRACE";
+
+            } else {
+                return "OFF";
+            }
         }
     }
 }
