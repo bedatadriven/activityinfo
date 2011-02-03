@@ -60,6 +60,12 @@ public class CommandServlet extends RpcServlet implements RemoteCommandService {
         }
     }
 
+    public CommandResult execute(String authToken, Command command) throws CommandException {
+        Authentication auth = retrieveAuthentication(authToken);
+        applyUserFilters(auth.getUser());
+        return handleCommand(auth.getUser(), command);
+    }
+
     /**
      * Publicly visible for testing *
      */

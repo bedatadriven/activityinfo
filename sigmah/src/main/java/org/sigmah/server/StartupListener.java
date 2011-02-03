@@ -11,10 +11,12 @@ import com.google.inject.servlet.GuiceServletContextListener;
 import org.apache.log4j.Logger;
 import org.sigmah.server.auth.AuthenticationModule;
 import org.sigmah.server.bootstrap.BootstrapModule;
+import org.sigmah.server.bootstrap.SigmahBootstrapModule;
 import org.sigmah.server.dao.hibernate.HibernateModule;
 import org.sigmah.server.endpoint.export.ExportModule;
 import org.sigmah.server.endpoint.file.FileModule;
 import org.sigmah.server.endpoint.gwtrpc.GwtRpcModule;
+import org.sigmah.server.endpoint.jsonrpc.JsonRpcModule;
 import org.sigmah.server.endpoint.kml.KmlModule;
 import org.sigmah.server.endpoint.wfs.WfsModule;
 import org.sigmah.server.mail.MailModule;
@@ -25,7 +27,6 @@ import org.sigmah.server.util.logging.LoggingModule;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
-import org.sigmah.server.bootstrap.SigmahBootstrapModule;
 
 
 /**
@@ -68,6 +69,7 @@ public class StartupListener extends GuiceServletContextListener {
                 new GwtRpcModule(),
                 new ExportModule(),
                 new WfsModule(),
+                new JsonRpcModule(),
                 new KmlModule());
 
 //        ScheduleInitializer si = injector.getInstance(ScheduleInitializer.class);
