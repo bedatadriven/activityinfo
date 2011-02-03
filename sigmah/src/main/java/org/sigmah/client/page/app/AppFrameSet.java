@@ -84,7 +84,6 @@ public class AppFrameSet implements Frame {
         topBar = new ToolBar();
 
         AppCacheMenu appCacheMenu = new AppCacheMenu();
-        appCacheMenu.setStyleName("appTitle");
         topBar.add(appCacheMenu);
 
         topBar.add(new SeparatorToolItem());
