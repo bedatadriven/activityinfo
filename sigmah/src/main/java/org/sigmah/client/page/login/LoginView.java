@@ -32,6 +32,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -194,8 +195,9 @@ public class LoginView extends Composite {
     }
 
     private void doLogin(final String login, final String password, final Button loginButton, final Image loader) {
-        final String query = "email="+login+"&password="+password;
-        final RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.POST,"../Login/service?"+query);
+        final String query = "email="+URL.encodeComponent(login)+"&password="+URL.encodeComponent(password);
+        
+        final RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.POST,"../Login/service");
         requestBuilder.setCallback(new RequestCallback() {
             @Override
             public void onResponseReceived(Request request, Response response) {
@@ -215,6 +217,9 @@ public class LoginView extends Composite {
                 loader.getElement().getStyle().setVisibility(Visibility.HIDDEN);
             }
         });
+
+        requestBuilder.setRequestData(query);
+        requestBuilder.setHeader("Content-Type", "application/x-www-form-urlencoded");
 
         loginButton.setEnabled(false);
         loader.getElement().getStyle().setVisibility(Visibility.VISIBLE);
