@@ -117,11 +117,11 @@ public class HostController extends AbstractController {
     private String computeAppUrl(HttpServletRequest request) {
         StringBuilder url = new StringBuilder();
         url.append("http://");
+        url.append(request.getServerName());
         if(request.getServerPort() != 80) {
-            url.append(request.getServerName()).append(":").append(request.getServerPort());
+           url.append(":").append(request.getServerPort());
         }
         url.append(request.getRequestURI());
         return url.toString();
-
     }
 }
