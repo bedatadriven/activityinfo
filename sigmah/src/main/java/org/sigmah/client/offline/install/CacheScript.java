@@ -8,15 +8,17 @@ package org.sigmah.client.offline.install;
 import com.bedatadriven.rebar.appcache.client.AppCache;
 import com.bedatadriven.rebar.appcache.client.AppCacheFactory;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.sigmah.client.EventBus;
+import com.google.inject.Inject;
+import org.sigmah.client.dispatch.remote.Authentication;
+import org.sigmah.client.offline.AuthTokenUtil;
 
 public class CacheScript implements Step {
-    private final EventBus eventBus;
+    private final Authentication authentication;
     protected AppCache appcache;
-    private String status;
 
-    public CacheScript(EventBus eventBus) {
-        this.eventBus = eventBus;
+    @Inject
+    public CacheScript(Authentication authentication) {
+        this.authentication = authentication;
         this.appcache = AppCacheFactory.get();
     }
 
@@ -32,6 +34,7 @@ public class CacheScript implements Step {
 
     @Override
     public void execute(final AsyncCallback<Void> callback) {
-      appcache.ensureCached(callback);
+        AuthTokenUtil.ensurePersistentCookie(authentication);
+        appcache.ensureCached(callback);
     }
 }

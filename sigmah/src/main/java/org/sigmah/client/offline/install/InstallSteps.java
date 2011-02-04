@@ -23,13 +23,14 @@ public class InstallSteps {
     private AsyncCallback callback;
 
     @Inject
-    public InstallSteps(EventBus eventBus, InitialSyncStep syncStep, CacheUserDetails cacheUserDetails) {
+    public InstallSteps(EventBus eventBus, InitialSyncStep syncStep, CacheUserDetails cacheUserDetails,
+                        CacheScript cacheScript) {
         this.eventBus = eventBus;
         steps.add(cacheUserDetails);
         if(GWT.isScript()) {
             // managed resources stores cause no end of problems in hosted mode,
             // so only invoke here if we are actually running in scripted mode
-            steps.add(new CacheScript(this.eventBus));
+            steps.add(cacheScript);
         }
         steps.add(syncStep);
         steps.add(new ShortcutStep());

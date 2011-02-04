@@ -57,9 +57,7 @@ public class ActivityInfoEntryPoint implements EntryPoint {
         injector.getDownloadManager();
         
         injector.createOfflineManager();
-        
-     //   injector.createActivityInfoOfflineUnit();
-        
+
         createCaches(injector);
 
         Log.info("Application: everyone plugged, firing Init event");

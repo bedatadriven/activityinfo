@@ -20,6 +20,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import org.sigmah.client.EventBus;
+import org.sigmah.client.dispatch.remote.Authentication;
+import org.sigmah.client.offline.AuthTokenUtil;
 import org.sigmah.client.offline.OfflineGateway;
 import org.sigmah.client.offline.sync.SyncStatusEvent;
 import org.sigmah.client.util.state.IStateManager;
@@ -91,7 +93,8 @@ public class OfflinePresenter {
     public OfflinePresenter(final View view,
                             EventBus eventBus,
                             Provider<OfflineGateway> gateway,
-                            IStateManager stateManager
+                            IStateManager stateManager,
+                            Authentication auth
     ) {
         this.view = view;
         this.stateManager = stateManager;
@@ -100,6 +103,8 @@ public class OfflinePresenter {
         loadState();
 
         Log.trace("OfflineManager: starting");
+
+        AuthTokenUtil.maybeEnsurePersistentCookie(auth);
 
         if(!installed) {
             activateStrategy(new NotInstalledStrategy());
