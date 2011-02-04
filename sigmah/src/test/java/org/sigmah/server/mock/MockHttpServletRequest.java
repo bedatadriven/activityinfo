@@ -195,11 +195,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
             sb.append(pathInfo);
         }
 
-        if (sb.length() > 0) {
-            return (sb.toString());
-        }
-
-        throw new UnsupportedOperationException();
+        return (sb.toString());
     }
 
     public StringBuffer getRequestURL() {
