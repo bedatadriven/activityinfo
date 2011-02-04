@@ -36,7 +36,6 @@ public class PhaseModel implements Serializable {
     private List<PhaseModel> successors = new ArrayList<PhaseModel>();
     private ProjectModel parentProjectModel;
     private Layout layout;
-    private List<Report> reports = new ArrayList<Report>();
     private Integer displayOrder;
     private PhaseModelDefinition definition;
     private String guide;
@@ -96,15 +95,6 @@ public class PhaseModel implements Serializable {
     @JoinColumn(name = "id_layout", nullable = true)
     public Layout getLayout() {
         return layout;
-    }
-
-    @OneToMany(mappedBy = "phaseModel", cascade = CascadeType.ALL)
-    public List<Report> getReports() {
-        return reports;
-    }
-
-    public void setReports(List<Report> reports) {
-        this.reports = reports;
     }
 
     @Column(name = "display_order", nullable = true)

@@ -26,7 +26,6 @@ import org.sigmah.shared.domain.ProjectDetails;
 import org.sigmah.shared.domain.ProjectFunding;
 import org.sigmah.shared.domain.ProjectModel;
 import org.sigmah.shared.domain.ProjectModelVisibility;
-import org.sigmah.shared.domain.Report;
 import org.sigmah.shared.domain.ReportingPeriod;
 import org.sigmah.shared.domain.Site;
 import org.sigmah.shared.domain.User;
@@ -118,7 +117,6 @@ public class PersistentClasses {
             AdminEntity.class,
             AdminLevel.class,
             Country.class,
-            Report.class,
             ProjectBanner.class,
             ProjectDetails.class,
             ProjectModelVisibility.class,
