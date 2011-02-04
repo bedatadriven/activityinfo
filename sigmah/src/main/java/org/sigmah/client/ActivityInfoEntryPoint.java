@@ -11,6 +11,7 @@ import com.extjs.gxt.ui.client.util.Theme;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import org.sigmah.client.inject.AppInjector;
+import org.sigmah.client.offline.AuthTokenUtil;
 
 
 /**
@@ -43,6 +44,10 @@ public class ActivityInfoEntryPoint implements EntryPoint {
 
         AppInjector injector = GWT.create(AppInjector.class);
 
+        // this isn't strictly necessary,
+        // the cookie's expiration date should be properly set upon offline installation,
+        // but double check here to make sure we can check for the manifest later
+        AuthTokenUtil.maybeEnsurePersistentCookie(injector.getAuthentication());
 
         injector.createWelcomeLoader();
         injector.createDataEntryLoader();

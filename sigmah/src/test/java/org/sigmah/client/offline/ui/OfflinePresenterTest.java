@@ -248,5 +248,4 @@ public class OfflinePresenterTest {
             return true;
         }
     }
-
 }

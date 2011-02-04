@@ -14,6 +14,7 @@ import org.sigmah.client.EventBus;
 import org.sigmah.client.HistoryManager;
 import org.sigmah.client.UsageTracker;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.dispatch.remote.cache.AdminEntityCache;
 import org.sigmah.client.dispatch.remote.cache.SchemaCache;
 import org.sigmah.client.i18n.UIConstants;
@@ -114,4 +115,5 @@ public interface AppInjector extends Ginjector {
 
     DbListPage getDbListPage();
 
+    Authentication getAuthentication();
 }
