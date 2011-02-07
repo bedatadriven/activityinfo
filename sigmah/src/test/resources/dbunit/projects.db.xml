@@ -77,8 +77,6 @@
     <phase_model_sucessors id_phase_model="1" id_phase_model_successor="3" />
     <phase_model_sucessors id_phase_model="2" id_phase_model_successor="4" />
 
-    <report id_report="1" id_layout="5" id_phase_model="1" />
-
     <userDatabase databaseId="1" name="PEAR" countryId="1" ownerUserId="1" lastSchemaUpdate="2009-01-01"/>
     <project databaseId="1" id_project_model="1"/>
 
