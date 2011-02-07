@@ -45,7 +45,7 @@ public class LocationUpdateBuilder implements UpdateBuilder {
                     .getResultList();
         } else {
             locations = em.createQuery("select loc from Location loc where loc.dateEdited > :localDate or " +
-                            "(loc.dateEdited >= :localDate and loc.id > :lastId) " +
+                            "(loc.dateEdited == :localDate and loc.id > :lastId) " +
                             "order by loc.dateEdited, loc.id")
                     .setParameter("localDate", localState.lastDate)
                     .setParameter("lastId", localState.lastId)
