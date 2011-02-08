@@ -72,7 +72,7 @@ public class AmendmentPolicy implements EntityPolicy<Amendment> {
         for(final LayoutGroup group : groups) {
             for(final LayoutConstraint constraint : group.getConstraints()) {
                 final FlexibleElement element = constraint.getElement();
-                if(element.isAmendable() != null && element.isAmendable()) {
+                if(/*element.isAmendable() != null && */element.isAmendable()) {
                     // The value of the current flexible element must be saved.
                     final Query maxDateQuery = em.createQuery("SELECT MAX(h.date) FROM HistoryToken h WHERE h.elementId = :elementId AND h.projectId = :projectId");
                     maxDateQuery.setParameter("projectId", project.getId());

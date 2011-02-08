@@ -37,6 +37,8 @@ import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.sigmah.shared.domain.Amendment;
+import org.sigmah.shared.dto.ProjectDTO;
 
 /**
  * 
@@ -176,6 +178,14 @@ public abstract class FlexibleElementDTO extends BaseModelData implements Entity
      * @return
      */
     private Component getComponentWithHistory(ValueResult valueResult, boolean enabled) {
+
+        // Checking the amendment state.
+        if(enabled && // This element is in an editable state
+                Boolean.TRUE.equals(getAmendable()) && // This element is part of the amendment
+                currentContainerDTO instanceof ProjectDTO && // This element is displayed in a project
+                (((ProjectDTO)currentContainerDTO).getAmendmentState() != Amendment.State.DRAFT || ((ProjectDTO)currentContainerDTO).getCurrentAmendment() != null)) {
+            enabled = false;
+        }
 
         // The permission for this element.
         final PrivacyGroupPermissionEnum perm = ProfileUtils.getPermission(authentication, getPrivacyGroup());
@@ -320,11 +330,11 @@ public abstract class FlexibleElementDTO extends BaseModelData implements Entity
         set("filledIn", filledIn);
     }
 
-    public Boolean isAmendable() {
+    public boolean getAmendable() {
         return (Boolean) get("amendable");
     }
 
-    public void setAmendable(Boolean amendable) {
+    public void setAmendable(boolean amendable) {
         set("amendable", amendable);
     }
 
