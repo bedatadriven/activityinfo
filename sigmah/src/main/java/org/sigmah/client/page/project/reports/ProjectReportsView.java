@@ -76,6 +76,7 @@ import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Anchor;
@@ -102,6 +103,11 @@ import org.sigmah.shared.command.result.CreateResult;
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class ProjectReportsView extends LayoutContainer {
 
+    /**
+     * Time in milliseconds between each autosave.
+     */
+    public final static int AUTO_SAVE_PERIOD = 120000;
+
     private Authentication authentication;
     private EventBus eventBus;
     private Dispatcher dispatcher;
@@ -119,6 +125,8 @@ public class ProjectReportsView extends LayoutContainer {
 
     private Button attachButton;
     private Button createReportButton;
+
+    private Timer autoSaveTimer;
 
     public ProjectReportsView(Authentication authentication, EventBus eventBus, Dispatcher dispatcher,
             ListStore<ReportReference> store) {
@@ -403,6 +411,11 @@ public class ProjectReportsView extends LayoutContainer {
         mainPanel.removeAll();
 //        currentReport = report;
 
+        if (autoSaveTimer != null) {
+            autoSaveTimer.cancel();
+            autoSaveTimer = null;
+        }
+
         if (report == null)
             return;
 
@@ -539,9 +552,8 @@ public class ProjectReportsView extends LayoutContainer {
 
             flowPanel.add(header);
 
-            // Save button
-            final Button saveButton = new Button(I18N.CONSTANTS.save(), icons.save());
-            saveButton.addListener(Events.Select, new Listener<BaseEvent>() {
+            // Save action
+            final Listener<BaseEvent> saveListener = new Listener<BaseEvent>() {
 
                 @Override
                 public void handleEvent(BaseEvent be) {
@@ -587,14 +599,30 @@ public class ProjectReportsView extends LayoutContainer {
                                     found = true;
                                 }
                             }
+
+                            autoSaveTimer.cancel();
+                            autoSaveTimer.schedule(AUTO_SAVE_PERIOD);
                         }
 
                     });
                 }
-            });
+            };
+
+            // Save button
+            final Button saveButton = new Button(I18N.CONSTANTS.save(), icons.save());
+            saveButton.addListener(Events.Select, saveListener);
 
             toolBar.add(saveButton);
             toolBar.add(new SeparatorToolItem());
+
+            // Auto save timer
+            autoSaveTimer = new Timer() {
+                @Override
+                public void run() {
+                    saveListener.handleEvent(null);
+                }
+            };
+            autoSaveTimer.schedule(AUTO_SAVE_PERIOD);
 
         } else {
             final Button editReportButton = new Button(I18N.CONSTANTS.edit(), icons.editPage());

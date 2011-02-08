@@ -46,7 +46,6 @@ public class ProjectReportsPresenter implements SubPresenter {
 
     private ProjectReportsView view;
     private ListStore<ReportReference> reportStore;
-    private boolean reportStoreNeedsRefresh = false;
 
     int currentReportId = -1;
 
