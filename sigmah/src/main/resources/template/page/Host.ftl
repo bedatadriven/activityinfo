@@ -73,7 +73,7 @@
     </script>
 
     <script language='javascript' src='ActivityInfo/gxt/flash/swfobject.js'></script>
-    <script type="text/javascript" language="javascript" src="ActivityInfo/bootstrap.js"></script>
+    <script type="text/javascript" language="javascript" src="ActivityInfo/ActivityInfo.nocache.js"></script>
     <link rel="stylesheet" type="text/css" href="ActivityInfo/gxt/css/gxt-all.css"/>
     <link rel="stylesheet" type="text/css" href="report.css"/>
 

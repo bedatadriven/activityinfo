@@ -5,11 +5,16 @@
 
 package org.sigmah.shared.command.handler;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.bedatadriven.rebar.sync.client.BulkUpdaterAsync;
-import com.bedatadriven.rebar.sync.mock.MockBulkUpdater;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.Inject;
+import java.io.File;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.junit.Before;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
@@ -23,12 +28,11 @@ import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.SyncRegionUpdate;
 import org.sigmah.shared.domain.User;
 
-import javax.persistence.EntityManagerFactory;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.Collections;
-import java.util.List;
+import com.allen_sauer.gwt.log.client.Log;
+import com.bedatadriven.rebar.sync.client.BulkUpdaterAsync;
+import com.bedatadriven.rebar.sync.mock.MockBulkUpdater;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Inject;
 
 public abstract class LocalHandlerTestCase {
     @Inject
@@ -36,6 +40,13 @@ public abstract class LocalHandlerTestCase {
     @Inject
     protected EntityManagerFactory serverEntityManagerFactory;
 
+    /**
+     * this is scoped to Tests as the analog of being
+     * scoped to a request.
+     */
+    @Inject
+    protected EntityManager serverEm;
+    
     protected User user;
 
     protected Dispatcher remoteDispatcher;
@@ -53,7 +64,13 @@ public abstract class LocalHandlerTestCase {
         remoteDispatcher = new RemoteDispatcherStub();
 
         Class.forName("org.sqlite.JDBC");
-        localConnection = DriverManager.getConnection("jdbc:sqlite::memory:");
+        
+        File testClientDb = new File("synctest");
+        if(testClientDb.exists()) {
+        	testClientDb.delete();
+        }
+        
+        localConnection = DriverManager.getConnection("jdbc:sqlite:synctest");
         updater = new MockBulkUpdater(localConnection);
 
         Log.setCurrentLogLevel(Log.LOG_LEVEL_DEBUG);
@@ -71,6 +88,10 @@ public abstract class LocalHandlerTestCase {
         syncr.start();
     }
 
+    protected void newRequest() {
+    	serverEm.clear();
+    }
+    
     private class RemoteDispatcherStub implements Dispatcher {
         @Override
         public <T extends CommandResult> void execute(Command<T> command, AsyncMonitor monitor, AsyncCallback<T> callback) {

@@ -64,10 +64,41 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
     @Test
     @OnDataSet("/dbunit/locations.db.xml")
     public void locationsAreChunked() throws SQLException {
-        addLocationsToServerDatabase(53);
+        addLocationsToServerDatabase(220);
         synchronize();
 
-        assertThat(Integer.valueOf(queryString("select count(*) from Location")), equalTo(53));
+        assertThat(Integer.valueOf(queryString("select count(*) from Location")), equalTo(220));
+        
+        // update a location on the server
+        serverEm.getTransaction().begin();
+        Location location = (Location) serverEm.createQuery("select l from Location l where l.name = 'Penekusu 26'")
+        					.getSingleResult();
+        location.setAxe("Motown"); 
+        location.setDateEdited(new Date());
+        serverEm.getTransaction().commit();
+        
+        newRequest();
+        synchronize();
+        
+        assertThat(queryInt("select count(*) from Location where Name='Penekusu 26'"), equalTo(1));
+        assertThat(queryString("select axe from Location where Name='Penekusu 26'"), equalTo("Motown"));
+
+        // now create a new location
+        Location newLocation = new Location();
+        newLocation.setName("Bukavu");
+        newLocation.setDateCreated(new Date());
+        newLocation.setDateEdited(new Date());
+        newLocation.setLocationType(serverEm.find(LocationType.class, 1));
+        serverEm.getTransaction().begin();
+        serverEm.persist(newLocation);
+        serverEm.getTransaction().commit();
+        
+        newRequest();
+        synchronize();
+        
+        assertThat(queryString("select name from Location where LocationId = " + newLocation.getId()), 
+        		equalTo("Bukavu"));
+        
     }
 
     @Test
@@ -115,7 +146,11 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
         Timestamp now = new Timestamp(new Date().getTime());
         for(int i=1;i<= count;++i) {
             Location loc = new Location();
-            loc.setDateCreated(now);
+            if(i%3 == 0) {
+            	loc.setDateCreated(new Date( now.getTime() - 100000));
+            } else {
+            	loc.setDateCreated(now);
+            }
             loc.setDateEdited(now);
             loc.setName("Penekusu " + i);
             loc.getAdminEntities().add(entityManager.getReference(AdminEntity.class, 2));
@@ -128,7 +163,6 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
         }
         entityManager.getTransaction().commit();
         entityManager.close();
-
     }
 
     private String queryString(String sql) throws SQLException {
@@ -136,7 +170,7 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
 
         return rs.getString(1);
     }
-
+    
     private Integer queryInt(String sql) throws SQLException {
         ResultSet rs = querySingleResult(sql);
         return rs.getInt(1);

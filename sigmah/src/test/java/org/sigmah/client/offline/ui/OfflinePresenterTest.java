@@ -206,6 +206,12 @@ public class OfflinePresenterTest {
             menuEnabled = false;
         }
 
+		@Override
+		public void showError(String message) {
+			// TODO Auto-generated method stub
+			
+		}
+
     }
 
     private static class OfflineImplStub implements OfflineGateway {

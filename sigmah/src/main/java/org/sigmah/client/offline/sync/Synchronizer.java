@@ -63,7 +63,7 @@ public class Synchronizer {
    }
 
     private void createSyncMetaTables() {
-        execute("create table if not exists sync_regions (id TEXT, localVersion INTEGER)",
+        execute("create table if not exists sync_regions (id TEXT, localVersion TEXT)",
                 "create table if not exists sync_history (lastUpdate INTEGER) ");
     }
 

@@ -74,6 +74,8 @@ public class OfflinePresenter {
 
         void enableMenu();
         void disableMenu();
+        
+        void showError(String message);
 
     }
 
@@ -185,7 +187,7 @@ public class OfflinePresenter {
     }
 
     private void reportFailure(Throwable throwable) {
-        // TODO
+    	view.showError(throwable.getMessage());
     }
 
     private abstract class Strategy {
@@ -221,6 +223,7 @@ public class OfflinePresenter {
             view.setButtonTextToInstalling();
             view.disableMenu();
             view.showProgressDialog();
+            view.updateProgress("Starting...", 0);
 
             loadGateway(new AsyncCallback<OfflineGateway>() {
                 @Override
@@ -234,6 +237,7 @@ public class OfflinePresenter {
                     gateway.install(new AsyncCallback<Void>() {
                         @Override
                         public void onFailure(Throwable caught) {
+                        	view.hideProgressDialog();
                             activateStrategy(new NotInstalledStrategy());
                             OfflinePresenter.this.reportFailure(caught);
                         }

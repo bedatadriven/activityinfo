@@ -130,7 +130,7 @@ public class SiteUpdateBuilder implements UpdateBuilder {
     }
 
     private void removeDependentIndicatorValuesOfDeletedOrUpdatedSites() throws JSONException {
-        builder.beginPreparedStatement("delete from IndicatorValue v where v.ReportingPeriodId in " +
+        builder.beginPreparedStatement("delete from IndicatorValue where IndicatorValue.ReportingPeriodId in " +
                 "(select ReportingPeriodId from ReportingPeriod where SiteId = ?) ");
         addIdsOfUpdatedOrDeleted(builder);
         builder.finishPreparedStatement();

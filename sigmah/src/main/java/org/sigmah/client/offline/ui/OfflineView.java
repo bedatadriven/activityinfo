@@ -6,6 +6,7 @@
 package org.sigmah.client.offline.ui;
 
 import com.extjs.gxt.ui.client.event.Observable;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
@@ -128,4 +129,11 @@ public class OfflineView extends Button implements OfflinePresenter.View {
     public void disableMenu() {
         setMenu(null);
     }
+
+	@Override
+	public void showError(String message) {
+		MessageBox.alert("Offline installation failed", "An error occured while installing " +
+				"offline mode: " + message, null);
+		
+	}
 }
