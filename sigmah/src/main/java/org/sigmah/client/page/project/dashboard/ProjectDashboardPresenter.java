@@ -562,7 +562,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
                 // Retrieving the current amendment id
                 Integer amendmentId = null;
-                if(projectPresenter.getCurrentProjectDTO().getCurrentAmendment() != null)
+                if (projectPresenter.getCurrentProjectDTO().getCurrentAmendment() != null)
                     amendmentId = projectPresenter.getCurrentProjectDTO().getCurrentAmendment().getId();
 
                 // Remote call to ask for this element value.
@@ -598,7 +598,8 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
                         // Generates element component (with the value).
                         elementDTO.init();
-                        final Component elementComponent = elementDTO.getElementComponent(valueResult, !readOnly && !valueResult.isAmendment());
+                        final Component elementComponent = elementDTO.getElementComponent(valueResult, !readOnly
+                                && !valueResult.isAmendment());
 
                         // Component width.
                         final FormData formData;
@@ -1817,6 +1818,9 @@ public class ProjectDashboardPresenter implements SubPresenter {
                                             projectPresenter.getCurrentProjectDTO().setPointsList(list);
                                         }
 
+                                        // Forces the default completion state.
+                                        point.setCompletionDate(null);
+
                                         // Adds the point locally.
                                         list.getPoints().add(point);
                                         view.getMonitoredPointsGrid().getStore().add(point);
@@ -1967,6 +1971,9 @@ public class ProjectDashboardPresenter implements SubPresenter {
                                             projectPresenter.getCurrentProjectDTO().setRemindersList(list);
                                         }
 
+                                        // Forces the default completion state.
+                                        reminder.setCompletionDate(null);
+
                                         // Adds the point locally.
                                         list.getReminders().add(reminder);
                                         view.getRemindersGrid().getStore().add(reminder);
@@ -1997,7 +2004,7 @@ public class ProjectDashboardPresenter implements SubPresenter {
 
                     // The 'completed' field has been edited by the grid
                     // editor, but the actual property which is saved in
-                    // data-layer is 'completionDate'. we have to do the
+                    // data-layer is 'completionDate'. We have to do the
                     // changes manually.
                     final ReminderDTO edited = se.getModel();
                     if (edited.getIsCompleted()) {

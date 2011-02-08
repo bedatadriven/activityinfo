@@ -1110,7 +1110,7 @@ public class ProjectDashboardView extends ProjectDashboardPresenter.View {
         final CellEditor checkBoxEditor = new CellEditor(new CheckBox());
         completedColumn.setEditor(checkBoxEditor);
 
-        // Icojn
+        // Icon
         final ColumnConfig iconColumn = new ColumnConfig();
         iconColumn.setId("icon");
         iconColumn.setHeader("");
