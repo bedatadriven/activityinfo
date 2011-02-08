@@ -468,6 +468,9 @@ public class FilesListElementDTO extends FlexibleElementDTO {
 
                     Notification.show(I18N.CONSTANTS.infoConfirmation(), I18N.CONSTANTS.monitoredPointAddConfirm());
 
+                    // Forces the default completion state.
+                    point.setCompletionDate(null);
+
                     ((ProjectDTO) currentContainerDTO).addMonitoredPoint(point);
                 }
 
