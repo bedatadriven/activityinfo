@@ -5,8 +5,9 @@
 
 package org.sigmah.shared.dto;
 
-import com.extjs.gxt.ui.client.data.BaseModel;
 import org.sigmah.shared.command.Month;
+
+import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
  *
@@ -22,7 +23,7 @@ import org.sigmah.shared.command.Month;
  *
  * @author Alex Bertram
  */
-public final class IndicatorRowDTO extends BaseModel implements DTO {
+public final class IndicatorRowDTO extends BaseModelData implements DTO {
 
     private int siteId;
     private int activityId;

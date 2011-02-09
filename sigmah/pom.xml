@@ -159,7 +159,7 @@
         <dependency>
             <groupId>com.bedatadriven.rebar</groupId>
             <artifactId>rebar-appcache</artifactId>
-            <version>0.6</version>
+            <version>0.7</version>
         </dependency>
         <dependency>
             <groupId>com.bedatadriven.rebar</groupId>
@@ -169,7 +169,7 @@
         <dependency>
             <groupId>com.bedatadriven.rebar</groupId>
             <artifactId>rebar-sync</artifactId>
-            <version>0.5-SNAPSHOT</version>
+            <version>0.5</version>
         </dependency>
 
         <dependency>

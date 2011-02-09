@@ -6,6 +6,7 @@
 package org.sigmah.shared.dto;
 
 import com.extjs.gxt.ui.client.data.BaseModel;
+import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
  * Projection DTO for the {@link org.sigmah.server.domain.ReportSubscription ReportSubscription}
@@ -17,7 +18,7 @@ import com.extjs.gxt.ui.client.data.BaseModel;
  *
  * @author Alex Bertram
  */
-public final class ReportSubscriptionDTO extends BaseModel {
+public final class ReportSubscriptionDTO extends BaseModelData {
 
     public ReportSubscriptionDTO() {
     }

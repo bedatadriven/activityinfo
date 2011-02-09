@@ -5,17 +5,17 @@
 
 package org.sigmah.shared.dto;
 
-import com.extjs.gxt.ui.client.data.BaseModel;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
  * One-to-one DTO for the {@link org.sigmah.shared.domain.AttributeGroup} domain object
  *
  * @author Alex Bertram
  */
-public final class AttributeGroupDTO extends BaseModel implements EntityDTO {
+public final class AttributeGroupDTO extends BaseModelData implements EntityDTO {
 
 	private List<AttributeDTO> attributes = new ArrayList<AttributeDTO>(0);
 	

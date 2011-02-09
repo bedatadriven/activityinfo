@@ -6,6 +6,7 @@
 package org.sigmah.shared.dto;
 
 import com.extjs.gxt.ui.client.data.BaseModel;
+import com.extjs.gxt.ui.client.data.BaseModelData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
  *
  * @author Alex Bertram
  */
-public final class UserDatabaseDTO extends BaseModel implements EntityDTO {
+public final class UserDatabaseDTO extends BaseModelData implements EntityDTO {
     private CountryDTO country;
 	private List<PartnerDTO> partners = new ArrayList<PartnerDTO>(0);
 	private List<ActivityDTO> activities = new ArrayList<ActivityDTO>(0);

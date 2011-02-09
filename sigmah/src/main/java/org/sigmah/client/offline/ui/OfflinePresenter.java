@@ -9,6 +9,22 @@
 package org.sigmah.client.offline.ui;
 
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+
+import org.sigmah.client.EventBus;
+import org.sigmah.client.dispatch.AsyncMonitor;
+import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.dispatch.remote.RemoteDispatcher;
+import org.sigmah.client.offline.OfflineGateway;
+import org.sigmah.client.offline.sync.SyncStatusEvent;
+import org.sigmah.client.util.state.IStateManager;
+import org.sigmah.shared.command.Command;
+import org.sigmah.shared.command.result.CommandResult;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -16,15 +32,12 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.Observable;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.InvocationException;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import org.sigmah.client.EventBus;
-import org.sigmah.client.offline.OfflineGateway;
-import org.sigmah.client.offline.sync.SyncStatusEvent;
-import org.sigmah.client.util.state.IStateManager;
-
-import java.util.Date;
+import com.google.inject.Singleton;
 
 /**
  * This class keeps as much of the offline functionality behind a runAsync clause to
@@ -32,7 +45,8 @@ import java.util.Date;
  *
  * @author Alex Bertram
  */
-public class OfflinePresenter {
+@Singleton
+public class OfflinePresenter implements Dispatcher {
     /**
      * Visible for testing
      */
@@ -53,6 +67,11 @@ public class OfflinePresenter {
          * Commands are sent to the remote server for handling
          */
         ONLINE
+    }
+    
+    public interface PromptCallback {
+    	void onCancel();
+    	void onTryToConnect();
     }
 
     public interface View {
@@ -76,12 +95,18 @@ public class OfflinePresenter {
         void disableMenu();
         
         void showError(String message);
+        
+        void promptToGoOnline(PromptCallback callback);
+		void setConnectionDialogToFailure();
+		void setConnectionDialogToBusy();
+		void hideConnectionDialog();
 
     }
 
     private final View view;
     private final IStateManager stateManager;
     private final Provider<OfflineGateway> gateway;
+    private final RemoteDispatcher remoteDispatcher;
 
     private OfflineMode activeMode;
     private boolean installed;
@@ -92,11 +117,13 @@ public class OfflinePresenter {
     @Inject
     public OfflinePresenter(final View view,
                             EventBus eventBus,
+                            RemoteDispatcher remoteService,
                             Provider<OfflineGateway> gateway,
                             IStateManager stateManager
     ) {
         this.view = view;
         this.stateManager = stateManager;
+        this.remoteDispatcher = remoteService;
         this.gateway = gateway;
 
         loadState();
@@ -160,7 +187,16 @@ public class OfflinePresenter {
         stateManager.set(OFFLINE_MODE_KEY, state.toString());
     }
 
-    private void activateStrategy(Strategy strategy) {
+   
+    @Override
+	public <T extends CommandResult> void execute(Command<T> command,
+			AsyncMonitor monitor, AsyncCallback<T> callback) {
+    	
+    	activeStrategy.dispatch(command, monitor, callback);
+		
+	}
+
+	private void activateStrategy(Strategy strategy) {
         try {
             this.activeStrategy = strategy;
             this.activeStrategy.activate();
@@ -196,9 +232,19 @@ public class OfflinePresenter {
         void onSyncNow() {}
         void onToggle() {}
         void onReinstall() {}
+        void dispatch(Command command, AsyncMonitor monitor, AsyncCallback callback) {
+        	// by default, we send to the server
+        	remoteDispatcher.execute(command, monitor, callback);
+        }
     }
 
 
+    /**
+     * Strategy for handling the state in which offline mode is 
+     * not at all available. 
+     * 
+     * The only thing the user can do from here is start installation.
+     */
     private class NotInstalledStrategy extends Strategy {
 
         @Override
@@ -211,10 +257,12 @@ public class OfflinePresenter {
         public void onDefaultButton() {
             activateStrategy(new InstallingStrategy());
         }
+        
     }
 
     /**
-     * UX behavior whilst installing
+     * Strategy for handling the state in which installation is in progress.
+     * Commands continue to be handled by the remote dispatcher during installation
      */
     private class InstallingStrategy extends Strategy {
 
@@ -253,7 +301,8 @@ public class OfflinePresenter {
             return this;
         }
 
-        @Override
+
+		@Override
         void onDefaultButton() {
             view.showProgressDialog();
         }
@@ -261,18 +310,27 @@ public class OfflinePresenter {
 
     /**
      * This is a sort of purgatory state that occurs immediately after
-     * application load when we've determined that we should go offline but
+     * application load when we've determined that we offline mode is 
+     * installed, and that we should go offline but
      * we haven't yet loaded the async fragment with the code.
      */
     private class LoadingOfflineStrategy extends Strategy {
 
+    	/**
+    	 * Commands cannot be executed until everything is loaded...
+    	 */
+    	private List<CommandRequest> pending;
+    	
         @Override
         Strategy activate() {
+        	pending = new ArrayList<CommandRequest>();
+        	
             view.setButtonTextToLoading();
+            
             loadGateway(new AsyncCallback<OfflineGateway>() {
                 @Override
                 public void onFailure(Throwable caught) {
-                    abandonShip(caught);
+                	abandonShip(caught);
                 }
 
                 @Override
@@ -287,11 +345,14 @@ public class OfflinePresenter {
                             @Override
                             public void onSuccess(Void result) {
                                 if(gateway.validateOfflineInstalled()) {
-                                    activateStrategy(new OfflineStrategy(gateway));
+                                	activateStrategy(new OfflineStrategy(gateway));
+                                	doDispatch(pending);
                                 } else {
                                     abandonShip();
                                 }
                             }
+
+						
                         });
                     }
                 }
@@ -309,11 +370,22 @@ public class OfflinePresenter {
         // can always reinstall. (not ideal, obviously)
         void abandonShip() {
             activateStrategy(new NotInstalledStrategy());
+        	doDispatch(pending);
         }
     }
 
+    /**
+     * Strategy for handling the state that occurs immediately after
+     * a user manually chooses to enter online mode but before 
+     * we've assured that all local changes have been sent to the server.
+     * 
+     * We defer all subsequent command handling until we've entered
+     * one mode or the other.
+     */
     private class GoingOffline extends Strategy {
         private OfflineGateway offlineManager;
+        
+        private List<CommandRequest> pending;
 
         private GoingOffline(OfflineGateway offlineManager) {
             this.offlineManager = offlineManager;
@@ -323,21 +395,36 @@ public class OfflinePresenter {
         Strategy activate() {
             view.setButtonTextToSyncing();
             view.disableMenu();
+            pending = new ArrayList<CommandRequest>();
             offlineManager.goOffline(new AsyncCallback<Void>() {
                 @Override
                 public void onFailure(Throwable caught) {
                     activateStrategy(new OnlineStrategy(offlineManager));
+                    doDispatch(pending);
                 }
 
                 @Override
                 public void onSuccess(Void result) {
                     activateStrategy(new OfflineStrategy(offlineManager));
+                    doDispatch(pending);
                 }
             });
             return this;
         }
+
+		@Override
+		void dispatch(Command command, AsyncMonitor monitor,
+				AsyncCallback callback) {
+			pending.add(new CommandRequest(command, monitor, callback));
+		}
     }
 
+    /**
+     * Strategy for handling the state during which the user is offline.
+     * We try to handle commands locally if possible.
+     * When unsupported commands are encountered, we offer the user the chance to connect.
+     *
+     */
     private class OfflineStrategy extends Strategy {
         private OfflineGateway offlineManger;
 
@@ -366,7 +453,81 @@ public class OfflinePresenter {
         void onReinstall() {
             activateStrategy(new InstallingStrategy());
         }
+
+		@Override
+		void dispatch(Command command, AsyncMonitor monitor,
+				AsyncCallback callback) {
+
+			if(offlineManger.canHandle(command)) {
+				offlineManger.execute(command, monitor, callback);
+			} else {
+				activateStrategy(new CheckingIfUserWantsToGoOnline(offlineManger, 
+						new CommandRequest(command, monitor, callback)));
+			}
+			
+		}
+       
     }
+    
+    private class CheckingIfUserWantsToGoOnline extends Strategy {
+
+    	private OfflineGateway offlineManager;
+    	
+    	private CommandRequest toExecuteOnline;
+    	private List<CommandRequest> pending;
+    	
+		public CheckingIfUserWantsToGoOnline(OfflineGateway offlineManger,
+				CommandRequest commandRequest) {
+			this.offlineManager = offlineManger;
+			this.toExecuteOnline = commandRequest;
+		}
+
+		@Override
+		Strategy activate() {
+			pending = new ArrayList<CommandRequest>();
+			view.disableMenu();			
+			view.promptToGoOnline(new PromptCallback() {
+
+				@Override
+				public void onCancel() {
+					if(toExecuteOnline.monitor != null) {
+						toExecuteOnline.monitor.onConnectionProblem();
+					}
+					toExecuteOnline.callback.onFailure(new InvocationException("Not connected"));
+					activateStrategy(new OfflineStrategy(offlineManager));
+					doDispatch(pending);
+				}
+
+				@Override
+				public void onTryToConnect() {
+					view.setConnectionDialogToBusy();
+					offlineManager.goOnline(new AsyncCallback<Void>() {
+						
+						@Override
+						public void onSuccess(Void arg0) {
+							view.hideConnectionDialog();
+							activateStrategy(new OnlineStrategy(offlineManager));
+							doDispatch(Arrays.asList(toExecuteOnline));
+							doDispatch(pending);	
+						}
+						
+						@Override
+						public void onFailure(Throwable arg0) {
+							view.setConnectionDialogToFailure();
+						}
+					});
+				}
+			});
+			return this;
+		}
+
+		@Override
+		void dispatch(Command command, AsyncMonitor monitor,
+				AsyncCallback callback) {
+			pending.add(new CommandRequest(command, monitor, callback));
+		}
+    }
+    
 
     private class GoingOnlineStrategy extends Strategy {
         private final OfflineGateway offlineManager;
@@ -396,6 +557,10 @@ public class OfflinePresenter {
         }
     }
 
+    /**
+     * Strategy for the state in which offline mode is available and installed,
+     * but we are currently connecting directly to the server.
+     */
     private class OnlineStrategy extends Strategy {
         private OfflineGateway offlineManager;
 
@@ -426,6 +591,11 @@ public class OfflinePresenter {
         }
     }
 
+    /**
+     * Strategy for the period in which we are actively synchronizing the local database.
+     * Synchronization can be initiated by the user when offline or offline, so we need to keep
+     * track of the "parent strategy"
+     */
     private class SyncingStrategy extends Strategy {
         private final Strategy parentStrategy;
         private final OfflineGateway offlineManager;
@@ -444,6 +614,7 @@ public class OfflinePresenter {
             offlineManager.synchronize(new AsyncCallback<Void>() {
                 @Override
                 public void onFailure(Throwable caught) {
+                	reportFailure(caught);
                     activateStrategy(parentStrategy);
                 }
 
@@ -459,5 +630,44 @@ public class OfflinePresenter {
         void onDefaultButton() {
             view.showProgressDialog();
         }
+
+		@Override
+		void dispatch(Command command, AsyncMonitor monitor,
+				AsyncCallback callback) {
+			
+			// defer to our parent strategy
+			parentStrategy.dispatch(command, monitor, callback);
+		}
     }
+    
+    private static class CommandRequest {
+    	final Command command;
+    	final AsyncMonitor monitor;
+    	final AsyncCallback callback;
+		
+    	public CommandRequest(Command command, AsyncMonitor monitor,
+				AsyncCallback callback) {
+			super();
+			this.command = command;
+			this.monitor = monitor;
+			this.callback = callback;
+		}
+    }
+
+    private void doDispatch(final Collection<CommandRequest> requests) {
+    	if(!requests.isEmpty()) {
+	    	// wait until everything's been switched around 
+	    	DeferredCommand.addCommand(new com.google.gwt.user.client.Command() {
+				
+				@Override
+				public void execute() {
+				   	for(CommandRequest request : requests) {
+			    		activeStrategy.dispatch(request.command, request.monitor, request.callback);
+			    	}				
+				}
+			});
+    	}
+    }
+
+    
 }

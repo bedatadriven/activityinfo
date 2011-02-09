@@ -5,7 +5,7 @@
 
 package org.sigmah.shared.dto;
 
-import com.extjs.gxt.ui.client.data.BaseModel;
+import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
  * Projection DTO of the {@link org.sigmah.shared.domain.UserPermission UserPermission}
@@ -13,7 +13,7 @@ import com.extjs.gxt.ui.client.data.BaseModel;
  *
  * @author Alex Bertram
  */
-public final class UserPermissionDTO extends BaseModel implements DTO {
+public final class UserPermissionDTO extends BaseModelData implements DTO {
 
     public UserPermissionDTO() {
         setAllowView(true);

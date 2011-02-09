@@ -5,42 +5,46 @@
 
 package org.sigmah.client.offline;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
-import org.sigmah.client.dispatch.SwitchingDispatcher;
+import java.util.Date;
+
+import org.sigmah.client.dispatch.AsyncMonitor;
+import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.dispatch.remote.DirectDispatcher;
 import org.sigmah.client.offline.command.LocalDispatcher;
 import org.sigmah.client.offline.install.InstallSteps;
 import org.sigmah.client.offline.sync.Synchronizer;
+import org.sigmah.shared.command.Command;
+import org.sigmah.shared.command.Ping;
+import org.sigmah.shared.command.result.VoidResult;
 
-import java.util.Date;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 public class OfflineImpl implements OfflineGateway {
     private static final int SYNC_INTERVAL = 30000;
 
-    private final SwitchingDispatcher switchingDispatcher;
     private final Provider<InstallSteps> installSteps;
-    private final Provider<LocalDispatcher> localDispatcher;
+    private final LocalDispatcher localDispatcher;
+    private final Dispatcher remoteDispatcher;
     private final Synchronizer synchronizer;
+   
 
 
     @Inject
-    public OfflineImpl(SwitchingDispatcher switchingDispatcher,
-                       Provider<InstallSteps> installSteps,
-                       Provider<LocalDispatcher> localDispatcher,
+    public OfflineImpl(Provider<InstallSteps> installSteps,
+                       LocalDispatcher localDispatcher,
+                       DirectDispatcher remoteDispatcher,
                        Synchronizer synchronizer) {
 
-        this.switchingDispatcher = switchingDispatcher;
         this.installSteps = installSteps;
         this.localDispatcher = localDispatcher;
+        this.remoteDispatcher = remoteDispatcher;
         this.synchronizer = synchronizer;
     }
 
     @Override
     public void install(final AsyncCallback<Void> callback) {
-
-        // just in case we are re-installing 
-        switchingDispatcher.clearLocalDispatcher();
 
         installSteps.get().run(new AsyncCallback() {
             @Override
@@ -57,7 +61,6 @@ public class OfflineImpl implements OfflineGateway {
 
     @Override
     public void goOffline(AsyncCallback<Void> callback) {
-        switchingDispatcher.setLocalDispatcher(localDispatcher.get());
         callback.onSuccess(null);
     }
 
@@ -78,10 +81,35 @@ public class OfflineImpl implements OfflineGateway {
     }
 
     @Override
-    public void goOnline(AsyncCallback callback) {
+    public void goOnline(final AsyncCallback<Void> callback) {
         // TODO: transmit queued changes
-        switchingDispatcher.clearLocalDispatcher();
+    	
+    	// confirm that we can connect to the server
+    	remoteDispatcher.execute(new Ping(), null, new AsyncCallback<VoidResult>() {
 
-        callback.onSuccess(null);
+			@Override
+			public void onFailure(Throwable caught) {
+				callback.onFailure(caught);
+				
+			}
+
+			@Override
+			public void onSuccess(VoidResult result) {
+				callback.onSuccess(null);
+			}
+		});
     }
+
+	@Override
+	public boolean canHandle(Command command) {
+		return localDispatcher.canExecute(command);
+	}
+
+	@Override
+	public void execute(Command command, AsyncMonitor monitor,
+			AsyncCallback callback) {
+		
+		localDispatcher.execute(command, monitor, callback);
+		
+	}
 }

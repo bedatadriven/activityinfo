@@ -5,7 +5,7 @@
 
 package	org.sigmah.shared.dto;
 
-import com.extjs.gxt.ui.client.data.BaseModel;
+import com.extjs.gxt.ui.client.data.BaseModelData;
 
 
 /**
@@ -13,7 +13,7 @@ import com.extjs.gxt.ui.client.data.BaseModel;
  *
  * @author Alex Bertram
  */
-public final class IndicatorDTO extends BaseModel implements EntityDTO {
+public final class IndicatorDTO extends BaseModelData implements EntityDTO {
 	public final static int AGGREGATE_SUM = 0;
 	public final static int AGGREGATE_AVG = 1;
 	public final static int AGGREGATE_SITE_COUNT = 2;

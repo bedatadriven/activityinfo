@@ -5,7 +5,17 @@
 
 package org.sigmah.client.offline.ui;
 
+import java.util.Date;
+
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.client.offline.ui.OfflinePresenter.PromptCallback;
+
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Observable;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.Dialog;
+import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
@@ -13,10 +23,6 @@ import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.inject.Singleton;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.icon.IconImageBundle;
-
-import java.util.Date;
 
 /**
  * @author Alex Bertram
@@ -26,6 +32,7 @@ public class OfflineView extends Button implements OfflinePresenter.View {
 
     private StatusWindow window;
     private ProgressDialog progressDialog;
+    private ConnectionDialog connectionDialog;
 
     private Menu menu;
     private MenuItem syncNowButton;
@@ -70,6 +77,7 @@ public class OfflineView extends Button implements OfflinePresenter.View {
     public void setButtonTextToInstall() {
         this.setIcon(null);
         this.setText(I18N.CONSTANTS.installOffline());
+        toggleModeButton.setText(I18N.CONSTANTS.switchToOffline());
     }
 
     @Override
@@ -82,6 +90,7 @@ public class OfflineView extends Button implements OfflinePresenter.View {
     public void setButtonTextToLastSync(Date lastSyncTime) {
         this.setIcon(IconImageBundle.ICONS.offline());
         this.setText(I18N.MESSAGES.lastSynced(DateTimeFormat.getShortDateTimeFormat().format(lastSyncTime)));
+        toggleModeButton.setText(I18N.CONSTANTS.switchToOnline());
     }
 
     @Override
@@ -94,6 +103,7 @@ public class OfflineView extends Button implements OfflinePresenter.View {
     public void setButtonTextToOnline() {
         this.setIcon(IconImageBundle.ICONS.onlineSynced());
         this.setText(I18N.CONSTANTS.online());
+        toggleModeButton.setText(I18N.CONSTANTS.switchToOffline());
     }
 
     @Override
@@ -134,6 +144,32 @@ public class OfflineView extends Button implements OfflinePresenter.View {
 	public void showError(String message) {
 		MessageBox.alert("Offline installation failed", "An error occured while installing " +
 				"offline mode: " + message, null);
+		
+	}
+
+	@Override
+	public void promptToGoOnline(final PromptCallback callback) {
+		if(connectionDialog == null) {
+			connectionDialog = new ConnectionDialog(); 
+		}
+		connectionDialog.setCallback(callback);
+		connectionDialog.clearStatus();
+		connectionDialog.show();
+	}
+
+	@Override
+	public void setConnectionDialogToFailure() {
+		connectionDialog.setFailed();
+	}
+
+	@Override
+	public void setConnectionDialogToBusy() {
+		connectionDialog.setBusy();	
+	}
+
+	@Override
+	public void hideConnectionDialog() {
+		connectionDialog.hide();
 		
 	}
 }

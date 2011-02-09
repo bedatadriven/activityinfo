@@ -13,13 +13,19 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Provider;
 import org.junit.Before;
 import org.junit.Test;
+import org.sigmah.client.dispatch.AsyncMonitor;
+import org.sigmah.client.dispatch.remote.RemoteDispatcher;
 import org.sigmah.client.mock.MockEventBus;
 import org.sigmah.client.mock.MockStateManager;
 import org.sigmah.client.offline.OfflineGateway;
 import org.sigmah.client.offline.sync.SyncStatusEvent;
+import org.sigmah.client.offline.ui.OfflinePresenter.PromptCallback;
+import org.sigmah.shared.command.Command;
+import org.sigmah.shared.command.result.CommandResult;
 
 import java.util.Date;
 
+import static org.easymock.EasyMock.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -29,6 +35,7 @@ public class OfflinePresenterTest {
     private Provider<OfflineGateway> gatewayProvider;
     private OfflineImplStub offlineImpl;
     private MockStateManager stateManager;
+	private RemoteDispatcher remoteDispatcher;
 
     @Before
     public void setUp() {
@@ -42,6 +49,7 @@ public class OfflinePresenterTest {
             }
         };
         stateManager = new MockStateManager();
+        remoteDispatcher = null;
     }
 
 
@@ -50,7 +58,8 @@ public class OfflinePresenterTest {
 
         // No state is set, so the presenter should assume that offline is not yet installed
 
-        OfflinePresenter presenter = new OfflinePresenter(view, eventBus, gatewayProvider, stateManager);
+        OfflinePresenter presenter = new OfflinePresenter(view, eventBus, remoteDispatcher,
+        		gatewayProvider, stateManager);
 
         assertThat(view.defaultButtonText, equalTo("Install"));
 
@@ -87,7 +96,8 @@ public class OfflinePresenterTest {
 
         stateManager.set(OfflinePresenter.OFFLINE_MODE_KEY, OfflinePresenter.OfflineMode.OFFLINE.toString());
 
-        OfflinePresenter presenter = new OfflinePresenter(view, eventBus, gatewayProvider, stateManager);
+        OfflinePresenter presenter = new OfflinePresenter(view, eventBus, 
+        		remoteDispatcher, gatewayProvider, stateManager);
 
         // offline async fragment finishes loading
         assertThat(offlineImpl.lastCall, equalTo("goOffline"));
@@ -102,7 +112,8 @@ public class OfflinePresenterTest {
 
         stateManager.set(OfflinePresenter.OFFLINE_MODE_KEY, OfflinePresenter.OfflineMode.OFFLINE.toString());
 
-        new OfflinePresenter(view, eventBus, gatewayProvider, stateManager);
+        new OfflinePresenter(view, eventBus, remoteDispatcher,
+        		gatewayProvider, stateManager);
 
         // offline async fragment finishes loading
         offlineImpl.lastCallback.onSuccess(null);
@@ -212,6 +223,30 @@ public class OfflinePresenterTest {
 			
 		}
 
+		@Override
+		public void promptToGoOnline(PromptCallback callback) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void setConnectionDialogToFailure() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void setConnectionDialogToBusy() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void hideConnectionDialog() {
+			// TODO Auto-generated method stub
+			
+		}
+
     }
 
     private static class OfflineImplStub implements OfflineGateway {
@@ -253,5 +288,19 @@ public class OfflinePresenterTest {
         public boolean validateOfflineInstalled() {
             return true;
         }
+
+
+		@Override
+		public boolean canHandle(Command command) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public void execute(Command command, AsyncMonitor monitor,
+				AsyncCallback callback) {
+			// TODO Auto-generated method stub
+			
+		}
     }
 }
