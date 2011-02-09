@@ -33,6 +33,9 @@ import org.sigmah.shared.domain.calendar.Event;
  */
 @SuppressWarnings("deprecation")
 public class CalendarWidget extends Composite {
+    public static final int CELL_DEFAULT_WIDTH = 150;
+    public static final int CELL_DEFAULT_HEIGHT = 80;
+
     public interface CalendarListener {
         public void afterRefresh();
     }
@@ -353,7 +356,7 @@ public class CalendarWidget extends Composite {
         final Element cell = grid.getCellFormatter().getElement(displayHeaders, displayWeekNumber?1:0);
         cell.setId("calendar-cell-calibration");
 
-        eventLimit = (getCellHeight() / EVENT_HEIGHT) - 2;
+        eventLimit = (getCellHeight(CELL_DEFAULT_HEIGHT) / EVENT_HEIGHT) - 2;
         if(eventLimit < 0)
             eventLimit = 0;
     }
@@ -362,8 +365,11 @@ public class CalendarWidget extends Composite {
      * Calculates the height of the cell identified by "calendar-cell-calibration".
      * @return height of a cell.
      */
-    private native int getCellHeight() /*-{
+    private native int getCellHeight(int defaultHeight) /*-{
         var height = 0;
+
+        if(!$wnd.getComputedStyle)
+            return defaultHeight;
 
         var row = $wnd.document.getElementById('calendar-row-calibration');
 
@@ -377,8 +383,11 @@ public class CalendarWidget extends Composite {
      * Calculates the width of the cell identified by "calendar-cell-calibration".
      * @return width of a cell.
      */
-    private native int getCellWidth() /*-{
+    private native int getCellWidth(int defaultWidth) /*-{
         var width = 0;
+
+        if(!$wnd.getComputedStyle)
+            return defaultWidth;
 
         var cell = $wnd.document.getElementById('calendar-cell-calibration');
 
@@ -653,7 +662,7 @@ public class CalendarWidget extends Composite {
                     final int left = flowPanel.getAbsoluteLeft() - 10;
                     final int bottom = Window.getClientHeight() - flowPanel.getAbsoluteTop();
 
-                    detailPopup.setWidth((getCellWidth()+20)+"px");
+                    detailPopup.setWidth((getCellWidth(CELL_DEFAULT_WIDTH)+20)+"px");
 
                     // Show the popup
                     detailPopup.setPopupPositionAndShow(new PositionCallback() {

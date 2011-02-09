@@ -25,6 +25,7 @@ import org.sigmah.client.page.NavigationHandler;
  */
 public class TabBar extends Composite {
     public final static String TAB_ID_PREFIX = "tab";
+    public final static int TAB_DEFAULT_WIDTH = 150;
     
     private EventBus eventBus;
     private TabModel model;
@@ -114,7 +115,11 @@ public class TabBar extends Composite {
 
                 if(leftTabIndex > 0) {
                     leftTabIndex--;
-                    distance += getTabWidth(TAB_ID_PREFIX, model.get(leftTabIndex).getId());
+
+                    if(isComputedStyleNotAvailable())
+                        distance += TAB_DEFAULT_WIDTH;
+                    else
+                        distance += getTabWidth(TAB_ID_PREFIX, model.get(leftTabIndex).getId());
                 }
 
                 direction = 1;
@@ -133,7 +138,11 @@ public class TabBar extends Composite {
                     distance = -distance;
 
                 if(leftTabIndex < model.size()-1) {
-                    distance += getTabWidth(TAB_ID_PREFIX, model.get(leftTabIndex).getId());
+                    if(isComputedStyleNotAvailable())
+                        distance += TAB_DEFAULT_WIDTH;
+                    else
+                        distance += getTabWidth(TAB_ID_PREFIX, model.get(leftTabIndex).getId());
+                    
                     leftTabIndex++;
                 }
 
@@ -204,7 +213,7 @@ public class TabBar extends Composite {
     }
     
     private void addTab(final Tab tab) {
-        // If you change this method, remember to change "linkWith>tabChanged" too.
+        // If you change this method, remember to change "linkWith() > tabChanged()" too.
         // The current "tabChanged" listener waits for a specific widget organization (AbsolutePanel>HTML)
         
         final AbsolutePanel panel = new AbsolutePanel();
@@ -220,6 +229,11 @@ public class TabBar extends Composite {
 
         final HTML rightBorder = new HTML();
         rightBorder.addStyleName("right");
+
+        // Using default sizes if the width cannot be computed
+        if(isComputedStyleNotAvailable()) {
+            panel.setWidth(TAB_DEFAULT_WIDTH+"px");
+        }
 
         final ClickHandler clickHandler = new ClickHandler() {
             @Override
@@ -276,6 +290,10 @@ public class TabBar extends Composite {
         if(index != -1)
             tabContainer.getWidget(selectedIndex).addStyleDependentName("active");
     }
+
+    private native boolean isComputedStyleNotAvailable() /*-{
+        return !$wnd.getComputedStyle;
+    }-*/;
 
     private native int getTabWidth(String prefix, int id) /*-{
         var width = 0;

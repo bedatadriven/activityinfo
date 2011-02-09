@@ -53,6 +53,8 @@ import com.google.inject.Inject;
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class SigmahAppFrame implements Frame {
+    public static final int HEADER_DEFAULT_HEIGHT = 90;
+
     private Page activePage;
 
     private SigmahViewport view;
@@ -122,7 +124,7 @@ public class SigmahAppFrame implements Frame {
                 }
             });
 
-            int clutterHeight = getDecorationHeight();
+            int clutterHeight = getDecorationHeight(HEADER_DEFAULT_HEIGHT);
 
             // Configure Ext-GWT viewport
             this.view = new SigmahViewport(0, clutterHeight);
@@ -179,23 +181,26 @@ public class SigmahAppFrame implements Frame {
         }
     }
 
-    private native int getDecorationHeight() /*-{
-                                             var height = 0;
+    private native int getDecorationHeight(int defaultHeight) /*-{
+        var height = 0;
 
-                                             var elements = $wnd.document.getElementsByClassName("decoration");
-                                             for(var index = 0; index < elements.length; index++) {
-                                             var style = $wnd.getComputedStyle(elements[index], null);
-                                             height += parseInt(style.height) + 
-                                             parseInt(style.borderTopWidth) +
-                                             parseInt(style.borderBottomWidth) +
-                                             parseInt(style.marginTop) +
-                                             parseInt(style.marginBottom) +
-                                             parseInt(style.paddingTop) +
-                                             parseInt(style.paddingBottom);
-                                             }
+        if(!$wnd.document.getElementsByClassName && !$wnd.getComputedStyle)
+            return defaultHeight;
 
-                                             return height;
-                                             }-*/;
+        var elements = $wnd.document.getElementsByClassName("decoration");
+        for(var index = 0; index < elements.length; index++) {
+            var style = $wnd.getComputedStyle(elements[index], null);
+            height += parseInt(style.height) +
+            parseInt(style.borderTopWidth) +
+            parseInt(style.borderBottomWidth) +
+            parseInt(style.marginTop) +
+            parseInt(style.marginBottom) +
+            parseInt(style.paddingTop) +
+            parseInt(style.paddingBottom);
+        }
+
+        return height;
+    }-*/;
 
     @Override
     public void setActivePage(Page page) {
