@@ -492,33 +492,6 @@
                             <module>org.sigmah.ActivityInfoProduction</module>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>sigmah-compile</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <configuration>
-                            <disableClassMetadata>true</disableClassMetadata>
-                            <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
-                            <logLevel>INFO</logLevel>
-                            <!-- Takes WAY to long for all 12 permutations -->
-                            <!-- run with profile soyc enabled to generate maps for a single perm-->
-                            <soyc>false</soyc>
-                            <module>org.sigmah.Sigmah</module>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>login-compile</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <configuration>
-                            <soyc>false</soyc>
-                            <module>org.sigmah.login.Login</module>
-                        </configuration>
-                    </execution>
                 </executions>
             </plugin>
 

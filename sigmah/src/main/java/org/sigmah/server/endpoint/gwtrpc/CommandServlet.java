@@ -6,6 +6,7 @@
 package org.sigmah.server.endpoint.gwtrpc;
 
 import com.google.gwt.rpc.server.RpcServlet;
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
@@ -41,7 +42,7 @@ import java.util.List;
  * E.g. UpdateEntity => org.sigmah.server.command.handler.UpdateEntityHandler
  */
 @Singleton
-public class CommandServlet extends RpcServlet implements RemoteCommandService {
+public class CommandServlet extends RemoteServiceServlet implements RemoteCommandService {
 
     @Inject
     private Injector injector;

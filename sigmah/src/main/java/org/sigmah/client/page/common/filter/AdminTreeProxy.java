@@ -5,89 +5,94 @@
 
 package org.sigmah.client.page.common.filter;
 
-import com.extjs.gxt.ui.client.data.DataProxy;
-import com.extjs.gxt.ui.client.data.DataReader;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.shared.command.GetAdminEntities;
 import org.sigmah.shared.command.result.AdminEntityResult;
+import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
+import org.sigmah.shared.dto.CountryDTO;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import com.extjs.gxt.ui.client.data.DataProxy;
+import com.extjs.gxt.ui.client.data.DataReader;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 class AdminTreeProxy implements DataProxy {
 
     private final Dispatcher service;
 
-    private List<AdminLevelDTO> hierarchy;
+    private CountryDTO country;
+    private Filter filter;
 
-    public AdminTreeProxy(Dispatcher service, List<AdminLevelDTO> hierarchy) {
+    public AdminTreeProxy(Dispatcher service) {
         this.service = service;
-        this.hierarchy = hierarchy;
     }
 
-    public void setHierarchy(List<AdminLevelDTO> hierarchy) {
-        this.hierarchy = hierarchy;
+    public void setCountry(CountryDTO country) {
+    	this.country = country;
     }
 
     public void load(DataReader dataReader, Object parent, final AsyncCallback callback) {
-
-        if (hierarchy.size() == 0) {
-            callback.onSuccess(Collections.emptyList());
-            return;
-        }
-
-        if (parent == null) {
-
-            service.execute(new GetAdminEntities(hierarchy.get(0).getId()), null, new AsyncCallback<AdminEntityResult>() {
-                public void onFailure(Throwable caught) {
-                    callback.onFailure(caught);
-                }
-
-                public void onSuccess(AdminEntityResult result) {
-                    callback.onSuccess(new ArrayList<AdminEntityDTO>(result.getData()));
-                }
-            });
-
-        } else {
-
+    	
+    	if(country == null) {
+    		callback.onSuccess(Collections.emptyList());
+    		return;
+    	}
+    	
+    	GetAdminEntities request = new GetAdminEntities();
+    	request.setCountryId(country.getId());
+    	request.setFilter(filter);
+    	
+        if (parent != null) {
             assert parent instanceof AdminEntityDTO : "expecting AdminEntityDTO";
 
             AdminEntityDTO parentEntity = (AdminEntityDTO) parent;
-            AdminLevelDTO childLevel = (AdminLevelDTO) findChildLevel(parentEntity);
-
-            // find the next child in this hierachy
-
-            if (childLevel == null) {
-                callback.onSuccess(Collections.emptyList());
-            } else {
-
-                service.execute(new GetAdminEntities(childLevel.getId(), parentEntity.getId()), null, new AsyncCallback<AdminEntityResult>() {
-                    public void onFailure(Throwable caught) {
-                        callback.onFailure(caught);
-                    }
-
-                    public void onSuccess(AdminEntityResult result) {
-                        callback.onSuccess(result.getData());
-                    }
-                });
-                
-            }
+            request.setParentId(parentEntity.getId());
         }
+
+        service.execute(request, null, new AsyncCallback<AdminEntityResult>() {
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            public void onSuccess(AdminEntityResult result) {
+            	prepareData(result.getData());
+                callback.onSuccess(result.getData());
+            }
+
+        });
 
     }
 
-    private AdminLevelDTO findChildLevel(AdminEntityDTO parent) {
-        for (AdminLevelDTO level : hierarchy) {
-            if (!level.isRoot() && level.getParentLevelId() == parent.getLevelId()) {
-                return level;
-            }
-        }
-        return null;
-    }
+	public void setFilter(Filter filter) {
+		this.filter = filter;
+		
+	}
 
+	private void prepareData(List<AdminEntityDTO> list) {
+		if(!sameLevel(list)) {
+			for(AdminEntityDTO entity : list) {
+				AdminLevelDTO level = country.getAdminLevelById(entity.getLevelId());
+				entity.setName( entity.getName() + " [" + level.getName() + "]");
+			}
+		}
+	}
+	
+	private boolean sameLevel(List<AdminEntityDTO> entities) {
+		Iterator<AdminEntityDTO> it = entities.iterator();
+		if(it.hasNext()) {
+			int levelId = it.next().getLevelId();
+			while(it.hasNext()) {
+				if(it.next().getLevelId() != levelId) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 }
 

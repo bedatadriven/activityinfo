@@ -254,6 +254,7 @@ public class SqlQueryBuilder {
 
             return SqlQueryBuilder.this;
         }
+
     }
 
     public class JoinBuilder {

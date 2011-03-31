@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.dao.OnDataSet;
@@ -35,6 +36,7 @@ import org.sigmah.test.InjectionSupport;
 
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/projects.db.xml")
+@Ignore("To be updated by sigmah team")
 public class ProjectTest extends CommandTestCase {
 
     @Test

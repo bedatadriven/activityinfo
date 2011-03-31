@@ -18,6 +18,7 @@ import java.util.Date;
  */
 public final class SiteDTO extends BaseModelData implements EntityDTO {
 
+	
     public SiteDTO() {
 	}
 

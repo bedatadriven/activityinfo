@@ -213,5 +213,30 @@ public class Filter implements Serializable {
         return new Filter();
     }
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((dateRange == null) ? 0 : dateRange.hashCode());
+		result = prime * result
+				+ ((restrictions == null) ? 0 : restrictions.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Filter other = (Filter) obj;
+		return getDateRange().equals(other.getDateRange()) &&
+				getRestrictions().equals(other.getRestrictions());
+	}
+
+    
 
 }

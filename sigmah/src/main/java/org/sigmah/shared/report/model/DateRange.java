@@ -149,4 +149,37 @@ public class DateRange implements Serializable {
 
         return i;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((maxDate == null) ? 0 : maxDate.hashCode());
+		result = prime * result + ((minDate == null) ? 0 : minDate.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		DateRange other = (DateRange) obj;
+		if (maxDate == null) {
+			if (other.maxDate != null)
+				return false;
+		} else if (!maxDate.equals(other.maxDate))
+			return false;
+		if (minDate == null) {
+			if (other.minDate != null)
+				return false;
+		} else if (!minDate.equals(other.minDate))
+			return false;
+		return true;
+	}
+    
+    
 }

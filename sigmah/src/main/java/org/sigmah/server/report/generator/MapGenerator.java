@@ -6,6 +6,8 @@
 package org.sigmah.server.report.generator;
 
 import com.google.inject.Inject;
+
+import org.apache.log4j.Logger;
 import org.sigmah.server.dao.BaseMapDAO;
 import org.sigmah.server.dao.PivotDAO;
 import org.sigmah.server.domain.SiteData;
@@ -31,6 +33,8 @@ public class MapGenerator extends ListGenerator<MapElement> {
 
     private final BaseMapDAO baseMapDAO;
 
+    private static final Logger logger = Logger.getLogger(MapGenerator.class);
+    
     @Inject
     public MapGenerator(PivotDAO pivotDAO, SiteTableDAO siteDAO, BaseMapDAO baseMapDAO) {
         super(pivotDAO, siteDAO);
@@ -83,7 +87,23 @@ public class MapGenerator extends ListGenerator<MapElement> {
         // Retrieve the basemap and clamp zoom level
         BaseMap baseMap = baseMapDAO.getBaseMap(element.getBaseMapId());
         if (baseMap == null) {
-            throw new RuntimeException("Could not find base map id=" + element.getBaseMapId());
+        	baseMap = new BaseMap() {
+				
+				@Override
+				public String getTileUrl(int zoom, int x, int y) {
+					return "http://google.com";
+				}
+				
+				@Override
+				public String getLocalTilePath(int zoom, int x, int y) {
+					return "/nothere.gif";
+				}
+			};
+			baseMap.setMinZoom(0);
+			baseMap.setMaxZoom(16);
+			baseMap.setId(element.getBaseMapId());
+            
+			logger.error("Could not find base map id=" + element.getBaseMapId());
         }
         if (zoom < baseMap.getMinZoom()) {
             zoom = baseMap.getMinZoom();

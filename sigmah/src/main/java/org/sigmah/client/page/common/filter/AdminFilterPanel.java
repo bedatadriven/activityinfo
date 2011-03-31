@@ -5,43 +5,60 @@
 
 package org.sigmah.client.page.common.filter;
 
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.BaseListLoader;
-import com.extjs.gxt.ui.client.data.ListLoader;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.FieldEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.client.page.common.widget.RemoteComboBox;
+import org.sigmah.shared.command.GetSchema;
+import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dto.AdminEntityDTO;
-import org.sigmah.shared.dto.AdminLevelDTO;
+import org.sigmah.shared.dto.SchemaDTO;
+import org.sigmah.shared.report.model.DimensionType;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.LoadEvent;
+import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.CheckChangedEvent;
+import com.extjs.gxt.ui.client.event.CheckChangedListener;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.TreePanelEvent;
+import com.extjs.gxt.ui.client.store.TreeStore;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * UI Component for editing Admin restrictions on a {@link org.sigmah.shared.dao.Filter}
  *
  * @author Alex Bertram
  */
-public class AdminFilterPanel extends ContentPanel {
+public class AdminFilterPanel extends ContentPanel implements FilterPanel {
 
     private final Dispatcher service;
     private TreeStore<AdminEntityDTO> store;
     private AdminTreeLoader loader;
-    private ComboBox<AdminLevelDTO> levelCombo;
 
     private TreePanel<AdminEntityDTO> tree;
+    
+    private Filter baseFilter = new Filter();
+    private Filter value = new Filter();
+	private Button applyButton;
+	private Button removeButton;
+	
+	private Set<Integer> selected = new HashSet<Integer>();
 
     public AdminFilterPanel(Dispatcher service) {
         this.service = service;
@@ -64,60 +81,53 @@ public class AdminFilterPanel extends ContentPanel {
         tree.setDisplayProperty("name");
         tree.getStyle().setNodeCloseIcon(null);
         tree.getStyle().setNodeOpenIcon(null);
+        tree.addCheckListener(new CheckChangedListener<AdminEntityDTO>() {
 
+			@Override
+			public void checkChanged(CheckChangedEvent<AdminEntityDTO> event) {
+				applyButton.setEnabled(!tree.getCheckedSelection().isEmpty());
+			}
+        });
+        
+        tree.addListener(Events.Expand, new Listener<TreePanelEvent>() {
 
+			@Override
+			public void handleEvent(TreePanelEvent be) {
+				onExpanded(be.getItem());
+			}
+        	
+        });
+        
         add(tree);
 
-        createFilterBar();
+        createApplyBar();
+        
     }
 
-    private void createFilterBar() {
-        ToolBar toolBar = new ToolBar();
-        //toolBar.add(new LabelToolItem(Application.CONSTANTS.filter()));
-        toolBar.setEnableOverflow(false);
+    private void createApplyBar() {
+    	ToolBar bar = new ToolBar();
+    	applyButton = new Button("Apply", new SelectionListener<ButtonEvent>() {
+			
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				applyFilter();
+			}
 
-        ListLoader<AdminLevelDTO> loader = new BaseListLoader(new AdminLevelProxy(service));
-        final ListStore<AdminLevelDTO> store = new ListStore<AdminLevelDTO>(loader);
-
-        levelCombo = new RemoteComboBox<AdminLevelDTO>();
-        levelCombo.setStore(store);
-        levelCombo.setDisplayField("name");
-        levelCombo.setValueField("id");
-        levelCombo.setTriggerAction(ComboBox.TriggerAction.ALL);
-        levelCombo.setEditable(false);
-        levelCombo.setForceSelection(true);
-        levelCombo.addListener(Events.Select, new Listener<FieldEvent>() {
-            public void handleEvent(FieldEvent be) {
-                onHierarchyChanged(buildHierarchy(store.getModels(), levelCombo.getValue()));
-            }
-        });
-
-        toolBar.add(levelCombo);
-        setTopComponent(toolBar);
+		});
+    	applyButton.disable();
+		bar.add(applyButton);
+    	removeButton = new Button(I18N.CONSTANTS.remove(), IconImageBundle.ICONS.delete(), new SelectionListener<ButtonEvent>() {
+			
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				removeFilter();
+			}
+		});
+		bar.add(removeButton);
+		removeButton.disable();
+    	setTopComponent(bar);
     }
 
-    private List<AdminLevelDTO> buildHierarchy(List<AdminLevelDTO> levels, AdminLevelDTO selected) {
-        List<AdminLevelDTO> list = new ArrayList<AdminLevelDTO>();
-        list.add(selected);
-
-        while (selected.getParentLevelId() != null) {
-            for (AdminLevelDTO level : levels) {
-                if (level.getId() == selected.getParentLevelId()) {
-                    list.add(level);
-                    selected = level;
-                    break;
-                }
-            }
-        }
-        Collections.reverse(list);
-        return list;
-    }
-
-    protected void onHierarchyChanged(List<AdminLevelDTO> hierarchy) {
-        loader.setHierarchy(hierarchy);
-        store.removeAll();
-        loader.load();
-    }
 
     /**
      * @return the list of AdminEntityDTOs that user has selected with which
@@ -127,16 +137,84 @@ public class AdminFilterPanel extends ContentPanel {
         List<AdminEntityDTO> checked = tree.getCheckedSelection();
         List<AdminEntityDTO> selected = new ArrayList<AdminEntityDTO>();
 
-        if (levelCombo.getValue() == null) {
-            return selected;
-        }
-        int filterLevelId = levelCombo.getValue().getId();
-
         for (AdminEntityDTO entity : checked) {
-            if (entity.getLevelId() == filterLevelId) {
-                selected.add(entity);
-            }
+            selected.add(entity);
         }
         return selected;
     }
+
+	@Override
+	public HandlerRegistration addValueChangeHandler(
+			ValueChangeHandler<Filter> handler) {
+		return addHandler(handler, ValueChangeEvent.getType());
+	}
+	
+
+	private void applyFilter() {
+		List<AdminEntityDTO> selection = getSelection();
+		value = new Filter();
+		for(AdminEntityDTO entity : selection) {
+			value.addRestriction(DimensionType.AdminLevel, entity.getId());
+		}
+		ValueChangeEvent.fire(this, value);
+		removeButton.enable();
+	}
+
+	private void removeFilter() {
+		
+		for(AdminEntityDTO entity : tree.getCheckedSelection()) {
+			tree.setChecked(entity, false);
+		}
+			
+		value = new Filter();
+		ValueChangeEvent.fire(this, value);
+		removeButton.disable();
+	}
+	
+	@Override
+	public Filter getValue() {
+		return value;
+	}
+
+	@Override
+	public void setValue(Filter value) {
+		
+	}
+
+	@Override
+	public void setValue(Filter value, boolean fireEvents) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void applyBaseFilter(final Filter filter) {
+		if(!this.baseFilter.equals(filter)) {
+			this.baseFilter = filter;
+			final Set<Integer> activities = filter.getRestrictions(DimensionType.Activity);
+			if(!activities.isEmpty()) {
+				service.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
+	
+					@Override
+					public void onFailure(Throwable caught) {
+						// TODO Auto-generated method stub
+						
+					}
+	
+					@Override
+					public void onSuccess(SchemaDTO result) {
+						loader.setCountry(result.getActivityById(activities.iterator().next()).getDatabase().getCountry());
+						loader.setFilter(filter);
+						loader.load();
+					}
+				
+				});	
+			}
+		}
+	}
+	
+
+	private void onExpanded(ModelData item) {
+		
+	}
 }

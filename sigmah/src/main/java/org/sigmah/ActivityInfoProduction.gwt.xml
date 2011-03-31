@@ -11,7 +11,7 @@
 
     <!-- Turn all logging off  -->
     <extend-property name="log_level" values="OFF" />
-    <set-property-fallback name="log_level" value="OFF"/>
+    <set-property name="log_level" value="OFF"/>
     <set-property name="log_DivLogger" value="DISABLED" />
 
     <entry-point class="org.sigmah.client.ActivityInfoEntryPoint"/>

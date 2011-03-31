@@ -5,15 +5,12 @@
 
 package org.sigmah.client.page.entry;
 
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.LoadEvent;
-import com.extjs.gxt.ui.client.data.SortInfo;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.Record;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import org.sigmah.client.AppEvents;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
@@ -26,12 +23,19 @@ import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.common.Shutdownable;
+import org.sigmah.client.page.common.filter.FilterPanel;
+import org.sigmah.client.page.common.filter.FilterPanelSet;
+import org.sigmah.client.page.common.filter.NullFilterPanel;
 import org.sigmah.client.page.common.grid.AbstractEditorGridPresenter;
 import org.sigmah.client.page.common.grid.GridView;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.page.entry.editor.SiteFormLoader;
 import org.sigmah.client.util.state.IStateManager;
-import org.sigmah.shared.command.*;
+import org.sigmah.shared.command.BatchCommand;
+import org.sigmah.shared.command.Command;
+import org.sigmah.shared.command.Delete;
+import org.sigmah.shared.command.GetSites;
+import org.sigmah.shared.command.UpdateEntity;
 import org.sigmah.shared.command.result.PagingResult;
 import org.sigmah.shared.command.result.SiteResult;
 import org.sigmah.shared.command.result.VoidResult;
@@ -42,9 +46,17 @@ import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 import org.sigmah.shared.report.model.DimensionType;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.LoadEvent;
+import com.extjs.gxt.ui.client.data.SortInfo;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Record;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -63,7 +75,6 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
 
         public void init(SiteEditor presenter, ActivityDTO activity, ListStore<SiteDTO> store);
         public AsyncMonitor getLoadingMonitor();
-        public Filter getFilter();
         void setSelection(int siteId);
     }
 
@@ -78,6 +89,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
     protected ActivityDTO currentActivity;
 
     private Integer siteIdToSelectOnNextLoad;
+    private FilterPanel filterPanel = new NullFilterPanel();
 
     @Inject
     public SiteEditor(EventBus eventBus, Dispatcher service, IStateManager stateMgr, final View view) {
@@ -105,6 +117,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
             }
         };
         this.eventBus.addListener(AppEvents.SiteChanged, siteChangedListener);
+		// TODO Auto-generated method stub
 
         siteCreatedListener = new Listener<SiteEvent>() {
             public void handleEvent(SiteEvent se) {
@@ -128,6 +141,19 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
         this.eventBus.addListener(AppEvents.SiteSelected, siteSelectedListner);
     }
 
+    public void bindFilterPanel(FilterPanel panel) {
+    	this.filterPanel = panel;
+    	filterPanel.addValueChangeHandler(new ValueChangeHandler<Filter>() {
+			
+			@Override
+			public void onValueChange(ValueChangeEvent<Filter> event) {
+				loader.setOffset(0);
+				load(event.getValue());
+			}
+		});
+    }
+    
+    
     private void onSiteCreated(SiteEvent se) {
         if (store.getCount() < PAGE_SIZE) {
             // there is only one page, so we can save some time by justing adding this model to directly to
@@ -203,24 +229,32 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
         */
 
         initLoaderDefaults(loader, place, new SortInfo("date2", Style.SortDir.DESC));
-        Filter filter = view.getFilter();
-        if(filter == null) {
-            filter = new Filter();
-        }
-        filter.addRestriction(DimensionType.Activity, currentActivity.getId());
-
-        GetSites cmd = new GetSites();
-        cmd.setFilter(filter);
         
-        loader.setCommand(cmd);
         view.init(SiteEditor.this, currentActivity, store);
 
         view.setActionEnabled(UIActions.add, currentActivity.getDatabase().isEditAllowed());
         view.setActionEnabled(UIActions.edit, false);
         view.setActionEnabled(UIActions.delete, false);
 
-        loader.load();
+        
+        load(filterPanel.getValue());
     }
+
+	private void load(Filter filter) {
+		Filter baseFilter = new Filter();
+        baseFilter.addRestriction(DimensionType.Activity, currentActivity.getId());
+        filterPanel.applyBaseFilter(baseFilter);
+        
+        Filter effectiveFilter = new Filter(filter, baseFilter);
+        
+        GetSites cmd = new GetSites();
+        cmd.setFilter(effectiveFilter);
+        
+        loader.setCommand(cmd);
+
+
+        loader.load();
+	}
 
 
     public boolean navigate(final PageState place) {

@@ -8,12 +8,17 @@ package org.sigmah.server.endpoint.gwtrpc.handler;
 import org.dozer.Mapper;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.sigmah.server.dao.OnDataSet;
+import org.sigmah.server.endpoint.gwtrpc.CommandTestCase;
 import org.sigmah.shared.dao.AdminDAO;
+import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.domain.*;
 import org.sigmah.shared.command.GetAdminEntities;
 import org.sigmah.shared.command.result.AdminEntityResult;
 import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.exception.CommandException;
+import org.sigmah.test.InjectionSupport;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,53 +26,30 @@ import java.util.List;
 import static org.easymock.EasyMock.*;
 import static org.junit.Assert.assertEquals;
 
-public class GetAdminEntitiesHandlerTest {
-
+@RunWith(InjectionSupport.class)
+@OnDataSet("/dbunit/sites-simple1.db.xml")
+public class GetAdminEntitiesHandlerTest extends CommandTestCase {
     private User user;
     private AdminDAO adminDAO;
     private Mapper mapper;
-    private static final int LEVEL_ID = 1;
-    private static final int ACTIVITY_ID = 4;
-    private static final int PARENT_ID = ACTIVITY_ID;
-    private AdminDAO.Query query;
+    private static final int PROVINCE = 1;
+
 
     @Test
     public void testRootLevelQuery() throws Exception {
 
-        GetAdminEntities cmd = new GetAdminEntities(LEVEL_ID);
-
-        expect(query.level(LEVEL_ID)).andReturn(query);
-        expect(query.execute()).andReturn(nCopies(15));
-        replay(query);
+        GetAdminEntities cmd = new GetAdminEntities(PROVINCE);
 
         AdminEntityResult result = execute(cmd);
 
-        assertEquals(15, result.getData().size());
+        assertEquals(4, result.getData().size());
     }
 
-    @Test
-    public void testEmptyRootLevelQuery() throws Exception {
-
-        GetAdminEntities cmd = new GetAdminEntities(LEVEL_ID);
-
-        expect(query.level(LEVEL_ID)).andReturn(query);
-        expect(query.execute()).andReturn(nCopies(0));
-        replay(query);
-
-        AdminEntityResult result = execute(cmd);
-
-        assertEquals(0, result.getData().size());
-    }
 
     @Test
     public void testChildQuery() throws Exception {
 
-        GetAdminEntities cmd = new GetAdminEntities(LEVEL_ID, PARENT_ID);
-
-        expect(query.level(LEVEL_ID)).andReturn(query);
-        expect(query.withParentEntityId(PARENT_ID)).andReturn(query);
-        expect(query.execute()).andReturn(nCopies(3));
-        replay(query);
+        GetAdminEntities cmd = new GetAdminEntities(2, 2);
 
         AdminEntityResult result = execute(cmd);
 
@@ -77,58 +59,16 @@ public class GetAdminEntitiesHandlerTest {
     @Test
     public void testSiteQuery() throws Exception {
 
-        int expectedCount = 3;
+        GetAdminEntities cmd = new GetAdminEntities();
+        cmd.setLevelId(1);
+        cmd.setFilter(Filter.filter().onActivity(2));
 
-        GetAdminEntities cmd = new GetAdminEntities(LEVEL_ID, PARENT_ID);
-        cmd.setActivityId(ACTIVITY_ID);
-
-        expect(query.level(LEVEL_ID)).andReturn(query);
-        expect(query.withParentEntityId(PARENT_ID)).andReturn(query);
-        expect(query.withSitesOfActivityId(ACTIVITY_ID)).andReturn(query);
-        expect(query.execute()).andReturn(nCopies(expectedCount));
-        replay(query);
 
         AdminEntityResult result = execute(cmd);
 
-        assertEquals(expectedCount, result.getData().size());
+        assertEquals(2, result.getData().size());
 
     }
 
-    @Before
-    public void setupUser() {
-        user = new User();
-        user.setId(LEVEL_ID);
-        user.setEmail("alex@bertram");
-    }
-
-    @Before
-    public void setupMapper() {
-        mapper = createMock(Mapper.class);
-        expect(mapper.map(isA(AdminEntity.class), eq(AdminEntityDTO.class)))
-                .andReturn(new AdminEntityDTO())
-                .anyTimes();
-        replay(mapper);
-    }
-
-    @Before
-    public void setupAdminDAO() {
-        adminDAO = createMock(AdminDAO.class);
-        expect(adminDAO.query()).andReturn(query);
-        replay(adminDAO);
-    }
-
-    @Before
-    public void createQueryMock() {
-        query = createMock(AdminDAO.Query.class);
-    }
-
-    public AdminEntityResult execute(GetAdminEntities cmd) throws CommandException {
-        GetAdminEntitiesHandler handler = new GetAdminEntitiesHandler(adminDAO, mapper);
-        return (AdminEntityResult) handler.execute(cmd, user);
-    }
-
-    private List<AdminEntity> nCopies(int entitiesToReturn) {
-        return Collections.nCopies(entitiesToReturn, new AdminEntity());
-    }
 
 }

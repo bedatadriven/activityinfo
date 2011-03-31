@@ -42,76 +42,11 @@ public class SiteGridPage extends SiteGrid {
     private int tabPanelExandedSize = 200;
     private boolean tabPanelCollapsed;
     private BorderLayoutData tabPanelLayout;
-    private AdminFilterPanel adminPanel;
-    private DateRangePanel datePanel;
-    private PartnerFilterPanel partnerPanel;
-
-
 
     public SiteGridPage(boolean enableDragSource) {
         super(enableDragSource);
     }
 
-    public AdminFilterPanel getAdminPanel() {
-        return adminPanel;
-    }
-
-    public void setAdminPanel(AdminFilterPanel adminPanel) {
-        this.adminPanel = adminPanel;
-    }
-
-    public DateRangePanel getDatePanel() {
-        return datePanel;
-    }
-
-    public void setDatePanel(DateRangePanel datePanel) {
-        this.datePanel = datePanel;
-    }
-
-    public PartnerFilterPanel getPartnerPanel() {
-        return partnerPanel;
-    }
-
-    public void setPartnerPanel(PartnerFilterPanel partnerPanel) {
-        this.partnerPanel = partnerPanel;
-    }
-
-    public SiteGridPage(boolean enableDragSource,AdminFilterPanel adminPanel, DateRangePanel datePanel, PartnerFilterPanel partnerPanel) {
-        super(enableDragSource);
-        this.adminPanel = adminPanel;
-        this.datePanel = datePanel;
-        this.partnerPanel = partnerPanel;
-    }
-
-    @Override
-    public Filter getFilter() {
-
-        Filter f = new Filter();
-
-        if(adminPanel == null) {
-            return f;
-        }
-
-        List<AdminEntityDTO> entities = adminPanel.getSelection();
-        for (AdminEntityDTO entity : entities) {
-            f.addRestriction(DimensionType.AdminLevel, entity.getId());
-        }
-
-        List<PartnerDTO> partners = partnerPanel.getSelection();
-        for (PartnerDTO entity : partners) {
-            f.addRestriction(DimensionType.Partner, entity.getId());
-        }
-
-        if (datePanel.getMinDate() != null) {
-            f.setMinDate(datePanel.getMinDate());
-        }
-
-        if (datePanel.getMaxDate() != null) {
-            f.setMaxDate(datePanel.getMaxDate());
-        }
-
-        return f;
-    }
 
     public void addSidePanel(String name, AbstractImagePrototype icon, final Component component) {
 

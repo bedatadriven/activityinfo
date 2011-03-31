@@ -77,11 +77,18 @@ public class AppCacheMenu extends Button {
                 break;
             case UPDATE_READY:
                 statusItem.setText("New version available");
+                notifyNewVersion();
                 break;
         }
     }
 
-    private void onStatusClicked() {
+    private void notifyNewVersion() {
+    	if(Window.confirm("Le logiciel Activity a ete mise a jour. Cliquer sur OK a recharger.")) {
+    		Window.Location.reload();
+    	}
+	}
+
+	private void onStatusClicked() {
       switch (status) {
             case UNSUPPORTED:
                 Window.open("http://www.google.com/chrome", "_blank", null);

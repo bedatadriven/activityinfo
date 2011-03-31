@@ -59,10 +59,10 @@
             email: "${auth.user.email}"
         };
         var GoogleMapsAPI = {
-            key: "ABQIAAAAHxDe2DM8fTqR3KT6JA3uSxQowpcadhvcZvF-AZHbBConS0qRQRSyDoOLQrw76pJeJNUXt2g-yC8FAg"
+            key: "ABQIAAAAaKyZGjYsJ9quclBfsnGc-xSULc68XBC8rIKw1gDHypRtutTChRRhuj6VmI9buf-pphk2EHnsnmxwRg"
         };
         var VersionInfo = {
-            revision: ${activityinfo.revision}
+            revision: '1.5RC2-2'
         };
         <#if offline == true>
         function disableOffline() {
@@ -83,7 +83,7 @@
     <div id="loading-box">
         <div class="loading-indicator">
             <img src="ActivityInfo/gxt/images/default/shared/large-loading.gif" alt=""/>
-            ActivityInfo r${activityinfo.revision}<br/>
+            ActivityInfo 1.5RC2-2<br/>
             <span id="loading-msg">Chargement en cours...</span>
 
         </div>

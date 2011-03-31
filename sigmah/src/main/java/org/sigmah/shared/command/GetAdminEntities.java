@@ -6,14 +6,22 @@
 package org.sigmah.shared.command;
 
 import org.sigmah.shared.command.result.AdminEntityResult;
+import org.sigmah.shared.dao.Filter;
 
+/**
+ * Retrieves a list of admin entities from the server. 
+ * 
+ * @author alexander
+ *
+ */
 public class GetAdminEntities extends GetListCommand<AdminEntityResult> {
 
-	private int levelId;
+	private Integer countryId;
+	private Integer levelId;
 	private Integer parentId;
-    private Integer activityId;
+    private Filter filter;
 	
-	protected GetAdminEntities() {
+	public GetAdminEntities() {
 		
 	}
 
@@ -27,16 +35,11 @@ public class GetAdminEntities extends GetListCommand<AdminEntityResult> {
 		this.parentId = parentId;
 	}
 
-    public GetAdminEntities(int levelId, Integer parentId, Integer activityId) {
-        this.levelId = levelId;
-        this.parentId = parentId;
-        this.activityId = activityId;
-    }
 
-    public int getLevelId() {
+    public Integer getLevelId() {
 		return levelId;
 	}
-	public void setLevelId(int levelId) {
+	public void setLevelId(Integer levelId) {
 		this.levelId = levelId;
 	}
 	public Integer getParentId() {
@@ -45,53 +48,69 @@ public class GetAdminEntities extends GetListCommand<AdminEntityResult> {
 	public void setParentId(Integer parentId) {
 		this.parentId = parentId;
 	}
+	
+	
 
-    public Integer getActivityId() {
-        return activityId;
-    }
+    public Integer getCountryId() {
+		return countryId;
+	}
 
-    public void setActivityId(Integer activityId) {
-        this.activityId = activityId;
-    }
+	public void setCountryId(Integer countryId) {
+		this.countryId = countryId;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+	public Filter getFilter() {
+		return filter;
+	}
 
-        GetAdminEntities that = (GetAdminEntities) o;
+	public void setFilter(Filter filter) {
+		this.filter = filter;
+	}
 
-        if (levelId != that.levelId) {
-            return false;
-        }
-        if (activityId != null ? !activityId.equals(that.activityId) : that.activityId != null) {
-            return false;
-        }
-        if (parentId != null ? !parentId.equals(that.parentId) : that.parentId != null) {
-            return false;
-        }
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((filter == null) ? 0 : filter.hashCode());
+		result = prime * result + ((levelId == null) ? 0 : levelId.hashCode());
+		result = prime * result
+				+ ((parentId == null) ? 0 : parentId.hashCode());
+		return result;
+	}
 
-        return true;
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		GetAdminEntities other = (GetAdminEntities) obj;
+		if (filter == null) {
+			if (other.filter != null)
+				return false;
+		} else if (!filter.equals(other.filter))
+			return false;
+		if (levelId == null) {
+			if (other.levelId != null)
+				return false;
+		} else if (!levelId.equals(other.levelId))
+			return false;
+		if (parentId == null) {
+			if (other.parentId != null)
+				return false;
+		} else if (!parentId.equals(other.parentId))
+			return false;
+		return true;
+	}
 
+	@Override
+	public String toString() {
+		return "GetAdminEntities [levelId=" + levelId + ", parentId="
+				+ parentId + ", filter=" + filter + "]";
+	}
 
-    @Override
-    public int hashCode() {
-        int result = levelId;
-        result = 31 * result + (parentId != null ? parentId.hashCode() : 0);
-        result = 31 * result + (activityId != null ? activityId.hashCode() : 0);
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "GetEntities{levelId=" + levelId + ", parentId=" + (parentId==null ? "null" : parentId) + ", " +
-                "activityId=" + activityId + "}";
-    }
-
+	
 
 }

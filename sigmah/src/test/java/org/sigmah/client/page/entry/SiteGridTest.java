@@ -66,7 +66,6 @@ public class SiteGridTest {
 
         // collaborator: view
         SiteEditor.View view = createNiceMock(SiteEditor.View.class);
-        expect(view.getFilter()).andReturn(new Filter());
         replay(view);
 
         // Class Under Test !!

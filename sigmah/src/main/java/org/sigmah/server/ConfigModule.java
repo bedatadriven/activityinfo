@@ -32,6 +32,17 @@ public class ConfigModule extends AbstractModule {
 
         tryToLoadFrom(properties, webInfDirectory(context));
         tryToLoadFrom(properties, tomcatConfigurationDirectory());
+        
+        // read properties from Beanstalk environment
+        if(System.getProperty("JDBC_CONNECTION_STRING") != null) {
+        	properties.setProperty("hibernate.connection.url", System.getProperty("JDBC_CONNECTION_STRING"));
+        }
+        if(System.getProperty("PARAM1") != null) {
+        	properties.setProperty("hibernate.connection.username", System.getProperty("PARAM1"));
+        }
+        if(System.getProperty("PARAM2") != null) {
+        	properties.setProperty("hibernate.connection.password", System.getProperty("PARAM2"));
+        }
         return properties;
     }
 

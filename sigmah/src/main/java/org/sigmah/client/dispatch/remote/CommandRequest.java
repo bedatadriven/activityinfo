@@ -78,7 +78,8 @@ class CommandRequest {
 
     public void fireOnSuccess(CommandResult result) {
         fireCompleted();
-        for (AsyncCallback c : callbacks) {
+        List<AsyncCallback> toCallback = new ArrayList<AsyncCallback>(callbacks);
+        for (AsyncCallback c : toCallback) {
             try {
                 c.onSuccess(result);
             } catch (Throwable e) {

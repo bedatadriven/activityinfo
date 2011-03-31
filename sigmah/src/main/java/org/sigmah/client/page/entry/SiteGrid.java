@@ -120,9 +120,7 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
         toolBar.addSaveSplitButton();
         toolBar.add(new SeparatorToolItem());
 
-                           
-        toolBar.add(new LabelToolItem(I18N.CONSTANTS.filter()));
-
+                          
         toolBar.addButton(UIActions.add, I18N.CONSTANTS.newSite(), IconImageBundle.ICONS.add());
         toolBar.addEditButton();
         toolBar.addDeleteButton(I18N.CONSTANTS.deleteSite());
@@ -300,8 +298,4 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
         }
     }
 
-	@Override
-	public Filter getFilter() {
-		return new Filter();
-	}
 }
