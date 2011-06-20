@@ -5,7 +5,10 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
-import com.google.inject.Inject;
+import java.util.Date;
+
+import org.apache.commons.logging.Log;
+import org.apache.log4j.Logger;
 import org.sigmah.server.dao.PartnerDAO;
 import org.sigmah.server.dao.hibernate.UserDAOImpl;
 import org.sigmah.server.mail.Invitation;
@@ -24,7 +27,7 @@ import org.sigmah.shared.dto.UserPermissionDTO;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.IllegalAccessCommandException;
 
-import java.util.Date;
+import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram
@@ -40,6 +43,8 @@ public class UpdateUserPermissionsHandler implements CommandHandler<UpdateUserPe
     private final UserPermissionDAO permDAO;
 
     private final Mailer<Invitation> inviteMailer;
+    
+    private static final Logger logger = Logger.getLogger(UpdateUserPermissionsHandler.class);
 
     @Inject
     public UpdateUserPermissionsHandler(UserDatabaseDAO databaseDAO, PartnerDAO partnerDAO, UserDAO userDAO,
@@ -90,13 +95,14 @@ public class UpdateUserPermissionsHandler implements CommandHandler<UpdateUserPe
         return null;
     }
 
-    private User createNewUser(User executingUser, UserPermissionDTO dto) {
+    private User createNewUser(User executingUser, UserPermissionDTO dto) throws CommandException {
         User user = UserDAOImpl.createNewUser(dto.getEmail(), dto.getName(), executingUser.getLocale());
         userDAO.persist(user);
         try {
-            inviteMailer.send(new Invitation(user, executingUser), LocaleHelper.getLocaleObject(executingUser));
+        	inviteMailer.send(new Invitation(user, executingUser), LocaleHelper.getLocaleObject(executingUser));
         } catch (Exception e) {
-            // ignore, don't abort because mail didn't work
+        	logger.error("Could not send invitation mail", e);
+        	throw new CommandException("Failed to send invitation email");
         }
         return user;
     }
