@@ -53,7 +53,7 @@ public class ImageMapRenderer {
         }
 
         public Image getImage(int zoom, int tileX, int tileY) {
-            try {
+            try {            	
                 return ImageIO.read(new File(baseMap.getLocalTilePath(zoom, tileX, tileY)));
             } catch (IOException e) {
                 return null;

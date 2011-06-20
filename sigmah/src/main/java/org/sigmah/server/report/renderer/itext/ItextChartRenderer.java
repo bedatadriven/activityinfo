@@ -8,7 +8,9 @@ package org.sigmah.server.report.renderer.itext;
 import com.google.inject.Inject;
 import com.lowagie.text.DocWriter;
 import com.lowagie.text.Document;
+import com.lowagie.text.Font;
 import com.lowagie.text.Image;
+import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
 import org.sigmah.server.report.renderer.ChartRendererJC;
@@ -26,58 +28,65 @@ import java.io.ByteArrayOutputStream;
  * @author Alex Bertram
  */
 public class ItextChartRenderer implements ItextRenderer<PivotChartElement> {
-    private static final int RESOLUTION = 150;
+	private static final int RESOLUTION = 150;
 
-    private final ChartRendererJC chartRenderer;
+	private final ChartRendererJC chartRenderer;
 
-    @Inject
-    public ItextChartRenderer(ChartRendererJC chartRenderer) {
-        this.chartRenderer = chartRenderer;
-    }
+	@Inject
+	public ItextChartRenderer(ChartRendererJC chartRenderer) {
+		this.chartRenderer = chartRenderer;
+	}
 
-    public void render(DocWriter writer, Document doc, PivotChartElement element) {
-
-
-        try {
-            doc.add(ThemeHelper.elementTitle(element.getTitle()));
-            ItextRendererHelper.addFilterDescription(doc, element.getContent().getFilterDescriptions());
-
-            float width = doc.getPageSize().getWidth() - doc.rightMargin() - doc.leftMargin();
-            float height = (doc.getPageSize().getHeight() - doc.topMargin() - doc.bottomMargin()) / 3f;
-
-            if(writer instanceof PdfWriter) {
-
-                // We can render the chart directly as vector graphics
-                // in the PDF file
-
-                PdfWriter pdfWriter = (PdfWriter)writer;
-                PdfContentByte cb = pdfWriter.getDirectContent();
-                Graphics2D g2d = cb.createGraphics(width, height);
-                chartRenderer.render(element, false, g2d, (int)width, (int)height, 72);
-                g2d.dispose();
+	public void render(DocWriter writer, Document doc, PivotChartElement element) {
 
 
-            } else {
+		try {
+			doc.add(ThemeHelper.elementTitle(element.getTitle()));
+			ItextRendererHelper.addFilterDescription(doc, element.getContent().getFilterDescriptions());
 
-                // For RTF/Html we embed as a GIF
+			if(element.getContent().getData().isEmpty()) {
+				Paragraph para = new Paragraph("Aucune Données");
+				para.setFont(new Font(Font.HELVETICA, 12, Font.NORMAL, new Color(0, 0, 0)));
+				doc.add(para);
 
-                width = width / 72f * RESOLUTION;
-                height = height / 72f * RESOLUTION;
+			} else {
+				float width = doc.getPageSize().getWidth() - doc.rightMargin() - doc.leftMargin();
+				float height = (doc.getPageSize().getHeight() - doc.topMargin() - doc.bottomMargin()) / 3f;
 
-                BufferedImage chartImage = chartRenderer.renderImage(element, false, (int)width, (int)height, RESOLUTION);
+				if(writer instanceof PdfWriter) {
 
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                ImageIO.write(chartImage, "GIF", baos);
+					// We can render the chart directly as vector graphics
+					// in the PDF file
 
-                Image image = Image.getInstance(baos.toByteArray());
-                image.scalePercent(72f/RESOLUTION*100f);
+					PdfWriter pdfWriter = (PdfWriter)writer;
+					PdfContentByte cb = pdfWriter.getDirectContent();
+					Graphics2D g2d = cb.createGraphics(width, height);
+					chartRenderer.render(element, false, g2d, (int)width, (int)height, 72);
+					g2d.dispose();
 
-                doc.add(image);
 
-            }
-           
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-    }
+				} else {
+
+					// For RTF/Html we embed as a GIF
+
+					width = width / 72f * RESOLUTION;
+					height = height / 72f * RESOLUTION;
+
+					BufferedImage chartImage = chartRenderer.renderImage(element, false, (int)width, (int)height, RESOLUTION);
+
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					ImageIO.write(chartImage, "GIF", baos);
+
+					Image image = Image.getInstance(baos.toByteArray());
+					image.scalePercent(72f/RESOLUTION*100f);
+
+					doc.add(image);
+
+				}
+			}
+
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

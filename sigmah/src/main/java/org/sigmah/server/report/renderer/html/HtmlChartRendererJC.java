@@ -44,8 +44,11 @@ public class HtmlChartRendererJC extends ChartRendererJC implements HtmlChartRen
 		/*
 		 * Render the image and include in the HTML file
 		 */
-
-		html.image(renderToUrl(element, false, imageStorageProvider, 600, 400, 72));
+		if(element.getContent().getData().isEmpty()) {
+			html.paragraph("Aucune données");
+		} else {
+			html.image(renderToUrl(element, false, imageStorageProvider, 600, 400, 72));
+		}
 	}
 
 	protected List<Dimension> toList(Dimension dimension) {

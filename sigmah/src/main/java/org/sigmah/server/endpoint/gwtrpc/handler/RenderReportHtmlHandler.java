@@ -12,6 +12,7 @@ import org.sigmah.server.report.ServletImageStorageProvider;
 import org.sigmah.server.report.generator.ReportGenerator;
 import org.sigmah.server.report.renderer.html.HtmlReportRenderer;
 import org.sigmah.server.report.util.HtmlWriter;
+import org.sigmah.server.util.logging.LogException;
 import org.sigmah.shared.command.RenderReportHtml;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
@@ -44,6 +45,7 @@ public class RenderReportHtmlHandler implements CommandHandler<RenderReportHtml>
         this.servletContext = servletContext;
     }
 
+    @LogException
     public CommandResult execute(RenderReportHtml cmd, User user) throws CommandException {
 
         String xml = reportDAO.findById(cmd.getTemplateId()).getXml();

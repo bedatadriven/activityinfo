@@ -78,6 +78,10 @@ public class PivotChartGenerator extends PivotGenerator<PivotChartElement> {
         if (element.getType() == PivotChartElement.Type.Pie) {
             return new ScaleUtil.Scale();
         }
+       
+        if (data.isEmpty()) {
+        	return new ScaleUtil.Scale();
+        }
 
         // find min, max values
         PivotTableData.RangeCalculator rangeCalculator = new PivotTableData.RangeCalculator();

@@ -320,7 +320,7 @@ public class PivotTableData implements Serializable {
 
     public static class RangeCalculator implements CellVisitor {
         private double minValue = Double.MAX_VALUE;
-        private double maxValue = Double.MIN_VALUE;
+        private double maxValue = -Double.MAX_VALUE;
 
         @Override
         public void onVisit(Axis row, Axis column, Cell cell) {
