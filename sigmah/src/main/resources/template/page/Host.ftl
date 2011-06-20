@@ -62,7 +62,7 @@
             key: "ABQIAAAAaKyZGjYsJ9quclBfsnGc-xSULc68XBC8rIKw1gDHypRtutTChRRhuj6VmI9buf-pphk2EHnsnmxwRg"
         };
         var VersionInfo = {
-            revision: '1.5RC2-2'
+            revision: '1.5-RC3'
         };
         <#if offline == true>
         function disableOffline() {
