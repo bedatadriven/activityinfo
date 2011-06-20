@@ -10,6 +10,8 @@ import com.google.gwt.ajaxloader.client.AjaxLoader;
 import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.maps.client.Maps;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.sigmah.client.dispatch.AsyncMonitor;
@@ -25,7 +27,7 @@ import java.util.List;
 public class MapApiLoader {
     private static final int TIMEOUT = 10 * 1000;
     // TODO: externalize this, should come from page
-    private static final String API_VERSION = "2";
+    private static final String API_VERSION = "2.153";
     private static final boolean USING_SENSOR = false;
 
     private static boolean loadInProgress = false;
@@ -65,15 +67,21 @@ public class MapApiLoader {
         waitingMonitors = new ArrayList<AsyncMonitor>();
         waitingCallbacks = new ArrayList<AsyncCallback>();
 
-        AjaxLoader.AjaxLoaderOptions options = AjaxLoader.AjaxLoaderOptions.newInstance();
+        final AjaxLoader.AjaxLoaderOptions options = AjaxLoader.AjaxLoaderOptions.newInstance();
         options.setLanguage(LocaleInfo.getCurrentLocale().getLocaleName());
 
-        Maps.loadMapsApi(getApiKey(), API_VERSION, USING_SENSOR, options, new Runnable() {
-            @Override
-            public void run() {
-                onApiLoaded();
-            }
-        });
+        DeferredCommand.addCommand(new Command() {
+			
+			@Override
+			public void execute() {
+			    Maps.loadMapsApi(getApiKey(), API_VERSION, USING_SENSOR, options, new Runnable() {
+		            @Override
+		            public void run() {
+		                onApiLoaded();
+		            }
+		        });			
+			}
+		});
         startFailureTimer();
     }
 
@@ -105,7 +113,7 @@ public class MapApiLoader {
             monitor.onCompleted();
         }
         for(AsyncCallback callback : waitingCallbacks) {
-            callback.onSuccess(null);
+            callback.onFailure(null);
         }
     }
 

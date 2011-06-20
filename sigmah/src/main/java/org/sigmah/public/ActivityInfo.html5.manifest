@@ -1,0 +1,10 @@
+CACHE MANIFEST
+
+# Name: __NAME__
+# Version: __VERSION__
+
+CACHE:
+__ENTRIES__
+
+NETWORK:
+*
