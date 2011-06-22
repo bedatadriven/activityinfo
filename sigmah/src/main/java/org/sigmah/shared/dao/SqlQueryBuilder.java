@@ -7,6 +7,9 @@ package org.sigmah.shared.dao;
 
 import org.sigmah.shared.report.model.DimensionType;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.core.client.GWT;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,6 +24,7 @@ public class SqlQueryBuilder {
     protected StringBuilder tableList = new StringBuilder();
     protected StringBuilder whereClause = new StringBuilder();
     protected StringBuilder orderByClause = new StringBuilder();
+    protected String groupByClause;
     protected List<Object> parameters = new ArrayList<Object>();
 
     private String limitClause = "";
@@ -46,6 +50,17 @@ public class SqlQueryBuilder {
         tableList.append(" LEFT JOIN ").append(tableName);
         return new JoinBuilder();
     }
+    
+    /**
+     * Appends a left join to the {@code FROM} clause
+     * @param tableName
+     * @return
+     */
+    public JoinBuilder innerJoin(String tableName) {
+        tableList.append(" INNER JOIN ").append(tableName);
+        return new JoinBuilder();
+    }
+
 
     /**
      * Appends a left join to derived table to the {@code FROM} clause
@@ -110,13 +125,13 @@ public class SqlQueryBuilder {
     public SqlQueryBuilder filteredBy(Filter filter) {
         for (DimensionType type : filter.getRestrictedDimensions()) {
             if (type == DimensionType.Indicator) {
-                where("Indicator.IndicatorId").in(filter.getRestrictions(type));
+                addIndicatorFilter(filter, type);
 
             } else if (type == DimensionType.Activity) {
                 where("Site.ActivityId").in(filter.getRestrictions(type));
 
             } else if (type == DimensionType.Database) {
-                where("Activity.DatabaseId").in(filter.getRestrictions(type));
+                where("Site.DatabaseId").in(filter.getRestrictions(type));
 
             } else if (type == DimensionType.Partner) {
                 where("Site.PartnerId").in(filter.getRestrictions(type));
@@ -133,19 +148,32 @@ public class SqlQueryBuilder {
         return this;
     }
 
+        protected void addIndicatorFilter(Filter filter, DimensionType type) {
+                where("Indicator.IndicatorId").in(filter.getRestrictions(type));
+        }
+
+        public SqlQueryBuilder groupBy(String string) {
+                this.groupByClause = string;
+                return this;
+        }
+
     public String sql() {
         StringBuilder sql = new StringBuilder("SELECT ")
-                .append(fieldList.toString())
+                .append(fieldList)
                 .append(" FROM ")
-                .append(tableList.toString());
+                .append(tableList);
 
         if(whereClause.length() > 0) {
             sql.append(" WHERE ")
-                    .append(whereClause.toString());
+                    .append(whereClause);
+        }
+        if(groupByClause != null) {
+                sql.append(" GROUP BY ")
+                        .append(groupByClause);
         }
         if(orderByClause.length() > 0) {
             sql.append(" ORDER BY ")
-                    .append(orderByClause.toString());
+                    .append(orderByClause);
         }
         sql.append(" ")
                 .append(limitClause);
@@ -155,6 +183,7 @@ public class SqlQueryBuilder {
 
     public ResultSet executeQuery(Connection connection) throws SQLException {
         String sql = sql();
+        Log.debug(sql);
         PreparedStatement stmt = prepareStatement(connection, sql);
         return stmt.executeQuery();
     }
@@ -254,7 +283,6 @@ public class SqlQueryBuilder {
 
             return SqlQueryBuilder.this;
         }
-
     }
 
     public class JoinBuilder {
@@ -281,4 +309,5 @@ public class SqlQueryBuilder {
         public abstract void handle(ResultSet rs) throws SQLException;
 
     }
+
 }

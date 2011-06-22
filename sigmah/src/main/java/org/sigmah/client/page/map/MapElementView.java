@@ -5,47 +5,56 @@
 
 package org.sigmah.client.page.map;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.Status;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.google.gwt.maps.client.MapType;
-import com.google.gwt.maps.client.MapWidget;
-import com.google.gwt.maps.client.geom.LatLng;
-import com.google.gwt.maps.client.geom.LatLngBounds;
-import com.google.gwt.maps.client.overlay.Icon;
-import com.google.gwt.maps.client.overlay.Marker;
-import com.google.gwt.maps.client.overlay.MarkerOptions;
-import com.google.gwt.maps.client.overlay.Overlay;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.map.GcIconFactory;
-import org.sigmah.client.map.IconFactory;
 import org.sigmah.client.map.MapApiLoader;
 import org.sigmah.client.map.MapTypeFactory;
+import org.sigmah.shared.command.GetSitePoints;
+import org.sigmah.shared.command.result.SitePointList;
+import org.sigmah.shared.dto.BoundingBoxDTO;
+import org.sigmah.shared.dto.SitePointDTO;
 import org.sigmah.shared.map.BaseMap;
 import org.sigmah.shared.report.content.Content;
 import org.sigmah.shared.report.content.Extents;
 import org.sigmah.shared.report.content.MapContent;
-import org.sigmah.shared.report.content.MapMarker;
 import org.sigmah.shared.report.model.MapElement;
 import org.sigmah.shared.report.model.ReportElement;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Html;
+import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.Status;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.maps.client.MapType;
+import com.google.gwt.maps.client.MapWidget;
+import com.google.gwt.maps.client.control.Control;
+import com.google.gwt.maps.client.control.LargeMapControl;
+import com.google.gwt.maps.client.geom.LatLng;
+import com.google.gwt.maps.client.geom.LatLngBounds;
+import com.google.gwt.maps.client.overlay.Marker;
+import com.google.gwt.maps.client.overlay.Overlay;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Displays the content of a MapElement using Google Maps.
  *
  * @author Alex Bertram (akbertram@gmail.com)
  */
-class MapPreview extends ContentPanel {
+class MapElementView extends ContentPanel {
     private MapWidget map = null;
     private String currentBaseMapId = null;
     private LatLngBounds pendingZoom = null;
@@ -65,12 +74,14 @@ class MapPreview extends ContentPanel {
      */
     private boolean apiLoadFailed = false;
 
+    private final Dispatcher dispatcher;
+    
+    public MapElementView(Dispatcher dispatcher) {
 
-    public MapPreview() {
-
+    	this.dispatcher = dispatcher;
+    	
         setHeading(I18N.CONSTANTS.preview());
-        setLayout(new FlowLayout());
-        setScrollMode(Style.Scroll.AUTO);
+        setLayout(new FitLayout());
 
         status = new Status();
         ToolBar toolBar = new ToolBar();
@@ -107,6 +118,13 @@ class MapPreview extends ContentPanel {
             Log.debug("MapPreview: zooming to level " + zoomLevel);
             map.setCenter(bounds.getCenter(), zoomLevel);
             pendingZoom = null;
+            DeferredCommand.addCommand(new Command() {
+				
+				@Override
+				public void execute() {
+					zoomToBounds(pendingZoom);
+				}
+			});
         }
     }
 
@@ -118,9 +136,7 @@ class MapPreview extends ContentPanel {
 
             clearOverlays();
 
-            if (content instanceof MapContent) {
-                createMapIfNeededAndUpdateMapContent();
-            }
+            createMapIfNeededAndUpdateMapContent();
         }
     }
 
@@ -129,6 +145,12 @@ class MapPreview extends ContentPanel {
                 LatLng.newInstance(extents.getMinLat(), extents.getMinLon()),
                 LatLng.newInstance(extents.getMaxLat(), extents.getMaxLon()));
     }
+
+    protected LatLngBounds llBoundsForExtents(BoundingBoxDTO bounds) {
+        return LatLngBounds.newInstance(
+                LatLng.newInstance(bounds.getY1(), bounds.getX1()),
+                LatLng.newInstance(bounds.getY2(), bounds.getX2()));	
+        }
 
 
     public void createMapIfNeededAndUpdateMapContent() {
@@ -142,9 +164,9 @@ class MapPreview extends ContentPanel {
                             apiLoadFailed = false;
 
                             map = new MapWidget();
-                            map.setDraggable(false);
+                            map.addControl(new LargeMapControl());
 
-                            changeBaseMapIfNeeded(content.getBaseMap());
+                            //changeBaseMapIfNeeded(content.getBaseMap());
 
                             // clear the error message content
                             removeAll();
@@ -195,39 +217,57 @@ class MapPreview extends ContentPanel {
      */
     private void updateMapToContent() {
 
-        map.setWidth(element.getWidth() + "px");
-        map.setHeight(element.getHeight() + "px");
+    	dispatcher.execute(new GetSitePoints(0), null, new AsyncCallback<SitePointList>() {
 
-        Log.debug("MapPreview: Received content, extents are = " + content.getExtents().toString());
+			@Override
+			public void onFailure(Throwable caught) {
+				MessageBox.alert("Load failed", caught.getMessage(), null);
+			}
 
-        zoomToBounds(llBoundsForExtents(content.getExtents()));
+			@Override
+			public void onSuccess(SitePointList result) {
 
-        layout();
-
-        map.checkResizeAndCenter();
-
-
-        // TODO: i18n
-        status.setStatus(content.getUnmappedSites().size() + " " + I18N.CONSTANTS.siteLackCoordiantes(), null);
-
-        GcIconFactory iconFactory = new GcIconFactory();
-        iconFactory.primaryColor = "#0000FF";
-
-        for (MapMarker marker : content.getMarkers()) {
-            Icon icon = IconFactory.createIcon(marker);
-            LatLng latLng = LatLng.newInstance(marker.getLat(), marker.getLng());
-
-            MarkerOptions options = MarkerOptions.newInstance();
-            options.setIcon(icon);
-
-            Marker overlay = new Marker(latLng, options);
-
-            map.addOverlay(overlay);
-            overlays.add(overlay);
-        }
+				for(SitePointDTO point : result.getPoints()) {
+		            LatLng latLng = LatLng.newInstance(point.getY(), point.getX());
+		            Marker overlay = new Marker(latLng);
+		            map.addOverlay(overlay);
+				}
+				
+		        zoomToBounds(llBoundsForExtents(result.getBounds()));
+		        map.checkResizeAndCenter();
+				
+			}
+    		
+		});
+    	
+//        Log.debug("MapPreview: Received content, extents are = " + content.getExtents().toString());
+//
+//        layout();
+//
+//
+//
+//        // TODO: i18n
+//        status.setStatus(content.getUnmappedSites().size() + " " + I18N.CONSTANTS.siteLackCoordiantes(), null);
+//
+//        GcIconFactory iconFactory = new GcIconFactory();
+//        iconFactory.primaryColor = "#0000FF";
+//
+//        for (MapMarker marker : content.getMarkers()) {
+//            Icon icon = IconFactory.createIcon(marker);
+//            LatLng latLng = LatLng.newInstance(marker.getLat(), marker.getLng());
+//
+//            MarkerOptions options = MarkerOptions.newInstance();
+//            options.setIcon(icon);
+//
+//            Marker overlay = new Marker(latLng, options);
+//
+//            map.addOverlay(overlay);
+//            overlays.add(overlay);
+//        }
     }
 
-    /**
+
+	/**
      * Handles the failure of the Google Maps API to load.
      */
     private void handleApiLoadFailure() {

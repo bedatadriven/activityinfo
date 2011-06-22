@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -73,6 +74,11 @@ public class MapElement extends ReportElement<MapContent> {
 
     public void setLayers(List<MapLayer> layers) {
         this.layers = layers;
+    }
+    
+    public void setLayers(MapLayer... layers) {
+    	this.layers = new ArrayList<MapLayer>();
+    	this.layers.addAll(Arrays.asList(layers));
     }
 
 

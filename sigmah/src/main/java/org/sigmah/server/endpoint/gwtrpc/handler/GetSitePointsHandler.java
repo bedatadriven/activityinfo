@@ -12,12 +12,14 @@ import org.sigmah.shared.command.GetSitePoints;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.SitePointList;
+import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dao.SiteOrder;
 import org.sigmah.shared.dao.SiteTableDAO;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.BoundingBoxDTO;
 import org.sigmah.shared.dto.SitePointDTO;
 import org.sigmah.shared.exception.CommandException;
+import org.sigmah.shared.report.model.DimensionType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,9 +43,14 @@ public class GetSitePointsHandler implements CommandHandler<GetSitePoints> {
     @Override
     public CommandResult execute(GetSitePoints cmd, User user) throws CommandException {
 
+    	Filter filter = new Filter();
+    	if(cmd.getActivityId() != 0) {
+    		filter.addRestriction(DimensionType.Activity, cmd.getActivityId());
+    	}    	
+    	
         // query for the sites
         List<SiteData> sites = dao.query(user,
-                filter().onActivity(cmd.getActivityId()),
+                filter,
                 Collections.<SiteOrder>emptyList(),
                 new SiteDataBinder(),
                 SiteTableDAO.RETRIEVE_NONE, 0, -1);

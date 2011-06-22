@@ -12,7 +12,7 @@ import org.sigmah.shared.command.result.SitePointList;
  */
 public class GetSitePoints implements Command<SitePointList> {
 
-    private int activityId;
+    private int activityId  ;
 
     private GetSitePoints() {
 

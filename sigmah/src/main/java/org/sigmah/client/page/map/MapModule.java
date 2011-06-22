@@ -11,6 +11,5 @@ public class MapModule extends AbstractGinModule {
 
     @Override
     protected void configure() {
-        bind(MapPresenter.View.class).to(MapPage.class);
     }
 }

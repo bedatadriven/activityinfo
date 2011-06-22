@@ -107,7 +107,7 @@ public class TileMath {
 			
 			//assert extentWidth >= 0;
 
-			if(extentWidth > mapWidth) {
+			if(extentWidth > mapWidth) {aura
                 return zoomLevel - 1;
             }
 

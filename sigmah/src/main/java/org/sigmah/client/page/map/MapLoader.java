@@ -18,14 +18,14 @@ import org.sigmah.client.page.*;
  * @author Alex Bertram (akbertram@gmail.com)
  */
 public class MapLoader implements PageLoader {
-    private final Provider<MapPresenter> mapPageProvider;
+    private final Provider<MapPage> mapPageProvider;
 
     @Inject
     public MapLoader(NavigationHandler pageManager, PageStateSerializer placeSerializer,
-                     Provider<MapPresenter> mapPageProvider) {
+                     Provider<MapPage> mapPageProvider) {
         this.mapPageProvider = mapPageProvider;
-        pageManager.registerPageLoader(MapPresenter.PAGE_ID, this);
-        placeSerializer.registerStatelessPlace(MapPresenter.PAGE_ID, new MapPageState());
+        pageManager.registerPageLoader(MapPage.PAGE_ID, this);
+        placeSerializer.registerStatelessPlace(MapPage.PAGE_ID, new MapPageState());
     }
 
     @Override
@@ -38,7 +38,7 @@ public class MapLoader implements PageLoader {
 
             @Override
             public void onSuccess() {
-                if(MapPresenter.PAGE_ID.equals(pageId)) {
+                if(MapPage.PAGE_ID.equals(pageId)) {
                     callback.onSuccess(mapPageProvider.get());
                 }
             }

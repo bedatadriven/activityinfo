@@ -19,7 +19,7 @@ import org.sigmah.client.page.TabPage;
 public class MapPageState implements PageState, TabPage {
 
     public PageId getPageId() {
-        return MapPresenter.PAGE_ID;
+        return MapPage.PAGE_ID;
     }
 
     public String serializeAsHistoryToken() {
