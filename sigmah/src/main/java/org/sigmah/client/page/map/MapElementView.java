@@ -15,14 +15,14 @@ import org.sigmah.client.map.MapApiLoader;
 import org.sigmah.client.map.MapTypeFactory;
 import org.sigmah.shared.command.GetSitePoints;
 import org.sigmah.shared.command.result.SitePointList;
-import org.sigmah.shared.dto.BoundingBoxDTO;
 import org.sigmah.shared.dto.SitePointDTO;
 import org.sigmah.shared.map.BaseMap;
 import org.sigmah.shared.report.content.Content;
-import org.sigmah.shared.report.content.Extents;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.model.MapElement;
 import org.sigmah.shared.report.model.ReportElement;
+import org.sigmah.shared.util.mapping.BoundingBoxDTO;
+import org.sigmah.shared.util.mapping.Extents;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.BaseEvent;

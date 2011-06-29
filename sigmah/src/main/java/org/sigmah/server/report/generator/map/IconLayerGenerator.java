@@ -10,6 +10,7 @@ import org.sigmah.shared.report.content.*;
 import org.sigmah.shared.report.model.IconMapLayer;
 import org.sigmah.shared.report.model.MapElement;
 import org.sigmah.shared.report.model.MapIcon;
+import org.sigmah.shared.util.mapping.Extents;
 
 import java.util.ArrayList;
 import java.util.List;

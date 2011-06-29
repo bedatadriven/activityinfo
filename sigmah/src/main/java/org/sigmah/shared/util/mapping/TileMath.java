@@ -3,9 +3,9 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.server.report.generator.map;
+package org.sigmah.shared.util.mapping;
 
-import org.sigmah.shared.report.content.Extents;
+import org.sigmah.server.report.generator.map.Tile;
 import org.sigmah.shared.report.content.LatLng;
 import org.sigmah.shared.report.content.Point;
 
@@ -24,7 +24,6 @@ import org.sigmah.shared.report.content.Point;
  * @author Alex Bertram
  *
  */
-
 public class TileMath {
 
 	/*
@@ -107,7 +106,7 @@ public class TileMath {
 			
 			//assert extentWidth >= 0;
 
-			if(extentWidth > mapWidth) {aura
+			if(extentWidth > mapWidth) {
                 return zoomLevel - 1;
             }
 

@@ -3,9 +3,12 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.shared.dto;
+package org.sigmah.shared.util.mapping;
 
 import java.io.Serializable;
+
+import org.sigmah.shared.report.content.LatLng;
+
 
 /**
  * One-to-one DTO for the {@link org.sigmah.shared.domain.Bounds} domain object.
@@ -18,7 +21,23 @@ public final class BoundingBoxDTO implements Serializable {
     public double x2;
     public double y2;
 
-    public BoundingBoxDTO() {
+    /**
+     * 
+     * @return an empty bounding box (180, 90, -180, -90)
+     */
+    public static BoundingBoxDTO empty() {
+    	return new BoundingBoxDTO();
+    }
+    
+    /**
+     *    
+     * @return maximum geographic bounds (-180, -90, 180, 90)
+     */
+    public static BoundingBoxDTO maxGeoBounds() {
+    	return new BoundingBoxDTO(-180, -90, 180, 90);
+    }
+    
+    private BoundingBoxDTO() {
         this.x1 = 180;
         this.y1 = 90;
         this.x2 = -180;
@@ -75,6 +94,24 @@ public final class BoundingBoxDTO implements Serializable {
     }
 
     /**
+     * Grows this BoundingBoxDTO to include the given bounds
+     */
+	public void grow(BoundingBoxDTO bounds) {
+		if(bounds.x1 < x1) {
+			this.x1 = bounds.x1;
+		}
+		if(bounds.y1 < y1) {
+			this.y1 = bounds.y1;
+		}
+		if(bounds.x2 > x2) {
+			this.x2 = bounds.x2;
+		}
+		if(bounds.y2 > y2) {
+			this.y2 = bounds.y2;
+		}
+	}
+    
+    /**
      * 
      * @return true if the BoundingBoxDTO is empty
      */
@@ -128,6 +165,11 @@ public final class BoundingBoxDTO implements Serializable {
         return b.x1 >= x1 && b.x2 <= x2 && b.y1 >= y1 && b.y2 <= y2;
     }
 
+	public boolean contains(LatLng center) {
+		return contains(center.getLng(), center.getLat());
+	}
+
+    
     /**
      * 
      * @return true if this BoundingBoxDTO contains the point at (x,y)
@@ -246,4 +288,19 @@ public final class BoundingBoxDTO implements Serializable {
     public String toString() {
         return "x1:" + x1 + ";x2:" + x2 + ";y1:" + y1 + ";y2:" + y2;
     }
+
+	public double getWidth() {
+		return x2-x1;
+	}
+	
+	public double getHeight() {
+		return y2-y1;
+	}
+
+	public LatLng centroid() {
+		return new LatLng(getCenterY(), getCenterX());
+	}
+
+
+
 }

@@ -16,10 +16,10 @@ import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dao.SiteOrder;
 import org.sigmah.shared.dao.SiteTableDAO;
 import org.sigmah.shared.domain.User;
-import org.sigmah.shared.dto.BoundingBoxDTO;
 import org.sigmah.shared.dto.SitePointDTO;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.report.model.DimensionType;
+import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,7 +55,7 @@ public class GetSitePointsHandler implements CommandHandler<GetSitePoints> {
                 new SiteDataBinder(),
                 SiteTableDAO.RETRIEVE_NONE, 0, -1);
 
-        BoundingBoxDTO bounds = new BoundingBoxDTO();
+        BoundingBoxDTO bounds = BoundingBoxDTO.empty();
 
         List<SitePointDTO> points = new ArrayList<SitePointDTO>(sites.size());
         for (SiteData site : sites) {

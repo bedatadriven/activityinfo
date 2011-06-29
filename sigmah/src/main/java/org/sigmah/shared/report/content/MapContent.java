@@ -6,6 +6,7 @@
 package org.sigmah.shared.report.content;
 
 import org.sigmah.shared.map.BaseMap;
+import org.sigmah.shared.util.mapping.Extents;
 
 import java.util.*;
 /*

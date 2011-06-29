@@ -16,10 +16,11 @@ import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dao.SiteTableDAO;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.map.BaseMap;
-import org.sigmah.shared.report.content.Extents;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.MapMarker;
 import org.sigmah.shared.report.model.*;
+import org.sigmah.shared.util.mapping.Extents;
+import org.sigmah.shared.util.mapping.TileMath;
 
 import java.util.ArrayList;
 import java.util.Collections;

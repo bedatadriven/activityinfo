@@ -12,6 +12,7 @@ import org.sigmah.client.map.AdminBoundsHelper;
 import org.sigmah.shared.command.GetAdminEntities;
 import org.sigmah.shared.command.result.AdminEntityResult;
 import org.sigmah.shared.dto.*;
+import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 import java.util.HashMap;
 import java.util.List;

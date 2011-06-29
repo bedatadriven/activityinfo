@@ -7,7 +7,7 @@ package org.sigmah.client.page.entry.editor;
 
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.common.widget.CoordinateField;
-import org.sigmah.shared.dto.BoundingBoxDTO;
+import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

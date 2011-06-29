@@ -13,6 +13,7 @@ import org.sigmah.shared.dao.SqlQueryBuilder;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.*;
 import org.sigmah.shared.exception.CommandException;
+import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -57,11 +58,12 @@ public class LocalGetSchemaHandler implements CommandHandler<GetSchema> {
                     country.setId(rs.getInt(1));
                     country.setName(rs.getString(2));
 
-                    BoundingBoxDTO bounds = new BoundingBoxDTO();
-                    bounds.setX1(rs.getDouble(3));
-                    bounds.setY1(rs.getDouble(4));
-                    bounds.setX2(rs.getDouble(5));
-                    bounds.setY2(rs.getDouble(6));
+                    BoundingBoxDTO bounds = new BoundingBoxDTO(
+                    		rs.getDouble(3),
+                    		rs.getDouble(4),
+                    		rs.getDouble(5),
+                    		rs.getDouble(6));
+
                     country.setBounds(bounds);
 
                     countries.put(country.getId(), country);

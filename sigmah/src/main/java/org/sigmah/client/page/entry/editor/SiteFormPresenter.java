@@ -19,6 +19,7 @@ import org.sigmah.shared.command.UpdateEntity;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.*;
+import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 import java.util.Map;
 

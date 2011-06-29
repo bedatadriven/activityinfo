@@ -9,6 +9,7 @@ import org.sigmah.shared.command.result.*;
 import org.sigmah.shared.dto.*;
 import org.sigmah.shared.map.BaseMap;
 import org.sigmah.shared.map.LocalBaseMap;
+import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 import java.util.ArrayList;
 import java.util.HashMap;

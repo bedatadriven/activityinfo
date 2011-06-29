@@ -5,6 +5,8 @@
 
 package org.sigmah.shared.dto;
 
+import org.sigmah.shared.util.mapping.BoundingBoxDTO;
+
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 

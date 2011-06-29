@@ -14,8 +14,8 @@ import org.sigmah.shared.dao.SqlAdminDAO;
 import org.sigmah.shared.dao.SqlQueryBuilder;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.AdminEntityDTO;
-import org.sigmah.shared.dto.BoundingBoxDTO;
 import org.sigmah.shared.exception.CommandException;
+import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

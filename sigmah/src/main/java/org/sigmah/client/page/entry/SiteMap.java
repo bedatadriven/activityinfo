@@ -48,6 +48,7 @@ import org.sigmah.client.page.common.Shutdownable;
 import org.sigmah.shared.command.GetSitePoints;
 import org.sigmah.shared.command.result.SitePointList;
 import org.sigmah.shared.dto.*;
+import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 import java.util.ArrayList;
 import java.util.HashMap;

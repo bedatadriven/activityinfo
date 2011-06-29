@@ -18,10 +18,10 @@ import org.sigmah.shared.dao.SiteTableDAO;
 import org.sigmah.shared.domain.AdminEntity;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.AdminEntityDTO;
-import org.sigmah.shared.dto.BoundingBoxDTO;
 import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.exception.CommandException;
+import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

@@ -2,6 +2,7 @@ package org.sigmah.shared.command;
 
 import org.sigmah.shared.command.result.MapTree;
 import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 /**
  * Computes a heirarchy of points visible to the user that can be used
@@ -12,9 +13,22 @@ import org.sigmah.shared.dao.Filter;
  */
 public class ComputeMapTree implements Command<MapTree> {
 
+	
+	private BoundingBoxDTO bounds;
+
 	/**
-	 * the filter to be applied to the tree
+	 * 
+	 * @return the geographic bounds of the current map view.
 	 */
-	private Filter filter;
+	public BoundingBoxDTO getBounds() {
+		return bounds;
+	}
+
+
+	public void setBounds(BoundingBoxDTO bounds) {
+		this.bounds = bounds;
+	}
+	
+	
 	
 }

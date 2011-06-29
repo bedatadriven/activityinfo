@@ -29,8 +29,8 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.map.MapTypeFactory;
 import org.sigmah.client.page.common.widget.CoordinateField;
 import org.sigmah.client.page.config.form.FieldSetFitLayout;
-import org.sigmah.shared.dto.BoundingBoxDTO;
 import org.sigmah.shared.dto.CountryDTO;
+import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 public class MapFieldSet extends FieldSet implements MapPresenter.View {
 

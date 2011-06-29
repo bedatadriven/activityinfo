@@ -9,6 +9,8 @@ package org.sigmah.shared.dto;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sigmah.shared.util.mapping.BoundingBoxDTO;
+
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**

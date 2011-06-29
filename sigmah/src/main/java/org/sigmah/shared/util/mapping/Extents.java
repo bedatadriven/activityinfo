@@ -3,9 +3,11 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.shared.report.content;
+package org.sigmah.shared.util.mapping;
 
 import java.io.Serializable;
+
+import org.sigmah.shared.report.content.LatLng;
 
 public class Extents implements Serializable {
 

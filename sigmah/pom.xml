@@ -494,6 +494,18 @@
                     </execution>
                 </executions>
             </plugin>
+			<!-- <plugin>
+				<groupId>com.google.code</groupId>
+				<artifactId>crx-maven-plugin</artifactId>
+				<version>1.1.0</version>
+				<extensions>true</extensions>
+				<configuration>
+					<pemKey>${chrome-webapp.key}</pemKey>
+					<pemCert>${chrome-webapp.cert}</pemCert>
+					<excludes>WEB-INF/**</excludes>
+				</configuration>
+			</plugin> -->
+            
 
             <!-- Make sure we remove GWT-generated stuff in the war/ folder -->
             <plugin>

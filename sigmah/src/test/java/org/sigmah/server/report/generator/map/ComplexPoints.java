@@ -5,8 +5,9 @@
 
 package org.sigmah.server.report.generator.map;
 
-import org.sigmah.shared.report.content.Extents;
 import org.sigmah.shared.report.content.LatLng;
+import org.sigmah.shared.util.mapping.Extents;
+import org.sigmah.shared.util.mapping.TileMath;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -8,8 +8,8 @@ import java.util.List;
 
 import org.sigmah.shared.command.GetAdminEntities;
 import org.sigmah.shared.dto.AdminEntityDTO;
-import org.sigmah.shared.dto.BoundingBoxDTO;
 import org.sigmah.shared.report.model.DimensionType;
+import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 public class SqlAdminDAO {
 	
@@ -64,11 +64,12 @@ public class SqlAdminDAO {
                     entity.setParentId(parentId);
                 }
 
-                BoundingBoxDTO bounds = new BoundingBoxDTO();
-                bounds.setX1(rs.getDouble(5));
-                bounds.setY1(rs.getDouble(6));
-                bounds.setX2(rs.getDouble(7));
-                bounds.setY2(rs.getDouble(8));
+                BoundingBoxDTO bounds = new BoundingBoxDTO(
+                		rs.getDouble(5),
+                		rs.getDouble(6),
+                		rs.getDouble(7),
+                		rs.getDouble(8));
+                
                 if(rs.wasNull()) {
                     entity.setBounds(bounds);
                 }

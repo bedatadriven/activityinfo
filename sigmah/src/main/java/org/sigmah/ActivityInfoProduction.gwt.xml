@@ -6,12 +6,11 @@
 <module rename-to="ActivityInfo">
     <inherits name="org.sigmah.ActivityInfo"/>
 
-    <extend-property name="locale" values="en,fr"/>
-    <set-property-fallback name="locale" value="en"/>
+    <extend-property name="locale" values="fr"/>
 
     <!-- Turn all logging off  -->
-    <extend-property name="log_level" values="OFF" />
-    <set-property name="log_level" value="OFF"/>
+    <extend-property name="log_level" values="TRACE" />
+    <set-property name="log_level" value="TRACE"/>
     <set-property name="log_DivLogger" value="DISABLED" />
 
     <entry-point class="org.sigmah.client.ActivityInfoEntryPoint"/>

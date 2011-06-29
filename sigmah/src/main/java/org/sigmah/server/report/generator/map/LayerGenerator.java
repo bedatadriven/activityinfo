@@ -6,8 +6,8 @@
 package org.sigmah.server.report.generator.map;
 
 import org.sigmah.server.domain.SiteData;
-import org.sigmah.shared.report.content.Extents;
 import org.sigmah.shared.report.content.MapContent;
+import org.sigmah.shared.util.mapping.Extents;
 
 import java.util.List;
 

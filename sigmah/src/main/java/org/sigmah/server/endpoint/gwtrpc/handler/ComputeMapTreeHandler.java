@@ -15,8 +15,9 @@ import org.sigmah.shared.command.result.MapTree;
 import org.sigmah.shared.dao.SqlQueryBuilder;
 import org.sigmah.shared.dao.SqlQueryBuilder.ResultHandler;
 import org.sigmah.shared.domain.User;
-import org.sigmah.shared.dto.BoundingBoxDTO;
 import org.sigmah.shared.exception.CommandException;
+import org.sigmah.shared.report.content.LatLng;
+import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 import com.google.inject.Inject;
 
@@ -86,6 +87,8 @@ public class ComputeMapTreeHandler implements CommandHandler<ComputeMapTree>{
 
 		final TreeBuilder treeBuilder = new TreeBuilder();
 		
+		// Select ONLY the admin entities where we actually have data
+		
 		SqlQueryBuilder.select(
 				"ae.AdminEntityId", 
 				"ae.AdminLevelId", 
@@ -100,11 +103,11 @@ public class ComputeMapTreeHandler implements CommandHandler<ComputeMapTree>{
 				"avg(l.x)",
 				"avg(l.y)",
 				"min(l.X)",
-				"max(l.X)",
 				"min(l.Y)",
+				"max(l.X)",
 				"max(l.Y)")
 			.from("AdminEntity ae")
-			.innerJoin("AdminLevel al").on("ae.AdminLevelId = al.AdminLevelId")
+			.innerJoin("AdminLevel al").on("ae.AdminLevelId = apl.AdminLevelId")
 			.innerJoin("LocationAdminLink link").on("ae.AdminEntityId = link.AdminEntityId")
 			.innerJoin("Location l").on("link.LocationId = l.LocationId")
 			.innerJoin("Site s").on("s.LocationId = l.LocationId")
@@ -115,7 +118,9 @@ public class ComputeMapTreeHandler implements CommandHandler<ComputeMapTree>{
 				public void handle(ResultSet rs) throws SQLException {
 					MapTree.EntityNode node = treeBuilder.getEntityNode(rs.getInt(1));
 					node.setLabel(rs.getString(4));
-					node.setBounds(boundsFromRs(rs, 6));
+					node.setAdminBounds(boundsFromRs(rs, 6));
+					node.setCenter(latLngFromRs(rs, 11));
+					node.setSiteBounds(boundsFromRs(rs, 13));
 					node.setPointCount(rs.getInt(10));
 
 					int levelId = rs.getInt(2);
@@ -129,11 +134,26 @@ public class ComputeMapTreeHandler implements CommandHandler<ComputeMapTree>{
 				}
 			});
 		
-		return treeBuilder.getRoot();
+		
+		MapTree.Node root = treeBuilder.getRoot();
+		root.normalizeGeography(BoundingBoxDTO.maxGeoBounds());
+		return root;
+	}
+	
+	private LatLng latLngFromRs(ResultSet rs, int startIndex) throws SQLException {
+		double lng = rs.getDouble(startIndex);
+		if(rs.wasNull()) {
+			return null;
+		}
+		double lat = rs.getDouble(startIndex+1);
+		if(rs.wasNull()) {
+			return null;
+		}
+		return new LatLng(lat, lng);
 	}
 	
 	private BoundingBoxDTO boundsFromRs(ResultSet rs, int startIndex) throws SQLException {
-		BoundingBoxDTO bounds = new BoundingBoxDTO();
+		BoundingBoxDTO bounds = BoundingBoxDTO.empty();
 		bounds.setX1(rs.getDouble(startIndex+0));
 		if(rs.wasNull()) {
 			return null;
@@ -160,4 +180,6 @@ public class ComputeMapTreeHandler implements CommandHandler<ComputeMapTree>{
 		}
 		return value;
 	}
+	
+	
 }

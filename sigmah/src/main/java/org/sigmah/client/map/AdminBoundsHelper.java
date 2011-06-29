@@ -6,6 +6,7 @@
 package org.sigmah.client.map;
 
 import org.sigmah.shared.dto.*;
+import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 import java.util.Collection;
 

@@ -8,8 +8,8 @@ package org.sigmah.client.page.entry.editor;
 import org.junit.Assert;
 import org.junit.Test;
 import org.sigmah.client.page.entry.editor.mock.MockMapView;
-import org.sigmah.shared.dto.BoundingBoxDTO;
 import org.sigmah.shared.dto.SiteDTO;
+import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
