@@ -5,19 +5,32 @@
 
 package org.sigmah.shared.map;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+
 import org.sigmah.shared.dto.DTO;
-/*
+
+/**
+ * Defines a base map (or "background map") that is 
+ * accessible on a public server somewhere.
+ * 
+ * Base Maps are essentially collections of 256x256 images that are
+ * tiled together to form a projected base map.
+ * 
  * @author Alex Bertram
  */
-
-public abstract class BaseMap implements DTO {
+@Entity
+public class BaseMap implements DTO {
 
     private String id;
     private String name;
     private int minZoom;
     private int maxZoom;
     private String copyright;
-
+    private String tileUrlPattern;
+    
+    @Id
     public String getId() {
         return id;
     }
@@ -34,6 +47,10 @@ public abstract class BaseMap implements DTO {
         this.name = name;
     }
 
+    /**
+     * @return the minimum zoom level for which this base map
+     * is available
+     */
     public int getMinZoom() {
         return minZoom;
     }
@@ -42,6 +59,10 @@ public abstract class BaseMap implements DTO {
         this.minZoom = minZoom;
     }
 
+    /**
+     * @return the maximum zoom level for which this base map
+     * is available
+     */
     public int getMaxZoom() {
         return maxZoom;
     }
@@ -50,6 +71,11 @@ public abstract class BaseMap implements DTO {
         this.maxZoom = maxZoom;
     }
 
+    /**
+     * @return the copyright message to be displayed when browsing for this
+     * map.
+     */
+    @Lob
     public String getCopyright() {
         return copyright;
     }
@@ -57,8 +83,30 @@ public abstract class BaseMap implements DTO {
     public void setCopyright(String copyright) {
         this.copyright = copyright;
     }
+    
+    /**
+     * 
+     * @return the url pattern used to retrieve individual tiles.
+     * Should be in the format http://mt{s}.mytiles.com/tiles?x={x}&y={y}&z={z}
+     * 
+     * The {s} parameter is used to get around the limitations some browsers 
+     * impose on the number of open connections for a given host.
+     * 
+     */
+    @Lob
+    public String getTileUrlPattern() {
+		return tileUrlPattern;
+	}
 
-    public abstract String getTileUrl(int zoom, int x, int y);
+	public void setTileUrlPattern(String tileUrlPattern) {
+		this.tileUrlPattern = tileUrlPattern;
+	}
 
-    public abstract String getLocalTilePath(int zoom, int x, int y);
+	public String getTileUrl(int zoom, int x, int y) {
+		return tileUrlPattern
+				.replace("{s}", Integer.toString(x%2+y%2))
+				.replace("{x}", Integer.toString(x))
+				.replace("{y}", Integer.toString(y))
+				.replace("{z}", Integer.toString(zoom));
+	}
 }

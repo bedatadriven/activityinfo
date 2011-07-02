@@ -5,14 +5,13 @@
 
 package org.sigmah.server.report.generator.map;
 
-import org.sigmah.server.dao.BaseMapDAO;
-import org.sigmah.shared.map.BaseMap;
-import org.sigmah.shared.map.LocalBaseMap;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.sigmah.server.dao.BaseMapDAO;
+import org.sigmah.shared.map.BaseMap;
 
 /**
  * @author Alex Bertram
@@ -24,12 +23,13 @@ public class MockBaseMapDAO implements BaseMapDAO {
     public MockBaseMapDAO() {
         baseMaps = new HashMap<String,BaseMap>();
 
-        BaseMap map1 = new LocalBaseMap();
+        BaseMap map1 = new BaseMap();
         map1.setId("map1");
         map1.setMinZoom(0);
         map1.setMaxZoom(12);
         map1.setCopyright("(C)");
         map1.setName("Grand Canyon");
+        map1.setTileUrlPattern("http://s/test.png");
         baseMaps.put("map1", map1);
 
     }

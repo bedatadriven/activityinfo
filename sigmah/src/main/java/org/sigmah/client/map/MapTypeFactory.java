@@ -33,7 +33,7 @@ public class MapTypeFactory {
         // for poorly covered countries
         if(country.getName().equals("RDC")) {
             TileLayer[] layers = new TileLayer[1];
-            layers[0] = new RgcTileLayer("http://www.pear.cd/ActivityInfo/tiles/admin", 6, 10);
+            layers[0] = new RgcTileLayer("http://tiles.aimaps.net/admin", 6, 10);
             Projection projection = new MercatorProjection(11);
             return new MapType(layers, projection, "Admin");
         } else {

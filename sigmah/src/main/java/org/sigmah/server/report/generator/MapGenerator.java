@@ -94,10 +94,6 @@ public class MapGenerator extends ListGenerator<MapElement> {
 					return "http://google.com";
 				}
 				
-				@Override
-				public String getLocalTilePath(int zoom, int x, int y) {
-					return "/nothere.gif";
-				}
 			};
 			baseMap.setMinZoom(0);
 			baseMap.setMaxZoom(16);

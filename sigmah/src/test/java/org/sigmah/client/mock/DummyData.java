@@ -5,15 +5,30 @@
 
 package org.sigmah.client.mock;
 
-import org.sigmah.shared.command.result.*;
-import org.sigmah.shared.dto.*;
-import org.sigmah.shared.map.BaseMap;
-import org.sigmah.shared.map.LocalBaseMap;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.sigmah.shared.command.result.AdminEntityResult;
+import org.sigmah.shared.command.result.BaseMapResult;
+import org.sigmah.shared.command.result.ListResult;
+import org.sigmah.shared.command.result.SiteResult;
+import org.sigmah.shared.command.result.UserResult;
+import org.sigmah.shared.dto.ActivityDTO;
+import org.sigmah.shared.dto.AdminEntityDTO;
+import org.sigmah.shared.dto.AdminLevelDTO;
+import org.sigmah.shared.dto.AttributeDTO;
+import org.sigmah.shared.dto.AttributeGroupDTO;
+import org.sigmah.shared.dto.BoundingBoxDTO;
+import org.sigmah.shared.dto.CountryDTO;
+import org.sigmah.shared.dto.LocationTypeDTO;
+import org.sigmah.shared.dto.PartnerDTO;
+import org.sigmah.shared.dto.SchemaDTO;
+import org.sigmah.shared.dto.SiteDTO;
+import org.sigmah.shared.dto.UserDatabaseDTO;
+import org.sigmah.shared.dto.UserPermissionDTO;
+import org.sigmah.shared.map.BaseMap;
 
 public class DummyData {
 
@@ -234,7 +249,7 @@ public class DummyData {
 
     public static BaseMapResult BaseMaps() {
 
-        BaseMap map = new LocalBaseMap();
+        BaseMap map = new BaseMap();
         map.setName("Administrative Map");
         map.setCopyright("Foobar");
         map.setId("admin");
