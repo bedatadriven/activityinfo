@@ -281,7 +281,7 @@
 
 	<!-- id=3 NFI Distribution at Boga, Ituri 2008 -->
 	
-	<location locationId="3" name="Boga" locationTypeId="1" X="3.323" Y="27.232" DateCreated="2009-02-01" DateEdited="2009-02-01"/>
+	<location locationId="3" name="Boga" locationTypeId="1" DateCreated="2009-02-01" DateEdited="2009-02-01"/>
 	<locationAdminLink locationId="3" adminEntityId="4"/>
 	<locationAdminLink locationId="3" adminEntityId="21"/>
 	

@@ -126,8 +126,15 @@ public class GetSitesHandler implements CommandHandler<GetSites> {
             model.setDate2(rs.getDate(date2.index() ));
             model.setLocationName( rs.getString( location_name.index() ));
             model.setLocationAxe( rs.getString( location_axe.index() ));
-            model.setX( rs.getDouble( x.index()));
-            model.setY( rs.getDouble( y.index()));
+            
+            double xCoord = rs.getDouble( x.index() );
+            if(!rs.wasNull()) {
+            	double yCoord = rs.getDouble( y.index() );
+            	if(!rs.wasNull()) {
+            		model.setX(xCoord);
+            		model.setY(yCoord);
+            	}
+            }
             model.setComments( rs.getString( comments.index() ));
 
             int partnerId = rs.getInt(partner_id.index());
