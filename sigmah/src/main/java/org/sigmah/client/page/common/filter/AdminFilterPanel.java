@@ -35,6 +35,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -197,7 +198,7 @@ public class AdminFilterPanel extends ContentPanel implements FilterPanel {
 	
 					@Override
 					public void onFailure(Throwable caught) {
-						// TODO Auto-generated method stub
+						GWT.log("Failed to load admin entities", caught);
 						
 					}
 	

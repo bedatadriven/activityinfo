@@ -5,20 +5,12 @@
 
 package org.sigmah.server.report.renderer.image;
 
-import com.google.inject.Inject;
-import org.sigmah.server.report.generator.MapIconPath;
-import org.sigmah.server.report.generator.map.TileProvider;
-import org.sigmah.server.report.generator.map.TiledMap;
-import org.sigmah.shared.map.BaseMap;
-import org.sigmah.shared.map.LocalBaseMap;
-import org.sigmah.shared.report.content.BubbleMapMarker;
-import org.sigmah.shared.report.content.IconMapMarker;
-import org.sigmah.shared.report.content.MapMarker;
-import org.sigmah.shared.report.content.PieMapMarker;
-import org.sigmah.shared.report.model.MapElement;
-
-import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.color.ColorSpace;
 import java.awt.font.LineMetrics;
 import java.awt.geom.Ellipse2D;
@@ -32,6 +24,20 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
+
+import org.sigmah.server.report.generator.MapIconPath;
+import org.sigmah.server.report.generator.map.TileProvider;
+import org.sigmah.server.report.generator.map.TiledMap;
+import org.sigmah.shared.map.BaseMap;
+import org.sigmah.shared.report.content.BubbleMapMarker;
+import org.sigmah.shared.report.content.IconMapMarker;
+import org.sigmah.shared.report.content.MapMarker;
+import org.sigmah.shared.report.content.PieMapMarker;
+import org.sigmah.shared.report.model.MapElement;
+
+import com.google.inject.Inject;
+
 /**
  * Renders a MapElement and its generated MapContent as an image
  * using Java 2D
@@ -41,26 +47,12 @@ import java.util.Map;
 public class ImageMapRenderer {
 
 
-    /**
-     * Implements the TileProvider interface for
-     * LocalBaseMap
-     */
-    private class LocalTileProvider implements TileProvider {
-        private LocalBaseMap baseMap;
-
-        private LocalTileProvider(LocalBaseMap baseMap) {
-            this.baseMap = baseMap;
-        }
-
-        public Image getImage(int zoom, int tileX, int tileY) {
-            try {            	
-                return ImageIO.read(new File(baseMap.getLocalTilePath(zoom, tileX, tileY)));
-            } catch (IOException e) {
-                return null;
-            }
-        }
-    }
-
+	/**
+	 * Provides tile images from a URL
+	 * 	
+	 * @author alex
+	 *
+	 */
     private class RemoteTileProvider implements TileProvider {
         private BaseMap baseMap;
 
@@ -201,13 +193,7 @@ public class ImageMapRenderer {
         g2d.setPaint(Color.WHITE);
         g2d.fillRect(0,0,element.getWidth(),element.getHeight());
 
-
-        TileProvider tileProvider;
-        if(element.getContent().getBaseMap() instanceof LocalBaseMap) {
-            tileProvider = new LocalTileProvider((LocalBaseMap) element.getContent().getBaseMap());
-        } else {
-            tileProvider = new RemoteTileProvider(element.getContent().getBaseMap());
-        }
+        TileProvider tileProvider = new RemoteTileProvider(element.getContent().getBaseMap());
 
         // Draw tiled map background
         try {

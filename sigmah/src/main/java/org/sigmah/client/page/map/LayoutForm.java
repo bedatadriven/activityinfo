@@ -54,6 +54,7 @@ class LayoutForm extends FormPanel {
         baseMapCombo.setValueField("id");
         baseMapCombo.setTriggerAction(ComboBox.TriggerAction.ALL);
         baseMapCombo.setForceSelection(true);
+        baseMapCombo.setUseQueryCache(false);
         baseMapCombo.setAllowBlank(false);
         add(baseMapCombo);
 

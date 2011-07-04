@@ -33,9 +33,12 @@
     <source path='client'/>
     <source path="shared"/>
 
+	<public path='public'>
+		<exclude name="gxt/themes/sigmah/**" />
+	</public>
 
     <!-- Enable other locales -->
     <extend-property name="locale" values="en" />
     <set-property-fallback name="locale" value="en"/>
-
+    
 </module>

@@ -53,6 +53,7 @@ public class GetSitesTest extends CommandTestCase {
         Assert.assertEquals("entityName", "Ituri", s.getAdminEntity(1).getName());
         Assert.assertNotNull("admin bounds", s.getAdminEntity(1).getBounds());
         Assert.assertEquals("indicator", 10000.0, s.getIndicatorValue(1));
+        Assert.assertNull("site x", s.getX());
     }
 
     @Test

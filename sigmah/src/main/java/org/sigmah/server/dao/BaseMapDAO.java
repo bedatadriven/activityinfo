@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @author Alex Bertram
  */
-@ImplementedBy(BaseMapFsDAO.class)
+@ImplementedBy(BaseMapDAOImpl.class)
 public interface BaseMapDAO {
 
     BaseMap getBaseMap(String id);
