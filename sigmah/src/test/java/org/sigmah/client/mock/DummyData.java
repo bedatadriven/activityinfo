@@ -5,8 +5,6 @@
 
 package org.sigmah.client.mock;
 
-import org.sigmah.shared.command.result.*;
-import org.sigmah.shared.dto.*;
 import org.sigmah.shared.map.BaseMap;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
@@ -34,7 +32,6 @@ import org.sigmah.shared.dto.UserDatabaseDTO;
 import org.sigmah.shared.dto.UserPermissionDTO;
 
 public class DummyData {
-
 
     public static final AdminEntityDTO Beni = new AdminEntityDTO(2, 101, 100, "Beni", new BoundingBoxDTO(0, 0, 25, 25));
     public static final AdminEntityDTO Masisi = new AdminEntityDTO(2, 102, 100, "Masisi", new BoundingBoxDTO(0, 25, 25, 50));
@@ -247,9 +244,6 @@ public class DummyData {
         return new AdminEntityResult(list);
     }
 
-
-
-
     public static BaseMapResult BaseMaps() {
 
         BaseMap map = new BaseMap();
@@ -263,9 +257,5 @@ public class DummyData {
         maps.add(map);
 
         return new BaseMapResult(maps);
-        
     }
-
-
-
 }
