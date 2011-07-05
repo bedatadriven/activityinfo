@@ -1,0 +1,27 @@
+@external .grabSprite, .layerItem, .removeLayer, .checkbox;
+
+@sprite .grabSprite {
+	gwt-image: "grabSprite";
+	float: left;
+	cursor: move;
+}	
+
+@sprite .removeLayer {
+	gwt-image: "removeLayer";
+	float: right;
+	vertical-align: top;
+}
+
+.checkbox {
+	float: left;
+	margin:5px;
+}
+
+.removeLayer {
+	
+}
+
+.layerItem {
+	margin: 5px;
+	vertical-align: center;
+}

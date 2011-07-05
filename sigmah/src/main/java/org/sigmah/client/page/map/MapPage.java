@@ -5,6 +5,8 @@
 
 package org.sigmah.client.page.map;
 
+import java.util.Collections;
+
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
@@ -23,15 +25,28 @@ import org.sigmah.shared.command.RenderElement;
 import org.sigmah.shared.command.RenderElement.Format;
 import org.sigmah.shared.report.content.Content;
 import org.sigmah.shared.report.model.AutoMapLayer;
+import org.sigmah.shared.report.model.BubbleMapLayer;
 import org.sigmah.shared.report.model.MapElement;
 import org.sigmah.shared.report.model.ReportElement;
 
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.CheckChangedEvent;
+import com.extjs.gxt.ui.client.event.CheckChangedListener;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.event.TreePanelEvent;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Element;
 import com.google.inject.Inject;
 
@@ -42,28 +57,67 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
 
     public static final PageId PAGE_ID = new PageId("maps");
 	
+    // Data mechanics
     private final Dispatcher dispatcher;
-    private final MapForm form;
     
+    // Contained widgets
+    private final MapForm form;
     private MapElementView mapView;
     private ActionToolBar toolBar;
-    
+    private SelectedLayerList layerControl;
+    private MapElement mapElement = new MapElement();
 
     @Inject
-    public MapPage(Dispatcher dispatcher, MapForm form) {
+    public MapPage(Dispatcher dispatcher, final MapForm form) {
     	this.dispatcher = dispatcher;
     	
-        setLayout(new FitLayout());
+    	MapResources.INSTANCE.layerStyle().ensureInjected();
+    	
+        setLayout(new BorderLayout());
         setHeaderVisible(false);
-
+        
         this.form = form;
-       // createFormPane(form);
+        createFormPane(form);
         createMap();
         createToolBar();
+        createSelectedLayersWidget();
+
+        
+        
+        form.getIndicatorTree().addCheckChangedListener(new Listener<TreePanelEvent>(){
+			@Override
+			public void handleEvent(TreePanelEvent be) {
+				BubbleMapLayer layer2 = new BubbleMapLayer();
+				layer2.setIndicatorIds(form.getIndicatorTree().getSelectedIds());
+				mapElement.addLayer(layer2);			
+				layerControl.setValue(mapElement);
+			}
+        	
+        });
+        
     }
 
-    private void createFormPane(MapForm form) {
-        BorderLayoutData west = new BorderLayoutData(Style.LayoutRegion.WEST, 0.50f);
+    private void createSelectedLayersWidget() {
+        layerControl = new SelectedLayerList();
+        
+        BorderLayoutData east = new BorderLayoutData(Style.LayoutRegion.EAST, 0.20f);
+        east.setCollapsible(true);
+        east.setSplit(true);
+        east.setMargins(new Margins(0, 0, 0, 5));
+        
+        layerControl.addValueChangeHandler(new ValueChangeHandler<MapElement>() {
+			
+			@Override
+			public void onValueChange(ValueChangeEvent<MapElement> event) {
+				//mapView.setValue()
+			}
+		});
+        
+        add(layerControl, east);
+	}
+
+	private void createFormPane(MapForm form) {
+        BorderLayoutData west = new BorderLayoutData(Style.LayoutRegion.WEST, 0.20f);
         west.setCollapsible(true);
         west.setSplit(true);
         west.setMargins(new Margins(0, 5, 0, 0));
@@ -100,7 +154,7 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
         return form.getMapElement();
     }
 
-    public void setContent(ReportElement element, Content content) {
+    public void setContent(MapElement element, Content content) {
         mapView.setContent(element, content);
     }
 
@@ -118,7 +172,6 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
 		map.setLayers(new AutoMapLayer());
 		
 		mapView.setContent(map, null);
-		
 	}
 
 	@Override

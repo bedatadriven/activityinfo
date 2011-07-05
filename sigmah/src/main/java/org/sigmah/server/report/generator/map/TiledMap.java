@@ -7,6 +7,7 @@ package org.sigmah.server.report.generator.map;
 
 import org.sigmah.shared.report.content.LatLng;
 import org.sigmah.shared.report.content.Point;
+import org.sigmah.shared.util.mapping.Tile;
 import org.sigmah.shared.util.mapping.TileMath;
 
 import java.awt.*;

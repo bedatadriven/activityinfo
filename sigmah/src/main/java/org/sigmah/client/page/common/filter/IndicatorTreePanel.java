@@ -8,8 +8,13 @@ package org.sigmah.client.page.common.filter;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.CheckChangedListener;
+import com.extjs.gxt.ui.client.event.EventType;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.Observable;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.TreePanelEvent;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.TreeStore;
@@ -204,6 +209,8 @@ public class IndicatorTreePanel extends ContentPanel {
             }
         }
     }
+    
+    
 
     /**
      * @return the list of selected indicators
@@ -216,6 +223,11 @@ public class IndicatorTreePanel extends ContentPanel {
             }
         }
         return list;
+    }
+    
+    public void addCheckChangedListener(Listener<TreePanelEvent> listener)
+    {
+    	tree.addListener(Events.CheckChange, listener);
     }
 
     /**

@@ -5,7 +5,6 @@
 
 package org.sigmah.shared.util.mapping;
 
-import org.sigmah.server.report.generator.map.Tile;
 import org.sigmah.shared.report.content.LatLng;
 import org.sigmah.shared.report.content.Point;
 

@@ -11,14 +11,18 @@ import java.util.List;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.map.GcIconFactory;
+import org.sigmah.client.map.IconFactory;
 import org.sigmah.client.map.MapApiLoader;
 import org.sigmah.client.map.MapTypeFactory;
+import org.sigmah.shared.command.GenerateElement;
 import org.sigmah.shared.command.GetSitePoints;
 import org.sigmah.shared.command.result.SitePointList;
 import org.sigmah.shared.dto.SitePointDTO;
 import org.sigmah.shared.map.BaseMap;
 import org.sigmah.shared.report.content.Content;
 import org.sigmah.shared.report.content.MapContent;
+import org.sigmah.shared.report.content.MapMarker;
 import org.sigmah.shared.report.model.MapElement;
 import org.sigmah.shared.report.model.ReportElement;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
@@ -37,24 +41,29 @@ import com.extjs.gxt.ui.client.widget.Status;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.maps.client.MapType;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.control.Control;
 import com.google.gwt.maps.client.control.LargeMapControl;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.geom.LatLngBounds;
+import com.google.gwt.maps.client.overlay.Icon;
 import com.google.gwt.maps.client.overlay.Marker;
+import com.google.gwt.maps.client.overlay.MarkerOptions;
 import com.google.gwt.maps.client.overlay.Overlay;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HasValue;
 
 /**
  * Displays the content of a MapElement using Google Maps.
  *
  * @author Alex Bertram (akbertram@gmail.com)
  */
-class MapElementView extends ContentPanel {
+class MapElementView extends ContentPanel implements HasValue<MapElement> {
     private MapWidget map = null;
     private String currentBaseMapId = null;
     private LatLngBounds pendingZoom = null;
@@ -128,9 +137,9 @@ class MapElementView extends ContentPanel {
         }
     }
 
-    public void setContent(ReportElement element, Content content) {
+    public void setContent(MapElement element, Content content) {
         this.element = (MapElement) element;
-        this.content = (MapContent) content;
+        
 
         if (!apiLoadFailed) {
 
@@ -213,11 +222,10 @@ class MapElementView extends ContentPanel {
 
     /**
      * Updates the size of the map and adds Overlays to reflect the content
-     * of the current
+     * of the current selected indicators
      */
     private void updateMapToContent() {
-
-    	dispatcher.execute(new GetSitePoints(0), null, new AsyncCallback<SitePointList>() {
+    	dispatcher.execute(new GenerateElement<MapContent>(element), null, new AsyncCallback<MapContent>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -225,45 +233,31 @@ class MapElementView extends ContentPanel {
 			}
 
 			@Override
-			public void onSuccess(SitePointList result) {
-
-				for(SitePointDTO point : result.getPoints()) {
-		            LatLng latLng = LatLng.newInstance(point.getY(), point.getX());
-		            Marker overlay = new Marker(latLng);
+			public void onSuccess(MapContent result) {
+		        Log.debug("MapPreview: Received content, extents are = " + content.getExtents().toString());
+				
+		        layout();
+		
+		        // TODO: i18n
+		        status.setStatus(content.getUnmappedSites().size() + " " + I18N.CONSTANTS.siteLackCoordiantes(), null);
+		
+		        GcIconFactory iconFactory = new GcIconFactory();
+		        iconFactory.primaryColor = "#0000FF";
+		
+		        for (MapMarker marker : content.getMarkers()) {
+		            Icon icon = IconFactory.createIcon(marker);
+		            LatLng latLng = LatLng.newInstance(marker.getLat(), marker.getLng());
+		
+		            MarkerOptions options = MarkerOptions.newInstance();
+		            options.setIcon(icon);
+		
+		            Marker overlay = new Marker(latLng, options);
+		
 		            map.addOverlay(overlay);
-				}
-				
-		        zoomToBounds(llBoundsForExtents(result.getBounds()));
-		        map.checkResizeAndCenter();
-				
+		            overlays.add(overlay);
+		        }
 			}
-    		
 		});
-    	
-//        Log.debug("MapPreview: Received content, extents are = " + content.getExtents().toString());
-//
-//        layout();
-//
-//
-//
-//        // TODO: i18n
-//        status.setStatus(content.getUnmappedSites().size() + " " + I18N.CONSTANTS.siteLackCoordiantes(), null);
-//
-//        GcIconFactory iconFactory = new GcIconFactory();
-//        iconFactory.primaryColor = "#0000FF";
-//
-//        for (MapMarker marker : content.getMarkers()) {
-//            Icon icon = IconFactory.createIcon(marker);
-//            LatLng latLng = LatLng.newInstance(marker.getLat(), marker.getLng());
-//
-//            MarkerOptions options = MarkerOptions.newInstance();
-//            options.setIcon(icon);
-//
-//            Marker overlay = new Marker(latLng, options);
-//
-//            map.addOverlay(overlay);
-//            overlays.add(overlay);
-//        }
     }
 
 
@@ -286,4 +280,29 @@ class MapElementView extends ContentPanel {
             layout();
         }
     }
+
+	@Override
+	public HandlerRegistration addValueChangeHandler(
+			ValueChangeHandler<MapElement> handler) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public MapElement getValue() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setValue(MapElement value) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setValue(MapElement value, boolean fireEvents) {
+		// TODO Auto-generated method stub
+		
+	}
 }

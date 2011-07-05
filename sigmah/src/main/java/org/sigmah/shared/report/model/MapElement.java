@@ -23,7 +23,6 @@ import java.util.List;
  */
 public class MapElement extends ReportElement<MapContent> {
 
-
     private String baseMapId;
     private int width = 640;
     private int height = 480;
