@@ -62,7 +62,7 @@
             key: "ABQIAAAAaKyZGjYsJ9quclBfsnGc-xSULc68XBC8rIKw1gDHypRtutTChRRhuj6VmI9buf-pphk2EHnsnmxwRg"
         };
         var VersionInfo = {
-            revision: '1.5-RC3'
+            revision: '1.5.4'
         };
         <#if offline == true>
         function disableOffline() {
@@ -83,7 +83,7 @@
     <div id="loading-box">
         <div class="loading-indicator">
             <img src="ActivityInfo/gxt/images/default/shared/large-loading.gif" alt=""/>
-            ActivityInfo 1.5RC2-2<br/>
+            ActivityInfo 1.5.4<br/>
             <span id="loading-msg">Chargement en cours...</span>
 
         </div>
