@@ -7,6 +7,9 @@ package org.sigmah.shared.report.model;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+
+import com.google.gwt.user.client.ui.Image;
+
 import java.util.ArrayList;
 import java.util.List;
 

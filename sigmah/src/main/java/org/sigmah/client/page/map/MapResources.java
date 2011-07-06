@@ -16,7 +16,10 @@ public interface MapResources extends ClientBundle {
 	public MapStyle layerStyle();
 	
 	@Source("GrabSprite.png")
-	public ImageResource grabSprite();	
+	public ImageResource grabSprite();		
+	
+	@Source("Poi.png")
+	public ImageResource poi();	
 	
 	@Source("CheckboxUnchecked.png")
 	public ImageResource checkboxUnchecked();	

@@ -64,7 +64,7 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
     private final MapForm form;
     private MapElementView mapView;
     private ActionToolBar toolBar;
-    private SelectedLayerList layerControl;
+    private SelectedLayersView layerControl;
     private MapElement mapElement = new MapElement();
 
     @Inject
@@ -77,20 +77,20 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
         setHeaderVisible(false);
         
         this.form = form;
+        
         createFormPane(form);
         createMap();
         createToolBar();
         createSelectedLayersWidget();
-
-        
         
         form.getIndicatorTree().addCheckChangedListener(new Listener<TreePanelEvent>(){
 			@Override
 			public void handleEvent(TreePanelEvent be) {
-				BubbleMapLayer layer2 = new BubbleMapLayer();
-				layer2.setIndicatorIds(form.getIndicatorTree().getSelectedIds());
-				mapElement.addLayer(layer2);			
+				BubbleMapLayer layer = new BubbleMapLayer();
+				layer.setIndicatorIds(form.getIndicatorTree().getSelectedIds());
+				mapElement.addLayer(layer);			
 				layerControl.setValue(mapElement);
+				be.setCancelled(true);
 			}
         	
         });
@@ -98,7 +98,7 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
     }
 
     private void createSelectedLayersWidget() {
-        layerControl = new SelectedLayerList();
+        layerControl = new SelectedLayersView();
         
         BorderLayoutData east = new BorderLayoutData(Style.LayoutRegion.EAST, 0.20f);
         east.setCollapsible(true);
@@ -161,8 +161,6 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
     public boolean validate() {
         return form.validate();
     }
-    
-    
 
 	@Override
 	protected void onRender(Element parent, int pos) {
