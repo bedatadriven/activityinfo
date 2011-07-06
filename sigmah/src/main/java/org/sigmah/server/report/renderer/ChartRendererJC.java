@@ -5,6 +5,19 @@
 
 package org.sigmah.server.report.renderer;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Shape;
+import java.awt.Stroke;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+
 import org.krysalis.jcharts.Chart;
 import org.krysalis.jcharts.axisChart.AxisChart;
 import org.krysalis.jcharts.chartData.AxisChartDataSet;
@@ -12,9 +25,20 @@ import org.krysalis.jcharts.chartData.ChartDataException;
 import org.krysalis.jcharts.chartData.DataSeries;
 import org.krysalis.jcharts.chartData.PieChartDataSet;
 import org.krysalis.jcharts.chartData.interfaces.IAxisDataSeries;
-import org.krysalis.jcharts.encoders.JPEGEncoder13;
+import org.krysalis.jcharts.encoders.JPEGEncoder;
 import org.krysalis.jcharts.nonAxisChart.PieChart2D;
-import org.krysalis.jcharts.properties.*;
+import org.krysalis.jcharts.properties.AxisChartTypeProperties;
+import org.krysalis.jcharts.properties.AxisProperties;
+import org.krysalis.jcharts.properties.BarChartProperties;
+import org.krysalis.jcharts.properties.ChartProperties;
+import org.krysalis.jcharts.properties.ClusteredBarChartProperties;
+import org.krysalis.jcharts.properties.DataAxisProperties;
+import org.krysalis.jcharts.properties.LabelAxisProperties;
+import org.krysalis.jcharts.properties.LegendProperties;
+import org.krysalis.jcharts.properties.LineChartProperties;
+import org.krysalis.jcharts.properties.PieChart2DProperties;
+import org.krysalis.jcharts.properties.PropertyException;
+import org.krysalis.jcharts.properties.StackedBarChartProperties;
 import org.krysalis.jcharts.properties.util.ChartFont;
 import org.krysalis.jcharts.properties.util.ChartStroke;
 import org.krysalis.jcharts.types.ChartType;
@@ -28,13 +52,6 @@ import org.sigmah.shared.report.content.PivotTableData;
 import org.sigmah.shared.report.model.CategoryProperties;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.PivotChartElement;
-
-import java.awt.*;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
 
 
 /**
@@ -51,7 +68,7 @@ public class ChartRendererJC  {
         try {
             Chart chart = createChart(element, includeTitle, width, height, dpi);
             ImageStorage storage = istorageProvider.getImageUrl(".jpg");
-            JPEGEncoder13.encode(chart,  0.75f, storage.getOutputStream());
+            JPEGEncoder.encode(chart,  0.75f, storage.getOutputStream());
             return storage.getUrl();
 
         } catch (Exception e) {
