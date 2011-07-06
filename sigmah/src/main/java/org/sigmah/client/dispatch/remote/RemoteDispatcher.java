@@ -18,6 +18,7 @@ import com.google.inject.Singleton;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.*;
 import org.sigmah.client.dispatch.remote.cache.ProxyResult;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.RemoteCommandServiceAsync;
 import org.sigmah.shared.command.result.CommandResult;
@@ -334,7 +335,9 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
         // TODO: for the moment our auth tokens don't expire. If at some point
         // we implement more aggressive security this needs to be handled gracefully
         // on the client.
-        Window.alert("You are not authenticated. Not clear why this has happened. Try logging in again.");
+        Window.alert(I18N.CONSTANTS.notAuthenticated());
+        
+        Window.Location.assign("/login");
     }
 
     private void onClientSideSerializationError(Throwable caught) {
