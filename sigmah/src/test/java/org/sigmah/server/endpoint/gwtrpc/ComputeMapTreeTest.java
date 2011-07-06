@@ -11,6 +11,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.hibernate.ejb.HibernateEntityManager;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.dao.OnDataSet;
@@ -30,6 +31,7 @@ import org.sigmah.test.InjectionSupport;
 public class ComputeMapTreeTest extends CommandTestCase {
 
 	@Test
+	@Ignore
 	public void works() throws CommandException, FileNotFoundException {
 		
 		MapTree tree = execute(new ComputeMapTree());

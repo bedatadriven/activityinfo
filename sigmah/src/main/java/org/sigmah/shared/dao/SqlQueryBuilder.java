@@ -131,7 +131,7 @@ public class SqlQueryBuilder {
                 where("Site.ActivityId").in(filter.getRestrictions(type));
 
             } else if (type == DimensionType.Database) {
-                where("Site.DatabaseId").in(filter.getRestrictions(type));
+                where("Activity.DatabaseId").in(filter.getRestrictions(type));
 
             } else if (type == DimensionType.Partner) {
                 where("Site.PartnerId").in(filter.getRestrictions(type));
