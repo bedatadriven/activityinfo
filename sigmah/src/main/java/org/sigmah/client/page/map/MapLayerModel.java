@@ -13,7 +13,7 @@ public class MapLayerModel extends BaseModelData {
 	}
 
 	public boolean isVisible() {
-		return get("visible");
+		return (Boolean) get("visible");
 	}
 
 	public void setVisible(boolean isVisible) {
