@@ -260,21 +260,7 @@ public class OfflinePresenter implements Dispatcher {
 
         @Override
         public void onDefaultButton() {
-        	// check for gears installation--
-        	// this is the only current implementation
-        	if(Factory.getInstance() == null) {
-        		MessageBox.confirm(I18N.CONSTANTS.gearsRequired(), I18N.CONSTANTS.gearsInstall(), new Listener<MessageBoxEvent>() {
-
-							@Override
-							public void handleEvent(MessageBoxEvent be) {
-								if("yes".equals(be.getButtonClicked().getItemId())) {
-									Window.open("http://gears.google.com", "_blank", null);
-								}
-							}
-						});
-        	} else {
-        		activateStrategy(new InstallingStrategy());
-        	}
+       		activateStrategy(new InstallingStrategy());
         }
         
     }

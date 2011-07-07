@@ -10,6 +10,8 @@ import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.util.Theme;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.gears.client.Factory;
+
 import org.sigmah.client.inject.AppInjector;
 import org.sigmah.client.offline.AuthTokenUtil;
 
@@ -61,7 +63,11 @@ public class ActivityInfoEntryPoint implements EntryPoint {
         injector.getHistoryManager();
         injector.getDownloadManager();
         
-        injector.createOfflineManager();
+        if(isOfflineModeSupported()) {
+        	injector.createOfflinePresenter();
+        } else {
+        	injector.createUnsupportedOfflinePresenter();
+        }
 
         createCaches(injector);
 
@@ -70,7 +76,12 @@ public class ActivityInfoEntryPoint implements EntryPoint {
         injector.getEventBus().fireEvent(AppEvents.Init);
     }
 
-    protected void createCaches(AppInjector injector) {
+    private boolean isOfflineModeSupported() {
+    	// Gears is currently required for offline mode
+		return Factory.getInstance() != null;
+	}
+
+	protected void createCaches(AppInjector injector) {
         injector.createSchemaCache();
         injector.createAdminCache();
     }
