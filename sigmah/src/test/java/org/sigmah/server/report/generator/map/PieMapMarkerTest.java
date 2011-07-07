@@ -12,27 +12,24 @@ import org.sigmah.server.domain.SiteData;
 import org.sigmah.shared.report.content.LatLng;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.PieMapMarker;
-import org.sigmah.shared.report.model.BubbleMapLayer;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.MapElement;
+import org.sigmah.shared.report.model.layers.BubbleMapLayer;
+import org.sigmah.shared.report.model.layers.PiechartMapLayer;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Alex Bertram
- */
 public class PieMapMarkerTest {
-
 
     @Test
     public void testPies() {
 
-        Dimension dim = new Dimension(DimensionType.Indicator);
-        dim.setCategoryColor(101, 255);
-        dim.setCategoryColor(102, 0x00FF00);
-        dim.setCategoryColor(103, 0x0000FF);
+        Dimension dimension = new Dimension(DimensionType.Indicator);
+        dimension.setCategoryColor(101, 255);
+        dimension.setCategoryColor(102, 0x00FF00);
+        dimension.setCategoryColor(103, 0x0000FF);
 
         SiteData site1 = new SiteData();
         site1.setValue(SiteTableColumn.id,  1);
@@ -45,12 +42,11 @@ public class PieMapMarkerTest {
         List<SiteData> sites = new ArrayList<SiteData>();
         sites.add(site1);
 
-        BubbleMapLayer layer = new BubbleMapLayer();
-        layer.setPie(true);
+        PiechartMapLayer layer = new PiechartMapLayer();
         layer.addIndicator(101);
         layer.addIndicator(102);
         layer.addIndicator(103);
-        layer.getColorDimensions().add(dim);
+        //layer.getColorDimensions().add(dimension);
 
         MapElement mapElement = new MapElement();
         mapElement.addLayer(layer);
@@ -59,7 +55,7 @@ public class PieMapMarkerTest {
 
         TiledMap map = new TiledMap(640, 480, new LatLng(0, 0), 6);
 
-        BubbleLayerGenerator gtor = new BubbleLayerGenerator(mapElement, layer);
+        PiechartLayerGenerator gtor = new PiechartLayerGenerator(mapElement, layer);
         gtor.generate(sites, map, content);
 
         Assert.assertEquals(1, content.getMarkers().size());

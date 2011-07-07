@@ -25,7 +25,6 @@ public interface LayerGenerator {
      */
     Extents calculateExtents(List<SiteData> sites);
 
-
     /**
      * Calculates the maximum potential margins (in pixels)
      * outside of the geographic bounds.
@@ -34,9 +33,5 @@ public interface LayerGenerator {
      */
     Margins calculateMargins();
 
-
     void generate(List<SiteData> sites, TiledMap map, MapContent content);
-
-
-
 }

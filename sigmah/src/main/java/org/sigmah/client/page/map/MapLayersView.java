@@ -1,12 +1,12 @@
 package org.sigmah.client.page.map;
 
-import org.sigmah.shared.report.model.BubbleMapLayer;
 import org.sigmah.shared.report.model.MapElement;
-import org.sigmah.shared.report.model.MapLayer;
+import org.sigmah.shared.report.model.layers.BubbleMapLayer;
+import org.sigmah.shared.report.model.layers.MapLayer;
 
+import com.extjs.gxt.ui.client.dnd.DND.Feedback;
 import com.extjs.gxt.ui.client.dnd.ListViewDragSource;
 import com.extjs.gxt.ui.client.dnd.ListViewDropTarget;
-import com.extjs.gxt.ui.client.dnd.DND.Feedback;
 import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.ListViewEvent;
@@ -18,7 +18,6 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.HasValue;
@@ -65,6 +64,10 @@ public class MapLayersView extends LayoutContainer implements HasValue<MapElemen
 		view.setTemplate(MapResources.INSTANCE.layerTemplate().getText());
 		view.setItemSelector(".layerItem");
 		
+		// Prevents confusion for the user where an onmouseover-ed item in the listview *looks* selected,
+		// but in fact is not selected
+		view.setSelectOnOver(true);
+		
 		view.getSelectionModel().addListener(Events.SelectionChange,
 				new Listener<SelectionChangedEvent<MapLayerModel>>() {
 					@Override
@@ -110,8 +113,7 @@ public class MapLayersView extends LayoutContainer implements HasValue<MapElemen
 					}
 				} 
 			}
-		});					
-
+		});			
 		
 	   ListViewDropTarget target = new ListViewDropTarget(view);
 	   target.setAllowSelfAsSource(true);
@@ -160,7 +162,7 @@ public class MapLayersView extends LayoutContainer implements HasValue<MapElemen
 					MapLayerModel model =  new MapLayerModel();
 					model.setName("layer X");
 					model.setVisible(layer.isVisible());
-					layer.setModel(model);
+					model.setMapLayer(layer);
 					store.add(model);
 				}
 			}

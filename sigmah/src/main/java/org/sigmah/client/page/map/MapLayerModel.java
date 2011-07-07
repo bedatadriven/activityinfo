@@ -1,9 +1,11 @@
 package org.sigmah.client.page.map;
 
+import org.sigmah.shared.report.model.layers.MapLayer;
+
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 public class MapLayerModel extends BaseModelData {
-
+	private MapLayer mapLayer;
 	public String getName() {
 		return get("name");
 	}
@@ -18,5 +20,13 @@ public class MapLayerModel extends BaseModelData {
 
 	public void setVisible(boolean isVisible) {
 		set("visible", isVisible);
+	}
+
+	public void setMapLayer(MapLayer mapLayer) {
+		this.mapLayer = mapLayer;
+	}
+
+	public MapLayer getMapLayer() {
+		return mapLayer;
 	}
 }

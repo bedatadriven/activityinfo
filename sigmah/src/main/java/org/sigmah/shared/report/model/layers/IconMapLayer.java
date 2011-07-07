@@ -3,7 +3,7 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.shared.report.model;
+package org.sigmah.shared.report.model.layers;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -13,28 +13,15 @@ import com.google.gwt.user.client.ui.Image;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Alex Bertram
+/*
+ * Displays an icon on a point of interest
  */
-public class IconMapLayer extends MapLayer {
+public class IconMapLayer extends AbstractMapLayer {
 
-    private List<Integer> indicatorIds = new ArrayList<Integer>(0);
     private List<Integer> activityIds = new ArrayList<Integer>(0);
 
     private String icon;
-    private boolean clustered = true;
-
     public IconMapLayer() {
-    }
-
-    @XmlElement(name="indicator")
-    @XmlElementWrapper(name="indicators")
-    public List<Integer> getIndicatorIds() {
-        return indicatorIds;
-    }
-
-    public void setIndicatorIds(List<Integer> indicatorIds) {
-        this.indicatorIds = indicatorIds;
     }
 
     @XmlElement(name="activity")
@@ -54,19 +41,6 @@ public class IconMapLayer extends MapLayer {
 
     public void setIcon(String icon) {
         this.icon = icon;
-    }
-
-    public void addIndicator(int id) {
-        indicatorIds.add(id);
-    }
-
-    @XmlElement
-    public boolean isClustered() {
-        return clustered;
-    }
-
-    public void setClustered(boolean clustered) {
-        this.clustered = clustered;
     }
 
     public void addActivityId(int activityId) {

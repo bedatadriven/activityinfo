@@ -15,10 +15,13 @@ import org.sigmah.shared.domain.User;
 import org.sigmah.shared.report.content.BubbleMapMarker;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.TableData;
-import org.sigmah.shared.report.model.BubbleMapLayer;
 import org.sigmah.shared.report.model.MapElement;
 import org.sigmah.shared.report.model.TableColumn;
 import org.sigmah.shared.report.model.TableElement;
+import org.sigmah.shared.report.model.labeling.ArabicNumberSequence;
+import org.sigmah.shared.report.model.layers.BubbleMapLayer;
+import org.sigmah.shared.report.model.layers.CircledMapLayer;
+import org.sigmah.shared.report.model.layers.MapLayer;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -71,8 +74,8 @@ public class TableGeneratorTest {
 
         MapElement map = new MapElement();
         map.setBaseMapId("map1");
-        BubbleMapLayer layer = new BubbleMapLayer();
-        layer.setNumbering(BubbleMapLayer.NumberingType.ArabicNumerals);
+        CircledMapLayer layer = new BubbleMapLayer();
+        layer.setLabelSequence(new ArabicNumberSequence());
         map.addLayer(layer);
         table.setMap(map);
 

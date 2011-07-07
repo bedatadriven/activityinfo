@@ -7,9 +7,9 @@ package org.sigmah.server.report.generator.map;
 
 import org.sigmah.server.domain.SiteData;
 import org.sigmah.shared.report.content.*;
-import org.sigmah.shared.report.model.IconMapLayer;
 import org.sigmah.shared.report.model.MapElement;
 import org.sigmah.shared.report.model.MapIcon;
+import org.sigmah.shared.report.model.layers.IconMapLayer;
 import org.sigmah.shared.util.mapping.Extents;
 
 import java.util.ArrayList;

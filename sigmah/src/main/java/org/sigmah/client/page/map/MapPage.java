@@ -22,10 +22,11 @@ import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.shared.command.RenderElement;
 import org.sigmah.shared.command.RenderElement.Format;
 import org.sigmah.shared.report.content.Content;
-import org.sigmah.shared.report.model.AutoMapLayer;
-import org.sigmah.shared.report.model.BubbleMapLayer;
 import org.sigmah.shared.report.model.MapElement;
 import org.sigmah.shared.report.model.ReportElement;
+import org.sigmah.shared.report.model.layers.AbstractMapLayer;
+import org.sigmah.shared.report.model.layers.AutoMapLayer;
+import org.sigmah.shared.report.model.layers.BubbleMapLayer;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -76,11 +77,10 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
         form.getIndicatorTree().addCheckChangedListener(new Listener<TreePanelEvent>(){
 			@Override
 			public void handleEvent(TreePanelEvent be) {
-					BubbleMapLayer layer = new BubbleMapLayer();
+					AbstractMapLayer layer = new BubbleMapLayer();
 					layer.setIndicatorIds(form.getIndicatorTree().getSelectedIds());
 					mapElement.addLayer(layer);
 					layerControl.setValue(mapElement);
-					//be.setCancelled(true);
 			}
         	
         });

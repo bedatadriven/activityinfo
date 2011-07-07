@@ -9,6 +9,12 @@ import java.io.Serializable;
 
 import org.sigmah.shared.report.content.LatLng;
 
+/*
+ * Bounding box for a map. 
+ * 
+ * This cannot be mapped 1:1 to a rectangle, since a lat/long combination is a coordinate on
+ * a sphere as opposed to a coordinate on a 2D plane.
+ */
 public class Extents implements Serializable {
 
 	private double minLat;

@@ -6,6 +6,10 @@
 package org.sigmah.shared.report.model;
 
 import org.sigmah.shared.report.content.MapContent;
+import org.sigmah.shared.report.model.layers.AbstractMapLayer;
+import org.sigmah.shared.report.model.layers.BubbleMapLayer;
+import org.sigmah.shared.report.model.layers.IconMapLayer;
+import org.sigmah.shared.report.model.layers.MapLayer;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -14,12 +18,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
 /**
  * Models a map element within a report
- * 
- * @author Alex Bertram
- *
  */
 public class MapElement extends ReportElement<MapContent> {
 
@@ -58,7 +58,7 @@ public class MapElement extends ReportElement<MapContent> {
         this.height = height;
     }
 
-    public void addLayer(MapLayer layer) {
+    public void addLayer(AbstractMapLayer layer) {
         this.layers.add(layer);
     }
 

@@ -12,7 +12,9 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.widget.ColorField;
 import org.sigmah.client.page.common.widget.MappingComboBox;
-import org.sigmah.shared.report.model.BubbleMapLayer;
+import org.sigmah.shared.report.model.layers.AbstractMapLayer;
+import org.sigmah.shared.report.model.layers.BubbleMapLayer;
+import org.sigmah.shared.report.model.layers.ScalingType;
 
 class BubbleLayerForm extends FormPanel {
     private NumberField maxRadiusField;
@@ -60,7 +62,7 @@ class BubbleLayerForm extends FormPanel {
     }
 
     public void updateLayer(BubbleMapLayer layer) {
-        layer.setScaling(BubbleMapLayer.ScalingType.Graduated);
+        layer.setScaling(ScalingType.Graduated);
         layer.setMaxRadius(maxRadiusField.getValue().intValue());
         layer.setMinRadius(minRadiusField.getValue().intValue());
         layer.setDefaultColor(colorField.getIntValue());

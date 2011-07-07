@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.domain.Indicator;
-import org.sigmah.shared.report.model.MapLayer;
+import org.sigmah.shared.report.model.layers.MapLayer;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.data.PropertyChangeEvent;

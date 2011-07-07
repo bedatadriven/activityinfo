@@ -9,14 +9,16 @@ import org.sigmah.server.domain.SiteData;
 import org.sigmah.server.report.generator.MapSymbol;
 import org.sigmah.shared.report.content.*;
 import org.sigmah.shared.report.model.*;
+import org.sigmah.shared.report.model.labeling.ArabicNumberSequence;
+import org.sigmah.shared.report.model.labeling.LabelSequence;
+import org.sigmah.shared.report.model.labeling.LatinAlphaSequence;
+import org.sigmah.shared.report.model.layers.BubbleMapLayer;
+import org.sigmah.shared.report.model.layers.ScalingType;
 import org.sigmah.shared.util.mapping.Extents;
 
 import java.util.*;
 
-/**
- * @author Alex Bertram
- */
-public class BubbleLayerGenerator implements LayerGenerator {
+public class BubbleLayerGenerator extends AbstractLayerGenerator {
 
     private MapElement element;
     private BubbleMapLayer layer;
@@ -24,52 +26,9 @@ public class BubbleLayerGenerator implements LayerGenerator {
     public BubbleLayerGenerator(MapElement element, BubbleMapLayer layer) {
         this.element = element;
         this.layer = layer;
-
-        // do sanity checks
-        if(this.layer.isPie() && this.layer.getIndicatorIds().size()== 0) {
-            throw new RuntimeException("Bubble layers styled as pies must have at least one indicator specified.");
-        }
-    }
-
-    protected boolean hasValue(SiteData site, List<Integer> indicatorIds) {
-
-        // if no indicators are specified, we count sites
-        if(indicatorIds.size() == 0) {
-            return true;
-        }
-
-        for(Integer indicatorId : indicatorIds) {
-            Double indicatorValue = site.getIndicatorValue(indicatorId);
-            if(indicatorValue != null) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    protected Double getValue(SiteData site, List<Integer> indicatorIds) {
-
-        // if no indicators are specifid, we count sites.
-        if(indicatorIds.size() == 0) {
-            return 1.0;
-        }
-
-        Double value = null;
-        for(Integer indicatorId : indicatorIds) {
-            Double indicatorValue = site.getIndicatorValue(indicatorId);
-            if(indicatorValue != null) {
-                if(value == null) {
-                    value = indicatorValue;
-                } else {
-                    value += indicatorValue;
-                }
-            }
-        }
-        return value;
     }
 
     public Extents calculateExtents(List<SiteData> sites) {
-
         // PRE---PASS - calculate extents of sites WITH non-zero
         // values for this indicator
 
@@ -81,7 +40,6 @@ public class BubbleLayerGenerator implements LayerGenerator {
                 extents.grow(site.getLatitude(), site.getLongitude());
             }
         }
-
 
         return extents;
     }
@@ -100,11 +58,11 @@ public class BubbleLayerGenerator implements LayerGenerator {
 
         // define our symbol scaling
         RadiiCalculator radiiCalculator;
-        if(layer.getScaling() == BubbleMapLayer.ScalingType.None ||
+        if(layer.getScaling() == ScalingType.None ||
                 layer.getMinRadius() == layer.getMaxRadius())
         {
             radiiCalculator = new FixedRadiiCalculator(layer.getMinRadius());
-        } else if(layer.getScaling() == BubbleMapLayer.ScalingType.Graduated) {
+        } else if(layer.getScaling() == ScalingType.Graduated) {
             radiiCalculator = new GsLogCalculator(layer.getMinRadius(), layer.getMaxRadius());
         } else {
             radiiCalculator = new FixedRadiiCalculator(layer.getMinRadius());
@@ -124,14 +82,8 @@ public class BubbleLayerGenerator implements LayerGenerator {
         for(Cluster cluster : clusters) {
             Point px = cluster.getPoint();
             LatLng latlng = cluster.latLngCentroid();
+            BubbleMapMarker marker =  new BubbleMapMarker();
 
-            BubbleMapMarker marker;
-            if(layer.isPie()) {
-                marker = new PieMapMarker();
-                sumSlices((PieMapMarker) marker, cluster.getPointValues());
-            } else {
-                marker = new BubbleMapMarker();
-            }
             for(PointValue pv : cluster.getPointValues()) {
                 marker.getSiteIds().add(pv.site.getId());
             }
@@ -149,7 +101,7 @@ public class BubbleLayerGenerator implements LayerGenerator {
         }
 
         // number markers if applicable
-        if(layer.getNumbering() != BubbleMapLayer.NumberingType.None) {
+        if(layer.getLabelSequence() != null) {
             numberMarkers(markers);
         }
 
@@ -166,8 +118,7 @@ public class BubbleLayerGenerator implements LayerGenerator {
 
         // if one of the dimensions is Indicator, then we will be potentially
         // generating several points per site. Otherwise, it is one point per site
-        boolean byIndicator = layer.containsIndicatorDimension() &&
-                 !layer.isPie();
+        boolean byIndicator = layer.containsIndicatorDimension();
 
         for(SiteData site : sites) {
 
@@ -198,9 +149,6 @@ public class BubbleLayerGenerator implements LayerGenerator {
                         PointValue pv = new PointValue(site,
                                 createSymbol(site, layer.getColorDimensions()),
                                 value, px);
-                        if(layer.isPie()) {
-                            calcSlices(pv, site);
-                        }
 
                         (px==null ? unmapped : mapped).add(pv);
                     }
@@ -209,57 +157,15 @@ public class BubbleLayerGenerator implements LayerGenerator {
         }
     }
 
-    private void calcSlices(PointValue pv, SiteData site) {
-        Dimension dim = layer.getColorDimensions().get(0);
-        pv.slices = new ArrayList<PieMapMarker.Slice>();
-        if(dim.getType() == DimensionType.Indicator) {
-            for(Integer integerId : layer.getIndicatorIds()) {
-                EntityCategory indicatorCategory = new EntityCategory(integerId);
-                Double value = site.getIndicatorValue(integerId);
-                if(value != null && value != 0) {
-                    PieMapMarker.Slice slice = new PieMapMarker.Slice();
-                    slice.setValue(value);
-                    slice.setCategory(indicatorCategory);
-
-                    CategoryProperties props = dim.getCategories().get(indicatorCategory);
-                    if(props != null && props.getColor() != null) {
-                        slice.setColor(props.getColor());
-                    } else {
-                        slice.setColor(layer.getDefaultColor());
-                    }
-                    pv.slices.add(slice);
-                }
-            }
-        }
-    }
-
-    private void sumSlices(PieMapMarker marker, List<PointValue> pvs) {
-        Map<DimensionCategory, PieMapMarker.Slice> slices = new HashMap<DimensionCategory, PieMapMarker.Slice>();
-        for(PointValue pv : pvs ) {
-            for(PieMapMarker.Slice slice : pv.slices)  {
-                PieMapMarker.Slice summedSlice = slices.get(slice.getCategory());
-                if(summedSlice == null) {
-                    summedSlice = new PieMapMarker.Slice(slice);
-                    slices.put(slice.getCategory(), summedSlice);
-                } else {
-                    summedSlice.setValue(summedSlice.getValue() + slice.getValue());
-                }
-            }
-        }
-        marker.setSlices(new ArrayList<PieMapMarker.Slice>(slices.values()));
-    }
-
     public MapSymbol createSymbol(SiteData site, List<Dimension> dimensions) {
-
         MapSymbol symbol = new MapSymbol();
 
-        if(!layer.isPie()) {
-            for(Dimension dimension : dimensions) {
-                if(dimension.getType() == DimensionType.Partner) {
-                    symbol.put(dimension, new EntityCategory(site.getPartnerId()));
-                }
+        for(Dimension dimension : dimensions) {
+            if(dimension.getType() == DimensionType.Partner) {
+                symbol.put(dimension, new EntityCategory(site.getPartnerId()));
             }
         }
+
         return symbol;
     }
 
@@ -308,17 +214,9 @@ public class BubbleLayerGenerator implements LayerGenerator {
         // sequence is spatially consistent
         Collections.sort(markers, new MapMarker.LRTBComparator());
 
-        // create our label sequence based on the layer properties
-        LabelSequence sequence;
-        if(layer.getNumbering() == BubbleMapLayer.NumberingType.LatinAlphabet) {
-            sequence = new LatinAlphaSequence();
-        } else {
-            sequence = new ArabicNumberSequence();
-        }
-
         // add the labels
         for(BubbleMapMarker marker : markers) {
-            marker.setLabel(sequence.next());
+            marker.setLabel(layer.getLabelSequence().next());
         }
     }
 

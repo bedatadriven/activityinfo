@@ -118,7 +118,7 @@ public class IndicatorTreePanel extends ContentPanel {
                             tpe.within(tree.getView().getTextElement(tpe.getNode())) &&
                             !tree.isChecked(model)) {
 
-                        tree.setChecked(model, true);
+                        tree.setChecked(model, !tree.isChecked(model));
                     }
                 }
             }

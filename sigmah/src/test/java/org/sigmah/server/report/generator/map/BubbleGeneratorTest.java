@@ -13,6 +13,7 @@ import org.sigmah.shared.report.content.BubbleMapMarker;
 import org.sigmah.shared.report.content.LatLng;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.model.*;
+import org.sigmah.shared.report.model.layers.BubbleMapLayer;
 
 import java.util.ArrayList;
 import java.util.List;

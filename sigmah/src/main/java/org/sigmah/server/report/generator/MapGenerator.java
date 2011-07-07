@@ -19,6 +19,9 @@ import org.sigmah.shared.map.BaseMap;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.MapMarker;
 import org.sigmah.shared.report.model.*;
+import org.sigmah.shared.report.model.layers.BubbleMapLayer;
+import org.sigmah.shared.report.model.layers.IconMapLayer;
+import org.sigmah.shared.report.model.layers.MapLayer;
 import org.sigmah.shared.util.mapping.Extents;
 import org.sigmah.shared.util.mapping.TileMath;
 

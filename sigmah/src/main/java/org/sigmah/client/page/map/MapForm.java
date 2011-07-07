@@ -18,10 +18,10 @@ import org.sigmah.client.page.common.filter.DateRangePanel;
 import org.sigmah.client.page.common.filter.IndicatorTreePanel;
 import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
-import org.sigmah.shared.report.model.BubbleMapLayer;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.MapElement;
 import org.sigmah.shared.report.model.ReportElement;
+import org.sigmah.shared.report.model.layers.BubbleMapLayer;
 
 import java.util.ArrayList;
 import java.util.List;

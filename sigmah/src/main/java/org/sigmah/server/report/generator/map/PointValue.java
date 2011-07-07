@@ -13,7 +13,6 @@ import org.sigmah.shared.report.content.Point;
 import java.awt.*;
 import java.util.List;
 
-
 public class PointValue {
 
     public PointValue() {
@@ -39,5 +38,4 @@ public class PointValue {
     public Point px;
     public Rectangle iconRect;
     public List<PieMapMarker.Slice> slices;
-
 }

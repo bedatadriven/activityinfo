@@ -18,9 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
-/**
- * @author Alex Bertram
+/*
+ * Olap dimension, mapping to rows or columns in pivot tables
  */
 @XmlJavaTypeAdapter(DimensionAdapter.class)
 public class Dimension extends BaseModelData implements Serializable {
@@ -112,7 +111,6 @@ public class Dimension extends BaseModelData implements Serializable {
         categories.put(new EntityCategory(id), props);
     }
 
-
     @Override
     public boolean equals(Object other) {
         if (this == other) {
@@ -125,12 +123,9 @@ public class Dimension extends BaseModelData implements Serializable {
             return false;
         }
 
-
         Dimension that = (Dimension) other;
 
-
         return this.type == that.type;
-
     }
 
     @Override
