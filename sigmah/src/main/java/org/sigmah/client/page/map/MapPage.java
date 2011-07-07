@@ -5,8 +5,6 @@
 
 package org.sigmah.client.page.map;
 
-import java.util.Collections;
-
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
@@ -30,21 +28,13 @@ import org.sigmah.shared.report.model.MapElement;
 import org.sigmah.shared.report.model.ReportElement;
 
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.CheckChangedEvent;
-import com.extjs.gxt.ui.client.event.CheckChangedListener;
-import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.TreePanelEvent;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Element;
@@ -64,7 +54,7 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
     private final MapForm form;
     private MapElementView mapView;
     private ActionToolBar toolBar;
-    private SelectedLayersView layerControl;
+    private MapLayersView layerControl;
     private MapElement mapElement = new MapElement();
 
     @Inject
@@ -98,7 +88,7 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
     }
 
     private void createSelectedLayersWidget() {
-        layerControl = new SelectedLayersView();
+        layerControl = new MapLayersView();
         
         BorderLayoutData east = new BorderLayoutData(Style.LayoutRegion.EAST, 0.20f);
         east.setCollapsible(true);

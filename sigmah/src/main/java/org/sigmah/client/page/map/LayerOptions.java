@@ -44,8 +44,7 @@ public class LayerOptions extends FormPanel {
 	private Radio radioAutomaticAggr = new Radio();
 	private Radio radioNoAggr = new Radio();
 
-	static
-	{
+	static 	{
 		possibleIcons.add(MapResources.INSTANCE.poi());
 		possibleIcons.add(MapResources.INSTANCE.poi());
 		possibleIcons.add(MapResources.INSTANCE.poi());
@@ -89,7 +88,7 @@ public class LayerOptions extends FormPanel {
 	}
 
 	private void createIconsContentPanel() {
-		contentpanelIcons.setLayout(new FlowLayout());
+		contentpanelIcons.setLayout(new RowLayout(Orientation.HORIZONTAL));
 		contentpanelIcons.setHeaderVisible(false);
 		
 		for (ImageResource icon : possibleIcons)

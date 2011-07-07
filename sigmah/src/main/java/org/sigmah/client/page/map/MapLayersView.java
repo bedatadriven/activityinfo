@@ -24,18 +24,18 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.HasValue;
 
 /*
- * Displays a list of layers selected by the user
+ * Displays a list of layers selected by the user 
  * 
  * @author Ruud Poutsma
  */
-public class SelectedLayersView extends LayoutContainer implements HasValue<MapElement> {
+public class MapLayersView extends LayoutContainer implements HasValue<MapElement> {
 	private MapElement mapElement;
 	ListStore<MapLayerModel> store = new ListStore<MapLayerModel>();
 	ListView<MapLayerModel> view = new ListView<MapLayerModel>();
 	ContentPanel panel = new ContentPanel();
 	LayerOptions layerOptions = new LayerOptions();
 	
-	public SelectedLayersView() {
+	public MapLayersView() {
 		super();
 		
 		setLayout(new FitLayout());
