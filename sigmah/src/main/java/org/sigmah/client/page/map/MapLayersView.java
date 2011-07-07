@@ -25,8 +25,6 @@ import com.google.gwt.user.client.ui.HasValue;
 
 /*
  * Displays a list of layers selected by the user 
- * 
- * @author Ruud Poutsma
  */
 public class MapLayersView extends LayoutContainer implements HasValue<MapElement> {
 	private MapElement mapElement;

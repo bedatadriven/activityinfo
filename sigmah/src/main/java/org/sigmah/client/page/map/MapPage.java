@@ -76,11 +76,11 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
         form.getIndicatorTree().addCheckChangedListener(new Listener<TreePanelEvent>(){
 			@Override
 			public void handleEvent(TreePanelEvent be) {
-				BubbleMapLayer layer = new BubbleMapLayer();
-				layer.setIndicatorIds(form.getIndicatorTree().getSelectedIds());
-				mapElement.addLayer(layer);			
-				layerControl.setValue(mapElement);
-				be.setCancelled(true);
+					BubbleMapLayer layer = new BubbleMapLayer();
+					layer.setIndicatorIds(form.getIndicatorTree().getSelectedIds());
+					mapElement.addLayer(layer);
+					layerControl.setValue(mapElement);
+					//be.setCancelled(true);
 			}
         	
         });
@@ -96,7 +96,6 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
         east.setMargins(new Margins(0, 0, 0, 5));
         
         layerControl.addValueChangeHandler(new ValueChangeHandler<MapElement>() {
-			
 			@Override
 			public void onValueChange(ValueChangeEvent<MapElement> event) {
 				//mapView.setValue()

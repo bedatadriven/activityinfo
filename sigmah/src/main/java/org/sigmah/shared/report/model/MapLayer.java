@@ -44,4 +44,5 @@ public abstract class MapLayer implements Serializable {
 	public Indicator getIndicator() {
 		return indicator;
 	}
+	
 }

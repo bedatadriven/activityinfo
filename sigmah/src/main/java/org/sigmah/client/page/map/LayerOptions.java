@@ -4,21 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.shared.domain.Indicator;
 import org.sigmah.shared.report.model.MapLayer;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
+import com.extjs.gxt.ui.client.data.PropertyChangeEvent;
+import com.extjs.gxt.ui.client.event.CheckChangedEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.Layout;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.ListView;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.Radio;
 import com.extjs.gxt.ui.client.widget.form.RadioGroup;
-import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
-import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Image;
@@ -33,7 +34,7 @@ public class LayerOptions extends FormPanel {
 	private Radio radioIcon = new Radio();
 	private RadioGroup radiogroupIcons =  new RadioGroup();
 	private Radio radioPiechart = new Radio();
-	private ContentPanel contentpanelIcons =  new ContentPanel();
+	private HorizontalPanel contentpanelIcons =  new HorizontalPanel();
     private static List<ImageResource> possibleIcons = new ArrayList<ImageResource>();
 	private ListView listviewPiechartPies;
 
@@ -88,8 +89,28 @@ public class LayerOptions extends FormPanel {
 	}
 
 	private void createIconsContentPanel() {
-		contentpanelIcons.setLayout(new RowLayout(Orientation.HORIZONTAL));
-		contentpanelIcons.setHeaderVisible(false);
+		boolean isFirst=true;
+		
+		// Indent icons to the right. Is there a better way?
+		HorizontalPanel marginPanel = new HorizontalPanel();
+		marginPanel.setWidth(32);
+		contentpanelIcons.add(marginPanel);
+		
+		// Default setting: no icons selected
+		radiogroupIcons.setEnabled(false);
+
+		radioIcon.addListener(Events.Select, new Listener<SelectionChangedEvent>() {
+			@Override
+			public void handleEvent(SelectionChangedEvent be) {
+				System.out.println();
+			}});
+		
+		radioIcon.addListener(Events.CheckChanged, new Listener<CheckChangedEvent>() {
+			@Override
+			public void handleEvent(CheckChangedEvent be) {
+				contentpanelIcons.setEnabled(radioIcon.getValue());
+				radiogroupIcons.setEnabled(radioIcon.getValue());
+			}});
 		
 		for (ImageResource icon : possibleIcons)
 		{
@@ -104,6 +125,13 @@ public class LayerOptions extends FormPanel {
 			
 			radiogroupIcons.add(radiobuttonIcon);
 			contentpanelIcons.add(iconPanel);
+			
+			
+			if (isFirst)
+			{
+				radiobuttonIcon.setValue(true);
+				isFirst=false;
+			}
 		}
 	}
 
@@ -139,5 +167,9 @@ public class LayerOptions extends FormPanel {
 
 	private void updateUI() {
 		
+	}
+	
+	private class PiechartIndicatorPicker {
+		private Indicator indicator;
 	}
 }
