@@ -35,7 +35,7 @@ import java.util.List;
  */
 public class MapGenerator extends ListGenerator<MapElement> {
 
-    private final BaseMapDAO baseMapDAO;
+	private final BaseMapDAO baseMapDAO;
 
     private static final Logger logger = Logger.getLogger(MapGenerator.class);
     
@@ -89,22 +89,19 @@ public class MapGenerator extends ListGenerator<MapElement> {
                 height);
 
         // Retrieve the basemap and clamp zoom level
-        BaseMap baseMap = baseMapDAO.getBaseMap(element.getBaseMapId());
-        if (baseMap == null) {
-        	baseMap = new BaseMap() {
-				
-				@Override
-				public String getTileUrl(int zoom, int x, int y) {
-					return "http://google.com";
-				}
-				
-			};
-			baseMap.setMinZoom(0);
-			baseMap.setMaxZoom(16);
-			baseMap.setId(element.getBaseMapId());
-            
-			logger.error("Could not find base map id=" + element.getBaseMapId());
-        }
+        BaseMap baseMap =null;
+        
+        if (element.getBaseMapId() == null) {
+        	baseMap = BaseMap.createNullMap("0");
+        } else {
+        	baseMap = baseMapDAO.getBaseMap(element.getBaseMapId());
+            if (baseMap == null) {
+            	baseMap = BaseMap.createNullMap(element.getBaseMapId());
+    			logger.error("Could not find base map id=" + element.getBaseMapId());
+            }
+        } 
+        
+        
         if (zoom < baseMap.getMinZoom()) {
             zoom = baseMap.getMinZoom();
         }
@@ -115,7 +112,11 @@ public class MapGenerator extends ListGenerator<MapElement> {
         TiledMap map = new TiledMap(width, height, extents.center(), zoom);
         content.setBaseMap(baseMap);
         content.setZoomLevel(zoom);
-        content.setExtents(extents);
+        if (baseMap == null) {
+        	baseMap = BaseMap.createNullMap(element.getBaseMapId());
+			logger.error("Could not find base map id=" + element.getBaseMapId());
+        }
+     content.setExtents(extents);
 
         // Generate the actual content
         for (LayerGenerator layerGtor : layerGenerators) {

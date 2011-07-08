@@ -12,20 +12,24 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
-import org.sigmah.client.page.map.MapLayerModel;
 import org.sigmah.shared.domain.Indicator;
 import org.sigmah.shared.report.model.labeling.LabelSequence;
+import org.sigmah.shared.report.model.labeling.LatinAlphaSequence;
 
 /*
  * Convenience implementation for MapLayer implementors
  */
-public abstract class AbstractMapLayer implements Serializable, MapLayer {
+public abstract class AbstractMapLayer implements MapLayer {
 
 	private boolean isVisible = true;
 	private Indicator indicator;
 	protected List<Integer> indicatorIds = new ArrayList<Integer>();
-	protected LabelSequence labelSequence;
+	protected LabelSequence labelSequence = new LatinAlphaSequence();
 	private boolean clustered = true;
+
+	public void addIndicator(int id) {
+	    indicatorIds.add(id);
+	}
 
 	public boolean isVisible() {
 		return isVisible;
@@ -53,6 +57,7 @@ public abstract class AbstractMapLayer implements Serializable, MapLayer {
 	    this.indicatorIds = indicatorIds;
 	}
 
+	@XmlElement(type=Object.class)
 	public LabelSequence getLabelSequence() {
 		return labelSequence;
 	}
@@ -69,9 +74,4 @@ public abstract class AbstractMapLayer implements Serializable, MapLayer {
 	public void setClustered(boolean clustered) {
 	    this.clustered = clustered;
 	}
-
-	public void addIndicator(int id) {
-	    indicatorIds.add(id);
-	}
-	
 }

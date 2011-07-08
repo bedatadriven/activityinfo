@@ -5,7 +5,9 @@
 
 package org.sigmah.shared.report.model.labeling;
 
-public interface LabelSequence {
+import java.io.Serializable;
+
+public interface LabelSequence extends Serializable {
 
     /**
      *

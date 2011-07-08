@@ -9,6 +9,7 @@ import com.google.gwt.resources.client.TextResource;
 public interface MapResources extends ClientBundle {
 	
 	public static final MapResources INSTANCE = GWT.create(MapResources.class);
+	
 	@Source("LayerTemplate.html")
 	public TextResource layerTemplate();
 	

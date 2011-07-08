@@ -13,13 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * Describes a document that contains a series of <code>ReportElement</code>s
  *  (e.g. Tables, Charts, etc} and is bound to a time frame.
  *
  * @see org.sigmah.shared.report.model.ReportElement
- *
- * @author Alex Bertram
  */
 @XmlRootElement(name="report")
 public class Report extends ReportElement<ReportContent> implements Serializable {

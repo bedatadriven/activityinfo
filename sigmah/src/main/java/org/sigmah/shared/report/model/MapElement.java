@@ -58,13 +58,13 @@ public class MapElement extends ReportElement<MapContent> {
         this.height = height;
     }
 
-    public void addLayer(AbstractMapLayer layer) {
+    public void addLayer(MapLayer layer) {
         this.layers.add(layer);
     }
 
     @XmlElementWrapper(name="layers")
     @XmlElements({
-            @XmlElement(name="bubbles", type= BubbleMapLayer.class),
+            @XmlElement(name="bubbles", type=BubbleMapLayer.class),
             @XmlElement(name="icons", type=IconMapLayer.class)
     })
     public List<MapLayer> getLayers() {

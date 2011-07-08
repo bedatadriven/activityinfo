@@ -98,7 +98,7 @@ public class BaseMap implements DTO {
 		return tileUrlPattern;
 	}
 
-	public void setTileUrlPattern(String tileUrlPattern) {
+    public void setTileUrlPattern(String tileUrlPattern) {
 		this.tileUrlPattern = tileUrlPattern;
 	}
 
@@ -108,5 +108,18 @@ public class BaseMap implements DTO {
 				.replace("{x}", Integer.toString(x))
 				.replace("{y}", Integer.toString(y))
 				.replace("{z}", Integer.toString(zoom));
+	}
+	
+	public static BaseMap createNullMap(String baseMapId)
+	{
+		BaseMap result = new BaseMap();
+		
+		result.setId(baseMapId);
+		result.setMinZoom(0);
+		result.setMaxZoom(16);
+		result.setName("Default map");
+		result.setTileUrlPattern("http://google.com");
+		
+		return result;
 	}
 }

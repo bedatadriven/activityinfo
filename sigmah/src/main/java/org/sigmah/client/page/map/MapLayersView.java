@@ -18,6 +18,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.HasValue;
@@ -120,18 +121,16 @@ public class MapLayersView extends LayoutContainer implements HasValue<MapElemen
 	   target.setFeedback(Feedback.INSERT);
 	}
 	
-	private void removeLayer(MapLayer mapLayer)
-	{
+	private void removeLayer(MapLayer mapLayer) {
 		mapElement.getLayers().remove(mapLayer);
+		ValueChangeEvent.fire(this, mapElement);
 		updateStore();
 	}
 
 	@Override
 	public HandlerRegistration addValueChangeHandler(
 			ValueChangeHandler<MapElement> handler) {
-
-		updateStore();
-		return null;
+		return addHandler(handler, ValueChangeEvent.getType());
 	}
 
 	@Override

@@ -5,12 +5,15 @@
 
 package org.sigmah.shared.report.model.labeling;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  *
  * Provides a sequence of arabic numbers: 1, 2, 3...
  *
  * @author Alex Bertram
  */
+@XmlRootElement
 public class ArabicNumberSequence implements LabelSequence {
 
     private int number = 1;

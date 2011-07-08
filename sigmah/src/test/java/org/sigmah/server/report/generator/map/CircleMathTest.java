@@ -20,7 +20,6 @@ public class CircleMathTest {
         Point b = new Point(5, 0);
 
         Assert.assertEquals(0.0, CircleMath.intersectionArea(a, b, 1, 2), DELTA);
-
     }
 
     @Test

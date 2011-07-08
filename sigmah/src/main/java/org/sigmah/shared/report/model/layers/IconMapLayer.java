@@ -5,22 +5,22 @@
 
 package org.sigmah.shared.report.model.layers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
-import com.google.gwt.user.client.ui.Image;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.google.gwt.resources.client.ImageResource;
 
 /*
  * Displays an icon on a point of interest
  */
 public class IconMapLayer extends AbstractMapLayer {
-
-    private List<Integer> activityIds = new ArrayList<Integer>(0);
-
+    
+	private List<Integer> activityIds = new ArrayList<Integer>(0);
     private String icon;
+
     public IconMapLayer() {
     }
 
@@ -45,5 +45,19 @@ public class IconMapLayer extends AbstractMapLayer {
 
     public void addActivityId(int activityId) {
         activityIds.add(activityId);
+    }
+    
+    public static ImageResource getIconFromString(String iconName)
+    {
+    	if (iconName == "Water")
+    		return MapIcons.INSTANCE.water();
+    	if (iconName == "Fire")
+    		return MapIcons.INSTANCE.fire();
+    	if (iconName == "Water")
+    		return MapIcons.INSTANCE.doctor();
+    	if (iconName == "Food")
+    		return MapIcons.INSTANCE.food();
+    	
+    	return null;
     }
 }

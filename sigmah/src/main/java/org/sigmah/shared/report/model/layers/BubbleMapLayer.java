@@ -15,12 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Defines a graduated symbol layer
+ * Defines a graduated symbol layer where indicators are visualized using a circle
  */
 public class BubbleMapLayer extends CircledMapLayer {
 
     private List<Dimension> colorDimensions = new ArrayList<Dimension>();
-
     private int defaultColor = 255; // blue
     private int labelColor;
 
@@ -29,6 +28,15 @@ public class BubbleMapLayer extends CircledMapLayer {
 
     public void addIndicator(int id) {
         indicatorIds.add(id);
+    }
+
+    public boolean containsIndicatorDimension() {
+        for(Dimension dim : colorDimensions) {
+            if(dim.getType() == DimensionType.Indicator) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @XmlElement(name="dimension")
@@ -41,22 +49,13 @@ public class BubbleMapLayer extends CircledMapLayer {
         this.colorDimensions = colorDimensions;
     }
 
-    public boolean containsIndicatorDimension() {
-        for(Dimension dim : colorDimensions) {
-            if(dim.getType() == DimensionType.Indicator) {
-                return true;
-            }
-        }
-        return false;
+    @XmlElement
+    public int getDefaultColor() {
+        return defaultColor;
     }
 
     public void setDefaultColor(int defaultColor) {
         this.defaultColor = defaultColor;
-    }
-
-    @XmlElement
-    public int getDefaultColor() {
-        return defaultColor;
     }
 
     @XmlElement

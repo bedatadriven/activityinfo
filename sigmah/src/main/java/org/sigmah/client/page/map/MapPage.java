@@ -27,6 +27,7 @@ import org.sigmah.shared.report.model.ReportElement;
 import org.sigmah.shared.report.model.layers.AbstractMapLayer;
 import org.sigmah.shared.report.model.layers.AutoMapLayer;
 import org.sigmah.shared.report.model.layers.BubbleMapLayer;
+import org.sigmah.shared.report.model.layers.MapLayer;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -77,12 +78,13 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
         form.getIndicatorTree().addCheckChangedListener(new Listener<TreePanelEvent>(){
 			@Override
 			public void handleEvent(TreePanelEvent be) {
-					AbstractMapLayer layer = new BubbleMapLayer();
+					MapLayer layer = new BubbleMapLayer();
 					layer.setIndicatorIds(form.getIndicatorTree().getSelectedIds());
+					layer.setClustered(false);
 					mapElement.addLayer(layer);
 					layerControl.setValue(mapElement);
+					mapView.setValue(mapElement);
 			}
-        	
         });
         
     }
@@ -98,7 +100,7 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
         layerControl.addValueChangeHandler(new ValueChangeHandler<MapElement>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<MapElement> event) {
-				//mapView.setValue()
+				mapView.setValue(event.getValue());
 			}
 		});
         
@@ -108,6 +110,7 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
 	private void createFormPane(MapForm form) {
         BorderLayoutData west = new BorderLayoutData(Style.LayoutRegion.WEST, 0.20f);
         west.setCollapsible(true);
+        
         west.setSplit(true);
         west.setMargins(new Margins(0, 5, 0, 0));
 
@@ -143,10 +146,6 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
         return form.getMapElement();
     }
 
-    public void setContent(MapElement element, Content content) {
-        mapView.setContent(element, content);
-    }
-
     public boolean validate() {
         return form.validate();
     }
@@ -154,11 +153,6 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
 	@Override
 	protected void onRender(Element parent, int pos) {
 		super.onRender(parent, pos);
-		
-		MapElement map = new MapElement();
-		map.setLayers(new AutoMapLayer());
-		
-		mapView.setContent(map, null);
 	}
 
 	@Override

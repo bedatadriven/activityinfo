@@ -1,10 +1,7 @@
 package org.sigmah.shared.report.model.layers;
 
-
 /**
- * Map Layer which automatically shows all available data.
- * @author alexander
- *
+ * Map Layer which tries to visualize all available map data optimized for usability. 
  */
 public class AutoMapLayer extends AbstractMapLayer {
 

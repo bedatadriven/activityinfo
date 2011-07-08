@@ -17,15 +17,13 @@ import org.sigmah.shared.report.model.layers.BubbleMapLayer;
 
 import java.util.ArrayList;
 import java.util.List;
+
 /*
  * @author Alex Bertram
  */
 public class BubbleGeneratorTest {
-
-
     @Test
     public void testColorByIndicators() {
-
         MapElement element = new MapElement();
 
         BubbleMapLayer layer = new BubbleMapLayer();
@@ -116,6 +114,5 @@ public class BubbleGeneratorTest {
         Assert.assertEquals(255, ((BubbleMapMarker) content.getMarkers().get(0)).getColor());
         Assert.assertEquals(0, ((BubbleMapMarker) content.getMarkers().get(1)).getColor());
     }
-
 
 }

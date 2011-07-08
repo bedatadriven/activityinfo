@@ -137,18 +137,6 @@ class MapElementView extends ContentPanel implements HasValue<MapElement> {
         }
     }
 
-    public void setContent(MapElement element, Content content) {
-        this.element = (MapElement) element;
-        
-
-        if (!apiLoadFailed) {
-
-            clearOverlays();
-
-            createMapIfNeededAndUpdateMapContent();
-        }
-    }
-
     private LatLngBounds llBoundsForExtents(Extents extents) {
         return LatLngBounds.newInstance(
                 LatLng.newInstance(extents.getMinLat(), extents.getMinLon()),
@@ -163,7 +151,6 @@ class MapElementView extends ContentPanel implements HasValue<MapElement> {
 
 
     public void createMapIfNeededAndUpdateMapContent() {
-
         if (map == null) {
             MapApiLoader.load(new MaskingAsyncMonitor(this, I18N.CONSTANTS.loadingMap()),
                     new AsyncCallback<Void>() {
@@ -193,7 +180,6 @@ class MapElementView extends ContentPanel implements HasValue<MapElement> {
 
         } else {
             clearOverlays();
-            changeBaseMapIfNeeded(content.getBaseMap());
             updateMapToContent();
         }
     }
@@ -225,6 +211,11 @@ class MapElementView extends ContentPanel implements HasValue<MapElement> {
      * of the current selected indicators
      */
     private void updateMapToContent() {
+    	if (element.getLayers().isEmpty())
+    	{
+    		return;
+    	}
+    	
     	dispatcher.execute(new GenerateElement<MapContent>(element), null, new AsyncCallback<MapContent>() {
 
 			@Override
@@ -234,17 +225,19 @@ class MapElementView extends ContentPanel implements HasValue<MapElement> {
 
 			@Override
 			public void onSuccess(MapContent result) {
-		        Log.debug("MapPreview: Received content, extents are = " + content.getExtents().toString());
-				
+		        Log.debug("MapPreview: Received content, extents are = " + result.getExtents().toString());
+
+		        //changeBaseMapIfNeeded(result.getBaseMap());
+
 		        layout();
 		
 		        // TODO: i18n
-		        status.setStatus(content.getUnmappedSites().size() + " " + I18N.CONSTANTS.siteLackCoordiantes(), null);
+		        status.setStatus(result.getUnmappedSites().size() + " " + I18N.CONSTANTS.siteLackCoordiantes(), null);
 		
 		        GcIconFactory iconFactory = new GcIconFactory();
 		        iconFactory.primaryColor = "#0000FF";
 		
-		        for (MapMarker marker : content.getMarkers()) {
+		        for (MapMarker marker : result.getMarkers()) {
 		            Icon icon = IconFactory.createIcon(marker);
 		            LatLng latLng = LatLng.newInstance(marker.getLat(), marker.getLng());
 		
@@ -296,8 +289,11 @@ class MapElementView extends ContentPanel implements HasValue<MapElement> {
 
 	@Override
 	public void setValue(MapElement value) {
-		// TODO Auto-generated method stub
-		
+		this.element=value;
+        if (!apiLoadFailed) {
+            clearOverlays();
+            createMapIfNeededAndUpdateMapContent();
+        }
 	}
 
 	@Override

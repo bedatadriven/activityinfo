@@ -5,12 +5,15 @@
 
 package org.sigmah.shared.report.model.labeling;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  *
  * Provides a sequence of latin letters: A...Z, AA..AZ
  *
  * @author Alex Bertram
  */
+@XmlRootElement
 public class LatinAlphaSequence implements LabelSequence {
 
     int nextNumber = 0;

@@ -34,9 +34,7 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
 
         Extents extents = Extents.emptyExtents();
         for(SiteData site : sites) {
-
             if(site.hasLatLong() && hasValue(site, layer.getIndicatorIds())) {
-
                 extents.grow(site.getLatitude(), site.getLongitude());
             }
         }
@@ -108,6 +106,9 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
         content.getMarkers().addAll(markers);
     }
 
+    /*
+     * 
+     */
     public void generatePoints(
             List<SiteData> sites,
             TiledMap map,
@@ -128,8 +129,8 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
                 if(site.hasLatLong())  {
                     px = map.fromLatLngToPixel(new LatLng(site.getLatitude(), site.getLongitude()));
                 }
+                
                 if(byIndicator) {
-
                     for(Integer indicatorId : layer.getIndicatorIds()) {
                         if(site.getIndicatorValue(indicatorId) != null) {
                             MapSymbol symbol = createSymbol(site, layer.getColorDimensions());
