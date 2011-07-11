@@ -1,6 +1,6 @@
 <#-- @ftlvariable name="" type="org.sigmah.server.bootstrap.model.HostPageModel" -->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html manifest="ActivityInfo/html5.manifest">
+<html manifest="ActivityInfo/ActivityInfo.appcache">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta name="application-name" content="ActivityInfo"/>
