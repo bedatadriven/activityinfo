@@ -26,6 +26,7 @@ public abstract class AbstractMapLayer implements MapLayer {
 	protected List<Integer> indicatorIds = new ArrayList<Integer>();
 	protected LabelSequence labelSequence = new LatinAlphaSequence();
 	private boolean clustered = true;
+	private List<Indicator> indicators = new ArrayList<Indicator>();
 
 	public void addIndicator(int id) {
 	    indicatorIds.add(id);
@@ -41,6 +42,17 @@ public abstract class AbstractMapLayer implements MapLayer {
 
 	public void setIndicator(Indicator indicator) {
 		this.indicator = indicator;
+	}
+
+	@Override
+	public List<Indicator> getIndicators() {
+		return indicators;
+	}
+
+	@Override
+	public void setIndicators(List<Indicator> indicators) {
+		this.indicators = indicators;
+		
 	}
 
 	public Indicator getIndicator() {

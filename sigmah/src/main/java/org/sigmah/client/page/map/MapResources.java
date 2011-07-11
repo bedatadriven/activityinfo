@@ -22,14 +22,29 @@ public interface MapResources extends ClientBundle {
 	@Source("Poi.png")
 	public ImageResource poi();	
 	
+	@Source("RemoveLayer.png")
+	public ImageResource removeLayer();	
+	
 	@Source("CheckboxUnchecked.png")
 	public ImageResource checkboxUnchecked();	
 	
 	@Source("CheckboxChecked.png")
 	public ImageResource checkboxChecked();
 	
-	@Source("RemoveLayer.png")
-	public ImageResource removeLayer();
+	@Source("Icon.png")
+	public ImageResource icon();
+	
+	@Source("Piechart.png")
+	public ImageResource piechart();
+	
+	@Source("Bubble.png")
+	public ImageResource bubble();
+	
+	@Source("SingleSelect.png")
+	public ImageResource singleSelect();
+	
+	@Source("MultiSelect.png")
+	public ImageResource multiSelect();
 	
 	public interface MapStyle extends CssResource {}
 }

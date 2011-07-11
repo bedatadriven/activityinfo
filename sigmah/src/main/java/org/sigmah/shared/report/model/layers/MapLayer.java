@@ -29,9 +29,14 @@ public interface MapLayer extends Serializable {
 	List<Integer> getIndicatorIds();
 	void setIndicatorIds(List<Integer> indicatorIds);
 	
+	List<Indicator> getIndicators();
+	void setIndicators(List<Indicator> indicators);
+	
 	public LabelSequence getLabelSequence();
 	public void setLabelSequence(LabelSequence labelSequence);
 
 	public boolean isClustered();
 	public void setClustered(boolean clustered);
+	
+	public boolean supportsMultipleIndicators();
 }

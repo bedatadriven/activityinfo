@@ -1,42 +1,34 @@
 package org.sigmah.client.page.map;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.shared.domain.Indicator;
+import org.sigmah.client.page.map.layerOptions.BubbleMapLayerOptions;
+import org.sigmah.client.page.map.layerOptions.IconMapLayerOptions;
+import org.sigmah.client.page.map.layerOptions.LayerOptionsWidget;
+import org.sigmah.client.page.map.layerOptions.PiechartMapLayerOptions;
+import org.sigmah.shared.report.model.layers.BubbleMapLayer;
+import org.sigmah.shared.report.model.layers.IconMapLayer;
 import org.sigmah.shared.report.model.layers.MapLayer;
+import org.sigmah.shared.report.model.layers.PiechartMapLayer;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
-import com.extjs.gxt.ui.client.data.PropertyChangeEvent;
-import com.extjs.gxt.ui.client.event.CheckChangedEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
-import com.extjs.gxt.ui.client.widget.ListView;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.Radio;
 import com.extjs.gxt.ui.client.widget.form.RadioGroup;
+import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.Element;
 
-public class LayerOptions extends FormPanel {
-	private MapLayer mapLayer;
-
-	// Visualization of elements on the map
-	private FieldSet fieldsetIndicatorOptions = new FieldSet();
-	private RadioGroup radiogroupVisualization = new RadioGroup();
-	private Radio radioProportionalCircle = new Radio();
-	private Radio radioIcon = new Radio();
-	private RadioGroup radiogroupIcons =  new RadioGroup();
-	private Radio radioPiechart = new Radio();
-	private HorizontalPanel contentpanelIcons =  new HorizontalPanel();
-    private static List<ImageResource> possibleIcons = new ArrayList<ImageResource>();
-	private ListView listviewPiechartPies;
+public class LayerOptions extends LayoutContainer {
+	// UI for the maplayer options the user can set
+	private MapLayer selectedMapLayer;
+	private BubbleMapLayerOptions bubbleMapLayerOptions = new BubbleMapLayerOptions();
+	private IconMapLayerOptions iconMapLayerOptions = new IconMapLayerOptions();
+	private PiechartMapLayerOptions piechartMapLayerOptions = new PiechartMapLayerOptions();
+	private ContentPanel contentpanelLayerOptions = new ContentPanel();
 
 	// Aggregation of elements on the map
 	private FieldSet fieldsetAggregation = new FieldSet();
@@ -45,94 +37,36 @@ public class LayerOptions extends FormPanel {
 	private Radio radioAutomaticAggr = new Radio();
 	private Radio radioNoAggr = new Radio();
 
-	static 	{
-		possibleIcons.add(MapResources.INSTANCE.poi());
-		possibleIcons.add(MapResources.INSTANCE.poi());
-		possibleIcons.add(MapResources.INSTANCE.poi());
-		possibleIcons.add(MapResources.INSTANCE.poi());
-		possibleIcons.add(MapResources.INSTANCE.poi());
-		possibleIcons.add(MapResources.INSTANCE.poi());
+	@Override
+	protected void onRender(Element parent, int index) {
+		super.onRender(parent, index);
+		
+		setLayout(new FitLayout());
+		
+		contentpanelLayerOptions.add(bubbleMapLayerOptions);
+	}
+
+	/*
+	 * Changes active widget showing layer options 
+	 */
+	public void setMapLayer(MapLayer mapLayer) {
+		if (mapLayer instanceof BubbleMapLayer) {
+			setActiveMapLayer(bubbleMapLayerOptions);
+			bubbleMapLayerOptions.setMapLayer(mapLayer);
+		}
+		if (mapLayer instanceof IconMapLayer) {
+			setActiveMapLayer(iconMapLayerOptions);
+			bubbleMapLayerOptions.setMapLayer(mapLayer);
+		}
+		if (mapLayer instanceof PiechartMapLayer) {
+			setActiveMapLayer(piechartMapLayerOptions);
+			bubbleMapLayerOptions.setMapLayer(mapLayer);
+		}
 	}
 	
-	public LayerOptions() {
-		super();
-		
-		setLayout(new RowLayout(Orientation.VERTICAL));
-		
-		createVisualization();
-		createAggregation();
-		
-		setHeading(I18N.CONSTANTS.mapLayerOptions() + " " + "[Selected layer name]");
-		setFrame(true);
-	}
-
-	private void createVisualization() {
-		createIconsContentPanel();
-		fieldsetIndicatorOptions.setLayout(new RowLayout(Orientation.VERTICAL));
-		fieldsetIndicatorOptions.setHeading(I18N.CONSTANTS.indicatorVisualization());
-		fieldsetIndicatorOptions.setCollapsible(true);
-		
-		radioProportionalCircle.setBoxLabel(I18N.CONSTANTS.proportionalCircle());
-		radioIcon.setBoxLabel(I18N.CONSTANTS.icon());
-		radioPiechart.setBoxLabel(I18N.CONSTANTS.pieChart());
-		
-		radiogroupVisualization.add(radioProportionalCircle);
-		radiogroupVisualization.add(radioIcon);
-		radiogroupVisualization.add(radioPiechart);
-		
-		fieldsetIndicatorOptions.add(radioProportionalCircle);
-		fieldsetIndicatorOptions.add(radioIcon);
-		fieldsetIndicatorOptions.add(contentpanelIcons);
-		fieldsetIndicatorOptions.add(radioPiechart);
-		
-		add(fieldsetIndicatorOptions);
-	}
-
-	private void createIconsContentPanel() {
-		boolean isFirst=true;
-		
-		// Indent icons to the right. Is there a better way?
-		HorizontalPanel marginPanel = new HorizontalPanel();
-		marginPanel.setWidth(32);
-		contentpanelIcons.add(marginPanel);
-		
-		// Default setting: no icons selected
-		radiogroupIcons.setEnabled(false);
-
-		radioIcon.addListener(Events.Select, new Listener<SelectionChangedEvent>() {
-			@Override
-			public void handleEvent(SelectionChangedEvent be) {
-				System.out.println();
-			}});
-		
-		radioIcon.addListener(Events.CheckChanged, new Listener<CheckChangedEvent>() {
-			@Override
-			public void handleEvent(CheckChangedEvent be) {
-				contentpanelIcons.setEnabled(radioIcon.getValue());
-				radiogroupIcons.setEnabled(radioIcon.getValue());
-			}});
-		
-		for (ImageResource icon : possibleIcons)
-		{
-			ContentPanel iconPanel = new ContentPanel();
-			iconPanel.setHeaderVisible(false);
-			iconPanel.setLayout(new RowLayout(Orientation.VERTICAL));
-			
-			Radio radiobuttonIcon = new Radio();
-			
-			iconPanel.add(radiobuttonIcon);
-			iconPanel.add(new Image(icon));
-			
-			radiogroupIcons.add(radiobuttonIcon);
-			contentpanelIcons.add(iconPanel);
-			
-			
-			if (isFirst)
-			{
-				radiobuttonIcon.setValue(true);
-				isFirst=false;
-			}
-		}
+	private void setActiveMapLayer(LayerOptionsWidget layerOptionsWidget) {
+		contentpanelLayerOptions.removeAll();
+		contentpanelLayerOptions.add(contentpanelLayerOptions);
 	}
 
 	private void createAggregation() {
@@ -151,25 +85,9 @@ public class LayerOptions extends FormPanel {
 		fieldsetAggregation.add(radioAdminLevelAggr);
 		fieldsetAggregation.add(radioAutomaticAggr);
 		fieldsetAggregation.add(radioNoAggr);
-		
-		add(fieldsetAggregation);
 	}
 
 	public MapLayer getMapLayer() {
-		return mapLayer;
-	}
-
-	public void setMapLayer(MapLayer mapLayer) {
-		this.mapLayer = mapLayer;
-		
-		updateUI();
-	}
-
-	private void updateUI() {
-		
-	}
-	
-	private class PiechartIndicatorPicker {
-		private Indicator indicator;
+		return selectedMapLayer;
 	}
 }

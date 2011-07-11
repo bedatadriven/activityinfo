@@ -20,6 +20,7 @@ class BubbleLayerForm extends FormPanel {
     private NumberField maxRadiusField;
     private NumberField minRadiusField;
     private ColorField colorField;
+    
     private MappingComboBox<Integer> clusterCombo;
 
     public BubbleLayerForm() {

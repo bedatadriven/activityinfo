@@ -5,4 +5,10 @@ package org.sigmah.shared.report.model.layers;
  */
 public class AutoMapLayer extends AbstractMapLayer {
 
+	@Override
+	public boolean supportsMultipleIndicators() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

@@ -1,53 +1,78 @@
 package org.sigmah.client.page.map;
 
+import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.shared.report.model.MapElement;
 import org.sigmah.shared.report.model.layers.BubbleMapLayer;
 import org.sigmah.shared.report.model.layers.MapLayer;
 
+import com.extjs.gxt.ui.client.data.TreeModel;
 import com.extjs.gxt.ui.client.dnd.DND.Feedback;
 import com.extjs.gxt.ui.client.dnd.ListViewDragSource;
 import com.extjs.gxt.ui.client.dnd.ListViewDropTarget;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.ListViewEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.SourceSelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.inject.Inject;
 
 /*
  * Displays a list of layers selected by the user 
  */
 public class MapLayersView extends LayoutContainer implements HasValue<MapElement> {
+	private Dispatcher service;
 	private MapElement mapElement;
-	ListStore<MapLayerModel> store = new ListStore<MapLayerModel>();
-	ListView<MapLayerModel> view = new ListView<MapLayerModel>();
-	ContentPanel panel = new ContentPanel();
-	LayerOptions layerOptions = new LayerOptions();
+	private ListStore<MapLayerModel> store = new ListStore<MapLayerModel>();
+	private ListView<MapLayerModel> view = new ListView<MapLayerModel>();
+	private ContentPanel panel = new ContentPanel();
+	private LayerOptions layerOptions = new LayerOptions();
+	private Button buttonAddLayer = new Button();
+	private AddLayerDialog addLayer;
 	
-	public MapLayersView() {
+	@Inject
+	public MapLayersView(Dispatcher service) {
 		super();
 		
-		setLayout(new FitLayout());
+		this.service = service;
+		
+		setLayout(new FlowLayout());
 		
 		createPanel();
+		createAddLayerButton();
 		createListView();
-		createLayerOptions();
+		addLayer = new AddLayerDialog(service);
 		
 		panel.add(view, new FormData("100%"));
+		panel.addButton(buttonAddLayer);
 		panel.add(layerOptions);
 		add(panel);
 	}
 
-	private void createLayerOptions() {
+	private void createAddLayerButton() {
+		buttonAddLayer.setText("Add layer...");
+		buttonAddLayer.addListener(Events.Select, new SelectionListener<ButtonEvent>() {  
+		      @Override  
+		      public void componentSelected(ButtonEvent ce) {  
+		    	  addLayer.show();
+		      }
+		});  
 	}
 
 	private void createPanel() {
@@ -67,6 +92,8 @@ public class MapLayersView extends LayoutContainer implements HasValue<MapElemen
 		
 		// Prevents confusion for the user where an onmouseover-ed item in the listview *looks* selected,
 		// but in fact is not selected
+		
+		// This option does not actually fire a select event :(
 		view.setSelectOnOver(true);
 		
 		view.getSelectionModel().addListener(Events.SelectionChange,
@@ -116,9 +143,21 @@ public class MapLayersView extends LayoutContainer implements HasValue<MapElemen
 			}
 		});			
 		
-	   ListViewDropTarget target = new ListViewDropTarget(view);
-	   target.setAllowSelfAsSource(true);
-	   target.setFeedback(Feedback.INSERT);
+		view.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<MapLayerModel>() {
+			@Override()
+			public void selectionChanged(SelectionChangedEvent<MapLayerModel> se) {
+				if (se.getSelectedItem()==null) {
+					System.out.println("Selected item on maplayersview is null :(");
+				} else {
+					layerOptions.setMapLayer(se.getSelectedItem().getMapLayer());
+				}
+			}
+		});
+		
+		
+	    ListViewDropTarget target = new ListViewDropTarget(view);
+	    target.setAllowSelfAsSource(true);
+	    target.setFeedback(Feedback.INSERT);
 	}
 	
 	private void removeLayer(MapLayer mapLayer) {

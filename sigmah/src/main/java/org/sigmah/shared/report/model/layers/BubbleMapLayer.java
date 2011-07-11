@@ -66,4 +66,9 @@ public class BubbleMapLayer extends CircledMapLayer {
     public void setLabelColor(int labelColor) {
         this.labelColor = labelColor;
     }
+
+	@Override
+	public boolean supportsMultipleIndicators() {
+		return true;
+	}
 }

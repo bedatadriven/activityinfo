@@ -27,5 +27,10 @@ public class PiechartMapLayer extends CircledMapLayer {
 		
 		return this.indicatorIds.indexOf(indicatorId) * 65000;
 	}
+
+	@Override
+	public boolean supportsMultipleIndicators() {
+		return true;
+	}
 	
 }

@@ -60,4 +60,9 @@ public class IconMapLayer extends AbstractMapLayer {
     	
     	return null;
     }
+
+	@Override
+	public boolean supportsMultipleIndicators() {
+		return false;
+	}
 }

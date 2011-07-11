@@ -51,13 +51,15 @@ public class IndicatorTreePanel extends ContentPanel {
     private ToolBar toolBar;
     private StoreFilterField filter;
     private AsyncMonitor monitor; 
+    private boolean multipleSelection;
     
-    public IndicatorTreePanel(Dispatcher service, final boolean multipleSelection) {
-    	this(service, multipleSelection, null);
-    }
-    
+    public boolean isMultipleSelection() {
+		return multipleSelection;
+	}
+
     public IndicatorTreePanel(Dispatcher service, final boolean multipleSelection, AsyncMonitor monitor) {
         this.service = service;
+        this.multipleSelection=multipleSelection;
         //this.setHeaderVisible(false);
         this.setHeading(I18N.CONSTANTS.indicators());
         this.setIcon(IconImageBundle.ICONS.indicator());
@@ -272,4 +274,13 @@ public class IndicatorTreePanel extends ContentPanel {
             return true;
         }
     }
+
+    public void setMultipleSelection(boolean multipleSelection) {
+		this.multipleSelection = multipleSelection;
+	}
+
+	public IndicatorTreePanel(Dispatcher service, final boolean multipleSelection) {
+    	this(service, multipleSelection, null);
+    }
+    
 }

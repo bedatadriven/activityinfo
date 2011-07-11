@@ -43,7 +43,7 @@ import com.google.gwt.user.client.Element;
 import com.google.inject.Inject;
 
 /**
- * Map Page View
+ * Displays a map where the user can interactively create a map
  */
 public class MapPage extends ContentPanel implements Page, ExportCallback, ActionListener  {
 
@@ -85,12 +85,11 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
 					layerControl.setValue(mapElement);
 					mapView.setValue(mapElement);
 			}
-        });
-        
+        });        
     }
 
     private void createSelectedLayersWidget() {
-        layerControl = new MapLayersView();
+        layerControl = new MapLayersView(dispatcher);
         
         BorderLayoutData east = new BorderLayoutData(Style.LayoutRegion.EAST, 0.20f);
         east.setCollapsible(true);
