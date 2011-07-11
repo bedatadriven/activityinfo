@@ -20,7 +20,7 @@ public class SqlAdminDAO {
             SqlQueryBuilder.select("AdminEntity.AdminEntityId, AdminEntity.Name, AdminEntity.AdminLevelId, " +
             		"AdminEntity.AdminEntityParentId, AdminEntity.X1, AdminEntity.Y1, AdminEntity.X2, AdminEntity.Y2 ")
                 .from("AdminEntity")
-                .orderBy("Name");
+                .orderBy("AdminEntity.Name");
 
         if(cmd.getCountryId() != null) {
         	query.from(" LEFT JOIN AdminLevel ON (AdminLevel.AdminLevelId=AdminEntity.adminLevelId) ");

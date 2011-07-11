@@ -45,7 +45,7 @@ public class OfflineImpl implements OfflineGateway {
 
     @Override
     public void install(final AsyncCallback<Void> callback) {
-
+    	
         installSteps.get().run(new AsyncCallback() {
             @Override
             public void onFailure(Throwable throwable) {

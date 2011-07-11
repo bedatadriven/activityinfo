@@ -19,6 +19,7 @@ import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.RemoteDispatcher;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.offline.OfflineGateway;
 import org.sigmah.client.offline.sync.SyncStatusEvent;
 import org.sigmah.client.util.state.IStateManager;
@@ -29,10 +30,14 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.Observable;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
+import com.google.gwt.gears.client.Factory;
 import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.InvocationException;
 import com.google.inject.Inject;
@@ -64,7 +69,7 @@ public class OfflinePresenter implements Dispatcher {
         OFFLINE,
 
         /**
-         * Commands are sent to the remote server for handling
+         * Commands are sent to the remote serveer for handling
          */
         ONLINE
     }
@@ -255,7 +260,7 @@ public class OfflinePresenter implements Dispatcher {
 
         @Override
         public void onDefaultButton() {
-            activateStrategy(new InstallingStrategy());
+       		activateStrategy(new InstallingStrategy());
         }
         
     }

@@ -70,6 +70,7 @@ import org.sigmah.shared.domain.reminder.ReminderList;
 import org.sigmah.shared.domain.value.File;
 import org.sigmah.shared.domain.value.FileVersion;
 import org.sigmah.shared.domain.value.Value;
+import org.sigmah.shared.map.BaseMap;
 
 /**
  * List of persistent classes managed by Hibernate.
@@ -89,6 +90,7 @@ public class PersistentClasses {
             MonitoredPoint.class,
             MonitoredPointList.class,
             Reminder.class,
+            BaseMap.class,
             ReminderList.class,
             IndicatorValue.class,
             AttributeValue.class,
