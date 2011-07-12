@@ -5,6 +5,8 @@
 
 package org.sigmah.server;
 
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
@@ -32,17 +34,8 @@ public class ConfigModule extends AbstractModule {
 
         tryToLoadFrom(properties, webInfDirectory(context));
         tryToLoadFrom(properties, tomcatConfigurationDirectory());
-        
-        // read properties from Beanstalk environment
-        if(System.getProperty("JDBC_CONNECTION_STRING") != null) {
-        	properties.setProperty("hibernate.connection.url", System.getProperty("JDBC_CONNECTION_STRING"));
-        }
-        if(System.getProperty("PARAM1") != null) {
-        	properties.setProperty("hibernate.connection.username", System.getProperty("PARAM1"));
-        }
-        if(System.getProperty("PARAM2") != null) {
-        	properties.setProperty("hibernate.connection.password", System.getProperty("PARAM2"));
-        }
+        tryToLoadFromS3(properties);
+
         return properties;
     }
 
@@ -58,6 +51,35 @@ public class ConfigModule extends AbstractModule {
             return false;
         }
         return false;
+    }
+
+    private void tryToLoadFromS3(Properties properties) {
+        String awsAccessKeyId = System.getProperty("AWS_ACCESS_KEY_ID");
+        String awsSecretAccessKey = System.getProperty("AWS_SECRET_KEY");
+
+        if(awsAccessKeyId == null || awsSecretAccessKey == null) {
+            logger.info("AWS Credentials not provided, not attempting to load config from S3");
+            return;
+        }
+
+        String config = System.getProperty("PARAM1");
+        if(config == null) {
+            logger.error("AWS Credentials provided, but PARAM1 does not contain bucket/key of configuration file");
+            return;
+        }
+        int slash = config.indexOf('/');
+        if(slash == -1) {
+            logger.error("AWS Credentials provided, but PARAM1 not in expected bucket/key format");
+        }
+        String bucket = config.substring(0, slash);
+        String key = config.substring(slash+1);
+
+        AmazonS3Client client = new AmazonS3Client(new BasicAWSCredentials(awsAccessKeyId, awsSecretAccessKey));
+        try {
+            properties.load(client.getObject(bucket, key).getObjectContent());
+        } catch (IOException e) {
+            logger.error("Exception reading configuration from S3: " + e.getMessage(), e);
+        }
     }
 
     private File webInfDirectory(ServletContext context) {
