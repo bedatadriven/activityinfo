@@ -5,7 +5,19 @@
 
 package org.sigmah.client.dispatch.remote;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import static org.easymock.EasyMock.capture;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.getCurrentArguments;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.notNull;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+
+import java.util.Collections;
+
 import org.easymock.Capture;
 import org.easymock.IAnswer;
 import org.junit.Before;
@@ -20,9 +32,7 @@ import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.exception.CommandException;
 
-import java.util.Collections;
-
-import static org.easymock.EasyMock.*;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class RemoteDispatcherTest {
 
@@ -110,6 +120,40 @@ public class RemoteDispatcherTest {
         // verify that only one command was sent
         verify(callback1);
         verify(callback2);
+    }
+    
+    @Test
+    public void successiveCommandsServedByProxyAreCorrectlyHandleded() {
+    	
+
+        GetSchema command = new GetSchema();
+
+        expect(proxy.maybeExecute(eq(command))).andReturn(new ProxyResult(new SchemaDTO())).anyTimes();
+        replay(proxy);
+
+        replay(service);   // no calls should be made to the remote service
+
+        final AsyncCallback callback2 = makeCallbackThatExpectsNonNullSuccess();
+
+        dispatcher.registerProxy(GetSchema.class, proxy);
+        dispatcher.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
+
+			@Override
+			public void onFailure(Throwable arg0) {
+				throw new AssertionError();
+			}
+
+			@Override
+			public void onSuccess(SchemaDTO arg0) {
+		        dispatcher.execute(new GetSchema(), null, callback2);				
+			}
+        	
+        });
+        dispatcher.processPendingCommands();
+        dispatcher.processPendingCommands();
+
+        verify(proxy, service, callback2);
+    	
     }
 
     @Test
