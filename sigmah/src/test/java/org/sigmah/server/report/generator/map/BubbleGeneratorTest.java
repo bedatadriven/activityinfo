@@ -13,6 +13,7 @@ import org.sigmah.shared.report.content.BubbleMapMarker;
 import org.sigmah.shared.report.content.LatLng;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.model.*;
+import org.sigmah.shared.report.model.clustering.AutomaticClustering;
 import org.sigmah.shared.report.model.layers.BubbleMapLayer;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class BubbleGeneratorTest {
         MapReportElement element = new MapReportElement();
 
         BubbleMapLayer layer = new BubbleMapLayer();
-        layer.setClustered(true);
+        layer.setClustering(new AutomaticClustering());
         layer.addIndicator(101);
         layer.addIndicator(102);
 
@@ -67,7 +68,7 @@ public class BubbleGeneratorTest {
         MapReportElement element = new MapReportElement();
 
         BubbleMapLayer layer = new BubbleMapLayer();
-        layer.setClustered(true);
+        layer.setClustering(new AutomaticClustering());
         layer.addIndicator(101);
 
         Dimension dim = new Dimension(DimensionType.Partner);

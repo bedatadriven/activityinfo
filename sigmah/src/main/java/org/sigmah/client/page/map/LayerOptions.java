@@ -9,14 +9,14 @@ import org.sigmah.shared.report.model.layers.IconMapLayer;
 import org.sigmah.shared.report.model.layers.MapLayer;
 import org.sigmah.shared.report.model.layers.PiechartMapLayer;
 
+import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 
 public class LayerOptions extends LayoutContainer {
-	// UI for the maplayer options the user can set
 	private MapLayer selectedMapLayer;
 
 	// Options for every supported MapLayer type
@@ -26,13 +26,13 @@ public class LayerOptions extends LayoutContainer {
 	private ContentPanel contentpanelLayerOptions = new ContentPanel();
 
 	// Aggregation options
-	private AggregationOptionsWidget aggregationOptions = new AggregationOptionsWidget();
+	private ClusteringOptionsWidget aggregationOptions = new ClusteringOptionsWidget();
 
 	@Override
 	protected void onRender(Element parent, int index) {
 		super.onRender(parent, index);
 		
-		setLayout(new FitLayout());
+		setLayout(new RowLayout(Orientation.VERTICAL));
 		
 		contentpanelLayerOptions.add(bubbleMapLayerOptions);
 		
@@ -46,23 +46,27 @@ public class LayerOptions extends LayoutContainer {
 	public void setMapLayer(MapLayer mapLayer) {
 		if (mapLayer instanceof BubbleMapLayer) {
 			setActiveMapLayer(bubbleMapLayerOptions);
-			bubbleMapLayerOptions.setMapLayer(mapLayer);
+			bubbleMapLayerOptions.setValue((BubbleMapLayer) mapLayer);
 		}
 		if (mapLayer instanceof IconMapLayer) {
 			setActiveMapLayer(iconMapLayerOptions);
-			bubbleMapLayerOptions.setMapLayer(mapLayer);
+			iconMapLayerOptions.setValue((IconMapLayer) mapLayer);
 		}
 		if (mapLayer instanceof PiechartMapLayer) {
 			setActiveMapLayer(piechartMapLayerOptions);
-			bubbleMapLayerOptions.setMapLayer(mapLayer);
+			piechartMapLayerOptions.setValue((PiechartMapLayer) mapLayer);
 		}
 	}
 	
 	private void setActiveMapLayer(LayerOptionsWidget layerOptionsWidget) {
 		contentpanelLayerOptions.removeAll();
 		contentpanelLayerOptions.add((Widget)layerOptionsWidget);
+		contentpanelLayerOptions.layout();
 	}
 
+	/*
+	 * Sets the selected options to the current MapLayer and returns the MapLayer
+	 */
 	public MapLayer getMapLayer() {
 		selectedMapLayer.setClustering(aggregationOptions.getSelectedClustering());
 		return selectedMapLayer;

@@ -1,5 +1,7 @@
 package org.sigmah.shared.report.model.clustering;
 
-public interface Clustering {
+import java.io.Serializable;
 
+public interface Clustering extends Serializable {
+	public boolean isClustered();
 }

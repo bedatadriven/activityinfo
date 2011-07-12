@@ -2,6 +2,7 @@ package org.sigmah.client.page.map;
 
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.shared.report.model.MapReportElement;
+import org.sigmah.shared.report.model.clustering.NoClustering;
 import org.sigmah.shared.report.model.layers.BubbleMapLayer;
 import org.sigmah.shared.report.model.layers.MapLayer;
 
@@ -21,6 +22,7 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.SourceSelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Layer;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -52,17 +54,34 @@ public class MapLayersWidget extends LayoutContainer implements HasValue<MapRepo
 		
 		this.service = service;
 		
+		createDefaultMapReportElement();
+		
 		setLayout(new FlowLayout());
 		
 		createPanel();
 		createAddLayerButton();
 		createListView();
-		addLayer = new AddLayerDialog(service);
+		createAddLayersDialog();
 		
 		panel.add(view, new FormData("100%"));
 		panel.addButton(buttonAddLayer);
 		panel.add(layerOptions);
 		add(panel);
+	}
+
+	private void createDefaultMapReportElement() {
+		 mapElement = new MapReportElement();
+	}
+
+	private void createAddLayersDialog() {
+		addLayer = new AddLayerDialog(service);
+		addLayer.addValueChangeHandler(new ValueChangeHandler<MapLayer>(){
+			@Override
+			public void onValueChange(ValueChangeEvent<MapLayer> event) {
+				if (event.getValue() != null) {
+					addLayer(event.getValue());
+				}
+			}});
 	}
 
 	private void createAddLayerButton() {
@@ -161,7 +180,7 @@ public class MapLayersWidget extends LayoutContainer implements HasValue<MapRepo
 	}
 	
 	private void removeLayer(MapLayer mapLayer) {
-		mapElement.getLayers().remove(mapLayer);
+		mapElement.getLayers().remove(mapLayer);				
 		ValueChangeEvent.fire(this, mapElement);
 		updateStore();
 	}
@@ -185,7 +204,6 @@ public class MapLayersWidget extends LayoutContainer implements HasValue<MapRepo
 	@Override
 	public void setValue(MapReportElement value, boolean fireEvents) {
 		this.mapElement=value;
-		
 		updateStore();
 	}
 
@@ -195,16 +213,19 @@ public class MapLayersWidget extends LayoutContainer implements HasValue<MapRepo
 		{
 			for (MapLayer layer : mapElement.getLayers())
 			{
-				if (layer instanceof BubbleMapLayer)
-				{
-					MapLayerModel model =  new MapLayerModel();
-					model.setName("layer X");
-					model.setVisible(layer.isVisible());
-					model.setMapLayer(layer);
-					store.add(model);
-				}
+				MapLayerModel model =  new MapLayerModel();
+				model.setName("layer X");
+				model.setVisible(layer.isVisible());
+				model.setMapLayer(layer);
+				store.add(model);
 			}
 		}
 	}
 
+	public void addLayer(MapLayer layer) {
+		layer.setClustering(new NoClustering());
+		mapElement.getLayers().add(layer);
+		ValueChangeEvent.fire(this, mapElement);
+		updateStore();
+	}
 }

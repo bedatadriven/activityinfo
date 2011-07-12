@@ -47,6 +47,7 @@ public class BubbleMapLayer extends CircledMapLayer {
 
     public void setColorDimensions(List<Dimension> colorDimensions) {
         this.colorDimensions = colorDimensions;
+        
     }
 
     @XmlElement

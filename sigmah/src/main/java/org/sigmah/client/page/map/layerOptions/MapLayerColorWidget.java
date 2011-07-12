@@ -25,12 +25,8 @@ public class MapLayerColorWidget extends HorizontalPanel implements HasValue<Ind
 	@Override
 	public HandlerRegistration addValueChangeHandler(
 			ValueChangeHandler<Indicator> handler) {
-	
 		// TODO Auto-generated method stub
 		return null;
-	
-	
-	
 	}
 
 	@Override
@@ -52,6 +48,4 @@ public class MapLayerColorWidget extends HorizontalPanel implements HasValue<Ind
 		labelName.setText(indicator.getName());
 		//colorPicker.setValue(indicator.get)
 	}
-	
-	
 }

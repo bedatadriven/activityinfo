@@ -52,7 +52,7 @@ public class MapForm extends ContentPanel {
 
         accordionLayout = new AccordionLayout();
         setLayout(accordionLayout);
-
+        
         indicatorTree = new IndicatorTreePanel(service, false);
         indicatorTree.setHeading(messages.indicators());
         indicatorTree.setIcon(icons.indicator());
@@ -65,13 +65,11 @@ public class MapForm extends ContentPanel {
         symbolForm = new BubbleLayerForm();
         add(symbolForm);
 
-        adminPanel = new AdminFilterPanel(this.service);
+        adminPanel = new AdminFilterPanel(service);
         add(adminPanel);
 
         datePanel = new DateRangePanel();
         add(datePanel);
-
-//        accordianLayout.setActiveItem(indicatorTree);
     }
 
     public ReportElement getMapElement() {

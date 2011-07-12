@@ -24,6 +24,7 @@ import org.sigmah.shared.command.RenderElement.Format;
 import org.sigmah.shared.report.content.Content;
 import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.ReportElement;
+import org.sigmah.shared.report.model.clustering.NoClustering;
 import org.sigmah.shared.report.model.layers.AbstractMapLayer;
 import org.sigmah.shared.report.model.layers.AutoMapLayer;
 import org.sigmah.shared.report.model.layers.BubbleMapLayer;
@@ -74,18 +75,6 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
         createMap();
         createToolBar();
         createSelectedLayersWidget();
-        
-        form.getIndicatorTree().addCheckChangedListener(new Listener<TreePanelEvent>(){
-			@Override
-			public void handleEvent(TreePanelEvent be) {
-					MapLayer layer = new BubbleMapLayer();
-					layer.setIndicatorIds(form.getIndicatorTree().getSelectedIds());
-					layer.setClustered(false);
-					mapReportElement.addLayer(layer);
-					layersWidget.setValue(mapReportElement);
-					mapView.setValue(mapReportElement);
-			}
-        });        
     }
 
     private void createSelectedLayersWidget() {
@@ -100,6 +89,7 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
 			@Override
 			public void onValueChange(ValueChangeEvent<MapReportElement> event) {
 				mapView.setValue(event.getValue());
+				layersWidget.setValue(event.getValue());
 			}
 		});
         

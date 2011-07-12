@@ -67,6 +67,7 @@ class BubbleLayerForm extends FormPanel {
         layer.setMaxRadius(maxRadiusField.getValue().intValue());
         layer.setMinRadius(minRadiusField.getValue().intValue());
         layer.setDefaultColor(colorField.getIntValue());
-        layer.setClustered(clusterCombo.getMappedValue() == 1);
+        // TODO: Decide on how to fix
+        //layer.setClustering(clusterCombo.getMappedValue() == 1);
     }
 }

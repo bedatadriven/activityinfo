@@ -15,8 +15,6 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
  * One-to-one DTO for {@link org.sigmah.shared.domain.Country} domain objects.
- *
- * @author Alex Bertram
  */
 public final class CountryDTO extends BaseModelData implements DTO {
 
@@ -26,7 +24,6 @@ public final class CountryDTO extends BaseModelData implements DTO {
 	private List<LocationTypeDTO> locationTypes = new ArrayList<LocationTypeDTO>(0);
     private BoundingBoxDTO bounds;
 
-    
 	public CountryDTO() {
 	}
 

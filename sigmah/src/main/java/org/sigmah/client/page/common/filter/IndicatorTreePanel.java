@@ -211,8 +211,6 @@ public class IndicatorTreePanel extends ContentPanel {
             }
         }
     }
-    
-    
 
     /**
      * @return the list of selected indicators
@@ -247,6 +245,14 @@ public class IndicatorTreePanel extends ContentPanel {
         return list;
     }
 
+    public void setMultipleSelection(boolean multipleSelection) {
+		this.multipleSelection = multipleSelection;
+	}
+
+	public IndicatorTreePanel(Dispatcher service, final boolean multipleSelection) {
+    	this(service, multipleSelection, null);
+    }
+	
     private class Loader extends BaseTreeLoader<ModelData> {
         public Loader() {
             super(new Proxy());
@@ -275,12 +281,5 @@ public class IndicatorTreePanel extends ContentPanel {
         }
     }
 
-    public void setMultipleSelection(boolean multipleSelection) {
-		this.multipleSelection = multipleSelection;
-	}
-
-	public IndicatorTreePanel(Dispatcher service, final boolean multipleSelection) {
-    	this(service, multipleSelection, null);
-    }
     
 }

@@ -8,9 +8,6 @@ package org.sigmah.shared.report.content;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Alex Bertram
- */
 public class PieMapMarker extends BubbleMapMarker {
 
     public static class Slice {
@@ -64,6 +61,4 @@ public class PieMapMarker extends BubbleMapMarker {
     public void setSlices(List<Slice> slices) {
         this.slices = slices;
     }
-
-
 }
