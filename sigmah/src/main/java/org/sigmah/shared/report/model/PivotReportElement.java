@@ -17,7 +17,7 @@ import java.util.Set;
  * @author Alex Bertram
  *
  */
-public abstract class PivotElement<ContentT extends PivotContent> extends ReportElement<ContentT> {
+public abstract class PivotReportElement<ContentT extends PivotContent> extends ReportElement<ContentT> {
 
 
 	/**

@@ -9,7 +9,7 @@ import com.google.inject.Inject;
 import org.sigmah.server.report.generator.MapIconPath;
 import org.sigmah.server.report.renderer.image.ImageMapRenderer;
 import org.sigmah.server.report.util.HtmlWriter;
-import org.sigmah.shared.report.model.MapElement;
+import org.sigmah.shared.report.model.MapReportElement;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -17,14 +17,14 @@ import java.io.OutputStream;
  * @author Alex Bertram
  */
 
-public class HtmlMapRenderer extends ImageMapRenderer implements HtmlRenderer<MapElement> {
+public class HtmlMapRenderer extends ImageMapRenderer implements HtmlRenderer<MapReportElement> {
 
     @Inject
     public HtmlMapRenderer(@MapIconPath String mapIconPath) {
         super(mapIconPath);
     }
 
-    public void render(HtmlWriter html, ImageStorageProvider provider, MapElement element) throws IOException {
+    public void render(HtmlWriter html, ImageStorageProvider provider, MapReportElement element) throws IOException {
 
         ImageStorage is = provider.getImageUrl("png");
 

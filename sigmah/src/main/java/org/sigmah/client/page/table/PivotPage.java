@@ -44,7 +44,7 @@ import org.sigmah.shared.report.model.DateDimension;
 import org.sigmah.shared.report.model.DateUnit;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
-import org.sigmah.shared.report.model.PivotTableElement;
+import org.sigmah.shared.report.model.PivotTableReportElement;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BaseTreeLoader;
@@ -426,7 +426,7 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 		treePanel.setChecked(d, checked);
 	}
 	
-	public void setContent(PivotTableElement element) {
+	public void setContent(PivotTableReportElement element) {
 		gridContainer.setData(element);
 	}
 

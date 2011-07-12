@@ -8,8 +8,8 @@ package org.sigmah.server.report.renderer.ppt;
 import com.google.inject.Inject;
 import org.apache.poi.hslf.usermodel.SlideShow;
 import org.sigmah.server.report.renderer.Renderer;
-import org.sigmah.shared.report.model.MapElement;
-import org.sigmah.shared.report.model.PivotChartElement;
+import org.sigmah.shared.report.model.MapReportElement;
+import org.sigmah.shared.report.model.PivotChartReportElement;
 import org.sigmah.shared.report.model.Report;
 import org.sigmah.shared.report.model.ReportElement;
 
@@ -36,16 +36,16 @@ public class PPTRenderer implements Renderer {
             SlideShow ppt = new SlideShow();
             Report report = (Report) element;
             for(ReportElement child : report.getElements()) {
-                if(child instanceof MapElement) {
-                    mapRenderer.render((MapElement) child, ppt);
-                } else if(child instanceof PivotChartElement) {
-                    chartRenderer.render((PivotChartElement) child, ppt);
+                if(child instanceof MapReportElement) {
+                    mapRenderer.render((MapReportElement) child, ppt);
+                } else if(child instanceof PivotChartReportElement) {
+                    chartRenderer.render((PivotChartReportElement) child, ppt);
                 }
             }
             ppt.write(os);
 
-        } else if(element instanceof MapElement) {
-            mapRenderer.render((MapElement) element, os);
+        } else if(element instanceof MapReportElement) {
+            mapRenderer.render((MapReportElement) element, os);
         }
     }
 

@@ -21,14 +21,13 @@ import java.util.List;
 /**
  * Models a map element within a report
  */
-public class MapElement extends ReportElement<MapContent> {
-
+public class MapReportElement extends ReportElement<MapContent> {
     private String baseMapId;
     private int width = 640;
     private int height = 480;
     private List<MapLayer> layers = new ArrayList<MapLayer>(0);
 
-    public MapElement() {
+    public MapReportElement() {
     }
 
     @XmlElement(name="baseMap", required = true)
@@ -79,6 +78,4 @@ public class MapElement extends ReportElement<MapContent> {
     	this.layers = new ArrayList<MapLayer>();
     	this.layers.addAll(Arrays.asList(layers));
     }
-
-
 }

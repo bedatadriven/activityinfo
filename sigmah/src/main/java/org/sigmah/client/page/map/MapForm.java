@@ -19,7 +19,7 @@ import org.sigmah.client.page.common.filter.IndicatorTreePanel;
 import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.report.model.DimensionType;
-import org.sigmah.shared.report.model.MapElement;
+import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.ReportElement;
 import org.sigmah.shared.report.model.layers.BubbleMapLayer;
 
@@ -75,7 +75,7 @@ public class MapForm extends ContentPanel {
     }
 
     public ReportElement getMapElement() {
-        MapElement element = new MapElement();
+        MapReportElement element = new MapReportElement();
         layoutForm.updateElement(element);
 
         List<Integer> indicators = new ArrayList<Integer>();

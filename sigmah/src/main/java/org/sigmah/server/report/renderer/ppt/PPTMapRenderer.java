@@ -18,7 +18,7 @@ import org.sigmah.server.report.renderer.image.ImageMapRenderer;
 import org.sigmah.shared.report.content.BubbleMapMarker;
 import org.sigmah.shared.report.content.IconMapMarker;
 import org.sigmah.shared.report.content.MapMarker;
-import org.sigmah.shared.report.model.MapElement;
+import org.sigmah.shared.report.model.MapReportElement;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -42,7 +42,7 @@ public class PPTMapRenderer extends ImageMapRenderer {
     }
 
     @Override
-    public void render(MapElement element, OutputStream stream) throws IOException {
+    public void render(MapReportElement element, OutputStream stream) throws IOException {
         //create a new empty slide show
         SlideShow ppt = new SlideShow();
         Dimension pageSize = computePageSize(element);
@@ -55,7 +55,7 @@ public class PPTMapRenderer extends ImageMapRenderer {
 
     }
 
-    public void render(MapElement element, SlideShow ppt) throws IOException {
+    public void render(MapReportElement element, SlideShow ppt) throws IOException {
 
         //add first slide
         Slide slide = ppt.createSlide();
@@ -130,7 +130,7 @@ public class PPTMapRenderer extends ImageMapRenderer {
         }
     }
 
-    private byte[] renderBasemap(MapElement element) throws IOException {
+    private byte[] renderBasemap(MapReportElement element) throws IOException {
 
         BufferedImage image = new BufferedImage(element.getWidth(), element.getHeight(), ColorSpace.TYPE_RGB);
         Graphics2D g2d = image.createGraphics();
@@ -144,7 +144,7 @@ public class PPTMapRenderer extends ImageMapRenderer {
         return out.toByteArray();
     }
 
-    private Dimension computePageSize(MapElement element) {
+    private Dimension computePageSize(MapReportElement element) {
         // standard sizes
         Dimension[] stdSizes = new Dimension[] {
                 new Dimension(720, 540), // Onscreen Show (4:5)

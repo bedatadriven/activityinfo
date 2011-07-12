@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class PivotChartElement extends PivotElement<PivotChartContent> {
+public class PivotChartReportElement extends PivotReportElement<PivotChartContent> {
 
     public enum Type {
 		Bar,
@@ -31,11 +31,11 @@ public class PivotChartElement extends PivotElement<PivotChartContent> {
 	private String categoryAxisTitle;
     private String valueAxisTitle;
 
-	public PivotChartElement() {
+	public PivotChartReportElement() {
 		
 	}
 	
-	public PivotChartElement(Type type) {
+	public PivotChartReportElement(Type type) {
 		this.type = type;
 	}
 

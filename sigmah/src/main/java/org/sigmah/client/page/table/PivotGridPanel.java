@@ -30,7 +30,7 @@ import org.sigmah.shared.report.content.EntityCategory;
 import org.sigmah.shared.report.content.PivotTableData;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
-import org.sigmah.shared.report.model.PivotElement;
+import org.sigmah.shared.report.model.PivotReportElement;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +45,7 @@ public class PivotGridPanel extends ContentPanel {
 
     protected EventBus eventBus;
 
-    protected PivotElement element;
+    protected PivotReportElement element;
     protected TreeGrid<PivotTableRow> grid;
     protected TreeStore<PivotTableRow> store;
     protected ColumnModel columnModel;
@@ -82,7 +82,7 @@ public class PivotGridPanel extends ContentPanel {
         }
     }
 
-    public void setData(final PivotElement element) {
+    public void setData(final PivotReportElement element) {
         if(grid != null) {
             removeAll();
         }

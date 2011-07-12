@@ -19,7 +19,7 @@ public class TableElement extends ReportElement<TableContent> {
     private List<TableColumn> sortBy = new ArrayList<TableColumn>();
 
     private int frozenColumns = 0;
-    private MapElement map;
+    private MapReportElement map;
 
     @XmlElement(name="columns")
 	public TableColumn getRootColumn() {
@@ -51,11 +51,11 @@ public class TableElement extends ReportElement<TableContent> {
 	}
 
     @XmlElement
-    public MapElement getMap() {
+    public MapReportElement getMap() {
         return map;
     }
 
-    public void setMap(MapElement map) {
+    public void setMap(MapReportElement map) {
         this.map = map;
     }
 

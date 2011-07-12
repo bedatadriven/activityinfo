@@ -14,12 +14,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class PivotTableElement extends PivotElement<PivotContent> {
+public class PivotTableReportElement extends PivotReportElement<PivotContent> {
 
 	private List<Dimension> columnDimensions = new ArrayList<Dimension>();
     private List<Dimension> rowDimensions = new ArrayList<Dimension>();
 
-	public PivotTableElement() {
+	public PivotTableReportElement() {
 		
 	}
 

@@ -28,7 +28,7 @@ import org.sigmah.shared.report.content.Content;
 import org.sigmah.shared.report.content.PivotContent;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
-import org.sigmah.shared.report.model.PivotTableElement;
+import org.sigmah.shared.report.model.PivotTableReportElement;
 
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -57,7 +57,7 @@ public class PivotPresenter implements Page {
         
         public TreeStore<ModelData> getDimensionStore();
 
-        public void setContent(PivotTableElement element);
+        public void setContent(PivotTableReportElement element);
 
         public AsyncMonitor getMonitor();
 
@@ -117,8 +117,8 @@ public class PivotPresenter implements Page {
 
     }
 
-    protected PivotTableElement createElement() {
-        PivotTableElement table = new PivotTableElement();
+    protected PivotTableReportElement createElement() {
+        PivotTableReportElement table = new PivotTableReportElement();
         table.setRowDimensions(view.getRowStore().getModels());
         table.setColumnDimensions(view.getColStore().getModels());
 
@@ -149,7 +149,7 @@ public class PivotPresenter implements Page {
 
     public void onUIAction(String itemId) {
         if (UIActions.refresh.equals(itemId)) {
-            final PivotTableElement element = createElement();
+            final PivotTableReportElement element = createElement();
             service.execute(new GenerateElement(element), view.getMonitor(), new AsyncCallback<Content>() {
                 public void onFailure(Throwable throwable) {
                     MessageBox.alert(I18N.CONSTANTS.error(), I18N.CONSTANTS.errorOnServer(), null);

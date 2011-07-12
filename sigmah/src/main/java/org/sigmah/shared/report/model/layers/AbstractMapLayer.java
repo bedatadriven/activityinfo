@@ -5,7 +5,6 @@
 
 package org.sigmah.shared.report.model.layers;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +12,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
 import org.sigmah.shared.domain.Indicator;
+import org.sigmah.shared.report.model.clustering.Clustering;
+import org.sigmah.shared.report.model.clustering.NoClustering;
 import org.sigmah.shared.report.model.labeling.LabelSequence;
 import org.sigmah.shared.report.model.labeling.LatinAlphaSequence;
 
@@ -27,6 +28,7 @@ public abstract class AbstractMapLayer implements MapLayer {
 	protected LabelSequence labelSequence = new LatinAlphaSequence();
 	private boolean clustered = true;
 	private List<Indicator> indicators = new ArrayList<Indicator>();
+	protected Clustering clustering =  new NoClustering(); 
 
 	public void addIndicator(int id) {
 	    indicatorIds.add(id);
@@ -85,5 +87,13 @@ public abstract class AbstractMapLayer implements MapLayer {
 
 	public void setClustered(boolean clustered) {
 	    this.clustered = clustered;
+	}
+
+	public Clustering getClustering() {
+		return clustering;
+	}
+
+	public void setClustering(Clustering clustering) {
+		this.clustering = clustering;
 	}
 }

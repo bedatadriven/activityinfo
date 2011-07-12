@@ -14,7 +14,7 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
 import org.sigmah.server.report.renderer.ChartRendererJC;
-import org.sigmah.shared.report.model.PivotChartElement;
+import org.sigmah.shared.report.model.PivotChartReportElement;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -22,12 +22,12 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 
 /**
- * Renders {@link org.sigmah.shared.report.model.PivotChartElement PivotChartElement}s into
+ * Renders {@link org.sigmah.shared.report.model.PivotChartReportElement PivotChartElement}s into
  * an iText document.
  *
  * @author Alex Bertram
  */
-public class ItextChartRenderer implements ItextRenderer<PivotChartElement> {
+public class ItextChartRenderer implements ItextRenderer<PivotChartReportElement> {
 	private static final int RESOLUTION = 150;
 
 	private final ChartRendererJC chartRenderer;
@@ -37,7 +37,7 @@ public class ItextChartRenderer implements ItextRenderer<PivotChartElement> {
 		this.chartRenderer = chartRenderer;
 	}
 
-	public void render(DocWriter writer, Document doc, PivotChartElement element) {
+	public void render(DocWriter writer, Document doc, PivotChartReportElement element) {
 
 
 		try {

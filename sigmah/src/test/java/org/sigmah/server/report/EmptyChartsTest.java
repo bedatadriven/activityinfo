@@ -22,8 +22,8 @@ import org.sigmah.shared.domain.User;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
-import org.sigmah.shared.report.model.PivotChartElement;
-import org.sigmah.shared.report.model.PivotChartElement.Type;
+import org.sigmah.shared.report.model.PivotChartReportElement;
+import org.sigmah.shared.report.model.PivotChartReportElement.Type;
 import org.sigmah.shared.report.model.Report;
 
 public class EmptyChartsTest {
@@ -31,7 +31,7 @@ public class EmptyChartsTest {
 	
 	@Test
 	public void generate() {
-		PivotChartElement element = new PivotChartElement(Type.StackedBar);
+		PivotChartReportElement element = new PivotChartReportElement(Type.StackedBar);
 		element.setIndicator(1);
 		element.addCategoryDimension(new Dimension(DimensionType.Partner));
 		element.addSeriesDimension(new Dimension(DimensionType.Database));

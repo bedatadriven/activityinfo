@@ -9,6 +9,7 @@ import org.sigmah.shared.report.model.layers.IconMapLayer;
 import org.sigmah.shared.report.model.layers.MapLayer;
 import org.sigmah.shared.report.model.layers.PiechartMapLayer;
 
+import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -16,6 +17,7 @@ import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -26,6 +28,7 @@ import com.extjs.gxt.ui.client.widget.form.Radio;
 import com.extjs.gxt.ui.client.widget.form.RadioGroup;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Image;
 import com.google.inject.Inject;
@@ -59,21 +62,29 @@ public class AddLayerDialog extends Window {
 		
 		this.service=service;
 		
-		setSize(500, 500);
-		setPlain(true);
-		setHeading("Add layer");
-		setLayout(new FlowLayout());
-		setModal(true);
-		setBlinkModal(true);
+		initializeComponent();
 		
 		createIndicatorOptions();
 		createLayerOptions();
 		createIndicatorTreePanel();
 		createCloseButton();
 	}
+
+	private void initializeComponent() {
+		setSize(500, 500);
+		setPlain(true);
+		setHeading("Add layer");
+		setLayout(new FlowLayout());
+		setModal(true);
+		setBlinkModal(true);
+	}
 	
 	private void createIndicatorOptions() {
+		HorizontalPanel radioPanel = new HorizontalPanel();
+		HorizontalPanel muliselectPanel = new HorizontalPanel();
+		
 		fieldsetLayerType.setHeading("Type of layer");
+		fieldsetLayerType.setLayout(new RowLayout(Orientation.VERTICAL));
 		radioProportionalCircle.setBoxLabel(I18N.CONSTANTS.proportionalCircle());
 		radioIcon.setBoxLabel(I18N.CONSTANTS.icon());
 		radioPiechart.setBoxLabel(I18N.CONSTANTS.pieChart());
@@ -82,9 +93,15 @@ public class AddLayerDialog extends Window {
 		radiogroupLayerType.add(radioProportionalCircle);
 		radiogroupLayerType.add(radioIcon);
 		
-		fieldsetLayerType.add(radioProportionalCircle);
-		fieldsetLayerType.add(radioIcon);
-		fieldsetLayerType.add(radioPiechart);
+		radioPanel.add(radioProportionalCircle);
+		radioPanel.add(radioIcon);
+		radioPanel.add(radioPiechart);
+		
+		muliselectPanel.add(imageCanSelectMultiple);
+		muliselectPanel.add(labelCanSelectMultiple);
+		
+		fieldsetLayerType.add(radioPanel);
+		fieldsetLayerType.add(muliselectPanel);
 		
 		// Let the user know whether or not he can select multiple indicators for the layer
 		// he wants to add to the map
@@ -93,7 +110,8 @@ public class AddLayerDialog extends Window {
 			public void handleEvent(FieldEvent be) {
 				if ((Boolean)be.getValue())
 				{
-					MapLayer layer = fromRadio((Radio) be.getSource());
+					// Grab the newly selected radio from the group, cache its MapLayer
+					MapLayer layer = fromRadio(((RadioGroup) be.getSource()).getValue());
 					setCanMultipleSelect(layer.supportsMultipleIndicators());
 				}
 			}
@@ -155,14 +173,11 @@ public class AddLayerDialog extends Window {
 	private void setCanMultipleSelect(boolean multipleSelect) {
 		if (multipleSelect) {
 			labelCanSelectMultiple.setText("You can include multiple indicators on this layertype");
-			changeSelectionIcon(MapResources.INSTANCE.multiSelect());
+			imageCanSelectMultiple.setResource(MapResources.INSTANCE.multiSelect());
 		} else {
 			labelCanSelectMultiple.setText("One indicator can be selected for this layertype");
-			changeSelectionIcon(MapResources.INSTANCE.singleSelect());
+			imageCanSelectMultiple.setResource(MapResources.INSTANCE.singleSelect());
 		}
 	}
 	
-	private void changeSelectionIcon(ImageResource icon) {
-		// Change the icon in some panel
-	}
 }

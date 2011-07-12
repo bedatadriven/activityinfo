@@ -38,7 +38,7 @@ import org.sigmah.shared.command.RenderElement;
 import org.sigmah.shared.report.model.DateDimension;
 import org.sigmah.shared.report.model.DateUnit;
 import org.sigmah.shared.report.model.Dimension;
-import org.sigmah.shared.report.model.PivotChartElement;
+import org.sigmah.shared.report.model.PivotChartReportElement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,7 +96,7 @@ public class ChartPage extends LayoutContainer implements ChartPagePresenter.Vie
 
         ToggleButton button = new ToggleButton("", IconImageBundle.ICONS.barChart());
         button.setToggleGroup("chartType");
-        button.setData("chartType", PivotChartElement.Type.Bar);
+        button.setData("chartType", PivotChartReportElement.Type.Bar);
         chartTypeButtons.add(button);
         toolBar.add(button);
 
@@ -203,7 +203,7 @@ public class ChartPage extends LayoutContainer implements ChartPagePresenter.Vie
         this.toolBar.setListener(presenter);
     }
 
-    private PivotChartElement.Type getChartType() {
+    private PivotChartReportElement.Type getChartType() {
         for (ToggleButton button : chartTypeButtons) {
             if (button.isPressed()) {
                 return button.getData("chartData");
@@ -214,8 +214,8 @@ public class ChartPage extends LayoutContainer implements ChartPagePresenter.Vie
 
 
     @Override
-    public PivotChartElement getChartElement() {
-        PivotChartElement element = new PivotChartElement();
+    public PivotChartReportElement getChartElement() {
+        PivotChartReportElement element = new PivotChartReportElement();
         element.setType(getChartType());
 
         if (categoryCombo.getValue() instanceof DateDimension) {
@@ -239,7 +239,7 @@ public class ChartPage extends LayoutContainer implements ChartPagePresenter.Vie
         return new MaskingAsyncMonitor(preview, I18N.CONSTANTS.loading());
     }
 
-    public void setData(PivotChartElement element) {
+    public void setData(PivotChartReportElement element) {
         preview.setContent(element.getContent());
         gridPanel.setData(element);
     }

@@ -3,7 +3,7 @@ package org.sigmah.server.report.renderer.itext;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
-import org.sigmah.shared.report.model.StaticElement;
+import org.sigmah.shared.report.model.StaticReportElement;
 
 import com.lowagie.text.DocWriter;
 import com.lowagie.text.Document;
@@ -16,10 +16,10 @@ import com.lowagie.text.Paragraph;
 * 
 */
 
-public class ItextStaticRenderer implements ItextRenderer < StaticElement > {
+public class ItextStaticRenderer implements ItextRenderer < StaticReportElement > {
 
 	@Override
-	public void render(DocWriter writer, Document doc, StaticElement element)
+	public void render(DocWriter writer, Document doc, StaticReportElement element)
 			throws DocumentException {
 		
 	    doc.add(ThemeHelper.elementTitle(element.getTitle()));

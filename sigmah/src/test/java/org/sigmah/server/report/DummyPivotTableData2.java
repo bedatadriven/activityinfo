@@ -12,7 +12,7 @@ import org.sigmah.shared.report.content.PivotTableData;
 import org.sigmah.shared.report.model.AdminDimension;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
-import org.sigmah.shared.report.model.PivotTableElement;
+import org.sigmah.shared.report.model.PivotTableReportElement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,8 +55,8 @@ public class DummyPivotTableData2 {
     }
 
 
-    public PivotTableElement testElement() {
-        PivotTableElement element = new PivotTableElement();
+    public PivotTableReportElement testElement() {
+        PivotTableReportElement element = new PivotTableReportElement();
         element.setTitle("Foobar 1612");
         element.setRowDimensions(rowDims);
         element.setColumnDimensions(colDims);

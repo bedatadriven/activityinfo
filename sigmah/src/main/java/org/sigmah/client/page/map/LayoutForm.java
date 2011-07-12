@@ -18,7 +18,7 @@ import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.shared.command.GetBaseMaps;
 import org.sigmah.shared.command.result.BaseMapResult;
 import org.sigmah.shared.map.BaseMap;
-import org.sigmah.shared.report.model.MapElement;
+import org.sigmah.shared.report.model.MapReportElement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +79,7 @@ class LayoutForm extends FormPanel {
         add(pageSizeCombo);
     }
 
-    public void updateElement(MapElement element) {
+    public void updateElement(MapReportElement element) {
         PageSizeModel pageSize = pageSizeCombo.getValue();
         element.setWidth(pageSize.getWidth());
         element.setHeight(pageSize.getHeight());

@@ -23,7 +23,7 @@ import org.sigmah.shared.map.BaseMap;
 import org.sigmah.shared.report.content.Content;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.MapMarker;
-import org.sigmah.shared.report.model.MapElement;
+import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.ReportElement;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 import org.sigmah.shared.util.mapping.Extents;
@@ -60,22 +60,21 @@ import com.google.gwt.user.client.ui.HasValue;
 
 /**
  * Displays the content of a MapElement using Google Maps.
- *
- * @author Alex Bertram (akbertram@gmail.com)
+ * Named AIMapWidget because of a naming conflict with com.google.gwt.maps.client.MapWidget
  */
-class MapElementView extends ContentPanel implements HasValue<MapElement> {
-    private MapWidget map = null;
+class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
+    private MapWidget mapWidget = null;
     private String currentBaseMapId = null;
     private LatLngBounds pendingZoom = null;
 
-    /**
-     * List of <code>Overlay</code>s that have been added to the map.
-     */
     private List<Overlay> overlays = new ArrayList<Overlay>();
-    private Status status;
+    private Status statusWidget;
 
-    private MapElement element;
-    private MapContent content;
+    // A map rendered serverside for reporting usage
+    private MapReportElement mapReportElement;
+    
+    // Model of a the map
+    private MapContent mapModel;
 
     /**
      * True if the Google Maps API is not loaded AND
@@ -85,16 +84,16 @@ class MapElementView extends ContentPanel implements HasValue<MapElement> {
 
     private final Dispatcher dispatcher;
     
-    public MapElementView(Dispatcher dispatcher) {
+    public AIMapWidget(Dispatcher dispatcher) {
 
     	this.dispatcher = dispatcher;
     	
         setHeading(I18N.CONSTANTS.preview());
         setLayout(new FitLayout());
 
-        status = new Status();
+        statusWidget = new Status();
         ToolBar toolBar = new ToolBar();
-        toolBar.add(status);
+        toolBar.add(statusWidget);
         setBottomComponent(toolBar);
 
         // seems like a good time to preload the MapsApi if
@@ -105,30 +104,29 @@ class MapElementView extends ContentPanel implements HasValue<MapElement> {
         addListener(Events.AfterLayout, new Listener<BaseEvent>() {
             @Override
             public void handleEvent(BaseEvent be) {
-                if (map != null) {
-                    map.checkResizeAndCenter();
+                if (mapWidget != null) {
+                    mapWidget.checkResizeAndCenter();
                 }
                 if (pendingZoom != null) {
-                    Log.debug("MapPreview: zooming to " + map.getBoundsZoomLevel(pendingZoom));
-                    map.setCenter(pendingZoom.getCenter(),
-                            map.getBoundsZoomLevel(pendingZoom));
+                    Log.debug("MapPreview: zooming to " + mapWidget.getBoundsZoomLevel(pendingZoom));
+                    mapWidget.setCenter(pendingZoom.getCenter(),
+                            mapWidget.getBoundsZoomLevel(pendingZoom));
                 }
             }
         });
     }
 
     private void zoomToBounds(LatLngBounds bounds) {
+        int zoomLevel = mapWidget.getBoundsZoomLevel(bounds);
 
-        int zoomLevel = map.getBoundsZoomLevel(bounds);
         if (zoomLevel == 0) {
             Log.debug("MapPreview: deferring zoom.");
             pendingZoom = bounds;
         } else {
             Log.debug("MapPreview: zooming to level " + zoomLevel);
-            map.setCenter(bounds.getCenter(), zoomLevel);
+            mapWidget.setCenter(bounds.getCenter(), zoomLevel);
             pendingZoom = null;
             DeferredCommand.addCommand(new Command() {
-				
 				@Override
 				public void execute() {
 					zoomToBounds(pendingZoom);
@@ -147,28 +145,24 @@ class MapElementView extends ContentPanel implements HasValue<MapElement> {
         return LatLngBounds.newInstance(
                 LatLng.newInstance(bounds.getY1(), bounds.getX1()),
                 LatLng.newInstance(bounds.getY2(), bounds.getX2()));	
-        }
-
+    }
 
     public void createMapIfNeededAndUpdateMapContent() {
-        if (map == null) {
+        if (mapWidget == null) {
             MapApiLoader.load(new MaskingAsyncMonitor(this, I18N.CONSTANTS.loadingMap()),
                     new AsyncCallback<Void>() {
                         @Override
                         public void onSuccess(Void result) {
-
                             apiLoadFailed = false;
 
-                            map = new MapWidget();
-                            map.addControl(new LargeMapControl());
+                            mapWidget = new MapWidget();
+                            mapWidget.addControl(new LargeMapControl());
 
                             //changeBaseMapIfNeeded(content.getBaseMap());
 
                             // clear the error message content
                             removeAll();
-
-                            add(map);
-
+                            add(mapWidget);
                             updateMapToContent();
                         }
 
@@ -177,7 +171,6 @@ class MapElementView extends ContentPanel implements HasValue<MapElement> {
                             handleApiLoadFailure();
                         }
                     });
-
         } else {
             clearOverlays();
             updateMapToContent();
@@ -187,10 +180,10 @@ class MapElementView extends ContentPanel implements HasValue<MapElement> {
     private void changeBaseMapIfNeeded(BaseMap baseMap) {
         if (currentBaseMapId == null || !currentBaseMapId.equals(baseMap.getId())) {
             MapType baseMapType = MapTypeFactory.mapTypeForBaseMap(baseMap);
-            map.addMapType(baseMapType);
-            map.setCurrentMapType(baseMapType);
-            map.removeMapType(MapType.getNormalMap());
-            map.removeMapType(MapType.getHybridMap());
+            mapWidget.addMapType(baseMapType);
+            mapWidget.setCurrentMapType(baseMapType);
+            mapWidget.removeMapType(MapType.getNormalMap());
+            mapWidget.removeMapType(MapType.getHybridMap());
             currentBaseMapId = baseMap.getId();
         }
     }
@@ -200,7 +193,7 @@ class MapElementView extends ContentPanel implements HasValue<MapElement> {
      */
     private void clearOverlays() {
         for (Overlay overlay : overlays) {
-            map.removeOverlay(overlay);
+            mapWidget.removeOverlay(overlay);
         }
         overlays.clear();
     }
@@ -211,12 +204,12 @@ class MapElementView extends ContentPanel implements HasValue<MapElement> {
      * of the current selected indicators
      */
     private void updateMapToContent() {
-    	if (element.getLayers().isEmpty())
-    	{
-    		return;
-    	}
+//    	if (mapReportElement.getLayers().isEmpty())
+//    	{
+//    		return;
+//    	}
     	
-    	dispatcher.execute(new GenerateElement<MapContent>(element), null, new AsyncCallback<MapContent>() {
+    	dispatcher.execute(new GenerateElement<MapContent>(mapReportElement), null, new AsyncCallback<MapContent>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -232,7 +225,7 @@ class MapElementView extends ContentPanel implements HasValue<MapElement> {
 		        layout();
 		
 		        // TODO: i18n
-		        status.setStatus(result.getUnmappedSites().size() + " " + I18N.CONSTANTS.siteLackCoordiantes(), null);
+		        statusWidget.setStatus(result.getUnmappedSites().size() + " " + I18N.CONSTANTS.siteLackCoordiantes(), null);
 		
 		        GcIconFactory iconFactory = new GcIconFactory();
 		        iconFactory.primaryColor = "#0000FF";
@@ -246,7 +239,7 @@ class MapElementView extends ContentPanel implements HasValue<MapElement> {
 		
 		            Marker overlay = new Marker(latLng, options);
 		
-		            map.addOverlay(overlay);
+		            mapWidget.addOverlay(overlay);
 		            overlays.add(overlay);
 		        }
 			}
@@ -258,11 +251,9 @@ class MapElementView extends ContentPanel implements HasValue<MapElement> {
      * Handles the failure of the Google Maps API to load.
      */
     private void handleApiLoadFailure() {
-
         apiLoadFailed = true;
 
         if (this.getItemCount() == 0) {
-
             add(new Html(I18N.CONSTANTS.cannotLoadMap()));
             add(new Button(I18N.CONSTANTS.retry(), new SelectionListener<ButtonEvent>() {
                 @Override
@@ -276,20 +267,20 @@ class MapElementView extends ContentPanel implements HasValue<MapElement> {
 
 	@Override
 	public HandlerRegistration addValueChangeHandler(
-			ValueChangeHandler<MapElement> handler) {
+			ValueChangeHandler<MapReportElement> handler) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public MapElement getValue() {
+	public MapReportElement getValue() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void setValue(MapElement value) {
-		this.element=value;
+	public void setValue(MapReportElement value) {
+		this.mapReportElement=value;
         if (!apiLoadFailed) {
             clearOverlays();
             createMapIfNeededAndUpdateMapContent();
@@ -297,7 +288,7 @@ class MapElementView extends ContentPanel implements HasValue<MapElement> {
 	}
 
 	@Override
-	public void setValue(MapElement value, boolean fireEvents) {
+	public void setValue(MapReportElement value, boolean fireEvents) {
 		// TODO Auto-generated method stub
 		
 	}

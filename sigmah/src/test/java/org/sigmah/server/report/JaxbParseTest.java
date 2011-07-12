@@ -48,13 +48,13 @@ public class JaxbParseTest {
         Report report = parseXml("report-elements.xml");
         dumpXml(report);
         Assert.assertEquals("element count", 7, report.getElements().size());
-        Assert.assertTrue("pivotTable", report.getElements().get(0) instanceof PivotTableElement);
-        Assert.assertTrue("pivotChart", report.getElements().get(1) instanceof PivotChartElement);
+        Assert.assertTrue("pivotTable", report.getElements().get(0) instanceof PivotTableReportElement);
+        Assert.assertTrue("pivotChart", report.getElements().get(1) instanceof PivotChartReportElement);
         Assert.assertTrue("table", report.getElements().get(2) instanceof TableElement);
-        Assert.assertTrue("map", report.getElements().get(3) instanceof MapElement);
-        Assert.assertTrue("static", report.getElements().get(4) instanceof StaticElement);
-        Assert.assertTrue("static", report.getElements().get(5) instanceof StaticElement);
-        Assert.assertTrue("static", report.getElements().get(6) instanceof StaticElement);
+        Assert.assertTrue("map", report.getElements().get(3) instanceof MapReportElement);
+        Assert.assertTrue("static", report.getElements().get(4) instanceof StaticReportElement);
+        Assert.assertTrue("static", report.getElements().get(5) instanceof StaticReportElement);
+        Assert.assertTrue("static", report.getElements().get(6) instanceof StaticReportElement);
     }
 
     @Test
@@ -63,9 +63,9 @@ public class JaxbParseTest {
         dumpXml(report);
 
         Assert.assertEquals("element count", 1, report.getElements().size());
-        Assert.assertTrue("is pivotTable", report.getElements().get(0) instanceof PivotTableElement);
+        Assert.assertTrue("is pivotTable", report.getElements().get(0) instanceof PivotTableReportElement);
 
-        PivotTableElement table = report.getElement(0);
+        PivotTableReportElement table = report.getElement(0);
         Assert.assertEquals("dimension count", 2, table.getRowDimensions().size());
         Assert.assertEquals("indicator type", DimensionType.Indicator, table.getRowDimensions().get(0).getType());
         Assert.assertTrue("admin subclass", table.getRowDimensions().get(1) instanceof AdminDimension);
@@ -75,8 +75,8 @@ public class JaxbParseTest {
     @Test
     public void testMarshallElements() throws Throwable {
         Report report = new Report();
-        report.addElement(new PivotChartElement());
-        report.addElement(new PivotTableElement());
+        report.addElement(new PivotChartReportElement());
+        report.addElement(new PivotTableReportElement());
 
         dumpXml(report);
     }

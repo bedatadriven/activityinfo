@@ -9,12 +9,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.sigmah.server.report.renderer.Renderer;
-import org.sigmah.shared.report.model.MapElement;
-import org.sigmah.shared.report.model.PivotChartElement;
-import org.sigmah.shared.report.model.PivotTableElement;
+import org.sigmah.shared.report.model.MapReportElement;
+import org.sigmah.shared.report.model.PivotChartReportElement;
+import org.sigmah.shared.report.model.PivotTableReportElement;
 import org.sigmah.shared.report.model.Report;
 import org.sigmah.shared.report.model.ReportElement;
-import org.sigmah.shared.report.model.StaticElement;
+import org.sigmah.shared.report.model.StaticReportElement;
 import org.sigmah.shared.report.model.TableElement;
 
 import com.google.inject.Inject;
@@ -98,15 +98,15 @@ public abstract class ItextReportRenderer implements Renderer {
     }
 
     private ItextRenderer rendererForElement(ReportElement element) {
-        if(element instanceof PivotTableElement) {
+        if(element instanceof PivotTableReportElement) {
             return pivotTableRenderer;
-        } else if(element instanceof PivotChartElement) {
+        } else if(element instanceof PivotChartReportElement) {
             return chartRenderer;
-        } else if(element instanceof MapElement) {
+        } else if(element instanceof MapReportElement) {
             return mapRenderer;
         } else if(element instanceof TableElement) {
             return tableRenderer;
-        } else if(element instanceof StaticElement) {
+        } else if(element instanceof StaticReportElement) {
                 return staticRenderer;
         } else {
             return new NullItextRenderer();

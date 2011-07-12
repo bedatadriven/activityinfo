@@ -11,7 +11,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.sigmah.server.report.DummyPivotTableData;
 import org.sigmah.server.report.DummyPivotTableData2;
-import org.sigmah.shared.report.model.PivotTableElement;
+import org.sigmah.shared.report.model.PivotTableReportElement;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -29,7 +29,7 @@ public class PivotTableRendererTest {
 
         // input test data : element + content
         DummyPivotTableData testData = new DummyPivotTableData();
-        PivotTableElement element = testData.Foobar1612Element();
+        PivotTableReportElement element = testData.Foobar1612Element();
 
         // Destination book
         HSSFWorkbook book = new HSSFWorkbook();
@@ -69,7 +69,7 @@ public class PivotTableRendererTest {
 
         // input test data : element + content
         DummyPivotTableData2 testData = new DummyPivotTableData2();
-        PivotTableElement element = testData.testElement();
+        PivotTableReportElement element = testData.testElement();
 
         // Destination book
         HSSFWorkbook book = new HSSFWorkbook();

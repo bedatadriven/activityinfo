@@ -44,17 +44,17 @@ public class ExcelReportRenderer implements ExcelRenderer<Report>, Renderer {
 
         if(element instanceof Report) {
             render(book, (Report) element);
-        } else if(element instanceof PivotTableElement) {
-            pivotTableRenderer.render(book, (PivotTableElement) element);
+        } else if(element instanceof PivotTableReportElement) {
+            pivotTableRenderer.render(book, (PivotTableReportElement) element);
 
         } else if(element instanceof TableElement) {
             tableRenderer.render(book, (TableElement) element);
 
-        } else if(element instanceof PivotChartElement) {
-            chartRenderer.render(book, (PivotChartElement)element);
+        } else if(element instanceof PivotChartReportElement) {
+            chartRenderer.render(book, (PivotChartReportElement)element);
             
-        } else if (element instanceof StaticElement) {
-        	staticRenderer.render(book, (StaticElement)element);
+        } else if (element instanceof StaticReportElement) {
+        	staticRenderer.render(book, (StaticReportElement)element);
         }
         book.write(os);
 
@@ -81,9 +81,9 @@ public class ExcelReportRenderer implements ExcelRenderer<Report>, Renderer {
 		for(ReportElement element : report.getElements()) {
 
 			
-			if(element instanceof PivotTableElement) {
+			if(element instanceof PivotTableReportElement) {
 				
-				pivotTableRenderer.render(workbook, (PivotTableElement) element);
+				pivotTableRenderer.render(workbook, (PivotTableReportElement) element);
 							
           	} else if(element instanceof TableElement) {
 				

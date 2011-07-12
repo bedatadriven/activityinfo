@@ -20,10 +20,10 @@ import java.util.*;
 
 public class BubbleLayerGenerator extends AbstractLayerGenerator {
 
-    private MapElement element;
+    private MapReportElement element;
     private BubbleMapLayer layer;
 
-    public BubbleLayerGenerator(MapElement element, BubbleMapLayer layer) {
+    public BubbleLayerGenerator(MapReportElement element, BubbleMapLayer layer) {
         this.element = element;
         this.layer = layer;
     }

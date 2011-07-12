@@ -8,7 +8,7 @@ package org.sigmah.server.report.renderer.html;
 import org.sigmah.server.report.renderer.ChartRendererJC;
 import org.sigmah.server.report.util.HtmlWriter;
 import org.sigmah.shared.report.model.Dimension;
-import org.sigmah.shared.report.model.PivotChartElement;
+import org.sigmah.shared.report.model.PivotChartReportElement;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ public class HtmlChartRendererJC extends ChartRendererJC implements HtmlChartRen
 
 
 	@Override
-	public void render(HtmlWriter html, ImageStorageProvider imageStorageProvider, PivotChartElement element) throws IOException {
+	public void render(HtmlWriter html, ImageStorageProvider imageStorageProvider, PivotChartReportElement element) throws IOException {
 		
 		/*
 		 * Generate the title

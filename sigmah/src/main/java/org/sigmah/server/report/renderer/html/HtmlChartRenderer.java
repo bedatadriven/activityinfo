@@ -5,8 +5,8 @@
 
 package org.sigmah.server.report.renderer.html;
 
-import org.sigmah.shared.report.model.PivotChartElement;
+import org.sigmah.shared.report.model.PivotChartReportElement;
 
-public interface HtmlChartRenderer extends HtmlRenderer<PivotChartElement> {
+public interface HtmlChartRenderer extends HtmlRenderer<PivotChartReportElement> {
 
 }

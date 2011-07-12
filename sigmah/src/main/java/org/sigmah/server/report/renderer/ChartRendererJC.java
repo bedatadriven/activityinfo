@@ -51,7 +51,7 @@ import org.sigmah.shared.report.content.PivotChartContent;
 import org.sigmah.shared.report.content.PivotTableData;
 import org.sigmah.shared.report.model.CategoryProperties;
 import org.sigmah.shared.report.model.Dimension;
-import org.sigmah.shared.report.model.PivotChartElement;
+import org.sigmah.shared.report.model.PivotChartReportElement;
 
 
 /**
@@ -63,7 +63,7 @@ import org.sigmah.shared.report.model.PivotChartElement;
 public class ChartRendererJC  {
 
 
-    public String renderToUrl(PivotChartElement element, boolean includeTitle, ImageStorageProvider istorageProvider,
+    public String renderToUrl(PivotChartReportElement element, boolean includeTitle, ImageStorageProvider istorageProvider,
                               int width, int height, int dpi) throws IOException {
         try {
             Chart chart = createChart(element, includeTitle, width, height, dpi);
@@ -77,7 +77,7 @@ public class ChartRendererJC  {
         }
     }
 
-    public BufferedImage renderImage(PivotChartElement element, boolean includeTitle, int width, int height, int dpi) {
+    public BufferedImage renderImage(PivotChartReportElement element, boolean includeTitle, int width, int height, int dpi) {
 
         try {
             Chart chart = createChart(element, includeTitle, width, height, dpi);
@@ -96,7 +96,7 @@ public class ChartRendererJC  {
         }
     }
 
-    public void render(PivotChartElement element, boolean includeTitle, Graphics2D g2d, int width, int height, int dpi) {
+    public void render(PivotChartReportElement element, boolean includeTitle, Graphics2D g2d, int width, int height, int dpi) {
         try {
             Chart chart = createChart(element, includeTitle, width, height, dpi);
             chart.setGraphics2D(g2d);
@@ -118,9 +118,9 @@ public class ChartRendererJC  {
      * @throws IOException
      * @throws ChartDataException
      */
-    protected Chart createChart(PivotChartElement element, boolean includeTitle, int width, int height, int dpi)
+    protected Chart createChart(PivotChartReportElement element, boolean includeTitle, int width, int height, int dpi)
             throws IOException, ChartDataException, PropertyException {
-        if(element.getType() == PivotChartElement.Type.Pie)  {
+        if(element.getType() == PivotChartReportElement.Type.Pie)  {
             return createPieChart(element, includeTitle, width, height, dpi);
         } else {
             return createAxisChart(element, includeTitle, width, height, dpi);
@@ -130,7 +130,7 @@ public class ChartRendererJC  {
     /**
      * Creates a JChart PieChart from our report element
      */
-    protected Chart createPieChart(PivotChartElement element, boolean includeTitle, int width, int height, int dpi) throws IOException, ChartDataException {
+    protected Chart createPieChart(PivotChartReportElement element, boolean includeTitle, int width, int height, int dpi) throws IOException, ChartDataException {
 
         PivotTableData table = element.getContent().getData();
         List<PivotTableData.Axis> categories = table.getRootCategory().getLeaves();
@@ -173,7 +173,7 @@ public class ChartRendererJC  {
         return paints;
     }
 
-    protected Chart createAxisChart(PivotChartElement element, boolean includeTitle,
+    protected Chart createAxisChart(PivotChartReportElement element, boolean includeTitle,
                                     int width, int height, int dpi)
             throws IOException, ChartDataException, PropertyException {
 
@@ -204,7 +204,7 @@ public class ChartRendererJC  {
                 computeLegendProperties(dpi, series), width, height);
     }
 
-    private ChartType computeChartType(PivotChartElement element) {
+    private ChartType computeChartType(PivotChartReportElement element) {
         switch (element.getType()) {
             case ClusteredBar:
                 return ChartType.BAR_CLUSTERED;
@@ -337,8 +337,8 @@ public class ChartRendererJC  {
         return p;
     }
 
-    protected AxisChartTypeProperties computeAxisChartProperties(int dpi, PivotChartElement element) {
-        if(element.getType() == PivotChartElement.Type.Line) {
+    protected AxisChartTypeProperties computeAxisChartProperties(int dpi, PivotChartReportElement element) {
+        if(element.getType() == PivotChartReportElement.Type.Line) {
             return computeLineChartProperties(element, dpi);
         } else {
             BarChartProperties p;
@@ -360,7 +360,7 @@ public class ChartRendererJC  {
         }
     }
 
-    private AxisChartTypeProperties computeLineChartProperties(PivotChartElement element, int dpi) {
+    private AxisChartTypeProperties computeLineChartProperties(PivotChartReportElement element, int dpi) {
         List<PivotTableData.Axis> series = element.getContent().getData().getRootSeries().getLeaves();
         Stroke[] stroke = new Stroke[series.size()];
         Shape[] shape = new Shape[series.size()];

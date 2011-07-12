@@ -24,7 +24,7 @@ import java.util.List;
 public class BubbleGeneratorTest {
     @Test
     public void testColorByIndicators() {
-        MapElement element = new MapElement();
+        MapReportElement element = new MapReportElement();
 
         BubbleMapLayer layer = new BubbleMapLayer();
         layer.setClustered(true);
@@ -64,7 +64,7 @@ public class BubbleGeneratorTest {
     @Test
     public void testColorByPartner() {
 
-        MapElement element = new MapElement();
+        MapReportElement element = new MapReportElement();
 
         BubbleMapLayer layer = new BubbleMapLayer();
         layer.setClustered(true);

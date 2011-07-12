@@ -8,7 +8,7 @@ package org.sigmah.server.report.renderer.html;
 import org.junit.Test;
 import org.sigmah.server.report.DummyPivotTableData;
 import org.sigmah.server.report.util.HtmlWriter;
-import org.sigmah.shared.report.model.PivotTableElement;
+import org.sigmah.shared.report.model.PivotTableReportElement;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -27,7 +27,7 @@ public class PivotTableHtmlRendererTest {
 
         // input
         DummyPivotTableData testData = new DummyPivotTableData();
-        PivotTableElement element = testData.Foobar1612Element();
+        PivotTableReportElement element = testData.Foobar1612Element();
 
         // collaborator: ImageStorageProvider
         ImageStorageProvider isp = createMock(ImageStorageProvider.class);

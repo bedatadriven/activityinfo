@@ -60,25 +60,25 @@ public class HtmlReportRenderer implements HtmlRenderer<Report> {
 		
 		for(ReportElement element : report.getElements()) {
 
-			if(element instanceof PivotTableElement) {
+			if(element instanceof PivotTableReportElement) {
 				
-				pivotTableRenderer.render(html, isp, (PivotTableElement) element);
+				pivotTableRenderer.render(html, isp, (PivotTableReportElement) element);
 							
-			} else if(element instanceof PivotChartElement) {
+			} else if(element instanceof PivotChartReportElement) {
 				
-				pivotChartRenderer.render(html, isp, (PivotChartElement) element);
+				pivotChartRenderer.render(html, isp, (PivotChartReportElement) element);
 			
 			} else if(element instanceof TableElement) {
 				
 				tableRenderer.render(html, isp, (TableElement) element);
 			
-			} else if(element instanceof MapElement) {
+			} else if(element instanceof MapReportElement) {
 
-                mapRenderer.render(html, isp, (MapElement) element);
+                mapRenderer.render(html, isp, (MapReportElement) element);
                 
-            } else if(element instanceof StaticElement) {
+            } else if(element instanceof StaticReportElement) {
 
-                staticRenderer.render(html, isp, (StaticElement) element);
+                staticRenderer.render(html, isp, (StaticReportElement) element);
             }
 
 		}

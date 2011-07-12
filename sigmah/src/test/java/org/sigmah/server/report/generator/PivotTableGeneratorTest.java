@@ -17,7 +17,7 @@ import org.sigmah.shared.report.content.PivotTableData;
 import org.sigmah.shared.report.model.AdminDimension;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
-import org.sigmah.shared.report.model.PivotTableElement;
+import org.sigmah.shared.report.model.PivotTableReportElement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +42,7 @@ public class PivotTableGeneratorTest {
 
         // test input data: PivotTableElement
 
-        PivotTableElement element = new PivotTableElement();
+        PivotTableReportElement element = new PivotTableReportElement();
         AdminDimension provinceDim = new AdminDimension(1);
         element.addRowDimension(provinceDim);
         Dimension partnerDim = new Dimension(DimensionType.Partner);
@@ -84,7 +84,7 @@ public class PivotTableGeneratorTest {
         user.setLocale("fr");
 
         // test input data: PivotTableElement
-        PivotTableElement element = new PivotTableElement();
+        PivotTableReportElement element = new PivotTableReportElement();
         Dimension indicatorDim = new Dimension(DimensionType.Indicator);
         element.addRowDimension(indicatorDim);
 

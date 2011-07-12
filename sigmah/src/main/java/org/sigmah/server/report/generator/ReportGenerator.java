@@ -38,17 +38,17 @@ public class ReportGenerator extends BaseGenerator<Report> {
 
     public Content generateElement(User user, ReportElement element, Filter inheritedFilter,
                                    DateRange dateRange) {
-        if (element instanceof PivotChartElement) {
-            pivotChartGenerator.generate(user, (PivotChartElement) element, inheritedFilter, dateRange);
-            return ((PivotChartElement) element).getContent();
+        if (element instanceof PivotChartReportElement) {
+            pivotChartGenerator.generate(user, (PivotChartReportElement) element, inheritedFilter, dateRange);
+            return ((PivotChartReportElement) element).getContent();
 
-        } else if (element instanceof PivotTableElement) {
-            pivotTableGenerator.generate(user, (PivotTableElement) element, inheritedFilter, dateRange);
-            return ((PivotTableElement) element).getContent();
+        } else if (element instanceof PivotTableReportElement) {
+            pivotTableGenerator.generate(user, (PivotTableReportElement) element, inheritedFilter, dateRange);
+            return ((PivotTableReportElement) element).getContent();
 
-        } else if (element instanceof MapElement) {
-            mapGenerator.generate(user, (MapElement) element, inheritedFilter, dateRange);
-            return ((MapElement) element).getContent();
+        } else if (element instanceof MapReportElement) {
+            mapGenerator.generate(user, (MapReportElement) element, inheritedFilter, dateRange);
+            return ((MapReportElement) element).getContent();
 
         } else if (element instanceof TableElement) {
             tableGenerator.generate(user, ((TableElement) element), inheritedFilter, dateRange);

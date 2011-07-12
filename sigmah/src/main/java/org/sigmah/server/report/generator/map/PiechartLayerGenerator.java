@@ -20,7 +20,7 @@ import org.sigmah.shared.report.content.Point;
 import org.sigmah.shared.report.model.CategoryProperties;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
-import org.sigmah.shared.report.model.MapElement;
+import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.layers.BubbleMapLayer;
 import org.sigmah.shared.report.model.layers.PiechartMapLayer;
 import org.sigmah.shared.report.model.layers.ScalingType;
@@ -28,10 +28,10 @@ import org.sigmah.shared.util.mapping.Extents;
 
 public class PiechartLayerGenerator extends AbstractLayerGenerator {
 
-    private MapElement element;
+    private MapReportElement element;
     private PiechartMapLayer layer;
 
-    public PiechartLayerGenerator(MapElement element, PiechartMapLayer layer) {
+    public PiechartLayerGenerator(MapReportElement element, PiechartMapLayer layer) {
         this.element = element;
         this.layer = layer;
     }

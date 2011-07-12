@@ -10,7 +10,7 @@ import org.apache.poi.hslf.model.ShapeGroup;
 import org.apache.poi.hslf.model.Slide;
 import org.apache.poi.hslf.usermodel.SlideShow;
 import org.sigmah.server.report.renderer.ChartRendererJC;
-import org.sigmah.shared.report.model.PivotChartElement;
+import org.sigmah.shared.report.model.PivotChartReportElement;
 
 import java.awt.*;
 import java.io.IOException;
@@ -21,7 +21,7 @@ import java.io.IOException;
 public class PPTChartRenderer {
 
 
-    public void render(PivotChartElement element, SlideShow ppt) throws IOException {
+    public void render(PivotChartReportElement element, SlideShow ppt) throws IOException {
 
         //add first slide
         Slide slide = ppt.createSlide();

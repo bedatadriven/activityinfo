@@ -65,8 +65,8 @@ public class DummyPivotTableData {
     }
 
 
-    public PivotTableElement Foobar1612Element() {
-        PivotTableElement element = new PivotTableElement();
+    public PivotTableReportElement Foobar1612Element() {
+        PivotTableReportElement element = new PivotTableReportElement();
         element.setTitle("Foobar 1612");
         element.setRowDimensions(rowDims);
         element.setColumnDimensions(colDims);

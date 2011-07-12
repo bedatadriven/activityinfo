@@ -22,7 +22,7 @@ import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.shared.command.RenderElement;
 import org.sigmah.shared.command.RenderElement.Format;
 import org.sigmah.shared.report.content.Content;
-import org.sigmah.shared.report.model.MapElement;
+import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.ReportElement;
 import org.sigmah.shared.report.model.layers.AbstractMapLayer;
 import org.sigmah.shared.report.model.layers.AutoMapLayer;
@@ -54,10 +54,10 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
     
     // Contained widgets
     private final MapForm form;
-    private MapElementView mapView;
+    private AIMapWidget mapView;
     private ActionToolBar toolBar;
-    private MapLayersView layerControl;
-    private MapElement mapElement = new MapElement();
+    private MapLayersWidget layersWidget;
+    private MapReportElement mapReportElement = new MapReportElement();
 
     @Inject
     public MapPage(Dispatcher dispatcher, final MapForm form) {
@@ -81,29 +81,29 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
 					MapLayer layer = new BubbleMapLayer();
 					layer.setIndicatorIds(form.getIndicatorTree().getSelectedIds());
 					layer.setClustered(false);
-					mapElement.addLayer(layer);
-					layerControl.setValue(mapElement);
-					mapView.setValue(mapElement);
+					mapReportElement.addLayer(layer);
+					layersWidget.setValue(mapReportElement);
+					mapView.setValue(mapReportElement);
 			}
         });        
     }
 
     private void createSelectedLayersWidget() {
-        layerControl = new MapLayersView(dispatcher);
+        layersWidget = new MapLayersWidget(dispatcher);
         
         BorderLayoutData east = new BorderLayoutData(Style.LayoutRegion.EAST, 0.20f);
         east.setCollapsible(true);
         east.setSplit(true);
         east.setMargins(new Margins(0, 0, 0, 5));
         
-        layerControl.addValueChangeHandler(new ValueChangeHandler<MapElement>() {
+        layersWidget.addValueChangeHandler(new ValueChangeHandler<MapReportElement>() {
 			@Override
-			public void onValueChange(ValueChangeEvent<MapElement> event) {
+			public void onValueChange(ValueChangeEvent<MapReportElement> event) {
 				mapView.setValue(event.getValue());
 			}
 		});
         
-        add(layerControl, east);
+        add(layersWidget, east);
 	}
 
 	private void createFormPane(MapForm form) {
@@ -117,7 +117,7 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
     }
 
     private void createMap() {
-        mapView = new MapElementView(dispatcher);
+        mapView = new AIMapWidget(dispatcher);
         mapView.setHeading(I18N.CONSTANTS.preview());
 
         add(mapView, new BorderLayoutData(Style.LayoutRegion.CENTER));

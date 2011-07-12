@@ -9,17 +9,15 @@ import org.sigmah.shared.map.BaseMap;
 import org.sigmah.shared.util.mapping.Extents;
 
 import java.util.*;
+
 /*
- * @author Alex Bertram
+ * Represents the model of a map 
  */
-
 public class MapContent implements Content {
-
-
     private BaseMap baseMap;
     private List<FilterDescription> filterDescriptions;
     private List<MapMarker> markers = new ArrayList<MapMarker>();
-    private java.util.Set<Integer> unmappedSites = new HashSet<Integer>();
+    private Set<Integer> unmappedSites = new HashSet<Integer>();
     private Extents extents;
     private int zoomLevel;
 

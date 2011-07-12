@@ -15,12 +15,12 @@ import org.sigmah.shared.report.content.PivotContent;
 import org.sigmah.shared.report.content.PivotTableData;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.Dimension;
-import org.sigmah.shared.report.model.PivotTableElement;
+import org.sigmah.shared.report.model.PivotTableReportElement;
 
 import java.util.Comparator;
 import java.util.Map;
 
-public class PivotTableGenerator extends PivotGenerator<PivotTableElement> {
+public class PivotTableGenerator extends PivotGenerator<PivotTableReportElement> {
 
     @Inject
     public PivotTableGenerator(PivotDAO pivotDAO) {
@@ -30,7 +30,7 @@ public class PivotTableGenerator extends PivotGenerator<PivotTableElement> {
     private Map<Dimension, Comparator<PivotTableData.Axis>> comparators;
 
     @Override
-    public void generate(User user, PivotTableElement element, Filter inheritedFilter,
+    public void generate(User user, PivotTableReportElement element, Filter inheritedFilter,
                          DateRange dateRange) {
 
         Filter filter = resolveElementFilter(element, dateRange);

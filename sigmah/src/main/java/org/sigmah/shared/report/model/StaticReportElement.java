@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlElement;
 
 import org.sigmah.shared.report.content.TableContent;
 
-public class StaticElement extends ReportElement < TableContent > implements Serializable {
+public class StaticReportElement extends ReportElement < TableContent > implements Serializable {
 	
 	private String text;
 	private String img;

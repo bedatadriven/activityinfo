@@ -7,7 +7,7 @@ package org.sigmah.server.report.renderer.image;
 
 import com.google.inject.Inject;
 import org.sigmah.server.report.renderer.Renderer;
-import org.sigmah.shared.report.model.MapElement;
+import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.ReportElement;
 
 import java.io.IOException;
@@ -29,8 +29,8 @@ public class ImageReportRenderer implements Renderer {
     public void render(ReportElement element, OutputStream os) throws IOException {
         // TODO: support for other types?
 
-        if(element instanceof MapElement) {
-            renderer.render((MapElement) element, os);
+        if(element instanceof MapReportElement) {
+            renderer.render((MapReportElement) element, os);
         }
 
     }

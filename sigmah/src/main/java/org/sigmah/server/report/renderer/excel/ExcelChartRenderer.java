@@ -10,18 +10,18 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.sigmah.shared.report.content.FilterDescription;
 import org.sigmah.shared.report.content.PivotTableData;
-import org.sigmah.shared.report.model.PivotChartElement;
+import org.sigmah.shared.report.model.PivotChartReportElement;
 
 import java.util.List;
 
 /**
  * @author Alex Bertram
  */
-public class ExcelChartRenderer implements ExcelRenderer<PivotChartElement> {
+public class ExcelChartRenderer implements ExcelRenderer<PivotChartReportElement> {
 
 	@Override
 	public void render(Workbook book,
-			PivotChartElement element) {
+			PivotChartReportElement element) {
 
 		/* Generate the actual pivot table data */
 
@@ -29,7 +29,7 @@ public class ExcelChartRenderer implements ExcelRenderer<PivotChartElement> {
 
 		/* Generate the excel sheet */
 
-		new BaseExcelRenderer<PivotChartElement>(book, element) {
+		new BaseExcelRenderer<PivotChartReportElement>(book, element) {
 
 
 			@Override

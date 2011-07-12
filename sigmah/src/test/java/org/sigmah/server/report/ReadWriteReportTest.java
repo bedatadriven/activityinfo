@@ -5,7 +5,7 @@ import java.io.FileOutputStream;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import org.junit.Test;
-import org.sigmah.shared.report.model.MapElement;
+import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.Report;
 import org.sigmah.shared.report.model.layers.BubbleMapLayer;
 
@@ -15,7 +15,7 @@ public class ReadWriteReportTest {
 	public void readWriteReportTest() throws Throwable
 	{
 		Report report = new Report();
-		MapElement map = new MapElement();
+		MapReportElement map = new MapReportElement();
 		map.getLayers().add(new BubbleMapLayer());
 		
 		report.getElements().add(map);

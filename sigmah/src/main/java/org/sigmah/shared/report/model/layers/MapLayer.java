@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
 import org.sigmah.shared.domain.Indicator;
+import org.sigmah.shared.report.model.clustering.Clustering;
 import org.sigmah.shared.report.model.labeling.LabelSequence;
 
 /*
@@ -39,4 +40,7 @@ public interface MapLayer extends Serializable {
 	public void setClustered(boolean clustered);
 	
 	public boolean supportsMultipleIndicators();
+	
+	public Clustering getClustering();
+	public void setClustering(Clustering clustering);
 }

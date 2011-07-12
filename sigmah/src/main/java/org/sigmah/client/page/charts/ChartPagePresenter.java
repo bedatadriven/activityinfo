@@ -23,7 +23,7 @@ import org.sigmah.shared.command.GenerateElement;
 import org.sigmah.shared.command.RenderElement;
 import org.sigmah.shared.report.content.Content;
 import org.sigmah.shared.report.content.PivotChartContent;
-import org.sigmah.shared.report.model.PivotChartElement;
+import org.sigmah.shared.report.model.PivotChartReportElement;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -37,11 +37,11 @@ public class ChartPagePresenter implements Page, ActionListener, ExportCallback 
 
         public void bindPresenter(ChartPagePresenter presenter);
 
-        public PivotChartElement getChartElement();
+        public PivotChartReportElement getChartElement();
 
         public AsyncMonitor getMonitor();
 
-        public void setData(PivotChartElement element);
+        public void setData(PivotChartReportElement element);
 
     }
 
@@ -86,7 +86,7 @@ public class ChartPagePresenter implements Page, ActionListener, ExportCallback 
 
         if (UIActions.refresh.equals(actionId)) {
 
-            final PivotChartElement element = view.getChartElement();
+            final PivotChartReportElement element = view.getChartElement();
             service.execute(new GenerateElement(element), view.getMonitor(),
                     new AsyncCallback<Content>() {
 

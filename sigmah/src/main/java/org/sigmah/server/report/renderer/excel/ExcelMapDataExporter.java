@@ -12,7 +12,7 @@ import org.sigmah.shared.report.content.BubbleMapMarker;
 import org.sigmah.shared.report.content.IconMapMarker;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.MapMarker;
-import org.sigmah.shared.report.model.MapElement;
+import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.ReportElement;
 
 import java.io.IOException;
@@ -26,11 +26,11 @@ public class ExcelMapDataExporter implements Renderer {
 
     public void render(ReportElement element, OutputStream stm) throws IOException {
 
-        if(!(element instanceof MapElement)) {
+        if(!(element instanceof MapReportElement)) {
             throw new RuntimeException("ExcelMapDataExporter accepts only MapElements");
         }
 
-        MapContent content = ((MapElement)element).getContent();
+        MapContent content = ((MapReportElement)element).getContent();
 
         Workbook book = new HSSFWorkbook();
         Sheet sheet = book.createSheet();

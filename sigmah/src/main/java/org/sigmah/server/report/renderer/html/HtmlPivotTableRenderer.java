@@ -7,16 +7,16 @@ package org.sigmah.server.report.renderer.html;
 
 import org.sigmah.server.report.util.HtmlWriter;
 import org.sigmah.shared.report.content.PivotTableData;
-import org.sigmah.shared.report.model.PivotTableElement;
+import org.sigmah.shared.report.model.PivotTableReportElement;
 
 import java.text.NumberFormat;
 import java.util.List;
 
-public class HtmlPivotTableRenderer implements HtmlRenderer<PivotTableElement> {
+public class HtmlPivotTableRenderer implements HtmlRenderer<PivotTableReportElement> {
 
 
     @Override
-	public void render(HtmlWriter html, ImageStorageProvider isp, PivotTableElement element) {
+	public void render(HtmlWriter html, ImageStorageProvider isp, PivotTableReportElement element) {
 
 
 		html.startDiv().styleName(CssStyles.ELEMENT_CONTAINER);

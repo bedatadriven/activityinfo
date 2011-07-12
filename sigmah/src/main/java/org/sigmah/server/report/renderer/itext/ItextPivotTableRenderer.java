@@ -7,20 +7,20 @@ package org.sigmah.server.report.renderer.itext;
 
 import com.lowagie.text.*;
 import org.sigmah.shared.report.content.PivotTableData;
-import org.sigmah.shared.report.model.PivotTableElement;
+import org.sigmah.shared.report.model.PivotTableReportElement;
 
 import java.text.NumberFormat;
 import java.util.List;
 
 /**
- * Renders a {@link org.sigmah.shared.report.model.PivotTableElement} to an iText
+ * Renders a {@link org.sigmah.shared.report.model.PivotTableReportElement} to an iText
  * document (either PDF or RTF)
  *
  * @author Alex Bertram
  */
-public class ItextPivotTableRenderer implements ItextRenderer<PivotTableElement> {
+public class ItextPivotTableRenderer implements ItextRenderer<PivotTableReportElement> {
 
-    public void render(DocWriter writer, Document document, PivotTableElement element) {
+    public void render(DocWriter writer, Document document, PivotTableReportElement element) {
         try {
 
             document.add(ThemeHelper.elementTitle(element.getTitle()));

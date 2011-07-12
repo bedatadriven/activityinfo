@@ -7,7 +7,7 @@ package org.sigmah.server.report.generator.map;
 
 import org.sigmah.server.domain.SiteData;
 import org.sigmah.shared.report.content.*;
-import org.sigmah.shared.report.model.MapElement;
+import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.MapIcon;
 import org.sigmah.shared.report.model.layers.IconMapLayer;
 import org.sigmah.shared.util.mapping.Extents;
@@ -20,13 +20,13 @@ import java.util.List;
  */
 public class IconLayerGenerator implements LayerGenerator {
 
-    private final MapElement element;
+    private final MapReportElement element;
     private final IconMapLayer layer;
 
     private MapIcon icon;
 
 
-    public IconLayerGenerator(MapElement element, IconMapLayer layer) {
+    public IconLayerGenerator(MapReportElement element, IconMapLayer layer) {
         this.element = element;
         this.layer = layer;
 

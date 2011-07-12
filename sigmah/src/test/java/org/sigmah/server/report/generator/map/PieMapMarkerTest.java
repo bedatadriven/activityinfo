@@ -14,7 +14,7 @@ import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.PieMapMarker;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
-import org.sigmah.shared.report.model.MapElement;
+import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.layers.BubbleMapLayer;
 import org.sigmah.shared.report.model.layers.PiechartMapLayer;
 
@@ -48,7 +48,7 @@ public class PieMapMarkerTest {
         layer.addIndicator(103);
         //layer.getColorDimensions().add(dimension);
 
-        MapElement mapElement = new MapElement();
+        MapReportElement mapElement = new MapReportElement();
         mapElement.addLayer(layer);
 
         MapContent content = new MapContent();

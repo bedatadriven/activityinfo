@@ -1,7 +1,7 @@
 package org.sigmah.client.page.map;
 
 import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.shared.report.model.MapElement;
+import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.layers.BubbleMapLayer;
 import org.sigmah.shared.report.model.layers.MapLayer;
 
@@ -36,9 +36,9 @@ import com.google.inject.Inject;
 /*
  * Displays a list of layers selected by the user 
  */
-public class MapLayersView extends LayoutContainer implements HasValue<MapElement> {
+public class MapLayersWidget extends LayoutContainer implements HasValue<MapReportElement> {
 	private Dispatcher service;
-	private MapElement mapElement;
+	private MapReportElement mapElement;
 	private ListStore<MapLayerModel> store = new ListStore<MapLayerModel>();
 	private ListView<MapLayerModel> view = new ListView<MapLayerModel>();
 	private ContentPanel panel = new ContentPanel();
@@ -47,7 +47,7 @@ public class MapLayersView extends LayoutContainer implements HasValue<MapElemen
 	private AddLayerDialog addLayer;
 	
 	@Inject
-	public MapLayersView(Dispatcher service) {
+	public MapLayersWidget(Dispatcher service) {
 		super();
 		
 		this.service = service;
@@ -168,22 +168,22 @@ public class MapLayersView extends LayoutContainer implements HasValue<MapElemen
 
 	@Override
 	public HandlerRegistration addValueChangeHandler(
-			ValueChangeHandler<MapElement> handler) {
+			ValueChangeHandler<MapReportElement> handler) {
 		return addHandler(handler, ValueChangeEvent.getType());
 	}
 
 	@Override
-	public MapElement getValue() {
+	public MapReportElement getValue() {
 		return mapElement;
 	}
 
 	@Override
-	public void setValue(MapElement value) {
+	public void setValue(MapReportElement value) {
 		setValue(value, false);
 	}
 
 	@Override
-	public void setValue(MapElement value, boolean fireEvents) {
+	public void setValue(MapReportElement value, boolean fireEvents) {
 		this.mapElement=value;
 		
 		updateStore();

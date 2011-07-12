@@ -34,7 +34,7 @@ import org.sigmah.shared.report.content.BubbleMapMarker;
 import org.sigmah.shared.report.content.IconMapMarker;
 import org.sigmah.shared.report.content.MapMarker;
 import org.sigmah.shared.report.content.PieMapMarker;
-import org.sigmah.shared.report.model.MapElement;
+import org.sigmah.shared.report.model.MapReportElement;
 
 import com.google.inject.Inject;
 
@@ -76,13 +76,13 @@ public class ImageMapRenderer {
         this.mapIconRoot = mapIconPath;
     }
 
-    public void renderToFile(MapElement element, File file) throws IOException {
+    public void renderToFile(MapReportElement element, File file) throws IOException {
         FileOutputStream os = new FileOutputStream(file);
         render(element, os);
         os.close();
     }
 
-    public void render(MapElement element, OutputStream os) throws IOException {
+    public void render(MapReportElement element, OutputStream os) throws IOException {
         BufferedImage image = new BufferedImage(element.getWidth(), element.getHeight(), ColorSpace.TYPE_RGB);
 		Graphics2D g2d = image.createGraphics();
 
@@ -91,7 +91,7 @@ public class ImageMapRenderer {
         ImageIO.write(image,"PNG", os);
     }
 
-    public void render(MapElement element, Graphics2D g2d) {
+    public void render(MapReportElement element, Graphics2D g2d) {
 
         drawBasemap(g2d, element);
 
@@ -184,7 +184,7 @@ public class ImageMapRenderer {
         }
     }
 
-    public void drawBasemap(Graphics2D g2d, MapElement element) {
+    public void drawBasemap(Graphics2D g2d, MapReportElement element) {
         TiledMap map = new TiledMap(element.getWidth(), element.getHeight(),
                 element.getContent().getExtents().center(),
                 element.getContent().getZoomLevel());

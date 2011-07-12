@@ -9,7 +9,7 @@ import org.sigmah.server.dao.PivotDAO;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.report.content.*;
 import org.sigmah.shared.report.model.Dimension;
-import org.sigmah.shared.report.model.PivotElement;
+import org.sigmah.shared.report.model.PivotReportElement;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -17,7 +17,7 @@ import java.util.*;
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public abstract class PivotGenerator<T extends PivotElement> extends BaseGenerator<T> {
+public abstract class PivotGenerator<T extends PivotReportElement> extends BaseGenerator<T> {
     public PivotGenerator(PivotDAO pivotDAO) {
         super(pivotDAO);
     }

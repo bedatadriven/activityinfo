@@ -15,7 +15,7 @@ import org.sigmah.shared.domain.User;
 import org.sigmah.shared.report.content.BubbleMapMarker;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.TableData;
-import org.sigmah.shared.report.model.MapElement;
+import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.TableColumn;
 import org.sigmah.shared.report.model.TableElement;
 import org.sigmah.shared.report.model.labeling.ArabicNumberSequence;
@@ -72,7 +72,7 @@ public class TableGeneratorTest {
         table.addColumn(new TableColumn("Index", "map"));
         table.addColumn(new TableColumn("Site", "location.name"));
 
-        MapElement map = new MapElement();
+        MapReportElement map = new MapReportElement();
         map.setBaseMapId("map1");
         CircledMapLayer layer = new BubbleMapLayer();
         layer.setLabelSequence(new ArabicNumberSequence());

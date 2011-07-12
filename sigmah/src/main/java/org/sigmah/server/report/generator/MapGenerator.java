@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * @author Alex Bertram
  */
-public class MapGenerator extends ListGenerator<MapElement> {
+public class MapGenerator extends ListGenerator<MapReportElement> {
 
 	private final BaseMapDAO baseMapDAO;
 
@@ -45,7 +45,7 @@ public class MapGenerator extends ListGenerator<MapElement> {
         this.baseMapDAO = baseMapDAO;
     }
 
-    public void generate(User user, MapElement element, Filter inheritedFilter, DateRange dateRange) {
+    public void generate(User user, MapReportElement element, Filter inheritedFilter, DateRange dateRange) {
 
         Filter filter = resolveElementFilter(element, dateRange);
         Filter effectiveFilter = inheritedFilter == null ? filter : new Filter(inheritedFilter, filter);

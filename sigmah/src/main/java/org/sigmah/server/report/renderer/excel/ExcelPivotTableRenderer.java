@@ -8,18 +8,18 @@ package org.sigmah.server.report.renderer.excel;
 import org.apache.poi.ss.usermodel.*;
 import org.sigmah.shared.report.content.FilterDescription;
 import org.sigmah.shared.report.content.PivotTableData;
-import org.sigmah.shared.report.model.PivotTableElement;
+import org.sigmah.shared.report.model.PivotTableReportElement;
 
 import java.util.List;
 import java.util.Map.Entry;
 
-public class ExcelPivotTableRenderer implements ExcelRenderer<PivotTableElement> {
+public class ExcelPivotTableRenderer implements ExcelRenderer<PivotTableReportElement> {
 	
 
 
 	@Override
 	public void render(Workbook book,
-			PivotTableElement element) {
+			PivotTableReportElement element) {
 	
 		/* Generate the actual pivot table data */
 		
@@ -27,7 +27,7 @@ public class ExcelPivotTableRenderer implements ExcelRenderer<PivotTableElement>
 		
 		/* Generate the excel sheet */
 		
-		new BaseExcelTableRenderer<PivotTableElement, PivotTableData.Axis>(book, element) {
+		new BaseExcelTableRenderer<PivotTableReportElement, PivotTableData.Axis>(book, element) {
 		
 
 			@Override
