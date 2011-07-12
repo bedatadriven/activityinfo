@@ -84,6 +84,11 @@
             <name>Bedatadriven Public Repo</name>
             <url>http://nexus.bedatadriven.com/content/groups/public</url>
         </pluginRepository>
+        <pluginRepository>
+        	<id>modafocus</id>
+        	<name>Sonatype</name>
+        	<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </pluginRepository>
     </pluginRepositories>
 
     <distributionManagement>
@@ -614,6 +619,57 @@
                     <stopKey>STOP</stopKey>
                 </configuration>
             </plugin>
+            <plugin>
+            	<groupId>br.com.ingenieux</groupId>
+            	<artifactId>beanstalk-maven-plugin</artifactId>
+            	<version>0.2.0-SNAPSHOT</version>
+            	
+            	<configuration>
+            		<applicationName>activityinfo</applicationName>
+            		<s3Bucket>activityinfo-wars</s3Bucket>
+            		<s3Key>${project.version}-${maven.build.timestamp}</s3Key>
+            		
+            		<optionSettings>
+            		
+            			<optionSetting>
+            				<namespace> aws:autoscaling:launchconfiguration</namespace>
+            				<optionName>ImageId</optionName>
+            				<value>ami-8810e8e1</value>
+            			</optionSetting>
+            			<optionSetting>
+            				<namespace>aws:elb:policies</namespace>
+            				<optionName>Stickiness Policy</optionName>
+            				<value>true</value>
+            			</optionSetting>
+            			<optionSetting>
+            				<namespace>aws:elb:policies</namespace>
+            				<optionName>Stickiness Cookie Expiration</optionName>
+            				<value>3600</value>
+            			</optionSetting>
+            			<optionSetting>
+            				<namespace>aws:elasticbeanstalk:application:environment</namespace>
+            				<optionName>PARAM1</optionName>
+            				<value>activityinfo-conf</value>
+            			</optionSetting>
+            			<optionSetting>
+            				<namespace>aws:elasticbeanstalk:application:environment</namespace>
+            				<optionName>PARAM2</optionName>
+            				<value>activityinfo.production.properties</value>
+            			</optionSetting>
+	          			<optionSetting>
+							<namespace>aws:elasticbeanstalk:application:environment</namespace>
+							<optionName>AWS_ACCESS_KEY_ID</optionName>
+							<value>${aws.accessKey}</value>
+						</optionSetting>
+						<optionSetting>
+							<namespace>aws:elasticbeanstalk:application:environment</namespace>
+							<optionName>AWS_SECRET_KEY</optionName>
+							<value>${aws.secretKey}</value>
+						</optionSetting>
+            		</optionSettings>
+            	</configuration>
+            
+            </plugin>
         </plugins>
     </build>
 
@@ -711,6 +767,44 @@
             </build>
         </profile>
 
+		<profile>
+			
+			<!-- For the nightly build, we just overwrite the last nightly build
+			     artifact for this version and then restart the application server-->
+			
+			<id>nightly</id>
+			<build>
+				<plugins>
+				<plugin>
+					<groupId>br.com.ingenieux</groupId>
+					<artifactId>beanstalk-maven-plugin</artifactId>
+					<version>0.2.0-SNAPSHOT</version>
+	
+					<configuration>
+						<applicationName>activityinfo</applicationName>
+						<s3Bucket>activityinfo-wars</s3Bucket>
+						<s3Key>${project.version}-nightly.war</s3Key>
+						<versionLabel>${project.version}-NIGHTLY</versionLabel>
+						<environmentName>nightly</environmentName>
+						<cnamePrefix>activityinfo-nightly</cnamePrefix>
+					</configuration>
+					<executions>
+				    	<execution>
+				            <id>default</id>
+				            <phase>verify</phase>
+				            <goals>
+				              <goal>upload-source-bundle</goal>
+				              <goal>restart-application-server</goal>
+				            </goals>
+				    	</execution>
+				  	</executions>
+				</plugin>
+			</plugins>
+			</build>
+		</profile>
+		
+	
+
         <!-- Build the Application Module with only permutations for
  Safari and logging enabled for testing purposes -->
         <profile>
@@ -741,29 +835,7 @@
                 </plugins>
             </build>
         </profile>
-
-        <!-- Run tests against local MS SQL instance -->
-        <profile>
-            <id>mssql-test</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>2.9</version>
-                        <configuration>
-                            <systemProperties>
-                                <property>
-                                    <name>activityinfo.pu</name>
-                                    <value>mssql-test</value>
-                                </property>
-                            </systemProperties>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
+        
         <profile>
             <id>login</id>
             <build>
