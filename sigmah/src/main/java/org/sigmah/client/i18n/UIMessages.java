@@ -2,7 +2,7 @@ package org.sigmah.client.i18n;
 
 /**
  * Interface to represent the messages contained in resource bundle:
- * 	/home/ruud/workspace/activityinfo/sigmah/src/main/java/org/sigmah/client/i18n/UIMessages.properties'.
+ * 	/home/alex/dev/activityinfo/sigmah/src/main/java/org/sigmah/client/i18n/UIMessages.properties'.
  */
 public interface UIMessages extends com.google.gwt.i18n.client.Messages {
   

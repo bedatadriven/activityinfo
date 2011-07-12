@@ -5,22 +5,36 @@
 
 package org.sigmah.server.bootstrap;
 
-import com.bedatadriven.rebar.appcache.server.BootstrapServlet;
-import com.bedatadriven.rebar.appcache.server.PropertyProvider;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
-import com.google.inject.Singleton;
-import org.sigmah.server.domain.Authentication;
+import java.io.IOException;
 
 import javax.persistence.EntityManager;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.sigmah.server.domain.Authentication;
+
+import com.bedatadriven.rebar.appcache.server.DefaultSelectionServlet;
+import com.bedatadriven.rebar.appcache.server.PropertyProvider;
+import com.bedatadriven.rebar.appcache.server.SelectionException;
+import com.bedatadriven.rebar.appcache.server.UnknownUserAgentException;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
+import com.google.inject.Singleton;
+
+/**
+ * Overrides the behavior of the default rebar-appcache
+ * servlet to do custom locale selection based on the 
+ * authenticated user's profile.
+ * 
+ * @author alex
+ *
+ */
 @Singleton
-public class BootstrapScriptServlet extends BootstrapServlet {
+public class SelectionServlet extends DefaultSelectionServlet {
 
     @Inject
-    public BootstrapScriptServlet(Provider<EntityManager> entityManager) {
+    public SelectionServlet(Provider<EntityManager> entityManager) {
         registerProvider("locale", new LocaleProvider(entityManager));
         registerProvider("log_level", new LogLevelProvider());
     }
@@ -47,11 +61,37 @@ public class BootstrapScriptServlet extends BootstrapServlet {
                     return cookie.getValue();
                 }
             }
-            throw new IllegalStateException("User is not authenticated");
-        }
+            throw new UserNotAuthenticated();
+        } 
+    }
+    
+    private class UserNotAuthenticated extends SelectionException {
+    	
     }
 
-    /**
+    @Override
+	protected void handleSelectionException(Path path, Exception e,
+			HttpServletResponse resp) throws IOException {
+		if(e instanceof UserNotAuthenticated && path.file.endsWith(".js")) {
+			resp.getWriter().print("window.location = 'login';");
+		} else if(e instanceof UnknownUserAgentException) {
+			resp.getWriter().print("window.location = 'browser.html'");
+		} else {
+			super.handleNoAvailablePermutation(path, resp);
+		}
+	}
+
+	@Override
+	protected void handleNoAvailablePermutation(Path path,
+			HttpServletResponse resp) throws IOException {
+		if(path.file.endsWith(".js")) {
+			resp.getWriter().println("window.location = 'browser.html';");
+		} else {
+			resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unsupported browser");
+		}
+	}
+
+	/**
      * Set the log_level to be used based on the host name
      */
     private class LogLevelProvider implements PropertyProvider {

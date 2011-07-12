@@ -54,7 +54,7 @@ public class AdminFilterPanel extends ContentPanel implements FilterPanel {
 
     private TreePanel<AdminEntityDTO> tree;
     
-    private Filter baseFilter = new Filter();
+    private Filter baseFilter = null;
     private Filter value = new Filter();
 	private Button applyButton;
 	private Button removeButton;
@@ -190,29 +190,33 @@ public class AdminFilterPanel extends ContentPanel implements FilterPanel {
 
 	@Override
 	public void applyBaseFilter(final Filter filter) {
-		if(!this.baseFilter.equals(filter)) {
+		if(this.baseFilter == null || !this.baseFilter.equals(filter)) {
 			this.baseFilter = filter;
-			final Set<Integer> activities = filter.getRestrictions(DimensionType.Activity);
-			if(!activities.isEmpty()) {
-				service.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
-	
-					@Override
-					public void onFailure(Throwable caught) {
-						GWT.log("Failed to load admin entities", caught);
-						
-					}
-	
-					@Override
-					public void onSuccess(SchemaDTO result) {
+			service.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					GWT.log("Failed to load admin entities", caught);
+
+				}
+
+				@Override
+				public void onSuccess(SchemaDTO result) {
+					Set<Integer> activities = filter.getRestrictions(DimensionType.Activity);
+					if(!activities.isEmpty()) {
 						loader.setCountry(result.getActivityById(activities.iterator().next()).getDatabase().getCountry());
-						loader.setFilter(filter);
-						loader.load();
+					} else if(!result.getCountries().isEmpty()) {
+						loader.setCountry(result.getCountries().iterator().next());
+					} else {
+						// TODO: support multiple countries!
 					}
-				
-				});	
-			}
+					loader.setFilter(filter);
+					loader.load();
+				}
+			});	
 		}
 	}
+	
 	
 
 	private void onExpanded(ModelData item) {

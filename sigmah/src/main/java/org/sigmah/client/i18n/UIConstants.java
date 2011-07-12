@@ -2,7 +2,7 @@ package org.sigmah.client.i18n;
 
 /**
  * Interface to represent the constants contained in resource bundle:
- * 	'/home/ruud/workspace/activityinfo/sigmah/src/main/java/org/sigmah/client/i18n/UIConstants.properties'.
+ * 	'/home/alex/dev/activityinfo/sigmah/src/main/java/org/sigmah/client/i18n/UIConstants.properties'.
  */
 public interface UIConstants extends com.google.gwt.i18n.client.Constants {
   
@@ -311,24 +311,6 @@ public interface UIConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Administration")
   @Key("adminboard")
   String adminboard();
-
-  /**
-   * Translated "Administrative level".
-   * 
-   * @return translated "Administrative level"
-   */
-  @DefaultStringValue("Administrative level")
-  @Key("administrativeLevel")
-  String administrativeLevel();
-
-  /**
-   * Translated "Aggregation".
-   * 
-   * @return translated "Aggregation"
-   */
-  @DefaultStringValue("Aggregation")
-  @Key("aggregation")
-  String aggregation();
 
   /**
    * Translated "Aggregation Method".
@@ -2491,11 +2473,20 @@ public interface UIConstants extends com.google.gwt.i18n.client.Constants {
   String fullName();
 
   /**
-   * Translated "In order to use ActivityInfo offline, you must first install <b>Google Gears</b>. Click <a href=\"http://tools.google.com/gears/\" target=\"_blank\">here</a> to install.".
+   * Translated "To use ActivityInfo offline, you must install Google Gears. Do you want to install Gears now?".
    * 
-   * @return translated "In order to use ActivityInfo offline, you must first install <b>Google Gears</b>. Click <a href=\"http://tools.google.com/gears/\" target=\"_blank\">here</a> to install."
+   * @return translated "To use ActivityInfo offline, you must install Google Gears. Do you want to install Gears now?"
    */
-  @DefaultStringValue("In order to use ActivityInfo offline, you must first install <b>Google Gears</b>. Click <a href=\"http://tools.google.com/gears/\" target=\"_blank\">here</a> to install.")
+  @DefaultStringValue("To use ActivityInfo offline, you must install Google Gears. Do you want to install Gears now?")
+  @Key("gearsInstall")
+  String gearsInstall();
+
+  /**
+   * Translated "Gears is required".
+   * 
+   * @return translated "Gears is required"
+   */
+  @DefaultStringValue("Gears is required")
   @Key("gearsRequired")
   String gearsRequired();
 
@@ -2680,15 +2671,6 @@ public interface UIConstants extends com.google.gwt.i18n.client.Constants {
   String historyValue();
 
   /**
-   * Translated "Icon".
-   * 
-   * @return translated "Icon"
-   */
-  @DefaultStringValue("Icon")
-  @Key("icon")
-  String icon();
-
-  /**
    * Translated "Image".
    * 
    * @return translated "Image"
@@ -2723,15 +2705,6 @@ public interface UIConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("The completion date must be after the start date.")
   @Key("inconsistentDateRangeWarning")
   String inconsistentDateRangeWarning();
-
-  /**
-   * Translated "Indicator visualization".
-   * 
-   * @return translated "Indicator visualization"
-   */
-  @DefaultStringValue("Indicator visualization")
-  @Key("indicatorVisualization")
-  String indicatorVisualization();
 
   /**
    * Translated "Indicators".
@@ -3778,15 +3751,6 @@ public interface UIConstants extends com.google.gwt.i18n.client.Constants {
   String mapIcon();
 
   /**
-   * Translated "Layer options for".
-   * 
-   * @return translated "Layer options for"
-   */
-  @DefaultStringValue("Layer options for")
-  @Key("mapLayerOptions")
-  String mapLayerOptions();
-
-  /**
    * Translated "Maps".
    * 
    * @return translated "Maps"
@@ -4210,6 +4174,15 @@ public interface UIConstants extends com.google.gwt.i18n.client.Constants {
   String northHemiChars();
 
   /**
+   * Translated "Your session has timed out for security reasons. Click OK to login again.".
+   * 
+   * @return translated "Your session has timed out for security reasons. Click OK to login again."
+   */
+  @DefaultStringValue("Your session has timed out for security reasons. Click OK to login again.")
+  @Key("notAuthenticated")
+  String notAuthenticated();
+
+  /**
    * Translated "Not yet implemented.".
    * 
    * @return translated "Not yet implemented."
@@ -4442,15 +4415,6 @@ public interface UIConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Phase's details")
   @Key("phaseDetails")
   String phaseDetails();
-
-  /**
-   * Translated "Pie chart".
-   * 
-   * @return translated "Pie chart"
-   */
-  @DefaultStringValue("Pie chart")
-  @Key("pieChart")
-  String pieChart();
 
   /**
    * Translated "Cross all of the dimensions of your results, including by activity, time period, partner, or geography".
@@ -5081,15 +5045,6 @@ public interface UIConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("You have unsaved changes. Do you want to save before continuing?")
   @Key("promptSave")
   String promptSave();
-
-  /**
-   * Translated "Proportional circle".
-   * 
-   * @return translated "Proportional circle"
-   */
-  @DefaultStringValue("Proportional circle")
-  @Key("proportionalCircle")
-  String proportionalCircle();
 
   /**
    * Translated "Number".

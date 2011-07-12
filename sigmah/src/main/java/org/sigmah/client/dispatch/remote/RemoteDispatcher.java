@@ -154,10 +154,11 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
         int i = 0;
         while (i < pendingCommands.size()) {
             CommandRequest cmd = pendingCommands.get(i);
-
-            if (executionWithProxySuccessful(cmd)) {
-                pendingCommands.remove(i);
-
+            ProxyResult proxyResult = proxyManager.execute(cmd.getCommand());
+            if (proxyResult.couldExecute) {
+            	pendingCommands.remove(i);
+            	cmd.fireOnSuccess(proxyResult.result);
+            
             } else if (retriesMaxedOut(cmd)) {
                 pendingCommands.remove(i);
                 onRetriesMaxedOut(cmd);
@@ -193,7 +194,6 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
             return false;
         }
 
-        request.fireOnSuccess(r.result);
         return true;
     }
 
