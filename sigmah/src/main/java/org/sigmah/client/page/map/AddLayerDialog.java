@@ -65,6 +65,7 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 	// List of selected indicators
 	private Grid<IndicatorDTO> gridSelectedIndicators;
 	private ListStore<IndicatorDTO> indicatorsStore = new ListStore<IndicatorDTO>();
+	private Button buttonClearSelection = new Button();
     
     // Indicator options
 	private Button buttonAddLayer = new Button();
@@ -184,11 +185,14 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 			for (IndicatorDTO indicator : indicatorsStore.getModels()) {
 				newLayer.getIndicatorIds().add(indicator.getId());
 			}
-			treepanelIndicators.clearSelection();
-			indicatorsStore.removeAll();
+			clearSelection();
 			hide();
 			ValueChangeEvent.fire(this, newLayer);
 		}
+	}
+
+	private void clearSelection() {
+		indicatorsStore.removeAll();
 	}
 	
 	private MapLayer fromRadio(Radio radio) {
@@ -216,7 +220,7 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 			@Override
 			public void handleEvent(TreePanelEvent be) {
 				if (!multiSelect) {
-					indicatorsStore.removeAll();
+					clearSelection();
 				}
 				
 				if (be.isChecked()) {
@@ -282,5 +286,11 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 	@Override
 	public void setValue(MapLayer value, boolean fireEvents) {
 		// do nothing
+	}
+
+	@Override
+	public void hide() {
+		super.hide();
+		clearSelection();
 	}
 }

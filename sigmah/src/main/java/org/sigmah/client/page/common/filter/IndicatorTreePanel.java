@@ -87,7 +87,6 @@ public class IndicatorTreePanel extends ContentPanel {
         tree = new TreePanel<ModelData>(store);
         // Set multipleSelection after tree is instantiated
         this.setMultipleSelection(multipleSelection);
-        tree.setCheckable(true);
 
         tree.getStyle().setNodeCloseIcon(null);
         tree.getStyle().setNodeOpenIcon(null);
@@ -254,10 +253,6 @@ public class IndicatorTreePanel extends ContentPanel {
 	public IndicatorTreePanel(Dispatcher service, final boolean multipleSelection) {
     	this(service, multipleSelection, null);
     }
-	
-	public void clearSelection() {
-		tree.setCheckedSelection(null);
-	}
 	
     private class Loader extends BaseTreeLoader<ModelData> {
         public Loader() {

@@ -41,6 +41,7 @@ public class MapForm extends ContentPanel {
     protected AdminFilterPanel adminPanel;
     protected LayoutForm layoutForm;
     protected DateRangePanel datePanel;
+    protected MapOptionsWidget mapOptionsWidget;
 
     @Inject
     public MapForm(Dispatcher service, UIConstants messages, IconImageBundle icons) {
@@ -70,6 +71,9 @@ public class MapForm extends ContentPanel {
 
         datePanel = new DateRangePanel();
         add(datePanel);
+        
+        mapOptionsWidget = new MapOptionsWidget(service);
+        add(mapOptionsWidget);
     }
 
     public ReportElement getMapElement() {

@@ -9,30 +9,31 @@
 @sprite .removeLayer {
 	gwt-image: "removeLayer";
 	float: right;
-	vertical-align: top;
+	vertical-align: middle;
 }
 
 @sprite .iconBubble {
 	gwt-image: "bubble";
 	float: left;
-	vertical-align: top;
+	vertical-align: middle;
 }
 
 @sprite .iconPiechart {
 	gwt-image: "piechart";
 	float: left;
-	vertical-align: top;
+	vertical-align: middle;
 }
 
 @sprite .iconIcon {
 	gwt-image: "icon";
 	float: left;
-	vertical-align: top;
+	vertical-align: middle;
 }
 
 .checkbox {
 	float: left;
 	margin:5px;
+	vertical-align: middle;
 }
 
 .removeLayer {
@@ -41,5 +42,5 @@
 
 .layerItem {
 	margin: 5px;
-	vertical-align: center;
+	vertical-align: middle;
 }
