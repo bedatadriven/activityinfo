@@ -638,9 +638,14 @@
             		<optionSettings>
             		
             			<optionSetting>
-            				<namespace> aws:autoscaling:launchconfiguration</namespace>
+            				<namespace>aws:autoscaling:launchconfiguration</namespace>
             				<optionName>ImageId</optionName>
             				<value>ami-8810e8e1</value>
+            			</optionSetting>
+            			<optionSetting>
+            				<namespace>aws:autoscaling:launchconfiguration</namespace>
+            				<optionName>EC2KeyName</optionName>
+            				<value>bedatadriven</value>
             			</optionSetting>
             			<optionSetting>
             				<namespace>aws:elb:policies</namespace>
