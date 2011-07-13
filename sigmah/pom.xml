@@ -2,10 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.sigmah</groupId>
-    <artifactId>sigmah</artifactId>
+    <groupId>org.activityinfo</groupId>
+    <artifactId>activityinfo</artifactId>
     <packaging>war</packaging>
-    <version>1.5.4</version>
+    <version>1.5.5-SNAPSHOT</version>
     <name>Sigmah</name>
     <description>Web-based database platform for program monitoring and reporting for the UN,
         NGOs, and others working in humanitarian, development, and post-conflict contexts.</description>
@@ -14,15 +14,15 @@
         <url>http://mantis.activityinfo.org</url>
     </issueManagement>
     <ciManagement>
-        <system>mikeci</system>
-        <url>https://build.mikeci.com/history.html?name=ActivityInfo&amp;_sub=activityinfo</url>
+        <system>Jenkins</system>
+        <url>http://build.bedatadriven.com/job/ActivityInfo/</url>
     </ciManagement>
     <inceptionYear>2009</inceptionYear>
     <scm>
-        <connection>scm:svn:http://sigma-h.googlecode.com/svn/trunk</connection>
-        <developerConnection>scm:svn:https://sigma-h.googlecode.com/svn/trunk</developerConnection>
-        <url>http://code.google.com/p/sigmah/source/browse/trunk</url>
-    </scm>
+		<connection>scm:git:git@github.com:akbertram/activityinfo.git</connection>
+		<url>scm:git:git@github.com:akbertram/activityinfo.git</url>
+		<developerConnection>scm:git:git@github.com:akbertram/activityinfo.git</developerConnection>
+	</scm>
     <developers>
         <developer>
             <id>akbertram</id>
@@ -405,6 +405,24 @@
         <outputDirectory>${gwt.output.directory}/WEB-INF/classes</outputDirectory>
         <testSourceDirectory>src/test/java</testSourceDirectory>
         <plugins>
+            <plugin>
+               <groupId>pl.project13.maven</groupId>
+               <artifactId>git-commit-id-plugin</artifactId>
+               <version>1.5</version>
+               <executions>
+                   <execution>
+                       <phase>generate-sources</phase>
+                       <goals>
+                           <goal>revision</goal>
+                       </goals>
+                   </execution>
+               </executions>
+               <configuration>
+                   <prefix>git</prefix>
+                   <dotGitDirectory>${project.basedir}/../.git</dotGitDirectory>
+               </configuration>
+            </plugin>
+
             <!-- configure the Java Compiler Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -417,27 +435,6 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-
-            <plugin>
-                <groupId>com.google.code.maven-svn-revision-number-plugin</groupId>
-                <artifactId>maven-svn-revision-number-plugin</artifactId>
-                <version>1.6</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>revision</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <entries>
-                        <entry>
-                            <prefix>activityinfo</prefix>
-                        </entry>
-                    </entries>
-                </configuration>
-            </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -607,6 +604,61 @@
                     <stopPort>9095</stopPort>
                     <stopKey>STOP</stopKey>
                 </configuration>
+            </plugin>
+
+              <plugin>
+            	<groupId>br.com.ingenieux</groupId>
+            	<artifactId>beanstalk-maven-plugin</artifactId>
+            	<version>0.2.2-bedatadriven</version>
+
+            	<configuration>
+            		<applicationName>activityinfo</applicationName>
+            		<s3Bucket>activityinfo-wars</s3Bucket>
+            		<s3Key>${project.version}-${maven.build.timestamp}</s3Key>
+
+            		<optionSettings>
+            			<optionSetting>
+            				<namespace>aws:autoscaling:launchconfiguration</namespace>
+            				<optionName>ImageId</optionName>
+            				<value>ami-8810e8e1</value>
+            			</optionSetting>
+            			<optionSetting>
+            				<namespace>aws:autoscaling:launchconfiguration</namespace>
+            				<optionName>EC2KeyName</optionName>
+            				<value>bedatadriven</value>
+            			</optionSetting>
+            			<optionSetting>
+            				<namespace>aws:elb:policies</namespace>
+            				<optionName>Stickiness Policy</optionName>
+            				<value>true</value>
+            			</optionSetting>
+            			<optionSetting>
+            				<namespace>aws:elb:policies</namespace>
+            				<optionName>Stickiness Cookie Expiration</optionName>
+            				<value>3600</value>
+            			</optionSetting>
+            			<optionSetting>
+            				<namespace>aws:elasticbeanstalk:application:environment</namespace>
+            				<optionName>PARAM1</optionName>
+            				<value>activityinfo-conf</value>
+            			</optionSetting>
+            			<optionSetting>
+            				<namespace>aws:elasticbeanstalk:application:environment</namespace>
+            				<optionName>PARAM2</optionName>
+            				<value>activityinfo.production.properties</value>
+            			</optionSetting>
+	          			<optionSetting>
+							<namespace>aws:elasticbeanstalk:application:environment</namespace>
+							<optionName>AWS_ACCESS_KEY_ID</optionName>
+							<value>${aws.accessKey}</value>
+						</optionSetting>
+						<optionSetting>
+							<namespace>aws:elasticbeanstalk:application:environment</namespace>
+							<optionName>AWS_SECRET_KEY</optionName>
+							<value>${aws.secretKey}</value>
+						</optionSetting>
+            		</optionSettings>
+            	</configuration>
             </plugin>
         </plugins>
     </build>
@@ -864,6 +916,46 @@
                             <srcdir>${project.build.sourceDirectory}/org/sigmah/shared/report/model</srcdir>
                             <verbose>true</verbose>
                         </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Automatically engaged during maven release cycle -->
+        <profile>
+            <id>release-build</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>br.com.ingenieux</groupId>
+                        <artifactId>beanstalk-maven-plugin</artifactId>
+                        <version>0.2.2-bedatadriven</version>
+
+                        <configuration>
+                            <applicationName>activityinfo</applicationName>
+                            <s3Bucket>activityinfo-wars</s3Bucket>
+                            <s3Key>${project.version}-RELEASE.war</s3Key>
+                            <versionLabel>${project.version}-RELEASE</versionLabel>
+                            <environmentName>release-${git.commit.id.abbrev}</environmentName>
+                            <cnamePrefix>activityinfo-${git.commit.id.abbrev}</cnamePrefix>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>default</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                  <goal>upload-source-bundle</goal>
+                                  <goal>create-application-version</goal>
+                                  <goal>create-environment</goal>
+                                </goals>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>
