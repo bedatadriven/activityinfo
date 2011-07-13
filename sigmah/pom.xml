@@ -779,13 +779,27 @@
         </profile>
 
 		<profile>
-			
-			<!-- For the nightly build, we just overwrite the last nightly build
-			     artifact for this version and then restart the application server-->
-			
-			<id>nightly</id>
+			<id>continuous-deployment</id>
 			<build>
 				<plugins>
+				 <plugin>
+                   <groupId>pl.project13.maven</groupId>
+                   <artifactId>git-commit-id-plugin</artifactId>
+                   <version>1.5</version>
+                   <executions>
+                       <execution>
+            			   <phase></phase>
+                           <goals>
+                               <goal>revision</goal>
+                           </goals>
+                       </execution>
+                   </executions>
+                   <configuration>
+                       <prefix>git</prefix>
+                       <dotGitDirectory>${project.basedir}/../.git</dotGitDirectory>
+                   </configuration>
+               </plugin>
+				
 				<plugin>
 					<groupId>br.com.ingenieux</groupId>
 					<artifactId>beanstalk-maven-plugin</artifactId>
@@ -794,10 +808,10 @@
 					<configuration>
 						<applicationName>activityinfo</applicationName>
 						<s3Bucket>activityinfo-wars</s3Bucket>
-						<s3Key>${project.version}-nightly.war</s3Key>
-						<versionLabel>${project.version}-NIGHTLY</versionLabel>
-						<environmentName>nightly</environmentName>
-						<cnamePrefix>activityinfo-nightly</cnamePrefix>
+						<s3Key>${project.version}-${git.commit.id.abbrev}-${maven.build.timestamp}.war</s3Key>
+						<versionLabel>${project.version}-${git.commit.id.abbrev}-${maven.build.timestamp}</versionLabel>
+						<environmentName>activityinfo-testing</environmentName>
+						<cnamePrefix>activityinfo-testing</cnamePrefix>
 					</configuration>
 					<executions>
 				    	<execution>
@@ -805,7 +819,8 @@
 				            <phase>deploy</phase>
 				            <goals>
 				              <goal>upload-source-bundle</goal>
-				              <goal>restart-application-server</goal>
+				              <goal>create-application-version</goal>
+				              <goal>update-environment</goal>
 				            </goals>
 				    	</execution>
 				  	</executions>
