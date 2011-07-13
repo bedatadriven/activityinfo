@@ -8,6 +8,7 @@ package org.sigmah.shared.report.model.layers;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
 
@@ -71,5 +72,15 @@ public class BubbleMapLayer extends CircledMapLayer {
 	@Override
 	public boolean supportsMultipleIndicators() {
 		return true;
+	}
+
+	@Override
+	public String getName() {
+		return "Bubble";
+	}
+
+	@Override
+	public String getInternationalizedName() {
+		return "Bubble";
 	}
 }

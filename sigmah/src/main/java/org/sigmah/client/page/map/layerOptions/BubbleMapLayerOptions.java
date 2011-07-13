@@ -10,6 +10,7 @@ import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SliderEvent;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Slider;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -23,7 +24,7 @@ import com.google.gwt.user.client.ui.Image;
  * Displays a list of options the user can choose to configure a BubbleMapLayer
  * TODO: replace the two min/max sliders with a RangeSlider (Slider with 2 knobs)
  */
-public class BubbleMapLayerOptions extends ContentPanel implements LayerOptionsWidget<BubbleMapLayer> {
+public class BubbleMapLayerOptions extends LayoutContainer implements LayerOptionsWidget<BubbleMapLayer> {
 	private BubbleMapLayer bubbleMapLayer;
 	private ColorField colorPicker = new ColorField();
 	private FormPanel panel = new FormPanel();
@@ -37,8 +38,6 @@ public class BubbleMapLayerOptions extends ContentPanel implements LayerOptionsW
 	public BubbleMapLayerOptions() {
 		super();
 		
-		initializeComponent();
-
 		createColorPicker();
 		createMinMaxSliders();
 	}
@@ -53,11 +52,6 @@ public class BubbleMapLayerOptions extends ContentPanel implements LayerOptionsW
 			public void handleEvent(FieldEvent be) {
 				bubbleMapLayer.setLabelColor(colorPicker.getIntValue());
 		}});
-	}
-
-	private void initializeComponent() {
-		setAnimCollapse(false);
-		setHeading("Bubbles");
 	}
 
 	private void createMinMaxSliders() {

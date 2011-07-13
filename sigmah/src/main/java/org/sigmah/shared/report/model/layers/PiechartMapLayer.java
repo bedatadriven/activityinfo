@@ -37,4 +37,14 @@ public class PiechartMapLayer extends CircledMapLayer {
 	public List<Slice> getSlices() {
 		return slices;
 	}
+
+	@Override
+	public String getName() {
+		return "Piechart";
+	}
+
+	@Override
+	public String getInternationalizedName() {
+		return "Piechart";
+	}
 }

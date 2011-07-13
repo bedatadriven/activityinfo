@@ -60,9 +60,7 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
     private MapLayer newLayer = null;
 
     // List of all indicators
-    private FieldSet fieldsetTreePanel = new FieldSet();
 	private IndicatorTreePanel treepanelIndicators;
-	private ContentPanel contentpanelTreePanel = new ContentPanel();
 	
 	// List of selected indicators
 	private Grid<IndicatorDTO> gridSelectedIndicators;
@@ -124,12 +122,13 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 	}
 
 	private void initializeComponent() {
-		setSize(800, 600);
-		setPlain(true);
-		setHeading("Add layer");
 		VBoxLayout layout = new VBoxLayout();
 		layout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
 		setLayout(layout);
+
+		setSize(800, 600);
+		setPlain(true);
+		setHeading("Add layer");
 		setModal(true);
 		setBlinkModal(true);
 	}
@@ -185,7 +184,7 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 			for (IndicatorDTO indicator : indicatorsStore.getModels()) {
 				newLayer.getIndicatorIds().add(indicator.getId());
 			}
-			treepanelIndicators.clearState();
+			treepanelIndicators.clearSelection();
 			indicatorsStore.removeAll();
 			hide();
 			ValueChangeEvent.fire(this, newLayer);

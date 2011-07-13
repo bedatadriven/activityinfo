@@ -21,6 +21,7 @@ import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.SourceSelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.util.Padding;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Layer;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -29,6 +30,9 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
+import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
+import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
+import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -38,12 +42,11 @@ import com.google.inject.Inject;
 /*
  * Displays a list of layers selected by the user 
  */
-public class MapLayersWidget extends LayoutContainer implements HasValue<MapReportElement> {
+public class MapLayersWidget extends ContentPanel implements HasValue<MapReportElement> {
 	private Dispatcher service;
 	private MapReportElement mapElement;
 	private ListStore<MapLayerModel> store = new ListStore<MapLayerModel>();
 	private ListView<MapLayerModel> view = new ListView<MapLayerModel>();
-	private ContentPanel panel = new ContentPanel();
 	private LayerOptions layerOptions = new LayerOptions();
 	private Button buttonAddLayer = new Button();
 	private AddLayerDialog addLayer;
@@ -56,17 +59,19 @@ public class MapLayersWidget extends LayoutContainer implements HasValue<MapRepo
 		
 		createDefaultMapReportElement();
 		
-		setLayout(new FlowLayout());
-		
-		createPanel();
-		createAddLayerButton();
-		createListView();
+		initializeComponent();
 		createAddLayersDialog();
-		
-		panel.add(view, new FormData("100%"));
-		panel.addButton(buttonAddLayer);
-		panel.add(layerOptions);
-		add(panel);
+
+		createListView();
+		createAddLayerButton();
+		createLayerOptions();		
+	}
+
+	private void createLayerOptions() {
+	    VBoxLayoutData vbld = new VBoxLayoutData();
+	    vbld.setFlex(1);
+
+	    add(layerOptions);
 	}
 
 	private void createDefaultMapReportElement() {
@@ -92,15 +97,22 @@ public class MapLayersWidget extends LayoutContainer implements HasValue<MapRepo
 		    	  addLayer.show();
 		      }
 		});  
+
+		VBoxLayoutData vbld = new VBoxLayoutData();
+	    vbld.setFlex(1);
+	    add(buttonAddLayer);
 	}
 
-	private void createPanel() {
-		panel.setCollapsible(false);
-		panel.setFrame(true);
-		panel.setHeading("Selected Layers");
-		panel.setAutoHeight(true);
-		panel.setAutoWidth(true);
-		panel.setBodyBorder(false);
+	private void initializeComponent() {
+		VBoxLayout vboxLayout = new VBoxLayout();
+		vboxLayout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
+		vboxLayout.setPadding(new Padding(5));
+		
+		setLayout(vboxLayout);
+		setCollapsible(false);
+		setFrame(true);
+		setHeading("Selected Layers");
+		setBodyBorder(false);
 	}					
 
 
@@ -111,18 +123,34 @@ public class MapLayersWidget extends LayoutContainer implements HasValue<MapRepo
 		
 		// Prevents confusion for the user where an onmouseover-ed item in the listview *looks* selected,
 		// but in fact is not selected
-		
-		// This option does not actually fire a select event :(
-		view.setSelectOnOver(true);
-		
-		view.getSelectionModel().addListener(Events.SelectionChange,
-				new Listener<SelectionChangedEvent<MapLayerModel>>() {
-					@Override
-					public void handleEvent(SelectionChangedEvent<MapLayerModel> be) {
-						
-					}
-				});
+		// Off for now. It's a choice between two evils: confusing layer removal and 
+		//    confusing layer selection
+		//view.setSelectOnOver(true);
 
+		addListViewDnd();			
+		
+		view.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<MapLayerModel>() {
+			@Override()
+			public void selectionChanged(SelectionChangedEvent<MapLayerModel> se) {
+				if (se.getSelectedItem()==null) {
+					System.out.println("Selected item on maplayersview is null :(");
+				} else {
+					layerOptions.setMapLayer(se.getSelectedItem().getMapLayer());
+					layout();
+				}
+			}
+		});
+		
+	    ListViewDropTarget target = new ListViewDropTarget(view);
+	    target.setAllowSelfAsSource(true);
+	    target.setFeedback(Feedback.INSERT);
+
+	    VBoxLayoutData vbld = new VBoxLayoutData();
+	    vbld.setFlex(1);
+	    add(view, vbld);
+	}
+
+	private void addListViewDnd() {
 		ListViewDragSource source = new ListViewDragSource(view) {
 			@Override
 			protected void onDragStart(DNDEvent e) {
@@ -141,42 +169,22 @@ public class MapLayersWidget extends LayoutContainer implements HasValue<MapRepo
 			@Override
 			public void handleEvent(ListViewEvent be) {
 				// Change visibility
-				if (be.getTargetEl().hasStyleName("x-view-item-checkbox"))
-				{
+				if (be.getTargetEl().hasStyleName("x-view-item-checkbox")) {
 					MapLayerModel layerModel = (MapLayerModel) be.getModel();
-					if (layerModel != null)
-					{
-						layerModel.setVisible(!layerModel.isVisible());
+					if (layerModel != null) {
+						layerModel.getMapLayer().setVisible(!layerModel.getMapLayer().isVisible());
 					}
 				}				
 				
 				// Remove 
-				if (be.getTargetEl().hasStyleName("x-view-item-button"))
-				{
-					if (view.getSelectionModel().getSelectedItem() != null)
-					{
+				if (be.getTargetEl().hasStyleName("x-view-item-button")) {
+					if (view.getSelectionModel().getSelectedItem() != null) {
 						int index = store.indexOf(view.getSelectionModel().getSelectedItem());
 						removeLayer(mapElement.getLayers().get(index));
 					}
 				} 
 			}
-		});			
-		
-		view.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<MapLayerModel>() {
-			@Override()
-			public void selectionChanged(SelectionChangedEvent<MapLayerModel> se) {
-				if (se.getSelectedItem()==null) {
-					System.out.println("Selected item on maplayersview is null :(");
-				} else {
-					layerOptions.setMapLayer(se.getSelectedItem().getMapLayer());
-				}
-			}
 		});
-		
-		
-	    ListViewDropTarget target = new ListViewDropTarget(view);
-	    target.setAllowSelfAsSource(true);
-	    target.setFeedback(Feedback.INSERT);
 	}
 	
 	private void removeLayer(MapLayer mapLayer) {
@@ -217,6 +225,7 @@ public class MapLayersWidget extends LayoutContainer implements HasValue<MapRepo
 				model.setName("layer X");
 				model.setVisible(layer.isVisible());
 				model.setMapLayer(layer);
+				model.setLayerType(layer.getName());
 				store.add(model);
 			}
 		}

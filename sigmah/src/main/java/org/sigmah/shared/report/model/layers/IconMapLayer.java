@@ -65,4 +65,14 @@ public class IconMapLayer extends AbstractMapLayer {
 	public boolean supportsMultipleIndicators() {
 		return false;
 	}
+
+	@Override
+	public String getName() {
+		return "Icon";
+	}
+
+	@Override
+	public String getInternationalizedName() {
+		return "Icon";
+	}
 }

@@ -1,4 +1,4 @@
-@external .grabSprite, .layerItem, .removeLayer, .checkbox;
+@external .grabSprite, .layerItem, .removeLayer, .checkbox, .iconBubble, .iconPiechart, .iconIcon;
 
 @sprite .grabSprite {
 	gwt-image: "grabSprite";
@@ -9,6 +9,24 @@
 @sprite .removeLayer {
 	gwt-image: "removeLayer";
 	float: right;
+	vertical-align: top;
+}
+
+@sprite .iconBubble {
+	gwt-image: "bubble";
+	float: left;
+	vertical-align: top;
+}
+
+@sprite .iconPiechart {
+	gwt-image: "piechart";
+	float: left;
+	vertical-align: top;
+}
+
+@sprite .iconIcon {
+	gwt-image: "icon";
+	float: left;
 	vertical-align: top;
 }
 

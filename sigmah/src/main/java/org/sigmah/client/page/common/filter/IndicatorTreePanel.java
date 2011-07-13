@@ -59,7 +59,6 @@ public class IndicatorTreePanel extends ContentPanel {
 
     public IndicatorTreePanel(Dispatcher service, final boolean multipleSelection, AsyncMonitor monitor) {
         this.service = service;
-        this.multipleSelection=multipleSelection;
         //this.setHeaderVisible(false);
         this.setHeading(I18N.CONSTANTS.indicators());
         this.setIcon(IconImageBundle.ICONS.indicator());
@@ -86,14 +85,10 @@ public class IndicatorTreePanel extends ContentPanel {
         });
 
         tree = new TreePanel<ModelData>(store);
+        // Set multipleSelection after tree is instantiated
+        this.setMultipleSelection(multipleSelection);
         tree.setCheckable(true);
-        if (multipleSelection) {
-            tree.setCheckNodes(TreePanel.CheckNodes.BOTH);
-            tree.setCheckStyle(TreePanel.CheckCascade.CHILDREN);
-        } else {
-            tree.setCheckNodes(TreePanel.CheckNodes.LEAF);
-            tree.setCheckStyle(TreePanel.CheckCascade.NONE);
-        }
+
         tree.getStyle().setNodeCloseIcon(null);
         tree.getStyle().setNodeOpenIcon(null);
         tree.setLabelProvider(new ModelStringProvider<ModelData>() {
@@ -247,11 +242,22 @@ public class IndicatorTreePanel extends ContentPanel {
 
     public void setMultipleSelection(boolean multipleSelection) {
 		this.multipleSelection = multipleSelection;
+        if (multipleSelection) {
+            tree.setCheckNodes(TreePanel.CheckNodes.BOTH);
+            tree.setCheckStyle(TreePanel.CheckCascade.CHILDREN);
+        } else {
+            tree.setCheckNodes(TreePanel.CheckNodes.LEAF);
+            tree.setCheckStyle(TreePanel.CheckCascade.NONE);
+        }
 	}
 
 	public IndicatorTreePanel(Dispatcher service, final boolean multipleSelection) {
     	this(service, multipleSelection, null);
     }
+	
+	public void clearSelection() {
+		tree.setCheckedSelection(null);
+	}
 	
     private class Loader extends BaseTreeLoader<ModelData> {
         public Loader() {

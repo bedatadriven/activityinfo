@@ -34,7 +34,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 public class ClusteringOptionsWidget extends LayoutContainer {
 
 	// Aggregation of elements on the map
-	private FieldSet fieldsetAggregation = new FieldSet();
 	private RadioGroup radiogroupAggregation = new RadioGroup();
 	private Radio radioAdminLevelAggr = new Radio();
 	private Radio radioAutomaticAggr = new Radio();
@@ -47,15 +46,16 @@ public class ClusteringOptionsWidget extends LayoutContainer {
 	public ClusteringOptionsWidget() {
 		super();
 		
+		setLayout(new RowLayout(Orientation.VERTICAL));
+		
 		createAdminLevelOptions();
 		createOptions();
+		
+		// By default, no clustering is used for a layer
+		radioNoAggr.setValue(true);
 	}
 
 	private void createOptions() {
-		fieldsetAggregation.setLayout(new FitLayout());
-		fieldsetAggregation.setHeading(I18N.CONSTANTS.aggregation());
-		fieldsetAggregation.setCollapsible(true);
-		
 		radioAdminLevelAggr.setBoxLabel(I18N.CONSTANTS.administrativeLevel());
 		radioAutomaticAggr.setBoxLabel(I18N.CONSTANTS.automatic());
 		radioNoAggr.setBoxLabel(I18N.CONSTANTS.none());
@@ -64,12 +64,10 @@ public class ClusteringOptionsWidget extends LayoutContainer {
 		radiogroupAggregation.add(radioAutomaticAggr);
 		radiogroupAggregation.add(radioNoAggr);
 		
-		fieldsetAggregation.add(radioAdminLevelAggr);
-		fieldsetAggregation.add(panelAdministrativeLevelOptions);
-		fieldsetAggregation.add(radioAutomaticAggr);
-		fieldsetAggregation.add(radioNoAggr);
-		
-		add(fieldsetAggregation);
+		add(radioAdminLevelAggr);
+		add(panelAdministrativeLevelOptions);
+		add(radioAutomaticAggr);
+		add(radioNoAggr);
 	}
 	
 	private void createAdminLevelOptions() {

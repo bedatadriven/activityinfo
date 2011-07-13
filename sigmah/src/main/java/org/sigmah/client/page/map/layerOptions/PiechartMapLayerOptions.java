@@ -16,6 +16,7 @@ import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Label;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -24,7 +25,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 /*
  * Displays a list of options to configure a PiechartMapLayer
  */
-public class PiechartMapLayerOptions extends ContentPanel implements LayerOptionsWidget<PiechartMapLayer> {
+public class PiechartMapLayerOptions extends LayoutContainer implements LayerOptionsWidget<PiechartMapLayer> {
 	private Dispatcher service;
 	private PiechartMapLayer piechartMapLayer;
 	private ListView listviewPiechartPies;
@@ -33,22 +34,18 @@ public class PiechartMapLayerOptions extends ContentPanel implements LayerOption
 
 	public PiechartMapLayerOptions() {
 		super();
-		
-		initializeComponent();
+
+		populateColorPickerWidget();
 		add(contentpanelColorPickers);
-	}
-
-
-	private void initializeComponent() {
-		setAnimCollapse(false);
-		setHeading("Piechart");
 	}
 
 	private void populateColorPickerWidget() {
 		contentpanelColorPickers.removeAll();
 		
-		for (Slice slice : piechartMapLayer.getSlices()) {
-			contentpanelColorPickers.add(new SliceEditWidget(slice));
+		if (piechartMapLayer != null) {
+			for (Slice slice : piechartMapLayer.getSlices()) {
+				contentpanelColorPickers.add(new SliceEditWidget(slice));
+			}
 		}
 	};
 

@@ -10,6 +10,7 @@ import org.sigmah.shared.report.model.layers.MapLayer;
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.Radio;
 import com.extjs.gxt.ui.client.widget.form.RadioGroup;
@@ -21,9 +22,9 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Image;
 
 /*
- * Displays a list of options the user can choose to configre an IconMapLayer
+ * Displays a list of options the user can choose to configure an IconMapLayer
  */
-public class IconMapLayerOptions extends ContentPanel implements LayerOptionsWidget<IconMapLayer> {
+public class IconMapLayerOptions extends LayoutContainer implements LayerOptionsWidget<IconMapLayer> {
 	private IconMapLayer iconMapLayer;
 	private RadioGroup radiogroupIcons =  new RadioGroup();
 	private HorizontalPanel contentpanelIcons =  new HorizontalPanel();
@@ -41,9 +42,6 @@ public class IconMapLayerOptions extends ContentPanel implements LayerOptionsWid
 	public IconMapLayerOptions() {
 		super();
 		
-		setHeading("icon");
-		setAnimCollapse(false);
-
 		boolean isFirst=true;
 		
 		// Indent icons to the right. Is there a better way?
@@ -73,7 +71,7 @@ public class IconMapLayerOptions extends ContentPanel implements LayerOptionsWid
 				radiobuttonIcon.setValue(true);
 				isFirst=false;
 			}
-		}		setAnimCollapse(false);
+		}		
 		
 		add(contentpanelIcons);
 	}
