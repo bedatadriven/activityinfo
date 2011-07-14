@@ -6,15 +6,23 @@
 <module rename-to="ActivityInfo">
     <inherits name="org.sigmah.ActivityInfo"/>
 
+	
+	<!-- work-around to eliminate "default locale" permutations -->
+	<!-- http://www.google.com/url?sa=D&q=http://code.google.com/p/google-web-toolkit/issues/detail%3Fid%3D5769%23c1 -->
+
     <extend-property name="locale" values="en,fr"/>
     <set-property-fallback name="locale" value="en"/>
+    <set-property name="locale" value="en,fr"/>
+
 
     <!-- Turn all logging off  -->
     <extend-property name="log_level" values="OFF" />
     <set-property name="log_level" value="OFF"/>
     <set-property name="log_DivLogger" value="DISABLED" />
 
+
     <entry-point class="org.sigmah.client.ActivityInfoEntryPoint"/>
+
 
 	<public path='public'>
 		<exclude name="gxt/themes/sigmah/**" />
