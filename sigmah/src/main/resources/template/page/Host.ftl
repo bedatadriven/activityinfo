@@ -62,14 +62,8 @@
             key: "ABQIAAAAaKyZGjYsJ9quclBfsnGc-xSULc68XBC8rIKw1gDHypRtutTChRRhuj6VmI9buf-pphk2EHnsnmxwRg"
         };
         var VersionInfo = {
-            revision: '1.5.4'
+            revision: '${project.version}'
         };
-        <#if offline == true>
-        function disableOffline() {
-            document.cookie = "offline=false;expires=Thu, 01-Jan-1970 00:00:01 GMT";
-            window.location.reload();
-        }
-        </#if>
     </script>
 
     <script language='javascript' src='ActivityInfo/gxt/flash/swfobject.js'></script>
@@ -83,16 +77,11 @@
     <div id="loading-box">
         <div class="loading-indicator">
             <img src="ActivityInfo/gxt/images/default/shared/large-loading.gif" alt=""/>
-            ActivityInfo 1.5.4<br/>
+            ActivityInfo ${project.version}<br/>
             <span id="loading-msg">Chargement en cours...</span>
 
         </div>
     </div>
-<#if offline == true>
-    <div id="loading-options">
-        <a href="javascript:disableOffline()">Charger avec mode hors connexion desactiver</a>
-    </div>
-</#if>
 </div>
 <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1'
         style="position:absolute;width:0;height:0;border:0"></iframe>
