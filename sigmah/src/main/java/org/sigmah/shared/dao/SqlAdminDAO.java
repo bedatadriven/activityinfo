@@ -69,7 +69,7 @@ public class SqlAdminDAO {
                 bounds.setY1(rs.getDouble(6));
                 bounds.setX2(rs.getDouble(7));
                 bounds.setY2(rs.getDouble(8));
-                if(rs.wasNull()) {
+                if(!rs.wasNull()) {
                     entity.setBounds(bounds);
                 }
 

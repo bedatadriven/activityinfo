@@ -5,26 +5,22 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.assertThat;
+
 import org.dozer.Mapper;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.dao.OnDataSet;
 import org.sigmah.server.endpoint.gwtrpc.CommandTestCase;
-import org.sigmah.shared.dao.AdminDAO;
-import org.sigmah.shared.dao.Filter;
-import org.sigmah.shared.domain.*;
 import org.sigmah.shared.command.GetAdminEntities;
 import org.sigmah.shared.command.result.AdminEntityResult;
+import org.sigmah.shared.dao.AdminDAO;
+import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.AdminEntityDTO;
-import org.sigmah.shared.exception.CommandException;
 import org.sigmah.test.InjectionSupport;
-
-import java.util.Collections;
-import java.util.List;
-
-import static org.easymock.EasyMock.*;
-import static org.junit.Assert.assertEquals;
+import com.google.gwt.rpc.client.ast.NullValueCommand;
 
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/sites-simple1.db.xml")
@@ -42,7 +38,7 @@ public class GetAdminEntitiesHandlerTest extends CommandTestCase {
 
         AdminEntityResult result = execute(cmd);
 
-        assertEquals(4, result.getData().size());
+        assertThat(result.getData().size(), equalTo(4));
     }
 
 
@@ -53,7 +49,15 @@ public class GetAdminEntitiesHandlerTest extends CommandTestCase {
 
         AdminEntityResult result = execute(cmd);
 
-        assertEquals(3, result.getData().size());
+        assertThat(result.getData().size(), equalTo(3));
+        
+        AdminEntityDTO kalehe = result.getData().get(0);
+        assertThat(kalehe.getName(), equalTo("Kalehe"));
+        assertThat(kalehe.getBounds(), is(not(nullValue())));
+        assertThat(kalehe.getBounds().getX1(), equalTo(-44d));
+        assertThat(kalehe.getBounds().getY1(), equalTo(-22d));
+        assertThat(kalehe.getBounds().getX2(), equalTo(33d));
+        assertThat(kalehe.getBounds().getY2(), equalTo(40d));
     }
 
     @Test
@@ -66,9 +70,6 @@ public class GetAdminEntitiesHandlerTest extends CommandTestCase {
 
         AdminEntityResult result = execute(cmd);
 
-        assertEquals(2, result.getData().size());
-
+        assertThat(result.getData().size(), equalTo(2));
     }
-
-
 }
