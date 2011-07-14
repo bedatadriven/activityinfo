@@ -544,6 +544,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
+				<version>1.6.3</version>
 		
 				<!-- Include GWT compiler output in the war -->
 		
