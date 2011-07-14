@@ -110,7 +110,7 @@ public class ImageMapRenderer {
         }
     }
 
-    private void drawPieMarker(Graphics2D g2d, PieMapMarker marker) {
+    public void drawPieMarker(Graphics2D g2d, PieMapMarker marker) {
 
         // Determine the total area
         Rectangle area = new Rectangle();
@@ -121,7 +121,7 @@ public class ImageMapRenderer {
 
         // Get total value of all slices
         double total = 0.0D;
-        for (PieMapMarker.Slice slice : marker.getSlices()) {
+        for (PieMapMarker.SliceValue slice : marker.getSlices()) {
             total += slice.getValue();
         }
 
@@ -129,7 +129,7 @@ public class ImageMapRenderer {
         double curValue = 0.0D;
         int startAngle = 0;
         int i=0;
-        for (PieMapMarker.Slice slice : marker.getSlices()) {
+        for (PieMapMarker.SliceValue slice : marker.getSlices()) {
             // Compute the start and stop angles
             startAngle = (int)(curValue * 360 / total);
             int arcAngle = (int)(slice.getValue() * 360 / total);

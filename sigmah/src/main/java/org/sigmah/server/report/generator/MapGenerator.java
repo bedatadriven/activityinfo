@@ -63,13 +63,15 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         // Set up layer generators
         List<LayerGenerator> layerGenerators = new ArrayList<LayerGenerator>();
         for (MapLayer layer : element.getLayers()) {
-            if (layer instanceof BubbleMapLayer) {
-                layerGenerators.add(new BubbleLayerGenerator(element,
-                        (BubbleMapLayer) layer));
-            } else if (layer instanceof IconMapLayer) {
-                layerGenerators.add(new IconLayerGenerator(element,
-                        (IconMapLayer) layer));
-            }
+        	if (layer.isVisible()) {
+	            if (layer instanceof BubbleMapLayer) {
+	                layerGenerators.add(new BubbleLayerGenerator(element,
+	                        (BubbleMapLayer) layer));
+	            } else if (layer instanceof IconMapLayer) {
+	                layerGenerators.add(new IconLayerGenerator(element,
+	                        (IconMapLayer) layer));
+	            }
+        	}
         }
 
         // FIRST PASS: calculate extents and margins

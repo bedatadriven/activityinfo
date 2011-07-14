@@ -14,7 +14,13 @@ import java.awt.*;
 import java.util.List;
 
 public class PointValue {
-
+    public SiteData site;
+    public MapSymbol symbol;
+    public double value;
+    public Point px;
+    public Rectangle iconRect;
+    public List<PieMapMarker.SliceValue> slices;
+    
     public PointValue() {
     }
 
@@ -31,11 +37,4 @@ public class PointValue {
         this.iconRect = iconRect;
         this.value = 1;
     }
-
-    public SiteData site;
-    public MapSymbol symbol;
-    public double value;
-    public Point px;
-    public Rectangle iconRect;
-    public List<PieMapMarker.Slice> slices;
 }

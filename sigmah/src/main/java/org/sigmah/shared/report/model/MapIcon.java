@@ -7,25 +7,34 @@ package org.sigmah.shared.report.model;
 
 import java.io.Serializable;
 
+import com.google.gwt.resources.client.ImageResource;
+
 /**
  * A generic bitmap icon that can be used on the client or server side,
  * in tiled maps as well as SVG maps.
  *
  * @author Alex Bertram
  */
-public class MapIcon implements Serializable {
-
+public class MapIcon implements Serializable, ImageResource {
     private String name;
-    private int width;
-    private int height;
+	private String url;
+	
+	// Default to 32x32 sized icons
+    private int width = 32; 
+    private int height = 32;
+    
     private int anchorX;
     private int anchorY;
 
     public MapIcon() {
     }
-
+	
+	public MapIcon(String name) {
+        setName(name);
+	}
+	
     public MapIcon(String name, int width, int height, int anchorX, int anchorY) {
-        this.name = name;
+        setName(name);
         this.width = width;
         this.height = height;
         this.anchorX = anchorX;
@@ -42,6 +51,7 @@ public class MapIcon implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+        url = "mapicons/" + name + ".png";
     }
 
     /**
@@ -94,4 +104,37 @@ public class MapIcon implements Serializable {
     public void setAnchorY(int anchorY) {
         this.anchorY = anchorY;
     }
+
+
+	@Override
+	public int getLeft() {
+		return 0;
+	}
+
+	@Override
+	public int getTop() {
+		return 0;
+	}
+
+	@Override
+	public String getURL() {
+		return url;
+	}
+
+	@Override
+	public boolean isAnimated() {
+		return false;
+	}
+	
+	public static ImageResource fromEnum(Icon icon) {
+		return new MapIcon(icon.toString());
+	}
+    
+	public enum Icon {
+		Default,
+		Doctor,
+		Fire,
+		Food,
+		Water
+	}
 }

@@ -11,6 +11,8 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
+import org.sigmah.shared.report.model.MapIcon;
+
 import com.google.gwt.resources.client.ImageResource;
 
 /*
@@ -19,7 +21,9 @@ import com.google.gwt.resources.client.ImageResource;
 public class IconMapLayer extends AbstractMapLayer {
     
 	private List<Integer> activityIds = new ArrayList<Integer>(0);
-    private String icon;
+    
+	// Set the first found icon as default (top declared icon)
+	private String icon = MapIcon.Icon.Default.name();
 
     public IconMapLayer() {
     }
@@ -46,20 +50,6 @@ public class IconMapLayer extends AbstractMapLayer {
     public void addActivityId(int activityId) {
         activityIds.add(activityId);
     }
-    
-    public static ImageResource getIconFromString(String iconName)
-    {
-    	if (iconName == "Water")
-    		return MapIcons.INSTANCE.water();
-    	if (iconName == "Fire")
-    		return MapIcons.INSTANCE.fire();
-    	if (iconName == "Water")
-    		return MapIcons.INSTANCE.doctor();
-    	if (iconName == "Food")
-    		return MapIcons.INSTANCE.food();
-    	
-    	return null;
-    }
 
 	@Override
 	public boolean supportsMultipleIndicators() {
@@ -75,4 +65,6 @@ public class IconMapLayer extends AbstractMapLayer {
 	public String getInternationalizedName() {
 		return "Icon";
 	}
+	
+
 }

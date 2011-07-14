@@ -23,6 +23,7 @@ import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.layers.BubbleMapLayer;
 import org.sigmah.shared.report.model.layers.PiechartMapLayer;
+import org.sigmah.shared.report.model.layers.PiechartMapLayer.Slice;
 import org.sigmah.shared.report.model.layers.ScalingType;
 import org.sigmah.shared.util.mapping.Extents;
 
@@ -40,7 +41,6 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
 
         // PRE---PASS - calculate extents of sites WITH non-zero
         // values for this indicator
-
         Extents extents = Extents.emptyExtents();
         for(SiteData site : sites) {
             if (site.hasLatLong() && hasValue(site, layer.getIndicatorIds())) {
@@ -131,11 +131,11 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
 
                 Double value = getValue(site, layer.getIndicatorIds());
                 if(value != null && value != 0) {
-//                    PointValue pv = new PointValue(site,
-//                            createSymbol(site, layer.getColorDimensions()),
-//                            value, px);
-
-//                    (px==null ? unmapped : mapped).add(pv);
+                    PointValue pv = new PointValue(site,
+                            new MapSymbol(),
+                            value, px);
+                    calulateSlices(pv, site);
+                    (px==null ? unmapped : mapped).add(pv);
                 }
             }
         }
@@ -192,45 +192,38 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
         }
     }
     
-    private void calulatecSlices(PointValue pv, SiteData site) {
-        // Not supported for now.
-    	//Dimension dim = layer.getColorDimensions().get(0);
-        pv.slices = new ArrayList<PieMapMarker.Slice>();
-        // Assuming it's an indicator
-        //if(dim.getType() == DimensionType.Indicator) {
-            for(Integer integerId : layer.getIndicatorIds()) {
-                EntityCategory indicatorCategory = new EntityCategory(integerId);
-                Double value = site.getIndicatorValue(integerId);
-                if(value != null && value != 0) {
-                    PieMapMarker.Slice slice = new PieMapMarker.Slice();
-                    slice.setValue(value);
-                    slice.setCategory(indicatorCategory);
+    private void calulateSlices(PointValue pv, SiteData site) {
+        pv.slices = new ArrayList<PieMapMarker.SliceValue>();
+        
+        for(Slice slice : layer.getSlices()) {
+            EntityCategory indicatorCategory = new EntityCategory(slice.getIndicatorId());
+            Double value = site.getIndicatorValue(slice.getIndicatorId());
+            if(value != null && value != 0) {
+                PieMapMarker.SliceValue sliceValue = new PieMapMarker.SliceValue();
+                
+                sliceValue.setValue(value);
+                sliceValue.setCategory(indicatorCategory);
+                sliceValue.setColor(slice.getColor());
 
-                    //CategoryProperties props = dim.getCategories().get(indicatorCategory);
-                    //if(props != null && props.getColor() != null) {
-                    //    slice.setColor(props.getColor());
-                    //} else {
-                    slice.setColor(layer.getColor(integerId));
-                    //}
-                    pv.slices.add(slice);
-                }
+                pv.slices.add(sliceValue);
             }
+        }
     }
 
     private void sumSlices(PieMapMarker marker, List<PointValue> pvs) {
-        Map<DimensionCategory, PieMapMarker.Slice> slices = new HashMap<DimensionCategory, PieMapMarker.Slice>();
+        Map<DimensionCategory, PieMapMarker.SliceValue> slices = new HashMap<DimensionCategory, PieMapMarker.SliceValue>();
         for(PointValue pv : pvs ) {
-            for(PieMapMarker.Slice slice : pv.slices)  {
-                PieMapMarker.Slice summedSlice = slices.get(slice.getCategory());
+            for(PieMapMarker.SliceValue slice : pv.slices)  {
+                PieMapMarker.SliceValue summedSlice = slices.get(slice.getCategory());
                 if(summedSlice == null) {
-                    summedSlice = new PieMapMarker.Slice(slice);
+                    summedSlice = new PieMapMarker.SliceValue(slice);
                     slices.put(slice.getCategory(), summedSlice);
                 } else {
                     summedSlice.setValue(summedSlice.getValue() + slice.getValue());
                 }
             }
         }
-        marker.setSlices(new ArrayList<PieMapMarker.Slice>(slices.values()));
+        marker.setSlices(new ArrayList<PieMapMarker.SliceValue>(slices.values()));
     }
 
 	@Override

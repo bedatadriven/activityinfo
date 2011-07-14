@@ -25,12 +25,6 @@ public interface MapResources extends ClientBundle {
 	@Source("RemoveLayer.png")
 	public ImageResource removeLayer();	
 	
-	@Source("CheckboxUnchecked.png")
-	public ImageResource checkboxUnchecked();	
-	
-	@Source("CheckboxChecked.png")
-	public ImageResource checkboxChecked();
-	
 	@Source("Icon.png")
 	public ImageResource icon();
 	

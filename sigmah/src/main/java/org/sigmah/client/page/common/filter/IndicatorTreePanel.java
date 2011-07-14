@@ -87,6 +87,7 @@ public class IndicatorTreePanel extends ContentPanel {
         tree = new TreePanel<ModelData>(store);
         // Set multipleSelection after tree is instantiated
         this.setMultipleSelection(multipleSelection);
+        tree.setCheckable(true);
 
         tree.getStyle().setNodeCloseIcon(null);
         tree.getStyle().setNodeOpenIcon(null);

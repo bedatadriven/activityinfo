@@ -8,6 +8,8 @@ package org.sigmah.client.map;
 import com.google.gwt.maps.client.geom.Point;
 import com.google.gwt.maps.client.geom.Size;
 import com.google.gwt.maps.client.overlay.Icon;
+import com.google.gwt.resources.client.ImageResource;
+
 import org.sigmah.shared.report.content.BubbleMapMarker;
 import org.sigmah.shared.report.content.IconMapMarker;
 import org.sigmah.shared.report.content.MapMarker;
@@ -52,7 +54,6 @@ public class IconFactory {
         icon.setInfoWindowAnchor(anchor);
         icon.setPrintImageURL(iconUrl + "&chof=gif");
         icon.setMozPrintImageURL(iconUrl);
-
         return icon;
     }
 
@@ -74,6 +75,4 @@ public class IconFactory {
 
         return icon;
     }
-
-
 }

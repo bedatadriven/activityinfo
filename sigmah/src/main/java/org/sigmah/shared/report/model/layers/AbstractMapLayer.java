@@ -24,10 +24,10 @@ public abstract class AbstractMapLayer implements MapLayer {
 	private boolean isVisible = true;
 	protected List<Integer> indicatorIds = new ArrayList<Integer>();
 	protected LabelSequence labelSequence = new LatinAlphaSequence();
-	private List<Indicator> indicators = new ArrayList<Indicator>();
 	protected Clustering clustering =  new NoClustering(); 
 
-	public void addIndicator(int id) {
+	@Override
+	public void addIndicatorId(int id) {
 	    indicatorIds.add(id);
 	}
 
@@ -44,11 +44,7 @@ public abstract class AbstractMapLayer implements MapLayer {
 	public List<Integer> getIndicatorIds() {
 	    return indicatorIds;
 	}
-
-	public void setIndicatorIds(List<Integer> indicatorIds) {
-	    this.indicatorIds = indicatorIds;
-	}
-
+	
 	@XmlElement(type=Object.class)
 	public LabelSequence getLabelSequence() {
 		return labelSequence;

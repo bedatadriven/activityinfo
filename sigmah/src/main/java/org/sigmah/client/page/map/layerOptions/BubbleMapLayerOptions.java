@@ -5,6 +5,7 @@ import org.sigmah.shared.report.model.layers.BubbleMapLayer;
 import org.sigmah.shared.report.model.layers.MapLayer;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.ColorPaletteEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -44,13 +45,21 @@ public class BubbleMapLayerOptions extends LayoutContainer implements LayerOptio
 
 	private void createColorPicker() {
 		add(colorPicker);
-		colorPicker.setFieldLabel("woeo");
+
+		// Set the selected color to the maplayer
+		colorPicker.addListener(Events.Change, new Listener<FieldEvent>() {
+			@Override
+			public void handleEvent(FieldEvent be) {
+				bubbleMapLayer.setLabelColor(colorPicker.getIntValue());
+				ValueChangeEvent.fire(BubbleMapLayerOptions.this, bubbleMapLayer);
+		}});
 
 		// Set the selected color to the maplayer
 		colorPicker.addListener(Events.Select, new Listener<FieldEvent>() {
 			@Override
 			public void handleEvent(FieldEvent be) {
 				bubbleMapLayer.setLabelColor(colorPicker.getIntValue());
+				ValueChangeEvent.fire(BubbleMapLayerOptions.this, bubbleMapLayer);
 		}});
 	}
 
@@ -62,6 +71,7 @@ public class BubbleMapLayerOptions extends LayoutContainer implements LayerOptio
 		sliderMinSize.setClickToChange(false);
 		add(sliderMinSize);
 
+
 		sliderMaxSize.setMinValue(1);
 		sliderMaxSize.setMaxValue(20);
 		sliderMaxSize.setIncrement(1);
@@ -69,18 +79,18 @@ public class BubbleMapLayerOptions extends LayoutContainer implements LayerOptio
 		sliderMaxSize.setClickToChange(false);
 		add(sliderMaxSize);
 		
-		// Ensure min can't be more then max, and max can't be less then min
-		sliderMinSize.addListener(Events.BeforeChange, new Listener<SliderEvent>() {
-			@Override
-			public void handleEvent(SliderEvent be) {
-				be.setCancelled(sliderMinSize.getValue() > sliderMaxSize.getValue());
-		}});
-
-		sliderMaxSize.addListener(Events.BeforeChange, new Listener<SliderEvent>() {
-			@Override
-			public void handleEvent(SliderEvent be) {
-					be.setCancelled(sliderMaxSize.getValue() < sliderMinSize.getValue());
-		}});
+//		// Ensure min can't be more then max, and max can't be less then min
+//		sliderMinSize.addListener(Events.BeforeChange, new Listener<SliderEvent>() {
+//			@Override
+//			public void handleEvent(SliderEvent be) {
+//				be.setCancelled(sliderMinSize.getValue() > sliderMaxSize.getValue());
+//		}});
+//
+//		sliderMaxSize.addListener(Events.BeforeChange, new Listener<SliderEvent>() {
+//			@Override
+//			public void handleEvent(SliderEvent be) {
+//				be.setCancelled(sliderMaxSize.getValue() < sliderMinSize.getValue());
+//		}});
 	}
 
 	@Override

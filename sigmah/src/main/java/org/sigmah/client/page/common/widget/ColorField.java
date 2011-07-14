@@ -5,6 +5,7 @@
 
 package org.sigmah.client.page.common.widget;
 
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ColorPaletteEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -24,6 +25,7 @@ public class ColorField extends TriggerField<String> {
 
     public ColorField() {
         setEditable(false);
+        setFireChangeEventOnSetValue(true);
     }
 
     @Override
@@ -33,6 +35,7 @@ public class ColorField extends TriggerField<String> {
         menu.getColorPalette().addListener(Events.Select, new Listener<ColorPaletteEvent>() {
             public void handleEvent(ColorPaletteEvent ce) {
                 setValue(ce.getColor());
+                fireEvent(Events.Select, new BaseEvent(ColorField.this));
             }
         });
         menu.show(getElement(), "b");

@@ -1,13 +1,17 @@
 package org.sigmah.client.page.map;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.domain.AdminLevel;
 import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.CountryDTO;
+import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.report.model.clustering.AdministrativeLevelClustering;
 import org.sigmah.shared.report.model.clustering.AutomaticClustering;
 import org.sigmah.shared.report.model.clustering.Clustering;
@@ -26,6 +30,7 @@ import com.extjs.gxt.ui.client.widget.form.Radio;
 import com.extjs.gxt.ui.client.widget.form.RadioGroup;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
 /*
@@ -42,14 +47,18 @@ public class ClusteringOptionsWidget extends LayoutContainer {
 	// Administrative level clustering
 	private VerticalPanel panelAdministrativeLevelOptions = new VerticalPanel();
 	private Map<CountryDTO, AdminLevelDTO> pickedAdminLevelsByCountry = new HashMap<CountryDTO, AdminLevelDTO>();
+	private List<CountryDTO> countries = new ArrayList<CountryDTO>();
+	private Dispatcher service;
 
-	public ClusteringOptionsWidget() {
+	public ClusteringOptionsWidget(Dispatcher service) {
 		super();
+		
+		this.service = service;
 		
 		setLayout(new RowLayout(Orientation.VERTICAL));
 		
-		createAdminLevelOptions();
 		createOptions();
+		getCountries();
 		
 		// By default, no clustering is used for a layer
 		radioNoAggr.setValue(true);
@@ -71,8 +80,6 @@ public class ClusteringOptionsWidget extends LayoutContainer {
 	}
 	
 	private void createAdminLevelOptions() {
-		List<CountryDTO> countries = getCountries();
-
 		if (countries != null) {
 			// Show name of country with related adminlevels as option for the user
 			for (CountryDTO country : countries) {
@@ -111,14 +118,27 @@ public class ClusteringOptionsWidget extends LayoutContainer {
 
 				panelAdministrativeLevelOptions.add(panel);
 			}
-		} else { // No countries found
+		} else { // No countries found		getCountries();
+
 			Label labelNoCountries = new Label("[Unavailable]");
 			panelAdministrativeLevelOptions.add(labelNoCountries);
 		}
 	}
 
-	private List<CountryDTO> getCountries() {
-		return null;
+	private void getCountries() {
+		service.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			public void onSuccess(SchemaDTO result) {
+				countries = result.getCountries();
+				createAdminLevelOptions();
+			}
+		});
 	}
 
 	public Clustering getSelectedClustering() {

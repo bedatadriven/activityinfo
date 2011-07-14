@@ -10,15 +10,15 @@ import java.util.List;
 
 public class PieMapMarker extends BubbleMapMarker {
 
-    public static class Slice {
+    public static class SliceValue {
         private double value;
         private DimensionCategory category;
         private int color;
 
-        public Slice() {
+        public SliceValue() {
         }
 
-        public Slice(Slice slice) {
+        public SliceValue(SliceValue slice) {
             this.value = slice.value;
             this.category = slice.category;
             this.color = slice.color;
@@ -52,13 +52,13 @@ public class PieMapMarker extends BubbleMapMarker {
     public PieMapMarker() {
     }
 
-    private List<Slice> slices = new ArrayList<Slice>(0);
+    private List<SliceValue> slices = new ArrayList<SliceValue>(0);
 
-    public List<Slice> getSlices() {
+    public List<SliceValue> getSlices() {
         return slices;
     }
 
-    public void setSlices(List<Slice> slices) {
+    public void setSlices(List<SliceValue> slices) {
         this.slices = slices;
     }
 }

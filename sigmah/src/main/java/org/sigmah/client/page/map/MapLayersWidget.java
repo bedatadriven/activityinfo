@@ -47,7 +47,7 @@ public class MapLayersWidget extends ContentPanel implements HasValue<MapReportE
 	private MapReportElement mapElement;
 	private ListStore<MapLayerModel> store = new ListStore<MapLayerModel>();
 	private ListView<MapLayerModel> view = new ListView<MapLayerModel>();
-	private LayerOptions layerOptions = new LayerOptions();
+	private LayerOptions layerOptions;
 	private Button buttonAddLayer = new Button();
 	private AddLayerDialog addLayer;
 	
@@ -64,12 +64,19 @@ public class MapLayersWidget extends ContentPanel implements HasValue<MapReportE
 
 		createListView();
 		createAddLayerButton();
-		createLayerOptions();		
+		createLayerOptions();
 	}
 
 	private void createLayerOptions() {
-	    VBoxLayoutData vbld = new VBoxLayoutData();
-	    vbld.setFlex(1);
+		layerOptions = new LayerOptions(service);
+		
+		layerOptions.addValueChangeHandler(new ValueChangeHandler<MapLayer>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<MapLayer> event) {
+				updateStore();
+				ValueChangeEvent.fire(MapLayersWidget.this, mapElement);
+			}
+		});
 
 	    add(layerOptions);
 	}
@@ -97,9 +104,7 @@ public class MapLayersWidget extends ContentPanel implements HasValue<MapReportE
 		    	  addLayer.show();
 		      }
 		});  
-
-		VBoxLayoutData vbld = new VBoxLayoutData();
-	    vbld.setFlex(1);
+		
 	    add(buttonAddLayer);
 	}
 
@@ -111,7 +116,7 @@ public class MapLayersWidget extends ContentPanel implements HasValue<MapReportE
 		setLayout(vboxLayout);
 		setCollapsible(false);
 		setFrame(true);
-		setHeading("Selected Layers");
+		setHeading("Layers");
 		setBodyBorder(false);
 	}					
 
@@ -136,34 +141,10 @@ public class MapLayersWidget extends ContentPanel implements HasValue<MapReportE
 					System.out.println("Selected item on maplayersview is null :(");
 				} else {
 					layerOptions.setMapLayer(se.getSelectedItem().getMapLayer());
-					layout();
+					layout(true);
 				}
 			}
 		});
-		
-	    ListViewDropTarget target = new ListViewDropTarget(view);
-	    target.setAllowSelfAsSource(true);
-	    target.setFeedback(Feedback.INSERT);
-
-	    VBoxLayoutData vbld = new VBoxLayoutData();
-	    vbld.setFlex(1);
-	    add(view, vbld);
-	}
-
-	private void addListViewDnd() {
-		ListViewDragSource source = new ListViewDragSource(view) {
-			@Override
-			protected void onDragStart(DNDEvent e) {
-				super.onDragStart(e);
-				if (!e.getTargetEl().hasStyleName("grabSprite")) {
-					e.setCancelled(true);
-				}
-			}
-			@Override
-			protected void onDragDrop(DNDEvent e) {
-				super.onDragDrop(e);
-			}
-		};
 		
 		view.addListener(Events.Select, new Listener<ListViewEvent>() {
 			@Override
@@ -172,7 +153,11 @@ public class MapLayersWidget extends ContentPanel implements HasValue<MapReportE
 				if (be.getTargetEl().hasStyleName("x-view-item-checkbox")) {
 					MapLayerModel layerModel = (MapLayerModel) be.getModel();
 					if (layerModel != null) {
-						layerModel.getMapLayer().setVisible(!layerModel.getMapLayer().isVisible());
+						boolean newSetting = !layerModel.isVisible();
+						layerModel.setVisible(newSetting);
+						layerModel.getMapLayer().setVisible(newSetting);
+						ValueChangeEvent.fire(MapLayersWidget.this, mapElement);
+						store.update(layerModel);
 					}
 				}				
 				
@@ -185,6 +170,43 @@ public class MapLayersWidget extends ContentPanel implements HasValue<MapReportE
 				} 
 			}
 		});
+
+	    VBoxLayoutData vbld = new VBoxLayoutData();
+	    vbld.setFlex(1);
+	    add(view, vbld);
+	}
+
+	private void addListViewDnd() {
+	    ListViewDropTarget target = new ListViewDropTarget(view);
+	    target.setAllowSelfAsSource(true);
+	    target.setFeedback(Feedback.INSERT);
+
+	    ListViewDragSource source = new ListViewDragSource(view) {
+	    	int draggedItemIndexStart = 0;
+	    	int draggedItemIndexDrop = 0;
+	    	
+			@Override
+			protected void onDragStart(DNDEvent e) {
+				super.onDragStart(e);
+				if (!e.getTargetEl().hasStyleName("grabSprite")) {
+					e.setCancelled(true);
+				}
+				draggedItemIndexStart = store.indexOf(view.getSelectionModel().getSelectedItem());
+			}
+			
+			@Override
+			protected void onDragDrop(DNDEvent e) {
+				super.onDragDrop(e);
+				
+				// Move the MapLayer onto his new position
+				draggedItemIndexDrop = store.indexOf(view.getSelectionModel().getSelectedItem());
+				MapLayer removed = mapElement.getLayers().remove(draggedItemIndexStart);
+				mapElement.getLayers().add(draggedItemIndexDrop, removed);
+				
+				ValueChangeEvent.fire(MapLayersWidget.this, mapElement);
+			}
+		};
+	
 	}
 	
 	private void removeLayer(MapLayer mapLayer) {
@@ -217,12 +239,10 @@ public class MapLayersWidget extends ContentPanel implements HasValue<MapReportE
 
 	private void updateStore() {
 		store.removeAll();
-		if (mapElement != null)
-		{
-			for (MapLayer layer : mapElement.getLayers())
-			{
+		if (mapElement != null) {
+			for (MapLayer layer : mapElement.getLayers()) {
 				MapLayerModel model =  new MapLayerModel();
-				model.setName("layer X");
+				model.setName(layer.getName());
 				model.setVisible(layer.isVisible());
 				model.setMapLayer(layer);
 				model.setLayerType(layer.getName());

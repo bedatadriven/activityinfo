@@ -24,8 +24,8 @@ public interface MapLayer extends Serializable {
 	 * of the values of the indicators in this list, or
 	 * 1.0 if no indicators are specified.
 	 */
-	List<Integer> getIndicatorIds();
-	void setIndicatorIds(List<Integer> indicatorIds);
+	public List<Integer> getIndicatorIds();
+	public void addIndicatorId(int Id);
 	
 	public LabelSequence getLabelSequence();
 	public void setLabelSequence(LabelSequence labelSequence);

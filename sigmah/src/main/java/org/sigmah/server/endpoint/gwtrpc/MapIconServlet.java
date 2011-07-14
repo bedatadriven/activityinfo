@@ -8,6 +8,9 @@ package org.sigmah.server.endpoint.gwtrpc;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.sigmah.server.report.renderer.image.ImageMapRenderer;
+import org.sigmah.shared.report.content.PieMapMarker;
+import org.sigmah.shared.report.content.PieMapMarker.SliceValue;
+import org.sigmah.shared.report.model.layers.PiechartMapLayer.Slice;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
@@ -25,6 +28,8 @@ import java.io.IOException;
  * The query parameter "t" indicates the type of icon to be generated:
  * <p/>
  * <b>t=bubble</b>: Generates a semi-transparent circle
+ *
+ * TODO: security checks. Manual parsing of arguments just screams for some sec flaws.
  *
  * @author Alex Bertram
  * @param r Radius, in pixels, of the bubble
@@ -44,7 +49,7 @@ public class MapIconServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        if ("bubble".equals(req.getParameter("t"))) {
+        if (req.getParameter("t").equals("bubble")) {
 
             int radius = Integer.parseInt(req.getParameter("r"));
             int color;
@@ -65,6 +70,50 @@ public class MapIconServlet extends HttpServlet {
 
             resp.setContentType("image/png");
             ImageIO.write(icon, "PNG", resp.getOutputStream());
+        } else {
+        	if (req.getParameter("t").equals("piechart")) {
+
+        		int radius = Integer.parseInt(req.getParameter("r"));
+
+                BufferedImage icon = new BufferedImage(radius * 2, radius * 2, BufferedImage.TYPE_INT_ARGB);
+                Graphics2D g2d = icon.createGraphics();
+
+                PieMapMarker pmm = new PieMapMarker();
+                pmm.setRadius(radius);
+                
+                String[] values = req.getParameterValues("value");
+                String[] colors = req.getParameterValues("color");
+                
+                if (colors.length != values.length) {
+                	String error = "Expected same amount of colors & values. Amount of Colors: [{0}]. Amount of values: [{1}].";
+                	error = String.format(error, colors.length, values.length);
+                	throw new ServletException(error);
+                }
+                
+                for (int i=0; i<colors.length; i++) {
+                    int color;
+                    double value=0.0;
+
+                    try {
+                        color = Integer.parseInt(colors[i]);
+                        value = Double.parseDouble(values[i]);
+                    } catch (NumberFormatException e) {
+                        color = Color.decode(colors[i]).getRGB();
+                    }
+                	SliceValue slice = new SliceValue();
+                	slice.setColor(color);
+                	slice.setValue(value);
+                    pmm.getSlices().add(slice);
+                }
+                
+                g2d.setPaint(new Color(255, 255, 255, 0));
+                g2d.fillRect(0, 0, radius * 2, radius * 2);
+
+                renderer.drawPieMarker(g2d, pmm);
+
+                resp.setContentType("image/png");
+                ImageIO.write(icon, "PNG", resp.getOutputStream());
+        	}
         }
     }
 }

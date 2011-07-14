@@ -5,35 +5,29 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 
-import org.sigmah.shared.report.content.PieMapMarker.Slice;
-
 /*
  * Displays multiple indicators using a piechart to visualize relative proportions
  */
 public class PiechartMapLayer extends CircledMapLayer {
 	private List<Slice> slices = new ArrayList<Slice>();
-	
-	/*
-	 * Returns a color based on the position of the indicator.
-	 * 
-	 * Only a fixed list of colors is used. These colors are based on alternate contrasts.
-	 * Alternate contrasted colors mean subsequent indicators can be distinguished clearly, even
-	 * on photocopied paper.
-	 */
-	@XmlElement
-	public int getColor(int indicatorId) {
-		//TODO: implement static list of colors
-		//TODO: make sure the first color and last color always contrast
-		// 
-		
-		return this.indicatorIds.indexOf(indicatorId) * 65000;
-	}
 
 	@Override
 	public boolean supportsMultipleIndicators() {
 		return true;
 	}
 	
+	@Override
+	public List<Integer> getIndicatorIds() {
+		List<Integer> result  = new ArrayList<Integer>();
+		
+		for (Slice slice : slices) {
+			result.add(slice.getIndicatorId());
+		}
+		
+		return result;
+	}
+	 
+	//TODO: make jaxb
 	public List<Slice> getSlices() {
 		return slices;
 	}
@@ -46,5 +40,37 @@ public class PiechartMapLayer extends CircledMapLayer {
 	@Override
 	public String getInternationalizedName() {
 		return "Piechart";
+	}
+	
+	@Override
+	public void addIndicatorId(int Id) {
+		slices.add(new Slice(-1, Id));
+	}
+
+	public static class Slice {
+		private int color;
+		private int indicatorId;
+		
+		public Slice(int color, int indicatorId) {
+			super();
+			this.color = color;
+			this.indicatorId = indicatorId;
+		}
+		
+		public int getColor() {
+			return color;
+		}
+		
+		public void setColor(int color) {
+			this.color = color;
+		}
+		
+		public int getIndicatorId() {
+			return indicatorId;
+		}
+		
+		public void setIndicatorId(int indicatorId) {
+			this.indicatorId = indicatorId;
+		}
 	}
 }

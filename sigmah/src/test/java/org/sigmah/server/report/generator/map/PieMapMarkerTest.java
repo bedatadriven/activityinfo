@@ -43,9 +43,9 @@ public class PieMapMarkerTest {
         sites.add(site1);
 
         PiechartMapLayer layer = new PiechartMapLayer();
-        layer.addIndicator(101);
-        layer.addIndicator(102);
-        layer.addIndicator(103);
+        layer.addIndicatorId(101);
+        layer.addIndicatorId(102);
+        layer.addIndicatorId(103);
         //layer.getColorDimensions().add(dimension);
 
         MapReportElement mapElement = new MapReportElement();

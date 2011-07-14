@@ -25,6 +25,7 @@ import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.MapMarker;
 import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.ReportElement;
+import org.sigmah.shared.report.model.layers.MapLayer;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 import org.sigmah.shared.util.mapping.Extents;
 
@@ -245,7 +246,6 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 			}
 		});
     }
-
 
 	/**
      * Handles the failure of the Google Maps API to load.
