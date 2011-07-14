@@ -53,6 +53,22 @@ public class ConfigModule extends AbstractModule {
         return false;
     }
 
+    /** 
+     * Tries to load a configuration file from an external object stored in Amazon S3.
+     * 
+     * This is very useful in automating production and continuous deployment scenarios
+     * because it allows us to keep the config and the app artifact seperate. 
+     * 
+     * This method expects the following environment variables to be set: 
+     * <ul>
+     * <li>AWS_ACCESS_KEY_ID: access key for the AWS account authorized to access the S3 bucket</li>
+     * <li>AWS_SECRET_KEY: secret key for this account</li>
+     * <li>PARAM1: the name of the bucket where the config file is stored</li>
+     * <li>PARAM2: the key to the config properties file</li>
+     * </ul>
+     * 
+     * @param properties the properties object into which to load the config
+     */
     private void tryToLoadFromS3(Properties properties) {
         String awsAccessKeyId = System.getProperty("AWS_ACCESS_KEY_ID");
         String awsSecretAccessKey = System.getProperty("AWS_SECRET_KEY");
@@ -62,18 +78,16 @@ public class ConfigModule extends AbstractModule {
             return;
         }
 
-        String config = System.getProperty("PARAM1");
-        if(config == null) {
-            logger.error("AWS Credentials provided, but PARAM1 does not contain bucket/key of configuration file");
+        String bucket = System.getProperty("PARAM1");
+        if(bucket == null) {
+            logger.error("AWS Credentials provided, but PARAM1 does not contain the bucket name in which the configuration file is stored");
             return;
         }
-        int slash = config.indexOf('/');
-        if(slash == -1) {
-            logger.error("AWS Credentials provided, but PARAM1 not in expected bucket/key format");
+        String key = System.getProperty("PARAM2");
+        if(key == null) {
+        	logger.error("AWS Credentials provided, but PARAM2 does not contain the configuration file's key");
         }
-        String bucket = config.substring(0, slash);
-        String key = config.substring(slash+1);
-
+        
         AmazonS3Client client = new AmazonS3Client(new BasicAWSCredentials(awsAccessKeyId, awsSecretAccessKey));
         try {
             properties.load(client.getObject(bucket, key).getObjectContent());
