@@ -227,7 +227,7 @@ public class PiechartMapLayerOptions extends LayoutContainer implements LayerOpt
 		}
 		
 		public int getColor() {
-			return get("color");
+			return (Integer)get("color");
 		}
 		
 		public void setColor(int color) {
@@ -235,7 +235,7 @@ public class PiechartMapLayerOptions extends LayoutContainer implements LayerOpt
 		}
 		
 		public int getIndicatorId() {
-			return get("indicatorId");
+			return (Integer)get("indicatorId");
 		}
 		
 		public void setIndicatorId(int indicatorId) {

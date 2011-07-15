@@ -20,6 +20,8 @@ public class ReadWriteReportTest {
 		
 		report.getElements().add(map);
 		
+		Package p = Report.class.getPackage();
+				
         JAXBContext jc = JAXBContext.newInstance(Report.class.getPackage().getName());
         Marshaller marshaller = jc.createMarshaller();
         marshaller.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());

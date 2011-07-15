@@ -8,12 +8,18 @@ package org.sigmah.shared.report.model.layers;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementRef;
+import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
 import org.sigmah.shared.domain.Indicator;
+import org.sigmah.shared.report.model.clustering.AdministrativeLevelClustering;
+import org.sigmah.shared.report.model.clustering.AutomaticClustering;
 import org.sigmah.shared.report.model.clustering.Clustering;
 import org.sigmah.shared.report.model.clustering.NoClustering;
+import org.sigmah.shared.report.model.labeling.ArabicNumberSequence;
 import org.sigmah.shared.report.model.labeling.LabelSequence;
 import org.sigmah.shared.report.model.labeling.LatinAlphaSequence;
 
@@ -46,7 +52,10 @@ public abstract class AbstractMapLayer implements MapLayer {
 	    return indicatorIds;
 	}
 	
-	@XmlElement(type=Object.class)
+	@XmlElementRefs({
+		@XmlElementRef(type=ArabicNumberSequence.class),
+		@XmlElementRef(type=LatinAlphaSequence.class)
+		})
 	public LabelSequence getLabelSequence() {
 		return labelSequence;
 	}
@@ -60,7 +69,11 @@ public abstract class AbstractMapLayer implements MapLayer {
 	    return clustering.isClustered();
 	}
 
-	@XmlElement
+	@XmlElementRefs({
+		@XmlElementRef(type=AdministrativeLevelClustering.class),
+		@XmlElementRef(type=NoClustering.class),
+		@XmlElementRef(type=AutomaticClustering.class)
+		})
 	public Clustering getClustering() {
 		return clustering;
 	}
