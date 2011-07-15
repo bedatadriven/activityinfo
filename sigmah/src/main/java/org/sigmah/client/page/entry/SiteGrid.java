@@ -6,6 +6,7 @@
 package org.sigmah.client.page.entry;
 
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
@@ -13,6 +14,7 @@ import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.*;
+import com.extjs.gxt.ui.client.widget.grid.EditorGrid.ClicksToEdit;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
@@ -82,6 +84,12 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
         grid.setLoadMask(true);
         grid.setStateful(true);
         grid.setStateId("SiteGrid" + activity.getId());
+        
+        GridSelectionModel<SiteDTO> sm = new GridSelectionModel<SiteDTO>();
+        sm.setSelectionMode(SelectionMode.SINGLE);
+		grid.setSelectionModel(sm);
+		
+        grid.setClicksToEdit(ClicksToEdit.TWO);
 //        grid.addListener(Events.BeforeEdit, new Listener<GridEvent>() {
 //            public void handleEvent(GridEvent be) {
 //                if(be.getProperty().startsWith(AdminLevelDTO.PROPERTY_PREFIX)) {

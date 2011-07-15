@@ -9,6 +9,8 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.extjs.gxt.ui.client.widget.grid.CellSelectionModel;
@@ -36,6 +38,17 @@ public abstract class AbstractEditorGridView<ModelT extends ModelData, Presenter
                 onCellClick(be);
             }
         });
+        
+        grid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<ModelT>() {
+
+			@Override
+			public void selectionChanged(SelectionChangedEvent<ModelT> se) {
+				if(se.getSelectedItem() != null) {
+					presenter.onSelectionChanged(se.getSelectedItem());
+				}
+			}
+		
+        });
 
         grid.addListener(Events.BeforeEdit, new Listener<GridEvent>() {
             public void handleEvent(GridEvent be) {
@@ -47,15 +60,17 @@ public abstract class AbstractEditorGridView<ModelT extends ModelData, Presenter
     }
 
     protected void onCellClick(GridEvent ge) {
-        CellSelectionModel sm = (CellSelectionModel) ge.getGrid().getSelectionModel();
-
-        ModelT selection = (ModelT) sm.getSelectCell().model;
-        if(lastSelection != selection) {
-            lastSelection = selection;
-            presenter.onSelectionChanged(selection); 
-        }
+    	if(ge.getGrid().getSelectionModel() instanceof CellSelectionModel) {
+	        CellSelectionModel sm = (CellSelectionModel) ge.getGrid().getSelectionModel();
+	
+	        ModelT selection = (ModelT) sm.getSelectCell().model;
+	        if(lastSelection != selection) {
+	            lastSelection = selection;
+	            presenter.onSelectionChanged(selection); 
+	        }
+    	}
     }
-
+ 
     @Override
     public void setActionEnabled(String actionId, boolean enabled) {
         super.setActionEnabled(actionId, enabled);

@@ -95,13 +95,12 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
             indicatorFieldSet = new IndicatorFieldSet(activity);
             registerFieldSet(indicatorFieldSet);
             add(indicatorFieldSet);
-
-
-            // COMMENT
-
-            commentFieldSet = new CommentFieldSet();
-            add(commentFieldSet);
         }
+
+        // COMMENT
+
+        commentFieldSet = new CommentFieldSet();
+        add(commentFieldSet);
 
         registerAll();
 

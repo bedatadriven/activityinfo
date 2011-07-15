@@ -26,7 +26,7 @@
 	<adminEntity adminLevelId="2" adminEntityId="10" adminEntityParentId="4" name="Bukavu" code="203" x1="0" y1="0" x2="0" y2="0"/>
 	<adminEntity adminLevelId="2" adminEntityId="11" adminEntityParentId="2" name="Walungu" code="201" x1="0" y1="0" x2="0" y2="0"/>
 	<adminEntity adminLevelId="2" adminEntityId="12" adminEntityParentId="2" name="Shabunda" code="202" x1="0" y1="0" x2="0" y2="0"/>
-	<adminEntity adminLevelId="2" adminEntityId="13" adminEntityParentId="2" name="Kalehe" code="203" x1="0" y1="0" x2="0" y2="0"/>
+	<adminEntity adminLevelId="2" adminEntityId="13" adminEntityParentId="2" name="Kalehe" code="203" x1="-44" y1="-22" x2="33" y2="40"/>
 	<adminEntity adminLevelId="2" adminEntityId="21" adminEntityParentId="4" name="Irumu" code="203" x1="0" y1="0" x2="0" y2="0"/>
 
 	<!--  User setup -->
