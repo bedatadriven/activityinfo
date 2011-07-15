@@ -131,14 +131,6 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
         return new MaskingAsyncMonitor(mapView, I18N.CONSTANTS.loading());
     }
 
-    public ReportElement getMapElement() {
-        return form.getMapElement();
-    }
-
-    public boolean validate() {
-        return form.validate();
-    }
-
 	@Override
 	protected void onRender(Element parent, int pos) {
 		super.onRender(parent, pos);
@@ -156,7 +148,13 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
 	@Override
 	public void export(Format format) {
 		// TODO Auto-generated method stub
-		
+//	    public ReportElement getMapElement() {
+//      return form.getMapElement();
+//  }
+
+//  public boolean validate() {
+//      return form.validate();
+//  }
 	}
 
 	@Override

@@ -87,7 +87,7 @@ public class IndicatorTreePanel extends ContentPanel {
         tree = new TreePanel<ModelData>(store);
         // Set multipleSelection after tree is instantiated
         this.setMultipleSelection(multipleSelection);
-        tree.setCheckable(true);
+        //tree.setCheckable(true);
 
         tree.getStyle().setNodeCloseIcon(null);
         tree.getStyle().setNodeOpenIcon(null);
@@ -104,22 +104,22 @@ public class IndicatorTreePanel extends ContentPanel {
         tree.setStateId("indicatorPanel");
         tree.setStateful(true);
         tree.setAutoSelect(true);
-        tree.addListener(Events.OnClick, new Listener<TreePanelEvent<ModelData>>() {
-            public void handleEvent(TreePanelEvent<ModelData> tpe) {
-
-                // when the user clicks on the label of an indicator, check
-                // the indicator
-                if (tpe.getNode() != null) {
-                    ModelData model = tpe.getNode().getModel();
-                    if (model instanceof IndicatorDTO &&
-                            tpe.within(tree.getView().getTextElement(tpe.getNode())) &&
-                            !tree.isChecked(model)) {
-
-                        tree.setChecked(model, !tree.isChecked(model));
-                    }
-                }
-            }
-        });
+//        tree.addListener(Events.OnClick, new Listener<TreePanelEvent<ModelData>>() {
+//            public void handleEvent(TreePanelEvent<ModelData> tpe) {
+//
+//                // when the user clicks on the label of an indicator, check
+//                // the indicator
+//                if (tpe.getNode() != null) {
+//                    ModelData model = tpe.getNode().getModel();
+//                    if (model instanceof IndicatorDTO &&
+//                            tpe.within(tree.getView().getTextElement(tpe.getNode())) &&
+//                            !tree.isChecked(model)) {
+//
+//                        tree.setChecked(model, !tree.isChecked(model));
+//                    }
+//                }
+//            }
+//        });
         tree.addListener(Events.BrowserEvent, new Listener<TreePanelEvent<ModelData>>() {
 
             public void handleEvent(TreePanelEvent<ModelData> be) {
@@ -191,17 +191,13 @@ public class IndicatorTreePanel extends ContentPanel {
                 callback.onSuccess(new ArrayList<ModelData>(((UserDatabaseDTO) parent).getActivities()));
 
             } else if (parent instanceof ActivityDTO) {
-                ActivityDTO activity = ((ActivityDTO) parent);
+            	callback.onSuccess(new ArrayList<ModelData>(((ActivityDTO) parent).groupIndicators()));
+            } else if (parent instanceof IndicatorGroup) {
+            	IndicatorGroup group = ((IndicatorGroup) parent);
                 ArrayList<ModelData> list = new ArrayList<ModelData>();
-
-                for (IndicatorGroup group : activity.groupIndicators()) {
-                    if (group.getName() != null) {
-                        list.add(group);
-                    }
                     for (IndicatorDTO indicator : group.getIndicators()) {
                         list.add(indicator);
                     }
-                }
                 callback.onSuccess(list);
             }
         }
@@ -222,7 +218,7 @@ public class IndicatorTreePanel extends ContentPanel {
     
     public void addCheckChangedListener(Listener<TreePanelEvent> listener)
     {
-    	tree.addListener(Events.CheckChange, listener);
+    	tree.addListener(Events.OnDoubleClick, listener);
     }
 
     /**
@@ -262,8 +258,8 @@ public class IndicatorTreePanel extends ContentPanel {
 
         @Override
         public boolean hasChildren(ModelData parent) {
-            return !(parent instanceof IndicatorDTO) &&
-                    !(parent instanceof IndicatorGroup);
+            return !(parent instanceof IndicatorDTO);
+                    //!(parent instanceof IndicatorGroup);
         }
     }
 

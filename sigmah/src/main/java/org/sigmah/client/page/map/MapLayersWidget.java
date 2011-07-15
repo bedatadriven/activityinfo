@@ -98,7 +98,7 @@ public class MapLayersWidget extends ContentPanel implements HasValue<MapReportE
 	}
 
 	private void createAddLayerButton() {
-		buttonAddLayer.setText(I18N.CONSTANTS.addLayer());
+		buttonAddLayer.setText(I18N.CONSTANTS.addLayerWithDialogHint());
 		buttonAddLayer.addListener(Events.Select, new SelectionListener<ButtonEvent>() {  
 		      @Override  
 		      public void componentSelected(ButtonEvent ce) {  

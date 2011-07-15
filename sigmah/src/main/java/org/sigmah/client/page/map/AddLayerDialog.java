@@ -93,10 +93,10 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		createIndicatorTreePanel();
 		createSelectedIndicatorsList();
 		
-		addButton(new Button(I18N.CONSTANTS.addLayerWithDialogHint(), new SelectionListener<ButtonEvent>() {  
+		addButton(new Button("Clear selection", new SelectionListener<ButtonEvent>() {  
 	        @Override  
 	        public void componentSelected(ButtonEvent ce) {  
-	            addLayer();  
+	        	clearSelection();
 	        }  
         }));
 		
@@ -158,8 +158,17 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		muliselectPanel.add(imageCanSelectMultiple);
 		muliselectPanel.add(labelCanSelectMultiple);
 		
+		Button buttonClearSelection = new Button(I18N.CONSTANTS.addLayer());
+		buttonClearSelection.addListener(Events.OnClick, new SelectionListener<ButtonEvent>() {  
+	        @Override  
+	        public void componentSelected(ButtonEvent ce) {  
+	            addLayer();  
+	        }  
+        });		
+		
 		fieldsetLayerType.add(radioPanel);
 		fieldsetLayerType.add(muliselectPanel);
+		fieldsetLayerType.add(buttonClearSelection);
 		
 		// Let the user know whether or not he can select multiple indicators for the layer
 		// he wants to add to the map
@@ -223,10 +232,16 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		}
 	}
 
+	/*
+	 * Clears list of selected indicators
+	 */
 	private void clearSelection() {
 		indicatorsStore.removeAll();
 	}
 	
+	/*
+	 * Factory method for a MapLayer based on given Radio widget
+	 */
 	private MapLayer fromRadio(Radio radio) {
 		if (radio.equals(radioIcon)) {
 			return new IconMapLayer();
@@ -251,32 +266,17 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		treepanelIndicators.addCheckChangedListener(new Listener<TreePanelEvent>(){
 			@Override
 			public void handleEvent(TreePanelEvent be) {
-				if (!multiSelect) {
+				if (notMultiSelect()) {
 					clearSelection();
 				}
 				
-				if (be.isChecked()) {
-					if (be.getItem() instanceof IndicatorGroup && multiSelect) {
-						IndicatorGroup group = (IndicatorGroup) be.getItem();
-						for (IndicatorDTO indicator : group.getIndicators()) {
-							indicatorsStore.add(indicator);
-						}
-					}
-					if (be.getItem() instanceof IndicatorDTO) {
-						indicatorsStore.add((IndicatorDTO) be.getItem());
-					}
-				} else {
-					if (be.getItem() instanceof IndicatorGroup) {
-						IndicatorGroup group = (IndicatorGroup) be.getItem();
-						for (IndicatorDTO indicator : group.getIndicators()) {
-							indicatorsStore.remove(indicator);
-						}
-					}
-					if (be.getItem() instanceof IndicatorDTO) {
-						indicatorsStore.remove((IndicatorDTO) be.getItem());
-					}
+				if (be.getItem() instanceof IndicatorGroup && multiSelect) {
+					addIndicatorGroupToStore((IndicatorGroup) be.getItem());
 				}
-					
+				if (be.getItem() instanceof IndicatorDTO) {
+					addIndicatorToStoreIfNotPresent((IndicatorDTO) be.getItem());
+				}
+
 				indicatorsStore.commitChanges();
 			}
 		});
@@ -286,6 +286,22 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		add(treepanelIndicators, vbld);
     }
 	
+	private void addIndicatorGroupToStore(IndicatorGroup group) {
+		for (IndicatorDTO indicator : group.getIndicators()) {
+			addIndicatorToStoreIfNotPresent(indicator);
+		}
+	}
+	
+	private void addIndicatorToStoreIfNotPresent(IndicatorDTO indicator) {
+		if (!indicatorsStore.contains(indicator)) {
+			indicatorsStore.add(indicator);
+		}
+	}
+	
+	private boolean notMultiSelect() {
+		return !multiSelect;
+	}
+	
 	private void setCanMultipleSelect() {
 		if (multiSelect) {
 			labelCanSelectMultiple.setText(I18N.MESSAGES.canIncludeMultipleIndicators());
@@ -293,9 +309,16 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		} else {
 			labelCanSelectMultiple.setText(I18N.MESSAGES.canIncludeSingleIndicator());
 			imageCanSelectMultiple.setResource(MapResources.INSTANCE.singleSelect());
+			clearSelectionIfMoreThenOneItem();
 		}
 		
 		treepanelIndicators.setMultipleSelection(multiSelect);
+	}
+
+	private void clearSelectionIfMoreThenOneItem() {
+		if (indicatorsStore.getModels().size() > 1) {
+			clearSelection();
+		}
 	}
 
 	@Override

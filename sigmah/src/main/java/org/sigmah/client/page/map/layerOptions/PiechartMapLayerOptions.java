@@ -81,12 +81,14 @@ public class PiechartMapLayerOptions extends LayoutContainer implements LayerOpt
 	
 	private void createMinMaxSliders() {
 		sliderMinSize.setMinValue(1);
-		sliderMinSize.setMaxValue(20);
+		sliderMinSize.setMaxValue(60);
+		sliderMinSize.setValue(16);
 		sliderMinSize.setIncrement(1);
 		sliderMinSize.setDraggable(true);
 
 		sliderMaxSize.setMinValue(1);
-		sliderMaxSize.setMaxValue(20);
+		sliderMaxSize.setMaxValue(60);
+		sliderMaxSize.setValue(48);
 		sliderMaxSize.setIncrement(1);
 		sliderMaxSize.setDraggable(true);
 		

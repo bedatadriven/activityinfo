@@ -95,6 +95,8 @@ public class LayerOptions extends ContentPanel implements HasValue<MapLayer> {
 		setFieldsetHeadingToLayerName();
 		fieldsetLayerSpecificOptions.setCollapsible(true);
 		fieldsetLayerSpecificOptions.setAutoWidth(true);
+		fieldsetLayerSpecificOptions.setLayout(new FlowLayout());
+		fieldsetClustering.setLayout(new FlowLayout());
 		add(fieldsetLayerSpecificOptions);
 
 		fieldsetClustering.setHeading(I18N.CONSTANTS.clustering());

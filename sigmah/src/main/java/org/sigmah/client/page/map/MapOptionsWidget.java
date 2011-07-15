@@ -33,7 +33,6 @@ public class MapOptionsWidget extends ContentPanel {
 		
 		getBaseMaps();
 		
-		createBaseMapOptions(baseMaps);
 		createFixedZoomHint();
 		createFixedPanningHint();
 	}
@@ -54,6 +53,7 @@ public class MapOptionsWidget extends ContentPanel {
 					failLoadingBaseMapsEmpty();
 				} else {
 					baseMaps = result.getBaseMaps();
+					createBaseMapOptions(baseMaps);
 				}
 			}
 		});

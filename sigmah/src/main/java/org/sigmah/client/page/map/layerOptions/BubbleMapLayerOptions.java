@@ -62,18 +62,21 @@ public class BubbleMapLayerOptions extends LayoutContainer implements LayerOptio
 		}});
 
 		colorPicker.setFieldLabel("Color");
+		colorPicker.setValue("000000");
 		
 		panel.add(colorPicker, formData);
 	}
 
 	private void createMinMaxSliders() {
-		sliderMinSize.setMinValue(16);
-		sliderMinSize.setMaxValue(48);
+		sliderMinSize.setMinValue(1);
+		sliderMinSize.setMaxValue(60);
+		sliderMinSize.setValue(16);
 		sliderMinSize.setIncrement(1);
 		sliderMinSize.setDraggable(true);
 
-		sliderMaxSize.setMinValue(16);
-		sliderMaxSize.setMaxValue(48);
+		sliderMaxSize.setMinValue(1);
+		sliderMaxSize.setMaxValue(60);
+		sliderMaxSize.setValue(48);
 		sliderMaxSize.setIncrement(1);
 		sliderMaxSize.setDraggable(true);
 		
