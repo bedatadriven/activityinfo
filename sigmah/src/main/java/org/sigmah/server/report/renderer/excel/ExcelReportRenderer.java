@@ -53,8 +53,8 @@ public class ExcelReportRenderer implements ExcelRenderer<Report>, Renderer {
         } else if(element instanceof PivotChartElement) {
             chartRenderer.render(book, (PivotChartElement)element);
             
-        } else if (element instanceof StaticElement) {
-        	staticRenderer.render(book, (StaticElement)element);
+        } else if (element instanceof TextElement) {
+        	staticRenderer.render(book, (TextElement)element);
         }
         book.write(os);
 

@@ -5,13 +5,18 @@
 
 package org.sigmah.server.report.renderer.itext;
 
+import java.io.OutputStream;
+
+import org.sigmah.server.report.generator.MapIconPath;
+import org.sigmah.server.report.renderer.ChartRendererJC;
+
 import com.google.inject.Inject;
 import com.lowagie.text.DocWriter;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
+import com.lowagie.text.HeaderFooter;
+import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfWriter;
-
-import java.io.OutputStream;
 
 
 /**
@@ -22,11 +27,8 @@ import java.io.OutputStream;
 public class PdfReportRenderer extends ItextReportRenderer {
 
     @Inject
-    public PdfReportRenderer(ItextPivotTableRenderer pivotTableRenderer,
-                             ItextChartRenderer chartRenderer, ItextMapRenderer mapRenderer,
-                             ItextTableRenderer tableRenderer,
-                             ItextStaticRenderer staticRenderer) {
-        super(pivotTableRenderer, chartRenderer, mapRenderer, tableRenderer, staticRenderer);
+    public PdfReportRenderer(@MapIconPath String mapIconPath) {
+        super(new ItextRtfChartRenderer(new ChartRendererJC()), mapIconPath);
     }
 
     @Override
@@ -46,4 +48,12 @@ public class PdfReportRenderer extends ItextReportRenderer {
     public String getFileSuffix() {
         return ".pdf";
     }
+
+	@Override
+	protected void renderFooter(Document document) {
+		HeaderFooter footer = new HeaderFooter(new Phrase("Page ", ThemeHelper.footerFont()), true);
+		document.setFooter(footer);		
+	}
+    
+    
 }

@@ -11,15 +11,11 @@
     <fileName>My File Name</fileName>
 
     <elements>
-        <static>
-       	 	<text>This is static text and image.</text>
-       	 	<img>http://www.google.nl/logos/2010/oz10-hp.gif</img>
-       	 </static>
-       	 <static>
-       	 	<text>This is text only</text>
-       	 </static>
-       	<static>
-       	 	<img>http://www.google.nl/logos/2010/oz10-hp.gif</img>
-       	 </static>
+       	 <text>
+       	 	<p>This is static text and image.</p>
+       	 </text>
+       	 <image>
+       	 	<url>http://www.google.nl/logos/2010/oz10-hp.gif</url>
+       	 </image> 
     </elements>
 </report>
