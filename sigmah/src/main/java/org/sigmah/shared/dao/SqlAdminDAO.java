@@ -63,14 +63,12 @@ public class SqlAdminDAO {
                 if(!rs.wasNull()) {
                     entity.setParentId(parentId);
                 }
-
-                BoundingBoxDTO bounds = new BoundingBoxDTO(
-                		rs.getDouble(5),
-                		rs.getDouble(6),
-                		rs.getDouble(7),
-                		rs.getDouble(8));
-                
-                if(rs.wasNull()) {
+                BoundingBoxDTO bounds = BoundingBoxDTO.empty();
+                bounds.setX1(rs.getDouble(5));
+                bounds.setY1(rs.getDouble(6));
+                bounds.setX2(rs.getDouble(7));
+                bounds.setY2(rs.getDouble(8));
+                if(!rs.wasNull()) {
                     entity.setBounds(bounds);
                 }
 

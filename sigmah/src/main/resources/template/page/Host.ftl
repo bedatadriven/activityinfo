@@ -64,12 +64,6 @@
         var VersionInfo = {
             revision: '${project.version}'
         };
-        <#if offline == true>
-        function disableOffline() {
-            document.cookie = "offline=false;expires=Thu, 01-Jan-1970 00:00:01 GMT";
-            window.location.reload();
-        }
-        </#if>
     </script>
 
     <script language='javascript' src='ActivityInfo/gxt/flash/swfobject.js'></script>
@@ -88,11 +82,6 @@
 
         </div>
     </div>
-<#if offline == true>
-    <div id="loading-options">
-        <a href="javascript:disableOffline()">Charger avec mode hors connexion desactiver</a>
-    </div>
-</#if>
 </div>
 <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1'
         style="position:absolute;width:0;height:0;border:0"></iframe>
