@@ -12,13 +12,7 @@ public class AutoMapLayer extends AbstractMapLayer {
 	}
 
 	@Override
-	public String getName() {
+	public String getTypeName() {
 		return "Automatic";
 	}
-
-	@Override
-	public String getInternationalizedName() {
-		return "Automatic";
-	}
-
 }

@@ -25,6 +25,7 @@ public abstract class AbstractMapLayer implements MapLayer {
 	protected List<Integer> indicatorIds = new ArrayList<Integer>();
 	protected LabelSequence labelSequence = new LatinAlphaSequence();
 	protected Clustering clustering =  new NoClustering(); 
+	protected String name;
 
 	@Override
 	public void addIndicatorId(int id) {
@@ -59,6 +60,7 @@ public abstract class AbstractMapLayer implements MapLayer {
 	    return clustering.isClustered();
 	}
 
+	@XmlElement
 	public Clustering getClustering() {
 		return clustering;
 	}
@@ -73,5 +75,16 @@ public abstract class AbstractMapLayer implements MapLayer {
 	@Override
 	public boolean hasMultipleIndicators() {
 		return indicatorIds != null && indicatorIds.size() > 1;
+	}
+
+	@XmlElement
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public void setName(String name) {
+		this.name=name;
 	}
 }

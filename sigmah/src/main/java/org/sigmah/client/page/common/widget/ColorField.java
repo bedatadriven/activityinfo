@@ -9,6 +9,7 @@ import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ColorPaletteEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.form.TriggerField;
 import com.extjs.gxt.ui.client.widget.menu.ColorMenu;
@@ -35,7 +36,7 @@ public class ColorField extends TriggerField<String> {
         menu.getColorPalette().addListener(Events.Select, new Listener<ColorPaletteEvent>() {
             public void handleEvent(ColorPaletteEvent ce) {
                 setValue(ce.getColor());
-                fireEvent(Events.Select, new BaseEvent(ColorField.this));
+                fireEvent(Events.Select, new FieldEvent(ColorField.this));
             }
         });
         menu.show(getElement(), "b");

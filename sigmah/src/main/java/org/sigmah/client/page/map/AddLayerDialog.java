@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.page.common.filter.IndicatorTreePanel;
 import org.sigmah.client.page.common.widget.ColorField;
 import org.sigmah.shared.dto.IndicatorDTO;
@@ -32,6 +33,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.Radio;
 import com.extjs.gxt.ui.client.widget.form.RadioGroup;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -69,7 +71,7 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
     
     // Indicator options
 	private Button buttonAddLayer = new Button();
-	private Label labelCanSelectMultiple = new Label();
+	private LabelField labelCanSelectMultiple = new LabelField();
 	private Image imageCanSelectMultiple = new Image();
     
 	// Choice for type of layer
@@ -176,15 +178,45 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		
 		add(fieldsetLayerType);
 	}
+	
+	/*
+	 * Makes up a name for given layer, using following pattern:
+	 * -One indicator -> use indicator name
+	 * -One IndicatorGroup -> use indicatorgroups' name
+	 * -Multiple indicators, multiple indicator groups -> "N indicators"
+	 * 
+	 * TODO: implement indicatorgroup detection
+	 */
+	private void createLayerName(MapLayer mapLayer) {
+		if (mapLayer.getIndicatorIds().size() == 1) {
+			mapLayer.setName(indicatorsStore.getModels().get(0).getName());
+			return;
+		}
+		
+		if (mapLayer.getIndicatorIds().size() > 1) {
+			mapLayer.setName(mapLayer.getIndicatorIds().size() + " " + I18N.CONSTANTS.indicators());
+			return;
+		}
+	}
+
+	// TODO: implement
+	private IndicatorGroup getIndicatorGroupOfSelectedIndicators() {
+		return null;
+	}
 
 	protected void addLayer() {
 		if (indicatorsStore.getModels().size() > 0) {
 			Radio selected = radiogroupLayerType.getValue();
+			
+			// Create the new layer based on the selected type
 			newLayer = fromRadio(selected);
 			List<Integer> indicators = new ArrayList<Integer>();
 			for (IndicatorDTO indicator : indicatorsStore.getModels()) {
-				newLayer.getIndicatorIds().add(indicator.getId());
+				newLayer.addIndicatorId(indicator.getId());
 			}
+			createLayerName(newLayer);
+			
+			// Set UI back to defaults
 			clearSelection();
 			hide();
 			ValueChangeEvent.fire(this, newLayer);

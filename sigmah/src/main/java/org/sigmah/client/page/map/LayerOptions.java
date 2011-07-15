@@ -54,7 +54,7 @@ public class LayerOptions extends ContentPanel implements HasValue<MapLayer> {
 		createBubbleLayerOptionsWidget();
 		createIconLayerOptionsWidget();
 		createPiechartLayerOptionsWidget();
-		
+
 		initializeComponent();
 	}
 
@@ -92,21 +92,25 @@ public class LayerOptions extends ContentPanel implements HasValue<MapLayer> {
 		vBoxLayout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
 		setLayout(new FlowLayout());
 		
-		//fieldsetLaypaddingerSpecificOptions.setLayout(new FitLayout());
-		fieldsetLayerSpecificOptions.setHeading(getLayerTypeName() + " " + "options");
+		setFieldsetHeadingToLayerName();
 		fieldsetLayerSpecificOptions.setCollapsible(true);
+		fieldsetLayerSpecificOptions.setAutoWidth(true);
 		add(fieldsetLayerSpecificOptions);
 
-		//fieldsetClustering.setLayout(new FitLayout());
 		fieldsetClustering.setHeading(I18N.CONSTANTS.aggregation());
 		fieldsetClustering.setCollapsible(true);		
 		fieldsetClustering.add(clusteringOptions);
+		fieldsetClustering.setAutoWidth(true);
 		add(fieldsetClustering);
+	}
+
+	private void setFieldsetHeadingToLayerName() {
+		fieldsetLayerSpecificOptions.setHeading(getLayerTypeName() + " " + "options");		
 	}
 
 	private String getLayerTypeName() {
 		if (selectedMapLayer != null) {
-			return "LAYERTYPE";
+			return selectedMapLayer.getTypeName();
 		} else {
 			return "[NONE]";
 		}
@@ -116,6 +120,8 @@ public class LayerOptions extends ContentPanel implements HasValue<MapLayer> {
 	 * Changes active widget showing layer options 
 	 */
 	public void setMapLayer(MapLayer mapLayer) {
+		this.selectedMapLayer = mapLayer;
+		
 		if (mapLayer instanceof BubbleMapLayer) {
 			bubbleMapLayerOptions.setValue((BubbleMapLayer) mapLayer);
 			setActiveMapLayer(bubbleMapLayerOptions);
@@ -134,8 +140,7 @@ public class LayerOptions extends ContentPanel implements HasValue<MapLayer> {
 		fieldsetLayerSpecificOptions.removeAll();
 		fieldsetLayerSpecificOptions.add((Widget)layerOptionsWidget);
 		fieldsetLayerSpecificOptions.layout();
-		//layout(true);
-		//fieldsetLayerSpecificOptions.setHeading(((MapLayer)layerOptionsWidget.getValue()).getName());
+		setFieldsetHeadingToLayerName();
 	}
 
 	/*

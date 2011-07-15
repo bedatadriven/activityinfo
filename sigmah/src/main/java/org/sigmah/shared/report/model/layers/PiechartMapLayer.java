@@ -1,5 +1,6 @@
 package org.sigmah.shared.report.model.layers;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,9 @@ import javax.xml.bind.annotation.XmlElement;
  */
 public class PiechartMapLayer extends CircledMapLayer {
 	private List<Slice> slices = new ArrayList<Slice>();
+
+	public PiechartMapLayer() {
+	}
 
 	@Override
 	public boolean supportsMultipleIndicators() {
@@ -33,12 +37,7 @@ public class PiechartMapLayer extends CircledMapLayer {
 	}
 
 	@Override
-	public String getName() {
-		return "Piechart";
-	}
-
-	@Override
-	public String getInternationalizedName() {
+	public String getTypeName() {
 		return "Piechart";
 	}
 	
@@ -47,10 +46,13 @@ public class PiechartMapLayer extends CircledMapLayer {
 		slices.add(new Slice(-1, Id));
 	}
 
-	public static class Slice {
+	public static class Slice implements Serializable {
 		private int color;
 		private int indicatorId;
 		
+		public Slice() {
+		}
+
 		public Slice(int color, int indicatorId) {
 			super();
 			this.color = color;

@@ -14,7 +14,9 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Slider;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.SliderField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -29,8 +31,11 @@ public class BubbleMapLayerOptions extends LayoutContainer implements LayerOptio
 	private BubbleMapLayer bubbleMapLayer;
 	private ColorField colorPicker = new ColorField();
 	private FormPanel panel = new FormPanel();
+	private SliderField sliderfieldMinSize;
+	private SliderField sliderfieldMaxSize;
 	private Slider sliderMinSize = new Slider();
 	private Slider sliderMaxSize = new Slider();
+	private FormData formData = new FormData("5");
 	
 	// TODO: replace images by a dynamic canvas element rendering the desired min/maxsize
 	private Image imageMinSize = new Image();
@@ -41,19 +46,12 @@ public class BubbleMapLayerOptions extends LayoutContainer implements LayerOptio
 		
 		createColorPicker();
 		createMinMaxSliders();
+		
+		panel.setHeaderVisible(false);
+		add(panel);
 	}
 
 	private void createColorPicker() {
-		add(colorPicker);
-
-		// Set the selected color to the maplayer
-		colorPicker.addListener(Events.Change, new Listener<FieldEvent>() {
-			@Override
-			public void handleEvent(FieldEvent be) {
-				bubbleMapLayer.setLabelColor(colorPicker.getIntValue());
-				ValueChangeEvent.fire(BubbleMapLayerOptions.this, bubbleMapLayer);
-		}});
-
 		// Set the selected color to the maplayer
 		colorPicker.addListener(Events.Select, new Listener<FieldEvent>() {
 			@Override
@@ -61,6 +59,10 @@ public class BubbleMapLayerOptions extends LayoutContainer implements LayerOptio
 				bubbleMapLayer.setLabelColor(colorPicker.getIntValue());
 				ValueChangeEvent.fire(BubbleMapLayerOptions.this, bubbleMapLayer);
 		}});
+
+		colorPicker.setFieldLabel("Color");
+		
+		panel.add(colorPicker, formData);
 	}
 
 	private void createMinMaxSliders() {
@@ -68,29 +70,35 @@ public class BubbleMapLayerOptions extends LayoutContainer implements LayerOptio
 		sliderMinSize.setMaxValue(20);
 		sliderMinSize.setIncrement(1);
 		sliderMinSize.setDraggable(true);
-		sliderMinSize.setClickToChange(false);
-		add(sliderMinSize);
-
 
 		sliderMaxSize.setMinValue(1);
 		sliderMaxSize.setMaxValue(20);
 		sliderMaxSize.setIncrement(1);
 		sliderMaxSize.setDraggable(true);
-		sliderMaxSize.setClickToChange(false);
-		add(sliderMaxSize);
 		
-//		// Ensure min can't be more then max, and max can't be less then min
-//		sliderMinSize.addListener(Events.BeforeChange, new Listener<SliderEvent>() {
-//			@Override
-//			public void handleEvent(SliderEvent be) {
-//				be.setCancelled(sliderMinSize.getValue() > sliderMaxSize.getValue());
-//		}});
-//
-//		sliderMaxSize.addListener(Events.BeforeChange, new Listener<SliderEvent>() {
-//			@Override
-//			public void handleEvent(SliderEvent be) {
-//				be.setCancelled(sliderMaxSize.getValue() < sliderMinSize.getValue());
-//		}});
+		sliderfieldMinSize = new SliderField(sliderMinSize);
+		sliderfieldMinSize.setFieldLabel("Minimum");
+		sliderfieldMaxSize = new SliderField(sliderMaxSize);
+		sliderfieldMaxSize.setFieldLabel("Maximum");
+		panel.add(sliderfieldMinSize, formData);
+		panel.add(sliderfieldMaxSize, formData);
+		
+		// Ensure min can't be more then max, and max can't be less then min
+		sliderMinSize.addListener(Events.Change, new Listener<SliderEvent>() {
+			@Override
+			public void handleEvent(SliderEvent be) {
+				if (sliderMinSize.getValue() > sliderMaxSize.getValue()) {
+					sliderMinSize.setValue(sliderMaxSize.getValue());
+				}
+		}});
+
+		sliderMaxSize.addListener(Events.Change, new Listener<SliderEvent>() {
+			@Override
+			public void handleEvent(SliderEvent be) {
+				if (sliderMaxSize.getValue() < sliderMinSize.getValue()) {
+					sliderMaxSize.setValue(sliderMinSize.getValue());
+				}
+		}});
 	}
 
 	@Override

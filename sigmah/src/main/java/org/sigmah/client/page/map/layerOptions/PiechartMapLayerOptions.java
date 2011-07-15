@@ -54,7 +54,6 @@ public class PiechartMapLayerOptions extends LayoutContainer implements LayerOpt
 		loadData();
 
 		setupIndicatorOptionsGrid();
-		populateColorPickerWidget();
 	}
 
 	private void initializeComponent() {
@@ -104,6 +103,7 @@ public class PiechartMapLayerOptions extends LayoutContainer implements LayerOpt
 			@Override
 			public void onSuccess(SchemaDTO result) {
 				schema=result;
+				populateColorPickerWidget();
 			}
 		});
 	}
