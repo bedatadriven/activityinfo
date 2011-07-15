@@ -155,6 +155,7 @@ public class MapLayersWidget extends ContentPanel implements HasValue<MapReportE
 						ValueChangeEvent.fire(MapLayersWidget.this, mapElement);
 						store.update(layerModel);
 					}
+					be.setCancelled(true);
 				}				
 				
 				// Remove 

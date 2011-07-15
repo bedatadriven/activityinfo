@@ -93,10 +93,10 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		createIndicatorTreePanel();
 		createSelectedIndicatorsList();
 		
-		addButton(new Button("Clear selection", new SelectionListener<ButtonEvent>() {  
+		addButton(new Button(I18N.CONSTANTS.addLayer(), new SelectionListener<ButtonEvent>() {  
 	        @Override  
 	        public void componentSelected(ButtonEvent ce) {  
-	        	clearSelection();
+	        	addLayer();
 	        }  
         }));
 		
@@ -158,13 +158,13 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		muliselectPanel.add(imageCanSelectMultiple);
 		muliselectPanel.add(labelCanSelectMultiple);
 		
-		Button buttonClearSelection = new Button(I18N.CONSTANTS.addLayer());
-		buttonClearSelection.addListener(Events.OnClick, new SelectionListener<ButtonEvent>() {  
-	        @Override  
-	        public void componentSelected(ButtonEvent ce) {  
-	            addLayer();  
-	        }  
-        });		
+		Button buttonClearSelection = new Button("Clear selection");
+		buttonClearSelection.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				clearSelection();
+			}
+		});
 		
 		fieldsetLayerType.add(radioPanel);
 		fieldsetLayerType.add(muliselectPanel);
