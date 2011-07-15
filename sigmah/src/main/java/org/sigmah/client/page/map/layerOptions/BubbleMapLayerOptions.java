@@ -66,13 +66,13 @@ public class BubbleMapLayerOptions extends LayoutContainer implements LayerOptio
 	}
 
 	private void createMinMaxSliders() {
-		sliderMinSize.setMinValue(1);
-		sliderMinSize.setMaxValue(20);
+		sliderMinSize.setMinValue(16);
+		sliderMinSize.setMaxValue(48);
 		sliderMinSize.setIncrement(1);
 		sliderMinSize.setDraggable(true);
 
-		sliderMaxSize.setMinValue(1);
-		sliderMaxSize.setMaxValue(20);
+		sliderMaxSize.setMinValue(16);
+		sliderMaxSize.setMaxValue(48);
 		sliderMaxSize.setIncrement(1);
 		sliderMaxSize.setDraggable(true);
 		
@@ -90,6 +90,8 @@ public class BubbleMapLayerOptions extends LayoutContainer implements LayerOptio
 				if (sliderMinSize.getValue() > sliderMaxSize.getValue()) {
 					sliderMinSize.setValue(sliderMaxSize.getValue());
 				}
+				bubbleMapLayer.setMinRadius(sliderMinSize.getValue());
+				ValueChangeEvent.fire(BubbleMapLayerOptions.this, bubbleMapLayer);
 		}});
 
 		sliderMaxSize.addListener(Events.Change, new Listener<SliderEvent>() {
@@ -98,6 +100,8 @@ public class BubbleMapLayerOptions extends LayoutContainer implements LayerOptio
 				if (sliderMaxSize.getValue() < sliderMinSize.getValue()) {
 					sliderMaxSize.setValue(sliderMinSize.getValue());
 				}
+				bubbleMapLayer.setMinRadius(sliderMinSize.getValue());
+				ValueChangeEvent.fire(BubbleMapLayerOptions.this, bubbleMapLayer);
 		}});
 	}
 

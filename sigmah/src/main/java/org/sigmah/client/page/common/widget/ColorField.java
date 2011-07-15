@@ -39,7 +39,7 @@ public class ColorField extends TriggerField<String> {
                 fireEvent(Events.Select, new FieldEvent(ColorField.this));
             }
         });
-        menu.show(getElement(), "b");
+        menu.show(getElement(), "l");
     }
 
     /**

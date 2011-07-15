@@ -71,6 +71,8 @@ public class ClusteringOptionsWidget extends LayoutContainer {
 		
 		// By default, no clustering is used for a layer
 		radioNoAggr.setValue(true);
+		
+		this.setEnabled(false);
 	}
 
 	private void createOptions() {
@@ -106,10 +108,16 @@ public class ClusteringOptionsWidget extends LayoutContainer {
 					// Show a combobox with available adminlevels for the country
 					ListStore<AdminLevelDTO> adminLevelStore = new ListStore<AdminLevelDTO>();
 					adminLevelStore.add(adminLevels);
-					ComboBox<AdminLevelDTO> combobox = new ComboBox<AdminLevelDTO>();
+					final ComboBox<AdminLevelDTO> combobox = new ComboBox<AdminLevelDTO>();
 					combobox.setStore(adminLevelStore);
 					combobox.setDisplayField("name");
 					combobox.setForceSelection(true);
+					combobox.addListener(Events.TriggerClick, new Listener<FieldEvent>() {
+						@Override
+						public void handleEvent(FieldEvent be) {
+							combobox.setAllQuery("");
+						}
+					});
 					
 					combobox.setEditable(false);
 					panel.add(combobox);

@@ -1,5 +1,6 @@
 package org.sigmah.client.page.map.layerOptions;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,9 @@ import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.report.content.PieMapMarker.SliceValue;
 import org.sigmah.shared.report.model.layers.PiechartMapLayer;
+import org.sigmah.shared.report.model.layers.PiechartMapLayer.Slice;
 
+import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -25,6 +28,7 @@ import com.extjs.gxt.ui.client.widget.Slider;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.SliderField;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
+import com.extjs.gxt.ui.client.widget.grid.CellSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
@@ -46,8 +50,8 @@ public class PiechartMapLayerOptions extends LayoutContainer implements LayerOpt
 	private Dispatcher service;
 	private PiechartMapLayer piechartMapLayer;
 	private SchemaDTO schema;
-	private Grid<IndicatorDTO> gridIndicatorOptions;
-	private ListStore<IndicatorDTO> indicatorsStore = new ListStore<IndicatorDTO>();
+	private Grid<NamedSlice> gridIndicatorOptions;
+	private ListStore<NamedSlice> indicatorsStore = new ListStore<NamedSlice>();
 	private SliderField sliderfieldMinSize;
 	private SliderField sliderfieldMaxSize;
 	private Slider sliderMinSize = new Slider();
@@ -100,6 +104,7 @@ public class PiechartMapLayerOptions extends LayoutContainer implements LayerOpt
 					sliderMinSize.setValue(sliderMaxSize.getValue());
 				}
 				piechartMapLayer.setMinRadius(sliderMinSize.getValue());
+				ValueChangeEvent.fire(PiechartMapLayerOptions.this, piechartMapLayer);
 		}});
 
 		sliderMaxSize.addListener(Events.Change, new Listener<SliderEvent>() {
@@ -109,6 +114,7 @@ public class PiechartMapLayerOptions extends LayoutContainer implements LayerOpt
 					sliderMaxSize.setValue(sliderMinSize.getValue());
 				}
 				piechartMapLayer.setMaxRadius(sliderMaxSize.getValue());
+				ValueChangeEvent.fire(PiechartMapLayerOptions.this, piechartMapLayer);
 		}});
 	}
 
@@ -120,7 +126,6 @@ public class PiechartMapLayerOptions extends LayoutContainer implements LayerOpt
 	    columnName.setDataIndex("name");
 	    columnName.setHeader("Indicators");
 	    columnConfigs.add(columnName);
-
 	    ColorField colorField = new ColorField();
 	    
 		ColumnConfig columnColor = new ColumnConfig();
@@ -128,16 +133,30 @@ public class PiechartMapLayerOptions extends LayoutContainer implements LayerOpt
 	    columnColor.setDataIndex("color");
 	    columnColor.setHeader("Color");
 	    columnColor.setWidth(30);
-	    columnColor.setEditor(new CellEditor(colorField));
+	    
+	    CellEditor colorEditor = new CellEditor(colorField) {
+			@Override
+			public Object postProcessValue(Object value) {
+				return super.postProcessValue(value);
+			}
+
+			@Override
+			public Object preProcessValue(Object value) {
+				return super.preProcessValue(value);
+			}
+	    };
+	    
+	    columnColor.setEditor(colorEditor);
 	    columnConfigs.add(columnColor);
 
 		ColumnModel columnmodelIndicators = new ColumnModel(columnConfigs);
 
-		gridIndicatorOptions = new Grid<IndicatorDTO>(indicatorsStore, columnmodelIndicators);
+		gridIndicatorOptions = new Grid<NamedSlice>(indicatorsStore, columnmodelIndicators);
 		gridIndicatorOptions.setBorders(false);
 		gridIndicatorOptions.setAutoExpandColumn("name");
 		gridIndicatorOptions.setAutoWidth(true);
 		gridIndicatorOptions.setHeight(200);
+		gridIndicatorOptions.setSelectionModel(new CellSelectionModel<PiechartMapLayerOptions.NamedSlice>());
 
 		VBoxLayoutData vbld = new VBoxLayoutData();
 		vbld.setFlex(1);
@@ -147,7 +166,6 @@ public class PiechartMapLayerOptions extends LayoutContainer implements LayerOpt
 
 	private void loadData() {
 		service.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
-
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO Auto-generated method stub
@@ -165,9 +183,9 @@ public class PiechartMapLayerOptions extends LayoutContainer implements LayerOpt
 		if (piechartMapLayer !=null &&
 				piechartMapLayer.getIndicatorIds() != null &&
 				piechartMapLayer.getIndicatorIds().size() > 0) {
-			for (Integer id : piechartMapLayer.getIndicatorIds()) {
-				IndicatorDTO indicator = schema.getIndicatorById(id);
-				indicatorsStore.add(indicator);
+			for (Slice slice : piechartMapLayer.getSlices()) {
+				String name = schema.getIndicatorById(slice.getIndicatorId()).getName();
+				indicatorsStore.add(new NamedSlice(slice.getColor(), slice.getIndicatorId(), name));
 			}
 		}
 		layout(true);
@@ -193,5 +211,42 @@ public class PiechartMapLayerOptions extends LayoutContainer implements LayerOpt
 	public HandlerRegistration addValueChangeHandler(
 			ValueChangeHandler<PiechartMapLayer> handler) {
 		return this.addHandler(handler, ValueChangeEvent.getType());
+	}
+	
+	public static class NamedSlice extends BaseModelData {
+		public NamedSlice() {
+		}
+
+		public NamedSlice(int color, int indicatorId, String name) {
+			super();
+			
+			setColor(color);
+			setIndicatorId(indicatorId);
+			setName(name);
+		}
+		
+		public int getColor() {
+			return get("color");
+		}
+		
+		public void setColor(int color) {
+			set("color", color);
+		}
+		
+		public int getIndicatorId() {
+			return get("indicatorId");
+		}
+		
+		public void setIndicatorId(int indicatorId) {
+			set("indicatorId" , indicatorId);
+		}
+
+		public String getName() {
+			return get("name");
+		}
+
+		public void setName(String name) {
+			set("name" , name);
+		}
 	}
 }

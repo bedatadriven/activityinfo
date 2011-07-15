@@ -93,7 +93,8 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
             marker.setLng(latlng.getLng());
             marker.setAlpha(layer.getAlpha());
 
-            marker.setColor(findColor(cluster.getPointValues().get(0).symbol, layer));
+            //marker.setColor(findColor(cluster.getPointValues().get(0).symbol, layer));
+            marker.setColor(layer.getLabelColor());
 
             markers.add(marker);
         }
