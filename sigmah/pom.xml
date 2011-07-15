@@ -5,7 +5,7 @@
     <groupId>org.activityinfo</groupId>
     <artifactId>activityinfo</artifactId>
     <packaging>war</packaging>
-    <version>1.5.7</version>
+    <version>1.5.8-SNAPSHOT</version>
     <name>Sigmah</name>
     <description>Web-based database platform for program monitoring and reporting for the UN,
         NGOs, and others working in humanitarian, development, and post-conflict contexts.</description>
