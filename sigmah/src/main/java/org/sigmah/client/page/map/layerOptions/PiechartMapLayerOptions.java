@@ -15,17 +15,22 @@ import org.sigmah.shared.report.model.layers.PiechartMapLayer;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SliderEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
+import com.extjs.gxt.ui.client.widget.Slider;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.SliderField;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
@@ -43,7 +48,13 @@ public class PiechartMapLayerOptions extends LayoutContainer implements LayerOpt
 	private SchemaDTO schema;
 	private Grid<IndicatorDTO> gridIndicatorOptions;
 	private ListStore<IndicatorDTO> indicatorsStore = new ListStore<IndicatorDTO>();
-	
+	private SliderField sliderfieldMinSize;
+	private SliderField sliderfieldMaxSize;
+	private Slider sliderMinSize = new Slider();
+	private Slider sliderMaxSize = new Slider();
+	private FormData formData = new FormData("5");
+	private FormPanel panel = new FormPanel();
+
 	public PiechartMapLayerOptions(Dispatcher service) {
 		super();
 		
@@ -52,11 +63,53 @@ public class PiechartMapLayerOptions extends LayoutContainer implements LayerOpt
 		initializeComponent();
 		
 		loadData();
+		
+		createMinMaxSliders();
 
 		setupIndicatorOptionsGrid();
 	}
 
 	private void initializeComponent() {
+		panel.setHeaderVisible(false);
+		add(panel);
+	}
+	
+	private void createMinMaxSliders() {
+		sliderMinSize.setMinValue(1);
+		sliderMinSize.setMaxValue(20);
+		sliderMinSize.setIncrement(1);
+		sliderMinSize.setDraggable(true);
+
+		sliderMaxSize.setMinValue(1);
+		sliderMaxSize.setMaxValue(20);
+		sliderMaxSize.setIncrement(1);
+		sliderMaxSize.setDraggable(true);
+		
+		sliderfieldMinSize = new SliderField(sliderMinSize);
+		sliderfieldMinSize.setFieldLabel("Minimum");
+		sliderfieldMaxSize = new SliderField(sliderMaxSize);
+		sliderfieldMaxSize.setFieldLabel("Maximum");
+		panel.add(sliderfieldMinSize, formData);
+		panel.add(sliderfieldMaxSize, formData);
+		
+		// Ensure min can't be more then max, and max can't be less then min
+		sliderMinSize.addListener(Events.Change, new Listener<SliderEvent>() {
+			@Override
+			public void handleEvent(SliderEvent be) {
+				if (sliderMinSize.getValue() > sliderMaxSize.getValue()) {
+					sliderMinSize.setValue(sliderMaxSize.getValue());
+				}
+				piechartMapLayer.setMinRadius(sliderMinSize.getValue());
+		}});
+
+		sliderMaxSize.addListener(Events.Change, new Listener<SliderEvent>() {
+			@Override
+			public void handleEvent(SliderEvent be) {
+				if (sliderMaxSize.getValue() < sliderMinSize.getValue()) {
+					sliderMaxSize.setValue(sliderMinSize.getValue());
+				}
+				piechartMapLayer.setMaxRadius(sliderMaxSize.getValue());
+		}});
 	}
 
 	private void setupIndicatorOptionsGrid() {
@@ -89,7 +142,7 @@ public class PiechartMapLayerOptions extends LayoutContainer implements LayerOpt
 		VBoxLayoutData vbld = new VBoxLayoutData();
 		vbld.setFlex(1);
 		
-		add(gridIndicatorOptions);
+		panel.add(gridIndicatorOptions);
 	}
 
 	private void loadData() {

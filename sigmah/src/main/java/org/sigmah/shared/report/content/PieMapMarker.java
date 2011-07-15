@@ -5,12 +5,13 @@
 
 package org.sigmah.shared.report.content;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PieMapMarker extends BubbleMapMarker {
 
-    public static class SliceValue {
+    public static class SliceValue implements Serializable {
         private double value;
         private DimensionCategory category;
         private int color;

@@ -80,6 +80,8 @@ public class MapIconServlet extends HttpServlet {
 
                 PieMapMarker pmm = new PieMapMarker();
                 pmm.setRadius(radius);
+                pmm.setX(radius);
+                pmm.setY(radius);
                 
                 String[] values = req.getParameterValues("value");
                 String[] colors = req.getParameterValues("color");

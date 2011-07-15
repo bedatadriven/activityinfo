@@ -22,6 +22,7 @@ import org.sigmah.shared.report.model.*;
 import org.sigmah.shared.report.model.layers.BubbleMapLayer;
 import org.sigmah.shared.report.model.layers.IconMapLayer;
 import org.sigmah.shared.report.model.layers.MapLayer;
+import org.sigmah.shared.report.model.layers.PiechartMapLayer;
 import org.sigmah.shared.util.mapping.Extents;
 import org.sigmah.shared.util.mapping.TileMath;
 
@@ -65,11 +66,11 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         for (MapLayer layer : element.getLayers()) {
         	if (layer.isVisible()) {
 	            if (layer instanceof BubbleMapLayer) {
-	                layerGenerators.add(new BubbleLayerGenerator(element,
-	                        (BubbleMapLayer) layer));
+	                layerGenerators.add(new BubbleLayerGenerator(element, (BubbleMapLayer) layer));
 	            } else if (layer instanceof IconMapLayer) {
-	                layerGenerators.add(new IconLayerGenerator(element,
-	                        (IconMapLayer) layer));
+	                layerGenerators.add(new IconLayerGenerator(element, (IconMapLayer) layer));
+	            } else if (layer instanceof PiechartMapLayer) {
+	            	layerGenerators.add(new PiechartLayerGenerator(element, (PiechartMapLayer) layer));
 	            }
         	}
         }
