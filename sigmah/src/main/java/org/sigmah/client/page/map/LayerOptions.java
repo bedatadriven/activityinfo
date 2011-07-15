@@ -97,7 +97,7 @@ public class LayerOptions extends ContentPanel implements HasValue<MapLayer> {
 		fieldsetLayerSpecificOptions.setAutoWidth(true);
 		add(fieldsetLayerSpecificOptions);
 
-		fieldsetClustering.setHeading(I18N.CONSTANTS.aggregation());
+		fieldsetClustering.setHeading(I18N.CONSTANTS.clustering());
 		fieldsetClustering.setCollapsible(true);		
 		fieldsetClustering.add(clusteringOptions);
 		fieldsetClustering.setAutoWidth(true);
@@ -105,7 +105,7 @@ public class LayerOptions extends ContentPanel implements HasValue<MapLayer> {
 	}
 
 	private void setFieldsetHeadingToLayerName() {
-		fieldsetLayerSpecificOptions.setHeading(getLayerTypeName() + " " + "options");		
+		fieldsetLayerSpecificOptions.setHeading(getLayerTypeName() + " " + I18N.CONSTANTS.options());		
 	}
 
 	private String getLayerTypeName() {

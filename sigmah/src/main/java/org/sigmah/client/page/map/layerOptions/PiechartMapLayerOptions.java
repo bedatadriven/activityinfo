@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.common.widget.ColorField;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.domain.Indicator;
@@ -90,9 +91,9 @@ public class PiechartMapLayerOptions extends LayoutContainer implements LayerOpt
 		sliderMaxSize.setDraggable(true);
 		
 		sliderfieldMinSize = new SliderField(sliderMinSize);
-		sliderfieldMinSize.setFieldLabel("Minimum");
+		sliderfieldMinSize.setFieldLabel(I18N.CONSTANTS.radiusMinimum());
 		sliderfieldMaxSize = new SliderField(sliderMaxSize);
-		sliderfieldMaxSize.setFieldLabel("Maximum");
+		sliderfieldMaxSize.setFieldLabel(I18N.CONSTANTS.radiusMaximum());
 		panel.add(sliderfieldMinSize, formData);
 		panel.add(sliderfieldMaxSize, formData);
 		
@@ -124,14 +125,14 @@ public class PiechartMapLayerOptions extends LayoutContainer implements LayerOpt
 		ColumnConfig columnName = new ColumnConfig();
 	    columnName.setId("name");
 	    columnName.setDataIndex("name");
-	    columnName.setHeader("Indicators");
+	    columnName.setHeader(I18N.CONSTANTS.indicators());
 	    columnConfigs.add(columnName);
 	    ColorField colorField = new ColorField();
 	    
 		ColumnConfig columnColor = new ColumnConfig();
 	    columnColor.setId("color");
 	    columnColor.setDataIndex("color");
-	    columnColor.setHeader("Color");
+	    columnColor.setHeader(I18N.CONSTANTS.color());
 	    columnColor.setWidth(30);
 	    
 	    CellEditor colorEditor = new CellEditor(colorField) {

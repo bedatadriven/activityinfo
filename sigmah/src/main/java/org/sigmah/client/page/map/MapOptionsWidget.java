@@ -3,6 +3,7 @@ package org.sigmah.client.page.map;
 import java.util.List;
 
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.command.GetBaseMaps;
 import org.sigmah.shared.command.result.BaseMapResult;
 import org.sigmah.shared.map.BaseMap;
@@ -59,14 +60,12 @@ public class MapOptionsWidget extends ContentPanel {
 	}
 	
 	private void failLoadingBaseMapsEmpty() {
-		System.out.println("FAIL: Unable to fetch basemaps");
-		Label labelFailLoading = new Label("Empty set of basemaps");
+		Label labelFailLoading = new Label(I18N.CONSTANTS.failBaseMapLoadingCount());
 		add(labelFailLoading);
 	}
 
 	private void failLoadingBaseMaps() {
-		System.out.println("FAIL: Unable to fetch basemaps");
-		Label labelFailLoading = new Label("Something went wrong downloading the list of basemaps");
+		Label labelFailLoading = new Label(I18N.CONSTANTS.failBaseMapLoading());
 		add(labelFailLoading);
 	}
 

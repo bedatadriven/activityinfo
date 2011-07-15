@@ -1,5 +1,6 @@
 package org.sigmah.client.page.map.layerOptions;
 
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.common.widget.ColorField;
 import org.sigmah.shared.report.model.layers.BubbleMapLayer;
 import org.sigmah.shared.report.model.layers.MapLayer;
@@ -77,9 +78,9 @@ public class BubbleMapLayerOptions extends LayoutContainer implements LayerOptio
 		sliderMaxSize.setDraggable(true);
 		
 		sliderfieldMinSize = new SliderField(sliderMinSize);
-		sliderfieldMinSize.setFieldLabel("Minimum");
+		sliderfieldMinSize.setFieldLabel(I18N.CONSTANTS.radiusMinimum());
 		sliderfieldMaxSize = new SliderField(sliderMaxSize);
-		sliderfieldMaxSize.setFieldLabel("Maximum");
+		sliderfieldMaxSize.setFieldLabel(I18N.CONSTANTS.radiusMaximum());
 		panel.add(sliderfieldMinSize, formData);
 		panel.add(sliderfieldMaxSize, formData);
 		

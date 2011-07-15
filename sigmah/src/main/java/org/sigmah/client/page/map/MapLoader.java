@@ -14,8 +14,6 @@ import org.sigmah.client.page.*;
 
 /**
  * PageLoader for the Map page
- *
- * @author Alex Bertram (akbertram@gmail.com)
  */
 public class MapLoader implements PageLoader {
     private final Provider<MapPage> mapPageProvider;

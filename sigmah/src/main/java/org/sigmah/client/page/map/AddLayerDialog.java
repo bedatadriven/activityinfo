@@ -93,7 +93,7 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		createIndicatorTreePanel();
 		createSelectedIndicatorsList();
 		
-		addButton(new Button("Add layer", new SelectionListener<ButtonEvent>() {  
+		addButton(new Button(I18N.CONSTANTS.addLayerWithDialogHint(), new SelectionListener<ButtonEvent>() {  
 	        @Override  
 	        public void componentSelected(ButtonEvent ce) {  
 	            addLayer();  
@@ -109,7 +109,7 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		ColumnConfig column = new ColumnConfig();
 	    column.setId("name");
 	    column.setDataIndex("name");
-	    column.setHeader("Selected indicators");
+	    column.setHeader(I18N.CONSTANTS.selectedLayers());
 	    column.setWidth(700);  
 	    columnConfigs.add(column);
 
@@ -140,7 +140,7 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		HorizontalPanel radioPanel = new HorizontalPanel();
 		HorizontalPanel muliselectPanel = new HorizontalPanel();
 		
-		fieldsetLayerType.setHeading("Type of layer");
+		fieldsetLayerType.setHeading(I18N.CONSTANTS.typeOfLayer());
 		fieldsetLayerType.setLayout(new RowLayout(Orientation.VERTICAL));
 		radioProportionalCircle.setBoxLabel(I18N.CONSTANTS.proportionalCircle());
 		radioIcon.setBoxLabel(I18N.CONSTANTS.icon());
@@ -288,10 +288,10 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 	
 	private void setCanMultipleSelect() {
 		if (multiSelect) {
-			labelCanSelectMultiple.setText("You can include multiple indicators on this layertype");
+			labelCanSelectMultiple.setText(I18N.MESSAGES.canIncludeMultipleIndicators());
 			imageCanSelectMultiple.setResource(MapResources.INSTANCE.multiSelect());
 		} else {
-			labelCanSelectMultiple.setText("One indicator can be selected for this layertype");
+			labelCanSelectMultiple.setText(I18N.MESSAGES.canIncludeSingleIndicator());
 			imageCanSelectMultiple.setResource(MapResources.INSTANCE.singleSelect());
 		}
 		

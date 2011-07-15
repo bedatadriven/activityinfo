@@ -1,6 +1,7 @@
 package org.sigmah.client.page.map;
 
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.clustering.NoClustering;
 import org.sigmah.shared.report.model.layers.BubbleMapLayer;
@@ -97,7 +98,7 @@ public class MapLayersWidget extends ContentPanel implements HasValue<MapReportE
 	}
 
 	private void createAddLayerButton() {
-		buttonAddLayer.setText("Add layer...");
+		buttonAddLayer.setText(I18N.CONSTANTS.addLayer());
 		buttonAddLayer.addListener(Events.Select, new SelectionListener<ButtonEvent>() {  
 		      @Override  
 		      public void componentSelected(ButtonEvent ce) {  
@@ -116,7 +117,7 @@ public class MapLayersWidget extends ContentPanel implements HasValue<MapReportE
 		setLayout(vboxLayout);
 		setCollapsible(false);
 		setFrame(true);
-		setHeading("Layers");
+		setHeading(I18N.CONSTANTS.layers());
 		setBodyBorder(false);
 	}					
 
