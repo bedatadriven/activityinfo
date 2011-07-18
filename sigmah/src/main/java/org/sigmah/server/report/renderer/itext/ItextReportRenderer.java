@@ -7,15 +7,19 @@ package org.sigmah.server.report.renderer.itext;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.sigmah.server.report.generator.MapIconPath;
 import org.sigmah.server.report.renderer.Renderer;
+import org.sigmah.shared.report.model.ImageReportElement;
 import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.PivotChartReportElement;
 import org.sigmah.shared.report.model.PivotTableReportElement;
 import org.sigmah.shared.report.model.Report;
 import org.sigmah.shared.report.model.ReportElement;
-import org.sigmah.shared.report.model.StaticReportElement;
 import org.sigmah.shared.report.model.TableElement;
+import org.sigmah.shared.report.model.TextReportElement;
 
 import com.google.inject.Inject;
 import com.lowagie.text.DocWriter;
@@ -33,19 +37,18 @@ import com.lowagie.text.DocumentException;
  */
 public abstract class ItextReportRenderer implements Renderer {
 
-    private final ItextPivotTableRenderer pivotTableRenderer;
-    private final ItextChartRenderer chartRenderer;
-    private final ItextMapRenderer mapRenderer;
-    private final ItextTableRenderer tableRenderer;
-    private final ItextStaticRenderer staticRenderer;
-
+	private final Map<Class, ItextRenderer> renderers = new HashMap<Class, ItextRenderer>();
+	
     @Inject
-    public ItextReportRenderer(ItextPivotTableRenderer pivotTableRenderer, ItextChartRenderer chartRenderer, ItextMapRenderer mapRenderer, ItextTableRenderer tableRenderer, ItextStaticRenderer staticRenderer) {
-        this.pivotTableRenderer = pivotTableRenderer;
-        this.chartRenderer = chartRenderer;
-        this.mapRenderer = mapRenderer;
-        this.tableRenderer = tableRenderer;
-        this.staticRenderer = staticRenderer;
+    protected ItextReportRenderer(ItextChartRenderer chartRenderer, @MapIconPath String mapIconPath) {
+    	ItextMapRenderer itextMapRenderer = new ItextMapRenderer(mapIconPath);
+		
+    	renderers.put(PivotTableReportElement.class, new ItextPivotTableRenderer());
+    	renderers.put(PivotChartReportElement.class, chartRenderer);
+    	renderers.put(MapReportElement.class, itextMapRenderer);
+    	renderers.put(TableElement.class, new ItextTableRenderer(itextMapRenderer));
+    	renderers.put(TextReportElement.class, new ItextTextRenderer());
+    	renderers.put(ImageReportElement.class, new ItextImageRenderer());
     }
 
     public void render(ReportElement element, OutputStream os) throws IOException {
@@ -54,11 +57,13 @@ public abstract class ItextReportRenderer implements Renderer {
             Document document = new Document();
             DocWriter writer = createWriter(document, os);
             document.open();
-
+            
+            renderFooter(document);
+            
             if(element instanceof Report) {
-                renderReport(element, document, writer);
+                renderReport(writer, document, element);
             } else {
-                renderElement(writer, element, document);
+                renderElement(writer, document, element);
             }
 
             document.close();
@@ -66,6 +71,8 @@ public abstract class ItextReportRenderer implements Renderer {
             throw new RuntimeException(e);
         }
     }
+
+	protected abstract void renderFooter(Document document);
 
     /**
      * Provides a DocWriter for an open document and OutputStream. Subclasses should provide
@@ -79,44 +86,21 @@ public abstract class ItextReportRenderer implements Renderer {
     protected abstract DocWriter createWriter(Document document, OutputStream os) throws DocumentException;
 
 
-    private void renderReport(ReportElement element, Document document, DocWriter writer) throws DocumentException {
+    private void renderReport(DocWriter writer, Document document, ReportElement element) throws DocumentException {
         Report report = (Report) element;
         document.add(ThemeHelper.reportTitle(report.getTitle()));
         ItextRendererHelper.addFilterDescription(document, report.getContent().getFilterDescriptions());
 
         for(ReportElement childElement : report.getElements()) {
-            renderElement(writer, childElement, document);
+        	renderElement(writer, document, childElement);
         }
     }
 
-    private void renderElement(DocWriter writer, ReportElement element, Document document) {
-        try {
-            rendererForElement(element).render(writer, document, element);
-        } catch(DocumentException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private ItextRenderer rendererForElement(ReportElement element) {
-        if(element instanceof PivotTableReportElement) {
-            return pivotTableRenderer;
-        } else if(element instanceof PivotChartReportElement) {
-            return chartRenderer;
-        } else if(element instanceof MapReportElement) {
-            return mapRenderer;
-        } else if(element instanceof TableElement) {
-            return tableRenderer;
-        } else if(element instanceof StaticReportElement) {
-                return staticRenderer;
-        } else {
-            return new NullItextRenderer();
-        }
-    }
-
-    private static class NullItextRenderer implements ItextRenderer {
-        @Override
-        public void render(DocWriter writer, Document doc, ReportElement element) throws DocumentException {
-
-        }
-    }
+	private void renderElement(DocWriter writer, Document document,
+			ReportElement element) throws DocumentException {
+		if(renderers.containsKey(element.getClass())) {
+			ItextRenderer renderer = renderers.get(element.getClass());
+		    renderer.render(writer, document, element);
+		}
+	}
 }

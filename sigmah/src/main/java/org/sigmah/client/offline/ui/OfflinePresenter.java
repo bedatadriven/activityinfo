@@ -20,6 +20,7 @@ import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.RemoteDispatcher;
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.offline.OfflineGateway;
 import org.sigmah.client.offline.sync.SyncStatusEvent;
 import org.sigmah.client.util.state.IStateManager;
@@ -111,6 +112,7 @@ public class OfflinePresenter implements Dispatcher {
     private final View view;
     private final IStateManager stateManager;
     private final Provider<OfflineGateway> gateway;
+    private UIConstants uiConstants;
     private final RemoteDispatcher remoteDispatcher;
 
     private OfflineMode activeMode;
@@ -124,12 +126,14 @@ public class OfflinePresenter implements Dispatcher {
                             EventBus eventBus,
                             RemoteDispatcher remoteService,
                             Provider<OfflineGateway> gateway,
-                            IStateManager stateManager
+                            IStateManager stateManager,
+                            UIConstants uiConstants
     ) {
         this.view = view;
         this.stateManager = stateManager;
         this.remoteDispatcher = remoteService;
         this.gateway = gateway;
+        this.uiConstants = uiConstants;
 
         loadState();
 
@@ -276,7 +280,7 @@ public class OfflinePresenter implements Dispatcher {
             view.setButtonTextToInstalling();
             view.disableMenu();
             view.showProgressDialog();
-            view.updateProgress("Starting...", 0);
+            view.updateProgress(uiConstants.starting(), 0);
 
             loadGateway(new AsyncCallback<OfflineGateway>() {
                 @Override

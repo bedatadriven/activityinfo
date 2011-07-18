@@ -30,7 +30,7 @@ public class AppCacheMenu extends Button {
 
         Menu menu = new Menu();
 
-        statusItem = new MenuItem("Status", new SelectionListener<MenuEvent>() {
+        statusItem = new MenuItem(I18N.CONSTANTS.status(), new SelectionListener<MenuEvent>() {
             @Override
             public void componentSelected(MenuEvent menuEvent) {
                 onStatusClicked();
@@ -63,27 +63,27 @@ public class AppCacheMenu extends Button {
                 statusItem.setText("Download the Google Chrome browser");
                 break;
             case UNCACHED:
-                statusItem.setText("Not cached");
+                statusItem.setText(I18N.CONSTANTS.appcacheUncached());
                 break;
             case OBSOLETE:
             case IDLE:
-                statusItem.setText("Cache up to date");
+                statusItem.setText(I18N.CONSTANTS.appcacheUptodate());
                 break;
             case CHECKING:
-                statusItem.setText("Checking for new version...");
+                statusItem.setText(I18N.CONSTANTS.appcacheChecking());
                 break;
             case DOWNLOADING:
-                statusItem.setText("Downloading new version to cache...");
+                statusItem.setText(I18N.CONSTANTS.appcacheDownloading());
                 break;
             case UPDATE_READY:
-                statusItem.setText("New version available");
+                statusItem.setText(I18N.CONSTANTS.appcacheDownloading());
                 notifyNewVersion();
                 break;
         }
     }
 
     private void notifyNewVersion() {
-    	if(Window.confirm("Le logiciel Activity a ete mise a jour. Cliquer sur OK a recharger.")) {
+    	if(Window.confirm(I18N.CONSTANTS.newVersionPrompt())) {
     		Window.Location.reload();
     	}
 	}
@@ -112,7 +112,7 @@ public class AppCacheMenu extends Button {
         appCache.ensureCached(new AsyncCallback<Void>() {
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert("Error caching application: " + caught.getMessage());
+                Window.alert(I18N.CONSTANTS.appcacheError() + caught.getMessage());
             }
 
             @Override
@@ -124,8 +124,7 @@ public class AppCacheMenu extends Button {
     }
 
     private void restart() {
-        if(Window.confirm("A new version of ActivityInfo is available and has " +
-                "been downloaded to the cache. Click 'OK' to reload the page.")) {
+        if(Window.confirm(I18N.CONSTANTS.newVersionPrompt())) {
             Window.Location.reload();
         }
     }

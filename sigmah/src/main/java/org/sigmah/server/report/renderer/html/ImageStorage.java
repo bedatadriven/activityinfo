@@ -23,7 +23,4 @@ public class ImageStorage {
 	public OutputStream getOutputStream() {
 		return outputStream;
 	}
-	
-	
-	
 }

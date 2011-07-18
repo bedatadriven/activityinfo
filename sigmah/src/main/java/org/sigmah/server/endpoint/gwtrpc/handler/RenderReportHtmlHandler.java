@@ -5,12 +5,18 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
-import com.google.inject.Inject;
+import java.io.File;
+import java.io.IOException;
+import java.io.StringWriter;
+
+import javax.servlet.ServletContext;
+import javax.xml.bind.JAXBException;
+
 import org.sigmah.server.dao.ReportDefinitionDAO;
 import org.sigmah.server.report.ReportParserJaxb;
 import org.sigmah.server.report.ServletImageStorageProvider;
 import org.sigmah.server.report.generator.ReportGenerator;
-import org.sigmah.server.report.renderer.html.HtmlReportRenderer;
+import org.sigmah.server.report.renderer.itext.HtmlReportRenderer;
 import org.sigmah.server.report.util.HtmlWriter;
 import org.sigmah.server.util.logging.LogException;
 import org.sigmah.shared.command.RenderReportHtml;
@@ -21,10 +27,7 @@ import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.report.model.Report;
 
-import javax.servlet.ServletContext;
-import javax.xml.bind.JAXBException;
-import java.io.File;
-import java.io.IOException;
+import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram
@@ -55,8 +58,8 @@ public class RenderReportHtmlHandler implements CommandHandler<RenderReportHtml>
 
             generator.generate(user, report, null, cmd.getDateRange());
 
-            HtmlWriter writer = new HtmlWriter();
-            renderer.render(writer, createServletImageProvider(), report);
+            StringWriter writer = new StringWriter();
+            renderer.render(report, writer);
 
             return new HtmlResult(writer.toString());
         } catch (JAXBException e) {

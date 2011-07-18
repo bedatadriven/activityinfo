@@ -52,9 +52,9 @@ public class JaxbParseTest {
         Assert.assertTrue("pivotChart", report.getElements().get(1) instanceof PivotChartReportElement);
         Assert.assertTrue("table", report.getElements().get(2) instanceof TableElement);
         Assert.assertTrue("map", report.getElements().get(3) instanceof MapReportElement);
-        Assert.assertTrue("static", report.getElements().get(4) instanceof StaticReportElement);
-        Assert.assertTrue("static", report.getElements().get(5) instanceof StaticReportElement);
-        Assert.assertTrue("static", report.getElements().get(6) instanceof StaticReportElement);
+        Assert.assertTrue("static", report.getElements().get(4) instanceof TextReportElement);
+        Assert.assertTrue("static", report.getElements().get(5) instanceof TextReportElement);
+        Assert.assertTrue("static", report.getElements().get(6) instanceof ImageReportElement);
     }
 
     @Test

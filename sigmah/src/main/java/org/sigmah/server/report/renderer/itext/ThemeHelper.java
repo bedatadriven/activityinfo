@@ -43,6 +43,10 @@ public class ThemeHelper {
         para.setSpacingBefore(10);
         return para;
     }
+    
+    public static Font footerFont() {
+    	return new Font(Font.TIMES_ROMAN, 13, Font.BOLD, new Color(0, 0, 0)); 
+    }
 
     public static Cell columnHeaderCell(String label, boolean leaf) throws BadElementException {
         return columnHeaderCell(label, leaf, leaf ? Cell.ALIGN_RIGHT : Cell.ALIGN_CENTER);

@@ -17,6 +17,7 @@ public class ServletImageStorageProvider implements ImageStorageProvider {
     private String urlBase;
     private String tempPath;
 
+    
     public ServletImageStorageProvider(String urlBase, String tempPath) {
         this.urlBase = urlBase;
         this.tempPath = tempPath + "/";

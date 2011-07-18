@@ -142,9 +142,8 @@ public class OfflineView extends Button implements OfflinePresenter.View {
 
 	@Override
 	public void showError(String message) {
-		MessageBox.alert("Offline installation failed", "An error occured while installing " +
-				"offline mode: " + message, null);
-		
+		MessageBox.alert(I18N.CONSTANTS.offlineInstallationFailed(), I18N.CONSTANTS.offlineInstallError() + message, null);
+
 	}
 
 	@Override

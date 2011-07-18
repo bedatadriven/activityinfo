@@ -323,7 +323,7 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
         // AsyncCallback.onFailure(Throwable) method is to get the application into
         //  a state where a browser refresh can be done.
         // TODO: this needs to be handled by the user interface somewhere
-        Window.alert("A new version of ActivityInfo has been posted to the server. You will need to refresh before continuing.");
+        Window.alert(I18N.CONSTANTS.newVersionPrompt());
     }
 
     private void onAuthenticationExpired() {

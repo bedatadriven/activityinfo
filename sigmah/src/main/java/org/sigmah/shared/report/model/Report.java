@@ -5,12 +5,23 @@
 
 package org.sigmah.shared.report.model;
 
-import org.sigmah.shared.report.content.ReportContent;
-
-import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import org.sigmah.shared.report.content.ReportContent;
+
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import org.sigmah.shared.report.content.ReportContent;
 
 /**
  * Describes a document that contains a series of <code>ReportElement</code>s
@@ -53,7 +64,8 @@ public class Report extends ReportElement<ReportContent> implements Serializable
             @XmlElement(name="pivotChart", type=PivotChartReportElement.class),
             @XmlElement(name="table", type=TableElement.class),
             @XmlElement(name="map", type=MapReportElement.class),
-            @XmlElement(name="static", type=StaticReportElement.class)
+            @XmlElement(name="text", type=TextReportElement.class),
+            @XmlElement(name="image", type=ImageReportElement.class)
     })
     @XmlElementWrapper(name="elements")
 	public List<ReportElement> getElements() {

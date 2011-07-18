@@ -10,18 +10,17 @@ import org.apache.poi.hslf.HSLFSlideShow;
 import org.apache.poi.hslf.model.Shape;
 import org.apache.poi.hslf.model.Slide;
 import org.apache.poi.hslf.usermodel.SlideShow;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
-/*
- * @author Alex Bertram
- */
 
 public class PptAlphaCheck {
 
 
     @Test
+    @Ignore("learning test only")
     public void testAlphaValues() throws IOException {
 
 
