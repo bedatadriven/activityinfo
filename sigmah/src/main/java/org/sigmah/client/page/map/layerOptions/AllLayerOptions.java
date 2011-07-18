@@ -1,11 +1,7 @@
-package org.sigmah.client.page.map;
+package org.sigmah.client.page.map.layerOptions;
 
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.map.layerOptions.BubbleMapLayerOptions;
-import org.sigmah.client.page.map.layerOptions.IconMapLayerOptions;
-import org.sigmah.client.page.map.layerOptions.LayerOptionsWidget;
-import org.sigmah.client.page.map.layerOptions.PiechartMapLayerOptions;
 import org.sigmah.shared.report.model.clustering.Clustering;
 import org.sigmah.shared.report.model.layers.BubbleMapLayer;
 import org.sigmah.shared.report.model.layers.IconMapLayer;
@@ -24,13 +20,13 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
 
-public class LayerOptions extends ContentPanel implements HasValue<MapLayer> {
+public class AllLayerOptions extends ContentPanel implements HasValue<MapLayer> {
 	private MapLayer selectedMapLayer;
 
 	// Options for every supported MapLayer type
-	private BubbleMapLayerOptions bubbleMapLayerOptions = new BubbleMapLayerOptions();
-	private IconMapLayerOptions iconMapLayerOptions = new IconMapLayerOptions();
-	private PiechartMapLayerOptions piechartMapLayerOptions;
+	private BubbleLayerOptions bubbleMapLayerOptions = new BubbleLayerOptions();
+	private IconLayerOptions iconMapLayerOptions = new IconLayerOptions();
+	private PiechartLayerOptions piechartMapLayerOptions;
 
 	// Clustering options
 	private ClusteringOptionsWidget clusteringOptions;
@@ -41,7 +37,7 @@ public class LayerOptions extends ContentPanel implements HasValue<MapLayer> {
 
 	private Dispatcher service;
 
-	public LayerOptions(Dispatcher service) {
+	public AllLayerOptions(Dispatcher service) {
 		super();
 	
 		this.service = service;
@@ -51,7 +47,7 @@ public class LayerOptions extends ContentPanel implements HasValue<MapLayer> {
 			public void onValueChange(ValueChangeEvent<Clustering> event) {
 				if (selectedMapLayer != null) {
 					selectedMapLayer.setClustering(event.getValue());
-					ValueChangeEvent.fire(LayerOptions.this, selectedMapLayer);
+					ValueChangeEvent.fire(AllLayerOptions.this, selectedMapLayer);
 				}
 			}
 		});
@@ -69,12 +65,12 @@ public class LayerOptions extends ContentPanel implements HasValue<MapLayer> {
 	}
 
 	private void createPiechartLayerOptionsWidget() {
-		piechartMapLayerOptions = new PiechartMapLayerOptions(service);
+		piechartMapLayerOptions = new PiechartLayerOptions(service);
 		
 		piechartMapLayerOptions.addValueChangeHandler(new ValueChangeHandler<PiechartMapLayer>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<PiechartMapLayer> event) {
-				ValueChangeEvent.fire(LayerOptions.this, event.getValue());
+				ValueChangeEvent.fire(AllLayerOptions.this, event.getValue());
 			}
 		});
 	}
@@ -83,7 +79,7 @@ public class LayerOptions extends ContentPanel implements HasValue<MapLayer> {
 		iconMapLayerOptions.addValueChangeHandler(new ValueChangeHandler<IconMapLayer>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<IconMapLayer> event) {
-				ValueChangeEvent.fire(LayerOptions.this, event.getValue());
+				ValueChangeEvent.fire(AllLayerOptions.this, event.getValue());
 			}
 		});
 	}
@@ -92,14 +88,12 @@ public class LayerOptions extends ContentPanel implements HasValue<MapLayer> {
 		bubbleMapLayerOptions.addValueChangeHandler(new ValueChangeHandler<BubbleMapLayer>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<BubbleMapLayer> event) {
-				ValueChangeEvent.fire(LayerOptions.this, event.getValue());
+				ValueChangeEvent.fire(AllLayerOptions.this, event.getValue());
 			}
 		});
 	}
 
 	private void initializeComponent() {
-		VBoxLayout vBoxLayout = new VBoxLayout();
-		vBoxLayout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
 		setLayout(new FlowLayout());
 		
 		setFieldsetHeadingToLayerName();

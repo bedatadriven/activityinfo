@@ -3,10 +3,11 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.client.page.map;
+package org.sigmah.client.page.map.mapOptions;
 
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
 import com.google.inject.Inject;
 import org.sigmah.client.dispatch.Dispatcher;
@@ -29,52 +30,67 @@ import java.util.List;
 /**
  * Form for choosing options related to the MapElement
  */
-public class MapForm extends ContentPanel {
+public class AllMapOptionsWidget extends ContentPanel {
 
     protected final Dispatcher service;
-    protected final UIConstants messages;
     protected final IconImageBundle icons;
 
-    protected AccordionLayout accordionLayout;
-//    protected IndicatorTreePanel indicatorTree;
-    protected BubbleLayerForm symbolForm;
     protected AdminFilterPanel adminPanel;
-    protected LayoutForm layoutForm;
+    protected LayoutOptionsWidget layoutForm;
     protected DateRangePanel datePanel;
-    protected MapOptionsWidget mapOptionsWidget;
+    private BaseMapPickerWidget mapOptionsWidget;
+    
+    private FieldSet fieldsetBaseMaps = new FieldSet();
+    private FieldSet fieldsetLayoutOptions = new FieldSet();
 
     @Inject
-    public MapForm(Dispatcher service, UIConstants messages, IconImageBundle icons) {
+    public AllMapOptionsWidget(Dispatcher service, IconImageBundle icons) {
         this.service = service;
-        this.messages = messages;
         this.icons = icons;
 
-        setHeading(I18N.CONSTANTS.settings());
+        initializeComponent();
 
-        accordionLayout = new AccordionLayout();
-        setLayout(accordionLayout);
-        
-//        indicatorTree = new IndicatorTreePanel(service, false);
-//        indicatorTree.setHeading(messages.indicators());
-//        indicatorTree.setIcon(icons.indicator());
-//        indicatorTree.setHeaderVisible(true);
-//        add(indicatorTree);
+        createLayoutOptions();
+        createBaseMapPicker();
 
-        layoutForm = new LayoutForm(service);
-        add(layoutForm);
-
-//        symbolForm = new BubbleLayerForm();
-//        add(symbolForm);
-//
 //        adminPanel = new AdminFilterPanel(service);
 //        add(adminPanel);
 //
 //        datePanel = new DateRangePanel();
 //        add(datePanel);
         
-        mapOptionsWidget = new MapOptionsWidget(service);
-        add(mapOptionsWidget);
     }
+    
+    private void createBaseMapPicker() {
+    	mapOptionsWidget = new BaseMapPickerWidget(service);
+        fieldsetBaseMaps.add(getMapOptionsWidget());
+	}
+
+	private void createLayoutOptions() {
+        layoutForm = new LayoutOptionsWidget(service);
+        fieldsetLayoutOptions.add(layoutForm);
+	}
+
+	private void setFieldsetDefaults(FieldSet fieldset) {
+    	fieldset.setCollapsible(true);
+    }
+
+	private void initializeComponent() {
+		setHeading(I18N.CONSTANTS.settings());
+		
+		fieldsetBaseMaps.setHeading("Base maps");
+		fieldsetLayoutOptions.setHeading("Layout");
+		
+		setFieldsetDefaults(fieldsetBaseMaps);
+		setFieldsetDefaults(fieldsetLayoutOptions);
+		
+		add(fieldsetBaseMaps);
+		add(fieldsetLayoutOptions);
+	}
+
+	public BaseMapPickerWidget getMapOptionsWidget() {
+		return mapOptionsWidget;
+	}
 
 //    public ReportElement getMapElement() {
 ////        MapReportElement element = new MapReportElement();
@@ -98,14 +114,6 @@ public class MapForm extends ContentPanel {
 ////        return element;
 //    }
 
-//    /**
-//     * Public for testing
-//     *
-//     * @return the indicator tree panel
-//     */
-//    public IndicatorTreePanel getIndicatorTree() {
-//        return indicatorTree;
-//    }
 
 //    public boolean validate() {
 //        if (indicatorTree.getSelection().size() == 0) {

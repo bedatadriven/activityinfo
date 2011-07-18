@@ -3,11 +3,12 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.client.page.map;
+package org.sigmah.client.page.map.mapOptions;
 
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.LoadListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -29,7 +30,7 @@ import java.util.List;
  *
  * @author Alex Bertram
  */
-class LayoutForm extends FormPanel {
+class LayoutOptionsWidget extends LayoutContainer {
 
     private final Dispatcher service;
 
@@ -37,15 +38,15 @@ class LayoutForm extends FormPanel {
     private ComboBox<PageSizeModel> pageSizeCombo;
 
     @Inject
-    public LayoutForm(Dispatcher service) {
+    public LayoutOptionsWidget(Dispatcher service) {
 
         this.service = service;
 
-        setHeading(I18N.CONSTANTS.pageLayout());
-        setIcon(IconImageBundle.ICONS.report());
-
-        setLabelWidth(125);
-        setFieldWidth(150);
+//        setHeading(I18N.CONSTANTS.pageLayout());
+//        setIcon(IconImageBundle.ICONS.report());
+//
+//        setLabelWidth(125);
+//        setFieldWidth(150);
 
         baseMapCombo = new ComboBox();
         baseMapCombo.setFieldLabel(I18N.CONSTANTS.backgroundMap());

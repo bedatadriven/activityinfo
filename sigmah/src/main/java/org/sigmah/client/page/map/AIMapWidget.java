@@ -292,4 +292,8 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public void setBaseMap(BaseMap baseMap) {
+		changeBaseMapIfNeeded(baseMap);
+	}
 }

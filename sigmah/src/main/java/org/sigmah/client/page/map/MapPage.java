@@ -19,20 +19,12 @@ import org.sigmah.client.page.common.toolbar.ActionToolBar;
 import org.sigmah.client.page.common.toolbar.ExportCallback;
 import org.sigmah.client.page.common.toolbar.ExportMenuButton;
 import org.sigmah.client.page.common.toolbar.UIActions;
+import org.sigmah.client.page.map.mapOptions.AllMapOptionsWidget;
 import org.sigmah.shared.command.RenderElement;
 import org.sigmah.shared.command.RenderElement.Format;
-import org.sigmah.shared.report.content.Content;
+import org.sigmah.shared.map.BaseMap;
 import org.sigmah.shared.report.model.MapReportElement;
-import org.sigmah.shared.report.model.ReportElement;
-import org.sigmah.shared.report.model.clustering.NoClustering;
-import org.sigmah.shared.report.model.layers.AbstractMapLayer;
-import org.sigmah.shared.report.model.layers.AutoMapLayer;
-import org.sigmah.shared.report.model.layers.BubbleMapLayer;
-import org.sigmah.shared.report.model.layers.MapLayer;
-
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.TreePanelEvent;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -54,22 +46,21 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
     private final Dispatcher dispatcher;
     
     // Contained widgets
-    private final MapForm form;
-    private AIMapWidget mapView;
-    private ActionToolBar toolBar;
-    private MapLayersWidget layersWidget;
+    private final AllMapOptionsWidget allMapOptionsWidget;
+    private AIMapWidget aiMapWidget;
+    private ActionToolBar toolbarMapActions;
+    private LayersWidget layersWidget;
     private MapReportElement mapReportElement = new MapReportElement();
 
     @Inject
-    public MapPage(Dispatcher dispatcher, final MapForm form) {
+    public MapPage(Dispatcher dispatcher, final AllMapOptionsWidget form) {
     	this.dispatcher = dispatcher;
     	
     	MapResources.INSTANCE.layerStyle().ensureInjected();
     	
-        setLayout(new BorderLayout());
-        setHeaderVisible(false);
+        initializeComponent();
         
-        this.form = form;
+        this.allMapOptionsWidget = form;
         
         createFormPane(form);
         createMap();
@@ -77,8 +68,13 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
         createSelectedLayersWidget();
     }
 
+	private void initializeComponent() {
+		setLayout(new BorderLayout());
+        setHeaderVisible(false);
+	}
+
     private void createSelectedLayersWidget() {
-        layersWidget = new MapLayersWidget(dispatcher);
+        layersWidget = new LayersWidget(dispatcher);
         
         BorderLayoutData east = new BorderLayoutData(Style.LayoutRegion.EAST, 0.20f);
         east.setCollapsible(true);
@@ -88,7 +84,7 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
         layersWidget.addValueChangeHandler(new ValueChangeHandler<MapReportElement>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<MapReportElement> event) {
-				mapView.setValue(event.getValue());
+				aiMapWidget.setValue(event.getValue());
 				layersWidget.setValue(event.getValue());
 			}
 		});
@@ -96,39 +92,47 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
         add(layersWidget, east);
 	}
 
-	private void createFormPane(MapForm form) {
+	private void createFormPane(AllMapOptionsWidget allMapOptionsWidget) {
         BorderLayoutData west = new BorderLayoutData(Style.LayoutRegion.WEST, 0.20f);
         west.setCollapsible(true);
         
         west.setSplit(true);
         west.setMargins(new Margins(0, 5, 0, 0));
 
-        add((Component) form, west);
+        add((Component) allMapOptionsWidget, west);
+        
+        allMapOptionsWidget.getMapOptionsWidget().addValueChangeHandler(new ValueChangeHandler<BaseMap>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<BaseMap> event) {
+				aiMapWidget.setBaseMap(event.getValue());
+			}
+		});
+        
     }
 
     private void createMap() {
-        mapView = new AIMapWidget(dispatcher);
-        mapView.setHeading(I18N.CONSTANTS.preview());
+        aiMapWidget = new AIMapWidget(dispatcher);
+        aiMapWidget.setHeading(I18N.CONSTANTS.preview());
 
-        add(mapView, new BorderLayoutData(Style.LayoutRegion.CENTER));
+        add(aiMapWidget, new BorderLayoutData(Style.LayoutRegion.CENTER));
     }
 
     protected void createToolBar() {
-        toolBar = new ActionToolBar(this);
-        toolBar.addRefreshButton();
-        toolBar.add(new ExportMenuButton(RenderElement.Format.PowerPoint, new ExportCallback() {
+        toolbarMapActions = new ActionToolBar(this);
+        toolbarMapActions.addRefreshButton();
+        toolbarMapActions.add(new ExportMenuButton(RenderElement.Format.PowerPoint, new ExportCallback() {
             public void export(RenderElement.Format format) {
                //export(format);
 
             }
         }));
-        toolBar.addButton(UIActions.exportData, I18N.CONSTANTS.exportData(),
+        toolbarMapActions.addButton(UIActions.exportData, I18N.CONSTANTS.exportData(),
                 IconImageBundle.ICONS.excel());
-        mapView.setTopComponent(toolBar);
+        aiMapWidget.setTopComponent(toolbarMapActions);
     }
 
     public AsyncMonitor getMapLoadingMonitor() {
-        return new MaskingAsyncMonitor(mapView, I18N.CONSTANTS.loading());
+        return new MaskingAsyncMonitor(aiMapWidget, I18N.CONSTANTS.loading());
     }
 
 	@Override

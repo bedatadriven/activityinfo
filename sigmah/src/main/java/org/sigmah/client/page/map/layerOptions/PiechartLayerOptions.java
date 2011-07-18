@@ -1,6 +1,5 @@
 package org.sigmah.client.page.map.layerOptions;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,23 +7,16 @@ import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.common.widget.ColorField;
 import org.sigmah.shared.command.GetSchema;
-import org.sigmah.shared.domain.Indicator;
-import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.SchemaDTO;
-import org.sigmah.shared.report.content.PieMapMarker.SliceValue;
 import org.sigmah.shared.report.model.layers.PiechartMapLayer;
 import org.sigmah.shared.report.model.layers.PiechartMapLayer.Slice;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SliderEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.Slider;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.SliderField;
@@ -33,12 +25,8 @@ import com.extjs.gxt.ui.client.widget.grid.CellSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
-import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -47,7 +35,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 /*
  * Displays a list of options to configure a PiechartMapLayer
  */
-public class PiechartMapLayerOptions extends LayoutContainer implements LayerOptionsWidget<PiechartMapLayer> {
+public class PiechartLayerOptions extends LayoutContainer implements LayerOptionsWidget<PiechartMapLayer> {
 	private Dispatcher service;
 	private PiechartMapLayer piechartMapLayer;
 	private SchemaDTO schema;
@@ -60,7 +48,7 @@ public class PiechartMapLayerOptions extends LayoutContainer implements LayerOpt
 	private FormData formData = new FormData("5");
 	private FormPanel panel = new FormPanel();
 
-	public PiechartMapLayerOptions(Dispatcher service) {
+	public PiechartLayerOptions(Dispatcher service) {
 		super();
 		
 		this.service=service;
@@ -109,7 +97,7 @@ public class PiechartMapLayerOptions extends LayoutContainer implements LayerOpt
 					sliderMinSize.setValue(sliderMaxSize.getValue());
 				}
 				piechartMapLayer.setMinRadius(sliderMinSize.getValue());
-				ValueChangeEvent.fire(PiechartMapLayerOptions.this, piechartMapLayer);
+				ValueChangeEvent.fire(PiechartLayerOptions.this, piechartMapLayer);
 		}});
 
 		sliderMaxSize.addListener(Events.Change, new Listener<SliderEvent>() {
@@ -119,7 +107,7 @@ public class PiechartMapLayerOptions extends LayoutContainer implements LayerOpt
 					sliderMaxSize.setValue(sliderMinSize.getValue());
 				}
 				piechartMapLayer.setMaxRadius(sliderMaxSize.getValue());
-				ValueChangeEvent.fire(PiechartMapLayerOptions.this, piechartMapLayer);
+				ValueChangeEvent.fire(PiechartLayerOptions.this, piechartMapLayer);
 		}});
 	}
 
@@ -161,7 +149,7 @@ public class PiechartMapLayerOptions extends LayoutContainer implements LayerOpt
 		gridIndicatorOptions.setAutoExpandColumn("name");
 		gridIndicatorOptions.setAutoWidth(true);
 		gridIndicatorOptions.setHeight(200);
-		gridIndicatorOptions.setSelectionModel(new CellSelectionModel<PiechartMapLayerOptions.NamedSlice>());
+		gridIndicatorOptions.setSelectionModel(new CellSelectionModel<PiechartLayerOptions.NamedSlice>());
 
 		VBoxLayoutData vbld = new VBoxLayoutData();
 		vbld.setFlex(1);

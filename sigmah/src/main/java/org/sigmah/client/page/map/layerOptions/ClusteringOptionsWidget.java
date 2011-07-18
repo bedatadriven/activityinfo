@@ -1,4 +1,4 @@
-package org.sigmah.client.page.map;
+package org.sigmah.client.page.map.layerOptions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +25,7 @@ import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.Radio;
 import com.extjs.gxt.ui.client.widget.form.RadioGroup;
@@ -106,9 +107,7 @@ public class ClusteringOptionsWidget extends LayoutContainer implements HasValue
 				HorizontalPanel panel = new HorizontalPanel();
 				
 				// Show the countryname using a label
-				LabelField label = new LabelField();
-				label.setText(country.getName());
-				panel.add(label);
+				panel.add(new LabelField(country.getName()));
 				
 				if (adminLevels.size() > 0) { // adminlevels found, add them as option
 					// Show a combobox with available adminlevels for the country
@@ -118,12 +117,8 @@ public class ClusteringOptionsWidget extends LayoutContainer implements HasValue
 					combobox.setStore(adminLevelStore);
 					combobox.setDisplayField("name");
 					combobox.setForceSelection(true);
-					combobox.addListener(Events.TriggerClick, new Listener<FieldEvent>() {
-						@Override
-						public void handleEvent(FieldEvent be) {
-							combobox.setAllQuery("");
-						}
-					});
+					combobox.setTriggerAction(TriggerAction.ALL);
+					combobox.setEditable(false);
 					combobox.addListener(Events.Select, new Listener<FieldEvent>() {
 						@Override
 						public void handleEvent(FieldEvent be) {
@@ -131,7 +126,6 @@ public class ClusteringOptionsWidget extends LayoutContainer implements HasValue
 						}
 					});
 					
-					combobox.setEditable(false);
 					panel.add(combobox);
 	
 					// Keep a reference to the adminlevel by country

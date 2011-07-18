@@ -24,13 +24,13 @@ import com.google.gwt.user.client.ui.Image;
 /*
  * Displays a list of options the user can choose to configure an IconMapLayer
  */
-public class IconMapLayerOptions extends LayoutContainer implements LayerOptionsWidget<IconMapLayer> {
+public class IconLayerOptions extends LayoutContainer implements LayerOptionsWidget<IconMapLayer> {
 	private IconMapLayer iconMapLayer;
 	private RadioGroup radiogroupIcons =  new RadioGroup();
 	private HorizontalPanel contentpanelIcons =  new HorizontalPanel();
 	private Map<Radio, Icon> radioIcons = new HashMap<Radio, Icon>();
 
-	public IconMapLayerOptions() {
+	public IconLayerOptions() {
 		super();
 		
 		initializeComponent();
@@ -41,7 +41,7 @@ public class IconMapLayerOptions extends LayoutContainer implements LayerOptions
 			@Override
 			public void handleEvent(FieldEvent be) {
 				iconMapLayer.setIcon(radioIcons.get(radiogroupIcons.getValue()).name());
-				ValueChangeEvent.fire(IconMapLayerOptions.this, iconMapLayer);
+				ValueChangeEvent.fire(IconLayerOptions.this, iconMapLayer);
 			}
 		});
 	}

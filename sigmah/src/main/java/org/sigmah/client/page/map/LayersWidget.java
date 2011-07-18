@@ -2,6 +2,7 @@ package org.sigmah.client.page.map;
 
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.page.map.layerOptions.AllLayerOptions;
 import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.clustering.NoClustering;
 import org.sigmah.shared.report.model.layers.MapLayer;
@@ -25,26 +26,31 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.inject.Inject;
 
 /*
  * Displays a list of layers selected by the user 
  */
-public class MapLayersWidget extends ContentPanel implements HasValue<MapReportElement> {
+public class LayersWidget extends ContentPanel implements HasValue<MapReportElement> {
 	private Dispatcher service;
 	private MapReportElement mapElement;
-	private ListStore<MapLayerModel> store = new ListStore<MapLayerModel>();
-	private ListView<MapLayerModel> view = new ListView<MapLayerModel>();
-	private LayerOptions layerOptions;
+	private ListStore<LayerModel> store = new ListStore<LayerModel>();
+	private ListView<LayerModel> view = new ListView<LayerModel>();
+	private AllLayerOptions layerOptions;
 	private Button buttonAddLayer = new Button();
 	private AddLayerDialog addLayer;
 	
 	@Inject
-	public MapLayersWidget(Dispatcher service) {
+	public LayersWidget(Dispatcher service) {
 		super();
 		
 		this.service = service;
@@ -60,13 +66,12 @@ public class MapLayersWidget extends ContentPanel implements HasValue<MapReportE
 	}
 
 	private void createLayerOptions() {
-		layerOptions = new LayerOptions(service);
-		
+		layerOptions = new AllLayerOptions(service);
 		layerOptions.addValueChangeHandler(new ValueChangeHandler<MapLayer>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<MapLayer> event) {
 				updateStore();
-				ValueChangeEvent.fire(MapLayersWidget.this, mapElement);
+				ValueChangeEvent.fire(LayersWidget.this, mapElement);
 			}
 		});
 
@@ -85,7 +90,8 @@ public class MapLayersWidget extends ContentPanel implements HasValue<MapReportE
 				if (event.getValue() != null) {
 					addLayer(event.getValue());
 				}
-			}});
+			}
+		});
 	}
 
 	private void createAddLayerButton() {
@@ -95,7 +101,9 @@ public class MapLayersWidget extends ContentPanel implements HasValue<MapReportE
 		      public void componentSelected(ButtonEvent ce) {  
 		    	  addLayer.show();
 		      }
-		});  
+		});
+		
+		buttonAddLayer.setIcon(AbstractImagePrototype.create(MapResources.INSTANCE.addLayer()));
 		
 	    add(buttonAddLayer);
 	}
@@ -126,9 +134,9 @@ public class MapLayersWidget extends ContentPanel implements HasValue<MapReportE
 
 		addListViewDnd();			
 		
-		view.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<MapLayerModel>() {
+		view.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<LayerModel>() {
 			@Override()
-			public void selectionChanged(SelectionChangedEvent<MapLayerModel> se) {
+			public void selectionChanged(SelectionChangedEvent<LayerModel> se) {
 				changeSelectedLayer();
 			}
 		});
@@ -138,12 +146,12 @@ public class MapLayersWidget extends ContentPanel implements HasValue<MapReportE
 			public void handleEvent(ListViewEvent be) {
 				// Change visibility
 				if (be.getTargetEl().hasStyleName("x-view-item-checkbox")) {
-					MapLayerModel layerModel = (MapLayerModel) be.getModel();
+					LayerModel layerModel = (LayerModel) be.getModel();
 					if (layerModel != null) {
 						boolean newSetting = !layerModel.isVisible();
 						layerModel.setVisible(newSetting);
 						layerModel.getMapLayer().setVisible(newSetting);
-						ValueChangeEvent.fire(MapLayersWidget.this, mapElement);
+						ValueChangeEvent.fire(LayersWidget.this, mapElement);
 						store.update(layerModel);
 					}
 //					be.setCancelled(true);
@@ -202,7 +210,7 @@ public class MapLayersWidget extends ContentPanel implements HasValue<MapReportE
 				MapLayer removed = mapElement.getLayers().remove(draggedItemIndexStart);
 				mapElement.getLayers().add(draggedItemIndexDrop, removed);
 				
-				ValueChangeEvent.fire(MapLayersWidget.this, mapElement);
+				ValueChangeEvent.fire(LayersWidget.this, mapElement);
 			}
 		};
 	
@@ -240,7 +248,7 @@ public class MapLayersWidget extends ContentPanel implements HasValue<MapReportE
 		store.removeAll();
 		if (mapElement != null) {
 			for (MapLayer layer : mapElement.getLayers()) {
-				MapLayerModel model =  new MapLayerModel();
+				LayerModel model =  new LayerModel();
 				model.setName(layer.getName());
 				model.setVisible(layer.isVisible());
 				model.setMapLayer(layer);

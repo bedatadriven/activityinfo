@@ -5,9 +5,7 @@ import java.util.List;
 
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.page.common.filter.IndicatorTreePanel;
-import org.sigmah.client.page.common.widget.ColorField;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.IndicatorGroup;
 import org.sigmah.shared.report.model.layers.BubbleMapLayer;
@@ -16,8 +14,6 @@ import org.sigmah.shared.report.model.layers.MapLayer;
 import org.sigmah.shared.report.model.layers.PiechartMapLayer;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
-import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
@@ -25,24 +21,16 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.TreePanelEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
-import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.Radio;
 import com.extjs.gxt.ui.client.widget.form.RadioGroup;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.layout.AnchorData;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
-import com.extjs.gxt.ui.client.widget.layout.LayoutData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
@@ -50,7 +38,6 @@ import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Image;
 import com.google.inject.Inject;
@@ -95,13 +82,6 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		createIndicatorTreePanel();
 		createSelectedIndicatorsList();
 		
-		addButton(new Button(I18N.CONSTANTS.addLayer(), new SelectionListener<ButtonEvent>() {  
-	        @Override  
-	        public void componentSelected(ButtonEvent ce) {  
-	        	addLayer();
-	        }  
-        }));
-		
 		Button buttonClearSelection = new Button("Clear selection");
 		buttonClearSelection.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
@@ -109,8 +89,14 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 				clearSelection();
 			}
 		});
-		
-		add(buttonClearSelection, new AnchorData("l"));
+		add(buttonClearSelection);
+
+		addButton(new Button(I18N.CONSTANTS.addLayer(), new SelectionListener<ButtonEvent>() {  
+	        @Override  
+	        public void componentSelected(ButtonEvent ce) {  
+	        	addLayer();
+	        }  
+        }));
 		
 		radioProportionalCircle.setValue(true);
 	}
@@ -269,7 +255,7 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		treepanelIndicators.addCheckChangedListener(new Listener<TreePanelEvent>(){
 			@Override
 			public void handleEvent(TreePanelEvent be) {
-				if (notMultiSelect()) {
+				if (isSingleSelect()) {
 					clearSelection();
 				}
 				
@@ -301,7 +287,7 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		}
 	}
 	
-	private boolean notMultiSelect() {
+	private boolean isSingleSelect() {
 		return !multiSelect;
 	}
 	

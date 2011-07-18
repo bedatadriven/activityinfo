@@ -29,13 +29,13 @@ import com.google.gwt.user.client.ui.Image;
  * Displays a list of options the user can choose to configure a BubbleMapLayer
  * TODO: replace the two min/max sliders with a RangeSlider (Slider with 2 knobs)
  */
-public class BubbleMapLayerOptions extends LayoutContainer implements LayerOptionsWidget<BubbleMapLayer> {
+public class BubbleLayerOptions extends LayoutContainer implements LayerOptionsWidget<BubbleMapLayer> {
 	private BubbleMapLayer bubbleMapLayer;
 	private ColorField colorPicker = new ColorField();
 	private Slider sliderMinSize = new Slider();
 	private Slider sliderMaxSize = new Slider();
 
-	public BubbleMapLayerOptions() {
+	public BubbleLayerOptions() {
 		super();
 		
 		createColorPicker();
@@ -48,7 +48,7 @@ public class BubbleMapLayerOptions extends LayoutContainer implements LayerOptio
 			@Override
 			public void handleEvent(FieldEvent be) {
 				bubbleMapLayer.setLabelColor(colorPicker.getIntValue());
-				ValueChangeEvent.fire(BubbleMapLayerOptions.this, bubbleMapLayer);
+				ValueChangeEvent.fire(BubbleLayerOptions.this, bubbleMapLayer);
 		}});
 
 		colorPicker.setFieldLabel("Color");
@@ -91,7 +91,7 @@ public class BubbleMapLayerOptions extends LayoutContainer implements LayerOptio
 					sliderMinSize.setValue(sliderMaxSize.getValue());
 				}
 				bubbleMapLayer.setMinRadius(sliderMinSize.getValue());
-				ValueChangeEvent.fire(BubbleMapLayerOptions.this, bubbleMapLayer);
+				ValueChangeEvent.fire(BubbleLayerOptions.this, bubbleMapLayer);
 		}});
 
 		sliderMaxSize.addListener(Events.Change, new Listener<SliderEvent>() {
@@ -101,7 +101,7 @@ public class BubbleMapLayerOptions extends LayoutContainer implements LayerOptio
 					sliderMaxSize.setValue(sliderMinSize.getValue());
 				}
 				bubbleMapLayer.setMinRadius(sliderMinSize.getValue());
-				ValueChangeEvent.fire(BubbleMapLayerOptions.this, bubbleMapLayer);
+				ValueChangeEvent.fire(BubbleLayerOptions.this, bubbleMapLayer);
 		}});
 	}
 

@@ -22,7 +22,7 @@ public class BubbleMapLayer extends CircledMapLayer {
 
     private List<Dimension> colorDimensions = new ArrayList<Dimension>();
     private int defaultColor = 255; // blue
-    private int labelColor;
+    private int labelColor = 255;
 
     public BubbleMapLayer() {
     }

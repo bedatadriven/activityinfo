@@ -4,7 +4,7 @@ import org.sigmah.shared.report.model.layers.MapLayer;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
-public class MapLayerModel extends BaseModelData {
+public class LayerModel extends BaseModelData {
 	private transient MapLayer mapLayer;
 	public String getName() {
 		return get("name");

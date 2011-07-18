@@ -24,11 +24,11 @@ import org.sigmah.shared.dto.DTO;
 public class BaseMap implements DTO {
 
     private String id;
-    private String name;
+    private String name = "";
     private int minZoom;
     private int maxZoom;
-    private String copyright;
-    private String tileUrlPattern;
+    private String copyright = "";
+    private String tileUrlPattern = "";
     
     @Id
     public String getId() {

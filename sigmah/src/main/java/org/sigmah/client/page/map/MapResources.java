@@ -40,5 +40,8 @@ public interface MapResources extends ClientBundle {
 	@Source("MultiSelect.png")
 	public ImageResource multiSelect();
 	
+	@Source("AddLayer.png")
+	public ImageResource addLayer();
+	
 	public interface MapStyle extends CssResource {}
 }
