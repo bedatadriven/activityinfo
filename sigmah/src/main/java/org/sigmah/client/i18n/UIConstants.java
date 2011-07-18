@@ -7,15 +7,6 @@ package org.sigmah.client.i18n;
 public interface UIConstants extends com.google.gwt.i18n.client.Constants {
   
   /**
-   * Translated "======".
-   * 
-   * @return translated "======"
-   */
-  @DefaultStringValue("======")
-  @Key("")
-  String _();
-
-  /**
    * Translated "ALL".
    * 
    * @return translated "ALL"
@@ -536,6 +527,60 @@ public interface UIConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("ActivityInfo")
   @Key("appTitle")
   String appTitle();
+
+  /**
+   * Translated "Checking for new version...".
+   * 
+   * @return translated "Checking for new version..."
+   */
+  @DefaultStringValue("Checking for new version...")
+  @Key("appcacheChecking")
+  String appcacheChecking();
+
+  /**
+   * Translated "Downloading new version...".
+   * 
+   * @return translated "Downloading new version..."
+   */
+  @DefaultStringValue("Downloading new version...")
+  @Key("appcacheDownloading")
+  String appcacheDownloading();
+
+  /**
+   * Translated "There was an error while caching the application:".
+   * 
+   * @return translated "There was an error while caching the application:"
+   */
+  @DefaultStringValue("There was an error while caching the application:")
+  @Key("appcacheError")
+  String appcacheError();
+
+  /**
+   * Translated "New version of ActivityInfo is ready.".
+   * 
+   * @return translated "New version of ActivityInfo is ready."
+   */
+  @DefaultStringValue("New version of ActivityInfo is ready.")
+  @Key("appcacheReady")
+  String appcacheReady();
+
+  /**
+   * Translated "Not cached".
+   * 
+   * @return translated "Not cached"
+   */
+  @DefaultStringValue("Not cached")
+  @Key("appcacheUncached")
+  String appcacheUncached();
+
+  /**
+   * Translated "Cache up to date".
+   * 
+   * @return translated "Cache up to date"
+   */
+  @DefaultStringValue("Cache up to date")
+  @Key("appcacheUptodate")
+  String appcacheUptodate();
 
   /**
    * Translated "Assessment".
@@ -4111,6 +4156,15 @@ public interface UIConstants extends com.google.gwt.i18n.client.Constants {
   String newUser();
 
   /**
+   * Translated "ActivityInfo has been updated! You must refresh the page to continue.".
+   * 
+   * @return translated "ActivityInfo has been updated! You must refresh the page to continue."
+   */
+  @DefaultStringValue("ActivityInfo has been updated! You must refresh the page to continue.")
+  @Key("newVersionPrompt")
+  String newVersionPrompt();
+
+  /**
    * Translated "Next".
    * 
    * @return translated "Next"
@@ -4190,6 +4244,24 @@ public interface UIConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Not yet implemented.")
   @Key("notImplemented")
   String notImplemented();
+
+  /**
+   * Translated "An error occurred while installing offline mode".
+   * 
+   * @return translated "An error occurred while installing offline mode"
+   */
+  @DefaultStringValue("An error occurred while installing offline mode")
+  @Key("offlineInstallError")
+  String offlineInstallError();
+
+  /**
+   * Translated "Offline installation failed".
+   * 
+   * @return translated "Offline installation failed"
+   */
+  @DefaultStringValue("Offline installation failed")
+  @Key("offlineInstallationFailed")
+  String offlineInstallationFailed();
 
   /**
    * Translated "OK".
@@ -5461,6 +5533,15 @@ public interface UIConstants extends com.google.gwt.i18n.client.Constants {
   String reports();
 
   /**
+   * Translated "Requesting sync regions...".
+   * 
+   * @return translated "Requesting sync regions..."
+   */
+  @DefaultStringValue("Requesting sync regions...")
+  @Key("requestingSyncRegions")
+  String requestingSyncRegions();
+
+  /**
    * Translated "Retry".
    * 
    * @return translated "Retry"
@@ -5740,6 +5821,15 @@ public interface UIConstants extends com.google.gwt.i18n.client.Constants {
   String startDate();
 
   /**
+   * Translated "Starting...".
+   * 
+   * @return translated "Starting..."
+   */
+  @DefaultStringValue("Starting...")
+  @Key("starting")
+  String starting();
+
+  /**
    * Translated "Status".
    * 
    * @return translated "Status"
@@ -5801,6 +5891,24 @@ public interface UIConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Synchronize Now")
   @Key("syncNow")
   String syncNow();
+
+  /**
+   * Translated "Synchronization Complete".
+   * 
+   * @return translated "Synchronization Complete"
+   */
+  @DefaultStringValue("Synchronization Complete")
+  @Key("synchronizationComplete")
+  String synchronizationComplete();
+
+  /**
+   * Translated "Synchronize now".
+   * 
+   * @return translated "Synchronize now"
+   */
+  @DefaultStringValue("Synchronize now")
+  @Key("synchronizeNow")
+  String synchronizeNow();
 
   /**
    * Translated "Synchronizing...".

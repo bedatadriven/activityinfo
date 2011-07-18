@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.remote.RemoteDispatcher;
+import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.mock.MockEventBus;
 import org.sigmah.client.mock.MockStateManager;
 import org.sigmah.client.offline.OfflineGateway;
@@ -36,6 +37,7 @@ public class OfflinePresenterTest {
     private OfflineImplStub offlineImpl;
     private MockStateManager stateManager;
 	private RemoteDispatcher remoteDispatcher;
+    private UIConstants uiConstants;
 
     @Before
     public void setUp() {
@@ -50,6 +52,7 @@ public class OfflinePresenterTest {
         };
         stateManager = new MockStateManager();
         remoteDispatcher = null;
+        uiConstants = createMock(UIConstants.class);
     }
 
 
@@ -59,7 +62,7 @@ public class OfflinePresenterTest {
         // No state is set, so the presenter should assume that offline is not yet installed
 
         OfflinePresenter presenter = new OfflinePresenter(view, eventBus, remoteDispatcher,
-        		gatewayProvider, stateManager);
+        		gatewayProvider, stateManager, uiConstants);
 
         assertThat(view.defaultButtonText, equalTo("Install"));
 
@@ -97,7 +100,7 @@ public class OfflinePresenterTest {
         stateManager.set(OfflinePresenter.OFFLINE_MODE_KEY, OfflinePresenter.OfflineMode.OFFLINE.toString());
 
         OfflinePresenter presenter = new OfflinePresenter(view, eventBus, 
-        		remoteDispatcher, gatewayProvider, stateManager);
+        		remoteDispatcher, gatewayProvider, stateManager, uiConstants);
 
         // offline async fragment finishes loading
         assertThat(offlineImpl.lastCall, equalTo("goOffline"));
@@ -113,7 +116,7 @@ public class OfflinePresenterTest {
         stateManager.set(OfflinePresenter.OFFLINE_MODE_KEY, OfflinePresenter.OfflineMode.OFFLINE.toString());
 
         new OfflinePresenter(view, eventBus, remoteDispatcher,
-        		gatewayProvider, stateManager);
+        		gatewayProvider, stateManager, uiConstants);
 
         // offline async fragment finishes loading
         offlineImpl.lastCallback.onSuccess(null);

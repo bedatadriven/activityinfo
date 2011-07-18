@@ -31,7 +31,7 @@ class StatusWindow extends Window {
         progressBar.setWidth(200);
         add(progressBar);
 
-        syncNowButton = new Button("Synchronize Now", IconImageBundle.ICONS.onlineSynced());
+        syncNowButton = new Button(I18N.CONSTANTS.synchronizeNow(), IconImageBundle.ICONS.onlineSynced());
         toggleOfflineButton = new Button(I18N.CONSTANTS.switchToOnline());
 
         addButton(syncNowButton);

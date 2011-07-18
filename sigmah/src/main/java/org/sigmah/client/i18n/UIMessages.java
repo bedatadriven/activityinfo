@@ -322,6 +322,15 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
   String sitesMissingCoordinates(String arg0);
 
   /**
+   * Translated "Synchronizing {0} [{1} rows updated so far]".
+   * 
+   * @return translated "Synchronizing {0} [{1} rows updated so far]"
+   */
+  @DefaultMessage("Synchronizing {0} [{1} rows updated so far]")
+  @Key("synchronizerProgress")
+  String synchronizerProgress(String arg0,  String arg1);
+
+  /**
    * Translated "ActivityInfo r{0}".
    * 
    * @return translated "ActivityInfo r{0}"

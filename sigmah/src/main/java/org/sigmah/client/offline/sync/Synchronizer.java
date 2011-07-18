@@ -16,6 +16,9 @@ import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.dispatch.remote.Direct;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.i18n.UIConstants;
+import org.sigmah.client.i18n.UIMessages;
 import org.sigmah.shared.command.GetSyncRegionUpdates;
 import org.sigmah.shared.command.GetSyncRegions;
 import org.sigmah.shared.command.result.SyncRegion;
@@ -39,6 +42,8 @@ public class Synchronizer {
     private final Connection conn;
     private final BulkUpdaterAsync updater;
     private final Authentication auth;
+    private final UIConstants uiConstants;
+    private final UIMessages uiMessages;
 
     private ProgressTrackingIterator<SyncRegion> regionIt;
 
@@ -53,12 +58,15 @@ public class Synchronizer {
                         @Direct Dispatcher dispatch,
                         Connection conn,
                         BulkUpdaterAsync updater,
-                        Authentication auth) {
+                        Authentication auth,
+                        UIConstants uiConstants, UIMessages uiMessages) {
         this.eventBus = eventBus;
         this.conn = conn;
         this.dispatch = dispatch;
         this.updater = updater;
         this.auth = auth;
+        this.uiConstants = uiConstants;
+        this.uiMessages = uiMessages;
         createSyncMetaTables();
    }
 
@@ -93,7 +101,7 @@ public class Synchronizer {
     }
 
     public void start() {
-        fireStatusEvent("Requesting sync regions...", 0);
+        fireStatusEvent(uiConstants.requestingSyncRegions(), 0);
         running = true;
         rowsUpdated = 0;
         dispatch.execute(new GetSyncRegions(), null, new AsyncCallback<SyncRegions>() {
@@ -132,14 +140,14 @@ public class Synchronizer {
 
     private void onSynchronizationComplete() {
         setLastUpdateTime();
-        fireStatusEvent("Synchronization Complete", 100);
+        fireStatusEvent(uiConstants.synchronizationComplete(), 100);
         if(callback != null) {
             callback.onSuccess(null);
         }
     }
 
     private void doUpdate(final SyncRegion region, String localVersion) {
-        fireStatusEvent("Synchronizing '" + region.getId() + "' [" + rowsUpdated + " rows updated so far]",
+        fireStatusEvent(uiMessages.synchronizerProgress(region.getId(), Integer.toString(rowsUpdated)),
                 regionIt.percentComplete());
         Log.info("Synchronizer: Region " + region.getId() + ": localVersion=" + localVersion);
 

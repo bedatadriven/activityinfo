@@ -19,6 +19,8 @@ import org.junit.Before;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.Authentication;
+import org.sigmah.client.i18n.UIConstants;
+import org.sigmah.client.i18n.UIMessages;
 import org.sigmah.client.mock.MockEventBus;
 import org.sigmah.client.offline.command.LocalDispatcher;
 import org.sigmah.client.offline.sync.Synchronizer;
@@ -33,6 +35,9 @@ import com.bedatadriven.rebar.sync.client.BulkUpdaterAsync;
 import com.bedatadriven.rebar.sync.mock.MockBulkUpdater;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
+
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.replay;
 
 public abstract class LocalHandlerTestCase {
     @Inject
@@ -56,6 +61,9 @@ public abstract class LocalHandlerTestCase {
     protected Connection localConnection;
     private BulkUpdaterAsync updater;
 
+    private UIConstants uiConstants;
+    private UIMessages uiMessages;
+
     @Before
     public void setUp() throws SQLException, ClassNotFoundException {
 
@@ -73,6 +81,10 @@ public abstract class LocalHandlerTestCase {
         localConnection = DriverManager.getConnection("jdbc:sqlite:synctest");
         updater = new MockBulkUpdater(localConnection);
 
+        uiConstants = createNiceMock(UIConstants.class);
+        uiMessages = createNiceMock(UIMessages.class);
+        replay(uiConstants, uiMessages);
+
         Log.setCurrentLogLevel(Log.LOG_LEVEL_DEBUG);
     }
 
@@ -84,7 +96,7 @@ public abstract class LocalHandlerTestCase {
 
     protected void synchronize() {
         Synchronizer syncr = new Synchronizer(new MockEventBus(), remoteDispatcher, localConnection, updater,
-                localAuth);
+                localAuth, uiConstants, uiMessages);
         syncr.start();
     }
 
