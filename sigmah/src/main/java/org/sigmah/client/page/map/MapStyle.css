@@ -1,43 +1,58 @@
-@external .grabSprite, .layerItem, .removeLayer, .checkbox, .iconBubble, .iconPiechart, .iconIcon;
+@external .grabSprite, .layerItem, .removeLayer, .checkbox, .iconBubble, .iconPiechart, .iconIcon, .layerName;
 
 @sprite .grabSprite {
 	gwt-image: "grabSprite";
 	float: left;
 	cursor: move;
+	top: 0.5em;
+	position: relative;
+	margin: 0.25em;
 }	
 
 @sprite .removeLayer {
 	gwt-image: "removeLayer";
 	float: right;
-	line-height: 2em;
+	margin: 0.25em;
 }
 
 @sprite .iconBubble {
 	gwt-image: "bubble";
 	float: left;
-	line-height: 2em;
+	top: 0.75em;
+	position: relative;
+	margin: 0.25em;
 }
 
 @sprite .iconPiechart {
 	gwt-image: "piechart";
 	float: left;
-	line-height: 2em;
+	top: 0.75em;
+	position: relative;
+	margin: 0.25em;
 }
 
 @sprite .iconIcon {
 	gwt-image: "icon";
 	float: left;
-	line-height: 2em;
+	top: 0.75em;
+	position: relative;
+	margin: 0.25em;
+}
+
+.layerName {
+	margin: 0.25em;
 }
 
 .checkbox {
 	float: left;
-	margin:5px;
-	vertical-align: middle;
+	top: 0.75em;
+	position: relative;
+	margin: 0.25em;
 }
 
 .layerItem {
-	margin: 5px;
-	line-height: 1em;
 	text-align: left;
+	overflow: hidden;
+	height: 3.5em;
+	position: relative;
 }

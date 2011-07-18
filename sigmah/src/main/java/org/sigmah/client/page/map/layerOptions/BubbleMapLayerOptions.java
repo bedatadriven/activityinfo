@@ -15,6 +15,7 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Slider;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.SliderField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
@@ -31,25 +32,14 @@ import com.google.gwt.user.client.ui.Image;
 public class BubbleMapLayerOptions extends LayoutContainer implements LayerOptionsWidget<BubbleMapLayer> {
 	private BubbleMapLayer bubbleMapLayer;
 	private ColorField colorPicker = new ColorField();
-	private FormPanel panel = new FormPanel();
-	private SliderField sliderfieldMinSize;
-	private SliderField sliderfieldMaxSize;
 	private Slider sliderMinSize = new Slider();
 	private Slider sliderMaxSize = new Slider();
-	private FormData formData = new FormData("5");
-	
-	// TODO: replace images by a dynamic canvas element rendering the desired min/maxsize
-	private Image imageMinSize = new Image();
-	private Image imageMaxSize = new Image();
 
 	public BubbleMapLayerOptions() {
 		super();
 		
 		createColorPicker();
 		createMinMaxSliders();
-		
-		panel.setHeaderVisible(false);
-		add(panel);
 	}
 
 	private void createColorPicker() {
@@ -63,29 +53,35 @@ public class BubbleMapLayerOptions extends LayoutContainer implements LayerOptio
 
 		colorPicker.setFieldLabel("Color");
 		colorPicker.setValue("000000");
+		colorPicker.setAutoWidth(true);
 		
-		panel.add(colorPicker, formData);
+		LabelField labelColor = new LabelField(I18N.CONSTANTS.color());
+		add(labelColor);
+		add(colorPicker);
+	}
+	
+	private void setSliderDefaults(Slider slider) {
+		slider.setMinValue(1);
+		slider.setMaxValue(60);
+		slider.setIncrement(1);
+		slider.setDraggable(true);
+		slider.setAutoWidth(true);
 	}
 
 	private void createMinMaxSliders() {
-		sliderMinSize.setMinValue(1);
-		sliderMinSize.setMaxValue(60);
-		sliderMinSize.setValue(16);
-		sliderMinSize.setIncrement(1);
-		sliderMinSize.setDraggable(true);
-
-		sliderMaxSize.setMinValue(1);
-		sliderMaxSize.setMaxValue(60);
-		sliderMaxSize.setValue(48);
-		sliderMaxSize.setIncrement(1);
-		sliderMaxSize.setDraggable(true);
+		setSliderDefaults(sliderMinSize);
+		setSliderDefaults(sliderMaxSize);
 		
-		sliderfieldMinSize = new SliderField(sliderMinSize);
-		sliderfieldMinSize.setFieldLabel(I18N.CONSTANTS.radiusMinimum());
-		sliderfieldMaxSize = new SliderField(sliderMaxSize);
-		sliderfieldMaxSize.setFieldLabel(I18N.CONSTANTS.radiusMaximum());
-		panel.add(sliderfieldMinSize, formData);
-		panel.add(sliderfieldMaxSize, formData);
+		sliderMinSize.setValue(16);
+		sliderMaxSize.setValue(48);
+		
+		LabelField labelMin = new LabelField(I18N.CONSTANTS.radiusMinimum());
+		LabelField labelMax = new LabelField(I18N.CONSTANTS.radiusMaximum());
+		
+		add(labelMin);
+		add(sliderMinSize);
+		add(labelMax);
+		add(sliderMaxSize);
 		
 		// Ensure min can't be more then max, and max can't be less then min
 		sliderMinSize.addListener(Events.Change, new Listener<SliderEvent>() {

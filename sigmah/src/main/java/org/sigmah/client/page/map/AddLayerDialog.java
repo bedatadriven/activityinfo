@@ -39,8 +39,10 @@ import com.extjs.gxt.ui.client.widget.form.RadioGroup;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.layout.AnchorData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.extjs.gxt.ui.client.widget.layout.LayoutData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
@@ -100,6 +102,16 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 	        }  
         }));
 		
+		Button buttonClearSelection = new Button("Clear selection");
+		buttonClearSelection.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				clearSelection();
+			}
+		});
+		
+		add(buttonClearSelection, new AnchorData("l"));
+		
 		radioProportionalCircle.setValue(true);
 	}
 
@@ -158,17 +170,8 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		muliselectPanel.add(imageCanSelectMultiple);
 		muliselectPanel.add(labelCanSelectMultiple);
 		
-		Button buttonClearSelection = new Button("Clear selection");
-		buttonClearSelection.addSelectionListener(new SelectionListener<ButtonEvent>() {
-			@Override
-			public void componentSelected(ButtonEvent ce) {
-				clearSelection();
-			}
-		});
-		
 		fieldsetLayerType.add(radioPanel);
 		fieldsetLayerType.add(muliselectPanel);
-		fieldsetLayerType.add(buttonClearSelection);
 		
 		// Let the user know whether or not he can select multiple indicators for the layer
 		// he wants to add to the map

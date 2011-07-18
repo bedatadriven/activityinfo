@@ -8,7 +8,6 @@ import java.util.Map;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.command.GetSchema;
-import org.sigmah.shared.domain.AdminLevel;
 import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.SchemaDTO;
@@ -17,41 +16,37 @@ import org.sigmah.shared.report.model.clustering.AutomaticClustering;
 import org.sigmah.shared.report.model.clustering.Clustering;
 import org.sigmah.shared.report.model.clustering.NoClustering;
 
-import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Label;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
-import com.extjs.gxt.ui.client.widget.form.ListModelPropertyEditor;
 import com.extjs.gxt.ui.client.widget.form.Radio;
 import com.extjs.gxt.ui.client.widget.form.RadioGroup;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.HasValue;
 
 /*
  * Shows a list of options to aggregate markers on the map
  */
-public class ClusteringOptionsWidget extends LayoutContainer {
-
-	private FormPanel formPanel = new FormPanel();
+public class ClusteringOptionsWidget extends LayoutContainer implements HasValue<Clustering> {
+	private Clustering selectedClustering = new NoClustering();
+	private AdministrativeLevelClustering adminLevelClustering = new AdministrativeLevelClustering();
 	
 	// Aggregation of elements on the map
 	private RadioGroup radiogroupAggregation = new RadioGroup();
 	private Radio radioAdminLevelAggr = new Radio();
 	private Radio radioAutomaticAggr = new Radio();
 	private Radio radioNoAggr = new Radio();
-	
+	 
 	// Administrative level clustering
 	private VerticalPanel panelAdministrativeLevelOptions = new VerticalPanel();
 	private Map<CountryDTO, AdminLevelDTO> pickedAdminLevelsByCountry = new HashMap<CountryDTO, AdminLevelDTO>();
@@ -64,21 +59,25 @@ public class ClusteringOptionsWidget extends LayoutContainer {
 		
 		this.service = service;
 		
-		setLayout(new RowLayout(Orientation.VERTICAL));
+		initializeComponent();
 		
 		createOptions();
 		getCountries();
 		
 		// By default, no clustering is used for a layer
 		radioNoAggr.setValue(true);
-		
-		this.setEnabled(false);
+	}
+
+	private void initializeComponent() {
+		panelAdministrativeLevelOptions.setAutoWidth(true);
+		panelEnclosingAdminLevel.setAutoWidth(true);
 	}
 
 	private void createOptions() {
 		radioAdminLevelAggr.setBoxLabel(I18N.CONSTANTS.administrativeLevel());
 		radioAutomaticAggr.setBoxLabel(I18N.CONSTANTS.automatic());
 		radioNoAggr.setBoxLabel(I18N.CONSTANTS.none());
+		radiogroupAggregation.setAutoWidth(true);
 		
 		radiogroupAggregation.add(radioAdminLevelAggr);
 		radiogroupAggregation.add(radioAutomaticAggr);
@@ -88,6 +87,13 @@ public class ClusteringOptionsWidget extends LayoutContainer {
 		add(panelEnclosingAdminLevel);
 		add(radioAutomaticAggr);
 		add(radioNoAggr);
+		
+		radiogroupAggregation.addListener(Events.Change, new Listener<FieldEvent>() {
+			@Override
+			public void handleEvent(FieldEvent be) {
+				setValue(getSelectedClustering());
+			}
+		});
 	}
 	
 	private void createAdminLevelOptions() {
@@ -116,6 +122,12 @@ public class ClusteringOptionsWidget extends LayoutContainer {
 						@Override
 						public void handleEvent(FieldEvent be) {
 							combobox.setAllQuery("");
+						}
+					});
+					combobox.addListener(Events.Select, new Listener<FieldEvent>() {
+						@Override
+						public void handleEvent(FieldEvent be) {
+							//adminLevelClustering.
 						}
 					});
 					
@@ -193,5 +205,27 @@ public class ClusteringOptionsWidget extends LayoutContainer {
 		}
 
 		return null;
+	}
+
+	@Override
+	public HandlerRegistration addValueChangeHandler(
+			ValueChangeHandler<Clustering> handler) {
+		return null;
+	}
+
+	@Override
+	public Clustering getValue() {
+		return selectedClustering;
+	}
+
+	@Override
+	public void setValue(Clustering value) {
+		selectedClustering = value;
+		ValueChangeEvent.fire(this, value);
+	}
+
+	@Override
+	public void setValue(Clustering value, boolean fireEvents) {
+		
 	}
 }

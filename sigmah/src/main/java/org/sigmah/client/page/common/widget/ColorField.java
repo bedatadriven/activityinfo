@@ -68,4 +68,5 @@ public class ColorField extends TriggerField<String> {
     public int getIntValue() {
         return value == null ? WHITE : Integer.parseInt(value, 16);
     }
+
 }

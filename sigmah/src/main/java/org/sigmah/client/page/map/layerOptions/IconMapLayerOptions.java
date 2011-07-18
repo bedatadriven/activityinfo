@@ -33,8 +33,10 @@ public class IconMapLayerOptions extends LayoutContainer implements LayerOptions
 	public IconMapLayerOptions() {
 		super();
 		
+		initializeComponent();
+
 		populateWithIcons();
-		add(contentpanelIcons);
+
 		radiogroupIcons.addListener(Events.Change, new Listener<FieldEvent>() {
 			@Override
 			public void handleEvent(FieldEvent be) {
@@ -44,6 +46,11 @@ public class IconMapLayerOptions extends LayoutContainer implements LayerOptions
 		});
 	}
 
+	private void initializeComponent() {
+		contentpanelIcons.setAutoWidth(true);
+		add(contentpanelIcons);
+	}
+
 	private void populateWithIcons() {
 		boolean isFirst = true;
 		for (Icon mapIcon : Icon.values())
@@ -51,6 +58,7 @@ public class IconMapLayerOptions extends LayoutContainer implements LayerOptions
 			ContentPanel iconPanel = new ContentPanel();
 			iconPanel.setHeaderVisible(false);
 			iconPanel.setLayout(new RowLayout(Orientation.VERTICAL));
+			iconPanel.setAutoWidth(true);
 			
 			Radio radiobuttonIcon = new Radio();
 			

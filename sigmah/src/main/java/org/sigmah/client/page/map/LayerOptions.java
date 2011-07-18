@@ -6,6 +6,7 @@ import org.sigmah.client.page.map.layerOptions.BubbleMapLayerOptions;
 import org.sigmah.client.page.map.layerOptions.IconMapLayerOptions;
 import org.sigmah.client.page.map.layerOptions.LayerOptionsWidget;
 import org.sigmah.client.page.map.layerOptions.PiechartMapLayerOptions;
+import org.sigmah.shared.report.model.clustering.Clustering;
 import org.sigmah.shared.report.model.layers.BubbleMapLayer;
 import org.sigmah.shared.report.model.layers.IconMapLayer;
 import org.sigmah.shared.report.model.layers.MapLayer;
@@ -45,6 +46,15 @@ public class LayerOptions extends ContentPanel implements HasValue<MapLayer> {
 	
 		this.service = service;
 		clusteringOptions = new ClusteringOptionsWidget(service);
+		clusteringOptions.addValueChangeHandler(new ValueChangeHandler<Clustering>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<Clustering> event) {
+				if (selectedMapLayer != null) {
+					selectedMapLayer.setClustering(event.getValue());
+					ValueChangeEvent.fire(LayerOptions.this, selectedMapLayer);
+				}
+			}
+		});
 	}
 
 	@Override

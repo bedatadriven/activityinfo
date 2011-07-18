@@ -79,18 +79,20 @@ public class PiechartMapLayerOptions extends LayoutContainer implements LayerOpt
 		add(panel);
 	}
 	
+	private void setSliderDefaults(Slider slider) {
+		slider.setMinValue(1);
+		slider.setMaxValue(60);
+		slider.setIncrement(1);
+		slider.setDraggable(true);
+		slider.setAutoWidth(true);
+	}
+	
 	private void createMinMaxSliders() {
-		sliderMinSize.setMinValue(1);
-		sliderMinSize.setMaxValue(60);
-		sliderMinSize.setValue(16);
-		sliderMinSize.setIncrement(1);
-		sliderMinSize.setDraggable(true);
+		setSliderDefaults(sliderMinSize);
+		setSliderDefaults(sliderMaxSize);
 
-		sliderMaxSize.setMinValue(1);
-		sliderMaxSize.setMaxValue(60);
+		sliderMinSize.setValue(16);
 		sliderMaxSize.setValue(48);
-		sliderMaxSize.setIncrement(1);
-		sliderMaxSize.setDraggable(true);
 		
 		sliderfieldMinSize = new SliderField(sliderMinSize);
 		sliderfieldMinSize.setFieldLabel(I18N.CONSTANTS.radiusMinimum());
