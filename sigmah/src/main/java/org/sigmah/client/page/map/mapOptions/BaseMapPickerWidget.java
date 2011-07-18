@@ -130,7 +130,6 @@ public class BaseMapPickerWidget extends LayoutContainer implements HasValue<Bas
 		return this.addHandler(handler, ValueChangeEvent.getType());
 	}
 
-
 	@Override
 	public BaseMap getValue() {
 		return selectedBaseMap;
