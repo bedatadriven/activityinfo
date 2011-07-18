@@ -75,12 +75,7 @@ public class BubbleMapLayer extends CircledMapLayer {
 	}
 
 	@Override
-	public String getName() {
-		return "Bubble";
-	}
-
-	@Override
-	public String getInternationalizedName() {
+	public String getTypeName() {
 		return "Bubble";
 	}
 }

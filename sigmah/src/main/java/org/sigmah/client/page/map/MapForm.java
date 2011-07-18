@@ -36,7 +36,7 @@ public class MapForm extends ContentPanel {
     protected final IconImageBundle icons;
 
     protected AccordionLayout accordionLayout;
-    protected IndicatorTreePanel indicatorTree;
+//    protected IndicatorTreePanel indicatorTree;
     protected BubbleLayerForm symbolForm;
     protected AdminFilterPanel adminPanel;
     protected LayoutForm layoutForm;
@@ -54,65 +54,65 @@ public class MapForm extends ContentPanel {
         accordionLayout = new AccordionLayout();
         setLayout(accordionLayout);
         
-        indicatorTree = new IndicatorTreePanel(service, false);
-        indicatorTree.setHeading(messages.indicators());
-        indicatorTree.setIcon(icons.indicator());
-        indicatorTree.setHeaderVisible(true);
-        add(indicatorTree);
+//        indicatorTree = new IndicatorTreePanel(service, false);
+//        indicatorTree.setHeading(messages.indicators());
+//        indicatorTree.setIcon(icons.indicator());
+//        indicatorTree.setHeaderVisible(true);
+//        add(indicatorTree);
 
         layoutForm = new LayoutForm(service);
         add(layoutForm);
 
-        symbolForm = new BubbleLayerForm();
-        add(symbolForm);
-
-        adminPanel = new AdminFilterPanel(service);
-        add(adminPanel);
-
-        datePanel = new DateRangePanel();
-        add(datePanel);
+//        symbolForm = new BubbleLayerForm();
+//        add(symbolForm);
+//
+//        adminPanel = new AdminFilterPanel(service);
+//        add(adminPanel);
+//
+//        datePanel = new DateRangePanel();
+//        add(datePanel);
         
         mapOptionsWidget = new MapOptionsWidget(service);
         add(mapOptionsWidget);
     }
 
-    public ReportElement getMapElement() {
-        MapReportElement element = new MapReportElement();
-        layoutForm.updateElement(element);
+//    public ReportElement getMapElement() {
+////        MapReportElement element = new MapReportElement();
+////        layoutForm.updateElement(element);
+////
+////        List<IndicatorDTO> sel = indicatorTree.getSelection();
+////        BubbleMapLayer layer = new BubbleMapLayer();
+////        
+////        if (!sel.isEmpty()) {
+////            layer.addIndicatorId(sel.get(0).getId());
+////        }
+////
+////        symbolForm.updateLayer(layer);
+////        element.addLayer(layer);
+////
+////        datePanel.updateFilter(element.getFilter());
+////
+////        for (AdminEntityDTO entity : adminPanel.getSelection()) {
+////            element.getFilter().addRestriction(DimensionType.AdminLevel, entity.getId());
+////        }
+////        return element;
+//    }
 
-        List<IndicatorDTO> sel = indicatorTree.getSelection();
-        BubbleMapLayer layer = new BubbleMapLayer();
-        
-        if (!sel.isEmpty()) {
-            layer.addIndicatorId(sel.get(0).getId());
-        }
+//    /**
+//     * Public for testing
+//     *
+//     * @return the indicator tree panel
+//     */
+//    public IndicatorTreePanel getIndicatorTree() {
+//        return indicatorTree;
+//    }
 
-        symbolForm.updateLayer(layer);
-        element.addLayer(layer);
-
-        datePanel.updateFilter(element.getFilter());
-
-        for (AdminEntityDTO entity : adminPanel.getSelection()) {
-            element.getFilter().addRestriction(DimensionType.AdminLevel, entity.getId());
-        }
-        return element;
-    }
-
-    /**
-     * Public for testing
-     *
-     * @return the indicator tree panel
-     */
-    public IndicatorTreePanel getIndicatorTree() {
-        return indicatorTree;
-    }
-
-    public boolean validate() {
-        if (indicatorTree.getSelection().size() == 0) {
-
-            MessageBox.alert(I18N.CONSTANTS.appTitle(), I18N.CONSTANTS.pleaseSelectIndicator(), null);
-            return false;
-        }
-        return true;
-    }
+//    public boolean validate() {
+//        if (indicatorTree.getSelection().size() == 0) {
+//
+//            MessageBox.alert(I18N.CONSTANTS.appTitle(), I18N.CONSTANTS.pleaseSelectIndicator(), null);
+//            return false;
+//        }
+//        return true;
+//    }
 }

@@ -1,9 +1,11 @@
 package org.sigmah.client.page.map.layerOptions;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.common.widget.ColorField;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.domain.Indicator;
@@ -11,21 +13,29 @@ import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.report.content.PieMapMarker.SliceValue;
 import org.sigmah.shared.report.model.layers.PiechartMapLayer;
+import org.sigmah.shared.report.model.layers.PiechartMapLayer.Slice;
 
+import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SliderEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
+import com.extjs.gxt.ui.client.widget.Slider;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.SliderField;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
+import com.extjs.gxt.ui.client.widget.grid.CellSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
@@ -41,9 +51,15 @@ public class PiechartMapLayerOptions extends LayoutContainer implements LayerOpt
 	private Dispatcher service;
 	private PiechartMapLayer piechartMapLayer;
 	private SchemaDTO schema;
-	private Grid<IndicatorDTO> gridIndicatorOptions;
-	private ListStore<IndicatorDTO> indicatorsStore = new ListStore<IndicatorDTO>();
-	
+	private Grid<NamedSlice> gridIndicatorOptions;
+	private ListStore<NamedSlice> indicatorsStore = new ListStore<NamedSlice>();
+	private SliderField sliderfieldMinSize;
+	private SliderField sliderfieldMaxSize;
+	private Slider sliderMinSize = new Slider();
+	private Slider sliderMaxSize = new Slider();
+	private FormData formData = new FormData("5");
+	private FormPanel panel = new FormPanel();
+
 	public PiechartMapLayerOptions(Dispatcher service) {
 		super();
 		
@@ -52,12 +68,57 @@ public class PiechartMapLayerOptions extends LayoutContainer implements LayerOpt
 		initializeComponent();
 		
 		loadData();
+		
+		createMinMaxSliders();
 
 		setupIndicatorOptionsGrid();
-		populateColorPickerWidget();
 	}
 
 	private void initializeComponent() {
+		panel.setHeaderVisible(false);
+		add(panel);
+	}
+	
+	private void createMinMaxSliders() {
+		sliderMinSize.setMinValue(1);
+		sliderMinSize.setMaxValue(60);
+		sliderMinSize.setValue(16);
+		sliderMinSize.setIncrement(1);
+		sliderMinSize.setDraggable(true);
+
+		sliderMaxSize.setMinValue(1);
+		sliderMaxSize.setMaxValue(60);
+		sliderMaxSize.setValue(48);
+		sliderMaxSize.setIncrement(1);
+		sliderMaxSize.setDraggable(true);
+		
+		sliderfieldMinSize = new SliderField(sliderMinSize);
+		sliderfieldMinSize.setFieldLabel(I18N.CONSTANTS.radiusMinimum());
+		sliderfieldMaxSize = new SliderField(sliderMaxSize);
+		sliderfieldMaxSize.setFieldLabel(I18N.CONSTANTS.radiusMaximum());
+		panel.add(sliderfieldMinSize, formData);
+		panel.add(sliderfieldMaxSize, formData);
+		
+		// Ensure min can't be more then max, and max can't be less then min
+		sliderMinSize.addListener(Events.Change, new Listener<SliderEvent>() {
+			@Override
+			public void handleEvent(SliderEvent be) {
+				if (sliderMinSize.getValue() > sliderMaxSize.getValue()) {
+					sliderMinSize.setValue(sliderMaxSize.getValue());
+				}
+				piechartMapLayer.setMinRadius(sliderMinSize.getValue());
+				ValueChangeEvent.fire(PiechartMapLayerOptions.this, piechartMapLayer);
+		}});
+
+		sliderMaxSize.addListener(Events.Change, new Listener<SliderEvent>() {
+			@Override
+			public void handleEvent(SliderEvent be) {
+				if (sliderMaxSize.getValue() < sliderMinSize.getValue()) {
+					sliderMaxSize.setValue(sliderMinSize.getValue());
+				}
+				piechartMapLayer.setMaxRadius(sliderMaxSize.getValue());
+				ValueChangeEvent.fire(PiechartMapLayerOptions.this, piechartMapLayer);
+		}});
 	}
 
 	private void setupIndicatorOptionsGrid() {
@@ -66,36 +127,48 @@ public class PiechartMapLayerOptions extends LayoutContainer implements LayerOpt
 		ColumnConfig columnName = new ColumnConfig();
 	    columnName.setId("name");
 	    columnName.setDataIndex("name");
-	    columnName.setHeader("Indicators");
+	    columnName.setHeader(I18N.CONSTANTS.indicators());
 	    columnConfigs.add(columnName);
-
 	    ColorField colorField = new ColorField();
 	    
 		ColumnConfig columnColor = new ColumnConfig();
 	    columnColor.setId("color");
 	    columnColor.setDataIndex("color");
-	    columnColor.setHeader("Color");
+	    columnColor.setHeader(I18N.CONSTANTS.color());
 	    columnColor.setWidth(30);
-	    columnColor.setEditor(new CellEditor(colorField));
+	    
+	    CellEditor colorEditor = new CellEditor(colorField) {
+			@Override
+			public Object postProcessValue(Object value) {
+				return super.postProcessValue(value);
+			}
+
+			@Override
+			public Object preProcessValue(Object value) {
+				return super.preProcessValue(value);
+			}
+	    };
+	    
+	    columnColor.setEditor(colorEditor);
 	    columnConfigs.add(columnColor);
 
 		ColumnModel columnmodelIndicators = new ColumnModel(columnConfigs);
 
-		gridIndicatorOptions = new Grid<IndicatorDTO>(indicatorsStore, columnmodelIndicators);
+		gridIndicatorOptions = new Grid<NamedSlice>(indicatorsStore, columnmodelIndicators);
 		gridIndicatorOptions.setBorders(false);
 		gridIndicatorOptions.setAutoExpandColumn("name");
 		gridIndicatorOptions.setAutoWidth(true);
 		gridIndicatorOptions.setHeight(200);
+		gridIndicatorOptions.setSelectionModel(new CellSelectionModel<PiechartMapLayerOptions.NamedSlice>());
 
 		VBoxLayoutData vbld = new VBoxLayoutData();
 		vbld.setFlex(1);
 		
-		add(gridIndicatorOptions);
+		panel.add(gridIndicatorOptions);
 	}
 
 	private void loadData() {
 		service.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
-
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO Auto-generated method stub
@@ -104,6 +177,7 @@ public class PiechartMapLayerOptions extends LayoutContainer implements LayerOpt
 			@Override
 			public void onSuccess(SchemaDTO result) {
 				schema=result;
+				populateColorPickerWidget();
 			}
 		});
 	}
@@ -112,9 +186,9 @@ public class PiechartMapLayerOptions extends LayoutContainer implements LayerOpt
 		if (piechartMapLayer !=null &&
 				piechartMapLayer.getIndicatorIds() != null &&
 				piechartMapLayer.getIndicatorIds().size() > 0) {
-			for (Integer id : piechartMapLayer.getIndicatorIds()) {
-				IndicatorDTO indicator = schema.getIndicatorById(id);
-				indicatorsStore.add(indicator);
+			for (Slice slice : piechartMapLayer.getSlices()) {
+				String name = schema.getIndicatorById(slice.getIndicatorId()).getName();
+				indicatorsStore.add(new NamedSlice(slice.getColor(), slice.getIndicatorId(), name));
 			}
 		}
 		layout(true);
@@ -140,5 +214,42 @@ public class PiechartMapLayerOptions extends LayoutContainer implements LayerOpt
 	public HandlerRegistration addValueChangeHandler(
 			ValueChangeHandler<PiechartMapLayer> handler) {
 		return this.addHandler(handler, ValueChangeEvent.getType());
+	}
+	
+	public static class NamedSlice extends BaseModelData {
+		public NamedSlice() {
+		}
+
+		public NamedSlice(int color, int indicatorId, String name) {
+			super();
+			
+			setColor(color);
+			setIndicatorId(indicatorId);
+			setName(name);
+		}
+		
+		public int getColor() {
+			return (Integer)get("color");
+		}
+		
+		public void setColor(int color) {
+			set("color", color);
+		}
+		
+		public int getIndicatorId() {
+			return (Integer)get("indicatorId");
+		}
+		
+		public void setIndicatorId(int indicatorId) {
+			set("indicatorId" , indicatorId);
+		}
+
+		public String getName() {
+			return get("name");
+		}
+
+		public void setName(String name) {
+			set("name" , name);
+		}
 	}
 }

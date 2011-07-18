@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.page.common.filter.IndicatorTreePanel;
 import org.sigmah.client.page.common.widget.ColorField;
 import org.sigmah.shared.dto.IndicatorDTO;
@@ -32,6 +33,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.Radio;
 import com.extjs.gxt.ui.client.widget.form.RadioGroup;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -69,7 +71,7 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
     
     // Indicator options
 	private Button buttonAddLayer = new Button();
-	private Label labelCanSelectMultiple = new Label();
+	private LabelField labelCanSelectMultiple = new LabelField();
 	private Image imageCanSelectMultiple = new Image();
     
 	// Choice for type of layer
@@ -91,10 +93,10 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		createIndicatorTreePanel();
 		createSelectedIndicatorsList();
 		
-		addButton(new Button("Add layer", new SelectionListener<ButtonEvent>() {  
+		addButton(new Button(I18N.CONSTANTS.addLayer(), new SelectionListener<ButtonEvent>() {  
 	        @Override  
 	        public void componentSelected(ButtonEvent ce) {  
-	            addLayer();  
+	        	addLayer();
 	        }  
         }));
 		
@@ -107,7 +109,7 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		ColumnConfig column = new ColumnConfig();
 	    column.setId("name");
 	    column.setDataIndex("name");
-	    column.setHeader("Selected indicators");
+	    column.setHeader(I18N.CONSTANTS.selectedLayers());
 	    column.setWidth(700);  
 	    columnConfigs.add(column);
 
@@ -138,7 +140,7 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		HorizontalPanel radioPanel = new HorizontalPanel();
 		HorizontalPanel muliselectPanel = new HorizontalPanel();
 		
-		fieldsetLayerType.setHeading("Type of layer");
+		fieldsetLayerType.setHeading(I18N.CONSTANTS.typeOfLayer());
 		fieldsetLayerType.setLayout(new RowLayout(Orientation.VERTICAL));
 		radioProportionalCircle.setBoxLabel(I18N.CONSTANTS.proportionalCircle());
 		radioIcon.setBoxLabel(I18N.CONSTANTS.icon());
@@ -156,8 +158,17 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		muliselectPanel.add(imageCanSelectMultiple);
 		muliselectPanel.add(labelCanSelectMultiple);
 		
+		Button buttonClearSelection = new Button("Clear selection");
+		buttonClearSelection.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				clearSelection();
+			}
+		});
+		
 		fieldsetLayerType.add(radioPanel);
 		fieldsetLayerType.add(muliselectPanel);
+		fieldsetLayerType.add(buttonClearSelection);
 		
 		// Let the user know whether or not he can select multiple indicators for the layer
 		// he wants to add to the map
@@ -176,25 +187,61 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		
 		add(fieldsetLayerType);
 	}
+	
+	/*
+	 * Makes up a name for given layer, using following pattern:
+	 * -One indicator -> use indicator name
+	 * -One IndicatorGroup -> use indicatorgroups' name
+	 * -Multiple indicators, multiple indicator groups -> "N indicators"
+	 * 
+	 * TODO: implement indicatorgroup detection
+	 */
+	private void createLayerName(MapLayer mapLayer) {
+		if (mapLayer.getIndicatorIds().size() == 1) {
+			mapLayer.setName(indicatorsStore.getModels().get(0).getName());
+			return;
+		}
+		
+		if (mapLayer.getIndicatorIds().size() > 1) {
+			mapLayer.setName(mapLayer.getIndicatorIds().size() + " " + I18N.CONSTANTS.indicators());
+			return;
+		}
+	}
+
+	// TODO: implement
+	private IndicatorGroup getIndicatorGroupOfSelectedIndicators() {
+		return null;
+	}
 
 	protected void addLayer() {
 		if (indicatorsStore.getModels().size() > 0) {
 			Radio selected = radiogroupLayerType.getValue();
+			
+			// Create the new layer based on the selected type
 			newLayer = fromRadio(selected);
 			List<Integer> indicators = new ArrayList<Integer>();
 			for (IndicatorDTO indicator : indicatorsStore.getModels()) {
-				newLayer.getIndicatorIds().add(indicator.getId());
+				newLayer.addIndicatorId(indicator.getId());
 			}
+			createLayerName(newLayer);
+			
+			// Set UI back to defaults
 			clearSelection();
 			hide();
 			ValueChangeEvent.fire(this, newLayer);
 		}
 	}
 
+	/*
+	 * Clears list of selected indicators
+	 */
 	private void clearSelection() {
 		indicatorsStore.removeAll();
 	}
 	
+	/*
+	 * Factory method for a MapLayer based on given Radio widget
+	 */
 	private MapLayer fromRadio(Radio radio) {
 		if (radio.equals(radioIcon)) {
 			return new IconMapLayer();
@@ -219,32 +266,17 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		treepanelIndicators.addCheckChangedListener(new Listener<TreePanelEvent>(){
 			@Override
 			public void handleEvent(TreePanelEvent be) {
-				if (!multiSelect) {
+				if (notMultiSelect()) {
 					clearSelection();
 				}
 				
-				if (be.isChecked()) {
-					if (be.getItem() instanceof IndicatorGroup && multiSelect) {
-						IndicatorGroup group = (IndicatorGroup) be.getItem();
-						for (IndicatorDTO indicator : group.getIndicators()) {
-							indicatorsStore.add(indicator);
-						}
-					}
-					if (be.getItem() instanceof IndicatorDTO) {
-						indicatorsStore.add((IndicatorDTO) be.getItem());
-					}
-				} else {
-					if (be.getItem() instanceof IndicatorGroup) {
-						IndicatorGroup group = (IndicatorGroup) be.getItem();
-						for (IndicatorDTO indicator : group.getIndicators()) {
-							indicatorsStore.remove(indicator);
-						}
-					}
-					if (be.getItem() instanceof IndicatorDTO) {
-						indicatorsStore.remove((IndicatorDTO) be.getItem());
-					}
+				if (be.getItem() instanceof IndicatorGroup && multiSelect) {
+					addIndicatorGroupToStore((IndicatorGroup) be.getItem());
 				}
-					
+				if (be.getItem() instanceof IndicatorDTO) {
+					addIndicatorToStoreIfNotPresent((IndicatorDTO) be.getItem());
+				}
+
 				indicatorsStore.commitChanges();
 			}
 		});
@@ -254,16 +286,39 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		add(treepanelIndicators, vbld);
     }
 	
+	private void addIndicatorGroupToStore(IndicatorGroup group) {
+		for (IndicatorDTO indicator : group.getIndicators()) {
+			addIndicatorToStoreIfNotPresent(indicator);
+		}
+	}
+	
+	private void addIndicatorToStoreIfNotPresent(IndicatorDTO indicator) {
+		if (!indicatorsStore.contains(indicator)) {
+			indicatorsStore.add(indicator);
+		}
+	}
+	
+	private boolean notMultiSelect() {
+		return !multiSelect;
+	}
+	
 	private void setCanMultipleSelect() {
 		if (multiSelect) {
-			labelCanSelectMultiple.setText("You can include multiple indicators on this layertype");
+			labelCanSelectMultiple.setText(I18N.MESSAGES.canIncludeMultipleIndicators());
 			imageCanSelectMultiple.setResource(MapResources.INSTANCE.multiSelect());
 		} else {
-			labelCanSelectMultiple.setText("One indicator can be selected for this layertype");
+			labelCanSelectMultiple.setText(I18N.MESSAGES.canIncludeSingleIndicator());
 			imageCanSelectMultiple.setResource(MapResources.INSTANCE.singleSelect());
+			clearSelectionIfMoreThenOneItem();
 		}
 		
 		treepanelIndicators.setMultipleSelection(multiSelect);
+	}
+
+	private void clearSelectionIfMoreThenOneItem() {
+		if (indicatorsStore.getModels().size() > 1) {
+			clearSelection();
+		}
 	}
 
 	@Override

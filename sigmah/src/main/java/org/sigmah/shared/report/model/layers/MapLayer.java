@@ -38,10 +38,11 @@ public interface MapLayer extends Serializable {
 	public Clustering getClustering();
 	public void setClustering(Clustering clustering);
 	
-	public String getInternationalizedName();
+	public String getName();
+	public void setName(String name);
 	
 	/*
 	 * Function to determine non-typesafe name of the class for gxt template usage
 	 */
-	public String getName();
+	public String getTypeName();
 }

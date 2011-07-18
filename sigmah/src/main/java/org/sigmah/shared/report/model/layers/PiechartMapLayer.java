@@ -1,15 +1,48 @@
 package org.sigmah.shared.report.model.layers;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 
 /*
  * Displays multiple indicators using a piechart to visualize relative proportions
  */
 public class PiechartMapLayer extends CircledMapLayer {
 	private List<Slice> slices = new ArrayList<Slice>();
+	private static List<Integer> colors = new ArrayList<Integer>();
+	
+	public PiechartMapLayer() {
+	}
+	
+	static {
+		colors.add(16711680); // red
+		colors.add(16776960); // yellow
+		colors.add(16777215); // white
+		colors.add(255);    // darkblue
+		colors.add(65280); // green
+		colors.add(8388736); // purple
+		colors.add(16711680); // red
+		colors.add(16776960); // yellow
+		colors.add(16777215); // white
+		colors.add(255);    // darkblue
+		colors.add(65280); // green
+		colors.add(8388736); // purple
+		colors.add(16711680); // red
+		colors.add(16776960); // yellow
+		colors.add(16777215); // white
+		colors.add(255);    // darkblue
+		colors.add(65280); // green
+		colors.add(8388736); // purple
+		colors.add(16711680); // red
+		colors.add(16776960); // yellow
+		colors.add(16777215); // white
+		colors.add(255);    // darkblue
+		colors.add(65280); // green
+		colors.add(8388736); // purple
+	}
 
 	@Override
 	public boolean supportsMultipleIndicators() {
@@ -26,31 +59,37 @@ public class PiechartMapLayer extends CircledMapLayer {
 		
 		return result;
 	}
-	 
-	//TODO: make jaxb
+	
+	@XmlElement(name = "slice")
+	@XmlElementWrapper(name = "slices")
 	public List<Slice> getSlices() {
 		return slices;
 	}
 
 	@Override
-	public String getName() {
-		return "Piechart";
-	}
-
-	@Override
-	public String getInternationalizedName() {
+	public String getTypeName() {
 		return "Piechart";
 	}
 	
 	@Override
 	public void addIndicatorId(int Id) {
-		slices.add(new Slice(-1, Id));
+		slices.add(new Slice(getNextColor(), Id));
+	}
+	
+	/*
+	 * Returns next color for a slice
+	 */
+	private int getNextColor() {
+		return colors.get(slices.size());
 	}
 
-	public static class Slice {
+	public static class Slice implements Serializable {
 		private int color;
 		private int indicatorId;
 		
+		public Slice() {
+		}
+
 		public Slice(int color, int indicatorId) {
 			super();
 			this.color = color;

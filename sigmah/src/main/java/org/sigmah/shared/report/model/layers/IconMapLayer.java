@@ -57,14 +57,7 @@ public class IconMapLayer extends AbstractMapLayer {
 	}
 
 	@Override
-	public String getName() {
+	public String getTypeName() {
 		return "Icon";
 	}
-
-	@Override
-	public String getInternationalizedName() {
-		return "Icon";
-	}
-	
-
 }

@@ -228,6 +228,7 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
 
 	@Override
 	public Margins calculateMargins() {
-		return null;
+        return new Margins(layer.getMaxRadius());
+
 	}
 }

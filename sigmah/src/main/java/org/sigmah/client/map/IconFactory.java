@@ -13,7 +13,10 @@ import com.google.gwt.resources.client.ImageResource;
 import org.sigmah.shared.report.content.BubbleMapMarker;
 import org.sigmah.shared.report.content.IconMapMarker;
 import org.sigmah.shared.report.content.MapMarker;
+import org.sigmah.shared.report.content.PieMapMarker;
+import org.sigmah.shared.report.content.PieMapMarker.SliceValue;
 import org.sigmah.shared.report.model.MapIcon;
+import org.sigmah.shared.report.model.layers.PiechartMapLayer.Slice;
 
 /**
  * Factory for GoogleMap Icons originating from the
@@ -28,6 +31,8 @@ public class IconFactory {
     public static Icon createIcon(MapMarker marker) {
         if (marker instanceof IconMapMarker) {
             return createIconMapMarker((IconMapMarker) marker);
+        } else if (marker instanceof PieMapMarker) {
+            return createPieMapMarker((PieMapMarker) marker);
         } else if (marker instanceof BubbleMapMarker) {
             return createBubbleMapMarker((BubbleMapMarker) marker);
         } else {
@@ -73,6 +78,29 @@ public class IconFactory {
         icon.setPrintImageURL(iconUrl);
         icon.setMozPrintImageURL(iconUrl);
 
+        return icon;
+    }
+    
+    public static Icon createPieMapMarker(PieMapMarker marker) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("icon?t=piechart&r=").append(marker.getRadius());
+        for (SliceValue slice : marker.getSlices()) {
+        	sb.append("&value=").append(slice.getValue());
+        	sb.append("&color=").append(slice.getColor());
+        }
+        String iconUrl = sb.toString();
+        int size = marker.getRadius() * 2;
+
+        Icon icon = Icon.newInstance(Icon.DEFAULT_ICON);
+        icon.setImageURL(iconUrl);
+        icon.setIconSize(Size.newInstance(size, size));
+        icon.setShadowSize(Size.newInstance(0, 0));
+        Point anchor = Point.newInstance(marker.getRadius(), marker.getRadius());
+        icon.setIconAnchor(anchor);
+        icon.setInfoWindowAnchor(anchor);
+        icon.setPrintImageURL(iconUrl);
+        icon.setMozPrintImageURL(iconUrl);
+        
         return icon;
     }
 }
