@@ -54,6 +54,7 @@ public class ClusteringOptionsWidget extends LayoutContainer implements HasValue
 	private List<CountryDTO> countries = new ArrayList<CountryDTO>();
 	private Dispatcher service;
 	private HorizontalPanel panelEnclosingAdminLevel = new HorizontalPanel();
+	private List<AdminLevelDTO> selectedAdminLevels = new ArrayList<AdminLevelDTO>();
 
 	public ClusteringOptionsWidget(Dispatcher service) {
 		super();
@@ -101,47 +102,10 @@ public class ClusteringOptionsWidget extends LayoutContainer implements HasValue
 		if (countries != null) {
 			// Show name of country with related adminlevels as option for the user
 			for (CountryDTO country : countries) {
-				List<AdminLevelDTO> adminLevels = country.getAdminLevels();
-	
-				// Get a container
-				HorizontalPanel panel = new HorizontalPanel();
-				
-				// Show the countryname using a label
-				panel.add(new LabelField(country.getName()));
-				
-				if (adminLevels.size() > 0) { // adminlevels found, add them as option
-					// Show a combobox with available adminlevels for the country
-					ListStore<AdminLevelDTO> adminLevelStore = new ListStore<AdminLevelDTO>();
-					adminLevelStore.add(adminLevels);
-					final ComboBox<AdminLevelDTO> combobox = new ComboBox<AdminLevelDTO>();
-					combobox.setStore(adminLevelStore);
-					combobox.setDisplayField("name");
-					combobox.setForceSelection(true);
-					combobox.setTriggerAction(TriggerAction.ALL);
-					combobox.setEditable(false);
-					combobox.addListener(Events.Select, new Listener<FieldEvent>() {
-						@Override
-						public void handleEvent(FieldEvent be) {
-							//adminLevelClustering.
-						}
-					});
-					
-					panel.add(combobox);
-	
-					// Keep a reference to the adminlevel by country
-					pickedAdminLevelsByCountry.put(country, adminLevels.get(0));
-				} else { // No adminlevels defined for given country
-					LabelField labelUnavailable = new LabelField();
-					labelUnavailable.setText("[Unavailable]");
-					panel.add(labelUnavailable);
-				}
-
-				panelAdministrativeLevelOptions.add(panel);
+				createAdminLevelsByCountry(country);
 			}
-		} else { // No countries found		getCountries();
-
-			LabelField labelNoCountries = new LabelField("[Unavailable]");
-			panelAdministrativeLevelOptions.add(labelNoCountries);
+		} else { // No countries found
+			createNoCountriesFoundUI();
 		}
 		
 		HorizontalPanel panelMargin = new HorizontalPanel();
@@ -153,6 +117,91 @@ public class ClusteringOptionsWidget extends LayoutContainer implements HasValue
 		setAdminLevelEnabledOrDisabled();
 	}
 
+	private void createNoCountriesFoundUI() {
+		LabelField labelNoCountries = new LabelField("[Unavailable]");
+		panelAdministrativeLevelOptions.add(labelNoCountries);
+	}
+
+	private void createAdminLevelsByCountry(CountryDTO country) {
+		List<AdminLevelDTO> adminLevels = country.getAdminLevels();
+
+		// Get a container
+		HorizontalPanel panel = new HorizontalPanel();
+		
+		// Show the countryname using a label
+		panel.add(new LabelField(country.getName()));
+		
+		if (adminLevels.size() > 0) { 
+			final ComboBox<AdminLevelDTO> combobox = createAdminLevelsCombobox(adminLevels);
+			panel.add(combobox);
+
+			// Keep a reference to the adminlevel by country
+			pickedAdminLevelsByCountry.put(country, adminLevels.get(0));
+		} else { // No adminlevels defined for given country
+			LabelField labelUnavailable = new LabelField();
+			labelUnavailable.setText("[Unavailable]");
+			panel.add(labelUnavailable);
+		}
+
+		panelAdministrativeLevelOptions.add(panel);
+	}
+
+	private ComboBox<AdminLevelDTO> createAdminLevelsCombobox(
+			List<AdminLevelDTO> adminLevels) {
+		// Show a combobox with available adminlevels for the country
+		ListStore<AdminLevelDTO> adminLevelStore = new ListStore<AdminLevelDTO>();
+		adminLevelStore.add(adminLevels);
+		final ComboBox<AdminLevelDTO> combobox = new ComboBox<AdminLevelDTO>();
+		combobox.setStore(adminLevelStore);
+		combobox.setDisplayField("name");
+		combobox.setForceSelection(true);
+		combobox.setTriggerAction(TriggerAction.ALL);
+		combobox.setEditable(false);
+		combobox.addListener(Events.Select, new Listener<FieldEvent>() {
+			@Override
+			public void handleEvent(FieldEvent be) {
+				// Ensure no adminlevels of equal country exist in list of selected
+				// admin levels. Remove if such an adminlevel is found
+				AdminLevelDTO adminLevel = combobox.getValue();
+				if (containsAdminLevelOfCountry(adminLevel.getCountryId())) {
+					removeAdminLevelsWith(adminLevel.getCountryId());
+				}
+				
+				adminLevelClustering.getAdminLevels().add(adminLevel.getId());
+			}
+		});
+		return combobox;
+	}
+	
+	/*
+	 * Returns true when the selected adminlevels contain an adminlevel with given countryId
+	 */
+	private boolean containsAdminLevelOfCountry(int countryId) {
+		for (AdminLevelDTO adminLevel : selectedAdminLevels) {
+			if (adminLevel.getCountryId() == countryId) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	private void removeAdminLevelsWith(int countryId) {
+		AdminLevelDTO adminLevelToRemove = null;
+		
+		for (AdminLevelDTO adminLevel : selectedAdminLevels) {
+			if (adminLevel.getCountryId() == countryId) {
+				adminLevelToRemove = adminLevel;
+			}
+		}
+		
+		selectedAdminLevels.remove(adminLevelToRemove);
+	}
+	
+	private void removeAdminLevelsFromCountry(AdminLevelDTO adminLevel) {
+		
+	}
+	
 	/*
 	 * Enables/disables the adminlevel choice UI
 	 */

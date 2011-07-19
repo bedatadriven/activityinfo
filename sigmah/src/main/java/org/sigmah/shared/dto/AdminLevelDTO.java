@@ -115,4 +115,12 @@ public final class AdminLevelDTO extends BaseModelData implements DTO {
 		return Integer.parseInt(propertyName.substring(AdminLevelDTO.PROPERTY_PREFIX.length()));
 	}
 
+	public void setCountryId(int countryId) {
+		set("countryId", countryId);
+	}
+
+	public int getCountryId() {
+		return (Integer)get("countryId");
+	}
+
 }
