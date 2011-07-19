@@ -16,7 +16,9 @@ import org.sigmah.client.map.IconFactory;
 import org.sigmah.client.map.MapApiLoader;
 import org.sigmah.client.map.MapTypeFactory;
 import org.sigmah.shared.command.GenerateElement;
+import org.sigmah.shared.command.GetBaseMaps;
 import org.sigmah.shared.command.GetSitePoints;
+import org.sigmah.shared.command.result.BaseMapResult;
 import org.sigmah.shared.command.result.SitePointList;
 import org.sigmah.shared.dto.SitePointDTO;
 import org.sigmah.shared.map.BaseMap;
@@ -76,6 +78,7 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
     
     // Model of a the map
     private MapContent mapModel;
+	private List<BaseMap> baseMaps;
 
     /**
      * True if the Google Maps API is not loaded AND
@@ -159,7 +162,7 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
                             mapWidget = new MapWidget();
                             mapWidget.addControl(new LargeMapControl());
 
-                            //changeBaseMapIfNeeded(content.getBaseMap());
+                            //changeBaseMapIfNeeded(mapReportElement.getBaseMapId());
 
                             // clear the error message content
                             removeAll();
@@ -179,14 +182,18 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
     }
 
     private void changeBaseMapIfNeeded(BaseMap baseMap) {
-        if (currentBaseMapId == null || !currentBaseMapId.equals(baseMap.getId())) {
-            MapType baseMapType = MapTypeFactory.mapTypeForBaseMap(baseMap);
-            mapWidget.addMapType(baseMapType);
-            mapWidget.setCurrentMapType(baseMapType);
-            mapWidget.removeMapType(MapType.getNormalMap());
-            mapWidget.removeMapType(MapType.getHybridMap());
-            currentBaseMapId = baseMap.getId();
-        }
+    	if (baseMap != null) {
+	        if (currentBaseMapId == null || !currentBaseMapId.equals(baseMap.getId())) {
+	            MapType baseMapType = MapTypeFactory.mapTypeForBaseMap(baseMap);
+	            mapWidget.addMapType(baseMapType);
+	            mapWidget.setCurrentMapType(baseMapType);
+	            mapWidget.removeMapType(MapType.getNormalMap());
+	            mapWidget.removeMapType(MapType.getHybridMap());
+	            currentBaseMapId = baseMap.getId();
+	        }
+    	} else {
+    		getBaseMaps();
+    	}
     }
 
     /**
@@ -198,17 +205,35 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
         }
         overlays.clear();
     }
+    
+	private void getBaseMaps() {
+		GetBaseMaps getBaseMaps = new GetBaseMaps();
+		
+		dispatcher.execute(getBaseMaps, null, new AsyncCallback<BaseMapResult>() {
 
+			@Override
+			public void onFailure(Throwable caught) {
+			}
+
+			@Override
+			public void onSuccess(BaseMapResult result) {
+				if (result.getBaseMaps() == null) {
+				} else {
+					baseMaps = result.getBaseMaps();
+				}
+			}
+		});
+	}
 
     /**
      * Updates the size of the map and adds Overlays to reflect the content
      * of the current selected indicators
      */
     private void updateMapToContent() {
-//    	if (mapReportElement.getLayers().isEmpty())
-//    	{
-//    		return;
-//    	}
+    	if (mapReportElement.getLayers().isEmpty())
+    	{
+    		return;
+    	}
     	
     	dispatcher.execute(new GenerateElement<MapContent>(mapReportElement), null, new AsyncCallback<MapContent>() {
 
@@ -221,7 +246,7 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 			public void onSuccess(MapContent result) {
 		        Log.debug("MapPreview: Received content, extents are = " + result.getExtents().toString());
 
-		        //changeBaseMapIfNeeded(result.getBaseMap());
+		        changeBaseMapIfNeeded(result.getBaseMap());
 
 		        layout();
 		
@@ -231,7 +256,11 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 		        GcIconFactory iconFactory = new GcIconFactory();
 		        iconFactory.primaryColor = "#0000FF";
 		
-		        for (MapMarker marker : result.getMarkers()) {
+		        putMarkersOnMap(result);
+			}
+
+			private void putMarkersOnMap(MapContent result) {
+				for (MapMarker marker : result.getMarkers()) {
 		            Icon icon = IconFactory.createIcon(marker);
 		            LatLng latLng = LatLng.newInstance(marker.getLat(), marker.getLng());
 		
@@ -274,8 +303,7 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 
 	@Override
 	public MapReportElement getValue() {
-		// TODO Auto-generated method stub
-		return null;
+		return mapReportElement;
 	}
 
 	@Override
@@ -291,9 +319,5 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 	public void setValue(MapReportElement value, boolean fireEvents) {
 		// TODO Auto-generated method stub
 		
-	}
-	
-	public void setBaseMap(BaseMap baseMap) {
-		changeBaseMapIfNeeded(baseMap);
 	}
 }

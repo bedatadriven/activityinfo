@@ -104,7 +104,9 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
         allMapOptionsWidget.getMapOptionsWidget().addValueChangeHandler(new ValueChangeHandler<BaseMap>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<BaseMap> event) {
-				aiMapWidget.setBaseMap(event.getValue());
+				MapReportElement map = aiMapWidget.getValue();
+				map.setBaseMapId(event.getValue().getId());
+				aiMapWidget.setValue(map);
 			}
 		});
         

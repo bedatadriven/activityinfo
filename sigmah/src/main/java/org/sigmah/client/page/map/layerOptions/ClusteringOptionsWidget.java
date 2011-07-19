@@ -16,7 +16,6 @@ import org.sigmah.shared.report.model.clustering.AutomaticClustering;
 import org.sigmah.shared.report.model.clustering.Clustering;
 import org.sigmah.shared.report.model.clustering.NoClustering;
 
-import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -104,7 +103,7 @@ public class ClusteringOptionsWidget extends LayoutContainer implements HasValue
 			for (CountryDTO country : countries) {
 				createAdminLevelsByCountry(country);
 			}
-		} else { // No countries found
+		} else {
 			createNoCountriesFoundUI();
 		}
 		
@@ -241,7 +240,11 @@ public class ClusteringOptionsWidget extends LayoutContainer implements HasValue
 			return new NoClustering(); 
 		}
 		if (selectedRadio.equals(radioAdminLevelAggr)) {
-			return new AdministrativeLevelClustering(); 
+			AdministrativeLevelClustering newAdminClustering = new AdministrativeLevelClustering();
+			for (Integer adminLevel : adminLevelClustering.getAdminLevels()) {
+				newAdminClustering.getAdminLevels().add(adminLevel);
+			}
+			return newAdminClustering;
 		}
 		if (selectedRadio.equals(radioAutomaticAggr)) {
 			return new AutomaticClustering(); 
