@@ -7,6 +7,7 @@
 	top: 0.5em;
 	position: relative;
 	margin: 0.25em;
+	width=16px;
 }	
 
 @sprite .removeLayer {
@@ -41,6 +42,9 @@
 
 .layerName {
 	margin: 0.25em;
+	display:table-cell;
+	vertical-align: middle;
+	width: 65%;
 }
 
 .checkbox {
@@ -55,4 +59,7 @@
 	overflow: hidden;
 	height: 3.5em;
 	position: relative;
+	width: 99%;
+	display: table;
+	float: left;
 }
