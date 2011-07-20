@@ -122,4 +122,8 @@ public class BaseMap implements DTO {
 		
 		return result;
 	}
+	
+	public boolean hasSingleZoomLevel() {
+		return minZoom==maxZoom;
+	}
 }

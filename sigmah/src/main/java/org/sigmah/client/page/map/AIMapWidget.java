@@ -264,6 +264,35 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 		        iconFactory.primaryColor = "#0000FF";
 		
 		        putMarkersOnMap(result);
+		        
+		        if (isFirstLayerUpdate) {
+		        	zoomToMarkers(result);
+		        }
+			}
+
+			private void zoomToMarkers(MapContent result) {
+				LatLng center = LatLng.newInstance(result.getExtents().center().getLat(), result.getExtents().center().getLng());
+				mapWidget.panTo(center);
+				if (result.getBaseMap().hasSingleZoomLevel()) {
+					mapWidget.setZoomLevel(result.getBaseMap().getMaxZoom()); // minZoom should also be fine
+				} else {
+					LatLng southWest = LatLng.newInstance(result.getExtents().getMinLat(), result.getExtents().getMaxLon());
+					LatLng northEast = LatLng.newInstance(result.getExtents().getMaxLat(), result.getExtents().getMinLon());
+					LatLngBounds bounds = LatLngBounds.newInstance(southWest, northEast);
+					int idealZoom = mapWidget.getBoundsZoomLevel(bounds);
+
+					// Ensure zoom level is kept between min & max
+					if (idealZoom < result.getBaseMap().getMinZoom()) {
+						idealZoom = result.getBaseMap().getMinZoom();
+					}
+					if (idealZoom > result.getBaseMap().getMaxZoom()) {
+						idealZoom = result.getBaseMap().getMaxZoom();
+					}
+					mapWidget.setZoomLevel(idealZoom);
+				}
+			}
+
+			private void zoomToExtents() {
 			}
 
 			private void putMarkersOnMap(MapContent result) {
