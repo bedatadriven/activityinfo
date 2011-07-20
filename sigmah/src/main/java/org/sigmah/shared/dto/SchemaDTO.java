@@ -136,6 +136,16 @@ public final class SchemaDTO extends BaseModelData implements DTO {
 		}
 		return null;
 	}
+	
+	public CountryDTO getCountryByAdminLevelId(Integer adminLevelId) {
+		AdminLevelDTO adminLevel = getAdminLevelById(adminLevelId);
+		
+		if (adminLevel != null && countries != null) {
+			return getCountryById(adminLevel.getCountryId());
+		}
+		
+		return null;
+	}
 
     public ActivityDTO getActivityByIndicatorId(int id) {
         for(UserDatabaseDTO db : databases) {

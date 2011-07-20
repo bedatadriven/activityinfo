@@ -127,19 +127,34 @@ public class AllLayerOptions extends ContentPanel implements HasValue<MapLayer> 
 	 */
 	public void setMapLayer(MapLayer mapLayer) {
 		this.selectedMapLayer = mapLayer;
+		LayerOptionsWidget layerOptionsWidget = fromLayer(mapLayer);
 		
 		if (mapLayer instanceof BubbleMapLayer) {
 			bubbleMapLayerOptions.setValue((BubbleMapLayer) mapLayer);
-			setActiveMapLayer(bubbleMapLayerOptions);
 		}
 		if (mapLayer instanceof IconMapLayer) {
 			iconMapLayerOptions.setValue((IconMapLayer) mapLayer);
-			setActiveMapLayer(iconMapLayerOptions);
 		}
 		if (mapLayer instanceof PiechartMapLayer) {
 			piechartMapLayerOptions.setValue((PiechartMapLayer) mapLayer);
-			setActiveMapLayer(piechartMapLayerOptions);
 		}
+		
+		setActiveMapLayer(layerOptionsWidget);
+		clusteringOptions.setValue(mapLayer.getClustering(), false);
+	}
+	
+	private LayerOptionsWidget fromLayer(MapLayer mapLayer) {
+		if (mapLayer instanceof BubbleMapLayer) {
+			return bubbleMapLayerOptions;
+		}
+		if (mapLayer instanceof IconMapLayer) {
+			return iconMapLayerOptions;
+		}
+		if (mapLayer instanceof PiechartMapLayer) {
+			return piechartMapLayerOptions;
+		}
+		
+		return null;
 	}
 	
 	private void setActiveMapLayer(LayerOptionsWidget layerOptionsWidget) {
@@ -176,5 +191,15 @@ public class AllLayerOptions extends ContentPanel implements HasValue<MapLayer> 
 	@Override
 	public void setValue(MapLayer value, boolean fireEvents) {
 		
+	}
+
+	@Override
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
+		
+		bubbleMapLayerOptions.setEnabled(enabled);
+		piechartMapLayerOptions.setEnabled(enabled);
+		iconMapLayerOptions.setEnabled(enabled);
+		clusteringOptions.setEnabled(enabled);
 	}
 }

@@ -118,6 +118,7 @@ public class LayersWidget extends ContentPanel implements HasValue<MapReportElem
 		setFrame(true);
 		setHeading(I18N.CONSTANTS.layers());
 		setBodyBorder(false);
+		setHeaderVisible(false);
 	}					
 
 
@@ -144,6 +145,12 @@ public class LayersWidget extends ContentPanel implements HasValue<MapReportElem
 		view.addListener(Events.Select, new Listener<ListViewEvent>() {
 			@Override
 			public void handleEvent(ListViewEvent be) {
+				if (be.getIndex() == -1) {
+					disableLayerOptions();
+				} else {
+					enableLayerOptions();
+				}
+				
 				// Change visibility
 				if (be.getTargetEl().hasStyleName("x-view-item-checkbox")) {
 					LayerModel layerModel = (LayerModel) be.getModel();
@@ -176,6 +183,14 @@ public class LayersWidget extends ContentPanel implements HasValue<MapReportElem
 	    add(view, vbld);
 	}
 
+	private void enableLayerOptions() {
+		layerOptions.setEnabled(true);
+	}
+
+	private void disableLayerOptions() {
+		layerOptions.setEnabled(false);
+	}
+	
 	private void changeSelectedLayer() {
 		if (view.getSelectionModel().getSelectedItem() != null) {
 			layerOptions.setMapLayer(view.getSelectionModel().getSelectedItem().getMapLayer());

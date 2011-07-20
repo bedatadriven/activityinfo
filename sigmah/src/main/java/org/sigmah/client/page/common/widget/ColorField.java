@@ -22,7 +22,7 @@ import com.google.gwt.user.client.Element;
  */
 public class ColorField extends TriggerField<String> {
     private static final String WHITE_HEX_STRING = "FFFFFF";
-    private static final int WHITE = 0xFFFFF;
+    private static final int WHITE = 0xFFFFFF;
 
     public ColorField() {
         setEditable(false);
@@ -53,6 +53,14 @@ public class ColorField extends TriggerField<String> {
         if(isRendered()) {
             input.setStyleAttribute("backgroundColor", "#" + (value == null ? WHITE_HEX_STRING : value));
         }
+    }
+    
+    public void setValue(int value) {
+    	setValue(Integer.toHexString(value));
+    }
+    
+    private String fromIntValue(int color) {
+    	return "#" + (value == null ? WHITE_HEX_STRING : value);
     }
 
     @Override

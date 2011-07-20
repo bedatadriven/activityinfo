@@ -7,6 +7,7 @@ import org.sigmah.shared.report.model.layers.MapLayer;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ColorPaletteEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -23,6 +24,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Image;
 
 /*
@@ -34,12 +36,18 @@ public class BubbleLayerOptions extends LayoutContainer implements LayerOptionsW
 	private ColorField colorPicker = new ColorField();
 	private Slider sliderMinSize = new Slider();
 	private Slider sliderMaxSize = new Slider();
+	private Timer timerMinSlider;
+	private Timer timerMaxSlider;
 
 	public BubbleLayerOptions() {
 		super();
 		
 		createColorPicker();
 		createMinMaxSliders();
+	}
+
+	protected void onTimer() {
+		
 	}
 
 	private void createColorPicker() {
@@ -87,30 +95,36 @@ public class BubbleLayerOptions extends LayoutContainer implements LayerOptionsW
 		sliderMinSize.addListener(Events.Change, new Listener<SliderEvent>() {
 			@Override
 			public void handleEvent(SliderEvent be) {
-
+				timerMinSlider.cancel();
+				timerMinSlider.schedule(250);
 		}});
-		
-		sliderMinSize.addListener(Events.OnMouseUp, new Listener<BaseEvent>() {
+		sliderMaxSize.addListener(Events.Change, new Listener<SliderEvent>() {
 			@Override
-			public void handleEvent(BaseEvent be) {
+			public void handleEvent(SliderEvent be) {
+				timerMaxSlider.cancel();
+				timerMaxSlider.schedule(250);
+			}
+		});
+		timerMinSlider = new Timer() {
+			@Override
+			public void run() {
 				if (sliderMinSize.getValue() > sliderMaxSize.getValue()) {
 					sliderMinSize.setValue(sliderMaxSize.getValue());
 				}
 				bubbleMapLayer.setMinRadius(sliderMinSize.getValue());
 				ValueChangeEvent.fire(BubbleLayerOptions.this, bubbleMapLayer);
 			}
-		});
-
-		sliderMaxSize.addListener(Events.OnMouseUp, new Listener<BaseEvent>() {
-		//sliderMaxSize.addListener(Events.Change, new Listener<SliderEvent>() {
+		};
+		timerMaxSlider = new Timer() {
 			@Override
-			public void handleEvent(BaseEvent be) {
+			public void run() {
 				if (sliderMaxSize.getValue() < sliderMinSize.getValue()) {
 					sliderMaxSize.setValue(sliderMinSize.getValue());
 				}
 				bubbleMapLayer.setMinRadius(sliderMinSize.getValue());
 				ValueChangeEvent.fire(BubbleLayerOptions.this, bubbleMapLayer);
-		}});
+			}
+		};
 	}
 
 	@Override
@@ -118,17 +132,24 @@ public class BubbleLayerOptions extends LayoutContainer implements LayerOptionsW
 		return bubbleMapLayer;
 	}
 
-	@Override
-	public void setValue(BubbleMapLayer value) {
-		this.bubbleMapLayer=value;
+	private void updateUI() {
+		sliderMinSize.setValue(bubbleMapLayer.getMinRadius(), true);
+		sliderMaxSize.setValue(bubbleMapLayer.getMaxRadius(), true);
+		colorPicker.setValue(bubbleMapLayer.getLabelColor());
 	}
-
+	
 	// TODO: fireevent
 	@Override
 	public void setValue(BubbleMapLayer value, boolean fireEvents) {
 		setValue(value);
 	}
-
+	
+	@Override
+	public void setValue(BubbleMapLayer value) {
+		this.bubbleMapLayer=value;
+		updateUI();
+	}
+	
 	@Override
 	public HandlerRegistration addValueChangeHandler(
 			ValueChangeHandler<BubbleMapLayer> handler) {

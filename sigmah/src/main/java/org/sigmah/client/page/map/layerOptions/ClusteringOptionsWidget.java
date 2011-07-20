@@ -52,10 +52,11 @@ public class ClusteringOptionsWidget extends LayoutContainer implements HasValue
 	// Administrative level clustering
 	private VerticalPanel panelAdministrativeLevelOptions = new VerticalPanel();
 	private Map<CountryDTO, AdminLevelDTO> pickedAdminLevelsByCountry = new HashMap<CountryDTO, AdminLevelDTO>();
-	private List<CountryDTO> countries = new ArrayList<CountryDTO>();
 	private Dispatcher service;
+	private SchemaDTO schema;
 	private HorizontalPanel panelEnclosingAdminLevel = new HorizontalPanel();
 	private List<AdminLevelDTO> selectedAdminLevels = new ArrayList<AdminLevelDTO>();
+	private Map<CountryDTO, ComboBox<AdminLevelDTO>> comboboxesByCountry = new HashMap<CountryDTO, ComboBox<AdminLevelDTO>>();
 
 	public ClusteringOptionsWidget(Dispatcher service) {
 		super();
@@ -100,6 +101,7 @@ public class ClusteringOptionsWidget extends LayoutContainer implements HasValue
 	}
 	
 	private void createAdminLevelOptions() {
+		List<CountryDTO> countries = schema.getCountries();
 		if (countries != null) {
 			// Show name of country with related adminlevels as option for the user
 			for (CountryDTO country : countries) {
@@ -142,6 +144,7 @@ public class ClusteringOptionsWidget extends LayoutContainer implements HasValue
 
 			// Keep a reference to the adminlevel by country
 			pickedAdminLevelsByCountry.put(country, adminLevels.get(0));
+			comboboxesByCountry.put(country, combobox);
 		} else { // No adminlevels defined for given country
 			LabelField labelUnavailable = new LabelField();
 			labelUnavailable.setText("[Unavailable]");
@@ -235,7 +238,7 @@ public class ClusteringOptionsWidget extends LayoutContainer implements HasValue
 
 			@Override
 			public void onSuccess(SchemaDTO result) {
-				countries = result.getCountries();
+				schema = result;
 				createAdminLevelOptions();
 			}
 		});
@@ -255,18 +258,20 @@ public class ClusteringOptionsWidget extends LayoutContainer implements HasValue
 	
 	public Clustering getSelectedClustering() {
 		Radio selectedRadio = radiogroupAggregation.getValue();
-		if (selectedRadio.equals(radioNoAggr)) {
-			return new NoClustering(); 
-		}
-		if (selectedRadio.equals(radioAdminLevelAggr)) {
-			AdministrativeLevelClustering newAdminClustering = new AdministrativeLevelClustering();
-			for (Integer adminLevel : adminLevelClustering.getAdminLevels()) {
-				newAdminClustering.getAdminLevels().add(adminLevel);
+		if (selectedRadio != null) {
+			if (selectedRadio.equals(radioNoAggr)) {
+				return new NoClustering(); 
 			}
-			return newAdminClustering;
-		}
-		if (selectedRadio.equals(radioAutomaticAggr)) {
-			return new AutomaticClustering(); 
+			if (selectedRadio.equals(radioAdminLevelAggr)) {
+				AdministrativeLevelClustering newAdminClustering = new AdministrativeLevelClustering();
+				for (Integer adminLevel : adminLevelClustering.getAdminLevels()) {
+					newAdminClustering.getAdminLevels().add(adminLevel);
+				}
+				return newAdminClustering;
+			}
+			if (selectedRadio.equals(radioAutomaticAggr)) {
+				return new AutomaticClustering(); 
+			}
 		}
 
 		return null;
@@ -286,11 +291,57 @@ public class ClusteringOptionsWidget extends LayoutContainer implements HasValue
 	@Override
 	public void setValue(Clustering value) {
 		selectedClustering = value;
+		updateRadios();
 		ValueChangeEvent.fire(this, value);
 	}
 
+
 	@Override
 	public void setValue(Clustering value, boolean fireEvents) {
-		
+		selectedClustering = value;
+		updateRadios();
+		if (fireEvents) {
+			ValueChangeEvent.fire(this, value);
+		}
 	}
+
+	private void updateRadios() {
+		if (selectedClustering instanceof NoClustering) {
+			radioNoAggr.setValue(true);
+		}
+		if (selectedClustering instanceof AutomaticClustering) {
+			radioAutomaticAggr.setValue(true);
+		}
+		if (selectedClustering instanceof AdministrativeLevelClustering) {
+			AdministrativeLevelClustering autoClustering = (AdministrativeLevelClustering) selectedClustering;
+			radioAdminLevelAggr.setValue(true);
+			clearComboboxesSelection();
+			selectCorrectAdminLevels(autoClustering);
+		}
+	}
+
+	/*
+	 * Ensure the correct AdminLevels are selected for given AdminClustering instance
+	 */
+	private void selectCorrectAdminLevels(AdministrativeLevelClustering adminLevelClustering) {
+		if (!schema.getCountries().isEmpty()) {
+			for (Integer adminLevelId : adminLevelClustering.getAdminLevels()) {
+				CountryDTO country = schema.getCountryByAdminLevelId(adminLevelId);
+				List<AdminLevelDTO> newSelection = new ArrayList<AdminLevelDTO>();
+				newSelection.add(schema.getAdminLevelById(adminLevelId));
+				comboboxesByCountry.get(country).setSelection(newSelection);
+			}
+		}
+	}
+
+	/*
+	 * Clear selection for all comboboxes containing the AdminLevels per country
+	 */
+	private void clearComboboxesSelection() {
+		for (ComboBox<AdminLevelDTO> comboboxAdminLevel : comboboxesByCountry.values()) {
+			comboboxAdminLevel.clearSelections();
+		}
+	}
+
+
 }
