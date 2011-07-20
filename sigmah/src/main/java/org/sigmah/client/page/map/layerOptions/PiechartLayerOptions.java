@@ -30,6 +30,7 @@ import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /*
@@ -45,6 +46,8 @@ public class PiechartLayerOptions extends LayoutContainer implements LayerOption
 	private SliderField sliderfieldMaxSize;
 	private Slider sliderMinSize = new Slider();
 	private Slider sliderMaxSize = new Slider();
+	private Timer timerMinSlider;
+	private Timer timerMaxSlider;
 	private FormData formData = new FormData("5");
 	private FormPanel panel = new FormPanel();
 
@@ -93,22 +96,36 @@ public class PiechartLayerOptions extends LayoutContainer implements LayerOption
 		sliderMinSize.addListener(Events.Change, new Listener<SliderEvent>() {
 			@Override
 			public void handleEvent(SliderEvent be) {
-				if (sliderMinSize.getValue() > sliderMaxSize.getValue()) {
-					sliderMinSize.setValue(sliderMaxSize.getValue());
-				}
-				piechartMapLayer.setMinRadius(sliderMinSize.getValue());
-				ValueChangeEvent.fire(PiechartLayerOptions.this, piechartMapLayer);
+				timerMinSlider.cancel();
+				timerMinSlider.schedule(250);
 		}});
 
 		sliderMaxSize.addListener(Events.Change, new Listener<SliderEvent>() {
 			@Override
 			public void handleEvent(SliderEvent be) {
+				timerMinSlider.cancel();
+				timerMaxSlider.schedule(250);
+		}});
+		timerMinSlider = new Timer() {
+			@Override
+			public void run() {
+				if (sliderMinSize.getValue() > sliderMaxSize.getValue()) {
+					sliderMinSize.setValue(sliderMaxSize.getValue());
+				}
+				piechartMapLayer.setMinRadius(sliderMinSize.getValue());
+				ValueChangeEvent.fire(PiechartLayerOptions.this, piechartMapLayer);
+			}
+		};
+		timerMaxSlider = new Timer() {
+			@Override
+			public void run() {
 				if (sliderMaxSize.getValue() < sliderMinSize.getValue()) {
 					sliderMaxSize.setValue(sliderMinSize.getValue());
 				}
 				piechartMapLayer.setMaxRadius(sliderMaxSize.getValue());
 				ValueChangeEvent.fire(PiechartLayerOptions.this, piechartMapLayer);
-		}});
+			}
+		};
 	}
 
 	private void setupIndicatorOptionsGrid() {
@@ -192,7 +209,13 @@ public class PiechartLayerOptions extends LayoutContainer implements LayerOption
 	@Override
 	public void setValue(PiechartMapLayer value) {
 		this.piechartMapLayer = value;
+		updateUI();
+	}
+
+	private void updateUI() {
 		populateColorPickerWidget();
+		sliderMinSize.setValue(piechartMapLayer.getMinRadius(), true);
+		sliderMaxSize.setValue(piechartMapLayer.getMaxRadius(), true);
 	}
 
 	@Override
