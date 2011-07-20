@@ -39,6 +39,7 @@ public class GetSchemaTest extends CommandTestCase {
         Assert.assertTrue("object graph is preserved (database-activity)",
                 schema.getDatabaseById(1) ==
                         schema.getDatabaseById(1).getActivities().get(0).getDatabase());
+        Assert.assertTrue("CountryId is not null", schema.getCountries().get(0).getAdminLevels().get(0).getCountryId()!=0);
     }
 
     @Test

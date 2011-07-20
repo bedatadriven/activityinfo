@@ -8,6 +8,8 @@ package org.sigmah.server.report.generator.map;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.sigmah.server.report.ClusterImpl;
+import org.sigmah.shared.report.model.clustering.Cluster;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;

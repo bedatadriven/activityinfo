@@ -5,10 +5,17 @@
 
 package org.sigmah.server.report.generator.map;
 
-import org.sigmah.server.domain.SiteData;
+import org.hibernate.hql.ast.tree.FromClause;
+import org.sigmah.server.report.ClusterImpl;
+import org.sigmah.server.report.generator.map.MarkerGraph.IntersectionCalculator;
+import org.sigmah.server.report.generator.map.MarkerGraph.Node;
 import org.sigmah.shared.report.content.*;
 import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.MapIcon;
+import org.sigmah.shared.report.model.PointValue;
+import org.sigmah.shared.report.model.SiteData;
+import org.sigmah.shared.report.model.clustering.Cluster;
+import org.sigmah.shared.report.model.clustering.Clusterer;
 import org.sigmah.shared.report.model.layers.IconMapLayer;
 import org.sigmah.shared.util.mapping.Extents;
 
@@ -89,41 +96,30 @@ public class IconLayerGenerator implements LayerGenerator {
 
             }
         }
-
-        if(layer.isClustered()) {
-
-            MarkerGraph graph = new MarkerGraph(points, new MarkerGraph.IntersectionCalculator() {
-                public boolean intersects(MarkerGraph.Node a, MarkerGraph.Node b) {
-                    return a.getPointValue().iconRect.intersects(b.getPointValue().iconRect);
-                }
-            });
-
-            GeneticSolver solver = new GeneticSolver();
-
-            List<Cluster> clusters = solver.solve(graph, rectCalculator, new RectFitnessFunctor(),
-                    UpperBoundsCalculator.calculate(graph, rectCalculator));
-
-            for(Cluster cluster : clusters) {
-                IconMapMarker marker = new IconMapMarker();
-                marker.setX(cluster.getPoint().getX());
-                marker.setY(cluster.getPoint().getY());
-                LatLng latlng = cluster.latLngCentroid();
-                marker.setLat(latlng.getLat());
-                marker.setLng(latlng.getLng());
-                marker.setIcon(icon);
-                content.getMarkers().add(marker);
-            }
-        } else {
-
-            for(PointValue point : points) {
-                IconMapMarker marker = new IconMapMarker();
-                marker.setX(point.px.getX());
-                marker.setY(point.px.getY());
-                marker.setLat(point.site.getLatitude());
-                marker.setLng(point.site.getLongitude());
-                marker.setIcon(icon);
-                content.getMarkers().add(marker);
-            }
-        }
+        
+        IntersectionCalculator intersectionCalculator = new IntersectionCalculator() {
+			@Override
+			public boolean intersects(Node a, Node b) {
+	        	  return a.getPointValue().iconRect.intersects(b.getPointValue().iconRect);
+			}
+		};
+        
+		Clusterer clusterer = ClustererFactory.fromClustering(layer.getClustering(), rectCalculator, points, intersectionCalculator);
+		
+        List<Cluster> clusters = clusterer.cluster();
+        createMarkersFrom(clusters, content);
     }
+
+	private void createMarkersFrom(List<Cluster> clusters, MapContent content) {
+		for(Cluster cluster : clusters) {
+            IconMapMarker marker = new IconMapMarker();
+            marker.setX(cluster.getPoint().getX());
+            marker.setY(cluster.getPoint().getY());
+            LatLng latlng = cluster.latLngCentroid();
+            marker.setLat(latlng.getLat());
+            marker.setLng(latlng.getLng());
+            marker.setIcon(icon);
+            content.getMarkers().add(marker);
+        }
+	}
 }

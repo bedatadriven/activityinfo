@@ -10,7 +10,6 @@ import com.google.inject.Inject;
 import org.apache.log4j.Logger;
 import org.sigmah.server.dao.BaseMapDAO;
 import org.sigmah.server.dao.PivotDAO;
-import org.sigmah.server.domain.SiteData;
 import org.sigmah.server.report.generator.map.*;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dao.SiteTableDAO;

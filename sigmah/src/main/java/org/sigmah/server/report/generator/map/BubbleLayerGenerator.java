@@ -5,14 +5,16 @@
 
 package org.sigmah.server.report.generator.map;
 
-import org.sigmah.server.domain.SiteData;
-import org.sigmah.server.report.generator.MapSymbol;
+import org.sigmah.server.report.ClusterImpl;
 import org.sigmah.shared.report.content.*;
 import org.sigmah.shared.report.model.*;
+import org.sigmah.shared.report.model.clustering.Cluster;
+import org.sigmah.shared.report.model.clustering.Clusterer;
 import org.sigmah.shared.report.model.labeling.ArabicNumberSequence;
 import org.sigmah.shared.report.model.labeling.LabelSequence;
 import org.sigmah.shared.report.model.labeling.LatinAlphaSequence;
 import org.sigmah.shared.report.model.layers.BubbleMapLayer;
+import org.sigmah.shared.report.model.layers.MapLayer;
 import org.sigmah.shared.report.model.layers.ScalingType;
 import org.sigmah.shared.util.mapping.Extents;
 
@@ -66,10 +68,13 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
             radiiCalculator = new FixedRadiiCalculator(layer.getMinRadius());
         }
 
-        // solve using the genetic algorithm
-        List<Cluster> clusters;
-        clusters = cluster(points, radiiCalculator);
-
+        IntersectionCalculator intersectionCalculator = new IntersectionCalculator(layer.getMaxRadius());
+        Clusterer clusterer = ClustererFactory.fromClustering
+        	(layer.getClustering(), radiiCalculator, points, intersectionCalculator);
+        
+        // Cluster points by the clustering algorithm set in the layer 
+        List<Cluster> clusters = clusterer.cluster();
+        
         // add unmapped sites
         for(PointValue pv : unmapped) {
             content.getUnmappedSites().add(pv.site.getId());
@@ -185,29 +190,6 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
                 return categoryProperties.getColor();
             }
         }
-    }
-
-    private List<Cluster> cluster(List<PointValue> points, RadiiCalculator radiiCalculator) {
-        List<Cluster> clusters;
-        if(layer.isClustered()) {
-
-            MarkerGraph graph = new MarkerGraph(points, new IntersectionCalculator(layer.getMaxRadius()));
-
-            GeneticSolver solver = new GeneticSolver();
-            clusters = solver.solve(
-                    graph,
-                    radiiCalculator,
-                    new CircleFitnessFunctor(),
-                    UpperBoundsCalculator.calculate(graph,
-                            new FixedRadiiCalculator(layer.getMinRadius())));
-        } else {
-            clusters = new ArrayList<Cluster>();
-            for(PointValue point : points) {
-                clusters.add(new Cluster(point));
-            }
-            radiiCalculator.calculate(clusters);
-        }
-        return clusters;
     }
 
     private void numberMarkers(List<BubbleMapMarker> markers) {

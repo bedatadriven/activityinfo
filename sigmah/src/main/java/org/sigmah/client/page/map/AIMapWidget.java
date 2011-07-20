@@ -79,6 +79,9 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
     // Model of a the map
     private MapContent mapModel;
 	private List<BaseMap> baseMaps;
+	
+	// True when the first layer is just put on the map
+	private boolean isFirstLayerUpdate=true;
 
     /**
      * True if the Google Maps API is not loaded AND
@@ -158,7 +161,7 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
                         @Override
                         public void onSuccess(Void result) {
                             apiLoadFailed = false;
-
+                            
                             mapWidget = new MapWidget();
                             mapWidget.addControl(new LargeMapControl());
 
@@ -230,10 +233,15 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
      * of the current selected indicators
      */
     private void updateMapToContent() {
-    	if (mapReportElement.getLayers().isEmpty())
-    	{
+    	// Don't update when no layers are present
+    	if (mapReportElement.getLayers().isEmpty()) {
     		return;
     	}
+    	// Prevent setting the extends for the MapWidget when more then 1 layer is added
+		if (isFirstLayerUpdate && 
+				!(mapReportElement.getLayers().size()==1 || mapReportElement.getLayers().isEmpty())) {
+			isFirstLayerUpdate=false;
+		}
     	
     	dispatcher.execute(new GenerateElement<MapContent>(mapReportElement), null, new AsyncCallback<MapContent>() {
 
@@ -250,7 +258,6 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 
 		        layout();
 		
-		        // TODO: i18n
 		        statusWidget.setStatus(result.getUnmappedSites().size() + " " + I18N.CONSTANTS.siteLackCoordiantes(), null);
 		
 		        GcIconFactory iconFactory = new GcIconFactory();

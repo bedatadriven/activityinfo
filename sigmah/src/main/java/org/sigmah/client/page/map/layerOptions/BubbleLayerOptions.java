@@ -87,16 +87,24 @@ public class BubbleLayerOptions extends LayoutContainer implements LayerOptionsW
 		sliderMinSize.addListener(Events.Change, new Listener<SliderEvent>() {
 			@Override
 			public void handleEvent(SliderEvent be) {
+
+		}});
+		
+		sliderMinSize.addListener(Events.OnMouseUp, new Listener<BaseEvent>() {
+			@Override
+			public void handleEvent(BaseEvent be) {
 				if (sliderMinSize.getValue() > sliderMaxSize.getValue()) {
 					sliderMinSize.setValue(sliderMaxSize.getValue());
 				}
 				bubbleMapLayer.setMinRadius(sliderMinSize.getValue());
 				ValueChangeEvent.fire(BubbleLayerOptions.this, bubbleMapLayer);
-		}});
+			}
+		});
 
-		sliderMaxSize.addListener(Events.Change, new Listener<SliderEvent>() {
+		sliderMaxSize.addListener(Events.OnMouseUp, new Listener<BaseEvent>() {
+		//sliderMaxSize.addListener(Events.Change, new Listener<SliderEvent>() {
 			@Override
-			public void handleEvent(SliderEvent be) {
+			public void handleEvent(BaseEvent be) {
 				if (sliderMaxSize.getValue() < sliderMinSize.getValue()) {
 					sliderMaxSize.setValue(sliderMinSize.getValue());
 				}

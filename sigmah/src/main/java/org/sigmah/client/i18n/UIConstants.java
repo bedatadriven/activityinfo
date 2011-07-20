@@ -2,37 +2,10 @@ package org.sigmah.client.i18n;
 
 /**
  * Interface to represent the constants contained in resource bundle:
- * 	'/home/alex/dev/activityinfo/sigmah/src/main/java/org/sigmah/client/i18n/UIConstants.properties'.
+ * 	'/home/ruud/workspace/activityinfo/sigmah/src/main/java/org/sigmah/client/i18n/UIConstants.properties'.
  */
 public interface UIConstants extends com.google.gwt.i18n.client.Constants {
   
-  /**
-   * Translated "======".
-   * 
-   * @return translated "======"
-   */
-  @DefaultStringValue("======")
-  @Key("")
-  String _();
-
-  /**
-   * Translated "HEAD".
-   * 
-   * @return translated "HEAD"
-   */
-  @DefaultStringValue("HEAD")
-  @Key("<<<<<<<")
-  String _______();
-
-  /**
-   * Translated "activityinfo-1.5".
-   * 
-   * @return translated "activityinfo-1.5"
-   */
-  @DefaultStringValue("activityinfo-1.5")
-  @Key(">>>>>>>")
-  String ________dup();
-
   /**
    * Translated "ALL".
    * 

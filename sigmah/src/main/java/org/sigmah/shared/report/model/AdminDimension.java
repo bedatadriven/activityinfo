@@ -5,6 +5,7 @@
 
 package org.sigmah.shared.report.model;
 
+
 public class AdminDimension extends Dimension {
 
 	private int levelId;

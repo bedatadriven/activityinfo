@@ -6,6 +6,7 @@
 package org.sigmah.server.report.generator.map;
 
 import org.sigmah.shared.report.content.Point;
+import org.sigmah.shared.report.model.PointValue;
 
 import java.awt.geom.Line2D;
 import java.util.ArrayList;

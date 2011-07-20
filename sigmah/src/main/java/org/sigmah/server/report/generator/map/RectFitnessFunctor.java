@@ -5,11 +5,14 @@
 
 package org.sigmah.server.report.generator.map;
 
-import java.awt.*;
+import java.awt.Rectangle;
 import java.util.List;
 /*
  * @author Alex Bertram
  */
+
+import org.sigmah.server.report.ClusterImpl;
+import org.sigmah.shared.report.model.clustering.Cluster;
 
 public class RectFitnessFunctor implements FitnessFunctor {
 
@@ -17,7 +20,8 @@ public class RectFitnessFunctor implements FitnessFunctor {
         return r.width * r.height;
     }
 
-    public double score(List<Cluster> clusters) {
+	@Override
+	public double score(List<Cluster> clusters) {
         double score = 0;
         for(int i=0; i!=clusters.size(); ++i) {
 
@@ -40,5 +44,5 @@ public class RectFitnessFunctor implements FitnessFunctor {
         }
 
         return score;
-    }
+	}
 }

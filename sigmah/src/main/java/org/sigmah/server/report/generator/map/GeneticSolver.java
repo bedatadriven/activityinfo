@@ -11,6 +11,9 @@ import java.util.*;
  * @author Alex Bertram
  */
 
+import org.sigmah.server.report.ClusterImpl;
+import org.sigmah.shared.report.model.clustering.Cluster;
+
 public class GeneticSolver {
 
     private RadiiCalculator radiiCalculator;
@@ -20,7 +23,7 @@ public class GeneticSolver {
     private List<Phenotype> population;
     private Random random;
 
-    private List<Cluster> simpleClusters;
+    private ArrayList<Cluster> simpleClusters;
 
     private double solutionFitness;
 
@@ -112,7 +115,7 @@ public class GeneticSolver {
         for (int i = 0; i != allSubGraphs.size(); i++) {
             List<MarkerGraph.Node> subGraph = allSubGraphs.get(i);
             if (subGraph.size()==1) {
-                simpleClusters.add(new Cluster(subGraph.get(0)));
+                simpleClusters.add(new ClusterImpl(subGraph.get(0)));
             } else if(allUpperBounds.get(i) == 1) {
                 simpleClusters.addAll(KMeans.cluster(subGraph, 1));
             } else {

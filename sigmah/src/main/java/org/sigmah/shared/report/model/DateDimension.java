@@ -6,6 +6,7 @@
 package org.sigmah.shared.report.model;
 
 
+
 /**
  * Models a data dimension that can be grouped by week, month, quarter, year, etc
  * 

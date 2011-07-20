@@ -12,6 +12,7 @@ import org.apache.poi.hslf.model.Picture;
 import org.apache.poi.hslf.model.ShapeTypes;
 import org.apache.poi.hslf.model.Slide;
 import org.apache.poi.hslf.usermodel.SlideShow;
+import java.awt.Dimension;
 import org.sigmah.server.report.generator.MapIconPath;
 import org.sigmah.server.report.generator.map.IconRectCalculator;
 import org.sigmah.server.report.renderer.image.ImageMapRenderer;
@@ -21,7 +22,10 @@ import org.sigmah.shared.report.content.MapMarker;
 import org.sigmah.shared.report.model.MapReportElement;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;

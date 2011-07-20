@@ -3,10 +3,9 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.server.report.generator;
+package org.sigmah.shared.report.model;
 
 import org.sigmah.shared.report.content.DimensionCategory;
-import org.sigmah.shared.report.model.Dimension;
 
 import java.util.HashMap;
 import java.util.Map;

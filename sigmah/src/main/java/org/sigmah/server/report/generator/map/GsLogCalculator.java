@@ -10,6 +10,9 @@ import java.util.List;
  * @author Alex Bertram
  */
 
+import org.sigmah.server.report.ClusterImpl;
+import org.sigmah.shared.report.model.clustering.Cluster;
+
 public class GsLogCalculator implements RadiiCalculator {
 
     private double minRadius;
@@ -20,7 +23,8 @@ public class GsLogCalculator implements RadiiCalculator {
         this.maxRadius = maxRadius;
     }
 
-    public void calculate(List<Cluster> clusters) {
+	@Override
+	public void calculate(List<Cluster> clusters) {
 
         // FIRST PASS:
         // calculate min and max of the markers
@@ -58,5 +62,5 @@ public class GsLogCalculator implements RadiiCalculator {
 
             clusters.get(i).setRadius(Math.round(minRadius + (symbolRange * p)));
         }
-    }
+	}
 }

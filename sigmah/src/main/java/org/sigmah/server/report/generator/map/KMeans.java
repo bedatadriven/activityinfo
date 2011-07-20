@@ -5,7 +5,9 @@
 
 package org.sigmah.server.report.generator.map;
 
+import org.sigmah.server.report.ClusterImpl;
 import org.sigmah.shared.report.content.Point;
+import org.sigmah.shared.report.model.clustering.Cluster;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,11 +56,11 @@ public class KMeans {
 
         // create clusters
         for(int i=0; i!=numClusters;++i) {
-            clusters.add(new Cluster(centers[i]));
+            clusters.add(new ClusterImpl(centers[i]));
         }
         
         for(int j=0; j!=nodes.size();++j) {
-            clusters.get(membership[j]).addNode(nodes.get(j));
+            ((ClusterImpl) clusters.get(membership[j])).addNode(nodes.get(j));
         }
 
         return clusters;

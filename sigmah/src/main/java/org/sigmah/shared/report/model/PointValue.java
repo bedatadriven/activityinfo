@@ -3,10 +3,8 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.server.report.generator.map;
+package org.sigmah.shared.report.model;
 
-import org.sigmah.server.domain.SiteData;
-import org.sigmah.server.report.generator.MapSymbol;
 import org.sigmah.shared.report.content.PieMapMarker;
 import org.sigmah.shared.report.content.Point;
 

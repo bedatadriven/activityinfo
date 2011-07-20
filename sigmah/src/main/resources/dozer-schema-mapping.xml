@@ -53,6 +53,18 @@
 		<class-b>org.sigmah.shared.dto.AttributeDTO</class-b>
 
 	</mapping>
+	
+		<mapping wildcard="true">
+
+		<class-a>org.sigmah.shared.domain.AdminLevel</class-a>
+		<class-b>org.sigmah.shared.dto.AdminLevelDTO</class-b>
+		
+		<field>
+			<a>country.id</a>
+			<b>countryId</b>
+		</field>
+
+	</mapping>
 
 
 	<mapping wildcard="true">

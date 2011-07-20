@@ -3,7 +3,7 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.server.domain;
+package org.sigmah.shared.report.model;
 
 import org.sigmah.shared.dao.SiteTableColumn;
 import org.sigmah.shared.domain.AdminEntity;

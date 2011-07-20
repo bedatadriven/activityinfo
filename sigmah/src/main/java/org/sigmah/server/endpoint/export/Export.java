@@ -11,7 +11,6 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.sigmah.server.domain.SiteData;
 import org.sigmah.server.report.generator.SiteDataBinder;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dao.SiteTableColumn;
@@ -20,6 +19,7 @@ import org.sigmah.shared.domain.AdminEntity;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.*;
 import org.sigmah.shared.report.model.DimensionType;
+import org.sigmah.shared.report.model.SiteData;
 
 import java.util.ArrayList;
 import java.util.Date;

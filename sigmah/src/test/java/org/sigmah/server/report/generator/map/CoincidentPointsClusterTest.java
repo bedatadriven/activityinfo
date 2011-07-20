@@ -7,9 +7,12 @@ package org.sigmah.server.report.generator.map;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.sigmah.server.report.generator.MapSymbol;
+import org.sigmah.server.report.ClusterImpl;
 import org.sigmah.shared.report.content.LatLng;
 import org.sigmah.shared.report.content.Point;
+import org.sigmah.shared.report.model.MapSymbol;
+import org.sigmah.shared.report.model.PointValue;
+import org.sigmah.shared.report.model.clustering.Cluster;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

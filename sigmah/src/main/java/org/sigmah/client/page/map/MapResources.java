@@ -43,5 +43,8 @@ public interface MapResources extends ClientBundle {
 	@Source("AddLayer.png")
 	public ImageResource addLayer();
 	
+	@Source("Error.png")
+	public ImageResource error();
+	
 	public interface MapStyle extends CssResource {}
 }

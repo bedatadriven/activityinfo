@@ -8,7 +8,7 @@ package org.sigmah.server.report.generator.map;
 import org.junit.Assert;
 import org.junit.Test;
 import org.sigmah.shared.dao.SiteTableColumn;
-import org.sigmah.server.domain.SiteData;
+import org.sigmah.shared.domain.Indicator;
 import org.sigmah.shared.report.content.BubbleMapMarker;
 import org.sigmah.shared.report.content.LatLng;
 import org.sigmah.shared.report.content.MapContent;
@@ -29,6 +29,7 @@ public class BubbleGeneratorTest {
 
         BubbleMapLayer layer = new BubbleMapLayer();
         layer.setClustering(new AutomaticClustering());
+        Indicator indicator1= new Indicator();
         layer.addIndicator(101);
         layer.addIndicator(102);
 
@@ -55,10 +56,12 @@ public class BubbleGeneratorTest {
 
         BubbleLayerGenerator gtor = new BubbleLayerGenerator(element, layer);
         gtor.generate(sites, map, content);
-
+        
         Assert.assertEquals("marker count", 2, content.getMarkers().size());
+        
+        // Color is not determined by dimension, but by the BubbleMapLayer setting
         Assert.assertEquals(255, ((BubbleMapMarker) content.getMarkers().get(0)).getColor());
-        Assert.assertEquals(0, ((BubbleMapMarker) content.getMarkers().get(1)).getColor());
+        Assert.assertEquals(255, ((BubbleMapMarker) content.getMarkers().get(1)).getColor());
         Assert.assertTrue(((BubbleMapMarker) content.getMarkers().get(0)).getRadius() >= layer.getMinRadius());
     }
 
@@ -113,7 +116,7 @@ public class BubbleGeneratorTest {
 
         Assert.assertEquals("marker count", 2, content.getMarkers().size());
         Assert.assertEquals(255, ((BubbleMapMarker) content.getMarkers().get(0)).getColor());
-        Assert.assertEquals(0, ((BubbleMapMarker) content.getMarkers().get(1)).getColor());
+        Assert.assertEquals(255, ((BubbleMapMarker) content.getMarkers().get(1)).getColor());
     }
 
 }

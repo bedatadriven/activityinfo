@@ -10,10 +10,14 @@ import java.util.List;
  * @author Alex Bertram
  */
 
+import org.sigmah.server.report.ClusterImpl;
+import org.sigmah.shared.report.model.clustering.Cluster;
+
 public class CircleFitnessFunctor implements FitnessFunctor {
 
 
-    public double score(List<Cluster> clusters) {
+	@Override
+	public double score(List<Cluster> clusters) {
 
         double score = 0;
         for(int i=0; i!=clusters.size(); ++i) {
@@ -44,6 +48,6 @@ public class CircleFitnessFunctor implements FitnessFunctor {
         }
 
         return score;
-    }
+	}
 
 }

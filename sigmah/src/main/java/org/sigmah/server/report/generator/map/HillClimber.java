@@ -10,15 +10,16 @@ import java.util.*;
  * @author Alex Bertram
  */
 
+import org.sigmah.shared.report.model.clustering.Cluster;
+
 public class HillClimber {
 
     private List<List<MarkerGraph.Node>> subgraphs;
     private Random random = new Random();
 
     private int[] currentNode;
-    private List<List<Cluster>> clusters;
+    private ArrayList<List<Cluster>> clusters;
     private double currentScore;
-
     private final RadiiCalculator radiiCalculator;
     private final FitnessFunctor fitness;
 

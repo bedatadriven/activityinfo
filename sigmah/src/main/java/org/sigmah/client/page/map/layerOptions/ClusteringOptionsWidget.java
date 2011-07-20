@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.page.map.MapResources;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.CountryDTO;
@@ -33,6 +34,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.Image;
 
 /*
  * Shows a list of options to aggregate markers on the map
@@ -108,17 +110,21 @@ public class ClusteringOptionsWidget extends LayoutContainer implements HasValue
 		}
 		
 		HorizontalPanel panelMargin = new HorizontalPanel();
-		panelMargin.setWidth("3em");
+		panelMargin.setWidth("1em");
 		panelEnclosingAdminLevel.add(panelMargin);
 		panelEnclosingAdminLevel.add(panelAdministrativeLevelOptions);
 		
 		setEnabledOnSelectAdminLevel();
 		setAdminLevelEnabledOrDisabled();
+		
+		layout();
 	}
 
 	private void createNoCountriesFoundUI() {
 		LabelField labelNoCountries = new LabelField("[Unavailable]");
 		panelAdministrativeLevelOptions.add(labelNoCountries);
+		
+		layout();
 	}
 
 	private void createAdminLevelsByCountry(CountryDTO country) {
@@ -167,6 +173,7 @@ public class ClusteringOptionsWidget extends LayoutContainer implements HasValue
 				}
 				
 				adminLevelClustering.getAdminLevels().add(adminLevel.getId());
+				setValue(adminLevelClustering);
 			}
 		});
 		return combobox;
@@ -223,7 +230,7 @@ public class ClusteringOptionsWidget extends LayoutContainer implements HasValue
 
 			@Override
 			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
+				createFailedFetchCountriesUI();
 			}
 
 			@Override
@@ -234,6 +241,18 @@ public class ClusteringOptionsWidget extends LayoutContainer implements HasValue
 		});
 	}
 
+	private void createFailedFetchCountriesUI() {
+		LabelField labelFailedFetchCountries = new LabelField("Failed to download list of countries from server, option disabled. Sorry!");
+		labelFailedFetchCountries.setAutoWidth(true);
+		Image imageError = new Image(MapResources.INSTANCE.error());
+
+		panelAdministrativeLevelOptions.add(imageError);
+		panelAdministrativeLevelOptions.add(labelFailedFetchCountries);
+		radioAdminLevelAggr.setEnabled(false);
+		
+		layout();
+	}
+	
 	public Clustering getSelectedClustering() {
 		Radio selectedRadio = radiogroupAggregation.getValue();
 		if (selectedRadio.equals(radioNoAggr)) {
@@ -256,7 +275,7 @@ public class ClusteringOptionsWidget extends LayoutContainer implements HasValue
 	@Override
 	public HandlerRegistration addValueChangeHandler(
 			ValueChangeHandler<Clustering> handler) {
-		return null;
+		return addHandler(handler, ValueChangeEvent.getType());
 	}
 
 	@Override

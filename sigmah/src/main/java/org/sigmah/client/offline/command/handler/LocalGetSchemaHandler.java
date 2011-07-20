@@ -112,6 +112,7 @@ public class LocalGetSchemaHandler implements CommandHandler<GetSchema> {
 
                     int countryId = rs.getInt(4);
                     countries.get(countryId).getAdminLevels().add(level);
+                    level.setCountryId(countryId);
                 }
             });
         }

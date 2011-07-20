@@ -83,6 +83,7 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		createSelectedIndicatorsList();
 		
 		Button buttonClearSelection = new Button("Clear selection");
+		buttonClearSelection.setEnabled(false);
 		buttonClearSelection.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent ce) {
@@ -226,6 +227,7 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 	 */
 	private void clearSelection() {
 		indicatorsStore.removeAll();
+		buttonAddLayer.setEnabled(false);
 	}
 	
 	/*
@@ -261,9 +263,11 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 				
 				if (be.getItem() instanceof IndicatorGroup && multiSelect) {
 					addIndicatorGroupToStore((IndicatorGroup) be.getItem());
+					buttonAddLayer.setEnabled(true);
 				}
 				if (be.getItem() instanceof IndicatorDTO) {
 					addIndicatorToStoreIfNotPresent((IndicatorDTO) be.getItem());
+					buttonAddLayer.setEnabled(true);
 				}
 
 				indicatorsStore.commitChanges();

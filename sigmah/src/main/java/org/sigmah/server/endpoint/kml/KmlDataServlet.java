@@ -11,7 +11,6 @@ import com.google.inject.Singleton;
 import org.apache.commons.codec.binary.Base64;
 import org.sigmah.server.auth.Authenticator;
 import org.sigmah.server.domain.DomainFilters;
-import org.sigmah.server.domain.SiteData;
 import org.sigmah.server.report.generator.SiteDataBinder;
 import org.sigmah.server.report.util.HtmlWriter;
 import org.sigmah.server.util.KMLNamespace;
@@ -24,6 +23,7 @@ import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.exception.CommandException;
+import org.sigmah.shared.report.model.SiteData;
 import org.xml.sax.SAXException;
 
 import javax.persistence.EntityManager;

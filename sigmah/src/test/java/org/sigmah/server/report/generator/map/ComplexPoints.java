@@ -6,6 +6,7 @@
 package org.sigmah.server.report.generator.map;
 
 import org.sigmah.shared.report.content.LatLng;
+import org.sigmah.shared.report.model.PointValue;
 import org.sigmah.shared.util.mapping.Extents;
 import org.sigmah.shared.util.mapping.TileMath;
 

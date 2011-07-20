@@ -10,6 +10,9 @@ import java.util.List;
  * @author Alex Bertram
  */
 
+import org.sigmah.server.report.ClusterImpl;
+import org.sigmah.shared.report.model.clustering.Cluster;
+
 public class FixedRadiiCalculator implements RadiiCalculator {
 
     private final int radius;
