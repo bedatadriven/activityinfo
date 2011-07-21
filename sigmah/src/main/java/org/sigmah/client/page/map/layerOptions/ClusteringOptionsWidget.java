@@ -154,8 +154,7 @@ public class ClusteringOptionsWidget extends LayoutContainer implements HasValue
 		panelAdministrativeLevelOptions.add(panel);
 	}
 
-	private ComboBox<AdminLevelDTO> createAdminLevelsCombobox(
-			List<AdminLevelDTO> adminLevels) {
+	private ComboBox<AdminLevelDTO> createAdminLevelsCombobox(List<AdminLevelDTO> adminLevels) {
 		// Show a combobox with available adminlevels for the country
 		ListStore<AdminLevelDTO> adminLevelStore = new ListStore<AdminLevelDTO>();
 		adminLevelStore.add(adminLevels);
@@ -179,6 +178,7 @@ public class ClusteringOptionsWidget extends LayoutContainer implements HasValue
 				setValue(adminLevelClustering);
 			}
 		});
+		
 		return combobox;
 	}
 	
@@ -207,10 +207,6 @@ public class ClusteringOptionsWidget extends LayoutContainer implements HasValue
 		selectedAdminLevels.remove(adminLevelToRemove);
 	}
 	
-	private void removeAdminLevelsFromCountry(AdminLevelDTO adminLevel) {
-		
-	}
-	
 	/*
 	 * Enables/disables the adminlevel choice UI
 	 */
@@ -220,7 +216,6 @@ public class ClusteringOptionsWidget extends LayoutContainer implements HasValue
 			public void handleEvent(FieldEvent be) {
 				setAdminLevelEnabledOrDisabled();
 			}
-
 		});
 	}
 
@@ -230,7 +225,6 @@ public class ClusteringOptionsWidget extends LayoutContainer implements HasValue
 
 	private void getCountries() {
 		service.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
-
 			@Override
 			public void onFailure(Throwable caught) {
 				createFailedFetchCountriesUI();
@@ -295,7 +289,6 @@ public class ClusteringOptionsWidget extends LayoutContainer implements HasValue
 		ValueChangeEvent.fire(this, value);
 	}
 
-
 	@Override
 	public void setValue(Clustering value, boolean fireEvents) {
 		selectedClustering = value;
@@ -342,6 +335,4 @@ public class ClusteringOptionsWidget extends LayoutContainer implements HasValue
 			comboboxAdminLevel.clearSelections();
 		}
 	}
-
-
 }

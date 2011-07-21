@@ -276,8 +276,8 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 				if (result.getBaseMap().hasSingleZoomLevel()) {
 					mapWidget.setZoomLevel(result.getBaseMap().getMaxZoom()); // minZoom should also be fine
 				} else {
-					LatLng southWest = LatLng.newInstance(result.getExtents().getMinLat(), result.getExtents().getMaxLon());
-					LatLng northEast = LatLng.newInstance(result.getExtents().getMaxLat(), result.getExtents().getMinLon());
+					LatLng southWest = LatLng.newInstance(result.getExtents().getMinLat(), result.getExtents().getMinLon());
+					LatLng northEast = LatLng.newInstance(result.getExtents().getMaxLat(), result.getExtents().getMaxLon());
 					LatLngBounds bounds = LatLngBounds.newInstance(southWest, northEast);
 					int idealZoom = mapWidget.getBoundsZoomLevel(bounds);
 
