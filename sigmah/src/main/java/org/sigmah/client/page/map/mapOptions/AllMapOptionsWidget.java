@@ -43,7 +43,6 @@ public class AllMapOptionsWidget extends ContentPanel {
     private AdminFilterPanel adminPanel;
     private LayoutOptionsWidget layoutForm;
     private DateRangePanel datePanel;
-    private FilterOptionsWidget filterOptionsWidget;
     private BaseMapPickerWidget mapOptionsWidget;
     
     private FieldSet fieldsetBaseMaps = new FieldSet();
@@ -57,20 +56,21 @@ public class AllMapOptionsWidget extends ContentPanel {
 
         initializeComponent();
 
-        createLayoutOptions();
+        //createLayoutOptions();
         createBaseMapPicker();
-        createFilterOptions();
-
-//        adminPanel = new AdminFilterPanel(service);
-//        add(adminPanel);
-//
-//        datePanel = new DateRangePanel();
-//        add(datePanel);
+        createDateFilterOptions();
+        // TODO:hookup valuechanged event so that the filter actually is applied to the mapreportelement 
+        createAdminFilterOptions(service);
     }
-    
-    private void createFilterOptions() {
-    	filterOptionsWidget = new FilterOptionsWidget();
-    	fieldsetFilterOptions.add(filterOptionsWidget);
+
+	private void createAdminFilterOptions(Dispatcher service) {
+		adminPanel = new AdminFilterPanel(service);
+        add(adminPanel);
+	}
+
+	private void createDateFilterOptions() {
+		datePanel = new DateRangePanel();
+        add(datePanel);
 	}
 
 	private void createBaseMapPicker() {

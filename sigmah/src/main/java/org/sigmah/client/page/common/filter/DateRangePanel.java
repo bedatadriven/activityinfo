@@ -5,9 +5,14 @@
 
 package org.sigmah.client.page.common.filter;
 
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.FieldEvent;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.DateField;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.HasValue;
@@ -25,33 +30,40 @@ import java.util.Date;
  * @author Alex Bertram
  */
 public class DateRangePanel extends ContentPanel implements HasValue<Filter>{
-    private DateField date1;
-    private DateField date2;
+    private DateField datefieldMinDate;
+    private DateField datefieldMaxDate;
+    private Filter filter = new Filter();
 
     public DateRangePanel() {
         super();
 
-        setHeading(I18N.CONSTANTS.filterByDate());
-        setIcon(IconImageBundle.ICONS.filter());
-        setBodyStyle("padding:5px");
+//        setIcon(IconImageBundle.ICONS.filter());
+//        setBodyStyle("padding:5px");
 
         add(new Html(I18N.CONSTANTS.fromDate()));
 
-        date1 = new DateField();
-        add(date1);
+        datefieldMinDate = new DateField();
+        add(datefieldMinDate);
 
         add(new Html(I18N.CONSTANTS.toDate()));
 
-        date2 = new DateField();
-        add(date2);
-    }
-
-    public Date getMinDate() {
-        return date1.getValue();
-    }
-
-    public Date getMaxDate() {
-        return date2.getValue();
+        datefieldMaxDate = new DateField();
+        add(datefieldMaxDate);
+        
+        datefieldMinDate.addListener(Events.Change, new Listener<FieldEvent>() {
+			@Override
+			public void handleEvent(FieldEvent be) {
+				filter.setMinDate(datefieldMinDate.getValue());
+				ValueChangeEvent.fire(DateRangePanel.this, filter);
+			}
+		});
+        datefieldMaxDate.addListener(Events.Change, new Listener<FieldEvent>() {
+			@Override
+			public void handleEvent(FieldEvent be) {
+				filter.setMaxDate(datefieldMaxDate.getValue());
+				ValueChangeEvent.fire(DateRangePanel.this, filter);
+			}
+		});
     }
 
     /**
@@ -60,32 +72,37 @@ public class DateRangePanel extends ContentPanel implements HasValue<Filter>{
      * @param filter  the filter to update
      */
     public void updateFilter(Filter filter) {
-        filter.setMinDate(date1.getValue());
-        filter.setMaxDate(date2.getValue());
+        filter.setMinDate(datefieldMinDate.getValue());
+        filter.setMaxDate(datefieldMaxDate.getValue());
     }
 
 	@Override
 	public HandlerRegistration addValueChangeHandler(
 			ValueChangeHandler<Filter> handler) {
-		// TODO Auto-generated method stub
-		return null;
+		return addHandler(handler, ValueChangeEvent.getType());
 	}
 
 	@Override
 	public Filter getValue() {
-		// TODO Auto-generated method stub
-		return null;
+		return filter;
 	}
 
 	@Override
 	public void setValue(Filter value) {
-		// TODO Auto-generated method stub
-		
+		this.filter=value;
 	}
 
 	@Override
 	public void setValue(Filter value, boolean fireEvents) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public Date getMinDate() {
+		return datefieldMinDate.getValue();
+	}
+
+	public Date getMaxDate() {
+		return datefieldMaxDate.getValue();
 	}
 }

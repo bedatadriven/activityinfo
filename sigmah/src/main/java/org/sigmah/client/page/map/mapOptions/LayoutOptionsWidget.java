@@ -30,6 +30,7 @@ import java.util.List;
  *
  * @author Alex Bertram
  */
+// TODO: refactor into page formatting options only
 class LayoutOptionsWidget extends LayoutContainer {
 
     private final Dispatcher service;
