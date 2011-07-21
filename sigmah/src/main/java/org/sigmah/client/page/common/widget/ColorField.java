@@ -5,7 +5,6 @@
 
 package org.sigmah.client.page.common.widget;
 
-import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ColorPaletteEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;

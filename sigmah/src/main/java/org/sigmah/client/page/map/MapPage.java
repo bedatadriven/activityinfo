@@ -124,7 +124,7 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
         toolbarMapActions.addRefreshButton();
         toolbarMapActions.add(new ExportMenuButton(RenderElement.Format.PowerPoint, new ExportCallback() {
             public void export(RenderElement.Format format) {
-               //export(format);
+               export(format);
 
             }
         }));
@@ -154,6 +154,7 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
 	@Override
 	public void export(Format format) {
 		// TODO Auto-generated method stub
+	}
 //	    public ReportElement getMapElement() {
 //      return form.getMapElement();
 //  }
@@ -161,7 +162,6 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
 //  public boolean validate() {
 //      return form.validate();
 //  }
-	}
 
 	@Override
 	public PageId getPageId() {

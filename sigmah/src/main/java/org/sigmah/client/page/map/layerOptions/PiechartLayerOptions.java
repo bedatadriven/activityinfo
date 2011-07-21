@@ -12,7 +12,9 @@ import org.sigmah.shared.report.model.layers.PiechartMapLayer;
 import org.sigmah.shared.report.model.layers.PiechartMapLayer.Slice;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SliderEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -23,8 +25,11 @@ import com.extjs.gxt.ui.client.widget.form.SliderField;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.CellSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -40,7 +45,7 @@ public class PiechartLayerOptions extends LayoutContainer implements LayerOption
 	private Dispatcher service;
 	private PiechartMapLayer piechartMapLayer;
 	private SchemaDTO schema;
-	private Grid<NamedSlice> gridIndicatorOptions;
+	private EditorGrid<NamedSlice> gridIndicatorOptions;
 	private ListStore<NamedSlice> indicatorsStore = new ListStore<NamedSlice>();
 	private SliderField sliderfieldMinSize;
 	private SliderField sliderfieldMaxSize;
@@ -133,40 +138,63 @@ public class PiechartLayerOptions extends LayoutContainer implements LayerOption
 		
 		ColumnConfig columnName = new ColumnConfig();
 	    columnName.setId("name");
-	    columnName.setDataIndex("name");
 	    columnName.setHeader(I18N.CONSTANTS.indicators());
 	    columnConfigs.add(columnName);
-	    ColorField colorField = new ColorField();
+	    final ColorField colorField = new ColorField();
 	    
 		ColumnConfig columnColor = new ColumnConfig();
 	    columnColor.setId("color");
-	    columnColor.setDataIndex("color");
 	    columnColor.setHeader(I18N.CONSTANTS.color());
-	    columnColor.setWidth(30);
+	    columnColor.setWidth(50);
 	    
 	    CellEditor colorEditor = new CellEditor(colorField) {
 			@Override
 			public Object postProcessValue(Object value) {
-				return super.postProcessValue(value);
+				if (value==null) {
+					return value;
+				}
+				return colorField.getIntValue();
 			}
-
 			@Override
 			public Object preProcessValue(Object value) {
-				return super.preProcessValue(value);
+				if (value==null) {
+					return value;
+				}
+				return Integer.toHexString((Integer)value);
 			}
 	    };
 	    
+	    GridCellRenderer<NamedSlice> colorRenderer = new GridCellRenderer<PiechartLayerOptions.NamedSlice>() {
+			
+			@Override
+			public Object render(NamedSlice model, String property, ColumnData config,
+					int rowIndex, int colIndex, ListStore<NamedSlice> store,
+					Grid<NamedSlice> grid) {
+				String color = Integer.toHexString(model.getColor());
+				return "<span style='background:#" + color + "'>" + color + "</span>";
+			}
+		};
+	    
+		columnColor.setRenderer(colorRenderer);
 	    columnColor.setEditor(colorEditor);
 	    columnConfigs.add(columnColor);
 
 		ColumnModel columnmodelIndicators = new ColumnModel(columnConfigs);
 
-		gridIndicatorOptions = new Grid<NamedSlice>(indicatorsStore, columnmodelIndicators);
+		gridIndicatorOptions = new EditorGrid<NamedSlice>(indicatorsStore, columnmodelIndicators);
 		gridIndicatorOptions.setBorders(false);
 		gridIndicatorOptions.setAutoExpandColumn("name");
 		gridIndicatorOptions.setAutoWidth(true);
-		gridIndicatorOptions.setHeight(200);
+		gridIndicatorOptions.setHeight(150);
 		gridIndicatorOptions.setSelectionModel(new CellSelectionModel<PiechartLayerOptions.NamedSlice>());
+		gridIndicatorOptions.addListener(Events.AfterEdit, new Listener<GridEvent<NamedSlice>>() {
+			@Override
+			public void handleEvent(GridEvent<NamedSlice> be) {
+				// set the new color on the slice on the wrapped model 
+				be.getModel().getSlice().setColor(be.getModel().getColor());
+				ValueChangeEvent.fire(PiechartLayerOptions.this, piechartMapLayer);
+			}
+		});
 
 		VBoxLayoutData vbld = new VBoxLayoutData();
 		vbld.setFlex(1);
@@ -195,7 +223,7 @@ public class PiechartLayerOptions extends LayoutContainer implements LayerOption
 				piechartMapLayer.getIndicatorIds().size() > 0) {
 			for (Slice slice : piechartMapLayer.getSlices()) {
 				String name = schema.getIndicatorById(slice.getIndicatorId()).getName();
-				indicatorsStore.add(new NamedSlice(slice.getColor(), slice.getIndicatorId(), name));
+				indicatorsStore.add(new NamedSlice(slice.getColor(), slice.getIndicatorId(), name, slice));
 			}
 		}
 		layout(true);
@@ -230,15 +258,17 @@ public class PiechartLayerOptions extends LayoutContainer implements LayerOption
 	}
 	
 	public static class NamedSlice extends BaseModelData {
+		private Slice slice;
 		public NamedSlice() {
 		}
 
-		public NamedSlice(int color, int indicatorId, String name) {
+		public NamedSlice(int color, int indicatorId, String name, Slice slice) {
 			super();
 			
 			setColor(color);
 			setIndicatorId(indicatorId);
 			setName(name);
+			this.slice=slice;
 		}
 		
 		public int getColor() {
@@ -263,6 +293,10 @@ public class PiechartLayerOptions extends LayoutContainer implements LayerOption
 
 		public void setName(String name) {
 			set("name" , name);
+		}
+
+		public Slice getSlice() {
+			return slice;
 		}
 	}
 }

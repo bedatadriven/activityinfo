@@ -17,17 +17,11 @@ import org.sigmah.client.map.MapApiLoader;
 import org.sigmah.client.map.MapTypeFactory;
 import org.sigmah.shared.command.GenerateElement;
 import org.sigmah.shared.command.GetBaseMaps;
-import org.sigmah.shared.command.GetSitePoints;
 import org.sigmah.shared.command.result.BaseMapResult;
-import org.sigmah.shared.command.result.SitePointList;
-import org.sigmah.shared.dto.SitePointDTO;
 import org.sigmah.shared.map.BaseMap;
-import org.sigmah.shared.report.content.Content;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.MapMarker;
 import org.sigmah.shared.report.model.MapReportElement;
-import org.sigmah.shared.report.model.ReportElement;
-import org.sigmah.shared.report.model.layers.MapLayer;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 import org.sigmah.shared.util.mapping.Extents;
 
@@ -48,7 +42,6 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.maps.client.MapType;
 import com.google.gwt.maps.client.MapWidget;
-import com.google.gwt.maps.client.control.Control;
 import com.google.gwt.maps.client.control.LargeMapControl;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.geom.LatLngBounds;
@@ -274,8 +267,10 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 				LatLng center = LatLng.newInstance(result.getExtents().center().getLat(), result.getExtents().center().getLng());
 				mapWidget.panTo(center);
 				if (result.getBaseMap().hasSingleZoomLevel()) {
-					mapWidget.setZoomLevel(result.getBaseMap().getMaxZoom()); // minZoom should also be fine
+					// MinZoom & MaxZoom both represent the sole zooming level
+					mapWidget.setZoomLevel(result.getBaseMap().getMaxZoom()); 
 				} else {
+					// Compute ideal zoomlevel
 					LatLng southWest = LatLng.newInstance(result.getExtents().getMinLat(), result.getExtents().getMinLon());
 					LatLng northEast = LatLng.newInstance(result.getExtents().getMaxLat(), result.getExtents().getMaxLon());
 					LatLngBounds bounds = LatLngBounds.newInstance(southWest, northEast);
@@ -288,6 +283,8 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 					if (idealZoom > result.getBaseMap().getMaxZoom()) {
 						idealZoom = result.getBaseMap().getMaxZoom();
 					}
+					
+					// Apply the zoomlevel
 					mapWidget.setZoomLevel(idealZoom);
 				}
 			}
