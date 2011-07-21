@@ -1,17 +1,14 @@
 package org.sigmah.shared.map;
 
-import javax.persistence.Id;
-import javax.persistence.Lob;
-
 import org.sigmah.shared.dto.DTO;
 
 public class BaseMap implements DTO {
 
-	private String id;
-	private String name = "";
-	private int minZoom;
-	private int maxZoom;
-	private String copyright = "";
+	protected String id;
+	protected String name = "";
+	protected int minZoom;
+	protected int maxZoom;
+	protected String copyright = "";
 
 	public static TileBaseMap createNullMap(String baseMapId) {
 		TileBaseMap result = new TileBaseMap();
@@ -25,7 +22,6 @@ public class BaseMap implements DTO {
 		return result;
 	}
 
-	@Id
 	public String getId() {
 	    return id;
 	}
@@ -70,7 +66,6 @@ public class BaseMap implements DTO {
 	 * @return the copyright message to be displayed when browsing for this
 	 * map.
 	 */
-	@Lob
 	public String getCopyright() {
 	    return copyright;
 	}

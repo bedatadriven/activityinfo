@@ -6,9 +6,8 @@
 package org.sigmah.shared.map;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Lob;
-
-import org.sigmah.shared.dto.DTO;
 
 /**
  * Defines a base map (or "background map") that is 
@@ -19,7 +18,9 @@ import org.sigmah.shared.dto.DTO;
  * 
  * @author Alex Bertram
  */
-@Entity
+// FIXME: Support upgrading without model change after refactoring BaseMap into 
+// TileBaseMap and other subclases of BaseMap 
+@Entity(name="BaseMap")
 public class TileBaseMap extends BaseMap  {
 
     private String tileUrlPattern = "";
@@ -48,5 +49,27 @@ public class TileBaseMap extends BaseMap  {
 				.replace("{x}", Integer.toString(x))
 				.replace("{y}", Integer.toString(y))
 				.replace("{z}", Integer.toString(zoom));
+	}
+
+	@Id
+	@Override
+	public String getId() {
+		return super.getId();
+	}
+
+	@Override
+	public void setId(String id) {
+		super.setId(id);
+	}
+
+	@Lob
+	@Override
+	public String getCopyright() {
+		return super.getCopyright();
+	}
+
+	@Override
+	public void setCopyright(String copyright) {
+		super.setCopyright(copyright);
 	}
 }

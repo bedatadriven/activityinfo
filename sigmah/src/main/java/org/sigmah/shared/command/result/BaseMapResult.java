@@ -5,10 +5,9 @@
 
 package org.sigmah.shared.command.result;
 
-import org.sigmah.shared.map.BaseMap;
-import org.sigmah.shared.map.TileBaseMap;
-
 import java.util.List;
+
+import org.sigmah.shared.map.BaseMap;
 
 /**
  *
@@ -32,9 +31,5 @@ public class BaseMapResult implements CommandResult  {
 
     public List<BaseMap> getBaseMaps() {
         return baseMaps;
-    }
-
-    public void setBaseMaps(List<BaseMap> baseMaps) {
-        this.baseMaps = baseMaps;
     }
 }
