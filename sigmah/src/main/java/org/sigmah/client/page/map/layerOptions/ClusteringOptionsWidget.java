@@ -119,7 +119,7 @@ public class ClusteringOptionsWidget extends LayoutContainer implements HasValue
 		setEnabledOnSelectAdminLevel();
 		setAdminLevelEnabledOrDisabled();
 		
-		layout();
+		layout(true);
 	}
 
 	private void createNoCountriesFoundUI() {

@@ -5,6 +5,10 @@
 
 package org.sigmah.client.page.map.mapOptions;
 
+import com.extjs.gxt.ui.client.event.BoxComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.widget.BoxComponent;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
@@ -35,13 +39,16 @@ public class AllMapOptionsWidget extends ContentPanel {
     protected final Dispatcher service;
     protected final IconImageBundle icons;
 
-    protected AdminFilterPanel adminPanel;
-    protected LayoutOptionsWidget layoutForm;
-    protected DateRangePanel datePanel;
+    // All the encapsulated widgets containing some map options
+    private AdminFilterPanel adminPanel;
+    private LayoutOptionsWidget layoutForm;
+    private DateRangePanel datePanel;
+    private FilterOptionsWidget filterOptionsWidget;
     private BaseMapPickerWidget mapOptionsWidget;
     
     private FieldSet fieldsetBaseMaps = new FieldSet();
     private FieldSet fieldsetLayoutOptions = new FieldSet();
+    private FieldSet fieldsetFilterOptions = new FieldSet();
 
     @Inject
     public AllMapOptionsWidget(Dispatcher service, IconImageBundle icons) {
@@ -52,16 +59,21 @@ public class AllMapOptionsWidget extends ContentPanel {
 
         createLayoutOptions();
         createBaseMapPicker();
+        createFilterOptions();
 
 //        adminPanel = new AdminFilterPanel(service);
 //        add(adminPanel);
 //
 //        datePanel = new DateRangePanel();
 //        add(datePanel);
-        
     }
     
-    private void createBaseMapPicker() {
+    private void createFilterOptions() {
+    	filterOptionsWidget = new FilterOptionsWidget();
+    	fieldsetFilterOptions.add(filterOptionsWidget);
+	}
+
+	private void createBaseMapPicker() {
     	mapOptionsWidget = new BaseMapPickerWidget(service);
         fieldsetBaseMaps.add(getMapOptionsWidget());
 	}
@@ -80,12 +92,15 @@ public class AllMapOptionsWidget extends ContentPanel {
 		
 		fieldsetBaseMaps.setHeading("Base maps");
 		fieldsetLayoutOptions.setHeading("Layout");
+		fieldsetFilterOptions.setHeading(I18N.CONSTANTS.timePeriod());
 		
 		setFieldsetDefaults(fieldsetBaseMaps);
 		setFieldsetDefaults(fieldsetLayoutOptions);
+		setFieldsetDefaults(fieldsetFilterOptions);
 		
 		add(fieldsetBaseMaps);
 		add(fieldsetLayoutOptions);
+		add(fieldsetFilterOptions);
 	}
 
 	public BaseMapPickerWidget getMapOptionsWidget() {

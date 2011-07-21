@@ -76,7 +76,7 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
     private void createSelectedLayersWidget() {
         layersWidget = new LayersWidget(dispatcher);
         
-        BorderLayoutData east = new BorderLayoutData(Style.LayoutRegion.EAST, 0.20f);
+        BorderLayoutData east = new BorderLayoutData(Style.LayoutRegion.EAST, 0.25f);
         east.setCollapsible(true);
         east.setSplit(true);
         east.setMargins(new Margins(0, 0, 0, 5));

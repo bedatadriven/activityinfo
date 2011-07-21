@@ -185,7 +185,7 @@ public class PiechartLayerOptions extends LayoutContainer implements LayerOption
 		gridIndicatorOptions.setBorders(false);
 		gridIndicatorOptions.setAutoExpandColumn("name");
 		gridIndicatorOptions.setAutoWidth(true);
-		gridIndicatorOptions.setHeight(150);
+		gridIndicatorOptions.setHeight(100);
 		gridIndicatorOptions.setSelectionModel(new CellSelectionModel<PiechartLayerOptions.NamedSlice>());
 		gridIndicatorOptions.addListener(Events.AfterEdit, new Listener<GridEvent<NamedSlice>>() {
 			@Override
@@ -218,6 +218,7 @@ public class PiechartLayerOptions extends LayoutContainer implements LayerOption
 	}
 
 	private void populateColorPickerWidget() {
+		indicatorsStore.removeAll();
 		if (piechartMapLayer !=null &&
 				piechartMapLayer.getIndicatorIds() != null &&
 				piechartMapLayer.getIndicatorIds().size() > 0) {

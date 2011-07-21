@@ -60,8 +60,8 @@ public class LayersWidget extends ContentPanel implements HasValue<MapReportElem
 		initializeComponent();
 		createAddLayersDialog();
 
-		createListView();
 		createAddLayerButton();
+		createListView();
 		createLayerOptions();
 	}
 

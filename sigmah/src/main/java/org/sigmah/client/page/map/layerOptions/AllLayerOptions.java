@@ -41,6 +41,17 @@ public class AllLayerOptions extends ContentPanel implements HasValue<MapLayer> 
 		super();
 	
 		this.service = service;
+
+		initializeComponent();
+		
+		createBubbleLayerOptionsWidget();
+		createIconLayerOptionsWidget();
+		createPiechartLayerOptionsWidget();
+
+		createClusteringOptions(service);
+	}
+
+	private void createClusteringOptions(Dispatcher service) {
 		clusteringOptions = new ClusteringOptionsWidget(service);
 		clusteringOptions.addValueChangeHandler(new ValueChangeHandler<Clustering>() {
 			@Override
@@ -51,22 +62,11 @@ public class AllLayerOptions extends ContentPanel implements HasValue<MapLayer> 
 				}
 			}
 		});
-	}
-
-	@Override
-	protected void onRender(Element parent, int index) {
-		super.onRender(parent, index);
-		
-		createBubbleLayerOptionsWidget();
-		createIconLayerOptionsWidget();
-		createPiechartLayerOptionsWidget();
-
-		initializeComponent();
+		fieldsetClustering.add(clusteringOptions);
 	}
 
 	private void createPiechartLayerOptionsWidget() {
 		piechartMapLayerOptions = new PiechartLayerOptions(service);
-		
 		piechartMapLayerOptions.addValueChangeHandler(new ValueChangeHandler<PiechartMapLayer>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<PiechartMapLayer> event) {
@@ -95,6 +95,7 @@ public class AllLayerOptions extends ContentPanel implements HasValue<MapLayer> 
 
 	private void initializeComponent() {
 		setLayout(new FlowLayout());
+		setHeaderVisible(false);
 		
 		setFieldsetHeadingToLayerName();
 		fieldsetLayerSpecificOptions.setCollapsible(true);
@@ -104,8 +105,7 @@ public class AllLayerOptions extends ContentPanel implements HasValue<MapLayer> 
 		add(fieldsetLayerSpecificOptions);
 
 		fieldsetClustering.setHeading(I18N.CONSTANTS.clustering());
-		fieldsetClustering.setCollapsible(true);		
-		fieldsetClustering.add(clusteringOptions);
+		fieldsetClustering.setCollapsible(true);
 		fieldsetClustering.setAutoWidth(true);
 		add(fieldsetClustering);
 	}
