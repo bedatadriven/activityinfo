@@ -8,6 +8,7 @@ package org.sigmah.server.report.generator.map;
 import org.junit.Assert;
 import org.junit.Test;
 import org.sigmah.server.report.ClusterImpl;
+import org.sigmah.server.report.generator.map.cluster.GeneticSolver;
 import org.sigmah.shared.report.content.LatLng;
 import org.sigmah.shared.report.content.Point;
 import org.sigmah.shared.report.model.MapSymbol;

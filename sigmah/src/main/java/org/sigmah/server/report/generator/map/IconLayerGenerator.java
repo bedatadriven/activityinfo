@@ -9,6 +9,7 @@ import org.hibernate.hql.ast.tree.FromClause;
 import org.sigmah.server.report.ClusterImpl;
 import org.sigmah.server.report.generator.map.MarkerGraph.IntersectionCalculator;
 import org.sigmah.server.report.generator.map.MarkerGraph.Node;
+import org.sigmah.server.report.generator.map.cluster.ClustererFactory;
 import org.sigmah.shared.report.content.*;
 import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.MapIcon;

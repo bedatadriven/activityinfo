@@ -11,19 +11,19 @@ import java.util.List;
 import java.util.Map;
 
 import org.sigmah.server.dao.BaseMapDAO;
-import org.sigmah.shared.map.BaseMap;
+import org.sigmah.shared.map.TileBaseMap;
 
 /**
  * @author Alex Bertram
  */
 public class MockBaseMapDAO implements BaseMapDAO {
 
-    Map<String, BaseMap> baseMaps;
+    Map<String, TileBaseMap> baseMaps;
 
     public MockBaseMapDAO() {
-        baseMaps = new HashMap<String,BaseMap>();
+        baseMaps = new HashMap<String,TileBaseMap>();
 
-        BaseMap map1 = new BaseMap();
+        TileBaseMap map1 = new TileBaseMap();
         map1.setId("map1");
         map1.setMinZoom(0);
         map1.setMaxZoom(12);
@@ -35,12 +35,12 @@ public class MockBaseMapDAO implements BaseMapDAO {
     }
 
     @Override
-    public BaseMap getBaseMap(String id) {
+    public TileBaseMap getBaseMap(String id) {
         return baseMaps.get(id);
     }
 
     @Override
-    public List<BaseMap> getBaseMaps() {
-        return new ArrayList<BaseMap>(baseMaps.values());
+    public List<TileBaseMap> getBaseMaps() {
+        return new ArrayList<TileBaseMap>(baseMaps.values());
     }
 }

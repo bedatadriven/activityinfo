@@ -6,6 +6,9 @@
 package org.sigmah.client.mock;
 
 import org.sigmah.shared.map.BaseMap;
+import org.sigmah.shared.map.SateliteBaseMap;
+import org.sigmah.shared.map.StreetBaseMap;
+import org.sigmah.shared.map.TileBaseMap;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 import java.util.ArrayList;
@@ -228,7 +231,7 @@ public class DummyData {
         list.add(new AdminEntityDTO(1, 1, "Ituri"));
         return new AdminEntityResult(list);
     }
-
+    
     public static AdminEntityResult PEARPlus_ZS() {
         List<AdminEntityDTO> list = new ArrayList<AdminEntityDTO>();
         list.add(new AdminEntityDTO(2, 11, 1, "Banana"));
@@ -246,7 +249,7 @@ public class DummyData {
 
     public static BaseMapResult BaseMaps() {
 
-        BaseMap map = new BaseMap();
+        TileBaseMap map = new TileBaseMap();
         map.setName("Administrative Map");
         map.setCopyright("Foobar");
         map.setId("admin");
@@ -255,6 +258,8 @@ public class DummyData {
 
         List<BaseMap> maps = new ArrayList<BaseMap>();
         maps.add(map);
+        maps.add(new StreetBaseMap());
+        maps.add(new SateliteBaseMap());
 
         return new BaseMapResult(maps);
     }

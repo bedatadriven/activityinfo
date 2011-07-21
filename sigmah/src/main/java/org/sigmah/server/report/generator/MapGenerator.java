@@ -14,7 +14,7 @@ import org.sigmah.server.report.generator.map.*;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dao.SiteTableDAO;
 import org.sigmah.shared.domain.User;
-import org.sigmah.shared.map.BaseMap;
+import org.sigmah.shared.map.TileBaseMap;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.MapMarker;
 import org.sigmah.shared.report.model.*;
@@ -91,14 +91,14 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
                 height);
 
         // Retrieve the basemap and clamp zoom level
-        BaseMap baseMap =null;
+        TileBaseMap baseMap =null;
         
         if (element.getBaseMapId() == null) {
-        	baseMap = BaseMap.createNullMap("0");
+        	baseMap = TileBaseMap.createNullMap("0");
         } else {
         	baseMap = baseMapDAO.getBaseMap(element.getBaseMapId());
             if (baseMap == null) {
-            	baseMap = BaseMap.createNullMap(element.getBaseMapId());
+            	baseMap = TileBaseMap.createNullMap(element.getBaseMapId());
     			logger.error("Could not find base map id=" + element.getBaseMapId());
             }
         } 
@@ -115,7 +115,7 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         content.setBaseMap(baseMap);
         content.setZoomLevel(zoom);
         if (baseMap == null) {
-        	baseMap = BaseMap.createNullMap(element.getBaseMapId());
+        	baseMap = TileBaseMap.createNullMap(element.getBaseMapId());
 			logger.error("Could not find base map id=" + element.getBaseMapId());
         }
      content.setExtents(extents);

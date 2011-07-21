@@ -9,6 +9,7 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.command.GetBaseMaps;
 import org.sigmah.shared.command.result.BaseMapResult;
 import org.sigmah.shared.map.BaseMap;
+import org.sigmah.shared.map.TileBaseMap;
 
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;

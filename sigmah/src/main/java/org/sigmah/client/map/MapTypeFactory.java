@@ -12,6 +12,9 @@ import com.google.gwt.maps.client.geom.MercatorProjection;
 import com.google.gwt.maps.client.geom.Projection;
 import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.map.BaseMap;
+import org.sigmah.shared.map.SateliteBaseMap;
+import org.sigmah.shared.map.StreetBaseMap;
+import org.sigmah.shared.map.TileBaseMap;
 
 /**
  * Utility class for creating standard GoogleMap MapTypes
@@ -48,11 +51,18 @@ public class MapTypeFactory {
      * @return
      */
     public static MapType mapTypeForBaseMap(BaseMap baseMap) {
-        TileLayer[] layers = new TileLayer[1];
-        layers[0] = new BaseMapLayer(baseMap);
-        Projection projection = new MercatorProjection(baseMap.getMaxZoom()+1);
-
-        return new MapType(layers, projection, baseMap.getName());
+        if (baseMap instanceof TileBaseMap) {
+            TileLayer[] layers = new TileLayer[1];
+            layers[0] = new BaseMapLayer(baseMap);
+            Projection projection = new MercatorProjection(baseMap.getMaxZoom()+1);
+            return new MapType(layers, projection, baseMap.getName());
+        } else if (baseMap instanceof SateliteBaseMap) {
+        	return MapType.getSatelliteMap();
+        } else if (baseMap instanceof StreetBaseMap) {
+        	return MapType.getNormalMap();
+        }
+        
+        return null;
     }
 
     /**

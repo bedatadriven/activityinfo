@@ -9,7 +9,9 @@ import org.sigmah.shared.report.content.PieMapMarker;
 import org.sigmah.shared.report.content.Point;
 
 import java.awt.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PointValue {
     public SiteData site;
@@ -18,7 +20,8 @@ public class PointValue {
     public Point px;
     public Rectangle iconRect;
     public List<PieMapMarker.SliceValue> slices;
-    
+	private Map<Integer, Integer> adminMembership = new HashMap<Integer, Integer>();
+
     public PointValue() {
     }
 
@@ -35,4 +38,12 @@ public class PointValue {
         this.iconRect = iconRect;
         this.value = 1;
     }
+
+	public void setAdminMembership(Map<Integer, Integer> adminMembership) {
+		this.adminMembership = adminMembership;
+	}
+
+	public Map<Integer, Integer> getAdminMembership() {
+		return adminMembership;
+	}
 }

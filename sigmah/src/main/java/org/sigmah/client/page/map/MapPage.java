@@ -5,9 +5,11 @@
 
 package org.sigmah.client.page.map;
 
+import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
+import org.sigmah.client.event.DownloadRequestEvent;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.NavigationCallback;
@@ -22,7 +24,9 @@ import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.page.map.mapOptions.AllMapOptionsWidget;
 import org.sigmah.shared.command.RenderElement;
 import org.sigmah.shared.command.RenderElement.Format;
+import org.sigmah.shared.command.result.RenderResult;
 import org.sigmah.shared.map.BaseMap;
+import org.sigmah.shared.map.TileBaseMap;
 import org.sigmah.shared.report.model.MapReportElement;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.util.Margins;
@@ -33,6 +37,7 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 /**
@@ -41,6 +46,7 @@ import com.google.inject.Inject;
 public class MapPage extends ContentPanel implements Page, ExportCallback, ActionListener  {
 
     public static final PageId PAGE_ID = new PageId("maps");
+    private EventBus eventBus;
 	
     // Data mechanics
     private final Dispatcher dispatcher;
@@ -53,8 +59,9 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
     private MapReportElement mapReportElement = new MapReportElement();
 
     @Inject
-    public MapPage(Dispatcher dispatcher, final AllMapOptionsWidget form) {
+    public MapPage(Dispatcher dispatcher, final AllMapOptionsWidget form, EventBus eventBus) {
     	this.dispatcher = dispatcher;
+    	this.eventBus=eventBus;
     	
     	MapResources.INSTANCE.layerStyle().ensureInjected();
     	
@@ -104,7 +111,7 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
         allMapOptionsWidget.getMapOptionsWidget().addValueChangeHandler(new ValueChangeHandler<BaseMap>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<BaseMap> event) {
-				MapReportElement map = aiMapWidget.getValue();
+				MapReportElement map = aiMapWidget.getValue(); 
 				map.setBaseMapId(event.getValue().getId());
 				aiMapWidget.setValue(map);
 			}
@@ -153,7 +160,20 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
 
 	@Override
 	public void export(Format format) {
-		// TODO Auto-generated method stub
+		RenderElement renderElement = new RenderElement();
+		renderElement.setElement(mapReportElement);
+		renderElement.setFormat(format);
+		dispatcher.execute(renderElement, null, new AsyncCallback<RenderResult>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			public void onSuccess(RenderResult result) {
+				eventBus.fireEvent(new DownloadRequestEvent(result.getUrl()));
+			}
+		});
 	}
 //	    public ReportElement getMapElement() {
 //      return form.getMapElement();

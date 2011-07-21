@@ -6,6 +6,7 @@
 package org.sigmah.shared.command.result;
 
 import org.sigmah.shared.map.BaseMap;
+import org.sigmah.shared.map.TileBaseMap;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
  *
  * List of <code>BaseMap</code>s returned by the <code>GetBaseMaps</code> command.
  *
- * @see org.sigmah.shared.map.BaseMap
+ * @see org.sigmah.shared.map.TileBaseMap
  * @see org.sigmah.shared.command.GetBaseMaps
  *
  * @author Alex Bertram

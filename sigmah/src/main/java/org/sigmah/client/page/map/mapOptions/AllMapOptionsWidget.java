@@ -107,27 +107,28 @@ public class AllMapOptionsWidget extends ContentPanel {
 		return mapOptionsWidget;
 	}
 
-//    public ReportElement getMapElement() {
-////        MapReportElement element = new MapReportElement();
-////        layoutForm.updateElement(element);
-////
-////        List<IndicatorDTO> sel = indicatorTree.getSelection();
-////        BubbleMapLayer layer = new BubbleMapLayer();
-////        
-////        if (!sel.isEmpty()) {
-////            layer.addIndicatorId(sel.get(0).getId());
-////        }
-////
-////        symbolForm.updateLayer(layer);
-////        element.addLayer(layer);
-////
-////        datePanel.updateFilter(element.getFilter());
-////
-////        for (AdminEntityDTO entity : adminPanel.getSelection()) {
-////            element.getFilter().addRestriction(DimensionType.AdminLevel, entity.getId());
-////        }
-////        return element;
-//    }
+    public ReportElement getMapElement() {
+//        MapReportElement element = new MapReportElement();
+//        layoutForm.updateElement(element);
+//
+//        List<IndicatorDTO> sel = indicatorTree.getSelection();
+//        BubbleMapLayer layer = new BubbleMapLayer();
+//        
+//        if (!sel.isEmpty()) {
+//            layer.addIndicatorId(sel.get(0).getId());
+//        }
+//
+//        symbolForm.updateLayer(layer);
+//        element.addLayer(layer);
+//
+//        datePanel.updateFilter(element.getFilter());
+//
+//        for (AdminEntityDTO entity : adminPanel.getSelection()) {
+//            element.getFilter().addRestriction(DimensionType.AdminLevel, entity.getId());
+//        }
+//        return element;
+    	return null;
+    }
 
 
 //    public boolean validate() {

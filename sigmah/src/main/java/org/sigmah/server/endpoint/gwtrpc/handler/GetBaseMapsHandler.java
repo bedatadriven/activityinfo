@@ -5,6 +5,9 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.inject.Inject;
 import org.sigmah.server.dao.BaseMapDAO;
 import org.sigmah.shared.command.GetBaseMaps;
@@ -13,6 +16,9 @@ import org.sigmah.shared.command.result.BaseMapResult;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.CommandException;
+import org.sigmah.shared.map.BaseMap;
+import org.sigmah.shared.map.SateliteBaseMap;
+import org.sigmah.shared.map.StreetBaseMap;
 
 /**
  * @author Alex Bertram
@@ -28,6 +34,10 @@ public class GetBaseMapsHandler implements CommandHandler<GetBaseMaps> {
     }
 
     public CommandResult execute(GetBaseMaps cmd, User user) throws CommandException {
-        return new BaseMapResult(baseMapDAO.getBaseMaps());
+    	List<BaseMap> maps = new ArrayList<BaseMap>();
+    	maps.addAll(baseMapDAO.getBaseMaps());
+    	maps.add(new SateliteBaseMap());
+    	maps.add(new StreetBaseMap());
+        return new BaseMapResult(maps);
     }
 }

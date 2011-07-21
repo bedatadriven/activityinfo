@@ -29,7 +29,7 @@ import javax.imageio.ImageIO;
 import org.sigmah.server.report.generator.MapIconPath;
 import org.sigmah.server.report.generator.map.TileProvider;
 import org.sigmah.server.report.generator.map.TiledMap;
-import org.sigmah.shared.map.BaseMap;
+import org.sigmah.shared.map.TileBaseMap;
 import org.sigmah.shared.report.content.BubbleMapMarker;
 import org.sigmah.shared.report.content.IconMapMarker;
 import org.sigmah.shared.report.content.MapMarker;
@@ -54,9 +54,9 @@ public class ImageMapRenderer {
 	 *
 	 */
     private class RemoteTileProvider implements TileProvider {
-        private BaseMap baseMap;
+        private TileBaseMap baseMap;
 
-        private RemoteTileProvider(BaseMap baseMap) {
+        private RemoteTileProvider(TileBaseMap baseMap) {
             this.baseMap = baseMap;
         }
 

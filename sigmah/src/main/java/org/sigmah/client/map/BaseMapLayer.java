@@ -11,7 +11,9 @@ import com.google.gwt.maps.client.TileLayer;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.geom.LatLngBounds;
 import com.google.gwt.maps.client.geom.Point;
+
 import org.sigmah.shared.map.BaseMap;
+import org.sigmah.shared.map.TileBaseMap;
 
 /**
  * Implementation of GoogleMaps TileLayer for an ActivityInfo BaseMap
@@ -20,9 +22,9 @@ class BaseMapLayer extends TileLayer {
 
 	private BaseMap baseMap;
 
-	public BaseMapLayer(BaseMap baseMap) {
-		super(createCopyRights(baseMap), baseMap.getMinZoom(), baseMap.getMaxZoom());
-		this.baseMap = baseMap;
+	public BaseMapLayer(BaseMap baseMap2) {
+		super(createCopyRights(baseMap2), baseMap2.getMinZoom(), baseMap2.getMaxZoom());
+		this.baseMap = baseMap2;
 	}
 
     public static CopyrightCollection createCopyRights(BaseMap baseMap) {
@@ -45,7 +47,12 @@ class BaseMapLayer extends TileLayer {
 
 	@Override
 	public String getTileURL(Point tile, int zoomLevel) {
-        return baseMap.getTileUrl(zoomLevel, tile.getX(), tile.getY());
+		if (baseMap instanceof TileBaseMap) {
+			return ((TileBaseMap) baseMap).getTileUrl(zoomLevel, tile.getX(), tile.getY());
+		}
+		
+		// TODO: fix
+		return null;
 	}
 
 	@Override

@@ -10,7 +10,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import org.apache.log4j.Logger;
-import org.sigmah.shared.map.BaseMap;
+import org.sigmah.shared.map.TileBaseMap;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -32,18 +32,16 @@ public class BaseMapDAOImpl implements BaseMapDAO {
     private final static Logger logger = Logger.getLogger(BaseMapDAOImpl.class);
     private final Provider<EntityManager> entityManager;
     
-    
-    
     @Inject
     public BaseMapDAOImpl(Provider<EntityManager> entityManager) {
     	this.entityManager = entityManager;
     }
 
-    public BaseMap getBaseMap(String id) {
-        return entityManager.get().find(BaseMap.class, id);
+    public TileBaseMap getBaseMap(String id) {
+        return entityManager.get().find(TileBaseMap.class, id);
     }
 
-    public List<BaseMap> getBaseMaps() {
+    public List<TileBaseMap> getBaseMaps() {
     	return entityManager.get().createQuery("select m from BaseMap m").getResultList();
     }
 }

@@ -1,13 +1,17 @@
-package org.sigmah.server.report.generator.map;
+package org.sigmah.server.report.generator.map.cluster;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.sigmah.server.report.ClusterImpl;
+import org.sigmah.server.report.generator.map.RadiiCalculator;
 import org.sigmah.shared.report.model.PointValue;
 import org.sigmah.shared.report.model.clustering.Cluster;
 import org.sigmah.shared.report.model.clustering.Clusterer;
 
+/*
+ * Does not cluster at all, rather maps points 1:1 to clusters
+ */
 public class NoneClusterer implements Clusterer {
 	private RadiiCalculator radiiCalculator;
 	private List<PointValue> points;

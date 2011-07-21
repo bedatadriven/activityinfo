@@ -6,6 +6,7 @@
 package org.sigmah.server.report.generator.map;
 
 import org.sigmah.server.report.ClusterImpl;
+import org.sigmah.server.report.generator.map.cluster.ClustererFactory;
 import org.sigmah.shared.report.content.*;
 import org.sigmah.shared.report.model.*;
 import org.sigmah.shared.report.model.clustering.Cluster;
@@ -156,7 +157,9 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
                         PointValue pv = new PointValue(site,
                                 createSymbol(site, layer.getColorDimensions()),
                                 value, px);
-
+                        
+                        // TODO: add AdminLevel to pointvalue
+                        
                         (px==null ? unmapped : mapped).add(pv);
                     }
                 }

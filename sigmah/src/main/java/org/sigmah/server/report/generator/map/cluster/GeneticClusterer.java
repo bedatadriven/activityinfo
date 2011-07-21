@@ -1,8 +1,12 @@
-package org.sigmah.server.report.generator.map;
+package org.sigmah.server.report.generator.map.cluster;
 
 import java.util.List;
 
 import org.sigmah.server.report.ClusterImpl;
+import org.sigmah.server.report.generator.map.CircleFitnessFunctor;
+import org.sigmah.server.report.generator.map.MarkerGraph;
+import org.sigmah.server.report.generator.map.RadiiCalculator;
+import org.sigmah.server.report.generator.map.UpperBoundsCalculator;
 import org.sigmah.server.report.generator.map.MarkerGraph.IntersectionCalculator;
 import org.sigmah.shared.report.model.PointValue;
 import org.sigmah.shared.report.model.clustering.Cluster;

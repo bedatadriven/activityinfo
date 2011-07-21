@@ -19,6 +19,7 @@ import org.sigmah.shared.command.GenerateElement;
 import org.sigmah.shared.command.GetBaseMaps;
 import org.sigmah.shared.command.result.BaseMapResult;
 import org.sigmah.shared.map.BaseMap;
+import org.sigmah.shared.map.TileBaseMap;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.MapMarker;
 import org.sigmah.shared.report.model.MapReportElement;
@@ -205,7 +206,7 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 	private void getBaseMaps() {
 		GetBaseMaps getBaseMaps = new GetBaseMaps();
 		
-		dispatcher.execute(getBaseMaps, null, new AsyncCallback<BaseMapResult>() {
+		dispatcher.execute(getBaseMaps, new MaskingAsyncMonitor(this, I18N.CONSTANTS.loading()), new AsyncCallback<BaseMapResult>() {
 
 			@Override
 			public void onFailure(Throwable caught) {

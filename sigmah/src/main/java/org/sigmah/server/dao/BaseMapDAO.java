@@ -6,12 +6,12 @@
 package org.sigmah.server.dao;
 
 import com.google.inject.ImplementedBy;
-import org.sigmah.shared.map.BaseMap;
+import org.sigmah.shared.map.TileBaseMap;
 
 import java.util.List;
 
 /**
- * Data Access Object for the {@link org.sigmah.shared.map.BaseMap} objects
+ * Data Access Object for the {@link org.sigmah.shared.map.TileBaseMap} objects
  * available to the user.
  *
  * @author Alex Bertram
@@ -19,9 +19,9 @@ import java.util.List;
 @ImplementedBy(BaseMapDAOImpl.class)
 public interface BaseMapDAO {
 
-    BaseMap getBaseMap(String id);
+    TileBaseMap getBaseMap(String id);
 
-    List<BaseMap> getBaseMaps();
+    List<TileBaseMap> getBaseMaps();
 
 
 }

@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.sigmah.server.report.ClusterImpl;
 import org.sigmah.server.report.generator.map.BubbleLayerGenerator.IntersectionCalculator;
+import org.sigmah.server.report.generator.map.cluster.GeneticSolver;
 import org.sigmah.shared.report.content.BubbleMapMarker;
 import org.sigmah.shared.report.content.DimensionCategory;
 import org.sigmah.shared.report.content.EntityCategory;

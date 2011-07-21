@@ -5,7 +5,7 @@
 
 package org.sigmah.shared.report.content;
 
-import org.sigmah.shared.map.BaseMap;
+import org.sigmah.shared.map.TileBaseMap;
 import org.sigmah.shared.util.mapping.Extents;
 
 import java.util.*;
@@ -14,7 +14,7 @@ import java.util.*;
  * Represents the model of a map 
  */
 public class MapContent implements Content {
-    private BaseMap baseMap;
+    private TileBaseMap baseMap;
     private List<FilterDescription> filterDescriptions;
     private List<MapMarker> markers = new ArrayList<MapMarker>();
     private Set<Integer> unmappedSites = new HashSet<Integer>();
@@ -65,11 +65,11 @@ public class MapContent implements Content {
         this.zoomLevel = zoomLevel;
     }
 
-    public BaseMap getBaseMap() {
+    public TileBaseMap getBaseMap() {
         return baseMap;
     }
 
-    public void setBaseMap(BaseMap baseMap) {
+    public void setBaseMap(TileBaseMap baseMap) {
         this.baseMap = baseMap;
     }
 

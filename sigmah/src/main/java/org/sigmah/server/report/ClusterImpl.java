@@ -29,6 +29,10 @@ public class ClusterImpl implements Cluster {
         pointValues = new ArrayList<PointValue>();
         this.point = point;
     }
+    
+    public ClusterImpl(List<PointValue> points) {
+    	pointValues=points;
+    }
 
     public ClusterImpl(MarkerGraph.Node node) {
         pointValues = new ArrayList<PointValue>(1);

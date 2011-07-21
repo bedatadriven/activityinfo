@@ -11,7 +11,7 @@ import org.junit.Test;
 import org.sigmah.server.report.DummyPivotTableData;
 import org.sigmah.server.report.renderer.html.ImageStorage;
 import org.sigmah.server.report.renderer.html.ImageStorageProvider;
-import org.sigmah.shared.map.BaseMap;
+import org.sigmah.shared.map.TileBaseMap;
 import org.sigmah.shared.report.content.LatLng;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.MapMarker;
@@ -86,7 +86,7 @@ public class ItextReportRendererTest {
 		marker1.setX(px.x);
 		marker1.setY(px.y);
 		
-		BaseMap baseMap = new BaseMap();
+		TileBaseMap baseMap = new TileBaseMap();
 		baseMap.setTileUrlPattern("http://mt{s}.aimaps.net/nordkivu.cd/v1/z{z}/{x}x{y}.png");
 		
 		MapContent mapContent = new MapContent();

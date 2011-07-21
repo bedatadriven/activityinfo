@@ -8,6 +8,10 @@ package org.sigmah.client.page.common.filter;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.form.DateField;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.HasValue;
+
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.shared.dao.Filter;
@@ -20,7 +24,7 @@ import java.util.Date;
  *
  * @author Alex Bertram
  */
-public class DateRangePanel extends ContentPanel {
+public class DateRangePanel extends ContentPanel implements HasValue<Filter>{
     private DateField date1;
     private DateField date2;
 
@@ -59,4 +63,29 @@ public class DateRangePanel extends ContentPanel {
         filter.setMinDate(date1.getValue());
         filter.setMaxDate(date2.getValue());
     }
+
+	@Override
+	public HandlerRegistration addValueChangeHandler(
+			ValueChangeHandler<Filter> handler) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Filter getValue() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setValue(Filter value) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setValue(Filter value, boolean fireEvents) {
+		// TODO Auto-generated method stub
+		
+	}
 }
