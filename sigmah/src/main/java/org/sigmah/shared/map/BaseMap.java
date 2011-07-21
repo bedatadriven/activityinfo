@@ -5,7 +5,7 @@ import javax.persistence.Lob;
 
 import org.sigmah.shared.dto.DTO;
 
-public class BaseMap {
+public class BaseMap implements DTO {
 
 	private String id;
 	private String name = "";

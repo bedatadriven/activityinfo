@@ -20,7 +20,7 @@ import org.sigmah.shared.dto.DTO;
  * @author Alex Bertram
  */
 @Entity
-public class TileBaseMap extends BaseMap implements DTO {
+public class TileBaseMap extends BaseMap  {
 
     private String tileUrlPattern = "";
     
