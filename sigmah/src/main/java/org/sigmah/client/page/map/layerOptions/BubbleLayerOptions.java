@@ -51,18 +51,18 @@ public class BubbleLayerOptions extends LayoutContainer implements LayerOptionsW
 	}
 
 	private void createColorPicker() {
+		colorPicker.setFieldLabel("Color");
+		colorPicker.setValue("000000");
+		colorPicker.setAutoWidth(true);
+		
 		// Set the selected color to the maplayer
-		colorPicker.addListener(Events.Select, new Listener<FieldEvent>() {
+		colorPicker.addListener(Events.Change, new Listener<FieldEvent>() {
 			@Override
 			public void handleEvent(FieldEvent be) {
 				bubbleMapLayer.setLabelColor(colorPicker.getValue());
 				ValueChangeEvent.fire(BubbleLayerOptions.this, bubbleMapLayer);
 		}});
 
-		colorPicker.setFieldLabel("Color");
-		colorPicker.setValue("000000");
-		colorPicker.setAutoWidth(true);
-		
 		LabelField labelColor = new LabelField(I18N.CONSTANTS.color());
 		add(labelColor);
 		add(colorPicker);

@@ -9,12 +9,12 @@ package org.sigmah.shared.report.content;
  * @author Alex Bertram
  */
 public class BubbleMapMarker extends MapMarker {
-    private String color;
+    private String color = "FF0000";
     private String label;
     private double alpha;
     private double value;
     private int radius;
-    private String labelColor;
+    private String labelColor = "FF0000";
 
     public double getValue() {
         return value;

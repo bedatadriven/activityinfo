@@ -12,6 +12,7 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.DateField;
+import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -40,12 +41,12 @@ public class DateRangePanel extends ContentPanel implements HasValue<Filter>{
 //        setIcon(IconImageBundle.ICONS.filter());
 //        setBodyStyle("padding:5px");
 
-        add(new Html(I18N.CONSTANTS.fromDate()));
+        add(new LabelField(I18N.CONSTANTS.fromDate()));
 
         datefieldMinDate = new DateField();
         add(datefieldMinDate);
 
-        add(new Html(I18N.CONSTANTS.toDate()));
+        add(new LabelField(I18N.CONSTANTS.toDate()));
 
         datefieldMaxDate = new DateField();
         add(datefieldMaxDate);

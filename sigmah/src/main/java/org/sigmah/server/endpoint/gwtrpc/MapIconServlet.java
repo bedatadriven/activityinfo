@@ -8,6 +8,7 @@ package org.sigmah.server.endpoint.gwtrpc;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.sigmah.server.report.renderer.image.ImageMapRenderer;
+import org.sigmah.server.util.ColorUtil;
 import org.sigmah.shared.report.content.PieMapMarker;
 import org.sigmah.shared.report.content.PieMapMarker.SliceValue;
 import org.sigmah.shared.report.model.layers.PiechartMapLayer.Slice;
@@ -52,7 +53,7 @@ public class MapIconServlet extends HttpServlet {
         if (req.getParameter("t").equals("bubble")) {
 
             int radius = Integer.parseInt(req.getParameter("r"));
-            Color color = renderer.colorFromString(req.getParameter("c"));
+            Color color = ColorUtil.colorFromString(req.getParameter("c"));
 
             BufferedImage icon = new BufferedImage(radius * 2, radius * 2, BufferedImage.TYPE_INT_ARGB);
             Graphics2D g2d = icon.createGraphics();

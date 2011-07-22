@@ -5,11 +5,13 @@
 
 package org.sigmah.shared.report.model;
 
+import org.sigmah.client.page.map.layerOptions.PiechartLayerOptions;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.model.layers.AbstractMapLayer;
 import org.sigmah.shared.report.model.layers.BubbleMapLayer;
 import org.sigmah.shared.report.model.layers.IconMapLayer;
 import org.sigmah.shared.report.model.layers.MapLayer;
+import org.sigmah.shared.report.model.layers.PiechartMapLayer;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -30,7 +32,7 @@ public class MapReportElement extends ReportElement<MapContent> {
     public MapReportElement() {
     }
 
-    @XmlElement(name="baseMap", required = true)
+    @XmlElement(name="tileBaseMap", required = true)
     public String getBaseMapId() {
         return baseMapId;
     }
@@ -63,7 +65,8 @@ public class MapReportElement extends ReportElement<MapContent> {
 
     @XmlElementWrapper(name="layers")
     @XmlElements({
-            @XmlElement(name="bubbles", type=BubbleMapLayer.class),
+        @XmlElement(name="bubbles", type=BubbleMapLayer.class),
+        @XmlElement(name="pie", type=PiechartMapLayer.class),
             @XmlElement(name="icons", type=IconMapLayer.class)
     })
     public List<MapLayer> getLayers() {

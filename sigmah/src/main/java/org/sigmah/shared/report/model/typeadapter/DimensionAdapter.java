@@ -5,14 +5,20 @@
 
 package org.sigmah.shared.report.model.typeadapter;
 
-import org.sigmah.shared.report.content.EntityCategory;
-import org.sigmah.shared.report.model.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
-import java.util.ArrayList;
-import java.util.List;
+
+import org.sigmah.shared.report.content.EntityCategory;
+import org.sigmah.shared.report.model.AdminDimension;
+import org.sigmah.shared.report.model.CategoryProperties;
+import org.sigmah.shared.report.model.DateDimension;
+import org.sigmah.shared.report.model.DateUnit;
+import org.sigmah.shared.report.model.Dimension;
+import org.sigmah.shared.report.model.DimensionType;
 
 /**
  * @author Alex Bertram

@@ -115,8 +115,9 @@ public class BubbleGeneratorTest {
         gtor.generate(sites, map, content);
 
         Assert.assertEquals("marker count", 2, content.getMarkers().size());
-        Assert.assertEquals(255, ((BubbleMapMarker) content.getMarkers().get(0)).getColor());
-        Assert.assertEquals(255, ((BubbleMapMarker) content.getMarkers().get(1)).getColor());
+        String color = ((BubbleMapMarker) content.getMarkers().get(0)).getColor();
+        Assert.assertEquals("FF0000", ((BubbleMapMarker) content.getMarkers().get(0)).getColor());
+        Assert.assertEquals("FF0000", ((BubbleMapMarker) content.getMarkers().get(1)).getColor());
     }
 
 }

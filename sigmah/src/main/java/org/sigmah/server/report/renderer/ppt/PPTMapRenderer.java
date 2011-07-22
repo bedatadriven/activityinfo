@@ -16,6 +16,7 @@ import java.awt.Dimension;
 import org.sigmah.server.report.generator.MapIconPath;
 import org.sigmah.server.report.generator.map.IconRectCalculator;
 import org.sigmah.server.report.renderer.image.ImageMapRenderer;
+import org.sigmah.server.util.ColorUtil;
 import org.sigmah.shared.report.content.BubbleMapMarker;
 import org.sigmah.shared.report.content.IconMapMarker;
 import org.sigmah.shared.report.content.MapMarker;
@@ -105,7 +106,7 @@ public class PPTMapRenderer extends ImageMapRenderer {
                 marker.getRadius()*2,
                 marker.getRadius()*2));
 
-        shape.setFillColor(new Color(Integer.parseInt(marker.getColor())));
+        shape.setFillColor(ColorUtil.colorFromString(marker.getColor()));
         shape.setEscherProperty(EscherProperties.FILL__FILLOPACITY, 49087);
         shape.setLineColor(bubbleStrokeColor(Integer.parseInt(marker.getColor())));
         slide.addShape(shape);
