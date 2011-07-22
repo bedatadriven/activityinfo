@@ -52,13 +52,7 @@ public class MapIconServlet extends HttpServlet {
         if (req.getParameter("t").equals("bubble")) {
 
             int radius = Integer.parseInt(req.getParameter("r"));
-            int color;
-
-            try {
-                color = Integer.parseInt(req.getParameter("c"));
-            } catch (NumberFormatException e) {
-                color = Color.decode(req.getParameter("c")).getRGB();
-            }
+            Color color = renderer.colorFromString(req.getParameter("c"));
 
             BufferedImage icon = new BufferedImage(radius * 2, radius * 2, BufferedImage.TYPE_INT_ARGB);
             Graphics2D g2d = icon.createGraphics();
@@ -93,14 +87,14 @@ public class MapIconServlet extends HttpServlet {
                 }
                 
                 for (int i=0; i<colors.length; i++) {
-                    int color;
+                	String color;
                     double value=0.0;
 
+                    color = colors[i];
                     try {
-                        color = Integer.parseInt(colors[i]);
                         value = Double.parseDouble(values[i]);
                     } catch (NumberFormatException e) {
-                        color = Color.decode(colors[i]).getRGB();
+                        //color = Color.decode(colors[i]).getRGB();
                     }
                 	SliceValue slice = new SliceValue();
                 	slice.setColor(color);

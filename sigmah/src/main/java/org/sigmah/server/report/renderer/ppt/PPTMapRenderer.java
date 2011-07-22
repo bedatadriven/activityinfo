@@ -105,9 +105,9 @@ public class PPTMapRenderer extends ImageMapRenderer {
                 marker.getRadius()*2,
                 marker.getRadius()*2));
 
-        shape.setFillColor(new Color(marker.getColor()));
+        shape.setFillColor(new Color(Integer.parseInt(marker.getColor())));
         shape.setEscherProperty(EscherProperties.FILL__FILLOPACITY, 49087);
-        shape.setLineColor(bubbleStrokeColor(marker.getColor()));
+        shape.setLineColor(bubbleStrokeColor(Integer.parseInt(marker.getColor())));
         slide.addShape(shape);
     }
 

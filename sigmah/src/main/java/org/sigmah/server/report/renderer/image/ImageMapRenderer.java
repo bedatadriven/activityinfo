@@ -140,7 +140,7 @@ public class ImageMapRenderer {
             }
 
             // Set the color and draw a filled arc
-            g2d.setColor(bubbleFillColor(slice.getColor()));
+            g2d.setColor(bubbleFillColor(colorFromString(slice.getColor())));
             g2d.fillArc(area.x, area.y, area.width, area.height, startAngle, arcAngle);
 
             curValue += slice.getValue();
@@ -151,6 +151,16 @@ public class ImageMapRenderer {
         }
 
     }
+    
+    public Color colorFromString(String color) {
+    	Color result=new Color(0,255,0);
+    	try {
+            result = new Color(Integer.parseInt(color));
+        } catch (NumberFormatException e) {
+        	result = Color.decode("0x"+color);
+        }
+        return result;
+    }
 
     private void drawLabel(Graphics2D g2d, BubbleMapMarker marker) {
         Font font = new Font(Font.SANS_SERIF, Font.BOLD, (int) (marker.getRadius() * 2f * 0.8f));
@@ -160,7 +170,7 @@ public class ImageMapRenderer {
         Rectangle2D rect = font.getStringBounds(marker.getLabel(), g2d.getFontRenderContext());
         LineMetrics lm = font.getLineMetrics(marker.getLabel(), g2d.getFontRenderContext());
 
-        g2d.setColor(new Color(marker.getLabelColor()));
+        g2d.setColor(new Color(Integer.parseInt(marker.getLabelColor())));
         g2d.setFont(font);
         g2d.drawString(marker.getLabel(),
                 (int)(marker.getX() - (rect.getWidth() / 2)),
@@ -203,11 +213,8 @@ public class ImageMapRenderer {
         }
     }
 
-    public Color bubbleFillColor(int colorRgb) {
-        Color color = new Color(colorRgb);
-        float[] rgb = color.getComponents(null);
-
-        return new Color(rgb[0], rgb[1], rgb[2], 0.70f);
+    public Color bubbleFillColor(Color colorRgb) {
+        return new Color(colorRgb.getRed(), colorRgb.getGreen(), colorRgb.getBlue(), 179); //179=0.7*255
     }
 
     public Color bubbleStrokeColor(int colorRgb) {
@@ -215,14 +222,14 @@ public class ImageMapRenderer {
     }
 
     public void drawBubbleMarker(Graphics2D g2d, BubbleMapMarker marker) {
-        drawBubble(g2d, marker.getColor(), marker.getX(), marker.getY(), marker.getRadius());
+        drawBubble(g2d, colorFromString(marker.getColor()), marker.getX(), marker.getY(), marker.getRadius());
         if(marker.getLabel() != null) {
             drawLabel(g2d, marker);
         }
     }
 
 
-    public void drawBubble(Graphics2D g2d, int colorRgb, int x, int y, int radius) {
+    public void drawBubble(Graphics2D g2d, Color colorRgb, int x, int y, int radius) {
         Ellipse2D.Double ellipse = new Ellipse2D.Double(
                 x - radius,
                 y - radius,

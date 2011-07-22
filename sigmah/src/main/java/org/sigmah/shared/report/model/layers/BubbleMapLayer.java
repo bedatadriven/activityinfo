@@ -22,7 +22,7 @@ public class BubbleMapLayer extends CircledMapLayer {
 
     private List<Dimension> colorDimensions = new ArrayList<Dimension>();
     private int defaultColor = 255; // blue
-    private int labelColor = 255;
+    private String labelColor = "FF0000";
 
     public BubbleMapLayer() {
     }
@@ -61,11 +61,11 @@ public class BubbleMapLayer extends CircledMapLayer {
     }
 
     @XmlElement
-    public int getLabelColor() {
+    public String getLabelColor() {
         return labelColor;
     }
 
-    public void setLabelColor(int labelColor) {
+    public void setLabelColor(String labelColor) {
         this.labelColor = labelColor;
     }
 

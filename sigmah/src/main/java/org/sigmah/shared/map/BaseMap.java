@@ -1,11 +1,13 @@
 package org.sigmah.shared.map;
 
+import javax.persistence.MappedSuperclass;
+
 import org.sigmah.shared.dto.DTO;
 
 public class BaseMap implements DTO {
 
 	protected String id;
-	protected String name = "";
+	protected String name = "nada";
 	protected int minZoom;
 	protected int maxZoom;
 	protected String copyright = "";

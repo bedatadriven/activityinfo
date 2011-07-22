@@ -14,7 +14,7 @@ public class PieMapMarker extends BubbleMapMarker {
     public static class SliceValue implements Serializable {
         private double value;
         private DimensionCategory category;
-        private int color;
+        private String color;
 
         public SliceValue() {
         }
@@ -41,11 +41,11 @@ public class PieMapMarker extends BubbleMapMarker {
             this.category = category;
         }
 
-        public int getColor() {
+        public String getColor() {
             return color;
         }
 
-        public void setColor(int color) {
+        public void setColor(String color) {
             this.color = color;
         }
     }

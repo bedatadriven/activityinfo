@@ -9,12 +9,12 @@ package org.sigmah.shared.report.content;
  * @author Alex Bertram
  */
 public class BubbleMapMarker extends MapMarker {
-    private int color;
+    private String color;
     private String label;
     private double alpha;
     private double value;
     private int radius;
-    private int labelColor;
+    private String labelColor;
 
     public double getValue() {
         return value;
@@ -32,11 +32,11 @@ public class BubbleMapMarker extends MapMarker {
         this.radius = radius;
     }
 
-    public int getColor() {
+    public String getColor() {
         return color;
     }
 
-    public void setColor(int color) {
+    public void setColor(String color) {
         this.color = color;
     }
 
@@ -48,11 +48,11 @@ public class BubbleMapMarker extends MapMarker {
         this.label = label;
     }
 
-    public int getLabelColor() {
+    public String getLabelColor() {
         return labelColor;
     }
 
-    public void setLabelColor(int labelColor) {
+    public void setLabelColor(String labelColor) {
         this.labelColor = labelColor;
     }
 

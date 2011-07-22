@@ -54,14 +54,22 @@ public class DateRangePanel extends ContentPanel implements HasValue<Filter>{
 			@Override
 			public void handleEvent(FieldEvent be) {
 				filter.setMinDate(datefieldMinDate.getValue());
-				ValueChangeEvent.fire(DateRangePanel.this, filter);
+				
+				// Only fire a ValueChangeEvent when there's a complete range (min+max both non-null)
+				if (filter.getMaxDate() != null) {
+					ValueChangeEvent.fire(DateRangePanel.this, filter);
+				}
 			}
 		});
         datefieldMaxDate.addListener(Events.Change, new Listener<FieldEvent>() {
 			@Override
 			public void handleEvent(FieldEvent be) {
 				filter.setMaxDate(datefieldMaxDate.getValue());
-				ValueChangeEvent.fire(DateRangePanel.this, filter);
+				
+				// Only fire a ValueChangeEvent when there's a complete range (min+max both non-null)
+				if (filter.getMinDate() != null) {
+					ValueChangeEvent.fire(DateRangePanel.this, filter);
+				}
 			}
 		});
     }

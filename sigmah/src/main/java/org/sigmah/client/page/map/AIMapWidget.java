@@ -241,12 +241,13 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
     private void updateMapToContent() {
     	// Don't update when no layers are present
     	if (mapReportElement.getLayers().isEmpty()) {
+    		isFirstLayerUpdate = true;
     		return;
     	}
     	// Prevent setting the extends for the MapWidget when more then 1 layer is added
 		if (isFirstLayerUpdate && 
-				!(mapReportElement.getLayers().size()==1 || mapReportElement.getLayers().isEmpty())) {
-			isFirstLayerUpdate=false;
+				mapReportElement.getLayers().size() > 0) {
+			isFirstLayerUpdate = false;
 		}
     	
     	dispatcher.execute(new GenerateElement<MapContent>(mapReportElement), null, new AsyncCallback<MapContent>() {
@@ -300,9 +301,6 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 					// Apply the zoomlevel
 					mapWidget.setZoomLevel(idealZoom);
 				}
-			}
-
-			private void zoomToExtents() {
 			}
 
 			private void putMarkersOnMap(MapContent result) {

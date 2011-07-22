@@ -12,36 +12,22 @@ import javax.xml.bind.annotation.XmlElementWrapper;
  */
 public class PiechartMapLayer extends CircledMapLayer {
 	private List<Slice> slices = new ArrayList<Slice>();
-	private static List<Integer> colors = new ArrayList<Integer>();
+	private static List<String> colors = new ArrayList<String>();
 	
 	public PiechartMapLayer() {
 	}
 	
+	// See also: http://cloford.com/resources/colours/500col.htm
 	static {
-		colors.add(16711680); // red
-		colors.add(16776960); // yellow
-		colors.add(16777215); // white
-		colors.add(255);    // darkblue
-		colors.add(65280); // green
-		colors.add(8388736); // purple
-		colors.add(16711680); // red
-		colors.add(16776960); // yellow
-		colors.add(16777215); // white
-		colors.add(255);    // darkblue
-		colors.add(65280); // green
-		colors.add(8388736); // purple
-		colors.add(16711680); // red
-		colors.add(16776960); // yellow
-		colors.add(16777215); // white
-		colors.add(255);    // darkblue
-		colors.add(65280); // green
-		colors.add(8388736); // purple
-		colors.add(16711680); // red
-		colors.add(16776960); // yellow
-		colors.add(16777215); // white
-		colors.add(255);    // darkblue
-		colors.add(65280); // green
-		colors.add(8388736); // purple
+		colors.add("4169E1"); // royal blue
+		colors.add("EEEE00"); // yellow 2
+		colors.add("EE0000"); // red 2
+		colors.add("00EE00"); // green 2
+		colors.add("912CEE"); // purple
+		colors.add("7EC0EE"); // skyblue 2
+		colors.add("EE9A00"); // orange 2
+		colors.add("800000"); // maroon
+		colors.add("B4EEB4"); // darkseagreen 2
 	}
 
 	@Override
@@ -79,28 +65,29 @@ public class PiechartMapLayer extends CircledMapLayer {
 	/*
 	 * Returns next color for a slice
 	 */
-	private int getNextColor() {
-		return colors.get(slices.size());
+	private String getNextColor() {
+		// Use a modulo to prevent OutOfRangeException for indicator-happy users
+		return colors.get(slices.size() % colors.size());
 	}
 
 	public static class Slice implements Serializable {
-		private int color;
+		private String color;
 		private int indicatorId;
 		
 		public Slice() {
 		}
 
-		public Slice(int color, int indicatorId) {
+		public Slice(String color, int indicatorId) {
 			super();
 			this.color = color;
 			this.indicatorId = indicatorId;
 		}
 		
-		public int getColor() {
+		public String getColor() {
 			return color;
 		}
 		
-		public void setColor(int color) {
+		public void setColor(String color) {
 			this.color = color;
 		}
 		

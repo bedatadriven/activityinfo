@@ -5,8 +5,11 @@
 
 package org.sigmah.client.page.common.widget;
 
+import com.extjs.gxt.ui.client.Style.HideMode;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ColorPaletteEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.DomEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -22,6 +25,7 @@ import com.google.gwt.user.client.Element;
 public class ColorField extends TriggerField<String> {
     private static final String WHITE_HEX_STRING = "FFFFFF";
     private static final int WHITE = 0xFFFFFF;
+	private ColorMenu menu;
 
     public ColorField() {
         setEditable(false);
@@ -29,13 +33,26 @@ public class ColorField extends TriggerField<String> {
     }
 
     @Override
+	protected boolean validateBlur(DomEvent ce, Element target) {
+        return menu == null || (menu != null && !menu.isVisible() && !menu.getElement().isOrHasChild(target));
+	}
+
+	@Override
     protected void onTriggerClick(ComponentEvent ce) {
         super.onTriggerClick(ce);
-        ColorMenu menu = new ColorMenu();
-        menu.getColorPalette().addListener(Events.Select, new Listener<ColorPaletteEvent>() {
+        
+        menu = new ColorMenu() {
+
+			@Override
+			protected void onClick(ComponentEvent ce) {
+				// TODO Auto-generated method stub
+				
+			}};
+        
+        menu.getColorPalette().addListener(Events.BeforeSelect, new Listener<ColorPaletteEvent>() {
             public void handleEvent(ColorPaletteEvent ce) {
                 setValue(ce.getColor());
-                fireEvent(Events.Select, new FieldEvent(ColorField.this));
+                menu.hide();
             }
         });
         menu.show(getElement(), "l");
@@ -75,5 +92,11 @@ public class ColorField extends TriggerField<String> {
     public int getIntValue() {
         return value == null ? WHITE : Integer.parseInt(value, 16);
     }
+
+	@Override
+	protected void onBlur(ComponentEvent ce) {
+		super.onBlur(ce);
+        fireEvent(Events.Select, new FieldEvent(ColorField.this));
+	}
 
 }

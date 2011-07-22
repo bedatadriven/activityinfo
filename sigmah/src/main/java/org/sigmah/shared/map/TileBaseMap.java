@@ -20,6 +20,7 @@ import javax.persistence.Lob;
  */
 // FIXME: Support upgrading without model change after refactoring BaseMap into 
 // TileBaseMap and other subclases of BaseMap 
+// Same goes for overridden methods
 @Entity(name="BaseMap")
 public class TileBaseMap extends BaseMap  {
 
@@ -72,4 +73,36 @@ public class TileBaseMap extends BaseMap  {
 	public void setCopyright(String copyright) {
 		super.setCopyright(copyright);
 	}
+
+	@Override
+	public String getName() {
+		return super.getName();
+	}
+
+	@Override
+	public void setName(String name) {
+		super.setName(name);
+	}
+
+	@Override
+	public int getMinZoom() {
+		return super.getMinZoom();
+	}
+
+	@Override
+	public void setMinZoom(int minZoom) {
+		super.setMinZoom(minZoom);
+	}
+
+	@Override
+	public int getMaxZoom() {
+		return super.getMaxZoom();
+	}
+
+	@Override
+	public void setMaxZoom(int maxZoom) {
+		super.setMaxZoom(maxZoom);
+	}
+	
+	
 }
