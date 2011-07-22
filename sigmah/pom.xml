@@ -62,6 +62,9 @@
 
         <!-- Allow the build to continue even if there are test failures -->
         <maven.test.failure.ignore>true</maven.test.failure.ignore>
+
+
+		<display.version>${project.version}-${git.commit.id.abbrev}</display.version>
     </properties>
 
     <repositories>
@@ -671,7 +674,7 @@
             			<optionSetting>
             				<namespace>aws:elasticbeanstalk:application:environment</namespace>
             				<optionName>PARAM2</optionName>
-            				<value>activityinfo.production.properties</value>
+            				<value>activityinfo.21test.properties</value>
             			</optionSetting>
 	          			<optionSetting>
 							<namespace>aws:elasticbeanstalk:application:environment</namespace>
@@ -828,6 +831,9 @@
                     <value>true</value>
                 </property>
             </activation>
+            <properties>
+            	<display.version>${project.version}</display.version>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
