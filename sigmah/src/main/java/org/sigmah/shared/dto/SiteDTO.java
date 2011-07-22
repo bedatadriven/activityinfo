@@ -19,9 +19,7 @@ import java.util.Date;
 public final class SiteDTO extends BaseModelData implements EntityDTO {
 
 	
-    public static final String ENTITY_NAME = "Site";
-
-	public SiteDTO() {
+    public SiteDTO() {
 	}
 
     /**
@@ -327,6 +325,6 @@ public final class SiteDTO extends BaseModelData implements EntityDTO {
 
     @Override
     public String getEntityName() {
-        return ENTITY_NAME;
+        return "Site";
     }
 }

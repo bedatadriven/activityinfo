@@ -46,7 +46,7 @@ public class GetSitesHandler implements CommandHandler<GetSites> {
     }
 
     @Override
-    public SiteResult execute(GetSites cmd, User user) throws CommandException {
+    public CommandResult execute(GetSites cmd, User user) throws CommandException {
         List<SiteOrder> order = sortInfoToSortOrder(cmd);
         int offset = calculateOffset(cmd, user, order);
 

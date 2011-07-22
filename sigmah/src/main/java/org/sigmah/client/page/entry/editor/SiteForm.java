@@ -163,14 +163,4 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
     public Map<String, Object> getPropertyMap() {
         return super.getAllValues();
     }
-    
-    private void fixUpProperties(Map<String,Object> map) {
-    	if(map.containsKey("partner")) {
-    		PartnerDTO partner = (PartnerDTO)map.get("partner");
-    		if(partner != null) {
-    			map.put("partnerId", partner.getId());
-    		}
-    		map.remove("partner");
-    	}
-    }
 }

@@ -109,7 +109,7 @@ public class ItextReportRendererTest {
 		report.addElement(chart);
 		report.addElement(table);
 		report.addElement(new TextElement("Testing 1..2.3.. français"));
-		//report.addElement(map);
+		report.addElement(map);
 		
 		renderToPdf(report, "piechart.pdf");
 		renderToHtml(report, "piechart.html");

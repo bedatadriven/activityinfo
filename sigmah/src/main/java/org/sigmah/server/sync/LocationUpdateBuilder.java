@@ -92,8 +92,8 @@ public class LocationUpdateBuilder implements UpdateBuilder {
         	}
             locationIds.add(location.getId());
         }
-		
-        builder.insert("or replace", Location.class, createdLocations);
+
+        builder.insert(Location.class, createdLocations);
         builder.update(Location.class, updatedLocations);
 	}
 	
@@ -135,7 +135,7 @@ public class LocationUpdateBuilder implements UpdateBuilder {
         private Timestamp lastDate;
 
         public LocalState(Location lastLocation) {
-            lastDate = TimestampHelper.fromDate(lastLocation.getDateEdited());
+            lastDate = (Timestamp) lastLocation.getDateEdited();
         }
 
         public LocalState(String cookie) {

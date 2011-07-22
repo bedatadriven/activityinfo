@@ -5,19 +5,6 @@
 
 package org.sigmah.server.endpoint.gwtrpc;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Timestamp;
-import java.util.Date;
-
-import javax.persistence.EntityManager;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.dao.OnDataSet;
@@ -31,6 +18,16 @@ import org.sigmah.shared.domain.LocationType;
 import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.MockHibernateModule;
 import org.sigmah.test.Modules;
+
+import javax.persistence.EntityManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.Date;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.*;
 
 @RunWith(InjectionSupport.class)
 @Modules({
@@ -149,7 +146,6 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
         Timestamp now = new Timestamp(new Date().getTime());
         for(int i=1;i<= count;++i) {
             Location loc = new Location();
-            loc.setId(i);
             if(i%3 == 0) {
             	loc.setDateCreated(new Date( now.getTime() - 100000));
             } else {

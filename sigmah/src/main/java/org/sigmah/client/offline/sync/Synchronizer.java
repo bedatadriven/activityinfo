@@ -34,15 +34,6 @@ import java.util.List;
 
 import static org.sigmah.shared.dao.SqlQueryBuilder.select;
 
-/**
- * 
- * Synchronizes the local database by retriving updates from
- * the remote server. 
- * 
- * 
- * @author alex
- *
- */
 @Singleton
 public class Synchronizer {
 
@@ -100,9 +91,7 @@ public class Synchronizer {
                 });
 
         for(String tableName : tableNames) {
-        	if(!tableName.startsWith("sqlite_")) {
-        		execute("drop table " + tableName);
-        	}
+            execute("drop table " + tableName);
         }
     }
 

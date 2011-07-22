@@ -196,38 +196,16 @@ public class SqlQueryBuilder {
      * @param conn JDBC connection
      */
     public Date singleDateResultOrNull(Connection conn) {
-    	return getSingleResult(conn, new SingleResultHandler<Date>() {
-			
-			@Override
-			public Date get(ResultSet rs) throws SQLException {
-				return rs.getDate(1);
-			}
-		});
-    }
-
-
-	public int singleIntResult(Connection connection) {
-		return getSingleResult(connection, new SingleResultHandler<Integer>() {
-
-			@Override
-			public Integer get(ResultSet rs) throws SQLException {
-				return rs.getInt(1);
-			}
-		});
-	}
-	
-
-	public <T> T getSingleResult(Connection connection, SingleResultHandler<T> handler) {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         String sql = sql();
 
         try {
-            stmt = prepareStatement(connection, sql);
+            stmt = prepareStatement(conn, sql);
             rs = stmt.executeQuery();
 
             if(rs.next()) {
-                return handler.get(rs);
+                return rs.getDate(1);
             } else {
                 return null;
             }
@@ -237,7 +215,9 @@ public class SqlQueryBuilder {
             if(rs != null) { try { rs.close(); } catch(SQLException ignored) {} }
             if(stmt != null) { try { stmt.close(); } catch(SQLException ignored) {} }
         }
-	}
+
+    }
+
 
     public class WhereClauseBuilder {
 
@@ -301,12 +281,4 @@ public class SqlQueryBuilder {
         public abstract void handle(ResultSet rs) throws SQLException;
 
     }
-    
-    private static abstract class SingleResultHandler<T> {
-    	
-    	public abstract T get(ResultSet rs) throws SQLException;
-    }
-    
-    
-
 }

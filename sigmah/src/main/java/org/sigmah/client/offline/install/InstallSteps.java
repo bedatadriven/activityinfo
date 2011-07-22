@@ -59,9 +59,7 @@ public class InstallSteps {
         step.execute(new AsyncCallback<Void>() {
             @Override
             public void onFailure(Throwable throwable) {
-            	RuntimeException ex = new RuntimeException("Offline installation step '" + 
-        				step.getDescription() + "' failed with exception '" +
-            			throwable.getMessage() + "'", throwable);
+            	RuntimeException ex = new RuntimeException("Offline installation step failed: " + step.getDescription(), throwable);
                 Log.error(ex.getMessage(), throwable);
                 callback.onFailure(ex);
             }

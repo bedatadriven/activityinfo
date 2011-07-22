@@ -64,7 +64,7 @@ public class SiteUpdateBuilder implements UpdateBuilder {
 
         builder.delete(Site.class, deleted);
         builder.update(Site.class, updated);
-        builder.insert("or replace", Site.class, created);
+        builder.insert(Site.class, created);
 
         if(!createdOrUpdated.isEmpty()) {
             insertDependentAttributeValues();
@@ -153,7 +153,7 @@ public class SiteUpdateBuilder implements UpdateBuilder {
                 .setParameter("sites", createdOrUpdated)
                 .getResultList();
 
-        builder.insert("or replace", ReportingPeriod.class, rps);
+        builder.insert(ReportingPeriod.class, rps);
     }
 
     private void insertDependentIndicatorValues() throws JSONException {
@@ -163,7 +163,7 @@ public class SiteUpdateBuilder implements UpdateBuilder {
                 .setParameter("sites", createdOrUpdated)
                 .getResultList();
 
-        builder.insert("or replace", IndicatorValue.class, values);
+        builder.insert(IndicatorValue.class, values);
     }
 
     private void addIdsOfUpdatedOrDeleted(JpaUpdateBuilder builder) throws JSONException {
