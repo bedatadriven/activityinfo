@@ -3,26 +3,23 @@ package org.sigmah.server.report.generator.map.cluster;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sigmah.server.report.ClusterImpl;
 import org.sigmah.server.report.generator.map.RadiiCalculator;
 import org.sigmah.shared.report.model.PointValue;
-import org.sigmah.shared.report.model.clustering.Cluster;
-import org.sigmah.shared.report.model.clustering.Clusterer;
 
-/*
+/**
  * Does not cluster at all, rather maps points 1:1 to clusters
  */
-public class NoneClusterer implements Clusterer {
+public class NullClusterer implements Clusterer {
 	private RadiiCalculator radiiCalculator;
 	private List<PointValue> points;
 
-	public NoneClusterer(RadiiCalculator radiiCalculator,
+	public NullClusterer(RadiiCalculator radiiCalculator,
 			List<PointValue> points) {
 		this.radiiCalculator = radiiCalculator;
 		this.points = points;
 	}
 	
-	/*
+	/**
 	 * Maps each Point to a cluster, not performing an actual clustering algorithm whatsoever
 	 * @see org.sigmah.shared.report.model.clustering.Clustering#cluster(java.util.List, org.sigmah.server.report.generator.map.RadiiCalculator)
 	 */
@@ -32,7 +29,7 @@ public class NoneClusterer implements Clusterer {
         
         // No actaul clustering taking place, simply map each point to a new cluster
         for(PointValue point : points) {
-            clusters.add(new ClusterImpl(point));
+            clusters.add(new Cluster(point));
         }
         
         // Not sure if this thing belongs here

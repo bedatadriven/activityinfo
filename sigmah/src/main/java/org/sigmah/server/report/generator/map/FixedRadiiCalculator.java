@@ -6,12 +6,8 @@
 package org.sigmah.server.report.generator.map;
 
 import java.util.List;
-/*
- * @author Alex Bertram
- */
 
-import org.sigmah.server.report.ClusterImpl;
-import org.sigmah.shared.report.model.clustering.Cluster;
+import org.sigmah.server.report.generator.map.cluster.Cluster;
 
 public class FixedRadiiCalculator implements RadiiCalculator {
 

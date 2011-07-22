@@ -5,12 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.sigmah.server.report.ClusterImpl;
 import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.report.model.PointValue;
 import org.sigmah.shared.report.model.clustering.AdministrativeLevelClustering;
-import org.sigmah.shared.report.model.clustering.Cluster;
-import org.sigmah.shared.report.model.clustering.Clusterer;
 
 /*
  * Clusters a set of points by the administrative level the points reside in, 
@@ -40,7 +37,7 @@ public class AdminLevelClusterer implements Clusterer {
 
 	private void convertMapToClusterList() {
 		for (List<PointValue> points : pointsByAdminLevel.values()) {
-			Cluster cluster = new ClusterImpl(points);
+			Cluster cluster = new Cluster(points);
 			pointsClusteredByAdminLevel.add(cluster);
 		}
 	}

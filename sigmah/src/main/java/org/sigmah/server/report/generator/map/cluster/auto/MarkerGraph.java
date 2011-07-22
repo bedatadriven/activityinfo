@@ -3,7 +3,7 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.server.report.generator.map;
+package org.sigmah.server.report.generator.map.cluster.auto;
 
 import org.sigmah.shared.report.content.Point;
 import org.sigmah.shared.report.model.PointValue;

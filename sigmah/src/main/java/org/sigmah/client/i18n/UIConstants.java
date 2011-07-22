@@ -2,7 +2,7 @@ package org.sigmah.client.i18n;
 
 /**
  * Interface to represent the constants contained in resource bundle:
- * 	'/home/ruud/workspace/activityinfo/sigmah/src/main/java/org/sigmah/client/i18n/UIConstants.properties'.
+ * 	'/home/alex/dev/activityinfo/sigmah/src/main/java/org/sigmah/client/i18n/UIConstants.properties'.
  */
 public interface UIConstants extends com.google.gwt.i18n.client.Constants {
   

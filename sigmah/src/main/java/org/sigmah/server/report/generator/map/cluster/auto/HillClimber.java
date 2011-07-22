@@ -3,14 +3,15 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.server.report.generator.map;
+package org.sigmah.server.report.generator.map.cluster.auto;
 
 import java.util.*;
 /*
  * @author Alex Bertram
  */
 
-import org.sigmah.shared.report.model.clustering.Cluster;
+import org.sigmah.server.report.generator.map.RadiiCalculator;
+import org.sigmah.server.report.generator.map.cluster.Cluster;
 
 public class HillClimber {
 

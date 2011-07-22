@@ -5,21 +5,31 @@
 
 package org.sigmah.server.report.generator.map;
 
-import org.sigmah.server.report.ClusterImpl;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.sigmah.server.report.generator.map.cluster.Cluster;
+import org.sigmah.server.report.generator.map.cluster.Clusterer;
 import org.sigmah.server.report.generator.map.cluster.ClustererFactory;
-import org.sigmah.shared.report.content.*;
-import org.sigmah.shared.report.model.*;
-import org.sigmah.shared.report.model.clustering.Cluster;
-import org.sigmah.shared.report.model.clustering.Clusterer;
-import org.sigmah.shared.report.model.labeling.ArabicNumberSequence;
-import org.sigmah.shared.report.model.labeling.LabelSequence;
-import org.sigmah.shared.report.model.labeling.LatinAlphaSequence;
+import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph;
+import org.sigmah.shared.report.content.BubbleMapMarker;
+import org.sigmah.shared.report.content.DimensionCategory;
+import org.sigmah.shared.report.content.EntityCategory;
+import org.sigmah.shared.report.content.LatLng;
+import org.sigmah.shared.report.content.MapContent;
+import org.sigmah.shared.report.content.MapMarker;
+import org.sigmah.shared.report.content.Point;
+import org.sigmah.shared.report.model.CategoryProperties;
+import org.sigmah.shared.report.model.Dimension;
+import org.sigmah.shared.report.model.DimensionType;
+import org.sigmah.shared.report.model.MapReportElement;
+import org.sigmah.shared.report.model.MapSymbol;
+import org.sigmah.shared.report.model.PointValue;
+import org.sigmah.shared.report.model.SiteData;
 import org.sigmah.shared.report.model.layers.BubbleMapLayer;
-import org.sigmah.shared.report.model.layers.MapLayer;
 import org.sigmah.shared.report.model.layers.ScalingType;
 import org.sigmah.shared.util.mapping.Extents;
-
-import java.util.*;
 
 public class BubbleLayerGenerator extends AbstractLayerGenerator {
 

@@ -3,15 +3,15 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.server.report.generator.map;
-
-import org.sigmah.server.report.ClusterImpl;
-import org.sigmah.shared.report.content.Point;
-import org.sigmah.shared.report.model.clustering.Cluster;
+package org.sigmah.server.report.generator.map.cluster.auto;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.sigmah.server.report.generator.map.cluster.Cluster;
+import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph.Node;
+import org.sigmah.shared.report.content.Point;
 
 
 /**
@@ -56,11 +56,11 @@ public class KMeans {
 
         // create clusters
         for(int i=0; i!=numClusters;++i) {
-            clusters.add(new ClusterImpl(centers[i]));
+            clusters.add(new Cluster(centers[i]));
         }
         
         for(int j=0; j!=nodes.size();++j) {
-            ((ClusterImpl) clusters.get(membership[j])).addNode(nodes.get(j));
+            ((Cluster) clusters.get(membership[j])).addNode(nodes.get(j));
         }
 
         return clusters;

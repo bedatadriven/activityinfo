@@ -6,18 +6,17 @@
 package org.sigmah.server.report.generator.map.cluster;
 
 
-import java.util.*;
-/*
- * @author Alex Bertram
- */
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Random;
 
-import org.sigmah.server.report.ClusterImpl;
-import org.sigmah.server.report.generator.map.FitnessFunctor;
-import org.sigmah.server.report.generator.map.KMeans;
-import org.sigmah.server.report.generator.map.MarkerGraph;
 import org.sigmah.server.report.generator.map.RadiiCalculator;
-import org.sigmah.server.report.generator.map.MarkerGraph.Node;
-import org.sigmah.shared.report.model.clustering.Cluster;
+import org.sigmah.server.report.generator.map.cluster.auto.FitnessFunctor;
+import org.sigmah.server.report.generator.map.cluster.auto.KMeans;
+import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph;
 
 public class GeneticSolver {
 
@@ -120,7 +119,7 @@ public class GeneticSolver {
         for (int i = 0; i != allSubGraphs.size(); i++) {
             List<MarkerGraph.Node> subGraph = allSubGraphs.get(i);
             if (subGraph.size()==1) {
-                simpleClusters.add(new ClusterImpl(subGraph.get(0)));
+                simpleClusters.add(new Cluster(subGraph.get(0)));
             } else if(allUpperBounds.get(i) == 1) {
                 simpleClusters.addAll(KMeans.cluster(subGraph, 1));
             } else {

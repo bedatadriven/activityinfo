@@ -6,9 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.sigmah.server.report.ClusterImpl;
-import org.sigmah.server.report.generator.map.BubbleLayerGenerator.IntersectionCalculator;
+import org.sigmah.server.report.generator.map.cluster.Cluster;
 import org.sigmah.server.report.generator.map.cluster.GeneticSolver;
+import org.sigmah.server.report.generator.map.cluster.auto.CircleFitnessFunctor;
+import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph;
 import org.sigmah.shared.report.content.BubbleMapMarker;
 import org.sigmah.shared.report.content.DimensionCategory;
 import org.sigmah.shared.report.content.EntityCategory;
@@ -17,14 +18,10 @@ import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.MapMarker;
 import org.sigmah.shared.report.content.PieMapMarker;
 import org.sigmah.shared.report.content.Point;
-import org.sigmah.shared.report.model.CategoryProperties;
-import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.MapSymbol;
 import org.sigmah.shared.report.model.PointValue;
 import org.sigmah.shared.report.model.SiteData;
-import org.sigmah.shared.report.model.clustering.Cluster;
-import org.sigmah.shared.report.model.layers.BubbleMapLayer;
 import org.sigmah.shared.report.model.layers.PiechartMapLayer;
 import org.sigmah.shared.report.model.layers.PiechartMapLayer.Slice;
 import org.sigmah.shared.report.model.layers.ScalingType;
@@ -164,7 +161,7 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
         } else {
             clusters = new ArrayList<Cluster>();
             for(PointValue point : points) {
-                clusters.add(new ClusterImpl(point));
+                clusters.add(new Cluster(point));
             }
             radiiCalculator.calculate(clusters);
         }

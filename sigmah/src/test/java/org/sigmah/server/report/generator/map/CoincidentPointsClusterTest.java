@@ -5,20 +5,21 @@
 
 package org.sigmah.server.report.generator.map;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.sigmah.server.report.ClusterImpl;
-import org.sigmah.server.report.generator.map.cluster.GeneticSolver;
-import org.sigmah.shared.report.content.LatLng;
-import org.sigmah.shared.report.content.Point;
-import org.sigmah.shared.report.model.MapSymbol;
-import org.sigmah.shared.report.model.PointValue;
-import org.sigmah.shared.report.model.clustering.Cluster;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.sigmah.server.report.generator.map.cluster.Cluster;
+import org.sigmah.server.report.generator.map.cluster.GeneticSolver;
+import org.sigmah.server.report.generator.map.cluster.auto.CircleFitnessFunctor;
+import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph;
+import org.sigmah.shared.report.content.LatLng;
+import org.sigmah.shared.report.content.Point;
+import org.sigmah.shared.report.model.MapSymbol;
+import org.sigmah.shared.report.model.PointValue;
 
 /*
 * Real example that didn't work.

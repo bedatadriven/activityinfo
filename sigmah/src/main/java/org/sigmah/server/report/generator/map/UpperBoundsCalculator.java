@@ -7,12 +7,12 @@ package org.sigmah.server.report.generator.map;
 
 import java.util.ArrayList;
 import java.util.List;
-/*
- * @author Alex Bertram
- */
 
-import org.sigmah.server.report.ClusterImpl;
-import org.sigmah.shared.report.model.clustering.Cluster;
+import org.sigmah.server.report.generator.map.cluster.Cluster;
+import org.sigmah.server.report.generator.map.cluster.auto.CircleFitnessFunctor;
+import org.sigmah.server.report.generator.map.cluster.auto.FitnessFunctor;
+import org.sigmah.server.report.generator.map.cluster.auto.KMeans;
+import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph;
 
 public class UpperBoundsCalculator {
 

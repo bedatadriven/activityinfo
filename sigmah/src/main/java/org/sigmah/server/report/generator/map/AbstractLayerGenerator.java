@@ -2,11 +2,11 @@ package org.sigmah.server.report.generator.map;
 
 import java.util.List;
 
-import org.sigmah.server.report.generator.map.MarkerGraph.IntersectionCalculator;
+import org.sigmah.server.report.generator.map.cluster.Clusterer;
+import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph.IntersectionCalculator;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.model.SiteData;
 import org.sigmah.shared.report.model.clustering.AutomaticClustering;
-import org.sigmah.shared.report.model.clustering.Clusterer;
 import org.sigmah.shared.report.model.clustering.Clustering;
 import org.sigmah.shared.report.model.clustering.NoClustering;
 import org.sigmah.shared.util.mapping.Extents;

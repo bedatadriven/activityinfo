@@ -8,8 +8,12 @@ package org.sigmah.server.report.generator.map;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.sigmah.server.report.generator.map.cluster.Cluster;
 import org.sigmah.server.report.generator.map.cluster.GeneticSolver;
-import org.sigmah.shared.report.model.clustering.Cluster;
+import org.sigmah.server.report.generator.map.cluster.auto.CircleFitnessFunctor;
+import org.sigmah.server.report.generator.map.cluster.auto.FitnessFunctor;
+import org.sigmah.server.report.generator.map.cluster.auto.KMeans;
+import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;

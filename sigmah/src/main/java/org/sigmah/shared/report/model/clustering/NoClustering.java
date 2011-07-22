@@ -1,10 +1,6 @@
 package org.sigmah.shared.report.model.clustering;
 
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.sigmah.server.report.ClusterImpl;
 
 
 /*
@@ -17,9 +13,4 @@ public class NoClustering implements Clustering {
 		return false;
 	}
 
-	@Override
-	public List<Cluster> cluster(Clusterer clusterer) {
-		return clusterer.cluster();
-	}
-	
 }

@@ -5,23 +5,24 @@
 
 package org.sigmah.server.report.generator.map;
 
-import org.hibernate.hql.ast.tree.FromClause;
-import org.sigmah.server.report.ClusterImpl;
-import org.sigmah.server.report.generator.map.MarkerGraph.IntersectionCalculator;
-import org.sigmah.server.report.generator.map.MarkerGraph.Node;
-import org.sigmah.server.report.generator.map.cluster.ClustererFactory;
-import org.sigmah.shared.report.content.*;
-import org.sigmah.shared.report.model.MapReportElement;
-import org.sigmah.shared.report.model.MapIcon;
-import org.sigmah.shared.report.model.PointValue;
-import org.sigmah.shared.report.model.SiteData;
-import org.sigmah.shared.report.model.clustering.Cluster;
-import org.sigmah.shared.report.model.clustering.Clusterer;
-import org.sigmah.shared.report.model.layers.IconMapLayer;
-import org.sigmah.shared.util.mapping.Extents;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.sigmah.server.report.generator.map.cluster.Cluster;
+import org.sigmah.server.report.generator.map.cluster.Clusterer;
+import org.sigmah.server.report.generator.map.cluster.ClustererFactory;
+import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph.IntersectionCalculator;
+import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph.Node;
+import org.sigmah.shared.report.content.IconMapMarker;
+import org.sigmah.shared.report.content.LatLng;
+import org.sigmah.shared.report.content.MapContent;
+import org.sigmah.shared.report.content.Point;
+import org.sigmah.shared.report.model.MapIcon;
+import org.sigmah.shared.report.model.MapReportElement;
+import org.sigmah.shared.report.model.PointValue;
+import org.sigmah.shared.report.model.SiteData;
+import org.sigmah.shared.report.model.layers.IconMapLayer;
+import org.sigmah.shared.util.mapping.Extents;
 
 /*
  * @author Alex Bertram
