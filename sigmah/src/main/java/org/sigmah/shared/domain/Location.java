@@ -36,7 +36,6 @@ public class Location implements java.io.Serializable {
 	}
 
     @Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name = "LocationID", unique = true, nullable = false)
 	public int getId() {
 		return this.id;

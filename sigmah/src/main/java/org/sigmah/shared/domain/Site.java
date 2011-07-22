@@ -88,7 +88,6 @@ public class Site implements java.io.Serializable, Deleteable {
      * @return the id of this Site
      */
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name = "SiteId", unique = true, nullable = false)
 	public int getId() {
 		return this.id;

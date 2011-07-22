@@ -22,8 +22,10 @@ import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.i18n.UIMessages;
 import org.sigmah.client.mock.MockEventBus;
+import org.sigmah.client.offline.command.CommandQueue;
 import org.sigmah.client.offline.command.LocalDispatcher;
 import org.sigmah.client.offline.sync.Synchronizer;
+import org.sigmah.client.offline.sync.UpdateSynchronizer;
 import org.sigmah.server.endpoint.gwtrpc.CommandServlet;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.result.CommandResult;
@@ -59,6 +61,9 @@ public abstract class LocalHandlerTestCase {
     protected Authentication localAuth;
     protected LocalDispatcher localDispatcher;
     protected Connection localConnection;
+    
+    protected CommandQueue commandQueue;
+    
     private BulkUpdaterAsync updater;
 
     private UIConstants uiConstants;
@@ -77,10 +82,12 @@ public abstract class LocalHandlerTestCase {
         if(testClientDb.exists()) {
         	testClientDb.delete();
         }
+      
         
         localConnection = DriverManager.getConnection("jdbc:sqlite:synctest");
         updater = new MockBulkUpdater(localConnection);
-
+        commandQueue = new CommandQueue(localConnection);
+        
         uiConstants = createNiceMock(UIConstants.class);
         uiMessages = createNiceMock(UIMessages.class);
         replay(uiConstants, uiMessages);
@@ -95,7 +102,19 @@ public abstract class LocalHandlerTestCase {
     }
 
     protected void synchronize() {
-        Synchronizer syncr = new Synchronizer(new MockEventBus(), remoteDispatcher, localConnection, updater,
+    	new UpdateSynchronizer(commandQueue, remoteDispatcher)
+    		.sync(new AsyncCallback<Void>() {
+			
+			@Override
+			public void onSuccess(Void result) {				
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {				
+			}
+		});
+    	
+    	Synchronizer syncr = new Synchronizer(new MockEventBus(), remoteDispatcher, localConnection, updater,
                 localAuth, uiConstants, uiMessages);
         syncr.start();
     }
@@ -103,7 +122,7 @@ public abstract class LocalHandlerTestCase {
     protected void newRequest() {
     	serverEm.clear();
     }
-    
+
     private class RemoteDispatcherStub implements Dispatcher {
         @Override
         public <T extends CommandResult> void execute(Command<T> command, AsyncMonitor monitor, AsyncCallback<T> callback) {

@@ -180,7 +180,7 @@ public class SiteFormPresenter implements SiteFormLeash {
             final Map<String, Object> properties = view.getPropertyMap();
             properties.putAll(adminPresenter.getPropertyMap());
             properties.put("activityId", currentActivity.getId());
-
+            	
             service.execute(new CreateEntity("Site", properties), view.getMonitor(), new AsyncCallback<CreateResult>() {
                 @Override
                 public void onFailure(Throwable throwable) {

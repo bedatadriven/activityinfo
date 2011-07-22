@@ -51,7 +51,6 @@ public class ReportingPeriod implements java.io.Serializable, Deleteable {
 
 
     @Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name = "ReportingPeriodId", unique = true, nullable = false)
 	public int getId() {
 		return this.id;

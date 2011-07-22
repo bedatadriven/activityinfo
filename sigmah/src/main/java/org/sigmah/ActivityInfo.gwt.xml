@@ -12,6 +12,8 @@
     <!-- Inherit additional dependencies  -->
     <inherits name='com.google.gwt.inject.Inject' />
     <inherits name="com.google.gwt.i18n.I18N" />
+    <inherits name="com.google.gwt.i18n.I18N" />
+	<inherits name="com.google.gson.Gson"/>
    <!--  <inherits name="com.google.gwt.rpc.RPC" /> -->
     <inherits name='com.extjs.gxt.ui.GXT' />
     <inherits name="com.google.gwt.maps.GoogleMaps" />
