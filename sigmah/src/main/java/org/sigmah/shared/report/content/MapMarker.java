@@ -20,7 +20,8 @@ public class MapMarker implements Serializable {
     private double lat;
     private double lng;
     private List<Integer> siteIds = new ArrayList<Integer>();
-
+    private String title;
+    
     public MapMarker() {
 
     }
@@ -68,8 +69,18 @@ public class MapMarker implements Serializable {
     public int getSize() {
         return 0;
     }
+    
+    public String getTitle() {
+		return title;
+	}
 
-    /**
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+
+
+	/**
      * Sorts markers left to right, top to bottom.
      */
     public static class LRTBComparator implements Comparator<MapMarker> {

@@ -77,7 +77,7 @@ public class IconFactory {
         icon.setInfoWindowAnchor(anchor);
         icon.setPrintImageURL(iconUrl);
         icon.setMozPrintImageURL(iconUrl);
-
+        icon.setImageMap(GcIconFactory.createCircleImageMap(size, size, 10));
         return icon;
     }
     
@@ -100,6 +100,7 @@ public class IconFactory {
         icon.setInfoWindowAnchor(anchor);
         icon.setPrintImageURL(iconUrl);
         icon.setMozPrintImageURL(iconUrl);
+        icon.setImageMap(GcIconFactory.createCircleImageMap(size, size, 10));
         
         return icon;
     }

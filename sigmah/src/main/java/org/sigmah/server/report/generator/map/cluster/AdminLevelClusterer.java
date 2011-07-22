@@ -38,12 +38,13 @@ public class AdminLevelClusterer implements Clusterer {
 		Map<Integer, Cluster> adminClusters = new HashMap<Integer,Cluster>();
 		
 		for(PointValue pv : points) {
-			int entityId = getAdminEntityId(pv);
-			if(entityId != -1) {
-				Cluster cluster = adminClusters.get(entityId);
+			AdminEntity entity = getAdminEntityId(pv);
+			if(entity != null) {
+				Cluster cluster = adminClusters.get(entity.getId());
 				if(cluster == null) {
 					cluster = new Cluster(pv);
-					adminClusters.put(entityId, cluster);
+					cluster.setTitle(entity.getName());
+					adminClusters.put(entity.getId(), cluster);
 				} else {
 					cluster.addPointValue(pv);
 				}
@@ -56,14 +57,14 @@ public class AdminLevelClusterer implements Clusterer {
 		return clusters;
 	}
 
-	private int getAdminEntityId(PointValue pv) {
+	private AdminEntity getAdminEntityId(PointValue pv) {
 		Map<Integer, AdminEntity> membership = pv.site.adminEntities;
 		for(Integer levelId : model.getAdminLevels()) {
 			if(membership.containsKey(levelId)) {
-				return membership.get(levelId).getId();
+				return membership.get(levelId);
 			}
 		}
-		return -1;
+		return null;
 	}
 	
 }

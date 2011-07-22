@@ -108,7 +108,8 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
             marker.setLat(latlng.getLat());
             marker.setLng(latlng.getLng());
             marker.setAlpha(layer.getAlpha());
-
+            marker.setTitle(formatTitle(cluster));
+            
             //marker.setColor(findColor(cluster.getPointValues().get(0).symbol, layer));
             marker.setColor(layer.getLabelColor());
 
@@ -123,7 +124,15 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
         content.getMarkers().addAll(markers);
     }
 
-    public void generatePoints(
+    private String formatTitle(Cluster cluster) {
+		if(cluster.hasTitle()) {
+			return cluster.getTitle() + " - " + cluster.sumValues();
+		} else {
+			return Double.toString(cluster.sumValues());
+		}
+	}
+
+	public void generatePoints(
             List<SiteData> sites,
             TiledMap map,
             BubbleMapLayer layer,

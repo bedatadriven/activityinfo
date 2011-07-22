@@ -5,8 +5,9 @@
 
 package org.sigmah.client.page.map;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
@@ -19,7 +20,6 @@ import org.sigmah.shared.command.GenerateElement;
 import org.sigmah.shared.command.GetBaseMaps;
 import org.sigmah.shared.command.result.BaseMapResult;
 import org.sigmah.shared.map.BaseMap;
-import org.sigmah.shared.map.TileBaseMap;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.MapMarker;
 import org.sigmah.shared.report.model.MapReportElement;
@@ -41,9 +41,12 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapType;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.control.LargeMapControl;
+import com.google.gwt.maps.client.event.MapClickHandler;
+import com.google.gwt.maps.client.event.MapClickHandler.MapClickEvent;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.geom.LatLngBounds;
 import com.google.gwt.maps.client.overlay.Icon;
@@ -64,7 +67,7 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
     private String currentBaseMapId = null;
     private LatLngBounds pendingZoom = null;
 
-    private List<Overlay> overlays = new ArrayList<Overlay>();
+    private Map<Overlay, MapMarker> overlays = new HashMap<Overlay, MapMarker>();
     private Status statusWidget;
 
     // A map rendered serverside for reporting usage
@@ -158,7 +161,16 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
                             
                             mapWidget = new MapWidget();
                             mapWidget.addControl(new LargeMapControl());
+                            
+                            mapWidget.addMapClickHandler(new MapClickHandler() {
+								
+								@Override
+								public void onClick(MapClickEvent event) {
+									onMapClick(event);
+								}
 
+							});
+                            
                             //changeBaseMapIfNeeded(mapReportElement.getBaseMapId());
 
                             // clear the error message content
@@ -197,9 +209,9 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
      * Clears all existing content from the map
      */
     private void clearOverlays() {
-        for (Overlay overlay : overlays) {
-            mapWidget.removeOverlay(overlay);
-        }
+    	if(mapWidget != null) {
+    		mapWidget.clearOverlays();
+    	}
         overlays.clear();
     }
     
@@ -300,11 +312,11 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 		
 		            MarkerOptions options = MarkerOptions.newInstance();
 		            options.setIcon(icon);
-		
+		            options.setTitle(marker.getTitle());
 		            Marker overlay = new Marker(latLng, options);
-		
+		            
 		            mapWidget.addOverlay(overlay);
-		            overlays.add(overlay);
+		            overlays.put(overlay, marker);
 		        }
 			}
 		});
@@ -353,5 +365,13 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 	public void setValue(MapReportElement value, boolean fireEvents) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	private void onMapClick(MapClickEvent event) {
+		if(event.getOverlay() != null) {
+			MapMarker marker = overlays.get(event.getOverlay());
+			InfoWindowContent content = new InfoWindowContent(marker.getTitle());
+			mapWidget.getInfoWindow().open((Marker)event.getOverlay(), content);
+		}
 	}
 }

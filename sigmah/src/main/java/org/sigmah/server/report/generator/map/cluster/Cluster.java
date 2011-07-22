@@ -18,6 +18,7 @@ public class Cluster {
     private double radius;
     private Point point;
     private Rectangle rectangle;
+    private String title;
 
     public Cluster(Point point) {
         pointValues = new ArrayList<PointValue>();
@@ -49,8 +50,19 @@ public class Cluster {
 		pointValues.add(pv);
 	}
 
+    public String getTitle() {
+		return title;
+	}
 
-    /**
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public boolean hasTitle() {
+		return this.title != null;
+	}
+	
+	/**
      *
      * @return The weighted centroid of the cluster
      */
@@ -232,5 +244,7 @@ public class Cluster {
 //    		     return new Rectangle  (tx1, ty1, (int) tx2, (int) ty2);
 //    	}
 //    }
+
+
 
 }
