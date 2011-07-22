@@ -23,47 +23,7 @@ import java.util.List;
  * @author Alex Bertram
  */
 public class BubbleGeneratorTest {
-    @Test
-    public void testColorByIndicators() {
-        MapReportElement element = new MapReportElement();
-
-        BubbleMapLayer layer = new BubbleMapLayer();
-        layer.setClustering(new AutomaticClustering());
-        Indicator indicator1= new Indicator();
-        layer.addIndicator(101);
-        layer.addIndicator(102);
-
-        Dimension dim = new Dimension(DimensionType.Indicator);
-        dim.setProperties(101, CategoryProperties.Color(0, 0, 255));
-        dim.setProperties(102, CategoryProperties.Color(0, 0, 0));
-        layer.getColorDimensions().add(dim);
-
-        List<SiteData> sites = new ArrayList<SiteData>();
-
-        SiteData site1 = new SiteData();
-        site1.setValue(SiteTableColumn.id, 1) ;
-        site1.setValue(SiteTableColumn.x, 29.3 );
-        site1.setValue(SiteTableColumn.y, -1.5);
-        site1.indicatorValues.put(101, 35.0);
-        site1.indicatorValues.put(102, 55.0);
-        sites.add(site1);
-
-        element.addLayer(layer);
-
-        TiledMap map = new TiledMap(640, 480, new LatLng(-1.5, 29.3), 9);
-
-        MapContent content = new MapContent();
-
-        BubbleLayerGenerator gtor = new BubbleLayerGenerator(element, layer);
-        gtor.generate(sites, map, content);
-        
-        Assert.assertEquals("marker count", 2, content.getMarkers().size());
-        
-        // Color is not determined by dimension, but by the BubbleMapLayer setting
-        Assert.assertEquals(255, ((BubbleMapMarker) content.getMarkers().get(0)).getColor());
-        Assert.assertEquals(255, ((BubbleMapMarker) content.getMarkers().get(1)).getColor());
-        Assert.assertTrue(((BubbleMapMarker) content.getMarkers().get(0)).getRadius() >= layer.getMinRadius());
-    }
+  
 
     @Test
     public void testColorByPartner() {

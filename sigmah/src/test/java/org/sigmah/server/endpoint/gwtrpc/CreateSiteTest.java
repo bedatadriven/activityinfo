@@ -19,6 +19,9 @@ import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.test.InjectionSupport;
 
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+
 import java.util.GregorianCalendar;
 
 @RunWith(InjectionSupport.class)
@@ -29,21 +32,7 @@ public class CreateSiteTest extends CommandTestCase {
     @Test
     public void test() throws CommandException {
         // create a new detached, client model
-        SiteDTO newSite = new SiteDTO();
-
-        newSite.setActivityId(1);
-        newSite.setPartner(new PartnerDTO(1, "Foobar"));
-        newSite.setDate1((new GregorianCalendar(2008, 12, 1)).getTime());
-        newSite.setDate2((new GregorianCalendar(2009, 1, 3)).getTime());
-        newSite.setLocationName("Virunga");
-        newSite.setLocationAxe("Goma - Rutshuru");
-        newSite.setX(27.432);
-        newSite.setY(1.23);
-        newSite.setIndicatorValue(1, 996.0);
-        newSite.setIndicatorValue(2, null);
-        newSite.setAttributeValue(1, true);
-        newSite.setAttributeValue(2, false);
-        newSite.setComments("huba huba");
+        SiteDTO newSite = SiteDTOs.newSite();
 
         // create command
 
@@ -60,6 +49,7 @@ public class CreateSiteTest extends CommandTestCase {
         newSite.setId(result.getNewId());
         //cmd.onCompleted(result);
 
+        assertThat(result.getNewId(), not(equalTo(0)));
 
         // try to retrieve what we've created
 
@@ -71,15 +61,11 @@ public class CreateSiteTest extends CommandTestCase {
 
 
         // confirm that the changes are there
-        Assert.assertEquals("site.location.name", newSite.getLocationName(), secondRead.getLocationName());
-        Assert.assertEquals("site.attribute[1]", true, secondRead.getAttributeValue(1));
-        Assert.assertEquals("site.reportingPeriod[0].indicatorValue[0]", 996.0, secondRead.getIndicatorValue(1), 0.1);
-        Assert.assertEquals("site.comments", newSite.getComments(), secondRead.getComments());
-        Assert.assertEquals("site.partner", newSite.getPartner().getId(), secondRead.getPartner().getId());
+        SiteDTOs.validateNewSite(secondRead);
     }
 
 
-    @Test
+	@Test
     public void testAdminBoundCreate() throws CommandException {
         // create a new detached, client model
         SiteDTO newSite = new SiteDTO();

@@ -184,7 +184,7 @@
         <dependency>
             <groupId>com.bedatadriven.rebar</groupId>
             <artifactId>rebar-sync</artifactId>
-            <version>0.5</version>
+            <version>0.5.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -372,7 +372,11 @@
             <artifactId>gson</artifactId>
             <version>1.6</version>
         </dependency>
-
+	    <dependency>
+	      <groupId>gson-gwt</groupId>
+	      <artifactId>gson-gwt</artifactId>
+	      <version>1.0</version>
+	    </dependency>
 
         <!--  testing framework  -->
 

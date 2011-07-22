@@ -5,9 +5,18 @@
 
 package org.sigmah.server.policy;
 
-import com.google.inject.Inject;
-import org.sigmah.server.dao.*;
-import org.sigmah.server.domain.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.persistence.EntityManager;
+
+import org.bouncycastle.jce.provider.symmetric.AES.KeyGen;
+import org.sigmah.client.offline.command.handler.KeyGenerator;
+import org.sigmah.server.dao.LocationDAO;
+import org.sigmah.server.dao.PartnerDAO;
+import org.sigmah.server.dao.ReportingPeriodDAO;
+import org.sigmah.server.dao.SiteDAO;
 import org.sigmah.shared.dao.ActivityDAO;
 import org.sigmah.shared.dao.AdminDAO;
 import org.sigmah.shared.domain.Activity;
@@ -18,11 +27,14 @@ import org.sigmah.shared.domain.Site;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.UserDatabase;
 import org.sigmah.shared.domain.UserPermission;
-import org.sigmah.shared.dto.*;
+import org.sigmah.shared.dto.ActivityDTO;
+import org.sigmah.shared.dto.AdminEntityDTO;
+import org.sigmah.shared.dto.AdminLevelDTO;
+import org.sigmah.shared.dto.AttributeDTO;
+import org.sigmah.shared.dto.IndicatorDTO;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 public class SitePolicy implements EntityPolicy<Site> {
     private final ActivityDAO activityDAO;
@@ -31,7 +43,6 @@ public class SitePolicy implements EntityPolicy<Site> {
     private final PartnerDAO partnerDAO;
     private final ReportingPeriodDAO reportingPeriodDAO;
     private final SiteDAO siteDAO;
-
 
     @Inject
     public SitePolicy(ActivityDAO activityDAO, AdminDAO adminDAO, LocationDAO locationDAO,
@@ -47,8 +58,10 @@ public class SitePolicy implements EntityPolicy<Site> {
     @Override
     public Integer create(User user, PropertyMap properties) {
 
+    	KeyGenerator keyGenerator = new KeyGenerator();
+    
         Activity activity = activityDAO.findById((Integer) properties.get("activityId"));
-        OrgUnit partner = partnerDAO.findById(((PartnerDTO) properties.get("partner")).getId());
+        OrgUnit partner = partnerDAO.findById(((Integer) properties.get("partnerId")));
 
         assertSiteEditPrivileges(user, activity, partner);
 
@@ -58,6 +71,13 @@ public class SitePolicy implements EntityPolicy<Site> {
            */
 
         Location location = new Location();
+        
+        if(properties.containsKey("locationId")) {
+        	location.setId((Integer)properties.get("locationId"));
+        } else {
+        	location.setId(keyGenerator.generateInt());
+        }
+        
         location.setLocationType(activity.getLocationType());
         updateLocationProperties(location, properties);
 
@@ -70,6 +90,13 @@ public class SitePolicy implements EntityPolicy<Site> {
            */
 
         Site site = new Site();
+        
+        if(properties.containsKey("siteId")) {
+        	site.setId((Integer)properties.get("siteId"));
+        } else {
+        	site.setId(keyGenerator.generateInt());
+        }
+        
         site.setLocation(location);
         site.setActivity(activity);
         site.setPartner(partner);
@@ -78,7 +105,7 @@ public class SitePolicy implements EntityPolicy<Site> {
         updateSiteProperties(site, properties, true);
 
         siteDAO.persist(site);
-
+        
         updateAttributeValueProperties(site, properties, true);
 
         /*
@@ -91,6 +118,13 @@ public class SitePolicy implements EntityPolicy<Site> {
         if (activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE) {
 
             ReportingPeriod period = new ReportingPeriod();
+            
+            if(properties.containsKey("reportingPeriodId")) {
+            	period.setId((Integer)properties.get("reportingPeriodId"));
+            } else {
+            	period.setId(keyGenerator.generateInt());
+            }
+            
             period.setSite(site);
             period.setMonitoring(false);
 
@@ -119,7 +153,6 @@ public class SitePolicy implements EntityPolicy<Site> {
         updateAttributeValueProperties(site, changes, false);
         updateLocationProperties(site.getLocation(), changes);
         updateAdminProperties(site.getLocation(), changes, false);
-
 
         if (!site.getReportingPeriods().isEmpty()) {
             ReportingPeriod period = site.getReportingPeriods().iterator().next();

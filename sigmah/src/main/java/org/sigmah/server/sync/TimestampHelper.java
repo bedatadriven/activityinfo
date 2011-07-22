@@ -25,6 +25,13 @@ public class TimestampHelper {
         }
         return timestamp;
     }
+    
+    public static Timestamp fromDate(Date d) {
+    	if(d instanceof Timestamp) {
+    		return (Timestamp)d;
+    	}
+    	return new Timestamp(d.getTime());
+    }
 
     public static String toString(Date date) {
         if(date instanceof Timestamp) {

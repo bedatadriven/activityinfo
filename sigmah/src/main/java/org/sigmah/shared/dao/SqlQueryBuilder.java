@@ -7,9 +7,6 @@ package org.sigmah.shared.dao;
 
 import org.sigmah.shared.report.model.DimensionType;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.core.client.GWT;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,7 +21,6 @@ public class SqlQueryBuilder {
     protected StringBuilder tableList = new StringBuilder();
     protected StringBuilder whereClause = new StringBuilder();
     protected StringBuilder orderByClause = new StringBuilder();
-    protected String groupByClause;
     protected List<Object> parameters = new ArrayList<Object>();
 
     private String limitClause = "";
@@ -50,9 +46,9 @@ public class SqlQueryBuilder {
         tableList.append(" LEFT JOIN ").append(tableName);
         return new JoinBuilder();
     }
-    
+
     /**
-     * Appends a left join to the {@code FROM} clause
+     * Appends an inner join to the {@code FROM} clause
      * @param tableName
      * @return
      */
@@ -60,8 +56,7 @@ public class SqlQueryBuilder {
         tableList.append(" INNER JOIN ").append(tableName);
         return new JoinBuilder();
     }
-
-
+    
     /**
      * Appends a left join to derived table to the {@code FROM} clause
      */
@@ -125,7 +120,7 @@ public class SqlQueryBuilder {
     public SqlQueryBuilder filteredBy(Filter filter) {
         for (DimensionType type : filter.getRestrictedDimensions()) {
             if (type == DimensionType.Indicator) {
-                addIndicatorFilter(filter, type);
+                where("Indicator.IndicatorId").in(filter.getRestrictions(type));
 
             } else if (type == DimensionType.Activity) {
                 where("Site.ActivityId").in(filter.getRestrictions(type));
@@ -148,32 +143,19 @@ public class SqlQueryBuilder {
         return this;
     }
 
-        protected void addIndicatorFilter(Filter filter, DimensionType type) {
-                where("Indicator.IndicatorId").in(filter.getRestrictions(type));
-        }
-
-        public SqlQueryBuilder groupBy(String string) {
-                this.groupByClause = string;
-                return this;
-        }
-
     public String sql() {
         StringBuilder sql = new StringBuilder("SELECT ")
-                .append(fieldList)
+                .append(fieldList.toString())
                 .append(" FROM ")
-                .append(tableList);
+                .append(tableList.toString());
 
         if(whereClause.length() > 0) {
             sql.append(" WHERE ")
-                    .append(whereClause);
-        }
-        if(groupByClause != null) {
-                sql.append(" GROUP BY ")
-                        .append(groupByClause);
+                    .append(whereClause.toString());
         }
         if(orderByClause.length() > 0) {
             sql.append(" ORDER BY ")
-                    .append(orderByClause);
+                    .append(orderByClause.toString());
         }
         sql.append(" ")
                 .append(limitClause);
@@ -183,7 +165,6 @@ public class SqlQueryBuilder {
 
     public ResultSet executeQuery(Connection connection) throws SQLException {
         String sql = sql();
-        Log.debug(sql);
         PreparedStatement stmt = prepareStatement(connection, sql);
         return stmt.executeQuery();
     }
@@ -225,16 +206,38 @@ public class SqlQueryBuilder {
      * @param conn JDBC connection
      */
     public Date singleDateResultOrNull(Connection conn) {
+    	return getSingleResult(conn, new SingleResultHandler<Date>() {
+			
+			@Override
+			public Date get(ResultSet rs) throws SQLException {
+				return rs.getDate(1);
+			}
+		});
+    }
+
+
+	public int singleIntResult(Connection connection) {
+		return getSingleResult(connection, new SingleResultHandler<Integer>() {
+
+			@Override
+			public Integer get(ResultSet rs) throws SQLException {
+				return rs.getInt(1);
+			}
+		});
+	}
+	
+
+	public <T> T getSingleResult(Connection connection, SingleResultHandler<T> handler) {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         String sql = sql();
 
         try {
-            stmt = prepareStatement(conn, sql);
+            stmt = prepareStatement(connection, sql);
             rs = stmt.executeQuery();
 
             if(rs.next()) {
-                return rs.getDate(1);
+                return handler.get(rs);
             } else {
                 return null;
             }
@@ -244,9 +247,7 @@ public class SqlQueryBuilder {
             if(rs != null) { try { rs.close(); } catch(SQLException ignored) {} }
             if(stmt != null) { try { stmt.close(); } catch(SQLException ignored) {} }
         }
-
-    }
-
+	}
 
     public class WhereClauseBuilder {
 
@@ -283,6 +284,7 @@ public class SqlQueryBuilder {
 
             return SqlQueryBuilder.this;
         }
+
     }
 
     public class JoinBuilder {
@@ -309,5 +311,12 @@ public class SqlQueryBuilder {
         public abstract void handle(ResultSet rs) throws SQLException;
 
     }
+    
+    private static abstract class SingleResultHandler<T> {
+    	
+    	public abstract T get(ResultSet rs) throws SQLException;
+    }
+    
+    
 
 }
