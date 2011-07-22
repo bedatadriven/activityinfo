@@ -5,9 +5,17 @@
 
 package org.sigmah.client.page;
 
+import com.extjs.gxt.ui.client.core.El;
 import com.extjs.gxt.ui.client.event.EventType;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.IFrameElement;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Frame;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.sigmah.client.EventBus;
@@ -43,9 +51,26 @@ public class DownloadManager {
 
         // launch download in IFRAME (so our app window is not disturbed
         // if the connection fails before the client receives the Content-disposition header
-        Window.open(url, "_downloadFrame", null);
-
-        // todo: feedback to user and monitor transfer, if possible.
+        Frame frame = new Frame(url);
+        
+        El el = El.fly(frame.getElement());
+		el.setStyleAttribute("width", 0);
+		el.setStyleAttribute("height", 0);
+		el.setStyleAttribute("position", "absolute");
+		el.setStyleAttribute("border", 0);
+		
+		DOM.sinkEvents(frame.getElement(), Event.ONLOAD);
+		DOM.setEventListener(frame.getElement(), new EventListener() {
+			
+			@Override
+			public void onBrowserEvent(Event event) {
+				GWT.log("Finished!");
+			}
+		});
+		
+		RootPanel.get().add(frame);
+        
+         // todo: feedback to user and monitor transfer, if possible.
     }
 }
 

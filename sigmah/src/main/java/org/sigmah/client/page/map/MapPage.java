@@ -8,6 +8,7 @@ package org.sigmah.client.page.map;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.dispatch.callback.DownloadCallback;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.event.DownloadRequestEvent;
 import org.sigmah.client.i18n.I18N;
@@ -82,6 +83,7 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
 
     private void createSelectedLayersWidget() {
         layersWidget = new LayersWidget(dispatcher);
+        layersWidget.setValue(mapReportElement);
         
         BorderLayoutData east = new BorderLayoutData(Style.LayoutRegion.EAST, 0.25f);
         east.setCollapsible(true);
@@ -128,13 +130,7 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
 
     protected void createToolBar() {
         toolbarMapActions = new ActionToolBar(this);
-        toolbarMapActions.addRefreshButton();
-        toolbarMapActions.add(new ExportMenuButton(RenderElement.Format.PowerPoint, new ExportCallback() {
-            public void export(RenderElement.Format format) {
-               export(format);
-
-            }
-        }));
+        toolbarMapActions.add(new ExportMenuButton(RenderElement.Format.PowerPoint, this));
         toolbarMapActions.addButton(UIActions.exportData, I18N.CONSTANTS.exportData(),
                 IconImageBundle.ICONS.excel());
         aiMapWidget.setTopComponent(toolbarMapActions);
@@ -163,17 +159,7 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
 		RenderElement renderElement = new RenderElement();
 		renderElement.setElement(mapReportElement);
 		renderElement.setFormat(format);
-		dispatcher.execute(renderElement, null, new AsyncCallback<RenderResult>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-			}
-
-			@Override
-			public void onSuccess(RenderResult result) {
-				eventBus.fireEvent(new DownloadRequestEvent(result.getUrl()));
-			}
-		});
+		dispatcher.execute(renderElement, null, new DownloadCallback(eventBus));
 	}
 //	    public ReportElement getMapElement() {
 //      return form.getMapElement();
