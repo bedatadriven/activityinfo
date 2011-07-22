@@ -10,7 +10,7 @@ public abstract class CircledMapLayer extends AbstractMapLayer {
 	private int minRadius = 16;
 	private int maxRadius = 48;
 	private double alpha = 0.75;
-	private ScalingType scaling = ScalingType.None;
+	private ScalingType scaling = ScalingType.Graduated;
 
 	@XmlElement
 	public int getMinRadius() {
@@ -47,5 +47,4 @@ public abstract class CircledMapLayer extends AbstractMapLayer {
 	public void setScaling(ScalingType scaling) {
 	    this.scaling = scaling;
 	}
-
 }
