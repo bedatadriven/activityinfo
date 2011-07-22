@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import org.sigmah.server.report.generator.map.RadiiCalculator;
+import org.sigmah.shared.domain.AdminEntity;
 import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.report.model.PointValue;
 import org.sigmah.shared.report.model.clustering.AdministrativeLevelClustering;
@@ -14,44 +17,53 @@ import org.sigmah.shared.report.model.clustering.AdministrativeLevelClustering;
  * calculated per country
  */
 public class AdminLevelClusterer implements Clusterer {
-	private AdministrativeLevelClustering adminLevelClustering;
+	private AdministrativeLevelClustering model;
+	private RadiiCalculator radiiCalculator;
 	private List<PointValue> points;
-	private Map<AdminLevelDTO, List<PointValue>> pointsByAdminLevel = new HashMap<AdminLevelDTO, List<PointValue>>();
-	private List<Cluster> pointsClusteredByAdminLevel = new ArrayList<Cluster>();
+	
 	public AdminLevelClusterer(
 			AdministrativeLevelClustering adminLevelClustering,
+			RadiiCalculator radiiCalculator,
 			List<PointValue> points) {
 		super();
-		this.adminLevelClustering = adminLevelClustering;
+		this.model = adminLevelClustering;
 		this.points = points;
+		this.radiiCalculator = radiiCalculator;
 	}
 
 	@Override
 	public List<Cluster> cluster() {
 		
-		sortPointsByAdminLevel();
-		convertMapToClusterList();
+		// admin entity id -> cluster
+		Map<Integer, Cluster> adminClusters = new HashMap<Integer,Cluster>();
 		
-		return pointsClusteredByAdminLevel;
-	}
-
-	private void convertMapToClusterList() {
-		for (List<PointValue> points : pointsByAdminLevel.values()) {
-			Cluster cluster = new Cluster(points);
-			pointsClusteredByAdminLevel.add(cluster);
+		for(PointValue pv : points) {
+			int entityId = getAdminEntityId(pv);
+			if(entityId != -1) {
+				Cluster cluster = adminClusters.get(entityId);
+				if(cluster == null) {
+					cluster = new Cluster(pv);
+					adminClusters.put(entityId, cluster);
+				} else {
+					cluster.addPointValue(pv);
+				}
+			}
 		}
+	
+		ArrayList<Cluster> clusters = new ArrayList<Cluster>(adminClusters.values());
+		radiiCalculator.calculate(clusters);
+		
+		return clusters;
 	}
 
-	private void sortPointsByAdminLevel() {
-		// TODO: implement me
+	private int getAdminEntityId(PointValue pv) {
+		Map<Integer, AdminEntity> membership = pv.site.adminEntities;
+		for(Integer levelId : model.getAdminLevels()) {
+			if(membership.containsKey(levelId)) {
+				return membership.get(levelId).getId();
+			}
+		}
+		return -1;
 	}
 	
-	private void addToMap(AdminLevelDTO adminLevel, PointValue point) {
-		if (!pointsByAdminLevel.containsKey(adminLevel)) {
-			pointsByAdminLevel.put(adminLevel, new ArrayList<PointValue>());
-		}
-		
-		pointsByAdminLevel.get(adminLevel).add(point);
-	}
-
 }

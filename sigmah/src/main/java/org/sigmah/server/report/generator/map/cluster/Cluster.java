@@ -43,6 +43,11 @@ public class Cluster {
 	public void addNode(MarkerGraph.Node node) {
         pointValues.add(node.getPointValue());
     }
+	
+
+	public void addPointValue(PointValue pv) {
+		pointValues.add(pv);
+	}
 
 
     /**
@@ -227,4 +232,5 @@ public class Cluster {
 //    		     return new Rectangle  (tx1, ty1, (int) tx2, (int) ty2);
 //    	}
 //    }
+
 }

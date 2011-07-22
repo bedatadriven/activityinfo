@@ -123,9 +123,6 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
         content.getMarkers().addAll(markers);
     }
 
-    /*
-     * 
-     */
     public void generatePoints(
             List<SiteData> sites,
             TiledMap map,
@@ -133,11 +130,7 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
             List<PointValue> mapped,
             List<PointValue> unmapped) {
 
-
-        // if one of the dimensions is Indicator, then we will be potentially
-        // generating several points per site. Otherwise, it is one point per site
-        boolean byIndicator = layer.containsIndicatorDimension();
-
+    	
         for(SiteData site : sites) {
 
             if(hasValue(site, layer.getIndicatorIds())) {
@@ -146,32 +139,16 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
                 if(site.hasLatLong())  {
                     px = map.fromLatLngToPixel(new LatLng(site.getLatitude(), site.getLongitude()));
                 }
-                
-                if(byIndicator) {
-                    for(Integer indicatorId : layer.getIndicatorIds()) {
-                        if(site.getIndicatorValue(indicatorId) != null) {
-                            MapSymbol symbol = createSymbol(site, layer.getColorDimensions());
-                            symbol.put(new Dimension(DimensionType.Indicator),
-                                    new EntityCategory(indicatorId,null));
-
-                            Double value = site.getIndicatorValue(indicatorId);
-                            if(value != null && value != 0) {
-                                (px==null ? unmapped : mapped).add(new PointValue(site, symbol, value, px));
-                            }
-                        }
-                    }
-                } else {
-
-                    Double value = getValue(site, layer.getIndicatorIds());
-                    if(value != null && value != 0) {
-                        PointValue pv = new PointValue(site,
-                                createSymbol(site, layer.getColorDimensions()),
-                                value, px);
-                        
-                        // TODO: add AdminLevel to pointvalue
-                        
-                        (px==null ? unmapped : mapped).add(pv);
-                    }
+      
+                Double value = getValue(site, layer.getIndicatorIds());
+                if(value != null && value != 0) {
+                    PointValue pv = new PointValue(site,
+                            createSymbol(site, layer.getColorDimensions()),
+                            value, px);
+                    
+                    // TODO: add AdminLevel to pointvalue
+                    
+                    (px==null ? unmapped : mapped).add(pv);
                 }
             }
         }
