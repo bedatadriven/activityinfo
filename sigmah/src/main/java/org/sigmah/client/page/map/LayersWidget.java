@@ -161,16 +161,11 @@ public class LayersWidget extends ContentPanel implements HasValue<MapReportElem
 						ValueChangeEvent.fire(LayersWidget.this, mapElement);
 						store.update(layerModel);
 					}
-<<<<<<< Updated upstream
 //					be.setCancelled(true);
 //					be.stopEvent();
-=======
-					//be.setCancelled(true);
->>>>>>> Stashed changes
 				}				
 				
 				// Remove 
-				//if (be.getTargetEl().hasStyleName("x-view-item-button")) {
 				if (be.getTargetEl().hasStyleName("removeLayer")) {
 					if (view.getSelectionModel().getSelectedItem() != null) {
 						int index = store.indexOf(view.getSelectionModel().getSelectedItem());
