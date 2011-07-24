@@ -2,8 +2,10 @@ package org.sigmah.client.page.map.layerOptions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
@@ -167,44 +169,22 @@ public class ClusteringOptionsWidget extends LayoutContainer implements HasValue
 		combobox.addListener(Events.Select, new Listener<FieldEvent>() {
 			@Override
 			public void handleEvent(FieldEvent be) {
-				// Ensure no adminlevels of equal country exist in list of selected
-				// admin levels. Remove if such an adminlevel is found
-				AdminLevelDTO adminLevel = combobox.getValue();
-				if (containsAdminLevelOfCountry(adminLevel.getCountryId())) {
-					removeAdminLevelsWith(adminLevel.getCountryId());
-				}
+				onAdminLevelSelection(be);
 				
-				adminLevelClustering.getAdminLevels().add(adminLevel.getId());
-				setValue(adminLevelClustering);
 			}
 		});
 		
 		return combobox;
 	}
 	
-	/*
-	 * Returns true when the selected adminlevels contain an adminlevel with given countryId
-	 */
-	private boolean containsAdminLevelOfCountry(int countryId) {
-		for (AdminLevelDTO adminLevel : selectedAdminLevels) {
-			if (adminLevel.getCountryId() == countryId) {
-				return true;
+	protected void onAdminLevelSelection(FieldEvent be) {
+		adminLevelClustering.getAdminLevels().clear();
+		for(ComboBox<AdminLevelDTO> comboBox : comboboxesByCountry.values()) {
+			if(comboBox.getValue() != null) {
+				adminLevelClustering.getAdminLevels().add(comboBox.getValue().getId());
 			}
 		}
-		
-		return false;
-	}
-	
-	private void removeAdminLevelsWith(int countryId) {
-		AdminLevelDTO adminLevelToRemove = null;
-		
-		for (AdminLevelDTO adminLevel : selectedAdminLevels) {
-			if (adminLevel.getCountryId() == countryId) {
-				adminLevelToRemove = adminLevel;
-			}
-		}
-		
-		selectedAdminLevels.remove(adminLevelToRemove);
+		setValue(adminLevelClustering);		
 	}
 	
 	/*
