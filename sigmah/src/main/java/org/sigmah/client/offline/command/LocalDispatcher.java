@@ -13,6 +13,7 @@ import java.util.Map;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.Authentication;
+import org.sigmah.client.offline.command.handler.PartialCommandHandler;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
@@ -73,7 +74,17 @@ public class LocalDispatcher implements Dispatcher {
     }
     
     public boolean canExecute(Command c) {
-    	return registry.containsKey(c.getClass());
+    	if(!registry.containsKey(c.getClass())) {
+    		return false;
+    	}
+    	// some commands may only be partially available online
+    	CommandHandler handler = getHandler(c);
+    	if(handler instanceof PartialCommandHandler) {
+    		return ((PartialCommandHandler) handler).canExecute(c);
+    	} else {
+    		return true;
+    	}
+    	
     }
     
     private CommandHandler getHandler(Command c) {

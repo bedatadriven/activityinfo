@@ -85,7 +85,6 @@ public class PivotTableData implements Serializable {
          * Required for GWT serialization
          */
         private Cell() {
-
         }
 		
 		public Cell(Double value) {

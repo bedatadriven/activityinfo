@@ -28,6 +28,10 @@ public class SiteHibernateDAO extends GenericDAO<Site, Integer> implements SiteD
     @Override
     public void updateAttributeValues(int siteId, Map<Integer, Boolean> changes) {
 
+    	// flush any pending persists() to the database
+    	// before we execute native sql that may depend on entities
+    	em.flush();
+    	
         Set<Integer> falseValues = new HashSet<Integer>();
         Set<Integer> trueValues = new HashSet<Integer>();
         Set<Integer> nullValues = new HashSet<Integer>();
