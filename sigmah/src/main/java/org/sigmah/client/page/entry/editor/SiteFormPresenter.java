@@ -95,7 +95,7 @@ public class SiteFormPresenter implements SiteFormLeash {
         return store;
     }
 
-    protected ListStore<SiteDTO> createAsssessmentStore() {
+	protected ListStore<SiteDTO> createAsssessmentStore() {
         return new ListStore<SiteDTO>();
     }
 
@@ -181,6 +181,11 @@ public class SiteFormPresenter implements SiteFormLeash {
             final Map<String, Object> properties = view.getPropertyMap();
             properties.putAll(adminPresenter.getPropertyMap());
             properties.put("activityId", currentActivity.getId());
+            
+            // hack: we need to send partnerId instead of partner.id, but the
+            // nonsense form binding that i set up here doesn't support custom bindings
+            properties.put("partnerId", ((PartnerDTO)properties.get("partner")).getId());
+            properties.remove("partner");
             	
             service.execute(new CreateEntity("Site", properties), view.getMonitor(), new AsyncCallback<CreateResult>() {
                 @Override
