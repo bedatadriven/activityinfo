@@ -19,6 +19,7 @@
                     <alpha>0.75</alpha>
                     <maxRadius>48</maxRadius>
                     <minRadius>16</minRadius>
+<<<<<<< Updated upstream
                     <scaling>Graduated</scaling>
                     <colors/>
                     <defaultColor>255</defaultColor>
@@ -48,6 +49,13 @@
                         </slice>
                     </slices>
                 </pie>
+=======
+                    <scaling>None</scaling>
+                    <colors/>
+                    <defaultColor>255</defaultColor>
+                    <labelColor>0</labelColor>
+                </bubbles>
+>>>>>>> Stashed changes
             </layers>
             <width>640</width>
         </map>

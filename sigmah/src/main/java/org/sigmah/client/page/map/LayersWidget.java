@@ -161,8 +161,12 @@ public class LayersWidget extends ContentPanel implements HasValue<MapReportElem
 						ValueChangeEvent.fire(LayersWidget.this, mapElement);
 						store.update(layerModel);
 					}
+<<<<<<< Updated upstream
 //					be.setCancelled(true);
 //					be.stopEvent();
+=======
+					//be.setCancelled(true);
+>>>>>>> Stashed changes
 				}				
 				
 				// Remove 
