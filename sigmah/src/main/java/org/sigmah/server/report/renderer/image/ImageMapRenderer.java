@@ -196,13 +196,15 @@ public class ImageMapRenderer {
         g2d.setPaint(Color.WHITE);
         g2d.fillRect(0,0,element.getWidth(),element.getHeight());
 
-        TileProvider tileProvider = new RemoteTileProvider(element.getContent().getBaseMap());
-
-        // Draw tiled map background
-        try {
-            map.drawLayer(g2d, tileProvider);
-        } catch(Exception e) {
-            e.printStackTrace();
+        if(element.getContent().getBaseMap() instanceof TileBaseMap) {
+	        TileProvider tileProvider = new RemoteTileProvider((TileBaseMap) element.getContent().getBaseMap());
+	
+	        // Draw tiled map background
+	        try {
+	            map.drawLayer(g2d, tileProvider);
+	        } catch(Exception e) {
+	            e.printStackTrace();
+	        }
         }
     }
 

@@ -49,26 +49,6 @@ class LayoutOptionsWidget extends LayoutContainer {
 //        setLabelWidth(125);
 //        setFieldWidth(150);
 
-        baseMapCombo = new ComboBox();
-        baseMapCombo.setFieldLabel(I18N.CONSTANTS.backgroundMap());
-        baseMapCombo.setStore(getBaseMapStore());
-        baseMapCombo.setDisplayField("name");
-        baseMapCombo.setValueField("id");
-        baseMapCombo.setTriggerAction(ComboBox.TriggerAction.ALL);
-        baseMapCombo.setForceSelection(true);
-        baseMapCombo.setUseQueryCache(false);
-        baseMapCombo.setAllowBlank(false);
-        add(baseMapCombo);
-
-        final ListLoader loader = baseMapCombo.getStore().getLoader();
-        loader.addLoadListener(new LoadListener() {
-            @Override
-            public void loaderLoad(LoadEvent le) {
-                baseMapCombo.setValue(baseMapCombo.getStore().getAt(0));
-                loader.removeLoadListener(this);
-            }
-        });
-        loader.load();
 
         pageSizeCombo = new ComboBox<PageSizeModel>();
         pageSizeCombo.setFieldLabel(I18N.CONSTANTS.pageSize());
@@ -87,38 +67,7 @@ class LayoutOptionsWidget extends LayoutContainer {
         element.setHeight(pageSize.getHeight());
         element.setBaseMapId((String) baseMapCombo.getValue().get("id"));
     }
-
-
-    private ListStore getBaseMapStore() {
-
-        DataProxy proxy = new DataProxy<ListLoadResult>() {
-            public void load(DataReader<ListLoadResult> dataReader, Object loadConfig, final AsyncCallback<ListLoadResult> callback) {
-                service.execute(new GetBaseMaps(), null, new AsyncCallback<BaseMapResult>() {
-                    public void onFailure(Throwable caught) {
-                        callback.onFailure(caught);
-                    }
-
-                    public void onSuccess(BaseMapResult result) {
-                        List<ModelData> list = new ArrayList<ModelData>();
-                        for (BaseMap baseMap : result.getBaseMaps()) {
-                            ModelData data = new BaseModelData();
-                            data.set("id", baseMap.getId());
-                            data.set("name", baseMap.getName());
-                            list.add(data);
-                        }
-                        callback.onSuccess(new BaseListLoadResult<ModelData>(list));
-                    }
-                });
-            }
-        };
-
-        BaseListLoader loader = new BaseListLoader(proxy);
-        loader.setRemoteSort(false);
-
-        ListStore store = new ListStore(loader);
-        return store;
-    }
-
+    
     private static class PageSizeModel extends BaseModelData {
 
         public PageSizeModel(String name, int width, int height) {

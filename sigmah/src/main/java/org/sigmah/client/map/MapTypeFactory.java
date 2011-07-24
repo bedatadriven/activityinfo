@@ -5,16 +5,16 @@
 
 package org.sigmah.client.map;
 
+import org.sigmah.shared.dto.CountryDTO;
+import org.sigmah.shared.map.BaseMap;
+import org.sigmah.shared.map.GoogleBaseMap;
+import org.sigmah.shared.map.TileBaseMap;
+
 import com.google.gwt.maps.client.MapType;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.TileLayer;
 import com.google.gwt.maps.client.geom.MercatorProjection;
 import com.google.gwt.maps.client.geom.Projection;
-import org.sigmah.shared.dto.CountryDTO;
-import org.sigmah.shared.map.BaseMap;
-import org.sigmah.shared.map.SateliteBaseMap;
-import org.sigmah.shared.map.StreetBaseMap;
-import org.sigmah.shared.map.TileBaseMap;
 
 /**
  * Utility class for creating standard GoogleMap MapTypes
@@ -53,15 +53,16 @@ public class MapTypeFactory {
     public static MapType mapTypeForBaseMap(BaseMap baseMap) {
         if (baseMap instanceof TileBaseMap) {
             TileLayer[] layers = new TileLayer[1];
-            layers[0] = new BaseMapLayer(baseMap);
+            layers[0] = new BaseMapLayer((TileBaseMap) baseMap);
             Projection projection = new MercatorProjection(baseMap.getMaxZoom()+1);
-            return new MapType(layers, projection, baseMap.getName());
-        } else if (baseMap instanceof SateliteBaseMap) {
+            return new MapType(layers, projection, ((TileBaseMap) baseMap).getName());
+            
+        } else if (baseMap.equals(GoogleBaseMap.SATELLITE)) {
         	return MapType.getSatelliteMap();
-        } else if (baseMap instanceof StreetBaseMap) {
+        	
+        } else if (baseMap.equals(GoogleBaseMap.ROADMAP)) {
         	return MapType.getNormalMap();
         }
-        
         return null;
     }
 

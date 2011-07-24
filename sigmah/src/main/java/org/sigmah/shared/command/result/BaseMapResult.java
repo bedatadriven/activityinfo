@@ -7,7 +7,7 @@ package org.sigmah.shared.command.result;
 
 import java.util.List;
 
-import org.sigmah.shared.map.BaseMap;
+import org.sigmah.shared.map.TileBaseMap;
 
 /**
  *
@@ -20,16 +20,17 @@ import org.sigmah.shared.map.BaseMap;
  */
 public class BaseMapResult implements CommandResult  {
 
-    List<BaseMap> baseMaps;
-
-    private BaseMapResult() {
+    List<TileBaseMap> baseMaps;
+    
+    public BaseMapResult() {
+    	
     }
 
-    public BaseMapResult(List<BaseMap> baseMaps) {
-        this.baseMaps = baseMaps;
+    public BaseMapResult(List<TileBaseMap> maps) {
+        this.baseMaps = maps;
     }
 
-    public List<BaseMap> getBaseMaps() {
+    public List<TileBaseMap> getBaseMaps() {
         return baseMaps;
     }
 }

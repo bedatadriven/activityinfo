@@ -1,5 +1,6 @@
 package org.sigmah.client.page.map.mapOptions;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.command.GetBaseMaps;
 import org.sigmah.shared.command.result.BaseMapResult;
 import org.sigmah.shared.map.BaseMap;
+import org.sigmah.shared.map.GoogleBaseMap;
 import org.sigmah.shared.map.TileBaseMap;
 
 import com.extjs.gxt.ui.client.event.Events;
@@ -25,13 +27,13 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 
-/*
+/**
  * Displays a list of options and hints for the map
  */
 public class BaseMapPickerWidget extends LayoutContainer implements HasValue<BaseMap>{
 	private RadioGroup radiogroupBaseMap = new RadioGroup();
 	private Dispatcher service;
-	private List<BaseMap> baseMaps;
+	private List<TileBaseMap> baseMaps = new ArrayList<TileBaseMap>();
 	private BaseMap selectedBaseMap = null;
 	private Map<Radio, BaseMap> baseMapPerRadio = new HashMap<Radio, BaseMap>();
 	private VerticalPanel panelBaseMaps = new VerticalPanel(); 
@@ -41,7 +43,7 @@ public class BaseMapPickerWidget extends LayoutContainer implements HasValue<Bas
 		
 		initializeComponent();
 		
-		getBaseMaps();
+		loadBaseMaps();
 
 		createFixedZoomHint();
 		createFixedPanningHint();
@@ -54,7 +56,7 @@ public class BaseMapPickerWidget extends LayoutContainer implements HasValue<Bas
 	}
 
 
-	private void getBaseMaps() {
+	private void loadBaseMaps() {
 		GetBaseMaps getBaseMaps = new GetBaseMaps();
 		
 		service.execute(getBaseMaps, null, new AsyncCallback<BaseMapResult>() {
@@ -99,29 +101,42 @@ public class BaseMapPickerWidget extends LayoutContainer implements HasValue<Bas
 	 * Adds a radiobutton for every found basemap
 	 */
 	private void createBaseMapOptions() {
-		if (baseMaps != null) {
-			for (BaseMap baseMap : baseMaps) {
-				Radio radioBaseMap = new Radio();
-				radioBaseMap.setBoxLabel(baseMap.getName());
-				radioBaseMap.setFieldLabel(baseMap.getName());
-				radiogroupBaseMap.add(radioBaseMap);
-				panelBaseMaps.add(radioBaseMap);
-				
-				// Keep a reference to the basemap 
-				baseMapPerRadio.put(radioBaseMap, baseMap);
-			}
-			
-			radiogroupBaseMap.addListener(Events.Change, new Listener<FieldEvent>() {
-				@Override
-				public void handleEvent(FieldEvent be) {
-					if (radiogroupBaseMap.getValue() != null) {
-						setValue(baseMapPerRadio.get(radiogroupBaseMap.getValue()));
-					}
-				}
-			});
-			
-			layout(true);
+
+		panelBaseMaps.removeAll();
+		
+		// add standard base maps
+		
+		addRadio(GoogleBaseMap.ROADMAP, I18N.CONSTANTS.googleRoadmap());
+		addRadio(GoogleBaseMap.SATELLITE, I18N.CONSTANTS.googleSatelliteMap());
+		
+		// add basemaps defined in the server database
+		
+		for (TileBaseMap baseMap : baseMaps) {
+			addRadio(baseMap, baseMap.getName());
 		}
+		
+		panelBaseMaps.layout(true);
+		
+		radiogroupBaseMap.addListener(Events.Change, new Listener<FieldEvent>() {
+			@Override
+			public void handleEvent(FieldEvent be) {
+				if (radiogroupBaseMap.getValue() != null) {
+					setValue(baseMapPerRadio.get(radiogroupBaseMap.getValue()));
+				}
+			}
+		});
+		
+	}
+
+
+	private void addRadio(BaseMap baseMap, String label) {
+		Radio radioBaseMap = new Radio();
+		radioBaseMap.setBoxLabel(label);
+		radiogroupBaseMap.add(radioBaseMap);
+		panelBaseMaps.add(radioBaseMap);
+		
+		// Keep a reference to the basemap 
+		baseMapPerRadio.put(radioBaseMap, baseMap);
 	}
 
 

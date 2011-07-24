@@ -70,6 +70,8 @@ public class AllMapOptionsWidget extends ContentPanel {
 
 	private void createDateFilterOptions() {
 		datePanel = new DateRangePanel();
+		datePanel.setHeading(I18N.CONSTANTS.filterByDate());
+		datePanel.setIcon(IconImageBundle.ICONS.filter());
         add(datePanel);
 	}
 

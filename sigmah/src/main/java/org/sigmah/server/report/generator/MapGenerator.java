@@ -14,6 +14,9 @@ import org.sigmah.server.report.generator.map.*;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dao.SiteTableDAO;
 import org.sigmah.shared.domain.User;
+import org.sigmah.shared.map.BaseMap;
+import org.sigmah.shared.map.GoogleBaseMap;
+import org.sigmah.shared.map.PredefinedBaseMaps;
 import org.sigmah.shared.map.TileBaseMap;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.MapMarker;
@@ -91,10 +94,12 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
                 height);
 
         // Retrieve the basemap and clamp zoom level
-        TileBaseMap baseMap =null;
-        
+        BaseMap baseMap = null;
         if (element.getBaseMapId() == null) {
-        	baseMap = TileBaseMap.createNullMap("0");
+        	// default
+        	baseMap = GoogleBaseMap.ROADMAP;
+        } else if(PredefinedBaseMaps.isPredefinedMap(element.getBaseMapId())) {
+        	baseMap = PredefinedBaseMaps.forId(element.getBaseMapId());
         } else {
         	baseMap = baseMapDAO.getBaseMap(element.getBaseMapId());
             if (baseMap == null) {

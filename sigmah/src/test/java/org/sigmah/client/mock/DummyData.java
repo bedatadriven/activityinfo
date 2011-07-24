@@ -5,13 +5,8 @@
 
 package org.sigmah.client.mock;
 
-import org.sigmah.shared.map.BaseMap;
-import org.sigmah.shared.map.SateliteBaseMap;
-import org.sigmah.shared.map.StreetBaseMap;
-import org.sigmah.shared.map.TileBaseMap;
-import org.sigmah.shared.util.mapping.BoundingBoxDTO;
-
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +28,8 @@ import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 import org.sigmah.shared.dto.UserPermissionDTO;
+import org.sigmah.shared.map.TileBaseMap;
+import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 public class DummyData {
 
@@ -256,11 +253,6 @@ public class DummyData {
         map.setMinZoom(0);
         map.setMaxZoom(16);
 
-        List<BaseMap> maps = new ArrayList<BaseMap>();
-        maps.add(map);
-        maps.add(new StreetBaseMap());
-        maps.add(new SateliteBaseMap());
-
-        return new BaseMapResult(maps);
+        return new BaseMapResult(Collections.singletonList(map));
     }
 }

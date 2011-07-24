@@ -21,6 +21,13 @@ import org.sigmah.shared.exception.CommandException;
 
 import com.google.inject.Inject;
 
+/**
+ * Handles the creation of a new entity on the client side, and
+ * queues the command for later transmission to the server.
+ * 
+ * Currently only supports updates to the SiteDTO view.
+ * 
+ */
 public class LocalCreateEntityHandler implements PartialCommandHandler<CreateEntity> {
    
 	
@@ -154,5 +161,4 @@ public class LocalCreateEntityHandler implements PartialCommandHandler<CreateEnt
 		
 		return siteId;
 	}
-	
 }

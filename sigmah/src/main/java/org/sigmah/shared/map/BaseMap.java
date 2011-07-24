@@ -1,16 +1,12 @@
 package org.sigmah.shared.map;
 
-import javax.persistence.MappedSuperclass;
-
 import org.sigmah.shared.dto.DTO;
 
-public class BaseMap implements DTO {
-
-	protected String id;
-	protected String name = "nada";
-	protected int minZoom;
-	protected int maxZoom;
-	protected String copyright = "";
+/**
+ * Basemaps provide the reference imagery on which ActivityInfo-specific
+ * overlays are painted.
+ */
+public abstract class BaseMap implements DTO {
 
 	public static TileBaseMap createNullMap(String baseMapId) {
 		TileBaseMap result = new TileBaseMap();
@@ -23,65 +19,28 @@ public class BaseMap implements DTO {
 		
 		return result;
 	}
-
-	public String getId() {
-	    return id;
-	}
-
-	public void setId(String id) {
-	    this.id = id;
-	}
-
-	public String getName() {
-	    return name;
-	}
-
-	public void setName(String name) {
-	    this.name = name;
-	}
+	
+	public abstract String getId();
 
 	/**
 	 * @return the minimum zoom level for which this base map
 	 * is available
 	 */
-	public int getMinZoom() {
-	    return minZoom;
-	}
-
-	public void setMinZoom(int minZoom) {
-	    this.minZoom = minZoom;
-	}
+	public abstract int getMinZoom();
 
 	/**
 	 * @return the maximum zoom level for which this base map
 	 * is available
 	 */
-	public int getMaxZoom() {
-	    return maxZoom;
-	}
+	public abstract int getMaxZoom();
 
-	public void setMaxZoom(int maxZoom) {
-	    this.maxZoom = maxZoom;
-	}
-
-	/**
-	 * @return the copyright message to be displayed when browsing for this
-	 * map.
-	 */
-	public String getCopyright() {
-	    return copyright;
-	}
-
-	public void setCopyright(String copyright) {
-	    this.copyright = copyright;
-	}
 
 	public BaseMap() {
 		super();
 	}
 
 	public boolean hasSingleZoomLevel() {
-		return minZoom==maxZoom;
+		return getMinZoom() == getMaxZoom();
 	}
 
 }

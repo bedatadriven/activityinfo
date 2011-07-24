@@ -20,6 +20,7 @@ import org.sigmah.shared.command.GenerateElement;
 import org.sigmah.shared.command.GetBaseMaps;
 import org.sigmah.shared.command.result.BaseMapResult;
 import org.sigmah.shared.map.BaseMap;
+import org.sigmah.shared.map.TileBaseMap;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.MapMarker;
 import org.sigmah.shared.report.model.MapReportElement;
@@ -64,7 +65,7 @@ import com.google.gwt.user.client.ui.HasValue;
  */
 class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
     private MapWidget mapWidget = null;
-    private String currentBaseMapId = null;
+    private BaseMap currentBaseMap = null;
     private LatLngBounds pendingZoom = null;
 
     private Map<Overlay, MapMarker> overlays = new HashMap<Overlay, MapMarker>();
@@ -75,7 +76,7 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
     
     // Model of a the map
     private MapContent mapModel;
-	private List<BaseMap> baseMaps;
+	private List<TileBaseMap> baseMaps;
 	
 	// True when the first layer is just put on the map
 	private boolean isFirstLayerUpdate=true;
@@ -127,6 +128,15 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
             Log.debug("MapPreview: deferring zoom.");
             pendingZoom = bounds;
         } else {
+        	
+        	// we want to be careful not to frustrate the user by pulling back 
+        	// on the zoom level every time a change is made, so only change the zoom in
+        	// if it's an increase from where we are now
+        	if(zoomLevel < mapWidget.getZoomLevel()) {
+        		zoomLevel = mapWidget.getZoomLevel();
+        	}
+        	
+        	
             Log.debug("MapPreview: zooming to level " + zoomLevel);
             mapWidget.setCenter(bounds.getCenter(), zoomLevel);
             pendingZoom = null;
@@ -192,13 +202,13 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 
     private void changeBaseMapIfNeeded(BaseMap baseMap) {
     	if (baseMap != null) {
-	        if (currentBaseMapId == null || !currentBaseMapId.equals(baseMap.getId())) {
+	        if (currentBaseMap == null || !currentBaseMap.equals(baseMap)) {
 	            MapType baseMapType = MapTypeFactory.mapTypeForBaseMap(baseMap);
 	            mapWidget.addMapType(baseMapType);
 	            mapWidget.setCurrentMapType(baseMapType);
 	            mapWidget.removeMapType(MapType.getNormalMap());
 	            mapWidget.removeMapType(MapType.getHybridMap());
-	            currentBaseMapId = baseMap.getId();
+	            currentBaseMap = baseMap;
 	        }
     	} else {
     		getBaseMaps();
@@ -272,35 +282,11 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 		
 		        putMarkersOnMap(result);
 		        
-		        if (isFirstLayerUpdate) {
-		        	zoomToMarkers(result);
-		        }
+		        zoomToMarkers(result);
 			}
 
 			private void zoomToMarkers(MapContent result) {
-				LatLng center = LatLng.newInstance(result.getExtents().center().getLat(), result.getExtents().center().getLng());
-				mapWidget.panTo(center);
-				if (result.getBaseMap().hasSingleZoomLevel()) {
-					// MinZoom & MaxZoom both represent the sole zooming level
-					mapWidget.setZoomLevel(result.getBaseMap().getMaxZoom()); 
-				} else {
-					// Compute ideal zoomlevel
-					LatLng southWest = LatLng.newInstance(result.getExtents().getMinLat(), result.getExtents().getMinLon());
-					LatLng northEast = LatLng.newInstance(result.getExtents().getMaxLat(), result.getExtents().getMaxLon());
-					LatLngBounds bounds = LatLngBounds.newInstance(southWest, northEast);
-					int idealZoom = mapWidget.getBoundsZoomLevel(bounds);
-
-					// Ensure zoom level is kept between min & max
-					if (idealZoom < result.getBaseMap().getMinZoom()) {
-						idealZoom = result.getBaseMap().getMinZoom();
-					}
-					if (idealZoom > result.getBaseMap().getMaxZoom()) {
-						idealZoom = result.getBaseMap().getMaxZoom();
-					}
-					
-					// Apply the zoomlevel
-					mapWidget.setZoomLevel(idealZoom);
-				}
+				zoomToBounds(llBoundsForExtents(result.getExtents()));
 			}
 
 			private void putMarkersOnMap(MapContent result) {
