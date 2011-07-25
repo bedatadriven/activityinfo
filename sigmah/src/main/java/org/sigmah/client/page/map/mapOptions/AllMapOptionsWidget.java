@@ -58,9 +58,9 @@ public class AllMapOptionsWidget extends ContentPanel {
 
         //createLayoutOptions();
         createBaseMapPicker();
-        createDateFilterOptions();
+//        createDateFilterOptions();
         // TODO:hookup valuechanged event so that the filter actually is applied to the mapreportelement 
-        createAdminFilterOptions(service);
+//        createAdminFilterOptions(service);
     }
 
 	private void createAdminFilterOptions(Dispatcher service) {
@@ -101,8 +101,8 @@ public class AllMapOptionsWidget extends ContentPanel {
 		setFieldsetDefaults(fieldsetFilterOptions);
 		
 		add(fieldsetBaseMaps);
-		add(fieldsetLayoutOptions);
-		add(fieldsetFilterOptions);
+//		add(fieldsetLayoutOptions);
+//		add(fieldsetFilterOptions);
 	}
 
 	public BaseMapPickerWidget getMapOptionsWidget() {

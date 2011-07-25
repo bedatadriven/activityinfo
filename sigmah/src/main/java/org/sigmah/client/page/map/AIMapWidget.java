@@ -354,8 +354,11 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 	private void onMapClick(MapClickEvent event) {
 		if(event.getOverlay() != null) {
 			MapMarker marker = overlays.get(event.getOverlay());
-			InfoWindowContent content = new InfoWindowContent(marker.getTitle());
-			mapWidget.getInfoWindow().open((Marker)event.getOverlay(), content);
+			if (marker != null)
+			{
+				InfoWindowContent content = new InfoWindowContent(marker.getTitle());
+				mapWidget.getInfoWindow().open((Marker)event.getOverlay(), content);
+			}
 		}
 	}
 }
