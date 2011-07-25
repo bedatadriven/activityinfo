@@ -315,4 +315,10 @@ public class ClusteringOptionsWidget extends LayoutContainer implements HasValue
 			comboboxAdminLevel.clearSelections();
 		}
 	}
+
+	@Override
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
+		radiogroupAggregation.setEnabled(enabled);
+	}
 }

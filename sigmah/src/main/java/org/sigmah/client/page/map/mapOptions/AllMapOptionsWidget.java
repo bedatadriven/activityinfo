@@ -5,31 +5,15 @@
 
 package org.sigmah.client.page.map.mapOptions;
 
-import com.extjs.gxt.ui.client.event.BoxComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.widget.BoxComponent;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
 import com.google.inject.Inject;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.filter.AdminFilterPanel;
 import org.sigmah.client.page.common.filter.DateRangePanel;
-import org.sigmah.client.page.common.filter.IndicatorTreePanel;
-import org.sigmah.shared.dto.AdminEntityDTO;
-import org.sigmah.shared.dto.IndicatorDTO;
-import org.sigmah.shared.report.model.DimensionType;
-import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.ReportElement;
-import org.sigmah.shared.report.model.layers.BubbleMapLayer;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Form for choosing options related to the MapElement
