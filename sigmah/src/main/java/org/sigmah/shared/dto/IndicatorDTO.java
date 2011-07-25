@@ -13,7 +13,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  *
  * @author Alex Bertram
  */
-public final class IndicatorDTO extends BaseModelData implements EntityDTO {
+public final class IndicatorDTO extends BaseModelData implements EntityDTO, ProvidesKey {
 	public final static int AGGREGATE_SUM = 0;
 	public final static int AGGREGATE_AVG = 1;
 	public final static int AGGREGATE_SITE_COUNT = 2;
@@ -209,4 +209,9 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO {
     public String getEntityName() {
         return "Indicator";
     }
+
+	@Override
+	public String getKey() {
+		return "i" + getId();
+	}
 }

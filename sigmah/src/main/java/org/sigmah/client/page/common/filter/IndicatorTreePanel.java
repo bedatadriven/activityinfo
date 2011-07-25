@@ -8,13 +8,8 @@ package org.sigmah.client.page.common.filter;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.CheckChangedListener;
-import com.extjs.gxt.ui.client.event.EventType;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.Observable;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.TreePanelEvent;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.TreeStore;
@@ -53,41 +48,29 @@ public class IndicatorTreePanel extends ContentPanel {
     private AsyncMonitor monitor; 
     private boolean multipleSelection;
     
-    public boolean isMultipleSelection() {
-		return multipleSelection;
-	}
-
     public IndicatorTreePanel(Dispatcher service, final boolean multipleSelection, AsyncMonitor monitor) {
         this.service = service;
-        //this.setHeaderVisible(false);
         this.setHeading(I18N.CONSTANTS.indicators());
         this.setIcon(IconImageBundle.ICONS.indicator());
         this.setLayout(new FitLayout());
         this.setScrollMode(Style.Scroll.NONE);
         this.monitor = monitor;
      
-
         loader = new Loader();
         store = new TreeStore<ModelData>(loader);
         store.setKeyProvider(new ModelKeyProvider<ModelData>() {
             @Override
             public String getKey(ModelData model) {
-                if (model instanceof UserDatabaseDTO) {
-                    return "db" + ((UserDatabaseDTO) model).getId();
-                } else if (model instanceof ActivityDTO) {
-                    return "act" + ((ActivityDTO) model).getId();
-                } else if (model instanceof IndicatorDTO) {
-                    return "i" + ((IndicatorDTO) model).getId();
-                } else {
-                    return model.get("name");
+            	if (model instanceof ProvidesKey) {
+            		return ((ProvidesKey)model).getKey();
+                } else if (model == null) {
+                	throw new RuntimeException("Did not expect model to be null: assigning keys in IndicatorTreePanel");
                 }
+                throw new RuntimeException("Unknown type: expected activity, userdb, indicator or indicatorgroup");
             }
         });
 
         tree = new TreePanel<ModelData>(store);
-        // Set multipleSelection after tree is instantiated
-        this.setMultipleSelection(multipleSelection);
-        //tree.setCheckable(true);
 
         tree.getStyle().setNodeCloseIcon(null);
         tree.getStyle().setNodeOpenIcon(null);
@@ -97,6 +80,9 @@ public class IndicatorTreePanel extends ContentPanel {
                 if (model instanceof IndicatorDTO) {
                     return name;
                 } else {
+                	if (name == null) {
+                		name="noname";//I18N.CONSTANTS.noNameEntered();
+                	}
                     return "<b>" + name + "</b>";
                 }
             }
@@ -104,22 +90,6 @@ public class IndicatorTreePanel extends ContentPanel {
         tree.setStateId("indicatorPanel");
         tree.setStateful(true);
         tree.setAutoSelect(true);
-//        tree.addListener(Events.OnClick, new Listener<TreePanelEvent<ModelData>>() {
-//            public void handleEvent(TreePanelEvent<ModelData> tpe) {
-//
-//                // when the user clicks on the label of an indicator, check
-//                // the indicator
-//                if (tpe.getNode() != null) {
-//                    ModelData model = tpe.getNode().getModel();
-//                    if (model instanceof IndicatorDTO &&
-//                            tpe.within(tree.getView().getTextElement(tpe.getNode())) &&
-//                            !tree.isChecked(model)) {
-//
-//                        tree.setChecked(model, !tree.isChecked(model));
-//                    }
-//                }
-//            }
-//        });
         tree.addListener(Events.BrowserEvent, new Listener<TreePanelEvent<ModelData>>() {
 
             public void handleEvent(TreePanelEvent<ModelData> be) {
@@ -259,7 +229,6 @@ public class IndicatorTreePanel extends ContentPanel {
         @Override
         public boolean hasChildren(ModelData parent) {
             return !(parent instanceof IndicatorDTO);
-                    //!(parent instanceof IndicatorGroup);
         }
     }
 
@@ -278,6 +247,8 @@ public class IndicatorTreePanel extends ContentPanel {
             return true;
         }
     }
-
     
+    public boolean isMultipleSelection() {
+		return multipleSelection;
+	}
 }

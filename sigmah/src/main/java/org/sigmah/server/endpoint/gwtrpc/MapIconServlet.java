@@ -11,8 +11,6 @@ import org.sigmah.server.report.renderer.image.ImageMapRenderer;
 import org.sigmah.server.util.ColorUtil;
 import org.sigmah.shared.report.content.PieMapMarker;
 import org.sigmah.shared.report.content.PieMapMarker.SliceValue;
-import org.sigmah.shared.report.model.layers.PiechartMapLayer.Slice;
-
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
