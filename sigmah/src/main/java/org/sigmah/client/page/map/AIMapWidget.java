@@ -40,6 +40,7 @@ import com.extjs.gxt.ui.client.widget.Status;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.maps.client.InfoWindowContent;
@@ -72,7 +73,7 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
     private Status statusWidget;
 
     // A map rendered serverside for reporting usage
-    private MapReportElement mapReportElement;
+    private MapReportElement mapReportElement = new MapReportElement();
     
     // Model of a the map
     private MapContent mapModel;
@@ -119,6 +120,7 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
                 }
             }
         });
+        getBaseMaps();
     }
 
     private void zoomToBounds(LatLngBounds bounds) {
@@ -169,19 +171,9 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
                         public void onSuccess(Void result) {
                             apiLoadFailed = false;
                             
-                            mapWidget = new MapWidget();
-                            mapWidget.addControl(new LargeMapControl());
+                            createGoogleMapWidget();
                             
-                            mapWidget.addMapClickHandler(new MapClickHandler() {
-								
-								@Override
-								public void onClick(MapClickEvent event) {
-									onMapClick(event);
-								}
-
-							});
-                            
-                            //changeBaseMapIfNeeded(mapReportElement.getBaseMapId());
+//                            changeBaseMapIfNeeded(mapReportElement.getBaseMapId());
 
                             // clear the error message content
                             removeAll();
@@ -199,15 +191,27 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
             updateMapToContent();
         }
     }
-
+    
+	private void createGoogleMapWidget() {
+		mapWidget = new MapWidget();
+        mapWidget.addControl(new LargeMapControl());
+        
+        mapWidget.addMapClickHandler(new MapClickHandler() {
+			@Override
+			public void onClick(MapClickEvent event) {
+				onMapClick(event);
+			}
+		});
+	}
+	
     private void changeBaseMapIfNeeded(BaseMap baseMap) {
     	if (baseMap != null) {
 	        if (currentBaseMap == null || !currentBaseMap.equals(baseMap)) {
 	            MapType baseMapType = MapTypeFactory.mapTypeForBaseMap(baseMap);
-	            mapWidget.addMapType(baseMapType);
-	            mapWidget.setCurrentMapType(baseMapType);
 	            mapWidget.removeMapType(MapType.getNormalMap());
 	            mapWidget.removeMapType(MapType.getHybridMap());
+	            mapWidget.addMapType(baseMapType);
+	            mapWidget.setCurrentMapType(baseMapType);
 	            currentBaseMap = baseMap;
 	        }
     	} else {
@@ -239,11 +243,13 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 				if (result.getBaseMaps() == null) {
 				} else {
 					baseMaps = result.getBaseMaps();
+					mapReportElement.setBaseMapId(BaseMap.getDefaultMapId());
+					setValue(mapReportElement);
 				}
 			}
 		});
 	}
-
+	
     /**
      * Updates the size of the map and adds Overlays to reflect the content
      * of the current selected indicators
@@ -327,8 +333,7 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 	@Override
 	public HandlerRegistration addValueChangeHandler(
 			ValueChangeHandler<MapReportElement> handler) {
-		// TODO Auto-generated method stub
-		return null;
+		return addHandler(handler, ValueChangeEvent.getType());
 	}
 
 	@Override
@@ -343,6 +348,7 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
             clearOverlays();
             createMapIfNeededAndUpdateMapContent();
         }
+        ValueChangeEvent.fire(this, mapReportElement);
 	}
 
 	@Override

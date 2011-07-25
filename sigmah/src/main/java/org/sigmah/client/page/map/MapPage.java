@@ -73,7 +73,7 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
         createFormPane(form);
         createMap();
         createToolBar();
-        createSelectedLayersWidget();
+        createLayersWidget();
     }
 
 	private void initializeComponent() {
@@ -81,7 +81,7 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
         setHeaderVisible(false);
 	}
 
-    private void createSelectedLayersWidget() {
+    private void createLayersWidget() {
         layersWidget = new LayersWidget(dispatcher);
         layersWidget.setValue(mapReportElement);
         
@@ -95,6 +95,7 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
 			public void onValueChange(ValueChangeEvent<MapReportElement> event) {
 				aiMapWidget.setValue(event.getValue());
 				layersWidget.setValue(event.getValue());
+				allMapOptionsWidget.setValue(event.getValue());
 			}
 		});
         
@@ -113,9 +114,11 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
         allMapOptionsWidget.getMapOptionsWidget().addValueChangeHandler(new ValueChangeHandler<BaseMap>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<BaseMap> event) {
-				MapReportElement map = aiMapWidget.getValue(); 
-				map.setBaseMapId(event.getValue().getId());
-				aiMapWidget.setValue(map);
+				MapReportElement map = aiMapWidget.getValue();
+				if (map != null) {
+					map.setBaseMapId(event.getValue().getId());
+					aiMapWidget.setValue(map);
+				}
 			}
 		});
         

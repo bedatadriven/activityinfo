@@ -6,6 +6,8 @@
 package org.sigmah.shared.report.model;
 
 import org.sigmah.client.page.map.layerOptions.PiechartLayerOptions;
+import org.sigmah.shared.map.BaseMap;
+import org.sigmah.shared.map.GoogleBaseMap;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.model.layers.AbstractMapLayer;
 import org.sigmah.shared.report.model.layers.BubbleMapLayer;
@@ -24,7 +26,7 @@ import java.util.List;
  * Models a map element within a report
  */
 public class MapReportElement extends ReportElement<MapContent> {
-    private String baseMapId;
+    private String baseMapId = BaseMap.getDefaultMapId();
     private int width = 640;
     private int height = 480;
     private List<MapLayer> layers = new ArrayList<MapLayer>(0);

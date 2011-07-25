@@ -35,7 +35,10 @@ public class BaseMapPickerWidget extends LayoutContainer implements HasValue<Bas
 	private Dispatcher service;
 	private List<TileBaseMap> baseMaps = new ArrayList<TileBaseMap>();
 	private BaseMap selectedBaseMap = null;
+	
+	// FIXME: use a bidimap from Guava if contained by Guava
 	private Map<Radio, BaseMap> baseMapPerRadio = new HashMap<Radio, BaseMap>();
+	private Map<BaseMap, Radio> radioPerBaseMap = new HashMap<BaseMap,Radio>();
 	private VerticalPanel panelBaseMaps = new VerticalPanel(); 
 	
 	public BaseMapPickerWidget(Dispatcher service) {
@@ -101,16 +104,13 @@ public class BaseMapPickerWidget extends LayoutContainer implements HasValue<Bas
 	 * Adds a radiobutton for every found basemap
 	 */
 	private void createBaseMapOptions() {
-
 		panelBaseMaps.removeAll();
 		
 		// add standard base maps
-		
 		addRadio(GoogleBaseMap.ROADMAP, I18N.CONSTANTS.googleRoadmap());
 		addRadio(GoogleBaseMap.SATELLITE, I18N.CONSTANTS.googleSatelliteMap());
 		
 		// add basemaps defined in the server database
-		
 		for (TileBaseMap baseMap : baseMaps) {
 			addRadio(baseMap, baseMap.getName());
 		}
@@ -126,10 +126,14 @@ public class BaseMapPickerWidget extends LayoutContainer implements HasValue<Bas
 			}
 		});
 		
+		BaseMap defaultMap = getBaseMapById(BaseMap.getDefaultMapId());
+		if (radioPerBaseMap.containsKey(defaultMap)) {
+			radioPerBaseMap.get(defaultMap).setValue(true);
+		}
 	}
 
 
-	private void addRadio(BaseMap baseMap, String label) {
+	private Radio addRadio(BaseMap baseMap, String label) {
 		Radio radioBaseMap = new Radio();
 		radioBaseMap.setBoxLabel(label);
 		radiogroupBaseMap.add(radioBaseMap);
@@ -137,8 +141,21 @@ public class BaseMapPickerWidget extends LayoutContainer implements HasValue<Bas
 		
 		// Keep a reference to the basemap 
 		baseMapPerRadio.put(radioBaseMap, baseMap);
+		radioPerBaseMap.put(baseMap, radioBaseMap);
+		
+		return radioBaseMap;
 	}
 
+	private BaseMap getBaseMapById(String id) {
+		if (baseMaps !=null) {
+			for (BaseMap map : baseMaps) {
+				if (map.getId().equals(id)) {
+					return map;
+				}
+			}
+		}
+		return null;
+	}
 
 	@Override
 	public HandlerRegistration addValueChangeHandler(
@@ -155,9 +172,15 @@ public class BaseMapPickerWidget extends LayoutContainer implements HasValue<Bas
 	@Override
 	public void setValue(BaseMap value) {
 		this.selectedBaseMap=value;
+		updateUI();
 		ValueChangeEvent.fire(this, value);
 	}
 
+	private void updateUI() {
+		if (radioPerBaseMap.containsKey(selectedBaseMap)) {
+			radioPerBaseMap.get(selectedBaseMap).setValue(true);
+		}
+	}
 
 	@Override
 	public void setValue(BaseMap value, boolean fireEvents) {
