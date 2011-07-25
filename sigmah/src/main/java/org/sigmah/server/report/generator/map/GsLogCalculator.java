@@ -55,6 +55,9 @@ public class GsLogCalculator implements RadiiCalculator {
             double logValue = Math.log(values[i]);
 
             double p = ((logValue - logMin) / logRange);
+            if (Double.isNaN(p)) {
+            	p = 0.0;
+            }
 
             clusters.get(i).setRadius(Math.round(minRadius + (symbolRange * p)));
         }
