@@ -21,20 +21,12 @@ public class SqlInsertBuilder {
 	}
 	
 	public SqlInsertBuilder value(String columnName, Object value) {
-		columns.add(columnName);
-		values.add(value);
-		return this;
-	}
-	
-
-	public SqlInsertBuilder valueIfNotNull(String columnName, Object value) {
 		if(value != null) {
-			value(columnName, value);
+			columns.add(columnName);
+			values.add(value);
 		}
 		return this;
 	}
-	
-
 	
 	public void execute(Connection connection) throws SQLException {
 		StringBuilder sql = new StringBuilder("INSERT INTO ")
