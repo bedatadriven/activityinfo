@@ -29,32 +29,35 @@ public class SqlInsertBuilder {
 	}
 	
 	public void execute(Connection connection) throws SQLException {
-		StringBuilder sql = new StringBuilder("INSERT INTO ")
-			.append(tableName)
-			.append(" (");
-		
-		for(int i=0;i!=columns.size();++i) {
-			if(i>0) {
-				sql.append(", ");
+		if(!values.isEmpty()) {
+
+			StringBuilder sql = new StringBuilder("INSERT INTO ")
+				.append(tableName)
+				.append(" (");
+			
+			for(int i=0;i!=columns.size();++i) {
+				if(i>0) {
+					sql.append(", ");
+				}
+				sql.append(columns.get(i));
 			}
-			sql.append(columns.get(i));
-		}
-		sql.append(") VALUES (");
-		
-		for(int i=0;i!=columns.size();++i) {
-			if(i>0) {
-				sql.append(", ");
+			sql.append(") VALUES (");
+			
+			for(int i=0;i!=columns.size();++i) {
+				if(i>0) {
+					sql.append(", ");
+				}
+				sql.append("?");
 			}
-			sql.append("?");
+			sql.append(")");
+			
+		    PreparedStatement stmt = connection.prepareStatement(sql.toString());
+	        for(int i=0;i!=values.size();++i) {
+	            stmt.setObject(i+1, values.get(i));
+	        }
+	        
+	        stmt.executeUpdate();
 		}
-		sql.append(")");
-		
-	    PreparedStatement stmt = connection.prepareStatement(sql.toString());
-        for(int i=0;i!=values.size();++i) {
-            stmt.setObject(i+1, values.get(i));
-        }
-        
-        stmt.execute();
 	}
 
 }

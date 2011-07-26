@@ -174,17 +174,17 @@
         <dependency>
             <groupId>com.bedatadriven.rebar</groupId>
             <artifactId>rebar-appcache</artifactId>
-            <version>0.8</version>
+            <version>0.9.4</version>
         </dependency>
         <dependency>
             <groupId>com.bedatadriven.rebar</groupId>
             <artifactId>rebar-sql</artifactId>
-            <version>1.2.0.5</version>
+            <version>1.2.0.6</version>
         </dependency>
         <dependency>
             <groupId>com.bedatadriven.rebar</groupId>
             <artifactId>rebar-sync</artifactId>
-            <version>0.5.1-SNAPSHOT</version>
+            <version>0.5.1</version>
         </dependency>
 
         <dependency>
@@ -539,9 +539,6 @@
                     <filesets>
                         <fileset>
                             <directory>tomcat</directory>
-                        </fileset>
-                        <fileset>
-                            <directory>war/WEB-INF/lib</directory>
                         </fileset>
                         <fileset>
                             <directory>war/ActivityInfo</directory>

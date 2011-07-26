@@ -193,15 +193,15 @@ public class SitePolicy implements EntityPolicy<Site> {
             if (property.startsWith(AdminLevelDTO.PROPERTY_PREFIX)) {
 
                 int levelId = AdminLevelDTO.levelIdForPropertyName(property);
-                AdminEntityDTO entity = (AdminEntityDTO) value;
+                Integer entityId = (Integer) value;
 
                 if (creating) {
-                    if(entity != null) {
-                        locationDAO.addAdminMembership(location.getId(), entity.getId());
+                    if(entityId != null) {
+                        locationDAO.addAdminMembership(location.getId(), entityId);
                     }
                 } else {
-                    if(entity != null) {
-                        locationDAO.updateAdminMembership(location.getId(), levelId, entity.getId());
+                    if(entityId != null) {
+                        locationDAO.updateAdminMembership(location.getId(), levelId, entityId);
                     } else {
                         locationDAO.removeMembership(location.getId(), levelId);
                     }
@@ -296,7 +296,7 @@ public class SitePolicy implements EntityPolicy<Site> {
             } else if (isAdminBound &&
                     AdminLevelDTO.getPropertyName(location.getLocationType().getBoundAdminLevel().getId()).equals(property)) {
 
-                location.setName(adminDAO.findById(((AdminEntityDTO) value).getId()).getName());
+                location.setName(adminDAO.findById(((Integer) value)).getName());
             }
         }
     }

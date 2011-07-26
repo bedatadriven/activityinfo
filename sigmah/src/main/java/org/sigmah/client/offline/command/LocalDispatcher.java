@@ -66,8 +66,11 @@ public class LocalDispatcher implements Dispatcher {
             callback.onSuccess((T)result);
         } catch (Throwable e) {
             Log.debug("Command failure");
-            if(monitor!=null) {
-                monitor.onCompleted();
+            try {
+	            if(monitor!=null) {
+	                monitor.onCompleted();
+	            }
+            } catch(Throwable ignored) {
             }
             callback.onFailure(e);
         }
