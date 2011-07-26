@@ -64,7 +64,7 @@ public class LocalDispatcher implements Dispatcher {
                 monitor.onCompleted();
             }
             callback.onSuccess((T)result);
-        } catch (CommandException e) {
+        } catch (Throwable e) {
             Log.debug("Command failure");
             if(monitor!=null) {
                 monitor.onCompleted();
