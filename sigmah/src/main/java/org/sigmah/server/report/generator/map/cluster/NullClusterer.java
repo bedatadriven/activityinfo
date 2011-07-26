@@ -20,8 +20,8 @@ public class NullClusterer implements Clusterer {
 	}
 	
 	/**
-	 * Maps each Point to a cluster, not performing an actual clustering algorithm whatsoever
-	 * @see org.sigmah.shared.report.model.clustering.Clustering#cluster(java.util.List, org.sigmah.server.report.generator.map.RadiiCalculator)
+	 * Maps each Point to a cluster, not performing an actual clued.report.model.clustering.Clusteristering algorithm whatsoever
+	 * @see org.sigmah.sharng#cluster(java.util.List, org.sigmah.server.report.generator.map.RadiiCalculator)
 	 */
 	@Override
 	public List<Cluster> cluster() {

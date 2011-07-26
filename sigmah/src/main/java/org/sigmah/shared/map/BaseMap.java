@@ -20,6 +20,10 @@ public abstract class BaseMap implements DTO {
 		return result;
 	}
 	
+	public static String getDefaultMapId() {
+		return "admin";
+	}
+	
 	public abstract String getId();
 
 	/**

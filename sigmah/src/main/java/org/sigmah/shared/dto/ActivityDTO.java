@@ -17,7 +17,7 @@ import java.util.Map;
  *
  * @author Alex Bertram
  */
-public final class ActivityDTO extends BaseModelData implements EntityDTO {
+public final class ActivityDTO extends BaseModelData implements EntityDTO, ProvidesKey {
 
     public final static int REPORT_ONCE = 0;
     public static final int REPORT_MONTHLY = 1;
@@ -243,6 +243,7 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO {
             IndicatorGroup group = map.get(category);
             if(group == null) {
                 group = new IndicatorGroup(category);
+                group.setActivityId(this.getId());
                 map.put(category, group);
                 groups.add(group);
             }
@@ -306,4 +307,9 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO {
         }
         return null;
     }
+
+	@Override
+	public String getKey() {
+		return "act" + getId();
+	}
 }

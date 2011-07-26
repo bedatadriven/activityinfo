@@ -1,5 +1,8 @@
 package org.sigmah.client.page.map;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.map.layerOptions.AllLayerOptions;
@@ -26,15 +29,11 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.PushButton;
 import com.google.inject.Inject;
 
 /*
@@ -63,6 +62,8 @@ public class LayersWidget extends ContentPanel implements HasValue<MapReportElem
 		createAddLayerButton();
 		createListView();
 		createLayerOptions();
+		
+		layerOptions.setEnabled(false);
 	}
 
 	private void createLayerOptions() {
@@ -259,6 +260,9 @@ public class LayersWidget extends ContentPanel implements HasValue<MapReportElem
 	}
 
 	private void updateStore() {
+		// Save the selecteditem, because removing all items from the store triggers
+		// a selecteditem change
+		int selectedItemIndex = store.indexOf(view.getSelectionModel().getSelectedItem());
 		store.removeAll();
 		if (mapElement != null) {
 			for (MapLayer layer : mapElement.getLayers()) {
@@ -269,6 +273,13 @@ public class LayersWidget extends ContentPanel implements HasValue<MapReportElem
 				model.setLayerType(layer.getTypeName());
 				store.add(model);
 			}
+		}
+		
+		// Place selection back at original selection
+		if ((selectedItemIndex != -1) && (selectedItemIndex < store.getCount())) {
+			List<LayerModel> selectedItem = new ArrayList<LayerModel>();
+			selectedItem.add(store.getAt(selectedItemIndex));
+			view.getSelectionModel().setSelection(selectedItem);
 		}
 	}
 

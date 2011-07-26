@@ -18,12 +18,11 @@ import java.util.List;
  *
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public final class IndicatorGroup extends BaseModelData {
+public final class IndicatorGroup extends BaseModelData implements ProvidesKey {
 
     private List<IndicatorDTO> indicators = new ArrayList<IndicatorDTO>();
-
     public IndicatorGroup(String name) {
-        set("name", name);
+    	set("name", name);
     }
 
     /**
@@ -43,5 +42,18 @@ public final class IndicatorGroup extends BaseModelData {
     public void addIndicator(IndicatorDTO indicator) {
         indicators.add(indicator);
     }
+
+	public void setActivityId(int activityId) {
+		set("activityId",activityId);
+	}
+
+	public int getActivityId() {
+		return (Integer)get("activityId");
+	}
+
+	@Override
+	public String getKey() {
+		return "group"+getName() + getActivityId();
+	}
 
 }

@@ -5,45 +5,36 @@
 
 package org.sigmah.client.page.map.mapOptions;
 
-import com.extjs.gxt.ui.client.event.BoxComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.widget.BoxComponent;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.filter.AdminFilterPanel;
 import org.sigmah.client.page.common.filter.DateRangePanel;
-import org.sigmah.client.page.common.filter.IndicatorTreePanel;
-import org.sigmah.shared.dto.AdminEntityDTO;
-import org.sigmah.shared.dto.IndicatorDTO;
-import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.ReportElement;
-import org.sigmah.shared.report.model.layers.BubbleMapLayer;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Form for choosing options related to the MapElement
  */
-public class AllMapOptionsWidget extends ContentPanel {
+public class AllMapOptionsWidget extends ContentPanel implements HasValue<MapReportElement> {
 
     protected final Dispatcher service;
     protected final IconImageBundle icons;
+    
+    private MapReportElement map;
 
     // All the encapsulated widgets containing some map options
     private AdminFilterPanel adminPanel;
     private LayoutOptionsWidget layoutForm;
     private DateRangePanel datePanel;
-    private BaseMapPickerWidget mapOptionsWidget;
+    private BaseMapPickerWidget baseMapPickerWidget;
     
     private FieldSet fieldsetBaseMaps = new FieldSet();
     private FieldSet fieldsetLayoutOptions = new FieldSet();
@@ -58,9 +49,9 @@ public class AllMapOptionsWidget extends ContentPanel {
 
         //createLayoutOptions();
         createBaseMapPicker();
-        createDateFilterOptions();
+//        createDateFilterOptions();
         // TODO:hookup valuechanged event so that the filter actually is applied to the mapreportelement 
-        createAdminFilterOptions(service);
+//        createAdminFilterOptions(service);
     }
 
 	private void createAdminFilterOptions(Dispatcher service) {
@@ -76,7 +67,7 @@ public class AllMapOptionsWidget extends ContentPanel {
 	}
 
 	private void createBaseMapPicker() {
-    	mapOptionsWidget = new BaseMapPickerWidget(service);
+    	baseMapPickerWidget = new BaseMapPickerWidget(service);
         fieldsetBaseMaps.add(getMapOptionsWidget());
 	}
 
@@ -101,12 +92,12 @@ public class AllMapOptionsWidget extends ContentPanel {
 		setFieldsetDefaults(fieldsetFilterOptions);
 		
 		add(fieldsetBaseMaps);
-		add(fieldsetLayoutOptions);
-		add(fieldsetFilterOptions);
+//		add(fieldsetLayoutOptions);
+//		add(fieldsetFilterOptions);
 	}
 
 	public BaseMapPickerWidget getMapOptionsWidget() {
-		return mapOptionsWidget;
+		return baseMapPickerWidget;
 	}
 
     public ReportElement getMapElement() {
@@ -131,6 +122,28 @@ public class AllMapOptionsWidget extends ContentPanel {
 //        return element;
     	return null;
     }
+
+	@Override
+	public HandlerRegistration addValueChangeHandler(
+			ValueChangeHandler<MapReportElement> handler) {
+		return addHandler(handler, ValueChangeEvent.getType());
+	}
+
+	@Override
+	public MapReportElement getValue() {
+		return map;
+	}
+
+	@Override
+	public void setValue(MapReportElement value) {
+		this.map=value;
+	}
+
+	@Override
+	public void setValue(MapReportElement value, boolean fireEvents) {
+		// TODO Auto-generated method stub
+		
+	}
 
 
 //    public boolean validate() {
