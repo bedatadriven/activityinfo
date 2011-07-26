@@ -12,9 +12,6 @@ import com.google.inject.Singleton;
 /**
  * Sends updates to the remote database. 
  * 
- * 
- * @author alex
- *
  */
 @Singleton
 public class UpdateSynchronizer {
@@ -26,7 +23,7 @@ public class UpdateSynchronizer {
 	private QueueEntry currentEntry = null;
 	
 	@Inject
-	public UpdateSynchronizer(CommandQueue commandQueue, @Direct Dispatcher dispatcher) {
+	public UpdateSynchronizer(CommandQueue commandQueue, SynchronizerDispatcher dispatcher) {
 		super();
 		this.commandQueue = commandQueue;
 		this.dispatcher = dispatcher;

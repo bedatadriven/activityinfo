@@ -64,7 +64,7 @@ public class Synchronizer {
 
     @Inject
     public Synchronizer(EventBus eventBus,
-                        @Direct Dispatcher dispatch,
+                        SynchronizerDispatcher dispatch,
                         Connection conn,
                         BulkUpdaterAsync updater,
                         Authentication auth,

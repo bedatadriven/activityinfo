@@ -30,7 +30,6 @@ import com.google.inject.Singleton;
 @Singleton                                               
 public class OfflineView extends Button implements OfflinePresenter.View {
 
-    private StatusWindow window;
     private ProgressDialog progressDialog;
     private ConnectionDialog connectionDialog;
 
@@ -40,8 +39,6 @@ public class OfflineView extends Button implements OfflinePresenter.View {
     private MenuItem reinstallOffline;
 
     public OfflineView() {
-        window = new StatusWindow();
-
         syncNowButton = new MenuItem(I18N.CONSTANTS.syncNow(), IconImageBundle.ICONS.onlineSyncing());
         toggleModeButton = new MenuItem(I18N.CONSTANTS.switchToOnline());
         reinstallOffline = new MenuItem(I18N.CONSTANTS.reinstallOfflineMode());
@@ -131,8 +128,16 @@ public class OfflineView extends Button implements OfflinePresenter.View {
         assert progressDialog != null;
         progressDialog.getProgressBar().updateProgress(percentComplete / 100, taskDescription);
     }
+    
+    
 
-    public void enableMenu() {
+    @Override
+	public void showConnectionProblem(int attempt, int retryDelay) {
+    	assert progressDialog != null;
+    	progressDialog.getProgressBar().updateText(I18N.CONSTANTS.connectionProblem());
+	}
+
+	public void enableMenu() {
         setMenu(menu);
     }
 

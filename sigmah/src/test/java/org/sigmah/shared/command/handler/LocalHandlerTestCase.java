@@ -25,6 +25,7 @@ import org.sigmah.client.mock.MockEventBus;
 import org.sigmah.client.offline.command.CommandQueue;
 import org.sigmah.client.offline.command.LocalDispatcher;
 import org.sigmah.client.offline.sync.Synchronizer;
+import org.sigmah.client.offline.sync.SynchronizerDispatcher;
 import org.sigmah.client.offline.sync.UpdateSynchronizer;
 import org.sigmah.server.endpoint.gwtrpc.CommandServlet;
 import org.sigmah.shared.command.Command;
@@ -102,7 +103,7 @@ public abstract class LocalHandlerTestCase {
     }
 
     protected void synchronize() {
-    	new UpdateSynchronizer(commandQueue, remoteDispatcher)
+    	new UpdateSynchronizer(commandQueue, new SynchronizerDispatcher(new MockEventBus(),remoteDispatcher))
     		.sync(new AsyncCallback<Void>() {
 			
 			@Override
@@ -114,7 +115,7 @@ public abstract class LocalHandlerTestCase {
 			}
 		});
     	
-    	Synchronizer syncr = new Synchronizer(new MockEventBus(), remoteDispatcher, localConnection, updater,
+    	Synchronizer syncr = new Synchronizer(new MockEventBus(), new SynchronizerDispatcher(new MockEventBus(), remoteDispatcher), localConnection, updater,
                 localAuth, uiConstants, uiMessages);
         syncr.start();
     }
