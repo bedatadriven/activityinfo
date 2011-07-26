@@ -1,6 +1,10 @@
 <#-- @ftlvariable name="" type="org.sigmah.server.bootstrap.model.HostPageModel" -->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<#if appCacheEnabled>
 <html manifest="ActivityInfo/ActivityInfo.appcache">
+<#else>
+<html>
+</#if>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta name="application-name" content="ActivityInfo"/>
