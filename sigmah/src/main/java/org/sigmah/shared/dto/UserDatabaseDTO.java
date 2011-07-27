@@ -20,6 +20,7 @@ public final class UserDatabaseDTO extends BaseModelData implements EntityDTO, P
     private CountryDTO country;
 	private List<PartnerDTO> partners = new ArrayList<PartnerDTO>(0);
 	private List<ActivityDTO> activities = new ArrayList<ActivityDTO>(0);
+	private List<LockedPeriodDTO> lockedPeriods = new ArrayList<LockedPeriodDTO>(0);
 
     public UserDatabaseDTO() {
 	}
@@ -302,4 +303,8 @@ public final class UserDatabaseDTO extends BaseModelData implements EntityDTO, P
     public String getKey() {
     	return "db" + getId();
     }
+
+	public void setLockedPeriods(List<LockedPeriodDTO> lockedPeriods) {
+		this.lockedPeriods = lockedPeriods;
+	}
 }
