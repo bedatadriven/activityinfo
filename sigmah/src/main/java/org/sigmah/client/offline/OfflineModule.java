@@ -51,9 +51,11 @@ public class OfflineModule extends AbstractGinModule {
     }
 
     @Provides
-    @Singleton
     protected Connection provideConnection(Authentication auth) {
-        try {
+        // Note that this is a NOT bound to the @Singleton scope, 
+    	// the autocommit flag is stored on the Connection 
+    	
+    	try {
             return GearsConnectionFactory.getConnection(auth.getLocalDbName());
         } catch (SQLException e) {
             throw new RuntimeException(e);

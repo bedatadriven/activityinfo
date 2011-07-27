@@ -65,14 +65,11 @@ public class CommandQueue {
 	@Inject
 	public CommandQueue(Connection connection) {
 		this.connection = connection;		
-		
-		try {
-			Statement stmt = connection.createStatement();
-			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS command_queue (id INTEGER PRIMARY KEY AUTOINCREMENT, command TEXT) " );
-		} catch (SQLException e) {
-			Log.error("Could not create the command_queue table!", e);
-			throw new RuntimeException("Could not create the command_queue table");
-		}
+	}
+
+	public void createTableIfNotExists() throws SQLException {
+		Statement stmt = connection.createStatement();
+		stmt.executeUpdate("CREATE TABLE IF NOT EXISTS command_queue (id INTEGER PRIMARY KEY AUTOINCREMENT, command TEXT) " );
 	}
 
 	/**

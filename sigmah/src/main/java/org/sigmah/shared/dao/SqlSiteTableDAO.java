@@ -7,6 +7,8 @@ package org.sigmah.shared.dao;
 
 import com.google.gwt.core.client.GWT;
 import com.google.inject.Inject;
+
+import org.sigmah.shared.dao.SqlQueryBuilder.ResultHandler;
 import org.sigmah.shared.domain.AdminEntity;
 import org.sigmah.shared.domain.AdminLevel;
 import org.sigmah.shared.domain.Bounds;
@@ -57,7 +59,7 @@ public class SqlSiteTableDAO implements SiteTableDAO {
             int limit) {
 
         try {
-            BaseQueryBuilder builder = new BaseQueryBuilder(user.getId())
+            final BaseQueryBuilder builder = new BaseQueryBuilder(user.getId())
                     .appendFieldList(SiteTableColumn.values());
 
             if(orderings != null) {
@@ -75,14 +77,18 @@ public class SqlSiteTableDAO implements SiteTableDAO {
             final Map<Integer, RowT> siteMap = new HashMap<Integer, RowT>();
             final List<RowT> sites = new ArrayList<RowT>();
 
-            ResultSet rs = builder.executeQuery(connection);
-            while(rs.next()) {
-                RowT site = binder.newInstance(builder.aliases(), rs);
-                sites.add(site);
-                if(retrieve != 0) {
-                    siteMap.put(rs.getInt(SiteTableColumn.id.index()), site);
-                }
-            }
+            builder.forEachResult(connection, new ResultHandler() {
+				
+				@Override
+				public void handle(ResultSet rs) throws SQLException {
+				   RowT site = binder.newInstance(builder.aliases(), rs);
+	                sites.add(site);
+	                if(retrieve != 0) {
+	                    siteMap.put(rs.getInt(SiteTableColumn.id.index()), site);
+	                }
+				}
+			});
+            
 
             if( !sites.isEmpty()) {
 
@@ -105,30 +111,20 @@ public class SqlSiteTableDAO implements SiteTableDAO {
 
     @Override
     public int queryCount(User user, Filter filter) {
-        try {
-            BaseQueryBuilder builder = new BaseQueryBuilder(user.getId());
-            builder.appendField("count(*)");
+        BaseQueryBuilder builder = new BaseQueryBuilder(user.getId());
+		builder.appendField("count(*)");
 
-            if(filter != null) {
-                builder.filteredBy(filter);
-            }
+		if(filter != null) {
+		    builder.filteredBy(filter);
+		}
 
-            ResultSet rs = builder.executeQuery(connection);
-
-            if(rs.next()) {
-                return rs.getInt(1);
-            } else {
-                return 0;
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+		return builder.singleIntResult(connection);
     }
 
     @Override
     public int queryPageNumber(User user, Filter filter, List<SiteOrder> orderings, int pageSize, int siteId) {
-        try {
+        ResultSet rs = null;
+    	try {
             BaseQueryBuilder builder = new BaseQueryBuilder(user.getId());
             builder.appendField("site.SiteId");
 
@@ -140,7 +136,7 @@ public class SqlSiteTableDAO implements SiteTableDAO {
                 builder.filteredBy(filter);
             }
 
-            ResultSet rs = builder.executeQuery(connection);
+            rs = builder.executeQuery(connection);
 
             int index = 0;
             while(rs.next()) {
@@ -154,6 +150,10 @@ public class SqlSiteTableDAO implements SiteTableDAO {
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+        	if(rs != null) {
+        		try { rs.close(); } catch(Exception ignored) {}
+        	}
         }
     }
 
@@ -166,103 +166,112 @@ public class SqlSiteTableDAO implements SiteTableDAO {
     }
 
     private <SiteT> Map<Integer, AdminEntity> queryEntities(Map<Integer, SiteT> siteMap) throws SQLException {
-        Map<Integer, AdminEntity> map = new HashMap<Integer, AdminEntity>();
+        final Map<Integer, AdminEntity> map = new HashMap<Integer, AdminEntity>();
 
-        ResultSet rs = select("e.AdminEntityId, e.Name, e.AdminEntityParentId, e.AdminLevelId, e.X1, e.Y1, e.X2, e.Y2")
+        select("e.AdminEntityId, e.Name, e.AdminEntityParentId, e.AdminLevelId, e.X1, e.Y1, e.X2, e.Y2")
                 .from("AdminEntity e")
                 .where("e.AdminEntityId").in(
                         select("AdminEntityId").from("LocationAdminLink").where("LocationId").in(
                                 select("LocationId").from("Site").where("SiteId").in(siteMap.keySet())))
-                .executeQuery(connection);
+                .forEachResult(connection, new ResultHandler() {
+					
+					@Override
+					public void handle(ResultSet rs) throws SQLException {
+					      AdminEntity entity = new AdminEntity();
+				            entity.setId(rs.getInt(1));
+				            entity.setName(rs.getString(2));
 
+				            AdminEntity parent = new AdminEntity();
+				            parent.setId(rs.getInt(3));
+				            if(!rs.wasNull()) {
+				                entity.setParent(parent);
+				            }
 
-        while(rs.next()) {
-            AdminEntity entity = new AdminEntity();
-            entity.setId(rs.getInt(1));
-            entity.setName(rs.getString(2));
+				            AdminLevel level = new AdminLevel();
+				            level.setId(rs.getInt(4));
+				            entity.setLevel(level);
 
-            AdminEntity parent = new AdminEntity();
-            parent.setId(rs.getInt(3));
-            if(!rs.wasNull()) {
-                entity.setParent(parent);
-            }
+				            Bounds bounds = new Bounds();
+				            bounds.setX1(rs.getDouble(5));
+				            bounds.setY1(rs.getDouble(6));
+				            bounds.setX2(rs.getDouble(7));
+				            bounds.setY2(rs.getDouble(8));
+				            if(!rs.wasNull()) {
+				                entity.setBounds(bounds);
+				            }
 
-            AdminLevel level = new AdminLevel();
-            level.setId(rs.getInt(4));
-            entity.setLevel(level);
+				            map.put(entity.getId(), entity);
+					}
+				});
 
-            Bounds bounds = new Bounds();
-            bounds.setX1(rs.getDouble(5));
-            bounds.setY1(rs.getDouble(6));
-            bounds.setX2(rs.getDouble(7));
-            bounds.setY2(rs.getDouble(8));
-            if(!rs.wasNull()) {
-                entity.setBounds(bounds);
-            }
-
-            map.put(entity.getId(), entity);
-        }
 
         return map;
     }
 
 
-    private <SiteT> void linkAdminEntitiesToSites(SiteProjectionBinder<SiteT> binder, Map<Integer, SiteT> siteMap, Map<Integer, AdminEntity> adminEntities) throws SQLException {
-        ResultSet rs =
+    private <SiteT> void linkAdminEntitiesToSites(final SiteProjectionBinder<SiteT> binder, final Map<Integer, SiteT> siteMap, final Map<Integer, AdminEntity> adminEntities) throws SQLException {
                 select("Site.SiteId, Link.AdminEntityId ")
                         .from("Site INNER JOIN Location ON (Location.LocationId = Site.LocationId) " +
                                 "INNER JOIN LocationAdminLink Link ON (Link.LocationId = Location.LocationId) ")
                         .where("Site.SiteId").in(siteMap.keySet())
-                        .executeQuery(connection);
+                        .forEachResult(connection, new ResultHandler() {
+							
+							@Override
+							public void handle(ResultSet rs) throws SQLException {
+							      int siteId = rs.getInt(1);
+						            int entityId = rs.getInt(2);
+						            AdminEntity adminEntity = adminEntities.get(entityId);
 
-        while(rs.next()) {
-            int siteId = rs.getInt(1);
-            int entityId = rs.getInt(2);
-            AdminEntity adminEntity = adminEntities.get(entityId);
-
-            binder.setAdminEntity(siteMap.get(siteId), adminEntity);
-        }
+						            binder.setAdminEntity(siteMap.get(siteId), adminEntity);
+							}
+						});
     }
 
     @SuppressWarnings("unchecked")
-    protected <SiteT> void joinIndicatorValues(Map<Integer, SiteT> siteMap, SiteProjectionBinder<SiteT> binder) throws SQLException {
+    protected <SiteT> void joinIndicatorValues(final Map<Integer, SiteT> siteMap, final SiteProjectionBinder<SiteT> binder) throws SQLException {
 
-        ResultSet rs =
-                select("P.SiteId, V.IndicatorId, V.Value")
-                        .from("ReportingPeriod P " +
-                                "INNER JOIN IndicatorValue V ON (P.ReportingPeriodId = V.ReportingPeriodId) " +
-                                "INNER JOIN Indicator I ON (I.IndicatorId = V.IndicatorId)")
-                        .where("P.SiteId").in(siteMap.keySet())
-                        .and("I.dateDeleted IS NULL")
-                        .executeQuery(connection);
+   
+    	select("P.SiteId, V.IndicatorId, V.Value")
+            .from("ReportingPeriod P " +
+                    "INNER JOIN IndicatorValue V ON (P.ReportingPeriodId = V.ReportingPeriodId) " +
+                    "INNER JOIN Indicator I ON (I.IndicatorId = V.IndicatorId)")
+            .where("P.SiteId").in(siteMap.keySet())
+            .and("I.dateDeleted IS NULL")
+            .forEachResult(connection, new ResultHandler() {
+				
+				@Override
+				public void handle(ResultSet rs) throws SQLException {
+					  int siteId = rs.getInt(1);
+			            int indicatorId = rs.getInt(2);
+			            double indicatorValue = rs.getDouble(3);
+			            if(!rs.wasNull()) {
+			                binder.addIndicatorValue(siteMap.get(siteId), indicatorId, 0, indicatorValue);
+			            }								
+				}
+			});
 
-        while(rs.next()) {
-            int siteId = rs.getInt(1);
-            int indicatorId = rs.getInt(2);
-            double indicatorValue = rs.getDouble(3);
-            if(!rs.wasNull()) {
-                binder.addIndicatorValue(siteMap.get(siteId), indicatorId, 0, indicatorValue);
-            }
-        }
     }
 
     protected <SiteT> void joinAttributeValues(
-            Map<Integer, SiteT> siteMap,
-            SiteProjectionBinder<SiteT> transformer) throws SQLException {
+            final Map<Integer, SiteT> siteMap,
+            final SiteProjectionBinder<SiteT> transformer) throws SQLException {
 
-        ResultSet rs =
-                select("V.SiteId, V.AttributeId, V.Value").from("AttributeValue V")
-                        .where("V.SiteId").in(siteMap.keySet())
-                        .and("NOT V.Value is NULL")
-                        .executeQuery(connection);
 
-        while(rs.next()) {
-            int siteId = rs.getInt(1);
-            int attributeId = rs.getInt(2);
-            boolean value =rs.getBoolean(3);
+        select("V.SiteId, V.AttributeId, V.Value").from("AttributeValue V")
+                .where("V.SiteId").in(siteMap.keySet())
+                .and("NOT V.Value is NULL")
+                .forEachResult(connection, new ResultHandler() {
+					
+					@Override
+					public void handle(ResultSet rs) throws SQLException {
+						 int siteId = rs.getInt(1);
+				            int attributeId = rs.getInt(2);
+				            boolean value =rs.getBoolean(3);
 
-            transformer.setAttributeValue(siteMap.get(siteId), attributeId, value);
-        }
+				            transformer.setAttributeValue(siteMap.get(siteId), attributeId, value);
+					}
+				});
+
     }
 
     /**

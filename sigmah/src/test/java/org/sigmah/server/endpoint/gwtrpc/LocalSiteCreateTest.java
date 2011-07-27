@@ -49,7 +49,7 @@ public class LocalSiteCreateTest extends LocalHandlerTestCase {
 
         // execute the command
 
-        LocalCreateEntityHandler handler = new LocalCreateEntityHandler(localConnection, new KeyGenerator(), new CommandQueue(localConnection));
+        LocalCreateEntityHandler handler = new LocalCreateEntityHandler(localConnection, new KeyGenerator());
 
         CreateResult result = handler.execute(cmd, null);
 

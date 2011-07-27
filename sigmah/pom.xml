@@ -51,6 +51,7 @@
 
         <!--  convenience to define GWT version in one place -->
         <gwtVersion>2.0.4</gwtVersion>
+        <rebarVersion>2.1-SNAPSHOT</rebarVersion>
         <platform>windows</platform>
 
         <!--  tell the compiler we can use 1.6 -->
@@ -174,17 +175,17 @@
         <dependency>
             <groupId>com.bedatadriven.rebar</groupId>
             <artifactId>rebar-appcache</artifactId>
-            <version>0.9.4</version>
+            <version>${rebarVersion}</version>
         </dependency>
         <dependency>
             <groupId>com.bedatadriven.rebar</groupId>
             <artifactId>rebar-sql</artifactId>
-            <version>1.2.0.6</version>
+            <version>${rebarVersion}</version>
         </dependency>
         <dependency>
             <groupId>com.bedatadriven.rebar</groupId>
             <artifactId>rebar-sync</artifactId>
-            <version>0.5.1</version>
+            <version>${rebarVersion}</version>
         </dependency>
 
         <dependency>

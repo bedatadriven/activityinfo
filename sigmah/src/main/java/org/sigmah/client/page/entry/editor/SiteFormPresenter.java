@@ -199,6 +199,7 @@ public class SiteFormPresenter implements SiteFormLeash {
 
                 @Override
                 public void onSuccess(CreateResult result) {
+                	currentSite.setId(result.getNewId());
                     updateSiteModel();
 
                     eventBus.fireEvent(new SiteEvent(AppEvents.SiteCreated, SiteFormPresenter.this, currentSite));
