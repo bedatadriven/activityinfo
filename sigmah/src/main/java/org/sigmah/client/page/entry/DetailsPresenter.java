@@ -5,18 +5,21 @@
 
 package org.sigmah.client.page.entry;
 
-import com.extjs.gxt.ui.client.event.Listener;
-import com.google.gwt.i18n.client.NumberFormat;
-import com.google.inject.Inject;
 import org.sigmah.client.AppEvents;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.event.SiteEvent;
 import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.page.common.Shutdownable;
-import org.sigmah.shared.dto.*;
-/*
- * @author Alex Bertram
- */
+import org.sigmah.shared.dto.ActivityDTO;
+import org.sigmah.shared.dto.AttributeDTO;
+import org.sigmah.shared.dto.AttributeGroupDTO;
+import org.sigmah.shared.dto.IndicatorDTO;
+import org.sigmah.shared.dto.IndicatorGroup;
+import org.sigmah.shared.dto.SiteDTO;
+
+import com.extjs.gxt.ui.client.event.Listener;
+import com.google.gwt.i18n.client.NumberFormat;
+import com.google.inject.Inject;
 
 public class DetailsPresenter implements Shutdownable {
 

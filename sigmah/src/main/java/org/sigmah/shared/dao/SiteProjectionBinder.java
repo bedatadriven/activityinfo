@@ -5,10 +5,10 @@
 
 package org.sigmah.shared.dao;
 
-import org.sigmah.shared.domain.AdminEntity;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import org.sigmah.shared.domain.AdminEntity;
 
 /**
  *

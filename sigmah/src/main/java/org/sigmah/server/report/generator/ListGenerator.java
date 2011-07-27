@@ -5,10 +5,11 @@
 
 package org.sigmah.server.report.generator;
 
-import com.google.inject.Inject;
 import org.sigmah.server.dao.PivotDAO;
 import org.sigmah.shared.dao.SiteTableDAO;
 import org.sigmah.shared.report.model.ReportElement;
+
+import com.google.inject.Inject;
 
 /**
  * This is the base class for generators of element that

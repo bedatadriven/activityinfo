@@ -5,15 +5,22 @@
 
 package org.sigmah.shared.dao;
 
-import org.sigmah.shared.report.model.DateRange;
-import org.sigmah.shared.report.model.DimensionType;
-import org.sigmah.shared.report.model.typeadapter.FilterAdapter;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.io.Serializable;
-import java.util.*;
+
+import org.sigmah.shared.report.model.DateRange;
+import org.sigmah.shared.report.model.DimensionType;
+import org.sigmah.shared.report.model.typeadapter.FilterAdapter;
 
 /**
  * Defines a filter of activity data as a date range and a set of restrictions on

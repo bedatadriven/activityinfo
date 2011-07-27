@@ -5,8 +5,12 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
-import com.extjs.gxt.ui.client.Style;
-import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 import org.dozer.Mapper;
 import org.sigmah.shared.command.GetUsers;
 import org.sigmah.shared.command.handler.CommandHandler;
@@ -17,10 +21,8 @@ import org.sigmah.shared.domain.UserPermission;
 import org.sigmah.shared.dto.UserPermissionDTO;
 import org.sigmah.shared.exception.CommandException;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import java.util.ArrayList;
-import java.util.List;
+import com.extjs.gxt.ui.client.Style;
+import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram

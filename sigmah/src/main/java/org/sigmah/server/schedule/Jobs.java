@@ -5,12 +5,19 @@
 
 package org.sigmah.server.schedule;
 
-import com.google.inject.Inject;
-import org.quartz.*;
-import org.quartz.spi.JobFactory;
+import java.util.Date;
 
 import javax.servlet.ServletContext;
-import java.util.Date;
+
+import org.quartz.JobDetail;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.SchedulerFactory;
+import org.quartz.Trigger;
+import org.quartz.TriggerUtils;
+import org.quartz.spi.JobFactory;
+
+import com.google.inject.Inject;
 
 /*
  * @author Alex Bertram

@@ -5,12 +5,13 @@
 
 package org.sigmah.client.dispatch;
 
+import org.sigmah.shared.command.RemoteCommandService;
+import org.sigmah.shared.command.RemoteCommandServiceAsync;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import org.sigmah.shared.command.RemoteCommandService;
-import org.sigmah.shared.command.RemoteCommandServiceAsync;
 
 /**
  * Configures and provides the RemoteCommandServiceAsync instance

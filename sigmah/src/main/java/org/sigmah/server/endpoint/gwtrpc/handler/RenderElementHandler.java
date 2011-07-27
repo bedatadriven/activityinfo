@@ -5,7 +5,11 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
-import com.google.inject.Inject;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import javax.servlet.ServletContext;
 
 import org.sigmah.server.auth.SecureTokenGenerator;
 import org.sigmah.server.report.renderer.Renderer;
@@ -19,10 +23,7 @@ import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.UnexpectedCommandException;
 
-import javax.servlet.ServletContext;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram

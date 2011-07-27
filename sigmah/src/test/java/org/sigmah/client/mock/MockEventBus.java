@@ -5,17 +5,18 @@
 
 package org.sigmah.client.mock;
 
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.BaseObservable;
-import com.extjs.gxt.ui.client.event.EventType;
-import org.junit.Assert;
-import org.sigmah.client.EventBus;
-import org.sigmah.client.event.NavigationEvent;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertTrue;
+import org.junit.Assert;
+import org.sigmah.client.EventBus;
+import org.sigmah.client.event.NavigationEvent;
+
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.BaseObservable;
+import com.extjs.gxt.ui.client.event.EventType;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

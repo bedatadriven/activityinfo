@@ -5,10 +5,11 @@
 
 package org.sigmah.client.dispatch.loader;
 
-import com.extjs.gxt.ui.client.data.LoadEvent;
-import com.extjs.gxt.ui.client.data.Loader;
 import org.sigmah.shared.command.BatchCommand;
 import org.sigmah.shared.command.Command;
+
+import com.extjs.gxt.ui.client.data.LoadEvent;
+import com.extjs.gxt.ui.client.data.Loader;
 
 /**
  * Subclass of GXT LoadEvent that allows listeners to piggy-back on a load command.

@@ -5,6 +5,29 @@
 
 package org.sigmah.client.page.app;
 
+import org.sigmah.client.EventBus;
+import org.sigmah.client.dispatch.AsyncMonitor;
+import org.sigmah.client.dispatch.remote.Authentication;
+import org.sigmah.client.event.NavigationEvent;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.client.offline.ui.AppCacheMenu;
+import org.sigmah.client.offline.ui.OfflineView;
+import org.sigmah.client.page.Frame;
+import org.sigmah.client.page.NavigationCallback;
+import org.sigmah.client.page.NavigationHandler;
+import org.sigmah.client.page.Page;
+import org.sigmah.client.page.PageId;
+import org.sigmah.client.page.PageState;
+import org.sigmah.client.page.charts.ChartPageState;
+import org.sigmah.client.page.common.widget.LoadingPlaceHolder;
+import org.sigmah.client.page.config.DbListPageState;
+import org.sigmah.client.page.entry.SiteGridPageState;
+import org.sigmah.client.page.map.MapPageState;
+import org.sigmah.client.page.report.ReportListPageState;
+import org.sigmah.client.page.table.PivotPageState;
+import org.sigmah.client.page.welcome.WelcomePageState;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -23,23 +46,6 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.sigmah.client.EventBus;
-import org.sigmah.client.dispatch.AsyncMonitor;
-import org.sigmah.client.dispatch.remote.Authentication;
-import org.sigmah.client.event.NavigationEvent;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.client.offline.ui.AppCacheMenu;
-import org.sigmah.client.offline.ui.OfflineView;
-import org.sigmah.client.page.*;
-import org.sigmah.client.page.charts.ChartPageState;
-import org.sigmah.client.page.common.widget.LoadingPlaceHolder;
-import org.sigmah.client.page.config.DbListPageState;
-import org.sigmah.client.page.entry.SiteGridPageState;
-import org.sigmah.client.page.map.MapPageState;
-import org.sigmah.client.page.report.ReportListPageState;
-import org.sigmah.client.page.table.PivotPageState;
-import org.sigmah.client.page.welcome.WelcomePageState;
 
 
 

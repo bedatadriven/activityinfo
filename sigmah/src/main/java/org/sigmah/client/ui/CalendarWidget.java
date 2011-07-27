@@ -1,16 +1,23 @@
 package org.sigmah.client.ui;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
+
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.shared.domain.calendar.Calendar;
+import org.sigmah.shared.domain.calendar.Event;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -19,13 +26,6 @@ import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.TreeSet;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.shared.domain.calendar.Calendar;
-import org.sigmah.shared.domain.calendar.Event;
 
 /**
  * This widget displays a calendar.

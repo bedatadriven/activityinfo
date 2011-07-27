@@ -5,11 +5,16 @@
 
 package org.sigmah.server.report.renderer.excel;
 
-import org.apache.poi.ss.usermodel.*;
+import java.util.List;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.sigmah.shared.report.content.FilterDescription;
 import org.sigmah.shared.report.model.ReportElement;
-
-import java.util.List;
 
 
 public abstract class BaseExcelRenderer<ElementT extends ReportElement> {

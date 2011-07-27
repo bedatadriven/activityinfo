@@ -6,9 +6,6 @@
 package org.sigmah.client.page.common.grid;
 
 import com.extjs.gxt.ui.client.Style;
-/*
- * @author Alex Bertram
- */
 
 public abstract class AbstractPagingGridPageState extends AbstractGridPageState {
     protected int pageNum = -1;

@@ -5,11 +5,12 @@
 
 package org.sigmah.test;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Module;
-import com.google.inject.name.Names;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityManagerFactory;
+
 import org.junit.AfterClass;
 import org.junit.internal.runners.statements.RunAfters;
 import org.junit.runner.notification.RunNotifier;
@@ -20,10 +21,11 @@ import org.junit.runners.model.Statement;
 import org.sigmah.server.dao.OnDataSet;
 import org.sigmah.server.dao.hibernate.LoadDataSet;
 
-import javax.persistence.EntityManagerFactory;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Module;
+import com.google.inject.name.Names;
 
 public class InjectionSupport extends BlockJUnit4ClassRunner {
     private Injector injector;

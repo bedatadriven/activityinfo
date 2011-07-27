@@ -4,6 +4,7 @@ import java.io.FileOutputStream;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
+
 import org.junit.Test;
 import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.Report;

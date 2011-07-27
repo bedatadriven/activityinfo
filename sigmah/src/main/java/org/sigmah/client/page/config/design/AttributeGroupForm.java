@@ -6,13 +6,14 @@
 package org.sigmah.client.page.config.design;
 
 
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.page.common.widget.MappingComboBox;
+import org.sigmah.client.page.common.widget.MappingComboBoxBinding;
+
 import com.extjs.gxt.ui.client.binding.FieldBinding;
 import com.extjs.gxt.ui.client.binding.FormBinding;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.common.widget.MappingComboBox;
-import org.sigmah.client.page.common.widget.MappingComboBoxBinding;
 
 class AttributeGroupForm extends AbstractDesignForm {
 

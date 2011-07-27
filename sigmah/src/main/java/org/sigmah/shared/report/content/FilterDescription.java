@@ -5,11 +5,11 @@
 
 package org.sigmah.shared.report.content;
 
-import org.sigmah.shared.report.model.DimensionType;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.sigmah.shared.report.model.DimensionType;
 
 /**
  * Encapsulates a text description of a given filter restriction.

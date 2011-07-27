@@ -8,13 +8,11 @@ package org.sigmah.shared.report.model.layers;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
-import org.sigmah.shared.domain.Indicator;
 import org.sigmah.shared.report.model.clustering.AdministrativeLevelClustering;
 import org.sigmah.shared.report.model.clustering.AutomaticClustering;
 import org.sigmah.shared.report.model.clustering.Clustering;

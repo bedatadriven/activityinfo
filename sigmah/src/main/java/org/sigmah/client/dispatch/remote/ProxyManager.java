@@ -5,7 +5,11 @@
 
 package org.sigmah.client.dispatch.remote;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.sigmah.client.dispatch.CommandProxy;
 import org.sigmah.client.dispatch.DispatchEventSource;
 import org.sigmah.client.dispatch.DispatchListener;
@@ -13,10 +17,7 @@ import org.sigmah.client.dispatch.remote.cache.ProxyResult;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.result.CommandResult;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.allen_sauer.gwt.log.client.Log;
 
 /**
  * Utility class that maintains a list of {@link DispatchListener}s and

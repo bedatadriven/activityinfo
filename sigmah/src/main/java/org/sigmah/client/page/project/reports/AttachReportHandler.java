@@ -5,6 +5,29 @@
 
 package org.sigmah.client.page.project.reports;
 
+import java.io.Serializable;
+import java.util.Date;
+import java.util.HashMap;
+
+import org.sigmah.client.EventBus;
+import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.dispatch.remote.Authentication;
+import org.sigmah.client.event.NavigationEvent;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.page.NavigationHandler;
+import org.sigmah.client.page.project.ProjectPresenter;
+import org.sigmah.client.page.project.ProjectState;
+import org.sigmah.client.util.Notification;
+import org.sigmah.shared.command.CreateEntity;
+import org.sigmah.shared.command.GetValue;
+import org.sigmah.shared.command.result.CreateResult;
+import org.sigmah.shared.command.result.ValueResult;
+import org.sigmah.shared.dto.ProjectDTO;
+import org.sigmah.shared.dto.ProjectDTO.LocalizedElement;
+import org.sigmah.shared.dto.element.FlexibleElementDTO;
+import org.sigmah.shared.dto.element.ReportElementDTO;
+import org.sigmah.shared.dto.report.ReportReference;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -17,27 +40,6 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.HashMap;
-import org.sigmah.client.EventBus;
-import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.dispatch.remote.Authentication;
-import org.sigmah.client.event.NavigationEvent;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.NavigationHandler;
-import org.sigmah.client.page.project.ProjectPresenter;
-import org.sigmah.client.page.project.ProjectState;
-import org.sigmah.client.util.Notification;
-import org.sigmah.shared.command.CreateEntity;
-import org.sigmah.shared.command.GetValue;
-import org.sigmah.shared.dto.report.ReportReference;
-import org.sigmah.shared.command.result.CreateResult;
-import org.sigmah.shared.command.result.ValueResult;
-import org.sigmah.shared.dto.ProjectDTO;
-import org.sigmah.shared.dto.ProjectDTO.LocalizedElement;
-import org.sigmah.shared.dto.element.FlexibleElementDTO;
-import org.sigmah.shared.dto.element.ReportElementDTO;
 
 /**
  * 

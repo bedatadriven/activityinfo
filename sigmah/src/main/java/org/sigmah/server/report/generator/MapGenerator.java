@@ -5,12 +5,20 @@
 
 package org.sigmah.server.report.generator;
 
-import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.sigmah.server.dao.BaseMapDAO;
 import org.sigmah.server.dao.PivotDAO;
-import org.sigmah.server.report.generator.map.*;
+import org.sigmah.server.report.generator.map.BubbleLayerGenerator;
+import org.sigmah.server.report.generator.map.IconLayerGenerator;
+import org.sigmah.server.report.generator.map.LayerGenerator;
+import org.sigmah.server.report.generator.map.Margins;
+import org.sigmah.server.report.generator.map.PiechartLayerGenerator;
+import org.sigmah.server.report.generator.map.TiledMap;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dao.SiteTableDAO;
 import org.sigmah.shared.domain.User;
@@ -20,7 +28,10 @@ import org.sigmah.shared.map.PredefinedBaseMaps;
 import org.sigmah.shared.map.TileBaseMap;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.MapMarker;
-import org.sigmah.shared.report.model.*;
+import org.sigmah.shared.report.model.DateRange;
+import org.sigmah.shared.report.model.DimensionType;
+import org.sigmah.shared.report.model.MapReportElement;
+import org.sigmah.shared.report.model.SiteData;
 import org.sigmah.shared.report.model.layers.BubbleMapLayer;
 import org.sigmah.shared.report.model.layers.IconMapLayer;
 import org.sigmah.shared.report.model.layers.MapLayer;
@@ -28,10 +39,7 @@ import org.sigmah.shared.report.model.layers.PiechartMapLayer;
 import org.sigmah.shared.util.mapping.Extents;
 import org.sigmah.shared.util.mapping.TileMath;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram

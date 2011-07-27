@@ -5,14 +5,19 @@
 
 package org.sigmah.server.dao;
 
-import com.google.inject.ImplementedBy;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.sigmah.server.dao.hibernate.PivotHibernateDAO;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.report.content.DimensionCategory;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
 
-import java.util.*;
+import com.google.inject.ImplementedBy;
 
 /**
  * PivotDAO is a reporting data access object that provides aggregation ("or pivoting")

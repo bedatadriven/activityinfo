@@ -5,7 +5,12 @@
 
 package org.sigmah.server.dao.hibernate;
 
-import org.hibernate.criterion.*;
+import org.hibernate.criterion.Conjunction;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.Subqueries;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dao.SiteTableColumn;
 import org.sigmah.shared.domain.Location;

@@ -5,6 +5,10 @@
 
 package org.sigmah.client.page.common.dialog;
 
+import org.sigmah.client.dispatch.AsyncMonitor;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
+
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -16,9 +20,6 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
-import org.sigmah.client.dispatch.AsyncMonitor;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.icon.IconImageBundle;
 
 public class FormDialogImpl<FormT extends FormPanel> extends Window implements AsyncMonitor, FormDialogTether {
 

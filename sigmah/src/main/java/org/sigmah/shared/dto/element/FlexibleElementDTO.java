@@ -16,8 +16,10 @@ import org.sigmah.client.util.HistoryTokenText;
 import org.sigmah.shared.command.GetHistory;
 import org.sigmah.shared.command.result.HistoryResult;
 import org.sigmah.shared.command.result.ValueResult;
+import org.sigmah.shared.domain.Amendment;
 import org.sigmah.shared.domain.profile.PrivacyGroupPermissionEnum;
 import org.sigmah.shared.dto.EntityDTO;
+import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.element.handler.RequiredValueEvent;
 import org.sigmah.shared.dto.element.handler.RequiredValueHandler;
 import org.sigmah.shared.dto.element.handler.ValueEvent;
@@ -37,8 +39,6 @@ import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.sigmah.shared.domain.Amendment;
-import org.sigmah.shared.dto.ProjectDTO;
 
 /**
  * 

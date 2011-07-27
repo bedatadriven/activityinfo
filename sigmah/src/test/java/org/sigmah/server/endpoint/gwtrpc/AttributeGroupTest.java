@@ -5,6 +5,9 @@
 
 package org.sigmah.server.endpoint.gwtrpc;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,9 +21,6 @@ import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.AttributeGroupDTO;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.test.InjectionSupport;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/schema1.db.xml")

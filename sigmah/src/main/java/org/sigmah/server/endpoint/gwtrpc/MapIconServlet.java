@@ -5,20 +5,24 @@
 
 package org.sigmah.server.endpoint.gwtrpc;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import org.sigmah.server.report.renderer.image.ImageMapRenderer;
-import org.sigmah.server.util.ColorUtil;
-import org.sigmah.shared.report.content.PieMapMarker;
-import org.sigmah.shared.report.content.PieMapMarker.SliceValue;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
+
+import org.sigmah.server.report.renderer.image.ImageMapRenderer;
+import org.sigmah.server.util.ColorUtil;
+import org.sigmah.shared.report.content.PieMapMarker;
+import org.sigmah.shared.report.content.PieMapMarker.SliceValue;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * Servlet that generates map icons for use in a Google Maps

@@ -5,15 +5,17 @@
 
 package org.sigmah.server.endpoint.gwtrpc;
 
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.SortInfo;
 import junit.framework.Assert;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.dao.OnDataSet;
 import org.sigmah.shared.command.GetInvitationList;
 import org.sigmah.shared.command.result.InvitationList;
 import org.sigmah.test.InjectionSupport;
+
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.SortInfo;
 
 @RunWith(InjectionSupport.class)
 public class InvitationTest extends CommandTestCase {

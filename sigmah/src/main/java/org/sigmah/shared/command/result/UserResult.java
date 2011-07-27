@@ -5,9 +5,9 @@
 
 package org.sigmah.shared.command.result;
 
-import org.sigmah.shared.dto.UserPermissionDTO;
-
 import java.util.List;
+
+import org.sigmah.shared.dto.UserPermissionDTO;
 
 /**
  * @see org.sigmah.shared.command.GetUsers

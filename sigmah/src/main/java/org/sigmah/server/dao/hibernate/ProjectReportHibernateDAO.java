@@ -5,14 +5,16 @@
 
 package org.sigmah.server.dao.hibernate;
 
-import com.google.inject.Inject;
 import javax.persistence.EntityManager;
+
 import org.sigmah.server.dao.ProjectReportDAO;
 import org.sigmah.shared.domain.report.ProjectReport;
 import org.sigmah.shared.domain.report.ProjectReportModel;
 import org.sigmah.shared.domain.report.ProjectReportVersion;
 import org.sigmah.shared.domain.report.RichTextElement;
 import org.sigmah.shared.domain.value.Value;
+
+import com.google.inject.Inject;
 
 /**
  *

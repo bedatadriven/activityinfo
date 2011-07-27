@@ -5,6 +5,9 @@
 
 package org.sigmah.server.schedule;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.sigmah.server.domain.ReportDefinition;
@@ -13,9 +16,6 @@ import org.sigmah.shared.domain.User;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.Report;
 import org.sigmah.shared.report.model.ReportFrequency;
-
-import java.util.Calendar;
-import java.util.Date;
 
 /**
  * @author Alex Bertram

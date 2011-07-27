@@ -16,6 +16,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sigmah.client.page.project.logframe.ProjectLogFramePresenter;
 import org.sigmah.server.dao.Transactional;
+import org.sigmah.shared.domain.Amendment;
 import org.sigmah.shared.domain.Country;
 import org.sigmah.shared.domain.OrgUnit;
 import org.sigmah.shared.domain.Phase;
@@ -32,7 +33,6 @@ import org.sigmah.shared.domain.reminder.MonitoredPointList;
 import org.sigmah.shared.domain.reminder.ReminderList;
 
 import com.google.inject.Inject;
-import org.sigmah.shared.domain.Amendment;
 
 public class ProjectPolicy implements EntityPolicy<Project> {
 

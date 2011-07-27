@@ -5,9 +5,8 @@
 
 package org.sigmah.client.page.entry.editor;
 
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import java.util.Map;
+
 import org.sigmah.client.AppEvents;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
@@ -18,10 +17,15 @@ import org.sigmah.shared.command.CreateEntity;
 import org.sigmah.shared.command.UpdateEntity;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.command.result.VoidResult;
-import org.sigmah.shared.dto.*;
+import org.sigmah.shared.dto.ActivityDTO;
+import org.sigmah.shared.dto.CountryDTO;
+import org.sigmah.shared.dto.PartnerDTO;
+import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
-import java.util.Map;
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class SiteFormPresenter implements SiteFormLeash {
 

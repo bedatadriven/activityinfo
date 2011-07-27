@@ -5,10 +5,10 @@
 
 package org.sigmah.shared.command.result;
 
-import org.sigmah.shared.dto.SiteDTO;
-
 import java.util.Arrays;
 import java.util.List;
+
+import org.sigmah.shared.dto.SiteDTO;
 
 /**
  * Result from the GetSites command

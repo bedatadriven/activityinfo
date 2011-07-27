@@ -5,16 +5,22 @@
 
 package org.sigmah.server.dao.hibernate;
 
-import com.google.inject.Inject;
-import org.hibernate.ejb.HibernateEntityManager;
-import org.hibernate.jdbc.Work;
-import org.sigmah.shared.dao.*;
-import org.sigmah.shared.domain.User;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.hibernate.ejb.HibernateEntityManager;
+import org.hibernate.jdbc.Work;
+import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.dao.SQLDialect;
+import org.sigmah.shared.dao.SiteOrder;
+import org.sigmah.shared.dao.SiteProjectionBinder;
+import org.sigmah.shared.dao.SiteTableDAO;
+import org.sigmah.shared.dao.SqlSiteTableDAO;
+import org.sigmah.shared.domain.User;
+
+import com.google.inject.Inject;
 
 /**
  * Hibernate-friendly wrapper for the {@link org.sigmah.shared.dao.SqlSiteTableDAO}

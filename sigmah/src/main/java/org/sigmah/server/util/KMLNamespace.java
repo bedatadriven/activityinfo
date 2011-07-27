@@ -5,10 +5,10 @@
 
 package org.sigmah.server.util;
 
-import org.xml.sax.SAXException;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import org.xml.sax.SAXException;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

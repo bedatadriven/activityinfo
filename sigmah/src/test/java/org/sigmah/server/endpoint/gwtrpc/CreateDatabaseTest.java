@@ -5,6 +5,11 @@
 
 package org.sigmah.server.endpoint.gwtrpc;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,9 +21,6 @@ import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.test.InjectionSupport;
-
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertThat;
 
 @RunWith(InjectionSupport.class)
 public class CreateDatabaseTest extends CommandTestCase {

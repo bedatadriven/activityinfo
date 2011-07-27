@@ -5,13 +5,13 @@
 
 package org.sigmah.server.report.generator;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import org.sigmah.shared.dao.SiteProjectionBinder;
 import org.sigmah.shared.dao.SiteTableColumn;
 import org.sigmah.shared.domain.AdminEntity;
 import org.sigmah.shared.report.model.SiteData;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 public class SiteDataBinder implements SiteProjectionBinder<SiteData> {
 

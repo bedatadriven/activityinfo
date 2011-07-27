@@ -5,10 +5,12 @@
 
 package org.sigmah.server.report.generator.map.cluster.auto;
 
-import java.util.*;
-/*
- * @author Alex Bertram
- */
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 import org.sigmah.server.report.generator.map.RadiiCalculator;
 import org.sigmah.server.report.generator.map.cluster.Cluster;

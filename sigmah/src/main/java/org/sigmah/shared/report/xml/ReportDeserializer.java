@@ -5,15 +5,13 @@
 
 package org.sigmah.shared.report.xml;
 
+import org.sigmah.shared.report.model.Report;
+import org.sigmah.shared.report.model.ReportElement;
+
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;
 import com.google.gwt.xml.client.NodeList;
 import com.google.gwt.xml.client.Text;
-import org.sigmah.shared.report.model.Report;
-import org.sigmah.shared.report.model.ReportElement;
-/*
- * @author Alex Bertram
- */
 
 public class ReportDeserializer {
 

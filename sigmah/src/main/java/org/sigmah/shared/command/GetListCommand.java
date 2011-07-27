@@ -5,9 +5,10 @@
 
 package org.sigmah.shared.command;
 
-import com.extjs.gxt.ui.client.data.SortInfo;
 import org.sigmah.client.dispatch.loader.ListCmdLoader;
 import org.sigmah.shared.command.result.CommandResult;
+
+import com.extjs.gxt.ui.client.data.SortInfo;
 
 /**
  * Base class for Commands that return lists of objects, support sorting on the server,

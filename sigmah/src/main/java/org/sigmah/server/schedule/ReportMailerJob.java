@@ -5,7 +5,17 @@
 
 package org.sigmah.server.schedule;
 
-import com.google.inject.Inject;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
+import javax.persistence.EntityManager;
+import javax.xml.bind.JAXBException;
+
 import org.apache.commons.mail.EmailAttachment;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.MultiPartEmail;
@@ -24,15 +34,7 @@ import org.sigmah.shared.report.model.Report;
 import org.sigmah.shared.report.model.ReportFrequency;
 import org.xml.sax.SAXException;
 
-import javax.persistence.EntityManager;
-import javax.xml.bind.JAXBException;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.DateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import com.google.inject.Inject;
 
 
 /**

@@ -5,7 +5,12 @@
 
 package org.sigmah.server.util.logging;
 
-import com.google.inject.Inject;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.mail.EmailException;
@@ -13,11 +18,7 @@ import org.apache.commons.mail.SimpleEmail;
 import org.apache.log4j.Logger;
 import org.sigmah.server.mail.MailSender;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import com.google.inject.Inject;
 
 public class LoggingInterceptor implements MethodInterceptor {
 

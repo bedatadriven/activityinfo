@@ -5,13 +5,13 @@
 
 package org.sigmah.shared.report.content;
 
-import org.sigmah.shared.map.HasLatLng;
-import org.sigmah.shared.report.model.TableColumn;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.sigmah.shared.map.HasLatLng;
+import org.sigmah.shared.report.model.TableColumn;
 
 public class TableData implements Serializable {
 

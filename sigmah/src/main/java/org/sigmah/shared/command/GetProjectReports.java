@@ -5,13 +5,7 @@
 
 package org.sigmah.shared.command;
 
-import java.util.Date;
-
 import org.sigmah.shared.command.result.ProjectReportListResult;
-import org.sigmah.shared.domain.report.ProjectReport;
-
-import com.extjs.gxt.ui.client.data.BaseModelData;
-import org.sigmah.shared.dto.value.ListableValue;
 
 /**
  * Request to retrieves the reports attached to a given project.

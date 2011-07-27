@@ -5,12 +5,12 @@
 
 package org.sigmah.client.page.report;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.PageStateParser;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Page state object for the ReportPreview page

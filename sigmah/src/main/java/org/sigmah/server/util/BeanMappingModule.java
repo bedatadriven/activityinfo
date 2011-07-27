@@ -5,15 +5,16 @@
 
 package org.sigmah.server.util;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
-import com.google.inject.Singleton;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
 import org.sigmah.shared.dto.DTOMapper;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
 
 public class BeanMappingModule extends AbstractModule {
 

@@ -5,7 +5,8 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
-import com.google.inject.Inject;
+import javax.persistence.EntityManager;
+
 import org.sigmah.shared.command.RemovePartner;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
@@ -18,7 +19,7 @@ import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.IllegalAccessCommandException;
 import org.sigmah.shared.exception.PartnerHasSitesException;
 
-import javax.persistence.EntityManager;
+import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram

@@ -5,10 +5,15 @@
 
 package org.sigmah.server.bootstrap;
 
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.google.inject.Singleton;
-import freemarker.template.Configuration;
+import static org.sigmah.server.util.StringUtil.isEmpty;
+
+import java.io.IOException;
+
+import javax.persistence.NoResultException;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.sigmah.server.Cookies;
 import org.sigmah.server.auth.impl.PasswordHelper;
 import org.sigmah.server.bootstrap.exception.IncompleteFormException;
@@ -21,13 +26,11 @@ import org.sigmah.server.util.logging.LogException;
 import org.sigmah.shared.dao.UserDAO;
 import org.sigmah.shared.domain.User;
 
-import javax.persistence.NoResultException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Singleton;
 
-import static org.sigmah.server.util.StringUtil.isEmpty;
+import freemarker.template.Configuration;
 
 
 @Singleton

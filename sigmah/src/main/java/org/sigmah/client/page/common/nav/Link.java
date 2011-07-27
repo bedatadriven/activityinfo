@@ -5,10 +5,11 @@
 
 package org.sigmah.client.page.common.nav;
 
+import org.sigmah.client.page.PageState;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.data.BaseTreeModel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import org.sigmah.client.page.PageState;
 
 /**
  * A TreeModel that a represents a link to another PageId+PageState

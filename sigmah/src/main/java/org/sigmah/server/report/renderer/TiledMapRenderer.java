@@ -5,11 +5,11 @@
 
 package org.sigmah.server.report.renderer;
 
-import org.sigmah.shared.report.content.TableData;
-import org.sigmah.shared.report.model.TableElement;
-
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+
+import org.sigmah.shared.report.content.TableData;
+import org.sigmah.shared.report.model.TableElement;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

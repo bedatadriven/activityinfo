@@ -5,9 +5,6 @@
 
 package org.sigmah.client.page.report;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.ImplementedBy;
-import com.google.inject.Inject;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
@@ -31,6 +28,10 @@ import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.command.result.XmlResult;
 import org.sigmah.shared.dto.ReportDefinitionDTO;
 import org.sigmah.shared.report.model.DateRange;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.ImplementedBy;
+import com.google.inject.Inject;
 
 /**
  * Report Preview Page Presenter

@@ -5,6 +5,12 @@
 
 package org.sigmah.client.page.charts;
 
+import java.util.List;
+
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.shared.report.content.PivotChartContent;
+import org.sigmah.shared.report.content.PivotTableData;
+
 import com.extjs.gxt.charts.client.Chart;
 import com.extjs.gxt.charts.client.model.ChartModel;
 import com.extjs.gxt.charts.client.model.axis.XAxis;
@@ -18,11 +24,6 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.MarginData;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.shared.report.content.PivotChartContent;
-import org.sigmah.shared.report.content.PivotTableData;
-
-import java.util.List;
 
 /**
  * A view of the PivotChartElement using Open Flash Charts

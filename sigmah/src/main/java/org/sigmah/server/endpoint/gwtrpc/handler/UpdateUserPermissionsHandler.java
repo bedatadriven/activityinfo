@@ -7,7 +7,6 @@ package org.sigmah.server.endpoint.gwtrpc.handler;
 
 import java.util.Date;
 
-import org.apache.commons.logging.Log;
 import org.apache.log4j.Logger;
 import org.sigmah.server.dao.PartnerDAO;
 import org.sigmah.server.dao.hibernate.UserDAOImpl;

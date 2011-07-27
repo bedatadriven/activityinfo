@@ -3,13 +3,12 @@ package org.sigmah.client.page.admin;
 
 import org.sigmah.client.ui.StylableHBoxLayout;
 
-
+import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 

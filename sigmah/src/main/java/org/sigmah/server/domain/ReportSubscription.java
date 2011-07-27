@@ -5,11 +5,18 @@
 
 package org.sigmah.server.domain;
 
-import javax.persistence.*;
+import java.io.Serializable;
+
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import org.sigmah.shared.domain.User;
-
-import java.io.Serializable;
 
 /**
  * Defines a subscription to a given report.

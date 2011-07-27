@@ -5,9 +5,9 @@
 
 package org.sigmah.shared.command.result;
 
-import org.sigmah.shared.dto.IndicatorRowDTO;
-
 import java.util.List;
+
+import org.sigmah.shared.dto.IndicatorRowDTO;
 
 /**
  * @author Alex Bertram

@@ -5,15 +5,16 @@
 
 package org.sigmah.client.offline.install;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.sigmah.client.EventBus;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
-import org.sigmah.client.EventBus;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public class InstallSteps {
 

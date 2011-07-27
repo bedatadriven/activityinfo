@@ -5,11 +5,41 @@
 
 package org.sigmah.client.page.entry;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.sigmah.client.AppEvents;
+import org.sigmah.client.EventBus;
+import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
+import org.sigmah.client.event.SiteEvent;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.client.map.AdminBoundsHelper;
+import org.sigmah.client.map.GcIconFactory;
+import org.sigmah.client.map.MapApiLoader;
+import org.sigmah.client.map.MapTypeFactory;
+import org.sigmah.client.page.common.Shutdownable;
+import org.sigmah.shared.command.GetSitePoints;
+import org.sigmah.shared.command.result.SitePointList;
+import org.sigmah.shared.dto.ActivityDTO;
+import org.sigmah.shared.dto.CountryDTO;
+import org.sigmah.shared.dto.SiteDTO;
+import org.sigmah.shared.dto.SitePointDTO;
+import org.sigmah.shared.util.mapping.BoundingBoxDTO;
+
 import com.ebessette.maps.core.client.overlay.MarkerManagerImpl;
 import com.ebessette.maps.core.client.overlay.OverlayManagerOptions;
 import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.dnd.DropTarget;
-import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.DNDEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MenuEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.state.StateManager;
 import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.widget.Component;
@@ -33,27 +63,6 @@ import com.google.gwt.maps.client.overlay.Overlay;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
-import org.sigmah.client.AppEvents;
-import org.sigmah.client.EventBus;
-import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
-import org.sigmah.client.event.SiteEvent;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.client.map.AdminBoundsHelper;
-import org.sigmah.client.map.GcIconFactory;
-import org.sigmah.client.map.MapApiLoader;
-import org.sigmah.client.map.MapTypeFactory;
-import org.sigmah.client.page.common.Shutdownable;
-import org.sigmah.shared.command.GetSitePoints;
-import org.sigmah.shared.command.result.SitePointList;
-import org.sigmah.shared.dto.*;
-import org.sigmah.shared.util.mapping.BoundingBoxDTO;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * A map panel that serves a counterpart to the SiteGrid, and

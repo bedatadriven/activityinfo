@@ -5,10 +5,15 @@
 
 package org.sigmah.client.dispatch.remote.cache;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.result.CommandResult;
-
-import java.util.*;
 
 /**
  * Provides a default, in-memory, command caching implementation based on

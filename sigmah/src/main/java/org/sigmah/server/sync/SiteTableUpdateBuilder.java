@@ -5,13 +5,14 @@
 
 package org.sigmah.server.sync;
 
-import com.bedatadriven.rebar.sync.server.JpaUpdateBuilder;
 import org.json.JSONException;
 import org.sigmah.shared.command.GetSyncRegionUpdates;
 import org.sigmah.shared.command.result.SyncRegionUpdate;
 import org.sigmah.shared.domain.ReportingPeriod;
 import org.sigmah.shared.domain.Site;
 import org.sigmah.shared.domain.User;
+
+import com.bedatadriven.rebar.sync.server.JpaUpdateBuilder;
 
 public class SiteTableUpdateBuilder implements UpdateBuilder {
 

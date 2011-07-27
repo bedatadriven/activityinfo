@@ -5,8 +5,6 @@
 
 package org.sigmah.client.page.entry;
 
-import java.util.Arrays;
-
 import org.sigmah.client.dispatch.callback.Got;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
@@ -20,7 +18,6 @@ import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.PageStateSerializer;
 import org.sigmah.client.page.common.filter.AdminFilterPanel;
 import org.sigmah.client.page.common.filter.DateRangePanel;
-import org.sigmah.client.page.common.filter.FilterPanel;
 import org.sigmah.client.page.common.filter.FilterPanelSet;
 import org.sigmah.client.page.common.filter.PartnerFilterPanel;
 import org.sigmah.client.page.common.nav.NavigationPanel;

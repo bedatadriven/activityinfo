@@ -5,8 +5,15 @@
 
 package org.sigmah.server.report.renderer.excel;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.sigmah.server.report.renderer.Renderer;
 import org.sigmah.shared.report.content.BubbleMapMarker;
 import org.sigmah.shared.report.content.IconMapMarker;
@@ -14,9 +21,6 @@ import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.MapMarker;
 import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.ReportElement;
-
-import java.io.IOException;
-import java.io.OutputStream;
 
 /**
  * 

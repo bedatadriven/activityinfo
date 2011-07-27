@@ -5,9 +5,9 @@
 
 package org.sigmah.shared.dao;
 
-import org.sigmah.shared.domain.User;
-
 import java.util.List;
+
+import org.sigmah.shared.domain.User;
 
 /**       
  * 

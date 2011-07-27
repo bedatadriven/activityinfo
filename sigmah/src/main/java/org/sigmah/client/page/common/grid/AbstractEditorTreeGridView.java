@@ -8,9 +8,6 @@ package org.sigmah.client.page.common.grid;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.treegrid.EditorTreeGrid;
-/*
- * @author Alex Bertram
- */
 
 public abstract class AbstractEditorTreeGridView<ModelT extends ModelData, PresenterT extends GridPresenter<ModelT>>
         extends AbstractEditorGridView<ModelT, PresenterT>

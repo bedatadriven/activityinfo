@@ -5,10 +5,11 @@
 
 package org.sigmah.client.page.entry;
 
-import com.extjs.gxt.ui.client.data.DataReader;
-import com.extjs.gxt.ui.client.data.ModelData;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
@@ -19,10 +20,10 @@ import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.extjs.gxt.ui.client.data.DataReader;
+import com.extjs.gxt.ui.client.data.ModelData;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Inject;
 
 
 public class DataEntryNavigator implements Navigator {

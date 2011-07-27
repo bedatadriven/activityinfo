@@ -5,13 +5,17 @@
 
 package org.sigmah.server.report.renderer.excel;
 
-import org.apache.poi.ss.usermodel.*;
+import java.util.List;
+import java.util.Map.Entry;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.sigmah.shared.report.content.FilterDescription;
 import org.sigmah.shared.report.content.PivotTableData;
 import org.sigmah.shared.report.model.PivotTableReportElement;
-
-import java.util.List;
-import java.util.Map.Entry;
 
 public class ExcelPivotTableRenderer implements ExcelRenderer<PivotTableReportElement> {
 	

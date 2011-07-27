@@ -5,6 +5,7 @@
 
 package org.sigmah.client.page.project;
 
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.ui.StylableHBoxLayout;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -19,7 +20,6 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
-import org.sigmah.client.i18n.I18N;
 
 /**
  * Initializes the view elements of a project page.

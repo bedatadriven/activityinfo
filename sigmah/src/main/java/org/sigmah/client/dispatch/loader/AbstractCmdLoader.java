@@ -5,9 +5,6 @@
 
 package org.sigmah.client.dispatch.loader;
 
-import com.extjs.gxt.ui.client.data.LoadEvent;
-import com.extjs.gxt.ui.client.data.Loader;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.shared.command.Command;
@@ -15,6 +12,10 @@ import org.sigmah.shared.command.GetListCommand;
 import org.sigmah.shared.command.result.BatchResult;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.ListResult;
+
+import com.extjs.gxt.ui.client.data.LoadEvent;
+import com.extjs.gxt.ui.client.data.Loader;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 
 /**

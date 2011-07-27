@@ -5,9 +5,15 @@
 
 package org.sigmah.server.endpoint.gwtrpc;
 
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.google.inject.Singleton;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.persistence.NoResultException;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.sigmah.login.client.LoginException;
 import org.sigmah.server.Cookies;
 import org.sigmah.server.auth.Authenticator;
@@ -17,13 +23,9 @@ import org.sigmah.server.domain.Authentication;
 import org.sigmah.shared.dao.UserDAO;
 import org.sigmah.shared.domain.User;
 
-import javax.persistence.NoResultException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Singleton;
 
 @Singleton
 public class LoginServiceServlet extends HttpServlet {

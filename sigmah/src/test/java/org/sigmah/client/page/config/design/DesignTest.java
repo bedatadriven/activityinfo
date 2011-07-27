@@ -5,9 +5,18 @@
 
 package org.sigmah.client.page.config.design;
 
-import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.store.Record;
-import com.extjs.gxt.ui.client.store.TreeStore;
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.getCurrentArguments;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.reset;
+import static org.easymock.EasyMock.resetToDefault;
+import static org.easymock.EasyMock.verify;
+
+import java.util.List;
+
 import org.easymock.IAnswer;
 import org.junit.Assert;
 import org.junit.Test;
@@ -29,12 +38,9 @@ import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.SchemaDTO;
 
-import java.util.List;
-
-import static org.easymock.EasyMock.*;
-/*
- * @author Alex Bertram
- */
+import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.store.Record;
+import com.extjs.gxt.ui.client.store.TreeStore;
 
 public class DesignTest {
 

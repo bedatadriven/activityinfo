@@ -5,7 +5,12 @@
 
 package org.sigmah.server.report.generator;
 
-import com.google.inject.Inject;
+import static org.sigmah.shared.dao.Filter.filter;
+
+import java.util.List;
+
+import javax.persistence.EntityManager;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,10 +23,7 @@ import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.MockHibernateModule;
 import org.sigmah.test.Modules;
 
-import javax.persistence.EntityManager;
-import java.util.List;
-
-import static org.sigmah.shared.dao.Filter.filter;
+import com.google.inject.Inject;
 
 @RunWith(InjectionSupport.class)
 @Modules({MockHibernateModule.class})

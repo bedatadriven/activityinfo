@@ -5,19 +5,21 @@
 
 package org.sigmah.server;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
+
+import javax.servlet.ServletContext;
+
+import org.apache.log4j.Logger;
+import org.sigmah.server.util.logging.Trace;
+
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import org.apache.log4j.Logger;
-import org.sigmah.server.util.logging.Trace;
-
-import javax.servlet.ServletContext;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
 
 public class ConfigModule extends AbstractModule {
     private static Logger logger = Logger.getLogger(ConfigModule.class);

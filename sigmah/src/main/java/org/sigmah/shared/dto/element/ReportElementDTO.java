@@ -5,6 +5,25 @@
 
 package org.sigmah.shared.dto.element;
 
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.List;
+
+import org.sigmah.client.event.NavigationEvent;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.client.page.NavigationHandler;
+import org.sigmah.client.page.PageState;
+import org.sigmah.client.page.project.ProjectPresenter;
+import org.sigmah.client.page.project.ProjectState;
+import org.sigmah.client.page.project.reports.EditReportDialog;
+import org.sigmah.client.ui.WidgetField;
+import org.sigmah.shared.command.GetProjectReports;
+import org.sigmah.shared.command.result.ProjectReportListResult;
+import org.sigmah.shared.command.result.ValueResult;
+import org.sigmah.shared.dto.ProjectDTO;
+import org.sigmah.shared.dto.report.ReportReference;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.google.gwt.core.client.GWT;
@@ -16,23 +35,6 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Image;
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import org.sigmah.client.event.NavigationEvent;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.client.page.NavigationHandler;
-import org.sigmah.client.page.PageState;
-import org.sigmah.client.page.project.ProjectPresenter;
-import org.sigmah.client.page.project.ProjectState;
-import org.sigmah.client.page.project.reports.EditReportDialog;
-import org.sigmah.client.ui.WidgetField;
-import org.sigmah.shared.command.GetProjectReports;
-import org.sigmah.shared.dto.report.ReportReference;
-import org.sigmah.shared.command.result.ProjectReportListResult;
-import org.sigmah.shared.command.result.ValueResult;
-import org.sigmah.shared.dto.ProjectDTO;
 
 /**
  * Field that can hold a project report.

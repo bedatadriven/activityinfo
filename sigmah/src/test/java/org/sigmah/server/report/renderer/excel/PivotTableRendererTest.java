@@ -5,6 +5,11 @@
 
 package org.sigmah.server.report.renderer.excel;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.junit.Assert;
@@ -12,11 +17,6 @@ import org.junit.Test;
 import org.sigmah.server.report.DummyPivotTableData;
 import org.sigmah.server.report.DummyPivotTableData2;
 import org.sigmah.shared.report.model.PivotTableReportElement;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

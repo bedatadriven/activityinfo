@@ -5,9 +5,9 @@
 
 package org.sigmah.shared.dto;
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
-
 import java.util.Date;
+
+import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
  * Projection DTO for the {@link org.sigmah.shared.domain.Site} domain object, including

@@ -5,8 +5,17 @@
 
 package org.sigmah.client.page.entry;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.sigmah.client.page.common.widget.CollapsibleTabPanel;
+
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -18,17 +27,6 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.CardLayout;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import org.sigmah.client.page.common.filter.AdminFilterPanel;
-import org.sigmah.client.page.common.filter.DateRangePanel;
-import org.sigmah.client.page.common.filter.PartnerFilterPanel;
-import org.sigmah.client.page.common.widget.CollapsibleTabPanel;
-import org.sigmah.shared.dao.Filter;
-import org.sigmah.shared.dto.AdminEntityDTO;
-import org.sigmah.shared.dto.PartnerDTO;
-import org.sigmah.shared.report.model.DimensionType;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

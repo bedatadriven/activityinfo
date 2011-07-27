@@ -5,7 +5,10 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
-import com.google.inject.Inject;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+
 import org.sigmah.server.domain.ReportDefinition;
 import org.sigmah.server.domain.ReportSubscription;
 import org.sigmah.shared.command.UpdateSubscription;
@@ -16,8 +19,7 @@ import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.IllegalAccessCommandException;
 
-import javax.persistence.EntityManager;
-import java.util.List;
+import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram

@@ -5,20 +5,21 @@
 
 package org.sigmah.server.report.renderer.itext;
 
-import com.google.inject.Inject;
-import com.lowagie.text.DocWriter;
-import com.lowagie.text.Document;
-import com.lowagie.text.Image;
-import org.sigmah.server.report.generator.MapIconPath;
-import org.sigmah.server.report.renderer.image.ImageMapRenderer;
-import org.sigmah.shared.report.model.MapReportElement;
-
 import java.awt.Graphics2D;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 
 import javax.imageio.ImageIO;
+
+import org.sigmah.server.report.generator.MapIconPath;
+import org.sigmah.server.report.renderer.image.ImageMapRenderer;
+import org.sigmah.shared.report.model.MapReportElement;
+
+import com.google.inject.Inject;
+import com.lowagie.text.DocWriter;
+import com.lowagie.text.Document;
+import com.lowagie.text.Image;
 
 
 /**

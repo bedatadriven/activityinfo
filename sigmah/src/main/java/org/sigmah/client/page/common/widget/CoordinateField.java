@@ -6,8 +6,9 @@
 package org.sigmah.client.page.common.widget;
 
 
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import org.sigmah.client.i18n.I18N;
+
+import com.extjs.gxt.ui.client.widget.form.TextField;
 
 /**
  * GXT Field for Geographical coordinates. The type of the field is double,

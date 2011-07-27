@@ -4,11 +4,9 @@
  */
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.google.inject.Singleton;
 import java.util.EnumMap;
 import java.util.Map;
+
 import org.sigmah.server.endpoint.gwtrpc.handler.calendar.ActivityCalendarHandler;
 import org.sigmah.server.endpoint.gwtrpc.handler.calendar.CalendarHandler;
 import org.sigmah.server.endpoint.gwtrpc.handler.calendar.MonitoredPointCalendarHandler;
@@ -20,6 +18,10 @@ import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.calendar.CalendarType;
 import org.sigmah.shared.exception.CommandException;
+
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Singleton;
 
 /**
  * Retrieves calendars and events.

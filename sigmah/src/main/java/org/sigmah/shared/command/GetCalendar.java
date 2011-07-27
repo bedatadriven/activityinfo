@@ -6,6 +6,7 @@
 package org.sigmah.shared.command;
 
 import java.io.Serializable;
+
 import org.sigmah.shared.domain.calendar.Calendar;
 import org.sigmah.shared.domain.calendar.CalendarType;
 

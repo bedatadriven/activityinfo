@@ -5,8 +5,9 @@
 
 package org.sigmah.client.page.project.reports;
 
-import com.extjs.gxt.ui.client.widget.Label;
 import org.sigmah.client.i18n.I18N;
+
+import com.extjs.gxt.ui.client.widget.Label;
 
 /**
  * Count and display the number of key questions and how many are valids.

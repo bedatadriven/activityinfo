@@ -5,7 +5,10 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
-import com.google.inject.Inject;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.sigmah.server.report.generator.MapIconPath;
 import org.sigmah.shared.command.GetMapIcons;
 import org.sigmah.shared.command.handler.CommandHandler;
@@ -15,9 +18,7 @@ import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.MapIconDTO;
 import org.sigmah.shared.exception.CommandException;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram

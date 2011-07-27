@@ -5,10 +5,11 @@
 
 package org.sigmah.client.offline.ui;
 
+import org.sigmah.client.i18n.I18N;
+
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.ProgressBar;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
-import org.sigmah.client.i18n.I18N;
 
 class ProgressDialog extends Dialog {
     private ProgressBar progressBar;

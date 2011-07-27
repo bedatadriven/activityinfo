@@ -5,10 +5,11 @@
 
 package org.sigmah.shared.dto;
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.domain.Amendment;
 import org.sigmah.shared.dto.logframe.LogFrameDTO;
+
+import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
  * DTO mapping class for {@link Amendment}s.

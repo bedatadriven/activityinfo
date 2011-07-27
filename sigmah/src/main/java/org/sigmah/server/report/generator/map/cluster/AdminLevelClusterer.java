@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.sigmah.server.report.generator.map.RadiiCalculator;
 import org.sigmah.shared.domain.AdminEntity;
-import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.report.model.PointValue;
 import org.sigmah.shared.report.model.clustering.AdministrativeLevelClustering;
 

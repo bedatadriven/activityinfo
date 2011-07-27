@@ -5,14 +5,18 @@
 
 package org.sigmah.server.report.renderer.excel;
 
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.sigmah.shared.report.content.TreeNode;
-import org.sigmah.shared.report.model.ReportElement;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.sigmah.shared.report.content.TreeNode;
+import org.sigmah.shared.report.model.ReportElement;
 
 
 public abstract class BaseExcelTableRenderer<ElementT extends ReportElement, ColumnT extends TreeNode> 

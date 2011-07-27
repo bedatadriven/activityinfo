@@ -5,16 +5,16 @@
 
 package org.sigmah.server.report.generator;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.sigmah.shared.domain.User;
-import org.sigmah.server.util.DateUtilCalendarImpl;
-import org.sigmah.shared.date.DateUtil;
-import org.sigmah.shared.report.model.DateRange;
-import org.sigmah.shared.report.model.Report;
-
 import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.replay;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.sigmah.server.util.DateUtilCalendarImpl;
+import org.sigmah.shared.date.DateUtil;
+import org.sigmah.shared.domain.User;
+import org.sigmah.shared.report.model.DateRange;
+import org.sigmah.shared.report.model.Report;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

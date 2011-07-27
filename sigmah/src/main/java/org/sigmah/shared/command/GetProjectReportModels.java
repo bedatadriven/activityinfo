@@ -5,10 +5,11 @@
 
 package org.sigmah.shared.command;
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.ProjectReportModelListResult;
 import org.sigmah.shared.domain.report.ProjectReportModel;
+
+import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
  * Retrieves every report model available to the user.

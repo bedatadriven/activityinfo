@@ -5,13 +5,13 @@
 
 package org.sigmah.shared.dto;
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.extjs.gxt.ui.client.data.ModelData;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.extjs.gxt.ui.client.data.ModelData;
 
 /**
  * Aggregate DTO for all {@link org.sigmah.shared.domain.UserDatabase}s visible

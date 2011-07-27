@@ -5,12 +5,8 @@
 
 package org.sigmah.client.page.config;
 
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.ImplementedBy;
-import com.google.inject.Inject;
+import java.util.ArrayList;
+
 import org.sigmah.client.AppEvents;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
@@ -32,7 +28,12 @@ import org.sigmah.shared.dto.UserDatabaseDTO;
 import org.sigmah.shared.exception.DuplicateException;
 import org.sigmah.shared.exception.PartnerHasSitesException;
 
-import java.util.ArrayList;
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.ImplementedBy;
+import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram

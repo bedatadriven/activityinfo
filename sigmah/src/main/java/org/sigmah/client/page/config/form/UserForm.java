@@ -5,6 +5,10 @@
 
 package org.sigmah.client.page.config.form;
 
+import org.sigmah.client.i18n.UIConstants;
+import org.sigmah.shared.dto.PartnerDTO;
+import org.sigmah.shared.dto.UserDatabaseDTO;
+
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.binding.FieldBinding;
 import com.extjs.gxt.ui.client.binding.FormBinding;
@@ -16,9 +20,6 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.core.client.GWT;
-import org.sigmah.client.i18n.UIConstants;
-import org.sigmah.shared.dto.PartnerDTO;
-import org.sigmah.shared.dto.UserDatabaseDTO;
 
 public class UserForm extends FormPanel {
 

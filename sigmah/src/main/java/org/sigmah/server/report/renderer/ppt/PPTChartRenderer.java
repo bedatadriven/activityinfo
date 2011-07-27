@@ -5,15 +5,18 @@
 
 package org.sigmah.server.report.renderer.ppt;
 
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.io.IOException;
+
 import org.apache.poi.hslf.model.PPGraphics2D;
 import org.apache.poi.hslf.model.ShapeGroup;
 import org.apache.poi.hslf.model.Slide;
 import org.apache.poi.hslf.usermodel.SlideShow;
 import org.sigmah.server.report.renderer.ChartRendererJC;
 import org.sigmah.shared.report.model.PivotChartReportElement;
-
-import java.awt.*;
-import java.io.IOException;
 
 /**
  * @author Alex Bertram

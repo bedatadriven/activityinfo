@@ -5,10 +5,11 @@
 
 package org.sigmah.shared.report.content;
 
-import org.sigmah.shared.report.model.typeadapter.CategoryAdapter;
+import java.io.Serializable;
 
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.io.Serializable;
+
+import org.sigmah.shared.report.model.typeadapter.CategoryAdapter;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

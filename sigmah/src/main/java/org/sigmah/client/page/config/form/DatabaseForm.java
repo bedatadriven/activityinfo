@@ -5,6 +5,14 @@
 
 package org.sigmah.client.page.config.form;
 
+import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.page.common.widget.RemoteComboBox;
+import org.sigmah.shared.command.GetCountries;
+import org.sigmah.shared.command.result.CountryResult;
+import org.sigmah.shared.dto.CountryDTO;
+import org.sigmah.shared.dto.UserDatabaseDTO;
+
 import com.extjs.gxt.ui.client.binding.FieldBinding;
 import com.extjs.gxt.ui.client.binding.FormBinding;
 import com.extjs.gxt.ui.client.data.BaseListLoader;
@@ -15,13 +23,6 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.common.widget.RemoteComboBox;
-import org.sigmah.shared.command.GetCountries;
-import org.sigmah.shared.command.result.CountryResult;
-import org.sigmah.shared.dto.CountryDTO;
-import org.sigmah.shared.dto.UserDatabaseDTO;
 
 public class DatabaseForm extends FormPanel {
     private FormBinding binding;

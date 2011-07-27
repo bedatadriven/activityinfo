@@ -22,6 +22,8 @@ import org.sigmah.shared.command.result.ValueResult;
 import org.sigmah.shared.command.result.ValueResultUtils;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.element.FlexibleElement;
+import org.sigmah.shared.domain.history.HistoryToken;
+import org.sigmah.shared.dto.report.ReportReference;
 import org.sigmah.shared.dto.value.BudgetPartsListValueDTO;
 import org.sigmah.shared.dto.value.FileDTO;
 import org.sigmah.shared.dto.value.IndicatorsListValueDTO;
@@ -30,8 +32,6 @@ import org.sigmah.shared.dto.value.TripletValueDTO;
 import org.sigmah.shared.exception.CommandException;
 
 import com.google.inject.Inject;
-import org.sigmah.shared.dto.report.ReportReference;
-import org.sigmah.shared.domain.history.HistoryToken;
 
 /**
  * Handler getting the value of a {@link FlexibleElement}.

@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.sigmah.shared.domain.Amendment;
 import org.sigmah.shared.dto.element.DefaultFlexibleElementContainer;
 import org.sigmah.shared.dto.element.FlexibleElementDTO;
 import org.sigmah.shared.dto.logframe.LogFrameDTO;
@@ -20,7 +21,6 @@ import org.sigmah.shared.dto.reminder.ReminderListDTO;
 import org.sigmah.shared.dto.value.ValueDTO;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
-import org.sigmah.shared.domain.Amendment;
 
 /**
  * DTO mapping class for entity Project.

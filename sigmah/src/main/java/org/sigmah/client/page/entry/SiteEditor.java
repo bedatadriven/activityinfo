@@ -6,8 +6,6 @@
 package org.sigmah.client.page.entry;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +22,6 @@ import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.common.Shutdownable;
 import org.sigmah.client.page.common.filter.FilterPanel;
-import org.sigmah.client.page.common.filter.FilterPanelSet;
 import org.sigmah.client.page.common.filter.NullFilterPanel;
 import org.sigmah.client.page.common.grid.AbstractEditorGridPresenter;
 import org.sigmah.client.page.common.grid.GridView;

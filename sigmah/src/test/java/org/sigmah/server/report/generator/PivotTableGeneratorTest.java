@@ -5,6 +5,16 @@
 
 package org.sigmah.server.report.generator;
 
+import static org.easymock.EasyMock.anyInt;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.replay;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Test;
@@ -18,12 +28,6 @@ import org.sigmah.shared.report.model.AdminDimension;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.PivotTableReportElement;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import static org.easymock.EasyMock.*;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

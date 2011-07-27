@@ -5,10 +5,11 @@
 
 package org.sigmah.client.page.entry.editor;
 
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.extjs.gxt.ui.client.widget.form.TextArea;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.common.FieldSetFitLayout;
+
+import com.extjs.gxt.ui.client.widget.form.FieldSet;
+import com.extjs.gxt.ui.client.widget.form.TextArea;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

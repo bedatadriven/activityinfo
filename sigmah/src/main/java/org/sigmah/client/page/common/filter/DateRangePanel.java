@@ -5,24 +5,21 @@
 
 package org.sigmah.client.page.common.filter;
 
+import java.util.Date;
+
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.shared.dao.Filter;
+
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.HasValue;
-
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.shared.dao.Filter;
-
-import java.util.Date;
 
 /**
  * UI Component for selecting a range of dates to be used with

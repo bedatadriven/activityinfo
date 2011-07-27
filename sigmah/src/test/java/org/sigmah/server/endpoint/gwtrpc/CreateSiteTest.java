@@ -5,7 +5,12 @@
 
 package org.sigmah.server.endpoint.gwtrpc;
 
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertThat;
+
+import java.util.GregorianCalendar;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,10 +24,7 @@ import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.test.InjectionSupport;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
-
-import java.util.GregorianCalendar;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/sites-simple1.db.xml")

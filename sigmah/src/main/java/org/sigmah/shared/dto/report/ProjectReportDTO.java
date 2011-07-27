@@ -8,6 +8,7 @@ package org.sigmah.shared.dto.report;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+
 import org.sigmah.shared.command.result.CommandResult;
 
 /**

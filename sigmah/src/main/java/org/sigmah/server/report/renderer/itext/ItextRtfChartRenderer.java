@@ -12,7 +12,6 @@ import com.google.inject.Inject;
 import com.lowagie.text.DocWriter;
 import com.lowagie.text.Document;
 import com.lowagie.text.Image;
-import com.lowagie.text.Paragraph;
 
 public class ItextRtfChartRenderer extends ItextChartRenderer {
 

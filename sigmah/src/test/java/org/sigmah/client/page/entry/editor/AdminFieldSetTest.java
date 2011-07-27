@@ -5,7 +5,11 @@
 
 package org.sigmah.client.page.entry.editor;
 
-import com.extjs.gxt.ui.client.store.ListStore;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.sigmah.client.mock.DispatcherStub;
@@ -17,7 +21,7 @@ import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.SiteDTO;
 
-import static org.easymock.EasyMock.*;
+import com.extjs.gxt.ui.client.store.ListStore;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

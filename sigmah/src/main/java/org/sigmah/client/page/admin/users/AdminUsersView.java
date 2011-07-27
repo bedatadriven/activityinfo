@@ -1,8 +1,9 @@
 package org.sigmah.client.page.admin.users;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.ArrayList;
+
 import org.sigmah.client.UserInfo;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
@@ -15,10 +16,8 @@ import org.sigmah.client.page.common.grid.ConfirmCallback;
 import org.sigmah.client.page.common.toolbar.ActionToolBar;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.page.config.form.UserSigmahForm;
-import org.sigmah.client.ui.StylableVBoxLayout;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.dto.OrgUnitDTO;
-import org.sigmah.shared.dto.OrganizationDTO;
 import org.sigmah.shared.dto.UserDTO;
 import org.sigmah.shared.dto.profile.ProfileDTO;
 
@@ -39,9 +38,9 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.grid.CellSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
@@ -51,7 +50,6 @@ import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
 import com.google.gwt.i18n.client.DateTimeFormat;

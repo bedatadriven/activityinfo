@@ -5,13 +5,8 @@
 
 package org.sigmah.client.page.entry;
 
-import com.extjs.gxt.ui.client.data.LoadEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.LoadListener;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.Record;
-import com.extjs.gxt.ui.client.store.Store;
-import com.extjs.gxt.ui.client.util.DateWrapper;
+import java.util.ArrayList;
+
 import org.sigmah.client.AppEvents;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
@@ -31,10 +26,13 @@ import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.IndicatorRowDTO;
 import org.sigmah.shared.dto.SiteDTO;
 
-import java.util.ArrayList;
-/*
- * @author Alex Bertram
- */
+import com.extjs.gxt.ui.client.data.LoadEvent;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.LoadListener;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Record;
+import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.util.DateWrapper;
 
 public class MonthlyPresenter extends AbstractEditorGridPresenter<IndicatorRowDTO> {
 

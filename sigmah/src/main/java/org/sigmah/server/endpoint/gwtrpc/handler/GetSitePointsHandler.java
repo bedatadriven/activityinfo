@@ -5,7 +5,10 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
-import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.sigmah.server.report.generator.SiteDataBinder;
 import org.sigmah.shared.command.GetSitePoints;
 import org.sigmah.shared.command.handler.CommandHandler;
@@ -21,11 +24,7 @@ import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.SiteData;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static org.sigmah.shared.dao.Filter.filter;
+import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

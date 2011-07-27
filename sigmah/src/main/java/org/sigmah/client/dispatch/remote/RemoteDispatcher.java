@@ -5,6 +5,24 @@
 
 package org.sigmah.client.dispatch.remote;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.sigmah.client.EventBus;
+import org.sigmah.client.dispatch.AsyncMonitor;
+import org.sigmah.client.dispatch.CommandProxy;
+import org.sigmah.client.dispatch.DispatchEventSource;
+import org.sigmah.client.dispatch.DispatchListener;
+import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.dispatch.remote.cache.ProxyResult;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.shared.command.Command;
+import org.sigmah.shared.command.RemoteCommandServiceAsync;
+import org.sigmah.shared.command.result.CommandResult;
+import org.sigmah.shared.exception.CommandException;
+import org.sigmah.shared.exception.InvalidAuthTokenException;
+import org.sigmah.shared.exception.UnexpectedCommandException;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Timer;
@@ -15,19 +33,6 @@ import com.google.gwt.user.client.rpc.InvocationException;
 import com.google.gwt.user.client.rpc.StatusCodeException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.sigmah.client.EventBus;
-import org.sigmah.client.dispatch.*;
-import org.sigmah.client.dispatch.remote.cache.ProxyResult;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.shared.command.Command;
-import org.sigmah.shared.command.RemoteCommandServiceAsync;
-import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.exception.CommandException;
-import org.sigmah.shared.exception.InvalidAuthTokenException;
-import org.sigmah.shared.exception.UnexpectedCommandException;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * An implementation of {@link org.sigmah.client.dispatch.Dispatcher} that

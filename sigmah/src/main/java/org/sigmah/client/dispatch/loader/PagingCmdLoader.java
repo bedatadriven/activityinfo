@@ -5,11 +5,12 @@
 
 package org.sigmah.client.dispatch.loader;
 
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoader;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.shared.command.PagingGetCommand;
 import org.sigmah.shared.command.result.PagingResult;
+
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoader;
 
 /**
  * Command-pattern-based implementation of the GXT {@link com.extjs.gxt.ui.client.data.PagingLoader}

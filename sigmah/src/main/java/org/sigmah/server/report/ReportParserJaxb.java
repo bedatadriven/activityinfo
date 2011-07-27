@@ -5,13 +5,14 @@
 
 package org.sigmah.server.report;
 
-import org.sigmah.shared.report.model.Report;
+import java.io.Reader;
+import java.io.StringReader;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.io.Reader;
-import java.io.StringReader;
+
+import org.sigmah.shared.report.model.Report;
 
 /**
  * @author Alex Bertram

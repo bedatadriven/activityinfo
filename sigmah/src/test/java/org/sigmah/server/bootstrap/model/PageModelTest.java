@@ -5,9 +5,9 @@
 
 package org.sigmah.server.bootstrap.model;
 
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 
 /**
  * @author Alex Bertram

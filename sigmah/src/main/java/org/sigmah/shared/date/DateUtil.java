@@ -5,14 +5,14 @@
 
 package org.sigmah.shared.date;
 
+import java.util.Date;
+
 import org.sigmah.shared.command.Month;
 import org.sigmah.shared.report.content.DimensionCategory;
 import org.sigmah.shared.report.content.MonthCategory;
 import org.sigmah.shared.report.content.YearCategory;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.DateUnit;
-
-import java.util.Date;
 
 /**
  * Abstract class providing functions for manipulating dates. There are concrete implementations

@@ -5,10 +5,12 @@
 
 package org.sigmah.client.ui;
 
-import com.google.inject.Singleton;
 import java.util.ArrayList;
+
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.PageState;
+
+import com.google.inject.Singleton;
 
 /**
  * Maintains a list of tabs.

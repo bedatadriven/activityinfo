@@ -5,8 +5,17 @@
 
 package org.sigmah.server.sync;
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.matchers.JUnitMatchers.containsString;
+
+import java.util.Date;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.json.JSONException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,13 +29,8 @@ import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.MockHibernateModule;
 import org.sigmah.test.Modules;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import java.util.Date;
-
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertThat;
-import static org.junit.matchers.JUnitMatchers.containsString;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 @RunWith(InjectionSupport.class)
 @Modules({

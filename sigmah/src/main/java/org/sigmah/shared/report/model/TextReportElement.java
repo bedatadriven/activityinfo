@@ -1,8 +1,6 @@
 package org.sigmah.shared.report.model;
 
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlValue;
 
 import org.sigmah.shared.report.content.NullContent;
 

@@ -5,10 +5,10 @@
 
 package org.sigmah.shared.command.result;
 
+import java.util.List;
+
 import org.sigmah.shared.dto.SitePointDTO;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
-
-import java.util.List;
 
 /**
  * @author Alex Bertram

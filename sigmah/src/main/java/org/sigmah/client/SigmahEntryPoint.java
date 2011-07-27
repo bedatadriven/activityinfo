@@ -5,12 +5,13 @@
 
 package org.sigmah.client;
 
+import org.sigmah.client.dispatch.remote.Authentication;
+import org.sigmah.client.ui.SigmahTheme;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.GXT;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import org.sigmah.client.dispatch.remote.Authentication;
-import org.sigmah.client.ui.SigmahTheme;
 
 
 /**

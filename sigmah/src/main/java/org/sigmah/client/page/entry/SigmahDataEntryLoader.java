@@ -5,20 +5,27 @@
 
 package org.sigmah.client.page.entry;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.RunAsyncCallback;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.Inject;
 import org.sigmah.client.SigmahInjector;
 import org.sigmah.client.dispatch.callback.Got;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.client.page.*;
+import org.sigmah.client.page.Frames;
+import org.sigmah.client.page.NavigationHandler;
+import org.sigmah.client.page.Page;
+import org.sigmah.client.page.PageId;
+import org.sigmah.client.page.PageLoader;
+import org.sigmah.client.page.PageState;
+import org.sigmah.client.page.PageStateSerializer;
 import org.sigmah.client.page.common.nav.NavigationPanel;
 import org.sigmah.client.page.common.widget.VSplitFrameSet;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.SchemaDTO;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.RunAsyncCallback;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

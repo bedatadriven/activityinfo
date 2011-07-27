@@ -7,6 +7,7 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.util.HistoryTokenText;
 import org.sigmah.client.util.NumberUtils;
 import org.sigmah.shared.command.GetCountries;
+import org.sigmah.shared.command.GetCountry;
 import org.sigmah.shared.command.result.CountryResult;
 import org.sigmah.shared.command.result.ValueResult;
 import org.sigmah.shared.command.result.ValueResultUtils;
@@ -38,7 +39,6 @@ import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.sigmah.shared.command.GetCountry;
 
 /**
  * DTO mapping class for entity element.DefaultFlexibleElement.

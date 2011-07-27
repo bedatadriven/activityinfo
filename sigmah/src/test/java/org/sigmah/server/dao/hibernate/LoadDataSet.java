@@ -5,6 +5,17 @@
 
 package org.sigmah.server.dao.hibernate;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
@@ -22,16 +33,6 @@ import org.hibernate.jdbc.Work;
 import org.junit.internal.runners.model.MultipleFailureException;
 import org.junit.runners.model.Statement;
 import org.sigmah.server.dao.DatabaseCleaner;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class LoadDataSet extends Statement {
     private final Statement next;

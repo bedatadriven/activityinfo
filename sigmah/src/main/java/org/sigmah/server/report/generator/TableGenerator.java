@@ -5,7 +5,11 @@
 
 package org.sigmah.server.report.generator;
 
-import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import org.sigmah.server.dao.PivotDAO;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dao.IndicatorDAO;
@@ -21,10 +25,7 @@ import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.TableColumn;
 import org.sigmah.shared.report.model.TableElement;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import com.google.inject.Inject;
 
 public class TableGenerator extends ListGenerator<TableElement> {
 

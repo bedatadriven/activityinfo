@@ -5,13 +5,14 @@
 
 package org.sigmah.client.page.common.widget;
 
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.loader.ListCmdLoader;
 import org.sigmah.shared.command.GetMapIcons;
 import org.sigmah.shared.command.result.MapIconResult;
 import org.sigmah.shared.dto.MapIconDTO;
+
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
 
 /**
  * ComboBox that allows the visual selection of a MapIcon

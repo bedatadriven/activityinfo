@@ -7,7 +7,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.sigmah.shared.command.GetProjectDocuments;
-import org.sigmah.shared.dto.report.ReportReference;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.ProjectReportListResult;
@@ -16,6 +15,7 @@ import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.value.File;
 import org.sigmah.shared.domain.value.FileVersion;
 import org.sigmah.shared.domain.value.Value;
+import org.sigmah.shared.dto.report.ReportReference;
 import org.sigmah.shared.exception.CommandException;
 
 import com.google.inject.Inject;

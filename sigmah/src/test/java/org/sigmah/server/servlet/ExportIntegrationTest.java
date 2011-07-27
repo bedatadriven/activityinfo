@@ -5,7 +5,12 @@
 
 package org.sigmah.server.servlet;
 
-import com.google.inject.Inject;
+import java.io.File;
+import java.io.FileOutputStream;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.hibernate.ejb.HibernateEntityManager;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,10 +28,7 @@ import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 import org.sigmah.test.InjectionSupport;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import java.io.File;
-import java.io.FileOutputStream;
+import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram

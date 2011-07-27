@@ -5,10 +5,11 @@
 
 package org.sigmah.server.report.renderer.itext;
 
+import org.sigmah.shared.report.model.ReportElement;
+
 import com.lowagie.text.DocWriter;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
-import org.sigmah.shared.report.model.ReportElement;
 
 /**
  * Interface to classes which render {@link ReportElement}s into iText documents

@@ -5,12 +5,13 @@
 
 package org.sigmah.client.page.entry;
 
+import org.sigmah.client.i18n.I18N;
+
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import org.sigmah.client.i18n.I18N;
 
 public class DetailsTab extends TabItem implements DetailsPresenter.View {
 

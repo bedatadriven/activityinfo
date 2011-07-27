@@ -5,11 +5,13 @@
 
 package org.sigmah.client.page.welcome;
 
+import org.sigmah.client.page.Frames;
+import org.sigmah.client.page.NavigationCallback;
+import org.sigmah.client.page.Page;
+import org.sigmah.client.page.PageId;
+import org.sigmah.client.page.PageState;
+
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import org.sigmah.client.page.*;
-/*
- * @author Alex Bertram
- */
 
 public class StaticPage extends ContentPanel implements Page {
 

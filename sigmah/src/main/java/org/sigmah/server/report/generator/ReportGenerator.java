@@ -5,15 +5,23 @@
 
 package org.sigmah.server.report.generator;
 
-import com.google.inject.Inject;
+import java.util.Collections;
+
 import org.sigmah.server.dao.PivotDAO;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.report.content.Content;
 import org.sigmah.shared.report.content.ReportContent;
-import org.sigmah.shared.report.model.*;
+import org.sigmah.shared.report.model.DateRange;
+import org.sigmah.shared.report.model.DimensionType;
+import org.sigmah.shared.report.model.MapReportElement;
+import org.sigmah.shared.report.model.PivotChartReportElement;
+import org.sigmah.shared.report.model.PivotTableReportElement;
+import org.sigmah.shared.report.model.Report;
+import org.sigmah.shared.report.model.ReportElement;
+import org.sigmah.shared.report.model.TableElement;
 
-import java.util.Collections;
+import com.google.inject.Inject;
 
 public class ReportGenerator extends BaseGenerator<Report> {
 

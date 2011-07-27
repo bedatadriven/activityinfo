@@ -4,15 +4,16 @@
  */
 package org.sigmah.server.endpoint.gwtrpc.handler.calendar;
 
-import com.google.inject.Inject;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sigmah.shared.domain.calendar.ActivityCalendarIdentifier;
@@ -22,6 +23,8 @@ import org.sigmah.shared.domain.logframe.ExpectedResult;
 import org.sigmah.shared.domain.logframe.LogFrame;
 import org.sigmah.shared.domain.logframe.LogFrameActivity;
 import org.sigmah.shared.domain.logframe.SpecificObjective;
+
+import com.google.inject.Inject;
 
 /**
  * Convert activities as calendar events.

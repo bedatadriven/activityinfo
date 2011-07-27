@@ -7,7 +7,14 @@ package org.sigmah.shared.domain;
 
 // Generated Apr 9, 2009 7:58:20 AM by Hibernate Tools 3.2.2.GA
 
-import javax.persistence.*;
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 
 /**

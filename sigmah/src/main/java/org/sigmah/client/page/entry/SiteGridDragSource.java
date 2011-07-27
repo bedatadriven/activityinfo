@@ -9,9 +9,6 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.dnd.DragSource;
 import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
-/*
- * @author Alex Bertram
- */
 
 public class SiteGridDragSource extends DragSource {
 

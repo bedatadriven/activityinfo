@@ -12,7 +12,6 @@ import org.sigmah.shared.report.model.layers.PiechartMapLayer;
 import org.sigmah.shared.report.model.layers.PiechartMapLayer.Slice;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;

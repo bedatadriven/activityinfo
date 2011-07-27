@@ -5,13 +5,9 @@
 
 package org.sigmah.client.page.config;
 
-import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.Inject;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.sigmah.client.AppEvents;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
@@ -34,8 +30,17 @@ import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.extjs.gxt.ui.client.data.BaseListLoadResult;
+import com.extjs.gxt.ui.client.data.BaseListLoader;
+import com.extjs.gxt.ui.client.data.DataProxy;
+import com.extjs.gxt.ui.client.data.DataReader;
+import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Inject;
 
 public class DbListPresenter implements ActionListener {
     public static final PageId DatabaseList = new PageId("dblist");

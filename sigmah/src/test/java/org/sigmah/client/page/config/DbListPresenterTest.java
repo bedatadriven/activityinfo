@@ -5,8 +5,29 @@
 
 package org.sigmah.client.page.config;
 
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import static org.easymock.EasyMock.and;
+import static org.easymock.EasyMock.anyBoolean;
+import static org.easymock.EasyMock.capture;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.getCurrentArguments;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.or;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.internal.matchers.IsCollectionContaining.hasItem;
+import static org.junit.internal.matchers.IsCollectionContaining.hasItems;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import org.easymock.Capture;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
@@ -25,16 +46,8 @@ import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.easymock.EasyMock.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.internal.matchers.IsCollectionContaining.hasItem;
-import static org.junit.internal.matchers.IsCollectionContaining.hasItems;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class DbListPresenterTest {
     private static final int OWNED_DB_ID = 1;

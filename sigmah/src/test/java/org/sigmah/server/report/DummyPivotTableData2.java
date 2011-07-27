@@ -5,6 +5,9 @@
 
 package org.sigmah.server.report;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.sigmah.shared.report.content.EntityCategory;
 import org.sigmah.shared.report.content.FilterDescription;
 import org.sigmah.shared.report.content.PivotContent;
@@ -13,9 +16,6 @@ import org.sigmah.shared.report.model.AdminDimension;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.PivotTableReportElement;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

@@ -5,22 +5,23 @@
 
 package org.sigmah.server.mail;
 
-import freemarker.template.Configuration;
-import freemarker.template.TemplateException;
-import org.apache.commons.mail.EmailException;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.sigmah.shared.domain.User;
-import org.sigmah.server.dao.hibernate.UserDAOImpl;
-import org.sigmah.server.util.TemplateModule;
+import static junit.framework.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
 
-import static junit.framework.Assert.assertTrue;
+import org.apache.commons.mail.EmailException;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.sigmah.server.dao.hibernate.UserDAOImpl;
+import org.sigmah.server.util.TemplateModule;
+import org.sigmah.shared.domain.User;
+
+import freemarker.template.Configuration;
+import freemarker.template.TemplateException;
 
 @RunWith(Parameterized.class)
 public class InvitationMailerTest {

@@ -5,8 +5,9 @@
 
 package org.sigmah.client.dispatch.remote;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.shared.command.Command;
@@ -14,8 +15,8 @@ import org.sigmah.shared.command.RemoteCommandServiceAsync;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.exception.CommandException;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Inject;
 
 /**
  * Dispatcher which sends individual commands to the server with no caching, batching,

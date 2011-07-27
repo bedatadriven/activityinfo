@@ -5,10 +5,6 @@
 
 package org.sigmah.client.page.table.drilldown;
 
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.LoadEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.store.ListStore;
 import org.sigmah.client.AppEvents;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
@@ -28,9 +24,11 @@ import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.report.content.EntityCategory;
 import org.sigmah.shared.report.content.PivotTableData;
 import org.sigmah.shared.report.model.DimensionType;
-/*
- * @author Alex Bertram
- */
+
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.LoadEvent;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.store.ListStore;
 
 public class DrillDownEditor extends SiteEditor {
 

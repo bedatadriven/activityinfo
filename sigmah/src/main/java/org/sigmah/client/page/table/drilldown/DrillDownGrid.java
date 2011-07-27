@@ -5,8 +5,8 @@
 
 package org.sigmah.client.page.table.drilldown;
 
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import java.util.List;
+
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.entry.SiteEditor;
 import org.sigmah.client.page.entry.SiteGrid;
@@ -14,10 +14,8 @@ import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.SiteDTO;
 
-import java.util.List;
-/*
- * @author Alex Bertram
- */
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 
 public class DrillDownGrid extends SiteGrid implements DrillDownEditor.View {
 

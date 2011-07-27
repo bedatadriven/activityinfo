@@ -6,10 +6,11 @@
 package org.sigmah.shared.command;
 
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import java.util.List;
+
 import org.sigmah.shared.command.result.CommandResult;
 
-import java.util.List;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface RemoteCommandServiceAsync
 {

@@ -5,12 +5,17 @@
 
 package org.sigmah.server.dao.hibernate;
 
-import com.google.inject.Inject;
+import static junit.framework.Assert.assertEquals;
+
+import java.util.Comparator;
+import java.util.List;
+
 import junit.framework.Assert;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.sigmah.shared.dao.AdminDAO;
 import org.sigmah.server.dao.OnDataSet;
+import org.sigmah.shared.dao.AdminDAO;
 import org.sigmah.shared.domain.AdminEntity;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.test.AssertUtils;
@@ -18,10 +23,7 @@ import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.MockHibernateModule;
 import org.sigmah.test.Modules;
 
-import java.util.Comparator;
-import java.util.List;
-
-import static junit.framework.Assert.assertEquals;
+import com.google.inject.Inject;
 
 
 @RunWith(InjectionSupport.class)

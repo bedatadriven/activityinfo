@@ -5,38 +5,25 @@
 
 package org.sigmah.server.report;
 
-import com.google.inject.Inject;
+import java.io.File;
+import java.io.InputStreamReader;
+
+import javax.persistence.EntityManager;
+import javax.xml.bind.JAXBException;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.sigmah.server.dao.hibernate.HibernateModule;
-import org.sigmah.shared.domain.User;
 import org.sigmah.server.report.generator.ReportGenerator;
-import org.sigmah.server.report.renderer.Renderer;
 import org.sigmah.server.report.renderer.RendererFactory;
-import org.sigmah.shared.command.RenderElement;
-import org.sigmah.shared.report.model.MapReportElement;
-import org.sigmah.shared.report.model.PivotTableReportElement;
+import org.sigmah.shared.domain.User;
 import org.sigmah.shared.report.model.Report;
-import org.sigmah.shared.report.model.ReportElement;
-import org.sigmah.shared.report.model.TableElement;
-import org.sigmah.shared.report.model.labeling.ArabicNumberSequence;
-import org.sigmah.shared.report.model.layers.BubbleMapLayer;
-import org.sigmah.shared.report.model.layers.ScalingType;
 import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.MockHibernateModule;
 import org.sigmah.test.Modules;
 import org.sigmah.test.ServletStubModule;
 
-import javax.persistence.EntityManager;
-import javax.xml.bind.JAXBException;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-
-import junit.framework.Assert;
+import com.google.inject.Inject;
 
 //@Ignore("Needs to be rewritten -- figure out what to do with dependency on the map icons folder")
 @RunWith(InjectionSupport.class)

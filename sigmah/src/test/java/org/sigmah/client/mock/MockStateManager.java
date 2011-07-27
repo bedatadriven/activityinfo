@@ -5,11 +5,11 @@
 
 package org.sigmah.client.mock;
 
-import org.sigmah.client.util.state.IStateManager;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.sigmah.client.util.state.IStateManager;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

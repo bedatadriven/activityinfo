@@ -5,16 +5,13 @@
 
 package org.sigmah.client.page.welcome;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.sigmah.client.page.Frames;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.PageStateParser;
-
-import java.util.Arrays;
-import java.util.List;
-/*
- * @author Alex Bertram
- */
 
 public class StaticPageState implements PageState {
 

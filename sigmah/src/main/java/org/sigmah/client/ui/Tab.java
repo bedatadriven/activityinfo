@@ -6,6 +6,7 @@
 package org.sigmah.client.ui;
 
 import java.util.ArrayList;
+
 import org.sigmah.client.page.PageState;
 
 /**

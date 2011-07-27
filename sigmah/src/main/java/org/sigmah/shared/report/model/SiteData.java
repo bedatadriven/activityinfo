@@ -5,13 +5,13 @@
 
 package org.sigmah.shared.report.model;
 
-import org.sigmah.shared.dao.SiteTableColumn;
-import org.sigmah.shared.domain.AdminEntity;
-import org.sigmah.shared.map.HasLatLng;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.sigmah.shared.dao.SiteTableColumn;
+import org.sigmah.shared.domain.AdminEntity;
+import org.sigmah.shared.map.HasLatLng;
 
 /**
  * A non-tabular representation of sites used by 

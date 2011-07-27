@@ -5,9 +5,10 @@
 
 package org.sigmah.client.page.config.form;
 
+import org.sigmah.client.i18n.I18N;
+
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import org.sigmah.client.i18n.I18N;
 
 public class DateRangeForm extends FormPanel {
 

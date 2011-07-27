@@ -5,15 +5,20 @@
 
 package org.sigmah.client.page.common.widget;
 
+import org.sigmah.client.dispatch.AsyncMonitor;
+import org.sigmah.client.page.Frame;
+import org.sigmah.client.page.NavigationCallback;
+import org.sigmah.client.page.Page;
+import org.sigmah.client.page.PageId;
+import org.sigmah.client.page.PageState;
+import org.sigmah.client.page.common.nav.NavigationPanel;
+
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.google.gwt.user.client.ui.Widget;
-import org.sigmah.client.dispatch.AsyncMonitor;
-import org.sigmah.client.page.*;
-import org.sigmah.client.page.common.nav.NavigationPanel;
 
 /**
  * Standard 2-column split frame with a left-hand pane for navigation and the center

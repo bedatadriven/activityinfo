@@ -5,7 +5,6 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
-import com.google.inject.Inject;
 import org.dozer.Mapper;
 import org.sigmah.shared.command.GetCountry;
 import org.sigmah.shared.command.handler.CommandHandler;
@@ -15,6 +14,8 @@ import org.sigmah.shared.domain.Country;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.exception.CommandException;
+
+import com.google.inject.Inject;
 
 /**
  * Handler for the {@link GetCountry} command.

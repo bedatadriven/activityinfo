@@ -5,7 +5,8 @@
 
 package org.sigmah.client.page.entry.editor;
 
-import com.extjs.gxt.ui.client.store.ListStore;
+import java.util.Map;
+
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.page.common.dialog.FormDialogImpl;
 import org.sigmah.client.page.common.toolbar.UIActions;
@@ -14,7 +15,7 @@ import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.dto.SiteDTO;
 
-import java.util.Map;
+import com.extjs.gxt.ui.client.store.ListStore;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

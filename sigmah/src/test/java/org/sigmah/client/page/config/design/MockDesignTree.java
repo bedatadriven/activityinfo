@@ -5,8 +5,12 @@
 
 package org.sigmah.client.page.config.design;
 
-import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.store.TreeStore;
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.replay;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.page.common.dialog.FormDialogCallback;
 import org.sigmah.client.page.common.dialog.FormDialogTether;
@@ -14,14 +18,8 @@ import org.sigmah.client.page.common.grid.ConfirmCallback;
 import org.sigmah.shared.dto.EntityDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.easymock.EasyMock.createNiceMock;
-import static org.easymock.EasyMock.replay;
-/*
- * @author Alex Bertram
- */
+import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.store.TreeStore;
 
 public class MockDesignTree implements DesignPresenter.View {
 

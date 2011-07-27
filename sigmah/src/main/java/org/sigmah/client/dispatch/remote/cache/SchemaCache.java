@@ -5,13 +5,19 @@
 
 package org.sigmah.client.dispatch.remote.cache;
 
-import com.google.inject.Inject;
 import org.sigmah.client.dispatch.CommandProxy;
 import org.sigmah.client.dispatch.DispatchEventSource;
 import org.sigmah.client.dispatch.DispatchListener;
-import org.sigmah.shared.command.*;
+import org.sigmah.shared.command.AddPartner;
+import org.sigmah.shared.command.Command;
+import org.sigmah.shared.command.CreateEntity;
+import org.sigmah.shared.command.GetSchema;
+import org.sigmah.shared.command.RemovePartner;
+import org.sigmah.shared.command.UpdateEntity;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.dto.SchemaDTO;
+
+import com.google.inject.Inject;
 
 /**
  * Caches the user's schema in-memory for the duration of the session.

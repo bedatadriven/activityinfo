@@ -5,8 +5,8 @@
 
 package org.sigmah.server.sync;
 
-import com.bedatadriven.rebar.sync.server.JpaUpdateBuilder;
-import com.google.inject.Inject;
+import java.util.List;
+
 import org.json.JSONException;
 import org.sigmah.shared.command.GetSyncRegionUpdates;
 import org.sigmah.shared.command.result.SyncRegionUpdate;
@@ -14,7 +14,8 @@ import org.sigmah.shared.dao.AdminDAO;
 import org.sigmah.shared.domain.AdminEntity;
 import org.sigmah.shared.domain.User;
 
-import java.util.List;
+import com.bedatadriven.rebar.sync.server.JpaUpdateBuilder;
+import com.google.inject.Inject;
 
 public class
         AdminUpdateBuilder implements UpdateBuilder {

@@ -5,6 +5,15 @@
 
 package org.sigmah.client.page;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.sigmah.client.EventBus;
+import org.sigmah.client.dispatch.AsyncMonitor;
+import org.sigmah.client.event.NavigationEvent;
+import org.sigmah.client.inject.Root;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.EventType;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -14,14 +23,6 @@ import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.sigmah.client.EventBus;
-import org.sigmah.client.dispatch.AsyncMonitor;
-import org.sigmah.client.event.NavigationEvent;
-import org.sigmah.client.inject.Root;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  *  Coordinates navigation between pages.

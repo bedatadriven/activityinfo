@@ -5,9 +5,20 @@
 
 package org.sigmah.server.endpoint.kml;
 
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.google.inject.Singleton;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.stream.StreamResult;
+
 import org.apache.commons.codec.binary.Base64;
 import org.sigmah.server.auth.Authenticator;
 import org.sigmah.server.domain.DomainFilters;
@@ -17,7 +28,11 @@ import org.sigmah.server.util.KMLNamespace;
 import org.sigmah.server.util.XmlBuilder;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.command.handler.GetSchemaHandler;
-import org.sigmah.shared.dao.*;
+import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.dao.SiteOrder;
+import org.sigmah.shared.dao.SiteTableColumn;
+import org.sigmah.shared.dao.SiteTableDAO;
+import org.sigmah.shared.dao.UserDAO;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
@@ -26,18 +41,9 @@ import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.report.model.SiteData;
 import org.xml.sax.SAXException;
 
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.stream.StreamResult;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Singleton;
 
 /**
  * Serves a KML (Google Earth) file containing the locations of all activities

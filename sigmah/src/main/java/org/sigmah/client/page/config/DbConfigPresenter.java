@@ -5,7 +5,6 @@
 
 package org.sigmah.client.page.config;
 
-import com.google.inject.Inject;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
@@ -14,6 +13,8 @@ import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.common.GalleryView;
 import org.sigmah.client.page.config.design.DesignPresenter;
 import org.sigmah.shared.dto.UserDatabaseDTO;
+
+import com.google.inject.Inject;
 
 public class DbConfigPresenter implements Page {
 

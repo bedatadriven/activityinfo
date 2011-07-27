@@ -5,9 +5,9 @@
 
 package org.sigmah.client.mock;
 
-import org.sigmah.shared.map.AbstractCoordinateEditor;
-
 import java.text.NumberFormat;
+
+import org.sigmah.shared.map.AbstractCoordinateEditor;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

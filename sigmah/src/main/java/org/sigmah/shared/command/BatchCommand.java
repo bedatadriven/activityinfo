@@ -5,10 +5,10 @@
 
 package org.sigmah.shared.command;
 
-import org.sigmah.shared.command.result.BatchResult;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.sigmah.shared.command.result.BatchResult;
 
 /**
  *

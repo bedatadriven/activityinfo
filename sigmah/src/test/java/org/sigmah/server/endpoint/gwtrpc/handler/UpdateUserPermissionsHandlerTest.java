@@ -20,7 +20,6 @@ import org.sigmah.server.mail.Invitation;
 import org.sigmah.server.mail.Mailer;
 import org.sigmah.shared.command.UpdateUserPermissions;
 import org.sigmah.shared.dao.UserDAO;
-import org.sigmah.shared.dao.DAO;
 import org.sigmah.shared.dao.UserDatabaseDAO;
 import org.sigmah.shared.dao.UserPermissionDAO;
 import org.sigmah.shared.domain.OrgUnit;
@@ -30,7 +29,6 @@ import org.sigmah.shared.domain.UserPermission;
 import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.dto.UserPermissionDTO;
 import org.sigmah.shared.exception.IllegalAccessCommandException;
-import org.sigmah.shared.dao.DAO;
 
 /**
  * @author Alex Bertram

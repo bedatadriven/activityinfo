@@ -5,19 +5,6 @@
 
 package org.sigmah.server.dao.hibernate;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.inject.Inject;
-import org.hibernate.Session;
-import org.hibernate.ejb.HibernateEntityManager;
-import org.hibernate.jdbc.Work;
-import org.sigmah.server.dao.PivotDAO;
-import org.sigmah.server.domain.AggregationMethod;
-import org.sigmah.shared.dao.Filter;
-import org.sigmah.shared.dao.SQLDialect;
-import org.sigmah.shared.report.content.*;
-import org.sigmah.shared.report.model.*;
-
-import javax.persistence.EntityManager;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -26,6 +13,30 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+
+import javax.persistence.EntityManager;
+
+import org.hibernate.Session;
+import org.hibernate.ejb.HibernateEntityManager;
+import org.hibernate.jdbc.Work;
+import org.sigmah.server.dao.PivotDAO;
+import org.sigmah.server.domain.AggregationMethod;
+import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.dao.SQLDialect;
+import org.sigmah.shared.report.content.EntityCategory;
+import org.sigmah.shared.report.content.MonthCategory;
+import org.sigmah.shared.report.content.QuarterCategory;
+import org.sigmah.shared.report.content.SimpleCategory;
+import org.sigmah.shared.report.content.YearCategory;
+import org.sigmah.shared.report.model.AdminDimension;
+import org.sigmah.shared.report.model.AttributeGroupDimension;
+import org.sigmah.shared.report.model.DateDimension;
+import org.sigmah.shared.report.model.DateUnit;
+import org.sigmah.shared.report.model.Dimension;
+import org.sigmah.shared.report.model.DimensionType;
+
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.inject.Inject;
 
 
 /**

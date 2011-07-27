@@ -5,6 +5,24 @@
 
 package org.sigmah.client.page.project.reports;
 
+import java.util.Date;
+
+import org.sigmah.client.EventBus;
+import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.dispatch.remote.Authentication;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.client.page.project.logframe.FormWindow;
+import org.sigmah.client.page.project.logframe.FormWindow.FormSubmitListener;
+import org.sigmah.client.ui.ButtonFileUploadField;
+import org.sigmah.client.util.Notification;
+import org.sigmah.shared.dto.ProjectDTO;
+import org.sigmah.shared.dto.ProjectDTO.LocalizedElement;
+import org.sigmah.shared.dto.element.FlexibleElementDTO;
+import org.sigmah.shared.dto.reminder.MonitoredPointDTO;
+import org.sigmah.shared.dto.report.ReportReference;
+import org.sigmah.shared.dto.value.FileUploadUtils;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -23,22 +41,6 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.core.client.GWT;
-import java.util.Date;
-import org.sigmah.client.EventBus;
-import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.dispatch.remote.Authentication;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.client.page.project.logframe.FormWindow;
-import org.sigmah.client.page.project.logframe.FormWindow.FormSubmitListener;
-import org.sigmah.client.ui.ButtonFileUploadField;
-import org.sigmah.client.util.Notification;
-import org.sigmah.shared.dto.report.ReportReference;
-import org.sigmah.shared.dto.ProjectDTO;
-import org.sigmah.shared.dto.ProjectDTO.LocalizedElement;
-import org.sigmah.shared.dto.element.FlexibleElementDTO;
-import org.sigmah.shared.dto.reminder.MonitoredPointDTO;
-import org.sigmah.shared.dto.value.FileUploadUtils;
 
 /**
  * Creates and maintains the "attach file" dialog.

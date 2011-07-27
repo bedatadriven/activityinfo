@@ -5,9 +5,9 @@
 
 package org.sigmah.shared.command.result;
 
-import org.sigmah.shared.dto.AdminEntityDTO;
-
 import java.util.List;
+
+import org.sigmah.shared.dto.AdminEntityDTO;
 
 /**
  * Result of a <code>GetAdminEntities</code> command.

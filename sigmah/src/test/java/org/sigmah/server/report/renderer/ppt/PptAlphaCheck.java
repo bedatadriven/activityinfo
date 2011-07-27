@@ -5,6 +5,9 @@
 
 package org.sigmah.server.report.renderer.ppt;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.apache.poi.ddf.EscherProperties;
 import org.apache.poi.hslf.HSLFSlideShow;
 import org.apache.poi.hslf.model.Shape;
@@ -12,9 +15,6 @@ import org.apache.poi.hslf.model.Slide;
 import org.apache.poi.hslf.usermodel.SlideShow;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 public class PptAlphaCheck {
 

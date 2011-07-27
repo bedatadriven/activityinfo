@@ -6,6 +6,7 @@
 package org.sigmah.server.endpoint.gwtrpc.handler.calendar;
 
 import java.io.Serializable;
+
 import org.sigmah.shared.domain.calendar.Calendar;
 
 /**

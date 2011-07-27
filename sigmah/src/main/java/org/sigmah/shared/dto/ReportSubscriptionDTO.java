@@ -5,7 +5,6 @@
 
 package org.sigmah.shared.dto;
 
-import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**

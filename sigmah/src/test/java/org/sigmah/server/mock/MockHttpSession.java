@@ -5,10 +5,11 @@
 
 package org.sigmah.server.mock;
 
+import java.util.Enumeration;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionContext;
-import java.util.Enumeration;
 
 /**
  * @author Alex Bertram

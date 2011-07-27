@@ -5,6 +5,8 @@
 
 package org.sigmah.client.inject;
 
+import java.util.MissingResourceException;
+
 import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.shared.dto.profile.ProfileDTO;
 import org.sigmah.shared.dto.profile.ProfileUtils;
@@ -12,7 +14,6 @@ import org.sigmah.shared.dto.profile.ProfileUtils;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.i18n.client.Dictionary;
 import com.google.inject.Provider;
-import java.util.MissingResourceException;
 
 /**
  * Retrieves the current authenticated user.

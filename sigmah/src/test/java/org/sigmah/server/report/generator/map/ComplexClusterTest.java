@@ -5,6 +5,11 @@
 
 package org.sigmah.server.report.generator.map;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -14,11 +19,6 @@ import org.sigmah.server.report.generator.map.cluster.auto.CircleFitnessFunctor;
 import org.sigmah.server.report.generator.map.cluster.auto.FitnessFunctor;
 import org.sigmah.server.report.generator.map.cluster.auto.KMeans;
 import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph;
-
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Alex Bertram

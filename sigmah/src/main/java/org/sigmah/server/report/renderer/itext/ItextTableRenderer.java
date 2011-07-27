@@ -5,16 +5,22 @@
 
 package org.sigmah.server.report.renderer.itext;
 
-import com.google.inject.Inject;
-import com.lowagie.text.*;
-import org.sigmah.shared.report.content.TableData;
-import org.sigmah.shared.report.model.TableColumn;
-import org.sigmah.shared.report.model.TableElement;
-
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.Date;
 import java.util.List;
+
+import org.sigmah.shared.report.content.TableData;
+import org.sigmah.shared.report.model.TableColumn;
+import org.sigmah.shared.report.model.TableElement;
+
+import com.google.inject.Inject;
+import com.lowagie.text.Cell;
+import com.lowagie.text.DocWriter;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Table;
 
 /**
  * Renders a {@link org.sigmah.shared.report.model.TableElement} to an iText Document.

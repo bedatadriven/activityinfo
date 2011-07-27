@@ -5,7 +5,9 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
-import com.google.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.xml.bind.JAXBException;
+
 import org.sigmah.server.domain.ReportDefinition;
 import org.sigmah.server.report.ReportParserJaxb;
 import org.sigmah.shared.command.UpdateReportDef;
@@ -16,8 +18,7 @@ import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.ParseException;
 import org.sigmah.shared.report.model.Report;
 
-import javax.persistence.EntityManager;
-import javax.xml.bind.JAXBException;
+import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram

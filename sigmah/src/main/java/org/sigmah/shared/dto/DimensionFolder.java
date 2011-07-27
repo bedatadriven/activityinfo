@@ -1,7 +1,8 @@
 package org.sigmah.shared.dto;
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
 import org.sigmah.shared.report.model.DimensionType;
+
+import com.extjs.gxt.ui.client.data.BaseModelData;
 
 public class DimensionFolder extends BaseModelData {
 	

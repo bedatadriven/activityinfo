@@ -21,15 +21,15 @@ import org.sigmah.shared.command.result.ProjectReportListResult;
 import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.ProjectDTO.LocalizedElement;
 import org.sigmah.shared.dto.element.FilesListElementDTO;
+import org.sigmah.shared.dto.element.ReportElementDTO;
 import org.sigmah.shared.dto.report.ProjectReportDTO;
+import org.sigmah.shared.dto.report.ReportReference;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.sigmah.shared.dto.report.ReportReference;
-import org.sigmah.shared.dto.element.ReportElementDTO;
 
 /**
  * Sub presenter that manage the "reports" view from the project page.

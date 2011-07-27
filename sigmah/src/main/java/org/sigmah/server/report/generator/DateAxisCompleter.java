@@ -5,12 +5,12 @@
 
 package org.sigmah.server.report.generator;
 
+import java.util.Collection;
+
 import org.sigmah.shared.report.content.PivotTableData.Axis;
 import org.sigmah.shared.report.content.YearCategory;
 import org.sigmah.shared.report.model.DateDimension;
 import org.sigmah.shared.report.model.DateUnit;
-
-import java.util.Collection;
 
 /**
  * While we don't normally want to include gobs of empty cells, 

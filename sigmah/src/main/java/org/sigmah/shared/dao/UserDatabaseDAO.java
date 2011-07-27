@@ -5,9 +5,9 @@
 
 package org.sigmah.shared.dao;
 
-import org.sigmah.shared.domain.UserDatabase;
-
 import java.util.List;
+
+import org.sigmah.shared.domain.UserDatabase;
 
 /**
  * Data Access Object for {@link UserDatabase} domain classes. Implemented automatically

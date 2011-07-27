@@ -5,12 +5,13 @@
 
 package org.sigmah.client.page.entry;
 
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.SortInfo;
 import org.junit.Assert;
 import org.junit.Test;
 import org.sigmah.client.page.PageStateSerializer;
 import org.sigmah.shared.dto.ActivityDTO;
+
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.SortInfo;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

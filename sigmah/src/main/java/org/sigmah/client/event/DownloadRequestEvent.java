@@ -5,8 +5,9 @@
 
 package org.sigmah.client.event;
 
-import com.extjs.gxt.ui.client.event.BaseEvent;
 import org.sigmah.client.page.DownloadManager;
+
+import com.extjs.gxt.ui.client.event.BaseEvent;
 
 /**
  * An event which requests the download of a file.

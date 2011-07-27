@@ -5,13 +5,10 @@
 
 package org.sigmah.client.page.common.grid;
 
-import com.extjs.gxt.ui.client.data.Loader;
-import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.store.Record;
-import com.extjs.gxt.ui.client.store.Store;
-import com.extjs.gxt.ui.client.store.StoreEvent;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.loader.CommandLoadEvent;
@@ -23,9 +20,13 @@ import org.sigmah.client.util.state.IStateManager;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.result.BatchResult;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.extjs.gxt.ui.client.data.Loader;
+import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.store.Record;
+import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.store.StoreEvent;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public abstract class AbstractEditorGridPresenter<ModelT extends ModelData>
         extends AbstractGridPresenter<ModelT> {

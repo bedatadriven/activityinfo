@@ -6,6 +6,7 @@
 package org.sigmah.server.report.generator;
 
 import junit.framework.Assert;
+
 import org.junit.Test;
 
 /**

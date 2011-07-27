@@ -9,9 +9,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.persistence.EntityManager;
-
-import org.bouncycastle.jce.provider.symmetric.AES.KeyGen;
 import org.sigmah.client.offline.command.handler.KeyGenerator;
 import org.sigmah.server.dao.LocationDAO;
 import org.sigmah.server.dao.PartnerDAO;
@@ -34,7 +31,6 @@ import org.sigmah.shared.dto.AttributeDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 public class SitePolicy implements EntityPolicy<Site> {
     private final ActivityDAO activityDAO;

@@ -4,7 +4,9 @@
  */
 package org.sigmah.client.page.project;
 
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import java.util.EnumMap;
+import java.util.Map;
+
 import org.sigmah.client.CountriesList;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.UserInfo;
@@ -27,8 +29,11 @@ import org.sigmah.client.page.project.details.ProjectDetailsPresenter;
 import org.sigmah.client.page.project.logframe.ProjectLogFramePresenter;
 import org.sigmah.client.page.project.reports.ProjectReportsPresenter;
 import org.sigmah.client.ui.ToggleAnchor;
+import org.sigmah.shared.command.AmendmentAction;
 import org.sigmah.shared.command.GetProject;
+import org.sigmah.shared.domain.Amendment;
 import org.sigmah.shared.domain.profile.GlobalPermissionEnum;
+import org.sigmah.shared.dto.AmendmentDTO;
 import org.sigmah.shared.dto.PhaseDTO;
 import org.sigmah.shared.dto.ProjectBannerDTO;
 import org.sigmah.shared.dto.ProjectDTO;
@@ -41,6 +46,7 @@ import org.sigmah.shared.dto.profile.ProfileUtils;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -65,11 +71,6 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
-import java.util.EnumMap;
-import java.util.Map;
-import org.sigmah.shared.command.AmendmentAction;
-import org.sigmah.shared.domain.Amendment;
-import org.sigmah.shared.dto.AmendmentDTO;
 
 /**
  * Project presenter which manages the {@link ProjectView}.

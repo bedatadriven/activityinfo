@@ -5,10 +5,10 @@
 
 package org.sigmah.server.report.renderer;
 
-import org.sigmah.shared.report.model.ReportElement;
-
 import java.io.IOException;
 import java.io.OutputStream;
+
+import org.sigmah.shared.report.model.ReportElement;
 
 /**           
  *

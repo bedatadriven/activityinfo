@@ -5,6 +5,10 @@
 
 package org.sigmah.client.page.entry.editor;
 
+import static org.easymock.EasyMock.createNiceMock;
+
+import java.util.Map;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.sigmah.client.mock.DispatcherStub;
@@ -14,13 +18,6 @@ import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.SiteDTO;
-
-import java.util.Map;
-
-import static org.easymock.EasyMock.createNiceMock;
-/*
- * @author Alex Bertram
- */
 
 public class AdminChangeTest {
 

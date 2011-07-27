@@ -5,22 +5,28 @@
 
 package org.sigmah.client.report;
 
-import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.SchemaDTO;
-import org.sigmah.shared.report.model.*;
+import org.sigmah.shared.report.model.AdminDimension;
+import org.sigmah.shared.report.model.DateDimension;
+import org.sigmah.shared.report.model.DateUnit;
+import org.sigmah.shared.report.model.Dimension;
+import org.sigmah.shared.report.model.DimensionType;
 
-import java.util.ArrayList;
-import java.util.List;
-/*
- * @author Alex Bertram
- */
+import com.extjs.gxt.ui.client.data.BaseListLoadResult;
+import com.extjs.gxt.ui.client.data.BaseListLoader;
+import com.extjs.gxt.ui.client.data.DataProxy;
+import com.extjs.gxt.ui.client.data.DataReader;
+import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class DimensionStoreFactory {
 

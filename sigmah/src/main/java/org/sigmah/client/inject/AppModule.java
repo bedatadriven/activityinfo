@@ -5,8 +5,6 @@
 
 package org.sigmah.client.inject;
 
-import com.google.gwt.inject.client.AbstractGinModule;
-import com.google.inject.Singleton;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.LoggingEventBus;
 import org.sigmah.client.dispatch.DispatchEventSource;
@@ -27,6 +25,9 @@ import org.sigmah.client.page.common.GalleryView;
 import org.sigmah.client.util.state.GXTStateManager;
 import org.sigmah.client.util.state.IStateManager;
 import org.sigmah.shared.command.RemoteCommandServiceAsync;
+
+import com.google.gwt.inject.client.AbstractGinModule;
+import com.google.inject.Singleton;
 
 public class AppModule extends AbstractGinModule {
 

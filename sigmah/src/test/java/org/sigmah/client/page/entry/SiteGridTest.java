@@ -5,9 +5,20 @@
 
 package org.sigmah.client.page.entry;
 
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.SortInfo;
-import com.extjs.gxt.ui.client.store.Record;
+import static java.util.Collections.singleton;
+import static org.easymock.EasyMock.anyBoolean;
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.reset;
+import static org.easymock.EasyMock.resetToDefault;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertThat;
+
+import java.util.Collections;
+import java.util.Set;
+
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.Assert;
@@ -27,17 +38,13 @@ import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.command.UpdateEntity;
 import org.sigmah.shared.command.result.SiteResult;
 import org.sigmah.shared.command.result.VoidResult;
-import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.report.model.DimensionType;
 
-import java.util.Collections;
-import java.util.Set;
-
-import static java.util.Collections.singleton;
-import static org.easymock.EasyMock.*;
-import static org.junit.Assert.assertThat;
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.SortInfo;
+import com.extjs.gxt.ui.client.store.Record;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

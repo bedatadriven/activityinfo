@@ -5,6 +5,10 @@
 
 package org.sigmah.client.page.common.dialog;
 
+import org.sigmah.client.dispatch.AsyncMonitor;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
+
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -14,9 +18,6 @@ import com.extjs.gxt.ui.client.widget.Status;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
-import org.sigmah.client.dispatch.AsyncMonitor;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.icon.IconImageBundle;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

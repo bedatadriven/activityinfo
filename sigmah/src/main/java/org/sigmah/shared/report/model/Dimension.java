@@ -5,18 +5,20 @@
 
 package org.sigmah.shared.report.model;
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
-import org.sigmah.shared.report.content.DimensionCategory;
-import org.sigmah.shared.report.content.EntityCategory;
-import org.sigmah.shared.report.model.typeadapter.DimensionAdapter;
-
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import org.sigmah.shared.report.content.DimensionCategory;
+import org.sigmah.shared.report.content.EntityCategory;
+import org.sigmah.shared.report.model.typeadapter.DimensionAdapter;
+
+import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /*
  * Olap dimension, mapping to rows or columns in pivot tables

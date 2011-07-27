@@ -5,11 +5,11 @@
 
 package org.sigmah.test;
 
-import org.junit.internal.runners.model.MultipleFailureException;
-import org.junit.runners.model.Statement;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.junit.internal.runners.model.MultipleFailureException;
+import org.junit.runners.model.Statement;
 
 /**
  * Executes an inner statement and then exits the scope

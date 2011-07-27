@@ -5,12 +5,13 @@
 
 package org.sigmah.server.policy;
 
-import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Date;
+
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+
 import org.sigmah.server.dao.Transactional;
 import org.sigmah.shared.domain.Amendment;
 import org.sigmah.shared.domain.PhaseModel;
@@ -20,6 +21,8 @@ import org.sigmah.shared.domain.element.FlexibleElement;
 import org.sigmah.shared.domain.history.HistoryToken;
 import org.sigmah.shared.domain.layout.LayoutConstraint;
 import org.sigmah.shared.domain.layout.LayoutGroup;
+
+import com.google.inject.Inject;
 
 /**
  * Creates and updates project amendments.

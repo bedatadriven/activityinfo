@@ -5,13 +5,9 @@
 
 package org.sigmah.client.page.config;
 
-import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
@@ -27,8 +23,17 @@ import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.util.state.IStateManager;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.GridEvent;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.inject.Inject;
 
 public class DbListPage extends ContentPanel implements DbListPresenter.View, Page {
 

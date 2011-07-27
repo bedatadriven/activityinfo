@@ -5,10 +5,13 @@
 
 package org.sigmah.client.map;
 
-import org.sigmah.shared.dto.*;
-import org.sigmah.shared.util.mapping.BoundingBoxDTO;
-
 import java.util.Collection;
+
+import org.sigmah.shared.dto.ActivityDTO;
+import org.sigmah.shared.dto.AdminEntityDTO;
+import org.sigmah.shared.dto.AdminLevelDTO;
+import org.sigmah.shared.dto.SiteDTO;
+import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 /**
  * Utility class to help calculate the lat/lng bounds of an

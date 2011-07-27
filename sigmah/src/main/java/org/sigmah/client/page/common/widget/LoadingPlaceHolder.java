@@ -5,11 +5,12 @@
 
 package org.sigmah.client.page.common.widget;
 
+import org.sigmah.client.dispatch.AsyncMonitor;
+import org.sigmah.client.i18n.I18N;
+
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
-import org.sigmah.client.dispatch.AsyncMonitor;
-import org.sigmah.client.i18n.I18N;
 
 /**
  * An AsyncMonitor implementation that shows the "Loading Component"

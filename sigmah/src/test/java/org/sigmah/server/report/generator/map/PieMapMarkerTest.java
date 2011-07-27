@@ -5,7 +5,11 @@
 
 package org.sigmah.server.report.generator.map;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import junit.framework.Assert;
+
 import org.junit.Test;
 import org.sigmah.shared.dao.SiteTableColumn;
 import org.sigmah.shared.report.content.LatLng;
@@ -15,11 +19,7 @@ import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.SiteData;
-import org.sigmah.shared.report.model.layers.BubbleMapLayer;
 import org.sigmah.shared.report.model.layers.PiechartMapLayer;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class PieMapMarkerTest {
 

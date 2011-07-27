@@ -5,6 +5,28 @@
 
 package org.sigmah.shared.dto.element;
 
+import java.io.Serializable;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+
+import org.sigmah.client.event.NavigationEvent;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.client.page.NavigationHandler;
+import org.sigmah.client.page.PageState;
+import org.sigmah.client.page.project.ProjectPresenter;
+import org.sigmah.client.page.project.ProjectState;
+import org.sigmah.client.ui.FlexibleGrid;
+import org.sigmah.client.util.Notification;
+import org.sigmah.shared.command.CreateEntity;
+import org.sigmah.shared.command.Delete;
+import org.sigmah.shared.command.result.CreateResult;
+import org.sigmah.shared.command.result.ValueResult;
+import org.sigmah.shared.command.result.VoidResult;
+import org.sigmah.shared.dto.ProjectDTO;
+import org.sigmah.shared.dto.report.ReportReference;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -27,26 +49,6 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Image;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import org.sigmah.client.event.NavigationEvent;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.client.page.NavigationHandler;
-import org.sigmah.client.page.PageState;
-import org.sigmah.client.page.project.ProjectPresenter;
-import org.sigmah.client.page.project.ProjectState;
-import org.sigmah.client.ui.FlexibleGrid;
-import org.sigmah.client.util.Notification;
-import org.sigmah.shared.command.CreateEntity;
-import org.sigmah.shared.command.Delete;
-import org.sigmah.shared.command.result.CreateResult;
-import org.sigmah.shared.dto.report.ReportReference;
-import org.sigmah.shared.command.result.ValueResult;
-import org.sigmah.shared.command.result.VoidResult;
-import org.sigmah.shared.dto.ProjectDTO;
 
 /**
  * Flexible element that can contain a list of project reports.

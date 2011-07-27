@@ -5,7 +5,10 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
-import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,9 +23,7 @@ import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.exception.CommandException;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.EntityManager;
+import com.google.inject.Inject;
 
 public class GetCountriesHandler implements CommandHandler<GetCountries> {
 

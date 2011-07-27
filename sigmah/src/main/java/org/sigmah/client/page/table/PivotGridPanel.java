@@ -5,6 +5,21 @@
 
 package org.sigmah.client.page.table;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.sigmah.client.AppEvents;
+import org.sigmah.client.EventBus;
+import org.sigmah.client.event.PivotCellEvent;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.shared.report.content.EntityCategory;
+import org.sigmah.shared.report.content.PivotTableData;
+import org.sigmah.shared.report.model.Dimension;
+import org.sigmah.shared.report.model.DimensionType;
+import org.sigmah.shared.report.model.PivotReportElement;
+
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BaseTreeModel;
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -22,20 +37,6 @@ import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.inject.Inject;
-import org.sigmah.client.AppEvents;
-import org.sigmah.client.EventBus;
-import org.sigmah.client.event.PivotCellEvent;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.shared.report.content.EntityCategory;
-import org.sigmah.shared.report.content.PivotTableData;
-import org.sigmah.shared.report.model.Dimension;
-import org.sigmah.shared.report.model.DimensionType;
-import org.sigmah.shared.report.model.PivotReportElement;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 

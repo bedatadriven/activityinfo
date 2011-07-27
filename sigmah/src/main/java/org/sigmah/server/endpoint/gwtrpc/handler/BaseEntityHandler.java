@@ -5,7 +5,11 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
-import org.sigmah.server.domain.*;
+import java.util.Date;
+import java.util.Map;
+
+import javax.persistence.EntityManager;
+
 import org.sigmah.shared.domain.Activity;
 import org.sigmah.shared.domain.Attribute;
 import org.sigmah.shared.domain.AttributeGroup;
@@ -15,10 +19,6 @@ import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.UserDatabase;
 import org.sigmah.shared.dto.LocationTypeDTO;
 import org.sigmah.shared.exception.IllegalAccessCommandException;
-
-import javax.persistence.EntityManager;
-import java.util.Date;
-import java.util.Map;
 
 /**
  * Provides functionality common to CreateEntityHandler and

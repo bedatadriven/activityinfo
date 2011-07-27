@@ -5,6 +5,21 @@
 
 package org.sigmah.client.page.project.reports;
 
+import java.util.HashMap;
+import java.util.List;
+
+import org.sigmah.client.EventBus;
+import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.dispatch.remote.Authentication;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.shared.dto.ProjectDTO;
+import org.sigmah.shared.dto.ProjectDTO.LocalizedElement;
+import org.sigmah.shared.dto.element.FilesListElementDTO;
+import org.sigmah.shared.dto.element.FlexibleElementDTO;
+import org.sigmah.shared.dto.element.ReportElementDTO;
+import org.sigmah.shared.dto.report.ReportReference;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -13,19 +28,6 @@ import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
-import java.util.HashMap;
-import java.util.List;
-import org.sigmah.client.EventBus;
-import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.dispatch.remote.Authentication;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.shared.dto.report.ReportReference;
-import org.sigmah.shared.dto.ProjectDTO;
-import org.sigmah.shared.dto.ProjectDTO.LocalizedElement;
-import org.sigmah.shared.dto.element.FilesListElementDTO;
-import org.sigmah.shared.dto.element.FlexibleElementDTO;
-import org.sigmah.shared.dto.element.ReportElementDTO;
 
 /**
  * Builds menus to attach documents and reports to flexibles elements.

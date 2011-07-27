@@ -15,7 +15,6 @@ import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.AttributeDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
-import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.exception.CommandException;
 

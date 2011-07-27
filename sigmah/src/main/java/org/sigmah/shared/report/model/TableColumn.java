@@ -5,13 +5,14 @@
 
 package org.sigmah.shared.report.model;
 
-import org.sigmah.shared.report.content.TreeNode;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
-import java.util.ArrayList;
-import java.util.List;
+
+import org.sigmah.shared.report.content.TreeNode;
 
 /**
  * @author Alex Bertram

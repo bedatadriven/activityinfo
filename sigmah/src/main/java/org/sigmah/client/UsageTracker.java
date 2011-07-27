@@ -5,12 +5,6 @@
 
 package org.sigmah.client;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.google.gwt.core.client.JavaScriptException;
-import com.google.gwt.gears.client.Factory;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import org.sigmah.client.dispatch.DispatchEventSource;
 import org.sigmah.client.dispatch.remote.cache.DefaultDispatchListener;
 import org.sigmah.client.event.DownloadRequestEvent;
@@ -21,6 +15,13 @@ import org.sigmah.shared.command.CreateEntity;
 import org.sigmah.shared.command.Delete;
 import org.sigmah.shared.command.UpdateEntity;
 import org.sigmah.shared.command.result.CommandResult;
+
+import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.google.gwt.core.client.JavaScriptException;
+import com.google.gwt.gears.client.Factory;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * Tracks usage of the application and reports to Google Analytics

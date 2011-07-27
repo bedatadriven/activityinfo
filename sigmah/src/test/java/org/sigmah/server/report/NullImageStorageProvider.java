@@ -5,11 +5,11 @@
 
 package org.sigmah.server.report;
 
-import org.sigmah.server.report.renderer.html.ImageStorage;
-import org.sigmah.server.report.renderer.html.ImageStorageProvider;
-
 import java.io.IOException;
 import java.io.OutputStream;
+
+import org.sigmah.server.report.renderer.html.ImageStorage;
+import org.sigmah.server.report.renderer.html.ImageStorageProvider;
 
 public class NullImageStorageProvider implements ImageStorageProvider {
 

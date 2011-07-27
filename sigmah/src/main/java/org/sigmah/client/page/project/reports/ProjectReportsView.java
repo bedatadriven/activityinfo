@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.sigmah.client.EventBus;
+import org.sigmah.client.dispatch.AsyncCallbacks;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.event.NavigationEvent;
@@ -21,7 +22,12 @@ import org.sigmah.client.page.project.ProjectState;
 import org.sigmah.client.page.project.reports.images.ToolbarImages;
 import org.sigmah.client.ui.FoldPanel;
 import org.sigmah.client.util.Notification;
+import org.sigmah.shared.command.CreateEntity;
+import org.sigmah.shared.command.GetProjectReport;
+import org.sigmah.shared.command.PromoteProjectReportDraft;
+import org.sigmah.shared.command.RemoveProjectReportDraft;
 import org.sigmah.shared.command.UpdateEntity;
+import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.domain.profile.GlobalPermissionEnum;
 import org.sigmah.shared.dto.profile.ProfileUtils;
@@ -29,6 +35,7 @@ import org.sigmah.shared.dto.report.KeyQuestionDTO;
 import org.sigmah.shared.dto.report.ProjectReportContent;
 import org.sigmah.shared.dto.report.ProjectReportDTO;
 import org.sigmah.shared.dto.report.ProjectReportSectionDTO;
+import org.sigmah.shared.dto.report.ReportReference;
 import org.sigmah.shared.dto.report.RichTextElementDTO;
 import org.sigmah.shared.dto.value.FileUploadUtils;
 
@@ -87,13 +94,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RichTextArea;
 import com.google.gwt.user.client.ui.SimplePanel;
-import org.sigmah.client.dispatch.AsyncCallbacks;
-import org.sigmah.shared.command.CreateEntity;
-import org.sigmah.shared.command.GetProjectReport;
-import org.sigmah.shared.command.PromoteProjectReportDraft;
-import org.sigmah.shared.command.RemoveProjectReportDraft;
-import org.sigmah.shared.dto.report.ReportReference;
-import org.sigmah.shared.command.result.CreateResult;
 
 /**
  * Displays the reports attached to a project.

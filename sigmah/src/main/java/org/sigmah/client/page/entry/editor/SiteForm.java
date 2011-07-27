@@ -6,11 +6,8 @@
 package org.sigmah.client.page.entry.editor;
 
 
-import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
-import com.google.gwt.maps.client.Maps;
+import java.util.Map;
+
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.i18n.I18N;
@@ -22,7 +19,11 @@ import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.dto.SiteDTO;
 
-import java.util.Map;
+import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.form.FieldSet;
+import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.google.gwt.maps.client.Maps;
 
 public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
 

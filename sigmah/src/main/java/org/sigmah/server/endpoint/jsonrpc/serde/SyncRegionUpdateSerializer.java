@@ -5,10 +5,16 @@
 
 package org.sigmah.server.endpoint.jsonrpc.serde;
 
-import com.google.gson.*;
+import java.lang.reflect.Type;
+
 import org.sigmah.shared.command.result.SyncRegionUpdate;
 
-import java.lang.reflect.Type;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 
 public class SyncRegionUpdateSerializer implements JsonSerializer<SyncRegionUpdate> {
 

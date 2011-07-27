@@ -5,13 +5,6 @@
 
 package org.sigmah.client.page.report;
 
-import com.extjs.gxt.ui.client.store.GroupingStore;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.Record;
-import com.extjs.gxt.ui.client.store.Store;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.ImplementedBy;
-import com.google.inject.Inject;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.loader.ListCmdLoader;
@@ -25,9 +18,21 @@ import org.sigmah.client.page.common.dialog.FormDialogImpl;
 import org.sigmah.client.page.common.grid.AbstractEditorGridPresenter;
 import org.sigmah.client.page.common.grid.GridView;
 import org.sigmah.client.util.state.IStateManager;
-import org.sigmah.shared.command.*;
+import org.sigmah.shared.command.BatchCommand;
+import org.sigmah.shared.command.Command;
+import org.sigmah.shared.command.CreateReportDef;
+import org.sigmah.shared.command.GetReportTemplates;
+import org.sigmah.shared.command.UpdateSubscription;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.dto.ReportDefinitionDTO;
+
+import com.extjs.gxt.ui.client.store.GroupingStore;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Record;
+import com.extjs.gxt.ui.client.store.Store;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.ImplementedBy;
+import com.google.inject.Inject;
 
 /**
  * Page which presents the list of reports visible to the user

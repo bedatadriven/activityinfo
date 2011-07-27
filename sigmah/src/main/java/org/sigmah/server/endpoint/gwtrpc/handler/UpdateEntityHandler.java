@@ -12,6 +12,8 @@ import javax.persistence.EntityManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sigmah.server.policy.ActivityPolicy;
+import org.sigmah.server.policy.PersonalEventPolicy;
+import org.sigmah.server.policy.ProjectReportPolicy;
 import org.sigmah.server.policy.PropertyMap;
 import org.sigmah.server.policy.SitePolicy;
 import org.sigmah.shared.command.UpdateEntity;
@@ -26,8 +28,6 @@ import org.sigmah.shared.exception.IllegalAccessCommandException;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import org.sigmah.server.policy.PersonalEventPolicy;
-import org.sigmah.server.policy.ProjectReportPolicy;
 
 /**
  * @author Alex Bertram

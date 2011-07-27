@@ -5,19 +5,21 @@
 
 package org.sigmah.server.endpoint.kml;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 
 /**
  * Serves a simple KML file containing a network link to {@link org.sigmah.server.endpoint.kml.KmlDataServlet}.

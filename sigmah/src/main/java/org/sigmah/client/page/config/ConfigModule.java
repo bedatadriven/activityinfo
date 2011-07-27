@@ -9,9 +9,10 @@
  */
 package org.sigmah.client.page.config;
 
-import com.google.gwt.inject.client.AbstractGinModule;
 import org.sigmah.client.page.config.design.DesignPresenter;
 import org.sigmah.client.page.config.design.DesignView;
+
+import com.google.gwt.inject.client.AbstractGinModule;
 
 /**
  * @author Alex Bertram

@@ -6,14 +6,19 @@
 package org.sigmah.server.report.renderer.excel;
 
 
-import com.google.inject.Inject;
+import java.io.IOException;
+import java.io.OutputStream;
+
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.sigmah.server.report.renderer.Renderer;
-import org.sigmah.shared.report.model.*;
+import org.sigmah.shared.report.model.PivotChartReportElement;
+import org.sigmah.shared.report.model.PivotTableReportElement;
+import org.sigmah.shared.report.model.Report;
+import org.sigmah.shared.report.model.ReportElement;
+import org.sigmah.shared.report.model.TableElement;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import com.google.inject.Inject;
 
 public class ExcelReportRenderer implements ExcelRenderer<Report>, Renderer {
 

@@ -5,9 +5,10 @@
 
 package org.sigmah.client.dispatch.callback;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.shared.command.result.CreateResult;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Convenience callback for commands that return CreateResult

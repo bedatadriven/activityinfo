@@ -5,17 +5,19 @@
 
 package org.sigmah.server.dao.hibernate;
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
-import com.google.inject.Singleton;
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.hibernate.ejb.HibernateEntityManager;
 import org.hibernate.jdbc.Work;
 import org.sigmah.shared.dao.SQLDialect;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import java.sql.Connection;
-import java.sql.SQLException;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
+import com.google.inject.Singleton;
 
 @Singleton
 public class SQLDialectProvider implements Provider<SQLDialect> {

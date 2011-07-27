@@ -5,9 +5,10 @@
 
 package org.sigmah.client.page.entry.editor;
 
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.dto.ActivityDTO;
+
+import com.extjs.gxt.ui.client.widget.form.TextField;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

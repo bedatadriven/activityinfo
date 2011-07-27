@@ -8,6 +8,7 @@ package org.sigmah.server.util;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+
 import freemarker.template.Configuration;
 
 /**

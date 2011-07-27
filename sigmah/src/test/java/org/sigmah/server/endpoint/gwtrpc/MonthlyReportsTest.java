@@ -5,6 +5,8 @@
 
 package org.sigmah.server.endpoint.gwtrpc;
 
+import java.util.ArrayList;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,8 +16,6 @@ import org.sigmah.shared.command.Month;
 import org.sigmah.shared.command.UpdateMonthlyReports;
 import org.sigmah.shared.command.result.MonthlyReportResult;
 import org.sigmah.test.InjectionSupport;
-
-import java.util.ArrayList;
 
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/sites-simple1.db.xml")

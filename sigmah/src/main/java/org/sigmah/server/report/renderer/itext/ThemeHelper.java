@@ -5,12 +5,12 @@
 
 package org.sigmah.server.report.renderer.itext;
 
+import java.awt.Color;
+
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.Cell;
 import com.lowagie.text.Font;
 import com.lowagie.text.Paragraph;
-
-import java.awt.*;
 
 /**
  * Centralizes all style-specific code. At the present, there is a single theme hardcoded

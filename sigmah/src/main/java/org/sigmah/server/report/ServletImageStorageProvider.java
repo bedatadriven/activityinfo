@@ -5,12 +5,12 @@
 
 package org.sigmah.server.report;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import org.sigmah.server.auth.SecureTokenGenerator;
 import org.sigmah.server.report.renderer.html.ImageStorage;
 import org.sigmah.server.report.renderer.html.ImageStorageProvider;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 public class ServletImageStorageProvider implements ImageStorageProvider {
 

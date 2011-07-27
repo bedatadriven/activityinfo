@@ -5,6 +5,11 @@
 
 package org.sigmah.server.schedule;
 
+import java.text.MessageFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.ResourceBundle;
+
 import org.sigmah.server.domain.ReportSubscription;
 import org.sigmah.server.report.util.HtmlWriter;
 import org.sigmah.server.util.DateUtilCalendarImpl;
@@ -14,11 +19,6 @@ import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.DateUnit;
 import org.sigmah.shared.report.model.Report;
 import org.sigmah.shared.report.model.ReportFrequency;
-
-import java.text.MessageFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.ResourceBundle;
 
 /*
  * @author Alex Bertram

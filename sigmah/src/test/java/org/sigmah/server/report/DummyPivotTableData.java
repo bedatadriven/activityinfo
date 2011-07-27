@@ -5,11 +5,20 @@
 
 package org.sigmah.server.report;
 
-import org.sigmah.shared.report.content.*;
-import org.sigmah.shared.report.model.*;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.sigmah.shared.report.content.EntityCategory;
+import org.sigmah.shared.report.content.FilterDescription;
+import org.sigmah.shared.report.content.PivotContent;
+import org.sigmah.shared.report.content.PivotTableData;
+import org.sigmah.shared.report.content.YearCategory;
+import org.sigmah.shared.report.model.AdminDimension;
+import org.sigmah.shared.report.model.DateDimension;
+import org.sigmah.shared.report.model.DateUnit;
+import org.sigmah.shared.report.model.Dimension;
+import org.sigmah.shared.report.model.DimensionType;
+import org.sigmah.shared.report.model.PivotTableReportElement;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

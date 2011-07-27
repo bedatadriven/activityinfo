@@ -5,9 +5,10 @@
 
 package org.sigmah.shared.report.model;
 
-import javax.xml.bind.annotation.XmlAttribute;
 import java.io.Serializable;
 import java.util.Date;
+
+import javax.xml.bind.annotation.XmlAttribute;
 
 /**
  *

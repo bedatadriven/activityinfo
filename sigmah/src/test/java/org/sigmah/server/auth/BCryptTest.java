@@ -5,11 +5,11 @@
 
 package org.sigmah.server.auth;
 
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Ignore;
 import org.junit.Test;
 import org.sigmah.server.auth.impl.BCrypt;
-
-import static org.junit.Assert.assertTrue;
 
 public class BCryptTest {
 

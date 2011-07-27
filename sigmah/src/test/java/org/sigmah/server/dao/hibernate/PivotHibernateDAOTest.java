@@ -5,7 +5,14 @@
 
 package org.sigmah.server.dao.hibernate;
 
-import com.google.inject.Inject;
+import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Set;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -17,14 +24,17 @@ import org.sigmah.shared.report.content.DimensionCategory;
 import org.sigmah.shared.report.content.EntityCategory;
 import org.sigmah.shared.report.content.LabeledDimensionCategory;
 import org.sigmah.shared.report.content.QuarterCategory;
-import org.sigmah.shared.report.model.*;
+import org.sigmah.shared.report.model.AdminDimension;
+import org.sigmah.shared.report.model.AttributeGroupDimension;
+import org.sigmah.shared.report.model.DateDimension;
+import org.sigmah.shared.report.model.DateUnit;
+import org.sigmah.shared.report.model.Dimension;
+import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.MockHibernateModule;
 import org.sigmah.test.Modules;
 
-import java.util.*;
-
-import static org.junit.Assert.assertEquals;
+import com.google.inject.Inject;
 
 @RunWith(InjectionSupport.class)
 @Modules({MockHibernateModule.class})

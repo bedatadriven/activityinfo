@@ -5,15 +5,20 @@
 
 package org.sigmah.server.bootstrap;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.sigmah.server.bootstrap.model.ConfirmInvitePageModel;
 import org.sigmah.server.bootstrap.model.InvalidInvitePageModel;
-
-import javax.servlet.ServletException;
-import java.io.IOException;
-
-import static org.junit.Assert.*;
 
 public class ConfirmInviteControllerTest extends ControllerTestCase {
 

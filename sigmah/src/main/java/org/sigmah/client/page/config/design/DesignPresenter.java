@@ -5,13 +5,8 @@
 
 package org.sigmah.client.page.config.design;
 
-import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.store.Record;
-import com.extjs.gxt.ui.client.store.Store;
-import com.extjs.gxt.ui.client.store.TreeStore;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.ImplementedBy;
-import com.google.inject.Inject;
+import java.util.List;
+
 import org.sigmah.client.AppEvents;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
@@ -26,12 +21,27 @@ import org.sigmah.client.page.common.grid.TreeGridView;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.page.config.DbPageState;
 import org.sigmah.client.util.state.IStateManager;
-import org.sigmah.shared.command.*;
+import org.sigmah.shared.command.BatchCommand;
+import org.sigmah.shared.command.Command;
+import org.sigmah.shared.command.CreateEntity;
+import org.sigmah.shared.command.Delete;
+import org.sigmah.shared.command.UpdateEntity;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.command.result.VoidResult;
-import org.sigmah.shared.dto.*;
+import org.sigmah.shared.dto.ActivityDTO;
+import org.sigmah.shared.dto.AttributeDTO;
+import org.sigmah.shared.dto.AttributeGroupDTO;
+import org.sigmah.shared.dto.EntityDTO;
+import org.sigmah.shared.dto.IndicatorDTO;
+import org.sigmah.shared.dto.UserDatabaseDTO;
 
-import java.util.List;
+import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.store.Record;
+import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.store.TreeStore;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.ImplementedBy;
+import com.google.inject.Inject;
 
 
 /**

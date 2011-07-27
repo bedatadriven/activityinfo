@@ -5,8 +5,9 @@
 
 package org.sigmah.server.auth;
 
-import com.google.inject.AbstractModule;
 import org.sigmah.server.auth.impl.DatabaseAuthenticator;
+
+import com.google.inject.AbstractModule;
 
 /**
  * Guice Module defining bindings for Authentication interfaces.

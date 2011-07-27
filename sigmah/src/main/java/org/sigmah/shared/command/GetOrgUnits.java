@@ -1,6 +1,5 @@
 package org.sigmah.shared.command;
 
-import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.OrgUnitListResult;
 import org.sigmah.shared.dao.Filter;
 

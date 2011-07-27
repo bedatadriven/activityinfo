@@ -5,14 +5,11 @@
 
 package org.sigmah.client.page.common.grid;
 
-import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.widget.treegrid.CellTreeGridSelectionModel;
-
 import java.util.ArrayList;
 import java.util.List;
-/*
- * @author Alex Bertram
- */
+
+import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.widget.treegrid.CellTreeGridSelectionModel;
 
 public class ImprovedCellTreeGridSelectionModel<M extends ModelData> extends CellTreeGridSelectionModel<M> {
 

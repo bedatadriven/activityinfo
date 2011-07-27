@@ -5,9 +5,9 @@
 
 package org.sigmah.shared.command;
 
-import org.sigmah.shared.command.result.CommandResult;
-
 import java.io.Serializable;
+
+import org.sigmah.shared.command.result.CommandResult;
 
 /**
  * Marker interface for RPC commands.

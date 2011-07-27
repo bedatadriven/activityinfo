@@ -5,6 +5,10 @@
 
 package org.sigmah.client.ui;
 
+import org.sigmah.client.EventBus;
+import org.sigmah.client.event.NavigationEvent;
+import org.sigmah.client.page.NavigationHandler;
+
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -15,9 +19,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
-import org.sigmah.client.EventBus;
-import org.sigmah.client.event.NavigationEvent;
-import org.sigmah.client.page.NavigationHandler;
 
 /**
  * This widget displays a tab bar. Tabs are maintained by a {@link TabModel}.

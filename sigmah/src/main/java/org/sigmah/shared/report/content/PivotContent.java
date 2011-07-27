@@ -5,10 +5,10 @@
 
 package org.sigmah.shared.report.content;
 
-import org.sigmah.shared.dao.Filter;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.sigmah.shared.dao.Filter;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

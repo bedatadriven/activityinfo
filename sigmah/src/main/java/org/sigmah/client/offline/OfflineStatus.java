@@ -5,12 +5,13 @@
 
 package org.sigmah.client.offline;
 
+import java.util.Date;
+
+import org.sigmah.client.dispatch.remote.Authentication;
+
 import com.google.gwt.user.client.Cookies;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.sigmah.client.dispatch.remote.Authentication;
-
-import java.util.Date;
 
 /**
  * A helper class for testing the off-line status of the application.

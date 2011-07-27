@@ -5,11 +5,11 @@
 
 package org.sigmah.server.domain;
 
+import javax.persistence.EntityManager;
+
 import org.hibernate.Filter;
 import org.hibernate.ejb.HibernateEntityManager;
 import org.sigmah.shared.domain.User;
-
-import javax.persistence.EntityManager;
 
 /*
  * @author Alex Bertram

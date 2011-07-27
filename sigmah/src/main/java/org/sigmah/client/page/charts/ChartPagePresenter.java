@@ -5,10 +5,6 @@
 
 package org.sigmah.client.page.charts;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.ImplementedBy;
-import com.google.inject.Inject;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
@@ -24,6 +20,11 @@ import org.sigmah.shared.command.RenderElement;
 import org.sigmah.shared.report.content.Content;
 import org.sigmah.shared.report.content.PivotChartContent;
 import org.sigmah.shared.report.model.PivotChartReportElement;
+
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.ImplementedBy;
+import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

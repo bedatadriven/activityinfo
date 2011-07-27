@@ -5,10 +5,10 @@
 
 package org.sigmah.client.util.state;
 
-import com.extjs.gxt.ui.client.state.StateManager;
-
 import java.util.Date;
 import java.util.Map;
+
+import com.extjs.gxt.ui.client.state.StateManager;
 
 /**
  * 

@@ -17,12 +17,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.sigmah.shared.report.content.ReportContent;
 
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import org.sigmah.shared.report.content.ReportContent;
-
 /**
  * Describes a document that contains a series of <code>ReportElement</code>s
  *  (e.g. Tables, Charts, etc} and is bound to a time frame.

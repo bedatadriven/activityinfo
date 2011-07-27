@@ -6,6 +6,7 @@
 package org.sigmah.server.endpoint.gwtrpc;
 
 import junit.framework.Assert;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.dao.OnDataSet;

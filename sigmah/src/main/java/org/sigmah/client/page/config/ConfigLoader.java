@@ -5,20 +5,27 @@
 
 package org.sigmah.client.page.config;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.RunAsyncCallback;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.Inject;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.callback.Got;
 import org.sigmah.client.inject.AppInjector;
-import org.sigmah.client.page.*;
+import org.sigmah.client.page.Frames;
+import org.sigmah.client.page.NavigationHandler;
+import org.sigmah.client.page.Page;
+import org.sigmah.client.page.PageId;
+import org.sigmah.client.page.PageLoader;
+import org.sigmah.client.page.PageState;
+import org.sigmah.client.page.PageStateSerializer;
 import org.sigmah.client.page.common.nav.NavigationPanel;
 import org.sigmah.client.page.common.widget.VSplitFrameSet;
 import org.sigmah.client.page.config.design.DesignPresenter;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.RunAsyncCallback;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Inject;
 
 public class ConfigLoader implements PageLoader {
 

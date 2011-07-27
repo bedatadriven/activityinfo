@@ -5,11 +5,11 @@
 
 package org.sigmah.server.endpoint.gwtrpc;
 
-import com.google.gwt.rpc.server.RpcServlet;
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.google.inject.Singleton;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+
 import org.sigmah.server.dao.AuthenticationDAO;
 import org.sigmah.server.dao.Transactional;
 import org.sigmah.server.domain.Authentication;
@@ -25,9 +25,10 @@ import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.InvalidAuthTokenException;
 import org.sigmah.shared.exception.UnexpectedCommandException;
 
-import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.List;
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Singleton;
 
 
 /**

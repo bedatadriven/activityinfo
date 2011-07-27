@@ -8,11 +8,11 @@ package org.sigmah.server.endpoint.gwtrpc;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.sigmah.shared.domain.User;
 import org.sigmah.server.endpoint.gwtrpc.handler.GetMapIconsHandler;
 import org.sigmah.server.report.ReportModule;
 import org.sigmah.shared.command.GetMapIcons;
 import org.sigmah.shared.command.result.MapIconResult;
+import org.sigmah.shared.domain.User;
 import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.Modules;
 

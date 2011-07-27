@@ -5,16 +5,6 @@
 
 package org.sigmah.client.page.report;
 
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.DateField;
-import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
-import com.google.gwt.i18n.client.DateTimeFormat;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.i18n.I18N;
@@ -28,6 +18,21 @@ import org.sigmah.shared.date.DateUtil;
 import org.sigmah.shared.dto.ReportDefinitionDTO;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.ReportFrequency;
+
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.FieldEvent;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Html;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.DateField;
+import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
+import com.google.gwt.i18n.client.DateTimeFormat;
 
 /**
  * View for the ReportPreview page

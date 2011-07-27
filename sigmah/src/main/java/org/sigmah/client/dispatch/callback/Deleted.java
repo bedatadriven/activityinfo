@@ -5,8 +5,9 @@
 
 package org.sigmah.client.dispatch.callback;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.sigmah.shared.command.result.VoidResult;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Convienence call back for Delete command calls.

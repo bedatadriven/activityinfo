@@ -5,11 +5,12 @@
 
 package org.sigmah.shared.command.result;
 
-import com.extjs.gxt.ui.client.data.ListLoadResult;
-import org.sigmah.shared.dto.CountryDTO;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.sigmah.shared.dto.CountryDTO;
+
+import com.extjs.gxt.ui.client.data.ListLoadResult;
 
 public class CountryResult implements CommandResult, ListLoadResult<CountryDTO> {
     private List<CountryDTO> data;

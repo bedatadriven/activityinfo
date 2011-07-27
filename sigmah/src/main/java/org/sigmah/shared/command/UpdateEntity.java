@@ -5,11 +5,12 @@
 
 package org.sigmah.shared.command;
 
-import com.extjs.gxt.ui.client.data.RpcMap;
+import java.util.Map;
+
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.EntityDTO;
 
-import java.util.Map;
+import com.extjs.gxt.ui.client.data.RpcMap;
 
 /**
  *

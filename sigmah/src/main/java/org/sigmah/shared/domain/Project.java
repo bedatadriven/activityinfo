@@ -22,8 +22,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import org.sigmah.shared.domain.Amendment.State;
 
+import org.sigmah.shared.domain.Amendment.State;
 import org.sigmah.shared.domain.logframe.LogFrame;
 import org.sigmah.shared.domain.reminder.MonitoredPointList;
 import org.sigmah.shared.domain.reminder.ReminderList;

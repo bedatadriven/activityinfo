@@ -5,12 +5,13 @@
 
 package org.sigmah.client.dispatch.loader;
 
+import org.sigmah.shared.command.GetListCommand;
+import org.sigmah.shared.command.PagingGetCommand;
+
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.SortInfo;
-import org.sigmah.shared.command.GetListCommand;
-import org.sigmah.shared.command.PagingGetCommand;
 
 /**
  * Adapter that exposes {@link GetListCommand} and {@link org.sigmah.shared.command.PagingGetCommand}s as

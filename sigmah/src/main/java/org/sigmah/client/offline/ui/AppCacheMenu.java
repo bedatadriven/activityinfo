@@ -5,6 +5,8 @@
 
 package org.sigmah.client.offline.ui;
 
+import org.sigmah.client.i18n.I18N;
+
 import com.bedatadriven.rebar.appcache.client.AppCache;
 import com.bedatadriven.rebar.appcache.client.AppCacheFactory;
 import com.extjs.gxt.ui.client.event.MenuEvent;
@@ -16,7 +18,6 @@ import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.sigmah.client.i18n.I18N;
 
 public class AppCacheMenu extends Button {
 

@@ -5,11 +5,12 @@
 
 package org.sigmah.client.page.config;
 
+import org.sigmah.client.i18n.I18N;
+
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import org.sigmah.client.i18n.I18N;
 
 public class AccountPanel extends FormPanel implements AccountEditor.View {
 

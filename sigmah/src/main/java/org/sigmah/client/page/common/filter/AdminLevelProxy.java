@@ -5,16 +5,17 @@
 
 package org.sigmah.client.page.common.filter;
 
-import com.extjs.gxt.ui.client.data.DataProxy;
-import com.extjs.gxt.ui.client.data.DataReader;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import java.util.ArrayList;
+
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.SchemaDTO;
 
-import java.util.ArrayList;
+import com.extjs.gxt.ui.client.data.DataProxy;
+import com.extjs.gxt.ui.client.data.DataReader;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Loads the list of all AdminLevels for all countries visible to the user.

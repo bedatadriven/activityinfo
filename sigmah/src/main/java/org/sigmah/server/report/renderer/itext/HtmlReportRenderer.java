@@ -7,22 +7,16 @@ package org.sigmah.server.report.renderer.itext;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.StringWriter;
 import java.io.Writer;
-import java.net.URL;
 import java.nio.charset.Charset;
 
 import org.sigmah.server.report.generator.MapIconPath;
 import org.sigmah.server.report.renderer.ChartRendererJC;
 import org.sigmah.server.report.renderer.html.ImageStorage;
 import org.sigmah.server.report.renderer.html.ImageStorageProvider;
-import org.sigmah.shared.report.model.Report;
 import org.sigmah.shared.report.model.ReportElement;
 
-import antlr.CharBuffer;
-
 import com.google.inject.Inject;
-import com.lowagie.text.BadElementException;
 import com.lowagie.text.DocWriter;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;

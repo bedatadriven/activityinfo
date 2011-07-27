@@ -5,6 +5,9 @@
 
 package org.sigmah.shared.command.handler;
 
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.replay;
+
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -37,9 +40,6 @@ import com.bedatadriven.rebar.sync.client.BulkUpdaterAsync;
 import com.bedatadriven.rebar.sync.mock.MockBulkUpdater;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
-
-import static org.easymock.EasyMock.createNiceMock;
-import static org.easymock.EasyMock.replay;
 
 public abstract class LocalHandlerTestCase {
     @Inject

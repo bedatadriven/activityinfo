@@ -5,11 +5,12 @@
 
 package org.sigmah.server.dao.hibernate;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 /**
  * Invocation Handler for {@link org.sigmah.shared.dao.DAO} interfaces.

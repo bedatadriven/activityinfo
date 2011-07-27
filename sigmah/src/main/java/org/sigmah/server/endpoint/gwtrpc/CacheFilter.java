@@ -6,13 +6,19 @@
 package org.sigmah.server.endpoint.gwtrpc;
 
 
-import com.google.inject.Singleton;
-
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.google.inject.Singleton;
 
 /**
  * Instructs browsers to cache application ressources "until the sun explodes" (or actually a year)

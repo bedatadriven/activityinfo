@@ -5,9 +5,10 @@
 
 package org.sigmah.client.event;
 
+import org.sigmah.client.page.PageState;
+
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.EventType;
-import org.sigmah.client.page.PageState;
 
 /**
  * Encapsulates information related to page navigation events.

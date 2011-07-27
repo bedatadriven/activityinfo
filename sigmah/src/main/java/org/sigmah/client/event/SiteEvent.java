@@ -5,9 +5,10 @@
 
 package org.sigmah.client.event;
 
+import org.sigmah.shared.dto.SiteDTO;
+
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.EventType;
-import org.sigmah.shared.dto.SiteDTO;
 
 /**
  * Encapsulates details for {@link org.sigmah.shared.domain.Site} related events.

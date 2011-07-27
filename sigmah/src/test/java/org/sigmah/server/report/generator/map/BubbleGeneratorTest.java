@@ -5,19 +5,22 @@
 
 package org.sigmah.server.report.generator.map;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.sigmah.shared.dao.SiteTableColumn;
-import org.sigmah.shared.domain.Indicator;
 import org.sigmah.shared.report.content.BubbleMapMarker;
 import org.sigmah.shared.report.content.LatLng;
 import org.sigmah.shared.report.content.MapContent;
-import org.sigmah.shared.report.model.*;
+import org.sigmah.shared.report.model.CategoryProperties;
+import org.sigmah.shared.report.model.Dimension;
+import org.sigmah.shared.report.model.DimensionType;
+import org.sigmah.shared.report.model.MapReportElement;
+import org.sigmah.shared.report.model.SiteData;
 import org.sigmah.shared.report.model.clustering.AutomaticClustering;
 import org.sigmah.shared.report.model.layers.BubbleMapLayer;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /*
  * @author Alex Bertram

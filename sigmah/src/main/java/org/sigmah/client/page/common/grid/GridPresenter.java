@@ -5,9 +5,10 @@
 
 package org.sigmah.client.page.common.grid;
 
+import org.sigmah.client.page.common.toolbar.ActionListener;
+
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.Record;
-import org.sigmah.client.page.common.toolbar.ActionListener;
 
 public interface GridPresenter<T extends ModelData> extends ActionListener {
 

@@ -5,19 +5,22 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler.calendar;
 
-import com.google.inject.Inject;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import javax.persistence.Query;
+
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 import org.sigmah.shared.domain.calendar.Calendar;
 import org.sigmah.shared.domain.calendar.CalendarType;
 import org.sigmah.shared.domain.calendar.Event;
 import org.sigmah.shared.domain.calendar.PersonalCalendar;
 import org.sigmah.shared.domain.calendar.PersonalEvent;
+
+import com.google.inject.Inject;
 
 /**
  * Retrieve personal events.

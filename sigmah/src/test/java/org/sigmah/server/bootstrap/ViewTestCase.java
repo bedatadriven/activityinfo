@@ -5,15 +5,16 @@
 
 package org.sigmah.server.bootstrap;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
+import java.io.IOException;
+import java.io.StringWriter;
+
 import org.junit.BeforeClass;
 import org.sigmah.server.bootstrap.model.PageModel;
 import org.sigmah.server.util.TemplateModule;
 
-import java.io.IOException;
-import java.io.StringWriter;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 
 /**
  * @author Alex Bertram

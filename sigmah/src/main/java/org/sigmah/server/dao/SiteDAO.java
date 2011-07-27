@@ -5,10 +5,10 @@
 
 package org.sigmah.server.dao;
 
+import java.util.Map;
+
 import org.sigmah.shared.dao.DAO;
 import org.sigmah.shared.domain.Site;
-
-import java.util.Map;
 
 /**
  * Data Access Object for the {@link org.sigmah.shared.domain.Site} domain object.

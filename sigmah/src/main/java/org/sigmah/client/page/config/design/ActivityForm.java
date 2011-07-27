@@ -6,6 +6,16 @@
 package org.sigmah.client.page.config.design;
 
 
+import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.page.common.widget.MapIconComboBox;
+import org.sigmah.client.page.common.widget.MappingComboBox;
+import org.sigmah.client.page.common.widget.MappingComboBoxBinding;
+import org.sigmah.shared.dto.ActivityDTO;
+import org.sigmah.shared.dto.LocationTypeDTO;
+import org.sigmah.shared.dto.MapIconDTO;
+import org.sigmah.shared.dto.UserDatabaseDTO;
+
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.binding.Converter;
@@ -16,15 +26,6 @@ import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.common.widget.MapIconComboBox;
-import org.sigmah.client.page.common.widget.MappingComboBox;
-import org.sigmah.client.page.common.widget.MappingComboBoxBinding;
-import org.sigmah.shared.dto.ActivityDTO;
-import org.sigmah.shared.dto.LocationTypeDTO;
-import org.sigmah.shared.dto.MapIconDTO;
-import org.sigmah.shared.dto.UserDatabaseDTO;
 
 /**
  * Form for editing ActivityDTO

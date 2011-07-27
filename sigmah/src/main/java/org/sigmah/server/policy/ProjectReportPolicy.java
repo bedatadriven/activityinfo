@@ -5,12 +5,12 @@
 
 package org.sigmah.server.policy;
 
-import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import org.sigmah.server.dao.ProjectReportDAO;
 import org.sigmah.server.dao.Transactional;
 import org.sigmah.server.endpoint.gwtrpc.handler.UpdateProjectHandler;
@@ -25,7 +25,8 @@ import org.sigmah.shared.domain.report.ProjectReportModelSection;
 import org.sigmah.shared.domain.report.ProjectReportVersion;
 import org.sigmah.shared.domain.report.RichTextElement;
 import org.sigmah.shared.domain.value.Value;
-import org.sigmah.shared.dto.report.ReportReference;
+
+import com.google.inject.Inject;
 
 /**
  * Handle the creation and the update procedure of the project reports.

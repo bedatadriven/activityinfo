@@ -5,19 +5,19 @@
 
 package org.sigmah.client.dispatch.remote;
 
-import org.junit.Test;
-import org.sigmah.client.mock.NullAsyncCallback;
-import org.sigmah.shared.command.GetSchema;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeThat;
 import static org.junit.internal.matchers.IsCollectionContaining.hasItem;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import org.junit.Test;
+import org.sigmah.client.mock.NullAsyncCallback;
+import org.sigmah.shared.command.GetSchema;
 
 public class CommandRequestTest {
 

@@ -5,12 +5,13 @@
 
 package org.sigmah.shared.report.model;
 
-import org.sigmah.shared.report.content.TableContent;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
-import java.util.ArrayList;
-import java.util.List;
+
+import org.sigmah.shared.report.content.TableContent;
 
 
 public class TableElement extends ReportElement<TableContent> {

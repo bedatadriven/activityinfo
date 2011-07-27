@@ -5,17 +5,11 @@
 
 package org.sigmah.client.page.project.calendar;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.data.BaseModel;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.project.SubPresenter;
 import org.sigmah.client.page.project.ProjectPresenter;
+import org.sigmah.client.page.project.SubPresenter;
 import org.sigmah.client.ui.CalendarWidget;
 import org.sigmah.shared.command.GetCalendar;
 import org.sigmah.shared.domain.calendar.ActivityCalendarIdentifier;
@@ -24,6 +18,13 @@ import org.sigmah.shared.domain.calendar.CalendarType;
 import org.sigmah.shared.domain.calendar.MonitoredPointCalendarIdentifier;
 import org.sigmah.shared.domain.calendar.ReminderCalendarIdentifier;
 import org.sigmah.shared.dto.ProjectDTO;
+
+import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.data.BaseModel;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * 

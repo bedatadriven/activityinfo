@@ -5,13 +5,13 @@
 
 package org.sigmah.server.dao.hibernate;
 
-import com.google.inject.Inject;
+import javax.persistence.EntityManager;
 
 import org.sigmah.server.dao.LocationDAO;
 import org.sigmah.shared.domain.AdminEntity;
 import org.sigmah.shared.domain.Location;
 
-import javax.persistence.EntityManager;
+import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram

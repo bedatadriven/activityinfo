@@ -4,11 +4,13 @@ import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.project.SubPresenter;
 import org.sigmah.client.page.project.ProjectPresenter;
+import org.sigmah.client.page.project.SubPresenter;
 import org.sigmah.client.util.Notification;
+import org.sigmah.shared.command.CopyLogFrame;
 import org.sigmah.shared.command.UpdateLogFrame;
 import org.sigmah.shared.command.result.LogFrameResult;
+import org.sigmah.shared.domain.Amendment;
 import org.sigmah.shared.domain.profile.GlobalPermissionEnum;
 import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.logframe.LogFrameDTO;
@@ -26,8 +28,6 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.sigmah.shared.command.CopyLogFrame;
-import org.sigmah.shared.domain.Amendment;
 
 /**
  * Presenter for the project log frame.

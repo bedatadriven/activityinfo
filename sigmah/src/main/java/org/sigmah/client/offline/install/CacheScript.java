@@ -5,12 +5,13 @@
 
 package org.sigmah.client.offline.install;
 
+import org.sigmah.client.dispatch.remote.Authentication;
+import org.sigmah.client.offline.AuthTokenUtil;
+
 import com.bedatadriven.rebar.appcache.client.AppCache;
 import com.bedatadriven.rebar.appcache.client.AppCacheFactory;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
-import org.sigmah.client.dispatch.remote.Authentication;
-import org.sigmah.client.offline.AuthTokenUtil;
 
 public class CacheScript implements Step {
     private final Authentication authentication;

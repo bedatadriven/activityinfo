@@ -5,13 +5,14 @@
 
 package org.sigmah.server.report.generator.map;
 
-import junit.framework.Assert;
-import org.junit.Test;
-import org.sigmah.shared.report.content.MapMarker;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import junit.framework.Assert;
+
+import org.junit.Test;
+import org.sigmah.shared.report.content.MapMarker;
 
 /**
  * @author Alex Bertram

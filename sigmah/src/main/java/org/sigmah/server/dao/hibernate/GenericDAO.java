@@ -6,13 +6,11 @@
 package org.sigmah.server.dao.hibernate;
 
 
-import com.google.inject.Inject;
+import java.lang.reflect.ParameterizedType;
 
 import javax.persistence.EntityManager;
 
 import org.sigmah.shared.dao.DAO;
-
-import java.lang.reflect.ParameterizedType;
 
 /**
  * Generic DAO implementation which provides implementation of boiler-plate methods using

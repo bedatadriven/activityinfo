@@ -5,11 +5,11 @@
 
 package org.sigmah.shared.report.model.typeadapter;
 
-import org.sigmah.shared.report.content.DimensionCategory;
-import org.sigmah.shared.report.content.EntityCategory;
-
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
+
+import org.sigmah.shared.report.content.DimensionCategory;
+import org.sigmah.shared.report.content.EntityCategory;
 
 /**
  * @author Alex Bertram

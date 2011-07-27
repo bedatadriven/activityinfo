@@ -5,13 +5,10 @@
 
 package org.sigmah.shared.report.model;
 
-import org.sigmah.shared.report.content.DimensionCategory;
-
 import java.util.HashMap;
 import java.util.Map;
-/*
- * @author Alex Bertram
- */
+
+import org.sigmah.shared.report.content.DimensionCategory;
 
 public class MapSymbol {
 

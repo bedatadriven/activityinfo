@@ -5,14 +5,7 @@
 
 package org.sigmah.shared.dao;
 
-import com.google.gwt.core.client.GWT;
-import com.google.inject.Inject;
-import org.sigmah.shared.domain.AdminEntity;
-import org.sigmah.shared.domain.AdminLevel;
-import org.sigmah.shared.domain.Bounds;
-import org.sigmah.shared.domain.User;
-import org.sigmah.shared.dto.AdminLevelDTO;
-import org.sigmah.shared.dto.IndicatorDTO;
+import static org.sigmah.shared.dao.SqlQueryBuilder.select;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -22,7 +15,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.sigmah.shared.dao.SqlQueryBuilder.select;
+import org.sigmah.shared.domain.AdminEntity;
+import org.sigmah.shared.domain.AdminLevel;
+import org.sigmah.shared.domain.Bounds;
+import org.sigmah.shared.domain.User;
+import org.sigmah.shared.dto.AdminLevelDTO;
+import org.sigmah.shared.dto.IndicatorDTO;
+
+import com.google.gwt.core.client.GWT;
+import com.google.inject.Inject;
 
 public class SqlSiteTableDAO implements SiteTableDAO {
     private final Connection connection;

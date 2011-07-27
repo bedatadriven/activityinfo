@@ -1,16 +1,11 @@
 package org.sigmah.shared.dto;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.dozer.Mapper;
-import org.sigmah.shared.domain.profile.OrgUnitProfile;
-import org.sigmah.shared.domain.profile.Profile;
 import org.sigmah.shared.dto.profile.ProfileDTO;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.google.inject.Inject;
 /**
  * One-to-one DTO of the {@link org.sigmah.shared.domain.User} domain class.
  * 

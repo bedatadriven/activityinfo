@@ -5,12 +5,10 @@
 
 package org.sigmah.client.page.common.grid;
 
+import org.sigmah.client.page.PageState;
+
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.SortInfo;
-import org.sigmah.client.page.PageState;
-/*
- * @author Alex Bertram
- */
 
 public abstract class AbstractGridPageState implements PageState {
     protected SortInfo sortInfo = null;

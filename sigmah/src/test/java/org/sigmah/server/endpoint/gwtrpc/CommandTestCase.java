@@ -6,20 +6,22 @@
 package org.sigmah.server.endpoint.gwtrpc;
 
 
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-import org.sigmah.shared.domain.User;
+import java.util.Collections;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+
 import org.sigmah.server.util.BeanMappingModule;
 import org.sigmah.server.util.TemplateModule;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.result.CommandResult;
+import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.test.MockHibernateModule;
 import org.sigmah.test.Modules;
 
-import javax.persistence.EntityManager;
-import java.util.Collections;
-import java.util.List;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 @Modules({
         MockHibernateModule.class,

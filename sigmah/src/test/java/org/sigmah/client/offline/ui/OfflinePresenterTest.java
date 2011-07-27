@@ -5,12 +5,12 @@
 
 package org.sigmah.client.offline.ui;
 
-import com.extjs.gxt.ui.client.event.BaseObservable;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.MenuEvent;
-import com.extjs.gxt.ui.client.event.Observable;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.Provider;
+import static org.easymock.EasyMock.createMock;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
+
+import java.util.Date;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.sigmah.client.dispatch.AsyncMonitor;
@@ -22,13 +22,13 @@ import org.sigmah.client.offline.OfflineGateway;
 import org.sigmah.client.offline.sync.SyncStatusEvent;
 import org.sigmah.client.offline.ui.OfflinePresenter.PromptCallback;
 import org.sigmah.shared.command.Command;
-import org.sigmah.shared.command.result.CommandResult;
 
-import java.util.Date;
-
-import static org.easymock.EasyMock.*;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import com.extjs.gxt.ui.client.event.BaseObservable;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.MenuEvent;
+import com.extjs.gxt.ui.client.event.Observable;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Provider;
 
 public class OfflinePresenterTest {
     private ViewStub view;

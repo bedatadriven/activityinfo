@@ -5,6 +5,11 @@
 
 package org.sigmah.client.page.project.reports;
 
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.page.project.reports.images.ToolbarImages;
+import org.sigmah.client.ui.FoldPanel;
+import org.sigmah.shared.dto.report.KeyQuestionDTO;
+
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -15,10 +20,6 @@ import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.RichTextArea;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.project.reports.images.ToolbarImages;
-import org.sigmah.client.ui.FoldPanel;
-import org.sigmah.shared.dto.report.KeyQuestionDTO;
 
 /**
  * 

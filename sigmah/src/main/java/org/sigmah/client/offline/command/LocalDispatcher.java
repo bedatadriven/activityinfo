@@ -5,9 +5,7 @@
 
 package org.sigmah.client.offline.command;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.sigmah.client.dispatch.AsyncMonitor;
@@ -21,10 +19,6 @@ import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.CommandException;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
-import com.extjs.gxt.ui.client.widget.Dialog;
-import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 

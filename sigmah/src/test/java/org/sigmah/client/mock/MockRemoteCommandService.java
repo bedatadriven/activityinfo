@@ -5,7 +5,11 @@
 
 package org.sigmah.client.mock;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.command.RemoteCommandServiceAsync;
@@ -13,10 +17,7 @@ import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.exception.CommandException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
 * @author Alex Bertram (akbertram@gmail.com)

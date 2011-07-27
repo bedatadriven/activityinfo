@@ -1,9 +1,11 @@
 package org.sigmah.shared.dto.report;
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
 import java.util.Date;
+
 import org.sigmah.shared.domain.report.ProjectReport;
 import org.sigmah.shared.dto.value.ListableValue;
+
+import com.extjs.gxt.ui.client.data.BaseModelData;
 
 public class ReportReference extends BaseModelData implements ListableValue {
 

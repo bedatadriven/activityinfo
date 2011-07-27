@@ -8,6 +8,7 @@ package org.sigmah.shared.domain;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,6 +22,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
+
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.domain.history.HistoryToken;
 import org.sigmah.shared.domain.logframe.LogFrame;

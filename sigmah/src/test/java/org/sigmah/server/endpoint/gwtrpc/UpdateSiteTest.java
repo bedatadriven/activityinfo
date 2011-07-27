@@ -5,6 +5,9 @@
 
 package org.sigmah.server.endpoint.gwtrpc;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,9 +19,6 @@ import org.sigmah.shared.domain.Site;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.test.InjectionSupport;
-
-import java.util.HashMap;
-import java.util.Map;
 
 
 @RunWith(InjectionSupport.class)

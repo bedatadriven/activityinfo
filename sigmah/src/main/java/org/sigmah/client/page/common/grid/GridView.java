@@ -5,11 +5,9 @@
 
 package org.sigmah.client.page.common.grid;
 
-import com.extjs.gxt.ui.client.data.ModelData;
 import org.sigmah.client.dispatch.AsyncMonitor;
-/*
- * @author Alex Bertram
- */
+
+import com.extjs.gxt.ui.client.data.ModelData;
 
 public interface GridView<PresenterT extends GridPresenter, ModelT extends ModelData> {
 

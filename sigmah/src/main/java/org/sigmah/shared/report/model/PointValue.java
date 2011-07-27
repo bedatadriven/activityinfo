@@ -5,13 +5,13 @@
 
 package org.sigmah.shared.report.model;
 
-import org.sigmah.shared.report.content.PieMapMarker;
-import org.sigmah.shared.report.content.Point;
-
-import java.awt.*;
+import java.awt.Rectangle;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.sigmah.shared.report.content.PieMapMarker;
+import org.sigmah.shared.report.content.Point;
 
 public class PointValue {
     public SiteData site;

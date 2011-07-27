@@ -6,14 +6,15 @@
 package org.sigmah.client.dispatch.monitor;
 
 
+import org.sigmah.client.dispatch.AsyncMonitor;
+import org.sigmah.client.i18n.I18N;
+
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Container;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import org.sigmah.client.dispatch.AsyncMonitor;
-import org.sigmah.client.i18n.I18N;
 
 /**
  * Uses a GXT loading mask on a component to keep the user updated on

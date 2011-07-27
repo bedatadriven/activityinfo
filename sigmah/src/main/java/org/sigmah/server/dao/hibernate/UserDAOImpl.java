@@ -5,12 +5,13 @@
 
 package org.sigmah.server.dao.hibernate;
 
-import com.google.inject.Inject;
+import javax.persistence.EntityManager;
+
 import org.sigmah.server.auth.SecureTokenGenerator;
 import org.sigmah.shared.dao.UserDAO;
 import org.sigmah.shared.domain.User;
 
-import javax.persistence.EntityManager;
+import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram

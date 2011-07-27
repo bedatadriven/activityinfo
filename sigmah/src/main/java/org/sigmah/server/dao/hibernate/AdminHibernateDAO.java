@@ -5,7 +5,10 @@
 
 package org.sigmah.server.dao.hibernate;
 
-import com.google.inject.Inject;
+import java.util.List;
+import java.util.Set;
+
+import javax.persistence.EntityManager;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -17,9 +20,7 @@ import org.hibernate.ejb.HibernateEntityManager;
 import org.sigmah.shared.dao.AdminDAO;
 import org.sigmah.shared.domain.AdminEntity;
 
-import javax.persistence.EntityManager;
-import java.util.List;
-import java.util.Set;
+import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram

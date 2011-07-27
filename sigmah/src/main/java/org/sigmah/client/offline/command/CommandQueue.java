@@ -10,8 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.dispatch.remote.Direct;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.CreateEntity;
 import org.sigmah.shared.dao.SqlInsertBuilder;

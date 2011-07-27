@@ -5,6 +5,16 @@
 
 package org.sigmah.client.page.entry.editor;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.page.common.widget.RemoteComboBox;
+import org.sigmah.shared.dto.ActivityDTO;
+import org.sigmah.shared.dto.AdminEntityDTO;
+import org.sigmah.shared.dto.AdminLevelDTO;
+
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -12,15 +22,6 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Event;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.common.widget.RemoteComboBox;
-import org.sigmah.shared.dto.ActivityDTO;
-import org.sigmah.shared.dto.AdminEntityDTO;
-import org.sigmah.shared.dto.AdminLevelDTO;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class AdminFieldSet extends AbstractFieldSet implements AdminFieldSetPresenter.View  {
 

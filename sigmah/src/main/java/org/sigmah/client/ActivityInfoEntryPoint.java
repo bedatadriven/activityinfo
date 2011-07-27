@@ -5,15 +5,15 @@
 
 package org.sigmah.client;
 
+import org.sigmah.client.inject.AppInjector;
+import org.sigmah.client.offline.AuthTokenUtil;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.util.Theme;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.gears.client.Factory;
-
-import org.sigmah.client.inject.AppInjector;
-import org.sigmah.client.offline.AuthTokenUtil;
 
 
 /**

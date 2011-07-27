@@ -5,24 +5,15 @@
 
 package org.sigmah.client.page.map.mapOptions;
 
-import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.event.LoadListener;
+import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.shared.report.model.MapReportElement;
+
+import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
-import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.shared.command.GetBaseMaps;
-import org.sigmah.shared.command.result.BaseMapResult;
-import org.sigmah.shared.map.BaseMap;
-import org.sigmah.shared.report.model.MapReportElement;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Provides user interface for selecting the layout and basemap of the

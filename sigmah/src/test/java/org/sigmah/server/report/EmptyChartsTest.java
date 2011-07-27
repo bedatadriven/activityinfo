@@ -11,7 +11,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.sigmah.server.dao.PivotDAO;
 import org.sigmah.server.report.generator.PivotChartGenerator;
@@ -24,7 +23,6 @@ import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.PivotChartReportElement;
 import org.sigmah.shared.report.model.PivotChartReportElement.Type;
-import org.sigmah.shared.report.model.Report;
 
 public class EmptyChartsTest {
 

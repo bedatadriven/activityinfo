@@ -13,8 +13,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 
 import org.sigmah.shared.report.model.MapIcon;
 
-import com.google.gwt.resources.client.ImageResource;
-
 /*
  * Displays an icon on a point of interest
  */

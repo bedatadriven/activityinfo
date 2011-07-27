@@ -5,13 +5,14 @@
 
 package org.sigmah.client.util;
 
-import com.extjs.gxt.ui.client.util.DateWrapper;
+import java.util.Date;
+
 import org.sigmah.shared.command.Month;
 import org.sigmah.shared.date.DateUtil;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.DateUnit;
 
-import java.util.Date;
+import com.extjs.gxt.ui.client.util.DateWrapper;
 
 /**
  * Client-side implementation of the {@link org.sigmah.shared.date.DateUtil} interface.

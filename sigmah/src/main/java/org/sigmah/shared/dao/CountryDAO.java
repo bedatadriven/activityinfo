@@ -5,10 +5,9 @@
 
 package org.sigmah.shared.dao;
 
-import org.sigmah.shared.domain.Country;
-import org.sigmah.shared.domain.LocationType;
-
 import java.util.List;
+
+import org.sigmah.shared.domain.Country;
 
 
 /**

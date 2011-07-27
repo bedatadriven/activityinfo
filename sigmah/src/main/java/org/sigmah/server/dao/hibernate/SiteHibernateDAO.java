@@ -5,15 +5,16 @@
 
 package org.sigmah.server.dao.hibernate;
 
-import com.google.inject.Inject;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import javax.persistence.EntityManager;
 
 import org.sigmah.server.dao.SiteDAO;
 import org.sigmah.shared.domain.Site;
 
-import javax.persistence.EntityManager;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram

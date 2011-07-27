@@ -15,7 +15,6 @@ import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.ProfileListResult;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.profile.Profile;
-import org.sigmah.shared.dto.profile.ProfileDTO;
 import org.sigmah.shared.dto.profile.ProfileDTOLight;
 import org.sigmah.shared.exception.CommandException;
 

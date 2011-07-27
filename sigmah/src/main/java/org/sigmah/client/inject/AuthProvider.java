@@ -5,11 +5,12 @@
 
 package org.sigmah.client.inject;
 
+import org.sigmah.client.dispatch.remote.Authentication;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.user.client.Cookies;
 import com.google.inject.Provider;
-import org.sigmah.client.dispatch.remote.Authentication;
 
 /**
  * Supplies user <code>Authentication</code> information from

@@ -5,11 +5,11 @@
 
 package org.sigmah.client.page;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.inject.Singleton;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.inject.Singleton;
 
 /**
  *

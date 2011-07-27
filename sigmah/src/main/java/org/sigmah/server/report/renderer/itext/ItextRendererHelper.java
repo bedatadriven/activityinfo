@@ -5,11 +5,12 @@
 
 package org.sigmah.server.report.renderer.itext;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
+import java.util.List;
+
 import org.sigmah.shared.report.content.FilterDescription;
 
-import java.util.List;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
 
 /**
  * Support routines for ItextRenderers

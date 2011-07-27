@@ -5,15 +5,12 @@
 
 package org.sigmah.server.report.generator.map.cluster.auto;
 
-import org.sigmah.shared.report.content.Point;
-import org.sigmah.shared.report.model.PointValue;
-
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.List;
-/*
- * @author Alex Bertram
- */
+
+import org.sigmah.shared.report.content.Point;
+import org.sigmah.shared.report.model.PointValue;
 
 public class MarkerGraph {
     private List<List<Node>> subgraphs;

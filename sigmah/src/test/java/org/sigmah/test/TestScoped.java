@@ -5,10 +5,10 @@
 
 package org.sigmah.test;
 
-import com.google.inject.ScopeAnnotation;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+
+import com.google.inject.ScopeAnnotation;
 
 
 @ScopeAnnotation

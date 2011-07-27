@@ -5,11 +5,18 @@
 
 package org.sigmah.shared.command;
 
-import com.extjs.gxt.ui.client.data.RpcMap;
-import org.sigmah.shared.command.result.CreateResult;
-import org.sigmah.shared.dto.*;
-
 import java.util.Map;
+
+import org.sigmah.shared.command.result.CreateResult;
+import org.sigmah.shared.dto.ActivityDTO;
+import org.sigmah.shared.dto.AdminEntityDTO;
+import org.sigmah.shared.dto.EntityDTO;
+import org.sigmah.shared.dto.LocationTypeDTO;
+import org.sigmah.shared.dto.PartnerDTO;
+import org.sigmah.shared.dto.SiteDTO;
+import org.sigmah.shared.dto.UserDatabaseDTO;
+
+import com.extjs.gxt.ui.client.data.RpcMap;
 
 /**
  * Creates and persists a domain entity on the server.

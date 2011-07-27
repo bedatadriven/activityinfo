@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.dom4j.datatype.DatatypeElement;
-
 public class SqlUpdateBuilder {
 	private String tableName;
 	private String action;

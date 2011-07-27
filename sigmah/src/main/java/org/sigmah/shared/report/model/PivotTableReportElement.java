@@ -5,14 +5,15 @@
 
 package org.sigmah.shared.report.model;
 
-import org.sigmah.shared.report.content.PivotContent;
-
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+
+import org.sigmah.shared.report.content.PivotContent;
 
 public class PivotTableReportElement extends PivotReportElement<PivotContent> {
 

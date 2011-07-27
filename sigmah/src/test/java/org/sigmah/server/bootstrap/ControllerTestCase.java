@@ -5,7 +5,22 @@
 
 package org.sigmah.server.bootstrap;
 
-import com.google.inject.Injector;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.getCurrentArguments;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.not;
+import static org.easymock.EasyMock.replay;
+import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
+
+import javax.persistence.NoResultException;
+import javax.servlet.ServletException;
+
 import org.easymock.IAnswer;
 import org.junit.Before;
 import org.sigmah.server.auth.Authenticator;
@@ -14,19 +29,14 @@ import org.sigmah.server.bootstrap.model.HostPageModel;
 import org.sigmah.server.bootstrap.model.LoginPageModel;
 import org.sigmah.server.bootstrap.model.PageModel;
 import org.sigmah.server.dao.AuthenticationDAO;
-import org.sigmah.shared.dao.UserDAO;
 import org.sigmah.server.domain.Authentication;
-import org.sigmah.shared.domain.User;
 import org.sigmah.server.mock.MockHttpServletRequest;
 import org.sigmah.server.mock.MockHttpServletResponse;
 import org.sigmah.server.mock.MockTemplateConfiguration;
+import org.sigmah.shared.dao.UserDAO;
+import org.sigmah.shared.domain.User;
 
-import javax.persistence.NoResultException;
-import javax.servlet.ServletException;
-import java.io.IOException;
-
-import static org.easymock.EasyMock.*;
-import static org.junit.Assert.assertEquals;
+import com.google.inject.Injector;
 
 /**
  * @author Alex Bertram

@@ -5,14 +5,15 @@
 
 package org.sigmah.client.page.common.widget;
 
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.shared.map.AbstractCoordinateEditor;
+import org.sigmah.shared.map.CoordinateFormatException;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.PropertyEditor;
 import com.extjs.gxt.ui.client.widget.form.Validator;
 import com.google.gwt.i18n.client.NumberFormat;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.shared.map.AbstractCoordinateEditor;
-import org.sigmah.shared.map.CoordinateFormatException;
 
 /**
  *

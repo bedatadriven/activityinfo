@@ -5,7 +5,6 @@
 
 package org.sigmah.client.page.welcome;
 
-import com.google.inject.Inject;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
@@ -16,9 +15,8 @@ import org.sigmah.client.page.common.GalleryView;
 import org.sigmah.client.page.entry.SiteGridPageState;
 import org.sigmah.client.page.map.MapPageState;
 import org.sigmah.client.page.table.PivotPageState;
-/*
- * @author Alex Bertram
- */
+
+import com.google.inject.Inject;
 
 public class Welcome implements Page {
 

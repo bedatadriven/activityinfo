@@ -6,15 +6,20 @@
 package org.sigmah.client.page.config.design;
 
 
-import com.extjs.gxt.ui.client.Style.Orientation;
-import com.extjs.gxt.ui.client.binding.FieldBinding;
-import com.extjs.gxt.ui.client.binding.FormBinding;
-import com.extjs.gxt.ui.client.widget.form.*;
-import com.google.gwt.core.client.GWT;
 import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.page.common.widget.MappingComboBox;
 import org.sigmah.client.page.common.widget.MappingComboBoxBinding;
 import org.sigmah.shared.dto.IndicatorDTO;
+
+import com.extjs.gxt.ui.client.Style.Orientation;
+import com.extjs.gxt.ui.client.binding.FieldBinding;
+import com.extjs.gxt.ui.client.binding.FormBinding;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
+import com.extjs.gxt.ui.client.widget.form.NumberField;
+import com.extjs.gxt.ui.client.widget.form.TextArea;
+import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.google.gwt.core.client.GWT;
 
 class IndicatorForm extends AbstractDesignForm {
 

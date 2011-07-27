@@ -5,14 +5,12 @@
 
 package org.sigmah.client.page.welcome;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageLoader;
 import org.sigmah.client.page.PageState;
-/*
- * @author Alex Bertram
- */
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class StaticPageLoader implements PageLoader {
 

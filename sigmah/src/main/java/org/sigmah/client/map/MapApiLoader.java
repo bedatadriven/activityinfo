@@ -5,6 +5,11 @@
 
 package org.sigmah.client.map;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.sigmah.client.dispatch.AsyncMonitor;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.ajaxloader.client.AjaxLoader;
 import com.google.gwt.i18n.client.Dictionary;
@@ -14,10 +19,6 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.sigmah.client.dispatch.AsyncMonitor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Convenience wrapper for loading the Google Maps API asynchronously

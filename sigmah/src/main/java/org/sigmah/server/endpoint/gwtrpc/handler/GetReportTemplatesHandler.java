@@ -5,7 +5,12 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
-import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 import org.sigmah.server.domain.ReportDefinition;
 import org.sigmah.server.domain.ReportSubscription;
 import org.sigmah.shared.command.GetReportTemplates;
@@ -16,10 +21,7 @@ import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.ReportDefinitionDTO;
 import org.sigmah.shared.exception.CommandException;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import java.util.ArrayList;
-import java.util.List;
+import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram

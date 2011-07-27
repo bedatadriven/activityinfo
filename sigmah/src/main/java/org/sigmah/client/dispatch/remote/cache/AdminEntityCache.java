@@ -5,14 +5,15 @@
 
 package org.sigmah.client.dispatch.remote.cache;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import org.sigmah.client.dispatch.CommandProxy;
 import org.sigmah.client.dispatch.DispatchEventSource;
 import org.sigmah.client.dispatch.DispatchListener;
 import org.sigmah.shared.command.GetAdminEntities;
 import org.sigmah.shared.command.result.AdminEntityResult;
 import org.sigmah.shared.command.result.CommandResult;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * Caches the results of {@link org.sigmah.shared.command.GetAdminEntities}

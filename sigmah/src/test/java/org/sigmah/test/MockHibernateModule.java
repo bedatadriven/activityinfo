@@ -5,14 +5,15 @@
 
 package org.sigmah.test;
 
-import com.google.inject.Provider;
-import com.google.inject.Singleton;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.hibernate.ejb.Ejb3Configuration;
 import org.sigmah.server.dao.hibernate.HibernateModule;
 import org.sigmah.server.domain.PersistentClasses;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
+import com.google.inject.Provider;
+import com.google.inject.Singleton;
 
 public class MockHibernateModule extends HibernateModule {
     private static EntityManagerFactory emf = null;

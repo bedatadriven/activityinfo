@@ -5,12 +5,13 @@
 
 package org.sigmah.client.page.config;
 
-import com.google.inject.ImplementedBy;
-import com.google.inject.Inject;
 import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
+
+import com.google.inject.ImplementedBy;
+import com.google.inject.Inject;
 
 public class AccountEditor implements Page {
     public static final PageId Account = new PageId("account");

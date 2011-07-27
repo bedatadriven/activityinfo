@@ -6,11 +6,12 @@
 package org.sigmah.client.page.config.design;
 
 
+import org.sigmah.client.i18n.I18N;
+
 import com.extjs.gxt.ui.client.binding.FieldBinding;
 import com.extjs.gxt.ui.client.binding.FormBinding;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import org.sigmah.client.i18n.I18N;
 
 class AttributeForm extends AbstractDesignForm {
 

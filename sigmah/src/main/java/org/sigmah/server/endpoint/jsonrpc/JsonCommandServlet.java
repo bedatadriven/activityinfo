@@ -5,10 +5,16 @@
 
 package org.sigmah.server.endpoint.jsonrpc;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.sigmah.server.endpoint.gwtrpc.CommandServlet;
 import org.sigmah.server.endpoint.jsonrpc.serde.SyncRegionUpdateSerializer;
 import org.sigmah.server.util.logging.LogException;
@@ -18,14 +24,10 @@ import org.sigmah.shared.command.result.SyncRegionUpdate;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.InvalidAuthTokenException;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 
 /**

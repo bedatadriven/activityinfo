@@ -5,13 +5,16 @@
 
 package org.sigmah.client.page.welcome;
 
+import org.sigmah.client.inject.AppInjector;
+import org.sigmah.client.page.NavigationHandler;
+import org.sigmah.client.page.Page;
+import org.sigmah.client.page.PageId;
+import org.sigmah.client.page.PageLoader;
+import org.sigmah.client.page.PageState;
+import org.sigmah.client.page.PageStateSerializer;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
-import org.sigmah.client.inject.AppInjector;
-import org.sigmah.client.page.*;
-/*
- * @author Alex Bertram
- */
 
 public class WelcomeLoader implements PageLoader {
 

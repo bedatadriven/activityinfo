@@ -5,15 +5,14 @@
 
 package org.sigmah.shared.report.model.layers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
-import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Defines a graduated symbol layer where indicators are visualized using a circle

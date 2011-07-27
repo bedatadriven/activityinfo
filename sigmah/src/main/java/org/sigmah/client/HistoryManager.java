@@ -5,6 +5,11 @@
 
 package org.sigmah.client;
 
+import org.sigmah.client.event.NavigationEvent;
+import org.sigmah.client.page.NavigationHandler;
+import org.sigmah.client.page.PageState;
+import org.sigmah.client.page.PageStateSerializer;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -15,10 +20,6 @@ import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.History;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.sigmah.client.event.NavigationEvent;
-import org.sigmah.client.page.NavigationHandler;
-import org.sigmah.client.page.PageState;
-import org.sigmah.client.page.PageStateSerializer;
 
 /**
  *

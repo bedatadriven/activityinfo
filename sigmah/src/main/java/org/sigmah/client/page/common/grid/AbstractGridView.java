@@ -5,6 +5,11 @@
 
 package org.sigmah.client.page.common.grid;
 
+import org.sigmah.client.dispatch.AsyncMonitor;
+import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.page.common.toolbar.ActionToolBar;
+
 import com.extjs.gxt.ui.client.data.Loader;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoader;
@@ -17,10 +22,6 @@ import com.extjs.gxt.ui.client.widget.grid.CellSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
-import org.sigmah.client.dispatch.AsyncMonitor;
-import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.common.toolbar.ActionToolBar;
 
 /*
  * @author Alex Bertram

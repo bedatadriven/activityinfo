@@ -5,12 +5,18 @@
 
 package org.sigmah.client.page.map;
 
+import org.sigmah.client.page.NavigationHandler;
+import org.sigmah.client.page.Page;
+import org.sigmah.client.page.PageId;
+import org.sigmah.client.page.PageLoader;
+import org.sigmah.client.page.PageState;
+import org.sigmah.client.page.PageStateSerializer;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import org.sigmah.client.page.*;
 
 /**
  * PageLoader for the Map page

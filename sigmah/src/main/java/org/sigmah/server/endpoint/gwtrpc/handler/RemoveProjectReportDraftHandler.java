@@ -5,14 +5,16 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
-import com.google.inject.Inject;
 import javax.persistence.EntityManager;
+
 import org.sigmah.shared.command.RemoveProjectReportDraft;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.report.ProjectReportVersion;
 import org.sigmah.shared.exception.CommandException;
+
+import com.google.inject.Inject;
 
 /**
  * Handler for the {@link RemoveProjectReportDraft} command.

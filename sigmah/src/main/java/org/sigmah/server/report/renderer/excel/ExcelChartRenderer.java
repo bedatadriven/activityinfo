@@ -5,14 +5,14 @@
 
 package org.sigmah.server.report.renderer.excel;
 
+import java.util.List;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.sigmah.shared.report.content.FilterDescription;
 import org.sigmah.shared.report.content.PivotTableData;
 import org.sigmah.shared.report.model.PivotChartReportElement;
-
-import java.util.List;
 
 /**
  * @author Alex Bertram

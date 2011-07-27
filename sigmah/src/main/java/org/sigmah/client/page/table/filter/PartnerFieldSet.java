@@ -5,20 +5,18 @@
 
 package org.sigmah.client.page.table.filter;
 
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.client.page.common.FieldSetFitLayout;
+import org.sigmah.shared.dto.PartnerDTO;
+import org.sigmah.shared.dto.SchemaDTO;
+
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ModelIconProvider;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.client.page.common.FieldSetFitLayout;
-import org.sigmah.shared.dto.PartnerDTO;
-import org.sigmah.shared.dto.SchemaDTO;
-/*
- * @author Alex Bertram
- */
 
 public class PartnerFieldSet extends AbstractFilterFieldSet {
     protected ListView<PartnerDTO> checkList;

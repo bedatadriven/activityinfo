@@ -6,9 +6,6 @@
 package org.sigmah.server.report.generator.map.cluster.auto;
 
 import java.util.List;
-/*
- * @author Alex Bertram
- */
 
 import org.sigmah.server.report.generator.map.cluster.Cluster;
 

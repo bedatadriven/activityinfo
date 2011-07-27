@@ -5,18 +5,20 @@
 
 package org.sigmah.server.dao;
 
-import com.google.inject.Inject;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Table;
+
 import org.hibernate.ejb.HibernateEntityManager;
 import org.hibernate.jdbc.Work;
 import org.sigmah.server.domain.PersistentClasses;
 import org.sigmah.shared.dao.SQLDialect;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Table;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
+import com.google.inject.Inject;
 
 public class DatabaseCleaner {
 

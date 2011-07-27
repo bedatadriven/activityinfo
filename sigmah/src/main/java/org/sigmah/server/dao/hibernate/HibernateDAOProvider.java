@@ -5,15 +5,16 @@
 
 package org.sigmah.server.dao.hibernate;
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
-
-import org.sigmah.shared.dao.DAO;
-
-import javax.persistence.EntityManager;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
+
+import javax.persistence.EntityManager;
+
+import org.sigmah.shared.dao.DAO;
+
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 /**
  * Provider which dynamically implements an a subclass of DAO

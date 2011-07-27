@@ -5,16 +5,17 @@
 
 package org.sigmah.server.bootstrap;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.sigmah.server.Cookies;
 import org.sigmah.server.bootstrap.model.HostPageModel;
-
-import javax.servlet.ServletException;
-import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class HostControllerTest extends ControllerTestCase {
 

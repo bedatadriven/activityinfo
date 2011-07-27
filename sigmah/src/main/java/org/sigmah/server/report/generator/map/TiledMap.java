@@ -5,12 +5,13 @@
 
 package org.sigmah.server.report.generator.map;
 
+import java.awt.Graphics2D;
+import java.awt.Image;
+
 import org.sigmah.shared.report.content.LatLng;
 import org.sigmah.shared.report.content.Point;
 import org.sigmah.shared.util.mapping.Tile;
 import org.sigmah.shared.util.mapping.TileMath;
-
-import java.awt.*;
 
 public class TiledMap {
 

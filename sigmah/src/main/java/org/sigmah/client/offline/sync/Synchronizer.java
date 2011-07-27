@@ -5,18 +5,23 @@
 
 package org.sigmah.client.offline.sync;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.bedatadriven.rebar.sql.client.DatabaseLockedException;
-import com.bedatadriven.rebar.sync.client.BulkUpdaterAsync;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import static org.sigmah.shared.dao.SqlQueryBuilder.select;
+
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.dispatch.remote.Direct;
-import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.i18n.UIMessages;
 import org.sigmah.shared.command.GetSyncRegionUpdates;
@@ -26,13 +31,13 @@ import org.sigmah.shared.command.result.SyncRegionUpdate;
 import org.sigmah.shared.command.result.SyncRegions;
 import org.sigmah.shared.dao.SqlQueryBuilder;
 
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
-import static org.sigmah.shared.dao.SqlQueryBuilder.select;
+import com.allen_sauer.gwt.log.client.Log;
+import com.bedatadriven.rebar.sql.client.DatabaseLockedException;
+import com.bedatadriven.rebar.sync.client.BulkUpdaterAsync;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * 

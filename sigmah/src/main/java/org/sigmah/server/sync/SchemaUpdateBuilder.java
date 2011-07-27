@@ -5,19 +5,31 @@
 
 package org.sigmah.server.sync;
 
-import com.bedatadriven.rebar.sync.server.JpaUpdateBuilder;
-import com.google.inject.Inject;
-import org.json.JSONException;
-import org.sigmah.shared.command.GetSyncRegionUpdates;
-import org.sigmah.shared.command.result.SyncRegionUpdate;
-import org.sigmah.shared.dao.UserDatabaseDAO;
-import org.sigmah.shared.domain.*;
-
-import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import javax.persistence.EntityManager;
+
+import org.json.JSONException;
+import org.sigmah.shared.command.GetSyncRegionUpdates;
+import org.sigmah.shared.command.result.SyncRegionUpdate;
+import org.sigmah.shared.dao.UserDatabaseDAO;
+import org.sigmah.shared.domain.Activity;
+import org.sigmah.shared.domain.AdminLevel;
+import org.sigmah.shared.domain.Attribute;
+import org.sigmah.shared.domain.AttributeGroup;
+import org.sigmah.shared.domain.Country;
+import org.sigmah.shared.domain.Indicator;
+import org.sigmah.shared.domain.LocationType;
+import org.sigmah.shared.domain.OrgUnit;
+import org.sigmah.shared.domain.User;
+import org.sigmah.shared.domain.UserDatabase;
+import org.sigmah.shared.domain.UserPermission;
+
+import com.bedatadriven.rebar.sync.server.JpaUpdateBuilder;
+import com.google.inject.Inject;
 
 public class SchemaUpdateBuilder implements UpdateBuilder {
 

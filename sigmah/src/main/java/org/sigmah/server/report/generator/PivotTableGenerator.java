@@ -6,7 +6,9 @@
 package org.sigmah.server.report.generator;
 
 
-import com.google.inject.Inject;
+import java.util.Comparator;
+import java.util.Map;
+
 import org.sigmah.server.dao.PivotDAO;
 import org.sigmah.server.util.LocaleHelper;
 import org.sigmah.shared.dao.Filter;
@@ -17,8 +19,7 @@ import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.PivotTableReportElement;
 
-import java.util.Comparator;
-import java.util.Map;
+import com.google.inject.Inject;
 
 public class PivotTableGenerator extends PivotGenerator<PivotTableReportElement> {
 

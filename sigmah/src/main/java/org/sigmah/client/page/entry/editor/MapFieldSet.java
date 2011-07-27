@@ -6,6 +6,13 @@
 package org.sigmah.client.page.entry.editor;
 
 
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.map.MapTypeFactory;
+import org.sigmah.client.page.common.widget.CoordinateField;
+import org.sigmah.client.page.config.form.FieldSetFitLayout;
+import org.sigmah.shared.dto.CountryDTO;
+import org.sigmah.shared.util.mapping.BoundingBoxDTO;
+
 import com.extjs.gxt.ui.client.event.ContainerEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
@@ -25,12 +32,6 @@ import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.geom.LatLngBounds;
 import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.maps.client.overlay.MarkerOptions;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.map.MapTypeFactory;
-import org.sigmah.client.page.common.widget.CoordinateField;
-import org.sigmah.client.page.config.form.FieldSetFitLayout;
-import org.sigmah.shared.dto.CountryDTO;
-import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 public class MapFieldSet extends FieldSet implements MapPresenter.View {
 

@@ -3,10 +3,10 @@ package org.sigmah.client.page.map.layerOptions;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.collections.BidiMap;
 import org.sigmah.shared.report.model.MapIcon;
 import org.sigmah.shared.report.model.MapIcon.Icon;
 import org.sigmah.shared.report.model.layers.IconMapLayer;
+
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;

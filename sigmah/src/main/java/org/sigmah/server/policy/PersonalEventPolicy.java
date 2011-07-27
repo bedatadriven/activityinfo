@@ -5,13 +5,15 @@
 
 package org.sigmah.server.policy;
 
-import com.extjs.gxt.ui.client.widget.form.Time;
-import com.google.inject.Inject;
 import java.util.Date;
+
 import org.sigmah.client.page.project.calendar.ProjectCalendarPresenter.CalendarWrapper;
 import org.sigmah.server.dao.PersonalEventDAO;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.calendar.PersonalEvent;
+
+import com.extjs.gxt.ui.client.widget.form.Time;
+import com.google.inject.Inject;
 
 /**
  *

@@ -5,15 +5,16 @@
 
 package org.sigmah.client.page.entry.editor;
 
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.dialog.SaveChangesCallback;
 import org.sigmah.client.page.common.dialog.SavePromptMessageBox;
 import org.sigmah.client.page.common.toolbar.UIActions;
+
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

@@ -5,22 +5,21 @@
 
 package org.sigmah.client.page;
 
+import org.sigmah.client.EventBus;
+import org.sigmah.client.dispatch.remote.Authentication;
+import org.sigmah.client.event.DownloadRequestEvent;
+
 import com.extjs.gxt.ui.client.core.El;
 import com.extjs.gxt.ui.client.event.EventType;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.sigmah.client.EventBus;
-import org.sigmah.client.dispatch.remote.Authentication;
-import org.sigmah.client.event.DownloadRequestEvent;
 
 /**
  *

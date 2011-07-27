@@ -5,26 +5,8 @@
 
 package org.sigmah.server.report.renderer.ppt;
 
-import com.google.inject.Inject;
-import org.apache.poi.ddf.EscherProperties;
-import org.apache.poi.hslf.model.AutoShape;
-import org.apache.poi.hslf.model.Picture;
-import org.apache.poi.hslf.model.ShapeTypes;
-import org.apache.poi.hslf.model.Slide;
-import org.apache.poi.hslf.usermodel.SlideShow;
-import java.awt.Dimension;
-import org.sigmah.server.report.generator.MapIconPath;
-import org.sigmah.server.report.generator.map.IconRectCalculator;
-import org.sigmah.server.report.renderer.image.ImageMapRenderer;
-import org.sigmah.server.util.ColorUtil;
-import org.sigmah.shared.report.content.BubbleMapMarker;
-import org.sigmah.shared.report.content.IconMapMarker;
-import org.sigmah.shared.report.content.MapMarker;
-import org.sigmah.shared.report.model.MapReportElement;
-
-import javax.imageio.ImageIO;
-
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.color.ColorSpace;
@@ -35,6 +17,25 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.imageio.ImageIO;
+
+import org.apache.poi.ddf.EscherProperties;
+import org.apache.poi.hslf.model.AutoShape;
+import org.apache.poi.hslf.model.Picture;
+import org.apache.poi.hslf.model.ShapeTypes;
+import org.apache.poi.hslf.model.Slide;
+import org.apache.poi.hslf.usermodel.SlideShow;
+import org.sigmah.server.report.generator.MapIconPath;
+import org.sigmah.server.report.generator.map.IconRectCalculator;
+import org.sigmah.server.report.renderer.image.ImageMapRenderer;
+import org.sigmah.server.util.ColorUtil;
+import org.sigmah.shared.report.content.BubbleMapMarker;
+import org.sigmah.shared.report.content.IconMapMarker;
+import org.sigmah.shared.report.content.MapMarker;
+import org.sigmah.shared.report.model.MapReportElement;
+
+import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram

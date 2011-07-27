@@ -5,18 +5,16 @@
 
 package org.sigmah.client.map;
 
-import com.google.gwt.maps.client.geom.Point;
-import com.google.gwt.maps.client.geom.Size;
-import com.google.gwt.maps.client.overlay.Icon;
-import com.google.gwt.resources.client.ImageResource;
-
 import org.sigmah.shared.report.content.BubbleMapMarker;
 import org.sigmah.shared.report.content.IconMapMarker;
 import org.sigmah.shared.report.content.MapMarker;
 import org.sigmah.shared.report.content.PieMapMarker;
 import org.sigmah.shared.report.content.PieMapMarker.SliceValue;
 import org.sigmah.shared.report.model.MapIcon;
-import org.sigmah.shared.report.model.layers.PiechartMapLayer.Slice;
+
+import com.google.gwt.maps.client.geom.Point;
+import com.google.gwt.maps.client.geom.Size;
+import com.google.gwt.maps.client.overlay.Icon;
 
 /**
  * Factory for GoogleMap Icons originating from the

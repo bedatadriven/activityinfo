@@ -1,5 +1,8 @@
 package org.sigmah.server.report.generator.map;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
+
 import java.util.Collections;
 
 import org.junit.Test;
@@ -11,9 +14,6 @@ import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.SiteData;
 import org.sigmah.shared.report.model.clustering.NoClustering;
 import org.sigmah.shared.report.model.layers.PiechartMapLayer;
-
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
 
 public class PiechartMapLayerGeneratorTest {
 

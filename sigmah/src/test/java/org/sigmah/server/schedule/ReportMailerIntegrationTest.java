@@ -5,11 +5,12 @@
 
 package org.sigmah.server.schedule;
 
-import org.junit.Test;
-import org.xml.sax.SAXException;
+import java.io.IOException;
 
 import javax.xml.bind.JAXBException;
-import java.io.IOException;
+
+import org.junit.Test;
+import org.xml.sax.SAXException;
 
 /**
  * @author Alex Bertram

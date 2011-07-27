@@ -5,6 +5,11 @@
 
 package org.sigmah.client.page.entry.editor;
 
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.shared.dto.ActivityDTO;
+import org.sigmah.shared.dto.IndicatorDTO;
+import org.sigmah.shared.dto.IndicatorGroup;
+
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
@@ -13,10 +18,6 @@ import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.i18n.client.NumberFormat;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.shared.dto.ActivityDTO;
-import org.sigmah.shared.dto.IndicatorDTO;
-import org.sigmah.shared.dto.IndicatorGroup;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

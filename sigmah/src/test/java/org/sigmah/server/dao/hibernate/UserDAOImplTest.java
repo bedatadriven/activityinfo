@@ -5,7 +5,10 @@
 
 package org.sigmah.server.dao.hibernate;
 
-import com.google.inject.Inject;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.dao.OnDataSet;
@@ -15,7 +18,7 @@ import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.MockHibernateModule;
 import org.sigmah.test.Modules;
 
-import static org.junit.Assert.*;
+import com.google.inject.Inject;
 
 @RunWith(InjectionSupport.class)
 @Modules({MockHibernateModule.class})

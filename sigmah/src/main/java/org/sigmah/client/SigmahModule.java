@@ -5,8 +5,6 @@
 
 package org.sigmah.client;
 
-import com.google.gwt.inject.client.AbstractGinModule;
-import com.google.inject.Singleton;
 import org.sigmah.client.dispatch.DispatchEventSource;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.RemoteServiceProvider;
@@ -23,6 +21,9 @@ import org.sigmah.client.page.common.GalleryView;
 import org.sigmah.client.util.state.GXTStateManager;
 import org.sigmah.client.util.state.IStateManager;
 import org.sigmah.shared.command.RemoteCommandServiceAsync;
+
+import com.google.gwt.inject.client.AbstractGinModule;
+import com.google.inject.Singleton;
 
 /**
  * Gin configuration module for Sigmah.

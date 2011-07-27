@@ -5,7 +5,10 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import org.dozer.Mapper;
@@ -20,7 +23,6 @@ import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.test.InjectionSupport;
-import com.google.gwt.rpc.client.ast.NullValueCommand;
 
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/sites-simple1.db.xml")

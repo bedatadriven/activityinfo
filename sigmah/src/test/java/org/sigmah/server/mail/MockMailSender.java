@@ -5,11 +5,11 @@
 
 package org.sigmah.server.mail;
 
-import org.apache.commons.mail.Email;
-import org.apache.commons.mail.EmailException;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.mail.Email;
+import org.apache.commons.mail.EmailException;
 
 /**
  * @author Alex Bertram

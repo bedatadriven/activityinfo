@@ -5,17 +5,18 @@
 
 package org.sigmah.client.dispatch.remote;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.MutatingCommand;
 import org.sigmah.shared.command.result.CommandResult;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 
 /**

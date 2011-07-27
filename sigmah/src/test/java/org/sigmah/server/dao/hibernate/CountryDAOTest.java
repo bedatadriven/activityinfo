@@ -5,21 +5,22 @@
 
 package org.sigmah.server.dao.hibernate;
 
-import com.google.inject.Inject;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.sigmah.shared.dao.CountryDAO;
 import org.sigmah.server.dao.OnDataSet;
+import org.sigmah.shared.dao.CountryDAO;
 import org.sigmah.shared.domain.Country;
 import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.MockHibernateModule;
 import org.sigmah.test.Modules;
 
-import java.util.List;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import com.google.inject.Inject;
 
 @RunWith(InjectionSupport.class)
 @Modules({MockHibernateModule.class})

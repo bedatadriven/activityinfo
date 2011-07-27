@@ -5,11 +5,9 @@
 
 package org.sigmah.client.page.common.grid;
 
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.event.LoadListener;
-import com.extjs.gxt.ui.client.store.Record;
-import com.extjs.gxt.ui.client.store.Store;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.loader.CommandLoadEvent;
 import org.sigmah.client.event.NavigationEvent;
@@ -21,11 +19,18 @@ import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.util.SortInfoEqualityChecker;
 import org.sigmah.client.util.state.IStateManager;
 
-import java.util.HashMap;
-import java.util.Map;
-/*
- * @author Alex Bertram
- */
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.ListLoadConfig;
+import com.extjs.gxt.ui.client.data.ListLoader;
+import com.extjs.gxt.ui.client.data.LoadEvent;
+import com.extjs.gxt.ui.client.data.Loader;
+import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoader;
+import com.extjs.gxt.ui.client.data.SortInfo;
+import com.extjs.gxt.ui.client.event.LoadListener;
+import com.extjs.gxt.ui.client.store.Record;
+import com.extjs.gxt.ui.client.store.Store;
 
 public abstract class AbstractGridPresenter<ModelT extends ModelData>
         implements GridPresenter<ModelT>, Page {

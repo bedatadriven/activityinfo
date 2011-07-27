@@ -5,13 +5,14 @@
 
 package org.sigmah.client.dispatch.loader;
 
+import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.shared.command.GetListCommand;
+import org.sigmah.shared.command.result.ListResult;
+
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.ListLoadConfig;
 import com.extjs.gxt.ui.client.data.ListLoader;
 import com.extjs.gxt.ui.client.data.SortInfo;
-import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.shared.command.GetListCommand;
-import org.sigmah.shared.command.result.ListResult;
 
 /**
  * Base class for command-pattern-based implementations of GXT {@link com.extjs.gxt.ui.client.data.ListLoader}

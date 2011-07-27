@@ -2,7 +2,6 @@ package org.sigmah.shared.command.result;
 
 import java.util.List;
 
-import org.sigmah.shared.dto.profile.ProfileDTO;
 import org.sigmah.shared.dto.profile.ProfileDTOLight;
 
 

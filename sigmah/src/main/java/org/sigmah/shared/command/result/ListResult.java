@@ -5,11 +5,11 @@
 
 package org.sigmah.shared.command.result;
 
-import com.extjs.gxt.ui.client.data.ListLoadResult;
-import com.extjs.gxt.ui.client.data.ModelData;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.data.ModelData;
 
 /**
  * Abstract base class of <code>CommandResult</code>s that are compatible with the GXT loading interface.

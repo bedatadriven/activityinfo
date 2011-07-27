@@ -5,11 +5,25 @@
 
 package org.sigmah.shared.command.handler;
 
-import com.extjs.gxt.ui.client.Style.SortDir;
-import com.extjs.gxt.ui.client.data.SortInfo;
-import com.google.inject.Inject;
+import static org.sigmah.shared.dao.SiteTableColumn.activity_id;
+import static org.sigmah.shared.dao.SiteTableColumn.comments;
+import static org.sigmah.shared.dao.SiteTableColumn.date1;
+import static org.sigmah.shared.dao.SiteTableColumn.date2;
+import static org.sigmah.shared.dao.SiteTableColumn.location_axe;
+import static org.sigmah.shared.dao.SiteTableColumn.location_name;
+import static org.sigmah.shared.dao.SiteTableColumn.partner_id;
+import static org.sigmah.shared.dao.SiteTableColumn.partner_name;
+import static org.sigmah.shared.dao.SiteTableColumn.x;
+import static org.sigmah.shared.dao.SiteTableColumn.y;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.sigmah.shared.command.GetSites;
-import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.SiteResult;
 import org.sigmah.shared.dao.SiteOrder;
 import org.sigmah.shared.dao.SiteProjectionBinder;
@@ -23,14 +37,9 @@ import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.sigmah.shared.dao.SiteTableColumn.*;
+import com.extjs.gxt.ui.client.Style.SortDir;
+import com.extjs.gxt.ui.client.data.SortInfo;
+import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram

@@ -5,11 +5,12 @@
 
 package org.sigmah.server.endpoint.gwtrpc;
 
-import com.google.inject.Inject;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import junit.framework.Assert;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +25,8 @@ import org.sigmah.shared.domain.calendar.CalendarType;
 import org.sigmah.shared.domain.calendar.Event;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.test.InjectionSupport;
+
+import com.google.inject.Inject;
 
 /**
  *

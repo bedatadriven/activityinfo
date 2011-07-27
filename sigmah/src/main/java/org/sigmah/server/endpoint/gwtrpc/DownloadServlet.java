@@ -5,14 +5,6 @@
 
 package org.sigmah.server.endpoint.gwtrpc;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -20,6 +12,15 @@ import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * A simple servlet that serves a temporary file with a Content-Disposition

@@ -5,15 +5,16 @@
 
 package org.sigmah.shared.report.model.typeadapter;
 
-import org.sigmah.shared.dao.Filter;
-import org.sigmah.shared.report.model.DateRange;
-import org.sigmah.shared.report.model.DimensionType;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
-import java.util.ArrayList;
-import java.util.List;
+
+import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.report.model.DateRange;
+import org.sigmah.shared.report.model.DimensionType;
 
 /**
  * @author Alex Bertram

@@ -17,7 +17,6 @@ import org.sigmah.server.report.ReportParserJaxb;
 import org.sigmah.server.report.ServletImageStorageProvider;
 import org.sigmah.server.report.generator.ReportGenerator;
 import org.sigmah.server.report.renderer.itext.HtmlReportRenderer;
-import org.sigmah.server.report.util.HtmlWriter;
 import org.sigmah.server.util.logging.LogException;
 import org.sigmah.shared.command.RenderReportHtml;
 import org.sigmah.shared.command.handler.CommandHandler;

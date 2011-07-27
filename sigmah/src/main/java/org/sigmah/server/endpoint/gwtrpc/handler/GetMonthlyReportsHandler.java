@@ -5,7 +5,11 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
-import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+
 import org.sigmah.shared.command.GetMonthlyReports;
 import org.sigmah.shared.command.Month;
 import org.sigmah.shared.command.handler.CommandHandler;
@@ -18,9 +22,7 @@ import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.IndicatorRowDTO;
 import org.sigmah.shared.exception.CommandException;
 
-import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.List;
+import com.google.inject.Inject;
 
 /**
  * See GetMonthlyReports

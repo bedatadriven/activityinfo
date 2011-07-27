@@ -5,16 +5,13 @@
 
 package org.sigmah.server.util;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import org.sigmah.shared.command.Month;
 import org.sigmah.shared.date.DateUtil;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.DateUnit;
-
-import java.util.Calendar;
-import java.util.Date;
-/*
- * @author Alex Bertram
- */
 
 public class DateUtilCalendarImpl extends DateUtil {
 

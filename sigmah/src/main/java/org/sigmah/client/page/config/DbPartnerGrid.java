@@ -5,13 +5,9 @@
 
 package org.sigmah.client.page.config;
 
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.Store;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.dialog.FormDialogCallback;
@@ -23,8 +19,13 @@ import org.sigmah.client.page.config.form.PartnerForm;
 import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram

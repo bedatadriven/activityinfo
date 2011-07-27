@@ -5,6 +5,13 @@
 
 package org.sigmah.client.page.config.form;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import org.sigmah.client.page.common.widget.MappingComboBox;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.Events;
@@ -12,13 +19,12 @@ import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Container;
-import com.extjs.gxt.ui.client.widget.form.*;
-import org.sigmah.client.page.common.widget.MappingComboBox;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.Field;
+import com.extjs.gxt.ui.client.widget.form.FieldSet;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.MultiField;
+import com.extjs.gxt.ui.client.widget.form.TextField;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

@@ -5,14 +5,26 @@
 
 package org.sigmah.server.report.generator;
 
+import java.text.SimpleDateFormat;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+
 import org.sigmah.server.dao.PivotDAO;
 import org.sigmah.shared.dao.Filter;
-import org.sigmah.shared.report.content.*;
+import org.sigmah.shared.report.content.DimensionCategory;
+import org.sigmah.shared.report.content.LabeledDimensionCategory;
+import org.sigmah.shared.report.content.MonthCategory;
+import org.sigmah.shared.report.content.PivotTableData;
+import org.sigmah.shared.report.content.QuarterCategory;
+import org.sigmah.shared.report.content.SimpleCategory;
+import org.sigmah.shared.report.content.YearCategory;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.PivotReportElement;
-
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

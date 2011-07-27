@@ -5,6 +5,20 @@
 
 package org.sigmah.client.page.entry;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.sigmah.client.dispatch.AsyncMonitor;
+import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.client.page.common.grid.AbstractEditorGridView;
+import org.sigmah.client.page.common.toolbar.UIActions;
+import org.sigmah.shared.dto.ActivityDTO;
+import org.sigmah.shared.dto.AdminLevelDTO;
+import org.sigmah.shared.dto.IndicatorDTO;
+import org.sigmah.shared.dto.SiteDTO;
+
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.data.ModelData;
@@ -13,28 +27,21 @@ import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.grid.*;
+import com.extjs.gxt.ui.client.widget.grid.CellEditor;
+import com.extjs.gxt.ui.client.widget.grid.CellSelectionModel;
+import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
+import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid.ClicksToEdit;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
+import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
-import org.sigmah.client.dispatch.AsyncMonitor;
-import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.client.page.common.grid.AbstractEditorGridView;
-import org.sigmah.client.page.common.toolbar.UIActions;
-import org.sigmah.shared.dao.Filter;
-import org.sigmah.shared.dto.ActivityDTO;
-import org.sigmah.shared.dto.AdminLevelDTO;
-import org.sigmah.shared.dto.IndicatorDTO;
-import org.sigmah.shared.dto.SiteDTO;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

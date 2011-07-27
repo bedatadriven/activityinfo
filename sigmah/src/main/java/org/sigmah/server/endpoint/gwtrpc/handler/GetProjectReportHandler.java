@@ -5,15 +5,16 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
-import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+
 import org.sigmah.shared.command.GetProjectReport;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
@@ -30,6 +31,8 @@ import org.sigmah.shared.dto.report.ProjectReportDTO;
 import org.sigmah.shared.dto.report.ProjectReportSectionDTO;
 import org.sigmah.shared.dto.report.RichTextElementDTO;
 import org.sigmah.shared.exception.CommandException;
+
+import com.google.inject.Inject;
 
 /**
  *

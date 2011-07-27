@@ -5,8 +5,9 @@
 
 package org.sigmah.shared.dto;
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
 import org.sigmah.shared.report.model.ReportFrequency;
+
+import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
  * One-to-one DTO for the {@link org.sigmah.server.domain.ReportDefinition} domain class

@@ -5,14 +5,6 @@
 
 package org.sigmah.client.page.config;
 
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.ModelKeyProvider;
-import com.extjs.gxt.ui.client.data.SortInfo;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.Record;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.ImplementedBy;
-import com.google.inject.Inject;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.loader.PagingCmdLoader;
@@ -33,9 +25,15 @@ import org.sigmah.shared.command.result.UserResult;
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 import org.sigmah.shared.dto.UserPermissionDTO;
-/*
- * @author Alex Bertram
- */
+
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.ModelKeyProvider;
+import com.extjs.gxt.ui.client.data.SortInfo;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Record;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.ImplementedBy;
+import com.google.inject.Inject;
 
 public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO>
         implements GridPresenter<UserPermissionDTO> {

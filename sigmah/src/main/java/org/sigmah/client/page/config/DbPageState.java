@@ -5,19 +5,16 @@
 
 package org.sigmah.client.page.config;
 
+import java.util.Arrays;
+import java.util.List;
+
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.Frames;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.PageStateParser;
-import org.sigmah.client.page.common.grid.AbstractPagingGridPageState;
-
-import java.util.Arrays;
-import java.util.List;
-import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.TabPage;
-/*
- * @author Alex Bertram
- */
+import org.sigmah.client.page.common.grid.AbstractPagingGridPageState;
 
 public class DbPageState extends AbstractPagingGridPageState implements TabPage {
 

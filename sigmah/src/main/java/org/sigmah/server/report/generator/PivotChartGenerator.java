@@ -5,7 +5,6 @@
 
 package org.sigmah.server.report.generator;
 
-import com.google.inject.Inject;
 import org.sigmah.server.dao.PivotDAO;
 import org.sigmah.server.util.LocaleHelper;
 import org.sigmah.shared.dao.Filter;
@@ -18,6 +17,8 @@ import org.sigmah.shared.report.content.PivotTableData;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.PivotChartReportElement;
+
+import com.google.inject.Inject;
 
 public class PivotChartGenerator extends PivotGenerator<PivotChartReportElement> {
 

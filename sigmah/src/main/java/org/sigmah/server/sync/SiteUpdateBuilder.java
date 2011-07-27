@@ -5,18 +5,26 @@
 
 package org.sigmah.server.sync;
 
-import com.bedatadriven.rebar.sync.server.JpaUpdateBuilder;
-import com.google.inject.Inject;
-import org.json.JSONException;
-import org.sigmah.shared.command.GetSyncRegionUpdates;
-import org.sigmah.shared.command.result.SyncRegionUpdate;
-import org.sigmah.shared.domain.*;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
+import org.json.JSONException;
+import org.sigmah.shared.command.GetSyncRegionUpdates;
+import org.sigmah.shared.command.result.SyncRegionUpdate;
+import org.sigmah.shared.domain.AttributeValue;
+import org.sigmah.shared.domain.IndicatorValue;
+import org.sigmah.shared.domain.OrgUnit;
+import org.sigmah.shared.domain.ReportingPeriod;
+import org.sigmah.shared.domain.Site;
+import org.sigmah.shared.domain.User;
+import org.sigmah.shared.domain.UserDatabase;
+
+import com.bedatadriven.rebar.sync.server.JpaUpdateBuilder;
+import com.google.inject.Inject;
 
 public class SiteUpdateBuilder implements UpdateBuilder {
 

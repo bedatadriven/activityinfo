@@ -5,10 +5,10 @@
 
 package org.sigmah.shared.report.model;
 
-import org.sigmah.shared.report.content.PivotContent;
-
 import java.util.HashSet;
 import java.util.Set;
+
+import org.sigmah.shared.report.content.PivotContent;
 
 /**
  * Abstract base class that exposes properties common to 

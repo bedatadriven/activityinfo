@@ -5,10 +5,10 @@
 
 package org.sigmah.shared.command.result;
 
+import java.util.List;
+
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
-
-import java.util.List;
 
 /**
  * Abstract base class for <code>CommandResult</code>s that are compatible with the

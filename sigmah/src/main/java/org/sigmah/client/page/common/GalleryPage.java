@@ -5,6 +5,11 @@
 
 package org.sigmah.client.page.common;
 
+import org.sigmah.client.EventBus;
+import org.sigmah.client.event.NavigationEvent;
+import org.sigmah.client.page.NavigationHandler;
+import org.sigmah.client.page.PageState;
+
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.event.Events;
@@ -17,10 +22,6 @@ import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.inject.Inject;
-import org.sigmah.client.EventBus;
-import org.sigmah.client.event.NavigationEvent;
-import org.sigmah.client.page.NavigationHandler;
-import org.sigmah.client.page.PageState;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

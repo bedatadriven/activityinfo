@@ -5,9 +5,10 @@
 
 package org.sigmah.client.page.config;
 
-import com.extjs.gxt.ui.client.data.DataReader;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.callback.Got;
 import org.sigmah.client.i18n.I18N;
@@ -19,9 +20,9 @@ import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.extjs.gxt.ui.client.data.DataReader;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

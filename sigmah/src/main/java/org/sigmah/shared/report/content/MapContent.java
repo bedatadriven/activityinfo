@@ -5,12 +5,15 @@
 
 package org.sigmah.shared.report.content;
 
-import org.sigmah.shared.map.BaseMap;
-import org.sigmah.shared.map.GoogleBaseMap;
-import org.sigmah.shared.map.TileBaseMap;
-import org.sigmah.shared.util.mapping.Extents;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import java.util.*;
+import org.sigmah.shared.map.BaseMap;
+import org.sigmah.shared.util.mapping.Extents;
 
 /*
  * Represents the model of a map 

@@ -5,13 +5,14 @@
 
 package org.sigmah.server.report.renderer.image;
 
-import com.google.inject.Inject;
+import java.io.IOException;
+import java.io.OutputStream;
+
 import org.sigmah.server.report.renderer.Renderer;
 import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.ReportElement;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import com.google.inject.Inject;
 
 /*
  * @author Alex Bertram

@@ -5,12 +5,13 @@
 
 package org.sigmah.test;
 
-import com.google.inject.Inject;
+import javax.persistence.EntityManager;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.persistence.EntityManager;
+import com.google.inject.Inject;
 
 @RunWith(InjectionSupport.class)
 @Modules(MockHibernateModule.class)

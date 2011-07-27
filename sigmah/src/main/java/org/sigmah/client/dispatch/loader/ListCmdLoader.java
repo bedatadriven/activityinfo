@@ -5,10 +5,11 @@
 
 package org.sigmah.client.dispatch.loader;
 
-import com.extjs.gxt.ui.client.data.ListLoader;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.shared.command.GetListCommand;
 import org.sigmah.shared.command.result.ListResult;
+
+import com.extjs.gxt.ui.client.data.ListLoader;
 
 /**
  * Command-pattern-based implementation of the GXT {@link com.extjs.gxt.ui.client.data.ListLoader}

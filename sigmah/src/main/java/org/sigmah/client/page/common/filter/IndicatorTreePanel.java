@@ -5,8 +5,29 @@
 
 package org.sigmah.client.page.common.filter;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.sigmah.client.dispatch.AsyncMonitor;
+import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.shared.command.GetSchema;
+import org.sigmah.shared.dto.ActivityDTO;
+import org.sigmah.shared.dto.IndicatorDTO;
+import org.sigmah.shared.dto.IndicatorGroup;
+import org.sigmah.shared.dto.ProvidesKey;
+import org.sigmah.shared.dto.SchemaDTO;
+import org.sigmah.shared.dto.UserDatabaseDTO;
+
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.*;
+import com.extjs.gxt.ui.client.data.BaseTreeLoader;
+import com.extjs.gxt.ui.client.data.DataProxy;
+import com.extjs.gxt.ui.client.data.DataReader;
+import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.data.ModelKeyProvider;
+import com.extjs.gxt.ui.client.data.ModelStringProvider;
+import com.extjs.gxt.ui.client.data.TreeLoader;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -21,15 +42,6 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.sigmah.client.dispatch.AsyncMonitor;
-import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.shared.command.GetSchema;
-import org.sigmah.shared.dto.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * UI Component that allows the user to select a list of Indicators

@@ -5,10 +5,8 @@
 
 package org.sigmah.server.endpoint.gwtrpc;
 
-import com.extjs.gxt.ui.client.Style.SortDir;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import com.extjs.gxt.ui.client.data.SortInfo;
 import junit.framework.Assert;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.dao.OnDataSet;
@@ -18,6 +16,10 @@ import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.test.InjectionSupport;
+
+import com.extjs.gxt.ui.client.Style.SortDir;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import com.extjs.gxt.ui.client.data.SortInfo;
 
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/sites-simple1.db.xml")

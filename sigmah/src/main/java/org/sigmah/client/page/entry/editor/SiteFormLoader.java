@@ -5,11 +5,6 @@
 
 package org.sigmah.client.page.entry.editor;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.RunAsyncCallback;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
@@ -17,6 +12,12 @@ import org.sigmah.client.dispatch.monitor.NullAsyncMonitor;
 import org.sigmah.client.map.MapApiLoader;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.SiteDTO;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.RunAsyncCallback;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

@@ -5,14 +5,15 @@
 
 package org.sigmah.client.page.entry.editor.mock;
 
-import com.extjs.gxt.ui.client.store.ListStore;
-import org.sigmah.client.page.entry.editor.AdminFieldSetPresenter;
-import org.sigmah.shared.dto.AdminEntityDTO;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import org.sigmah.client.page.entry.editor.AdminFieldSetPresenter;
+import org.sigmah.shared.dto.AdminEntityDTO;
+
+import com.extjs.gxt.ui.client.store.ListStore;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

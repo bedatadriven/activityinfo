@@ -5,16 +5,26 @@
 
 package org.sigmah.server.report;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.sigmah.shared.report.model.*;
+import java.io.InputStreamReader;
+import java.util.Calendar;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import java.io.InputStreamReader;
-import java.util.Calendar;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.sigmah.shared.report.model.AdminDimension;
+import org.sigmah.shared.report.model.DimensionType;
+import org.sigmah.shared.report.model.ImageReportElement;
+import org.sigmah.shared.report.model.MapReportElement;
+import org.sigmah.shared.report.model.PivotChartReportElement;
+import org.sigmah.shared.report.model.PivotTableReportElement;
+import org.sigmah.shared.report.model.Report;
+import org.sigmah.shared.report.model.ReportFrequency;
+import org.sigmah.shared.report.model.TableElement;
+import org.sigmah.shared.report.model.TextReportElement;
 
 /**
  * @author Alex Bertram

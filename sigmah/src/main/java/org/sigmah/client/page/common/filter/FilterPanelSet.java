@@ -2,7 +2,6 @@ package org.sigmah.client.page.common.filter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import org.sigmah.shared.dao.Filter;

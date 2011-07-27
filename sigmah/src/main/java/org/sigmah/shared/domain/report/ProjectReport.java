@@ -7,6 +7,7 @@ package org.sigmah.shared.domain.report;
 
 import java.io.Serializable;
 import java.util.Date;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,6 +18,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+
 import org.sigmah.shared.domain.Deleteable;
 import org.sigmah.shared.domain.Project;
 import org.sigmah.shared.domain.element.FlexibleElement;

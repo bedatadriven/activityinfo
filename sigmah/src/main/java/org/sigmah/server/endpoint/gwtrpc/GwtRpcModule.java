@@ -5,12 +5,12 @@
 
 package org.sigmah.server.endpoint.gwtrpc;
 
+import org.sigmah.server.auth.SigmahAuthDictionaryServlet;
 import org.sigmah.server.endpoint.file.FileDownloadServlet;
 import org.sigmah.server.endpoint.file.FileUploadServlet;
 import org.sigmah.server.endpoint.file.ImageServlet;
 
 import com.google.inject.servlet.ServletModule;
-import org.sigmah.server.auth.SigmahAuthDictionaryServlet;
 
 public class GwtRpcModule extends ServletModule {
 

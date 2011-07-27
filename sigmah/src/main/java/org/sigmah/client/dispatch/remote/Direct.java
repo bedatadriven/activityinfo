@@ -5,13 +5,15 @@
 
 package org.sigmah.client.dispatch.remote;
 
-import com.google.inject.BindingAnnotation;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.PARAMETER;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import static java.lang.annotation.ElementType.*;
+import com.google.inject.BindingAnnotation;
 
 /**
  * Indicates that the Dispatcher should connect directly to the

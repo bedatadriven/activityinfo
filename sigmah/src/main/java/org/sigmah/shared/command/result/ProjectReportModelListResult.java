@@ -7,6 +7,7 @@ package org.sigmah.shared.command.result;
 
 import java.io.Serializable;
 import java.util.List;
+
 import org.sigmah.shared.command.GetProjectReportModels;
 
 /**

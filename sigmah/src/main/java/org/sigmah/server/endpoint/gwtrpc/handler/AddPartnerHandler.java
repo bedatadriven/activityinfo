@@ -5,7 +5,11 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
-import com.google.inject.Inject;
+import java.util.List;
+import java.util.Set;
+
+import javax.persistence.EntityManager;
+
 import org.sigmah.shared.command.AddPartner;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
@@ -18,9 +22,7 @@ import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.DuplicateException;
 import org.sigmah.shared.exception.IllegalAccessCommandException;
 
-import javax.persistence.EntityManager;
-import java.util.List;
-import java.util.Set;
+import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram

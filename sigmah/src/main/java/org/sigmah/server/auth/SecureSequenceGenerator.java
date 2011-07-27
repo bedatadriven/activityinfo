@@ -5,11 +5,11 @@
 
 package org.sigmah.server.auth;
 
+import java.io.Serializable;
+
 import org.hibernate.HibernateException;
 import org.hibernate.engine.SessionImplementor;
 import org.hibernate.id.IdentifierGenerator;
-
-import java.io.Serializable;
 
 /**
  * Identifier Generator that generates unique IDs for our authentication that are sufficiently

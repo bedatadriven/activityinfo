@@ -5,15 +5,7 @@
 
 package org.sigmah.client.offline.command.handler;
 
-import com.google.inject.Inject;
-import org.sigmah.client.dispatch.remote.Authentication;
-import org.sigmah.shared.command.GetSchema;
-import org.sigmah.shared.command.handler.CommandHandler;
-import org.sigmah.shared.dao.SqlQueryBuilder;
-import org.sigmah.shared.domain.User;
-import org.sigmah.shared.dto.*;
-import org.sigmah.shared.exception.CommandException;
-import org.sigmah.shared.util.mapping.BoundingBoxDTO;
+import static org.sigmah.shared.dao.SqlQueryBuilder.select;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -23,7 +15,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.sigmah.shared.dao.SqlQueryBuilder.select;
+import org.sigmah.client.dispatch.remote.Authentication;
+import org.sigmah.shared.command.GetSchema;
+import org.sigmah.shared.command.handler.CommandHandler;
+import org.sigmah.shared.dao.SqlQueryBuilder;
+import org.sigmah.shared.domain.User;
+import org.sigmah.shared.dto.ActivityDTO;
+import org.sigmah.shared.dto.AdminLevelDTO;
+import org.sigmah.shared.dto.AttributeDTO;
+import org.sigmah.shared.dto.AttributeGroupDTO;
+import org.sigmah.shared.dto.CountryDTO;
+import org.sigmah.shared.dto.IndicatorDTO;
+import org.sigmah.shared.dto.LocationTypeDTO;
+import org.sigmah.shared.dto.PartnerDTO;
+import org.sigmah.shared.dto.SchemaDTO;
+import org.sigmah.shared.dto.UserDatabaseDTO;
+import org.sigmah.shared.exception.CommandException;
+import org.sigmah.shared.util.mapping.BoundingBoxDTO;
+
+import com.google.inject.Inject;
 
 public class LocalGetSchemaHandler implements CommandHandler<GetSchema> {
 

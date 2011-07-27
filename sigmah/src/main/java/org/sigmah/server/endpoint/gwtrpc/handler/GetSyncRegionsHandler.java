@@ -5,7 +5,14 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
-import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.persistence.EntityManager;
+
 import org.sigmah.shared.command.GetSyncRegions;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
@@ -17,8 +24,7 @@ import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.UserDatabase;
 import org.sigmah.shared.exception.CommandException;
 
-import javax.persistence.EntityManager;
-import java.util.*;
+import com.google.inject.Inject;
 
 public class GetSyncRegionsHandler implements CommandHandler<GetSyncRegions> {
 

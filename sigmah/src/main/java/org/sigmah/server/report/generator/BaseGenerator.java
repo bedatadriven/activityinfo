@@ -5,7 +5,10 @@
 
 package org.sigmah.server.report.generator;
 
-import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import org.sigmah.server.dao.PivotDAO;
 import org.sigmah.server.report.util.DateRangeFormat;
 import org.sigmah.server.util.LocaleHelper;
@@ -16,9 +19,7 @@ import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.ReportElement;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import com.google.inject.Inject;
 
 /**
  * Implements functionality common to all generators.

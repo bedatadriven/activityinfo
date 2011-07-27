@@ -5,10 +5,11 @@
 
 package org.sigmah.client.event;
 
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.EventType;
 import org.sigmah.shared.report.content.PivotTableData;
 import org.sigmah.shared.report.model.PivotReportElement;
+
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.EventType;
 
 /**
  * Event fired when a pivot cell is double-clicked. Other listening components may 

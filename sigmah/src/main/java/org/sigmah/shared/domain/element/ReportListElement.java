@@ -6,9 +6,11 @@
 package org.sigmah.shared.domain.element;
 
 import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+
 import org.sigmah.shared.domain.report.ProjectReport;
 
 /**

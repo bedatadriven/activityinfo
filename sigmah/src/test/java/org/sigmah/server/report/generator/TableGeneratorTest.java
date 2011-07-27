@@ -5,12 +5,28 @@
 
 package org.sigmah.server.report.generator;
 
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import junit.framework.Assert;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.sigmah.server.dao.PivotDAO;
 import org.sigmah.server.report.generator.map.MockBaseMapDAO;
-import org.sigmah.shared.dao.*;
+import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.dao.IndicatorDAO;
+import org.sigmah.shared.dao.SiteOrder;
+import org.sigmah.shared.dao.SiteProjectionBinder;
+import org.sigmah.shared.dao.SiteTableColumn;
+import org.sigmah.shared.dao.SiteTableDAO;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.report.content.BubbleMapMarker;
 import org.sigmah.shared.report.content.MapContent;
@@ -21,15 +37,6 @@ import org.sigmah.shared.report.model.TableElement;
 import org.sigmah.shared.report.model.labeling.ArabicNumberSequence;
 import org.sigmah.shared.report.model.layers.BubbleMapLayer;
 import org.sigmah.shared.report.model.layers.CircledMapLayer;
-import org.sigmah.shared.report.model.layers.MapLayer;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import static org.easymock.EasyMock.*;
 
 /**
  * @author Alex Bertram

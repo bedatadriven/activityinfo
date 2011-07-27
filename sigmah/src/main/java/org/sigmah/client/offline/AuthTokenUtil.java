@@ -5,12 +5,13 @@
 
 package org.sigmah.client.offline;
 
+import java.util.Date;
+
+import org.sigmah.client.dispatch.remote.Authentication;
+
 import com.bedatadriven.rebar.appcache.client.AppCache;
 import com.bedatadriven.rebar.appcache.client.AppCacheFactory;
 import com.google.gwt.user.client.Cookies;
-import org.sigmah.client.dispatch.remote.Authentication;
-
-import java.util.Date;
 
 public class AuthTokenUtil {
 

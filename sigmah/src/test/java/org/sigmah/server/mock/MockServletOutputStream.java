@@ -5,9 +5,10 @@
 
 package org.sigmah.server.mock;
 
-import javax.servlet.ServletOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+
+import javax.servlet.ServletOutputStream;
 
 /**
  * @author Alex Bertram

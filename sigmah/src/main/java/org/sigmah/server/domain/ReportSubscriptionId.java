@@ -5,11 +5,9 @@
 
 package org.sigmah.server.domain;
 
-import javax.persistence.Embeddable;
 import java.io.Serializable;
-/*
- * @author Alex Bertram
- */
+
+import javax.persistence.Embeddable;
 
 @Embeddable
 public class ReportSubscriptionId implements Serializable {

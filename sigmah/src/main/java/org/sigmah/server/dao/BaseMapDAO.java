@@ -5,10 +5,11 @@
 
 package org.sigmah.server.dao;
 
-import com.google.inject.ImplementedBy;
+import java.util.List;
+
 import org.sigmah.shared.map.TileBaseMap;
 
-import java.util.List;
+import com.google.inject.ImplementedBy;
 
 /**
  * Data Access Object for the {@link org.sigmah.shared.map.TileBaseMap} objects

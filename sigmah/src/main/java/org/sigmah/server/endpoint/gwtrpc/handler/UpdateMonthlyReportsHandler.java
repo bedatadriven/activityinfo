@@ -5,8 +5,12 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
-import com.google.inject.Inject;
-import org.sigmah.server.domain.*;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.persistence.EntityManager;
+
 import org.sigmah.shared.command.Month;
 import org.sigmah.shared.command.UpdateMonthlyReports;
 import org.sigmah.shared.command.handler.CommandHandler;
@@ -19,10 +23,7 @@ import org.sigmah.shared.domain.Site;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.CommandException;
 
-import javax.persistence.EntityManager;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
+import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram

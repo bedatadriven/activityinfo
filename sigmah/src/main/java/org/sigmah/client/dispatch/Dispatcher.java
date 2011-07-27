@@ -9,9 +9,10 @@
  */
 package org.sigmah.client.dispatch;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.result.CommandResult;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Executes {@link org.sigmah.shared.command.Command}s on behalf of client code. The implementation handles

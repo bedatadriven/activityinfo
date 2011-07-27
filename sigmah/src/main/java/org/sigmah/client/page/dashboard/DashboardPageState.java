@@ -7,6 +7,7 @@ package org.sigmah.client.page.dashboard;
 
 import java.util.Arrays;
 import java.util.List;
+
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;

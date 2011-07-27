@@ -5,9 +5,9 @@
 
 package org.sigmah.shared.command.result;
 
-import org.sigmah.shared.dto.ReportSubscriptionDTO;
-
 import java.util.List;
+
+import org.sigmah.shared.dto.ReportSubscriptionDTO;
 
 /**
  *

@@ -5,7 +5,9 @@
 
 package org.sigmah.server.policy;
 
-import com.google.inject.Inject;
+import java.util.Date;
+
+import javax.persistence.EntityManager;
 
 import org.sigmah.shared.dao.ActivityDAO;
 import org.sigmah.shared.dao.UserDatabaseDAO;
@@ -15,8 +17,7 @@ import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.UserDatabase;
 import org.sigmah.shared.dto.LocationTypeDTO;
 
-import javax.persistence.EntityManager;
-import java.util.Date;
+import com.google.inject.Inject;
 
 public class ActivityPolicy implements EntityPolicy<Activity> {
 

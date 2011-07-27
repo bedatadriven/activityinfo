@@ -5,8 +5,8 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
-import com.google.inject.Inject;
 import javax.persistence.EntityManager;
+
 import org.dozer.Mapper;
 import org.sigmah.server.dao.Transactional;
 import org.sigmah.shared.command.CopyLogFrame;
@@ -17,6 +17,8 @@ import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.logframe.LogFrame;
 import org.sigmah.shared.dto.logframe.LogFrameDTO;
 import org.sigmah.shared.exception.CommandException;
+
+import com.google.inject.Inject;
 
 /**
  * Handler for the CopyLogFrame command.

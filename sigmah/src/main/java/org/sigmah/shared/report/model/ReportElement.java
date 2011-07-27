@@ -5,12 +5,13 @@
 
 package org.sigmah.shared.report.model;
 
-import org.sigmah.shared.dao.Filter;
-import org.sigmah.shared.report.content.Content;
+import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
-import java.io.Serializable;
+
+import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.report.content.Content;
 
 /**
  * ReportElement is the base class for all report elements and the

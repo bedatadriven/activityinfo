@@ -5,7 +5,21 @@
 
 package org.sigmah.client.page;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import static org.easymock.EasyMock.capture;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.getCurrentArguments;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.easymock.Capture;
 import org.easymock.IAnswer;
 import org.junit.Assert;
@@ -15,12 +29,7 @@ import org.sigmah.client.dispatch.monitor.NullAsyncMonitor;
 import org.sigmah.client.event.NavigationEvent;
 import org.sigmah.client.mock.MockEventBus;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.easymock.EasyMock.*;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class NavigationHandlerTest {
 

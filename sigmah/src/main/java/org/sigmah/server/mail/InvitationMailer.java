@@ -5,19 +5,21 @@
 
 package org.sigmah.server.mail;
 
-import com.google.inject.Inject;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
 import org.sigmah.server.util.logging.LogException;
 import org.sigmah.server.util.logging.Trace;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import com.google.inject.Inject;
+
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 
 public class InvitationMailer implements Mailer<Invitation> {
 
