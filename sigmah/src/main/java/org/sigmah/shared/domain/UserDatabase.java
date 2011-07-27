@@ -5,28 +5,10 @@
 
 package org.sigmah.shared.domain;
 
+import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 
 /**
  * 
@@ -39,7 +21,6 @@ import javax.persistence.Transient;
  * 
  */
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
 @org.hibernate.annotations.FilterDefs({
         @org.hibernate.annotations.FilterDef(name = "userVisible", parameters = { @org.hibernate.annotations.ParamDef(name = "currentUserId", type = "int") }),
         @org.hibernate.annotations.FilterDef(name = "hideDeleted") })
@@ -67,7 +48,7 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
     private Set<OrgUnit> partners = new HashSet<OrgUnit>(0);
     private Set<Activity> activities = new HashSet<Activity>(0);
     private Set<UserPermission> userPermissions = new HashSet<UserPermission>(0);
-    private Set<Project2> projects = new HashSet<Project2>(0);
+   // private Set<Project2> projects = new HashSet<Project2>(0);
     private Date dateDeleted;
     private Date lastSchemaUpdate;
 
@@ -383,15 +364,15 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
         this.lastSchemaUpdate = lastSchemaUpdate;
     }
 
-	public void setProjects(Set<Project2> projects) {
-		this.projects = projects;
-	}
-	
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "database")
-    @org.hibernate.annotations.OrderBy(clause = "sortOrder")
-    @org.hibernate.annotations.Filter(name = "hideDeleted", condition = "DateDeleted is null")
-	public Set<Project2> getProjects() {
-		return projects;
-	}
+//	public void setProjects(Set<Project2> projects) {
+//		this.projects = projects;
+//	}
+//
+//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "database")
+//    @org.hibernate.annotations.OrderBy(clause = "sortOrder")
+//    @org.hibernate.annotations.Filter(name = "hideDeleted", condition = "DateDeleted is null")
+//	public Set<Project2> getProjects() {
+//		return projects;
+//	}
 
 }

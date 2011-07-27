@@ -5,19 +5,17 @@
 
 package org.sigmah.client.page.table;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.PageStateParser;
-import org.sigmah.client.page.TabPage;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class PivotPageState implements PageState, TabPage {
+public class PivotPageState implements PageState {
 
     @Override
     public PageId getPageId() {
@@ -32,11 +30,6 @@ public class PivotPageState implements PageState, TabPage {
     @Override
     public List<PageId> getEnclosingFrames() {
         return Arrays.asList(PivotPresenter.Pivot);
-    }
-
-    @Override
-    public String getTabTitle() {
-        return I18N.CONSTANTS.tables();
     }
 
     public static class Parser implements PageStateParser {

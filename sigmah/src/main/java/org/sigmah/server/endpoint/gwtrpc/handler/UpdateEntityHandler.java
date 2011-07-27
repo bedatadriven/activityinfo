@@ -5,15 +5,11 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
-import java.util.Map;
-
-import javax.persistence.EntityManager;
-
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sigmah.server.policy.ActivityPolicy;
-import org.sigmah.server.policy.PersonalEventPolicy;
-import org.sigmah.server.policy.ProjectReportPolicy;
 import org.sigmah.server.policy.PropertyMap;
 import org.sigmah.server.policy.SitePolicy;
 import org.sigmah.shared.command.UpdateEntity;
@@ -26,8 +22,8 @@ import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.IllegalAccessCommandException;
 
-import com.google.inject.Inject;
-import com.google.inject.Injector;
+import javax.persistence.EntityManager;
+import java.util.Map;
 
 /**
  * @author Alex Bertram
@@ -70,14 +66,6 @@ public class UpdateEntityHandler extends BaseEntityHandler implements CommandHan
 
         } else if ("Site".equals(cmd.getEntityName())) {
             SitePolicy policy = injector.getInstance(SitePolicy.class);
-            policy.update(user, cmd.getId(), changeMap);
-            
-        } else if ("PersonalEvent".equals(cmd.getEntityName())) {
-            PersonalEventPolicy policy = injector.getInstance(PersonalEventPolicy.class);
-            policy.update(user, cmd.getId(), changeMap);
-
-        } else if ("ProjectReport".equals(cmd.getEntityName())) {
-            ProjectReportPolicy policy = injector.getInstance(ProjectReportPolicy.class);
             policy.update(user, cmd.getId(), changeMap);
 
         } else {

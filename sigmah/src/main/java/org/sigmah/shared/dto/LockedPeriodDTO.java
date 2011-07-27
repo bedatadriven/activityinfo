@@ -1,8 +1,8 @@
 package org.sigmah.shared.dto;
 
-import java.util.Date;
-
 import com.extjs.gxt.ui.client.data.BaseModelData;
+
+import java.util.Date;
 
 /*
  * A period where normal users cannot add, update or remove data 
@@ -24,7 +24,7 @@ public class LockedPeriodDTO extends BaseModelData implements DTO {
 	}
 	
 	public int getId() {
-		return get("id");
+		return (Integer)get("id");
 	}
 	
 	public void setEndDate(Date endDate) {

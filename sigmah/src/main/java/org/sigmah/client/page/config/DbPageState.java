@@ -5,18 +5,16 @@
 
 package org.sigmah.client.page.config;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.Frames;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.PageStateParser;
-import org.sigmah.client.page.TabPage;
 import org.sigmah.client.page.common.grid.AbstractPagingGridPageState;
 
-public class DbPageState extends AbstractPagingGridPageState implements TabPage {
+import java.util.Arrays;
+import java.util.List;
+
+public class DbPageState extends AbstractPagingGridPageState {
 
     private PageId pageId;
     private int databaseId;
@@ -76,11 +74,6 @@ public class DbPageState extends AbstractPagingGridPageState implements TabPage 
     @Override
     public int hashCode() {
         return databaseId;
-    }
-
-    @Override
-    public String getTabTitle() {
-        return I18N.CONSTANTS.database();
     }
 
     public static class Parser implements PageStateParser {

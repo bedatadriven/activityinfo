@@ -5,18 +5,16 @@
 
 package org.sigmah.client.page.charts;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
-import org.sigmah.client.page.TabPage;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class ChartPageState implements PageState, TabPage {
+public class ChartPageState implements PageState {
 
     public String serializeAsHistoryToken() {
         return null;
@@ -41,8 +39,4 @@ public class ChartPageState implements PageState, TabPage {
         return 0;
     }
 
-    @Override
-    public String getTabTitle() {
-        return I18N.CONSTANTS.charts();
-    }
 }

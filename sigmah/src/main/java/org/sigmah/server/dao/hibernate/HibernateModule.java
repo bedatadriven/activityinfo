@@ -5,40 +5,17 @@
 
 package org.sigmah.server.dao.hibernate;
 
-import java.util.Properties;
+import com.google.inject.*;
+import com.google.inject.matcher.Matchers;
+import com.google.inject.servlet.RequestScoped;
+import org.hibernate.ejb.HibernateEntityManager;
+import org.sigmah.server.dao.*;
+import org.sigmah.shared.dao.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-
-import org.hibernate.ejb.HibernateEntityManager;
-import org.sigmah.server.dao.AuthenticationDAO;
-import org.sigmah.server.dao.LocationDAO;
-import org.sigmah.server.dao.PartnerDAO;
-import org.sigmah.server.dao.PersonalEventDAO;
-import org.sigmah.server.dao.ProjectReportDAO;
-import org.sigmah.server.dao.ReportDefinitionDAO;
-import org.sigmah.server.dao.ReportingPeriodDAO;
-import org.sigmah.server.dao.SiteDAO;
-import org.sigmah.server.dao.Transactional;
-import org.sigmah.shared.dao.ActivityDAO;
-import org.sigmah.shared.dao.AdminDAO;
-import org.sigmah.shared.dao.CountryDAO;
-import org.sigmah.shared.dao.DAO;
-import org.sigmah.shared.dao.IndicatorDAO;
-import org.sigmah.shared.dao.SQLDialect;
-import org.sigmah.shared.dao.SiteTableDAO;
-import org.sigmah.shared.dao.UserDAO;
-import org.sigmah.shared.dao.UserDatabaseDAO;
-import org.sigmah.shared.dao.UserPermissionDAO;
-
-import com.google.inject.AbstractModule;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
-import com.google.inject.Provides;
-import com.google.inject.Singleton;
-import com.google.inject.matcher.Matchers;
-import com.google.inject.servlet.RequestScoped;
+import java.util.Properties;
 
 /**
  * Guice module that provides Hibernate-based implementations for the DAO-layer interfaces.
@@ -91,8 +68,6 @@ public class HibernateModule extends AbstractModule {
         bindDAOProxy(UserDatabaseDAO.class);
         bindDAOProxy(UserPermissionDAO.class);
         bind(UserDAO.class).to(UserDAOImpl.class);
-        bind(PersonalEventDAO.class).to(PersonalEventHibernateDAO.class);
-        bind(ProjectReportDAO.class).to(ProjectReportHibernateDAO.class);
     }
 
     private <T extends DAO> void bindDAOProxy(Class<T> daoClass) {

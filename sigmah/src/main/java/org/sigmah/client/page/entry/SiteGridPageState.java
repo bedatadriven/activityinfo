@@ -5,20 +5,18 @@
 
 package org.sigmah.client.page.entry;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.Frames;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.PageStateParser;
-import org.sigmah.client.page.TabPage;
 import org.sigmah.client.page.common.grid.AbstractPagingGridPageState;
 import org.sigmah.shared.dto.ActivityDTO;
 
+import java.util.Arrays;
+import java.util.List;
 
-public class SiteGridPageState extends AbstractPagingGridPageState implements TabPage {
+
+public class SiteGridPageState extends AbstractPagingGridPageState {
 
     private int activityId;
 
@@ -89,11 +87,6 @@ public class SiteGridPageState extends AbstractPagingGridPageState implements Ta
         return activityId;
     }
 
-    @Override
-    public String getTabTitle() {
-        return I18N.CONSTANTS.dataEntry();
-    }
-    
 
     public static class Parser implements PageStateParser {
 

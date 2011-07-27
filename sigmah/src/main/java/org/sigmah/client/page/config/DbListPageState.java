@@ -5,16 +5,14 @@
 
 package org.sigmah.client.page.config;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.Frames;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
-import org.sigmah.client.page.TabPage;
 
-public class DbListPageState implements PageState, TabPage {
+import java.util.Arrays;
+import java.util.List;
+
+public class DbListPageState implements PageState {
 
     public DbListPageState() {
         
@@ -43,11 +41,6 @@ public class DbListPageState implements PageState, TabPage {
     @Override
     public int hashCode() {
         return 0;
-    }
-
-    @Override
-    public String getTabTitle() {
-        return I18N.CONSTANTS.databases();
     }
 
 }

@@ -5,21 +5,9 @@
 
 package org.sigmah.shared.domain;
 
+import javax.persistence.*;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
-import org.sigmah.shared.domain.profile.OrgUnitProfile;
 
 /**
  * Describes a user
@@ -47,8 +35,6 @@ public class User implements java.io.Serializable {
     private String changePasswordKey;
     private Date dateChangePasswordKeyIssued;
     private String hashedPassword;
-    private Organization organization;
-    private OrgUnitProfile orgUnitWithProfiles;
 
     public User() {
     }
@@ -186,25 +172,6 @@ public class User implements java.io.Serializable {
     @Override
     public int hashCode() {
         return getEmail().hashCode();
-    }
-
-    @ManyToOne(optional = true)
-    @JoinColumn(name = "id_organization", nullable = true)
-    public Organization getOrganization() {
-        return organization;
-    }
-
-    public void setOrganization(Organization organization) {
-        this.organization = organization;
-    }
-
-    @OneToOne(mappedBy = "user", optional = true)
-    public OrgUnitProfile getOrgUnitWithProfiles() {
-        return orgUnitWithProfiles;
-    }
-
-    public void setOrgUnitWithProfiles(OrgUnitProfile orgUnitWithProfiles) {
-        this.orgUnitWithProfiles = orgUnitWithProfiles;
     }
 
     @Override

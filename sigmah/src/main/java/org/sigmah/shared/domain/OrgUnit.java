@@ -5,24 +5,9 @@
 
 package org.sigmah.shared.domain;
 
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
 
 /**
  * 
@@ -42,25 +27,13 @@ public class OrgUnit implements java.io.Serializable, SchemaElement {
     private Location location;
     private OrgUnit parent;
     private Set<OrgUnit> children = new HashSet<OrgUnit>(0);
-    private Organization organization;
     private Double plannedBudget;
     private Double spendBudget;
     private Double receivedBudget;
-    private OrgUnitModel orgUnitModel;
     private Integer calendarId;
     private Country officeLocationCountry;
 
     public OrgUnit() {
-    }
-
-    @OneToOne(fetch = FetchType.EAGER, optional = true)
-    @JoinColumn(name = "id_org_unit_model")
-    public OrgUnitModel getOrgUnitModel() {
-        return orgUnitModel;
-    }
-
-    public void setOrgUnitModel(OrgUnitModel orgUnitModel) {
-        this.orgUnitModel = orgUnitModel;
     }
 
     @Id
@@ -107,14 +80,6 @@ public class OrgUnit implements java.io.Serializable, SchemaElement {
         this.databases = databases;
     }
 
-    @ManyToOne
-    public Organization getOrganization() {
-        return organization;
-    }
-
-    public void setOrganization(Organization organization) {
-        this.organization = organization;
-    }
 
     /**
      * The point location of the OrgUnit, generally the city of its head office.

@@ -5,20 +5,18 @@
 
 package org.sigmah.client.page.config;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.Frames;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.PageStateParser;
-import org.sigmah.client.page.TabPage;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class AccountPageState implements PageState, TabPage {
+public class AccountPageState implements PageState {
 
 
     @Override
@@ -52,9 +50,5 @@ public class AccountPageState implements PageState, TabPage {
             return new AccountPageState();
         }
     }
-    
-    @Override
-    public String getTabTitle() {
-        return I18N.CONSTANTS.users();
-    }
+
 }

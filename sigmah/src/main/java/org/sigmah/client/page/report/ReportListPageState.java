@@ -5,20 +5,18 @@
 
 package org.sigmah.client.page.report;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
-import org.sigmah.client.page.TabPage;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Page State object
  *
  * @author Alex Bertram
  */
-public class ReportListPageState implements PageState, TabPage {
+public class ReportListPageState implements PageState {
 
     public PageId getPageId() {
         return ReportListPagePresenter.ReportHome;
@@ -32,8 +30,4 @@ public class ReportListPageState implements PageState, TabPage {
         return Arrays.asList(ReportListPagePresenter.ReportHome);
     }
 
-    @Override
-    public String getTabTitle() {
-        return I18N.CONSTANTS.reports();
-    }
 }

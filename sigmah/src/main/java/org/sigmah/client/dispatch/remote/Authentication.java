@@ -6,8 +6,6 @@
 package org.sigmah.client.dispatch.remote;
 
 import org.sigmah.shared.domain.User;
-import org.sigmah.shared.domain.profile.GlobalPermissionEnum;
-import org.sigmah.shared.dto.profile.ProfileDTO;
 
 /**
  * Encapsulates user identity and their authorization to access the server.
@@ -28,7 +26,6 @@ public class Authentication {
     private String userFirstName;
     private String completeName;
     private String shortName;
-    private ProfileDTO aggregatedProfile;
 
     /**
      * 
@@ -111,19 +108,6 @@ public class Authentication {
         this.orgUnitId = orgUnitId;
     }
 
-    /**
-     * 
-     * @return If the activityInfo menus has to been shown.
-     * @see {@link GlobalPermissionEnum#VIEW_ACTIVITYINFO}.
-     */
-    public boolean isShowMenus() {
-        return showMenus;
-    }
-
-    public void setShowMenus(boolean showMenus) {
-        this.showMenus = showMenus;
-    }
-
     public String getUserName() {
         return userName;
     }
@@ -138,14 +122,6 @@ public class Authentication {
 
     public void setUserFirstName(String userFirstName) {
         this.userFirstName = userFirstName;
-    }
-
-    public ProfileDTO getAggregatedProfile() {
-        return aggregatedProfile;
-    }
-
-    public void setAggregatedProfile(ProfileDTO aggregatedProfile) {
-        this.aggregatedProfile = aggregatedProfile;
     }
 
     /**
