@@ -67,6 +67,7 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
     private Set<OrgUnit> partners = new HashSet<OrgUnit>(0);
     private Set<Activity> activities = new HashSet<Activity>(0);
     private Set<UserPermission> userPermissions = new HashSet<UserPermission>(0);
+    private Set<Project2> projects = new HashSet<Project2>(0);
     private Date dateDeleted;
     private Date lastSchemaUpdate;
 
@@ -381,5 +382,16 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
     public void setLastSchemaUpdate(Date lastSchemaUpdate) {
         this.lastSchemaUpdate = lastSchemaUpdate;
     }
+
+	public void setProjects(Set<Project2> projects) {
+		this.projects = projects;
+	}
+	
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "database")
+    @org.hibernate.annotations.OrderBy(clause = "sortOrder")
+    @org.hibernate.annotations.Filter(name = "hideDeleted", condition = "DateDeleted is null")
+	public Set<Project2> getProjects() {
+		return projects;
+	}
 
 }

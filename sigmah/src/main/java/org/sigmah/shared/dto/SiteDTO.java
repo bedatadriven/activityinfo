@@ -290,6 +290,14 @@ public final class SiteDTO extends BaseModelData implements EntityDTO {
 	public Boolean getAttributeValue(int attributeId) {
 		return get(AttributeDTO.getPropertyName(attributeId));
 	}
+	
+	public Project2DTO getProject() {
+		return (Project2DTO)get("project");
+	}
+	
+	public void setProject(Project2DTO project) {
+		set("project", project);
+	}
 
     /**
      * Tests equality based on id

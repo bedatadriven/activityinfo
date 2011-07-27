@@ -21,6 +21,7 @@ public final class UserDatabaseDTO extends BaseModelData implements EntityDTO, P
 	private List<PartnerDTO> partners = new ArrayList<PartnerDTO>(0);
 	private List<ActivityDTO> activities = new ArrayList<ActivityDTO>(0);
 	private List<LockedPeriodDTO> lockedPeriods = new ArrayList<LockedPeriodDTO>(0);
+	private List<Project2DTO> projects = new ArrayList<Project2DTO>(0);
 
     public UserDatabaseDTO() {
 	}
@@ -146,8 +147,16 @@ public final class UserDatabaseDTO extends BaseModelData implements EntityDTO, P
 	public void setPartners(List<PartnerDTO> partners) {
 		this.partners = partners;
 	}
+	
+    public List<Project2DTO> getProjects() {
+		return projects;
+	}
 
-    /**
+	public void setProjects(List<Project2DTO> projects) {
+		this.projects = projects;
+	}
+
+	/**
      * Sets the permission of the current user to view all partner's data in this UserDatabase.
      * See {@link org.sigmah.shared.domain.UserPermission#setAllowViewAll(boolean)}
      */

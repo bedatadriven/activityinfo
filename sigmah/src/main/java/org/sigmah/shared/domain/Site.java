@@ -53,6 +53,7 @@ public class Site implements java.io.Serializable, Deleteable {
 	
 	private Activity activity;
 	private Location location;
+	private Project2 project;
 	
 	private String siteGuid;
 	private OrgUnit partner;
@@ -74,6 +75,7 @@ public class Site implements java.io.Serializable, Deleteable {
 	private String comments;
 	
 	private Set<Site> interventions = new HashSet<Site>(0);
+	
 
     public Site() {
 		Date now = new Date();
@@ -415,4 +417,14 @@ public class Site implements java.io.Serializable, Deleteable {
     public void setTarget(int target) {
         this.target = target;
     }
+
+	public void setProject(Project2 project) {
+		this.project = project;
+	}
+
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="ProjectId", nullable=false)
+	public Project2 getProject() {
+		return project;
+	}
 }
