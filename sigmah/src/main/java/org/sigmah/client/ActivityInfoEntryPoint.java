@@ -6,6 +6,7 @@
 package org.sigmah.client;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.bedatadriven.rebar.appcache.client.AppCacheFactory;
 import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.util.Theme;
 import com.google.gwt.core.client.EntryPoint;
@@ -27,6 +28,7 @@ public class ActivityInfoEntryPoint implements EntryPoint {
 	public void onModuleLoad() {
 
         Log.info("Application: onModuleLoad starting");
+        Log.info("Application Permutation: " + GWT.getPermutationStrongName());
 
         if(!GWT.isScript()) {
             Log.setCurrentLogLevel(Log.LOG_LEVEL_TRACE);
