@@ -2,14 +2,14 @@ package org.sigmah.shared.dto;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
-public class Project2DTO extends BaseModelData implements DTO {
+public class ProjectDTO extends BaseModelData implements DTO {
 	private String description;
-	public Project2DTO() {
+	public ProjectDTO() {
 		super();
 	}
 
 //	public Project2DTO(int id, String name, int siteId) {
-	public Project2DTO(int id, String name) {
+	public ProjectDTO(int id, String name) {
 		super();
 		
 		setId(id);

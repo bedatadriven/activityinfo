@@ -33,6 +33,6 @@ public class PersistentClasses {
             AdminEntity.class,
             AdminLevel.class,
             Country.class,
-            Project2.class
+            Project.class
     };
 }

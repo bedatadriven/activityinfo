@@ -21,7 +21,7 @@ public final class UserDatabaseDTO extends BaseModelData implements EntityDTO, P
 	private List<PartnerDTO> partners = new ArrayList<PartnerDTO>(0);
 	private List<ActivityDTO> activities = new ArrayList<ActivityDTO>(0);
 	private List<LockedPeriodDTO> lockedPeriods = new ArrayList<LockedPeriodDTO>(0);
-	private List<Project2DTO> projects = new ArrayList<Project2DTO>(0);
+	private List<ProjectDTO> projects = new ArrayList<ProjectDTO>(0);
 
     public UserDatabaseDTO() {
 	}
@@ -148,11 +148,11 @@ public final class UserDatabaseDTO extends BaseModelData implements EntityDTO, P
 		this.partners = partners;
 	}
 	
-    public List<Project2DTO> getProjects() {
+    public List<ProjectDTO> getProjects() {
 		return projects;
 	}
 
-	public void setProjects(List<Project2DTO> projects) {
+	public void setProjects(List<ProjectDTO> projects) {
 		this.projects = projects;
 	}
 

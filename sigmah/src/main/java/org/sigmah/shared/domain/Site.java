@@ -41,7 +41,7 @@ public class Site implements java.io.Serializable, Deleteable {
 	
 	private Activity activity;
 	private Location location;
-	private Project2 project;
+	private Project project;
 	
 	private String siteGuid;
 	private OrgUnit partner;
@@ -406,13 +406,13 @@ public class Site implements java.io.Serializable, Deleteable {
         this.target = target;
     }
 
-	public void setProject(Project2 project) {
+	public void setProject(Project project) {
 		this.project = project;
 	}
 
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="ProjectId", nullable=true)
-	public Project2 getProject() {
+	public Project getProject() {
 		return project;
 	}
 }

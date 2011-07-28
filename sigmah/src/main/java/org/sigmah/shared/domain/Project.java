@@ -9,18 +9,18 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class Project2 {
+public class Project {
 	private int id;
 	private String name;
 	private int siteId;
 	private String description;
 	private Date dateDeleted;
 	
-	public Project2() {
+	public Project() {
 		super();
 	}
 
-	public Project2(int id, String name, int siteId) {
+	public Project(int id, String name, int siteId) {
 		super();
 		this.id = id;
 		this.name = name;

@@ -291,11 +291,11 @@ public final class SiteDTO extends BaseModelData implements EntityDTO {
 		return get(AttributeDTO.getPropertyName(attributeId));
 	}
 	
-	public Project2DTO getProject() {
-		return (Project2DTO)get("project");
+	public ProjectDTO getProject() {
+		return (ProjectDTO)get("project");
 	}
 	
-	public void setProject(Project2DTO project) {
+	public void setProject(ProjectDTO project) {
 		set("project", project);
 	}
 

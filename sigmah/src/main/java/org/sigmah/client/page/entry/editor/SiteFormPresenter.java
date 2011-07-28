@@ -20,7 +20,7 @@ import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.PartnerDTO;
-import org.sigmah.shared.dto.Project2DTO;
+import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
@@ -100,8 +100,8 @@ public class SiteFormPresenter implements SiteFormLeash {
         return store;
     }
     
-    protected ListStore<Project2DTO> createProjectStore() {
-    	return new ListStore<Project2DTO>();
+    protected ListStore<ProjectDTO> createProjectStore() {
+    	return new ListStore<ProjectDTO>();
     	// TODO: implement
     }
 
