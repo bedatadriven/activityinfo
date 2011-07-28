@@ -737,6 +737,7 @@
                                 <configuration>
                                     <draftCompile>true</draftCompile>
                                     <module>org.sigmah.ActivityInfoFFTest</module>
+                                    <style>pretty</style>
                                 </configuration>
                                 <goals>
                                     <goal>compile</goal>
@@ -791,6 +792,9 @@
 
 		<profile>
 			<id>continuous-deployment</id>
+			<properties>
+            	<display.version>${project.version}-b${BUILD_NUMBER}</display.version>
+            </properties>
 			<build>
 				<plugins>
 					<plugin>
@@ -801,8 +805,8 @@
 						<configuration>
 							<applicationName>activityinfo</applicationName>
 							<s3Bucket>activityinfo-wars</s3Bucket>
-							<s3Key>${project.version}-${git.commit.id.abbrev}-${maven.build.timestamp}.war</s3Key>
-							<versionLabel>${project.version}-${git.commit.id.abbrev}-${maven.build.timestamp}</versionLabel>
+							<s3Key>${project.version}-${git.commit.id.abbrev}-${BUILD_NUMBER}.war</s3Key>
+							<versionLabel>${project.version}-${git.commit.id.abbrev}-${BUILD_NUMBER}</versionLabel>
 							<environmentName>activityinfo-testing</environmentName>
 							<cnamePrefix>activityinfo-testing</cnamePrefix>
 						</configuration>
