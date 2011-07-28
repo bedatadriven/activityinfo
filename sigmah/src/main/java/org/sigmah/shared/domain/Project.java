@@ -1,30 +1,35 @@
 package org.sigmah.shared.domain;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
-public class Project {
+public class Project implements Serializable {
 	private int id;
 	private String name;
-	private int siteId;
+//	private int userDatabaseId;
 	private String description;
 	private Date dateDeleted;
+	private UserDatabase database;
 	
 	public Project() {
 		super();
 	}
 
-	public Project(int id, String name, int siteId) {
+	public Project(int id, String name) {//, int userDatabaseId) {
 		super();
 		this.id = id;
 		this.name = name;
-		this.siteId = siteId;
+//		this.userDatabaseId = userDatabaseId;
 	}
 
 	@Id
@@ -47,13 +52,14 @@ public class Project {
 		this.name = name;
 	}
 	
-	public int getSiteId() {
-		return siteId;
-	}
-	
-	public void setSiteId(int siteId) {
-		this.siteId = siteId;
-	}
+
+//	public int getUserDatabaseId() {
+//		return userDatabaseId;
+//	}
+//	
+//	public void setUserDatabaseId(int userDatabaseId) {
+//		this.userDatabaseId = userDatabaseId;
+//	}
 
 	public void setDescription(String description) {
 		this.description = description;
@@ -71,4 +77,15 @@ public class Project {
 	public Date getDateDeleted() {
 		return dateDeleted;
 	}
+
+	public void setDatabase(UserDatabase database) {
+		this.database = database;
+	}
+	
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "DatabaseId", nullable = false)
+	public UserDatabase getDatabase() {
+		return database;
+	}
+
 }

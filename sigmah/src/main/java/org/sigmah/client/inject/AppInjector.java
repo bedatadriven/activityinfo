@@ -28,6 +28,7 @@ import org.sigmah.client.page.config.ConfigNavigator;
 import org.sigmah.client.page.config.DbConfigPresenter;
 import org.sigmah.client.page.config.DbListPage;
 import org.sigmah.client.page.config.DbPartnerEditor;
+import org.sigmah.client.page.config.DbProjectEditor;
 import org.sigmah.client.page.config.DbUserEditor;
 import org.sigmah.client.page.config.design.DesignPresenter;
 import org.sigmah.client.page.entry.DataEntryLoader;
@@ -87,6 +88,8 @@ public interface AppInjector extends Ginjector {
     DbUserEditor getDbUserEditor();
 
     DbPartnerEditor getDbPartnerEditor();
+    
+    DbProjectEditor getDbProjectEditor();
 
     DesignPresenter getDesigner();
 

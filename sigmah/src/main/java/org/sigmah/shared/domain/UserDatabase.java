@@ -385,8 +385,8 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
 	}
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "database")
-    @org.hibernate.annotations.OrderBy(clause = "sortOrder")
-    @org.hibernate.annotations.Filter(name = "hideDeleted", condition = "DateDeleted is null")
+//    @org.hibernate.annotations.OrderBy(clause = "sortOrder")
+//    @org.hibernate.annotations.Filter(name = "hideDeleted", condition = "DateDeleted is null")
 	public Set<Project> getProjects() {
 		return projects;
 	}

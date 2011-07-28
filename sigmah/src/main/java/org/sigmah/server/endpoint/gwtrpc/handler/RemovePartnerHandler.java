@@ -62,7 +62,6 @@ public class RemovePartnerHandler implements CommandHandler<RemovePartner> {
 
         db.getPartners().remove(em.getReference(OrgUnit.class, cmd.getPartnerId()));
 
-
         return new VoidResult();
     }
 }

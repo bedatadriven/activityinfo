@@ -37,6 +37,7 @@ public class AddProjectHandler implements CommandHandler<AddProject> {
         Project project = new Project();
         project.setName(from.getName());
         project.setDescription(from.getDescription());
+        project.setDatabase(db);
 
         em.persist(project);
         db.getProjects().add(project);

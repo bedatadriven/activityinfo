@@ -14,8 +14,6 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
  * @author Alex Bertram
  */
 abstract class AbstractDesignForm extends FormPanel {
-
-
     public abstract FormBinding getBinding();
 
     public int getPreferredDialogWidth() {
@@ -23,8 +21,6 @@ abstract class AbstractDesignForm extends FormPanel {
     }
 
     public int getPreferredDialogHeight() {
-
         return 300;
-
     }
 }

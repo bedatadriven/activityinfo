@@ -15,6 +15,7 @@ import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.dao.UserDatabaseDAO;
 import org.sigmah.shared.domain.Activity;
 import org.sigmah.shared.domain.OrgUnit;
+import org.sigmah.shared.domain.Project;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.UserDatabase;
 import org.sigmah.shared.domain.UserPermission;
@@ -22,6 +23,7 @@ import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.DTOMapper;
 import org.sigmah.shared.dto.PartnerDTO;
+import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 import org.sigmah.shared.exception.CommandException;
@@ -113,6 +115,10 @@ public class GetSchemaHandler implements CommandHandler<GetSchema> {
 
             for (OrgUnit partner : database.getPartners()) {
                 databaseDTO.getPartners().add(mapper.map(partner, PartnerDTO.class));
+            }
+            
+            for (Project project : database.getProjects()) {
+            	databaseDTO.getProjects().add(mapper.map(project, ProjectDTO.class));
             }
             
             for (Activity activity : database.getActivities()) {
