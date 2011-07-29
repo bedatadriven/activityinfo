@@ -29,7 +29,7 @@ public class ProjectFieldSet extends FieldSet implements ProjectPresenter.View {
 		comboboxProjects.setDisplayField("name");
 		comboboxProjects.setEditable(false);
 		comboboxProjects.setTriggerAction(ComboBox.TriggerAction.ALL);
-		comboboxProjects.setFieldLabel(I18N.CONSTANTS.projectName());
+		comboboxProjects.setFieldLabel(I18N.CONSTANTS.project());
 		comboboxProjects.setForceSelection(true);
 		comboboxProjects.setAllowBlank(false);
 		
@@ -37,7 +37,7 @@ public class ProjectFieldSet extends FieldSet implements ProjectPresenter.View {
 	}
 
 	private void initializeComponent() {
-		setHeading(I18N.CONSTANTS.projectName());
+		setHeading(I18N.CONSTANTS.project());
 		setCollapsible(false);
 	}
 

@@ -308,7 +308,7 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
         for(int r=0; r!=grid.getStore().getCount(); ++r) {
             if(grid.getStore().getAt(r).getId() == siteId) {
                 grid.getView().ensureVisible(r, 0, false);
-                ((CellSelectionModel) grid.getSelectionModel()).selectCell(r, 0);
+                ((CellSelectionModel<SiteDTO>) grid.getSelectionModel()).selectCell(r, 0);
             }
         }
     }
