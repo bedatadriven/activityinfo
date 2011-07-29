@@ -20,6 +20,7 @@ import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.PartnerDTO;
+import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.test.InjectionSupport;
@@ -82,6 +83,7 @@ public class CreateSiteTest extends CommandTestCase {
         newSite.setX(27.432);
         newSite.setY(1.23);
         newSite.setComments("huba huba");
+        newSite.setProject(new ProjectDTO(1,"SomeProject"));
 
         // create command
 
@@ -89,7 +91,8 @@ public class CreateSiteTest extends CommandTestCase {
 
         // execute the command
 
-        setUser(1);
+        setUser(1);        newSite.setProject(new ProjectDTO(1,"SomeProject"));
+
 
         CreateResult result = (CreateResult) execute(cmd);
         newSite.setId(result.getNewId());
@@ -121,6 +124,7 @@ public class CreateSiteTest extends CommandTestCase {
         newSite.setLocationName("Virunga");
         newSite.setAttributeValue(1, false);
         newSite.setAttributeValue(2, false);
+        newSite.setProject(new ProjectDTO(1,"SomeProject"));
 
         // create command
 
