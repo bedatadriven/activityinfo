@@ -37,4 +37,7 @@ public class ProjectPresenter {
 		this.view.setStore(store);
 	}
 
+	public ProjectPresenter.View getView() {
+		return view;
+	}
 }

@@ -166,8 +166,10 @@ public class SiteFormPresenter implements SiteFormLeash {
     }
     
     private void addProjectIdToMap(Map<String, Object> map) {
-        int projectId = currentSite.getProject() == null ? 0 : currentSite.getProject().getId();
+    	
+        int projectId = projectPresenter.getView().getProject() == null ? 0 : projectPresenter.getView().getProject().getId();
         map.put("projectId", projectId);
+        map.remove("project");
     }
 
     public void onSave() {
@@ -205,7 +207,6 @@ public class SiteFormPresenter implements SiteFormLeash {
             properties.putAll(adminPresenter.getPropertyMap());
             properties.put("activityId", currentActivity.getId());
             addProjectIdToMap(properties);
-            properties.remove("project");
             
             // hack: we need to send partnerId instead of partner.id, but the
             // nonsense form binding that i set up here doesn't support custom bindings
