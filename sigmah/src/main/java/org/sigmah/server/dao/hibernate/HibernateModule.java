@@ -5,17 +5,39 @@
 
 package org.sigmah.server.dao.hibernate;
 
-import com.google.inject.*;
-import com.google.inject.matcher.Matchers;
-import com.google.inject.servlet.RequestScoped;
-import org.hibernate.ejb.HibernateEntityManager;
-import org.sigmah.server.dao.*;
-import org.sigmah.shared.dao.*;
+import java.util.Properties;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import java.util.Properties;
+
+import org.hibernate.ejb.HibernateEntityManager;
+import org.sigmah.server.dao.AuthenticationDAO;
+import org.sigmah.server.dao.LocationDAO;
+import org.sigmah.server.dao.PartnerDAO;
+import org.sigmah.server.dao.ReportDefinitionDAO;
+import org.sigmah.server.dao.ReportingPeriodDAO;
+import org.sigmah.server.dao.SiteDAO;
+import org.sigmah.server.dao.Transactional;
+import org.sigmah.shared.dao.ActivityDAO;
+import org.sigmah.shared.dao.AdminDAO;
+import org.sigmah.shared.dao.CountryDAO;
+import org.sigmah.shared.dao.DAO;
+import org.sigmah.shared.dao.IndicatorDAO;
+import org.sigmah.shared.dao.ProjectDAO;
+import org.sigmah.shared.dao.SiteTableDAO;
+import org.sigmah.shared.dao.SqlDialect;
+import org.sigmah.shared.dao.UserDAO;
+import org.sigmah.shared.dao.UserDatabaseDAO;
+import org.sigmah.shared.dao.UserPermissionDAO;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
+import com.google.inject.matcher.Matchers;
+import com.google.inject.servlet.RequestScoped;
 
 /**
  * Guice module that provides Hibernate-based implementations for the DAO-layer interfaces.

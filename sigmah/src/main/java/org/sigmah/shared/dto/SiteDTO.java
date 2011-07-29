@@ -119,6 +119,11 @@ public final class SiteDTO extends BaseModelData implements EntityDTO {
 		
 		return partner.getName();
 	}
+    
+    
+    public String getProjectName() {
+		return getProject() == null ? null : getProject().getName();
+    }
 
     /**
      * @return the instance of the Partner who owns this Site

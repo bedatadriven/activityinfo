@@ -5,6 +5,8 @@
 
 package org.sigmah.server.dao;
 
+import java.util.List;
+
 import org.sigmah.shared.dao.DAO;
 import org.sigmah.shared.domain.Location;
 
@@ -43,4 +45,5 @@ public interface LocationDAO extends DAO<Location, Integer> {
      */
     void removeMembership(int locationId, int adminLevelId);
     
+    List<Location> allWithoutCoordinates();
 }

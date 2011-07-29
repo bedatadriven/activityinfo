@@ -5,7 +5,10 @@
 
 package org.sigmah.server.dao.hibernate;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.sigmah.server.dao.LocationDAO;
 import org.sigmah.shared.domain.AdminEntity;
@@ -53,4 +56,12 @@ public class LocationHibernateDAO extends GenericDAO<Location, Integer> implemen
                 .setParameter(2, adminLevelId)
                 .executeUpdate();
     }
+    
+	@Override
+	public List<Location> allWithoutCoordinates() {
+		Query query = em.createNativeQuery(
+				"SELECT * FROM location l where x is null and y is null", Location.class);
+		
+		return query.getResultList();
+	}
 }
