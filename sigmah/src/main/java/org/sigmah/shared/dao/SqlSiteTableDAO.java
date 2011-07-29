@@ -27,10 +27,10 @@ import com.google.inject.Inject;
 
 public class SqlSiteTableDAO implements SiteTableDAO {
     private final Connection connection;
-    private final SQLDialect dialect;
+    private final SqlDialect dialect;
 
     @Inject
-    public SqlSiteTableDAO(Connection connection, SQLDialect dialect) {
+    public SqlSiteTableDAO(Connection connection, SqlDialect dialect) {
         this.connection = connection;
         this.dialect = dialect;
     }

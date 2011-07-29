@@ -14,9 +14,11 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.widget.LoadingPlaceHolder;
 import org.sigmah.client.page.config.form.ModelFormPanel;
+import org.sigmah.client.page.entry.editor.ProjectPresenter.View;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.PartnerDTO;
+import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.SiteDTO;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
@@ -29,6 +31,7 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
 
     protected SiteFormPresenter presenter;
     protected ActivityDTO activity;
+    protected SiteDTO site;
 
     private ActivityFieldSet activityFieldSet;
     private LocationFieldSet locationFieldSet;
@@ -36,7 +39,7 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
     private AttributeFieldSet attributeFieldSet;
     private IndicatorFieldSet indicatorFieldSet;
     private CommentFieldSet commentFieldSet;
-
+    private ProjectFieldSet projectFieldSet;
 
     public SiteForm() {
         this.setBodyStyle("padding: 3px");
@@ -51,29 +54,29 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
     public void init(SiteFormPresenter presenter,
                      ActivityDTO activity,
                      ListStore<PartnerDTO> partnerStore,
-                     ListStore<SiteDTO> assessmentStore) {
+                     ListStore<SiteDTO> assessmentStore, ListStore<ProjectDTO> projectStore) {
 
         removeAll();
         setLayout(new FlowLayout());
 
         this.presenter = presenter;
         this.activity = activity;
+        this.site=site;
 
         this.setLayout(new FlowLayout());
         this.setScrollMode(Scroll.AUTOY);
         this.setHeading(activity.getName());
 
         // ACTIVITY fieldset
-
         activityFieldSet = new ActivityFieldSet(activity, partnerStore, assessmentStore);
         add(activityFieldSet);
-
+        
+        add(projectFieldSet);
+        
         // LOCATION fieldset
-
         add(locationFieldSet);
 
         // GEO POSITION
-
         add((FieldSet) mapView);
 
         if (Maps.isLoaded()) {
@@ -84,7 +87,6 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
         }
 
         // ATTRIBUTE fieldset
-
         if (activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE) {
 
             attributeFieldSet = new AttributeFieldSet(activity);
@@ -99,7 +101,6 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
         }
 
         // COMMENT
-
         commentFieldSet = new CommentFieldSet();
         add(commentFieldSet);
 
@@ -121,7 +122,6 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
 
     @Override
     public AdminFieldSetPresenter.View createAdminFieldSetView(ActivityDTO activity) {
-
         locationFieldSet = new LocationFieldSet(activity);
 
         return locationFieldSet;
@@ -174,4 +174,15 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
     		map.remove("partner");
     	}
     }
+
+
+	@Override
+	public View createProjectView(ProjectDTO project) {
+        projectFieldSet = new ProjectFieldSet(site);
+        add(projectFieldSet);
+        
+        layout();
+        
+        return projectFieldSet;
+	}
 }

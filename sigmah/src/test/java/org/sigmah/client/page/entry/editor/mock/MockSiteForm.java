@@ -13,10 +13,12 @@ import java.util.Set;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.page.entry.editor.AdminFieldSetPresenter;
 import org.sigmah.client.page.entry.editor.MapPresenter;
+import org.sigmah.client.page.entry.editor.ProjectPresenter;
 import org.sigmah.client.page.entry.editor.SiteFormPresenter;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.PartnerDTO;
+import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.SiteDTO;
 
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -27,14 +29,18 @@ import com.extjs.gxt.ui.client.store.ListStore;
 public class MockSiteForm implements SiteFormPresenter.View {
 
     public MockAdminFieldSet adminFieldSet = new MockAdminFieldSet();
+    public MockProjectFieldSet projectFieldSet = new MockProjectFieldSet();
     public MockMapView mapView = new MockMapView();
     public Map<String, Object> changes = new HashMap<String, Object>();
     public Set<String> disabledActions = new HashSet<String>();
     public Map<String, Object> properties = new HashMap<String, Object>();
 
-    public void init(SiteFormPresenter presenter, ActivityDTO activity, ListStore<PartnerDTO> partnerStore, ListStore<SiteDTO> assessmentStore) {
-
-    }
+	@Override
+	public void init(SiteFormPresenter presenter, ActivityDTO activity,
+			ListStore<PartnerDTO> partnerStore,
+			ListStore<SiteDTO> assessmentStore,
+			ListStore<ProjectDTO> projectStore) {
+	}
 
     public void setSite(SiteDTO site) {
         properties = site.getProperties();
@@ -87,6 +93,13 @@ public class MockSiteForm implements SiteFormPresenter.View {
         return false;
     }
 
-    public void hide() {
+    public void hide() { 
     }
+
+	@Override
+	public ProjectPresenter.View createProjectView(ProjectDTO project) {
+		return projectFieldSet; 
+	}
+
+
 }

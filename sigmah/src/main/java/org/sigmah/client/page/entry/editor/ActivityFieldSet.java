@@ -20,8 +20,7 @@ import com.extjs.gxt.ui.client.widget.form.Validator;
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class
-        ActivityFieldSet extends AbstractFieldSet {
+public class ActivityFieldSet extends AbstractFieldSet {
     private DateField dateField1;
     private DateField dateField2;
 
@@ -34,14 +33,15 @@ public class
 		databaseField.setValue(activity.getDatabase().getName());
 		databaseField.setFieldLabel(I18N.CONSTANTS.database());
 		databaseField.setReadOnly(true);
+		databaseField.setEnabled(false);
 		add(databaseField);
 
 		TextField<String> activityField = new TextField<String>();
 		activityField.setValue(activity.getName());
 		activityField.setFieldLabel(I18N.CONSTANTS.activity());
 		activityField.setReadOnly(true);
+		activityField.setEnabled(false);
 		add(activityField);
-
 
 		ComboBox<PartnerDTO> partnerCombo = new ComboBox<PartnerDTO>();
 		partnerCombo.setName("partner");

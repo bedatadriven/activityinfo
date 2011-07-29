@@ -166,7 +166,6 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
         }
     }
 
-
     public void addSubComponent(Shutdownable subComponent) {
         subComponents.add(subComponent);
     }

@@ -43,7 +43,6 @@ public class IndicatorFieldSet extends FieldSet {
             }
 
             for(IndicatorDTO indicator : group.getIndicators()) {
-
                 if(indicator.isCollectIntervention()) {
                     addIndicator(indicator);
                 }
@@ -62,7 +61,6 @@ public class IndicatorFieldSet extends FieldSet {
         header.setStyleAttribute("marginTop", "6pt");
 
         add(header, layoutData);
-        
     }
 
     protected void addIndicator(IndicatorDTO indicator) {

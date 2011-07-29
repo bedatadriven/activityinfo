@@ -5,10 +5,22 @@
 
 package org.sigmah.shared.domain;
 
-import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 /**
  * Concrete realization of
@@ -38,10 +50,10 @@ public class Site implements java.io.Serializable, Deleteable {
 
 	private int id;
     private Site assessment;
-	
+	private Project project;
+
 	private Activity activity;
 	private Location location;
-	private Project project;
 	
 	private String siteGuid;
 	private OrgUnit partner;
@@ -405,7 +417,8 @@ public class Site implements java.io.Serializable, Deleteable {
     public void setTarget(int target) {
         this.target = target;
     }
-
+    
+    
 	public void setProject(Project project) {
 		this.project = project;
 	}

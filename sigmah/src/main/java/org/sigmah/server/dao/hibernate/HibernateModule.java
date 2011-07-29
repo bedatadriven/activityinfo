@@ -50,7 +50,7 @@ public class HibernateModule extends AbstractModule {
     }
 
     private void configureDialects() {
-        bind(SQLDialect.class).toProvider(SQLDialectProvider.class).in(Singleton.class);
+        bind(SqlDialect.class).toProvider(SQLDialectProvider.class).in(Singleton.class);
     }
 
     protected void configureDAOs() {
@@ -65,6 +65,7 @@ public class HibernateModule extends AbstractModule {
         bindDAOProxy(PartnerDAO.class);
         bind(SiteTableDAO.class).to(HibernateSiteTableDAO.class);
         bind(SiteDAO.class).to(SiteHibernateDAO.class);
+        bind(ProjectDAO.class).to(ProjectHibernateDAO.class);
         bindDAOProxy(UserDatabaseDAO.class);
         bindDAOProxy(UserPermissionDAO.class);
         bind(UserDAO.class).to(UserDAOImpl.class);

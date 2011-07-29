@@ -10,9 +10,11 @@ import java.util.Map;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.page.common.dialog.FormDialogImpl;
 import org.sigmah.client.page.common.toolbar.UIActions;
+import org.sigmah.client.page.entry.editor.ProjectPresenter.View;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.PartnerDTO;
+import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.SiteDTO;
 
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -47,10 +49,10 @@ public class SiteFormDialog extends FormDialogImpl<SiteForm> implements SiteForm
         return this;
     }
 
-    public void init(SiteFormPresenter presenter, ActivityDTO activity, ListStore<PartnerDTO> partnerStore, ListStore<SiteDTO> assessmentStore) {
+    public void init(SiteFormPresenter presenter, ActivityDTO activity, ListStore<PartnerDTO> partnerStore, ListStore<SiteDTO> assessmentStore, ListStore<ProjectDTO> projectStore) {
         this.presenter = presenter;
         this.activity = activity;
-        form.init(presenter, activity, partnerStore, assessmentStore);
+        form.init(presenter, activity, partnerStore, assessmentStore, projectStore);
 
     }
 
@@ -101,4 +103,9 @@ public class SiteFormDialog extends FormDialogImpl<SiteForm> implements SiteForm
     public Map<String, Object> getPropertyMap() {
         return form.getPropertyMap();
     }
+
+	@Override
+	public View createProjectView(ProjectDTO project) {
+		return form.createProjectView(null);
+	}
 }

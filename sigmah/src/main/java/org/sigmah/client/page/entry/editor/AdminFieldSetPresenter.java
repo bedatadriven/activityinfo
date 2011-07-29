@@ -101,9 +101,7 @@ public class AdminFieldSetPresenter {
                 (selected != null && selection.get(levelId) != null &&
                         selected.getId() != selection.get(levelId).getId())) {
 
-
             selection.put(levelId, selected);
-
 
             // clear the value of child levels and
             // reconfigure loaders

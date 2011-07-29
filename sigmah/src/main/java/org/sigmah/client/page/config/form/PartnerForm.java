@@ -42,8 +42,6 @@ public class PartnerForm extends FormPanel {
 		operationalField.setName("operational");
 		operationalField.setFieldLabel(constants.operational());
 		this.add(operationalField);
-
-
 	}
 
     public FormBinding getBinding() {

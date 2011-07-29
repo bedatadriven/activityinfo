@@ -312,4 +312,7 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO, Provi
 	public String getKey() {
 		return "act" + getId();
 	}
+	
+	
+
 }

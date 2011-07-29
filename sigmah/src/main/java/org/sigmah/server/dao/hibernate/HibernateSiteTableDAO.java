@@ -13,7 +13,7 @@ import java.util.List;
 import org.hibernate.ejb.HibernateEntityManager;
 import org.hibernate.jdbc.Work;
 import org.sigmah.shared.dao.Filter;
-import org.sigmah.shared.dao.SQLDialect;
+import org.sigmah.shared.dao.SqlDialect;
 import org.sigmah.shared.dao.SiteOrder;
 import org.sigmah.shared.dao.SiteProjectionBinder;
 import org.sigmah.shared.dao.SiteTableDAO;
@@ -29,11 +29,11 @@ import com.google.inject.Inject;
 public class HibernateSiteTableDAO implements SiteTableDAO {
 
     private HibernateEntityManager entityManager;
-    private SQLDialect dialect;
+    private SqlDialect dialect;
 
 
     @Inject
-    public HibernateSiteTableDAO(HibernateEntityManager em, SQLDialect dialect) {
+    public HibernateSiteTableDAO(HibernateEntityManager em, SqlDialect dialect) {
         this.entityManager = em;
         this.dialect = dialect;
     }

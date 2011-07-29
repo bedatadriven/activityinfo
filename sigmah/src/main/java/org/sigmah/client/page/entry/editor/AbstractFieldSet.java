@@ -22,6 +22,4 @@ public class AbstractFieldSet extends FieldSet {
 		this.setLayout(layout);
 		this.setCollapsible(false);
     }
-
-
 }

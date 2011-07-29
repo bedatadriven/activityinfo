@@ -15,7 +15,7 @@ package org.sigmah.shared.dao;
  *
  * @author Alex Bertram
  */
-public interface SQLDialect {
+public interface SqlDialect {
 
     /**
      * @param expression a valid SQL expression

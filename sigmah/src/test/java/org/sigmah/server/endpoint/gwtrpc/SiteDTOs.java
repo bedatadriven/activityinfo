@@ -4,6 +4,7 @@ import java.util.GregorianCalendar;
 
 import org.junit.Assert;
 import org.sigmah.shared.dto.PartnerDTO;
+import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.SiteDTO;
 
 public class SiteDTOs {
@@ -24,6 +25,7 @@ public class SiteDTOs {
 	    newSite.setAttributeValue(1, true);
 	    newSite.setAttributeValue(2, false);
 	    newSite.setComments("huba huba");
+	    newSite.setProject(new ProjectDTO(1, "WoeiProject"));
 		return newSite;
 	}
 

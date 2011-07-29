@@ -99,7 +99,7 @@ public class SiteFormLoader {
         SiteFormDialog dlg = new SiteFormDialog(form);
 
         SiteFormPresenter presenter = new SiteFormPresenter(eventBus, dataConn, activity, dlg);
-        presenter.setSite(site);
+        presenter.setSite(site); 
 
         monitor.onCompleted();
 

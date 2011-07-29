@@ -13,16 +13,16 @@ import javax.persistence.EntityManagerFactory;
 
 import org.hibernate.ejb.HibernateEntityManager;
 import org.hibernate.jdbc.Work;
-import org.sigmah.shared.dao.SQLDialect;
+import org.sigmah.shared.dao.SqlDialect;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 @Singleton
-public class SQLDialectProvider implements Provider<SQLDialect> {
+public class SQLDialectProvider implements Provider<SqlDialect> {
 
-    private SQLDialect dialect;
+    private SqlDialect dialect;
 
     @Inject
     public SQLDialectProvider(EntityManagerFactory emf)  {
@@ -35,7 +35,7 @@ public class SQLDialectProvider implements Provider<SQLDialect> {
 
     }
 
-    public static SQLDialect from(EntityManager entityManager) {
+    public static SqlDialect from(EntityManager entityManager) {
         SQLDialectProvider provider = new SQLDialectProvider();
         provider.init((HibernateEntityManager) entityManager);
         return provider.get();
@@ -63,11 +63,11 @@ public class SQLDialectProvider implements Provider<SQLDialect> {
 
 
     @Override
-    public SQLDialect get() {
+    public SqlDialect get() {
         return dialect;
     }
 
-    private static class DefaultDialect implements SQLDialect {
+    private static class DefaultDialect implements SqlDialect {
         @Override
         public String yearFunction(String column) {
             return "YEAR(" + column + ")";

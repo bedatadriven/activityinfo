@@ -20,7 +20,7 @@ import org.sigmah.shared.command.GetAdminEntities;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.command.handler.GetSitesHandler;
-import org.sigmah.shared.dao.SQLDialect;
+import org.sigmah.shared.dao.SqlDialect;
 import org.sigmah.shared.dao.SiteTableDAO;
 import org.sigmah.shared.dao.SqlSiteTableDAO;
 import org.sigmah.shared.dao.SqliteDialect;
@@ -45,7 +45,7 @@ public class OfflineModule extends AbstractGinModule {
         bind(BulkUpdaterAsync.class).to(GearsBulkUpdater.class);
 
         //DAOs for off-line
-        bind(SQLDialect.class).to(SqliteDialect.class).in(Singleton.class);
+        bind(SqlDialect.class).to(SqliteDialect.class).in(Singleton.class);
         bind(SiteTableDAO.class).to(SqlSiteTableDAO.class).in(Singleton.class);
 
     }

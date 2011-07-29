@@ -22,7 +22,7 @@ import org.hibernate.jdbc.Work;
 import org.sigmah.server.dao.PivotDAO;
 import org.sigmah.server.domain.AggregationMethod;
 import org.sigmah.shared.dao.Filter;
-import org.sigmah.shared.dao.SQLDialect;
+import org.sigmah.shared.dao.SqlDialect;
 import org.sigmah.shared.report.content.EntityCategory;
 import org.sigmah.shared.report.content.MonthCategory;
 import org.sigmah.shared.report.content.QuarterCategory;
@@ -47,11 +47,11 @@ import com.google.inject.Inject;
 public class PivotHibernateDAO implements PivotDAO {
 
     private final EntityManager em;
-    private final SQLDialect dialect;
+    private final SqlDialect dialect;
 
 
     @Inject
-    public PivotHibernateDAO(EntityManager em, SQLDialect dialect) {
+    public PivotHibernateDAO(EntityManager em, SqlDialect dialect) {
         this.em = em;
         this.dialect = dialect;
     }

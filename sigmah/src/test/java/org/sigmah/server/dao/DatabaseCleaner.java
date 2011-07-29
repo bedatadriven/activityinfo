@@ -16,17 +16,17 @@ import javax.persistence.Table;
 import org.hibernate.ejb.HibernateEntityManager;
 import org.hibernate.jdbc.Work;
 import org.sigmah.server.domain.PersistentClasses;
-import org.sigmah.shared.dao.SQLDialect;
+import org.sigmah.shared.dao.SqlDialect;
 
 import com.google.inject.Inject;
 
 public class DatabaseCleaner {
 
     private final EntityManager em;
-    private final SQLDialect dialect;
+    private final SqlDialect dialect;
 
     @Inject
-    public DatabaseCleaner(EntityManager em, SQLDialect dialect) {
+    public DatabaseCleaner(EntityManager em, SqlDialect dialect) {
         this.em = em;
         this.dialect = dialect;
     }

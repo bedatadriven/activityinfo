@@ -16,9 +16,11 @@ import org.sigmah.server.dao.ReportingPeriodDAO;
 import org.sigmah.server.dao.SiteDAO;
 import org.sigmah.shared.dao.ActivityDAO;
 import org.sigmah.shared.dao.AdminDAO;
+import org.sigmah.shared.dao.ProjectDAO;
 import org.sigmah.shared.domain.Activity;
 import org.sigmah.shared.domain.Location;
 import org.sigmah.shared.domain.OrgUnit;
+import org.sigmah.shared.domain.Project;
 import org.sigmah.shared.domain.ReportingPeriod;
 import org.sigmah.shared.domain.Site;
 import org.sigmah.shared.domain.User;
@@ -39,16 +41,18 @@ public class SitePolicy implements EntityPolicy<Site> {
     private final PartnerDAO partnerDAO;
     private final ReportingPeriodDAO reportingPeriodDAO;
     private final SiteDAO siteDAO;
+    private final ProjectDAO projectDAO;
 
     @Inject
     public SitePolicy(ActivityDAO activityDAO, AdminDAO adminDAO, LocationDAO locationDAO,
-                      PartnerDAO partnerDAO, SiteDAO siteDAO, ReportingPeriodDAO reportingPeriodDAO) {
+                      PartnerDAO partnerDAO, SiteDAO siteDAO, ReportingPeriodDAO reportingPeriodDAO, ProjectDAO projectDAO) {
         this.locationDAO = locationDAO;
         this.siteDAO = siteDAO;
         this.reportingPeriodDAO = reportingPeriodDAO;
         this.partnerDAO = partnerDAO;
         this.activityDAO = activityDAO;
         this.adminDAO = adminDAO;
+        this.projectDAO = projectDAO;
     }
 
     @Override
@@ -58,6 +62,7 @@ public class SitePolicy implements EntityPolicy<Site> {
     
         Activity activity = activityDAO.findById((Integer) properties.get("activityId"));
         OrgUnit partner = partnerDAO.findById(((Integer) properties.get("partnerId")));
+        Project project = projectDAO.findById((Integer) properties.get("projectId"));
 
         assertSiteEditPrivileges(user, activity, partner);
 
@@ -96,6 +101,7 @@ public class SitePolicy implements EntityPolicy<Site> {
         site.setLocation(location);
         site.setActivity(activity);
         site.setPartner(partner);
+        site.setProject(project);
         site.setDateCreated(new Date());
 
         updateSiteProperties(site, properties, true);
@@ -263,6 +269,10 @@ public class SitePolicy implements EntityPolicy<Site> {
 
             } else if ("status".equals(property)) {
                 site.setStatus((Integer) value);
+                
+            } else if ("projectId".equals(property)) {
+            	Project project = projectDAO.findById((Integer)value);
+            	site.setProject(project);
             }
         }
     }

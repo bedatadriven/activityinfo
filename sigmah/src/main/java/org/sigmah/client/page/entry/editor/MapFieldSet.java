@@ -34,8 +34,6 @@ import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.maps.client.overlay.MarkerOptions;
 
 public class MapFieldSet extends FieldSet implements MapPresenter.View {
-
-
     private ContentPanel panel;
     private MapWidget map = null;
     private Marker marker = null;

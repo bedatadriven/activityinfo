@@ -35,13 +35,16 @@ public class SiteFormPresenter implements SiteFormLeash {
         public void init(SiteFormPresenter presenter,
                          ActivityDTO activity,
                          ListStore<PartnerDTO> partnerStore,
-                         ListStore<SiteDTO> assessmentStore);
+                         ListStore<SiteDTO> assessmentStore,
+                         ListStore<ProjectDTO> projectStore);
 
         public void setSite(SiteDTO site);
 
         public AdminFieldSetPresenter.View createAdminFieldSetView(ActivityDTO activity);
 
         public MapPresenter.View createMapView(CountryDTO country);
+        
+        public ProjectPresenter.View createProjectView(ProjectDTO project);
 
         public boolean validate();
 
@@ -51,13 +54,11 @@ public class SiteFormPresenter implements SiteFormLeash {
 
         public Map<String, Object> getPropertyMap();
 
-
         public AsyncMonitor getMonitor();
 
         public void setActionEnabled(String actionId, boolean enabled);
 
         public void hide();
-
     }
 
     private final EventBus eventBus;
@@ -68,6 +69,7 @@ public class SiteFormPresenter implements SiteFormLeash {
 
     protected MapPresenter mapPresenter;
     protected AdminFieldSetPresenter adminPresenter;
+    protected ProjectPresenter projectPresenter;
     private View view;
 
     public SiteFormPresenter(EventBus eventBus, Dispatcher service, ActivityDTO activity, View view) {
@@ -90,19 +92,21 @@ public class SiteFormPresenter implements SiteFormLeash {
                     store.add(partner);
                 }
             }
+            
             store.sort("name", Style.SortDir.ASC);
 
         } else {
-
             store.add(currentActivity.getDatabase().getMyPartner());
-
         }
         return store;
     }
     
     protected ListStore<ProjectDTO> createProjectStore() {
-    	return new ListStore<ProjectDTO>();
-    	// TODO: implement
+    	 ListStore<ProjectDTO> result = new ListStore<ProjectDTO>();
+    	 
+    	 result.add(currentActivity.getDatabase().getProjects());
+    	 
+    	 return result;
     }
 
 	protected ListStore<SiteDTO> createAsssessmentStore() {
@@ -127,9 +131,10 @@ public class SiteFormPresenter implements SiteFormLeash {
                 SiteFormPresenter.this.onModified();
             }
         });
+        
+        projectPresenter = new ProjectPresenter(view.createProjectView(null));
 
-        view.init(this, currentActivity, createPartnerStore(), createAsssessmentStore());
-
+        view.init(this, currentActivity, createPartnerStore(), createAsssessmentStore(), createProjectStore());
     }
 
     public void setSite(SiteDTO site) {
@@ -137,8 +142,9 @@ public class SiteFormPresenter implements SiteFormLeash {
 
         adminPresenter.setSite(site);
         mapPresenter.setSite(site, adminPresenter.getBoundsName(), adminPresenter.getBounds());
+        projectPresenter.setSite(site, currentActivity.getDatabase());
+        
         view.setSite(site);
-
         view.setActionEnabled(UIActions.save, false);
     }
 
@@ -158,7 +164,11 @@ public class SiteFormPresenter implements SiteFormLeash {
     public void onModified() {
         view.setActionEnabled(UIActions.save, view.isDirty() || adminPresenter.isDirty());
     }
-
+    
+    private void addProjectIdToMap(Map<String, Object> map) {
+        int projectId = currentSite.getProject() == null ? 0 : currentSite.getProject().getId();
+        map.put("projectId", projectId);
+    }
 
     public void onSave() {
 
@@ -168,6 +178,9 @@ public class SiteFormPresenter implements SiteFormLeash {
             if (adminPresenter.isDirty()) {
                 changes.putAll(adminPresenter.getPropertyMap());
             }
+            
+            // The projectId will always be updated, regardless of change/create mode
+            addProjectIdToMap(changes);
 
             service.execute(new UpdateEntity("Site", currentSite.getId(), changes), view.getMonitor(), new AsyncCallback<VoidResult>() {
                 @Override
@@ -191,12 +204,14 @@ public class SiteFormPresenter implements SiteFormLeash {
             final Map<String, Object> properties = view.getPropertyMap();
             properties.putAll(adminPresenter.getPropertyMap());
             properties.put("activityId", currentActivity.getId());
+            addProjectIdToMap(properties);
+            properties.remove("project");
             
             // hack: we need to send partnerId instead of partner.id, but the
             // nonsense form binding that i set up here doesn't support custom bindings
             properties.put("partnerId", ((PartnerDTO)properties.get("partner")).getId());
             properties.remove("partner");
-            	
+
             service.execute(new CreateEntity("Site", properties), view.getMonitor(), new AsyncCallback<CreateResult>() {
                 @Override
                 public void onFailure(Throwable throwable) {

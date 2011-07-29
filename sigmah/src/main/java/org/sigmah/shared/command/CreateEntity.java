@@ -104,6 +104,8 @@ public class CreateEntity implements Command<CreateResult> {
         CreateEntity cmd = new CreateEntity("Site", newSite.getProperties());
         cmd.properties.put("activityId", newSite.getActivityId());
         cmd.properties.put("partnerId", newSite.getPartner().getId());
+        cmd.properties.put("projectId", newSite.getProject().getId());
+        cmd.properties.remove("project");
         cmd.properties.remove("partner");
 
         return cmd;

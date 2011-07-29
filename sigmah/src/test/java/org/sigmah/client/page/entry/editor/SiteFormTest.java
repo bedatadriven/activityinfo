@@ -12,6 +12,7 @@ import org.sigmah.client.mock.DummyData;
 import org.sigmah.client.mock.MockEventBus;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.page.entry.editor.mock.MockSiteForm;
+import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.SchemaDTO;
 
 /**
@@ -34,9 +35,11 @@ public class SiteFormTest {
 
         // Collaborator: View
         MockSiteForm form = new MockSiteForm();
+        
+        ActivityDTO activity = schema.getActivityById(91);
 
         // CLASS UNDER TEST
-        SiteFormPresenter presenter = new SiteFormPresenter(eventBus, service, schema.getActivityById(91), form);
+        SiteFormPresenter presenter = new SiteFormPresenter(eventBus, service, activity, form);
         presenter.setSite(DummyData.PEAR_Sites().get(4));
 
         // Verify that the admin field set is intialzed
@@ -67,7 +70,7 @@ public class SiteFormTest {
         MockSiteForm form = new MockSiteForm();
 
         // CLASS UNDER TEST
-        SiteFormPresenter presenter = new SiteFormPresenter(eventBus,service, schema.getActivityById(91), form);
+        SiteFormPresenter presenter = new SiteFormPresenter(eventBus, service, schema.getActivityById(91), form);
         presenter.setSite(DummyData.PEAR_Sites().get(4));
 
         // Verify that the map view has been centered on the admin bounds

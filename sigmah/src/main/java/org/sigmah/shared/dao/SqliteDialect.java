@@ -5,7 +5,7 @@
 
 package org.sigmah.shared.dao;
 
-public class SqliteDialect implements SQLDialect {
+public class SqliteDialect implements SqlDialect {
 
     // TODO: implement date/time functions for pivot tables...
     // http://www.sqlite.org/cvstrac/wiki?p=DateAndTimeFunctions
