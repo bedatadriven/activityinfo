@@ -50,8 +50,7 @@
         <netbeans.hint.license>gpl3</netbeans.hint.license>
 
         <!--  convenience to define GWT version in one place -->
-        <gwtVersion>2.0.4</gwtVersion>
-        <platform>windows</platform>
+        <gwtVersion>2.3.0</gwtVersion>
 
         <!--  tell the compiler we can use 1.6 -->
         <maven.compiler.source>1.6</maven.compiler.source>
@@ -62,7 +61,6 @@
 
         <!-- Allow the build to continue even if there are test failures -->
         <maven.test.failure.ignore>true</maven.test.failure.ignore>
-
 
 		<display.version>${project.version}-${git.commit.id.abbrev}</display.version>
     </properties>
@@ -140,7 +138,7 @@
         <dependency>
             <groupId>com.google.code.gwt-log</groupId>
             <artifactId>gwt-log</artifactId>
-            <version>3.0.1</version>
+            <version>3.1.3</version>
         </dependency>
 
 
@@ -148,12 +146,14 @@
         <dependency>
             <groupId>com.extjs</groupId>
             <artifactId>gxt</artifactId>
-            <version>2.1.1</version>
+            <version>2.2.4</version>
+            <classifier>gwt22</classifier>
         </dependency>
         <dependency>
             <groupId>com.google.gwt.google-apis</groupId>
             <artifactId>gwt-maps</artifactId>
-            <version>1.0.4</version>
+            <version>1.1.0</version>
+            <classifier>gwt23</classifier>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -168,23 +168,29 @@
             <version>1.2.1</version>
             <scope>provided</scope>
         </dependency>
+        
+        <dependency>
+		    <groupId>com.google.guava</groupId>
+		    <artifactId>guava</artifactId>
+		    <version>r09</version>
+		</dependency>
 
         <!-- Rebar- client persistence -->
 
         <dependency>
             <groupId>com.bedatadriven.rebar</groupId>
             <artifactId>rebar-appcache</artifactId>
-            <version>0.8</version>
+            <version>2.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.bedatadriven.rebar</groupId>
             <artifactId>rebar-sql</artifactId>
-            <version>1.2.0.5</version>
+            <version>2.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.bedatadriven.rebar</groupId>
             <artifactId>rebar-sync</artifactId>
-            <version>0.5.1-SNAPSHOT</version>
+            <version>2.2-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -196,25 +202,24 @@
 
 
         <!--  Dependency Injection Framework -->
+		
+		<dependency>
+		    <groupId>com.google.inject</groupId>
+		    <artifactId>guice</artifactId>
+		    <version>3.0</version>
+		</dependency>
 
-        <dependency>
-            <groupId>com.google.code.guice</groupId>
-            <artifactId>guice</artifactId>
-            <version>2.0</version>
-        </dependency>
+		<dependency>
+		    <groupId>com.google.inject.extensions</groupId>
+		    <artifactId>guice-servlet</artifactId>
+		    <version>3.0</version>
+		</dependency>
 
-        <dependency>
-            <groupId>com.google.code.guice</groupId>
-            <artifactId>guice-servlet</artifactId>
-            <version>2.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.code.guice</groupId>
-            <artifactId>gin</artifactId>
-            <version>2.0</version>
-            <scope>provided</scope>
-        </dependency>
+		<dependency>
+		    <groupId>com.google.gwt.inject</groupId>
+		    <artifactId>gin</artifactId>
+		    <version>1.5.0</version>
+		</dependency>
 
         <!-- aopalliance is a transitive dependency of guice, but it there seems to be
             a guice-2.0 artifact out there floating around with out a proper pom -->
@@ -226,7 +231,6 @@
 
         <dependency>
             <groupId>com.amazonaws</groupId>
-
             <artifactId>aws-java-sdk</artifactId>
             <version>1.2.2</version>
         </dependency>
@@ -245,6 +249,7 @@
             <version>3.5-beta5</version>
         </dependency>
 
+		<!-- PowerPoint export -->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-scratchpad</artifactId>
@@ -311,27 +316,16 @@
             <version>1.0.1B-rc4</version>
         </dependency>
 
-        <!-- Open source alternative to Microsoft's SQL driver -->
-        <!-- which was not working with SQL Server 2008 Express -->
-        <dependency>
-            <groupId>net.sourceforge.jtds</groupId>
-            <artifactId>jtds</artifactId>
-            <version>1.2.4</version>
-        </dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.13</version>
         </dependency>
+
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>1.3.148</version>
-        </dependency>
-        <dependency>
-            <groupId>postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>8.4-701.jdbc4</version>
         </dependency>
 
         <dependency>
@@ -473,7 +467,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>gwt-maven-plugin</artifactId>
-                <version>1.2</version>
+                <version>2.3.0-1</version>
                 <configuration>
                     <runTarget>/</runTarget>
                     <logLevel>TRACE</logLevel>
@@ -484,6 +478,7 @@
                     <webappDirectory>${basedir}/war</webappDirectory>
                     <warSourceDirectory>${basedir}/war</warSourceDirectory>
                     <extraJvmArgs>-Xmx512M -Xss1M</extraJvmArgs>
+                    <hostedWebapp>war</hostedWebapp>
                 </configuration>
 
                 <executions>
@@ -728,7 +723,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>gwt-maven-plugin</artifactId>
-                        <version>1.2</version>
+                        <version>2.3.0-1</version>
                         <configuration>
                             <module>org.sigmah.ActivityInfoFFTest</module>
                             <soyc>false</soyc>
@@ -743,12 +738,6 @@
                                 <goals>
                                     <goal>compile</goal>
                                 </goals>
-                            </execution>
-                            <execution>
-                                <id>sigmah-compile</id>
-                                <configuration>
-                                    <skip>true</skip>
-                                </configuration>
                             </execution>
                             <execution>
                                 <id>login-compile</id>
@@ -805,8 +794,8 @@
 							<s3Bucket>activityinfo-wars</s3Bucket>
 							<s3Key>${project.version}-${git.commit.id.abbrev}-${maven.build.timestamp}.war</s3Key>
 							<versionLabel>${project.version}-${git.commit.id.abbrev}-${maven.build.timestamp}</versionLabel>
-							<environmentName>activityinfo-testing</environmentName>
-							<cnamePrefix>activityinfo-testing</cnamePrefix>
+							<environmentName>activityinfo-alpha</environmentName>
+							<cnamePrefix>activityinfo-alpha</cnamePrefix>
 						</configuration>
 						<executions>
 					    	<execution>
@@ -871,7 +860,7 @@
 	
 
         <!-- Build the Application Module with only permutations for
- Safari and logging enabled for testing purposes -->
+ 			 Safari and logging enabled for testing purposes -->
         <profile>
             <id>safari</id>
             <build>

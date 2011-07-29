@@ -5,15 +5,15 @@
 
 package org.sigmah.test;
 
-import static com.google.inject.internal.Preconditions.checkState;
+import static com.google.common.base.Preconditions.checkState;
 
 import java.util.Map;
 
+import com.google.common.collect.Maps;
 import com.google.inject.Key;
 import com.google.inject.OutOfScopeException;
 import com.google.inject.Provider;
 import com.google.inject.Scope;
-import com.google.inject.internal.Maps;
 
 /**
  * Scopes a single execution of a block of code. Apply this scope with a
