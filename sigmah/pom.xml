@@ -793,10 +793,10 @@
 						<configuration>
 							<applicationName>activityinfo</applicationName>
 							<s3Bucket>activityinfo-wars</s3Bucket>
-							<s3Key>${project.version}-${git.commit.id.abbrev}-${maven.build.timestamp}.war</s3Key>
-							<versionLabel>${project.version}-${git.commit.id.abbrev}-${maven.build.timestamp}</versionLabel>
-							<environmentName>activityinfo-alpha</environmentName>
-							<cnamePrefix>activityinfo-alpha</cnamePrefix>
+							<s3Key>${project.version}-${git.commit.id.abbrev}-${BUILD_NUMBER}.war</s3Key>
+							<versionLabel>${project.version}-${git.commit.id.abbrev}-${BUILD_NUMBER}</versionLabel>
+							<environmentName>activityinfo-latest</environmentName>
+							<cnamePrefix>activityinfo-latest</cnamePrefix>
 						</configuration>
 						<executions>
 					    	<execution>
