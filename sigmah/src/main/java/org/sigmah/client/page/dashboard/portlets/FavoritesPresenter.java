@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.page.dashboard.portlets.FavoritesPresenter.View.RemovedFavoriteHandler;
-import org.sigmah.shared.command.GetFavorites;
+import org.sigmah.shared.command.GetFavoritePages;
 import org.sigmah.shared.command.RemoveFavorite;
 import org.sigmah.shared.command.result.UserFavorites;
 import org.sigmah.shared.command.result.VoidResult;
@@ -33,6 +33,7 @@ public class FavoritesPresenter implements PortletPresenter {
 	public interface View extends PortletView {
 		public void setData(List<PageDTO> favorites);
 		public HandlerRegistration addRemovedHandler(RemovedFavoriteHandler handler);
+		public void removeFavorite(PageDTO favorite);
 		
 		public class RemovedFavoriteEvent extends
 				GwtEvent<RemovedFavoriteHandler> {
@@ -107,17 +108,16 @@ public class FavoritesPresenter implements PortletPresenter {
 					public Object render(final PageDTO model, String property,
 							ColumnData config, int rowIndex, int colIndex,
 							ListStore<PageDTO> store, Grid<PageDTO> grid) {
-				        Button b = new Button((String) model.get(property), new SelectionListener<ButtonEvent>() {  
+				        Button removeButton = new Button((String) model.get(property), new SelectionListener<ButtonEvent>() {  
 					          @Override  
 					          public void componentSelected(ButtonEvent ce) {
 					        	  eventBus.fireEvent(new RemovedFavoriteEvent(model));
 					          }
-					        }
-				        );
-				        b.setWidth(grid.getColumnModel().getColumnWidth(colIndex) - 10);  
-				        b.setToolTip("Remove favorite");  
+					    });
+				        removeButton.setWidth(32);  
+				        removeButton.setToolTip("Remove favorite");
 				  
-				        return b;  
+				        return removeButton;
 					}
 				};  
 			
@@ -142,6 +142,11 @@ public class FavoritesPresenter implements PortletPresenter {
 		public HandlerRegistration addRemovedHandler(RemovedFavoriteHandler handler) {
 			return eventBus.addHandler(RemovedFavoriteEvent.TYPE, handler);
 		}
+
+		@Override
+		public void removeFavorite(PageDTO favorite) {
+			store.remove(favorite);
+		}
 		
 	}
 	
@@ -159,13 +164,12 @@ public class FavoritesPresenter implements PortletPresenter {
 	}
 
 	private void getFavorites() {
-		service.execute(new GetFavorites(), null, new AsyncCallback<UserFavorites>() {
+		service.execute(new GetFavoritePages(), null, new AsyncCallback<UserFavorites>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO Auto-generated method stub
 				
 			}
-
 
 			@Override
 			public void onSuccess(UserFavorites result) {
@@ -179,7 +183,7 @@ public class FavoritesPresenter implements PortletPresenter {
 		view = new FavoritesView();
 		view.addRemovedHandler(new RemovedFavoriteHandler() {
 			@Override
-			public void onRemovedFavorite(PageDTO page) {
+			public void onRemovedFavorite(final PageDTO page) {
 				service.execute(new RemoveFavorite(), null, new AsyncCallback<VoidResult>() {
 					@Override
 					public void onFailure(Throwable caught) {
@@ -188,7 +192,7 @@ public class FavoritesPresenter implements PortletPresenter {
 
 					@Override
 					public void onSuccess(VoidResult result) {
-						
+						view.removeFavorite(page);
 					}
 				});
 			}

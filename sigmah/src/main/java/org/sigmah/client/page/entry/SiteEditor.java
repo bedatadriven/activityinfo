@@ -102,7 +102,11 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
 
         initListeners(store, loader);
 
-        siteChangedListener = new Listener<SiteEvent>() {
+        addListeners();
+    }
+
+	private void addListeners() {
+		siteChangedListener = new Listener<SiteEvent>() {
             public void handleEvent(SiteEvent se) {
 
                 SiteDTO ourCopy = store.findModel("id", se.getSite().getId());
@@ -114,7 +118,6 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
             }
         };
         this.eventBus.addListener(AppEvents.SiteChanged, siteChangedListener);
-		// TODO Auto-generated method stub
 
         siteCreatedListener = new Listener<SiteEvent>() {
             public void handleEvent(SiteEvent se) {
@@ -136,7 +139,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
             }
         };
         this.eventBus.addListener(AppEvents.SiteSelected, siteSelectedListner);
-    }
+	}
 
     public void bindFilterPanel(FilterPanel panel) {
     	this.filterPanel = panel;
@@ -231,7 +234,6 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
         view.setActionEnabled(UIActions.add, currentActivity.getDatabase().isEditAllowed());
         view.setActionEnabled(UIActions.edit, false);
         view.setActionEnabled(UIActions.delete, false);
-
         
         load(filterPanel.getValue());
     }
@@ -277,15 +279,10 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
 
         view.setActionEnabled(UIActions.export, result.getTotalLength() != 0);
 
-        /*
-         * Let everyone else know we have navigated
-         */
+        // Let everyone else know we have navigated
         firePageEvent(new SiteGridPageState(currentActivity), le);
 
-        /*
-         * Select a site
-         */
-
+        // Select a site
         if (siteIdToSelectOnNextLoad != null) {
             view.setSelection(siteIdToSelectOnNextLoad);
             siteIdToSelectOnNextLoad = null;
@@ -400,7 +397,6 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
         }
 
         formLoader.edit(currentActivity, newSite, view.getLoadingMonitor());
-
     }
 
     protected void onEdit(SiteDTO site) {

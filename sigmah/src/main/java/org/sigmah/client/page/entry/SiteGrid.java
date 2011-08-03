@@ -43,6 +43,9 @@ import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 
+/*
+ * Displays a list of Indicators and allows the user to edit various columns in the grid
+ */
 public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
         implements SiteEditor.View {
 

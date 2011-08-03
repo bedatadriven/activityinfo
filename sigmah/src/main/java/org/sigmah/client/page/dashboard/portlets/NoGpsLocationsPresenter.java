@@ -97,7 +97,6 @@ public class NoGpsLocationsPresenter implements PortletPresenter {
 			// TODO Auto-generated method stub
 			
 		}
-
 	}
 
 	private Dispatcher service;
