@@ -7,7 +7,7 @@ import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.dashboard.portlets.PortletPresenter;
-import org.sigmah.client.page.dashboard.portlets.PortletViewFactory;
+import org.sigmah.client.page.dashboard.portlets.PortletPresenterFactory;
 import org.sigmah.shared.command.GetDashboard;
 import org.sigmah.shared.dto.DashboardSettingsDTO;
 import org.sigmah.shared.dto.portlets.PortletDTO;
@@ -25,16 +25,16 @@ public class DashboardPresenter implements Page {
 	private View view;
 	private EventBus eventBus;
 	private Dispatcher service;
-	private PortletViewFactory factory;
+	private PortletPresenterFactory factory;
 	private DashboardSettingsDTO dashboard;
 
 	@Inject
-	public DashboardPresenter(EventBus eventBus, Dispatcher service, PortletViewFactory factory) {
+	public DashboardPresenter(EventBus eventBus, Dispatcher service, PortletPresenterFactory factory) {
 		this.eventBus = eventBus;
 		this.service = service;
 		this.factory = factory;
 		
-		factory = new PortletViewFactory(service);
+		factory = new PortletPresenterFactory(service);
 		
 		view = new DashboardView();
 		

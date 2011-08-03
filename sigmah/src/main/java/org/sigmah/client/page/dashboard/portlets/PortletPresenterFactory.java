@@ -10,11 +10,11 @@ import com.google.inject.Inject;
 /*
  * Returns a PortletPresenter from a portlet
  */
-public class PortletViewFactory {
+public class PortletPresenterFactory {
 	Dispatcher service;
 	
 	@Inject
-	public PortletViewFactory(Dispatcher service) {
+	public PortletPresenterFactory(Dispatcher service) {
 		this.service = service;
 	}
 

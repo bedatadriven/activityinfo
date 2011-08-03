@@ -5,8 +5,6 @@
 
 package org.sigmah.client.page.table.drilldown;
 
-import java.util.List;
-
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.entry.SiteEditor;
 import org.sigmah.client.page.entry.SiteGrid;
@@ -50,8 +48,7 @@ public class DrillDownGrid extends SiteGrid implements DrillDownEditor.View {
 
 
     @Override
-    protected void addIndicatorColumns(ActivityDTO activity, List<ColumnConfig> columns) {
-
+    protected void createIndicatorColumns() {
         ColumnConfig column = createIndicatorColumn(currentIndicator, I18N.CONSTANTS.value());
         column.setId("indicator");
         column.setDataIndex(currentIndicator.getPropertyName());

@@ -43,20 +43,14 @@ import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 
-/**
- * @author Alex Bertram (akbertram@gmail.com)
- */
 public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
         implements SiteEditor.View {
 
-
-    private ActivityDTO activity;
+	protected ActivityDTO activity;
     protected EditorGrid<SiteDTO> grid;
     private boolean enableDragSource;
-
-//    private Map<String, ComboBox<AdminEntityDTO>> adminComboBoxes =
-//            new HashMap<String, ComboBox<AdminEntityDTO>>();
-
+    protected List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
+	private List<AdminLevelDTO> levels;
 
     public SiteGrid(boolean enableDragSource) {
         this();
@@ -67,15 +61,12 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
         this.setLayout(new BorderLayout());
     }
 
-
     @Override
     public void init(SiteEditor presenter, ActivityDTO activity, ListStore<SiteDTO> store) {
-
         this.activity = activity;
         setHeading(I18N.MESSAGES.activityTitle(activity.getDatabase().getName(), activity.getName()));
 
         super.init(presenter, store);
-
     }
 
     @Override
@@ -131,10 +122,8 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
 
 
     protected void initToolBar() {
-
         toolBar.addSaveSplitButton();
         toolBar.add(new SeparatorToolItem());
-
                           
         toolBar.addButton(UIActions.add, I18N.CONSTANTS.newSite(), IconImageBundle.ICONS.add());
         toolBar.addEditButton();
@@ -151,91 +140,37 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
     }
 
     protected ColumnModel createColumnModel(ActivityDTO activity) {
+        createMapColumn();
+        createDateColumn();
+        createPartnerColumn();
+        createLocationColumn();
+        createIndicatorColumns();
 
-        List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
+        getAdminLevels();
+        createAdminLevelsColumns();
 
-        ColumnConfig mapColumn = new ColumnConfig("x", "", 25);
-        mapColumn.setRenderer(new GridCellRenderer<SiteDTO>() {
-            @Override
-            public Object render(SiteDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
-                if(model.hasCoords()) {
-                    return "<div class='mapped'>&nbsp;&nbsp;</div>";
-                } else {
-                    return "<div class='unmapped'>&nbsp;&nbsp;</div>";
-                }
-            }
-        });
-        columns.add(mapColumn);
+        return new ColumnModel(columns);
+    }
 
-
-        /*
-         * Date Column
-         */
-
-        if(activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE) {
-
-            DateField dateField = new DateField();
-            dateField.getPropertyEditor().setFormat(DateTimeFormat.getFormat("MM/dd/y"));
-
-            ColumnConfig dateColumn = new ColumnConfig("date2", I18N.CONSTANTS.date(), 100);
-            dateColumn.setDateTimeFormat(DateTimeFormat.getFormat("yyyy-MMM-dd"));
-            dateColumn.setEditor(new CellEditor(dateField));
-
-            columns.add(dateColumn);
-        }
-
-        /*
-         * Partner
-         * Should we allow edit from here? Not comfortable with people
-         * changing the partner really at all after the activity has been created
-         *
-         */
-
-        if(activity.getDatabase().isViewAllAllowed()) {
-            columns.add(new ColumnConfig("partner", I18N.CONSTANTS.partner(), 100));
-        }
-
-        if(activity.getLocationType().getBoundAdminLevelId() == null) {
-
-            /*
-             * Location (Name)
-             */
-
+	private void createLocationColumn() {
+		if(activity.getLocationType().getBoundAdminLevelId() == null) {
+            // Location (Name)
             TextField<String> locationField = new TextField<String>();
             locationField.setAllowBlank(false);
-
             ColumnConfig locationColumn = new ColumnConfig("locationName", I18N.CONSTANTS.location(), 100);
             locationColumn.setEditor(new CellEditor(locationField));
             columns.add(locationColumn);
 
-            /*
-             * Axe
-             */
-
+            // Axe
             TextField<String> locationAxeField = new TextField<String>();
-
             ColumnConfig axeColumn = new ColumnConfig("locationAxe", I18N.CONSTANTS.axe(), 75);
             axeColumn.setEditor(new CellEditor(locationAxeField));
             columns.add(axeColumn);
         }
+	}
 
-        addIndicatorColumns(activity, columns);
-
-
-        // add the admin columns (province, territoire, etc)
-
-        List<AdminLevelDTO> levels ;
-
-        if( activity.getLocationType().isAdminLevel()) {
-
-            levels = activity.getDatabase().getCountry().getAdminLevelAncestors(activity.getLocationType().getBoundAdminLevelId());
-
-        } else {
-
-            levels = activity.getDatabase().getCountry().getAdminLevels();
-        }
-
-        for (AdminLevelDTO level : levels) {
+	private void createAdminLevelsColumns() {
+		for (AdminLevelDTO level : levels) {
 
 
 //            ComboBox<AdminEntityDTO> combo = new RemoteComboBox<AdminEntityDTO>();
@@ -253,19 +188,55 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
 
             columns.add(adminColumn);
         }
+	}
 
+	private void getAdminLevels() {
+		if( activity.getLocationType().isAdminLevel()) {
+            levels = activity.getDatabase().getCountry().getAdminLevelAncestors(activity.getLocationType().getBoundAdminLevelId());
+        } else {
+            levels = activity.getDatabase().getCountry().getAdminLevels();
+        }
+	}
 
-        return new ColumnModel(columns);
-    }
+	private void createPartnerColumn() {
+		if(activity.getDatabase().isViewAllAllowed()) {
+            columns.add(new ColumnConfig("partner", I18N.CONSTANTS.partner(), 100));
+        }
+	}
 
-    protected void addIndicatorColumns(ActivityDTO activity, List<ColumnConfig> columns) {
-        /*
-        * Add columns for all indicators that have a queries heading
-        */
+	private void createDateColumn() {
+		if(activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE) {
 
+            DateField dateField = new DateField();
+            dateField.getPropertyEditor().setFormat(DateTimeFormat.getFormat("MM/dd/y"));
+
+            ColumnConfig dateColumn = new ColumnConfig("date2", I18N.CONSTANTS.date(), 100);
+            dateColumn.setDateTimeFormat(DateTimeFormat.getFormat("yyyy-MMM-dd"));
+            dateColumn.setEditor(new CellEditor(dateField));
+
+            columns.add(dateColumn);
+        }
+	}
+
+	private void createMapColumn() {
+		ColumnConfig mapColumn = new ColumnConfig("x", "", 25);
+        mapColumn.setRenderer(new GridCellRenderer<SiteDTO>() {
+            @Override
+            public Object render(SiteDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
+                if(model.hasCoords()) {
+                    return "<div class='mapped'>&nbsp;&nbsp;</div>";
+                } else {
+                    return "<div class='unmapped'>&nbsp;&nbsp;</div>";
+                }
+            }
+        });
+        columns.add(mapColumn);
+	}
+
+    protected void createIndicatorColumns() {
+    	// Only add indicators that have a queries heading
         for (IndicatorDTO indicator : activity.getIndicators()) {
             if(indicator.getListHeader() != null && !indicator.getListHeader().isEmpty()) {
-
                 columns.add(createIndicatorColumn(indicator, indicator.getListHeader()));
             }
         }
@@ -304,7 +275,6 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
     }
 
     public void setSelection(int siteId) {
-
         for(int r=0; r!=grid.getStore().getCount(); ++r) {
             if(grid.getStore().getAt(r).getId() == siteId) {
                 grid.getView().ensureVisible(r, 0, false);
