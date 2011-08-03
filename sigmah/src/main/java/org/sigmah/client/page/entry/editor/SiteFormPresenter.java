@@ -216,7 +216,7 @@ public class SiteFormPresenter implements SiteFormLeash {
             service.execute(new CreateEntity("Site", properties), view.getMonitor(), new AsyncCallback<CreateResult>() {
                 @Override
                 public void onFailure(Throwable throwable) {
-                    // let monitor display
+                    // TODO: handle failure
                 }
 
                 @Override

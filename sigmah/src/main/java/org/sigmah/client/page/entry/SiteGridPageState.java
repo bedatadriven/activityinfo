@@ -5,15 +5,15 @@
 
 package org.sigmah.client.page.entry;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.sigmah.client.page.Frames;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.PageStateParser;
 import org.sigmah.client.page.common.grid.AbstractPagingGridPageState;
 import org.sigmah.shared.dto.ActivityDTO;
-
-import java.util.Arrays;
-import java.util.List;
 
 
 public class SiteGridPageState extends AbstractPagingGridPageState {
@@ -92,15 +92,14 @@ public class SiteGridPageState extends AbstractPagingGridPageState {
 
         @Override
         public PageState parse(String token) {
-
             SiteGridPageState place = new SiteGridPageState();
 
             for(String t : token.split("/")) {
-
                 if(!place.parseGridStateTokens(t)) {
                     place.activityId = Integer.parseInt(t);
                 }
             }
+            
             return place;
         }
 
