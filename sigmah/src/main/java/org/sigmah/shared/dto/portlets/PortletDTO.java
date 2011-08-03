@@ -1,6 +1,8 @@
 package org.sigmah.shared.dto.portlets;
 
-public interface PortletDTO {
+import java.io.Serializable;
+
+public interface PortletDTO extends Serializable {
 	String getName();
 	String getDescription();
 }

@@ -1,18 +1,27 @@
 package org.sigmah.client.page.dashboard.portlets;
 
-import org.sigmah.shared.dto.portlets.NoGpsLocations;
+import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.shared.dto.portlets.NoGpsLocationsDTO;
 import org.sigmah.shared.dto.portlets.PortletDTO;
+
+import com.google.inject.Inject;
 
 
 /*
- * Returns a PortletView from a portlet
+ * Returns a PortletPresenter from a portlet
  */
 public class PortletViewFactory {
-	public PortletView fromPortlet(PortletDTO portlet) {
-		if (portlet instanceof NoGpsLocations) {
-//			return new NoGpsSitesPresenter.NoGpsSitesPortletView((NoGpsLocations) portlet);
+	Dispatcher service;
+	
+	@Inject
+	public PortletViewFactory(Dispatcher service) {
+		this.service = service;
+	}
+
+	public PortletPresenter fromPortlet(PortletDTO portlet) {
+		if (portlet instanceof NoGpsLocationsDTO) {
+			return new NoGpsLocationsPresenter(service, (NoGpsLocationsDTO) portlet); 
 		}
-		
 		
 		return null;
 	}

@@ -87,7 +87,7 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
     public Grid<SiteDTO> createGridAndAddToContainer(Store store) {
 
         grid = new EditorGrid<SiteDTO>((ListStore)store, createColumnModel(activity));
-        grid.setColumnResize(true);
+        //grid.setColumnResize(true);
         grid.setLoadMask(true);
         grid.setStateful(true);
         grid.setStateId("SiteGrid" + activity.getId());

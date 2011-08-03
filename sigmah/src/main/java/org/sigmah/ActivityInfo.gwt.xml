@@ -12,7 +12,7 @@
     <!-- Inherit additional dependencies  -->
     <inherits name='com.google.gwt.inject.Inject' />
     <inherits name="com.google.gwt.i18n.I18N" />
-    <inherits name="com.google.gwt.i18n.I18N" />
+    <!-- <inherits name="com.google.gwt.i18n.I18N" /> -->
 	<inherits name="com.google.gson.Gson"/>
    <!--  <inherits name="com.google.gwt.rpc.RPC" /> -->
     <inherits name='com.extjs.gxt.ui.GXT' />
@@ -22,13 +22,16 @@
     <inherits name="com.google.gwt.inject.Inject"/>
     <inherits name="com.extjs.gxt.charts.Chart"/>
     <inherits name="com.google.code.gaxb.Annotations"/>
+<!-- -->
     <inherits name="com.bedatadriven.rebar.appcache.AppCache"/>
     <inherits name="com.bedatadriven.rebar.sql.Sql"/>
     <inherits name="com.bedatadriven.rebar.sync.Sync"/>
+<!-- -->
+    
     <inherits name="com.allen_sauer.gwt.log.gwt-log-impl"/>
 
     <!-- Configure Logging -->
-    <extend-property name="log_level" values="TRACE"/>
+    <!-- <extend-property name="log_level" values="DEBUG"/>-->
 
 
     <!-- Include generated sources -->

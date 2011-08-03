@@ -9,13 +9,9 @@ import org.sigmah.shared.dto.DashboardSettingsDTO;
 import org.sigmah.shared.exception.CommandException;
 
 public class GetDashboardHandler implements CommandHandler<GetDashboard> {
-
 	@Override
 	public CommandResult execute(GetDashboard cmd, User user)
 			throws CommandException {
-		DashboardSettingsDTO settings = new DashboardSettingsDTO();
-		settings.setAmountColumns(3);
-		return new DashboardSettingsResult(settings);
+		return new DashboardSettingsResult(DashboardSettingsDTO.createDefault());
 	}
-
 }

@@ -8,13 +8,11 @@ public class ProjectDTO extends BaseModelData implements DTO {
 		super();
 	}
 
-//	public Project2DTO(int id, String name, int siteId) {
 	public ProjectDTO(int id, String name) {
 		super();
 		
 		setId(id);
 		setName(name);
-//		setSiteId(siteId); 
 	} 
 
 	public int getId() {
@@ -33,14 +31,6 @@ public class ProjectDTO extends BaseModelData implements DTO {
 		set("name", name);
 	}
 	
-//	public int getSiteId() {
-//		return (Integer)get("siteId");
-//	}
-//	
-//	public void setSiteId(int siteId) {
-//		set("siteId", siteId);
-//	}
-
 	public void setDescription(String description) {
 		set("description", description);
 	}

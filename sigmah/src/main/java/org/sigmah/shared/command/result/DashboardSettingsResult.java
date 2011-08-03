@@ -5,6 +5,10 @@ import org.sigmah.shared.dto.DashboardSettingsDTO;
 public class DashboardSettingsResult implements CommandResult {
 	private DashboardSettingsDTO dashboard;
 
+	public DashboardSettingsResult() {
+		super();
+	}
+
 	public DashboardSettingsResult(DashboardSettingsDTO settings) {
 		this.dashboard=settings;
 	}

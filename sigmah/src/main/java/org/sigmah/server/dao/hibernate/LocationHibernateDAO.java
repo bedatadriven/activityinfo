@@ -5,6 +5,7 @@
 
 package org.sigmah.server.dao.hibernate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -62,6 +63,12 @@ public class LocationHibernateDAO extends GenericDAO<Location, Integer> implemen
 		Query query = em.createNativeQuery(
 				"SELECT * FROM location l where x is null and y is null", Location.class);
 		
-		return query.getResultList();
+		// Convert to generically typed list
+		List<Location> result = new ArrayList<Location>();
+		for (Object o: query.getResultList()) {
+			result.add((Location)o);
+		}
+		
+		return result;
 	}
 }
