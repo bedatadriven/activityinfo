@@ -11,7 +11,7 @@ import org.sigmah.client.page.entry.editor.MapPresenter.EditView.CoordinatesChan
 import org.sigmah.client.page.entry.editor.MapPresenter.EditView.MarkerMovedEvent;
 import org.sigmah.client.page.entry.editor.MapPresenter.EditView.MarkerMovedHandler;
 import org.sigmah.shared.dto.SiteDTO;
-import org.sigmah.shared.report.content.LatLng;
+import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 import com.google.gwt.event.shared.EventHandler;
@@ -24,7 +24,7 @@ import com.google.gwt.user.client.ui.Widget;
  * by dragging a marker over a map
  */
 public class MapPresenter {
-	public interface MapView extends View<LatLng> {
+	public interface MapView extends View<AiLatLng> {
         public void setMapView(BoundingBoxDTO bounds);
 		public Widget asWidget();
 	}
@@ -32,10 +32,10 @@ public class MapPresenter {
     public interface EditView extends MapView {
         public Double getX();
         public Double getY();
-        public void setMarkerPosition(LatLng latLng);
+        public void setMarkerPosition(AiLatLng latLng);
         public BoundingBoxDTO getBounds();
         public void setBounds(String name, BoundingBoxDTO bounds);
-        public void panTo(LatLng latLng);
+        public void panTo(AiLatLng latLng);
         
         public HandlerRegistration addMarkerMovedHandler(MarkerMovedHandler handler);
         public HandlerRegistration addCoordinatesChangedHandler(CoordinatesChangedHandler handler);
@@ -152,10 +152,10 @@ public class MapPresenter {
 				double y = event.getY();
 				
 		        if(haveValidCoords()) {
-		            view.setMarkerPosition(new LatLng(y, x));
+		            view.setMarkerPosition(new AiLatLng(y, x));
 
 		            if(!view.getBounds().contains(x, y)) {
-		                view.panTo(new LatLng(y, x));
+		                view.panTo(new AiLatLng(y, x));
 		            }
 		        }
 			}
@@ -170,10 +170,10 @@ public class MapPresenter {
 		        if(!bounds.contains(mx, my)) {
 		            double clampedY = bounds.clampY(my);
 		            double clampedX = bounds.clampX(mx);
-		            view.setMarkerPosition(new LatLng(clampedY, clampedX));
-		            view.setValue(new LatLng(clampedY, clampedX));
+		            view.setMarkerPosition(new AiLatLng(clampedY, clampedX));
+		            view.setValue(new AiLatLng(clampedY, clampedX));
 		        } else {
-		            view.setValue(new LatLng(my, mx));
+		            view.setValue(new AiLatLng(my, mx));
 		        }
 			}
 		});
@@ -189,7 +189,7 @@ public class MapPresenter {
         view.setMapView(bounds);
 
         if(!haveValidCoords()) {
-            view.setMarkerPosition(new LatLng(bounds.getCenterY(), bounds.getCenterX()));
+            view.setMarkerPosition(new AiLatLng(bounds.getCenterY(), bounds.getCenterX()));
         }
     }
 

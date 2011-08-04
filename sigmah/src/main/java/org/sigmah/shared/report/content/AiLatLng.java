@@ -13,9 +13,9 @@ package org.sigmah.shared.report.content;
  * @author Alex Bertram
  *
  */
-public class LatLng {
+public class AiLatLng {
 	
-	public LatLng(double lat, double lon) {
+	public AiLatLng(double lat, double lon) {
 		super();
 		this.lat = lat;
 		this.lng = lon;

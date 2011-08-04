@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph;
-import org.sigmah.shared.report.content.LatLng;
+import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.Point;
 import org.sigmah.shared.report.model.PointValue;
 
@@ -90,7 +90,7 @@ public class Cluster {
         return new Point((minX + maxX)/2, (minY + maxY)/2);
     }
 
-	public LatLng latLngCentroid() {
+	public AiLatLng latLngCentroid() {
         double latSum=0;
         double lngSum=0;
         double count=0;
@@ -101,7 +101,7 @@ public class Cluster {
             count++;
         }
 
-        return new LatLng(latSum / count, lngSum / count);
+        return new AiLatLng(latSum / count, lngSum / count);
 
     }
 

@@ -8,7 +8,7 @@ package org.sigmah.client.page.entry.editor;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.common.widget.CoordinateField;
-import org.sigmah.shared.report.content.LatLng;
+import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -103,7 +103,7 @@ public class CoordFieldSet extends AbstractFieldSet implements MapPresenter.Edit
 	}
 
 	@Override
-	public void setValue(LatLng value) {
+	public void setValue(AiLatLng value) {
         latField.setValue(value.getLat());
         latField.validate();
 
@@ -112,15 +112,15 @@ public class CoordFieldSet extends AbstractFieldSet implements MapPresenter.Edit
 	}
 
 	@Override
-	public LatLng getValue() {
-		return new LatLng(latField.getValue(), lngField.getValue());
+	public AiLatLng getValue() {
+		return new AiLatLng(latField.getValue(), lngField.getValue());
 	}
 
 	@Override
-	public void setMarkerPosition(LatLng latLng) {
+	public void setMarkerPosition(AiLatLng latLng) {
 	}
 
 	@Override
-	public void panTo(LatLng latLng) {
+	public void panTo(AiLatLng latLng) {
 	}
 }

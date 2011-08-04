@@ -13,7 +13,7 @@ import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph;
 import org.sigmah.shared.report.content.BubbleMapMarker;
 import org.sigmah.shared.report.content.DimensionCategory;
 import org.sigmah.shared.report.content.EntityCategory;
-import org.sigmah.shared.report.content.LatLng;
+import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.MapMarker;
 import org.sigmah.shared.report.content.PieMapMarker;
@@ -84,7 +84,7 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
         List<BubbleMapMarker> markers = new ArrayList<BubbleMapMarker>();
         for(Cluster cluster : clusters) {
             Point px = cluster.getPoint();
-            LatLng latlng = cluster.latLngCentroid();
+            AiLatLng latlng = cluster.latLngCentroid();
             BubbleMapMarker marker = new PieMapMarker();
 
             sumSlices((PieMapMarker) marker, cluster.getPointValues());
@@ -124,7 +124,7 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
                 Point px = null;
                 
                 if(site.hasLatLong())  {
-                    px = map.fromLatLngToPixel(new LatLng(site.getLatitude(), site.getLongitude()));
+                    px = map.fromLatLngToPixel(new AiLatLng(site.getLatitude(), site.getLongitude()));
                 }
 
                 Double value = getValue(site, layer.getIndicatorIds());

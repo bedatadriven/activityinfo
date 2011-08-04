@@ -5,7 +5,7 @@
 
 package org.sigmah.shared.util.mapping;
 
-import org.sigmah.shared.report.content.LatLng;
+import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.Point;
 
 
@@ -61,7 +61,7 @@ public class TileMath {
 	 * @return
 	 */
 	
-	public static Point fromLatLngToPixel(LatLng latlng, int zoom) {
+	public static Point fromLatLngToPixel(AiLatLng latlng, int zoom) {
 
 		double size = size(zoom);
 		double radius = size / TWO_PI;
@@ -98,8 +98,8 @@ public class TileMath {
 
 		do {
 
-			Point upperLeft = fromLatLngToPixel(new LatLng(extent.getMaxLat(), extent.getMinLon()), zoomLevel);
-			Point lowerRight = fromLatLngToPixel(new LatLng(extent.getMinLat(), extent.getMaxLon()), zoomLevel);
+			Point upperLeft = fromLatLngToPixel(new AiLatLng(extent.getMaxLat(), extent.getMinLon()), zoomLevel);
+			Point lowerRight = fromLatLngToPixel(new AiLatLng(extent.getMinLat(), extent.getMaxLon()), zoomLevel);
 			
 			int extentWidth = lowerRight.x - upperLeft.x;
 			

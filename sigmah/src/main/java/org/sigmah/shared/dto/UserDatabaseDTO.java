@@ -6,7 +6,9 @@
 package org.sigmah.shared.dto;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
@@ -20,7 +22,7 @@ public final class UserDatabaseDTO extends BaseModelData implements EntityDTO, P
     private CountryDTO country;
 	private List<PartnerDTO> partners = new ArrayList<PartnerDTO>(0);
 	private List<ActivityDTO> activities = new ArrayList<ActivityDTO>(0);
-	private List<LockedPeriodDTO> lockedPeriods = new ArrayList<LockedPeriodDTO>(0);
+	private Set<LockedPeriodDTO> lockedPeriods = new HashSet<LockedPeriodDTO>(0);
 	private List<ProjectDTO> projects = new ArrayList<ProjectDTO>(0);
 
     public UserDatabaseDTO() {
@@ -313,7 +315,11 @@ public final class UserDatabaseDTO extends BaseModelData implements EntityDTO, P
     	return "db" + getId();
     }
 
-	public void setLockedPeriods(List<LockedPeriodDTO> lockedPeriods) {
+	public void setLockedPeriods(Set<LockedPeriodDTO> lockedPeriods) {
 		this.lockedPeriods = lockedPeriods;
+	}
+
+	public Set<LockedPeriodDTO> getLockedPeriods() {
+		return lockedPeriods;
 	}
 }

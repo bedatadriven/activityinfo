@@ -1,10 +1,15 @@
 package org.sigmah.shared.dto;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 public class ProjectDTO extends BaseModelData implements DTO {
-	private String description;
-	public ProjectDTO() {
+    private Set<LockedPeriodDTO> lockedPeriods = new HashSet<LockedPeriodDTO>(0);
+    private UserDatabaseDTO database;
+
+    public ProjectDTO() {
 		super();
 	}
 
@@ -37,5 +42,26 @@ public class ProjectDTO extends BaseModelData implements DTO {
 
 	public String getDescription() {
 		return (String)get("description");
+	}
+	
+	public Set<LockedPeriodDTO> getLockedPeriods() {
+		Set<LockedPeriodDTO> allLockedPeriods = new HashSet<LockedPeriodDTO>();
+		allLockedPeriods.addAll(lockedPeriods);
+		if (getDatabase() != null && getDatabase().getLockedPeriods() != null) {
+			allLockedPeriods.addAll(getDatabase().getLockedPeriods());
+		}
+		return allLockedPeriods;
+	}
+	
+	public void setLockedPeriods(Set<LockedPeriodDTO> lockedPeriods) {
+		this.lockedPeriods = lockedPeriods;
+	}
+
+	public void setDatabase(UserDatabaseDTO database) {
+		this.database = database;
+	}
+
+	public UserDatabaseDTO getDatabase() {
+		return database;
 	}
 }

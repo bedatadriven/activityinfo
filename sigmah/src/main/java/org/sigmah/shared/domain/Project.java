@@ -2,6 +2,8 @@ package org.sigmah.shared.domain;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,7 +22,8 @@ public class Project implements Serializable {
 	private String description;
 	private Date dateDeleted;
 	private UserDatabase database;
-	
+    private Set<LockedPeriod> lockedPeriods = new HashSet<LockedPeriod>();
+
 	public Project() {
 		super();
 	}
@@ -86,6 +89,16 @@ public class Project implements Serializable {
     @JoinColumn(name = "DatabaseId", nullable = false)
 	public UserDatabase getDatabase() {
 		return database;
+	}
+
+	public void setLockedPeriods(Set<LockedPeriod> lockedPeriods) {
+		this.lockedPeriods = lockedPeriods;
+	}
+	
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ProjectId", nullable = false)
+	public Set<LockedPeriod> getLockedPeriods() {
+		return lockedPeriods;
 	}
 
 }

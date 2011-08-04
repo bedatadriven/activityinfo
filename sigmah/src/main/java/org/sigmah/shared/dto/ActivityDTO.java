@@ -7,8 +7,10 @@ package org.sigmah.shared.dto;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
@@ -26,6 +28,7 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO, Provi
 
     private List<IndicatorDTO> indicators = new ArrayList<IndicatorDTO>(0);
     private List<AttributeGroupDTO> attributeGroups = new ArrayList<AttributeGroupDTO>(0);
+    private Set<LockedPeriodDTO> lockedPeriods = new HashSet<LockedPeriodDTO>(0);
 
     public ActivityDTO() {
         setAssessment(false);
@@ -312,7 +315,17 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO, Provi
 	public String getKey() {
 		return "act" + getId();
 	}
-	
-	
 
+	public void setLockedPeriods(Set<LockedPeriodDTO> lockedPeriods) {
+		this.lockedPeriods = lockedPeriods;
+	}
+
+	public Set<LockedPeriodDTO> getLockedPeriods() {
+		Set<LockedPeriodDTO> allLockedPeriods = new HashSet<LockedPeriodDTO>();
+		allLockedPeriods.addAll(lockedPeriods);
+		if (getDatabase() != null && getDatabase().getLockedPeriods() != null) {
+			allLockedPeriods.addAll(getDatabase().getLockedPeriods());
+		}
+		return allLockedPeriods;
+	}
 }

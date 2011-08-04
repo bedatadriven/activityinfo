@@ -65,6 +65,7 @@ public class Activity implements Serializable, Deleteable, Orderable, SchemaElem
 
     private Set<Site> sites = new HashSet<Site>(0);
     private Set<AttributeGroup> attributeGroups = new HashSet<AttributeGroup>(0);
+    private Set<LockedPeriod> lockedPeriods = new HashSet<LockedPeriod>();
 
     private String mapIcon;
 
@@ -230,4 +231,13 @@ public class Activity implements Serializable, Deleteable, Orderable, SchemaElem
     public void setMapIcon(String mapIcon) {
         this.mapIcon = mapIcon;
     }
+
+	public void setLockedPeriods(Set<LockedPeriod> lockedPeriods) {
+		this.lockedPeriods = lockedPeriods;
+	}
+	
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Set<LockedPeriod> getLockedPeriods() {
+		return lockedPeriods;
+	}
 }

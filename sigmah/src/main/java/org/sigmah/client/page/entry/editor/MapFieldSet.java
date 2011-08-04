@@ -255,18 +255,18 @@ public class MapFieldSet extends FieldSet implements MapPresenter.EditView {
 	}
 
 	@Override
-	public void setValue(org.sigmah.shared.report.content.LatLng value) {
+	public void setValue(org.sigmah.shared.report.content.AiLatLng value) {
         latField.setValue(value.getLat());
         lngField.setValue(value.getLng());
 	}
 
 	@Override
-	public org.sigmah.shared.report.content.LatLng getValue() {
-		return new org.sigmah.shared.report.content.LatLng(latField.getValue(), lngField.getValue());
+	public org.sigmah.shared.report.content.AiLatLng getValue() {
+		return new org.sigmah.shared.report.content.AiLatLng(latField.getValue(), lngField.getValue());
 	}
 
 	@Override
-	public void setMarkerPosition(org.sigmah.shared.report.content.LatLng latLng) {
+	public void setMarkerPosition(org.sigmah.shared.report.content.AiLatLng latLng) {
         LatLng latlng = LatLng.newInstance(latLng.getLat(), latLng.getLng());
         if (marker == null) {
             createMarker(latlng);
@@ -276,7 +276,7 @@ public class MapFieldSet extends FieldSet implements MapPresenter.EditView {
 	}
 
 	@Override
-	public void panTo(org.sigmah.shared.report.content.LatLng latLng) {
+	public void panTo(org.sigmah.shared.report.content.AiLatLng latLng) {
         LatLng latlng = LatLng.newInstance(latLng.getLat(), latLng.getLng());
         map.panTo(latlng);
 	}

@@ -7,7 +7,7 @@ package org.sigmah.shared.util.mapping;
 
 import java.io.Serializable;
 
-import org.sigmah.shared.report.content.LatLng;
+import org.sigmah.shared.report.content.AiLatLng;
 
 
 /**
@@ -165,7 +165,7 @@ public final class BoundingBoxDTO implements Serializable {
         return b.x1 >= x1 && b.x2 <= x2 && b.y1 >= y1 && b.y2 <= y2;
     }
 
-	public boolean contains(LatLng center) {
+	public boolean contains(AiLatLng center) {
 		return contains(center.getLng(), center.getLat());
 	}
 
@@ -297,8 +297,8 @@ public final class BoundingBoxDTO implements Serializable {
 		return y2-y1;
 	}
 
-	public LatLng centroid() {
-		return new LatLng(getCenterY(), getCenterX());
+	public AiLatLng centroid() {
+		return new AiLatLng(getCenterY(), getCenterX());
 	}
 
 

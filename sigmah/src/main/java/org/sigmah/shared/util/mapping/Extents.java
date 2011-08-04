@@ -7,7 +7,7 @@ package org.sigmah.shared.util.mapping;
 
 import java.io.Serializable;
 
-import org.sigmah.shared.report.content.LatLng;
+import org.sigmah.shared.report.content.AiLatLng;
 
 /*
  * Bounding box for a map. 
@@ -91,8 +91,8 @@ public class Extents implements Serializable {
         return minLat > maxLat || minLon > maxLon;
     }
 
-	public LatLng center() {
-		return new LatLng( (minLat + maxLat) / 2.0, (minLon + maxLon) / 2.0 );
+	public AiLatLng center() {
+		return new AiLatLng( (minLat + maxLat) / 2.0, (minLon + maxLon) / 2.0 );
 	}
 
     @Override

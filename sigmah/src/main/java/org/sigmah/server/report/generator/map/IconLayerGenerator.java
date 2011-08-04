@@ -14,7 +14,7 @@ import org.sigmah.server.report.generator.map.cluster.ClustererFactory;
 import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph.IntersectionCalculator;
 import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph.Node;
 import org.sigmah.shared.report.content.IconMapMarker;
-import org.sigmah.shared.report.content.LatLng;
+import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.Point;
 import org.sigmah.shared.report.model.MapIcon;
@@ -88,7 +88,7 @@ public class IconLayerGenerator implements LayerGenerator {
 
                 if(site.hasLatLong()) {
 
-                    Point point = map.fromLatLngToPixel(new LatLng(site.getLatitude(), site.getLongitude()));
+                    Point point = map.fromLatLngToPixel(new AiLatLng(site.getLatitude(), site.getLongitude()));
                     points.add(new PointValue(site, point, rectCalculator.iconRect(point)));
 
                 } else {
@@ -117,7 +117,7 @@ public class IconLayerGenerator implements LayerGenerator {
             IconMapMarker marker = new IconMapMarker();
             marker.setX(cluster.getPoint().getX());
             marker.setY(cluster.getPoint().getY());
-            LatLng latlng = cluster.latLngCentroid();
+            AiLatLng latlng = cluster.latLngCentroid();
             marker.setLat(latlng.getLat());
             marker.setLng(latlng.getLng());
             marker.setIcon(icon);

@@ -8,7 +8,7 @@ package org.sigmah.server.report.generator.map;
 import java.awt.Graphics2D;
 import java.awt.Image;
 
-import org.sigmah.shared.report.content.LatLng;
+import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.Point;
 import org.sigmah.shared.util.mapping.Tile;
 import org.sigmah.shared.util.mapping.TileMath;
@@ -41,7 +41,7 @@ public class TiledMap {
 	/**
 	 * The geographic center of the map
 	 */
-	private final LatLng geoCenter;
+	private final AiLatLng geoCenter;
 	
 	/**
 	 * The center of the map in the projected coordinate system
@@ -60,7 +60,7 @@ public class TiledMap {
 	private Tile tileOrigin;
 	
 	
-	public TiledMap(int width, int height, LatLng geographicCenter, int zoom) {
+	public TiledMap(int width, int height, AiLatLng geographicCenter, int zoom) {
 		this.width = width;
 		this.height = height;
 		this.zoom = zoom;
@@ -127,7 +127,7 @@ public class TiledMap {
 		}
 	}
 	
-	public Point fromLatLngToPixel(LatLng latlng) {
+	public Point fromLatLngToPixel(AiLatLng latlng) {
 	
 		Point p = TileMath.fromLatLngToPixel(latlng, this.zoom);
 		

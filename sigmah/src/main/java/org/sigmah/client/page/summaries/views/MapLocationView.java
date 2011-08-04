@@ -5,7 +5,7 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.map.MapTypeFactory;
 import org.sigmah.client.page.entry.editor.MapPresenter.MapView;
 import org.sigmah.shared.dto.CountryDTO;
-import org.sigmah.shared.report.content.LatLng;
+import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 import com.extjs.gxt.ui.client.event.ContainerEvent;
@@ -32,7 +32,7 @@ public class MapLocationView extends LayoutContainer implements MapView {
     private ContentPanel panel;
     private MapWidget map = null;
     private Marker marker = null;
-    private LatLng latLng;
+    private AiLatLng latLng;
 
     private LabelField latField;
     private LabelField lngField;
@@ -150,7 +150,7 @@ public class MapLocationView extends LayoutContainer implements MapView {
 	}
 
 	@Override
-	public void setValue(org.sigmah.shared.report.content.LatLng value) {
+	public void setValue(org.sigmah.shared.report.content.AiLatLng value) {
 		this.latLng = value;
 		
         latField.setValue(value.getLat());
@@ -162,7 +162,7 @@ public class MapLocationView extends LayoutContainer implements MapView {
 	}
 
 	@Override
-	public org.sigmah.shared.report.content.LatLng getValue() {
+	public org.sigmah.shared.report.content.AiLatLng getValue() {
 		return latLng;
 	}
 }
