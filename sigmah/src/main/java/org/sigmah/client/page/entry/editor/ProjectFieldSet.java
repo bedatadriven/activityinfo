@@ -1,6 +1,10 @@
 package org.sigmah.client.page.entry.editor;
 
+import java.util.List;
+
+import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.page.entry.editor.ProjectPresenter.ProjectPickerView;
 import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.SiteDTO;
 
@@ -8,14 +12,11 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 
-public class ProjectFieldSet extends FieldSet implements ProjectPresenter.View {
-	private SiteDTO site;
+public class ProjectFieldSet extends FieldSet implements ProjectPickerView {
 	private ComboBox<ProjectDTO> comboboxProjects;
 	
 	public ProjectFieldSet(SiteDTO site) {
 		super();
-		
-		this.site = site;
 		
 		initializeComponent();
 		
@@ -42,23 +43,28 @@ public class ProjectFieldSet extends FieldSet implements ProjectPresenter.View {
 	}
 
 	@Override
-	public void init(ProjectPresenter presenter) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public ProjectDTO getProject() {
-		return comboboxProjects.getValue();
-	}
-
-	@Override
-	public void setProject(ProjectDTO project) {
-		comboboxProjects.setValue(project);
-	}
-
-	@Override
-	public void setStore(ListStore<ProjectDTO> projectStore) {
+	public void setProjects(List<ProjectDTO> projects) {
+		ListStore<ProjectDTO> projectStore = new ListStore<ProjectDTO>();
+		projectStore.add(projects);
 		comboboxProjects.setStore(projectStore);
+	}
+
+	@Override
+	public void initialize() {
+	}
+
+	@Override
+	public AsyncMonitor getAsyncMonitor() {
+		return null;
+	}
+
+	@Override
+	public void setValue(ProjectDTO value) {
+		comboboxProjects.setValue(value);
+	}
+
+	@Override
+	public ProjectDTO getValue() {
+		return comboboxProjects.getValue();
 	}
 }

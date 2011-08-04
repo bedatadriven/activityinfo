@@ -6,6 +6,7 @@
 package org.sigmah.client.page.entry.editor;
 
 
+import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.map.MapTypeFactory;
 import org.sigmah.client.page.common.widget.CoordinateField;
@@ -22,6 +23,9 @@ import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.maps.client.MapType;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.control.SmallMapControl;
@@ -33,7 +37,9 @@ import com.google.gwt.maps.client.geom.LatLngBounds;
 import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.maps.client.overlay.MarkerOptions;
 
-public class MapFieldSet extends FieldSet implements MapPresenter.View {
+public class MapFieldSet extends FieldSet implements MapPresenter.EditView {
+	private EventBus eventBus = new SimpleEventBus();
+	
     private ContentPanel panel;
     private MapWidget map = null;
     private Marker marker = null;
@@ -43,44 +49,77 @@ public class MapFieldSet extends FieldSet implements MapPresenter.View {
 
     private LatLngBounds pendingZoom = null;
 
-    private MapPresenter presenter;
     private final CountryDTO country;
 
     public MapFieldSet(CountryDTO country) {
         this.country = country;
+        
+        initializeComponent();
+
+        createPanel();
+        createPanelToolbar();
+        createMapWidget();
     }
 
-    public void init(final MapPresenter presenter) {
-
-        this.presenter = presenter;
-
+    private void initializeComponent() {
         setHeading(I18N.CONSTANTS.geoPosition());
         setLayout(new FieldSetFitLayout());
         setHeight(250);
+	}
 
-        /*
-           * Create the content panel that houses
-           * the map and the coordinate fields
-           */
+	public void init() {
+    }
 
-        panel = new ContentPanel();
-        panel.setHeaderVisible(false);
-        panel.setLayout(new FitLayout());
+	private void createMapWidget() {
+		map = new MapWidget();
 
-        /*
-           * The bottom ToolBar records the latitude and longitude
-           *
-           */
+        map.addControl(new SmallMapControl());
+        map.setCenter(LatLng.newInstance(
+                country.getBounds().getCenterY(),
+                country.getBounds().getCenterX()));
+        map.setZoomLevel(6);
 
+        MapType adminMap = MapTypeFactory.createLocalisationMapType(country);
+        map.addMapType(adminMap);
+        map.setCurrentMapType(adminMap);
+
+        map.addMapZoomEndHandler(new MapZoomEndHandler() {
+            public void onZoomEnd(MapZoomEndEvent event) {
+            	eventBus.fireEvent(
+            			new MapViewChangedEvent(createBounds(map.getBounds())));
+            }
+        });
+
+        map.addMapMoveEndHandler(new MapMoveEndHandler() {
+            @Override
+            public void onMoveEnd(MapMoveEndEvent mapMoveEndEvent) {
+            	eventBus.fireEvent(
+            			new MapViewChangedEvent(createBounds(map.getBounds())));
+            }
+        });
+
+        this.addListener(Events.AfterLayout, new Listener<ContainerEvent>() {
+
+            @Override
+            public void handleEvent(ContainerEvent be) {
+                map.checkResizeAndCenter();
+                if (pendingZoom != null) {
+                    zoomToBounds(pendingZoom);
+                }
+            }
+        });
+        panel.add(map);
+	}
+
+	private void createPanelToolbar() {
         Listener<FieldEvent> latLngListener = new Listener<FieldEvent>() {
             public void handleEvent(FieldEvent be) {
-                presenter.onCoordsChanged(latField.getValue(), lngField.getValue());
+            	eventBus.fireEvent(new CoordinatesChangedEvent(
+            			latField.getValue(), lngField.getValue()));
             }
         };
 
-        /* Create the Lat/Lng entry fields */
-
-        latField = new CoordinateField(CoordinateField.Axis.LATITUDE);
+		latField = new CoordinateField(CoordinateField.Axis.LATITUDE);
         latField.setName("y");
         latField.setFireChangeEventOnSetValue(true);
 
@@ -98,60 +137,18 @@ public class MapFieldSet extends FieldSet implements MapPresenter.View {
         coordBar.add(lngField);
 
         panel.setBottomComponent(coordBar);
+	}
 
-        /* Create the map itself */
-
-        map = new MapWidget();
-        panel.add(map);
-
-        map.addControl(new SmallMapControl());
-        map.setCenter(LatLng.newInstance(
-                country.getBounds().getCenterY(),
-                country.getBounds().getCenterX()));
-        map.setZoomLevel(6);
-
-        MapType adminMap = MapTypeFactory.createLocalisationMapType(country);
-        map.addMapType(adminMap);
-        map.setCurrentMapType(adminMap);
-
-        map.addMapZoomEndHandler(new MapZoomEndHandler() {
-            public void onZoomEnd(MapZoomEndEvent event) {
-                presenter.onMapViewChanged(createBounds(map.getBounds()));
-            }
-        });
-
-        map.addMapMoveEndHandler(new MapMoveEndHandler() {
-            @Override
-            public void onMoveEnd(MapMoveEndEvent mapMoveEndEvent) {
-                presenter.onMapViewChanged(createBounds(map.getBounds()));
-            }
-        });
-
-        this.addListener(Events.AfterLayout, new Listener<ContainerEvent>() {
-
-            @Override
-            public void handleEvent(ContainerEvent be) {
-
-                map.checkResizeAndCenter();
-
-                if (pendingZoom != null) {
-                    zoomToBounds(pendingZoom);
-                }
-            }
-        });
-
+	private void createPanel() {
+		panel = new ContentPanel();
+        panel.setHeaderVisible(false);
+        panel.setLayout(new FitLayout());
         add(panel);
-    }
+	}
 
     @Override
-    public BoundingBoxDTO getMapView() {
+    public BoundingBoxDTO getBounds() {
         return createBounds(map.getBounds());
-    }
-
-    @Override
-    public void panTo(double lat, double lng) {
-        LatLng latlng = LatLng.newInstance(lat, lng);
-        map.panTo(latlng);
     }
 
     public CoordinateField getLatField() {
@@ -162,16 +159,8 @@ public class MapFieldSet extends FieldSet implements MapPresenter.View {
         return lngField;
     }
 
-
-    @Override
-    public void setCoords(Double lat, Double lng) {
-        latField.setValue(lat);
-        lngField.setValue(lng);
-    }
-
     @Override
     public void setBounds(String name, BoundingBoxDTO bounds) {
-
         latField.setBounds(name, bounds.y1, bounds.y2);
         lngField.setBounds(name, bounds.x1, bounds.x2);
 
@@ -192,16 +181,6 @@ public class MapFieldSet extends FieldSet implements MapPresenter.View {
     @Override
     public void setMapView(BoundingBoxDTO bounds) {
         zoomToBounds(createLatLngBounds(bounds));
-    }
-
-    @Override
-    public void setMarkerPos(double lat, double lng) {
-        LatLng latlng = LatLng.newInstance(lat, lng);
-        if (marker == null) {
-            createMarker(latlng);
-        } else {
-            marker.setLatLng(latlng);
-        }
     }
 
     public void zoomToBounds(LatLngBounds llbounds) {
@@ -225,9 +204,9 @@ public class MapFieldSet extends FieldSet implements MapPresenter.View {
 
         marker.addMarkerDragEndHandler(new MarkerDragEndHandler() {
             public void onDragEnd(MarkerDragEndEvent event) {
-
                 LatLng latlng = marker.getLatLng();
-                presenter.onMarkerMoved(latlng.getLatitude(), latlng.getLongitude());
+                eventBus.fireEvent(
+                		new MarkerMovedEvent(latlng.getLatitude(), latlng.getLongitude()));
             }
         });
 
@@ -246,7 +225,60 @@ public class MapFieldSet extends FieldSet implements MapPresenter.View {
                 latlngbounds.getSouthWest().getLatitude(),
                 latlngbounds.getSouthWest().getLongitude(),
                 latlngbounds.getNorthEast().getLatitude());
-
     }
+
+	@Override
+	public HandlerRegistration addMarkerMovedHandler(MarkerMovedHandler handler) {
+		return eventBus.addHandler(MarkerMovedEvent.TYPE, handler);
+	}
+
+	@Override
+	public HandlerRegistration addCoordinatesChangedHandler(
+			CoordinatesChangedHandler handler) {
+		return eventBus.addHandler(CoordinatesChangedEvent.TYPE, handler);
+	}
+
+	@Override
+	public HandlerRegistration addMapViewChangedHandler(
+			MapViewChangedHandler handler) {
+		return eventBus.addHandler(MapViewChangedEvent.TYPE, handler);
+	}
+
+	@Override
+	public void initialize() {
+	}
+
+	@Override
+	public AsyncMonitor getAsyncMonitor() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setValue(org.sigmah.shared.report.content.LatLng value) {
+        latField.setValue(value.getLat());
+        lngField.setValue(value.getLng());
+	}
+
+	@Override
+	public org.sigmah.shared.report.content.LatLng getValue() {
+		return new org.sigmah.shared.report.content.LatLng(latField.getValue(), lngField.getValue());
+	}
+
+	@Override
+	public void setMarkerPosition(org.sigmah.shared.report.content.LatLng latLng) {
+        LatLng latlng = LatLng.newInstance(latLng.getLat(), latLng.getLng());
+        if (marker == null) {
+            createMarker(latlng);
+        } else {
+            marker.setLatLng(latlng);
+        }
+	}
+
+	@Override
+	public void panTo(org.sigmah.shared.report.content.LatLng latLng) {
+        LatLng latlng = LatLng.newInstance(latLng.getLat(), latLng.getLng());
+        map.panTo(latlng);
+	}
 
 }

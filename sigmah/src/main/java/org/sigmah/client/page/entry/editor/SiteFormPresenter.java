@@ -13,6 +13,7 @@ import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.event.SiteEvent;
 import org.sigmah.client.page.common.toolbar.UIActions;
+import org.sigmah.client.page.entry.editor.ProjectPresenter.ProjectPickerView;
 import org.sigmah.shared.command.CreateEntity;
 import org.sigmah.shared.command.UpdateEntity;
 import org.sigmah.shared.command.result.CreateResult;
@@ -42,9 +43,9 @@ public class SiteFormPresenter implements SiteFormLeash {
 
         public AdminFieldSetPresenter.View createAdminFieldSetView(ActivityDTO activity);
 
-        public MapPresenter.View createMapView(CountryDTO country);
+        public MapPresenter.EditView createMapView(CountryDTO country);
         
-        public ProjectPresenter.View createProjectView(ProjectDTO project);
+        public ProjectPickerView createProjectView(ProjectDTO project);
 
         public boolean validate();
 
@@ -167,7 +168,7 @@ public class SiteFormPresenter implements SiteFormLeash {
     
     private void addProjectIdToMap(Map<String, Object> map) {
     	
-        int projectId = projectPresenter.getView().getProject() == null ? 0 : projectPresenter.getView().getProject().getId();
+        int projectId = projectPresenter.getView().getValue() == null ? 0 : projectPresenter.getView().getValue().getId();
         map.put("projectId", projectId);
         map.remove("project");
     }

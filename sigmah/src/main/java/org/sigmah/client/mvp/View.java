@@ -1,4 +1,4 @@
-package org.sigmah.client.page;
+package org.sigmah.client.mvp;
 
 import org.sigmah.client.dispatch.AsyncMonitor;
 
@@ -14,7 +14,11 @@ import com.google.gwt.user.client.TakesValue;
 public interface View<T> extends TakesValue<T> {
 	/*
 	 * Presenters have an async process of fetching data. Only after the data has been
-	 * fetched successfully and the data set on the View, the Presenter calls this method
+	 * fetched successfully and the data set on the View, the Presenter calls this method.
+	 * This is foremost important for data which is listed, e.g. the choices of a combobox.
+	 * The constructor can construct the UI, when the presenter has this data fetched, it 
+	 * can be set on the view. After this, the initialize method can be called.  
+	 *  
 	 */
 	public void initialize();
 	

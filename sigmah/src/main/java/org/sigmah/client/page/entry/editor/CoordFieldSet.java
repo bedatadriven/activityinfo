@@ -5,14 +5,18 @@
 
 package org.sigmah.client.page.entry.editor;
 
+import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.common.widget.CoordinateField;
+import org.sigmah.shared.report.content.LatLng;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
+
+import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class CoordFieldSet extends AbstractFieldSet implements MapPresenter.View {
+public class CoordFieldSet extends AbstractFieldSet implements MapPresenter.EditView {
 
     MapPresenter presenter;
     protected CoordinateField latField;
@@ -46,16 +50,6 @@ public class CoordFieldSet extends AbstractFieldSet implements MapPresenter.View
     }
 
     @Override
-    public void setCoords(Double lat, Double lng) {
-        latField.setValue(lat);
-        latField.validate();
-
-        lngField.setValue(lng);
-        lngField.validate();
-    }
-
-
-    @Override
     public Double getX() {
         return latField.getValue();
     }
@@ -66,13 +60,8 @@ public class CoordFieldSet extends AbstractFieldSet implements MapPresenter.View
     }
 
     @Override
-    public BoundingBoxDTO getMapView() {
+    public BoundingBoxDTO getBounds() {
         return new BoundingBoxDTO(-180, -90, 180, 90);
-    }
-
-    @Override
-    public void setMarkerPos(double lat, double lng) {
-        // noop
     }
 
     @Override
@@ -80,10 +69,58 @@ public class CoordFieldSet extends AbstractFieldSet implements MapPresenter.View
         // nooop
     }
 
-    @Override
-    public void panTo(double lat, double lng) {
-        // noop
-    }
+	@Override
+	public HandlerRegistration addMarkerMovedHandler(MarkerMovedHandler handler) {
+		return null;
+	}
 
+	/*
+	 * No events supported on this View
+	 * @see org.sigmah.client.page.entry.editor.MapPresenter.View#addCoordinatesChangedHandler(org.sigmah.client.page.entry.editor.MapPresenter.View.CoordinatesChangedHandler)
+	 */
+	@Override
+	public HandlerRegistration addCoordinatesChangedHandler(
+			CoordinatesChangedHandler handler) {
+		return null;
+	}
 
+	@Override
+	public HandlerRegistration addMapViewChangedHandler(
+			MapViewChangedHandler handler) {
+		return null;
+	}
+
+	@Override
+	public void initialize() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public AsyncMonitor getAsyncMonitor() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setValue(LatLng value) {
+        latField.setValue(value.getLat());
+        latField.validate();
+
+        lngField.setValue(value.getLng());
+        lngField.validate();
+	}
+
+	@Override
+	public LatLng getValue() {
+		return new LatLng(latField.getValue(), lngField.getValue());
+	}
+
+	@Override
+	public void setMarkerPosition(LatLng latLng) {
+	}
+
+	@Override
+	public void panTo(LatLng latLng) {
+	}
 }

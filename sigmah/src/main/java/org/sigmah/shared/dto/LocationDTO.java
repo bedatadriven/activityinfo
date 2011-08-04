@@ -48,4 +48,12 @@ public class LocationDTO extends BaseModelData implements DTO {
 	public void setName(String name) {
 		set("name", name);
 	}
+
+	public String getAxe() {
+		return (String)get("axe");
+	}
+	
+	public void setAxe(String axe) {
+		set("axe", axe);
+	}
 }

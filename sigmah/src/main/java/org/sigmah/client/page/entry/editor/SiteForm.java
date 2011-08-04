@@ -5,7 +5,6 @@
 
 package org.sigmah.client.page.entry.editor;
 
-
 import java.util.Map;
 
 import org.sigmah.client.dispatch.AsyncMonitor;
@@ -14,7 +13,7 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.widget.LoadingPlaceHolder;
 import org.sigmah.client.page.config.form.ModelFormPanel;
-import org.sigmah.client.page.entry.editor.ProjectPresenter.View;
+import org.sigmah.client.page.entry.editor.ProjectPresenter.ProjectPickerView;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.PartnerDTO;
@@ -35,7 +34,7 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
 
     private ActivityFieldSet activityFieldSet;
     private LocationFieldSet locationFieldSet;
-    private MapPresenter.View mapView;
+    private MapPresenter.EditView mapView;
     private AttributeFieldSet attributeFieldSet;
     private IndicatorFieldSet indicatorFieldSet;
     private CommentFieldSet commentFieldSet;
@@ -49,7 +48,6 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
         add(new LoadingPlaceHolder());
     }
 
-
     @Override
     public void init(SiteFormPresenter presenter,
                      ActivityDTO activity,
@@ -61,7 +59,7 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
 
         this.presenter = presenter;
         this.activity = activity;
-        this.site=site;
+        this.site = site;
 
         this.setLayout(new FlowLayout());
         this.setScrollMode(Scroll.AUTOY);
@@ -128,7 +126,7 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
     }
 
     @Override
-    public MapPresenter.View createMapView(CountryDTO country) {
+    public MapPresenter.EditView createMapView(CountryDTO country) {
 
         if (Maps.isLoaded()) {
             MapFieldSet mapFieldSet = new MapFieldSet(country);
@@ -177,7 +175,7 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
 
 
 	@Override
-	public View createProjectView(ProjectDTO project) {
+	public ProjectPickerView createProjectView(ProjectDTO project) {
         projectFieldSet = new ProjectFieldSet(site);
         add(projectFieldSet);
         

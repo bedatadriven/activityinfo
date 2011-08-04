@@ -10,7 +10,7 @@ import java.util.Map;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.page.common.dialog.FormDialogImpl;
 import org.sigmah.client.page.common.toolbar.UIActions;
-import org.sigmah.client.page.entry.editor.ProjectPresenter.View;
+import org.sigmah.client.page.entry.editor.ProjectPresenter.ProjectPickerView;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.PartnerDTO;
@@ -19,9 +19,6 @@ import org.sigmah.shared.dto.SiteDTO;
 
 import com.extjs.gxt.ui.client.store.ListStore;
 
-/**
- * @author Alex Bertram (akbertram@gmail.com)
- */
 public class SiteFormDialog extends FormDialogImpl<SiteForm> implements SiteFormPresenter.View {
 
     private SiteFormPresenter presenter;
@@ -76,7 +73,7 @@ public class SiteFormDialog extends FormDialogImpl<SiteForm> implements SiteForm
     }
 
     @Override
-    public MapPresenter.View createMapView(CountryDTO country) {
+    public MapPresenter.EditView createMapView(CountryDTO country) {
         return form.createMapView(country);
     }
 
@@ -105,7 +102,7 @@ public class SiteFormDialog extends FormDialogImpl<SiteForm> implements SiteForm
     }
 
 	@Override
-	public View createProjectView(ProjectDTO project) {
+	public ProjectPickerView createProjectView(ProjectDTO project) {
 		return form.createProjectView(null);
 	}
 }
