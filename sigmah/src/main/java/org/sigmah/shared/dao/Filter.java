@@ -99,7 +99,7 @@ public class Filter implements Serializable {
 		return getRestrictionSet(type, false);
 	}
 	
-	private Set<Integer> getRestrictionSet(DimensionType type, boolean create) {
+	private Set<Integer> getRestrictFilterionSet(DimensionType type, boolean create) {
 		Set<Integer> set = restrictions.get(type);
 		
 		if(set == null) {

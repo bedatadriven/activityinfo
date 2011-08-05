@@ -33,6 +33,10 @@ public class ActionToolBar extends ToolBar implements Listener<ButtonEvent> {
 
     private ActionListener listener;
     private SplitButton saveButton;
+    private Button addButton;
+    private Button removeButton;
+    private Button refreshButton;
+    private Button editButton;
 
     public ActionToolBar() {
     }
@@ -49,11 +53,18 @@ public class ActionToolBar extends ToolBar implements Listener<ButtonEvent> {
      * @param text Text of the button
      * @param icon Icon of the button. See {@link org.sigmah.client.icon.IconImageBundle}
      */
-    public void addButton(String actionId, String text, AbstractImagePrototype icon) {
+    public Button addButton(String actionId, String text, AbstractImagePrototype icon) {
         Button button = new Button(text, icon);
         button.setItemId(actionId);
         button.addListener(Events.Select, this);
         add(button);
+        
+        return button;
+    }
+    
+    public void addCreateButton() {
+    	this.addButton = addButton(UIActions.add, I18N.CONSTANTS.addItem(), IconImageBundle.ICONS.add());
+ 
     }
 
     public void addEditButton() {
@@ -61,15 +72,15 @@ public class ActionToolBar extends ToolBar implements Listener<ButtonEvent> {
     }
 
     public void addEditButton(AbstractImagePrototype icon) {
-      addButton(UIActions.edit, I18N.CONSTANTS.edit(), icon);
+        this.editButton = addButton(UIActions.edit, I18N.CONSTANTS.edit(), icon);
     }
 
     public void addDeleteButton() {
-        addButton(UIActions.delete, I18N.CONSTANTS.delete(), IconImageBundle.ICONS.delete());
+        this.removeButton = addButton(UIActions.delete, I18N.CONSTANTS.delete(), IconImageBundle.ICONS.delete());
     }
 
     public void addDeleteButton(String text) {
-        addButton(UIActions.delete, text, IconImageBundle.ICONS.delete());
+        this.removeButton = addButton(UIActions.delete, text, IconImageBundle.ICONS.delete());
     }
 
     public void addExcelExportButton() {
@@ -77,7 +88,7 @@ public class ActionToolBar extends ToolBar implements Listener<ButtonEvent> {
     }
 
     public void addRefreshButton() {
-        addButton(UIActions.refresh, I18N.CONSTANTS.refreshPreview(), IconImageBundle.ICONS.refresh());
+        this.refreshButton = addButton(UIActions.refresh, I18N.CONSTANTS.refreshPreview(), IconImageBundle.ICONS.refresh());
     }
 
     public void addSaveSplitButton() {
@@ -138,6 +149,24 @@ public class ActionToolBar extends ToolBar implements Listener<ButtonEvent> {
         } else {
             Log.warn("ActionToolBar: setActionEnabled(" + actionId + ") was called, but button is not present");
         }
+    }
+    
+    public void setDeleteEnabled(boolean enabled) {
+    	if (removeButton != null) {
+    		refreshButton.setEnabled(enabled);
+    	}
+    }
+    
+    public void setAddEnabled(boolean enabled) {
+    	if (addButton != null) {
+    		addButton.setEnabled(enabled);
+    	}
+    }
+    
+    public void setUpdateEnabled(boolean enabled) {
+    	if (editButton != null) {
+    		editButton.setEnabled(enabled);
+    	}
     }
 
     public void setListener(ActionListener listener) {

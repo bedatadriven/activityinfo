@@ -11,7 +11,7 @@ import com.google.gwt.user.client.TakesValue;
  * the Presenter. The View only has 'dumb' methods: the Presenter acts as a proxy 
  * between the model and the view.
  */
-public interface View<T> extends TakesValue<T> {
+public interface View<M> extends TakesValue<M> {
 	/*
 	 * Presenters have an async process of fetching data. Only after the data has been
 	 * fetched successfully and the data set on the View, the Presenter calls this method.

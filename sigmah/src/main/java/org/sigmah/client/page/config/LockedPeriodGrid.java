@@ -2,21 +2,21 @@ package org.sigmah.client.page.config;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import org.hibernate.event.DeleteEvent;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.mvp.Filter;
-import org.sigmah.server.endpoint.gwtrpc.handler.DeleteHandler;
+import org.sigmah.client.page.common.toolbar.ActionToolBar;
 import org.sigmah.shared.dto.LockedPeriodDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
@@ -29,14 +29,13 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.i18n.client.DateTimeFormat;
 
-public class LockedPeriodGrid extends LayoutContainer implements LockedPeriodListEditor {
+public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEditor {
 	private EventBus eventBus = new SimpleEventBus();
 	
 	private ListStore<LockedPeriodDTO> lockedPeriodStore;
-	private boolean isCreateEnabled = true;
-	private boolean isUpdateEnabled = true;
-	private boolean isDeleteEnabled = true;
 	private EditorGrid<LockedPeriodDTO> gridLockedPeriods;
+	private UserDatabaseDTO userDatabase;
+	private ActionToolBar toolbarActions;
 
 	public LockedPeriodGrid() {
 		super();
@@ -51,7 +50,7 @@ public class LockedPeriodGrid extends LayoutContainer implements LockedPeriodLis
 		
 		configs.add(createEnabledColumn());
 	    configs.add(createNameColumn()); 
-	    configs.add(createStartDateColumn());  
+	    configs.add(createStartDateColumn());
 	    configs.add(createEndDateColumn());
 	    configs.add(createTotalTimeColumn());
 	    
@@ -69,6 +68,7 @@ public class LockedPeriodGrid extends LayoutContainer implements LockedPeriodLis
 	private ColumnConfig createEnabledColumn() {
 	    CheckColumnConfig columnEnabled = new CheckColumnConfig("enabled", "Enabled?", 55);  
 	    columnEnabled.setEditor(new CellEditor(new CheckBox()));
+	    
 	    return columnEnabled;
 	}
 
@@ -78,6 +78,7 @@ public class LockedPeriodGrid extends LayoutContainer implements LockedPeriodLis
 	    columnTotalTime.setHeader(I18N.CONSTANTS.timePeriod());  
 	    columnTotalTime.setWidth(200);  
 	    columnTotalTime.setRowHeader(true);
+	    
 		return columnTotalTime;
 	}
 
@@ -87,6 +88,7 @@ public class LockedPeriodGrid extends LayoutContainer implements LockedPeriodLis
 		columnName.setHeader(I18N.CONSTANTS.name());  
 		columnName.setWidth(200);  
 		columnName.setRowHeader(true); 
+		
 	    return columnName;
 	}
 
@@ -100,6 +102,7 @@ public class LockedPeriodGrid extends LayoutContainer implements LockedPeriodLis
 	    columnEndDate.setHeader(I18N.CONSTANTS.toDate());  
 	    columnEndDate.setWidth(200);  
 	    columnEndDate.setRowHeader(true);  
+	    
 		return columnEndDate;
 	}
 
@@ -113,11 +116,17 @@ public class LockedPeriodGrid extends LayoutContainer implements LockedPeriodLis
 	    columnStartDate.setHeader(I18N.CONSTANTS.fromDate());  
 	    columnStartDate.setWidth(200);  
 	    columnStartDate.setRowHeader(true);
+	    
 		return columnStartDate;
 	}
 
 	private void initializeComponent() {
 		lockedPeriodStore = new ListStore<LockedPeriodDTO>();
+		
+		toolbarActions = new ActionToolBar();
+		toolbarActions.addDeleteButton();
+		toolbarActions.addCreateButton();
+		this.setTopComponent(toolbarActions);
 	}
 
 	@Override
@@ -127,7 +136,7 @@ public class LockedPeriodGrid extends LayoutContainer implements LockedPeriodLis
 
 	@Override
 	public void update(LockedPeriodDTO item) {
-		// TODO: implement
+		lockedPeriodStore.commitChanges();
 	}
 
 	@Override
@@ -137,17 +146,17 @@ public class LockedPeriodGrid extends LayoutContainer implements LockedPeriodLis
 
 	@Override
 	public void setCreateEnabled(boolean createEnabled) {
-		this.isCreateEnabled = createEnabled;
+		toolbarActions.setAddEnabled(createEnabled);
 	}
 
 	@Override
 	public void setUpdateEnabled(boolean updateEnabled) {
-		this.isUpdateEnabled = updateEnabled;
+		toolbarActions.setUpdateEnabled(updateEnabled);
 	}
 
 	@Override
 	public void setDeleteEnabled(boolean deleteEnabled) {
-		this.isDeleteEnabled = deleteEnabled;
+		toolbarActions.setDeleteEnabled(deleteEnabled);
 	}
 
 	@Override
@@ -164,58 +173,27 @@ public class LockedPeriodGrid extends LayoutContainer implements LockedPeriodLis
 
 	@Override
 	public void setValue(LockedPeriodDTO value) {
-		// TODO Auto-generated method stub
-		
+		gridLockedPeriods.getSelectionModel().select(value, false);
 	}
 
 	@Override
 	public LockedPeriodDTO getValue() {
-		// TODO Auto-generated method stub
-		return null;
+		return gridLockedPeriods.getSelectionModel().getSelectedItem();
 	}
 
 	@Override
-	public void setPeriods(Set<LockedPeriodDTO> lockedPeriods) {
-		lockedPeriodStore.removeAll();
-		lockedPeriodStore.add(new ArrayList<LockedPeriodDTO>(lockedPeriods));
-	}
-	
-	@Override
-	public HandlerRegistration addCreateHandler(
-			org.sigmah.client.mvp.CrudView.CreateHandler handler) {
+	public HandlerRegistration addCreateHandler(CreateHandler handler) {
 		return eventBus.addHandler(CreateEvent.TYPE, handler);
 	}
 
 	@Override
-	public HandlerRegistration addUpdateHandler(
-			org.sigmah.client.mvp.CrudView.UpdateHandler handler) {
+	public HandlerRegistration addUpdateHandler(UpdateHandler handler) {
 		return eventBus.addHandler(UpdateEvent.TYPE, handler);
 	}
 
 	@Override
-	public HandlerRegistration addRequestDeleteHandler(
-			org.sigmah.client.mvp.CrudView.DeleteHandler handler) {
-		return eventBus.addHandler(DeleteEvent.TYPE, handler);
-	}
-
-	@Override
-	public HandlerRegistration addCancelUpdateHandler(
-			org.sigmah.client.mvp.CrudView.UpdateHandler handler) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public HandlerRegistration addRequestDeleteHandler(DeleteHandler handler) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public HandlerRegistration addConfirmDeleteHandler(
-			org.sigmah.client.mvp.CrudView.ConfirmDeleteHandler handler) {
-		// TODO Auto-generated method stub
-		return null;
+	public HandlerRegistration addConfirmDeleteHandler(ConfirmDeleteHandler handler) {
+		return eventBus.addHandler(ConfirmDeleteEvent.TYPE, handler);
 	}
 
 	@Override
@@ -227,41 +205,65 @@ public class LockedPeriodGrid extends LayoutContainer implements LockedPeriodLis
 
 	@Override
 	public HandlerRegistration addFilterHandler(
-			org.sigmah.client.mvp.CrudView.FilterHandler filter) {
+			FilterHandler filter) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void cancelUpdate(LockedPeriodDTO item) {
-		// TODO Auto-generated method stub
-		
+		gridLockedPeriods.stopEditing(true);
 	}
 
 	@Override
 	public void filter(Filter<LockedPeriodDTO> filter) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void askConfirmDelete(LockedPeriodDTO item) {
-		// TODO Auto-generated method stub
-		
+		// TODO: i18n
+		MessageBox.confirm("Delete LockedPeriod", "Wanna delete this lockedPeriod?", new Listener<MessageBoxEvent>() {
+			@Override
+			public void handleEvent(MessageBoxEvent be) {
+				eventBus.fireEvent(new ConfirmDeleteEvent());
+			}
+		});
 	}
 
 	@Override
 	public void setParent(UserDatabaseDTO parent) {
-		// TODO Auto-generated method stub
-		
+		this.userDatabase = parent;
 	}
 
 	@Override
 	public void setCanCancelUpdate(boolean canCancelUpdate) {
 		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void setItems(List<LockedPeriodDTO> items) {
+		lockedPeriodStore.removeAll();
+		lockedPeriodStore.add(new ArrayList<LockedPeriodDTO>(items));
+	}
+
+	@Override
+	public void removeFilter() {
+		// TODO Auto-generated method stub
 		
 	}
 
+	@Override
+	public HandlerRegistration addCancelUpdateHandler(
+			CancelUpdateHandler handler) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-
+	@Override
+	public HandlerRegistration addRequestDeleteHandler(
+			RequestDeleteHandler handler) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
