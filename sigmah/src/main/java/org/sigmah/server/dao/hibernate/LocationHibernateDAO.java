@@ -5,6 +5,8 @@
 
 package org.sigmah.server.dao.hibernate;
 
+import java.util.ListIterator;
+
 import com.google.inject.Inject;
 
 import org.sigmah.server.dao.LocationDAO;
@@ -45,12 +47,12 @@ public class LocationHibernateDAO extends GenericDAO<Location, Integer> implemen
     }
 
     private void removeExistingRow(int locationId, int adminLevelId) {
-        em.createNativeQuery("delete from LocationAdminLink where " +
-                "LocationId = ?1 and " +
-                "AdminEntityId in " +
-                "(select e.AdminEntityId from AdminEntity e where e.AdminLevelId = ?2)")
-                .setParameter(1, locationId)
-                .setParameter(2, adminLevelId)
-                .executeUpdate();
+        Location location = em.find(Location.class, locationId);
+        for(AdminEntity entity : location.getAdminEntities()) {
+        	if(entity.getLevel().getId() == adminLevelId) {
+        		location.getAdminEntities().remove(entity);
+        		return;
+        	}
+        }
     }
 }
