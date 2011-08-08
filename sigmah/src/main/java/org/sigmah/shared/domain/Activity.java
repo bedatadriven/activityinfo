@@ -236,7 +236,7 @@ public class Activity implements Serializable, Deleteable, Orderable, SchemaElem
 		this.lockedPeriods = lockedPeriods;
 	}
 	
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "activity")
 	public Set<LockedPeriod> getLockedPeriods() {
 		return lockedPeriods;
 	}

@@ -13,12 +13,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Project implements Serializable {
 	private int id;
 	private String name;
-//	private int userDatabaseId;
 	private String description;
 	private Date dateDeleted;
 	private UserDatabase database;
@@ -28,11 +28,10 @@ public class Project implements Serializable {
 		super();
 	}
 
-	public Project(int id, String name) {//, int userDatabaseId) {
+	public Project(int id, String name) {
 		super();
 		this.id = id;
 		this.name = name;
-//		this.userDatabaseId = userDatabaseId;
 	}
 
 	@Id
@@ -55,15 +54,6 @@ public class Project implements Serializable {
 		this.name = name;
 	}
 	
-
-//	public int getUserDatabaseId() {
-//		return userDatabaseId;
-//	}
-//	
-//	public void setUserDatabaseId(int userDatabaseId) {
-//		this.userDatabaseId = userDatabaseId;
-//	}
-
 	public void setDescription(String description) {
 		this.description = description;
 	}
@@ -94,8 +84,8 @@ public class Project implements Serializable {
 	public void setLockedPeriods(Set<LockedPeriod> lockedPeriods) {
 		this.lockedPeriods = lockedPeriods;
 	}
-	
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
     @JoinColumn(name = "ProjectId", nullable = false)
 	public Set<LockedPeriod> getLockedPeriods() {
 		return lockedPeriods;

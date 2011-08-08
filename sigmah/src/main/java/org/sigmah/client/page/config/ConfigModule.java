@@ -9,6 +9,7 @@
  */
 package org.sigmah.client.page.config;
 
+import org.sigmah.client.page.config.LockedPeriodsPresenter.LockedPeriodListEditor;
 import org.sigmah.client.page.config.design.DesignPresenter;
 import org.sigmah.client.page.config.design.DesignView;
 
@@ -29,5 +30,6 @@ public class ConfigModule extends AbstractGinModule {
         bind(DbPartnerEditor.View.class).to(DbPartnerGrid.class);
         bind(DbProjectEditor.View.class).to(DbProjectGrid.class);
         bind(DesignPresenter.View.class).to(DesignView.class);
+        bind(LockedPeriodListEditor.class).to(LockedPeriodGrid.class);
     }
 }

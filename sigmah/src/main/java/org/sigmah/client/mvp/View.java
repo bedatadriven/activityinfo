@@ -3,6 +3,7 @@ package org.sigmah.client.mvp;
 import org.sigmah.client.dispatch.AsyncMonitor;
 
 import com.google.gwt.user.client.TakesValue;
+import com.google.gwt.user.client.ui.IsWidget;
 
 /*
  * The view always has a primary domain object to display. The view receives calls 
@@ -11,7 +12,7 @@ import com.google.gwt.user.client.TakesValue;
  * the Presenter. The View only has 'dumb' methods: the Presenter acts as a proxy 
  * between the model and the view.
  */
-public interface View<M> extends TakesValue<M> {
+public interface View<M> extends TakesValue<M>, IsWidget {
 	/*
 	 * Presenters have an async process of fetching data. Only after the data has been
 	 * fetched successfully and the data set on the View, the Presenter calls this method.
@@ -29,4 +30,5 @@ public interface View<M> extends TakesValue<M> {
 	 * 
 	 */
 	public AsyncMonitor getAsyncMonitor();
+	
 }

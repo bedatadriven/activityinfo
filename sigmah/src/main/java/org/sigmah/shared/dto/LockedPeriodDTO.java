@@ -7,7 +7,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 /*
  * A period where normal users cannot add, update or remove data 
  */
-public class LockedPeriodDTO extends BaseModelData implements DTO {
+public class LockedPeriodDTO extends BaseModelData implements EntityDTO {
 	public LockedPeriodDTO() {
 		super();
 	}
@@ -17,6 +17,14 @@ public class LockedPeriodDTO extends BaseModelData implements DTO {
 		setStartDate(startDate);
 		setEndDate(endDate);
 		setEnabled(true);
+	}
+	
+	public void setName(String name) {
+		set("name", name);
+	}
+	
+	public String getName() {
+		return (String)get("name");
 	}
 	
 	public void setId(int id) {
@@ -59,6 +67,11 @@ public class LockedPeriodDTO extends BaseModelData implements DTO {
 
 	public boolean isEnabled() {
 		return (Boolean)get("enabled");
+	}
+
+	@Override
+	public String getEntityName() {
+		return "LockedPeriod";
 	}
 
 }

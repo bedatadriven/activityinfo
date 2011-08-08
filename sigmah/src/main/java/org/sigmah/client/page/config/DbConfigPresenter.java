@@ -41,10 +41,14 @@ public class DbConfigPresenter implements Page {
             view.add(I18N.CONSTANTS.users(), I18N.CONSTANTS.userManagerDescription(),
                     "db-users.png", new DbPageState(DbUserEditor.DatabaseUsers, db.getId()));
         }
-        
-        view.add(I18N.CONSTANTS.project(), I18N.CONSTANTS.projectManagerDescription(),
+        if (db.isDesignAllowed()) {
+            view.add(I18N.CONSTANTS.design(), I18N.CONSTANTS.designDescription(),
+                    "db-design.png", new DbPageState(LockedPeriodsPresenter.LockedPeriod, db.getId()));
+        }
+        if (db.isDesignAllowed()) {
+	        view.add(I18N.CONSTANTS.project(), I18N.CONSTANTS.projectManagerDescription(),
         			"db-users.png", new DbPageState(DbProjectEditor.DatabaseProjects, db.getId()));
-
+        }
 //        view.add("Cibles", "Définer les cibles pour les indicateurs.", "db-targets",
 //                new DbPageState(Pages.DatabaseTargets, db.getId()));
     }

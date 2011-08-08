@@ -44,6 +44,7 @@ public class ConfigLoader implements PageLoader {
         pageManager.registerPageLoader(DbUserEditor.DatabaseUsers, this);
         pageManager.registerPageLoader(DbPartnerEditor.DatabasePartners, this);
         pageManager.registerPageLoader(DbProjectEditor.DatabaseProjects, this);
+        pageManager.registerPageLoader(LockedPeriodsPresenter.LockedPeriod, this);
         pageManager.registerPageLoader(DesignPresenter.PAGE_ID, this);
 
         placeSerializer.registerStatelessPlace(AccountEditor.Account, new AccountPageState());
@@ -52,6 +53,7 @@ public class ConfigLoader implements PageLoader {
         placeSerializer.registerParser(DbUserEditor.DatabaseUsers, new DbPageState.Parser(DbUserEditor.DatabaseUsers));
         placeSerializer.registerParser(DbPartnerEditor.DatabasePartners, new DbPageState.Parser(DbPartnerEditor.DatabasePartners));
         placeSerializer.registerParser(DbProjectEditor.DatabaseProjects, new DbPageState.Parser(DbProjectEditor.DatabaseProjects));
+        placeSerializer.registerParser(LockedPeriodsPresenter.LockedPeriod, new DbPageState.Parser(LockedPeriodsPresenter.LockedPeriod));
         placeSerializer.registerParser(DesignPresenter.PAGE_ID, new DbPageState.Parser(DesignPresenter.PAGE_ID));
     }
 
@@ -104,6 +106,11 @@ public class ConfigLoader implements PageLoader {
 
                             } else if (DbPartnerEditor.DatabasePartners.equals(pageId)) {
                                 DbPartnerEditor presenter = injector.getDbPartnerEditor();
+                                presenter.go(db);
+                                callback.onSuccess(presenter);
+
+                            } else if (LockedPeriodsPresenter.LockedPeriod.equals(pageId)) {
+                            	LockedPeriodsPresenter presenter = injector.getLockedPeriodsEditor();
                                 presenter.go(db);
                                 callback.onSuccess(presenter);
                                 

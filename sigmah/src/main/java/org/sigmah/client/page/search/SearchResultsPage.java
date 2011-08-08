@@ -9,6 +9,7 @@ import org.sigmah.shared.dto.SearchHitDTO;
 
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ListView;
+import com.google.gwt.user.client.ui.Widget;
 
 public class SearchResultsPage implements SearchView {
 	SearchResult searchResult;
@@ -54,6 +55,12 @@ public class SearchResultsPage implements SearchView {
 
 	@Override
 	public SearchHitDTO getValue() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Widget asWidget() {
 		// TODO Auto-generated method stub
 		return null;
 	}

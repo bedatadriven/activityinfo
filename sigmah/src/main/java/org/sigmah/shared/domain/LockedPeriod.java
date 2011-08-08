@@ -19,6 +19,8 @@ public class LockedPeriod implements Serializable {
 	private String name;
 	private int id;
 	private UserDatabase userDatabase;
+	private Project project;
+	private Activity activity;
 	
 	@Column(name = "FromDate", nullable = false)
 	public Date getFromDate() {
@@ -59,7 +61,7 @@ public class LockedPeriod implements Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "UserDatabaseId", nullable = false)
+	@JoinColumn(name = "UserDatabaseId", nullable = true)
 	public UserDatabase getUserDatabase() {
 		return userDatabase;
 	}
@@ -67,4 +69,25 @@ public class LockedPeriod implements Serializable {
 	public void setUserDatabase(UserDatabase userDatabase) {
 		this.userDatabase = userDatabase;
 	}
+
+	public void setProject(Project project) {
+		this.project = project;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ProjectId", nullable = true)
+	public Project getProject() {
+		return project;
+	}
+
+	public void setActivity(Activity activity) {
+		this.activity = activity;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ActivityId", nullable = true)
+	public Activity getActivity() {
+		return activity;
+	}
+	
 }

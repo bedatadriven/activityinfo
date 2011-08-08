@@ -5,7 +5,7 @@
 
 package org.sigmah.client.page.entry.editor;
 
-import org.sigmah.client.mvp.View;
+import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.page.entry.editor.MapPresenter.EditView.CoordinatesChangedEvent;
 import org.sigmah.client.page.entry.editor.MapPresenter.EditView.CoordinatesChangedHandler;
 import org.sigmah.client.page.entry.editor.MapPresenter.EditView.MarkerMovedEvent;
@@ -24,9 +24,27 @@ import com.google.gwt.user.client.ui.Widget;
  * by dragging a marker over a map
  */
 public class MapPresenter {
-	public interface MapView extends View<AiLatLng> {
+	public interface MapView  {
         public void setMapView(BoundingBoxDTO bounds);
-		public Widget asWidget();
+		public Widget asWidget();	
+		public void initialize();
+		
+		/*
+		 * The UI displaying loading, network status (retry/error/complete)
+		 * Usually some standard Async monitor UI view, such as NullAsyncMonitor,
+		 * MaskingAsyncMonitor etc
+		 * 
+		 */
+		public AsyncMonitor getAsyncMonitor();
+		  void setValue(AiLatLng value);
+
+		  /**
+		   * Returns the current value.
+		   * 
+		   * @return the value as an object of type V
+		   * @see #setValue
+		   */
+		  AiLatLng getValue();
 	}
 	
     public interface EditView extends MapView {
