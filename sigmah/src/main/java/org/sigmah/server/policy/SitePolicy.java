@@ -5,9 +5,14 @@
 
 package org.sigmah.server.policy;
 
-import com.google.inject.Inject;
-import org.sigmah.server.dao.*;
-import org.sigmah.server.domain.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.sigmah.server.dao.LocationDAO;
+import org.sigmah.server.dao.PartnerDAO;
+import org.sigmah.server.dao.ReportingPeriodDAO;
+import org.sigmah.server.dao.SiteDAO;
 import org.sigmah.shared.dao.ActivityDAO;
 import org.sigmah.shared.dao.AdminDAO;
 import org.sigmah.shared.domain.Activity;
@@ -18,11 +23,14 @@ import org.sigmah.shared.domain.Site;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.UserDatabase;
 import org.sigmah.shared.domain.UserPermission;
-import org.sigmah.shared.dto.*;
+import org.sigmah.shared.dto.ActivityDTO;
+import org.sigmah.shared.dto.AdminEntityDTO;
+import org.sigmah.shared.dto.AdminLevelDTO;
+import org.sigmah.shared.dto.AttributeDTO;
+import org.sigmah.shared.dto.IndicatorDTO;
+import org.sigmah.shared.dto.PartnerDTO;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import com.google.inject.Inject;
 
 public class SitePolicy implements EntityPolicy<Site> {
     private final ActivityDAO activityDAO;
@@ -110,8 +118,23 @@ public class SitePolicy implements EntityPolicy<Site> {
     public void update(User user, Object id, PropertyMap changes)  {
 
         Site site = siteDAO.findById((Integer)id);
-
+        
+        // verify that the current user can modify sites of the partner to which
+        // the site is currently assigned
         assertSiteEditPrivileges(user, site.getActivity(), site.getPartner());
+        
+        
+        OrgUnit partner = site.getPartner();
+        if(changes.containsKey("partner")) {
+        	PartnerDTO partnerDTO = (PartnerDTO)changes.get("partner");
+        	partner = partnerDAO.findById(partnerDTO.getId());
+        	
+        	// verify that the user can modify sites belong to the new partner
+            assertSiteEditPrivileges(user, site.getActivity(), partner);
+            
+            site.setPartner(partner);
+        }
+
 
         site.setDateEdited(new Date());
 
@@ -119,7 +142,6 @@ public class SitePolicy implements EntityPolicy<Site> {
         updateAttributeValueProperties(site, changes, false);
         updateLocationProperties(site.getLocation(), changes);
         updateAdminProperties(site.getLocation(), changes, false);
-
 
         if (!site.getReportingPeriods().isEmpty()) {
             ReportingPeriod period = site.getReportingPeriods().iterator().next();
