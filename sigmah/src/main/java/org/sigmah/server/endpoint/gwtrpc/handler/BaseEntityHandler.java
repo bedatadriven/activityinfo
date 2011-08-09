@@ -15,6 +15,7 @@ import org.sigmah.shared.domain.Attribute;
 import org.sigmah.shared.domain.AttributeGroup;
 import org.sigmah.shared.domain.Indicator;
 import org.sigmah.shared.domain.LocationType;
+import org.sigmah.shared.domain.LockedPeriod;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.UserDatabase;
 import org.sigmah.shared.dto.LocationTypeDTO;
@@ -96,8 +97,24 @@ public class BaseEntityHandler {
         if (changes.containsKey("sortOrder")) {
             group.setSortOrder((Integer) changes.get("sortOrder"));
         }
-
-
+    }
+    
+    protected void updateLockedPeriodProperties(LockedPeriod lockedPeriod, Map<String, Object> changes) {
+        if (changes.containsKey("name")) {
+        	lockedPeriod.setName((String) changes.get("name"));
+        }
+        if (changes.containsKey("toDate")) {
+        	lockedPeriod.setToDate((Date) changes.get("toDate"));
+        }
+        if (changes.containsKey("fromDate")) {
+        	lockedPeriod.setFromDate((Date) changes.get("fromDate"));
+        }
+        if (changes.containsKey("enabled")) {
+        	lockedPeriod.setEnabled((Boolean) changes.get("enabled"));
+        }
+        
+        lockedPeriod.getParentDatabase().setLastSchemaUpdate(new Date());
+        em.merge(lockedPeriod);
     }
 
     protected void updateActivityProperties(Activity activity, Map<String, Object> changes) {

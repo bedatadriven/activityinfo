@@ -153,7 +153,7 @@ public class ActionToolBar extends ToolBar implements Listener<ButtonEvent> {
     
     public void setDeleteEnabled(boolean enabled) {
     	if (removeButton != null) {
-    		refreshButton.setEnabled(enabled);
+    		removeButton.setEnabled(enabled);
     	}
     }
     

@@ -5,8 +5,10 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
-import com.google.inject.Inject;
-import com.google.inject.Injector;
+import java.util.Map;
+
+import javax.persistence.EntityManager;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sigmah.server.policy.ActivityPolicy;
@@ -18,12 +20,13 @@ import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.domain.Attribute;
 import org.sigmah.shared.domain.AttributeGroup;
 import org.sigmah.shared.domain.Indicator;
+import org.sigmah.shared.domain.LockedPeriod;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.IllegalAccessCommandException;
 
-import javax.persistence.EntityManager;
-import java.util.Map;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 /**
  * @author Alex Bertram
@@ -68,6 +71,9 @@ public class UpdateEntityHandler extends BaseEntityHandler implements CommandHan
             SitePolicy policy = injector.getInstance(SitePolicy.class);
             policy.update(user, cmd.getId(), changeMap);
 
+        } else if ("LockedPeriod".equals(cmd.getEntityName())) {
+            updateLockedPeriod(user, cmd, changes);
+            
         } else {
             throw new RuntimeException("unknown entity type");
         }
@@ -82,6 +88,15 @@ public class UpdateEntityHandler extends BaseEntityHandler implements CommandHan
         assertDesignPriviledges(user, indicator.getActivity().getDatabase());
 
         updateIndicatorProperties(indicator, changes);
+    }
+    
+    private void updateLockedPeriod(User user, UpdateEntity cmd, Map<String, Object> changes) {
+    	LockedPeriod lockedPeriod = em.find(LockedPeriod.class, cmd.getId());
+    	
+    	// TODO: check permissions when updating the LockedPeriod
+    	//assertDesignPriviledges(user, database)
+    	
+    	updateLockedPeriodProperties(lockedPeriod, changes);
     }
 
     private void updateAttribute(User user, UpdateEntity cmd, Map<String, Object> changes) {

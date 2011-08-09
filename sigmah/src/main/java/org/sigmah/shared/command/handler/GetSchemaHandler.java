@@ -14,6 +14,7 @@ import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.dao.UserDatabaseDAO;
 import org.sigmah.shared.domain.Activity;
+import org.sigmah.shared.domain.LockedPeriod;
 import org.sigmah.shared.domain.OrgUnit;
 import org.sigmah.shared.domain.Project;
 import org.sigmah.shared.domain.User;
@@ -22,6 +23,7 @@ import org.sigmah.shared.domain.UserPermission;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.DTOMapper;
+import org.sigmah.shared.dto.LockedPeriodDTO;
 import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.SchemaDTO;
@@ -125,6 +127,12 @@ public class GetSchemaHandler implements CommandHandler<GetSchema> {
                 ActivityDTO activityDTO = mapper.map(activity, ActivityDTO.class);
                 databaseDTO.getActivities().add(activityDTO);
                 activityDTO.setDatabase(databaseDTO);
+            }
+            
+            for (LockedPeriod lockedPeriod : database.getLockedPeriods()) {
+            	LockedPeriodDTO lockedPeriodDTO = mapper.map(lockedPeriod, LockedPeriodDTO.class);
+            	databaseDTO.getLockedPeriods().add(lockedPeriodDTO);
+            	lockedPeriodDTO.setUserDatabase(databaseDTO);
             }
 
             schema.getDatabases().add(databaseDTO);

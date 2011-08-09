@@ -7,7 +7,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 
 public class ProjectDTO extends BaseModelData implements DTO {
     private Set<LockedPeriodDTO> lockedPeriods = new HashSet<LockedPeriodDTO>(0);
-    private UserDatabaseDTO database;
+    private UserDatabaseDTO userDatabase;
 
     public ProjectDTO() {
 		super();
@@ -45,23 +45,23 @@ public class ProjectDTO extends BaseModelData implements DTO {
 	}
 	
 	public Set<LockedPeriodDTO> getLockedPeriods() {
-		Set<LockedPeriodDTO> allLockedPeriods = new HashSet<LockedPeriodDTO>();
-		allLockedPeriods.addAll(lockedPeriods);
-		if (getDatabase() != null && getDatabase().getLockedPeriods() != null) {
-			allLockedPeriods.addAll(getDatabase().getLockedPeriods());
-		}
-		return allLockedPeriods;
+//		Set<LockedPeriodDTO> allLockedPeriods = new HashSet<LockedPeriodDTO>();
+//		allLockedPeriods.addAll(lockedPeriods);
+//		if (getDatabase() != null && getDatabase().getLockedPeriods() != null) {
+//			allLockedPeriods.addAll(getDatabase().getLockedPeriods());
+//		}
+		return lockedPeriods;
 	}
 	
 	public void setLockedPeriods(Set<LockedPeriodDTO> lockedPeriods) {
 		this.lockedPeriods = lockedPeriods;
 	}
 
-	public void setDatabase(UserDatabaseDTO database) {
-		this.database = database;
+	public void setUserDatabase(UserDatabaseDTO database) {
+		this.userDatabase = database;
 	}
 
-	public UserDatabaseDTO getDatabase() {
-		return database;
+	public UserDatabaseDTO getUserDatabase() {
+		return userDatabase;
 	}
 }

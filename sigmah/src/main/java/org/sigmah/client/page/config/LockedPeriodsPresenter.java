@@ -3,6 +3,7 @@ package org.sigmah.client.page.config;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
@@ -66,6 +67,7 @@ public class LockedPeriodsPresenter
 
 		void startCreate();
 		void stopCreate();
+		public void setUserDatabase(UserDatabaseDTO userDatabase);
 	}
 	
 	public static PageId LockedPeriod = new PageId("lockedPeriod");
@@ -152,12 +154,18 @@ public class LockedPeriodsPresenter
 					public void onSuccess(BatchResult result) {
 						// Simply use the hammer: remove the old one, add the updated one
 						for (LockedPeriodDTO lockedPeriod : view.getUnsavedItems()) {
-							for (LockedPeriodDTO oldLockedPeriod : parentModel.getLockedPeriods()) {
+							LockedPeriodDTO lockedPeriodToRemove = null;
+							Set<LockedPeriodDTO> lockedPeriodsToUpdate = parentModel.getLockedPeriods(); 
+							for (LockedPeriodDTO oldLockedPeriod : lockedPeriodsToUpdate) {
 								if (lockedPeriod.getId() == oldLockedPeriod.getId()) {
-									parentModel.getLockedPeriods().remove(oldLockedPeriod);
-									parentModel.getLockedPeriods().add(lockedPeriod);
-									continue;
+									lockedPeriodToRemove = oldLockedPeriod;
+									break;
 								}
+							}
+							if (lockedPeriodToRemove !=null) {
+								lockedPeriodsToUpdate.remove(lockedPeriodToRemove);
+								parentModel.getLockedPeriods().remove(lockedPeriodToRemove);
+								parentModel.getLockedPeriods().add(lockedPeriod);
 							}
 						}
 

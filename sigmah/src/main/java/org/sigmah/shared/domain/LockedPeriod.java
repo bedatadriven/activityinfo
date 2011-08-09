@@ -11,9 +11,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
+
 
 @Entity
-public class LockedPeriod implements Serializable {
+public class LockedPeriod implements Serializable, ReallyDeleteable {
 	private Date fromDate;
 	private Date toDate;
 	private String name;
@@ -21,8 +23,9 @@ public class LockedPeriod implements Serializable {
 	private UserDatabase userDatabase;
 	private Project project;
 	private Activity activity;
+	private boolean enabled;
 	
-	@Column(name = "FromDate", nullable = false)
+	@Column(nullable = false)
 	public Date getFromDate() {
 		return fromDate;
 	}
@@ -31,7 +34,7 @@ public class LockedPeriod implements Serializable {
 		this.fromDate = fromDate;
 	}
 	
-	@Column(name = "ToDate", nullable = false)
+	@Column(nullable = false)
 	public Date getToDate() {
 		return toDate;
 	}
@@ -40,7 +43,7 @@ public class LockedPeriod implements Serializable {
 		this.toDate = toDate;
 	}
 	
-	@Column(name = "Name", nullable = false)
+	@Column(nullable = false)
 	public String getName() {
 		return name;
 	}
@@ -60,7 +63,7 @@ public class LockedPeriod implements Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER )
 	@JoinColumn(name = "UserDatabaseId", nullable = true)
 	public UserDatabase getUserDatabase() {
 		return userDatabase;
@@ -74,7 +77,7 @@ public class LockedPeriod implements Serializable {
 		this.project = project;
 	}
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER )
 	@JoinColumn(name = "ProjectId", nullable = true)
 	public Project getProject() {
 		return project;
@@ -84,10 +87,47 @@ public class LockedPeriod implements Serializable {
 		this.activity = activity;
 	}
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER )
 	@JoinColumn(name = "ActivityId", nullable = true)
 	public Activity getActivity() {
 		return activity;
 	}
+
+	public void setEnabled(boolean isEnabled) {
+		this.enabled = isEnabled;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
 	
+	@Transient
+	public UserDatabase getParentDatabase() {
+		if (userDatabase != null) {
+			return userDatabase;
+		} else if (activity != null) {
+			return activity.getDatabase();
+		} else if (project != null) {
+			return project.getUserDatabase();
+		}
+		
+		return null;
+	}
+
+	@Override
+	public void deleteReferences() {
+		if (activity != null) {
+			activity.getLockedPeriods().remove(this);
+		}
+		if (userDatabase != null) {
+			userDatabase.getLockedPeriods().remove(this);
+		}
+		if (project!=null) {
+			project.getLockedPeriods().remove(this);
+		}
+		this.activity=null;
+		this.userDatabase=null;
+		this.project=null;
+	}
+
 }

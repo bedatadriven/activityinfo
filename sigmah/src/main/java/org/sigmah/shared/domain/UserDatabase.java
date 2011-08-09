@@ -385,7 +385,7 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
 		this.projects = projects;
 	}
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "database")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Set<Project> getProjects() {
 		return projects;
 	}
@@ -394,7 +394,7 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
 		this.lockedPeriods = lockedPeriods;
 	}
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "userDatabase")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy="userDatabase")
 	public Set<LockedPeriod> getLockedPeriods() {
 		return lockedPeriods;
 	}

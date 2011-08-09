@@ -8,14 +8,18 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  * A period where normal users cannot add, update or remove data 
  */
 public class LockedPeriodDTO extends BaseModelData implements EntityDTO {
+	private ActivityDTO activity;
+	private UserDatabaseDTO userDatabase;
+	private ProjectDTO project;
+	
 	public LockedPeriodDTO() {
 		super();
 	}
 
 	public LockedPeriodDTO(int id, Date startDate, Date endDate) {
 		setId(id);
-		setStartDate(startDate);
-		setEndDate(endDate);
+		setFromDate(startDate);
+		setToDate(endDate);
 		setEnabled(true);
 	}
 	
@@ -35,20 +39,20 @@ public class LockedPeriodDTO extends BaseModelData implements EntityDTO {
 		return (Integer)get("id");
 	}
 	
-	public void setEndDate(Date endDate) {
-		set("endDate", endDate);
+	public void setToDate(Date toDate) {
+		set("toDate", toDate);
 	}
 	
-	public Date getEndDate() {
-		return (Date) get("endDate");
+	public Date getToDate() {
+		return (Date) get("toDate");
 	}
 	
-	public void setStartDate(Date startDate) {
-		set("startDate", startDate);
+	public void setFromDate(Date fromDate) {
+		set("fromDate", fromDate);
 	}
 	
-	public Date getStartDate() {
-		return (Date) get("startDate");
+	public Date getFromDate() {
+		return (Date) get("fromDate");
 	}
 
 	/*
@@ -56,9 +60,9 @@ public class LockedPeriodDTO extends BaseModelData implements EntityDTO {
 	 * are non-null.
 	 */
 	public boolean isValid() {
-		return getStartDate() != null &&
-		getEndDate() != null &&
-		getStartDate().before(getEndDate());
+		return getFromDate() != null &&
+		getToDate() != null &&
+		getFromDate().before(getToDate());
 	}
 
 	public void setEnabled(boolean enabled) {
@@ -74,4 +78,28 @@ public class LockedPeriodDTO extends BaseModelData implements EntityDTO {
 		return "LockedPeriod";
 	}
 
+	
+	public void setActivity(ActivityDTO activity) {
+		this.activity = activity;
+	}
+
+	public ActivityDTO getActivity() {
+		return activity;
+	}
+	
+	public UserDatabaseDTO getUserDatabase() {
+		return userDatabase;
+	}
+
+	public void setUserDatabase(UserDatabaseDTO userDatabase) {
+		this.userDatabase = userDatabase;
+	}
+
+	public ProjectDTO getProject() {
+		return project;
+	}
+
+	public void setProject(ProjectDTO project) {
+		this.project = project;
+	}
 }

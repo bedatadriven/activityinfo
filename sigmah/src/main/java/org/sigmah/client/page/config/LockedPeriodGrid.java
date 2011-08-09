@@ -1,11 +1,13 @@
 package org.sigmah.client.page.config;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.mvp.Filter;
 import org.sigmah.client.page.common.toolbar.ActionListener;
 import org.sigmah.client.page.common.toolbar.ActionToolBar;
@@ -15,9 +17,12 @@ import org.sigmah.client.page.config.LockedPeriodsPresenter.LockedPeriodListEdit
 import org.sigmah.shared.dto.LockedPeriodDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 
+import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Record;
@@ -30,8 +35,12 @@ import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.CheckColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
@@ -60,6 +69,7 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 		List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 		
 		configs.add(createEnabledColumn());
+	    configs.add(createParentTypeColumn()); 
 	    configs.add(createNameColumn()); 
 	    configs.add(createStartDateColumn());
 	    configs.add(createEndDateColumn());
@@ -68,6 +78,14 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 	    gridLockedPeriods = new EditorGrid<LockedPeriodDTO>(
 	    		lockedPeriodStore, new ColumnModel(configs));
 	    
+	    gridLockedPeriods.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<LockedPeriodDTO>() {
+			@Override
+			public void selectionChanged(SelectionChangedEvent<LockedPeriodDTO> se) {
+				setDeleteEnabled(se.getSelectedItem() != null);
+				lockedPeriod = se.getSelectedItem();
+			}
+		});
+	    
 	    gridLockedPeriods.getSelectionModel().addListener(Events.SelectionChange, new Listener<SelectionEvent<LockedPeriodDTO>>() {
 			@Override
 			public void handleEvent(SelectionEvent<LockedPeriodDTO> be) {
@@ -75,6 +93,14 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 				if (be.getModel() != null) {
 					lockedPeriod = be.getModel();
 				}
+			}
+		});
+	    
+	    gridLockedPeriods.addListener(Events.OnClick, new Listener<ComponentEvent>() {
+			@Override
+			public void handleEvent(ComponentEvent be) {
+				lockedPeriod = gridLockedPeriods.getSelectionModel().getSelectedItem();
+				setDeleteEnabled(gridLockedPeriods.getSelectionModel().getSelectedItem() != null);
 			}
 		});
 	    
@@ -115,7 +141,7 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 	    
 	    ColumnConfig columnEndDate = new ColumnConfig();  
 	    columnEndDate.setEditor(new CellEditor(datefieldEndDate));
-	    columnEndDate.setId("endDate");  
+	    columnEndDate.setId("toDate");  
 	    columnEndDate.setHeader(I18N.CONSTANTS.toDate());  
 	    columnEndDate.setWidth(200);  
 	    columnEndDate.setRowHeader(true);  
@@ -130,7 +156,7 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 	    
 	    ColumnConfig columnStartDate = new ColumnConfig();  
 	    columnStartDate.setEditor(new CellEditor(datefieldStartDate));
-	    columnStartDate.setId("startDate");  
+	    columnStartDate.setId("fromDate");  
 	    columnStartDate.setHeader(I18N.CONSTANTS.fromDate());  
 	    columnStartDate.setWidth(200);  
 	    columnStartDate.setRowHeader(true);
@@ -138,9 +164,42 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 	    
 		return columnStartDate;
 	}
+	
+	private ColumnConfig createParentTypeColumn() {
+	    ColumnConfig columnParentType = new ColumnConfig();  
+	    GridCellRenderer<LockedPeriodDTO> iconRenderer = new GridCellRenderer<LockedPeriodDTO>() {
+			@Override
+			public Object render(LockedPeriodDTO model, String property,
+					ColumnData config, int rowIndex, int colIndex,
+					ListStore<LockedPeriodDTO> store, Grid<LockedPeriodDTO> grid) {
+				
+				if (model.getActivity() != null) {
+					return IconImageBundle.ICONS.activity().getHTML();
+				}
+				
+				if (model.getUserDatabase() != null) {
+					return IconImageBundle.ICONS.database().getHTML();
+				}
+				
+				if (model.getProject() != null) {
+					return IconImageBundle.ICONS.project().getHTML();
+				}
+				
+				return null;
+			}
+		}; 
+	    //columnStartDate.setId("fromDate");
+		columnParentType.setHeader(I18N.CONSTANTS.type());  
+	    columnParentType.setWidth(48);
+	    columnParentType.setRowHeader(true);
+	    columnParentType.setRenderer(iconRenderer);
+		
+		return columnParentType;
+	}
 
 	private void initializeComponent() {
 		setHeading("Manage time locks on databases, projects and activities");
+		setLayout(new FitLayout());
 
 		createListStore();
 		createActionToolbar();
@@ -197,6 +256,7 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 	@Override
 	public void create(LockedPeriodDTO item) {
 		lockedPeriodStore.add(item);
+		addLockedPeriod.stopCreate();
 	}
 
 	@Override
@@ -299,6 +359,7 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 	@Override
 	public void setParent(UserDatabaseDTO parent) {
 		this.userDatabase = parent;
+		addLockedPeriod.setUserDatabase(parent);
 	}
 
 	@Override
@@ -321,29 +382,25 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 	@Override
 	public HandlerRegistration addCancelUpdateHandler(
 			CancelUpdateHandler handler) {
-		// TODO Auto-generated method stub
-		return null;
+		return eventBus.addHandler(CancelUpdateEvent.TYPE, handler);
 	}
 
 	@Override
 	public HandlerRegistration addRequestDeleteHandler(
 			RequestDeleteHandler handler) {
-		// TODO Auto-generated method stub
-		return null;
+		return eventBus.addHandler(RequestDeleteEvent.TYPE, handler);
 	}
 
 	@Override
 	public HandlerRegistration addCancelCreateHandler(
 			org.sigmah.client.mvp.CanCreate.CancelCreateHandler handler) {
-		// TODO Auto-generated method stub
-		return null;
+		return eventBus.addHandler(CancelCreateEvent.TYPE, handler);
 	}
 
 	@Override
 	public HandlerRegistration addStartCreateHandler(
 			org.sigmah.client.mvp.CanCreate.StartCreateHandler handler) {
-		// TODO Auto-generated method stub
-		return null;
+		return eventBus.addHandler(StartCreateEvent.TYPE, handler);
 	}
 
 	@Override
@@ -371,8 +428,14 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 	@Override
 	public Map<String, Object> getChanges(LockedPeriodDTO item) {
 		for (Record record : lockedPeriodStore.getModifiedRecords()) {
-			if (record.getModel().equals(item)) {
-				return record.getChanges();
+			LockedPeriodDTO lockedPeriod = (LockedPeriodDTO)record.getModel();
+			if (lockedPeriod.getId() == item.getId()) {
+				Map<String, Object> changes = new HashMap<String, Object>();
+				for (String property : record.getPropertyNames()) {
+					changes.put(property, lockedPeriod.get(property));
+				}
+				
+				return changes;
 			}
 		}
 		

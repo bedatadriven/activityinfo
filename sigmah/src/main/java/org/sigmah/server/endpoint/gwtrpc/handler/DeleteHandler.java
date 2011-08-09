@@ -11,6 +11,7 @@ import org.sigmah.shared.command.Delete;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.domain.Deleteable;
+import org.sigmah.shared.domain.ReallyDeleteable;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.UserDatabase;
 
@@ -35,10 +36,19 @@ public class DeleteHandler implements CommandHandler<Delete> {
         // TODO check permissions for delete!
         // These handler should redirect to one of the Entity policy classes.
         Class entityClass = entityClassForEntityName(cmd.getEntityName());
-        Deleteable entity = (Deleteable) em.find(entityClass, cmd.getId());
-
-        entity.delete();
-
+		Object entity = em.find(entityClass, cmd.getId());
+        
+        if (entity instanceof Deleteable) {
+            Deleteable deleteable = (Deleteable) entity;
+            deleteable.delete();
+        }
+        
+        if (entity instanceof ReallyDeleteable) {
+        	ReallyDeleteable reallyDeleteable = (ReallyDeleteable)entity;
+        	reallyDeleteable.deleteReferences();
+        	em.remove(reallyDeleteable);
+        }
+        
         return null;
     }
 

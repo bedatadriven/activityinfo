@@ -15,6 +15,7 @@ import org.sigmah.server.dao.OnDataSet;
 import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.command.UpdateEntity;
 import org.sigmah.shared.command.result.ListResult;
+import org.sigmah.shared.domain.LockedPeriod;
 import org.sigmah.shared.domain.Site;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.exception.CommandException;
@@ -23,8 +24,7 @@ import org.sigmah.test.InjectionSupport;
 
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/sites-simple1.db.xml")
-public class UpdateSiteTest extends CommandTestCase {
-
+public class UpdateSiteTest extends CommandTestCase { 
 
     @Test
     public void testUpdate() throws CommandException {
@@ -63,17 +63,29 @@ public class UpdateSiteTest extends CommandTestCase {
         Assert.assertEquals("site.attribute[4]", true, model.getAttributeValue(1));
     }
 
+    @Test
     public void testUpdatePartner() throws CommandException {
         // define changes for site id=2
         Map<String, Object> changes = new HashMap<String, Object>();
         changes.put("partnerId", 2);
 
-        execute(new UpdateEntity("site", 2, changes));
+        execute(new UpdateEntity("Site", 2, changes));
 
         // assure that the change has been effected
 
         Site site = em.find(Site.class, 2);
         Assert.assertEquals("partnerId", 2, site.getPartner().getId());
     }
+    
+    @Test
+    public void testUpdateLockedPeriod() throws CommandException {
+        Map<String, Object> changes = new HashMap<String, Object>();
+        changes.put("enabled", false);
 
+        execute(new UpdateEntity("LockedPeriod", 1, changes));
+
+        // assure that the change has been effected
+        LockedPeriod lockedPeriod = em.find(LockedPeriod.class, 1);
+        Assert.assertEquals("enabled", false, lockedPeriod.isEnabled());
+    }
 }

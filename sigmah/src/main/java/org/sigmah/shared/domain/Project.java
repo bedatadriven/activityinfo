@@ -21,7 +21,7 @@ public class Project implements Serializable {
 	private String name;
 	private String description;
 	private Date dateDeleted;
-	private UserDatabase database;
+	private UserDatabase userDatabase;
     private Set<LockedPeriod> lockedPeriods = new HashSet<LockedPeriod>();
 
 	public Project() {
@@ -71,14 +71,14 @@ public class Project implements Serializable {
 		return dateDeleted;
 	}
 
-	public void setDatabase(UserDatabase database) {
-		this.database = database;
+	public void setUserDatabase(UserDatabase userDatabase) {
+		this.userDatabase = userDatabase;
 	}
 	
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "DatabaseId", nullable = false)
-	public UserDatabase getDatabase() {
-		return database;
+	public UserDatabase getUserDatabase() {
+		return userDatabase;
 	}
 
 	public void setLockedPeriods(Set<LockedPeriod> lockedPeriods) {
