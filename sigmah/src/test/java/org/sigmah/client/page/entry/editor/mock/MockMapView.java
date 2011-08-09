@@ -32,7 +32,7 @@ public class MockMapView implements MapEditView {
     public Double markerY;
 
     @Override
-    public void setBounds(String name, BoundingBoxDTO bounds) {
+    public void setEditBounds(String name, BoundingBoxDTO bounds) {
         this.boundsName = name;
         this.bounds = bounds;
     }
@@ -48,7 +48,7 @@ public class MockMapView implements MapEditView {
     }
 
     @Override
-    public void setMapView(BoundingBoxDTO bounds) {
+    public void setViewBounds(BoundingBoxDTO bounds) {
         this.mapView = bounds;
     }
 
@@ -84,12 +84,6 @@ public class MockMapView implements MapEditView {
 	}
 
 	@Override
-	public BoundingBoxDTO getBounds() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void panTo(AiLatLng latLng) {
 		// TODO Auto-generated method stub
 		
@@ -113,8 +107,7 @@ public class MockMapView implements MapEditView {
 	}
 
 	@Override
-	public BoundingBoxDTO getBoundingBox() {
-		// TODO Auto-generated method stub
-		return null;
+	public BoundingBoxDTO getViewBounds() {
+		return mapView;
 	}
 }

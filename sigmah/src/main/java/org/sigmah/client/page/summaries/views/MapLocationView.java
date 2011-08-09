@@ -105,7 +105,7 @@ public class MapLocationView extends LayoutContainer implements MapView {
 	}
 
     @Override
-    public void setMapView(BoundingBoxDTO bounds) {
+    public void setViewBounds(BoundingBoxDTO bounds) {
         zoomToBounds(createLatLngBounds(bounds));
     }
 
@@ -167,7 +167,7 @@ public class MapLocationView extends LayoutContainer implements MapView {
 	}
 
 	@Override
-	public BoundingBoxDTO getBoundingBox() {
+	public BoundingBoxDTO getViewBounds() {
 		// TODO Auto-generated method stub
 		return null;
 	}

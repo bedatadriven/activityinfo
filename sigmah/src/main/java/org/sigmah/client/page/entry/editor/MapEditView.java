@@ -11,8 +11,10 @@ public interface MapEditView extends MapView {
     public Double getX();
     public Double getY();
     public void setMarkerPosition(AiLatLng latLng);
-    public BoundingBoxDTO getBounds();
-    public void setBounds(String name, BoundingBoxDTO bounds);
+    
+    // Area where the user is forced to keep the marker within the specified bounds when
+    // changing the position of the marker
+    public void setEditBounds(String name, BoundingBoxDTO bounds);
     public void panTo(AiLatLng latLng);
     
     public HandlerRegistration addMarkerMovedHandler(MarkerMovedHandler handler);

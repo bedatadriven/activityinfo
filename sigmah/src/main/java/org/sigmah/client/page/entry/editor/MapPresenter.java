@@ -38,11 +38,10 @@ public class MapPresenter
         setBounds(name, bounds);
     }
 	
-	
     public void setBounds(String name, BoundingBoxDTO bounds) {
         this.bounds = bounds;
-        view.setBounds(name, bounds);
-        view.setMapView(bounds);
+        view.setEditBounds(name, bounds);
+        view.setViewBounds(bounds);
 
         if(!haveValidCoords()) {
             view.setMarkerPosition(new AiLatLng(bounds.getCenterY(), bounds.getCenterX()));
@@ -64,7 +63,7 @@ public class MapPresenter
         if(haveValidCoords()) {
             view.setValue(new AiLatLng(y, x));
 
-            if(!view.getBoundingBox().contains(x, y)) {
+            if(!view.getViewBounds().contains(x, y)) {
                 view.panTo(new AiLatLng(y, x));
             }
         }

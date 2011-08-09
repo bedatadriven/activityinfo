@@ -146,11 +146,6 @@ public class MapFieldSet extends FieldSet implements MapEditView {
         add(panel);
 	}
 
-    @Override
-    public BoundingBoxDTO getBounds() {
-        return createBounds(map.getBounds());
-    }
-
     public CoordinateField getLatField() {
         return latField;
     }
@@ -160,7 +155,7 @@ public class MapFieldSet extends FieldSet implements MapEditView {
     }
 
     @Override
-    public void setBounds(String name, BoundingBoxDTO bounds) {
+    public void setEditBounds(String name, BoundingBoxDTO bounds) {
         latField.setBounds(name, bounds.y1, bounds.y2);
         lngField.setBounds(name, bounds.x1, bounds.x2);
 
@@ -179,7 +174,7 @@ public class MapFieldSet extends FieldSet implements MapEditView {
     }
 
     @Override
-    public void setMapView(BoundingBoxDTO bounds) {
+    public void setViewBounds(BoundingBoxDTO bounds) {
         zoomToBounds(createLatLngBounds(bounds));
     }
 
@@ -282,9 +277,8 @@ public class MapFieldSet extends FieldSet implements MapEditView {
 	}
 
 	@Override
-	public BoundingBoxDTO getBoundingBox() {
-		// TODO Auto-generated method stub
-		return null;
+	public BoundingBoxDTO getViewBounds() {
+        return createBounds(map.getBounds());
 	}
 
 }

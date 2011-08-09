@@ -74,7 +74,7 @@ public class SiteFormTest {
         presenter.setSite(DummyData.PEAR_Sites().get(4));
 
         // Verify that the map view has been centered on the admin bounds
-        Assert.assertTrue(form.mapView.getBoundingBox().contains(DummyData.Beni.getBounds()));
+        Assert.assertTrue(form.mapView.getViewBounds().contains(DummyData.Beni.getBounds()));
 
 
     }

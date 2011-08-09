@@ -36,7 +36,7 @@ public class MapTest {
 
         presenter.setSite(new SiteDTO(), null, bounds);
 
-        Assert.assertEquals(bounds, map.getBoundingBox());
+        Assert.assertEquals(bounds, map.getViewBounds());
         Assert.assertEquals(bounds.getCenterX(), map.markerX, DELTA);
         Assert.assertEquals(bounds.getCenterY(), map.markerY, DELTA);
     }
@@ -44,8 +44,6 @@ public class MapTest {
 
     @Test
     public void testMarkerMove() {
-
-
         // Collaborator: view
         MockMapView map = new MockMapView();
 
@@ -75,6 +73,4 @@ public class MapTest {
         Assert.assertEquals("coord x clamped", 300.0, map.getX(), DELTA);
         Assert.assertEquals("coord y clamped", 200.0, map.getY(), DELTA);
     }
-
-
 }

@@ -7,10 +7,12 @@ import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 import com.google.gwt.user.client.ui.Widget;
 
 public interface MapView  {
-    public void setMapView(BoundingBoxDTO bounds);
 	public Widget asWidget();
 	public void initialize();
-	public BoundingBoxDTO getBoundingBox();
+
+	// The map area the user can see
+	public void setViewBounds(BoundingBoxDTO bounds);
+	public BoundingBoxDTO getViewBounds();
 	
 	/*
 	 * The UI displaying loading, network status (retry/error/complete)
@@ -19,13 +21,9 @@ public interface MapView  {
 	 * 
 	 */
 	public AsyncMonitor getAsyncMonitor();
-	  void setValue(AiLatLng value);
+	
+	// A marker has a lat/lng coordinate
+	void setValue(AiLatLng value);
 
-	  /**
-	   * Returns the current value.
-	   * 
-	   * @return the value as an object of type V
-	   * @see #setValue
-	   */
-	  AiLatLng getValue();
+	AiLatLng getValue();
 }

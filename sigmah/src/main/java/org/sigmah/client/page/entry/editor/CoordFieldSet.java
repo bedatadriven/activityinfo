@@ -44,7 +44,7 @@ public class CoordFieldSet extends AbstractFieldSet implements MapEditView {
 
 
     @Override
-    public void setBounds(String name, BoundingBoxDTO bounds) {
+    public void setEditBounds(String name, BoundingBoxDTO bounds) {
         latField.setBounds(name, bounds.getY1(), bounds.getY2());
         lngField.setBounds(name, bounds.getX1(), bounds.getX2());
     }
@@ -60,12 +60,7 @@ public class CoordFieldSet extends AbstractFieldSet implements MapEditView {
     }
 
     @Override
-    public BoundingBoxDTO getBounds() {
-        return new BoundingBoxDTO(-180, -90, 180, 90);
-    }
-
-    @Override
-    public void setMapView(BoundingBoxDTO bounds) {
+    public void setViewBounds(BoundingBoxDTO bounds) {
         // nooop
     }
 
@@ -125,7 +120,7 @@ public class CoordFieldSet extends AbstractFieldSet implements MapEditView {
 	}
 
 	@Override
-	public BoundingBoxDTO getBoundingBox() {
-		return null;
+	public BoundingBoxDTO getViewBounds() {
+        return new BoundingBoxDTO(-180, -90, 180, 90);
 	}
 }
