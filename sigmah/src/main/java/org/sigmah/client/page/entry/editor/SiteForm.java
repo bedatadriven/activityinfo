@@ -34,7 +34,7 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
 
     private ActivityFieldSet activityFieldSet;
     private LocationFieldSet locationFieldSet;
-    private MapPresenter.EditView mapView;
+    private MapEditView mapView;
     private AttributeFieldSet attributeFieldSet;
     private IndicatorFieldSet indicatorFieldSet;
     private CommentFieldSet commentFieldSet;
@@ -126,7 +126,7 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
     }
 
     @Override
-    public MapPresenter.EditView createMapView(CountryDTO country) {
+    public MapEditView createMapView(CountryDTO country) {
 
         if (Maps.isLoaded()) {
             MapFieldSet mapFieldSet = new MapFieldSet(country);

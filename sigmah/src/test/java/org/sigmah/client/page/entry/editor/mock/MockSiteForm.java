@@ -12,7 +12,7 @@ import java.util.Set;
 
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.page.entry.editor.AdminFieldSetPresenter;
-import org.sigmah.client.page.entry.editor.MapPresenter;
+import org.sigmah.client.page.entry.editor.MapEditView;
 import org.sigmah.client.page.entry.editor.ProjectPresenter;
 import org.sigmah.client.page.entry.editor.SiteFormPresenter;
 import org.sigmah.shared.dto.ActivityDTO;
@@ -52,7 +52,7 @@ public class MockSiteForm implements SiteFormPresenter.View {
     }
 
     @Override
-    public MapPresenter.View createMapView(CountryDTO country) {
+    public MapEditView createMapView(CountryDTO country) {
         return mapView;
     }
 
@@ -97,7 +97,7 @@ public class MockSiteForm implements SiteFormPresenter.View {
     }
 
 	@Override
-	public ProjectPresenter.View createProjectView(ProjectDTO project) {
+	public ProjectPresenter.ProjectPickerView createProjectView(ProjectDTO project) {
 		return projectFieldSet; 
 	}
 

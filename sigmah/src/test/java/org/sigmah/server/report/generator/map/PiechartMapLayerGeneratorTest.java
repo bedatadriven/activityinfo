@@ -7,7 +7,7 @@ import java.util.Collections;
 
 import org.junit.Test;
 import org.sigmah.shared.dao.SiteTableColumn;
-import org.sigmah.shared.report.content.LatLng;
+import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.PieMapMarker;
 import org.sigmah.shared.report.model.MapReportElement;
@@ -37,7 +37,7 @@ public class PiechartMapLayerGeneratorTest {
 		pcml.addIndicatorId(4);
 		pcml.setClustering(new NoClustering());
 		
-		TiledMap map = new TiledMap(500, 600, new LatLng(15.0, 0.0), 6);
+		TiledMap map = new TiledMap(500, 600, new AiLatLng(15.0, 0.0), 6);
 
 		PiechartLayerGenerator gen = new PiechartLayerGenerator(new MapReportElement(), pcml);
 		

@@ -12,7 +12,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.sigmah.shared.dao.SiteTableColumn;
-import org.sigmah.shared.report.content.LatLng;
+import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.PieMapMarker;
 import org.sigmah.shared.report.model.Dimension;
@@ -53,7 +53,7 @@ public class PieMapMarkerTest {
 
         MapContent content = new MapContent();
 
-        TiledMap map = new TiledMap(640, 480, new LatLng(0, 0), 6);
+        TiledMap map = new TiledMap(640, 480, new AiLatLng(0, 0), 6);
 
         PiechartLayerGenerator generator = new PiechartLayerGenerator(mapElement, layer);
         generator.generate(sites, map, content);

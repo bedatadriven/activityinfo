@@ -25,8 +25,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @author Alex Bertram
  */
 class CommandRequest {
-
-
     /**
      * The pending command
      */

@@ -43,7 +43,7 @@ public class SiteFormPresenter implements SiteFormLeash {
 
         public AdminFieldSetPresenter.View createAdminFieldSetView(ActivityDTO activity);
 
-        public MapPresenter.EditView createMapView(CountryDTO country);
+        public MapEditView createMapView(CountryDTO country);
         
         public ProjectPickerView createProjectView(ProjectDTO project);
 

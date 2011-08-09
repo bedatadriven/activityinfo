@@ -14,7 +14,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph;
-import org.sigmah.shared.report.content.LatLng;
+import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.model.PointValue;
 import org.sigmah.shared.util.mapping.Extents;
 import org.sigmah.shared.util.mapping.TileMath;
@@ -30,7 +30,7 @@ public class ComplexPoints {
     public double originalSum;
     public Extents extents;
     public List<PointValue> points;
-    public List<LatLng> latlngs;
+    public List<AiLatLng> latlngs;
     public MarkerGraph graph;
 
     ComplexPoints() throws IOException {
@@ -42,7 +42,7 @@ public class ComplexPoints {
         originalSum = 0;
 
         points = new ArrayList<PointValue>();
-        latlngs = new ArrayList<LatLng>();
+        latlngs = new ArrayList<AiLatLng>();
         while(in.ready()) {
 
             String line = in.readLine();
@@ -61,7 +61,7 @@ public class ComplexPoints {
 
             originalSum += value;
 
-            latlngs.add(new LatLng(lat, lng));
+            latlngs.add(new AiLatLng(lat, lng));
 
             extents.grow(lat, lng);
 

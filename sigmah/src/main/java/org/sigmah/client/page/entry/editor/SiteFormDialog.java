@@ -73,7 +73,7 @@ public class SiteFormDialog extends FormDialogImpl<SiteForm> implements SiteForm
     }
 
     @Override
-    public MapPresenter.EditView createMapView(CountryDTO country) {
+    public MapEditView createMapView(CountryDTO country) {
         return form.createMapView(country);
     }
 

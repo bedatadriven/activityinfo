@@ -12,7 +12,7 @@ import org.sigmah.server.report.DummyPivotTableData;
 import org.sigmah.server.report.renderer.html.ImageStorage;
 import org.sigmah.server.report.renderer.html.ImageStorageProvider;
 import org.sigmah.shared.map.TileBaseMap;
-import org.sigmah.shared.report.content.LatLng;
+import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.MapMarker;
 import org.sigmah.shared.report.content.NullContent;
@@ -82,7 +82,7 @@ public class ItextReportRendererTest {
 		MapMarker marker1 = new MapMarker();
 		marker1.setLat(-1.554203);
 		marker1.setLng(29.047508);
-		Point px = TileMath.fromLatLngToPixel(new LatLng(marker1.getLat(), marker1.getLng()), 6);
+		Point px = TileMath.fromLatLngToPixel(new AiLatLng(marker1.getLat(), marker1.getLng()), 6);
 		marker1.setX(px.x);
 		marker1.setY(px.y);
 		

@@ -16,7 +16,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class CoordFieldSet extends AbstractFieldSet implements MapPresenter.EditView {
+public class CoordFieldSet extends AbstractFieldSet implements MapEditView {
 
     MapPresenter presenter;
     protected CoordinateField latField;
@@ -122,5 +122,10 @@ public class CoordFieldSet extends AbstractFieldSet implements MapPresenter.Edit
 
 	@Override
 	public void panTo(AiLatLng latLng) {
+	}
+
+	@Override
+	public BoundingBoxDTO getBoundingBox() {
+		return null;
 	}
 }

@@ -7,6 +7,7 @@ package org.sigmah.client.page.entry.editor;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.sigmah.client.page.entry.editor.MapEditView.MarkerMovedEvent;
 import org.sigmah.client.page.entry.editor.mock.MockMapView;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
@@ -35,7 +36,7 @@ public class MapTest {
 
         presenter.setSite(new SiteDTO(), null, bounds);
 
-        Assert.assertEquals(bounds, map.getMapView());
+        Assert.assertEquals(bounds, map.getBoundingBox());
         Assert.assertEquals(bounds.getCenterX(), map.markerX, DELTA);
         Assert.assertEquals(bounds.getCenterY(), map.markerY, DELTA);
     }
@@ -59,7 +60,7 @@ public class MapTest {
         site.setY(30.0);
         presenter.setSite(site, null, bounds);
 
-        presenter.onMarkerMoved(50.0, 65.0);
+        presenter.onMarkedMoved(new MarkerMovedEvent(50.0, 65.0));
 
         Assert.assertEquals("y", 50.0, map.getY(), DELTA);
         Assert.assertEquals("x", 65.0, map.getX(), DELTA);
@@ -67,7 +68,7 @@ public class MapTest {
         // VERIFY that attempting to move the marker out of the
         // bounds results in clamping
 
-        presenter.onMarkerMoved(900, 800);
+        presenter.onMarkedMoved(new MarkerMovedEvent(900, 800));
 
         Assert.assertEquals("marker x clamped", 300.0, map.markerX, DELTA);
         Assert.assertEquals("marker y clamped", 200.0, map.markerY, DELTA);

@@ -1,7 +1,7 @@
 package org.sigmah.client.page.summaries.views;
 
 import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.page.entry.editor.MapPresenter.MapView;
+import org.sigmah.client.page.entry.editor.MapView;
 
 import com.google.gwt.event.shared.EventBus;
 

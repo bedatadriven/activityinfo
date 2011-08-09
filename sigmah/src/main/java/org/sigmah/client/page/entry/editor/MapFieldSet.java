@@ -37,7 +37,7 @@ import com.google.gwt.maps.client.geom.LatLngBounds;
 import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.maps.client.overlay.MarkerOptions;
 
-public class MapFieldSet extends FieldSet implements MapPresenter.EditView {
+public class MapFieldSet extends FieldSet implements MapEditView {
 	private EventBus eventBus = new SimpleEventBus();
 	
     private ContentPanel panel;
@@ -279,6 +279,12 @@ public class MapFieldSet extends FieldSet implements MapPresenter.EditView {
 	public void panTo(org.sigmah.shared.report.content.AiLatLng latLng) {
         LatLng latlng = LatLng.newInstance(latLng.getLat(), latLng.getLng());
         map.panTo(latlng);
+	}
+
+	@Override
+	public BoundingBoxDTO getBoundingBox() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

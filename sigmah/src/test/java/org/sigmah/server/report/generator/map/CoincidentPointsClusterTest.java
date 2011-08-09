@@ -16,7 +16,7 @@ import org.sigmah.server.report.generator.map.cluster.Cluster;
 import org.sigmah.server.report.generator.map.cluster.GeneticSolver;
 import org.sigmah.server.report.generator.map.cluster.auto.CircleFitnessFunctor;
 import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph;
-import org.sigmah.shared.report.content.LatLng;
+import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.Point;
 import org.sigmah.shared.report.model.MapSymbol;
 import org.sigmah.shared.report.model.PointValue;
@@ -70,7 +70,7 @@ public class CoincidentPointsClusterTest extends GraphTest {
     public void testRealData() throws Exception {
 
         // Define projection for the test case
-        TiledMap map = new TiledMap(492, 690, new LatLng(2.293492496, 30.538372993), 9);
+        TiledMap map = new TiledMap(492, 690, new AiLatLng(2.293492496, 30.538372993), 9);
 
         // Read data
         BufferedReader in = new BufferedReader(new InputStreamReader(
@@ -88,7 +88,7 @@ public class CoincidentPointsClusterTest extends GraphTest {
             double lng = Double.parseDouble(columns[1]);
 
             PointValue pv = new PointValue();
-            pv.px = map.fromLatLngToPixel(new LatLng(lat, lng));
+            pv.px = map.fromLatLngToPixel(new AiLatLng(lat, lng));
             pv.value = Double.parseDouble(columns[2]);
             pv.symbol = new MapSymbol();
 

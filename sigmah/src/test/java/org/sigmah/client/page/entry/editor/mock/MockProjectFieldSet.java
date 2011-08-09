@@ -1,32 +1,46 @@
 package org.sigmah.client.page.entry.editor.mock;
 
-import org.sigmah.client.page.entry.editor.ProjectPresenter;
+import java.util.List;
+
+import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.shared.dto.ProjectDTO;
 
-import com.extjs.gxt.ui.client.store.ListStore;
+import com.google.gwt.user.client.ui.Widget;
 
-public class MockProjectFieldSet implements org.sigmah.client.page.entry.editor.ProjectPresenter.View  {
+public class MockProjectFieldSet implements org.sigmah.client.page.entry.editor.ProjectPresenter.ProjectPickerView  {
 
 	@Override
-	public void init(ProjectPresenter presenter) {
+	public void initialize() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public ProjectDTO getProject() {
+	public AsyncMonitor getAsyncMonitor() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void setProject(ProjectDTO project) {
+	public void setValue(ProjectDTO value) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void setStore(ListStore<ProjectDTO> projectStore) {
+	public ProjectDTO getValue() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Widget asWidget() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setProjects(List<ProjectDTO> projects) {
 		// TODO Auto-generated method stub
 		
 	} 

@@ -11,8 +11,8 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 import org.sigmah.shared.dao.SiteTableColumn;
+import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.BubbleMapMarker;
-import org.sigmah.shared.report.content.LatLng;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.model.CategoryProperties;
 import org.sigmah.shared.report.model.Dimension;
@@ -70,7 +70,7 @@ public class BubbleGeneratorTest {
 
         element.addLayer(layer);
 
-        TiledMap map = new TiledMap(640, 480, new LatLng(-1.5, 29.3), 9);
+        TiledMap map = new TiledMap(640, 480, new AiLatLng(-1.5, 29.3), 9);
 
         MapContent content = new MapContent();
 

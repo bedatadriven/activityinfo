@@ -6,7 +6,7 @@ import java.util.Set;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.mvp.View;
-import org.sigmah.client.page.entry.editor.MapPresenter.MapView;
+import org.sigmah.client.page.entry.editor.MapView;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.CountryDTO;
