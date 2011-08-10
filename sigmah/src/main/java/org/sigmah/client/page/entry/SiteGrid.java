@@ -7,6 +7,7 @@ package org.sigmah.client.page.entry;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
@@ -17,6 +18,7 @@ import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
+import org.sigmah.shared.dto.LockedPeriodDTO;
 import org.sigmah.shared.dto.SiteDTO;
 
 import com.extjs.gxt.ui.client.Style;
@@ -160,39 +162,29 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
         columnLocked.setRenderer(new GridCellRenderer<SiteDTO>() {
             @Override
             public Object render(SiteDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
-            	String icons = "";
-            	String emptyIcon = IconImageBundle.ICONS.empty().getHTML();
-            	boolean isLocked = false;
+            	StringBuilder builder = new StringBuilder();
             	
-            	if (model.fallsWithinLockedPeriods(activity.getDatabase().getEnabledLockedPeriods(), activity)) {
-            		icons += IconImageBundle.ICONS.database().getHTML();
-            		isLocked=true;
-            	} else {
-            		icons+=emptyIcon;
-            	}
-            	
-            	if (model.getProject() != null &&
-            		model.fallsWithinLockedPeriods(model.getProject().getEnabledLockedPeriods(), activity)) {
-            		icons += IconImageBundle.ICONS.project().getHTML();
-            		isLocked=true;
-            	} else {
-            		icons +=emptyIcon;
-            	}
-            	
-            	if (model.fallsWithinLockedPeriods(activity.getEnabledLockedPeriods(), activity)) {
-            		icons += IconImageBundle.ICONS.activity().getHTML();
-            		isLocked=true;
-            	} else {
-            		icons +=emptyIcon;
-            	}
-            	
-            	if (isLocked) {
-            		icons += IconImageBundle.ICONS.lockedPeriod().getHTML();
-            		return icons;
+            	if (model.fallsWithinLockedPeriod(activity)) {
+            		String tooltip = buildTooltip(model, activity);
+            		
+            		builder.append("<span qtip='");
+            		builder.append(tooltip);
+            		builder.append("'>");
+            		builder.append(IconImageBundle.ICONS.lockedPeriod().getHTML());
+            		builder.append("</span>");
+            		return builder.toString();
             	} else {
             		return "";
             	}
             }
+
+			private String buildTooltip(SiteDTO model, ActivityDTO activity) {
+				Set<LockedPeriodDTO> lockedPeriods = model.getAffectedLockedPeriods(activity);
+				for (LockedPeriodDTO lockedPeriod : lockedPeriods) {
+					
+				}
+				return "woei! tooltip";
+			}
         });
         columns.add(columnLocked);
 	}

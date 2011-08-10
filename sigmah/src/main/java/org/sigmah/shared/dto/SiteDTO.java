@@ -7,7 +7,9 @@ package org.sigmah.shared.dto;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
@@ -350,9 +352,12 @@ public final class SiteDTO extends BaseModelData implements EntityDTO {
 	 * Returns true when this Site is locked for C/U/D operations
 	 */
 	public boolean fallsWithinLockedPeriod(ActivityDTO activity) {
+		return fallsWithinLockedPeriods(getRelevantLockedPeriods(activity), activity);
+	}
+
+	private List<LockedPeriodDTO> getRelevantLockedPeriods(ActivityDTO activity) {
 		List<LockedPeriodDTO> lockedPeriods = new ArrayList<LockedPeriodDTO>();
 		
-		// Grab all relevant locked periods
 		lockedPeriods.addAll(activity.getEnabledLockedPeriods());
 		if (activity.getDatabase() != null) {
 			lockedPeriods.addAll(activity.getDatabase().getEnabledLockedPeriods());
@@ -361,9 +366,12 @@ public final class SiteDTO extends BaseModelData implements EntityDTO {
 			lockedPeriods.addAll(getProject().getEnabledLockedPeriods());
 		}
 		
-		return fallsWithinLockedPeriods(lockedPeriods, activity);
+		return lockedPeriods;
 	}
 	
+	/*
+	 * Returns true when this Site falls within at least one of given LockedPeriods
+	 */
 	public boolean fallsWithinLockedPeriods(Iterable<LockedPeriodDTO> lockedPeriods, ActivityDTO activity) {
 		for (LockedPeriodDTO lockedPeriod : lockedPeriods) {
 			// For reporting purposes, only the Date2 is 'counted'.  
@@ -373,5 +381,18 @@ public final class SiteDTO extends BaseModelData implements EntityDTO {
 		}
 		
 		return false;
+	}
+	
+	public Set<LockedPeriodDTO> getAffectedLockedPeriods(ActivityDTO activity) {
+		Set<LockedPeriodDTO> affectedLockedPeriods = new HashSet<LockedPeriodDTO>();
+		
+		for (LockedPeriodDTO lockedPeriod : getRelevantLockedPeriods(activity)) {
+			// For reporting purposes, only the Date2 is 'counted'.  
+			if (lockedPeriod.fallsWithinPeriod(getDate2())) {
+				affectedLockedPeriods.add(lockedPeriod);
+			}
+		}
+		
+		return affectedLockedPeriods;
 	}
 }
