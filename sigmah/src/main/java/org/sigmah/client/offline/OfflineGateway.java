@@ -22,7 +22,7 @@ public interface OfflineGateway {
     /**
      * @return  the date of the last successful synchronization to the client
      */
-    Date getLastSyncTime();
+    void getLastSyncTime(AsyncCallback<Date> callback);
 
     /**
      * Conducts sanity checks to be sure that we are really prepared to go
@@ -30,7 +30,7 @@ public interface OfflineGateway {
      *
      * @return true if we are ready
      */
-    boolean validateOfflineInstalled();
+    void validateOfflineInstalled(AsyncCallback<Void> callback);
 
     void goOffline(AsyncCallback<Void> callback);
     void goOnline(AsyncCallback<Void> callback);

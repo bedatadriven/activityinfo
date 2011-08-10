@@ -64,11 +64,7 @@ public class ActivityInfoEntryPoint implements EntryPoint {
         injector.getHistoryManager();
         injector.getDownloadManager();
         
-        if(isOfflineModeSupported()) {
-        	injector.createOfflinePresenter();
-        } else {
-        	injector.createUnsupportedOfflinePresenter();
-        }
+    	injector.createOfflinePresenter();
 
         createCaches(injector);
 
@@ -76,12 +72,7 @@ public class ActivityInfoEntryPoint implements EntryPoint {
 
         injector.getEventBus().fireEvent(AppEvents.Init);
     }
-
-    private boolean isOfflineModeSupported() {
-    	// Gears is currently required for offline mode
-		return Factory.getInstance() != null;
-	}
-
+	
 	protected void createCaches(AppInjector injector) {
         injector.createSchemaCache();
         injector.createAdminCache();

@@ -36,6 +36,8 @@ import org.sigmah.shared.command.result.SyncRegionUpdate;
 import org.sigmah.shared.domain.User;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.bedatadriven.rebar.sql.client.SqlDatabase;
+import com.bedatadriven.rebar.sql.server.jdbc.JdbcDatabaseFactory;
 import com.bedatadriven.rebar.sync.client.BulkUpdaterAsync;
 import com.bedatadriven.rebar.sync.mock.MockBulkUpdater;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -60,7 +62,7 @@ public abstract class LocalHandlerTestCase {
 
     protected Authentication localAuth;
     protected LocalDispatcher localDispatcher;
-    protected Connection localConnection;
+    protected SqlDatabase localDatabase;
     
     protected CommandQueue commandQueue;
     
@@ -68,6 +70,9 @@ public abstract class LocalHandlerTestCase {
 
     private UIConstants uiConstants;
     private UIMessages uiMessages;
+	protected Connection localConnection;
+	
+	private String databaseName = "target/localdbtest" + new java.util.Date().getTime();
 
     @Before
     public void setUp() throws SQLException, ClassNotFoundException {
@@ -84,9 +89,13 @@ public abstract class LocalHandlerTestCase {
         }
       
         
-        localConnection = DriverManager.getConnection("jdbc:sqlite:synctest");
-        updater = new MockBulkUpdater(localConnection);
-        commandQueue = new CommandQueue(localConnection);
+        JdbcDatabaseFactory localFactory = new JdbcDatabaseFactory();
+        localDatabase = localFactory.open(databaseName);
+                
+   //     localConnection = DriverManager.getConnection("jdbc:sqlite:synctest");
+    //    localConnection.setAutoCommit(false);
+        updater = new MockBulkUpdater("jdbc:sqlite:" + databaseName);
+   //     commandQueue = new CommandQueue(localConnection);
         
         uiConstants = createNiceMock(UIConstants.class);
         uiMessages = createNiceMock(UIMessages.class);
@@ -102,21 +111,32 @@ public abstract class LocalHandlerTestCase {
     }
 
     protected void synchronize() {
-    	new UpdateSynchronizer(commandQueue, remoteDispatcher)
-    		.sync(new AsyncCallback<Void>() {
-			
+//    	new UpdateSynchronizer(commandQueue, remoteDispatcher)
+//    		.sync(new AsyncCallback<Void>() {
+//			
+//			@Override
+//			public void onSuccess(Void result) {				
+//			}
+//			
+//			@Override
+//			public void onFailure(Throwable caught) {				
+//			}
+//		});
+    	
+    	Synchronizer syncr = new Synchronizer(new MockEventBus(), remoteDispatcher, localDatabase, updater,
+                localAuth, uiConstants, uiMessages);
+        syncr.start(new AsyncCallback<Void>() {
+
 			@Override
-			public void onSuccess(Void result) {				
+			public void onFailure(Throwable caught) {
+				throw new AssertionError(caught);
 			}
-			
+
 			@Override
-			public void onFailure(Throwable caught) {				
+			public void onSuccess(Void result) {
+				
 			}
 		});
-    	
-    	Synchronizer syncr = new Synchronizer(new MockEventBus(), remoteDispatcher, localConnection, updater,
-                localAuth, uiConstants, uiMessages);
-        syncr.start();
     }
 
     protected void newRequest() {

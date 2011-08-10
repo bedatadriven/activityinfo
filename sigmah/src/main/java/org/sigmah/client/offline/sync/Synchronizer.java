@@ -7,7 +7,6 @@ package org.sigmah.client.offline.sync;
 
 import static org.sigmah.shared.dao.SqlQueryBuilder.select;
 
-import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
@@ -33,6 +33,13 @@ import org.sigmah.shared.dao.SqlQueryBuilder;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.bedatadriven.rebar.sql.client.DatabaseLockedException;
+import com.bedatadriven.rebar.sql.client.SqlDatabase;
+import com.bedatadriven.rebar.sql.client.SqlException;
+import com.bedatadriven.rebar.sql.client.SqlResultCallback;
+import com.bedatadriven.rebar.sql.client.SqlResultSet;
+import com.bedatadriven.rebar.sql.client.SqlTransaction;
+import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
+import com.bedatadriven.rebar.sql.client.util.SqlKeyValueTable;
 import com.bedatadriven.rebar.sync.client.BulkUpdaterAsync;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -53,7 +60,7 @@ public class Synchronizer {
 
     private final Dispatcher dispatch;
     private final EventBus eventBus;
-    private final Connection conn;
+    private final SqlDatabase conn;
     private final BulkUpdaterAsync updater;
     private final Authentication auth;
     private final UIConstants uiConstants;
@@ -66,11 +73,14 @@ public class Synchronizer {
     private AsyncCallback<Void> callback;
 
     private boolean running = false;
+    
+    private SyncRegionTable localVerisonTable;
+    private SyncHistoryTable historyTable;
 
     @Inject
     public Synchronizer(EventBus eventBus,
                         @Direct Dispatcher dispatch,
-                        Connection conn,
+                        SqlDatabase conn,
                         BulkUpdaterAsync updater,
                         Authentication auth,
                         UIConstants uiConstants, UIMessages uiMessages) {
@@ -81,46 +91,58 @@ public class Synchronizer {
         this.auth = auth;
         this.uiConstants = uiConstants;
         this.uiMessages = uiMessages;
-        createSyncMetaTables();
+        
+        this.localVerisonTable = new SyncRegionTable(conn);
+        this.historyTable = new SyncHistoryTable(conn);
    }
 
-    private void createSyncMetaTables() {
-        execute("create table if not exists sync_regions (id TEXT, localVersion TEXT)",
-                "create table if not exists sync_history (lastUpdate INTEGER) ");
-    }
-
-    public void clearDatabase() {
+    public void clearDatabase() { 	
         dropAllTables();
         createSyncMetaTables();
     }
 
     private void dropAllTables() {
-        final List<String> tableNames = new ArrayList<String>();
-        select("name").from("sqlite_master where type = 'table'")
-                .forEachResult(conn, new SqlQueryBuilder.ResultHandler() {
-                    @Override
-                    public void handle(ResultSet rs) throws SQLException {
-                        tableNames.add(rs.getString(1));
-                    }
-                });
-
-        for(String tableName : tableNames) {
-        	if(!tableName.startsWith("sqlite_")) {
-        		execute("drop table " + tableName);
-        	}
-        }
+    	conn.dropAllTables(new AsyncCallback<Void>() {
+			
+			@Override
+			public void onSuccess(Void result) {
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+			}
+		});
+      
     }
 
     public void start(AsyncCallback<Void> callback) {
-        this.callback = callback;
-        start();
-    }
-
-    public void start() {
+    	this.callback = callback;
         fireStatusEvent(uiConstants.requestingSyncRegions(), 0);
         running = true;
         rowsUpdated = 0;
-        dispatch.execute(new GetSyncRegions(), null, new AsyncCallback<SyncRegions>() {
+        createSyncMetaTables();
+    }
+
+
+    
+    private void createSyncMetaTables() {
+    	conn.transaction(new DefaultTxCallback() {
+			
+			@Override
+			public void begin(SqlTransaction tx) {
+				tx.executeSql("create table if not exists sync_regions (id TEXT PRIMARY KEY, localVersion TEXT)");
+				tx.executeSql("create table if not exists sync_history (lastUpdate INTEGER)");
+			}
+
+			@Override
+			public void onSuccess() {
+				retrieveSyncRegions();
+			}
+		});
+    }
+    
+	private void retrieveSyncRegions() {
+		dispatch.execute(new GetSyncRegions(), null, new AsyncCallback<SyncRegions>() {
             @Override
             public void onFailure(Throwable throwable) {
                 handleException("Error getting sync regions", throwable);
@@ -133,7 +155,7 @@ public class Synchronizer {
                 doNextUpdate();
             }
         });
-    }
+	}
 
     private void fireStatusEvent(String task, double percentComplete) {
         Log.info("Synchronizer: " + task + " (" + percentComplete + "%)");
@@ -146,14 +168,23 @@ public class Synchronizer {
         }
         if(regionIt.hasNext()) {
             final SyncRegion region = regionIt.next();
-            String localVersion = queryLocalVersion(region.getId());
-
-            doUpdate(region, localVersion);
+            checkLocalVersion(region);
         } else {
             onSynchronizationComplete();
         }
     }
 
+    private void checkLocalVersion(final SyncRegion region) {
+    	localVerisonTable.get(region.getId(), new DefaultCallback<String>() {
+
+			@Override
+			public void onSuccess(String localVersion) {
+				doUpdate(region, localVersion);
+			}
+		});
+    }
+
+    
     private void onSynchronizationComplete() {
         setLastUpdateTime();
         fireStatusEvent(uiConstants.synchronizationComplete(), 100);
@@ -183,77 +214,44 @@ public class Synchronizer {
     private void persistUpdates(final SyncRegion region, final SyncRegionUpdate update) {
         if(update.getSql() == null) {
             Log.debug("Synchronizer: Region " + region.getId() + " is up to date");
-            afterUpdatesArePersisted(region, update);
-            return;
-        }
-
-        Log.debug("Synchronizer: persisting updates for region " + region.getId());
-        updater.executeUpdates(auth.getLocalDbName(), update.getSql(), new AsyncCallback<Integer>() {
-            @Override
-            public void onFailure(Throwable throwable) {
-                handleException("Synchronizer: Async execution of region updates failed. \nSQL=" + update.getSql() +
-                        "\nMessage: " + throwable.getMessage(), throwable);
-            }
-
-            @Override
-            public void onSuccess(Integer rows) {
-                Log.debug("Synchronizer: updates succeeded, " + rows + " row(s) affected");
-                rowsUpdated += rows;
-                afterUpdatesArePersisted(region, update);
-            }
-        });
-    }
-
-    private void afterUpdatesArePersisted(final SyncRegion region, final SyncRegionUpdate update) {
-        try {
-            updateLocalVersion(region.getId(), update.getVersion());
-            if(!update.isComplete()) {
-                doUpdate(region, update.getVersion());
-            } else {
-                doNextUpdate();
-            }
-        } catch (DatabaseLockedException e) {
-            Log.debug("Synchronizer: Database locked, will try again in 500 ms");
-            Scheduler.get().scheduleFixedDelay(new Scheduler.RepeatingCommand() {
-                @Override
-                public boolean execute() {
-                    afterUpdatesArePersisted(region, update);
-                    return false;
-                }
-            }, 500);
-        } catch (SQLException e) {
-            handleException("SQL exception thrown while updating local version number", e);
+            doNextUpdate();
+    
+        } else {
+		    Log.debug("Synchronizer: persisting updates for region " + region.getId());
+	        updater.executeUpdates(auth.getLocalDbName(), update.getSql(), new AsyncCallback<Integer>() {
+	            @Override
+	            public void onFailure(Throwable throwable) {
+	                handleException("Synchronizer: Async execution of region updates failed. \nSQL=" + update.getSql() +
+	                        "\nMessage: " + throwable.getMessage(), throwable);
+	            }
+	
+	            @Override
+	            public void onSuccess(Integer rows) {
+	                Log.debug("Synchronizer: updates succeeded, " + rows + " row(s) affected");
+	                rowsUpdated += rows;
+	                updateLocalVersion(region, update);
+	            }
+	        });
         }
     }
 
-    private String queryLocalVersion(String id) {
-        try {
-            PreparedStatement stmt = conn.prepareStatement("select localVersion from sync_regions where id = ?");
-            stmt.setString(1, id);
-            ResultSet rs = stmt.executeQuery();
-            if(rs.next()) {
-                return rs.getString(1);
-            } else {
-                return null;
-            }
-        } catch (SQLException e) {
-            handleException("Exception thrown while querying local version", e);
-            throw new RuntimeException(e);
-        }
-    }
+    private void updateLocalVersion(final SyncRegion region, final SyncRegionUpdate update) {
+    	conn.transaction(new DefaultTxCallback() {
+			
+			@Override
+			public void begin(SqlTransaction tx) {
+				tx.executeSql("insert into sync_regions (id, localVersion) values (?, ?)", new Object[] { region.getId(), update.getVersion() });
+			}
 
-    private void updateLocalVersion(String id, String version) throws SQLException {
-        PreparedStatement update = conn.prepareStatement(
-                "update sync_regions set localVersion = ? where id = ?");
-        update.setString(1, version);
-        update.setString(2, id);
-        if(update.executeUpdate() == 0) {
-            PreparedStatement insert = conn.prepareStatement(
-                    "insert into sync_regions (id, localVersion) values (?, ?)");
-            insert.setString(1, id);
-            insert.setString(2, version);
-            insert.executeUpdate();
-        }
+			@Override
+			public void onSuccess() {
+				if(!update.isComplete()) {
+	                doUpdate(region, update.getVersion());
+	            } else {
+	                doNextUpdate();
+	            }
+			}
+		});
     }
 
     private void handleException(String message, Throwable throwable) {
@@ -264,24 +262,48 @@ public class Synchronizer {
     }
 
     private void setLastUpdateTime() {
-        Date now = new Date(new java.util.Date().getTime());
-        try {
-            PreparedStatement stmt = conn.prepareStatement("update sync_history set lastUpdate = ?");
-            stmt.setDate(1, now);
-            if(stmt.executeUpdate() == 0) {
-                stmt = conn.prepareStatement("insert into sync_history (lastUpdate) values (?)");
-                stmt.setDate(1, now);
-                stmt.executeUpdate();
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Couldn't set last update time", e);
-        }
+        final Date now = new Date(new java.util.Date().getTime());
+        historyTable.update();
+        
+        conn.transaction(new DefaultTxCallback() {
+			@Override
+			public void begin(SqlTransaction tx) {
+				tx.executeSql("insert into sync_history (lastUpdate) values (?)", new Object[] { now.getTime() }); 				
+			}
+		});
     }
 
-    public Date getLastUpdateTime() {
-        return select("lastUpdate").from("sync_history")
-                 .singleDateResultOrNull(conn);
-
+    public void getLastUpdateTime(final AsyncCallback<java.util.Date> callback) {
+        historyTable.get(new AsyncCallback<Double>() {
+			
+			@Override
+			public void onSuccess(Double result) {
+				if(result == null) {
+					callback.onSuccess(null);
+				} else {
+					callback.onSuccess(new Date(result.longValue()));
+				}
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				callback.onFailure(caught);	
+			}
+		});
+    }
+    
+    private abstract class DefaultTxCallback extends SqlTransactionCallback {
+		@Override
+		public final void onError(SqlException e) {
+			callback.onFailure(e);
+		}
+    }
+  
+    private abstract class DefaultCallback<T> implements AsyncCallback<T> {
+		@Override
+		public void onFailure(Throwable caught) {
+			callback.onFailure(caught);
+		}
     }
 
     private static class ProgressTrackingIterator<T> implements Iterator<T> {
@@ -317,17 +339,4 @@ public class Synchronizer {
     }
 
 
-    private void execute(String... sql) {
-        Statement stmt = null;
-        try {
-            stmt = conn.createStatement();
-            for(String statement : sql) {
-                stmt.executeUpdate(statement);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            if(stmt != null) { try { stmt.close(); } catch( SQLException ignored) {} }
-        }
-    }
 }
