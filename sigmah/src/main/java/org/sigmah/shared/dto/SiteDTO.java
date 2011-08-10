@@ -354,7 +354,9 @@ public final class SiteDTO extends BaseModelData implements EntityDTO {
 		
 		// Grab all relevant locked periods
 		lockedPeriods.addAll(activity.getEnabledLockedPeriods());
-		lockedPeriods.addAll(activity.getDatabase().getEnabledLockedPeriods());
+		if (activity.getDatabase() != null) {
+			lockedPeriods.addAll(activity.getDatabase().getEnabledLockedPeriods());
+		}
 		if (getProject() != null) {
 			lockedPeriods.addAll(getProject().getEnabledLockedPeriods());
 		}
