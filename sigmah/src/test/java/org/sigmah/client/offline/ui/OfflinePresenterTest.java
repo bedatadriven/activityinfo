@@ -278,8 +278,8 @@ public class OfflinePresenterTest {
         }
 
         @Override
-        public Date getLastSyncTime() {
-            return null;
+        public void getLastSyncTime(AsyncCallback<Date> callback) {
+            callback.onSuccess(null);
         }
 
         private void onCalled(String method, AsyncCallback<Void> callback) {
@@ -288,8 +288,8 @@ public class OfflinePresenterTest {
         }
 
         @Override
-        public boolean validateOfflineInstalled() {
-            return true;
+        public void validateOfflineInstalled(AsyncCallback<Void> callback) {
+          callback.onSuccess(null);
         }
 
 

@@ -348,15 +348,20 @@ public class OfflinePresenter implements Dispatcher {
 
                             @Override
                             public void onSuccess(Void result) {
-                                if(gateway.validateOfflineInstalled()) {
-                                	activateStrategy(new OfflineStrategy(gateway));
-                                	doDispatch(pending);
-                                } else {
-                                    abandonShip();
-                                }
+                            	gateway.validateOfflineInstalled(new AsyncCallback<Void>() {
+									
+									@Override
+									public void onSuccess(Void result) {
+	                                	activateStrategy(new OfflineStrategy(gateway));
+	                                	doDispatch(pending);										
+									}
+									
+									@Override
+									public void onFailure(Throwable caught) {
+	                                    abandonShip();
+									}
+								});                                	
                             }
-
-						
                         });
                     }
                 }
@@ -438,7 +443,17 @@ public class OfflinePresenter implements Dispatcher {
 
         public OfflineStrategy activate() {
             setActiveMode(OfflineMode.OFFLINE);
-            view.setButtonTextToLastSync(offlineManger.getLastSyncTime());
+            offlineManger.getLastSyncTime(new AsyncCallback<Date>() {
+				
+				@Override
+				public void onSuccess(Date result) {
+					view.setButtonTextToLastSync(result);
+				}
+				
+				@Override
+				public void onFailure(Throwable caught) {
+				}
+			});
             view.enableMenu();
             return this;
         }
