@@ -36,9 +36,9 @@ public class MapTest {
 
         presenter.setSite(new SiteDTO(), null, bounds);
 
-        Assert.assertEquals(bounds, map.getViewBounds());
-        Assert.assertEquals(bounds.getCenterX(), map.markerX, DELTA);
-        Assert.assertEquals(bounds.getCenterY(), map.markerY, DELTA);
+        Assert.assertEquals(bounds, map.getViewBounds());	
+        Assert.assertEquals(bounds.getCenterX(), map.getX(), DELTA);
+        Assert.assertEquals(bounds.getCenterY(), map.getY(), DELTA);
     }
 
 
@@ -68,8 +68,11 @@ public class MapTest {
 
         presenter.onMarkedMoved(new MarkerMovedEvent(900, 800));
 
-        Assert.assertEquals("marker x clamped", 300.0, map.markerX, DELTA);
-        Assert.assertEquals("marker y clamped", 200.0, map.markerY, DELTA);
+        // The marker should not be placed beyond the edit bounds
+        Assert.assertEquals("marker x clamped", 300.0, map.getValue().getLng(), DELTA);
+        Assert.assertEquals("marker y clamped", 200.0, map.getValue().getLat(), DELTA);
+        
+        // The view should not be able to pan out of the viewing bounds
         Assert.assertEquals("coord x clamped", 300.0, map.getX(), DELTA);
         Assert.assertEquals("coord y clamped", 200.0, map.getY(), DELTA);
     }

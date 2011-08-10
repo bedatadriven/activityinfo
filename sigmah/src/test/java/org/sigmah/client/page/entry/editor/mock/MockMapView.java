@@ -20,12 +20,11 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class MockMapView implements MapEditView {
 
-    public String boundsName;
-    public BoundingBoxDTO bounds;
-    public Double lat;
-    public Double lng;
-    public BoundingBoxDTO mapView;
-    private AiLatLng latLng;
+	private String boundsName;
+	private BoundingBoxDTO editBounds;
+	private BoundingBoxDTO viewBounds;
+    private AiLatLng latLng = new AiLatLng(-1000.0, -1000.0);
+    private AiLatLng marker = new AiLatLng(-1000.0, -1000.0);
     private EventBus eventBus = new SimpleEventBus(); 
 
     public Double markerX;
@@ -34,22 +33,22 @@ public class MockMapView implements MapEditView {
     @Override
     public void setEditBounds(String name, BoundingBoxDTO bounds) {
         this.boundsName = name;
-        this.bounds = bounds;
+        this.editBounds = bounds;
     }
 
     @Override
     public Double getX() {
-        return lng;
+        return latLng.getLng();
     }
 
     @Override
     public Double getY() {
-        return lat;
+        return latLng.getLat();
     }
 
     @Override
     public void setViewBounds(BoundingBoxDTO bounds) {
-        this.mapView = bounds;
+        this.viewBounds = bounds;
     }
 
 	@Override
@@ -79,8 +78,7 @@ public class MockMapView implements MapEditView {
 
 	@Override
 	public void setMarkerPosition(AiLatLng latLng) {
-		// TODO Auto-generated method stub
-		
+		this.latLng=latLng;
 	}
 
 	@Override
@@ -108,6 +106,6 @@ public class MockMapView implements MapEditView {
 
 	@Override
 	public BoundingBoxDTO getViewBounds() {
-		return mapView;
+		return viewBounds;
 	}
 }
