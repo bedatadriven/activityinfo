@@ -14,9 +14,11 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.grid.AbstractEditorGridView;
 import org.sigmah.client.page.common.toolbar.UIActions;
+import org.sigmah.client.page.common.toolbar.WarningBar;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
+import org.sigmah.shared.dto.LockedPeriodDTO;
 import org.sigmah.shared.dto.SiteDTO;
 
 import com.extjs.gxt.ui.client.Style;
@@ -41,6 +43,7 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 
 /*
@@ -54,6 +57,7 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
     private boolean enableDragSource;
     protected List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 	private List<AdminLevelDTO> levels;
+	private WarningBar warningbarLockedPeriods;
 
     public SiteGrid(boolean enableDragSource) {
         this();
@@ -69,8 +73,35 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
         this.activity = activity;
         setHeading(I18N.MESSAGES.activityTitle(activity.getDatabase().getName(), activity.getName()));
 
+        createLockedPeriodsWarning();
+        
         super.init(presenter, store);
     }
+
+	private void createLockedPeriodsWarning() {
+		warningbarLockedPeriods = new WarningBar();
+        if (this.activity != null && this.activity.getLockedPeriods().size() > 0) {
+        	StringBuilder builder = new StringBuilder();
+        	builder.append("Activity ");
+        	builder.append(activity.getName());
+        	builder.append(" is locked for sites dated between ");
+        	
+        	for (LockedPeriodDTO lockedPeriod : this.activity.getLockedPeriods()) {
+        		builder.append(DateTimeFormat.getFormat(PredefinedFormat.DATE_MEDIUM).format(lockedPeriod.getFromDate()));
+        		builder.append(" and ");
+        		builder.append(DateTimeFormat.getFormat(PredefinedFormat.DATE_MEDIUM).format(lockedPeriod.getToDate()));
+        		builder.append(", ");
+        	}
+        	// remove last comma
+        	String message = builder.toString().substring(0, builder.length() - 2);
+        	warningbarLockedPeriods.setWarning(message);
+        }
+        BorderLayoutData warningLayout = new BorderLayoutData(Style.LayoutRegion.NORTH);
+        warningLayout.setMinSize(24);
+        warningLayout.setMaxSize(120);
+        warningLayout.setSize(24);
+        add(warningbarLockedPeriods, warningLayout);
+	}
 
     @Override
     public AsyncMonitor getLoadingMonitor() {

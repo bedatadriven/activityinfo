@@ -54,9 +54,9 @@ public class SiteGridPage extends SiteGrid {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 BorderLayout borderLayout = (BorderLayout) getLayout();
-                if(sideBarButton.isPressed()) {
+                if (sideBarButton.isPressed()) {
 
-                    if(sidePanel == null) {
+                    if (sidePanel == null) {
                         sidePanel = new LayoutContainer();
                         sidePanel.setLayout(new CardLayout());
 
@@ -68,7 +68,7 @@ public class SiteGridPage extends SiteGrid {
                     } else if(isRendered()) {
                         borderLayout.show(Style.LayoutRegion.EAST);
                     }
-                    if(!component.isAttached()) {
+                    if (!component.isAttached()) {
                         sidePanel.add(component);
                     }
                     ((CardLayout)sidePanel.getLayout()).setActiveItem(component);
@@ -114,8 +114,6 @@ public class SiteGridPage extends SiteGrid {
         });
 
         tabPanel.add(tab);
-
-
     }
 
     private void onTabClicked(TabItem.HeaderItem header) {
@@ -134,7 +132,6 @@ public class SiteGridPage extends SiteGrid {
             expandTabs();
             getLayout().layout();
         }
-
     }
 
     private void collapseTabs() {
