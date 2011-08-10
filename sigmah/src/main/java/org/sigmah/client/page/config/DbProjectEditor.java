@@ -102,6 +102,7 @@ public class DbProjectEditor extends AbstractGridPresenter<ProjectDTO> {
                     public void onSuccess(CreateResult result) {
                     	newProject.setId(result.getNewId());
                         store.add(newProject);
+                        db.getProjects().add(newProject);
                         eventBus.fireEvent(AppEvents.SchemaChanged);
                         dlg.hide();
                     }
