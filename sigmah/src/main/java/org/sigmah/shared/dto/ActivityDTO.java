@@ -323,4 +323,16 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO, Provi
 	public Set<LockedPeriodDTO> getLockedPeriods() {
 		return lockedPeriods;
 	}
+
+	public Set<LockedPeriodDTO> getEnabledLockedPeriods() {
+	    Set<LockedPeriodDTO> lockedPeriods = new HashSet<LockedPeriodDTO>(0);
+
+	    for (LockedPeriodDTO lcokedPeriod : getLockedPeriods()) {
+	    	if (lcokedPeriod.isEnabled()) {
+	    		lockedPeriods.add(lcokedPeriod);
+	    	}
+	    }
+	    
+	    return lockedPeriods;
+	}
 }

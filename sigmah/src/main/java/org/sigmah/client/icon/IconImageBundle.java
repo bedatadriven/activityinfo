@@ -190,4 +190,9 @@ public interface IconImageBundle extends ImageBundle {
 
     @Resource(value = "project.png")
     AbstractImagePrototype project();
-}
+    
+	@Resource(value = "LockedPeriod.png")
+	AbstractImagePrototype lockedPeriod();	
+    
+	@Resource(value = "empty.png")
+	AbstractImagePrototype empty();	}

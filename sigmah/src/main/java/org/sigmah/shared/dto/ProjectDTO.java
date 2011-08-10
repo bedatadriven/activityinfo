@@ -64,4 +64,16 @@ public class ProjectDTO extends BaseModelData implements DTO {
 	public UserDatabaseDTO getUserDatabase() {
 		return userDatabase;
 	}
+	
+	public Set<LockedPeriodDTO> getEnabledLockedPeriods() {
+	    Set<LockedPeriodDTO> lockedPeriods = new HashSet<LockedPeriodDTO>(0);
+
+	    for (LockedPeriodDTO lcokedPeriod : getLockedPeriods()) {
+	    	if (lcokedPeriod.isEnabled()) {
+	    		lockedPeriods.add(lcokedPeriod);
+	    	}
+	    }
+	    
+	    return lockedPeriods;
+	}
 }

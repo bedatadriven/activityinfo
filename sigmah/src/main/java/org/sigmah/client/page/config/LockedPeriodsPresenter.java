@@ -139,7 +139,7 @@ public class LockedPeriodsPresenter
 					public void onSuccess(VoidResult result) {
 						view.update(lockedPeriod);
 						
-						// Simplu use the hammer: remove the old one, add the updated one
+						// Simplu use the hammer: remove the old one, type filter textadd the updated one
 						parentModel.getLockedPeriods().remove(lockedPeriod);
 						parentModel.getLockedPeriods().add(lockedPeriod);
 					}

@@ -5,7 +5,9 @@
 
 package org.sigmah.shared.dto;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
@@ -342,5 +344,32 @@ public final class SiteDTO extends BaseModelData implements EntityDTO {
 	
 	public void setProject(ProjectDTO project) {
 		set("project", project);
+	}
+	
+	/*
+	 * Returns true when this Site is locked for C/U/D operations
+	 */
+	public boolean fallsWithinLockedPeriod(ActivityDTO activity) {
+		List<LockedPeriodDTO> lockedPeriods = new ArrayList<LockedPeriodDTO>();
+		
+		// Grab all relevant locked periods
+		lockedPeriods.addAll(activity.getEnabledLockedPeriods());
+		lockedPeriods.addAll(activity.getDatabase().getEnabledLockedPeriods());
+		if (getProject() != null) {
+			lockedPeriods.addAll(getProject().getEnabledLockedPeriods());
+		}
+		
+		return fallsWithinLockedPeriods(lockedPeriods, activity);
+	}
+	
+	public boolean fallsWithinLockedPeriods(Iterable<LockedPeriodDTO> lockedPeriods, ActivityDTO activity) {
+		for (LockedPeriodDTO lockedPeriod : lockedPeriods) {
+			// For reporting purposes, only the Date2 is 'counted'.  
+			if (lockedPeriod.fallsWithinPeriod(getDate2())) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }
