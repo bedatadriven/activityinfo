@@ -69,11 +69,12 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 		List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 		
 		configs.add(createEnabledColumn());
-	    configs.add(createParentTypeColumn()); 
-	    configs.add(createNameColumn()); 
+	    configs.add(createParentTypeColumn());
+	    configs.add(createParentNameColumn());
+	    configs.add(createNameColumn());
 	    configs.add(createStartDateColumn());
 	    configs.add(createEndDateColumn());
-	    configs.add(createTotalTimeColumn());
+	    //configs.add(createTotalTimeColumn());
 	    
 	    gridLockedPeriods = new EditorGrid<LockedPeriodDTO>(
 	    		lockedPeriodStore, new ColumnModel(configs));
@@ -107,6 +108,24 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 	    add(gridLockedPeriods);
 	}
 
+	private ColumnConfig createParentNameColumn() {
+		ColumnConfig columnName = new ColumnConfig();
+		columnName.setHeader("parentName");
+		columnName.setDataIndex("parentName");
+		columnName.setWidth(150);
+		columnName.setRowHeader(true); 
+		columnName.setRenderer(new GridCellRenderer<LockedPeriodDTO>() {
+			@Override
+			public Object render(LockedPeriodDTO model, String property,
+					ColumnData config, int rowIndex, int colIndex,
+					ListStore<LockedPeriodDTO> store, Grid<LockedPeriodDTO> grid) {
+				return model.getParentName();
+			}
+		});
+		
+	    return columnName;
+	}
+
 	private ColumnConfig createEnabledColumn() {
 	    CheckColumnConfig columnEnabled = new CheckColumnConfig("enabled", "Enabled?", 55);  
 	    columnEnabled.setEditor(new CellEditor(new CheckBox()));
@@ -118,7 +137,7 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 		ColumnConfig columnTotalTime = new ColumnConfig();
 	    columnTotalTime.setId("endDate");  
 	    columnTotalTime.setHeader(I18N.CONSTANTS.timePeriod());  
-	    columnTotalTime.setWidth(200);  
+	    columnTotalTime.setWidth(100);  
 	    columnTotalTime.setRowHeader(true);
 	    columnTotalTime.setDateTimeFormat(DateTimeFormat.getFormat("yyyy-MMM-dd"));
 	    
@@ -129,7 +148,7 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 		ColumnConfig columnName = new ColumnConfig();  
 		columnName.setId("name");  
 		columnName.setHeader(I18N.CONSTANTS.name());  
-		columnName.setWidth(200);  
+		columnName.setWidth(150);  
 		columnName.setRowHeader(true); 
 		
 	    return columnName;
@@ -143,7 +162,7 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 	    columnEndDate.setEditor(new CellEditor(datefieldEndDate));
 	    columnEndDate.setId("toDate");  
 	    columnEndDate.setHeader(I18N.CONSTANTS.toDate());  
-	    columnEndDate.setWidth(200);  
+	    columnEndDate.setWidth(100);  
 	    columnEndDate.setRowHeader(true);  
 	    columnEndDate.setDateTimeFormat(DateTimeFormat.getFormat("yyyy-MMM-dd"));
 	    
@@ -158,7 +177,7 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 	    columnStartDate.setEditor(new CellEditor(datefieldStartDate));
 	    columnStartDate.setId("fromDate");  
 	    columnStartDate.setHeader(I18N.CONSTANTS.fromDate());  
-	    columnStartDate.setWidth(200);  
+	    columnStartDate.setWidth(100);  
 	    columnStartDate.setRowHeader(true);
 	    columnStartDate.setDateTimeFormat(DateTimeFormat.getFormat("yyyy-MMM-dd"));
 	    

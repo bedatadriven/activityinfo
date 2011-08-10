@@ -57,8 +57,8 @@ public class MapPresenter
 
 	@Override
 	public void onCoordinatesChanged(MapEditView.CoordinatesChangedEvent event) {
-		double x = event.getX();
-		double y = event.getY();
+		double x = event.getCoordinates().getLng();
+		double y = event.getCoordinates().getLat();
 		
         if(haveValidCoords()) {
             view.setValue(new AiLatLng(y, x));

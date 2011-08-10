@@ -12,6 +12,7 @@ import org.sigmah.client.map.MapTypeFactory;
 import org.sigmah.client.page.common.widget.CoordinateField;
 import org.sigmah.client.page.config.form.FieldSetFitLayout;
 import org.sigmah.shared.dto.CountryDTO;
+import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 import com.extjs.gxt.ui.client.event.ContainerEvent;
@@ -114,8 +115,8 @@ public class MapFieldSet extends FieldSet implements MapEditView {
 	private void createPanelToolbar() {
         Listener<FieldEvent> latLngListener = new Listener<FieldEvent>() {
             public void handleEvent(FieldEvent be) {
-            	eventBus.fireEvent(new CoordinatesChangedEvent(
-            			latField.getValue(), lngField.getValue()));
+            	eventBus.fireEvent(new CoordinatesChangedEvent(new AiLatLng(
+            			latField.getValue(), lngField.getValue())));
             }
         };
 
