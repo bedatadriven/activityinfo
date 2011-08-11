@@ -63,13 +63,13 @@ public class CommandQueue {
 	@Inject
 	public CommandQueue(Connection connection) {
 		this.connection = connection;		
-		
+		/*
 		try {
 			Statement stmt = connection.createStatement();
 			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS command_queue (id INTEGER PRIMARY KEY AUTOINCREMENT, command TEXT) " );
 		} catch (SQLException e) {
 			Log.error("Could not create the command_queue table!", e);
-		}
+		}*/
 	}
 
 	/**
@@ -79,12 +79,12 @@ public class CommandQueue {
 	 * @throws SQLException
 	 */
 	public void queue(Command cmd) throws SQLException {
-		
+		/*
 		if(cmd instanceof CreateEntity) {
 			queueCreateEntity((CreateEntity) cmd); 
 		} else {
 			throw new RuntimeException("Cannot queue class of type " + cmd.getClass().getName());
-		}
+		}*/
 	}
 	
 	/**
@@ -94,7 +94,8 @@ public class CommandQueue {
 	 * @return the Command next in line for execution
 	 */
 	public void peek(AsyncCallback<QueueEntry> callback) {
-		try {
+		callback.onSuccess(null);
+		/*try {
 			ResultSet rs = SqlQueryBuilder.select("id, command").from("command_queue").orderBy("id").executeQuery(connection);
 			if(rs.next()) {
 				callback.onSuccess(new QueueEntry(rs.getInt(1), deserializeCommand(rs.getString(2))));
@@ -103,7 +104,7 @@ public class CommandQueue {
 			}
 		} catch(SQLException e){
 			callback.onFailure(e);
-		}
+		}*/
 	}
 	
 	public void remove(int queueId, AsyncCallback<Boolean> callback) {

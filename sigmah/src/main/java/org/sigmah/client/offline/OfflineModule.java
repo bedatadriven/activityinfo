@@ -26,8 +26,11 @@ import org.sigmah.shared.dao.SqlSiteTableDAO;
 import org.sigmah.shared.dao.SqliteDialect;
 
 import com.bedatadriven.rebar.sql.client.GearsConnectionFactory;
+import com.bedatadriven.rebar.sql.client.SqlDatabase;
+import com.bedatadriven.rebar.sql.client.SqlDatabaseFactory;
 import com.bedatadriven.rebar.sync.client.BulkUpdaterAsync;
 import com.bedatadriven.rebar.sync.client.impl.GearsBulkUpdater;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.inject.client.AbstractGinModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
@@ -42,7 +45,6 @@ public class OfflineModule extends AbstractGinModule {
 
         bind(OfflinePresenter.View.class).to(OfflineView.class);
         bind(OfflineGateway.class).to(OfflineImpl.class);
-        bind(BulkUpdaterAsync.class).to(GearsBulkUpdater.class);
 
         //DAOs for off-line
         bind(SqlDialect.class).to(SqliteDialect.class).in(Singleton.class);
@@ -53,11 +55,14 @@ public class OfflineModule extends AbstractGinModule {
     @Provides
     @Singleton
     protected Connection provideConnection(Authentication auth) {
-        try {
-            return GearsConnectionFactory.getConnection(auth.getLocalDbName());
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return new DummyConnection();
+    }
+    
+    @Provides
+    @Singleton
+    protected SqlDatabase provideSqlDatabase(Authentication auth) {
+    	SqlDatabaseFactory factory = GWT.create(SqlDatabaseFactory.class);
+    	return factory.open(auth.getLocalDbName());
     }
 
     @Provides
@@ -68,10 +73,10 @@ public class OfflineModule extends AbstractGinModule {
             LocalCreateEntityHandler createEntityHandler) {
 
         LocalDispatcher dispatcher = new LocalDispatcher(auth);
-        dispatcher.registerHandler(GetSchema.class, schemaHandler);
+       /* dispatcher.registerHandler(GetSchema.class, schemaHandler);
         dispatcher.registerHandler(GetSites.class, sitesHandler);
         dispatcher.registerHandler(GetAdminEntities.class, adminHandler);
-        dispatcher.registerHandler(CreateEntity.class, createEntityHandler);
+        dispatcher.registerHandler(CreateEntity.class, createEntityHandler);*/
         
         return dispatcher;
     }
