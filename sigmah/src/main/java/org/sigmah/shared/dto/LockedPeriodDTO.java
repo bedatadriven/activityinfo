@@ -102,4 +102,26 @@ public class LockedPeriodDTO extends BaseModelData implements EntityDTO {
 	public void setProject(ProjectDTO project) {
 		this.project = project;
 	}
+	
+	public String getParentName() {
+		if (getProject() != null) {
+			return getProject().getName();
+		}
+		if (getActivity() != null) {
+			return getActivity().getName();
+		}
+		if (getUserDatabase() != null) {
+			return getUserDatabase().getName();
+		}
+		
+		return null;
+	}
+	
+	public boolean fallsWithinPeriod(Date date) {
+		return 
+		   (getFromDate().before(date) &&
+			getToDate().after(date)) ||
+			getFromDate().compareTo(date) == 0 ||
+			getToDate().compareTo(date) == 0;
+	}
 }

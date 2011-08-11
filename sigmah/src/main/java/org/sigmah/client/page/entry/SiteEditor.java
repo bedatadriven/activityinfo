@@ -316,8 +316,9 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
 
     private boolean isEditable(SiteDTO selectedSite) {
         UserDatabaseDTO db = currentActivity.getDatabase();
-        boolean editable = db.isEditAllAllowed() ||
-                (db.isEditAllowed() && db.getMyPartnerId() == selectedSite.getPartner().getId());
+        boolean editable = (db.isEditAllAllowed() ||
+                (db.isEditAllowed() && db.getMyPartnerId() == selectedSite.getPartner().getId())) &&
+                !selectedSite.fallsWithinLockedPeriod(currentActivity);
         return editable;
     }
 

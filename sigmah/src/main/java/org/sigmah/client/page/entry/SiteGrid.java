@@ -7,6 +7,7 @@ package org.sigmah.client.page.entry;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
@@ -17,6 +18,7 @@ import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
+import org.sigmah.shared.dto.LockedPeriodDTO;
 import org.sigmah.shared.dto.SiteDTO;
 
 import com.extjs.gxt.ui.client.Style;
@@ -76,7 +78,6 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
     public AsyncMonitor getLoadingMonitor() {
         return new MaskingAsyncMonitor(this, I18N.CONSTANTS.loading());
     }
-
 
     public Grid<SiteDTO> createGridAndAddToContainer(Store store) {
 
@@ -144,6 +145,7 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
 
     protected ColumnModel createColumnModel(ActivityDTO activity) {
         createMapColumn();
+        createLockColumn();
         createDateColumn();
         createPartnerColumn();
         createLocationColumn();
@@ -154,6 +156,38 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
 
         return new ColumnModel(columns);
     }
+
+	private void createLockColumn() {
+		ColumnConfig columnLocked = new ColumnConfig("x", "", 70);
+        columnLocked.setRenderer(new GridCellRenderer<SiteDTO>() {
+            @Override
+            public Object render(SiteDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
+            	StringBuilder builder = new StringBuilder();
+            	
+            	if (model.fallsWithinLockedPeriod(activity)) {
+            		String tooltip = buildTooltip(model, activity);
+            		
+            		builder.append("<span qtip='");
+            		builder.append(tooltip);
+            		builder.append("'>");
+            		builder.append(IconImageBundle.ICONS.lockedPeriod().getHTML());
+            		builder.append("</span>");
+            		return builder.toString();
+            	} else {
+            		return "";
+            	}
+            }
+
+			private String buildTooltip(SiteDTO model, ActivityDTO activity) {
+				Set<LockedPeriodDTO> lockedPeriods = model.getAffectedLockedPeriods(activity);
+				for (LockedPeriodDTO lockedPeriod : lockedPeriods) {
+					
+				}
+				return "woei! tooltip";
+			}
+        });
+        columns.add(columnLocked);
+	}
 
 	private void createLocationColumn() {
 		if(activity.getLocationType().getBoundAdminLevelId() == null) {

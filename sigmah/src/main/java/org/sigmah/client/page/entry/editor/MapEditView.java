@@ -62,20 +62,20 @@ public interface MapEditView extends MapView {
     
     public class CoordinatesChangedEvent extends GwtEvent<CoordinatesChangedHandler> {
     	public static Type<CoordinatesChangedHandler> TYPE = new Type<CoordinatesChangedHandler>();
-    	double x;
-    	double y;
+    	AiLatLng coordinates;
     	
-    	public CoordinatesChangedEvent(double x, double y) {
-			this.x = x;
-			this.y = y;
+    	
+		public CoordinatesChangedEvent(AiLatLng coordinates) {
+			super();
+			this.coordinates = coordinates;
 		}
 
-		public double getX() {
-			return x;
+		public AiLatLng getCoordinates() {
+			return coordinates;
 		}
 
-		public double getY() {
-			return y;
+		public void setCoordinates(AiLatLng coordinates) {
+			this.coordinates = coordinates;
 		}
 
 		@Override

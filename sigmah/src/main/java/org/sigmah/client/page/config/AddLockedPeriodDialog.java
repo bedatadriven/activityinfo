@@ -90,6 +90,8 @@ public class AddLockedPeriodDialog extends Window implements
 	
 	@Override
 	public void setUserDatabase(UserDatabaseDTO userDatabase) {
+		this.userDatabase=userDatabase;
+		
 		labelDatabaseName.setText(userDatabase.getName());
 		
 		storeProjects.removeAll();

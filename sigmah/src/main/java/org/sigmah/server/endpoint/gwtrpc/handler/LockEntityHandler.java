@@ -37,6 +37,7 @@ public class LockEntityHandler implements CommandHandler<LockEntity> {
 		lockedPeriod.setFromDate(lockedPeriodDTO.getFromDate());
 		lockedPeriod.setToDate(lockedPeriodDTO.getToDate());
 		lockedPeriod.setName(lockedPeriodDTO.getName());
+		lockedPeriod.setEnabled(lockedPeriodDTO.isEnabled());
 
 		if (cmd.getUserDatabseId() != 0) {
 	        database = em.find(UserDatabase.class, cmd.getUserDatabseId());

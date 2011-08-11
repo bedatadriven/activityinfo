@@ -322,4 +322,16 @@ public final class UserDatabaseDTO extends BaseModelData implements EntityDTO, P
 	public Set<LockedPeriodDTO> getLockedPeriods() {
 		return lockedPeriods;
 	}
+	
+	public Set<LockedPeriodDTO> getEnabledLockedPeriods() {
+	    Set<LockedPeriodDTO> lockedPeriods = new HashSet<LockedPeriodDTO>(0);
+
+	    for (LockedPeriodDTO lcokedPeriod : getLockedPeriods()) {
+	    	if (lcokedPeriod.isEnabled()) {
+	    		lockedPeriods.add(lcokedPeriod);
+	    	}
+	    }
+	    
+	    return lockedPeriods;
+	}
 }

@@ -32,7 +32,9 @@ import org.sigmah.shared.command.UpdateLockedPeriod;
 import org.sigmah.shared.command.result.BatchResult;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.command.result.VoidResult;
+import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.LockedPeriodDTO;
+import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -92,7 +94,15 @@ public class LockedPeriodsPresenter
 	public void onCreate(CreateEvent event) {
 		final LockedPeriodDTO lockedPeriod = view.getValue();
 		LockEntity lockUserDatabase = new LockEntity(lockedPeriod);
-		lockUserDatabase.setUserDatabaseId(parentModel.getId());
+		if (lockedPeriod.getActivity() != null) {
+			lockUserDatabase.setActivityId(lockedPeriod.getActivity().getId());		
+		}
+		if (lockedPeriod.getProject() != null) {
+			lockUserDatabase.setProjectId(lockedPeriod.getProject().getId());		
+		}
+		if (lockedPeriod.getUserDatabase() != null) {
+			lockUserDatabase.setUserDatabaseId(lockedPeriod.getUserDatabase().getId());		
+		}
 		
 		service.execute(lockUserDatabase, null, new AsyncCallback<CreateResult>() {
 			@Override
@@ -129,7 +139,7 @@ public class LockedPeriodsPresenter
 					public void onSuccess(VoidResult result) {
 						view.update(lockedPeriod);
 						
-						// Simplu use the hammer: remove the old one, add the updated one
+						// Simplu use the hammer: remove the old one, type filter textadd the updated one
 						parentModel.getLockedPeriods().remove(lockedPeriod);
 						parentModel.getLockedPeriods().add(lockedPeriod);
 					}
@@ -224,7 +234,17 @@ public class LockedPeriodsPresenter
 	public void go(UserDatabaseDTO db) {
 		parentModel = db;
 		
-		ArrayList<LockedPeriodDTO> items = new ArrayList<LockedPeriodDTO>(db.getLockedPeriods()); 
+		ArrayList<LockedPeriodDTO> items = new ArrayList<LockedPeriodDTO>(db.getLockedPeriods());
+		for (ActivityDTO activity : db.getActivities()) {
+			if (activity.getLockedPeriods() != null && activity.getLockedPeriods().size() > 0) {
+				items.addAll(activity.getLockedPeriods());
+			}
+		}
+		for (ProjectDTO project : db.getProjects()) {
+			if (project.getLockedPeriods() != null && project.getLockedPeriods().size() > 0) {
+				items.addAll(project.getLockedPeriods());
+			}
+		}
 		view.setItems(items);
 		if (items.size() > 0) {
 			view.setValue(items.get(0));
