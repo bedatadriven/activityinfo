@@ -96,22 +96,26 @@ public class Synchronizer {
         this.historyTable = new SyncHistoryTable(conn);
    }
 
-    public void clearDatabase() { 	
-        dropAllTables();
-        createSyncMetaTables();
-    }
-
-    private void dropAllTables() {
+    /**
+     * Drops all tables in the user's database and starts synchronization fresh
+     */
+    public void startFresh(final AsyncCallback<Void> callback) { 	
     	conn.dropAllTables(new AsyncCallback<Void>() {
 			
 			@Override
 			public void onSuccess(Void result) {
+				start(callback);
 			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
+				callback.onFailure(caught);
 			}
 		});
+    }
+
+    private void dropAllTables() {
+    	
       
     }
 
@@ -227,7 +231,7 @@ public class Synchronizer {
 	
 	            @Override
 	            public void onSuccess(Integer rows) {
-	                Log.debug("Synchronizer: updates succeeded, " + rows + " row(s) affected");
+	                Log.debug("Synchronizer: updates to region " + region.getId() + " succeeded, " + rows + " row(s) affected");
 	                rowsUpdated += rows;
 	                updateLocalVersion(region, update);
 	            }
@@ -236,20 +240,20 @@ public class Synchronizer {
     }
 
     private void updateLocalVersion(final SyncRegion region, final SyncRegionUpdate update) {
-    	conn.transaction(new DefaultTxCallback() {
+    	localVerisonTable.put(region.getId(), update.getVersion(), new AsyncCallback<Void>() {
 			
 			@Override
-			public void begin(SqlTransaction tx) {
-				tx.executeSql("insert into sync_regions (id, localVersion) values (?, ?)", new Object[] { region.getId(), update.getVersion() });
-			}
-
-			@Override
-			public void onSuccess() {
+			public void onSuccess(Void result) {
 				if(!update.isComplete()) {
 	                doUpdate(region, update.getVersion());
 	            } else {
 	                doNextUpdate();
 	            }
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				callback.onFailure(caught);
 			}
 		});
     }
@@ -262,15 +266,7 @@ public class Synchronizer {
     }
 
     private void setLastUpdateTime() {
-        final Date now = new Date(new java.util.Date().getTime());
         historyTable.update();
-        
-        conn.transaction(new DefaultTxCallback() {
-			@Override
-			public void begin(SqlTransaction tx) {
-				tx.executeSql("insert into sync_history (lastUpdate) values (?)", new Object[] { now.getTime() }); 				
-			}
-		});
     }
 
     public void getLastUpdateTime(final AsyncCallback<java.util.Date> callback) {
