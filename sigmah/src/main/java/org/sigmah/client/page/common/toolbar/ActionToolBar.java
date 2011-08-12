@@ -37,6 +37,8 @@ public class ActionToolBar extends ToolBar implements Listener<ButtonEvent> {
     private Button removeButton;
     private Button refreshButton;
     private Button editButton;
+    private Button buttonGroupTime;
+    private Button buttonGroupAdminLevel;
 
     public ActionToolBar() {
     }
@@ -89,6 +91,14 @@ public class ActionToolBar extends ToolBar implements Listener<ButtonEvent> {
 
     public void addRefreshButton() {
         this.refreshButton = addButton(UIActions.refresh, I18N.CONSTANTS.refreshPreview(), IconImageBundle.ICONS.refresh());
+    }
+    
+    public void addGroupTimeButton() {
+    	this.buttonGroupTime = addButton(UIActions.groupTime, I18N.CONSTANTS.time(), IconImageBundle.ICONS.group());
+    }
+    
+    public void addGroupAdminLevelButton() {
+    	this.buttonGroupAdminLevel = addButton(UIActions.groupAdminLevel, I18N.CONSTANTS.administrativeLevel(), IconImageBundle.ICONS.add());
     }
 
     public void addSaveSplitButton() {
