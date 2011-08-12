@@ -10,9 +10,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -60,6 +58,11 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
 
         assertThat(queryInt("select AttributeGroupId from AttributeGroupInActivity where ActivityId=2"),
                 equalTo(1));
+        
+        assertThat(queryInt("select count(*) from LockedPeriod"), equalTo(4));
+        assertThat(queryInt("select count(*) from LockedPeriod where ProjectId is not null"), equalTo(1));
+        assertThat(queryInt("select count(*) from LockedPeriod where ActivityId is not null"), equalTo(1));
+        assertThat(queryInt("select count(*) from LockedPeriod where UserDatabaseId is not null"), equalTo(2));
     }
 
 

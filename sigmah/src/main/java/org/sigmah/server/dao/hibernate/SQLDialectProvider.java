@@ -97,6 +97,11 @@ public class SQLDialectProvider implements Provider<SqlDialect> {
         public String limitClause(int offset, int limit) {
             throw new UnsupportedOperationException();
         }
+
+		@Override
+		public String addWildcard(String matchingExpression) {
+            throw new UnsupportedOperationException();
+		}
     }
 
     private static class MSSQLDialect extends DefaultDialect {

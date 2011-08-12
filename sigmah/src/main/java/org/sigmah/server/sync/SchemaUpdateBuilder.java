@@ -23,7 +23,9 @@ import org.sigmah.shared.domain.AttributeGroup;
 import org.sigmah.shared.domain.Country;
 import org.sigmah.shared.domain.Indicator;
 import org.sigmah.shared.domain.LocationType;
+import org.sigmah.shared.domain.LockedPeriod;
 import org.sigmah.shared.domain.OrgUnit;
+import org.sigmah.shared.domain.Project;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.UserDatabase;
 import org.sigmah.shared.domain.UserPermission;
@@ -68,8 +70,12 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
             AttributeGroup.class,
             Attribute.class,
             User.class,
-            UserPermission.class
+            UserPermission.class,
+            LockedPeriod.class,
+            Project.class
     };
+	private List<LockedPeriod> allLockedPeriods = new ArrayList<LockedPeriod>();
+	private List<Project> projects = new ArrayList<Project>();
 
     @Inject
     public SchemaUpdateBuilder(UserDatabaseDAO userDatabaseDAO, EntityManager entityManager) {
@@ -117,6 +123,8 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
         builder.insert(LocationType.class, locationTypes);
         builder.insert(User.class, users);
         builder.insert(UserPermission.class, userPermissions);
+        builder.insert(Project.class, projects);
+        builder.insert(LockedPeriod.class, allLockedPeriods);
 
         builder.executeStatement("create table if not exists PartnerInDatabase (DatabaseId integer, PartnerId int)");
         builder.beginPreparedStatement("insert into PartnerInDatabase (DatabaseId, PartnerId) values (?, ?) ");
@@ -165,7 +173,17 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
                     partnerIds.add(partner.getId());
                 }
             }
+
+            projects.addAll(new ArrayList<Project>(database.getProjects()));
+            
+           	allLockedPeriods.addAll(database.getLockedPeriods());
+           	for (Project project : database.getProjects()) {
+           		allLockedPeriods.addAll(project.getLockedPeriods());
+           	}
+            
             for(Activity activity : database.getActivities()) {
+                allLockedPeriods.addAll(activity.getLockedPeriods());
+
                 activities.add(activity);
                 for(Indicator indicator : activity.getIndicators()) {
                     indicators.add(indicator);
@@ -180,6 +198,7 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
                 	}
                 }
             }
+            
         }
     }
 

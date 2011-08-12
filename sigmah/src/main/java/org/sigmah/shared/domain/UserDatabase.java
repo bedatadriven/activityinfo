@@ -385,7 +385,7 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
 		this.projects = projects;
 	}
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy="userDatabase")
 	public Set<Project> getProjects() {
 		return projects;
 	}

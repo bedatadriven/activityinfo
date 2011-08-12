@@ -57,4 +57,6 @@ public interface SqlDialect {
      * @return
      */
     String limitClause(int offset, int limit);
+    
+    String addWildcard(String matchingExpression);
 }
