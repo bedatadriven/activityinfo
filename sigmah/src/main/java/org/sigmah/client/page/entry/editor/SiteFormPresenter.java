@@ -196,6 +196,10 @@ public class SiteFormPresenter implements SiteFormLeash {
                     // update model
                     for (Map.Entry<String, Object> change : changes.entrySet()) {
                         currentSite.set(change.getKey(), change.getValue());
+                        if (change.getKey().equals("projectId")) {
+                        	ProjectDTO project = currentActivity.getDatabase().getProjectById((Integer)change.getValue());
+                        	currentSite.setProject(project);
+                        }
                     }
 
                     eventBus.fireEvent(new SiteEvent(AppEvents.SiteChanged, SiteFormPresenter.this, currentSite));

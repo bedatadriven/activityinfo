@@ -204,6 +204,5 @@ public class FormDialogImpl<FormT extends FormPanel> extends Window implements A
         form.enable();
         saveButton.enable();
         cancelButton.enable();
-
     }
 }

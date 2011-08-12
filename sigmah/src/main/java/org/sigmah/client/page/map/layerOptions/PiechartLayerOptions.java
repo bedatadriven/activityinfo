@@ -5,7 +5,8 @@ import java.util.List;
 
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.common.widget.ColorField;
+import org.sigmah.client.page.common.columns.EditColorColumn;
+import org.sigmah.client.page.common.columns.ReadTextColumn;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.report.model.layers.PiechartMapLayer;
@@ -21,14 +22,10 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Slider;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.SliderField;
-import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.CellSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -135,30 +132,8 @@ public class PiechartLayerOptions extends LayoutContainer implements LayerOption
 	private void setupIndicatorOptionsGrid() {
 		List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
 	    
-	    final ColorField colorField = new ColorField();
-		ColumnConfig columnColor = new ColumnConfig();
-	    columnColor.setId("color");
-	    columnColor.setHeader(I18N.CONSTANTS.color());
-	    columnColor.setWidth(50);
-	    
-	    GridCellRenderer<NamedSlice> colorRenderer = new GridCellRenderer<PiechartLayerOptions.NamedSlice>() {
-			@Override
-			public Object render(NamedSlice model, String property, ColumnData config,
-					int rowIndex, int colIndex, ListStore<NamedSlice> store,
-					Grid<NamedSlice> grid) {
-				String color = model.getColor();
-				return "<span style='background:#" + color + "'>" + color + "</span>";
-			}
-		};
-	    
-		columnColor.setRenderer(colorRenderer);
-	    columnColor.setEditor(new CellEditor(colorField));
-	    columnConfigs.add(columnColor);
-
-		ColumnConfig columnName = new ColumnConfig();
-	    columnName.setId("name");
-	    columnName.setHeader(I18N.CONSTANTS.indicators());
-	    columnConfigs.add(columnName);
+	    columnConfigs.add(new EditColorColumn());
+	    columnConfigs.add(new ReadTextColumn("name", I18N.CONSTANTS.indicators(), 50));
 	    
 		ColumnModel columnmodelIndicators = new ColumnModel(columnConfigs);
 

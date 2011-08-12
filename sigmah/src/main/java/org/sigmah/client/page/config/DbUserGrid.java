@@ -58,14 +58,9 @@ public class DbUserGrid extends AbstractEditorGridView<UserPermissionDTO, DbUser
 
         final List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
-        ColumnConfig name = new ColumnConfig("name", I18N.CONSTANTS.name(), 100);
-        columns.add(name);
-
-        ColumnConfig email = new ColumnConfig("email", I18N.CONSTANTS.email(), 150);
-        columns.add(email);
-
-        ColumnConfig partner = new ColumnConfig("partner", I18N.CONSTANTS.partner(), 150);
-        columns.add(partner);
+        columns.add(new ColumnConfig("name", I18N.CONSTANTS.name(), 100));
+        columns.add(new ColumnConfig("email", I18N.CONSTANTS.email(), 150));
+        columns.add(new ColumnConfig("partner", I18N.CONSTANTS.partner(), 150));
 
         CheckColumnConfig allowView = new CheckColumnConfig("allowViewSimple", I18N.CONSTANTS.allowView(), 75);
         allowView.setDataIndex("allowView");
@@ -93,14 +88,12 @@ public class DbUserGrid extends AbstractEditorGridView<UserPermissionDTO, DbUser
 
         CheckColumnConfig allowManageUsers = null;
         if (db.isManageUsersAllowed()) {
-            allowManageUsers = new CheckColumnConfig("allowManageUsers", I18N.CONSTANTS.allowManageUsers(), 150);
-            columns.add(allowManageUsers);
+            columns.add(new CheckColumnConfig("allowManageUsers", I18N.CONSTANTS.allowManageUsers(), 150));
         }
 
         CheckColumnConfig allowManageAllUsers = null;
         if (db.isManageAllUsersAllowed()) {
-            allowManageAllUsers = new CheckColumnConfig("allowManageAllUsers", I18N.CONSTANTS.manageAllUsers(), 150);
-            columns.add(allowManageAllUsers);
+            columns.add(new CheckColumnConfig("allowManageAllUsers", I18N.CONSTANTS.manageAllUsers(), 150));
         }
 
         // only users with the right to design them selves can change the design attribute

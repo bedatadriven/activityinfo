@@ -106,7 +106,7 @@ public class SitePresenter {
 		}
 
 		@Override
-		public AsyncMonitor getAsyncMonitor() {
+		public AsyncMonitor getLoadingMonitor() {
 			// TODO Auto-generated method stub
 			return null;
 		}

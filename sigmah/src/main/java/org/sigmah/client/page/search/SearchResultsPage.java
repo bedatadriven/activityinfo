@@ -44,7 +44,7 @@ public class SearchResultsPage implements SearchView {
 	}
 
 	@Override
-	public AsyncMonitor getAsyncMonitor() {
+	public AsyncMonitor getLoadingMonitor() {
 		// TODO Auto-generated method stub
 		return null;
 	}

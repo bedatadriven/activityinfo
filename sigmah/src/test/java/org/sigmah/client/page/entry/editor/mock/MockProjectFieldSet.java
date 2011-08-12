@@ -16,7 +16,7 @@ public class MockProjectFieldSet implements org.sigmah.client.page.entry.editor.
 	}
 
 	@Override
-	public AsyncMonitor getAsyncMonitor() {
+	public AsyncMonitor getLoadingMonitor() {
 		// TODO Auto-generated method stub
 		return null;
 	}
