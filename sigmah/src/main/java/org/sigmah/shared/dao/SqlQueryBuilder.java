@@ -230,6 +230,17 @@ public class SqlQueryBuilder {
 		});
 	}
 	
+	public String singleStringResult(Connection connection) {
+		return getSingleResult(connection, new SingleResultHandler<String>() {
+
+			@Override
+			public String get(ResultSet rs) throws SQLException {
+				return rs.getString(1);
+			}
+		});
+	}
+    
+	
 
 	public <T> T getSingleResult(Connection connection, SingleResultHandler<T> handler) {
         PreparedStatement stmt = null;
@@ -320,7 +331,8 @@ public class SqlQueryBuilder {
     	
     	public abstract T get(ResultSet rs) throws SQLException;
     }
-    
+
+	
     
 
 }

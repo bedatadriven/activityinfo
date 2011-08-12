@@ -35,8 +35,8 @@ import com.extjs.gxt.ui.client.data.RpcMap;
 public class CreateEntity implements Command<CreateResult> {
 
 
-    private String entityName;
-    private RpcMap properties;
+    public String entityName;
+    public RpcMap properties;
 
     private AdminEntityDTO entity_;
     private PartnerDTO partner_;
@@ -94,20 +94,17 @@ public class CreateEntity implements Command<CreateResult> {
         this.properties = properties;
     }
 
-    public static Command<CreateResult> Activity(UserDatabaseDTO db, ActivityDTO act) {
+    public static CreateEntity Activity(UserDatabaseDTO db, ActivityDTO act) {
         CreateEntity cmd = new CreateEntity("Activity", act.getProperties());
         cmd.properties.put("databaseId", db.getId());
         return cmd;
     }
 
-    public static CreateEntity Site(SiteDTO newSite) {
-        CreateEntity cmd = new CreateEntity("Site", newSite.getProperties());
-        cmd.properties.put("activityId", newSite.getActivityId());
-        cmd.properties.put("partnerId", newSite.getPartner().getId());
-        cmd.properties.put("projectId", newSite.getProject().getId());
-        cmd.properties.remove("project");
-        cmd.properties.remove("partner");
-
+    
+    public static CreateEntity Site(SiteDTO site) {
+        CreateEntity cmd = new CreateEntity();
+        cmd.entityName = "Site";
+        cmd.properties = site.toChangeMap();
         return cmd;
     }
 }

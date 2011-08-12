@@ -60,7 +60,6 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
 
         assertThat(queryInt("select AttributeGroupId from AttributeGroupInActivity where ActivityId=2"),
                 equalTo(1));
-
     }
 
 
@@ -170,22 +169,11 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
     }
 
     private String queryString(String sql) throws SQLException {
-        ResultSet rs = querySingleResult(sql);
-
-        return rs.getString(1);
+       return localDatabase.selectString(sql);
     }
     
     private Integer queryInt(String sql) throws SQLException {
-        ResultSet rs = querySingleResult(sql);
-        return rs.getInt(1);
+    	return localDatabase.selectInt(sql);
     }
 
-    private ResultSet querySingleResult(String sql) throws SQLException {
-        Statement stmt = localConnection.createStatement();
-        ResultSet rs = stmt.executeQuery(sql);
-        if(!rs.next()) {
-            throw new AssertionError("No rows returned for '" + sql + "'");
-        }
-        return rs;
-    }
 }

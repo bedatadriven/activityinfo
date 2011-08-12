@@ -37,6 +37,7 @@ import org.sigmah.shared.domain.User;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
+import com.bedatadriven.rebar.sql.server.jdbc.JdbcDatabase;
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcDatabaseFactory;
 import com.bedatadriven.rebar.sync.client.BulkUpdaterAsync;
 import com.bedatadriven.rebar.sync.mock.MockBulkUpdater;
@@ -62,7 +63,7 @@ public abstract class LocalHandlerTestCase {
 
     protected Authentication localAuth;
     protected LocalDispatcher localDispatcher;
-    protected SqlDatabase localDatabase;
+    protected JdbcDatabase localDatabase;
     
     protected CommandQueue commandQueue;
     
@@ -81,22 +82,8 @@ public abstract class LocalHandlerTestCase {
 
         remoteDispatcher = new RemoteDispatcherStub();
 
-        Class.forName("org.sqlite.JDBC");
-        
-        File testClientDb = new File("synctest");
-        if(testClientDb.exists()) {
-        	testClientDb.delete();
-        }
-      
-        
-        JdbcDatabaseFactory localFactory = new JdbcDatabaseFactory();
-        localDatabase = localFactory.open(databaseName);
-                
-   //     localConnection = DriverManager.getConnection("jdbc:sqlite:synctest");
-    //    localConnection.setAutoCommit(false);
-        updater = new MockBulkUpdater("jdbc:sqlite:" + databaseName);
-   //     commandQueue = new CommandQueue(localConnection);
-        
+        localDatabase = new JdbcDatabase(databaseName);
+                        
         uiConstants = createNiceMock(UIConstants.class);
         uiMessages = createNiceMock(UIMessages.class);
         replay(uiConstants, uiMessages);
@@ -123,8 +110,8 @@ public abstract class LocalHandlerTestCase {
 //			}
 //		});
     	
-    	Synchronizer syncr = new Synchronizer(new MockEventBus(), remoteDispatcher, localDatabase, updater,
-                localAuth, uiConstants, uiMessages);
+    	Synchronizer syncr = new Synchronizer(new MockEventBus(), remoteDispatcher, localDatabase, 
+                uiConstants, uiMessages);
         syncr.start(new AsyncCallback<Void>() {
 
 			@Override
@@ -137,6 +124,8 @@ public abstract class LocalHandlerTestCase {
 				
 			}
 		});
+        localDatabase.processEventQueue();
+        
     }
 
     protected void newRequest() {

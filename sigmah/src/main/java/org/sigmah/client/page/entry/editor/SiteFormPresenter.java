@@ -19,6 +19,7 @@ import org.sigmah.shared.command.UpdateEntity;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.ActivityDTO;
+import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.dto.ProjectDTO;
@@ -193,23 +194,18 @@ public class SiteFormPresenter implements SiteFormLeash {
 
                 @Override
                 public void onSuccess(VoidResult voidResult) {
-                    // update model
-                    for (Map.Entry<String, Object> change : changes.entrySet()) {
-                        currentSite.set(change.getKey(), change.getValue());
-                        if (change.getKey().equals("projectId")) {
-                        	ProjectDTO project = currentActivity.getDatabase().getProjectById((Integer)change.getValue());
-                        	currentSite.setProject(project);
-                        }
-                    }
+                    updateSiteModel();
 
                     eventBus.fireEvent(new SiteEvent(AppEvents.SiteChanged, SiteFormPresenter.this, currentSite));
                     view.hide();
                 }
+
+
             });
         } else {
 
             final Map<String, Object> properties = view.getPropertyMap();
-            properties.putAll(adminPresenter.getPropertyMap());
+            properties.putAll(adminPresenter.getChangeMap());
             properties.put("activityId", currentActivity.getId());
             addProjectIdToMap(properties);
             
@@ -226,8 +222,8 @@ public class SiteFormPresenter implements SiteFormLeash {
 
                 @Override
                 public void onSuccess(CreateResult result) {
-                    currentSite.setProperties(properties);
-                    currentSite.setId(result.getNewId());
+                	currentSite.setId(result.getNewId());
+                    updateSiteModel();
 
                     eventBus.fireEvent(new SiteEvent(AppEvents.SiteCreated, SiteFormPresenter.this, currentSite));
                     view.hide();
@@ -235,7 +231,16 @@ public class SiteFormPresenter implements SiteFormLeash {
             });
         }
     }
-
+    
+	private void updateSiteModel() {
+		for (Map.Entry<String, Object> change : view.getChanges().entrySet()) {
+            currentSite.set(change.getKey(), change.getValue());
+        }
+        for (Map.Entry<String, AdminEntityDTO> entity : adminPresenter.getPropertyMap().entrySet()) {
+        	currentSite.set(entity.getKey(), entity.getValue());
+        }
+	}
+    
     public int getActivityId() {
         return currentActivity.getId();
     }

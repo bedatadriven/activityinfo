@@ -51,6 +51,7 @@
 
         <!--  convenience to define GWT version in one place -->
         <gwtVersion>2.3.0</gwtVersion>
+		<rebarVersion>2.2-SNAPSHOT</rebarVersion>
 
         <!--  tell the compiler we can use 1.6 -->
         <maven.compiler.source>1.6</maven.compiler.source>
@@ -63,6 +64,7 @@
         <maven.test.failure.ignore>true</maven.test.failure.ignore>
 
 		<display.version>${project.version}-${git.commit.id.abbrev}</display.version>
+		
     </properties>
 
     <repositories>
@@ -179,19 +181,19 @@
         <dependency>
             <groupId>com.bedatadriven.rebar</groupId>
             <artifactId>rebar-appcache</artifactId>
-            <version>2.2-SNAPSHOT</version>
+            <version>${rebarVersion}</version>
         </dependency>
         
         
         <dependency>
             <groupId>com.bedatadriven.rebar</groupId>
             <artifactId>rebar-sql</artifactId>
-            <version>2.2-SNAPSHOT</version>
+            <version>${rebarVersion}</version>
         </dependency>
         <dependency>
             <groupId>com.bedatadriven.rebar</groupId>
             <artifactId>rebar-sync</artifactId>
-            <version>2.2-SNAPSHOT</version>
+            <version>${rebarVersion}</version>
         </dependency>
 
         <dependency>
@@ -332,7 +334,7 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.5.2</version>
+            <version>1.4.2</version>
         </dependency>
 
         <!-- Bean  Mapping and XML -->
@@ -537,9 +539,6 @@
                             <directory>tomcat</directory>
                         </fileset>
                         <fileset>
-                            <directory>war/WEB-INF/lib</directory>
-                        </fileset>
-                        <fileset>
                             <directory>war/ActivityInfo</directory>
                         </fileset>
                         <fileset>
@@ -735,6 +734,7 @@
                                 <configuration>
                                     <draftCompile>true</draftCompile>
                                     <module>org.sigmah.ActivityInfoFFTest</module>
+                                    <style>pretty</style>
                                 </configuration>
                                 <goals>
                                     <goal>compile</goal>
@@ -783,6 +783,9 @@
 
 		<profile>
 			<id>continuous-deployment</id>
+			<properties>
+            	<display.version>${project.version}-b${BUILD_NUMBER}</display.version>
+            </properties>
 			<build>
 				<plugins>
 					<plugin>

@@ -32,8 +32,7 @@ public class InitialSyncStep implements Step {
     @Override
     public void execute(AsyncCallback<Void> callback) {
     	try {
-	        syncro.clearDatabase();
-	        syncro.start(callback);
+	        syncro.startFresh(callback);
     	} catch(Exception e) {
     		callback.onFailure(e);
     	}

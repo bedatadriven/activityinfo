@@ -5,18 +5,9 @@
 
 package org.sigmah.client.offline.sync;
 
-import static org.sigmah.shared.dao.SqlQueryBuilder.select;
-
 import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
@@ -29,19 +20,13 @@ import org.sigmah.shared.command.GetSyncRegions;
 import org.sigmah.shared.command.result.SyncRegion;
 import org.sigmah.shared.command.result.SyncRegionUpdate;
 import org.sigmah.shared.command.result.SyncRegions;
-import org.sigmah.shared.dao.SqlQueryBuilder;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.bedatadriven.rebar.sql.client.DatabaseLockedException;
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlException;
-import com.bedatadriven.rebar.sql.client.SqlResultCallback;
-import com.bedatadriven.rebar.sql.client.SqlResultSet;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
-import com.bedatadriven.rebar.sql.client.util.SqlKeyValueTable;
 import com.bedatadriven.rebar.sync.client.BulkUpdaterAsync;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -61,8 +46,6 @@ public class Synchronizer {
     private final Dispatcher dispatch;
     private final EventBus eventBus;
     private final SqlDatabase conn;
-    private final BulkUpdaterAsync updater;
-    private final Authentication auth;
     private final UIConstants uiConstants;
     private final UIMessages uiMessages;
 
@@ -81,14 +64,10 @@ public class Synchronizer {
     public Synchronizer(EventBus eventBus,
                         @Direct Dispatcher dispatch,
                         SqlDatabase conn,
-                        BulkUpdaterAsync updater,
-                        Authentication auth,
                         UIConstants uiConstants, UIMessages uiMessages) {
         this.eventBus = eventBus;
         this.conn = conn;
         this.dispatch = dispatch;
-        this.updater = updater;
-        this.auth = auth;
         this.uiConstants = uiConstants;
         this.uiMessages = uiMessages;
         
@@ -96,23 +75,22 @@ public class Synchronizer {
         this.historyTable = new SyncHistoryTable(conn);
    }
 
-    public void clearDatabase() { 	
-        dropAllTables();
-        createSyncMetaTables();
-    }
-
-    private void dropAllTables() {
+    /**
+     * Drops all tables in the user's database and starts synchronization fresh
+     */
+    public void startFresh(final AsyncCallback<Void> callback) { 	
     	conn.dropAllTables(new AsyncCallback<Void>() {
 			
 			@Override
 			public void onSuccess(Void result) {
+				start(callback);
 			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
+				callback.onFailure(caught);
 			}
 		});
-      
     }
 
     public void start(AsyncCallback<Void> callback) {
@@ -218,7 +196,7 @@ public class Synchronizer {
     
         } else {
 		    Log.debug("Synchronizer: persisting updates for region " + region.getId());
-	        updater.executeUpdates(auth.getLocalDbName(), update.getSql(), new AsyncCallback<Integer>() {
+	        conn.executeUpdates(update.getSql(), new AsyncCallback<Integer>() {
 	            @Override
 	            public void onFailure(Throwable throwable) {
 	                handleException("Synchronizer: Async execution of region updates failed. \nSQL=" + update.getSql() +
@@ -227,7 +205,7 @@ public class Synchronizer {
 	
 	            @Override
 	            public void onSuccess(Integer rows) {
-	                Log.debug("Synchronizer: updates succeeded, " + rows + " row(s) affected");
+	                Log.debug("Synchronizer: updates to region " + region.getId() + " succeeded, " + rows + " row(s) affected");
 	                rowsUpdated += rows;
 	                updateLocalVersion(region, update);
 	            }
@@ -236,20 +214,20 @@ public class Synchronizer {
     }
 
     private void updateLocalVersion(final SyncRegion region, final SyncRegionUpdate update) {
-    	conn.transaction(new DefaultTxCallback() {
+    	localVerisonTable.put(region.getId(), update.getVersion(), new AsyncCallback<Void>() {
 			
 			@Override
-			public void begin(SqlTransaction tx) {
-				tx.executeSql("insert into sync_regions (id, localVersion) values (?, ?)", new Object[] { region.getId(), update.getVersion() });
-			}
-
-			@Override
-			public void onSuccess() {
+			public void onSuccess(Void result) {
 				if(!update.isComplete()) {
 	                doUpdate(region, update.getVersion());
 	            } else {
 	                doNextUpdate();
 	            }
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				callback.onFailure(caught);
 			}
 		});
     }
@@ -262,15 +240,7 @@ public class Synchronizer {
     }
 
     private void setLastUpdateTime() {
-        final Date now = new Date(new java.util.Date().getTime());
         historyTable.update();
-        
-        conn.transaction(new DefaultTxCallback() {
-			@Override
-			public void begin(SqlTransaction tx) {
-				tx.executeSql("insert into sync_history (lastUpdate) values (?)", new Object[] { now.getTime() }); 				
-			}
-		});
     }
 
     public void getLastUpdateTime(final AsyncCallback<java.util.Date> callback) {

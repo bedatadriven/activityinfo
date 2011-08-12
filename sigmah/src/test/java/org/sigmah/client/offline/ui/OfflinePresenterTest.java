@@ -159,6 +159,12 @@ public class OfflinePresenterTest {
         }
 
         @Override
+		public void showConnectionProblem(int attempt, int retryDelay) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
         public Observable getSyncNowItem() {
             return syncNowItem;
         }

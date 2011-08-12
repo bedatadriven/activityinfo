@@ -28,11 +28,13 @@ public class InstallSteps {
                         CacheScript cacheScript) {
         this.eventBus = eventBus;
         steps.add(cacheUserDetails);
-        if(GWT.isScript()) {
-            // managed resources stores cause no end of problems in hosted mode,
-            // so only invoke here if we are actually running in scripted mode
-            steps.add(cacheScript);
-        }
+        
+// 		
+//        if(GWT.isScript()) {
+//            // managed resources stores cause no end of problems in hosted mode,
+//            // so only invoke here if we are actually running in scripted mode
+//            steps.add(cacheScript);
+//        }
         steps.add(syncStep);
         steps.add(new ShortcutStep());
     }

@@ -45,11 +45,11 @@ public class AdminChangeTest {
         presenter.setSite(site);
         presenter.onSelectionChanged(3, new AdminEntityDTO(3, 9221, "Ruizi"));
 
-        Map<String,Object> properties = presenter.getPropertyMap();
+        Map<String,Object> properties = presenter.getChangeMap();
 
-        Assert.assertEquals("Nord Kivu", ((AdminEntityDTO) properties.get(AdminLevelDTO.getPropertyName(1))).getName());
-        Assert.assertEquals("Beni", ((AdminEntityDTO) properties.get(AdminLevelDTO.getPropertyName(2))).getName());
-        Assert.assertEquals("Ruizi", ((AdminEntityDTO) properties.get(AdminLevelDTO.getPropertyName(3))).getName());
+        Assert.assertEquals("Nord Kivu", (Integer)100, (Integer) properties.get(AdminLevelDTO.getPropertyName(1)));
+        Assert.assertEquals("Beni", (Integer)101, ((Integer) properties.get(AdminLevelDTO.getPropertyName(2))));
+        Assert.assertEquals("Ruizi", (Integer)9221, ((Integer) properties.get(AdminLevelDTO.getPropertyName(3))));
 
     }
 

@@ -1,6 +1,10 @@
 <#-- @ftlvariable name="" type="org.sigmah.server.bootstrap.model.HostPageModel" -->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<#if appCacheEnabled>
 <html manifest="ActivityInfo/ActivityInfo.appcache">
+<#else>
+<html>
+</#if>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta name="application-name" content="ActivityInfo"/>
@@ -76,7 +80,7 @@
 <div id="loading">
     <div id="loading-box">
         <div class="loading-indicator">
-            <img src="ActivityInfo/gxt/images/default/shared/large-loading.gif" alt=""/>
+            <img src="ActivityInfo/gxt224/images/default/shared/large-loading.gif" alt=""/>
             ActivityInfo ${display.version}<br/>
             <span id="loading-msg">Chargement en cours...</span>
 

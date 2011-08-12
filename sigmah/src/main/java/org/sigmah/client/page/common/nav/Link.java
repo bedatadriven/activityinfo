@@ -119,7 +119,6 @@ public class Link extends BaseTreeModel {
         public Link build() {
             assert link.getLabel() != null : "Link models must have a name/label";
             assert link.getKey() != null : "Link models must have a key";
-            Log.debug("Node label = " + link.getLabel() + ", key = " + link.getKey());
             return link;
         }
     }
