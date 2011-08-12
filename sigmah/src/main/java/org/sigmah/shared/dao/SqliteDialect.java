@@ -40,8 +40,4 @@ public class SqliteDialect implements SqlDialect {
         return "LIMIT " + limit + " OFFSET " + offset;
     }
 
-	@Override
-	public String addWildcard(String matchingExpression) {
-		return "" + matchingExpression + "%";
-	}
 }

@@ -98,10 +98,6 @@ public class SQLDialectProvider implements Provider<SqlDialect> {
             throw new UnsupportedOperationException();
         }
 
-		@Override
-		public String addWildcard(String matchingExpression) {
-            throw new UnsupportedOperationException();
-		}
     }
 
     private static class MSSQLDialect extends DefaultDialect {
