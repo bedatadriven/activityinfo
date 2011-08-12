@@ -13,6 +13,7 @@ import java.util.List;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.client.page.common.CheckBoxList;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.dto.SchemaDTO;
@@ -78,14 +79,7 @@ public class PartnerFilterPanel extends ContentPanel {
             }
         });
 
-        tree = new TreePanel<ModelData>(store);
-        tree.setCheckable(true);
-        tree.setCheckNodes(TreePanel.CheckNodes.LEAF);
-        tree.setCheckStyle(TreePanel.CheckCascade.NONE);
-        tree.getStyle().setNodeCloseIcon(null);
-        tree.getStyle().setNodeOpenIcon(null);
-        tree.setBorders(true);
-        tree.setDisplayProperty("name");
+        tree = new CheckBoxList<ModelData>(store);
  
         add(tree);
     }

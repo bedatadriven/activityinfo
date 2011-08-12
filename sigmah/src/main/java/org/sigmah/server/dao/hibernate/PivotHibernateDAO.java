@@ -74,6 +74,8 @@ public class PivotHibernateDAO implements PivotDAO {
                 appendIdCriteria(where, "Activity.DatabaseId", filter.getRestrictions(type), parameters);
             } else if (type == DimensionType.Partner) {
                 appendIdCriteria(where, "Site.PartnerId", filter.getRestrictions(type), parameters);
+            } else if (type == DimensionType.Project) {
+                appendIdCriteria(where, "Site.ProjectId", filter.getRestrictions(type), parameters);
             } else if (type == DimensionType.AdminLevel) {
                 where.append(" AND Site.LocationId IN " +
                         "(SELECT Link.LocationId FROM LocationAdminLink Link WHERE 1=1 ");

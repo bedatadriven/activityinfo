@@ -159,7 +159,6 @@ public class PivotGridPanel extends ContentPanel {
         List<PivotTableData.Axis> leaves = data.getRootColumn().getLeaves();
         for(PivotTableData.Axis axis : leaves) {
 
-
             String id = "col" + colIndex;
 
             String label = axis.getLabel();
@@ -174,7 +173,6 @@ public class PivotGridPanel extends ContentPanel {
 
             propertyMap.put(axis, id);
             columnMap.put(colIndex, axis);
-
 
             config.add(column);
             colIndex++;

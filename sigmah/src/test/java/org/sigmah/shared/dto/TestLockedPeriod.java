@@ -7,15 +7,13 @@ import org.junit.Test;
 
 public class TestLockedPeriod {
 	@Test
-	public void lockedPeriodTest() {
+	public void rangeTest() {
 		LockedPeriodDTO lockedPeriod = new LockedPeriodDTO();
 		lockedPeriod.setFromDate(new Date(2000, 1,1));
 		lockedPeriod.setToDate(new Date(2000,1,2));
 		lockedPeriod.setEnabled(true);
 		
-		SiteDTO site = new SiteDTO(1);
-		site.setDate1(new Date(2000,1,1));
-		site.setDate2(new Date(2000,1,2));
+		SiteDTO site = createSite();
 		
 		ActivityDTO activity = new ActivityDTO(1, "woei");
 		activity.getLockedPeriods().add(lockedPeriod);
@@ -36,7 +34,14 @@ public class TestLockedPeriod {
 		activity1.getLockedPeriods().add(lockedPeriod1);
 
 		Assert.assertFalse("Site should NOT fall within LockedPeriod", site1.fallsWithinLockedPeriod(activity));
+		Assert.assertTrue("No affected LockedPeriods should be available", site.getAffectedLockedPeriods(activity1).size() == 0);
+	}
 
+	private SiteDTO createSite() {
+		SiteDTO site = new SiteDTO(1);
+		site.setDate1(new Date(2000,1,1));
+		site.setDate2(new Date(2000,1,2));
+		return site;
 	}
 	
 }

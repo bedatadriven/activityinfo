@@ -189,6 +189,24 @@ public class PivotHibernateDAOTest {
   
     }
     
+    @Test
+    public void projectFilters() {
+    	
+    	withIndicatorAsDimension();
+    	withProjectAsDimension();
+    	
+    	filter.addRestriction(DimensionType.Database, 1);
+    	filter.addRestriction(DimensionType.Project, 1);
+    	
+    	execute();
+    	
+    	assertBucketCount(3);
+    	
+    	assertThat().forIndicator(1).thereIsOneBucketWithValue(5100);
+    	assertThat().forIndicator(2).thereIsOneBucketWithValue(1700);
+    	assertThat().forIndicator(103).thereIsOneBucketWithValue(2);
+    }
+    
 
     private void assertBucketCount(int expectedCount) {
         assertEquals(expectedCount, buckets.size());
