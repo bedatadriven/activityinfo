@@ -103,6 +103,20 @@ public class LockedPeriodDTO extends BaseModelData implements EntityDTO {
 		this.project = project;
 	}
 	
+	public int getParentId() {
+		if (getActivity() != null) {
+			return getActivity().getId();		
+		}
+		if (getProject() != null) {
+			return getProject().getId();		
+		}
+		if (getUserDatabase() != null) {
+			return getUserDatabase().getId();		
+		}
+		
+		throw new RuntimeException("Expected a parent instance");
+	}
+	
 	public String getParentName() {
 		if (getProject() != null) {
 			return getProject().getName();

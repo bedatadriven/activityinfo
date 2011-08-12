@@ -126,7 +126,7 @@ public final class SiteDTO extends BaseModelData implements EntityDTO {
     
     
     public String getProjectName() {
-		return getProject() == null ? null : getProject().getName();
+		return getProject() == null ? "" : getProject().getName();
     }
 
     /**

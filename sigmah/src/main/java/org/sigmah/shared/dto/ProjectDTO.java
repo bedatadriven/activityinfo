@@ -76,4 +76,9 @@ public class ProjectDTO extends BaseModelData implements DTO {
 	    
 	    return lockedPeriods;
 	}
+
+	@Override
+	public String toString() {
+		return getName();
+	}
 }

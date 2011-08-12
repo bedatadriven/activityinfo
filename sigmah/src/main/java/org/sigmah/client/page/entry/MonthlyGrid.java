@@ -141,9 +141,6 @@ public class MonthlyGrid extends AbstractEditorGridView<IndicatorRowDTO, Monthly
             }
         }
 
-
-
         toolBar.add(monthCombo);
-        
     }
 }
