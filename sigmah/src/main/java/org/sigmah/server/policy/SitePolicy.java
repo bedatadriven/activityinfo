@@ -14,6 +14,7 @@ import org.sigmah.server.dao.LocationDAO;
 import org.sigmah.server.dao.PartnerDAO;
 import org.sigmah.server.dao.ReportingPeriodDAO;
 import org.sigmah.server.dao.SiteDAO;
+import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.dao.ActivityDAO;
 import org.sigmah.shared.dao.AdminDAO;
 import org.sigmah.shared.dao.ProjectDAO;
@@ -71,10 +72,21 @@ public class SitePolicy implements EntityPolicy<Site> {
            * Create and save a new Location object in the database
            */
 
+    	Integer clientLocationId = (Integer)properties.get("locationId");
+    	Integer clientSiteId = (Integer)properties.get("siteId");
+    	
+    	// first verify that the this object does not already exist on the server.
+    	// This can happen if this command had previously and successfully been executed on the server but 
+    	// something broke down between the transmission of the success result to the client
+
+    	if(clientLocationId != null && locationDoesNotAlreadyExist(clientLocationId)) {
+    		return clientSiteId;
+    	}
+    	
         Location location = new Location();
         
-        if(properties.containsKey("locationId")) {
-        	location.setId((Integer)properties.get("locationId"));
+        if(clientLocationId != null) {
+			location.setId(clientLocationId);
         } else {
         	location.setId(keyGenerator.generateInt());
         }
@@ -92,8 +104,11 @@ public class SitePolicy implements EntityPolicy<Site> {
 
         Site site = new Site();
         
+       
         if(properties.containsKey("siteId")) {
-        	site.setId((Integer)properties.get("siteId"));
+        	
+
+			site.setId(clientSiteId);
         } else {
         	site.setId(keyGenerator.generateInt());
         }
@@ -140,6 +155,10 @@ public class SitePolicy implements EntityPolicy<Site> {
 
         return site.getId();
 
+    }
+    
+    private boolean locationDoesNotAlreadyExist(Integer id) {
+    	return locationDAO.findById(id) != null;
     }
 
 
@@ -195,15 +214,15 @@ public class SitePolicy implements EntityPolicy<Site> {
             if (property.startsWith(AdminLevelDTO.PROPERTY_PREFIX)) {
 
                 int levelId = AdminLevelDTO.levelIdForPropertyName(property);
-                AdminEntityDTO entity = (AdminEntityDTO) value;
+                Integer entityId = (Integer) value;
 
                 if (creating) {
-                    if(entity != null) {
-                        locationDAO.addAdminMembership(location.getId(), entity.getId());
+                    if(entityId != null) {
+                        locationDAO.addAdminMembership(location.getId(), entityId);
                     }
                 } else {
-                    if(entity != null) {
-                        locationDAO.updateAdminMembership(location.getId(), levelId, entity.getId());
+                    if(entityId != null) {
+                        locationDAO.updateAdminMembership(location.getId(), levelId, entityId);
                     } else {
                         locationDAO.removeMembership(location.getId(), levelId);
                     }
@@ -302,7 +321,7 @@ public class SitePolicy implements EntityPolicy<Site> {
             } else if (isAdminBound &&
                     AdminLevelDTO.getPropertyName(location.getLocationType().getBoundAdminLevel().getId()).equals(property)) {
 
-                location.setName(adminDAO.findById(((AdminEntityDTO) value).getId()).getName());
+                location.setName(adminDAO.findById(((Integer) value)).getName());
             }
         }
     }

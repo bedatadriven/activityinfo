@@ -53,7 +53,6 @@ public class OfflineModule extends AbstractGinModule {
     }
 
     @Provides
-    @Singleton
     protected Connection provideConnection(Authentication auth) {
         return new DummyConnection();
     }

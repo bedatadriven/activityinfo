@@ -22,12 +22,14 @@ public class SiteTableUpdateBuilder implements UpdateBuilder {
     public SyncRegionUpdate build(User user, GetSyncRegionUpdates request) throws JSONException {
         SyncRegionUpdate update = new SyncRegionUpdate();
         update.setComplete(true);
-        update.setVersion("1");
+        update.setVersion("2");
 
-        if(request.getLocalVersion() == null ) {
+        if(! "2".equals(request.getLocalVersion()) ) {
 
             builder.createTableIfNotExists(Site.class);
             builder.createTableIfNotExists(ReportingPeriod.class);
+            builder.executeStatement("create index if not exists site_activity on site (ActivityId)");
+
             // TODO: fix rebar to handle these types of classes correctly
             builder.executeStatement("create table if not exists AttributeValue (SiteId integer, AttributeId integer, Value integer)");
             builder.executeStatement("create table if not exists IndicatorValue (ReportingPeriodId integer, IndicatorId integer, Value real)");

@@ -112,8 +112,7 @@ public class CommandQueue {
 			PreparedStatement stmt = connection.prepareStatement("DELETE FROM command_queue WHERE id = ?");
 			stmt.setInt(1, queueId);
 			int rowsAffected = stmt.executeUpdate();
-			connection.commit();
-			
+		
 			callback.onSuccess(rowsAffected == 1);
 			
 			
@@ -215,6 +214,11 @@ public class CommandQueue {
 			
 		}
 		return map;
+	}
+
+	public void createTableIfNotExists() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

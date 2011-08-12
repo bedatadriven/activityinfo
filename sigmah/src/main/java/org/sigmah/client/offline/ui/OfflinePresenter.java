@@ -21,6 +21,7 @@ import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.RemoteDispatcher;
 import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.offline.OfflineGateway;
+import org.sigmah.client.offline.sync.SyncConnectionProblemEvent;
 import org.sigmah.client.offline.sync.SyncStatusEvent;
 import org.sigmah.client.util.state.IStateManager;
 import org.sigmah.shared.command.Command;
@@ -101,6 +102,7 @@ public class OfflinePresenter implements Dispatcher {
 		void setConnectionDialogToFailure();
 		void setConnectionDialogToBusy();
 		void hideConnectionDialog();
+		void showConnectionProblem(int attempt, int retryDelay);
 
     }
 
@@ -174,6 +176,14 @@ public class OfflinePresenter implements Dispatcher {
             public void handleEvent(SyncStatusEvent be) {
                 view.updateProgress(be.getTask(), be.getPercentComplete());
             }
+        });
+        
+        eventBus.addListener(SyncConnectionProblemEvent.TYPE, new Listener<SyncConnectionProblemEvent>() {
+
+			@Override
+			public void handleEvent(SyncConnectionProblemEvent be) {
+				view.showConnectionProblem(be.getAttempt(), be.getRetryDelay());
+			}
         });
     }
 

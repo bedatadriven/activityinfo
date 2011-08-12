@@ -44,7 +44,7 @@ public class UpdateSiteTest extends CommandTestCase {
         model.setAdminEntity(2, null);
 
 
-        execute(new UpdateEntity(model, model.getProperties()));
+        execute(new UpdateEntity(model, model.toChangeMap().getTransientMap()));
 
         // retrieve the old one
 

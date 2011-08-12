@@ -5,8 +5,6 @@
 
 package org.sigmah.server.bootstrap;
 
-import static org.sigmah.server.util.StringUtil.isEmpty;
-
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -21,6 +19,7 @@ import org.sigmah.server.dao.Transactional;
 import org.sigmah.server.domain.Authentication;
 import org.sigmah.server.util.logging.LogException;
 
+import com.bedatadriven.rebar.appcache.server.UserAgentProvider;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
@@ -45,14 +44,25 @@ public class HostController extends AbstractController {
                 Cookies.addAuthCookie(resp, auth, false);
                 resp.sendRedirect(HostController.ENDPOINT);
             } else {
-                writeView(resp, new HostPageModel(auth, computeAppUrl(req)));
+                HostPageModel model = new HostPageModel(auth, computeAppUrl(req));
+                model.setAppCacheEnabled(checkAppCacheEnabled(req));
+				writeView(resp, model);
             }
         } catch (NoValidAuthentication noValidAuthentication) {
             resp.sendRedirect(LoginController.ENDPOINT + parseUrlSuffix(req));
         }
     }
 
-    @Transactional
+    private boolean checkAppCacheEnabled(HttpServletRequest req) {
+    	// for browsers that only support database synchronisation via gears at this point,
+    	// we would rather use gears managed resources stores than HTML5 appcache 
+    	// so that we only have to display one permission
+    	// (this really only applies to FF <= 3.6 right now)
+    	UserAgentProvider userAgentProvider = new UserAgentProvider();
+    	return !userAgentProvider.canSupportGears(req);
+	}
+
+	@Transactional
     protected Authentication getAuthentication(HttpServletRequest request) throws NoValidAuthentication {
         String authToken = request.getParameter("auth");
         if(isEmpty(authToken)) {
@@ -72,7 +82,11 @@ public class HostController extends AbstractController {
         return auth;
     }
 
-    /**
+    private boolean isEmpty(String authToken) {
+		return authToken == null || authToken.length() == 0;
+	}
+
+	/**
      * @return  The url used for the desktop shortcut
      */
     private String computeAppUrl(HttpServletRequest request) {

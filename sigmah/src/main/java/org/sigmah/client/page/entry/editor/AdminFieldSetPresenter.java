@@ -177,15 +177,26 @@ public class AdminFieldSetPresenter {
         return false;
     }
 
-    public Map<String, Object> getPropertyMap() {
+    public Map<String, Object> getChangeMap() {
 
         Map<String, Object> map = new HashMap<String, Object>();
 
         for (AdminLevelDTO level : levels) {
 
-            map.put(AdminEntityDTO.getPropertyName(level.getId()),
-                    selection.get(level.getId()));
+            AdminEntityDTO entity = selection.get(level.getId());
+			map.put(AdminEntityDTO.getPropertyName(level.getId()),
+                    entity == null ? null : entity.getId());
 
+        }
+        return map;
+    }
+    
+    public Map<String, AdminEntityDTO> getPropertyMap() {
+        Map<String, AdminEntityDTO> map = new HashMap<String, AdminEntityDTO>();
+
+        for (AdminLevelDTO level : levels) {
+            AdminEntityDTO entity = selection.get(level.getId());
+			map.put(AdminEntityDTO.getPropertyName(level.getId()), entity);
         }
         return map;
     }

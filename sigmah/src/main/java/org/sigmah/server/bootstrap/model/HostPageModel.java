@@ -9,14 +9,13 @@ import org.sigmah.server.domain.Authentication;
 
 public class HostPageModel extends PageModel {
     private Authentication auth;
-    private boolean offline;
     private String appUrl;
-
+    private boolean appCacheEnabled;
+    
     public HostPageModel(Authentication auth, String appUrl) {
         this.auth = auth;
         this.appUrl = appUrl;
     }
-
 
     public Authentication getAuth() {
         return auth;
@@ -26,7 +25,11 @@ public class HostPageModel extends PageModel {
         return appUrl;
     }
 
-    public boolean isOffline() {
-        return offline;
-    }
+	public boolean isAppCacheEnabled() {
+		return appCacheEnabled;
+	}
+
+	public void setAppCacheEnabled(boolean appCacheEnabled) {
+		this.appCacheEnabled = appCacheEnabled;
+	}
 }

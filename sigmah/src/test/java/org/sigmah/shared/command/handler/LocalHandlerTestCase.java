@@ -82,22 +82,8 @@ public abstract class LocalHandlerTestCase {
 
         remoteDispatcher = new RemoteDispatcherStub();
 
-        Class.forName("org.sqlite.JDBC");
-        
-        File testClientDb = new File("synctest");
-        if(testClientDb.exists()) {
-        	testClientDb.delete();
-        }
-      
-        
-        JdbcDatabaseFactory localFactory = new JdbcDatabaseFactory();
         localDatabase = new JdbcDatabase(databaseName);
-                
-   //     localConnection = DriverManager.getConnection("jdbc:sqlite:synctest");
-    //    localConnection.setAutoCommit(false);
-        updater = new MockBulkUpdater("jdbc:sqlite:" + databaseName);
-   //     commandQueue = new CommandQueue(localConnection);
-        
+                        
         uiConstants = createNiceMock(UIConstants.class);
         uiMessages = createNiceMock(UIMessages.class);
         replay(uiConstants, uiMessages);

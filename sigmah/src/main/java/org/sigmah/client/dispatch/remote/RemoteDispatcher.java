@@ -58,7 +58,6 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
      */
     private List<CommandRequest> executingCommands = new ArrayList<CommandRequest>();
 
-    private Dispatcher localDispatcher;
 
 
     @Inject
@@ -100,13 +99,6 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
         proxyManager.registerProxy(commandClass, proxy);
     }
 
-    public void setLocalHandler(Dispatcher dispatcher) {
-        this.localDispatcher = dispatcher;
-    }
-
-    public void clearLocalHandler() {
-        this.localDispatcher = null;
-    }
 
     /**
      * Schedules a command for asynchronous execution
@@ -118,14 +110,6 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
     @Override
     public final <T extends CommandResult> void execute(Command<T> command, AsyncMonitor monitor,
                                                         AsyncCallback<T> callback) {
-
-        /**
-         * If offline, delegate directly to localDispatcher
-         */
-        if(localDispatcher != null) {
-            localDispatcher.execute(command, monitor, callback);
-            return;
-        }
 
         CommandRequest request = new CommandRequest(command, monitor, callback);
         request.fireBeforeRequest();
