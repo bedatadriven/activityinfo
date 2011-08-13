@@ -215,6 +215,9 @@
 	
 	<partner partnerId="2" name="Solidarites"  />
 	<partnerInDatabase partnerId="2" databaseId="1"/>
+	
+	<partner partnerId="3" name="Kivu Help" />
+	<partnerInDatabase partnerId="3" databaseId="1" />
 
     <!-- PEAR Plus Partners -->
     <partnerInDatabase partnerId="1" databaseId="2"/>

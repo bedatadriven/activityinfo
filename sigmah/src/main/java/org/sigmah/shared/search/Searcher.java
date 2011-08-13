@@ -1,11 +1,13 @@
 package org.sigmah.shared.search;
 
-import org.sigmah.shared.dao.Filter;
+import java.util.List;
+
+import org.sigmah.shared.report.model.DimensionType;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public interface Searcher {
+public interface Searcher<M> {
+	public void search(String testQuery, final AsyncCallback<List<Integer>> callback);
 
-	void search(String testQuery, AsyncCallback<Filter> callback);
-	
+	public DimensionType getDimensionType();
 }

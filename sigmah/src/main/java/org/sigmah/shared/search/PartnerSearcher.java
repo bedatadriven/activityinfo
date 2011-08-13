@@ -1,6 +1,10 @@
 package org.sigmah.shared.search;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.domain.OrgUnit;
 import org.sigmah.shared.report.model.DimensionType;
 
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
@@ -12,36 +16,40 @@ import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
-public class SearcherAsync implements Searcher {
+public class PartnerSearcher extends AbstractSearcher<OrgUnit> implements Searcher<OrgUnit> {
 
-	SqlDatabase db;
-	
 	@Inject
-	public SearcherAsync(SqlDatabase db) {
-		this.db = db;
+	public PartnerSearcher(SqlDatabase db) {
+		super(db);
 	}
-
+	
 	@Override
-	public void search(final String testQuery, final AsyncCallback<Filter> callback) {
+	public void search(String testQuery, final AsyncCallback<List<Integer>> callback) {
 		final Filter resultFilter = new Filter();
-
+		final String query = likeify(testQuery);
+		
 		db.transaction(new SqlTransactionCallback() {
+			
 			@Override
 			public void begin(SqlTransaction tx) {
-				String query = "%" + testQuery + "%";
-				tx.executeSql("select adminentityid from adminentity where name like '?'", new Object[]{query}, new SqlResultCallback() {
+				tx.executeSql("select PartnerId from partner where name like ?", new Object[]{query}, new SqlResultCallback() {
+					List<Integer> partnerIds = new ArrayList<Integer>();
 					
 					@Override
 					public void onSuccess(SqlTransaction tx, SqlResultSet results) {
-						for (SqlResultSetRow result : results.getRows()) {
-							resultFilter.addRestriction(DimensionType.AdminLevel, result.getInt("AdminEntityId"));
+						for (SqlResultSetRow row : results.getRows()) {
+							partnerIds.add(row.getInt("PartnerId"));
 						}
-						callback.onSuccess(resultFilter);
+						callback.onSuccess(partnerIds);
 					}
 				});
 			}
-			
 		});
+	}
+
+	@Override
+	public DimensionType getDimensionType() {
+		return DimensionType.Partner;
 	}
 
 }
