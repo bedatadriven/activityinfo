@@ -25,20 +25,25 @@ import org.sigmah.client.page.config.DbListPageState;
 import org.sigmah.client.page.entry.SiteGridPageState;
 import org.sigmah.client.page.map.MapPageState;
 import org.sigmah.client.page.report.ReportListPageState;
+import org.sigmah.client.page.search.SearchPageState;
 import org.sigmah.client.page.table.PivotPageState;
 import org.sigmah.client.page.welcome.WelcomePageState;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Viewport;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
@@ -102,8 +107,10 @@ public class AppFrameSet implements Frame {
         addNavLink(I18N.CONSTANTS.tables(), IconImageBundle.ICONS.table(), new PivotPageState());
         addNavLink(I18N.CONSTANTS.setup(), IconImageBundle.ICONS.setup(), new DbListPageState());
 
-        topBar.add(new FillToolItem());
+        addSearchBox();
 
+        topBar.add(new FillToolItem());
+        
         LabelToolItem emailLabel = new LabelToolItem(auth.getEmail());
         emailLabel.setStyleAttribute("fontWeight", "bold");
         topBar.add(emailLabel);
@@ -124,7 +131,27 @@ public class AppFrameSet implements Frame {
         viewport.add(topBar, new RowData(1.0, 30));
     }
 
-    private void addNavLink(String text, AbstractImagePrototype icon, final PageState place) {
+	private void addSearchBox() {
+		final TextField<String> searchBox = new TextField<String>();
+        searchBox.addKeyListener(new KeyListener() {
+
+			@Override
+			public void componentKeyUp(ComponentEvent event) {
+				super.componentKeyUp(event);
+				if (event.getKeyCode() == KeyCodes.KEY_ENTER) {
+					search(searchBox.getValue());
+				}
+			}
+		});
+        
+        topBar.add(searchBox);
+	}
+
+    protected void search(String value) {
+        eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new SearchPageState(value)));
+	}
+
+	private void addNavLink(String text, AbstractImagePrototype icon, final PageState place) {
         Button button = new Button(text, icon, new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {

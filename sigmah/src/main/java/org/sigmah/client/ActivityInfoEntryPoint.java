@@ -9,12 +9,10 @@ import org.sigmah.client.inject.AppInjector;
 import org.sigmah.client.offline.AuthTokenUtil;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.bedatadriven.rebar.appcache.client.AppCacheFactory;
 import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.util.Theme;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.gears.client.Factory;
 
 
 /**
@@ -61,6 +59,7 @@ public class ActivityInfoEntryPoint implements EntryPoint {
         injector.createMapLoader();
         injector.createConfigLoader();
         injector.createDashboardLoader();
+        injector.createSearchLoader();
 
         injector.getUsageTracker();
         injector.getHistoryManager();

@@ -56,7 +56,23 @@ public class SearchTest {
 		AllSearcher allSearcher = new AllSearcher(db);
 		allSearcher.searchAll("kivu");
 		
-		assertTrue("expected 1 partner, 2 adminlevels", allSearcher.getFilter().getRestrictedDimensions().contains(DimensionType.AdminLevel));
-		assertTrue("expected 1 partner, 2 adminlevels", allSearcher.getFilter().getRestrictedDimensions().contains(DimensionType.Partner));
+		assertTrue("expected 1 partner, 2 adminlevels", 
+				allSearcher.getFilter().getRestrictedDimensions()
+					.contains(DimensionType.AdminLevel));
+		
+		assertTrue("expected adminlevels with id=2 and id=3", 
+				allSearcher.getFilter().getRestrictions(DimensionType.AdminLevel)
+					.contains(2) &&
+				allSearcher.getFilter().getRestrictions(DimensionType.AdminLevel)
+					.contains(3));
+					
+		assertTrue("expected 1 partner, 2 adminlevels", 
+				allSearcher.getFilter().getRestrictedDimensions()
+					.contains(DimensionType.Partner));
+		
+		assertTrue("expected partner with id=3", 
+				allSearcher.getFilter().getRestrictions(DimensionType.Partner)
+					.contains(3));
+		
 	}
 }
