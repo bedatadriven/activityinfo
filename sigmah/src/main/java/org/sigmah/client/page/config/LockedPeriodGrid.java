@@ -21,6 +21,7 @@ import org.sigmah.client.page.common.toolbar.ActionToolBar;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.page.config.LockedPeriodsPresenter.AddLockedPeriodView;
 import org.sigmah.client.page.config.LockedPeriodsPresenter.LockedPeriodListEditor;
+import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.LockedPeriodDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 
@@ -58,6 +59,7 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 	// Data
 	private UserDatabaseDTO userDatabase;
 	private LockedPeriodDTO lockedPeriod;
+	private ActivityDTO activityFilter= null;
 
 	// Nested views
 	private AddLockedPeriodView addLockedPeriod;
@@ -234,7 +236,31 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 	@Override
 	public void setItems(List<LockedPeriodDTO> items) {
 		lockedPeriodStore.removeAll();
-		lockedPeriodStore.add(new ArrayList<LockedPeriodDTO>(items));
+		lockedPeriodStore.add(filterLockedPeriodsByActivity(items));
+	}
+
+	private List<LockedPeriodDTO> filterLockedPeriodsByActivity(
+			List<LockedPeriodDTO> items) {
+		
+		if (activityFilter != null) {
+			// Remove LockedPeriods which have a different Activity then the activiftyFilter
+			List<LockedPeriodDTO> lockedPeriodsFilteredByActivity = new ArrayList<LockedPeriodDTO>();
+			for (LockedPeriodDTO lockedPeriod : items) {
+				if (lockedPeriod.getActivity() != null) {
+					// Activity as parent, only add when activity equals filter
+					if (lockedPeriod.getActivity().getId() == activityFilter.getId()) {
+						lockedPeriodsFilteredByActivity.add(lockedPeriod);
+					}
+				} else {
+					// Database or Project, can be added
+					lockedPeriodsFilteredByActivity.add(lockedPeriod);
+				}
+			}
+			return lockedPeriodsFilteredByActivity;
+		} else {
+			// No filter, just return the items
+			return items;
+		}
 	}
 
 
@@ -402,6 +428,20 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 	@Override
 	public void setValue(LockedPeriodDTO value) {
 		//gridLockedPeriods.getSelectionModel().select(value, false);
+	}
+
+	public void setActivityFilter(ActivityDTO activityFilter) {
+		this.activityFilter = activityFilter;
+	}
+
+	public ActivityDTO getActivityFilter() {
+		return activityFilter;
+	}
+
+	public void setReadOnly(boolean isReadOnly) {
+		if (isReadOnly) {
+			remove(toolbarActions);
+		}
 	}
 
 

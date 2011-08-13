@@ -120,6 +120,7 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
         toolBar.add(new SeparatorToolItem());
 
         toolBar.addExcelExportButton();
+        toolBar.addLockedPeriodsButton();
     }
 
     @Override

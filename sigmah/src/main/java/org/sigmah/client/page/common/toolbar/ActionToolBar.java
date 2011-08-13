@@ -39,6 +39,7 @@ public class ActionToolBar extends ToolBar implements Listener<ButtonEvent> {
     private Button editButton;
     private Button buttonGroupTime;
     private Button buttonGroupAdminLevel;
+    private Button buttonShowLockedPeriods;
 
     public ActionToolBar() {
     }
@@ -183,6 +184,10 @@ public class ActionToolBar extends ToolBar implements Listener<ButtonEvent> {
         this.listener = listener;
         setEnabled(listener != null);
     }
+
+	public void addLockedPeriodsButton() {
+        addButton(UIActions.showLockedPeriods, "locks", IconImageBundle.ICONS.lockedPeriod());
+	}
 
 
 }

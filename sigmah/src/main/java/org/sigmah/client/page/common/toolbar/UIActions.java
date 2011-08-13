@@ -45,4 +45,6 @@ public class UIActions {
     public static final String groupTime = "groupTime";
     
     public static final String groupAdminLevel = "groupAdminLevel";
+
+    public static final String showLockedPeriods = "showLockedPeriods";
 }

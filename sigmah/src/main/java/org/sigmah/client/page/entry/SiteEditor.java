@@ -26,6 +26,7 @@ import org.sigmah.client.page.common.filter.NullFilterPanel;
 import org.sigmah.client.page.common.grid.AbstractEditorGridPresenter;
 import org.sigmah.client.page.common.grid.GridView;
 import org.sigmah.client.page.common.toolbar.UIActions;
+import org.sigmah.client.page.config.ShowLockedPeriodsDialog;
 import org.sigmah.client.page.entry.editor.SiteFormLoader;
 import org.sigmah.client.util.state.IStateManager;
 import org.sigmah.shared.command.BatchCommand;
@@ -39,6 +40,7 @@ import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
+import org.sigmah.shared.dto.LockedPeriodDTO;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 import org.sigmah.shared.report.model.DimensionType;
@@ -79,11 +81,13 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
     private final EventBus eventBus;
     private final Dispatcher service;
     private final SiteFormLoader formLoader;
+    private final ShowLockedPeriodsDialog showLockedPeriods = new ShowLockedPeriodsDialog();
 
     protected final ListStore<SiteDTO> store;
     protected final PagingCmdLoader<SiteResult> loader;
 
     protected ActivityDTO currentActivity;
+    protected SiteDTO currentSite;
 
     private Integer siteIdToSelectOnNextLoad;
     private FilterPanel filterPanel = new NullFilterPanel();
@@ -290,7 +294,8 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
     }
 
     public void onSelectionChanged(SiteDTO selectedSite) {
-
+    	this.currentSite = selectedSite;
+    	
         if (selectedSite == null) {
             view.setActionEnabled(UIActions.delete, false);
             view.setActionEnabled(UIActions.edit, false);
@@ -337,12 +342,15 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
 
         return batch;
     }
-
     @Override
     public void onUIAction(String actionId) {
         super.onUIAction(actionId);
         if (UIActions.export.equals(actionId)) {
             onExport();
+        } else if (UIActions.showLockedPeriods.equals(actionId)) {
+        	showLockedPeriods.setActivityFilter(currentActivity);
+        	showLockedPeriods.setValue(getLockedPeriods());
+        	showLockedPeriods.show();
         } else if (UIActions.map.equals(actionId)) {
 
         }
@@ -378,7 +386,20 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
 //    }
 
 
-    protected void onAdd() {
+    private List<LockedPeriodDTO> getLockedPeriods() {
+    	List<LockedPeriodDTO> lockedPeriods = new ArrayList<LockedPeriodDTO>();
+    	
+    	lockedPeriods.addAll(currentActivity.getEnabledLockedPeriods());
+    	lockedPeriods.addAll(currentActivity.getDatabase().getEnabledLockedPeriods());
+    	
+    	if (currentSite != null && currentSite.getProject() != null) {
+    		lockedPeriods.addAll(currentSite.getProject().getEnabledLockedPeriods());
+    	}
+    	
+    	return lockedPeriods;
+	}
+
+	protected void onAdd() {
 
         SiteDTO newSite = new SiteDTO();
         newSite.setActivityId(currentActivity.getId());
