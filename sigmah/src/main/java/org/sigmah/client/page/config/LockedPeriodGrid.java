@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.sigmah.client.dispatch.AsyncMonitor;
+import org.sigmah.client.dispatch.monitor.NullAsyncMonitor;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.mvp.CanCreate;
 import org.sigmah.client.mvp.CanDelete;
@@ -49,6 +50,10 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 	// UI stuff
 	private ListStore<LockedPeriodDTO> lockedPeriodStore;
 	private EditorGrid<LockedPeriodDTO> gridLockedPeriods;
+	private AsyncMonitor deletingMonitor = new NullAsyncMonitor();
+	private AsyncMonitor creatingMonitor = new NullAsyncMonitor();
+	private AsyncMonitor loadingMonitor = new NullAsyncMonitor();
+	private AsyncMonitor updatingMonitor = new NullAsyncMonitor();
 
 	// Data
 	private UserDatabaseDTO userDatabase;
@@ -318,7 +323,26 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 	public void cancelCreate() {
 		addLockedPeriod.cancelCreate();
 	}
+	@Override
+	public AsyncMonitor getLoadingMonitor() {
+		return loadingMonitor;
+	}
 
+	@Override
+	public AsyncMonitor getCreatingMonitor() {
+		return creatingMonitor;
+	}
+
+	@Override
+	public AsyncMonitor getUpdatingMonitor() {
+		return updatingMonitor;
+	}
+
+	@Override
+	public AsyncMonitor getDeletingMonitor() {
+		return deletingMonitor;
+	}
+	
 	@Override
 	public void filter(Filter<LockedPeriodDTO> filter) {
 		// TODO Auto-generated method stub
@@ -376,31 +400,9 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 	}
 
 	@Override
-	public AsyncMonitor getLoadingMonitor() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void setValue(LockedPeriodDTO value) {
 		//gridLockedPeriods.getSelectionModel().select(value, false);
 	}
 
-	@Override
-	public AsyncMonitor getCreatingMonitor() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	@Override
-	public AsyncMonitor getUpdatingMonitor() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public AsyncMonitor getDeletingMonitor() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }
