@@ -169,7 +169,7 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
 	}
 
 	private void createLockColumn() {
-		ColumnConfig columnLocked = new ColumnConfig("x", "", 70);
+		ColumnConfig columnLocked = new ColumnConfig("x", "", 24);
         columnLocked.setRenderer(new GridCellRenderer<SiteDTO>() {
             @Override
             public Object render(SiteDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
