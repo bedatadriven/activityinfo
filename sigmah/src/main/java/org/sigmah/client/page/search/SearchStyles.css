@@ -27,7 +27,7 @@
 	top: 0.75em;
 	position: relative;
 	margin: 0.25em;
-}
+}	
 @sprite .iconPartner {
 	gwt-image: "partner";
 	float: left;
@@ -83,7 +83,12 @@
 }
 
 .searchBox {
-	font-size: 2em;
-	height: 2.25em;	
-	background-color: grey;
+	font-size: 20px;
+	height: 1.5em;
+	background-image: url('search.png');
+	background-repeat: no-repeat;
+}
+
+.link {
+	font-size: 12px;
 }

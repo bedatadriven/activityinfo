@@ -3,7 +3,7 @@ package org.sigmah.shared.search;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sigmah.shared.domain.AdminEntity;
+import org.sigmah.shared.domain.Activity;
 import org.sigmah.shared.report.model.DimensionType;
 
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
@@ -13,37 +13,36 @@ import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.Inject;
 
-public class AdminEntitySearcher extends AbstractSearcher<AdminEntity> implements Searcher<AdminEntity> {
-	@Inject
-	public AdminEntitySearcher(SqlDatabase db) {
+public class ActivitySearcher extends AbstractSearcher<Activity> implements Searcher<Activity> {
+
+	public ActivitySearcher(SqlDatabase db) {
 		super(db);
 	}
 
 	@Override
-	public void search(final String testQuery, final AsyncCallback<List<Integer>> callback, SqlTransaction tx) {
+	public void search(String testQuery, final AsyncCallback<List<Integer>> callback, SqlTransaction tx) {
 		query = likeify(testQuery);
 		db.transaction(new SqlTransactionCallback() {
-			List<Integer> adminEntityIds = new ArrayList<Integer>();
+			List<Integer> activityIds = new ArrayList<Integer>();
 			@Override
 			public void begin(SqlTransaction tx) {
-				tx.executeSql("select adminentityid from adminentity where name like ?", new Object[]{query}, new SqlResultCallback() {
+				tx.executeSql("select activityid from activity where name like ?", new Object[]{query}, new SqlResultCallback() {
 					@Override
 					public void onSuccess(SqlTransaction tx, SqlResultSet results) {
 						for (SqlResultSetRow result : results.getRows()) {
-							adminEntityIds.add(result.getInt("AdminEntityId"));
+							activityIds.add(result.getInt("ActivityId"));
 						}
-						callback.onSuccess(adminEntityIds);
+						callback.onSuccess(activityIds);
 					}
 				});
 			}
 		});
-
 	}
 
 	@Override
 	public DimensionType getDimensionType() {
-		return DimensionType.AdminLevel;
+		return DimensionType.Activity;
 	}
+
 }

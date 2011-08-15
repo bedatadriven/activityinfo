@@ -5,6 +5,7 @@ import java.util.List;
 import org.sigmah.client.mvp.ListView;
 import org.sigmah.shared.command.result.SearchResult;
 import org.sigmah.shared.dto.SearchHitDTO;
+import org.sigmah.shared.report.content.PivotContent;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
@@ -49,4 +50,7 @@ public interface SearchView extends ListView<SearchHitDTO, SearchResult> {
 	public interface SearchHandler extends EventHandler {
 		void onSearch(SearchEvent searchEvent);
 	}
+
+	void setSearchResults(PivotContent pivotTabelData);
+	void setSearchQuery(String query);
 }

@@ -43,5 +43,8 @@ public interface SearchResources extends ClientBundle {
 	@Source("toreplace.png")
 	public ImageResource partner();
 	
-	public interface SearchStyles extends CssResource {}
+	public interface SearchStyles extends CssResource {
+		String searchBox();
+		String link();
+	}
 }
