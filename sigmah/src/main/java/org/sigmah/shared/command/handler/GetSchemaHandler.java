@@ -1,145 +1,428 @@
-/*
- * All Sigmah code is released under the GNU General Public License v3
- * See COPYRIGHT.txt and LICENSE.txt.
- */
-
 package org.sigmah.shared.command.handler;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.sigmah.shared.command.GetSchema;
-import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.dao.UserDatabaseDAO;
-import org.sigmah.shared.domain.Activity;
-import org.sigmah.shared.domain.LockedPeriod;
-import org.sigmah.shared.domain.OrgUnit;
-import org.sigmah.shared.domain.Project;
-import org.sigmah.shared.domain.User;
-import org.sigmah.shared.domain.UserDatabase;
-import org.sigmah.shared.domain.UserPermission;
 import org.sigmah.shared.dto.ActivityDTO;
+import org.sigmah.shared.dto.AdminLevelDTO;
+import org.sigmah.shared.dto.AttributeDTO;
+import org.sigmah.shared.dto.AttributeGroupDTO;
 import org.sigmah.shared.dto.CountryDTO;
-import org.sigmah.shared.dto.DTOMapper;
-import org.sigmah.shared.dto.LockedPeriodDTO;
+import org.sigmah.shared.dto.IndicatorDTO;
+import org.sigmah.shared.dto.LocationTypeDTO;
 import org.sigmah.shared.dto.PartnerDTO;
-import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
-import org.sigmah.shared.exception.CommandException;
+import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
-import com.allen_sauer.gwt.log.client.Log;
+import com.bedatadriven.rebar.sql.client.SqlDatabase;
+import com.bedatadriven.rebar.sql.client.SqlException;
+import com.bedatadriven.rebar.sql.client.SqlResultCallback;
+import com.bedatadriven.rebar.sql.client.SqlResultSet;
+import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
+import com.bedatadriven.rebar.sql.client.SqlTransaction;
+import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
+import com.bedatadriven.rebar.sql.client.query.SqlQuery;
+import com.bedatadriven.rebar.sql.client.util.RowHandler;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 
-/**
- * @author Alex Bertram
- * @see org.sigmah.shared.command.GetSchema
- */
-public class GetSchemaHandler implements CommandHandler<GetSchema> {
+public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDTO> {
 
-    private UserDatabaseDAO userDatabaseDAO;
-    private DTOMapper mapper;
-
+    private SqlDatabase database;
+  
     @Inject
-    public GetSchemaHandler(UserDatabaseDAO userDatabaseDAO, DTOMapper mapper) {
-        this.userDatabaseDAO = userDatabaseDAO;
-        this.mapper = mapper;
+    public GetSchemaHandler(SqlDatabase database) {
+		super();
+		this.database = database;
+	}
 
-    }
+	@Override
+	public void execute(GetSchema command, CommandContext context,
+			AsyncCallback<SchemaDTO> callback) {
 
-    @Override
-    public CommandResult execute(GetSchema cmd, User user) throws CommandException {
+		new SchemaBuilder().build(context, callback);
+	}
+    
 
-        SchemaDTO schema = new SchemaDTO();
-        Date lastUpdate = new Date(0);
+    private class SchemaBuilder {
+        final List<UserDatabaseDTO> databaseList = new ArrayList<UserDatabaseDTO>();
+        final Map<Integer, UserDatabaseDTO> databaseMap = new HashMap<Integer, UserDatabaseDTO>();
 
-        // Note that hibernate is already filtering by user so it is not necessary to pass the user
-        List<UserDatabase> databases = userDatabaseDAO.queryAllUserDatabasesAlphabetically();
+        final Map<Integer, CountryDTO> countries = new HashMap<Integer, CountryDTO>();
+        final Map<Integer, PartnerDTO> partners = new HashMap<Integer, PartnerDTO>();
+        final Map<Integer, ActivityDTO> activities = new HashMap<Integer, ActivityDTO>();
+        final Map<Integer, AttributeGroupDTO> attributeGroups = new HashMap<Integer, AttributeGroupDTO>();
 
-        Map<Integer, CountryDTO> countries = new HashMap<Integer, CountryDTO>();
+        SqlTransaction tx;
+        CommandContext context;
+       
 
-        for (UserDatabase database : databases) {
+		public void loadCountries() {
+            SqlQuery.select("CountryId, Name, X1, Y1, X2, Y2")
+            	.from("Country")
+            	.execute(tx, new RowHandler() {
 
-            if (database.getLastSchemaUpdate().after(lastUpdate)) {
-                lastUpdate = database.getLastSchemaUpdate();
-            }
+		                @Override
+                public void handleRow(SqlResultSetRow rs) {
+                    CountryDTO country = new CountryDTO();
+                    country.setId(rs.getInt("CountryId"));
+                    country.setName(rs.getString("Name"));
 
-            UserDatabaseDTO databaseDTO = new UserDatabaseDTO();
+                    BoundingBoxDTO bounds = new BoundingBoxDTO(
+                    		rs.getDouble("X1"),
+                    		rs.getDouble("Y1"),
+                    		rs.getDouble("X2"),
+                    		rs.getDouble("Y2"));
 
-            databaseDTO.setId(database.getId());
-            databaseDTO.setName(database.getName());
-            databaseDTO.setFullName(database.getFullName());
-            databaseDTO.setOwnerName(database.getOwner().getName());
-            databaseDTO.setOwnerEmail(database.getOwner().getEmail());
+                    country.setBounds(bounds);
 
-            CountryDTO country = countries.get(database.getCountry().getId());
-            Log.debug("country: " +country);
-            if (country == null) {
-            	Log.debug("country.locationTypes " +database.getCountry().getLocationTypes().size());
-                country = mapper.map(database.getCountry(), CountryDTO.class);
-                countries.put(country.getId(), country);
-                schema.getCountries().add(country);
-            }
-            
-            Log.debug("" + country.getLocationTypeById(2));
-            
-            databaseDTO.setCountry(country);
-            databaseDTO.setAmOwner(database.getOwner().getId() == user.getId());
-
-            UserPermission permission = null;
-            if (!databaseDTO.getAmOwner()) {
-            	// don't support user permission when running in browser
-            	if (database.getPermissionByUser(user) != null) {
-            		if (database.getPermissionByUser(user).getPartner() != null) {
-            			  databaseDTO.setMyPartnerId(database.getPermissionByUser(user).getPartner().getId());
-            		}
-            	}
-
-                permission = database.getPermissionByUser(user);
-
-                if (permission != null && permission.getLastSchemaUpdate().after(lastUpdate)) {
-                    lastUpdate = permission.getLastSchemaUpdate();
+                    countries.put(country.getId(), country);
                 }
-            }
-            if (permission == null) {
-            	// don't support user permission when running in browser
-            	permission = new UserPermission();
-            }
-            databaseDTO.setViewAllAllowed(databaseDTO.getAmOwner() || permission.isAllowViewAll());
-            databaseDTO.setEditAllowed(databaseDTO.getAmOwner() || permission.isAllowEdit());
-            databaseDTO.setEditAllAllowed(databaseDTO.getAmOwner() || permission.isAllowEditAll());
-            databaseDTO.setDesignAllowed(databaseDTO.getAmOwner() || permission.isAllowDesign());
-            databaseDTO.setManageUsersAllowed(databaseDTO.getAmOwner() || permission.isAllowManageUsers());
-            databaseDTO.setManageAllUsersAllowed(databaseDTO.getAmOwner() || permission.isAllowManageAllUsers());
-
-            for (OrgUnit partner : database.getPartners()) {
-                databaseDTO.getPartners().add(mapper.map(partner, PartnerDTO.class));
-            }
-            
-            for (Project project : database.getProjects()) {
-            	databaseDTO.getProjects().add(mapper.map(project, ProjectDTO.class));
-            }
-            
-            for (Activity activity : database.getActivities()) {
-                ActivityDTO activityDTO = mapper.map(activity, ActivityDTO.class);
-                databaseDTO.getActivities().add(activityDTO);
-                activityDTO.setDatabase(databaseDTO);
-            }
-            
-            for (LockedPeriod lockedPeriod : database.getLockedPeriods()) {
-            	LockedPeriodDTO lockedPeriodDTO = mapper.map(lockedPeriod, LockedPeriodDTO.class);
-            	databaseDTO.getLockedPeriods().add(lockedPeriodDTO);
-            	lockedPeriodDTO.setUserDatabase(databaseDTO);
-            }
-
-            schema.getDatabases().add(databaseDTO);
+            });
         }
 
-        schema.setVersion(lastUpdate.getTime());
-        return schema;
+        public void loadLocationTypes() {
+            SqlQuery.select("LocationTypeId, Name, BoundAdminLevelId, CountryId")
+                .from("LocationType")
+                .execute(tx, new RowHandler() {
 
+                @Override
+                public void handleRow(SqlResultSetRow row) {
+                    LocationTypeDTO type = new LocationTypeDTO();
+                    type.setId(row.getInt("LocationTypeId"));
+                    type.setName(row.getString("Name"));
+
+                    if(!row.isNull("BoundAdminLevelId")) {
+                    	type.setBoundAdminLevelId(row.getInt("BoundAdminLevelId"));
+                    }
+
+                    int countryId = row.getInt("CountryId");
+                    countries.get(countryId).getLocationTypes().add(type);
+                }
+            });
+        }
+
+        public void loadAdminLevels() {
+            SqlQuery.select("AdminLevelId, Name, ParentId, CountryId")
+                .from("AdminLevel")
+                .execute(tx, new RowHandler() {
+					
+					@Override
+					public void handleRow(SqlResultSetRow row) {
+						AdminLevelDTO level = new AdminLevelDTO();
+						level.setId(row.getInt("AdminLevelId"));
+						level.setName(row.getString("Name"));
+						level.setCountryId(row.getInt("CountryId"));
+
+						if(!row.isNull("ParentId")) {
+							level.setParentLevelId(row.getInt("ParentId"));
+						}
+						
+						countries.get(level.getCountryId()).getAdminLevels().add(level);
+					}
+				});
+        }
+
+        public void loadDatabases() {
+            SqlQuery query = SqlQuery.select("d.DatabaseId")
+            	.appendColumn("d.Name")
+            	.appendColumn("d.FullName")
+            	.appendColumn("d.OwnerUserId")
+            	.appendColumn("d.CountryId")
+            	.appendColumn("o.Name", "OwnerName")
+            	.appendColumn("o.Email", "OwnerEmail")
+            	.appendColumn("p.AllowViewAll")
+            	.appendColumn("p.AllowEdit")
+            	.appendColumn("p.AllowEditAll")
+            	.appendColumn("p.AllowManageUsers")
+            	.appendColumn("p.AllowManageAllUsers")
+            	.appendColumn("p.AllowDesign")
+            .from("UserDatabase d")
+            .leftJoin("UserPermission p").on("d.DatabaseId = p.DatabaseId")
+            .leftJoin("UserLogin o").on("d.OwnerUserId = o.UserId")
+            .where("d.DateDeleted").isNull()
+            .orderBy("d.Name");
+            
+            applyDatabasePermissionFilter(query);
+            
+            
+            query.execute(tx, new SqlResultCallback() {
+				
+				@Override
+				public void onSuccess(SqlTransaction tx, SqlResultSet results) {
+			
+					for(SqlResultSetRow row : results.getRows()) {
+					    UserDatabaseDTO db = new UserDatabaseDTO();
+	                    db.setId( row.getInt("DatabaseId") );
+	                    db.setName( row.getString("Name") );
+	                    db.setFullName( row.getString("FullName") );
+	                    db.setAmOwner( row.getInt("OwnerUserId") == context.getUser().getId() );
+	                    db.setCountry( countries.get( row.getInt("CountryId") ));
+	                    db.setOwnerName( row.getString("OwnerName") );
+	                    db.setOwnerEmail( row.getString("OwnerEmail") );
+	
+	                    db.setViewAllAllowed(db.getAmOwner() || row.getBoolean("AllowViewAll") );
+	                    db.setEditAllowed(db.getAmOwner() || row.getBoolean("AllowEdit") );
+	                    db.setEditAllAllowed(db.getAmOwner() || row.getBoolean("AllowEditAll") );
+	                    db.setManageUsersAllowed(db.getAmOwner() || row.getBoolean("AllowManageUsers" ) );
+	                    db.setManageAllUsersAllowed(db.getAmOwner() || row.getBoolean("AllowManageAllUsers") );
+	                    db.setDesignAllowed(db.getAmOwner() || row.getBoolean("AllowDesign") );
+	
+	                    databaseMap.put(db.getId(), db);
+	                    databaseList.add(db);				
+					}
+					
+					if(!databaseMap.isEmpty()) {
+			            joinPartnersToDatabases();
+
+			            loadActivities();
+			            loadIndicators();
+			            loadAttributeGroups();
+			            loadAttributes();
+			            joinAttributesToActivities();
+					}
+					
+				}
+			});
+        }
+
+		private void applyDatabasePermissionFilter(SqlQuery query) {
+			if(!GWT.isClient()) {
+            	// apply permissions on the server side
+            	// the current user must....
+            	query.whereTrue("(" +
+            			
+            			// be the owner of this database
+            			
+            			"(? = OwnerUserId)" +
+            					" OR " +
+            			
+            			// have permission to view this database	
+                         
+                         "(? in (SELECT p.UserId from UserPermission p "
+                       			+ "WHERE p.AllowView and p.UserId=? and p.DatabaseId=d.DatabaseId))" +
+                         
+            	   ")");
+                       	    
+                       			
+            	query.appendParameter(context.getUser().getId());
+            	query.appendParameter(context.getUser().getId());
+            	query.appendParameter(context.getUser().getId());
+            }
+		}
+
+        private void joinPartnersToDatabases() {
+            SqlQuery query = SqlQuery.select("d.DatabaseId","d.PartnerId", "p.Name")
+                .from("PartnerInDatabase", "d")
+                .leftJoin("Partner", "p").on("d.PartnerId = p.PartnerId");
+            
+            if(!GWT.isClient()) {
+            	// on the server, limit the partners to those that are visible to
+            	// the connected user
+            	query.where("d.DatabaseId").in(databaseMap.values());
+            }
+            
+            query.execute(tx, new RowHandler() {
+					
+					@Override
+					public void handleRow(SqlResultSetRow row) {
+	                    
+	                    int partnerId = row.getInt("PartnerId");
+	                    PartnerDTO partner = partners.get(partnerId);
+	                    if(partner == null) {
+	                    	partner = new PartnerDTO();
+	                    	partner.setId(partnerId);
+	                    	partner.setName(row.getString("Name"));
+	                    	partners.put(partnerId, partner);
+	                    }
+
+	                    UserDatabaseDTO db = databaseMap.get( row.getInt("DatabaseId") );
+	                    db.getPartners().add(partner);
+					}
+				});
+    
+        }
+        
+        public void loadActivities() {
+            SqlQuery query = SqlQuery.select("ActivityId, Name, Category, LocationTypeId, ReportingFrequency, DatabaseId")
+                .from("Activity")
+                .orderBy("SortOrder");
+            
+            if(!GWT.isClient()) {
+            	query.where("DatabaseId").in(databaseMap.keySet());
+            }
+            
+            query.execute(tx, new RowHandler() {
+
+
+				@Override
+				public void handleRow(SqlResultSetRow row) {
+                    ActivityDTO activity = new ActivityDTO();
+                    activity.setId( row.getInt("ActivityId") );
+                    activity.setName( row.getString("Name") );
+                    activity.setCategory( row.getString("Category") );
+                    activity.setLocationTypeId( row.getInt("LocationTypeId") );
+                    activity.setReportingFrequency( row.getInt("ReportingFrequency") );
+
+                    int databaseId = row.getInt("DatabaseId");
+                    UserDatabaseDTO database = databaseMap.get(databaseId);
+                    activity.setDatabase(database);
+                    database.getActivities().add(activity);
+                    activities.put(activity.getId(), activity);					
+				}
+            });
+        }
+
+        public void loadIndicators() {
+            SqlQuery query = SqlQuery.select("IndicatorId, Name, Category, ListHeader, Description, Aggregation",
+                     "Units, CollectIntervention, CollectMonitoring, ActivityId")
+                    .from("Indicator")
+                    .orderBy("SortOrder");
+            
+            if(!GWT.isClient()) {
+            	query.where("ActivityId").in(SqlQuery.select("ActivityId").from("Activity").where("databaseId")
+            			.in(databaseMap.keySet()));
+            			
+            }
+            
+            query.execute(tx, new RowHandler() {
+
+                @Override
+                public void handleRow(SqlResultSetRow rs) {
+                    IndicatorDTO indicator = new IndicatorDTO();
+                    indicator.setId(rs.getInt("IndicatorId"));
+                    indicator.setName(rs.getString("Name"));
+                    indicator.setCategory(rs.getString("Category"));
+                    indicator.setListHeader(rs.getString("ListHeader"));
+                    indicator.setDescription(rs.getString("Description"));
+                    indicator.setAggregation(rs.getInt("Aggregation"));
+                    indicator.setUnits(rs.getString("Units"));
+
+                    int activityId = rs.getInt("ActivityId");
+                    ActivityDTO activity = activities.get(activityId);
+                    activity.getIndicators().add(indicator);
+                }
+            });
+        }
+
+        public void loadAttributeGroups() {
+            SqlQuery query = SqlQuery.select("AttributeGroupId, Name, MultipleAllowed")
+                    .from("AttributeGroup")
+                    .orderBy("SortOrder");
+            
+            if(!GWT.isClient()) {
+            	query.where("AttributeGroupId").in(
+            			SqlQuery.select("AttributeGroupId").from("AttributeGroupInActivity")
+            				.where("ActivityId").in(SqlQuery.select("ActivityId").from("Activity")
+            						.where("databaseId").in(databaseMap.keySet())));
+            			
+            }
+            
+            query.execute(tx, new RowHandler() {
+
+                @Override
+                public void handleRow(SqlResultSetRow rs)  {
+
+                    AttributeGroupDTO group = new AttributeGroupDTO();
+                    group.setId(rs.getInt("AttributeGroupId"));
+                    group.setName(rs.getString("Name"));
+                    group.setMultipleAllowed(rs.getBoolean("MultipleAllowed"));
+
+                    attributeGroups.put(group.getId(), group);
+                }
+            });
+        }
+
+        public void loadAttributes() {
+            SqlQuery query = SqlQuery.select("AttributeId, Name, AttributeGroupId")
+                .from("Attribute")
+                .orderBy("SortOrder");
+            
+            if(!GWT.isClient()) {
+            	query.where("AttributeGroupId").in(
+            			SqlQuery.select("AttributeGroupId").from("AttributeGroupInActivity")
+            				.where("ActivityId").in(SqlQuery.select("ActivityId").from("Activity")
+            						.where("databaseId").in(databaseMap.keySet())));
+            			
+            }
+            
+            query.execute(tx, new RowHandler() {
+
+                @Override
+                public void handleRow(SqlResultSetRow row) {
+
+                    AttributeDTO attribute = new AttributeDTO();
+                    attribute.setId(row.getInt("AttributeId"));
+                    attribute.setName(row.getString("Name"));
+
+
+                    int groupId = row.getInt("AttributeGroupId");
+                    attributeGroups.get(groupId).getAttributes().add(attribute);
+                }
+            });
+        }
+
+        public void joinAttributesToActivities() {
+            SqlQuery query = SqlQuery.select("J.ActivityId, J.AttributeGroupId")
+                .from("AttributeGroupInActivity J " +
+                        "INNER JOIN AttributeGroup G ON (J.AttributeGroupId = G.AttributeGroupId)")
+                .orderBy("G.SortOrder");
+            
+            if(!GWT.isClient()) {
+            	query.where("ActivityId").in(SqlQuery.select("ActivityId").from("Activity").where("databaseId")
+            			.in(databaseMap.keySet()));
+            			
+            }
+            
+            query.execute(tx, new RowHandler() {
+                    @Override
+                    public void handleRow(SqlResultSetRow row) {
+
+                        int activityId = row.getInt("ActivityId");
+                        int groupId = row.getInt("AttributeGroupId");
+
+                        activities.get(activityId).getAttributeGroups().add(
+                                attributeGroups.get(groupId));
+                    }
+                });
+        }
+
+        public void build(CommandContext context, final AsyncCallback<SchemaDTO> callback) {
+        	this.context = context;
+        	database.transaction(new SqlTransactionCallback() {
+				
+				@Override
+				public void begin(SqlTransaction tx) {
+					SchemaBuilder.this.tx = tx;
+				    loadCountries();
+		            loadLocationTypes();
+		            loadAdminLevels();
+
+		            loadDatabases();
+			
+				}
+
+				@Override
+				public void onError(SqlException e) {
+					callback.onFailure(e);
+				}
+
+				@Override
+				public void onSuccess() {
+				    SchemaDTO schemaDTO = new SchemaDTO();
+		            schemaDTO.setCountries(new ArrayList<CountryDTO>(countries.values()));
+		            schemaDTO.setDatabases(new ArrayList<UserDatabaseDTO>(databaseMap.values()));
+		            
+		            callback.onSuccess(schemaDTO);
+				}
+			});
+        }
     }
 }
+

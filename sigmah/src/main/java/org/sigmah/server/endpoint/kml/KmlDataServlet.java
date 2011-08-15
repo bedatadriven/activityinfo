@@ -27,7 +27,7 @@ import org.sigmah.server.report.util.HtmlWriter;
 import org.sigmah.server.util.KMLNamespace;
 import org.sigmah.server.util.XmlBuilder;
 import org.sigmah.shared.command.GetSchema;
-import org.sigmah.shared.command.handler.GetSchemaHandler;
+import org.sigmah.shared.command.handler.GetSchemaHandlerSync;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dao.SiteOrder;
 import org.sigmah.shared.dao.SiteTableColumn;
@@ -144,7 +144,7 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
 
         XmlBuilder xml = new XmlBuilder(new StreamResult(out));
 
-        GetSchemaHandler schemaHandler = injector.getInstance(GetSchemaHandler.class);
+        GetSchemaHandlerSync schemaHandler = injector.getInstance(GetSchemaHandlerSync.class);
         SchemaDTO schema = (SchemaDTO) schemaHandler.execute(new GetSchema(), user);
 
         List<SiteData> sites = querySites(user, schema);

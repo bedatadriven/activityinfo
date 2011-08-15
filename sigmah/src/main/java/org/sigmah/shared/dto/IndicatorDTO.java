@@ -113,37 +113,7 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
 	public String getDescription() {
 		return get("description");
 	}
-
-    /**
-     * Sets whether this indicator is collected during the intervention.
-     * (Some indicators are only collected during the monitoring phase)
-     */
-	public void setCollectIntervention(boolean collected) {
-		set("collectIntervention", collected);
-	}
-
-    /**
-     * @return true if this indicator is collected during the intervention.
-     * (Some indicators are only collected during the monitoring phase)
-     */
-	public boolean isCollectIntervention() {
-		return (Boolean)get("collectIntervention");
-	}
-
-    /**
-     * Sets whether this indicator is collected during the monitoring phase/
-     */
-	public void setCollectMonitoring(boolean collected) {
-		set("collectMonitoring",collected);
-	}
-
-    /**
-     * @return true if this indicator is collected during the monitoring phase
-     */
-	public boolean isCollectMonitoring() {
-		return (Boolean)get("collectMonitoring");
-	}
-
+	
     /**
      * Sets the aggregation method for this indicator
      */

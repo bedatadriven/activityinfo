@@ -19,7 +19,7 @@ import org.sigmah.server.dao.hibernate.HibernateSiteTableDAO;
 import org.sigmah.server.endpoint.export.Export;
 import org.sigmah.server.endpoint.gwtrpc.CommandTestCase;
 import org.sigmah.shared.command.GetSchema;
-import org.sigmah.shared.command.handler.GetSchemaHandler;
+import org.sigmah.shared.command.handler.GetSchemaHandlerSync;
 import org.sigmah.shared.dao.SqlDialect;
 import org.sigmah.shared.dao.SiteTableDAO;
 import org.sigmah.shared.domain.User;
@@ -44,7 +44,7 @@ public class ExportIntegrationTest extends CommandTestCase {
     private SqlDialect dialect;
 
     @Inject
-    private GetSchemaHandler getSchemaHandler;
+    private GetSchemaHandlerSync getSchemaHandler;
 
 
     @Test

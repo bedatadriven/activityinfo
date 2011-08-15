@@ -42,11 +42,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 	public void execute(final GetSites command, final CommandContext context,
 			final AsyncCallback<SiteResult> callback) {
 
-		if(command.getSeekToSiteId() != null) {
-			calculatePage(command, context, callback);
-		} else {
-			doQuery(command, context, callback);
-		}
+		doQuery(command, context, callback);
 	}
 
 	private void calculatePage(GetSites command, CommandContext context,
@@ -54,6 +50,10 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 
 		final SqlQuery query = SqlQuery.select("Site.SiteId");
 		
+		applyJoins(query);
+		applyFilter(query, command.getFilter());
+		applyPermissions(query, context);
+		applySort(query, command.getSortInfo());
 		
 	}
 
