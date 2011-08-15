@@ -41,8 +41,9 @@ public class SearchPresenter implements SearchView.SearchHandler, Page {
 
 			@Override
 			public void onSuccess(SearchResult result) {
-				view.setItems(result.getHits());
-				view.setLatestAdditions(result.getLatestAdditions());
+//				view.setItems(result.getHits());
+//				view.setLatestAdditions(result.getLatestAdditions());
+				System.out.println("argf");
 			}
 		});
 	}
