@@ -32,18 +32,20 @@ public class SearchPresenter implements SearchView.SearchHandler, Page {
 	
 	@Override
 	public void onSearch(SearchEvent searchEvent) {
+		view.setSearchQuery(searchEvent.getQuery());
+		view.getLoadingMonitor().beforeRequest();
+		
 		service.execute(new Search(searchEvent.getQuery()), null, new AsyncCallback<SearchResult>() {
-
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO handle failure
+				view.getLoadingMonitor().onServerError();
 			}
 
 			@Override
 			public void onSuccess(SearchResult result) {
-//				view.setItems(result.getHits());
-//				view.setLatestAdditions(result.getLatestAdditions());
-				System.out.println("argf");
+				view.setSearchResults(result.getPivotTabelData());
+				view.getLoadingMonitor().onCompleted();
 			}
 		});
 	}

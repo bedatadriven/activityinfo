@@ -8,11 +8,10 @@ import java.util.List;
 import org.sigmah.server.dao.SiteDAO;
 import org.sigmah.shared.command.GenerateElement;
 import org.sigmah.shared.command.Search;
-import org.sigmah.shared.command.handler.CommandHandler;
-import org.sigmah.shared.command.result.CommandResult;
+import org.sigmah.shared.command.handler.CommandContext;
+import org.sigmah.shared.command.handler.CommandHandlerAsync;
 import org.sigmah.shared.command.result.SearchResult;
 import org.sigmah.shared.dao.Filter;
-import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.SearchHitDTO;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
@@ -29,11 +28,10 @@ import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
-public class SearchHandler implements CommandHandler<Search> {
+public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> {
 	private List<Searcher> searchers = new ArrayList<Searcher>();
 	private List<Searcher> failedSearchers = new ArrayList<Searcher>();
 	private SqlDatabase db;
-	private String searchQuery;
 	private Filter filter = new Filter();
 	private GenerateElementHandler getPivotData;
 
@@ -44,10 +42,11 @@ public class SearchHandler implements CommandHandler<Search> {
         
         //searcher = new AllSearcher(entityManager.)
     }
-    
+
 	@Override
-	public CommandResult execute(Search cmd, User user) throws CommandException {
-			
+	public void execute(Search command, CommandContext context,
+			AsyncCallback<SearchResult> callback) {
+		
 		final PivotTableReportElement pivotTable = new PivotTableReportElement();
 		pivotTable.addRowDimension(new Dimension(DimensionType.Database));
 		pivotTable.addRowDimension(new Dimension(DimensionType.Activity));
@@ -55,7 +54,7 @@ public class SearchHandler implements CommandHandler<Search> {
 	
 		initSearchers();
 		
-		searchNext(cmd.getSearchQuery(), searchers.iterator(), new AsyncCallback<Filter>() {
+		searchNext(command.getSearchQuery(), searchers.iterator(), new AsyncCallback<Filter>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				// Not going to happen
@@ -63,18 +62,26 @@ public class SearchHandler implements CommandHandler<Search> {
 
 			@Override
 			public void onSuccess(Filter result) {
-				pivotTable.setFilter(filter);
+				pivotTable.setFilter(result);
 			}
 		});
 					
+//		if (result.getRestrictedDimensions().isEmpty()) {
+//		}
 		GenerateElement<PivotContent> zmd = new GenerateElement<PivotContent>(pivotTable);
-		PivotContent content = (PivotContent) getPivotData.execute(zmd, user);
+		PivotContent content = null;
+		try {
+			content = (PivotContent) getPivotData.execute(zmd, context.getUser());
+		} catch (CommandException e) {
+			callback.onFailure(e);
+		}
 
 		SearchResult result = new SearchResult();
 		result.setPivotTabelData(content);
-		return result;
+		
+		callback.onSuccess(result);
 	}
-	
+    
 	private void initSearchers() {
 		searchers.add(new PartnerSearcher(db));
 		searchers.add(new AdminEntitySearcher(db));
@@ -85,7 +92,7 @@ public class SearchHandler implements CommandHandler<Search> {
 		final Filter filter=new Filter();
 		final Searcher<?> searcher = it.next();
 		
-		searcher.search(searchQuery, new AsyncCallback<List<Integer>>() {
+		searcher.search(q, new AsyncCallback<List<Integer>>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -113,7 +120,7 @@ public class SearchHandler implements CommandHandler<Search> {
 					callback.onSuccess(filter);
 				}
 			}
-		});
+		}, null);
 	}
 	
 	public void go() {
@@ -159,5 +166,6 @@ public class SearchHandler implements CommandHandler<Search> {
 //		
 //		return result;
 	}
+
 
 }

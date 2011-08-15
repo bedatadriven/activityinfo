@@ -47,7 +47,7 @@ public class SearchTest {
 			public void onFailure(Throwable caught) {
 				throw new AssertionError(caught);
 			}
-		});
+		}, null);
 	}
 	
 	@Test

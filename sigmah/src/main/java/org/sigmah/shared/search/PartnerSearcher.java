@@ -8,6 +8,7 @@ import org.sigmah.shared.domain.OrgUnit;
 import org.sigmah.shared.report.model.DimensionType;
 
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
+import com.bedatadriven.rebar.sql.client.SqlException;
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
 import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
@@ -24,7 +25,7 @@ public class PartnerSearcher extends AbstractSearcher<OrgUnit> implements Search
 	}
 	
 	@Override
-	public void search(String testQuery, final AsyncCallback<List<Integer>> callback) {
+	public void search(String testQuery, final AsyncCallback<List<Integer>> callback, SqlTransaction tx) {
 		final Filter resultFilter = new Filter();
 		final String query = likeify(testQuery);
 		
@@ -44,6 +45,13 @@ public class PartnerSearcher extends AbstractSearcher<OrgUnit> implements Search
 					}
 				});
 			}
+
+			@Override
+			public void onError(SqlException e) {
+				super.onError(e);
+			}
+			
+			
 		});
 	}
 
