@@ -18,7 +18,9 @@ import org.sigmah.server.endpoint.gwtrpc.handler.HandlerUtil;
 import org.sigmah.server.util.logging.LogException;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.RemoteCommandService;
+import org.sigmah.shared.command.handler.CommandContext;
 import org.sigmah.shared.command.handler.CommandHandler;
+import org.sigmah.shared.command.handler.CommandHandlerAsync;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.CommandException;
@@ -101,12 +103,22 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
     @Transactional
     @LogException(emailAlert = true)
     protected CommandResult handleCommand(User user, Command command) throws CommandException {
-        CommandHandler handler = createHandler(command);
-        return handler.execute(command, user);
+        Object handler = createHandler(command);
+        if(handler instanceof CommandHandler) {
+        	return ((CommandHandler) handler).execute(command, user);
+        } else if(handler instanceof CommandHandlerAsync) {
+        	Collector<CommandResult> collector = new Collector<CommandResult>();
+        	((CommandHandlerAsync) handler).execute(command, new CommandContextImpl(user), collector);
+        	return collector.getResult();
+        } else {
+        	throw new RuntimeException("Command handler class " + handler.getClass() + " must implement " +
+        			"CommandHandler or CommandHandlerAsync");
+        }
     }
+    
 
-    private CommandHandler createHandler(Command command) {
-        return (CommandHandler) injector.getInstance(
+    private Object createHandler(Command command) {
+        return injector.getInstance(
                 HandlerUtil.executorForCommand(command));
     }
 
@@ -118,4 +130,22 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
         }
         return auth;
     }
+    
+    private static class CommandContextImpl implements CommandContext {
+    	
+    	private User user;
+
+		public CommandContextImpl(User user) {
+			super();
+			this.user = user;
+		}
+
+		@Override
+		public User getUser() {
+			return user;
+		}
+    	
+    	
+    }
+    
 }

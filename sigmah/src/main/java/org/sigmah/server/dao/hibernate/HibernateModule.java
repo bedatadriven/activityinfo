@@ -31,6 +31,8 @@ import org.sigmah.shared.dao.UserDAO;
 import org.sigmah.shared.dao.UserDatabaseDAO;
 import org.sigmah.shared.dao.UserPermissionDAO;
 
+import com.bedatadriven.rebar.sql.client.SqlDatabase;
+import com.bedatadriven.rebar.sql.server.jdbc.JdbcDatabase;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -134,4 +136,5 @@ public class HibernateModule extends AbstractModule {
         return (HibernateEntityManager)entityManager;
     }
 
+    
 }

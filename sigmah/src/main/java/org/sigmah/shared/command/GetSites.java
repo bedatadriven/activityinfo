@@ -17,7 +17,7 @@ import org.sigmah.shared.report.model.DimensionType;
  *
  */
 public class GetSites extends PagingGetCommand<SiteResult> implements OfflineSupport {
-
+	
     private Filter filter = new Filter();
 
     private Integer seekToSiteId;

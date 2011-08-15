@@ -19,7 +19,7 @@ import org.sigmah.shared.command.CreateEntity;
 import org.sigmah.shared.command.GetAdminEntities;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.command.GetSites;
-import org.sigmah.shared.command.handler.GetSitesHandler;
+import org.sigmah.shared.command.handler.GetSitesHandlerSync;
 import org.sigmah.shared.dao.SqlDialect;
 import org.sigmah.shared.dao.SiteTableDAO;
 import org.sigmah.shared.dao.SqlSiteTableDAO;
@@ -67,7 +67,7 @@ public class OfflineModule extends AbstractGinModule {
     @Provides
     protected LocalDispatcher provideLocalDispatcher(Authentication auth,
             LocalGetSchemaHandler schemaHandler,
-            GetSitesHandler sitesHandler,
+            GetSitesHandlerSync sitesHandler,
             LocalGetAdminEntitiesHandler adminHandler,
             LocalCreateEntityHandler createEntityHandler) {
 

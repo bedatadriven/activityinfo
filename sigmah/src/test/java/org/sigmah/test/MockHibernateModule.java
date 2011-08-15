@@ -5,14 +5,21 @@
 
 package org.sigmah.test;
 
+import java.sql.Connection;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import org.hibernate.ejb.Ejb3Configuration;
+import org.hibernate.ejb.HibernateEntityManager;
 import org.sigmah.server.dao.hibernate.HibernateModule;
 import org.sigmah.server.domain.PersistentClasses;
 
+import com.bedatadriven.rebar.sql.client.SqlDatabase;
+import com.bedatadriven.rebar.sql.server.jdbc.JdbcDatabase;
+import com.bedatadriven.rebar.sql.server.jdbc.JdbcExecutor;
 import com.google.inject.Provider;
+import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
 public class MockHibernateModule extends HibernateModule {
@@ -44,7 +51,7 @@ public class MockHibernateModule extends HibernateModule {
     }
 
     private String getConfigurationFilePath() {
-        String db = "h2";
+        String db = "mysql";
         if(System.getProperty("testDatabase") != null) {
             db = System.getProperty("testDatabase");
         }
@@ -60,4 +67,24 @@ public class MockHibernateModule extends HibernateModule {
         bind(EntityManager.class).toProvider(EntityManagerProvider.class)
                 .in(TestScoped.class);
     }
+
+    @Provides
+    protected SqlDatabase provideServerDatabase(final Provider<HibernateEntityManager> hem) {
+    	return new JdbcDatabase("SERVER") {
+
+			@Override
+			protected JdbcExecutor newExecutor() {
+				return new JdbcExecutor() {
+					
+					@Override
+					protected Connection openConnection() throws Exception {
+						return hem.get().getSession().connection();
+					}
+					
+					
+				};
+			}	
+    	};
+    }
+    
 }

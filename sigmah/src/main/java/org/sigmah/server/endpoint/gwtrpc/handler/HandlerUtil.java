@@ -55,24 +55,36 @@ public class HandlerUtil {
      * @return A <code>CommandHandler</code> capabling of handling the given <code>Command</code>
      */
     @SuppressWarnings("unchecked")
-    public static Class<CommandHandler<?>> executorForCommand(Command<?> cmd) {
+    public static Class executorForCommand(Command<?> cmd) {
 
         String commandName = cmd.getClass().getName().substring(
                 cmd.getClass().getPackage().getName().length() + 1);
-    	String etorName = null;
+    	String handlerName = null;
+    	
         if (! (cmd instanceof OfflineSupport)) {
-        	etorName = "org.sigmah.server.endpoint.gwtrpc.handler." +
+        	handlerName = "org.sigmah.server.endpoint.gwtrpc.handler." +
         		commandName + "Handler";
         } else {
-        	etorName = CommandHandler.class.getPackage().getName() + "." +
+        	handlerName = CommandHandler.class.getPackage().getName() + "." +
             	commandName + "Handler";
         }
 
         try {
-            return (Class<CommandHandler<?>>) CommandHandler.class.getClassLoader().loadClass(etorName);
+            return (Class<CommandHandler<?>>) CommandHandler.class.getClassLoader().loadClass(handlerName);
 
-        } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException("No handler " + etorName + " found for " + commandName, e);
+        } catch (ClassNotFoundException e1) {
+        	
+        	// try looking for the handler in the shared package
+
+        	handlerName = "org.sigmah.shared.command.handler." +
+        			commandName + "Handler";
+        	
+        	try {
+        		return Class.forName(handlerName);
+        	} catch(ClassNotFoundException e2) {
+        	
+        		throw new IllegalArgumentException("No handler " + handlerName + " found for " + commandName, e2);
+        	}
         }
 
     }

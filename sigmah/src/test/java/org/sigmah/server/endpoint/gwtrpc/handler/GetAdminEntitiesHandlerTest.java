@@ -27,9 +27,7 @@ import org.sigmah.test.InjectionSupport;
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/sites-simple1.db.xml")
 public class GetAdminEntitiesHandlerTest extends CommandTestCase {
-    private User user;
-    private AdminDAO adminDAO;
-    private Mapper mapper;
+
     private static final int PROVINCE = 1;
 
 
@@ -64,11 +62,9 @@ public class GetAdminEntitiesHandlerTest extends CommandTestCase {
 
     @Test
     public void testSiteQuery() throws Exception {
-
         GetAdminEntities cmd = new GetAdminEntities();
         cmd.setLevelId(1);
         cmd.setFilter(Filter.filter().onActivity(2));
-
 
         AdminEntityResult result = execute(cmd);
 

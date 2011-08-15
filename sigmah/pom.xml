@@ -313,6 +313,11 @@
             </exclusions>
             <version>3.4.0.GA</version>
         </dependency>
+		<dependency>
+		    <groupId>com.jolbox</groupId>
+		    <artifactId>bonecp</artifactId>
+		    <version>0.7.1.RELEASE</version>
+		</dependency>
         <dependency>
             <groupId>geronimo-spec</groupId>
             <artifactId>geronimo-spec-jta</artifactId>
@@ -395,6 +400,11 @@
             <version>2.5.1</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+		    <groupId>com.mysql</groupId>
+		    <artifactId>management</artifactId>
+		    <version>5-0-12</version>
+		</dependency>
         <dependency>
             <groupId>org.xerial.thirdparty</groupId>
             <artifactId>sqlitejdbc-nested</artifactId>

@@ -5,9 +5,14 @@
 
 package org.sigmah.server.endpoint.gwtrpc;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 import junit.framework.Assert;
 
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.junit.Test;
+import org.junit.internal.matchers.TypeSafeMatcher;
 import org.junit.runner.RunWith;
 import org.sigmah.server.dao.OnDataSet;
 import org.sigmah.shared.command.GetSites;
@@ -91,26 +96,27 @@ public class GetSitesTest extends CommandTestCase {
 
         PagingLoadResult<SiteDTO> result = execute(cmd);
 
-        Assert.assertEquals("rows retrieved [0,2]", 2, result.getData().size());
-        Assert.assertEquals("total rows [0,2]", 3, result.getTotalLength());
+        assertThat("offset", result.getOffset(), equalTo(0));
+        
 
         cmd.setOffset(1);
         cmd.setLimit(2);
 
         result = execute(cmd);
 
-        Assert.assertEquals("offset [1,2]", 1, result.getOffset());
-        Assert.assertEquals("rows retrieved [1,2]", 2, result.getData().size());
-        Assert.assertEquals("total rows [1,2]", 3, result.getTotalLength());
+        assertThat(result.getOffset(), equalTo(1));
+        assertThat(result.getData().size(), equalTo(2));
+        assertThat("total length", result.getTotalLength(), equalTo(3));
 
         cmd.setOffset(0);
         cmd.setLimit(50);
 
         result = execute(cmd);
 
-        Assert.assertEquals("offset [0,50]", 0, result.getOffset());
-        Assert.assertEquals("rows retrieved [0,50]", 3, result.getData().size());
-        Assert.assertEquals("total rows [0,50]", 3, result.getTotalLength());
+        assertThat(result.getOffset(), equalTo(0));
+        assertThat(result.getData().size(), equalTo(3));
+        assertThat("total length", result.getTotalLength(), equalTo(3));
+
 
     }
 
@@ -201,4 +207,6 @@ public class GetSitesTest extends CommandTestCase {
         Assert.assertEquals("rows on this page", 1, result.getData().size());
         Assert.assertEquals("correct site returned", 1, result.getData().get(0).getId());
     }
+    
+    
 }

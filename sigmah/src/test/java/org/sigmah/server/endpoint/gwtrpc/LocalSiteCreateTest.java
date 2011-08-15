@@ -11,7 +11,7 @@ import org.sigmah.server.util.BeanMappingModule;
 import org.sigmah.server.util.logging.LoggingModule;
 import org.sigmah.shared.command.CreateEntity;
 import org.sigmah.shared.command.GetSites;
-import org.sigmah.shared.command.handler.GetSitesHandler;
+import org.sigmah.shared.command.handler.GetSitesHandlerSync;
 import org.sigmah.shared.command.handler.LocalHandlerTestCase;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.dao.SqlSiteTableDAO;
@@ -60,7 +60,7 @@ public class LocalSiteCreateTest extends LocalHandlerTestCase {
 
         // try to retrieve what we've created FROM OUR CLIENT SIDE DATABASE
 
-        GetSitesHandler getSitesHandler = new GetSitesHandler(new SqlSiteTableDAO(localConnection, new SqliteDialect()));
+        GetSitesHandlerSync getSitesHandler = new GetSitesHandlerSync(new SqlSiteTableDAO(localConnection, new SqliteDialect()));
         PagingLoadResult<SiteDTO> loadResult = (PagingLoadResult<SiteDTO>) getSitesHandler.execute(GetSites.byId(newSite.getId()), user);        
         
 
