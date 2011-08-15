@@ -54,7 +54,7 @@ public class ProjectFieldSet extends FieldSet implements ProjectPickerView {
 	}
 
 	@Override
-	public AsyncMonitor getAsyncMonitor() {
+	public AsyncMonitor getLoadingMonitor() {
 		return null;
 	}
 

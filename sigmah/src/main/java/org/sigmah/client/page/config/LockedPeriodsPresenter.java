@@ -2,12 +2,11 @@ package org.sigmah.client.page.config;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.mvp.CanCreate;
+import org.sigmah.client.mvp.AddCreateView;
 import org.sigmah.client.mvp.CanCreate.CreateEvent;
 import org.sigmah.client.mvp.CanDelete.ConfirmDeleteEvent;
 import org.sigmah.client.mvp.CanDelete.RequestDeleteEvent;
@@ -17,18 +16,15 @@ import org.sigmah.client.mvp.CanUpdate.CancelUpdateEvent;
 import org.sigmah.client.mvp.CanUpdate.UpdateEvent;
 import org.sigmah.client.mvp.CrudView;
 import org.sigmah.client.mvp.ListPresenterBase;
-import org.sigmah.client.mvp.View;
 import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.config.LockedPeriodsPresenter.LockedPeriodListEditor;
 import org.sigmah.shared.command.BatchCommand;
-import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.Delete;
 import org.sigmah.shared.command.LockEntity;
 import org.sigmah.shared.command.UpdateEntity;
-import org.sigmah.shared.command.UpdateLockedPeriod;
 import org.sigmah.shared.command.result.BatchResult;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.command.result.VoidResult;
@@ -51,24 +47,18 @@ public class LockedPeriodsPresenter
 		Page {
 	
 	@ImplementedBy(LockedPeriodGrid.class)
-	public interface LockedPeriodListEditor extends
-		CrudView<LockedPeriodDTO, UserDatabaseDTO> {
-		List<LockedPeriodDTO> getUnsavedItems();
-
-		boolean hasChangedItems();
-
-		boolean hasSingleChangedItem();
-		Map<String, Object> getChanges(LockedPeriodDTO item);
+	public interface LockedPeriodListEditor
+		extends
+			CrudView<LockedPeriodDTO, UserDatabaseDTO> {
+		
+		void setTitle(String title);
 	}	
 	
 	@ImplementedBy(AddLockedPeriodDialog.class)
-	public interface AddLockedPeriodView 
+	public interface AddLockedPeriodView
 		extends 
-			View<LockedPeriodDTO>,
-			CanCreate<LockedPeriodDTO> {
+			AddCreateView<LockedPeriodDTO> {
 
-		void startCreate();
-		void stopCreate();
 		public void setUserDatabase(UserDatabaseDTO userDatabase);
 	}
 	
@@ -79,19 +69,12 @@ public class LockedPeriodsPresenter
 			LockedPeriodListEditor view) {
 		super(service, eventBus, view);
 		
-//		getData();
-		
-//		view.setCreateEnabled(true);
-//		view.setDeleteEnabled(true);
-//		view.setUpdateEnabled(true);
-	}
-
-	private void getData() {
-//		view.setItems(new ArrayList<LockedPeriodDTO>(parentModel.getLockedPeriods()));
 	}
 
 	@Override
 	public void onCreate(CreateEvent event) {
+		view.getCreatingMonitor().beforeRequest();
+		
 		final LockedPeriodDTO lockedPeriod = view.getValue();
 		LockEntity lockUserDatabase = new LockEntity(lockedPeriod);
 		if (lockedPeriod.getActivity() != null) {
@@ -107,13 +90,19 @@ public class LockedPeriodsPresenter
 		service.execute(lockUserDatabase, null, new AsyncCallback<CreateResult>() {
 			@Override
 			public void onFailure(Throwable caught) {
+				view.getCreatingMonitor().onServerError();
 				System.out.println("oh noes");
 			}
 
 			@Override
 			public void onSuccess(CreateResult result) {
+				// Update the Id for the child instance
 				lockedPeriod.setId(result.getNewId());
+				
+				// Tell the view there's a new kid on the block
 				view.create(lockedPeriod);
+				
+				// Update the in-memory model
 				parentModel.getLockedPeriods().add(lockedPeriod);
 			}
 		});
@@ -121,76 +110,72 @@ public class LockedPeriodsPresenter
 
 	@Override
 	public void onUpdate(UpdateEvent event) {
-		List<LockedPeriodDTO> changedItems = view.getUnsavedItems();
 		if (view.hasChangedItems()) {
-			Command updateCommand = null;
+			// Tell the user we're about to persist his changes
+			view.getUpdatingMonitor().beforeRequest();
 			
-			if (view.hasSingleChangedItem()) {
-				final LockedPeriodDTO lockedPeriod = view.getUnsavedItems().get(0);
-				UpdateEntity updateSingle = new UpdateEntity(lockedPeriod.getEntityName(), lockedPeriod.getId(), view.getChanges(lockedPeriod));
-				
-				service.execute(updateSingle, null, new AsyncCallback<VoidResult>() {
-					@Override
-					public void onFailure(Throwable caught) {
-						// TODO Handle failure
-					}
-
-					@Override
-					public void onSuccess(VoidResult result) {
-						view.update(lockedPeriod);
-						
-						// Simplu use the hammer: remove the old one, type filter textadd the updated one
-						parentModel.getLockedPeriods().remove(lockedPeriod);
-						parentModel.getLockedPeriods().add(lockedPeriod);
-					}
-				});
-				
-			} else {
-				BatchCommand batch = new BatchCommand();
-				for (LockedPeriodDTO lockedPeriod : view.getUnsavedItems()) {
-					batch.add(new UpdateEntity(
-							lockedPeriod.getEntityName(), 
-							lockedPeriod.getId(), 
-							view.getChanges(lockedPeriod)));
+			service.execute(createBatchCommand(), null, new AsyncCallback<BatchResult>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					// Tell the user an error occurred
+					view.getDeletingMonitor().onServerError();
+					// TODO Handle failure
 				}
-				
-				service.execute(batch, null, new AsyncCallback<BatchResult>() {
-					@Override
-					public void onFailure(Throwable caught) {
-						// TODO Handle failure
-					}
 
-					@Override
-					public void onSuccess(BatchResult result) {
-						// Simply use the hammer: remove the old one, add the updated one
-						for (LockedPeriodDTO lockedPeriod : view.getUnsavedItems()) {
-							LockedPeriodDTO lockedPeriodToRemove = null;
-							Set<LockedPeriodDTO> lockedPeriodsToUpdate = parentModel.getLockedPeriods(); 
-							for (LockedPeriodDTO oldLockedPeriod : lockedPeriodsToUpdate) {
-								if (lockedPeriod.getId() == oldLockedPeriod.getId()) {
-									lockedPeriodToRemove = oldLockedPeriod;
-									break;
-								}
-							}
-							if (lockedPeriodToRemove !=null) {
-								lockedPeriodsToUpdate.remove(lockedPeriodToRemove);
-								parentModel.getLockedPeriods().remove(lockedPeriodToRemove);
-								parentModel.getLockedPeriods().add(lockedPeriod);
+				@Override
+				public void onSuccess(BatchResult result) {
+					// Tell the user we're done updating
+					view.getDeletingMonitor().onCompleted();
+					
+					// Update the in-memory model
+					updateParent();
+					
+					// Update the view
+					view.update(null);
+				}
+
+				/*
+				 * Iterate over all changed lockedperiods, and then replace them
+				 */
+				private void updateParent() {
+					for (LockedPeriodDTO lockedPeriod : view.getUnsavedItems()) {
+						LockedPeriodDTO lockedPeriodToRemove = null;
+						
+						// Cache the LockedPeriods candidate for removal
+						Set<LockedPeriodDTO> lockedPeriodsToUpdate = parentModel.getLockedPeriods();
+						
+						// Find the LockedPeriod in the model
+						for (LockedPeriodDTO oldLockedPeriod : lockedPeriodsToUpdate) {
+							if (lockedPeriod.getId() == oldLockedPeriod.getId()) {
+								lockedPeriodToRemove = oldLockedPeriod;
+								break;
 							}
 						}
-
-						view.update(null);
+						
+						// Replace LockedPeriod when the same entity is found
+						if (lockedPeriodToRemove != null) {
+							// Remove from cache
+							lockedPeriodsToUpdate.remove(lockedPeriodToRemove);
+							
+							// Replace old instance with new instance
+							parentModel.getLockedPeriods().remove(lockedPeriodToRemove);
+							parentModel.getLockedPeriods().add(lockedPeriod);
+						}
 					}
-				});
-			}
+				}
+			});
 		}
 	}
 
-	private UpdateLockedPeriod createUpdateCommand(LockedPeriodDTO lockedPeriod) {
-		UpdateLockedPeriod update = new UpdateLockedPeriod(lockedPeriod);
-		update.setUserDatabaseId(parentModel.getId());
-		
-		return update;
+	private BatchCommand createBatchCommand() {
+		BatchCommand batch = new BatchCommand();
+		for (LockedPeriodDTO lockedPeriod : view.getUnsavedItems()) {
+			batch.add(new UpdateEntity(
+					lockedPeriod.getEntityName(), 
+					lockedPeriod.getId(), 
+					view.getChanges(lockedPeriod)));
+		}
+		return batch;
 	}
 
 	@Override
@@ -231,7 +216,7 @@ public class LockedPeriodsPresenter
 		view.askConfirmDelete(view.getValue());
 	}
 
-	public void go(UserDatabaseDTO db) {
+	public void initialize(UserDatabaseDTO db) {
 		parentModel = db;
 		
 		ArrayList<LockedPeriodDTO> items = new ArrayList<LockedPeriodDTO>(db.getLockedPeriods());

@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
@@ -58,7 +60,7 @@ public class Project implements Serializable {
 		this.description = description;
 	}
 
-	@Column(length=250, nullable=true)
+	@Lob
 	public String getDescription() {
 		return description;
 	}
@@ -85,8 +87,8 @@ public class Project implements Serializable {
 		this.lockedPeriods = lockedPeriods;
 	}
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
-    @JoinColumn(name = "ProjectId", nullable = false)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy="project")
+    //@OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
 	public Set<LockedPeriod> getLockedPeriods() {
 		return lockedPeriods;
 	}

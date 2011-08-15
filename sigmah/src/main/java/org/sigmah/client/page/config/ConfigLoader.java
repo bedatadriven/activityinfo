@@ -111,7 +111,7 @@ public class ConfigLoader implements PageLoader {
 
                             } else if (LockedPeriodsPresenter.LockedPeriod.equals(pageId)) {
                             	LockedPeriodsPresenter presenter = injector.getLockedPeriodsEditor();
-                                presenter.go(db);
+                                presenter.initialize(db);
                                 callback.onSuccess(presenter);
                                 
                             } else if (DbProjectEditor.DatabaseProjects.equals(pageId)) {

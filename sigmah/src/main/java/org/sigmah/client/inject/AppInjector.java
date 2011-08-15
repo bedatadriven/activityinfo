@@ -43,6 +43,9 @@ import org.sigmah.client.page.report.ReportListPagePresenter;
 import org.sigmah.client.page.report.ReportLoader;
 import org.sigmah.client.page.report.ReportModule;
 import org.sigmah.client.page.report.ReportPreviewPresenter;
+import org.sigmah.client.page.search.SearchLoader;
+import org.sigmah.client.page.search.SearchModule;
+import org.sigmah.client.page.search.SearchPresenter;
 import org.sigmah.client.page.table.PivotModule;
 import org.sigmah.client.page.table.PivotPageLoader;
 import org.sigmah.client.page.table.PivotPresenter;
@@ -66,7 +69,8 @@ import com.google.gwt.inject.client.Ginjector;
         MapModule.class,
         PivotModule.class,
         ConfigModule.class,
-        OfflineModule.class
+        OfflineModule.class,
+        SearchModule.class
 })
 public interface AppInjector extends Ginjector {
 
@@ -97,7 +101,7 @@ public interface AppInjector extends Ginjector {
     DesignPresenter getDesigner();
 
     WelcomeLoader createWelcomeLoader();
-
+    
     DataEntryLoader createDataEntryLoader();
 
     MapLoader createMapLoader();
@@ -139,4 +143,8 @@ public interface AppInjector extends Ginjector {
     Authentication getAuthentication();
 
 	DashboardLoader createDashboardLoader();
+
+	SearchPresenter getSearchPage();
+
+	SearchLoader createSearchLoader();
 }

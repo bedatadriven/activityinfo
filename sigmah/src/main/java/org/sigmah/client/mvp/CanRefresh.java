@@ -14,6 +14,9 @@ public interface CanRefresh<M> {
 	// methods.
 	public HandlerRegistration addRefreshHandler(RefreshHandler handler);
 	
+	// Is the refresh button enabled?
+	public void setRefreshEnabled(boolean canRefresh);
+	
 	public class RefreshEvent extends GwtEvent<RefreshHandler> {
 		public static Type TYPE = new Type<RefreshHandler>(); 
 		

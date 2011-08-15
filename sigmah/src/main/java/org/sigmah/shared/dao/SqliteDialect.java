@@ -39,4 +39,5 @@ public class SqliteDialect implements SqlDialect {
     public String limitClause(int offset, int limit) {
         return "LIMIT " + limit + " OFFSET " + offset;
     }
+
 }

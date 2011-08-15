@@ -29,6 +29,6 @@ public interface View<M> extends TakesValue<M>, IsWidget {
 	 * MaskingAsyncMonitor etc
 	 * 
 	 */
-	public AsyncMonitor getAsyncMonitor();
+	public AsyncMonitor getLoadingMonitor();
 	
 }

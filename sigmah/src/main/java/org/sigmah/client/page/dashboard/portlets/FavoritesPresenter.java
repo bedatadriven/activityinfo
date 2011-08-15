@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.page.common.columns.ReadTextColumn;
 import org.sigmah.client.page.dashboard.portlets.FavoritesPresenter.View.RemovedFavoriteHandler;
 import org.sigmah.shared.command.GetFavoritePages;
 import org.sigmah.shared.command.RemoveFavorite;
@@ -92,11 +93,7 @@ public class FavoritesPresenter implements PortletPresenter {
 			store = new ListStore<PageDTO>();
 			List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
-			ColumnConfig columnPageName = new ColumnConfig();
-			columnPageName.setId("partnerName");
-			columnPageName.setHeader("Saved page");
-			columnPageName.setWidth(200);
-			configs.add(columnPageName);
+			configs.add(new ReadTextColumn("partnerName", "Saved page", 200));
 
 			ColumnConfig columnRemovePage = new ColumnConfig();
 			columnRemovePage.setId("remove");

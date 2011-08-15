@@ -41,4 +41,10 @@ public class UIActions {
     public static final String discardChanges = "discard";
 
     public static final String exportData = "exportData";
+    
+    public static final String groupTime = "groupTime";
+    
+    public static final String groupAdminLevel = "groupAdminLevel";
+
+    public static final String showLockedPeriods = "showLockedPeriods";
 }

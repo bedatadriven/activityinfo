@@ -74,6 +74,8 @@ public class PivotHibernateDAO implements PivotDAO {
                 appendIdCriteria(where, "Activity.DatabaseId", filter.getRestrictions(type), parameters);
             } else if (type == DimensionType.Partner) {
                 appendIdCriteria(where, "Site.PartnerId", filter.getRestrictions(type), parameters);
+            } else if (type == DimensionType.Project) {
+                appendIdCriteria(where, "Site.ProjectId", filter.getRestrictions(type), parameters);
             } else if (type == DimensionType.AdminLevel) {
                 where.append(" AND Site.LocationId IN " +
                         "(SELECT Link.LocationId FROM LocationAdminLink Link WHERE 1=1 ");
@@ -283,7 +285,8 @@ public class PivotHibernateDAO implements PivotDAO {
                 "LEFT JOIN ReportingPeriod Period ON (Period.ReportingPeriodId=V.ReportingPeriodId) " +
                 "LEFT JOIN Indicator ON (Indicator.IndicatorId = V.IndicatorId) " +
                 "LEFT JOIN Site ON (Period.SiteId = Site.SiteId) " +
-                "LEFT JOIN Partner ON (Site.PartnerId = Partner.PartnerId) " +
+                "LEFT JOIN Partner ON (Site.PartnerId = Partner.PartnerId)" +
+                "LEFT JOIN Project ON (Site.ProjectId = Project.ProjectId) " +
                 "LEFT JOIN Location ON (Location.LocationId = Site.LocationId) " +
                 "LEFT JOIN Activity ON (Activity.ActivityId = Site.ActivityId) " +
                 "LEFT JOIN UserDatabase ON (Activity.DatabaseId = UserDatabase.DatabaseId) ");
@@ -319,6 +322,7 @@ public class PivotHibernateDAO implements PivotDAO {
         StringBuilder from = new StringBuilder();
         from.append(" Site " +
                 "LEFT JOIN Partner ON (Site.PartnerId = Partner.PartnerId) " +
+                "LEFT JOIN Project ON (Site.ProjectId = Project.ProjectId) " +
                 "LEFT JOIN Location ON (Location.LocationId = Site.LocationId) " +
                 "LEFT JOIN Activity ON (Activity.ActivityId = Site.ActivityId) " +
                 "LEFT JOIN Indicator ON (Indicator.ActivityId = Activity.ActivityId) " +
@@ -380,6 +384,11 @@ public class PivotHibernateDAO implements PivotDAO {
                 dimColumns.append(", Site.PartnerId, Partner.Name");
                 bundlers.add(new EntityBundler(dimension, nextColumnIndex));
                 nextColumnIndex += 2;
+                
+            } else if (dimension.getType() == DimensionType.Project) {
+            	dimColumns.append(", Site.ProjectId, Project.Name");
+            	bundlers.add(new EntityBundler(dimension, nextColumnIndex));
+            	nextColumnIndex += 2;
 
             } else if (dimension.getType() == DimensionType.Indicator) {
                 dimColumns.append(", Indicator.IndicatorId, Indicator.Name, Indicator.SortOrder");

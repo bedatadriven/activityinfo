@@ -14,6 +14,9 @@ import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.client.page.common.columns.EditDateColumn;
+import org.sigmah.client.page.common.columns.EditTextColumn;
+import org.sigmah.client.page.common.columns.ReadTextColumn;
 import org.sigmah.client.page.common.grid.AbstractEditorGridView;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.shared.dto.ActivityDTO;
@@ -27,9 +30,7 @@ import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
-import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.CellSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -43,7 +44,6 @@ import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
-import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 
 /*
@@ -60,18 +60,25 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
 
     public SiteGrid(boolean enableDragSource) {
         this();
+        
         this.enableDragSource = enableDragSource;
     }
 
     public SiteGrid() {
-        this.setLayout(new BorderLayout());
+        initializeComponent();
     }
+
+	private void initializeComponent() {
+		this.setLayout(new BorderLayout());
+	}
 
     @Override
     public void init(SiteEditor presenter, ActivityDTO activity, ListStore<SiteDTO> store) {
         this.activity = activity;
         setHeading(I18N.MESSAGES.activityTitle(activity.getDatabase().getName(), activity.getName()));
-
+        
+        //QuickTip quickTip = new QuickTip(grid);
+        
         super.init(presenter, store);
     }
 
@@ -81,9 +88,8 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
     }
 
     public Grid<SiteDTO> createGridAndAddToContainer(Store store) {
-
         grid = new EditorGrid<SiteDTO>((ListStore)store, createColumnModel(activity));
-        //grid.setColumnResize(true);
+        
         grid.setLoadMask(true);
         grid.setStateful(true);
         grid.setStateId("SiteGrid" + activity.getId());
@@ -93,13 +99,6 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
 		grid.setSelectionModel(sm);
 		
         grid.setClicksToEdit(ClicksToEdit.TWO);
-//        grid.addListener(Events.BeforeEdit, new Listener<GridEvent>() {
-//            public void handleEvent(GridEvent be) {
-//                if(be.getProperty().startsWith(AdminLevelDTO.PROPERTY_PREFIX)) {
-//                    prepareAdminEditor(be);
-//                }
-//            }
-//        });
 
         add(grid, new BorderLayoutData(Style.LayoutRegion.CENTER));
 
@@ -109,22 +108,6 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
 
         return grid;
     }
-
-//    private void prepareAdminEditor(GridEvent be) {
-//
-//        ComboBox comboBox = adminComboBoxes.get(be.getProperty());
-//
-//        ListStore<AdminEntityDTO> store =
-//                presenter.getAdminEntityStore(be.getProperty(), (SiteDTO)be.getRecord().getModel());
-//
-//        if(store == null) {
-//            be.setCancelled(true);
-//        } else {
-//            comboBox.setStore(store);
-//        }
-//    }
-
-
 
     protected void initToolBar() {
         toolBar.addSaveSplitButton();
@@ -137,6 +120,7 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
         toolBar.add(new SeparatorToolItem());
 
         toolBar.addExcelExportButton();
+        toolBar.addLockedPeriodsButton();
     }
 
     @Override
@@ -149,17 +133,44 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
         createLockColumn();
         createDateColumn();
         createPartnerColumn();
+        createProjectColumn();
         createLocationColumn();
         createIndicatorColumns();
 
         getAdminLevels();
         createAdminLevelsColumns();
+        //createGeographyColumn();
 
         return new ColumnModel(columns);
     }
 
+	private void createGeographyColumn() {
+		if(activity.getDatabase().isViewAllAllowed()) {
+			ColumnConfig columnGeography = new ColumnConfig();
+			GridCellRenderer<SiteDTO> projectRenderer = new GridCellRenderer<SiteDTO>() {
+				
+				@Override
+				public Object render(SiteDTO model, String property, ColumnData config,
+						int rowIndex, int colIndex, ListStore<SiteDTO> store,
+						Grid<SiteDTO> grid) {
+					return null;
+				}
+			};
+			columnGeography.setRenderer(projectRenderer);
+			columnGeography.setHeader(I18N.CONSTANTS.geography());
+			columnGeography.setWidth(100);
+			columns.add(columnGeography);
+        }
+	}
+
+	private void createProjectColumn() {
+		if(activity.getDatabase().isViewAllAllowed()) {
+			columns.add(new ReadTextColumn("project", I18N.CONSTANTS.project(), 100));
+        }
+	}
+
 	private void createLockColumn() {
-		ColumnConfig columnLocked = new ColumnConfig("x", "", 70);
+		ColumnConfig columnLocked = new ColumnConfig("x", "", 24);
         columnLocked.setRenderer(new GridCellRenderer<SiteDTO>() {
             @Override
             public Object render(SiteDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
@@ -168,11 +179,11 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
             	if (model.fallsWithinLockedPeriod(activity)) {
             		String tooltip = buildTooltip(model, activity);
             		
-            		builder.append("<span qtip='");
-            		builder.append(tooltip);
-            		builder.append("'>");
+            		//builder.append("<span qtip='");
+            		//builder.append(tooltip);
+            		//builder.append("'>");
             		builder.append(IconImageBundle.ICONS.lockedPeriod().getHTML());
-            		builder.append("</span>");
+            		//builder.append("</span>");
             		return builder.toString();
             	} else {
             		return "";
@@ -192,39 +203,14 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
 
 	private void createLocationColumn() {
 		if(activity.getLocationType().getBoundAdminLevelId() == null) {
-            // Location (Name)
-            TextField<String> locationField = new TextField<String>();
-            locationField.setAllowBlank(false);
-            ColumnConfig locationColumn = new ColumnConfig("locationName", I18N.CONSTANTS.location(), 100);
-            locationColumn.setEditor(new CellEditor(locationField));
-            columns.add(locationColumn);
-
-            // Axe
-            TextField<String> locationAxeField = new TextField<String>();
-            ColumnConfig axeColumn = new ColumnConfig("locationAxe", I18N.CONSTANTS.axe(), 75);
-            axeColumn.setEditor(new CellEditor(locationAxeField));
-            columns.add(axeColumn);
+            columns.add(new EditTextColumn("locationName", I18N.CONSTANTS.location(), 100));
+            columns.add(new EditTextColumn("locationAxe", I18N.CONSTANTS.axe(), 100));
         }
 	}
 
 	private void createAdminLevelsColumns() {
 		for (AdminLevelDTO level : levels) {
-
-
-//            ComboBox<AdminEntityDTO> combo = new RemoteComboBox<AdminEntityDTO>();
-//            combo.setTypeAheadDelay(50);
-//            combo.setForceSelection(false);
-//            combo.setEditable(false);
-//            combo.setValueField("id");
-//            combo.setDisplayField("name");
-//            combo.setTriggerAction(ComboBox.TriggerAction.ALL);
-
-            ColumnConfig adminColumn = new ColumnConfig(level.getPropertyName(), level.getName(), 75);
-//            adminColumn.setEditor(new CellEditor(combo));
-
-//            adminComboBoxes.put(level.getPropertyName(), combo);
-
-            columns.add(adminColumn);
+            columns.add(new ColumnConfig(level.getPropertyName(), level.getName(), 75));
         }
 	}
 
@@ -244,15 +230,7 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
 
 	private void createDateColumn() {
 		if(activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE) {
-
-            DateField dateField = new DateField();
-            dateField.getPropertyEditor().setFormat(DateTimeFormat.getFormat("MM/dd/y"));
-
-            ColumnConfig dateColumn = new ColumnConfig("date2", I18N.CONSTANTS.date(), 100);
-            dateColumn.setDateTimeFormat(DateTimeFormat.getFormat("yyyy-MMM-dd"));
-            dateColumn.setEditor(new CellEditor(dateField));
-
-            columns.add(dateColumn);
+            columns.add(new EditDateColumn("date2", I18N.CONSTANTS.date(), 100));
         }
 	}
 

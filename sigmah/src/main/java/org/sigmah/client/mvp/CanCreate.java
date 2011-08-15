@@ -1,5 +1,6 @@
 package org.sigmah.client.mvp;
 
+import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.shared.dto.DTO;
 
 import com.google.gwt.event.shared.EventHandler;
@@ -29,8 +30,18 @@ public interface CanCreate<M extends DTO> {
 	// An item is created by the presenter, this method adds the item to the view 
 	public void create(M item);
 	
+	// Is the 'new' button enabled?
 	public void setCreateEnabled(boolean createEnabled);
-
+	
+	// Set the UI for creation of a new entity
+	public void startCreate();
+	
+	// The user wants to exit the new entity creation mode
+	public void cancelCreate();
+	
+	// Let the user know what's going on when creating an entity
+	public AsyncMonitor getCreatingMonitor();
+	
 	// The Presenter has a seperate view for creating/updating domain object
 	public class CreateEvent extends GwtEvent<CreateHandler> {
 		public static Type TYPE = new Type<CreateHandler>(); 

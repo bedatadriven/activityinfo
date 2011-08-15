@@ -334,4 +334,14 @@ public final class UserDatabaseDTO extends BaseModelData implements EntityDTO, P
 	    
 	    return lockedPeriods;
 	}
+
+	public ProjectDTO getProjectById(Integer value) {
+		for (ProjectDTO project : getProjects()) {
+			if (value.intValue() == project.getId()) {
+				return project;
+			}
+		}
+		
+		return null;
+	}
 }

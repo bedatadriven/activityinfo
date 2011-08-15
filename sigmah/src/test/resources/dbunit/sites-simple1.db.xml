@@ -201,7 +201,12 @@
                  description="desc"
                  sortOrder="1"/>
 
-	<lockedPeriod LockedPeriodId="1" enabled="true" toDate="2009-01-02" fromDate="2009-01-01" name="woei" UserDatabaseId="1"/>
+	<lockedPeriod LockedPeriodId="1" enabled="true" toDate="2009-01-02" fromDate="2009-01-01" name="woei" UserDatabaseId="1"/>   
+	<lockedPeriod LockedPeriodId="3" enabled="true" toDate="2009-01-22" fromDate="2009-01-01" name="whoa" ActivityId="1"/> 
+	<lockedPeriod LockedPeriodId="4" enabled="true" toDate="2009-01-24" fromDate="2009-01-01" name="yey" UserDatabaseId="2"/>	
+	<project projectId="1" databaseId="1" name="RRMP"/>
+	<project projectId="2" databaseId="1" name="USAID"/>
+	<lockedPeriod LockedPeriodId="2" enabled="true" toDate="2009-01-12" fromDate="2009-01-01" name="lala" ProjectId="1"/>
 	
 	<!--  PEAR Partners -->
 
@@ -210,6 +215,9 @@
 	
 	<partner partnerId="2" name="Solidarites"  />
 	<partnerInDatabase partnerId="2" databaseId="1"/>
+	
+	<partner partnerId="3" name="Kivu Help" />
+	<partnerInDatabase partnerId="3" databaseId="1" />
 
     <!-- PEAR Plus Partners -->
     <partnerInDatabase partnerId="1" databaseId="2"/>
@@ -257,7 +265,7 @@
 	<locationAdminLink locationId="1" adminEntityId="2"/>
 	<locationAdminLink locationId="1" adminEntityId="12"/>
 	
-	<site siteId="1" activityId="1" locationId="1" partnerId="1" Status="1" target="0" Date1="2009-01-01" Date2="2009-01-02" DateCreated="2009-02-01" DateEdited="2009-02-01"/>
+	<site siteId="1" activityId="1" locationId="1" partnerId="1" Status="1" target="0" Date1="2009-01-01" Date2="2009-01-02" DateCreated="2009-02-01" DateEdited="2009-02-01" projectId="1"/>
 	<attributeValue siteId="1" attributeId="1" value="0"/>
 	<attributeValue siteId="1" attributeId="2" value="1"/>
 	
@@ -272,7 +280,7 @@
 	<locationAdminLink locationId="2" adminEntityId="2"/>
 	<locationAdminLink locationId="2" adminEntityId="11"/>
 	
-	<site siteId="2" activityId="1" locationId="2" partnerId="1" Status="1" target="1" Date1="2009-01-15" Date2="2009-01-16" DateCreated="2009-02-01" DateEdited="2009-02-01"/>
+	<site siteId="2" activityId="1" locationId="2" partnerId="1" Status="1" target="1" Date1="2009-01-15" Date2="2009-01-16" DateCreated="2009-02-01" DateEdited="2009-02-01" projectId="1"/>
 	<attributeValue siteId="2" attributeId="1" value="1"/>
 	<attributeValue siteId="2" attributeId="2" value="1"/>
 	
@@ -286,7 +294,7 @@
 	<locationAdminLink locationId="3" adminEntityId="4"/>
 	<locationAdminLink locationId="3" adminEntityId="21"/>
 	
-	<site siteId="3" activityId="1" locationId="3" partnerId="2" Status="1" target="0" Date1="2008-10-05" Date2="2008-10-06" DateCreated="2009-02-01" DateEdited="2009-02-01"/>
+	<site siteId="3" activityId="1" locationId="3" partnerId="2" Status="1" target="0" Date1="2008-10-05" Date2="2008-10-06" DateCreated="2009-02-01" DateEdited="2009-02-01" projectId="2"/>
 	<attributeValue siteId="3" attributeId="1" value="1"/>
 	<attributeValue siteId="3" attributeId="2" value="0"/>
 	

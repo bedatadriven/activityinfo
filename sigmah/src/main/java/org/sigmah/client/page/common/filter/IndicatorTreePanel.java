@@ -83,7 +83,8 @@ public class IndicatorTreePanel extends ContentPanel {
         });
 
         tree = new TreePanel<ModelData>(store);
-
+        
+        tree.setCheckable(true);
         tree.getStyle().setNodeCloseIcon(null);
         tree.getStyle().setNodeOpenIcon(null);
         tree.setLabelProvider(new ModelStringProvider<ModelData>() {

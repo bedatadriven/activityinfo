@@ -17,7 +17,8 @@ public enum DimensionType {
 	Indicator(SortType.DEFINED),
 	IndicatorCategory(SortType.DEFINED),
 	AttributeGroup(SortType.NATURAL_VALUE),
-    Site(SortType.NATURAL_LABEL);
+    Site(SortType.NATURAL_LABEL), 
+    Project(SortType.NATURAL_LABEL);
 
 	private SortType sortOrder;
 

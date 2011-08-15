@@ -1,7 +1,5 @@
 package org.sigmah.client.page.config;
 
-import java.util.List;
-
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
@@ -78,14 +76,6 @@ public class AddLockedPeriodDialog extends Window implements
 		initializeComponent();
 		
 		setStartState();
-	}
-	
-	public void setProjects(List<ProjectDTO> projects) {
-
-	}
-	
-	public void setActivities(List<ActivityDTO> activities) {
-
 	}
 	
 	@Override
@@ -236,7 +226,7 @@ public class AddLockedPeriodDialog extends Window implements
 	}
 
 	@Override
-	public AsyncMonitor getAsyncMonitor() {
+	public AsyncMonitor getLoadingMonitor() {
 		return null;
 	}
 
@@ -307,13 +297,6 @@ public class AddLockedPeriodDialog extends Window implements
 		this.show();
 	}
 
-	@Override
-	public void stopCreate() {
-		setStartState();
-		
-		this.hide();
-	}
-	
 	private void setStartState() {
 		textfieldName.setValue(null);
 		datefieldFromDate.setValue(null);
@@ -322,5 +305,74 @@ public class AddLockedPeriodDialog extends Window implements
 		radioActivity.setValue(false);
 		radioProject.setValue(false);
 		radioDatabase.setValue(true);
+	}
+
+	@Override
+	public void cancelCreate() {
+		setStartState();
+		this.hide();
+	}
+
+	@Override
+	public void update(LockedPeriodDTO item) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void cancelUpdate(LockedPeriodDTO item) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void cancelUpdateAll() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void startUpdate() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setUpdateEnabled(boolean updateEnabled) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public HandlerRegistration addUpdateHandler(
+			org.sigmah.client.mvp.CanUpdate.UpdateHandler handler) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public HandlerRegistration addCancelUpdateHandler(
+			org.sigmah.client.mvp.CanUpdate.CancelUpdateHandler handler) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public HandlerRegistration addRequestUpdateHandler(
+			org.sigmah.client.mvp.CanUpdate.RequestUpdateHandler handler) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public AsyncMonitor getCreatingMonitor() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public AsyncMonitor getUpdatingMonitor() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

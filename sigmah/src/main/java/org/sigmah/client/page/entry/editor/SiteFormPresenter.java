@@ -194,7 +194,6 @@ public class SiteFormPresenter implements SiteFormLeash {
 
                 @Override
                 public void onSuccess(VoidResult voidResult) {
-                    // update model
                     updateSiteModel();
 
                     eventBus.fireEvent(new SiteEvent(AppEvents.SiteChanged, SiteFormPresenter.this, currentSite));

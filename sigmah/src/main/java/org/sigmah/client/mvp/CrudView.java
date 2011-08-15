@@ -1,5 +1,8 @@
 package org.sigmah.client.mvp;
 
+import java.util.List;
+import java.util.Map;
+
 import org.sigmah.shared.dto.DTO;
 
 /*
@@ -24,10 +27,10 @@ public interface CrudView<M extends DTO, P extends DTO> extends
 	CanUpdate<M>,
 	CanDelete<M>,
 	CanFilter<M>,
-	CanRefresh<M> {
-//public interface CrudView<M extends DTO, P extends HasCollection<M>> extends View<M> {
-	
-	/*
-	 * whether or not the user currently may C/U/D an item
-	 */
+	CanRefresh<M> 
+{
+	List<M> getUnsavedItems();
+	boolean hasChangedItems();
+	boolean hasSingleChangedItem();
+	Map<String, Object> getChanges(M item);
 }

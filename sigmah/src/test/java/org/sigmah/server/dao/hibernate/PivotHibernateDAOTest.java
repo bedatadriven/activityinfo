@@ -42,13 +42,14 @@ import com.google.inject.Inject;
 public class PivotHibernateDAOTest {
 
 
-    private PivotDAO dao;
+	private PivotDAO dao;
     private Set<Dimension> dimensions;
     private Dimension indicatorDim;
     private Filter filter;
     private AdminDimension provinceDim;
     private AdminDimension territoireDim;
     private List<PivotDAO.Bucket> buckets;
+    private Dimension projectDim = new Dimension(DimensionType.Project);
     private Dimension partnerDim;
 
 
@@ -56,7 +57,8 @@ public class PivotHibernateDAOTest {
     private static final int NB_BENEFICIARIES_ID = 1;
 
     @Inject
-    public PivotHibernateDAOTest(PivotHibernateDAO dao) {
+    public PivotHibernateDAOTest(PivotHibernateDAO dao) {  
+
         this.dao = dao;
     }
 
@@ -169,6 +171,42 @@ public class PivotHibernateDAOTest {
         assertEquals(3, (int) buckets.get(0).doubleValue());
 
     }
+    
+    
+    @Test
+    public void projects() {
+    	
+    	withIndicatorAsDimension();
+    	withProjectAsDimension();
+    	filter.addRestriction(DimensionType.Database, 1);
+    	filter.addRestriction(DimensionType.Indicator, 1);
+    	
+    	execute();
+    	
+    	assertBucketCount(2);
+    	assertThat().forProject(1).thereIsOneBucketWithValue(5100);
+    	assertThat().forProject(2).thereIsOneBucketWithValue(10000);
+  
+    }
+    
+    @Test
+    public void projectFilters() {
+    	
+    	withIndicatorAsDimension();
+    	withProjectAsDimension();
+    	
+    	filter.addRestriction(DimensionType.Database, 1);
+    	filter.addRestriction(DimensionType.Project, 1);
+    	
+    	execute();
+    	
+    	assertBucketCount(3);
+    	
+    	assertThat().forIndicator(1).thereIsOneBucketWithValue(5100);
+    	assertThat().forIndicator(2).thereIsOneBucketWithValue(1700);
+    	assertThat().forIndicator(103).thereIsOneBucketWithValue(2);
+    }
+    
 
     private void assertBucketCount(int expectedCount) {
         assertEquals(expectedCount, buckets.size());
@@ -278,6 +316,10 @@ public class PivotHibernateDAOTest {
         indicatorDim = new Dimension(DimensionType.Indicator);
         dimensions.add(indicatorDim);
     }
+    
+    private void withProjectAsDimension() {
+    	dimensions.add(projectDim);
+    }
 
     private void withAdminDimension(AdminDimension adminDimension) {
         dimensions.add(adminDimension);
@@ -324,7 +366,13 @@ public class PivotHibernateDAOTest {
             return this;
         }
 
-        public AssertionBuilder forPartner(int partnerId) {
+        public AssertionBuilder forProject(int projectId) {
+			criteria.append(" with project ").append(projectId);
+			filter(projectDim, projectId);
+			return this;
+		}
+
+		public AssertionBuilder forPartner(int partnerId) {
             criteria.append(" with partner ").append(partnerId);
             filter(partnerDim, partnerId);
             return this;

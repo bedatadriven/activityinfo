@@ -10,6 +10,12 @@ public class SearchHitDTO extends BaseModelData implements DTO {
 	private String type;
 	
 	public SearchHitDTO() {
+		set("name", "woei!");
+	}	
+	
+	public SearchHitDTO(DTO dto, int position) {
+		setDto(dto);
+		setPosition(position);
 	}
 	
 	public float getBoost() {
@@ -29,6 +35,10 @@ public class SearchHitDTO extends BaseModelData implements DTO {
 	}
 	public void setDto(DTO dto) {
 		set("dto", dto);
+	}
+	
+	public BaseModelData getDtoAsBaseModel() {
+		return getDto() == null ? null : (BaseModelData)getDto();
 	}
 
 	public void setType(String type) {

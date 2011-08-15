@@ -128,7 +128,7 @@ public final class SiteDTO extends BaseModelData implements EntityDTO {
     
     
     public String getProjectName() {
-		return getProject() == null ? null : getProject().getName();
+		return getProject() == null ? "" : getProject().getName();
     }
 
     /**
@@ -354,7 +354,7 @@ public final class SiteDTO extends BaseModelData implements EntityDTO {
 	 * Returns true when this Site is locked for C/U/D operations
 	 */
 	public boolean fallsWithinLockedPeriod(ActivityDTO activity) {
-		return fallsWithinLockedPeriods(getRelevantLockedPeriods(activity), activity);
+		return fallsWithinLockedPeriods(getRelevantLockedPeriods(activity), activity, this.getDate2());
 	}
 
 	private List<LockedPeriodDTO> getRelevantLockedPeriods(ActivityDTO activity) {
@@ -374,10 +374,10 @@ public final class SiteDTO extends BaseModelData implements EntityDTO {
 	/*
 	 * Returns true when this Site falls within at least one of given LockedPeriods
 	 */
-	public boolean fallsWithinLockedPeriods(Iterable<LockedPeriodDTO> lockedPeriods, ActivityDTO activity) {
+	public static boolean fallsWithinLockedPeriods(Iterable<LockedPeriodDTO> lockedPeriods, ActivityDTO activity, Date date) {
 		for (LockedPeriodDTO lockedPeriod : lockedPeriods) {
 			// For reporting purposes, only the Date2 is 'counted'.  
-			if (lockedPeriod.fallsWithinPeriod(getDate2())) {
+			if (lockedPeriod.fallsWithinPeriod(date)) {
 				return true;
 			}
 		}

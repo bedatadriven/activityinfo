@@ -231,6 +231,7 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 		list.add(new Dimension(I18N.CONSTANTS.activity(), DimensionType.Activity));
 		list.add(new Dimension(I18N.CONSTANTS.indicators(), DimensionType.Indicator));
 		list.add(new Dimension(I18N.CONSTANTS.partner(), DimensionType.Partner));
+		list.add(new Dimension(I18N.CONSTANTS.project(), DimensionType.Project));
 
 		list.add(new DimensionFolder(I18N.CONSTANTS.geography(), DimensionType.AdminLevel,0,0));
 		list.add(new DimensionFolder(I18N.CONSTANTS.time(), DimensionType.Date,0,0));
