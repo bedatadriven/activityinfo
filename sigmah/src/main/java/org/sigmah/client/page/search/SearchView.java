@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.sigmah.client.mvp.ListView;
 import org.sigmah.shared.command.result.SearchResult;
+import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dto.SearchHitDTO;
 import org.sigmah.shared.report.content.PivotContent;
 
@@ -53,4 +54,5 @@ public interface SearchView extends ListView<SearchHitDTO, SearchResult> {
 
 	void setSearchResults(PivotContent pivotTabelData);
 	void setSearchQuery(String query);
+	void setFilter(Filter filter);
 }

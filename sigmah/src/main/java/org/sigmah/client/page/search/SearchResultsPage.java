@@ -6,6 +6,7 @@ import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.monitor.NullAsyncMonitor;
 import org.sigmah.client.page.map.AIMapWidget;
 import org.sigmah.shared.command.result.SearchResult;
+import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dto.SearchHitDTO;
 import org.sigmah.shared.report.content.PivotContent;
 import org.sigmah.shared.report.content.PivotTableData.Axis;
@@ -26,14 +27,14 @@ import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.TextBox;
 
 public class SearchResultsPage extends ContentPanel implements SearchView {
-	private VerticalPanel panelResults;
+	private VerticalPanel panelSearchResults;
+	private VerticalPanel panelCompleteResult;
 	private SearchResult searchResult;
 	private PivotContent pivotContent;
-//	private ListStore<SearchHitDTO> storeHits = new ListStore<SearchHitDTO>();
-//	private ListView<SearchHitDTO> listviewSearchResults;
 	private ListStore<SearchHitDTO> storeLatestAdditions = new ListStore<SearchHitDTO>();
 	private ListView<SearchHitDTO> listViewLatestAdditions;
-	
+	private SearchFilterView filterView;
+
 	private TextBox textboxSearch;
 	private AsyncMonitor loadingMonitor = new NullAsyncMonitor();
 	private SimpleEventBus eventBus = new SimpleEventBus();
@@ -46,12 +47,35 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 	private void initializeComponent() {
 		setHeading("Search results");
 		setLayout(new BorderLayout());
-
+		
 		SearchResources.INSTANCE.searchStyles().ensureInjected();
 		
+		createCompleteResultPanel();
+		createFilterView();
+		createSearchResultsPanel();
 		createLatestAdditionsList();
 		createLatestAdditionsMap();
 		createSearchBox();
+	}
+
+	private void createSearchResultsPanel() {
+		panelSearchResults = new VerticalPanel();
+		panelSearchResults.setScrollMode(Scroll.AUTO);
+		panelCompleteResult.add(panelSearchResults);
+	}
+
+	private void createCompleteResultPanel() {
+		BorderLayoutData bld = new BorderLayoutData(LayoutRegion.CENTER);
+		bld.setSplit(true);
+		
+		panelCompleteResult = new VerticalPanel();
+		
+		add(panelCompleteResult, bld);
+	}
+
+	private void createFilterView() {
+		filterView  = new SearchFilterView();
+		panelCompleteResult.add(filterView);
 	}
 
 	private void createLatestAdditionsMap() {
@@ -142,32 +166,29 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 	}
 
 	private void showSearchResults() {
-		if (panelResults != null) {
-			remove(panelResults);
-		}
-		
-		panelResults = new VerticalPanel();
-		panelResults.setScrollMode(Scroll.AUTO);
+		panelSearchResults.removeAll();
 		
 		for (Axis axis : pivotContent.getData().getRootRow().getChildren()) {
-			
 			SearchResultItem itemWidget = new SearchResultItem();
 			itemWidget.setDabaseName(axis.getLabel());
 			itemWidget.setChilds(axis.getChildList());
 			
-			panelResults.add(itemWidget);
+			panelSearchResults.add(itemWidget);
 		}
 		
-		BorderLayoutData bld = new BorderLayoutData(LayoutRegion.CENTER);
-		bld.setSplit(true);
-		
-		add(panelResults, bld);
 		layout(true);
 	}
 
 	@Override
 	public void setSearchQuery(String query) {
 		textboxSearch.setText(query);
+	}
+
+	@Override
+	public void setFilter(Filter filter) {
+		if (filter.hasRestrictions()) {
+			filterView.setFilter(filter);
+		}
 	}
 
 }

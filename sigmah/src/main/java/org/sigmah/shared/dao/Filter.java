@@ -131,6 +131,10 @@ public class Filter implements Serializable {
 		return restrictions.containsKey(type);
 	}
 	
+	public boolean hasRestrictions() {
+		return !restrictions.isEmpty();
+	}
+	
 	public boolean isDateRestricted() {
 		return dateRange.getMinDate()!=null || dateRange.getMaxDate()!=null;
 	}

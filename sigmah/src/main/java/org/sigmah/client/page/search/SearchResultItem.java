@@ -2,6 +2,7 @@ package org.sigmah.client.page.search;
 
 import java.util.List;
 
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.shared.report.content.EntityCategory;
 import org.sigmah.shared.report.content.PivotTableData.Axis;
@@ -69,7 +70,7 @@ public class SearchResultItem  extends LayoutContainer {
 			panelChild.add(link);
 			if (axis.getCells().size() > 0) {
 				panelChild.add(new LabelField(
-						axis.getCells().values().iterator().next().getValue().toString()));
+						axis.getCells().values().iterator().next().getValue().toString() + I18N.CONSTANTS.sites()));
 			}
 			
 			panelChilds.add(panelChild);

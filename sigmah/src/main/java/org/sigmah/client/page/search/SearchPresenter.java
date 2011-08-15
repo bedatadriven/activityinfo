@@ -45,6 +45,7 @@ public class SearchPresenter implements SearchView.SearchHandler, Page {
 			@Override
 			public void onSuccess(SearchResult result) {
 				view.setSearchResults(result.getPivotTabelData());
+				view.setFilter(result.getPivotTabelData().getEffectiveFilter());
 				view.getLoadingMonitor().onCompleted();
 			}
 		});
