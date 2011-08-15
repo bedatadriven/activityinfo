@@ -305,6 +305,8 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
 
             view.setActionEnabled(UIActions.delete, editable);
             view.setActionEnabled(UIActions.edit, editable);
+            view.setActionEnabled(UIActions.showLockedPeriods, 
+            		currentSite.fallsWithinLockedPeriod(currentActivity));
         }
 
         eventBus.fireEvent(new SiteEvent(AppEvents.SiteSelected, this, selectedSite));
