@@ -7,13 +7,14 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  * in the UI for the search results. 
  */
 public class SearchHitDTO extends BaseModelData implements DTO {
-	private String type;
 	
 	public SearchHitDTO() {
 		set("name", "woei!");
 	}	
 	
-	public SearchHitDTO(DTO dto, int position) {
+	public SearchHitDTO(EntityDTO dto, int position) {
+		this();
+		
 		setDto(dto);
 		setPosition(position);
 	}
@@ -30,11 +31,12 @@ public class SearchHitDTO extends BaseModelData implements DTO {
 	public void setPosition(int position) {
 		set("position",  position);
 	}
-	public DTO getDto() {
-		return (DTO) get("dto");
+	public EntityDTO getDto() {
+		return (EntityDTO) get("dto");
 	}
-	public void setDto(DTO dto) {
+	public void setDto(EntityDTO dto) {
 		set("dto", dto);
+		set("type", dto.getEntityName());
 	}
 	
 	public BaseModelData getDtoAsBaseModel() {
@@ -46,7 +48,6 @@ public class SearchHitDTO extends BaseModelData implements DTO {
 	}
 
 	public String getType() {
-		return (String)get("type");
-		
+		return getDto().getEntityName();
 	}
 }

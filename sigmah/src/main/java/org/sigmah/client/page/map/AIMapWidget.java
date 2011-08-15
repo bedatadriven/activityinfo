@@ -64,7 +64,7 @@ import com.google.gwt.user.client.ui.HasValue;
  * Displays the content of a MapElement using Google Maps.
  * Named AIMapWidget because of a naming conflict with com.google.gwt.maps.client.MapWidget
  */
-class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
+public class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
     private MapWidget mapWidget = null;
     private BaseMap currentBaseMap = null;
     private LatLngBounds pendingZoom = null;
