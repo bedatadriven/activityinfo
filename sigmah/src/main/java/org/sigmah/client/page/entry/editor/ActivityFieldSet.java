@@ -24,7 +24,7 @@ public class ActivityFieldSet extends AbstractFieldSet {
     private DateField dateField1;
     private DateField dateField2;
 
-    public ActivityFieldSet(ActivityDTO activity,
+    public ActivityFieldSet(final ActivityDTO activity,
                             ListStore<PartnerDTO> partnerStore,
                             ListStore<SiteDTO> assessmentStore) {
         super(I18N.CONSTANTS.activity(), 100, 200);
@@ -71,6 +71,10 @@ public class ActivityFieldSet extends AbstractFieldSet {
                     if(dateField1.getValue()!=null && dateField2.getValue()!=null) {
                         if(dateField2.getValue().before(dateField1.getValue())) {
                             return I18N.CONSTANTS.inconsistentDateRangeWarning();
+                        }
+                        if (SiteDTO.fallsWithinLockedPeriods(
+                        		activity.getDatabase().getEnabledLockedPeriods(), activity, dateField2.getValue())) {
+                        	return I18N.CONSTANTS.dateFallsWithinLockedPeriodWarning();
                         }
                     }
                     return null;
