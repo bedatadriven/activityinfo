@@ -14,7 +14,6 @@ import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.report.model.DimensionType;
 
-import com.bedatadriven.rebar.sql.builder.SqlQuery;
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlException;
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
@@ -22,6 +21,7 @@ import com.bedatadriven.rebar.sql.client.SqlResultSet;
 import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
+import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.SortInfo;
 import com.google.gwt.core.client.GWT;
@@ -52,7 +52,8 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 	private void calculatePage(GetSites command, CommandContext context,
 			AsyncCallback<SiteResult> callback) {
 
-	
+		final SqlQuery query = SqlQuery.select("Site.SiteId");
+		
 		
 	}
 

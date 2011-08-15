@@ -10,12 +10,12 @@ import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
-import com.bedatadriven.rebar.sql.builder.SqlQuery;
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
 import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
+import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 

@@ -2,8 +2,8 @@ package org.sigmah.server.database;
 
 import java.sql.Connection;
 
-import com.bedatadriven.rebar.sql.builder.MySqlDialect;
-import com.bedatadriven.rebar.sql.builder.SqlDialect;
+import com.bedatadriven.rebar.sql.client.query.MySqlDialect;
+import com.bedatadriven.rebar.sql.client.query.SqlDialect;
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcDatabase;
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcExecutor;
 import com.google.inject.Inject;
