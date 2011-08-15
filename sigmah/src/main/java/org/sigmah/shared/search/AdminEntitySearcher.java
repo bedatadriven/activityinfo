@@ -29,7 +29,6 @@ public class AdminEntitySearcher extends AbstractSearcher<AdminEntity> implement
 			@Override
 			public void begin(SqlTransaction tx) {
 				tx.executeSql("select adminentityid from adminentity where name like ?", new Object[]{query}, new SqlResultCallback() {
-					
 					@Override
 					public void onSuccess(SqlTransaction tx, SqlResultSet results) {
 						for (SqlResultSetRow result : results.getRows()) {

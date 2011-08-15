@@ -18,6 +18,7 @@ public class PivotContent implements Content {
     public PivotContent() {
 
     }
+    
     private Filter effectiveFilter;
     private List<FilterDescription> filterDescriptions;
     private PivotTableData data;

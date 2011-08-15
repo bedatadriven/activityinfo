@@ -4,32 +4,43 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.sigmah.shared.dto.DTO;
+import org.sigmah.shared.dto.FilterResult;
 import org.sigmah.shared.dto.SearchHitDTO;
+import org.sigmah.shared.dto.SiteDTO;
+import org.sigmah.shared.report.content.PivotContent;
 
 public class SearchResult extends ListResult<SearchHitDTO> implements CommandResult, DTO {
-	List<SearchHitDTO> hits = new ArrayList<SearchHitDTO>();
-	List<SearchHitDTO> latestAdditions = new ArrayList<SearchHitDTO>();
-	
+	PivotContent pivotTabelData; // hierarchy of activities
+	List<FilterResult> filterResults;
+	List<SiteDTO> recentAdditions = new ArrayList<SiteDTO>();
+
 	public SearchResult() {
 		super();
 	}
 
-	public SearchResult(List<SearchHitDTO> hits,
-			List<SearchHitDTO> latestAdditions) {
-		this.hits = hits;
-		this.latestAdditions = latestAdditions;
+
+	public SearchResult(PivotContent pivotTabelData,
+			List<FilterResult> filterResults, List<SiteDTO> recentAdditions) {
+		super();
+		this.pivotTabelData = pivotTabelData;
+		this.filterResults = filterResults;
+		this.recentAdditions = recentAdditions;
+	}
+
+
+	public List<SiteDTO> getLatestAdditions() {
+		return recentAdditions;
 	}
 	
-	public List<SearchHitDTO> getHits() {
-		return hits;
+	public void setLatestAdditions(List<SiteDTO> latestAdditions) {
+		this.recentAdditions = latestAdditions;
 	}
-	public void setHits(List<SearchHitDTO> hits) {
-		this.hits = hits;
+	
+	public PivotContent getPivotTabelData() {
+		return pivotTabelData;
 	}
-	public List<SearchHitDTO> getLatestAdditions() {
-		return latestAdditions;
-	}
-	public void setLatestAdditions(List<SearchHitDTO> latestAdditions) {
-		this.latestAdditions = latestAdditions;
+
+	public void setPivotTabelData(PivotContent pivotTabelData) {
+		this.pivotTabelData = pivotTabelData;
 	}
 }

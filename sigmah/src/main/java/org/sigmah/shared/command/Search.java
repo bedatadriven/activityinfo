@@ -11,6 +11,7 @@ public class Search implements Command<SearchResult> {
 	
 	public Search(int pageId, String searchQuery) {
 		super();
+		
 		this.pageId = pageId;
 		this.searchQuery = searchQuery;
 	}
