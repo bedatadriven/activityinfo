@@ -76,9 +76,9 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 	private void createGrid() {
 		List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 		
-		configs.add(new EditCheckColumnConfig("enabled", "Enabled?", 55));
+		configs.add(new EditCheckColumnConfig("enabled", I18N.CONSTANTS.enabledColumn(), 55));
 	    configs.add(new ReadLockedPeriodTypeColumn());
-	    configs.add(new ReadTextColumn("parentName", "parentName", 150));
+	    configs.add(new ReadTextColumn("parentName", I18N.CONSTANTS.parentName(), 150));
 	    configs.add(new ReadTextColumn("name", I18N.CONSTANTS.name(), 100));
 	    configs.add(new EditDateColumn("fromDate", I18N.CONSTANTS.fromDate(), 100));
 	    configs.add(new EditDateColumn("toDate", I18N.CONSTANTS.toDate(), 100));
@@ -213,7 +213,7 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 	public void askConfirmDelete(LockedPeriodDTO item) {
 		// TODO: i18n
 		if (mustConfirmDelete) {
-			MessageBox.confirm("Delete LockedPeriod", "Wanna delete this lockedPeriod?", new Listener<MessageBoxEvent>() {
+			MessageBox.confirm(I18N.CONSTANTS.deleteLockedPeriodTitle(), I18N.CONSTANTS.deleteLockedPeriodQuestion(), new Listener<MessageBoxEvent>() {
 				@Override
 				public void handleEvent(MessageBoxEvent be) {
 					if (be.isCancelled()) {
