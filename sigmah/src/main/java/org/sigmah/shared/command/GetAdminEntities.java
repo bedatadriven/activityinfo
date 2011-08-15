@@ -49,8 +49,6 @@ public class GetAdminEntities extends GetListCommand<AdminEntityResult> {
 		this.parentId = parentId;
 	}
 	
-	
-
     public Integer getCountryId() {
 		return countryId;
 	}

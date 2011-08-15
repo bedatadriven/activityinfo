@@ -34,7 +34,6 @@ public class PersistentClasses {
             AttributeValue.class,
             ReportingPeriod.class,
             Site.class,
-            OrgUnitPermission.class,
             UserPermission.class,
             OrgUnit.class,
             Location.class,

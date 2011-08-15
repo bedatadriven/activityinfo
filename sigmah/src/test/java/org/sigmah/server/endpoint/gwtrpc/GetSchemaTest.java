@@ -6,12 +6,19 @@
 package org.sigmah.server.endpoint.gwtrpc;
 
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.dao.OnDataSet;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.ActivityDTO;
+import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.AttributeDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.SchemaDTO;
@@ -20,7 +27,7 @@ import org.sigmah.test.InjectionSupport;
 
 
 @RunWith(InjectionSupport.class)
-@OnDataSet("/dbunit/schema1.db.xml")
+@OnDataSet("/dbunit/sites-simple1.db.xml")
 public class GetSchemaTest extends CommandTestCase {
 
     @Test
@@ -39,7 +46,10 @@ public class GetSchemaTest extends CommandTestCase {
         Assert.assertTrue("object graph is preserved (database-activity)",
                 schema.getDatabaseById(1) ==
                         schema.getDatabaseById(1).getActivities().get(0).getDatabase());
-        Assert.assertTrue("CountryId is not null", schema.getCountries().get(0).getAdminLevels().get(0).getCountryId()!=0);
+        AdminLevelDTO adminLevel = schema.getCountries().get(0).getAdminLevels().get(0);
+		assertThat("CountryId is not null", adminLevel.getCountryId(), not(equalTo(0)));
+		assertThat("CountryId is not null", adminLevel.getId(), not(equalTo(0)));
+
     }
 
     @Test
@@ -50,11 +60,10 @@ public class GetSchemaTest extends CommandTestCase {
 
         SchemaDTO schema = execute(new GetSchema());
 
-        Assert.assertTrue("BAVON in PEAR", schema.getDatabaseById(1) != null);
-
-        Assert.assertTrue("bavon can edit", schema.getDatabaseById(1).isEditAllowed());
-        Assert.assertFalse("bavon cannot edit all", schema.getDatabaseById(1).isEditAllAllowed());
-
+        assertThat(schema.getDatabases().size(), equalTo(1));
+        assertThat("BAVON in PEAR", schema.getDatabaseById(1), is(not(nullValue())));
+        assertThat(schema.getDatabaseById(1).isEditAllowed(), equalTo(true));
+        assertThat(schema.getDatabaseById(1).isEditAllAllowed(), equalTo(false));
     }
 
     @Test
@@ -87,8 +96,6 @@ public class GetSchemaTest extends CommandTestCase {
         Assert.assertEquals("property:name", test.getName(), "kits");
         Assert.assertEquals("property:units", test.getUnits(), "menages");
         Assert.assertEquals("property:aggregation", test.getAggregation(), 0);
-        Assert.assertEquals("property:collectIntervention", test.isCollectIntervention(), true);
-        Assert.assertEquals("property:collectMonitoring", test.isCollectMonitoring(), true);
         Assert.assertEquals("property:category", test.getCategory(), "outputs");
         Assert.assertEquals("property:listHeader", test.getListHeader(), "header");
         Assert.assertEquals("property:description", test.getDescription(), "desc");

@@ -233,8 +233,6 @@ public class LocalGetSchemaHandler implements CommandHandler<GetSchema> {
                     indicator.setDescription(rs.getString(5));
                     indicator.setAggregation(rs.getInt(6));
                     indicator.setUnits(rs.getString(7));
-                    indicator.setCollectIntervention(rs.getInt(8) != 0);
-                    indicator.setCollectMonitoring(rs.getInt(9) != 0);
 
                     int activityId = rs.getInt(10);
                     ActivityDTO activity = activities.get(activityId);

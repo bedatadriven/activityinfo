@@ -41,8 +41,23 @@ public class MockHibernateModule extends HibernateModule {
                     for(Class entityClass : PersistentClasses.LIST) {
                         cfg.addAnnotatedClass(entityClass);
                     }
-                    emf = cfg.configure(getConfigurationFilePath()) //add a regular hibernate.cfg.xml
-                            .buildEntityManagerFactory(); //Create the entity manager factory
+                    cfg.configure(getConfigurationFilePath()); //add a regular hibernate.cfg.xml
+                    
+                    // override properties from user's maven profile if set
+                    
+                    if(System.getProperty("testDatabaseUrl")!=null) {
+	                    cfg.setProperty("hibernate.connection.url", System.getProperty("testDatabaseUrl"));
+                    }
+                    if(System.getProperty("testDatabaseUsername")!=null) {
+	                    cfg.setProperty("hibernate.connection.username", System.getProperty("testDatabaseUsername"));
+                    }
+                    if(System.getProperty("testDatabasePassword")!=null) {
+	                    cfg.setProperty("hibernate.connection.password", System.getProperty("testDatabasePassword"));
+                    }
+                    
+                    emf = cfg.buildEntityManagerFactory(); //Create the entity manager factory
+                    
+                   
                     System.err.println("GUICE: EntityManagerFACTORY created");
                 }
                 return emf;

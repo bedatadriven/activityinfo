@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.jolbox.bonecp.BoneCP;
@@ -14,7 +15,7 @@ public class BoneCpConnectionProvider implements Provider<Connection> {
 
 	private BoneCP connectionPool;
 
-
+	@Inject
 	public BoneCpConnectionProvider(Properties configProperties) {
 		try {
 			Class.forName(configProperties.getProperty("hibernate.connection.driver_class"));
