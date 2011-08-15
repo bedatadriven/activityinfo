@@ -50,6 +50,8 @@ public class LockedPeriodsPresenter
 	public interface LockedPeriodListEditor
 		extends
 			CrudView<LockedPeriodDTO, UserDatabaseDTO> {
+		
+		void setTitle(String title);
 	}	
 	
 	@ImplementedBy(AddLockedPeriodDialog.class)

@@ -17,6 +17,7 @@ import org.sigmah.client.dispatch.loader.CommandLoadEvent;
 import org.sigmah.client.dispatch.loader.PagingCmdLoader;
 import org.sigmah.client.event.DownloadRequestEvent;
 import org.sigmah.client.event.SiteEvent;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
@@ -353,6 +354,10 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
         	showLockedPeriods.setActivityFilter(currentActivity);
         	showLockedPeriods.setValue(getLockedPeriods());
         	showLockedPeriods.show();
+        	showLockedPeriods.setTitle(I18N.MESSAGES.showLockedPeriodsTitle
+        			(currentActivity.getDatabase().getName(), 
+        					currentSite.getProjectName(), 
+        					currentActivity.getName()));
         } else if (UIActions.map.equals(actionId)) {
 
         }

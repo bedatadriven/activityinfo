@@ -444,5 +444,8 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 		}
 	}
 
+	public void setTitle(String title) {
+		setHeading(title);
+	}
 
 }
