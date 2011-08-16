@@ -11,7 +11,7 @@ import org.sigmah.shared.search.Searcher;
 
 public class SearchResult extends ListResult<SearchHitDTO> implements CommandResult, DTO {
 	PivotContent pivotTabelData; // hierarchy of activities
-	List<SiteDTO> recentAdditions = new ArrayList<SiteDTO>();
+	List<SiteDTO> recentAdditions;
 	List<Searcher<?>> failedSearchers = new ArrayList<Searcher<?>>();
 
 	public SearchResult() {
@@ -25,13 +25,6 @@ public class SearchResult extends ListResult<SearchHitDTO> implements CommandRes
 		this.recentAdditions = recentAdditions;
 	}
 
-	public List<SiteDTO> getLatestAdditions() {
-		return recentAdditions;
-	}
-	
-	public void setLatestAdditions(List<SiteDTO> latestAdditions) {
-		this.recentAdditions = latestAdditions;
-	}
 	
 	public PivotContent getPivotTabelData() {
 		return pivotTabelData;
@@ -47,5 +40,13 @@ public class SearchResult extends ListResult<SearchHitDTO> implements CommandRes
 
 	public void setFailedSearchers(List<Searcher<?>> failedSearchers) {
 		this.failedSearchers = failedSearchers;
+	}
+
+	public List<SiteDTO> getRecentAdditions() {
+		return recentAdditions;
+	}
+
+	public void setRecentAdditions(List<SiteDTO> recentAdditions) {
+		this.recentAdditions = recentAdditions;
 	}
 }

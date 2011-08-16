@@ -7,6 +7,7 @@ package org.sigmah.shared.command.result;
 
 import java.util.List;
 
+import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.dto.SitePointDTO;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
@@ -41,5 +42,15 @@ public class SitePointList implements CommandResult {
 
     public void setPoints(List<SitePointDTO> points) {
         this.points = points;
+    }
+    
+    public static SitePointList fromSitesList(List<SiteDTO> sites) {
+    	SitePointList result = new SitePointList();
+    	
+    	for (SiteDTO site : sites) {
+    		 result.getPoints().add(SitePointDTO.fromSite(site));
+    	}
+    	
+    	return result;
     }
 }

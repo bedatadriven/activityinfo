@@ -1,85 +1,27 @@
-@external .hit, .hits, .additions, .addition, .searchBox .iconDatabase, .iconActivity, .iconAdminEntity, .iconSite, .iconPartner, .iconProject, . iconAttribute, .iconAttributeGroup;
+@external .hit, .hits, .additions, .addition, .searchBox .site, .sites, .date, .comment;
 
-@sprite .iconDatabase {
-	gwt-image: "activity";
-	float: left;
-	top: 0.75em;
-	position: relative;
-	margin: 0.25em;
-}
-@sprite .iconActivity {
-	gwt-image: "adminEntity";
-	float: left;
-	top: 0.75em;
-	position: relative;
-	margin: 0.25em;
-}
-@sprite .iconAdminEntity {
-	gwt-image: "site";
-	float: left;
-	top: 0.75em;
-	position: relative;
-	margin: 0.25em;
-}
-@sprite .iconSite {
-	gwt-image: "database";
-	float: left;
-	top: 0.75em;
-	position: relative;
-	margin: 0.25em;
-}	
-@sprite .iconPartner {
-	gwt-image: "partner";
-	float: left;
-	top: 0.75em;
-	position: relative;
-	margin: 0.25em;
-}
-@sprite .iconProject {
-	gwt-image: "project";
-	float: left;
-	top: 0.75em;
-	position: relative;
-	margin: 0.25em;
-}
-
-@sprite .iconAttribute {
-	gwt-image: "attribute";
-	float: left;
-	top: 0.75em;
-	position: relative;
-	margin: 0.25em;
-}
-
-@sprite .iconAttributeGroup {
-	gwt-image: "attributeGroup";
-	float: left;
-	top: 0.75em;
-	position: relative;
-	margin: 0.25em;
-}
-
-.hits {
+.sites {
+	font-size: 12px;
 	margin: 0.25em;
 	vertical-align: middle;
-	background-color: grey;
+	background-color: #F7F8E0;
+	width: 90%;
+	padding: 8px;
 }
 
-.hit {
+.site {
+	font-size: 12px;
+	width: 100%;
 	text-align: left;
 	float: left;
-	background-color: red;
+	background-color: #F3E2A9;
+	padding: 4px;
+	border-width: 1px;
+	border-style: inset;
 }
 
-.additions {
-	margin: 0.25em;
-	background-color: black;
-}
-
-.addition {
-	text-align: left;
-	float: left;
-	background-color: purple;
+.date {
+	font-size: 12px;
 }
 
 .searchBox {
@@ -87,8 +29,18 @@
 	height: 1.5em;
 	background-image: url('search.png');
 	background-repeat: no-repeat;
+	background-color: #F2F2F2;
 }
 
 .link {
+	font-size: 12px;
+}
+
+.comment {
+	background-color: yellow;
+	padding: 8px;
+	border-style: dotted;
+	border-width: 1px;
+	background-image: url('search.png');
 	font-size: 12px;
 }

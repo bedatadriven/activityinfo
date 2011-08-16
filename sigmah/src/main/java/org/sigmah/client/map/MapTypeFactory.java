@@ -34,7 +34,7 @@ public class MapTypeFactory {
         // TODO: generalize
         // There are probably other cases where we need to add custom tiles
         // for poorly covered countries
-        if(country.getName().equals("RDC")) {
+        if(country != null && country.getName().equals("RDC")) {
             TileLayer[] layers = new TileLayer[1];
             layers[0] = new RgcTileLayer("http://tiles.aimaps.net/admin", 6, 10);
             Projection projection = new MercatorProjection(11);

@@ -1,5 +1,9 @@
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import org.sigmah.server.dao.SiteDAO;
 import org.sigmah.shared.command.GenerateElement;
 import org.sigmah.shared.command.Search;
@@ -7,6 +11,7 @@ import org.sigmah.shared.command.handler.CommandContext;
 import org.sigmah.shared.command.handler.CommandHandlerAsync;
 import org.sigmah.shared.command.result.SearchResult;
 import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.report.content.PivotContent;
 import org.sigmah.shared.report.model.Dimension;
@@ -64,8 +69,27 @@ public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> 
 
 		SearchResult result = new SearchResult();
 		result.setPivotTabelData(content);
+		result.setRecentAdditions(mockSites());
 		
 		callback.onSuccess(result);
+	}
+	
+	private List<SiteDTO> mockSites() {
+		List<SiteDTO> mockSites = new ArrayList<SiteDTO>();
+		
+		for (int i=0; i<10; i++) {
+			SiteDTO site = new SiteDTO();
+			site.setDate1(new Date(2000,1,1));
+			site.setDate2(new Date(2000,2,2));
+			site.setComments("KJHKJ KJH LKUHLIUHIUE u");
+			site.setLocationAxe("Somewhere");
+			site.setY(-4.2 +(0.1*i));
+			site.setX(23.9 + (0.1 * i));
+			site.setId(i);
+			mockSites.add(site);
+		}
+		
+		return mockSites;
 	}
 
 }

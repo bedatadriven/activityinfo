@@ -21,11 +21,15 @@ public final class SitePointDTO implements DTO {
     
     private SitePointDTO() {
     }
-
+    
     public SitePointDTO(int siteId, double x, double y) {
         this.y = y;
         this.x = x;
         this.siteId = siteId;
+    }
+    
+    public static SitePointDTO fromSite(SiteDTO site) {
+    	return new SitePointDTO(site.getId(), site.getX(), site.getY());
     }
 
     public int getSiteId() {

@@ -6,6 +6,7 @@ import org.sigmah.client.mvp.ListView;
 import org.sigmah.shared.command.result.SearchResult;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dto.SearchHitDTO;
+import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.report.content.PivotContent;
 
 import com.google.gwt.event.shared.EventHandler;
@@ -15,8 +16,6 @@ import com.google.inject.ImplementedBy;
 
 @ImplementedBy(SearchResultsPage.class)
 public interface SearchView extends ListView<SearchHitDTO, SearchResult> {
-
-	void setLatestAdditions(List<SearchHitDTO> latestAdditions);
 
 	HandlerRegistration addSearchHandler(SearchHandler handler);
 	
@@ -55,4 +54,6 @@ public interface SearchView extends ListView<SearchHitDTO, SearchResult> {
 	void setSearchResults(PivotContent pivotTabelData);
 	void setSearchQuery(String query);
 	void setFilter(Filter filter);
+
+	void setLatestAdditions(List<SiteDTO> latestAdditions);
 }
