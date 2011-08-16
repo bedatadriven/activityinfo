@@ -106,7 +106,7 @@ public class SearchTest {
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				assertTrue(false);
+				assertTrue("Expected searchresult", false);
 			}
 		});
 		
