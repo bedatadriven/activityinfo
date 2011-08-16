@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.monitor.NullAsyncMonitor;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.map.AIMapWidget;
 import org.sigmah.shared.command.result.SearchResult;
 import org.sigmah.shared.dao.Filter;
@@ -17,6 +18,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
+import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -39,6 +41,7 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 	private AsyncMonitor loadingMonitor = new NullAsyncMonitor();
 	private SimpleEventBus eventBus = new SimpleEventBus();
 	private AIMapWidget mapWidget;
+	private String searchQuery;
 	
 	public SearchResultsPage() {
 		initializeComponent();
@@ -168,6 +171,13 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 	private void showSearchResults() {
 		panelSearchResults.removeAll();
 		
+		LabelField labelResults = new LabelField();
+		labelResults.setText(I18N.MESSAGES.searchResultsFound("26", searchQuery)); 
+		panelSearchResults.add(labelResults);
+		VerticalPanel panelSpacer = new VerticalPanel();
+		panelSpacer.setHeight(16);
+		panelSearchResults.add(panelSpacer);
+		
 		for (Axis axis : pivotContent.getData().getRootRow().getChildren()) {
 			SearchResultItem itemWidget = new SearchResultItem();
 			itemWidget.setDabaseName(axis.getLabel());
@@ -181,14 +191,14 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 
 	@Override
 	public void setSearchQuery(String query) {
+		this.searchQuery = query;
+		
 		textboxSearch.setText(query);
 	}
 
 	@Override
 	public void setFilter(Filter filter) {
-		if (filter.hasRestrictions()) {
 			filterView.setFilter(filter);
-		}
 	}
 
 }

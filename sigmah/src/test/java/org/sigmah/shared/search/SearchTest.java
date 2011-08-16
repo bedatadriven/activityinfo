@@ -8,6 +8,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.database.ClientDatabaseStubs;
 import org.sigmah.server.dao.OnDataSet;
+import org.sigmah.server.endpoint.gwtrpc.handler.GenerateElementHandler;
+import org.sigmah.server.endpoint.gwtrpc.handler.SearchHandler;
+import org.sigmah.shared.command.Search;
+import org.sigmah.shared.command.handler.CommandContext;
+import org.sigmah.shared.command.result.SearchResult;
+import org.sigmah.shared.domain.User;
+import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.MockHibernateModule;
 import org.sigmah.test.Modules;
@@ -15,6 +22,7 @@ import org.sigmah.test.Modules;
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcDatabase;
 import com.google.gwt.junit.JUnitMessageQueue.ClientStatus;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Inject;
 
 @RunWith(InjectionSupport.class)
 @Modules({MockHibernateModule.class})
@@ -23,7 +31,25 @@ public class SearchTest {
 
 	private String testQuery = "kivu";
 	private JdbcDatabase db = ClientDatabaseStubs.sitesSimple();
+	private GenerateElementHandler getPivotData;
+	private SearchHandler handler;
+	private CommandContext context = new CommandContext() {
+		User user = new User();
+		
+		@Override
+		public User getUser() {
+			user.setId(1);
+			return user;
+		}
+	};
+	private GenerateElementHandler genelhandler;
 
+
+    @Inject
+    public SearchTest(GenerateElementHandler genElHandler) {
+    	this.genelhandler = genElHandler;
+    }
+	
 	
 	@Test
 	public void testString() {
@@ -36,8 +62,8 @@ public class SearchTest {
 	
 	@Test
 	public void testStringAsync() {
-		AdminEntitySearcher sa = new AdminEntitySearcher(db);
-		sa.search(testQuery, new AsyncCallback<List<Integer>>() {
+		AdminEntitySearcher sa = new AdminEntitySearcher();
+		sa.search(testQuery, null, new AsyncCallback<List<Integer>>() {
 			
 			@Override
 			public void onSuccess(List<Integer> result) {
@@ -48,31 +74,49 @@ public class SearchTest {
 			public void onFailure(Throwable caught) {
 				throw new AssertionError(caught);
 			}
-		}, null);
+		});
 	}
 	
 	@Test
 	public void testSearchAll() {
-//		AllSearcher allSearcher = new AllSearcher(db);
-//		allSearcher.searchAll("kivu");
-//		
-//		assertTrue("expected 1 partner, 2 adminlevels", 
-//				allSearcher.getFilter().getRestrictedDimensions()
-//					.contains(DimensionType.AdminLevel));
-//		
-//		assertTrue("expected adminlevels with id=2 and id=3", 
-//				allSearcher.getFilter().getRestrictions(DimensionType.AdminLevel)
-//					.contains(2) &&
-//				allSearcher.getFilter().getRestrictions(DimensionType.AdminLevel)
-//					.contains(3));
-//					
-//		assertTrue("expected 1 partner, 2 adminlevels", 
-//				allSearcher.getFilter().getRestrictedDimensions()
-//					.contains(DimensionType.Partner));
-//		
-//		assertTrue("expected partner with id=3", 
-//				allSearcher.getFilter().getRestrictions(DimensionType.Partner)
-//					.contains(3));
+		SearchHandler handler = new SearchHandler(db, null, genelhandler);
 		
+		handler.execute(new Search("kivu"), context, new AsyncCallback<SearchResult>() {
+			
+			@Override
+			public void onSuccess(SearchResult result) {
+				assertTrue("Expected all searchers to succeed", result.getFailedSearchers().isEmpty());
+				
+				assertTrue("2 adminlevels", 
+						result.getPivotTabelData().getEffectiveFilter().getRestrictedDimensions()
+							.contains(DimensionType.AdminLevel));
+				
+				assertTrue("expected adminlevels with id=2 and id=3", 
+						result.getPivotTabelData().getEffectiveFilter().getRestrictions(DimensionType.AdminLevel)
+							.contains(2) &&
+							result.getPivotTabelData().getEffectiveFilter().getRestrictions(DimensionType.AdminLevel)
+							.contains(3));
+							
+				assertTrue("expected 1 partner", 
+						result.getPivotTabelData().getEffectiveFilter().getRestrictedDimensions()
+							.contains(DimensionType.Partner));
+				
+				assertTrue("expected partner with id=3", 
+						result.getPivotTabelData().getEffectiveFilter().getRestrictions(DimensionType.Partner)
+							.contains(3));
+				
+				assertTrue("expected project with id=3",
+						result.getPivotTabelData().getEffectiveFilter().getRestrictedDimensions()
+							.contains(DimensionType.Project));
+						
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				assertTrue("Expected searchresult", false);
+			}
+		});
+		
+
 	}
 }

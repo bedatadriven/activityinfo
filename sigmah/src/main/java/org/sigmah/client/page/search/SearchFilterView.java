@@ -31,6 +31,7 @@ public class SearchFilterView extends LayoutContainer {
 		panelNoResultsFound = new HorizontalPanel();
 		LabelField labelNoResultsFound = new LabelField();
 		labelNoResultsFound.setText(I18N.MESSAGES.noSearchResults(searchQuery));
+		add(panelNoResultsFound);
 	}
 
 
@@ -64,11 +65,14 @@ public class SearchFilterView extends LayoutContainer {
 
 
 	private void showNoResultsFound() {
+		labelHeader.setVisible(false);
 		panelNoResultsFound.setVisible(true);
 	}
 
 
 	private void showEntityPanel() {		
+		labelHeader.setVisible(true);
+		panelNoResultsFound.setVisible(false);
 		for (DimensionType foundEntity : filter.getRestrictedDimensions()) {
 			panelEntity = new HorizontalPanel();
 			
@@ -108,11 +112,15 @@ public class SearchFilterView extends LayoutContainer {
 	private Image fromDimension(DimensionType dimension) {
 		switch(dimension) {
 		case AdminLevel:
-			return IconImageBundle.ICONS.delete().createImage();
+			return IconImageBundle.ICONS.adminlevel1().createImage();
 		case Database:
 			return IconImageBundle.ICONS.database().createImage();
 		case Activity:
 			return IconImageBundle.ICONS.activity().createImage();
+		case Project:
+			return IconImageBundle.ICONS.project().createImage();
+		case Partner:
+			return IconImageBundle.ICONS.partner().createImage();
 		}
 		
 		// etc
