@@ -115,6 +115,7 @@
 				units="menages"   
 				aggregation="0"
 				collectIntervention="1"  
+				projectId="3"
 				collectMonitoring="1"  
 				category="outputs"  
 				listHeader="header"  
@@ -200,12 +201,22 @@
                  listHeader="kids"
                  description="desc"
                  sortOrder="1"/>
+        
+    <activity activityId="5"
+        databaseId="2"
+        name="Kivu water distribution"
+        reportingFrequency="1"
+        allowEdit="1"
+        isAssessment="0"
+        sortOrder="1"
+        locationTypeId="3"/>
 
 	<lockedPeriod LockedPeriodId="1" enabled="true" toDate="2009-01-02" fromDate="2009-01-01" name="woei" UserDatabaseId="1"/>   
 	<lockedPeriod LockedPeriodId="3" enabled="true" toDate="2009-01-22" fromDate="2009-01-01" name="whoa" ActivityId="1"/> 
 	<lockedPeriod LockedPeriodId="4" enabled="true" toDate="2009-01-24" fromDate="2009-01-01" name="yey" UserDatabaseId="2"/>	
 	<project projectId="1" databaseId="1" name="RRMP"/>
 	<project projectId="2" databaseId="1" name="USAID"/>
+	<project projectId="3" databaseId="1" name="Kivu water"/>
 	<lockedPeriod LockedPeriodId="2" enabled="true" toDate="2009-01-12" fromDate="2009-01-01" name="lala" ProjectId="1"/>
 	
 	<!--  PEAR Partners -->

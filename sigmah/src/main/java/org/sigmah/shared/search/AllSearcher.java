@@ -20,6 +20,7 @@ public class AllSearcher {
 	
 	static {
 		searchers.add(new PartnerSearcher());
+		searchers.add(new ProjectSearcher());
 		searchers.add(new AdminEntitySearcher());
 	}
 	

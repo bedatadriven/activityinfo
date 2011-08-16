@@ -102,6 +102,11 @@ public class SearchTest {
 				assertTrue("expected partner with id=3", 
 						result.getPivotTabelData().getEffectiveFilter().getRestrictions(DimensionType.Partner)
 							.contains(3));
+				
+				assertTrue("expected project with id=3",
+						result.getPivotTabelData().getEffectiveFilter().getRestrictedDimensions()
+							.contains(DimensionType.Project));
+						
 			}
 			
 			@Override
