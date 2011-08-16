@@ -11,16 +11,13 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
-import org.dozer.Mapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.dao.OnDataSet;
 import org.sigmah.server.endpoint.gwtrpc.CommandTestCase;
 import org.sigmah.shared.command.GetAdminEntities;
 import org.sigmah.shared.command.result.AdminEntityResult;
-import org.sigmah.shared.dao.AdminDAO;
 import org.sigmah.shared.dao.Filter;
-import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.test.InjectionSupport;
 
@@ -68,6 +65,6 @@ public class GetAdminEntitiesHandlerTest extends CommandTestCase {
 
         AdminEntityResult result = execute(cmd);
 
-        assertThat(result.getData().size(), equalTo(2));
+        assertThat(result.getData().size(), equalTo(3));
     }
 }

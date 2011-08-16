@@ -19,13 +19,13 @@ public class ProjectSearcher extends AbstractSearcher<Project> implements Search
 	public void search(String testQuery, SqlTransaction tx,
 			final AsyncCallback<List<Integer>> callback) {
 		final String query = likeify(testQuery);
-		tx.executeSql("select ProjectId from project where name like ?", new Object[]{query}, new SqlResultCallback() {
+		tx.executeSql("select ProjectId from project", new Object[]{}, new SqlResultCallback() {
 			List<Integer> projectIds = new ArrayList<Integer>();
 			
 			@Override
 			public void onSuccess(SqlTransaction tx, SqlResultSet results) {
 				for (SqlResultSetRow row : results.getRows()) {
-					projectIds.add(row.getInt("PartnerId"));
+					projectIds.add(row.getInt("ProjectId"));
 				}
 				callback.onSuccess(projectIds);
 			}
