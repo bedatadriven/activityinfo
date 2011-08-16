@@ -7,10 +7,12 @@ import org.sigmah.shared.dto.DTO;
 import org.sigmah.shared.dto.SearchHitDTO;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.report.content.PivotContent;
+import org.sigmah.shared.search.Searcher;
 
 public class SearchResult extends ListResult<SearchHitDTO> implements CommandResult, DTO {
 	PivotContent pivotTabelData; // hierarchy of activities
 	List<SiteDTO> recentAdditions = new ArrayList<SiteDTO>();
+	List<Searcher<?>> failedSearchers = new ArrayList<Searcher<?>>();
 
 	public SearchResult() {
 		super();
@@ -37,5 +39,13 @@ public class SearchResult extends ListResult<SearchHitDTO> implements CommandRes
 
 	public void setPivotTabelData(PivotContent pivotTabelData) {
 		this.pivotTabelData = pivotTabelData;
+	}
+
+	public List<Searcher<?>> getFailedSearchers() {
+		return failedSearchers;
+	}
+
+	public void setFailedSearchers(List<Searcher<?>> failedSearchers) {
+		this.failedSearchers = failedSearchers;
 	}
 }

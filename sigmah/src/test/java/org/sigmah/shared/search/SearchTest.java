@@ -40,7 +40,7 @@ public class SearchTest {
 			user.setId(1);
 			return user;
 		}
-	};;;
+	};
 	private GenerateElementHandler genelhandler;
 
     @Inject
@@ -83,6 +83,8 @@ public class SearchTest {
 			
 			@Override
 			public void onSuccess(SearchResult result) {
+				assertTrue("Expected all searchers to succeed", result.getFailedSearchers().isEmpty());
+				
 				assertTrue("2 adminlevels", 
 						result.getPivotTabelData().getEffectiveFilter().getRestrictedDimensions()
 							.contains(DimensionType.AdminLevel));

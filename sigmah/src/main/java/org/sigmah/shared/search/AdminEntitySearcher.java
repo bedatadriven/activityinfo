@@ -14,6 +14,9 @@ import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class AdminEntitySearcher extends AbstractSearcher<AdminEntity> implements Searcher<AdminEntity> {
+	
+	public AdminEntitySearcher() {
+	}
 
 	@Override
 	public void search(final String testQuery, SqlTransaction tx, final AsyncCallback<List<Integer>> callback) {

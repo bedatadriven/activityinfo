@@ -15,6 +15,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class PartnerSearcher extends AbstractSearcher<OrgUnit> implements Searcher<OrgUnit> {
 
+	
+	public PartnerSearcher() {
+	}
+
 	@Override
 	public void search(String testQuery, SqlTransaction tx, final AsyncCallback<List<Integer>> callback) {
 		final String query = likeify(testQuery);
