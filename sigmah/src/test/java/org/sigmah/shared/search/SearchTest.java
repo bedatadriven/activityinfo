@@ -19,6 +19,9 @@ import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.MockHibernateModule;
 import org.sigmah.test.Modules;
 
+import com.bedatadriven.rebar.sql.client.SqlException;
+import com.bedatadriven.rebar.sql.client.SqlTransaction;
+import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcDatabase;
 import com.google.gwt.junit.JUnitMessageQueue.ClientStatus;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -73,6 +76,31 @@ public class SearchTest {
 			@Override
 			public void onFailure(Throwable caught) {
 				throw new AssertionError(caught);
+			}
+		});
+	}
+	
+	@Test
+	public void testAttributeGroup() {
+		db.transaction(new SqlTransactionCallback() {
+			@Override
+			public void begin(SqlTransaction tx) {
+				new AttributeGroupSearcher().search("cause", tx, new AsyncCallback<List<Integer>>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						assertTrue("Did not expect error when searching attribute groups", false);
+					}
+
+					@Override
+					public void onSuccess(List<Integer> result) {
+						assertTrue("Expected one attribute group with name like 'cause'", result.size()==1);
+					}
+				});
+			}
+
+			@Override
+			public void onError(SqlException e) {
+				assertTrue("Did not expect error when having db transaction", false);
 			}
 		});
 	}
