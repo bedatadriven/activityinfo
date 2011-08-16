@@ -112,11 +112,15 @@ public class SearchFilterView extends LayoutContainer {
 	private Image fromDimension(DimensionType dimension) {
 		switch(dimension) {
 		case AdminLevel:
-			return IconImageBundle.ICONS.delete().createImage();
+			return IconImageBundle.ICONS.adminlevel1().createImage();
 		case Database:
 			return IconImageBundle.ICONS.database().createImage();
 		case Activity:
 			return IconImageBundle.ICONS.activity().createImage();
+		case Project:
+			return IconImageBundle.ICONS.project().createImage();
+		case Partner:
+			return IconImageBundle.ICONS.partner().createImage();
 		}
 		
 		// etc
