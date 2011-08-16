@@ -17,7 +17,6 @@ import org.sigmah.client.dispatch.loader.CommandLoadEvent;
 import org.sigmah.client.dispatch.loader.PagingCmdLoader;
 import org.sigmah.client.event.DownloadRequestEvent;
 import org.sigmah.client.event.SiteEvent;
-import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
@@ -27,7 +26,6 @@ import org.sigmah.client.page.common.filter.NullFilterPanel;
 import org.sigmah.client.page.common.grid.AbstractEditorGridPresenter;
 import org.sigmah.client.page.common.grid.GridView;
 import org.sigmah.client.page.common.toolbar.UIActions;
-import org.sigmah.client.page.config.ShowLockedPeriodsDialog;
 import org.sigmah.client.page.entry.editor.SiteFormLoader;
 import org.sigmah.client.util.state.IStateManager;
 import org.sigmah.shared.command.BatchCommand;
@@ -76,13 +74,13 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
         public void init(SiteEditor presenter, ActivityDTO activity, ListStore<SiteDTO> store);
         public AsyncMonitor getLoadingMonitor();
         void setSelection(int siteId);
+		public void showLockedPeriods(List<LockedPeriodDTO> list);
     }
 
     private final View view;
     private final EventBus eventBus;
     private final Dispatcher service;
     private final SiteFormLoader formLoader;
-    private final ShowLockedPeriodsDialog showLockedPeriods = new ShowLockedPeriodsDialog();
 
     protected final ListStore<SiteDTO> store;
     protected final PagingCmdLoader<SiteResult> loader;
@@ -351,13 +349,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
         if (UIActions.export.equals(actionId)) {
             onExport();
         } else if (UIActions.showLockedPeriods.equals(actionId)) {
-        	showLockedPeriods.setActivityFilter(currentActivity);
-        	showLockedPeriods.setValue(getLockedPeriods());
-        	showLockedPeriods.show();
-        	showLockedPeriods.setTitle(I18N.MESSAGES.showLockedPeriodsTitle
-        			(currentActivity.getDatabase().getName(), 
-        					currentSite.getProjectName(), 
-        					currentActivity.getName()));
+        	view.showLockedPeriods(getLockedPeriods());
         } else if (UIActions.map.equals(actionId)) {
 
         }

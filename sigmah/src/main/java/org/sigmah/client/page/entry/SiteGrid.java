@@ -19,6 +19,7 @@ import org.sigmah.client.page.common.columns.EditTextColumn;
 import org.sigmah.client.page.common.columns.ReadTextColumn;
 import org.sigmah.client.page.common.grid.AbstractEditorGridView;
 import org.sigmah.client.page.common.toolbar.UIActions;
+import org.sigmah.client.page.config.ShowLockedPeriodsDialog;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
@@ -57,6 +58,8 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
     private boolean enableDragSource;
     protected List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 	private List<AdminLevelDTO> levels;
+    private final ShowLockedPeriodsDialog showLockedPeriods = new ShowLockedPeriodsDialog();
+	private SiteDTO currentSite;
 
     public SiteGrid(boolean enableDragSource) {
         this();
@@ -127,6 +130,7 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
     public void setActionEnabled(String actionId, boolean enabled) {
         super.setActionEnabled(actionId, enabled);
     }
+	
 
     protected ColumnModel createColumnModel(ActivityDTO activity) {
         createMapColumn();
@@ -293,6 +297,7 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
     public void setSelection(int siteId) {
         for(int r=0; r!=grid.getStore().getCount(); ++r) {
             if(grid.getStore().getAt(r).getId() == siteId) {
+            	this.currentSite=grid.getStore().getAt(r);
                 grid.getView().ensureVisible(r, 0, false);
                 if(grid.getSelectionModel() instanceof CellSelectionModel) {
                     ((CellSelectionModel) grid.getSelectionModel()).selectCell(r, 0);                	
@@ -302,5 +307,16 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
             }
         }
     }
+
+	@Override
+	public void showLockedPeriods(List<LockedPeriodDTO> list) {
+		showLockedPeriods.show();
+		showLockedPeriods.setActivityFilter(activity);
+    	showLockedPeriods.setValue(list);
+    	showLockedPeriods.setTitle(I18N.MESSAGES.showLockedPeriodsTitle
+    			(activity.getDatabase().getName(), 
+    					currentSite.getProjectName(), 
+    					activity.getName()));
+	}
 
 }
