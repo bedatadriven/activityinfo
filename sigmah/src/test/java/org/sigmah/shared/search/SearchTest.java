@@ -23,7 +23,6 @@ import com.bedatadriven.rebar.sql.client.SqlException;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcDatabase;
-import com.google.gwt.junit.JUnitMessageQueue.ClientStatus;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -64,23 +63,6 @@ public class SearchTest {
 	}
 	
 	@Test
-	public void testStringAsync() {
-		AdminEntitySearcher sa = new AdminEntitySearcher();
-		sa.search(testQuery, null, new AsyncCallback<List<Integer>>() {
-			
-			@Override
-			public void onSuccess(List<Integer> result) {
-				assertTrue("Expected adminlevel with id=3",result.contains(3)); 
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				throw new AssertionError(caught);
-			}
-		});
-	}
-	
-	@Test
 	public void testAttributeGroup() {
 		db.transaction(new SqlTransactionCallback() {
 			@Override
@@ -100,7 +82,7 @@ public class SearchTest {
 
 			@Override
 			public void onError(SqlException e) {
-				assertTrue("Did not expect error when having db transaction", false);
+				assertTrue("Did not expect error when having db transaction", false); 
 			}
 		});
 	}
