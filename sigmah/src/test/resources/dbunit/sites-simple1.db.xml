@@ -115,7 +115,6 @@
 				units="menages"   
 				aggregation="0"
 				collectIntervention="1"  
-				projectId="3"
 				collectMonitoring="1"  
 				category="outputs"  
 				listHeader="header"  
