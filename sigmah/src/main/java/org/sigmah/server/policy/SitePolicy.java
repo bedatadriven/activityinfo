@@ -14,7 +14,6 @@ import org.sigmah.server.dao.LocationDAO;
 import org.sigmah.server.dao.PartnerDAO;
 import org.sigmah.server.dao.ReportingPeriodDAO;
 import org.sigmah.server.dao.SiteDAO;
-import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.dao.ActivityDAO;
 import org.sigmah.shared.dao.AdminDAO;
 import org.sigmah.shared.dao.ProjectDAO;
@@ -28,7 +27,6 @@ import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.UserDatabase;
 import org.sigmah.shared.domain.UserPermission;
 import org.sigmah.shared.dto.ActivityDTO;
-import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.AttributeDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
@@ -292,6 +290,9 @@ public class SitePolicy implements EntityPolicy<Site> {
             } else if ("projectId".equals(property)) {
             	Project project = projectDAO.findById((Integer)value);
             	site.setProject(project);
+            } else if ("partnerId".equals(property)) {
+            	OrgUnit partner = partnerDAO.findById((Integer)value);
+            	site.setPartner(partner);
             }
         }
     }
