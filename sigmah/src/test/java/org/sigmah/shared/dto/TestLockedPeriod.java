@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class TestLockedPeriod {
+	
 	@Test
 	public void rangeTest() {
 		LockedPeriodDTO lockedPeriod = new LockedPeriodDTO();
@@ -33,8 +34,8 @@ public class TestLockedPeriod {
 		ActivityDTO activity1 = new ActivityDTO(2, "woei");
 		activity1.getLockedPeriods().add(lockedPeriod1);
 
-		Assert.assertFalse("Site should NOT fall within LockedPeriod", site1.fallsWithinLockedPeriod(activity));
-		Assert.assertTrue("No affected LockedPeriods should be available", site.getAffectedLockedPeriods(activity1).size() == 0);
+		Assert.assertFalse("Site should NOT fall within LockedPeriod", site1.fallsWithinLockedPeriod(activity1));
+		Assert.assertTrue("No affected LockedPeriods should be available", site1.getAffectedLockedPeriods(activity1).size() == 0);
 	}
 
 	private SiteDTO createSite() {

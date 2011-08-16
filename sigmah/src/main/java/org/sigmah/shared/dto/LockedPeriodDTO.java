@@ -132,10 +132,13 @@ public class LockedPeriodDTO extends BaseModelData implements EntityDTO {
 	}
 	
 	public boolean fallsWithinPeriod(Date date) {
-		return 
-		   (getFromDate().before(date) &&
-			getToDate().after(date)) ||
-			getFromDate().compareTo(date) == 0 ||
-			getToDate().compareTo(date) == 0;
+		Date from = getFromDate();
+		Date to = getToDate();
+		
+		boolean isSameAsFrom = from.compareTo(date) == 0;
+		boolean isSameAsTo = to.compareTo(date) == 0;
+		boolean isBetween = from.before(date) && to.after(date);
+		
+		return isBetween || isSameAsFrom || isSameAsTo;
 	}
 }
