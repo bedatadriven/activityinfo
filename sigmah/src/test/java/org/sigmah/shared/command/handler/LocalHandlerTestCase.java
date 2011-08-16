@@ -18,6 +18,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
+import org.junit.After;
 import org.junit.Before;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
@@ -39,6 +40,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcDatabase;
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcDatabaseFactory;
+import com.bedatadriven.rebar.sql.server.jdbc.JdbcScheduler;
 import com.bedatadriven.rebar.sync.client.BulkUpdaterAsync;
 import com.bedatadriven.rebar.sync.mock.MockBulkUpdater;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -73,6 +75,8 @@ public abstract class LocalHandlerTestCase {
     private UIMessages uiMessages;
 	protected Connection localConnection;
 	
+	protected CommandContext commandContext;
+	
 	private String databaseName = "target/localdbtest" + new java.util.Date().getTime();
 
     @Before
@@ -95,6 +99,13 @@ public abstract class LocalHandlerTestCase {
         user = new User();
         user.setId(userId);
         localAuth = new Authentication(user.getId(), "X", user.getEmail());
+        commandContext = new CommandContext() {
+			
+			@Override
+			public User getUser() {
+				return user;
+			}
+		};
     }
 
     protected void synchronize() {
@@ -126,6 +137,11 @@ public abstract class LocalHandlerTestCase {
 		});
         localDatabase.processEventQueue();
         
+    }
+    
+    @After
+    public void tearDown() {
+    	JdbcScheduler.get().forceCleanup();
     }
 
     protected void newRequest() {

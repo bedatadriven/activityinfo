@@ -6,30 +6,25 @@
 package org.sigmah.client.offline;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.offline.command.LocalDispatcher;
 import org.sigmah.client.offline.command.handler.LocalCreateEntityHandler;
-import org.sigmah.client.offline.command.handler.LocalGetAdminEntitiesHandler;
-import org.sigmah.client.offline.command.handler.LocalGetSchemaHandler;
 import org.sigmah.client.offline.ui.OfflinePresenter;
 import org.sigmah.client.offline.ui.OfflineView;
-import org.sigmah.shared.command.CreateEntity;
 import org.sigmah.shared.command.GetAdminEntities;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.command.GetSites;
-import org.sigmah.shared.command.handler.GetSitesHandlerSync;
-import org.sigmah.shared.dao.SqlDialect;
+import org.sigmah.shared.command.handler.GetAdminEntitiesHandler;
+import org.sigmah.shared.command.handler.GetSchemaHandler;
+import org.sigmah.shared.command.handler.GetSitesHandler;
 import org.sigmah.shared.dao.SiteTableDAO;
+import org.sigmah.shared.dao.SqlDialect;
 import org.sigmah.shared.dao.SqlSiteTableDAO;
 import org.sigmah.shared.dao.SqliteDialect;
 
-import com.bedatadriven.rebar.sql.client.GearsConnectionFactory;
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlDatabaseFactory;
-import com.bedatadriven.rebar.sync.client.BulkUpdaterAsync;
-import com.bedatadriven.rebar.sync.client.impl.GearsBulkUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.inject.client.AbstractGinModule;
 import com.google.inject.Provides;
@@ -66,20 +61,17 @@ public class OfflineModule extends AbstractGinModule {
 
     @Provides
     protected LocalDispatcher provideLocalDispatcher(Authentication auth,
-            LocalGetSchemaHandler schemaHandler,
-            GetSitesHandlerSync sitesHandler,
-            LocalGetAdminEntitiesHandler adminHandler,
+            GetSchemaHandler schemaHandler,
+            GetSitesHandler sitesHandler,
+            GetAdminEntitiesHandler adminHandler,
             LocalCreateEntityHandler createEntityHandler) {
 
         LocalDispatcher dispatcher = new LocalDispatcher(auth);
-       /* dispatcher.registerHandler(GetSchema.class, schemaHandler);
+        dispatcher.registerHandler(GetSchema.class, schemaHandler);
         dispatcher.registerHandler(GetSites.class, sitesHandler);
         dispatcher.registerHandler(GetAdminEntities.class, adminHandler);
-        dispatcher.registerHandler(CreateEntity.class, createEntityHandler);*/
+      /*  dispatcher.registerHandler(CreateEntity.class, createEntityHandler);*/
         
         return dispatcher;
     }
-
-
-
 }

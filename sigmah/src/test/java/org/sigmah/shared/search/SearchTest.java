@@ -6,12 +6,14 @@ import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.sigmah.database.ClientDatabaseStubs;
 import org.sigmah.server.dao.OnDataSet;
 import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.MockHibernateModule;
 import org.sigmah.test.Modules;
 
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcDatabase;
+import com.google.gwt.junit.JUnitMessageQueue.ClientStatus;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 @RunWith(InjectionSupport.class)
@@ -20,8 +22,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class SearchTest {
 
 	private String testQuery = "kivu";
-	private String dbFile = getClass().getResource("/dbunit/sites-simple.sqlite").getFile();
-	private JdbcDatabase db = new JdbcDatabase(dbFile);
+	private JdbcDatabase db = ClientDatabaseStubs.sitesSimple();
 
 	
 	@Test

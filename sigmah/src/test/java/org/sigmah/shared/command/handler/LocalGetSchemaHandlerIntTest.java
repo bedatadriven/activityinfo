@@ -3,7 +3,7 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.client.offline.command.handler;
+package org.sigmah.shared.command.handler;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -11,11 +11,12 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.dao.OnDataSet;
+import org.sigmah.server.endpoint.gwtrpc.Collector;
 import org.sigmah.server.endpoint.gwtrpc.GwtRpcModule;
 import org.sigmah.server.util.BeanMappingModule;
 import org.sigmah.server.util.logging.LoggingModule;
 import org.sigmah.shared.command.GetSchema;
-import org.sigmah.shared.command.handler.LocalHandlerTestCase;
+import org.sigmah.shared.command.handler.GetSchemaHandler;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.AttributeGroupDTO;
 import org.sigmah.shared.dto.SchemaDTO;
@@ -24,6 +25,8 @@ import org.sigmah.shared.exception.CommandException;
 import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.MockHibernateModule;
 import org.sigmah.test.Modules;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 @RunWith(InjectionSupport.class)
 @Modules({
@@ -41,9 +44,11 @@ public class LocalGetSchemaHandlerIntTest extends LocalHandlerTestCase {
 
         synchronize();
 
-        LocalGetSchemaHandler handler = new LocalGetSchemaHandler(localConnection, localAuth);
-        SchemaDTO schema = handler.execute(new GetSchema(), user);
+        GetSchemaHandler handler = new GetSchemaHandler(localDatabase);
+        Collector<SchemaDTO> collector = new Collector<SchemaDTO>();
+        handler.execute(new GetSchema(), commandContext, collector);
 
+        SchemaDTO schema = collector.getResult();
         assertThat(schema.getDatabases().size(), equalTo(2));
         assertThat(schema.getDatabaseById(1).isDesignAllowed(), equalTo(true));
         assertThat(schema.getDatabaseById(1).getAmOwner(), equalTo(true));
@@ -59,8 +64,11 @@ public class LocalGetSchemaHandlerIntTest extends LocalHandlerTestCase {
         setUser(2); // Bavon, has access only to PEAR
         synchronize();
 
-        LocalGetSchemaHandler handler = new LocalGetSchemaHandler(localConnection, localAuth);
-        SchemaDTO schema = handler.execute(new GetSchema(), user);
+        GetSchemaHandler handler = new GetSchemaHandler(localDatabase);
+        Collector<SchemaDTO> collector = new Collector<SchemaDTO>();
+        handler.execute(new GetSchema(), commandContext, collector);
+
+        SchemaDTO schema = collector.getResult();
 
         assertThat(schema.getDatabases().size(), equalTo(1));
 

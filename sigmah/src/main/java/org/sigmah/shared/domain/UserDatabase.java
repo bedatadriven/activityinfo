@@ -40,15 +40,10 @@ import javax.persistence.Transient;
 @org.hibernate.annotations.FilterDefs({
         @org.hibernate.annotations.FilterDef(name = "userVisible", parameters = { @org.hibernate.annotations.ParamDef(name = "currentUserId", type = "int") }),
         @org.hibernate.annotations.FilterDef(name = "hideDeleted") })
-// TODO: add filtering on organisational level permissions
 @org.hibernate.annotations.Filters({
         @org.hibernate.annotations.Filter(name = "userVisible", condition = "(:currentUserId = OwnerUserId  "
-                + "or :currentUserId in (select p.UserId from UserPermission p "
-                + "where p.AllowView and p.UserId=:currentUserId and p.DatabaseId=DatabaseId)"
-                + "or :currentUserId in (select p.User_userid from OrgUnitPermission p "
-                + "left join PartnerInDatabase m on (p.unit_id = m.partnerid) where "
-                + "m.databaseId=DatabaseId and p.viewAll))"),
-
+                + "or :currentUserId in (select p.UserId from UserPermission p " 
+                + "where p.AllowView and p.UserId=:currentUserId and p.DatabaseId=DatabaseId))"),
         @org.hibernate.annotations.Filter(name = "hideDeleted", condition = "DateDeleted is null") })
 @NamedQuery(name = "queryAllUserDatabasesAlphabetically", query = "select db from UserDatabase db order by db.name")
 public class UserDatabase implements java.io.Serializable, Deleteable, SchemaElement {

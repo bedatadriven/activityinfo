@@ -13,10 +13,11 @@ import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.offline.command.handler.PartialCommandHandler;
 import org.sigmah.shared.command.Command;
+import org.sigmah.shared.command.handler.CommandContext;
 import org.sigmah.shared.command.handler.CommandHandler;
+import org.sigmah.shared.command.handler.CommandHandlerAsync;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.domain.User;
-import org.sigmah.shared.exception.CommandException;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -25,42 +26,53 @@ import com.google.inject.Inject;
 /**
  * Dispatches commands to local handlers
  */
-public class LocalDispatcher implements Dispatcher {
+public class LocalDispatcher implements Dispatcher, CommandContext {
     private final Authentication auth;
-    private final Map<Class, CommandHandler> registry = new HashMap<Class, CommandHandler>();
-
+    private final Map<Class, CommandHandlerAsync> registry = new HashMap<Class, CommandHandlerAsync>();
     
     @Inject
     public LocalDispatcher(Authentication auth) {
         this.auth = auth;
     }
 
-    public <T extends Command> void registerHandler(Class<T> commandClass, CommandHandler<T> handler) {
+    public <C extends Command<R>, R extends CommandResult> void registerHandler(Class<C> commandClass, CommandHandlerAsync<C,R> handler) {
         registry.put(commandClass, handler);
     }
 
     @Override
-    public <T extends CommandResult> void execute(Command<T> command, AsyncMonitor monitor, AsyncCallback<T> callback) {
+    public <R extends CommandResult> void execute(Command<R> command, final AsyncMonitor monitor, final AsyncCallback<R> callback) {
        	    	
-    	// pass a dummy user to the command
-        User user =  new User();
-        user.setId(auth.getUserId());
-        user.setEmail(auth.getEmail());
-
         if(monitor != null) {
             monitor.beforeRequest();
         }
         try {
-            CommandHandler handler = getHandler(command);
-            CommandResult result = handler.execute(command, user);
-            Log.debug("Command success");
-            if(monitor!=null) {
-                monitor.onCompleted();
-            }
-            callback.onSuccess((T)result);
+            CommandHandlerAsync handler = getHandler(command);
+            handler.execute(command, null, new AsyncCallback<R>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					try {
+			            if(monitor!=null) {
+			                monitor.onServerError();
+			            }
+		            } catch(Throwable ignored) {
+		            }
+		            callback.onFailure(caught);
+				}
+
+				@Override
+				public void onSuccess(R result) {
+		            Log.debug("Command success");
+					if(monitor!=null) {
+						monitor.onCompleted();
+					}
+					callback.onSuccess(result);					
+				}
+			});
+
         } catch (Throwable e) {
             Log.debug("Command failure: ", e);
-            try {
+			try {
 	            if(monitor!=null) {
 	                monitor.onServerError();
 	            }
@@ -75,7 +87,7 @@ public class LocalDispatcher implements Dispatcher {
     		return false;
     	}
     	// some commands may only be partially available online
-    	CommandHandler handler = getHandler(c);
+    	CommandHandlerAsync handler = getHandler(c);
     	if(handler instanceof PartialCommandHandler) {
     		return ((PartialCommandHandler) handler).canExecute(c);
     	} else {
@@ -84,12 +96,21 @@ public class LocalDispatcher implements Dispatcher {
     	
     }
     
-    private CommandHandler getHandler(Command c) {
-        CommandHandler handler = registry.get(c.getClass());
+    private <C extends Command<R>,R extends CommandResult> CommandHandlerAsync<C,R> getHandler(C c) {
+        CommandHandlerAsync<C,R> handler = registry.get(c.getClass());
         if(handler == null) {
             throw new IllegalArgumentException("No handler class for " + c.toString());
         }
 
         return handler;
     }
+
+	@Override
+	public User getUser() {
+        User user =  new User();
+        user.setId(auth.getUserId());
+        user.setEmail(auth.getEmail());
+        return user;
+	}
+    
 }

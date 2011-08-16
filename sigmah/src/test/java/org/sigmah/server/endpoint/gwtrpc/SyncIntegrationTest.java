@@ -39,7 +39,10 @@ import org.sigmah.test.Modules;
 })
 public class SyncIntegrationTest extends LocalHandlerTestCase {
 
-    @Test
+    private long nowIsh;
+	private long awhileBack;
+
+	@Test
     @OnDataSet("/dbunit/sites-simple1.db.xml")
     public void run() throws SQLException {
         synchronize();
@@ -113,14 +116,13 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
         entityManager.getTransaction().begin();
         Date now = new Date();
         Location loc = new Location();
-        loc.setDateCreated(now);
-        loc.setDateEdited(now);
+        loc.setDateCreated(new Date(nowIsh+=1500));
+        loc.setDateEdited(new Date(nowIsh+=1500));
         loc.setName("Penekusu");
         loc.setLocationType(entityManager.find(LocationType.class, 1));
         entityManager.persist(loc);
         entityManager.getTransaction().commit();
         entityManager.clear();
-
 
         entityManager.getTransaction().begin();
         Location loc2 = entityManager.find(Location.class, loc.getId());
@@ -146,18 +148,21 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
     }
 
     private void addLocationsToServerDatabase(int count) {
-        EntityManager entityManager = serverEntityManagerFactory.createEntityManager();
+       
+    	nowIsh = new Date().getTime();
+    	awhileBack = nowIsh - 100000;
+    	
+    	    	EntityManager entityManager = serverEntityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
-        Timestamp now = new Timestamp(new Date().getTime());
         for(int i=1;i<= count;++i) {
             Location loc = new Location();
             loc.setId(i);
             if(i%3 == 0) {
-            	loc.setDateCreated(new Date( now.getTime() - 100000));
+            	loc.setDateCreated(new Date(awhileBack+=15000));
             } else {
-            	loc.setDateCreated(now);
+            	loc.setDateCreated(new Date(nowIsh+=15000));
             }
-            loc.setDateEdited(now);
+            loc.setDateEdited(new Date(nowIsh+=15000));
             loc.setName("Penekusu " + i);
             loc.getAdminEntities().add(entityManager.getReference(AdminEntity.class, 2));
             loc.getAdminEntities().add(entityManager.getReference(AdminEntity.class, 12));
@@ -170,6 +175,7 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
         entityManager.getTransaction().commit();
         entityManager.close();
     }
+
 
     private String queryString(String sql) throws SQLException {
        return localDatabase.selectString(sql);
