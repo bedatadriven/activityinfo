@@ -31,6 +31,7 @@ public class SearchFilterView extends LayoutContainer {
 		panelNoResultsFound = new HorizontalPanel();
 		LabelField labelNoResultsFound = new LabelField();
 		labelNoResultsFound.setText(I18N.MESSAGES.noSearchResults(searchQuery));
+		add(panelNoResultsFound);
 	}
 
 
@@ -64,11 +65,14 @@ public class SearchFilterView extends LayoutContainer {
 
 
 	private void showNoResultsFound() {
+		labelHeader.setVisible(false);
 		panelNoResultsFound.setVisible(true);
 	}
 
 
 	private void showEntityPanel() {		
+		labelHeader.setVisible(true);
+		panelNoResultsFound.setVisible(false);
 		for (DimensionType foundEntity : filter.getRestrictedDimensions()) {
 			panelEntity = new HorizontalPanel();
 			

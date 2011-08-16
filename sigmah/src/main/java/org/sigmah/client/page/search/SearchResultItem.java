@@ -66,7 +66,7 @@ public class SearchResultItem  extends LayoutContainer {
 			
 			Hyperlink link = new Hyperlink(axis.getLabel(),
 					"site-grid/" + ((EntityCategory)axis.getCategory()).getId());
-			link.setStyleName("link");
+			link.setStylePrimaryName("link");
 			panelChild.add(link);
 			if (axis.getCells().size() > 0) {
 				panelChild.add(new LabelField(
