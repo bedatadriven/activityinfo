@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.sigmah.database.ClientDatabaseStubs;
 import org.sigmah.server.dao.OnDataSet;
 import org.sigmah.server.endpoint.gwtrpc.handler.GenerateElementHandler;
 import org.sigmah.server.endpoint.gwtrpc.handler.SearchHandler;
@@ -19,6 +20,7 @@ import org.sigmah.test.MockHibernateModule;
 import org.sigmah.test.Modules;
 
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcDatabase;
+import com.google.gwt.junit.JUnitMessageQueue.ClientStatus;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -28,8 +30,7 @@ import com.google.inject.Inject;
 public class SearchTest {
 
 	private String testQuery = "kivu";
-	private String dbFile = getClass().getResource("/dbunit/sites-simple.sqlite").getFile();
-	private JdbcDatabase db = new JdbcDatabase(dbFile);
+	private JdbcDatabase db = ClientDatabaseStubs.sitesSimple();
 	private GenerateElementHandler getPivotData;
 	private SearchHandler handler;
 	private CommandContext context = new CommandContext() {
@@ -42,6 +43,7 @@ public class SearchTest {
 		}
 	};
 	private GenerateElementHandler genelhandler;
+
 
     @Inject
     public SearchTest(GenerateElementHandler genElHandler) {

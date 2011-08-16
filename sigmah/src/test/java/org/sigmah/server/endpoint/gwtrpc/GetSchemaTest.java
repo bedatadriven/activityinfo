@@ -11,6 +11,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -72,7 +74,7 @@ public class GetSchemaTest extends CommandTestCase {
 
         SchemaDTO schema = execute(new GetSchema());
 
-        Assert.assertTrue("STEFAN not in PEAR", schema.getDatabaseById(1) == null);
+        assertTrue("STEFAN does not have access to RRM", schema.getDatabaseById(2) == null);
     }
 
     @Test
@@ -86,19 +88,16 @@ public class GetSchemaTest extends CommandTestCase {
                 schema.getActivityById(2).getIndicators().size() == 0);
 
         ActivityDTO nfi = schema.getActivityById(1);
-        IndicatorDTO[] indicators = nfi.getIndicators().toArray(new IndicatorDTO[0]);
 
-        Assert.assertEquals("indicators are present", 2, indicators.length);
-        //Assert.assertTrue("indicators are sorted",
-        //		indicators[0].getSortOrder() <= indicators[1].getSortOrder());
+        assertThat("indicators are present", nfi.getIndicators().size(), equalTo(3));
 
         IndicatorDTO test = nfi.getIndicatorById(2);
-        Assert.assertEquals("property:name", test.getName(), "kits");
-        Assert.assertEquals("property:units", test.getUnits(), "menages");
-        Assert.assertEquals("property:aggregation", test.getAggregation(), 0);
-        Assert.assertEquals("property:category", test.getCategory(), "outputs");
-        Assert.assertEquals("property:listHeader", test.getListHeader(), "header");
-        Assert.assertEquals("property:description", test.getDescription(), "desc");
+        assertThat("property:name", test.getName(), equalTo("baches"));
+        assertThat("property:units", test.getUnits(), equalTo("menages"));
+        assertThat("property:aggregation", test.getAggregation(), equalTo(IndicatorDTO.AGGREGATE_SUM));
+        assertThat("property:category", test.getCategory(), equalTo("outputs"));
+        assertThat("property:listHeader", test.getListHeader(), equalTo("header"));
+        assertThat("property:description", test.getDescription(), equalTo("desc"));
     }
 
     @Test
@@ -108,7 +107,7 @@ public class GetSchemaTest extends CommandTestCase {
 
         SchemaDTO schema = execute(new GetSchema());
 
-        Assert.assertTrue("no attributes case", schema.getActivityById(2).getAttributeGroups().size() == 0);
+        Assert.assertTrue("no attributes case", schema.getActivityById(3).getAttributeGroups().size() == 0);
 
         ActivityDTO nfi = schema.getActivityById(1);
         AttributeDTO[] attributes = nfi.getAttributeGroups().get(0).getAttributes().toArray(new AttributeDTO[0]);
@@ -117,7 +116,7 @@ public class GetSchemaTest extends CommandTestCase {
 
         AttributeDTO test = nfi.getAttributeById(1);
 
-        Assert.assertEquals("property:name", "Retour", test.getName());
+        Assert.assertEquals("property:name", "Catastrophe Naturelle", test.getName());
     }
 
 

@@ -102,6 +102,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 						if(!sites.isEmpty()) {
 							queryEntities(tx, siteMap);
 							joinIndicatorValues(tx, siteMap);
+							joinAttributeValues(tx, siteMap);
 							
 							if(command.getLimit() > 0) {
 								queryTotalLength(tx, command, context, result);
@@ -150,6 +151,9 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 		// during synchronization
 
 		if(!GWT.isClient()) {    
+			query.whereTrue("Site.DateDeleted IS NULL")
+				.and("Activity.DateDeleted IS NULL")
+				.and("UserDatabase.DateDeleted IS NULL");
 			query.whereTrue(
 					"(UserDatabase.OwnerUserId = ? OR " +
 							"UserDatabase.DatabaseId in "  +
@@ -306,6 +310,29 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 			            double indicatorValue = row.getDouble("Value");
 
 						site.setIndicatorValue(indicatorId, indicatorValue);
+					}		
+				}
+			});
+	}
+	
+	private void joinAttributeValues(SqlTransaction tx, final Map<Integer, SiteDTO> siteMap) {
+
+    	SqlQuery.select()
+    		.appendColumn("AttributeId", "attributeId")
+    		.appendColumn("SiteId", "siteId")
+    		.appendColumn("Value", "value")
+            .from("AttributeValue")
+            .where("SiteId").in(siteMap.keySet())
+            .execute(tx, new SqlResultCallback() {
+				
+				@Override
+				public void onSuccess(SqlTransaction tx, SqlResultSet results) {
+					for(SqlResultSetRow row : results.getRows()) {
+						SiteDTO site = siteMap.get( row.getInt("siteId") );
+						int attributeId = row.getInt("attributeId");
+			            boolean value = row.getBoolean("value");
+
+						site.setAttributeValue(attributeId, value);
 					}		
 				}
 			});

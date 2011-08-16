@@ -64,21 +64,27 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
        
 
 		public void loadCountries() {
-            SqlQuery.select("CountryId, Name, X1, Y1, X2, Y2")
+            SqlQuery.select()
+            	.appendColumn("CountryId", "id")
+            	.appendColumn("Name", "name")
+            	.appendColumn("X1", "x1")
+            	.appendColumn("y1", "y1")
+            	.appendColumn("x2", "x2")
+            	.appendColumn("y2", "y2")
             	.from("Country")
             	.execute(tx, new RowHandler() {
 
 		                @Override
                 public void handleRow(SqlResultSetRow rs) {
                     CountryDTO country = new CountryDTO();
-                    country.setId(rs.getInt("CountryId"));
-                    country.setName(rs.getString("Name"));
+                    country.setId(rs.getInt("id"));
+                    country.setName(rs.getString("name"));
 
                     BoundingBoxDTO bounds = new BoundingBoxDTO(
-                    		rs.getDouble("X1"),
-                    		rs.getDouble("Y1"),
-                    		rs.getDouble("X2"),
-                    		rs.getDouble("Y2"));
+                    		rs.getDouble("x1"),
+                    		rs.getDouble("y1"),
+                    		rs.getDouble("x2"),
+                    		rs.getDouble("y2"));
 
                     country.setBounds(bounds);
 
@@ -137,19 +143,23 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
             	.appendColumn("d.CountryId")
             	.appendColumn("o.Name", "OwnerName")
             	.appendColumn("o.Email", "OwnerEmail")
-            	.appendColumn("p.AllowViewAll")
-            	.appendColumn("p.AllowEdit")
-            	.appendColumn("p.AllowEditAll")
-            	.appendColumn("p.AllowManageUsers")
-            	.appendColumn("p.AllowManageAllUsers")
-            	.appendColumn("p.AllowDesign")
+            	.appendColumn("p.AllowViewAll", "allowViewAll")
+            	.appendColumn("p.AllowEdit", "allowEdit")
+            	.appendColumn("p.AllowEditAll", "allowEditAll")
+            	.appendColumn("p.AllowManageUsers", "allowManageUsers")
+            	.appendColumn("p.AllowManageAllUsers", "allowManageAllUsers")
+            	.appendColumn("p.AllowDesign", "allowDesign")
             .from("UserDatabase d")
-            .leftJoin("UserPermission p").on("d.DatabaseId = p.DatabaseId")
+            .leftJoin( 
+            		SqlQuery.select("*").from("UserPermission")
+            			.where("UserPermission.UserId").equalTo(context.getUser().getId()), "p")
+            			.on("p.DatabaseId = d.DatabaseId")
             .leftJoin("UserLogin o").on("d.OwnerUserId = o.UserId")
             .where("d.DateDeleted").isNull()
+            .whereTrue("(o.userId = ? or p.AllowView = 1)")
+            .appendParameter(context.getUser().getId())
             .orderBy("d.Name");
             
-            applyDatabasePermissionFilter(query);
             
             
             query.execute(tx, new SqlResultCallback() {
@@ -167,12 +177,12 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
 	                    db.setOwnerName( row.getString("OwnerName") );
 	                    db.setOwnerEmail( row.getString("OwnerEmail") );
 	
-	                    db.setViewAllAllowed(db.getAmOwner() || row.getBoolean("AllowViewAll") );
-	                    db.setEditAllowed(db.getAmOwner() || row.getBoolean("AllowEdit") );
-	                    db.setEditAllAllowed(db.getAmOwner() || row.getBoolean("AllowEditAll") );
-	                    db.setManageUsersAllowed(db.getAmOwner() || row.getBoolean("AllowManageUsers" ) );
-	                    db.setManageAllUsersAllowed(db.getAmOwner() || row.getBoolean("AllowManageAllUsers") );
-	                    db.setDesignAllowed(db.getAmOwner() || row.getBoolean("AllowDesign") );
+	                    db.setViewAllAllowed(db.getAmOwner() || row.getBoolean("allowViewAll") );
+	                    db.setEditAllowed(db.getAmOwner() || row.getBoolean("allowEdit") );
+	                    db.setEditAllAllowed(db.getAmOwner() || row.getBoolean("allowEditAll") );
+	                    db.setManageUsersAllowed(db.getAmOwner() || row.getBoolean("allowManageUsers" ) );
+	                    db.setManageAllUsersAllowed(db.getAmOwner() || row.getBoolean("allowManageAllUsers") );
+	                    db.setDesignAllowed(db.getAmOwner() || row.getBoolean("allowDesign") );
 	
 	                    databaseMap.put(db.getId(), db);
 	                    databaseList.add(db);				
@@ -191,32 +201,6 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
 				}
 			});
         }
-
-		private void applyDatabasePermissionFilter(SqlQuery query) {
-			if(!GWT.isClient()) {
-            	// apply permissions on the server side
-            	// the current user must....
-            	query.whereTrue("(" +
-            			
-            			// be the owner of this database
-            			
-            			"(? = OwnerUserId)" +
-            					" OR " +
-            			
-            			// have permission to view this database	
-                         
-                         "(? in (SELECT p.UserId from UserPermission p "
-                       			+ "WHERE p.AllowView and p.UserId=? and p.DatabaseId=d.DatabaseId))" +
-                         
-            	   ")");
-                       	    
-                       			
-            	query.appendParameter(context.getUser().getId());
-            	query.appendParameter(context.getUser().getId());
-            	query.appendParameter(context.getUser().getId());
-            }
-		}
-
         private void joinPartnersToDatabases() {
             SqlQuery query = SqlQuery.select("d.DatabaseId","d.PartnerId", "p.Name")
                 .from("PartnerInDatabase", "d")
@@ -255,6 +239,7 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
                 .orderBy("SortOrder");
             
             if(!GWT.isClient()) {
+            	query.where("DateDeleted IS NULL");
             	query.where("DatabaseId").in(databaseMap.keySet());
             }
             
@@ -286,6 +271,7 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
                     .orderBy("SortOrder");
             
             if(!GWT.isClient()) {
+            	query.where("DateDeleted IS NULL");
             	query.where("ActivityId").in(SqlQuery.select("ActivityId").from("Activity").where("databaseId")
             			.in(databaseMap.keySet()));
             			
@@ -306,17 +292,23 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
 
                     int activityId = rs.getInt("ActivityId");
                     ActivityDTO activity = activities.get(activityId);
-                    activity.getIndicators().add(indicator);
+                    if(activity != null) { // it may have been deleted
+                    	activity.getIndicators().add(indicator);
+                    }
                 }
             });
         }
 
         public void loadAttributeGroups() {
-            SqlQuery query = SqlQuery.select("AttributeGroupId, Name, MultipleAllowed")
+            SqlQuery query = SqlQuery.select()
+            		.appendColumn("AttributeGroupId", "id")
+            		.appendColumn("Name", "name")
+            		.appendColumn("MultipleAllowed", "multipleAllowed")
                     .from("AttributeGroup")
                     .orderBy("SortOrder");
             
             if(!GWT.isClient()) {
+            	query.where("DateDeleted IS NULL");
             	query.where("AttributeGroupId").in(
             			SqlQuery.select("AttributeGroupId").from("AttributeGroupInActivity")
             				.where("ActivityId").in(SqlQuery.select("ActivityId").from("Activity")
@@ -330,9 +322,9 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
                 public void handleRow(SqlResultSetRow rs)  {
 
                     AttributeGroupDTO group = new AttributeGroupDTO();
-                    group.setId(rs.getInt("AttributeGroupId"));
-                    group.setName(rs.getString("Name"));
-                    group.setMultipleAllowed(rs.getBoolean("MultipleAllowed"));
+                    group.setId(rs.getInt("id"));
+                    group.setName(rs.getString("name"));
+                    group.setMultipleAllowed(rs.getBoolean("multipleAllowed"));
 
                     attributeGroups.put(group.getId(), group);
                 }
@@ -345,6 +337,7 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
                 .orderBy("SortOrder");
             
             if(!GWT.isClient()) {
+            	query.where("DateDeleted IS NULL");
             	query.where("AttributeGroupId").in(
             			SqlQuery.select("AttributeGroupId").from("AttributeGroupInActivity")
             				.where("ActivityId").in(SqlQuery.select("ActivityId").from("Activity")
@@ -384,11 +377,12 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
                     @Override
                     public void handleRow(SqlResultSetRow row) {
 
-                        int activityId = row.getInt("ActivityId");
                         int groupId = row.getInt("AttributeGroupId");
-
-                        activities.get(activityId).getAttributeGroups().add(
-                                attributeGroups.get(groupId));
+                        
+                        ActivityDTO activity = activities.get(row.getInt("ActivityId"));
+                        if(activity != null) { // it may have been deleted
+                        	activity.getAttributeGroups().add(attributeGroups.get(groupId));
+                        }
                     }
                 });
         }
