@@ -22,6 +22,7 @@ public class AllSearcher {
 		searchers.add(new PartnerSearcher());
 		searchers.add(new ProjectSearcher());
 		searchers.add(new AdminEntitySearcher());
+		searchers.add(new AttributeGroupSearcher());
 	}
 	
 	public AllSearcher(SqlDatabase db) {
@@ -32,12 +33,10 @@ public class AllSearcher {
 		db.transaction(new SqlTransactionCallback() {
 			@Override
 			public void begin(SqlTransaction tx) {
-				
 				searchNext(query, searchers.iterator(), tx, new AsyncCallback<Filter>() {
 					@Override
 					public void onFailure(Throwable caught) {
-						// Not going to happen
-						System.out.println();
+						callback.onFailure(caught);
 					}
 
 					@Override
@@ -49,7 +48,7 @@ public class AllSearcher {
 
 			@Override
 			public void onError(SqlException e) {
-				super.onError(e);
+				callback.onFailure(e);
 			}
 		});
 	}
@@ -65,6 +64,7 @@ public class AllSearcher {
 			@Override
 			public void onFailure(Throwable caught) {
 				failedSearchers.add(searcher);
+				System.out.println("Failed searcher: ");
 				
 				AllSearcher.this.continueOrYieldFilter(q, it, tx, callback);
 			}

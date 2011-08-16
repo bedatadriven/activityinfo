@@ -7,6 +7,7 @@ import org.sigmah.shared.report.model.DimensionType;
 
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.google.gwt.user.client.ui.Image;
 
@@ -14,7 +15,7 @@ import com.google.gwt.user.client.ui.Image;
 public class SearchFilterView extends LayoutContainer {
 	private LabelField labelHeader;
 	private Filter filter;
-	private HorizontalPanel panelEntity;
+	private VerticalPanel panelEntities;
 	private HorizontalPanel panelNoResultsFound;
 	private String searchQuery = "";
 	
@@ -24,6 +25,13 @@ public class SearchFilterView extends LayoutContainer {
 		addHeaderLabel();
 		
 		createNoResultsFoundPanel();
+		createEntityPanel();
+	}
+
+
+	private void createEntityPanel() {
+		panelEntities = new VerticalPanel();
+		add(panelEntities);
 	}
 
 
@@ -53,9 +61,6 @@ public class SearchFilterView extends LayoutContainer {
 
 
 	private void updateUI() {
-		if (panelEntity != null) {
-			remove(panelEntity);
-		}
 		if (filter.hasRestrictions()) {
 			showEntityPanel();
 		} else {
@@ -73,8 +78,9 @@ public class SearchFilterView extends LayoutContainer {
 	private void showEntityPanel() {		
 		labelHeader.setVisible(true);
 		panelNoResultsFound.setVisible(false);
+		panelEntities.removeAll();
 		for (DimensionType foundEntity : filter.getRestrictedDimensions()) {
-			panelEntity = new HorizontalPanel();
+			HorizontalPanel panelEntity = new HorizontalPanel();
 			
 			Image iconEntityType = fromDimension(foundEntity);
 			panelEntity.add(iconEntityType);
@@ -101,8 +107,7 @@ public class SearchFilterView extends LayoutContainer {
 			panelEntity.add(labelEntityName);
 			
 			// TODO: add a label with the names of the entities. We do not have those here (yet).
-			
-			add(panelEntity);
+			panelEntities.add(panelEntity);
 		}
 		
 		layout(true);
