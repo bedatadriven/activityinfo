@@ -1,9 +1,14 @@
 <div class=sites>
 	<tpl for=".">
 		<div class=site>
-			<div class=date>{date1:date("d MMM yyyy")} - {date2:date("d MMM yyyy")}</div>
-			<div class=lat>Lat: {y}, Long: {x}</div>
-			<div class=comment>{comments}</div>
+			<div class=activity>
+				<div class=iconActivity></div>{activityName}
+			</div>
+			<div class=date><div class=iconDate></div>{date1:date("d MMM yyyy")} - {date2:date("d MMM yyyy")}</div>
+			<div class=location><div class=iconLocation></div>{locationName}</div>
+			<tpl if="hasComment==true">
+				<div class=comment>{comments}</div>
+			</tpl>
 		</div>
 	</tpl>
 </div>

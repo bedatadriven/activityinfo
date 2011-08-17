@@ -356,7 +356,10 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
 
 
                     int groupId = row.getInt("AttributeGroupId");
-                    attributeGroups.get(groupId).getAttributes().add(attribute);
+                    AttributeGroupDTO group = attributeGroups.get(groupId);
+                    if (group != null) {
+                    	group.getAttributes().add(attribute);
+                    }
                 }
             });
         }

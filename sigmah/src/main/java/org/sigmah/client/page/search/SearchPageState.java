@@ -6,14 +6,16 @@ import java.util.List;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.PageStateParser;
-import org.sigmah.client.page.config.AccountPageState;
 
 public class SearchPageState implements PageState {
 
 	private String searchQuery = "";
 	
-	public SearchPageState(String value) {
-		searchQuery = value;
+	public SearchPageState() {
+	}
+
+	public SearchPageState(String query) {
+		searchQuery = query;
 	}
 
 	@Override
@@ -32,8 +34,21 @@ public class SearchPageState implements PageState {
 	}
 	
     @Override
-    public boolean equals(Object obj) {
-        return obj != null && obj instanceof AccountPageState;
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        SearchPageState searchPlace = (SearchPageState) o;
+
+        if (searchQuery != searchPlace.searchQuery) {
+            return false;
+        }
+        
+        return true;
     }
 	
     @Override

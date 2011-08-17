@@ -24,7 +24,6 @@ public class SearchResult extends ListResult<SearchHitDTO> implements CommandRes
 		this.pivotTabelData = pivotTabelData;
 		this.recentAdditions = recentAdditions;
 	}
-
 	
 	public PivotContent getPivotTabelData() {
 		return pivotTabelData;

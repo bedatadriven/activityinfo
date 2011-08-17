@@ -1,13 +1,15 @@
 package org.sigmah.client.page.search;
 
 import java.util.List;
+import java.util.Map;
 
 import org.sigmah.client.mvp.ListView;
+import org.sigmah.client.page.search.SearchPresenter.RecentSiteModel;
 import org.sigmah.shared.command.result.SearchResult;
-import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.command.result.SitePointList;
 import org.sigmah.shared.dto.SearchHitDTO;
-import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.report.content.PivotContent;
+import org.sigmah.shared.report.model.DimensionType;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
@@ -53,7 +55,8 @@ public interface SearchView extends ListView<SearchHitDTO, SearchResult> {
 
 	void setSearchResults(PivotContent pivotTabelData);
 	void setSearchQuery(String query);
-	void setFilter(Filter filter);
+	void setFilter(Map<DimensionType, List<SearchResultEntity>> affectedEntities);
 
-	void setLatestAdditions(List<SiteDTO> latestAdditions);
+	public void setSitePoints(SitePointList sitePoints);
+	public void setSites(List<RecentSiteModel> sites);
 }

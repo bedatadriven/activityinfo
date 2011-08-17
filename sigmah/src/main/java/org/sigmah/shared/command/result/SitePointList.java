@@ -5,6 +5,7 @@
 
 package org.sigmah.shared.command.result;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.sigmah.shared.dto.SiteDTO;
@@ -46,6 +47,10 @@ public class SitePointList implements CommandResult {
     
     public static SitePointList fromSitesList(List<SiteDTO> sites) {
     	SitePointList result = new SitePointList();
+    	
+    	if (result.getPoints() == null) {
+    		result.setPoints(new ArrayList<SitePointDTO>());
+    	}
     	
     	for (SiteDTO site : sites) {
     		 result.getPoints().add(SitePointDTO.fromSite(site));

@@ -6,56 +6,61 @@ import org.sigmah.client.page.map.MapView;
 import org.sigmah.client.page.map.MapView.SiteSelectedEvent;
 import org.sigmah.client.page.map.MapView.SiteSelectedHandler;
 import org.sigmah.client.page.map.MapViewImpl;
+import org.sigmah.client.page.search.SearchPresenter.RecentSiteModel;
 import org.sigmah.shared.command.result.SitePointList;
-import org.sigmah.shared.dto.SiteDTO;
 
-import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.ListViewEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.util.Padding;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
+import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
+import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 
-public class RecentSitesView extends ContentPanel {
+public class RecentSitesView extends LayoutContainer {
 	private MapView mapWidget;
-	private ListView<SiteDTO> listviewSites;
-	private ListStore<SiteDTO> storeSites;
-	private List<SiteDTO> sites;
+	private ListView<RecentSiteModel> listviewSites;
+	private ListStore<RecentSiteModel> storeSites;
+	private List<RecentSiteModel> sites;
 	
 	public RecentSitesView() {
 		super();
 		
 		initializeComponent();
 		
-		createMapWidget();
 		createSitesPanel();
+		createMapWidget();
 	}
 	
-	public void setSites(List<SiteDTO> sites) {
+	public void setSites(List<RecentSiteModel> sites) {
 		this.sites=sites;
+		
 		storeSites.removeAll();
 		storeSites.add(sites);
-
-		mapWidget.setSites(SitePointList.fromSitesList(sites));
+	}
+	
+	public void setSitePoins(SitePointList sitePoints) {
+		mapWidget.setSites(sitePoints);
 	}
 
 	private void createSitesPanel() {
-		listviewSites = new ListView<SiteDTO>(storeSites);
+		listviewSites = new ListView<RecentSiteModel>(storeSites);
 		
 		listviewSites.setTemplate(SearchResources.INSTANCE.sitesTemplate().getText());
 		listviewSites.setItemSelector(".site");
-		listviewSites.addListener(Events.Select, new Listener<ListViewEvent<SiteDTO>>() {
+		listviewSites.addListener(Events.Select, new Listener<ListViewEvent<RecentSiteModel>>() {
 			@Override
-			public void handleEvent(ListViewEvent<SiteDTO> be) {
-				mapWidget.selectSite(be.getModel().getId());
+			public void handleEvent(ListViewEvent<RecentSiteModel> be) {
+				mapWidget.selectSite(be.getModel().getSiteId());
 			}
 		});
 		
-		BorderLayoutData bld = new BorderLayoutData(LayoutRegion.CENTER); 
-		
-		add(listviewSites, bld);
+	    VBoxLayoutData vbld = new VBoxLayoutData();
+	    vbld.setFlex(3);
+		add(listviewSites, vbld);
 	}
 
 	private void createMapWidget() {
@@ -63,23 +68,22 @@ public class RecentSitesView extends ContentPanel {
 		mapWidget.addSiteSelectedHandler(new SiteSelectedHandler() {
 			@Override
 			public void onSiteSelected(SiteSelectedEvent siteSelectedEvent) {
-				SiteDTO site = getSiteById(siteSelectedEvent.getSiteId());
+				RecentSiteModel site = getSiteById(siteSelectedEvent.getSiteId());
 				listviewSites.getSelectionModel().select(site, false);
-				mapWidget.selectSite(site.getId());
+				mapWidget.selectSite(site.getSiteId());
 			}
 		});
 		
-		BorderLayoutData bld= new BorderLayoutData(LayoutRegion.SOUTH); 
-		bld.setMinSize(300);
-		bld.setSize(300);
+	    VBoxLayoutData vbld = new VBoxLayoutData();
+	    vbld.setFlex(1);
 		
-		add(mapWidget.asWidget(), bld);
+		add(mapWidget.asWidget(), vbld);
 	}
 	
 	// TODO: move to collection class
-	private SiteDTO getSiteById(int siteId) {
-		for (SiteDTO site : sites) {
-			if (site.getId() == siteId)
+	private RecentSiteModel getSiteById(int siteId) {
+		for (RecentSiteModel site : sites) {
+			if (site.getSiteId() == siteId)
 			{
 				return site;
 			}
@@ -88,9 +92,14 @@ public class RecentSitesView extends ContentPanel {
 	}
 
 	private void initializeComponent() {
-		setHeading("Recently added sites");
+		//setHeading("Recently added sites");
+		VBoxLayout vboxLayout = new VBoxLayout();
+		vboxLayout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
+		vboxLayout.setPadding(new Padding(5));
 		
-		storeSites = new ListStore<SiteDTO>();
+		setLayout(vboxLayout);
+
+		storeSites = new ListStore<RecentSiteModel>();
 	}
 	
 }

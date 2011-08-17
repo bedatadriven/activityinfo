@@ -1,26 +1,32 @@
 package org.sigmah.client.page.search;
 
+import java.util.List;
+import java.util.Map;
+
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.report.model.DimensionType;
 
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
+import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Image;
 
 
 public class SearchFilterView extends LayoutContainer {
 	private LabelField labelHeader;
-	private Filter filter;
 	private VerticalPanel panelEntities;
 	private HorizontalPanel panelNoResultsFound;
 	private String searchQuery = "";
+	private Map<DimensionType, List<SearchResultEntity>> affectedEntities;
 	
 	public SearchFilterView() {
 		super();
+		
+		SearchResources.INSTANCE.searchStyles().ensureInjected();
+		setStylePrimaryName("filterView");
 		
 		addHeaderLabel();
 		
@@ -28,12 +34,11 @@ public class SearchFilterView extends LayoutContainer {
 		createEntityPanel();
 	}
 
-
 	private void createEntityPanel() {
 		panelEntities = new VerticalPanel();
+		panelEntities.setStylePrimaryName("filterView");
 		add(panelEntities);
 	}
-
 
 	private void createNoResultsFoundPanel() {
 		panelNoResultsFound = new HorizontalPanel();
@@ -42,77 +47,86 @@ public class SearchFilterView extends LayoutContainer {
 		add(panelNoResultsFound);
 	}
 
-
 	private void addHeaderLabel() {
 		labelHeader = new LabelField();
 		labelHeader.setText("Showing result for:");
+		labelHeader.setStylePrimaryName("filterSummary");
 		add(labelHeader);
 	}
 
-	public void setFilter(Filter filter) {
-		this.filter = filter;
-		
-		updateUI();
-	}
-	
 	public void setQuery(String query) {
 		this.searchQuery=query;
 	}
 
 
 	private void updateUI() {
-		if (filter.hasRestrictions()) {
-			showEntityPanel();
-		} else {
-			showNoResultsFound();
-		}
+		setHasFilter(affectedEntities.size() > 0);
+		showEntityPanel();
 	}
+	
+	private void setHasFilter(boolean hasFilter) {
+		// show the filters
+		labelHeader.setVisible(hasFilter);
+		panelEntities.setVisible(hasFilter);
 
-
-	private void showNoResultsFound() {
-		labelHeader.setVisible(false);
-		panelNoResultsFound.setVisible(true);
+		// hide no results panel
+		panelNoResultsFound.setVisible(!hasFilter);
 	}
 
 
 	private void showEntityPanel() {		
-		labelHeader.setVisible(true);
-		panelNoResultsFound.setVisible(false);
 		panelEntities.removeAll();
-		for (DimensionType foundEntity : filter.getRestrictedDimensions()) {
+		panelEntities.setStylePrimaryName("filterView");
+		for (DimensionType foundEntity : affectedEntities.keySet()) {
 			HorizontalPanel panelEntity = new HorizontalPanel();
 			
 			Image iconEntityType = fromDimension(foundEntity);
 			panelEntity.add(iconEntityType);
 			
 			LabelField labelEntityTypeCount = new LabelField();
-			labelEntityTypeCount.setText(Integer.toString(filter.getRestrictions(foundEntity).size()));
+			labelEntityTypeCount.setText(Integer.toString(affectedEntities.get(foundEntity).size()));
 			panelEntity.add(labelEntityTypeCount);
 			
 			LabelField labelEntityTypeName = new LabelField();
-			labelEntityTypeName.setText(foundEntity.toString());
+			labelEntityTypeName.setText(getEntityTypePluralName(foundEntity));
 			panelEntity.add(labelEntityTypeName);
-			
-			LabelField labelEntityName = new LabelField();
-			StringBuilder builder = new StringBuilder();
-			for (Integer id : filter.getRestrictions(foundEntity)) {
-				builder.append(Integer.toString(id));
-				builder.append(", ");
+
+			// Add every hit entity linked to it's landing page
+			for (SearchResultEntity searchResultEntity : affectedEntities.get(foundEntity)) {
+				Hyperlink link = new Hyperlink(searchResultEntity.getName(), "hm");
+				panelEntity.add(link);
 			}
 			
-			String entitiesList = builder.toString();
-			// Remove last ", "
-			entitiesList = entitiesList.substring(0, entitiesList.length() -2);
-			labelEntityName.setText(entitiesList);
-			panelEntity.add(labelEntityName);
-			
-			// TODO: add a label with the names of the entities. We do not have those here (yet).
+			panelEntity.setStylePrimaryName("filterView");
 			panelEntities.add(panelEntity);
 		}
 		
 		layout(true);
 	}
 
+	public void setFilter(Map<DimensionType, List<SearchResultEntity>> affectedEntities) {
+		this.affectedEntities = affectedEntities;
+
+		updateUI();
+	}
+	
+	private String getEntityTypePluralName(DimensionType dimension) {
+		switch (dimension) {
+		case Activity:
+			return I18N.CONSTANTS.activities();
+		case AdminLevel:
+			return null;
+			//return I18N.CONSTANTS.adminEntities();
+		case Partner:
+			return I18N.CONSTANTS.partners();
+		case Project:
+			return I18N.CONSTANTS.projects();
+		case AttributeGroup:
+			return null;
+			//return I18N.CONSTANTS.attributeTypes();
+		}
+		return "No pluralized string definition in SearchFilterView.java";
+	}
 
 	private Image fromDimension(DimensionType dimension) {
 		switch(dimension) {

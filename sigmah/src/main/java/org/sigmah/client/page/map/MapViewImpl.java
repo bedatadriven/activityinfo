@@ -6,36 +6,26 @@ import java.util.List;
 import java.util.Map;
 
 import org.sigmah.client.map.GcIconFactory;
-import org.sigmah.client.map.MapTypeFactory;
 import org.sigmah.client.page.common.Shutdownable;
 import org.sigmah.shared.command.result.SitePointList;
 import org.sigmah.shared.dto.SitePointDTO;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 import com.ebessette.maps.core.client.overlay.MarkerManagerImpl;
-import com.ebessette.maps.core.client.overlay.OverlayManagerOptions;
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
-import com.google.gwt.maps.client.MapType;
 import com.google.gwt.maps.client.MapWidget;
-import com.google.gwt.maps.client.control.SmallMapControl;
-import com.google.gwt.maps.client.event.MapClickHandler;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.geom.LatLngBounds;
 import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.maps.client.overlay.MarkerOptions;
 import com.google.gwt.maps.client.overlay.Overlay;
-import com.google.gwt.user.client.Element;
 
 /*
  * A view showing a given list of sites
  */
-public class MapViewImpl extends ContentPanel implements Shutdownable, MapView {
+public class MapViewImpl extends LayoutContainer implements Shutdownable, MapView {
 
 	private SimpleEventBus eventBus = new SimpleEventBus();
 	
@@ -57,7 +47,45 @@ public class MapViewImpl extends ContentPanel implements Shutdownable, MapView {
 	private SitePointList sites;
 
     public MapViewImpl() {
-        setHeaderVisible(false);
+//        map = new MapWidget();
+//        
+//        //LatLng.newInstance(sites.getBounds().getCenterY(), sites.getBounds().getCenterX()), 8
+//
+//        MapType adminMap = MapTypeFactory.createLocalisationMapType(null);
+//        map.addMapType(adminMap);
+//        map.setCurrentMapType(adminMap);
+//        map.addControl(new SmallMapControl());
+//
+//        setLayout(new FitLayout());
+//        add(map);
+//
+//        map.addMapClickHandler(new MapClickHandler() {
+//            @Override
+//            public void onClick(MapClickEvent event) {
+//                if (event.getOverlay() != null) {
+//                    int siteId = siteIdFromOverlay(event.getOverlay());
+//                    eventBus.fireEvent(new SiteSelectedEvent(siteId));
+//                }
+//
+//            }
+//        });
+//
+//        // Listen for when this component is resized/layed out
+//        // to assure that map widget is properly restated
+//        Listener<BaseEvent> resizeListener = new Listener<BaseEvent>() {
+//            @Override
+//            public void handleEvent(BaseEvent be) {
+//                map.checkResizeAndCenter();
+//                if (pendingZoom != null) {
+//                    zoomToBounds(pendingZoom);
+//                }
+//            }
+//        };
+//
+//        addListener(Events.AfterLayout, resizeListener);
+//        addListener(Events.Resize, resizeListener);
+//
+//        layout();
     }
 
     public void selectSite(int siteId) {
@@ -105,53 +133,6 @@ public class MapViewImpl extends ContentPanel implements Shutdownable, MapView {
     public void shutdown() {
     }
 
-    @Override
-    protected void onRender(final Element parent, final int pos) {
-    	MapViewImpl.super.onRender(parent, pos);
-    	if (sites != null) {
-            removeAll();
-
-            map = new MapWidget(LatLng.newInstance(sites.getBounds().getCenterY(), sites.getBounds().getCenterX()), 8);
-
-            MapType adminMap = MapTypeFactory.createLocalisationMapType(null);
-            map.addMapType(adminMap);
-            map.setCurrentMapType(adminMap);
-            map.addControl(new SmallMapControl());
-
-            setLayout(new FitLayout());
-            add(map);
-
-            map.addMapClickHandler(new MapClickHandler() {
-                @Override
-                public void onClick(MapClickEvent event) {
-                    if (event.getOverlay() != null) {
-                        int siteId = siteIdFromOverlay(event.getOverlay());
-                        eventBus.fireEvent(new SiteSelectedEvent(siteId));
-                    }
-
-                }
-            });
-
-            // Listen for when this component is resized/layed out
-            // to assure that map widget is properly restated
-            Listener<BaseEvent> resizeListener = new Listener<BaseEvent>() {
-                @Override
-                public void handleEvent(BaseEvent be) {
-                    map.checkResizeAndCenter();
-                    if (pendingZoom != null) {
-                        zoomToBounds(pendingZoom);
-                    }
-                }
-            };
-
-            addListener(Events.AfterLayout, resizeListener);
-            addListener(Events.Resize, resizeListener);
-
-            layout();
-        }
-    }
-
-
     private int siteIdFromOverlay(Overlay overlay) {
         if (overlay == highlitMarker) {
             return markerIds.get(currentHighlightedMarker);
@@ -180,16 +161,16 @@ public class MapViewImpl extends ContentPanel implements Shutdownable, MapView {
     }
 
     public void addSitesToMap(SitePointList points) {
-        if (markerMgr == null) {
-            OverlayManagerOptions options = new OverlayManagerOptions();
-            options.setMaxZoom(map.getCurrentMapType().getMaximumResolution());
-
-            markerMgr = new MarkerManagerImpl(map, options);
-        } else {
-            for (Marker marker : markerIds.keySet()) {
-                markerMgr.removeMarker(marker);
-            }
-        }
+//        if (markerMgr == null) {
+//            OverlayManagerOptions options = new OverlayManagerOptions();
+//            options.setMaxZoom(map.getCurrentMapType().getMaximumResolution());
+//
+//            markerMgr = new MarkerManagerImpl(map, options);
+//        } else {
+//            for (Marker marker : markerIds.keySet()) {
+//                markerMgr.removeMarker(marker);
+//            }
+//        }
         markerIds = new HashMap<Marker, Integer>();
         siteMarkers = new HashMap<Integer, Marker>();
 
@@ -207,7 +188,8 @@ public class MapViewImpl extends ContentPanel implements Shutdownable, MapView {
 
         markerMgr.addOverlays(markers, 0);
         markerMgr.refresh();
-
+        
+        layout();
     }
 
     private LatLngBounds llBoundsForBounds(BoundingBoxDTO bounds) {
@@ -235,7 +217,7 @@ public class MapViewImpl extends ContentPanel implements Shutdownable, MapView {
 	public void setSites(SitePointList sites) {
 		this.sites=sites;
 		
-		addSitesToMap(sites);
+		//addSitesToMap(sites);
 	}
 
 	@Override
