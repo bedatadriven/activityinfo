@@ -37,8 +37,9 @@ public class EmptyChartsTest {
 		PivotDAO pivotDAO = createMock(PivotDAO.class);
 		expect(pivotDAO.aggregate(anyInt(), isA(Filter.class), (Set<Dimension>)isA(Set.class)))
 			.andReturn(Collections.EMPTY_LIST);
-		expect(pivotDAO.getFilterLabels(eq(DimensionType.Indicator), (java.util.Collection<Integer>)isA(Collection.class)))
-			.andReturn(Collections.EMPTY_LIST);
+		expect(pivotDAO.getFilterLabels(eq(DimensionType.Indicator), 
+				(java.util.Set<Integer>)isA(Set.class)))
+			.andReturn(Collections.EMPTY_MAP);
 
 		replay(pivotDAO);
 		

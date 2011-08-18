@@ -18,7 +18,6 @@ import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.MockHibernateModule;
 import org.sigmah.test.Modules;
 
-import com.bedatadriven.rebar.sql.server.jdbc.JdbcScheduler;
 import com.google.inject.Inject;
 
 @RunWith(InjectionSupport.class)
@@ -54,7 +53,7 @@ public class PivotTest {
 		for (DimensionType dimension : filter.getRestrictedDimensions()) {
 			Map<Integer, String> labels = pivotdao.getFilterLabels(dimension, filter.getRestrictions(dimension));
 			 
-			JdbcScheduler.get().assertAllFinished();
+			//JdbcScheduler.get().assertAllFinished();
 			
 			// We don't make assumptions about the data, only about that there should be data (working query)
 			assertTrue("Expected at least one label for entity " + dimension.toString(), labels.size() != 0);

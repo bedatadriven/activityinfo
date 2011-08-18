@@ -189,7 +189,7 @@ public class SearchPresenter implements SearchView.SearchHandler, Page {
 			set("databaseName", databaseName);
 		}
 		public int getSiteId() {
-			return get("siteId");
+			return (Integer)get("siteId");
 		}
 		public void setSiteId(int siteId) {
 			set("siteId", siteId);
