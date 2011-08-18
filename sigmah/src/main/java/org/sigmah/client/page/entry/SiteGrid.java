@@ -34,6 +34,7 @@ import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.SiteDTO;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -301,7 +302,11 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
         for(int r=0; r!=grid.getStore().getCount(); ++r) {
             if(grid.getStore().getAt(r).getId() == siteId) {
                 grid.getView().ensureVisible(r, 0, false);
-                ((CellSelectionModel) grid.getSelectionModel()).selectCell(r, 0);
+                if(grid.getSelectionModel() instanceof CellSelectionModel) {
+                    ((CellSelectionModel) grid.getSelectionModel()).selectCell(r, 0);                	
+                } else {
+                	grid.getSelectionModel().setSelection(Collections.singletonList(grid.getStore().getAt(r)));
+                }
             }
         }
     }

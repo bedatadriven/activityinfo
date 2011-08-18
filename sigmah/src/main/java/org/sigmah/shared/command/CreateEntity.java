@@ -5,11 +5,18 @@
 
 package org.sigmah.shared.command;
 
-import com.extjs.gxt.ui.client.data.RpcMap;
-import org.sigmah.shared.command.result.CreateResult;
-import org.sigmah.shared.dto.*;
-
 import java.util.Map;
+
+import org.sigmah.shared.command.result.CreateResult;
+import org.sigmah.shared.dto.ActivityDTO;
+import org.sigmah.shared.dto.AdminEntityDTO;
+import org.sigmah.shared.dto.EntityDTO;
+import org.sigmah.shared.dto.LocationTypeDTO;
+import org.sigmah.shared.dto.PartnerDTO;
+import org.sigmah.shared.dto.SiteDTO;
+import org.sigmah.shared.dto.UserDatabaseDTO;
+
+import com.extjs.gxt.ui.client.data.RpcMap;
 
 /**
  * Creates and persists a domain entity on the server.
@@ -28,8 +35,8 @@ import java.util.Map;
 public class CreateEntity implements Command<CreateResult> {
 
 
-    private String entityName;
-    private RpcMap properties;
+    public String entityName;
+    public RpcMap properties;
 
     private AdminEntityDTO entity_;
     private PartnerDTO partner_;
@@ -87,18 +94,16 @@ public class CreateEntity implements Command<CreateResult> {
         this.properties = properties;
     }
 
-    public static Command<CreateResult> Activity(UserDatabaseDTO db, ActivityDTO act) {
+    public static CreateEntity Activity(UserDatabaseDTO db, ActivityDTO act) {
         CreateEntity cmd = new CreateEntity("Activity", act.getProperties());
         cmd.properties.put("databaseId", db.getId());
         return cmd;
     }
-
-    public static CreateEntity Site(SiteDTO newSite) {
-        CreateEntity cmd = new CreateEntity("Site", newSite.getProperties());
-        cmd.properties.put("activityId", newSite.getActivityId());
-        cmd.properties.put("partnerId", newSite.getPartner().getId());
-        cmd.properties.remove("partner");
-
+    
+    public static CreateEntity Site(SiteDTO site) {
+        CreateEntity cmd = new CreateEntity();
+        cmd.entityName = "Site";
+        cmd.properties = site.toChangeMap();
         return cmd;
     }
 }

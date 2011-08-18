@@ -13,6 +13,7 @@ import org.sigmah.shared.dao.SqlInsertBuilder;
 import org.sigmah.shared.dao.SqlQueryBuilder;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.ActivityDTO;
+import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.AttributeDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.PartnerDTO;
@@ -33,13 +34,20 @@ public class LocalCreateEntityHandler implements PartialCommandHandler<CreateEnt
 	
 	private Connection connection;
 	private KeyGenerator keyGenerator;
-	private CommandQueue queue;
 
 	@Inject
-	public LocalCreateEntityHandler(Connection connection, KeyGenerator keyGenerator, CommandQueue queue) {
+	public LocalCreateEntityHandler(Connection connection, KeyGenerator keyGenerator) {
 		this.connection = connection;
 		this.keyGenerator = keyGenerator;
-		this.queue = queue;
+		
+		try {
+			CommandQueue queue = new CommandQueue(connection);
+			queue.createTableIfNotExists();
+			
+		} catch(SQLException e) {
+			throw new RuntimeException("Could not create command_queue table!", e);
+		}
+	
 	}
 	
 	
@@ -66,12 +74,11 @@ public class LocalCreateEntityHandler implements PartialCommandHandler<CreateEnt
 
 	private int createSite(CreateEntity cmd) throws SQLException {
 
+		connection.setAutoCommit(false);
 		
 		Map<String,Object> properties = cmd.getProperties().getTransientMap();
 		int activityId = (Integer) properties.get("activityId");
 	
-		
-		
 		// look up the Activity Entity so we can get the corresponding location
 		// type
 		
@@ -82,6 +89,7 @@ public class LocalCreateEntityHandler implements PartialCommandHandler<CreateEnt
 		
 		int locationTypeId = rs.getInt(1);
 		int reportingFrequency = rs.getInt(2);
+		rs.close();
 		
 		
 		// insert a new location object
@@ -94,6 +102,18 @@ public class LocalCreateEntityHandler implements PartialCommandHandler<CreateEnt
 			.value("Y", properties.get("y"))
 			.value("LocationTypeId", locationTypeId)
 			.execute(connection);
+		
+		for(Entry<String,Object> property : properties.entrySet()) {
+			if(property.getKey().startsWith(AdminLevelDTO.PROPERTY_PREFIX)) {
+				Integer entityId = (Integer) property.getValue();
+				if(entityId != null) {
+					SqlInsertBuilder.insertInto("LocationAdminLink")
+						.value("AdminEntityId", entityId)
+						.value("Locationid", locationId)
+						.execute(connection);
+				}
+			}
+		}
 		
 		// update command for remote consumption with new ids
 		cmd.getProperties().put("locationId", locationId);
@@ -155,6 +175,7 @@ public class LocalCreateEntityHandler implements PartialCommandHandler<CreateEnt
 			cmd.getProperties().put("reportingPeriodId", reportingPeriodId);
 		}
 
+		CommandQueue queue = new CommandQueue(connection);
 		queue.queue(cmd);
 		
 		connection.commit();

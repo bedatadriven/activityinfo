@@ -1,5 +1,7 @@
 package org.sigmah.client.offline.sync;
 
+import java.sql.SQLException;
+
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.Direct;
 import org.sigmah.client.offline.command.CommandQueue;
@@ -12,9 +14,6 @@ import com.google.inject.Singleton;
 /**
  * Sends updates to the remote database. 
  * 
- * 
- * @author alex
- *
  */
 @Singleton
 public class UpdateSynchronizer {
@@ -26,10 +25,16 @@ public class UpdateSynchronizer {
 	private QueueEntry currentEntry = null;
 	
 	@Inject
-	public UpdateSynchronizer(CommandQueue commandQueue, @Direct Dispatcher dispatcher) {
+	public UpdateSynchronizer(CommandQueue commandQueue, SynchronizerDispatcher dispatcher) {
 		super();
 		this.commandQueue = commandQueue;
 		this.dispatcher = dispatcher;
+		
+		try {
+			this.commandQueue.createTableIfNotExists();
+		} catch (SQLException e) {
+			throw new RuntimeException("Could not create command queue_table", e);
+		}
 	}
 	
 	

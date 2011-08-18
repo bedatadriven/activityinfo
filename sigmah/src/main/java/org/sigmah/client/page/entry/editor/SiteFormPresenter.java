@@ -5,9 +5,8 @@
 
 package org.sigmah.client.page.entry.editor;
 
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import java.util.Map;
+
 import org.sigmah.client.AppEvents;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
@@ -18,10 +17,16 @@ import org.sigmah.shared.command.CreateEntity;
 import org.sigmah.shared.command.UpdateEntity;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.command.result.VoidResult;
-import org.sigmah.shared.dto.*;
+import org.sigmah.shared.dto.ActivityDTO;
+import org.sigmah.shared.dto.AdminEntityDTO;
+import org.sigmah.shared.dto.CountryDTO;
+import org.sigmah.shared.dto.PartnerDTO;
+import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
-import java.util.Map;
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class SiteFormPresenter implements SiteFormLeash {
 
@@ -45,7 +50,6 @@ public class SiteFormPresenter implements SiteFormLeash {
         public Map<String, Object> getChanges();
 
         public Map<String, Object> getPropertyMap();
-
 
         public AsyncMonitor getMonitor();
 
@@ -168,18 +172,18 @@ public class SiteFormPresenter implements SiteFormLeash {
                 @Override
                 public void onSuccess(VoidResult voidResult) {
                     // update model
-                    for (Map.Entry<String, Object> change : changes.entrySet()) {
-                        currentSite.set(change.getKey(), change.getValue());
-                    }
+                    updateSiteModel();
 
                     eventBus.fireEvent(new SiteEvent(AppEvents.SiteChanged, SiteFormPresenter.this, currentSite));
                     view.hide();
                 }
+
+
             });
         } else {
 
             final Map<String, Object> properties = view.getPropertyMap();
-            properties.putAll(adminPresenter.getPropertyMap());
+            properties.putAll(adminPresenter.getChangeMap());
             properties.put("activityId", currentActivity.getId());
             
             // hack: we need to send partnerId instead of partner.id, but the
@@ -195,8 +199,8 @@ public class SiteFormPresenter implements SiteFormLeash {
 
                 @Override
                 public void onSuccess(CreateResult result) {
-                    currentSite.setProperties(properties);
-                    currentSite.setId(result.getNewId());
+                	currentSite.setId(result.getNewId());
+                    updateSiteModel();
 
                     eventBus.fireEvent(new SiteEvent(AppEvents.SiteCreated, SiteFormPresenter.this, currentSite));
                     view.hide();
@@ -204,7 +208,16 @@ public class SiteFormPresenter implements SiteFormLeash {
             });
         }
     }
-
+    
+	private void updateSiteModel() {
+		for (Map.Entry<String, Object> change : view.getChanges().entrySet()) {
+            currentSite.set(change.getKey(), change.getValue());
+        }
+        for (Map.Entry<String, AdminEntityDTO> entity : adminPresenter.getPropertyMap().entrySet()) {
+        	currentSite.set(entity.getKey(), entity.getValue());
+        }
+	}
+    
     public int getActivityId() {
         return currentActivity.getId();
     }

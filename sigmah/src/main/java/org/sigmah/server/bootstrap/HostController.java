@@ -5,6 +5,7 @@
 
 package org.sigmah.server.bootstrap;
 
+import com.bedatadriven.rebar.appcache.server.UserAgentProvider;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
@@ -42,14 +43,24 @@ public class HostController extends AbstractController {
                 Cookies.addAuthCookie(resp, auth, false);
                 resp.sendRedirect(HostController.ENDPOINT);
             } else {
-                writeView(resp, new HostPageModel(auth, computeAppUrl(req)));
+                HostPageModel model = new HostPageModel(auth, computeAppUrl(req));
+                model.setAppCacheEnabled(checkAppCacheEnabled(req));
+				writeView(resp, model);
             }
         } catch (NoValidAuthentication noValidAuthentication) {
             resp.sendRedirect(LoginController.ENDPOINT + parseUrlSuffix(req));
         }
     }
 
-    @Transactional
+    private boolean checkAppCacheEnabled(HttpServletRequest req) {
+    	// since we only support database synchronisation via gears at this point,
+    	// we would rather use gears than appcache for those browsers who can 
+    	// support gears so that we only have to display one permission
+    	UserAgentProvider userAgentProvider = new UserAgentProvider();
+    	return !userAgentProvider.canSupportGears(req);
+	}
+
+	@Transactional
     protected Authentication getAuthentication(HttpServletRequest request) throws NoValidAuthentication {
         String authToken = request.getParameter("auth");
         if(isEmpty(authToken)) {

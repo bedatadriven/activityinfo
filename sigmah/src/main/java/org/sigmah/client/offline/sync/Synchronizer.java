@@ -64,7 +64,7 @@ public class Synchronizer {
 
     @Inject
     public Synchronizer(EventBus eventBus,
-                        @Direct Dispatcher dispatch,
+                        SynchronizerDispatcher dispatch,
                         Connection conn,
                         BulkUpdaterAsync updater,
                         Authentication auth,
@@ -222,19 +222,11 @@ public class Synchronizer {
     }
 
     private String queryLocalVersion(String id) {
-        try {
-            PreparedStatement stmt = conn.prepareStatement("select localVersion from sync_regions where id = ?");
-            stmt.setString(1, id);
-            ResultSet rs = stmt.executeQuery();
-            if(rs.next()) {
-                return rs.getString(1);
-            } else {
-                return null;
-            }
-        } catch (SQLException e) {
-            handleException("Exception thrown while querying local version", e);
-            throw new RuntimeException(e);
-        }
+    	return SqlQueryBuilder.select("localVersion")
+    				.from("sync_regions")
+    				.where("id").equalTo(id)
+    				.singleStringResult(conn);
+   
     }
 
     private void updateLocalVersion(String id, String version) throws SQLException {

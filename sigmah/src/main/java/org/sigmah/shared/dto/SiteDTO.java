@@ -6,8 +6,12 @@
 package org.sigmah.shared.dto;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.extjs.gxt.ui.client.data.RpcMap;
 
 import java.util.Date;
+import java.util.Map.Entry;
+
+import org.sigmah.shared.command.CreateEntity;
 
 /**
  * Projection DTO for the {@link org.sigmah.shared.domain.Site} domain object, including
@@ -329,4 +333,21 @@ public final class SiteDTO extends BaseModelData implements EntityDTO {
     public String getEntityName() {
         return ENTITY_NAME;
     }
+
+	public RpcMap toChangeMap() {
+		RpcMap map = new RpcMap();
+	
+	    map.put("activityId", getActivityId());
+	    for(Entry<String, Object> property : getProperties().entrySet()) {
+	    	if(property.getKey().equals("partner")) {
+	            map.put("partnerId", getPartner().getId());
+	    	} else if(property.getKey().startsWith(AdminLevelDTO.PROPERTY_PREFIX)) {
+	    		map.put(property.getKey(), property.getValue() == null ? null : ((AdminEntityDTO)property.getValue()).getId());
+	    	} else {
+	    		map.put(property.getKey(), property.getValue());
+	    	}
+	    }
+	
+	    return map;
+	}
 }

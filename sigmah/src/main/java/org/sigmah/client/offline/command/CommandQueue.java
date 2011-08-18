@@ -65,13 +65,11 @@ public class CommandQueue {
 	@Inject
 	public CommandQueue(Connection connection) {
 		this.connection = connection;		
-		
-		try {
-			Statement stmt = connection.createStatement();
-			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS command_queue (id INTEGER PRIMARY KEY AUTOINCREMENT, command TEXT) " );
-		} catch (SQLException e) {
-			Log.error("Could not create the command_queue table!", e);
-		}
+	}
+
+	public void createTableIfNotExists() throws SQLException {
+		Statement stmt = connection.createStatement();
+		stmt.executeUpdate("CREATE TABLE IF NOT EXISTS command_queue (id INTEGER PRIMARY KEY AUTOINCREMENT, command TEXT) " );
 	}
 
 	/**
@@ -113,8 +111,7 @@ public class CommandQueue {
 			PreparedStatement stmt = connection.prepareStatement("DELETE FROM command_queue WHERE id = ?");
 			stmt.setInt(1, queueId);
 			int rowsAffected = stmt.executeUpdate();
-			connection.commit();
-			
+		
 			callback.onSuccess(rowsAffected == 1);
 			
 			
