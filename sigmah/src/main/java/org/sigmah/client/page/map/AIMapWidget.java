@@ -81,6 +81,7 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 	
 	// True when the first layer is just put on the map
 	private boolean isFirstLayerUpdate=true;
+	private boolean isGoogleMapsInitialized = false;
 
     /**
      * True if the Google Maps API is not loaded AND
@@ -105,7 +106,9 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
         // seems like a good time to preload the MapsApi if
         // we haven't already done so
 
-        MapApiLoader.load();
+        //MapApiLoader.load();
+        
+        loadMapAsynchronously();
 
         addListener(Events.AfterLayout, new Listener<BaseEvent>() {
             @Override
@@ -120,8 +123,90 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
                 }
             }
         });
+        
         getBaseMaps();
     }
+
+	private void loadMapAsynchronously() {
+		MapApiLoader.load(new MaskingAsyncMonitor(this, I18N.CONSTANTS.loadingMap()),
+            new AsyncCallback<Void>() {
+                @Override
+                public void onSuccess(Void result) {
+                    apiLoadFailed = false;
+                    isGoogleMapsInitialized = true;
+                    
+                    createGoogleMapWidget();
+                    
+                    // clear the error message content
+                    removeAll();
+                    add(mapWidget);
+                    updateMapToContent();
+                    
+                    if (currentBaseMap != null) {
+                    	setBaseMap(currentBaseMap);
+                    }
+                }
+
+                @Override
+                public void onFailure(Throwable caught) {
+                    handleApiLoadFailure();
+                }
+            });
+	}
+    
+    public void setBaseMap(BaseMap baseMap) {
+    	if (!isGoogleMapsInitialized) {
+    		currentBaseMap = baseMap;
+    		return;
+    	}
+    	if (baseMap != null) {
+	        if (currentBaseMap == null || !currentBaseMap.equals(baseMap)) {
+	            MapType baseMapType = MapTypeFactory.mapTypeForBaseMap(baseMap);
+	            mapWidget.removeMapType(MapType.getNormalMap());
+	            mapWidget.removeMapType(MapType.getHybridMap());
+	            mapWidget.addMapType(baseMapType);
+	            mapWidget.setCurrentMapType(baseMapType);
+	            currentBaseMap = baseMap;
+	            layout();
+	        }
+    	}
+    }
+    
+    public void createMapIfNeededAndUpdateMapContent() {
+        if (mapWidget == null) {
+
+        } else {
+            clearOverlays();
+            updateMapToContent();
+        }
+    }
+    
+	@Override
+	public HandlerRegistration addValueChangeHandler(
+			ValueChangeHandler<MapReportElement> handler) {
+		return addHandler(handler, ValueChangeEvent.getType());
+	}
+
+	@Override
+	public MapReportElement getValue() {
+		return mapReportElement;
+	}
+
+	@Override
+	public void setValue(MapReportElement value) {
+		this.mapReportElement=value;
+        if (!apiLoadFailed) {
+            clearOverlays();
+            createMapIfNeededAndUpdateMapContent();
+        }
+        ValueChangeEvent.fire(this, mapReportElement);
+	}
+
+	@Override
+	public void setValue(MapReportElement value, boolean fireEvents) {
+		// TODO Auto-generated method stub
+		
+	}
 
     private void zoomToBounds(LatLngBounds bounds) {
         int zoomLevel = mapWidget.getBoundsZoomLevel(bounds);
@@ -163,38 +248,12 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
                 LatLng.newInstance(bounds.getY2(), bounds.getX2()));	
     }
 
-    public void createMapIfNeededAndUpdateMapContent() {
-        if (mapWidget == null) {
-            MapApiLoader.load(new MaskingAsyncMonitor(this, I18N.CONSTANTS.loadingMap()),
-                    new AsyncCallback<Void>() {
-                        @Override
-                        public void onSuccess(Void result) {
-                            apiLoadFailed = false;
-                            
-                            createGoogleMapWidget();
-                            
-//                            changeBaseMapIfNeeded(mapReportElement.getBaseMapId());
 
-                            // clear the error message content
-                            removeAll();
-                            add(mapWidget);
-                            updateMapToContent();
-                        }
-
-                        @Override
-                        public void onFailure(Throwable caught) {
-                            handleApiLoadFailure();
-                        }
-                    });
-        } else {
-            clearOverlays();
-            updateMapToContent();
-        }
-    }
     
 	private void createGoogleMapWidget() {
 		mapWidget = new MapWidget();
         mapWidget.addControl(new LargeMapControl());
+        mapWidget.panTo(LatLng.newInstance(-1, 25));
         
         mapWidget.addMapClickHandler(new MapClickHandler() {
 			@Override
@@ -203,22 +262,7 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 			}
 		});
 	}
-	
-    private void changeBaseMapIfNeeded(BaseMap baseMap) {
-    	if (baseMap != null) {
-	        if (currentBaseMap == null || !currentBaseMap.equals(baseMap)) {
-	            MapType baseMapType = MapTypeFactory.mapTypeForBaseMap(baseMap);
-	            mapWidget.removeMapType(MapType.getNormalMap());
-	            mapWidget.removeMapType(MapType.getHybridMap());
-	            mapWidget.addMapType(baseMapType);
-	            mapWidget.setCurrentMapType(baseMapType);
-	            currentBaseMap = baseMap;
-	        }
-    	} else {
-    		getBaseMaps();
-    	}
-    }
-
+    
     /**
      * Clears all existing content from the map
      */
@@ -241,6 +285,7 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 			@Override
 			public void onSuccess(BaseMapResult result) {
 				if (result.getBaseMaps() == null) {
+					// TODO: handle nullresult
 				} else {
 					baseMaps = result.getBaseMaps();
 					mapReportElement.setBaseMapId(BaseMap.getDefaultMapId());
@@ -277,7 +322,7 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 			public void onSuccess(MapContent result) {
 		        Log.debug("MapPreview: Received content, extents are = " + result.getExtents().toString());
 
-		        changeBaseMapIfNeeded(result.getBaseMap());
+		        setBaseMap(result.getBaseMap());
 
 		        layout();
 		
@@ -287,12 +332,7 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 		        iconFactory.primaryColor = "#0000FF";
 		
 		        putMarkersOnMap(result);
-		        
 		        zoomToMarkers(result);
-			}
-
-			private void zoomToMarkers(MapContent result) {
-				zoomToBounds(llBoundsForExtents(result.getExtents()));
 			}
 
 			private void putMarkersOnMap(MapContent result) {
@@ -311,6 +351,10 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 			}
 		});
     }
+    
+	private void zoomToMarkers(MapContent result) {
+		zoomToBounds(llBoundsForExtents(result.getExtents()));
+	}
 
 	/**
      * Handles the failure of the Google Maps API to load.
@@ -330,33 +374,6 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
         }
     }
 
-	@Override
-	public HandlerRegistration addValueChangeHandler(
-			ValueChangeHandler<MapReportElement> handler) {
-		return addHandler(handler, ValueChangeEvent.getType());
-	}
-
-	@Override
-	public MapReportElement getValue() {
-		return mapReportElement;
-	}
-
-	@Override
-	public void setValue(MapReportElement value) {
-		this.mapReportElement=value;
-        if (!apiLoadFailed) {
-            clearOverlays();
-            createMapIfNeededAndUpdateMapContent();
-        }
-        ValueChangeEvent.fire(this, mapReportElement);
-	}
-
-	@Override
-	public void setValue(MapReportElement value, boolean fireEvents) {
-		// TODO Auto-generated method stub
-		
-	}
-	
 	private void onMapClick(MapClickEvent event) {
 		if(event.getOverlay() != null) {
 			MapMarker marker = overlays.get(event.getOverlay());
