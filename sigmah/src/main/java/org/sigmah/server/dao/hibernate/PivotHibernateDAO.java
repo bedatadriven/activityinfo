@@ -19,6 +19,7 @@ import javax.persistence.EntityManager;
 import org.hibernate.Session;
 import org.hibernate.ejb.HibernateEntityManager;
 import org.hibernate.jdbc.Work;
+import org.junit.runner.RunWith;
 import org.sigmah.server.dao.PivotDAO;
 import org.sigmah.server.domain.AggregationMethod;
 import org.sigmah.shared.dao.Filter;
@@ -34,8 +35,16 @@ import org.sigmah.shared.report.model.DateDimension;
 import org.sigmah.shared.report.model.DateUnit;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
+import org.sigmah.test.InjectionSupport;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.bedatadriven.rebar.sql.client.SqlDatabase;
+import com.bedatadriven.rebar.sql.client.SqlException;
+import com.bedatadriven.rebar.sql.client.SqlResultCallback;
+import com.bedatadriven.rebar.sql.client.SqlResultSet;
+import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
+import com.bedatadriven.rebar.sql.client.SqlTransaction;
+import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 import com.google.inject.Inject;
 
 
@@ -43,16 +52,18 @@ import com.google.inject.Inject;
  * PivotDAO implementation for hibernate using native SQL.
  *
  */
-
+@RunWith(InjectionSupport.class)
 public class PivotHibernateDAO implements PivotDAO {
 
     private final EntityManager em;
     private final SqlDialect dialect;
+    private final SqlDatabase db;
 
 
     @Inject
-    public PivotHibernateDAO(EntityManager em, SqlDialect dialect) {
+    public PivotHibernateDAO(EntityManager em, SqlDialect dialect, SqlDatabase db) {
         this.em = em;
+        this.db=db;
         this.dialect = dialect;
     }
 
@@ -538,7 +549,40 @@ public class PivotHibernateDAO implements PivotDAO {
 
     @Override
     public List<String> getFilterLabels(DimensionType type, Collection<Integer> ids) {
-        // TODO
-        return new ArrayList<String>();
+    	final List<String> labels = new ArrayList<String>();
+    	if (type == DimensionType.Site) {
+    		return labels;
+    	}
+    	String tableName;
+    	String primaryKeyId;
+    	// TODO: convention: UserDatabase != Database
+    	if (type == DimensionType.Database) {
+    		tableName = "UserDatabase";
+    		primaryKeyId = "DatabaseId";
+    	} else {
+    		tableName = type.toString();
+    		primaryKeyId = tableName + "Id";
+    	}
+    	
+    	SqlQuery.select("name")
+    			.from(tableName)
+    			.where(primaryKeyId)
+    			.in(ids)
+    			
+    			.execute(db, new SqlResultCallback() {
+					@Override
+					public void onSuccess(SqlTransaction tx, SqlResultSet results) {
+						for (SqlResultSetRow row : results.getRows()) {
+							labels.add(row.getString("name"));
+						}
+					}
+
+					@Override
+					public boolean onFailure(SqlException e) {
+						return super.onFailure(e);
+					}
+				});
+        
+        return labels;
     }
 }
