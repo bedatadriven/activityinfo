@@ -115,15 +115,15 @@ public class SearchFilterView extends LayoutContainer {
 		case Activity:
 			return I18N.CONSTANTS.activities();
 		case AdminLevel:
-			return null;
-			//return I18N.CONSTANTS.adminEntities();
+			return I18N.CONSTANTS.adminEntities();
 		case Partner:
 			return I18N.CONSTANTS.partners();
 		case Project:
 			return I18N.CONSTANTS.projects();
 		case AttributeGroup:
-			return null;
-			//return I18N.CONSTANTS.attributeTypes();
+			return I18N.CONSTANTS.attributeTypes();
+		case Indicator:
+			return I18N.CONSTANTS.indicators();
 		}
 		return "No pluralized string definition in SearchFilterView.java";
 	}
@@ -140,6 +140,8 @@ public class SearchFilterView extends LayoutContainer {
 			return IconImageBundle.ICONS.project().createImage();
 		case Partner:
 			return IconImageBundle.ICONS.partner().createImage();
+		case Indicator:
+			return IconImageBundle.ICONS.indicator().createImage();
 		}
 		
 		// etc

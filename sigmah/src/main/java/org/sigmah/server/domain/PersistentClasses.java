@@ -40,6 +40,7 @@ public class PersistentClasses {
             Indicator.class,
             Attribute.class,
             AttributeGroup.class,
+            LockedPeriod.class,
             Activity.class,
             ReportSubscription.class,
             ReportDefinition.class,
@@ -51,6 +52,5 @@ public class PersistentClasses {
             AdminLevel.class,
             Country.class,
             Project.class,
-            LockedPeriod.class
     };
 }

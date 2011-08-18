@@ -22,6 +22,7 @@ import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.SiteDTO;
+import org.sigmah.shared.report.content.FilterDescription;
 import org.sigmah.shared.report.content.PivotContent;
 import org.sigmah.shared.report.model.DimensionType;
 
@@ -98,6 +99,11 @@ public class SearchPresenter implements SearchView.SearchHandler, Page {
 			}
 
 			private String getName(Integer entityId, DimensionType type, PivotContent pivotTable) {
+				for (FilterDescription fd : pivotTable.getFilterDescriptions()) {
+					if (fd.getDimensionType() == type) {
+						return fd.getLabels().get(entityId);
+					}
+				}
 				return "noName";
 			}
 		});

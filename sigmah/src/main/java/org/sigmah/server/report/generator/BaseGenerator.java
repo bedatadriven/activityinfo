@@ -84,8 +84,8 @@ public abstract class BaseGenerator<T extends ReportElement> implements ContentG
         Set<DimensionType> filterDims = filter.getRestrictedDimensions();
         filterDims.removeAll(excludeDims);
 
+        
         for (DimensionType type : filterDims) {
-
             list.add(new FilterDescription(
                     type,
                     pivotDAO.getFilterLabels(type, filter.getRestrictions(type))));
@@ -94,9 +94,10 @@ public abstract class BaseGenerator<T extends ReportElement> implements ContentG
         if (filter.getMinDate() != null || filter.getMaxDate() != null) {
             DateRangeFormat format = new DateRangeFormat(LocaleHelper.getLocaleObject(user));
 
-            list.add(new FilterDescription(
-                    DimensionType.Date,
-                    format.format(filter.getMinDate(), filter.getMaxDate())));
+            //TODO: implement
+//            list.add(new FilterDescription(
+//                    DimensionType.Date,
+//                    format.format(filter.getMinDate(), filter.getMaxDate())));
         }
 
         return list;

@@ -17,6 +17,7 @@ import org.sigmah.shared.report.model.DimensionType;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
@@ -45,6 +46,13 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 
 	public SearchResultsPage() {
 		initializeComponent();
+
+		createCompleteResultPanel();
+		createRecentSitesView();
+		createFilterView();
+
+		createSearchBox();
+		createSearchResultsPanel();
 	}
 
 	private void initializeComponent() {
@@ -52,12 +60,6 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 		setLayout(new BorderLayout());
 
 		SearchResources.INSTANCE.searchStyles().ensureInjected();
-
-		createCompleteResultPanel();
-		createFilterView();
-		createSearchResultsPanel();
-		createRecentSitesView();
-		createSearchBox();
 	}
 
 	private void createRecentSitesView() {
@@ -108,7 +110,7 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 
 		BorderLayoutData bld = new BorderLayoutData(LayoutRegion.NORTH);
 		bld.setSize(40);
-		bld.setSplit(true);
+		bld.setMargins(new Margins(16));
 
 		add(textboxSearch, bld);
 	}
@@ -157,7 +159,8 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 	private void showSearchResults() {
 		panelSearchResults.removeAll();
 
-		int children=0;
+		int activities=0;
+		int databases=0;
 		
 		LabelField labelResults = new LabelField();
 		panelSearchResults.add(labelResults);
@@ -174,12 +177,13 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 				itemWidget.setChilds(axis.getChildList());
 	
 				panelSearchResults.add(itemWidget);
-				children++;
+				activities+=axis.getChildCount();
+				databases++;
 			}
 		}
 
 		labelResults.setText(I18N.MESSAGES
-				.searchResultsFound(Integer.toString(children), searchQuery));
+				.searchResultsFound(Integer.toString(activities), Integer.toString(databases), searchQuery));
 
 		layout(true);
 	}

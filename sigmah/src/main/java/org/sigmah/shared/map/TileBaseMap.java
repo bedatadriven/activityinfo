@@ -8,6 +8,7 @@ package org.sigmah.shared.map;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.Table;
 
 /**
  * Defines a custom base map (or "background map") that is 
@@ -22,6 +23,7 @@ import javax.persistence.Lob;
 // TileBaseMap and other subclases of BaseMap 
 // Same goes for overridden methods
 @Entity(name="BaseMap")
+@Table(name="BaseMap")
 public class TileBaseMap extends BaseMap  {
 
     private String tileUrlPattern = "";

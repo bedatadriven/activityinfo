@@ -37,7 +37,7 @@ public interface PivotDAO {
      */
     List<Bucket> aggregate(int userId, Filter filter, Set<Dimension> dimensions);
 
-    List<String> getFilterLabels(DimensionType type, Collection<Integer> ids);
+    Map<Integer, String> getFilterLabels(DimensionType type, Set<Integer> map);
 
     /**
      * Contains the aggregate value for an intersection of dimension categories.

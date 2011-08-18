@@ -77,7 +77,7 @@ public class ConfigLoader implements PageLoader {
 
                 } else if (DbListPresenter.DatabaseList.equals(pageId)) {
                     callback.onSuccess(injector.getDbListPage());
-
+                    
                 } else if (pageState instanceof DbPageState) {
                     final DbPageState dPlace = (DbPageState) pageState;
 

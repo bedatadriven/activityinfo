@@ -11,7 +11,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
@@ -44,6 +46,7 @@ import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
 import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
+import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 import com.google.inject.Inject;
 
@@ -548,23 +551,31 @@ public class PivotHibernateDAO implements PivotDAO {
     }
 
     @Override
-    public List<String> getFilterLabels(DimensionType type, Collection<Integer> ids) {
-    	final List<String> labels = new ArrayList<String>();
+    public Map<Integer, String> getFilterLabels(final DimensionType type, final Set<Integer> ids) {
+    	final Map<Integer, String> labels = new HashMap<Integer, String>();
     	if (type == DimensionType.Site) {
     		return labels;
     	}
-    	String tableName;
-    	String primaryKeyId;
-    	// TODO: convention: UserDatabase != Database
-    	if (type == DimensionType.Database) {
-    		tableName = "UserDatabase";
-    		primaryKeyId = "DatabaseId";
-    	} else {
-    		tableName = type.toString();
-    		primaryKeyId = tableName + "Id";
-    	}
     	
-    	SqlQuery.select("name")
+    	db.transaction(new SqlTransactionCallback() {
+			
+			@Override
+			public void begin(SqlTransaction tx) {
+		    	String tableName;
+		    	final String primaryKeyId;
+		    	// TODO: convention: UserDatabase != Database
+		    	if (type == DimensionType.Database) {
+		    		tableName = "UserDatabase";
+		    		primaryKeyId = "DatabaseId";
+		    	} else if (type == DimensionType.AdminLevel) {
+		    		tableName = "AdminEntity";
+		    		primaryKeyId = "AdminEntityId";
+		    	} else {
+		    		tableName = type.toString();
+		    		primaryKeyId = tableName + "Id";
+		    	}
+				
+		    	SqlQuery.select("name", primaryKeyId)
     			.from(tableName)
     			.where(primaryKeyId)
     			.in(ids)
@@ -573,7 +584,7 @@ public class PivotHibernateDAO implements PivotDAO {
 					@Override
 					public void onSuccess(SqlTransaction tx, SqlResultSet results) {
 						for (SqlResultSetRow row : results.getRows()) {
-							labels.add(row.getString("name"));
+							labels.put(row.getInt(primaryKeyId), row.getString("name"));
 						}
 					}
 
@@ -582,6 +593,14 @@ public class PivotHibernateDAO implements PivotDAO {
 						return super.onFailure(e);
 					}
 				});
+			}
+
+			@Override
+			public void onError(SqlException e) {
+				super.onError(e);
+			}
+		});
+
         
         return labels;
     }

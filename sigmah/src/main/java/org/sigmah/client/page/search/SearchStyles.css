@@ -77,21 +77,17 @@ a {
 }
 
 .searchResults {
-	padding: 0.5em;
+	padding: 1em;
 	font-size: 12;	
 	line-height: 1em;
 }
 
 .searchBox {
 	font-size: 1em;
-	height: 1.25em;
 	background-image: url('search.png');
 	background-repeat: no-repeat;
 	background-color: #F2F2F2;
 	background-position: 4px;
-	padding: 4px;
-	padding-left: 8px;
-	margin: 0.5em;
 }
 
 .link {

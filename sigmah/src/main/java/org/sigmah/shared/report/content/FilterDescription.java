@@ -6,10 +6,11 @@
 package org.sigmah.shared.report.content;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.sigmah.shared.report.model.DimensionType;
+
 
 /**
  * Encapsulates a text description of a given filter restriction.
@@ -21,7 +22,7 @@ import org.sigmah.shared.report.model.DimensionType;
 public class FilterDescription implements Serializable {
 	
 	private DimensionType type;
-	private List<String> labels;
+	private Map<Integer, String> labels;
 
     /**
      * Required for GWT serialization
@@ -30,15 +31,15 @@ public class FilterDescription implements Serializable {
 
     }
 
-	public FilterDescription(DimensionType type, List<String> labels) {
+	public FilterDescription(DimensionType type, Map<Integer, String> labels) {
 		this.type = type;
 		this.labels = labels;
 	}
 	
-	public FilterDescription(DimensionType type, String label) {
+	public FilterDescription(DimensionType type, int id, String label) {
 		this.type = type;
-		this.labels = new ArrayList<String>(1);
-		this.labels.add(label);
+		this.labels = new HashMap<Integer, String>();
+		this.labels.put(id,label);
 	}
 	
 
@@ -49,13 +50,13 @@ public class FilterDescription implements Serializable {
 	/**
 	 * @return The labels of the dimension categories specified in this restriction.
 	 */
-	public List<String> getLabels() {
+	public Map<Integer, String> getLabels() {
 		return labels;
 	}
 	
 	public String joinLabels(String delimeter) {
 		StringBuilder sb = new StringBuilder();
-		for(String label : labels) {
+		for(String label : labels.values()) {
 			if(sb.length()!=0) {
 				sb.append(delimeter);
 			}
