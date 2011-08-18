@@ -1,4 +1,4 @@
-@external .hit, .hits, .additions, .addition, .searchBox .site, .sites, .date, .comment, .iconLocation, .location, .filterView, .searchResults, .filterSummary, .iconDate, .iconActivity, .activity, .iconDatabase;
+@external .hit, .hits, .additions, .addition, .searchBox .site, .sites, .date, .comment, .iconLocation, .location, .filterView, .searchResults, .filterSummary, .iconDate, .iconActivity, .activity, .iconDatabase, .iconAddEdited, .dateEdited;
 
 @sprite .iconLocation {
 	gwt-image: "location";
@@ -21,6 +21,12 @@
 	float: left;
 }
 
+@sprite .iconAddEdited {
+	gwt-image: "addEdited";
+	margin-left: 4px;
+	float: right;
+}
+
 @sprite .iconDatabase {
 	gwt-image: "database";
 	float: left;
@@ -34,6 +40,12 @@
 	vertical-align: middle;
 	width: 90%;
 	padding: 4px;
+}
+
+.dateEdited {
+	font-size: 10px;
+	color: #585858;
+	float: right;
 }
 
 a {

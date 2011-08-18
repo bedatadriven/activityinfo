@@ -5,28 +5,28 @@
 
 package org.sigmah.test;
 
-import java.sql.Connection;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import org.hibernate.ejb.Ejb3Configuration;
-import org.hibernate.ejb.HibernateEntityManager;
 import org.sigmah.server.dao.hibernate.HibernateModule;
+import org.sigmah.server.database.TestDatabaseModule;
 import org.sigmah.server.domain.PersistentClasses;
 
-import com.bedatadriven.rebar.sql.client.SqlDatabase;
-import com.bedatadriven.rebar.sql.server.jdbc.JdbcDatabase;
-import com.bedatadriven.rebar.sql.server.jdbc.JdbcExecutor;
 import com.google.inject.Provider;
-import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
 public class MockHibernateModule extends HibernateModule {
     private static EntityManagerFactory emf = null;
 
-
     @Override
+	protected void configure() {
+		super.configure();
+		
+		install(new TestDatabaseModule());
+	}
+
+	@Override
     protected void configureEmf() {
         bind(EntityManagerFactory.class).toProvider(new Provider<EntityManagerFactory>() {
             @Override
@@ -83,23 +83,21 @@ public class MockHibernateModule extends HibernateModule {
                 .in(TestScoped.class);
     }
 
-    @Provides
-    protected SqlDatabase provideServerDatabase(final Provider<HibernateEntityManager> hem) {
-    	return new JdbcDatabase("SERVER") {
-
-			@Override
-			protected JdbcExecutor newExecutor() {
-				return new JdbcExecutor() {
-					
-					@Override
-					protected Connection openConnection() throws Exception {
-						return hem.get().getSession().connection();
-					}
-					
-					
-				};
-			}	
-    	};
-    }
+//    @Provides
+//    protected SqlDatabase provideServerDatabase(final Provider<HibernateEntityManager> hem) {
+//    	return new JdbcDatabase("SERVER") {
+//
+//			@Override
+//			protected JdbcExecutor newExecutor() {
+//				return new JdbcExecutor() {
+//					
+//					@Override
+//					protected Connection openConnection() throws Exception {
+//						return hem.get().getSession().connection();
+//					}
+//				};
+//			}	
+//    	};
+//    }
     
 }

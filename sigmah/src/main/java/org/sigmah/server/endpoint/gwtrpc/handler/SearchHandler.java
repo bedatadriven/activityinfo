@@ -67,6 +67,7 @@ public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> 
 		
 		GetSitesHandler getSitesHandler = new GetSitesHandler(db);
 		GetSites getSites = new GetSites();
+		//Filter siteFilter = pivotTable.getFilter()
 		getSites.setFilter(pivotTable.getFilter());
 		
 		getSitesHandler.execute(getSites, context, new AsyncCallback<SiteResult>() {

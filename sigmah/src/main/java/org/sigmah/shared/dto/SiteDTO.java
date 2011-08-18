@@ -113,6 +113,14 @@ public final class SiteDTO extends BaseModelData implements EntityDTO {
 		set("date2", date2);
 	}
 
+	public Date getDateEdited() {
+		return get("dateEdited");
+	}
+
+	public void setDateEdited(Date dateEdited) {
+		set("dateEdited", dateEdited);
+	}
+	
     /**
      * 
      * @return the name of the Partner who owns this Site
