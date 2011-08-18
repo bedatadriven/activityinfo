@@ -5,12 +5,16 @@
 
 package org.sigmah.shared.report.content;
 
-import org.sigmah.shared.map.BaseMap;
-import org.sigmah.shared.map.GoogleBaseMap;
-import org.sigmah.shared.map.TileBaseMap;
-import org.sigmah.shared.util.mapping.Extents;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import java.util.*;
+import org.sigmah.shared.dto.IndicatorDTO;
+import org.sigmah.shared.map.BaseMap;
+import org.sigmah.shared.util.mapping.Extents;
 
 /*
  * Represents the model of a map 
@@ -20,6 +24,7 @@ public class MapContent implements Content {
     private List<FilterDescription> filterDescriptions;
     private List<MapMarker> markers = new ArrayList<MapMarker>();
     private Set<Integer> unmappedSites = new HashSet<Integer>();
+    private Set<IndicatorDTO> indicators = new HashSet<IndicatorDTO>();
     private Extents extents;
     private int zoomLevel;
 
@@ -75,7 +80,24 @@ public class MapContent implements Content {
         this.baseMap = baseMap;
     }
 
-    public Map<Integer, String> siteLabelMap() {
+    public Set<IndicatorDTO> getIndicators() {
+		return indicators;
+	}
+
+	public void setIndicators(Set<IndicatorDTO> indicators) {
+		this.indicators = indicators;
+	}
+	
+	public IndicatorDTO getIndicatorById(int indicatorId) {
+		for (IndicatorDTO indicator : indicators) {
+			if (indicator.getId() ==  indicatorId) {
+				return indicator;
+			}
+		}
+		return null;
+	}
+
+	public Map<Integer, String> siteLabelMap() {
         Map<Integer, String> map = new HashMap<Integer, String>();
         for(MapMarker marker : getMarkers()) {
             if(marker instanceof BubbleMapMarker && ((BubbleMapMarker) marker).getLabel() != null) {

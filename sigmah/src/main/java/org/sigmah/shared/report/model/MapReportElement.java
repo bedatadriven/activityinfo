@@ -5,22 +5,20 @@
 
 package org.sigmah.shared.report.model;
 
-import org.sigmah.client.page.map.layerOptions.PiechartLayerOptions;
-import org.sigmah.shared.map.BaseMap;
-import org.sigmah.shared.map.GoogleBaseMap;
-import org.sigmah.shared.report.content.MapContent;
-import org.sigmah.shared.report.model.layers.AbstractMapLayer;
-import org.sigmah.shared.report.model.layers.BubbleMapLayer;
-import org.sigmah.shared.report.model.layers.IconMapLayer;
-import org.sigmah.shared.report.model.layers.MapLayer;
-import org.sigmah.shared.report.model.layers.PiechartMapLayer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+
+import org.sigmah.shared.map.BaseMap;
+import org.sigmah.shared.report.content.MapContent;
+import org.sigmah.shared.report.model.layers.BubbleMapLayer;
+import org.sigmah.shared.report.model.layers.IconMapLayer;
+import org.sigmah.shared.report.model.layers.MapLayer;
+import org.sigmah.shared.report.model.layers.PiechartMapLayer;
 
 /**
  * Models a map element within a report
@@ -60,7 +58,7 @@ public class MapReportElement extends ReportElement<MapContent> {
     public void setHeight(int height) {
         this.height = height;
     }
-
+    
     public void addLayer(MapLayer layer) {
         this.layers.add(layer);
     }
@@ -69,7 +67,7 @@ public class MapReportElement extends ReportElement<MapContent> {
     @XmlElements({
         @XmlElement(name="bubbles", type=BubbleMapLayer.class),
         @XmlElement(name="pie", type=PiechartMapLayer.class),
-            @XmlElement(name="icons", type=IconMapLayer.class)
+        @XmlElement(name="icons", type=IconMapLayer.class)
     })
     public List<MapLayer> getLayers() {
         return layers;

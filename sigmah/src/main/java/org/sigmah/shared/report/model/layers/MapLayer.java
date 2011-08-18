@@ -3,10 +3,6 @@ package org.sigmah.shared.report.model.layers;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-
-import org.sigmah.shared.domain.Indicator;
 import org.sigmah.shared.report.model.clustering.Clustering;
 import org.sigmah.shared.report.model.labeling.LabelSequence;
 

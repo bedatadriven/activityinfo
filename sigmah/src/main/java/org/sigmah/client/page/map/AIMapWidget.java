@@ -19,10 +19,15 @@ import org.sigmah.client.map.MapTypeFactory;
 import org.sigmah.shared.command.GenerateElement;
 import org.sigmah.shared.command.GetBaseMaps;
 import org.sigmah.shared.command.result.BaseMapResult;
+import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.map.BaseMap;
 import org.sigmah.shared.map.TileBaseMap;
+import org.sigmah.shared.report.content.BubbleMapMarker;
+import org.sigmah.shared.report.content.IconMapMarker;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.MapMarker;
+import org.sigmah.shared.report.content.PieMapMarker;
+import org.sigmah.shared.report.content.PieMapMarker.SliceValue;
 import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 import org.sigmah.shared.util.mapping.Extents;
@@ -312,7 +317,6 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 		}
     	
     	dispatcher.execute(new GenerateElement<MapContent>(mapReportElement), null, new AsyncCallback<MapContent>() {
-
 			@Override
 			public void onFailure(Throwable caught) {
 				MessageBox.alert("Load failed", caught.getMessage(), null);
@@ -334,54 +338,99 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 		        putMarkersOnMap(result);
 		        zoomToMarkers(result);
 			}
-
-			private void putMarkersOnMap(MapContent result) {
-				for (MapMarker marker : result.getMarkers()) {
-		            Icon icon = IconFactory.createIcon(marker);
-		            LatLng latLng = LatLng.newInstance(marker.getLat(), marker.getLng());
-		
-		            MarkerOptions options = MarkerOptions.newInstance();
-		            options.setIcon(icon);
-		            options.setTitle(marker.getTitle());
-		            Marker overlay = new Marker(latLng, options);
-		            
-		            mapWidget.addOverlay(overlay);
-		            overlays.put(overlay, marker);
-		        }
-			}
 		});
     }
     
 	private void zoomToMarkers(MapContent result) {
 		zoomToBounds(llBoundsForExtents(result.getExtents()));
 	}
+	
+	private void putMarkersOnMap(MapContent result) {
+		for (MapMarker marker : result.getMarkers()) {
+            Icon icon = IconFactory.createIcon(marker);
+            LatLng latLng = LatLng.newInstance(marker.getLat(), marker.getLng());
 
+            MarkerOptions options = MarkerOptions.newInstance();
+            options.setIcon(icon);
+            options.setTitle(marker.getTitle());
+            Marker overlay = new Marker(latLng, options);
+            
+            mapWidget.addOverlay(overlay);
+            overlays.put(overlay, marker);
+        }
+	}
+	
 	/**
      * Handles the failure of the Google Maps API to load.
      */
-    private void handleApiLoadFailure() {
-        apiLoadFailed = true;
+	 private void handleApiLoadFailure() {
+	        apiLoadFailed = true;
 
         if (this.getItemCount() == 0) {
             add(new Html(I18N.CONSTANTS.cannotLoadMap()));
+
             add(new Button(I18N.CONSTANTS.retry(), new SelectionListener<ButtonEvent>() {
                 @Override
                 public void componentSelected(ButtonEvent ce) {
                     createMapIfNeededAndUpdateMapContent();
                 }
             }));
+            
             layout();
         }
     }
+
 
 	private void onMapClick(MapClickEvent event) {
 		if(event.getOverlay() != null) {
 			MapMarker marker = overlays.get(event.getOverlay());
 			if (marker != null)
 			{
-				InfoWindowContent content = new InfoWindowContent(marker.getTitle());
+				InfoWindowContent content = new InfoWindowContent(constructInfoWindowContent(marker));
 				mapWidget.getInfoWindow().open((Marker)event.getOverlay(), content);
 			}
 		}
+	}
+
+	private String constructInfoWindowContent(MapMarker marker) {
+		if (marker instanceof PieMapMarker) {
+			PieMapMarker piemarker = (PieMapMarker)marker;
+			
+			// Create a list with all items with the value colored
+			StringBuilder builder = new StringBuilder();
+			builder.append("<ul>");
+
+			for (SliceValue slice : piemarker.getSlices()) {
+				IndicatorDTO indicator = mapReportElement.getContent().getIndicatorById
+										(((BubbleMapMarker) marker).getIndicatorId());
+
+				builder.append("<li>");
+				builder.append("<b><span style=\"background-color:" + slice.getColor() + "\"");
+				builder.append(slice.getValue());
+				builder.append("</span><b> ");
+				builder.append(indicator.getName());
+			}
+
+			builder.append("</ul>");
+			
+			return builder.toString();
+			
+		} else if (marker instanceof BubbleMapMarker) {
+			IndicatorDTO indicator = mapReportElement.getContent().getIndicatorById
+										(((BubbleMapMarker) marker).getIndicatorId());
+			return "<b>" + 
+					marker.getTitle() + 
+					"</b> " +
+					indicator.getName();
+			
+		} else if (marker instanceof IconMapMarker) {
+			IndicatorDTO indicator = mapReportElement.getContent().getIndicatorById
+										(((IconMapMarker) marker).getIndicatorId());
+			return "<b>" + 
+					marker.getTitle() + 
+					"</b> " +
+					indicator.getName();
+		}
+		return null;
 	}
 }

@@ -15,6 +15,7 @@ public class BubbleMapMarker extends MapMarker {
     private double value;
     private int radius;
     private String labelColor = "FF0000";
+    private int indicatorId = 0;
 
     public double getValue() {
         return value;
@@ -68,4 +69,13 @@ public class BubbleMapMarker extends MapMarker {
     public int getSize() {
         return radius;
     }
+
+	public int getIndicatorId() {
+		return indicatorId;
+	}
+
+	public void setIndicatorId(int indicatorId) {
+		this.indicatorId = indicatorId;
+	}
+    
 }
