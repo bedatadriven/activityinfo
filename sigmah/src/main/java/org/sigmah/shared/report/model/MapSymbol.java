@@ -13,6 +13,7 @@ import java.util.Map;
  * @author Alex Bertram
  */
 
+@Deprecated
 public class MapSymbol {
 
     private Map<Dimension, DimensionCategory> categories = new HashMap<Dimension, DimensionCategory>();

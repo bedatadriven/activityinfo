@@ -116,8 +116,7 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
             marker.setTitle(formatTitle(cluster));
             marker.setIndicatorIds(new HashSet<Integer>(layer.getIndicatorIds()));
             
-            //marker.setColor(findColor(cluster.getPointValues().get(0).symbol, layer));
-            marker.setColor(layer.getLabelColor());
+            marker.setColor(layer.getBubbleColor());
             
             if(marker.getValue() < legend.getMinValue()) {
             	legend.setMinValue(marker.getValue());
@@ -179,6 +178,10 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
         }
     }
 
+	// this was too complicated. 
+	// we should be able to achieve the same result using filters on the labels
+	// --> schedule to remove
+	@Deprecated
     public MapSymbol createSymbol(SiteData site, List<Dimension> dimensions) {
         MapSymbol symbol = new MapSymbol();
 
@@ -189,22 +192,6 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
         }
 
         return symbol;
-    }
-
-    public int findColor(MapSymbol symbol, BubbleMapLayer layer) {
-
-        if(layer.getColorDimensions().size() == 0) {
-            return layer.getDefaultColor();
-        } else {
-            Dimension dimension = layer.getColorDimensions().get(0);
-            DimensionCategory category = symbol.get(dimension);
-            CategoryProperties categoryProperties = dimension.getCategories().get(category);
-            if(categoryProperties == null) {
-                return layer.getDefaultColor();
-            } else {
-                return categoryProperties.getColor();
-            }
-        }
     }
 
     private void numberMarkers(List<BubbleMapMarker> markers) {

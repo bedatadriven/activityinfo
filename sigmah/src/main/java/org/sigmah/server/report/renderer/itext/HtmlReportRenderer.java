@@ -5,6 +5,8 @@
 
 package org.sigmah.server.report.renderer.itext;
 
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringWriter;
@@ -28,9 +30,11 @@ import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.Image;
+import com.lowagie.text.ImgRaw;
 import com.lowagie.text.Jpeg;
 import com.lowagie.text.html.HtmlTags;
 import com.lowagie.text.html.HtmlWriter;
+import com.lowagie.text.pdf.codec.PngImage;
 
 
 /**
@@ -109,6 +113,9 @@ public class HtmlReportRenderer extends ItextReportRenderer {
 					storage.getOutputStream().write(image.getRawData());
 					storage.getOutputStream().close();
 					writeImage(image, storage.getUrl());
+				} else if(image instanceof ImgRaw) {
+//					ImgRaw raw = (ImgRaw)image;
+//					RenderedImage
 				}
 				writeEnd(HtmlTags.DIV);
 			} else {
@@ -141,7 +148,5 @@ public class HtmlReportRenderer extends ItextReportRenderer {
 			writeEnd();
 		}
     }
-    
-    
-    
+   
 }

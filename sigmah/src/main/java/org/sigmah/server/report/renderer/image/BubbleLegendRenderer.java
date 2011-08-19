@@ -5,13 +5,12 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.color.ColorSpace;
-import java.awt.font.FontRenderContext;
 import java.awt.font.LineMetrics;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 
+import org.sigmah.server.util.ColorUtil;
 import org.sigmah.shared.report.content.BubbleLayerLegend;
 import org.sigmah.shared.report.model.layers.BubbleMapLayer;
 
@@ -91,7 +90,7 @@ public class BubbleLegendRenderer {
 			drawSymbolRange(g2d);
 		} else {
 			ImageMapRenderer.drawBubble(g2d, 
-				new Color(layer.getDefaultColor()), 
+				ColorUtil.colorFromString(layer.getBubbleColor()), 
 				bubbleCenterX, 
 				PADDING + layer.getMinRadius(), 
 				layer.getMinRadius());
@@ -108,7 +107,7 @@ public class BubbleLegendRenderer {
     	y += layer.getMinRadius();
     	
 		ImageMapRenderer.drawBubble(g2d, 
-				new Color(layer.getDefaultColor()), 
+				ColorUtil.colorFromString(layer.getBubbleColor()), 
 				bubbleCenterX, 
 				y, 
 				layer.getMinRadius());
@@ -127,7 +126,7 @@ public class BubbleLegendRenderer {
 		y += layer.getMaxRadius();
 		
 		ImageMapRenderer.drawBubble(g2d, 
-				new Color(layer.getDefaultColor()), 
+				ColorUtil.colorFromString(layer.getBubbleColor()), 
 				bubbleCenterX, 
 				y, 
 				layer.getMaxRadius());
