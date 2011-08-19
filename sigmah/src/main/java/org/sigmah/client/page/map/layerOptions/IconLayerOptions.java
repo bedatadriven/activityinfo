@@ -3,10 +3,10 @@ package org.sigmah.client.page.map.layerOptions;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.collections.BidiMap;
 import org.sigmah.shared.report.model.MapIcon;
 import org.sigmah.shared.report.model.MapIcon.Icon;
 import org.sigmah.shared.report.model.layers.IconMapLayer;
+
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
@@ -32,6 +32,8 @@ public class IconLayerOptions extends LayoutContainer implements LayerOptionsWid
 	// Are Bidimaps from commons collections supported GWT clientside?
 	private Map<Radio, Icon> radioIcons = new HashMap<Radio, Icon>();
 	private Map<Icon, Radio> iconsRadio = new HashMap<Icon, Radio>();
+	
+	private boolean ignoreFireEvent = false;
 
 	public IconLayerOptions() {
 		super();
@@ -44,7 +46,11 @@ public class IconLayerOptions extends LayoutContainer implements LayerOptionsWid
 			@Override
 			public void handleEvent(FieldEvent be) {
 				iconMapLayer.setIcon(radioIcons.get(radiogroupIcons.getValue()).name());
-				ValueChangeEvent.fire(IconLayerOptions.this, iconMapLayer);
+				if (!ignoreFireEvent) {
+					ValueChangeEvent.fire(IconLayerOptions.this, iconMapLayer);
+				} else {
+					ignoreFireEvent = false;
+				}
 			}
 		});
 	}
@@ -87,10 +93,11 @@ public class IconLayerOptions extends LayoutContainer implements LayerOptionsWid
 	@Override
 	public void setValue(IconMapLayer value) {
 		this.iconMapLayer=value;
+		ignoreFireEvent=true;
 		updateUI();
 	}
 	private void updateUI() {
-		iconsRadio.get(iconMapLayer.getIcon()).setValue(true);
+		iconsRadio.get(Icon.valueOf(iconMapLayer.getIcon())).setValue(true);
 	}
 
 	@Override
