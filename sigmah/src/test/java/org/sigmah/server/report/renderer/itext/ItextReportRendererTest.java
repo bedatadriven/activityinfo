@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.sigmah.server.report.DummyPivotTableData;
 import org.sigmah.server.report.renderer.html.ImageStorage;
 import org.sigmah.server.report.renderer.html.ImageStorageProvider;
+import org.sigmah.server.report.renderer.ppt.PPTMapRenderer;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.map.BaseMap;
 import org.sigmah.shared.map.GoogleBaseMap;
@@ -293,7 +294,10 @@ public class ItextReportRendererTest {
 		renderToPdf(report, "legend.pdf");
 		renderToHtml(report, "legend.html");
 		renderToRtf(report, "legend.rtf");
+		renderToPpt(map, "legend.ppt");
 	}
+
+
 
 	private String mapIconPath() {
 		return "war/mapicons";
@@ -325,6 +329,11 @@ public class ItextReportRendererTest {
 	
 	private void renderToRtf(Report report, String name) throws IOException {
 		renderTo(report, new RtfReportRenderer(mapIconPath()), name);
+	}
+	
+	private void renderToPpt(MapReportElement map, String name) throws FileNotFoundException, IOException {
+		PPTMapRenderer renderer = new PPTMapRenderer(mapIconPath());
+		renderer.render(map, new FileOutputStream("target/report-tests/" + name));
 	}
 	
 	private static class TestImageStorageProvider implements ImageStorageProvider {
