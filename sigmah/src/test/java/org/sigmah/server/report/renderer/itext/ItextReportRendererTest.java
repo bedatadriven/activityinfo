@@ -11,7 +11,10 @@ import org.junit.Test;
 import org.sigmah.server.report.DummyPivotTableData;
 import org.sigmah.server.report.renderer.html.ImageStorage;
 import org.sigmah.server.report.renderer.html.ImageStorageProvider;
+import org.sigmah.shared.map.BaseMap;
+import org.sigmah.shared.map.GoogleBaseMap;
 import org.sigmah.shared.map.TileBaseMap;
+import org.sigmah.shared.report.content.BubbleMapMarker;
 import org.sigmah.shared.report.content.LatLng;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.MapMarker;
@@ -79,12 +82,12 @@ public class ItextReportRendererTest {
 		table.setTitle("My Table");
 		table.setContent(tableContent);
 		
-		MapMarker marker1 = new MapMarker();
-		marker1.setLat(-1.554203);
-		marker1.setLng(29.047508);
-		Point px = TileMath.fromLatLngToPixel(new LatLng(marker1.getLat(), marker1.getLng()), 6);
-		marker1.setX(px.x);
-		marker1.setY(px.y);
+		BubbleMapMarker marker1 = new BubbleMapMarker();
+		marker1.setLat(-2.45);
+		marker1.setLng(28.8);
+		marker1.setX(100);
+		marker1.setY(100);
+		marker1.setRadius(25);
 		
 		TileBaseMap baseMap = new TileBaseMap();
 		baseMap.setTileUrlPattern("http://mt{s}.aimaps.net/nordkivu.cd/v1/z{z}/{x}x{y}.png");
@@ -94,7 +97,7 @@ public class ItextReportRendererTest {
 		mapContent.setBaseMap(baseMap);
 		mapContent.setZoomLevel(8);
 		mapContent.setExtents(new Extents(-2.2, -2.1, 28.85, 28.9));
-		mapContent.setMarkers(Arrays.asList(marker1));
+		mapContent.setMarkers(Arrays.asList((MapMarker)marker1));
 		
 		MapReportElement map = new MapReportElement();
 		map.setTitle("My Map");
@@ -114,6 +117,55 @@ public class ItextReportRendererTest {
 		renderToHtml(report, "piechart.html");
 		renderToHtmlUsingWriter(report, "piechart2.html");
 		renderToRtf(report, "piechart.rtf");
+	}
+	
+	@Test
+	public void googleMapsBaseMap() throws IOException {
+	
+		ReportContent content = new ReportContent();
+		content.setFilterDescriptions(Collections.EMPTY_LIST);
+		
+		Report report = new Report();
+		report.setContent(content);
+	
+		
+		TileBaseMap referenceBaseMap = new TileBaseMap();
+		referenceBaseMap.setTileUrlPattern("http://mt{s}.aimaps.net/admin/v1/z{z}/{x}x{y}.png");
+		referenceBaseMap.setName("Administrative Map");
+		
+		BaseMap[] baseMaps = new BaseMap[] { 
+				referenceBaseMap,
+				GoogleBaseMap.HYBRID,
+				GoogleBaseMap.ROADMAP,
+				GoogleBaseMap.SATELLITE,
+				GoogleBaseMap.TERRAIN
+		};
+		
+		for(BaseMap baseMap : baseMaps) {
+		
+			BubbleMapMarker marker1 = new BubbleMapMarker();
+			marker1.setLat(-2.45);
+			marker1.setLng(28.8);
+			marker1.setX(100);
+			marker1.setY(100);
+			marker1.setRadius(25);
+			
+			MapContent mapContent = new MapContent();
+			mapContent.setFilterDescriptions(Collections.EMPTY_LIST);
+			mapContent.setBaseMap(baseMap);
+			mapContent.setZoomLevel(8);
+			mapContent.setExtents(new Extents(-2.2, -2.1, 28.85, 28.9));
+			mapContent.setMarkers(Arrays.asList((MapMarker)marker1));
+			
+			MapReportElement satelliteMap = new MapReportElement();
+			satelliteMap.setTitle(baseMap.toString());
+			satelliteMap.setContent(mapContent);
+			report.addElement(satelliteMap);
+		}
+		
+
+		
+		renderToPdf(report, "google map.pdf");
 	}
 
 
@@ -140,9 +192,6 @@ public class ItextReportRendererTest {
 		writer.close();
 		
 	}
-	
-	
-	
 	
 	private void renderToRtf(Report report, String name) throws IOException {
 		renderTo(report, new RtfReportRenderer(""), name);

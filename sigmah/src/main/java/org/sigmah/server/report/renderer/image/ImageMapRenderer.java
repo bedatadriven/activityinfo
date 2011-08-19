@@ -30,6 +30,8 @@ import org.sigmah.server.report.generator.MapIconPath;
 import org.sigmah.server.report.generator.map.TileProvider;
 import org.sigmah.server.report.generator.map.TiledMap;
 import org.sigmah.server.util.ColorUtil;
+import org.sigmah.shared.map.BaseMap;
+import org.sigmah.shared.map.GoogleBaseMap;
 import org.sigmah.shared.map.TileBaseMap;
 import org.sigmah.shared.report.content.BubbleMapMarker;
 import org.sigmah.shared.report.content.IconMapMarker;
@@ -196,17 +198,35 @@ public class ImageMapRenderer {
         g2d.setPaint(Color.WHITE);
         g2d.fillRect(0,0,element.getWidth(),element.getHeight());
 
-        if(element.getContent().getBaseMap() instanceof TileBaseMap) {
-	        TileProvider tileProvider = new RemoteTileProvider((TileBaseMap) element.getContent().getBaseMap());
-	
-	        // Draw tiled map background
-	        try {
-	            map.drawLayer(g2d, tileProvider);
-	        } catch(Exception e) {
-	            e.printStackTrace();
+        BaseMap baseMap = element.getContent().getBaseMap();
+        try {
+	        if(baseMap instanceof TileBaseMap) {
+		        drawTiledBaseMap(g2d, map, baseMap);
+	        } else if(baseMap instanceof GoogleBaseMap) {
+	        	drawGoogleBaseMap(g2d, map, (GoogleBaseMap)baseMap);
 	        }
+        } catch(Exception e) {
+            e.printStackTrace();
         }
     }
+
+	private void drawTiledBaseMap(Graphics2D g2d, TiledMap map, BaseMap baseMap) {
+		TileProvider tileProvider = new RemoteTileProvider((TileBaseMap) baseMap);
+		map.drawLayer(g2d, tileProvider);
+	}
+
+	private void drawGoogleBaseMap(Graphics2D g2d, TiledMap map, GoogleBaseMap baseMap) throws IOException {
+		BufferedImage image = ImageIO.read(GoogleStaticMapsApi.buildRequest()
+				.setBaseMap(baseMap)
+				.setCenter(map.getGeoCenter())
+				.setWidth(map.getWidth())
+				.setHeight(map.getHeight())
+				.setZoom(map.getZoom())
+				.url());
+		
+		g2d.drawImage(image, 0, 0, map.getWidth(), map.getHeight(), null);
+	}
+	
 
     public Color bubbleFillColor(Color colorRgb) {
         return new Color(colorRgb.getRed(), colorRgb.getGreen(), colorRgb.getBlue(), 179); //179=0.7*255
