@@ -62,6 +62,7 @@ public class IndicatorTreePanel extends ContentPanel {
     
     public IndicatorTreePanel(Dispatcher service, final boolean multipleSelection, AsyncMonitor monitor) {
         this.service = service;
+        
         this.setHeading(I18N.CONSTANTS.indicators());
         this.setIcon(IconImageBundle.ICONS.indicator());
         this.setLayout(new FitLayout());
@@ -90,6 +91,9 @@ public class IndicatorTreePanel extends ContentPanel {
 
         tree = new TreePanel<ModelData>(store);
         tree.setCheckable(true);
+        tree.setAutoExpand(true);
+//        setMultipleSelection(true);
+        
         tree.getStyle().setNodeCloseIcon(null);
         tree.getStyle().setNodeOpenIcon(null);
         tree.setLabelProvider(new ModelStringProvider<ModelData>() {
@@ -106,7 +110,7 @@ public class IndicatorTreePanel extends ContentPanel {
             }
         });
         tree.setStateId("indicatorPanel");
-        tree.setStateful(true);
+//        tree.setStateful(true);
         tree.setAutoSelect(true);
         tree.addListener(Events.BrowserEvent, new Listener<TreePanelEvent<ModelData>>() {
 
@@ -119,26 +123,7 @@ public class IndicatorTreePanel extends ContentPanel {
                 }
             }
         });
-        tree.addListener(Events.CheckChange, new Listener<TreePanelEvent<ModelData>>() {
-            public void handleEvent(TreePanelEvent<ModelData> event) {
 
-                // when a user checks a parent node, expand all
-                // child nodes
-                if (!(event.getItem() instanceof IndicatorDTO) &&
-                        event.isChecked()) {
-                    tree.setExpanded(event.getItem(), true);
-                }
-
-                // for single select, assure that only one indicator is selected
-                if (!multipleSelection && event.isChecked()) {
-                    for (ModelData model : tree.getCheckedSelection()) {
-                        if (model != event.getItem()) {
-                            tree.setChecked(model, false);
-                        }
-                    }
-                }
-            }
-        });
         add(tree);
         createFilterBar();
     }
@@ -204,9 +189,8 @@ public class IndicatorTreePanel extends ContentPanel {
         return list;
     }
     
-    public void addCheckChangedListener(Listener<TreePanelEvent> listener)
-    {
-    	tree.addListener(Events.OnDoubleClick, listener);
+    public void addCheckChangedListener(Listener<TreePanelEvent> listener) {
+    	tree.addListener(Events.CheckChange, listener);
     }
 
     /**
@@ -269,4 +253,20 @@ public class IndicatorTreePanel extends ContentPanel {
     public boolean isMultipleSelection() {
 		return multipleSelection;
 	}
+    
+    private boolean isSingleSelect() {
+    	return !multipleSelection;
+    }
+    
+    public void clearSelection() {
+    	for (IndicatorDTO indicator: getSelection()) {
+    		tree.getSelectionModel().deselect(indicator);
+    		tree.setChecked(indicator, false);
+    	}
+    }
+
+	public void setChecked(IndicatorDTO indicator, boolean b) {
+		tree.setChecked(indicator, b);
+	}
+    
 }

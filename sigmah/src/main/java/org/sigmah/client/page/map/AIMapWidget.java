@@ -90,7 +90,7 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 
     /**
      * True if the Google Maps API is not loaded AND
-     * an attempt to load the API has already failed.
+     * an attempt to load the API has already failed.2 [DEBUG] RemoteDispatcher: sending 3 to server.
      */
     private boolean apiLoadFailed = false;
 
