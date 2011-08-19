@@ -14,6 +14,7 @@ import org.sigmah.server.report.generator.map.cluster.Cluster;
 import org.sigmah.server.report.generator.map.cluster.Clusterer;
 import org.sigmah.server.report.generator.map.cluster.ClustererFactory;
 import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph;
+import org.sigmah.shared.report.content.BubbleLayerLegend;
 import org.sigmah.shared.report.content.BubbleMapMarker;
 import org.sigmah.shared.report.content.DimensionCategory;
 import org.sigmah.shared.report.content.EntityCategory;
@@ -92,6 +93,9 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
             content.getUnmappedSites().add(pv.site.getId());
         }
 
+        BubbleLayerLegend legend = new BubbleLayerLegend();
+        legend.setDefinition(layer);
+        
         // create the markers
         List<BubbleMapMarker> markers = new ArrayList<BubbleMapMarker>();
         for(Cluster cluster : clusters) {
@@ -112,17 +116,26 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
             marker.setTitle(formatTitle(cluster));
             marker.setIndicatorIds(new HashSet<Integer>(layer.getIndicatorIds()));
             
-            //marker.setColor(findColor(cluster.getPointValues().get(0).symbol, layer));
-            marker.setColor(layer.getLabelColor());
+            marker.setColor(layer.getBubbleColor());
+            
+            if(marker.getValue() < legend.getMinValue()) {
+            	legend.setMinValue(marker.getValue());
+            }
+            if(marker.getValue() > legend.getMaxValue()) {
+            	legend.setMaxValue(marker.getValue());
+            }
 
             markers.add(marker);
         }
+        
 
+        
         // number markers if applicable
         if(layer.getLabelSequence() != null) {
             numberMarkers(markers);
         }
 
+        content.addLegend(legend);
         content.getMarkers().addAll(markers);
     }
 
@@ -165,6 +178,10 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
         }
     }
 
+	// this was too complicated. 
+	// we should be able to achieve the same result using filters on the labels
+	// --> schedule to remove
+	@Deprecated
     public MapSymbol createSymbol(SiteData site, List<Dimension> dimensions) {
         MapSymbol symbol = new MapSymbol();
 
@@ -175,22 +192,6 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
         }
 
         return symbol;
-    }
-
-    public int findColor(MapSymbol symbol, BubbleMapLayer layer) {
-
-        if(layer.getColorDimensions().size() == 0) {
-            return layer.getDefaultColor();
-        } else {
-            Dimension dimension = layer.getColorDimensions().get(0);
-            DimensionCategory category = symbol.get(dimension);
-            CategoryProperties categoryProperties = dimension.getCategories().get(category);
-            if(categoryProperties == null) {
-                return layer.getDefaultColor();
-            } else {
-                return categoryProperties.getColor();
-            }
-        }
     }
 
     private void numberMarkers(List<BubbleMapMarker> markers) {

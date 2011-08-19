@@ -27,15 +27,26 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import org.sigmah.server.report.generator.MapIconPath;
+import org.sigmah.server.report.generator.map.BubbleLayerGenerator;
 import org.sigmah.server.report.generator.map.TileProvider;
 import org.sigmah.server.report.generator.map.TiledMap;
 import org.sigmah.server.util.ColorUtil;
+import org.sigmah.shared.map.BaseMap;
+import org.sigmah.shared.map.GoogleBaseMap;
 import org.sigmah.shared.map.TileBaseMap;
+import org.sigmah.shared.report.content.BubbleLayerLegend;
 import org.sigmah.shared.report.content.BubbleMapMarker;
+import org.sigmah.shared.report.content.IconLayerLegend;
 import org.sigmah.shared.report.content.IconMapMarker;
+import org.sigmah.shared.report.content.MapLayerLegend;
 import org.sigmah.shared.report.content.MapMarker;
+import org.sigmah.shared.report.content.PieChartLegend;
 import org.sigmah.shared.report.content.PieMapMarker;
 import org.sigmah.shared.report.model.MapReportElement;
+import org.sigmah.shared.report.model.layers.BubbleMapLayer;
+import org.sigmah.shared.report.model.layers.IconMapLayer;
+import org.sigmah.shared.report.model.layers.MapLayer;
+import org.sigmah.shared.report.model.layers.PiechartMapLayer;
 
 import com.google.inject.Inject;
 
@@ -70,7 +81,11 @@ public class ImageMapRenderer {
         }
     }
 
-    protected final String mapIconRoot;
+	private static final int LEGEND_LABEL_WIDTH = 25;
+	
+	protected final String mapIconRoot;
+
+	private Map<String, BufferedImage> iconImages = new HashMap<String, BufferedImage>();
 
     @Inject
     public ImageMapRenderer(@MapIconPath String mapIconPath) {
@@ -91,18 +106,16 @@ public class ImageMapRenderer {
 
         ImageIO.write(image,"PNG", os);
     }
-
+    
     public void render(MapReportElement element, Graphics2D g2d) {
 
         drawBasemap(g2d, element);
 
         // Draw markers
 
-        Map<String, BufferedImage> iconImages = new HashMap<String, BufferedImage>();
-
         for(MapMarker marker : element.getContent().getMarkers()) {
             if(marker instanceof IconMapMarker) {
-                drawIcon(g2d, iconImages, (IconMapMarker) marker);
+                drawIcon(g2d, (IconMapMarker) marker);
             } else if( marker instanceof PieMapMarker) {
                 drawPieMarker(g2d, (PieMapMarker) marker);
             } else if( marker instanceof BubbleMapMarker) {
@@ -111,7 +124,7 @@ public class ImageMapRenderer {
         }
     }
 
-    public void drawPieMarker(Graphics2D g2d, PieMapMarker marker) {
+    public static void drawPieMarker(Graphics2D g2d, PieMapMarker marker) {
 
         // Determine the total area
         Rectangle area = new Rectangle();
@@ -155,7 +168,7 @@ public class ImageMapRenderer {
     
 
 
-    private void drawLabel(Graphics2D g2d, BubbleMapMarker marker) {
+    private static void drawLabel(Graphics2D g2d, BubbleMapMarker marker) {
         Font font = new Font(Font.SANS_SERIF, Font.BOLD, (int) (marker.getRadius() * 2f * 0.8f));
 
         // measure the bounds of the string so we can center it within
@@ -170,22 +183,46 @@ public class ImageMapRenderer {
                 (int)(marker.getY() + (lm.getAscent() / 2)));
     }
 
-    private void drawIcon(Graphics2D g2d, Map<String, BufferedImage> iconImages, IconMapMarker marker) {
-        BufferedImage image = iconImages.get(marker.getIcon().getName());
-        if(image == null) {
-            try {
-                image = ImageIO.read(new File(mapIconRoot + "/" + marker.getIcon().getName() + ".png"));
-                iconImages.put(marker.getIcon().getName(), image);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+    private void drawIcon(Graphics2D g2d, IconMapMarker marker) {
+        BufferedImage image = getIconImage(marker);
         if(image != null) {
              g2d.drawImage(image, null,
                 marker.getX() - marker.getIcon().getAnchorX(),
                 marker.getY() - marker.getIcon().getAnchorY());
         }
     }
+
+	private BufferedImage getIconImage(IconMapMarker marker) {
+		return getIconImage(marker.getIcon().getName());
+	}
+	
+	protected Image renderSlice(Color color, int size) {
+		BufferedImage image = new BufferedImage(size, size, ColorSpace.TYPE_RGB);
+		Graphics2D g2d = image.createGraphics();
+		g2d.setPaint(color);
+		g2d.fillRect(0,0,size,size);
+//		
+//		Ellipse2D.Double ellipse = new Ellipse2D.Double(
+//                size/2, size/2, size/2, size/2);
+//		
+//	  	g2d.setPaint(color);
+//		g2d.fill(ellipse);
+//		
+		return image;
+	}
+
+	private BufferedImage getIconImage(String name) {
+		BufferedImage image = iconImages.get(name);
+        if(image == null) {
+            try {
+                image = ImageIO.read(new File(mapIconRoot + "/" + name + ".png"));
+                iconImages.put(name, image);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+		return image;
+	}
 
     public void drawBasemap(Graphics2D g2d, MapReportElement element) {
         TiledMap map = new TiledMap(element.getWidth(), element.getHeight(),
@@ -196,35 +233,66 @@ public class ImageMapRenderer {
         g2d.setPaint(Color.WHITE);
         g2d.fillRect(0,0,element.getWidth(),element.getHeight());
 
-        if(element.getContent().getBaseMap() instanceof TileBaseMap) {
-	        TileProvider tileProvider = new RemoteTileProvider((TileBaseMap) element.getContent().getBaseMap());
-	
-	        // Draw tiled map background
-	        try {
-	            map.drawLayer(g2d, tileProvider);
-	        } catch(Exception e) {
-	            e.printStackTrace();
+        BaseMap baseMap = element.getContent().getBaseMap();
+        try {
+	        if(baseMap instanceof TileBaseMap) {
+		        drawTiledBaseMap(g2d, map, baseMap);
+	        } else if(baseMap instanceof GoogleBaseMap) {
+	        	drawGoogleBaseMap(g2d, map, (GoogleBaseMap)baseMap);
 	        }
+        } catch(Exception e) {
+            e.printStackTrace();
         }
     }
 
-    public Color bubbleFillColor(Color colorRgb) {
+	private void drawTiledBaseMap(Graphics2D g2d, TiledMap map, BaseMap baseMap) {
+		TileProvider tileProvider = new RemoteTileProvider((TileBaseMap) baseMap);
+		map.drawLayer(g2d, tileProvider);
+	}
+
+	private void drawGoogleBaseMap(Graphics2D g2d, TiledMap map, GoogleBaseMap baseMap) throws IOException {
+		BufferedImage image = ImageIO.read(GoogleStaticMapsApi.buildRequest()
+				.setBaseMap(baseMap)
+				.setCenter(map.getGeoCenter())
+				.setWidth(map.getWidth())
+				.setHeight(map.getHeight())
+				.setZoom(map.getZoom())
+				.url());
+		
+		g2d.drawImage(image, 0, 0, map.getWidth(), map.getHeight(), null);
+	}
+	
+
+    public static Color bubbleFillColor(Color colorRgb) {
         return new Color(colorRgb.getRed(), colorRgb.getGreen(), colorRgb.getBlue(), 179); //179=0.7*255
     }
 
-    public Color bubbleStrokeColor(int colorRgb) {
+    public static Color bubbleStrokeColor(int colorRgb) {
         return new Color(colorRgb).darker();
     }
 
-    public void drawBubbleMarker(Graphics2D g2d, BubbleMapMarker marker) {
+    public static void drawBubbleMarker(Graphics2D g2d, BubbleMapMarker marker) {
         drawBubble(g2d, ColorUtil.colorFromString(marker.getColor()), marker.getX(), marker.getY(), marker.getRadius());
         if(marker.getLabel() != null) {
             drawLabel(g2d, marker);
         }
     }
+    
+    public Image createLegendSymbol(MapLayerLegend<?> legend) {
+    	if(legend instanceof BubbleLayerLegend) {
+    		return new BubbleLegendRenderer((BubbleLayerLegend) legend).createImage();
+    	} else if(legend instanceof IconLayerLegend) {
+    		IconMapLayer layer = ((IconLayerLegend)legend).getDefinition();
+    		return getIconImage(layer.getIcon());
+    	} else if(legend instanceof PieChartLegend) {
+    		return new PieChartLegendRenderer((PieChartLegend) legend).createImage();
+    	} else {
+    		throw new IllegalArgumentException();
+    	}
+    }
+    
 
-
-    public void drawBubble(Graphics2D g2d, Color colorRgb, int x, int y, int radius) {
+    public static void drawBubble(Graphics2D g2d, Color colorRgb, int x, int y, int radius) {
         Ellipse2D.Double ellipse = new Ellipse2D.Double(
                 x - radius,
                 y - radius,
@@ -237,5 +305,6 @@ public class ImageMapRenderer {
         g2d.setStroke(new BasicStroke(1.5f));
         g2d.draw(ellipse);
     }
+
 
 }

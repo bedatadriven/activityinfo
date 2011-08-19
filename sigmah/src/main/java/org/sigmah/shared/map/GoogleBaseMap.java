@@ -77,4 +77,9 @@ public class GoogleBaseMap extends BaseMap {
 		GoogleBaseMap other = (GoogleBaseMap) obj;
 		return id.equals(other.id);
 	}
+	
+	@Override
+	public String toString() {
+		return "Google " + formatId + " base map";
+	}
 }
