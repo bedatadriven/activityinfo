@@ -5,16 +5,19 @@
 
 package org.sigmah.client;
 
+import java.util.HashMap;
+
+import org.sigmah.client.inject.AppInjector;
+import org.sigmah.client.offline.AuthTokenUtil;
+
 import com.allen_sauer.gwt.log.client.Log;
-import com.bedatadriven.rebar.appcache.client.AppCacheFactory;
 import com.extjs.gxt.ui.client.GXT;
+import com.extjs.gxt.ui.client.state.Provider;
+import com.extjs.gxt.ui.client.state.StateManager;
 import com.extjs.gxt.ui.client.util.Theme;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.gears.client.Factory;
-
-import org.sigmah.client.inject.AppInjector;
-import org.sigmah.client.offline.AuthTokenUtil;
 
 
 /**
@@ -43,6 +46,24 @@ public class ActivityInfoEntryPoint implements EntryPoint {
         }
 
 		GXT.setDefaultTheme(Theme.BLUE, true);
+		StateManager.get().setProvider(new Provider() {
+			HashMap<String, String> inMemorySessionStateMap = new HashMap<String, String>(); 
+			
+			@Override
+			protected void setValue(String name, String value) {
+				inMemorySessionStateMap.put(name, value);
+			}
+			
+			@Override
+			protected String getValue(String name) {
+				return inMemorySessionStateMap.get(name);
+			}
+			
+			@Override
+			protected void clearKey(String name) {
+				inMemorySessionStateMap.remove(name);
+			}
+		});
 
         Log.trace("Application: GXT theme set");
 
