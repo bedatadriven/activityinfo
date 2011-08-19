@@ -5,8 +5,6 @@
 
 package org.sigmah.client.page.entry;
 
-import java.util.Arrays;
-
 import org.sigmah.client.dispatch.callback.Got;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
@@ -20,7 +18,6 @@ import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.PageStateSerializer;
 import org.sigmah.client.page.common.filter.AdminFilterPanel;
 import org.sigmah.client.page.common.filter.DateRangePanel;
-import org.sigmah.client.page.common.filter.FilterPanel;
 import org.sigmah.client.page.common.filter.FilterPanelSet;
 import org.sigmah.client.page.common.filter.PartnerFilterPanel;
 import org.sigmah.client.page.common.nav.NavigationPanel;
@@ -53,8 +50,6 @@ public class DataEntryLoader implements PageLoader {
         placeSerializer.registerParser(SiteEditor.ID, new SiteGridPageState.Parser());
         
         adminPanel = new AdminFilterPanel(injector.getService());
-        adminPanel.setHeading(I18N.CONSTANTS.filterByGeography()); 
-        adminPanel.setIcon(IconImageBundle.ICONS.filter()); 	
 		
         datePanel = new DateRangePanel();
         partnerPanel = new PartnerFilterPanel(injector.getService());
@@ -113,7 +108,7 @@ public class DataEntryLoader implements PageLoader {
                 SiteGridPage grid = new SiteGridPage(true);
                 SiteEditor editor = new SiteEditor(injector.getEventBus(), injector.getService(),
                         injector.getStateManager(), grid);
-                editor.bindFilterPanel(new FilterPanelSet(adminPanel));
+                editor.bindFilterPanel(new FilterPanelSet(adminPanel, datePanel, partnerPanel));
 
                 if (activity.getReportingFrequency() == ActivityDTO.REPORT_MONTHLY) {
                     MonthlyGrid monthlyGrid = new MonthlyGrid(activity);

@@ -13,7 +13,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  *
  * @author Alex Bertram
  */
-public final class PartnerDTO extends BaseModelData implements DTO {
+public final class PartnerDTO extends BaseModelData implements DTO, ProvidesKey {
 
 	public PartnerDTO() {
 		
@@ -81,6 +81,11 @@ public final class PartnerDTO extends BaseModelData implements DTO {
         } else {
             return getId();
         }
+	}
+
+	@Override
+	public String getKey() {
+		return "partner" + getId();
 	}
 	
 }

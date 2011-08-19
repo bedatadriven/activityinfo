@@ -8,11 +8,17 @@ package org.sigmah.client.page.common.filter;
 import java.util.Date;
 
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.client.page.common.filter.FilterToolBar.ApplyFilterEvent;
+import org.sigmah.client.page.common.filter.FilterToolBar.ApplyFilterHandler;
+import org.sigmah.client.page.common.filter.FilterToolBar.RemoveFilterEvent;
+import org.sigmah.client.page.common.filter.FilterToolBar.RemoveFilterHandler;
 import org.sigmah.shared.dao.Filter;
 
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
@@ -27,52 +33,82 @@ import com.google.gwt.user.client.ui.HasValue;
  *
  * @author Alex Bertram
  */
-public class DateRangePanel extends ContentPanel implements HasValue<Filter>{
+public class DateRangePanel extends ContentPanel implements HasValue<Filter>, FilterPanel {
     private DateField datefieldMinDate;
     private DateField datefieldMaxDate;
     private Filter filter = new Filter();
+    
+    private FilterToolBar filterToolBar;
 
     public DateRangePanel() {
         super();
         
-        setHeading(I18N.CONSTANTS.filterByDate());
+        initializeComponent();
 
-//        setIcon(IconImageBundle.ICONS.filter());
-//        setBodyStyle("padding:5px");
+        createFilterToolbar();
+        createFromDateField();
+        createToDateField();
+    }
 
-        add(new LabelField(I18N.CONSTANTS.fromDate()));
-
-        datefieldMinDate = new DateField();
-        add(datefieldMinDate);
-
-        add(new LabelField(I18N.CONSTANTS.toDate()));
-
-        datefieldMaxDate = new DateField();
-        add(datefieldMaxDate);
-        
-        datefieldMinDate.addListener(Events.Change, new Listener<FieldEvent>() {
+	private void createFilterToolbar() {
+		filterToolBar = new FilterToolBarImpl();
+		filterToolBar.addApplyFilterHandler(new ApplyFilterHandler() {
 			@Override
-			public void handleEvent(FieldEvent be) {
-				filter.setMinDate(datefieldMinDate.getValue());
-				
-				// Only fire a ValueChangeEvent when there's a complete range (min+max both non-null)
-				if (filter.getMaxDate() != null) {
-					ValueChangeEvent.fire(DateRangePanel.this, filter);
-				}
+			public void onApplyFilter(ApplyFilterEvent deleteEvent) {
+				applyFilter();
 			}
 		});
+
+		filterToolBar.addRemoveFilterHandler(new RemoveFilterHandler() {
+			@Override
+			public void onRemoveFilter(RemoveFilterEvent deleteEvent) {
+				removeFilter();
+			}
+		});
+		setTopComponent((Component) filterToolBar);
+	}
+
+	protected void applyFilter() {
+		ValueChangeEvent.fire(this, filter);
+		filterToolBar.setRemoveFilterEnabled(true);
+	}
+
+	protected void removeFilter() {
+		
+	}
+
+	private void createToDateField() {
+		add(new LabelField(I18N.CONSTANTS.toDate()));
+
+        datefieldMaxDate = new DateField();
         datefieldMaxDate.addListener(Events.Change, new Listener<FieldEvent>() {
 			@Override
 			public void handleEvent(FieldEvent be) {
 				filter.setMaxDate(datefieldMaxDate.getValue());
-				
-				// Only fire a ValueChangeEvent when there's a complete range (min+max both non-null)
-				if (filter.getMinDate() != null) {
-					ValueChangeEvent.fire(DateRangePanel.this, filter);
-				}
+				filterToolBar.setApplyFilterEnabled(filter.getMinDate() != null);
 			}
 		});
-    }
+        add(datefieldMaxDate);
+	}
+
+	private void createFromDateField() {
+		add(new LabelField(I18N.CONSTANTS.fromDate()));
+
+        datefieldMinDate = new DateField();
+        datefieldMinDate.addListener(Events.Change, new Listener<FieldEvent>() {
+			@Override
+			public void handleEvent(FieldEvent be) {
+				filter.setMinDate(datefieldMinDate.getValue());
+				filterToolBar.setApplyFilterEnabled(filter.getMaxDate() != null);
+			}
+		});
+        add(datefieldMinDate);
+	}
+
+	private void initializeComponent() {
+		setHeading(I18N.CONSTANTS.filterByDate());
+        setIcon(IconImageBundle.ICONS.filter());
+	}
 
     /**
      * Updates the given filter with the user's choice.
@@ -112,5 +148,11 @@ public class DateRangePanel extends ContentPanel implements HasValue<Filter>{
 
 	public Date getMaxDate() {
 		return datefieldMaxDate.getValue();
+	}
+
+	@Override
+	public void applyBaseFilter(Filter filter) {
+		filter.setMaxDate(getMaxDate());
+		filter.setMinDate(getMinDate());
 	}
 }
