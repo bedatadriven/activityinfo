@@ -326,6 +326,8 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 			public void onSuccess(MapContent result) {
 		        Log.debug("MapPreview: Received content, extents are = " + result.getExtents().toString());
 
+		        mapModel = result;
+		        
 		        setBaseMap(result.getBaseMap());
 
 		        layout();
@@ -398,38 +400,49 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 			
 			// Create a list with all items with the value colored
 			StringBuilder builder = new StringBuilder();
+			
+			// Start an html list
 			builder.append("<ul>");
 
+			// Add each slice of the pie as a listitem
 			for (SliceValue slice : piemarker.getSlices()) {
-				IndicatorDTO indicator = mapReportElement.getContent().getIndicatorById
-										(((BubbleMapMarker) marker).getIndicatorId());
+				IndicatorDTO indicator = mapModel.getIndicatorById(slice.getIndicatorId());
 
 				builder.append("<li>");
-				builder.append("<b><span style=\"background-color:" + slice.getColor() + "\"");
+				builder.append("<b><span style=\"background-color:" + slice.getColor() + "\">");
 				builder.append(slice.getValue());
-				builder.append("</span><b> ");
+				builder.append("</span></b> ");
 				builder.append(indicator.getName());
 			}
 
+			// Close and return the html list
 			builder.append("</ul>");
-			
 			return builder.toString();
 			
 		} else if (marker instanceof BubbleMapMarker) {
-			IndicatorDTO indicator = mapReportElement.getContent().getIndicatorById
-										(((BubbleMapMarker) marker).getIndicatorId());
-			return "<b>" + 
-					marker.getTitle() + 
-					"</b> " +
-					indicator.getName();
+			BubbleMapMarker bubbleMarker = (BubbleMapMarker)marker;
 			
+			// Create a list with all items with the value colored
+			StringBuilder builder = new StringBuilder();
+			
+			// Start an html list
+			builder.append("<b>" + I18N.CONSTANTS.sum() + " " + marker.getTitle() + " </b><ul>");
+
+			// Add each slice of the pie as a listitem
+			for (Integer indicatorId : bubbleMarker.getIndicatorIds()) {
+				IndicatorDTO indicator = mapModel.getIndicatorById(indicatorId);
+
+				builder.append("<li>");
+				builder.append(indicator.getName());
+			}
+
+			// Close and return the html list
+			builder.append("</ul>");
+			return builder.toString();
 		} else if (marker instanceof IconMapMarker) {
-			IndicatorDTO indicator = mapReportElement.getContent().getIndicatorById
+			IndicatorDTO indicator = mapModel.getIndicatorById
 										(((IconMapMarker) marker).getIndicatorId());
-			return "<b>" + 
-					marker.getTitle() + 
-					"</b> " +
-					indicator.getName();
+			return indicator.getName();
 		}
 		return null;
 	}

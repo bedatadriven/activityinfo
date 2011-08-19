@@ -40,7 +40,7 @@ public class GetSchemaTest extends CommandTestCase {
                 schema.getDatabaseById(1) ==
                         schema.getDatabaseById(1).getActivities().get(0).getDatabase());
         Assert.assertTrue("CountryId is not null", schema.getCountries().get(0).getAdminLevels().get(0).getCountryId()!=0);
-        Assert.assertEquals("Expected one database",1, schema.getDatabases().size());
+        Assert.assertEquals("Expected one database", 2, schema.getDatabases().size());
     }
 
     @Test
