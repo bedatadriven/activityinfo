@@ -27,7 +27,6 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import org.sigmah.server.report.generator.MapIconPath;
-import org.sigmah.server.report.generator.map.BubbleLayerGenerator;
 import org.sigmah.server.report.generator.map.TileProvider;
 import org.sigmah.server.report.generator.map.TiledMap;
 import org.sigmah.server.util.ColorUtil;
@@ -43,10 +42,7 @@ import org.sigmah.shared.report.content.MapMarker;
 import org.sigmah.shared.report.content.PieChartLegend;
 import org.sigmah.shared.report.content.PieMapMarker;
 import org.sigmah.shared.report.model.MapReportElement;
-import org.sigmah.shared.report.model.layers.BubbleMapLayer;
 import org.sigmah.shared.report.model.layers.IconMapLayer;
-import org.sigmah.shared.report.model.layers.MapLayer;
-import org.sigmah.shared.report.model.layers.PiechartMapLayer;
 
 import com.google.inject.Inject;
 
@@ -80,8 +76,6 @@ public class ImageMapRenderer {
             }
         }
     }
-
-	private static final int LEGEND_LABEL_WIDTH = 25;
 	
 	protected final String mapIconRoot;
 
@@ -196,9 +190,9 @@ public class ImageMapRenderer {
 		return getIconImage(marker.getIcon().getName());
 	}
 	
-	protected Image renderSlice(Color color, int size) {
-		BufferedImage image = new BufferedImage(size, size, ColorSpace.TYPE_RGB);
-		Graphics2D g2d = image.createGraphics();
+	protected <T extends ImageResult> T renderSlice(ImageCreator<T> imageCreator, Color color, int size) {
+		T result = imageCreator.create(size, size);
+		Graphics2D g2d = result.getGraphics();
 		g2d.setPaint(color);
 		g2d.fillRect(0,0,size,size);
 //		
@@ -208,7 +202,7 @@ public class ImageMapRenderer {
 //	  	g2d.setPaint(color);
 //		g2d.fill(ellipse);
 //		
-		return image;
+		return result;
 	}
 
 	private BufferedImage getIconImage(String name) {
@@ -278,20 +272,26 @@ public class ImageMapRenderer {
         }
     }
     
-    public Image createLegendSymbol(MapLayerLegend<?> legend) {
+    public <T extends ImageResult> T createLegendSymbol(MapLayerLegend<?> legend, ImageCreator<T> creator) {
     	if(legend instanceof BubbleLayerLegend) {
-    		return new BubbleLegendRenderer((BubbleLayerLegend) legend).createImage();
+    		return new BubbleLegendRenderer((BubbleLayerLegend) legend).createImage(creator);
     	} else if(legend instanceof IconLayerLegend) {
-    		IconMapLayer layer = ((IconLayerLegend)legend).getDefinition();
-    		return getIconImage(layer.getIcon());
+    		return createIconImage(creator, (IconLayerLegend)legend);
     	} else if(legend instanceof PieChartLegend) {
-    		return new PieChartLegendRenderer((PieChartLegend) legend).createImage();
+    		return new PieChartLegendRenderer((PieChartLegend) legend).createImage(creator);
     	} else {
     		throw new IllegalArgumentException();
     	}
     }
-    
 
+    private <T extends ImageResult> T createIconImage(ImageCreator<T> creator, IconLayerLegend legend) {
+    	BufferedImage icon = getIconImage(legend.getDefinition().getIcon());
+    	T result = creator.create(icon.getWidth(), icon.getHeight());
+    	result.getGraphics().drawImage(icon, 0, 0, null);
+    	
+    	return result;
+    }
+    
     public static void drawBubble(Graphics2D g2d, Color colorRgb, int x, int y, int radius) {
         Ellipse2D.Double ellipse = new Ellipse2D.Double(
                 x - radius,
@@ -305,6 +305,4 @@ public class ImageMapRenderer {
         g2d.setStroke(new BasicStroke(1.5f));
         g2d.draw(ellipse);
     }
-
-
 }

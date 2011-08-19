@@ -25,16 +25,11 @@ public class PieChartLegendRenderer {
 		this.width = this.height = PADDING + (layer.getMaxRadius() * 2) + PADDING;
 	}
 	
-	public Image createImage() {
+	public <T extends ImageResult> T createImage(ImageCreator<T> creator) {
+		T result = creator.create(width, height);
+		drawSymbol(result.getGraphics());
 		
-		BufferedImage image = new BufferedImage(width, height, ColorSpace.TYPE_RGB);
-		Graphics2D g2d = image.createGraphics();
-		g2d.setPaint(Color.WHITE);
-		g2d.fillRect(0,0,width, height);
-		
-		drawSymbol(g2d);
-		
-		return image;
+		return result;
 	}
 
 	private void drawSymbol(Graphics2D g2d) {
@@ -67,7 +62,7 @@ public class PieChartLegendRenderer {
 			double value = 1;
 			for(int i=0;i!=values.length;++i) {
 				values[i] = value;
-				value *= 3 ;
+				value *= 1.5 ;
 			}
 			return values;
 		}
