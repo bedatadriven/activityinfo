@@ -21,7 +21,6 @@ import javax.persistence.EntityManager;
 import org.hibernate.Session;
 import org.hibernate.ejb.HibernateEntityManager;
 import org.hibernate.jdbc.Work;
-import org.junit.runner.RunWith;
 import org.sigmah.server.dao.PivotDAO;
 import org.sigmah.server.domain.AggregationMethod;
 import org.sigmah.shared.dao.Filter;
@@ -37,7 +36,6 @@ import org.sigmah.shared.report.model.DateDimension;
 import org.sigmah.shared.report.model.DateUnit;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
-import org.sigmah.test.InjectionSupport;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
@@ -55,7 +53,6 @@ import com.google.inject.Inject;
  * PivotDAO implementation for hibernate using native SQL.
  *
  */
-@RunWith(InjectionSupport.class)
 public class PivotHibernateDAO implements PivotDAO {
 
     private final EntityManager em;

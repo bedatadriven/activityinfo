@@ -39,8 +39,8 @@ public class EmptyChartsTest {
 			.andReturn(Collections.EMPTY_LIST);
 		
 		expect(pivotDAO.getFilterLabels(eq(DimensionType.Indicator), 
-									    	(Set<Integer>)isA(Set.class)))
-			.andReturn(Collections.<Integer, String>emptyMap()); 
+				(java.util.Set<Integer>)isA(Set.class)))
+			.andReturn(Collections.EMPTY_MAP);
 
 		replay(pivotDAO);
 		
