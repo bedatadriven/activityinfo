@@ -19,10 +19,15 @@ import org.sigmah.client.map.MapTypeFactory;
 import org.sigmah.shared.command.GenerateElement;
 import org.sigmah.shared.command.GetBaseMaps;
 import org.sigmah.shared.command.result.BaseMapResult;
+import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.map.BaseMap;
 import org.sigmah.shared.map.TileBaseMap;
+import org.sigmah.shared.report.content.BubbleMapMarker;
+import org.sigmah.shared.report.content.IconMapMarker;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.MapMarker;
+import org.sigmah.shared.report.content.PieMapMarker;
+import org.sigmah.shared.report.content.PieMapMarker.SliceValue;
 import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 import org.sigmah.shared.util.mapping.Extents;
@@ -81,6 +86,7 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 	
 	// True when the first layer is just put on the map
 	private boolean isFirstLayerUpdate=true;
+	private boolean isGoogleMapsInitialized = false;
 
     /**
      * True if the Google Maps API is not loaded AND
@@ -105,7 +111,9 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
         // seems like a good time to preload the MapsApi if
         // we haven't already done so
 
-        MapApiLoader.load();
+        //MapApiLoader.load();
+        
+        loadMapAsynchronously();
 
         addListener(Events.AfterLayout, new Listener<BaseEvent>() {
             @Override
@@ -120,8 +128,90 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
                 }
             }
         });
+        
         getBaseMaps();
     }
+
+	private void loadMapAsynchronously() {
+		MapApiLoader.load(new MaskingAsyncMonitor(this, I18N.CONSTANTS.loadingMap()),
+            new AsyncCallback<Void>() {
+                @Override
+                public void onSuccess(Void result) {
+                    apiLoadFailed = false;
+                    isGoogleMapsInitialized = true;
+                    
+                    createGoogleMapWidget();
+                    
+                    // clear the error message content
+                    removeAll();
+                    add(mapWidget);
+                    updateMapToContent();
+                    
+                    if (currentBaseMap != null) {
+                    	setBaseMap(currentBaseMap);
+                    }
+                }
+
+                @Override
+                public void onFailure(Throwable caught) {
+                    handleApiLoadFailure();
+                }
+            });
+	}
+    
+    public void setBaseMap(BaseMap baseMap) {
+    	if (!isGoogleMapsInitialized) {
+    		currentBaseMap = baseMap;
+    		return;
+    	}
+    	if (baseMap != null) {
+	        if (currentBaseMap == null || !currentBaseMap.equals(baseMap)) {
+	            MapType baseMapType = MapTypeFactory.mapTypeForBaseMap(baseMap);
+	            mapWidget.removeMapType(MapType.getNormalMap());
+	            mapWidget.removeMapType(MapType.getHybridMap());
+	            mapWidget.addMapType(baseMapType);
+	            mapWidget.setCurrentMapType(baseMapType);
+	            currentBaseMap = baseMap;
+	            layout();
+	        }
+    	}
+    }
+    
+    public void createMapIfNeededAndUpdateMapContent() {
+        if (mapWidget == null) {
+
+        } else {
+            clearOverlays();
+            updateMapToContent();
+        }
+    }
+    
+	@Override
+	public HandlerRegistration addValueChangeHandler(
+			ValueChangeHandler<MapReportElement> handler) {
+		return addHandler(handler, ValueChangeEvent.getType());
+	}
+
+	@Override
+	public MapReportElement getValue() {
+		return mapReportElement;
+	}
+
+	@Override
+	public void setValue(MapReportElement value) {
+		this.mapReportElement=value;
+        if (!apiLoadFailed) {
+            clearOverlays();
+            createMapIfNeededAndUpdateMapContent();
+        }
+        ValueChangeEvent.fire(this, mapReportElement);
+	}
+
+	@Override
+	public void setValue(MapReportElement value, boolean fireEvents) {
+		// TODO Auto-generated method stub
+		
+	}
 
     private void zoomToBounds(LatLngBounds bounds) {
         int zoomLevel = mapWidget.getBoundsZoomLevel(bounds);
@@ -163,38 +253,12 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
                 LatLng.newInstance(bounds.getY2(), bounds.getX2()));	
     }
 
-    public void createMapIfNeededAndUpdateMapContent() {
-        if (mapWidget == null) {
-            MapApiLoader.load(new MaskingAsyncMonitor(this, I18N.CONSTANTS.loadingMap()),
-                    new AsyncCallback<Void>() {
-                        @Override
-                        public void onSuccess(Void result) {
-                            apiLoadFailed = false;
-                            
-                            createGoogleMapWidget();
-                            
-//                            changeBaseMapIfNeeded(mapReportElement.getBaseMapId());
 
-                            // clear the error message content
-                            removeAll();
-                            add(mapWidget);
-                            updateMapToContent();
-                        }
-
-                        @Override
-                        public void onFailure(Throwable caught) {
-                            handleApiLoadFailure();
-                        }
-                    });
-        } else {
-            clearOverlays();
-            updateMapToContent();
-        }
-    }
     
 	private void createGoogleMapWidget() {
 		mapWidget = new MapWidget();
         mapWidget.addControl(new LargeMapControl());
+        mapWidget.panTo(LatLng.newInstance(-1, 25));
         
         mapWidget.addMapClickHandler(new MapClickHandler() {
 			@Override
@@ -203,22 +267,7 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 			}
 		});
 	}
-	
-    private void changeBaseMapIfNeeded(BaseMap baseMap) {
-    	if (baseMap != null) {
-	        if (currentBaseMap == null || !currentBaseMap.equals(baseMap)) {
-	            MapType baseMapType = MapTypeFactory.mapTypeForBaseMap(baseMap);
-	            mapWidget.removeMapType(MapType.getNormalMap());
-	            mapWidget.removeMapType(MapType.getHybridMap());
-	            mapWidget.addMapType(baseMapType);
-	            mapWidget.setCurrentMapType(baseMapType);
-	            currentBaseMap = baseMap;
-	        }
-    	} else {
-    		getBaseMaps();
-    	}
-    }
-
+    
     /**
      * Clears all existing content from the map
      */
@@ -241,6 +290,7 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 			@Override
 			public void onSuccess(BaseMapResult result) {
 				if (result.getBaseMaps() == null) {
+					// TODO: handle nullresult
 				} else {
 					baseMaps = result.getBaseMaps();
 					mapReportElement.setBaseMapId(BaseMap.getDefaultMapId());
@@ -267,7 +317,6 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 		}
     	
     	dispatcher.execute(new GenerateElement<MapContent>(mapReportElement), null, new AsyncCallback<MapContent>() {
-
 			@Override
 			public void onFailure(Throwable caught) {
 				MessageBox.alert("Load failed", caught.getMessage(), null);
@@ -277,7 +326,9 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 			public void onSuccess(MapContent result) {
 		        Log.debug("MapPreview: Received content, extents are = " + result.getExtents().toString());
 
-		        changeBaseMapIfNeeded(result.getBaseMap());
+		        mapModel = result;
+		        
+		        setBaseMap(result.getBaseMap());
 
 		        layout();
 		
@@ -287,84 +338,112 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 		        iconFactory.primaryColor = "#0000FF";
 		
 		        putMarkersOnMap(result);
-		        
 		        zoomToMarkers(result);
-			}
-
-			private void zoomToMarkers(MapContent result) {
-				zoomToBounds(llBoundsForExtents(result.getExtents()));
-			}
-
-			private void putMarkersOnMap(MapContent result) {
-				for (MapMarker marker : result.getMarkers()) {
-		            Icon icon = IconFactory.createIcon(marker);
-		            LatLng latLng = LatLng.newInstance(marker.getLat(), marker.getLng());
-		
-		            MarkerOptions options = MarkerOptions.newInstance();
-		            options.setIcon(icon);
-		            options.setTitle(marker.getTitle());
-		            Marker overlay = new Marker(latLng, options);
-		            
-		            mapWidget.addOverlay(overlay);
-		            overlays.put(overlay, marker);
-		        }
 			}
 		});
     }
+    
+	private void zoomToMarkers(MapContent result) {
+		zoomToBounds(llBoundsForExtents(result.getExtents()));
+	}
+	
+	private void putMarkersOnMap(MapContent result) {
+		for (MapMarker marker : result.getMarkers()) {
+            Icon icon = IconFactory.createIcon(marker);
+            LatLng latLng = LatLng.newInstance(marker.getLat(), marker.getLng());
 
+            MarkerOptions options = MarkerOptions.newInstance();
+            options.setIcon(icon);
+            options.setTitle(marker.getTitle());
+            Marker overlay = new Marker(latLng, options);
+            
+            mapWidget.addOverlay(overlay);
+            overlays.put(overlay, marker);
+        }
+	}
+	
 	/**
      * Handles the failure of the Google Maps API to load.
      */
-    private void handleApiLoadFailure() {
-        apiLoadFailed = true;
+	 private void handleApiLoadFailure() {
+	        apiLoadFailed = true;
 
         if (this.getItemCount() == 0) {
             add(new Html(I18N.CONSTANTS.cannotLoadMap()));
+
             add(new Button(I18N.CONSTANTS.retry(), new SelectionListener<ButtonEvent>() {
                 @Override
                 public void componentSelected(ButtonEvent ce) {
                     createMapIfNeededAndUpdateMapContent();
                 }
             }));
+            
             layout();
         }
     }
 
-	@Override
-	public HandlerRegistration addValueChangeHandler(
-			ValueChangeHandler<MapReportElement> handler) {
-		return addHandler(handler, ValueChangeEvent.getType());
-	}
 
-	@Override
-	public MapReportElement getValue() {
-		return mapReportElement;
-	}
-
-	@Override
-	public void setValue(MapReportElement value) {
-		this.mapReportElement=value;
-        if (!apiLoadFailed) {
-            clearOverlays();
-            createMapIfNeededAndUpdateMapContent();
-        }
-        ValueChangeEvent.fire(this, mapReportElement);
-	}
-
-	@Override
-	public void setValue(MapReportElement value, boolean fireEvents) {
-		// TODO Auto-generated method stub
-		
-	}
-	
 	private void onMapClick(MapClickEvent event) {
 		if(event.getOverlay() != null) {
 			MapMarker marker = overlays.get(event.getOverlay());
 			if (marker != null)
 			{
-				InfoWindowContent content = new InfoWindowContent(marker.getTitle());
+				InfoWindowContent content = new InfoWindowContent(constructInfoWindowContent(marker));
 				mapWidget.getInfoWindow().open((Marker)event.getOverlay(), content);
 			}
 		}
+	}
+
+	private String constructInfoWindowContent(MapMarker marker) {
+		if (marker instanceof PieMapMarker) {
+			PieMapMarker piemarker = (PieMapMarker)marker;
+			
+			// Create a list with all items with the value colored
+			StringBuilder builder = new StringBuilder();
+			
+			// Start an html list
+			builder.append("<ul>");
+
+			// Add each slice of the pie as a listitem
+			for (SliceValue slice : piemarker.getSlices()) {
+				IndicatorDTO indicator = mapModel.getIndicatorById(slice.getIndicatorId());
+
+				builder.append("<li>");
+				builder.append("<b><span style=\"background-color:" + slice.getColor() + "\">");
+				builder.append(slice.getValue());
+				builder.append("</span></b> ");
+				builder.append(indicator.getName());
+			}
+
+			// Close and return the html list
+			builder.append("</ul>");
+			return builder.toString();
+			
+		} else if (marker instanceof BubbleMapMarker) {
+			BubbleMapMarker bubbleMarker = (BubbleMapMarker)marker;
+			
+			// Create a list with all items with the value colored
+			StringBuilder builder = new StringBuilder();
+			
+			// Start an html list
+			builder.append("<b>" + I18N.CONSTANTS.sum() + " " + marker.getTitle() + " </b><ul>");
+
+			// Add each slice of the pie as a listitem
+			for (Integer indicatorId : bubbleMarker.getIndicatorIds()) {
+				IndicatorDTO indicator = mapModel.getIndicatorById(indicatorId);
+
+				builder.append("<li>");
+				builder.append(indicator.getName());
+			}
+
+			// Close and return the html list
+			builder.append("</ul>");
+			return builder.toString();
+		} else if (marker instanceof IconMapMarker) {
+			IndicatorDTO indicator = mapModel.getIndicatorById
+										(((IconMapMarker) marker).getIndicatorId());
+			return indicator.getName();
+		}
+		return null;
 	}
 }

@@ -10,7 +10,6 @@ import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.callback.DownloadCallback;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
-import org.sigmah.client.event.DownloadRequestEvent;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.NavigationCallback;
@@ -23,12 +22,13 @@ import org.sigmah.client.page.common.toolbar.ExportCallback;
 import org.sigmah.client.page.common.toolbar.ExportMenuButton;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.page.map.mapOptions.AllMapOptionsWidget;
+import org.sigmah.client.page.map.mapOptions.BaseMapChangedEvent;
+import org.sigmah.client.page.map.mapOptions.BasemapChangedEventHandler;
 import org.sigmah.shared.command.RenderElement;
 import org.sigmah.shared.command.RenderElement.Format;
-import org.sigmah.shared.command.result.RenderResult;
 import org.sigmah.shared.map.BaseMap;
-import org.sigmah.shared.map.TileBaseMap;
 import org.sigmah.shared.report.model.MapReportElement;
+
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.Component;
@@ -38,7 +38,6 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 /**
@@ -69,6 +68,13 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
         initializeComponent();
         
         this.allMapOptionsWidget = form;
+        
+        allMapOptionsWidget.addBaseMapChangedHandler(new BasemapChangedEventHandler() {
+			@Override
+			public void onBaseMapChanged(BaseMapChangedEvent event) {
+				aiMapWidget.setBaseMap(event.getBaseMap());
+			}
+		});
         
         createFormPane(form);
         createMap();

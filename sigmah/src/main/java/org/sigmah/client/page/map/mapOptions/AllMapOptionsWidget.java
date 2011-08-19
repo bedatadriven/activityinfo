@@ -5,6 +5,15 @@
 
 package org.sigmah.client.page.map.mapOptions;
 
+import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.client.page.common.filter.AdminFilterPanel;
+import org.sigmah.client.page.common.filter.DateRangePanel;
+import org.sigmah.shared.map.BaseMap;
+import org.sigmah.shared.report.model.MapReportElement;
+import org.sigmah.shared.report.model.ReportElement;
+
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -12,13 +21,6 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
-import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.client.page.common.filter.AdminFilterPanel;
-import org.sigmah.client.page.common.filter.DateRangePanel;
-import org.sigmah.shared.report.model.MapReportElement;
-import org.sigmah.shared.report.model.ReportElement;
 
 /**
  * Form for choosing options related to the MapElement
@@ -52,6 +54,10 @@ public class AllMapOptionsWidget extends ContentPanel implements HasValue<MapRep
 //        createDateFilterOptions();
         // TODO:hookup valuechanged event so that the filter actually is applied to the mapreportelement 
 //        createAdminFilterOptions(service);
+    } 
+    
+    public HandlerRegistration addBaseMapChangedHandler(BasemapChangedEventHandler handler) {
+    	return this.addHandler(handler, BaseMapChangedEvent.TYPE);
     }
 
 	private void createAdminFilterOptions(Dispatcher service) {
@@ -68,6 +74,13 @@ public class AllMapOptionsWidget extends ContentPanel implements HasValue<MapRep
 
 	private void createBaseMapPicker() {
     	baseMapPickerWidget = new BaseMapPickerWidget(service);
+    	baseMapPickerWidget.addValueChangeHandler(new ValueChangeHandler<BaseMap>() {
+			
+			@Override
+			public void onValueChange(ValueChangeEvent<BaseMap> event) {
+				fireEvent(new BaseMapChangedEvent(event.getValue()));
+			}
+		});
         fieldsetBaseMaps.add(getMapOptionsWidget());
 	}
 

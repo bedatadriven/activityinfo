@@ -7,6 +7,7 @@ package org.sigmah.server.report.generator.map;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import org.sigmah.server.report.generator.map.cluster.Cluster;
@@ -109,6 +110,7 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
             marker.setLng(latlng.getLng());
             marker.setAlpha(layer.getAlpha());
             marker.setTitle(formatTitle(cluster));
+            marker.setIndicatorIds(new HashSet<Integer>(layer.getIndicatorIds()));
             
             //marker.setColor(findColor(cluster.getPointValues().get(0).symbol, layer));
             marker.setColor(layer.getLabelColor());

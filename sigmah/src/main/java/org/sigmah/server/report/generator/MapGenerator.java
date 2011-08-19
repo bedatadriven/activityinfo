@@ -5,22 +5,38 @@
 
 package org.sigmah.server.report.generator;
 
-import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.sigmah.server.dao.BaseMapDAO;
 import org.sigmah.server.dao.PivotDAO;
-import org.sigmah.server.report.generator.map.*;
+import org.sigmah.server.report.generator.map.BubbleLayerGenerator;
+import org.sigmah.server.report.generator.map.IconLayerGenerator;
+import org.sigmah.server.report.generator.map.LayerGenerator;
+import org.sigmah.server.report.generator.map.Margins;
+import org.sigmah.server.report.generator.map.PiechartLayerGenerator;
+import org.sigmah.server.report.generator.map.TiledMap;
 import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.dao.IndicatorDAO;
 import org.sigmah.shared.dao.SiteTableDAO;
+import org.sigmah.shared.domain.Indicator;
 import org.sigmah.shared.domain.User;
+import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.map.BaseMap;
 import org.sigmah.shared.map.GoogleBaseMap;
 import org.sigmah.shared.map.PredefinedBaseMaps;
 import org.sigmah.shared.map.TileBaseMap;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.MapMarker;
-import org.sigmah.shared.report.model.*;
+import org.sigmah.shared.report.model.DateRange;
+import org.sigmah.shared.report.model.DimensionType;
+import org.sigmah.shared.report.model.MapReportElement;
+import org.sigmah.shared.report.model.SiteData;
 import org.sigmah.shared.report.model.layers.BubbleMapLayer;
 import org.sigmah.shared.report.model.layers.IconMapLayer;
 import org.sigmah.shared.report.model.layers.MapLayer;
@@ -28,10 +44,7 @@ import org.sigmah.shared.report.model.layers.PiechartMapLayer;
 import org.sigmah.shared.util.mapping.Extents;
 import org.sigmah.shared.util.mapping.TileMath;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram
@@ -39,13 +52,15 @@ import java.util.List;
 public class MapGenerator extends ListGenerator<MapReportElement> {
 
 	private final BaseMapDAO baseMapDAO;
+	private final IndicatorDAO indicatorDAO;
 
     private static final Logger logger = Logger.getLogger(MapGenerator.class);
     
     @Inject
-    public MapGenerator(PivotDAO pivotDAO, SiteTableDAO siteDAO, BaseMapDAO baseMapDAO) {
+    public MapGenerator(PivotDAO pivotDAO, SiteTableDAO siteDAO, BaseMapDAO baseMapDAO, IndicatorDAO indicatorDAO) {
         super(pivotDAO, siteDAO);
         this.baseMapDAO = baseMapDAO;
+        this.indicatorDAO = indicatorDAO;
     }
 
     public void generate(User user, MapReportElement element, Filter inheritedFilter, DateRange dateRange) {
@@ -129,6 +144,25 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         for (LayerGenerator layerGtor : layerGenerators) {
             layerGtor.generate(sites, map, content);
         }
+        
+        // Get relevant indicators for the map markers
+        Set<Integer> indicatorIds = new HashSet<Integer>(); 
+        
+        for (MapLayer maplayer : element.getLayers()) {
+        	indicatorIds.addAll(maplayer.getIndicatorIds());
+        }
+        
+        Set<IndicatorDTO> indicatorDTOs = new HashSet<IndicatorDTO>();
+        for (Integer indicatorId : indicatorIds) {
+        	Indicator indicator = indicatorDAO.findById(indicatorId);
+        	IndicatorDTO indicatorDTO = new IndicatorDTO();
+        	indicatorDTO.setId(indicator.getId());
+        	indicatorDTO.setName(indicator.getName());
+        	
+        	indicatorDTOs.add(indicatorDTO);
+        }
+        
+        content.setIndicators(indicatorDTOs);
 
         // sort order by symbol radius descending
         // (this assures that smaller symbols are drawn on

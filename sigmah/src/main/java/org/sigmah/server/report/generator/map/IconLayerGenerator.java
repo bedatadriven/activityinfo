@@ -121,6 +121,7 @@ public class IconLayerGenerator implements LayerGenerator {
             marker.setLat(latlng.getLat());
             marker.setLng(latlng.getLng());
             marker.setIcon(icon);
+            marker.setIndicatorId(layer.getIndicatorIds().get(0));
             content.getMarkers().add(marker);
         }
 	}
