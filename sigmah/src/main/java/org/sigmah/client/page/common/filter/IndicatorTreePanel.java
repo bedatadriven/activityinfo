@@ -78,12 +78,7 @@ public class IndicatorTreePanel extends ContentPanel {
 			@Override
 			public String getKey(ModelData model) {
 				if (model instanceof ProvidesKey) {
-					String key = ((ProvidesKey) model).getKey();
-					// if (keys.contains(key)) {
-					// throw new RuntimeException("double key: " + key);
-					// }
-					// keys.add(key);
-					return key;
+					return ((ProvidesKey) model).getKey();
 				} else if (model == null) {
 					throw new RuntimeException(
 							"Did not expect model to be null: assigning keys in IndicatorTreePanel");
@@ -95,9 +90,17 @@ public class IndicatorTreePanel extends ContentPanel {
 
 		tree = new TreePanel<ModelData>(store);
 		tree.setCheckable(true);
-		tree.setAutoExpand(true);
-		// setMultipleSelection(true);
-
+		
+		/*
+		 * 
+		 *  No. No. No! NO!! NONONO!!! Seriously. Don't.
+		 *  
+		 *  1. In postbacks, complete model is serialized in a cookie.
+		 *  2. Cookie gets send, server can't handle cookie size of half the database
+		 *  3. You wonder where the HTTP 413 comes from, and seriously consider hiring cookiemonster.
+		 */
+		// tree.setAutoExpand(true);
+		
 		tree.getStyle().setNodeCloseIcon(null);
 		tree.getStyle().setNodeOpenIcon(null);
 		tree.setLabelProvider(new ModelStringProvider<ModelData>() {
@@ -114,7 +117,7 @@ public class IndicatorTreePanel extends ContentPanel {
 			}
 		});
 		tree.setStateId("indicatorPanel");
-		// tree.setStateful(true);
+		tree.setStateful(true);
 		tree.setAutoSelect(true);
 		tree.addListener(Events.BrowserEvent,
 				new Listener<TreePanelEvent<ModelData>>() {
