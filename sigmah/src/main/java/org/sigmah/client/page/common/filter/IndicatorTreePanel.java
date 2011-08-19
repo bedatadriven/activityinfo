@@ -45,228 +45,254 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * UI Component that allows the user to select a list of Indicators
- *
+ * 
  * @author Alex Bertram
  */
 public class IndicatorTreePanel extends ContentPanel {
 
-    private final Dispatcher service;
+	private final Dispatcher service;
 
-    private TreeLoader<ModelData> loader;
-    private TreeStore<ModelData> store;
-    private TreePanel<ModelData> tree;
-    private ToolBar toolBar;
-    private StoreFilterField filter;
-    private AsyncMonitor monitor; 
-    private boolean multipleSelection;
-    
-    public IndicatorTreePanel(Dispatcher service, final boolean multipleSelection, AsyncMonitor monitor) {
-        this.service = service;
-        
-        this.setHeading(I18N.CONSTANTS.indicators());
-        this.setIcon(IconImageBundle.ICONS.indicator());
-        this.setLayout(new FitLayout());
-        this.setScrollMode(Style.Scroll.NONE);
-        this.monitor = monitor;
-     
-        loader = new Loader();
-        store = new TreeStore<ModelData>(loader);
-        store.setKeyProvider(new ModelKeyProvider<ModelData>() {
-        	List<String> keys = new ArrayList<String>();
-            @Override
-            public String getKey(ModelData model) {
-            	if (model instanceof ProvidesKey) {
-            		String key = ((ProvidesKey)model).getKey();
-//            		if (keys.contains(key)) {
-//            			throw new RuntimeException("double key: " + key);
-//            		}
-//            		keys.add(key);
-            		return key;
-                } else if (model == null) {
-                	throw new RuntimeException("Did not expect model to be null: assigning keys in IndicatorTreePanel");
-                }
-                throw new RuntimeException("Unknown type: expected activity, userdb, indicator or indicatorgroup");
-            }
-        });
+	private TreeLoader<ModelData> loader;
+	private TreeStore<ModelData> store;
+	private TreePanel<ModelData> tree;
+	private ToolBar toolBar;
+	private StoreFilterField filter;
+	private AsyncMonitor monitor;
+	private boolean multipleSelection;
 
-        tree = new TreePanel<ModelData>(store);
-        tree.setCheckable(true);
-        tree.setAutoExpand(true);
-//        setMultipleSelection(true);
-        
-        tree.getStyle().setNodeCloseIcon(null);
-        tree.getStyle().setNodeOpenIcon(null);
-        tree.setLabelProvider(new ModelStringProvider<ModelData>() {
-            public String getStringValue(ModelData model, String property) {
-                String name = model.get("name");
-                if (model instanceof IndicatorDTO) {
-                    return name;
-                } else {
-                	if (name == null) {
-                		name="noname";//I18N.CONSTANTS.noNameEntered();
-                	}
-                    return "<b>" + name + "</b>";
-                }
-            }
-        });
-        tree.setStateId("indicatorPanel");
-//        tree.setStateful(true);
-        tree.setAutoSelect(true);
-        tree.addListener(Events.BrowserEvent, new Listener<TreePanelEvent<ModelData>>() {
+	public IndicatorTreePanel(Dispatcher service,
+			final boolean multipleSelection, AsyncMonitor monitor) {
+		this.service = service;
 
-            public void handleEvent(TreePanelEvent<ModelData> be) {
-                if (be.getEventTypeInt() == Event.ONKEYPRESS) {
-                    if (!toolBar.isVisible()) {
-                        toolBar.setVisible(true);
-                    }
-                    filter.focus();
-                }
-            }
-        });
+		this.setHeading(I18N.CONSTANTS.indicators());
+		this.setIcon(IconImageBundle.ICONS.indicator());
+		this.setLayout(new FitLayout());
+		this.setScrollMode(Style.Scroll.NONE);
+		this.monitor = monitor;
 
-        add(tree);
-        createFilterBar();
-    }
+		loader = new Loader();
+		store = new TreeStore<ModelData>(loader);
+		store.setKeyProvider(new ModelKeyProvider<ModelData>() {
+			List<String> keys = new ArrayList<String>();
 
-    private void createFilterBar() {
-        toolBar = new ToolBar();
-        toolBar.add(new LabelToolItem(I18N.CONSTANTS.search()));
-        filter = new FilterField();
-        filter.addListener(Events.Blur, new Listener<BaseEvent>() {
-            public void handleEvent(BaseEvent be) {
-                if (filter.getRawValue() == null || filter.getRawValue().length() == 0) {
-                    toolBar.setVisible(false);
-                }
-            }
-        });
-        toolBar.add(filter);
-        toolBar.setVisible(false);
-        filter.bind(store);
-        setTopComponent(toolBar);
-    }
+			@Override
+			public String getKey(ModelData model) {
+				if (model instanceof ProvidesKey) {
+					String key = ((ProvidesKey) model).getKey();
+					// if (keys.contains(key)) {
+					// throw new RuntimeException("double key: " + key);
+					// }
+					// keys.add(key);
+					return key;
+				} else if (model == null) {
+					throw new RuntimeException(
+							"Did not expect model to be null: assigning keys in IndicatorTreePanel");
+				}
+				throw new RuntimeException(
+						"Unknown type: expected activity, userdb, indicator or indicatorgroup");
+			}
+		});
 
-    private class Proxy implements DataProxy<List<ModelData>> {
-        private SchemaDTO schema;
-        public void load(DataReader<List<ModelData>> listDataReader, Object parent, final AsyncCallback<List<ModelData>> callback) {
+		tree = new TreePanel<ModelData>(store);
+		tree.setCheckable(true);
+		tree.setAutoExpand(true);
+		// setMultipleSelection(true);
 
-            if (parent == null) {
-                service.execute(new GetSchema(), monitor, new AsyncCallback<SchemaDTO>() {
-                    public void onFailure(Throwable caught) {
-                        callback.onFailure(caught);
-                    }
+		tree.getStyle().setNodeCloseIcon(null);
+		tree.getStyle().setNodeOpenIcon(null);
+		tree.setLabelProvider(new ModelStringProvider<ModelData>() {
+			public String getStringValue(ModelData model, String property) {
+				String name = model.get("name");
+				if (model instanceof IndicatorDTO) {
+					return name;
+				} else {
+					if (name == null) {
+						name = "noname";
+					}
+					return "<b>" + name + "</b>";
+				}
+			}
+		});
+		tree.setStateId("indicatorPanel");
+		// tree.setStateful(true);
+		tree.setAutoSelect(true);
+		tree.addListener(Events.BrowserEvent,
+				new Listener<TreePanelEvent<ModelData>>() {
 
-                    public void onSuccess(SchemaDTO result) {
-                        schema = result;
-                        callback.onSuccess(new ArrayList<ModelData>(schema.getDatabases()));
-                    }
-                });
-            } else if (parent instanceof UserDatabaseDTO) {
-                callback.onSuccess(new ArrayList<ModelData>(((UserDatabaseDTO) parent).getActivities()));
+					public void handleEvent(TreePanelEvent<ModelData> be) {
+						if (be.getEventTypeInt() == Event.ONKEYPRESS) {
+							if (!toolBar.isVisible()) {
+								toolBar.setVisible(true);
+							}
+							filter.focus();
+						}
+					}
+				});
 
-            } else if (parent instanceof ActivityDTO) {
-            	callback.onSuccess(new ArrayList<ModelData>(((ActivityDTO) parent).groupIndicators()));
-            } else if (parent instanceof IndicatorGroup) {
-            	IndicatorGroup group = ((IndicatorGroup) parent);
-                ArrayList<ModelData> list = new ArrayList<ModelData>();
-                    for (IndicatorDTO indicator : group.getIndicators()) {
-                        list.add(indicator);
-                    }
-                callback.onSuccess(list);
-            }
-        }
-    }
-
-    /**
-     * @return the list of selected indicators
-     */
-    public List<IndicatorDTO> getSelection() {
-        List<IndicatorDTO> list = new ArrayList<IndicatorDTO>();
-        for (ModelData model : tree.getCheckedSelection()) {
-            if (model instanceof IndicatorDTO) {
-                list.add((IndicatorDTO) model);
-            }
-        }
-        return list;
-    }
-    
-    public void addCheckChangedListener(Listener<TreePanelEvent> listener) {
-    	tree.addListener(Events.CheckChange, listener);
-    }
-
-    /**
-     *
-     * @return the list of the ids of selected indicators
-     */
-    public List<Integer> getSelectedIds() {
-        List<Integer> list = new ArrayList<Integer>();
-
-        for (ModelData model : tree.getCheckedSelection()) {
-            if (model instanceof IndicatorDTO) {
-                list.add(((IndicatorDTO) model).getId());
-            }
-        }
-        return list;
-    }
-
-    public void setMultipleSelection(boolean multipleSelection) {
-		this.multipleSelection = multipleSelection;
-        if (multipleSelection) {
-            tree.setCheckNodes(TreePanel.CheckNodes.BOTH);
-            tree.setCheckStyle(TreePanel.CheckCascade.CHILDREN);
-        } else {
-            tree.setCheckNodes(TreePanel.CheckNodes.LEAF);
-            tree.setCheckStyle(TreePanel.CheckCascade.NONE);
-        }
+		add(tree);
+		createFilterBar();
 	}
 
-	public IndicatorTreePanel(Dispatcher service, final boolean multipleSelection) {
-    	this(service, multipleSelection, null);
-    }
-	
-    private class Loader extends BaseTreeLoader<ModelData> {
-        public Loader() {
-            super(new Proxy());
-        }
+	private void createFilterBar() {
+		toolBar = new ToolBar();
+		toolBar.add(new LabelToolItem(I18N.CONSTANTS.search()));
+		filter = new FilterField();
+		filter.addListener(Events.Blur, new Listener<BaseEvent>() {
+			public void handleEvent(BaseEvent be) {
+				if (filter.getRawValue() == null
+						|| filter.getRawValue().length() == 0) {
+					toolBar.setVisible(false);
+				}
+			}
+		});
+		toolBar.add(filter);
+		toolBar.setVisible(false);
+		filter.bind(store);
+		setTopComponent(toolBar);
+	}
 
-        @Override
-        public boolean hasChildren(ModelData parent) {
-            return !(parent instanceof IndicatorDTO);
-        }
-    }
+	private class Proxy implements DataProxy<List<ModelData>> {
+		private SchemaDTO schema;
 
-    private static class FilterField extends StoreFilterField {
-        @Override
-        protected boolean doSelect(Store store, ModelData parent,
-                                   ModelData record, String property, String filter) {
+		public void load(DataReader<List<ModelData>> listDataReader,
+				Object parent, final AsyncCallback<List<ModelData>> callback) {
 
-            String keywords[] = filter.toLowerCase().split("\\s+");
-            String name = ((String) record.get("name")).toLowerCase();
-            for (String keyword : keywords) {
-                if (name.indexOf(keyword) == -1) {
-                    return false;
-                }
-            }
-            return true;
-        }
-    }
-    
-    public boolean isMultipleSelection() {
+			if (parent == null) {
+				service.execute(new GetSchema(), monitor,
+						new AsyncCallback<SchemaDTO>() {
+							public void onFailure(Throwable caught) {
+								callback.onFailure(caught);
+							}
+
+							public void onSuccess(SchemaDTO result) {
+								schema = result;
+								callback.onSuccess(new ArrayList<ModelData>(
+										schema.getDatabases()));
+							}
+						});
+			} else if (parent instanceof UserDatabaseDTO) {
+				callback.onSuccess(new ArrayList<ModelData>(
+						((UserDatabaseDTO) parent).getActivities()));
+
+			} else if (parent instanceof ActivityDTO) {
+				ActivityDTO acitvity = (ActivityDTO)parent;
+				List<IndicatorGroup> groupIndicators = acitvity.groupIndicators();
+				List<ModelData> children = new ArrayList<ModelData>();
+				for (IndicatorGroup group : groupIndicators) {
+					if (group.getName() == null) {
+						for (IndicatorDTO indicator : group.getIndicators()) {
+							children.add(indicator);
+						}
+					} else {
+						children.add(group);
+					}
+				}
+				callback.onSuccess(children);
+				
+				
+			} else if (parent instanceof IndicatorGroup) {
+				IndicatorGroup group = ((IndicatorGroup) parent);
+				ArrayList<ModelData> list = new ArrayList<ModelData>();
+				for (IndicatorDTO indicator : group.getIndicators()) {
+					list.add(indicator);
+				}
+				callback.onSuccess(list);
+			}
+		}
+	}
+
+	/**
+	 * @return the list of selected indicators
+	 */
+	public List<IndicatorDTO> getSelection() {
+		List<IndicatorDTO> list = new ArrayList<IndicatorDTO>();
+		for (ModelData model : tree.getCheckedSelection()) {
+			if (model instanceof IndicatorDTO) {
+				list.add((IndicatorDTO) model);
+			}
+		}
+		return list;
+	}
+
+	public void addCheckChangedListener(Listener<TreePanelEvent> listener) {
+		tree.addListener(Events.CheckChange, listener);
+	}
+
+	/**
+	 * 
+	 * @return the list of the ids of selected indicators
+	 */
+	public List<Integer> getSelectedIds() {
+		List<Integer> list = new ArrayList<Integer>();
+
+		for (ModelData model : tree.getCheckedSelection()) {
+			if (model instanceof IndicatorDTO) {
+				list.add(((IndicatorDTO) model).getId());
+			}
+		}
+		return list;
+	}
+
+	public void setMultipleSelection(boolean multipleSelection) {
+		this.multipleSelection = multipleSelection;
+		if (multipleSelection) {
+			tree.setCheckNodes(TreePanel.CheckNodes.BOTH);
+			tree.setCheckStyle(TreePanel.CheckCascade.CHILDREN);
+		} else {
+			tree.setCheckNodes(TreePanel.CheckNodes.LEAF);
+			tree.setCheckStyle(TreePanel.CheckCascade.NONE);
+		}
+	}
+
+	public IndicatorTreePanel(Dispatcher service,
+			final boolean multipleSelection) {
+		this(service, multipleSelection, null);
+	}
+
+	private class Loader extends BaseTreeLoader<ModelData> {
+		public Loader() {
+			super(new Proxy());
+		}
+
+		@Override
+		public boolean hasChildren(ModelData parent) {
+			return !(parent instanceof IndicatorDTO);
+		}
+	}
+
+	private static class FilterField extends StoreFilterField {
+		@Override
+		protected boolean doSelect(Store store, ModelData parent,
+				ModelData record, String property, String filter) {
+
+			String keywords[] = filter.toLowerCase().split("\\s+");
+			String name = ((String) record.get("name")).toLowerCase();
+			for (String keyword : keywords) {
+				if (name.indexOf(keyword) == -1) {
+					return false;
+				}
+			}
+			return true;
+		}
+	}
+
+	public boolean isMultipleSelection() {
 		return multipleSelection;
 	}
-    
-    private boolean isSingleSelect() {
-    	return !multipleSelection;
-    }
-    
-    public void clearSelection() {
-    	for (IndicatorDTO indicator: getSelection()) {
-    		tree.getSelectionModel().deselect(indicator);
-    		tree.setChecked(indicator, false);
-    	}
-    }
+
+	private boolean isSingleSelect() {
+		return !multipleSelection;
+	}
+
+	public void clearSelection() {
+		for (IndicatorDTO indicator : getSelection()) {
+			tree.getSelectionModel().deselect(indicator);
+			tree.setChecked(indicator, false);
+		}
+	}
 
 	public void setChecked(IndicatorDTO indicator, boolean b) {
 		tree.setChecked(indicator, b);
 	}
-    
+
 }
