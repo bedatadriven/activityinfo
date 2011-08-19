@@ -17,6 +17,7 @@ import org.sigmah.shared.report.content.EntityCategory;
 import org.sigmah.shared.report.content.LatLng;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.MapMarker;
+import org.sigmah.shared.report.content.PieChartLegend;
 import org.sigmah.shared.report.content.PieMapMarker;
 import org.sigmah.shared.report.content.Point;
 import org.sigmah.shared.report.model.MapReportElement;
@@ -109,7 +110,11 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
             numberMarkers(markers);
         }
 
+        PieChartLegend legend = new PieChartLegend();
+        legend.setDefinition(layer);
+        
         content.getMarkers().addAll(markers);
+		content.addLegend(legend);
     }
 
     public void generatePoints(

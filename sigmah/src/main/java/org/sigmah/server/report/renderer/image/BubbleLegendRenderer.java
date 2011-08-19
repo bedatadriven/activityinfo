@@ -79,13 +79,11 @@ public class BubbleLegendRenderer {
 		this.bubbleCenterX = PADDING + layer.getMaxRadius();
 	}
 	
-	public Image createImage() {
+	public <T extends ImageResult> T createImage(ImageCreator<T> creator) {
 
-		BufferedImage image = new BufferedImage(width, height, ColorSpace.TYPE_RGB);
-		Graphics2D g2d = image.createGraphics();
-		g2d.setPaint(Color.WHITE);
-		g2d.fillRect(0,0,width, height);
-
+		T result = creator.create(width, height);
+		Graphics2D g2d = result.getGraphics();
+		
 		if(renderRange) {
 			drawSymbolRange(g2d);
 		} else {
@@ -95,8 +93,7 @@ public class BubbleLegendRenderer {
 				PADDING + layer.getMinRadius(), 
 				layer.getMinRadius());
 		}
-		return image;
-
+		return result;
 	}
 	
 

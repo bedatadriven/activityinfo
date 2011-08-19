@@ -3,15 +3,27 @@ package org.sigmah.server.report.renderer.itext;
 
 import java.awt.Color;
 
+import org.sigmah.server.report.renderer.ChartRendererJC;
+import org.sigmah.server.report.renderer.image.ImageCreator;
 import org.sigmah.shared.report.model.PivotChartReportElement;
 
+import com.lowagie.text.BadElementException;
 import com.lowagie.text.DocWriter;
 import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
 import com.lowagie.text.Paragraph;
 
-public abstract class ItextChartRenderer implements ItextRenderer<PivotChartReportElement>{
+public class ItextChartRenderer implements ItextRenderer<PivotChartReportElement>{
 	
+	private final ImageCreator<? extends ItextImageResult> imageCreator;
+	private final ChartRendererJC chartRenderer = new ChartRendererJC();
+	
+	public ItextChartRenderer(
+			ImageCreator<? extends ItextImageResult> imageCreator) {
+		super();
+		this.imageCreator = imageCreator;
+	}
 
 	public void render(DocWriter writer, Document doc, PivotChartReportElement element) {
 
@@ -29,7 +41,7 @@ public abstract class ItextChartRenderer implements ItextRenderer<PivotChartRepo
 				float width = doc.getPageSize().getWidth() - doc.rightMargin() - doc.leftMargin();
 				float height = (doc.getPageSize().getHeight() - doc.topMargin() - doc.bottomMargin()) / 3f;
 
-				renderImage(writer, doc, element, width, height);
+				renderImage(doc, element, width, height);
 			
 			}
 		} catch(Exception e) {
@@ -37,7 +49,13 @@ public abstract class ItextChartRenderer implements ItextRenderer<PivotChartRepo
 		}
 	}
 	
-	protected abstract void renderImage(DocWriter writer, Document doc, PivotChartReportElement element, float width, float height)
-		throws Exception;
+	protected void renderImage(Document doc, PivotChartReportElement element, float width, float height) 
+			throws BadElementException, DocumentException {
+		ItextImageResult image = imageCreator.create((int)width, (int)height);
+		
+		chartRenderer.render(element, false, image.getGraphics(), (int)width, (int)height, 72);
+		
+		doc.add(image.toItextImage());
+	}
 }
 

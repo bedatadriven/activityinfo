@@ -324,7 +324,6 @@ public class ItextReportRendererTest {
 		HtmlReportRenderer renderer = new HtmlReportRenderer(mapIconPath(), new TestImageStorageProvider());
 		renderer.render(report, writer);
 		writer.close();
-		
 	}
 	
 	private void renderToRtf(Report report, String name) throws IOException {
@@ -338,13 +337,13 @@ public class ItextReportRendererTest {
 	
 	private static class TestImageStorageProvider implements ImageStorageProvider {
 
-		private int nextId = 1;
+		private static int nextId = 1;
 		
 		@Override
 		public ImageStorage getImageUrl(String suffix) throws IOException {			
 			String fileName = (nextId++) + suffix;
-			
-			return new ImageStorage(fileName, new FileOutputStream("target/report-tests/" + fileName));
+			File file = new File("target/report-tests/" + fileName);
+			return new ImageStorage(file.toURI().toURL().toString(), new FileOutputStream(file));
 		}
 	}
 }

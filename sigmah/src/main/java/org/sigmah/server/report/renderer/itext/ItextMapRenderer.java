@@ -11,10 +11,13 @@ import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
 
+import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
 
 import org.sigmah.server.report.generator.MapIconPath;
+import org.sigmah.server.report.renderer.image.ImageCreator;
 import org.sigmah.server.report.renderer.image.ImageMapRenderer;
 import org.sigmah.server.util.ColorUtil;
 import org.sigmah.shared.dto.IndicatorDTO;
@@ -50,9 +53,12 @@ import com.lowagie.text.Table;
  */
 public class ItextMapRenderer extends ImageMapRenderer implements ItextRenderer<MapReportElement> {
 
+	private ImageCreator<? extends ItextImageResult> imageCreator;
+	
     @Inject
-    public ItextMapRenderer(@MapIconPath String mapIconPath) {
+    public ItextMapRenderer(@MapIconPath String mapIconPath, ImageCreator<? extends ItextImageResult> imageCreator) {
         super(mapIconPath);
+        this.imageCreator = imageCreator;
     }
 
     public void render(DocWriter writer, Document doc, MapReportElement element) {
@@ -62,7 +68,9 @@ public class ItextMapRenderer extends ImageMapRenderer implements ItextRenderer<
             ItextRendererHelper.addFilterDescription(doc, element.getContent().getFilterDescriptions());
 
             renderMap(writer, element, doc);
-            renderLegend(writer, element, doc);
+            if(!element.getContent().getLegends().isEmpty()) {
+            	renderLegend(writer, element, doc);
+            }
 
         } catch(Exception e) {
             throw new RuntimeException(e);
@@ -71,27 +79,17 @@ public class ItextMapRenderer extends ImageMapRenderer implements ItextRenderer<
 
 	public void renderMap(DocWriter writer, MapReportElement element, Document doc) {
         try {
-            BufferedImage image = new BufferedImage(element.getWidth(), element.getHeight(), ColorSpace.TYPE_RGB);
-    		Graphics2D g2d = image.createGraphics();
-
-            render(element, g2d);
+        	ItextImageResult image = imageCreator.create(element.getWidth(), element.getHeight());
+        	
+            render(element, image.getGraphics());
             
-            // Note that it is important to use JPEG here because otherwise
-            // itext will decode and reencode the image
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();            
-            ImageIO.write(image,"JPEG", baos);
-
-            Image imageElement = Image.getInstance(baos.toByteArray());
-            imageElement.scalePercent(72f/92f*100f);
-
-            doc.add(imageElement);
+            doc.add(image.toItextImage());
 
         } catch(Exception e) {
             throw new RuntimeException(e);
         }
     }
-
-    
+ 
     private void renderLegend(DocWriter writer, MapReportElement element,
 			Document doc) throws DocumentException, IOException {
 	    	
@@ -117,10 +115,8 @@ public class ItextMapRenderer extends ImageMapRenderer implements ItextRenderer<
     		symbolCell.setHorizontalAlignment(Element.ALIGN_CENTER);
     		symbolCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
     		
-    		java.awt.Image symbol = createLegendSymbol(legend);
-			if(symbol != null) {
-				symbolCell.addElement(Image.getInstance(symbol, Color.WHITE, false));
-			}
+    		ItextImageResult symbol = createLegendSymbol(legend, imageCreator);
+			symbolCell.addElement(symbol.toItextImage());
 			
     		Cell descriptionCell = new Cell();
     		addLegendDescription(element, legend.getDefinition(), descriptionCell);
@@ -149,9 +145,9 @@ public class ItextMapRenderer extends ImageMapRenderer implements ItextRenderer<
 		for(Slice slice : layer.getSlices()) {
 			IndicatorDTO indicator = element.getContent().getIndicatorById(slice.getIndicatorId());
 			Color color = ColorUtil.colorFromString(slice.getColor());
-			Image sliceImage = Image.getInstance(renderSlice(color, 10), Color.WHITE, false);
+			ItextImageResult sliceImage = renderSlice(imageCreator, color, 10);
 			
-			Chunk box = new Chunk(sliceImage, 0, 0);
+			Chunk box = new Chunk(sliceImage.toItextImage(), 0, 0);
 			Chunk description = new Chunk(indicator.getName());
 			
 			Phrase phrase = new Phrase();
@@ -161,14 +157,7 @@ public class ItextMapRenderer extends ImageMapRenderer implements ItextRenderer<
 			Paragraph paragraph = new Paragraph(phrase);
 			
 			descriptionCell.add(paragraph);
-		}
-		
-	}
-
-	private String boxSymbol() {
-		StringBuilder sb = new StringBuilder();
-		sb.appendCodePoint(254);
-		return sb.toString();
+		}	
 	}
 	
 	private void addSingleIndicatorDescription(MapReportElement element,
@@ -189,4 +178,5 @@ public class ItextMapRenderer extends ImageMapRenderer implements ItextRenderer<
 		
 		descriptionCell.add(list);
 	}
+	
 }
