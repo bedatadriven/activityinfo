@@ -5,74 +5,93 @@
 
 package org.sigmah.client.page.common.filter;
 
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.shared.command.GetSchema;
-import org.sigmah.shared.dto.PartnerDTO;
-import org.sigmah.shared.dto.SchemaDTO;
-import org.sigmah.shared.dto.UserDatabaseDTO;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.client.page.common.ProvidesKeyProvider;
+import org.sigmah.client.page.common.filter.FilterToolBar.ApplyFilterEvent;
+import org.sigmah.client.page.common.filter.FilterToolBar.ApplyFilterHandler;
+import org.sigmah.client.page.common.filter.FilterToolBar.RemoveFilterEvent;
+import org.sigmah.client.page.common.filter.FilterToolBar.RemoveFilterHandler;
+import org.sigmah.shared.command.GetSchema;
+import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.dto.PartnerDTO;
+import org.sigmah.shared.dto.SchemaDTO;
+import org.sigmah.shared.dto.UserDatabaseDTO;
+import org.sigmah.shared.report.model.DimensionType;
+
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.BaseTreeLoader;
+import com.extjs.gxt.ui.client.data.DataProxy;
+import com.extjs.gxt.ui.client.data.DataReader;
+import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.data.TreeLoader;
+import com.extjs.gxt.ui.client.store.TreeStore;
+import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+
 /**
- * UI Component that allows the user to choose a list of partens
+ * UI Component that allows the user to choose a list of partners
  * on which to restrict the query.
- *
- * @author JDH
  */
-public class PartnerFilterPanel extends ContentPanel {
-	private TreeLoader<ModelData> loader;
-	private TreeStore<ModelData> store;
-	private TreePanel<ModelData> tree;
-	private final Dispatcher service;	
+public class PartnerFilterPanel extends ContentPanel implements FilterPanel {
+	private TreeLoader<PartnerDTO> loader;
+	private TreeStore<PartnerDTO> store;
+	private TreePanel<PartnerDTO> tree;
+	private final Dispatcher service;
+	private FilterToolBar filterToolBar;
 	
-    /**
-     * Constructor
-     * 
-     * @param service
-     */
     public PartnerFilterPanel(Dispatcher service) {
     	this.service = service;
-        setHeading(I18N.CONSTANTS.filterByPartner());
-        setIcon(IconImageBundle.ICONS.filter());
-        
-        this.setLayout(new FitLayout());
-        this.setScrollMode(Style.Scroll.NONE);
-        this.setHeading(I18N.CONSTANTS.filterByPartner());
-        this.setIcon(IconImageBundle.ICONS.filter());
+    	
+        initializeComponent();
 
-        loader = new BaseTreeLoader<ModelData>(new PartnerDataProxy()) {
-        	@Override
-        	public boolean hasChildren(ModelData parent) {
-        		return false;
-        	}
-        };
-        
-        store = new TreeStore<ModelData>(loader);
-        
-        store.setKeyProvider(new ModelKeyProvider<ModelData>() {
-            @Override
-            public String getKey(ModelData model) {
-            	if (model instanceof PartnerDTO) {
-            		return "" + ((PartnerDTO)model).getId();
-            	} else {
-            		return "";
-            	}
-            }
-        });
+        createFilterToolBar();
+        createLoader();
+        createStore();
+        createTree();
+    }
 
-        tree = new TreePanel<ModelData>(store);
+	private void createFilterToolBar() {
+		filterToolBar = new FilterToolBarImpl();
+		filterToolBar.addApplyFilterHandler(new ApplyFilterHandler() {
+			
+			@Override
+			public void onApplyFilter(ApplyFilterEvent deleteEvent) {
+				applyFilter();
+			}
+		});
+		filterToolBar.addRemoveFilterHandler(new RemoveFilterHandler() {
+			
+			@Override
+			public void onRemoveFilter(RemoveFilterEvent deleteEvent) {
+				removeFilter();
+			}
+		});
+		setTopComponent((Component) filterToolBar);
+	}
+
+	protected void removeFilter() {
+		// TODO: implement
+	}
+
+	protected void applyFilter() {
+		// TODO: implement
+	}
+
+	private void createTree() {
+		tree = new TreePanel<PartnerDTO>(store);
         tree.setCheckable(true);
         tree.setCheckNodes(TreePanel.CheckNodes.LEAF);
         tree.setCheckStyle(TreePanel.CheckCascade.NONE);
@@ -82,13 +101,38 @@ public class PartnerFilterPanel extends ContentPanel {
         tree.setDisplayProperty("name");
  
         add(tree);
-    }
+	}
+
+	private void createStore() {
+		store = new TreeStore<PartnerDTO>(loader);
+        
+        store.setKeyProvider(new ProvidesKeyProvider<PartnerDTO>());
+	}
+
+	private void createLoader() {
+		loader = new BaseTreeLoader<PartnerDTO>(new PartnerDataProxy()) {
+        	@Override
+        	public boolean hasChildren(PartnerDTO parent) {
+        		return false;
+        	}
+        };
+	}
+
+	private void initializeComponent() {
+		setHeading(I18N.CONSTANTS.filterByPartner());
+        setIcon(IconImageBundle.ICONS.filter());
+        
+        setLayout(new FitLayout());
+        setScrollMode(Style.Scroll.NONE);
+        setHeading(I18N.CONSTANTS.filterByPartner());
+        setIcon(IconImageBundle.ICONS.filter());
+	}
   
-	private class PartnerDataProxy implements DataProxy<List<ModelData>> {
+	private class PartnerDataProxy implements DataProxy<List<PartnerDTO>> {
 
         private List<PartnerDTO> allPartners = null;
 
-        public void load(DataReader<List<ModelData>> listDataReader, Object o, final AsyncCallback<List<ModelData>> callback) {
+        public void load(DataReader<List<PartnerDTO>> listDataReader, Object o, final AsyncCallback<List<PartnerDTO>> callback) {
            
             if (allPartners == null) {
                 service.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
@@ -107,11 +151,11 @@ public class PartnerFilterPanel extends ContentPanel {
         					}
         				}
         				Collections.sort(allPartners,new PartnerDTOComparator());
-                        callback.onSuccess(new ArrayList<ModelData>(allPartners));
+                        callback.onSuccess(new ArrayList<PartnerDTO>(allPartners));
                     }
                 });
             } else {
-                callback.onSuccess(new ArrayList<ModelData>(allPartners));
+                callback.onSuccess(new ArrayList<PartnerDTO>(allPartners));
             }
         }
     }
@@ -137,7 +181,6 @@ public class PartnerFilterPanel extends ContentPanel {
 	}
 
     public List<PartnerDTO> getSelection() {
-
         List<PartnerDTO> list = new ArrayList<PartnerDTO>();
 
         for (ModelData model : tree.getCheckedSelection()) {
@@ -149,7 +192,6 @@ public class PartnerFilterPanel extends ContentPanel {
     }
     
     public List<Integer> getSelectedIds() {
-
         List<Integer> list = new ArrayList<Integer>();
 
         for (ModelData model : tree.getCheckedSelection()) {
@@ -159,4 +201,37 @@ public class PartnerFilterPanel extends ContentPanel {
         }
         return list;
     }
+
+	@Override
+	public Filter getValue() {
+		Filter filter = new Filter();
+		List<Integer> selectedIds = getSelectedIds();
+		if (selectedIds.size() > 0) {
+			filter.addRestriction(DimensionType.Partner, getSelectedIds());
+		}
+		return filter;
+	}
+
+	@Override
+	public void setValue(Filter value) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setValue(Filter value, boolean fireEvents) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public HandlerRegistration addValueChangeHandler(
+			ValueChangeHandler<Filter> handler) {
+		return addHandler(handler, ValueChangeEvent.getType());
+	}
+
+	@Override
+	public void applyBaseFilter(Filter filter) {
+		filter.addRestriction(DimensionType.Partner, getSelectedIds());
+	}
 }
