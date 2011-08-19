@@ -38,6 +38,7 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.MessageBox;
@@ -95,6 +96,7 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
     private boolean apiLoadFailed = false;
 
     private final Dispatcher dispatcher;
+	private MapPage mapPage;
     
     public AIMapWidget(Dispatcher dispatcher) {
 
@@ -315,8 +317,10 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 				mapReportElement.getLayers().size() > 0) {
 			isFirstLayerUpdate = false;
 		}
+		
+		Component maskingComponent = mapPage == null ? this : mapPage;
     	
-    	dispatcher.execute(new GenerateElement<MapContent>(mapReportElement), null, new AsyncCallback<MapContent>() {
+    	dispatcher.execute(new GenerateElement<MapContent>(mapReportElement), new MaskingAsyncMonitor(maskingComponent, I18N.CONSTANTS.loadingMap()), new AsyncCallback<MapContent>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				MessageBox.alert("Load failed", caught.getMessage(), null);
@@ -445,5 +449,9 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 			return indicator.getName();
 		}
 		return null;
+	}
+
+	public void setMaster(MapPage mapPage) {
+		this.mapPage = mapPage;
 	}
 }

@@ -133,6 +133,9 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
     private void createMap() {
         aiMapWidget = new AIMapWidget(dispatcher);
         aiMapWidget.setHeading(I18N.CONSTANTS.preview());
+        
+        // Ugly hack to prevent call avalanches
+        aiMapWidget.setMaster(this);
 
         add(aiMapWidget, new BorderLayoutData(Style.LayoutRegion.CENTER));
     }
