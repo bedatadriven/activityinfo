@@ -17,11 +17,13 @@ import org.sigmah.shared.map.BaseMap;
 import org.sigmah.shared.util.mapping.Extents;
 
 /*
- * Represents the model of a map 
+ * Model of a fully generated and realized map. 
+ * 
  */
 public class MapContent implements Content {
     private BaseMap baseMap;
     private List<FilterDescription> filterDescriptions;
+    private List<MapLayerLegend> legends = new ArrayList<MapLayerLegend>();
     private List<MapMarker> markers = new ArrayList<MapMarker>();
     private Set<Integer> unmappedSites = new HashSet<Integer>();
     private Set<IndicatorDTO> indicators = new HashSet<IndicatorDTO>();
@@ -95,6 +97,18 @@ public class MapContent implements Content {
 			}
 		}
 		return null;
+	}
+
+	public List<MapLayerLegend> getLegends() {
+		return legends;
+	}
+
+	public void setLegends(List<MapLayerLegend> legends) {
+		this.legends = legends;
+	}
+	
+	public void addLegend(MapLayerLegend legend) {
+		this.legends.add(legend);
 	}
 
 	public Map<Integer, String> siteLabelMap() {

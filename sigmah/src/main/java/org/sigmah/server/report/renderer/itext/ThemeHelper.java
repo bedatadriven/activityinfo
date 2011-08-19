@@ -44,6 +44,14 @@ public class ThemeHelper {
         return para;
     }
     
+    public static Paragraph legendTitle(String title) {
+        Paragraph para = new Paragraph(title);
+        para.setFont(new Font(Font.TIMES_ROMAN, 10, Font.BOLD, new Color(79, 129, 189)));
+        para.setSpacingBefore(10);
+        return para;
+    }
+    
+    
     public static Font footerFont() {
     	return new Font(Font.TIMES_ROMAN, 13, Font.BOLD, new Color(0, 0, 0)); 
     }

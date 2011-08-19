@@ -13,6 +13,7 @@ import org.sigmah.server.report.generator.map.cluster.Clusterer;
 import org.sigmah.server.report.generator.map.cluster.ClustererFactory;
 import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph.IntersectionCalculator;
 import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph.Node;
+import org.sigmah.shared.report.content.IconLayerLegend;
 import org.sigmah.shared.report.content.IconMapMarker;
 import org.sigmah.shared.report.content.LatLng;
 import org.sigmah.shared.report.content.MapContent;
@@ -110,6 +111,11 @@ public class IconLayerGenerator implements LayerGenerator {
 		
         List<Cluster> clusters = clusterer.cluster();
         createMarkersFrom(clusters, content);
+        
+        IconLayerLegend legend = new IconLayerLegend();
+        legend.setDefinition(layer);
+        
+		content.addLegend(legend);
     }
 
 	private void createMarkersFrom(List<Cluster> clusters, MapContent content) {

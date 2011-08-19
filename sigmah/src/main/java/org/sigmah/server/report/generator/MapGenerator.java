@@ -122,8 +122,7 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
     			logger.error("Could not find base map id=" + element.getBaseMapId());
             }
         } 
-        
-        
+                
         if (zoom < baseMap.getMinZoom()) {
             zoom = baseMap.getMinZoom();
         }
@@ -138,7 +137,7 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         	baseMap = TileBaseMap.createNullMap(element.getBaseMapId());
 			logger.error("Could not find base map id=" + element.getBaseMapId());
         }
-     content.setExtents(extents);
+        content.setExtents(extents);
 
         // Generate the actual content
         for (LayerGenerator layerGtor : layerGenerators) {
