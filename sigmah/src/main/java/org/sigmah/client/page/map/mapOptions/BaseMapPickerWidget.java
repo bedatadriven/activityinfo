@@ -109,7 +109,9 @@ public class BaseMapPickerWidget extends LayoutContainer implements HasValue<Bas
 		// add standard base maps
 		addRadio(GoogleBaseMap.ROADMAP, I18N.CONSTANTS.googleRoadmap());
 		addRadio(GoogleBaseMap.SATELLITE, I18N.CONSTANTS.googleSatelliteMap());
-		
+		addRadio(GoogleBaseMap.HYBRID, I18N.CONSTANTS.googleHybrid());
+		addRadio(GoogleBaseMap.TERRAIN, I18N.CONSTANTS.googleTerrainMap());
+
 		// add basemaps defined in the server database
 		for (TileBaseMap baseMap : baseMaps) {
 			addRadio(baseMap, baseMap.getName());
