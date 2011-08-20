@@ -10,7 +10,7 @@
     <meta name="application-name" content="ActivityInfo"/>
     <meta name="description" content="ActivityInfo"/>
     <meta name="application-url" content="${appUrl}"/>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
  
     <link rel="icon" href="ActivityInfo/desktopicons/16x16.png" sizes="16x16"/>
     <link rel="icon" href="ActivityInfo/desktopicons/32x32.png" sizes="32x32"/>
@@ -76,7 +76,18 @@
     <script type="text/javascript" language="javascript" src="ActivityInfo/ActivityInfo.nocache.js"></script>
     <link rel="stylesheet" type="text/css" href="ActivityInfo/gxt224/css/gxt-all.css"/>
     <link rel="stylesheet" type="text/css" href="report.css"/>
-
+	<script type="text/javascript">
+	
+	  var _gaq = _gaq || [];
+	  _gaq.push(['_setAccount', 'UA-11567120-1']);
+	  _gaq.push(['_trackPageview', '/login/success']);
+	
+	  (function() {
+	    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	  })();
+	</script>
 </head>
 <body>
 <div id="loading">
@@ -93,15 +104,5 @@
         style="position:absolute;width:0;height:0;border:0"></iframe>
 <iframe src="javascript:''" id="_downloadFrame" name="_downloadFrame" tabIndex='-1'
         style="position:absolute;width:0;height:0;border:0"></iframe>
-<script type="text/javascript">
-    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-    try {
-        var pageTracker = _gat._getTracker("UA-11567120-1");
-        pageTracker._trackPageview("/login/success");
-    } catch(err) {
-    }</script>
 </body>
 </html>
