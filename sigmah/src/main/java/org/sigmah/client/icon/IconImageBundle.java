@@ -225,7 +225,8 @@ public interface IconImageBundle extends ImageBundle {
 	AbstractImagePrototype partner();	
     
 	@Resource(value = "empty.png")
-	AbstractImagePrototype empty();	}
+	AbstractImagePrototype empty();	
+
     @Resource(value = "applyFilter.png")
     AbstractImagePrototype applyFilter();
 }

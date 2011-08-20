@@ -6,7 +6,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 import org.sigmah.shared.map.GoogleBaseMap;
-import org.sigmah.shared.report.content.LatLng;
+import org.sigmah.shared.report.content.AiLatLng;
 
 /**
  * 
@@ -22,7 +22,7 @@ public class GoogleStaticMapsApi {
 	private int width;
 	private int height;
 	private int zoom;
-	private LatLng center;
+	private AiLatLng center;
 	private GoogleBaseMap baseMap;
 		
 	public static GoogleStaticMapsApi buildRequest() {
@@ -44,7 +44,7 @@ public class GoogleStaticMapsApi {
 		return this;
 	}
 
-	public GoogleStaticMapsApi setCenter(LatLng center) {
+	public GoogleStaticMapsApi setCenter(AiLatLng center) {
 		this.center = center;
 		return this;
 	}

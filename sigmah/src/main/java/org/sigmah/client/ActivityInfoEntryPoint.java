@@ -19,8 +19,6 @@ import com.extjs.gxt.ui.client.util.Theme;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 
-import com.google.gwt.gears.client.Factory;
-
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.

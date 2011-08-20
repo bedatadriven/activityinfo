@@ -8,16 +8,20 @@ package org.sigmah.server.bootstrap;
 import java.io.IOException;
 
 import javax.persistence.EntityManager;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.sigmah.server.domain.Authentication;
+import org.sigmah.shared.Cookies;
 
 import com.bedatadriven.rebar.appcache.server.DefaultSelectionServlet;
 import com.bedatadriven.rebar.appcache.server.PropertyProvider;
 import com.bedatadriven.rebar.appcache.server.SelectionException;
 import com.bedatadriven.rebar.appcache.server.UnknownUserAgentException;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
@@ -50,6 +54,9 @@ public class SelectionServlet extends DefaultSelectionServlet {
         @Override
         public String get(HttpServletRequest req) {
             Authentication auth = entityManager.get().find(Authentication.class, getAuthToken(req));
+            if(auth == null) {
+            	throw new UserNotAuthenticatedException("bad authToken");
+            }
             String locale = auth.getUser().getLocale();
             // todo: update rebar-appcache so we can get a list of possible property values
             return locale;
@@ -57,27 +64,31 @@ public class SelectionServlet extends DefaultSelectionServlet {
 
         private String getAuthToken(HttpServletRequest req) {
             for(Cookie cookie : req.getCookies()) {
-                if(cookie.getName().equals("authToken")) {
+                if(cookie.getName().equals(Cookies.AUTH_TOKEN_COOKIE)) {
                     return cookie.getValue();
                 }
             }
-            throw new UserNotAuthenticated();
+            throw new UserNotAuthenticatedException("No authToken cookie");
         } 
     }
     
-    private class UserNotAuthenticated extends SelectionException {
-    	
+    private class UserNotAuthenticatedException extends SelectionException {
+
+		public UserNotAuthenticatedException(String message) {
+			super(message);
+		}
     }
+    
 
     @Override
 	protected void handleSelectionException(Path path, Exception e,
 			HttpServletResponse resp) throws IOException {
-		if(e instanceof UserNotAuthenticated && path.file.endsWith(".js")) {
+		if(e instanceof UserNotAuthenticatedException && path.file.endsWith(".js")) {
 			resp.getWriter().print("window.location = 'login';");
 		} else if(e instanceof UnknownUserAgentException) {
 			resp.getWriter().print("window.location = 'browser.html'");
 		} else {
-			super.handleNoAvailablePermutation(path, resp);
+			super.handleSelectionException(path, e, resp);
 		}
 	}
 
@@ -107,5 +118,15 @@ public class SelectionServlet extends DefaultSelectionServlet {
                 return "OFF";
             }
         }
+    }
+
+    @VisibleForTesting
+    void testInit(ServletConfig config) throws ServletException {
+    	init(config);
+    }
+    
+    @VisibleForTesting
+    void testGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    	doGet(req, resp);
     }
 }

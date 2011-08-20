@@ -150,7 +150,7 @@ public class TiledMap {
 	}
 
 
-	public LatLng getGeoCenter() {
+	public AiLatLng getGeoCenter() {
 		return geoCenter;
 	}
 	
