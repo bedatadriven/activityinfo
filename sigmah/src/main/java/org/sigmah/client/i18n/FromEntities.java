@@ -19,6 +19,8 @@ public class FromEntities {
 			return I18N.CONSTANTS.indicators();
 		case Site:
 			return I18N.CONSTANTS.sites();
+		case Database:
+			return I18N.CONSTANTS.databases();
 		}
 		return "No pluralized string definition for " + dimension.toString();
 	}

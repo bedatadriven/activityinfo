@@ -11,7 +11,6 @@ import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
-import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Image;
 
 
@@ -89,16 +88,23 @@ public class SearchFilterView extends LayoutContainer {
 			
 			LabelField labelEntityTypeName = new LabelField();
 			labelEntityTypeName.setText(I18N.fromEntities.getDimensionTypePluralName(foundEntity));
+			labelEntityTypeName.addInputStyleName("font-weight:bold");
 			panelEntity.add(labelEntityTypeName);
 
+			HorizontalPanel panelEntityResults = new HorizontalPanel();
+			panelEntityResults.setStylePrimaryName("panelEntityResults");
+			panelEntityResults.setSpacing(10);
+			
 			// Add every hit entity linked to it's landing page
 			for (SearchResultEntity searchResultEntity : affectedEntities.get(foundEntity)) {
-				Hyperlink link = new Hyperlink(searchResultEntity.getName(), "hm");
-				panelEntity.add(link);
+//				Hyperlink link = new Hyperlink(searchResultEntity.getName(), "hm");
+//				panelEntity.add(link);
+				LabelField labelName = new LabelField(searchResultEntity.getName());
+				panelEntityResults.add(labelName);
 			}
 			
-			panelEntity.setStylePrimaryName("filterView");
 			panelEntities.add(panelEntity);
+			panelEntities.add(panelEntityResults);
 		}
 		
 		layout(true);

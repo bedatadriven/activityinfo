@@ -93,16 +93,18 @@ public class SearchTest {
 				assertHasDimension(DimensionType.AdminLevel, result);
 				assertHasDimension(DimensionType.Project, result);
 				assertHasDimension(DimensionType.AttributeGroup, result);
+				assertHasDimension(DimensionType.Indicator, result);
 				
 				assertHasRestrictionWithIds(DimensionType.AdminLevel, result, 2, 3);
 				assertHasRestrictionWithIds(DimensionType.Partner, result, 3);
 				assertHasRestrictionWithIds(DimensionType.Project, result, 3);
 				assertHasRestrictionWithIds(DimensionType.Site, result, 9);
 				assertHasRestrictionWithIds(DimensionType.AttributeGroup, result, 3);
+				assertHasRestrictionWithIds(DimensionType.Indicator, result, 675);
 			}
 			
 			@Override
-			public void onFailure(Throwable caught) {
+			public void onFailure(Throwable caught) { 
 				assertTrue("Expected searchresult", false);
 			}
 		});
@@ -111,7 +113,7 @@ public class SearchTest {
 	
 	public static void assertHasDimension(DimensionType type, SearchResult result) {
 		if (!result.getPivotTabelData().getEffectiveFilter().isRestricted(type)) {
-			fail("expected DimensionType " + type.toString() + " in filter of searchresult");
+			fail("expected DimensionType \"" + type.toString() + "\" in filter of searchresult");
 		}
 	}
 	

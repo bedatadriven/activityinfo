@@ -24,8 +24,7 @@ public class AttributeGroupSearcher implements Searcher<Attribute> {
 				.select("AttributeGroupId")
 				.from("AttributeGroup")
 				.where("name")
-				.like()
-				.appendLikeParameter(testQuery)
+				.like(testQuery)
 				
 				.execute(tx, new SqlResultCallback() {
 					@Override

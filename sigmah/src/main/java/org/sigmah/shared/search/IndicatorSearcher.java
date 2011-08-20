@@ -27,9 +27,11 @@ public class IndicatorSearcher implements Searcher<Indicator> {
 		SqlQuery
 				.select(primaryKey)
 				.from(tableName)
-				.where(ColumnToSearch)
-				.like()
-				.appendLikeParameter(testQuery)
+				.onlyWhere(ColumnToSearch)
+				.like(testQuery)
+				.or()
+				.onlyWhere("Name")
+				.like(testQuery)
 				
 				.execute(tx, new SqlResultCallback() {
 					List<Integer> ids = new ArrayList<Integer>();

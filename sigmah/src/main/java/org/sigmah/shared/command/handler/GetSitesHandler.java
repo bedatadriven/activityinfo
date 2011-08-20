@@ -197,7 +197,8 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 		if(filter != null) {
 	        for (DimensionType type : filter.getRestrictedDimensions()) {
 	            if (type == DimensionType.Indicator) {
-	                query.where("Indicator.IndicatorId").in(filter.getRestrictions(type));
+	                // TODO: Alex
+	            	//query.where("Indicator.IndicatorId").in(filter.getRestrictions(type));
 	
 	            } else if (type == DimensionType.Activity) {
 	                query.where("Site.ActivityId").in(filter.getRestrictions(type));

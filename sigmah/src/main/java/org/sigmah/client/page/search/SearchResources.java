@@ -34,5 +34,7 @@ public interface SearchResources extends ClientBundle {
 	public interface SearchStyles extends CssResource {
 		String searchBox();
 		String link();
+		String panelEntityResults();
+		String filterView();
 	}
 }

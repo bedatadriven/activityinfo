@@ -28,8 +28,7 @@ public class SiteSearcher implements Searcher<Site> {
 				.select(primaryKey)
 				.from(tableName)
 				.where(ColumnToSearch)
-				.like()
-				.appendLikeParameter(testQuery)
+				.like(testQuery)
 				
 				.execute(tx, new SqlResultCallback() {
 					List<Integer> ids = new ArrayList<Integer>();

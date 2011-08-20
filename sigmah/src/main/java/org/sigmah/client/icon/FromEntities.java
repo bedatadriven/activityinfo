@@ -25,6 +25,8 @@ public class FromEntities {
 			return IconImageBundle.ICONS.indicator();
 		case Site:
 			return IconImageBundle.ICONS.site();
+		case AttributeGroup:
+			return IconImageBundle.ICONS.group();
 		}
 		
 		return IconImageBundle.ICONS.none();
