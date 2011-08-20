@@ -20,6 +20,7 @@ import org.sigmah.client.mock.MockEventBus;
 import org.sigmah.client.mock.MockStateManager;
 import org.sigmah.client.offline.OfflineGateway;
 import org.sigmah.client.offline.sync.SyncStatusEvent;
+import org.sigmah.client.offline.ui.OfflinePresenter.EnableCallback;
 import org.sigmah.client.offline.ui.OfflinePresenter.PromptConnectCallback;
 import org.sigmah.shared.command.Command;
 
@@ -252,6 +253,18 @@ public class OfflinePresenterTest {
 
 		@Override
 		public void hideConnectionDialog() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void promptEnable(EnableCallback callback) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void confirmEnable(EnableCallback callback) {
 			// TODO Auto-generated method stub
 			
 		}

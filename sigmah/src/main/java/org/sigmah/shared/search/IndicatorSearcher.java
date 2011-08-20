@@ -3,7 +3,7 @@ package org.sigmah.shared.search;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sigmah.shared.domain.Attribute;
+import org.sigmah.shared.domain.Indicator;
 import org.sigmah.shared.report.model.DimensionType;
 
 import com.bedatadriven.rebar.sql.client.SqlException;
@@ -14,25 +14,33 @@ import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class AttributeGroupSearcher implements Searcher<Attribute> {
+public class IndicatorSearcher implements Searcher<Indicator> {
 
 	@Override
-	public void search(String testQuery, SqlTransaction tx, final AsyncCallback<List<Integer>> callback) {
-		final List<Integer> attributeGroupIds = new ArrayList<Integer>();
-
+	public void search(String testQuery, SqlTransaction tx,
+			final AsyncCallback<List<Integer>> callback) {
+		
+		final String primaryKey = "IndicatorId";
+		String tableName="Indicator";
+		String ColumnToSearch = "description";
+		
 		SqlQuery
-				.select("AttributeGroupId")
-				.from("AttributeGroup")
-				.where("name")
+				.select(primaryKey)
+				.from(tableName)
+				.onlyWhere(ColumnToSearch)
+				.like(testQuery)
+				.or()
+				.onlyWhere("Name")
 				.like(testQuery)
 				
 				.execute(tx, new SqlResultCallback() {
+					List<Integer> ids = new ArrayList<Integer>();
 					@Override
 					public void onSuccess(SqlTransaction tx, SqlResultSet results) {
 						for (SqlResultSetRow row : results.getRows()) {
-							attributeGroupIds.add(row.getInt("AttributeGroupId"));
+							ids.add(row.getInt(primaryKey));
 						}
-						callback.onSuccess(attributeGroupIds);
+						callback.onSuccess(ids);
 					}
 					
 					@Override
@@ -40,11 +48,12 @@ public class AttributeGroupSearcher implements Searcher<Attribute> {
 						return super.onFailure(e);
 					}
 				});
+		
 	}
 
 	@Override
 	public DimensionType getDimensionType() {
-		return DimensionType.AttributeGroup;
+		return DimensionType.Indicator;
 	}
 
 }

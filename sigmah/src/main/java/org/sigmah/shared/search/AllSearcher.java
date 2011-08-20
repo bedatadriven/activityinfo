@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.sigmah.shared.dao.Filter;
-import org.sigmah.shared.report.model.DimensionType;
 
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlException;
@@ -24,7 +23,8 @@ public class AllSearcher {
 		searchers.add(new ProjectSearcher());
 		searchers.add(new AdminEntitySearcher());
 		searchers.add(new AttributeGroupSearcher());
-		searchers.add(new GenericSearcher(DimensionType.Indicator));
+		searchers.add(new SiteSearcher());
+		searchers.add(new IndicatorSearcher());
 	}
 	
 	public AllSearcher(SqlDatabase db) {

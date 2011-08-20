@@ -31,8 +31,7 @@ public class GenericSearcher implements Searcher<Object> {
 				.select(primaryKey)
 				.from(tableName)
 				.where("name")
-				.like()
-				.appendLikeParameter(testQuery)
+				.like(testQuery)
 				
 				.execute(tx, new SqlResultCallback() {
 					@Override

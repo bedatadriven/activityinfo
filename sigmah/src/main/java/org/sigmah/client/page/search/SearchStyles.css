@@ -1,4 +1,4 @@
-@external .hit, .hits, .additions, .addition, .searchBox .site, .sites, .date, .comment, .iconLocation, .location, .filterView, .searchResults, .filterSummary, .iconDate, .iconActivity, .activity, .iconDatabase, .iconAddEdited, .dateEdited;
+@external .hit, .hits, .additions, .addition, .searchBox .site, .sites, .date, .comment, .iconLocation, .location, .filterView, .searchResults, .filterSummary, .iconDate, .iconActivity, .activity, .iconDatabase, .iconAddEdited, .dateEdited, .panelEntityResults;
 
 @sprite .iconLocation {
 	gwt-image: "location";
@@ -104,6 +104,10 @@ a {
 
 .link {
 	font-size: 12px;
+}
+
+.panelEntityResults {
+	border-left-width: 2em;
 }
 
 .comment {
