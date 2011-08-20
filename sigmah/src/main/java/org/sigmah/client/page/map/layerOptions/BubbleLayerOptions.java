@@ -48,7 +48,7 @@ public class BubbleLayerOptions extends LayoutContainer implements LayerOptionsW
 		colorPicker.addListener(Events.Change, new Listener<FieldEvent>() {
 			@Override
 			public void handleEvent(FieldEvent be) {
-				bubbleMapLayer.setLabelColor(colorPicker.getValue());
+				bubbleMapLayer.setBubbletColor(colorPicker.getValue());
 				ValueChangeEvent.fire(BubbleLayerOptions.this, bubbleMapLayer);
 		}});
 
@@ -124,7 +124,7 @@ public class BubbleLayerOptions extends LayoutContainer implements LayerOptionsW
 	private void updateUI() {
 		sliderMinSize.setValue(bubbleMapLayer.getMinRadius(), true);
 		sliderMaxSize.setValue(bubbleMapLayer.getMaxRadius(), true);
-		colorPicker.setValue(bubbleMapLayer.getLabelColor());
+		colorPicker.setValue(bubbleMapLayer.getBubbleColor());
 	}
 	
 	// TODO: fireevent

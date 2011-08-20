@@ -36,6 +36,11 @@ public class ThemeHelper {
         return para;
     }
 
+    public static Paragraph legendText(String text) {
+    	Paragraph para = new Paragraph();
+    	para.setFont(bodyFont());
+    	return para;
+    }
 
     public static Paragraph elementTitle(String title) {
         Paragraph para = new Paragraph(title);
@@ -43,6 +48,14 @@ public class ThemeHelper {
         para.setSpacingBefore(10);
         return para;
     }
+    
+    public static Paragraph legendTitle(String title) {
+        Paragraph para = new Paragraph(title);
+        para.setFont(new Font(Font.TIMES_ROMAN, 10, Font.BOLD, new Color(79, 129, 189)));
+        para.setSpacingBefore(10);
+        return para;
+    }
+    
     
     public static Font footerFont() {
     	return new Font(Font.TIMES_ROMAN, 13, Font.BOLD, new Color(0, 0, 0)); 
@@ -67,7 +80,7 @@ public class ThemeHelper {
 
         return cell;
     }
-
+    
     public static Cell cornerCell() {
         Cell cell = new Cell();
         cell.setHeader(true);
@@ -101,7 +114,7 @@ public class ThemeHelper {
 
         if(label != null) {
             Paragraph para = new Paragraph(label);
-            Font font = new Font(Font.HELVETICA, 10, Font.NORMAL, Color.BLACK);
+            Font font = bodyFont();
             if(depth == 0 && !leaf) {
                 font.setColor(Color.WHITE);
             }
@@ -131,4 +144,8 @@ public class ThemeHelper {
 
         return cell;
     }
+
+	private static Font bodyFont() {
+		return new Font(Font.HELVETICA, 10, Font.NORMAL, Color.BLACK);
+	}
 }

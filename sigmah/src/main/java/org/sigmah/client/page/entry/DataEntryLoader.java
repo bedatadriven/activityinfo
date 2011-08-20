@@ -50,8 +50,6 @@ public class DataEntryLoader implements PageLoader {
         placeSerializer.registerParser(SiteEditor.ID, new SiteGridPageState.Parser());
         
         adminPanel = new AdminFilterPanel(injector.getService());
-        adminPanel.setHeading(I18N.CONSTANTS.filterByGeography()); 
-        adminPanel.setIcon(IconImageBundle.ICONS.filter()); 	
 		
         datePanel = new DateRangePanel();
         partnerPanel = new PartnerFilterPanel(injector.getService());
@@ -110,7 +108,7 @@ public class DataEntryLoader implements PageLoader {
                 SiteGridPage grid = new SiteGridPage(true);
                 SiteEditor editor = new SiteEditor(injector.getEventBus(), injector.getService(),
                         injector.getStateManager(), grid);
-                editor.bindFilterPanel(new FilterPanelSet(adminPanel));
+                editor.bindFilterPanel(new FilterPanelSet(adminPanel, datePanel, partnerPanel));
 
                 if (activity.getReportingFrequency() == ActivityDTO.REPORT_MONTHLY) {
                     MonthlyGrid monthlyGrid = new MonthlyGrid(activity);

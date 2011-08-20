@@ -5,6 +5,9 @@
 
 package org.sigmah.shared.report.content;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * @author Alex Bertram
  */
@@ -15,6 +18,7 @@ public class BubbleMapMarker extends MapMarker {
     private double value;
     private int radius;
     private String labelColor = "FF0000";
+    private Set<Integer> indicatorIds = new HashSet<Integer>();
 
     public double getValue() {
         return value;
@@ -68,4 +72,12 @@ public class BubbleMapMarker extends MapMarker {
     public int getSize() {
         return radius;
     }
+
+	public Set<Integer> getIndicatorIds() {
+		return indicatorIds;
+	}
+
+	public void setIndicatorIds(Set<Integer> indicatorIds) {
+		this.indicatorIds = indicatorIds;
+	}
 }

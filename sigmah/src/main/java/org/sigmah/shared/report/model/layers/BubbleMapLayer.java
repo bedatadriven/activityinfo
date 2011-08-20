@@ -20,8 +20,8 @@ import org.sigmah.shared.report.model.DimensionType;
 public class BubbleMapLayer extends CircledMapLayer {
 
     private List<Dimension> colorDimensions = new ArrayList<Dimension>();
-    private int defaultColor = 255; // blue
-    private String labelColor = "FF0000";
+    private String bubbleColor = "FF0000";
+    private String labelColor = "000000";
 
     public BubbleMapLayer() {
     }
@@ -39,31 +39,49 @@ public class BubbleMapLayer extends CircledMapLayer {
         return false;
     }
 
+    @Deprecated
     @XmlElement(name="dimension")
     @XmlElementWrapper(name="colors")
     public List<Dimension> getColorDimensions() {
         return colorDimensions;
     }
 
+    @Deprecated
     public void setColorDimensions(List<Dimension> colorDimensions) {
         this.colorDimensions = colorDimensions;
         
     }
 
+    /**
+     * 
+     * @return the color used to draw the circles 
+     */
     @XmlElement
-    public int getDefaultColor() {
-        return defaultColor;
+    public String getBubbleColor() {
+        return bubbleColor;
     }
 
-    public void setDefaultColor(int defaultColor) {
-        this.defaultColor = defaultColor;
+    /**
+     * 
+     * @param color the color used to draw the circles
+     */
+    public void setBubbletColor(String color) {
+        this.bubbleColor = color;
     }
 
+    /**
+     * 
+     * @return the hex color used to label bubbles (for the text)
+     */
     @XmlElement
     public String getLabelColor() {
         return labelColor;
     }
 
+    /**
+     * 
+     * @param labelColor the color to use when labelling bubbles (for the text)
+     */
     public void setLabelColor(String labelColor) {
         this.labelColor = labelColor;
     }

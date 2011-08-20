@@ -87,7 +87,7 @@ public class TableGeneratorTest {
         table.setMap(map);
 
         TableGenerator gtor = new TableGenerator(createPivotDAO(), new MockSiteTableDAO(), createIndicator(),
-                new MapGenerator(createPivotDAO(), new MockSiteTableDAO(), new MockBaseMapDAO()));
+                new MapGenerator(createPivotDAO(), new MockSiteTableDAO(), new MockBaseMapDAO(), new MockIndicatorDAO()));
         gtor.generate(user, table, null, null);
 
         MapContent mapContent = map.getContent();

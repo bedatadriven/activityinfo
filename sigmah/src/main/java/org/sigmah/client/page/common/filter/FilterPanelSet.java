@@ -13,7 +13,7 @@ import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 
 public class FilterPanelSet implements FilterPanel {
-
+	
 	private List<FilterPanel> panels;
 	private HandlerManager manager;
 	private List<HandlerRegistration> myRegistrations;
@@ -44,7 +44,6 @@ public class FilterPanelSet implements FilterPanel {
 	public Filter getValue() {
 		return composeFilter(new Filter(), null);
 	}
-	
 
 	@Override
 	public void applyBaseFilter(Filter baseFilter) {
@@ -78,8 +77,7 @@ public class FilterPanelSet implements FilterPanel {
 	}
 
 	@Override
-	public HandlerRegistration addValueChangeHandler(
-			ValueChangeHandler<Filter> handler) {
+	public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Filter> handler) {
 		final HandlerRegistration reg = ensureHandlers().addHandler(ValueChangeEvent.getType(), handler);
 		return new HandlerRegistration() {
 			
@@ -102,6 +100,5 @@ public class FilterPanelSet implements FilterPanel {
 			manager.fireEvent(event);
 		}
 	}
-
 
 }

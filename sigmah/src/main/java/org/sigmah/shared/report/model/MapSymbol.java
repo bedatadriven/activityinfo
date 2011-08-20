@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.sigmah.shared.report.content.DimensionCategory;
 
+@Deprecated
 public class MapSymbol {
 
     private Map<Dimension, DimensionCategory> categories = new HashMap<Dimension, DimensionCategory>();

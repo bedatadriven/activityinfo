@@ -3,6 +3,7 @@ package org.sigmah.server.report.generator.map;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +17,7 @@ import org.sigmah.shared.report.content.EntityCategory;
 import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.MapMarker;
+import org.sigmah.shared.report.content.PieChartLegend;
 import org.sigmah.shared.report.content.PieMapMarker;
 import org.sigmah.shared.report.content.Point;
 import org.sigmah.shared.report.model.MapReportElement;
@@ -98,6 +100,7 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
             marker.setLat(latlng.getLat());
             marker.setLng(latlng.getLng());
             marker.setAlpha(layer.getAlpha());
+            marker.setIndicatorIds(new HashSet<Integer>(layer.getIndicatorIds()));
 
             markers.add(marker);
         }
@@ -107,7 +110,11 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
             numberMarkers(markers);
         }
 
+        PieChartLegend legend = new PieChartLegend();
+        legend.setDefinition(layer);
+        
         content.getMarkers().addAll(markers);
+		content.addLegend(legend);
     }
 
     public void generatePoints(
@@ -202,6 +209,7 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
                 sliceValue.setValue(value);
                 sliceValue.setCategory(indicatorCategory);
                 sliceValue.setColor(slice.getColor());
+                sliceValue.setIndicatorId(slice.getIndicatorId());
 
                 pv.slices.add(sliceValue);
             }
@@ -215,6 +223,7 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
                 PieMapMarker.SliceValue summedSlice = slices.get(slice.getCategory());
                 if(summedSlice == null) {
                     summedSlice = new PieMapMarker.SliceValue(slice);
+                    summedSlice.setIndicatorId(slice.getIndicatorId());
                     slices.put(slice.getCategory(), summedSlice);
                 } else {
                     summedSlice.setValue(summedSlice.getValue() + slice.getValue());

@@ -80,7 +80,7 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		
 		createLayerOptions();
 		createIndicatorTreePanel();
-		createSelectedIndicatorsList();
+		//createSelectedIndicatorsList();
 		
 		Button buttonClearSelection = new Button("Clear selection");
 		buttonClearSelection.setEnabled(false);
@@ -227,6 +227,7 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 	 */
 	private void clearSelection() {
 		indicatorsStore.removeAll();
+		treepanelIndicators.clearSelection();
 		buttonAddLayer.setEnabled(false);
 	}
 	
@@ -257,27 +258,56 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		treepanelIndicators.addCheckChangedListener(new Listener<TreePanelEvent>(){
 			@Override
 			public void handleEvent(TreePanelEvent be) {
-				if (isSingleSelect()) {
-					clearSelection();
+				if (isSingleSelect() && be.isChecked()) {
+                    for (IndicatorDTO indicator : treepanelIndicators.getSelection()) {
+                        if (!indicator.equals(be.getItem())) {
+                        	treepanelIndicators.setChecked(indicator, false);
+                        }
+                    }
 				}
 				
 				if (be.getItem() instanceof IndicatorGroup && multiSelect) {
-					addIndicatorGroupToStore((IndicatorGroup) be.getItem());
-					buttonAddLayer.setEnabled(true);
+					IndicatorGroup indicatorGroup = (IndicatorGroup)be.getItem();
+					if (be.isChecked()) {
+						addIndicatorGroupToStore((IndicatorGroup) be.getItem());
+					} else {
+						removeIndicatorGroupFromStore(indicatorGroup);
+					}
+					buttonAddLayer.setEnabled(hasSelectedItems());
 				}
 				if (be.getItem() instanceof IndicatorDTO) {
-					addIndicatorToStoreIfNotPresent((IndicatorDTO) be.getItem());
-					buttonAddLayer.setEnabled(true);
+					IndicatorDTO indicator = (IndicatorDTO)be.getItem();
+					if (be.isChecked()) {
+						addIndicatorToStoreIfNotPresent(indicator);
+					} else {
+						removeIndicatorFromStore(indicator);
+					}
+					buttonAddLayer.setEnabled(hasSelectedItems());
 				}
-
-				indicatorsStore.commitChanges();
 			}
+
+			private void removeIndicatorGroupFromStore(IndicatorGroup indicatorGroup) {
+				for (IndicatorDTO indicator : indicatorGroup.getIndicators()) {
+					removeIndicatorFromStore(indicator);
+				}
+			}
+
 		});
 		
 		VBoxLayoutData vbld = new VBoxLayoutData();
 		vbld.setFlex(10);
 		add(treepanelIndicators, vbld);
     }
+		
+	private void removeIndicatorFromStore(IndicatorDTO item) {
+		if (indicatorsStore.contains(item)) {
+			indicatorsStore.remove(item);
+		}
+	}
+
+	private boolean hasSelectedItems() {
+		return indicatorsStore.getModels().size() > 0;
+	}
 	
 	private void addIndicatorGroupToStore(IndicatorGroup group) {
 		for (IndicatorDTO indicator : group.getIndicators()) {

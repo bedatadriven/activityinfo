@@ -12,6 +12,7 @@ import java.util.Map;
 
 import org.sigmah.server.report.generator.MapIconPath;
 import org.sigmah.server.report.renderer.Renderer;
+import org.sigmah.server.report.renderer.image.ImageCreator;
 import org.sigmah.shared.report.model.ImageReportElement;
 import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.PivotChartReportElement;
@@ -37,21 +38,21 @@ import com.lowagie.text.DocumentException;
  */
 public abstract class ItextReportRenderer implements Renderer {
 
-	private final Map<Class, ItextRenderer> renderers = new HashMap<Class, ItextRenderer>();
+	protected final Map<Class, ItextRenderer> renderers = new HashMap<Class, ItextRenderer>();
 	
     @Inject
-    protected ItextReportRenderer(ItextChartRenderer chartRenderer, @MapIconPath String mapIconPath) {
-    	ItextMapRenderer itextMapRenderer = new ItextMapRenderer(mapIconPath);
+    protected ItextReportRenderer(@MapIconPath String mapIconPath) {
+    	ItextMapRenderer itextMapRenderer = new ItextMapRenderer(mapIconPath, getImageCreator());
 		
     	renderers.put(PivotTableReportElement.class, new ItextPivotTableRenderer());
-    	renderers.put(PivotChartReportElement.class, chartRenderer);
+    	renderers.put(PivotChartReportElement.class, new ItextChartRenderer(getImageCreator()));
     	renderers.put(MapReportElement.class, itextMapRenderer);
     	renderers.put(TableElement.class, new ItextTableRenderer(itextMapRenderer));
     	renderers.put(TextReportElement.class, new ItextTextRenderer());
     	renderers.put(ImageReportElement.class, new ItextImageRenderer());
     }
 
-    public void render(ReportElement element, OutputStream os) throws IOException {
+	public void render(ReportElement element, OutputStream os) throws IOException {
 
         try {
             Document document = new Document();
@@ -73,6 +74,8 @@ public abstract class ItextReportRenderer implements Renderer {
     }
 
 	protected abstract void renderFooter(Document document);
+
+    protected abstract ImageCreator<? extends ItextImageResult> getImageCreator();
 
     /**
      * Provides a DocWriter for an open document and OutputStream. Subclasses should provide

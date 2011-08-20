@@ -22,6 +22,8 @@ import org.sigmah.client.page.common.toolbar.ExportCallback;
 import org.sigmah.client.page.common.toolbar.ExportMenuButton;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.page.map.mapOptions.AllMapOptionsWidget;
+import org.sigmah.client.page.map.mapOptions.BaseMapChangedEvent;
+import org.sigmah.client.page.map.mapOptions.BasemapChangedEventHandler;
 import org.sigmah.shared.command.RenderElement;
 import org.sigmah.shared.command.RenderElement.Format;
 import org.sigmah.shared.map.BaseMap;
@@ -66,6 +68,13 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
         initializeComponent();
         
         this.allMapOptionsWidget = form;
+        
+        allMapOptionsWidget.addBaseMapChangedHandler(new BasemapChangedEventHandler() {
+			@Override
+			public void onBaseMapChanged(BaseMapChangedEvent event) {
+				aiMapWidget.setBaseMap(event.getBaseMap());
+			}
+		});
         
         createFormPane(form);
         createMap();
@@ -124,6 +133,9 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
     private void createMap() {
         aiMapWidget = new AIMapWidget(dispatcher);
         aiMapWidget.setHeading(I18N.CONSTANTS.preview());
+        
+        // Ugly hack to prevent call avalanches
+        aiMapWidget.setMaster(this);
 
         add(aiMapWidget, new BorderLayoutData(Style.LayoutRegion.CENTER));
     }

@@ -133,5 +133,27 @@ public class TiledMap {
 		
 		return new Point(p.x - origin.x, p.y - origin.y);	
 	}
+
+
+	public int getWidth() {
+		return width;
+	}
+
+
+	public int getHeight() {
+		return height;
+	}
+
+
+	public int getZoom() {
+		return zoom;
+	}
+
+
+	public LatLng getGeoCenter() {
+		return geoCenter;
+	}
+	
+	
 	
 }

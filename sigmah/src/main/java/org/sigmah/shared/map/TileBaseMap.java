@@ -129,4 +129,8 @@ public class TileBaseMap extends BaseMap  {
 		return true;
 	}
 	
+	@Override
+	public String toString() {
+		return name;
+	}
 }

@@ -15,6 +15,7 @@ public class PieMapMarker extends BubbleMapMarker {
         private double value;
         private DimensionCategory category;
         private String color;
+        private int indicatorId = 0;
 
         public SliceValue() {
         }
@@ -48,6 +49,14 @@ public class PieMapMarker extends BubbleMapMarker {
         public void setColor(String color) {
             this.color = color;
         }
+
+		public int getIndicatorId() {
+			return indicatorId;
+		}
+
+		public void setIndicatorId(int indicatorId) {
+			this.indicatorId = indicatorId;
+		}
     }
 
     public PieMapMarker() {

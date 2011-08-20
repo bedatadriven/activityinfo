@@ -6,13 +6,16 @@
 package org.sigmah.client.page.common.filter;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.client.page.common.filter.FilterToolBar.ApplyFilterEvent;
+import org.sigmah.client.page.common.filter.FilterToolBar.ApplyFilterHandler;
+import org.sigmah.client.page.common.filter.FilterToolBar.RemoveFilterEvent;
+import org.sigmah.client.page.common.filter.FilterToolBar.RemoveFilterHandler;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dto.AdminEntityDTO;
@@ -24,15 +27,10 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.CheckChangedEvent;
 import com.extjs.gxt.ui.client.event.CheckChangedListener;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.event.TreePanelEvent;
 import com.extjs.gxt.ui.client.store.TreeStore;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -54,25 +52,23 @@ public class AdminFilterPanel extends ContentPanel implements FilterPanel {
     private TreePanel<AdminEntityDTO> tree;
     
     private Filter baseFilter = null;
-    private Filter value = new Filter();
-	private Button applyButton;
-	private Button removeButton;
-	
-	private Set<Integer> selected = new HashSet<Integer>();
+    private Filter filter = new Filter();
+    
+    private FilterToolBar filterToolBar;
 
     public AdminFilterPanel(Dispatcher service) {
         this.service = service;
 
-        this.setLayout(new FitLayout());
-        this.setScrollMode(Style.Scroll.AUTO);
-        this.setHeading(I18N.CONSTANTS.filterByGeography());
-        this.setIcon(IconImageBundle.ICONS.filter());
+        initializeComponent();
 
+        createAdminEntitiesTree();
+        createFilterToolBar();
+        
+        layout(true);
+    }
 
-        loader = new AdminTreeLoader(service);
-        store = new TreeStore<AdminEntityDTO>(loader);
-
-        tree = new TreePanel<AdminEntityDTO>(store);
+	private void createAdminEntitiesTree() {
+		tree = new TreePanel<AdminEntityDTO>(store);
 
         tree.setCheckable(true);
         tree.setCheckNodes(TreePanel.CheckNodes.BOTH);
@@ -81,51 +77,46 @@ public class AdminFilterPanel extends ContentPanel implements FilterPanel {
         tree.setDisplayProperty("name");
         tree.getStyle().setNodeCloseIcon(null);
         tree.getStyle().setNodeOpenIcon(null);
+        tree.setStateful(true);
         tree.addCheckListener(new CheckChangedListener<AdminEntityDTO>() {
 
 			@Override
 			public void checkChanged(CheckChangedEvent<AdminEntityDTO> event) {
-				applyButton.setEnabled(!tree.getCheckedSelection().isEmpty());
+				filterToolBar.setApplyFilterEnabled(!tree.getCheckedSelection().isEmpty());
 			}
-        });
-        
-        tree.addListener(Events.Expand, new Listener<TreePanelEvent>() {
-
-			@Override
-			public void handleEvent(TreePanelEvent be) {
-				onExpanded(be.getItem());
-			}
-        	
         });
         
         add(tree);
+	}
 
-        createApplyBar();
-        
-    }
+    private void initializeComponent() {
+        this.setLayout(new FitLayout());
+        this.setScrollMode(Style.Scroll.AUTO);
+        this.setHeading(I18N.CONSTANTS.filterByGeography());
+        this.setIcon(IconImageBundle.ICONS.filter());
 
-    private void createApplyBar() {
-    	ToolBar bar = new ToolBar();
-    	applyButton = new Button("Apply", new SelectionListener<ButtonEvent>() {
-			
+        loader = new AdminTreeLoader(service);
+        store = new TreeStore<AdminEntityDTO>(loader);
+	}
+
+	private void createFilterToolBar() {
+		filterToolBar = new FilterToolBarImpl();
+		
+		filterToolBar.addApplyFilterHandler(new ApplyFilterHandler() {
 			@Override
-			public void componentSelected(ButtonEvent ce) {
+			public void onApplyFilter(ApplyFilterEvent deleteEvent) {
 				applyFilter();
 			}
-
 		});
-    	applyButton.disable();
-		bar.add(applyButton);
-    	removeButton = new Button(I18N.CONSTANTS.remove(), IconImageBundle.ICONS.delete(), new SelectionListener<ButtonEvent>() {
-			
+		
+		filterToolBar.addRemoveFilterHandler(new RemoveFilterHandler() {
 			@Override
-			public void componentSelected(ButtonEvent ce) {
+			public void onRemoveFilter(RemoveFilterEvent deleteEvent) {
 				removeFilter();
 			}
 		});
-		bar.add(removeButton);
-		removeButton.disable();
-    	setTopComponent(bar);
+		
+		setTopComponent((Component) filterToolBar);
     }
 
 
@@ -152,12 +143,12 @@ public class AdminFilterPanel extends ContentPanel implements FilterPanel {
 
 	private void applyFilter() {
 		List<AdminEntityDTO> selection = getSelection();
-		value = new Filter();
+		filter = new Filter();
 		for(AdminEntityDTO entity : selection) {
-			value.addRestriction(DimensionType.AdminLevel, entity.getId());
+			filter.addRestriction(DimensionType.AdminLevel, entity.getId());
 		}
-		ValueChangeEvent.fire(this, value);
-		removeButton.enable();
+		ValueChangeEvent.fire(this, filter);
+		filterToolBar.setRemoveFilterEnabled(true);
 	}
 
 	private void removeFilter() {
@@ -166,14 +157,14 @@ public class AdminFilterPanel extends ContentPanel implements FilterPanel {
 			tree.setChecked(entity, false);
 		}
 			
-		value = new Filter();
-		ValueChangeEvent.fire(this, value);
-		removeButton.disable();
+		filter = new Filter();
+		ValueChangeEvent.fire(this, filter);
+		filterToolBar.setRemoveFilterEnabled(false);
 	}
 	
 	@Override
 	public Filter getValue() {
-		return value;
+		return filter;
 	}
 
 	@Override
@@ -189,14 +180,13 @@ public class AdminFilterPanel extends ContentPanel implements FilterPanel {
 
 	@Override
 	public void applyBaseFilter(final Filter filter) {
-		if(this.baseFilter == null || !this.baseFilter.equals(filter)) {
-			this.baseFilter = filter;
+		if(baseFilter == null || !baseFilter.equals(filter)) {
+			baseFilter = filter;
 			service.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
 
 				@Override
 				public void onFailure(Throwable caught) {
 					GWT.log("Failed to load admin entities", caught);
-
 				}
 
 				@Override
@@ -216,9 +206,4 @@ public class AdminFilterPanel extends ContentPanel implements FilterPanel {
 		}
 	}
 	
-	
-
-	private void onExpanded(ModelData item) {
-		
-	}
 }

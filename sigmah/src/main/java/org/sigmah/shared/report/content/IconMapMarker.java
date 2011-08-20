@@ -12,7 +12,7 @@ import org.sigmah.shared.report.model.MapIcon;
  */
 public class IconMapMarker extends MapMarker {
     
-
+    private int indicatorId = 0;
     private MapIcon icon;
 
     public MapIcon getIcon() {
@@ -22,4 +22,14 @@ public class IconMapMarker extends MapMarker {
     public void setIcon(MapIcon icon) {
         this.icon = icon;
     }
+
+	public int getIndicatorId() {
+		return indicatorId;
+	}
+
+	public void setIndicatorId(int indicatorId) {
+		this.indicatorId = indicatorId;
+	}
+    
+    
 }

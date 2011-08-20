@@ -109,7 +109,7 @@ public class PPTMapRenderer extends ImageMapRenderer {
 
         shape.setFillColor(ColorUtil.colorFromString(marker.getColor()));
         shape.setEscherProperty(EscherProperties.FILL__FILLOPACITY, 49087);
-        shape.setLineColor(bubbleStrokeColor(Integer.parseInt(marker.getColor())));
+        shape.setLineColor(bubbleStrokeColor(ColorUtil.toInteger(marker.getColor())));
         slide.addShape(shape);
     }
 

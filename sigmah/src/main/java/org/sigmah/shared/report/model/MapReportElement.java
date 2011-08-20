@@ -58,7 +58,7 @@ public class MapReportElement extends ReportElement<MapContent> {
     public void setHeight(int height) {
         this.height = height;
     }
-
+    
     public void addLayer(MapLayer layer) {
         this.layers.add(layer);
     }
@@ -67,7 +67,7 @@ public class MapReportElement extends ReportElement<MapContent> {
     @XmlElements({
         @XmlElement(name="bubbles", type=BubbleMapLayer.class),
         @XmlElement(name="pie", type=PiechartMapLayer.class),
-            @XmlElement(name="icons", type=IconMapLayer.class)
+        @XmlElement(name="icons", type=IconMapLayer.class)
     })
     public List<MapLayer> getLayers() {
         return layers;

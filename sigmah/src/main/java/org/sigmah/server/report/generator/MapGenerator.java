@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.sigmah.server.dao.BaseMapDAO;
@@ -20,8 +22,11 @@ import org.sigmah.server.report.generator.map.Margins;
 import org.sigmah.server.report.generator.map.PiechartLayerGenerator;
 import org.sigmah.server.report.generator.map.TiledMap;
 import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.dao.IndicatorDAO;
 import org.sigmah.shared.dao.SiteTableDAO;
+import org.sigmah.shared.domain.Indicator;
 import org.sigmah.shared.domain.User;
+import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.map.BaseMap;
 import org.sigmah.shared.map.GoogleBaseMap;
 import org.sigmah.shared.map.PredefinedBaseMaps;
@@ -47,13 +52,15 @@ import com.google.inject.Inject;
 public class MapGenerator extends ListGenerator<MapReportElement> {
 
 	private final BaseMapDAO baseMapDAO;
+	private final IndicatorDAO indicatorDAO;
 
     private static final Logger logger = Logger.getLogger(MapGenerator.class);
     
     @Inject
-    public MapGenerator(PivotDAO pivotDAO, SiteTableDAO siteDAO, BaseMapDAO baseMapDAO) {
+    public MapGenerator(PivotDAO pivotDAO, SiteTableDAO siteDAO, BaseMapDAO baseMapDAO, IndicatorDAO indicatorDAO) {
         super(pivotDAO, siteDAO);
         this.baseMapDAO = baseMapDAO;
+        this.indicatorDAO = indicatorDAO;
     }
 
     public void generate(User user, MapReportElement element, Filter inheritedFilter, DateRange dateRange) {
@@ -115,8 +122,7 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
     			logger.error("Could not find base map id=" + element.getBaseMapId());
             }
         } 
-        
-        
+                
         if (zoom < baseMap.getMinZoom()) {
             zoom = baseMap.getMinZoom();
         }
@@ -131,12 +137,31 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         	baseMap = TileBaseMap.createNullMap(element.getBaseMapId());
 			logger.error("Could not find base map id=" + element.getBaseMapId());
         }
-     content.setExtents(extents);
+        content.setExtents(extents);
 
         // Generate the actual content
         for (LayerGenerator layerGtor : layerGenerators) {
             layerGtor.generate(sites, map, content);
         }
+        
+        // Get relevant indicators for the map markers
+        Set<Integer> indicatorIds = new HashSet<Integer>(); 
+        
+        for (MapLayer maplayer : element.getLayers()) {
+        	indicatorIds.addAll(maplayer.getIndicatorIds());
+        }
+        
+        Set<IndicatorDTO> indicatorDTOs = new HashSet<IndicatorDTO>();
+        for (Integer indicatorId : indicatorIds) {
+        	Indicator indicator = indicatorDAO.findById(indicatorId);
+        	IndicatorDTO indicatorDTO = new IndicatorDTO();
+        	indicatorDTO.setId(indicator.getId());
+        	indicatorDTO.setName(indicator.getName());
+        	
+        	indicatorDTOs.add(indicatorDTO);
+        }
+        
+        content.setIndicators(indicatorDTOs);
 
         // sort order by symbol radius descending
         // (this assures that smaller symbols are drawn on
