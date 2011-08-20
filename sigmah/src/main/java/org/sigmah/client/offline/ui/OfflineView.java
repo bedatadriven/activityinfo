@@ -9,7 +9,8 @@ import java.util.Date;
 
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.client.offline.ui.OfflinePresenter.PromptCallback;
+import org.sigmah.client.offline.ui.OfflinePresenter.EnableCallback;
+import org.sigmah.client.offline.ui.OfflinePresenter.PromptConnectCallback;
 
 import com.extjs.gxt.ui.client.event.Observable;
 import com.extjs.gxt.ui.client.widget.MessageBox;
@@ -148,7 +149,7 @@ public class OfflineView extends Button implements OfflinePresenter.View {
 	}
 
 	@Override
-	public void promptToGoOnline(final PromptCallback callback) {
+	public void promptToGoOnline(final PromptConnectCallback callback) {
 		if(connectionDialog == null) {
 			connectionDialog = new ConnectionDialog(); 
 		}
@@ -172,4 +173,19 @@ public class OfflineView extends Button implements OfflinePresenter.View {
 		connectionDialog.hide();
 		
 	}
+
+	@Override
+	public void promptEnable(EnableCallback callback) {
+		if(PromptOfflineDialog.shouldAskAgain()) {
+			PromptOfflineDialog dialog = new PromptOfflineDialog(callback);
+			dialog.show();
+		}
+	}
+
+	@Override
+	public void confirmEnable(EnableCallback callback) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

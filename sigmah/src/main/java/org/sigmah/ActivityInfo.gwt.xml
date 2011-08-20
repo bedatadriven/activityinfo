@@ -33,6 +33,25 @@
     <!-- <extend-property name="log_level" values="DEBUG"/>-->
 
 
+	<!-- Configure deferred binding for offline module depending on browser capability -->
+    
+    <replace-with class="org.sigmah.client.offline.capability.IECapabilityProfile">
+        <when-type-is class="org.sigmah.client.offline.capability.OfflineCapabilityProfile"/>
+		<any>
+			<when-property-is name="user.agent" value="ie6"/>
+			<when-property-is name="user.agent" value="ie8" />
+			<when-property-is name="user.agent" value="ie9" />
+	    </any>	
+	</replace-with>
+	
+	<replace-with class="org.sigmah.client.offline.capability.FFCapabilityProfile">
+        <when-type-is class="org.sigmah.client.offline.capability.OfflineCapabilityProfile"/>
+		<any>
+			<when-property-is name="user.agent" value="gecko1_8"/>
+	    </any>	
+	</replace-with>
+
+
     <!-- Include generated sources -->
     <source path='client'/>
     <source path="shared"/>

@@ -18,6 +18,7 @@ import org.sigmah.client.dispatch.remote.cache.SchemaCache;
 import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.offline.OfflineModule;
 import org.sigmah.client.offline.ui.OfflinePresenter;
+import org.sigmah.client.offline.ui.PromptOfflineDialog;
 import org.sigmah.client.offline.ui.UnsupportedOfflinePresenter;
 import org.sigmah.client.page.DownloadManager;
 import org.sigmah.client.page.charts.ChartLoader;
@@ -147,4 +148,5 @@ public interface AppInjector extends Ginjector {
 	SearchPresenter getSearchPage();
 
 	SearchLoader createSearchLoader();
+	
 }

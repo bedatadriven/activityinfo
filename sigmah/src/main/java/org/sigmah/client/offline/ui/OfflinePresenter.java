@@ -66,14 +66,18 @@ public class OfflinePresenter implements Dispatcher {
         OFFLINE,
 
         /**
-         * Commands are sent to the remote serveer for handling
+         * Commands are sent to the remote server for handling
          */
         ONLINE
     }
     
-    public interface PromptCallback {
+    public interface PromptConnectCallback {
     	void onCancel();
     	void onTryToConnect();
+    }
+    
+    public interface EnableCallback {
+    	void enableOffline();
     }
 
     public interface View {
@@ -98,12 +102,14 @@ public class OfflinePresenter implements Dispatcher {
         
         void showError(String message);
         
-        void promptToGoOnline(PromptCallback callback);
+        void promptToGoOnline(PromptConnectCallback callback);
 		void setConnectionDialogToFailure();
 		void setConnectionDialogToBusy();
 		void hideConnectionDialog();
 		void showConnectionProblem(int attempt, int retryDelay);
 
+		void promptEnable(EnableCallback callback);
+		void confirmEnable(EnableCallback callback);
     }
 
     private final View view;
@@ -137,7 +143,9 @@ public class OfflinePresenter implements Dispatcher {
         Log.trace("OfflineManager: starting");
 
         if(!installed) {
-            activateStrategy(new NotInstalledStrategy());
+            NotInstalledStrategy strategy = new NotInstalledStrategy();
+			activateStrategy(strategy);
+			view.promptEnable(strategy);
 
         } else {
             activateStrategy(new LoadingOfflineStrategy());
@@ -259,7 +267,7 @@ public class OfflinePresenter implements Dispatcher {
      * 
      * The only thing the user can do from here is start installation.
      */
-    private class NotInstalledStrategy extends Strategy {
+    private class NotInstalledStrategy extends Strategy implements EnableCallback {
 
         @Override
         public NotInstalledStrategy activate() {
@@ -271,7 +279,11 @@ public class OfflinePresenter implements Dispatcher {
         public void onDefaultButton() {
        		activateStrategy(new InstallingStrategy());
         }
-        
+
+		@Override
+		public void enableOffline() {
+       		activateStrategy(new InstallingStrategy());
+		}
     }
 
     /**
@@ -515,7 +527,7 @@ public class OfflinePresenter implements Dispatcher {
 		Strategy activate() {
 			pending = new ArrayList<CommandRequest>();
 			view.disableMenu();			
-			view.promptToGoOnline(new PromptCallback() {
+			view.promptToGoOnline(new PromptConnectCallback() {
 
 				@Override
 				public void onCancel() {

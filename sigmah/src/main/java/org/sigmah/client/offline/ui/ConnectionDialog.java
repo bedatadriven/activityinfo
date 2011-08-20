@@ -1,7 +1,7 @@
 package org.sigmah.client.offline.ui;
 
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.offline.ui.OfflinePresenter.PromptCallback;
+import org.sigmah.client.offline.ui.OfflinePresenter.PromptConnectCallback;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -12,7 +12,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 
 public class ConnectionDialog extends Window {
 	
-	private PromptCallback callback;
+	private PromptConnectCallback callback;
 	private Status status;
 	private Button tryToConnect;
 	private Button cancelButton;
@@ -53,7 +53,7 @@ public class ConnectionDialog extends Window {
 		addButton(cancelButton);
 	}
 
-	public void setCallback(PromptCallback callback) {
+	public void setCallback(PromptConnectCallback callback) {
 		this.callback = callback;
 	}
 	

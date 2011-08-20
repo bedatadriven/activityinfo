@@ -20,7 +20,7 @@ import org.sigmah.client.mock.MockEventBus;
 import org.sigmah.client.mock.MockStateManager;
 import org.sigmah.client.offline.OfflineGateway;
 import org.sigmah.client.offline.sync.SyncStatusEvent;
-import org.sigmah.client.offline.ui.OfflinePresenter.PromptCallback;
+import org.sigmah.client.offline.ui.OfflinePresenter.PromptConnectCallback;
 import org.sigmah.shared.command.Command;
 
 import com.extjs.gxt.ui.client.event.BaseObservable;
@@ -233,7 +233,7 @@ public class OfflinePresenterTest {
 		}
 
 		@Override
-		public void promptToGoOnline(PromptCallback callback) {
+		public void promptToGoOnline(PromptConnectCallback callback) {
 			// TODO Auto-generated method stub
 			
 		}

@@ -10,6 +10,7 @@ import java.util.HashMap;
 
 import org.sigmah.client.inject.AppInjector;
 import org.sigmah.client.offline.AuthTokenUtil;
+import org.sigmah.client.offline.ui.PromptOfflineDialog;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.GXT;

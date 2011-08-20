@@ -10,6 +10,8 @@
     <meta name="application-name" content="ActivityInfo"/>
     <meta name="description" content="ActivityInfo"/>
     <meta name="application-url" content="${appUrl}"/>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+ 
     <link rel="icon" href="ActivityInfo/desktopicons/16x16.png" sizes="16x16"/>
     <link rel="icon" href="ActivityInfo/desktopicons/32x32.png" sizes="32x32"/>
     <link rel="icon" href="ActivityInfo/desktopicons/48x48.png" sizes="48x48"/>

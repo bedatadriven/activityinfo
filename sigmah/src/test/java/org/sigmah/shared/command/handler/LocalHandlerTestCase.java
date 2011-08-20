@@ -78,6 +78,7 @@ public abstract class LocalHandlerTestCase {
 	protected CommandContext commandContext;
 	
 	private String databaseName = "target/localdbtest" + new java.util.Date().getTime();
+	protected Synchronizer synchronizer;
 
     @Before
     public void setUp() throws SQLException, ClassNotFoundException {
@@ -121,9 +122,9 @@ public abstract class LocalHandlerTestCase {
 //			}
 //		});
     	
-    	Synchronizer syncr = new Synchronizer(new MockEventBus(), remoteDispatcher, localDatabase, 
+    	synchronizer = new Synchronizer(new MockEventBus(), remoteDispatcher, localDatabase, 
                 uiConstants, uiMessages);
-        syncr.start(new AsyncCallback<Void>() {
+        synchronizer.start(new AsyncCallback<Void>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
