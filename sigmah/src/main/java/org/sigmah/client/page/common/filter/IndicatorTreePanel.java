@@ -90,6 +90,7 @@ public class IndicatorTreePanel extends ContentPanel {
 
 		tree = new TreePanel<ModelData>(store);
 		tree.setCheckable(true);
+		setAllNodesCheckable();
 		
 		/*
 		 * 
@@ -239,10 +240,8 @@ public class IndicatorTreePanel extends ContentPanel {
 	public void setMultipleSelection(boolean multipleSelection) {
 		this.multipleSelection = multipleSelection;
 		if (multipleSelection) {
-			tree.setCheckNodes(TreePanel.CheckNodes.BOTH);
 			tree.setCheckStyle(TreePanel.CheckCascade.CHILDREN);
 		} else {
-			tree.setCheckNodes(TreePanel.CheckNodes.LEAF);
 			tree.setCheckStyle(TreePanel.CheckCascade.NONE);
 		}
 	}
@@ -297,5 +296,14 @@ public class IndicatorTreePanel extends ContentPanel {
 	public void setChecked(IndicatorDTO indicator, boolean b) {
 		tree.setChecked(indicator, b);
 	}
+	
+	public void setLeafCheckableOnly() {
+		tree.setCheckNodes(TreePanel.CheckNodes.LEAF);
+	}
+	
+	public void setAllNodesCheckable() {
+		tree.setCheckNodes(TreePanel.CheckNodes.BOTH);
+	}
+
 
 }

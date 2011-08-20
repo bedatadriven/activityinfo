@@ -255,6 +255,7 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		//indicatorTreePanel.setIcon(icons.indicator());
 		
 		treepanelIndicators.setHeaderVisible(false);
+		treepanelIndicators.setLeafCheckableOnly();
 		treepanelIndicators.addCheckChangedListener(new Listener<TreePanelEvent>(){
 			@Override
 			public void handleEvent(TreePanelEvent be) {
