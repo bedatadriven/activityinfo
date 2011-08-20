@@ -6,6 +6,9 @@
 package org.sigmah.server.endpoint.gwtrpc;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -46,7 +49,12 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
     @OnDataSet("/dbunit/sites-simple1.db.xml")
     public void run() throws SQLException {
         synchronize();
-
+        
+        Collector<Date> lastUpdate = Collector.newCollector();
+        synchronizer.getLastUpdateTime(lastUpdate);
+        
+        assertThat(lastUpdate.getResult(), is(not(nullValue())));
+        
         assertThat(queryString("select Name from Indicator where IndicatorId=103"),
                 equalTo("Nb. of distributions"));
         assertThat(queryString("select Name from AdminLevel where AdminLevelId=1"),

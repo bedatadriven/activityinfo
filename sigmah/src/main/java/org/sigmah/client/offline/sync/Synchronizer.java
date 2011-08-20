@@ -59,6 +59,8 @@ public class Synchronizer {
     
     private SyncRegionTable localVerisonTable;
     private SyncHistoryTable historyTable;
+    
+    private SynchronizerStats stats = new SynchronizerStats();
 
     @Inject
     public Synchronizer(EventBus eventBus,
@@ -98,6 +100,7 @@ public class Synchronizer {
         fireStatusEvent(uiConstants.requestingSyncRegions(), 0);
         running = true;
         rowsUpdated = 0;
+        stats.onStart();
         createSyncMetaTables();
     }
 
@@ -164,6 +167,7 @@ public class Synchronizer {
 
     
     private void onSynchronizationComplete() {
+    	stats.onFinished();
         setLastUpdateTime();
         fireStatusEvent(uiConstants.synchronizationComplete(), 100);
         if(callback != null) {
@@ -172,10 +176,12 @@ public class Synchronizer {
     }
 
     private void doUpdate(final SyncRegion region, String localVersion) {
+    	    	
         fireStatusEvent(uiMessages.synchronizerProgress(region.getId(), Integer.toString(rowsUpdated)),
                 regionIt.percentComplete());
         Log.info("Synchronizer: Region " + region.getId() + ": localVersion=" + localVersion);
 
+    	stats.onRemoteCallStarted();
         dispatch.execute(new GetSyncRegionUpdates(region.getId(), localVersion), null, new AsyncCallback<SyncRegionUpdate>() {
             @Override
             public void onFailure(Throwable throwable) {
@@ -183,7 +189,8 @@ public class Synchronizer {
             }
 
             @Override
-            public void onSuccess(SyncRegionUpdate update) {
+            public void onSuccess(SyncRegionUpdate update) {            	
+            	stats.onRemoteCallFinished();
                 persistUpdates(region, update);
             }
         });
@@ -196,6 +203,7 @@ public class Synchronizer {
     
         } else {
 		    Log.debug("Synchronizer: persisting updates for region " + region.getId());
+		    stats.onDbUpdateStarted();
 	        conn.executeUpdates(update.getSql(), new AsyncCallback<Integer>() {
 	            @Override
 	            public void onFailure(Throwable throwable) {
@@ -207,6 +215,7 @@ public class Synchronizer {
 	            public void onSuccess(Integer rows) {
 	                Log.debug("Synchronizer: updates to region " + region.getId() + " succeeded, " + rows + " row(s) affected");
 	                rowsUpdated += rows;
+	                stats.onDbUpdateFinished();
 	                updateLocalVersion(region, update);
 	            }
 	        });
@@ -244,22 +253,7 @@ public class Synchronizer {
     }
 
     public void getLastUpdateTime(final AsyncCallback<java.util.Date> callback) {
-        historyTable.get(new AsyncCallback<Double>() {
-			
-			@Override
-			public void onSuccess(Double result) {
-				if(result == null) {
-					callback.onSuccess(null);
-				} else {
-					callback.onSuccess(new Date(result.longValue()));
-				}
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				callback.onFailure(caught);	
-			}
-		});
+        historyTable.get(callback);
     }
     
     private abstract class DefaultTxCallback extends SqlTransactionCallback {
