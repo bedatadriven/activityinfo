@@ -16,4 +16,5 @@ public class I18N {
 
     public static final UIConstants CONSTANTS = (UIConstants) GWT.create(UIConstants.class);
     public static final UIMessages MESSAGES = (UIMessages)GWT.create(UIMessages.class);
+    public static final FromEntities fromEntities = new FromEntities();
 }

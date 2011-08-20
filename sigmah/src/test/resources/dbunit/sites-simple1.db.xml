@@ -71,6 +71,11 @@
 				attributeId="4"
 				name="Soap"
 				sortOrder="2" />
+				
+	<attributeGroup attributeGroupId="3"
+		name="Something about Kivu"
+		multipleAllowed="1"
+		sortOrder="1"/>
 	
 	<!--  Database: PEAR -->
 
@@ -92,6 +97,7 @@
 	
 			<attributeGroupInActivity activityId="1" attributeGroupId="1"/>
 			<attributeGroupInActivity activityId="1" attributeGroupId="2"/>		
+			<attributeGroupInActivity activityId="1" attributeGroupId="3"/>		
 			
 			<!-- NFI Indicator 1: Beneficiaries -->
 				

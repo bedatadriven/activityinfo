@@ -19,6 +19,8 @@ import com.google.gwt.user.client.ui.ImageBundle;
 @SuppressWarnings("deprecation")
 public interface IconImageBundle extends ImageBundle {
     IconImageBundle ICONS = (IconImageBundle) GWT.create(IconImageBundle.class);
+    
+    public static FromEntities fromEntities = new FromEntities();
 
     AbstractImagePrototype add();
 
@@ -229,4 +231,12 @@ public interface IconImageBundle extends ImageBundle {
 
     @Resource(value = "applyFilter.png")
     AbstractImagePrototype applyFilter();
-}
+
+    @Resource(value = "site.png")
+    AbstractImagePrototype site();
+
+    @Resource(value = "none.png")
+    AbstractImagePrototype none();
+
+    @Resource(value = "indicators.png")
+    AbstractImagePrototype indicators();}

@@ -34,10 +34,10 @@ public interface MapResources extends ClientBundle {
 	@Source("Bubble.png")
 	public ImageResource bubble();
 	
-	@Source("SingleSelect.png")
+	@Source("indicator.png")
 	public ImageResource singleSelect();
 	
-	@Source("MultiSelect.png")
+	@Source("indicators.png")
 	public ImageResource multiSelect();
 	
 	@Source("AddLayer.png")

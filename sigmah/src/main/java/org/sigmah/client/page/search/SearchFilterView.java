@@ -80,7 +80,7 @@ public class SearchFilterView extends LayoutContainer {
 		for (DimensionType foundEntity : affectedEntities.keySet()) {
 			HorizontalPanel panelEntity = new HorizontalPanel();
 			
-			Image iconEntityType = fromDimension(foundEntity);
+			Image iconEntityType = IconImageBundle.fromEntities.fromDimension(foundEntity).createImage();
 			panelEntity.add(iconEntityType);
 			
 			LabelField labelEntityTypeCount = new LabelField();
@@ -88,7 +88,7 @@ public class SearchFilterView extends LayoutContainer {
 			panelEntity.add(labelEntityTypeCount);
 			
 			LabelField labelEntityTypeName = new LabelField();
-			labelEntityTypeName.setText(getEntityTypePluralName(foundEntity));
+			labelEntityTypeName.setText(I18N.fromEntities.getDimensionTypePluralName(foundEntity));
 			panelEntity.add(labelEntityTypeName);
 
 			// Add every hit entity linked to it's landing page
@@ -109,44 +109,4 @@ public class SearchFilterView extends LayoutContainer {
 
 		updateUI();
 	}
-	
-	private String getEntityTypePluralName(DimensionType dimension) {
-		switch (dimension) {
-		case Activity:
-			return I18N.CONSTANTS.activities();
-		case AdminLevel:
-			return I18N.CONSTANTS.adminEntities();
-		case Partner:
-			return I18N.CONSTANTS.partners();
-		case Project:
-			return I18N.CONSTANTS.projects();
-		case AttributeGroup:
-			return I18N.CONSTANTS.attributeTypes();
-		case Indicator:
-			return I18N.CONSTANTS.indicators();
-		}
-		return "No pluralized string definition in SearchFilterView.java";
-	}
-
-	private Image fromDimension(DimensionType dimension) {
-		switch(dimension) {
-		case AdminLevel:
-			return IconImageBundle.ICONS.adminlevel1().createImage();
-		case Database:
-			return IconImageBundle.ICONS.database().createImage();
-		case Activity:
-			return IconImageBundle.ICONS.activity().createImage();
-		case Project:
-			return IconImageBundle.ICONS.project().createImage();
-		case Partner:
-			return IconImageBundle.ICONS.partner().createImage();
-		case Indicator:
-			return IconImageBundle.ICONS.indicator().createImage();
-		}
-		
-		// etc
-		
-		return IconImageBundle.ICONS.delete().createImage();
-	}
-	
 }

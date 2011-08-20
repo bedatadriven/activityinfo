@@ -16,7 +16,6 @@ import org.sigmah.server.endpoint.gwtrpc.GwtRpcModule;
 import org.sigmah.server.util.BeanMappingModule;
 import org.sigmah.server.util.logging.LoggingModule;
 import org.sigmah.shared.command.GetSchema;
-import org.sigmah.shared.command.handler.GetSchemaHandler;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.AttributeGroupDTO;
 import org.sigmah.shared.dto.SchemaDTO;
@@ -25,8 +24,6 @@ import org.sigmah.shared.exception.CommandException;
 import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.MockHibernateModule;
 import org.sigmah.test.Modules;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 @RunWith(InjectionSupport.class)
 @Modules({
@@ -79,7 +76,7 @@ public class LocalGetSchemaHandlerIntTest extends LocalHandlerTestCase {
         assertThat(pearDb.isEditAllAllowed(), equalTo(false));
 
         ActivityDTO activity = schema.getActivityById(1);
-        assertThat(activity.getAttributeGroups().size(), equalTo(2));
+        assertThat(activity.getAttributeGroups().size(), equalTo(3));
 
         AttributeGroupDTO group = activity.getAttributeGroupById(1);
         assertThat(group.getName(), equalTo("cause"));

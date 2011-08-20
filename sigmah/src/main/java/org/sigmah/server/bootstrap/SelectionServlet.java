@@ -75,7 +75,6 @@ public class SelectionServlet extends DefaultSelectionServlet {
     private class UserNotAuthenticatedException extends SelectionException {
 
 		public UserNotAuthenticatedException(String message) {
-			super(message);
 		}
     }
     

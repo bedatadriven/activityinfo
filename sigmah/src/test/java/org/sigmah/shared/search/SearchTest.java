@@ -85,18 +85,20 @@ public class SearchTest {
 		handler.execute(new Search("kivu"), context, new AsyncCallback<SearchResult>() {
 			
 			@Override
-			public void onSuccess(SearchResult result) {
+			public void onSuccess(SearchResult result) {  
 				assertTrue("Expected all searchers to succeed", result.getFailedSearchers().isEmpty());
 				
 				assertHasDimension(DimensionType.Site, result);
 				assertHasDimension(DimensionType.Partner, result);
 				assertHasDimension(DimensionType.AdminLevel, result);
 				assertHasDimension(DimensionType.Project, result);
+				assertHasDimension(DimensionType.AttributeGroup, result);
 				
-				assertHasCountOfDimensions(DimensionType.AdminLevel, result, 2, 3);
-				assertHasCountOfDimensions(DimensionType.Partner, result, 3);
-				assertHasCountOfDimensions(DimensionType.Project, result, 3);
-				assertHasCountOfDimensions(DimensionType.Site, result, 9);
+				assertHasRestrictionWithIds(DimensionType.AdminLevel, result, 2, 3);
+				assertHasRestrictionWithIds(DimensionType.Partner, result, 3);
+				assertHasRestrictionWithIds(DimensionType.Project, result, 3);
+				assertHasRestrictionWithIds(DimensionType.Site, result, 9);
+				assertHasRestrictionWithIds(DimensionType.AttributeGroup, result, 3);
 			}
 			
 			@Override
@@ -113,7 +115,7 @@ public class SearchTest {
 		}
 	}
 	
-	private void assertHasCountOfDimensions(DimensionType type, SearchResult result, int... ids) {
+	private void assertHasRestrictionWithIds(DimensionType type, SearchResult result, int... ids) {
 		for (int id : ids) {
 			if (!result.getPivotTabelData().getEffectiveFilter()
 					.getRestrictions(type).contains(id)) {
