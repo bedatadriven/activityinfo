@@ -11,6 +11,7 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.offline.ui.OfflinePresenter.EnableCallback;
 import org.sigmah.client.offline.ui.OfflinePresenter.PromptConnectCallback;
+import org.sigmah.client.util.state.CrossSessionStateProvider;
 
 import com.extjs.gxt.ui.client.event.Observable;
 import com.extjs.gxt.ui.client.widget.MessageBox;
@@ -19,6 +20,7 @@ import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
@@ -27,6 +29,7 @@ import com.google.inject.Singleton;
 @Singleton                                               
 public class OfflineView extends Button implements OfflinePresenter.View {
 
+	private CrossSessionStateProvider stateProvider;
     private ProgressDialog progressDialog;
     private ConnectionDialog connectionDialog;
 
@@ -35,7 +38,9 @@ public class OfflineView extends Button implements OfflinePresenter.View {
     private MenuItem toggleModeButton;
     private MenuItem reinstallOffline;
 
-    public OfflineView() {
+    @Inject
+    public OfflineView(CrossSessionStateProvider stateProvider) {
+    	this.stateProvider = stateProvider;
         syncNowButton = new MenuItem(I18N.CONSTANTS.syncNow(), IconImageBundle.ICONS.onlineSyncing());
         toggleModeButton = new MenuItem(I18N.CONSTANTS.switchToOnline());
         reinstallOffline = new MenuItem(I18N.CONSTANTS.reinstallOfflineMode());
@@ -176,8 +181,8 @@ public class OfflineView extends Button implements OfflinePresenter.View {
 
 	@Override
 	public void promptEnable(EnableCallback callback) {
-		if(PromptOfflineDialog.shouldAskAgain()) {
-			PromptOfflineDialog dialog = new PromptOfflineDialog(callback);
+		if(PromptOfflineDialog.shouldAskAgain(stateProvider)) {
+			PromptOfflineDialog dialog = new PromptOfflineDialog(stateProvider,callback);
 			dialog.show();
 		}
 	}

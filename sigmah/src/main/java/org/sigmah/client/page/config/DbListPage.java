@@ -20,7 +20,7 @@ import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.common.toolbar.ActionToolBar;
 import org.sigmah.client.page.common.toolbar.UIActions;
-import org.sigmah.client.util.state.IStateManager;
+import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 
 import com.extjs.gxt.ui.client.event.Events;
@@ -42,7 +42,7 @@ public class DbListPage extends ContentPanel implements DbListPresenter.View, Pa
     private ActionToolBar toolBar;
 
     @Inject
-    public DbListPage(EventBus eventBus, Dispatcher dispatcher, IStateManager stateMgr) {
+    public DbListPage(EventBus eventBus, Dispatcher dispatcher, StateProvider stateMgr) {
         presenter = new DbListPresenter(eventBus, dispatcher, this);
 
         setLayout(new FitLayout());

@@ -52,7 +52,7 @@ import org.sigmah.client.page.table.PivotPageLoader;
 import org.sigmah.client.page.table.PivotPresenter;
 import org.sigmah.client.page.welcome.Welcome;
 import org.sigmah.client.page.welcome.WelcomeLoader;
-import org.sigmah.client.util.state.IStateManager;
+import org.sigmah.client.util.state.StateProvider;
 
 import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
@@ -81,7 +81,7 @@ public interface AppInjector extends Ginjector {
 
     Welcome getWelcomePage();
 
-    IStateManager getStateManager();
+    StateProvider getStateManager();
 
     HistoryManager getHistoryManager();
 

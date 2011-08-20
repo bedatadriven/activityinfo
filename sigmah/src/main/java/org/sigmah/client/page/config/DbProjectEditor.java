@@ -13,7 +13,7 @@ import org.sigmah.client.page.common.dialog.FormDialogTether;
 import org.sigmah.client.page.common.grid.AbstractGridPresenter;
 import org.sigmah.client.page.common.grid.GridView;
 import org.sigmah.client.page.common.toolbar.UIActions;
-import org.sigmah.client.util.state.IStateManager;
+import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.AddProject;
 import org.sigmah.shared.command.RemoveProject;
 import org.sigmah.shared.command.result.CreateResult;
@@ -50,7 +50,7 @@ public class DbProjectEditor extends AbstractGridPresenter<ProjectDTO> {
     private ListStore<ProjectDTO> store;
     
     @Inject
-    public DbProjectEditor(EventBus eventBus, Dispatcher service, IStateManager stateMgr, View view) {
+    public DbProjectEditor(EventBus eventBus, Dispatcher service, StateProvider stateMgr, View view) {
         super(eventBus, stateMgr, view);
         this.service = service;
         this.eventBus = eventBus;

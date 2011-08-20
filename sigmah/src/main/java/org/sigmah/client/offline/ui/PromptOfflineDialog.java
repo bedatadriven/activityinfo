@@ -1,21 +1,18 @@
 package org.sigmah.client.offline.ui;
 
-import java.util.Date;
-
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.offline.capability.OfflineCapabilityProfile;
 import org.sigmah.client.offline.capability.ProfileResources;
 import org.sigmah.client.offline.ui.OfflinePresenter.EnableCallback;
+import org.sigmah.client.util.state.CrossSessionStateProvider;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Cookies;
 import com.google.inject.Inject;
 
 
@@ -32,17 +29,21 @@ public class PromptOfflineDialog extends Dialog {
 	
 	private final OfflineCapabilityProfile capabilityProfile = GWT.create(OfflineCapabilityProfile.class);
 	
-	private static final String COOKIE_NAME = "offlineSilent";
+	private static final String DONT_ASK_STATE_KEY = "offlineSilent";
 	private static final String DONT_ASK_COOKIE_VALUE = "true";
 	private static final long THREE_MONTHS = 1000 * 60 * 60 * 24 * 90;
 	
+
+	private final CrossSessionStateProvider stateProvider;
 	private final EnableCallback callback;
 	
 	
+	
 	@Inject
-	public PromptOfflineDialog(EnableCallback callback) {
+	public PromptOfflineDialog(CrossSessionStateProvider stateProvider, EnableCallback callback) {
 		super();
 		
+		this.stateProvider = stateProvider;
 		this.callback = callback;
 		
 		setWidth(500);
@@ -89,7 +90,7 @@ public class PromptOfflineDialog extends Dialog {
 	}
 	
 	private void dontAskAgain() {
-		Cookies.setCookie(COOKIE_NAME, DONT_ASK_COOKIE_VALUE, new Date(new Date().getTime() + THREE_MONTHS));
+		stateProvider.set(DONT_ASK_STATE_KEY, Boolean.TRUE.toString());
 		hide();
 	}
 
@@ -98,7 +99,7 @@ public class PromptOfflineDialog extends Dialog {
 		callback.enableOffline();
 	}
 	
-	public static boolean shouldAskAgain() {
-		return !DONT_ASK_COOKIE_VALUE.equals(Cookies.getCookie(COOKIE_NAME));
+	public static boolean shouldAskAgain(CrossSessionStateProvider stateProvider ) {
+		return !Boolean.TRUE.toString().equals(stateProvider.getString(DONT_ASK_STATE_KEY));
 	}
 }

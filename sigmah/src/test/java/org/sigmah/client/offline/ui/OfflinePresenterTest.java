@@ -17,7 +17,7 @@ import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.remote.RemoteDispatcher;
 import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.mock.MockEventBus;
-import org.sigmah.client.mock.MockStateManager;
+import org.sigmah.client.mock.StateManagerStub;
 import org.sigmah.client.offline.OfflineGateway;
 import org.sigmah.client.offline.sync.SyncStatusEvent;
 import org.sigmah.client.offline.ui.OfflinePresenter.EnableCallback;
@@ -36,7 +36,7 @@ public class OfflinePresenterTest {
     private MockEventBus eventBus;
     private Provider<OfflineGateway> gatewayProvider;
     private OfflineImplStub offlineImpl;
-    private MockStateManager stateManager;
+    private StateManagerStub stateManager;
 	private RemoteDispatcher remoteDispatcher;
     private UIConstants uiConstants;
 
@@ -51,7 +51,7 @@ public class OfflinePresenterTest {
                 return offlineImpl;
             }
         };
-        stateManager = new MockStateManager();
+        stateManager = new StateManagerStub();
         remoteDispatcher = null;
         uiConstants = createMock(UIConstants.class);
     }

@@ -20,7 +20,7 @@ import org.sigmah.client.page.common.grid.AbstractEditorGridPresenter;
 import org.sigmah.client.page.common.grid.TreeGridView;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.page.config.DbPageState;
-import org.sigmah.client.util.state.IStateManager;
+import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.BatchCommand;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.CreateEntity;
@@ -70,7 +70,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
 
 
     @Inject
-    public DesignPresenter(EventBus eventBus, Dispatcher service, IStateManager stateMgr,
+    public DesignPresenter(EventBus eventBus, Dispatcher service, StateProvider stateMgr,
                     View view, UIConstants messages) {
         super(eventBus, service, stateMgr, view);
         this.eventBus = eventBus;

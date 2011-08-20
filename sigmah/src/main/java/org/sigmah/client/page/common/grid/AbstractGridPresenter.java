@@ -17,7 +17,7 @@ import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.util.SortInfoEqualityChecker;
-import org.sigmah.client.util.state.IStateManager;
+import org.sigmah.client.util.state.StateProvider;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ListLoadConfig;
@@ -36,10 +36,10 @@ public abstract class AbstractGridPresenter<ModelT extends ModelData>
         implements GridPresenter<ModelT>, Page {
 
     private final EventBus eventBus;
-    private final IStateManager stateMgr;
+    private final StateProvider stateMgr;
     private final GridView<GridPresenter, ModelT> view;
 
-    protected AbstractGridPresenter(EventBus eventBus, IStateManager stateMgr, GridView view) {
+    protected AbstractGridPresenter(EventBus eventBus, StateProvider stateMgr, GridView view) {
         this.eventBus = eventBus;
         this.stateMgr = stateMgr;
         this.view = view;

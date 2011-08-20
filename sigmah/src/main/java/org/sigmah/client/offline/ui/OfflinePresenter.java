@@ -23,7 +23,8 @@ import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.offline.OfflineGateway;
 import org.sigmah.client.offline.sync.SyncConnectionProblemEvent;
 import org.sigmah.client.offline.sync.SyncStatusEvent;
-import org.sigmah.client.util.state.IStateManager;
+import org.sigmah.client.util.state.CrossSessionStateProvider;
+import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.result.CommandResult;
 
@@ -113,7 +114,7 @@ public class OfflinePresenter implements Dispatcher {
     }
 
     private final View view;
-    private final IStateManager stateManager;
+    private final StateProvider stateManager;
     private final Provider<OfflineGateway> gateway;
     private UIConstants uiConstants;
     private final RemoteDispatcher remoteDispatcher;
@@ -129,7 +130,7 @@ public class OfflinePresenter implements Dispatcher {
                             EventBus eventBus,
                             RemoteDispatcher remoteService,
                             Provider<OfflineGateway> gateway,
-                            IStateManager stateManager,
+                            CrossSessionStateProvider stateManager,
                             UIConstants uiConstants
     ) {
         this.view = view;

@@ -22,8 +22,8 @@ import org.sigmah.client.page.charts.ChartPage;
 import org.sigmah.client.page.charts.ChartPagePresenter;
 import org.sigmah.client.page.common.GalleryPage;
 import org.sigmah.client.page.common.GalleryView;
-import org.sigmah.client.util.state.GXTStateManager;
-import org.sigmah.client.util.state.IStateManager;
+import org.sigmah.client.util.state.GxtStateProvider;
+import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.RemoteCommandServiceAsync;
 
 import com.google.gwt.inject.client.AbstractGinModule;
@@ -41,7 +41,7 @@ public class AppModule extends AbstractGinModule {
         bind(PageStateSerializer.class).in(Singleton.class);
         bind(EventBus.class).to(LoggingEventBus.class).in(Singleton.class);
 
-        bind(IStateManager.class).to(GXTStateManager.class);
+        bind(StateProvider.class).to(GxtStateProvider.class);
         bind(Frame.class).annotatedWith(Root.class).to(AppFrameSet.class);
         bind(GalleryView.class).to(GalleryPage.class);
         bind(ChartPagePresenter.View.class).to(ChartPage.class);

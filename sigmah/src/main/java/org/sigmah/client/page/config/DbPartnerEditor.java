@@ -18,7 +18,7 @@ import org.sigmah.client.page.common.dialog.FormDialogTether;
 import org.sigmah.client.page.common.grid.AbstractGridPresenter;
 import org.sigmah.client.page.common.grid.GridView;
 import org.sigmah.client.page.common.toolbar.UIActions;
-import org.sigmah.client.util.state.IStateManager;
+import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.AddPartner;
 import org.sigmah.shared.command.RemovePartner;
 import org.sigmah.shared.command.result.CreateResult;
@@ -58,7 +58,7 @@ public class DbPartnerEditor extends AbstractGridPresenter<PartnerDTO> {
 
 
     @Inject
-    public DbPartnerEditor(EventBus eventBus, Dispatcher service, IStateManager stateMgr, View view) {
+    public DbPartnerEditor(EventBus eventBus, Dispatcher service, StateProvider stateMgr, View view) {
         super(eventBus, stateMgr, view);
         this.service = service;
         this.eventBus = eventBus;

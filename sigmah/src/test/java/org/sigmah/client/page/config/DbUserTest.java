@@ -15,7 +15,7 @@ import org.junit.Test;
 import org.sigmah.client.mock.DispatcherStub;
 import org.sigmah.client.mock.DummyData;
 import org.sigmah.client.mock.MockEventBus;
-import org.sigmah.client.mock.MockStateManager;
+import org.sigmah.client.mock.StateManagerStub;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.shared.command.GetUsers;
 import org.sigmah.shared.command.UpdateUserPermissions;
@@ -48,7 +48,7 @@ public class DbUserTest {
         replay(view);
 
         // Class under test
-        DbUserEditor editor = new DbUserEditor(new MockEventBus(), service, new MockStateManager(), view);
+        DbUserEditor editor = new DbUserEditor(new MockEventBus(), service, new StateManagerStub(), view);
 
         // VERIFY save button is initially disabled
         editor.go(schema.getDatabaseById(1), new DbPageState(DbUserEditor.DatabaseUsers, 1));
@@ -83,7 +83,7 @@ public class DbUserTest {
         replay(view);
 
         // Class under test
-        DbUserEditor editor = new DbUserEditor(new MockEventBus(), service, new MockStateManager(), view);
+        DbUserEditor editor = new DbUserEditor(new MockEventBus(), service, new StateManagerStub(), view);
         editor.go(schema.getDatabaseById(1), new DbPageState(DbUserEditor.DatabaseUsers, 1));
         
         // VERIFY that following a modification a user command to save results in
@@ -118,7 +118,7 @@ public class DbUserTest {
         replay(view);
 
         // Class under test
-        DbUserEditor editor = new DbUserEditor(new MockEventBus(), service, new MockStateManager(), view);
+        DbUserEditor editor = new DbUserEditor(new MockEventBus(), service, new StateManagerStub(), view);
         editor.go(schema.getDatabaseById(1), new DbPageState(DbUserEditor.DatabaseUsers, 1));
 
         // VERIFY that following a successful save the save button is disabled

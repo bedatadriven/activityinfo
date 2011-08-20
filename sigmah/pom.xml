@@ -492,6 +492,8 @@
                     <warSourceDirectory>${basedir}/war</warSourceDirectory>
                     <extraJvmArgs>-Xmx512M -Xss1M</extraJvmArgs>
                     <hostedWebapp>war</hostedWebapp>
+                    <soycDetailed>true</soycDetailed>
+                    <soyc>true</soyc>
                 </configuration>
 
                 <executions>

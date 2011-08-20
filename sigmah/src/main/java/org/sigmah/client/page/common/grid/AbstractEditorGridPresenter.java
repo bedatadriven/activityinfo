@@ -16,7 +16,7 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.common.toolbar.UIActions;
-import org.sigmah.client.util.state.IStateManager;
+import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.result.BatchResult;
 
@@ -35,7 +35,7 @@ public abstract class AbstractEditorGridPresenter<ModelT extends ModelData>
     private Dispatcher service;
     private boolean isDirty = false;
 
-    protected AbstractEditorGridPresenter(EventBus eventBus, Dispatcher service, IStateManager stateMgr, GridView view) {
+    protected AbstractEditorGridPresenter(EventBus eventBus, Dispatcher service, StateProvider stateMgr, GridView view) {
         super(eventBus, stateMgr, view);
         this.view = view;
         this.service = service;
