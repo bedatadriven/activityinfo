@@ -80,6 +80,8 @@ public class OfflineImpl implements OfflineGateway {
 			public void onSuccess(Date result) {
 				if(result == null) {
 					callback.onFailure(new RuntimeException("Never synchronized"));
+				} else {
+					callback.onSuccess(null);
 				}
 				
 			}
