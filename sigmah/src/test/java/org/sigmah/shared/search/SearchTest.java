@@ -1,6 +1,7 @@
 package org.sigmah.shared.search;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 
@@ -52,16 +53,6 @@ public class SearchTest {
     	this.genelhandler = genElHandler;
     }
 	
-	
-	@Test
-	public void testString() {
-		
-//		
-//		Filter filter = searcher.search(testQuery);
-//		
-//		assertTrue(filter.getRestrictions(DimensionType.AdminLevel).contains(3)); 
-	}
-	
 	@Test
 	public void testAttributeGroup() {
 		db.transaction(new SqlTransactionCallback() {
@@ -97,28 +88,15 @@ public class SearchTest {
 			public void onSuccess(SearchResult result) {
 				assertTrue("Expected all searchers to succeed", result.getFailedSearchers().isEmpty());
 				
-				assertTrue("2 adminlevels", 
-						result.getPivotTabelData().getEffectiveFilter().getRestrictedDimensions()
-							.contains(DimensionType.AdminLevel));
+				assertHasDimension(DimensionType.Site, result);
+				assertHasDimension(DimensionType.Partner, result);
+				assertHasDimension(DimensionType.AdminLevel, result);
+				assertHasDimension(DimensionType.Project, result);
 				
-				assertTrue("expected adminlevels with id=2 and id=3", 
-						result.getPivotTabelData().getEffectiveFilter().getRestrictions(DimensionType.AdminLevel)
-							.contains(2) &&
-							result.getPivotTabelData().getEffectiveFilter().getRestrictions(DimensionType.AdminLevel)
-							.contains(3));
-							
-				assertTrue("expected 1 partner", 
-						result.getPivotTabelData().getEffectiveFilter().getRestrictedDimensions()
-							.contains(DimensionType.Partner));
-				
-				assertTrue("expected partner with id=3", 
-						result.getPivotTabelData().getEffectiveFilter().getRestrictions(DimensionType.Partner)
-							.contains(3));
-				
-				assertTrue("expected project with id=3",
-						result.getPivotTabelData().getEffectiveFilter().getRestrictedDimensions()
-							.contains(DimensionType.Project));
-						
+				assertHasCountOfDimensions(DimensionType.AdminLevel, result, 2, 3);
+				assertHasCountOfDimensions(DimensionType.Partner, result, 3);
+				assertHasCountOfDimensions(DimensionType.Project, result, 3);
+				assertHasCountOfDimensions(DimensionType.Site, result, 9);
 			}
 			
 			@Override
@@ -127,6 +105,28 @@ public class SearchTest {
 			}
 		});
 		
-
 	}
+	
+	public static void assertHasDimension(DimensionType type, SearchResult result) {
+		if (!result.getPivotTabelData().getEffectiveFilter().isRestricted(type)) {
+			fail("expected DimensionType " + type.toString() + " in filter of searchresult");
+		}
+	}
+	
+	private void assertHasCountOfDimensions(DimensionType type, SearchResult result, int... ids) {
+		for (int id : ids) {
+			if (!result.getPivotTabelData().getEffectiveFilter()
+					.getRestrictions(type).contains(id)) {
+				
+				fail(String.format("Expected restriction with id={0} for DimensionType {1}", 
+						Integer.toString(id), type.toString()));
+			}
+		}
+	}
+	
 }
+
+
+
+
+

@@ -319,7 +319,7 @@
 	<locationAdminLink locationId="9" adminEntityId="2"/>
 	<locationAdminLink locationId="9" adminEntityId="11"/>
 		
-	<site siteId="9" activityId="3" locationId="9" partnerId="1" Status="1" target="0" Date1="2009-01-01" Date2="2009-12-31" DateCreated="2009-01-01" DateEdited="2009-01-01" />
+	<site siteId="9" activityId="3" locationId="9" partnerId="1" Status="1" target="0" Date1="2009-01-01" Date2="2009-12-31" DateCreated="2009-01-01" DateEdited="2009-01-01" comments="Some comment while noting Kivu here to hit a search result"/>
 		
 	<reportingPeriod reportingPeriodId="91" siteId="9" monitoring="0" date1="2009-01-01" date2="2009-01-31" DateCreated="2009-02-01" DateEdited="2009-02-01" />
 		<indicatorValue reportingPeriodId="91" indicatorId="5" value="0.1"/>
