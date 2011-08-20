@@ -16,8 +16,8 @@ import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.dispatch.remote.cache.AdminEntityCache;
 import org.sigmah.client.dispatch.remote.cache.SchemaCache;
 import org.sigmah.client.i18n.UIConstants;
+import org.sigmah.client.offline.OfflineController;
 import org.sigmah.client.offline.OfflineModule;
-import org.sigmah.client.offline.ui.OfflinePresenter;
 import org.sigmah.client.offline.ui.PromptOfflineDialog;
 import org.sigmah.client.offline.ui.UnsupportedOfflinePresenter;
 import org.sigmah.client.page.DownloadManager;
@@ -125,9 +125,7 @@ public interface AppInjector extends Ginjector {
 
     ReportPreviewPresenter getReportPreviewPresenter();
 
-    OfflinePresenter createOfflinePresenter();
-
-    UnsupportedOfflinePresenter createUnsupportedOfflinePresenter();
+    OfflineController createOfflineController();
     
     SchemaCache createSchemaCache();
 

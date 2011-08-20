@@ -1,9 +1,9 @@
 package org.sigmah.client.offline.ui;
 
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.offline.OfflineController.EnableCallback;
 import org.sigmah.client.offline.capability.OfflineCapabilityProfile;
 import org.sigmah.client.offline.capability.ProfileResources;
-import org.sigmah.client.offline.ui.OfflinePresenter.EnableCallback;
 import org.sigmah.client.util.state.CrossSessionStateProvider;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;

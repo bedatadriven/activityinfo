@@ -3,7 +3,7 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.client.offline;
+package org.sigmah.client.offline.sync;
 
 import java.util.Date;
 
@@ -12,8 +12,6 @@ import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.DirectDispatcher;
 import org.sigmah.client.offline.command.LocalDispatcher;
 import org.sigmah.client.offline.install.InstallSteps;
-import org.sigmah.client.offline.sync.Synchronizer;
-import org.sigmah.client.offline.sync.UpdateSynchronizer;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.Ping;
 import org.sigmah.shared.command.result.VoidResult;
@@ -22,21 +20,21 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
-public class OfflineImpl implements OfflineGateway {
+public class SynchronizerImpl implements Synchronizer {
     private static final int SYNC_INTERVAL = 30000;
 
     private final Provider<InstallSteps> installSteps;
     private final LocalDispatcher localDispatcher;
     private final Dispatcher remoteDispatcher;
-    private final Synchronizer synchronizer;
+    private final DownSynchronizer synchronizer;
     private final UpdateSynchronizer updateSynchronizer;
 
 
     @Inject
-    public OfflineImpl(Provider<InstallSteps> installSteps,
+    public SynchronizerImpl(Provider<InstallSteps> installSteps,
                        LocalDispatcher localDispatcher,
                        DirectDispatcher remoteDispatcher,
-                       Synchronizer synchronizer,
+                       DownSynchronizer synchronizer,
                        UpdateSynchronizer updateSynchronizer) {
 
         this.installSteps = installSteps;

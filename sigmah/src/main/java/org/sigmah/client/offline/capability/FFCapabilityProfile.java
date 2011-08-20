@@ -6,7 +6,14 @@ import com.google.gwt.gears.client.Factory;
 import com.google.gwt.user.client.Window;
 
 /**
+ * FireFox offline capability profile.
  * 
+ * For the most part, firefox does not support ActivityInfo's offline
+ * mode because they have chosen to go with indexedb over websql. So
+ * we encourage users to download chrome instead.
+ * 
+ * However, we do handle the exceptional case where the user has an old
+ * version of FireFox (<= 3.6) that supports the Gears plugin. 
  */
 public class FFCapabilityProfile extends OfflineCapabilityProfile {
 

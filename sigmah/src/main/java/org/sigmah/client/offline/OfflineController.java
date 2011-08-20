@@ -6,7 +6,7 @@
 /**
  * Permits offline access to ActivityInfo with the help of Gears
  */
-package org.sigmah.client.offline.ui;
+package org.sigmah.client.offline;
 
 
 import java.util.ArrayList;
@@ -20,9 +20,9 @@ import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.RemoteDispatcher;
 import org.sigmah.client.i18n.UIConstants;
-import org.sigmah.client.offline.OfflineGateway;
 import org.sigmah.client.offline.sync.SyncConnectionProblemEvent;
 import org.sigmah.client.offline.sync.SyncStatusEvent;
+import org.sigmah.client.offline.sync.Synchronizer;
 import org.sigmah.client.util.state.CrossSessionStateProvider;
 import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.Command;
@@ -49,7 +49,7 @@ import com.google.inject.Singleton;
  * @author Alex Bertram
  */
 @Singleton
-public class OfflinePresenter implements Dispatcher {
+public class OfflineController implements Dispatcher {
     /**
      * Visible for testing
      */
@@ -115,7 +115,7 @@ public class OfflinePresenter implements Dispatcher {
 
     private final View view;
     private final StateProvider stateManager;
-    private final Provider<OfflineGateway> gateway;
+    private final Provider<Synchronizer> gateway;
     private UIConstants uiConstants;
     private final RemoteDispatcher remoteDispatcher;
 
@@ -126,10 +126,10 @@ public class OfflinePresenter implements Dispatcher {
 
 
     @Inject
-    public OfflinePresenter(final View view,
+    public OfflineController(final View view,
                             EventBus eventBus,
                             RemoteDispatcher remoteService,
-                            Provider<OfflineGateway> gateway,
+                            Provider<Synchronizer> gateway,
                             CrossSessionStateProvider stateManager,
                             UIConstants uiConstants
     ) {
@@ -231,7 +231,7 @@ public class OfflinePresenter implements Dispatcher {
         }
     }
 
-    private void loadGateway(final AsyncCallback<OfflineGateway> callback) {
+    private void loadGateway(final AsyncCallback<Synchronizer> callback) {
         GWT.runAsync(new RunAsyncCallback() {
             @Override
             public void onFailure(Throwable throwable) {
@@ -300,7 +300,7 @@ public class OfflinePresenter implements Dispatcher {
             view.showProgressDialog();
             view.updateProgress(uiConstants.starting(), 0);
 
-            loadGateway(new AsyncCallback<OfflineGateway>() {
+            loadGateway(new AsyncCallback<Synchronizer>() {
                 @Override
                 public void onFailure(Throwable caught) {
                     activateStrategy(new NotInstalledStrategy());
@@ -308,13 +308,13 @@ public class OfflinePresenter implements Dispatcher {
                 }
 
                 @Override
-                public void onSuccess(final OfflineGateway gateway) {
+                public void onSuccess(final Synchronizer gateway) {
                     gateway.install(new AsyncCallback<Void>() {
                         @Override
                         public void onFailure(Throwable caught) {
                         	view.hideProgressDialog();
                             activateStrategy(new NotInstalledStrategy());
-                            OfflinePresenter.this.reportFailure(caught);
+                            OfflineController.this.reportFailure(caught);
                         }
 
                         @Override
@@ -354,14 +354,14 @@ public class OfflinePresenter implements Dispatcher {
         	
             view.setButtonTextToLoading();
             
-            loadGateway(new AsyncCallback<OfflineGateway>() {
+            loadGateway(new AsyncCallback<Synchronizer>() {
                 @Override
                 public void onFailure(Throwable caught) {
                 	abandonShip(caught);
                 }
 
                 @Override
-                public void onSuccess(final OfflineGateway gateway) {
+                public void onSuccess(final Synchronizer gateway) {
                     if(activeMode == OfflineMode.OFFLINE) {
                         gateway.goOffline(new AsyncCallback<Void>() {
                             @Override
@@ -415,11 +415,11 @@ public class OfflinePresenter implements Dispatcher {
      * one mode or the other.
      */
     private class GoingOffline extends Strategy {
-        private OfflineGateway offlineManager;
+        private Synchronizer offlineManager;
         
         private List<CommandRequest> pending;
 
-        private GoingOffline(OfflineGateway offlineManager) {
+        private GoingOffline(Synchronizer offlineManager) {
             this.offlineManager = offlineManager;
         }
 
@@ -458,9 +458,9 @@ public class OfflinePresenter implements Dispatcher {
      *
      */
     private class OfflineStrategy extends Strategy {
-        private OfflineGateway offlineManger;
+        private Synchronizer offlineManger;
 
-        private OfflineStrategy(OfflineGateway offlineManger) {
+        private OfflineStrategy(Synchronizer offlineManger) {
             this.offlineManger = offlineManger;
         }
 
@@ -513,12 +513,12 @@ public class OfflinePresenter implements Dispatcher {
     
     private class CheckingIfUserWantsToGoOnline extends Strategy {
 
-    	private OfflineGateway offlineManager;
+    	private Synchronizer offlineManager;
     	
     	private CommandRequest toExecuteOnline;
     	private List<CommandRequest> pending;
     	
-		public CheckingIfUserWantsToGoOnline(OfflineGateway offlineManger,
+		public CheckingIfUserWantsToGoOnline(Synchronizer offlineManger,
 				CommandRequest commandRequest) {
 			this.offlineManager = offlineManger;
 			this.toExecuteOnline = commandRequest;
@@ -572,9 +572,9 @@ public class OfflinePresenter implements Dispatcher {
     
 
     private class GoingOnlineStrategy extends Strategy {
-        private final OfflineGateway offlineManager;
+        private final Synchronizer offlineManager;
 
-        private GoingOnlineStrategy(final OfflineGateway offlineManager) {
+        private GoingOnlineStrategy(final Synchronizer offlineManager) {
             this.offlineManager = offlineManager;
         }
 
@@ -586,7 +586,7 @@ public class OfflinePresenter implements Dispatcher {
             offlineManager.goOnline(new AsyncCallback<Void>() {
                 @Override
                 public void onFailure(Throwable caught) {
-                    OfflinePresenter.this.reportFailure(caught);
+                    OfflineController.this.reportFailure(caught);
                     activateStrategy(new OfflineStrategy(offlineManager));
                 }
 
@@ -604,9 +604,9 @@ public class OfflinePresenter implements Dispatcher {
      * but we are currently connecting directly to the server.
      */
     private class OnlineStrategy extends Strategy {
-        private OfflineGateway offlineManager;
+        private Synchronizer offlineManager;
 
-        private OnlineStrategy(OfflineGateway offlineManager) {
+        private OnlineStrategy(Synchronizer offlineManager) {
             this.offlineManager = offlineManager;
         }
 
@@ -640,9 +640,9 @@ public class OfflinePresenter implements Dispatcher {
      */
     private class SyncingStrategy extends Strategy {
         private final Strategy parentStrategy;
-        private final OfflineGateway offlineManager;
+        private final Synchronizer offlineManager;
 
-        private SyncingStrategy(final Strategy parentStrategy, OfflineGateway offlineManager) {
+        private SyncingStrategy(final Strategy parentStrategy, Synchronizer offlineManager) {
             this.parentStrategy = parentStrategy;
             this.offlineManager = offlineManager;
         }

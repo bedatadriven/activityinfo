@@ -9,8 +9,9 @@ import java.util.Date;
 
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.client.offline.ui.OfflinePresenter.EnableCallback;
-import org.sigmah.client.offline.ui.OfflinePresenter.PromptConnectCallback;
+import org.sigmah.client.offline.OfflineController;
+import org.sigmah.client.offline.OfflineController.EnableCallback;
+import org.sigmah.client.offline.OfflineController.PromptConnectCallback;
 import org.sigmah.client.util.state.CrossSessionStateProvider;
 
 import com.extjs.gxt.ui.client.event.Observable;
@@ -27,7 +28,7 @@ import com.google.inject.Singleton;
  * @author Alex Bertram
  */
 @Singleton                                               
-public class OfflineView extends Button implements OfflinePresenter.View {
+public class OfflineView extends Button implements OfflineController.View {
 
 	private CrossSessionStateProvider stateProvider;
     private ProgressDialog progressDialog;

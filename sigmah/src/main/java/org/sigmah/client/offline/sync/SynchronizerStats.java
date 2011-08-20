@@ -4,6 +4,11 @@ import java.util.Date;
 
 import com.allen_sauer.gwt.log.client.Log;
 
+/**
+ * Logging utility to track where time is spent during sychronization.
+ * Should compile out when logging is turned off.
+ * 
+ */
 public class SynchronizerStats {
 
 	

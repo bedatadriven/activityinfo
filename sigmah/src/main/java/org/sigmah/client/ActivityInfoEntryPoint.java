@@ -72,7 +72,7 @@ public class ActivityInfoEntryPoint implements EntryPoint {
         injector.getHistoryManager();
         injector.getDownloadManager();
         
-    	injector.createOfflinePresenter();
+    	injector.createOfflineController();
 
         createCaches(injector);
 

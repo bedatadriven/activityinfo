@@ -1,7 +1,7 @@
 package org.sigmah.client.offline.ui;
 
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.offline.ui.OfflinePresenter.PromptConnectCallback;
+import org.sigmah.client.offline.OfflineController.PromptConnectCallback;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;

@@ -1,9 +1,6 @@
 package org.sigmah.client.offline.sync;
 
-import java.sql.SQLException;
-
 import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.dispatch.remote.Direct;
 import org.sigmah.client.offline.command.CommandQueue;
 import org.sigmah.client.offline.command.CommandQueue.QueueEntry;
 
