@@ -7,7 +7,6 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
@@ -35,8 +34,10 @@ public class EmptyChartsTest {
 		element.addSeriesDimension(new Dimension(DimensionType.Database));
 	
 		PivotDAO pivotDAO = createMock(PivotDAO.class);
+		
 		expect(pivotDAO.aggregate(anyInt(), isA(Filter.class), (Set<Dimension>)isA(Set.class)))
 			.andReturn(Collections.EMPTY_LIST);
+		
 		expect(pivotDAO.getFilterLabels(eq(DimensionType.Indicator), 
 				(java.util.Set<Integer>)isA(Set.class)))
 			.andReturn(Collections.EMPTY_MAP);
