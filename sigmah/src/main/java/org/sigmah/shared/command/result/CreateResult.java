@@ -21,8 +21,6 @@ public class CreateResult implements CommandResult {
 
     private int newId;
 
-    private BaseModelData entity;
-
     protected CreateResult() {
 
     }
@@ -31,9 +29,6 @@ public class CreateResult implements CommandResult {
         this.newId = newId;
     }
 
-    public CreateResult(BaseModelData entity) {
-        this.entity = entity;
-    }
 
     /**
      * Gets the primary key of the new entity.
@@ -49,12 +44,5 @@ public class CreateResult implements CommandResult {
         this.newId = newId;
     }
 
-    public void setEntity(BaseModelData entity) {
-        this.entity = entity;
-    }
-
-    public BaseModelData getEntity() {
-        return entity;
-    }
 
 }
