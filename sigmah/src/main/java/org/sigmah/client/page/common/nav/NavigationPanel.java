@@ -26,6 +26,7 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.inject.Inject;
 
 /**
  * UI component that provides a hierarchial
@@ -45,6 +46,7 @@ public class NavigationPanel extends ContentPanel {
     protected Listener<NavigationEvent> navListener;
     protected Listener<BaseEvent> changeListener;
 
+    @Inject
     public NavigationPanel(final EventBus eventBus, final Navigator navigator) {
         this.eventBus = eventBus;
 

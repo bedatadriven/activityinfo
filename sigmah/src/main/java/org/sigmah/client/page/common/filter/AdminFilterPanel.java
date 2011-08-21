@@ -35,6 +35,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Inject;
 
 /**
  * UI Component for editing Admin restrictions on a {@link org.sigmah.shared.dao.Filter}
@@ -54,6 +55,7 @@ public class AdminFilterPanel extends ContentPanel implements FilterPanel {
     
     private FilterToolBar filterToolBar;
 
+    @Inject
     public AdminFilterPanel(Dispatcher service) {
         this.service = service;
 

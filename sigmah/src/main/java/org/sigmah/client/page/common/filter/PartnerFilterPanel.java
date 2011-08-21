@@ -40,6 +40,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Inject;
 
 /**
  * UI Component that allows the user to choose a list of partners
@@ -52,6 +53,7 @@ public class PartnerFilterPanel extends ContentPanel implements FilterPanel {
 	private final Dispatcher service;
 	private FilterToolBar filterToolBar;
 	
+	@Inject
     public PartnerFilterPanel(Dispatcher service) {
     	this.service = service;
     	
