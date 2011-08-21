@@ -6,6 +6,7 @@ import java.util.Map;
 import com.extjs.gxt.ui.client.state.Provider;
 import com.google.gwt.storage.client.Storage;
 import com.google.gwt.storage.client.StorageMap;
+import com.google.inject.Singleton;
 
 /**
  * GXT state provider that either takes advantage of the HTML5 LocalStorage or
@@ -14,6 +15,7 @@ import com.google.gwt.storage.client.StorageMap;
  * This is used in place of the default CookieProvider because with TreePanels 
  * the amount of state stored in cookies can quickly explode.
  */
+@Singleton
 public final class SafeStateProvider extends Provider {
 	Map<String, String> stateMap = new HashMap<String, String>();
 

@@ -7,7 +7,9 @@ import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.state.CookieProvider;
 import com.extjs.gxt.ui.client.state.Provider;
 import com.google.gwt.storage.client.Storage;
+import com.google.inject.Singleton;
 
+@Singleton
 public class CrossSessionStateProviderImpl implements CrossSessionStateProvider {
 
 	private Provider provider;
@@ -49,5 +51,4 @@ public class CrossSessionStateProviderImpl implements CrossSessionStateProvider 
 	public void set(String name, Object value) {
 		provider.set(name, value);
 	}
-
 }
