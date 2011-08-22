@@ -1,7 +1,7 @@
 package org.sigmah.client.offline.capability;
 
 
-import com.google.gwt.gears.client.Factory;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Internet Explorer 6-8 offline capability profile.
@@ -12,24 +12,17 @@ import com.google.gwt.gears.client.Factory;
  * that can be downloaded from MS lab's web site, but there is absolutely no appcache support,
  * even in IE9.
  */
-public class IECapabilityProfile extends OfflineCapabilityProfile {
+public class IECapabilityProfile extends GearsCapabilityProfile {
+
 
 	@Override
-	public boolean isOfflineModeSupported() {
-		return gearsIsInstalled();
-	}
-
-	@Override
-	public String getStartupMessageHtml() {
-		if(gearsIsInstalled()) {
+	public String getInstallInstructions() {
+		if(isOfflineModeSupported()) {
 			return ProfileResources.INSTANCE.startupMessage().getText();
 		} else {
 			return ProfileResources.INSTANCE.startupMessageIE().getText();
 		}
 	}
-	
-	private boolean gearsIsInstalled() {
-		return Factory.getInstance() != null;
-	}
 
+	
 }

@@ -41,16 +41,16 @@ public class AppCacheMenu extends Button {
 
         setMenu(menu);
 
-        new Timer() {
-            @Override
-            public void run() {
-                AppCache.Status currentStatus = appCache.getStatus();
-                if(currentStatus != status) {
-                    status = currentStatus;
-                    onStatusChanged();
-                }
-            }
-        }.scheduleRepeating(2000);
+//        new Timer() {
+//            @Override
+//            public void run() {
+//                AppCache.Status currentStatus = appCache.getStatus();
+//                if(currentStatus != status) {
+//                    status = currentStatus;
+//                    onStatusChanged();
+//                }
+//            }
+//        }.scheduleRepeating(2000);
     }
 
     private static String getRevision() {

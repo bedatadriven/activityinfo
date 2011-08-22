@@ -20,6 +20,7 @@ import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.RemoteDispatcher;
 import org.sigmah.client.i18n.UIConstants;
+import org.sigmah.client.offline.capability.OfflineCapabilityProfile;
 import org.sigmah.client.offline.sync.SyncConnectionProblemEvent;
 import org.sigmah.client.offline.sync.SyncStatusEvent;
 import org.sigmah.client.offline.sync.Synchronizer;
@@ -35,7 +36,8 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.Observable;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
-import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.InvocationException;
 import com.google.inject.Inject;
@@ -110,7 +112,7 @@ public class OfflineController implements Dispatcher {
 		void showConnectionProblem(int attempt, int retryDelay);
 
 		void promptEnable(EnableCallback callback);
-		void confirmEnable(EnableCallback callback);
+		void showInstallInstructions();
     }
 
     private final View view;
@@ -118,6 +120,7 @@ public class OfflineController implements Dispatcher {
     private final Provider<Synchronizer> gateway;
     private UIConstants uiConstants;
     private final RemoteDispatcher remoteDispatcher;
+    private final OfflineCapabilityProfile capabilityProfile;
 
     private OfflineMode activeMode;
     private boolean installed;
@@ -131,15 +134,20 @@ public class OfflineController implements Dispatcher {
                             RemoteDispatcher remoteService,
                             Provider<Synchronizer> gateway,
                             CrossSessionStateProvider stateManager,
+                            OfflineCapabilityProfile capabilityProfile,
                             UIConstants uiConstants
     ) {
         this.view = view;
         this.stateManager = stateManager;
         this.remoteDispatcher = remoteService;
         this.gateway = gateway;
+        this.capabilityProfile = capabilityProfile;
         this.uiConstants = uiConstants;
 
         loadState();
+        if(installed) {
+        	validateStillSupported();
+        }
 
         Log.trace("OfflineManager: starting");
 
@@ -204,6 +212,18 @@ public class OfflineController implements Dispatcher {
             installed = true;
             activeMode = OfflineMode.valueOf(state);
         }
+    }
+    
+    private void validateStillSupported() {
+    	// can happen that the user enables off line mode,
+    	// and then in a future session uninstalls the required plugin
+    	// or revokes permission.
+    	
+    	// check for that here.
+    	if(!capabilityProfile.isOfflineModeSupported() || !capabilityProfile.hasPermission()) {
+    		// TODO: do we display a warning here?
+    		installed = false;
+    	}
     }
 
     private void setActiveMode(OfflineMode state) {
@@ -283,7 +303,18 @@ public class OfflineController implements Dispatcher {
 
 		@Override
 		public void enableOffline() {
-       		activateStrategy(new InstallingStrategy());
+			capabilityProfile.acquirePermission(new AsyncCallback<Void>() {
+				
+				@Override
+				public void onSuccess(Void result) {
+		       		activateStrategy(new InstallingStrategy());
+				}
+				
+				@Override
+				public void onFailure(Throwable caught) {
+					// noop.
+				}
+			});
 		}
     }
 
@@ -381,6 +412,7 @@ public class OfflineController implements Dispatcher {
 									
 									@Override
 									public void onFailure(Throwable caught) {
+										reportFailure(caught);
 	                                    abandonShip();
 									}
 								});                                	
@@ -699,7 +731,7 @@ public class OfflineController implements Dispatcher {
     private void doDispatch(final Collection<CommandRequest> requests) {
     	if(!requests.isEmpty()) {
 	    	// wait until everything's been switched around 
-	    	DeferredCommand.addCommand(new com.google.gwt.user.client.Command() {
+	    	Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 				
 				@Override
 				public void execute() {

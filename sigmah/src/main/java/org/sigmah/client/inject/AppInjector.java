@@ -18,8 +18,6 @@ import org.sigmah.client.dispatch.remote.cache.SchemaCache;
 import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.offline.OfflineController;
 import org.sigmah.client.offline.OfflineModule;
-import org.sigmah.client.offline.ui.PromptOfflineDialog;
-import org.sigmah.client.offline.ui.UnsupportedOfflinePresenter;
 import org.sigmah.client.page.DownloadManager;
 import org.sigmah.client.page.charts.ChartLoader;
 import org.sigmah.client.page.config.AccountEditor;

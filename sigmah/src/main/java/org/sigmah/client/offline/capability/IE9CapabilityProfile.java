@@ -14,7 +14,7 @@ public class IE9CapabilityProfile extends OfflineCapabilityProfile {
 	}
 
 	@Override
-	public String getStartupMessageHtml() {
+	public String getInstallInstructions() {
 		return ProfileResources.INSTANCE.startupMessageIE9().getText();
 	}
 
