@@ -14,6 +14,9 @@ public interface ProfileResources extends ClientBundle {
 	
 	@Source("StartupMessageIE.html")
 	TextResource startupMessageIE();
+
+	@Source("StartupMessageIE9.html")
+	TextResource startupMessageIE9();
 	
 	@Source("StartupMessageFirefox.html")
 	TextResource startupMessageFirefox();

@@ -40,10 +40,16 @@
 		<any>
 			<when-property-is name="user.agent" value="ie6"/>
 			<when-property-is name="user.agent" value="ie8" />
-			<when-property-is name="user.agent" value="ie9" />
 	    </any>	
 	</replace-with>
 	
+        <replace-with class="org.sigmah.client.offline.capability.IE9CapabilityProfile">
+        <when-type-is class="org.sigmah.client.offline.capability.OfflineCapabilityProfile"/>
+        <any>
+            <when-property-is name="user.agent" value="ie9" />
+        </any>  
+    </replace-with>
+    
 	<replace-with class="org.sigmah.client.offline.capability.FFCapabilityProfile">
         <when-type-is class="org.sigmah.client.offline.capability.OfflineCapabilityProfile"/>
 		<any>
