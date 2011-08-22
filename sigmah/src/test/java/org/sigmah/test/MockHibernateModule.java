@@ -5,13 +5,15 @@
 
 package org.sigmah.test;
 
+import java.util.Properties;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
-import org.hibernate.ejb.Ejb3Configuration;
 import org.sigmah.server.dao.hibernate.HibernateModule;
+import org.sigmah.server.database.TestConnectionProvider;
 import org.sigmah.server.database.TestDatabaseModule;
-import org.sigmah.server.domain.PersistentClasses;
 
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
@@ -34,47 +36,21 @@ public class MockHibernateModule extends HibernateModule {
                 // we are assuming that the tests do not affect the database schema, so there is no
                 // need to restart hibernate for each test class, and we save quite a bit of time
                 if (emf == null) {
-                    // we want to avoid a full scan of WEB-INF/classes during hibernate
-                    // startup for tests. So we avoid the normal persistence.xml config
-                    // and build the configuration manually.
-                    Ejb3Configuration cfg = new Ejb3Configuration();
-                    for(Class entityClass : PersistentClasses.LIST) {
-                        cfg.addAnnotatedClass(entityClass);
-                    }
-                    cfg.configure(getConfigurationFilePath()); //add a regular hibernate.cfg.xml
-                    
-                    // override properties from user's maven profile if set
-                    
-                    if(System.getProperty("testDatabaseUrl")!=null) {
-	                    cfg.setProperty("hibernate.connection.url", System.getProperty("testDatabaseUrl"));
-                    }
-                    if(System.getProperty("testDatabaseUsername")!=null) {
-	                    cfg.setProperty("hibernate.connection.username", System.getProperty("testDatabaseUsername"));
-                    }
-                    if(System.getProperty("testDatabasePassword")!=null) {
-	                    cfg.setProperty("hibernate.connection.password", System.getProperty("testDatabasePassword"));
-                    }
-                    
-                    emf = cfg.buildEntityManagerFactory(); //Create the entity manager factory
-                    
-                   
+                	Properties properties = new Properties();
+                	properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
+                	properties.setProperty("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
+                	properties.setProperty("hibernate.connection.url",  TestConnectionProvider.getUrl());
+                	properties.setProperty("hibernate.connection.username", TestConnectionProvider.getUsername());
+                	properties.setProperty("hibernate.connection.password", TestConnectionProvider.getPassword());
+                	//properties.setProperty("hibernate.hbm2ddl.auto", "update");
+                                	
+                	emf = Persistence.createEntityManagerFactory("activityInfo", properties);
+                	
                     System.err.println("GUICE: EntityManagerFACTORY created");
                 }
                 return emf;
             }
         }).in(Singleton.class);
-    }
-
-    private String getConfigurationFilePath() {
-        String db = "mysql";
-        if(System.getProperty("testDatabase") != null) {
-            db = System.getProperty("testDatabase");
-        }
-        String cfgFile = "/hibernate-tests-" + db + ".cfg.xml";
-        if( getClass().getResourceAsStream(cfgFile) == null ) {
-            throw new Error("Cannot find hibernate cfg file for testing: " + cfgFile);
-        }
-        return cfgFile;
     }
 
     @Override

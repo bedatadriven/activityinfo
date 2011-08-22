@@ -26,6 +26,7 @@ import org.dbunit.ext.h2.H2Connection;
 import org.dbunit.ext.hsqldb.HsqldbConnection;
 import org.dbunit.ext.mssql.InsertIdentityOperation;
 import org.dbunit.ext.mssql.MsSqlConnection;
+import org.dbunit.ext.mysql.MySqlConnection;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
 import org.hibernate.ejb.HibernateEntityManager;
@@ -104,17 +105,6 @@ public class LoadDataSet extends Statement {
     }
 
     private IDatabaseConnection createDbUnitConnection(Connection connection) throws DatabaseUnitException, SQLException {
-        String dbName = connection.getMetaData().getDatabaseProductName();
-        if(dbName.equals("Microsoft SQL Server")) {
-            IDatabaseConnection con = new MsSqlConnection(connection);
-            con.getConfig().setProperty("http://www.dbunit.org/properties/escapePattern", "[?]");
-            return con;
-        } else if(dbName.equals("HSQL Database Engine")) {
-            return new HsqldbConnection(connection, null);
-        } else if(dbName.equals("H2")) {
-            return new H2Connection(connection, null);
-        } else {
-            return new DatabaseConnection(connection);
-        }
+    	return new MySqlConnection(connection, null);
     }
 }
