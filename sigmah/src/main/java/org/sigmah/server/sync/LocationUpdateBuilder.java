@@ -24,7 +24,7 @@ import com.bedatadriven.rebar.sync.server.JpaUpdateBuilder;
 import com.google.inject.Inject;
 
 public class LocationUpdateBuilder implements UpdateBuilder {
-    public static final int MAX_UPDATES = 100;
+    public static final int MAX_UPDATES = 500;
 
     private final EntityManager em;
     private List<Location> locations;

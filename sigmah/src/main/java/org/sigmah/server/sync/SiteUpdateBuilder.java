@@ -17,7 +17,6 @@ import org.sigmah.shared.command.GetSyncRegionUpdates;
 import org.sigmah.shared.command.result.SyncRegionUpdate;
 import org.sigmah.shared.domain.AttributeValue;
 import org.sigmah.shared.domain.IndicatorValue;
-import org.sigmah.shared.domain.OrgUnit;
 import org.sigmah.shared.domain.ReportingPeriod;
 import org.sigmah.shared.domain.Site;
 import org.sigmah.shared.domain.User;
@@ -31,7 +30,7 @@ public class SiteUpdateBuilder implements UpdateBuilder {
     private final EntityManager entityManager;
 
     private int databaseId;
-    public static final int MAX_RESULTS = 100;
+    public static final int MAX_RESULTS = 500;
 
     private List<Site> all;
     private List<Site> created = new ArrayList<Site>();
