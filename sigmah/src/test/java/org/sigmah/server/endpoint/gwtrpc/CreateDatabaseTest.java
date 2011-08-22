@@ -8,9 +8,8 @@ package org.sigmah.server.endpoint.gwtrpc;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.dao.OnDataSet;
@@ -39,10 +38,11 @@ public class CreateDatabaseTest extends CommandTestCase {
 
         UserDatabaseDTO newdb = schema.getDatabaseById(cr.getNewId());
 
-        Assert.assertEquals(db.getName(), newdb.getName());
-        Assert.assertEquals(db.getFullName(), newdb.getFullName());
-        Assert.assertNotNull(newdb.getCountry());
-        Assert.assertEquals("Alex", newdb.getOwnerName());
+        assertNotNull(newdb);
+        assertEquals(db.getName(), newdb.getName());
+        assertEquals(db.getFullName(), newdb.getFullName());
+        assertNotNull(newdb.getCountry());
+        assertEquals("Alex", newdb.getOwnerName());
     }
 
     @Test
@@ -63,6 +63,7 @@ public class CreateDatabaseTest extends CommandTestCase {
 
         UserDatabaseDTO newdb = schema.getDatabaseById(cr.getNewId());
 
+        assertNotNull(newdb);
         assertThat(newdb.getCountry(), is(notNullValue()));
         assertThat(newdb.getCountry().getName(), is(equalTo("Haiti")));
     }
