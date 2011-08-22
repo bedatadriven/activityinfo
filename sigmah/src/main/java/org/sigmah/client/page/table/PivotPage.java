@@ -25,7 +25,7 @@ import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.page.table.drilldown.DrillDownEditor;
 import org.sigmah.client.page.table.drilldown.DrillDownGrid;
 import org.sigmah.client.util.DateUtilGWTImpl;
-import org.sigmah.client.util.state.IStateManager;
+import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dto.ActivityDTO;
@@ -91,7 +91,7 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 
 	protected EventBus eventBus;
 	protected Dispatcher service;
-	protected IStateManager stateMgr;
+	protected StateProvider stateMgr;
 
 	protected PivotPresenter presenter;
 
@@ -114,7 +114,7 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 	private Listener<PivotCellEvent> initialDrillDownListener;
 
 	@Inject
-	public PivotPage(EventBus eventBus, Dispatcher service, IStateManager stateMgr) {
+	public PivotPage(EventBus eventBus, Dispatcher service, StateProvider stateMgr) {
 
 		this.eventBus = eventBus;
 		this.service = service;

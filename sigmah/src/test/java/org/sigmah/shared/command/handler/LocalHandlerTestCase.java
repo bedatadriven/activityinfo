@@ -28,7 +28,7 @@ import org.sigmah.client.i18n.UIMessages;
 import org.sigmah.client.mock.MockEventBus;
 import org.sigmah.client.offline.command.CommandQueue;
 import org.sigmah.client.offline.command.LocalDispatcher;
-import org.sigmah.client.offline.sync.Synchronizer;
+import org.sigmah.client.offline.sync.DownSynchronizer;
 import org.sigmah.client.offline.sync.UpdateSynchronizer;
 import org.sigmah.server.endpoint.gwtrpc.CommandServlet;
 import org.sigmah.shared.command.Command;
@@ -78,6 +78,7 @@ public abstract class LocalHandlerTestCase {
 	protected CommandContext commandContext;
 	
 	private String databaseName = "target/localdbtest" + new java.util.Date().getTime();
+	protected DownSynchronizer synchronizer;
 
     @Before
     public void setUp() throws SQLException, ClassNotFoundException {
@@ -121,9 +122,9 @@ public abstract class LocalHandlerTestCase {
 //			}
 //		});
     	
-    	Synchronizer syncr = new Synchronizer(new MockEventBus(), remoteDispatcher, localDatabase, 
+    	synchronizer = new DownSynchronizer(new MockEventBus(), remoteDispatcher, localDatabase, 
                 uiConstants, uiMessages);
-        syncr.start(new AsyncCallback<Void>() {
+        synchronizer.start(new AsyncCallback<Void>() {
 
 			@Override
 			public void onFailure(Throwable caught) {

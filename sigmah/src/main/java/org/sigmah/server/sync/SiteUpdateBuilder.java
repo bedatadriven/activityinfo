@@ -31,8 +31,7 @@ public class SiteUpdateBuilder implements UpdateBuilder {
     private final EntityManager entityManager;
 
     private int databaseId;
-    private int orgUnitId;
-    public static final int MAX_RESULTS = 25;
+    public static final int MAX_RESULTS = 100;
 
     private List<Site> all;
     private List<Site> created = new ArrayList<Site>();
@@ -100,13 +99,11 @@ public class SiteUpdateBuilder implements UpdateBuilder {
                 "select s from Site s " +
                         "WHERE  (s.dateEdited > :localVersion) AND " +
                         "(s.dateDeleted is NULL or s.dateCreated < :localVersion) AND " +
-                        "(s.activity.database = :database) AND " +
-                        "(s.partner = :orgUnit)" +
+                        "(s.activity.database = :database)" +
                         "ORDER BY s.dateEdited")
                 .setMaxResults(MAX_RESULTS)
                 .setParameter("localVersion", localVersion)
                 .setParameter("database", entityManager.getReference(UserDatabase.class, databaseId))
-                .setParameter("orgUnit", entityManager.getReference(OrgUnit.class, orgUnitId))
                 .getResultList();
 
 
@@ -183,6 +180,5 @@ public class SiteUpdateBuilder implements UpdateBuilder {
     private void parseRegion(String regionId) {
         String[] parts = regionId.split("/");
         databaseId = Integer.parseInt(parts[1]);
-        orgUnitId = Integer.parseInt(parts[2]);
     }
 }

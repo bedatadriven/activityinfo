@@ -1,0 +1,11 @@
+@external .startupDialogBody;
+
+
+.startupDialogBody { 
+	background-color: white;
+	padding: 10px;
+	}
+.startupDialogBody p {
+	font-size: 14px;
+	margin-bottom: 10px;
+}			

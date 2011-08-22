@@ -31,6 +31,4 @@ public class SyncConnectionProblemEvent extends BaseEvent {
 	public int getRetryDelay() {
 		return retryDelay;
 	}
-
-
 }

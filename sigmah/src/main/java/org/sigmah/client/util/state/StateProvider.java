@@ -12,9 +12,8 @@ import java.util.Map;
  * Clean abstraction around GXT's {@link com.extjs.gxt.ui.client.state.StateManager},
  * to facilitate dependency injection.
  *
- * @author Alex Bertram (akbertram@gmail.com)
  */
-public interface IStateManager {
+public interface StateProvider {
 
     public Object get(String name);
 

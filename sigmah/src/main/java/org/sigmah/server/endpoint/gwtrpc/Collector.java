@@ -27,5 +27,9 @@ public class Collector<T> implements AsyncCallback<T> {
 		}
 		return result;
 	}
+	
+	public static <T> Collector<T> newCollector() {
+		return new Collector<T>();
+	}
 
 }

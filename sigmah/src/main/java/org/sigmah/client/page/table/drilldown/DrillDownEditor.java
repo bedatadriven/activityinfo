@@ -12,7 +12,7 @@ import org.sigmah.client.dispatch.callback.Got;
 import org.sigmah.client.event.PivotCellEvent;
 import org.sigmah.client.page.common.grid.AbstractGridPageState;
 import org.sigmah.client.page.entry.SiteEditor;
-import org.sigmah.client.util.state.IStateManager;
+import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.dao.Filter;
@@ -45,7 +45,7 @@ public class DrillDownEditor extends SiteEditor {
     private final View view;
     private Listener<PivotCellEvent> eventListener;
 
-    public DrillDownEditor(EventBus eventBus, Dispatcher service, IStateManager stateMgr, DateUtil dateUtil,
+    public DrillDownEditor(EventBus eventBus, Dispatcher service, StateProvider stateMgr, DateUtil dateUtil,
                            View view) {
         super(eventBus, service, stateMgr, view);
 

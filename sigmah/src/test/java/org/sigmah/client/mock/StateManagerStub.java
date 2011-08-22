@@ -3,52 +3,47 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.client.util.state;
+package org.sigmah.client.mock;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
-import com.extjs.gxt.ui.client.state.StateManager;
+import org.sigmah.client.util.state.CrossSessionStateProvider;
 
-/**
- * 
- * @author Alex Bertram (akbertram@gmail.com)
- */
-public class GXTStateManager implements IStateManager {
 
-    private final StateManager gxtMgr;
+public class StateManagerStub implements CrossSessionStateProvider {
 
-    public GXTStateManager() {
-        gxtMgr = StateManager.get();
-    }
+
+    Map<String, Object> state = new HashMap<String, Object>();
 
     @Override
     public Object get(String name) {
-        return gxtMgr.get(name);
+        return state.get(name);
     }
 
     @Override
     public Date getDate(String name) {
-        return gxtMgr.getDate(name);
+        return (Date)get(name);
     }
 
     @Override
     public Integer getInteger(String name) {
-        return gxtMgr.getInteger(name);
+        return (Integer)get(name);
     }
 
     @Override
     public Map<String, Object> getMap(String name) {
-        return gxtMgr.getMap(name);
+        return (Map<String,Object>)get(name);
     }
 
     @Override
     public String getString(String name) {
-        return gxtMgr.getString(name);
+        return (String)get(name);
     }
 
     @Override
     public void set(String name, Object value) {
-        gxtMgr.set(name, value);
+        state.put(name, value);
     }
 }

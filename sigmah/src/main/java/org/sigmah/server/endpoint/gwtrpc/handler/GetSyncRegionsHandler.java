@@ -76,14 +76,12 @@ public class GetSyncRegionsHandler implements CommandHandler<GetSyncRegions> {
         // our initial sync region manages the table schema
         siteRegions.add(new SyncRegion("site-tables"));
 
-        // only send sync regions for database / orgUnit pairs that exist
-        List<Object[]> pairs = entityManager.createQuery(
-                "SELECT DISTINCT db.id, unit.id FROM Site s JOIN s.partner unit JOIN s.activity a JOIN a.database db")
-                    .getResultList();
-
-        for(Object[] pair : pairs) {
-            siteRegions.add(new SyncRegion("site/" + pair[0] + "/" + pair[1]));
+        // do one sync region per database
+        List<UserDatabase> dbs = schemaDAO.queryAllUserDatabasesAlphabetically();
+        for(UserDatabase db : dbs) {
+        	siteRegions.add(new SyncRegion("site/" + db.getId()));
         }
+        
         return siteRegions;
     }
 

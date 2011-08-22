@@ -20,10 +20,6 @@
 
     <entry-point class="org.sigmah.client.ActivityInfoEntryPoint"/>
 
-
-	<public path='public'>
-		<exclude name="gxt/themes/sigmah/**" />
-	</public>    
     
 </module>
 

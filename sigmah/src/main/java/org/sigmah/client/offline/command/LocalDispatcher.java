@@ -47,7 +47,7 @@ public class LocalDispatcher implements Dispatcher, CommandContext {
         }
         try {
             CommandHandlerAsync handler = getHandler(command);
-            handler.execute(command, null, new AsyncCallback<R>() {
+            handler.execute(command, this, new AsyncCallback<R>() {
 
 				@Override
 				public void onFailure(Throwable caught) {

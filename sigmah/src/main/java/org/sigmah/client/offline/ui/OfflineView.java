@@ -9,7 +9,10 @@ import java.util.Date;
 
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.client.offline.ui.OfflinePresenter.PromptCallback;
+import org.sigmah.client.offline.OfflineController;
+import org.sigmah.client.offline.OfflineController.EnableCallback;
+import org.sigmah.client.offline.OfflineController.PromptConnectCallback;
+import org.sigmah.client.util.state.CrossSessionStateProvider;
 
 import com.extjs.gxt.ui.client.event.Observable;
 import com.extjs.gxt.ui.client.widget.MessageBox;
@@ -18,14 +21,16 @@ import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
  * @author Alex Bertram
  */
 @Singleton                                               
-public class OfflineView extends Button implements OfflinePresenter.View {
+public class OfflineView extends Button implements OfflineController.View {
 
+	private CrossSessionStateProvider stateProvider;
     private ProgressDialog progressDialog;
     private ConnectionDialog connectionDialog;
 
@@ -34,7 +39,9 @@ public class OfflineView extends Button implements OfflinePresenter.View {
     private MenuItem toggleModeButton;
     private MenuItem reinstallOffline;
 
-    public OfflineView() {
+    @Inject
+    public OfflineView(CrossSessionStateProvider stateProvider) {
+    	this.stateProvider = stateProvider;
         syncNowButton = new MenuItem(I18N.CONSTANTS.syncNow(), IconImageBundle.ICONS.onlineSyncing());
         toggleModeButton = new MenuItem(I18N.CONSTANTS.switchToOnline());
         reinstallOffline = new MenuItem(I18N.CONSTANTS.reinstallOfflineMode());
@@ -148,7 +155,7 @@ public class OfflineView extends Button implements OfflinePresenter.View {
 	}
 
 	@Override
-	public void promptToGoOnline(final PromptCallback callback) {
+	public void promptToGoOnline(final PromptConnectCallback callback) {
 		if(connectionDialog == null) {
 			connectionDialog = new ConnectionDialog(); 
 		}
@@ -172,4 +179,19 @@ public class OfflineView extends Button implements OfflinePresenter.View {
 		connectionDialog.hide();
 		
 	}
+
+	@Override
+	public void promptEnable(EnableCallback callback) {
+		if(PromptOfflineDialog.shouldAskAgain(stateProvider)) {
+			PromptOfflineDialog dialog = new PromptOfflineDialog(stateProvider,callback);
+			dialog.show();
+		}
+	}
+
+	@Override
+	public void confirmEnable(EnableCallback callback) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

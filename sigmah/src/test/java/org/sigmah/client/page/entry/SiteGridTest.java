@@ -31,7 +31,7 @@ import org.sigmah.client.event.SiteEvent;
 import org.sigmah.client.mock.DispatcherStub;
 import org.sigmah.client.mock.DummyData;
 import org.sigmah.client.mock.MockEventBus;
-import org.sigmah.client.mock.MockStateManager;
+import org.sigmah.client.mock.StateManagerStub;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.command.GetSites;
@@ -77,7 +77,7 @@ public class SiteGridTest {
 
         // Class Under Test !!
         SiteEditor presenter = new SiteEditor(eventBus, service,
-                new MockStateManager(), view);
+                new StateManagerStub(), view);
 
         // VERIFY that command is correct
 
@@ -133,7 +133,7 @@ public class SiteGridTest {
         replay(view);
 
         // Class Under Test !
-        SiteEditor presenter = new SiteEditor(eventBus, service, new MockStateManager(), view);
+        SiteEditor presenter = new SiteEditor(eventBus, service, new StateManagerStub(), view);
 
         // navigate to NFI data entry
         // verify that the appropriate actions were enabled correctly
@@ -192,7 +192,7 @@ public class SiteGridTest {
         // Class Under Test !!
 
         SiteEditor presenter = new SiteEditor(eventBus, service,
-                new MockStateManager(), view);
+                new StateManagerStub(), view);
 
         // VERIFY that the button is enabled on load
         reset(view);
@@ -225,7 +225,7 @@ public class SiteGridTest {
         // Class Under Test !!
 
         SiteEditor presenter = new SiteEditor(eventBus, service,
-                new MockStateManager(), view);
+                new StateManagerStub(), view);
 
         // VERIFY that the export is not enabled
 
@@ -253,7 +253,7 @@ public class SiteGridTest {
         replay(view);
 
         // Class under test !
-        SiteEditor presenter = new SiteEditor(eventBus, service, new MockStateManager(), view);
+        SiteEditor presenter = new SiteEditor(eventBus, service, new StateManagerStub(), view);
 
 
         // VERIFY that a navigation request result in command load
@@ -304,7 +304,7 @@ public class SiteGridTest {
         replay(view);
 
         // CLASS UNDER Test
-        SiteEditor presenter = new SiteEditor(eventBus, service, new MockStateManager(),
+        SiteEditor presenter = new SiteEditor(eventBus, service, new StateManagerStub(),
                 view);
 
         // VERIFY that a new site triggers the correct command AND
@@ -346,7 +346,7 @@ public class SiteGridTest {
 
         // CLASS UNDER TEST
         SchemaDTO schema = DummyData.PEAR();
-        SiteEditor presenter = new SiteEditor(eventBus, service, new MockStateManager(),
+        SiteEditor presenter = new SiteEditor(eventBus, service, new StateManagerStub(),
                 view);
 
         presenter.go(new SiteGridPageState(91), schema.getActivityById(91));
@@ -379,7 +379,7 @@ public class SiteGridTest {
         replay(view);
 
         // CLASS UNDER TEST
-        SiteEditor editor = new SiteEditor(new MockEventBus(), service, new MockStateManager(),
+        SiteEditor editor = new SiteEditor(new MockEventBus(), service, new StateManagerStub(),
                 view);
 
         editor.go(new SiteGridPageState(91), schema.getActivityById(91));

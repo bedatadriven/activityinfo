@@ -5,17 +5,17 @@
 
 package org.sigmah.client.offline.install;
 
-import org.sigmah.client.offline.sync.Synchronizer;
+import org.sigmah.client.offline.sync.DownSynchronizer;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 public class InitialSyncStep implements Step {
 
-    private final Synchronizer syncro;
+    private final DownSynchronizer syncro;
 
     @Inject
-    public InitialSyncStep(Synchronizer syncro) {
+    public InitialSyncStep(DownSynchronizer syncro) {
         this.syncro = syncro;
     }
 

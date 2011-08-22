@@ -16,7 +16,7 @@ import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.common.grid.AbstractEditorGridPresenter;
 import org.sigmah.client.page.common.grid.GridView;
-import org.sigmah.client.util.state.IStateManager;
+import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.GetMonthlyReports;
 import org.sigmah.shared.command.Month;
@@ -56,7 +56,7 @@ public class MonthlyPresenter extends AbstractEditorGridPresenter<IndicatorRowDT
     private int currentSiteId = -1;
     private Month startMonth;
 
-    public MonthlyPresenter(EventBus eventBus, Dispatcher service, IStateManager stateMgr, ActivityDTO activity, final View view) {
+    public MonthlyPresenter(EventBus eventBus, Dispatcher service, StateProvider stateMgr, ActivityDTO activity, final View view) {
         super(eventBus, service, stateMgr, view);
         this.service = service;
         this.eventBus = eventBus;
@@ -92,7 +92,7 @@ public class MonthlyPresenter extends AbstractEditorGridPresenter<IndicatorRowDT
         eventBus.removeListener(AppEvents.SiteSelected, siteListener);
     }
 
-    private void getInitialStartMonth(IStateManager stateMgr) {
+    private void getInitialStartMonth(StateProvider stateMgr) {
         String stateKey = "monthlyView" + this.activity.getId() + "startMonth";
         if (stateMgr.getString(stateKey) != null) {
             try {

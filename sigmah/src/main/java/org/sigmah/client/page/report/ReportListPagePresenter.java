@@ -17,7 +17,7 @@ import org.sigmah.client.page.common.dialog.FormDialogCallback;
 import org.sigmah.client.page.common.dialog.FormDialogImpl;
 import org.sigmah.client.page.common.grid.AbstractEditorGridPresenter;
 import org.sigmah.client.page.common.grid.GridView;
-import org.sigmah.client.util.state.IStateManager;
+import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.BatchCommand;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.CreateReportDef;
@@ -55,7 +55,7 @@ public class ReportListPagePresenter extends AbstractEditorGridPresenter<ReportD
     private GroupingStore<ReportDefinitionDTO> store;
 
     @Inject
-    public ReportListPagePresenter(EventBus eventBus, Dispatcher service, IStateManager stateMgr, View view) {
+    public ReportListPagePresenter(EventBus eventBus, Dispatcher service, StateProvider stateMgr, View view) {
         super(eventBus, service, stateMgr, view);
         this.eventBus = eventBus;
         this.service = service;

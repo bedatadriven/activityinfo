@@ -16,8 +16,9 @@ import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.dispatch.remote.cache.AdminEntityCache;
 import org.sigmah.client.dispatch.remote.cache.SchemaCache;
 import org.sigmah.client.i18n.UIConstants;
+import org.sigmah.client.offline.OfflineController;
 import org.sigmah.client.offline.OfflineModule;
-import org.sigmah.client.offline.ui.OfflinePresenter;
+import org.sigmah.client.offline.ui.PromptOfflineDialog;
 import org.sigmah.client.offline.ui.UnsupportedOfflinePresenter;
 import org.sigmah.client.page.DownloadManager;
 import org.sigmah.client.page.charts.ChartLoader;
@@ -51,7 +52,7 @@ import org.sigmah.client.page.table.PivotPageLoader;
 import org.sigmah.client.page.table.PivotPresenter;
 import org.sigmah.client.page.welcome.Welcome;
 import org.sigmah.client.page.welcome.WelcomeLoader;
-import org.sigmah.client.util.state.IStateManager;
+import org.sigmah.client.util.state.StateProvider;
 
 import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
@@ -80,7 +81,7 @@ public interface AppInjector extends Ginjector {
 
     Welcome getWelcomePage();
 
-    IStateManager getStateManager();
+    StateProvider getStateManager();
 
     HistoryManager getHistoryManager();
 
@@ -124,9 +125,7 @@ public interface AppInjector extends Ginjector {
 
     ReportPreviewPresenter getReportPreviewPresenter();
 
-    OfflinePresenter createOfflinePresenter();
-
-    UnsupportedOfflinePresenter createUnsupportedOfflinePresenter();
+    OfflineController createOfflineController();
     
     SchemaCache createSchemaCache();
 
@@ -147,4 +146,5 @@ public interface AppInjector extends Ginjector {
 	SearchPresenter getSearchPage();
 
 	SearchLoader createSearchLoader();
+	
 }

@@ -3,7 +3,7 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.client.offline.ui;
+package org.sigmah.client.offline;
 
 import static org.easymock.EasyMock.createMock;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -17,10 +17,12 @@ import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.remote.RemoteDispatcher;
 import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.mock.MockEventBus;
-import org.sigmah.client.mock.MockStateManager;
-import org.sigmah.client.offline.OfflineGateway;
+import org.sigmah.client.mock.StateManagerStub;
+import org.sigmah.client.offline.OfflineController;
+import org.sigmah.client.offline.OfflineController.EnableCallback;
+import org.sigmah.client.offline.OfflineController.PromptConnectCallback;
 import org.sigmah.client.offline.sync.SyncStatusEvent;
-import org.sigmah.client.offline.ui.OfflinePresenter.PromptCallback;
+import org.sigmah.client.offline.sync.Synchronizer;
 import org.sigmah.shared.command.Command;
 
 import com.extjs.gxt.ui.client.event.BaseObservable;
@@ -30,12 +32,12 @@ import com.extjs.gxt.ui.client.event.Observable;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Provider;
 
-public class OfflinePresenterTest {
+public class OfflineControllerTest {
     private ViewStub view;
     private MockEventBus eventBus;
-    private Provider<OfflineGateway> gatewayProvider;
+    private Provider<Synchronizer> gatewayProvider;
     private OfflineImplStub offlineImpl;
-    private MockStateManager stateManager;
+    private StateManagerStub stateManager;
 	private RemoteDispatcher remoteDispatcher;
     private UIConstants uiConstants;
 
@@ -44,13 +46,13 @@ public class OfflinePresenterTest {
         view = new ViewStub();
         eventBus = new MockEventBus();
         offlineImpl = new OfflineImplStub();
-        gatewayProvider = new Provider<OfflineGateway>() {
+        gatewayProvider = new Provider<Synchronizer>() {
             @Override
-            public OfflineGateway get() {
+            public Synchronizer get() {
                 return offlineImpl;
             }
         };
-        stateManager = new MockStateManager();
+        stateManager = new StateManagerStub();
         remoteDispatcher = null;
         uiConstants = createMock(UIConstants.class);
     }
@@ -61,7 +63,7 @@ public class OfflinePresenterTest {
 
         // No state is set, so the presenter should assume that offline is not yet installed
 
-        OfflinePresenter presenter = new OfflinePresenter(view, eventBus, remoteDispatcher,
+        OfflineController presenter = new OfflineController(view, eventBus, remoteDispatcher,
         		gatewayProvider, stateManager, uiConstants);
 
         assertThat(view.defaultButtonText, equalTo("Install"));
@@ -97,9 +99,9 @@ public class OfflinePresenterTest {
 
         // No state is set, so the presenter should assume that offline is not yet installed
 
-        stateManager.set(OfflinePresenter.OFFLINE_MODE_KEY, OfflinePresenter.OfflineMode.OFFLINE.toString());
+        stateManager.set(OfflineController.OFFLINE_MODE_KEY, OfflineController.OfflineMode.OFFLINE.toString());
 
-        OfflinePresenter presenter = new OfflinePresenter(view, eventBus, 
+        OfflineController presenter = new OfflineController(view, eventBus, 
         		remoteDispatcher, gatewayProvider, stateManager, uiConstants);
 
         // offline async fragment finishes loading
@@ -113,9 +115,9 @@ public class OfflinePresenterTest {
     @Test
     public void reinstallWhileOffline() {
 
-        stateManager.set(OfflinePresenter.OFFLINE_MODE_KEY, OfflinePresenter.OfflineMode.OFFLINE.toString());
+        stateManager.set(OfflineController.OFFLINE_MODE_KEY, OfflineController.OfflineMode.OFFLINE.toString());
 
-        new OfflinePresenter(view, eventBus, remoteDispatcher,
+        new OfflineController(view, eventBus, remoteDispatcher,
         		gatewayProvider, stateManager, uiConstants);
 
         // offline async fragment finishes loading
@@ -130,7 +132,7 @@ public class OfflinePresenterTest {
     }
 
 
-    private static class ViewStub implements OfflinePresenter.View {
+    private static class ViewStub implements OfflineController.View {
 
         public BaseObservable defaultButton = new BaseObservable();
         public String defaultButtonText;
@@ -233,7 +235,7 @@ public class OfflinePresenterTest {
 		}
 
 		@Override
-		public void promptToGoOnline(PromptCallback callback) {
+		public void promptToGoOnline(PromptConnectCallback callback) {
 			// TODO Auto-generated method stub
 			
 		}
@@ -256,9 +258,21 @@ public class OfflinePresenterTest {
 			
 		}
 
+		@Override
+		public void promptEnable(EnableCallback callback) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void confirmEnable(EnableCallback callback) {
+			// TODO Auto-generated method stub
+			
+		}
+
     }
 
-    private static class OfflineImplStub implements OfflineGateway {
+    private static class OfflineImplStub implements Synchronizer {
         AsyncCallback<Void> lastCallback;
         String lastCall = "not yet been called";
 

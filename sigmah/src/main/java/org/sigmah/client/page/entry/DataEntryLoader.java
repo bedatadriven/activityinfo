@@ -16,12 +16,8 @@ import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageLoader;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.PageStateSerializer;
-import org.sigmah.client.page.common.filter.AdminFilterPanel;
-import org.sigmah.client.page.common.filter.DateRangePanel;
-import org.sigmah.client.page.common.filter.FilterPanelSet;
-import org.sigmah.client.page.common.filter.PartnerFilterPanel;
+import org.sigmah.client.page.common.filter.FilterPanel;
 import org.sigmah.client.page.common.nav.NavigationPanel;
-import org.sigmah.client.page.common.widget.VSplitFilteredFrameSet;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.SchemaDTO;
@@ -30,6 +26,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -37,22 +34,20 @@ import com.google.inject.Inject;
 public class DataEntryLoader implements PageLoader {
 
     private final AppInjector injector;
-    private AdminFilterPanel adminPanel;
-    private DateRangePanel datePanel;
-    private PartnerFilterPanel partnerPanel;   
-
+    private final Provider<DataEntryFrameSet> dataEntryFrameSetProvider;
+    
+    private FilterPanel filterPanelSet = null;
+    
     @Inject
-    public DataEntryLoader(AppInjector injector, NavigationHandler pageManager, PageStateSerializer placeSerializer) {
+    public DataEntryLoader(AppInjector injector, NavigationHandler pageManager, 
+    		PageStateSerializer placeSerializer,
+    		Provider<DataEntryFrameSet> dataEntryFrameSetProvider) {
         this.injector = injector;
-
+        this.dataEntryFrameSetProvider = dataEntryFrameSetProvider;
         pageManager.registerPageLoader(Frames.DataEntryFrameSet, this);
         pageManager.registerPageLoader(SiteEditor.ID, this);
         placeSerializer.registerParser(SiteEditor.ID, new SiteGridPageState.Parser());
         
-        adminPanel = new AdminFilterPanel(injector.getService());
-		
-        datePanel = new DateRangePanel();
-        partnerPanel = new PartnerFilterPanel(injector.getService());
     }
 
     @Override
@@ -79,15 +74,10 @@ public class DataEntryLoader implements PageLoader {
 
     private void loadFrame(PageState place, AsyncCallback<Page> callback) {
 
-        NavigationPanel navPanel = new NavigationPanel(injector.getEventBus(),
-                injector.getDataEntryNavigator());
-    
+    	DataEntryFrameSet frameSet = dataEntryFrameSetProvider.get();
+    	this.filterPanelSet = frameSet.getFilterPanelSet();
+		callback.onSuccess(frameSet);
        
-        VSplitFilteredFrameSet frameSet = new VSplitFilteredFrameSet(Frames.DataEntryFrameSet, navPanel);
-        frameSet.addFilterPanel(adminPanel);
-        frameSet.addFilterPanel(datePanel);
-        frameSet.addFilterPanel(partnerPanel);
-        callback.onSuccess(frameSet);
     }
 
     protected void loadSiteGrid(final PageState place, final AsyncCallback<Page> callback) {
@@ -108,7 +98,7 @@ public class DataEntryLoader implements PageLoader {
                 SiteGridPage grid = new SiteGridPage(true);
                 SiteEditor editor = new SiteEditor(injector.getEventBus(), injector.getService(),
                         injector.getStateManager(), grid);
-                editor.bindFilterPanel(new FilterPanelSet(adminPanel, datePanel, partnerPanel));
+                editor.bindFilterPanel(filterPanelSet);
 
                 if (activity.getReportingFrequency() == ActivityDTO.REPORT_MONTHLY) {
                     MonthlyGrid monthlyGrid = new MonthlyGrid(activity);

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.activityinfo</groupId>
     <artifactId>activityinfo</artifactId>
@@ -18,11 +18,11 @@
         <url>http://build.bedatadriven.com/job/ActivityInfo/</url>
     </ciManagement>
     <inceptionYear>2009</inceptionYear>
-	<scm>
-		<connection>scm:git:git@github.com:akbertram/activityinfo.git</connection>
-		<url>scm:git:git@github.com:akbertram/activityinfo.git</url>
-		<developerConnection>scm:git:git@github.com:akbertram/activityinfo.git</developerConnection>
-	</scm>
+    <scm>
+        <connection>scm:git:git@github.com:akbertram/activityinfo.git</connection>
+        <url>scm:git:git@github.com:akbertram/activityinfo.git</url>
+        <developerConnection>scm:git:git@github.com:akbertram/activityinfo.git</developerConnection>
+    </scm>
     <developers>
         <developer>
             <id>akbertram</id>
@@ -31,7 +31,7 @@
             <organization>bedatadriven</organization>
             <organizationUrl>http://www.bedatadriven.com</organizationUrl>
         </developer>
-       <developer>
+        <developer>
             <id>rpoutsma</id>
             <name>Ruud Poutsma</name>
             <email>ruud@bedatadriven.com</email>
@@ -49,22 +49,22 @@
     <properties>
         <netbeans.hint.license>gpl3</netbeans.hint.license>
 
-        <!--  convenience to define GWT version in one place -->
+        <!-- convenience to define GWT version in one place -->
         <gwtVersion>2.3.0</gwtVersion>
-		<rebarVersion>2.2-SNAPSHOT</rebarVersion>
+        <rebarVersion>2.2-SNAPSHOT</rebarVersion>
 
-        <!--  tell the compiler we can use 1.6 -->
+        <!-- tell the compiler we can use 1.6 -->
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
 
-        <!-- 	<gwt.output.directory>${basedir}/target/gwt</gwt.output.directory> -->
+        <!-- <gwt.output.directory>${basedir}/target/gwt</gwt.output.directory> -->
         <gwt.output.directory>${basedir}/war</gwt.output.directory>
 
         <!-- Allow the build to continue even if there are test failures -->
         <maven.test.failure.ignore>true</maven.test.failure.ignore>
 
-		<display.version>${project.version}-${git.commit.id.abbrev}</display.version>
-		
+        <display.version>${project.version}-${git.commit.id.abbrev}</display.version>
+
     </properties>
 
     <repositories>
@@ -95,9 +95,9 @@
             <url>http://nexus.bedatadriven.com/content/groups/public</url>
         </pluginRepository>
         <pluginRepository>
-        	<id>modafocus</id>
-        	<name>Sonatype</name>
-        	<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <id>modafocus</id>
+            <name>Sonatype</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </pluginRepository>
     </pluginRepositories>
 
@@ -116,7 +116,7 @@
 
     <dependencies>
 
-        <!--  GWT deps (from central repo) -->
+        <!-- GWT deps (from central repo) -->
 
         <dependency>
             <groupId>com.google.gwt</groupId>
@@ -142,8 +142,8 @@
             <artifactId>gwt-log</artifactId>
             <version>3.1.3</version>
         </dependency>
-        
-        <!--  Other clientside APIs  -->
+
+        <!-- Other clientside APIs -->
         <dependency>
             <groupId>com.extjs</groupId>
             <artifactId>gxt</artifactId>
@@ -169,12 +169,12 @@
             <version>1.2.1</version>
             <scope>provided</scope>
         </dependency>
-        
+
         <dependency>
-		    <groupId>com.google.guava</groupId>
-		    <artifactId>guava</artifactId>
-		    <version>r09</version>
-		</dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>r09</version>
+        </dependency>
 
         <!-- Rebar- client persistence -->
 
@@ -183,8 +183,8 @@
             <artifactId>rebar-appcache</artifactId>
             <version>${rebarVersion}</version>
         </dependency>
-        
-        
+
+
         <dependency>
             <groupId>com.bedatadriven.rebar</groupId>
             <artifactId>rebar-sql</artifactId>
@@ -204,32 +204,25 @@
         </dependency>
 
 
-        <!--  Dependency Injection Framework -->
-		
-		<dependency>
-		    <groupId>com.google.inject</groupId>
-		    <artifactId>guice</artifactId>
-		    <version>3.0</version>
-		</dependency>
+        <!-- Dependency Injection Framework -->
 
-		<dependency>
-		    <groupId>com.google.inject.extensions</groupId>
-		    <artifactId>guice-servlet</artifactId>
-		    <version>3.0</version>
-		</dependency>
-
-		<dependency>
-		    <groupId>com.google.gwt.inject</groupId>
-		    <artifactId>gin</artifactId>
-		    <version>1.5.0</version>
-		</dependency>
-
-        <!-- aopalliance is a transitive dependency of guice, but it there seems to be
-            a guice-2.0 artifact out there floating around with out a proper pom -->
         <dependency>
-            <groupId>aopalliance</groupId>
-            <artifactId>aopalliance</artifactId>
-            <version>1.0</version>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>3.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.inject.extensions</groupId>
+            <artifactId>guice-servlet</artifactId>
+            <version>3.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.gwt.inject</groupId>
+            <artifactId>gin</artifactId>
+            <version>1.5.0</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -252,7 +245,7 @@
             <version>3.5-beta5</version>
         </dependency>
 
-		<!-- PowerPoint export -->
+        <!-- PowerPoint export -->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-scratchpad</artifactId>
@@ -284,10 +277,8 @@
             <artifactId>commons-email</artifactId>
             <version>1.1</version>
             <exclusions>
-                <!--
-                Because the JDK1.6 already include the Java Activation API,
-                otherwise this could generate ClassLoading en Linkage errors
-                -->
+                <!-- Because the JDK1.6 already include the Java Activation 
+                    API, otherwise this could generate ClassLoading en Linkage errors -->
                 <exclusion>
                     <groupId>javax.activation</groupId>
                     <artifactId>activation</artifactId>
@@ -313,11 +304,11 @@
             </exclusions>
             <version>3.4.0.GA</version>
         </dependency>
-		<dependency>
-		    <groupId>com.jolbox</groupId>
-		    <artifactId>bonecp</artifactId>
-		    <version>0.7.1.RELEASE</version>
-		</dependency>
+        <dependency>
+            <groupId>com.jolbox</groupId>
+            <artifactId>bonecp</artifactId>
+            <version>0.7.1.RELEASE</version>
+        </dependency>
         <dependency>
             <groupId>geronimo-spec</groupId>
             <artifactId>geronimo-spec-jta</artifactId>
@@ -331,18 +322,12 @@
         </dependency>
 
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>1.3.148</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.4.2</version>
         </dependency>
 
-        <!-- Bean  Mapping and XML -->
+        <!-- Bean Mapping and XML -->
 
         <dependency>
             <groupId>net.sf.dozer</groupId>
@@ -374,13 +359,14 @@
             <artifactId>gson</artifactId>
             <version>1.6</version>
         </dependency>
-	    <dependency>
-	      <groupId>gson-gwt</groupId>
-	      <artifactId>gson-gwt</artifactId>
-	      <version>1.0</version>
-	    </dependency>
+        <dependency>
+            <groupId>gson-gwt</groupId>
+            <artifactId>gson-gwt</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
 
-        <!--  testing framework  -->
+        <!-- testing framework -->
 
         <dependency>
             <groupId>junit</groupId>
@@ -400,11 +386,6 @@
             <version>2.5.1</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-		    <groupId>com.mysql</groupId>
-		    <artifactId>management</artifactId>
-		    <version>5-0-12</version>
-		</dependency>
         <dependency>
             <groupId>org.xerial.thirdparty</groupId>
             <artifactId>sqlitejdbc-nested</artifactId>
@@ -427,8 +408,8 @@
             </resource>
         </resources>
 
-        <!-- Compile classes into the war
-               directory for hosted mode live editing -->
+        <!-- Compile classes into the war directory for hosted mode live 
+            editing -->
         <outputDirectory>${gwt.output.directory}/WEB-INF/classes</outputDirectory>
         <testSourceDirectory>src/test/java</testSourceDirectory>
         <plugins>
@@ -445,24 +426,24 @@
                 </configuration>
             </plugin>
 
-			<plugin>
-				<groupId>pl.project13.maven</groupId>
-				<artifactId>git-commit-id-plugin</artifactId>
-				<version>1.5</version>
-				<executions>
-					<execution>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>revision</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<prefix>git</prefix>
-					<dotGitDirectory>${project.basedir}/../.git</dotGitDirectory>
-				</configuration>
-			</plugin>
-						
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <prefix>git</prefix>
+                    <dotGitDirectory>${project.basedir}/../.git</dotGitDirectory>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -476,7 +457,7 @@
 
             </plugin>
 
-            <!--  configure the GWT-Maven plugin -->
+            <!-- configure the GWT-Maven plugin -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>gwt-maven-plugin</artifactId>
@@ -518,26 +499,17 @@
                             <disableClassMetadata>true</disableClassMetadata>
                             <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
                             <logLevel>INFO</logLevel>
-                            <!-- Takes WAY to long for all 12 permutations -->
-                            <!-- run with profile soyc enabled to generate maps for a single perm-->
-                            <soyc>false</soyc>
+                            <compileReport>true</compileReport>
                             <module>org.sigmah.ActivityInfoProduction</module>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-			<!-- <plugin>
-				<groupId>com.google.code</groupId>
-				<artifactId>crx-maven-plugin</artifactId>
-				<version>1.1.0</version>
-				<extensions>true</extensions>
-				<configuration>
-					<pemKey>${chrome-webapp.key}</pemKey>
-					<pemCert>${chrome-webapp.cert}</pemCert>
-					<excludes>WEB-INF/**</excludes>
-				</configuration>
-			</plugin> -->
-            
+            <!-- <plugin> <groupId>com.google.code</groupId> <artifactId>crx-maven-plugin</artifactId> 
+                <version>1.1.0</version> <extensions>true</extensions> <configuration> <pemKey>${chrome-webapp.key}</pemKey> 
+                <pemCert>${chrome-webapp.cert}</pemCert> <excludes>WEB-INF/**</excludes> 
+                </configuration> </plugin> -->
+
 
             <!-- Make sure we remove GWT-generated stuff in the war/ folder -->
             <plugin>
@@ -560,13 +532,17 @@
                         <fileset>
                             <directory>war/Sigmah</directory>
                         </fileset>
+                        <fileset>
+                            <directory>war/WEB-INF/lib</directory>
+                        </fileset>
                     </filesets>
                 </configuration>
             </plugin>
 
 
             <!-- Exclude GWT integration tests from the test phase -->
-            <!-- we want to run them during the integration-test phase with the gwt-maven plugin  -->
+            <!-- we want to run them during the integration-test phase with 
+                the gwt-maven plugin -->
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.9</version>
@@ -577,24 +553,25 @@
                     </excludes>
                     <failIfNoTests>false</failIfNoTests>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
-	                <systemPropertyVariables>
-			            <testDatabaseUrl>${testDatabaseUrl}</testDatabaseUrl>
-			            <testDatabaseUsername>${testDatabaseUsername}</testDatabaseUsername>
-			            <testDatabasePassword>${testDatabasePassword}</testDatabasePassword>
-		          	</systemPropertyVariables>
+                    <systemPropertyVariables>
+                        <testDatabaseUrl>${testDatabaseUrl}</testDatabaseUrl>
+                        <testDatabaseUsername>${testDatabaseUsername}</testDatabaseUsername>
+                        <testDatabasePassword>${testDatabasePassword}</testDatabasePassword>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-		
-				<!-- Include GWT compiler output in the war -->
-		
-				<configuration>
-					<warSourceDirectory>${basedir}/war</warSourceDirectory>
-					<warSourceExcludes>ActivityInfo/compile-report</warSourceExcludes>
-				</configuration>
-			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.1.1</version>
+
+                <!-- Include GWT compiler output in the war -->
+
+                <configuration>
+                    <warSourceDirectory>${basedir}/war</warSourceDirectory>
+                    <warSourceExcludes>ActivityInfo/compile-report,*.log</warSourceExcludes>
+                </configuration>
+            </plugin>
 
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -625,7 +602,8 @@
 
             <!-- Embedded web server for testing -->
             <!-- You can start by invoking mvn jetty:run -->
-            <!-- The server was also be started for the integration testing phase -->
+            <!-- The server was also be started for the integration testing 
+                phase -->
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>maven-jetty-plugin</artifactId>
@@ -634,11 +612,12 @@
                     <webAppSourceDirectory>${basedir}/war</webAppSourceDirectory>
                     <scanIntervalSeconds>0</scanIntervalSeconds>
                     <scanTargets>
-                        <!--<scanTarget>${basedir}/war/WEB-INF/classes</scanTarget>-->
+                        <!--<scanTarget>${basedir}/war/WEB-INF/classes</scanTarget> -->
                         <scanTarget>${basedir}/war/WEB-INF/web.xml</scanTarget>
                     </scanTargets>
                     <connectors>
-                        <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+                        <connector
+                            implementation="org.mortbay.jetty.nio.SelectChannelConnector">
                             <port>9090</port>
                             <integralPort>9095</integralPort>
                         </connector>
@@ -649,60 +628,85 @@
                 </configuration>
             </plugin>
             <plugin>
-            	<groupId>br.com.ingenieux</groupId>
-            	<artifactId>beanstalk-maven-plugin</artifactId>
-            	<version>0.2.2-bedatadriven</version>
-            	
-            	<configuration>
-            		<applicationName>activityinfo</applicationName>
-            		<s3Bucket>activityinfo-wars</s3Bucket>
-            		<s3Key>${project.version}-${maven.build.timestamp}</s3Key>
-            		
-            		<optionSettings>
-            		
-            			<optionSetting>
-            				<namespace>aws:autoscaling:launchconfiguration</namespace>
-            				<optionName>ImageId</optionName>
-            				<value>ami-8810e8e1</value>
-            			</optionSetting>
-            			<optionSetting>
-            				<namespace>aws:autoscaling:launchconfiguration</namespace>
-            				<optionName>EC2KeyName</optionName>
-            				<value>bedatadriven</value>
-            			</optionSetting>
-            			<optionSetting>
-            				<namespace>aws:elb:policies</namespace>
-            				<optionName>Stickiness Policy</optionName>
-            				<value>true</value>
-            			</optionSetting>
-            			<optionSetting>
-            				<namespace>aws:elb:policies</namespace>
-            				<optionName>Stickiness Cookie Expiration</optionName>
-            				<value>3600</value>
-            			</optionSetting>
-            			<optionSetting>
-            				<namespace>aws:elasticbeanstalk:application:environment</namespace>
-            				<optionName>PARAM1</optionName>
-            				<value>activityinfo-conf</value>
-            			</optionSetting>
-            			<optionSetting>
-            				<namespace>aws:elasticbeanstalk:application:environment</namespace>
-            				<optionName>PARAM2</optionName>
-            				<value>activityinfo.21test.properties</value>
-            			</optionSetting>
-	          			<optionSetting>
-							<namespace>aws:elasticbeanstalk:application:environment</namespace>
-							<optionName>AWS_ACCESS_KEY_ID</optionName>
-							<value>${aws.accessKey}</value>
-						</optionSetting>
-						<optionSetting>
-							<namespace>aws:elasticbeanstalk:application:environment</namespace>
-							<optionName>AWS_SECRET_KEY</optionName>
-							<value>${aws.secretKey}</value>
-						</optionSetting>
-            		</optionSettings>
-            	</configuration>
-            
+                <groupId>br.com.ingenieux</groupId>
+                <artifactId>beanstalk-maven-plugin</artifactId>
+                <version>0.2.2-bedatadriven</version>
+
+                <configuration>
+                    <applicationName>activityinfo</applicationName>
+                    <s3Bucket>activityinfo-wars</s3Bucket>
+                    <s3Key>${project.version}-${maven.build.timestamp}</s3Key>
+
+                    <optionSettings>
+
+                        <optionSetting>
+                            <namespace>aws:autoscaling:launchconfiguration</namespace>
+                            <optionName>ImageId</optionName>
+                            <value>ami-8810e8e1</value>
+                        </optionSetting>
+                        <optionSetting>
+                            <namespace>aws:autoscaling:launchconfiguration</namespace>
+                            <optionName>EC2KeyName</optionName>
+                            <value>bedatadriven</value>
+                        </optionSetting>
+                        <optionSetting>
+                            <namespace>aws:elb:policies</namespace>
+                            <optionName>Stickiness Policy</optionName>
+                            <value>true</value>
+                        </optionSetting>
+                        <optionSetting>
+                            <namespace>aws:elb:policies</namespace>
+                            <optionName>Stickiness Cookie Expiration</optionName>
+                            <value>3600</value>
+                        </optionSetting>
+                        <optionSetting>
+                            <namespace>aws:elasticbeanstalk:application:environment</namespace>
+                            <optionName>PARAM1</optionName>
+                            <value>activityinfo-conf</value>
+                        </optionSetting>
+                        <optionSetting>
+                            <namespace>aws:elasticbeanstalk:application:environment</namespace>
+                            <optionName>PARAM2</optionName>
+                            <value>activityinfo.21test.properties</value>
+                        </optionSetting>
+                        <optionSetting>
+                            <namespace>aws:elasticbeanstalk:application:environment</namespace>
+                            <optionName>AWS_ACCESS_KEY_ID</optionName>
+                            <value>${aws.accessKey}</value>
+                        </optionSetting>
+                        <optionSetting>
+                            <namespace>aws:elasticbeanstalk:application:environment</namespace>
+                            <optionName>AWS_SECRET_KEY</optionName>
+                            <value>${aws.secretKey}</value>
+                        </optionSetting>
+                    </optionSettings>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.0-beta-3</version>
+                <configuration>
+                    <reportPlugins>
+                        <plugin>
+                            <groupId>org.codehaus.mojo</groupId>
+                            <artifactId>gwt-maven-plugin</artifactId>
+                            <version>2.3.0-1</version>
+                            <configuration>
+                                <modules>
+                                    <module>org.sigmah.ActivityInfoProduction</module>
+                                </modules>
+                            </configuration>
+                            <reportSets>
+                                <reportSet>
+                                    <reports>
+                                        <report>compile-report</report>
+                                    </reports>
+                                </reportSet>
+                            </reportSets>
+                        </plugin>
+                    </reportPlugins>
+                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -715,19 +719,36 @@
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-		<version>2.9</version>
+                <version>2.9</version>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
                 <version>2.0-beta-2</version>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.1.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>gwt-maven-plugin</artifactId>
+                <version>2.3.0-1</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>compile-report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
         </plugins>
     </reporting>
 
     <profiles>
-        <!-- Build the Application Module with only permutations for
-    FireFox and logging enabled for testing purposes -->
+        <!-- Build the Application Module with only permutations for FireFox 
+            and logging enabled for testing purposes -->
         <profile>
             <id>fftest</id>
             <properties>
@@ -766,8 +787,8 @@
                 </plugins>
             </build>
         </profile>
-        <!-- Build the Application Module with only permutations for
-              IE6 and logging enabled for testing purposes -->
+        <!-- Build the Application Module with only permutations for IE6 
+            and logging enabled for testing purposes -->
         <profile>
             <id>ie6test</id>
             <build>
@@ -796,44 +817,44 @@
             </build>
         </profile>
 
-		<profile>
-			<id>continuous-deployment</id>
-			<properties>
-            	<display.version>${project.version}-b${BUILD_NUMBER}</display.version>
+        <profile>
+            <id>continuous-deployment</id>
+            <properties>
+                <display.version>${project.version}-b${BUILD_NUMBER}</display.version>
             </properties>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>br.com.ingenieux</groupId>
-						<artifactId>beanstalk-maven-plugin</artifactId>
-						<version>0.2.2-bedatadriven</version>
-		
-						<configuration>
-							<applicationName>activityinfo</applicationName>
-							<s3Bucket>activityinfo-wars</s3Bucket>
-							<s3Key>${project.version}-${git.commit.id.abbrev}-${BUILD_NUMBER}.war</s3Key>
-							<versionLabel>${project.version}-${git.commit.id.abbrev}-${BUILD_NUMBER}</versionLabel>
-							<environmentName>activityinfo-latest</environmentName>
-							<cnamePrefix>activityinfo-latest</cnamePrefix>
-						</configuration>
-						<executions>
-					    	<execution>
-					            <id>default</id>
-					            <phase>deploy</phase>
-					            <goals>
-					              <goal>upload-source-bundle</goal>
-					              <goal>create-application-version</goal>
-					              <goal>update-environment-version</goal>
-					            </goals>
-					    	</execution>
-					  	</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>br.com.ingenieux</groupId>
+                        <artifactId>beanstalk-maven-plugin</artifactId>
+                        <version>0.2.2-bedatadriven</version>
 
-		
+                        <configuration>
+                            <applicationName>activityinfo</applicationName>
+                            <s3Bucket>activityinfo-wars</s3Bucket>
+                            <s3Key>${project.version}-b${BUILD_NUMBER}-${git.commit.id.abbrev}.war</s3Key>
+                            <versionLabel>${project.version}-b${BUILD_NUMBER}-${git.commit.id.abbrev}</versionLabel>
+                            <environmentName>activityinfo-latest</environmentName>
+                            <cnamePrefix>activityinfo-latest</cnamePrefix>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>default</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>upload-source-bundle</goal>
+                                    <goal>create-application-version</goal>
+                                    <goal>update-environment-version</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+
+
         <!-- Automatically engaged during maven release cycle -->
         <profile>
             <id>release-build</id>
@@ -844,7 +865,7 @@
                 </property>
             </activation>
             <properties>
-            	<display.version>${project.version}</display.version>
+                <display.version>${project.version}</display.version>
             </properties>
             <build>
                 <plugins>
@@ -866,9 +887,9 @@
                                 <id>default</id>
                                 <phase>deploy</phase>
                                 <goals>
-                                  <goal>upload-source-bundle</goal>
-                                  <goal>create-application-version</goal>
-                                  <goal>create-environment</goal>
+                                    <goal>upload-source-bundle</goal>
+                                    <goal>create-application-version</goal>
+                                    <goal>create-environment</goal>
                                 </goals>
                             </execution>
                         </executions>
@@ -876,10 +897,10 @@
                 </plugins>
             </build>
         </profile>
-	
 
-        <!-- Build the Application Module with only permutations for
- 			 Safari and logging enabled for testing purposes -->
+
+        <!-- Build the Application Module with only permutations for Safari 
+            and logging enabled for testing purposes -->
         <profile>
             <id>safari</id>
             <build>
@@ -908,7 +929,7 @@
                 </plugins>
             </build>
         </profile>
-        
+
         <profile>
             <id>login</id>
             <build>
@@ -926,8 +947,8 @@
                 </plugins>
             </build>
         </profile>
-        <!-- Build the Application Module with a single permutation but with soyc
-             enabled -->
+        <!-- Build the Application Module with a single permutation but with 
+            soyc enabled -->
         <profile>
             <id>ai-soyc</id>
             <build>
@@ -945,7 +966,7 @@
                 </plugins>
             </build>
         </profile>
-       	<profile>
+        <profile>
             <id>schemagen</id>
             <build>
                 <plugins>
@@ -954,7 +975,9 @@
                         <artifactId>maven-jaxb-schemagen-plugin</artifactId>
                         <version>1.3-SNAPSHOT</version>
                         <configuration>
-                            <project>${project}</project>
+                            <project>
+                                ${project}
+                            </project>
                             <destdir>${project.build.directory}/schemas</destdir>
                             <srcdir>${project.build.sourceDirectory}/org/sigmah/shared/report/model</srcdir>
                             <verbose>true</verbose>

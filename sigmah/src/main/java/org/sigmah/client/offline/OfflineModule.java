@@ -10,7 +10,8 @@ import java.sql.Connection;
 import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.offline.command.LocalDispatcher;
 import org.sigmah.client.offline.command.handler.LocalCreateEntityHandler;
-import org.sigmah.client.offline.ui.OfflinePresenter;
+import org.sigmah.client.offline.sync.Synchronizer;
+import org.sigmah.client.offline.sync.SynchronizerImpl;
 import org.sigmah.client.offline.ui.OfflineView;
 import org.sigmah.shared.command.GetAdminEntities;
 import org.sigmah.shared.command.GetSchema;
@@ -38,8 +39,8 @@ public class OfflineModule extends AbstractGinModule {
     @Override
     protected void configure() {
 
-        bind(OfflinePresenter.View.class).to(OfflineView.class);
-        bind(OfflineGateway.class).to(OfflineImpl.class);
+        bind(OfflineController.View.class).to(OfflineView.class);
+        bind(Synchronizer.class).to(SynchronizerImpl.class);
 
         //DAOs for off-line
         bind(SqlDialect.class).to(SqliteDialect.class).in(Singleton.class);

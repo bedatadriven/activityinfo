@@ -24,7 +24,7 @@ import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.mock.DispatcherStub;
 import org.sigmah.client.mock.DummyData;
 import org.sigmah.client.mock.MockEventBus;
-import org.sigmah.client.mock.MockStateManager;
+import org.sigmah.client.mock.StateManagerStub;
 import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.common.grid.ConfirmCallback;
 import org.sigmah.client.page.common.toolbar.UIActions;
@@ -68,7 +68,7 @@ public class DesignTest {
         UIConstants constants = createNiceMock(UIConstants.class);
         replay(constants);
 
-        DesignPresenter designer = new DesignPresenter(eventBus, service, new MockStateManager(),
+        DesignPresenter designer = new DesignPresenter(eventBus, service, new StateManagerStub(),
                 view, constants);
         designer.go(schema.getDatabaseById(1));
 
@@ -112,7 +112,7 @@ public class DesignTest {
         UIConstants constants = createNiceMock(UIConstants.class);
         replay(constants);
 
-        DesignPresenter designer = new DesignPresenter(eventBus, service, new MockStateManager(),
+        DesignPresenter designer = new DesignPresenter(eventBus, service, new StateManagerStub(),
                 view, constants);
         designer.go(schema.getDatabaseById(1));
 
@@ -166,7 +166,7 @@ public class DesignTest {
         UIConstants constants = createNiceMock(UIConstants.class);
         replay(constants);
 
-        DesignPresenter designer = new DesignPresenter(new MockEventBus(), service, new MockStateManager(),
+        DesignPresenter designer = new DesignPresenter(new MockEventBus(), service, new StateManagerStub(),
                 view, constants);
         designer.go(schema.getDatabaseById(1));
 
@@ -201,7 +201,7 @@ public class DesignTest {
         UIConstants constants = createNiceMock(UIConstants.class);
         replay(constants);
 
-        DesignPresenter designer = new DesignPresenter(new MockEventBus(), service, new MockStateManager(),
+        DesignPresenter designer = new DesignPresenter(new MockEventBus(), service, new StateManagerStub(),
                 view, constants);
         designer.go(schema.getDatabaseById(1));
 
@@ -250,7 +250,7 @@ public class DesignTest {
         replay(constants);
 
         // Class under test
-        DesignPresenter designer = new DesignPresenter(eventBus, service, new MockStateManager(), view, constants);
+        DesignPresenter designer = new DesignPresenter(eventBus, service, new StateManagerStub(), view, constants);
 
         // VERIFY that when an activity is added, it appears at the end of the list with two
         // sub folders

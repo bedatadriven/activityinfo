@@ -14,7 +14,7 @@ import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.dispatch.remote.Direct;
 import org.sigmah.client.dispatch.remote.DirectDispatcher;
 import org.sigmah.client.dispatch.remote.RemoteDispatcher;
-import org.sigmah.client.offline.ui.OfflinePresenter;
+import org.sigmah.client.offline.OfflineController;
 import org.sigmah.client.page.Frame;
 import org.sigmah.client.page.PageStateSerializer;
 import org.sigmah.client.page.app.AppFrameSet;
@@ -22,8 +22,8 @@ import org.sigmah.client.page.charts.ChartPage;
 import org.sigmah.client.page.charts.ChartPagePresenter;
 import org.sigmah.client.page.common.GalleryPage;
 import org.sigmah.client.page.common.GalleryView;
-import org.sigmah.client.util.state.GXTStateManager;
-import org.sigmah.client.util.state.IStateManager;
+import org.sigmah.client.util.state.GxtStateProvider;
+import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.RemoteCommandServiceAsync;
 
 import com.google.gwt.inject.client.AbstractGinModule;
@@ -35,13 +35,13 @@ public class AppModule extends AbstractGinModule {
     protected void configure() {
         bind(Authentication.class).toProvider(AuthProvider.class).in(Singleton.class);
         bind(RemoteCommandServiceAsync.class).toProvider(RemoteServiceProvider.class).in(Singleton.class);
-        bind(Dispatcher.class).to(OfflinePresenter.class).in(Singleton.class);
+        bind(Dispatcher.class).to(OfflineController.class).in(Singleton.class);
         bind(Dispatcher.class).annotatedWith(Direct.class).to(DirectDispatcher.class).in(Singleton.class);
         bind(DispatchEventSource.class).to(RemoteDispatcher.class);
         bind(PageStateSerializer.class).in(Singleton.class);
         bind(EventBus.class).to(LoggingEventBus.class).in(Singleton.class);
 
-        bind(IStateManager.class).to(GXTStateManager.class);
+        bind(StateProvider.class).to(GxtStateProvider.class);
         bind(Frame.class).annotatedWith(Root.class).to(AppFrameSet.class);
         bind(GalleryView.class).to(GalleryPage.class);
         bind(ChartPagePresenter.View.class).to(ChartPage.class);

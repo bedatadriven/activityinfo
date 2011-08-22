@@ -5,9 +5,9 @@
 
 package org.sigmah.server;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.servlet.GuiceServletContextListener;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+
 import org.apache.log4j.Logger;
 import org.sigmah.server.auth.AuthenticationModule;
 import org.sigmah.server.bootstrap.BootstrapModule;
@@ -17,15 +17,15 @@ import org.sigmah.server.endpoint.export.ExportModule;
 import org.sigmah.server.endpoint.gwtrpc.GwtRpcModule;
 import org.sigmah.server.endpoint.jsonrpc.JsonRpcModule;
 import org.sigmah.server.endpoint.kml.KmlModule;
-import org.sigmah.server.endpoint.wfs.WfsModule;
 import org.sigmah.server.mail.MailModule;
 import org.sigmah.server.report.ReportModule;
 import org.sigmah.server.util.BeanMappingModule;
 import org.sigmah.server.util.TemplateModule;
 import org.sigmah.server.util.logging.LoggingModule;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.servlet.GuiceServletContextListener;
 
 
 /**
@@ -66,7 +66,6 @@ public class StartupListener extends GuiceServletContextListener {
                 new BootstrapModule(),
                 new GwtRpcModule(),
                 new ExportModule(),
-                new WfsModule(),
                 new JsonRpcModule(),
                 new KmlModule());
 
