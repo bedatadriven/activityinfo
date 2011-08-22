@@ -223,6 +223,7 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
 								
 								int databaseId =  row.getInt("DatabaseId");
 								UserDatabaseDTO database = databaseMap.get(databaseId);
+								database.getProjects().add(project);
 								project.setUserDatabase(database);
 								projects.put(project.getId(), project);
 							}

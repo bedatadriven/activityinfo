@@ -313,7 +313,7 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
 		showLockedPeriods.show();
 		showLockedPeriods.setActivityFilter(activity);
     	showLockedPeriods.setValue(list);
-    	showLockedPeriods.setTitle(I18N.MESSAGES.showLockedPeriodsTitle
+    	showLockedPeriods.setHeader(I18N.MESSAGES.showLockedPeriodsTitle
     			(activity.getDatabase().getName(), 
     					currentSite.getProjectName(), 
     					activity.getName()));

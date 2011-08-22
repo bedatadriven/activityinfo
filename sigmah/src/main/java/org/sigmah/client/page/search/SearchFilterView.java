@@ -48,7 +48,7 @@ public class SearchFilterView extends LayoutContainer {
 
 	private void addHeaderLabel() {
 		labelHeader = new LabelField();
-		labelHeader.setText("Showing result for:");
+		labelHeader.setText(I18N.CONSTANTS.showingSearchResultFor());
 		labelHeader.setStylePrimaryName("filterSummary");
 		add(labelHeader);
 	}

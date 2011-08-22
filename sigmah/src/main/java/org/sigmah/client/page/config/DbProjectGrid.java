@@ -3,6 +3,7 @@ package org.sigmah.client.page.config;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.dialog.FormDialogCallback;
@@ -59,7 +60,7 @@ public class DbProjectGrid extends
     
 	@Override
 	protected void initToolBar() {
-        toolBar.addButton(UIActions.add, messages.addPartner(), icons.add());
+        toolBar.addButton(UIActions.add, I18N.CONSTANTS.addProject(), icons.add()); 
         toolBar.addButton(UIActions.delete, messages.delete(), icons.delete());
 	}
 
@@ -67,7 +68,7 @@ public class DbProjectGrid extends
 	public void init(DbProjectEditor editor, UserDatabaseDTO db,
 			ListStore<ProjectDTO> store) {
         super.init(editor, store);
-        this.setHeading(db.getName() + " - " + "Projectsz");
+        this.setHeading(I18N.MESSAGES.projectsForDatabase(db.getName())); 
 	}
 
 	@Override
