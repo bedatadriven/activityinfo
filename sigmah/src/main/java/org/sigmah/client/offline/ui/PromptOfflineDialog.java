@@ -71,7 +71,7 @@ public class PromptOfflineDialog extends Dialog {
 		addButton(new Button(I18N.CONSTANTS.notNow(), new SelectionListener<ButtonEvent>() {
 
 			@Override
-			public void componentSelected(ButtonEvent ce) {
+			public void componentSelected(ButtonEvent ce) { 
 				askMeLater();
 			}
 			

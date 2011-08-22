@@ -228,7 +228,7 @@
 
 	<!-- id=1 NFI Distribution at Penekusu, Sud Kivu 2 jan 2009 -->
 
-	<location locationId="1" name="Penekusu" locationTypeId="1"
+	<location locationId="1" name="Penekusu Kivu" locationTypeId="1"
 		X="1.532" Y="27.323" DateCreated="2009-02-01" DateEdited="2009-02-01" />
 	<locationAdminLink locationId="1" adminEntityId="2" />
 	<locationAdminLink locationId="1" adminEntityId="12" />

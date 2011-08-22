@@ -87,6 +87,8 @@ public class PivotHibernateDAO implements PivotDAO {
                 appendIdCriteria(where, "Site.PartnerId", filter.getRestrictions(type), parameters);
             } else if (type == DimensionType.Project) {
                 appendIdCriteria(where, "Site.ProjectId", filter.getRestrictions(type), parameters);
+            } else if (type == DimensionType.Location) {
+                appendIdCriteria(where, "Site.LocationId", filter.getRestrictions(type), parameters);
             } else if (type == DimensionType.AdminLevel) {
                 where.append(" AND Site.LocationId IN " +
                         "(SELECT Link.LocationId FROM LocationAdminLink Link WHERE 1=1 ");
@@ -398,6 +400,11 @@ public class PivotHibernateDAO implements PivotDAO {
                 
             } else if (dimension.getType() == DimensionType.Project) {
             	dimColumns.append(", Site.ProjectId, Project.Name");
+            	bundlers.add(new EntityBundler(dimension, nextColumnIndex));
+            	nextColumnIndex += 2;
+
+            } else if (dimension.getType() == DimensionType.Location) {
+            	dimColumns.append(", Site.LocationId, Location.Name");
             	bundlers.add(new EntityBundler(dimension, nextColumnIndex));
             	nextColumnIndex += 2;
 

@@ -239,4 +239,7 @@ public interface IconImageBundle extends ImageBundle {
     AbstractImagePrototype none();
 
     @Resource(value = "indicators.png")
-    AbstractImagePrototype indicators();}
+    AbstractImagePrototype indicators();
+
+    AbstractImagePrototype location();
+}

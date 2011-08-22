@@ -94,6 +94,7 @@ public class SearchTest {
 				assertHasDimension(DimensionType.Project, result);
 				assertHasDimension(DimensionType.AttributeGroup, result);
 				assertHasDimension(DimensionType.Indicator, result);
+				assertHasDimension(DimensionType.Location, result);
 				
 				assertHasRestrictionWithIds(DimensionType.AdminLevel, result, 2, 3);
 				assertHasRestrictionWithIds(DimensionType.Partner, result, 3);
@@ -101,6 +102,7 @@ public class SearchTest {
 				//assertHasRestrictionWithIds(DimensionType.Site, result, 9);
 				assertHasRestrictionWithIds(DimensionType.AttributeGroup, result, 3);
 				assertHasRestrictionWithIds(DimensionType.Indicator, result, 675);
+				assertHasRestrictionWithIds(DimensionType.Location, result, 1);
 			}
 			
 			@Override

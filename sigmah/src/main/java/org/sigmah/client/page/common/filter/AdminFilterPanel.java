@@ -30,6 +30,7 @@ import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 /**
