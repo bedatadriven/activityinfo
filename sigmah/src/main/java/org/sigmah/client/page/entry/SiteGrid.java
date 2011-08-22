@@ -319,4 +319,9 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
     					activity.getName()));
 	}
 
+	@Override
+	public void setSite(SiteDTO selectedSite) {
+		currentSite = selectedSite;
+	}
+
 }

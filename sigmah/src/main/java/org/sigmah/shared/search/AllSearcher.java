@@ -23,7 +23,7 @@ public class AllSearcher {
 		searchers.add(new ProjectSearcher());
 		searchers.add(new AdminEntitySearcher());
 		searchers.add(new AttributeGroupSearcher());
-		searchers.add(new SiteSearcher());
+		//searchers.add(new SiteSearcher());
 		searchers.add(new IndicatorSearcher());
 	}
 	

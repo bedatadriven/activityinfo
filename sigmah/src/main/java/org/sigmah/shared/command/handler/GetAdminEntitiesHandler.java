@@ -5,12 +5,12 @@ import java.util.List;
 
 import org.sigmah.shared.command.GetAdminEntities;
 import org.sigmah.shared.command.result.AdminEntityResult;
-import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
+import com.bedatadriven.rebar.sql.client.SqlException;
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
 import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
@@ -74,6 +74,12 @@ public class GetAdminEntitiesHandler implements CommandHandlerAsync<GetAdminEnti
 					entities.add(toEntity(row));
 				}
 				callback.onSuccess(new AdminEntityResult(entities));
+			}
+
+			@Override
+			public boolean onFailure(SqlException e) {
+				// TODO Auto-generated method stub
+				return super.onFailure(e);
 			}
 		});
 	}

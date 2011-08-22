@@ -70,6 +70,9 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 		
 		initializeComponent();
 		
+		createListStore();
+		createActionToolbar();
+		createAddLockedPeriodDialog();
 		createGrid();
 	}
 
@@ -100,10 +103,6 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 	private void initializeComponent() {
 		setHeading("Manage time locks on databases, projects and activities");
 		setLayout(new FitLayout());
-
-		createListStore();
-		createActionToolbar();
-		createAddLockedPeriodDialog();
 	}
 
 	private void createListStore() {
@@ -133,6 +132,8 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 		toolbarActions.addDeleteButton();
 		toolbarActions.addCreateButton();
 		toolbarActions.addSaveSplitButton();
+		toolbarActions.setDeleteEnabled(false);
+		toolbarActions.setUpdateEnabled(false);
 		this.setTopComponent(toolbarActions);
 	}
 

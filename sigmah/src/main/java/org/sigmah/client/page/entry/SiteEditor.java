@@ -75,6 +75,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
         public AsyncMonitor getLoadingMonitor();
         void setSelection(int siteId);
 		public void showLockedPeriods(List<LockedPeriodDTO> list);
+		public void setSite(SiteDTO selectedSite);
     }
 
     private final View view;
@@ -294,6 +295,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
 
     public void onSelectionChanged(SiteDTO selectedSite) {
     	this.currentSite = selectedSite;
+    	view.setSite(selectedSite);
     	
         if (selectedSite == null) {
             view.setActionEnabled(UIActions.delete, false);

@@ -13,11 +13,14 @@ import org.sigmah.shared.dto.AttributeGroupDTO;
 import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.LocationTypeDTO;
+import org.sigmah.shared.dto.LockedPeriodDTO;
 import org.sigmah.shared.dto.PartnerDTO;
+import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlException;
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
@@ -58,6 +61,7 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
         final Map<Integer, PartnerDTO> partners = new HashMap<Integer, PartnerDTO>();
         final Map<Integer, ActivityDTO> activities = new HashMap<Integer, ActivityDTO>();
         final Map<Integer, AttributeGroupDTO> attributeGroups = new HashMap<Integer, AttributeGroupDTO>();
+        final Map<Integer, ProjectDTO> projects = new HashMap<Integer, ProjectDTO>();
 
         SqlTransaction tx;
         CommandContext context;
@@ -167,7 +171,7 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
 				@Override
 				public void onSuccess(SqlTransaction tx, SqlResultSet results) {
 			
-					for(SqlResultSetRow row : results.getRows()) {
+				    for(SqlResultSetRow row : results.getRows()) {
 					    UserDatabaseDTO db = new UserDatabaseDTO();
 	                    db.setId( row.getInt("DatabaseId") );
 	                    db.setName( row.getString("Name") );
@@ -191,17 +195,96 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
 					if(!databaseMap.isEmpty()) {
 			            joinPartnersToDatabases();
 
+			            loadProjects();
 			            loadActivities();
 			            loadIndicators();
 			            loadAttributeGroups();
 			            loadAttributes();
 			            joinAttributesToActivities();
+			            loadLockedPeriods();
 					}
 					
 				}
 			});
         }
-        private void joinPartnersToDatabases() {
+        
+        protected void loadProjects() {
+        	SqlQuery.select("Name, ProjectId, Description, DatabaseId")
+        			.from("Project")
+        	
+        			.execute(tx, new SqlResultCallback() {
+						@Override
+						public void onSuccess(SqlTransaction tx, SqlResultSet results) {
+							for (SqlResultSetRow row : results.getRows()) {
+								ProjectDTO project = new ProjectDTO();
+								project.setName(row.getString("Name"));
+								project.setId(row.getInt("ProjectId"));
+								project.setDescription(row.getString("Description"));
+								
+								int databaseId =  row.getInt("DatabaseId");
+								UserDatabaseDTO database = databaseMap.get(databaseId);
+								project.setUserDatabase(database);
+								projects.put(project.getId(), project);
+							}
+						}
+					});
+		}
+
+		protected void loadLockedPeriods() {
+            SqlQuery.select("FromDate, ToDate, Enabled, Name, LockedPeriodId, UserDatabaseId, ActivityId, ProjectId")
+					.from("LockedPeriod")
+					
+					.execute(tx, new SqlResultCallback() {
+						
+						@Override
+						public void onSuccess(SqlTransaction tx, SqlResultSet results) {
+							for (SqlResultSetRow row : results.getRows()) {
+								LockedPeriodDTO lockedPeriod = new LockedPeriodDTO();
+								
+								lockedPeriod.setFromDate(row.getDate("FromDate"));
+								lockedPeriod.setToDate(row.getDate("ToDate"));
+								lockedPeriod.setEnabled(row.getBoolean("Enabled"));
+								lockedPeriod.setName(row.getString("Name"));
+								lockedPeriod.setId(row.getInt("LockedPeriodId"));
+								
+								boolean parentFound = false;
+								
+								if (!row.isNull("ActivityId")) {
+									Integer activityId = row.getInt("ActivityId");
+									ActivityDTO activity = activities.get(activityId);
+									activity.getLockedPeriods().add(lockedPeriod);
+									lockedPeriod.setActivity(activity);
+									parentFound=true;
+								}
+								if (!row.isNull("UserDatabaseId")) { 
+									Integer databaseId = row.getInt("UserDatabaseId");
+									UserDatabaseDTO database = databaseMap.get(databaseId);
+									database.getLockedPeriods().add(lockedPeriod);
+									lockedPeriod.setUserDatabase(database);
+									parentFound=true;
+								}
+								if (!row.isNull("ProjectID")) {
+									Integer projectId = row.getInt("ProjectId");
+									ProjectDTO project = projects.get(projectId);
+									project.getLockedPeriods().add(lockedPeriod);
+									lockedPeriod.setProject(project);
+									parentFound=true;
+								}
+								
+								if (!parentFound) {
+									Log.debug("Zombie lockedPeriod: No parent (UserDatabase/Activity/Project) found for LockedPeriod with Id=" + lockedPeriod.getId()); 
+								}
+							}
+						}
+
+						@Override
+						public boolean onFailure(SqlException e) {
+							return super.onFailure(e);
+						}
+					});
+		}
+        
+		private void joinPartnersToDatabases() {
             SqlQuery query = SqlQuery.select("d.DatabaseId","d.PartnerId", "p.Name")
                 .from("PartnerInDatabase", "d")
                 .leftJoin("Partner", "p").on("d.PartnerId = p.PartnerId");
@@ -259,12 +342,12 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
                     UserDatabaseDTO database = databaseMap.get(databaseId);
                     activity.setDatabase(database);
                     database.getActivities().add(activity);
-                    activities.put(activity.getId(), activity);					
+                    activities.put(activity.getId(), activity);
 				}
             });
         }
 
-        public void loadIndicators() {
+		public void loadIndicators() {
             SqlQuery query = SqlQuery.select("IndicatorId, Name, Category, ListHeader, Description, Aggregation",
                      "Units, CollectIntervention, CollectMonitoring, ActivityId")
                     .from("Indicator")
