@@ -36,5 +36,6 @@ public interface SearchResources extends ClientBundle {
 		String link();
 		String panelEntityResults();
 		String filterView();
+		String searchField();
 	}
 }
