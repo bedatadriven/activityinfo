@@ -133,7 +133,6 @@ public class ListPresenterBase<M extends DTO, L extends List<M>, P extends DTO, 
 
 	@Override
 	public void onStartCreate(StartCreateEvent createEvent) {
-		// TODO Auto-generated method stub
-		
+		view.startCreate();
 	}
 }

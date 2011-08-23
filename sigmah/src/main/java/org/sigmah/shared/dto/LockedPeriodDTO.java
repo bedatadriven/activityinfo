@@ -80,6 +80,7 @@ public class LockedPeriodDTO extends BaseModelData implements EntityDTO {
 
 	
 	public void setActivity(ActivityDTO activity) {
+		set("parentName", activity.getName());
 		this.activity = activity;
 	}
 
@@ -92,6 +93,7 @@ public class LockedPeriodDTO extends BaseModelData implements EntityDTO {
 	}
 
 	public void setUserDatabase(UserDatabaseDTO userDatabase) {
+		set("parentName", userDatabase.getName());
 		this.userDatabase = userDatabase;
 	}
 
@@ -100,6 +102,7 @@ public class LockedPeriodDTO extends BaseModelData implements EntityDTO {
 	}
 
 	public void setProject(ProjectDTO project) {
+		set("parentName", project.getName());
 		this.project = project;
 	}
 	
@@ -118,17 +121,7 @@ public class LockedPeriodDTO extends BaseModelData implements EntityDTO {
 	}
 	
 	public String getParentName() {
-		if (getProject() != null) {
-			return getProject().getName();
-		}
-		if (getActivity() != null) {
-			return getActivity().getName();
-		}
-		if (getUserDatabase() != null) {
-			return getUserDatabase().getName();
-		}
-		
-		return null;
+		return (String)get("parentName");
 	}
 	
 	public boolean fallsWithinPeriod(Date date) {

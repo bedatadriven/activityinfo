@@ -8,6 +8,7 @@ package org.sigmah.client.page.entry.editor;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.PartnerDTO;
+import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.SiteDTO;
 
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -26,7 +27,8 @@ public class ActivityFieldSet extends AbstractFieldSet {
 
     public ActivityFieldSet(final ActivityDTO activity,
                             ListStore<PartnerDTO> partnerStore,
-                            ListStore<SiteDTO> assessmentStore) {
+                            ListStore<SiteDTO> assessmentStore, 
+                            ListStore<ProjectDTO> projectStore) {
         super(I18N.CONSTANTS.activity(), 100, 200);
 
         TextField<String> databaseField = new TextField<String>();
@@ -83,6 +85,18 @@ public class ActivityFieldSet extends AbstractFieldSet {
 			add(dateField2);
 
 		}
+		
+		ComboBox<ProjectDTO> comboboxProjects = new ComboBox<ProjectDTO>();
+		
+		comboboxProjects.setName("project");
+		comboboxProjects.setDisplayField("name");
+		comboboxProjects.setEditable(false);
+		comboboxProjects.setStore(projectStore);
+		comboboxProjects.setTriggerAction(ComboBox.TriggerAction.ALL);
+		comboboxProjects.setFieldLabel(I18N.CONSTANTS.project());
+		comboboxProjects.setForceSelection(true);
+		comboboxProjects.setAllowBlank(false);
+		add(comboboxProjects);
 
 //		if(activity.getLocationType().getBoundAdminLevelId() == null) {
 //			ComboBox<SiteDTO> assessmentCombo = new AssessmentCombo(activity.getDatabase().getCountry());

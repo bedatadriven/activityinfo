@@ -3,6 +3,7 @@ package org.sigmah.shared.search;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sigmah.shared.domain.Location;
 import org.sigmah.shared.report.model.DimensionType;
 
 import com.bedatadriven.rebar.sql.client.SqlException;
@@ -13,19 +14,18 @@ import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class GenericSearcher implements Searcher<Object> {
-	private DimensionType dimension;
-	
-	public GenericSearcher(DimensionType dimension) {
-		this.dimension = dimension;
-	}
+/*
+ * LocationId is LocationID (note two capitals at Id)
+ */
+public class LocationSearcher implements
+		Searcher<Location> {
 
 	@Override
 	public void search(String testQuery, SqlTransaction tx,
 			final AsyncCallback<List<Integer>> callback) {
 		final List<Integer> ids = new ArrayList<Integer>();
-		String tableName = dimension.toString();
-		final String primaryKey = tableName + "Id";
+		String tableName = "Location";
+		final String primaryKey = "LocationID";
 		
 		SqlQuery
 				.select(primaryKey)
@@ -51,7 +51,7 @@ public class GenericSearcher implements Searcher<Object> {
 
 	@Override
 	public DimensionType getDimensionType() {
-		return dimension;
+		return DimensionType.Location;
 	}
 
 }

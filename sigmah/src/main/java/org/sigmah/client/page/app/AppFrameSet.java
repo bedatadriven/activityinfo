@@ -19,6 +19,7 @@ import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.charts.ChartPageState;
+import org.sigmah.client.page.common.SearchField;
 import org.sigmah.client.page.common.widget.LoadingPlaceHolder;
 import org.sigmah.client.page.config.DbListPageState;
 import org.sigmah.client.page.entry.SiteGridPageState;
@@ -31,11 +32,13 @@ import org.sigmah.client.page.welcome.WelcomePageState;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.KeyListener;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Viewport;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
@@ -131,15 +134,20 @@ public class AppFrameSet implements Frame {
     }
 
 	private void addSearchBox() {
-		final TextField<String> searchBox = new TextField<String>();
+		final SearchField searchBox = new SearchField();
         searchBox.addKeyListener(new KeyListener() {
-
 			@Override
 			public void componentKeyUp(ComponentEvent event) {
 				super.componentKeyUp(event);
 				if (event.getKeyCode() == KeyCodes.KEY_ENTER) {
 					search(searchBox.getValue());
 				}
+			}
+		});
+        searchBox.addListener(Events.TriggerClick, new Listener<FieldEvent>() {
+			@Override
+			public void handleEvent(FieldEvent be) {
+				search(searchBox.getValue());
 			}
 		});
         

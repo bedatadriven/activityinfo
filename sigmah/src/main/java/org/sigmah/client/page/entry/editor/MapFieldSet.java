@@ -115,8 +115,10 @@ public class MapFieldSet extends FieldSet implements MapEditView {
 	private void createPanelToolbar() {
         Listener<FieldEvent> latLngListener = new Listener<FieldEvent>() {
             public void handleEvent(FieldEvent be) {
-            	eventBus.fireEvent(new CoordinatesChangedEvent(new AiLatLng(
-            			latField.getValue(), lngField.getValue())));
+            	if (latField.getValue() != null && lngField.getValue()!=null) {
+	            	eventBus.fireEvent(new CoordinatesChangedEvent(new AiLatLng(
+	            			latField.getValue(), lngField.getValue())));
+            	}
             }
         };
 
@@ -262,7 +264,7 @@ public class MapFieldSet extends FieldSet implements MapEditView {
 	}
 
 	@Override
-	public void setMarkerPosition(org.sigmah.shared.report.content.AiLatLng latLng) {
+	public void setMarkerPosition(AiLatLng latLng) {
         LatLng latlng = LatLng.newInstance(latLng.getLat(), latLng.getLng());
         if (marker == null) {
             createMarker(latlng);

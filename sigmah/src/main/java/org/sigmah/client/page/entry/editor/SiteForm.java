@@ -13,7 +13,6 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.widget.LoadingPlaceHolder;
 import org.sigmah.client.page.config.form.ModelFormPanel;
-import org.sigmah.client.page.entry.editor.ProjectPresenter.ProjectPickerView;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.PartnerDTO;
@@ -38,7 +37,6 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
     private AttributeFieldSet attributeFieldSet;
     private IndicatorFieldSet indicatorFieldSet;
     private CommentFieldSet commentFieldSet;
-    private ProjectFieldSet projectFieldSet;
 
     public SiteForm() {
         this.setBodyStyle("padding: 3px");
@@ -52,7 +50,8 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
     public void init(SiteFormPresenter presenter,
                      ActivityDTO activity,
                      ListStore<PartnerDTO> partnerStore,
-                     ListStore<SiteDTO> assessmentStore, ListStore<ProjectDTO> projectStore) {
+                     ListStore<SiteDTO> assessmentStore, 
+                     ListStore<ProjectDTO> projectStore) {
 
         removeAll();
         setLayout(new FlowLayout());
@@ -66,10 +65,8 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
         this.setHeading(activity.getName());
 
         // ACTIVITY fieldset
-        activityFieldSet = new ActivityFieldSet(activity, partnerStore, assessmentStore);
+        activityFieldSet = new ActivityFieldSet(activity, partnerStore, assessmentStore, projectStore);
         add(activityFieldSet);
-        
-        add(projectFieldSet);
         
         // LOCATION fieldset
         add(locationFieldSet);
@@ -173,14 +170,4 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
     	}
     }
 
-
-	@Override
-	public ProjectPickerView createProjectView(ProjectDTO project) {
-        projectFieldSet = new ProjectFieldSet(site);
-        add(projectFieldSet);
-        
-        layout();
-        
-        return projectFieldSet;
-	}
 }

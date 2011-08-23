@@ -88,19 +88,21 @@ public class SearchTest {
 			public void onSuccess(SearchResult result) {  
 				assertTrue("Expected all searchers to succeed", result.getFailedSearchers().isEmpty());
 				
-				assertHasDimension(DimensionType.Site, result);
+				//assertHasDimension(DimensionType.Site, result);
 				assertHasDimension(DimensionType.Partner, result);
 				assertHasDimension(DimensionType.AdminLevel, result);
 				assertHasDimension(DimensionType.Project, result);
 				assertHasDimension(DimensionType.AttributeGroup, result);
 				assertHasDimension(DimensionType.Indicator, result);
+				assertHasDimension(DimensionType.Location, result);
 				
 				assertHasRestrictionWithIds(DimensionType.AdminLevel, result, 2, 3);
 				assertHasRestrictionWithIds(DimensionType.Partner, result, 3);
 				assertHasRestrictionWithIds(DimensionType.Project, result, 3);
-				assertHasRestrictionWithIds(DimensionType.Site, result, 9);
+				//assertHasRestrictionWithIds(DimensionType.Site, result, 9);
 				assertHasRestrictionWithIds(DimensionType.AttributeGroup, result, 3);
 				assertHasRestrictionWithIds(DimensionType.Indicator, result, 675);
+				assertHasRestrictionWithIds(DimensionType.Location, result, 1);
 			}
 			
 			@Override

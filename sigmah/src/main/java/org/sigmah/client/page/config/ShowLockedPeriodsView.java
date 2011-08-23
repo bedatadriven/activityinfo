@@ -9,4 +9,5 @@ import com.google.gwt.user.client.ui.HasValue;
 
 public interface ShowLockedPeriodsView extends HasValue<List<LockedPeriodDTO>> {
 	public void setActivityFilter(ActivityDTO activity);
+	public void setHeader(String header);
 }

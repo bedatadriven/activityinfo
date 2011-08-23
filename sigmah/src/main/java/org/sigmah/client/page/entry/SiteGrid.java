@@ -137,7 +137,11 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
         createLockColumn();
         createDateColumn();
         createPartnerColumn();
-        createProjectColumn();
+        
+        // Only show Project column when the database has projects
+        if (!activity.getDatabase().getProjects().isEmpty()) {
+            createProjectColumn();
+        }
         createLocationColumn();
         createIndicatorColumns();
 
@@ -313,10 +317,15 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
 		showLockedPeriods.show();
 		showLockedPeriods.setActivityFilter(activity);
     	showLockedPeriods.setValue(list);
-    	showLockedPeriods.setTitle(I18N.MESSAGES.showLockedPeriodsTitle
+    	showLockedPeriods.setHeader(I18N.MESSAGES.showLockedPeriodsTitle
     			(activity.getDatabase().getName(), 
     					currentSite.getProjectName(), 
     					activity.getName()));
+	}
+
+	@Override
+	public void setSite(SiteDTO selectedSite) {
+		currentSite = selectedSite;
 	}
 
 }

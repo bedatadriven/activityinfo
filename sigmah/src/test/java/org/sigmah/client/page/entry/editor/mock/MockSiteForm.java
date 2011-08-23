@@ -13,7 +13,6 @@ import java.util.Set;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.page.entry.editor.AdminFieldSetPresenter;
 import org.sigmah.client.page.entry.editor.MapEditView;
-import org.sigmah.client.page.entry.editor.ProjectPresenter;
 import org.sigmah.client.page.entry.editor.SiteFormPresenter;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.CountryDTO;
@@ -29,7 +28,6 @@ import com.extjs.gxt.ui.client.store.ListStore;
 public class MockSiteForm implements SiteFormPresenter.View {
 
     public MockAdminFieldSet adminFieldSet = new MockAdminFieldSet();
-    public MockProjectFieldSet projectFieldSet = new MockProjectFieldSet();
     public MockMapView mapView = new MockMapView();
     public Map<String, Object> changes = new HashMap<String, Object>();
     public Set<String> disabledActions = new HashSet<String>();
@@ -95,11 +93,4 @@ public class MockSiteForm implements SiteFormPresenter.View {
 
     public void hide() { 
     }
-
-	@Override
-	public ProjectPresenter.ProjectPickerView createProjectView(ProjectDTO project) {
-		return projectFieldSet; 
-	}
-
-
 }
