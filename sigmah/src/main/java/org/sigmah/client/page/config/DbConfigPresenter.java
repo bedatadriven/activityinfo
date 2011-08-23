@@ -42,7 +42,7 @@ public class DbConfigPresenter implements Page {
                     "db-users.png", new DbPageState(DbUserEditor.DatabaseUsers, db.getId()));
         }
         if (db.isDesignAllowed()) {
-            view.add(I18N.CONSTANTS.design(), I18N.CONSTANTS.lockPeriodsDescription(), 
+            view.add(I18N.CONSTANTS.timeLocks(), I18N.CONSTANTS.lockPeriodsDescription(), 
                     "db-lockedperiods.png", new DbPageState(LockedPeriodsPresenter.LockedPeriod, db.getId()));
         }
         if (db.isDesignAllowed()) {
