@@ -81,7 +81,7 @@ public class DbProjectGrid extends
         FormDialogImpl<ProjectForm> dlg = new FormDialogImpl<ProjectForm>(form);
         dlg.setWidth(450);
         dlg.setHeight(300);
-        dlg.setHeading(messages.newPartner());
+        dlg.setHeading(messages.createProject());
 
         dlg.show(callback);
 
