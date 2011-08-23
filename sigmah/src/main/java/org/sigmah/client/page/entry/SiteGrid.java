@@ -137,7 +137,11 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
         createLockColumn();
         createDateColumn();
         createPartnerColumn();
-        createProjectColumn();
+        
+        // Only show Project column when the database has projects
+        if (!activity.getDatabase().getProjects().isEmpty()) {
+            createProjectColumn();
+        }
         createLocationColumn();
         createIndicatorColumns();
 
