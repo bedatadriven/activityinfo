@@ -61,7 +61,8 @@ public class ShowLockedPeriodsDialog extends Dialog implements ShowLockedPeriods
 
 	@Override
 	public void setHeader(String header) {
-		grid.setHeading(header);
+		setHeading(header);
+		grid.setHeaderVisible(false);
 	}
 	
 }
