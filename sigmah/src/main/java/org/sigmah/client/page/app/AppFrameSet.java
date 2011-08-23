@@ -11,7 +11,6 @@ import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.event.NavigationEvent;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.client.offline.ui.AppCacheMenu;
 import org.sigmah.client.offline.ui.OfflineView;
 import org.sigmah.client.page.Frame;
 import org.sigmah.client.page.NavigationCallback;
@@ -94,7 +93,7 @@ public class AppFrameSet implements Frame {
 
         topBar = new ToolBar();
 
-        AppCacheMenu appCacheMenu = new AppCacheMenu();
+        VersionLabel appCacheMenu = new VersionLabel();
         topBar.add(appCacheMenu);
 
         topBar.add(new SeparatorToolItem());

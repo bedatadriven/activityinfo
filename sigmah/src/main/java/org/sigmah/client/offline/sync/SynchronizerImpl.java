@@ -16,6 +16,7 @@ import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.Ping;
 import org.sigmah.shared.command.result.VoidResult;
 
+import com.bedatadriven.rebar.appcache.client.AppCache;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -23,41 +24,42 @@ import com.google.inject.Provider;
 public class SynchronizerImpl implements Synchronizer {
     private static final int SYNC_INTERVAL = 30000;
 
-    private final Provider<InstallSteps> installSteps;
     private final LocalDispatcher localDispatcher;
     private final Dispatcher remoteDispatcher;
-    private final DownSynchronizer synchronizer;
+    private final AppCacheSynchronizer appCacheSynchronizer;
+    private final DownSynchronizer downSychronizer;
     private final UpdateSynchronizer updateSynchronizer;
 
 
     @Inject
-    public SynchronizerImpl(Provider<InstallSteps> installSteps,
+    public SynchronizerImpl(
                        LocalDispatcher localDispatcher,
                        DirectDispatcher remoteDispatcher,
+                       AppCacheSynchronizer appCache,
                        DownSynchronizer synchronizer,
                        UpdateSynchronizer updateSynchronizer) {
-
-        this.installSteps = installSteps;
-        this.localDispatcher = localDispatcher;
+    	this.appCacheSynchronizer = appCache;
+    	this.localDispatcher = localDispatcher;
         this.remoteDispatcher = remoteDispatcher;
-        this.synchronizer = synchronizer;
+        this.downSychronizer = synchronizer;
         this.updateSynchronizer = updateSynchronizer;
     }
 
     @Override
     public void install(final AsyncCallback<Void> callback) {
     	
-        installSteps.get().run(new AsyncCallback() {
-            @Override
-            public void onFailure(Throwable throwable) {
-                callback.onFailure(throwable);
-            }
-
-            @Override
-            public void onSuccess(Object o) {
-                goOffline(callback);
-            }
-        });
+    	appCacheSynchronizer.ensureUpToDate(new AsyncCallback<Void>() {
+			
+			@Override
+			public void onSuccess(Void result) {
+				downSychronizer.startFresh(callback);
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				callback.onFailure(caught);
+			}
+		});
     }
 
     @Override
@@ -67,12 +69,12 @@ public class SynchronizerImpl implements Synchronizer {
 
     @Override
     public void getLastSyncTime(AsyncCallback<java.util.Date> callback) {
-        synchronizer.getLastUpdateTime(callback);
+        downSychronizer.getLastUpdateTime(callback);
     }
 
     @Override
     public void validateOfflineInstalled(final AsyncCallback<Void> callback) {
-    	synchronizer.getLastUpdateTime(new AsyncCallback<Date>() {
+    	downSychronizer.getLastUpdateTime(new AsyncCallback<Date>() {
 			
 			@Override
 			public void onSuccess(Date result) {
@@ -87,21 +89,31 @@ public class SynchronizerImpl implements Synchronizer {
 			@Override
 			public void onFailure(Throwable caught) {
 				callback.onFailure(caught);
-				
 			}
 		});
     }
 
     @Override
     public void synchronize(final AsyncCallback<Void> callback) {
-    	// send updates to server, then on success request 
-    	// updates from server
-    	updateSynchronizer.sync(new AsyncCallback<Void>() {
+    	appCacheSynchronizer.ensureUpToDate(new AsyncCallback<Void>() {
 			
 			@Override
-			public void onSuccess(Void arg0) {
-		    	synchronizer.start(callback); 
-				
+			public void onSuccess(Void result) {
+				// send updates to server, then on success request 
+		    	// updates from server
+		    	updateSynchronizer.sync(new AsyncCallback<Void>() {
+					
+					@Override
+					public void onSuccess(Void arg0) {
+				    	downSychronizer.start(callback); 
+						
+					}
+					
+					@Override
+					public void onFailure(Throwable caught) {
+						callback.onFailure(caught);
+					}
+				});
 			}
 			
 			@Override
@@ -109,6 +121,7 @@ public class SynchronizerImpl implements Synchronizer {
 				callback.onFailure(caught);
 			}
 		});
+    	
     }
 
     @Override
@@ -124,7 +137,6 @@ public class SynchronizerImpl implements Synchronizer {
 			@Override
 			public void onSuccess(Void result) {
 		    	verifyConnectivity(callback);
-				
 			}
 		});    	
     }

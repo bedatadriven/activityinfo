@@ -28,6 +28,7 @@ import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
 import com.bedatadriven.rebar.sync.client.BulkUpdaterAsync;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.InvocationException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -241,7 +242,11 @@ public class DownSynchronizer {
     private void handleException(String message, Throwable throwable) {
         Log.error("Synchronizer: " + message, throwable);
         if(callback != null) {
-            callback.onFailure(throwable);
+        	if(throwable instanceof InvocationException) {
+        		callback.onFailure(new SynchronizerConnectionException());
+        	} else {
+        		callback.onFailure(throwable);
+        	}
         }
     }
 

@@ -49,7 +49,7 @@ public class OfflineView extends Button implements OfflineController.View {
     public OfflineView(CrossSessionStateProvider stateProvider, OfflineCapabilityProfile profile) {
     	this.stateProvider = stateProvider;
     	this.capabilityProfile = profile;
-        syncNowButton = new MenuItem(I18N.CONSTANTS.syncNow(), IconImageBundle.ICONS.onlineSyncing());
+        syncNowButton = new MenuItem(I18N.CONSTANTS.syncNow(), IconImageBundle.ICONS.sync());
         toggleModeButton = new MenuItem(I18N.CONSTANTS.switchToOnline());
         reinstallOffline = new MenuItem(I18N.CONSTANTS.reinstallOfflineMode());
 
@@ -102,7 +102,7 @@ public class OfflineView extends Button implements OfflineController.View {
 
     @Override
     public void setButtonTextToSyncing() {
-        this.setIcon(IconImageBundle.ICONS.onlineSyncing());
+        this.setIcon(IconImageBundle.ICONS.syncing());
         this.setText(I18N.CONSTANTS.synchronizing());
     }
 
