@@ -66,5 +66,5 @@
     <!-- Enable other locales -->
     <extend-property name="locale" values="en" />
     <set-property-fallback name="locale" value="en"/>
-    <super-source path="jre" />
+    <super-source path="emul" />
 </module>

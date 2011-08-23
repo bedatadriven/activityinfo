@@ -406,6 +406,18 @@
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
             </resource>
+            <resource>
+                <directory>src/main/java</directory>
+				<includes>
+					<include>**/emul/**/*.java</include>
+					<include>**/client/**/*.java</include>
+                    <include>**/server/**/*.*</include>
+					<include>**/login/**/*.java</include>
+					<include>**/shared/**/*.java</include>
+					<include>**/*.gwt.xml</include>
+					<include>**/*.properties</include>
+				</includes>
+            </resource>
         </resources>
 
         <!-- Compile classes into the war directory for hosted mode live 
