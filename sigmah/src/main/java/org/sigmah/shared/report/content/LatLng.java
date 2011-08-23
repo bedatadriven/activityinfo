@@ -5,24 +5,26 @@
 
 package org.sigmah.shared.report.content;
 
+import java.io.Serializable;
+
 /**
  * LatLng is a point in geographical coordinates longitude and latitude
  * 
  * This class is immutable
- * 
- * @author Alex Bertram
- *
  */
-public class LatLng {
+public class LatLng implements Serializable {
 	
+	public LatLng() {
+	}
+
 	public LatLng(double lat, double lon) {
 		super();
 		this.lat = lat;
 		this.lng = lon;
 	}
 	
-	private final double lat;
-	private final double lng;
+	private double lat;
+	private double lng;
 	
 	/**
 	 * 
@@ -39,4 +41,14 @@ public class LatLng {
 	public double getLng() {
 		return lng;
 	}
+
+	public void setLat(double lat) {
+		this.lat = lat;
+	}
+
+	public void setLng(double lng) {
+		this.lng = lng;
+	}
+	
+	
 }

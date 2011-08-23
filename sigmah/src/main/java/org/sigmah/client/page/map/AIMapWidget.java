@@ -196,6 +196,9 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 
 	@Override
 	public MapReportElement getValue() {
+		mapReportElement.setZoomLevel(mapWidget.getZoomLevel());
+		mapReportElement.setCenter(new org.sigmah.shared.report.content.LatLng(
+				mapWidget.getCenter().getLatitude(), mapWidget.getCenter().getLongitude()));
 		return mapReportElement;
 	}
 

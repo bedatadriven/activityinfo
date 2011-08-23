@@ -12,8 +12,10 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.sigmah.shared.map.BaseMap;
+import org.sigmah.shared.report.content.LatLng;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.model.layers.BubbleMapLayer;
 import org.sigmah.shared.report.model.layers.IconMapLayer;
@@ -27,6 +29,9 @@ public class MapReportElement extends ReportElement<MapContent> {
     private String baseMapId = BaseMap.getDefaultMapId();
     private int width = 640;
     private int height = 480;
+    // When non-null, the zoom/panning settings are used, otherwise the generator calculates them
+    private LatLng center = null;
+    private int zoomLevel = -1;
     private List<MapLayer> layers = new ArrayList<MapLayer>(0);
 
     public MapReportElement() {
@@ -81,4 +86,24 @@ public class MapReportElement extends ReportElement<MapContent> {
     	this.layers = new ArrayList<MapLayer>();
     	this.layers.addAll(Arrays.asList(layers));
     }
+
+    @XmlTransient
+	public LatLng getCenter() {
+		return center;
+	}
+
+	public void setCenter(LatLng center) {
+		this.center = center;
+	}
+
+    @XmlTransient
+	public int getZoomLevel() {
+		return zoomLevel;
+	}
+
+	public void setZoomLevel(int zoomLevel) {
+		this.zoomLevel = zoomLevel;
+	}
+    
+    
 }
