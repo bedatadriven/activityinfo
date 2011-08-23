@@ -57,6 +57,7 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
     private ActionToolBar toolbarMapActions;
     private LayersWidget layersWidget;
     private MapReportElement mapReportElement = new MapReportElement();
+	private ExportMenuButton exportMenu;
 
     @Inject
     public MapPage(Dispatcher dispatcher, final AllMapOptionsWidget form, EventBus eventBus) {
@@ -102,6 +103,9 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
 				aiMapWidget.setValue(event.getValue());
 				layersWidget.setValue(event.getValue());
 				allMapOptionsWidget.setValue(event.getValue());
+				boolean canExport = !event.getValue().getLayers().isEmpty();
+				toolbarMapActions.setActionEnabled(UIActions.exportData,canExport); 
+				exportMenu.setEnabled(canExport);
 			}
 		});
         
@@ -142,9 +146,12 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
 
     protected void createToolBar() {
         toolbarMapActions = new ActionToolBar(this);
-        toolbarMapActions.add(new ExportMenuButton(RenderElement.Format.PowerPoint, this));
+        exportMenu = new ExportMenuButton(RenderElement.Format.PowerPoint, this);
+        exportMenu.setEnabled(false);
+		toolbarMapActions.add(exportMenu);
         toolbarMapActions.addButton(UIActions.exportData, I18N.CONSTANTS.exportData(),
                 IconImageBundle.ICONS.excel());
+        toolbarMapActions.setActionEnabled(UIActions.exportData, false);
         aiMapWidget.setTopComponent(toolbarMapActions);
     }
 
