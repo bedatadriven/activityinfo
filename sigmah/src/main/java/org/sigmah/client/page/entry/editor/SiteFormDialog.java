@@ -10,7 +10,6 @@ import java.util.Map;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.page.common.dialog.FormDialogImpl;
 import org.sigmah.client.page.common.toolbar.UIActions;
-import org.sigmah.client.page.entry.editor.ProjectPresenter.ProjectPickerView;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.PartnerDTO;
@@ -101,8 +100,4 @@ public class SiteFormDialog extends FormDialogImpl<SiteForm> implements SiteForm
         return form.getPropertyMap();
     }
 
-	@Override
-	public ProjectPickerView createProjectView(ProjectDTO project) {
-		return form.createProjectView(null);
-	}
 }

@@ -13,7 +13,6 @@ import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.event.SiteEvent;
 import org.sigmah.client.page.common.toolbar.UIActions;
-import org.sigmah.client.page.entry.editor.ProjectPresenter.ProjectPickerView;
 import org.sigmah.shared.command.CreateEntity;
 import org.sigmah.shared.command.UpdateEntity;
 import org.sigmah.shared.command.result.CreateResult;
@@ -46,8 +45,6 @@ public class SiteFormPresenter implements SiteFormLeash {
 
         public MapEditView createMapView(CountryDTO country);
         
-        public ProjectPickerView createProjectView(ProjectDTO project);
-
         public boolean validate();
 
         public boolean isDirty();
@@ -71,7 +68,6 @@ public class SiteFormPresenter implements SiteFormLeash {
 
     protected MapPresenter mapPresenter;
     protected AdminFieldSetPresenter adminPresenter;
-    protected ProjectPresenter projectPresenter;
     private View view;
 
     public SiteFormPresenter(EventBus eventBus, Dispatcher service, ActivityDTO activity, View view) {
@@ -107,6 +103,7 @@ public class SiteFormPresenter implements SiteFormLeash {
     	 ListStore<ProjectDTO> result = new ListStore<ProjectDTO>();
     	 
     	 result.add(currentActivity.getDatabase().getProjects());
+    	 result.sort("name", Style.SortDir.ASC);
     	 
     	 return result;
     }
@@ -134,7 +131,6 @@ public class SiteFormPresenter implements SiteFormLeash {
             }
         });
         
-        projectPresenter = new ProjectPresenter(view.createProjectView(null));
 
         view.init(this, currentActivity, createPartnerStore(), createAsssessmentStore(), createProjectStore());
     }
@@ -144,7 +140,6 @@ public class SiteFormPresenter implements SiteFormLeash {
 
         adminPresenter.setSite(site);
         mapPresenter.setSite(site, adminPresenter.getBoundsName(), adminPresenter.getBounds());
-        projectPresenter.setSite(site, currentActivity.getDatabase());
         
         view.setSite(site);
         view.setActionEnabled(UIActions.save, false);
@@ -169,7 +164,7 @@ public class SiteFormPresenter implements SiteFormLeash {
     
     private void addProjectIdToMap(Map<String, Object> map) {
     	
-        int projectId = projectPresenter.getView().getValue() == null ? 0 : projectPresenter.getView().getValue().getId();
+        int projectId = ((ProjectDTO)map.get("project")).getId();
         map.put("projectId", projectId);
         map.remove("project");
     }
