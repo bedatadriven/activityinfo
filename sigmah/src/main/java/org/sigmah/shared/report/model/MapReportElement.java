@@ -29,7 +29,6 @@ public class MapReportElement extends ReportElement<MapContent> {
     private String baseMapId = BaseMap.getDefaultMapId();
     private int width = 640;
     private int height = 480;
-    // When non-null, the zoom/panning settings are used, otherwise the generator calculates them
     private LatLng center = null;
     private int zoomLevel = -1;
     private List<MapLayer> layers = new ArrayList<MapLayer>(0);
@@ -87,6 +86,12 @@ public class MapReportElement extends ReportElement<MapContent> {
     	this.layers.addAll(Arrays.asList(layers));
     }
 
+    /*
+     * Returns the center of the map
+     * 
+     * when null, ignored by the generator. Instead, the generator calculates the 
+     * center by the set of locations on the map 
+     */
     @XmlTransient
 	public LatLng getCenter() {
 		return center;
@@ -96,6 +101,12 @@ public class MapReportElement extends ReportElement<MapContent> {
 		this.center = center;
 	}
 
+	/*
+	 * Returns the zoomlevel of the map background
+	 * 
+     * When null, ignored by the generator. Instead, the generator calculates the 
+     * zoomleve by the set of locations on the map and the size of the map
+	 */
     @XmlTransient
 	public int getZoomLevel() {
 		return zoomLevel;
