@@ -4,33 +4,28 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 
 // Simple tuple for a filter hit
 public class SearchResultEntity extends BaseModelData {
-	private int id;
-	private String name;
-	private String url;
 	
 	public SearchResultEntity(int id, String name, String url) {
-		this.id = id;
-		this.name = name;
-		this.url = url;
+		setId(id);
+		setName(name);
+		setUrl(url);
 	}
 	public int getId() {
-		return id;
+		return (Integer)get("id");
 	}
 	public void setId(int id) {
-		this.id = id;
+		set("id", id);
 	}
 	public String getName() {
-		return name;
+		return (String)get("name");
 	}
 	public void setName(String name) {
-		this.name = name;
+		set("name", name);
 	}
 	public String getUrl() {
-		return url;
+		return (String)get("url");
 	}
 	public void setUrl(String url) {
-		this.url = url;
+		set("url",url);
 	}
-	
-	
 }

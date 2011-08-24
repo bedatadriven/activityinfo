@@ -27,6 +27,7 @@ import org.sigmah.shared.report.content.PivotContent;
 import org.sigmah.shared.report.model.DimensionType;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -89,7 +90,10 @@ public class SearchPresenter implements SearchView.SearchHandler, Page {
 					
 					List<SearchResultEntity> entities = new ArrayList<SearchResultEntity>();
 					for (Integer entityId : effectiveFilter.getRestrictions(type)) {
-						SearchResultEntity entity = new SearchResultEntity(entityId, getName(entityId, type, pivotContent), "url");
+						String name = getName(entityId, type, pivotContent);
+						String link = GWT.getHostPageBaseURL() + "#search/" + type.toString() + ":" + name;
+						
+						SearchResultEntity entity = new SearchResultEntity(entityId, name, link);
 						entities.add(entity);
 					}
 					newFilter.put(type, entities);

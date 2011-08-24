@@ -78,29 +78,30 @@ public class PivotHibernateDAO implements PivotDAO {
     public static void appendDimensionRestrictions(StringBuilder where, Filter filter, List<Object> parameters) {
         for (DimensionType type : filter.getRestrictedDimensions()) {
             if (type == DimensionType.Indicator) {
-                appendIdCriteria(where, "Indicator.IndicatorId", filter.getRestrictions(type), parameters);
+                appendIdCriteria(where, "Indicator.IndicatorId", filter.getRestrictions(type), parameters, filter.isOr());
             } else if (type == DimensionType.Activity) {
-                appendIdCriteria(where, "Site.ActivityId", filter.getRestrictions(type), parameters);
+                appendIdCriteria(where, "Site.ActivityId", filter.getRestrictions(type), parameters, filter.isOr());
             } else if (type == DimensionType.Database) {
-                appendIdCriteria(where, "Activity.DatabaseId", filter.getRestrictions(type), parameters);
+                appendIdCriteria(where, "Activity.DatabaseId", filter.getRestrictions(type), parameters, filter.isOr());
             } else if (type == DimensionType.Partner) {
-                appendIdCriteria(where, "Site.PartnerId", filter.getRestrictions(type), parameters);
+                appendIdCriteria(where, "Site.PartnerId", filter.getRestrictions(type), parameters, filter.isOr());
             } else if (type == DimensionType.Project) {
-                appendIdCriteria(where, "Site.ProjectId", filter.getRestrictions(type), parameters);
+                appendIdCriteria(where, "Site.ProjectId", filter.getRestrictions(type), parameters, filter.isOr());
             } else if (type == DimensionType.Location) {
-                appendIdCriteria(where, "Site.LocationId", filter.getRestrictions(type), parameters);
+                appendIdCriteria(where, "Site.LocationId", filter.getRestrictions(type), parameters, filter.isOr());
             } else if (type == DimensionType.AdminLevel) {
                 where.append(" AND Site.LocationId IN " +
                         "(SELECT Link.LocationId FROM LocationAdminLink Link WHERE 1=1 ");
 
-                appendIdCriteria(where, "Link.AdminEntityId", filter.getRestrictions(type), parameters);
+                appendIdCriteria(where, "Link.AdminEntityId", filter.getRestrictions(type), parameters, filter.isOr());
                 where.append(") ");
             }
         }
     }
 
-    public static void appendIdCriteria(StringBuilder sb, String fieldName, Collection<Integer> ids, List<Object> parameters) {
-        sb.append(" AND ").append(fieldName);
+    public static void appendIdCriteria(StringBuilder sb, String fieldName, Collection<Integer> ids, List<Object> parameters, boolean isOr) {
+        sb.append(isOr ? " OR " : " AND ");
+        sb.append(fieldName);
 
 
         if (ids.size() == 1) {

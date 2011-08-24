@@ -43,7 +43,7 @@ public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> 
 		pivotTable.addRowDimension(new Dimension(DimensionType.Indicator));
 		
 		createFilterFromQuery(command.getSearchQuery(), pivotTable, callback);
-	
+		//pivotTable.getFilter().setOr(true);
 		PivotContent content = null;
 		final SearchResult result = new SearchResult();
 
