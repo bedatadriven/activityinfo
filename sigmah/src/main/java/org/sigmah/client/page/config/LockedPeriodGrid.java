@@ -225,8 +225,9 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 				public void handleEvent(MessageBoxEvent be) {
 					if (be.isCancelled()) {
 						eventBus.fireEvent(new CancelDeleteEvent());
-					} 
-					eventBus.fireEvent(new ConfirmDeleteEvent());
+					} else {
+						eventBus.fireEvent(new ConfirmDeleteEvent());
+					}
 				}
 			});
 		} else {
