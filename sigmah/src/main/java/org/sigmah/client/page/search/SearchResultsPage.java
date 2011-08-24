@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.sigmah.client.dispatch.AsyncMonitor;
-import org.sigmah.client.dispatch.monitor.NullAsyncMonitor;
+import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.map.AIMapWidget;
+import org.sigmah.client.page.entry.SiteMap;
 import org.sigmah.client.page.search.SearchPresenter.RecentSiteModel;
 import org.sigmah.shared.command.result.SearchResult;
 import org.sigmah.shared.command.result.SitePointList;
@@ -39,9 +39,9 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 	private RecentSitesView recentSitesView;
 
 	private TextBox textboxSearch;
-	private AsyncMonitor loadingMonitor = new NullAsyncMonitor();
+	private AsyncMonitor loadingMonitor;
 	private SimpleEventBus eventBus = new SimpleEventBus();
-	private AIMapWidget mapWidget;
+	private SiteMap siteMap;
 	private String searchQuery;
 
 	public SearchResultsPage() {
@@ -61,6 +61,7 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 		setLayout(new BorderLayout());
 
 		SearchResources.INSTANCE.searchStyles().ensureInjected();
+		loadingMonitor = new MaskingAsyncMonitor(this, I18N.CONSTANTS.busySearching());
 	}
 
 	private void createRecentSitesView() {

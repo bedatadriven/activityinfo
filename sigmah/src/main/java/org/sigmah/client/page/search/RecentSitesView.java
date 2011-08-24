@@ -3,11 +3,8 @@ package org.sigmah.client.page.search;
 import java.util.List;
 
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.map.MapView;
-import org.sigmah.client.page.map.MapView.SiteSelectedEvent;
-import org.sigmah.client.page.map.MapView.SiteSelectedHandler;
-import org.sigmah.client.page.map.MapViewImpl;
 import org.sigmah.client.page.search.SearchPresenter.RecentSiteModel;
+import org.sigmah.client.page.summaries.views.MapLocationView;
 import org.sigmah.shared.command.result.SitePointList;
 
 import com.extjs.gxt.ui.client.event.Events;
@@ -22,10 +19,10 @@ import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 
 public class RecentSitesView extends ContentPanel {
-	private MapView mapWidget;
 	private ListView<RecentSiteModel> listviewSites;
 	private ListStore<RecentSiteModel> storeSites;
 	private List<RecentSiteModel> sites;
+	private MapLocationView map;
 	
 	public RecentSitesView() {
 		super();
@@ -44,7 +41,7 @@ public class RecentSitesView extends ContentPanel {
 	}
 	
 	public void setSitePoins(SitePointList sitePoints) {
-		mapWidget.setSites(sitePoints);
+//		map.setSites(sitePoints);
 	}
 
 	private void createSitesPanel() {
@@ -55,7 +52,7 @@ public class RecentSitesView extends ContentPanel {
 		listviewSites.addListener(Events.Select, new Listener<ListViewEvent<RecentSiteModel>>() {
 			@Override
 			public void handleEvent(ListViewEvent<RecentSiteModel> be) {
-				mapWidget.selectSite(be.getModel().getSiteId());
+//				mapWidget.selectSite(be.getModel().getSiteId());
 			}
 		});
 		
@@ -65,18 +62,12 @@ public class RecentSitesView extends ContentPanel {
 	}
 
 	private void createMapWidget() {
-		mapWidget = new MapViewImpl();
-		mapWidget.addSiteSelectedHandler(new SiteSelectedHandler() {
-			@Override
-			public void onSiteSelected(SiteSelectedEvent siteSelectedEvent) {
-				RecentSiteModel site = getSiteById(siteSelectedEvent.getSiteId());
-				listviewSites.getSelectionModel().select(site, false);
-				mapWidget.selectSite(site.getSiteId());
-			}
-		});
+//		map = new MapLocationView(null);
 		
-	    VBoxLayoutData vbld = new VBoxLayoutData();
-	    vbld.setFlex(1);
+//	    VBoxLayoutData vbld = new VBoxLayoutData();
+//	    vbld.setFlex(1);
+	    
+//	    add(map, vbld);
 	}
 	
 	// TODO: move to collection class

@@ -3,6 +3,7 @@ package org.sigmah.client.page.common;
 import org.sigmah.client.page.search.SearchResources;
 
 import com.extjs.gxt.ui.client.widget.form.TriggerField;
+import com.google.gwt.user.client.Element;
 
 public class SearchField extends TriggerField<String> {
 
@@ -11,7 +12,13 @@ public class SearchField extends TriggerField<String> {
 		
 		SearchResources.INSTANCE.searchStyles().ensureInjected();
 		
-		setTriggerStyle("searchField");
+		setTriggerStyle("x-form-search-trigger");
+	}
+
+	@Override
+	protected void onRender(Element target, int index) {
+		super.onRender(target, index);
+		setTriggerStyle("x-form-search-trigger");
 	}
 	
 }

@@ -64,7 +64,7 @@ public class SearchPresenter implements SearchView.SearchHandler, Page {
 		view.setSearchQuery(searchEvent.getQuery());
 		view.getLoadingMonitor().beforeRequest();
 		
-		service.execute(new Search(searchEvent.getQuery()), null, new AsyncCallback<SearchResult>() {
+		service.execute(new Search(searchEvent.getQuery()), view.getLoadingMonitor(), new AsyncCallback<SearchResult>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO handle failure
