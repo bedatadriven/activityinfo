@@ -6,6 +6,7 @@
 package org.sigmah.server.dao;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -19,70 +20,52 @@ import org.sigmah.server.domain.PersistentClasses;
 import org.sigmah.shared.dao.SqlDialect;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
+/**
+ * Cleans the MySQL test database
+ * 
+ */
 public class DatabaseCleaner {
 
-    private final EntityManager em;
-    private final SqlDialect dialect;
-
+	private final Provider<Connection> connectionProvider;
+	
     @Inject
-    public DatabaseCleaner(EntityManager em, SqlDialect dialect) {
-        this.em = em;
-        this.dialect = dialect;
+    public DatabaseCleaner(Provider<Connection> connectionProvider) {
+        this.connectionProvider = connectionProvider;
     }
 
     public void clean() {
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
+    	Connection connection = connectionProvider.get();
 
-        HibernateEntityManager hem = (HibernateEntityManager) em;
-        hem.getSession().doWork(new Work() {
-            @Override
-            public void execute(Connection connection) throws SQLException {
-                Statement stmt = connection.createStatement();
-
-                if(dialect.isPossibleToDisableReferentialIntegrity()) {
-                    stmt.execute(dialect.disableReferentialIntegrityStatement(true));
-                }
-
-                executeSafe(stmt, removeAllRows("AttributeGroupInActivity"));
-                executeSafe(stmt, removeAllRows("PartnerInDatabase"));
-                executeSafe(stmt, removeAllRows("LocationAdminLink"));
-                //executeSafe(stmt, removeAllRows("phase_model_sucessors"));
-                //executeSafe(stmt, removeAllRows("user_unit_profiles"));
-
-                for(Class<?> entityClass : PersistentClasses.LIST) {
-                    executeSafe(stmt, removeAllRows(tableName(entityClass)));
-                }
-
-                if(dialect.isPossibleToDisableReferentialIntegrity()) {
-                    stmt.execute(dialect.disableReferentialIntegrityStatement(false));
-                }
-            }
-        });
-
-        tx.commit();
-    }
-
-    private void executeSafe(Statement stmt, String sql) throws SQLException {
-        try {
-            stmt.execute(sql);
-        } catch (SQLException e) {
-            System.err.println("DatabaseCleaner: SQL failed: " + sql + ", " + e.getMessage());
-        }
-    }
-
-    private String removeAllRows(String tableName) {
-        return "delete from " + tableName;
-    }
-
-    private String tableName(Class<?> entityClass) {
-        Table annotation = entityClass.getAnnotation(Table.class);
-        if(annotation == null || annotation.name().length() == 0) {
-            return entityClass.getSimpleName();
-        } else {
-            return annotation.name();
-        }
+    	try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
+			statement.execute("SET foreign_key_checks = 0");
+			
+			ResultSet tables = connection.getMetaData().getTables(null, null, null, new String[] {"TABLE"});
+			try {
+				while(tables.next()) {
+					String tableName = tables.getString(3);
+					statement.execute("DELETE FROM " + tableName);
+					
+				}
+			} finally {
+				tables.close();
+			}
+			statement.execute("SET foreign_key_checks = 1");
+			statement.close();
+			connection.commit();
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+			
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException ignored) {
+			}			
+		}
     }
 
 }

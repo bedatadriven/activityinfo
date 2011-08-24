@@ -27,6 +27,7 @@ public class TestConnectionProvider implements Provider<Connection>{
 	@Override
 	public Connection get() {
 		try {
+			System.err.println("Opening test database at " + getUrl());
 			Class.forName("com.mysql.jdbc.Driver");
 			return DriverManager.getConnection(getUrl(), getUsername(), getPassword());
 		} catch (Exception e) {

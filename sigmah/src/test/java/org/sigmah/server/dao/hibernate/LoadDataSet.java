@@ -13,39 +13,30 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-
 import org.dbunit.DatabaseUnitException;
-import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
-import org.dbunit.ext.h2.H2Connection;
-import org.dbunit.ext.hsqldb.HsqldbConnection;
 import org.dbunit.ext.mssql.InsertIdentityOperation;
-import org.dbunit.ext.mssql.MsSqlConnection;
 import org.dbunit.ext.mysql.MySqlConnection;
 import org.dbunit.operation.DatabaseOperation;
-import org.hibernate.Session;
-import org.hibernate.ejb.HibernateEntityManager;
-import org.hibernate.jdbc.Work;
 import org.junit.internal.runners.model.MultipleFailureException;
 import org.junit.runners.model.Statement;
 import org.sigmah.server.dao.DatabaseCleaner;
 
+import com.google.inject.Provider;
+
 public class LoadDataSet extends Statement {
     private final Statement next;
     private final Object target;
-    private final EntityManagerFactory emf;
+    private final Provider<Connection> connectionProvider;
     private String name;
 
-
-    public LoadDataSet(EntityManagerFactory emf, Statement next, String name, Object target) {
+    public LoadDataSet(Provider<Connection> connectionProvider, Statement next, String name, Object target) {
         this.next = next;
         this.target = target;
-        this.emf = emf;
+        this.connectionProvider = connectionProvider;
         this.name = name;
     }
 
@@ -76,35 +67,23 @@ public class LoadDataSet extends Statement {
         return new FlatXmlDataSet(new InputStreamReader(in), false, true, false);
     }
 
-    private void populate(final IDataSet dataSet) {
+    private void populate(final IDataSet dataSet) throws DatabaseUnitException, SQLException {
         executeOperation(InsertIdentityOperation.INSERT, dataSet);
     }
 
     private void removeAllRows() {
-        EntityManager em = emf.createEntityManager();
-        DatabaseCleaner cleaner = new DatabaseCleaner(em, SQLDialectProvider.from(em));
+        DatabaseCleaner cleaner = new DatabaseCleaner(connectionProvider);
         cleaner.clean();
-        em.close();
     }
 
-    private void executeOperation(final DatabaseOperation op, final IDataSet dataSet) {
-        HibernateEntityManager hem = (HibernateEntityManager) emf.createEntityManager();
-        Session session = hem.getSession();
-        session.doWork(new Work() {
-            @Override
-            public void execute(Connection connection) throws SQLException {
-                try {
-                    IDatabaseConnection dbUnitConnection = createDbUnitConnection(connection);
-                    op.execute(dbUnitConnection, dataSet);
-                } catch (DatabaseUnitException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-        hem.close();
+    private void executeOperation(final DatabaseOperation op, final IDataSet dataSet) throws DatabaseUnitException, SQLException {
+    	Connection connection = connectionProvider.get();
+    	try {
+    		  IDatabaseConnection dbUnitConnection = new MySqlConnection(connection, null);
+              op.execute(dbUnitConnection, dataSet);
+    	} finally {
+    		connection.close();
+    	}
     }
 
-    private IDatabaseConnection createDbUnitConnection(Connection connection) throws DatabaseUnitException, SQLException {
-    	return new MySqlConnection(connection, null);
-    }
 }

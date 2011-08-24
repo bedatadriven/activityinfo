@@ -10,10 +10,10 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
-
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.dao.OnDataSet;
@@ -92,7 +92,7 @@ public class GetSchemaTest extends CommandTestCase {
 
         ActivityDTO nfi = schema.getActivityById(1);
 
-        assertThat("indicators are present", nfi.getIndicators().size(), equalTo(3));
+        assertThat("indicators are present", nfi.getIndicators().size(), equalTo(4));
 
         IndicatorDTO test = nfi.getIndicatorById(2);
         assertThat("property:name", test.getName(), equalTo("baches"));
