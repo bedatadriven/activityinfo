@@ -22,9 +22,9 @@ public class AllSearcher {
 	static {
 		searchers.add(new GenericSearcher(DimensionType.Partner));
 		searchers.add(new GenericSearcher(DimensionType.Project));
+		searchers.add(new GenericSearcher(DimensionType.AttributeGroup));
 		searchers.add(new LocationSearcher());
 		searchers.add(new AdminEntitySearcher());
-		searchers.add(new AttributeGroupSearcher());
 		//searchers.add(new SiteSearcher());
 		searchers.add(new IndicatorSearcher());
 	}

@@ -17,6 +17,7 @@ public class AppEvents {
     public static final EventType ConnectionStatusChange = new EventBus.NamedEventType("ConnectionStatusChange");
 
     public static final EventType Bookmark = new EventBus.NamedEventType("Bookmark");
+    public static final EventType Search = new EventBus.NamedEventType("Search");
 
     public static final EventType LogoutRequested = new EventBus.NamedEventType("LogoutRequeseted");
 

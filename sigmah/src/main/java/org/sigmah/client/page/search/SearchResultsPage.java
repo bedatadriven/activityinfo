@@ -19,6 +19,7 @@ import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
@@ -32,8 +33,7 @@ import com.google.gwt.user.client.ui.TextBox;
 
 public class SearchResultsPage extends ContentPanel implements SearchView {
 	private VerticalPanel panelSearchResults;
-	private VerticalPanel panelCompleteResult;
-	private SearchResult searchResult;
+	private LayoutContainer containerFilterAndResult;
 	private PivotContent pivotContent;
 	private SearchFilterView filterView;
 	private RecentSitesView recentSitesView;
@@ -47,12 +47,13 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 	public SearchResultsPage() {
 		initializeComponent();
 
-		createCompleteResultPanel();
 		createRecentSitesView();
+		
+		createCompleteResultPanel();
 		createFilterView();
+		createSearchResultsPanel();
 
 		createSearchBox();
-		createSearchResultsPanel();
 	}
 
 	private void initializeComponent() {
@@ -69,7 +70,7 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 		bld.setSplit(true);
 		bld.setCollapsible(true);
 		bld.setMinSize(300);
-		bld.setSize(400);
+		bld.setSize(0.4F);
 
 		add(recentSitesView, bld);
 	}
@@ -77,21 +78,23 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 	private void createSearchResultsPanel() {
 		panelSearchResults = new VerticalPanel();
 		panelSearchResults.setScrollMode(Scroll.AUTO);
-		panelCompleteResult.add(panelSearchResults);
+		containerFilterAndResult.add(panelSearchResults);
 	}
 
 	private void createCompleteResultPanel() {
+		containerFilterAndResult = new LayoutContainer();
+		containerFilterAndResult.setScrollMode(Scroll.AUTOY);
+		
 		BorderLayoutData bld = new BorderLayoutData(LayoutRegion.CENTER);
 		bld.setSplit(true);
+		bld.setSize(0.5F);
 
-		panelCompleteResult = new VerticalPanel();
-
-		add(panelCompleteResult, bld);
+		add(containerFilterAndResult, bld);
 	}
 
 	private void createFilterView() {
 		filterView = new SearchFilterView();
-		panelCompleteResult.add(filterView);
+		containerFilterAndResult.add(filterView);
 	}
 
 	private void createSearchBox() {
@@ -117,7 +120,7 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 
 	@Override
 	public void setParent(SearchResult parent) {
-		searchResult = parent;
+//		searchResult = parent;
 	}
 
 	@Override

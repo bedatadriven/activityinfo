@@ -14,13 +14,13 @@ import com.extjs.gxt.ui.client.event.ListViewEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Padding;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 
-public class RecentSitesView extends LayoutContainer {
+public class RecentSitesView extends ContentPanel {
 	private MapView mapWidget;
 	private ListView<RecentSiteModel> listviewSites;
 	private ListStore<RecentSiteModel> storeSites;
@@ -77,7 +77,7 @@ public class RecentSitesView extends LayoutContainer {
 	    VBoxLayoutData vbld = new VBoxLayoutData();
 	    vbld.setFlex(1);
 		
-		add(mapWidget.asWidget(), vbld);
+		//add(mapWidget.asWidget(), vbld);
 	}
 	
 	// TODO: move to collection class
@@ -92,7 +92,7 @@ public class RecentSitesView extends LayoutContainer {
 	}
 
 	private void initializeComponent() {
-		//setHeading("Recently added sites");
+		setHeading("Recently added sites");
 		VBoxLayout vboxLayout = new VBoxLayout();
 		vboxLayout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
 		vboxLayout.setPadding(new Padding(5));

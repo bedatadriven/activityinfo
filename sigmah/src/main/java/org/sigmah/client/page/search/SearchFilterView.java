@@ -1,5 +1,7 @@
 package org.sigmah.client.page.search;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -7,56 +9,67 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.shared.report.model.DimensionType;
 
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
+import com.extjs.gxt.ui.client.Style.Orientation;
+import com.extjs.gxt.ui.client.util.Padding;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
-import com.google.gwt.user.client.ui.Image;
+import com.extjs.gxt.ui.client.widget.layout.RowData;
+import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
+import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
+import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 
 
-public class SearchFilterView extends LayoutContainer {
-	private LabelField labelHeader;
-	private VerticalPanel panelEntities;
-	private HorizontalPanel panelNoResultsFound;
+public class SearchFilterView extends ContentPanel {
 	private String searchQuery = "";
 	private Map<DimensionType, List<SearchResultEntity>> affectedEntities;
+	private static List<DimensionType> supportedDimensions = new ArrayList<DimensionType>();
+	private Map<DimensionType, ContentPanel> dimensionPanels = new HashMap<DimensionType, ContentPanel>();
+	
+	static {
+		supportedDimensions.add(DimensionType.AdminLevel);
+		supportedDimensions.add(DimensionType.Project);
+		supportedDimensions.add(DimensionType.Partner);
+		//supportedDimensions.add(DimensionType.Database);
+		supportedDimensions.add(DimensionType.Location);
+		supportedDimensions.add(DimensionType.AttributeGroup);
+		//supportedDimensions.add(DimensionType.Indicator);
+	}
 	
 	public SearchFilterView() {
 		super();
 		
 		SearchResources.INSTANCE.searchStyles().ensureInjected();
 		setStylePrimaryName("filterView");
+		setHeading(I18N.CONSTANTS.showingSearchResultFor());
+		setHeight(300);
 		
-		addHeaderLabel();
-		
-		createNoResultsFoundPanel();
-		createEntityPanel();
+		VBoxLayout layout = new VBoxLayout();
+		layout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
+		layout.setPadding(new Padding(2,2,2,2));
+		setLayout(layout);
+
+		VBoxLayoutData hbld = new VBoxLayoutData();
+		hbld.setFlex(1);
+//		hbld.setMinHeight(75);
+//		hbld.setMaxHeight(150);
+
+		for (DimensionType dimension : supportedDimensions) {
+			ContentPanel panel = new ContentPanel();
+			panel.setHeading(I18N.fromEntities.getDimensionTypePluralName(dimension));
+			panel.setIcon(IconImageBundle.fromEntities.fromDimension(dimension));
+			panel.setLayout(new RowLayout(Orientation.HORIZONTAL));
+			dimensionPanels.put(dimension, panel);
+			panel.add(new LabelField("No search"));
+			add(panel, hbld);
+		}
+		layout(true);
 	}
 
-	private void createEntityPanel() {
-		panelEntities = new VerticalPanel();
-		panelEntities.setStylePrimaryName("filterView");
-		add(panelEntities);
-	}
-
-	private void createNoResultsFoundPanel() {
-		panelNoResultsFound = new HorizontalPanel();
-		LabelField labelNoResultsFound = new LabelField();
-		labelNoResultsFound.setText(I18N.MESSAGES.noSearchResults(searchQuery));
-		add(panelNoResultsFound);
-	}
-
-	private void addHeaderLabel() {
-		labelHeader = new LabelField();
-		labelHeader.setText(I18N.CONSTANTS.showingSearchResultFor());
-		labelHeader.setStylePrimaryName("filterSummary");
-		add(labelHeader);
-	}
 
 	public void setQuery(String query) {
 		this.searchQuery=query;
 	}
-
 
 	private void updateUI() {
 		setHasFilter(affectedEntities.size() > 0);
@@ -65,49 +78,44 @@ public class SearchFilterView extends LayoutContainer {
 	
 	private void setHasFilter(boolean hasFilter) {
 		// show the filters
-		labelHeader.setVisible(hasFilter);
-		panelEntities.setVisible(hasFilter);
-
-		// hide no results panel
-		panelNoResultsFound.setVisible(!hasFilter);
 	}
 
 
-	private void showEntityPanel() {		
-		panelEntities.removeAll();
-		panelEntities.setStylePrimaryName("filterView");
-		for (DimensionType foundEntity : affectedEntities.keySet()) {
-			HorizontalPanel panelEntity = new HorizontalPanel();
-			
-			Image iconEntityType = IconImageBundle.fromEntities.fromDimension(foundEntity).createImage();
-			panelEntity.add(iconEntityType);
-			
-			LabelField labelEntityTypeCount = new LabelField();
-			labelEntityTypeCount.setText(Integer.toString(affectedEntities.get(foundEntity).size()));
-			panelEntity.add(labelEntityTypeCount);
-			
-			LabelField labelEntityTypeName = new LabelField();
-			labelEntityTypeName.setText(I18N.fromEntities.getDimensionTypePluralName(foundEntity));
-			labelEntityTypeName.addInputStyleName("font-weight:bold");
-			panelEntity.add(labelEntityTypeName);
-
-			HorizontalPanel panelEntityResults = new HorizontalPanel();
-			panelEntityResults.setStylePrimaryName("panelEntityResults");
-			panelEntityResults.setSpacing(10);
-			
-			// Add every hit entity linked to it's landing page
-			for (SearchResultEntity searchResultEntity : affectedEntities.get(foundEntity)) {
-//				Hyperlink link = new Hyperlink(searchResultEntity.getName(), "hm");
-//				panelEntity.add(link);
-				LabelField labelName = new LabelField(searchResultEntity.getName());
-				panelEntityResults.add(labelName);
+	private void showEntityPanel() {
+		for (DimensionType foundEntity : supportedDimensions) {
+			if (affectedEntities.containsKey(foundEntity)) {
+				fillContentPanelWithEntities(foundEntity);
+			} else {
+				showNoResultsForEntity(foundEntity);
 			}
-			
-			panelEntities.add(panelEntity);
-			panelEntities.add(panelEntityResults);
 		}
 		
 		layout(true);
+	}
+
+	private void fillContentPanelWithEntities(DimensionType foundEntity) {
+		ContentPanel panel = dimensionPanels.get(foundEntity);
+		panel.removeAll();
+		
+		panel.setHeading(I18N.fromEntities.getDimensionTypePluralName(foundEntity) + " (" +
+				Integer.toString(affectedEntities.get(foundEntity).size()) +  ")");
+
+		for (SearchResultEntity searchResultEntity : affectedEntities.get(foundEntity)) {
+//			 Add every hit entity linked to it's landing page
+//			Hyperlink link = new Hyperlink(searchResultEntity.getName(), "hm");
+//			panelEntity.add(link);
+			LabelField labelName = new LabelField("   " + searchResultEntity.getName() + "   ");
+			panel.add(labelName, new RowData());
+		}
+	}
+
+	private void showNoResultsForEntity(DimensionType foundEntity) {
+		ContentPanel panel = dimensionPanels.get(foundEntity);
+		panel.removeAll();
+		panel.setHeading(I18N.fromEntities.getDimensionTypePluralName(foundEntity) + " (0)");
+		LabelField labelNoMatches = new LabelField(I18N.CONSTANTS.noMatches());
+		labelNoMatches.setStyleAttribute("color", "grey");
+		panel.add(labelNoMatches);
 	}
 
 	public void setFilter(Map<DimensionType, List<SearchResultEntity>> affectedEntities) {
