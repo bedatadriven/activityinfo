@@ -55,6 +55,7 @@ public class SearchResultItem  extends LayoutContainer {
 
 	public void setChilds(List<Axis> childList) {
 		for (Axis axis : childList) {
+			VerticalPanel panelAll = new VerticalPanel();
 			HorizontalPanel panelChild = new HorizontalPanel();
 
 			HorizontalPanel spacer = new HorizontalPanel();
@@ -62,17 +63,30 @@ public class SearchResultItem  extends LayoutContainer {
 			panelChild.add(spacer);
 			Image image = IconImageBundle.ICONS.activity().createImage();
 			panelChild.add(image);
+			panelAll.add(panelChild);
 			
 			Hyperlink link = new Hyperlink(axis.getLabel(),
 					"site-grid/" + ((EntityCategory)axis.getCategory()).getId());
 			link.setStylePrimaryName("link");
 			panelChild.add(link);
-//			if (axis.getCells().size() > 0) {
-//				panelChild.add(new LabelField(
-//						axis.getCells().values().iterator().next().getValue().toString() + I18N.CONSTANTS.sites()));
-//			}
 			
-			panelChilds.add(panelChild);
+			for (Axis childAxis : axis.getChildren()) {
+				HorizontalPanel panelIndicator = new HorizontalPanel();
+
+				HorizontalPanel spacerIndicator = new HorizontalPanel();
+				spacerIndicator.setWidth(40);
+				panelIndicator.add(spacerIndicator);
+				panelIndicator.add(IconImageBundle.ICONS.indicator().createImage());
+				
+				Hyperlink linkIndicator = new Hyperlink(childAxis.getLabel(),
+						"site-grid/" + ((EntityCategory)childAxis.getCategory()).getId());
+				linkIndicator.setStylePrimaryName("link");
+				panelIndicator.add(linkIndicator);
+				
+				panelAll.add(panelIndicator);
+			}
+			
+			panelChilds.add(panelAll);
 		}
 	}
 }
