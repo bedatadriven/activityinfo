@@ -6,7 +6,6 @@
 package org.sigmah.client.page.entry;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -318,26 +317,12 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
     protected void onBeforeLoad(CommandLoadEvent le) {
         super.onBeforeLoad(le);
 
-        view.setActionEnabled(UIActions.add, currentActivity.getDatabase().isEditAllowed() && !isCurrentActivityLocked());
+        view.setActionEnabled(UIActions.add, currentActivity.getDatabase().isEditAllowed());
         view.setActionEnabled(UIActions.edit, false);
         view.setActionEnabled(UIActions.delete, false);
     }
 
-    private boolean isCurrentActivityLocked() {
-    	for (LockedPeriodDTO lockedPeriod : currentActivity.getEnabledLockedPeriods()) {
-    		if (lockedPeriod.fallsWithinPeriod(new Date())) {
-    			return true;
-    		}
-    	}
-    	for (LockedPeriodDTO lockedPeriod : currentActivity.getDatabase().getEnabledLockedPeriods()) {
-    		if (lockedPeriod.fallsWithinPeriod(new Date())) {
-    			return true;
-    		}
-    	}
-    	return false;
-	}
-
-	private boolean isEditable(SiteDTO selectedSite) {
+    private boolean isEditable(SiteDTO selectedSite) {
         UserDatabaseDTO db = currentActivity.getDatabase();
         boolean editable = (db.isEditAllAllowed() ||
                 (db.isEditAllowed() && db.getMyPartnerId() == selectedSite.getPartner().getId())) &&
