@@ -498,7 +498,7 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
 				public void onSuccess() {
 				    SchemaDTO schemaDTO = new SchemaDTO();
 		            schemaDTO.setCountries(new ArrayList<CountryDTO>(countries.values()));
-		            schemaDTO.setDatabases(new ArrayList<UserDatabaseDTO>(databaseMap.values()));
+		            schemaDTO.setDatabases(databaseList);
 		            
 		            callback.onSuccess(schemaDTO);
 				}

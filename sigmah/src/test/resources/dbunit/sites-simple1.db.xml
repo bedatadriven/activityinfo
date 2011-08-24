@@ -148,6 +148,8 @@
 	<userDatabase databaseId="2" name="PEAR Plus" countryId="1"
 		ownerUserId="1" lastSchemaUpdate="2009-01-01" />
 
+    <userDatabase databaseId="3" name="Alpha" countryId="1" ownerUserId="1" lastSchemaUpdate="2009-01-01"/>
+
 	<!-- PEAR PLUS Activity #1 - Support to health centers (monthly reporting) -->
 
 	<activity activityId="3" databaseId="2"
