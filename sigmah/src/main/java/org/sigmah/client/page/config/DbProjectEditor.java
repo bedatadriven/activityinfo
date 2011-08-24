@@ -21,7 +21,7 @@ import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 import org.sigmah.shared.exception.DuplicateException;
-import org.sigmah.shared.exception.PartnerHasSitesException;
+import org.sigmah.shared.exception.ProjectHasSitesException;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -73,9 +73,11 @@ public class DbProjectEditor extends AbstractGridPresenter<ProjectDTO> {
 	protected void onDeleteConfirmed(final ProjectDTO project) {
         service.execute(new RemoveProject(db.getId(), project.getId()), view.getDeletingMonitor(), new AsyncCallback<VoidResult>() {
             public void onFailure(Throwable caught) {
-                if (caught instanceof PartnerHasSitesException) {
-                    MessageBox.alert(I18N.CONSTANTS.removeItem(), I18N.MESSAGES.partnerHasDataWarning(project.getName()), null);
-                } 
+                if (caught instanceof ProjectHasSitesException) { 
+                    MessageBox.alert(I18N.CONSTANTS.removeItem(), I18N.MESSAGES.projectHasDataWarning(project.getName()), null);
+                } else {
+                	MessageBox.alert(I18N.CONSTANTS.error(), I18N.CONSTANTS.errorOnServer(), null);
+                }
             }
 
             public void onSuccess(VoidResult result) {
@@ -95,7 +97,9 @@ public class DbProjectEditor extends AbstractGridPresenter<ProjectDTO> {
                 service.execute(new AddProject(db.getId(), newProject), dlg, new AsyncCallback<CreateResult>() {
                     public void onFailure(Throwable caught) {
                         if (caught instanceof DuplicateException) {
-
+                        	MessageBox.alert(I18N.CONSTANTS.error(), I18N.CONSTANTS.errorOnServer(), null);
+                        } else {
+                        	MessageBox.alert(I18N.CONSTANTS.error(), I18N.CONSTANTS.errorOnServer(), null);
                         }
                     }
 
