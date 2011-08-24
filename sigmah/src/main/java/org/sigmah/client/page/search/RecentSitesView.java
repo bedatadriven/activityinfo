@@ -2,6 +2,7 @@ package org.sigmah.client.page.search;
 
 import java.util.List;
 
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.map.MapView;
 import org.sigmah.client.page.map.MapView.SiteSelectedEvent;
 import org.sigmah.client.page.map.MapView.SiteSelectedHandler;
@@ -76,8 +77,6 @@ public class RecentSitesView extends ContentPanel {
 		
 	    VBoxLayoutData vbld = new VBoxLayoutData();
 	    vbld.setFlex(1);
-		
-		//add(mapWidget.asWidget(), vbld);
 	}
 	
 	// TODO: move to collection class
@@ -92,7 +91,7 @@ public class RecentSitesView extends ContentPanel {
 	}
 
 	private void initializeComponent() {
-		setHeading("Recently added sites");
+		setHeading(I18N.MESSAGES.recentlyAddedSites("10"));
 		VBoxLayout vboxLayout = new VBoxLayout();
 		vboxLayout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
 		vboxLayout.setPadding(new Padding(5));

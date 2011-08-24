@@ -17,6 +17,8 @@ public class SearchResultItem  extends LayoutContainer {
 	private LabelField labelDatabaseName;
 	private HorizontalPanel panelTop = new HorizontalPanel();
 	private VerticalPanel panelChilds = new VerticalPanel();
+	private int activityCount = 0;
+	private int indicatorCount = 0;
 	
 	public SearchResultItem() {
 		super();
@@ -29,6 +31,16 @@ public class SearchResultItem  extends LayoutContainer {
 		
 		add(panelTop);
 		add(panelChilds);
+	}
+
+
+	public int getActivityCount() {
+		return activityCount;
+	}
+
+
+	public int getIndicatorCount() {
+		return indicatorCount;
 	}
 
 
@@ -78,14 +90,19 @@ public class SearchResultItem  extends LayoutContainer {
 				panelIndicator.add(spacerIndicator);
 				panelIndicator.add(IconImageBundle.ICONS.indicator().createImage());
 				
-				Hyperlink linkIndicator = new Hyperlink(childAxis.getLabel(),
-						"site-grid/" + ((EntityCategory)childAxis.getCategory()).getId());
-				linkIndicator.setStylePrimaryName("link");
-				panelIndicator.add(linkIndicator);
+//				Hyperlink linkIndicator = new Hyperlink(childAxis.getLabel(),
+//						"site-grid/" + ((EntityCategory)childAxis.getCategory()).getId());
+//				linkIndicator.setStylePrimaryName("link");
+//				panelIndicator.add(linkIndicator);
+				
+				LabelField labelIndicator = new LabelField(childAxis.getLabel());
+				panelIndicator.add(labelIndicator);
 				
 				panelAll.add(panelIndicator);
+				indicatorCount++;
 			}
 			
+			activityCount++;
 			panelChilds.add(panelAll);
 		}
 	}

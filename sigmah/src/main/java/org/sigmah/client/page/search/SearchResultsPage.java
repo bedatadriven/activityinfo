@@ -164,6 +164,7 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 
 		int activities=0;
 		int databases=0;
+		int indicators=0;
 		
 		LabelField labelResults = new LabelField();
 		panelSearchResults.add(labelResults);
@@ -180,13 +181,17 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 				itemWidget.setChilds(axis.getChildList());
 	
 				panelSearchResults.add(itemWidget);
-				activities+=axis.getChildCount();
 				databases++;
+				activities += itemWidget.getActivityCount();
+				indicators += itemWidget.getIndicatorCount();
 			}
 		}
 
-		labelResults.setText(I18N.MESSAGES
-				.searchResultsFound(Integer.toString(activities), Integer.toString(databases), searchQuery));
+		labelResults.setText(I18N.MESSAGES.searchResultsFound(
+				searchQuery, 
+				Integer.toString(databases), 
+				Integer.toString(activities), 
+				Integer.toString(indicators)));
 
 		layout(true);
 	}

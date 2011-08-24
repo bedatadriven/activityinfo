@@ -30,10 +30,8 @@ public class SearchFilterView extends ContentPanel {
 		supportedDimensions.add(DimensionType.AdminLevel);
 		supportedDimensions.add(DimensionType.Project);
 		supportedDimensions.add(DimensionType.Partner);
-		//supportedDimensions.add(DimensionType.Database);
 		supportedDimensions.add(DimensionType.Location);
 		supportedDimensions.add(DimensionType.AttributeGroup);
-		//supportedDimensions.add(DimensionType.Indicator);
 	}
 	
 	public SearchFilterView() {
@@ -60,7 +58,8 @@ public class SearchFilterView extends ContentPanel {
 			panel.setIcon(IconImageBundle.fromEntities.fromDimension(dimension));
 			panel.setLayout(new RowLayout(Orientation.HORIZONTAL));
 			dimensionPanels.put(dimension, panel);
-			panel.add(new LabelField("No search"));
+			LabelField labelNoSearch = new LabelField(I18N.CONSTANTS.noSearch());
+			labelNoSearch.setStyleAttribute("color", "grey");
 			add(panel, hbld);
 		}
 		layout(true);
@@ -104,7 +103,7 @@ public class SearchFilterView extends ContentPanel {
 //			 Add every hit entity linked to it's landing page
 //			Hyperlink link = new Hyperlink(searchResultEntity.getName(), "hm");
 //			panelEntity.add(link);
-			LabelField labelName = new LabelField("   " + searchResultEntity.getName() + "   ");
+			LabelField labelName = new LabelField(searchResultEntity.getName());
 			panel.add(labelName, new RowData());
 		}
 	}
