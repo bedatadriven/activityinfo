@@ -10,10 +10,13 @@ import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.shared.report.model.DimensionType;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
+import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Padding;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
-import com.extjs.gxt.ui.client.widget.layout.RowData;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
@@ -60,7 +63,7 @@ public class SearchFilterView extends ContentPanel {
 			dimensionPanels.put(dimension, panel);
 			LabelField labelNoSearch = new LabelField(I18N.CONSTANTS.noSearch());
 			labelNoSearch.setStyleAttribute("color", "grey");
-			add(panel, hbld);
+			add(panel);
 		}
 		layout(true);
 	}
@@ -95,17 +98,21 @@ public class SearchFilterView extends ContentPanel {
 	private void fillContentPanelWithEntities(DimensionType foundEntity) {
 		ContentPanel panel = dimensionPanels.get(foundEntity);
 		panel.removeAll();
-		
+		panel.setLayout(new FitLayout());
 		panel.setHeading(I18N.fromEntities.getDimensionTypePluralName(foundEntity) + " (" +
 				Integer.toString(affectedEntities.get(foundEntity).size()) +  ")");
 
+		List<BaseModelData> entities = new ArrayList<BaseModelData>();
 		for (SearchResultEntity searchResultEntity : affectedEntities.get(foundEntity)) {
-//			 Add every hit entity linked to it's landing page
-//			Hyperlink link = new Hyperlink(searchResultEntity.getName(), "hm");
-//			panelEntity.add(link);
-			LabelField labelName = new LabelField(searchResultEntity.getName());
-			panel.add(labelName, new RowData());
+			BaseModelData entity = new BaseModelData();
+			entity.set("name", searchResultEntity.getName());
+			entities.add(entity);
 		}
+		ListStore<BaseModelData> store = new ListStore<BaseModelData>();
+		store.add(entities);
+		ListView<BaseModelData> listviewEntities = new ListView<BaseModelData>(store);
+		listviewEntities.setTemplate(SearchResources.INSTANCE.entitiesTemplate().getText());
+		panel.add(listviewEntities);
 	}
 
 	private void showNoResultsForEntity(DimensionType foundEntity) {

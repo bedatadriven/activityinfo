@@ -16,6 +16,7 @@ import org.sigmah.shared.report.content.PivotTableData.Axis;
 import org.sigmah.shared.report.model.DimensionType;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
+import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -24,6 +25,7 @@ import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
@@ -84,6 +86,9 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 
 	private void createCompleteResultPanel() {
 		containerFilterAndResult = new LayoutContainer();
+		RowLayout layout = new RowLayout();
+		layout.setOrientation(Orientation.VERTICAL);
+		containerFilterAndResult.setLayout(layout);
 		containerFilterAndResult.setScrollMode(Scroll.AUTOY);
 		
 		BorderLayoutData bld = new BorderLayoutData(LayoutRegion.CENTER);

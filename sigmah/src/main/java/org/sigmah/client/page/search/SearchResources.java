@@ -13,6 +13,9 @@ public interface SearchResources extends ClientBundle {
 	@Source("SitesTemplate.html")
 	public TextResource sitesTemplate();
 	
+	@Source("EntitiesTemplate.html")
+	public TextResource entitiesTemplate();
+	
 	@Source("SearchStyles.css")
 	public SearchStyles searchStyles();
 	
