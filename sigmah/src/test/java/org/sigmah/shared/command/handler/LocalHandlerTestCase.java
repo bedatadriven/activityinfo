@@ -8,9 +8,7 @@ package org.sigmah.shared.command.handler;
 import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.replay;
 
-import java.io.File;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
@@ -26,25 +24,25 @@ import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.i18n.UIMessages;
 import org.sigmah.client.mock.MockEventBus;
-import org.sigmah.client.offline.command.CommandQueue;
+import org.sigmah.client.offline.OfflineModuleStub;
 import org.sigmah.client.offline.command.LocalDispatcher;
+import org.sigmah.client.offline.command.CommandQueue;
 import org.sigmah.client.offline.sync.DownSynchronizer;
-import org.sigmah.client.offline.sync.UpdateSynchronizer;
 import org.sigmah.server.endpoint.gwtrpc.CommandServlet;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.SyncRegionUpdate;
 import org.sigmah.shared.domain.User;
+import org.sigmah.shared.util.Collector;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcDatabase;
-import com.bedatadriven.rebar.sql.server.jdbc.JdbcDatabaseFactory;
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcScheduler;
 import com.bedatadriven.rebar.sync.client.BulkUpdaterAsync;
-import com.bedatadriven.rebar.sync.mock.MockBulkUpdater;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Guice;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 public abstract class LocalHandlerTestCase {
     @Inject
@@ -68,45 +66,43 @@ public abstract class LocalHandlerTestCase {
     protected JdbcDatabase localDatabase;
     
     protected CommandQueue commandQueue;
-    
-    private BulkUpdaterAsync updater;
-
+        
     private UIConstants uiConstants;
     private UIMessages uiMessages;
 	protected Connection localConnection;
 	
-	protected CommandContext commandContext;
+	
 	
 	private String databaseName = "target/localdbtest" + new java.util.Date().getTime();
 	protected DownSynchronizer synchronizer;
 
     @Before
     public void setUp() throws SQLException, ClassNotFoundException {
-
+        
+    	localDatabase = new JdbcDatabase(databaseName);
+        
         setUser(1); // default is db owner
 
         remoteDispatcher = new RemoteDispatcherStub();
 
-        localDatabase = new JdbcDatabase(databaseName);
                         
         uiConstants = createNiceMock(UIConstants.class);
         uiMessages = createNiceMock(UIMessages.class);
         replay(uiConstants, uiMessages);
 
         Log.setCurrentLogLevel(Log.LOG_LEVEL_DEBUG);
+        
+        	
     }
 
     protected void setUser(int userId) {
         user = new User();
         user.setId(userId);
         localAuth = new Authentication(user.getId(), "X", user.getEmail());
-        commandContext = new CommandContext() {
-			
-			@Override
-			public User getUser() {
-				return user;
-			}
-		};
+
+        Injector clientSideInjector = Guice.createInjector(new OfflineModuleStub(localAuth, localDatabase));
+        localDispatcher = clientSideInjector.getInstance(LocalDispatcher.class);
+        
     }
 
     protected void synchronize() {
@@ -139,6 +135,13 @@ public abstract class LocalHandlerTestCase {
         localDatabase.processEventQueue();
         
     }
+    
+    protected <C extends Command<R>, R extends CommandResult> R executeLocally(Command command) {
+    	Collector<R> collector = Collector.newCollector();
+    	localDispatcher.execute(command, null, collector);
+    	return collector.getResult();
+    }
+    
     
     @After
     public void tearDown() {

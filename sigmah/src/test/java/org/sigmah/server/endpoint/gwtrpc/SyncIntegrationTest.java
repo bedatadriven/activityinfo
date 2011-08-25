@@ -29,6 +29,7 @@ import org.sigmah.shared.command.handler.LocalHandlerTestCase;
 import org.sigmah.shared.domain.AdminEntity;
 import org.sigmah.shared.domain.Location;
 import org.sigmah.shared.domain.LocationType;
+import org.sigmah.shared.util.Collector;
 import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.MockHibernateModule;
 import org.sigmah.test.Modules;

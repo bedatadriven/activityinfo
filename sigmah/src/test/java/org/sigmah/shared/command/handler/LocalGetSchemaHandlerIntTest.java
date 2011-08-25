@@ -11,7 +11,6 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.dao.OnDataSet;
-import org.sigmah.server.endpoint.gwtrpc.Collector;
 import org.sigmah.server.endpoint.gwtrpc.GwtRpcModule;
 import org.sigmah.server.util.BeanMappingModule;
 import org.sigmah.server.util.logging.LoggingModule;
@@ -21,6 +20,7 @@ import org.sigmah.shared.dto.AttributeGroupDTO;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 import org.sigmah.shared.exception.CommandException;
+import org.sigmah.shared.util.Collector;
 import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.MockHibernateModule;
 import org.sigmah.test.Modules;
@@ -40,18 +40,13 @@ public class LocalGetSchemaHandlerIntTest extends LocalHandlerTestCase {
     public void forDatabaseOwner() throws CommandException {
 
         synchronize();
-
-        GetSchemaHandler handler = new GetSchemaHandler(localDatabase);
-        Collector<SchemaDTO> collector = new Collector<SchemaDTO>();
-        handler.execute(new GetSchema(), commandContext, collector);
-
-        SchemaDTO schema = collector.getResult();
+ 
+        SchemaDTO schema = executeLocally(new GetSchema());
         assertThat(schema.getDatabases().size(), equalTo(3));
         assertThat(schema.getDatabaseById(1).isDesignAllowed(), equalTo(true));
         assertThat(schema.getDatabaseById(1).getAmOwner(), equalTo(true));
         assertThat(schema.getDatabaseById(2).getAmOwner(), equalTo(true));
         assertThat(schema.getDatabaseById(1).getOwnerName(), equalTo("Alex"));
-
     }
 
     @Test
@@ -61,11 +56,8 @@ public class LocalGetSchemaHandlerIntTest extends LocalHandlerTestCase {
         setUser(2); // Bavon, has access only to PEAR
         synchronize();
 
-        GetSchemaHandler handler = new GetSchemaHandler(localDatabase);
-        Collector<SchemaDTO> collector = new Collector<SchemaDTO>();
-        handler.execute(new GetSchema(), commandContext, collector);
 
-        SchemaDTO schema = collector.getResult();
+        SchemaDTO schema = executeLocally(new GetSchema());
 
         assertThat(schema.getDatabases().size(), equalTo(1));
 

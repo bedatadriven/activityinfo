@@ -16,7 +16,7 @@ import org.sigmah.shared.report.model.DimensionType;
  * @author Alex Bertram
  *
  */
-public class GetSites extends PagingGetCommand<SiteResult> implements OfflineSupport {
+public class GetSites extends PagingGetCommand<SiteResult> {
 	
     private Filter filter = new Filter();
 

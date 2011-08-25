@@ -8,7 +8,7 @@ import org.sigmah.server.dao.SiteDAO;
 import org.sigmah.shared.command.GenerateElement;
 import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.command.Search;
-import org.sigmah.shared.command.handler.CommandContext;
+import org.sigmah.shared.command.handler.ExecutionContext;
 import org.sigmah.shared.command.handler.CommandHandlerAsync;
 import org.sigmah.shared.command.handler.GetSitesHandler;
 import org.sigmah.shared.command.result.SearchResult;
@@ -37,7 +37,7 @@ public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> 
     }
 
 	@Override
-	public void execute(final Search command, CommandContext context,
+	public void execute(final Search command, ExecutionContext context,
 			final AsyncCallback<SearchResult> callback) {
 		
 		final PivotTableReportElement pivotTable = new PivotTableReportElement();
@@ -61,7 +61,7 @@ public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> 
 		callback.onSuccess(result);
 	}
 
-	private void getRecentSitesUsingFilter(CommandContext context,
+	private void getRecentSitesUsingFilter(ExecutionContext context,
 			final AsyncCallback<SearchResult> callback,
 			final PivotTableReportElement pivotTable, final SearchResult result) {
 		
@@ -83,7 +83,7 @@ public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> 
 		});
 	}
 
-	private PivotContent getPivotDataUsingFilter(CommandContext context,
+	private PivotContent getPivotDataUsingFilter(ExecutionContext context,
 			final AsyncCallback<SearchResult> callback,
 			final PivotTableReportElement pivotTable, PivotContent content) {
 		

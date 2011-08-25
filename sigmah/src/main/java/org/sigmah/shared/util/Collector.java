@@ -1,4 +1,4 @@
-package org.sigmah.server.endpoint.gwtrpc;
+package org.sigmah.shared.util;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -9,7 +9,11 @@ public class Collector<T> implements AsyncCallback<T> {
 	
 	@Override
 	public void onFailure(Throwable caught) {
-		throw new RuntimeException(caught);
+		if(caught instanceof RuntimeException) {
+			throw (RuntimeException)caught;
+		} else {
+			throw new RuntimeException(caught);
+		}
 	}
 
 	@Override

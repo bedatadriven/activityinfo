@@ -24,7 +24,7 @@ public interface CommandHandlerAsync<C extends Command<R>, R extends CommandResu
     * @param callback Callback to receive the command result or an exception
     *
     */
-   void execute(C command, CommandContext context, AsyncCallback<R> callback);
+   void execute(C command, ExecutionContext context, AsyncCallback<R> callback);
 
 	
 }

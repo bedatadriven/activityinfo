@@ -16,7 +16,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.dao.OnDataSet;
 import org.sigmah.shared.command.CreateEntity;
+import org.sigmah.shared.command.CreateSite;
 import org.sigmah.shared.command.GetSites;
+import org.sigmah.shared.command.exception.NotAuthorizedException;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.PartnerDTO;
@@ -29,7 +31,7 @@ import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/sites-simple1.db.xml")
-public class CreateSiteTest extends CommandTestCase {
+public class CreateSiteTest extends CommandTestCase2 {
 
 
     @Test
@@ -39,7 +41,7 @@ public class CreateSiteTest extends CommandTestCase {
 
         // create command
 
-        CreateEntity cmd = CreateEntity.Site(newSite);
+        CreateSite cmd = new CreateSite(newSite);
 
         // execute the command
 
@@ -66,6 +68,21 @@ public class CreateSiteTest extends CommandTestCase {
         // confirm that the changes are there
         SiteDTOs.validateNewSite(secondRead);
     }
+    
+    @Test(expected=NotAuthorizedException.class)
+    public void unauthorized() throws CommandException {
+        // create a new detached, client model
+        SiteDTO newSite = SiteDTOs.newSite();
+        newSite.setPartner(new PartnerDTO(2, "Not NRC"));
+        // create command
+
+        CreateSite cmd = new CreateSite(newSite);
+
+        // execute the command
+
+        setUser(2); // bavon (only has access to his own partners in database 1)
+        execute(cmd);
+    }
 
 
 	@Test
@@ -87,11 +104,12 @@ public class CreateSiteTest extends CommandTestCase {
 
         // create command
 
-        CreateEntity cmd = CreateEntity.Site(newSite);
+        CreateSite cmd = new CreateSite(newSite);
 
         // execute the command
 
-        setUser(1);        newSite.setProject(new ProjectDTO(1,"SomeProject"));
+        setUser(1);        
+        newSite.setProject(new ProjectDTO(1,"SomeProject"));
 
 
         CreateResult result = (CreateResult) execute(cmd);
@@ -128,7 +146,7 @@ public class CreateSiteTest extends CommandTestCase {
 
         // create command
 
-        CreateEntity cmd = CreateEntity.Site(newSite);
+        CreateSite cmd = new CreateSite(newSite);
 
         // execute the command
 

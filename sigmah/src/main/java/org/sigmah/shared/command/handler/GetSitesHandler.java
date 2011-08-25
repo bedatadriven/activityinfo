@@ -15,12 +15,10 @@ import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.report.model.DimensionType;
 
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
-import com.bedatadriven.rebar.sql.client.SqlException;
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
 import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
-import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.SortInfo;
@@ -30,8 +28,8 @@ import com.google.inject.Inject;
 
 public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult> {
 
-	private SqlDatabase database;
-
+	private final SqlDatabase database;
+	
 	@Inject
 	public GetSitesHandler(SqlDatabase database) {
 		super();
@@ -39,13 +37,13 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 	}
 
 	@Override
-	public void execute(final GetSites command, final CommandContext context,
+	public void execute(final GetSites command, final ExecutionContext context,
 			final AsyncCallback<SiteResult> callback) {
 
 		doQuery(command, context, callback);
 	}
 
-	private void calculatePage(GetSites command, CommandContext context,
+	private void calculatePage(GetSites command, ExecutionContext context,
 			AsyncCallback<SiteResult> callback) {
 
 		final SqlQuery query = SqlQuery.select("Site.SiteId");
@@ -57,7 +55,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 		
 	}
 
-	private void doQuery(final GetSites command, final CommandContext context,
+	private void doQuery(final GetSites command, final ExecutionContext context,
 			final AsyncCallback<SiteResult> callback) {
 		final SqlQuery query = SqlQuery.select("site.SiteId")
 			.appendColumn("activity.ActivityId")
@@ -87,41 +85,26 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 		final SiteResult result = new SiteResult(sites);
 		result.setOffset(command.getOffset());
 
-		database.transaction(new SqlTransactionCallback() {
+		query.execute(context.getTransaction(), new SqlResultCallback() {
 
 			@Override
-			public void begin(SqlTransaction tx) {
-				query.execute(tx, new SqlResultCallback() {
-
-					@Override
-					public void onSuccess(SqlTransaction tx, SqlResultSet results) {
-						for(SqlResultSetRow row : results.getRows()) {
-							SiteDTO site = toSite(row);
-							sites.add(site);
-							siteMap.put(site.getId(), site);
-						}
-						if(!sites.isEmpty()) {
-							queryEntities(tx, siteMap);
-							joinIndicatorValues(tx, siteMap);
-							joinAttributeValues(tx, siteMap);
-							
-							if(command.getLimit() > 0) {
-								queryTotalLength(tx, command, context, result);
-							} else {
-								result.setTotalLength(sites.size());
-							}
-						}
-					}
-				});
-			}
-
-			@Override
-			public void onError(SqlException e) {
-				callback.onFailure(e);
-			}
-
-			@Override
-			public void onSuccess() {
+			public void onSuccess(SqlTransaction tx, SqlResultSet results) {
+				for(SqlResultSetRow row : results.getRows()) {
+					SiteDTO site = toSite(row);
+					sites.add(site);
+					siteMap.put(site.getId(), site);
+				}
+				if(!sites.isEmpty()) {
+					queryEntities(tx, siteMap);
+					joinIndicatorValues(tx, siteMap);
+					joinAttributeValues(tx, siteMap);
+					
+					if(command.getLimit() <= 0) {
+						result.setTotalLength(sites.size());
+					} else {
+						queryTotalLength(tx, command, context, result);
+					} 
+				}
 				callback.onSuccess(result);
 			}
 		});
@@ -146,7 +129,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 		}
 	}
 
-	private void applyPermissions(final SqlQuery query, CommandContext context) {
+	private void applyPermissions(final SqlQuery query, ExecutionContext context) {
 		// Apply permissions if we are on the server, 
 		// otherwise permissions have already been taken into account
 		// during synchronization
@@ -221,7 +204,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 		}
 	}
 	
-	private void queryTotalLength(SqlTransaction tx, GetSites command, CommandContext context, final SiteResult result) {
+	private void queryTotalLength(SqlTransaction tx, GetSites command, ExecutionContext context, final SiteResult result) {
 		final SqlQuery query = SqlQuery.selectSingle("count(*) AS site_count");
 		applyJoins(query);
 		applyFilter(query, command.getFilter());

@@ -39,7 +39,7 @@ public class BatchCommandHandler implements CommandHandler<BatchCommand> {
         for (Command cmd : batch.getCommands()) {
 
             CommandHandler etor = (CommandHandler) injector.getInstance(
-                    HandlerUtil.executorForCommand(cmd));
+                    HandlerUtil.handlerForCommand(cmd));
 
             results.add(etor.execute(cmd, user));
 

@@ -5,7 +5,6 @@
 
 package org.sigmah.shared.command;
 
-import org.sigmah.client.dispatch.loader.ListCmdLoader;
 import org.sigmah.shared.command.result.CommandResult;
 
 import com.extjs.gxt.ui.client.data.SortInfo;

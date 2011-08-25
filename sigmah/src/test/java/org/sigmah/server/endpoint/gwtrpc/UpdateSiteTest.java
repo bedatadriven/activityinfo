@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.sigmah.server.dao.OnDataSet;
 import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.command.UpdateEntity;
+import org.sigmah.shared.command.UpdateSite;
 import org.sigmah.shared.command.result.ListResult;
 import org.sigmah.shared.domain.LockedPeriod;
 import org.sigmah.shared.domain.Site;
@@ -44,7 +45,7 @@ public class UpdateSiteTest extends CommandTestCase {
         model.setAdminEntity(2, null);
 
 
-        execute(new UpdateEntity(model, model.toChangeMap().getTransientMap()));
+        execute(new UpdateSite(model.getId(), model.toChangeMap()));
 
         // retrieve the old one
 
@@ -69,7 +70,7 @@ public class UpdateSiteTest extends CommandTestCase {
         Map<String, Object> changes = new HashMap<String, Object>();
         changes.put("partnerId", 2);
 
-        execute(new UpdateEntity("Site", 2, changes));
+        execute(new UpdateSite(2, changes));
 
         // assure that the change has been effected
 

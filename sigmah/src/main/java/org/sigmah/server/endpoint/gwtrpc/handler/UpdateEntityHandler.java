@@ -13,7 +13,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sigmah.server.policy.ActivityPolicy;
 import org.sigmah.server.policy.PropertyMap;
-import org.sigmah.server.policy.SitePolicy;
 import org.sigmah.shared.command.UpdateEntity;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
@@ -66,10 +65,6 @@ public class UpdateEntityHandler extends BaseEntityHandler implements CommandHan
 
         } else if ("Indicator".equals(cmd.getEntityName())) {
             updateIndicator(user, cmd, changes);
-
-        } else if ("Site".equals(cmd.getEntityName())) {
-            SitePolicy policy = injector.getInstance(SitePolicy.class);
-            policy.update(user, cmd.getId(), changeMap);
 
         } else if ("LockedPeriod".equals(cmd.getEntityName())) {
             updateLockedPeriod(user, cmd, changes);

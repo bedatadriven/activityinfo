@@ -1,10 +1,7 @@
 package org.sigmah.client.offline.command;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,10 +9,11 @@ import java.util.Map.Entry;
 
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.CreateEntity;
-import org.sigmah.shared.dao.SqlInsertBuilder;
-import org.sigmah.shared.dao.SqlQueryBuilder;
+import org.sigmah.shared.command.CreateSite;
 
-import com.allen_sauer.gwt.log.client.Log;
+import com.bedatadriven.rebar.sql.client.SqlDatabase;
+import com.bedatadriven.rebar.sql.client.SqlTransaction;
+import com.bedatadriven.rebar.sql.client.query.SqlInsert;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -33,8 +31,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class CommandQueue {
 	
-	private final Connection connection;
-	
+
 	public static class QueueEntry {
 		private int id;
 		private Command command;
@@ -58,18 +55,18 @@ public class CommandQueue {
 			this.command = command;
 		}
 	}
+
+	private SqlDatabase database;
 	
 	
 	@Inject
-	public CommandQueue(Connection connection) {
-		this.connection = connection;		
-		/*
-		try {
-			Statement stmt = connection.createStatement();
-			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS command_queue (id INTEGER PRIMARY KEY AUTOINCREMENT, command TEXT) " );
-		} catch (SQLException e) {
-			Log.error("Could not create the command_queue table!", e);
-		}*/
+	public CommandQueue(SqlDatabase database) {
+		this.database = database;
+		createTableIfNotExists();
+	}
+	
+	public void createTableIfNotExists() {
+		database.executeSql("CREATE TABLE IF NOT EXISTS command_queue (id INTEGER PRIMARY KEY AUTOINCREMENT, command TEXT)");
 	}
 
 	/**
@@ -78,13 +75,12 @@ public class CommandQueue {
 	 * @param cmd
 	 * @throws SQLException
 	 */
-	public void queue(Command cmd) throws SQLException {
-		/*
-		if(cmd instanceof CreateEntity) {
-			queueCreateEntity((CreateEntity) cmd); 
+	public void queue(SqlTransaction tx, Command cmd) {
+		if(cmd instanceof CreateSite) {
+			queueCreateSite(tx, (CreateSite) cmd); 
 		} else {
 			throw new RuntimeException("Cannot queue class of type " + cmd.getClass().getName());
-		}*/
+		}
 	}
 	
 	/**
@@ -108,33 +104,32 @@ public class CommandQueue {
 	}
 	
 	public void remove(int queueId, AsyncCallback<Boolean> callback) {
-		try {
-			PreparedStatement stmt = connection.prepareStatement("DELETE FROM command_queue WHERE id = ?");
-			stmt.setInt(1, queueId);
-			int rowsAffected = stmt.executeUpdate();
-		
-			callback.onSuccess(rowsAffected == 1);
-			
-			
-		} catch(SQLException e) {
-			callback.onFailure(e);
-		}
+//		try {
+//			PreparedStatement stmt = connection.prepareStatement("DELETE FROM command_queue WHERE id = ?");
+//			stmt.setInt(1, queueId);
+//			int rowsAffected = stmt.executeUpdate();
+//		
+//			callback.onSuccess(rowsAffected == 1);
+//			
+//			
+//		} catch(SQLException e) {
+//			callback.onFailure(e);
+//		}
 	}
 	
 
-	private void queueCreateEntity(CreateEntity cmd) throws SQLException {
+	private void queueCreateSite(SqlTransaction tx, CreateSite cmd) {
 		
 		JsonObject root = serialize(cmd);
 		
-		SqlInsertBuilder.insertInto("command_queue")
+		SqlInsert.insertInto("command_queue")
 			.value("command", root.toString())
-			.execute(connection);
+			.execute(tx);
 	}
 
-	private JsonObject serialize(CreateEntity cmd) {
+	private JsonObject serialize(CreateSite cmd) {
 		JsonObject root = new JsonObject();
-		root.addProperty("commandClass", "CreateEntity");
-		root.addProperty("entityName", cmd.getEntityName());
+		root.addProperty("commandClass", "CreateSite");
 		root.add("properties", encodeMap(cmd.getProperties().getTransientMap()));
 		return root;
 	}
@@ -216,9 +211,6 @@ public class CommandQueue {
 		return map;
 	}
 
-	public void createTableIfNotExists() {
-		// TODO Auto-generated method stub
-		
-	}
+
 	
 }

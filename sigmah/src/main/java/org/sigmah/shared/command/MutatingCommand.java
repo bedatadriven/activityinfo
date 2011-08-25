@@ -5,13 +5,14 @@
 
 package org.sigmah.shared.command;
 
+import org.sigmah.shared.command.result.CommandResult;
+
 /**
  *
  * Marker interface for Commands that have
  * an effect on the remote state. (for example,
  * a command which updates the database)
- *
- * @author Alex Bertram
  */
-public interface MutatingCommand {
+public interface MutatingCommand<R extends CommandResult> extends Command<R> {
+	
 }
