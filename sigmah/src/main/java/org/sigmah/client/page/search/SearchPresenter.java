@@ -155,6 +155,7 @@ public class SearchPresenter implements SearchView.SearchHandler, Page {
 			if (schema != null) {
 				ActivityDTO activity = schema.getActivityById(site.getActivityId());
 				recent.setActivityName(activity.getName());
+				recent.setActivityLink(GWT.getHostPageBaseURL() + "#site-grid/" + activity.getId());
 				recent.setDatabaseName(activity.getDatabase().getName() == null ? "[Database]" : activity.getDatabase().getName());
 			}
 			result.add(recent);
@@ -164,12 +165,6 @@ public class SearchPresenter implements SearchView.SearchHandler, Page {
 	}
 	
 	public class RecentSiteModel extends BaseModelData {
-		private String activityName;
-		private int siteId;
-		private String locationName;
-		private Date date1;
-		private Date date2;
-		private String comments;
 		
 		public RecentSiteModel(SiteDTO site) {
 			set("hasComment", false);
@@ -185,6 +180,12 @@ public class SearchPresenter implements SearchView.SearchHandler, Page {
 		}
 		public void setActivityName(String activityName) {
 			set("activityName", activityName);
+		}
+		public String getActivityLink() {
+			return get("activityLink");
+		}
+		public void setActivityLink(String activityLink) {
+			set("activityLink", activityLink);
 		}
 		public String getDatabaseName() {
 			return get("activityName");
