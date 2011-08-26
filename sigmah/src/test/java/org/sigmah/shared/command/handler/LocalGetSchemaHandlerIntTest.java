@@ -46,7 +46,7 @@ public class LocalGetSchemaHandlerIntTest extends LocalHandlerTestCase {
         handler.execute(new GetSchema(), commandContext, collector);
 
         SchemaDTO schema = collector.getResult();
-        assertThat(schema.getDatabases().size(), equalTo(2));
+        assertThat(schema.getDatabases().size(), equalTo(3));
         assertThat(schema.getDatabaseById(1).isDesignAllowed(), equalTo(true));
         assertThat(schema.getDatabaseById(1).getAmOwner(), equalTo(true));
         assertThat(schema.getDatabaseById(2).getAmOwner(), equalTo(true));

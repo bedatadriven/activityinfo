@@ -9,10 +9,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import junit.framework.Assert;
 
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
 import org.junit.Test;
-import org.junit.internal.matchers.TypeSafeMatcher;
 import org.junit.runner.RunWith;
 import org.sigmah.server.dao.OnDataSet;
 import org.sigmah.shared.command.GetSites;
@@ -28,7 +25,7 @@ import com.extjs.gxt.ui.client.data.SortInfo;
 
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/sites-simple1.db.xml")
-public class GetSitesTest extends CommandTestCase {
+public class GetSitesTest extends CommandTestCase2{
     private static final int DATABASE_OWNER = 1;
                 
 

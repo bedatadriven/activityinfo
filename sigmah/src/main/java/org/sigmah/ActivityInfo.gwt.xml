@@ -57,6 +57,14 @@
 	    </any>	
 	</replace-with>
 
+    <replace-with class="org.sigmah.client.offline.capability.WebKitCapabilityProfile">
+        <when-type-is class="org.sigmah.client.offline.capability.OfflineCapabilityProfile"/>
+        <any>
+            <when-property-is name="user.agent" value="safari"/>
+            <!-- Have to double check but think opera is pretty consistent with webkit -->
+            <when-property-is name="user.agent" value="opera"/>
+        </any>  
+    </replace-with>
 
     <!-- Include generated sources -->
     <source path='client'/>

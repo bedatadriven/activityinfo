@@ -125,7 +125,9 @@ public interface IconImageBundle extends ImageBundle {
 
     AbstractImagePrototype onlineSynced();
 
-    AbstractImagePrototype onlineSyncing();
+    AbstractImagePrototype sync();
+    
+    AbstractImagePrototype syncing();
 
     AbstractImagePrototype up();
 

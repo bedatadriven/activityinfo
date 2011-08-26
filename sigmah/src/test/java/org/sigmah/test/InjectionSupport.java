@@ -6,10 +6,9 @@
 package org.sigmah.test;
 
 import java.lang.reflect.Method;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.persistence.EntityManagerFactory;
 
 import org.junit.AfterClass;
 import org.junit.internal.runners.statements.RunAfters;
@@ -104,7 +103,7 @@ public class InjectionSupport extends BlockJUnit4ClassRunner {
         }
 
         return ods == null ? statement :
-                new LoadDataSet(injector.getInstance(EntityManagerFactory.class), statement, ods.value(), target);
+                new LoadDataSet(injector.getProvider(Connection.class), statement, ods.value(), target);
     }
 
     /**

@@ -38,6 +38,7 @@ import com.google.inject.Inject;
  * @author Alex Bertram
  * @see org.sigmah.shared.command.GetSchema
  */
+@Deprecated
 public class GetSchemaHandlerSync implements CommandHandler<GetSchema> {
 
     private UserDatabaseDAO userDatabaseDAO;

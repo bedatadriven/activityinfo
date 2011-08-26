@@ -32,9 +32,13 @@ public class GetAdminEntitiesHandler implements CommandHandlerAsync<GetAdminEnti
 	@Override
 	public void execute(GetAdminEntities cmd, CommandContext context,
 			final AsyncCallback<AdminEntityResult> callback) {
-
+		
 		SqlQuery query =
-				SqlQuery.select("AdminEntity.*")
+				SqlQuery.select("adminEntityId",
+					"name",
+					"adminLevelId",
+					"adminEntityParentId",
+					"x1","y1","x2","y2")
 					.from("AdminEntity")
 					.orderBy("AdminEntity.Name");
 
@@ -75,23 +79,17 @@ public class GetAdminEntitiesHandler implements CommandHandlerAsync<GetAdminEnti
 				}
 				callback.onSuccess(new AdminEntityResult(entities));
 			}
-
-			@Override
-			public boolean onFailure(SqlException e) {
-				// TODO Auto-generated method stub
-				return super.onFailure(e);
-			}
 		});
 	}
 
 	public static AdminEntityDTO toEntity(SqlResultSetRow row) {
 		
 		AdminEntityDTO entity = new AdminEntityDTO();
-		entity.setId(row.getInt("AdminEntityId"));
-		entity.setName(row.getString("Name"));
-		entity.setLevelId(row.getInt("AdminLevelId"));
-		if(!row.isNull("AdminEntityParentId")) {
-			entity.setParentId(row.getInt("AdminEntityParentId"));
+		entity.setId(row.getInt("adminEntityId"));
+		entity.setName(row.getString("name"));
+		entity.setLevelId(row.getInt("adminLevelId"));
+		if(!row.isNull("adminEntityParentId")) {
+			entity.setParentId(row.getInt("adminEntityParentId"));
 		}
 		BoundingBoxDTO bounds = BoundingBoxDTO.empty();
 		if(!row.isNull("x1")) {

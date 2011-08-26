@@ -184,7 +184,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
             	query.orderBy("Location.Axe", ascending);
             } else if (field.startsWith(IndicatorDTO.PROPERTY_PREFIX)) {
             	int indicatorId = IndicatorDTO.indicatorIdForPropertyName(field);
-            	query.orderBy(SqlQuery.select("SUM(v.Value)")
+            	query.orderBy(SqlQuery.selectSingle("SUM(v.Value)")
     				.from("IndicatorValue", "v")
     				.leftJoin("ReportingPeriod", "r").on("v.ReportingPeriodId=r.ReportingPeriodId")
     				.whereTrue("v.IndicatorId=" + indicatorId)
@@ -222,7 +222,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 	}
 	
 	private void queryTotalLength(SqlTransaction tx, GetSites command, CommandContext context, final SiteResult result) {
-		final SqlQuery query = SqlQuery.select("count(*) AS site_count");
+		final SqlQuery query = SqlQuery.selectSingle("count(*) AS site_count");
 		applyJoins(query);
 		applyFilter(query, command.getFilter());
 		applyPermissions(query, context);
@@ -246,8 +246,12 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 
 		// first retrieve all the admin DTOs that we'll need for this result set
 		
-		SqlQuery.select("e.*")
-			.from("AdminEntity e")
+		SqlQuery.select("adminEntityId",
+				"name",
+				"adminLevelId",
+				"adminEntityParentId",
+				"x1","y1","x2","y2")
+			.from("AdminEntity", "e")
 			.where("e.AdminEntityId").in(
 				SqlQuery.select("AdminEntityId").from("LocationAdminLink").where("LocationId").in(
 						SqlQuery.select("LocationId").from("Site").where("SiteId").in(siteMap.keySet())))

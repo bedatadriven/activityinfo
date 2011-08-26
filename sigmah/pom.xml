@@ -377,7 +377,7 @@
         <dependency>
             <groupId>org.dbunit</groupId>
             <artifactId>dbunit</artifactId>
-            <version>2.4.4</version>
+            <version>2.4.8</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -923,14 +923,13 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>gwt-maven-plugin</artifactId>
-                        <version>1.2</version>
                         <configuration>
                             <module>org.sigmah.ActivityInfoSafariTest</module>
                         </configuration>
 
                         <executions>
                             <execution>
-                                <id>gwt-compile</id>
+                                <id>activityinfo-compile</id>
                                 <configuration>
                                     <draftCompile>true</draftCompile>
                                     <module>org.sigmah.ActivityInfoSafariTest</module>

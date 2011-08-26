@@ -21,27 +21,17 @@ import com.google.inject.Inject;
  * activation of offline mode
  * 
  */
-public class PromptOfflineDialog extends Dialog {
+public class PromptOfflineDialog extends BasePromptDialog {
 
-	static {
-		ProfileResources.INSTANCE.style().ensureInjected();
-	}
-	
-	private final OfflineCapabilityProfile capabilityProfile = GWT.create(OfflineCapabilityProfile.class);
-	
+
 	private static final String DONT_ASK_STATE_KEY = "offlineSilent";
-	private static final String DONT_ASK_COOKIE_VALUE = "true";
-	private static final long THREE_MONTHS = 1000 * 60 * 60 * 24 * 90;
-	
 
 	private final CrossSessionStateProvider stateProvider;
 	private final EnableCallback callback;
 	
-	
-	
 	@Inject
 	public PromptOfflineDialog(CrossSessionStateProvider stateProvider, EnableCallback callback) {
-		super();
+		super(capabilityProfile.getInstallInstructions());
 		
 		this.stateProvider = stateProvider;
 		this.callback = callback;
@@ -52,7 +42,7 @@ public class PromptOfflineDialog extends Dialog {
 		setModal(true);
 		setLayout(new FitLayout());
 		
-		Html bodyHtml = new Html(capabilityProfile.getStartupMessageHtml());
+		Html bodyHtml = new Html(capabilityProfile.getInstallInstructions());
 		bodyHtml.addStyleName(ProfileResources.INSTANCE.style().startupDialogBody());
         
 		add(bodyHtml);

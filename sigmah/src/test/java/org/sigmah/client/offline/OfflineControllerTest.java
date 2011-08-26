@@ -21,6 +21,7 @@ import org.sigmah.client.mock.StateManagerStub;
 import org.sigmah.client.offline.OfflineController;
 import org.sigmah.client.offline.OfflineController.EnableCallback;
 import org.sigmah.client.offline.OfflineController.PromptConnectCallback;
+import org.sigmah.client.offline.capability.WebKitCapabilityProfile;
 import org.sigmah.client.offline.sync.SyncStatusEvent;
 import org.sigmah.client.offline.sync.Synchronizer;
 import org.sigmah.shared.command.Command;
@@ -64,7 +65,7 @@ public class OfflineControllerTest {
         // No state is set, so the presenter should assume that offline is not yet installed
 
         OfflineController presenter = new OfflineController(view, eventBus, remoteDispatcher,
-        		gatewayProvider, stateManager, uiConstants);
+        		gatewayProvider, stateManager, new WebKitCapabilityProfile(), uiConstants);
 
         assertThat(view.defaultButtonText, equalTo("Install"));
 
@@ -102,7 +103,7 @@ public class OfflineControllerTest {
         stateManager.set(OfflineController.OFFLINE_MODE_KEY, OfflineController.OfflineMode.OFFLINE.toString());
 
         OfflineController presenter = new OfflineController(view, eventBus, 
-        		remoteDispatcher, gatewayProvider, stateManager, uiConstants);
+        		remoteDispatcher, gatewayProvider, stateManager, new WebKitCapabilityProfile(), uiConstants);
 
         // offline async fragment finishes loading
         assertThat(offlineImpl.lastCall, equalTo("goOffline"));
@@ -118,7 +119,7 @@ public class OfflineControllerTest {
         stateManager.set(OfflineController.OFFLINE_MODE_KEY, OfflineController.OfflineMode.OFFLINE.toString());
 
         new OfflineController(view, eventBus, remoteDispatcher,
-        		gatewayProvider, stateManager, uiConstants);
+        		gatewayProvider, stateManager, new WebKitCapabilityProfile(), uiConstants);
 
         // offline async fragment finishes loading
         offlineImpl.lastCallback.onSuccess(null);
@@ -265,7 +266,7 @@ public class OfflineControllerTest {
 		}
 
 		@Override
-		public void confirmEnable(EnableCallback callback) {
+		public void showInstallInstructions() {
 			// TODO Auto-generated method stub
 			
 		}

@@ -12,14 +12,18 @@ import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.offline.OfflineController;
 import org.sigmah.client.offline.OfflineController.EnableCallback;
 import org.sigmah.client.offline.OfflineController.PromptConnectCallback;
+import org.sigmah.client.offline.capability.OfflineCapabilityProfile;
 import org.sigmah.client.util.state.CrossSessionStateProvider;
 
 import com.extjs.gxt.ui.client.event.Observable;
+import com.extjs.gxt.ui.client.widget.Dialog;
+import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -38,11 +42,14 @@ public class OfflineView extends Button implements OfflineController.View {
     private MenuItem syncNowButton;
     private MenuItem toggleModeButton;
     private MenuItem reinstallOffline;
+    
+    private OfflineCapabilityProfile capabilityProfile;
 
     @Inject
-    public OfflineView(CrossSessionStateProvider stateProvider) {
+    public OfflineView(CrossSessionStateProvider stateProvider, OfflineCapabilityProfile profile) {
     	this.stateProvider = stateProvider;
-        syncNowButton = new MenuItem(I18N.CONSTANTS.syncNow(), IconImageBundle.ICONS.onlineSyncing());
+    	this.capabilityProfile = profile;
+        syncNowButton = new MenuItem(I18N.CONSTANTS.syncNow(), IconImageBundle.ICONS.sync());
         toggleModeButton = new MenuItem(I18N.CONSTANTS.switchToOnline());
         reinstallOffline = new MenuItem(I18N.CONSTANTS.reinstallOfflineMode());
 
@@ -95,7 +102,7 @@ public class OfflineView extends Button implements OfflineController.View {
 
     @Override
     public void setButtonTextToSyncing() {
-        this.setIcon(IconImageBundle.ICONS.onlineSyncing());
+        this.setIcon(IconImageBundle.ICONS.syncing());
         this.setText(I18N.CONSTANTS.synchronizing());
     }
 
@@ -150,7 +157,7 @@ public class OfflineView extends Button implements OfflineController.View {
 
 	@Override
 	public void showError(String message) {
-		MessageBox.alert(I18N.CONSTANTS.offlineInstallationFailed(), I18N.CONSTANTS.offlineInstallError() + message, null);
+		MessageBox.alert(I18N.CONSTANTS.offlineMode(), I18N.CONSTANTS.offlineInstallError() + message, null);
 
 	}
 
@@ -189,9 +196,10 @@ public class OfflineView extends Button implements OfflineController.View {
 	}
 
 	@Override
-	public void confirmEnable(EnableCallback callback) {
-		// TODO Auto-generated method stub
-		
+	public void showInstallInstructions() {
+		OfflineCapabilityProfile profile = GWT.create(OfflineCapabilityProfile.class);
+		MessageBox.alert(I18N.CONSTANTS.offlineMode(), profile.getInstallInstructions(),
+				null);
 	}
 
 }
