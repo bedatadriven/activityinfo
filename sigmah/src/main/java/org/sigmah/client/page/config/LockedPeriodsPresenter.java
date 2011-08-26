@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.mvp.AddCreateView;
 import org.sigmah.client.mvp.CanCreate.CreateEvent;
 import org.sigmah.client.mvp.CanDelete.ConfirmDeleteEvent;
@@ -33,6 +34,7 @@ import org.sigmah.shared.dto.LockedPeriodDTO;
 import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
@@ -78,7 +80,7 @@ public class LockedPeriodsPresenter
 		final LockedPeriodDTO lockedPeriod = view.getValue();
 		LockEntity lockUserDatabase = new LockEntity(lockedPeriod);
 		if (lockedPeriod.getActivity() != null) {
-			lockUserDatabase.setActivityId(lockedPeriod.getActivity().getId());		
+			lockUserDatabase.setActivityId(lockedPeriod.getActivity().getId());
 		}
 		if (lockedPeriod.getProject() != null) {
 			lockUserDatabase.setProjectId(lockedPeriod.getProject().getId());		
@@ -91,7 +93,7 @@ public class LockedPeriodsPresenter
 			@Override
 			public void onFailure(Throwable caught) {
 				view.getCreatingMonitor().onServerError();
-				System.out.println("oh noes");
+				MessageBox.alert(I18N.CONSTANTS.error(), I18N.CONSTANTS.errorOnServer() + "\n\n" +  caught.getMessage(), null);
 			}
 
 			@Override
@@ -120,6 +122,7 @@ public class LockedPeriodsPresenter
 					// Tell the user an error occurred
 					view.getDeletingMonitor().onServerError();
 					// TODO Handle failure
+					MessageBox.alert(I18N.CONSTANTS.error(), I18N.CONSTANTS.errorOnServer() + "\n\n" +  caught.getMessage(), null);
 				}
 
 				@Override
@@ -191,7 +194,7 @@ public class LockedPeriodsPresenter
 
 			@Override
 			public void onFailure(Throwable caught) {
-				// TODO Handle failure
+				MessageBox.alert(I18N.CONSTANTS.error(), I18N.CONSTANTS.errorOnServer() + "\n\n" +  caught.getMessage(), null);
 			}
 
 			@Override

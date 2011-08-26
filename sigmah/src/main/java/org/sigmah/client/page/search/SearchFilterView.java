@@ -1,5 +1,7 @@
 package org.sigmah.client.page.search;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -7,112 +9,109 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.shared.report.model.DimensionType;
 
+import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.util.Padding;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
-import com.google.gwt.user.client.ui.Image;
+import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
+import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
 
 
-public class SearchFilterView extends LayoutContainer {
-	private LabelField labelHeader;
-	private VerticalPanel panelEntities;
-	private HorizontalPanel panelNoResultsFound;
-	private String searchQuery = "";
+public class SearchFilterView extends ContentPanel {
 	private Map<DimensionType, List<SearchResultEntity>> affectedEntities;
+	private static List<DimensionType> supportedDimensions = new ArrayList<DimensionType>();
+	private Map<DimensionType, EntityPanel> dimensionPanels = new HashMap<DimensionType, EntityPanel>();
+	
+	static {
+		supportedDimensions.add(DimensionType.AdminLevel);
+		supportedDimensions.add(DimensionType.Project);
+		supportedDimensions.add(DimensionType.Partner);
+		supportedDimensions.add(DimensionType.Location);
+		supportedDimensions.add(DimensionType.AttributeGroup);
+	}
 	
 	public SearchFilterView() {
 		super();
 		
 		SearchResources.INSTANCE.searchStyles().ensureInjected();
 		setStylePrimaryName("filterView");
+		setHeading(I18N.CONSTANTS.showingSearchResultFor());
+		setHeight(300);
 		
-		addHeaderLabel();
-		
-		createNoResultsFoundPanel();
-		createEntityPanel();
-	}
+		VBoxLayout layout = new VBoxLayout();
+		layout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
+		layout.setPadding(new Padding(2,2,2,2));
+		setLayout(layout);
 
-	private void createEntityPanel() {
-		panelEntities = new VerticalPanel();
-		panelEntities.setStylePrimaryName("filterView");
-		add(panelEntities);
+		for (DimensionType dimension : supportedDimensions) {
+			EntityPanel entityPanel = new EntityPanel(dimension);
+			dimensionPanels.put(dimension, entityPanel);
+			add(entityPanel);
+		}
+		layout(true);
 	}
-
-	private void createNoResultsFoundPanel() {
-		panelNoResultsFound = new HorizontalPanel();
-		LabelField labelNoResultsFound = new LabelField();
-		labelNoResultsFound.setText(I18N.MESSAGES.noSearchResults(searchQuery));
-		add(panelNoResultsFound);
-	}
-
-	private void addHeaderLabel() {
-		labelHeader = new LabelField();
-		labelHeader.setText(I18N.CONSTANTS.showingSearchResultFor());
-		labelHeader.setStylePrimaryName("filterSummary");
-		add(labelHeader);
-	}
-
-	public void setQuery(String query) {
-		this.searchQuery=query;
-	}
-
 
 	private void updateUI() {
-		setHasFilter(affectedEntities.size() > 0);
-		showEntityPanel();
-	}
-	
-	private void setHasFilter(boolean hasFilter) {
-		// show the filters
-		labelHeader.setVisible(hasFilter);
-		panelEntities.setVisible(hasFilter);
-
-		// hide no results panel
-		panelNoResultsFound.setVisible(!hasFilter);
-	}
-
-
-	private void showEntityPanel() {		
-		panelEntities.removeAll();
-		panelEntities.setStylePrimaryName("filterView");
-		for (DimensionType foundEntity : affectedEntities.keySet()) {
-			HorizontalPanel panelEntity = new HorizontalPanel();
-			
-			Image iconEntityType = IconImageBundle.fromEntities.fromDimension(foundEntity).createImage();
-			panelEntity.add(iconEntityType);
-			
-			LabelField labelEntityTypeCount = new LabelField();
-			labelEntityTypeCount.setText(Integer.toString(affectedEntities.get(foundEntity).size()));
-			panelEntity.add(labelEntityTypeCount);
-			
-			LabelField labelEntityTypeName = new LabelField();
-			labelEntityTypeName.setText(I18N.fromEntities.getDimensionTypePluralName(foundEntity));
-			labelEntityTypeName.addInputStyleName("font-weight:bold");
-			panelEntity.add(labelEntityTypeName);
-
-			HorizontalPanel panelEntityResults = new HorizontalPanel();
-			panelEntityResults.setStylePrimaryName("panelEntityResults");
-			panelEntityResults.setSpacing(10);
-			
-			// Add every hit entity linked to it's landing page
-			for (SearchResultEntity searchResultEntity : affectedEntities.get(foundEntity)) {
-//				Hyperlink link = new Hyperlink(searchResultEntity.getName(), "hm");
-//				panelEntity.add(link);
-				LabelField labelName = new LabelField(searchResultEntity.getName());
-				panelEntityResults.add(labelName);
-			}
-			
-			panelEntities.add(panelEntity);
-			panelEntities.add(panelEntityResults);
+		for (DimensionType foundEntity : supportedDimensions) {
+			dimensionPanels.get(foundEntity).fillWithEntities(affectedEntities.get(foundEntity));
 		}
 		
 		layout(true);
 	}
-
+	
 	public void setFilter(Map<DimensionType, List<SearchResultEntity>> affectedEntities) {
 		this.affectedEntities = affectedEntities;
 
 		updateUI();
+	}
+	
+	private class EntityPanel extends VerticalPanel {
+		private DimensionType dimension;
+		private HorizontalPanel panelHeader;
+		private ListStore<BaseModelData> store = new ListStore<BaseModelData>();
+		private ListView<BaseModelData> listviewEntities = new ListView<BaseModelData>(store);
+		private LabelField labelNoSearch = new LabelField(I18N.CONSTANTS.noSearch());
+		private LabelField labelNoMatches = new LabelField(I18N.CONSTANTS.noMatches());
+
+		public EntityPanel(DimensionType dimension) {
+			super();
+			
+			this.dimension = dimension;
+
+			SearchResources.INSTANCE.searchStyles().ensureInjected();
+			
+			initializeComponent();
+		}
+
+		private void initializeComponent() {
+			listviewEntities.setTemplate(SearchResources.INSTANCE.entitiesTemplate().getText());
+
+			panelHeader = new HorizontalPanel();
+			panelHeader.add(IconImageBundle.fromEntities.fromDimension(dimension).createImage());
+			panelHeader.add(new LabelField(I18N.fromEntities.getDimensionTypePluralName(dimension)));
+			add(panelHeader);
+			
+			labelNoMatches.setStyleAttribute("color", "grey");
+			labelNoSearch.setStyleAttribute("color", "grey");
+			add(labelNoSearch);
+		}
+		
+		public void fillWithEntities(List<SearchResultEntity> affectedEntities) {
+			removeAll();
+			add(panelHeader);
+
+			if (affectedEntities == null) {
+				add(labelNoMatches);
+			} else {
+				store.removeAll();
+				store.add(affectedEntities);
+				add(listviewEntities);
+			}
+		}
+		
 	}
 }

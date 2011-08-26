@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.sigmah.client.dispatch.AsyncMonitor;
-import org.sigmah.client.dispatch.monitor.NullAsyncMonitor;
+import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.map.AIMapWidget;
+import org.sigmah.client.page.entry.SiteMap;
 import org.sigmah.client.page.search.SearchPresenter.RecentSiteModel;
 import org.sigmah.shared.command.result.SearchResult;
 import org.sigmah.shared.command.result.SitePointList;
@@ -16,13 +16,16 @@ import org.sigmah.shared.report.content.PivotTableData.Axis;
 import org.sigmah.shared.report.model.DimensionType;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
+import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
@@ -32,27 +35,27 @@ import com.google.gwt.user.client.ui.TextBox;
 
 public class SearchResultsPage extends ContentPanel implements SearchView {
 	private VerticalPanel panelSearchResults;
-	private VerticalPanel panelCompleteResult;
-	private SearchResult searchResult;
+	private LayoutContainer containerFilterAndResult;
 	private PivotContent pivotContent;
 	private SearchFilterView filterView;
 	private RecentSitesView recentSitesView;
 
 	private TextBox textboxSearch;
-	private AsyncMonitor loadingMonitor = new NullAsyncMonitor();
+	private AsyncMonitor loadingMonitor;
 	private SimpleEventBus eventBus = new SimpleEventBus();
-	private AIMapWidget mapWidget;
+	private SiteMap siteMap;
 	private String searchQuery;
 
 	public SearchResultsPage() {
 		initializeComponent();
 
-		createCompleteResultPanel();
 		createRecentSitesView();
+		
+		createCompleteResultPanel();
 		createFilterView();
+		createSearchResultsPanel();
 
 		createSearchBox();
-		createSearchResultsPanel();
 	}
 
 	private void initializeComponent() {
@@ -60,6 +63,7 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 		setLayout(new BorderLayout());
 
 		SearchResources.INSTANCE.searchStyles().ensureInjected();
+		loadingMonitor = new MaskingAsyncMonitor(this, I18N.CONSTANTS.busySearching());
 	}
 
 	private void createRecentSitesView() {
@@ -69,7 +73,7 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 		bld.setSplit(true);
 		bld.setCollapsible(true);
 		bld.setMinSize(300);
-		bld.setSize(400);
+		bld.setSize(0.4F);
 
 		add(recentSitesView, bld);
 	}
@@ -77,21 +81,26 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 	private void createSearchResultsPanel() {
 		panelSearchResults = new VerticalPanel();
 		panelSearchResults.setScrollMode(Scroll.AUTO);
-		panelCompleteResult.add(panelSearchResults);
+		containerFilterAndResult.add(panelSearchResults);
 	}
 
 	private void createCompleteResultPanel() {
+		containerFilterAndResult = new LayoutContainer();
+		RowLayout layout = new RowLayout();
+		layout.setOrientation(Orientation.VERTICAL);
+		containerFilterAndResult.setLayout(layout);
+		containerFilterAndResult.setScrollMode(Scroll.AUTOY);
+		
 		BorderLayoutData bld = new BorderLayoutData(LayoutRegion.CENTER);
 		bld.setSplit(true);
+		bld.setSize(0.5F);
 
-		panelCompleteResult = new VerticalPanel();
-
-		add(panelCompleteResult, bld);
+		add(containerFilterAndResult, bld);
 	}
 
 	private void createFilterView() {
 		filterView = new SearchFilterView();
-		panelCompleteResult.add(filterView);
+		containerFilterAndResult.add(filterView);
 	}
 
 	private void createSearchBox() {
@@ -117,7 +126,7 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 
 	@Override
 	public void setParent(SearchResult parent) {
-		searchResult = parent;
+//		searchResult = parent;
 	}
 
 	@Override
@@ -161,6 +170,7 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 
 		int activities=0;
 		int databases=0;
+		int indicators=0;
 		
 		LabelField labelResults = new LabelField();
 		panelSearchResults.add(labelResults);
@@ -177,13 +187,17 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 				itemWidget.setChilds(axis.getChildList());
 	
 				panelSearchResults.add(itemWidget);
-				activities+=axis.getChildCount();
 				databases++;
+				activities += itemWidget.getActivityCount();
+				indicators += itemWidget.getIndicatorCount();
 			}
 		}
 
-		labelResults.setText(I18N.MESSAGES
-				.searchResultsFound(Integer.toString(activities), Integer.toString(databases), searchQuery));
+		labelResults.setText(I18N.MESSAGES.searchResultsFound(
+				searchQuery, 
+				Integer.toString(databases), 
+				Integer.toString(activities), 
+				Integer.toString(indicators)));
 
 		layout(true);
 	}

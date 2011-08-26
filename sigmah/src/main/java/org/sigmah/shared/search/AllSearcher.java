@@ -1,6 +1,7 @@
 package org.sigmah.shared.search;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -14,23 +15,27 @@ import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class AllSearcher {
-	private static List<Searcher> searchers = new ArrayList<Searcher>();
-	private List<Searcher> failedSearchers = new ArrayList<Searcher>();
+	private static List<Searcher<?>> searchers = new ArrayList<Searcher<?>>();
+	private List<Searcher<?>> failedSearchers = new ArrayList<Searcher<?>>();
 	private Filter filter = new Filter();
 	SqlDatabase db;
 	
 	static {
 		searchers.add(new GenericSearcher(DimensionType.Partner));
 		searchers.add(new GenericSearcher(DimensionType.Project));
+		searchers.add(new GenericSearcher(DimensionType.AttributeGroup));
 		searchers.add(new LocationSearcher());
 		searchers.add(new AdminEntitySearcher());
-		searchers.add(new AttributeGroupSearcher());
 		//searchers.add(new SiteSearcher());
 		searchers.add(new IndicatorSearcher());
 	}
 	
 	public AllSearcher(SqlDatabase db) {
 		this.db=db;
+	}
+	
+	public List<Searcher<?>> supportedSearchers() {
+		return Collections.unmodifiableList(searchers);
 	}
 	
 	public void searchAll (final String query, final AsyncCallback<Filter> callback) {
@@ -57,11 +62,11 @@ public class AllSearcher {
 		});
 	}
 	
-	public void searchNext(final String q, final Iterator<Searcher> it,
+	public void searchNext(final String q, final Iterator<Searcher<?>> iterator,
 			final SqlTransaction tx, final AsyncCallback<Filter> callback) {
 
 		Filter filter = new Filter();
-		final Searcher<?> searcher = it.next();
+		final Searcher<?> searcher = iterator.next();
 		
 		searcher.search(q, tx, new AsyncCallback<List<Integer>>() {
 
@@ -70,14 +75,14 @@ public class AllSearcher {
 				failedSearchers.add(searcher);
 				System.out.println("Failed searcher: ");
 				
-				AllSearcher.this.continueOrYieldFilter(q, it, tx, callback);
+				AllSearcher.this.continueOrYieldFilter(q, iterator, tx, callback);
 			}
 
 			@Override
 			public void onSuccess(List<Integer> result) {
 				addRestrictions(result);
 				
-				AllSearcher.this.continueOrYieldFilter(q, it, tx, callback);
+				AllSearcher.this.continueOrYieldFilter(q, iterator, tx, callback);
 			}
 			
 			private void addRestrictions(List<Integer> result) {
@@ -89,12 +94,12 @@ public class AllSearcher {
 	}
 	
 	private void continueOrYieldFilter(final String q,
-			final Iterator<Searcher> it,
+			final Iterator<Searcher<?>> iterator,
 			final SqlTransaction tx,
 			final AsyncCallback<Filter> callback) {
 		
-		if (it.hasNext()) {
-			searchNext(q, it, tx, callback);
+		if (iterator.hasNext()) {
+			searchNext(q, iterator, tx, callback);
 		} else {
 			callback.onSuccess(filter);
 		}

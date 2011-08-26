@@ -97,6 +97,7 @@ public class SearchTest {
 	@Test
 	public void testSearchAll() {
 		SearchHandler handler = new SearchHandler(db, null, genelhandler);
+		final AllSearcher allSearcher = new AllSearcher(null);
 		
 		handler.execute(new Search("kivu"), context, new AsyncCallback<SearchResult>() {
 			
@@ -104,18 +105,13 @@ public class SearchTest {
 			public void onSuccess(SearchResult result) {  
 				assertTrue("Expected all searchers to succeed", result.getFailedSearchers().isEmpty());
 				
-				//assertHasDimension(DimensionType.Site, result);
-				assertHasDimension(DimensionType.Partner, result);
-				assertHasDimension(DimensionType.AdminLevel, result);
-				assertHasDimension(DimensionType.Project, result);
-				assertHasDimension(DimensionType.AttributeGroup, result);
-				assertHasDimension(DimensionType.Indicator, result);
-				assertHasDimension(DimensionType.Location, result);
+				for (Searcher<?> searcher : allSearcher.supportedSearchers()) {
+					assertHasDimension(searcher.getDimensionType(), result);
+				}
 				
 				assertHasRestrictionWithIds(DimensionType.AdminLevel, result, 2, 3);
 				assertHasRestrictionWithIds(DimensionType.Partner, result, 3);
 				assertHasRestrictionWithIds(DimensionType.Project, result, 3);
-				//assertHasRestrictionWithIds(DimensionType.Site, result, 9);
 				assertHasRestrictionWithIds(DimensionType.AttributeGroup, result, 3);
 				assertHasRestrictionWithIds(DimensionType.Indicator, result, 675);
 				assertHasRestrictionWithIds(DimensionType.Location, result, 1);

@@ -13,6 +13,9 @@ public interface SearchResources extends ClientBundle {
 	@Source("SitesTemplate.html")
 	public TextResource sitesTemplate();
 	
+	@Source("EntitiesTemplate.html")
+	public TextResource entitiesTemplate();
+	
 	@Source("SearchStyles.css")
 	public SearchStyles searchStyles();
 	
@@ -30,6 +33,9 @@ public interface SearchResources extends ClientBundle {
 	
 	@Source("addEdited.png")
 	public ImageResource addEdited();	
+	
+	@Source("search.png")
+	public ImageResource search();	
 	
 	public interface SearchStyles extends CssResource {
 		String searchBox();

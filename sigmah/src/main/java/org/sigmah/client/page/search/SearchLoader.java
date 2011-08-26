@@ -28,15 +28,18 @@ public class SearchLoader implements PageLoader {
     }
 	
 	@Override
-	public void load(final PageId pageId, PageState pageState,
+	public void load(final PageId pageId, final PageState pageState,
 			final AsyncCallback<Page> callback) {
 		
 		GWT.runAsync(new RunAsyncCallback() {
 			
 			@Override
 			public void onSuccess() {
-                if(SearchPresenter.Search.equals(pageId)) {
-                    callback.onSuccess(injector.getSearchPage());
+				if (pageState instanceof SearchPageState && SearchPresenter.Search.equals(pageId)) {
+					SearchPageState searchPageState = (SearchPageState)pageState;
+					SearchPresenter searchPage =  injector.getSearchPage();
+					searchPage.setQuery(searchPageState.getSearchQuery());
+                    callback.onSuccess(searchPage);
                 }
 			}
 			

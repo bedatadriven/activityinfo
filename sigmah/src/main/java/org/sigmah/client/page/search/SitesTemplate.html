@@ -1,14 +1,10 @@
 <div class=sites>
 	<tpl for=".">
 		<div class=site>
-			<div class=edited>{dateEdited:date("d MMM yyyy")}
-				<div class=iconAddEdited></div>
-			</div>
 			<div class=activity>
-				<div class=iconActivity></div>{activityName}
+				<div class=iconActivity></div><a href='{activityLink}'>{activityName}</a> <i>au</i> {locationName}
 			</div>
 			<div class=date><div class=iconDate></div>{date1:date("d MMM yyyy")} - {date2:date("d MMM yyyy")}</div>
-			<div class=location><div class=iconLocation></div>{locationName}</div>
 			<tpl if="hasComment==true">
 				<div class=comment>{comments}</div>
 			</tpl>

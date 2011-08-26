@@ -1,28 +1,26 @@
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.sigmah.server.dao.SiteDAO;
 import org.sigmah.shared.command.GenerateElement;
 import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.command.Search;
-import org.sigmah.shared.command.handler.ExecutionContext;
 import org.sigmah.shared.command.handler.CommandHandlerAsync;
+import org.sigmah.shared.command.handler.ExecutionContext;
 import org.sigmah.shared.command.handler.GetSitesHandler;
 import org.sigmah.shared.command.result.SearchResult;
 import org.sigmah.shared.command.result.SiteResult;
 import org.sigmah.shared.dao.Filter;
-import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.report.content.PivotContent;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.PivotTableReportElement;
 import org.sigmah.shared.search.AllSearcher;
+import org.sigmah.shared.search.SearchException;
 
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
+import com.extjs.gxt.ui.client.Style.SortDir;
+import com.extjs.gxt.ui.client.data.SortInfo;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -40,13 +38,10 @@ public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> 
 	public void execute(final Search command, ExecutionContext context,
 			final AsyncCallback<SearchResult> callback) {
 		
-		final PivotTableReportElement pivotTable = new PivotTableReportElement();
-		pivotTable.addRowDimension(new Dimension(DimensionType.Database));
-		pivotTable.addRowDimension(new Dimension(DimensionType.Activity));
-		//pivotTable.addRowDimension(new Dimension(DimensionType.Indicator));
+		final PivotTableReportElement pivotTable = createSearchPivotTableElement();
 		
 		createFilterFromQuery(command.getSearchQuery(), pivotTable, callback);
-	
+		//pivotTable.getFilter().setOr(true);
 		PivotContent content = null;
 		final SearchResult result = new SearchResult();
 
@@ -55,10 +50,24 @@ public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> 
 			content = getPivotDataUsingFilter(context, callback, pivotTable, content);
 			getRecentSitesUsingFilter(context, callback, pivotTable, result); 
 		}
-		
-		result.setPivotTabelData(content);
+	
+		if (content == null) {
+			callback.onFailure(new SearchException("PivotContent is null. Probably an uncaught database or searcher error "));
+		} else {
+			result.setPivotTabelData(content);
+		}
 		
 		callback.onSuccess(result);
+	}
+
+	private PivotTableReportElement createSearchPivotTableElement() {
+		final PivotTableReportElement pivotTable = new PivotTableReportElement();
+		
+		pivotTable.addRowDimension(new Dimension(DimensionType.Database));
+		pivotTable.addRowDimension(new Dimension(DimensionType.Activity));
+		pivotTable.addRowDimension(new Dimension(DimensionType.Indicator));
+		
+		return pivotTable;
 	}
 
 	private void getRecentSitesUsingFilter(ExecutionContext context,
@@ -67,6 +76,8 @@ public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> 
 		
 		GetSitesHandler getSitesHandler = new GetSitesHandler(db);
 		GetSites getSites = new GetSites();
+		getSites.setSortInfo(new SortInfo("DateEdited", SortDir.DESC));
+		getSites.setLimit(10);
 		//Filter siteFilter = pivotTable.getFilter()
 		getSites.setFilter(pivotTable.getFilter());
 		
@@ -97,7 +108,6 @@ public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> 
 	}
 	
 	private void createFilterFromQuery(String query, final PivotTableReportElement pivotTable, final AsyncCallback<SearchResult> callback) {
-		
 		AllSearcher allSearcher = new AllSearcher(db);
 		allSearcher.searchAll(query, new AsyncCallback<Filter>() {
 			
@@ -112,24 +122,4 @@ public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> 
 			}
 		});
 	}
-
-	private List<SiteDTO> mockSites() {
-		List<SiteDTO> mockSites = new ArrayList<SiteDTO>();
-		
-		for (int i=0; i<5; i++) {
-			SiteDTO site = new SiteDTO();
-			site.setDate1(new Date(2000,1,1));
-			site.setDate2(new Date(2000,2,2));
-			site.setComments("KJHKJ KJH LKUHLIUHIUE u");
-			site.setLocationAxe("Somewhere");
-			site.setY(-4.2 +(0.1*i));
-			site.setX(23.9 + (0.1 * i));
-			site.setId(i);
-			site.setLocationName("somewhere");
-			mockSites.add(site);
-		}
-		
-		return mockSites;
-	}
-
 }

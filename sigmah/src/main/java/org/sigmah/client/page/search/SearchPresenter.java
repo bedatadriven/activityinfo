@@ -27,11 +27,11 @@ import org.sigmah.shared.report.content.PivotContent;
 import org.sigmah.shared.report.model.DimensionType;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 public class SearchPresenter implements SearchView.SearchHandler, Page {
-
 	public static final PageId Search = new PageId("search");
 	protected final Dispatcher service;
 	protected final EventBus eventBus;
@@ -39,8 +39,7 @@ public class SearchPresenter implements SearchView.SearchHandler, Page {
 	private SchemaDTO schema;
 	
 	@Inject
-	public SearchPresenter(Dispatcher service, EventBus eventBus,
-			SearchView view) {
+	public SearchPresenter(Dispatcher service, EventBus eventBus, SearchView view) {
 		this.service=service;
 		this.eventBus=eventBus;
 		this.view=view;
@@ -64,7 +63,7 @@ public class SearchPresenter implements SearchView.SearchHandler, Page {
 		view.setSearchQuery(searchEvent.getQuery());
 		view.getLoadingMonitor().beforeRequest();
 		
-		service.execute(new Search(searchEvent.getQuery()), null, new AsyncCallback<SearchResult>() {
+		service.execute(new Search(searchEvent.getQuery()), view.getLoadingMonitor(), new AsyncCallback<SearchResult>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO handle failure
@@ -89,7 +88,10 @@ public class SearchPresenter implements SearchView.SearchHandler, Page {
 					
 					List<SearchResultEntity> entities = new ArrayList<SearchResultEntity>();
 					for (Integer entityId : effectiveFilter.getRestrictions(type)) {
-						SearchResultEntity entity = new SearchResultEntity(entityId, getName(entityId, type, pivotContent), "url");
+						String name = getName(entityId, type, pivotContent);
+						String link = GWT.getHostPageBaseURL() + "#search/" + type.toString() + ":" + name;
+						
+						SearchResultEntity entity = new SearchResultEntity(entityId, name, link);
 						entities.add(entity);
 					}
 					newFilter.put(type, entities);
@@ -124,8 +126,7 @@ public class SearchPresenter implements SearchView.SearchHandler, Page {
 	}
 
 	@Override
-	public void requestToNavigateAway(PageState place,
-			NavigationCallback callback) {
+	public void requestToNavigateAway(PageState place, NavigationCallback callback) {
 		callback.onDecided(true);
 	}
 
@@ -151,6 +152,7 @@ public class SearchPresenter implements SearchView.SearchHandler, Page {
 			if (schema != null) {
 				ActivityDTO activity = schema.getActivityById(site.getActivityId());
 				recent.setActivityName(activity.getName());
+				recent.setActivityLink(GWT.getHostPageBaseURL() + "#site-grid/" + activity.getId());
 				recent.setDatabaseName(activity.getDatabase().getName() == null ? "[Database]" : activity.getDatabase().getName());
 			}
 			result.add(recent);
@@ -160,12 +162,6 @@ public class SearchPresenter implements SearchView.SearchHandler, Page {
 	}
 	
 	public class RecentSiteModel extends BaseModelData {
-		private String activityName;
-		private int siteId;
-		private String locationName;
-		private Date date1;
-		private Date date2;
-		private String comments;
 		
 		public RecentSiteModel(SiteDTO site) {
 			set("hasComment", false);
@@ -181,6 +177,12 @@ public class SearchPresenter implements SearchView.SearchHandler, Page {
 		}
 		public void setActivityName(String activityName) {
 			set("activityName", activityName);
+		}
+		public String getActivityLink() {
+			return get("activityLink");
+		}
+		public void setActivityLink(String activityLink) {
+			set("activityLink", activityLink);
 		}
 		public String getDatabaseName() {
 			return get("activityName");
@@ -222,5 +224,9 @@ public class SearchPresenter implements SearchView.SearchHandler, Page {
 		public boolean hasComment() {
 			return (Boolean)get("hasComment");
 		}
+	}
+
+	public void setQuery(String searchQuery) {
+		onSearch(new SearchEvent(searchQuery));
 	}
 }

@@ -69,7 +69,7 @@ public class ConfigNavigator implements Navigator {
                     .labeled(messages.databases())
                     .withIcon(icons.database()).build();
 
-            callback.onSuccess(Arrays.asList(accountLink, dbListLink));
+            callback.onSuccess(Arrays.asList(accountLink, dbListLink)); 
 
         } else {
             Link link = (Link) parent;
