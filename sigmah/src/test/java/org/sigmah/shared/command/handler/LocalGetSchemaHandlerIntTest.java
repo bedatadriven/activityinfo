@@ -53,7 +53,7 @@ public class LocalGetSchemaHandlerIntTest extends LocalHandlerTestCase {
     @OnDataSet("/dbunit/sites-simple1.db.xml")
     public void forUser() throws CommandException {
 
-        setUser(2); // Bavon, has access only to PEAR
+        setUser(4); // only has view access to databse 1
         synchronize();
 
 
@@ -64,8 +64,8 @@ public class LocalGetSchemaHandlerIntTest extends LocalHandlerTestCase {
         UserDatabaseDTO pearDb = schema.getDatabaseById(1);
         assertThat(pearDb.getAmOwner(), equalTo(false));
         assertThat(pearDb.isViewAllAllowed(), equalTo(false));
-        assertThat(pearDb.isEditAllowed(), equalTo(true));
-        assertThat(pearDb.isEditAllAllowed(), equalTo(false));
+        assertThat(pearDb.isEditAllowed(), equalTo(false));
+        assertThat(pearDb.isEditAllAllowed(), equalTo(true));
 
         ActivityDTO activity = schema.getActivityById(1);
         assertThat(activity.getAttributeGroups().size(), equalTo(3));

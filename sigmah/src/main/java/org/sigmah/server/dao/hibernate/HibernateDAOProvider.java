@@ -55,13 +55,17 @@ public class HibernateDAOProvider<T> implements Provider<T> {
 
     @Override
     public T get() {
-        ClassLoader cl = daoClass.getClassLoader();
+        return makeImplementation(daoClass, entityClass, emProvider.get());
+    }
+
+	public static <T> T makeImplementation(Class<T> daoClass, Class entityClass, EntityManager entityManager) {
+		ClassLoader cl = daoClass.getClassLoader();
         return (T) Proxy.newProxyInstance(cl,
             new Class[]{daoClass},
             new DAOInvocationHandler(
-                emProvider.get(), entityClass
+                entityManager, entityClass
         ));
-    }
+	}
 
 
 }

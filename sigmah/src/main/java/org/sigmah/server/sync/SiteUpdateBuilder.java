@@ -13,6 +13,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import org.json.JSONException;
+import org.sigmah.server.dao.hibernate.HibernateDAOProvider;
 import org.sigmah.shared.command.GetSyncRegionUpdates;
 import org.sigmah.shared.command.result.SyncRegionUpdate;
 import org.sigmah.shared.domain.AttributeValue;
