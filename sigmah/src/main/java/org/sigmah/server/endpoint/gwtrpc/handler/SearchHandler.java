@@ -16,6 +16,7 @@ import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.PivotTableReportElement;
 import org.sigmah.shared.search.AllSearcher;
+import org.sigmah.shared.search.SearchException;
 
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.extjs.gxt.ui.client.Style.SortDir;
@@ -37,10 +38,7 @@ public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> 
 	public void execute(final Search command, CommandContext context,
 			final AsyncCallback<SearchResult> callback) {
 		
-		final PivotTableReportElement pivotTable = new PivotTableReportElement();
-		pivotTable.addRowDimension(new Dimension(DimensionType.Database));
-		pivotTable.addRowDimension(new Dimension(DimensionType.Activity));
-		pivotTable.addRowDimension(new Dimension(DimensionType.Indicator));
+		final PivotTableReportElement pivotTable = createSearchPivotTableElement();
 		
 		createFilterFromQuery(command.getSearchQuery(), pivotTable, callback);
 		//pivotTable.getFilter().setOr(true);
@@ -52,10 +50,24 @@ public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> 
 			content = getPivotDataUsingFilter(context, callback, pivotTable, content);
 			getRecentSitesUsingFilter(context, callback, pivotTable, result); 
 		}
-		
-		result.setPivotTabelData(content);
+	
+		if (content == null) {
+			callback.onFailure(new SearchException("PivotContent is null. Probably an uncaught database or searcher error "));
+		} else {
+			result.setPivotTabelData(content);
+		}
 		
 		callback.onSuccess(result);
+	}
+
+	private PivotTableReportElement createSearchPivotTableElement() {
+		final PivotTableReportElement pivotTable = new PivotTableReportElement();
+		
+		pivotTable.addRowDimension(new Dimension(DimensionType.Database));
+		pivotTable.addRowDimension(new Dimension(DimensionType.Activity));
+		pivotTable.addRowDimension(new Dimension(DimensionType.Indicator));
+		
+		return pivotTable;
 	}
 
 	private void getRecentSitesUsingFilter(CommandContext context,
@@ -96,7 +108,6 @@ public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> 
 	}
 	
 	private void createFilterFromQuery(String query, final PivotTableReportElement pivotTable, final AsyncCallback<SearchResult> callback) {
-		
 		AllSearcher allSearcher = new AllSearcher(db);
 		allSearcher.searchAll(query, new AsyncCallback<Filter>() {
 			
