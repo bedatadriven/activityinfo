@@ -15,8 +15,9 @@ import java.util.List;
 import org.dozer.Mapper;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.Month;
-import org.sigmah.shared.command.OfflineSupport;
+import org.sigmah.shared.command.handler.AuthorizationHandler;
 import org.sigmah.shared.command.handler.CommandHandler;
+import org.sigmah.shared.command.handler.CommandHandlerAsync;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.UserDatabase;
@@ -55,19 +56,14 @@ public class HandlerUtil {
      * @return A <code>CommandHandler</code> capabling of handling the given <code>Command</code>
      */
     @SuppressWarnings("unchecked")
-    public static Class executorForCommand(Command<?> cmd) {
+    public static Class handlerForCommand(Command<?> cmd) {
 
         String commandName = cmd.getClass().getName().substring(
                 cmd.getClass().getPackage().getName().length() + 1);
     	String handlerName = null;
     	
-        if (! (cmd instanceof OfflineSupport)) {
-        	handlerName = "org.sigmah.server.endpoint.gwtrpc.handler." +
-        		commandName + "Handler";
-        } else {
-        	handlerName = CommandHandler.class.getPackage().getName() + "." +
-            	commandName + "Handler";
-        }
+    	handlerName = "org.sigmah.server.endpoint.gwtrpc.handler." +
+    		commandName + "Handler";
 
         try {
             return (Class<CommandHandler<?>>) CommandHandler.class.getClassLoader().loadClass(handlerName);
@@ -88,9 +84,56 @@ public class HandlerUtil {
         }
 
     }
+    
+
+    /**
+     * Returns the <code>CommandHandler</code> that corresponds to the given <code>Command</code>.
+     * <strong>Only</strong> the package org.sigmah.server.command.handler
+     * is searched, so the handler must be there.
+     *
+     * @param cmd The <code>Command</code> for which a <code>CommandHandler</code> is to be returned
+     * @return A <code>CommandHandler</code> capabling of handling the given <code>Command</code>
+     */
+    @SuppressWarnings("unchecked")
+    public static <C extends Command<R>, R extends CommandResult> Class<CommandHandlerAsync<C,R>> 
+    			asyncHandlerForCommand(C cmd) {
+
+        String commandName = cmd.getClass().getName().substring(
+                cmd.getClass().getPackage().getName().length() + 1);
+    	String handlerName = null;
+    	
+    	handlerName = "org.sigmah.shared.command.handler." +
+    		commandName + "Handler";
+
+        try {
+            return (Class<CommandHandlerAsync<C,R>>) CommandHandler.class.getClassLoader().loadClass(handlerName);
+
+        } catch (ClassNotFoundException e) {
+    		throw new IllegalArgumentException("No async handler " + handlerName + " found for " + commandName, e);
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static <C extends Command<?>> Class<AuthorizationHandler<C>> authorizationHandlerForCommand(C cmd) {
+
+        String commandName = cmd.getClass().getName().substring(
+                cmd.getClass().getPackage().getName().length() + 1);
+    	String handlerName = null;
+    	
+    	handlerName = "org.sigmah.server.command.auth." +
+    		commandName + "AuthorizationHandler";
+
+        try {
+            return (Class<AuthorizationHandler<C>>) CommandHandler.class.getClassLoader().loadClass(handlerName);
+
+        } catch (ClassNotFoundException e1) {
+        	return null;
+        }
+    }
+
 
     public static <T extends CommandResult> T execute(Injector injector, Command<T> cmd, User user) throws CommandException {
-        Class<? extends CommandHandler> handlerClass = executorForCommand(cmd);
+        Class<? extends CommandHandler> handlerClass = handlerForCommand(cmd);
         CommandHandler handler = injector.getInstance(handlerClass);
         return (T) handler.execute(cmd, user);
     }

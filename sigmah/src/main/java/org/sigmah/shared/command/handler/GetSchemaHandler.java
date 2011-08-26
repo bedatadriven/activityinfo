@@ -37,16 +37,9 @@ import com.google.inject.Inject;
 public class GetSchemaHandler implements
 		CommandHandlerAsync<GetSchema, SchemaDTO> {
 
-	private SqlDatabase database;
-
-	@Inject
-	public GetSchemaHandler(SqlDatabase database) {
-		super();
-		this.database = database;
-	}
 
 	@Override
-	public void execute(GetSchema command, CommandContext context,
+	public void execute(GetSchema command, ExecutionContext context,
 			AsyncCallback<SchemaDTO> callback) {
 
 		new SchemaBuilder().build(context, callback);
@@ -54,6 +47,8 @@ public class GetSchemaHandler implements
 
 	private class SchemaBuilder {
 		final List<UserDatabaseDTO> databaseList = new ArrayList<UserDatabaseDTO>();
+		final List<CountryDTO> countryList = new ArrayList<CountryDTO>();
+		
 		final Map<Integer, UserDatabaseDTO> databaseMap = new HashMap<Integer, UserDatabaseDTO>();
 
 		final Map<Integer, CountryDTO> countries = new HashMap<Integer, CountryDTO>();
@@ -63,7 +58,7 @@ public class GetSchemaHandler implements
 		final Map<Integer, ProjectDTO> projects = new HashMap<Integer, ProjectDTO>();
 
 		SqlTransaction tx;
-		CommandContext context;
+		ExecutionContext context;
 
 		public void loadCountries() {
 			SqlQuery.select().appendColumn("CountryId", "id")
@@ -85,6 +80,7 @@ public class GetSchemaHandler implements
 							country.setBounds(bounds);
 
 							countries.put(country.getId(), country);
+							countryList.add(country);
 						}
 					});
 		}
@@ -288,11 +284,6 @@ public class GetSchemaHandler implements
 									+ lockedPeriod.getId());
 						}
 					}
-				}
-
-				@Override
-				public boolean onFailure(SqlException e) {
-					return super.onFailure(e);
 				}
 			});
 		}
@@ -502,37 +493,23 @@ public class GetSchemaHandler implements
 			});
 		}
 
-		public void build(CommandContext context,
+
+		public void build(ExecutionContext context,
 				final AsyncCallback<SchemaDTO> callback) {
 			this.context = context;
-			database.transaction(new SqlTransactionCallback() {
+			this.tx = context.getTransaction();
+	
+			loadCountries();
+			loadLocationTypes();
+			loadAdminLevels();
 
-				@Override
-				public void begin(SqlTransaction tx) {
-					SchemaBuilder.this.tx = tx;
-					loadCountries();
-					loadLocationTypes();
-					loadAdminLevels();
+			loadDatabases();
+			
+			SchemaDTO schemaDTO = new SchemaDTO();
+			schemaDTO.setCountries(countryList);
+			schemaDTO.setDatabases(databaseList);
 
-					loadDatabases();
-
-				}
-
-				@Override
-				public void onError(SqlException e) {
-					callback.onFailure(e);
-				}
-
-				@Override
-				public void onSuccess() {
-					SchemaDTO schemaDTO = new SchemaDTO();
-					schemaDTO.setCountries(new ArrayList<CountryDTO>(countries
-							.values()));
-					schemaDTO.setDatabases(databaseList);
-
-					callback.onSuccess(schemaDTO);
-				}
-			});
+			callback.onSuccess(schemaDTO);
 		}
 	}
 }

@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.dao.OnDataSet;
@@ -26,11 +27,18 @@ import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.test.InjectionSupport;
 
+import com.bedatadriven.rebar.sql.server.jdbc.JdbcScheduler;
+
 
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/sites-simple1.db.xml")
-public class GetSchemaTest extends CommandTestCase {
+public class GetSchemaTest extends CommandTestCase2 {
 
+	@Before
+	public void cleanUpScheduler() {
+		JdbcScheduler.get().forceCleanup();
+	}
+	
     @Test
     public void testDatabaseVisibilityForOwners() throws CommandException {
 

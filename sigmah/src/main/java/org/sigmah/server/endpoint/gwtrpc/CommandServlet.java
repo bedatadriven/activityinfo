@@ -18,7 +18,6 @@ import org.sigmah.server.endpoint.gwtrpc.handler.HandlerUtil;
 import org.sigmah.server.util.logging.LogException;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.RemoteCommandService;
-import org.sigmah.shared.command.handler.CommandContext;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.handler.CommandHandlerAsync;
 import org.sigmah.shared.command.result.CommandResult;
@@ -27,6 +26,7 @@ import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.InvalidAuthTokenException;
 import org.sigmah.shared.exception.UnexpectedCommandException;
 
+import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -103,24 +103,9 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
     @Transactional
     @LogException(emailAlert = true)
     protected CommandResult handleCommand(User user, Command command) throws CommandException {
-        Object handler = createHandler(command);
-        if(handler instanceof CommandHandler) {
-        	return ((CommandHandler) handler).execute(command, user);
-        } else if(handler instanceof CommandHandlerAsync) {
-        	Collector<CommandResult> collector = new Collector<CommandResult>();
-        	((CommandHandlerAsync) handler).execute(command, new CommandContextImpl(user), collector);
-        	return collector.getResult();
-        } else {
-        	throw new RuntimeException("Command handler class " + handler.getClass() + " must implement " +
-        			"CommandHandler or CommandHandlerAsync");
-        }
+    	return ServerExecutionContext.execute(injector, user, command);
     }
     
-
-    private Object createHandler(Command command) {
-        return injector.getInstance(
-                HandlerUtil.executorForCommand(command));
-    }
 
     private Authentication retrieveAuthentication(String authToken) throws InvalidAuthTokenException {
         AuthenticationDAO authDAO = injector.getInstance(AuthenticationDAO.class);
@@ -129,23 +114,6 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
             throw new InvalidAuthTokenException();
         }
         return auth;
-    }
-    
-    private static class CommandContextImpl implements CommandContext {
-    	
-    	private User user;
-
-		public CommandContextImpl(User user) {
-			super();
-			this.user = user;
-		}
-
-		@Override
-		public User getUser() {
-			return user;
-		}
-    	
-    	
     }
     
 }

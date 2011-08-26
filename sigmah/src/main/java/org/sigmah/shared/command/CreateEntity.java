@@ -99,12 +99,4 @@ public class CreateEntity implements Command<CreateResult> {
         cmd.properties.put("databaseId", db.getId());
         return cmd;
     }
-
-    
-    public static CreateEntity Site(SiteDTO site) {
-        CreateEntity cmd = new CreateEntity();
-        cmd.entityName = "Site";
-        cmd.properties = site.toChangeMap();
-        return cmd;
-    }
 }

@@ -5,7 +5,6 @@
 
 package org.sigmah.client.dispatch.remote;
 
-import org.sigmah.shared.domain.User;
 
 /**
  * Encapsulates user identity and their authorization to access the server.
@@ -13,19 +12,11 @@ import org.sigmah.shared.domain.User;
  * This is normally injected by Gin, see the default
  * {@link org.sigmah.client.inject.AuthProvider}
  * 
- * @author Alex Bertram
  */
 public class Authentication {
     private String authToken;
     private String email;
     private int userId;
-    private int organizationId;
-    private int orgUnitId;
-    private boolean showMenus;
-    private String userName;
-    private String userFirstName;
-    private String completeName;
-    private String shortName;
 
     /**
      * 
@@ -42,13 +33,6 @@ public class Authentication {
         this.email = email;
     }
 
-    /**
-     * Default constuctor for dummy tokens.
-     * 
-     */
-    public Authentication() {
-
-    }
 
     /**
      * @return Unique ID for the user, from the server's database
@@ -84,90 +68,7 @@ public class Authentication {
         this.email = email;
     }
 
-    /**
-     * 
-     * @return The organization id.
-     */
-    public int getOrganizationId() {
-        return organizationId;
-    }
-
-    public void setOrganizationId(int organizationId) {
-        this.organizationId = organizationId;
-    }
-
-    /**
-     * 
-     * @return The organizational unit id.
-     */
-    public int getOrgUnitId() {
-        return orgUnitId;
-    }
-
-    public void setOrgUnitId(int orgUnitId) {
-        this.orgUnitId = orgUnitId;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getUserFirstName() {
-        return userFirstName;
-    }
-
-    public void setUserFirstName(String userFirstName) {
-        this.userFirstName = userFirstName;
-    }
-
-    /**
-     * Gets the formatted complete name of the connected user.
-     * <ul>
-     * <li>If the user has a first name and a last name, returns '<i>John
-     * Doe</i>'.</li>
-     * <li>If the user hasn't a first name and has a last name, returns
-     * '<i>Doe</i>'.</li>
-     * <li>If the user has neither a first name or a last name, returns an empty
-     * string.</li>
-     * </ul>
-     * 
-     * @return The complete name.
-     */
-    public String getUserCompleteName() {
-
-        if (completeName == null) {
-            completeName = User.getUserCompleteName(userFirstName, userName);
-        }
-
-        return completeName;
-    }
-
-    /**
-     * Gets the formatted short name of the connected user.
-     * <ul>
-     * <li>If the user has a first name and a last name, returns '<i>J.
-     * Doe</i>'.</li>
-     * <li>If the user hasn't a first name and has a last name, returns
-     * '<i>Doe</i>'.</li>
-     * <li>If the user has neither a first name or a last name, returns an empty
-     * string.</li>
-     * </ul>
-     * 
-     * @return The short name.
-     */
-    public String getUserShortName() {
-
-        if (shortName == null) {
-            shortName = User.getUserShortName(userFirstName, userName);
-        }
-
-        return shortName;
-    }
-
+   
     /**
      * @return the name of the local Sqlite database for this user
      */

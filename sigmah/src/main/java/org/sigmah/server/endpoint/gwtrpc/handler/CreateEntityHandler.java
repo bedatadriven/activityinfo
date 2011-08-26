@@ -11,7 +11,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sigmah.server.policy.ActivityPolicy;
 import org.sigmah.server.policy.PropertyMap;
-import org.sigmah.server.policy.SitePolicy;
 import org.sigmah.server.policy.UserDatabasePolicy;
 import org.sigmah.shared.command.CreateEntity;
 import org.sigmah.shared.command.handler.CommandHandler;
@@ -58,9 +57,6 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
             return createAttribute(cmd, properties);
         } else if ("Indicator".equals(cmd.getEntityName())) {
             return createIndicator(user, cmd, properties);
-        } else if ("Site".equals(cmd.getEntityName())) {
-            SitePolicy policy = injector.getInstance(SitePolicy.class);
-            return new CreateResult((Integer) policy.create(user, propertyMap));
         }else {
             throw new CommandException("Invalid entity class " + cmd.getEntityName());
         }

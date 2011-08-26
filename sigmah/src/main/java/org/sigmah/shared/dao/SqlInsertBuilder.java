@@ -31,25 +31,7 @@ public class SqlInsertBuilder {
 	public void execute(Connection connection) throws SQLException {
 		if(!values.isEmpty()) {
 
-			StringBuilder sql = new StringBuilder("INSERT INTO ")
-				.append(tableName)
-				.append(" (");
-			
-			for(int i=0;i!=columns.size();++i) {
-				if(i>0) {
-					sql.append(", ");
-				}
-				sql.append(columns.get(i));
-			}
-			sql.append(") VALUES (");
-			
-			for(int i=0;i!=columns.size();++i) {
-				if(i>0) {
-					sql.append(", ");
-				}
-				sql.append("?");
-			}
-			sql.append(")");
+			String sql = sql();
 			
 		    PreparedStatement stmt = connection.prepareStatement(sql.toString());
 	        for(int i=0;i!=values.size();++i) {
@@ -58,6 +40,31 @@ public class SqlInsertBuilder {
 	        
 	        stmt.executeUpdate();
 		}
+	}
+
+
+	
+	private String sql() {
+		StringBuilder sql = new StringBuilder("INSERT INTO ")
+			.append(tableName)
+			.append(" (");
+		
+		for(int i=0;i!=columns.size();++i) {
+			if(i>0) {
+				sql.append(", ");
+			}
+			sql.append(columns.get(i));
+		}
+		sql.append(") VALUES (");
+		
+		for(int i=0;i!=columns.size();++i) {
+			if(i>0) {
+				sql.append(", ");
+			}
+			sql.append("?");
+		}
+		sql.append(")");
+		return sql.toString();
 	}
 
 }

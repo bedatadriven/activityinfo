@@ -30,7 +30,7 @@ public class GetAdminEntitiesHandler implements CommandHandlerAsync<GetAdminEnti
 	}
 
 	@Override
-	public void execute(GetAdminEntities cmd, CommandContext context,
+	public void execute(GetAdminEntities cmd, ExecutionContext context,
 			final AsyncCallback<AdminEntityResult> callback) {
 		
 		SqlQuery query =
@@ -68,8 +68,7 @@ public class GetAdminEntitiesHandler implements CommandHandlerAsync<GetAdminEnti
 
 			query.where("AdminEntity.AdminEntityId").in(subQuery);
 		}
-		query.delegateErrorsTo(callback);
-		query.execute(database, new SqlResultCallback() {
+		query.execute(context.getTransaction(), new SqlResultCallback() {
 
 			@Override
 			public void onSuccess(SqlTransaction tx, SqlResultSet results) {

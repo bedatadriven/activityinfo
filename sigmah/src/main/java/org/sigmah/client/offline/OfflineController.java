@@ -424,7 +424,17 @@ public class OfflineController implements Dispatcher {
             return this;
         }
 
-        void abandonShip(Throwable caught) {
+        
+        
+        @Override
+		void dispatch(Command command, AsyncMonitor monitor,
+				AsyncCallback callback) {
+			pending.add(new CommandRequest(command, monitor, callback));
+		}
+
+
+
+		void abandonShip(Throwable caught) {
             reportFailure(caught);
             abandonShip();
         }

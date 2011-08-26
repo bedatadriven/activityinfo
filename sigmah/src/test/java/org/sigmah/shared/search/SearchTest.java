@@ -11,8 +11,10 @@ import org.sigmah.database.ClientDatabaseStubs;
 import org.sigmah.server.dao.OnDataSet;
 import org.sigmah.server.endpoint.gwtrpc.handler.GenerateElementHandler;
 import org.sigmah.server.endpoint.gwtrpc.handler.SearchHandler;
+import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.Search;
-import org.sigmah.shared.command.handler.CommandContext;
+import org.sigmah.shared.command.handler.ExecutionContext;
+import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.SearchResult;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.report.model.DimensionType;
@@ -36,7 +38,7 @@ public class SearchTest {
 	private JdbcDatabase db = ClientDatabaseStubs.sitesSimple();
 	private GenerateElementHandler getPivotData;
 	private SearchHandler handler;
-	private CommandContext context = new CommandContext() {
+	private ExecutionContext context = new ExecutionContext() {
 		User user = new User();
 		
 		@Override
@@ -44,6 +46,20 @@ public class SearchTest {
 			user.setId(1);
 			return user;
 		}
+
+		@Override
+		public SqlTransaction getTransaction() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public <C extends Command<R>, R extends CommandResult> void execute(
+				C command, AsyncCallback<R> callback) {
+			throw new UnsupportedOperationException();
+			
+		}
+		
+		
 	};
 	private GenerateElementHandler genelhandler;
 

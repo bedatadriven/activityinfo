@@ -11,10 +11,14 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 import org.json.JSONException;
+import org.sigmah.server.dao.hibernate.HibernateDAOProvider;
+import org.sigmah.server.domain.DomainFilters;
 import org.sigmah.shared.command.GetSyncRegionUpdates;
 import org.sigmah.shared.command.result.SyncRegionUpdate;
+import org.sigmah.shared.command.result.UserFavorites;
 import org.sigmah.shared.dao.UserDatabaseDAO;
 import org.sigmah.shared.domain.Activity;
 import org.sigmah.shared.domain.AdminLevel;
@@ -78,17 +82,26 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
 	private List<Project> projects = new ArrayList<Project>();
 
     @Inject
-    public SchemaUpdateBuilder(UserDatabaseDAO userDatabaseDAO, EntityManager entityManager) {
-        this.userDatabaseDAO = userDatabaseDAO;
-        this.entityManager = entityManager;
+    public SchemaUpdateBuilder(EntityManagerFactory entityManagerFactory) {
+        // create a new, unfiltered entity manager so we can see deleted records
+        this.entityManager = entityManagerFactory.createEntityManager();
+        this.userDatabaseDAO = HibernateDAOProvider.makeImplementation(UserDatabaseDAO.class, UserDatabase.class, 
+        		entityManager);
     }
 
     public SyncRegionUpdate build(User user, GetSyncRegionUpdates request) throws JSONException {
-        databases = userDatabaseDAO.queryAllUserDatabasesAlphabetically();
-        userPermissions = entityManager.createQuery("select p from UserPermission p where p.user.id = ?1")
+        
+    	// get the permissions before we apply the filter
+    	// otherwise they will be excluded
+    	userPermissions = entityManager.createQuery("select p from UserPermission p where p.user.id = ?1")
                 .setParameter(1, user.getId())
                 .getResultList();
 
+        DomainFilters.applyUserFilter(user, entityManager);
+        
+    	databases = userDatabaseDAO.queryAllUserDatabasesAlphabetically();
+    	
+    	
         long localVersion = request.getLocalVersion() == null ? 0 : Long.parseLong(request.getLocalVersion());
         long serverVersion = getCurrentSchemaVersion(user);
 
@@ -154,7 +167,8 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
         	if(!userIds.contains(database.getOwner().getId())) {
         		User u = database.getOwner();
         		// don't send hashed password to client
-        		u.setHashedPassword("");
+// EEK i think hibernate will persist this to the database automatically if we change it here!!
+//        		u.setHashedPassword("");
         		users.add(u);
         		userIds.add(u.getId());
         	}
@@ -183,7 +197,7 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
             
             for(Activity activity : database.getActivities()) {
                 allLockedPeriods.addAll(activity.getLockedPeriods());
-
+                
                 activities.add(activity);
                 for(Indicator indicator : activity.getIndicators()) {
                     indicators.add(indicator);

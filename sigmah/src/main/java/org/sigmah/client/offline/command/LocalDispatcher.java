@@ -5,39 +5,39 @@
 
 package org.sigmah.client.offline.command;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.Authentication;
-import org.sigmah.client.offline.command.handler.PartialCommandHandler;
 import org.sigmah.shared.command.Command;
-import org.sigmah.shared.command.handler.CommandContext;
-import org.sigmah.shared.command.handler.CommandHandler;
-import org.sigmah.shared.command.handler.CommandHandlerAsync;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.domain.User;
+import org.sigmah.shared.util.Collector;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.bedatadriven.rebar.sql.client.SqlDatabase;
+import com.bedatadriven.rebar.sql.client.SqlException;
+import com.bedatadriven.rebar.sql.client.SqlTransaction;
+import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 /**
  * Dispatches commands to local handlers
  */
-public class LocalDispatcher implements Dispatcher, CommandContext {
+public class LocalDispatcher implements Dispatcher {
     private final Authentication auth;
-    private final Map<Class, CommandHandlerAsync> registry = new HashMap<Class, CommandHandlerAsync>();
+    private final HandlerRegistry registry;
+    private final SqlDatabase database;
+    private final CommandQueue commandQueue;
     
     @Inject
-    public LocalDispatcher(Authentication auth) {
+    public LocalDispatcher(Authentication auth, SqlDatabase database, HandlerRegistry registry) {
         this.auth = auth;
+        this.registry = registry;
+        this.database = database;
+        this.commandQueue = new CommandQueue(database);
     }
 
-    public <C extends Command<R>, R extends CommandResult> void registerHandler(Class<C> commandClass, CommandHandlerAsync<C,R> handler) {
-        registry.put(commandClass, handler);
-    }
 
     @Override
     public <R extends CommandResult> void execute(Command<R> command, final AsyncMonitor monitor, final AsyncCallback<R> callback) {
@@ -46,8 +46,7 @@ public class LocalDispatcher implements Dispatcher, CommandContext {
             monitor.beforeRequest();
         }
         try {
-            CommandHandlerAsync handler = getHandler(command);
-            handler.execute(command, this, new AsyncCallback<R>() {
+            doExecute(command, new AsyncCallback<R>() {
 
 				@Override
 				public void onFailure(Throwable caught) {
@@ -82,30 +81,37 @@ public class LocalDispatcher implements Dispatcher, CommandContext {
         }
     }
     
-    public boolean canExecute(Command c) {
-    	if(!registry.containsKey(c.getClass())) {
-    		return false;
-    	}
-    	// some commands may only be partially available online
-    	CommandHandlerAsync handler = getHandler(c);
-    	if(handler instanceof PartialCommandHandler) {
-    		return ((PartialCommandHandler) handler).canExecute(c);
-    	} else {
-    		return true;
-    	}
-    	
+    /**
+     * Begins a new transaction, initializes a new ExecutionContext, and executes the root command.
+     * @param command
+     * @param callback
+     */
+    private <R extends CommandResult> void doExecute(final Command<R> command, final AsyncCallback<R> callback) {
+    	final Collector<R> commandResult = Collector.newCollector();
+    	database.transaction(new SqlTransactionCallback() {
+			
+			@Override
+			public void begin(SqlTransaction tx) {
+				OfflineExecutionContext context = new OfflineExecutionContext(getUser(), tx, registry, commandQueue);
+				context.execute(command, commandResult);
+			}
+
+			@Override
+			public void onError(SqlException e) {
+				callback.onFailure(e);
+			}
+
+			@Override
+			public void onSuccess() {
+				callback.onSuccess(commandResult.getResult());
+			}
+		});
     }
     
-    private <C extends Command<R>,R extends CommandResult> CommandHandlerAsync<C,R> getHandler(C c) {
-        CommandHandlerAsync<C,R> handler = registry.get(c.getClass());
-        if(handler == null) {
-            throw new IllegalArgumentException("No handler class for " + c.toString());
-        }
-
-        return handler;
+    public boolean canExecute(Command c) {
+    	return registry.hasHandler(c);    	
     }
-
-	@Override
+   
 	public User getUser() {
         User user =  new User();
         user.setId(auth.getUserId());

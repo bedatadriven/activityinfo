@@ -32,7 +32,6 @@ public class GetSitesTest extends CommandTestCase2{
     @Test
     public void testActivityQueryBasic() throws CommandException {
 
-
         setUser(DATABASE_OWNER);
 
         GetSites cmd = new GetSites();
