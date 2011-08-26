@@ -196,6 +196,7 @@ public class LayersWidget extends ContentPanel implements HasValue<MapReportElem
 			layerOptions.setMapLayer(view.getSelectionModel().getSelectedItem().getMapLayer());
 			layout(true);
 		}
+		layerOptions.setEnabled(view.getSelectionModel().getSelectedItem() != null);
 	}
 
 	private void addListViewDnd() {
