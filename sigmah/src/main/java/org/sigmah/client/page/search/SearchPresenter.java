@@ -32,7 +32,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 public class SearchPresenter implements SearchView.SearchHandler, Page {
-
 	public static final PageId Search = new PageId("search");
 	protected final Dispatcher service;
 	protected final EventBus eventBus;
@@ -40,8 +39,7 @@ public class SearchPresenter implements SearchView.SearchHandler, Page {
 	private SchemaDTO schema;
 	
 	@Inject
-	public SearchPresenter(Dispatcher service, EventBus eventBus,
-			SearchView view) {
+	public SearchPresenter(Dispatcher service, EventBus eventBus, SearchView view) {
 		this.service=service;
 		this.eventBus=eventBus;
 		this.view=view;
@@ -128,8 +126,7 @@ public class SearchPresenter implements SearchView.SearchHandler, Page {
 	}
 
 	@Override
-	public void requestToNavigateAway(PageState place,
-			NavigationCallback callback) {
+	public void requestToNavigateAway(PageState place, NavigationCallback callback) {
 		callback.onDecided(true);
 	}
 
@@ -227,5 +224,9 @@ public class SearchPresenter implements SearchView.SearchHandler, Page {
 		public boolean hasComment() {
 			return (Boolean)get("hasComment");
 		}
+	}
+
+	public void setQuery(String searchQuery) {
+		onSearch(new SearchEvent(searchQuery));
 	}
 }
