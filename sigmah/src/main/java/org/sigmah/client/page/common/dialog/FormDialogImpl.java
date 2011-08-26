@@ -18,67 +18,65 @@ import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 
+/*
+ * Default implementation for a FormDialog that displays a FormPanel
+ */
 public class FormDialogImpl<FormT extends FormPanel> extends Window implements AsyncMonitor, FormDialogTether {
-
     protected FormT form;
-
     private Status status;
-
-    protected final Button saveButton;
-    protected final Button cancelButton;
-
+    protected Button saveButton;
+    protected Button cancelButton;
     private String workingText = I18N.CONSTANTS.saving();
-
     private FormDialogCallback callback = null;
-
     private boolean asyncCallInProgress = false;
     private boolean asyncCallCancelled;
 
 
     public FormDialogImpl(final FormT form) {
-
-        /*
-           * Configure this window
-           */
-        setModal(true);
-        setLayout(new FitLayout());
-        setModal(true);
-        //setCloseAction(CloseAction.HIDE);
-        setClosable(false);
-        setBodyStyle("padding: 5px;");
-        setLayout(new FitLayout());
-
-        /*
-           * Adjust the form panel's appearance
-           * to fit in nicely with the dialog
-           */
         this.form = form;
-        if (!form.isRendered()) {
+    	
+        initializeComponent();
+
+        adjustAppearanceToFitDialog(form);
+
+        add(form);
+        
+        createStatusButtonBar();
+        createSaveButton();
+        createCancelButton();
+    }
+
+	private void adjustAppearanceToFitDialog(final FormT form) {
+		if (!form.isRendered()) {
             form.setHeaderVisible(false);
             form.setFrame(false);
         }
+	}
 
-        add(form);
+	private void createCancelButton() {
+        cancelButton = new Button(I18N.CONSTANTS.cancel());
+        cancelButton.setIcon(IconImageBundle.ICONS.cancel());
+        addButton(cancelButton);
+        cancelButton.addListener(Events.Select, new Listener<ButtonEvent>() {
+            public void handleEvent(ButtonEvent be) {
+                hide();
+            }
+        });
+	}
 
-        /*
-           * Create the status button bar
-           */
-
-        status = new Status();
-        status.setWidth(200);
-        this.getButtonBar().add(status);
-        //	this.getButtonBar().add(new FillToolItem());
-
-        saveButton = new Button(I18N.CONSTANTS.save());
+	private void createSaveButton() {
+		saveButton = new Button(I18N.CONSTANTS.save());
         saveButton.setIcon(IconImageBundle.ICONS.save());
         saveButton.addListener(Events.Select, new Listener<ButtonEvent>() {
             public void handleEvent(ButtonEvent be) {
                 // use a deferred handler to make sure we get any change
                 // events first
-                DeferredCommand.addCommand(new Command() {
+                Scheduler.get().scheduleDeferred(new ScheduledCommand() {
                     @Override
                     public void execute() {
                         if (!form.isValid()) {
@@ -92,22 +90,22 @@ public class FormDialogImpl<FormT extends FormPanel> extends Window implements A
             }
         });
         addButton(saveButton);
+	}
 
-        cancelButton = new Button(I18N.CONSTANTS.cancel());
-        cancelButton.setIcon(IconImageBundle.ICONS.cancel());
-        addButton(cancelButton);
+	private void createStatusButtonBar() {
+		status = new Status();
+        status.setWidth(200);
+        this.getButtonBar().add(status);
+	}
 
-        cancelButton.addListener(Events.Select, new Listener<ButtonEvent>() {
-            public void handleEvent(ButtonEvent be) {
-//				if(getCloseAction() == CloseAction.CLOSE) {
-//					close();
-//				} else {
-                hide();
-//				}
-            }
-        });
-    }
-
+	private void initializeComponent() {
+		setModal(true);
+        setLayout(new FitLayout());
+        setModal(true);
+        setClosable(false);
+        setBodyStyle("padding: 5px;");
+        setLayout(new FitLayout());
+	}
 
     public FormT getForm() {
         return form;
@@ -117,13 +115,11 @@ public class FormDialogImpl<FormT extends FormPanel> extends Window implements A
         return saveButton;
     }
 
-
     public void show(FormDialogCallback callback) {
         this.callback = callback;
 
         show();
     }
-
 
     public void onValidated() {
         if (callback != null) {
@@ -155,7 +151,6 @@ public class FormDialogImpl<FormT extends FormPanel> extends Window implements A
 
     @Override
     public void beforeRequest() {
-
         form.disable();
         saveButton.disable();
         cancelButton.disable();
@@ -171,7 +166,6 @@ public class FormDialogImpl<FormT extends FormPanel> extends Window implements A
         status.setBusy(I18N.CONSTANTS.connectionProblem());
     }
 
-
     @Override
     public boolean onRetrying() {
         if (asyncCallCancelled) {
@@ -184,23 +178,18 @@ public class FormDialogImpl<FormT extends FormPanel> extends Window implements A
         return true;
     }
 
-
     @Override
     public void onServerError() {
-
         form.enable();
         saveButton.enable();
         cancelButton.enable();
         status.clearStatus("");
-
         MessageBox.alert(this.getHeading(), I18N.CONSTANTS.serverError(), null);
     }
-
 
     @Override
     public void onCompleted() {
         status.clearStatus("");
-
         form.enable();
         saveButton.enable();
         cancelButton.enable();
