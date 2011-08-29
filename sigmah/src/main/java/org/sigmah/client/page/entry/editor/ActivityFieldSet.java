@@ -15,6 +15,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.Field;
+import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.Validator;
 
@@ -86,17 +87,24 @@ public class ActivityFieldSet extends AbstractFieldSet {
 
 		}
 		
-		ComboBox<ProjectDTO> comboboxProjects = new ComboBox<ProjectDTO>();
-		
-		comboboxProjects.setName("project");
-		comboboxProjects.setDisplayField("name");
-		comboboxProjects.setEditable(false);
-		comboboxProjects.setStore(projectStore);
-		comboboxProjects.setTriggerAction(ComboBox.TriggerAction.ALL);
-		comboboxProjects.setFieldLabel(I18N.CONSTANTS.project());
-		comboboxProjects.setForceSelection(true);
-		comboboxProjects.setAllowBlank(false);
-		add(comboboxProjects);
+		if (activity.getDatabase().getProjects().size() > 0) {
+			ComboBox<ProjectDTO> comboboxProjects = new ComboBox<ProjectDTO>();
+			
+			comboboxProjects.setName("project");
+			comboboxProjects.setDisplayField("name");
+			comboboxProjects.setEditable(false);
+			comboboxProjects.setStore(projectStore);
+			comboboxProjects.setTriggerAction(ComboBox.TriggerAction.ALL);
+			comboboxProjects.setFieldLabel(I18N.CONSTANTS.project());
+			comboboxProjects.setForceSelection(true);
+			comboboxProjects.setAllowBlank(false);
+			add(comboboxProjects);
+		} else {
+			LabelField labelNoProjects = new LabelField(
+					I18N.MESSAGES.noProjectsDefinedForDatabase(activity.getDatabase().getName()));
+			labelNoProjects.setFieldLabel(I18N.CONSTANTS.projects());
+			add(labelNoProjects);
+		}
 
 //		if(activity.getLocationType().getBoundAdminLevelId() == null) {
 //			ComboBox<SiteDTO> assessmentCombo = new AssessmentCombo(activity.getDatabase().getCountry());
