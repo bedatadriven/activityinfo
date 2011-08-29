@@ -95,12 +95,12 @@ public class ActivityFieldSet extends AbstractFieldSet {
 			comboboxProjects.setTriggerAction(ComboBox.TriggerAction.ALL);
 			comboboxProjects.setFieldLabel(I18N.CONSTANTS.project());
 			comboboxProjects.setForceSelection(true);
-			comboboxProjects.setAllowBlank(false);
+			comboboxProjects.setAllowBlank(true);
 			add(comboboxProjects);
 		} else {
 			LabelField labelNoProjects = new LabelField(
 					I18N.MESSAGES.noProjectsDefinedForDatabase(activity.getDatabase().getName()));
-			labelNoProjects.setFieldLabel(I18N.CONSTANTS.projects());
+			labelNoProjects.setFieldLabel(I18N.CONSTANTS.project());
 			add(labelNoProjects);
 		}
 
