@@ -9,14 +9,11 @@ import org.sigmah.shared.dto.LockedPeriodDTO;
 import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 
-import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
-import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
@@ -32,11 +29,9 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Widget;
 
-public class AddLockedPeriodDialog extends Window implements
+public class AddLockedPeriodDialog extends FormPanel implements
 		AddLockedPeriodView {
 
-	private FormPanel formPanel;
-	
 	private FieldSet fieldsetParentType;
 	private RadioGroup radiogroupParentType;
 	private Radio radioDatabase;
@@ -64,8 +59,6 @@ public class AddLockedPeriodDialog extends Window implements
 	private CheckBox checkboxEnabled;
 	private LabelField labelParent;
 	private LabelField labelTimePeriod;  // Shows the total time
-	private Button buttonSave;
-	private Button buttonCancel;
 	private Dispatcher service;
 	
 	private EventBus eventBus = new SimpleEventBus();
@@ -92,12 +85,10 @@ public class AddLockedPeriodDialog extends Window implements
 	}
 
 	private void initializeComponent() {
-		setHeading("Add a timelock");
 		setWidth(400);
-		setHeight(300);
+		setHeight(280);
 		
-		formPanel = new FormPanel();
-		formPanel.setHeaderVisible(false);
+		setHeaderVisible(false);
 		
 		fieldsetParentType = new FieldSet();
 		fieldsetParentType.setHeading(I18N.CONSTANTS.type());
@@ -179,45 +170,42 @@ public class AddLockedPeriodDialog extends Window implements
 		fieldsetParentType.add(panelProject);
 		radiogroupParentType.add(radioProject);
 		
-		formPanel.add(fieldsetParentType);
+		add(fieldsetParentType);
 		
 		textfieldName = new TextField<String>();
 		textfieldName.setFieldLabel(I18N.CONSTANTS.name());
-		formPanel.add(textfieldName);
+		add(textfieldName);
 
 		checkboxEnabled = new CheckBox();
 		checkboxEnabled.setFieldLabel("Enabled");
-		formPanel.add(checkboxEnabled);
+		add(checkboxEnabled);
 
 		datefieldFromDate = new DateField();
 		datefieldFromDate.setFieldLabel(I18N.CONSTANTS.fromDate());
-		formPanel.add(datefieldFromDate);
+		add(datefieldFromDate);
 
 		datefieldToDate = new DateField();
 		datefieldToDate.setFieldLabel(I18N.CONSTANTS.toDate());
-		formPanel.add(datefieldToDate);
+		add(datefieldToDate);
 		
-		buttonSave=new Button(I18N.CONSTANTS.save());
-		buttonSave.addListener(Events.Select, new Listener<BaseEvent>() {
-			@Override
-			public void handleEvent(BaseEvent be) {
-				eventBus.fireEvent(new CreateEvent());
-			}
-		});
-		formPanel.addButton(buttonSave);
-		
-		buttonCancel = new Button(I18N.CONSTANTS.cancel());
-		buttonCancel.addListener(Events.Select, new Listener<BaseEvent>() {
-			@Override
-			public void handleEvent(BaseEvent be) {
-				eventBus.fireEvent(new CancelCreateEvent());
-			}
-		});
-		formPanel.addButton(buttonCancel);
+//		buttonSave=new Button(I18N.CONSTANTS.save());
+//		buttonSave.addListener(Events.Select, new Listener<BaseEvent>() {
+//			@Override
+//			public void handleEvent(BaseEvent be) {
+//				eventBus.fireEvent(new CreateEvent());
+//			}
+//		});
+//		formPanel.addButton(buttonSave);
+//		
+//		buttonCancel = new Button(I18N.CONSTANTS.cancel());
+//		buttonCancel.addListener(Events.Select, new Listener<BaseEvent>() {
+//			@Override
+//			public void handleEvent(BaseEvent be) {
+//				eventBus.fireEvent(new CancelCreateEvent());
+//			}
+//		});
+//		formPanel.addButton(buttonCancel);
 
-		
-		
-		add(formPanel);
 	}
 
 	@Override
