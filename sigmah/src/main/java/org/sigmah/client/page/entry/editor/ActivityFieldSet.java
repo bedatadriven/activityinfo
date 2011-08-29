@@ -36,14 +36,12 @@ public class ActivityFieldSet extends AbstractFieldSet {
 		databaseField.setValue(activity.getDatabase().getName());
 		databaseField.setFieldLabel(I18N.CONSTANTS.database());
 		databaseField.setReadOnly(true);
-		databaseField.setEnabled(false);
 		add(databaseField);
 
 		TextField<String> activityField = new TextField<String>();
 		activityField.setValue(activity.getName());
 		activityField.setFieldLabel(I18N.CONSTANTS.activity());
 		activityField.setReadOnly(true);
-		activityField.setEnabled(false);
 		add(activityField);
 
 		ComboBox<PartnerDTO> partnerCombo = new ComboBox<PartnerDTO>();
