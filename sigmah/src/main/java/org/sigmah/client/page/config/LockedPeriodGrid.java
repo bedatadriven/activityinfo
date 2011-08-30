@@ -16,10 +16,12 @@ import org.sigmah.client.page.common.columns.EditCheckColumnConfig;
 import org.sigmah.client.page.common.columns.EditDateColumn;
 import org.sigmah.client.page.common.columns.ReadLockedPeriodTypeColumn;
 import org.sigmah.client.page.common.columns.ReadTextColumn;
+import org.sigmah.client.page.common.dialog.FormDialogCallback;
+import org.sigmah.client.page.common.dialog.FormDialogImpl;
+import org.sigmah.client.page.common.dialog.FormDialogTether;
 import org.sigmah.client.page.common.toolbar.ActionListener;
 import org.sigmah.client.page.common.toolbar.ActionToolBar;
 import org.sigmah.client.page.common.toolbar.UIActions;
-import org.sigmah.client.page.config.LockedPeriodsPresenter.AddLockedPeriodView;
 import org.sigmah.client.page.config.LockedPeriodsPresenter.LockedPeriodListEditor;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.LockedPeriodDTO;
@@ -62,8 +64,9 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 	private ActivityDTO activityFilter= null;
 
 	// Nested views
-	private AddLockedPeriodView addLockedPeriod;
+	private AddLockedPeriodDialog addLockedPeriod;
 	private ActionToolBar toolbarActions;
+	private FormDialogImpl<AddLockedPeriodDialog> form;
 
 	public LockedPeriodGrid() {
 		super();
@@ -164,6 +167,9 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 	public void create(LockedPeriodDTO item) {
 		lockedPeriodStore.add(item);
 		addLockedPeriod.cancelCreate();
+		if (form != null) {
+			form.hide();
+		}
 	}
 
 	@Override
@@ -351,11 +357,36 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 	@Override
 	public void startCreate() {
 		addLockedPeriod.startCreate();
+		form = new FormDialogImpl<AddLockedPeriodDialog>(addLockedPeriod);
+		form.setHeading(I18N.CONSTANTS.addTimeLock());
+		form.setWidth(400);
+		form.setHeight(350);
+		
+		form.show(new FormDialogCallback() {
+			@Override
+			public void onValidated() {
+				super.onValidated();
+			}
+
+			@Override
+			public void onValidated(FormDialogTether dlg) {
+				LockedPeriodGrid.this.lockedPeriod = addLockedPeriod.getValue();
+				eventBus.fireEvent(new CreateEvent());
+			}
+
+			@Override
+			public void onCancelled() {
+				eventBus.fireEvent(new CancelCreateEvent());
+			}
+		});
 	}
 
 	@Override
 	public void cancelCreate() {
 		addLockedPeriod.cancelCreate();
+		if (form != null) {
+			form.hide();
+		}
 	}
 	@Override
 	public AsyncMonitor getLoadingMonitor() {

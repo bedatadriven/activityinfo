@@ -25,8 +25,8 @@ import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.i18n.UIMessages;
 import org.sigmah.client.mock.MockEventBus;
 import org.sigmah.client.offline.OfflineModuleStub;
-import org.sigmah.client.offline.command.LocalDispatcher;
 import org.sigmah.client.offline.command.CommandQueue;
+import org.sigmah.client.offline.command.LocalDispatcher;
 import org.sigmah.client.offline.sync.DownSynchronizer;
 import org.sigmah.server.endpoint.gwtrpc.CommandServlet;
 import org.sigmah.shared.command.Command;
@@ -38,7 +38,6 @@ import org.sigmah.shared.util.Collector;
 import com.allen_sauer.gwt.log.client.Log;
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcDatabase;
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcScheduler;
-import com.bedatadriven.rebar.sync.client.BulkUpdaterAsync;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
@@ -136,7 +135,7 @@ public abstract class LocalHandlerTestCase {
         
     }
     
-    protected <C extends Command<R>, R extends CommandResult> R executeLocally(Command command) {
+    protected <C extends Command<R>, R extends CommandResult> R executeLocally(C command) {
     	Collector<R> collector = Collector.newCollector();
     	localDispatcher.execute(command, null, collector);
     	return collector.getResult();

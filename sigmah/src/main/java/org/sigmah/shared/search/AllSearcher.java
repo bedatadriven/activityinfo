@@ -8,17 +8,14 @@ import java.util.List;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.report.model.DimensionType;
 
-import com.bedatadriven.rebar.sql.client.SqlDatabase;
-import com.bedatadriven.rebar.sql.client.SqlException;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
-import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class AllSearcher {
 	private static List<Searcher<?>> searchers = new ArrayList<Searcher<?>>();
 	private List<Searcher<?>> failedSearchers = new ArrayList<Searcher<?>>();
 	private Filter filter = new Filter();
-	SqlDatabase db;
+	SqlTransaction tx;
 	
 	static {
 		searchers.add(new GenericSearcher(DimensionType.Partner));
@@ -30,34 +27,24 @@ public class AllSearcher {
 		searchers.add(new IndicatorSearcher());
 	}
 	
-	public AllSearcher(SqlDatabase db) {
-		this.db=db;
+	public AllSearcher(SqlTransaction tx) {
+		this.tx=tx;
 	}
 	
-	public List<Searcher<?>> supportedSearchers() {
+	public static List<Searcher<?>> supportedSearchers() {
 		return Collections.unmodifiableList(searchers);
 	}
 	
 	public void searchAll (final String query, final AsyncCallback<Filter> callback) {
-		db.transaction(new SqlTransactionCallback() {
+		searchNext(query, searchers.iterator(), tx, new AsyncCallback<Filter>() {
 			@Override
-			public void begin(SqlTransaction tx) {
-				searchNext(query, searchers.iterator(), tx, new AsyncCallback<Filter>() {
-					@Override
-					public void onFailure(Throwable caught) {
-						callback.onFailure(caught);
-					}
-
-					@Override
-					public void onSuccess(Filter result) {
-						callback.onSuccess(filter);
-					}
-				});
+			public void onFailure(Throwable caught) {
+				callback.onFailure(caught);
 			}
 
 			@Override
-			public void onError(SqlException e) {
-				callback.onFailure(e);
+			public void onSuccess(Filter result) {
+				callback.onSuccess(filter);
 			}
 		});
 	}

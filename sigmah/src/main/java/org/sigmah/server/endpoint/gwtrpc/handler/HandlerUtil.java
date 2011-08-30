@@ -61,7 +61,7 @@ public class HandlerUtil {
         String commandName = cmd.getClass().getName().substring(
                 cmd.getClass().getPackage().getName().length() + 1);
     	String handlerName = null;
-    	
+    				   
     	handlerName = "org.sigmah.server.endpoint.gwtrpc.handler." +
     		commandName + "Handler";
 
@@ -71,7 +71,7 @@ public class HandlerUtil {
         } catch (ClassNotFoundException e1) {
         	
         	// try looking for the handler in the shared package
-
+        				   
         	handlerName = "org.sigmah.shared.command.handler." +
         			commandName + "Handler";
         	
@@ -100,16 +100,22 @@ public class HandlerUtil {
 
         String commandName = cmd.getClass().getName().substring(
                 cmd.getClass().getPackage().getName().length() + 1);
-    	String handlerName = null;
+    	String sharedHandlerName = null;
     	
-    	handlerName = "org.sigmah.shared.command.handler." +
+    	sharedHandlerName = "org.sigmah.shared.command.handler." +
     		commandName + "Handler";
 
         try {
-            return (Class<CommandHandlerAsync<C,R>>) CommandHandler.class.getClassLoader().loadClass(handlerName);
+            return (Class<CommandHandlerAsync<C,R>>) CommandHandler.class.getClassLoader().loadClass(sharedHandlerName);
 
         } catch (ClassNotFoundException e) {
-    		throw new IllegalArgumentException("No async handler " + handlerName + " found for " + commandName, e);
+        	String serverHandlerName = "org.sigmah.server.endpoint.gwtrpc.handler." +
+    			commandName + "Handler";
+        	try {
+        		return (Class<CommandHandlerAsync<C,R>>) CommandHandler.class.getClassLoader().loadClass(serverHandlerName);
+        	} catch (Exception ex) {
+        		throw new IllegalArgumentException("No async handler " + serverHandlerName + " found for " + commandName, e);
+        	}
         }
     }
     

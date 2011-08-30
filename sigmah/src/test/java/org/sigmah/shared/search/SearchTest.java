@@ -7,67 +7,26 @@ import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.sigmah.database.ClientDatabaseStubs;
 import org.sigmah.server.dao.OnDataSet;
-import org.sigmah.server.endpoint.gwtrpc.handler.GenerateElementHandler;
-import org.sigmah.server.endpoint.gwtrpc.handler.SearchHandler;
-import org.sigmah.shared.command.Command;
+import org.sigmah.server.endpoint.gwtrpc.CommandTestCase;
 import org.sigmah.shared.command.Search;
-import org.sigmah.shared.command.handler.ExecutionContext;
-import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.SearchResult;
-import org.sigmah.shared.domain.User;
+import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.test.InjectionSupport;
-import org.sigmah.test.MockHibernateModule;
-import org.sigmah.test.Modules;
 
+import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlException;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
-import com.bedatadriven.rebar.sql.server.jdbc.JdbcDatabase;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 @RunWith(InjectionSupport.class)
-@Modules({MockHibernateModule.class})
 @OnDataSet("/dbunit/sites-simple1.db.xml")
-public class SearchTest {
+public class SearchTest extends CommandTestCase {
 
-	private String testQuery = "kivu";
-	private JdbcDatabase db = ClientDatabaseStubs.sitesSimple();
-	private GenerateElementHandler getPivotData;
-	private SearchHandler handler;
-	private ExecutionContext context = new ExecutionContext() {
-		User user = new User();
-		
-		@Override
-		public User getUser() {
-			user.setId(1);
-			return user;
-		}
-
-		@Override
-		public SqlTransaction getTransaction() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public <C extends Command<R>, R extends CommandResult> void execute(
-				C command, AsyncCallback<R> callback) {
-			throw new UnsupportedOperationException();
-			
-		}
-		
-		
-	};
-	private GenerateElementHandler genelhandler;
-
-
-    @Inject
-    public SearchTest(GenerateElementHandler genElHandler) {
-    	this.genelhandler = genElHandler;
-    }
+	@Inject private SqlDatabase db;
 	
 	@Test
 	public void testAttributeGroup() {
@@ -95,34 +54,21 @@ public class SearchTest {
 	}
 	
 	@Test
-	public void testSearchAll() {
-		SearchHandler handler = new SearchHandler(db, null, genelhandler);
-		final AllSearcher allSearcher = new AllSearcher(null);
+	public void testSearchAll() throws CommandException {
+		SearchResult result = execute(new Search("kivu"));
+
+		assertTrue("Expected all searchers to succeed", result.getFailedSearchers().isEmpty());
 		
-		handler.execute(new Search("kivu"), context, new AsyncCallback<SearchResult>() {
-			
-			@Override
-			public void onSuccess(SearchResult result) {  
-				assertTrue("Expected all searchers to succeed", result.getFailedSearchers().isEmpty());
-				
-				for (Searcher<?> searcher : allSearcher.supportedSearchers()) {
-					assertHasDimension(searcher.getDimensionType(), result);
-				}
-				
-				assertHasRestrictionWithIds(DimensionType.AdminLevel, result, 2, 3);
-				assertHasRestrictionWithIds(DimensionType.Partner, result, 3);
-				assertHasRestrictionWithIds(DimensionType.Project, result, 3);
-				assertHasRestrictionWithIds(DimensionType.AttributeGroup, result, 3);
-				assertHasRestrictionWithIds(DimensionType.Indicator, result, 675);
-				assertHasRestrictionWithIds(DimensionType.Location, result, 1);
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) { 
-				assertTrue("Expected searchresult", false);
-			}
-		});
+		for (Searcher<?> searcher : AllSearcher.supportedSearchers()) {
+			assertHasDimension(searcher.getDimensionType(), result);
+		}
 		
+		assertHasRestrictionWithIds(DimensionType.AdminLevel, result, 2, 3);
+		assertHasRestrictionWithIds(DimensionType.Partner, result, 3);
+		assertHasRestrictionWithIds(DimensionType.Project, result, 3);
+		assertHasRestrictionWithIds(DimensionType.AttributeGroup, result, 3);
+		assertHasRestrictionWithIds(DimensionType.Indicator, result, 675);
+		assertHasRestrictionWithIds(DimensionType.Location, result, 1);
 	}
 	
 	public static void assertHasDimension(DimensionType type, SearchResult result) {
@@ -143,8 +89,4 @@ public class SearchTest {
 	}
 	
 }
-
-
-
-
 

@@ -26,11 +26,6 @@ public class CoordFieldSet extends AbstractFieldSet implements MapEditView {
 
         super(I18N.CONSTANTS.geoPosition(), 100, 200);
 
-    }
-
-    public void init(MapPresenter presenter) {
-        this.presenter = presenter;
-        
         latField = new CoordinateField(CoordinateField.Axis.LATITUDE);
         latField.setFieldLabel(I18N.CONSTANTS.latitude());
         latField.setName("y");
@@ -40,6 +35,10 @@ public class CoordFieldSet extends AbstractFieldSet implements MapEditView {
         lngField.setFieldLabel(I18N.CONSTANTS.longitude());
         lngField.setName("x");
         add(lngField);
+    }
+
+    public void init(MapPresenter presenter) {
+        this.presenter = presenter;
     }
 
 

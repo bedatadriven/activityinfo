@@ -200,7 +200,7 @@ public class PivotHibernateDAOTest {
     	
     	execute();
     	
-    	assertBucketCount(3);
+    	assertBucketCount(4);
     	
     	assertThat().forIndicator(1).thereIsOneBucketWithValue(5100);
     	assertThat().forIndicator(2).thereIsOneBucketWithValue(1700);
