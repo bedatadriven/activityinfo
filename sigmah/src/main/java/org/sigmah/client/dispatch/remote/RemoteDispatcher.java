@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.sigmah.client.EventBus;
+import org.sigmah.client.SessionUtil;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.CommandProxy;
 import org.sigmah.client.dispatch.DispatchEventSource;
@@ -326,10 +327,10 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
         // on the client.
         Window.alert(I18N.CONSTANTS.notAuthenticated());
         
-        Window.Location.assign("/login");
+        SessionUtil.forceLogin();
     }
 
-    private void onClientSideSerializationError(Throwable caught) {
+	private void onClientSideSerializationError(Throwable caught) {
         Log.error("RemoteDispatcher: client side exception thrown during execution of remote command", caught);
         onServerError(executingCommands, caught);
     }

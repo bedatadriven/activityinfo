@@ -172,13 +172,23 @@ public class OfflineView extends Button implements OfflineController.View {
 	}
 
 	@Override
-	public void setConnectionDialogToFailure() {
-		connectionDialog.setFailed();
+	public void setConnectionDialogToConnectionFailure() {
+		connectionDialog.setConnectionFailed();
 	}
 
 	@Override
 	public void setConnectionDialogToBusy() {
 		connectionDialog.setBusy();	
+	}
+	
+	@Override
+	public void setConnectionDialogToSessionExpired() {
+		connectionDialog.setSessionExpired();
+	}
+
+	@Override
+	public void setConnectionDialogToServerUnavailable() {
+		connectionDialog.setServerUnavailable();
 	}
 
 	@Override
@@ -201,5 +211,7 @@ public class OfflineView extends Button implements OfflineController.View {
 		MessageBox.alert(I18N.CONSTANTS.offlineMode(), profile.getInstallInstructions(),
 				null);
 	}
+
+
 
 }

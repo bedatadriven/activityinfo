@@ -46,7 +46,6 @@ public class OfflineExecutionContext implements ExecutionContext {
 			@Override
 			public void onFailure(Throwable caught) {
 				callback.onFailure(caught);
-				
 			}
 
 			@Override

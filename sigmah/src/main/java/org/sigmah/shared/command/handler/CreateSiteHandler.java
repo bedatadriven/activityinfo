@@ -129,7 +129,7 @@ public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, Create
 			int locationId,
 			Map<String, Object> properties)  {
 
-		int siteId = keyGenerator.generateInt();
+		int siteId = getOrCreateKey(properties, "siteId");
 		
 		SqlInsert.insertInto("Site")
 		.value("SiteId", siteId)
@@ -174,9 +174,8 @@ public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, Create
 			int locationTypeId, 
 			String name,
 			Map<String, Object> properties) {
-
-
-		int locationId = keyGenerator.generateInt();
+		
+		int locationId = getOrCreateKey(properties, "locationId");
 		
 		SqlInsert.insertInto("Location")
 		.value("LocationId", locationId)
@@ -214,7 +213,8 @@ public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, Create
 			SqlTransaction tx,
 			int siteId, 
 			Map<String, Object> properties)  {
-		int reportingPeriodId = keyGenerator.generateInt();
+		
+		int reportingPeriodId = getOrCreateKey(properties, "reportingPeriodId");
 		SqlInsert.insertInto("ReportingPeriod")
 		.value("ReportingPeriodId", reportingPeriodId)
 		.value("SiteId", siteId)
@@ -244,6 +244,13 @@ public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, Create
 				.execute(tx);
 			}
 		}
+	}
+	
+	private int getOrCreateKey(Map<String,Object> properties, String name) {
+		if(!properties.containsKey(name)) {
+			properties.put(name, keyGenerator.generateInt());
+		} 
+		return (Integer) properties.get(name);
 	}
 		
 }

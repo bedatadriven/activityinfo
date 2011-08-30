@@ -14,7 +14,8 @@ import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.event.SiteEvent;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.shared.command.CreateEntity;
-import org.sigmah.shared.command.UpdateEntity;
+import org.sigmah.shared.command.CreateSite;
+import org.sigmah.shared.command.UpdateSite;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.ActivityDTO;
@@ -181,7 +182,7 @@ public class SiteFormPresenter implements SiteFormLeash {
             // The projectId will always be updated, regardless of change/create mode
             addProjectIdToMap(changes);
 
-            service.execute(new UpdateEntity("Site", currentSite.getId(), changes), view.getMonitor(), new AsyncCallback<VoidResult>() {
+            service.execute(new UpdateSite(currentSite.getId(), changes), view.getMonitor(), new AsyncCallback<VoidResult>() {
                 @Override
                 public void onFailure(Throwable throwable) {
                     // let monitor display
@@ -209,7 +210,7 @@ public class SiteFormPresenter implements SiteFormLeash {
             properties.put("partnerId", ((PartnerDTO)properties.get("partner")).getId());
             properties.remove("partner");
 
-            service.execute(new CreateEntity("Site", properties), view.getMonitor(), new AsyncCallback<CreateResult>() {
+            service.execute(new CreateSite(properties), view.getMonitor(), new AsyncCallback<CreateResult>() {
                 @Override
                 public void onFailure(Throwable throwable) {
                     // TODO: handle failure

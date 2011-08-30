@@ -28,6 +28,7 @@ import org.sigmah.client.util.state.CrossSessionStateProvider;
 import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.result.CommandResult;
+import org.sigmah.shared.exception.InvalidAuthTokenException;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -40,6 +41,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.InvocationException;
+import com.google.gwt.user.client.rpc.StatusCodeException;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
@@ -106,8 +108,10 @@ public class OfflineController implements Dispatcher {
         void showError(String message);
         
         void promptToGoOnline(PromptConnectCallback callback);
-		void setConnectionDialogToFailure();
+		void setConnectionDialogToConnectionFailure();
 		void setConnectionDialogToBusy();
+		void setConnectionDialogToSessionExpired();
+		void setConnectionDialogToServerUnavailable();
 		void hideConnectionDialog();
 		void showConnectionProblem(int attempt, int retryDelay);
 
@@ -596,15 +600,27 @@ public class OfflineController implements Dispatcher {
 						}
 						
 						@Override
-						public void onFailure(Throwable arg0) {
-							view.setConnectionDialogToFailure();
+						public void onFailure(Throwable caught) {
+							onConnectionFailure(caught);
 						}
+
 					});
 				}
 			});
 			return this;
 		}
 
+		private void onConnectionFailure(Throwable caught) {
+			Log.debug("Offline Controller: goOnline failed: " + caught.getMessage(), caught);
+			if(caught instanceof InvalidAuthTokenException) {
+				view.setConnectionDialogToSessionExpired();
+			} else if(caught instanceof StatusCodeException){
+				view.setConnectionDialogToServerUnavailable();
+			} else {
+				view.setConnectionDialogToConnectionFailure();
+			}
+		}
+		
 		@Override
 		void dispatch(Command command, AsyncMonitor monitor,
 				AsyncCallback callback) {

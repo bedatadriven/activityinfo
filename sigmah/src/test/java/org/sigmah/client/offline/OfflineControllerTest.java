@@ -242,7 +242,7 @@ public class OfflineControllerTest {
 		}
 
 		@Override
-		public void setConnectionDialogToFailure() {
+		public void setConnectionDialogToConnectionFailure() {
 			// TODO Auto-generated method stub
 			
 		}
@@ -267,6 +267,18 @@ public class OfflineControllerTest {
 
 		@Override
 		public void showInstallInstructions() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void setConnectionDialogToSessionExpired() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void setConnectionDialogToServerUnavailable() {
 			// TODO Auto-generated method stub
 			
 		}
