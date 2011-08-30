@@ -20,6 +20,7 @@ import org.sigmah.shared.command.result.SyncRegionUpdate;
 import org.sigmah.shared.domain.Location;
 import org.sigmah.shared.domain.User;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.bedatadriven.rebar.sync.server.JpaUpdateBuilder;
 import com.google.inject.Inject;
 
@@ -29,8 +30,6 @@ public class LocationUpdateBuilder implements UpdateBuilder {
     private final EntityManager em;
     private List<Location> locations;
     private Set<Integer> locationIds = new HashSet<Integer>();
-    private List<Location> createdLocations = new ArrayList<Location>();
-    private List<Location> updatedLocations = new ArrayList<Location>();
 
     private static final Logger logger = Logger.getLogger(LocationUpdateBuilder.class);
 
@@ -83,32 +82,24 @@ public class LocationUpdateBuilder implements UpdateBuilder {
 
 	private void createAndUpdateLocations() throws JSONException {
 		
-        builder.createTableIfNotExists(Location.class);		
 		for(Location location : locations) {
-        	if(!TimestampHelper.isAfter(location.getDateCreated(), localState.lastDate)) {
-        		updatedLocations.add(location);
-        	} else {
-        		createdLocations.add(location);
-        	}
-            locationIds.add(location.getId());
-        }
+			locationIds.add(location.getId());
+		}
 		
-        builder.insert("or replace", Location.class, createdLocations);
-        builder.update(Location.class, updatedLocations);
+        builder.createTableIfNotExists(Location.class);		
+        builder.insert("or replace", Location.class, locations);
 	}
 	
 	private void linkAdminEntities() throws JSONException { 
 		builder.executeStatement("create table if not exists LocationAdminLink (LocationId integer, AdminEntityId integer)");
 
-		if(!updatedLocations.isEmpty()) {
+		if(!locations.isEmpty()) {
 			builder.beginPreparedStatement("delete from LocationAdminLink where LocationId = ?");
-			for(Location updateLoc : updatedLocations) {
+			for(Location updateLoc : locations) {
 				builder.addExecution(updateLoc.getId());
 			}
 			builder.finishPreparedStatement();
-		}
 
-		if(!locations.isEmpty()) {
 			List<Object[]> joins = em.createQuery("SELECT loc.id, e.id FROM Location loc JOIN loc.adminEntities e WHERE loc.id IN (:ids)")
 			.setParameter("ids", locationIds)
 			.getResultList();
