@@ -177,6 +177,8 @@ public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, Create
 		
 		int locationId = getOrCreateKey(properties, "locationId");
 		
+		Date timestamp = new Date();
+		
 		SqlInsert.insertInto("Location")
 		.value("LocationId", locationId)
 		.value("Name", name)
@@ -184,6 +186,8 @@ public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, Create
 		.value("X", properties.get("x"))
 		.value("Y", properties.get("y"))
 		.value("LocationTypeId", locationTypeId)
+		.value("dateCreated", timestamp)
+		.value("dateEdited", timestamp)
 		.execute(tx);
 		
 		insertLocationAdminLinks(tx, locationId, properties);

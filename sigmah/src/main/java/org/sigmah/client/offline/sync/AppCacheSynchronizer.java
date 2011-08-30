@@ -1,6 +1,7 @@
 package org.sigmah.client.offline.sync;
 
 import org.sigmah.client.EventBus;
+import org.sigmah.client.i18n.I18N;
 
 import com.bedatadriven.rebar.appcache.client.AppCache;
 import com.bedatadriven.rebar.appcache.client.AppCacheFactory;
@@ -40,7 +41,7 @@ public class AppCacheSynchronizer implements ProgressEventHandler {
 
 	@Override
 	public void onProgress(int filesComplete, int filesTotal) {
-		eventBus.fireEvent(new SyncStatusEvent("Saving application to cache...",
+		eventBus.fireEvent(new SyncStatusEvent(I18N.CONSTANTS.appCacheProgress(),
 				(double)filesComplete / (double)filesTotal * 100d));
 	}
 	

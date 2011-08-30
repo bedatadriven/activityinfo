@@ -15,7 +15,7 @@ class ProgressDialog extends Dialog {
     private ProgressBar progressBar;
 
     public ProgressDialog() {
-        setHeading(I18N.CONSTANTS.statusOfflineMode());
+        setHeading(I18N.CONSTANTS.synchronizing());
         setWidth(400);
         setHeight(75);
         setLayout(new CenterLayout());

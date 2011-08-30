@@ -13,6 +13,7 @@ import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.dispatch.remote.Direct;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.i18n.UIMessages;
 import org.sigmah.shared.command.GetSyncRegionUpdates;
@@ -45,11 +46,8 @@ public class DownSynchronizer {
     private final EventBus eventBus;
     private final SqlDatabase conn;
     private final UIConstants uiConstants;
-    private final UIMessages uiMessages;
 
     private ProgressTrackingIterator<SyncRegion> regionIt;
-
-    private int rowsUpdated;
 
     private AsyncCallback<Void> callback;
 
@@ -64,12 +62,11 @@ public class DownSynchronizer {
     public DownSynchronizer(EventBus eventBus,
                         @Direct Dispatcher dispatch,
                         SqlDatabase conn,
-                        UIConstants uiConstants, UIMessages uiMessages) {
+                        UIConstants uiConstants) {
         this.eventBus = eventBus;
         this.conn = conn;
         this.dispatch = dispatch;
         this.uiConstants = uiConstants;
-        this.uiMessages = uiMessages;
         
         this.localVerisonTable = new SyncRegionTable(conn);
         this.historyTable = new SyncHistoryTable(conn);
@@ -97,7 +94,6 @@ public class DownSynchronizer {
     	this.callback = callback;
         fireStatusEvent(uiConstants.requestingSyncRegions(), 0);
         running = true;
-        rowsUpdated = 0;
         stats.onStart();
         createSyncMetaTables();
     }
@@ -175,8 +171,7 @@ public class DownSynchronizer {
 
     private void doUpdate(final SyncRegion region, String localVersion) {
     	    	
-        fireStatusEvent(uiMessages.synchronizerProgress(region.getId(), Integer.toString(rowsUpdated)),
-                regionIt.percentComplete());
+        fireStatusEvent(uiConstants.downSyncProgress(), regionIt.percentComplete());
         Log.info("Synchronizer: Region " + region.getId() + ": localVersion=" + localVersion);
 
     	stats.onRemoteCallStarted();
@@ -212,7 +207,6 @@ public class DownSynchronizer {
 	            @Override
 	            public void onSuccess(Integer rows) {
 	                Log.debug("Synchronizer: updates to region " + region.getId() + " succeeded, " + rows + " row(s) affected");
-	                rowsUpdated += rows;
 	                stats.onDbUpdateFinished();
 	                updateLocalVersion(region, update);
 	            }

@@ -118,7 +118,7 @@ public abstract class LocalHandlerTestCase {
 //		});
     	
     	synchronizer = new DownSynchronizer(new MockEventBus(), remoteDispatcher, localDatabase, 
-                uiConstants, uiMessages);
+                uiConstants);
         synchronizer.start(new AsyncCallback<Void>() {
 
 			@Override
