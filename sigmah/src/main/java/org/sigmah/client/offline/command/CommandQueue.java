@@ -7,9 +7,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.sigmah.shared.command.Command;
-import org.sigmah.shared.command.CreateEntity;
 import org.sigmah.shared.command.CreateSite;
+import org.sigmah.shared.command.UpdateSite;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlException;
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
@@ -81,13 +82,15 @@ public class CommandQueue {
 	 * @throws SQLException
 	 */
 	public void queue(SqlTransaction tx, Command cmd) {
-		if(cmd instanceof CreateSite) {
-			queueCreateSite(tx, (CreateSite) cmd); 
-		} else {
-			throw new RuntimeException("Cannot queue class of type " + cmd.getClass().getName());
-		}
+		JsonObject root = serialize(cmd);
+		
+		SqlInsert.insertInto("command_queue")
+			.value("command", root.toString())
+			.execute(tx);
 	}
 	
+
+
 	/**
 	 * 
 	 * Peeks at the command next line in for execution, without removing it from the queue.
@@ -108,14 +111,14 @@ public class CommandQueue {
 							callback.onSuccess(null);
 						} else {
 							
+							SqlResultSetRow row = results.getRow(0);
 							QueueEntry entry;
+							int id = row.getInt("id");
+							String json = row.getString("command"); 
 							try {
-								SqlResultSetRow row = results.getRow(0);
-								entry = new QueueEntry(row.getInt("id"),
-										deserializeCommand(row.getString("command")));
-							
-								
+								entry = new QueueEntry(id, deserializeCommand(json));							
 							} catch(Exception e) {
+								Log.debug("Exception deserializing command from queue (JSON=" + json + ")", e);
 								callback.onFailure(e);
 								return;
 							}
@@ -150,19 +153,29 @@ public class CommandQueue {
 	}
 	
 
-	private void queueCreateSite(SqlTransaction tx, CreateSite cmd) {
-		
-		JsonObject root = serialize(cmd);
-		
-		SqlInsert.insertInto("command_queue")
-			.value("command", root.toString())
-			.execute(tx);
+	
+	private JsonObject serialize(Command cmd) {
+		if(cmd instanceof CreateSite) {
+			return serialize((CreateSite)cmd);
+		} else if(cmd instanceof UpdateSite) {
+			return serialize((UpdateSite)cmd);
+		} else {
+			throw new IllegalArgumentException("Cannot serialize commands of type " + cmd.getClass());
+		}
 	}
 
 	private JsonObject serialize(CreateSite cmd) {
 		JsonObject root = new JsonObject();
 		root.addProperty("commandClass", "CreateSite");
 		root.add("properties", encodeMap(cmd.getProperties().getTransientMap()));
+		return root;
+	}
+	
+	private JsonObject serialize(UpdateSite cmd) {
+		JsonObject root = new JsonObject();
+		root.addProperty("commandClass", "UpdateSite");
+		root.addProperty("siteId", cmd.getSiteId());
+		root.add("changes", encodeMap(cmd.getChanges().getTransientMap()));
 		return root;
 	}
 	
@@ -173,16 +186,25 @@ public class CommandQueue {
 		
 		if("CreateSite".equals(commandClass)) {
 			return deserializeCreateSite(root);
+		} else if("UpdateSite".equals(commandClass)) {
+			return deserializeUpdateSite(root);
 		} else {
 			throw new RuntimeException("Cannot deserialize queud command of class " + commandClass);
 		}
 	}
+
 
 	private CreateSite deserializeCreateSite(JsonObject root) {
 		return new CreateSite(
 			decodeMap(root.get("properties").getAsJsonObject()));
 	}
 
+	private UpdateSite deserializeUpdateSite(JsonObject root) {
+		return new UpdateSite(root.get("siteId").getAsInt(), 
+				decodeMap(root.get("changes").getAsJsonObject()));
+	}
+
+	
 	private JsonObject encodeMap(Map<String, Object> map) {
 		JsonObject root = new JsonObject();
 		for(Entry<String,Object> property : map.entrySet()) {

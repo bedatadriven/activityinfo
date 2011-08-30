@@ -13,6 +13,7 @@ import java.util.Map;
 import org.junit.Test;
 import org.sigmah.database.ClientDatabaseStubs;
 import org.sigmah.shared.command.CreateSite;
+import org.sigmah.shared.command.UpdateSite;
 import org.sigmah.shared.util.Collector;
 
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
@@ -62,5 +63,33 @@ public class CommandQueueTest {
 		assertThat(entry2.getResult(), is(nullValue()));
 
 		
+	}
+	
+	@Test
+	public void testUpdateSite() {
+		
+		SqlDatabase db = ClientDatabaseStubs.empty();
+		final CommandQueue queue = new CommandQueue(db);
+		
+		Map<String, Object> changes = new HashMap<String, Object>();
+		changes.put("anInt", 34);
+		changes.put("aString", "testing");
+		
+		final UpdateSite cmd = new UpdateSite(99, changes);
+		
+		db.transaction(new SqlTransactionCallback() {
+			
+			@Override
+			public void begin(SqlTransaction tx) {
+				queue.queue(tx, cmd);
+			}
+		});
+		
+		Collector<CommandQueue.QueueEntry> reread = Collector.newCollector();
+		queue.peek(reread);
+		
+
+		assertThat(reread.getResult(), not(nullValue()));
+		assertThat(cmd, equalTo(reread.getResult().getCommand()));
 	}
 }

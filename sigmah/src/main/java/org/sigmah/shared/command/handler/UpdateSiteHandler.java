@@ -1,5 +1,6 @@
 package org.sigmah.shared.command.handler;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -10,12 +11,10 @@ import org.sigmah.shared.dto.AttributeDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
 
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
-import com.bedatadriven.rebar.sql.client.SqlException;
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
 import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
-import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
 import com.bedatadriven.rebar.sql.client.query.SqlInsert;
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 import com.bedatadriven.rebar.sql.client.query.SqlUpdate;
@@ -24,13 +23,6 @@ import com.google.inject.Inject;
 
 public class UpdateSiteHandler implements CommandHandlerAsync<UpdateSite, VoidResult> {
 
-	private SqlDatabase database;
-	
-	@Inject
-	public UpdateSiteHandler(SqlDatabase database) {
-		super();
-		this.database = database;
-	}
 
 	@Override
 	public void execute(final UpdateSite command, ExecutionContext context,
@@ -55,6 +47,7 @@ public class UpdateSiteHandler implements CommandHandlerAsync<UpdateSite, VoidRe
 			.value("comments", changes)
 			.value("projectId", changes)
 			.value("partnerId", changes)
+			.value("dateEdited", new Date())
 			.execute(tx);
 
 	}
@@ -131,6 +124,7 @@ public class UpdateSiteHandler implements CommandHandlerAsync<UpdateSite, VoidRe
 		.value("axe", changes, "locationAxe")
 		.value("x", changes)
 		.value("y", changes)
+		.value("dateEdited", new Date())
 		.execute(tx);
 		
 		updateLocationAdminLinks(tx, locationId, changes);
