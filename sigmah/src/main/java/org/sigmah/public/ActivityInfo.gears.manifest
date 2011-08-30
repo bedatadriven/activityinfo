@@ -4,6 +4,7 @@
  "version" : "__VERSION__",
  "entries" : [
      { "url": "../" },
+     { "url": "../dbquery.html" },
      __ENTRIES__
     ]
 }
