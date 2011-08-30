@@ -164,10 +164,11 @@ public class SiteFormPresenter implements SiteFormLeash {
     }
     
     private void addProjectIdToMap(Map<String, Object> map) {
-    	
-        int projectId = ((ProjectDTO)map.get("project")).getId();
-        map.put("projectId", projectId);
-        map.remove("project");
+    	if(map.containsKey("project")) {
+	        int projectId = ((ProjectDTO)map.get("project")).getId();
+	        map.put("projectId", projectId);
+	        map.remove("project");
+    	}
     }
 
     public void onSave() {

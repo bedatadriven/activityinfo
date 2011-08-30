@@ -26,12 +26,6 @@ public class UpdateSynchronizer {
 		super();
 		this.commandQueue = commandQueue;
 		this.dispatcher = dispatcher;
-//		
-//		try {
-//			this.commandQueue.createTableIfNotExists();
-//		} catch (SQLException e) {
-//			throw new RuntimeException("Could not create command queue_table", e);
-//		}
 	}
 	
 	
@@ -66,7 +60,7 @@ public class UpdateSynchronizer {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				
+				callback.onFailure(caught);
 			}
 
 			@Override

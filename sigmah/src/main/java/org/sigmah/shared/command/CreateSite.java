@@ -39,6 +39,31 @@ public class CreateSite implements MutatingCommand<CreateResult> {
 
 	public void setProperties(RpcMap properties) {
 		this.properties = properties;
-	}	
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if(obj == null) {
+			return false;
+		}
+		if(!(obj instanceof CreateSite)) {
+			return false;
+		}
+		return this.properties.equals(((CreateSite)obj).properties);
+	}
+
+	@Override
+	public int hashCode() {
+		return properties.hashCode();
+	}
+
+	@Override
+	public String toString() {
+		return "CreateSite{" + properties.toString() + "}";
+	}
+	
+	
+	
+	
 	
 }

@@ -283,6 +283,12 @@ public class OfflineControllerTest {
 			
 		}
 
+		@Override
+		public void promptToLogin() {
+			// TODO Auto-generated method stub
+			
+		}
+
     }
 
     private static class OfflineImplStub implements Synchronizer {

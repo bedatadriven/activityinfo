@@ -1,6 +1,5 @@
 package org.sigmah.client.offline.command;
 
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,8 +11,14 @@ import org.sigmah.shared.command.CreateEntity;
 import org.sigmah.shared.command.CreateSite;
 
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
+import com.bedatadriven.rebar.sql.client.SqlException;
+import com.bedatadriven.rebar.sql.client.SqlResultCallback;
+import com.bedatadriven.rebar.sql.client.SqlResultSet;
+import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
+import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
 import com.bedatadriven.rebar.sql.client.query.SqlInsert;
+import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -89,32 +94,59 @@ public class CommandQueue {
 	 * 
 	 * @return the Command next in line for execution
 	 */
-	public void peek(AsyncCallback<QueueEntry> callback) {
-		callback.onSuccess(null);
-		/*try {
-			ResultSet rs = SqlQueryBuilder.select("id, command").from("command_queue").orderBy("id").executeQuery(connection);
-			if(rs.next()) {
-				callback.onSuccess(new QueueEntry(rs.getInt(1), deserializeCommand(rs.getString(2))));
-			} else {
-				callback.onSuccess(null);
+	public void peek(final AsyncCallback<QueueEntry> callback) {
+		database.transaction(new SqlTransactionCallback() {
+			
+			@Override
+			public void begin(SqlTransaction tx) {
+				SqlQuery.select("id", "command").from("command_queue").orderBy("id")
+				.execute(tx, new SqlResultCallback() {
+					
+					@Override
+					public void onSuccess(SqlTransaction tx, SqlResultSet results) {
+						if(results.getRows().size() == 0) {
+							callback.onSuccess(null);
+						} else {
+							
+							QueueEntry entry;
+							try {
+								SqlResultSetRow row = results.getRow(0);
+								entry = new QueueEntry(row.getInt("id"),
+										deserializeCommand(row.getString("command")));
+							
+								
+							} catch(Exception e) {
+								callback.onFailure(e);
+								return;
+							}
+							
+							callback.onSuccess(entry);
+
+						}
+					}
+				});
 			}
-		} catch(SQLException e){
-			callback.onFailure(e);
-		}*/
+		});
 	}
 	
-	public void remove(int queueId, AsyncCallback<Boolean> callback) {
-//		try {
-//			PreparedStatement stmt = connection.prepareStatement("DELETE FROM command_queue WHERE id = ?");
-//			stmt.setInt(1, queueId);
-//			int rowsAffected = stmt.executeUpdate();
-//		
-//			callback.onSuccess(rowsAffected == 1);
-//			
-//			
-//		} catch(SQLException e) {
-//			callback.onFailure(e);
-//		}
+	public void remove(final int queueId, final AsyncCallback<Boolean> callback) {
+		database.transaction(new SqlTransactionCallback() {
+			
+			@Override
+			public void begin(SqlTransaction tx) {
+				tx.executeSql("DELETE FROM command_queue WHERE id = ?", new Object[] { queueId });
+			}
+
+			@Override
+			public void onError(SqlException e) {
+				callback.onFailure(e);
+			}
+
+			@Override
+			public void onSuccess() {
+				callback.onSuccess(true);
+			}
+		});
 	}
 	
 
@@ -139,16 +171,15 @@ public class CommandQueue {
 		JsonObject root = (JsonObject) new JsonParser().parse(json);
 		String commandClass = root.get("commandClass").getAsString();
 		
-		if("CreateEntity".equals(commandClass)) {
-			return deserializeCreateEntity(root);
+		if("CreateSite".equals(commandClass)) {
+			return deserializeCreateSite(root);
 		} else {
 			throw new RuntimeException("Cannot deserialize queud command of class " + commandClass);
 		}
 	}
 
-	private CreateEntity deserializeCreateEntity(JsonObject root) {
-		return new CreateEntity(
-			root.get("entityName").getAsString(),
+	private CreateSite deserializeCreateSite(JsonObject root) {
+		return new CreateSite(
 			decodeMap(root.get("properties").getAsJsonObject()));
 	}
 

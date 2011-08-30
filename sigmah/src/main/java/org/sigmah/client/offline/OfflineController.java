@@ -108,6 +108,7 @@ public class OfflineController implements Dispatcher {
         void showError(String message);
         
         void promptToGoOnline(PromptConnectCallback callback);
+    	void promptToLogin();
 		void setConnectionDialogToConnectionFailure();
 		void setConnectionDialogToBusy();
 		void setConnectionDialogToSessionExpired();
@@ -270,7 +271,11 @@ public class OfflineController implements Dispatcher {
     }
 
     private void reportFailure(Throwable throwable) {
-    	view.showError(throwable.getMessage());
+    	if(throwable instanceof InvalidAuthTokenException) {
+    		view.promptToLogin();
+    	} else {
+    		view.showError(throwable.getMessage());
+    	}
     }
 
     private abstract class Strategy {

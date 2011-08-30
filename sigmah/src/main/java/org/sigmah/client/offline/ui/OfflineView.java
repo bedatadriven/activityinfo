@@ -170,6 +170,26 @@ public class OfflineView extends Button implements OfflineController.View {
 		connectionDialog.clearStatus();
 		connectionDialog.show();
 	}
+	
+	@Override
+	public void promptToLogin() {
+		if(connectionDialog == null) {
+			connectionDialog = new ConnectionDialog(); 
+		}
+		connectionDialog.setCallback(new PromptConnectCallback() {
+			
+			@Override
+			public void onTryToConnect() {				
+			}
+			
+			@Override
+			public void onCancel() {
+				connectionDialog.hide();
+			}
+		});
+		connectionDialog.setSessionExpired();
+		connectionDialog.show();
+	}
 
 	@Override
 	public void setConnectionDialogToConnectionFailure() {

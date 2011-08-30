@@ -10,4 +10,9 @@ public class ClientDatabaseStubs {
 		return new SqliteStubDatabase(dbFile);
 	}
 	
+	public static JdbcDatabase empty() {
+		String name = "target/localdbtest" + new java.util.Date().getTime();
+		return new SqliteStubDatabase(name);
+	}
+	
 }
