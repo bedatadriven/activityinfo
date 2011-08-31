@@ -10,7 +10,7 @@
     <meta name="application-name" content="ActivityInfo"/>
     <meta name="description" content="ActivityInfo"/>
     <meta name="application-url" content="${appUrl}"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=9">
  
     <link rel="icon" href="ActivityInfo/desktopicons/16x16.png" sizes="16x16"/>
     <link rel="icon" href="ActivityInfo/desktopicons/32x32.png" sizes="32x32"/>
