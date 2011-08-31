@@ -10,11 +10,8 @@ import org.sigmah.client.EventBus;
 import org.sigmah.client.event.SiteEvent;
 import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.page.common.Shutdownable;
+import org.sigmah.client.page.entry.editor.SiteRenderer;
 import org.sigmah.shared.dto.ActivityDTO;
-import org.sigmah.shared.dto.AttributeDTO;
-import org.sigmah.shared.dto.AttributeGroupDTO;
-import org.sigmah.shared.dto.IndicatorDTO;
-import org.sigmah.shared.dto.IndicatorGroup;
 import org.sigmah.shared.dto.SiteDTO;
 
 import com.extjs.gxt.ui.client.event.Listener;
@@ -25,7 +22,6 @@ public class DetailsPresenter implements Shutdownable {
 
     public interface View {
         public void setHtml(String html);
-
         void setSelectionTitle(String title);
     }
 
@@ -40,6 +36,7 @@ public class DetailsPresenter implements Shutdownable {
     private boolean showEmptyRows = false;
 
     private Listener<SiteEvent> siteListener;
+	private SiteRenderer siteRenderer = new SiteRenderer();
 
     @Inject
     public DetailsPresenter(EventBus eventBus, ActivityDTO activity, UIConstants messages, View view) {
@@ -75,102 +72,7 @@ public class DetailsPresenter implements Shutdownable {
 
         this.currentSite = site;
         view.setSelectionTitle(site.getLocationName());
-        view.setHtml(renderSite(site));
+        view.setHtml(siteRenderer.renderSite(site, activity, showEmptyRows));
     }
-
-    protected String renderSite(SiteDTO site) {
-
-        StringBuilder html = new StringBuilder();
-
-
-        if(site.getComments() != null) {
-            String commentsHtml = site.getComments();
-            commentsHtml = commentsHtml.replace("\n", "<br/>");
-            html.append("<p class='comments'><span class='groupName'>").append(messages.comments()).append(":</span> ")
-                    .append(commentsHtml).append("</p>");
-        }
-
-
-        for(AttributeGroupDTO group : activity.getAttributeGroups()) {
-            renderAttribute(html, group, site);
-        }
-
-        html.append("<table class='indicatorTable' cellspacing='0'>");
-        for(IndicatorGroup group : activity.groupIndicators())  {
-            renderIndicatorGroup(html, group, site);
-        }
-        html.append("</table>");
-
-        return html.toString();
-    }
-
-    private void renderIndicatorGroup(StringBuilder html, IndicatorGroup group, SiteDTO site) {
-        StringBuilder groupHtml = new StringBuilder();
-        boolean empty = true;
-
-        if(group.getName()!=null) {
-            groupHtml.append("<tr><td class='indicatorGroupHeading'>").append(group.getName()).
-                    append("</td><td>&nbsp;</td></tr>");
-        }
-        for(IndicatorDTO indicator : group.getIndicators()) {
-
-            Double value;
-            if(indicator.getAggregation() == IndicatorDTO.AGGREGATE_SITE_COUNT) {
-                value = 1.0;
-            } else {
-                value = site.getIndicatorValue(indicator);
-            }
-
-            if(showEmptyRows ||
-                    (value != null &&
-                            (indicator.getAggregation() != IndicatorDTO.AGGREGATE_SUM || value != 0))) {
-
-                groupHtml.append("<tr><td class='indicatorHeading");
-                if(group.getName()!=null) {
-                    groupHtml.append(" indicatorGroupChild");
-                }
-
-                groupHtml.append("'>").append(indicator.getName())
-                        .append("</td><td class='indicatorValue'>")
-                        .append(formatValue(indicator, value))
-                        .append("</td><td class='indicatorUnits'>").append(indicator.getUnits())
-                        .append("</td></tr>");
-                empty = false;
-            }
-        }
-        if(showEmptyRows || !empty) {
-            html.append(groupHtml.toString());
-        }
-    }
-
-    protected String formatValue(IndicatorDTO indicator, Double value) {
-        if(value == null) {
-            return "-";
-        } else {
-            return indicatorFormat.format(value);
-        }
-    }
-
-    protected void renderAttribute(StringBuilder html, AttributeGroupDTO group, SiteDTO site) {
-        int count = 0;
-        for(AttributeDTO attribute : group.getAttributes()) {
-            Boolean value = site.getAttributeValue(attribute.getId());
-            if(value != null && value) {
-                if(count ==0 ) {
-                    html.append("<p class='attribute'><span class='groupName'>")
-                            .append(group.getName()).append(": </span><span class='attValues'>");
-                } else {
-                    html.append(", ");
-                }
-                html.append(attribute.getName());
-                count++;
-            }
-        }
-        if(count !=0) {
-            html.append("</span></p>");
-        }
-    }
-
-
 
 }

@@ -1,0 +1,11 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder">
+	<ui:style>
+		.important {
+			font-weight: bold;
+		}
+	</ui:style>
+	<div>
+		<span class="{style.important}" ui:field="nameSpan" />
+	</div>
+</ui:UiBinder>

@@ -2,17 +2,14 @@ package org.sigmah.client.offline.ui;
 
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.offline.OfflineController.EnableCallback;
-import org.sigmah.client.offline.capability.OfflineCapabilityProfile;
 import org.sigmah.client.offline.capability.ProfileResources;
 import org.sigmah.client.util.state.CrossSessionStateProvider;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.core.client.GWT;
 import com.google.inject.Inject;
 
 
@@ -53,7 +50,7 @@ public class PromptOfflineDialog extends BasePromptDialog {
 			addButton(new Button(I18N.CONSTANTS.installOffline(), new SelectionListener<ButtonEvent>() {
 				
 				@Override
-				public void componentSelected(ButtonEvent ce) {
+				public void componentSelected(ButtonEvent ce) { 
 					enableOffline();
 				}
 			}));

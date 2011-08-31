@@ -3,6 +3,7 @@ package org.sigmah.client.page.dashboard.portlets;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.page.common.columns.ReadTextColumn;
 import org.sigmah.client.page.dashboard.portlets.FavoritesPresenter.View.RemovedFavoriteHandler;
@@ -23,6 +24,8 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
@@ -31,11 +34,11 @@ import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class FavoritesPresenter implements PortletPresenter {
-	public interface View extends PortletView {
+	public interface View extends PortletView<FavoritesDTO> {
 		public void setData(List<PageDTO> favorites);
 		public HandlerRegistration addRemovedHandler(RemovedFavoriteHandler handler);
 		public void removeFavorite(PageDTO favorite);
-		
+
 		public class RemovedFavoriteEvent extends
 				GwtEvent<RemovedFavoriteHandler> {
 			private static final Type<RemovedFavoriteHandler> TYPE = new Type<RemovedFavoriteHandler>();
@@ -73,23 +76,25 @@ public class FavoritesPresenter implements PortletPresenter {
 			void onRemovedFavorite(PageDTO page);
 		}
 	}
-	
-	public class FavoritesView implements View {
-		private Portlet portlet;
+
+	public class FavoritesView extends Portlet implements View {
 		private Grid<PageDTO> grid;
 		private ListStore<PageDTO> store;
 		private EventBus eventBus = new SimpleEventBus();
-		
-		public FavoritesView() {
+		private FavoritesDTO favorites;
+
+		public FavoritesView(FavoritesDTO favorites) {
+			this.favorites=favorites;
 		}
 
 		@Override
 		public Portlet asPortlet() {
-			return portlet;
+			return this;
 		}
 
 		@Override
 		public void initialize() {
+			setLayout(new FitLayout());
 			store = new ListStore<PageDTO>();
 			List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
@@ -99,34 +104,30 @@ public class FavoritesPresenter implements PortletPresenter {
 			columnRemovePage.setId("remove");
 			columnRemovePage.setHeader("X");
 			columnRemovePage.setWidth(200);
-			
-			GridCellRenderer<PageDTO> buttonRenderer = new GridCellRenderer<PageDTO>() {  
+
+			GridCellRenderer<PageDTO> buttonRenderer = new GridCellRenderer<PageDTO>() {
 					@Override
 					public Object render(final PageDTO model, String property,
 							ColumnData config, int rowIndex, int colIndex,
 							ListStore<PageDTO> store, Grid<PageDTO> grid) {
-				        Button removeButton = new Button((String) model.get(property), new SelectionListener<ButtonEvent>() {  
-					          @Override  
+				        Button removeButton = new Button((String) model.get(property), new SelectionListener<ButtonEvent>() {
+					          @Override
 					          public void componentSelected(ButtonEvent ce) {
 					        	  eventBus.fireEvent(new RemovedFavoriteEvent(model));
 					          }
 					    });
-				        removeButton.setWidth(32);  
+				        removeButton.setWidth(32);
 				        removeButton.setToolTip("Remove favorite");
-				  
+
 				        return removeButton;
 					}
-				};  
-			
+				};
+
 			columnRemovePage.setRenderer(buttonRenderer);
 			configs.add(columnRemovePage);
 
-			Grid<PageDTO> sites = new Grid<PageDTO>(store,
-					new ColumnModel(configs));
-
-			portlet.add(grid);
-			
 			grid = new Grid<PageDTO>(store, new ColumnModel(configs));
+			add(grid);
 		}
 
 		@Override
@@ -144,20 +145,69 @@ public class FavoritesPresenter implements PortletPresenter {
 		public void removeFavorite(PageDTO favorite) {
 			store.remove(favorite);
 		}
-		
+
+		@Override
+		public void fireEvent(GwtEvent<?> event) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void setValue(FavoritesDTO value) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void setValue(FavoritesDTO value, boolean fireEvents) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public HandlerRegistration addValueChangeHandler(
+				ValueChangeHandler<FavoritesDTO> handler) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public FavoritesDTO getValue() {
+			return favorites;
+		}
+
+		@Override
+		public HandlerRegistration addRefreshHandler(
+				org.sigmah.client.mvp.CanRefresh.RefreshHandler handler) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void setRefreshEnabled(boolean canRefresh) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public AsyncMonitor loadingMonitor() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
 	}
-	
+
 	private View view;
 	private FavoritesDTO favoritesPortlet;
 	private Dispatcher service;
 	private UserFavorites userFavorites;
-	
+
 	public FavoritesPresenter(FavoritesDTO favoritesPortlet) {
 		this.favoritesPortlet = favoritesPortlet;
-		
+
 		initializeView();
-		
-		getFavorites();
+
+//		getFavorites();
 	}
 
 	private void getFavorites() {
@@ -165,7 +215,7 @@ public class FavoritesPresenter implements PortletPresenter {
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
@@ -173,11 +223,11 @@ public class FavoritesPresenter implements PortletPresenter {
 				userFavorites = result;
 				view.setData(userFavorites.getFavorites());
 			}
-		}); 
+		});
 	}
 
-	private void initializeView() {		
-		view = new FavoritesView();
+	private void initializeView() {
+		view = new FavoritesView(favoritesPortlet);
 		view.addRemovedHandler(new RemovedFavoriteHandler() {
 			@Override
 			public void onRemovedFavorite(final PageDTO page) {

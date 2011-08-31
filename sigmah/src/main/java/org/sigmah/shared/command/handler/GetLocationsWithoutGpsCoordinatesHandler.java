@@ -21,6 +21,9 @@ public class GetLocationsWithoutGpsCoordinatesHandler implements CommandHandlerA
 			final ExecutionContext context,
 			final AsyncCallback<LocationsWithoutGpsResult> callback) {
 		
+		// 100K seems enough for now
+		final int max = command.hasLocationCountLimit() ? command.getMaxLocations() : 100000;
+		
 		SqlQuery.selectSingle("Count(*)")
 				.from("Location")
 				.where("X")
@@ -41,7 +44,8 @@ public class GetLocationsWithoutGpsCoordinatesHandler implements CommandHandlerA
 								.isNull()
 								.where("Y")
 								.isNull()
-								.setLimitClause("LIMIT 0, " + Integer.toString(command.getMaxLocations()))
+								
+								.setLimitClause("LIMIT 0, " + Integer.toString(max))
 								
 								.execute(context.getTransaction(), new SqlResultCallback() {
 									@Override

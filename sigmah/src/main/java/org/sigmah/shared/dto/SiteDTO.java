@@ -121,6 +121,14 @@ public final class SiteDTO extends BaseModelData implements EntityDTO {
 		set("dateEdited", dateEdited);
 	}
 	
+	public Date getDateCreated() {
+		return get("dateCreated");
+	}
+
+	public void setDateCreated(Date dateCreated) {
+		set("dateCreated", dateCreated);
+	}
+	
     /**
      * 
      * @return the name of the Partner who owns this Site
@@ -422,5 +430,9 @@ public final class SiteDTO extends BaseModelData implements EntityDTO {
 	    }
 	
 	    return map;
+	}
+	
+	public boolean isEditedOneOrMoreTimes() {
+		return getDateCreated().equals(getDateEdited());
 	}
 }

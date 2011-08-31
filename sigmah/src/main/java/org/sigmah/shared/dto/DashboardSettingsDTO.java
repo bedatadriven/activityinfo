@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.sigmah.shared.domain.User;
+import org.sigmah.shared.dto.portlets.FavoritesDTO;
 import org.sigmah.shared.dto.portlets.NoGpsLocationsDTO;
 import org.sigmah.shared.dto.portlets.PortletDTO;
 
@@ -18,9 +19,10 @@ public class DashboardSettingsDTO extends BaseModelData implements DTO {
 		super();
 		
 		setPortlets(new ArrayList<PortletDTO>());
+		getPortlets().add(new FavoritesDTO());
+		getPortlets().add(new NoGpsLocationsDTO());
 	}
-
-
+	
 	public void setAmountColumns(int amountColumns) {
 		set("amountColumns", amountColumns);
 	}

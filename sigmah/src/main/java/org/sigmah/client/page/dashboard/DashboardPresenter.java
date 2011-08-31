@@ -8,6 +8,7 @@ import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.dashboard.portlets.PortletPresenter;
 import org.sigmah.client.page.dashboard.portlets.PortletPresenterFactory;
+import org.sigmah.client.page.dashboard.portlets.PortletView;
 import org.sigmah.shared.command.GetDashboard;
 import org.sigmah.shared.dto.DashboardSettingsDTO;
 import org.sigmah.shared.dto.portlets.PortletDTO;
@@ -17,7 +18,7 @@ import com.google.inject.Inject;
 
 public class DashboardPresenter implements Page {
 	public interface View {
-		public void addPortlet(PortletPresenter presenter);
+		void addPortlet(PortletView<PortletDTO> portletView);
 	}
 
 	public static final PageId Dashboard = new PageId("Dashboard");
@@ -26,7 +27,7 @@ public class DashboardPresenter implements Page {
 	private EventBus eventBus;
 	private Dispatcher service;
 	private PortletPresenterFactory factory;
-	private DashboardSettingsDTO dashboard;
+	private DashboardSettingsDTO dashboard = new DashboardSettingsDTO();
 
 	@Inject
 	public DashboardPresenter(EventBus eventBus, Dispatcher service, PortletPresenterFactory factory) {
@@ -38,7 +39,8 @@ public class DashboardPresenter implements Page {
 		
 		view = new DashboardView();
 		
-		getDashboard();
+//		getDashboard();
+		initialize();
 	}
 	
 	private void getDashboard() {
@@ -59,7 +61,7 @@ public class DashboardPresenter implements Page {
 	private void initialize() {
 		for (PortletDTO portlet : dashboard.getPortlets()) {
 			PortletPresenter portletPresenter = factory.fromPortlet(portlet);
-			view.addPortlet(portletPresenter);
+			view.addPortlet(portletPresenter.getView());
 		}
 	}
 

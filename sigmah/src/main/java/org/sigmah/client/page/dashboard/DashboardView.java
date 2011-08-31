@@ -4,17 +4,27 @@ import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
-import org.sigmah.client.page.dashboard.portlets.PortletPresenter;
+import org.sigmah.client.page.dashboard.portlets.PortletView;
+import org.sigmah.shared.dto.portlets.PortletDTO;
 
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.custom.Portal;
 
 public class DashboardView extends LayoutContainer implements DashboardPresenter.View, Page {
-	private Portal portal = new Portal(3);
+	private Portal portal;
 	
 	public DashboardView() {
 		super();
 		
+		initializeComponent();
+	}
+
+	private void initializeComponent() {
+		int amountColumns = 3;
+		portal = new Portal(amountColumns);
+		for (int i=0; i<amountColumns; i++) {
+			portal.setColumnWidth(i, 1 / amountColumns);
+		}
 		add(portal);
 	}
 
@@ -49,7 +59,7 @@ public class DashboardView extends LayoutContainer implements DashboardPresenter
 	}
 
 	@Override
-	public void addPortlet(PortletPresenter presenter) {
-		portal.add(presenter.getView().asPortlet(), 0);
+	public void addPortlet(PortletView<PortletDTO> portletView) {
+		portal.add(portletView.asPortlet(), portletView.getValue().column());
 	}
 }

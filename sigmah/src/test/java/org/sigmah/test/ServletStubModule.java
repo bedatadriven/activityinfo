@@ -131,7 +131,6 @@ public class ServletStubModule extends AbstractModule {
 				throw new RuntimeException();
 			}
 			
-			@Override
 			public String getContextPath() {
 				throw new RuntimeException();
 			}

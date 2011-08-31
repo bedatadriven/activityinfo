@@ -244,4 +244,7 @@ public interface IconImageBundle extends ImageBundle {
     AbstractImagePrototype indicators();
 
     AbstractImagePrototype location();
+    
+    AbstractImagePrototype logo48();
+    AbstractImagePrototype edit();
 }

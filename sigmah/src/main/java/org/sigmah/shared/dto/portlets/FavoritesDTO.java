@@ -29,4 +29,9 @@ public class FavoritesDTO extends BaseModelData implements PortletDTO {
 	public List<PageDTO> getFavorites() {
 		return (List<PageDTO>)get("favorites");
 	}
+
+	@Override
+	public int column() {
+		return 0;
+	}
 }
