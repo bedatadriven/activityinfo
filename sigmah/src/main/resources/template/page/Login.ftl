@@ -54,16 +54,16 @@
                 </div>
                 <div class="rememberBox" id="rememberPanel">
                     <label for="remember"><input name="remember" type="checkbox" value="true" id="remember"
-                                                 class="checkBox"/>Rester connect�</label>
+                                                 class="checkBox"/>Rester connecté</label>
 
-                    <div id="loginHelp"><a href="login-problem.html">Vous n'arrivez pas � vous connecter ?</a></div>
+                    <div id="loginHelp"><a href="login-problem.html">Vous n'arrivez pas à vous connecter ?</a></div>
                     <span id="loginBox"><input type="image" src="static/login_fr.png"
                                                id="loginButton"></span></a></span>
                 </div>
 
                 <div id="marketTitle" class="marketTitle" align="center">Vous n'utilizer pas encore ActivityInfo?</div>
                 <div id="marketBody" class="marketBody" align="center">ActivityInfo est une solution comprehensive pour
-                    le suivi de vos activit�s d'urgence et de d�veloppement.<br/>
+                    le suivi de vos activités d'urgence et de développement.<br/>
 
                     <div id="buttonGroup" align="left">
 
@@ -83,9 +83,6 @@
 <script type="text/javascript" src="http://twitter.com/javascripts/blogger.js"></script>
 <script type="text/javascript"
         src="http://twitter.com/statuses/user_timeline/activityinfo.json?callback=twitterCallback2&amp;count=5"></script>
-<#-- This is the tracking code for Google Analytics. You can remove this if you do not wish to track
-     usage. If you do wish to use Google Analytics to track usage, you will need to replace UA-11567120-1 with your
-     own ID. -->
 <script type="text/javascript">
     var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
     document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));

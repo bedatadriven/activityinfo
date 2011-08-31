@@ -40,7 +40,6 @@ public class PromptOfflineDialog extends BasePromptDialog {
 		setHeight(350);
 		setHeading(I18N.CONSTANTS.installOffline());
 		setModal(true);
-		setLayout(new FitLayout());
 		
 		Html bodyHtml = new Html(capabilityProfile.getInstallInstructions());
 		bodyHtml.addStyleName(ProfileResources.INSTANCE.style().startupDialogBody());
