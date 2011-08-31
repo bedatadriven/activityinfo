@@ -229,11 +229,14 @@ public class CommandQueue {
 					value.addProperty("type", "Boolean");
 					value.addProperty("value", (Boolean)property.getValue());
 				} else {
-					throw new IllegalArgumentException("Cannot convert handle map value type " + property.getKey() +
+          Log.error("Cannot convert handle map value '" + property.getKey() + ", type " + property.getKey() +
 							": " + property.getValue().getClass().getName());
+          value = null;
 				}
-				
-				root.add(property.getKey(), value);
+
+        if(value != null ) {
+				  root.add(property.getKey(), value);
+        }
 			}
 		}
 		return root;
