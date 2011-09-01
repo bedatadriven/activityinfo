@@ -13,10 +13,10 @@ import com.google.gwt.i18n.client.NumberFormat;
 public class SiteRenderer {
 	private NumberFormat indicatorFormat = NumberFormat.getFormat("#,###");
 	
-	public String renderSite(SiteDTO site, ActivityDTO activity, boolean showEmptyRows) {
+	public String renderSite(SiteDTO site, ActivityDTO activity, boolean showEmptyRows, boolean renderComments) {
         StringBuilder html = new StringBuilder();
 
-        if(site.getComments() != null) {
+        if(renderComments && site.getComments() != null) {
             String commentsHtml = site.getComments();
             commentsHtml = commentsHtml.replace("\n", "<br/>");
             html.append("<p class='comments'><span class='groupName'>").append(I18N.CONSTANTS.comments()).append(":</span> ")
@@ -64,10 +64,10 @@ public class SiteRenderer {
                 }
 
                 groupHtml.append("'>").append(indicator.getName())
-                        .append("</td><td class='indicatorValue'>")
-                        .append(formatValue(indicator, value))
-                        .append("</td><td class='indicatorUnits'>").append(indicator.getUnits())
-                        .append("</td></tr>");
+                         .append("</td><td class='indicatorValue'>")
+                         .append(formatValue(indicator, value))
+                         .append("</td><td class='indicatorUnits'>").append(indicator.getUnits())
+                         .append("</td></tr>");
                 empty = false;
             }
         }
@@ -86,21 +86,24 @@ public class SiteRenderer {
 
     protected void renderAttribute(StringBuilder html, AttributeGroupDTO group, SiteDTO site) {
         int count = 0;
-        for(AttributeDTO attribute : group.getAttributes()) {
-            Boolean value = site.getAttributeValue(attribute.getId());
-            if(value != null && value) {
-                if(count ==0 ) {
-                    html.append("<p class='attribute'><span class='groupName'>")
-                            .append(group.getName()).append(": </span><span class='attValues'>");
-                } else {
-                    html.append(", ");
-                }
-                html.append(attribute.getName());
-                count++;
-            }
-        }
-        if(count !=0) {
-            html.append("</span></p>");
+        if (group != null) {
+		    for(AttributeDTO attribute : group.getAttributes()) {
+		        Boolean value = site.getAttributeValue(attribute.getId());
+		        if(value != null && value) {
+		            if(count ==0 ) {
+		                html.append("<p class='attribute'><span class='groupName'>")
+		                    .append(group.getName())
+		                    .append(": </span><span class='attValues'>");
+		            } else {
+		                html.append(", ");
+		            }
+		            html.append(attribute.getName());
+		            count++;
+		        }
+		    }
+		    if(count !=0) {
+		        html.append("</span></p>");
+		    }
         }
     }
 }

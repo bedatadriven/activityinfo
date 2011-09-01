@@ -24,8 +24,8 @@ public class DashboardLoader  implements PageLoader  {
         this.injector = injector;
         this.service = injector.getService();
         
-        pageManager.registerPageLoader(DashboardPresenter.Dashboard, this);
-        placeSerializer.registerStatelessPlace(DashboardPresenter.Dashboard, new AccountPageState());
+        pageManager.registerPageLoader(Dashboard.DASHBOARD, this);
+        placeSerializer.registerStatelessPlace(Dashboard.DASHBOARD, new AccountPageState());
     }
 	
 	@Override
@@ -38,7 +38,7 @@ public class DashboardLoader  implements PageLoader  {
             }
             @Override
             public void onSuccess() {
-                if (DashboardPresenter.Dashboard.equals(pageId)) {
+                if (Dashboard.DASHBOARD.equals(pageId)) {
                     callback.onSuccess(injector.getDashboard());
 
                 } else {

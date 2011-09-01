@@ -17,12 +17,12 @@ public class DashboardPageState implements PageState {
 
 	@Override
 	public List<PageId> getEnclosingFrames() {
-		return Arrays.asList(DashboardPresenter.Dashboard);
+		return Arrays.asList(Dashboard.DASHBOARD);
 	}
 
 	@Override
 	public PageId getPageId() {
-		return DashboardPresenter.Dashboard;
+		return Dashboard.DASHBOARD;
 	}
 
     @Override

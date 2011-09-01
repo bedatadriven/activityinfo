@@ -435,4 +435,11 @@ public final class SiteDTO extends BaseModelData implements EntityDTO {
 	public boolean isEditedOneOrMoreTimes() {
 		return getDateCreated().equals(getDateEdited());
 	}
+	
+	/**
+	 * Returns the location in the format of [LocationName (LocationAxe)]
+	 */
+	public String getPrettyLocationName() {
+		return getLocationName() + getLocationAxe() != null ? " (" + getLocationAxe() + ")" : "";
+	}
 }

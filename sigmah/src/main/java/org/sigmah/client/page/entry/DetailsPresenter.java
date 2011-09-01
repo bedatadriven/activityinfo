@@ -72,7 +72,7 @@ public class DetailsPresenter implements Shutdownable {
 
         this.currentSite = site;
         view.setSelectionTitle(site.getLocationName());
-        view.setHtml(siteRenderer.renderSite(site, activity, showEmptyRows));
+        view.setHtml(siteRenderer.renderSite(site, activity, showEmptyRows, true));
     }
 
 }

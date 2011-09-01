@@ -8,6 +8,7 @@ import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.command.GetSitesWithoutCoordinates;
 import org.sigmah.shared.command.result.LocationsWithoutGpsResult;
 import org.sigmah.shared.command.result.SiteResult;
+import org.sigmah.shared.command.result.SitesWithoutLocationsResult;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dto.LocationDTO;
 import org.sigmah.shared.report.model.DimensionType;
@@ -23,11 +24,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 2. create filter
  * 3. grab 10 latest sites using filter
 */
-public class GetSitesWithoutCoordinatesHandler implements CommandHandlerAsync<GetSitesWithoutCoordinates, SiteResult> {
+public class GetSitesWithoutCoordinatesHandler implements CommandHandlerAsync<GetSitesWithoutCoordinates, SitesWithoutLocationsResult> {
 
 	@Override
-	public void execute(GetSitesWithoutCoordinates command,
-			final ExecutionContext context, final AsyncCallback<SiteResult> callback) {
+	public void execute(final GetSitesWithoutCoordinates command,
+			final ExecutionContext context, final AsyncCallback<SitesWithoutLocationsResult> callback) {
 		
 		context.execute(new GetLocationsWithoutGpsCoordinates(), new AsyncCallback<LocationsWithoutGpsResult>() {
 			@Override
@@ -35,17 +36,17 @@ public class GetSitesWithoutCoordinatesHandler implements CommandHandlerAsync<Ge
 				callback.onFailure(caught);
 			}
 			@Override
-			public void onSuccess(LocationsWithoutGpsResult result) {
+			public void onSuccess(final LocationsWithoutGpsResult locationsResult) {
 				Filter filter = new Filter();
 				Set<Integer> locationIds = new HashSet<Integer>();
-				for (LocationDTO location : result.getData()) {
+				for (LocationDTO location : locationsResult.getData()) {
 					locationIds.add(location.getId());
 				}
 				filter.addRestriction(DimensionType.Location, locationIds);
 				
 				GetSites getSites = new GetSites();
-				getSites.setLimit(10);
-				getSites.setSortInfo(new SortInfo("DateEdited", SortDir.DESC));
+				getSites.setLimit(command.getMaxLocations());
+				getSites.setSortInfo(new SortInfo("dateEdited", SortDir.DESC));
 				getSites.setFilter(filter);
 				context.execute(getSites, new AsyncCallback<SiteResult>() {
 					@Override
@@ -54,7 +55,9 @@ public class GetSitesWithoutCoordinatesHandler implements CommandHandlerAsync<Ge
 					}
 					@Override
 					public void onSuccess(SiteResult result) {
-						callback.onSuccess(result);
+						SitesWithoutLocationsResult newResult = new SitesWithoutLocationsResult(result.getData());
+						newResult.setTotalLocationsCount(locationsResult.getTotalLocationsCount());
+						callback.onSuccess(newResult);
 					}
 				});
 			}

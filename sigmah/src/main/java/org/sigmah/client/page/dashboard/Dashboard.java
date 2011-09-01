@@ -16,16 +16,18 @@ import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class Dashboard2 extends ContentPanel implements Page {
-
+public class Dashboard extends ContentPanel implements Page {
+	public static final PageId DASHBOARD = new PageId("dashboard");
 	private int margin=10;
 	private Dispatcher service;
 	private VerticalPanel mainArea = new VerticalPanel(); 
 	private VerticalPanel rightColumn = new VerticalPanel(); 
+	private final WelcomeWidget welcomeWidget = new WelcomeWidget();
 	
 	@Inject
-	public Dashboard2(Dispatcher service) {
+	public Dashboard(Dispatcher service) {
 		super();
+		setSize("100%", "100%");
 
 		this.service = service;
 
@@ -39,6 +41,7 @@ public class Dashboard2 extends ContentPanel implements Page {
 		welcomeHeader();
 		setHeaderVisible(false);
 		setScrollMode(Scroll.AUTOY);
+		setTopComponent(welcomeWidget);
 	}
 	
 	private void createUpdateStream() {
@@ -47,6 +50,7 @@ public class Dashboard2 extends ContentPanel implements Page {
 	}
 
 	private void addToMainArea(Widget widget) {
+		mainArea.setSpacing(10);
 		mainArea.add(widget);
 	}
 	
@@ -55,7 +59,6 @@ public class Dashboard2 extends ContentPanel implements Page {
 	}
 	
 	private void welcomeHeader() {
-		setTopComponent(new WelcomeWidget());
 	}
 
 	private void createBlogPosts() {
@@ -73,6 +76,7 @@ public class Dashboard2 extends ContentPanel implements Page {
 		mainArea.setStyleAttribute("margin", "1em");
 		rightColumn.setStyleAttribute("margin", "1em");
 		add(mainArea, new RowData(.67,-1,new Margins(margin)));
+		mainArea.setHeight("");
 		add(rightColumn, new RowData(.33,-1,new Margins(margin)));
 	}
 
@@ -84,7 +88,7 @@ public class Dashboard2 extends ContentPanel implements Page {
 
 	@Override
 	public PageId getPageId() {
-		return DashboardPresenter.Dashboard;
+		return Dashboard.DASHBOARD;
 	}
 
 	@Override

@@ -18,9 +18,13 @@ class AiPortlet extends LayoutContainer {
 
 		this.service = service;
 		
+		setBorders(true);
+		
 		labelTitle = new Label(title);
+		labelTitle.setStyleAttribute("margin", "5px");
 		labelTitle.setStyleAttribute("font-size", "14px");
 		labelTitle.setStyleAttribute("font-weight", "bold");
+		labelTitle.setStyleAttribute("color", "#0B0B61");
 		add(labelTitle);
 	}
 	
