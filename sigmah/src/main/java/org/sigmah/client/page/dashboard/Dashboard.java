@@ -27,7 +27,7 @@ public class Dashboard extends ContentPanel implements Page {
 	@Inject
 	public Dashboard(Dispatcher service) {
 		super();
-		setSize("100%", "100%");
+		setSize("auto", "auto");
 
 		this.service = service;
 
