@@ -17,7 +17,6 @@ import com.extjs.gxt.ui.client.state.StateManager;
 import com.extjs.gxt.ui.client.util.Theme;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import org.sigmah.shared.dto.portlets.FavoritesDTO;
 
 
 /**
@@ -32,8 +31,6 @@ public class ActivityInfoEntryPoint implements EntryPoint {
 
         Log.info("Application: onModuleLoad starting");
         Log.info("Application Permutation: " + GWT.getPermutationStrongName());
-        FavoritesDTO f= new FavoritesDTO();
-        String n = f.getDescription();
 
         if(!GWT.isScript()) {
             Log.setCurrentLogLevel(Log.LOG_LEVEL_TRACE);

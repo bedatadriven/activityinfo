@@ -251,4 +251,6 @@ public interface IconImageBundle extends ImageBundle {
     AbstractImagePrototype add32();
     AbstractImagePrototype time();
     AbstractImagePrototype note();
+    AbstractImagePrototype favorite();
+    AbstractImagePrototype emptyFavorite();
 }

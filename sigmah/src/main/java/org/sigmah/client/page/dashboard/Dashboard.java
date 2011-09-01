@@ -34,9 +34,10 @@ public class Dashboard extends ContentPanel implements Page {
 		initializeComponent();
 
 		createBlogPosts();
-		createSitesWithoutLocations();
-
 		createUpdateStream();
+
+		createSitesWithoutLocations();
+		createFavorites();
 
 		welcomeHeader();
 		setHeaderVisible(false);
@@ -44,6 +45,11 @@ public class Dashboard extends ContentPanel implements Page {
 		setTopComponent(welcomeWidget);
 	}
 	
+	private void createFavorites() {
+		Favorites favorites = new Favorites(service, "Favorites");
+		addRight(favorites);
+	}
+
 	private void createUpdateStream() {
 		UpdateStream updateStream = new UpdateStream(service);
 		addToMainArea(updateStream);
