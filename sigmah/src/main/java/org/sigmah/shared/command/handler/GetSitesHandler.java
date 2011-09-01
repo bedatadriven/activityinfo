@@ -64,6 +64,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 			.appendColumn("site.Date1", "Date1")
 			.appendColumn("site.Date2", "Date2")
 			.appendColumn("site.DateEdited", "DateEdited")
+			.appendColumn("site.DateCreated", "DateCreated")
 			.appendColumn("partner.PartnerId", "PartnerId")
 			.appendColumn("partner.name", "PartnerName")
 			.appendColumn("location.name", "LocationName")
@@ -159,6 +160,8 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
             	query.orderBy("Site.Date1", ascending);
             } else if (field.equals("date2")) {
             	query.orderBy("Site.Date2", ascending);
+            } else if (field.equals("dateEdited")) {
+            	query.orderBy("Site.DateEdited", ascending);
             } else if (field.equals("locationName")) {
             	query.orderBy("Location.name", ascending);
             } else if (field.equals("partner")) {
@@ -334,6 +337,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
         model.setDate1( row.getDate("Date1") );
         model.setDate2( row.getDate("Date2") );
         model.setDateEdited(row.getDate("DateEdited"));
+        model.setDateCreated(row.getDate("DateCreated"));
         model.setLocationName( row.getString("LocationName") );
         model.setLocationAxe( row.getString("LocationAxe") );
         

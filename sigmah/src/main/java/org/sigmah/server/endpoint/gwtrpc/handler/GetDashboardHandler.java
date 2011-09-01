@@ -1,17 +1,20 @@
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
 import org.sigmah.shared.command.GetDashboard;
-import org.sigmah.shared.command.handler.CommandHandler;
-import org.sigmah.shared.command.result.CommandResult;
+import org.sigmah.shared.command.handler.CommandHandlerAsync;
+import org.sigmah.shared.command.handler.ExecutionContext;
 import org.sigmah.shared.command.result.DashboardSettingsResult;
-import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.DashboardSettingsDTO;
-import org.sigmah.shared.exception.CommandException;
 
-public class GetDashboardHandler implements CommandHandler<GetDashboard> {
+import com.google.gwt.user.client.rpc.AsyncCallback;
+
+public class GetDashboardHandler implements CommandHandlerAsync<GetDashboard, DashboardSettingsResult> {
 	@Override
-	public CommandResult execute(GetDashboard cmd, User user)
-			throws CommandException {
-		return new DashboardSettingsResult(DashboardSettingsDTO.createDefault());
+	public void execute(
+			GetDashboard command, 
+			ExecutionContext context,
+			AsyncCallback<DashboardSettingsResult> callback) {
+		
+		callback.onSuccess(new DashboardSettingsResult(DashboardSettingsDTO.createDefault())); 
 	}
 }

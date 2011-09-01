@@ -113,7 +113,7 @@ public class LoggingInterceptor implements MethodInterceptor {
 
     private void trace(MethodInvocation invocation) {
         Logger logger = Logger.getLogger(invocation.getThis().getClass());
-        logger.trace("Calling " + invocation.getMethod().getName());
+        //logger.trace("Calling " + invocation.getMethod().getName());
     }
 
     private boolean isExceptionLoggingEnabled(MethodInvocation invocation) {

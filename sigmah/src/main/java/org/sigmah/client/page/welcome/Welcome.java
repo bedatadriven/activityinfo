@@ -12,6 +12,7 @@ import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.charts.ChartPageState;
 import org.sigmah.client.page.common.GalleryView;
+import org.sigmah.client.page.dashboard.DashboardPageState;
 import org.sigmah.client.page.entry.SiteGridPageState;
 import org.sigmah.client.page.map.MapPageState;
 import org.sigmah.client.page.table.PivotPageState;
@@ -31,8 +32,8 @@ public class Welcome implements Page {
         this.view.setHeading(I18N.CONSTANTS.welcomeMessage());
         this.view.setIntro(I18N.CONSTANTS.selectCategory());
 
-//        this.view.add(I18N.CONSTANTS.dataEntry(), I18N.CONSTANTS.dataEntryDescription(), 
-//        		"form.png", new DashboardPageState());
+        this.view.add(I18N.CONSTANTS.dataEntry(), I18N.CONSTANTS.dataEntryDescription(), 
+        		"form.png", new DashboardPageState());
 
         this.view.add(I18N.CONSTANTS.dataEntry(), I18N.CONSTANTS.dataEntryDescription(), 
         		"form.png", new SiteGridPageState());

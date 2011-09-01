@@ -54,7 +54,7 @@ public class StartupListener extends GuiceServletContextListener {
 
     @Override
     protected Injector getInjector() {
-        logger.trace("Injector is being created");
+        //logger.trace("Injector is being created");
 
         Injector injector = Guice.createInjector(
                 new ConfigModule(), new LoggingModule(),

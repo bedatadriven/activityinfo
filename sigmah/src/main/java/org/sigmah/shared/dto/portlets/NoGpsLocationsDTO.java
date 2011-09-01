@@ -19,4 +19,10 @@ public class NoGpsLocationsDTO implements PortletDTO {
 		return "Lists all the locations which do not have GPS coordinates associated with them";
 	}
 
+	@Override
+	public int column() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }
