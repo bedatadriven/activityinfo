@@ -59,9 +59,10 @@ public class SitesWithoutLocations extends AiPortlet {
 						panel.add(IconImageBundle.ICONS.edit().createImage());
 						panel.add(IconImageBundle.ICONS.site().createImage());
 						panel.add(new LabelField(site.getLocationName()));
-						panel.add(new LabelField(DateTimeFormat.getFormat("yyyy-MMM-dd").format(site.getDateCreated())));
+						panel.add(new LabelField(DateTimeFormat.getFormat("yyyy-MMM-dd").format(site.getDateEdited())));
 						add(panel, new RowData(-1, -1, new Margins(5)));
 					}
+					layout(true);
 				}
 			}
 		);

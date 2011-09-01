@@ -21,6 +21,7 @@ public class Update extends LayoutContainer {
 	private final HorizontalPanel horizontalPanel = new HorizontalPanel();
 	private static final IconImageBundle iconImageBundle = IconImageBundle.ICONS;
 	private LabelField labelDatabase_1;
+	private LabelField labelPartner;
 	private LabelField labelActivity;
 	private LabelField labelDaysAgo;
 	private Html htmlDetails;
@@ -67,6 +68,10 @@ public class Update extends LayoutContainer {
 		panelHeader.add(iconImageBundle.activity().createImage());
 		labelActivity = new LabelField(activity.getName());
 		panelHeader.add(labelActivity);
+		
+		panelHeader.add(iconImageBundle.partner().createImage());
+		labelPartner = new LabelField(site.getPartnerName());
+		panelHeader.add(labelPartner);
 		
 		panelHeader.add(iconImageBundle.time().createImage());
 		labelDaysAgo = new LabelField(getHumanReadableDate());

@@ -7,6 +7,7 @@ import org.sigmah.shared.command.GetLocationsWithoutGpsCoordinates;
 import org.sigmah.shared.command.result.LocationsWithoutGpsResult;
 import org.sigmah.shared.dto.LocationDTO;
 
+import com.bedatadriven.rebar.sql.client.SqlException;
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
 import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
@@ -26,10 +27,8 @@ public class GetLocationsWithoutGpsCoordinatesHandler implements CommandHandlerA
 		
 		SqlQuery.selectSingle("Count(*)")
 				.from("Location")
-				.where("X")
-				.isNull()
-				.where("Y")
-				.isNull()
+				.where("X").isNull()
+				.where("Y").isNull()
 
 				.execute(context.getTransaction(), new SqlResultCallback() {
 					
@@ -60,6 +59,12 @@ public class GetLocationsWithoutGpsCoordinatesHandler implements CommandHandlerA
 										}
 										result.setData(locations);
 										callback.onSuccess(result);
+									}
+
+									@Override
+									public boolean onFailure(SqlException e) {
+										// TODO Auto-generated method stub
+										return super.onFailure(e);
 									}
 								});
 						}

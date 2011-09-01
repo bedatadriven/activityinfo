@@ -27,8 +27,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class GetSitesWithoutCoordinatesHandler implements CommandHandlerAsync<GetSitesWithoutCoordinates, SitesWithoutLocationsResult> {
 
 	@Override
-	public void execute(final GetSitesWithoutCoordinates command,
-			final ExecutionContext context, final AsyncCallback<SitesWithoutLocationsResult> callback) {
+	public void execute(
+			final GetSitesWithoutCoordinates command,
+			final ExecutionContext context, 
+			final AsyncCallback<SitesWithoutLocationsResult> callback) {
 		
 		context.execute(new GetLocationsWithoutGpsCoordinates(), new AsyncCallback<LocationsWithoutGpsResult>() {
 			@Override
