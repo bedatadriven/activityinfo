@@ -110,7 +110,7 @@ public class BubbleLayerOptions extends LayoutContainer implements LayerOptionsW
 				if (sliderMaxSize.getValue() < sliderMinSize.getValue()) {
 					sliderMaxSize.setValue(sliderMinSize.getValue());
 				}
-				bubbleMapLayer.setMinRadius(sliderMinSize.getValue());
+				bubbleMapLayer.setMaxRadius(sliderMaxSize.getValue());
 				ValueChangeEvent.fire(BubbleLayerOptions.this, bubbleMapLayer);
 			}
 		};
