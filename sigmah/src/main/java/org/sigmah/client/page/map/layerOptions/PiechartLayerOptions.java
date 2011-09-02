@@ -82,7 +82,6 @@ public class PiechartLayerOptions extends LayoutContainer implements LayerOption
 		slider.setDraggable(true);
 		slider.setAutoWidth(true);
 	}
-	
 	private void createMinMaxSliders() {
 		setSliderDefaults(sliderMinSize);
 		setSliderDefaults(sliderMaxSize);

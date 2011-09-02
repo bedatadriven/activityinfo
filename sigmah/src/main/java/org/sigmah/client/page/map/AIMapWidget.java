@@ -29,6 +29,10 @@ import org.sigmah.shared.report.content.MapMarker;
 import org.sigmah.shared.report.content.PieMapMarker;
 import org.sigmah.shared.report.content.PieMapMarker.SliceValue;
 import org.sigmah.shared.report.model.MapReportElement;
+import org.sigmah.shared.report.model.clustering.AdministrativeLevelClustering;
+import org.sigmah.shared.report.model.clustering.AutomaticClustering;
+import org.sigmah.shared.report.model.clustering.Clustering;
+import org.sigmah.shared.report.model.clustering.NoClustering;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 import org.sigmah.shared.util.mapping.Extents;
 
@@ -408,8 +412,13 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 			// Create a list with all items with the value colored
 			StringBuilder builder = new StringBuilder();
 			
+			addClusteringMessage(piemarker, builder);
+			
+			builder.append("<p>");
+			builder.append(I18N.CONSTANTS.indicators());
+			builder.append(":</p>");
 			// Start an html list
-			builder.append("<ul>");
+			builder.append("<ul style=\"list-style:inside;\">");
 
 			// Add each slice of the pie as a listitem
 			for (SliceValue slice : piemarker.getSlices()) {
@@ -432,8 +441,20 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 			// Create a list with all items with the value colored
 			StringBuilder builder = new StringBuilder();
 			
+			addClusteringMessage(bubbleMarker, builder);
+
 			// Start an html list
-			builder.append("<b>" + I18N.CONSTANTS.sum() + " " + marker.getTitle() + " </b><ul>");
+			builder.append("<p><b>");
+			builder.append(I18N.CONSTANTS.sum());
+			builder.append(": ");
+			builder.append(marker.getTitle());
+			builder.append("</b></p>");
+
+			builder.append("<p>");
+			builder.append(I18N.CONSTANTS.indicators());
+			builder.append(":</p>");
+
+			builder.append("<ul style=\"list-style:inside;\">");
 
 			// Add each slice of the pie as a listitem
 			for (Integer indicatorId : bubbleMarker.getIndicatorIds()) {
@@ -453,8 +474,28 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 		}
 		return null;
 	}
+	
 
 	public void setMaster(MapPage mapPage) {
 		this.mapPage = mapPage;
+	}
+	
+	private void addClusteringMessage(BubbleMapMarker marker, StringBuilder builder) {
+		builder.append("<p>"); 
+		if (marker.getClustering() instanceof NoClustering) {
+			builder.append(I18N.CONSTANTS.none() + " " + I18N.CONSTANTS.clustering());
+		
+		} else if (marker.getClustering() instanceof AutomaticClustering){
+			builder.append(I18N.MESSAGES.amountSitesClusteredByClusteringMethod(
+						  	  Integer.toString(marker.getClusterAmount()), 
+					  		  I18N.CONSTANTS.automatic())); 
+		
+		} else if (marker.getClustering() instanceof AdministrativeLevelClustering) {
+			AdministrativeLevelClustering admincl = (AdministrativeLevelClustering) marker.getClustering();
+			builder.append(I18N.MESSAGES.amountSitesClusteredByClusteringMethod(
+							  Integer.toString(marker.getClusterAmount()), 
+							  I18N.CONSTANTS.administrativeLevel())); 			
+		}
+		builder.append("</p>"); 
 	}
 }
