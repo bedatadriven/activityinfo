@@ -18,8 +18,11 @@ import org.sigmah.client.map.MapApiLoader;
 import org.sigmah.client.map.MapTypeFactory;
 import org.sigmah.shared.command.GenerateElement;
 import org.sigmah.shared.command.GetBaseMaps;
+import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.command.result.BaseMapResult;
+import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
+import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.map.BaseMap;
 import org.sigmah.shared.map.TileBaseMap;
 import org.sigmah.shared.report.content.BubbleMapMarker;
@@ -78,6 +81,7 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
     private MapWidget mapWidget = null;
     private BaseMap currentBaseMap = null;
     private LatLngBounds pendingZoom = null;
+	private SchemaDTO schema;
 
     private Map<Overlay, MapMarker> overlays = new HashMap<Overlay, MapMarker>();
     private Status statusWidget;
@@ -135,8 +139,22 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
             }
         });
         
+        getSchema();
         getBaseMaps();
     }
+
+	private void getSchema() {
+		dispatcher.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Handle failure
+			}
+			@Override
+			public void onSuccess(SchemaDTO result) {
+				schema=result;
+			}
+		});
+	}
 
 	private void loadMapAsynchronously() {
 		MapApiLoader.load(new MaskingAsyncMonitor(this, I18N.CONSTANTS.loadingMap()),
@@ -413,10 +431,8 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 			StringBuilder builder = new StringBuilder();
 			
 			addClusteringMessage(piemarker, builder);
+			addIndicatorTitle(builder);
 			
-			builder.append("<p>");
-			builder.append(I18N.CONSTANTS.indicators());
-			builder.append(":</p>");
 			// Start an html list
 			builder.append("<ul style=\"list-style:inside;\">");
 
@@ -424,11 +440,11 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 			for (SliceValue slice : piemarker.getSlices()) {
 				IndicatorDTO indicator = mapModel.getIndicatorById(slice.getIndicatorId());
 
-				builder.append("<li>");
-				builder.append("<b><span style=\"background-color:" + slice.getColor() + "\">");
-				builder.append(slice.getValue());
-				builder.append("</span></b> ");
-				builder.append(indicator.getName());
+				builder.append("<li>")
+					   .append("<b><span style=\"background-color:" + slice.getColor() + "\">")
+					   .append(slice.getValue())
+					   .append("</span></b> ")
+					   .append(indicator.getName());
 			}
 
 			// Close and return the html list
@@ -443,17 +459,15 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 			
 			addClusteringMessage(bubbleMarker, builder);
 
+			builder.append("<p><b>")
+				   .append(I18N.CONSTANTS.sum())
+				   .append(": ")
+				   .append(marker.getTitle())
+				   .append("</b></p>");
+
+			addIndicatorTitle(builder);
+
 			// Start an html list
-			builder.append("<p><b>");
-			builder.append(I18N.CONSTANTS.sum());
-			builder.append(": ");
-			builder.append(marker.getTitle());
-			builder.append("</b></p>");
-
-			builder.append("<p>");
-			builder.append(I18N.CONSTANTS.indicators());
-			builder.append(":</p>");
-
 			builder.append("<ul style=\"list-style:inside;\">");
 
 			// Add each slice of the pie as a listitem
@@ -474,6 +488,12 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 		}
 		return null;
 	}
+
+	private void addIndicatorTitle(StringBuilder builder) {
+		builder.append("<p>")
+			   .append(I18N.CONSTANTS.indicators())
+			   .append(":</p>");
+	}
 	
 
 	public void setMaster(MapPage mapPage) {
@@ -492,9 +512,11 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 		
 		} else if (marker.getClustering() instanceof AdministrativeLevelClustering) {
 			AdministrativeLevelClustering admincl = (AdministrativeLevelClustering) marker.getClustering();
+			AdminLevelDTO adminLevel = schema.getAdminLevelById(admincl.getAdminLevels().get(0));
+			
 			builder.append(I18N.MESSAGES.amountSitesClusteredByClusteringMethod(
 							  Integer.toString(marker.getClusterAmount()), 
-							  I18N.CONSTANTS.administrativeLevel())); 			
+							  I18N.CONSTANTS.administrativeLevel() + " " + adminLevel.getName())); 			
 		}
 		builder.append("</p>"); 
 	}
