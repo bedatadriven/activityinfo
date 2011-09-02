@@ -146,7 +146,12 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
 
     protected void createToolBar() {
         toolbarMapActions = new ActionToolBar(this);
-        exportMenu = new ExportMenuButton(RenderElement.Format.PowerPoint, this);
+        exportMenu = new ExportMenuButton(RenderElement.Format.PowerPoint)
+        	.withPowerPoint()
+        	.withWord()
+        	.withPdf()
+        	.withPng()
+        	.callbackTo(this);
         exportMenu.setEnabled(false);
 		toolbarMapActions.add(exportMenu);
         toolbarMapActions.addButton(UIActions.exportData, I18N.CONSTANTS.exportData(),

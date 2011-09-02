@@ -112,7 +112,12 @@ public class ChartPage extends LayoutContainer implements ChartPagePresenter.Vie
 
         toolBar.add(new SeparatorToolItem());
 
-        toolBar.add(new ExportMenuButton(RenderElement.Format.PowerPoint, new ExportCallback() {
+        toolBar.add(new ExportMenuButton(RenderElement.Format.PowerPoint)
+        	.withPowerPoint()
+        	.withWord()
+        	.withPdf()
+        	.withPng()
+        	.callbackTo(new ExportCallback() {
             public void export(RenderElement.Format format) {
                 presenter.export(format);
             }
