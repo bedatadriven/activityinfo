@@ -90,7 +90,7 @@ public class MapReportElement extends ReportElement<MapContent> {
      * Returns the center of the map
      * 
      * when null, ignored by the generator. Instead, the generator calculates the 
-     * center by the set of locations on the map 
+     * center by the set of locations on the map AdministrativeLevelClustering
      */
     @XmlTransient
 	public LatLng getCenter() {

@@ -8,6 +8,8 @@ package org.sigmah.shared.report.content;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.sigmah.shared.report.model.clustering.Clustering;
+
 /**
  * @author Alex Bertram
  */
@@ -19,6 +21,8 @@ public class BubbleMapMarker extends MapMarker {
     private int radius;
     private String labelColor = "FF0000";
     private Set<Integer> indicatorIds = new HashSet<Integer>();
+    private Clustering clustering;
+    private int clusterAmount;
 
     public double getValue() {
         return value;
@@ -79,5 +83,21 @@ public class BubbleMapMarker extends MapMarker {
 
 	public void setIndicatorIds(Set<Integer> indicatorIds) {
 		this.indicatorIds = indicatorIds;
+	}
+
+	public void setClustering(Clustering clustering) {
+		this.clustering = clustering;
+	}
+
+	public Clustering getClustering() {
+		return clustering;
+	}
+
+	public void setClusterAmount(int clusterAmount) {
+		this.clusterAmount = clusterAmount;
+	}
+
+	public int getClusterAmount() {
+		return clusterAmount;
 	}
 }

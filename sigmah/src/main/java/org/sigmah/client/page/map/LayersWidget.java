@@ -140,7 +140,7 @@ public class LayersWidget extends ContentPanel implements HasValue<MapReportElem
 		view.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<LayerModel>() {
 			@Override()
 			public void selectionChanged(SelectionChangedEvent<LayerModel> se) {
-				changeSelectedLayer();
+				changeSelectedLayer(false);
 			}
 		});
 		
@@ -173,7 +173,7 @@ public class LayersWidget extends ContentPanel implements HasValue<MapReportElem
 					}
 				} 
 				
-				changeSelectedLayer();
+				changeSelectedLayer(false);
 			}
 		});
 
@@ -190,9 +190,9 @@ public class LayersWidget extends ContentPanel implements HasValue<MapReportElem
 		layerOptions.setEnabled(false);
 	}
 	
-	private void changeSelectedLayer() {
+	private void changeSelectedLayer(boolean fireEvent) {
 		if (view.getSelectionModel().getSelectedItem() != null) {
-			layerOptions.setMapLayer(view.getSelectionModel().getSelectedItem().getMapLayer());
+			layerOptions.setValue(view.getSelectionModel().getSelectedItem().getMapLayer(), fireEvent);
 			layout(true);
 		}
 		layerOptions.setEnabled(view.getSelectionModel().getSelectedItem() != null);

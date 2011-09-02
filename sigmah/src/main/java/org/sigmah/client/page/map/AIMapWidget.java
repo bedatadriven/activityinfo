@@ -18,8 +18,11 @@ import org.sigmah.client.map.MapApiLoader;
 import org.sigmah.client.map.MapTypeFactory;
 import org.sigmah.shared.command.GenerateElement;
 import org.sigmah.shared.command.GetBaseMaps;
+import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.command.result.BaseMapResult;
+import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
+import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.map.BaseMap;
 import org.sigmah.shared.map.TileBaseMap;
 import org.sigmah.shared.report.content.BubbleMapMarker;
@@ -29,6 +32,10 @@ import org.sigmah.shared.report.content.MapMarker;
 import org.sigmah.shared.report.content.PieMapMarker;
 import org.sigmah.shared.report.content.PieMapMarker.SliceValue;
 import org.sigmah.shared.report.model.MapReportElement;
+import org.sigmah.shared.report.model.clustering.AdministrativeLevelClustering;
+import org.sigmah.shared.report.model.clustering.AutomaticClustering;
+import org.sigmah.shared.report.model.clustering.Clustering;
+import org.sigmah.shared.report.model.clustering.NoClustering;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 import org.sigmah.shared.util.mapping.Extents;
 
@@ -74,6 +81,7 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
     private MapWidget mapWidget = null;
     private BaseMap currentBaseMap = null;
     private LatLngBounds pendingZoom = null;
+	private SchemaDTO schema;
 
     private Map<Overlay, MapMarker> overlays = new HashMap<Overlay, MapMarker>();
     private Status statusWidget;
@@ -131,8 +139,22 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
             }
         });
         
+        getSchema();
         getBaseMaps();
     }
+
+	private void getSchema() {
+		dispatcher.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Handle failure
+			}
+			@Override
+			public void onSuccess(SchemaDTO result) {
+				schema=result;
+			}
+		});
+	}
 
 	private void loadMapAsynchronously() {
 		MapApiLoader.load(new MaskingAsyncMonitor(this, I18N.CONSTANTS.loadingMap()),
@@ -408,18 +430,21 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 			// Create a list with all items with the value colored
 			StringBuilder builder = new StringBuilder();
 			
+			addClusteringMessage(piemarker, builder);
+			addIndicatorTitle(builder);
+			
 			// Start an html list
-			builder.append("<ul>");
+			builder.append("<ul style=\"list-style:inside;\">");
 
 			// Add each slice of the pie as a listitem
 			for (SliceValue slice : piemarker.getSlices()) {
 				IndicatorDTO indicator = mapModel.getIndicatorById(slice.getIndicatorId());
 
-				builder.append("<li>");
-				builder.append("<b><span style=\"background-color:" + slice.getColor() + "\">");
-				builder.append(slice.getValue());
-				builder.append("</span></b> ");
-				builder.append(indicator.getName());
+				builder.append("<li>")
+					   .append("<b><span style=\"background-color:" + slice.getColor() + "\">")
+					   .append(slice.getValue())
+					   .append("</span></b> ")
+					   .append(indicator.getName());
 			}
 
 			// Close and return the html list
@@ -432,8 +457,18 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 			// Create a list with all items with the value colored
 			StringBuilder builder = new StringBuilder();
 			
+			addClusteringMessage(bubbleMarker, builder);
+
+			builder.append("<p><b>")
+				   .append(I18N.CONSTANTS.sum())
+				   .append(": ")
+				   .append(marker.getTitle())
+				   .append("</b></p>");
+
+			addIndicatorTitle(builder);
+
 			// Start an html list
-			builder.append("<b>" + I18N.CONSTANTS.sum() + " " + marker.getTitle() + " </b><ul>");
+			builder.append("<ul style=\"list-style:inside;\">");
 
 			// Add each slice of the pie as a listitem
 			for (Integer indicatorId : bubbleMarker.getIndicatorIds()) {
@@ -454,7 +489,35 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 		return null;
 	}
 
+	private void addIndicatorTitle(StringBuilder builder) {
+		builder.append("<p>")
+			   .append(I18N.CONSTANTS.indicators())
+			   .append(":</p>");
+	}
+	
+
 	public void setMaster(MapPage mapPage) {
 		this.mapPage = mapPage;
+	}
+	
+	private void addClusteringMessage(BubbleMapMarker marker, StringBuilder builder) {
+		builder.append("<p>"); 
+		if (marker.getClustering() instanceof NoClustering) {
+			builder.append(I18N.CONSTANTS.none() + " " + I18N.CONSTANTS.clustering());
+		
+		} else if (marker.getClustering() instanceof AutomaticClustering){
+			builder.append(I18N.MESSAGES.amountSitesClusteredByClusteringMethod(
+						  	  Integer.toString(marker.getClusterAmount()), 
+					  		  I18N.CONSTANTS.automatic())); 
+		
+		} else if (marker.getClustering() instanceof AdministrativeLevelClustering) {
+			AdministrativeLevelClustering admincl = (AdministrativeLevelClustering) marker.getClustering();
+			AdminLevelDTO adminLevel = schema.getAdminLevelById(admincl.getAdminLevels().get(0));
+			
+			builder.append(I18N.MESSAGES.amountSitesClusteredByClusteringMethod(
+							  Integer.toString(marker.getClusterAmount()), 
+							  I18N.CONSTANTS.administrativeLevel() + " " + adminLevel.getName())); 			
+		}
+		builder.append("</p>"); 
 	}
 }
