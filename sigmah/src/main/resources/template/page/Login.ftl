@@ -54,16 +54,16 @@
                 </div>
                 <div class="rememberBox" id="rememberPanel">
                     <label for="remember"><input name="remember" type="checkbox" value="true" id="remember"
-                                                 class="checkBox"/>Rester connect�</label>
+                                                 class="checkBox"/>Rester connecté</label>
 
-                    <div id="loginHelp"><a href="login-problem.html">Vous n'arrivez pas � vous connecter ?</a></div>
+                    <div id="loginHelp"><a href="login-problem.html">Vous n'arrivez pas à vous connecter ?</a></div>
                     <span id="loginBox"><input type="image" src="static/login_fr.png"
                                                id="loginButton"></span></a></span>
                 </div>
 
                 <div id="marketTitle" class="marketTitle" align="center">Vous n'utilizer pas encore ActivityInfo?</div>
                 <div id="marketBody" class="marketBody" align="center">ActivityInfo est une solution comprehensive pour
-                    le suivi de vos activit�s d'urgence et de d�veloppement.<br/>
+                    le suivi de vos activités d'urgence et de développement.<br/>
 
                     <div id="buttonGroup" align="left">
 
