@@ -5,21 +5,43 @@
 
 package org.sigmah.server.bootstrap.model;
 
-import org.sigmah.shared.domain.User;
 
 /**
  * @author Alex Bertram
  */
 public class ResetPasswordPageModel extends PageModel {
 
-    private User user;
+    private boolean loginError;     
+    private boolean emailSent;
+    private boolean emailError;
 
-    public ResetPasswordPageModel(User user) {
-        this.user = user;
+    public ResetPasswordPageModel() {
     }
 
+	public boolean isLoginError() {
+		return loginError;
+	}
 
-    public User getUser() {
-        return user;
-    }
+	public void setLoginError(boolean loginError) {
+		this.loginError = loginError;
+	}
+
+	public boolean isEmailSent() {
+		return emailSent;
+	}
+
+	public void setEmailSent(boolean emailSent) {
+		this.emailSent = emailSent;
+	}
+
+	public boolean isEmailError() {
+		return emailError;
+	}
+
+	public void setEmailError(boolean emailError) {
+		this.emailError = emailError;
+	}
+
+    
+    
 }

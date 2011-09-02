@@ -419,6 +419,13 @@
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
             </resource>
+            
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                	<include>**/*.properties</include>
+                </includes>
+            </resource>
         </resources>
 
         <!-- Compile classes into the war

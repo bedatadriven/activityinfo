@@ -9,9 +9,8 @@ import javax.persistence.EntityManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sigmah.server.dao.hibernate.UserDAOImpl;
-import org.sigmah.server.mail.Invitation;
-import org.sigmah.server.mail.Mailer;
-import org.sigmah.server.util.LocaleHelper;
+import org.sigmah.server.mail.InvitationMessage;
+import org.sigmah.server.mail.MailSender;
 import org.sigmah.shared.dao.UserDAO;
 import org.sigmah.shared.domain.OrgUnit;
 import org.sigmah.shared.domain.User;
@@ -30,15 +29,15 @@ public class UserPolicy implements EntityPolicy<User> {
 	
 	private final EntityManager em;
 	private final UserDAO userDAO;
-	private final Mailer<Invitation> inviteMailer;
+	private final MailSender mailSender;
 	private static final Log log = LogFactory.getLog(UserPolicy.class);
 	
 	
 	@Inject
-    public UserPolicy(EntityManager em, UserDAO userDAO, Mailer<Invitation> inviteMailer) {
+    public UserPolicy(EntityManager em, UserDAO userDAO, MailSender mailSender) {
         this.em = em;
         this.userDAO = userDAO;
-        this.inviteMailer = inviteMailer;
+        this.mailSender = mailSender;
     }
 
 	@Override
@@ -72,7 +71,7 @@ public class UserPolicy implements EntityPolicy<User> {
 	        	userDAO.persist(userToPersist);
 	        	log.debug("UserPolicy : User mail invitation...");
 	        	try {
-		    		inviteMailer.send(new Invitation(userToPersist, executingUser), LocaleHelper.getLocaleObject(executingUser));
+		    		mailSender.send(new InvitationMessage(userToPersist, executingUser));
 		        } catch (Exception e) {
 		            // ignore, don't abort because mail didn't work
 		        }

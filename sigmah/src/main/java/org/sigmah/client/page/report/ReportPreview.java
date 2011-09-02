@@ -91,7 +91,11 @@ public class ReportPreview extends ContentPanel implements ReportPreviewPresente
         // do initial load
         presenter.onUIAction(UIActions.refresh);
 
-        ExportMenuButton export = new ExportMenuButton(RenderElement.Format.Word, presenter);
+        ExportMenuButton export = new ExportMenuButton(RenderElement.Format.Word)
+        	.withWord()
+        	.withPdf()
+        	.callbackTo(presenter);
+        
         toolBar.add(export);
 
         setTopComponent(toolBar);

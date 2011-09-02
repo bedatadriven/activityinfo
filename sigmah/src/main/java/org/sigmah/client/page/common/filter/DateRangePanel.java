@@ -65,6 +65,7 @@ public class DateRangePanel extends ContentPanel implements HasValue<Filter>, Fi
 				removeFilter();
 			}
 		});
+		filterToolBar.setApplyFilterEnabled(true);
 		setTopComponent((Component) filterToolBar);
 	}
 
