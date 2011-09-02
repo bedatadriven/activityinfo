@@ -29,7 +29,7 @@ import freemarker.template.Configuration;
 
 @Singleton
 public class ResetPasswordController extends AbstractController {
-	public static final String ENDPOINT = "loginProblem";
+	public static final String ENDPOINT = "/loginProblem";
 
 	private final MailSender mailer;
 

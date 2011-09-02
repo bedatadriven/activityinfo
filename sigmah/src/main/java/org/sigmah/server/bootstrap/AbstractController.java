@@ -5,14 +5,20 @@
 
 package org.sigmah.server.bootstrap;
 
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.google.inject.Singleton;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
+import static org.sigmah.server.util.StringUtil.isEmpty;
+
+import java.io.IOException;
+
+import javax.persistence.NoResultException;
+import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.sigmah.server.Cookies;
 import org.sigmah.server.bootstrap.exception.IncompleteFormException;
+import org.sigmah.server.bootstrap.exception.InvalidKeyException;
 import org.sigmah.server.bootstrap.model.PageModel;
 import org.sigmah.server.dao.AuthenticationDAO;
 import org.sigmah.server.dao.Transactional;
@@ -21,13 +27,13 @@ import org.sigmah.shared.dao.UserDAO;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.InvalidLoginException;
 
-import javax.persistence.NoResultException;
-import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Singleton;
+
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 
 
 /**
@@ -157,5 +163,31 @@ public class AbstractController extends HttpServlet {
             sb.append(req.getRequestURL().substring(hash));
         }
         return sb.toString();
+    }
+
+
+    protected final String getRequiredParameter(HttpServletRequest request, String name) {
+        String value = request.getParameter(name);
+        if (isEmpty(value)) {
+            throw new IncompleteFormException();
+        }
+
+        return value;
+    }
+
+
+    @Transactional
+    protected User findUserByKey(String key) throws InvalidKeyException {
+        try {
+            if (key == null || key.length() == 0) {
+                throw new InvalidKeyException();
+            }
+
+            UserDAO userDAO = injector.getInstance(UserDAO.class);
+            return userDAO.findUserByChangePasswordKey(key);
+
+        } catch (NoResultException e) {
+            throw new InvalidKeyException();
+        }
     }
 }

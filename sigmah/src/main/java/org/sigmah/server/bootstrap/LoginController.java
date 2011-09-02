@@ -31,7 +31,7 @@ import freemarker.template.Configuration;
 
 @Singleton
 public class LoginController extends AbstractController {
-    public static final String ENDPOINT = "login";
+    public static final String ENDPOINT = "/login";
 
     private final MailSender sender;
     
