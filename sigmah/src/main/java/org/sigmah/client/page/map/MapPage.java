@@ -175,7 +175,9 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
 
 	@Override
 	public void onUIAction(String actionId) {
-		
+		if (actionId.equals(UIActions.exportData)) {
+			export(Format.Excel_Data);
+		}
 	}
 
 	@Override
