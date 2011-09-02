@@ -1,6 +1,7 @@
 package org.sigmah.client.page.map;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.sigmah.client.dispatch.Dispatcher;
@@ -162,8 +163,6 @@ public class LayersWidget extends ContentPanel implements HasValue<MapReportElem
 						ValueChangeEvent.fire(LayersWidget.this, mapElement);
 						store.update(layerModel);
 					}
-//					be.setCancelled(true);
-//					be.stopEvent();
 				}				
 				
 				// Remove 
@@ -198,9 +197,18 @@ public class LayersWidget extends ContentPanel implements HasValue<MapReportElem
 		}
 		layerOptions.setEnabled(view.getSelectionModel().getSelectedItem() != null);
 	}
+	
+	private class MapLayersDropTarget extends ListViewDropTarget {
+		public MapLayersDropTarget(ListView listView) {
+			super(listView);
+		}
+    	public int getInsertIndex() {
+    		return insertIndex;
+    	}
+	}
 
 	private void addListViewDnd() {
-	    ListViewDropTarget target = new ListViewDropTarget(view);
+	    ListViewDropTarget target = new MapLayersDropTarget(view);
 	    target.setAllowSelfAsSource(true);
 	    target.setFeedback(Feedback.INSERT);
 
@@ -215,6 +223,7 @@ public class LayersWidget extends ContentPanel implements HasValue<MapReportElem
 					e.setCancelled(true);
 				}
 				draggedItemIndexStart = store.indexOf(view.getSelectionModel().getSelectedItem());
+				e.setData(draggedItemIndexStart);
 			}
 			
 			@Override
@@ -222,10 +231,11 @@ public class LayersWidget extends ContentPanel implements HasValue<MapReportElem
 				super.onDragDrop(e);
 				
 				// Move the MapLayer onto his new position
-				draggedItemIndexDrop = store.indexOf(view.getSelectionModel().getSelectedItem());
-				MapLayer removed = mapElement.getLayers().remove(draggedItemIndexStart);
-				mapElement.getLayers().add(draggedItemIndexDrop, removed);
-				
+				draggedItemIndexDrop = ((MapLayersDropTarget)e.getDropTarget()).getInsertIndex();
+				if (draggedItemIndexDrop == mapElement.getLayers().size()){
+					draggedItemIndexDrop--;
+				} 
+				Collections.swap(mapElement.getLayers(), draggedItemIndexStart, draggedItemIndexDrop);
 				ValueChangeEvent.fire(LayersWidget.this, mapElement);
 			}
 		};
