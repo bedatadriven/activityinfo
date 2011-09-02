@@ -97,7 +97,7 @@ public class ConfirmInviteController extends AbstractController {
     }
 
     @Transactional
-    private void confirmUserProfile(HttpServletRequest request, User user) throws IncompleteFormException {
+    protected void confirmUserProfile(HttpServletRequest request, User user) throws IncompleteFormException {
         String name = getRequiredParameter(request, "name");
         String locale = getRequiredParameter(request, "locale");
         String password = getRequiredParameter(request, "password");

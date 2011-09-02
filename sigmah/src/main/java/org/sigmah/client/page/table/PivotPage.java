@@ -19,6 +19,7 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.filter.AdminFilterPanel;
 import org.sigmah.client.page.common.filter.DateRangePanel;
+import org.sigmah.client.page.common.filter.FilterPanelSet;
 import org.sigmah.client.page.common.filter.IndicatorTreePanel;
 import org.sigmah.client.page.common.filter.PartnerFilterPanel;
 import org.sigmah.client.page.common.toolbar.UIActions;
@@ -81,6 +82,8 @@ import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -102,6 +105,7 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 	protected TreeStore<ModelData> dimensionStore;
 	protected TreePanel<ModelData> treePanel;
 
+
 	protected ContentPanel filterPane;
 	protected IndicatorTreePanel indicatorPanel;
 	protected AdminFilterPanel adminPanel;
@@ -112,6 +116,7 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 	protected ToolBar gridToolBar;
 	protected DrillDownGrid drilldownPanel;
 	private Listener<PivotCellEvent> initialDrillDownListener;
+	private FilterPanelSet filterPanelSet;
 
 	@Inject
 	public PivotPage(EventBus eventBus, Dispatcher service, IStateManager stateMgr) {
@@ -132,6 +137,9 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 		createDateFilter();
 		createPartnerFilter();
 		createGridContainer();
+		
+		filterPanelSet = new FilterPanelSet(adminPanel, datePanel, partnerPanel);
+		
 
 		initialDrillDownListener = new Listener<PivotCellEvent>() {
 			public void handleEvent(PivotCellEvent be) {
@@ -410,9 +418,16 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 		//    indicatorPanel.setSchema(result);
 	}
 
-	public void bindPresenter(PivotPresenter presenter) {
+	public void bindPresenter(final PivotPresenter presenter) {
 
 		this.presenter = presenter;
+		filterPanelSet.addValueChangeHandler(new ValueChangeHandler<Filter>() {
+					
+			@Override
+			public void onValueChange(ValueChangeEvent<Filter> event) {
+				presenter.onUIAction(UIActions.refresh);
+			}
+		});
 	}
 
 	public void enableUIAction(String actionId, boolean enabled) {
