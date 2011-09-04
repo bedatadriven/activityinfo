@@ -51,7 +51,7 @@
 
         <!--  convenience to define GWT version in one place -->
         <gwtVersion>2.0.4</gwtVersion>
-        <rebarVersion>2.1-SNAPSHOT</rebarVersion>
+        <rebarVersion>2.1.1</rebarVersion>
         <platform>windows</platform>
 
         <!--  tell the compiler we can use 1.6 -->
