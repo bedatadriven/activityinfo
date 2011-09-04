@@ -345,6 +345,7 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 
 	private void createPartnerFilter() {
 		partnerPanel = new PartnerFilterPanel(service);
+		partnerPanel.applyBaseFilter(new Filter());
 		filterPane.add(partnerPanel);
 	}
 

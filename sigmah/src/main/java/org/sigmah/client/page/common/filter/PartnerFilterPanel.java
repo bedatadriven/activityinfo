@@ -178,9 +178,11 @@ public class PartnerFilterPanel extends ContentPanel implements FilterPanel {
 	@Override
 	public Filter getValue() {
 		Filter filter = new Filter();
-		List<Integer> selectedIds = getSelectedIds();
-		if (selectedIds.size() > 0) {
-			filter.addRestriction(DimensionType.Partner, getSelectedIds());
+		if(isRendered()) {
+			List<Integer> selectedIds = getSelectedIds();
+			if (selectedIds.size() > 0) {
+				filter.addRestriction(DimensionType.Partner, getSelectedIds());
+			}
 		}
 		return filter;
 	}
