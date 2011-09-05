@@ -842,7 +842,7 @@
                     <plugin>
                         <groupId>br.com.ingenieux</groupId>
                         <artifactId>beanstalk-maven-plugin</artifactId>
-                        <version>0.2.2-bedatadriven</version>
+                        <version>0.2.4</version>
 
                         <configuration>
                             <applicationName>activityinfo</applicationName>
@@ -888,7 +888,7 @@
                     <plugin>
                         <groupId>br.com.ingenieux</groupId>
                         <artifactId>beanstalk-maven-plugin</artifactId>
-                        <version>0.2.2-bedatadriven</version>
+                        <version>0.2.4/version>
 
                         <configuration>
                             <applicationName>activityinfo</applicationName>
