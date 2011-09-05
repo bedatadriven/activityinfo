@@ -645,7 +645,7 @@
             <plugin>
                 <groupId>br.com.ingenieux</groupId>
                 <artifactId>beanstalk-maven-plugin</artifactId>
-                <version>0.2.2-bedatadriven</version>
+                <version>0.2.4</version>
 
                 <configuration>
                     <applicationName>activityinfo</applicationName>
@@ -682,7 +682,7 @@
                         <optionSetting>
                             <namespace>aws:elasticbeanstalk:application:environment</namespace>
                             <optionName>PARAM2</optionName>
-                            <value>activityinfo.21test.properties</value>
+                            <value>activityinfo.22test.properties</value>
                         </optionSetting>
                         <optionSetting>
                             <namespace>aws:elasticbeanstalk:application:environment</namespace>
@@ -849,7 +849,7 @@
                             <s3Bucket>activityinfo-wars</s3Bucket>
                             <s3Key>${project.version}-b${BUILD_NUMBER}-${git.commit.id.abbrev}.war</s3Key>
                             <versionLabel>${project.version}-b${BUILD_NUMBER}-${git.commit.id.abbrev}</versionLabel>
-                            <environmentName>activityinfo-latest</environmentName>
+                            <environmentName>activityinfo-beta</environmentName>
                             <cnamePrefix>activityinfo-latest</cnamePrefix>
                         </configuration>
                         <executions>
@@ -859,7 +859,8 @@
                                 <goals>
                                     <goal>upload-source-bundle</goal>
                                     <goal>create-application-version</goal>
-                                    <goal>update-environment-version</goal>
+                                    <goal>update-environment-options</goal>
+                                    <goal>update-environment</goal>
                                 </goals>
                             </execution>
                         </executions>
