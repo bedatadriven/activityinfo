@@ -645,7 +645,7 @@
             <plugin>
                 <groupId>br.com.ingenieux</groupId>
                 <artifactId>beanstalk-maven-plugin</artifactId>
-                <version>0.2.4</version>
+                <version>0.2.2-bedatadriven</version>
 
                 <configuration>
                     <applicationName>activityinfo</applicationName>
@@ -842,7 +842,7 @@
                     <plugin>
                         <groupId>br.com.ingenieux</groupId>
                         <artifactId>beanstalk-maven-plugin</artifactId>
-                        <version>0.2.4</version>
+                        <version>0.2.2-bedatadriven</version>
 
                         <configuration>
                             <applicationName>activityinfo</applicationName>
@@ -859,8 +859,8 @@
                                 <goals>
                                     <goal>upload-source-bundle</goal>
                                     <goal>create-application-version</goal>
-                                    <goal>update-environment-options</goal>
-                                    <goal>update-environment</goal>
+                                    <goal>update-environment-configuration-settings</goal>
+                                    <goal>update-environment-version</goal>
                                 </goals>
                             </execution>
                         </executions>
@@ -888,7 +888,7 @@
                     <plugin>
                         <groupId>br.com.ingenieux</groupId>
                         <artifactId>beanstalk-maven-plugin</artifactId>
-                        <version>0.2.4</version>
+                        <version>0.2.2-bedatadriven</version>
 
                         <configuration>
                             <applicationName>activityinfo</applicationName>
