@@ -9,18 +9,22 @@ import org.junit.Before;
 import org.junit.Test;
 import org.sigmah.server.Cookies;
 import org.sigmah.server.bootstrap.model.LoginPageModel;
+import org.sigmah.server.mail.MailSender;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
 
 import static org.junit.Assert.*;
+import static org.easymock.EasyMock.*;
 
 public class LoginControllerTest extends ControllerTestCase {
 
-
     @Before
     public void setUp() {
-        controller = new LoginController(injector, templateCfg);
+    	MailSender sender = createMock(MailSender.class);
+    	replay(sender);
+    	
+        controller = new LoginController(injector, templateCfg, sender);
 
         req.setRequestURL("http://activityinfo.org/login");
     }

@@ -8,7 +8,10 @@ package org.sigmah.server.mail;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
 
+
 public interface MailSender {
 
-    public void send(Email message) throws EmailException;
+    public void send(MailMessage message);
+    public void send(Email email) throws EmailException;
 }
+

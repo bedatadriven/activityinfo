@@ -5,8 +5,6 @@
 
 package org.sigmah.client.page.common.widget;
 
-import com.extjs.gxt.ui.client.Style.HideMode;
-import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ColorPaletteEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.DomEvent;
@@ -97,6 +95,16 @@ public class ColorField extends TriggerField<String> {
 	protected void onBlur(ComponentEvent ce) {
 		super.onBlur(ce);
         fireEvent(Events.Select, new FieldEvent(ColorField.this));
+	}
+
+	public void setValue(String bubbleColor, boolean b) {
+		if (b) {
+			setFireChangeEventOnSetValue(false);
+			setValue(bubbleColor);
+			setFireChangeEventOnSetValue(true);
+		} else {
+			setValue(bubbleColor);
+		}
 	}
 
 }

@@ -14,8 +14,8 @@
 </head>
 <body class="login">
 
-<form name="Form1" method="post" id="loginForm" action="login" method="post">
-    <input type="hidden" name="urlSuffix" value="${urlSuffix}">
+<form name="Form1" method="post" id="loginForm" action="changePassword" method="post">
+    <input type="hidden" name="key" value="${user.changePasswordKey}"></input>
 
     <div id="login">
         <div id="cap-top"></div>
@@ -38,29 +38,18 @@
                  title="Un projet de l'UNICEF RDC">
 
             <div id="panelLogin">
-                <div id="loginPanel">
-                    <label>Addresse Email</label>
-
-                    <input name="email" type="text" value="" id="txtLogin" class="textboxX"/>
-                </div>
                 <div id="passwordPanel">
-                    <label>Mot de passe</label>
+                    <label>Noveau Mot de passe</label>
                     <input name="password" type="password" id="txtPassword" class="textboxX"/>
                 </div>
-                <div id="errorPanel">
-                <#if loginError == true>
-                    L'addresse email ou mot de passe est incorrect.
-                </#if>
+                <div id="passwordPanel">
+                    <label>Confirmer votre mot de passe</label>
+                    <input name="password2" type="password" id="txtPassword" class="textboxX"/>
                 </div>
-                <div class="rememberBox" id="rememberPanel">
-                    <label for="remember"><input name="remember" type="checkbox" value="true" id="remember"
-                                                 class="checkBox"/>Rester connecté</label>
+				<div class="rememberBox" id="rememberPanel">
 
-                    <div id="loginHelp"><a href="loginProblem">Vous n'arrivez pas à vous connecter ?</a></div>
-                    <span id="loginBox"><input type="image" src="static/login_fr.png"
-                                               id="loginButton"></span></a></span>
-                </div>
-
+                   <input type="submit" value="Confirmer"></span></a></span>
+				</div>
                 <div id="marketTitle" class="marketTitle" align="center">Vous n'utilizer pas encore ActivityInfo?</div>
                 <div id="marketBody" class="marketBody" align="center">ActivityInfo est une solution comprehensive pour
                     le suivi de vos activités d'urgence et de développement.<br/>

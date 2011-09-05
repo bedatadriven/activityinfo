@@ -5,7 +5,7 @@
     <groupId>org.activityinfo</groupId>
     <artifactId>activityinfo</artifactId>
     <packaging>war</packaging>
-    <version>2.1-SNAPSHOT</version>
+    <version>2.1.1-SNAPSHOT</version>
     <name>ActivityInfo</name>
     <description>Web-based database platform for program monitoring and reporting for the UN,
         NGOs, and others working in humanitarian, development, and post-conflict contexts.</description>
@@ -51,7 +51,7 @@
 
         <!--  convenience to define GWT version in one place -->
         <gwtVersion>2.0.4</gwtVersion>
-        <rebarVersion>2.1-SNAPSHOT</rebarVersion>
+        <rebarVersion>2.1.1</rebarVersion>
         <platform>windows</platform>
 
         <!--  tell the compiler we can use 1.6 -->
@@ -418,6 +418,13 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
+            </resource>
+            
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                	<include>**/*.properties</include>
+                </includes>
             </resource>
         </resources>
 

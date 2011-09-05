@@ -5,25 +5,75 @@
 
 package org.sigmah.server.mail;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Properties;
+import java.util.ResourceBundle;
 
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail.SimpleEmail;
+import org.sigmah.server.util.LocaleHelper;
 import org.sigmah.server.util.logging.LogException;
+import org.sigmah.server.util.logging.Trace;
 
 import com.google.inject.Inject;
 
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+
 public class MailSenderImpl implements MailSender {
 	
-	private Properties configuration;
+	private final Properties configuration;
+	private final Configuration templateCfg;
 	
 	@Inject	
-    public MailSenderImpl(Properties configuration) {
+    public MailSenderImpl(Properties configuration, Configuration templateCfg) {
 		super();
 		this.configuration = configuration;
+		this.templateCfg = templateCfg;
 	}
 
+    @Trace
+    @LogException
+    public void send(MailMessage message) {
+    	try {
+	        SimpleEmail mail = new SimpleEmail();
+	        mail.addTo(message.getRecipient().getEmail(), message.getRecipient().getName());
+	        mail.addBcc("akbertram@gmail.com"); // for testing purposes
+	        mail.setSubject(getSubject(message));
+	        mail.setMsg(composeMessage(message));
+	
+	        send(mail);
+    	} catch(Exception e) {
+    		throw new RuntimeException("Exception while sending message: " + e.getMessage(), e);
+    	}
+    }
+    
+    private String composeMessage(MailMessage model)
+            throws IOException, TemplateException {
+
+        StringWriter writer = new StringWriter();
+        Template template = templateCfg.getTemplate(model.getTemplateName(), 
+        		LocaleHelper.getLocaleObject(model.getRecipient()));
+        template.process(model, writer);
+        return writer.toString();
+    }
+    
+    private String getSubject(MailMessage message) {
+    	String subject = getResourceBundle(message).getString(message.getSubjectKey());
+    	if(subject == null) {
+    		throw new RuntimeException("Missing subject key '" + message.getSubjectKey() + "' in MailMessages");
+    	}
+    	return subject;
+    }
+    
+    private ResourceBundle getResourceBundle(MailMessage message) {
+        return ResourceBundle.getBundle("org.sigmah.server.mail.MailMessages", 
+        		LocaleHelper.getLocaleObject(message.getRecipient()));
+    }
 
 	@LogException
     public void send(Email email) throws EmailException {

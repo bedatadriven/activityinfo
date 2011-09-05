@@ -1,8 +1,5 @@
 package org.sigmah.client.page.map;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.common.filter.IndicatorTreePanel;
@@ -28,8 +25,6 @@ import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.Radio;
 import com.extjs.gxt.ui.client.widget.form.RadioGroup;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
@@ -56,7 +51,6 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 	// List of selected indicators
 	private Grid<IndicatorDTO> gridSelectedIndicators;
 	private ListStore<IndicatorDTO> indicatorsStore = new ListStore<IndicatorDTO>();
-	private Button buttonClearSelection = new Button();
     
     // Indicator options
 	private Button buttonAddLayer = new Button();
@@ -80,18 +74,7 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		
 		createLayerOptions();
 		createIndicatorTreePanel();
-		//createSelectedIndicatorsList();
 		
-		Button buttonClearSelection = new Button("Clear selection");
-		buttonClearSelection.setEnabled(false);
-		buttonClearSelection.addSelectionListener(new SelectionListener<ButtonEvent>() {
-			@Override
-			public void componentSelected(ButtonEvent ce) {
-				clearSelection();
-			}
-		});
-		add(buttonClearSelection);
-
 		addButton(new Button(I18N.CONSTANTS.addLayer(), new SelectionListener<ButtonEvent>() {  
 	        @Override  
 	        public void componentSelected(ButtonEvent ce) {  
@@ -100,27 +83,6 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
         }));
 		
 		radioProportionalCircle.setValue(true);
-	}
-
-	private void createSelectedIndicatorsList() {
-		List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
-		
-		ColumnConfig column = new ColumnConfig();
-	    column.setId("name");
-	    column.setDataIndex("name");
-	    column.setHeader(I18N.CONSTANTS.selectedLayers());
-	    column.setWidth(700);  
-	    columnConfigs.add(column);
-
-		ColumnModel columnmodelIndicators = new ColumnModel(columnConfigs);
-
-		gridSelectedIndicators = new Grid<IndicatorDTO>(indicatorsStore, columnmodelIndicators);
-		gridSelectedIndicators.setBorders(false);
-		
-		VBoxLayoutData vbld = new VBoxLayoutData();
-		vbld.setFlex(2);
-		
-		add(gridSelectedIndicators, vbld);
 	}
 
 	private void initializeComponent() {
@@ -198,18 +160,12 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		}
 	}
 
-	// TODO: implement
-	private IndicatorGroup getIndicatorGroupOfSelectedIndicators() {
-		return null;
-	}
-
 	protected void addLayer() {
 		if (indicatorsStore.getModels().size() > 0) {
 			Radio selected = radiogroupLayerType.getValue();
 			
 			// Create the new layer based on the selected type
 			newLayer = fromRadio(selected);
-			List<Integer> indicators = new ArrayList<Integer>();
 			for (IndicatorDTO indicator : indicatorsStore.getModels()) {
 				newLayer.addIndicatorId(indicator.getId());
 			}
@@ -255,6 +211,7 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		//indicatorTreePanel.setIcon(icons.indicator());
 		
 		treepanelIndicators.setHeaderVisible(false);
+		treepanelIndicators.setLeafCheckableOnly();
 		treepanelIndicators.addCheckChangedListener(new Listener<TreePanelEvent>(){
 			@Override
 			public void handleEvent(TreePanelEvent be) {
