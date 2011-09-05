@@ -53,6 +53,7 @@ import com.extjs.gxt.ui.client.store.Record;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -91,6 +92,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
 
     private Integer siteIdToSelectOnNextLoad;
     private FilterPanel filterPanel = new NullFilterPanel();
+	private HandlerRegistration filterRegistration;
 
     @Inject
     public SiteEditor(EventBus eventBus, Dispatcher service, StateProvider stateMgr, final View view) {
@@ -147,7 +149,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
 
     public void bindFilterPanel(FilterPanel panel) {
     	this.filterPanel = panel;
-    	filterPanel.addValueChangeHandler(new ValueChangeHandler<Filter>() {
+    	filterRegistration = filterPanel.addValueChangeHandler(new ValueChangeHandler<Filter>() {
 			
 			@Override
 			public void onValueChange(ValueChangeEvent<Filter> event) {
@@ -186,6 +188,8 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
         for (Shutdownable subComponet : subComponents) {
             subComponet.shutdown();
         }
+        
+        filterRegistration.removeHandler();
     }
 
     @Override

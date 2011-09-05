@@ -28,7 +28,7 @@ import freemarker.template.Configuration;
 
 @Singleton
 public class HostController extends AbstractController {
-    public static final String ENDPOINT = "";
+    public static final String ENDPOINT = "/";
 
     @Inject
     public HostController(Injector injector, Configuration templateCfg) {

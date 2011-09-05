@@ -101,6 +101,8 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
             marker.setLng(latlng.getLng());
             marker.setAlpha(layer.getAlpha());
             marker.setIndicatorIds(new HashSet<Integer>(layer.getIndicatorIds()));
+            marker.setClusterAmount(cluster.getPointValues().size());
+            marker.setClustering(layer.getClustering());
 
             markers.add(marker);
         }

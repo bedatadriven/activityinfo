@@ -97,4 +97,14 @@ public class ColorField extends TriggerField<String> {
         fireEvent(Events.Select, new FieldEvent(ColorField.this));
 	}
 
+	public void setValue(String bubbleColor, boolean b) {
+		if (b) {
+			setFireChangeEventOnSetValue(false);
+			setValue(bubbleColor);
+			setFireChangeEventOnSetValue(true);
+		} else {
+			setValue(bubbleColor);
+		}
+	}
+
 }

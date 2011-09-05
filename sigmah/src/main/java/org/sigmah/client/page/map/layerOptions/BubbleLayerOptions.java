@@ -110,7 +110,7 @@ public class BubbleLayerOptions extends LayoutContainer implements LayerOptionsW
 				if (sliderMaxSize.getValue() < sliderMinSize.getValue()) {
 					sliderMaxSize.setValue(sliderMinSize.getValue());
 				}
-				bubbleMapLayer.setMinRadius(sliderMinSize.getValue());
+				bubbleMapLayer.setMaxRadius(sliderMaxSize.getValue());
 				ValueChangeEvent.fire(BubbleLayerOptions.this, bubbleMapLayer);
 			}
 		};
@@ -124,7 +124,7 @@ public class BubbleLayerOptions extends LayoutContainer implements LayerOptionsW
 	private void updateUI() {
 		sliderMinSize.setValue(bubbleMapLayer.getMinRadius(), true);
 		sliderMaxSize.setValue(bubbleMapLayer.getMaxRadius(), true);
-		colorPicker.setValue(bubbleMapLayer.getBubbleColor());
+		colorPicker.setValue(bubbleMapLayer.getBubbleColor(), true);
 	}
 	
 	// TODO: fireevent

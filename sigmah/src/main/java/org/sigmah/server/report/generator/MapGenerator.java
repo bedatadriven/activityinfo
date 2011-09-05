@@ -8,8 +8,8 @@ package org.sigmah.server.report.generator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -31,6 +31,7 @@ import org.sigmah.shared.map.BaseMap;
 import org.sigmah.shared.map.GoogleBaseMap;
 import org.sigmah.shared.map.PredefinedBaseMaps;
 import org.sigmah.shared.map.TileBaseMap;
+import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.MapMarker;
 import org.sigmah.shared.report.model.DateRange;
@@ -104,9 +105,8 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         // and the projection
         int width = element.getWidth();
         int height = element.getHeight();
-        int zoom = TileMath.zoomLevelForExtents(extents,
-                width,
-                height);
+        int zoom = element.getZoomLevel() == -1 ? TileMath.zoomLevelForExtents(extents, width, height) : element.getZoomLevel();
+        AiLatLng center = element.getCenter() == null ? extents.center() : element.getCenter();
 
         // Retrieve the basemap and clamp zoom level
         BaseMap baseMap = null;
@@ -130,7 +130,7 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
             zoom = baseMap.getMaxZoom();
         }
 
-        TiledMap map = new TiledMap(width, height, extents.center(), zoom);
+        TiledMap map = new TiledMap(width, height, center, zoom);
         content.setBaseMap(baseMap);
         content.setZoomLevel(zoom);
         if (baseMap == null) {

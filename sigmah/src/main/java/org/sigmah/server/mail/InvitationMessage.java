@@ -7,11 +7,11 @@ package org.sigmah.server.mail;
 
 import org.sigmah.shared.domain.User;
 
-public class Invitation {
+public class InvitationMessage extends MailMessage {
     private User newUser;
     private User invitingUser;
 
-    public Invitation(User newUser, User invitingUser) {
+    public InvitationMessage(User newUser, User invitingUser) {
         this.newUser = newUser;
         this.invitingUser = invitingUser;
     }
@@ -23,4 +23,10 @@ public class Invitation {
     public User getInvitingUser() {
         return invitingUser;
     }
+
+	@Override
+	public User getRecipient() {
+		return newUser;
+	}
+
 }
