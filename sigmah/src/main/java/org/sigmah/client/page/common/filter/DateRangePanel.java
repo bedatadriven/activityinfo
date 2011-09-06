@@ -36,7 +36,6 @@ import com.google.gwt.user.client.ui.HasValue;
 public class DateRangePanel extends ContentPanel implements HasValue<Filter>, FilterPanel {
     private DateField datefieldMinDate;
     private DateField datefieldMaxDate;
-    private Filter filter = new Filter();
     
     private FilterToolBar filterToolBar;
 
@@ -70,25 +69,22 @@ public class DateRangePanel extends ContentPanel implements HasValue<Filter>, Fi
 	}
 
 	protected void applyFilter() {
-		ValueChangeEvent.fire(this, filter);
-		filterToolBar.setRemoveFilterEnabled(true);
+		Filter value = getValue();
+		ValueChangeEvent.fire(this, value);
+		filterToolBar.setRemoveFilterEnabled(value.isDateRestricted());
 	}
 
 	protected void removeFilter() {
-		
+		datefieldMinDate.setValue(null);
+		datefieldMaxDate.setValue(null);
+		filterToolBar.setRemoveFilterEnabled(false);
+		ValueChangeEvent.fire(this, getValue());
 	}
 
 	private void createToDateField() {
 		add(new LabelField(I18N.CONSTANTS.toDate()));
 
         datefieldMaxDate = new DateField();
-        datefieldMaxDate.addListener(Events.Change, new Listener<FieldEvent>() {
-			@Override
-			public void handleEvent(FieldEvent be) {
-				filter.setMaxDate(datefieldMaxDate.getValue());
-				filterToolBar.setApplyFilterEnabled(filter.getMinDate() != null);
-			}
-		});
         add(datefieldMaxDate);
 	}
 
@@ -96,13 +92,6 @@ public class DateRangePanel extends ContentPanel implements HasValue<Filter>, Fi
 		add(new LabelField(I18N.CONSTANTS.fromDate()));
 
         datefieldMinDate = new DateField();
-        datefieldMinDate.addListener(Events.Change, new Listener<FieldEvent>() {
-			@Override
-			public void handleEvent(FieldEvent be) {
-				filter.setMinDate(datefieldMinDate.getValue());
-				filterToolBar.setApplyFilterEnabled(filter.getMaxDate() != null);
-			}
-		});
         add(datefieldMinDate);
 	}
 
@@ -117,8 +106,6 @@ public class DateRangePanel extends ContentPanel implements HasValue<Filter>, Fi
      * @param filter  the filter to update
      */
     public void updateFilter(Filter filter) {
-        filter.setMinDate(datefieldMinDate.getValue());
-        filter.setMaxDate(datefieldMaxDate.getValue());
     }
 
 	@Override
@@ -129,12 +116,16 @@ public class DateRangePanel extends ContentPanel implements HasValue<Filter>, Fi
 
 	@Override
 	public Filter getValue() {
-		return filter;
+		Filter filter = new Filter();
+        filter.setMinDate(datefieldMinDate.getValue());
+        filter.setMaxDate(datefieldMaxDate.getValue());
+        
+        return filter;
 	}
 
 	@Override
 	public void setValue(Filter value) {
-		this.filter=value;
+		
 	}
 
 	@Override
@@ -153,7 +144,6 @@ public class DateRangePanel extends ContentPanel implements HasValue<Filter>, Fi
 
 	@Override
 	public void applyBaseFilter(Filter filter) {
-		filter.setMaxDate(getMaxDate());
-		filter.setMinDate(getMinDate());
+		
 	}
 }
