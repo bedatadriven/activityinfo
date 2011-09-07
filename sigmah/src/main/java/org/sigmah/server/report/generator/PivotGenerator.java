@@ -16,6 +16,7 @@ import java.util.Set;
 
 import org.sigmah.server.dao.PivotDAO;
 import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.dao.pivot.Bucket;
 import org.sigmah.shared.report.content.DimensionCategory;
 import org.sigmah.shared.report.content.LabeledDimensionCategory;
 import org.sigmah.shared.report.content.MonthCategory;
@@ -43,7 +44,7 @@ public abstract class PivotGenerator<T extends PivotReportElement> extends BaseG
         PivotTableData table = new PivotTableData(rowDims, colDims);
 
 
-        List<PivotDAO.Bucket> buckets = pivotDAO.aggregate(
+        List<Bucket> buckets = pivotDAO.aggregate(
                 userId, filter,
                 element.allDimensions());
 
@@ -51,7 +52,7 @@ public abstract class PivotGenerator<T extends PivotReportElement> extends BaseG
         Map<Dimension, Comparator<PivotTableData.Axis>> comparators =
                 createComparators(element.allDimensions());
 
-        for (PivotDAO.Bucket bucket : buckets) {
+        for (Bucket bucket : buckets) {
 
             PivotTableData.Axis column = colDims.isEmpty() ? table.getRootColumn() :
                     find(locale, table.getRootColumn(), colDims.iterator(), comparators, bucket);
@@ -91,7 +92,7 @@ public abstract class PivotGenerator<T extends PivotReportElement> extends BaseG
     protected PivotTableData.Axis find(Locale locale, PivotTableData.Axis axis,
                                        Iterator<Dimension> dimensionIterator,
                                        Map<Dimension, Comparator<PivotTableData.Axis>> comparators,
-                                       PivotDAO.Bucket result) {
+                                       Bucket result) {
 
         Dimension childDimension = dimensionIterator.next();
         DimensionCategory category = result.getCategory(childDimension);

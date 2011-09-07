@@ -25,6 +25,7 @@ import org.sigmah.server.dao.PivotDAO;
 import org.sigmah.server.domain.AggregationMethod;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dao.SqlDialect;
+import org.sigmah.shared.dao.pivot.Bucket;
 import org.sigmah.shared.report.content.EntityCategory;
 import org.sigmah.shared.report.content.MonthCategory;
 import org.sigmah.shared.report.content.QuarterCategory;
