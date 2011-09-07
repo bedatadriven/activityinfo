@@ -232,7 +232,7 @@ public class GetSchemaHandler implements
 		}
 
 		protected void loadLockedPeriods() {
-			// TODO(ruud): load only those visible to the user
+			// TODO(ruud): load only what is visible to user 
 			SqlQuery.select("fromDate", "toDate", "enabled", "name",
 					"lockedPeriodId", "userDatabaseId", "activityId",
 					"projectId").from("LockedPeriod")
