@@ -208,7 +208,7 @@ public class GetSchemaHandler implements
 		protected void loadProjects() {
 			SqlQuery.select("name", "projectId", "description", "databaseId")
 					.from("Project")
-
+					.where("databaseId").in(databaseMap.keySet())
 					.execute(tx, new SqlResultCallback() {
 						@Override
 						public void onSuccess(SqlTransaction tx,
@@ -232,6 +232,7 @@ public class GetSchemaHandler implements
 		}
 
 		protected void loadLockedPeriods() {
+			// TODO(ruud): load only those visible to the user
 			SqlQuery.select("fromDate", "toDate", "enabled", "name",
 					"lockedPeriodId", "userDatabaseId", "activityId",
 					"projectId").from("LockedPeriod")
