@@ -21,6 +21,7 @@ import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.RemoteDispatcher;
 import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.offline.capability.OfflineCapabilityProfile;
+import org.sigmah.client.offline.sync.AppOutOfDateException;
 import org.sigmah.client.offline.sync.SyncConnectionProblemEvent;
 import org.sigmah.client.offline.sync.SyncStatusEvent;
 import org.sigmah.client.offline.sync.Synchronizer;
@@ -40,6 +41,7 @@ import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException;
 import com.google.gwt.user.client.rpc.InvocationException;
 import com.google.gwt.user.client.rpc.StatusCodeException;
 import com.google.inject.Inject;
@@ -117,6 +119,7 @@ public class OfflineController implements Dispatcher {
 		void showConnectionProblem(int attempt, int retryDelay);
 
 		void promptEnable(EnableCallback callback);
+		void promptToReloadForNewVersion();
 		void showInstallInstructions();
     }
 
@@ -273,6 +276,10 @@ public class OfflineController implements Dispatcher {
     private void reportFailure(Throwable throwable) {
     	if(throwable instanceof InvalidAuthTokenException) {
     		view.promptToLogin();
+    	} else if(throwable instanceof AppOutOfDateException || 
+    			throwable instanceof IncompatibleRemoteServiceException) {
+    		view.promptToReloadForNewVersion();    		
+    		
     	} else {
     		view.showError(throwable.getMessage());
     	}

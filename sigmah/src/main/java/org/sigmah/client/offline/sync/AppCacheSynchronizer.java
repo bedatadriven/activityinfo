@@ -4,6 +4,7 @@ import org.sigmah.client.EventBus;
 import org.sigmah.client.i18n.I18N;
 
 import com.bedatadriven.rebar.appcache.client.AppCache;
+import com.bedatadriven.rebar.appcache.client.AppCache.Status;
 import com.bedatadriven.rebar.appcache.client.AppCacheFactory;
 import com.bedatadriven.rebar.appcache.client.events.ProgressEventHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -27,8 +28,12 @@ public class AppCacheSynchronizer implements ProgressEventHandler {
 			
 			@Override
 			public void onSuccess(Void result) {
-				progressRegistration.removeHandler();
-				callback.onSuccess(result);
+				if(appCache.getStatus() == Status.UPDATE_READY) {
+					callback.onFailure(new AppOutOfDateException());
+				} else {
+					progressRegistration.removeHandler();
+					callback.onSuccess(result);
+				}
 			}
 			
 			@Override

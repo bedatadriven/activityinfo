@@ -633,7 +633,7 @@
                     <connectors>
                         <connector
                             implementation="org.mortbay.jetty.nio.SelectChannelConnector">
-                            <port>9090</port>
+                            <port>9093</port>
                             <integralPort>9095</integralPort>
                         </connector>
                     </connectors>

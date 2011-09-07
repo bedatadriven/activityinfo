@@ -152,6 +152,12 @@ public class OfflineControllerTest {
         }
 
         @Override
+		public void promptToReloadForNewVersion() {
+
+			
+		}
+
+		@Override
         public Observable getReinstallItem() {
             return reinstallItem;
         }
