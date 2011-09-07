@@ -8,7 +8,7 @@
     <!-- Inherit the core Web Toolkit stuff.                        -->
     <inherits name='com.google.gwt.user.User' />
 
-	<stylesheet src="ExtGWT/css/gxt-all.css"/>
+	<stylesheet src="gxt224/css/gxt-all.css"/>
 	
     <!-- Inherit additional dependencies  -->
     <inherits name='com.google.gwt.inject.Inject' />

@@ -77,7 +77,6 @@
 
     <script language='javascript' src='ActivityInfo/gxt224/flash/swfobject.js'></script>
     <script type="text/javascript" language="javascript" src="ActivityInfo/ActivityInfo.nocache.js"></script>
-    <link rel="stylesheet" type="text/css" href="ActivityInfo/gxt224/css/gxt-all.css"/>
 	<script type="text/javascript">
 	
 	  var _gaq = _gaq || [];
