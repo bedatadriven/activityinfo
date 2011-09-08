@@ -1,5 +1,6 @@
 package org.sigmah.shared.search;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.Map;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.report.model.DimensionType;
 
-/** Transforms a search query string into a Filter instance.
+/** Transforms a search query string into a Filter instance/ workable data structure
  * See related test class for OK/non OK queries
  */
 public class QueryParser {
@@ -21,20 +22,105 @@ public class QueryParser {
 	private List<Integer> colonPositions = new ArrayList<Integer>();
 	private List<Dimension> dimensions = new ArrayList<Dimension>();
 	private Map<String, List<String>> uniqueDimensions = new HashMap<String, List<String>>();
+	private Map<String, List<String>> preciseDimensions = new HashMap<String, List<String>>();
+	private List<ParserError> errors = new ArrayList<ParserError>();
 	private String query;
 	private boolean hasFailed=false;
+	private boolean hasDimensions = false;
 	
 	public void parse(String query) {
 		this.query=query;
 		
 		try {
 			determineColonPositions();
-			createDimensions();
-			parseSearchTerms();
-			makeDimensionsUnique();
+			determineHaveDimensions();
+			if (hasDimensions) {
+				createDimensions();
+				parseSearchTerms();
+				makeDimensionsUnique();
+				createPreciseDimensions();
+				createFilter();
+			}
 		} catch (Exception e) {
 			hasFailed=true;
 		}
+	}
+	
+	/** This can be done better */
+	private boolean isSupportedDimension(DimensionType dimension) {
+		return (dimension == DimensionType.Activity   ||
+				dimension == DimensionType.AdminLevel ||
+				dimension == DimensionType.Partner    ||
+				dimension == DimensionType.Location   ||
+				dimension == DimensionType.Project    ||
+				dimension == DimensionType.Indicator  ||
+				dimension == DimensionType.IndicatorCategory);
+	}
+
+	private void createFilter() {
+		Filter filter = new Filter();
+		
+		for (String dimensionString : preciseDimensions.keySet()) {
+			DimensionType dimension;
+			try {
+				
+				dimension = fromString(dimensionString);
+			} catch (Exception e) {
+				continue; // Ruthlessly ignore nonparseable string
+			}
+
+			List<Integer> ids = new ArrayList<Integer>();
+			for (String idString : preciseDimensions.get(dimensionString)) {
+				try {
+					int id = Integer.parseInt(idString);
+					ids.add(id);
+				} catch (Exception ex) {
+					continue; // Ruthlessly ignore nonparseable string
+				}
+			}
+			if (ids.size() > 0 && isSupportedDimension(dimension)) {
+				filter.addRestriction(dimension, ids);
+			}
+		}
+		
+		this.filter=filter;
+	}
+	
+	/** Transforms a localized dimension into a dimension we can use to parse using the DimensionType enum */
+	// TODO: implement
+	private String fromLocalizedDimension(String localizedDimension) {
+		return localizedDimension;
+	}
+
+	private DimensionType fromString(String dimensionString) throws Exception {
+		dimensionString = capitalizeFirstLetter(dimensionString.toLowerCase().trim());
+		try {
+			return Enum.valueOf(DimensionType.class, dimensionString);
+		} catch (Exception ex) {
+			throw ex;
+		}
+	}
+	
+	private String capitalizeFirstLetter(String string) {
+		char[] stringArray = string.toCharArray();
+		stringArray[0] = Character.toUpperCase(stringArray[0]);
+		return new String(stringArray);
+	}
+
+	private void createPreciseDimensions() {
+		for (String dimension : uniqueDimensions.keySet()) {
+			if (dimension.toLowerCase().endsWith("id")) {
+				preciseDimensions.put(dimension, uniqueDimensions.get(dimension));
+			}
+		}
+	}
+
+	public boolean hasDimensions() {
+		return hasDimensions;
+	}
+
+	private void determineHaveDimensions() {
+		hasDimensions = colonPositions.size() > 0;
 	}
 
 	private void makeDimensionsUnique() {
@@ -57,6 +143,10 @@ public class QueryParser {
 
 	public boolean hasFailed() {
 		return hasFailed;
+	}
+
+	public Filter getFilterOfSpecifiedIds() {
+		return filter;
 	}
 
 	private void parseSearchTerms() {
@@ -105,13 +195,16 @@ public class QueryParser {
 	/**
 	 * Using the list of positions of the colons, it parses dimension names and
 	 * creates a dimension and adds it to a list of dimensions
+	 * 
+	 * Assumes every character before a colon is part of the name of a dimension,
+	 * unless a quote, space is encountered or start of string is reached
 	 */
 	private void createDimensions() {
 		for (Integer colonPosition: colonPositions) {
 			Dimension dimension = new Dimension();
 			dimension.setEndPosition(colonPosition);
 			boolean startNotFound = true;
-			while (startNotFound) {
+			while (startNotFound) {	
 				for (int pos = colonPosition-1; pos > -1; pos--) {
 					String lookBehind = query.substring(pos, pos + 1);
 					// Quote/space/start of string means detection of begincharacter dimensiontype
@@ -183,5 +276,82 @@ public class QueryParser {
 		public void addSearchTerm(String dimensionName) {
 			searchTerms.add(dimensionName.trim().toLowerCase());
 		}
+	}
+	
+	public interface ParserError extends Serializable {
+		public String description();
+		public String fixTip();
+		public ParseErrorSeverity severity();
+		
+		public enum ParseErrorSeverity {
+			Info,
+			Warning,
+			Error // --> We should not have errors to bother a user with
+		}
+		
+		/** Can't transform a dimension string into a DimensionType enum instance */
+		public class DimensionError implements ParserError {
+			@Override public String description() {
+				return null;
+			}
+
+			@Override
+			public String fixTip() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public ParseErrorSeverity severity() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+		}
+		
+		/** When i.e. "locationid:15" is specified, but "15" is not parseable as an integer */
+		public class IdSearchTermError implements ParserError {
+			private String actualSearchTerm; 
+			
+			public IdSearchTermError() { }
+			public IdSearchTermError(String actualSearchTerm) {
+				super();
+				this.actualSearchTerm = actualSearchTerm;
+			}
+			@Override public String description() {
+				return null;
+			}
+			public String getActualSearchTerm() {
+				return actualSearchTerm;
+			}
+			@Override public String fixTip() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			@Override public ParseErrorSeverity severity() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+		}
+		
+		public class UnsupportedDimension implements ParserError {
+			@Override
+			public String description() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public String fixTip() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public ParseErrorSeverity severity() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+		}
+		
 	}
 }

@@ -1,4 +1,4 @@
-@external .entities, .entity,  .search, .hit, .hits, .additions, .addition, .searchBox .site, .sites, .date, .comment, .iconLocation, .location, .filterView, .searchResults, .filterSummary, .iconDate, .iconActivity, .activity, .iconDatabase, .iconAddEdited, .dateEdited, .panelEntityResults, .searchField;
+@external .searchSmall .entities, .entity,  .search, .hit, .hits, .additions, .addition, .searchBox .site, .sites, .date, .comment, .iconLocation, .location, .filterView, .searchResults, .filterSummary, .iconDate, .iconActivity, .activity, .iconDatabase, .iconAddEdited, .dateEdited, .panelEntityResults, .searchField;
 
 @sprite .iconLocation {
 	gwt-image: "location";
@@ -36,6 +36,11 @@
 
 @sprite .searchField {
 	gwt-image: "search" !important;
+}
+
+@Sprite .searchSmall {
+	gwt-image: "searchSmall";
+	display: inline;
 }
 
 .sites {
@@ -98,7 +103,8 @@ a {
 
 .entity {
 	font-size:12px;
-	margin: 4px;
+	margin: 2px 2px 4px 18px;
+	height: 20px;
 }
 
 .searchResults {

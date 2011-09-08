@@ -14,6 +14,7 @@ import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.PivotTableReportElement;
 import org.sigmah.shared.search.AllSearcher;
+import org.sigmah.shared.search.QueryParser;
 
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.SortInfo;
@@ -38,9 +39,22 @@ public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> 
     }
 
 	@Override
-	public void execute(final Search command, final ExecutionContext context,
+	public void execute(final Search command, final ExecutionContext context, final AsyncCallback<SearchResult> callback) {
+		QueryParser parser = new QueryParser();
+		parser.parse(command.getSearchQuery());
+		if (parser.hasDimensions()) { // assume more refined search using "location:kivu"-like queries 
+			searchDimensions(parser, command, context, callback);
+		} else { // assume first time search
+			searchAll(command, context, callback);
+		}
+	}
+
+	/*
+	 * Assumes the user typed a generic search term without specifying a dimension. Search
+	 * using all possible searchers, and return a list of matched dimensions
+	 */
+	private void searchAll(final Search command, final ExecutionContext context,
 			final AsyncCallback<SearchResult> callback) {
-		
 		AllSearcher allSearcher = new AllSearcher(context.getTransaction());
 		allSearcher.searchAll(command.getSearchQuery(), new AsyncCallback<Filter>() {
 			@Override
@@ -62,10 +76,7 @@ public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> 
 					}
 					content.setEffectiveFilter(resultFilter);
 					searchResult.setPivotTabelData(content);
-					GetSites getSites = new GetSites();
-					getSites.setSortInfo(new SortInfo("DateEdited", SortDir.DESC));
-					getSites.setLimit(10);
-					getSites.setFilter(resultFilter);
+					GetSites getSites = createGetSitesCommand(resultFilter);
 					context.execute(getSites, new AsyncCallback<SiteResult>() {
 						@Override
 						public void onFailure(Throwable caught) {
@@ -82,7 +93,22 @@ public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> 
 					callback.onSuccess(searchResult);
 				}
 			}
+			private GetSites createGetSitesCommand(final Filter resultFilter) {
+				GetSites getSites = new GetSites();
+				getSites.setSortInfo(new SortInfo("DateEdited", SortDir.DESC));
+				getSites.setLimit(10);
+				getSites.setFilter(resultFilter);
+				return getSites;
+			}
 		});
+	}
+
+	private void searchDimensions(QueryParser parser, Search command, ExecutionContext context, AsyncCallback<SearchResult> callback) {
+		// assume more refined search with specified dimensions
+		// create a filter based on the refined search command, then perform the search
+//		for (QueryParser.Dimension dimension: parser.getDimensions()) {
+//			 if (dimension.g)
+//		}
 	}
 
 	private PivotTableReportElement createSearchPivotTableElement() {

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
+import org.sigmah.server.auth.impl.PasswordHelper;
 import org.sigmah.shared.search.QueryParser.Dimension;
 
 public class ParserTest {
@@ -58,6 +59,7 @@ public class ParserTest {
 		ParserTester.test(okQueries.get(4))
 						   .andAssertContainsDimensions("partner")
 						   .andAssertDimension("partner").hasSearchTerms("some");
+		System.out.println(PasswordHelper.hashPassword("woei"));
 	}
 	
 	private void assertAllEvilQueriesFail() {

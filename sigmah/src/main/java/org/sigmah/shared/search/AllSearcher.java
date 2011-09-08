@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.report.model.DimensionType;
@@ -33,6 +34,10 @@ public class AllSearcher {
 	
 	public static List<Searcher<?>> supportedSearchers() {
 		return Collections.unmodifiableList(searchers);
+	}
+	
+	public void searchDimensions(Map<DimensionType, List<String>> dimensions) {
+		
 	}
 	
 	public void searchAll (final String query, final AsyncCallback<Filter> callback) {
