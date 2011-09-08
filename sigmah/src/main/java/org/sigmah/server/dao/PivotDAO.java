@@ -5,15 +5,13 @@
 
 package org.sigmah.server.dao;
 
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.sigmah.server.dao.hibernate.PivotHibernateDAO;
 import org.sigmah.shared.dao.Filter;
-import org.sigmah.shared.report.content.DimensionCategory;
+import org.sigmah.shared.dao.pivot.Bucket;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
 
@@ -39,38 +37,4 @@ public interface PivotDAO {
 
     Map<Integer, String> getFilterLabels(DimensionType type, Set<Integer> map);
 
-    /**
-     * Contains the aggregate value for an intersection of dimension categories.
-     */
-    public static class Bucket {
-        private double value;
-        private Map<Dimension, DimensionCategory> categories = new HashMap<Dimension, DimensionCategory>();
-
-        public Bucket() {
-        }
-
-        public Bucket(double doubleValue) {
-            this.value = doubleValue;
-        }
-
-        public Collection<Dimension> dimensions() {
-            return categories.keySet();
-        }
-
-        public void setCategory(Dimension dimension, DimensionCategory category) {
-            this.categories.put(dimension, category);
-        }
-
-        public DimensionCategory getCategory(Dimension dimension) {
-            return categories.get(dimension);
-        }
-
-        public double doubleValue() {
-            return value;
-        }
-
-        public void setDoubleValue(double value) {
-            this.value = value;
-        }
-    }
 }

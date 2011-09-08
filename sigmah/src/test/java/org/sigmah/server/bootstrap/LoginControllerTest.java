@@ -5,6 +5,8 @@
 
 package org.sigmah.server.bootstrap;
 
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.replay;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -18,13 +20,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.sigmah.server.Cookies;
 import org.sigmah.server.bootstrap.model.LoginPageModel;
+import org.sigmah.server.mail.MailSender;
 
 public class LoginControllerTest extends ControllerTestCase {
 
-
     @Before
     public void setUp() {
-        controller = new LoginController(injector, templateCfg);
+    	MailSender sender = createMock(MailSender.class);
+    	replay(sender);
+    	
+        controller = new LoginController(injector, templateCfg, sender);
 
         req.setRequestURL("http://activityinfo.org/login");
     }

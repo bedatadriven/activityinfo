@@ -53,10 +53,6 @@ public class ActivityInfoEntryPoint implements EntryPoint {
 
         AppInjector injector = GWT.create(AppInjector.class);
 
-        // this isn't strictly necessary,
-        // the cookie's expiration date should be properly set upon offline installation,
-        // but double check here to make sure we can check for the manifest later
-        AuthTokenUtil.maybeEnsurePersistentCookie(injector.getAuthentication());
 
         injector.createWelcomeLoader();
         injector.createDataEntryLoader();

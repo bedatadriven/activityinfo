@@ -144,6 +144,14 @@ public class SqlQueryBuilder {
                 where("Site.SiteId").in(filter.getRestrictions(type));
             }
         }
+        if(filter.getMinDate() != null) {
+        	whereTrue("Site.Date2 >= ?");
+        	parameters.add(filter.getMinDate());
+        }
+        if(filter.getMaxDate() != null) {
+        	whereTrue("Site.Date2 <= ?");
+        	parameters.add(filter.getMaxDate());
+        }
         return this;
     }
 

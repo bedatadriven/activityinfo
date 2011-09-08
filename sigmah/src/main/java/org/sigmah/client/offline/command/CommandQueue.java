@@ -129,6 +129,11 @@ public class CommandQueue {
 					}
 				});
 			}
+
+			@Override
+			public void onError(SqlException e) {
+				callback.onFailure(e);
+			}
 		});
 	}
 	
@@ -266,7 +271,4 @@ public class CommandQueue {
 		}
 		return map;
 	}
-
-
-	
 }

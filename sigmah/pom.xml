@@ -633,7 +633,7 @@
                     <connectors>
                         <connector
                             implementation="org.mortbay.jetty.nio.SelectChannelConnector">
-                            <port>9090</port>
+                            <port>9093</port>
                             <integralPort>9095</integralPort>
                         </connector>
                     </connectors>
@@ -682,7 +682,7 @@
                         <optionSetting>
                             <namespace>aws:elasticbeanstalk:application:environment</namespace>
                             <optionName>PARAM2</optionName>
-                            <value>activityinfo.21test.properties</value>
+                            <value>activityinfo.22test.properties</value>
                         </optionSetting>
                         <optionSetting>
                             <namespace>aws:elasticbeanstalk:application:environment</namespace>
@@ -849,7 +849,7 @@
                             <s3Bucket>activityinfo-wars</s3Bucket>
                             <s3Key>${project.version}-b${BUILD_NUMBER}-${git.commit.id.abbrev}.war</s3Key>
                             <versionLabel>${project.version}-b${BUILD_NUMBER}-${git.commit.id.abbrev}</versionLabel>
-                            <environmentName>activityinfo-latest</environmentName>
+                            <environmentName>activityinfo-beta</environmentName>
                             <cnamePrefix>activityinfo-latest</cnamePrefix>
                         </configuration>
                         <executions>

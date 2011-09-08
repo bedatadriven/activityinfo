@@ -115,14 +115,20 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
         CommandRequest request = new CommandRequest(command, monitor, callback);
         request.fireBeforeRequest();
 
-        if (!request.isMutating() &&
-                !request.mergeSuccessfulInto(pendingCommands) &&
-                !request.mergeSuccessfulInto(executingCommands)) {
+        if (request.isMutating()) {
+        	// mutating requests get queued immediately, don't try to merge them
+        	// into any pending/executing commands, it wouldn't be correct
+        	
+        	queue(request);
+        } else {
+        	if(!request.mergeSuccessfulInto(pendingCommands) &&
+               !request.mergeSuccessfulInto(executingCommands)) {
 
-            queue(request);
-
-            Log.debug("RemoteDispatcher: Scheduled " + command.toString() + ", now " +
-                    pendingCommands.size() + " command(s) pending");
+	            queue(request);
+	
+	            Log.debug("RemoteDispatcher: Scheduled " + command.toString() + ", now " +
+	                    pendingCommands.size() + " command(s) pending");
+        	}
         }
     }
 

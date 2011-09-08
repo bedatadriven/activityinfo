@@ -20,6 +20,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.sigmah.server.dao.PivotDAO;
 import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.dao.pivot.Bucket;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.report.content.DimensionCategory;
 import org.sigmah.shared.report.content.EntityCategory;
@@ -53,7 +54,7 @@ public class PivotTableGeneratorTest {
         element.addColDimension(partnerDim);
 
         // test input data: aggregated results
-        List<PivotDAO.Bucket> buckets = new ArrayList<PivotDAO.Bucket>();
+        List<Bucket> buckets = new ArrayList<Bucket>();
 
         buckets.add(newBucket(433, category(provinceDim, 2, "Sud Kivu"), category(partnerDim, 1, "IRC")));
         buckets.add(newBucket(1032, category(provinceDim, 1, "Nord Kivu"), category(partnerDim, 2, "Solidarites")));
@@ -93,7 +94,7 @@ public class PivotTableGeneratorTest {
         element.addRowDimension(indicatorDim);
 
         // test input data: aggregated results
-        List<PivotDAO.Bucket> buckets = new ArrayList<PivotDAO.Bucket>();
+        List<Bucket> buckets = new ArrayList<Bucket>();
 
         buckets.add(newBucket(300, category(indicatorDim, 1, "Nb. menages", 3)));
         buckets.add(newBucket(400, category(indicatorDim, 2, "Nb. personnes", 1)));
@@ -148,8 +149,8 @@ public class PivotTableGeneratorTest {
         return new AndCategory(dim, new EntityCategory(id, label, sortOrder));
     }
 
-    public PivotDAO.Bucket newBucket(double value, AndCategory... pairs) {
-        PivotDAO.Bucket bucket = new PivotDAO.Bucket();
+    public Bucket newBucket(double value, AndCategory... pairs) {
+        Bucket bucket = new Bucket();
         bucket.setDoubleValue(value);
         for (AndCategory pair : pairs) {
             bucket.setCategory(pair.getDimension(), pair.getCategory());

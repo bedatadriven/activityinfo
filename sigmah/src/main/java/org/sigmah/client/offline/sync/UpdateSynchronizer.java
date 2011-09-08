@@ -25,6 +25,8 @@ public class UpdateSynchronizer {
 	public UpdateSynchronizer(CommandQueue commandQueue, SynchronizerDispatcher dispatcher) {
 		super();
 		this.commandQueue = commandQueue;
+		this.commandQueue.createTableIfNotExists();
+			
 		this.dispatcher = dispatcher;
 	}
 	

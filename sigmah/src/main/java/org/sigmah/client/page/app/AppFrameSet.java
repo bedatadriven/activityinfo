@@ -122,10 +122,7 @@ public class AppFrameSet implements Frame {
         Button logoutTool = new Button(I18N.CONSTANTS.logout(), new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                // TODO: this needs to go elsewhere
-                Cookies.removeCookie("authToken");
-                Cookies.removeCookie("email");
-                Window.Location.reload();
+                Window.Location.assign("/logout");
             }
         });
         topBar.add(logoutTool);

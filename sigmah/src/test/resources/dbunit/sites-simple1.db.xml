@@ -149,6 +149,8 @@
 		ownerUserId="1" lastSchemaUpdate="2009-01-01" />
 
     <userDatabase databaseId="3" name="Alpha" countryId="1" ownerUserId="1" lastSchemaUpdate="2009-01-01"/>
+    
+    <project projectId="1" name="Project X" description="A project" databaseId="3"/>
 
 	<!-- PEAR PLUS Activity #1 - Support to health centers (monthly reporting) -->
 

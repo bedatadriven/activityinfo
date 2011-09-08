@@ -22,53 +22,83 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
  */
 public class ExportMenuButton extends SplitButton {
 
-    /**
+    private Menu menu;
+	private SelectionListener<MenuEvent> menuListener;
+	private ExportCallback callback;
+
+	/**
      * @param defaultFormat the default format that should appear on the SplitButton
      * @param callback the object to call back upon selection
      */
-    public ExportMenuButton(final RenderElement.Format defaultFormat, final ExportCallback callback) {
+    public ExportMenuButton(final RenderElement.Format defaultFormat) {
         this.setIcon(formatIcon(defaultFormat));
         this.setText(I18N.CONSTANTS.export());
 
         this.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
+            	assert callback != null : "You must call withCallback() when building!!";
                 callback.export(defaultFormat);
             }
         });
-        SelectionListener<MenuEvent> menuListener = new SelectionListener<MenuEvent>() {
+        menuListener = new SelectionListener<MenuEvent>() {
             @Override
             public void componentSelected(MenuEvent ce) {
                 callback.export((RenderElement.Format) ce.getItem().getData("format"));
             }
         };
 
-        Menu menu = new Menu();
+        menu = new Menu();
 
+        setMenu(menu);
+    }
+    
+    public ExportMenuButton callbackTo(ExportCallback callback) {
+    	this.callback = callback;
+    	return this;
+    }
+    
+    public ExportMenuButton withWord() {
         MenuItem word = new MenuItem(I18N.CONSTANTS.word(), formatIcon(RenderElement.Format.Word), menuListener);
         word.setData("format", RenderElement.Format.Word);
         menu.add(word);
-
+        
+        return this;
+    }
+    
+    public ExportMenuButton withExcel() {
         MenuItem excel = new MenuItem(I18N.CONSTANTS.excel(), formatIcon(RenderElement.Format.Excel), menuListener);
         excel.setData("format", RenderElement.Format.Excel);
         menu.add(excel);
-
+        
+        return this;
+    }
+    
+    public ExportMenuButton withPowerPoint() {
         MenuItem ppt = new MenuItem(I18N.CONSTANTS.powerPoint(), formatIcon(RenderElement.Format.PowerPoint), menuListener);
         ppt.setData("format", RenderElement.Format.PowerPoint);
         menu.add(ppt);
-
+        
+        return this;
+    }
+    
+    public ExportMenuButton withPdf() {
         MenuItem pdf = new MenuItem(I18N.CONSTANTS.pdf(), formatIcon(RenderElement.Format.PDF), menuListener);
         pdf.setData("format", RenderElement.Format.PDF);
         menu.add(pdf);
-
+        
+        return this;
+    }
+    
+    public ExportMenuButton withPng() {
         MenuItem image = new MenuItem(I18N.CONSTANTS.image(), formatIcon(RenderElement.Format.PNG), menuListener);
         image.setData("format", RenderElement.Format.PNG);
         menu.add(image);
-
-        setMenu(menu);
-
+        
+        return this;
     }
-
+    
+    
     private AbstractImagePrototype formatIcon(RenderElement.Format format) {
         if (format == RenderElement.Format.Excel) {
             return IconImageBundle.ICONS.excel();

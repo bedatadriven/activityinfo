@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.sigmah.client.offline.command.CommandQueue;
 import org.sigmah.client.offline.command.handler.KeyGenerator;
 import org.sigmah.shared.command.CreateSite;
 import org.sigmah.shared.command.result.CreateResult;
@@ -14,12 +13,10 @@ import org.sigmah.shared.dto.AttributeDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
 
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
-import com.bedatadriven.rebar.sql.client.SqlException;
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
 import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
-import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
 import com.bedatadriven.rebar.sql.client.query.SqlInsert;
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -35,12 +32,10 @@ import com.google.inject.Inject;
 public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, CreateResult> {
 
 
-	private SqlDatabase database;
 	private KeyGenerator keyGenerator;
 
 	@Inject
-	public CreateSiteHandler(SqlDatabase database, KeyGenerator keyGenerator) {
-		this.database = database;
+	public CreateSiteHandler(KeyGenerator keyGenerator) {
 		this.keyGenerator = keyGenerator;
 	}
 
@@ -120,7 +115,6 @@ public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, Create
 				}
 			});
 		}
-		
 	}
 
 	private int insertSite(
@@ -139,6 +133,7 @@ public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, Create
 		.value("Date2", properties.get("date2"))
 		.value("Comments", properties.get("comments"))
 		.value("PartnerId", properties.get("partnerId"))
+		.value("ProjectId", properties.get("projectId"))
 		.value("DateCreated", new Date())
 		.value("DateEdited", new Date())
 		.value("Status", 0) // no longer used  TODO : remove from databases

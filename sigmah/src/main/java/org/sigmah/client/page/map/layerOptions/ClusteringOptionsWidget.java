@@ -291,7 +291,7 @@ public class ClusteringOptionsWidget extends LayoutContainer implements HasValue
 		}
 	}
 
-	/*
+	/**
 	 * Ensure the correct AdminLevels are selected for given AdminClustering instance
 	 */
 	private void selectCorrectAdminLevels(AdministrativeLevelClustering adminLevelClustering) {
@@ -305,7 +305,7 @@ public class ClusteringOptionsWidget extends LayoutContainer implements HasValue
 		}
 	}
 
-	/*
+	/**
 	 * Clear selection for all comboboxes containing the AdminLevels per country
 	 */
 	private void clearComboboxesSelection() {

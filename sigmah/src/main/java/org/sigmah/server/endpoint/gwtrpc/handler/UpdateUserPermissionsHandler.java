@@ -10,8 +10,8 @@ import java.util.Date;
 import org.apache.log4j.Logger;
 import org.sigmah.server.dao.PartnerDAO;
 import org.sigmah.server.dao.hibernate.UserDAOImpl;
-import org.sigmah.server.mail.Invitation;
-import org.sigmah.server.mail.Mailer;
+import org.sigmah.server.mail.InvitationMessage;
+import org.sigmah.server.mail.MailSender;
 import org.sigmah.server.util.LocaleHelper;
 import org.sigmah.shared.command.UpdateUserPermissions;
 import org.sigmah.shared.command.handler.CommandHandler;
@@ -41,17 +41,17 @@ public class UpdateUserPermissionsHandler implements CommandHandler<UpdateUserPe
     private final PartnerDAO partnerDAO;
     private final UserPermissionDAO permDAO;
 
-    private final Mailer<Invitation> inviteMailer;
+    private final MailSender mailSender;
     
     private static final Logger logger = Logger.getLogger(UpdateUserPermissionsHandler.class);
 
     @Inject
     public UpdateUserPermissionsHandler(UserDatabaseDAO databaseDAO, PartnerDAO partnerDAO, UserDAO userDAO,
-                                        UserPermissionDAO permDAO, Mailer<Invitation> inviteMailer) {
+                                        UserPermissionDAO permDAO, MailSender mailSender) {
         this.userDAO = userDAO;
         this.partnerDAO = partnerDAO;
         this.permDAO = permDAO;
-        this.inviteMailer = inviteMailer;
+        this.mailSender = mailSender;
         this.databaseDAO = databaseDAO;
     }
 
@@ -98,7 +98,7 @@ public class UpdateUserPermissionsHandler implements CommandHandler<UpdateUserPe
         User user = UserDAOImpl.createNewUser(dto.getEmail(), dto.getName(), executingUser.getLocale());
         userDAO.persist(user);
         try {
-        	inviteMailer.send(new Invitation(user, executingUser), LocaleHelper.getLocaleObject(executingUser));
+        	mailSender.send(new InvitationMessage(user, executingUser));
         } catch (Exception e) {
         	logger.error("Could not send invitation mail", e);
         	throw new CommandException("Failed to send invitation email");

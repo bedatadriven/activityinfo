@@ -5,11 +5,8 @@
 
 package org.sigmah.server.bootstrap;
 
-import static org.sigmah.server.util.StringUtil.isEmpty;
-
 import java.io.IOException;
 
-import javax.persistence.NoResultException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,7 +20,6 @@ import org.sigmah.server.bootstrap.model.InvalidInvitePageModel;
 import org.sigmah.server.dao.Transactional;
 import org.sigmah.server.domain.Authentication;
 import org.sigmah.server.util.logging.LogException;
-import org.sigmah.shared.dao.UserDAO;
 import org.sigmah.shared.domain.User;
 
 import com.google.inject.Inject;
@@ -35,7 +31,7 @@ import freemarker.template.Configuration;
 
 @Singleton
 public class ConfirmInviteController extends AbstractController {
-    public static final String ENDPOINT = "confirm";
+    public static final String ENDPOINT = "/confirm";
 
     @Inject
     public ConfirmInviteController(Injector injector, Configuration templateCfg) {
@@ -84,23 +80,9 @@ public class ConfirmInviteController extends AbstractController {
         Cookies.addAuthCookie(resp, auth, false);
     }
 
-    @Transactional
-    protected User findUserByKey(String key) throws InvalidKeyException {
-        try {
-            if (isEmpty(key)) {
-                throw new InvalidKeyException();
-            }
-
-            UserDAO userDAO = injector.getInstance(UserDAO.class);
-            return userDAO.findUserByChangePasswordKey(key);
-
-        } catch (NoResultException e) {
-            throw new InvalidKeyException();
-        }
-    }
 
     @Transactional
-    private void confirmUserProfile(HttpServletRequest request, User user) throws IncompleteFormException {
+    protected void confirmUserProfile(HttpServletRequest request, User user) throws IncompleteFormException {
         String name = getRequiredParameter(request, "name");
         String locale = getRequiredParameter(request, "locale");
         String password = getRequiredParameter(request, "password");
@@ -112,13 +94,5 @@ public class ConfirmInviteController extends AbstractController {
         user.clearChangePasswordKey();
         user.setNewUser(false);
     }
-
-    private String getRequiredParameter(HttpServletRequest request, String name) {
-        String value = request.getParameter(name);
-        if (isEmpty(value)) {
-            throw new IncompleteFormException();
-        }
-
-        return value;
-    }
+   
 }

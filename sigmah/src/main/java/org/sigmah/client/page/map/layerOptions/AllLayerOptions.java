@@ -119,27 +119,6 @@ public class AllLayerOptions extends ContentPanel implements HasValue<MapLayer> 
 		}
 	}
 
-	/*
-	 * Changes active widget showing layer options 
-	 */
-	public void setMapLayer(MapLayer mapLayer) {
-		this.selectedMapLayer = mapLayer;
-		LayerOptionsWidget layerOptionsWidget = fromLayer(mapLayer);
-		
-		if (mapLayer instanceof BubbleMapLayer) {
-			bubbleMapLayerOptions.setValue((BubbleMapLayer) mapLayer);
-		}
-		if (mapLayer instanceof IconMapLayer) {
-			iconMapLayerOptions.setValue((IconMapLayer) mapLayer);
-		}
-		if (mapLayer instanceof PiechartMapLayer) {
-			piechartMapLayerOptions.setValue((PiechartMapLayer) mapLayer);
-		}
-		
-		setActiveMapLayer(layerOptionsWidget);
-		clusteringOptions.setValue(mapLayer.getClustering(), false);
-	}
-	
 	private LayerOptionsWidget fromLayer(MapLayer mapLayer) {
 		if (mapLayer instanceof BubbleMapLayer) {
 			return bubbleMapLayerOptions;
@@ -181,13 +160,30 @@ public class AllLayerOptions extends ContentPanel implements HasValue<MapLayer> 
 	}
 
 	@Override
-	public void setValue(MapLayer value) {
+	public void setValue(MapLayer mapLayer) {
+		this.selectedMapLayer = mapLayer;
+		LayerOptionsWidget layerOptionsWidget = fromLayer(mapLayer);
 		
+		if (mapLayer instanceof BubbleMapLayer) {
+			bubbleMapLayerOptions.setValue((BubbleMapLayer) mapLayer);
+		}
+		if (mapLayer instanceof IconMapLayer) {
+			iconMapLayerOptions.setValue((IconMapLayer) mapLayer);
+		}
+		if (mapLayer instanceof PiechartMapLayer) {
+			piechartMapLayerOptions.setValue((PiechartMapLayer) mapLayer);
+		}
+		
+		setActiveMapLayer(layerOptionsWidget);
+		clusteringOptions.setValue(mapLayer.getClustering(), false);
 	}
 
 	@Override
-	public void setValue(MapLayer value, boolean fireEvents) {
-		
+	public void setValue(MapLayer mapLayer, boolean fireEvents) {
+		setValue(mapLayer);
+		if (fireEvents) {
+			ValueChangeEvent.fire(this, mapLayer);
+		}
 	}
 
 	@Override

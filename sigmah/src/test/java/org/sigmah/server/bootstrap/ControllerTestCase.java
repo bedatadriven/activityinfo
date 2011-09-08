@@ -75,9 +75,11 @@ public abstract class ControllerTestCase {
 
         User user = new User();
         user.setEmail(USER_EMAIL);
+        user.setHashedPassword("$2$Foo");
 
         newUser.setEmail(NEW_USER_EMAIL);
         newUser.setNewUser(true);
+        newUser.setHashedPassword("$2$Foo");
         newUser.setChangePasswordKey(NEW_USER_KEY);
 
         UserDAO userDAO = createMock(UserDAO.class);

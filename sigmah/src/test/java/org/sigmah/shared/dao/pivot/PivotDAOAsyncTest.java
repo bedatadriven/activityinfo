@@ -3,7 +3,7 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.server.dao.hibernate;
+package org.sigmah.shared.dao.pivot;
 
 import static org.junit.Assert.assertEquals;
 
@@ -19,6 +19,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.dao.OnDataSet;
 import org.sigmah.server.dao.PivotDAO;
+import org.sigmah.server.database.TestDatabaseModule;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.report.content.DimensionCategory;
 import org.sigmah.shared.report.content.EntityCategory;
@@ -31,24 +32,28 @@ import org.sigmah.shared.report.model.DateUnit;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.test.InjectionSupport;
-import org.sigmah.test.MockHibernateModule;
 import org.sigmah.test.Modules;
 
+import com.bedatadriven.rebar.sql.client.SqlDatabase;
+import com.bedatadriven.rebar.sql.client.SqlTransaction;
+import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 @RunWith(InjectionSupport.class)
-@Modules({MockHibernateModule.class})
+@Modules({TestDatabaseModule.class})
 @OnDataSet("/dbunit/sites-simple1.db.xml")
-public class PivotHibernateDAOTest {
+public class PivotDAOAsyncTest {
 
 
-	private PivotDAO dao;
+	private PivotDAOAsync dao;
+	private SqlDatabase db;
     private Set<Dimension> dimensions;
     private Dimension indicatorDim;
     private Filter filter;
     private AdminDimension provinceDim;
     private AdminDimension territoireDim;
-    private List<PivotDAO.Bucket> buckets;
+    private List<Bucket> buckets;
     private Dimension projectDim = new Dimension(DimensionType.Project);
     private Dimension partnerDim;
 
@@ -57,9 +62,9 @@ public class PivotHibernateDAOTest {
     private static final int NB_BENEFICIARIES_ID = 1;
 
     @Inject
-    public PivotHibernateDAOTest(PivotHibernateDAO dao) {  
-
-        this.dao = dao;
+    public PivotDAOAsyncTest(SqlDatabase db, PivotDAOAsync dao) {  
+    	this.dao = dao;
+    	this.db = db;
     }
 
     @BeforeClass
@@ -73,7 +78,7 @@ public class PivotHibernateDAOTest {
 
         execute();
 
-        assertThat().forIndicator(OWNER_USER_ID).thereIsOneBucketWithValue(15100);
+        assertThat().forIndicator(1).thereIsOneBucketWithValue(15100);
     }
 
 
@@ -220,12 +225,13 @@ public class PivotHibernateDAOTest {
         filter.addRestriction(DimensionType.Indicator, 1);
         filter.addRestriction(DimensionType.Indicator, 2);
 
-        List<PivotDAO.Bucket> buckets = dao.aggregate(OWNER_USER_ID, filter, dimensions);
+        execute();
+       
 
         assertEquals(2, buckets.size());
 
-        PivotDAO.Bucket indicator1 = findBucketsByCategory(buckets, indicatorDim, new EntityCategory(1)).get(0);
-        PivotDAO.Bucket indicator2 = findBucketsByCategory(buckets, indicatorDim, new EntityCategory(2)).get(0);
+        Bucket indicator1 = findBucketsByCategory(buckets, indicatorDim, new EntityCategory(1)).get(0);
+        Bucket indicator2 = findBucketsByCategory(buckets, indicatorDim, new EntityCategory(2)).get(0);
 
         EntityCategory cat1 = (EntityCategory) indicator1.getCategory(indicatorDim);
         EntityCategory cat2 = (EntityCategory) indicator2.getCategory(indicatorDim);
@@ -241,8 +247,8 @@ public class PivotHibernateDAOTest {
 
         withIndicatorAsDimension();
 
-        List<PivotDAO.Bucket> buckets = dao.aggregate(OWNER_USER_ID, new Filter(), dimensions);
-
+        execute();
+        
         assertEquals(1, buckets.size());
         assertEquals(13600, (int) buckets.get(0).doubleValue());
 
@@ -255,10 +261,8 @@ public class PivotHibernateDAOTest {
 
         withIndicatorAsDimension();
 
-        Filter filter = new Filter();
-
-        List<PivotDAO.Bucket> buckets = dao.aggregate(1, filter, dimensions);
-
+        execute();
+        
         assertEquals(1, buckets.size());
         assertEquals(0, (int) buckets.get(0).doubleValue());
         assertEquals(5, ((EntityCategory) buckets.get(0).getCategory(this.indicatorDim)).getId());
@@ -274,17 +278,17 @@ public class PivotHibernateDAOTest {
 
         Filter filter = new Filter();
 
-        List<PivotDAO.Bucket> buckets = dao.aggregate(OWNER_USER_ID, filter, dimensions);
-
+        execute();
+        
         assertEquals(3, buckets.size());
         assertEquals(1500, (int)findBucketByQuarter(buckets, 2009, 1).doubleValue());
         assertEquals(3600, (int)findBucketByQuarter(buckets, 2009, 2).doubleValue());
         assertEquals(10000, (int)findBucketByQuarter(buckets, 2008, 4).doubleValue());
     }
 
-    private List<PivotDAO.Bucket> findBucketsByCategory(List<PivotDAO.Bucket> buckets, Dimension dim, DimensionCategory cat) {
-        List<PivotDAO.Bucket> matching = new ArrayList<PivotDAO.Bucket>();
-        for (PivotDAO.Bucket bucket : buckets) {
+    private List<Bucket> findBucketsByCategory(List<Bucket> buckets, Dimension dim, DimensionCategory cat) {
+        List<Bucket> matching = new ArrayList<Bucket>();
+        for (Bucket bucket : buckets) {
             if (bucket.getCategory(dim).equals(cat)) {
                 matching.add(bucket);
             }
@@ -292,8 +296,8 @@ public class PivotHibernateDAOTest {
         return matching;
     }
 
-    private PivotDAO.Bucket findBucketByQuarter(List<PivotDAO.Bucket> buckets, int year, int quarter) {
-        for(PivotDAO.Bucket bucket : buckets) {
+    private Bucket findBucketByQuarter(List<Bucket> buckets, int year, int quarter) {
+        for(Bucket bucket : buckets) {
             QuarterCategory category = (QuarterCategory) bucket.getCategory(new DateDimension(DateUnit.QUARTER));
             if(category.getYear() == year && category.getQuarter() == quarter) {
                 return bucket;
@@ -335,10 +339,31 @@ public class PivotHibernateDAOTest {
     }
 
     private void execute() {
-        buckets = dao.aggregate(OWNER_USER_ID, filter, dimensions);
+    	
+    	db.transaction(new SqlTransactionCallback() {
+
+			@Override
+			public void begin(SqlTransaction tx) {
+				dao.aggregate(tx, dimensions, filter, OWNER_USER_ID, new AsyncCallback<List<Bucket>>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						throw new AssertionError(caught);
+					}
+
+					@Override
+					public void onSuccess(List<Bucket> result) {
+						buckets = result;
+					}
+					
+				});
+			}
+    		
+    	});
+    	
 
         System.err.println("buckets = [");
-        for (PivotDAO.Bucket bucket : buckets) {
+        for (Bucket bucket : buckets) {
             System.err.println("  { value: " + bucket.doubleValue());
             for (Dimension dim : bucket.dimensions()) {
                 DimensionCategory cat = bucket.getCategory(dim);
@@ -355,7 +380,7 @@ public class PivotHibernateDAOTest {
     }
 
     private class AssertionBuilder {
-        List<PivotDAO.Bucket> matching = new ArrayList<PivotDAO.Bucket>(buckets);
+        List<Bucket> matching = new ArrayList<Bucket>(buckets);
         StringBuilder criteria = new StringBuilder();
 
         Object predicate;
@@ -397,9 +422,9 @@ public class PivotHibernateDAOTest {
         }
 
         private void filter(Dimension dim, String label) {
-            ListIterator<PivotDAO.Bucket> it = matching.listIterator();
+            ListIterator<Bucket> it = matching.listIterator();
             while (it.hasNext()) {
-                PivotDAO.Bucket bucket = it.next();
+                Bucket bucket = it.next();
                 DimensionCategory category = bucket.getCategory(dim);
                 if (!(category instanceof LabeledDimensionCategory) ||
                         !((LabeledDimensionCategory) category).getLabel().equals(label)) {
@@ -412,9 +437,9 @@ public class PivotHibernateDAOTest {
 
 
         private void filter(Dimension dim, int id) {
-            ListIterator<PivotDAO.Bucket> it = matching.listIterator();
+            ListIterator<Bucket> it = matching.listIterator();
             while (it.hasNext()) {
-                PivotDAO.Bucket bucket = it.next();
+                Bucket bucket = it.next();
                 DimensionCategory category = bucket.getCategory(dim);
                 if (!(category instanceof EntityCategory) ||
                         ((EntityCategory) category).getId() != id) {

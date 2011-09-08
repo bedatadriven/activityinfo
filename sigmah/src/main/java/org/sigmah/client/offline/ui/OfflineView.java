@@ -15,9 +15,9 @@ import org.sigmah.client.offline.OfflineController.PromptConnectCallback;
 import org.sigmah.client.offline.capability.OfflineCapabilityProfile;
 import org.sigmah.client.util.state.CrossSessionStateProvider;
 
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.Observable;
-import com.extjs.gxt.ui.client.widget.Dialog;
-import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
@@ -25,6 +25,7 @@ import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.Window;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -189,6 +190,20 @@ public class OfflineView extends Button implements OfflineController.View {
 		});
 		connectionDialog.setSessionExpired();
 		connectionDialog.show();
+	}
+	
+	
+
+	@Override
+	public void promptToReloadForNewVersion() {
+		MessageBox.prompt(I18N.CONSTANTS.appTitle(), I18N.CONSTANTS.newVersionPrompt(), new Listener<MessageBoxEvent>() {
+			@Override
+			public void handleEvent(MessageBoxEvent be) {
+				if(be.getButtonClicked().getItemId().equals(MessageBox.OK)) {
+					Window.Location.reload();
+				}
+			}
+		});
 	}
 
 	@Override

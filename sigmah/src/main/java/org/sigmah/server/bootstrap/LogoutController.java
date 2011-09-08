@@ -21,7 +21,7 @@ import freemarker.template.Configuration;
 
 @Singleton
 public class LogoutController extends AbstractController {
-    public static final String ENDPOINT = "logout";
+    public static final String ENDPOINT = "/logout";
 
     @Inject
     public LogoutController(Injector injector, Configuration templateCfg) {
@@ -31,7 +31,7 @@ public class LogoutController extends AbstractController {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logUserOut(resp);
-        delegateGet(LoginController.class, req, resp);
+        resp.sendRedirect("/login");
     }
 
     protected void logUserOut(HttpServletResponse resp) {

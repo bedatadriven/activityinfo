@@ -30,7 +30,7 @@ public class ConnectionDialog extends Window {
 		setHeading(I18N.CONSTANTS.connectionRequired());
 		setModal(true);
 		setClosable(false);
-		setWidth(400);
+		setWidth(475);
 		setHeight(150);
         setBodyStyle("padding: 5px; font-size: 12px");
 		
@@ -57,7 +57,7 @@ public class ConnectionDialog extends Window {
 		});
 	
 		status = new Status();
-        status.setWidth(200);
+        status.setWidth(150);
         this.getButtonBar().add(status);
 		
 		addButton(tryToConnect);

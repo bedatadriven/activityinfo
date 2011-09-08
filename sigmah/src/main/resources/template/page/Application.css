@@ -11,7 +11,7 @@
     color: rgb(192, 192, 192);
     font-weight: 900;
     font-size: 15px;
-    background: url("ActivityInfo/gxt211/images/default/shared/large-loading.gif") no-repeat;
+    background: url("ActivityInfo/gxt224/images/default/shared/large-loading.gif") no-repeat;
     padding-left: 50px;
     padding-top: 5px;
     padding-bottom: 8px;
@@ -176,7 +176,7 @@
 
 .gallery .loading-indicator {
     font-size: 11px;
-    background: url('ActivityInfo/gxt211/images/default/shared/large-loading.gif') no-repeat left;
+    background: url('ActivityInfo/gxt224/images/default/shared/large-loading.gif') no-repeat left;
     padding-left: 20px;
     margin: 10px;
 }
