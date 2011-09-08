@@ -234,10 +234,9 @@ public class OfflineController implements Dispatcher {
     	}
     }
 
-    private void setActiveMode(OfflineMode state) {
+    private void persistState(OfflineMode state) {
         stateManager.set(OFFLINE_MODE_KEY, state.toString());
     }
-
    
     @Override
 	public <T extends CommandResult> void execute(Command<T> command,
@@ -523,7 +522,7 @@ public class OfflineController implements Dispatcher {
         }
 
         public OfflineStrategy activate() {
-            setActiveMode(OfflineMode.OFFLINE);
+            persistState(OfflineMode.OFFLINE);
             offlineManger.getLastSyncTime(new AsyncCallback<Date>() {
 				
 				@Override
@@ -682,6 +681,7 @@ public class OfflineController implements Dispatcher {
 
         @Override
         Strategy activate() {
+        	persistState(OfflineMode.ONLINE);
             view.setButtonTextToOnline();
             view.enableMenu();
             return this;
