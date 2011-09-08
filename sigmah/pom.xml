@@ -9,6 +9,13 @@
     <name>ActivityInfo</name>
     <description>Web-based database platform for program monitoring and reporting for the UN,
         NGOs, and others working in humanitarian, development, and post-conflict contexts.</description>
+
+    <parent>
+       <groupId>org.activityinfo</groupId>
+       <artifactId>activityinfo-parent</artifactId>
+       <version>2.1.5-SNAPSHOT</version>
+    </parent>
+
     <issueManagement>
         <system>mantis</system>
         <url>http://mantis.activityinfo.org</url>
@@ -18,11 +25,6 @@
         <url>http://build.bedatadriven.com/job/ActivityInfo/</url>
     </ciManagement>
     <inceptionYear>2009</inceptionYear>
-	<scm>
-		<connection>scm:git:git@github.com:akbertram/activityinfo.git</connection>
-		<url>scm:git:git@github.com:akbertram/activityinfo.git</url>
-		<developerConnection>scm:git:git@github.com:akbertram/activityinfo.git</developerConnection>
-	</scm>
     <developers>
         <developer>
             <id>akbertram</id>
@@ -101,19 +103,6 @@
         	<url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </pluginRepository>
     </pluginRepositories>
-
-    <distributionManagement>
-        <repository>
-            <id>bedatadriven-oss</id>
-            <name>bedatadriven Open-Source releases</name>
-            <url>http://nexus.bedatadriven.com/content/repositories/oss-releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>bedatadriven-oss</id>
-            <name>bedatadriven Open-Source snapshots</name>
-            <url>http://nexus.bedatadriven.com/content/repositories/oss-snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
 
     <dependencies>
 
