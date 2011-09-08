@@ -36,13 +36,9 @@ import javax.servlet.ServletContextEvent;
  * @author Alex Bertram
  */
 public class StartupListener extends GuiceServletContextListener {
-
     private static Logger logger = Logger.getLogger(StartupListener.class);
-   
     private ServletContext context;
     public static final String INJECTOR_NAME = StartupListener.class.getName();
-
-
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {

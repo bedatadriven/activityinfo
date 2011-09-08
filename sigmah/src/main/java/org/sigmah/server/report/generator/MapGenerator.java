@@ -154,11 +154,13 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         Set<IndicatorDTO> indicatorDTOs = new HashSet<IndicatorDTO>();
         for (Integer indicatorId : indicatorIds) {
         	Indicator indicator = indicatorDAO.findById(indicatorId);
-        	IndicatorDTO indicatorDTO = new IndicatorDTO();
-        	indicatorDTO.setId(indicator.getId());
-        	indicatorDTO.setName(indicator.getName());
-        	
-        	indicatorDTOs.add(indicatorDTO);
+        	if (indicator != null) {
+	        	IndicatorDTO indicatorDTO = new IndicatorDTO();
+	        	indicatorDTO.setId(indicator.getId());
+	        	indicatorDTO.setName(indicator.getName());
+	        	
+	        	indicatorDTOs.add(indicatorDTO);
+        	}
         }
         
         content.setIndicators(indicatorDTOs);
