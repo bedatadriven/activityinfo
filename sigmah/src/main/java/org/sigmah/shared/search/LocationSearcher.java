@@ -21,7 +21,7 @@ public class LocationSearcher implements
 		Searcher<Location> {
 
 	@Override
-	public void search(String testQuery, SqlTransaction tx,
+	public void search(List<String> testQuery, SqlTransaction tx,
 			final AsyncCallback<List<Integer>> callback) {
 		final List<Integer> ids = new ArrayList<Integer>();
 		String tableName = "Location";
@@ -30,8 +30,8 @@ public class LocationSearcher implements
 		SqlQuery
 				.select(primaryKey)
 				.from(tableName)
-				.where("Name")
-				.like(testQuery)
+				.onlyWhere("Name")
+				.likeMany(testQuery)
 				
 				.execute(tx, new SqlResultCallback() {
 					@Override

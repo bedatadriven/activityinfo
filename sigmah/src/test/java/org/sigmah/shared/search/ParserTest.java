@@ -3,12 +3,15 @@ package org.sigmah.shared.search;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
+import static org.sigmah.shared.report.model.DimensionType.Location;
+import static org.sigmah.shared.report.model.DimensionType.Partner;
+import static org.sigmah.shared.report.model.DimensionType.Project;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
-import org.sigmah.server.auth.impl.PasswordHelper;
+import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.search.QueryParser.Dimension;
 
 public class ParserTest {
@@ -17,7 +20,7 @@ public class ParserTest {
 			add("location:\"kivu1\" project:kivu2 kivu3");
 			add("location:\"kivu1\" project:kivu2 kivu3 partner:kivu4 project:\"kivu5\"");
 			add("location:kivu1");
-			//"location:\":::\"",  <-- that one is nasty with the current parser impl setup
+			//"location:\":::\"",  <-- that one is nasty with the current parser impl
 			add("partner:some");
 	}};
 	
@@ -37,29 +40,28 @@ public class ParserTest {
 		//assertAllEvilQueriesFail();
 		
 		ParserTester.test(okQueries.get(0))
-						   .andAssertContainsDimensions("location", "project")
-						   .andAssertDimension("location").hasSearchTerms("kivu1")
-						   .andAssertDimension("project").hasSearchTerms("kivu2 kivu3");
+						   .andAssertContainsDimensions(Location, Project)
+						   .andAssertDimension(Location).hasSearchTerms("kivu1")
+						   .andAssertDimension(Project).hasSearchTerms("kivu2 kivu3");
 
 		ParserTester.test(okQueries.get(1))
-						   .andAssertContainsDimensions("location", "project")
-						   .andAssertDimension("location").hasSearchTerms("kivu1")
-						   .andAssertDimension("project").hasSearchTerms("kivu2 kivu3");
+						   .andAssertContainsDimensions(Location, Project)
+						   .andAssertDimension(Location).hasSearchTerms("kivu1")
+						   .andAssertDimension(Project).hasSearchTerms("kivu2 kivu3");
 
 		ParserTester.test(okQueries.get(2))
-						   .andAssertContainsDimensions("location", "project")
-						   .andAssertDimension("location").hasSearchTerms("kivu1")
-						   .andAssertDimension("project").hasSearchTerms("kivu2 kivu3", "kivu5")
-						   .andAssertDimension("partner").hasSearchTerms("kivu4");
+						   .andAssertContainsDimensions(Location, Project)
+						   .andAssertDimension(Location).hasSearchTerms("kivu1")
+						   .andAssertDimension(Project).hasSearchTerms("kivu2 kivu3", "kivu5")
+						   .andAssertDimension(Partner).hasSearchTerms("kivu4");
 
 		ParserTester.test(okQueries.get(3))
-						   .andAssertContainsDimensions("location")
-						   .andAssertDimension("location").hasSearchTerms("kivu1");
+						   .andAssertContainsDimensions(Location)
+						   .andAssertDimension(Location).hasSearchTerms("kivu1");
 
 		ParserTester.test(okQueries.get(4))
-						   .andAssertContainsDimensions("partner")
-						   .andAssertDimension("partner").hasSearchTerms("some");
-		System.out.println(PasswordHelper.hashPassword("woei"));
+						   .andAssertContainsDimensions(Partner)
+						   .andAssertDimension(Partner).hasSearchTerms("some");
 	}
 	
 	private void assertAllEvilQueriesFail() {
@@ -99,7 +101,7 @@ public class ParserTest {
 	
 	private static class ParserTester {
 		QueryParser parser;
-		private String dimension;
+		private DimensionType dimension;
 		
 		public ParserTester(QueryParser parser) {
 			this.parser = parser;
@@ -109,14 +111,14 @@ public class ParserTest {
 			parser.parse(query);
 			return new ParserTester(parser);
 		}
-		public ParserTester andAssertContainsDimensions(String... dimensionsToCheck) {
-			for (String dimension : dimensionsToCheck) {
+		public ParserTester andAssertContainsDimensions(DimensionType... dimensionsToCheck) {
+			for (DimensionType dimension : dimensionsToCheck) {
 				if (!parser.getUniqueDimensions().containsKey(dimension))
 					fail();
 			}
 			return this;
 		}
-		public ParserTester andAssertDimension(String dimension) {
+		public ParserTester andAssertDimension(DimensionType dimension) {
 			this.dimension=dimension;
 			return this;
 		}

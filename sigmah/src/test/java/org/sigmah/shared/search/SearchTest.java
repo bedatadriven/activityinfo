@@ -3,6 +3,7 @@ package org.sigmah.shared.search;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
@@ -33,7 +34,7 @@ public class SearchTest extends CommandTestCase {
 		db.transaction(new SqlTransactionCallback() {
 			@Override
 			public void begin(SqlTransaction tx) {
-				new AttributeGroupSearcher().search("cause", tx, new AsyncCallback<List<Integer>>() {
+				new AttributeGroupSearcher().search(Arrays.asList("cause"), tx, new AsyncCallback<List<Integer>>() {
 					@Override
 					public void onFailure(Throwable caught) {
 						assertTrue("Did not expect error when searching attribute groups", false);
@@ -82,7 +83,7 @@ public class SearchTest extends CommandTestCase {
 			if (!result.getPivotTabelData().getEffectiveFilter()
 					.getRestrictions(type).contains(id)) {
 				
-				fail(String.format("Expected restriction with id={0} for DimensionType {1}", 
+				fail(String.format("Expected restriction with id=%s for DimensionType %s", 
 						Integer.toString(id), type.toString()));
 			}
 		}

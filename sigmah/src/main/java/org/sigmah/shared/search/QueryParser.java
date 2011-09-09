@@ -1,11 +1,11 @@
 package org.sigmah.shared.search;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.report.model.DimensionType;
 
@@ -21,8 +21,9 @@ public class QueryParser {
 	private Filter filter = new Filter();
 	private List<Integer> colonPositions = new ArrayList<Integer>();
 	private List<Dimension> dimensions = new ArrayList<Dimension>();
-	private Map<String, List<String>> uniqueDimensions = new HashMap<String, List<String>>();
+	private Map<DimensionType, List<String>> uniqueDimensions = new HashMap<DimensionType, List<String>>();
 	private Map<String, List<String>> preciseDimensions = new HashMap<String, List<String>>();
+	private List<String> simpleSearchTerms = new ArrayList<String>();
 	private List<ParserError> errors = new ArrayList<ParserError>();
 	private String query;
 	private boolean hasFailed=false;
@@ -31,21 +32,45 @@ public class QueryParser {
 	public void parse(String query) {
 		this.query=query;
 		
+		if (query.length() ==0) {
+			hasFailed=true;
+			return;
+		}
+		
 		try {
 			determineColonPositions();
 			determineHaveDimensions();
-			if (hasDimensions) {
+			if (hasDimensions) { // i.e. a "location:kivu" or "activity:NFI ditribution" 
 				createDimensions();
 				parseSearchTerms();
 				makeDimensionsUnique();
 				createPreciseDimensions();
+				removePreciseDimensionsFromUniqueDimensions();
 				createFilter();
+			} else {
+				parseSearchTermsList();
 			}
 		} catch (Exception e) {
 			hasFailed=true;
 		}
 	}
 	
+	/** Removes "LocationId:15" from uniqueDimensions */
+	private void removePreciseDimensionsFromUniqueDimensions() {
+		for (String preciseDimension : preciseDimensions.keySet()) {
+			if (uniqueDimensions.containsKey(preciseDimension)) {
+				uniqueDimensions.remove(preciseDimension);
+			}
+		}
+	}
+
+	private void parseSearchTermsList() {
+		String[] splittedByComma = query.split(comma);
+		for (String term : splittedByComma) {
+			simpleSearchTerms.add(term.trim().toLowerCase());
+		}
+	}
+
 	/** This can be done better */
 	private boolean isSupportedDimension(DimensionType dimension) {
 		return (dimension == DimensionType.Activity   ||
@@ -88,8 +113,8 @@ public class QueryParser {
 	
 	/** Transforms a localized dimension into a dimension we can use to parse using the DimensionType enum */
 	// TODO: implement
-	private String fromLocalizedDimension(String localizedDimension) {
-		return localizedDimension;
+	private DimensionType fromLocalizedDimension(String localizedDimension) {
+		return I18N.fromEntities.fromLocalizedString(localizedDimension);
 	}
 
 	private DimensionType fromString(String dimensionString) throws Exception {
@@ -108,9 +133,9 @@ public class QueryParser {
 	}
 
 	private void createPreciseDimensions() {
-		for (String dimension : uniqueDimensions.keySet()) {
-			if (dimension.toLowerCase().endsWith("id")) {
-				preciseDimensions.put(dimension, uniqueDimensions.get(dimension));
+		for (Dimension dimension: dimensions) {
+			if (dimension.isIdDimension()) {
+				preciseDimensions.put(dimension.getName(), uniqueDimensions.get(dimension));
 			}
 		}
 	}
@@ -123,12 +148,18 @@ public class QueryParser {
 		hasDimensions = colonPositions.size() > 0;
 	}
 
+	public List<String> getSimpleSearchTerms() {
+		return simpleSearchTerms;
+	}
+
 	private void makeDimensionsUnique() {
 		for (Dimension d : dimensions) {
-			if (uniqueDimensions.containsKey(d.getName())) {
-				uniqueDimensions.get(d.getName()).addAll(d.getSearchTerms());
-			} else {
-				uniqueDimensions.put(d.name, d.getSearchTerms());
+			if (!d.isIdDimension()) {
+				if (uniqueDimensions.containsKey(d.getDimensionType())) {
+					uniqueDimensions.get(d.getDimensionType()).addAll(d.getSearchTerms());
+				} else {
+					uniqueDimensions.put(d.getDimensionType(), d.getSearchTerms());
+				}
 			}
 		}
 	}
@@ -137,7 +168,7 @@ public class QueryParser {
 		return dimensions;
 	}
 	
-	public Map<String, List<String>> getUniqueDimensions() {
+	public Map<DimensionType, List<String>> getUniqueDimensions() {
 		return uniqueDimensions;
 	}
 
@@ -153,8 +184,7 @@ public class QueryParser {
 		int dimensionCount= dimensions.size();
 		for (int dimensionIndex =0; dimensionIndex < dimensionCount; dimensionIndex++) {
 			Dimension dimension = dimensions.get(dimensionIndex);
-			int endPosition = 
-				dimensionIndex == dimensionCount - 1 ? 
+			int endPosition = dimensionIndex == dimensionCount - 1 ? 
 						query.length() : 
 						dimensions.get(dimensionIndex+1).getStartPosition();
 
@@ -216,13 +246,11 @@ public class QueryParser {
 				}
 			}
 			dimension.setName(query.substring(dimension.getStartPosition(), dimension.getEndPosition()));
-//			dimension.setDimensionType(getDimensionType(dimension.getName()));
+			if (!dimension.isIdDimension()) {
+				dimension.setDimensionType(I18N.fromEntities.fromLocalizedString(dimension.getName()));
+			}
 			dimensions.add(dimension);
 		}
-	}
-
-	private DimensionType getDimensionType(String name) {
-		return Enum.valueOf(DimensionType.class, name);
 	}
 
 	/**
@@ -243,6 +271,7 @@ public class QueryParser {
 		private String name;
 		private DimensionType dimensionType;
 		private List<String> searchTerms = new ArrayList<String>();
+		private boolean isIdDimension; // True when name ends in **Id/ID/id
 		public int getStartPosition() {
 			return startPosition;
 		}
@@ -260,6 +289,7 @@ public class QueryParser {
 		}
 		public void setName(String name) {
 			this.name = name.trim().toLowerCase();
+			setIdDimension(name.endsWith("id"));
 		}
 		public DimensionType getDimensionType() {
 			return dimensionType;
@@ -276,82 +306,11 @@ public class QueryParser {
 		public void addSearchTerm(String dimensionName) {
 			searchTerms.add(dimensionName.trim().toLowerCase());
 		}
-	}
-	
-	public interface ParserError extends Serializable {
-		public String description();
-		public String fixTip();
-		public ParseErrorSeverity severity();
-		
-		public enum ParseErrorSeverity {
-			Info,
-			Warning,
-			Error // --> We should not have errors to bother a user with
+		public void setIdDimension(boolean isIdDimension) {
+			this.isIdDimension = isIdDimension;
 		}
-		
-		/** Can't transform a dimension string into a DimensionType enum instance */
-		public class DimensionError implements ParserError {
-			@Override public String description() {
-				return null;
-			}
-
-			@Override
-			public String fixTip() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public ParseErrorSeverity severity() {
-				// TODO Auto-generated method stub
-				return null;
-			}
+		public boolean isIdDimension() {
+			return isIdDimension;
 		}
-		
-		/** When i.e. "locationid:15" is specified, but "15" is not parseable as an integer */
-		public class IdSearchTermError implements ParserError {
-			private String actualSearchTerm; 
-			
-			public IdSearchTermError() { }
-			public IdSearchTermError(String actualSearchTerm) {
-				super();
-				this.actualSearchTerm = actualSearchTerm;
-			}
-			@Override public String description() {
-				return null;
-			}
-			public String getActualSearchTerm() {
-				return actualSearchTerm;
-			}
-			@Override public String fixTip() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-			@Override public ParseErrorSeverity severity() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-		}
-		
-		public class UnsupportedDimension implements ParserError {
-			@Override
-			public String description() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public String fixTip() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public ParseErrorSeverity severity() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-		}
-		
 	}
 }

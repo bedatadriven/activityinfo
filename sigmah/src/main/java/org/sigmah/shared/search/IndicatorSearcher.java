@@ -17,7 +17,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class IndicatorSearcher implements Searcher<Indicator> {
 
 	@Override
-	public void search(String testQuery, SqlTransaction tx,
+	public void search(List<String> testQuery, SqlTransaction tx,
 			final AsyncCallback<List<Integer>> callback) {
 		
 		final String primaryKey = "IndicatorId";
@@ -28,10 +28,7 @@ public class IndicatorSearcher implements Searcher<Indicator> {
 				.select(primaryKey)
 				.from(tableName)
 				.onlyWhere(ColumnToSearch)
-				.like(testQuery)
-				.or()
-				.onlyWhere("Name")
-				.like(testQuery)
+				.likeMany(testQuery)
 				
 				.execute(tx, new SqlResultCallback() {
 					List<Integer> ids = new ArrayList<Integer>();

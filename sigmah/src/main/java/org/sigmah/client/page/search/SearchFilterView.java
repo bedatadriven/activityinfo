@@ -153,6 +153,7 @@ public class SearchFilterView extends ContentPanel {
 			add(labelNoSearch);
 			
 			addListenerToListview();
+			listviewEntities.setItemSelector(".searchSmall");
 		}
 
 		private void addListenerToListview() {

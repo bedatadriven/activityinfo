@@ -1,5 +1,7 @@
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
+import java.util.List;
+
 import org.sigmah.shared.command.GenerateElement;
 import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.command.Search;
@@ -45,7 +47,7 @@ public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> 
 		if (parser.hasDimensions()) { // assume more refined search using "location:kivu"-like queries 
 			searchDimensions(parser, command, context, callback);
 		} else { // assume first time search
-			searchAll(command, context, callback);
+			searchAll(parser.getSimpleSearchTerms(), context, callback);
 		}
 	}
 
@@ -53,62 +55,34 @@ public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> 
 	 * Assumes the user typed a generic search term without specifying a dimension. Search
 	 * using all possible searchers, and return a list of matched dimensions
 	 */
-	private void searchAll(final Search command, final ExecutionContext context,
+	private void searchAll(final List<String> q, final ExecutionContext context,
 			final AsyncCallback<SearchResult> callback) {
 		AllSearcher allSearcher = new AllSearcher(context.getTransaction());
-		allSearcher.searchAll(command.getSearchQuery(), new AsyncCallback<Filter>() {
+		allSearcher.searchAll(q, new AsyncCallback<Filter>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				callback.onFailure(caught);
 			}
 			@Override
 			public void onSuccess(final Filter resultFilter) {
-				final PivotTableReportElement pivotTable = createSearchPivotTableElement();
-				final SearchResult searchResult = new SearchResult();
-				if (resultFilter.getRestrictedDimensions().size() > 0) {
-					pivotTable.setFilter(resultFilter);
-					GenerateElement<PivotContent> zmd = new GenerateElement<PivotContent>(pivotTable);
-					PivotContent content = null;
-					try {
-						content = (PivotContent) genElHandler.execute(zmd, context.getUser());
-					} catch (CommandException e) {
-						callback.onFailure(e);
-					}
-					content.setEffectiveFilter(resultFilter);
-					searchResult.setPivotTabelData(content);
-					GetSites getSites = createGetSitesCommand(resultFilter);
-					context.execute(getSites, new AsyncCallback<SiteResult>() {
-						@Override
-						public void onFailure(Throwable caught) {
-							callback.onFailure(caught);
-						}
-						@Override
-						public void onSuccess(SiteResult resultSites) {
-							searchResult.setRecentAdditions(resultSites.getData());
-							callback.onSuccess(searchResult);
-						}
-					});
-				} else {
-					// Return empty searchresult when no filtered entities found
-					callback.onSuccess(searchResult);
-				}
+				processFilter(context, callback, resultFilter);
 			}
-			private GetSites createGetSitesCommand(final Filter resultFilter) {
-				GetSites getSites = new GetSites();
-				getSites.setSortInfo(new SortInfo("DateEdited", SortDir.DESC));
-				getSites.setLimit(10);
-				getSites.setFilter(resultFilter);
-				return getSites;
-			}
+
 		});
 	}
 
-	private void searchDimensions(QueryParser parser, Search command, ExecutionContext context, AsyncCallback<SearchResult> callback) {
-		// assume more refined search with specified dimensions
-		// create a filter based on the refined search command, then perform the search
-//		for (QueryParser.Dimension dimension: parser.getDimensions()) {
-//			 if (dimension.g)
-//		}
+	private void searchDimensions(QueryParser parser, Search command, final ExecutionContext context, final AsyncCallback<SearchResult> callback) {
+		AllSearcher allSearcher = new AllSearcher(context.getTransaction());
+		allSearcher.searchDimensions(parser.getUniqueDimensions(), new AsyncCallback<Filter>() {
+			@Override
+			public void onSuccess(Filter result) {
+				processFilter(context, callback, result);
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				callback.onFailure(caught);
+			}
+		});
 	}
 
 	private PivotTableReportElement createSearchPivotTableElement() {
@@ -119,5 +93,47 @@ public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> 
 		pivotTable.addRowDimension(new Dimension(DimensionType.Indicator));
 		
 		return pivotTable;
+	}
+
+	private void processFilter(final ExecutionContext context,
+			final AsyncCallback<SearchResult> callback,
+			final Filter resultFilter) {
+		final PivotTableReportElement pivotTable = createSearchPivotTableElement();
+		final SearchResult searchResult = new SearchResult();
+		if (resultFilter.getRestrictedDimensions().size() > 0) {
+			pivotTable.setFilter(resultFilter);
+			GenerateElement<PivotContent> zmd = new GenerateElement<PivotContent>(pivotTable);
+			PivotContent content = null;
+			try {
+				content = (PivotContent) genElHandler.execute(zmd, context.getUser());
+			} catch (CommandException e) {
+				callback.onFailure(e);
+			}
+			content.setEffectiveFilter(resultFilter);
+			searchResult.setPivotTabelData(content);
+			GetSites getSites = createGetSitesCommand(resultFilter);
+			context.execute(getSites, new AsyncCallback<SiteResult>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					callback.onFailure(caught);
+				}
+				@Override
+				public void onSuccess(SiteResult resultSites) {
+					searchResult.setRecentAdditions(resultSites.getData());
+					callback.onSuccess(searchResult);
+				}
+			});
+		} else {
+			// Return empty searchresult when no filtered entities found
+			callback.onSuccess(searchResult); 
+		}
+	}
+	
+	private GetSites createGetSitesCommand(final Filter resultFilter) {
+		GetSites getSites = new GetSites();
+		getSites.setSortInfo(new SortInfo("DateEdited", SortDir.DESC));
+		getSites.setLimit(10);
+		getSites.setFilter(resultFilter);
+		return getSites;
 	}
 }

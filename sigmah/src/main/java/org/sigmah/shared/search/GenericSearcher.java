@@ -21,7 +21,7 @@ public class GenericSearcher implements Searcher<Object> {
 	}
 
 	@Override
-	public void search(String testQuery, SqlTransaction tx,
+	public void search(List<String> testQuery, SqlTransaction tx,
 			final AsyncCallback<List<Integer>> callback) {
 		final List<Integer> ids = new ArrayList<Integer>();
 		String tableName = dimension.toString();
@@ -30,8 +30,8 @@ public class GenericSearcher implements Searcher<Object> {
 		SqlQuery
 				.select(primaryKey)
 				.from(tableName)
-				.where("Name")
-				.like(testQuery)
+				.onlyWhere("Name")
+				.likeMany(testQuery)
 				
 				.execute(tx, new SqlResultCallback() {
 					@Override

@@ -2,9 +2,11 @@ package org.sigmah.shared.search;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.report.model.DimensionType;
@@ -13,19 +15,19 @@ import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class AllSearcher {
-	private static List<Searcher<?>> searchers = new ArrayList<Searcher<?>>();
+	private static Map<DimensionType, Searcher<?>> searchers = new HashMap<DimensionType, Searcher<?>>();
 	private List<Searcher<?>> failedSearchers = new ArrayList<Searcher<?>>();
 	private Filter filter = new Filter();
 	SqlTransaction tx;
 	
 	static {
-		searchers.add(new GenericSearcher(DimensionType.Partner));
-		searchers.add(new GenericSearcher(DimensionType.Project));
-		searchers.add(new GenericSearcher(DimensionType.AttributeGroup));
-		searchers.add(new LocationSearcher());
-		searchers.add(new AdminEntitySearcher());
+		searchers.put(DimensionType.Partner, new GenericSearcher(DimensionType.Partner));
+		searchers.put(DimensionType.Project, new GenericSearcher(DimensionType.Project));
+		searchers.put(DimensionType.AttributeGroup, new GenericSearcher(DimensionType.AttributeGroup));
+		searchers.put(DimensionType.Location, new LocationSearcher());
+		searchers.put(DimensionType.AdminLevel, new AdminEntitySearcher());
 		//searchers.add(new SiteSearcher());
-		searchers.add(new IndicatorSearcher());
+		searchers.put(DimensionType.Indicator, new IndicatorSearcher());
 	}
 	
 	public AllSearcher(SqlTransaction tx) {
@@ -33,15 +35,11 @@ public class AllSearcher {
 	}
 	
 	public static List<Searcher<?>> supportedSearchers() {
-		return Collections.unmodifiableList(searchers);
+		return Collections.unmodifiableList(new ArrayList<Searcher<?>>(searchers.values()));
 	}
 	
-	public void searchDimensions(Map<DimensionType, List<String>> dimensions) {
-		
-	}
-	
-	public void searchAll (final String query, final AsyncCallback<Filter> callback) {
-		searchNext(query, searchers.iterator(), tx, new AsyncCallback<Filter>() {
+	public void searchDimensions(Map<DimensionType, List<String>> searchTerms, final AsyncCallback<Filter> callback) {
+		searchNextDimension(searchTerms.entrySet().iterator(), tx, new AsyncCallback<Filter>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				callback.onFailure(caught);
@@ -54,7 +52,62 @@ public class AllSearcher {
 		});
 	}
 	
-	public void searchNext(final String q, final Iterator<Searcher<?>> iterator,
+	public void searchAll (final List<String> query, final AsyncCallback<Filter> callback) {
+		searchNext(query, searchers.values().iterator(), tx, new AsyncCallback<Filter>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				callback.onFailure(caught);
+			}
+
+			@Override
+			public void onSuccess(Filter result) {
+				callback.onSuccess(filter);
+			}
+		});
+	}
+	
+	public void searchNextDimension(final Iterator<Entry<DimensionType, List<String>>> iterator,
+			final SqlTransaction tx, final AsyncCallback<Filter> callback) {
+
+		Filter filter = new Filter();
+		final Entry<DimensionType, List<String>> entry = iterator.next();
+		final Searcher<?> searcher = searchers.get(entry.getKey());
+		
+		searcher.search(entry.getValue(), tx, new AsyncCallback<List<Integer>>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				failedSearchers.add(searcher);
+				System.out.println("Failed searcher: ");
+				AllSearcher.this.continueOrYieldFilterSpecific(entry.getValue(), iterator, tx, callback);
+			}
+
+			@Override
+			public void onSuccess(List<Integer> result) {
+				addRestrictions(result);
+				AllSearcher.this.continueOrYieldFilterSpecific(entry.getValue(), iterator, tx, callback);
+			}
+			
+			private void addRestrictions(List<Integer> result) {
+				for (Integer resultId : result) {
+					AllSearcher.this.filter.addRestriction(searcher.getDimensionType(), resultId);
+				}
+			}
+		});
+	}
+	
+	private void continueOrYieldFilterSpecific(final List<String> q,
+			final Iterator<Entry<DimensionType, List<String>>> iterator,
+			final SqlTransaction tx,
+			final AsyncCallback<Filter> callback) {
+		
+		if (iterator.hasNext()) {
+			searchNextDimension(iterator, tx, callback);
+		} else {
+			callback.onSuccess(filter);
+		}
+	}
+	
+	public void searchNext(final List<String> q, final Iterator<Searcher<?>> iterator,
 			final SqlTransaction tx, final AsyncCallback<Filter> callback) {
 
 		Filter filter = new Filter();
@@ -85,7 +138,7 @@ public class AllSearcher {
 		});
 	}
 	
-	private void continueOrYieldFilter(final String q,
+	private void continueOrYieldFilter(final List<String> q,
 			final Iterator<Searcher<?>> iterator,
 			final SqlTransaction tx,
 			final AsyncCallback<Filter> callback) {

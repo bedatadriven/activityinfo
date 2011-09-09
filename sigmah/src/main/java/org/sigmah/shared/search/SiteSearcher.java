@@ -17,7 +17,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class SiteSearcher implements Searcher<Site> {
 
 	@Override
-	public void search(String testQuery, SqlTransaction tx,
+	public void search(List<String> testQuery, SqlTransaction tx,
 			final AsyncCallback<List<Integer>> callback) {
 		
 		final String primaryKey = "SiteId";
@@ -27,8 +27,8 @@ public class SiteSearcher implements Searcher<Site> {
 		SqlQuery
 				.select(primaryKey)
 				.from(tableName)
-				.where(ColumnToSearch)
-				.like(testQuery)
+				.onlyWhere(ColumnToSearch)
+				.likeMany(testQuery)
 				
 				.execute(tx, new SqlResultCallback() {
 					List<Integer> ids = new ArrayList<Integer>();

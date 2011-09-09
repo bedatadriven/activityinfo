@@ -43,6 +43,10 @@
 	display: inline;
 }
 
+.searchSmall:hover {
+	background: lightgrey;
+}
+
 .sites {
 	font-size: 12px;
 	margin: 0.25em;
