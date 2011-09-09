@@ -11,15 +11,12 @@ import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.DirectDispatcher;
 import org.sigmah.client.offline.command.LocalDispatcher;
-import org.sigmah.client.offline.install.InstallSteps;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.Ping;
 import org.sigmah.shared.command.result.VoidResult;
 
-import com.bedatadriven.rebar.appcache.client.AppCache;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 public class SynchronizerImpl implements Synchronizer {
     private static final int SYNC_INTERVAL = 30000;

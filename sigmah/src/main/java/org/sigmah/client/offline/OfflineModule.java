@@ -5,8 +5,6 @@
 
 package org.sigmah.client.offline;
 
-import java.sql.Connection;
-
 import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.offline.command.HandlerRegistry;
 import org.sigmah.client.offline.sync.Synchronizer;
@@ -39,11 +37,6 @@ public class OfflineModule extends AbstractGinModule {
         bind(SqlDialect.class).to(SqliteDialect.class).in(Singleton.class);
         bind(SiteTableDAO.class).to(SqlSiteTableDAO.class).in(Singleton.class);
         bind(HandlerRegistry.class).toProvider(HandlerRegistryProvider.class);
-    }
-
-    @Provides
-    protected Connection provideConnection(Authentication auth) {
-        return new DummyConnection();
     }
     
     @Provides
