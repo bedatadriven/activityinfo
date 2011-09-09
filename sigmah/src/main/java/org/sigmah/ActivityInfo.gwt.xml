@@ -29,6 +29,7 @@
     <inherits name="com.bedatadriven.rebar.sql.Sql"/>
     <inherits name="com.bedatadriven.rebar.sync.Sync"/>
     
+    <inherits name="com.teklabs.gwt.i18n.GwtI18nServer"/>
     <inherits name="com.allen_sauer.gwt.log.gwt-log-impl"/>
     <inherits name="com.extjs.gxt.ui.GXT"/>
     <inherits name="com.extjs.gxt.ui.GXT"/>
