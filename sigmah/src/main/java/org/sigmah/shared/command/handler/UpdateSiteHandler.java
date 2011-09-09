@@ -212,21 +212,33 @@ public class UpdateSiteHandler implements CommandHandlerAsync<UpdateSite, VoidRe
 		// it must be updated in totality for a given site to maintain
 		// consistency
 		
-		SqlUpdate.delete("LocationAdminLink")
-			.where("locationId", locationId)
-			.execute(tx);
-		
-		for(Entry<String,Object> property : properties.entrySet()) {
-			if(property.getKey().startsWith(AdminLevelDTO.PROPERTY_PREFIX)) {
-				Integer entityId = (Integer) property.getValue();
-				if(entityId != null) {
-					SqlInsert.insertInto("LocationAdminLink")
-					.value("AdminEntityId", entityId)
-					.value("Locationid", locationId)
-					.execute(tx);
+		if(hasAdminUpdates(properties)) {
+			
+			SqlUpdate.delete("LocationAdminLink")
+				.where("locationId", locationId)
+				.execute(tx);
+			
+			for(Entry<String,Object> property : properties.entrySet()) {
+				if(property.getKey().startsWith(AdminLevelDTO.PROPERTY_PREFIX)) {
+					Integer entityId = (Integer) property.getValue();
+					if(entityId != null) {
+						SqlInsert.insertInto("LocationAdminLink")
+						.value("AdminEntityId", entityId)
+						.value("Locationid", locationId)
+						.execute(tx);
+					}
 				}
 			}
 		}
 	}
 
+	private boolean hasAdminUpdates(Map<String, Object> changes) {
+		for(String propertyName : changes.keySet()) {
+			if(propertyName.startsWith(AdminLevelDTO.PROPERTY_PREFIX)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 }
