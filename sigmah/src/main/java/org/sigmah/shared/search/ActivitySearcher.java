@@ -17,14 +17,14 @@ public class ActivitySearcher implements Searcher<Activity> {
 
 
 	@Override
-	public void search(String testQuery, SqlTransaction tx, final AsyncCallback<List<Integer>> callback) {
+	public void search(List<String> searchTerms, SqlTransaction tx, final AsyncCallback<List<Integer>> callback) {
 		SqlQuery.select("ActivityId")
 				.from("Activity")
 				.onlyWhere("Name")
-				.like(testQuery)
+				.likeMany(searchTerms)
 				.or()
 				.onlyWhere("Category")
-				.like(testQuery)
+				.likeMany(searchTerms)
 				
 				.execute(tx, new SqlResultCallback() {
 					final List<Integer> activityIds = new ArrayList<Integer>();

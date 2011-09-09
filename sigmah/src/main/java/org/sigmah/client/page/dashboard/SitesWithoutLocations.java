@@ -39,8 +39,10 @@ public class SitesWithoutLocations extends AiPortlet {
 
 	private void getSitesWithoutCoordinates() {
 		service.execute(
-			new GetSitesWithoutCoordinates().setMaxLocations(10),
-			loadingMonitor, new AsyncCallback<SitesWithoutLocationsResult>() {
+			new GetSitesWithoutCoordinates()
+				.setMaxLocations(10),
+			loadingMonitor, 
+			new AsyncCallback<SitesWithoutLocationsResult>() {
 				@Override
 				public void onFailure(Throwable caught) {
 					System.out.println();

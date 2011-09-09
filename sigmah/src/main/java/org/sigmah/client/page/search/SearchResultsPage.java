@@ -7,6 +7,8 @@ import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.entry.SiteMap;
+import org.sigmah.client.page.search.SearchFilterView.DimensionAddedEvent;
+import org.sigmah.client.page.search.SearchFilterView.DimensionAddedEventHandler;
 import org.sigmah.client.page.search.SearchPresenter.RecentSiteModel;
 import org.sigmah.shared.command.result.SearchResult;
 import org.sigmah.shared.command.result.SitePointList;
@@ -101,6 +103,24 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 	private void createFilterView() {
 		filterView = new SearchFilterView();
 		containerFilterAndResult.add(filterView);
+		filterView.addDimensionAddedHandler(new DimensionAddedEventHandler() {
+			@Override
+			public void onDimensionAdded(DimensionAddedEvent event) {
+				addEntityToSearchBox(event.getAddedEntity());
+			}
+		});
+	}
+
+	private void addEntityToSearchBox(SearchResultEntity addedEntity) {
+		textboxSearch.setText(textboxSearch.getText() + " " + createEntityText(addedEntity));
+	}
+
+	private String createEntityText(SearchResultEntity addedEntity) {
+		return new StringBuilder()
+			.append(I18N.fromEntities.localizedStringFrom(addedEntity.getDimension()))
+			.append(":")
+			.append(addedEntity.getName())
+			.toString();
 	}
 
 	private void createSearchBox() {

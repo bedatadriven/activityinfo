@@ -91,7 +91,7 @@ public class SearchPresenter implements SearchView.SearchHandler, Page {
 						String name = getName(entityId, type, pivotContent);
 						String link = GWT.getHostPageBaseURL() + "#search/" + type.toString() + ":" + name;
 						
-						SearchResultEntity entity = new SearchResultEntity(entityId, name, link);
+						SearchResultEntity entity = new SearchResultEntity(entityId, name, link, type);
 						entities.add(entity);
 					}
 					newFilter.put(type, entities);

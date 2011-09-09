@@ -5,10 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.report.model.DimensionType;
 
-/** Transforms a search query string into a Filter instance.
+/** Transforms a search query string into a Filter instance/ workable data structure
  * See related test class for OK/non OK queries
  */
 public class QueryParser {
@@ -20,29 +21,145 @@ public class QueryParser {
 	private Filter filter = new Filter();
 	private List<Integer> colonPositions = new ArrayList<Integer>();
 	private List<Dimension> dimensions = new ArrayList<Dimension>();
-	private Map<String, List<String>> uniqueDimensions = new HashMap<String, List<String>>();
+	private Map<DimensionType, List<String>> uniqueDimensions = new HashMap<DimensionType, List<String>>();
+	private Map<String, List<String>> preciseDimensions = new HashMap<String, List<String>>();
+	private List<String> simpleSearchTerms = new ArrayList<String>();
+	private List<ParserError> errors = new ArrayList<ParserError>();
 	private String query;
 	private boolean hasFailed=false;
+	private boolean hasDimensions = false;
 	
 	public void parse(String query) {
 		this.query=query;
 		
+		if (query.length() ==0) {
+			hasFailed=true;
+			return;
+		}
+		
 		try {
 			determineColonPositions();
-			createDimensions();
-			parseSearchTerms();
-			makeDimensionsUnique();
+			determineHaveDimensions();
+			if (hasDimensions) { // i.e. a "location:kivu" or "activity:NFI ditribution" 
+				createDimensions();
+				parseSearchTerms();
+				makeDimensionsUnique();
+				createPreciseDimensions();
+				removePreciseDimensionsFromUniqueDimensions();
+				createFilter();
+			} else {
+				parseSearchTermsList();
+			}
 		} catch (Exception e) {
 			hasFailed=true;
 		}
 	}
+	
+	/** Removes "LocationId:15" from uniqueDimensions */
+	private void removePreciseDimensionsFromUniqueDimensions() {
+		for (String preciseDimension : preciseDimensions.keySet()) {
+			if (uniqueDimensions.containsKey(preciseDimension)) {
+				uniqueDimensions.remove(preciseDimension);
+			}
+		}
+	}
+
+	private void parseSearchTermsList() {
+		String[] splittedByComma = query.split(comma);
+		for (String term : splittedByComma) {
+			simpleSearchTerms.add(term.trim().toLowerCase());
+		}
+	}
+
+	/** This can be done better */
+	private boolean isSupportedDimension(DimensionType dimension) {
+		return (dimension == DimensionType.Activity   ||
+				dimension == DimensionType.AdminLevel ||
+				dimension == DimensionType.Partner    ||
+				dimension == DimensionType.Location   ||
+				dimension == DimensionType.Project    ||
+				dimension == DimensionType.Indicator  ||
+				dimension == DimensionType.IndicatorCategory);
+	}
+
+	private void createFilter() {
+		Filter filter = new Filter();
+		
+		for (String dimensionString : preciseDimensions.keySet()) {
+			DimensionType dimension;
+			try {
+				
+				dimension = fromString(dimensionString);
+			} catch (Exception e) {
+				continue; // Ruthlessly ignore nonparseable string
+			}
+
+			List<Integer> ids = new ArrayList<Integer>();
+			for (String idString : preciseDimensions.get(dimensionString)) {
+				try {
+					int id = Integer.parseInt(idString);
+					ids.add(id);
+				} catch (Exception ex) {
+					continue; // Ruthlessly ignore nonparseable string
+				}
+			}
+			if (ids.size() > 0 && isSupportedDimension(dimension)) {
+				filter.addRestriction(dimension, ids);
+			}
+		}
+		
+		this.filter=filter;
+	}
+	
+	/** Transforms a localized dimension into a dimension we can use to parse using the DimensionType enum */
+	// TODO: implement
+	private DimensionType fromLocalizedDimension(String localizedDimension) {
+		return I18N.fromEntities.fromLocalizedString(localizedDimension);
+	}
+
+	private DimensionType fromString(String dimensionString) throws Exception {
+		dimensionString = capitalizeFirstLetter(dimensionString.toLowerCase().trim());
+		try {
+			return Enum.valueOf(DimensionType.class, dimensionString);
+		} catch (Exception ex) {
+			throw ex;
+		}
+	}
+	
+	private String capitalizeFirstLetter(String string) {
+		char[] stringArray = string.toCharArray();
+		stringArray[0] = Character.toUpperCase(stringArray[0]);
+		return new String(stringArray);
+	}
+
+	private void createPreciseDimensions() {
+		for (Dimension dimension: dimensions) {
+			if (dimension.isIdDimension()) {
+				preciseDimensions.put(dimension.getName(), uniqueDimensions.get(dimension));
+			}
+		}
+	}
+
+	public boolean hasDimensions() {
+		return hasDimensions;
+	}
+
+	private void determineHaveDimensions() {
+		hasDimensions = colonPositions.size() > 0;
+	}
+
+	public List<String> getSimpleSearchTerms() {
+		return simpleSearchTerms;
+	}
 
 	private void makeDimensionsUnique() {
 		for (Dimension d : dimensions) {
-			if (uniqueDimensions.containsKey(d.getName())) {
-				uniqueDimensions.get(d.getName()).addAll(d.getSearchTerms());
-			} else {
-				uniqueDimensions.put(d.name, d.getSearchTerms());
+			if (!d.isIdDimension()) {
+				if (uniqueDimensions.containsKey(d.getDimensionType())) {
+					uniqueDimensions.get(d.getDimensionType()).addAll(d.getSearchTerms());
+				} else {
+					uniqueDimensions.put(d.getDimensionType(), d.getSearchTerms());
+				}
 			}
 		}
 	}
@@ -51,7 +168,7 @@ public class QueryParser {
 		return dimensions;
 	}
 	
-	public Map<String, List<String>> getUniqueDimensions() {
+	public Map<DimensionType, List<String>> getUniqueDimensions() {
 		return uniqueDimensions;
 	}
 
@@ -59,12 +176,15 @@ public class QueryParser {
 		return hasFailed;
 	}
 
+	public Filter getFilterOfSpecifiedIds() {
+		return filter;
+	}
+
 	private void parseSearchTerms() {
 		int dimensionCount= dimensions.size();
 		for (int dimensionIndex =0; dimensionIndex < dimensionCount; dimensionIndex++) {
 			Dimension dimension = dimensions.get(dimensionIndex);
-			int endPosition = 
-				dimensionIndex == dimensionCount - 1 ? 
+			int endPosition = dimensionIndex == dimensionCount - 1 ? 
 						query.length() : 
 						dimensions.get(dimensionIndex+1).getStartPosition();
 
@@ -105,13 +225,16 @@ public class QueryParser {
 	/**
 	 * Using the list of positions of the colons, it parses dimension names and
 	 * creates a dimension and adds it to a list of dimensions
+	 * 
+	 * Assumes every character before a colon is part of the name of a dimension,
+	 * unless a quote, space is encountered or start of string is reached
 	 */
 	private void createDimensions() {
 		for (Integer colonPosition: colonPositions) {
 			Dimension dimension = new Dimension();
 			dimension.setEndPosition(colonPosition);
 			boolean startNotFound = true;
-			while (startNotFound) {
+			while (startNotFound) {	
 				for (int pos = colonPosition-1; pos > -1; pos--) {
 					String lookBehind = query.substring(pos, pos + 1);
 					// Quote/space/start of string means detection of begincharacter dimensiontype
@@ -123,13 +246,11 @@ public class QueryParser {
 				}
 			}
 			dimension.setName(query.substring(dimension.getStartPosition(), dimension.getEndPosition()));
-//			dimension.setDimensionType(getDimensionType(dimension.getName()));
+			if (!dimension.isIdDimension()) {
+				dimension.setDimensionType(I18N.fromEntities.fromLocalizedString(dimension.getName()));
+			}
 			dimensions.add(dimension);
 		}
-	}
-
-	private DimensionType getDimensionType(String name) {
-		return Enum.valueOf(DimensionType.class, name);
 	}
 
 	/**
@@ -150,6 +271,7 @@ public class QueryParser {
 		private String name;
 		private DimensionType dimensionType;
 		private List<String> searchTerms = new ArrayList<String>();
+		private boolean isIdDimension; // True when name ends in **Id/ID/id
 		public int getStartPosition() {
 			return startPosition;
 		}
@@ -167,6 +289,7 @@ public class QueryParser {
 		}
 		public void setName(String name) {
 			this.name = name.trim().toLowerCase();
+			setIdDimension(name.endsWith("id"));
 		}
 		public DimensionType getDimensionType() {
 			return dimensionType;
@@ -182,6 +305,12 @@ public class QueryParser {
 		}
 		public void addSearchTerm(String dimensionName) {
 			searchTerms.add(dimensionName.trim().toLowerCase());
+		}
+		public void setIdDimension(boolean isIdDimension) {
+			this.isIdDimension = isIdDimension;
+		}
+		public boolean isIdDimension() {
+			return isIdDimension;
 		}
 	}
 }

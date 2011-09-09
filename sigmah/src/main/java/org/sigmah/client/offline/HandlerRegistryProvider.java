@@ -28,7 +28,8 @@ public class HandlerRegistryProvider implements Provider<HandlerRegistry> {
             GetAdminEntitiesHandler adminHandler,
             GetPartnersWithSitesHandler partnersWithSitesHandler,
             CreateSiteHandler createSiteHandler,
-            UpdateSiteHandler updateSiteHandler) {
+            UpdateSiteHandler updateSiteHandler) { 
+            //SearchHandler searchHandler) {
 		
 		registry = new HandlerRegistry();
     	registry.registerHandler(GetSchema.class, schemaHandler);
@@ -37,6 +38,7 @@ public class HandlerRegistryProvider implements Provider<HandlerRegistry> {
     	registry.registerHandler(GetPartnersWithSites.class, partnersWithSitesHandler);
     	registry.registerHandler(CreateSite.class, createSiteHandler);
     	registry.registerHandler(UpdateSite.class, updateSiteHandler);
+    	//registry.registerHandler(Search.class, searchHandler);
 	}
 
 	@Override

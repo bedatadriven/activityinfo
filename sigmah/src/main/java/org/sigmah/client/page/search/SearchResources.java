@@ -37,6 +37,9 @@ public interface SearchResources extends ClientBundle {
 	@Source("search.png")
 	public ImageResource search();	
 	
+	@Source("searchSmall.png")
+	public ImageResource searchSmall();	  
+	
 	public interface SearchStyles extends CssResource {
 		String searchBox();
 		String link();

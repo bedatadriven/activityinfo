@@ -17,14 +17,14 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class AttributeGroupSearcher implements Searcher<Attribute> {
 
 	@Override
-	public void search(String testQuery, SqlTransaction tx, final AsyncCallback<List<Integer>> callback) {
+	public void search(List<String> testQuery, SqlTransaction tx, final AsyncCallback<List<Integer>> callback) {
 		final List<Integer> attributeGroupIds = new ArrayList<Integer>();
 
 		SqlQuery
 				.select("AttributeGroupId")
 				.from("AttributeGroup")
 				.onlyWhere("Name")
-				.like(testQuery)
+				.likeMany(testQuery)
 				
 				.execute(tx, new SqlResultCallback() {
 					@Override

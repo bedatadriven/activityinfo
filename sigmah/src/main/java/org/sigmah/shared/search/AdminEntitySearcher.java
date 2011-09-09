@@ -16,11 +16,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class AdminEntitySearcher implements Searcher<AdminEntity> {
 	
 	@Override
-	public void search(final String testQuery, SqlTransaction tx, final AsyncCallback<List<Integer>> callback) {
+	public void search(final List<String> testQuery, SqlTransaction tx, final AsyncCallback<List<Integer>> callback) {
 		SqlQuery.select("AdminEntityId")
 		.from("AdminEntity")
 		.onlyWhere("Name")
-		.like(testQuery)
+		.likeMany(testQuery)
 		
 		.execute(tx, new SqlResultCallback() {
 			final List<Integer> adminEntityIds = new ArrayList<Integer>();

@@ -1,14 +1,17 @@
 package org.sigmah.client.page.search;
 
+import org.sigmah.shared.report.model.DimensionType;
+
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 // Simple tuple for a filter hit
 public class SearchResultEntity extends BaseModelData {
 	
-	public SearchResultEntity(int id, String name, String url) {
+	public SearchResultEntity(int id, String name, String url, DimensionType dimensionType) {
 		setId(id);
 		setName(name);
 		setUrl(url);
+		setDimensionType(dimensionType);
 	}
 	public int getId() {
 		return (Integer)get("id");
@@ -27,5 +30,11 @@ public class SearchResultEntity extends BaseModelData {
 	}
 	public void setUrl(String url) {
 		set("url",url);
+	}
+	public DimensionType getDimension() {
+		return (DimensionType) get("dimensionType");
+	}
+	public void setDimensionType(DimensionType dimensionType) {
+		set("dimensionType", dimensionType);
 	}
 }
