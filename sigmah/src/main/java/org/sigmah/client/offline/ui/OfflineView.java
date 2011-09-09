@@ -158,7 +158,7 @@ public class OfflineView extends Button implements OfflineController.View {
 
 	@Override
 	public void showError(String message) {
-		MessageBox.alert(I18N.CONSTANTS.offlineMode(), I18N.CONSTANTS.offlineInstallError() + message, null);
+		MessageBox.alert(I18N.CONSTANTS.offlineMode(), I18N.CONSTANTS.offlineInstallError() + "<br><br>" + message, null);
 
 	}
 
