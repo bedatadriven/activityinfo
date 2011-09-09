@@ -104,12 +104,13 @@ public class LocationUpdateBuilder implements UpdateBuilder {
 			.setParameter("ids", locationIds)
 			.getResultList();
 
-
-			builder.beginPreparedStatement("insert into LocationAdminLink (LocationId, AdminEntityId) values (?, ?)");
-			for(Object[] join : joins) {
-				builder.addExecution(join[0], join[1]);
+			if(!joins.isEmpty()) {
+				builder.beginPreparedStatement("insert into LocationAdminLink (LocationId, AdminEntityId) values (?, ?)");
+				for(Object[] join : joins) {
+					builder.addExecution(join[0], join[1]);
+				}
+				builder.finishPreparedStatement();
 			}
-			builder.finishPreparedStatement();
 		}
 	}
 	
