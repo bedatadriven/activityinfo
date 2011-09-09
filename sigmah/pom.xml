@@ -81,6 +81,11 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+        <repository>
+        	<id>teklabs</id>
+        	<name>Teklabs repo for i18n serverside</name>
+        	<url>https://service.teklabs.com/nexus/content/repositories/public-releases/</url>
+        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -175,6 +180,12 @@
             <artifactId>guava</artifactId>
             <version>r09</version>
         </dependency>
+        
+        <dependency>
+	        <groupId>com.teklabs.gwt-i18n-server</groupId>
+	        <artifactId>gwt-i18n-server</artifactId>
+	        <version>0.6</version>
+	    </dependency>
 
         <!-- Rebar- client persistence -->
 
@@ -324,7 +335,7 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.4.2</version>
+            <version>1.6.1</version>
         </dependency>
 
         <!-- Bean Mapping and XML -->

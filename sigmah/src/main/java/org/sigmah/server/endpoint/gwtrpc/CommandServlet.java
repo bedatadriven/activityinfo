@@ -14,23 +14,21 @@ import org.sigmah.server.dao.AuthenticationDAO;
 import org.sigmah.server.dao.Transactional;
 import org.sigmah.server.domain.Authentication;
 import org.sigmah.server.domain.DomainFilters;
-import org.sigmah.server.endpoint.gwtrpc.handler.HandlerUtil;
+import org.sigmah.server.util.LocaleHelper;
 import org.sigmah.server.util.logging.LogException;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.RemoteCommandService;
-import org.sigmah.shared.command.handler.CommandHandler;
-import org.sigmah.shared.command.handler.CommandHandlerAsync;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.InvalidAuthTokenException;
 import org.sigmah.shared.exception.UnexpectedCommandException;
 
-import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import com.teklabs.gwt.i18n.server.LocaleProxy;
 
 
 /**
@@ -67,6 +65,7 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
     public CommandResult execute(String authToken, Command command) throws CommandException {
         Authentication auth = retrieveAuthentication(authToken);
         applyUserFilters(auth.getUser());
+        LocaleProxy.setLocale(LocaleHelper.getLocaleObject(auth.getUser()));
         return handleCommand(auth.getUser(), command);
     }
 

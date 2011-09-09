@@ -20,6 +20,7 @@ import org.sigmah.server.endpoint.kml.KmlModule;
 import org.sigmah.server.mail.MailModule;
 import org.sigmah.server.report.ReportModule;
 import org.sigmah.server.util.BeanMappingModule;
+import org.sigmah.server.util.LocaleModule;
 import org.sigmah.server.util.TemplateModule;
 import org.sigmah.server.util.logging.LoggingModule;
 
@@ -67,7 +68,9 @@ public class StartupListener extends GuiceServletContextListener {
                 new GwtRpcModule(),
                 new ExportModule(),
                 new JsonRpcModule(),
-                new KmlModule());
+                new KmlModule(),
+                new LocaleModule());
+        
 
 //        ScheduleInitializer si = injector.getInstance(ScheduleInitializer.class);
 //        si.init();
