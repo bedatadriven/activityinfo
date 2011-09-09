@@ -35,7 +35,6 @@ public class OfflineModule extends AbstractGinModule {
 
         //DAOs for off-line
         bind(SqlDialect.class).to(SqliteDialect.class).in(Singleton.class);
-        bind(SiteTableDAO.class).to(SqlSiteTableDAO.class).in(Singleton.class);
         bind(HandlerRegistry.class).toProvider(HandlerRegistryProvider.class);
     }
     
