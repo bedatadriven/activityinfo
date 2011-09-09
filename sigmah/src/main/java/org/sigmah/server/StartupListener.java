@@ -70,13 +70,9 @@ public class StartupListener extends GuiceServletContextListener {
                 new JsonRpcModule(),
                 new KmlModule(),
                 new LocaleModule());
-        
-
-//        ScheduleInitializer si = injector.getInstance(ScheduleInitializer.class);
-//        si.init();
 
         context.setAttribute(INJECTOR_NAME, injector);
-
+        
         return injector;
     }
 
