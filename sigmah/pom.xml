@@ -527,7 +527,10 @@
                             <goal>compile</goal>
                         </goals>
                         <configuration>
-                            <disableClassMetadata>true</disableClassMetadata>
+                            <!-- restored temporarily for debugging purposes 
+                                <disableClassMetadata>true</disableClassMetadata>
+                            --> 
+
                             <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
                             <logLevel>INFO</logLevel>
                             <compileReport>true</compileReport>

@@ -5,6 +5,9 @@
 
 package org.sigmah.server.endpoint.gwtrpc;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,11 +19,14 @@ import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.command.UpdateEntity;
 import org.sigmah.shared.command.UpdateSite;
 import org.sigmah.shared.command.result.ListResult;
+import org.sigmah.shared.command.result.SiteResult;
 import org.sigmah.shared.domain.LockedPeriod;
 import org.sigmah.shared.domain.Site;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.test.InjectionSupport;
+
+import com.google.common.collect.Maps;
 
 
 @RunWith(InjectionSupport.class)
@@ -64,6 +70,23 @@ public class UpdateSiteTest extends CommandTestCase {
         Assert.assertEquals("site.attribute[4]", true, model.getAttributeValue(1));
     }
 
+    @Test
+    public void testUpdatePreservesAdminMemberships() throws CommandException {
+        
+        Map<String, Object> changes = Maps.newHashMap();
+        changes.put("comments", "new comments");
+        
+        execute(new UpdateSite(1, changes));
+
+        // retrieve the old one
+	
+        SiteResult result = execute(GetSites.byId(1));
+        SiteDTO secondRead = result.getData().get(0);
+
+        assertThat(secondRead.getAdminEntity(1).getId(), equalTo(2));
+        assertThat(secondRead.getAdminEntity(2).getId(), equalTo(12));
+    }
+    
     @Test
     public void testUpdatePartner() throws CommandException {
         // define changes for site id=2

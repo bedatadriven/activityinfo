@@ -10,7 +10,6 @@ import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
-import com.bedatadriven.rebar.sql.client.SqlException;
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
 import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
@@ -92,10 +91,10 @@ public class GetAdminEntitiesHandler implements CommandHandlerAsync<GetAdminEnti
 		}
 		BoundingBoxDTO bounds = BoundingBoxDTO.empty();
 		if(!row.isNull("x1")) {
-			bounds.setX1(row.getInt("x1"));
-			bounds.setY1(row.getInt("y1"));
-			bounds.setX2(row.getInt("x2"));
-			bounds.setY2(row.getInt("y2"));
+			bounds.setX1(row.getDouble("x1"));
+			bounds.setY1(row.getDouble("y1"));
+			bounds.setX2(row.getDouble("x2"));
+			bounds.setY2(row.getDouble("y2"));
 			entity.setBounds(bounds);
 		}
 		return entity;

@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.sigmah.database.ClientDatabaseStubs;
 import org.sigmah.shared.command.CreateSite;
@@ -19,8 +20,14 @@ import org.sigmah.shared.util.Collector;
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
+import com.bedatadriven.rebar.sql.server.jdbc.JdbcScheduler;
 
 public class CommandQueueTest {
+	
+	@Before
+	public void cleanUpPreemptively() {
+		JdbcScheduler.get().forceCleanup();
+	}
 	
 	@Test
 	public void testCreateSite() {

@@ -17,6 +17,7 @@ import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlException;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
+import com.bedatadriven.rebar.sql.server.jdbc.JdbcScheduler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Injector;
 
@@ -91,6 +92,9 @@ class ServerExecutionContext implements ExecutionContext {
 		if(handler instanceof CommandHandler) {
 			return ((CommandHandler) handler).execute(command, user);
 		}
+		
+		// TODO: log here, if there is something in the queue there is a problem somewhere.
+		JdbcScheduler.get().forceCleanup();
  		
 		injector.getInstance(SqlDatabase.class).transaction(new SqlTransactionCallback() {
 			

@@ -53,7 +53,7 @@ public class GetAdminEntitiesHandlerTest extends CommandTestCase {
         assertThat(kalehe.getBounds(), is(not(nullValue())));
         assertThat(kalehe.getBounds().getX1(), equalTo(-44d));
         assertThat(kalehe.getBounds().getY1(), equalTo(-22d));
-        assertThat(kalehe.getBounds().getX2(), equalTo(33d));
+        assertThat(kalehe.getBounds().getX2(), equalTo(33.5d));
         assertThat(kalehe.getBounds().getY2(), equalTo(40d));
     }
 
