@@ -253,4 +253,5 @@ public interface IconImageBundle extends ImageBundle {
     AbstractImagePrototype note();
     AbstractImagePrototype favorite();
     AbstractImagePrototype emptyFavorite();
+    AbstractImagePrototype csv();
 }
