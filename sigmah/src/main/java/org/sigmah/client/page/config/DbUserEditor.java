@@ -7,6 +7,7 @@ package org.sigmah.client.page.config;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.dispatch.callback.DownloadCallback;
 import org.sigmah.client.dispatch.loader.PagingCmdLoader;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
@@ -19,6 +20,7 @@ import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.BatchCommand;
 import org.sigmah.shared.command.Command;
+import org.sigmah.shared.command.ExportUsers;
 import org.sigmah.shared.command.GetUsers;
 import org.sigmah.shared.command.UpdateUserPermissions;
 import org.sigmah.shared.command.result.UserResult;
@@ -250,5 +252,17 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO>
         record.endEdit();
         onDirtyFlagChanged(store.getModifiedRecords().size() != 0);
     }
+
+	@Override
+	public void onUIAction(String actionId) {
+		super.onUIAction(actionId);
+		
+		if (actionId.equals(UIActions.export)) {
+			ExportUsers exportUsers = new ExportUsers()
+				.setDatabaseId(db.getId())
+				.setShowPermissions(true);
+			service.execute(exportUsers, null, new DownloadCallback(eventBus));
+		}
+	}
 
 }

@@ -147,10 +147,10 @@ public class DbUserGrid extends AbstractEditorGridView<UserPermissionDTO, DbUser
         toolBar.addSaveSplitButton();
         toolBar.addButton(UIActions.add, I18N.CONSTANTS.addUser(), IconImageBundle.ICONS.addUser());
         toolBar.addButton(UIActions.delete, I18N.CONSTANTS.delete(), IconImageBundle.ICONS.deleteUser());
+        toolBar.addExcelExportButton();
     }
 
     public FormDialogTether showNewForm(UserPermissionDTO user, FormDialogCallback callback) {
-
         UserForm form = new UserForm(db);
         form.getBinding().bind(user);
 
