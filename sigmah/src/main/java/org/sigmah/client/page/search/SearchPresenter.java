@@ -60,55 +60,59 @@ public class SearchPresenter implements SearchView.SearchHandler, Page {
 	
 	@Override
 	public void onSearch(SearchEvent searchEvent) {
-		view.setSearchQuery(searchEvent.getQuery());
-		view.getLoadingMonitor().beforeRequest();
-		
-		service.execute(new Search(searchEvent.getQuery()), view.getLoadingMonitor(), new AsyncCallback<SearchResult>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO handle failure
-				view.getLoadingMonitor().onServerError();
-			}
-
-			@Override
-			public void onSuccess(SearchResult result) {
-				view.setSearchResults(result.getPivotTabelData());
-				view.setFilter(createFilter(result.getPivotTabelData().getEffectiveFilter(), result.getPivotTabelData()));
-				view.getLoadingMonitor().onCompleted();
-				view.setSitePoints(SitePointList.fromSitesList(result.getRecentAdditions()));
-				view.setSites(fromSitesList(result.getRecentAdditions()));
-			}
-
-			private Map<DimensionType, List<SearchResultEntity>> createFilter(
-					Filter effectiveFilter, PivotContent pivotContent) {
-				
-				Map<DimensionType, List<SearchResultEntity>> newFilter = new HashMap<DimensionType, List<SearchResultEntity>>();
-				
-				for (DimensionType type : effectiveFilter.getRestrictedDimensions()) {
+		if (searchEvent.getQuery()!= null && searchEvent.getQuery().length() > 2) {
+			view.setSearchQuery(searchEvent.getQuery());
+			view.getLoadingMonitor().beforeRequest();
+			
+			service.execute(new Search(searchEvent.getQuery()), view.getLoadingMonitor(), new AsyncCallback<SearchResult>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					// TODO handle failure
+					view.getLoadingMonitor().onServerError();
+				}
+	
+				@Override
+				public void onSuccess(SearchResult result) {
+					view.setSearchResults(result.getPivotTabelData());
+					Filter filter = result.getPivotTabelData() == null ? null : result.getPivotTabelData().getEffectiveFilter(); 
+					view.setFilter(createFilter(filter, result.getPivotTabelData()));
+					view.getLoadingMonitor().onCompleted();
+					view.setSitePoints(SitePointList.fromSitesList(result.getRecentAdditions()));
+					view.setSites(fromSitesList(result.getRecentAdditions()));
+				}
+	
+				private Map<DimensionType, List<SearchResultEntity>> createFilter(
+						Filter effectiveFilter, PivotContent pivotContent) {
 					
-					List<SearchResultEntity> entities = new ArrayList<SearchResultEntity>();
-					for (Integer entityId : effectiveFilter.getRestrictions(type)) {
-						String name = getName(entityId, type, pivotContent);
-						String link = GWT.getHostPageBaseURL() + "#search/" + type.toString() + ":" + name;
-						
-						SearchResultEntity entity = new SearchResultEntity(entityId, name, link, type);
-						entities.add(entity);
+					Map<DimensionType, List<SearchResultEntity>> newFilter = new HashMap<DimensionType, List<SearchResultEntity>>();
+					
+					if (effectiveFilter != null){ 
+						for (DimensionType type : effectiveFilter.getRestrictedDimensions()) {
+							List<SearchResultEntity> entities = new ArrayList<SearchResultEntity>();
+							for (Integer entityId : effectiveFilter.getRestrictions(type)) {
+								String name = getName(entityId, type, pivotContent);
+								String link = GWT.getHostPageBaseURL() + "#search/" + type.toString() + ":" + name;
+								
+								SearchResultEntity entity = new SearchResultEntity(entityId, name, link, type);
+								entities.add(entity);
+							}
+							newFilter.put(type, entities);
+						}
 					}
-					newFilter.put(type, entities);
+					
+					return newFilter;
 				}
-				
-				return newFilter;
-			}
-
-			private String getName(Integer entityId, DimensionType type, PivotContent pivotTable) {
-				for (FilterDescription fd : pivotTable.getFilterDescriptions()) {
-					if (fd.getDimensionType() == type) {
-						return fd.getLabels().get(entityId);
+	
+				private String getName(Integer entityId, DimensionType type, PivotContent pivotTable) {
+					for (FilterDescription fd : pivotTable.getFilterDescriptions()) {
+						if (fd.getDimensionType() == type) {
+							return fd.getLabels().get(entityId);
+						}
 					}
+					return "noName";
 				}
-				return "noName";
-			}
-		});
+			});
+		}
 	}
 
 	@Override

@@ -219,7 +219,7 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 				Integer.toString(activities), 
 				Integer.toString(indicators)));
 
-		layout(true);
+		layout();
 	}
 
 	@Override

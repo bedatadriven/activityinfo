@@ -8,6 +8,7 @@ package org.sigmah.server.endpoint.gwtrpc;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import javax.persistence.EntityManager;
 
@@ -49,6 +50,7 @@ public abstract class CommandTestCase {
     protected <T extends CommandResult> T execute(Command<T> command) throws CommandException {
         User user = em.find(User.class, userId);
         assert user != null;
+        Locale.setDefault(Locale.ENGLISH);
 
         List<CommandResult> results = servlet.handleCommands(user, Collections.<Command>singletonList(command));
 
