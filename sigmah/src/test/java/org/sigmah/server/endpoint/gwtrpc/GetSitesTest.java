@@ -57,6 +57,12 @@ public class GetSitesTest extends CommandTestCase2{
         Assert.assertNotNull("admin bounds", s.getAdminEntity(1).getBounds());
         Assert.assertEquals("indicator", 10000.0, s.getIndicatorValue(1));
         Assert.assertNull("site x", s.getX());
+        
+        // assure project is present
+        SiteDTO s1 = result.getData().get(1);
+        assertThat(s1.getId(), equalTo(1));
+        assertThat(s1.getProject().getId(), equalTo(1));
+        
     }
 
     @Test
@@ -172,7 +178,6 @@ public class GetSitesTest extends CommandTestCase2{
 
         Assert.assertEquals("rows", 8, result.getData().size());
         Assert.assertNotNull("activityId", result.getData().get(0).getActivityId());
-
     }
 
     @Test
@@ -183,7 +188,6 @@ public class GetSitesTest extends CommandTestCase2{
         PagingLoadResult<SiteDTO> result = execute(new GetSites());
 
         Assert.assertEquals("rows", 0, result.getData().size());
-
     }
 
     @Test
@@ -203,6 +207,4 @@ public class GetSitesTest extends CommandTestCase2{
         Assert.assertEquals("rows on this page", 1, result.getData().size());
         Assert.assertEquals("correct site returned", 1, result.getData().get(0).getId());
     }
-    
-    
 }

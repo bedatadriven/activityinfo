@@ -16,6 +16,5 @@
 
     <modules>
       <module>sigmah</module>
-      <module>tests</module>
     </modules>
 </project>
