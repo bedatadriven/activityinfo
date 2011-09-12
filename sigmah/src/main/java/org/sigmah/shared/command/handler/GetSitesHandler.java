@@ -11,6 +11,7 @@ import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.PartnerDTO;
+import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.report.model.DimensionType;
 
@@ -67,6 +68,8 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 			.appendColumn("site.DateCreated", "DateCreated")
 			.appendColumn("partner.PartnerId", "PartnerId")
 			.appendColumn("partner.name", "PartnerName")
+			.appendColumn("site.projectId", "ProjectId")
+			.appendColumn("project.name", "ProjectName")
 			.appendColumn("location.name", "LocationName")
 			.appendColumn("location.axe", "LocationAxe")
 			.appendColumn("locationType.name", "LocationTypeName")
@@ -118,6 +121,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 			.leftJoin("Location").on("Site.LocationId = Location.LocationId")
 			.leftJoin("LocationType").on("Location.LocationTypeId = LocationType.LocationTypeId")
 			.leftJoin("Partner").on("Site.PartnerId = Partner.PartnerId")
+			.leftJoin("Project").on("Site.ProjectId = Project.ProjectId")
 		.whereTrue("Activity.dateDeleted IS NULL")
 			.and("UserDatabase.dateDeleted IS NULL");
 	}
@@ -350,6 +354,13 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
         PartnerDTO partner = new PartnerDTO();
         partner.setId( row.getInt("PartnerId"));
         partner.setName( row.getString("PartnerName") );
+        
+        if( !row.isNull("ProjectId") ) {
+        	ProjectDTO project = new ProjectDTO();
+        	project.setId( row.getInt("ProjectId") );
+        	project.setName( row.getString("ProjectName") );
+        	model.setProject(project);
+        }
         
         model.setPartner(partner);
         return model;
