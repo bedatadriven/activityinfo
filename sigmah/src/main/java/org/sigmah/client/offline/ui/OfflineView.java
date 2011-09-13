@@ -196,12 +196,10 @@ public class OfflineView extends Button implements OfflineController.View {
 
 	@Override
 	public void promptToReloadForNewVersion() {
-		MessageBox.prompt(I18N.CONSTANTS.appTitle(), I18N.CONSTANTS.newVersionPrompt(), new Listener<MessageBoxEvent>() {
+		MessageBox.alert(I18N.CONSTANTS.appTitle(), I18N.CONSTANTS.newVersionPrompt(), new Listener<MessageBoxEvent>() {
 			@Override
 			public void handleEvent(MessageBoxEvent be) {
-				if(be.getButtonClicked().getItemId().equals(MessageBox.OK)) {
-					Window.Location.reload();
-				}
+				Window.Location.reload();
 			}
 		});
 	}
