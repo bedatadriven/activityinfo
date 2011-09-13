@@ -18,8 +18,8 @@ import org.sigmah.shared.dto.UserPermissionDTO;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.UnexpectedCommandException;
 
-import com.google.gwt.thirdparty.guava.common.base.Charsets;
-import com.google.gwt.thirdparty.guava.common.io.Files;
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
 import com.google.inject.Inject;
 
 public class ExportUsersHandler implements CommandHandler<ExportUsers>{
@@ -36,16 +36,13 @@ public class ExportUsersHandler implements CommandHandler<ExportUsers>{
 	@Override
 	public CommandResult execute(ExportUsers cmd, User user) throws CommandException {
 		UserResult users = (UserResult) usersHandler.execute(new GetUsers(cmd.getDatabaseId()), user);
-
         String filename = SecureTokenGenerator.generate() + ".csv";
         String path = context.getRealPath("/temp") + "/" + filename;
-
         try {
             File file = new File(path);
             StringBuilder builder = new StringBuilder();
     		generateUserListInCsvFile(users, builder);
     		Files.write(builder, file, Charsets.UTF_8);
-
         } catch (IOException e) {
             e.printStackTrace();
             throw new UnexpectedCommandException();
