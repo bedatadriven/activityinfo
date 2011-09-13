@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 
@@ -25,14 +26,22 @@ import org.sigmah.server.dao.OnDataSet;
 import org.sigmah.server.sync.TimestampHelper;
 import org.sigmah.server.util.BeanMappingModule;
 import org.sigmah.server.util.logging.LoggingModule;
+import org.sigmah.shared.command.Delete;
+import org.sigmah.shared.command.GetSites;
+import org.sigmah.shared.command.UpdateSite;
 import org.sigmah.shared.command.handler.LocalHandlerTestCase;
+import org.sigmah.shared.command.result.SiteResult;
 import org.sigmah.shared.domain.AdminEntity;
 import org.sigmah.shared.domain.Location;
 import org.sigmah.shared.domain.LocationType;
+import org.sigmah.shared.dto.AttributeDTO;
+import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.util.Collector;
 import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.MockHibernateModule;
 import org.sigmah.test.Modules;
+
+import com.google.common.collect.Maps;
 
 @RunWith(InjectionSupport.class)
 @Modules({
@@ -75,6 +84,34 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
         assertThat(queryInt("select count(*) from LockedPeriod where ProjectId is not null"), equalTo(1));
         assertThat(queryInt("select count(*) from LockedPeriod where ActivityId is not null"), equalTo(1));
         assertThat(queryInt("select count(*) from LockedPeriod where UserDatabaseId is not null"), equalTo(2));
+        
+        
+        /// now try updating a site remotely (from another client)
+        // and veryify that we get the update after we synchronized
+        
+        Map<String, Object> changes = Maps.newHashMap();
+        changes.put(AttributeDTO.getPropertyName(1), true);
+        
+        executeRemotely(new UpdateSite(1, changes));
+        
+        synchronize();
+        
+        SiteResult siteResult = executeLocally(GetSites.byId(1));
+        SiteDTO s1 = siteResult.getData().get(0);
+        
+        assertThat(s1.getAttributeValue(1), equalTo(true));
+        assertThat(s1.getAttributeValue(2), equalTo(true));
+
+        // Try deleting a site
+        
+        executeRemotely(new Delete("Site", 1));
+        
+        synchronize();
+        
+        siteResult = executeLocally(GetSites.byId(1));
+       
+        assertThat(siteResult.getData().size(), equalTo(0));
+        
     }
 
 

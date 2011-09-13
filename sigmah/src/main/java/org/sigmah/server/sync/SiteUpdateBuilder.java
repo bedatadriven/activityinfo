@@ -33,13 +33,13 @@ public class SiteUpdateBuilder implements UpdateBuilder {
     private int databaseId;
     public static final int MAX_RESULTS = 500;
 
-    private List<Site> all;
-    private List<Site> created = new ArrayList<Site>();
+    private List<Site> all = new ArrayList<Site>();
     private List<Site> updated = new ArrayList<Site>();
+    private List<Integer> updatedIds = new ArrayList<Integer>();
+    
     private List<Site> deleted = new ArrayList<Site>();
 
-    private List<Integer> updatedOrDeleted = new ArrayList<Integer>();
-    private List<Integer> createdOrUpdated = new ArrayList<Integer>();
+
     private final JpaUpdateBuilder builder;
     private Timestamp localVersion;
 
@@ -63,18 +63,17 @@ public class SiteUpdateBuilder implements UpdateBuilder {
 
         retrieveNextBatchOfModifiedSites(localVersion);
 
-        if(!updatedOrDeleted.isEmpty()) {
+        if(!all.isEmpty()) {
             removeDependentAttributeValuesOfDeletedOrUpdatedSites();
             removeDependentIndicatorValuesOfDeletedOrUpdatedSites();
             removeDependentReportingPeriodsOfDeletedOrUpdatedSites();
         }
 
         builder.delete(Site.class, deleted);
-        builder.update(Site.class, updated);
-        builder.insert("or replace", Site.class, created);
 
-        if(!createdOrUpdated.isEmpty()) {
-            insertDependentAttributeValues();
+        if(!updated.isEmpty()) {
+            builder.insert("or replace", Site.class, updated);
+        	insertDependentAttributeValues();
             insertDependentReportingPeriods();
             insertDependentIndicatorValues();
         }
@@ -98,7 +97,6 @@ public class SiteUpdateBuilder implements UpdateBuilder {
         all = entityManager.createQuery(
                 "select s from Site s " +
                         "WHERE  (s.dateEdited > :localVersion) AND " +
-                        "(s.dateDeleted is NULL or s.dateCreated < :localVersion) AND " +
                         "(s.activity.database = :database)" +
                         "ORDER BY s.dateEdited")
                 .setMaxResults(MAX_RESULTS)
@@ -110,14 +108,9 @@ public class SiteUpdateBuilder implements UpdateBuilder {
         for(Site site : all) {
             if(site.isDeleted()) {
                 deleted.add(site);
-                updatedOrDeleted.add(site.getId());
-                createdOrUpdated.add(site.getId());
-            } else if(TimestampHelper.isAfter(site.getDateCreated(), localVersion)) {
-                created.add(site);
-                createdOrUpdated.add(site.getId());
             } else {
-                updated.add(site);
-                updatedOrDeleted.add(site.getId());
+            	updated.add(site);
+            	updatedIds.add(site.getId());
             }
         }
     }
@@ -146,7 +139,7 @@ public class SiteUpdateBuilder implements UpdateBuilder {
                 "SELECT av from Site s " +
                         "JOIN s.attributeValues av " +
                         "WHERE s.id in (:sites)")
-                .setParameter("sites", createdOrUpdated)
+                .setParameter("sites", updatedIds)
                 .getResultList();
 
         builder.insert(AttributeValue.class, values);
@@ -155,7 +148,7 @@ public class SiteUpdateBuilder implements UpdateBuilder {
     private void insertDependentReportingPeriods() throws JSONException {
         List<ReportingPeriod> rps = entityManager.createQuery("SELECT p from Site s JOIN s.reportingPeriods p WHERE " +
                 "s.id in (:sites)")
-                .setParameter("sites", createdOrUpdated)
+                .setParameter("sites", updatedIds)
                 .getResultList();
 
         builder.insert("or replace", ReportingPeriod.class, rps);
@@ -165,15 +158,15 @@ public class SiteUpdateBuilder implements UpdateBuilder {
         List<IndicatorValue> values = entityManager.createQuery(
                 "SELECT v from Site s JOIN s.reportingPeriods p JOIN p.indicatorValues v " +
                         "WHERE s.id in (:sites)")
-                .setParameter("sites", createdOrUpdated)
+                .setParameter("sites", updatedIds)
                 .getResultList();
 
         builder.insert("or replace", IndicatorValue.class, values);
     }
 
     private void addIdsOfUpdatedOrDeleted(JpaUpdateBuilder builder) throws JSONException {
-        for(Integer siteId : updatedOrDeleted) {
-            builder.addExecution(siteId);
+        for(Site site : all) {
+            builder.addExecution(site.getId());
         }
     }
 

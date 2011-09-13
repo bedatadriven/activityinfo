@@ -5,6 +5,8 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
+import java.util.Date;
+
 import javax.persistence.EntityManager;
 
 import org.sigmah.shared.command.Delete;
@@ -12,6 +14,7 @@ import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.domain.Deleteable;
 import org.sigmah.shared.domain.ReallyDeleteable;
+import org.sigmah.shared.domain.Site;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.UserDatabase;
 
@@ -41,6 +44,10 @@ public class DeleteHandler implements CommandHandler<Delete> {
         if (entity instanceof Deleteable) {
             Deleteable deleteable = (Deleteable) entity;
             deleteable.delete();
+            
+            if(entity instanceof Site) {
+            	((Site)entity).setDateEdited(new Date());
+            }
         }
         
         if (entity instanceof ReallyDeleteable) {

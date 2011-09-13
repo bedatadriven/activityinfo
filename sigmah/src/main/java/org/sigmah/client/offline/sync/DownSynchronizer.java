@@ -196,7 +196,8 @@ public class DownSynchronizer {
     
         } else {
 		    Log.debug("Synchronizer: persisting updates for region " + region.getId());
-		    stats.onDbUpdateStarted();
+
+	    	stats.onDbUpdateStarted();
 	        conn.executeUpdates(update.getSql(), new AsyncCallback<Integer>() {
 	            @Override
 	            public void onFailure(Throwable throwable) {

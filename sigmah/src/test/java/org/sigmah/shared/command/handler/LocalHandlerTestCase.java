@@ -117,6 +117,7 @@ public abstract class LocalHandlerTestCase {
 //			}
 //		});
     	
+    	newRequest();    	
     	synchronizer = new DownSynchronizer(new MockEventBus(), remoteDispatcher, localDatabase, 
                 uiConstants);
         synchronizer.start(new AsyncCallback<Void>() {
@@ -141,6 +142,13 @@ public abstract class LocalHandlerTestCase {
     	return collector.getResult();
     }
     
+    protected <C extends Command<R>, R extends CommandResult> R executeRemotely(C command) {
+    	Collector<R> collector = Collector.newCollector();
+    	remoteDispatcher.execute(command, null, collector);
+    	return collector.getResult();
+    }
+    
+        
     
     @After
     public void tearDown() {
