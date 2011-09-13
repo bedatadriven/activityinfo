@@ -245,6 +245,8 @@ public class OfflineView extends Button implements OfflineController.View {
 				null);
 	}
 
-
-
+	@Override
+	public void showSynchronizerConnectionProblem() {
+		MessageBox.alert(I18N.CONSTANTS.syncFailed(), I18N.CONSTANTS.synchronizerConnectionProblem(), null);
+	}
 }

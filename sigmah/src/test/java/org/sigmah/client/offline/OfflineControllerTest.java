@@ -295,6 +295,12 @@ public class OfflineControllerTest {
 			
 		}
 
+		@Override
+		public void showSynchronizerConnectionProblem() {
+			// TODO Auto-generated method stub
+			
+		}
+
     }
 
     private static class OfflineImplStub implements Synchronizer {

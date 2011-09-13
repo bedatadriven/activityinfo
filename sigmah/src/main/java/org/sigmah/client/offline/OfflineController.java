@@ -24,6 +24,7 @@ import org.sigmah.client.offline.sync.AppOutOfDateException;
 import org.sigmah.client.offline.sync.SyncConnectionProblemEvent;
 import org.sigmah.client.offline.sync.SyncStatusEvent;
 import org.sigmah.client.offline.sync.Synchronizer;
+import org.sigmah.client.offline.sync.SynchronizerConnectionException;
 import org.sigmah.client.util.state.CrossSessionStateProvider;
 import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.Command;
@@ -141,6 +142,8 @@ public class OfflineController implements Dispatcher {
 		void promptToReloadForNewVersion();
 
 		void showInstallInstructions();
+		
+		void showSynchronizerConnectionProblem();
 	}
 
 	private final View view;
@@ -304,6 +307,9 @@ public class OfflineController implements Dispatcher {
 				|| throwable instanceof IncompatibleRemoteServiceException) {
 			view.promptToReloadForNewVersion();
 
+		} else if(throwable instanceof SynchronizerConnectionException) {
+			view.showSynchronizerConnectionProblem();
+			
 		} else {
 			view.showError(throwable.getMessage());
 		}
@@ -766,6 +772,7 @@ public class OfflineController implements Dispatcher {
 				@Override
 				public void onFailure(Throwable caught) {
 					reportFailure(caught);
+					view.hideProgressDialog();
 					activateStrategy(parentStrategy);
 				}
 
