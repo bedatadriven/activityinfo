@@ -17,6 +17,7 @@ import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.Ping;
 import org.sigmah.shared.command.result.VoidResult;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -49,15 +50,17 @@ public class SynchronizerImpl implements Synchronizer {
 
     @Override
     public void install(final AsyncCallback<Void> callback) {
-    	
+    	Log.trace("SynchronizerImpl.install() starting...");
     	appCacheSynchronizer.ensureUpToDate(new AsyncCallback<Void>() {
 			
 			@Override
 			public void onSuccess(Void result) {
+		    	Log.trace("Calling downSynchronizer.startFresh()");
 				downSychronizer.startFresh(new AsyncCallback<Void>() {
 					
 					@Override
 					public void onSuccess(Void result) {
+				    	Log.trace("downSynchronizer.startFresh() completed");
 						AuthTokenUtil.ensurePersistentCookie(auth);
 						callback.onSuccess(result);
 					}
