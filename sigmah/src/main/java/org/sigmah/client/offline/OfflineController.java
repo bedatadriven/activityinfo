@@ -20,6 +20,7 @@ import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.RemoteDispatcher;
 import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.offline.capability.OfflineCapabilityProfile;
+import org.sigmah.client.offline.capability.PermissionRefusedException;
 import org.sigmah.client.offline.sync.AppOutOfDateException;
 import org.sigmah.client.offline.sync.SyncConnectionProblemEvent;
 import org.sigmah.client.offline.sync.SyncStatusEvent;
@@ -370,7 +371,9 @@ public class OfflineController implements Dispatcher {
 
 				@Override
 				public void onFailure(Throwable caught) {
-					// noop.
+					if(!(caught instanceof PermissionRefusedException)) {
+						reportFailure(caught);
+					}
 				}
 			});
 		}

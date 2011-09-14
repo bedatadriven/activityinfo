@@ -25,12 +25,16 @@ public abstract class GearsCapabilityProfile extends OfflineCapabilityProfile {
 
 	@Override
 	public final void acquirePermission(AsyncCallback<Void> callback) {
-		if(!isGearsInstalled()) {
-			callback.onFailure(new UnsupportedOperationException("Gears is not installed"));
-		} else if(acquirePermissions()) {
-			callback.onSuccess(null);
-		} else {
-			callback.onFailure(new PermissionRefusedException());
+		try {
+			if(!isGearsInstalled()) {
+				callback.onFailure(new UnsupportedOperationException("Gears is not installed"));
+			} else if(acquirePermissions()) {
+				callback.onSuccess(null);
+			} else {
+				callback.onFailure(new PermissionRefusedException());
+			}
+		} catch(Exception e) {
+			callback.onFailure(e);
 		}
 	}
 
