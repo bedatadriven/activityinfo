@@ -1,90 +1,92 @@
 package org.sigmah.client.page.dashboard;
 
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 
-import com.extjs.gxt.ui.client.Style.Orientation;
-import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.util.Margins;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
-import com.extjs.gxt.ui.client.widget.layout.RowData;
-import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class Dashboard extends ContentPanel implements Page {
+public class Dashboard extends Composite implements Page {
 	public static final PageId DASHBOARD = new PageId("dashboard");
-	private int margin=10;
 	private Dispatcher service;
-	private VerticalPanel mainArea = new VerticalPanel(); 
-	private VerticalPanel rightColumn = new VerticalPanel(); 
-	private final WelcomeWidget welcomeWidget = new WelcomeWidget();
+	private com.google.gwt.user.client.ui.VerticalPanel verticalPanel;
+	private ScrollPanel scrollPanel;
+	private com.google.gwt.user.client.ui.HorizontalPanel horizontalPanel;
+	private com.google.gwt.user.client.ui.VerticalPanel panelMain;
+	private com.google.gwt.user.client.ui.VerticalPanel panelRight;
+	private Block block_1;
+	private WelcomeWidget welcomeWidget;
+	private UpdateStream updateStream;
+	private Block block_2;
+	private SitesWithoutLocations sitesWithoutLocations;
 	
 	@Inject
 	public Dashboard(Dispatcher service) {
 		super();
-		setSize("auto", "auto");
-
 		this.service = service;
-
-		initializeComponent();
-
-		createBlogPosts();
-		createUpdateStream();
-
-		createSitesWithoutLocations();
-		createFavorites();
-
-		welcomeHeader();
-		setHeaderVisible(false);
-		setScrollMode(Scroll.AUTOY);
-		setTopComponent(welcomeWidget);
+		{
+			scrollPanel = new ScrollPanel();
+			initWidget(scrollPanel);
+			scrollPanel.setWidth("100%");
+			verticalPanel = new com.google.gwt.user.client.ui.VerticalPanel();
+			verticalPanel.setSize("100%", "auto");
+			scrollPanel.add(verticalPanel);
+			{
+				welcomeWidget = new WelcomeWidget();
+				verticalPanel.add(welcomeWidget);
+			}
+			{
+				horizontalPanel = new com.google.gwt.user.client.ui.HorizontalPanel();
+				verticalPanel.add(horizontalPanel);
+				horizontalPanel.setWidth("100%");
+				{
+					panelMain = new com.google.gwt.user.client.ui.VerticalPanel();
+					horizontalPanel.add(panelMain);
+					panelMain.setWidth("100%");
+					panelMain.setSpacing(10);
+					panelMain.setStyleName("dashboard-mainpanel");
+					horizontalPanel.setCellWidth(panelMain, "66%");
+					{
+						block_1 = new Block();
+						block_1.setTitle(I18N.CONSTANTS.latestAddedEditedSites());
+						panelMain.add(block_1);
+						{
+							updateStream = new UpdateStream(service);
+							block_1.add(updateStream);
+						}
+					}
+				}
+				{
+					panelRight = new com.google.gwt.user.client.ui.VerticalPanel();
+					horizontalPanel.add(panelRight);
+					panelRight.setWidth("100%");
+					panelRight.setSpacing(10);
+					panelRight.setStyleName("dashboard-rightpanel");
+					horizontalPanel.setCellWidth(panelRight, "32%");
+					{
+						block_2 = new Block();
+						block_2.setTitle(I18N.CONSTANTS.sitesWithoutCoordinates());
+						panelRight.add(block_2);
+						{
+							sitesWithoutLocations = new SitesWithoutLocations(service);
+							block_2.add(sitesWithoutLocations);
+						}
+					}
+				}
+			}
+		}
 	}
 	
-	private void createFavorites() {
-		Favorites favorites = new Favorites(service, "Favorites");
-		addRight(favorites);
-	}
-
-	private void createUpdateStream() {
-		UpdateStream updateStream = new UpdateStream(service);
-		addToMainArea(updateStream);
-	}
-
-	private void addToMainArea(Widget widget) {
-		mainArea.setSpacing(10);
-		mainArea.add(widget);
-	}
-	
-	private void addRight(Widget widget ) {
-		rightColumn.add(widget);
-	}
 	
 	private void welcomeHeader() {
 	}
 
-	private void createBlogPosts() {
-		NewNews newNews = new NewNews(service);
-		addToMainArea(newNews);
-	}
-
-	private void createSitesWithoutLocations() {
-		SitesWithoutLocations sitesWithoutLocations = new SitesWithoutLocations(service);
-		addRight(sitesWithoutLocations);
-	}
-
-	private void initializeComponent() {
-		setLayout(new RowLayout(Orientation.HORIZONTAL));
-		mainArea.setStyleAttribute("margin", "1em");
-		rightColumn.setStyleAttribute("margin", "1em");
-		add(mainArea, new RowData(.67,-1,new Margins(margin)));
-		mainArea.setHeight("");
-		add(rightColumn, new RowData(.33,-1,new Margins(margin)));
-	}
 
 	@Override
 	public void shutdown() {
@@ -98,7 +100,7 @@ public class Dashboard extends ContentPanel implements Page {
 	}
 
 	@Override
-	public Object getWidget() {
+	public Widget getWidget() {
 		return this;
 	}
 

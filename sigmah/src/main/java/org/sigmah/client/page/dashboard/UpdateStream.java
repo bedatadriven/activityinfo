@@ -10,30 +10,26 @@ import org.sigmah.shared.dto.SiteDTO;
 
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.SortInfo;
-import com.extjs.gxt.ui.client.util.Margins;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class UpdateStream extends AiPortlet {
+public class UpdateStream extends VerticalPanel {
 	private SchemaDTO schema;
-
+	private Dispatcher service;
+	//private AsyncMonitor loadingMonitor = new MaskingAsyncMonitor(this, I18N.CONSTANTS.loading());
+	
 	public UpdateStream(Dispatcher service) {
-		super(service, "Recently updated sites");
-		
+		this.service=service;
 		initializeComponent();
 		
 		getSchema();
 	}
 
 	private void initializeComponent() {
-		setAutoHeight(true);
-		setAutoWidth(true);
-		setLayout(new FitLayout());
 	}
 	
 	private void getSchema() {
-		service.execute(new GetSchema(), loadingMonitor, new AsyncCallback<SchemaDTO>() {
+		service.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO: handle failure
@@ -51,7 +47,7 @@ public class UpdateStream extends AiPortlet {
 		GetSites getSites = new GetSites();
 		getSites.setLimit(10);
 		getSites.setSortInfo(new SortInfo("DateEdited", SortDir.DESC));
-		service.execute(new GetSitesWithoutCoordinates(), loadingMonitor, new AsyncCallback<SitesWithoutLocationsResult>() { 
+		service.execute(new GetSitesWithoutCoordinates(), null, new AsyncCallback<SitesWithoutLocationsResult>() { 
 			@Override
 			public void onFailure(Throwable caught) {
 				//TODO: handle failure
@@ -59,9 +55,8 @@ public class UpdateStream extends AiPortlet {
 			@Override
 			public void onSuccess(SitesWithoutLocationsResult result) {
 				for (SiteDTO site : result.getData()) {
-					add(new Update(site, schema.getActivityById(site.getActivityId())), new RowData(-1,-1,new Margins(5)));
+					add(new Update(site, schema.getActivityById(site.getActivityId())));
 				}
-				layout(true);
 			}
 		});
 	}

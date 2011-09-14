@@ -22,12 +22,12 @@ import org.sigmah.client.page.charts.ChartPageState;
 import org.sigmah.client.page.common.SearchField;
 import org.sigmah.client.page.common.widget.LoadingPlaceHolder;
 import org.sigmah.client.page.config.DbListPageState;
+import org.sigmah.client.page.dashboard.DashboardPageState;
 import org.sigmah.client.page.entry.SiteGridPageState;
 import org.sigmah.client.page.map.MapPageState;
 import org.sigmah.client.page.report.ReportListPageState;
 import org.sigmah.client.page.search.SearchPageState;
 import org.sigmah.client.page.table.PivotPageState;
-import org.sigmah.client.page.welcome.WelcomePageState;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -46,7 +46,6 @@ import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -101,7 +100,7 @@ public class AppFrameSet implements Frame {
 
         topBar.add(new SeparatorToolItem());
 
-        addNavLink(I18N.CONSTANTS.welcome(), null, new WelcomePageState());
+        addNavLink(I18N.CONSTANTS.welcome(), IconImageBundle.ICONS.dashboard(), new DashboardPageState());
         addNavLink(I18N.CONSTANTS.dataEntry(), IconImageBundle.ICONS.dataEntry(), new SiteGridPageState());
         addNavLink(I18N.CONSTANTS.reports(), IconImageBundle.ICONS.report(), new ReportListPageState());
         addNavLink(I18N.CONSTANTS.charts(), IconImageBundle.ICONS.barChart(), new ChartPageState());

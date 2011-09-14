@@ -8,27 +8,19 @@ import org.sigmah.shared.command.GetSitesWithoutCoordinates;
 import org.sigmah.shared.command.result.SitesWithoutLocationsResult;
 import org.sigmah.shared.dto.SiteDTO;
 
-import com.extjs.gxt.ui.client.Style.Orientation;
-import com.extjs.gxt.ui.client.util.Margins;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
-import com.extjs.gxt.ui.client.widget.form.LabelField;
-import com.extjs.gxt.ui.client.widget.layout.RowData;
-import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class SitesWithoutLocations extends AiPortlet {
-
+public class SitesWithoutLocations extends VerticalPanel {
+	private Dispatcher service;
+	//private AsyncMonitor loadingMonitor = new MaskingAsyncMonitor(this, I18N.CONSTANTS.loading());
+	
 	public SitesWithoutLocations(Dispatcher service) {
-		super(service, "");
-
-		RowLayout layout = new RowLayout();
-		layout.setOrientation(Orientation.VERTICAL);
-		setLayout(layout);
-		setAutoHeight(true);
-
+		this.service=service;
 		setTitle(0);
-		
 		getSitesWithoutCoordinates();
 	}
 
@@ -41,7 +33,7 @@ public class SitesWithoutLocations extends AiPortlet {
 		service.execute(
 			new GetSitesWithoutCoordinates()
 				.setMaxLocations(10),
-			loadingMonitor, 
+			null, 
 			new AsyncCallback<SitesWithoutLocationsResult>() {
 				@Override
 				public void onFailure(Throwable caught) {
@@ -60,11 +52,10 @@ public class SitesWithoutLocations extends AiPortlet {
 						panel.setSpacing(5);
 						panel.add(IconImageBundle.ICONS.edit().createImage());
 						panel.add(IconImageBundle.ICONS.site().createImage());
-						panel.add(new LabelField(site.getLocationName()));
-						panel.add(new LabelField(DateTimeFormat.getFormat("yyyy-MMM-dd").format(site.getDateEdited())));
-						add(panel, new RowData(-1, -1, new Margins(5)));
+						panel.add(new Label(site.getLocationName()));
+						panel.add(new Label(DateTimeFormat.getFormat("yyyy-MMM-dd").format(site.getDateEdited())));
+						add(panel);
 					}
-					layout(true);
 				}
 			}
 		);

@@ -6,48 +6,45 @@ import org.sigmah.client.page.entry.editor.SiteRenderer;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.SiteDTO;
 
-import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
-import com.extjs.gxt.ui.client.widget.form.LabelField;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class Update extends LayoutContainer {
+public class Update extends VerticalPanel {
 	private SiteDTO site;
 	private ActivityDTO activity;
 	private final HorizontalPanel horizontalPanel = new HorizontalPanel();
 	private static final IconImageBundle iconImageBundle = IconImageBundle.ICONS;
-	private LabelField labelDatabase_1;
-	private LabelField labelPartner;
-	private LabelField labelActivity;
-	private LabelField labelDaysAgo;
-	private Html htmlDetails;
-	private LabelField labelLocation;
+	private Label labelDatabase_1;
+	private Label labelPartner;
+	private Label labelActivity;
+	private Label labelDaysAgo;
+	private HTML htmlDetails;
+	private Label labelLocation;
 	private VerticalPanel panelAddEditIcon;
 	private VerticalPanel panelHeaderContent;
 	private HorizontalPanel panelHeader;
-	private LayoutContainer layoutcontainerDetails;
+	private VerticalPanel layoutcontainerDetails;
 
 	public Update(SiteDTO site, ActivityDTO activity) {
 		super();
-		setSize("auto", "auto");
+		setStyleName("dashboard-update-mainpanel");
+		setSize("100%", "auto");
 		
 		this.site = site;
 		this.activity = activity;
 		
-		if (site.isEditedOneOrMoreTimes()) {
-			setStyleAttribute("background", "#F5F6CE");
-		} else {
-			setStyleAttribute("background", "#D8F6CE");
-		}
 		
 		HorizontalPanel horizontalPanel_1 = new HorizontalPanel();
+		if (site.isEditedOneOrMoreTimes()) {
+			horizontalPanel_1.setStyleName("dashboard-update-edit");
+		} else {
+			horizontalPanel_1.setStyleName("dashboard-update-add");
+		}		
 		
 		panelAddEditIcon = new VerticalPanel();
-		panelAddEditIcon.setHorizontalAlign(HorizontalAlignment.CENTER);
 		horizontalPanel_1.add(panelAddEditIcon);
 		panelAddEditIcon.setWidth("42");
 		
@@ -58,36 +55,35 @@ public class Update extends LayoutContainer {
 		
 		panelHeader.add(iconImageBundle.location().createImage());
 		
-		labelLocation = new LabelField(site.getPrettyLocationName());
+		labelLocation = new Label(site.getPrettyLocationName());
 		panelHeader.add(labelLocation);
 		
 		panelHeader.add(iconImageBundle.database().createImage());
-		labelDatabase_1 = new LabelField(activity.getDatabase().getName());
+		labelDatabase_1 = new Label(activity.getDatabase().getName());
 		panelHeader.add(labelDatabase_1);
 		
 		panelHeader.add(iconImageBundle.activity().createImage());
-		labelActivity = new LabelField(activity.getName());
+		labelActivity = new Label(activity.getName());
 		panelHeader.add(labelActivity);
 		
 		panelHeader.add(iconImageBundle.partner().createImage());
-		labelPartner = new LabelField(site.getPartnerName());
+		labelPartner = new Label(site.getPartnerName());
 		panelHeader.add(labelPartner);
 		
 		panelHeader.add(iconImageBundle.time().createImage());
-		labelDaysAgo = new LabelField(getHumanReadableDate());
+		labelDaysAgo = new Label(getHumanReadableDate());
 		panelHeader.add(labelDaysAgo);
 		panelHeaderContent.add(panelHeader);
 		
-		layoutcontainerDetails = new LayoutContainer();
-		layoutcontainerDetails.setLayout(new FitLayout());
+		layoutcontainerDetails = new VerticalPanel();
 		
-		htmlDetails = new Html();
+		htmlDetails = new HTML();
 		layoutcontainerDetails.add(htmlDetails);
 		htmlDetails.setWidth("auto");
 		panelHeaderContent.add(layoutcontainerDetails);
 		horizontalPanel_1.add(panelHeaderContent);
 		add(horizontalPanel_1);
-		horizontalPanel_1.setWidth("auto");
+		horizontalPanel_1.setWidth("100%");
 		
 		createAddOrEditIcon(); 
 		createDetails();
@@ -109,8 +105,8 @@ public class Update extends LayoutContainer {
 	private void createDetails() {
 		if (site.getComments() != null && !site.getComments().isEmpty()) {
 			HorizontalPanel panelNotes = new HorizontalPanel();
-			LabelField labelDetails = new LabelField(site.getComments());
-			panelNotes.setStyleAttribute("background", "#F3F781");
+			Label labelDetails = new Label(site.getComments());
+			//panelNotes.setStyleAttribute("background", "#F3F781");
 			panelNotes.add(IconImageBundle.ICONS.note().createImage());
 			panelNotes.add(labelDetails);
 			panelNotes.setSpacing(5);
@@ -119,7 +115,7 @@ public class Update extends LayoutContainer {
 		SiteRenderer siteRenderer = new SiteRenderer();
 		String htmlString = siteRenderer.renderSite(site, activity, false, false);
 		
-		htmlDetails.setHtml(htmlString);
+		htmlDetails.setHTML(htmlString);
 		htmlDetails.setStyleName("details");
 	}
 

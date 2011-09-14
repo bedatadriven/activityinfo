@@ -2,64 +2,80 @@ package org.sigmah.client.page.dashboard;
 
 import org.sigmah.client.dispatch.Dispatcher;
 
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.Style.Orientation;
-import com.extjs.gxt.ui.client.util.Margins;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.form.LabelField;
-import com.extjs.gxt.ui.client.widget.layout.RowData;
-import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Hyperlink;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
-class NewNews extends AiPortlet {
+public class NewNews extends VerticalPanel {
+	private HTML hyperlinkReadMore;
+	private HTML htmlContent;
+	private Label labelAuthor;
+	private Label labelDateTimePublished;
+	private Dispatcher service;
+
 	public NewNews(Dispatcher service) {
-		super(service, "News from BeDataDriven");
-		setHeight("auto");
-		
-		setAutoWidth(true);
-		setLayout(new RowLayout(Orientation.VERTICAL));
+		this.service=service;
 		
 		HorizontalPanel horizontalPanel = new HorizontalPanel();
 		horizontalPanel.setSpacing(5);
 		add(horizontalPanel);
 		
-		LabelField lblfldNewLabelfield = new LabelField("New LabelField");
-		horizontalPanel.add(lblfldNewLabelfield);
+		labelDateTimePublished = new Label("Published at");
+		horizontalPanel.add(labelDateTimePublished);
 		
-		LabelField lblfldNewLabelfield_1 = new LabelField("New LabelField");
-		horizontalPanel.add(lblfldNewLabelfield_1);
+		labelAuthor = new Label("Ruud Poutsma");
+		horizontalPanel.add(labelAuthor);
 		
-		Html htmlnewhtmlcomponent = new Html("<b>New</b><br><i>Html<i><br><u>Component</>");
-		add(htmlnewhtmlcomponent, new RowData(Style.DEFAULT, Style.DEFAULT, new Margins(5, 5, 5, 5)));
+		htmlContent = new HTML("<b>New</b><br><i>Html<i><br><u>Component</>"); 
+		add(htmlContent);
 		
-		Hyperlink hprlnkNewHyperlink = new Hyperlink("New hyperlink", false, "newHistoryToken");
-		add(hprlnkNewHyperlink);
+		hyperlinkReadMore = new HTML("woei woei woei ");
+		add(hyperlinkReadMore);
 
 		StringBuilder text = new StringBuilder();
 		for (int i = 0; i < 40; i++) {
 			text.append("Hey! Cool new Stuff?!?! \n");
 		}
 		
-//		RequestBuilder request = new RequestBuilder(RequestBuilder.GET, "http://bedatadriven.com/blog/wpGetPage.php");
-//		request.setHeader("Content-Type", "application/json");
-//		request.setRequestData("");
-//		try {
-//			request.sendRequest("wp.getPage", new RequestCallback() {
-//				@Override
-//				public void onResponseReceived(Request request, Response response) {
-//					response.
-//				}
-//				
-//				@Override
-//				public void onError(Request request, Throwable exception) {
-//					// TODO Auto-generated method stub
-//					
-//				}
-//			});
-//		} catch (RequestException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		getNews();
+
+	}
+
+	private void getNews() {
+		String url = "http://activityinfo.wordpress.com/xmlrpc.php";
+		
+		RequestBuilder request = new RequestBuilder(RequestBuilder.POST, url);
+		request.setHeader("Content-Type", "application/xml");
+		request.setRequestData("blog_id=activityinfo");
+		request.setPassword("testpassword");
+		request.setUser("activityinfo");
+		try {
+			request.sendRequest("wp.getPages", new RequestCallback() {
+				@Override
+				public void onError(Request request, Throwable exception) {
+					System.out.println();
+				}
+
+				@Override
+				public void onResponseReceived(Request request, Response response) {
+					System.out.println();
+				}
+
+
+			});
+		} catch (RequestException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private void setHyperLinkHtml(String link) {
+		//hyperlinkReadMore.setHtml("<a href=\"" + link + ">" + "Read more..." + "</a>");
 	}
 }

@@ -10,28 +10,27 @@ import org.sigmah.shared.command.result.DashboardSettingsResult;
 import org.sigmah.shared.dto.DashboardSettingsDTO;
 import org.sigmah.shared.dto.FavoriteDTO;
 
-import com.extjs.gxt.ui.client.Style.Orientation;
-import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class Favorites extends AiPortlet {
+public class Favorites extends VerticalPanel {
 	private Map<FavoriteDTO, Favorite> favoritewidgetsByFavorite = new HashMap<FavoriteDTO, Favorite>();
 	private DashboardSettingsDTO dashboard;
+	private Dispatcher service;
+	//private AsyncMonitor loadingMonitor = new MaskingAsyncMonitor(this, I18N.CONSTANTS.loading());
 	
 	public Favorites(Dispatcher service, String title) {
-		super(service, title);
-		
-		setLayout(new RowLayout(Orientation.VERTICAL));
+		this.service=service;
 
 		getDashboard();
 	}
 
 	private void getDashboard() {
-		service.execute(new GetDashboard(), loadingMonitor, new AsyncCallback<DashboardSettingsResult>() {
+		service.execute(new GetDashboard(), null, new AsyncCallback<DashboardSettingsResult>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO Handle failure
-				loadingMonitor.onServerError();
+				//loadingMonitor.onServerError();
 			}
 			@Override
 			public void onSuccess(DashboardSettingsResult result) {
@@ -49,7 +48,7 @@ public class Favorites extends AiPortlet {
 					favoritewidgetsByFavorite.put(favorite, favoriteWidget);
 					add(favoriteWidget);
 				}
-				layout(true);
+				//layout(true);
 			}
 		});
 	}

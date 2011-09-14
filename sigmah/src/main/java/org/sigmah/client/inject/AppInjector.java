@@ -48,8 +48,6 @@ import org.sigmah.client.page.search.SearchPresenter;
 import org.sigmah.client.page.table.PivotModule;
 import org.sigmah.client.page.table.PivotPageLoader;
 import org.sigmah.client.page.table.PivotPresenter;
-import org.sigmah.client.page.welcome.Welcome;
-import org.sigmah.client.page.welcome.WelcomeLoader;
 import org.sigmah.client.util.state.StateProvider;
 
 import com.google.gwt.inject.client.GinModules;
@@ -77,8 +75,6 @@ public interface AppInjector extends Ginjector {
 
     Dispatcher getService();
 
-    Welcome getWelcomePage();
-
     StateProvider getStateManager();
 
     HistoryManager getHistoryManager();
@@ -99,8 +95,6 @@ public interface AppInjector extends Ginjector {
 
     DesignPresenter getDesigner();
 
-    WelcomeLoader createWelcomeLoader();
-    
     DataEntryLoader createDataEntryLoader();
 
     MapLoader createMapLoader();

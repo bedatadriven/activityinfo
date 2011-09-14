@@ -7,9 +7,7 @@
 
     <!-- Inherit the core Web Toolkit stuff.                        -->
     <inherits name='com.google.gwt.user.User' />
-
-	<stylesheet src="gxt224/css/gxt-all.css"/>
-	
+<stylesheet src="gxt224/css/gxt-all.css"/>
     <!-- Inherit additional dependencies  -->
     <inherits name='com.google.gwt.inject.Inject' />
     <inherits name="com.google.gwt.i18n.I18N" />
@@ -31,8 +29,6 @@
     
     <inherits name="com.teklabs.gwt.i18n.GwtI18nServer"/>
     <inherits name="com.allen_sauer.gwt.log.gwt-log-impl"/>
-    <inherits name="com.extjs.gxt.ui.GXT"/>
-    <inherits name="com.extjs.gxt.ui.GXT"/>
 
     <!-- Configure Logging -->
     <!-- <extend-property name="log_level" values="DEBUG"/>-->

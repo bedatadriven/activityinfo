@@ -180,3 +180,60 @@
     padding-left: 20px;
     margin: 10px;
 }
+.InfoPageHeader {
+	color: navy;
+	margin-right: 0.25em;
+	font-size: 1em;
+	font-weight: bold;
+}
+.headerImage {
+	margin-right: 0.25em;
+}
+.dashboard-header {
+	margin: 0.25em 1.25em 0.25em -1em;
+	padding: 0.25em;
+	border-top: 2px solid navy;
+	background-color: #D0DEF0;
+}
+.dashboard-authorname {
+	font-size: 12px;
+	font-style: italic;
+}
+.dashboard-authorname-new {
+	color: navy;
+	padding-left: 0.25em;
+	font-size: 12px;
+	font-weight: bold;
+}
+.dashboard-mainpanel {
+	background-color: white;
+}
+.dashboard-rightpanel {
+	background-color: white;
+}
+.dashboard-block {
+	margin-right: 2em;
+	margin-left: 1em;
+}
+.dashboard-info-label {
+	font-weight: bold;
+}
+.dashboard-header-slogan {
+	margin-right: 0.5em;
+	margin-left: 0.5em;
+}
+.dashboard-header-logo {
+	margin: 1em;
+}
+.dashboard-update-add {
+	margin-right: 1em;
+	background-color: #D8F6CE;
+}
+.dashboard-update-edit {
+	margin-right: 1em;
+	background-color: #F5F6CE;
+}
+.dashboard-update-mainpanel {
+	margin-top: 1em;
+	padding-right: 1.25em;
+}

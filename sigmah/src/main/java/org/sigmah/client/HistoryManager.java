@@ -84,7 +84,7 @@ public class HistoryManager {
 //            }
 //        }
         } else {
-            History.newItem("welcome", true);
+            History.newItem("dashboard", true);
         }
     }
 
