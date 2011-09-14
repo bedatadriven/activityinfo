@@ -9,7 +9,9 @@ import java.util.Date;
 
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.dispatch.remote.DirectDispatcher;
+import org.sigmah.client.offline.AuthTokenUtil;
 import org.sigmah.client.offline.command.LocalDispatcher;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.Ping;
@@ -26,6 +28,7 @@ public class SynchronizerImpl implements Synchronizer {
     private final AppCacheSynchronizer appCacheSynchronizer;
     private final DownSynchronizer downSychronizer;
     private final UpdateSynchronizer updateSynchronizer;
+    private final Authentication auth;
 
 
     @Inject
@@ -34,12 +37,14 @@ public class SynchronizerImpl implements Synchronizer {
                        DirectDispatcher remoteDispatcher,
                        AppCacheSynchronizer appCache,
                        DownSynchronizer synchronizer,
-                       UpdateSynchronizer updateSynchronizer) {
+                       UpdateSynchronizer updateSynchronizer,
+                       Authentication auth) {
     	this.appCacheSynchronizer = appCache;
     	this.localDispatcher = localDispatcher;
         this.remoteDispatcher = remoteDispatcher;
         this.downSychronizer = synchronizer;
         this.updateSynchronizer = updateSynchronizer;
+        this.auth = auth;
     }
 
     @Override
@@ -49,7 +54,20 @@ public class SynchronizerImpl implements Synchronizer {
 			
 			@Override
 			public void onSuccess(Void result) {
-				downSychronizer.startFresh(callback);
+				downSychronizer.startFresh(new AsyncCallback<Void>() {
+					
+					@Override
+					public void onSuccess(Void result) {
+						AuthTokenUtil.ensurePersistentCookie(auth);
+						callback.onSuccess(result);
+					}
+					
+					@Override
+					public void onFailure(Throwable caught) {
+						callback.onFailure(caught);
+						
+					}
+				});
 			}
 			
 			@Override
