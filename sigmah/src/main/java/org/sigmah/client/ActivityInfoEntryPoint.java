@@ -8,7 +8,6 @@ package org.sigmah.client;
 
 
 import org.sigmah.client.inject.AppInjector;
-import org.sigmah.client.offline.AuthTokenUtil;
 import org.sigmah.client.util.state.SafeStateProvider;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -54,7 +53,6 @@ public class ActivityInfoEntryPoint implements EntryPoint {
         AppInjector injector = GWT.create(AppInjector.class);
 
 
-        injector.createWelcomeLoader();
         injector.createDataEntryLoader();
         injector.createChartLoader();
         injector.createReportLoader();
