@@ -177,7 +177,7 @@ public class SiteFormPresenter implements SiteFormLeash {
 
             final Map<String, Object> changes = view.getChanges();
             if (adminPresenter.isDirty()) {
-                changes.putAll(adminPresenter.getPropertyMap());
+                changes.putAll(adminPresenter.getChangeMap());
             }
             
             // The projectId will always be updated, regardless of change/create mode
