@@ -12,6 +12,7 @@ import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.Direct;
 import org.sigmah.client.i18n.UIConstants;
+import org.sigmah.client.offline.command.CommandQueue;
 import org.sigmah.shared.command.GetSyncRegionUpdates;
 import org.sigmah.shared.command.GetSyncRegions;
 import org.sigmah.shared.command.result.SyncRegion;
@@ -50,6 +51,7 @@ public class DownSynchronizer {
     
     private SyncRegionTable localVerisonTable;
     private SyncHistoryTable historyTable;
+    private CommandQueue commandQueueTable;
     
     private SynchronizerStats stats = new SynchronizerStats();
 
@@ -65,6 +67,7 @@ public class DownSynchronizer {
         
         this.localVerisonTable = new SyncRegionTable(conn);
         this.historyTable = new SyncHistoryTable(conn);
+        this.commandQueueTable = new CommandQueue(conn);
    }
 
     /**
@@ -78,6 +81,7 @@ public class DownSynchronizer {
 				conn.dropAllTables(tx);
 				localVerisonTable.createTableIfNotExists(tx);
 				historyTable.createTableIfNotExists(tx);
+				commandQueueTable.createTableIfNotExists(tx);
 			}
 
 			@Override

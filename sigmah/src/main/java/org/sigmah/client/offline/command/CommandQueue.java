@@ -68,11 +68,10 @@ public class CommandQueue {
 	@Inject
 	public CommandQueue(SqlDatabase database) {
 		this.database = database;
-		createTableIfNotExists();
 	}
 	
-	public void createTableIfNotExists() {
-		database.executeSql("CREATE TABLE IF NOT EXISTS command_queue (id INTEGER PRIMARY KEY AUTOINCREMENT, command TEXT)");
+	public void createTableIfNotExists(SqlTransaction tx) {
+		tx.executeSql("CREATE TABLE IF NOT EXISTS command_queue (id INTEGER PRIMARY KEY AUTOINCREMENT, command TEXT)");
 	}
 
 	/**
