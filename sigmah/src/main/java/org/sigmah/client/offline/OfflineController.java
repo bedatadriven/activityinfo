@@ -149,7 +149,7 @@ public class OfflineController implements Dispatcher {
 
 	private final View view;
 	private final StateProvider stateManager;
-	private final Provider<Synchronizer> gateway;
+	private final Provider<Synchronizer> synchronizerProvider;
 	private UIConstants uiConstants;
 	private final RemoteDispatcher remoteDispatcher;
 	private final OfflineCapabilityProfile capabilityProfile;
@@ -167,7 +167,7 @@ public class OfflineController implements Dispatcher {
 		this.view = view;
 		this.stateManager = stateManager;
 		this.remoteDispatcher = remoteService;
-		this.gateway = gateway;
+		this.synchronizerProvider = gateway;
 		this.capabilityProfile = capabilityProfile;
 		this.uiConstants = uiConstants;
 
@@ -287,16 +287,28 @@ public class OfflineController implements Dispatcher {
 		}
 	}
 
-	private void loadGateway(final AsyncCallback<Synchronizer> callback) {
+	private void loadSynchronizerImpl(final AsyncCallback<Synchronizer> callback) {
+		Log.trace("loadSynchronizerImpl() starting...");
 		GWT.runAsync(new RunAsyncCallback() {
 			@Override
 			public void onFailure(Throwable throwable) {
+				Log.trace("loadSynchronizerImpl() failed");
 				callback.onFailure(throwable);
 			}
 
 			@Override
 			public void onSuccess() {
-				callback.onSuccess(gateway.get());
+				Log.trace("loadSynchronizerImpl() succeeded");
+				
+				Synchronizer impl = null;
+				try {
+					impl = synchronizerProvider.get();
+				} catch(Throwable caught) {
+					Log.error("SynchronizationImpl constructor threw exception", caught);
+					callback.onFailure(caught);
+					return;
+				}
+				callback.onSuccess(impl);
 			}
 		});
 	}
@@ -357,11 +369,16 @@ public class OfflineController implements Dispatcher {
 
 		@Override
 		public void onDefaultButton() {
-			activateStrategy(new InstallingStrategy());
+			if(capabilityProfile.isOfflineModeSupported()) {
+				enableOffline();
+			} else {
+				view.showInstallInstructions();
+			}
 		}
 
 		@Override
 		public void enableOffline() {
+			Log.trace("enablingOffline() started");
 			capabilityProfile.acquirePermission(new AsyncCallback<Void>() {
 
 				@Override
@@ -393,7 +410,7 @@ public class OfflineController implements Dispatcher {
 			view.showProgressDialog();
 			view.updateProgress(uiConstants.starting(), 0);
 
-			loadGateway(new AsyncCallback<Synchronizer>() {
+			loadSynchronizerImpl(new AsyncCallback<Synchronizer>() {
 				@Override
 				public void onFailure(Throwable caught) {
 					activateStrategy(new NotInstalledStrategy());
@@ -446,7 +463,7 @@ public class OfflineController implements Dispatcher {
 
 			view.setButtonTextToLoading();
 
-			loadGateway(new AsyncCallback<Synchronizer>() {
+			loadSynchronizerImpl(new AsyncCallback<Synchronizer>() {
 				@Override
 				public void onFailure(Throwable caught) {
 					abandonShip(caught);

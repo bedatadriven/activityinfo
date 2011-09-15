@@ -5,7 +5,7 @@
 
 package org.sigmah.client.offline;
 
-import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -36,7 +36,7 @@ import com.google.inject.Provider;
 public class OfflineControllerTest {
     private ViewStub view;
     private MockEventBus eventBus;
-    private Provider<Synchronizer> gatewayProvider;
+    private Provider<Synchronizer> synchronizerProvider;
     private OfflineImplStub offlineImpl;
     private StateManagerStub stateManager;
 	private RemoteDispatcher remoteDispatcher;
@@ -47,7 +47,7 @@ public class OfflineControllerTest {
         view = new ViewStub();
         eventBus = new MockEventBus();
         offlineImpl = new OfflineImplStub();
-        gatewayProvider = new Provider<Synchronizer>() {
+        synchronizerProvider = new Provider<Synchronizer>() {
             @Override
             public Synchronizer get() {
                 return offlineImpl;
@@ -65,7 +65,7 @@ public class OfflineControllerTest {
         // No state is set, so the presenter should assume that offline is not yet installed
 
         OfflineController presenter = new OfflineController(view, eventBus, remoteDispatcher,
-        		gatewayProvider, stateManager, new WebKitCapabilityProfile(), uiConstants);
+        		synchronizerProvider, stateManager, new WebKitCapabilityProfile(), uiConstants);
 
         assertThat(view.defaultButtonText, equalTo("Install"));
 
@@ -103,7 +103,7 @@ public class OfflineControllerTest {
         stateManager.set(OfflineController.OFFLINE_MODE_KEY, OfflineController.OfflineMode.OFFLINE.toString());
 
         OfflineController presenter = new OfflineController(view, eventBus, 
-        		remoteDispatcher, gatewayProvider, stateManager, new WebKitCapabilityProfile(), uiConstants);
+        		remoteDispatcher, synchronizerProvider, stateManager, new WebKitCapabilityProfile(), uiConstants);
 
         // offline async fragment finishes loading
         assertThat(offlineImpl.lastCall, equalTo("goOffline"));
@@ -119,7 +119,7 @@ public class OfflineControllerTest {
         stateManager.set(OfflineController.OFFLINE_MODE_KEY, OfflineController.OfflineMode.OFFLINE.toString());
 
         new OfflineController(view, eventBus, remoteDispatcher,
-        		gatewayProvider, stateManager, new WebKitCapabilityProfile(), uiConstants);
+        		synchronizerProvider, stateManager, new WebKitCapabilityProfile(), uiConstants);
 
         // offline async fragment finishes loading
         offlineImpl.lastCallback.onSuccess(null);
@@ -132,6 +132,24 @@ public class OfflineControllerTest {
         assertThat(view.defaultButtonText, equalTo("Installing..."));
     }
 
+    @Test
+    public void synchronizerConstructorExceptionsAreCaught() {
+    	
+        // No state is set, so the presenter should assume that offline is not yet installed
+
+    	Provider<Synchronizer> throwingProvider = createMock(Provider.class);
+    	expect(throwingProvider.get()).andThrow(new RuntimeException("foo"));
+    	replay(throwingProvider);
+    	
+        OfflineController presenter = new OfflineController(view, eventBus, remoteDispatcher,
+        		throwingProvider, stateManager, new WebKitCapabilityProfile(), uiConstants);
+        
+        view.defaultButton.fireEvent(Events.Select);
+        
+        assertThat(view.errorMessage, equalTo("foo"));
+        assertThat(view.defaultButtonText, equalTo("Install"));
+
+    }
 
     private static class ViewStub implements OfflineController.View {
 
@@ -141,6 +159,7 @@ public class OfflineControllerTest {
         public String taskDescription;
         public double percentComplete;
         public boolean menuEnabled = false;
+    	public String errorMessage;
 
         private BaseObservable reinstallItem = new BaseObservable();
         private BaseObservable toggleItem = new BaseObservable();
@@ -237,8 +256,7 @@ public class OfflineControllerTest {
 
 		@Override
 		public void showError(String message) {
-			// TODO Auto-generated method stub
-			
+			errorMessage = message;
 		}
 
 		@Override

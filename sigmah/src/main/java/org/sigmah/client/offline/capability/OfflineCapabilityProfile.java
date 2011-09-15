@@ -1,6 +1,5 @@
 package org.sigmah.client.offline.capability;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 
