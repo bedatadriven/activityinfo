@@ -9,10 +9,14 @@ import static org.sigmah.shared.report.model.DimensionType.Project;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.search.QueryParser.Dimension;
+
+import com.teklabs.gwt.i18n.server.LocaleProxy;
 
 public class ParserTest {
 	private final List<String> okQueries = new ArrayList<String>() {{ // new fancy i-dont-like collection initer
@@ -33,6 +37,13 @@ public class ParserTest {
 			"location:",
 			"location:" 
 	};
+	
+	@BeforeClass 
+	public static void initLocales() {
+		LocaleProxy.initialize();
+		LocaleProxy.setLocale(Locale.ENGLISH);
+		
+	}
 	
 	@Test
 	public void testParser() {
