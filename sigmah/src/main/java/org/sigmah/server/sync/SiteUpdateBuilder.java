@@ -53,43 +53,46 @@ public class SiteUpdateBuilder implements UpdateBuilder {
 
     @Override
     public SyncRegionUpdate build(User user, GetSyncRegionUpdates request) throws JSONException {
-        parseRegion(request.getRegionId());
-
-        // todo: check user permissions for access to this db
-
-        localVersion = TimestampHelper.fromString(request.getLocalVersion());
-
-        // Retrieve the sites to that have changed in some way since our last call
-
-        retrieveNextBatchOfModifiedSites(localVersion);
-
-        if(!all.isEmpty()) {
-            removeDependentAttributeValuesOfDeletedOrUpdatedSites();
-            removeDependentIndicatorValuesOfDeletedOrUpdatedSites();
-            removeDependentReportingPeriodsOfDeletedOrUpdatedSites();
-        }
-
-        builder.delete(Site.class, deleted);
-
-        if(!updated.isEmpty()) {
-            builder.insert("or replace", Site.class, updated);
-        	insertDependentAttributeValues();
-            insertDependentReportingPeriods();
-            insertDependentIndicatorValues();
-        }
-
-        SyncRegionUpdate update = new SyncRegionUpdate();
-        update.setComplete(all.size() < MAX_RESULTS);
-        if(all.isEmpty()) {
-            update.setVersion(request.getLocalVersion());
-        } else {
-            update.setVersion(TimestampHelper.toString(all.get(all.size()-1).getDateEdited()));
-            update.setSql(builder.asJson());
-        }
-
-        entityManager.close();
+        try {
+	    	parseRegion(request.getRegionId());
+	
+	        // todo: check user permissions for access to this db
+	
+	        localVersion = TimestampHelper.fromString(request.getLocalVersion());
+	
+	        // Retrieve the sites to that have changed in some way since our last call
+	
+	        retrieveNextBatchOfModifiedSites(localVersion);
+	
+	        if(!all.isEmpty()) {
+	            removeDependentAttributeValuesOfDeletedOrUpdatedSites();
+	            removeDependentIndicatorValuesOfDeletedOrUpdatedSites();
+	            removeDependentReportingPeriodsOfDeletedOrUpdatedSites();
+	        }
+	
+	        builder.delete(Site.class, deleted);
+	
+	        if(!updated.isEmpty()) {
+	            builder.insert("or replace", Site.class, updated);
+	        	insertDependentAttributeValues();
+	            insertDependentReportingPeriods();
+	            insertDependentIndicatorValues();
+	        }
+	
+	        SyncRegionUpdate update = new SyncRegionUpdate();
+	        update.setComplete(all.size() < MAX_RESULTS);
+	        if(all.isEmpty()) {
+	            update.setVersion(request.getLocalVersion());
+	        } else {
+	            update.setVersion(TimestampHelper.toString(all.get(all.size()-1).getDateEdited()));
+	            update.setSql(builder.asJson());
+	        }
+	
+	        return update;
         
-        return update;
+        } finally {
+        	entityManager.close();
+        }
     }
 
 
