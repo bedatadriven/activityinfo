@@ -27,6 +27,7 @@ public class BeanMappingModule extends AbstractModule {
     @Singleton
     Mapper provideMapper() {
         List<String> mappingFiles = new ArrayList<String>();
+        mappingFiles.add("dozer-localdate.xml");
         mappingFiles.add("dozer-admin-mapping.xml");
         mappingFiles.add("dozer-schema-mapping.xml");
 

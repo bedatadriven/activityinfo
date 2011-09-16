@@ -199,8 +199,11 @@
             <artifactId>rebar-appcache</artifactId>
             <version>${rebarVersion}</version>
         </dependency>
-
-
+        <dependency>
+            <groupId>com.bedatadriven.rebar</groupId>
+            <artifactId>rebar-time</artifactId>
+            <version>${rebarVersion}</version>
+        </dependency>
         <dependency>
             <groupId>com.bedatadriven.rebar</groupId>
             <artifactId>rebar-sql</artifactId>
@@ -211,7 +214,6 @@
             <artifactId>rebar-sync</artifactId>
             <version>${rebarVersion}</version>
         </dependency>
-
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>

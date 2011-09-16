@@ -34,8 +34,8 @@ public class LockEntityHandler implements CommandHandler<LockEntity> {
 		
 		LockedPeriod  lockedPeriod = new LockedPeriod();
 		LockedPeriodDTO lockedPeriodDTO = cmd.getLockedPeriod();
-		lockedPeriod.setFromDate(lockedPeriodDTO.getFromDate());
-		lockedPeriod.setToDate(lockedPeriodDTO.getToDate());
+		lockedPeriod.setFromDate(lockedPeriodDTO.getFromDate().atMidnightInMyTimezone());
+		lockedPeriod.setToDate(lockedPeriodDTO.getToDate().atMidnightInMyTimezone());
 		lockedPeriod.setName(lockedPeriodDTO.getName());
 		lockedPeriod.setEnabled(lockedPeriodDTO.isEnabled());
 

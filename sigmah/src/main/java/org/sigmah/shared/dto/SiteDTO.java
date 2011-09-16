@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.RpcMap;
 
@@ -26,6 +27,9 @@ public final class SiteDTO extends BaseModelData implements EntityDTO {
 
 	
     public static final String ENTITY_NAME = "Site";
+    
+    // ensure that serializer/deserializer is generated for LocalDate
+    private LocalDate date_;
 
 	public SiteDTO() {
 	}
@@ -84,7 +88,7 @@ public final class SiteDTO extends BaseModelData implements EntityDTO {
     /**
      * @return the beginning of work at this Site
      */
-	public Date getDate1() {
+	public LocalDate getDate1() {
 		return get("date1");
 	}
 
@@ -94,13 +98,21 @@ public final class SiteDTO extends BaseModelData implements EntityDTO {
      * @param date1
      */
 	public void setDate1(Date date1) {
+		if(date1 == null) {
+			set("date1", null);
+		} else {
+			set("date1", new LocalDate(date1));
+		}
+	}
+	
+	public void setDate1(LocalDate date1) {
 		set("date1", date1);
 	}
 
     /**
      * @return the end of work at this Site
      */
-	public Date getDate2() {
+	public LocalDate getDate2() {
 		return get("date2");
 	}
 
@@ -110,6 +122,14 @@ public final class SiteDTO extends BaseModelData implements EntityDTO {
      * @param date2
      */
 	public void setDate2(Date date2) {
+		if(date2 == null) {
+			set("date2", null);
+		} else {
+			set("date2", new LocalDate(date2));
+		}
+	}
+	
+	public void setDate2(LocalDate date2) {
 		set("date2", date2);
 	}
 
@@ -390,7 +410,7 @@ public final class SiteDTO extends BaseModelData implements EntityDTO {
 	/*
 	 * Returns true when this Site falls within at least one of given LockedPeriods
 	 */
-	public static boolean fallsWithinLockedPeriods(Iterable<LockedPeriodDTO> lockedPeriods, ActivityDTO activity, Date date) {
+	public static boolean fallsWithinLockedPeriods(Iterable<LockedPeriodDTO> lockedPeriods, ActivityDTO activity, LocalDate date) {
 		for (LockedPeriodDTO lockedPeriod : lockedPeriods) {
 			// For reporting purposes, only the Date2 is 'counted'.  
 			if (lockedPeriod.fallsWithinPeriod(date)) {
@@ -399,6 +419,10 @@ public final class SiteDTO extends BaseModelData implements EntityDTO {
 		}
 		
 		return false;
+	}
+	
+	public static boolean fallsWithinLockedPeriods(Iterable<LockedPeriodDTO> lockedPeriods, ActivityDTO activity, Date date) {
+		return fallsWithinLockedPeriods(lockedPeriods, activity, new LocalDate(date));
 	}
 	
 	public Set<LockedPeriodDTO> getAffectedLockedPeriods(ActivityDTO activity) {

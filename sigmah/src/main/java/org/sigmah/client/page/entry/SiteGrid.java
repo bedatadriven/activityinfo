@@ -14,7 +14,7 @@ import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.client.page.common.columns.EditDateColumn;
+import org.sigmah.client.page.common.columns.EditableLocalDateColumn;
 import org.sigmah.client.page.common.columns.EditTextColumn;
 import org.sigmah.client.page.common.columns.ReadTextColumn;
 import org.sigmah.client.page.common.grid.AbstractEditorGridView;
@@ -238,7 +238,7 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
 
 	private void createDateColumn() {
 		if(activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE) {
-            columns.add(new EditDateColumn("date2", I18N.CONSTANTS.date(), 100));
+            columns.add(new EditableLocalDateColumn("date2", I18N.CONSTANTS.date(), 100));
         }
 	}
 

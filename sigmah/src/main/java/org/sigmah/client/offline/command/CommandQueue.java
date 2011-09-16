@@ -20,6 +20,7 @@ import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
 import com.bedatadriven.rebar.sql.client.query.SqlInsert;
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
+import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -232,6 +233,10 @@ public class CommandQueue {
 				} else if(property.getValue() instanceof Boolean) {
 					value.addProperty("type", "Boolean");
 					value.addProperty("value", (Boolean)property.getValue());
+				} else if(property.getValue() instanceof LocalDate) {
+					value.addProperty("type", "LocalDate");
+					value.addProperty("value", property.getValue().toString());
+					
 				} else {
           Log.error("Cannot convert handle map value '" + property.getKey() + ", type " + property.getKey() +
 							": " + property.getValue().getClass().getName());
@@ -262,6 +267,8 @@ public class CommandQueue {
 				map.put(property.getKey(), new Date(value.get("time").getAsLong()));
 			} else if("Boolean".equals(type)) {
 				map.put(property.getKey(), value.get("value").getAsBoolean());
+			} else if("LocalDate".equals(type)) {
+				map.put(property.getKey(), LocalDate.parse( value.get("value").getAsString()));
 			} else {
 				throw new IllegalArgumentException("map contains key with unsupported value type -- " + 
 					property.getKey() + ": " + type);

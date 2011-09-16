@@ -58,7 +58,7 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
 	@Test
     @OnDataSet("/dbunit/sites-simple1.db.xml")
     public void run() throws SQLException {
-        synchronize();
+        synchronizeFirstTime();
         
         Collector<Date> lastUpdate = Collector.newCollector();
         synchronizer.getLastUpdateTime(lastUpdate);
@@ -119,7 +119,7 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
     @OnDataSet("/dbunit/locations.db.xml")
     public void locationsAreChunked() throws SQLException {
         addLocationsToServerDatabase(220);
-        synchronize();
+        synchronizeFirstTime();
 
         assertThat(Integer.valueOf(queryString("select count(*) from Location")), equalTo(220));
         

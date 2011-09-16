@@ -5,11 +5,15 @@ import java.util.Map;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.dto.SiteDTO;
 
+import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.extjs.gxt.ui.client.data.RpcMap;
 
 public class CreateSite implements MutatingCommand<CreateResult> {
 
 	private RpcMap properties;
+	
+	// ensure this class is cleared for deserialization
+	private LocalDate date_;
 
 	public CreateSite() {
 		properties = new RpcMap();

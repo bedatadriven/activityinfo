@@ -11,6 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 
@@ -26,6 +28,7 @@ public class LockedPeriod implements Serializable, ReallyDeleteable {
 	private boolean enabled;
 	
 	@Column(nullable = false)
+	@Temporal(TemporalType.DATE)
 	public Date getFromDate() {
 		return fromDate;
 	}
@@ -35,6 +38,7 @@ public class LockedPeriod implements Serializable, ReallyDeleteable {
 	}
 	
 	@Column(nullable = false)
+	@Temporal(TemporalType.DATE)
 	public Date getToDate() {
 		return toDate;
 	}

@@ -31,7 +31,7 @@ public class LocalSiteCreateTest extends LocalHandlerTestCase {
     @OnDataSet("/dbunit/sites-simple1.db.xml")
     public void createNew() throws CommandException {
     	
-    	synchronize();
+    	synchronizeFirstTime();
     	
         // create a new detached, client model
         SiteDTO newSite = SiteDTOs.newSite();

@@ -12,7 +12,6 @@ import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.AttributeDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
 
-import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
 import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
@@ -228,7 +227,7 @@ public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, Create
 		
 		return reportingPeriodId;
 	}
-
+	
 	private void insertIndicatorValues(final Map<String, Object> properties,
 			SqlTransaction tx, int reportingPeriodId) {
 		// insert the indicator values 
