@@ -85,13 +85,12 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
         assertThat(queryInt("select count(*) from LockedPeriod where ActivityId is not null"), equalTo(1));
         assertThat(queryInt("select count(*) from LockedPeriod where UserDatabaseId is not null"), equalTo(2));
         
-        
         /// now try updating a site remotely (from another client)
         // and veryify that we get the update after we synchronized
         
         Map<String, Object> changes = Maps.newHashMap();
         changes.put(AttributeDTO.getPropertyName(1), true);
-        
+        changes.put("locationName", "newName");
         executeRemotely(new UpdateSite(1, changes));
         
         synchronize();
@@ -101,7 +100,8 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
         
         assertThat(s1.getAttributeValue(1), equalTo(true));
         assertThat(s1.getAttributeValue(2), equalTo(true));
-
+        assertThat(s1.getLocationName(), equalTo("newName"));
+        
         // Try deleting a site
         
         executeRemotely(new Delete("Site", 1));
@@ -111,6 +111,7 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
         siteResult = executeLocally(GetSites.byId(1));
        
         assertThat(siteResult.getData().size(), equalTo(0));
+        
         
     }
 

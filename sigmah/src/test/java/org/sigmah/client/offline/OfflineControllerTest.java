@@ -27,6 +27,7 @@ import org.sigmah.client.offline.OfflineController.PromptConnectCallback;
 import org.sigmah.client.offline.capability.WebKitCapabilityProfile;
 import org.sigmah.client.offline.sync.SyncStatusEvent;
 import org.sigmah.client.offline.sync.Synchronizer;
+import org.sigmah.client.util.state.CrossSessionStateProvider;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.CreateSite;
 import org.sigmah.shared.command.MutatingCommand;
@@ -104,19 +105,16 @@ public class OfflineControllerTest {
     @Test
     public void loadWhenOfflineIsEnabled() {
 
-        // No state is set, so the presenter should assume that offline is not yet installed
-
         stateManager.set(OfflineController.OFFLINE_MODE_KEY, OfflineController.OfflineMode.OFFLINE.toString());
 
         OfflineController presenter = new OfflineController(view, eventBus, 
         		remoteDispatcher, synchronizerProvider, stateManager, new WebKitCapabilityProfile(), uiConstants);
 
         // offline async fragment finishes loading
-        assertThat(synchronizerImpl.lastCall, equalTo("goOffline"));
         synchronizerImpl.lastCallback.onSuccess(null);
 
         assertThat(view.defaultButtonText, equalTo("Last Sync'd: <date>"));
-        assertThat(synchronizerImpl.lastCall, equalTo("goOffline"));
+        assertThat(synchronizerImpl.lastCall, equalTo("validateOfflineInstalled"));
     }
 
     @Test
@@ -170,11 +168,6 @@ public class OfflineControllerTest {
         
         Synchronizer impl = createMock(Synchronizer.class);
         
-        
-        Provider<Synchronizer> implProvider = createMock(Provider.class);
-        expect(implProvider.get()).andReturn(impl);
-        replay(implProvider);
-  
         OfflineController.View view = createMock(OfflineController.View.class);
         
         // Start the controller and verify we are in online mode
@@ -191,7 +184,7 @@ public class OfflineControllerTest {
         replay(view, impl);
         
         OfflineController presenter = new OfflineController(view, eventBus, 
-        		remoteDispatcher, implProvider, stateManager, new WebKitCapabilityProfile(), uiConstants);
+        		remoteDispatcher, provider(impl), stateManager, new WebKitCapabilityProfile(), uiConstants);
 
         verify(view, impl);
         
@@ -235,6 +228,69 @@ public class OfflineControllerTest {
     	verify(view);
     }
 
+
+	private Provider<Synchronizer> provider(Synchronizer impl) {
+		Provider<Synchronizer> implProvider = createMock(Provider.class);
+        expect(implProvider.get()).andReturn(impl);
+        replay(implProvider);
+		return implProvider;
+	}
+
+
+
+    
+    @Test
+    public void recoveryAfterOfflineLoadFails() {
+    	
+    	CrossSessionStateProvider stateProvider = createMock(CrossSessionStateProvider.class);
+    	expect(stateProvider.getString(eq(OfflineController.OFFLINE_MODE_KEY))).andReturn(OfflineController.OfflineMode.OFFLINE.name());
+    	replay(stateProvider);
+    	        
+        Dispatcher remoteDispatcher = createMock(Dispatcher.class);
+        replay(remoteDispatcher);
+        
+        Synchronizer impl = createMock(Synchronizer.class);	
+        impl.validateOfflineInstalled(isA(AsyncCallback.class));
+        expectLastCallAndCallbackWithFailure();
+        replay(impl);
+       
+        OfflineController.View view = createMock(OfflineController.View.class);
+        
+        // Start the controller and verify that after loading fails, state
+        // switches back to not installed
+ 
+        view.setButtonTextToLoading();
+        view.showError(isA(String.class));
+        view.setButtonTextToInstall();
+
+        expect(view.getButton()).andReturn(new BaseObservable());
+        expect(view.getSyncNowItem()).andReturn(new BaseObservable());
+        expect(view.getToggleItem()).andReturn(new BaseObservable());
+        expect(view.getReinstallItem()).andReturn(new BaseObservable());
+        
+        replay(view);
+        
+        OfflineController presenter = new OfflineController(view, eventBus, 
+        		remoteDispatcher, provider(impl), stateProvider, new WebKitCapabilityProfile(), uiConstants);
+
+        verify(view, impl);
+    }
+
+
+	private void expectLastCallAndCallbackWithFailure() {
+		expectLastCall().andAnswer(new IAnswer() {
+
+			@Override
+			public Object answer() throws Throwable {
+				for(Object arg : getCurrentArguments()) {
+					if(arg instanceof AsyncCallback) {
+						((AsyncCallback) arg).onFailure(new RuntimeException("fail!"));
+					}
+				}
+				return null;
+			}
+		});
+	}
 
 
 	private void expectLastCallAndCallbackWithSuccess() {
@@ -438,11 +494,6 @@ public class OfflineControllerTest {
         }
 
         @Override
-        public void goOffline(AsyncCallback<Void> callback) {
-           onCalled("goOffline", callback);
-        }
-
-        @Override
         public void goOnline(AsyncCallback<Void> callback) {
             onCalled("goOnline", callback);
         }
@@ -465,7 +516,7 @@ public class OfflineControllerTest {
 
         @Override
         public void validateOfflineInstalled(AsyncCallback<Void> callback) {
-          callback.onSuccess(null);
+        	onCalled("validateOfflineInstalled", callback);
         }
 
 

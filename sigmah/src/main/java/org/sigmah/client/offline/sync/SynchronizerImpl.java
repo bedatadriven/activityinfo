@@ -68,7 +68,6 @@ public class SynchronizerImpl implements Synchronizer {
 					@Override
 					public void onFailure(Throwable caught) {
 						callback.onFailure(caught);
-						
 					}
 				});
 			}
@@ -78,11 +77,6 @@ public class SynchronizerImpl implements Synchronizer {
 				callback.onFailure(caught);
 			}
 		});
-    }
-
-    @Override
-    public void goOffline(AsyncCallback<Void> callback) {
-        callback.onSuccess(null);
     }
 
     @Override

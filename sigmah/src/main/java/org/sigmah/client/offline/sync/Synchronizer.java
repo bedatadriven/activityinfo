@@ -32,7 +32,6 @@ public interface Synchronizer {
      */
     void validateOfflineInstalled(AsyncCallback<Void> callback);
 
-    void goOffline(AsyncCallback<Void> callback);
     void goOnline(AsyncCallback<Void> callback);
     void synchronize(AsyncCallback<Void> callback);
     

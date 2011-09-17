@@ -477,7 +477,7 @@ public class OfflineController implements Dispatcher {
 					if (activeMode == OfflineMode.ONLINE) {
 						activateStrategy(new OnlineStrategy(gateway));
 					} else {
-						gateway.goOffline(new AsyncCallback<Void>() {
+						gateway.validateOfflineInstalled(new AsyncCallback<Void>() {
 							@Override
 							public void onFailure(Throwable caught) {
 								abandonShip(caught);
@@ -485,21 +485,8 @@ public class OfflineController implements Dispatcher {
 
 							@Override
 							public void onSuccess(Void result) {
-								gateway.validateOfflineInstalled(new AsyncCallback<Void>() {
-
-									@Override
-									public void onSuccess(Void result) {
-										activateStrategy(new OfflineStrategy(
-												gateway));
-										doDispatch(pending);
-									}
-
-									@Override
-									public void onFailure(Throwable caught) {
-										reportFailure(caught);
-										abandonShip();
-									}
-								});
+								activateStrategy(new OfflineStrategy(gateway));
+								doDispatch(pending);
 							}
 						});
 					}
@@ -550,7 +537,7 @@ public class OfflineController implements Dispatcher {
 			view.setButtonTextToSyncing();
 			view.disableMenu();
 			pending = new ArrayList<CommandRequest>();
-			offlineManager.goOffline(new AsyncCallback<Void>() {
+			offlineManager.validateOfflineInstalled(new AsyncCallback<Void>() {
 				@Override
 				public void onFailure(Throwable caught) {
 					activateStrategy(new OnlineStrategy(offlineManager));
