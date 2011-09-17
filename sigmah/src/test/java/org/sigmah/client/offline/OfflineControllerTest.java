@@ -11,20 +11,26 @@ import static org.junit.Assert.assertThat;
 
 import java.util.Date;
 
+import org.easymock.Capture;
+import org.easymock.EasyMock;
+import org.easymock.IAnswer;
 import org.junit.Before;
 import org.junit.Test;
 import org.sigmah.client.dispatch.AsyncMonitor;
+import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.RemoteDispatcher;
 import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.mock.MockEventBus;
 import org.sigmah.client.mock.StateManagerStub;
-import org.sigmah.client.offline.OfflineController;
 import org.sigmah.client.offline.OfflineController.EnableCallback;
 import org.sigmah.client.offline.OfflineController.PromptConnectCallback;
 import org.sigmah.client.offline.capability.WebKitCapabilityProfile;
 import org.sigmah.client.offline.sync.SyncStatusEvent;
 import org.sigmah.client.offline.sync.Synchronizer;
 import org.sigmah.shared.command.Command;
+import org.sigmah.shared.command.CreateSite;
+import org.sigmah.shared.command.MutatingCommand;
+import org.sigmah.shared.command.result.CreateResult;
 
 import com.extjs.gxt.ui.client.event.BaseObservable;
 import com.extjs.gxt.ui.client.event.Events;
@@ -37,7 +43,7 @@ public class OfflineControllerTest {
     private ViewStub view;
     private MockEventBus eventBus;
     private Provider<Synchronizer> synchronizerProvider;
-    private OfflineImplStub offlineImpl;
+    private OfflineImplStub synchronizerImpl;
     private StateManagerStub stateManager;
 	private RemoteDispatcher remoteDispatcher;
     private UIConstants uiConstants;
@@ -46,11 +52,11 @@ public class OfflineControllerTest {
     public void setUp() {
         view = new ViewStub();
         eventBus = new MockEventBus();
-        offlineImpl = new OfflineImplStub();
+        synchronizerImpl = new OfflineImplStub();
         synchronizerProvider = new Provider<Synchronizer>() {
             @Override
             public Synchronizer get() {
-                return offlineImpl;
+                return synchronizerImpl;
             }
         };
         stateManager = new StateManagerStub();
@@ -73,7 +79,7 @@ public class OfflineControllerTest {
         view.defaultButton.fireEvent(Events.Select);
 
         // verify that installation has been launched
-        assertThat(offlineImpl.lastCall, equalTo("install"));
+        assertThat(synchronizerImpl.lastCall, equalTo("install"));
 
         // verify the UI is showing the status
         assertThat(view.defaultButtonText, equalTo("Installing..."));
@@ -87,7 +93,7 @@ public class OfflineControllerTest {
         assertThat(view.percentComplete, equalTo(50d));
 
         // signal that installation is complete
-        offlineImpl.lastCallback.onSuccess(null);
+        synchronizerImpl.lastCallback.onSuccess(null);
 
         // verify that the UI has been updated
         assertThat(view.progressDialogVisible, equalTo(false));
@@ -106,11 +112,11 @@ public class OfflineControllerTest {
         		remoteDispatcher, synchronizerProvider, stateManager, new WebKitCapabilityProfile(), uiConstants);
 
         // offline async fragment finishes loading
-        assertThat(offlineImpl.lastCall, equalTo("goOffline"));
-        offlineImpl.lastCallback.onSuccess(null);
+        assertThat(synchronizerImpl.lastCall, equalTo("goOffline"));
+        synchronizerImpl.lastCallback.onSuccess(null);
 
         assertThat(view.defaultButtonText, equalTo("Last Sync'd: <date>"));
-        assertThat(offlineImpl.lastCall, equalTo("goOffline"));
+        assertThat(synchronizerImpl.lastCall, equalTo("goOffline"));
     }
 
     @Test
@@ -122,13 +128,13 @@ public class OfflineControllerTest {
         		synchronizerProvider, stateManager, new WebKitCapabilityProfile(), uiConstants);
 
         // offline async fragment finishes loading
-        offlineImpl.lastCallback.onSuccess(null);
+        synchronizerImpl.lastCallback.onSuccess(null);
 
         // now click the reinstall menu item
         view.reinstallItem.fireEvent(Events.Select, new MenuEvent(null));
 
         // we should be in install mode
-        assertThat(offlineImpl.lastCall, equalTo("install"));
+        assertThat(synchronizerImpl.lastCall, equalTo("install"));
         assertThat(view.defaultButtonText, equalTo("Installing..."));
     }
 
@@ -148,8 +154,109 @@ public class OfflineControllerTest {
         
         assertThat(view.errorMessage, equalTo("foo"));
         assertThat(view.defaultButtonText, equalTo("Install"));
-
     }
+    
+    
+    @Test
+    public void synchronizeAfterMutatingCommands() {
+    	
+        stateManager.set(OfflineController.OFFLINE_MODE_KEY, OfflineController.OfflineMode.ONLINE.toString());
+        
+        
+        Dispatcher remoteDispatcher = createMock(Dispatcher.class);
+        Capture<AsyncCallback<CreateResult>> remoteServiceCallback = new Capture<AsyncCallback<CreateResult>>();
+        remoteDispatcher.execute(isA(MutatingCommand.class), anyObject(AsyncMonitor.class), capture(remoteServiceCallback));
+        replay(remoteDispatcher);
+        
+        Synchronizer impl = createMock(Synchronizer.class);
+        
+        
+        Provider<Synchronizer> implProvider = createMock(Provider.class);
+        expect(implProvider.get()).andReturn(impl);
+        replay(implProvider);
+  
+        OfflineController.View view = createMock(OfflineController.View.class);
+        
+        // Start the controller and verify we are in online mode
+ 
+        view.setButtonTextToLoading();
+        view.setButtonTextToOnline();
+        view.enableMenu();
+
+        expect(view.getButton()).andReturn(new BaseObservable());
+        expect(view.getSyncNowItem()).andReturn(new BaseObservable());
+        expect(view.getToggleItem()).andReturn(new BaseObservable());
+        expect(view.getReinstallItem()).andReturn(new BaseObservable());
+        
+        replay(view, impl);
+        
+        OfflineController presenter = new OfflineController(view, eventBus, 
+        		remoteDispatcher, implProvider, stateManager, new WebKitCapabilityProfile(), uiConstants);
+
+        verify(view, impl);
+        
+        // Now send a mutating command to the server
+        
+        CreateSite command = new CreateSite();
+        CreateResult expectedResult = new CreateResult(99);
+        
+        AsyncCallback<CreateResult> outerCallback = createMock("outerCallback", AsyncCallback.class);
+        outerCallback.onSuccess(eq(expectedResult));
+        replay(outerCallback);
+        
+        presenter.execute(command, null, outerCallback);
+    	
+    	// Server responds with the result...
+        // Verify that a background sync starts
+        
+        resetToDefault(view, impl);
+        
+        Capture<AsyncCallback<Void>> synchronizerCallback = new Capture<AsyncCallback<Void>>();
+        view.setButtonTextToSyncing();
+        view.disableMenu();
+        
+        impl.synchronize(capture(synchronizerCallback));
+    	
+        replay(view, impl);
+
+        remoteServiceCallback.getValue().onSuccess(expectedResult);
+
+        verify(view, impl);
+        
+        // And next the synchronization completes successfully...
+    	
+        resetToDefault(view);
+        view.setButtonTextToOnline();
+        view.enableMenu();
+        replay(view);
+        
+        synchronizerCallback.getValue().onSuccess(null);
+    	
+    	verify(view);
+    }
+
+
+
+	private void expectLastCallAndCallbackWithSuccess() {
+		expectLastMethodAndCallbackWith(null);
+	}
+
+
+	private void expectLastMethodAndCallbackWith(final Object result) {
+		expectLastCall().andAnswer(new IAnswer<Object>() {
+
+			@Override
+			public Object answer() throws Throwable {
+				for(Object arg : getCurrentArguments()) {
+					if(arg instanceof AsyncCallback) {
+						((AsyncCallback) arg).onSuccess(result);
+						return null;
+					}
+				}
+				throw new IllegalArgumentException("no AsyncCallback provided");
+			}
+		});
+	}
 
     private static class ViewStub implements OfflineController.View {
 

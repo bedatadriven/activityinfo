@@ -17,7 +17,7 @@ import java.util.List;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.dispatch.remote.RemoteDispatcher;
+import org.sigmah.client.dispatch.remote.Remote;
 import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.offline.capability.OfflineCapabilityProfile;
 import org.sigmah.client.offline.capability.PermissionRefusedException;
@@ -29,6 +29,7 @@ import org.sigmah.client.offline.sync.SynchronizerConnectionException;
 import org.sigmah.client.util.state.CrossSessionStateProvider;
 import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.Command;
+import org.sigmah.shared.command.MutatingCommand;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.exception.InvalidAuthTokenException;
 
@@ -151,7 +152,7 @@ public class OfflineController implements Dispatcher {
 	private final StateProvider stateManager;
 	private final Provider<Synchronizer> synchronizerProvider;
 	private UIConstants uiConstants;
-	private final RemoteDispatcher remoteDispatcher;
+	private final Dispatcher remoteDispatcher;
 	private final OfflineCapabilityProfile capabilityProfile;
 
 	private OfflineMode activeMode;
@@ -161,12 +162,14 @@ public class OfflineController implements Dispatcher {
 
 	@Inject
 	public OfflineController(final View view, EventBus eventBus,
-			RemoteDispatcher remoteService, Provider<Synchronizer> gateway,
+			@Remote Dispatcher remoteDispatcher, 
+			Provider<Synchronizer> gateway,
 			CrossSessionStateProvider stateManager,
-			OfflineCapabilityProfile capabilityProfile, UIConstants uiConstants) {
+			OfflineCapabilityProfile capabilityProfile, 
+			UIConstants uiConstants) {
 		this.view = view;
 		this.stateManager = stateManager;
-		this.remoteDispatcher = remoteService;
+		this.remoteDispatcher = remoteDispatcher;
 		this.synchronizerProvider = gateway;
 		this.capabilityProfile = capabilityProfile;
 		this.uiConstants = uiConstants;
@@ -471,7 +474,9 @@ public class OfflineController implements Dispatcher {
 
 				@Override
 				public void onSuccess(final Synchronizer gateway) {
-					if (activeMode == OfflineMode.OFFLINE) {
+					if (activeMode == OfflineMode.ONLINE) {
+						activateStrategy(new OnlineStrategy(gateway));
+					} else {
 						gateway.goOffline(new AsyncCallback<Void>() {
 							@Override
 							public void onFailure(Throwable caught) {
@@ -625,9 +630,7 @@ public class OfflineController implements Dispatcher {
 						offlineManger, new CommandRequest(command, monitor,
 								callback)));
 			}
-
 		}
-
 	}
 
 	private class CheckingIfUserWantsToGoOnline extends Strategy {
@@ -677,7 +680,6 @@ public class OfflineController implements Dispatcher {
 						public void onFailure(Throwable caught) {
 							onConnectionFailure(caught);
 						}
-
 					});
 				}
 			});
@@ -765,6 +767,27 @@ public class OfflineController implements Dispatcher {
 		void onReinstall() {
 			activateStrategy(new InstallingStrategy());
 		}
+
+		@Override
+		void dispatch(final Command command, AsyncMonitor monitor,
+				final AsyncCallback callback) {
+			
+			remoteDispatcher.execute(command, monitor, new AsyncCallback() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					callback.onFailure(caught);
+				}
+
+				@Override
+				public void onSuccess(Object result) {
+					callback.onSuccess(result);
+					if(command instanceof MutatingCommand) {
+						activateStrategy(new BackgroundSyncingWhileOnlineStrategy(offlineManager));
+					}
+				}			
+			});
+		}
 	}
 
 	/**
@@ -817,6 +840,78 @@ public class OfflineController implements Dispatcher {
 			parentStrategy.dispatch(command, monitor, callback);
 		}
 	}
+	
+	private class BackgroundSyncingWhileOnlineStrategy extends Strategy {
+		private final Synchronizer synchronizer;
+		private boolean dirty = false;
+		
+		private BackgroundSyncingWhileOnlineStrategy(Synchronizer offlineManager) {
+			this.synchronizer = offlineManager;
+		}
+
+		@Override
+		Strategy activate() {
+			view.setButtonTextToSyncing();
+			view.disableMenu();
+
+			startSynchronization();
+			
+			return this;
+		}
+
+		private void startSynchronization() {
+			synchronizer.synchronize(new AsyncCallback<Void>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					recordInconsistentState();
+					reportFailure(caught);
+					view.hideProgressDialog();
+					activateStrategy(new OnlineStrategy(synchronizer));
+				}
+
+				@Override
+				public void onSuccess(Void result) {
+					if(dirty) {
+						// while we have been synchronzing, the user a sent a command
+						// to the server that mutated the remote state,
+						// so we need to synchronize again to fetch the changes
+						startSynchronization();
+					} else {
+						activateStrategy(new OnlineStrategy(synchronizer));
+					}
+				}
+			});
+		}
+
+		private void recordInconsistentState() {
+			
+		}
+
+		@Override
+		void onDefaultButton() {
+			view.showProgressDialog();
+		}
+
+		@Override
+		void dispatch(final Command command, AsyncMonitor monitor,
+				final AsyncCallback callback) {
+
+			remoteDispatcher.execute(command, monitor, new AsyncCallback() {
+				@Override
+				public void onFailure(Throwable caught) {
+					callback.onFailure(caught);
+				}
+
+				@Override
+				public void onSuccess(Object result) {
+					if(command instanceof MutatingCommand) {
+						dirty = true;
+					}
+					callback.onSuccess(result);
+				}
+			});
+		}		
+	}
 
 	private static class CommandRequest {
 		final Command command;
@@ -847,5 +942,4 @@ public class OfflineController implements Dispatcher {
 			});
 		}
 	}
-
 }
