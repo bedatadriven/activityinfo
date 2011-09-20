@@ -20,6 +20,7 @@ import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Event;
 
@@ -31,7 +32,20 @@ public class AdminFieldSet extends AbstractFieldSet implements AdminFieldSetPres
 
     public AdminFieldSet(ActivityDTO activity) {
         super(I18N.CONSTANTS.location(), 100, 200);
+        
+        if (activity.getLocationType().getBoundAdminLevelId() == null) {
+            TextField<String> nameField = new TextField<String>();
+            nameField.setName("locationName");
+            nameField.setFieldLabel(activity.getLocationType().getName());
+            nameField.setAllowBlank(false);
+            add(nameField);
 
+            TextField<String> axeField = new TextField<String>();
+            axeField.setName("locationAxe");
+            axeField.setFieldLabel(I18N.CONSTANTS.axe());
+            add(axeField);
+        }
+        
         for(final AdminLevelDTO level : activity.getAdminLevels()) {
             final int levelId = level.getId();
 
@@ -66,51 +80,10 @@ public class AdminFieldSet extends AbstractFieldSet implements AdminFieldSetPres
                     }
                 }
             });
-//            comboBox.addListener(Events.Blur, new Listener<FieldEvent>() {
-//                public void handleEvent(FieldEvent be) {
-//
-//                    if(comboBox.getRawValue() == null || comboBox.getRawValue().length() == 0) {
-//                        // the user has erased the text of the field
-//
-//                        presenter.onSelectionChanged(levelId, null);
-//
-//                    } else if(comboBox.getValue() != null &&
-//                              comboBox.getValue().get("name").equals(comboBox.getRawValue())) {
-//
-//                        // the user typed in a new name that doesn't match the current selection
-//                        presenter.onSelectionChanged(levelId, comboBox.getValue() );
-//
-//                    } else if(comboBox.getStore().getCount() <= 1 &&
-//                            comboBox.getStore().getLoader() != null) {
-//
-//                        final String name = comboBox.getRawValue();
-//                        // need to load the list first
-//                        comboBox.markInvalid("Chargement de " + level.getName() + " en cours");
-//                        final Loader loader = comboBox.getStore().getLoader();
-//                        loader.addListener(Loader.Load, new Listener<LoadEvent>() {
-//                            public void handleEvent(LoadEvent be) {
-//                                loader.removeListener(Loader.Load, this);
-//                                ListLoadResult<AdminEntityDTO> result = be.getData();
-//                                AdminEntityDTO sel = findEntity(name, result.getData());
-//                                if(sel == null) {
-//                                    comboBox.markInvalid("Sélection non-valide");
-//                                } else {
-//                                    presenter.onSelectionChanged(levelId, sel);
-//                                    comboBox.clearInvalid();
-//                                }
-//                            }
-//                        });
-//
-//                    } else {
-//                        comboBox.markInvalid("Sélection non-valide");
-//                    }
-//
-//                }
-//            });
+
             comboBoxes.put(levelId, comboBox);
             add(comboBox);
         }
-
     }
 
     private AdminEntityDTO findEntity(String name, List<AdminEntityDTO> models) {
@@ -141,36 +114,6 @@ public class AdminFieldSet extends AbstractFieldSet implements AdminFieldSetPres
     public void setValue(int levelId, AdminEntityDTO value) {
         comboBoxes.get(levelId).setValue(value);
     }
-
-
-    //	private boolean validateAdminChoices() {
-//
-//		UIMessages messages = GWT.create(UIMessages.class);
-//		
-//		// first validate the selections using the bounding boxes
-//		AdminEntityCombo[] combos = this.levelCombos.values().toArray(new AdminEntityCombo[0]);
-//		
-//		for(AdminEntityCombo combo : combos) {
-//			combo.clearInvalid();
-//		}
-//	
-//		for(int i = 0; i!=combos.length; ++i) {
-//			AdminEntity a = combos[i].getValue();
-//			if(a != null && a.hasBounds()) {
-//				for(int j=i+1; j!=combos.length; ++j) {
-//
-//					AdminEntity b = combos[j].getValue();
-//
-//					if(b!=null && b.hasBounds() && a.getBounds().distance(b.getBounds()) > 0.25 ) {
-//						combos[i].forceInvalid(messages.adminConflict(a.getName(),combos[j].getLevel().getName(), b.getName()));
-//						combos[j].forceInvalid(messages.adminConflict(b.getName(), combos[i].getLevel().getName(), a.getName()));
-//						return false;
-//					}
-//				}
-//			}
-//		}	
-//		return true;
-//	}
 
     public ComboBox<AdminEntityDTO> getCombo(int levelId) {
         return comboBoxes.get(levelId);

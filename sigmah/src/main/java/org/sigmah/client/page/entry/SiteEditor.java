@@ -27,7 +27,6 @@ import org.sigmah.client.page.common.filter.NullFilterPanel;
 import org.sigmah.client.page.common.grid.AbstractEditorGridPresenter;
 import org.sigmah.client.page.common.grid.GridView;
 import org.sigmah.client.page.common.toolbar.UIActions;
-import org.sigmah.client.page.entry.editor.SiteFormLoader;
 import org.sigmah.client.page.entry.editor.SiteFormPage;
 import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.BatchCommand;
@@ -83,7 +82,6 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
     private final View view;
     private final EventBus eventBus;
     private final Dispatcher service;
-    private final SiteFormLoader formLoader;
 
     protected final ListStore<SiteDTO> store;
     protected final PagingCmdLoader<SiteResult> loader;
@@ -101,8 +99,6 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
         this.view = view;
         this.eventBus = eventBus;
         this.service = service;
-
-        formLoader = new SiteFormLoader(eventBus, service);
 
         loader = new PagingCmdLoader<SiteResult>(service);
         store = new ListStore<SiteDTO>(loader);

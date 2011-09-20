@@ -8,6 +8,7 @@ package org.sigmah.client.page.entry.editor;
 
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.map.MapApiLoader;
 import org.sigmah.client.map.MapTypeFactory;
 import org.sigmah.client.page.common.widget.CoordinateField;
 import org.sigmah.client.page.config.form.FieldSetFitLayout;
@@ -37,6 +38,7 @@ import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.geom.LatLngBounds;
 import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.maps.client.overlay.MarkerOptions;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class MapFieldSet extends FieldSet implements MapEditView {
 	private EventBus eventBus = new SimpleEventBus();
@@ -59,10 +61,24 @@ public class MapFieldSet extends FieldSet implements MapEditView {
 
         createPanel();
         createPanelToolbar();
-        createMapWidget();
+        loadMapAync();
     }
 
-    private void initializeComponent() {
+    private void loadMapAync() {
+    	MapApiLoader.load(null, new AsyncCallback<Void>() {
+			@Override
+			public void onSuccess(Void result) {
+				createMapWidget();				
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Handle failure
+			}
+		});
+	}
+
+	private void initializeComponent() {
         setHeading(I18N.CONSTANTS.geoPosition());
         setLayout(new FieldSetFitLayout());
         setHeight(250);

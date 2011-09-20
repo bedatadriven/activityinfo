@@ -7,13 +7,14 @@ package org.sigmah.client.page.entry.editor;
 
 import java.util.Map;
 
+import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
+import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.common.widget.LoadingPlaceHolder;
 import org.sigmah.client.page.config.form.ModelFormPanel;
 import org.sigmah.shared.dto.ActivityDTO;
-import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.SiteDTO;
@@ -23,26 +24,28 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.maps.client.Maps;
+import com.google.common.collect.Maps;
 
 public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
 
     protected SiteFormPresenter presenter;
     protected ActivityDTO activity;
     protected SiteDTO site;
-
+	private Dispatcher service;
+	private EventBus eventBus;
+	
     private ActivityFieldSet activityFieldSet;
-    private LocationFieldSet locationFieldSet;
-    private MapEditView mapView;
+    private LocationContainer locationFieldSet;
     private AttributeFieldSet attributeFieldSet;
     private IndicatorFieldSet indicatorFieldSet;
     private CommentFieldSet commentFieldSet;
 
     private TabPanel tabPanel;
     
-    public SiteForm() {
+    public SiteForm(Dispatcher service, EventBus eventBus) {
+		this.service=service;
+		this.eventBus=eventBus;
 //        this.setIcon(IconImageBundle.ICONS.editPage());
 //        this.setHeading(I18N.CONSTANTS.loading());
 
@@ -70,49 +73,35 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
         activityFieldSet = new ActivityFieldSet(activity, partnerStore, assessmentStore, projectStore);
         registerFieldSet(activityFieldSet);
         
-        addTab(I18N.CONSTANTS.details(), activityFieldSet);
+        addFlowTab(I18N.CONSTANTS.details(), activityFieldSet);
         
-        // LOCATION fieldset
+        locationFieldSet = new LocationContainer(service, eventBus, activity);
         
+        registerFieldSet(locationFieldSet, true);
+        addFitTab(I18N.CONSTANTS.location(), locationFieldSet);
 
-        // GEO POSITION        this.site = site;
-
-        if (Maps.isLoaded()) {
-            registerField(((MapFieldSet) mapView).getLngField());
-            registerField(((MapFieldSet) mapView).getLatField());
-        } else {
-            registerFieldSet((FieldSet) mapView);
-        }
-
-        addTab(I18N.CONSTANTS.location(), locationFieldSet, (FieldSet)mapView);
-
-        
         // ATTRIBUTE fieldset
         if (activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE) {
-
             attributeFieldSet = new AttributeFieldSet(activity);
             registerFieldSet(attributeFieldSet);
-
+           
             // INDICATOR fieldset
-
             indicatorFieldSet = new IndicatorFieldSet(activity);
             registerFieldSet(indicatorFieldSet);
-           
-            
-            addTab(I18N.CONSTANTS.attributes(), attributeFieldSet, indicatorFieldSet);
+            addFlowTab(I18N.CONSTANTS.attributes(), attributeFieldSet, indicatorFieldSet);
         }
 
         // COMMENT
         commentFieldSet = new CommentFieldSet();
         registerFieldSet(commentFieldSet);
-        addTab(I18N.CONSTANTS.comments(), commentFieldSet);
+        addFlowTab(I18N.CONSTANTS.comments(), commentFieldSet);
 
 
         layout();
     }
 
 	
-	private void addTab(String title, Component... components) {
+	private void addFlowTab(String title, Component... components) {
 		TabItem tab = new TabItem();
         tab.setText(title);
         tab.setScrollMode(Scroll.AUTOY);
@@ -123,9 +112,18 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
         tabPanel.add(tab);
 	}
 
+	private void addFitTab(String title, Component component) {
+		TabItem tab = new TabItem();
+        tab.setText(title);
+        tab.setLayout(new FitLayout());
+       	tab.add(component);
+        
+        tabPanel.add(tab);
+	}
+
     public void setSite(SiteDTO site) {
         updateForm(site);
-
+        locationFieldSet.setSite(site);
     }
 
     @Override
@@ -134,29 +132,11 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
     }
 
     @Override
-    public AdminFieldSetPresenter.View createAdminFieldSetView(ActivityDTO activity) {
-        locationFieldSet = new LocationFieldSet(activity);
-        registerFieldSet(locationFieldSet);
-        return locationFieldSet;
-    }
-
-    @Override
-    public MapEditView createMapView(CountryDTO country) {
-
-        if (Maps.isLoaded()) {
-            MapFieldSet mapFieldSet = new MapFieldSet(country);
-            this.mapView = mapFieldSet;
-        } else {
-            CoordFieldSet coordFieldSet = new CoordFieldSet();
-            this.mapView = coordFieldSet;
-        }
-
-        return mapView;
-    }
-
-    @Override
     public Map<String, Object> getChanges() {
-        return super.getModified();
+        Map<String, Object> changes = Maps.newHashMap();
+        changes.putAll(super.getModified());
+        changes.putAll(locationFieldSet.getChanges());
+        return changes;
     }
 
     @Override
@@ -174,8 +154,18 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
 
     }
 
-    public Map<String, Object> getPropertyMap() {
-        return super.getAllValues();
+    @Override
+	public boolean isDirty() {
+		return super.isDirty() || locationFieldSet.isDirty();
+	}
+
+	public Map<String, Object> getPropertyMap() {
+        Map<String, Object> changes = Maps.newHashMap();
+        
+        changes.putAll(super.getAllValues());
+        changes.putAll(locationFieldSet.getAllValues());
+        
+        return changes;
     }
     
     private void fixUpProperties(Map<String,Object> map) {

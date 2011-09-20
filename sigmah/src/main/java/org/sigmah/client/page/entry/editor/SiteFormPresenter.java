@@ -19,19 +19,16 @@ import org.sigmah.shared.command.UpdateSite;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.ActivityDTO;
-import org.sigmah.shared.dto.AdminEntityDTO;
-import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.SiteDTO;
-import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class SiteFormPresenter implements SiteFormLeash {
+public class SiteFormPresenter  {
 
     public interface View {
 
@@ -43,10 +40,6 @@ public class SiteFormPresenter implements SiteFormLeash {
 
         public void setSite(SiteDTO site);
 
-        public AdminFieldSetPresenter.View createAdminFieldSetView(ActivityDTO activity);
-
-        public MapEditView createMapView(CountryDTO country);
-        
         public boolean validate();
 
         public boolean isDirty();
@@ -68,8 +61,6 @@ public class SiteFormPresenter implements SiteFormLeash {
     private SiteDTO currentSite;
     private ActivityDTO currentActivity;
 
-    protected MapPresenter mapPresenter;
-    protected AdminFieldSetPresenter adminPresenter;
     private View view;
 
     public SiteFormPresenter(EventBus eventBus, Dispatcher service, ActivityDTO activity, View view) {
@@ -118,21 +109,7 @@ public class SiteFormPresenter implements SiteFormLeash {
 
         this.currentActivity = activity;
 
-        mapPresenter = new MapPresenter(view.createMapView(activity.getDatabase().getCountry()));
 
-        adminPresenter = new AdminFieldSetPresenter(service, currentActivity, view.createAdminFieldSetView(currentActivity));
-        adminPresenter.setListener(new AdminFieldSetPresenter.Listener() {
-            @Override
-            public void onBoundsChanged(String name, BoundingBoxDTO bounds) {
-                mapPresenter.setBounds(name, bounds);
-            }
-
-            @Override
-            public void onModified() {
-                SiteFormPresenter.this.onModified();
-            }
-        });
-        
 
         view.init(this, currentActivity, createPartnerStore(), createAsssessmentStore(), createProjectStore());
     }
@@ -140,9 +117,6 @@ public class SiteFormPresenter implements SiteFormLeash {
     public void setSite(SiteDTO site) {
         currentSite = site;
 
-        adminPresenter.setSite(site);
-        mapPresenter.setSite(site, adminPresenter.getBoundsName(), adminPresenter.getBounds());
-        
         view.setSite(site);
         view.setActionEnabled(UIActions.save, false);
     }
@@ -161,7 +135,7 @@ public class SiteFormPresenter implements SiteFormLeash {
     }
 
     public void onModified() {
-        view.setActionEnabled(UIActions.save, view.isDirty() || adminPresenter.isDirty());
+        view.setActionEnabled(UIActions.save, view.isDirty());
     }
     
     private void addProjectIdToMap(Map<String, Object> map) {
@@ -182,10 +156,6 @@ public class SiteFormPresenter implements SiteFormLeash {
         if (currentSite.hasId()) {
 
             final Map<String, Object> changes = view.getChanges();
-            if (adminPresenter.isDirty()) {
-                changes.putAll(adminPresenter.getChangeMap());
-            }
-            
             // The projectId will always be updated, regardless of change/create mode
             addProjectIdToMap(changes);
 
@@ -205,7 +175,6 @@ public class SiteFormPresenter implements SiteFormLeash {
         } else {
 
             final Map<String, Object> properties = view.getPropertyMap();
-            properties.putAll(adminPresenter.getChangeMap());
             properties.put("activityId", currentActivity.getId());
             addProjectIdToMap(properties);
             
@@ -234,9 +203,6 @@ public class SiteFormPresenter implements SiteFormLeash {
 	private void updateSiteModel() {
 		for (Map.Entry<String, Object> change : view.getChanges().entrySet()) {
             currentSite.set(change.getKey(), change.getValue());
-        }
-        for (Map.Entry<String, AdminEntityDTO> entity : adminPresenter.getPropertyMap().entrySet()) {
-        	currentSite.set(entity.getKey(), entity.getValue());
         }
 	}
     

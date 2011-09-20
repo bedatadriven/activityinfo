@@ -195,7 +195,7 @@ public class SiteFormPage extends ContentPanel implements Page {
 	
 	private void createSiteForm(ActivityDTO activity) {
 		this.removeAll();
-		SiteForm siteForm = new SiteForm();
+		SiteForm siteForm = new SiteForm(service, eventBus);
 		presenter = new SiteFormPresenter(eventBus, service, activity, siteForm);
 		add(siteForm);
 		layout();
