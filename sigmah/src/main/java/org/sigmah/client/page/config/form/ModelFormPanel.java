@@ -21,17 +21,17 @@ import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Container;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.MultiField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class ModelFormPanel extends FormPanel {
+public class ModelFormPanel extends LayoutContainer {
     
     protected Map<String, Field> fields = new HashMap<String, Field>();
 
@@ -156,7 +156,6 @@ public class ModelFormPanel extends FormPanel {
 
     }
 
-    @Override
     public boolean isDirty() {
         return dirtyProperties.size() != 0;
     }
@@ -195,7 +194,6 @@ public class ModelFormPanel extends FormPanel {
         return sb.toString();
     }
 
-    @Override
     public boolean isValid(boolean preventMark) {
         for(Field f : fields.values()) {
             if(!f.isValid(preventMark)) {

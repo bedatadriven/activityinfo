@@ -12,6 +12,7 @@ import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.event.SiteEvent;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.shared.command.CreateSite;
 import org.sigmah.shared.command.UpdateSite;
@@ -27,6 +28,7 @@ import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class SiteFormPresenter implements SiteFormLeash {
@@ -171,6 +173,11 @@ public class SiteFormPresenter implements SiteFormLeash {
     }
 
     public void onSave() {
+    	
+    	if(!view.validate()) {
+    		MessageBox.alert(I18N.CONSTANTS.appTitle(), I18N.CONSTANTS.pleaseCompleteForm(), null);
+    		return;
+    	}
 
         if (currentSite.hasId()) {
 
@@ -193,10 +200,7 @@ public class SiteFormPresenter implements SiteFormLeash {
                     updateSiteModel();
 
                     eventBus.fireEvent(new SiteEvent(AppEvents.SiteChanged, SiteFormPresenter.this, currentSite));
-                    view.hide();
                 }
-
-
             });
         } else {
 
@@ -222,7 +226,6 @@ public class SiteFormPresenter implements SiteFormLeash {
                     updateSiteModel();
 
                     eventBus.fireEvent(new SiteEvent(AppEvents.SiteCreated, SiteFormPresenter.this, currentSite));
-                    view.hide();
                 }
             });
         }

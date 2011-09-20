@@ -95,14 +95,14 @@ public class SiteFormLoader {
     }
 
     private void showForm(ActivityDTO activity, SiteDTO site, AsyncMonitor monitor) {
-        SiteForm form = new SiteForm();
-        SiteFormDialog dlg = new SiteFormDialog(form);
-
-        SiteFormPresenter presenter = new SiteFormPresenter(eventBus, dataConn, activity, dlg);
-        presenter.setSite(site); 
-
-        monitor.onCompleted();
-
-        leash = presenter;
+//        SiteForm form = new SiteForm();
+//        SiteFormDialog dlg = new SiteFormDialog(form);
+//
+//        SiteFormPresenter presenter = new SiteFormPresenter(eventBus, dataConn, activity, dlg);
+//        presenter.setSite(site); 
+//
+//        monitor.onCompleted();
+//
+//        leash = presenter;
     }
 }

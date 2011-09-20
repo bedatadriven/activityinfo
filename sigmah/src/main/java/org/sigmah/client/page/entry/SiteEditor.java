@@ -7,7 +7,6 @@ package org.sigmah.client.page.entry;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.sigmah.client.AppEvents;
 import org.sigmah.client.EventBus;
@@ -16,7 +15,9 @@ import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.loader.CommandLoadEvent;
 import org.sigmah.client.dispatch.loader.PagingCmdLoader;
 import org.sigmah.client.event.DownloadRequestEvent;
+import org.sigmah.client.event.NavigationEvent;
 import org.sigmah.client.event.SiteEvent;
+import org.sigmah.client.page.NavigationHandler;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
@@ -27,6 +28,7 @@ import org.sigmah.client.page.common.grid.AbstractEditorGridPresenter;
 import org.sigmah.client.page.common.grid.GridView;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.page.entry.editor.SiteFormLoader;
+import org.sigmah.client.page.entry.editor.SiteFormPage;
 import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.BatchCommand;
 import org.sigmah.shared.command.Command;
@@ -38,7 +40,6 @@ import org.sigmah.shared.command.result.SiteResult;
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dto.ActivityDTO;
-import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.LockedPeriodDTO;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
@@ -413,21 +414,11 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
             newSite.setPartner(currentActivity.getDatabase().getMyPartner());
         }
 
-        // initialize with defaults
-        SiteDTO sel = view.getSelection();
-        if (sel != null) {
-            for (Map.Entry<String, Object> prop : sel.getProperties().entrySet()) {
-                if (prop.getKey().startsWith(AdminLevelDTO.PROPERTY_PREFIX)) {
-                    newSite.set(prop.getKey(), prop.getValue());
-                }
-            }
-        }
-
-        formLoader.edit(currentActivity, newSite, view.getLoadingMonitor());
-    }
+    	eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new SiteFormPage.NewPageState(currentActivity.getId())));
+	}
 
     protected void onEdit(SiteDTO site) {
-        formLoader.edit(currentActivity, site, view.getLoadingMonitor());
+    	eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new SiteFormPage.EditPageState(site.getId())));
     }
 
 

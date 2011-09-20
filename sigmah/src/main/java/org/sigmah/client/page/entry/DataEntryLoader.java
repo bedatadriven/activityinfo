@@ -48,8 +48,13 @@ public class DataEntryLoader implements PageLoader {
         pageManager.registerPageLoader(Frames.DataEntryFrameSet, this);
         pageManager.registerPageLoader(SiteEditor.ID, this);
         placeSerializer.registerParser(SiteEditor.ID, new SiteGridPageState.Parser());
-        placeSerializer.registerParser(SiteFormPage.PAGEID, new SiteFormPage.SitePageStateParser());
-        pageManager.registerPageLoader(SiteFormPage.PAGEID, this);
+        
+        placeSerializer.registerParser(SiteFormPage.EDIT_PAGE_ID, new SiteFormPage.EditPageStateParser());
+        pageManager.registerPageLoader(SiteFormPage.EDIT_PAGE_ID, this);
+        
+        placeSerializer.registerParser(SiteFormPage.NEW_PAGE_ID, new SiteFormPage.NewStateParser());
+        pageManager.registerPageLoader(SiteFormPage.NEW_PAGE_ID, this);
+
     }
 
     @Override
@@ -63,7 +68,8 @@ public class DataEntryLoader implements PageLoader {
                     loadFrame(pageState, callback);
                 } else if (SiteEditor.ID.equals(pageId)) {
                     loadSiteGrid(pageState, callback);
-                } else if (SiteFormPage.PAGEID.equals(pageId)) {
+                } else if (SiteFormPage.EDIT_PAGE_ID.equals(pageId) || 
+                		   SiteFormPage.NEW_PAGE_ID.equals(pageId)) {
                 	SiteFormPage siteFormPage = siteFormProvider.get();
                 	siteFormPage.navigate(pageState);
                 	callback.onSuccess(siteFormPage);

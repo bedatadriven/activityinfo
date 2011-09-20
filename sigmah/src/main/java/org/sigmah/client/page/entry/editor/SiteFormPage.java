@@ -35,18 +35,22 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
-
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
 public class SiteFormPage extends ContentPanel implements Page {
 
-	public static final PageId PAGEID = new PageId("site");
+	public static final PageId EDIT_PAGE_ID = new PageId("site");
+	public static final PageId NEW_PAGE_ID = new PageId("newSite");
+	
+	
     private final ToolBar toolBar = new ToolBar();
+
 	private final Dispatcher service;
 	private SiteDTO currentSite;					
 	private SchemaDTO schema;
 	private final  EventBus eventBus;
+	private SiteFormPresenter presenter;
 	
     @Inject
     public SiteFormPage(Dispatcher service, EventBus eventBus) {
@@ -63,9 +67,9 @@ public class SiteFormPage extends ContentPanel implements Page {
         SelectionListener listener = new SelectionListener() {
             @Override
             public void componentSelected(ComponentEvent ce) {
-//                if (presenter != null) {
-//                    presenter.onUIAction(ce.getComponent().getItemId());
-//                }
+                if (presenter != null) {
+                    presenter.onUIAction(ce.getComponent().getItemId());
+                }
             }
         };
 
@@ -103,7 +107,7 @@ public class SiteFormPage extends ContentPanel implements Page {
 
 	@Override
 	public PageId getPageId() {
-		return PAGEID;
+		return EDIT_PAGE_ID;
 	}
 
 
@@ -126,60 +130,94 @@ public class SiteFormPage extends ContentPanel implements Page {
 
 
 	@Override
-	public boolean navigate(PageState place) {
-		assert(place instanceof SitePageState);
-		if (place instanceof SitePageState) {
-			final SitePageState siteState = (SitePageState) place;
-			
-			service.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
-				@Override
-				public void onFailure(Throwable caught) {
-					// TODO Auto-generated method stub
-					
-				}
-				@Override
-				public void onSuccess(SchemaDTO result) {
-					SiteFormPage.this.schema=result;
-					GetSites getSites= GetSites.byId(siteState.getSiteId());
-					service.execute(getSites, null, new AsyncCallback<SiteResult>() {
-						@Override
-						public void onFailure(Throwable caught) {
-							// TODO: handler failure
-							System.out.println();
-						}
+	public boolean navigate(final PageState place) {
 
-						@Override
-						public void onSuccess(SiteResult result) {
-							SiteFormPage.this.currentSite=result.getData().get(0);
-							createSiteForm();
-						}
-
-					});
-				}
-			});
-
-			return true;
+		if(!(place instanceof SiteFormPageState)) {
+			return false;
 		}
-		return false;
+		
+		service.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}		
+
+			@Override
+			public void onSuccess(SchemaDTO result) {
+				schema = result;
+				if (place instanceof EditPageState) {
+					editSite((EditPageState) place);
+				} else if(place instanceof NewPageState) {
+					newSite((NewPageState) place);
+				}
+			}
+		
+		});
+
+		return true;
 	}
-	private void createSiteForm() {
+
+
+	private void editSite(final EditPageState siteState) {
+		GetSites getSites= GetSites.byId(siteState.getSiteId());
+		service.execute(getSites, null, new AsyncCallback<SiteResult>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO: handler failure
+				System.out.println();
+			}
+
+			@Override
+			public void onSuccess(SiteResult result) {
+				SiteFormPage.this.currentSite=result.getData().get(0);
+				createSiteForm(schema.getActivityById(currentSite.getActivityId()));
+				presenter.setSite(currentSite);
+			}
+		});
+	}
+	
+	
+	private void newSite(NewPageState place) {
+		ActivityDTO activity = schema.getActivityById(place.getActivityId());
+
+		currentSite = new SiteDTO();
+		currentSite.setActivityId(place.getActivityId());
+        
+		if (!activity.getDatabase().isEditAllAllowed()) {
+			currentSite.setPartner(activity.getDatabase().getMyPartner());
+        }
+
+		createSiteForm(activity);
+		presenter.setSite(currentSite);
+	}
+
+	
+	private void createSiteForm(ActivityDTO activity) {
 		this.removeAll();
 		SiteForm siteForm = new SiteForm();
-		ActivityDTO activity = schema.getActivityById(currentSite.getActivityId());
-		SiteFormPresenter presenter = new SiteFormPresenter(eventBus, service, activity, siteForm);
-		presenter.setSite(currentSite);
+		presenter = new SiteFormPresenter(eventBus, service, activity, siteForm);
 		add(siteForm);
 		layout();
 	}
 	
-	public static class SitePageState implements PageState {
+	
+	/**
+	 * Marker interface for this form's supported PageStates
+	 *
+	 */
+	public interface SiteFormPageState extends PageState {
+		
+	}
+	
+	public static class EditPageState implements SiteFormPageState {
 		private int siteId;
 		
 		public int getSiteId() {
 			return siteId;
 		}
 
-		public SitePageState(int siteId) {
+		public EditPageState(int siteId) {
 			this.siteId = siteId;
 		}
 
@@ -190,23 +228,60 @@ public class SiteFormPage extends ContentPanel implements Page {
 
 		@Override
 		public PageId getPageId() {
-			return PAGEID;
+			return EDIT_PAGE_ID;
 		}
 
 		@Override
 		public List<PageId> getEnclosingFrames() {
-			return Collections.singletonList(PAGEID);
+			return Collections.singletonList(EDIT_PAGE_ID);
 		}
 	}
 	
-	public static class SitePageStateParser implements PageStateParser {
+	
+	public static class NewPageState implements SiteFormPageState {
+		private int activityId;
+		
+		public int getActivityId() {
+			return activityId;
+		}
+
+		public NewPageState(int activityId) {
+			this.activityId = activityId;
+		}
+
+		@Override
+		public String serializeAsHistoryToken() {
+			return Integer.toString(activityId);
+		}
+
+		@Override
+		public PageId getPageId() {
+			return NEW_PAGE_ID;
+		}
+
+		@Override
+		public List<PageId> getEnclosingFrames() {
+			return Collections.singletonList(NEW_PAGE_ID);
+		}
+	}
+	
+	
+	public static class EditPageStateParser implements PageStateParser {
 
 		@Override
 		public PageState parse(String token) {
-			return new SitePageState(Integer.parseInt(token));
+			return new EditPageState(Integer.parseInt(token));
 		}
-		
 	}
-	
+
+	public static class NewStateParser implements PageStateParser {
+
+		@Override
+		public PageState parse(String token) {
+			return new NewPageState(Integer.parseInt(token));
+		}
+	}
+
+		
 
 }

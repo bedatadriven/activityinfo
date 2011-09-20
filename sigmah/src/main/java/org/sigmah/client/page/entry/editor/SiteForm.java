@@ -10,7 +10,6 @@ import java.util.Map;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.widget.LoadingPlaceHolder;
 import org.sigmah.client.page.config.form.ModelFormPanel;
 import org.sigmah.shared.dto.ActivityDTO;
@@ -21,8 +20,11 @@ import org.sigmah.shared.dto.SiteDTO;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.TabItem;
+import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.maps.client.Maps;
 
 public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
@@ -38,15 +40,17 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
     private IndicatorFieldSet indicatorFieldSet;
     private CommentFieldSet commentFieldSet;
 
+    private TabPanel tabPanel;
+    
     public SiteForm() {
-        this.setBodyStyle("padding: 3px");
-        this.setIcon(IconImageBundle.ICONS.editPage());
-        this.setHeading(I18N.CONSTANTS.loading());
+//        this.setIcon(IconImageBundle.ICONS.editPage());
+//        this.setHeading(I18N.CONSTANTS.loading());
 
         add(new LoadingPlaceHolder());
     }
 
-    @Override
+    @Override        
+
     public void init(SiteFormPresenter presenter,
                      ActivityDTO activity,
                      ListStore<PartnerDTO> partnerStore,
@@ -54,25 +58,24 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
                      ListStore<ProjectDTO> projectStore) {
 
         removeAll();
-        setLayout(new FlowLayout());
-
-        this.presenter = presenter;
+        setLayout(new FitLayout());
+        
+        tabPanel = new TabPanel();
+        add(tabPanel);
+        
+        this.presenter = presenter;       
         this.activity = activity;
-        this.site = site;
-
-        this.setLayout(new FlowLayout());
-        this.setScrollMode(Scroll.AUTOY);
-        this.setHeading(activity.getName());
 
         // ACTIVITY fieldset
         activityFieldSet = new ActivityFieldSet(activity, partnerStore, assessmentStore, projectStore);
-        add(activityFieldSet);
+        registerFieldSet(activityFieldSet);
+        
+        addTab(I18N.CONSTANTS.details(), activityFieldSet);
         
         // LOCATION fieldset
-        add(locationFieldSet);
+        
 
-        // GEO POSITION
-        add((FieldSet) mapView);
+        // GEO POSITION        this.site = site;
 
         if (Maps.isLoaded()) {
             registerField(((MapFieldSet) mapView).getLngField());
@@ -81,29 +84,44 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
             registerFieldSet((FieldSet) mapView);
         }
 
+        addTab(I18N.CONSTANTS.location(), locationFieldSet, (FieldSet)mapView);
+
+        
         // ATTRIBUTE fieldset
         if (activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE) {
 
             attributeFieldSet = new AttributeFieldSet(activity);
             registerFieldSet(attributeFieldSet);
-            add(attributeFieldSet);
 
             // INDICATOR fieldset
 
             indicatorFieldSet = new IndicatorFieldSet(activity);
             registerFieldSet(indicatorFieldSet);
-            add(indicatorFieldSet);
+           
+            
+            addTab(I18N.CONSTANTS.attributes(), attributeFieldSet, indicatorFieldSet);
         }
 
         // COMMENT
         commentFieldSet = new CommentFieldSet();
-        add(commentFieldSet);
+        registerFieldSet(commentFieldSet);
+        addTab(I18N.CONSTANTS.comments(), commentFieldSet);
 
-        registerAll();
 
         layout();
     }
 
+	
+	private void addTab(String title, Component... components) {
+		TabItem tab = new TabItem();
+        tab.setText(title);
+        tab.setScrollMode(Scroll.AUTOY);
+        for(Component component : components) {
+        	tab.add(component);
+        }
+        
+        tabPanel.add(tab);
+	}
 
     public void setSite(SiteDTO site) {
         updateForm(site);
@@ -118,7 +136,7 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
     @Override
     public AdminFieldSetPresenter.View createAdminFieldSetView(ActivityDTO activity) {
         locationFieldSet = new LocationFieldSet(activity);
-
+        registerFieldSet(locationFieldSet);
         return locationFieldSet;
     }
 
@@ -143,7 +161,7 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
 
     @Override
     public boolean validate() {
-        return true;
+        return isValid(false);
     }
 
     @Override
