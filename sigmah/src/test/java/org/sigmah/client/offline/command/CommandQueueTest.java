@@ -21,19 +21,32 @@ import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcScheduler;
+import com.bedatadriven.rebar.time.calendar.LocalDate;
 
 public class CommandQueueTest {
+	
+	private SqlDatabase db;
+	private CommandQueue queue;
 	
 	@Before
 	public void cleanUpPreemptively() {
 		JdbcScheduler.get().forceCleanup();
+
+		db = ClientDatabaseStubs.empty();
+		queue = new CommandQueue(db);
+		
+		db.transaction(new SqlTransactionCallback() {
+			
+			@Override
+			public void begin(SqlTransaction tx) {
+				queue.createTableIfNotExists(tx);
+			}
+		});
 	}
 	
 	@Test
 	public void testCreateSite() {
 		
-		SqlDatabase db = ClientDatabaseStubs.empty();
-		final CommandQueue queue = new CommandQueue(db);
 		
 		Map<String, Object> properties = new HashMap<String, Object>();
 		properties.put("anInt", 34);
@@ -41,7 +54,8 @@ public class CommandQueueTest {
 		properties.put("aDouble", 3.0);
 		properties.put("aBoolean", true);
 		properties.put("anotherBoolean", false);
-		properties.put("aDate", new Date());
+		properties.put("aTime", new Date());
+		properties.put("aDate", new LocalDate(2011,3,15));
 		
 		final CreateSite cmd = new CreateSite(properties);
 		
@@ -74,10 +88,7 @@ public class CommandQueueTest {
 	
 	@Test
 	public void testUpdateSite() {
-		
-		SqlDatabase db = ClientDatabaseStubs.empty();
-		final CommandQueue queue = new CommandQueue(db);
-		
+				
 		Map<String, Object> changes = new HashMap<String, Object>();
 		changes.put("anInt", 34);
 		changes.put("aString", "testing");

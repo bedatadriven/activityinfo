@@ -5,6 +5,7 @@
 
 package org.sigmah.client.page.config.form;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -13,6 +14,7 @@ import java.util.Set;
 import org.sigmah.client.page.common.widget.MappingComboBox;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
@@ -117,6 +119,11 @@ public class ModelFormPanel extends FormPanel {
             Field field = entry.getValue();
             Object value =  model.get(entry.getKey());
 
+            // TODO(alex) make this hack go away
+            if(value instanceof LocalDate) {
+            	value = ((LocalDate) value).atMidnightInMyTimezone();
+            }
+            
             setFieldValue(field, value);
         }
     }
@@ -136,7 +143,11 @@ public class ModelFormPanel extends FormPanel {
         if(f instanceof MappingComboBox) {
             return ((MappingComboBox) f).getMappedValue();
         } else {
-            return f.getValue();
+        	Object value = f.getValue();
+        	if(value instanceof Date) {
+        		value = new LocalDate((Date)value);
+        	}
+            return value;
         }
     }
 

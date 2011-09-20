@@ -9,12 +9,15 @@ import java.util.Date;
 
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.dispatch.remote.DirectDispatcher;
+import org.sigmah.client.offline.AuthTokenUtil;
 import org.sigmah.client.offline.command.LocalDispatcher;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.Ping;
 import org.sigmah.shared.command.result.VoidResult;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -26,6 +29,7 @@ public class SynchronizerImpl implements Synchronizer {
     private final AppCacheSynchronizer appCacheSynchronizer;
     private final DownSynchronizer downSychronizer;
     private final UpdateSynchronizer updateSynchronizer;
+    private final Authentication auth;
 
 
     @Inject
@@ -34,22 +38,38 @@ public class SynchronizerImpl implements Synchronizer {
                        DirectDispatcher remoteDispatcher,
                        AppCacheSynchronizer appCache,
                        DownSynchronizer synchronizer,
-                       UpdateSynchronizer updateSynchronizer) {
+                       UpdateSynchronizer updateSynchronizer,
+                       Authentication auth) {
     	this.appCacheSynchronizer = appCache;
     	this.localDispatcher = localDispatcher;
         this.remoteDispatcher = remoteDispatcher;
         this.downSychronizer = synchronizer;
         this.updateSynchronizer = updateSynchronizer;
+        this.auth = auth;
     }
 
     @Override
     public void install(final AsyncCallback<Void> callback) {
-    	
+    	Log.trace("SynchronizerImpl.install() starting...");
     	appCacheSynchronizer.ensureUpToDate(new AsyncCallback<Void>() {
 			
 			@Override
 			public void onSuccess(Void result) {
-				downSychronizer.startFresh(callback);
+		    	Log.trace("Calling downSynchronizer.startFresh()");
+				downSychronizer.startFresh(new AsyncCallback<Void>() {
+					
+					@Override
+					public void onSuccess(Void result) {
+				    	Log.trace("downSynchronizer.startFresh() completed");
+						AuthTokenUtil.ensurePersistentCookie(auth);
+						callback.onSuccess(result);
+					}
+					
+					@Override
+					public void onFailure(Throwable caught) {
+						callback.onFailure(caught);
+					}
+				});
 			}
 			
 			@Override
@@ -57,11 +77,6 @@ public class SynchronizerImpl implements Synchronizer {
 				callback.onFailure(caught);
 			}
 		});
-    }
-
-    @Override
-    public void goOffline(AsyncCallback<Void> callback) {
-        callback.onSuccess(null);
     }
 
     @Override

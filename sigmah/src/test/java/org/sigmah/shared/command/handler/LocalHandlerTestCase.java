@@ -104,19 +104,29 @@ public abstract class LocalHandlerTestCase {
         
     }
 
+    
+    protected void synchronizeFirstTime() {
+    	newRequest();    	
+    	synchronizer = new DownSynchronizer(new MockEventBus(), remoteDispatcher, localDatabase, 
+                uiConstants);
+        synchronizer.startFresh(new AsyncCallback<Void>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				throw new AssertionError(caught);
+			}
+
+			@Override
+			public void onSuccess(Void result) {
+				
+			}
+		});
+        localDatabase.processEventQueue();
+        
+    }
+    
     protected void synchronize() {
-//    	new UpdateSynchronizer(commandQueue, remoteDispatcher)
-//    		.sync(new AsyncCallback<Void>() {
-//			
-//			@Override
-//			public void onSuccess(Void result) {				
-//			}
-//			
-//			@Override
-//			public void onFailure(Throwable caught) {				
-//			}
-//		});
-    	
+    	newRequest();    	
     	synchronizer = new DownSynchronizer(new MockEventBus(), remoteDispatcher, localDatabase, 
                 uiConstants);
         synchronizer.start(new AsyncCallback<Void>() {
@@ -141,6 +151,13 @@ public abstract class LocalHandlerTestCase {
     	return collector.getResult();
     }
     
+    protected <C extends Command<R>, R extends CommandResult> R executeRemotely(C command) {
+    	Collector<R> collector = Collector.newCollector();
+    	remoteDispatcher.execute(command, null, collector);
+    	return collector.getResult();
+    }
+    
+        
     
     @After
     public void tearDown() {

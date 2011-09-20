@@ -1,7 +1,6 @@
 package org.sigmah.client.page.search;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +25,7 @@ import org.sigmah.shared.report.content.FilterDescription;
 import org.sigmah.shared.report.content.PivotContent;
 import org.sigmah.shared.report.model.DimensionType;
 
+import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -206,16 +206,16 @@ public class SearchPresenter implements SearchView.SearchHandler, Page {
 		public void setLocationName(String locationName) {
 			set("locationName", locationName);
 		}
-		public Date getDate1() {
+		public LocalDate getDate1() {
 			return get("date1");
 		}
-		public void setDate1(Date date1) {
+		public void setDate1(LocalDate date1) {
 			set("date1", date1);
 		}
-		public Date getDate2() {
+		public LocalDate getDate2() {
 			return get("date2");
 		}
-		public void setDate2(Date date2) {
+		public void setDate2(LocalDate date2) {
 			set("date2", date2);
 		}
 		public String getComments() {

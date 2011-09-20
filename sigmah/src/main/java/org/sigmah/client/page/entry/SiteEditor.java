@@ -32,7 +32,7 @@ import org.sigmah.shared.command.BatchCommand;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.Delete;
 import org.sigmah.shared.command.GetSites;
-import org.sigmah.shared.command.UpdateEntity;
+import org.sigmah.shared.command.UpdateSite;
 import org.sigmah.shared.command.result.PagingResult;
 import org.sigmah.shared.command.result.SiteResult;
 import org.sigmah.shared.command.result.VoidResult;
@@ -344,7 +344,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
 
         BatchCommand batch = new BatchCommand();
         for (Record record : store.getModifiedRecords()) {
-            batch.add(new UpdateEntity("Site", (Integer) record.get("id"), getChangedProperties(record)));
+            batch.add(new UpdateSite((Integer) record.get("id"), getChangedProperties(record)));
         }
 
         return batch;

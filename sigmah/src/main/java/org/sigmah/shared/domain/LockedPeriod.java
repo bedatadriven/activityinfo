@@ -11,7 +11,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+
+import com.bedatadriven.rebar.time.calendar.LocalDate;
 
 
 @Entity
@@ -26,6 +30,7 @@ public class LockedPeriod implements Serializable, ReallyDeleteable {
 	private boolean enabled;
 	
 	@Column(nullable = false)
+	@Temporal(TemporalType.DATE)
 	public Date getFromDate() {
 		return fromDate;
 	}
@@ -34,13 +39,22 @@ public class LockedPeriod implements Serializable, ReallyDeleteable {
 		this.fromDate = fromDate;
 	}
 	
+	public void setFromDate(LocalDate fromDate) {
+		this.fromDate = fromDate.atMidnightInMyTimezone();
+	}
+	
 	@Column(nullable = false)
+	@Temporal(TemporalType.DATE)
 	public Date getToDate() {
 		return toDate;
 	}
 	
 	public void setToDate(Date toDate) {
 		this.toDate = toDate;
+	}
+	
+	public void setToDate(LocalDate toDate) {
+		this.toDate = toDate.atMidnightInMyTimezone();
 	}
 	
 	@Column(nullable = false)

@@ -1,5 +1,6 @@
 package org.sigmah.client.offline.capability;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.gears.client.Factory;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -25,12 +26,17 @@ public abstract class GearsCapabilityProfile extends OfflineCapabilityProfile {
 
 	@Override
 	public final void acquirePermission(AsyncCallback<Void> callback) {
-		if(!isGearsInstalled()) {
-			callback.onFailure(new UnsupportedOperationException("Gears is not installed"));
-		} else if(acquirePermissions()) {
-			callback.onSuccess(null);
-		} else {
-			callback.onFailure(new PermissionRefusedException());
+		Log.trace("GearsCapabilityProfile: acquiring permissions...");
+		try {
+			if(!isGearsInstalled()) {
+				callback.onFailure(new UnsupportedOperationException("Gears is not installed"));
+			} else if(acquirePermissions()) {
+				callback.onSuccess(null);
+			} else {
+				callback.onFailure(new PermissionRefusedException());
+			}
+		} catch(Exception e) {
+			callback.onFailure(e);
 		}
 	}
 

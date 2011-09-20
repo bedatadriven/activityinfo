@@ -17,16 +17,19 @@ import java.util.List;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.dispatch.remote.RemoteDispatcher;
+import org.sigmah.client.dispatch.remote.Remote;
 import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.offline.capability.OfflineCapabilityProfile;
+import org.sigmah.client.offline.capability.PermissionRefusedException;
 import org.sigmah.client.offline.sync.AppOutOfDateException;
 import org.sigmah.client.offline.sync.SyncConnectionProblemEvent;
 import org.sigmah.client.offline.sync.SyncStatusEvent;
 import org.sigmah.client.offline.sync.Synchronizer;
+import org.sigmah.client.offline.sync.SynchronizerConnectionException;
 import org.sigmah.client.util.state.CrossSessionStateProvider;
 import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.Command;
+import org.sigmah.shared.command.MutatingCommand;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.exception.InvalidAuthTokenException;
 
@@ -141,13 +144,15 @@ public class OfflineController implements Dispatcher {
 		void promptToReloadForNewVersion();
 
 		void showInstallInstructions();
+		
+		void showSynchronizerConnectionProblem();
 	}
 
 	private final View view;
 	private final StateProvider stateManager;
-	private final Provider<Synchronizer> gateway;
+	private final Provider<Synchronizer> synchronizerProvider;
 	private UIConstants uiConstants;
-	private final RemoteDispatcher remoteDispatcher;
+	private final Dispatcher remoteDispatcher;
 	private final OfflineCapabilityProfile capabilityProfile;
 
 	private OfflineMode activeMode;
@@ -157,13 +162,15 @@ public class OfflineController implements Dispatcher {
 
 	@Inject
 	public OfflineController(final View view, EventBus eventBus,
-			RemoteDispatcher remoteService, Provider<Synchronizer> gateway,
+			@Remote Dispatcher remoteDispatcher, 
+			Provider<Synchronizer> gateway,
 			CrossSessionStateProvider stateManager,
-			OfflineCapabilityProfile capabilityProfile, UIConstants uiConstants) {
+			OfflineCapabilityProfile capabilityProfile, 
+			UIConstants uiConstants) {
 		this.view = view;
 		this.stateManager = stateManager;
-		this.remoteDispatcher = remoteService;
-		this.gateway = gateway;
+		this.remoteDispatcher = remoteDispatcher;
+		this.synchronizerProvider = gateway;
 		this.capabilityProfile = capabilityProfile;
 		this.uiConstants = uiConstants;
 
@@ -283,16 +290,28 @@ public class OfflineController implements Dispatcher {
 		}
 	}
 
-	private void loadGateway(final AsyncCallback<Synchronizer> callback) {
+	private void loadSynchronizerImpl(final AsyncCallback<Synchronizer> callback) {
+		Log.trace("loadSynchronizerImpl() starting...");
 		GWT.runAsync(new RunAsyncCallback() {
 			@Override
 			public void onFailure(Throwable throwable) {
+				Log.trace("loadSynchronizerImpl() failed");
 				callback.onFailure(throwable);
 			}
 
 			@Override
 			public void onSuccess() {
-				callback.onSuccess(gateway.get());
+				Log.trace("loadSynchronizerImpl() succeeded");
+				
+				Synchronizer impl = null;
+				try {
+					impl = synchronizerProvider.get();
+				} catch(Throwable caught) {
+					Log.error("SynchronizationImpl constructor threw exception", caught);
+					callback.onFailure(caught);
+					return;
+				}
+				callback.onSuccess(impl);
 			}
 		});
 	}
@@ -304,6 +323,9 @@ public class OfflineController implements Dispatcher {
 				|| throwable instanceof IncompatibleRemoteServiceException) {
 			view.promptToReloadForNewVersion();
 
+		} else if(throwable instanceof SynchronizerConnectionException) {
+			view.showSynchronizerConnectionProblem();
+			
 		} else {
 			view.showError(throwable.getMessage());
 		}
@@ -350,11 +372,16 @@ public class OfflineController implements Dispatcher {
 
 		@Override
 		public void onDefaultButton() {
-			activateStrategy(new InstallingStrategy());
+			if(capabilityProfile.isOfflineModeSupported()) {
+				enableOffline();
+			} else {
+				view.showInstallInstructions();
+			}
 		}
 
 		@Override
 		public void enableOffline() {
+			Log.trace("enablingOffline() started");
 			capabilityProfile.acquirePermission(new AsyncCallback<Void>() {
 
 				@Override
@@ -364,7 +391,9 @@ public class OfflineController implements Dispatcher {
 
 				@Override
 				public void onFailure(Throwable caught) {
-					// noop.
+					if(!(caught instanceof PermissionRefusedException)) {
+						reportFailure(caught);
+					}
 				}
 			});
 		}
@@ -384,7 +413,7 @@ public class OfflineController implements Dispatcher {
 			view.showProgressDialog();
 			view.updateProgress(uiConstants.starting(), 0);
 
-			loadGateway(new AsyncCallback<Synchronizer>() {
+			loadSynchronizerImpl(new AsyncCallback<Synchronizer>() {
 				@Override
 				public void onFailure(Throwable caught) {
 					activateStrategy(new NotInstalledStrategy());
@@ -437,7 +466,7 @@ public class OfflineController implements Dispatcher {
 
 			view.setButtonTextToLoading();
 
-			loadGateway(new AsyncCallback<Synchronizer>() {
+			loadSynchronizerImpl(new AsyncCallback<Synchronizer>() {
 				@Override
 				public void onFailure(Throwable caught) {
 					abandonShip(caught);
@@ -445,8 +474,10 @@ public class OfflineController implements Dispatcher {
 
 				@Override
 				public void onSuccess(final Synchronizer gateway) {
-					if (activeMode == OfflineMode.OFFLINE) {
-						gateway.goOffline(new AsyncCallback<Void>() {
+					if (activeMode == OfflineMode.ONLINE) {
+						activateStrategy(new OnlineStrategy(gateway));
+					} else {
+						gateway.validateOfflineInstalled(new AsyncCallback<Void>() {
 							@Override
 							public void onFailure(Throwable caught) {
 								abandonShip(caught);
@@ -454,21 +485,8 @@ public class OfflineController implements Dispatcher {
 
 							@Override
 							public void onSuccess(Void result) {
-								gateway.validateOfflineInstalled(new AsyncCallback<Void>() {
-
-									@Override
-									public void onSuccess(Void result) {
-										activateStrategy(new OfflineStrategy(
-												gateway));
-										doDispatch(pending);
-									}
-
-									@Override
-									public void onFailure(Throwable caught) {
-										reportFailure(caught);
-										abandonShip();
-									}
-								});
+								activateStrategy(new OfflineStrategy(gateway));
+								doDispatch(pending);
 							}
 						});
 					}
@@ -519,7 +537,7 @@ public class OfflineController implements Dispatcher {
 			view.setButtonTextToSyncing();
 			view.disableMenu();
 			pending = new ArrayList<CommandRequest>();
-			offlineManager.goOffline(new AsyncCallback<Void>() {
+			offlineManager.validateOfflineInstalled(new AsyncCallback<Void>() {
 				@Override
 				public void onFailure(Throwable caught) {
 					activateStrategy(new OnlineStrategy(offlineManager));
@@ -599,9 +617,7 @@ public class OfflineController implements Dispatcher {
 						offlineManger, new CommandRequest(command, monitor,
 								callback)));
 			}
-
 		}
-
 	}
 
 	private class CheckingIfUserWantsToGoOnline extends Strategy {
@@ -651,7 +667,6 @@ public class OfflineController implements Dispatcher {
 						public void onFailure(Throwable caught) {
 							onConnectionFailure(caught);
 						}
-
 					});
 				}
 			});
@@ -739,6 +754,27 @@ public class OfflineController implements Dispatcher {
 		void onReinstall() {
 			activateStrategy(new InstallingStrategy());
 		}
+
+		@Override
+		void dispatch(final Command command, AsyncMonitor monitor,
+				final AsyncCallback callback) {
+			
+			remoteDispatcher.execute(command, monitor, new AsyncCallback() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					callback.onFailure(caught);
+				}
+
+				@Override
+				public void onSuccess(Object result) {
+					callback.onSuccess(result);
+					if(command instanceof MutatingCommand) {
+						activateStrategy(new BackgroundSyncingWhileOnlineStrategy(offlineManager));
+					}
+				}			
+			});
+		}
 	}
 
 	/**
@@ -766,6 +802,7 @@ public class OfflineController implements Dispatcher {
 				@Override
 				public void onFailure(Throwable caught) {
 					reportFailure(caught);
+					view.hideProgressDialog();
 					activateStrategy(parentStrategy);
 				}
 
@@ -789,6 +826,78 @@ public class OfflineController implements Dispatcher {
 			// defer to our parent strategy
 			parentStrategy.dispatch(command, monitor, callback);
 		}
+	}
+	
+	private class BackgroundSyncingWhileOnlineStrategy extends Strategy {
+		private final Synchronizer synchronizer;
+		private boolean dirty = false;
+		
+		private BackgroundSyncingWhileOnlineStrategy(Synchronizer offlineManager) {
+			this.synchronizer = offlineManager;
+		}
+
+		@Override
+		Strategy activate() {
+			view.setButtonTextToSyncing();
+			view.disableMenu();
+
+			startSynchronization();
+			
+			return this;
+		}
+
+		private void startSynchronization() {
+			synchronizer.synchronize(new AsyncCallback<Void>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					recordInconsistentState();
+					reportFailure(caught);
+					view.hideProgressDialog();
+					activateStrategy(new OnlineStrategy(synchronizer));
+				}
+
+				@Override
+				public void onSuccess(Void result) {
+					if(dirty) {
+						// while we have been synchronzing, the user a sent a command
+						// to the server that mutated the remote state,
+						// so we need to synchronize again to fetch the changes
+						startSynchronization();
+					} else {
+						activateStrategy(new OnlineStrategy(synchronizer));
+					}
+				}
+			});
+		}
+
+		private void recordInconsistentState() {
+			
+		}
+
+		@Override
+		void onDefaultButton() {
+			view.showProgressDialog();
+		}
+
+		@Override
+		void dispatch(final Command command, AsyncMonitor monitor,
+				final AsyncCallback callback) {
+
+			remoteDispatcher.execute(command, monitor, new AsyncCallback() {
+				@Override
+				public void onFailure(Throwable caught) {
+					callback.onFailure(caught);
+				}
+
+				@Override
+				public void onSuccess(Object result) {
+					if(command instanceof MutatingCommand) {
+						dirty = true;
+					}
+					callback.onSuccess(result);
+				}
+			});
+		}		
 	}
 
 	private static class CommandRequest {
@@ -820,5 +929,4 @@ public class OfflineController implements Dispatcher {
 			});
 		}
 	}
-
 }

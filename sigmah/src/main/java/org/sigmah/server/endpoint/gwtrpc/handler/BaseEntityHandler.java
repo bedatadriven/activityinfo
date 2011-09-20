@@ -21,6 +21,8 @@ import org.sigmah.shared.domain.UserDatabase;
 import org.sigmah.shared.dto.LocationTypeDTO;
 import org.sigmah.shared.exception.IllegalAccessCommandException;
 
+import com.bedatadriven.rebar.time.calendar.LocalDate;
+
 /**
  * Provides functionality common to CreateEntityHandler and
  * UpdateEntityHandler
@@ -104,10 +106,10 @@ public class BaseEntityHandler {
         	lockedPeriod.setName((String) changes.get("name"));
         }
         if (changes.containsKey("toDate")) {
-        	lockedPeriod.setToDate((Date) changes.get("toDate"));
+        	lockedPeriod.setToDate((LocalDate) changes.get("toDate"));
         }
         if (changes.containsKey("fromDate")) {
-        	lockedPeriod.setFromDate((Date) changes.get("fromDate"));
+        	lockedPeriod.setFromDate((LocalDate) changes.get("fromDate"));
         }
         if (changes.containsKey("enabled")) {
         	lockedPeriod.setEnabled((Boolean) changes.get("enabled"));

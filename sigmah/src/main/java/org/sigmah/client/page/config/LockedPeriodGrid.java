@@ -13,7 +13,7 @@ import org.sigmah.client.mvp.CanDelete;
 import org.sigmah.client.mvp.CanUpdate;
 import org.sigmah.client.mvp.Filter;
 import org.sigmah.client.page.common.columns.EditCheckColumnConfig;
-import org.sigmah.client.page.common.columns.EditDateColumn;
+import org.sigmah.client.page.common.columns.EditableLocalDateColumn;
 import org.sigmah.client.page.common.columns.ReadLockedPeriodTypeColumn;
 import org.sigmah.client.page.common.columns.ReadTextColumn;
 import org.sigmah.client.page.common.dialog.FormDialogCallback;
@@ -92,8 +92,8 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 	    configs.add(columnPeriodType);
 	    configs.add(new ReadTextColumn("parentName", I18N.CONSTANTS.parentName(), 150));
 	    configs.add(new ReadTextColumn("name", I18N.CONSTANTS.name(), 100));
-	    configs.add(new EditDateColumn("fromDate", I18N.CONSTANTS.fromDate(), 100));
-	    configs.add(new EditDateColumn("toDate", I18N.CONSTANTS.toDate(), 100));
+	    configs.add(new EditableLocalDateColumn("fromDate", I18N.CONSTANTS.fromDate(), 100));
+	    configs.add(new EditableLocalDateColumn("toDate", I18N.CONSTANTS.toDate(), 100));
 	    
 	    gridLockedPeriods = new EditorGrid<LockedPeriodDTO>(
 	    		lockedPeriodStore, new ColumnModel(configs));

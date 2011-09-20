@@ -47,6 +47,4 @@ public class LockEntity implements Command<CreateResult> {
 	public LockedPeriodDTO getLockedPeriod() {
 		return lockedPeriod;
 	}
-	
-	
 }

@@ -5,17 +5,14 @@
 
 package org.sigmah.client.offline.sync;
 
-import java.sql.Date;
 import java.util.Collection;
 import java.util.Iterator;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.dispatch.remote.Direct;
-import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.i18n.UIConstants;
-import org.sigmah.client.i18n.UIMessages;
+import org.sigmah.client.offline.command.CommandQueue;
 import org.sigmah.shared.command.GetSyncRegionUpdates;
 import org.sigmah.shared.command.GetSyncRegions;
 import org.sigmah.shared.command.result.SyncRegion;
@@ -27,7 +24,6 @@ import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlException;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
-import com.bedatadriven.rebar.sync.client.BulkUpdaterAsync;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.InvocationException;
 import com.google.inject.Inject;
@@ -55,6 +51,7 @@ public class DownSynchronizer {
     
     private SyncRegionTable localVerisonTable;
     private SyncHistoryTable historyTable;
+    private CommandQueue commandQueueTable;
     
     private SynchronizerStats stats = new SynchronizerStats();
 
@@ -70,22 +67,31 @@ public class DownSynchronizer {
         
         this.localVerisonTable = new SyncRegionTable(conn);
         this.historyTable = new SyncHistoryTable(conn);
+        this.commandQueueTable = new CommandQueue(conn);
    }
 
     /**
      * Drops all tables in the user's database and starts synchronization fresh
      */
     public void startFresh(final AsyncCallback<Void> callback) { 	
-    	conn.dropAllTables(new AsyncCallback<Void>() {
+    	conn.transaction(new SqlTransactionCallback() {
 			
 			@Override
-			public void onSuccess(Void result) {
-				start(callback);
+			public void begin(SqlTransaction tx) {
+				conn.dropAllTables(tx);
+				localVerisonTable.createTableIfNotExists(tx);
+				historyTable.createTableIfNotExists(tx);
+				commandQueueTable.createTableIfNotExists(tx);
 			}
-			
+
 			@Override
-			public void onFailure(Throwable caught) {
-				callback.onFailure(caught);
+			public void onError(SqlException e) {
+				callback.onFailure(e);
+			}
+
+			@Override
+			public void onSuccess() {
+				start(callback);
 			}
 		});
     }
@@ -95,26 +101,9 @@ public class DownSynchronizer {
         fireStatusEvent(uiConstants.requestingSyncRegions(), 0);
         running = true;
         stats.onStart();
-        createSyncMetaTables();
+		retrieveSyncRegions();
     }
 
-
-    
-    private void createSyncMetaTables() {
-    	conn.transaction(new DefaultTxCallback() {
-			
-			@Override
-			public void begin(SqlTransaction tx) {
-				tx.executeSql("create table if not exists sync_regions (id TEXT PRIMARY KEY, localVersion TEXT)");
-				tx.executeSql("create table if not exists sync_history (lastUpdate INTEGER)");
-			}
-
-			@Override
-			public void onSuccess() {
-				retrieveSyncRegions();
-			}
-		});
-    }
     
 	private void retrieveSyncRegions() {
 		dispatch.execute(new GetSyncRegions(), null, new AsyncCallback<SyncRegions>() {
@@ -196,7 +185,8 @@ public class DownSynchronizer {
     
         } else {
 		    Log.debug("Synchronizer: persisting updates for region " + region.getId());
-		    stats.onDbUpdateStarted();
+
+	    	stats.onDbUpdateStarted();
 	        conn.executeUpdates(update.getSql(), new AsyncCallback<Integer>() {
 	            @Override
 	            public void onFailure(Throwable throwable) {

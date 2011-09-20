@@ -186,7 +186,7 @@ public class ActionToolBar extends ToolBar implements Listener<ButtonEvent> {
     }
     
 	public void addLockedPeriodsButton() {
-        addButton(UIActions.showLockedPeriods, "locks", IconImageBundle.ICONS.lockedPeriod());
+        addButton(UIActions.showLockedPeriods, I18N.CONSTANTS.timeLocks(), IconImageBundle.ICONS.lockedPeriod());
 	}
 
 }
