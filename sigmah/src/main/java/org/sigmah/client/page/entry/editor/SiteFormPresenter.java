@@ -13,7 +13,6 @@ import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.event.SiteEvent;
 import org.sigmah.client.page.common.toolbar.UIActions;
-import org.sigmah.shared.command.CreateEntity;
 import org.sigmah.shared.command.CreateSite;
 import org.sigmah.shared.command.UpdateSite;
 import org.sigmah.shared.command.result.CreateResult;

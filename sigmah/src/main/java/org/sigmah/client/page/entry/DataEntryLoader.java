@@ -17,7 +17,7 @@ import org.sigmah.client.page.PageLoader;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.PageStateSerializer;
 import org.sigmah.client.page.common.filter.FilterPanel;
-import org.sigmah.client.page.common.nav.NavigationPanel;
+import org.sigmah.client.page.entry.editor.SiteFormPage;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.SchemaDTO;
@@ -35,19 +35,21 @@ public class DataEntryLoader implements PageLoader {
 
     private final AppInjector injector;
     private final Provider<DataEntryFrameSet> dataEntryFrameSetProvider;
-    
+    private final Provider<SiteFormPage> siteFormProvider;
     private FilterPanel filterPanelSet = null;
     
     @Inject
     public DataEntryLoader(AppInjector injector, NavigationHandler pageManager, 
     		PageStateSerializer placeSerializer,
-    		Provider<DataEntryFrameSet> dataEntryFrameSetProvider) {
+    		Provider<DataEntryFrameSet> dataEntryFrameSetProvider, Provider<SiteFormPage> siteFormProvider) {
         this.injector = injector;
         this.dataEntryFrameSetProvider = dataEntryFrameSetProvider;
+        this.siteFormProvider=siteFormProvider;
         pageManager.registerPageLoader(Frames.DataEntryFrameSet, this);
         pageManager.registerPageLoader(SiteEditor.ID, this);
         placeSerializer.registerParser(SiteEditor.ID, new SiteGridPageState.Parser());
-        
+        placeSerializer.registerParser(SiteFormPage.PAGEID, new SiteFormPage.SitePageStateParser());
+        pageManager.registerPageLoader(SiteFormPage.PAGEID, this);
     }
 
     @Override
@@ -61,6 +63,10 @@ public class DataEntryLoader implements PageLoader {
                     loadFrame(pageState, callback);
                 } else if (SiteEditor.ID.equals(pageId)) {
                     loadSiteGrid(pageState, callback);
+                } else if (SiteFormPage.PAGEID.equals(pageId)) {
+                	SiteFormPage siteFormPage = siteFormProvider.get();
+                	siteFormPage.navigate(pageState);
+                	callback.onSuccess(siteFormPage);
                 }
             }
 
