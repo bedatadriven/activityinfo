@@ -5,6 +5,7 @@
 
 package org.sigmah.client.page.entry.editor;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.google.common.collect.Lists;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -128,6 +130,7 @@ public class AdminFieldSetPresenter {
                 // clear the child value
                 // (it is no longer valid as the parent has changed)
                 view.setValue(child.getId(), null);
+                selection.put(child.getId(), null);
 
                 // reconfigure this combo
                 configureCombo(child.getId(), parentLevelId, selectedId);
@@ -305,4 +308,25 @@ public class AdminFieldSetPresenter {
             }
         }
     }
+
+	public String getLocationName() {
+		return null;
+	}
+
+	public Collection<Integer> getAdminEntityIds() {
+		List<Integer> result = Lists.newArrayList();
+		
+        for (AdminLevelDTO level : levels) {
+            AdminEntityDTO entity = selection.get(level.getId());
+            if (entity != null){
+            	result.add(entity.getId());
+            }
+        }
+		
+		return result;
+	}
+	
+	public void onNameChanged(String name) {
+		listener.onModified();
+	}
 }

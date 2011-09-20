@@ -4,6 +4,8 @@ import java.util.Map;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.shared.command.GetLocations;
+import org.sigmah.shared.command.GetLocations.LocationsResult;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
@@ -12,6 +14,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout.HBoxLayoutAlign;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayoutData;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class LocationContainer extends LayoutContainer {
 
@@ -23,6 +26,7 @@ public class LocationContainer extends LayoutContainer {
 	private MapPresenter mapPresenter;
 	private AdminFieldSetPresenter adminPresenter;
 	private SiteDTO site;
+	private AdminFieldSet adminFieldSet;
 
 	public LocationContainer(Dispatcher service, EventBus eventBus, ActivityDTO activity) {
 		this.service=service;
@@ -38,7 +42,7 @@ public class LocationContainer extends LayoutContainer {
 		setLayout(layout);
 		HBoxLayoutData dataAdminFields = new HBoxLayoutData();
 		
-		AdminFieldSet adminFieldSet = new AdminFieldSet(currentActivity);
+		adminFieldSet = new AdminFieldSet(currentActivity);
 		add(adminFieldSet, dataAdminFields);
 		
 		createLocationList();
@@ -59,8 +63,30 @@ public class LocationContainer extends LayoutContainer {
 
             @Override
             public void onModified() {
+            	getLocations();
             }
         });
+	}
+
+	protected void getLocations() {
+		GetLocations getLocations = new GetLocations()
+			.setName(adminFieldSet.getLocationName())
+			.setAdminEntityIds(adminPresenter.getAdminEntityIds());
+		for (Integer id : adminPresenter.getAdminEntityIds()) {
+			System.out.println("id: " + id);
+		}
+		service.execute(getLocations, null, new AsyncCallback<LocationsResult>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO: handle failure
+				System.out.println();
+			}
+
+			@Override
+			public void onSuccess(LocationsResult result) {
+				locations.show(result);
+			}
+		});
 	}
 
 	private void createMap() {

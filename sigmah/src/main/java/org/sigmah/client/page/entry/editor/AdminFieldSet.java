@@ -15,34 +15,56 @@ import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
 
+import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
+import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Timer;
 
 public class AdminFieldSet extends AbstractFieldSet implements AdminFieldSetPresenter.View  {
 
     private AdminFieldSetPresenter presenter;
     private Map<Integer, ComboBox<AdminEntityDTO>> comboBoxes =
             new HashMap<Integer, ComboBox<AdminEntityDTO>>();
+	private TextField<String> nameField;
+	private Timer nameDelay;
+	private Timer axeDelay;
+	private static final int delay=250; // milliseconds 
 
     public AdminFieldSet(ActivityDTO activity) {
         super(I18N.CONSTANTS.location(), 100, 200);
+        createTimers();
         
         if (activity.getLocationType().getBoundAdminLevelId() == null) {
-            TextField<String> nameField = new TextField<String>();
+            nameField = new TextField<String>();
             nameField.setName("locationName");
             nameField.setFieldLabel(activity.getLocationType().getName());
             nameField.setAllowBlank(false);
+            nameField.addKeyListener(new KeyListener() {
+				@Override
+				public void componentKeyUp(ComponentEvent event) {
+					super.componentKeyUp(event);
+					nameDelay.schedule(delay);
+				}
+            });
             add(nameField);
 
             TextField<String> axeField = new TextField<String>();
             axeField.setName("locationAxe");
             axeField.setFieldLabel(I18N.CONSTANTS.axe());
+            axeField.addKeyListener(new KeyListener() {
+				@Override
+				public void componentKeyUp(ComponentEvent event) {
+					super.componentKeyUp(event);
+					axeDelay.schedule(delay);
+				}
+            });
             add(axeField);
         }
         
@@ -86,7 +108,23 @@ public class AdminFieldSet extends AbstractFieldSet implements AdminFieldSetPres
         }
     }
 
-    private AdminEntityDTO findEntity(String name, List<AdminEntityDTO> models) {
+    private void createTimers() {
+    	nameDelay = new Timer() {
+			@Override
+			public void run() {
+				presenter.onNameChanged("");
+			}
+		};
+		axeDelay = new Timer() {
+			@Override
+			public void run() {
+				presenter.onNameChanged("");
+			}
+		};
+		
+	}
+
+	private AdminEntityDTO findEntity(String name, List<AdminEntityDTO> models) {
         for(AdminEntityDTO entity : models) {
             if(entity.getName().equalsIgnoreCase(name)) {
                 return entity;
@@ -118,4 +156,8 @@ public class AdminFieldSet extends AbstractFieldSet implements AdminFieldSetPres
     public ComboBox<AdminEntityDTO> getCombo(int levelId) {
         return comboBoxes.get(levelId);
     }
+
+	public String getLocationName() {
+		return nameField.getValue();
+	}
 }
