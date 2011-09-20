@@ -13,6 +13,7 @@ import org.sigmah.client.dispatch.RemoteServiceProvider;
 import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.dispatch.remote.Direct;
 import org.sigmah.client.dispatch.remote.DirectDispatcher;
+import org.sigmah.client.dispatch.remote.Remote;
 import org.sigmah.client.dispatch.remote.RemoteDispatcher;
 import org.sigmah.client.offline.OfflineController;
 import org.sigmah.client.page.Frame;
@@ -37,6 +38,7 @@ public class AppModule extends AbstractGinModule {
         bind(RemoteCommandServiceAsync.class).toProvider(RemoteServiceProvider.class).in(Singleton.class);
         bind(Dispatcher.class).to(OfflineController.class).in(Singleton.class);
         bind(Dispatcher.class).annotatedWith(Direct.class).to(DirectDispatcher.class).in(Singleton.class);
+        bind(Dispatcher.class).annotatedWith(Remote.class).to(RemoteDispatcher.class).in(Singleton.class);
         bind(DispatchEventSource.class).to(RemoteDispatcher.class);
         bind(PageStateSerializer.class).in(Singleton.class);
         bind(EventBus.class).to(LoggingEventBus.class).in(Singleton.class);

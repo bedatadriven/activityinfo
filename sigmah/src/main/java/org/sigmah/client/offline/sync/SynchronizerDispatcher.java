@@ -48,7 +48,6 @@ public class SynchronizerDispatcher implements Dispatcher {
 				} else {
 					callback.onFailure(caught);
 				}
-				
 			}
 
 			@Override
@@ -61,7 +60,7 @@ public class SynchronizerDispatcher implements Dispatcher {
 	
 	private final <T extends CommandResult> void handleConnectionFailure(final Command<T> command, Throwable caught, final AsyncCallback<T> callback, final int attempt) {
 		if(attempt > MAX_RETRY_COUNT) {
-			callback.onFailure(caught);
+			callback.onFailure(new SynchronizerConnectionException());
 		} else {
 			int delay = retryDelay(attempt);
 			eventBus.fireEvent(new SyncConnectionProblemEvent(attempt+1, delay));

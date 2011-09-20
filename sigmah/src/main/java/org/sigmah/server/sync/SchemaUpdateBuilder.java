@@ -91,31 +91,35 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
 
     public SyncRegionUpdate build(User user, GetSyncRegionUpdates request) throws JSONException {
         
-    	// get the permissions before we apply the filter
-    	// otherwise they will be excluded
-    	userPermissions = entityManager.createQuery("select p from UserPermission p where p.user.id = ?1")
-                .setParameter(1, user.getId())
-                .getResultList();
-
-        DomainFilters.applyUserFilter(user, entityManager);
-        
-    	databases = userDatabaseDAO.queryAllUserDatabasesAlphabetically();
-    	
-    	
-        long localVersion = request.getLocalVersion() == null ? 0 : Long.parseLong(request.getLocalVersion());
-        long serverVersion = getCurrentSchemaVersion(user);
-
-        SyncRegionUpdate update = new SyncRegionUpdate();
-        update.setVersion(Long.toString(serverVersion));
-        update.setComplete(true);
-
-        if(localVersion == serverVersion) {
-            update.setComplete(true);
-        } else {
-            makeEntityLists(null);
-            update.setSql(buildSql());
-        }
-        return update;
+    	try {
+	    	// get the permissions before we apply the filter
+	    	// otherwise they will be excluded
+	    	userPermissions = entityManager.createQuery("select p from UserPermission p where p.user.id = ?1")
+	                .setParameter(1, user.getId())
+	                .getResultList();
+	
+	        DomainFilters.applyUserFilter(user, entityManager);
+	        
+	    	databases = userDatabaseDAO.queryAllUserDatabasesAlphabetically();
+	    	
+	    	
+	        long localVersion = request.getLocalVersion() == null ? 0 : Long.parseLong(request.getLocalVersion());
+	        long serverVersion = getCurrentSchemaVersion(user);
+	
+	        SyncRegionUpdate update = new SyncRegionUpdate();
+	        update.setVersion(Long.toString(serverVersion));
+	        update.setComplete(true);
+	
+	        if(localVersion == serverVersion) {
+	            update.setComplete(true);
+	        } else {
+	            makeEntityLists(null);
+	            update.setSql(buildSql());
+	        }
+	        return update;
+    	} finally {
+    		entityManager.close();
+    	}
     }
 
     private String buildSql() throws JSONException {

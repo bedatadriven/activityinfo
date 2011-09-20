@@ -25,7 +25,7 @@
     
     <inherits name="com.bedatadriven.rebar.appcache.AppCache"/>
     <inherits name="com.bedatadriven.rebar.sql.Sql"/>
-    <inherits name="com.bedatadriven.rebar.sync.Sync"/>
+    <inherits name="com.bedatadriven.rebar.Time"/>
     
     <inherits name="com.teklabs.gwt.i18n.GwtI18nServer"/>
     <inherits name="com.allen_sauer.gwt.log.gwt-log-impl"/>

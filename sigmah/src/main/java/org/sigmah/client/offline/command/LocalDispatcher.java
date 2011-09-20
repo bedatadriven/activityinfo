@@ -32,7 +32,8 @@ public class LocalDispatcher implements Dispatcher {
     
     @Inject
     public LocalDispatcher(Authentication auth, SqlDatabase database, HandlerRegistry registry) {
-        this.auth = auth;
+        Log.trace("LocalDispatcher constructor starting...");
+    	this.auth = auth;
         this.registry = registry;
         this.database = database;
         this.commandQueue = new CommandQueue(database);

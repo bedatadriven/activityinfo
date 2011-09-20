@@ -1,6 +1,5 @@
 package org.sigmah.client.page.summaries;
 
-import java.util.Date;
 import java.util.List;
 
 import org.sigmah.client.dispatch.AsyncMonitor;
@@ -9,6 +8,7 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.mvp.View;
 import org.sigmah.shared.dto.SiteDTO;
 
+import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
@@ -124,7 +124,7 @@ public class SitePresenter {
 			labelComment.setText(site.getComments());
 		}
 		
-		private String createPeriod(Date from, Date to) {
+		private String createPeriod(LocalDate from, LocalDate to) {
 			return from.toString() + " " + I18N.CONSTANTS.toDate() + " " + to.toString();
 		}
 

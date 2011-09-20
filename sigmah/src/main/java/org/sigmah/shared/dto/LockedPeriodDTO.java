@@ -2,6 +2,7 @@ package org.sigmah.shared.dto;
 
 import java.util.Date;
 
+import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /*
@@ -14,13 +15,6 @@ public class LockedPeriodDTO extends BaseModelData implements EntityDTO {
 	
 	public LockedPeriodDTO() {
 		super();
-	}
-
-	public LockedPeriodDTO(int id, Date startDate, Date endDate) {
-		setId(id);
-		setFromDate(startDate);
-		setToDate(endDate);
-		setEnabled(true);
 	}
 	
 	public void setName(String name) {
@@ -40,19 +34,35 @@ public class LockedPeriodDTO extends BaseModelData implements EntityDTO {
 	}
 	
 	public void setToDate(Date toDate) {
-		set("toDate", toDate);
+		set("toDate", new LocalDate(toDate));
 	}
 	
-	public Date getToDate() {
-		return (Date) get("toDate");
+	public void setToDate(LocalDate toDate) {
+		if(toDate == null) {
+			set("toDate", null);
+		} else {
+			set("toDate", toDate);
+		}
+	}
+	
+	public LocalDate getToDate() {
+		return get("toDate");
 	}
 	
 	public void setFromDate(Date fromDate) {
+		if(fromDate == null) {
+			set("fromDate", null);
+		} else {
+			set("fromDate", new LocalDate(fromDate));
+		}
+	}
+	
+	public void setFromDate(LocalDate fromDate) {
 		set("fromDate", fromDate);
 	}
 	
-	public Date getFromDate() {
-		return (Date) get("fromDate");
+	public LocalDate getFromDate() {
+		return get("fromDate");
 	}
 
 	/*
@@ -125,8 +135,12 @@ public class LockedPeriodDTO extends BaseModelData implements EntityDTO {
 	}
 	
 	public boolean fallsWithinPeriod(Date date) {
-		Date from = getFromDate();
-		Date to = getToDate();
+		return fallsWithinPeriod(new LocalDate(date));
+	}
+	
+	public boolean fallsWithinPeriod(LocalDate date) {
+		LocalDate from = getFromDate();
+		LocalDate to = getToDate();
 		
 		boolean isSameAsFrom = from.compareTo(date) == 0;
 		boolean isSameAsTo = to.compareTo(date) == 0;

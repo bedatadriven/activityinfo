@@ -223,8 +223,8 @@ public class AddLockedPeriodDialog extends FormPanel implements
 		if (value != null) {
 			textfieldName.setValue(value.getName());
 			checkboxEnabled.setValue(value.isEnabled());
-			datefieldFromDate.setValue(value.getFromDate());
-			datefieldToDate.setValue(value.getToDate());
+			datefieldFromDate.setValue(value.getFromDate().atMidnightInMyTimezone());
+			datefieldToDate.setValue(value.getToDate().atMidnightInMyTimezone());
 		}
 	}
 

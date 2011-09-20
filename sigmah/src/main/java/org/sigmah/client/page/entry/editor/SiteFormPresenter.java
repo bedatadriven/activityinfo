@@ -164,9 +164,9 @@ public class SiteFormPresenter implements SiteFormLeash {
     }
     
     private void addProjectIdToMap(Map<String, Object> map) {
-    	if(map.containsKey("project")) {
-	        int projectId = ((ProjectDTO)map.get("project")).getId();
-	        map.put("projectId", projectId);
+    	ProjectDTO project = (ProjectDTO)map.get("project");
+    	if(project != null) {
+	        map.put("projectId", project.getId());
 	        map.remove("project");
     	}
     }
@@ -177,7 +177,7 @@ public class SiteFormPresenter implements SiteFormLeash {
 
             final Map<String, Object> changes = view.getChanges();
             if (adminPresenter.isDirty()) {
-                changes.putAll(adminPresenter.getPropertyMap());
+                changes.putAll(adminPresenter.getChangeMap());
             }
             
             // The projectId will always be updated, regardless of change/create mode
