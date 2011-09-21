@@ -31,6 +31,8 @@ public final class SiteDTO extends BaseModelData implements EntityDTO {
     // ensure that serializer/deserializer is generated for LocalDate
     private LocalDate date_;
 
+	private LocationDTO2 location;
+
 	public SiteDTO() {
 	}
 
@@ -465,5 +467,10 @@ public final class SiteDTO extends BaseModelData implements EntityDTO {
 	 */
 	public String getPrettyLocationName() {
 		return getLocationName() + getLocationAxe() != null ? " (" + getLocationAxe() + ")" : "";
+	}
+	
+	public void setLocation(LocationDTO2 location) {
+		set("locationId", location.getId());
+		this.location=location;
 	}
 }

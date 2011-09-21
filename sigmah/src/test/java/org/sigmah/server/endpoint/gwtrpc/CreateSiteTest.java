@@ -15,12 +15,13 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.dao.OnDataSet;
-import org.sigmah.shared.command.CreateEntity;
+import org.sigmah.shared.command.AddLocation;
 import org.sigmah.shared.command.CreateSite;
 import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.command.exception.NotAuthorizedException;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.dto.AdminEntityDTO;
+import org.sigmah.shared.dto.LocationDTO2;
 import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.SiteDTO;
@@ -33,39 +34,22 @@ import com.extjs.gxt.ui.client.data.PagingLoadResult;
 @OnDataSet("/dbunit/sites-simple1.db.xml")
 public class CreateSiteTest extends CommandTestCase2 {
 
-
     @Test
     public void test() throws CommandException {
-        // create a new detached, client model
+    	LocationDTO2 location = LocationDTOs.newLocation();
+    	CreateResult createLocation = (CreateResult) execute(new AddLocation().setLocation(location));
+    	location.setId(createLocation.getNewId());
+    	
         SiteDTO newSite = SiteDTOs.newSite();
-
-        // create command
-
+        newSite.setLocation(location);
         CreateSite cmd = new CreateSite(newSite);
-
-        // execute the command
-
         setUser(1);
-
         CreateResult result = (CreateResult) execute(cmd);
-
-
-        // let the client know the command has succeeded
         newSite.setId(result.getNewId());
-        //cmd.onCompleted(result);
-
         assertThat(result.getNewId(), not(equalTo(0)));
-
-        // try to retrieve what we've created
-
         PagingLoadResult<SiteDTO> loadResult = execute(GetSites.byId(newSite.getId()));
-
         Assert.assertEquals(1, loadResult.getData().size());
-
         SiteDTO secondRead = loadResult.getData().get(0);
-
-
-        // confirm that the changes are there
         SiteDTOs.validateNewSite(secondRead);
     }
     
@@ -143,6 +127,7 @@ public class CreateSiteTest extends CommandTestCase2 {
         newSite.setAttributeValue(1, false);
         newSite.setAttributeValue(2, false);
         newSite.setProject(new ProjectDTO(1,"SomeProject"));
+        newSite.setLocation(LocationDTOs.newLocation());
 
         // create command
 

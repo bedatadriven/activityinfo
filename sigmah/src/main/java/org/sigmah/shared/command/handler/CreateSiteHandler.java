@@ -29,8 +29,6 @@ import com.google.inject.Inject;
  * 
  */
 public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, CreateResult> {
-
-
 	private KeyGenerator keyGenerator;
 
 	@Inject
@@ -75,7 +73,7 @@ public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, Create
 
 					@Override
 					public void onSuccess(String name) {
-						int locationId = insertLocation(tx, locationTypeId, name, properties);
+						int locationId = (Integer) properties.get("locationId");
 						int siteId = insertSite(tx, activityId, locationId, properties);
 
 						// we only create a reporting period if this is a one-off activity
@@ -85,7 +83,8 @@ public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, Create
 						}
 
 						// update command for remote consumption with new ids
-						cmd.getProperties().put("locationId", locationId);
+						// You can call setLocation on SiteDTO, which will set the "locationId" property
+						//cmd.getProperties().put("locationId", locationId);
 						cmd.getProperties().put("siteId", siteId);
 						cmd.getProperties().put("reportingPeriodId", reportingPeriodId);
 						
@@ -125,18 +124,18 @@ public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, Create
 		int siteId = getOrCreateKey(properties, "siteId");
 		
 		SqlInsert.insertInto("Site")
-		.value("SiteId", siteId)
-		.value("LocationId", locationId)
-		.value("ActivityId", activityId)
-		.value("Date1", properties.get("date1"))
-		.value("Date2", properties.get("date2"))
-		.value("Comments", properties.get("comments"))
-		.value("PartnerId", properties.get("partnerId"))
-		.value("ProjectId", properties.get("projectId"))
-		.value("DateCreated", new Date())
-		.value("DateEdited", new Date())
-		.value("Status", 0) // no longer used  TODO : remove from databases
-		.value("Target", 0) // no longer used TODO : remove 
+			.value("SiteId", siteId)
+			.value("LocationId", locationId)
+			.value("ActivityId", activityId)
+			.value("Date1", properties.get("date1"))
+			.value("Date2", properties.get("date2"))
+			.value("Comments", properties.get("comments"))
+			.value("PartnerId", properties.get("partnerId"))
+			.value("ProjectId", properties.get("projectId"))
+			.value("DateCreated", new Date())
+			.value("DateEdited", new Date())
+			.value("Status", 0) // no longer used  TODO : remove from databases
+			.value("Target", 0) // no longer used TODO : remove 
 		.execute(tx);
 
 		insertAttributeValues(tx, siteId, properties);
@@ -163,31 +162,31 @@ public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, Create
 		}
 	}
 
-	private int insertLocation(
-			SqlTransaction tx,
-			int locationTypeId, 
-			String name,
-			Map<String, Object> properties) {
-		
-		int locationId = getOrCreateKey(properties, "locationId");
-		
-		Date timestamp = new Date();
-		
-		SqlInsert.insertInto("Location")
-		.value("LocationId", locationId)
-		.value("Name", name)
-		.value("Axe", properties.get("locationAxe"))
-		.value("X", properties.get("x"))
-		.value("Y", properties.get("y"))
-		.value("LocationTypeId", locationTypeId)
-		.value("dateCreated", timestamp)
-		.value("dateEdited", timestamp)
-		.execute(tx);
-		
-		insertLocationAdminLinks(tx, locationId, properties);
-
-		return locationId;
-	}
+//	private int insertLocation(
+//			SqlTransaction tx,
+//			int locationTypeId, 
+//			String name,
+//			Map<String, Object> properties) {
+//		
+//		int locationId = getOrCreateKey(properties, "locationId");
+//		
+//		Date timestamp = new Date();
+//		
+//		SqlInsert.insertInto("Location")
+//		.value("LocationId", locationId)
+//		.value("Name", name)
+//		.value("Axe", properties.get("locationAxe"))
+//		.value("X", properties.get("x"))
+//		.value("Y", properties.get("y"))
+//		.value("LocationTypeId", locationTypeId)
+//		.value("dateCreated", timestamp)
+//		.value("dateEdited", timestamp)
+//		.execute(tx);
+//		
+//		insertLocationAdminLinks(tx, locationId, properties);
+//
+//		return locationId;
+//	}
 	
 	private void insertLocationAdminLinks(
 			SqlTransaction tx,

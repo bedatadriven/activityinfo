@@ -388,14 +388,14 @@ public class SiteGridTest {
         //VERIFY that an inline change is results in an update entity call
 
         Record record = editor.getStore().getRecord(sites.getData().get(0));
-        record.set("locationName", "Freeport Indiana");
+        record.set("comments", "Freeport Indiana");
 
         editor.onUIAction(UIActions.save);
 
         UpdateEntity cmd = service.getLastExecuted(UpdateEntity.class);
         Assert.assertEquals(sites.getData().get(0).getId(), cmd.getId());
         Assert.assertEquals("Site", cmd.getEntityName());
-        Assert.assertEquals("Freeport Indiana", cmd.getChanges().get("locationName"));
+        Assert.assertEquals("Freeport Indiana", cmd.getChanges().get("comments"));
 
     }
 

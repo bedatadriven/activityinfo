@@ -49,6 +49,15 @@ public class LocationDTO2 extends BaseModelData implements EntityDTO {
 		return get("id");
 	}
 	
+	public int getLocationTypeId() {
+		return get("locationTypeId");
+	}
+	
+	public LocationDTO2 setLocationTypeId(int locationTypeId) {
+		set("locationTypeId", locationTypeId);
+		return this;
+	}
+	
 	public LocationDTO2 setAdminEntity(int levelId, AdminEntityDTO value) {
 		set(AdminLevelDTO.getPropertyName(levelId), value);
 		return this;

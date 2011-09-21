@@ -90,7 +90,6 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 		result.setOffset(command.getOffset());
 
 		query.execute(context.getTransaction(), new SqlResultCallback() {
-
 			@Override
 			public void onSuccess(SqlTransaction tx, SqlResultSet results) {
 				for(SqlResultSetRow row : results.getRows()) {

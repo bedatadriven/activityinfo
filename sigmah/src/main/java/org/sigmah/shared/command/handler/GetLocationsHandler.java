@@ -19,15 +19,17 @@ public class GetLocationsHandler implements CommandHandlerAsync<GetLocations, Lo
 
 	@Override
 	public void execute(final GetLocations command, ExecutionContext context, final AsyncCallback<LocationsResult> callback) {
-		 SqlQuery query = SqlQuery.select("LocationID","Name", "X", "Y").from("location");
+		 SqlQuery query = SqlQuery.select("LocationID","Name","Axe", "X", "Y").from("location");
 		 
-		 for (Integer adminEntityId : command.getAdminEntityIds()) {
-	 		 query.where("locationid")
-		 		  .in(SqlQuery.select("locationid")
-		 				  	  .from("locationadminlink")
-		 				      .where("adminentityid")
-		 				      .equalTo(adminEntityId));
-			 
+		 if (command.getAdminEntityIds() != null) {
+			 for (Integer adminEntityId : command.getAdminEntityIds()) {
+		 		 query.where("locationid")
+			 		  .in(SqlQuery.select("locationid")
+			 				  	  .from("locationadminlink")
+			 				      .where("adminentityid")
+			 				      .equalTo(adminEntityId));
+				 
+			 }
 		 }
 		 query.where("Name")
 			  .startsWith(command.getName())
@@ -39,6 +41,7 @@ public class GetLocationsHandler implements CommandHandlerAsync<GetLocations, Lo
 					for (SqlResultSetRow row : results.getRows()) {
 						LocationDTO2 location = new LocationDTO2();
 						location.setName(row.getString("Name"));
+						location.setAxe(row.getString("Axe"));
 						location.setId(row.getInt("LocationID"));
 						if (!row.isNull("Y")) {
 							location.setLatitude(row.getDouble("Y"));
