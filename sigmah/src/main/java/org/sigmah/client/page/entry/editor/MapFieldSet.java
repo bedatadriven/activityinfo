@@ -300,4 +300,7 @@ public class MapFieldSet extends FieldSet implements MapEditView {
         return createBounds(map.getBounds());
 	}
 
+	public MapWidget getMap() {
+		return map;
+	}
 }

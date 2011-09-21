@@ -4,19 +4,25 @@ import java.util.Map;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.page.entry.editor.NewLocationFieldSet.NewLocationPresenter;
 import org.sigmah.shared.command.GetLocations;
 import org.sigmah.shared.command.GetLocations.LocationsResult;
 import org.sigmah.shared.dto.ActivityDTO;
+import org.sigmah.shared.dto.LocationDTO2;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout.HBoxLayoutAlign;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
+import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
+import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class LocationContainer extends LayoutContainer {
+public class LocationContainer extends LayoutContainer implements NewLocationPresenter {
 
 	private ActivityDTO currentActivity;
 	private LocationListView locations;
@@ -27,6 +33,7 @@ public class LocationContainer extends LayoutContainer {
 	private AdminFieldSetPresenter adminPresenter;
 	private SiteDTO site;
 	private AdminFieldSet adminFieldSet;
+	private NewLocationFieldSet fieldsetNewLocation;
 
 	public LocationContainer(Dispatcher service, EventBus eventBus, ActivityDTO activity) {
 		this.service=service;
@@ -45,12 +52,8 @@ public class LocationContainer extends LayoutContainer {
 		adminFieldSet = new AdminFieldSet(currentActivity);
 		add(adminFieldSet, dataAdminFields);
 		
-		createLocationList();
-		add(locations);
-		
 		createMap();
-		HBoxLayoutData dataMap = new HBoxLayoutData();
-		dataMap.setFlex(1.0);
+		createLocationList();
 		add(map);
 		
 		adminPresenter = new AdminFieldSetPresenter(service, currentActivity, adminFieldSet);
@@ -72,6 +75,7 @@ public class LocationContainer extends LayoutContainer {
 		GetLocations getLocations = new GetLocations()
 			.setName(adminFieldSet.getLocationName())
 			.setAdminEntityIds(adminPresenter.getAdminEntityIds());
+		
 		for (Integer id : adminPresenter.getAdminEntityIds()) {
 			System.out.println("id: " + id);
 		}
@@ -79,7 +83,6 @@ public class LocationContainer extends LayoutContainer {
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO: handle failure
-				System.out.println();
 			}
 
 			@Override
@@ -94,7 +97,25 @@ public class LocationContainer extends LayoutContainer {
 	}
 
 	private void createLocationList() {
-		locations = new LocationListView();
+		LayoutContainer locationContainer = new LayoutContainer();
+		locationContainer.setWidth("220px");
+		VBoxLayout layout = new VBoxLayout();
+		layout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
+		locationContainer.setLayout(layout);
+		
+		FieldSet fieldsetLocations = new FieldSet();
+		fieldsetLocations.setHeading("Choose existing location");
+		locations = new LocationListView(); 
+		fieldsetLocations.add(locations);
+		
+		fieldsetNewLocation = new NewLocationFieldSet(this);
+				
+		VBoxLayoutData vbldExistingLocations = new VBoxLayoutData();
+		vbldExistingLocations.setFlex(1.0);
+		
+		locationContainer.add(fieldsetLocations, vbldExistingLocations);
+		locationContainer.add(fieldsetNewLocation);
+		add(locationContainer);
 	}
 
 	public Map<String, Object> getChanges() {
@@ -112,6 +133,12 @@ public class LocationContainer extends LayoutContainer {
 	public void setSite(SiteDTO site) {
 		this.site=site;
 		adminPresenter.setSite(site);
+	}
+
+	@Override
+	public void onAdd(LocationDTO2 lcoation) {
+//		service.execute(null, fieldsetNewLocation.getMonitor(), new AsyncCallback<T>() {
+//		})
 	}
 	
 }

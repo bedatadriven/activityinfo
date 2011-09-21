@@ -10,7 +10,8 @@ import org.sigmah.shared.dto.LocationDTO2;
 public class GetLocations implements Command<LocationsResult>{
 	private Collection<Integer> adminEntityIds;
 	private String name;
-	private int threshold = 30;
+	private int threshold = 300;
+
 	
 	public int getThreshold() {
 		return threshold;
@@ -35,8 +36,9 @@ public class GetLocations implements Command<LocationsResult>{
 	}
 
 	public static class LocationsResult implements CommandResult {
-		List<LocationDTO2> locations;
-		boolean hasExceededTreshold;
+		private List<LocationDTO2> locations;
+		private boolean hasExceededTreshold;
+		private int amountResults;
 		
 		public LocationsResult() {
 			super();
@@ -50,15 +52,24 @@ public class GetLocations implements Command<LocationsResult>{
 		public List<LocationDTO2> getLocations() {
 			return locations;
 		}
-		public void setLocations(List<LocationDTO2> locations) {
+		public LocationsResult setLocations(List<LocationDTO2> locations) {
 			this.locations = locations;
+			return this;
 		}
 		public boolean isHasExceededTreshold() {
 			return hasExceededTreshold;
 		}
-		public void setHasExceededTreshold(boolean hasExceededTreshold) {
+		public LocationsResult setHasExceededTreshold(boolean hasExceededTreshold) {
 			this.hasExceededTreshold = hasExceededTreshold;
+			return this;
 		}
-		
+		public int getAmountResults() {
+			return amountResults;
+		}
+
+		public LocationsResult setAmountResults(int amountResults) {
+			this.amountResults = amountResults;
+			return this;
+		}
 	}
 }

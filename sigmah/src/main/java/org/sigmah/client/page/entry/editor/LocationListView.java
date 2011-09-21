@@ -19,6 +19,7 @@ public class LocationListView extends ListView<LocationDTO2> {
 		setWidth(200);
 		setStore(store);
 		setDisplayProperty("name");
+		setHeight("100%");
 	}
 
 
