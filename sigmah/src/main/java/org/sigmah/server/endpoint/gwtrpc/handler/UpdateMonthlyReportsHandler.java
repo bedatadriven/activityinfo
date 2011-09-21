@@ -6,6 +6,9 @@
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
 import com.google.inject.Inject;
+
+import org.bouncycastle.jce.provider.symmetric.AES.KeyGen;
+import org.sigmah.client.offline.command.handler.KeyGenerator;
 import org.sigmah.server.domain.*;
 import org.sigmah.shared.command.Month;
 import org.sigmah.shared.command.UpdateMonthlyReports;
@@ -31,10 +34,12 @@ import java.util.Map;
 public class UpdateMonthlyReportsHandler implements CommandHandler<UpdateMonthlyReports> {
 
     private final EntityManager em;
+    private final KeyGenerator keyGenerator;
 
     @Inject
-    public UpdateMonthlyReportsHandler(EntityManager em) {
+    public UpdateMonthlyReportsHandler(EntityManager em, KeyGenerator keyGenerator) {
         this.em = em;
+        this.keyGenerator = keyGenerator;
     }
 
     public CommandResult execute(UpdateMonthlyReports cmd, User user) throws CommandException {
@@ -52,7 +57,8 @@ public class UpdateMonthlyReportsHandler implements CommandHandler<UpdateMonthly
             ReportingPeriod period = periods.get(change.month);
             if (period == null) {
                 period = new ReportingPeriod(site);
-
+                period.setId(keyGenerator.generateInt());
+                
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(Calendar.YEAR, change.month.getYear());
                 calendar.set(Calendar.MONTH, change.month.getMonth() - 1);
