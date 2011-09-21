@@ -23,6 +23,7 @@ import org.sigmah.server.report.renderer.html.ImageStorageProvider;
 import org.sigmah.server.report.renderer.image.ImageCreator;
 import org.sigmah.shared.report.model.ReportElement;
 
+import com.google.gwt.core.client.GWT;
 import com.google.inject.Inject;
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.DocWriter;
@@ -44,7 +45,6 @@ public class HtmlReportRenderer extends ItextReportRenderer {
 	public HtmlReportRenderer(@MapIconPath String mapIconPath, ImageStorageProvider imageStorageProvider) {
 		super(mapIconPath);
 		this.imageStorageProvider = imageStorageProvider;
-
 	}
 
 	@Override
@@ -107,7 +107,6 @@ public class HtmlReportRenderer extends ItextReportRenderer {
 			}
 		}
 	}
-
 
 	private static class HtmlImage implements ItextImageResult {
 		private final BufferedImage image;

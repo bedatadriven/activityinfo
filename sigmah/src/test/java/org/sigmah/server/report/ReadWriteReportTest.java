@@ -14,8 +14,7 @@ import org.sigmah.shared.report.model.layers.PiechartMapLayer.Slice;
 public class ReadWriteReportTest {
 	
 	@Test
-	public void readWriteReportTest() throws Throwable
-	{
+	public void readWriteReportTest() throws Throwable	{
 		Report report = new Report();
 		MapReportElement map = new MapReportElement();
 		map.getLayers().add(new BubbleMapLayer());

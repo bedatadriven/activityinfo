@@ -111,7 +111,7 @@ public class MapFieldSet extends FieldSet implements MapPresenter.View {
                 country.getBounds().getCenterX()));
         map.setZoomLevel(6);
 
-        MapType adminMap = MapTypeFactory.createLocalisationMapType(country);
+        MapType adminMap = MapTypeFactory.createLocalisationMapType(null);
         map.addMapType(adminMap);
         map.setCurrentMapType(adminMap);
 
@@ -168,6 +168,7 @@ public class MapFieldSet extends FieldSet implements MapPresenter.View {
     public void setCoords(Double lat, Double lng) {
         latField.setValue(lat);
         lngField.setValue(lng);
+        map.panTo(LatLng.newInstance(lat, lng));
     }
 
     @Override
@@ -198,11 +199,8 @@ public class MapFieldSet extends FieldSet implements MapPresenter.View {
     @Override
     public void setMarkerPos(double lat, double lng) {
         LatLng latlng = LatLng.newInstance(lat, lng);
-        if (marker == null) {
             createMarker(latlng);
-        } else {
-            marker.setLatLng(latlng);
-        }
+        map.panTo(latlng);
     }
 
     public void zoomToBounds(LatLngBounds llbounds) {
@@ -222,6 +220,7 @@ public class MapFieldSet extends FieldSet implements MapPresenter.View {
         MarkerOptions options = MarkerOptions.newInstance();
         options.setDraggable(true);
 
+        map.clearOverlays();
         marker = new Marker(latlng, options);
 
         marker.addMarkerDragEndHandler(new MarkerDragEndHandler() {

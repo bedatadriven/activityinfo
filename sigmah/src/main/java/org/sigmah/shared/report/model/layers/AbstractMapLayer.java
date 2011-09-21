@@ -13,6 +13,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.sigmah.shared.domain.Indicator;
 import org.sigmah.shared.report.model.clustering.AdministrativeLevelClustering;
@@ -64,7 +65,7 @@ public abstract class AbstractMapLayer implements MapLayer {
 		this.labelSequence = labelSequence;
 	}
 
-	@XmlElement
+	@XmlTransient
 	public boolean isClustered() {
 	    return clustering.isClustered();
 	}
