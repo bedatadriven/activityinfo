@@ -40,6 +40,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
+import com.extjs.gxt.ui.client.widget.treepanel.TreePanel.CheckCascade;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -90,6 +91,7 @@ public class IndicatorTreePanel extends ContentPanel {
 
 		tree = new TreePanel<ModelData>(store);
 		tree.setCheckable(true);
+
 		setAllNodesCheckable();
 		
 		/*
@@ -303,6 +305,7 @@ public class IndicatorTreePanel extends ContentPanel {
 	
 	public void setAllNodesCheckable() {
 		tree.setCheckNodes(TreePanel.CheckNodes.BOTH);
+		tree.setCheckStyle(CheckCascade.CHILDREN);
 	}
 
 
