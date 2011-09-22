@@ -2,25 +2,29 @@ package org.sigmah.server.report.generator.map.cluster;
 
 import java.util.List;
 
-import org.sigmah.server.report.generator.map.cluster.auto.CircleFitnessFunctor;
-import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph;
-import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph.IntersectionCalculator;
 import org.sigmah.server.report.generator.map.RadiiCalculator;
-import org.sigmah.server.report.generator.map.UpperBoundsCalculator;
+import org.sigmah.server.report.generator.map.TiledMap;
+import org.sigmah.server.report.generator.map.cluster.genetic.BubbleFitnessFunctor;
+import org.sigmah.server.report.generator.map.cluster.genetic.GeneticSolver;
+import org.sigmah.server.report.generator.map.cluster.genetic.MarkerGraph;
+import org.sigmah.server.report.generator.map.cluster.genetic.UpperBoundsCalculator;
+import org.sigmah.server.report.generator.map.cluster.genetic.MarkerGraph.IntersectionCalculator;
 import org.sigmah.shared.report.model.PointValue;
+import org.sigmah.shared.report.model.SiteData;
 
+/**
+ * Clusters PointValues together in an optimal way using
+ * a genetic algorithm.
+ */
 public class GeneticClusterer implements Clusterer {
 	RadiiCalculator radiiCalculator;
 	IntersectionCalculator intersectionCalculator;
-	private List<PointValue> points;
-
+	
 	public GeneticClusterer(RadiiCalculator radiiCalculator,
-			IntersectionCalculator intersectionCalculator,
-			List<PointValue> points) {
+			IntersectionCalculator intersectionCalculator) {
 		super();
 		this.radiiCalculator = radiiCalculator;
 		this.intersectionCalculator = intersectionCalculator;
-		this.points = points;
 	}
 
 	/*
@@ -29,7 +33,7 @@ public class GeneticClusterer implements Clusterer {
 	 * @see org.sigmah.shared.report.model.clustering.Clustering#cluster(java.util.List, org.sigmah.server.report.generator.map.RadiiCalculator)
 	 */
 	@Override
-	public List<Cluster> cluster() {
+	public List<Cluster> cluster(TiledMap map, List<PointValue> points) {
 		List<Cluster> clusters;
 		
         MarkerGraph graph = new MarkerGraph(points, intersectionCalculator);
@@ -38,10 +42,15 @@ public class GeneticClusterer implements Clusterer {
         clusters = solver.solve(
                 graph,
                 radiiCalculator,
-                new CircleFitnessFunctor(),
+                new BubbleFitnessFunctor(),
                 UpperBoundsCalculator.calculate(graph,
                         radiiCalculator));
         
         return clusters;
+	}
+
+	@Override
+	public boolean isMapped(SiteData site) {
+		return site.hasLatLong();
 	}
 }

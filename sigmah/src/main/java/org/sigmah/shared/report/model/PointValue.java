@@ -5,6 +5,7 @@
 
 package org.sigmah.shared.report.model;
 
+import org.sigmah.shared.report.content.LatLng;
 import org.sigmah.shared.report.content.PieMapMarker;
 import org.sigmah.shared.report.content.Point;
 
@@ -31,7 +32,7 @@ public class PointValue {
         this.value = value;
         this.px = px;
     }
-
+    
     public PointValue(SiteData site, Point px, Rectangle iconRect) {
         this.site = site;
         this.px = px;
@@ -46,4 +47,26 @@ public class PointValue {
 	public Map<Integer, Integer> getAdminMembership() {
 		return adminMembership;
 	}
+
+
+	public LatLng getLatLng() {
+		if(site.hasLatLong()) {
+			return new LatLng(site.getLatitude(), site.getLongitude());
+		} else {
+			return null;
+		}
+	}
+
+	public boolean hasLatLng() {
+		return getLatLng() != null;
+	}
+
+	public boolean hasPoint() {
+		return px != null;
+	}
+
+	public Point getPoint() {
+		return px;
+	}
+
 }

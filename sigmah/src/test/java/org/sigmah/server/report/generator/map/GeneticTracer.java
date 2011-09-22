@@ -5,10 +5,7 @@
 
 package org.sigmah.server.report.generator.map;
 
-import org.sigmah.server.report.generator.map.cluster.GeneticSolver;
-/*
- * @author Alex Bertram
- */
+import org.sigmah.server.report.generator.map.cluster.genetic.GeneticSolver;
 
 public class GeneticTracer implements GeneticSolver.Tracer {
 

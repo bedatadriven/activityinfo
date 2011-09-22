@@ -17,26 +17,43 @@ package org.sigmah.shared.report.content;
  */
 public class Point {
 
+	public final double x;
+	public final double y;
+	
 	public Point(int x, int y) {
 		super();
 		this.x = x;
 		this.y = y;
 	}
 
-	public final int x;
-	public final int y;
-
+	public Point(double x, double y) {
+		super();
+		this.x = x;
+		this.y = y;
+	}
 
     public int getX() {
-		return x;
+		return (int)Math.round(x);
 	}
 	
+    public double getDoubleX() {
+    	return x;
+    }
+    
 	public int getY() {
+		return (int)Math.round(y);
+	}
+	
+	public double getDoubleY() {
 		return y;
 	}
 	
 	public double distance(Point p) {
 		return Math.sqrt( (p.x-x)*(p.x-x) + (p.y-y)*(p.y-y) );	
+	}
+	
+	public Point translate(double tx, double ty) {
+		return new Point(x + tx, y + ty);
 	}
 
     @Override
@@ -50,10 +67,13 @@ public class Point {
 
         Point point = (Point) o;
 
-        if (x != point.x) {
+        // compare integers, ignore the extra precision
+        // of the doubles
+        
+        if (getX() != point.getX()) {
             return false;
         }
-        if (y != point.y) {
+        if (getY() != point.getY()) {
             return false;
         }
 
@@ -62,12 +82,12 @@ public class Point {
 
     @Override
     public int hashCode() {
-        int result = x;
-        result = 31 * result + y;
+        int result = getX();
+        result = 31 * result + getY();
         return result;
     }
 
-    public String toString() {
+	public String toString() {
         return "(" + x + ", " + y + ")";                
     }
 }

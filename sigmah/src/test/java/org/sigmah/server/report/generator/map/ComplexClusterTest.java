@@ -9,11 +9,12 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.sigmah.server.report.generator.map.cluster.Cluster;
-import org.sigmah.server.report.generator.map.cluster.GeneticSolver;
-import org.sigmah.server.report.generator.map.cluster.auto.CircleFitnessFunctor;
-import org.sigmah.server.report.generator.map.cluster.auto.FitnessFunctor;
-import org.sigmah.server.report.generator.map.cluster.auto.KMeans;
-import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph;
+import org.sigmah.server.report.generator.map.cluster.genetic.BubbleFitnessFunctor;
+import org.sigmah.server.report.generator.map.cluster.genetic.FitnessFunctor;
+import org.sigmah.server.report.generator.map.cluster.genetic.GeneticSolver;
+import org.sigmah.server.report.generator.map.cluster.genetic.KMeans;
+import org.sigmah.server.report.generator.map.cluster.genetic.MarkerGraph;
+import org.sigmah.server.report.generator.map.cluster.genetic.UpperBoundsCalculator;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -33,7 +34,7 @@ public class ComplexClusterTest extends GraphTest {
         ComplexPoints data = new ComplexPoints();
 
 
-        FitnessFunctor fitFtor = new CircleFitnessFunctor();
+        FitnessFunctor fitFtor = new BubbleFitnessFunctor();
         GsLogCalculator rCtor = new GsLogCalculator(5, 30);
 
         BufferedWriter csv = new BufferedWriter(new FileWriter("target/report-tests/brute.csv"));
@@ -111,7 +112,7 @@ public class ComplexClusterTest extends GraphTest {
 
             GeneticSolver solver = new GeneticSolver();
             solver.setTracer(new GeneticTracer());
-            List<Cluster> clusters = solver.solve(data.graph, radiiCalc, new CircleFitnessFunctor(),
+            List<Cluster> clusters = solver.solve(data.graph, radiiCalc, new BubbleFitnessFunctor(),
                     UpperBoundsCalculator.calculate(data.graph, new FixedRadiiCalculator(5)));
 
 
