@@ -6,22 +6,32 @@
 package org.sigmah.client.page.entry.editor;
 
 
+import java.util.Collection;
+
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.map.MapApiLoader;
 import org.sigmah.client.map.MapTypeFactory;
 import org.sigmah.client.page.common.widget.CoordinateField;
 import org.sigmah.client.page.config.form.FieldSetFitLayout;
+import org.sigmah.client.page.entry.editor.LocationListView.LocationSelectListener;
 import org.sigmah.shared.dto.CountryDTO;
+import org.sigmah.shared.dto.LocationDTO2;
 import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 import com.extjs.gxt.ui.client.event.ContainerEvent;
 import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
@@ -30,7 +40,7 @@ import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.control.SmallMapControl;
 import com.google.gwt.maps.client.event.MapMoveEndHandler;
 import com.google.gwt.maps.client.event.MapZoomEndHandler;
-import com.google.gwt.maps.client.event.MarkerDragEndHandler;
+import com.google.gwt.maps.client.event.MarkerClickHandler;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.geom.LatLngBounds;
 import com.google.gwt.maps.client.overlay.Marker;
@@ -43,6 +53,8 @@ public class MapFieldSet extends FieldSet implements MapEditView {
     private ContentPanel panel;
     private MapWidget map = null;
     private Marker marker = null;
+    private Marker selectedMarker = null;
+    private BiMap<LocationDTO2, Marker> markersPerLocation = HashBiMap.create();
 
     private CoordinateField latField;
     private CoordinateField lngField;
@@ -51,16 +63,34 @@ public class MapFieldSet extends FieldSet implements MapEditView {
 
     private final CountryDTO country;
 
-    public MapFieldSet(CountryDTO country) {
+	private LocationSelectListener listener;
+
+    public MapFieldSet(CountryDTO country, LocationSelectListener listener) {
         this.country = country;
+        this.listener=listener;
         
         initializeComponent();
 
         createPanel();
-        loadMapAync();
+        loadMapAsync();
+    }
+    
+    public void setLocations(Collection<LocationDTO2> locations) {
+    	map.clearOverlays();
+    	markersPerLocation.clear();
+    	for (LocationDTO2 location: locations) {
+    		if (location.hasCoordinates()) {
+    			Marker marker = createMarker(from(location));
+    			markersPerLocation.put(location, marker);
+    		}
+    	}
+    }
+    
+    private LatLng from(LocationDTO2 location) {
+    	return LatLng.newInstance(location.getLatitude(), location.getLongitude());
     }
 
-    private void loadMapAync() {
+    private void loadMapAsync() {
     	MapApiLoader.load(null, new AsyncCallback<Void>() {
 			@Override
 			public void onSuccess(Void result) {
@@ -124,6 +154,36 @@ public class MapFieldSet extends FieldSet implements MapEditView {
         panel.add(map);
 	}
 
+	private void createPanelToolbar() {
+        Listener<FieldEvent> latLngListener = new Listener<FieldEvent>() {
+            public void handleEvent(FieldEvent be) {
+            	if (latField.getValue() != null && lngField.getValue()!=null) {
+	            	eventBus.fireEvent(new CoordinatesChangedEvent(new AiLatLng(
+	            			latField.getValue(), lngField.getValue())));
+            	}
+            }
+        };
+
+		latField = new CoordinateField(CoordinateField.Axis.LATITUDE);
+        latField.setName("y");
+        latField.setFireChangeEventOnSetValue(true);
+
+        lngField = new CoordinateField(CoordinateField.Axis.LONGITUDE);
+        lngField.setName("x");
+        lngField.setFireChangeEventOnSetValue(true);
+
+        latField.addListener(Events.Change, latLngListener);
+        lngField.addListener(Events.Change, latLngListener);
+
+        ToolBar coordBar = new ToolBar();
+        coordBar.add(new LabelToolItem(I18N.CONSTANTS.lat()));
+        coordBar.add(latField);
+        coordBar.add(new LabelToolItem(I18N.CONSTANTS.lng()));
+        coordBar.add(lngField);
+
+        panel.setBottomComponent(coordBar);
+	}
+
 	private void createPanel() {
 		panel = new ContentPanel();
         panel.setHeaderVisible(false);
@@ -176,21 +236,20 @@ public class MapFieldSet extends FieldSet implements MapEditView {
         }
     }
 
-    private void createMarker(LatLng latlng) {
+    private Marker createMarker(LatLng latlng) {
         MarkerOptions options = MarkerOptions.newInstance();
-        options.setDraggable(true);
-
+        options.setDraggable(false);
         marker = new Marker(latlng, options);
 
-        marker.addMarkerDragEndHandler(new MarkerDragEndHandler() {
-            public void onDragEnd(MarkerDragEndEvent event) {
-                LatLng latlng = marker.getLatLng();
-                eventBus.fireEvent(
-                		new MarkerMovedEvent(latlng.getLatitude(), latlng.getLongitude()));
-            }
-        });
-
+        marker.addMarkerClickHandler(new MarkerClickHandler() {
+			@Override
+			public void onClick(MarkerClickEvent event) {
+				listener.onSelectLocation(markersPerLocation.inverse().get(event.getSender()));
+			}
+		});
         map.addOverlay(marker);
+        
+        return marker;
     }
 
 
@@ -266,7 +325,12 @@ public class MapFieldSet extends FieldSet implements MapEditView {
         return createBounds(map.getBounds());
 	}
 
-	public MapWidget getMap() {
-		return map;
+	public void setLocationSelected(LocationDTO2 location) {
+		if (selectedMarker != null) {
+			marker.setImage(null);
+		}
+		Marker marker = markersPerLocation.get(location);
+		marker.setImage(IconImageBundle.ICONS.selectedMarker().createImage().getUrl());
 	}
+
 }

@@ -22,6 +22,8 @@ import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.FormPanel.LabelAlign;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Event;
@@ -35,10 +37,16 @@ public class AdminFieldSet extends AbstractFieldSet implements AdminFieldSetPres
 	private TextField<String> nameField;
 	private Timer nameDelay;
 	private Timer axeDelay;
+	private FormPanel form = new FormPanel();
 	private static final int delay=250; // milliseconds 
 
     public AdminFieldSet(ActivityDTO activity) {
         super(I18N.CONSTANTS.location(), 100, 200);
+        form.setLabelAlign(LabelAlign.TOP);
+        form.setHeaderVisible(false);
+        form.setBorders(false);
+        setBorders(false);
+        add(form);
         createTimers();
         
         if (activity.getLocationType().getBoundAdminLevelId() == null) {
@@ -53,7 +61,7 @@ public class AdminFieldSet extends AbstractFieldSet implements AdminFieldSetPres
 					nameDelay.schedule(delay);
 				}
             });
-            add(nameField);
+            form.add(nameField);
 
             TextField<String> axeField = new TextField<String>();
             axeField.setName("locationAxe");
@@ -65,7 +73,7 @@ public class AdminFieldSet extends AbstractFieldSet implements AdminFieldSetPres
 					axeDelay.schedule(delay);
 				}
             });
-            add(axeField);
+            form.add(axeField);
         }
         
         for(final AdminLevelDTO level : activity.getAdminLevels()) {
@@ -104,7 +112,7 @@ public class AdminFieldSet extends AbstractFieldSet implements AdminFieldSetPres
             });
 
             comboBoxes.put(levelId, comboBox);
-            add(comboBox);
+            form.add(comboBox);
         }
     }
 

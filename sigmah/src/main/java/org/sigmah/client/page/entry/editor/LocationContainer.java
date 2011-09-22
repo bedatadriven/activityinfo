@@ -5,6 +5,7 @@ import java.util.Map;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.page.entry.editor.LocationListView.LocationSelectListener;
 import org.sigmah.client.page.entry.editor.NewLocationFieldSet.NewLocationPresenter;
 import org.sigmah.shared.command.AddLocation;
 import org.sigmah.shared.command.GetLocations;
@@ -21,6 +22,7 @@ import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.Dialog;
+import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
@@ -35,7 +37,7 @@ import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class LocationContainer extends LayoutContainer implements NewLocationPresenter {
+public class LocationContainer extends LayoutContainer implements NewLocationPresenter, LocationSelectListener {
 
 	private ActivityDTO currentActivity;
 	private LocationListView locations;
@@ -64,6 +66,7 @@ public class LocationContainer extends LayoutContainer implements NewLocationPre
 		HBoxLayoutData dataAdminFields = new HBoxLayoutData();
 		
 		adminFieldSet = new AdminFieldSet(currentActivity);
+		adminFieldSet.setBorders(false);
 		add(adminFieldSet, dataAdminFields);
 		
 		createWindowAddLocation();
@@ -113,17 +116,20 @@ public class LocationContainer extends LayoutContainer implements NewLocationPre
 			@Override
 			public void onSuccess(LocationsResult result) {
 				locations.show(result);
+				map.setLocations(result.getLocations());
 			}
 		});
 	}
 
 	private void createMap() {
-		map = new MapFieldSet(currentActivity.getDatabase().getCountry());
+		map = new MapFieldSet(currentActivity.getDatabase().getCountry(), this);
+		map.setBorders(false);
 	}
 
 	private void createLocationList() {
 		LayoutContainer locationContainer = new LayoutContainer();
-		locationContainer.setWidth("220px");
+		locationContainer.setBorders(false);
+		locationContainer.setWidth("300px");
 		VBoxLayout layout = new VBoxLayout();
 		layout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
 		locationContainer.setLayout(layout);
@@ -136,6 +142,7 @@ public class LocationContainer extends LayoutContainer implements NewLocationPre
 				box.setButtons(MessageBox.YESNO);
 				box.setTitle(I18N.CONSTANTS.confirmAddLocation());
 				box.setMessage(I18N.MESSAGES.confirmAddLocation());
+				box.setIcon(MessageBox.WARNING);
 				box.addCallback(new Listener<MessageBoxEvent>() {
 					@Override
 					public void handleEvent(MessageBoxEvent be) {
@@ -152,7 +159,7 @@ public class LocationContainer extends LayoutContainer implements NewLocationPre
 		
 		FieldSet fieldsetLocations = new FieldSet();
 		fieldsetLocations.setHeading("Choose existing location");
-		locations = new LocationListView(); 
+		locations = new LocationListView(this); 
 		fieldsetLocations.add(locations);
 		
 		fieldsetNewLocation = new NewLocationFieldSet(this);
@@ -166,6 +173,7 @@ public class LocationContainer extends LayoutContainer implements NewLocationPre
 		vbldButton.setMargins(new Margins(5));
 		locationContainer.add(buttonAddLocation, vbldButton);
 		add(locationContainer);
+		fieldsetLocations.setBorders(false);
 	}
 
 	public Map<String, Object> getChanges() {
@@ -184,22 +192,32 @@ public class LocationContainer extends LayoutContainer implements NewLocationPre
 		this.site=site;
 		adminPresenter.setSite(site);
 	}
-
+	
 	@Override
-	public void onAdd(LocationDTO2 lcoation) {
+	public void onAdd(final LocationDTO2 lcoation) {
 		//TODO: set adminentities
 		lcoation.setLocationTypeId(1);
 		service.execute(new AddLocation().setLocation(lcoation), fieldsetNewLocation.getMonitor(), new AsyncCallback<CreateResult>() {
 			@Override
-			public void onFailure(Throwable caught) {
+			public void onFailure(Throwable caught) { 
 				//TODO: handle failure
 			}
 
 			@Override
 			public void onSuccess(CreateResult result) {
+				lcoation.setId(result.getNewId());
+				locations.add(lcoation);
 				windowAddLocation.hide();
+				site.setLocation(lcoation);
+				Info.display("Added location", "Location [" + lcoation.getName() + "] added");
 			}
 		});
+	}
+
+	@Override
+	public void onSelectLocation(LocationDTO2 location) {
+		map.setLocationSelected(location);
+		locations.setSelectedLocation(location); 
 	}
 	
 }

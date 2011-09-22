@@ -9,6 +9,8 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.AttributeGroupDTO;
 
+import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
@@ -16,6 +18,7 @@ public class AttributeFieldSet extends AbstractFieldSet {
 
     public AttributeFieldSet(ActivityDTO activity) {
         super(I18N.CONSTANTS.attributes(), 100, 300);
+        setLayout(new FlowLayout());
 
 		for(AttributeGroupDTO attributeGroup : activity.getAttributeGroups()) {
 

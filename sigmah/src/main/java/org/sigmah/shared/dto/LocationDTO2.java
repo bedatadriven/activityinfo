@@ -1,8 +1,20 @@
 package org.sigmah.shared.dto;
 
+import java.util.Map;
+
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.google.common.base.Strings;
 
 public class LocationDTO2 extends BaseModelData implements EntityDTO {
+	public LocationDTO2() {
+		super();
+	}
+
+	public LocationDTO2(Map<String, Object> properties) {
+		super(properties);
+		// TODO Auto-generated constructor stub
+	}
+
 	public String getName() {
 		return get("name");
 	}
@@ -71,5 +83,12 @@ public class LocationDTO2 extends BaseModelData implements EntityDTO {
 	public String getEntityName() {
 		return "Location";
 	}
-
+	/** True when latitude() and longitude() are non-null */
+	public boolean hasCoordinates() {
+		return getLatitude() != null && getLongitude() != null;
+	}
+	/** True when this Location has a non-empty Axe */
+	public boolean hasAxe() {
+		return !Strings.isNullOrEmpty(getAxe());
+	}
 }

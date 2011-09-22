@@ -7,13 +7,13 @@ import org.sigmah.client.page.common.widget.CoordinateField;
 import org.sigmah.client.page.common.widget.CoordinateField.Axis;
 import org.sigmah.shared.dto.LocationDTO2;
 
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.LabelAlign;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
 
 public class NewLocationFieldSet extends FieldSet {
 	public interface NewLocationPresenter {
@@ -33,11 +33,11 @@ public class NewLocationFieldSet extends FieldSet {
 	public NewLocationFieldSet(final NewLocationPresenter presenter) {
 		setHeading("Add new location");
 		setShadow(false);
-		setBorders(false);
 		
 		FormPanel form = new FormPanel();
 		form.setLabelAlign(LabelAlign.TOP);
 		form.setHeaderVisible(false);
+		form.setBorders(false);
 		
 		labelName = new TextField<String>();
 		labelName.setFieldLabel(I18N.CONSTANTS.locationDetails());
@@ -57,16 +57,16 @@ public class NewLocationFieldSet extends FieldSet {
 		
 		Button buttonAddLocation = new Button();
 		buttonAddLocation.setText("Add location");
-		buttonAddLocation.addClickHandler(new ClickHandler() {
+		buttonAddLocation.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
-			public void onClick(ClickEvent event) {
+			public void componentSelected(ButtonEvent ce) {
 				if (latField.isValid() && longField.isValid()) {
 					presenter.onAdd(new LocationDTO2()
 						.setLongitude(longField.getValue())
 						.setLatitude(latField.getValue())
 						.setName(labelName.getValue())
 						.setAxe(labelAxe.getValue()));
-				}
+				}			
 			}
 		});
 		form.add(buttonAddLocation);

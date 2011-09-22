@@ -256,4 +256,5 @@ public interface IconImageBundle extends ImageBundle {
     AbstractImagePrototype csv();
     AbstractImagePrototype dashboard();
     AbstractImagePrototype marker();
+    AbstractImagePrototype selectedMarker();
 }
