@@ -407,8 +407,17 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
+                <includes>
+                	<include>template/page/Host.ftl</include>
+                </includes>
             </resource>
-            
+       		<resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <excludes>
+                	<exclude>template/page/Host.ftl</exclude>
+                </excludes>
+            </resource>                   
             <resource>
                 <directory>src/main/java</directory>
                 <includes>
