@@ -24,11 +24,13 @@ public class LocationFieldSet extends AdminFieldSet {
             nameField.setName("locationName");
             nameField.setFieldLabel(activity.getLocationType().getName());
             nameField.setAllowBlank(false);
+            nameField.setMaxLength(50); 
             add(nameField);
 
             TextField<String> axeField = new TextField<String>();
             axeField.setName("locationAxe");
             axeField.setFieldLabel(I18N.CONSTANTS.axe());
+            axeField.setMaxLength(50);
             add(axeField);
         }
     }
