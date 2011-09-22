@@ -35,7 +35,7 @@ import org.sigmah.client.mock.StateManagerStub;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.command.GetSites;
-import org.sigmah.shared.command.UpdateEntity;
+import org.sigmah.shared.command.UpdateSite;
 import org.sigmah.shared.command.result.SiteResult;
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.SchemaDTO;
@@ -372,7 +372,7 @@ public class SiteGridTest {
         // Collaborator: service
         DispatcherStub service = new DispatcherStub();
         service.setResult(GetSites.class, sites);
-        service.setResult(UpdateEntity.class, new VoidResult());
+        service.setResult(UpdateSite.class, new VoidResult());
 
         // Collaborator: View
         SiteEditor.View view = createNiceMock(SiteEditor.View.class);
@@ -388,14 +388,13 @@ public class SiteGridTest {
         //VERIFY that an inline change is results in an update entity call
 
         Record record = editor.getStore().getRecord(sites.getData().get(0));
-        record.set("comments", "Freeport Indiana");
+        record.set("activityId", 3);
 
         editor.onUIAction(UIActions.save);
 
-        UpdateEntity cmd = service.getLastExecuted(UpdateEntity.class);
-        Assert.assertEquals(sites.getData().get(0).getId(), cmd.getId());
-        Assert.assertEquals("Site", cmd.getEntityName());
-        Assert.assertEquals("Freeport Indiana", cmd.getChanges().get("comments"));
+        UpdateSite cmd = service.getLastExecuted(UpdateSite.class);
+        //Assert.assertEquals(sites.getData().get(0).getId(), cmd.getId());
+        Assert.assertEquals(3, cmd.getChanges().get("activityId"));
 
     }
 

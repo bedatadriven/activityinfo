@@ -59,7 +59,6 @@ public class CreateSiteTest extends CommandTestCase2 {
         SiteDTO newSite = SiteDTOs.newSite();
         newSite.setPartner(new PartnerDTO(2, "Not NRC"));
         // create command
-
         CreateSite cmd = new CreateSite(newSite);
 
         // execute the command

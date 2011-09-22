@@ -5,12 +5,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.sigmah.client.offline.command.handler.KeyGenerator;
+import org.sigmah.shared.command.AddLocation;
 import org.sigmah.shared.command.CreateSite;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.AttributeDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
+import org.sigmah.shared.dto.LocationDTO2;
 
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
@@ -37,7 +39,7 @@ public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, Create
 	}
 
 	@Override
-	public void execute(final CreateSite cmd, ExecutionContext context,
+	public void execute(final CreateSite cmd, final ExecutionContext context,
 			final AsyncCallback<CreateResult> callback) {
 
 		final Map<String,Object> properties = cmd.getProperties().getTransientMap();
@@ -53,7 +55,6 @@ public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, Create
 
 			@Override
 			public void onSuccess(final SqlTransaction tx, SqlResultSet results) {
-
 				if(results.getRows().isEmpty()) {
 					throw new RuntimeException("Could not find activityId " + activityId);
 				}
@@ -64,16 +65,14 @@ public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, Create
 				Integer boundAdminLevelId = row.isNull("boundAdminLevelId") ? null : row.getInt("boundAdminLevelId");
 				final int reportingFrequency = row.getInt("reportingFrequency");
 				
-				lookupName(tx, boundAdminLevelId, properties, new AsyncCallback<String>() {
-
+				lookupLocationId(context, boundAdminLevelId, locationTypeId, properties, new AsyncCallback<Integer>() {
 					@Override
 					public void onFailure(Throwable caught) {
-						// handled by tx-level 
+						// TODO Auto-generated method stub
+						
 					}
-
 					@Override
-					public void onSuccess(String name) {
-						int locationId = (Integer) properties.get("locationId");
+					public void onSuccess(Integer locationId) {
 						int siteId = insertSite(tx, activityId, locationId, properties);
 
 						// we only create a reporting period if this is a one-off activity
@@ -93,23 +92,59 @@ public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, Create
 				});
 			}
 		});
-
 	}
-	
 
-	private void lookupName(SqlTransaction tx,
-			Integer boundAdminLevelId, Map<String,Object> properties, final AsyncCallback<String> callback) {
+	private void lookupLocationId(final ExecutionContext context,
+			Integer boundAdminLevelId, final int locationTypeId, final Map<String,Object> properties, final AsyncCallback<Integer> callback) {
 
+		final SqlTransaction tx = context.getTransaction();
 		if(boundAdminLevelId == null) {
-			callback.onSuccess((String) properties.get("locationName"));
+			callback.onSuccess((Integer) properties.get("locationId"));
 		} else {
-			int entityId = (Integer) properties.get(AdminLevelDTO.getPropertyName(boundAdminLevelId));
-			SqlQuery.select("name").from("AdminEntity").where("AdminEntityId").equalTo(entityId)
+			final int entityId = (Integer) properties.get(AdminLevelDTO.getPropertyName(boundAdminLevelId));
+			SqlQuery.select("locationId")
+			.from("Location")
+			.where("LocationTypeId")
+			.equalTo(locationTypeId)
+			.where("locationId")
+			.in(SqlQuery.select("LocationId")
+					.from("LocationAdminLink")
+					.where("AdminEntityId")
+					.equalTo(entityId))
 			.execute(tx, new SqlResultCallback() {
-				
 				@Override
 				public void onSuccess(SqlTransaction tx, SqlResultSet results) {
-					callback.onSuccess(results.getRow(0).getString("name"));
+					if (results.getRows().isEmpty()) {
+						SqlQuery.select("Name")
+								.from("AdminEntity")
+								.where("AdminEntityId")
+								.equalTo(entityId)
+								.execute(tx, new SqlResultCallback() {
+									@Override
+									public void onSuccess(SqlTransaction tx, SqlResultSet results) {
+										String name = results.getRow(0).getString("Name");
+										int locationId = getOrCreateKey(properties, "locationId");
+										AddLocation addLocation = new AddLocation().setLocation(new LocationDTO2()
+														.setName(name)
+														.setId(locationId)
+														.setLocationTypeId(locationTypeId));
+										context.execute(addLocation, new AsyncCallback<CreateResult>() {
+											@Override
+											public void onFailure(Throwable caught) {
+												//Handled by tx
+											}
+
+											@Override
+											public void onSuccess(CreateResult result) {
+												callback.onSuccess(result.getNewId());
+											}
+										});
+									}
+								});
+						
+					} else {
+						callback.onSuccess(results.getRow(0).getInt("locationId"));
+					}
 				}
 			});
 		}
@@ -162,50 +197,6 @@ public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, Create
 		}
 	}
 
-//	private int insertLocation(
-//			SqlTransaction tx,
-//			int locationTypeId, 
-//			String name,
-//			Map<String, Object> properties) {
-//		
-//		int locationId = getOrCreateKey(properties, "locationId");
-//		
-//		Date timestamp = new Date();
-//		
-//		SqlInsert.insertInto("Location")
-//		.value("LocationId", locationId)
-//		.value("Name", name)
-//		.value("Axe", properties.get("locationAxe"))
-//		.value("X", properties.get("x"))
-//		.value("Y", properties.get("y"))
-//		.value("LocationTypeId", locationTypeId)
-//		.value("dateCreated", timestamp)
-//		.value("dateEdited", timestamp)
-//		.execute(tx);
-//		
-//		insertLocationAdminLinks(tx, locationId, properties);
-//
-//		return locationId;
-//	}
-	
-	private void insertLocationAdminLinks(
-			SqlTransaction tx,
-			int locationId, 
-			Map<String, Object> properties)  {
-		
-		for(Entry<String,Object> property : properties.entrySet()) {
-			if(property.getKey().startsWith(AdminLevelDTO.PROPERTY_PREFIX)) {
-				Integer entityId = (Integer) property.getValue();
-				if(entityId != null) {
-					SqlInsert.insertInto("LocationAdminLink")
-					.value("AdminEntityId", entityId)
-					.value("Locationid", locationId)
-					.execute(tx);
-				}
-			}
-		}
-	}
-
 	private int insertReportingPeriod(
 			SqlTransaction tx,
 			int siteId, 
@@ -213,13 +204,13 @@ public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, Create
 		
 		int reportingPeriodId = getOrCreateKey(properties, "reportingPeriodId");
 		SqlInsert.insertInto("ReportingPeriod")
-		.value("ReportingPeriodId", reportingPeriodId)
-		.value("SiteId", siteId)
-		.value("Date1", properties.get("date1"))
-		.value("Date2", properties.get("date2"))
-		.value("DateCreated", new Date())
-		.value("DateEdited", new Date())
-		.value("Monitoring", 0) // no longer used TODO : remove
+			.value("ReportingPeriodId", reportingPeriodId)
+			.value("SiteId", siteId)
+			.value("Date1", properties.get("date1"))
+			.value("Date2", properties.get("date2"))
+			.value("DateCreated", new Date())
+			.value("DateEdited", new Date())
+			.value("Monitoring", 0) // no longer used TODO : remove
 		.execute(tx);
 
 		insertIndicatorValues(properties, tx, reportingPeriodId);

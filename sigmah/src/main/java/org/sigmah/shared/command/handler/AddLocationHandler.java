@@ -1,12 +1,16 @@
 package org.sigmah.shared.command.handler;
 
 import java.util.Date;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.sigmah.client.offline.command.handler.KeyGenerator;
 import org.sigmah.shared.command.AddLocation;
 import org.sigmah.shared.command.result.CreateResult;
+import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.LocationDTO2;
 
+import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.query.SqlInsert;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
@@ -36,6 +40,25 @@ public class AddLocationHandler implements CommandHandlerAsync<AddLocation, Crea
 			.value("dateEdited", timestamp)
 			.execute(context.getTransaction());
 
+		insertLocationAdminLinks(context.getTransaction(), locationId, newLocation.getProperties());
+		
 		callback.onSuccess(new CreateResult(locationId));
+	}
+	private void insertLocationAdminLinks(
+			SqlTransaction tx,
+			int locationId, 
+			Map<String, Object> properties)  {
+		
+		for(Entry<String,Object> property : properties.entrySet()) {
+			if(property.getKey().startsWith(AdminLevelDTO.PROPERTY_PREFIX)) {
+				Integer entityId = (Integer) property.getValue();
+				if(entityId != null) {
+					SqlInsert.insertInto("LocationAdminLink")
+						.value("AdminEntityId", entityId)
+						.value("Locationid", locationId)
+						.execute(tx);
+				}
+			}
+		}
 	}
 }

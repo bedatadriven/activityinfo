@@ -22,6 +22,7 @@ import javax.persistence.EntityManager;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.sigmah.client.offline.command.handler.KeyGenerator;
 import org.sigmah.server.dao.OnDataSet;
 import org.sigmah.server.sync.TimestampHelper;
 import org.sigmah.server.util.BeanMappingModule;
@@ -42,6 +43,7 @@ import org.sigmah.test.MockHibernateModule;
 import org.sigmah.test.Modules;
 
 import com.google.common.collect.Maps;
+import com.google.inject.Inject;
 
 @RunWith(InjectionSupport.class)
 @Modules({
@@ -51,7 +53,13 @@ import com.google.common.collect.Maps;
         LoggingModule.class
 })
 public class SyncIntegrationTest extends LocalHandlerTestCase {
+	private KeyGenerator keyGenerator;
 
+	@Inject
+	public SyncIntegrationTest(KeyGenerator keyGenerator) {
+		this.keyGenerator = keyGenerator;
+	}
+	
     private long nowIsh;
 	private long awhileBack;
 
@@ -140,10 +148,12 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
 
         // now create a new location
         Location newLocation = new Location();
+        int locationId = keyGenerator.generateInt();
         newLocation.setName("Bukavu");
         newLocation.setDateCreated(new Date());
         newLocation.setDateEdited(new Date());
         newLocation.setLocationType(serverEm.find(LocationType.class, 1));
+        newLocation.setId(locationId);
         serverEm.getTransaction().begin();
         serverEm.persist(newLocation);
         serverEm.getTransaction().commit();
@@ -151,9 +161,8 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
         newRequest();
         synchronize();
         
-        assertThat(queryString("select name from Location where LocationId = " + newLocation.getId()), 
+        assertThat(queryString("select name from Location where LocationId = " + locationId), 
         		equalTo("Bukavu"));
-        
     }
 
     @Test

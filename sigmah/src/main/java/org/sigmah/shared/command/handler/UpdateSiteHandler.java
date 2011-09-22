@@ -10,7 +10,6 @@ import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.AttributeDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
 
-import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
 import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
@@ -19,7 +18,6 @@ import com.bedatadriven.rebar.sql.client.query.SqlInsert;
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 import com.bedatadriven.rebar.sql.client.query.SqlUpdate;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.Inject;
 
 public class UpdateSiteHandler implements CommandHandlerAsync<UpdateSite, VoidResult> {
 
@@ -39,7 +37,6 @@ public class UpdateSiteHandler implements CommandHandlerAsync<UpdateSite, VoidRe
 	}
 	
 	private void updateSiteProperties(SqlTransaction tx, UpdateSite command, Map<String, Object> changes) {
-	
 		SqlUpdate.update("Site")
 			.where("SiteId", command.getSiteId())
 			.value("date1", changes)
@@ -49,7 +46,6 @@ public class UpdateSiteHandler implements CommandHandlerAsync<UpdateSite, VoidRe
 			.value("partnerId", changes)
 			.value("dateEdited", new Date())
 			.execute(tx);
-
 	}
 
 

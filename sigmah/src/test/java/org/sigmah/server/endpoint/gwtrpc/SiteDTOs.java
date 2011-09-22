@@ -22,7 +22,6 @@ public class SiteDTOs {
 	    newSite.setAttributeValue(2, false);
 	    newSite.setComments("huba huba");
 	    newSite.setProject(new ProjectDTO(1, "WoeiProject"));
-//	    newSite.setLocation(LocationDTOs.newLocation());
 		return newSite;
 	}
 
