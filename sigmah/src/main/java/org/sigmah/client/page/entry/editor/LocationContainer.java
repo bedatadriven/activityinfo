@@ -4,16 +4,29 @@ import java.util.Map;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.entry.editor.NewLocationFieldSet.NewLocationPresenter;
+import org.sigmah.shared.command.AddLocation;
 import org.sigmah.shared.command.GetLocations;
 import org.sigmah.shared.command.GetLocations.LocationsResult;
+import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.LocationDTO2;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.util.Margins;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout.HBoxLayoutAlign;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayoutData;
@@ -34,6 +47,7 @@ public class LocationContainer extends LayoutContainer implements NewLocationPre
 	private SiteDTO site;
 	private AdminFieldSet adminFieldSet;
 	private NewLocationFieldSet fieldsetNewLocation;
+	private Window windowAddLocation;
 
 	public LocationContainer(Dispatcher service, EventBus eventBus, ActivityDTO activity) {
 		this.service=service;
@@ -52,6 +66,8 @@ public class LocationContainer extends LayoutContainer implements NewLocationPre
 		adminFieldSet = new AdminFieldSet(currentActivity);
 		add(adminFieldSet, dataAdminFields);
 		
+		createWindowAddLocation();
+		
 		createMap();
 		createLocationList();
 		add(map);
@@ -69,6 +85,15 @@ public class LocationContainer extends LayoutContainer implements NewLocationPre
             	getLocations();
             }
         });
+	}
+
+	private void createWindowAddLocation() {
+		windowAddLocation = new Window();
+		windowAddLocation.setWidth(400);
+		windowAddLocation.setHeight(400);
+		windowAddLocation.setLayout(new FitLayout());
+		windowAddLocation.add(new NewLocationFieldSet(this));
+		windowAddLocation.setTitle(I18N.CONSTANTS.addLocation());
 	}
 
 	protected void getLocations() {
@@ -103,6 +128,28 @@ public class LocationContainer extends LayoutContainer implements NewLocationPre
 		layout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
 		locationContainer.setLayout(layout);
 		
+		Button buttonAddLocation = new Button(I18N.CONSTANTS.addLocation());
+		buttonAddLocation.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				final MessageBox box = new MessageBox();
+				box.setButtons(MessageBox.YESNO);
+				box.setTitle(I18N.CONSTANTS.confirmAddLocation());
+				box.setMessage(I18N.MESSAGES.confirmAddLocation());
+				box.addCallback(new Listener<MessageBoxEvent>() {
+					@Override
+					public void handleEvent(MessageBoxEvent be) {
+						if (be.getButtonClicked().getText().toLowerCase().equals(Dialog.YES)) {
+							windowAddLocation.show();
+						} else {
+							box.close();
+						}
+					}
+				});
+				box.show();
+			}
+		});
+		
 		FieldSet fieldsetLocations = new FieldSet();
 		fieldsetLocations.setHeading("Choose existing location");
 		locations = new LocationListView(); 
@@ -114,7 +161,10 @@ public class LocationContainer extends LayoutContainer implements NewLocationPre
 		vbldExistingLocations.setFlex(1.0);
 		
 		locationContainer.add(fieldsetLocations, vbldExistingLocations);
-		locationContainer.add(fieldsetNewLocation);
+
+		VBoxLayoutData vbldButton = new VBoxLayoutData();
+		vbldButton.setMargins(new Margins(5));
+		locationContainer.add(buttonAddLocation, vbldButton);
 		add(locationContainer);
 	}
 
@@ -137,8 +187,19 @@ public class LocationContainer extends LayoutContainer implements NewLocationPre
 
 	@Override
 	public void onAdd(LocationDTO2 lcoation) {
-//		service.execute(null, fieldsetNewLocation.getMonitor(), new AsyncCallback<T>() {
-//		})
+		//TODO: set adminentities
+		lcoation.setLocationTypeId(1);
+		service.execute(new AddLocation().setLocation(lcoation), fieldsetNewLocation.getMonitor(), new AsyncCallback<CreateResult>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				//TODO: handle failure
+			}
+
+			@Override
+			public void onSuccess(CreateResult result) {
+				windowAddLocation.hide();
+			}
+		});
 	}
 	
 }

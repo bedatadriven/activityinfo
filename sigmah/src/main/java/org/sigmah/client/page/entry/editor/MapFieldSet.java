@@ -18,13 +18,10 @@ import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 import com.extjs.gxt.ui.client.event.ContainerEvent;
 import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
@@ -60,7 +57,6 @@ public class MapFieldSet extends FieldSet implements MapEditView {
         initializeComponent();
 
         createPanel();
-        createPanelToolbar();
         loadMapAync();
     }
 
@@ -126,36 +122,6 @@ public class MapFieldSet extends FieldSet implements MapEditView {
             }
         });
         panel.add(map);
-	}
-
-	private void createPanelToolbar() {
-        Listener<FieldEvent> latLngListener = new Listener<FieldEvent>() {
-            public void handleEvent(FieldEvent be) {
-            	if (latField.getValue() != null && lngField.getValue()!=null) {
-	            	eventBus.fireEvent(new CoordinatesChangedEvent(new AiLatLng(
-	            			latField.getValue(), lngField.getValue())));
-            	}
-            }
-        };
-
-		latField = new CoordinateField(CoordinateField.Axis.LATITUDE);
-        latField.setName("y");
-        latField.setFireChangeEventOnSetValue(true);
-
-        lngField = new CoordinateField(CoordinateField.Axis.LONGITUDE);
-        lngField.setName("x");
-        lngField.setFireChangeEventOnSetValue(true);
-
-        latField.addListener(Events.Change, latLngListener);
-        lngField.addListener(Events.Change, latLngListener);
-
-        ToolBar coordBar = new ToolBar();
-        coordBar.add(new LabelToolItem(I18N.CONSTANTS.lat()));
-        coordBar.add(latField);
-        coordBar.add(new LabelToolItem(I18N.CONSTANTS.lng()));
-        coordBar.add(lngField);
-
-        panel.setBottomComponent(coordBar);
 	}
 
 	private void createPanel() {
