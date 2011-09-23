@@ -3,16 +3,13 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.server.report.generator.map;
+package org.sigmah.server.report.generator.map.cluster.genetic;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sigmah.server.report.generator.map.RadiiCalculator;
 import org.sigmah.server.report.generator.map.cluster.Cluster;
-import org.sigmah.server.report.generator.map.cluster.auto.CircleFitnessFunctor;
-import org.sigmah.server.report.generator.map.cluster.auto.FitnessFunctor;
-import org.sigmah.server.report.generator.map.cluster.auto.KMeans;
-import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph;
 
 public class UpperBoundsCalculator {
 
@@ -41,7 +38,7 @@ public class UpperBoundsCalculator {
         List<Integer> bounds = new ArrayList<Integer>();
         List<List<MarkerGraph.Node>> subgraphs = graph.getSubgraphs();
 
-        FitnessFunctor ftor = new CircleFitnessFunctor();
+        FitnessFunctor ftor = new BubbleFitnessFunctor();
 
         for(List<MarkerGraph.Node> subgraph : subgraphs) {
 

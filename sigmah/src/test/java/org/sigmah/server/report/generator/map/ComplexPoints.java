@@ -5,12 +5,6 @@
 
 package org.sigmah.server.report.generator.map;
 
-import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph;
-import org.sigmah.shared.report.content.LatLng;
-import org.sigmah.shared.report.model.PointValue;
-import org.sigmah.shared.util.mapping.Extents;
-import org.sigmah.shared.util.mapping.TileMath;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -18,6 +12,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import org.sigmah.server.report.generator.map.cluster.genetic.MarkerGraph;
+import org.sigmah.shared.report.content.LatLng;
+import org.sigmah.shared.report.model.PointValue;
+import org.sigmah.shared.report.model.SiteData;
+import org.sigmah.shared.util.mapping.Extents;
+import org.sigmah.shared.util.mapping.TileMath;
 
 
 /**
@@ -57,6 +58,7 @@ public class ComplexPoints {
 
             PointValue pv = new PointValue();
             pv.value = value;
+            pv.site = new SiteData();
             points.add(pv);
 
             originalSum += value;

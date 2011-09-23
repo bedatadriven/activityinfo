@@ -8,9 +8,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.sigmah.server.report.generator.map.cluster.Cluster;
-import org.sigmah.server.report.generator.map.cluster.GeneticSolver;
-import org.sigmah.server.report.generator.map.cluster.auto.CircleFitnessFunctor;
-import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph;
+import org.sigmah.server.report.generator.map.cluster.Clusterer;
+import org.sigmah.server.report.generator.map.cluster.ClustererFactory;
+import org.sigmah.server.report.generator.map.cluster.genetic.BubbleFitnessFunctor;
+import org.sigmah.server.report.generator.map.cluster.genetic.GeneticSolver;
+import org.sigmah.server.report.generator.map.cluster.genetic.MarkerGraph;
+import org.sigmah.server.report.generator.map.cluster.genetic.UpperBoundsCalculator;
 import org.sigmah.shared.report.content.BubbleMapMarker;
 import org.sigmah.shared.report.content.DimensionCategory;
 import org.sigmah.shared.report.content.EntityCategory;
@@ -59,8 +62,7 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
         List<PointValue> points = new ArrayList<PointValue>();
         List<PointValue> unmapped = new ArrayList<PointValue>();
 
-        generatePoints(sites, map, layer, points, unmapped);
-
+       
         // define our symbol scaling
         RadiiCalculator radiiCalculator;
         if(layer.getScaling() == ScalingType.None ||
@@ -73,20 +75,23 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
             radiiCalculator = new FixedRadiiCalculator(layer.getMinRadius());
         }
 
-        // solve using the genetic algorithm
-        List<Cluster> clusters;
-        clusters = cluster(points, radiiCalculator);
+        Clusterer clusterer = ClustererFactory.fromClustering(layer.getClustering(), radiiCalculator,
+        		new BubbleIntersectionCalculator(layer.getMaxRadius()));
 
+        generatePoints(sites, map, layer,clusterer, points, unmapped);
+        
         // add unmapped sites
         for(PointValue pv : unmapped) {
             content.getUnmappedSites().add(pv.site.getId());
         }
+        
+        List<Cluster> clusters = clusterer.cluster(map, points);
 
         // create the markers
         List<BubbleMapMarker> markers = new ArrayList<BubbleMapMarker>();
         for(Cluster cluster : clusters) {
             Point px = cluster.getPoint();
-            LatLng latlng = cluster.latLngCentroid();
+            LatLng latlng = map.fromPixelToLatLng(cluster.getPoint());
             BubbleMapMarker marker = new PieMapMarker();
 
             sumSlices((PieMapMarker) marker, cluster.getPointValues());
@@ -123,6 +128,7 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
             List<SiteData> sites,
             TiledMap map,
             PiechartMapLayer layer,
+            Clusterer clusterer,
             List<PointValue> mapped,
             List<PointValue> unmapped) {
 
@@ -142,7 +148,11 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
                             new MapSymbol(),
                             value, px);
                     calulateSlices(pv, site);
-                    (px==null ? unmapped : mapped).add(pv);
+                    if(clusterer.isMapped(site)) {
+                    	mapped.add(pv);
+                    } else {
+                    	unmapped.add(pv);
+                    }
                 }
             }
         }
@@ -150,29 +160,6 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
 
     public int findColor(MapSymbol symbol, PiechartMapLayer layer) {
     	return 0;
-    }
-
-    private List<Cluster> cluster(List<PointValue> points, RadiiCalculator radiiCalculator) {
-        List<Cluster> clusters;
-        if(layer.isClustered()) {
-
-            MarkerGraph graph = new MarkerGraph(points, new IntersectionCalculator(layer.getMaxRadius()));
-
-            GeneticSolver solver = new GeneticSolver();
-            clusters = solver.solve(
-                    graph,
-                    radiiCalculator,
-                    new CircleFitnessFunctor(),
-                    UpperBoundsCalculator.calculate(graph,
-                            new FixedRadiiCalculator(layer.getMinRadius())));
-        } else {
-            clusters = new ArrayList<Cluster>();
-            for(PointValue point : points) {
-                clusters.add(new Cluster(point));
-            }
-            radiiCalculator.calculate(clusters);
-        }
-        return clusters;
     }
 
     private void numberMarkers(List<BubbleMapMarker> markers) {

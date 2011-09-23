@@ -3,7 +3,7 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.server.report.generator.map.cluster.auto;
+package org.sigmah.server.report.generator.map.cluster.genetic;
 
 import java.awt.Rectangle;
 import java.util.List;
@@ -21,7 +21,6 @@ public class RectFitnessFunctor implements FitnessFunctor {
         double score = 0;
         for(int i=0; i!=clusters.size(); ++i) {
 
-
             // award a score for the presence of this cluster
             // (all things equal, the more markers the better)
             Rectangle iRect = clusters.get(i).getRectangle();
@@ -38,7 +37,6 @@ public class RectFitnessFunctor implements FitnessFunctor {
                 }
             }
         }
-
         return score;
 	}
 }

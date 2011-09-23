@@ -3,14 +3,13 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.server.report.generator.map.cluster.auto;
+package org.sigmah.server.report.generator.map.cluster.genetic;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.sigmah.server.report.generator.map.cluster.Cluster;
-import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph.Node;
 import org.sigmah.shared.report.content.Point;
 
 

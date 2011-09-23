@@ -7,12 +7,13 @@ package org.sigmah.server.report.generator.map;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.sigmah.server.report.generator.map.cluster.Cluster;
 import org.sigmah.server.report.generator.map.cluster.Clusterer;
 import org.sigmah.server.report.generator.map.cluster.ClustererFactory;
-import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph.IntersectionCalculator;
-import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph.Node;
+import org.sigmah.server.report.generator.map.cluster.genetic.MarkerGraph.IntersectionCalculator;
+import org.sigmah.server.report.generator.map.cluster.genetic.MarkerGraph.Node;
 import org.sigmah.shared.report.content.IconLayerLegend;
 import org.sigmah.shared.report.content.IconMapMarker;
 import org.sigmah.shared.report.content.LatLng;
@@ -107,10 +108,10 @@ public class IconLayerGenerator implements LayerGenerator {
 			}
 		};
         
-		Clusterer clusterer = ClustererFactory.fromClustering(layer.getClustering(), rectCalculator, points, intersectionCalculator);
+		Clusterer clusterer = ClustererFactory.fromClustering(layer.getClustering(), rectCalculator, intersectionCalculator);
 		
-        List<Cluster> clusters = clusterer.cluster();
-        createMarkersFrom(clusters, content);
+        List<Cluster> clusters = clusterer.cluster(map, points);
+        createMarkersFrom(clusters, map, content);
         
         IconLayerLegend legend = new IconLayerLegend();
         legend.setDefinition(layer);
@@ -118,12 +119,12 @@ public class IconLayerGenerator implements LayerGenerator {
 		content.addLegend(legend);
     }
 
-	private void createMarkersFrom(List<Cluster> clusters, MapContent content) {
+	private void createMarkersFrom(List<Cluster> clusters, TiledMap map, MapContent content) {
 		for(Cluster cluster : clusters) {
             IconMapMarker marker = new IconMapMarker();
             marker.setX(cluster.getPoint().getX());
             marker.setY(cluster.getPoint().getY());
-            LatLng latlng = cluster.latLngCentroid();
+            LatLng latlng = map.fromPixelToLatLng(cluster.getPoint());
             marker.setLat(latlng.getLat());
             marker.setLng(latlng.getLng());
             marker.setIcon(icon);

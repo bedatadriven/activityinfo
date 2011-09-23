@@ -100,12 +100,12 @@ public class TiledMap {
 	
 	public void drawLayer(TileDrawer drawer, TileProvider source)  {
 		
-		int x = -(origin.x % TILE_SIZE);		
+		int x = -(origin.getX() % TILE_SIZE);		
 		int tileX = tileOrigin.getX();
 		
 		while (x  < width) {
 
-			int y = -(origin.y % TILE_SIZE);
+			int y = -(origin.getY() % TILE_SIZE);
 			int tileY = tileOrigin.getY();
 			
 			while (y < height) {
@@ -126,13 +126,14 @@ public class TiledMap {
 		}
 	}
 	
-	public Point fromLatLngToPixel(LatLng latlng) {
-	
-		Point p = TileMath.fromLatLngToPixel(latlng, this.zoom);
-		
-		return new Point(p.x - origin.x, p.y - origin.y);	
+	public Point fromLatLngToPixel(LatLng latLng) {
+		return TileMath.fromLatLngToPixel(latLng, this.zoom)
+					.translate(-origin.x, -origin.y);
 	}
-
+	
+	public LatLng fromPixelToLatLng(Point px) {
+		return TileMath.inverse(px.translate(origin.x, origin.y), this.zoom);
+	}
 
 	public int getWidth() {
 		return width;
@@ -143,16 +144,11 @@ public class TiledMap {
 		return height;
 	}
 
-
 	public int getZoom() {
 		return zoom;
 	}
 
-
 	public LatLng getGeoCenter() {
 		return geoCenter;
 	}
-	
-	
-	
 }

@@ -3,7 +3,7 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.server.report.generator.map.cluster;
+package org.sigmah.server.report.generator.map.cluster.genetic;
 
 
 import java.util.ArrayList;
@@ -14,9 +14,9 @@ import java.util.List;
 import java.util.Random;
 
 import org.sigmah.server.report.generator.map.RadiiCalculator;
-import org.sigmah.server.report.generator.map.cluster.auto.FitnessFunctor;
-import org.sigmah.server.report.generator.map.cluster.auto.KMeans;
-import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph;
+import org.sigmah.server.report.generator.map.cluster.Cluster;
+
+import com.google.inject.internal.Lists;
 
 public class GeneticSolver {
 
@@ -31,9 +31,8 @@ public class GeneticSolver {
 
     private double solutionFitness;
 
-
     /**
-     * Probablity that a single chromosome will mutate
+     * Probability that a single chromosome will mutate
      * over the course of a generation
      */
     private static final double PROB_MUTATE = 0.15;
@@ -112,14 +111,14 @@ public class GeneticSolver {
 
         List<List<MarkerGraph.Node>> allSubGraphs = graph.getSubgraphs();
         int popSize = 1;
-        subgraphs = new ArrayList<List<MarkerGraph.Node>>(allSubGraphs.size());
-        simpleClusters = new ArrayList<Cluster>(allSubGraphs.size());
-        upperBounds = new ArrayList<Integer>(allSubGraphs.size());
+        subgraphs = Lists.newArrayList();
+        simpleClusters = Lists.newArrayList();
+        upperBounds = Lists.newArrayList();
 
         for (int i = 0; i != allSubGraphs.size(); i++) {
             List<MarkerGraph.Node> subGraph = allSubGraphs.get(i);
             if (subGraph.size()==1) {
-                simpleClusters.add(new Cluster(subGraph.get(0)));
+                simpleClusters.add(new Cluster(subGraph.get(0).getPointValue()));
             } else if(allUpperBounds.get(i) == 1) {
                 simpleClusters.addAll(KMeans.cluster(subGraph, 1));
             } else {
@@ -160,9 +159,7 @@ public class GeneticSolver {
                 }
             }
         }
-
         solutionFitness = getFittest().getFitness();
-
         return getFittest().getClusters();
     }
 
@@ -179,25 +176,6 @@ public class GeneticSolver {
     private int randomChromosome(int i) {
         return 1 + random.nextInt(upperBounds.get(i)-1);
     }
-
-    /**
-     * Wipes out all but the fittest + 1 random member of the population
-     * and replaces with random phenotypes.
-     *
-     * Originally implemented as a last ditch effort as we converge, but
-     * in fact doesn't help because the totally random population tends
-     * to be pretty mediocre in fitness terms.
-     *
-     */
-    private void plagueOnBothOfYourHouses() {
-        List<Phenotype> survivors = new ArrayList<Phenotype>();
-        survivors.add(getFittest());
-        survivors.add(population.get(randomPhenotype()));
-        addRandomPhenotypes(survivors, population.size()-2);
-
-        population = survivors;
-    }
-
 
     public double evolve(int generationsStagnated) {
 
@@ -326,7 +304,6 @@ public class GeneticSolver {
     public Phenotype getFittest() {
         return population.get(0);
     }
-
 
     public double getSolutionFitness() {
         return solutionFitness;
