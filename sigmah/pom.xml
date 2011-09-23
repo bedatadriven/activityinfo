@@ -66,8 +66,7 @@
         <!-- Allow the build to continue even if there are test failures -->
         <maven.test.failure.ignore>true</maven.test.failure.ignore>
 
-
-		<display.version>${project.version}-${git.commit.id.abbrev}</display.version>
+		<display.version>${project.version}</display.version>
     </properties>
 
     <repositories>
@@ -407,17 +406,7 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
-                <includes>
-                	<include>template/page/Host.ftl</include>
-                </includes>
-            </resource>
-       		<resource>
-                <directory>src/main/resources</directory>
-                <filtering>false</filtering>
-                <excludes>
-                	<exclude>template/page/Host.ftl</exclude>
-                </excludes>
-            </resource>                   
+            </resource>                  
             <resource>
                 <directory>src/main/java</directory>
                 <includes>
@@ -465,12 +454,19 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>2.3</version>
+                <version>2.4</version>
 
                 <!-- set encoding to something not platform dependent -->
 
                 <configuration>
                     <encoding>UTF-8</encoding>
+                    
+                    <!--  Change the delimiters used for filtering to avoid 
+                    	  colliding with FTL template syntaxt -->
+	                <delimiters>
+	                	<delimeter>$[*]</delimeter>
+	                </delimiters>
+	           		<useDefaultDelimiters>false</useDefaultDelimiters>
                 </configuration>
 
             </plugin>
