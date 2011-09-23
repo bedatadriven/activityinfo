@@ -29,6 +29,7 @@ import com.lowagie.text.BadElementException;
 import com.lowagie.text.DocWriter;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
 import com.lowagie.text.Image;
 import com.lowagie.text.html.HtmlWriter;
 
@@ -107,6 +108,32 @@ public class HtmlReportRenderer extends ItextReportRenderer {
 			}
 		}
 	}
+	
+	private static class MyImage extends Image {
+		private int width;
+		private int height;
+		public MyImage(URL url, int width, int height) {
+			super(url);
+			this.width=width;
+			this.height=height;
+		}
+
+		@Override
+		public int type() {
+			return Element.IMGTEMPLATE;
+		}
+
+		@Override
+		public float getScaledWidth() {
+			return width;
+		}
+
+		@Override
+		public float getScaledHeight() {
+			return height;
+		}
+		
+	}
 
 	private static class HtmlImage implements ItextImageResult {
 		private final BufferedImage image;
@@ -124,12 +151,14 @@ public class HtmlReportRenderer extends ItextReportRenderer {
 		public Graphics2D getGraphics() {
 			return g2d;
 		}
+		
 
 		@Override
 		public Image toItextImage() throws BadElementException {
 			try {
 				ImageIO.write(image, "PNG", storage.getOutputStream());
-				return Image.getInstance(new URL(storage.getUrl()));
+				return new MyImage(new URL(storage.getUrl()), image.getWidth(), image.getHeight());
+				//return Image.getInstance(new URL(storage.getUrl()));
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
