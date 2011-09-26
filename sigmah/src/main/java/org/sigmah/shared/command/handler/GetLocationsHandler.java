@@ -31,6 +31,8 @@ public class GetLocationsHandler implements CommandHandlerAsync<GetLocations, Lo
 				 
 			 }
 		 }
+		 query.where("locationTypeID")
+		 	  .equalTo(command.getLocationTypeId());
 		 query.where("Name")
 			  .startsWith(command.getName())
 

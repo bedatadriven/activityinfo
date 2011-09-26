@@ -9,44 +9,46 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.common.widget.RemoteComboBox;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
 
+import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.util.Margins;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.LabelAlign;
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.layout.FormLayout;
+import com.extjs.gxt.ui.client.widget.layout.RowData;
+import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.Widget;
 
-public class AdminFieldSet extends AbstractFieldSet implements AdminFieldSetPresenter.View  {
+public class AdminFieldSet extends LayoutContainer implements AdminFieldSetPresenter.View  {
 
     private AdminFieldSetPresenter presenter;
     private Map<Integer, ComboBox<AdminEntityDTO>> comboBoxes =
             new HashMap<Integer, ComboBox<AdminEntityDTO>>();
 	private TextField<String> nameField;
 	private Timer nameDelay;
-	private Timer axeDelay;
-	private FormPanel form = new FormPanel();
 	private static final int delay=250; // milliseconds 
 
     public AdminFieldSet(ActivityDTO activity) {
-        super(I18N.CONSTANTS.location(), 100, 200);
-        form.setLabelAlign(LabelAlign.TOP);
-        form.setHeaderVisible(false);
-        form.setBorders(false);
-        setBorders(false);
-        add(form);
+        //super(I18N.CONSTANTS.location(), 100, 200);
+    	super();
+        setLayout(new RowLayout(Orientation.HORIZONTAL));
+        //setBorders(false);
+        
         createTimers();
         
         if (activity.getLocationType().getBoundAdminLevelId() == null) {
@@ -61,19 +63,9 @@ public class AdminFieldSet extends AbstractFieldSet implements AdminFieldSetPres
 					nameDelay.schedule(delay);
 				}
             });
-            form.add(nameField);
-
-            TextField<String> axeField = new TextField<String>();
-            axeField.setName("locationAxe");
-            axeField.setFieldLabel(I18N.CONSTANTS.axe());
-            axeField.addKeyListener(new KeyListener() {
-				@Override
-				public void componentKeyUp(ComponentEvent event) {
-					super.componentKeyUp(event);
-					axeDelay.schedule(delay);
-				}
-            });
-            form.add(axeField);
+            add(nameField);
+            nameField.setStyleAttribute("border-width", "3px");
+            nameField.setHeight("30px");
         }
         
         for(final AdminLevelDTO level : activity.getAdminLevels()) {
@@ -83,7 +75,6 @@ public class AdminFieldSet extends AbstractFieldSet implements AdminFieldSetPres
             comboBox.setFieldLabel(level.getName());
             comboBox.setStore(new ListStore<AdminEntityDTO>());
             comboBox.setTypeAhead(false);
-           // comboBox.setQueryDelay(0);
             comboBox.setForceSelection(true);
             comboBox.setEditable(false);
             comboBox.setValueField("id");
@@ -112,26 +103,31 @@ public class AdminFieldSet extends AbstractFieldSet implements AdminFieldSetPres
             });
 
             comboBoxes.put(levelId, comboBox);
-            form.add(comboBox);
+            add(comboBox);
         }
     }
+    
+    
 
-    private void createTimers() {
+    @Override
+	public boolean add(Widget widget) {
+    	LayoutContainer container = new LayoutContainer();
+        FormLayout formLayout = new FormLayout();
+        formLayout.setLabelAlign(LabelAlign.TOP);
+        container.setLayout(formLayout);
+		container.add(widget, new RowData(102, -1, new Margins(4,2,4,2)));
+		return super.add(container);
+	}
+
+	private void createTimers() {
     	nameDelay = new Timer() {
 			@Override
 			public void run() {
-				presenter.onNameChanged("");
+				presenter.onNameChanged(nameField.getValue());
 			}
 		};
-		axeDelay = new Timer() {
-			@Override
-			public void run() {
-				presenter.onNameChanged("");
-			}
-		};
-		
 	}
-
+    
 	private AdminEntityDTO findEntity(String name, List<AdminEntityDTO> models) {
         for(AdminEntityDTO entity : models) {
             if(entity.getName().equalsIgnoreCase(name)) {

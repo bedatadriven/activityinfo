@@ -11,7 +11,7 @@ public class GetLocations implements Command<LocationsResult>{
 	private Collection<Integer> adminEntityIds;
 	private String name;
 	private int threshold = 300;
-
+	private int locationTypeId;
 	
 	public int getThreshold() {
 		return threshold;
@@ -32,6 +32,15 @@ public class GetLocations implements Command<LocationsResult>{
 
 	public GetLocations setName(String name) {
 		this.name = name;
+		return this;
+	}
+	
+	public int getLocationTypeId() {
+		return locationTypeId;
+	}
+
+	public GetLocations setLocationTypeId(int locationTypeId) {
+		this.locationTypeId = locationTypeId;
 		return this;
 	}
 

@@ -14,9 +14,6 @@ import com.google.gwt.maps.client.overlay.Icon;
  *     sized and colored marker icons using the Google Charts API marker output.
  */
 public class GcIconFactory {
-
-
-
 	/**
 	 * Specifies, in pixels, the width of the icon.
 	 *     The width may include some blank space on the side, depending on the

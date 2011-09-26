@@ -75,7 +75,7 @@ public class LocationDTO2 extends BaseModelData implements EntityDTO {
 		return this;
 	}
 
-	public AdminEntityDTO getAdminEntity(int levelId) {
+	public AdminLevelDTO getAdminEntityId(int levelId) {
 		return get(AdminLevelDTO.getPropertyName(levelId));
 	}
 	

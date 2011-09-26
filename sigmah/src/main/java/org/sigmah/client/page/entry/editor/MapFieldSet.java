@@ -10,14 +10,14 @@ import java.util.Collection;
 
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.client.map.GcIconFactory;
 import org.sigmah.client.map.MapApiLoader;
 import org.sigmah.client.map.MapTypeFactory;
 import org.sigmah.client.page.common.widget.CoordinateField;
 import org.sigmah.client.page.config.form.FieldSetFitLayout;
+import org.sigmah.client.page.entry.editor.LocationContainer.LocationViewModel;
 import org.sigmah.client.page.entry.editor.LocationListView.LocationSelectListener;
 import org.sigmah.shared.dto.CountryDTO;
-import org.sigmah.shared.dto.LocationDTO2;
 import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
@@ -43,18 +43,20 @@ import com.google.gwt.maps.client.event.MapZoomEndHandler;
 import com.google.gwt.maps.client.event.MarkerClickHandler;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.geom.LatLngBounds;
+import com.google.gwt.maps.client.overlay.Icon;
 import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.maps.client.overlay.MarkerOptions;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class MapFieldSet extends FieldSet implements MapEditView {
 	private EventBus eventBus = new SimpleEventBus();
-	
+	private static final String markerColor = "#FF8673"; 
+	private static final String selectedMarkerColor = "#A61700"; 
     private ContentPanel panel;
     private MapWidget map = null;
-    private Marker marker = null;
     private Marker selectedMarker = null;
-    private BiMap<LocationDTO2, Marker> markersPerLocation = HashBiMap.create();
+    private BiMap<LocationViewModel, Marker> markersPerLocation = HashBiMap.create();
+    private GcIconFactory iconFactory = new GcIconFactory();
 
     private CoordinateField latField;
     private CoordinateField lngField;
@@ -75,10 +77,10 @@ public class MapFieldSet extends FieldSet implements MapEditView {
         loadMapAsync();
     }
     
-    public void setLocations(Collection<LocationDTO2> locations) {
+    public void setLocations(Collection<LocationViewModel> locations) {
     	map.clearOverlays();
     	markersPerLocation.clear();
-    	for (LocationDTO2 location: locations) {
+    	for (LocationViewModel location: locations) {
     		if (location.hasCoordinates()) {
     			Marker marker = createMarker(from(location));
     			markersPerLocation.put(location, marker);
@@ -86,7 +88,7 @@ public class MapFieldSet extends FieldSet implements MapEditView {
     	}
     }
     
-    private LatLng from(LocationDTO2 location) {
+    private LatLng from(LocationViewModel location) {
     	return LatLng.newInstance(location.getLatitude(), location.getLongitude());
     }
 
@@ -239,7 +241,10 @@ public class MapFieldSet extends FieldSet implements MapEditView {
     private Marker createMarker(LatLng latlng) {
         MarkerOptions options = MarkerOptions.newInstance();
         options.setDraggable(false);
-        marker = new Marker(latlng, options);
+        Marker marker = new Marker(latlng, options);
+        iconFactory.primaryColor = markerColor;
+        Icon icon = iconFactory.createFlatIcon();
+        marker.setImage(icon.getImageURL());
 
         marker.addMarkerClickHandler(new MarkerClickHandler() {
 			@Override
@@ -306,12 +311,7 @@ public class MapFieldSet extends FieldSet implements MapEditView {
 
 	@Override
 	public void setMarkerPosition(AiLatLng latLng) {
-        LatLng latlng = LatLng.newInstance(latLng.getLat(), latLng.getLng());
-        if (marker == null) {
-            createMarker(latlng);
-        } else {
-            marker.setLatLng(latlng);
-        }
+
 	}
 
 	@Override
@@ -325,12 +325,11 @@ public class MapFieldSet extends FieldSet implements MapEditView {
         return createBounds(map.getBounds());
 	}
 
-	public void setLocationSelected(LocationDTO2 location) {
-		if (selectedMarker != null) {
-			marker.setImage(null);
-		}
+	public void setLocationSelected(LocationViewModel location) {
 		Marker marker = markersPerLocation.get(location);
-		marker.setImage(IconImageBundle.ICONS.selectedMarker().createImage().getUrl());
+		iconFactory.primaryColor = selectedMarkerColor;
+		Icon icon = iconFactory.createFlatIcon();
+		marker.setImage(icon.getImageURL());
 	}
 
 }

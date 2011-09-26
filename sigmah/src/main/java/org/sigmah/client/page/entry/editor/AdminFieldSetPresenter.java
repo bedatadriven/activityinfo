@@ -203,6 +203,16 @@ public class AdminFieldSetPresenter {
         }
         return map;
     }
+    
+    public Map<Integer, AdminEntityDTO> getPropertyMapById() {
+        Map<Integer, AdminEntityDTO> map = new HashMap<Integer, AdminEntityDTO>();
+
+        for (AdminLevelDTO level : levels) {
+            AdminEntityDTO entity = selection.get(level.getId());
+			map.put(level.getId(), entity);
+        }
+        return map;
+    }
 
 
     private void recursivelySetSelection(SiteDTO site, Integer parentLevelId, Integer parentEntityId) {
