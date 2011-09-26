@@ -15,58 +15,31 @@ import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
-import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.LabelAlign;
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.Widget;
 
 public class AdminFieldSet extends LayoutContainer implements AdminFieldSetPresenter.View  {
-
     private AdminFieldSetPresenter presenter;
     private Map<Integer, ComboBox<AdminEntityDTO>> comboBoxes =
             new HashMap<Integer, ComboBox<AdminEntityDTO>>();
-	private TextField<String> nameField;
-	private Timer nameDelay;
-	private static final int delay=250; // milliseconds 
 
     public AdminFieldSet(ActivityDTO activity) {
         //super(I18N.CONSTANTS.location(), 100, 200);
     	super();
-        setLayout(new RowLayout(Orientation.HORIZONTAL));
-        //setBorders(false);
-        
-        createTimers();
-        
-        if (activity.getLocationType().getBoundAdminLevelId() == null) {
-            nameField = new TextField<String>();
-            nameField.setName("locationName");
-            nameField.setFieldLabel(activity.getLocationType().getName());
-            nameField.setAllowBlank(false);
-            nameField.addKeyListener(new KeyListener() {
-				@Override
-				public void componentKeyUp(ComponentEvent event) {
-					super.componentKeyUp(event);
-					nameDelay.schedule(delay);
-				}
-            });
-            add(nameField);
-            nameField.setStyleAttribute("border-width", "3px");
-            nameField.setHeight("30px");
-        }
+    	
+    	setLayout(new RowLayout(Orientation.HORIZONTAL));
+    	//add(containerAdminFields, new RowData(-1, 40, new Margins(4,2,4,2)));
         
         for(final AdminLevelDTO level : activity.getAdminLevels()) {
             final int levelId = level.getId();
@@ -86,7 +59,6 @@ public class AdminFieldSet extends LayoutContainer implements AdminFieldSetPrese
                 @Override
                 public void handleEvent(FieldEvent be) {
                     AdminEntityDTO selected = (AdminEntityDTO) be.getField().getValue();
-
                     presenter.onSelectionChanged(levelId, selected);
 
                 }
@@ -103,30 +75,19 @@ public class AdminFieldSet extends LayoutContainer implements AdminFieldSetPrese
             });
 
             comboBoxes.put(levelId, comboBox);
-            add(comboBox);
+            addCombo(comboBox);
         }
     }
     
-    
-
-    @Override
-	public boolean add(Widget widget) {
+    private void addCombo(ComboBox comboboxToAdd) {
     	LayoutContainer container = new LayoutContainer();
         FormLayout formLayout = new FormLayout();
+        formLayout.setDefaultWidth(120);
         formLayout.setLabelAlign(LabelAlign.TOP);
         container.setLayout(formLayout);
-		container.add(widget, new RowData(102, -1, new Margins(4,2,4,2)));
-		return super.add(container);
-	}
-
-	private void createTimers() {
-    	nameDelay = new Timer() {
-			@Override
-			public void run() {
-				presenter.onNameChanged(nameField.getValue());
-			}
-		};
-	}
+		container.add(comboboxToAdd);
+		add(container, new RowData(130, 50, new Margins(5,2,5,2)));
+    }
     
 	private AdminEntityDTO findEntity(String name, List<AdminEntityDTO> models) {
         for(AdminEntityDTO entity : models) {
@@ -160,8 +121,4 @@ public class AdminFieldSet extends LayoutContainer implements AdminFieldSetPrese
     public ComboBox<AdminEntityDTO> getCombo(int levelId) {
         return comboBoxes.get(levelId);
     }
-
-	public String getLocationName() {
-		return nameField.getValue();
-	}
 }

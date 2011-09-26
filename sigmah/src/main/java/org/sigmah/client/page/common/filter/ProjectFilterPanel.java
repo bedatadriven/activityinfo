@@ -37,11 +37,6 @@ public class ProjectFilterPanel extends ContentPanel  implements FilterPanel {
 	private TreePanel<ModelData> tree;
 	private final Dispatcher service;	
 	
-    /**
-     * Constructor
-     * 
-     * @param service
-     */
     public ProjectFilterPanel(Dispatcher service) {
     	this.service = service;
         setHeading(I18N.CONSTANTS.filterByProject());

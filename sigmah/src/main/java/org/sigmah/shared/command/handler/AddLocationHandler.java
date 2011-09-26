@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import org.sigmah.client.offline.command.handler.KeyGenerator;
 import org.sigmah.shared.command.AddLocation;
 import org.sigmah.shared.command.result.CreateResult;
+import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.LocationDTO2;
 
@@ -51,10 +52,10 @@ public class AddLocationHandler implements CommandHandlerAsync<AddLocation, Crea
 		
 		for(Entry<String,Object> property : properties.entrySet()) {
 			if(property.getKey().startsWith(AdminLevelDTO.PROPERTY_PREFIX)) {
-				Integer entityId = (Integer) property.getValue();
-				if(entityId != null) {
-					SqlInsert.insertInto("LocationAdminLink")
-						.value("AdminEntityId", entityId)
+				AdminEntityDTO entity =  (AdminEntityDTO) property.getValue();
+				if(entity != null) {
+					SqlInsert.insertInto("L(Integer)ocationAdminLink")
+						.value("AdminEntityId", entity.getId())
 						.value("Locationid", locationId)
 						.execute(tx);
 				}

@@ -257,4 +257,6 @@ public interface IconImageBundle extends ImageBundle {
     AbstractImagePrototype dashboard();
     AbstractImagePrototype marker();
     AbstractImagePrototype selectedMarker();
+    @Resource(value="useLocation16.png")
+    AbstractImagePrototype useLocation();
 }

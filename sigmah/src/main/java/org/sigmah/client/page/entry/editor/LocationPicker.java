@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.entry.editor.LocationListView.LocationSelectListener;
 import org.sigmah.client.page.entry.editor.NewLocationFieldSet.NewLocationPresenter;
 import org.sigmah.shared.command.AddLocation;
@@ -22,6 +23,8 @@ import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -33,7 +36,10 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
+import com.extjs.gxt.ui.client.widget.form.FormPanel.LabelAlign;
+import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout.HBoxLayoutAlign;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayoutData;
@@ -42,6 +48,7 @@ import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /** Present the user with:
@@ -49,7 +56,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * - a list of matching locations 
  * - a map showing matched locations
  * - ability to add a new location when there is no matching location */
-public class LocationContainer extends LayoutContainer implements NewLocationPresenter, LocationSelectListener {
+public class LocationPicker extends LayoutContainer implements NewLocationPresenter, LocationSelectListener {
 	private ActivityDTO currentActivity;
 	private LocationListView locations;
 	private MapFieldSet map;
@@ -65,8 +72,20 @@ public class LocationContainer extends LayoutContainer implements NewLocationPre
 	private Markers markers = new Markers();
 	private BiMap<Integer, LocationDTO2> originals = HashBiMap.create();
 	private SelectedLocationFieldSet selectedLocationView;
+	private TextField<String> nameField;
+	private Timer nameDelay;
+	private static final int delay=250; // milliseconds 
+	private LayoutContainer nameContainer;
+	private Button buttonUseLocation;
+	private SelectLocationCallback callback;
+	private LocationDTO2 selectedLocation;
+	
+	public interface SelectLocationCallback {
+		public void cancel();
+		public void useLocation(LocationDTO2 location);
+	}
 
-	public LocationContainer(Dispatcher service, EventBus eventBus, ActivityDTO activity) {
+	public LocationPicker(Dispatcher service, EventBus eventBus, ActivityDTO activity, SelectLocationCallback callback) {
 		this.service=service;
 		this.eventBus=eventBus;
 		this.currentActivity=activity;
@@ -77,12 +96,40 @@ public class LocationContainer extends LayoutContainer implements NewLocationPre
 		
 		createLocationsAndMapContainer();
 		createWindowAddLocation();
+		createNameTextbox();
 		createLocationList();
 		createMap();
 		
 		createPresenters();
 	}
 
+	private void createNameTextbox() {
+        //if (activity.getLocationType().getBoundAdminLevelId() == null) {
+        nameField = new TextField<String>();
+        nameField.setName("locationName");
+        nameField.setFieldLabel(currentActivity.getLocationType().getName());
+        nameField.setAllowBlank(false);
+        nameField.addKeyListener(new KeyListener() {
+			@Override
+			public void componentKeyUp(ComponentEvent event) {
+				super.componentKeyUp(event);
+				nameDelay.schedule(delay);
+			}
+        });
+        nameContainer = new LayoutContainer();
+        FormLayout formLayout = new FormLayout();
+        formLayout.setLabelAlign(LabelAlign.TOP);
+        nameContainer.setLayout(formLayout);
+        nameContainer.add(nameField);
+        //add(nameContainer, new RowData(-1,50,new Margins(4,2,4,2)));
+    	nameDelay = new Timer() {
+			@Override
+			public void run() {
+				getLocations();
+			}
+		};
+    }
+	
 	private void initializeComponent() {
 		VBoxLayout layout = new VBoxLayout();
 		layout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
@@ -107,6 +154,7 @@ public class LocationContainer extends LayoutContainer implements NewLocationPre
 
 	private void createAdminFieldSet() {
 		VBoxLayoutData dataAdminFields = new VBoxLayoutData();
+		dataAdminFields.setMargins(new Margins(5,2,5,2));
 		adminFieldSet = new AdminFieldSet(currentActivity);
 		adminFieldSet.setBorders(false);
 		adminFieldSet.setHeight("50px");
@@ -135,7 +183,7 @@ public class LocationContainer extends LayoutContainer implements NewLocationPre
 	/** Gets all locations from database based on the criteria the user has set */
 	protected void getLocations() {
 		GetLocations getLocations = new GetLocations()
-			.setName(adminFieldSet.getLocationName())
+			.setName(nameField.getValue())
 			.setAdminEntityIds(adminPresenter.getAdminEntityIds())
 			.setLocationTypeId(currentActivity.getLocationTypeId());
 		
@@ -184,14 +232,15 @@ public class LocationContainer extends LayoutContainer implements NewLocationPre
 	}
 
 	private void createLocationList() {
-		
-		createSleectedLocationView();
+		createSelectedLocationView();
 		LayoutContainer locationContainer = new LayoutContainer();
 		locationContainer.setBorders(false);
 		locationContainer.setWidth("300px");
 		VBoxLayout layout = new VBoxLayout();
 		layout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
 		locationContainer.setLayout(layout);
+		
+		createNameTextbox();
 		
 		Button buttonAddLocation = new Button(I18N.CONSTANTS.addLocation());
 		buttonAddLocation.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -201,9 +250,37 @@ public class LocationContainer extends LayoutContainer implements NewLocationPre
 			}
 		});
 		
+		LayoutContainer container = new LayoutContainer();
+		HBoxLayout buttonlayout = new HBoxLayout();
+		buttonlayout.setHBoxLayoutAlign(HBoxLayoutAlign.STRETCH);
+		container.setLayout(buttonlayout);
+		
+		Button buttonCancel = new Button(I18N.CONSTANTS.cancel());
+		buttonCancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				cancel();
+			}
+		});
+		buttonCancel.setIcon(IconImageBundle.ICONS.cancel());
+		
+		buttonUseLocation = new Button("Use location");
+		buttonUseLocation.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				useLocation();
+			}
+		});
+		buttonUseLocation.setIcon(IconImageBundle.ICONS.useLocation());
+		
+		container.add(buttonCancel);
+		container.add(buttonUseLocation);
+		
 		FieldSet fieldsetLocations = new FieldSet();
-		fieldsetLocations.setHeading("Choose existing location");
-		locations = new LocationListView(this); 
+		fieldsetLocations.setHeading("Find existing location");
+		fieldsetLocations.add(nameContainer);
+		
+		locations = new LocationListView(this);
 		fieldsetLocations.add(locations);
 		
 		fieldsetNewLocation = new NewLocationFieldSet(this);
@@ -220,9 +297,17 @@ public class LocationContainer extends LayoutContainer implements NewLocationPre
 		fieldsetLocations.setBorders(false);
 	}
 
-	private void createSleectedLocationView() {
+	protected void useLocation() {
+		callback.useLocation(selectedLocation);
+	}
+
+	protected void cancel() {
+		callback.cancel();
+	}
+
+	private void createSelectedLocationView() {
 		selectedLocationView = new SelectedLocationFieldSet(currentActivity);
-		//selectedLocationView.setLocation(location);
+		//selectedLocationView.setLocation(site.);
 	}
 
 	public Map<String, Object> getChanges() {
@@ -263,6 +348,7 @@ public class LocationContainer extends LayoutContainer implements NewLocationPre
 				LocationViewModel newLocation = new LocationViewModel(lcoation, markers.next());
 				windowAddLocation.hide();
 				site.setLocation(lcoation);
+				locations.add(newLocation);
 				Info.display("Added location", "Location [" + lcoation.getName() + "] added");
 			}
 		});
@@ -278,8 +364,16 @@ public class LocationContainer extends LayoutContainer implements NewLocationPre
 	/** Any of the child widgets call this method to change the current selected location */
 	@Override
 	public void onSelectLocation(LocationViewModel location) {
+		// Only allow using locations with coords
+		buttonUseLocation.setEnabled(location.hasCoordinates());
+		// Notify map and locations list a selection occured 
 		map.setLocationSelected(location);
 		locations.setSelectedLocation(location); 
+		if (location == null) {
+			selectedLocation = null;
+		} else {
+			selectedLocation=originals.get(location.getId());
+		}
 	}
 	
 	/** Annoy the user by popping up an intermediate dialog asking them if they really

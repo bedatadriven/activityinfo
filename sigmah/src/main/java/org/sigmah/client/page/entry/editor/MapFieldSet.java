@@ -15,8 +15,8 @@ import org.sigmah.client.map.MapApiLoader;
 import org.sigmah.client.map.MapTypeFactory;
 import org.sigmah.client.page.common.widget.CoordinateField;
 import org.sigmah.client.page.config.form.FieldSetFitLayout;
-import org.sigmah.client.page.entry.editor.LocationContainer.LocationViewModel;
 import org.sigmah.client.page.entry.editor.LocationListView.LocationSelectListener;
+import org.sigmah.client.page.entry.editor.LocationPicker.LocationViewModel;
 import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
@@ -51,7 +51,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class MapFieldSet extends FieldSet implements MapEditView {
 	private EventBus eventBus = new SimpleEventBus();
 	private static final String markerColor = "#FF8673"; 
-	private static final String selectedMarkerColor = "#A61700"; 
+	private static final String selectedMarkerColor = "#A61700";
+	private Icon defaultIcon;
     private ContentPanel panel;
     private MapWidget map = null;
     private Marker selectedMarker = null;
@@ -74,10 +75,16 @@ public class MapFieldSet extends FieldSet implements MapEditView {
         initializeComponent();
 
         createPanel();
+        createLatLongFields();
         loadMapAsync();
     }
     
-    public void setLocations(Collection<LocationViewModel> locations) {
+    private void createLatLongFields() {
+		latField = new CoordinateField(CoordinateField.Axis.LATITUDE);
+        lngField = new CoordinateField(CoordinateField.Axis.LONGITUDE);
+	}
+
+	public void setLocations(Collection<LocationViewModel> locations) {
     	map.clearOverlays();
     	markersPerLocation.clear();
     	for (LocationViewModel location: locations) {
@@ -323,13 +330,30 @@ public class MapFieldSet extends FieldSet implements MapEditView {
 	@Override
 	public BoundingBoxDTO getViewBounds() {
         return createBounds(map.getBounds());
-	}
+	}	
 
 	public void setLocationSelected(LocationViewModel location) {
 		Marker marker = markersPerLocation.get(location);
-		iconFactory.primaryColor = selectedMarkerColor;
-		Icon icon = iconFactory.createFlatIcon();
-		marker.setImage(icon.getImageURL());
+		if (selectedMarker != null && defaultIcon != null) {
+			selectedMarker.setImage(defaultIcon.getImageURL());
+		}
+		if (marker != null) { // No marker -> Location has no coords specified
+			el().unmask();
+			if (defaultIcon == null) {
+				defaultIcon = marker.getIcon();
+			}
+			iconFactory.primaryColor = selectedMarkerColor;
+			Icon icon = iconFactory.createFlatIcon();
+			marker.setImage(icon.getImageURL());
+			map.panTo(marker.getLatLng());
+			selectedMarker=marker;
+		}  else {
+			maskNoCoordinates();
+		}
+	}
+
+	private void maskNoCoordinates() {
+		this.el().mask("No coordinates for this location");
 	}
 
 }

@@ -36,7 +36,7 @@ public class PartnerFieldSet extends AbstractFilterFieldSet {
         tree.setCheckable(true);
         tree.setIconProvider(new ModelIconProvider<PartnerDTO>() {
             public AbstractImagePrototype getIcon(PartnerDTO model) {
-                return IconImageBundle.ICONS.group();
+                return IconImageBundle.ICONS.group(); 
             }
         });
 

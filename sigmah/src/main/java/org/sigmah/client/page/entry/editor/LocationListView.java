@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.entry.editor.LocationContainer.LocationViewModel;
+import org.sigmah.client.page.entry.editor.LocationPicker.LocationViewModel;
 import org.sigmah.shared.command.GetLocations.LocationsResult;
 
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;

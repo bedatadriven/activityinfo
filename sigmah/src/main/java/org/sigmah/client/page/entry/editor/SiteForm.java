@@ -14,7 +14,9 @@ import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.common.widget.LoadingPlaceHolder;
 import org.sigmah.client.page.config.form.ModelFormPanel;
+import org.sigmah.client.page.entry.editor.LocationPicker.SelectLocationCallback;
 import org.sigmah.shared.dto.ActivityDTO;
+import org.sigmah.shared.dto.LocationDTO2;
 import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.SiteDTO;
@@ -36,7 +38,7 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
 	private EventBus eventBus;
 	
     private ActivityFieldSet activityFieldSet;
-    private LocationContainer locationFieldSet;
+    private LocationPicker locationFieldSet;
     private AttributeFieldSet attributeFieldSet;
     private IndicatorFieldSet indicatorFieldSet;
     private CommentFieldSet commentFieldSet;
@@ -75,7 +77,17 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
         
         addFlowTab(I18N.CONSTANTS.details(), activityFieldSet);
         
-        locationFieldSet = new LocationContainer(service, eventBus, activity);
+        locationFieldSet = new LocationPicker(service, eventBus, activity, new SelectLocationCallback() {
+			@Override
+			public void useLocation(LocationDTO2 location) {
+				
+			}
+			
+			@Override
+			public void cancel() {
+				
+			}
+		});
         
         registerFieldSet(locationFieldSet, true);
         addFitTab(I18N.CONSTANTS.location(), locationFieldSet);
