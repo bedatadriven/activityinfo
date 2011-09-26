@@ -15,8 +15,6 @@ import org.sigmah.shared.dto.SchemaDTO;
  * @author Alex Bertram
  */
 public class GetSchema implements Command<SchemaDTO> {
-
-
     @Override
     public String toString() {
         return "GetSchema";

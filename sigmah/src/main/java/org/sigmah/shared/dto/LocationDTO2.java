@@ -2,12 +2,30 @@ package org.sigmah.shared.dto;
 
 import java.util.Map;
 
+import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.google.common.base.Strings;
 
 public class LocationDTO2 extends BaseModelData implements EntityDTO {
 	public LocationDTO2() {
 		super();
+	}
+	
+	public static LocationDTO2 fromSqlRow(SqlResultSetRow row) {
+		String name = row.getString("Name");
+		String axe = row.isNull("Axe") ? null : row.getString("Axe");
+		Double longitude = row.isNull("X") ? null : row.getDouble("X");
+		Double latitude = row.isNull("Y") ? null : row.getDouble("Y");
+		Integer locationTypeId = row.getInt("LocationTypeId");
+		int id = row.getInt("Id");
+		
+		return new LocationDTO2()
+			.setId(id)
+			.setName(name)
+			.setAxe(axe)
+			.setLongitude(longitude)
+			.setLatitude(latitude)
+			.setLocationTypeId(locationTypeId);
 	}
 
 	public LocationDTO2(Map<String, Object> properties) {
