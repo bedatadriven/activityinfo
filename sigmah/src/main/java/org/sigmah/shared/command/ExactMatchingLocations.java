@@ -6,7 +6,8 @@ import org.sigmah.shared.command.ExactMatchingLocations.ExactMatchingLocationsRe
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.dto.LocationDTO2;
 
-import com.google.gwt.dev.util.collect.Lists;
+import com.google.common.collect.Lists;
+
 
 /** Gets a list of locations matching which have identical data, except for the identifier */
 public class ExactMatchingLocations implements Command<ExactMatchingLocationsResult>{
@@ -14,7 +15,7 @@ public class ExactMatchingLocations implements Command<ExactMatchingLocationsRes
 	// Nothing really
 	
 	public static class ExactMatchingLocationsResult implements CommandResult {
-		private List<List<LocationDTO2>> matchingLocations = Lists.<List<LocationDTO2>>create();
+		private List<List<LocationDTO2>> matchingLocations = Lists.newArrayList();
 		private int millisecondsToCompleteQuery;
 
 		public List<List<LocationDTO2>> getMatchingLocations() {

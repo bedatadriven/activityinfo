@@ -20,8 +20,8 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
-import com.google.gwt.dev.util.collect.Lists;
-import com.google.gwt.dev.util.collect.Maps;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class ExactMatches extends LayoutContainer {
@@ -29,7 +29,7 @@ public class ExactMatches extends LayoutContainer {
 	private Grid<LocationDTO2> gridMatches;
 	private ListStore<LocationDTO2> storeUniqueLocations = new ListStore<LocationDTO2>();
 	private ListStore<LocationDTO2> storeMatches = new ListStore<LocationDTO2>();
-	private Map<LocationDTO2, List<LocationDTO2>> locationsByLocation = Maps.<LocationDTO2, List<LocationDTO2>>create();
+	private Map<LocationDTO2, List<LocationDTO2>> locationsByLocation = Maps.newHashMap();
 	private Dispatcher service;
 	private EventBus eventBus;
 	
@@ -56,7 +56,7 @@ public class ExactMatches extends LayoutContainer {
 
 			@Override
 			public void onSuccess(ExactMatchingLocationsResult result) {
-				List<LocationDTO2> uniqueLocations = Lists.<LocationDTO2>create();
+				List<LocationDTO2> uniqueLocations = Lists.newArrayList();
 					for (List<LocationDTO2> locations : result.getMatchingLocations()) {
 						LocationDTO2 firstLocation = locations.get(0);
 					uniqueLocations.add(firstLocation);
@@ -67,7 +67,7 @@ public class ExactMatches extends LayoutContainer {
 	}
 
 	private void createMatchesGrid() {
-		List<ColumnConfig> configs = Lists.create();
+		List<ColumnConfig> configs = Lists.newArrayList();
 		configs.add(new ReadTextColumn("name", I18N.CONSTANTS.name(), 100));
 		configs.add(new ReadTextColumn("axe", I18N.CONSTANTS.axe(), 100));
 		configs.add(new ReadTextColumn("id", "id", 40));
@@ -78,7 +78,7 @@ public class ExactMatches extends LayoutContainer {
 	}
 
 	private void createUniqueLocationsGrid() {
-		List<ColumnConfig> configs = Lists.create();
+		List<ColumnConfig> configs = Lists.newArrayList();
 		configs.add(new ReadTextColumn("name", I18N.CONSTANTS.name(), 100));
 		configs.add(new ReadTextColumn("axe", I18N.CONSTANTS.axe(), 100));
 		configs.add(new ReadTextColumn("id", "id", 40));

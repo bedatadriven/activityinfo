@@ -15,10 +15,7 @@ import com.extjs.gxt.ui.client.widget.form.TextArea;
  * @author Alex Bertram (akbertram@gmail.com)
  */
 public class CommentFieldSet extends FieldSet {
-
     public CommentFieldSet() {
-
-
 		setHeading(I18N.CONSTANTS.comments());
 		setLayout(new FieldSetFitLayout());
 		setCollapsible(false);

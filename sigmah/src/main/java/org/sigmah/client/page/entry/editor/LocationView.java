@@ -91,6 +91,8 @@ public class LocationView extends LayoutContainer {
 			@Override
 			public void useLocation(LocationDTO2 location) {
 				refreshAdminEntities();
+				cardLayout.setActiveItem(containerLocationView);
+				
 			}
 			@Override
 			public void cancel() {

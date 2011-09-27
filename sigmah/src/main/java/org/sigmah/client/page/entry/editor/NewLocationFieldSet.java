@@ -9,13 +9,12 @@ import org.sigmah.shared.dto.LocationDTO2;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.FormPanel.LabelAlign;
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 
-public class NewLocationFieldSet extends FieldSet {
+public class NewLocationFieldSet extends LayoutContainer {
 	public interface NewLocationPresenter {
 		public void onAdd(LocationDTO2 lcoation);
 	}
@@ -31,29 +30,24 @@ public class NewLocationFieldSet extends FieldSet {
 	}
 
 	public NewLocationFieldSet(final NewLocationPresenter presenter) {
-		setHeading("Add new location");
+		setLayout(new FormLayout());
 		setShadow(false);
-		
-		FormPanel form = new FormPanel();
-		form.setLabelAlign(LabelAlign.TOP);
-		form.setHeaderVisible(false);
-		form.setBorders(false);
 		
 		labelName = new TextField<String>();
 		labelName.setFieldLabel(I18N.CONSTANTS.locationDetails());
-		form.add(labelName);
+		add(labelName);
 		
 		labelAxe = new TextField<String>();
 		labelAxe.setFieldLabel(I18N.CONSTANTS.axe());
-		form.add(labelAxe);
+		add(labelAxe);
 		
 		longField = new CoordinateField(Axis.LONGITUDE);
 		longField.setFieldLabel(I18N.CONSTANTS.longitude());
-		form.add(longField);
+		add(longField);
 		
 		latField = new CoordinateField(Axis.LATITUDE);
 		latField.setFieldLabel(I18N.CONSTANTS.latitude());
-		form.add(latField);
+		add(latField);
 		
 		Button buttonAddLocation = new Button();
 		buttonAddLocation.setText("Add location");
@@ -69,8 +63,7 @@ public class NewLocationFieldSet extends FieldSet {
 				}			
 			}
 		});
-		form.add(buttonAddLocation);
-		add(form);
+		add(buttonAddLocation);
 	}
 
 }

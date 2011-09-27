@@ -57,15 +57,14 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
                      ListStore<PartnerDTO> partnerStore,
                      ListStore<SiteDTO> assessmentStore, 
                      ListStore<ProjectDTO> projectStore) {
+        this.presenter = presenter;       
+        this.activity = activity;
 
         removeAll();
         setLayout(new FitLayout());
         
         tabPanel = new TabPanel();
         add(tabPanel);
-        
-        this.presenter = presenter;       
-        this.activity = activity;
 
         // ACTIVITY fieldset
         activityFieldSet = new ActivityFieldSet(activity, partnerStore, assessmentStore, projectStore);

@@ -11,7 +11,7 @@ import com.bedatadriven.rebar.sql.client.SqlResultSet;
 import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
-import com.google.gwt.dev.util.collect.Lists;
+import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /** Compares all locations in the database for locations matching on name/axe/x/y/locationTypeId
@@ -49,7 +49,7 @@ public class ExactMatchingLocationsHandler implements CommandHandlerAsync<ExactM
 										@Override
 										public void onSuccess(SqlTransaction tx, SqlResultSet results) {
 											if (results.getRowsAffected() > 0) {
-												List<LocationDTO2> locations = Lists.<LocationDTO2>create();
+												List<LocationDTO2> locations = Lists.newArrayList();
 												for (SqlResultSetRow row : results.getRows()) {
 													locations.add(LocationDTO2.fromSqlRow(row));
 												}
