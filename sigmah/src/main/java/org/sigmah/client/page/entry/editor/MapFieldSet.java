@@ -26,7 +26,7 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
@@ -48,7 +48,7 @@ import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.maps.client.overlay.MarkerOptions;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class MapFieldSet extends FieldSet implements MapEditView {
+public class MapFieldSet extends LayoutContainer implements MapEditView {
 	private EventBus eventBus = new SimpleEventBus();
 	private static final String markerColor = "#FF8673"; 
 	private static final String selectedMarkerColor = "#A61700";
@@ -108,13 +108,12 @@ public class MapFieldSet extends FieldSet implements MapEditView {
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				// TODO Handle failure
+				System.out.println();
 			}
 		});
 	}
 
 	private void initializeComponent() {
-        setHeading(I18N.CONSTANTS.geoPosition());
         setLayout(new FieldSetFitLayout());
         setHeight(250);
 	}

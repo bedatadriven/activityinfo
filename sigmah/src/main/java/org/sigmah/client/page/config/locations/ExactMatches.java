@@ -29,7 +29,7 @@ public class ExactMatches extends LayoutContainer {
 	private Grid<LocationDTO2> gridMatches;
 	private ListStore<LocationDTO2> storeUniqueLocations = new ListStore<LocationDTO2>();
 	private ListStore<LocationDTO2> storeMatches = new ListStore<LocationDTO2>();
-	private Map<LocationDTO2, List<LocationDTO2>> locationsByLocation = Maps.create();
+	private Map<LocationDTO2, List<LocationDTO2>> locationsByLocation = Maps.<LocationDTO2, List<LocationDTO2>>create();
 	private Dispatcher service;
 	private EventBus eventBus;
 	
@@ -56,7 +56,7 @@ public class ExactMatches extends LayoutContainer {
 
 			@Override
 			public void onSuccess(ExactMatchingLocationsResult result) {
-				List<LocationDTO2> uniqueLocations = Lists.create();
+				List<LocationDTO2> uniqueLocations = Lists.<LocationDTO2>create();
 					for (List<LocationDTO2> locations : result.getMatchingLocations()) {
 						LocationDTO2 firstLocation = locations.get(0);
 					uniqueLocations.add(firstLocation);

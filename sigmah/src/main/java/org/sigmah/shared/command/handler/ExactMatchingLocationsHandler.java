@@ -49,7 +49,7 @@ public class ExactMatchingLocationsHandler implements CommandHandlerAsync<ExactM
 										@Override
 										public void onSuccess(SqlTransaction tx, SqlResultSet results) {
 											if (results.getRowsAffected() > 0) {
-												List<LocationDTO2> locations = Lists.create();
+												List<LocationDTO2> locations = Lists.<LocationDTO2>create();
 												for (SqlResultSetRow row : results.getRows()) {
 													locations.add(LocationDTO2.fromSqlRow(row));
 												}

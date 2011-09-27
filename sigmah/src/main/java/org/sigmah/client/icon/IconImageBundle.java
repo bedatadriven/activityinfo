@@ -259,4 +259,6 @@ public interface IconImageBundle extends ImageBundle {
     AbstractImagePrototype selectedMarker();
     @Resource(value="useLocation16.png")
     AbstractImagePrototype useLocation();
+    @Resource(value="editLocation16.png")
+    AbstractImagePrototype editLocation();
 }

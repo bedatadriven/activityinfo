@@ -28,7 +28,6 @@ import com.google.gwt.maps.client.overlay.MarkerOptions;
  * Displays a read-only view of a location somehwere on the world
  */
 public class MapLocationView extends LayoutContainer implements MapView {
-
     private ContentPanel panel;
     private MapWidget map = null;
     private Marker marker = null;

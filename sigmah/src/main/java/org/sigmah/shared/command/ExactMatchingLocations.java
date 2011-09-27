@@ -14,7 +14,7 @@ public class ExactMatchingLocations implements Command<ExactMatchingLocationsRes
 	// Nothing really
 	
 	public static class ExactMatchingLocationsResult implements CommandResult {
-		private List<List<LocationDTO2>> matchingLocations = Lists.create();
+		private List<List<LocationDTO2>> matchingLocations = Lists.<List<LocationDTO2>>create();
 		private int millisecondsToCompleteQuery;
 
 		public List<List<LocationDTO2>> getMatchingLocations() {

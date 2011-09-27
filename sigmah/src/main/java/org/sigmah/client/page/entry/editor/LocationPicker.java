@@ -35,11 +35,8 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.extjs.gxt.ui.client.widget.form.FormPanel.LabelAlign;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout.HBoxLayoutAlign;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayoutData;
@@ -56,29 +53,37 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * - a list of matching locations 
  * - a map showing matched locations
  * - ability to add a new location when there is no matching location */
-public class LocationPicker extends LayoutContainer implements NewLocationPresenter, LocationSelectListener {
-	private ActivityDTO currentActivity;
-	private LocationListView locations;
-	private MapFieldSet map;
+public class LocationPicker 
+	extends 
+		LayoutContainer 
+	implements 
+		NewLocationPresenter, LocationSelectListener {
 	private Dispatcher service;
 	private EventBus eventBus;
-	private MapPresenter mapPresenter;
-	private AdminFieldSetPresenter adminPresenter;
+
+	private ActivityDTO currentActivity;
+	private LocationDTO2 selectedLocation;
 	private SiteDTO site;
+
+	private LocationListView locations;
+	
+	private MapFieldSet map;
+	private MapPresenter mapPresenter;
+
+	private AdminFieldSetPresenter adminPresenter;
 	private AdminFieldSet adminFieldSet;
 	private NewLocationFieldSet fieldsetNewLocation;
 	private Window windowAddLocation;
+
+	private LayoutContainer leftContainer;
 	private LayoutContainer locationsAndMapContainer;
-	private Markers markers = new Markers();
-	private BiMap<Integer, LocationDTO2> originals = HashBiMap.create();
-	private SelectedLocationFieldSet selectedLocationView;
+	private MarkerNumbering markers = new MarkerNumbering();
+	private BiMap<Integer, LocationDTO2> originals = HashBiMap.<Integer, LocationDTO2>create();
 	private TextField<String> nameField;
 	private Timer nameDelay;
 	private static final int delay=250; // milliseconds 
-	private LayoutContainer nameContainer;
 	private Button buttonUseLocation;
 	private SelectLocationCallback callback;
-	private LocationDTO2 selectedLocation;
 	
 	public interface SelectLocationCallback {
 		public void cancel();
@@ -89,18 +94,82 @@ public class LocationPicker extends LayoutContainer implements NewLocationPresen
 		this.service=service;
 		this.eventBus=eventBus;
 		this.currentActivity=activity;
+		this.callback=callback;
 		
 		initializeComponent();
-		
+
+		// Picker of AdminEntities
 		createAdminFieldSet();
 		
+		// Left & right columns
 		createLocationsAndMapContainer();
 		createWindowAddLocation();
+		createLeftContainer();
+		
+		// Left column
+		createUseLocationButton();
 		createNameTextbox();
 		createLocationList();
+		
+		// Cancel/UseLocation buttons
+		createCancelButton();
+		createAddLocationButton();
+		
+		// Adds it to the right column
 		createMap();
 		
 		createPresenters();
+	}
+	
+	private void initializeComponent() {
+		VBoxLayout layout = new VBoxLayout();
+		layout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
+		setLayout(layout);
+	}
+
+	private void createUseLocationButton() {
+		buttonUseLocation = new Button("Use location");
+		buttonUseLocation.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				useLocation();
+			}
+		});
+		buttonUseLocation.setIcon(IconImageBundle.ICONS.useLocation());
+		leftContainer.add(buttonUseLocation, new VBoxLayoutData(new Margins(5)));
+	}
+
+	private void createCancelButton() {
+		Button buttonCancel = new Button(I18N.CONSTANTS.cancel());
+		buttonCancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				cancel();
+			}
+		});
+		buttonCancel.setIcon(IconImageBundle.ICONS.cancel());
+		leftContainer.add(buttonCancel, new VBoxLayoutData(new Margins(5)));
+	}
+
+	private void createAddLocationButton() {
+		Button buttonAddLocation = new Button(I18N.CONSTANTS.addLocation());
+		buttonAddLocation.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				proceedToShowAddLocationDialogAfterUserConfirmed();
+			}
+		});
+		leftContainer.add(buttonAddLocation, new VBoxLayoutData(new Margins(5)));
+	}
+
+	private void createLeftContainer() {
+		leftContainer = new LayoutContainer();
+		leftContainer.setBorders(false);
+		leftContainer.setWidth("300px");
+		VBoxLayout layout = new VBoxLayout();
+		layout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
+		leftContainer.setLayout(layout);
+		locationsAndMapContainer.add(leftContainer, new HBoxLayoutData());
 	}
 
 	private void createNameTextbox() {
@@ -116,25 +185,14 @@ public class LocationPicker extends LayoutContainer implements NewLocationPresen
 				nameDelay.schedule(delay);
 			}
         });
-        nameContainer = new LayoutContainer();
-        FormLayout formLayout = new FormLayout();
-        formLayout.setLabelAlign(LabelAlign.TOP);
-        nameContainer.setLayout(formLayout);
-        nameContainer.add(nameField);
-        //add(nameContainer, new RowData(-1,50,new Margins(4,2,4,2)));
     	nameDelay = new Timer() {
 			@Override
 			public void run() {
 				getLocations();
 			}
 		};
+		leftContainer.add(nameField, new VBoxLayoutData(new Margins(5,5,5,5)));
     }
-	
-	private void initializeComponent() {
-		VBoxLayout layout = new VBoxLayout();
-		layout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
-		setLayout(layout);
-	}
 
 	private void createPresenters() {
 		adminPresenter = new AdminFieldSetPresenter(service, currentActivity, adminFieldSet);
@@ -226,75 +284,19 @@ public class LocationPicker extends LayoutContainer implements NewLocationPresen
 		map = new MapFieldSet(currentActivity.getDatabase().getCountry(), this);
 		map.setBorders(false);
 		HBoxLayoutData data = new HBoxLayoutData();
+		data.setMargins(new Margins(5,5,5,5));
 		data.setFlex(1.0);
 
 		locationsAndMapContainer.add(map, data);
 	}
 
 	private void createLocationList() {
-		createSelectedLocationView();
-		LayoutContainer locationContainer = new LayoutContainer();
-		locationContainer.setBorders(false);
-		locationContainer.setWidth("300px");
-		VBoxLayout layout = new VBoxLayout();
-		layout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
-		locationContainer.setLayout(layout);
-		
-		createNameTextbox();
-		
-		Button buttonAddLocation = new Button(I18N.CONSTANTS.addLocation());
-		buttonAddLocation.addSelectionListener(new SelectionListener<ButtonEvent>() {
-			@Override
-			public void componentSelected(ButtonEvent ce) {
-				proceedToShowAddLocationDialogAfterUserConfirmed();
-			}
-		});
-		
-		LayoutContainer container = new LayoutContainer();
-		HBoxLayout buttonlayout = new HBoxLayout();
-		buttonlayout.setHBoxLayoutAlign(HBoxLayoutAlign.STRETCH);
-		container.setLayout(buttonlayout);
-		
-		Button buttonCancel = new Button(I18N.CONSTANTS.cancel());
-		buttonCancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
-			@Override
-			public void componentSelected(ButtonEvent ce) {
-				cancel();
-			}
-		});
-		buttonCancel.setIcon(IconImageBundle.ICONS.cancel());
-		
-		buttonUseLocation = new Button("Use location");
-		buttonUseLocation.addSelectionListener(new SelectionListener<ButtonEvent>() {
-			@Override
-			public void componentSelected(ButtonEvent ce) {
-				useLocation();
-			}
-		});
-		buttonUseLocation.setIcon(IconImageBundle.ICONS.useLocation());
-		
-		container.add(buttonCancel);
-		container.add(buttonUseLocation);
-		
-		FieldSet fieldsetLocations = new FieldSet();
-		fieldsetLocations.setHeading("Find existing location");
-		fieldsetLocations.add(nameContainer);
-		
 		locations = new LocationListView(this);
-		fieldsetLocations.add(locations);
-		
-		fieldsetNewLocation = new NewLocationFieldSet(this);
-				
+		locations.setHeight("300px");
 		VBoxLayoutData vbldExistingLocations = new VBoxLayoutData();
-		vbldExistingLocations.setFlex(1.0);
-		
-		locationContainer.add(fieldsetLocations, vbldExistingLocations);
-
-		VBoxLayoutData vbldButton = new VBoxLayoutData();
-		vbldButton.setMargins(new Margins(5));
-		locationContainer.add(buttonAddLocation, vbldButton);
-		locationsAndMapContainer.add(locationContainer, new HBoxLayoutData());
-		fieldsetLocations.setBorders(false);
+//		vbldExistingLocations.setFlex(0.5);
+		vbldExistingLocations.setMargins(new Margins(5,5,5,5));
+		leftContainer.add(locations, vbldExistingLocations);
 	}
 
 	protected void useLocation() {
@@ -303,11 +305,6 @@ public class LocationPicker extends LayoutContainer implements NewLocationPresen
 
 	protected void cancel() {
 		callback.cancel();
-	}
-
-	private void createSelectedLocationView() {
-		selectedLocationView = new SelectedLocationFieldSet(currentActivity);
-		//selectedLocationView.setLocation(site.);
 	}
 
 	public Map<String, Object> getChanges() {
@@ -445,7 +442,7 @@ public class LocationPicker extends LayoutContainer implements NewLocationPresen
 	}
 	
 	/** Keep track of marking the Location such that the user can identify the individual marker on the map */
-	public class Markers {
+	public class MarkerNumbering {
 		int index = 0;
 		
 		public void reset() {
