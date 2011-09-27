@@ -469,8 +469,27 @@ public final class SiteDTO extends BaseModelData implements EntityDTO {
 		return getLocationName() + getLocationAxe() != null ? " (" + getLocationAxe() + ")" : "";
 	}
 	
-	public void setLocation(LocationDTO2 location) {
+	public void setLocationId(int locationId) {
 		set("locationId", location.getId());
+	}
+	
+	public void setLocation(LocationDTO2 location) {
 		this.location=location;
+		setLocationId(location.getId());
+		setLocationName(location.getName());
+		setLocationAxe(location.getAxe());
+		setY(location.getLatitude());
+		setX(location.getLongitude());
+		// TODO: think of better construct for this mess
+		for (String admin : location.getPropertyNames()) {
+			if (admin.startsWith(AdminLevelDTO.PROPERTY_PREFIX)) {
+				int id = Integer.parseInt(admin.substring(admin.length()-1));
+				setAdminEntity(id, location.getAdminEntityId(id));
+			}
+		}
+	}
+
+	public Object getLocationId() {
+		return get("locationId");
 	}
 }

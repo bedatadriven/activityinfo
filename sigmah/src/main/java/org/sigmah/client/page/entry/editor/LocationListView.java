@@ -13,14 +13,13 @@ import com.extjs.gxt.ui.client.widget.ListView;
 
 /** Show a list of locations */
 public class LocationListView extends ListView<LocationViewModel> {
-	private boolean shouldFireEvent = true;
-	
 	/** Listener to notify selection changes */
 	public interface LocationSelectListener { 
 		public void onSelectLocation(LocationViewModel location);
 	}
 	
 	private ListStore<LocationViewModel> store = new ListStore<LocationViewModel>();
+	private boolean shouldFireEvent = true;
 	
 	public LocationListView(final LocationSelectListener listener) {
 		super();

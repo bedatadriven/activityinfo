@@ -177,6 +177,7 @@ public class SiteFormPresenter  {
             final Map<String, Object> properties = view.getPropertyMap();
             properties.put("activityId", currentActivity.getId());
             addProjectIdToMap(properties);
+            addLocationIdToMap(properties);
             
             // hack: we need to send partnerId instead of partner.id, but the
             // nonsense form binding that i set up here doesn't support custom bindings
@@ -200,6 +201,14 @@ public class SiteFormPresenter  {
         }
     }
     
+	private void addLocationIdToMap(Map<String, Object> properties) {
+		properties.remove("locationName");
+		properties.remove("locationAxe");
+		properties.remove("x");
+		properties.remove("y");
+		properties.put("locationId", currentSite.getLocationId());
+	}
+
 	private void updateSiteModel() {
 		for (Map.Entry<String, Object> change : view.getChanges().entrySet()) {
             currentSite.set(change.getKey(), change.getValue());

@@ -36,6 +36,10 @@ public class CreateSite implements MutatingCommand<CreateResult> {
 	public int getPartnerId() {
 		return (Integer)properties.get("partnerId");
 	}
+	
+	public int getLocationId() {
+		return (Integer)properties.get("locationId");
+	}
 
 	public RpcMap getProperties() {
 		return properties;

@@ -99,6 +99,7 @@ public class LocationPicker
 
 		// Picker of AdminEntities
 		createAdminFieldSet();
+		createFieldsetNewLocation();
 		
 		// Left & right columns
 		createLocationsAndMapContainer();
@@ -120,6 +121,10 @@ public class LocationPicker
 		createPresenters();
 	}
 	
+	private void createFieldsetNewLocation() {
+		fieldsetNewLocation = new NewLocationFieldSet(this);
+	}
+
 	private void initializeComponent() {
 		VBoxLayout layout = new VBoxLayout();
 		layout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);

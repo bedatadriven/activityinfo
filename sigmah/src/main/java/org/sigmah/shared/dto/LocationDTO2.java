@@ -16,8 +16,8 @@ public class LocationDTO2 extends BaseModelData implements EntityDTO {
 		String axe = row.isNull("Axe") ? null : row.getString("Axe");
 		Double longitude = row.isNull("X") ? null : row.getDouble("X");
 		Double latitude = row.isNull("Y") ? null : row.getDouble("Y");
-		Integer locationTypeId = row.getInt("LocationTypeId");
-		int id = row.getInt("Id");
+		Integer locationTypeId = row.getInt("LocationTypeID");
+		int id = row.getInt("LocationId");
 		
 		return new LocationDTO2()
 			.setId(id)
@@ -93,8 +93,8 @@ public class LocationDTO2 extends BaseModelData implements EntityDTO {
 		return this;
 	}
 
-	public AdminLevelDTO getAdminEntityId(int levelId) {
-		return (AdminLevelDTO)get(AdminLevelDTO.getPropertyName(levelId));
+	public AdminEntityDTO getAdminEntityId(int levelId) {
+		return (AdminEntityDTO)get(AdminLevelDTO.getPropertyName(levelId));
 	}
 	
 	@Override

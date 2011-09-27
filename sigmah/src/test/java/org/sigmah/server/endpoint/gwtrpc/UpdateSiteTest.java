@@ -42,7 +42,6 @@ public class UpdateSiteTest extends CommandTestCase {
 
         // modify and generate command
         model.setComments("NEW <b>Commentaire</b>");
-        model.setLocationName("NEWNAME");
         model.setAttributeValue(1, true);
         model.setAttributeValue(2, null);
         model.setAttributeValue(3, true);
@@ -60,7 +59,6 @@ public class UpdateSiteTest extends CommandTestCase {
 
         // confirm that the changes are there
         Assert.assertEquals("site.comments", model.getComments(), secondRead.getComments());
-        Assert.assertEquals("site.location.name", model.getLocationName(), secondRead.getLocationName());
         Assert.assertEquals("site.reportingPeriod[0].indicatorValue[0]", 995,
                 secondRead.getIndicatorValue(2).intValue());
 

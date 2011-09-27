@@ -12,7 +12,6 @@ import org.sigmah.shared.dto.IndicatorDTO;
 
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
-import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.query.SqlInsert;
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
@@ -30,7 +29,7 @@ public class UpdateSiteHandler implements CommandHandlerAsync<UpdateSite, VoidRe
 		SqlTransaction tx = context.getTransaction();
 		updateSiteProperties(tx, command, changes);
 		updateAttributeValues(tx, command.getSiteId(), changes);
-		updateLocation(tx, command.getSiteId(), changes);
+		//updateLocation(tx, command.getSiteId(), changes);
 		updateReportingPeriod(tx, command.getSiteId(), changes);
 	
 		callback.onSuccess(new VoidResult());
@@ -44,43 +43,44 @@ public class UpdateSiteHandler implements CommandHandlerAsync<UpdateSite, VoidRe
 			.value("comments", changes)
 			.value("projectId", changes)
 			.value("partnerId", changes)
+			.value("locationId", changes)
 			.value("dateEdited", new Date())
 			.execute(tx);
 	}
 
-
-	private void updateLocation(SqlTransaction tx,
-			final int siteId, final Map<String, Object> changes) {
-		
-		SqlQuery.select("locationId", "boundAdminLevelId")
-			.from("Location")
-			.leftJoin("LocationType").on("LocationType.LocationTypeId=Location.LocationTypeId")
-			.where("locationId").in(
-					SqlQuery.select("locationId").from("Site").where("siteId").equalTo(siteId))
-			.execute(tx, new SqlResultCallback() {
-				
-				@Override
-				public void onSuccess(final SqlTransaction tx, SqlResultSet results) {
-					SqlResultSetRow row = results.getRow(0);
-					final int locationId = row.getInt("locationId");
-					Integer boundAdminLevelId = row.isNull("boundAdminLevelId") ? null : row.getInt("boundAdminLevelId");
-					
-					lookupNewName(tx, boundAdminLevelId, changes, new AsyncCallback<String>() {
-
-						@Override
-						public void onFailure(Throwable caught) {
-							// doesn't get called
-						}
-
-						@Override
-						public void onSuccess(String result) {
-							updateLocation(tx, locationId, result, changes);
-						}							
-					});
-					
-				}
-			});
-	}
+/** comment out, remove later if not needed */
+//	private void updateLocation(SqlTransaction tx,
+//			final int siteId, final Map<String, Object> changes) {
+//		
+//		SqlQuery.select("locationId", "boundAdminLevelId")
+//			.from("Location")
+//			.leftJoin("LocationType").on("LocationType.LocationTypeId=Location.LocationTypeId")
+//			.where("locationId").in(
+//					SqlQuery.select("locationId").from("Site").where("siteId").equalTo(siteId))
+//			.execute(tx, new SqlResultCallback() {
+//				
+//				@Override
+//				public void onSuccess(final SqlTransaction tx, SqlResultSet results) {
+//					SqlResultSetRow row = results.getRow(0);
+//					final int locationId = row.getInt("locationId");
+//					Integer boundAdminLevelId = row.isNull("boundAdminLevelId") ? null : row.getInt("boundAdminLevelId");
+//					
+//					lookupNewName(tx, boundAdminLevelId, changes, new AsyncCallback<String>() {
+//
+//						@Override
+//						public void onFailure(Throwable caught) {
+//							// doesn't get called
+//						}
+//
+//						@Override
+//						public void onSuccess(String result) {
+//							updateLocation(tx, locationId, result, changes);
+//						}							
+//					});
+//					
+//				}
+//			});
+//	}
 
 	private void lookupNewName(SqlTransaction tx, 
 			Integer boundAdminLevelId, final Map<String, Object> changes,

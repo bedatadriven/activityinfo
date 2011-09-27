@@ -159,7 +159,7 @@ public class SiteForm extends ModelFormPanel implements SiteFormPresenter.View {
         Map<String, Object> changes = Maps.newHashMap();
         
         changes.putAll(super.getAllValues());
-        changes.putAll(locationFieldSet.getAllValues());
+//        changes.putAll(locationFieldSet.getAllValues());
         
         return changes;
     }

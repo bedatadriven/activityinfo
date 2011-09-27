@@ -11,7 +11,7 @@ public class GetLocations implements Command<LocationsResult>{
 	private Collection<Integer> adminEntityIds;
 	private String name;
 	private int threshold = 300;
-	private int locationTypeId;
+	private int locationTypeId = 0;
 	
 	public int getThreshold() {
 		return threshold;

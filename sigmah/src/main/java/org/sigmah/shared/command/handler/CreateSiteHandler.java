@@ -44,6 +44,7 @@ public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, Create
 
 		final Map<String,Object> properties = cmd.getProperties().getTransientMap();
 		final int activityId = cmd.getActivityId();
+		final int locationId = cmd.getLocationId();
 
 		// look up the Activity Entity so we can get the corresponding location
 		// type
@@ -65,31 +66,21 @@ public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, Create
 				Integer boundAdminLevelId = row.isNull("boundAdminLevelId") ? null : row.getInt("boundAdminLevelId");
 				final int reportingFrequency = row.getInt("reportingFrequency");
 				
-				lookupLocationId(context, boundAdminLevelId, locationTypeId, properties, new AsyncCallback<Integer>() {
-					@Override
-					public void onFailure(Throwable caught) {
-						// TODO Auto-generated method stub
-						
-					}
-					@Override
-					public void onSuccess(Integer locationId) {
-						int siteId = insertSite(tx, activityId, locationId, properties);
+				int siteId = insertSite(tx, activityId, locationId, properties);
 
-						// we only create a reporting period if this is a one-off activity
-						Integer reportingPeriodId = null;
-						if(reportingFrequency == ActivityDTO.REPORT_ONCE) {
-							reportingPeriodId = insertReportingPeriod(tx, siteId, properties);
-						}
+				// we only create a reporting period if this is a one-off activity
+				Integer reportingPeriodId = null;
+				if(reportingFrequency == ActivityDTO.REPORT_ONCE) {
+					reportingPeriodId = insertReportingPeriod(tx, siteId, properties);
+				}
 
-						// update command for remote consumption with new ids
-						// You can call setLocation on SiteDTO, which will set the "locationId" property
-						//cmd.getProperties().put("locationId", locationId);
-						cmd.getProperties().put("siteId", siteId);
-						cmd.getProperties().put("reportingPeriodId", reportingPeriodId);
-						
-						callback.onSuccess(new CreateResult(siteId));
-					}
-				});
+				// update command for remote consumption with new ids
+				// You can call setLocation on SiteDTO, which will set the "locationId" property
+				//cmd.getProperties().put("locationId", locationId);
+				cmd.getProperties().put("siteId", siteId);
+				cmd.getProperties().put("reportingPeriodId", reportingPeriodId);
+				
+				callback.onSuccess(new CreateResult(siteId));
 			}
 		});
 	}

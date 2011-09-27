@@ -28,6 +28,7 @@ import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
+import com.google.common.collect.Maps;
 
 public class LocationView extends LayoutContainer {
 	private EventBus eventBus;
@@ -35,6 +36,7 @@ public class LocationView extends LayoutContainer {
 	
 	private ActivityDTO currentActivity;
 	private SiteDTO site;
+	private LocationDTO2 location;
 	
 	private LocationPicker locationPicker;
 	private MapView mapView;
@@ -45,6 +47,9 @@ public class LocationView extends LayoutContainer {
 	private LayoutContainer infoContainer;
 	private LayoutContainer containerLocationView;
 	private CardLayout cardLayout = new CardLayout();
+	private LabelField labelName;
+	private LabelField labelAxe;
+	private boolean isDirty = false;
 	
 	public LocationView(EventBus eventBus, Dispatcher service, ActivityDTO activity) {
 		super();
@@ -90,9 +95,11 @@ public class LocationView extends LayoutContainer {
 		locationPicker = new LocationPicker(service, eventBus, currentActivity, new SelectLocationCallback() {
 			@Override
 			public void useLocation(LocationDTO2 location) {
-				refreshAdminEntities();
+				LocationView.this.location=location;
+				isDirty=true;
+				site.setLocation(location);
+				updateUI();
 				cardLayout.setActiveItem(containerLocationView);
-				
 			}
 			@Override
 			public void cancel() {
@@ -104,8 +111,16 @@ public class LocationView extends LayoutContainer {
 
 	public void setSite(SiteDTO site) {
 		this.site=site;
-		refreshAdminEntities();
+		//this.location=site.getLocation();
 		locationPicker.setSite(site);
+		updateUI();
+	}
+	
+	private void updateUI() {
+		labelName.setText(site.getLocationName());
+		labelAxe.setText(site.getLocationAxe());
+		refreshAdminEntities();
+		//map.setCoordinates(
 	}
 
 	private void InitializeComponent() {
@@ -126,13 +141,11 @@ public class LocationView extends LayoutContainer {
 		nameFieldset.setLayout(new FormLayout());
 		nameFieldset.setHeading(I18N.CONSTANTS.locationDetails());
 		
-		LabelField labelName = new LabelField();
-		labelName.setName("locationName"); // Use binding
+		labelName = new LabelField();
 		labelName.setFieldLabel(I18N.CONSTANTS.location());
 		nameFieldset.add(labelName);
 		
-		LabelField labelAxe = new LabelField();
-		labelAxe.setName("locationAxe");   // Use binding
+		labelAxe = new LabelField();
 		labelAxe.setFieldLabel(I18N.CONSTANTS.axe());
 		nameFieldset.add(labelAxe);
 		
@@ -158,6 +171,7 @@ public class LocationView extends LayoutContainer {
             }
             adminFieldset.add(labelAdminEntity);
         }
+        layout();
 	}
 
 	private void createAdminFieldset() {
@@ -168,7 +182,7 @@ public class LocationView extends LayoutContainer {
 	}
 
 	public boolean isDirty() {
-		return locationPicker.isDirty();
+		return isDirty;
 	}
 
 	public Map<? extends String, ? extends Object> getAllValues() {
@@ -176,7 +190,11 @@ public class LocationView extends LayoutContainer {
 	}
 
 	public Map<? extends String, ? extends Object> getChanges() {
-		return locationPicker.getChanges();
+		Map<String, Object> changes = Maps.newHashMap();
+		if (isDirty) {
+			changes.put("locationId", location.getId());
+		}
+		return changes;
 	}
 
 }
