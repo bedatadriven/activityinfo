@@ -34,7 +34,7 @@ public class LocationDTO2 extends BaseModelData implements EntityDTO {
 	}
 
 	public String getName() {
-		return get("name");
+		return (String)get("name");
 	}
 
 	public LocationDTO2 setName(String name) {
@@ -43,7 +43,7 @@ public class LocationDTO2 extends BaseModelData implements EntityDTO {
 	}
 
 	public String getAxe() {
-		return get("axe");
+		return (String)get("axe");
 	}
 
 	public LocationDTO2 setAxe(String axe) {
@@ -52,7 +52,7 @@ public class LocationDTO2 extends BaseModelData implements EntityDTO {
 	}
 
 	public Double getLatitude() {
-		return get("latitude");
+		return (Double)get("latitude");
 	}
 
 	public LocationDTO2 setLatitude(Double latitude) {
@@ -61,7 +61,7 @@ public class LocationDTO2 extends BaseModelData implements EntityDTO {
 	}
 
 	public Double getLongitude() {
-		return get("longitude");
+		return (Double)get("longitude");
 	}
 
 	public LocationDTO2 setLongitude(Double longitude) {
@@ -76,11 +76,11 @@ public class LocationDTO2 extends BaseModelData implements EntityDTO {
 
 	@Override
 	public int getId() {
-		return get("id");
+		return (Integer)get("id");
 	}
 	
 	public int getLocationTypeId() {
-		return get("locationTypeId");
+		return (Integer)get("locationTypeId");
 	}
 	
 	public LocationDTO2 setLocationTypeId(int locationTypeId) {
@@ -94,7 +94,7 @@ public class LocationDTO2 extends BaseModelData implements EntityDTO {
 	}
 
 	public AdminLevelDTO getAdminEntityId(int levelId) {
-		return get(AdminLevelDTO.getPropertyName(levelId));
+		return (AdminLevelDTO)get(AdminLevelDTO.getPropertyName(levelId));
 	}
 	
 	@Override
