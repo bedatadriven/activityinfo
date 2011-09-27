@@ -16,7 +16,6 @@ import org.sigmah.client.map.MapTypeFactory;
 import org.sigmah.client.page.common.widget.CoordinateField;
 import org.sigmah.client.page.config.form.FieldSetFitLayout;
 import org.sigmah.client.page.entry.editor.LocationListView.LocationSelectListener;
-import org.sigmah.client.page.entry.editor.LocationPicker.LocationViewModel;
 import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
@@ -60,7 +59,7 @@ public class MapFieldSet extends LayoutContainer implements MapEditView {
     private GcIconFactory iconFactory = new GcIconFactory();
 
     private CoordinateField latField;
-    private CoordinateField lngField;
+    private CoordinateField lngField; 
 
     private LatLngBounds pendingZoom = null;
 

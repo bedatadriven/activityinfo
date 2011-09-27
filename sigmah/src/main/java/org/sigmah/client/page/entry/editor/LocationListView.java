@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.entry.editor.LocationPicker.LocationViewModel;
 import org.sigmah.shared.command.GetLocations.LocationsResult;
 
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
@@ -17,7 +16,7 @@ public class LocationListView extends ListView<LocationViewModel> {
 	private boolean shouldFireEvent = true;
 	
 	/** Listener to notify selection changes */
-	public interface LocationSelectListener {
+	public interface LocationSelectListener { 
 		public void onSelectLocation(LocationViewModel location);
 	}
 	
@@ -37,7 +36,7 @@ public class LocationListView extends ListView<LocationViewModel> {
 		getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<LocationViewModel>() {
 			@Override
 			public void selectionChanged(SelectionChangedEvent<LocationViewModel> se) {
-				if (shouldFireEvent && se.getSelectedItem() != null) {
+				if (shouldFireEvent && (se.getSelectedItem() != null)) {
 					listener.onSelectLocation(se.getSelectedItem());
 				}
 				shouldFireEvent=true;
