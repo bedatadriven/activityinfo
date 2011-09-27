@@ -105,7 +105,6 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 	protected TreeStore<ModelData> dimensionStore;
 	protected TreePanel<ModelData> treePanel;
 
-
 	protected ContentPanel filterPane;
 	protected IndicatorTreePanel indicatorPanel;
 	protected AdminFilterPanel adminPanel;
@@ -120,15 +119,11 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 
 	@Inject
 	public PivotPage(EventBus eventBus, Dispatcher service, StateProvider stateMgr) {
-
 		this.eventBus = eventBus;
 		this.service = service;
 		this.stateMgr = stateMgr;
 
-		BorderLayout borderLayout = new BorderLayout();
-		borderLayout.setEnableState(true);
-		setStateId("pivotPage");
-		setLayout(borderLayout);
+		initializeComponent();
 
 		createPane();
 		createFilterPane();
@@ -139,7 +134,6 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 		createGridContainer();
 		
 		filterPanelSet = new FilterPanelSet(adminPanel, datePanel, partnerPanel);
-		
 
 		initialDrillDownListener = new Listener<PivotCellEvent>() {
 			public void handleEvent(PivotCellEvent be) {
@@ -147,6 +141,13 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 			}
 		};
 		eventBus.addListener(AppEvents.Drilldown, initialDrillDownListener);
+	}
+	
+	private void initializeComponent() {
+		BorderLayout borderLayout = new BorderLayout();
+		borderLayout.setEnableState(true);
+		setStateId("pivotPage");
+		setLayout(borderLayout);
 	}
 
 	public void createPane() {
@@ -165,7 +166,7 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 		VBoxLayoutData listLayout = new VBoxLayoutData();
 		listLayout.setFlex(1.0);
 
-		createDimsTree();
+		createDimensionsTree();
 		pane.add(treePanel, listLayout); 
 		pane.add(new Text(I18N.CONSTANTS.rows()), labelLayout);
 
@@ -189,10 +190,8 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 
 	}	
 
-	private void createDimsTree() {
-		// tree loader
+	private void createDimensionsTree() {
 		loader = new BaseTreeLoader<ModelData>(new Proxy()) {
-
 			@Override
 			public boolean hasChildren(ModelData parent) {
 				if (parent instanceof AttributeGroupDTO) {
@@ -234,24 +233,24 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 		treePanel.setId("statefullavaildims");
 		treePanel.collapseAll();
 		
-		final ArrayList <ModelData> list = new ArrayList <ModelData> (4);        
-		list.add(new Dimension(I18N.CONSTANTS.database(), DimensionType.Database));
-		list.add(new Dimension(I18N.CONSTANTS.activity(), DimensionType.Activity));
-		list.add(new Dimension(I18N.CONSTANTS.indicators(), DimensionType.Indicator));
-		list.add(new Dimension(I18N.CONSTANTS.partner(), DimensionType.Partner));
-		list.add(new Dimension(I18N.CONSTANTS.project(), DimensionType.Project));
+		final ArrayList<ModelData> dimensions = new ArrayList<ModelData>();        
+		dimensions.add(new Dimension(I18N.CONSTANTS.database(), DimensionType.Database));
+		dimensions.add(new Dimension(I18N.CONSTANTS.activity(), DimensionType.Activity));
+		dimensions.add(new Dimension(I18N.CONSTANTS.indicators(), DimensionType.Indicator));
+		dimensions.add(new Dimension(I18N.CONSTANTS.partner(), DimensionType.Partner));
+		dimensions.add(new Dimension(I18N.CONSTANTS.project(), DimensionType.Project));
+		dimensions.add(new Dimension(I18N.CONSTANTS.location(), DimensionType.Location));
 
-		list.add(new DimensionFolder(I18N.CONSTANTS.geography(), DimensionType.AdminLevel,0,0));
-		list.add(new DimensionFolder(I18N.CONSTANTS.time(), DimensionType.Date,0,0));
-		list.add(new DimensionFolder(I18N.CONSTANTS.attributes(), DimensionType.AttributeGroup,0,0));
-	
+		dimensions.add(new DimensionFolder(I18N.CONSTANTS.geography(), DimensionType.AdminLevel,0,0));
+		dimensions.add(new DimensionFolder(I18N.CONSTANTS.time(), DimensionType.Date,0,0));
+		dimensions.add(new DimensionFolder(I18N.CONSTANTS.attributes(), DimensionType.AttributeGroup,0,0));
 		
-		dimensionStore.add(list, false);  
+		dimensionStore.add(dimensions, false);  
 
-		setDimensionChecked(list.get(0), true);
-		setDimensionChecked(list.get(1), true);
-		setDimensionChecked(list.get(2), true);
-		setDimensionChecked(list.get(3), true);
+		setDimensionChecked(dimensions.get(0), true);
+		setDimensionChecked(dimensions.get(1), true);
+		setDimensionChecked(dimensions.get(2), true);
+		setDimensionChecked(dimensions.get(3), true);
 		
 		treePanel.addCheckListener( new CheckChangedListener <ModelData > () {
 			public void checkChanged(CheckChangedEvent<ModelData> event) {		
@@ -282,7 +281,6 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 			}
 		});
 	}
-
 
 	private ListStore<Dimension> createStore() {
 		ListStore<Dimension> store = new ListStore<Dimension>();
@@ -351,7 +349,6 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 	}
 
 	private void createGridContainer() {
-
 		center = new LayoutContainer();
 		center.setLayout(new BorderLayout());
 		add(center, new BorderLayoutData(Style.LayoutRegion.CENTER));
@@ -387,7 +384,6 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 	}
 
 	protected void createDrilldownPanel(PivotCellEvent event) {
-
 		BorderLayoutData layout = new BorderLayoutData(Style.LayoutRegion.SOUTH);
 		layout.setSplit(true);
 		layout.setCollapsible(true);
@@ -403,7 +399,6 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 		eventBus.removeListener(AppEvents.Drilldown, initialDrillDownListener);
 
 		layout();
-
 	}
 
 	@Override
@@ -513,7 +508,6 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 
 		public void loadChildren(Object parent, final AsyncCallback<List<ModelData>> callback) {
 			if (parent != null && parent instanceof DimensionFolder) {
-
 				DimensionFolder folder = (DimensionFolder) parent;
 				DimensionType type = folder.getType();
 				final ArrayList<ModelData> dims = new ArrayList<ModelData>();
