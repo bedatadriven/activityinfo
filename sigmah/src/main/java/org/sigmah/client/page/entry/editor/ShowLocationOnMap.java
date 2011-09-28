@@ -1,4 +1,5 @@
 package org.sigmah.client.page.entry.editor;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.map.MapApiLoader;
 import org.sigmah.client.map.MapTypeFactory;
 import org.sigmah.shared.dto.CountryDTO;
@@ -66,14 +67,19 @@ public class ShowLocationOnMap extends LayoutContainer {
 	}
 	
 	private void updateUI() {
-		if (mapLoaded && location != null && location.hasCoordinates()) {
-			map.clearOverlays();
-			LatLng latLng = LatLng.newInstance(location.getLongitude(), location.getLatitude());
-	        MarkerOptions options = MarkerOptions.newInstance();
-	        options.setDraggable(false);
-	        Marker marker = new Marker(latLng, options);
-	        map.addOverlay(marker);
-	        map.panTo(latLng);
+		if (mapLoaded && location != null) {
+			if (location.hasCoordinates()) {
+				el().unmask();
+				map.clearOverlays();
+				LatLng latLng = LatLng.newInstance(location.getLongitude(), location.getLatitude());
+		        MarkerOptions options = MarkerOptions.newInstance();
+		        options.setDraggable(false);
+		        Marker marker = new Marker(latLng, options);
+		        map.addOverlay(marker);
+		        map.panTo(latLng);
+			} else {
+				el().mask(I18N.CONSTANTS.noCoordinates());
+			}
 		}
 	}
 	
