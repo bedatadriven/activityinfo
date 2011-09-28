@@ -24,6 +24,7 @@ import com.extjs.gxt.ui.client.widget.layout.CardLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout.HBoxLayoutAlign;
+import com.extjs.gxt.ui.client.widget.layout.HBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
@@ -39,7 +40,6 @@ public class LocationView extends LayoutContainer {
 	private LocationDTO2 location;
 	
 	private LocationPicker locationPicker;
-	private MapView mapView;
 
 	private FieldSet adminFieldset;
 	private FieldSet nameFieldset;
@@ -50,6 +50,9 @@ public class LocationView extends LayoutContainer {
 	private LabelField labelName;
 	private LabelField labelAxe;
 	private boolean isDirty = false;
+	private ShowLocationOnMap map;
+	private LabelField labelLatitude;
+	private LabelField labelLongitude;
 	
 	public LocationView(EventBus eventBus, Dispatcher service, ActivityDTO activity) {
 		super();
@@ -111,16 +114,28 @@ public class LocationView extends LayoutContainer {
 
 	public void setSite(SiteDTO site) {
 		this.site=site;
-		//this.location=site.getLocation();
+		this.location = site.getLocation();
 		locationPicker.setSite(site);
 		updateUI();
 	}
-	
+	/** Ugh. This really show why we must seperate the model from the ViewModel. 
+	 * In this case, we'd like to have a rich Site model from where we can simply grab the
+	 * location, and use the location. The SiteGrid etc. should use a seperate defined ViewModel,
+	 * where all the attributes of the Site are flattened into a "one object with reflective
+	 * properties".
+	 */
 	private void updateUI() {
 		labelName.setText(site.getLocationName());
 		labelAxe.setText(site.getLocationAxe());
+		if (location.hasCoordinates()) {
+			labelLatitude.setText(location.getLatitude().toString());
+			labelLongitude.setText(location.getLongitude().toString());
+		} else {
+			labelLatitude.setText(I18N.CONSTANTS.noCoordinates());
+			labelLongitude.setText(I18N.CONSTANTS.noCoordinates());
+		}
 		refreshAdminEntities();
-		//map.setCoordinates(
+		map.setLocation(location);
 	}
 
 	private void InitializeComponent() {
@@ -149,12 +164,23 @@ public class LocationView extends LayoutContainer {
 		labelAxe.setFieldLabel(I18N.CONSTANTS.axe());
 		nameFieldset.add(labelAxe);
 		
+		labelLatitude = new LabelField();
+		labelLatitude.setFieldLabel(I18N.CONSTANTS.latitude());
+		nameFieldset.add(labelLatitude);
+		
+		labelLongitude = new LabelField();
+		labelLongitude.setFieldLabel(I18N.CONSTANTS.longitude());
+		nameFieldset.add(labelLongitude);
+		
 		infoContainer.add(nameFieldset, new VBoxLayoutData(new Margins(5,5,5,5)));
 	}
 
 	private void createMapView() {
-		// TODO Auto-generated method stub
-		
+		map = new ShowLocationOnMap(currentActivity.getDatabase().getCountry());
+		HBoxLayoutData layout = new HBoxLayoutData();
+		layout.setFlex(1.0);
+		layout.setMargins(new Margins(5,5,5,5));
+		containerLocationView.add(map, layout);
 	}
 	
 	private void refreshAdminEntities() {

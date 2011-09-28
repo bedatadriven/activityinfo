@@ -488,8 +488,28 @@ public final class SiteDTO extends BaseModelData implements EntityDTO {
 			}
 		}
 	}
+	
+	/** Returns a new location constructed from flattened properties of this site */
+	public LocationDTO2 getLocation() {
+		LocationDTO2 location = new LocationDTO2();
+		
+		location.setName(getLocationName());
+		location.setAxe(getLocationAxe());
+		location.setLatitude(getY());
+		location.setLongitude(getX());
+		
+	    for(Entry<String, Object> property : getProperties().entrySet()) {
+	    	if(property.getKey().startsWith(AdminLevelDTO.PROPERTY_PREFIX)) {
+	    		int id=((AdminEntityDTO)property.getValue()).getId();
+	    		location.setAdminEntity(id, ((AdminEntityDTO)property.getValue()));
+	    	}
+	    }
 
-	public Object getLocationId() {
+		
+		return location;
+	}
+
+	public Integer getLocationId() {
 		return get("locationId");
 	}
 }
