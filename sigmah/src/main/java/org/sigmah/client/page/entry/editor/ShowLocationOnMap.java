@@ -27,9 +27,13 @@ public class ShowLocationOnMap extends LayoutContainer {
 		
 		this.country=country;
 		
-		setLayout(new FitLayout());
+		initializeComponent();
 		
 		loadMapAsync();
+	}
+
+	private void initializeComponent() {
+		setLayout(new FitLayout());
 	}
 
     private void loadMapAsync() {
