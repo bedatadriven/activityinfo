@@ -88,8 +88,8 @@ public class PivotHibernateDAO implements PivotDAO {
                 appendIdCriteria(where, "Site.ProjectId", filter.getRestrictions(type), parameters, filter.isOr());
             } else if (type == DimensionType.Location) {
                 appendIdCriteria(where, "Site.LocationId", filter.getRestrictions(type), parameters, filter.isOr());
-            } else if (type == DimensionType.Attribute) {
-                appendIdCriteria(where, "Site.LocationId", filter.getRestrictions(type), parameters, filter.isOr());
+//            } else if (type == DimensionType.Attribute) {
+//                appendIdCriteria(where, "Site.LocationId", filter.getRestrictions(type), parameters, filter.isOr());
             } else if (type == DimensionType.AdminLevel) {
                 where.append(" AND Site.LocationId IN " +
                         "(SELECT Link.LocationId FROM LocationAdminLink Link WHERE 1=1 ");
