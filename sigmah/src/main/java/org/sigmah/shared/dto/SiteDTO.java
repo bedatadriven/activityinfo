@@ -415,8 +415,11 @@ public class SiteDTO extends BaseModelData implements EntityDTO {
 	public static boolean fallsWithinLockedPeriods(Iterable<LockedPeriodDTO> lockedPeriods, ActivityDTO activity, LocalDate date) {
 		for (LockedPeriodDTO lockedPeriod : lockedPeriods) {
 			// For reporting purposes, only the Date2 is 'counted'.  
-			if (lockedPeriod.fallsWithinPeriod(date)) {
-				return true;
+			if (date != null)
+			{
+				if (lockedPeriod.fallsWithinPeriod(date)) {
+					return true;
+				}
 			}
 		}
 		

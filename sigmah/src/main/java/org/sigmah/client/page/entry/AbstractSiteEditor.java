@@ -55,7 +55,7 @@ public abstract class AbstractSiteEditor extends AbstractEditorGridPresenter<Sit
     private Listener<SiteEvent> siteSelectedListner;
     private List<Shutdownable> subComponents = new ArrayList<Shutdownable>();
 
-    private final View view;
+    protected final View view;
     protected final EventBus eventBus;
     protected final Dispatcher service;
 
@@ -150,21 +150,7 @@ public abstract class AbstractSiteEditor extends AbstractEditorGridPresenter<Sit
     public void go(SiteGridPageState place, ActivityDTO activity) {
         this.currentActivity = activity;
     }
-//		@Override
-//	    public boolean navigate(final PageState place) {
-//			if (!super.navigate(place)) {
-//				return false;
-//			}
-//	        final SiteGridPageState gridPlace = (SiteGridPageState) place;
-//
-//	        if (currentActivity.getId() != gridPlace.getActivityId()) {
-//	            return false;
-//	        }
-//
-//	        handleGridNavigation(loader, gridPlace);
-//
-//	        return true;
-//	    }
+
 
 	protected void setActionsDisabled() {
 		view.setActionEnabled(UIActions.add, currentActivity.getDatabase().isEditAllowed());
@@ -175,9 +161,10 @@ public abstract class AbstractSiteEditor extends AbstractEditorGridPresenter<Sit
     protected void onLoaded(LoadEvent le) {
         super.onLoaded(le);
 
-        PagingResult result = (PagingResult) le.getData();
-
-        view.setActionEnabled(UIActions.export, result.getTotalLength() != 0);
+        if (le.getData() instanceof PagingResult) {
+        	PagingResult result = (PagingResult) le.getData();
+            view.setActionEnabled(UIActions.export, result.getTotalLength() != 0);
+        }
 
         // Let everyone else know we have navigated
         firePageEvent(new SiteGridPageState(currentActivity), le);

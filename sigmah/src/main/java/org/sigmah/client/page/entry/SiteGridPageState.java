@@ -87,9 +87,7 @@ public class SiteGridPageState extends AbstractPagingGridPageState {
         return activityId;
     }
 
-
     public static class Parser implements PageStateParser {
-
         @Override
         public PageState parse(String token) {
             SiteGridPageState place = new SiteGridPageState();

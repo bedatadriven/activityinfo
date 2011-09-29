@@ -60,7 +60,10 @@ public abstract class AbstractGridPresenter<ModelT extends ModelData>
 
                 @Override
                 public void loaderBeforeLoad(LoadEvent le) {
-                    onBeforeLoad((CommandLoadEvent) le);
+                	if (le instanceof CommandLoadEvent) {
+                        onBeforeLoad((CommandLoadEvent) le);
+                	}
+                    //onBeforeLoad(le);
                 }
             });
         }

@@ -160,7 +160,6 @@ public abstract class AbstractSiteGrid
             @Override
             public Object render(SiteDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
             	StringBuilder builder = new StringBuilder();
-            	
             	if (model.fallsWithinLockedPeriod(activity)) {
             		String tooltip = buildTooltip(model, activity);
             		

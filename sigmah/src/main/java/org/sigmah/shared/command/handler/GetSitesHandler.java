@@ -207,6 +207,14 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 	                query.where("Site.SiteId").in(filter.getRestrictions(type));
 	            }
 	        }
+	        if (filter.getMinDate() != null && filter.getMaxDate() != null) {
+	        	query.where("month(Site.Date2) = " + 
+	        			filter.getMinDate().getMonth() +
+	        			" AND " +
+	        			"year(Site.Date2) = " + 
+	        			filter.getMinDate().getYear());
+	        			
+	        }
 		}
 	}
 	

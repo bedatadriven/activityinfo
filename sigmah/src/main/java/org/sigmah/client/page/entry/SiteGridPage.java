@@ -31,7 +31,7 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class SiteGridPage extends SiteGrid { 
+public class SiteGridPage extends SiteTreeGrid { 
 
     private CollapsibleTabPanel tabPanel;
     private List<ToggleButton> sideBarButtons = new ArrayList<ToggleButton>();

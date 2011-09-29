@@ -1,6 +1,5 @@
 package org.sigmah.client.page.entry;
 
-import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.SiteDTO;
 
@@ -20,10 +19,7 @@ import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 
 public class SiteTreeGrid extends AbstractSiteGrid implements SiteTreeEditor.View {
 	private EditorTreeGrid<SiteDTO> grid;
-	private TreeStore<SiteDTO> treeStore;
-	private Dispatcher service;
 	private SiteTreeEditor treePresenter;
-	private ActivityDTO activity;
 	
 	public SiteTreeGrid() {
 		super();
@@ -98,9 +94,9 @@ public class SiteTreeGrid extends AbstractSiteGrid implements SiteTreeEditor.Vie
 	@Override
 	public void init(SiteTreeEditor presenter, ActivityDTO activity,
 			TreeStore<SiteDTO> store) {
-		super.init(presenter, store);
 		this.treePresenter=presenter;
 		this.activity = presenter.getCurrentActivity();
+		super.init(presenter, store);
 	}
 
 }

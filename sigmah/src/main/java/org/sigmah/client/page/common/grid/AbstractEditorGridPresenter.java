@@ -111,7 +111,6 @@ public abstract class AbstractEditorGridPresenter<M extends ModelData>
      */
     @Override
     protected void onBeforeLoad(CommandLoadEvent le) {
-
         if (getModifiedRecords().size() != 0) {
             le.addCommandToBatch(createSaveCommand());
         }

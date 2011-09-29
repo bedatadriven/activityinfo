@@ -68,8 +68,6 @@ public class SiteEditor extends AbstractSiteEditor implements Page, GridPresente
     @Inject
     public SiteEditor(EventBus eventBus, Dispatcher service, StateProvider stateMgr, final View view) {
         super(eventBus, service, stateMgr, view);
-        
-        this.view=view;
     }
 
     @Override

@@ -17,6 +17,7 @@ import org.sigmah.client.page.PageLoader;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.PageStateSerializer;
 import org.sigmah.client.page.common.filter.FilterPanel;
+import org.sigmah.client.page.entry.SiteTreeEditor.SiteTreeGridPageState;
 import org.sigmah.client.page.entry.editor.SiteFormPage;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.ActivityDTO;
@@ -45,8 +46,8 @@ public class DataEntryLoader implements PageLoader {
         this.dataEntryFrameSetProvider = dataEntryFrameSetProvider;
         this.siteFormProvider=siteFormProvider;
         pageManager.registerPageLoader(Frames.DataEntryFrameSet, this);
-        pageManager.registerPageLoader(SiteEditor.ID, this);
-        placeSerializer.registerParser(SiteEditor.ID, new SiteGridPageState.Parser());
+        pageManager.registerPageLoader(SiteTreeEditor.SiteTreeGridPageState.SITE_TREE_VIEW, this);
+        placeSerializer.registerParser(SiteTreeEditor.SiteTreeGridPageState.SITE_TREE_VIEW, new SiteTreeEditor.SiteTreeGridPageState.Parser());
         
         placeSerializer.registerParser(SiteFormPage.EDIT_PAGE_ID, new SiteFormPage.EditPageStateParser());
         pageManager.registerPageLoader(SiteFormPage.EDIT_PAGE_ID, this);
@@ -65,7 +66,7 @@ public class DataEntryLoader implements PageLoader {
             public void onSuccess() {
                 if (Frames.DataEntryFrameSet.equals(pageId)) {
                     loadFrame(pageState, callback);
-                } else if (SiteEditor.ID.equals(pageId)) {
+                } else if (SiteTreeEditor.SiteTreeGridPageState.SITE_TREE_VIEW.equals(pageId)) {
                     loadSiteGrid(pageState, callback);
                 } else if (SiteFormPage.EDIT_PAGE_ID.equals(pageId) || 
                 		   SiteFormPage.NEW_PAGE_ID.equals(pageId)) {
@@ -96,7 +97,7 @@ public class DataEntryLoader implements PageLoader {
         	
             @Override
             public void got(SchemaDTO schema) {
-                SiteGridPageState sgPlace = (SiteGridPageState) place;
+            	SiteTreeGridPageState sgPlace = (SiteTreeGridPageState) place;
                 if (sgPlace.getActivityId() == 0) {
                 	if (schema.getFirstActivity() != null) {
                 		sgPlace.setActivityId(schema.getFirstActivity().getId());
@@ -106,9 +107,9 @@ public class DataEntryLoader implements PageLoader {
                 ActivityDTO activity = schema.getActivityById(sgPlace.getActivityId());
 
                 SiteGridPage grid = new SiteGridPage(true);
-                SiteEditor editor = new SiteEditor(injector.getEventBus(), injector.getService(),
+                SiteTreeEditor editor = new SiteTreeEditor(injector.getEventBus(), injector.getService(),
                         injector.getStateManager(), grid);
-                editor.bindFilterPanel(filterPanelSet);
+                //editor.bindFilterPanel(filterPanelSet);
 
                 if (activity.getReportingFrequency() == ActivityDTO.REPORT_MONTHLY) {
                     MonthlyGrid monthlyGrid = new MonthlyGrid(activity);
@@ -121,7 +122,6 @@ public class DataEntryLoader implements PageLoader {
                     editor.addSubComponent(monthlyPresenter);
                     grid.addSouthTab(monthlyTab);
                 } else {
-
                     DetailsTab detailsTab = new DetailsTab();
                     DetailsPresenter detailsPresenter = new DetailsPresenter(
                             injector.getEventBus(),
@@ -131,14 +131,12 @@ public class DataEntryLoader implements PageLoader {
                     grid.addSouthTab(detailsTab);
                     editor.addSubComponent(detailsPresenter);
                 }
-                SiteMap map = new SiteMap(injector.getEventBus(), injector.getService(),
-                        activity);
+                SiteMap map = new SiteMap(injector.getEventBus(), injector.getService(), activity);
                 editor.addSubComponent(map);
                 grid.addSidePanel(I18N.CONSTANTS.map(), IconImageBundle.ICONS.map(), map);
 
-                editor.go((SiteGridPageState) place, activity);
+                editor.go((SiteTreeGridPageState) place, activity);
                 callback.onSuccess(editor);
-
             }
 
             @Override
