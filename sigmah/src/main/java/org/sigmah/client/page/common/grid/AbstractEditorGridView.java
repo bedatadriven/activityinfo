@@ -16,14 +16,13 @@ import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.extjs.gxt.ui.client.widget.grid.CellSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 
-public abstract class AbstractEditorGridView<ModelT extends ModelData, PresenterT extends GridPresenter<ModelT>>
-        extends AbstractGridView<ModelT, PresenterT> {
+public abstract class AbstractEditorGridView<M extends ModelData, P extends GridPresenter<M>>
+        extends AbstractGridView<M, P> {
 
-    private ModelT lastSelection;
+    private M lastSelection;
 
     @Override
-    protected void initGridListeners(final Grid<ModelT> grid) {
-
+    protected void initGridListeners(final Grid<M> grid) {
         grid.getStore().setMonitorChanges(true);
 
         grid.getStore().addListener(Store.Update, new Listener<StoreEvent>() {
@@ -33,21 +32,18 @@ public abstract class AbstractEditorGridView<ModelT extends ModelData, Presenter
         });
 
         grid.addListener(Events.CellClick, new Listener<GridEvent>() {
-
             public void handleEvent(GridEvent be) {
                 onCellClick(be);
             }
         });
         
-        grid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<ModelT>() {
-
+        grid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<M>() {
 			@Override
-			public void selectionChanged(SelectionChangedEvent<ModelT> se) {
+			public void selectionChanged(SelectionChangedEvent<M> se) {
 				if(se.getSelectedItem() != null) {
 					presenter.onSelectionChanged(se.getSelectedItem());
 				}
 			}
-		
         });
 
         grid.addListener(Events.BeforeEdit, new Listener<GridEvent>() {
@@ -63,7 +59,7 @@ public abstract class AbstractEditorGridView<ModelT extends ModelData, Presenter
     	if(ge.getGrid().getSelectionModel() instanceof CellSelectionModel) {
 	        CellSelectionModel sm = (CellSelectionModel) ge.getGrid().getSelectionModel();
 	
-	        ModelT selection = (ModelT) sm.getSelectCell().model;
+	        M selection = (M) sm.getSelectCell().model;
 	        if(lastSelection != selection) {
 	            lastSelection = selection;
 	            presenter.onSelectionChanged(selection); 

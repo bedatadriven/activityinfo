@@ -31,12 +31,8 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 
 public class DrillDownEditor extends SiteEditor {
-
     public interface View extends SiteEditor.View {
-
-        void show(SiteEditor presenter, ActivityDTO activity, IndicatorDTO indicator,
-                  ListStore<SiteDTO> store);
-
+        void show(SiteEditor presenter, ActivityDTO activity, IndicatorDTO indicator, ListStore<SiteDTO> store);
     }
 
     private final EventBus eventBus;
@@ -44,6 +40,7 @@ public class DrillDownEditor extends SiteEditor {
     private final DateUtil dateUtil;
     private final View view;
     private Listener<PivotCellEvent> eventListener;
+    private ListStore<SiteDTO> listStore;
 
     public DrillDownEditor(EventBus eventBus, Dispatcher service, StateProvider stateMgr, DateUtil dateUtil,
                            View view) {
@@ -66,7 +63,7 @@ public class DrillDownEditor extends SiteEditor {
     public void shutdown() {
         super.shutdown();
         eventBus.removeListener(AppEvents.Drilldown, eventListener);
-    }
+    } 
 
     public void onDrillDown(PivotCellEvent event) {
 
@@ -81,7 +78,6 @@ public class DrillDownEditor extends SiteEditor {
         effectiveFilter.clearRestrictions(DimensionType.Indicator);
 
         service.execute(new GetSchema(), null, new Got<SchemaDTO>() {
-
             @Override
             public void got(SchemaDTO schema) {
 
@@ -94,20 +90,18 @@ public class DrillDownEditor extends SiteEditor {
     }
 
     public void drill(ActivityDTO activity, IndicatorDTO indicator, Filter filter) {
-
-
         currentActivity = activity;
 
         GetSites cmd = GetSites.byActivity(currentActivity.getId());
         cmd.setFilter(filter);
 
-        loader.setCommand(cmd);
-        loader.setSortField(indicator.getPropertyName());
-        loader.setSortDir(Style.SortDir.DESC);
+        pagingCmdLoader.setCommand(cmd);
+        pagingCmdLoader.setSortField(indicator.getPropertyName());
+        pagingCmdLoader.setSortDir(Style.SortDir.DESC);
 
-        view.show(this, currentActivity, indicator, store);
+        view.show(this, currentActivity, indicator, listStore);
 
-        loader.load();
+        pagingCmdLoader.load();
     }
 
 

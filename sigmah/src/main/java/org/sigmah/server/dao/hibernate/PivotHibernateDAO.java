@@ -55,11 +55,9 @@ import com.google.inject.Inject;
  *
  */
 public class PivotHibernateDAO implements PivotDAO {
-
     private final EntityManager em;
     private final SqlDialect dialect;
     private final SqlDatabase db;
-
 
     @Inject
     public PivotHibernateDAO(EntityManager em, SqlDialect dialect, SqlDatabase db) {
@@ -89,6 +87,8 @@ public class PivotHibernateDAO implements PivotDAO {
             } else if (type == DimensionType.Project) {
                 appendIdCriteria(where, "Site.ProjectId", filter.getRestrictions(type), parameters, filter.isOr());
             } else if (type == DimensionType.Location) {
+                appendIdCriteria(where, "Site.LocationId", filter.getRestrictions(type), parameters, filter.isOr());
+            } else if (type == DimensionType.Attribute) {
                 appendIdCriteria(where, "Site.LocationId", filter.getRestrictions(type), parameters, filter.isOr());
             } else if (type == DimensionType.AdminLevel) {
                 where.append(" AND Site.LocationId IN " +
@@ -165,7 +165,6 @@ public class PivotHibernateDAO implements PivotDAO {
             bucket.setCategory(dimension, new SimpleCategory(rs.getString(labelColumnIndex)));
         }
     }
-
 
     private static class AttributeBundler implements Bundler {
         private final Dimension dimension;
@@ -297,6 +296,7 @@ public class PivotHibernateDAO implements PivotDAO {
 
         StringBuilder from = new StringBuilder();
         from.append(" IndicatorValue V " +
+        		//"LEFT JOIN Attribute ON (Activity.ActivityId = AttributeGroupInActivity.ActivityId) " +
                 "LEFT JOIN ReportingPeriod Period ON (Period.ReportingPeriodId=V.ReportingPeriodId) " +
                 "LEFT JOIN Indicator ON (Indicator.IndicatorId = V.IndicatorId) " +
                 "LEFT JOIN Site ON (Period.SiteId = Site.SiteId) " +
@@ -336,6 +336,7 @@ public class PivotHibernateDAO implements PivotDAO {
 
         StringBuilder from = new StringBuilder();
         from.append(" Site " +
+        		//"LEFT JOIN Attribute ON (Indicator.AttributeG"
                 "LEFT JOIN Partner ON (Site.PartnerId = Partner.PartnerId) " +
                 "LEFT JOIN Project ON (Site.ProjectId = Project.ProjectId) " +
                 "LEFT JOIN Location ON (Location.LocationId = Site.LocationId) " +
@@ -468,7 +469,7 @@ public class PivotHibernateDAO implements PivotDAO {
                 nextColumnIndex += 2;
             } else if (dimension instanceof AttributeGroupDimension) {
             	AttributeGroupDimension attrGroupDim = (AttributeGroupDimension) dimension;
-            	List < Integer > attributeIds = queryAttributeIds(attrGroupDim);
+            	List<Integer> attributeIds = queryAttributeIds(attrGroupDim);
             	int count = 0;
             	for (Integer attributeId: attributeIds) {
             		String tableAlias = "Attribute" + attributeId;
@@ -582,9 +583,9 @@ public class PivotHibernateDAO implements PivotDAO {
 		    	}
 				
 		    	SqlQuery.select("name", primaryKeyId)
-    			.from(tableName)
-    			.where(primaryKeyId)
-    			.in(ids)
+		    			.from(tableName)
+		    			.where(primaryKeyId)
+		    			.in(ids)
     			
     			.execute(db, new SqlResultCallback() {
 					@Override

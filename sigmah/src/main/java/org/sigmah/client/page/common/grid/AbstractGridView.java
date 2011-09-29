@@ -23,25 +23,21 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 
-/*
- * @author Alex Bertram
- */
-
-public abstract class AbstractGridView<ModelT extends ModelData, PresenterT extends GridPresenter<ModelT>>
-        extends ContentPanel
-        implements GridView<PresenterT, ModelT> {
+public abstract class AbstractGridView<M extends ModelData, P extends GridPresenter<M>>
+        extends 
+        	ContentPanel
+        implements 
+        	GridView<P, M> {
 
     protected ActionToolBar toolBar;
-    protected PresenterT presenter;
+    protected P presenter;
     protected PagingToolBar pagingBar;
-    private Grid<ModelT> grid;
+    private Grid<M> grid;
 
-
-    public void init(final PresenterT presenter, Store store) {
+    public void init(final P presenter, Store store) {
         this.presenter = presenter;
 
         createToolBar();
-
 
         grid = createGridAndAddToContainer(store);
 
@@ -49,37 +45,30 @@ public abstract class AbstractGridView<ModelT extends ModelData, PresenterT exte
 
         if (store instanceof ListStore) {
             Loader loader = ((ListStore) store).getLoader();
-
             if (loader instanceof PagingLoader) {
-
                 pagingBar = new PagingToolBar(presenter.getPageSize());
                 setBottomComponent(pagingBar);
-
                 pagingBar.bind((PagingLoader<?>) loader);
             }
         }
 
-        /*
-         *  In some cases, there is async call before the user inerface can be
-         * loaded. So we have to make sure our new components are rendered
-         */
+        /**  In some cases, there is async call before the user inerface can be
+         * loaded. So we have to make sure our new components are rendered */
         if (this.isRendered()) {
             this.layout();
         }
-
     }
 
-    protected void initGridListeners(Grid<ModelT> grid) {
-
-        grid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<ModelT>() {
+    protected void initGridListeners(Grid<M> grid) {
+        grid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<M>() {
             @Override
-            public void selectionChanged(SelectionChangedEvent<ModelT> se) {
+            public void selectionChanged(SelectionChangedEvent<M> se) {
                 presenter.onSelectionChanged(se.getSelectedItem());
             }
         });
     }
 
-    protected abstract Grid<ModelT> createGridAndAddToContainer(Store store);
+    protected abstract Grid<M> createGridAndAddToContainer(Store store);
 
     protected void createToolBar() {
         toolBar = new ActionToolBar(presenter);
@@ -101,10 +90,10 @@ public abstract class AbstractGridView<ModelT extends ModelData, PresenterT exte
     }
 
 
-    public ModelT getSelection() {
-        GridSelectionModel<ModelT> sm = grid.getSelectionModel();
+    public M getSelection() {
+        GridSelectionModel<M> sm = grid.getSelectionModel();
         if (sm instanceof CellSelectionModel) {
-            CellSelectionModel<ModelT>.CellSelection cell = ((CellSelectionModel<ModelT>) sm).getSelectCell();
+            CellSelectionModel<M>.CellSelection cell = ((CellSelectionModel<M>) sm).getSelectCell();
             return cell == null ? null : cell.model;
         } else {
             return sm.getSelectedItem();

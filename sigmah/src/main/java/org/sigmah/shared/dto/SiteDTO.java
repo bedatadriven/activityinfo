@@ -23,7 +23,7 @@ import com.extjs.gxt.ui.client.data.RpcMap;
  *
  * @author Alex Bertram
  */
-public final class SiteDTO extends BaseModelData implements EntityDTO {
+public class SiteDTO extends BaseModelData implements EntityDTO {
 
 	
     public static final String ENTITY_NAME = "Site";

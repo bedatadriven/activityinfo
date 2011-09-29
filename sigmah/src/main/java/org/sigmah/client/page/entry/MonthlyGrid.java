@@ -33,22 +33,28 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Element;
 
-public class MonthlyGrid extends AbstractEditorGridView<IndicatorRowDTO, MonthlyPresenter>
-                        implements MonthlyPresenter.View {
+public class MonthlyGrid 
+	extends 
+		AbstractEditorGridView<IndicatorRowDTO, MonthlyPresenter>
+	implements 
+		MonthlyPresenter.View {
 
     private MonthlyPresenter presenter;
     private EditorGrid<IndicatorRowDTO> grid;
-
     private ActivityDTO activity;
 
     public MonthlyGrid(ActivityDTO activity) {
         this.activity = activity;
-        this.setHeading(I18N.CONSTANTS.monthlyReports());
+        
+        initializeComponent();
+    }
+
+	private void initializeComponent() {
+		this.setHeading(I18N.CONSTANTS.monthlyReports());
         this.setLayout(new FitLayout());
         this.setBorders(false);
         this.setFrame(false);
-
-    }
+	}
 
     public void init(MonthlyPresenter presenter, ListStore<IndicatorRowDTO> store) {
         super.init(presenter, store);
@@ -62,7 +68,6 @@ public class MonthlyGrid extends AbstractEditorGridView<IndicatorRowDTO, Monthly
 
     @Override
     protected Grid<IndicatorRowDTO> createGridAndAddToContainer(Store store) {
-
         grid = new EditorGrid<IndicatorRowDTO>((ListStore)store, createColumnModel());
         grid.setAutoExpandColumn("indicatorName");
         grid.setLoadMask(true);
@@ -73,7 +78,6 @@ public class MonthlyGrid extends AbstractEditorGridView<IndicatorRowDTO, Monthly
     }
 
     public void setStartMonth(Month startMonth) {
-
         DateTimeFormat monthFormat = DateTimeFormat.getFormat("MMM yy");
 
         Month month = startMonth;
@@ -87,7 +91,6 @@ public class MonthlyGrid extends AbstractEditorGridView<IndicatorRowDTO, Monthly
     }
 
     public ColumnModel createColumnModel() {
-
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
         ColumnConfig indicator = new ColumnConfig("indicatorName", I18N.CONSTANTS.indicators(), 150);
@@ -98,7 +101,6 @@ public class MonthlyGrid extends AbstractEditorGridView<IndicatorRowDTO, Monthly
         NumberFormat indicatorFormat = NumberFormat.getFormat("0");
 
         for(int i = 0; i!=7; ++i) {
-
             NumberField indicatorField = new NumberField();
             indicatorField.getPropertyEditor().setFormat(indicatorFormat);
 
@@ -116,7 +118,6 @@ public class MonthlyGrid extends AbstractEditorGridView<IndicatorRowDTO, Monthly
 
     @Override
     protected void initToolBar() {
-
         toolBar.addSaveSplitButton();
         toolBar.add(new LabelToolItem(I18N.CONSTANTS.month() + ": "));
 

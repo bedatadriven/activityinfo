@@ -32,7 +32,6 @@ import com.google.inject.Provider;
  * @author Alex Bertram (akbertram@gmail.com)
  */
 public class DataEntryLoader implements PageLoader {
-
     private final AppInjector injector;
     private final Provider<DataEntryFrameSet> dataEntryFrameSetProvider;
     private final Provider<SiteFormPage> siteFormProvider;
@@ -93,7 +92,6 @@ public class DataEntryLoader implements PageLoader {
     }
 
     protected void loadSiteGrid(final PageState place, final AsyncCallback<Page> callback) {
-    
         injector.getService().execute(new GetSchema(), null, new Got<SchemaDTO>() {
         	
             @Override

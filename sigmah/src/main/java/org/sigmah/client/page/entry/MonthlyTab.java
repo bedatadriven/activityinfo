@@ -13,8 +13,6 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.Element;
 
 public class MonthlyTab extends TabItem {
-
-
     public MonthlyTab(MonthlyGrid grid) {
         setText(I18N.CONSTANTS.monthlyReports());
         setIcon(IconImageBundle.ICONS.table());

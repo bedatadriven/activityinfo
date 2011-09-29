@@ -25,7 +25,6 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
-
 public class DataEntryNavigator implements Navigator {
     private final Dispatcher service;
 
@@ -47,7 +46,6 @@ public class DataEntryNavigator implements Navigator {
     }
 
     public void load(DataReader<List<Link>> dataReader, Object parent, final AsyncCallback<List<Link>> callback) {
-
         if (parent == null) {
             service.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
                 public void onFailure(Throwable caught) {

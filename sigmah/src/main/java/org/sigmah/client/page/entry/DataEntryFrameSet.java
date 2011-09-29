@@ -12,7 +12,6 @@ import org.sigmah.client.page.common.widget.VSplitFilteredFrameSet;
 import com.google.inject.Inject;
 
 public class DataEntryFrameSet extends VSplitFilteredFrameSet {
-
 	private FilterPanelSet filterPanelSet;
 	
 	@Inject

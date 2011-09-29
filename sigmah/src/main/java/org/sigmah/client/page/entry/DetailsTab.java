@@ -14,29 +14,37 @@ import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 
 public class DetailsTab extends TabItem implements DetailsPresenter.View {
-
     private ContentPanel panel;
     private Html html;
 
     public DetailsTab() {
+        initializeComponent();
 
-        setText(I18N.CONSTANTS.details());
-        setLayout(new FitLayout());
+        createPanel();
+        createHtml();
+    }
 
-        panel = new ContentPanel();
+	private void createHtml() {
+		html = new Html();
+        html.setStyleName("details");
+        panel.add(html);
+	}
+
+	private void createPanel() {
+		panel = new ContentPanel();
         panel.setHeading(I18N.CONSTANTS.details());
         panel.setScrollMode(Style.Scroll.AUTOY);
         panel.setLayout(new FitLayout());
         add(panel);
+	}
 
-        html = new Html();
-        html.setStyleName("details");
-        panel.add(html);
-    }
+	private void initializeComponent() {
+		setText(I18N.CONSTANTS.details());
+        setLayout(new FitLayout());
+	}
 
     public void setSelectionTitle(String title) {
         panel.setHeading(I18N.CONSTANTS.details() + " - " +  title);
-
     }
 
     public void setHtml(String content) {

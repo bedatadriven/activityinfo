@@ -35,10 +35,8 @@ import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.util.DateWrapper;
 
 public class MonthlyPresenter extends AbstractEditorGridPresenter<IndicatorRowDTO> {
-
     public interface View extends GridView<MonthlyPresenter, IndicatorRowDTO> {
         void init(MonthlyPresenter presenter, ListStore<IndicatorRowDTO> store);
-
         void setStartMonth(Month startMonth);
     }
 
@@ -118,7 +116,6 @@ public class MonthlyPresenter extends AbstractEditorGridPresenter<IndicatorRowDT
     }
 
     public void onMonthSelected(Month month) {
-
         startMonth = new Month(month.getYear(), month.getMonth() - 3);
         loader.setCommand(new GetMonthlyReports(currentSiteId, startMonth, 7));
         loader.load();

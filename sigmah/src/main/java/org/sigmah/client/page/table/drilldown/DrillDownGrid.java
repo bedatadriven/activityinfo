@@ -16,16 +16,15 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 
 public class DrillDownGrid extends SiteGrid implements DrillDownEditor.View {
-
     ActivityDTO currentActivity;
     IndicatorDTO currentIndicator;
 
     public DrillDownGrid() {
+    	super(false);
         setHeading(I18N.CONSTANTS.drilldown());
     }
 
     public void show(SiteEditor presenter, ActivityDTO activity, IndicatorDTO indicator, ListStore<SiteDTO> store) {
-
         currentIndicator = indicator;
 
         if (currentActivity == null) {
@@ -53,6 +52,5 @@ public class DrillDownGrid extends SiteGrid implements DrillDownEditor.View {
         column.setId("indicator");
         column.setDataIndex(currentIndicator.getPropertyName());
         columns.add(column);
-
     }
 }

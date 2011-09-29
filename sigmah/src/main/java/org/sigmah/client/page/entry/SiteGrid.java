@@ -5,308 +5,65 @@
 
 package org.sigmah.client.page.entry;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
-import org.sigmah.client.dispatch.AsyncMonitor;
-import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.client.page.common.columns.EditableLocalDateColumn;
-import org.sigmah.client.page.common.columns.EditTextColumn;
-import org.sigmah.client.page.common.columns.ReadTextColumn;
-import org.sigmah.client.page.common.grid.AbstractEditorGridView;
-import org.sigmah.client.page.common.toolbar.UIActions;
-import org.sigmah.client.page.config.ShowLockedPeriodsDialog;
 import org.sigmah.shared.dto.ActivityDTO;
-import org.sigmah.shared.dto.AdminLevelDTO;
-import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.LockedPeriodDTO;
 import org.sigmah.shared.dto.SiteDTO;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
-import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
-import com.extjs.gxt.ui.client.widget.form.NumberField;
-import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.CellSelectionModel;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnData;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid.ClicksToEdit;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
-import com.google.gwt.i18n.client.NumberFormat;
 
-/*
- * Displays a list of Indicators and allows the user to edit various columns in the grid
- */
-public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
-        implements SiteEditor.View {
-
-	protected ActivityDTO activity;
-    protected EditorGrid<SiteDTO> grid;
-    private boolean enableDragSource;
-    protected List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
-	private List<AdminLevelDTO> levels;
-    private final ShowLockedPeriodsDialog showLockedPeriods = new ShowLockedPeriodsDialog();
-	private SiteDTO currentSite;
+/** Displays a list of Indicators and allows the user to edit various columns in the grid */
+public class SiteGrid extends AbstractSiteGrid implements SiteEditor.View {
+    protected EditorGrid<SiteDTO> editorGrid;
+    private ListStore<SiteDTO> listStore;
 
     public SiteGrid(boolean enableDragSource) {
-        this();
-        
-        this.enableDragSource = enableDragSource;
-    }
-
-    public SiteGrid() {
-        initializeComponent();
-    }
-
-	private void initializeComponent() {
-		this.setLayout(new BorderLayout());
-	}
-
-    @Override
-    public void init(SiteEditor presenter, ActivityDTO activity, ListStore<SiteDTO> store) {
-        this.activity = activity;
-        setHeading(I18N.MESSAGES.activityTitle(activity.getDatabase().getName(), activity.getName()));
-        
-        //QuickTip quickTip = new QuickTip(grid);
-        
-        super.init(presenter, store);
-    }
-
-    @Override
-    public AsyncMonitor getLoadingMonitor() {
-        return new MaskingAsyncMonitor(this, I18N.CONSTANTS.loading());
+        super(enableDragSource);
     }
 
     public Grid<SiteDTO> createGridAndAddToContainer(Store store) {
-        grid = new EditorGrid<SiteDTO>((ListStore)store, createColumnModel(activity));
+    	editorGrid = new EditorGrid<SiteDTO>((ListStore)store, createColumnModel(activity));
         
-        grid.setLoadMask(true);
-        grid.setStateful(true);
-        grid.setStateId("SiteGrid" + activity.getId());
+    	editorGrid.setLoadMask(true);
+    	editorGrid.setStateful(true);
+    	editorGrid.setStateId("SiteGrid" + activity.getId());
         
         GridSelectionModel<SiteDTO> sm = new GridSelectionModel<SiteDTO>();
         sm.setSelectionMode(SelectionMode.SINGLE);
-		grid.setSelectionModel(sm);
+        editorGrid.setSelectionModel(sm);
 		
-        grid.setClicksToEdit(ClicksToEdit.TWO);
+		editorGrid.setClicksToEdit(ClicksToEdit.TWO);
 
-        add(grid, new BorderLayoutData(Style.LayoutRegion.CENTER));
+        add(editorGrid, new BorderLayoutData(Style.LayoutRegion.CENTER));
 
         if(enableDragSource) {
-            new SiteGridDragSource(grid);
+            new SiteGridDragSource(editorGrid);
         }
 
-        return grid;
-    }
-
-    protected void initToolBar() {
-        toolBar.addSaveSplitButton();
-        toolBar.add(new SeparatorToolItem());
-                          
-        toolBar.addButton(UIActions.add, I18N.CONSTANTS.newSite(), IconImageBundle.ICONS.add());
-        toolBar.addEditButton();
-        toolBar.addDeleteButton(I18N.CONSTANTS.deleteSite());
-
-        toolBar.add(new SeparatorToolItem());
-
-        toolBar.addExcelExportButton();
-        toolBar.addLockedPeriodsButton();
-    }
-
-    @Override
-    public void setActionEnabled(String actionId, boolean enabled) {
-        super.setActionEnabled(actionId, enabled);
-    }
-	
-
-    protected ColumnModel createColumnModel(ActivityDTO activity) {
-        createMapColumn();
-        createLockColumn();
-        createDateColumn();
-        createPartnerColumn();
-        
-        // Only show Project column when the database has projects
-        if (!activity.getDatabase().getProjects().isEmpty()) {
-            createProjectColumn();
-        }
-        createLocationColumn();
-        createIndicatorColumns();
-
-        getAdminLevels();
-        createAdminLevelsColumns();
-        //createGeographyColumn();
-
-        return new ColumnModel(columns);
-    }
-
-	private void createGeographyColumn() {
-		if(activity.getDatabase().isViewAllAllowed()) {
-			ColumnConfig columnGeography = new ColumnConfig();
-			GridCellRenderer<SiteDTO> projectRenderer = new GridCellRenderer<SiteDTO>() {
-				
-				@Override
-				public Object render(SiteDTO model, String property, ColumnData config,
-						int rowIndex, int colIndex, ListStore<SiteDTO> store,
-						Grid<SiteDTO> grid) {
-					return null;
-				}
-			};
-			columnGeography.setRenderer(projectRenderer);
-			columnGeography.setHeader(I18N.CONSTANTS.geography());
-			columnGeography.setWidth(100);
-			columns.add(columnGeography);
-        }
-	}
-
-	private void createProjectColumn() {
-		if(activity.getDatabase().isViewAllAllowed()) {
-			columns.add(new ReadTextColumn("project", I18N.CONSTANTS.project(), 100));
-        }
-	}
-
-	private void createLockColumn() {
-		ColumnConfig columnLocked = new ColumnConfig("x", "", 24);
-        columnLocked.setRenderer(new GridCellRenderer<SiteDTO>() {
-            @Override
-            public Object render(SiteDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
-            	StringBuilder builder = new StringBuilder();
-            	
-            	if (model.fallsWithinLockedPeriod(activity)) {
-            		String tooltip = buildTooltip(model, activity);
-            		
-            		//builder.append("<span qtip='");
-            		//builder.append(tooltip);
-            		//builder.append("'>");
-            		builder.append(IconImageBundle.ICONS.lockedPeriod().getHTML());
-            		//builder.append("</span>");
-            		return builder.toString();
-            	} else {
-            		return "";
-            	}
-            }
-
-			private String buildTooltip(SiteDTO model, ActivityDTO activity) {
-				Set<LockedPeriodDTO> lockedPeriods = model.getAffectedLockedPeriods(activity);
-				for (LockedPeriodDTO lockedPeriod : lockedPeriods) {
-					
-				}
-				return "woei! tooltip";
-			}
-        });
-        columns.add(columnLocked);
-	}
-
-	private void createLocationColumn() {
-		if(activity.getLocationType().getBoundAdminLevelId() == null) {
-            columns.add(new EditTextColumn("locationName", I18N.CONSTANTS.location(), 100));
-            columns.add(new EditTextColumn("locationAxe", I18N.CONSTANTS.axe(), 100));
-        }
-	}
-
-	private void createAdminLevelsColumns() {
-		for (AdminLevelDTO level : levels) {
-            columns.add(new ColumnConfig(level.getPropertyName(), level.getName(), 75));
-        }
-	}
-
-	private void getAdminLevels() {
-		if( activity.getLocationType().isAdminLevel()) {
-            levels = activity.getDatabase().getCountry().getAdminLevelAncestors(activity.getLocationType().getBoundAdminLevelId());
-        } else {
-            levels = activity.getDatabase().getCountry().getAdminLevels();
-        }
-	}
-
-	private void createPartnerColumn() {
-		if(activity.getDatabase().isViewAllAllowed()) {
-            columns.add(new ColumnConfig("partner", I18N.CONSTANTS.partner(), 100));
-        }
-	}
-
-	private void createDateColumn() {
-		if(activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE) {
-            columns.add(new EditableLocalDateColumn("date2", I18N.CONSTANTS.date(), 100));
-        }
-	}
-
-	private void createMapColumn() {
-		ColumnConfig mapColumn = new ColumnConfig("x", "", 25);
-        mapColumn.setRenderer(new GridCellRenderer<SiteDTO>() {
-            @Override
-            public Object render(SiteDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
-                if(model.hasCoords()) {
-                    return "<div class='mapped'>&nbsp;&nbsp;</div>";
-                } else {
-                    return "<div class='unmapped'>&nbsp;&nbsp;</div>";
-                }
-            }
-        });
-        columns.add(mapColumn);
-	}
-
-    protected void createIndicatorColumns() {
-    	// Only add indicators that have a queries heading
-        for (IndicatorDTO indicator : activity.getIndicators()) {
-            if(indicator.getListHeader() != null && !indicator.getListHeader().isEmpty()) {
-                columns.add(createIndicatorColumn(indicator, indicator.getListHeader()));
-            }
-        }
-    }
-
-    protected ColumnConfig createIndicatorColumn(IndicatorDTO indicator, String header) {
-        final NumberFormat format = NumberFormat.getFormat("0");
-
-        NumberField indicatorField = new NumberField();
-        indicatorField.getPropertyEditor().setFormat(format);
-
-        ColumnConfig indicatorColumn = new ColumnConfig(indicator.getPropertyName(),
-                header, 50);
-
-        indicatorColumn.setNumberFormat(format);
-        indicatorColumn.setEditor(new CellEditor(indicatorField));
-        indicatorColumn.setAlignment(Style.HorizontalAlignment.RIGHT);
-
-        // For SUM indicators, don't show ZEROs in the Grid
-        // (it looks better if we don't)
-        if(indicator.getAggregation() == IndicatorDTO.AGGREGATE_SUM) {
-            indicatorColumn.setRenderer(new GridCellRenderer() {
-                @Override
-                public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
-                    Double value = model.get(property);
-                    if(value != null && value != 0) {
-                        return format.format(value);
-                    } else {
-                        return "";
-                    }
-                }
-            });
-        }
-
-        return indicatorColumn;
+        return editorGrid;
     }
 
     public void setSelection(int siteId) {
-        for(int r=0; r!=grid.getStore().getCount(); ++r) {
-            if(grid.getStore().getAt(r).getId() == siteId) {
-            	this.currentSite=grid.getStore().getAt(r);
-                grid.getView().ensureVisible(r, 0, false);
-                if(grid.getSelectionModel() instanceof CellSelectionModel) {
-                    ((CellSelectionModel) grid.getSelectionModel()).selectCell(r, 0);                	
+        for(int r=0; r!=listStore.getCount(); ++r) {
+            if(listStore.getAt(r).getId() == siteId) {
+            	this.currentSite=listStore.getAt(r);
+            	editorGrid.getView().ensureVisible(r, 0, false);
+                if(editorGrid.getSelectionModel() instanceof CellSelectionModel) {
+                    ((CellSelectionModel) editorGrid.getSelectionModel()).selectCell(r, 0);                	
                 } else {
-                	grid.getSelectionModel().setSelection(Collections.singletonList(grid.getStore().getAt(r)));
+                	editorGrid.getSelectionModel().setSelection(Collections.singletonList(listStore.getAt(r)));
                 }
             }
         }
@@ -328,4 +85,29 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
 		currentSite = selectedSite;
 	}
 
+	@Override
+	public void update(SiteDTO site) {
+		listStore.update(site);
+	}
+
+	@Override
+	public void setSelected(int id) {
+        SiteDTO site = listStore.findModel("id", id);
+        if (site != null) {
+            setSelection(id);
+        }
+	}
+
+	@Override
+	public void remove(SiteDTO site) {
+		listStore.remove(site);
+	}
+
+	@Override
+	public void init(SiteEditor presenter, ActivityDTO activity, ListStore<SiteDTO> store) {
+        this.activity = activity;
+        this.listStore=store;
+        setHeading(I18N.MESSAGES.activityTitle(activity.getDatabase().getName(), activity.getName()));
+        super.init(presenter, listStore);
+	}
 }

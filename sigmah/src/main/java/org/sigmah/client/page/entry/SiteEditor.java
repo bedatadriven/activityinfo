@@ -5,29 +5,19 @@
 
 package org.sigmah.client.page.entry;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.sigmah.client.AppEvents;
 import org.sigmah.client.EventBus;
-import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.loader.CommandLoadEvent;
 import org.sigmah.client.dispatch.loader.PagingCmdLoader;
-import org.sigmah.client.event.DownloadRequestEvent;
-import org.sigmah.client.event.NavigationEvent;
 import org.sigmah.client.event.SiteEvent;
-import org.sigmah.client.page.NavigationHandler;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
-import org.sigmah.client.page.common.Shutdownable;
 import org.sigmah.client.page.common.filter.FilterPanel;
 import org.sigmah.client.page.common.filter.NullFilterPanel;
-import org.sigmah.client.page.common.grid.AbstractEditorGridPresenter;
-import org.sigmah.client.page.common.grid.GridView;
+import org.sigmah.client.page.common.grid.GridPresenter;
 import org.sigmah.client.page.common.toolbar.UIActions;
-import org.sigmah.client.page.entry.editor.SiteFormPage;
 import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.BatchCommand;
 import org.sigmah.shared.command.Command;
@@ -39,18 +29,17 @@ import org.sigmah.shared.command.result.SiteResult;
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dto.ActivityDTO;
-import org.sigmah.shared.dto.LockedPeriodDTO;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 import org.sigmah.shared.report.model.DimensionType;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.LoadEvent;
+import com.extjs.gxt.ui.client.data.Loader;
 import com.extjs.gxt.ui.client.data.SortInfo;
-import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Record;
-import com.google.gwt.core.client.GWT;
+import com.extjs.gxt.ui.client.store.Store;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -60,148 +49,77 @@ import com.google.inject.Inject;
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements Page {
-
-    private Listener<SiteEvent> siteChangedListener;
-    private Listener<SiteEvent> siteCreatedListener;
-    private Listener<SiteEvent> siteSelectedListner;
-    private List<Shutdownable> subComponents = new ArrayList<Shutdownable>();
-
+public class SiteEditor extends AbstractSiteEditor implements Page, GridPresenter.SiteGridPresenter {
+	public interface View extends AbstractSiteEditor.View {
+        public void init(SiteEditor presenter, ActivityDTO activity, ListStore<SiteDTO> store);
+	}
+	
     public static final int PAGE_SIZE = 25;
     public static final PageId ID = new PageId("site-grid");
 
-    public interface View extends GridView<SiteEditor, SiteDTO> {
-
-        public void init(SiteEditor presenter, ActivityDTO activity, ListStore<SiteDTO> store);
-        public AsyncMonitor getLoadingMonitor();
-        void setSelection(int siteId);
-		public void showLockedPeriods(List<LockedPeriodDTO> list);
-		public void setSite(SiteDTO selectedSite);
-    }
-
-    private final View view;
-    private final EventBus eventBus;
-    private final Dispatcher service;
-
-    protected final ListStore<SiteDTO> store;
-    protected final PagingCmdLoader<SiteResult> loader;
-
-    protected ActivityDTO currentActivity;
-    protected SiteDTO currentSite;
+    protected ListStore<SiteDTO> listStore;
+    protected PagingCmdLoader<SiteResult> pagingCmdLoader;
 
     private Integer siteIdToSelectOnNextLoad;
     private FilterPanel filterPanel = new NullFilterPanel();
-	private HandlerRegistration filterRegistration;
+	private HandlerRegistration filterRegistration; 
+	private View view;
 
     @Inject
     public SiteEditor(EventBus eventBus, Dispatcher service, StateProvider stateMgr, final View view) {
         super(eventBus, service, stateMgr, view);
-        this.view = view;
-        this.eventBus = eventBus;
-        this.service = service;
-
-        loader = new PagingCmdLoader<SiteResult>(service);
-        store = new ListStore<SiteDTO>(loader);
-
-        initListeners(store, loader);
-
-        addListeners();
+        
+        this.view=view;
     }
 
-	private void addListeners() {
-		siteChangedListener = new Listener<SiteEvent>() {
-            public void handleEvent(SiteEvent se) {
-
-                SiteDTO ourCopy = store.findModel("id", se.getSite().getId());
-                if (ourCopy != null) {
-                    ourCopy.setProperties(se.getSite().getProperties());
-                }
-                store.update(ourCopy);
-
-            }
-        };
-        this.eventBus.addListener(AppEvents.SiteChanged, siteChangedListener);
-
-        siteCreatedListener = new Listener<SiteEvent>() {
-            public void handleEvent(SiteEvent se) {
-                onSiteCreated(se);
-            }
-        };
-        this.eventBus.addListener(AppEvents.SiteCreated, siteCreatedListener);
-
-        siteSelectedListner = new Listener<SiteEvent>() {
-            public void handleEvent(SiteEvent se) {
-                // check to see if this site is on the current page
-        	
-                if (se.getSource() != SiteEditor.this) {
-                    SiteDTO site = store.findModel("id", se.getSiteId());
-                    if (site != null) {
-                        view.setSelection(se.getSiteId());
-                    }
-                }
-            }
-        };
-        this.eventBus.addListener(AppEvents.SiteSelected, siteSelectedListner);
+    @Override
+	public ListStore<SiteDTO> getStore() {
+		return listStore;
 	}
 
-    public void bindFilterPanel(FilterPanel panel) {
+	@Override
+	protected Loader createLoader() {
+    	pagingCmdLoader = new PagingCmdLoader<SiteResult>(service);
+    	return pagingCmdLoader;
+	}
+
+	@Override
+	protected Store<SiteDTO> createStore() {
+		listStore = new ListStore<SiteDTO>(pagingCmdLoader);
+		return listStore;
+	}
+
+	public void bindFilterPanel(FilterPanel panel) {
     	this.filterPanel = panel;
+    	
     	filterRegistration = filterPanel.addValueChangeHandler(new ValueChangeHandler<Filter>() {
-			
 			@Override
 			public void onValueChange(ValueChangeEvent<Filter> event) {
-				loader.setOffset(0);
+				pagingCmdLoader.setOffset(0);
 				load(event.getValue());
 			}
 		});
     }
     
-    
-    private void onSiteCreated(SiteEvent se) {
-        if (store.getCount() < PAGE_SIZE) {
+    @Override
+    protected void onSiteCreated(SiteEvent se) {
+        if (listStore.getCount() < PAGE_SIZE) {
             // there is only one page, so we can save some time by justing adding this model to directly to
             //  the store
-            store.add(se.getSite());
+        	listStore.add(se.getSite());
         } else {
             // there are multiple pages and we don't really know where this site is going
             // to end up, so do a reload and seek to the page with the new site
-        	GetSites cmd = (GetSites) loader.getCommand();
+        	GetSites cmd = (GetSites) pagingCmdLoader.getCommand();
             cmd.setSeekToSiteId(se.getSite().getId());
             siteIdToSelectOnNextLoad = se.getSite().getId();
-            loader.load();
+            pagingCmdLoader.load();
         }
-    }
-
-    public void addSubComponent(Shutdownable subComponent) {
-        subComponents.add(subComponent);
-    }
-
-    public void shutdown() {
-
-        eventBus.removeListener(AppEvents.SiteChanged, siteChangedListener);
-        eventBus.removeListener(AppEvents.SiteCreated, siteCreatedListener);
-        eventBus.removeListener(AppEvents.SiteSelected, siteSelectedListner);
-
-        for (Shutdownable subComponet : subComponents) {
-            subComponet.shutdown();
-        }
-        
-        filterRegistration.removeHandler();
-    }
-
-    @Override
-    public ListStore<SiteDTO> getStore() {
-        return store;
     }
 
     @Override
     public int getPageSize() {
         return PAGE_SIZE;
-    }
-
-    @Override
-    public Object getWidget() {
-        return view;
     }
 
     @Override
@@ -214,33 +132,17 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
         return ID;
     }
 
-    public ActivityDTO getCurrentActivity() {
-        return currentActivity;
-    }
-
     private String stateId(String suffix) {
         return "sitegridpage." + currentActivity.getId();
     }
 
+    @Override
     public void go(SiteGridPageState place, ActivityDTO activity) {
-
-        currentActivity = activity;
-
-        /*
-        * Define the intial load parameters based on
-        * the navigation event, the, by previous user state
-        * and then by sensible defaults (sorted by date)
-        */
-
-        initLoaderDefaults(loader, place, new SortInfo("date2", Style.SortDir.DESC));
-        
-        view.init(SiteEditor.this, currentActivity, store);
-
-        view.setActionEnabled(UIActions.add, currentActivity.getDatabase().isEditAllowed());
-        view.setActionEnabled(UIActions.edit, false);
-        view.setActionEnabled(UIActions.delete, false);
-        
+    	super.go(place, activity);
+        initLoaderDefaults(pagingCmdLoader, place, new SortInfo("date2", Style.SortDir.DESC));
+        view.init(this, currentActivity, listStore);
         load(filterPanel.getValue());
+        setActionsDisabled();
     }
 
 	private void load(Filter filter) {
@@ -253,15 +155,13 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
         GetSites cmd = new GetSites();
         cmd.setFilter(effectiveFilter);
         
-        loader.setCommand(cmd);
-
-
-        loader.load();
+        pagingCmdLoader.setCommand(cmd);
+        pagingCmdLoader.load();
 	}
 
 
+	@Override
     public boolean navigate(final PageState place) {
-
         if (!(place instanceof SiteGridPageState)) {
             return false;
         }
@@ -272,7 +172,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
             return false;
         }
 
-        handleGridNavigation(loader, gridPlace);
+        handleGridNavigation(pagingCmdLoader, gridPlace);
 
         return true;
     }
@@ -337,6 +237,13 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
     }
 
     @Override
+	public void shutdown() {
+		super.shutdown();
+        
+        filterRegistration.removeHandler();
+	}
+
+	@Override
     protected Command createSaveCommand() {
 
         BatchCommand batch = new BatchCommand();
@@ -358,83 +265,18 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
         }
     }
 
-//    public ListStore<AdminEntityDTO> getAdminEntityStore(String property, SiteDTO site) {
-//
-//        int levelId = AdminLevelDTO.levelIdForProperty(property);
-//        AdminLevelDTO level = schema.getAdminLevelById(levelId);
-//
-//        GetAdminEntities cmd;
-//
-//        if(level.isRoot()) {
-//            cmd = new GetAdminEntities(levelId);
-//        } else {
-//            AdminEntityDTO parent = site.getAdminEntity( level.getParentLevelId());
-//            if( parent != null ) {
-//                cmd = new GetAdminEntities(levelId, parent.getId());
-//            } else {
-//                return null;
-//            }
-//        }
-//
-//        ListCmdLoader<AdminEntityResult> loader = new ListCmdLoader<AdminEntityResult>(service);
-//        loader.setCommand(cmd);
-//
-//        ListStore<AdminEntityDTO> store = new ListStore<AdminEntityDTO>(loader);
-//        if(site.get(property) != null) {
-//            store.add((AdminEntityDTO) site.get(property));
-//        }
-//
-//        return store;
-//    }
-
-
-    private List<LockedPeriodDTO> getLockedPeriods() {
-    	List<LockedPeriodDTO> lockedPeriods = new ArrayList<LockedPeriodDTO>();
-    	
-    	lockedPeriods.addAll(currentActivity.getEnabledLockedPeriods());
-    	lockedPeriods.addAll(currentActivity.getDatabase().getEnabledLockedPeriods());
-    	
-    	if (currentSite != null && currentSite.getProject() != null) {
-    		lockedPeriods.addAll(currentSite.getProject().getEnabledLockedPeriods());
-    	}
-    	
-    	return lockedPeriods;
-	}
-
-	protected void onAdd() {
-
-        SiteDTO newSite = new SiteDTO();
-        newSite.setActivityId(currentActivity.getId());
-
-        if (!currentActivity.getDatabase().isEditAllAllowed()) {
-            newSite.setPartner(currentActivity.getDatabase().getMyPartner());
-        }
-
-    	eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new SiteFormPage.NewPageState(currentActivity.getId())));
-	}
-
-    protected void onEdit(SiteDTO site) {
-    	eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new SiteFormPage.EditPageState(site.getId())));
-    }
-
-
     @Override
     protected void onDeleteConfirmed(final SiteDTO site) {
-
         service.execute(new Delete(site), view.getDeletingMonitor(), new AsyncCallback<VoidResult>() {
-
             public void onFailure(Throwable caught) {
 
             }
 
             public void onSuccess(VoidResult result) {
-                store.remove(site);
+                listStore.remove(site);
             }
         });
     }
-
-    private void onExport() {
-        String url = GWT.getModuleBaseURL() + "export?auth=#AUTH#&a=" + currentActivity.getId();
-        eventBus.fireEvent(new DownloadRequestEvent("siteExport", url));
-    }
+    
+    
 }

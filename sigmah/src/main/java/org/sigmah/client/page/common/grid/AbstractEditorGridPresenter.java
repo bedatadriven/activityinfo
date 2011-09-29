@@ -28,8 +28,8 @@ import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public abstract class AbstractEditorGridPresenter<ModelT extends ModelData>
-        extends AbstractGridPresenter<ModelT> {
+public abstract class AbstractEditorGridPresenter<M extends ModelData>
+        extends AbstractGridPresenter<M> {
 
     private GridView view;
     private Dispatcher service;
@@ -70,7 +70,7 @@ public abstract class AbstractEditorGridPresenter<ModelT extends ModelData>
 
     protected abstract Command createSaveCommand();
 
-    public abstract Store<ModelT> getStore();
+    public abstract Store<M> getStore();
 
     /**
      * Returns the list of modified records. The default implementation

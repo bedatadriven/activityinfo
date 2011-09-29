@@ -143,5 +143,4 @@ public class DbPartnerEditor extends AbstractGridPresenter<PartnerDTO> {
     public void shutdown() {
 
     }
-
 }
