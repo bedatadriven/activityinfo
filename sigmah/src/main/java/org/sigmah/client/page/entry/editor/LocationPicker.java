@@ -132,7 +132,7 @@ public class LocationPicker
 	}
 
 	private void createUseLocationButton() {
-		buttonUseLocation = new Button("Use location");
+		buttonUseLocation = new Button(I18N.CONSTANTS.useLocation());
 		buttonUseLocation.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent ce) {
@@ -177,7 +177,6 @@ public class LocationPicker
 	}
 
 	private void createNameTextbox() {
-        //if (activity.getLocationType().getBoundAdminLevelId() == null) {
         nameField = new TextField<String>();
         nameField.setName("locationName");
         nameField.setFieldLabel(currentActivity.getLocationType().getName());
@@ -350,7 +349,7 @@ public class LocationPicker
 				windowAddLocation.hide();
 				site.setLocation(lcoation);
 				locations.add(newLocation);
-				Info.display("Added location", "Location [" + lcoation.getName() + "] added");
+				Info.display(I18N.CONSTANTS.addedLocation(), I18N.MESSAGES.addedLocation(newLocation.getName()));
 			}
 		});
 	}

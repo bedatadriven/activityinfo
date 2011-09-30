@@ -83,7 +83,7 @@ public class LocationView extends LayoutContainer {
 	}
 
 	private void createChangeLocationButton() {
-		buttonChangeLocation = new Button("Change location...");
+		buttonChangeLocation = new Button(I18N.CONSTANTS.changeLocation());
 		buttonChangeLocation.setIcon(IconImageBundle.ICONS.editLocation());
 		buttonChangeLocation.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
