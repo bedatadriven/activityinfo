@@ -107,6 +107,10 @@ public abstract class AbstractSiteGrid
 
         toolBar.addExcelExportButton();
         toolBar.addLockedPeriodsButton();
+        
+        toolBar.addButton(UIActions.list, "Sites list", IconImageBundle.ICONS.list());
+        toolBar.addButton(UIActions.treeGeo, "Tree geo", IconImageBundle.ICONS.treeviewAdmin());
+        toolBar.addButton(UIActions.treeTime, "Tree time", IconImageBundle.ICONS.treeviewTime());
     }
 
     protected ColumnModel createColumnModel(ActivityDTO activity) {

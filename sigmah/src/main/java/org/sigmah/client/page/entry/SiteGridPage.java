@@ -44,6 +44,10 @@ public class SiteGridPage extends SiteTreeGrid {
     public SiteGridPage(boolean enableDragSource) {
         super(enableDragSource);
     }
+    
+    public SiteGridPage(AbstractSiteGrid abstractSiteGrid) {
+    	
+    }
 
 
     public void addSidePanel(String name, AbstractImagePrototype icon, final Component component) {

@@ -68,6 +68,8 @@ public class SiteEditor extends AbstractSiteEditor implements Page, GridPresente
     @Inject
     public SiteEditor(EventBus eventBus, Dispatcher service, StateProvider stateMgr, final View view) {
         super(eventBus, service, stateMgr, view);
+        
+        this.view=view;
     }
 
     @Override
@@ -134,9 +136,8 @@ public class SiteEditor extends AbstractSiteEditor implements Page, GridPresente
         return "sitegridpage." + currentActivity.getId();
     }
 
-    @Override
     public void go(SiteGridPageState place, ActivityDTO activity) {
-    	super.go(place, activity);
+    	this.currentActivity=activity;
         initLoaderDefaults(pagingCmdLoader, place, new SortInfo("date2", Style.SortDir.DESC));
         view.init(this, currentActivity, listStore);
         load(filterPanel.getValue());

@@ -16,7 +16,7 @@ import org.sigmah.client.page.common.grid.AbstractPagingGridPageState;
 import org.sigmah.shared.dto.ActivityDTO;
 
 
-public class SiteGridPageState extends AbstractPagingGridPageState {
+public class SiteGridPageState  extends AbstractPagingGridPageState implements SitePageState {
 
     private int activityId;
 
@@ -60,8 +60,9 @@ public class SiteGridPageState extends AbstractPagingGridPageState {
 		return Arrays.asList(Frames.DataEntryFrameSet,SiteEditor.ID);
 	}
 
-    public void setActivityId(int activityId) {
+    public SiteGridPageState setActivityId(int activityId) {
         this.activityId = activityId;
+        return this;
     }
 
     @Override

@@ -12,7 +12,9 @@ package org.sigmah.client.page.common.toolbar;
  */
 public class UIActions {
 
-    private UIActions() {}
+
+
+	private UIActions() {}
 
     public static final String add = "add";
     
@@ -47,4 +49,10 @@ public class UIActions {
     public static final String groupAdminLevel = "groupAdminLevel";
 
     public static final String showLockedPeriods = "showLockedPeriods";
+    
+    public static final String treeTime = "treeAdmin";
+
+    public static final String treeGeo = "treeGeo";
+
+    public static final String list = "sitesList";
 }

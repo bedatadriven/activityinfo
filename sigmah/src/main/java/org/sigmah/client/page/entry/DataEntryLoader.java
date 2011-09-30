@@ -17,7 +17,6 @@ import org.sigmah.client.page.PageLoader;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.PageStateSerializer;
 import org.sigmah.client.page.common.filter.FilterPanel;
-import org.sigmah.client.page.entry.SiteTreeEditor.SiteTreeGridPageState;
 import org.sigmah.client.page.entry.editor.SiteFormPage;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.ActivityDTO;
@@ -29,9 +28,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
-/**
- * @author Alex Bertram (akbertram@gmail.com)
- */
 public class DataEntryLoader implements PageLoader {
     private final AppInjector injector;
     private final Provider<DataEntryFrameSet> dataEntryFrameSetProvider;
@@ -39,15 +35,21 @@ public class DataEntryLoader implements PageLoader {
     private FilterPanel filterPanelSet = null;
     
     @Inject
-    public DataEntryLoader(AppInjector injector, NavigationHandler pageManager, 
+    public DataEntryLoader(AppInjector injector, 
+    		NavigationHandler pageManager, 
     		PageStateSerializer placeSerializer,
-    		Provider<DataEntryFrameSet> dataEntryFrameSetProvider, Provider<SiteFormPage> siteFormProvider) {
+    		Provider<DataEntryFrameSet> dataEntryFrameSetProvider, 
+    		Provider<SiteFormPage> siteFormProvider) {
         this.injector = injector;
         this.dataEntryFrameSetProvider = dataEntryFrameSetProvider;
         this.siteFormProvider=siteFormProvider;
         pageManager.registerPageLoader(Frames.DataEntryFrameSet, this);
-        pageManager.registerPageLoader(SiteTreeEditor.SiteTreeGridPageState.SITE_TREE_VIEW, this);
-        placeSerializer.registerParser(SiteTreeEditor.SiteTreeGridPageState.SITE_TREE_VIEW, new SiteTreeEditor.SiteTreeGridPageState.Parser());
+        
+        pageManager.registerPageLoader(SiteEditor.ID, this);
+        pageManager.registerPageLoader(SiteTreeGridPageState.SITE_TREE_VIEW, this);
+        
+        placeSerializer.registerParser(SiteEditor.ID, new SiteGridPageState.Parser());
+        placeSerializer.registerParser(SiteTreeGridPageState.SITE_TREE_VIEW, new SiteTreeGridPageState.Parser());
         
         placeSerializer.registerParser(SiteFormPage.EDIT_PAGE_ID, new SiteFormPage.EditPageStateParser());
         pageManager.registerPageLoader(SiteFormPage.EDIT_PAGE_ID, this);
@@ -59,14 +61,12 @@ public class DataEntryLoader implements PageLoader {
 
     @Override
     public void load(final PageId pageId, final PageState pageState, final AsyncCallback<Page> callback) {
-
         GWT.runAsync(new RunAsyncCallback() {
-
             @Override
             public void onSuccess() {
                 if (Frames.DataEntryFrameSet.equals(pageId)) {
                     loadFrame(pageState, callback);
-                } else if (SiteTreeEditor.SiteTreeGridPageState.SITE_TREE_VIEW.equals(pageId)) {
+                } else if (SiteTreeGridPageState.SITE_TREE_VIEW.equals(pageId) || pageId.equals(SiteEditor.ID)) {
                     loadSiteGrid(pageState, callback);
                 } else if (SiteFormPage.EDIT_PAGE_ID.equals(pageId) || 
                 		   SiteFormPage.NEW_PAGE_ID.equals(pageId)) {
@@ -81,7 +81,6 @@ public class DataEntryLoader implements PageLoader {
                 callback.onFailure(throwable);
             }
         });
-
     }
 
     private void loadFrame(PageState place, AsyncCallback<Page> callback) {
@@ -94,24 +93,66 @@ public class DataEntryLoader implements PageLoader {
 
     protected void loadSiteGrid(final PageState place, final AsyncCallback<Page> callback) {
         injector.getService().execute(new GetSchema(), null, new Got<SchemaDTO>() {
-        	
             @Override
             public void got(SchemaDTO schema) {
-            	SiteTreeGridPageState sgPlace = (SiteTreeGridPageState) place;
-                if (sgPlace.getActivityId() == 0) {
+				SitePageState sitePlace = (SitePageState) place;
+            	if (sitePlace != null) {
+                	setDefaultActivityId(sitePlace, schema);
+            	}
+                ActivityDTO activity = schema.getActivityById(sitePlace.getActivityId());
+
+                AbstractSiteGrid abstractSiteGrid = null;
+                AbstractSiteEditor abstractSiteEditor = null;
+                SiteEditor siteEditor = null;
+                SiteTreeEditor siteTreeEditor = null;
+                
+                if (place instanceof SiteGridPageState) {
+                	SiteGrid grid = new SiteGrid(true);
+                	siteEditor = new SiteEditor(injector.getEventBus(), 
+                			injector.getService(),
+                			injector.getStateManager(), 
+                			grid);
+                	abstractSiteGrid = grid;
+                	abstractSiteEditor = siteEditor;
+                	siteEditor.bindFilterPanel(filterPanelSet);
+                }
+                
+                if (place instanceof SiteTreeGridPageState) {
+                	SiteTreeGrid grid = new SiteTreeGrid(true);
+                	siteTreeEditor = new SiteTreeEditor(injector.getEventBus(), 
+                			injector.getService(),
+                			injector.getStateManager(),
+                			grid);
+                	abstractSiteGrid = grid;
+                	abstractSiteEditor = siteTreeEditor;
+                }
+                
+                SiteGridPage sitePage = new SiteGridPage(abstractSiteGrid);
+                
+                addDetailsOrReportingTabs(activity, sitePage, abstractSiteEditor);
+                
+                SiteMap map = new SiteMap(injector.getEventBus(), injector.getService(), activity);
+                abstractSiteEditor.addSubComponent(map);
+                sitePage.addSidePanel(I18N.CONSTANTS.map(), IconImageBundle.ICONS.map(), map);
+
+                if (siteEditor != null) {
+                	siteEditor.go((SiteGridPageState) place, activity);
+                } else if (siteTreeEditor != null) {
+                	siteTreeEditor.go((SiteTreeGridPageState) place, activity);
+                }
+                callback.onSuccess(abstractSiteEditor);
+            }
+
+			private void setDefaultActivityId(SitePageState sitePlace, SchemaDTO schema) {
+                if (sitePlace.getActivityId() == 0) {
                 	if (schema.getFirstActivity() != null) {
-                		sgPlace.setActivityId(schema.getFirstActivity().getId());
+                		sitePlace.setActivityId(schema.getFirstActivity().getId());
                 	}
                 }
+			}
 
-                ActivityDTO activity = schema.getActivityById(sgPlace.getActivityId());
-
-                SiteGridPage grid = new SiteGridPage(true);
-                SiteTreeEditor editor = new SiteTreeEditor(injector.getEventBus(), injector.getService(),
-                        injector.getStateManager(), grid);
-                //editor.bindFilterPanel(filterPanelSet);
-
-                if (activity.getReportingFrequency() == ActivityDTO.REPORT_MONTHLY) {
+			private void addDetailsOrReportingTabs(ActivityDTO activity, SiteGridPage gridPage, AbstractSiteEditor editor) {
+				if (activity.getReportingFrequency() == ActivityDTO.REPORT_MONTHLY) {
                     MonthlyGrid monthlyGrid = new MonthlyGrid(activity);
                     MonthlyTab monthlyTab = new MonthlyTab(monthlyGrid);
                     MonthlyPresenter monthlyPresenter = new MonthlyPresenter(
@@ -120,7 +161,7 @@ public class DataEntryLoader implements PageLoader {
                             injector.getStateManager(),
                             activity, monthlyGrid);
                     editor.addSubComponent(monthlyPresenter);
-                    grid.addSouthTab(monthlyTab);
+                    gridPage.addSouthTab(monthlyTab);
                 } else {
                     DetailsTab detailsTab = new DetailsTab();
                     DetailsPresenter detailsPresenter = new DetailsPresenter(
@@ -128,16 +169,10 @@ public class DataEntryLoader implements PageLoader {
                             activity,
                             injector.getMessages(),
                             detailsTab);
-                    grid.addSouthTab(detailsTab);
+                    gridPage.addSouthTab(detailsTab);
                     editor.addSubComponent(detailsPresenter);
                 }
-                SiteMap map = new SiteMap(injector.getEventBus(), injector.getService(), activity);
-                editor.addSubComponent(map);
-                grid.addSidePanel(I18N.CONSTANTS.map(), IconImageBundle.ICONS.map(), map);
-
-                editor.go((SiteTreeGridPageState) place, activity);
-                callback.onSuccess(editor);
-            }
+			}
 
             @Override
             public void onFailure(Throwable caught) {

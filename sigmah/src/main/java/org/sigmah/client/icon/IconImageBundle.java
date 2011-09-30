@@ -261,4 +261,7 @@ public interface IconImageBundle extends ImageBundle {
     AbstractImagePrototype useLocation();
     @Resource(value="editLocation16.png")
     AbstractImagePrototype editLocation();
+    AbstractImagePrototype treeviewAdmin();
+    AbstractImagePrototype treeviewTime();
+    AbstractImagePrototype list();
 }

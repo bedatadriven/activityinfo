@@ -17,6 +17,7 @@ import org.sigmah.client.page.common.Shutdownable;
 import org.sigmah.client.page.common.grid.AbstractEditorGridPresenter;
 import org.sigmah.client.page.common.grid.GridView.SiteGridView;
 import org.sigmah.client.page.common.toolbar.UIActions;
+import org.sigmah.client.page.entry.SiteTreeGridPageState.TreeType;
 import org.sigmah.client.page.entry.editor.SiteFormPage;
 import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.BatchCommand;
@@ -85,7 +86,7 @@ public abstract class AbstractSiteEditor extends AbstractEditorGridPresenter<Sit
 	protected abstract Loader createLoader();
 
 	protected abstract Store<SiteDTO> createStore();
-
+	
 	private void addListeners() {
         this.eventBus.addListener(AppEvents.SiteChanged, new Listener<SiteEvent>() {
             public void handleEvent(SiteEvent se) {
@@ -146,11 +147,6 @@ public abstract class AbstractSiteEditor extends AbstractEditorGridPresenter<Sit
     private String stateId(String suffix) {
         return "sitegridpage." + currentActivity.getId();
     }
-
-    public void go(SiteGridPageState place, ActivityDTO activity) {
-        this.currentActivity = activity;
-    }
-
 
 	protected void setActionsDisabled() {
 		view.setActionEnabled(UIActions.add, currentActivity.getDatabase().isEditAllowed());
@@ -230,8 +226,20 @@ public abstract class AbstractSiteEditor extends AbstractEditorGridPresenter<Sit
             onExport();
         } else if (UIActions.showLockedPeriods.equals(actionId)) {
         	view.showLockedPeriods(getLockedPeriods());
-        } else if (UIActions.map.equals(actionId)) {
-
+        } else if (UIActions.treeTime.equals(actionId)) {
+        	eventBus.fireEvent(new NavigationEvent(
+        			NavigationHandler.NavigationRequested, 
+        			new SiteTreeGridPageState().setActivityId(currentActivity.getId())));
+        } else if (UIActions.treeGeo.equals(actionId)) {
+        	eventBus.fireEvent(new NavigationEvent(
+        			NavigationHandler.NavigationRequested, 
+        			new SiteTreeGridPageState()
+        				.setActivityId(currentActivity.getId())
+        				.setTreeType(TreeType.GEO)));
+        } else if (UIActions.list.equals(actionId)) {
+        	eventBus.fireEvent(new NavigationEvent(
+        			NavigationHandler.NavigationRequested, 
+        			new SiteGridPageState(currentActivity)));
         }
     }
 

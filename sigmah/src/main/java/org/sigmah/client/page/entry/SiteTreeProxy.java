@@ -5,8 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.page.entry.SiteTreeEditor.SiteTreeGridPageState;
-import org.sigmah.client.page.entry.SiteTreeEditor.SiteTreeGridPageState.TreeType;
+import org.sigmah.client.page.entry.SiteTreeGridPageState.TreeType;
 import org.sigmah.shared.command.GetAdminEntities;
 import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.command.result.AdminEntityResult;
