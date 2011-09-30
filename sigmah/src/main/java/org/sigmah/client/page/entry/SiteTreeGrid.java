@@ -1,5 +1,7 @@
 package org.sigmah.client.page.entry;
 
+import java.util.Arrays;
+
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.entry.SiteTreeGridPageState.TreeType;
 import org.sigmah.shared.dto.ActivityDTO;
@@ -108,32 +110,44 @@ public class SiteTreeGrid extends AbstractSiteGrid implements SiteTreeEditor.Vie
 
 	@Override
 	public void setSelection(int siteId) {
-		// TODO Auto-generated method stub
-		
+		for (SiteDTO site : treePresenter.getStore().getAllItems()) {
+			if (site.getId() == siteId) {
+				grid.getSelectionModel().select(site, false);
+				return;
+			}
+		}
 	}
 
 	@Override
 	public void setSite(SiteDTO selectedSite) {
-		// TODO Auto-generated method stub
-		
+		setSelection(selectedSite.getId());
 	}
 
 	@Override
-	public void update(SiteDTO site) {
-		// TODO Auto-generated method stub
-		
+	public void update(SiteDTO updatedSite) {
+		for (SiteDTO site : treePresenter.getStore().getAllItems()) {
+			if (site instanceof MonthViewModel) {
+				MonthViewModel month = (MonthViewModel)site;
+				if (month.getYear() == site.getDate2().getYear() &&
+						month.getMonth() == site.getDate2().getMonthOfYear()) {
+					treePresenter.getStore().add(month, Arrays.asList(updatedSite), true);
+				}
+			}
+		}
 	}
 
 	@Override
 	public void setSelected(int id) {
-		// TODO Auto-generated method stub
-		
+		setSelection(id);
 	}
 
 	@Override
-	public void remove(SiteDTO site) {
-		// TODO Auto-generated method stub
-		
+	public void remove(SiteDTO removedSite) {
+		for (SiteDTO site : treePresenter.getStore().getAllItems()) {
+			if (site.getId() == removedSite.getId()) {
+				treePresenter.getStore().remove(site);
+			}
+		}
 	}
 
 	@Override
