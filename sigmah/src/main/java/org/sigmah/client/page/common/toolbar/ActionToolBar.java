@@ -17,6 +17,7 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.SplitButton;
+import com.extjs.gxt.ui.client.widget.button.ToggleButton;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
@@ -58,6 +59,15 @@ public class ActionToolBar extends ToolBar implements Listener<ButtonEvent> {
      */
     public Button addButton(String actionId, String text, AbstractImagePrototype icon) {
         Button button = new Button(text, icon);
+        button.setItemId(actionId);
+        button.addListener(Events.Select, this);
+        add(button);
+        
+        return button;
+    }
+    
+    public ToggleButton addToggleButton (String actionId, String text, AbstractImagePrototype icon) {
+    	ToggleButton button = new ToggleButton(text, icon);
         button.setItemId(actionId);
         button.addListener(Events.Select, this);
         add(button);

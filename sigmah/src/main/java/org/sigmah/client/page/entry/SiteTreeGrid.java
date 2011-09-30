@@ -1,5 +1,6 @@
 package org.sigmah.client.page.entry;
 
+import org.sigmah.client.page.entry.SiteTreeGridPageState.TreeType;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.SiteDTO;
 
@@ -96,7 +97,14 @@ public class SiteTreeGrid extends AbstractSiteGrid implements SiteTreeEditor.Vie
 			TreeStore<SiteDTO> store) {
 		this.treePresenter=presenter;
 		this.activity = presenter.getCurrentActivity();
+
 		super.init(presenter, store);
+		if (presenter.getPlace().getTreeType() == TreeType.GEO) {
+			toggle(togglebuttonTreeGeo);
+		}
+		if (presenter.getPlace().getTreeType() == TreeType.TIME) {
+			toggle(togglebuttonTreeTime);
+		}
 	}
 
 }

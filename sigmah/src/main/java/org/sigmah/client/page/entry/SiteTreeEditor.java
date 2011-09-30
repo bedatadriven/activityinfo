@@ -21,6 +21,7 @@ public class SiteTreeEditor extends AbstractSiteEditor implements GridPresenter.
 	private TreeStore<SiteDTO> treeStore;
 	private View treeView;
 	private SiteTreeProxy proxy;
+	private SiteTreeGridPageState place;
 	
 	public SiteTreeEditor(EventBus eventBus, Dispatcher service, StateProvider stateMgr, SiteTreeEditor.View view) {
 		super(eventBus, service, stateMgr, view);
@@ -30,8 +31,9 @@ public class SiteTreeEditor extends AbstractSiteEditor implements GridPresenter.
 	
     public void go(SiteTreeGridPageState place, ActivityDTO activity) {
         this.currentActivity = activity;
-        treeView.init(this, activity, treeStore);
         proxy.setPlace(place);
+        this.place=place;
+        treeView.init(this, activity, treeStore);
         //load(filterPanel.getValue());
         setActionsDisabled();
     }
@@ -70,6 +72,7 @@ public class SiteTreeEditor extends AbstractSiteEditor implements GridPresenter.
         boolean reloadRequired = true;
         
         proxy.setPlace(treeGridPlace);
+        this.place=treeGridPlace;
         
         if (reloadRequired) {
         	treeLoader.load();
@@ -82,4 +85,7 @@ public class SiteTreeEditor extends AbstractSiteEditor implements GridPresenter.
 		return SiteTreeGridPageState.SITE_TREE_VIEW.toString();
 	}
 
+	public SiteTreeGridPageState getPlace() {
+		return place;
+	}
 }

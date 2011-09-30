@@ -26,6 +26,7 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.dnd.DragSource;
 import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.button.ToggleButton;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -75,6 +76,9 @@ public abstract class AbstractSiteGrid
     protected List<AdminLevelDTO> levels;
     protected final ShowLockedPeriodsDialog showLockedPeriods = new ShowLockedPeriodsDialog();
     protected SiteDTO currentSite;
+    protected ToggleButton togglebuttonList;
+    protected ToggleButton togglebuttonTreeTime;
+    protected ToggleButton togglebuttonTreeGeo;
 
     public AbstractSiteGrid(boolean enableDragSource) {
         this();
@@ -107,10 +111,19 @@ public abstract class AbstractSiteGrid
 
         toolBar.addExcelExportButton();
         toolBar.addLockedPeriodsButton();
+
+        toolBar.add(new SeparatorToolItem());
         
-        toolBar.addButton(UIActions.list, "Sites list", IconImageBundle.ICONS.list());
-        toolBar.addButton(UIActions.treeGeo, "Tree geo", IconImageBundle.ICONS.treeviewAdmin());
-        toolBar.addButton(UIActions.treeTime, "Tree time", IconImageBundle.ICONS.treeviewTime());
+        togglebuttonList = toolBar.addToggleButton(UIActions.list, "Sites list", IconImageBundle.ICONS.list());
+        togglebuttonTreeGeo = toolBar.addToggleButton(UIActions.treeGeo, "Tree geo", IconImageBundle.ICONS.treeviewAdmin());
+        togglebuttonTreeTime = toolBar.addToggleButton(UIActions.treeTime, "Tree time", IconImageBundle.ICONS.treeviewTime());
+    }
+    
+    protected void toggle(ToggleButton button) {
+    	togglebuttonList.toggle(false);
+    	togglebuttonTreeGeo.toggle(false);
+    	togglebuttonTreeTime.toggle(false);
+    	button.toggle(true);
     }
 
     protected ColumnModel createColumnModel(ActivityDTO activity) {

@@ -64,6 +64,7 @@ public class SiteEditor extends AbstractSiteEditor implements Page, GridPresente
     private FilterPanel filterPanel = new NullFilterPanel();
 	private HandlerRegistration filterRegistration; 
 	private View view;
+	private SiteGridPageState place;
 
     @Inject
     public SiteEditor(EventBus eventBus, Dispatcher service, StateProvider stateMgr, final View view) {
@@ -170,6 +171,7 @@ public class SiteEditor extends AbstractSiteEditor implements Page, GridPresente
         if (currentActivity.getId() != gridPlace.getActivityId()) {
             return false;
         }
+        this.place=gridPlace;
 
         handleGridNavigation(pagingCmdLoader, gridPlace);
 
@@ -276,6 +278,8 @@ public class SiteEditor extends AbstractSiteEditor implements Page, GridPresente
             }
         });
     }
-    
-    
+
+	public SiteGridPageState getPlace() {
+		return place;
+	}
 }

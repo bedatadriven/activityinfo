@@ -109,5 +109,6 @@ public class SiteGrid extends AbstractSiteGrid implements SiteEditor.View {
         this.listStore=store;
         setHeading(I18N.MESSAGES.activityTitle(activity.getDatabase().getName(), activity.getName()));
         super.init(presenter, listStore);
+        toggle(togglebuttonList);
 	}
 }
