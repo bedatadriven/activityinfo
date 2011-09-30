@@ -139,6 +139,9 @@ public abstract class AbstractSiteGrid
         //togglebuttonTreeGeo = toolBar.addToggleButton(UIActions.treeGeo, "Tree geo", IconImageBundle.ICONS.treeviewAdmin());
         togglebuttonTreeTime = toolBar.addToggleButton(UIActions.treeTime, I18N.CONSTANTS.treeTime(), IconImageBundle.ICONS.treeviewTime());
         
+        if (sideBarButtons.size() > 0) {
+            toolBar.add(new SeparatorToolItem());
+        }
         for(ToggleButton button : sideBarButtons) {
             toolBar.add(button);
         }
