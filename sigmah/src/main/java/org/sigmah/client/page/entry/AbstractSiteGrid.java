@@ -114,8 +114,8 @@ public abstract class AbstractSiteGrid
 
         toolBar.add(new SeparatorToolItem());
         
-        togglebuttonList = toolBar.addToggleButton(UIActions.list, "Sites list", IconImageBundle.ICONS.list());
-        togglebuttonTreeGeo = toolBar.addToggleButton(UIActions.treeGeo, "Tree geo", IconImageBundle.ICONS.treeviewAdmin());
+        togglebuttonList = toolBar.addToggleButton(UIActions.list, "List", IconImageBundle.ICONS.list());
+        //togglebuttonTreeGeo = toolBar.addToggleButton(UIActions.treeGeo, "Tree geo", IconImageBundle.ICONS.treeviewAdmin());
         togglebuttonTreeTime = toolBar.addToggleButton(UIActions.treeTime, "Tree time", IconImageBundle.ICONS.treeviewTime());
     }
     
@@ -232,20 +232,20 @@ public abstract class AbstractSiteGrid
         return indicatorColumn;
 	}
 	
-	private void createLocationColumn() {
+	protected void createLocationColumn() {
 		if(activity.getLocationType().getBoundAdminLevelId() == null) {
             columns.add(new EditTextColumn("locationName", I18N.CONSTANTS.location(), 100));
             columns.add(new EditTextColumn("locationAxe", I18N.CONSTANTS.axe(), 100));
         }
 	}
 
-	private void createAdminLevelsColumns() {
+	protected void createAdminLevelsColumns() {
 		for (AdminLevelDTO level : levels) {
             columns.add(new ColumnConfig(level.getPropertyName(), level.getName(), 75));
         }
 	}
 
-	private void getAdminLevels() {
+	protected void getAdminLevels() {
 		if( activity.getLocationType().isAdminLevel()) {
             levels = activity.getDatabase().getCountry().getAdminLevelAncestors(activity.getLocationType().getBoundAdminLevelId());
         } else {
@@ -253,23 +253,26 @@ public abstract class AbstractSiteGrid
         }
 	}
 
-	private void createPartnerColumn() {
+	protected void createPartnerColumn() {
 		if(activity.getDatabase().isViewAllAllowed()) {
             columns.add(new ColumnConfig("partner", I18N.CONSTANTS.partner(), 100));
         }
 	}
 
-	private void createDateColumn() {
+	protected void createDateColumn() {
 		if(activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE) {
             columns.add(new EditableLocalDateColumn("date2", I18N.CONSTANTS.date(), 100));
         }
 	}
 
-	private void createMapColumn() {
+	protected void createMapColumn() {
 		ColumnConfig mapColumn = new ColumnConfig("x", "", 25);
         mapColumn.setRenderer(new GridCellRenderer<SiteDTO>() {
             @Override
             public Object render(SiteDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
+            	if (model instanceof MonthViewModel || model instanceof YearViewModel || model instanceof AdminLevelViewModel) {
+            		return "";
+            	}
                 if(model.hasCoords()) {
                     return "<div class='mapped'>&nbsp;&nbsp;</div>";
                 } else {

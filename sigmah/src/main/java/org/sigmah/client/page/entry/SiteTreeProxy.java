@@ -15,9 +15,12 @@ import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.report.model.DimensionType;
 
+import com.bedatadriven.rebar.time.calendar.LocalDate;
+import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.DataProxy;
 import com.extjs.gxt.ui.client.data.DataReader;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.data.SortInfo;
 import com.google.common.collect.Lists;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -34,11 +37,9 @@ public class SiteTreeProxy implements DataProxy<List<ModelData>> {
 		@Override
 		public void load(DataReader<List<ModelData>> reader, Object parent,
 				final AsyncCallback<List<ModelData>> callback) {
-			
 			if (place.getTreeType() == TreeType.GEO) {
 				getDataForGeo(parent, callback);
 			}
-			
 			if (place.getTreeType() == TreeType.TIME) {
 				getDataForTime(parent, callback);
 			}
@@ -63,6 +64,7 @@ public class SiteTreeProxy implements DataProxy<List<ModelData>> {
 				filter.setMaxDate(new Date(month.getYear(), month.getMonth(), 28));
 				filter.addRestriction(DimensionType.Activity, Arrays.asList(place.getActivityId()));
 				getSites.setFilter(filter);
+				getSites.setSortInfo(new SortInfo("date2", SortDir.ASC));
 				service.execute(getSites, null, new AsyncCallback<SiteResult>() {
 					@Override
 					public void onFailure(Throwable caught) {
@@ -74,11 +76,17 @@ public class SiteTreeProxy implements DataProxy<List<ModelData>> {
 						List<ModelData> sites = Lists.newArrayList();
 						for (SiteDTO site : result.getData()) {
 							sites.add(site);
+							site.set("name", DateTimeFormat.getFormat("dd, EEEE").format(fromLocal(site.getDate2())));
+							//site.set("name", "");
 						}
 						callback.onSuccess(sites);
 					}
 				});
 			}
+		}
+		
+		private Date fromLocal(LocalDate localDate) {
+			return new Date(localDate.getYear(), localDate.getMonthOfYear(), localDate.getDayOfMonth());
 		}
 
 		private void getDataForGeo(Object parent, AsyncCallback<List<ModelData>> callback) {
@@ -109,9 +117,9 @@ public class SiteTreeProxy implements DataProxy<List<ModelData>> {
 
 		private List<ModelData> createMonths(int year) {
 			List<ModelData> months = Lists.newArrayList();
-			for (int i=1; i<13; i++) {
+			for (int i=0; i<12; i++) {
 				months.add(new MonthViewModel()
-					.setName(DateTimeFormat.getFormat("MMMM yyyy").format(new Date(year, i, 1)))
+					.setName(DateTimeFormat.getFormat("MMMM yyyy").format(new Date(year -1900, i, 1)))
 					.setYear(year)
 					.setMonth(i));
 			}

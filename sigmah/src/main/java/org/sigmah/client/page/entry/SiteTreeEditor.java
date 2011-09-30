@@ -15,6 +15,7 @@ import com.extjs.gxt.ui.client.store.TreeStore;
 public class SiteTreeEditor extends AbstractSiteEditor implements GridPresenter.SiteGridPresenter{
 	public interface View extends AbstractSiteEditor.View {
         public void init(SiteTreeEditor presenter, ActivityDTO activity, TreeStore<SiteDTO> store);
+        public void updateMode();
 	}
 
 	private SiteTreeLoader treeLoader;
@@ -73,6 +74,7 @@ public class SiteTreeEditor extends AbstractSiteEditor implements GridPresenter.
         
         proxy.setPlace(treeGridPlace);
         this.place=treeGridPlace;
+        treeView.updateMode();
         
         if (reloadRequired) {
         	treeLoader.load();

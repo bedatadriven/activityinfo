@@ -1,5 +1,6 @@
 package org.sigmah.client.page.entry;
 
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.entry.SiteTreeGridPageState.TreeType;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.SiteDTO;
@@ -56,11 +57,58 @@ public class SiteTreeGrid extends AbstractSiteGrid implements SiteTreeEditor.Vie
 
 	@Override
 	protected ColumnModel createColumnModel(ActivityDTO activity) {
+		if (treePresenter.getPlace().getTreeType() == TreeType.GEO) {
+			createGeoColumns();
+		}
+		if (treePresenter.getPlace().getTreeType() == TreeType.TIME) {
+			createTimeColumns();
+		}
+        return new ColumnModel(columns);
+	}
+	
+	private void createTimeColumns() {
+		ColumnConfig name = new ColumnConfig("name", I18N.CONSTANTS.date(), 120);
+		name.setRenderer(new TreeGridCellRenderer<ModelData>());
+		columns.add(name);
+
+		createMapColumn();
+        createLockColumn();
+        createPartnerColumn();
+        
+        // Only show Project column when the database has projects
+        if (!activity.getDatabase().getProjects().isEmpty()) {
+            createProjectColumn();
+        }
+        
+        createLocationColumn();
+        createIndicatorColumns();
+
+        getAdminLevels();
+        createAdminLevelsColumns();
+	}
+	
+	private void createGeoColumns() {
 		ColumnConfig name = new ColumnConfig("name", "Name", 50);
 		name.setRenderer(new TreeGridCellRenderer<ModelData>());
 		columns.add(name);
-		return super.createColumnModel(activity);
+
+		createMapColumn();
+        createLockColumn();
+        createDateColumn();
+        createPartnerColumn();
+        
+        // Only show Project column when the database has projects
+        if (!activity.getDatabase().getProjects().isEmpty()) {
+            createProjectColumn();
+        }
+        
+        createLocationColumn();
+        createIndicatorColumns();
+
+        getAdminLevels();
 	}
+	
+	
 
 	@Override
 	public void setSelection(int siteId) {
@@ -99,10 +147,15 @@ public class SiteTreeGrid extends AbstractSiteGrid implements SiteTreeEditor.Vie
 		this.activity = presenter.getCurrentActivity();
 
 		super.init(presenter, store);
-		if (presenter.getPlace().getTreeType() == TreeType.GEO) {
+		updateMode();
+	}
+
+	@Override
+	public void updateMode() {
+		if (treePresenter.getPlace().getTreeType() == TreeType.GEO) {
 			toggle(togglebuttonTreeGeo);
 		}
-		if (presenter.getPlace().getTreeType() == TreeType.TIME) {
+		if (treePresenter.getPlace().getTreeType() == TreeType.TIME) {
 			toggle(togglebuttonTreeTime);
 		}
 	}
