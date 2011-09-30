@@ -114,9 +114,9 @@ public abstract class AbstractSiteGrid
 
         toolBar.add(new SeparatorToolItem());
         
-        togglebuttonList = toolBar.addToggleButton(UIActions.list, "List", IconImageBundle.ICONS.list());
+        togglebuttonList = toolBar.addToggleButton(UIActions.list, I18N.CONSTANTS.list(), IconImageBundle.ICONS.list());
         //togglebuttonTreeGeo = toolBar.addToggleButton(UIActions.treeGeo, "Tree geo", IconImageBundle.ICONS.treeviewAdmin());
-        togglebuttonTreeTime = toolBar.addToggleButton(UIActions.treeTime, "Tree time", IconImageBundle.ICONS.treeviewTime());
+        togglebuttonTreeTime = toolBar.addToggleButton(UIActions.treeTime, I18N.CONSTANTS.treeTime(), IconImageBundle.ICONS.treeviewTime());
     }
     
     protected void toggle(ToggleButton button) {
