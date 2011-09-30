@@ -151,8 +151,7 @@ public class SiteTreeGrid extends AbstractSiteGrid implements SiteTreeEditor.Vie
 	}
 
 	@Override
-	public void init(SiteTreeEditor presenter, ActivityDTO activity,
-			TreeStore<SiteDTO> store) {
+	public void init(SiteTreeEditor presenter, ActivityDTO activity, TreeStore<SiteDTO> store) {
 		this.treePresenter=presenter;
 		this.activity = presenter.getCurrentActivity();
 

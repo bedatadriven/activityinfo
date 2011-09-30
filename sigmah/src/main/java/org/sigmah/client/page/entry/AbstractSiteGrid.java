@@ -8,7 +8,6 @@ import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.client.page.common.columns.EditTextColumn;
 import org.sigmah.client.page.common.columns.EditableLocalDateColumn;
 import org.sigmah.client.page.common.columns.ReadTextColumn;
 import org.sigmah.client.page.common.grid.AbstractEditorGridView;
@@ -260,8 +259,8 @@ public abstract class AbstractSiteGrid
 	
 	protected void createLocationColumn() {
 		if(activity.getLocationType().getBoundAdminLevelId() == null) {
-            columns.add(new EditTextColumn("locationName", I18N.CONSTANTS.location(), 100));
-            columns.add(new EditTextColumn("locationAxe", I18N.CONSTANTS.axe(), 100));
+            columns.add(new ReadTextColumn("locationName", I18N.CONSTANTS.location(), 100));
+            columns.add(new ReadTextColumn("locationAxe", I18N.CONSTANTS.axe(), 100));
         }
 	}
 
