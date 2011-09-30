@@ -8,13 +8,11 @@ package org.sigmah.shared.command;
 import org.sigmah.shared.command.result.ReportTemplateResult;
 
 public class GetReportTemplates extends GetListCommand<ReportTemplateResult> {
-
     private Integer databaseId;
     private Integer templateId;
 
     public GetReportTemplates() {
     }
-
 
     public Integer getDatabaseId() {
         return databaseId;
@@ -22,7 +20,6 @@ public class GetReportTemplates extends GetListCommand<ReportTemplateResult> {
 
     public void setDatabaseId(Integer databaseId) {
         this.databaseId = databaseId;
-
     }
 
     public Integer getTemplateId() {
@@ -39,8 +36,4 @@ public class GetReportTemplates extends GetListCommand<ReportTemplateResult> {
 
         return cmd;
     }
-
-
-
-
 }

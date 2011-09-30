@@ -77,7 +77,6 @@ public class ReportListPagePresenter extends AbstractEditorGridPresenter<ReportD
 
     }
 
-
     @Override
     protected Command createSaveCommand() {
         BatchCommand batch = new BatchCommand();
@@ -101,7 +100,6 @@ public class ReportListPagePresenter extends AbstractEditorGridPresenter<ReportD
     }
 
     public void onSelectionChanged(ReportDefinitionDTO selectedItem) {
-
     }
 
     public PageId getPageId() {
@@ -126,7 +124,6 @@ public class ReportListPagePresenter extends AbstractEditorGridPresenter<ReportD
     }
 
     public void onNewReport(final int dbId) {
-
         final ReportXmlForm form = new ReportXmlForm();
         form.setXml("<report>\n<title></title>\n</report>");
 
@@ -136,7 +133,6 @@ public class ReportListPagePresenter extends AbstractEditorGridPresenter<ReportD
         dlg.show(new FormDialogCallback() {
             @Override
             public void onValidated() {
-
                 service.execute(new CreateReportDef(dbId, form.getXml()), dlg, new AsyncCallback<CreateResult>() {
                     public void onFailure(Throwable caught) {
                         dlg.onServerError();
@@ -147,7 +143,6 @@ public class ReportListPagePresenter extends AbstractEditorGridPresenter<ReportD
                         loader.load();
                     }
                 });
-
             }
         });
 

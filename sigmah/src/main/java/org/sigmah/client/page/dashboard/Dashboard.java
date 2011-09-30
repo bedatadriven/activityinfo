@@ -25,6 +25,8 @@ public class Dashboard extends Composite implements Page {
 	private UpdateStream updateStream;
 	private Block block_2;
 	private SitesWithoutLocations sitesWithoutLocations;
+	private Block block_report;
+	private Reports reports;
 	
 	@Inject
 	public Dashboard(Dispatcher service) {
@@ -53,6 +55,13 @@ public class Dashboard extends Composite implements Page {
 					panelMain.setStyleName("dashboard-mainpanel");
 					horizontalPanel.setCellWidth(panelMain, "66%");
 					{
+						block_report = new Block();
+						block_report.setTitle(I18N.CONSTANTS.reports());
+						panelMain.add(block_report);
+						{
+							reports = new Reports(service);
+							block_report.add(reports);
+						}
 						block_1 = new Block();
 						block_1.setTitle(I18N.CONSTANTS.latestAddedEditedSites());
 						panelMain.add(block_1);

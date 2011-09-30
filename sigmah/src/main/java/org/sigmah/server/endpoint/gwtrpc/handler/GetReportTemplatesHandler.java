@@ -28,7 +28,6 @@ import com.google.inject.Inject;
  * @see org.sigmah.shared.command.GetReportTemplates
  */
 public class GetReportTemplatesHandler implements CommandHandler<GetReportTemplates> {
-
     private EntityManager em;
 
     @Inject
