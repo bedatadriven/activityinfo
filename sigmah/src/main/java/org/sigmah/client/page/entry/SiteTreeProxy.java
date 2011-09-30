@@ -1,6 +1,5 @@
 package org.sigmah.client.page.entry;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -13,7 +12,6 @@ import org.sigmah.shared.command.result.SiteResult;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.SiteDTO;
-import org.sigmah.shared.report.model.DimensionType;
 
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.extjs.gxt.ui.client.Style.SortDir;
@@ -28,6 +26,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class SiteTreeProxy implements DataProxy<List<ModelData>> {
 		private Dispatcher service;
 		private SiteTreeGridPageState place;
+		private Filter filter;
 		
 		public SiteTreeProxy(Dispatcher service) {
 			super();
@@ -59,10 +58,8 @@ public class SiteTreeProxy implements DataProxy<List<ModelData>> {
 			if (parent instanceof MonthViewModel) {
 				MonthViewModel month = (MonthViewModel) parent;
 				GetSites getSites = new GetSites();
-				Filter filter = new Filter();
 				filter.setMinDate(new Date(month.getYear(), month.getMonth(), 1));
 				filter.setMaxDate(new Date(month.getYear(), month.getMonth(), 28));
-				filter.addRestriction(DimensionType.Activity, Arrays.asList(place.getActivityId()));
 				getSites.setFilter(filter);
 				getSites.setSortInfo(new SortInfo("date2", SortDir.ASC));
 				service.execute(getSites, null, new AsyncCallback<SiteResult>() {
@@ -92,8 +89,6 @@ public class SiteTreeProxy implements DataProxy<List<ModelData>> {
 		private void getDataForGeo(Object parent, AsyncCallback<List<ModelData>> callback) {
 			if (parent instanceof AdminEntityDTO) {
 				GetAdminEntities getAdminEntities = new GetAdminEntities();
-				Filter filter = new Filter();
-				filter.addRestriction(DimensionType.Activity, Arrays.asList(place.getActivityId()));
 				getAdminEntities.setFilter(filter);
 				service.execute(getAdminEntities, null, new AsyncCallback<AdminEntityResult>() {
 					@Override
@@ -140,5 +135,9 @@ public class SiteTreeProxy implements DataProxy<List<ModelData>> {
 		}
 		public void setPlace(SiteTreeGridPageState place) {
 			this.place = place;
+		}
+
+		public void setFilter(Filter filter) {
+			this.filter=filter;
 		}
 	}

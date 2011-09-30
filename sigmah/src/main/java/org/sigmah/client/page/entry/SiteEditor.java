@@ -14,8 +14,6 @@ import org.sigmah.client.event.SiteEvent;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
-import org.sigmah.client.page.common.filter.FilterPanel;
-import org.sigmah.client.page.common.filter.NullFilterPanel;
 import org.sigmah.client.page.common.grid.GridPresenter;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.util.state.StateProvider;
@@ -31,7 +29,6 @@ import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
-import org.sigmah.shared.report.model.DimensionType;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.LoadEvent;
@@ -40,9 +37,6 @@ import com.extjs.gxt.ui.client.data.SortInfo;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.store.Store;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -61,8 +55,6 @@ public class SiteEditor extends AbstractSiteEditor implements Page, GridPresente
     protected PagingCmdLoader<SiteResult> pagingCmdLoader;
 
     private Integer siteIdToSelectOnNextLoad;
-    private FilterPanel filterPanel = new NullFilterPanel();
-	private HandlerRegistration filterRegistration; 
 	private View view;
 	private SiteGridPageState place;
 
@@ -90,18 +82,6 @@ public class SiteEditor extends AbstractSiteEditor implements Page, GridPresente
 		return listStore;
 	}
 
-	public void bindFilterPanel(FilterPanel panel) {
-    	this.filterPanel = panel;
-    	
-    	filterRegistration = filterPanel.addValueChangeHandler(new ValueChangeHandler<Filter>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<Filter> event) {
-				pagingCmdLoader.setOffset(0);
-				load(event.getValue());
-			}
-		});
-    }
-    
     @Override
     protected void onSiteCreated(SiteEvent se) {
         if (listStore.getCount() < PAGE_SIZE) {
@@ -144,21 +124,6 @@ public class SiteEditor extends AbstractSiteEditor implements Page, GridPresente
         load(filterPanel.getValue());
         setActionsDisabled();
     }
-
-	private void load(Filter filter) {
-		Filter baseFilter = new Filter();
-        baseFilter.addRestriction(DimensionType.Activity, currentActivity.getId());
-        filterPanel.applyBaseFilter(baseFilter);
-        
-        Filter effectiveFilter = new Filter(filter, baseFilter);
-        
-        GetSites cmd = new GetSites();
-        cmd.setFilter(effectiveFilter);
-        
-        pagingCmdLoader.setCommand(cmd);
-        pagingCmdLoader.load();
-	}
-
 
 	@Override
     public boolean navigate(final PageState place) {
@@ -237,16 +202,8 @@ public class SiteEditor extends AbstractSiteEditor implements Page, GridPresente
         return isEditable((SiteDTO) record.getModel());
     }
 
-    @Override
-	public void shutdown() {
-		super.shutdown();
-        
-        filterRegistration.removeHandler();
-	}
-
 	@Override
     protected Command createSaveCommand() {
-
         BatchCommand batch = new BatchCommand();
         for (Record record : store.getModifiedRecords()) {
             batch.add(new UpdateSite((Integer) record.get("id"), getChangedProperties(record)));
@@ -278,6 +235,15 @@ public class SiteEditor extends AbstractSiteEditor implements Page, GridPresente
             }
         });
     }
+
+	@Override
+	protected void setFilter(Filter filter) {
+        GetSites cmd = new GetSites();
+        cmd.setFilter(filter);
+        
+        pagingCmdLoader.setCommand(cmd);
+        pagingCmdLoader.load();		
+	}
 
 	public SiteGridPageState getPlace() {
 		return place;

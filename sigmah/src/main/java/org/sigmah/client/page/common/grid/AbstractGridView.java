@@ -33,6 +33,9 @@ public abstract class AbstractGridView<M extends ModelData, P extends GridPresen
     protected P presenter;
     protected PagingToolBar pagingBar;
     private Grid<M> grid;
+    
+    protected abstract Grid<M> createGridAndAddToContainer(Store store);
+    protected abstract void initToolBar();
 
     public void init(final P presenter, Store store) {
         this.presenter = presenter;
@@ -68,8 +71,6 @@ public abstract class AbstractGridView<M extends ModelData, P extends GridPresen
         });
     }
 
-    protected abstract Grid<M> createGridAndAddToContainer(Store store);
-
     protected void createToolBar() {
         toolBar = new ActionToolBar(presenter);
         setTopComponent(toolBar);
@@ -79,8 +80,6 @@ public abstract class AbstractGridView<M extends ModelData, P extends GridPresen
         toolBar.setDirty(false);
     }
 
-    protected abstract void initToolBar();
-
     public void setActionEnabled(String actionId, boolean enabled) {
         toolBar.setActionEnabled(actionId, enabled);
     }
@@ -88,7 +87,6 @@ public abstract class AbstractGridView<M extends ModelData, P extends GridPresen
     public void confirmDeleteSelected(ConfirmCallback callback) {
         callback.confirmed();
     }
-
 
     public M getSelection() {
         GridSelectionModel<M> sm = grid.getSelectionModel();

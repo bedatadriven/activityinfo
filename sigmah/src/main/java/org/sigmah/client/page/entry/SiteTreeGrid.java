@@ -23,10 +23,6 @@ public class SiteTreeGrid extends AbstractSiteGrid implements SiteTreeEditor.Vie
 	private EditorTreeGrid<SiteDTO> grid;
 	private SiteTreeEditor treePresenter;
 	
-	public SiteTreeGrid() {
-		super();
-	}
-
 	public SiteTreeGrid(boolean enableDragSource) {
 		super(enableDragSource);
 	}
@@ -37,7 +33,7 @@ public class SiteTreeGrid extends AbstractSiteGrid implements SiteTreeEditor.Vie
         
         grid.setLoadMask(true); 
         grid.setStateful(true);
-        grid.setStateId("SiteGrid" + activity.getId());
+        grid.setStateId("site-treeview" + activity.getId());
         grid.setAutoExpandColumn("name");
         
         GridSelectionModel<SiteDTO> sm = new GridSelectionModel<SiteDTO>();

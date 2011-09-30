@@ -56,7 +56,6 @@ public class DataEntryLoader implements PageLoader {
         
         placeSerializer.registerParser(SiteFormPage.NEW_PAGE_ID, new SiteFormPage.NewStateParser());
         pageManager.registerPageLoader(SiteFormPage.NEW_PAGE_ID, this);
-
     }
 
     @Override
@@ -84,11 +83,9 @@ public class DataEntryLoader implements PageLoader {
     }
 
     private void loadFrame(PageState place, AsyncCallback<Page> callback) {
-
     	DataEntryFrameSet frameSet = dataEntryFrameSetProvider.get();
     	this.filterPanelSet = frameSet.getFilterPanelSet();
 		callback.onSuccess(frameSet);
-       
     }
 
     protected void loadSiteGrid(final PageState place, final AsyncCallback<Page> callback) {
@@ -114,7 +111,6 @@ public class DataEntryLoader implements PageLoader {
                 			grid);
                 	abstractSiteGrid = grid;
                 	abstractSiteEditor = siteEditor;
-                	siteEditor.bindFilterPanel(filterPanelSet);
                 }
                 
                 if (place instanceof SiteTreeGridPageState) {
@@ -126,14 +122,13 @@ public class DataEntryLoader implements PageLoader {
                 	abstractSiteGrid = grid;
                 	abstractSiteEditor = siteTreeEditor;
                 }
-                
-                SiteGridPage sitePage = new SiteGridPage(abstractSiteGrid);
-                
-                addDetailsOrReportingTabs(activity, sitePage, abstractSiteEditor);
+            	abstractSiteEditor.bindFilterPanel(filterPanelSet);
+
+                addDetailsOrReportingTabs(activity, abstractSiteGrid, abstractSiteEditor);
                 
                 SiteMap map = new SiteMap(injector.getEventBus(), injector.getService(), activity);
                 abstractSiteEditor.addSubComponent(map);
-                sitePage.addSidePanel(I18N.CONSTANTS.map(), IconImageBundle.ICONS.map(), map);
+                abstractSiteGrid.addSidePanel(I18N.CONSTANTS.map(), IconImageBundle.ICONS.map(), map);
 
                 if (siteEditor != null) {
                 	siteEditor.go((SiteGridPageState) place, activity);
@@ -151,7 +146,7 @@ public class DataEntryLoader implements PageLoader {
                 }
 			}
 
-			private void addDetailsOrReportingTabs(ActivityDTO activity, SiteGridPage gridPage, AbstractSiteEditor editor) {
+			private void addDetailsOrReportingTabs(ActivityDTO activity, AbstractSiteGrid abstractSiteGrid, AbstractSiteEditor editor) {
 				if (activity.getReportingFrequency() == ActivityDTO.REPORT_MONTHLY) {
                     MonthlyGrid monthlyGrid = new MonthlyGrid(activity);
                     MonthlyTab monthlyTab = new MonthlyTab(monthlyGrid);
@@ -161,7 +156,7 @@ public class DataEntryLoader implements PageLoader {
                             injector.getStateManager(),
                             activity, monthlyGrid);
                     editor.addSubComponent(monthlyPresenter);
-                    gridPage.addSouthTab(monthlyTab);
+                    abstractSiteGrid.addSouthTab(monthlyTab);
                 } else {
                     DetailsTab detailsTab = new DetailsTab();
                     DetailsPresenter detailsPresenter = new DetailsPresenter(
@@ -169,7 +164,7 @@ public class DataEntryLoader implements PageLoader {
                             activity,
                             injector.getMessages(),
                             detailsTab);
-                    gridPage.addSouthTab(detailsTab);
+                    abstractSiteGrid.addSouthTab(detailsTab);
                     editor.addSubComponent(detailsPresenter);
                 }
 			}

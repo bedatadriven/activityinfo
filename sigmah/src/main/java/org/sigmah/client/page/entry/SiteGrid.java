@@ -6,11 +6,9 @@
 package org.sigmah.client.page.entry;
 
 import java.util.Collections;
-import java.util.List;
 
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.dto.ActivityDTO;
-import org.sigmah.shared.dto.LockedPeriodDTO;
 import org.sigmah.shared.dto.SiteDTO;
 
 import com.extjs.gxt.ui.client.Style;
@@ -32,7 +30,16 @@ public class SiteGrid extends AbstractSiteGrid implements SiteEditor.View {
     public SiteGrid(boolean enableDragSource) {
         super(enableDragSource);
     }
-
+    
+	@Override
+	public void init(SiteEditor presenter, ActivityDTO activity, ListStore<SiteDTO> store) {
+        this.activity = activity;
+        this.listStore=store;
+        setHeading(I18N.MESSAGES.activityTitle(activity.getDatabase().getName(), activity.getName()));
+        super.init(presenter, listStore);
+        toggle(togglebuttonList);
+	}
+	
     public Grid<SiteDTO> createGridAndAddToContainer(Store store) {
     	editorGrid = new EditorGrid<SiteDTO>((ListStore)store, createColumnModel(activity));
         
@@ -70,17 +77,6 @@ public class SiteGrid extends AbstractSiteGrid implements SiteEditor.View {
     }
 
 	@Override
-	public void showLockedPeriods(List<LockedPeriodDTO> list) {
-		showLockedPeriods.show();
-		showLockedPeriods.setActivityFilter(activity);
-    	showLockedPeriods.setValue(list);
-    	showLockedPeriods.setHeader(I18N.MESSAGES.showLockedPeriodsTitle
-    			(activity.getDatabase().getName(), 
-    					currentSite.getProjectName(), 
-    					activity.getName()));
-	}
-
-	@Override
 	public void setSite(SiteDTO selectedSite) {
 		currentSite = selectedSite;
 	}
@@ -101,14 +97,5 @@ public class SiteGrid extends AbstractSiteGrid implements SiteEditor.View {
 	@Override
 	public void remove(SiteDTO site) {
 		listStore.remove(site);
-	}
-
-	@Override
-	public void init(SiteEditor presenter, ActivityDTO activity, ListStore<SiteDTO> store) {
-        this.activity = activity;
-        this.listStore=store;
-        setHeading(I18N.MESSAGES.activityTitle(activity.getDatabase().getName(), activity.getName()));
-        super.init(presenter, listStore);
-        toggle(togglebuttonList);
 	}
 }

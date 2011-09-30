@@ -43,7 +43,6 @@ public abstract class AbstractGridPresenter<ModelT extends ModelData>
         this.eventBus = eventBus;
         this.stateMgr = stateMgr;
         this.view = view;
-
     }
 
     public int getPageSize() {
@@ -155,7 +154,6 @@ public abstract class AbstractGridPresenter<ModelT extends ModelData>
     }
 
     protected void onLoaded(LoadEvent le) {
-
         Map<String, Object> stateMap = new HashMap<String, Object>();
 
         Object config = le.getConfig();
@@ -173,7 +171,6 @@ public abstract class AbstractGridPresenter<ModelT extends ModelData>
     }
 
     protected void firePageEvent(AbstractGridPageState place, LoadEvent le) {
-
         Object config = le.getConfig();
         if (config instanceof ListLoadConfig) {
             place.setSortInfo(((ListLoadConfig) config).getSortInfo());
@@ -186,9 +183,7 @@ public abstract class AbstractGridPresenter<ModelT extends ModelData>
         eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationAgreed, place));
     }
 
-
     protected void handleGridNavigation(ListLoader loader, AbstractGridPageState gridPlace) {
-
         boolean reloadRequired = false;
 
         if (gridPlace.getSortInfo() != null &&

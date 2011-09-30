@@ -8,12 +8,15 @@ import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.loader.CommandLoadEvent;
+import org.sigmah.client.dispatch.loader.PagingCmdLoader;
 import org.sigmah.client.event.DownloadRequestEvent;
 import org.sigmah.client.event.NavigationEvent;
 import org.sigmah.client.event.SiteEvent;
 import org.sigmah.client.page.NavigationHandler;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.common.Shutdownable;
+import org.sigmah.client.page.common.filter.FilterPanel;
+import org.sigmah.client.page.common.filter.NullFilterPanel;
 import org.sigmah.client.page.common.grid.AbstractEditorGridPresenter;
 import org.sigmah.client.page.common.grid.GridView.SiteGridView;
 import org.sigmah.client.page.common.toolbar.UIActions;
@@ -26,10 +29,12 @@ import org.sigmah.shared.command.Delete;
 import org.sigmah.shared.command.UpdateSite;
 import org.sigmah.shared.command.result.PagingResult;
 import org.sigmah.shared.command.result.VoidResult;
+import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.LockedPeriodDTO;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
+import org.sigmah.shared.report.model.DimensionType;
 
 import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.data.Loader;
@@ -37,6 +42,9 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.store.Store;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -64,8 +72,10 @@ public abstract class AbstractSiteEditor extends AbstractEditorGridPresenter<Sit
     protected SiteDTO currentSite;
     protected Store<SiteDTO> store;
     protected Loader loader;
+    protected FilterPanel filterPanel = new NullFilterPanel();
 
     private Integer siteIdToSelectOnNextLoad;
+    private HandlerRegistration filterRegistration;
 
     @Inject
     public AbstractSiteEditor(EventBus eventBus, Dispatcher service, StateProvider stateMgr, final View view) {
@@ -86,6 +96,8 @@ public abstract class AbstractSiteEditor extends AbstractEditorGridPresenter<Sit
 	protected abstract Loader createLoader();
 
 	protected abstract Store<SiteDTO> createStore();
+	
+	protected abstract void setFilter(Filter filter);
 	
 	private void addListeners() {
         this.eventBus.addListener(AppEvents.SiteChanged, new Listener<SiteEvent>() {
@@ -119,7 +131,30 @@ public abstract class AbstractSiteEditor extends AbstractEditorGridPresenter<Sit
     public void addSubComponent(Shutdownable subComponent) {
         subComponents.add(subComponent);
     }
-
+    
+	public void bindFilterPanel(FilterPanel panel) {
+    	this.filterPanel = panel;
+    	
+    	filterRegistration = filterPanel.addValueChangeHandler(new ValueChangeHandler<Filter>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<Filter> event) {
+				if (loader instanceof PagingCmdLoader) {
+					((PagingCmdLoader)loader).setOffset(0);					
+				}
+				load(event.getValue());
+			}
+		});
+    }
+	
+	protected void load(Filter filter) {
+		Filter baseFilter = new Filter();
+        baseFilter.addRestriction(DimensionType.Activity, currentActivity.getId());
+        filterPanel.applyBaseFilter(baseFilter);
+        
+        Filter effectiveFilter = new Filter(filter, baseFilter);
+        setFilter(effectiveFilter);
+	}
+	
     public void shutdown() {
         eventBus.removeListener(AppEvents.SiteChanged, siteChangedListener);
         eventBus.removeListener(AppEvents.SiteCreated, siteCreatedListener);
@@ -128,6 +163,8 @@ public abstract class AbstractSiteEditor extends AbstractEditorGridPresenter<Sit
         for (Shutdownable subComponet : subComponents) {
             subComponet.shutdown();
         }
+
+        filterRegistration.removeHandler();
     }
 
     @Override

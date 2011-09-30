@@ -6,6 +6,7 @@ import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.common.grid.GridPresenter;
 import org.sigmah.client.util.state.StateProvider;
+import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.SiteDTO;
 
@@ -35,7 +36,7 @@ public class SiteTreeEditor extends AbstractSiteEditor implements GridPresenter.
         proxy.setPlace(place);
         this.place=place;
         treeView.init(this, activity, treeStore);
-        //load(filterPanel.getValue());
+        load(filterPanel.getValue());
         setActionsDisabled();
     }
 
@@ -81,6 +82,11 @@ public class SiteTreeEditor extends AbstractSiteEditor implements GridPresenter.
         }
         return true;
     }
+
+	@Override
+	protected void setFilter(Filter filter) {
+		proxy.setFilter(filter);
+	}
 
 	@Override
 	protected String getStateId() {
