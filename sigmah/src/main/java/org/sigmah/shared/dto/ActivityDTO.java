@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.sigmah.shared.dto.LockedPeriodDTO.HasLockedPeriod;
+
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
@@ -19,7 +21,13 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  *
  * @author Alex Bertram
  */
-public final class ActivityDTO extends BaseModelData implements EntityDTO, ProvidesKey {
+public final class ActivityDTO 
+	extends 
+		BaseModelData 
+	implements 
+		EntityDTO,
+		HasLockedPeriod,
+		ProvidesKey {
 
     public final static int REPORT_ONCE = 0;
     public static final int REPORT_MONTHLY = 1;
@@ -271,9 +279,11 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO, Provi
     }
 
     public String getEntityName() {
-        return "Activity";
+    	return entityName;
     }
 
+    public static final String entityName = "Activity";
+    
     /**
      *
      * @return The list of admin levels that are relevant for the

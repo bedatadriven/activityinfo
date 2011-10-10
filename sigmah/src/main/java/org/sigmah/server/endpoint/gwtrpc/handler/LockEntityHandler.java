@@ -28,6 +28,7 @@ public class LockEntityHandler implements CommandHandler<LockEntity> {
 	@Override
 	public CommandResult execute(LockEntity cmd, User user)
 			throws CommandException {
+		
 		Activity activity = null;
 		UserDatabase database = null;
 		Project project = null;

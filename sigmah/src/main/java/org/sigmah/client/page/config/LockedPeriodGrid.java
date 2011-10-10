@@ -136,11 +136,15 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 					eventBus.fireEvent(new UpdateEvent());
 				} else if (actionId.equals(UIActions.discardChanges)) {
 					eventBus.fireEvent(new CancelUpdateEvent());
+				} else if (actionId.equals(UIActions.refresh)) {
+					eventBus.fireEvent(new RefreshEvent());
 				}
-			}});
+			}
+		});
 		toolbarActions.addDeleteButton();
 		toolbarActions.addCreateButton();
 		toolbarActions.addSaveSplitButton();
+		toolbarActions.addRefreshButton();
 		toolbarActions.setDeleteEnabled(false);
 		toolbarActions.setUpdateEnabled(false);
 		this.setTopComponent(toolbarActions);
@@ -260,9 +264,9 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 			// Remove LockedPeriods which have a different Activity then the activiftyFilter
 			List<LockedPeriodDTO> lockedPeriodsFilteredByActivity = new ArrayList<LockedPeriodDTO>();
 			for (LockedPeriodDTO lockedPeriod : items) {
-				if (lockedPeriod.getActivity() != null) {
+				if (lockedPeriod.getParent() != null && lockedPeriod.getParent() instanceof ActivityDTO) {
 					// Activity as parent, only add when activity equals filter
-					if (lockedPeriod.getActivity().getId() == activityFilter.getId()) {
+					if (lockedPeriod.getParent().getId() == activityFilter.getId()) {
 						lockedPeriodsFilteredByActivity.add(lockedPeriod);
 					}
 				} else {
@@ -276,7 +280,6 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 			return items;
 		}
 	}
-
 
 	@Override
 	public HandlerRegistration addCancelUpdateHandler(
@@ -416,38 +419,30 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 	@Override
 	public void setMustConfirmDelete(boolean mustConfirmDelete) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void setRefreshEnabled(boolean canRefresh) {
 		// TODO Auto-generated method stub
-		
 	}
-
 
 	@Override
 	public void removeFilter() {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void startUpdate() {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void cancelDelete() {
 		// TODO Auto-generated method stub
-		
 	}
 	@Override
-	public HandlerRegistration addRefreshHandler(
-			org.sigmah.client.mvp.CrudView.RefreshHandler handler) {
-		// TODO Auto-generated method stub
-		return null;
+	public HandlerRegistration addRefreshHandler(RefreshHandler handler) {
+		return eventBus.addHandler(RefreshEvent.TYPE, handler);
 	}
 
 	@Override
@@ -456,17 +451,15 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
 
 	@Override
 	public void initialize() {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void setValue(LockedPeriodDTO value) {
-		//gridLockedPeriods.getSelectionModel().select(value, false);
+		//gridLockedPeriods.getSelectionModel().select(vgetActivityalue, false);
 	}
 
 	public void setActivityFilter(ActivityDTO activityFilter) {
@@ -486,5 +479,4 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 	public void setTitle(String title) {
 		setHeading(title);
 	}
-
 }

@@ -10,6 +10,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.sigmah.shared.dto.LockedPeriodDTO.HasLockedPeriod;
+
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 
@@ -18,12 +20,21 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  *
  * @author Alex Bertram
  */
-public final class UserDatabaseDTO extends BaseModelData implements EntityDTO, ProvidesKey {
+public final class UserDatabaseDTO 
+	extends 
+		BaseModelData 
+	implements 
+		EntityDTO,
+		HasLockedPeriod,
+		ProvidesKey {
+	
     private CountryDTO country;
 	private List<PartnerDTO> partners = new ArrayList<PartnerDTO>(0);
 	private List<ActivityDTO> activities = new ArrayList<ActivityDTO>(0);
 	private Set<LockedPeriodDTO> lockedPeriods = new HashSet<LockedPeriodDTO>(0);
 	private List<ProjectDTO> projects = new ArrayList<ProjectDTO>(0);
+	
+    public final static String entityName = "UserDatabase";
 
     public UserDatabaseDTO() {
 	}
@@ -293,9 +304,9 @@ public final class UserDatabaseDTO extends BaseModelData implements EntityDTO, P
 	}
 
     public String getEntityName() {
-        return "UserDatabase";
+        return entityName;
     }
-
+    
     /**
      * Searches this UserDatabase's list of Partners for the PartnerDTO with the given
      * id.
@@ -309,6 +320,15 @@ public final class UserDatabaseDTO extends BaseModelData implements EntityDTO, P
             }
         }
         return null;
+    }
+    
+    public ActivityDTO getActivityById(int id) {
+    	for (ActivityDTO activity : getActivities()) {
+    		if (activity.getId() == id) {
+    			return activity;
+    		}
+    	}
+    	return null;
     }
     
     public String getKey() {

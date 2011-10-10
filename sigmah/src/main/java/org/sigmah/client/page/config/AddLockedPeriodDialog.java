@@ -236,13 +236,13 @@ public class AddLockedPeriodDialog extends FormPanel implements
 		newLockedPeriod.setFromDate(datefieldFromDate.getValue());
 		newLockedPeriod.setToDate(datefieldToDate.getValue());
 		if (radioActivity.getValue() && comboboxactivities.getValue() != null) {
-			newLockedPeriod.setActivity(comboboxactivities.getValue());
+			newLockedPeriod.setParent(comboboxactivities.getValue());
 		}
 		if (radioProject.getValue() && comboboxProjects.getValue() != null) {
-			newLockedPeriod.setProject(comboboxProjects.getValue());
+			newLockedPeriod.setParent(comboboxProjects.getValue());
 		}
 		if (radioDatabase.getValue()) {
-			newLockedPeriod.setUserDatabase(userDatabase);
+			newLockedPeriod.setParent(userDatabase);
 		}
 		
 		return newLockedPeriod;
