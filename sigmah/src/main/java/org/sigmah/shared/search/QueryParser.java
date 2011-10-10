@@ -29,17 +29,19 @@ public class QueryParser {
 	private boolean hasFailed=false;
 	private boolean hasDimensions = false;
 	private String failReason = "";
+	QueryChecker checker = new QueryChecker();
 	
 	public void parse(String query) {
 		this.query=query;
 		
-		if (query.length() == 0 || query.length() == 1) {
+		if (!checker.checkQuery(query)) { // Bugger out if the user fails to enter normal queries
 			hasFailed=true;
-			failReason = "Search query too short, need to be at least 3 characters";
+			checker.getFails().get(0);
 			return;
 		}
 		
 		try {
+			failFast();
 			determineColonPositions();
 			determineHaveDimensions();
 			if (hasDimensions) { // i.e. a "location:kivu" or "activity:NFI ditribution" 
@@ -56,6 +58,26 @@ public class QueryParser {
 			hasFailed=true;
 		}
 	}
+	
+	private void failFast() {
+		if (isWhitespace(query)) {
+			failReason = "Only whitespace found";
+		}
+	}
+
+	/** True when given string consists of only whitespace */
+	  public static boolean isWhitespace(String str) {
+	      if (str == null) {
+	          return false;
+	      }
+	      int sz = str.length();
+	      for (int i = 0; i < sz; i++) {
+	          if (str.charAt(i) != ' ') {
+	              return false;
+	          }
+	      }
+	      return true;
+	  }
 	
 	/** Removes "LocationId:15" from uniqueDimensions */
 	private void removePreciseDimensionsFromUniqueDimensions() {
