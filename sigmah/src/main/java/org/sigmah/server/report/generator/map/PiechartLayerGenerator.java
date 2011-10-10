@@ -37,7 +37,7 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
     private MapReportElement element;
     private PiechartMapLayer layer;
 
-    public PiechartLayerGenerator(MapReportElement element, PiechartMapLayer layer) {
+    public PiechartLayerGenerator(MapReportElement element, PiechartMapLayer layer, List<SiteData> sites) {
         this.element = element;
         this.layer = layer;
     }

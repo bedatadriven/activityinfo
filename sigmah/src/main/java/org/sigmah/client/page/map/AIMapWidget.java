@@ -110,8 +110,8 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 
     	this.dispatcher = dispatcher;
     	
-        setHeading(I18N.CONSTANTS.preview());
-        setLayout(new FitLayout());
+    	setHeaderVisible(false);
+    	setLayout(new FitLayout());
 
         statusWidget = new Status();
         ToolBar toolBar = new ToolBar();
@@ -138,9 +138,9 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
                 }
             }
         });
-        
-        getSchema();
-        getBaseMaps();
+//        
+//        getSchema();
+//        getBaseMaps();
     }
 
 	private void getSchema() {

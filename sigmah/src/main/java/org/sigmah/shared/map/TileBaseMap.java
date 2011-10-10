@@ -30,6 +30,7 @@ public class TileBaseMap extends BaseMap  {
 	private int minZoom;
 	private int maxZoom;
 	private String copyright = "";
+    private String thumbnailUrl;
     
     /**
      * 
@@ -100,6 +101,19 @@ public class TileBaseMap extends BaseMap  {
 
 	public void setMaxZoom(int maxZoom) {
 		this.maxZoom = maxZoom;
+	}
+
+	/**
+	 * 
+	 * @return a thumbnail image (175x95) used to preview this layer in the 
+	 * Base map dialog
+	 */
+	public String getThumbnailUrl() {
+		return thumbnailUrl;
+	}
+
+	public void setThumbnailUrl(String thumbnail) {
+		this.thumbnailUrl = thumbnail;
 	}
 
 	@Override

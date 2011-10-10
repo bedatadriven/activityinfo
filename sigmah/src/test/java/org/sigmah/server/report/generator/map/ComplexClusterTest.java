@@ -5,6 +5,11 @@
 
 package org.sigmah.server.report.generator.map;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -15,11 +20,6 @@ import org.sigmah.server.report.generator.map.cluster.genetic.GeneticSolver;
 import org.sigmah.server.report.generator.map.cluster.genetic.KMeans;
 import org.sigmah.server.report.generator.map.cluster.genetic.MarkerGraph;
 import org.sigmah.server.report.generator.map.cluster.genetic.UpperBoundsCalculator;
-
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Alex Bertram
@@ -108,7 +108,6 @@ public class ComplexClusterTest extends GraphTest {
 
         int count = 10;
         while (count-- > 0) {
-
 
             GeneticSolver solver = new GeneticSolver();
             solver.setTracer(new GeneticTracer());

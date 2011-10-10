@@ -13,15 +13,14 @@ import java.util.List;
 import org.sigmah.server.report.generator.map.cluster.Cluster;
 import org.sigmah.server.report.generator.map.cluster.Clusterer;
 import org.sigmah.server.report.generator.map.cluster.ClustererFactory;
+import org.sigmah.shared.domain.Site;
 import org.sigmah.shared.report.content.BubbleLayerLegend;
 import org.sigmah.shared.report.content.BubbleMapMarker;
-import org.sigmah.shared.report.content.DimensionCategory;
 import org.sigmah.shared.report.content.EntityCategory;
 import org.sigmah.shared.report.content.LatLng;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.MapMarker;
 import org.sigmah.shared.report.content.Point;
-import org.sigmah.shared.report.model.CategoryProperties;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.MapReportElement;
@@ -36,8 +35,9 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
 
     private MapReportElement element;
     private BubbleMapLayer layer;
+    private List<SiteData> sites;
 
-    public BubbleLayerGenerator(MapReportElement element, BubbleMapLayer layer) {
+    public BubbleLayerGenerator(MapReportElement element, BubbleMapLayer layer, List<SiteData> sites) {
         this.element = element;
         this.layer = layer;
     }

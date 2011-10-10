@@ -102,9 +102,6 @@ public interface IconImageBundle extends ImageBundle {
 
     AbstractImagePrototype unmapped();
 
-    @Resource(value = "gs.png")
-    AbstractImagePrototype graduatedSymbol();
-
     AbstractImagePrototype ppt();
 
     AbstractImagePrototype image();

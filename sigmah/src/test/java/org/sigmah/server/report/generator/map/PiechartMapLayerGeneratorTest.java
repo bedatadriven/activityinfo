@@ -1,5 +1,6 @@
 package org.sigmah.server.report.generator.map;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.Test;
@@ -39,7 +40,9 @@ public class PiechartMapLayerGeneratorTest {
 		
 		TiledMap map = new TiledMap(500, 600, new LatLng(15.0, 0.0), 6);
 
-		PiechartLayerGenerator gen = new PiechartLayerGenerator(new MapReportElement(), pcml);
+		PiechartLayerGenerator gen = new PiechartLayerGenerator(new MapReportElement(), 
+				pcml,
+				Arrays.asList(siteData));
 		
 		MapContent mc = new MapContent(); 
 		

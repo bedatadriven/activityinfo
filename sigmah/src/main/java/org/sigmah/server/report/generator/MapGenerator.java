@@ -84,11 +84,11 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         for (MapLayer layer : element.getLayers()) {
         	if (layer.isVisible()) {
 	            if (layer instanceof BubbleMapLayer) {
-	                layerGenerators.add(new BubbleLayerGenerator(element, (BubbleMapLayer) layer));
+	                layerGenerators.add(new BubbleLayerGenerator(element, (BubbleMapLayer) layer, sites));
 	            } else if (layer instanceof IconMapLayer) {
-	                layerGenerators.add(new IconLayerGenerator(element, (IconMapLayer) layer));
+	                layerGenerators.add(new IconLayerGenerator(element, (IconMapLayer) layer, sites));
 	            } else if (layer instanceof PiechartMapLayer) {
-	            	layerGenerators.add(new PiechartLayerGenerator(element, (PiechartMapLayer) layer));
+	            	layerGenerators.add(new PiechartLayerGenerator(element, (PiechartMapLayer) layer, sites));
 	            }
         	}
         }

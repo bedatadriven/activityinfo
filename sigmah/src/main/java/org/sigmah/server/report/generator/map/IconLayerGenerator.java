@@ -37,7 +37,7 @@ public class IconLayerGenerator implements LayerGenerator {
     private MapIcon icon;
 
 
-    public IconLayerGenerator(MapReportElement element, IconMapLayer layer) {
+    public IconLayerGenerator(MapReportElement element, IconMapLayer layer, List<SiteData> sites) {
         this.element = element;
         this.layer = layer;
 

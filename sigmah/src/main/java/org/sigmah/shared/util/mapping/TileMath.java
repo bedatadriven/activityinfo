@@ -146,6 +146,5 @@ public class TileMath {
 	public static Tile tileForPoint(Point px) {	
 		return new Tile( px.getX() / 256, px.getY() / 256 );
 	}
-	
 }
 
