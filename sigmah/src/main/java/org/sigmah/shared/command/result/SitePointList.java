@@ -52,8 +52,10 @@ public class SitePointList implements CommandResult {
     		result.setPoints(new ArrayList<SitePointDTO>());
     	}
     	
-    	for (SiteDTO site : sites) {
-    		 result.getPoints().add(SitePointDTO.fromSite(site));
+    	if (sites != null) {
+	    	for (SiteDTO site : sites) {
+	    		 result.getPoints().add(SitePointDTO.fromSite(site));
+	    	}
     	}
     	
     	return result;

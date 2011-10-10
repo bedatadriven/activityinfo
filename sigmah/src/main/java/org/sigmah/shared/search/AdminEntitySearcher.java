@@ -19,7 +19,7 @@ public class AdminEntitySearcher implements Searcher<AdminEntity> {
 	public void search(final List<String> testQuery, SqlTransaction tx, final AsyncCallback<List<Integer>> callback) {
 		SqlQuery.select("AdminEntityId")
 		.from("AdminEntity")
-		.onlyWhere("Name")
+		.whereLikes("Name")
 		.likeMany(testQuery)
 		
 		.execute(tx, new SqlResultCallback() {

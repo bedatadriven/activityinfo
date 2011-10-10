@@ -110,6 +110,16 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 			}
 		});
 	}
+	
+	private void showError() {
+		containerFilterAndResult.el().mask(I18N.MESSAGES.searchQueryTooShort());
+		recentSitesView.el().mask();
+	}
+	
+	private void clearErrorsIfShowing() {
+		containerFilterAndResult.el().unmask();
+		recentSitesView.el().unmask();
+	}
 
 	private void addEntityToSearchBox(SearchResultEntity addedEntity) {
 		textboxSearch.setText(textboxSearch.getText() + " " + createEntityText(addedEntity));
@@ -187,6 +197,7 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 
 	private void showSearchResults() {
 		panelSearchResults.removeAll();
+		clearErrorsIfShowing();
 
 		int activities=0;
 		int databases=0;

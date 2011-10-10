@@ -27,10 +27,9 @@ public class GenericSearcher implements Searcher<Object> {
 		String tableName = dimension.toString();
 		final String primaryKey = tableName + "Id";
 		
-		SqlQuery
-				.select(primaryKey)
+		SqlQuery.select(primaryKey)
 				.from(tableName)
-				.onlyWhere("Name")
+				.whereLikes("Name")
 				.likeMany(testQuery)
 				
 				.execute(tx, new SqlResultCallback() {

@@ -110,23 +110,18 @@ public class AllSearcher {
 	public void searchNext(final List<String> q, final Iterator<Searcher<?>> iterator,
 			final SqlTransaction tx, final AsyncCallback<Filter> callback) {
 
-		Filter filter = new Filter();
 		final Searcher<?> searcher = iterator.next();
-		
 		searcher.search(q, tx, new AsyncCallback<List<Integer>>() {
-
 			@Override
 			public void onFailure(Throwable caught) {
 				failedSearchers.add(searcher);
 				System.out.println("Failed searcher: ");
-				
 				AllSearcher.this.continueOrYieldFilter(q, iterator, tx, callback);
 			}
 
 			@Override
 			public void onSuccess(List<Integer> result) {
 				addRestrictions(result);
-				
 				AllSearcher.this.continueOrYieldFilter(q, iterator, tx, callback);
 			}
 			

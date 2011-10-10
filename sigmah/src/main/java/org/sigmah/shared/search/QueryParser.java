@@ -28,12 +28,14 @@ public class QueryParser {
 	private String query;
 	private boolean hasFailed=false;
 	private boolean hasDimensions = false;
+	private String failReason = "";
 	
 	public void parse(String query) {
 		this.query=query;
 		
-		if (query.length() ==0) {
+		if (query.length() == 0 || query.length() == 1) {
 			hasFailed=true;
+			failReason = "Search query too short, need to be at least 3 characters";
 			return;
 		}
 		
@@ -64,10 +66,21 @@ public class QueryParser {
 		}
 	}
 
+	/** performs simple parsing on the searchterm, falling back on space seperation if no comma found */
 	private void parseSearchTermsList() {
-		String[] splittedByComma = query.split(comma);
-		for (String term : splittedByComma) {
-			simpleSearchTerms.add(term.trim().toLowerCase());
+		String[] splitted = null;
+		if (query.contains(comma)) {
+			splitted = query.split(comma);
+		}
+		if (query.contains(space)) {
+			splitted = query.split(space);
+		}
+		if (splitted != null) {
+			for (String term : splitted) {
+				simpleSearchTerms.add(term.trim().toLowerCase());
+			}
+		} else { // Assume there's only one term
+			simpleSearchTerms.add(query);
 		}
 	}
 
@@ -262,6 +275,10 @@ public class QueryParser {
 			colonPositions.add(query.indexOf(colon, position));
 			position=query.indexOf(colon, position) + 1;
 		}
+	}
+
+	public String getFailReason() {
+		return failReason;
 	}
 
 	/** Simple struct to keep tome info together */
