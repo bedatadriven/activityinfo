@@ -55,6 +55,8 @@ import com.google.inject.Inject;
 public class MapPage extends LayoutContainer implements Page, ExportCallback, ActionListener  {
 
     private static final int CONTROL_TOP_MARGIN = 10;
+    private static final int LAYERS_STYLE_TOP_MARGIN = 50;
+    private static final int LAYERS_STYLE_LEFT_MARGIN = 80;
 	public static final PageId PAGE_ID = new PageId("maps");
     private EventBus eventBus;
 	
@@ -102,7 +104,7 @@ public class MapPage extends LayoutContainer implements Page, ExportCallback, Ac
 			}
 		});
 		
-		add(optionsPanel, new AbsoluteData(0, CONTROL_TOP_MARGIN));
+		add(optionsPanel, new AbsoluteData(LAYERS_STYLE_LEFT_MARGIN, CONTROL_TOP_MARGIN + LAYERS_STYLE_TOP_MARGIN));
 	}
 	
     private void createLayersWidget() {
@@ -154,7 +156,7 @@ public class MapPage extends LayoutContainer implements Page, ExportCallback, Ac
         toolbarMapActions.setActionEnabled(UIActions.exportData, false);
         
         AbsoluteData layout = new AbsoluteData();
-        layout.setLeft(10);
+        layout.setLeft(LAYERS_STYLE_LEFT_MARGIN);
         layout.setTop(10);
         
         add(toolbarMapActions, layout);
