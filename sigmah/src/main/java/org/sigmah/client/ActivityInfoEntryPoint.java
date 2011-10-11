@@ -17,6 +17,8 @@ import com.extjs.gxt.ui.client.state.StateManager;
 import com.extjs.gxt.ui.client.util.Theme;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.gears.client.Factory;
 
 
@@ -67,7 +69,7 @@ public class ActivityInfoEntryPoint implements EntryPoint {
 
         Log.trace("Application: GXT theme set");
 
-        AppInjector injector = GWT.create(AppInjector.class);
+        final AppInjector injector = GWT.create(AppInjector.class);
 
 
         injector.createWelcomeLoader();
@@ -94,12 +96,22 @@ public class ActivityInfoEntryPoint implements EntryPoint {
 
         injector.getEventBus().fireEvent(AppEvents.Init);
    
-        updateOlarkInfo(injector.getAuthentication());
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+			
+			@Override
+			public void execute() {
+		        updateOlarkInfo(injector.getAuthentication());
+			}
+		});
 	}
 
     private void updateOlarkInfo(Authentication authentication) {
-    	OlarkApi.updateEmailAddress(authentication.getEmail());
-    	OlarkApi.updateFullName(authentication.getUserName());
+    	try {
+	    	OlarkApi.updateEmailAddress(authentication.getEmail());
+	    	OlarkApi.updateFullName(authentication.getUserName());
+    	} catch(Throwable caught) {
+    		Log.debug("failed to update olark info", caught);
+    	}
 	}
 
 	private boolean isOfflineModeSupported() {

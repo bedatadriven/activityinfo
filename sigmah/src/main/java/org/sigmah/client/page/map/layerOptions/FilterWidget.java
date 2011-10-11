@@ -66,10 +66,10 @@ public abstract class FilterWidget extends Widget implements FilterPanel {
 		if(value == null) {
 			value = new Filter();
 		}
-		if(fireEvents) {
-			ValueChangeEvent.fireIfNotEqual(this, this.value, value);
-		}
 		this.value = value;
+		if(fireEvents) {
+			ValueChangeEvent.fire(this, this.value);
+		}
 		updateView();
 	}
 
