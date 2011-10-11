@@ -40,9 +40,10 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
     public BubbleLayerGenerator(MapReportElement element, BubbleMapLayer layer, List<SiteData> sites) {
         this.element = element;
         this.layer = layer;
+        this.sites=sites;
     }
 
-    public Extents calculateExtents(List<SiteData> sites) {
+    public Extents calculateExtents() {
         // PRE---PASS - calculate extents of sites WITH non-zero
         // values for this indicator
 
@@ -60,10 +61,7 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
         return new Margins(layer.getMaxRadius());
     }
 
-    public void generate(List<SiteData> sites, TiledMap map, MapContent content) {
-
-
-
+    public void generate(TiledMap map, MapContent content) {
         // define our symbol scaling
         RadiiCalculator radiiCalculator;
         if(layer.getScaling() == ScalingType.None ||

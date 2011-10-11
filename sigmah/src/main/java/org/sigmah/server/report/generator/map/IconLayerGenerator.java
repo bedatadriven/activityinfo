@@ -39,11 +39,13 @@ public class IconLayerGenerator
     private final IconMapLayer layer;
 
     private MapIcon icon;
+	private List<SiteData> sites;
 
 
     public IconLayerGenerator(MapReportElement element, IconMapLayer layer, List<SiteData> sites) {
         this.element = element;
         this.layer = layer;
+        this.sites=sites;
 
         this.icon = new MapIcon(layer.getIcon(), 32, 37, 16, 35);
     }
@@ -62,8 +64,7 @@ public class IconLayerGenerator
         }
     }
 
-    public Extents calculateExtents(List<SiteData> sites) {
-
+    public Extents calculateExtents() {
         Extents extents = Extents.emptyExtents();
         for(SiteData site : sites) {
             if(meetsCriteria(site) && site.hasLatLong()) {
@@ -83,7 +84,7 @@ public class IconLayerGenerator
 
 
 
-    public void generate(List<SiteData> sites, TiledMap map, MapContent content) {
+    public void generate(TiledMap map, MapContent content) {
         List<PointValue> points = new ArrayList<PointValue>();
         IconRectCalculator rectCalculator = new IconRectCalculator(icon);
 

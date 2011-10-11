@@ -46,7 +46,7 @@ public class PiechartMapLayerGeneratorTest {
 		
 		MapContent mc = new MapContent(); 
 		
-		gen.generate(Collections.singletonList(siteData), map, mc);
+		gen.generate(map, mc);
 		
 		assertThat(mc.getMarkers().size(), equalTo(1));
 		assertThat(((PieMapMarker)mc.getMarkers().get(0)).getSlices().size(), equalTo(4));

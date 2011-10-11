@@ -31,7 +31,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class LayerOptionsPanel extends LayoutContainer implements HasValue<MapLayer> {
 	
-	
 	private MapLayer selectedMapLayer;
 
 	// Options for every supported MapLayer type
@@ -49,7 +48,6 @@ public class LayerOptionsPanel extends LayoutContainer implements HasValue<MapLa
 	private Dispatcher dispatcher;
 
 	private AccordionLayout layout;
-	
 
 	public LayerOptionsPanel(Dispatcher service) {
 		super();
@@ -65,7 +63,6 @@ public class LayerOptionsPanel extends LayoutContainer implements HasValue<MapLa
 		createClusteringOptions(service);
 		createFilterPanel(service);
 	}
-
 
 	private void createClusteringOptions(Dispatcher service) {
 		clusteringOptions = new ClusteringOptionsWidget(service);
@@ -166,7 +163,13 @@ public class LayerOptionsPanel extends LayoutContainer implements HasValue<MapLa
 
 	private void createFilterPanel(Dispatcher service) {
 		filterPanel = new LayerFilterPanel(service);
-		
+		filterPanel.addValueChangeHandler(new ValueChangeHandler<Filter>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<Filter> event) {
+				selectedMapLayer.setFilter(event.getValue());
+				ValueChangeEvent.fire(LayerOptionsPanel.this, selectedMapLayer);
+			}
+		});
 		add(filterPanel);
 	}
 	
@@ -197,9 +200,7 @@ public class LayerOptionsPanel extends LayoutContainer implements HasValue<MapLa
 		
 	}
 
-	/*
-	 * Sets the selected options to the current MapLayer and returns the MapLayer
-	 */
+	/** Sets the selected options to the current MapLayer and returns the MapLayer */
 	public MapLayer getMapLayer() {
 		selectedMapLayer.setClustering(clusteringOptions.getSelectedClustering());
 		return selectedMapLayer;

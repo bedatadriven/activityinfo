@@ -69,12 +69,6 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         Filter filter = resolveElementFilter(element, dateRange);
         Filter effectiveFilter = inheritedFilter == null ? filter : new Filter(inheritedFilter, filter);
 
-        List<SiteData> sites = siteDAO.query(
-                user,
-                effectiveFilter,
-                null,
-                new SiteDataBinder(),
-                SiteTableDAO.RETRIEVE_ALL, 0, -1);
 
         MapContent content = new MapContent();
         content.setFilterDescriptions(generateFilterDescriptions(filter, Collections.<DimensionType>emptySet(), user));
@@ -83,6 +77,16 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         List<LayerGenerator> layerGenerators = new ArrayList<LayerGenerator>();
         for (MapLayer layer : element.getLayers()) {
         	if (layer.isVisible()) {
+        		// Add indicator
+        		Filter layerFilter = new Filter(effectiveFilter, layer.getFilter());
+        		//filter.addRestriction(DimensionType.Indicator, layer.getIndicatorIds());
+                List<SiteData> sites = siteDAO.query(
+                        user,
+                        layerFilter,
+                        null,
+                        new SiteDataBinder(),
+                        SiteTableDAO.RETRIEVE_ALL, 0, -1);
+                
 	            if (layer instanceof BubbleMapLayer) {
 	                layerGenerators.add(new BubbleLayerGenerator(element, (BubbleMapLayer) layer, sites));
 	            } else if (layer instanceof IconMapLayer) {
@@ -97,7 +101,7 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         Extents extents = Extents.emptyExtents();
         Margins margins = new Margins(0);
         for (LayerGenerator layerGtor : layerGenerators) {
-            extents.grow(layerGtor.calculateExtents(sites));
+            extents.grow(layerGtor.calculateExtents());
             margins.grow(layerGtor.calculateMargins());
         }
 
@@ -141,7 +145,7 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
 
         // Generate the actual content
         for (LayerGenerator layerGtor : layerGenerators) {
-            layerGtor.generate(sites, map, content);
+            layerGtor.generate(map, content);
         }
         
         // Get relevant indicators for the map markers

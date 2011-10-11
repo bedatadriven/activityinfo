@@ -36,13 +36,15 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
 
     private MapReportElement element;
     private PiechartMapLayer layer;
+	private List<SiteData> sites;
 
     public PiechartLayerGenerator(MapReportElement element, PiechartMapLayer layer, List<SiteData> sites) {
         this.element = element;
         this.layer = layer;
+        this.sites=sites;
     }
 
-    public Extents calculateExtents(List<SiteData> sites) {
+    public Extents calculateExtents() {
 
         // PRE---PASS - calculate extents of sites WITH non-zero
         // values for this indicator
@@ -56,7 +58,7 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
         return extents;
     } 
 
-    public void generate(List<SiteData> sites, TiledMap map, MapContent content) {
+    public void generate(TiledMap map, MapContent content) {
 
         // create the list of input point values
         List<PointValue> points = new ArrayList<PointValue>();
@@ -78,7 +80,7 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
         Clusterer clusterer = ClustererFactory.fromClustering(layer.getClustering(), radiiCalculator,
         		new BubbleIntersectionCalculator(layer.getMaxRadius()));
 
-        generatePoints(sites, map, layer,clusterer, points, unmapped);
+        generatePoints(map, layer,clusterer, points, unmapped);
         
         // add unmapped sites
         for(PointValue pv : unmapped) {
@@ -125,7 +127,6 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
     }
 
     public void generatePoints(
-            List<SiteData> sites,
             TiledMap map,
             PiechartMapLayer layer,
             Clusterer clusterer,
@@ -227,4 +228,5 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
         return new Margins(layer.getMaxRadius());
 
 	}
+
 }

@@ -34,7 +34,7 @@ public abstract class AbstractMapLayer implements MapLayer {
 	protected LabelSequence labelSequence = new LatinAlphaSequence();
 	protected Clustering clustering =  new NoClustering(); 
 	protected String name;
-	protected Filter filter;
+	protected Filter filter =new Filter();
 
 	@Override
 	public void addIndicatorId(int id) {
