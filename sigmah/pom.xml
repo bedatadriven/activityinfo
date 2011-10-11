@@ -677,7 +677,7 @@
             			<optionSetting>
             				<namespace>aws:elasticbeanstalk:application:environment</namespace>
             				<optionName>PARAM2</optionName>
-            				<value>activityinfo.21test.properties</value>
+            				<value>activityinfo21.production.properties</value>
             			</optionSetting>
 	          			<optionSetting>
 							<namespace>aws:elasticbeanstalk:application:environment</namespace>
