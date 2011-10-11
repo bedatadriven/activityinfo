@@ -183,7 +183,7 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
 	@Override
 	public void export(Format format) {
 		RenderElement renderElement = new RenderElement();
-		renderElement.setElement(mapReportElement);
+		renderElement.setElement(aiMapWidget.getValue());
 		renderElement.setFormat(format);
 		dispatcher.execute(renderElement, null, new DownloadCallback(eventBus));
 	}
