@@ -191,7 +191,7 @@ public class MapPage extends LayoutContainer implements Page, ExportCallback, Ac
 	@Override
 	public void export(Format format) {
 		RenderElement renderElement = new RenderElement();
-		renderElement.setElement(mapReportElement);
+		renderElement.setElement(aiMapWidget.getValue());
 		renderElement.setFormat(format);
 		dispatcher.execute(renderElement, null, new DownloadCallback(eventBus));
 	}

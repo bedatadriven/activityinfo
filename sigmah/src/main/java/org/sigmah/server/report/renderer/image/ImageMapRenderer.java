@@ -37,6 +37,7 @@ import org.sigmah.shared.report.content.BubbleLayerLegend;
 import org.sigmah.shared.report.content.BubbleMapMarker;
 import org.sigmah.shared.report.content.IconLayerLegend;
 import org.sigmah.shared.report.content.IconMapMarker;
+import org.sigmah.shared.report.content.LatLng;
 import org.sigmah.shared.report.content.MapLayerLegend;
 import org.sigmah.shared.report.content.MapMarker;
 import org.sigmah.shared.report.content.PieChartLegend;
@@ -219,8 +220,9 @@ public class ImageMapRenderer {
 	}
 
     public void drawBasemap(Graphics2D g2d, MapReportElement element) {
+    	LatLng center = element.getCenter() != null ? element.getCenter() : element.getContent().getExtents().center(); 
         TiledMap map = new TiledMap(element.getWidth(), element.getHeight(),
-                element.getContent().getExtents().center(),
+        		center,
                 element.getContent().getZoomLevel());
 
         // Draw white backgrond first, in case we run out of tiles

@@ -219,6 +219,8 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 	@Override
 	public MapReportElement getValue() {
 		mapReportElement.setZoomLevel(mapWidget.getZoomLevel());
+		mapReportElement.setWidth(mapWidget.getOffsetWidth());
+		mapReportElement.setHeight(mapWidget.getOffsetHeight());
 		mapReportElement.setCenter(new org.sigmah.shared.report.content.LatLng(
 				mapWidget.getCenter().getLatitude(), mapWidget.getCenter().getLongitude()));
 		return mapReportElement;
@@ -484,7 +486,13 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
 		} else if (marker instanceof IconMapMarker) {
 			IndicatorDTO indicator = mapModel.getIndicatorById
 										(((IconMapMarker) marker).getIndicatorId());
-			return indicator.getName();
+			return new StringBuilder()
+				.append(indicator.getName())
+				.append(": ")
+				.append("<b>")
+				.append(marker.getTitle())
+				.append("</b>")
+				.toString();
 		}
 		return null;
 	}
