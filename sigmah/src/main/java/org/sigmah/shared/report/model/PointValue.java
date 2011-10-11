@@ -39,6 +39,12 @@ public class PointValue {
         this.iconRect = iconRect;
         this.value = 1;
     }
+    
+    public PointValue(SiteData site, Point px, Rectangle iconRect, double value) {
+    	this(site, px, iconRect);
+    	
+        this.value = value;
+    }
 
 	public void setAdminMembership(Map<Integer, Integer> adminMembership) {
 		this.adminMembership = adminMembership;

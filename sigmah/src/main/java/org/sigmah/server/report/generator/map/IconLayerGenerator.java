@@ -29,7 +29,11 @@ import org.sigmah.shared.util.mapping.Extents;
 /*
  * @author Alex Bertram
  */
-public class IconLayerGenerator implements LayerGenerator {
+public class IconLayerGenerator 
+	extends 
+		AbstractLayerGenerator
+	implements 
+		LayerGenerator {
 
     private final MapReportElement element;
     private final IconMapLayer layer;
@@ -80,24 +84,17 @@ public class IconLayerGenerator implements LayerGenerator {
 
 
     public void generate(List<SiteData> sites, TiledMap map, MapContent content) {
-
         List<PointValue> points = new ArrayList<PointValue>();
-
         IconRectCalculator rectCalculator = new IconRectCalculator(icon);
 
         for(SiteData site : sites) {
             if(meetsCriteria(site)) {
-
                 if(site.hasLatLong()) {
-
                     Point point = map.fromLatLngToPixel(new LatLng(site.getLatitude(), site.getLongitude()));
-                    points.add(new PointValue(site, point, rectCalculator.iconRect(point)));
-
+                    points.add(new PointValue(site, point, rectCalculator.iconRect(point), getValue(site, layer.getIndicatorIds())));
                 } else {
-
                     content.getUnmappedSites().add(site.getId());
                 }
-
             }
         }
         
@@ -127,9 +124,19 @@ public class IconLayerGenerator implements LayerGenerator {
             LatLng latlng = map.fromPixelToLatLng(cluster.getPoint());
             marker.setLat(latlng.getLat());
             marker.setLng(latlng.getLng());
+            marker.setTitle(formatTitle(cluster));
             marker.setIcon(icon);
             marker.setIndicatorId(layer.getIndicatorIds().get(0));
             content.getMarkers().add(marker);
         }
 	}
+
+	private String formatTitle(Cluster cluster) {
+		if (cluster.getPointValues() != null) {
+			return Double.toString(cluster.sumValues());
+		}
+		return "";
+	}
+	
+	
 }
