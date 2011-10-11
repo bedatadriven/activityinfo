@@ -7,8 +7,8 @@ package org.sigmah.client;
 
 import java.util.HashMap;
 
+import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.inject.AppInjector;
-import org.sigmah.client.offline.AuthTokenUtil;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.GXT;
@@ -93,9 +93,16 @@ public class ActivityInfoEntryPoint implements EntryPoint {
         Log.info("Application: everyone plugged, firing Init event");
 
         injector.getEventBus().fireEvent(AppEvents.Init);
-    }
+   
+        updateOlarkInfo(injector.getAuthentication());
+	}
 
-    private boolean isOfflineModeSupported() {
+    private void updateOlarkInfo(Authentication authentication) {
+    	OlarkApi.updateEmailAddress(authentication.getEmail());
+    	OlarkApi.updateFullName(authentication.getUserName());
+	}
+
+	private boolean isOfflineModeSupported() {
     	// Gears is currently required for offline mode
 		return Factory.getInstance() != null;
 	}
