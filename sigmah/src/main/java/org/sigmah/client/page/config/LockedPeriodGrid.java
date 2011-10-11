@@ -136,15 +136,15 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 					eventBus.fireEvent(new UpdateEvent());
 				} else if (actionId.equals(UIActions.discardChanges)) {
 					eventBus.fireEvent(new CancelUpdateEvent());
-				} else if (actionId.equals(UIActions.refresh)) {
-					eventBus.fireEvent(new RefreshEvent());
+//				} else if (actionId.equals(UIActions.refresh)) {
+//					eventBus.fireEvent(new RefreshEvent());
 				}
 			}
 		});
 		toolbarActions.addDeleteButton();
 		toolbarActions.addCreateButton();
 		toolbarActions.addSaveSplitButton();
-		toolbarActions.addRefreshButton();
+//		toolbarActions.addRefreshButton();
 		toolbarActions.setDeleteEnabled(false);
 		toolbarActions.setUpdateEnabled(false);
 		this.setTopComponent(toolbarActions);
