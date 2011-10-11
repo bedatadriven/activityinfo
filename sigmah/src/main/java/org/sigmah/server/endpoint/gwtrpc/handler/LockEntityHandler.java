@@ -17,7 +17,6 @@ import org.sigmah.shared.exception.CommandException;
 import com.google.inject.Inject;
 
 public class LockEntityHandler implements CommandHandler<LockEntity> {
-
     private EntityManager em;
 
 	@Inject

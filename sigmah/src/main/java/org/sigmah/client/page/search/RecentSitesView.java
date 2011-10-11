@@ -40,6 +40,17 @@ public class RecentSitesView extends ContentPanel {
 		storeSites.add(sites);
 	}
 	
+	private void initializeComponent() {
+		setHeading(I18N.MESSAGES.recentlyAddedSites("10"));
+		VBoxLayout vboxLayout = new VBoxLayout();
+		vboxLayout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
+		vboxLayout.setPadding(new Padding(5));
+		
+		setLayout(vboxLayout);
+
+		storeSites = new ListStore<RecentSiteModel>();
+	}
+	
 	public void setSitePoins(SitePointList sitePoints) {
 //		map.setSites(sitePoints);
 	}
@@ -62,34 +73,5 @@ public class RecentSitesView extends ContentPanel {
 	}
 
 	private void createMapWidget() {
-//		map = new MapLocationView(null);
-		
-//	    VBoxLayoutData vbld = new VBoxLayoutData();
-//	    vbld.setFlex(1);
-	    
-//	    add(map, vbld);
 	}
-	
-	// TODO: move to collection class
-	private RecentSiteModel getSiteById(int siteId) {
-		for (RecentSiteModel site : sites) {
-			if (site.getSiteId() == siteId)
-			{
-				return site;
-			}
-		}
-		return null;
-	}
-
-	private void initializeComponent() {
-		setHeading(I18N.MESSAGES.recentlyAddedSites("10"));
-		VBoxLayout vboxLayout = new VBoxLayout();
-		vboxLayout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
-		vboxLayout.setPadding(new Padding(5));
-		
-		setLayout(vboxLayout);
-
-		storeSites = new ListStore<RecentSiteModel>();
-	}
-	
 }
