@@ -254,6 +254,11 @@ public class LayerOptionsPanel extends LayoutContainer implements HasValue<MapLa
 		show(mapLayer, clusteringPanel);
 	}
 	
+
+	public void showFilter(MapLayer mapLayer) {
+		show(mapLayer, filterPanel);
+	}
+	
 	private void show(MapLayer mapLayer, ContentPanel panel) {
 		if(!isVisible()) {
 			setVisible(true);
@@ -263,4 +268,9 @@ public class LayerOptionsPanel extends LayoutContainer implements HasValue<MapLa
 		layout.setActiveItem(panel);
 	}
 
+	public void onLayerSelectionChanged(MapLayer model) {
+		if(isVisible()) {
+			setValue(model);
+		}
+	}
 }

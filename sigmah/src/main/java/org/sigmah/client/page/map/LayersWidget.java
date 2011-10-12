@@ -12,7 +12,6 @@ import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.clustering.NoClustering;
 import org.sigmah.shared.report.model.layers.MapLayer;
 
-import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.dnd.DND.Feedback;
 import com.extjs.gxt.ui.client.dnd.ListViewDragSource;
 import com.extjs.gxt.ui.client.dnd.ListViewDropTarget;
@@ -22,8 +21,6 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.ListViewEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -34,6 +31,7 @@ import com.extjs.gxt.ui.client.widget.layout.AnchorData;
 import com.extjs.gxt.ui.client.widget.layout.AnchorLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -52,7 +50,6 @@ public class LayersWidget extends LayoutContainer implements HasValue<MapReportE
 	private MapReportElement mapElement;
 	private ListStore<LayerModel> store = new ListStore<LayerModel>();
 	private ListView<LayerModel> view = new ListView<LayerModel>();
-	//private AllLayerOptions layerOptions;
 
 	private ContentPanel layersPanel;
 	private Button addLayerButton;
@@ -73,31 +70,12 @@ public class LayersWidget extends LayoutContainer implements HasValue<MapReportE
 		
 		initializeComponent();
 		createLayersPanel();
-		//createAddLayersDialog();
 
 		createAddLayerButton();
 		createListView();
 		
 		createBaseMapPanel();
-		
-	//	createLayerOptions();
-		
-		//layerOptions.setEnabled(false);
 	}
-
-//	
-//	private void createLayerOptions() {
-//		layerOptions = new AllLayerOptions(service);
-//		layerOptions.addValueChangeHandler(new ValueChangeHandler<MapLayer>() {
-//			@Override
-//			public void onValueChange(ValueChangeEvent<MapLayer> event) {
-//				updateStore();
-//				ValueChangeEvent.fire(LayersWidget.this, mapElement);
-//			}
-//		});
-//
-//	   // add(layerOptions);
-//	}
 
 	private void createDefaultMapReportElement() {
 		 mapElement = new MapReportElement();
@@ -130,7 +108,6 @@ public class LayersWidget extends LayoutContainer implements HasValue<MapReportE
 		
 		addLayerButton.setIcon(IconImageBundle.ICONS.add());
 		
-	    //add(buttonAddLayer);
 		layersPanel.getHeader().addTool(addLayerButton);
 	}
 
@@ -187,22 +164,12 @@ public class LayersWidget extends LayoutContainer implements HasValue<MapReportE
 
 		addListViewDnd();			
 		
-		view.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<LayerModel>() {
-			@Override()
-			public void selectionChanged(SelectionChangedEvent<LayerModel> se) {
-			//	changeSelectedLayer(false);
-			}
-		});
-		
 		view.addListener(Events.Select, new Listener<ListViewEvent<LayerModel>>() {
 			@Override
 			public void handleEvent(ListViewEvent<LayerModel> event) {
-//				if (be.getIndex() == -1) {
-//					disableLayerOptions();
-//				} else {
-//					enableLayerOptions();
-//				}
-				
+				if (event.getIndex() == -1) {
+					optionsPanel.hide();
+				}
 				// Change visibility
 				if (event.getTargetEl().hasStyleName("x-view-item-checkbox")) {
 					LayerModel layerModel = (LayerModel) event.getModel();
@@ -216,32 +183,12 @@ public class LayersWidget extends LayoutContainer implements HasValue<MapReportE
 				} else {
 					showOptionsMenu(event.getModel(), event.getIndex());
 				}
-				
-	//			changeSelectedLayer(false);
+				optionsPanel.onLayerSelectionChanged(event.getModel().getMapLayer());
 			}
 
 		});
-
-//	    VBoxLayoutData vbld = new VBoxLayoutData();
-//	    vbld.setFlex(1);
 	    layersPanel.add(view);
 	}
-
-//	private void enableLayerOptions() {
-//		layerOptions.setEnabled(true);
-//	}
-//
-//	private void disableLayerOptions() {
-//		layerOptions.setEnabled(false);
-//	}
-//	
-//	private void changeSelectedLayer(boolean fireEvent) {
-//		if (view.getSelectionModel().getSelectedItem() != null) {
-//			layerOptions.setValue(view.getSelectionModel().getSelectedItem().getMapLayer(), fireEvent);
-//			layout(true);
-//		}
-//		layerOptions.setEnabled(view.getSelectionModel().getSelectedItem() != null);
-//	}
 	
 	private class MapLayersDropTarget extends ListViewDropTarget {
 		public MapLayersDropTarget(ListView listView) {
@@ -284,8 +231,21 @@ public class LayersWidget extends LayoutContainer implements HasValue<MapReportE
 				optionsPanel.showAggregation(getSelectedLayer());
 			}
 		}));
+		layerMenu.add(new MenuItem(I18N.CONSTANTS.filter(),
+				IconImageBundle.ICONS.filter(),
+				new SelectionListener<MenuEvent>() {
+		@Override
+		public void componentSelected(MenuEvent ce) {
+			optionsPanel.showFilter(getSelectedLayer());
+		}
+	}));
+	
+		
+		layerMenu.add(new SeparatorMenuItem());
+		
+		
 		layerMenu.add(new MenuItem(I18N.CONSTANTS.remove(), 
-					IconImageBundle.ICONS.remove(), 
+					IconImageBundle.ICONS.delete(), 
 					new SelectionListener<MenuEvent>() {
 			@Override
 			public void componentSelected(MenuEvent ce) {
