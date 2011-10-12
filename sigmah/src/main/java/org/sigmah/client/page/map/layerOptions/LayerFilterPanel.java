@@ -84,6 +84,8 @@ public class LayerFilterPanel extends ContentPanel implements HasValue<Filter> {
 			value = new Filter();
 		} else {
 			this.filter = value;
+			dateWidget.setValue(value, false);
+			partnerFilterWidget.setValue(value, false);
 		}
 		if(fireEvents) {
 			ValueChangeEvent.fire(this, value);

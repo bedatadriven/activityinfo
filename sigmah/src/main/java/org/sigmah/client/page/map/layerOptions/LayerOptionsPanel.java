@@ -236,6 +236,7 @@ public class LayerOptionsPanel extends LayoutContainer implements HasValue<MapLa
 		clusteringOptions.setValue(mapLayer.getClustering(), false);
 
 		filterPanel.getFilterPanelSet().applyBaseFilter(baseFilterFromLayer(mapLayer));
+		filterPanel.setValue(mapLayer.getFilter(), false);
 	}
 
 	@Override

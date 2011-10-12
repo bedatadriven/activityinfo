@@ -138,9 +138,9 @@ class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
                 }
             }
         });
-//        
-//        getSchema();
-//        getBaseMaps();
+        
+        getSchema();
+        getBaseMaps();
     }
 
 	private void getSchema() {
