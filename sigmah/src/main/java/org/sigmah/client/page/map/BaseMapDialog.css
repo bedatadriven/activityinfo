@@ -1,0 +1,43 @@
+
+
+.basemap-dlg .x-panel-body{
+    background: white;
+    font: 11px Arial, Helvetica, sans-serif;
+}
+.basemap-dlg .thumb{
+    background: #dddddd;
+    padding: 3px;
+}
+.basemap-dlg .thumb img{
+    height: 95px;
+    width: 175px;
+}
+.basemap-dlg .thumb-wrap{
+    float: left;
+    margin: 4px;
+    margin-right: 0;
+    padding: 5px;
+    width: 180px;
+    border: 1px solid #FFF;
+}
+.basemap-dlg .thumb-wrap span{
+    display: block;
+    overflow: hidden;
+    text-align: center;
+}
+
+.basemap-dlg .x-view-over{
+    border:1px solid #dddddd;
+    background: #efefef url(ActivityInfo/gxt/images/default/grid/row-over.gif) repeat-x left top;
+    padding: 4px;
+}
+
+.basemap-dlg  .x-view-selected{
+    background: #eff5fb url(images/selected.gif) no-repeat right bottom;
+    border:1px solid #99bbe8;
+    padding: 4px;
+}
+.basemap-dlg .x-view-selected .thumb{
+    background:transparent;
+}
+	

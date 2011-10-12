@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.sigmah.server.report.generator.map.cluster.Cluster;
-import org.sigmah.server.report.generator.map.cluster.GeneticSolver;
-import org.sigmah.server.report.generator.map.cluster.auto.CircleFitnessFunctor;
-import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph;
+import org.sigmah.server.report.generator.map.cluster.Clusterer;
+import org.sigmah.server.report.generator.map.cluster.ClustererFactory;
+import org.sigmah.server.report.generator.map.cluster.genetic.MarkerGraph;
+import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.BubbleMapMarker;
 import org.sigmah.shared.report.content.DimensionCategory;
 import org.sigmah.shared.report.content.EntityCategory;
-import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.MapMarker;
 import org.sigmah.shared.report.content.PieChartLegend;
@@ -33,13 +33,15 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
 
     private MapReportElement element;
     private PiechartMapLayer layer;
+	private List<SiteData> sites;
 
-    public PiechartLayerGenerator(MapReportElement element, PiechartMapLayer layer) {
+    public PiechartLayerGenerator(MapReportElement element, PiechartMapLayer layer, List<SiteData> sites) {
         this.element = element;
         this.layer = layer;
+        this.sites=sites;
     }
 
-    public Extents calculateExtents(List<SiteData> sites) {
+    public Extents calculateExtents() {
 
         // PRE---PASS - calculate extents of sites WITH non-zero
         // values for this indicator
@@ -53,14 +55,13 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
         return extents;
     } 
 
-    public void generate(List<SiteData> sites, TiledMap map, MapContent content) {
+    public void generate(TiledMap map, MapContent content) {
 
         // create the list of input point values
         List<PointValue> points = new ArrayList<PointValue>();
         List<PointValue> unmapped = new ArrayList<PointValue>();
 
-        generatePoints(sites, map, layer, points, unmapped);
-
+       
         // define our symbol scaling
         RadiiCalculator radiiCalculator;
         if(layer.getScaling() == ScalingType.None ||
@@ -73,14 +74,17 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
             radiiCalculator = new FixedRadiiCalculator(layer.getMinRadius());
         }
 
-        // solve using the genetic algorithm
-        List<Cluster> clusters;
-        clusters = cluster(points, radiiCalculator);
+        Clusterer clusterer = ClustererFactory.fromClustering(layer.getClustering(), radiiCalculator,
+        		new BubbleIntersectionCalculator(layer.getMaxRadius()));
 
+        generatePoints(map, layer,clusterer, points, unmapped);
+        
         // add unmapped sites
         for(PointValue pv : unmapped) {
             content.getUnmappedSites().add(pv.site.getId());
         }
+        
+        List<Cluster> clusters = clusterer.cluster(map, points);
 
         // create the markers
         List<BubbleMapMarker> markers = new ArrayList<BubbleMapMarker>();
@@ -120,9 +124,9 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
     }
 
     public void generatePoints(
-            List<SiteData> sites,
             TiledMap map,
             PiechartMapLayer layer,
+            Clusterer clusterer,
             List<PointValue> mapped,
             List<PointValue> unmapped) {
 
@@ -142,7 +146,11 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
                             new MapSymbol(),
                             value, px);
                     calulateSlices(pv, site);
-                    (px==null ? unmapped : mapped).add(pv);
+                    if(clusterer.isMapped(site)) {
+                    	mapped.add(pv);
+                    } else {
+                    	unmapped.add(pv);
+                    }
                 }
             }
         }
@@ -150,29 +158,6 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
 
     public int findColor(MapSymbol symbol, PiechartMapLayer layer) {
     	return 0;
-    }
-
-    private List<Cluster> cluster(List<PointValue> points, RadiiCalculator radiiCalculator) {
-        List<Cluster> clusters;
-        if(layer.isClustered()) {
-
-            MarkerGraph graph = new MarkerGraph(points, new IntersectionCalculator(layer.getMaxRadius()));
-
-            GeneticSolver solver = new GeneticSolver();
-            clusters = solver.solve(
-                    graph,
-                    radiiCalculator,
-                    new CircleFitnessFunctor(),
-                    UpperBoundsCalculator.calculate(graph,
-                            new FixedRadiiCalculator(layer.getMinRadius())));
-        } else {
-            clusters = new ArrayList<Cluster>();
-            for(PointValue point : points) {
-                clusters.add(new Cluster(point));
-            }
-            radiiCalculator.calculate(clusters);
-        }
-        return clusters;
     }
 
     private void numberMarkers(List<BubbleMapMarker> markers) {
@@ -240,4 +225,5 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
         return new Margins(layer.getMaxRadius());
 
 	}
+
 }

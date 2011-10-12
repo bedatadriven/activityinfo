@@ -6,7 +6,8 @@ import java.util.List;
 
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.map.layerOptions.AllLayerOptions;
+import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.client.page.map.layerOptions.LayerOptionsPanel;
 import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.clustering.NoClustering;
 import org.sigmah.shared.report.model.layers.MapLayer;
@@ -19,17 +20,18 @@ import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.ListViewEvent;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.util.Padding;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
-import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
-import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.AnchorData;
+import com.extjs.gxt.ui.client.widget.layout.AnchorLayout;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -37,47 +39,42 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
 
-/*
+/**
  * Displays a list of layers selected by the user 
  */
-public class LayersWidget extends ContentPanel implements HasValue<MapReportElement> {
+public class LayersWidget extends LayoutContainer implements HasValue<MapReportElement> {
+	
+	public static int WIDTH = 225;
+	
 	private Dispatcher service;
 	private MapReportElement mapElement;
 	private ListStore<LayerModel> store = new ListStore<LayerModel>();
 	private ListView<LayerModel> view = new ListView<LayerModel>();
-	private AllLayerOptions layerOptions;
-	private Button buttonAddLayer = new Button();
-	private AddLayerDialog addLayer;
+
+	private ContentPanel layersPanel;
+	private Button addLayerButton;
+	private AddLayerDialog addLayersDialog;
+	private LayerOptionsPanel optionsPanel;
+	private BaseMapPanel baseMapPanel;
+	
+	private Menu layerMenu;
 	
 	@Inject
-	public LayersWidget(Dispatcher service) {
+	public LayersWidget(Dispatcher service, LayerOptionsPanel optionsPanel) {
 		super();
 		
 		this.service = service;
+		this.optionsPanel = optionsPanel;
 		
 		createDefaultMapReportElement();
 		
 		initializeComponent();
-		createAddLayersDialog();
+		createLayersPanel();
 
 		createAddLayerButton();
 		createListView();
-		createLayerOptions();
 		
-		layerOptions.setEnabled(false);
-	}
-
-	private void createLayerOptions() {
-		layerOptions = new AllLayerOptions(service);
-		layerOptions.addValueChangeHandler(new ValueChangeHandler<MapLayer>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<MapLayer> event) {
-				updateStore();
-				ValueChangeEvent.fire(LayersWidget.this, mapElement);
-			}
-		});
-
-	    add(layerOptions);
+		createBaseMapPanel();
 	}
 
 	private void createDefaultMapReportElement() {
@@ -85,8 +82,8 @@ public class LayersWidget extends ContentPanel implements HasValue<MapReportElem
 	}
 
 	private void createAddLayersDialog() {
-		addLayer = new AddLayerDialog(service);
-		addLayer.addValueChangeHandler(new ValueChangeHandler<MapLayer>(){
+		addLayersDialog = new AddLayerDialog(service);
+		addLayersDialog.addValueChangeHandler(new ValueChangeHandler<MapLayer>(){
 			@Override
 			public void onValueChange(ValueChangeEvent<MapLayer> event) {
 				if (event.getValue() != null) {
@@ -97,33 +94,63 @@ public class LayersWidget extends ContentPanel implements HasValue<MapReportElem
 	}
 
 	private void createAddLayerButton() {
-		buttonAddLayer.setText(I18N.CONSTANTS.addLayerWithDialogHint());
-		buttonAddLayer.addListener(Events.Select, new SelectionListener<ButtonEvent>() {  
+		addLayerButton = new Button();
+		addLayerButton.setText(I18N.CONSTANTS.add());
+		addLayerButton.addListener(Events.Select, new SelectionListener<ButtonEvent>() {  
 		      @Override  
 		      public void componentSelected(ButtonEvent ce) {  
-		    	  addLayer.show();
+		    	  if(addLayersDialog == null) {
+		    		  createAddLayersDialog();
+		    	  }
+		    	  addLayersDialog.show();
 		      }
 		});
 		
-		buttonAddLayer.setIcon(AbstractImagePrototype.create(MapResources.INSTANCE.addLayer()));
+		addLayerButton.setIcon(IconImageBundle.ICONS.add());
 		
-	    add(buttonAddLayer);
+		layersPanel.getHeader().addTool(addLayerButton);
 	}
 
 	private void initializeComponent() {
-		VBoxLayout vboxLayout = new VBoxLayout();
-		vboxLayout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
-		vboxLayout.setPadding(new Padding(5));
+		AnchorLayout anchorLayout = new AnchorLayout();
+		setLayout(anchorLayout);
 		
-		setLayout(vboxLayout);
-		setCollapsible(false);
-		setFrame(true);
-		setHeading(I18N.CONSTANTS.layers());
-		setBodyBorder(false);
-		setHeaderVisible(false);
+		setWidth(WIDTH);
+
 	}					
+	
+	private void createLayersPanel() {
+		layersPanel = new ContentPanel();
+		layersPanel.setCollapsible(false);
+		layersPanel.setFrame(true);
+		layersPanel.setHeading(I18N.CONSTANTS.layers());
+		layersPanel.setBodyBorder(false);
+		layersPanel.setHeaderVisible(true);
+		layersPanel.setIcon(AbstractImagePrototype.create(MapResources.INSTANCE.layers()));		
+		
+		AnchorData layoutData = new AnchorData();
+		layoutData.setAnchorSpec("100% none");
+		
+		add(layersPanel, layoutData);
+	}
 
-
+	private void createBaseMapPanel() {
+		baseMapPanel = new BaseMapPanel(service);
+		baseMapPanel.addValueChangeHandler(new ValueChangeHandler<String>() {
+			
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				mapElement.setBaseMapId(event.getValue());
+				ValueChangeEvent.fire(LayersWidget.this, mapElement);
+			}
+		});
+	
+		AnchorData layoutData = new AnchorData();
+		layoutData.setAnchorSpec("100% none");
+	
+		add(baseMapPanel, layoutData);
+	}
+	
 	private void createListView() {
 		view.setStore(store);
 		view.setTemplate(MapResources.INSTANCE.layerTemplate().getText());
@@ -137,25 +164,15 @@ public class LayersWidget extends ContentPanel implements HasValue<MapReportElem
 
 		addListViewDnd();			
 		
-		view.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<LayerModel>() {
-			@Override()
-			public void selectionChanged(SelectionChangedEvent<LayerModel> se) {
-				changeSelectedLayer(false);
-			}
-		});
-		
-		view.addListener(Events.Select, new Listener<ListViewEvent>() {
+		view.addListener(Events.Select, new Listener<ListViewEvent<LayerModel>>() {
 			@Override
-			public void handleEvent(ListViewEvent be) {
-				if (be.getIndex() == -1) {
-					disableLayerOptions();
-				} else {
-					enableLayerOptions();
+			public void handleEvent(ListViewEvent<LayerModel> event) {
+				if (event.getIndex() == -1) {
+					optionsPanel.hide();
 				}
-				
 				// Change visibility
-				if (be.getTargetEl().hasStyleName("x-view-item-checkbox")) {
-					LayerModel layerModel = (LayerModel) be.getModel();
+				if (event.getTargetEl().hasStyleName("x-view-item-checkbox")) {
+					LayerModel layerModel = (LayerModel) event.getModel();
 					if (layerModel != null) {
 						boolean newSetting = !layerModel.isVisible();
 						layerModel.setVisible(newSetting);
@@ -163,39 +180,14 @@ public class LayersWidget extends ContentPanel implements HasValue<MapReportElem
 						ValueChangeEvent.fire(LayersWidget.this, mapElement);
 						store.update(layerModel);
 					}
-				}				
-				
-				// Remove 
-				if (be.getTargetEl().hasStyleName("removeLayer")) {
-					if (view.getSelectionModel().getSelectedItem() != null) {
-						int index = store.indexOf(view.getSelectionModel().getSelectedItem());
-						removeLayer(mapElement.getLayers().get(index));
-					}
-				} 
-				
-				changeSelectedLayer(false);
+				} else {
+					showOptionsMenu(event.getModel(), event.getIndex());
+				}
+				optionsPanel.onLayerSelectionChanged(event.getModel().getMapLayer());
 			}
+
 		});
-
-	    VBoxLayoutData vbld = new VBoxLayoutData();
-	    vbld.setFlex(1);
-	    add(view, vbld);
-	}
-
-	private void enableLayerOptions() {
-		layerOptions.setEnabled(true);
-	}
-
-	private void disableLayerOptions() {
-		layerOptions.setEnabled(false);
-	}
-	
-	private void changeSelectedLayer(boolean fireEvent) {
-		if (view.getSelectionModel().getSelectedItem() != null) {
-			layerOptions.setValue(view.getSelectionModel().getSelectedItem().getMapLayer(), fireEvent);
-			layout(true);
-		}
-		layerOptions.setEnabled(view.getSelectionModel().getSelectedItem() != null);
+	    layersPanel.add(view);
 	}
 	
 	private class MapLayersDropTarget extends ListViewDropTarget {
@@ -206,7 +198,63 @@ public class LayersWidget extends ContentPanel implements HasValue<MapReportElem
     		return insertIndex;
     	}
 	}
+	
+	private MapLayer getSelectedLayer() {
+		return view.getSelectionModel().getSelectedItem().getMapLayer();
+	}
 
+	private void showOptionsMenu(final LayerModel model, int index) {
+		if(layerMenu == null) {
+			createLayerMenu();
+		}
+		int x = this.getAbsoluteLeft() - 150;
+		int y = view.getElement(index).getAbsoluteTop();
+		
+		layerMenu.showAt(x, y);
+	}
+
+	private void createLayerMenu() {
+		layerMenu = new Menu();
+		layerMenu.add(new MenuItem(I18N.CONSTANTS.style(), 
+					AbstractImagePrototype.create(MapResources.INSTANCE.styleIcon()),
+					new SelectionListener<MenuEvent>() {
+			@Override
+			public void componentSelected(MenuEvent ce) {
+				optionsPanel.showStyle(getSelectedLayer());
+			}
+		}));
+		layerMenu.add(new MenuItem(I18N.CONSTANTS.aggregation(),
+					AbstractImagePrototype.create(MapResources.INSTANCE.clusterIcon()),
+					new SelectionListener<MenuEvent>() {
+			@Override
+			public void componentSelected(MenuEvent ce) {
+				optionsPanel.showAggregation(getSelectedLayer());
+			}
+		}));
+		layerMenu.add(new MenuItem(I18N.CONSTANTS.filter(),
+				IconImageBundle.ICONS.filter(),
+				new SelectionListener<MenuEvent>() {
+		@Override
+		public void componentSelected(MenuEvent ce) {
+			optionsPanel.showFilter(getSelectedLayer());
+		}
+	}));
+	
+		
+		layerMenu.add(new SeparatorMenuItem());
+		
+		
+		layerMenu.add(new MenuItem(I18N.CONSTANTS.remove(), 
+					IconImageBundle.ICONS.delete(), 
+					new SelectionListener<MenuEvent>() {
+			@Override
+			public void componentSelected(MenuEvent ce) {
+				removeLayer(getSelectedLayer());
+			}
+		}));
+		layerMenu.setWidth(150);
+	}
+	
 	private void addListViewDnd() {
 	    ListViewDropTarget target = new MapLayersDropTarget(view);
 	    target.setAllowSelfAsSource(true);
@@ -267,6 +315,7 @@ public class LayersWidget extends ContentPanel implements HasValue<MapReportElem
 	@Override
 	public void setValue(MapReportElement value, boolean fireEvents) {
 		this.mapElement=value;
+		this.baseMapPanel.setValue(value.getBaseMapId());
 		updateStore();
 	}
 

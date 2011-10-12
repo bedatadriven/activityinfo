@@ -45,7 +45,6 @@ public class HtmlReportRenderer extends ItextReportRenderer {
 	public HtmlReportRenderer(@MapIconPath String mapIconPath, ImageStorageProvider imageStorageProvider) {
 		super(mapIconPath);
 		this.imageStorageProvider = imageStorageProvider;
-
 	}
 
 	@Override
@@ -134,7 +133,6 @@ public class HtmlReportRenderer extends ItextReportRenderer {
 		}
 		
 	}
-
 
 	private static class HtmlImage implements ItextImageResult {
 		private final BufferedImage image;

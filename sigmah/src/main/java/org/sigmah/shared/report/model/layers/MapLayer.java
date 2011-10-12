@@ -3,10 +3,11 @@ package org.sigmah.shared.report.model.layers;
 import java.io.Serializable;
 import java.util.List;
 
+import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.report.model.clustering.Clustering;
 import org.sigmah.shared.report.model.labeling.LabelSequence;
 
-/*
+/**
  * A layer representing one or more indicators on a MapElement
  */
 public interface MapLayer extends Serializable {
@@ -37,8 +38,14 @@ public interface MapLayer extends Serializable {
 	public String getName();
 	public void setName(String name);
 	
+	
 	/*
 	 * Function to determine non-typesafe name of the class for gxt template usage
 	 */
 	public String getTypeName();
+	
+	
+	public Filter getFilter();
+	
+	public void setFilter(Filter filter);
 }

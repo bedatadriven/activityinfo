@@ -74,7 +74,7 @@ public class RenderReportHtmlHandler implements CommandHandler<RenderReportHtml>
             tempPath.mkdir();
         }
         ServletImageStorageProvider isp = new ServletImageStorageProvider("temp/",
-                tempPath.getAbsolutePath());
+                tempPath.getAbsolutePath(), null);
         return isp;
     }
 }

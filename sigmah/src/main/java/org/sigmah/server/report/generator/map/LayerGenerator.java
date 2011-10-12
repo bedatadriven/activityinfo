@@ -23,7 +23,7 @@ public interface LayerGenerator {
      * @param sites
      * @return A geographic bounding box
      */
-    Extents calculateExtents(List<SiteData> sites);
+    Extents calculateExtents();
 
     /**
      * Calculates the maximum potential margins (in pixels)
@@ -33,5 +33,5 @@ public interface LayerGenerator {
      */
     Margins calculateMargins();
 
-    void generate(List<SiteData> sites, TiledMap map, MapContent content);
+    void generate(TiledMap map, MapContent content);
 }

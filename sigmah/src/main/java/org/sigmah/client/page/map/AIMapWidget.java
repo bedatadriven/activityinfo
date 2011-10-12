@@ -110,8 +110,8 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
 
     	this.dispatcher = dispatcher;
     	
-        setHeading(I18N.CONSTANTS.preview());
-        setLayout(new FitLayout());
+    	setHeaderVisible(false);
+    	setLayout(new FitLayout());
 
         statusWidget = new Status();
         ToolBar toolBar = new ToolBar();
@@ -219,6 +219,8 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
 	@Override
 	public MapReportElement getValue() {
 		mapReportElement.setZoomLevel(mapWidget.getZoomLevel());
+		mapReportElement.setWidth(mapWidget.getOffsetWidth());
+		mapReportElement.setHeight(mapWidget.getOffsetHeight());
 		mapReportElement.setCenter(new AiLatLng(
 				mapWidget.getCenter().getLatitude(), mapWidget.getCenter().getLongitude()));
 		return mapReportElement;
@@ -484,7 +486,13 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
 		} else if (marker instanceof IconMapMarker) {
 			IndicatorDTO indicator = mapModel.getIndicatorById
 										(((IconMapMarker) marker).getIndicatorId());
-			return indicator.getName();
+			return new StringBuilder()
+				.append(indicator.getName())
+				.append(": ")
+				.append("<b>")
+				.append(marker.getTitle())
+				.append("</b>")
+				.toString();
 		}
 		return null;
 	}

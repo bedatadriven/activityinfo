@@ -8,4 +8,4 @@ http://www.activityinfo.org/changePassword?${user.changePasswordKey}
 
 Best regards,
 
-L'équipe ActivityInfo
+The ActivityInfo Team

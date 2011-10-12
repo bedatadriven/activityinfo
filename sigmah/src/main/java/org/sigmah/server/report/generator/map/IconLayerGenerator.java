@@ -11,11 +11,11 @@ import java.util.List;
 import org.sigmah.server.report.generator.map.cluster.Cluster;
 import org.sigmah.server.report.generator.map.cluster.Clusterer;
 import org.sigmah.server.report.generator.map.cluster.ClustererFactory;
-import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph.IntersectionCalculator;
-import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph.Node;
+import org.sigmah.server.report.generator.map.cluster.genetic.MarkerGraph.IntersectionCalculator;
+import org.sigmah.server.report.generator.map.cluster.genetic.MarkerGraph.Node;
+import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.IconLayerLegend;
 import org.sigmah.shared.report.content.IconMapMarker;
-import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.Point;
 import org.sigmah.shared.report.model.MapIcon;
@@ -28,17 +28,23 @@ import org.sigmah.shared.util.mapping.Extents;
 /*
  * @author Alex Bertram
  */
-public class IconLayerGenerator implements LayerGenerator {
+public class IconLayerGenerator 
+	extends 
+		AbstractLayerGenerator
+	implements 
+		LayerGenerator {
 
     private final MapReportElement element;
     private final IconMapLayer layer;
 
     private MapIcon icon;
+	private List<SiteData> sites;
 
 
-    public IconLayerGenerator(MapReportElement element, IconMapLayer layer) {
+    public IconLayerGenerator(MapReportElement element, IconMapLayer layer, List<SiteData> sites) {
         this.element = element;
         this.layer = layer;
+        this.sites=sites;
 
         this.icon = new MapIcon(layer.getIcon(), 32, 37, 16, 35);
     }
@@ -57,8 +63,7 @@ public class IconLayerGenerator implements LayerGenerator {
         }
     }
 
-    public Extents calculateExtents(List<SiteData> sites) {
-
+    public Extents calculateExtents() {
         Extents extents = Extents.emptyExtents();
         for(SiteData site : sites) {
             if(meetsCriteria(site) && site.hasLatLong()) {
@@ -78,25 +83,18 @@ public class IconLayerGenerator implements LayerGenerator {
 
 
 
-    public void generate(List<SiteData> sites, TiledMap map, MapContent content) {
-
+    public void generate(TiledMap map, MapContent content) {
         List<PointValue> points = new ArrayList<PointValue>();
-
         IconRectCalculator rectCalculator = new IconRectCalculator(icon);
 
         for(SiteData site : sites) {
             if(meetsCriteria(site)) {
-
                 if(site.hasLatLong()) {
-
                     Point point = map.fromLatLngToPixel(new AiLatLng(site.getLatitude(), site.getLongitude()));
                     points.add(new PointValue(site, point, rectCalculator.iconRect(point)));
-
                 } else {
-
                     content.getUnmappedSites().add(site.getId());
                 }
-
             }
         }
         
@@ -107,10 +105,10 @@ public class IconLayerGenerator implements LayerGenerator {
 			}
 		};
         
-		Clusterer clusterer = ClustererFactory.fromClustering(layer.getClustering(), rectCalculator, points, intersectionCalculator);
+		Clusterer clusterer = ClustererFactory.fromClustering(layer.getClustering(), rectCalculator, intersectionCalculator);
 		
-        List<Cluster> clusters = clusterer.cluster();
-        createMarkersFrom(clusters, content);
+        List<Cluster> clusters = clusterer.cluster(map, points);
+        createMarkersFrom(clusters, map, content);
         
         IconLayerLegend legend = new IconLayerLegend();
         legend.setDefinition(layer);
@@ -118,7 +116,7 @@ public class IconLayerGenerator implements LayerGenerator {
 		content.addLegend(legend);
     }
 
-	private void createMarkersFrom(List<Cluster> clusters, MapContent content) {
+	private void createMarkersFrom(List<Cluster> clusters, TiledMap map, MapContent content) {
 		for(Cluster cluster : clusters) {
             IconMapMarker marker = new IconMapMarker();
             marker.setX(cluster.getPoint().getX());
@@ -126,9 +124,19 @@ public class IconLayerGenerator implements LayerGenerator {
             AiLatLng latlng = cluster.latLngCentroid();
             marker.setLat(latlng.getLat());
             marker.setLng(latlng.getLng());
+            marker.setTitle(formatTitle(cluster));
             marker.setIcon(icon);
             marker.setIndicatorId(layer.getIndicatorIds().get(0));
             content.getMarkers().add(marker);
         }
 	}
+
+	private String formatTitle(Cluster cluster) {
+		if (cluster.getPointValues() != null) {
+			return Double.toString(cluster.sumValues());
+		}
+		return "";
+	}
+	
+	
 }

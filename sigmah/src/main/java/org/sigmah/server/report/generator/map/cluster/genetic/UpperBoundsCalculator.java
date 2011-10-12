@@ -3,45 +3,33 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.server.report.generator.map;
+package org.sigmah.server.report.generator.map.cluster.genetic;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sigmah.server.report.generator.map.RadiiCalculator;
 import org.sigmah.server.report.generator.map.cluster.Cluster;
-import org.sigmah.server.report.generator.map.cluster.auto.CircleFitnessFunctor;
-import org.sigmah.server.report.generator.map.cluster.auto.FitnessFunctor;
-import org.sigmah.server.report.generator.map.cluster.auto.KMeans;
-import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph;
 
 public class UpperBoundsCalculator {
 
     public interface Tracer {
-
         void onSubgraph(int nodeCount);
         void incremented(int count, List<Cluster> clusters, double fitness);
-
     }
 
     public static List<Integer> calculate(MarkerGraph graph, RadiiCalculator radiiCalculator) {
         return calculate(graph, radiiCalculator, null);
     }
 
-
-    /**
-     * Calculates the upper bound of the number of clusters per subgraph
-     * based on a minimum possible radius
-     *
-     * @param graph
-     * @param radiiCalculator
-     * @return
-     */
+    /** Calculates the upper bound of the number of clusters per subgraph
+     * based on a minimum possible radius */
     public static List<Integer> calculate(MarkerGraph graph, RadiiCalculator radiiCalculator, Tracer tracer) {
 
         List<Integer> bounds = new ArrayList<Integer>();
         List<List<MarkerGraph.Node>> subgraphs = graph.getSubgraphs();
 
-        FitnessFunctor ftor = new CircleFitnessFunctor();
+        FitnessFunctor ftor = new BubbleFitnessFunctor();
 
         for(List<MarkerGraph.Node> subgraph : subgraphs) {
 
@@ -70,6 +58,5 @@ public class UpperBoundsCalculator {
         }
         return subgraph.size();
     }
-
 
 }

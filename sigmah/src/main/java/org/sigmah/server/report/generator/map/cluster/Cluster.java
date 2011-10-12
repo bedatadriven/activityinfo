@@ -4,14 +4,14 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph;
+import org.sigmah.server.report.generator.map.cluster.genetic.MarkerGraph;
 import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.Point;
 import org.sigmah.shared.report.model.PointValue;
 
 /**
  * Represents a collection of nodes that
- * are clustered together in a given chromosone
+ * are clustered together in a given chromosome
  */
 public class Cluster {
     private List<PointValue> pointValues;
@@ -19,22 +19,24 @@ public class Cluster {
     private Point point;
     private Rectangle rectangle;
     private String title;
-
+    
+    /**
+     * Creates a cluster positioned at the given point
+     * on the projected space.
+     * 
+     * @param point the position of the cluster
+     */
     public Cluster(Point point) {
         pointValues = new ArrayList<PointValue>();
         this.point = point;
     }
-    
-    public Cluster(List<PointValue> points) {
-    	pointValues=points;
-    }
 
-    public Cluster(MarkerGraph.Node node) {
-        pointValues = new ArrayList<PointValue>(1);
-        pointValues.add(node.getPointValue());
-        this.point = node.getPoint();
-    }
-
+    /**
+     * Creates a cluster positioned on the given 
+     * PointValue
+     * 
+     * @param pointValue
+     */
     public Cluster(PointValue pointValue) {
         pointValues = new ArrayList<PointValue>(1);
         pointValues.add(pointValue);
@@ -44,7 +46,6 @@ public class Cluster {
 	public void addNode(MarkerGraph.Node node) {
         pointValues.add(node.getPointValue());
     }
-	
 
 	public void addPointValue(PointValue pv) {
 		pointValues.add(pv);
@@ -106,17 +107,17 @@ public class Cluster {
     }
 
 	public Point weightedCentroid() {
-            double weightSum = 0;
-            double x = 0;
-            double y = 0;
-            for(PointValue pointValue : pointValues) {
-                weightSum += pointValue.value;
-                x += pointValue.px.getX() * pointValue.value;
-                y += pointValue.px.getY() * pointValue.value;
-            }
-
-            return new Point((int)Math.round(x / weightSum), (int)Math.round(y / weightSum));
+        double weightSum = 0;
+        double x = 0;
+        double y = 0;
+        for(PointValue pointValue : pointValues) {
+            weightSum += pointValue.value;
+            x += pointValue.px.getX() * pointValue.value;
+            y += pointValue.px.getY() * pointValue.value;
         }
+
+        return new Point((int)Math.round(x / weightSum), (int)Math.round(y / weightSum));
+    }
 
 	public double getRadius() {
         return radius;
@@ -153,98 +154,8 @@ public class Cluster {
 	public void setRectangle(Rectangle rectangle) {
         this.rectangle = rectangle;
     }
-//    private class Rectangle {
-//    	private int x;
-//    	private int y;
-//    	private int width;
-//    	private int height;
-//
-//    	public Rectangle(int x, int y, int width, int height) {
-//    		this.x = x;
-//    		this.y = y;
-//    		this.width = width;
-//    		this.height = height;
-//    	}
-//
-//    	public int getX() {
-//    		return x;
-//    	}
-//    	
-//    	public void setX(int x) {
-//    		this.x = x;
-//    	}
-//    	
-//    	public int getY() {
-//    		return y;
-//    	}
-//    	
-//    	public void setY(int y) {
-//    		this.y = y;
-//    	}
-//    	
-//    	public int getWidth() {
-//    		return width;
-//    	}
-//    	
-//    	public void setWidth(int width) {
-//    		this.width = width;
-//    	}
-//    	
-//    	public int getHeight() {
-//    		return height;
-//    	}
-//    	
-//    	public void setHeight(int height) {
-//    		this.height = height;
-//    	}
-//    	
-//    	public boolean intersects(Rectangle rectangle) {
-//    		int tw = this.width;
-//    		     int th = this.height;
-//    		     int rw = rectangle.getWidth();
-//    		     int rh = rectangle.getHeight();
-//    		     if (rw <= 0 || rh <= 0 || tw <= 0 || th <= 0) {
-//    		         return false;
-//    		     }
-//    		     int tx = this.x;
-//    		     int ty = this.y;
-//    		     int rx = rectangle.getX();
-//    		     int ry = rectangle.getY();
-//    		     rw += rx;
-//    		     rh += ry;
-//    		     tw += tx;
-//    		     th += ty;
-//    		     // overflow || intersect
-//    		 return ((rw < rx || rw > tx) &&
-//    		         (rh < ry || rh > ty) &&
-//    		         (tw < tx || tw > rx) &&
-//    		         (th < ty || th > ry));
-//    	}
-//    	
-//    	public Rectangle intersection(Rectangle other) {
-//    		int tx1 = this.x;
-//    		     int ty1 = this.y;
-//    		     int rx1 = other.x;
-//    		     int ry1 = other.y;
-//    		     long tx2 = tx1; tx2 += this.width;
-//    		     long ty2 = ty1; ty2 += this.height;
-//    		     long rx2 = rx1; rx2 += other.width;
-//    		     long ry2 = ry1; ry2 += other.height;
-//    		     if (tx1 < rx1) tx1 = rx1;
-//    		     if (ty1 < ry1) ty1 = ry1;
-//    		     if (tx2 > rx2) tx2 = rx2;
-//    		     if (ty2 > ry2) ty2 = ry2;
-//    		     tx2 -= tx1;
-//    		     ty2 -= ty1;
-//    		     // tx2,ty2 will never overflow (they will never be
-//    		 // larger than the smallest of the two source w,h)
-//    		 // they might underflow, though...
-//    		 if (tx2 < Integer.MIN_VALUE) tx2 = Integer.MIN_VALUE;
-//    		     if (ty2 < Integer.MIN_VALUE) ty2 = Integer.MIN_VALUE;
-//    		     return new Rectangle  (tx1, ty1, (int) tx2, (int) ty2);
-//    	}
-//    }
 
-
-
+	public boolean hasPoint() {
+		return point != null;
+	}
 }

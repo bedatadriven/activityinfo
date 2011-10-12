@@ -12,7 +12,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlTransient;
 
+import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.report.model.clustering.AdministrativeLevelClustering;
 import org.sigmah.shared.report.model.clustering.AutomaticClustering;
 import org.sigmah.shared.report.model.clustering.Clustering;
@@ -30,6 +32,7 @@ public abstract class AbstractMapLayer implements MapLayer {
 	protected LabelSequence labelSequence = new LatinAlphaSequence();
 	protected Clustering clustering =  new NoClustering(); 
 	protected String name;
+	protected Filter filter =new Filter();
 
 	@Override
 	public void addIndicatorId(int id) {
@@ -62,7 +65,7 @@ public abstract class AbstractMapLayer implements MapLayer {
 		this.labelSequence = labelSequence;
 	}
 
-	@XmlElement
+	@XmlTransient
 	public boolean isClustered() {
 	    return clustering.isClustered();
 	}
@@ -98,4 +101,16 @@ public abstract class AbstractMapLayer implements MapLayer {
 	public void setName(String name) {
 		this.name=name;
 	}
+
+	@Override
+	public Filter getFilter() {
+		return filter;
+	}
+
+	@Override
+	public void setFilter(Filter filter) {
+		this.filter = filter;
+	}
+	
+	
 }

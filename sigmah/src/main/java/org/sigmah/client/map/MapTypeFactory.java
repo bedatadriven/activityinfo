@@ -62,6 +62,10 @@ public class MapTypeFactory {
         	
         } else if (baseMap.equals(GoogleBaseMap.ROADMAP)) {
         	return MapType.getNormalMap();
+        } else if (baseMap.equals(GoogleBaseMap.HYBRID)) {
+        	return MapType.getHybridMap();
+        } else if (baseMap.equals(GoogleBaseMap.TERRAIN)) {
+        	return MapType.getPhysicalMap();
         }
         return null;
     }

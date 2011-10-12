@@ -6,32 +6,35 @@ import java.util.List;
 import java.util.Map;
 
 import org.sigmah.server.report.generator.map.RadiiCalculator;
+import org.sigmah.server.report.generator.map.TiledMap;
 import org.sigmah.shared.domain.AdminEntity;
+import org.sigmah.shared.report.content.AiLatLng;
+import org.sigmah.shared.report.content.Point;
 import org.sigmah.shared.report.model.PointValue;
+import org.sigmah.shared.report.model.SiteData;
 import org.sigmah.shared.report.model.clustering.AdministrativeLevelClustering;
 
-/*
+import com.google.common.collect.Lists;
+
+/**
  * Clusters a set of points by the administrative level the points reside in, 
  * calculated per country
  */
 public class AdminLevelClusterer implements Clusterer {
 	private AdministrativeLevelClustering model;
 	private RadiiCalculator radiiCalculator;
-	private List<PointValue> points;
 	
 	public AdminLevelClusterer(
 			AdministrativeLevelClustering adminLevelClustering,
-			RadiiCalculator radiiCalculator,
-			List<PointValue> points) {
+			RadiiCalculator radiiCalculator) {
 		super();
 		this.model = adminLevelClustering;
-		this.points = points;
 		this.radiiCalculator = radiiCalculator;
 	}
 
 	@Override
-	public List<Cluster> cluster() {
-		
+	public List<Cluster> cluster(TiledMap map, List<PointValue> points) {
+		 
 		// admin entity id -> cluster
 		Map<Integer, Cluster> adminClusters = new HashMap<Integer,Cluster>();
 		
@@ -41,6 +44,7 @@ public class AdminLevelClusterer implements Clusterer {
 				Cluster cluster = adminClusters.get(entity.getId());
 				if(cluster == null) {
 					cluster = new Cluster(pv);
+					cluster.setPoint(adminCenter(map, entity));
 					cluster.setTitle(entity.getName());
 					adminClusters.put(entity.getId(), cluster);
 				} else {
@@ -49,14 +53,56 @@ public class AdminLevelClusterer implements Clusterer {
 			}
 		}
 	
-		ArrayList<Cluster> clusters = new ArrayList<Cluster>(adminClusters.values());
+		ArrayList<Cluster> clusters = Lists.newArrayList();
+		
+		// update centers of clusters based on points, if any
+		for(Cluster cluster : adminClusters.values()) {
+			updateCenter(cluster);
+			if(cluster.hasPoint()) {
+				clusters.add(cluster);
+			}
+		}
 		radiiCalculator.calculate(clusters);
 		
 		return clusters;
 	}
 
+	private void updateCenter(Cluster cluster) {
+		double count = 0;
+		double sumX = 0;
+		double sumY = 0;
+		
+		for(PointValue pv : cluster.getPointValues()) {
+			if(pv.hasPoint()) {
+				count ++;
+				sumX += pv.getPoint().getDoubleX();
+				sumY += pv.getPoint().getDoubleY();
+			}
+		}
+		
+		if(count > 0) {
+			cluster.setPoint(new Point(sumX / count, sumY / count));
+		}
+	}
+
+	private Point adminCenter(TiledMap map, AdminEntity entity) {
+		if(entity.getBounds() == null) {
+			return null;
+		} else {
+			AiLatLng center = new AiLatLng( 
+					(entity.getBounds().getY1() + entity.getBounds().getY2()) / 2d,
+					(entity.getBounds().getX1() + entity.getBounds().getX2()) / 2d);
+					
+			return map.fromLatLngToPixel(center);
+		}
+	}
+
 	private AdminEntity getAdminEntityId(PointValue pv) {
-		Map<Integer, AdminEntity> membership = pv.site.adminEntities;
+		return getAdminEntity(pv.site);
+	}
+
+	private AdminEntity getAdminEntity(SiteData site) {
+		Map<Integer, AdminEntity> membership = site.adminEntities;
 		for(Integer levelId : model.getAdminLevels()) {
 			if(membership.containsKey(levelId)) {
 				return membership.get(levelId);
@@ -64,5 +110,9 @@ public class AdminLevelClusterer implements Clusterer {
 		}
 		return null;
 	}
-	
+
+	@Override
+	public boolean isMapped(SiteData site) {
+		return getAdminEntity(site) != null;
+	}
 }

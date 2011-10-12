@@ -13,16 +13,13 @@ import java.util.List;
 import org.sigmah.server.report.generator.map.cluster.Cluster;
 import org.sigmah.server.report.generator.map.cluster.Clusterer;
 import org.sigmah.server.report.generator.map.cluster.ClustererFactory;
-import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph;
+import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.BubbleLayerLegend;
 import org.sigmah.shared.report.content.BubbleMapMarker;
-import org.sigmah.shared.report.content.DimensionCategory;
 import org.sigmah.shared.report.content.EntityCategory;
-import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.MapMarker;
 import org.sigmah.shared.report.content.Point;
-import org.sigmah.shared.report.model.CategoryProperties;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.MapReportElement;
@@ -37,13 +34,15 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
 
     private MapReportElement element;
     private BubbleMapLayer layer;
+    private List<SiteData> sites;
 
-    public BubbleLayerGenerator(MapReportElement element, BubbleMapLayer layer) {
+    public BubbleLayerGenerator(MapReportElement element, BubbleMapLayer layer, List<SiteData> sites) {
         this.element = element;
         this.layer = layer;
+        this.sites=sites;
     }
 
-    public Extents calculateExtents(List<SiteData> sites) {
+    public Extents calculateExtents() {
         // PRE---PASS - calculate extents of sites WITH non-zero
         // values for this indicator
 
@@ -61,14 +60,7 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
         return new Margins(layer.getMaxRadius());
     }
 
-    public void generate(List<SiteData> sites, TiledMap map, MapContent content) {
-
-        // create the list of input point values
-        List<PointValue> points = new ArrayList<PointValue>();
-        List<PointValue> unmapped = new ArrayList<PointValue>();
-
-        generatePoints(sites, map, layer, points, unmapped);
-
+    public void generate(TiledMap map, MapContent content) {
         // define our symbol scaling
         RadiiCalculator radiiCalculator;
         if(layer.getScaling() == ScalingType.None ||
@@ -81,12 +73,18 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
             radiiCalculator = new FixedRadiiCalculator(layer.getMinRadius());
         }
 
-        IntersectionCalculator intersectionCalculator = new IntersectionCalculator(layer.getMaxRadius());
+        BubbleIntersectionCalculator intersectionCalculator = new BubbleIntersectionCalculator(layer.getMaxRadius());
         Clusterer clusterer = ClustererFactory.fromClustering
-        	(layer.getClustering(), radiiCalculator, points, intersectionCalculator);
+        	(layer.getClustering(), radiiCalculator, intersectionCalculator);
+
+        // create the list of input point values
+        List<PointValue> points = new ArrayList<PointValue>();
+        List<PointValue> unmapped = new ArrayList<PointValue>();
+        generatePoints(sites, map, layer, clusterer, points, unmapped);
+
         
         // Cluster points by the clustering algorithm set in the layer 
-        List<Cluster> clusters = clusterer.cluster();
+        List<Cluster> clusters = clusterer.cluster(map, points);
         
         // add unmapped sites
         for(PointValue pv : unmapped) {
@@ -130,8 +128,6 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
             markers.add(marker);
         }
         
-
-        
         // number markers if applicable
         if(layer.getLabelSequence() != null) {
             numberMarkers(markers);
@@ -153,6 +149,7 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
             List<SiteData> sites,
             TiledMap map,
             BubbleMapLayer layer,
+            Clusterer clusterer,
             List<PointValue> mapped,
             List<PointValue> unmapped) {
 
@@ -173,8 +170,11 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
                             value, px);
                     
                     // TODO: add AdminLevel to pointvalue
-                    
-                    (px==null ? unmapped : mapped).add(pv);
+                    if(clusterer.isMapped(site)) {
+                    	mapped.add(pv);
+                    } else {
+                    	unmapped.add(pv);
+                    }
                 }
             }
         }
@@ -192,7 +192,6 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
                 symbol.put(dimension, new EntityCategory(site.getPartnerId()));
             }
         }
-
         return symbol;
     }
 
@@ -205,19 +204,6 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
         // add the labels
         for(BubbleMapMarker marker : markers) {
             marker.setLabel(layer.getLabelSequence().next());
-        }
-    }
-
-    public static class IntersectionCalculator implements MarkerGraph.IntersectionCalculator {
-        private int radius;
-
-        public IntersectionCalculator(int radius) {
-            this.radius = radius;
-        }
-
-        public boolean intersects(MarkerGraph.Node a, MarkerGraph.Node b) {
-            return a.getPoint().distance(b.getPoint()) < radius *2 &&
-                    a.getPointValue().symbol.equals(b.getPointValue().symbol);
         }
     }
 }
