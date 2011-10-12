@@ -91,7 +91,7 @@ public class IconLayerGenerator
             if(meetsCriteria(site)) {
                 if(site.hasLatLong()) {
                     Point point = map.fromLatLngToPixel(new AiLatLng(site.getLatitude(), site.getLongitude()));
-                    points.add(new PointValue(site, point, rectCalculator.iconRect(point)));
+                    points.add(new PointValue(site, point, rectCalculator.iconRect(point), getValue(site, layer.getIndicatorIds())));
                 } else {
                     content.getUnmappedSites().add(site.getId());
                 }
