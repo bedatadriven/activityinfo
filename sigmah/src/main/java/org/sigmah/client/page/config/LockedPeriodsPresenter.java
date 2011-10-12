@@ -24,6 +24,7 @@ import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.config.LockedPeriodsPresenter.LockedPeriodListEditor;
 import org.sigmah.shared.command.BatchCommand;
 import org.sigmah.shared.command.Delete;
+import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.command.LockEntity;
 import org.sigmah.shared.command.UpdateEntity;
 import org.sigmah.shared.command.result.BatchResult;
@@ -32,6 +33,7 @@ import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.LockedPeriodDTO;
 import org.sigmah.shared.dto.ProjectDTO;
+import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 
 import com.extjs.gxt.ui.client.widget.MessageBox;
@@ -79,14 +81,14 @@ public class LockedPeriodsPresenter
 		
 		final LockedPeriodDTO lockedPeriod = view.getValue();
 		LockEntity lockUserDatabase = new LockEntity(lockedPeriod);
-		if (lockedPeriod.getActivity() != null) {
-			lockUserDatabase.setActivityId(lockedPeriod.getActivity().getId());
+		if (lockedPeriod.getParent() instanceof ActivityDTO) {
+			lockUserDatabase.setActivityId(lockedPeriod.getParent().getId());
 		}
-		if (lockedPeriod.getProject() != null) {
-			lockUserDatabase.setProjectId(lockedPeriod.getProject().getId());		
+		if (lockedPeriod.getParent() instanceof ProjectDTO) {
+			lockUserDatabase.setProjectId(lockedPeriod.getParent().getId());		
 		}
-		if (lockedPeriod.getUserDatabase() != null) {
-			lockUserDatabase.setUserDatabaseId(lockedPeriod.getUserDatabase().getId());		
+		if (lockedPeriod.getParent() instanceof UserDatabaseDTO) {
+			lockUserDatabase.setUserDatabaseId(lockedPeriod.getParent().getId());		
 		}
 		
 		service.execute(lockUserDatabase, null, new AsyncCallback<CreateResult>() {
@@ -104,8 +106,8 @@ public class LockedPeriodsPresenter
 				// Tell the view there's a new kid on the block
 				view.create(lockedPeriod);
 				
-				// Update the in-memory model
-				parentModel.getLockedPeriods().add(lockedPeriod);
+				// Actually add the lock to it's parent
+				lockedPeriod.getParent().getLockedPeriods().add(lockedPeriod);
 			}
 		});
 	}
@@ -137,9 +139,7 @@ public class LockedPeriodsPresenter
 					view.update(null);
 				}
 
-				/*
-				 * Iterate over all changed lockedperiods, and then replace them
-				 */
+				/** Replace changed locks */
 				private void updateParent() {
 					for (LockedPeriodDTO lockedPeriod : view.getUnsavedItems()) {
 						LockedPeriodDTO lockedPeriodToRemove = null;
@@ -207,11 +207,25 @@ public class LockedPeriodsPresenter
 
 	@Override
 	public void onFilter(FilterEvent filterEvent) {
+		
 	}
 
 	@Override
 	public void onRefresh(RefreshEvent refreshEvent) {
-		view.setItems(new ArrayList<LockedPeriodDTO>(parentModel.getLockedPeriods()));
+		service.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO: handle failure
+			}
+
+			@Override
+			public void onSuccess(SchemaDTO result) {
+				for (LockedPeriodDTO lp : result.getDatabaseById(4).getLockedPeriods())
+					System.out.println();
+				
+				initialize(result.getDatabaseById(parentModel.getId()));
+			}
+		});
 	}
 
 	@Override
@@ -239,7 +253,7 @@ public class LockedPeriodsPresenter
 		}
 		view.setParent(parentModel);
 	}
-
+	
 	@Override
 	public void shutdown() {
 	}
@@ -255,8 +269,7 @@ public class LockedPeriodsPresenter
 	}
 
 	@Override
-	public void requestToNavigateAway(PageState place,
-			NavigationCallback callback) {
+	public void requestToNavigateAway(PageState place, NavigationCallback callback) {
 		callback.onDecided(true);
 	}
 
@@ -269,5 +282,4 @@ public class LockedPeriodsPresenter
 	public boolean navigate(PageState place) {
 		return false;
 	}
-	
 }

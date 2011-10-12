@@ -23,7 +23,7 @@ public class AttributeGroupSearcher implements Searcher<Attribute> {
 		SqlQuery
 				.select("AttributeGroupId")
 				.from("AttributeGroup")
-				.onlyWhere("Name")
+				.whereLikes("Name")
 				.likeMany(testQuery)
 				
 				.execute(tx, new SqlResultCallback() {

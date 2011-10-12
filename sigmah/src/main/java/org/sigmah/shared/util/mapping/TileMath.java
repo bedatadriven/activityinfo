@@ -33,6 +33,8 @@ public class TileMath {
 	private static final double HALF_PI = 1.5707963267948966192313216916398;
 	private static final double TWO_PI = 6.283185307179586476925286766559;
 	private static final double FORTPI = 0.78539816339744833;
+	private static final double RADIANS_PER_DEGREE = 0.0174532925;
+	private static final double DEGREES_PER_RADIAN = 57.2957795;
 
 	
 	/**
@@ -60,9 +62,7 @@ public class TileMath {
 	 * @param zoom
 	 * @return
 	 */
-	
 	public static Point fromLatLngToPixel(AiLatLng latlng, int zoom) {
-
 		double size = size(zoom);
 		double radius = size / TWO_PI;
 		
@@ -78,9 +78,22 @@ public class TileMath {
 	    double y = radius * Math.log(Math.tan(FORTPI + 0.5*lat));
 	    	   y = ty - y;
 			   
-		return new Point( (int)Math.round(x), (int)Math.round(y) );
+		return new Point( x, y );
 	}
+	
+	public static AiLatLng inverse(Point px, int zoom) {
 
+		double size = size(zoom);
+		double radius = size / TWO_PI;
+
+		double lng = (px.getDoubleX() / size * 360d) - 180d;
+		
+		double ty = ((double)size)/2.0; 
+		double y = (ty - px.getDoubleY()) / radius;
+		double lat = Math.atan(Math.sinh(y)) * DEGREES_PER_RADIAN;
+		
+		return new AiLatLng(lat, lng);
+	}
 
 	/**
 	 * 
@@ -101,7 +114,7 @@ public class TileMath {
 			Point upperLeft = fromLatLngToPixel(new AiLatLng(extent.getMaxLat(), extent.getMinLon()), zoomLevel);
 			Point lowerRight = fromLatLngToPixel(new AiLatLng(extent.getMinLat(), extent.getMaxLon()), zoomLevel);
 			
-			int extentWidth = lowerRight.x - upperLeft.x;
+			int extentWidth = lowerRight.getX() - upperLeft.getX();
 			
 			//assert extentWidth >= 0;
 
@@ -109,11 +122,11 @@ public class TileMath {
                 return zoomLevel - 1;
             }
 
-			int extentHeight = lowerRight.y - upperLeft.y;
+			int extentHeight = lowerRight.getY() - upperLeft.getY();
 			
 			if(extentHeight > mapHeight) {
                 return zoomLevel - 1;
-            }
+			}
 
 			zoomLevel++;
 			
@@ -129,11 +142,8 @@ public class TileMath {
 	 * @param px
 	 * @return
 	 */
-	public static Tile tileForPoint(Point px) {
-		
-		return new Tile( px.x / 256, px.y / 256 );
-		
+	public static Tile tileForPoint(Point px) {	
+		return new Tile( px.getX() / 256, px.getY() / 256 );
 	}
-	
 }
 

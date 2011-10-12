@@ -20,6 +20,9 @@ public class SearchPageState implements PageState {
 
 	@Override
 	public String serializeAsHistoryToken() {
+		if (searchQuery != null & !searchQuery.isEmpty()) {
+			return "q=" + searchQuery;
+		} 
 		return null;
 	}
 
@@ -63,7 +66,13 @@ public class SearchPageState implements PageState {
 	public static class Parser implements PageStateParser {
         @Override
         public PageState parse(String token) { 
-            return new SearchPageState(token);
+        	String query = "";
+        	if (token.startsWith("q")) {
+        		try {
+        			query = token.split("=")[1];
+        		} catch(Exception ex) { }
+        	}
+            return new SearchPageState(query);
         }
     }
 	

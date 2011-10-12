@@ -13,7 +13,7 @@ import java.util.List;
 
 import org.junit.Test;
 import org.sigmah.server.report.generator.map.cluster.Cluster;
-import org.sigmah.server.report.generator.map.cluster.auto.MarkerGraph;
+import org.sigmah.server.report.generator.map.cluster.genetic.MarkerGraph;
 import org.sigmah.shared.report.content.Point;
 import org.sigmah.shared.report.model.PointValue;
 

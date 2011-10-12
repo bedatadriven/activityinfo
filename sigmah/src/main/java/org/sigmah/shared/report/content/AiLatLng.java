@@ -5,6 +5,8 @@
 
 package org.sigmah.shared.report.content;
 
+import java.io.Serializable;
+
 /**
  * LatLng is a point in geographical coordinates longitude and latitude
  * 
@@ -13,16 +15,19 @@ package org.sigmah.shared.report.content;
  * @author Alex Bertram
  *
  */
-public class AiLatLng {
-	
+public class AiLatLng implements Serializable {
+	public AiLatLng() {
+		lat=0;
+		lng=0;
+	}
 	public AiLatLng(double lat, double lon) {
 		super();
 		this.lat = lat;
 		this.lng = lon;
 	}
 	
-	private final double lat;
-	private final double lng;
+	private double lat;
+	private double lng;
 	
 	/**
 	 * 

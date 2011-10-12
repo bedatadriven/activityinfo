@@ -3,6 +3,7 @@ package org.sigmah.client.page.map;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.CssResource.NotStrict;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.TextResource;
 
@@ -13,8 +14,13 @@ public interface MapResources extends ClientBundle {
 	@Source("LayerTemplate.html")
 	public TextResource layerTemplate();
 	
+	@NotStrict
 	@Source("MapStyle.css")
-	public MapStyle layerStyle();
+	public MapStyle style();
+	
+	@NotStrict
+	@Source("BaseMapDialog.css")
+	public BaseMapDialogStyle baseMapDialogStyle();
 	
 	@Source("GrabSprite.png")
 	public ImageResource grabSprite();
@@ -46,5 +52,22 @@ public interface MapResources extends ClientBundle {
 	@Source("Error.png")
 	public ImageResource error();
 	
-	public interface MapStyle extends CssResource {}
+    @Source("Layers.png")
+	public ImageResource layers();
+    
+    @Source("globe.png")
+    public ImageResource globe();
+
+    @Source("Style.png")
+    public ImageResource styleIcon();
+    
+    @Source("Cluster.png")
+    public ImageResource clusterIcon();
+	
+	public interface MapStyle extends CssResource {
+	}
+	
+	public interface BaseMapDialogStyle extends CssResource {
+	}
+	
 }

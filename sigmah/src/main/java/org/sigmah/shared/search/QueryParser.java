@@ -28,16 +28,20 @@ public class QueryParser {
 	private String query;
 	private boolean hasFailed=false;
 	private boolean hasDimensions = false;
+	private String failReason = "";
+	QueryChecker checker = new QueryChecker();
 	
 	public void parse(String query) {
 		this.query=query;
 		
-		if (query.length() ==0) {
+		if (!checker.checkQuery(query)) { // Bugger out if the user fails to enter normal queries
 			hasFailed=true;
+			checker.getFails().get(0);
 			return;
 		}
 		
 		try {
+			failFast();
 			determineColonPositions();
 			determineHaveDimensions();
 			if (hasDimensions) { // i.e. a "location:kivu" or "activity:NFI ditribution" 
@@ -55,6 +59,26 @@ public class QueryParser {
 		}
 	}
 	
+	private void failFast() {
+		if (isWhitespace(query)) {
+			failReason = "Only whitespace found";
+		}
+	}
+
+	/** True when given string consists of only whitespace */
+	  public static boolean isWhitespace(String str) {
+	      if (str == null) {
+	          return false;
+	      }
+	      int sz = str.length();
+	      for (int i = 0; i < sz; i++) {
+	          if (str.charAt(i) != ' ') {
+	              return false;
+	          }
+	      }
+	      return true;
+	  }
+	
 	/** Removes "LocationId:15" from uniqueDimensions */
 	private void removePreciseDimensionsFromUniqueDimensions() {
 		for (String preciseDimension : preciseDimensions.keySet()) {
@@ -64,10 +88,21 @@ public class QueryParser {
 		}
 	}
 
+	/** performs simple parsing on the searchterm, falling back on space seperation if no comma found */
 	private void parseSearchTermsList() {
-		String[] splittedByComma = query.split(comma);
-		for (String term : splittedByComma) {
-			simpleSearchTerms.add(term.trim().toLowerCase());
+		String[] splitted = null;
+		if (query.contains(comma)) {
+			splitted = query.split(comma);
+		}
+		if (query.contains(space)) {
+			splitted = query.split(space);
+		}
+		if (splitted != null) {
+			for (String term : splitted) {
+				simpleSearchTerms.add(term.trim().toLowerCase());
+			}
+		} else { // Assume there's only one term
+			simpleSearchTerms.add(query);
 		}
 	}
 
@@ -262,6 +297,10 @@ public class QueryParser {
 			colonPositions.add(query.indexOf(colon, position));
 			position=query.indexOf(colon, position) + 1;
 		}
+	}
+
+	public String getFailReason() {
+		return failReason;
 	}
 
 	/** Simple struct to keep tome info together */

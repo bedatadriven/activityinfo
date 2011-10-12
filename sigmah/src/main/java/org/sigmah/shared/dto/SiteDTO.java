@@ -466,4 +466,10 @@ public final class SiteDTO extends BaseModelData implements EntityDTO {
 	public String getPrettyLocationName() {
 		return getLocationName() + getLocationAxe() != null ? " (" + getLocationAxe() + ")" : "";
 	}
+
+	@Override
+	public String getName() {
+		// TODO Leave unimplemented for now. A site with a name? 
+		return null;
+	}
 }

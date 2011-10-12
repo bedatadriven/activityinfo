@@ -30,16 +30,16 @@
                 <dimension type="partner"/>
             </columns>
         </pivotTable>
-        <static>
-       	 	<text>This is static text and image.</text>
-       	 	<img>http://www.google.nl/logos/2010/oz10-hp.gif</img>
-       	 </static>
-       	 <static>
-       	 	<text>This is text only</text>
-       	 </static>
-       	<static>
-       	 	<img>http://www.google.nl/logos/2010/oz10-hp.gif</img>
-       	 </static>
+<!--        <static>-->
+<!--       	 	<text>This is static text and image.</text>-->
+<!--       	 	<img>http://www.google.nl/logos/2010/oz10-hp.gif</img>-->
+<!--       	 </static>-->
+<!--       	 <static>-->
+<!--       	 	<text>This is text only</text>-->
+<!--       	 </static>-->
+<!--       	<static>-->
+<!--       	 	<img>http://www.google.nl/logos/2010/oz10-hp.gif</img>-->
+<!--       	 </static>-->
         <table>
             <title>Evaluations ménées</title>
             <filter>
@@ -57,10 +57,10 @@
                 <!--<column label="Commentaire" source="site.comments"/>-->
             </columns>
             <map>
-                <baseMap>zs.gray.cd</baseMap>
+                <tileBaseMap>zs.gray.cd</tileBaseMap>
                 <layers>
                     <bubbles>
-                        <numbering>arabicNumerals</numbering>
+                        <arabicNumberSequence/>
                         <minRadius>10</minRadius>
                     </bubbles>
                 </layers>
@@ -87,7 +87,7 @@
 
         <map>
             <title>Carte de distributions NFI</title>
-            <baseMap>zs.gray.cd</baseMap>
+            <tileBaseMap>zs.gray.cd</tileBaseMap>
             <layers>
                 <bubbles>
                     <scaling>Graduated</scaling>
@@ -278,13 +278,12 @@
 
         <map>
             <title>Carte des Interventions EHA</title>
-            <baseMap>zs.gray.cd</baseMap>
+            <tileBaseMap>zs.gray.cd</tileBaseMap>
             <layers>
-                <bubbles>
+                <pie>
                     <minRadius>15</minRadius>
                     <maxRadius>30</maxRadius>
                     <scaling>Graduated</scaling>
-                    <pie>true</pie>
                     <indicators>
                         <indicator>100</indicator>
                         <indicator>103</indicator>
@@ -292,16 +291,38 @@
                         <indicator>104</indicator>
                         <indicator>101</indicator>
                     </indicators>
-                    <colors>
-                        <dimension type="indicator">
-                            <category name="100" color="#FFFF00" label="Water-trucking"/>
-                            <category name="103" color="#254061" label="Eau durable"/>
-                            <category name="102" color="#4F81BD" label="Eau d'urgence"/>
-                            <category name="104" color="#77933C" label="Assainissement durable"/>
-                            <category name="101" color="#C3D69B" label="Assainissement d'urgence"/>
-                        </dimension>
-                    </colors>
-                </bubbles>
+                    <slices>
+                        <slice>
+                            <color>FFFF00</color>
+                            <indicatorId>100</indicatorId>
+                        </slice>
+                        <slice>
+                            <color>254061</color>
+                            <indicatorId>103</indicatorId>
+                        </slice>
+                        <slice>
+                            <color>4F81BD</color>
+                            <indicatorId>102</indicatorId>
+                        </slice>
+                        <slice>
+                            <color>77933C</color>
+                            <indicatorId>104</indicatorId>
+                        </slice>
+                        <slice>
+                            <color>C3D69B</color>
+                            <indicatorId>101</indicatorId>
+                        </slice>
+                    </slices>
+<!--                    <colors>-->
+<!--                        <dimension type="indicator">-->
+<!--                            <category name="100" color="#FFFF00" label="Water-trucking"/>-->
+<!--                            <category name="103" color="#254061" label="Eau durable"/>-->
+<!--                            <category name="102" color="#4F81BD" label="Eau d'urgence"/>-->
+<!--                            <category name="104" color="#77933C" label="Assainissement durable"/>-->
+<!--                            <category name="101" color="#C3D69B" label="Assainissement d'urgence"/>-->
+<!--                        </dimension>-->
+<!--                    </colors>-->
+                </pie>
             </layers>
         </map>
     </elements>

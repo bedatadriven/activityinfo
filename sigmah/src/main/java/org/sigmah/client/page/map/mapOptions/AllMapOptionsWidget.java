@@ -36,7 +36,7 @@ public class AllMapOptionsWidget extends ContentPanel implements HasValue<MapRep
     private AdminFilterPanel adminPanel;
     private LayoutOptionsWidget layoutForm;
     private DateRangePanel datePanel;
-    private BaseMapPickerWidget baseMapPickerWidget;
+    private BaseMapDialog baseMapPickerWidget;
     
     private FieldSet fieldsetBaseMaps = new FieldSet();
     private FieldSet fieldsetLayoutOptions = new FieldSet();
@@ -73,14 +73,8 @@ public class AllMapOptionsWidget extends ContentPanel implements HasValue<MapRep
 	}
 
 	private void createBaseMapPicker() {
-    	baseMapPickerWidget = new BaseMapPickerWidget(service);
-    	baseMapPickerWidget.addValueChangeHandler(new ValueChangeHandler<BaseMap>() {
-			
-			@Override
-			public void onValueChange(ValueChangeEvent<BaseMap> event) {
-				fireEvent(new BaseMapChangedEvent(event.getValue()));
-			}
-		});
+    	baseMapPickerWidget = new BaseMapDialog(service);
+    	
         fieldsetBaseMaps.add(getMapOptionsWidget());
 	}
 
@@ -109,7 +103,7 @@ public class AllMapOptionsWidget extends ContentPanel implements HasValue<MapRep
 //		add(fieldsetFilterOptions);
 	}
 
-	public BaseMapPickerWidget getMapOptionsWidget() {
+	public BaseMapDialog getMapOptionsWidget() {
 		return baseMapPickerWidget;
 	}
 

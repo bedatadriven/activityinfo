@@ -14,9 +14,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 public class SearchLoader implements PageLoader {
-
-	
-	
     private AppInjector injector;
     
 	@Inject
@@ -32,7 +29,6 @@ public class SearchLoader implements PageLoader {
 			final AsyncCallback<Page> callback) {
 		
 		GWT.runAsync(new RunAsyncCallback() {
-			
 			@Override
 			public void onSuccess() {
 				if (pageState instanceof SearchPageState && SearchPresenter.Search.equals(pageId)) {
@@ -49,5 +45,4 @@ public class SearchLoader implements PageLoader {
 			}
 		});
 	}
-
 }

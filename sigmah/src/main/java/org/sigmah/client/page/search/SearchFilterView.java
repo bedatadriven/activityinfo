@@ -26,11 +26,10 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.user.client.ui.Image;
 
 
 public class SearchFilterView extends ContentPanel {
-
-
 	private Map<DimensionType, List<SearchResultEntity>> affectedEntities;
 	private static List<DimensionType> supportedDimensions = new ArrayList<DimensionType>();
 	private Map<DimensionType, EntityPanel> dimensionPanels = new HashMap<DimensionType, EntityPanel>();
@@ -50,11 +49,13 @@ public class SearchFilterView extends ContentPanel {
 		SearchResources.INSTANCE.searchStyles().ensureInjected();
 		setStylePrimaryName("filterView");
 		setHeading(I18N.CONSTANTS.showingSearchResultFor());
-		setHeight(300);
+		setHeight(350);
+		//setStyleAttribute("height", "auto"); 
+		//setHeight("auto");
 		
 		VBoxLayout layout = new VBoxLayout();
 		layout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
-		layout.setPadding(new Padding(2,2,2,2));
+		layout.setPadding(new Padding(4,4,4,4));
 		setLayout(layout);
 
 		for (DimensionType dimension : supportedDimensions) {
@@ -144,7 +145,10 @@ public class SearchFilterView extends ContentPanel {
 			listviewEntities.setTemplate(SearchResources.INSTANCE.entitiesTemplate().getText());
 
 			panelHeader = new HorizontalPanel();
-			panelHeader.add(IconImageBundle.fromEntities.fromDimension(dimension).createImage());
+			panelHeader.setStyleAttribute("margin", "4px");
+			Image icon = IconImageBundle.fromEntities.fromDimension(dimension).createImage();
+			icon.setStylePrimaryName(".entityIcon");
+			panelHeader.add(icon);
 			panelHeader.add(new LabelField(I18N.fromEntities.getDimensionTypePluralName(dimension)));
 			add(panelHeader);
 			
@@ -154,6 +158,8 @@ public class SearchFilterView extends ContentPanel {
 			
 			addListenerToListview();
 			listviewEntities.setItemSelector(".searchSmall");
+			listviewEntities.setSelectStyle(".searchSmallSelect");
+			listviewEntities.setStyleAttribute("margin", "4px 8px 4px 22px");
 		}
 
 		private void addListenerToListview() {

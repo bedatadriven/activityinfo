@@ -20,10 +20,10 @@ public class ActivitySearcher implements Searcher<Activity> {
 	public void search(List<String> searchTerms, SqlTransaction tx, final AsyncCallback<List<Integer>> callback) {
 		SqlQuery.select("ActivityId")
 				.from("Activity")
-				.onlyWhere("Name")
+				.whereLikes("Name")
 				.likeMany(searchTerms)
 				.or()
-				.onlyWhere("Category")
+				.whereLikes("Category")
 				.likeMany(searchTerms)
 				
 				.execute(tx, new SqlResultCallback() {

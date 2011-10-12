@@ -3,15 +3,19 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.server.report.generator.map.cluster.auto;
+package org.sigmah.server.report.generator.map.cluster.genetic;
 
 import java.util.List;
 
 import org.sigmah.server.report.generator.map.CircleMath;
 import org.sigmah.server.report.generator.map.cluster.Cluster;
 
-public class CircleFitnessFunctor implements FitnessFunctor {
-
+/**
+ * Scores the fitness of a circle clustering solution, awarding points
+ * for more bubbles, and penalizing solutions in which bubbles overlap.
+ *
+ */
+public class BubbleFitnessFunctor implements FitnessFunctor {
 
 	@Override
 	public double score(List<Cluster> clusters) {
@@ -22,15 +26,6 @@ public class CircleFitnessFunctor implements FitnessFunctor {
             // award a score for the presence of this cluster
             // (all things equal, the more markers the better)
             score += CircleMath.area(clusters.get(i).getRadius());
-  
-            // penalize clusters whose circle does not include
-            // all of its nodes
-//            for(MarkerGraph.Node node : clusters.get(i).getNodes()) {
-//                double d = centroids[i].distance(node.getPoint());
-//                if(d > radii[i]) {
-//                    score -= (CircleMath.area(d)-CircleMath.area(radii[i]));
-//                }
-//            }
 
             // penalize conflicts with other clusters
             for(int j=i+1; j!=clusters.size(); ++j) {
@@ -40,11 +35,8 @@ public class CircleFitnessFunctor implements FitnessFunctor {
                         clusters.get(j).getPoint(),
                         clusters.get(i).getRadius(),
                         clusters.get(j).getRadius());
-
             }
         }
-
         return score;
 	}
-
 }

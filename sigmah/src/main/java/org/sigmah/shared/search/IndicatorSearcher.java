@@ -27,7 +27,7 @@ public class IndicatorSearcher implements Searcher<Indicator> {
 		SqlQuery
 				.select(primaryKey)
 				.from(tableName)
-				.onlyWhere(ColumnToSearch)
+				.whereLikes(ColumnToSearch)
 				.likeMany(testQuery)
 				
 				.execute(tx, new SqlResultCallback() {

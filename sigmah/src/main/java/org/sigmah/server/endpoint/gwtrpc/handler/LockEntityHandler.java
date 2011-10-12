@@ -17,7 +17,6 @@ import org.sigmah.shared.exception.CommandException;
 import com.google.inject.Inject;
 
 public class LockEntityHandler implements CommandHandler<LockEntity> {
-
     private EntityManager em;
 
 	@Inject
@@ -28,6 +27,7 @@ public class LockEntityHandler implements CommandHandler<LockEntity> {
 	@Override
 	public CommandResult execute(LockEntity cmd, User user)
 			throws CommandException {
+		
 		Activity activity = null;
 		UserDatabase database = null;
 		Project project = null;
