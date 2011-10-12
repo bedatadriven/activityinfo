@@ -270,7 +270,9 @@ public class LayerOptionsPanel extends LayoutContainer implements HasValue<MapLa
 	}
 
 	public void onLayerSelectionChanged(MapLayer model) {
-		if(isVisible()) {
+		if (model == null) {
+			setVisible(false);
+		} else if(isVisible()) {
 			setValue(model);
 		}
 	}

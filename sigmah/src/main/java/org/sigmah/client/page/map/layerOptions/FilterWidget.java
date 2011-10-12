@@ -23,9 +23,7 @@ public abstract class FilterWidget extends Widget implements FilterPanel {
 	}
 
 	@UiField SpanElement dimensionSpan;
-	
 	@UiField SpanElement stateSpan;
-	
 	@UiField Element removeIcon;
 	
 	protected Filter value = new Filter();
@@ -53,8 +51,6 @@ public abstract class FilterWidget extends Widget implements FilterPanel {
 	public final Filter getValue() {
 		return value;
 	}
-	
-	
 
 	@Override
 	public final void setValue(Filter value) {
@@ -78,8 +74,7 @@ public abstract class FilterWidget extends Widget implements FilterPanel {
 	}
 	
 	@Override
-	public final HandlerRegistration addValueChangeHandler(
-			ValueChangeHandler<Filter> handler) {
+	public final HandlerRegistration addValueChangeHandler(ValueChangeHandler<Filter> handler) {
 		return addHandler(handler, ValueChangeEvent.getType());
 	}
 

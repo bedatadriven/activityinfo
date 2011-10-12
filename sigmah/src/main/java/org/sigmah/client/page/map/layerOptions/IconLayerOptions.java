@@ -105,8 +105,7 @@ public class IconLayerOptions extends LayoutContainer implements LayerOptionsWid
 		setValue(value);
 	}
 	@Override
-	public HandlerRegistration addValueChangeHandler(
-			ValueChangeHandler<IconMapLayer> handler) {
+	public HandlerRegistration addValueChangeHandler(ValueChangeHandler<IconMapLayer> handler) {
 		return this.addHandler(handler, ValueChangeEvent.getType());
 	}
 	
