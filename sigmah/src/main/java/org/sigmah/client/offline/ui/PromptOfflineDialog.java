@@ -9,7 +9,6 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.inject.Inject;
 
 
@@ -19,7 +18,6 @@ import com.google.inject.Inject;
  * 
  */
 public class PromptOfflineDialog extends BasePromptDialog {
-
 
 	private static final String DONT_ASK_STATE_KEY = "offlineSilent";
 
@@ -55,7 +53,6 @@ public class PromptOfflineDialog extends BasePromptDialog {
 			}));
 		}
 		addButton(new Button(I18N.CONSTANTS.notNow(), new SelectionListener<ButtonEvent>() {
-
 			@Override
 			public void componentSelected(ButtonEvent ce) { 
 				askMeLater();
@@ -63,7 +60,6 @@ public class PromptOfflineDialog extends BasePromptDialog {
 			
 		}));
 		addButton(new Button(I18N.CONSTANTS.dontAskAgain(), new SelectionListener<ButtonEvent>() {
-			
 			@Override
 			public void componentSelected(ButtonEvent ce) {
 				dontAskAgain();
