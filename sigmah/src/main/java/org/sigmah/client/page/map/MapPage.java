@@ -85,6 +85,7 @@ public class MapPage extends LayoutContainer implements Page, ExportCallback, Ac
 			
 			@Override
 			public void onValueChange(ValueChangeEvent<MapLayer> event) {
+				int l = mapReportElement.getLayers().indexOf(event.getValue());
 				aiMapWidget.setValue(mapReportElement);
 				layersWidget.setValue(mapReportElement);
 			}

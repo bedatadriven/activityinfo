@@ -81,8 +81,6 @@ public class IconLayerGenerator
                 icon.getWidth() - icon.getAnchorX());
     }
 
-
-
     public void generate(TiledMap map, MapContent content) {
         List<PointValue> points = new ArrayList<PointValue>();
         IconRectCalculator rectCalculator = new IconRectCalculator(icon);
@@ -131,7 +129,7 @@ public class IconLayerGenerator
         }
 	}
 
-	private String formatTitle(Cluster cluster) {
+	protected String formatTitle(Cluster cluster) {
 		if (cluster.getPointValues() != null) {
 			return Double.toString(cluster.sumValues());
 		}

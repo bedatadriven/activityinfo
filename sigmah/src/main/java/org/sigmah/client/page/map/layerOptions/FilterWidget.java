@@ -24,7 +24,7 @@ public abstract class FilterWidget extends Widget implements FilterPanel {
 
 	@UiField SpanElement dimensionSpan;
 	@UiField SpanElement stateSpan;
-	@UiField Element removeIcon;
+//	@UiField Element removeIcon;
 	
 	protected Filter value = new Filter();
 	protected Filter baseFilter = new Filter();

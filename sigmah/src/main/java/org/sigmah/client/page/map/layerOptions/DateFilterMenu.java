@@ -1,6 +1,7 @@
 package org.sigmah.client.page.map.layerOptions;
 
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.shared.report.model.DateRange;
 
 import com.extjs.gxt.ui.client.event.MenuEvent;
@@ -30,9 +31,22 @@ public class DateFilterMenu extends Menu {
 				showDateRangeDialog();
 			}
 		}));
+		add(new SeparatorMenuItem());
 		
+		addRemoveDateFilter();
 	}
 	
+	private void addRemoveDateFilter() {
+		add(new MenuItem(I18N.CONSTANTS.remove(), IconImageBundle.ICONS.delete(), new SelectionListener<MenuEvent>() {
+			@Override
+			public void componentSelected(MenuEvent ce) {
+				if(callback!=null) {
+					callback.onSelected(null);
+				}
+			}
+		}));
+	}
+
 	public void showAt(int x, int y, SelectionCallback<DateRange> callback) {
 		this.callback = callback;
 		showAt(x,y);
