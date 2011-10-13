@@ -18,7 +18,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.dao.OnDataSet;
-import org.sigmah.server.dao.PivotDAO;
 import org.sigmah.server.database.TestDatabaseModule;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.report.content.DimensionCategory;
@@ -122,7 +121,6 @@ public class PivotDAOAsyncTest {
 
     @Test
     public void testAttributePivot() {
-
         withIndicatorAsDimension();
         withPartnerAsDimension();
         withAttributeGroupDim(1);
@@ -140,13 +138,11 @@ public class PivotDAOAsyncTest {
 
         assertThat().forAttributeGroupLabeled(1, "Catastrophe Naturelle")
                         .thereIsOneBucketWithValue(10000);
-
     }
 
     
     @Test
     public void testAdminPivot() {
-
         withIndicatorAsDimension();
         withAdminDimension(provinceDim);
         withAdminDimension(territoireDim);
