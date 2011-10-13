@@ -66,7 +66,7 @@ public class SearchTest extends CommandTestCase {
 		
 		assertHasRestrictionWithIds(DimensionType.AdminLevel, result, 2, 3);
 		assertHasRestrictionWithIds(DimensionType.Partner, result, 3);
-		assertHasRestrictionWithIds(DimensionType.Project, result, 3);
+		assertHasRestrictionWithIds(DimensionType.Project, result, 4);
 		assertHasRestrictionWithIds(DimensionType.AttributeGroup, result, 3);
 		assertHasRestrictionWithIds(DimensionType.Indicator, result, 675);
 		assertHasRestrictionWithIds(DimensionType.Location, result, 1);

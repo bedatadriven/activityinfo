@@ -185,9 +185,9 @@
 		fromDate="2009-01-01" name="whoa" ActivityId="1" />
 	<lockedPeriod LockedPeriodId="4" enabled="true" toDate="2009-01-24"
 		fromDate="2009-01-01" name="yey" UserDatabaseId="2" />
-	<project ProjectId="1" databaseId="1" name="RRMP" />
-	<project ProjectId="2" databaseId="1" name="USAID" />
-	<project ProjectId="3" databaseId="1" name="Kivu water" />
+	<project projectId="2" databaseId="1" name="RRMP" />
+	<project projectId="3" databaseId="1" name="USAID" />
+	<project projectId="4" databaseId="1" name="Kivu water" />
 	<lockedPeriod LockedPeriodId="2" enabled="true" toDate="2009-01-12"
 		fromDate="2009-01-01" name="lala" ProjectId="1" />
 
