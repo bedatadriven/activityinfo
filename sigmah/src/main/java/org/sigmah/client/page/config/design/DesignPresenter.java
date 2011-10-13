@@ -106,13 +106,15 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
             treeStore.add(activityNode, attributeFolder, false);
 
             for (AttributeGroupDTO group : activity.getAttributeGroups()) {
-                AttributeGroupDTO groupNode = new AttributeGroupDTO(group);
-                treeStore.add(attributeFolder, groupNode, false);
-
-                for (AttributeDTO attribute : group.getAttributes()) {
-                    AttributeDTO attributeNode = new AttributeDTO(attribute);
-                    treeStore.add(groupNode, attributeNode, false);
-                }
+            	if (group != null) {
+	                AttributeGroupDTO groupNode = new AttributeGroupDTO(group);
+	                treeStore.add(attributeFolder, groupNode, false);
+	
+	                for (AttributeDTO attribute : group.getAttributes()) {
+	                    AttributeDTO attributeNode = new AttributeDTO(attribute);
+	                    treeStore.add(groupNode, attributeNode, false);
+	                }
+            	}
             }
 
             IndicatorFolder indicatorFolder = new IndicatorFolder(activityNode, messages.indicators());

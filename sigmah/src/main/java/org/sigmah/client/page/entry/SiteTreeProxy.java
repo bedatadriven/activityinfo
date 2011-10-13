@@ -2,11 +2,15 @@ package org.sigmah.client.page.entry;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.page.entry.SiteTreeGridPageState.TreeType;
 import org.sigmah.shared.command.GetAdminEntities;
 import org.sigmah.shared.command.GetSites;
+import org.sigmah.shared.command.SitesPerTime;
+import org.sigmah.shared.command.SitesPerTime.SitesPerTimeResult;
 import org.sigmah.shared.command.result.AdminEntityResult;
 import org.sigmah.shared.command.result.SiteResult;
 import org.sigmah.shared.dao.Filter;
@@ -27,7 +31,8 @@ public class SiteTreeProxy implements DataProxy<List<ModelData>> {
 		private Dispatcher service;
 		private SiteTreeGridPageState place;
 		private Filter filter;
-		
+		private SitesPerTimeResult result;
+
 		public SiteTreeProxy(Dispatcher service) {
 			super();
 			this.service = service;
@@ -44,10 +49,24 @@ public class SiteTreeProxy implements DataProxy<List<ModelData>> {
 			}
 		}
 		
+		private void setResult(SitesPerTimeResult result) {
+			this.result=result;
+		}
+		
 		private void getDataForTime(Object parent, final AsyncCallback<List<ModelData>> callback) {
 			if (parent == null) {
 				List<ModelData> yearsAndProvinces = Lists.newArrayList();
-				callback.onSuccess(createYears());
+				service.execute(new SitesPerTime(place.getActivityId()), null, new AsyncCallback<SitesPerTimeResult>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						callback.onFailure(caught);
+					}
+					@Override
+					public void onSuccess(SitesPerTimeResult result) {
+						setResult(result);
+						callback.onSuccess(createYears(result.getYears()));
+					}
+				});
 			}
 			
 			if (parent instanceof YearViewModel) {
@@ -112,21 +131,22 @@ public class SiteTreeProxy implements DataProxy<List<ModelData>> {
 
 		private List<ModelData> createMonths(int year) {
 			List<ModelData> months = Lists.newArrayList();
-			for (int i=0; i<12; i++) {
+			Map<Integer, Integer> monthResult = result.getYears().get(year);
+			for (Entry<Integer, Integer> month : monthResult.entrySet()) {
 				months.add(new MonthViewModel()
-					.setName(DateTimeFormat.getFormat("MMMM yyyy").format(new Date(year -1900, i, 1)))
+					.setName(DateTimeFormat.getFormat("MMMM yyyy").format(new Date(year -1900, month.getKey(), 1)) + " " + "(" + month.getValue().toString() + ")")
 					.setYear(year)
-					.setMonth(i));
+					.setMonth(month.getKey()));
 			}
 			return months;
 		}
 
-		private List<ModelData> createYears() {
+		private List<ModelData> createYears(Map<Integer, Map<Integer, Integer>> yearResults) {
 			List<ModelData> years= Lists.newArrayList();
-			years.add(new YearViewModel().setName("2008").setYear(2008));
-			years.add(new YearViewModel().setName("2009").setYear(2009));
-			years.add(new YearViewModel().setName("2010").setYear(2010));
-			years.add(new YearViewModel().setName("2011").setYear(2011));
+			
+			for (Entry<Integer, Map<Integer, Integer>> year : yearResults.entrySet()) {
+				years.add(new YearViewModel().setName(Integer.toString(year.getKey())).setYear(year.getKey()));
+			}
 			return years;
 		}
 		
