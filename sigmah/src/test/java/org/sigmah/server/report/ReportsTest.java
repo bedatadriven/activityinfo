@@ -18,7 +18,6 @@ import javax.xml.bind.JAXBException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.sigmah.server.dao.hibernate.HibernateModule;
 import org.sigmah.server.report.generator.ReportGenerator;
 import org.sigmah.server.report.renderer.Renderer;
 import org.sigmah.server.report.renderer.RendererFactory;
@@ -33,6 +32,7 @@ import org.sigmah.shared.report.model.labeling.ArabicNumberSequence;
 import org.sigmah.shared.report.model.layers.BubbleMapLayer;
 import org.sigmah.shared.report.model.layers.ScalingType;
 import org.sigmah.test.InjectionSupport;
+import org.sigmah.test.MockHibernateModule;
 import org.sigmah.test.Modules;
 import org.sigmah.test.ServletStubModule;
 
@@ -40,7 +40,7 @@ import com.google.inject.Inject;
 
 //@Ignore("Needs to be rewritten -- figure out what to do with dependency on the map icons folder")
 @RunWith(InjectionSupport.class)
-@Modules({ReportModule.class, ServletStubModule.class, HibernateModule.class}) //, , 
+@Modules({ReportStubModule.class, ServletStubModule.class, MockHibernateModule.class}) //, , 
 public class ReportsTest {
 
     @Inject
@@ -67,7 +67,7 @@ public class ReportsTest {
         
         reportGenerator.generate(user, report, null, null);
         for (RenderElement.Format format : RenderElement.Format.values()) {
-            if (format != RenderElement.Format.Excel) {
+            if (format != RenderElement.Format.Excel && format != RenderElement.Format.Excel_Data) {
                 Renderer renderer = factory.get(format);
                 FileOutputStream fos = new FileOutputStream("target/report-tests/full-test" + renderer.getFileSuffix());
                 renderer.render(report, fos);

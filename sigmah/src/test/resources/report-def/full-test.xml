@@ -30,16 +30,6 @@
                 <dimension type="partner"/>
             </columns>
         </pivotTable>
-<!--        <static>-->
-<!--       	 	<text>This is static text and image.</text>-->
-<!--       	 	<img>http://www.google.nl/logos/2010/oz10-hp.gif</img>-->
-<!--       	 </static>-->
-<!--       	 <static>-->
-<!--       	 	<text>This is text only</text>-->
-<!--       	 </static>-->
-<!--       	<static>-->
-<!--       	 	<img>http://www.google.nl/logos/2010/oz10-hp.gif</img>-->
-<!--       	 </static>-->
         <table>
             <title>Evaluations ménées</title>
             <filter>
@@ -148,10 +138,10 @@
             <type>StackedBar</type>
             <filter>
                 <restriction dimension="indicator">
-                    <category>29</category> <!-- Deplaces -->
-                    <category>31</category> <!-- Retournees -->
-                    <category>33</category> <!-- Fam d'acc -->
-                    <category>34</category> <!-- catostroph -->
+                    <category>29</category>  <!-- Deplaces --> 
+                    <category>31</category>  <!-- Retournees  -->
+                    <category>33</category>  <!-- Fam d'acc  -->
+                    <category>34</category>  <!-- catostroph  -->
                 </restriction>
             </filter>
             <categories>
@@ -172,7 +162,7 @@
             <type>Line</type>
             <filter>
                 <restriction dimension="indicator">
-                    <category>28</category> <!-- Total kits -->
+                    <category>28</category>  Total kits 
                 </restriction>
             </filter>
             <categories>
@@ -205,11 +195,11 @@
             <type>Pie</type>
             <filter>
                 <restriction dimension="indicator">
-                    <category>100</category>   <!-- Water Trucking -->
-                    <category>101</category>   <!-- Nombre de personnes beneficiares d'assanissment d'urgence -->
-                    <category>102</category>   <!-- Nombre de personnes bénéficiaries de l'eau d'urgence -->
-                    <category>103</category>   <!--Nombre de personnes bénéficiaries de l'eau durable -->
-                    <category>104</category>  <!-- Nombre de personnes bénéficiaries d'assainissement durable -->
+                    <category>100</category>    Water Trucking 
+                    <category>101</category>    Nombre de personnes beneficiares d'assanissment d'urgence 
+                    <category>102</category>    Nombre de personnes bénéficiaries de l'eau d'urgence 
+                    <category>103</category>   Nombre de personnes bénéficiaries de l'eau durable 
+                    <category>104</category>   Nombre de personnes bénéficiaries d'assainissement durable 
                 </restriction>
             </filter>
             <categories>

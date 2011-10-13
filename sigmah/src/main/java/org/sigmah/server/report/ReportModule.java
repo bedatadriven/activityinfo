@@ -27,7 +27,7 @@ public class ReportModule extends AbstractModule {
 
 	public ReportModule(Provider<HttpServletRequest> servletProvider) {
 		super();
-		this.servletProvider =servletProvider;
+		this.servletProvider = servletProvider;
 	}
 
 	@Override
