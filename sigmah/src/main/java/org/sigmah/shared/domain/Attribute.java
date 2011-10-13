@@ -91,6 +91,7 @@ public class Attribute implements Serializable, Deleteable, Orderable, SchemaEle
 	
 	public void delete() {
 		setDateDeleted(new Date());
+		getGroup().getActivities().iterator().next().getDatabase().setLastSchemaUpdate(new Date());
 	}
 
 	@Override

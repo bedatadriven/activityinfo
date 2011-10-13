@@ -48,6 +48,7 @@ public class DeleteHandler implements CommandHandler<Delete> {
             if(entity instanceof Site) {
             	((Site)entity).setDateEdited(new Date());
             }
+            //db.setLastSchemaUpdate(new Date());  UGH this sucks
         }
         
         if (entity instanceof ReallyDeleteable) {

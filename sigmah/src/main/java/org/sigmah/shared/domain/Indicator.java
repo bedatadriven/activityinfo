@@ -6,8 +6,20 @@
 package org.sigmah.shared.domain;
 
 
-import javax.persistence.*;
 import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 /**
  * Defines an Indicator, a numeric value that can change over time.
@@ -271,6 +283,7 @@ public class Indicator implements java.io.Serializable, Orderable, Deleteable, S
      */
 	public void delete() {
 		setDateDeleted(new Date());
+		getActivity().getDatabase().setLastSchemaUpdate(new Date());
 	}
 
     /**

@@ -5,6 +5,7 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -72,7 +73,8 @@ public class AddPartnerHandler implements CommandHandler<AddPartner> {
         newPartner.setName(cmd.getPartner().getName());
         newPartner.setFullName(cmd.getPartner().getFullName());
         em.persist(newPartner);
-
+        db.setLastSchemaUpdate(new Date());
+        em.persist(db);
         db.getPartners().add(newPartner);
 
         return new CreateResult(newPartner.getId());
