@@ -4,7 +4,7 @@
     <groupId>org.activityinfo</groupId>
     <artifactId>activityinfo</artifactId>
     <packaging>war</packaging>
-    <version>2.2.2-SNAPSHOT</version>
+    <version>2.2.3-SNAPSHOT</version>
     <name>ActivityInfo</name>
     <description>Web-based database platform for program monitoring and reporting for the UN,
         NGOs, and others working in humanitarian, development, and post-conflict contexts.</description>
@@ -701,7 +701,7 @@
                         <optionSetting>
                             <namespace>aws:elasticbeanstalk:application:environment</namespace>
                             <optionName>PARAM2</optionName>
-                            <value>activityinfo.22test.properties</value>
+                            <value>activityinfo22.production.properties</value>
                         </optionSetting>
                         <optionSetting>
                             <namespace>aws:elasticbeanstalk:application:environment</namespace>
