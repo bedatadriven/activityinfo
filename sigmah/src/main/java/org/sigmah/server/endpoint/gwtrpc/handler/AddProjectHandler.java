@@ -1,5 +1,7 @@
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
+import java.util.Date;
+
 import javax.persistence.EntityManager;
 
 import org.sigmah.shared.command.AddProject;
@@ -39,7 +41,10 @@ public class AddProjectHandler implements CommandHandler<AddProject> {
         project.setDescription(from.getDescription());
         project.setUserDatabase(db);
 
+        db.setLastSchemaUpdate(new Date());
+        
         em.persist(project);
+        em.persist(db);
         db.getProjects().add(project);
 
         return new CreateResult(project.getId());

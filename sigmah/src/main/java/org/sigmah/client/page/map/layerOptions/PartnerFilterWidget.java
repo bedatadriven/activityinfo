@@ -37,7 +37,9 @@ public class PartnerFilterWidget extends FilterWidget {
 			@Override
 			public void onSelected(Set<Integer> selection) {
 				Filter newValue = new Filter();
-				newValue.addRestriction(DimensionType.Partner, selection);
+				if (selection != null && !selection.isEmpty()) {
+					newValue.addRestriction(DimensionType.Partner, selection); 
+				}
 				setValue(newValue);
 			}
 		});

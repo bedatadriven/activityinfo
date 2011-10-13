@@ -116,7 +116,6 @@ public class LayersWidget extends LayoutContainer implements HasValue<MapReportE
 		setLayout(anchorLayout);
 		
 		setWidth(WIDTH);
-
 	}					
 	
 	private void createLayersPanel() {
@@ -234,11 +233,11 @@ public class LayersWidget extends LayoutContainer implements HasValue<MapReportE
 		layerMenu.add(new MenuItem(I18N.CONSTANTS.filter(),
 				IconImageBundle.ICONS.filter(),
 				new SelectionListener<MenuEvent>() {
-		@Override
-		public void componentSelected(MenuEvent ce) {
-			optionsPanel.showFilter(getSelectedLayer());
-		}
-	}));
+			@Override
+			public void componentSelected(MenuEvent ce) {
+				optionsPanel.showFilter(getSelectedLayer());
+			}
+		}));
 	
 		
 		layerMenu.add(new SeparatorMenuItem());

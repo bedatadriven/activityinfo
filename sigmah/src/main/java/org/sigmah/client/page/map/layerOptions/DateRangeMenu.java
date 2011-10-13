@@ -5,8 +5,8 @@ import com.extjs.gxt.ui.client.widget.menu.Menu;
 
 public class DateRangeMenu extends Menu {
 
-	DatePicker date1;
-	DatePicker date2;
+	private DatePicker date1;
+	private DatePicker date2;
 	
 	public DateRangeMenu() {
 	    date1 = new DatePicker();
@@ -19,7 +19,4 @@ public class DateRangeMenu extends Menu {
 	    showSeparator = false;
 	    setEnableScrolling(false);
 	}
-
-	
-
 }

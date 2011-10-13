@@ -22,28 +22,14 @@ import org.sigmah.client.page.common.toolbar.ExportCallback;
 import org.sigmah.client.page.common.toolbar.ExportMenuButton;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.page.map.layerOptions.LayerOptionsPanel;
-import org.sigmah.client.page.map.mapOptions.AllMapOptionsWidget;
-import org.sigmah.client.page.map.mapOptions.BaseMapChangedEvent;
-import org.sigmah.client.page.map.mapOptions.BasemapChangedEventHandler;
 import org.sigmah.shared.command.RenderElement;
 import org.sigmah.shared.command.RenderElement.Format;
-import org.sigmah.shared.map.BaseMap;
 import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.layers.MapLayer;
 
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.util.Margins;
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.AbsoluteData;
 import com.extjs.gxt.ui.client.widget.layout.AbsoluteLayout;
-import com.extjs.gxt.ui.client.widget.layout.AnchorData;
-import com.extjs.gxt.ui.client.widget.layout.AnchorLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.google.gwt.dom.client.MapElement;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Element;
@@ -99,6 +85,7 @@ public class MapPage extends LayoutContainer implements Page, ExportCallback, Ac
 			
 			@Override
 			public void onValueChange(ValueChangeEvent<MapLayer> event) {
+				int l = mapReportElement.getLayers().indexOf(event.getValue());
 				aiMapWidget.setValue(mapReportElement);
 				layersWidget.setValue(mapReportElement);
 			}
@@ -119,6 +106,7 @@ public class MapPage extends LayoutContainer implements Page, ExportCallback, Ac
 				boolean canExport = !event.getValue().getLayers().isEmpty();
 				toolbarMapActions.setActionEnabled(UIActions.exportData,canExport); 
 				exportMenu.setEnabled(canExport);
+				optionsPanel.setVisible(!event.getValue().getLayers().isEmpty());
 			}
 		});
 

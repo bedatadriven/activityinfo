@@ -1,5 +1,7 @@
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
+import java.util.Date;
+
 import javax.persistence.EntityManager;
 
 import org.sigmah.shared.command.RemoveProject;
@@ -54,6 +56,8 @@ public class RemoveProjectHandler implements CommandHandler<RemoveProject> {
 
         db.getPartners().remove(em.getReference(Project.class, cmd.getProjectId()));
 
+        db.setLastSchemaUpdate(new Date());
+        em.persist(db);
 
         return new VoidResult();
 	}

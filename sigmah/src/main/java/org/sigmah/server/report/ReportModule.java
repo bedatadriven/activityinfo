@@ -23,12 +23,11 @@ public class ReportModule extends AbstractModule {
 
 	public ReportModule() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public ReportModule(Provider<HttpServletRequest> servletProvider) {
 		super();
-		this.servletProvider =servletProvider;
+		this.servletProvider = servletProvider;
 	}
 
 	@Override
@@ -49,4 +48,5 @@ public class ReportModule extends AbstractModule {
                 tempPath.getAbsolutePath(), requestProvider);
         return isp;
     }
+
 }

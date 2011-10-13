@@ -5,6 +5,7 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.filter.FilterPanelSet;
 import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.report.model.DimensionType;
 
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -49,7 +50,12 @@ public class LayerFilterPanel extends ContentPanel implements HasValue<Filter> {
 	}
 
 	private void createNewFilterAndFireEvent() {
-		Filter filter = new Filter(dateWidget.getValue(), partnerFilterWidget.getValue());
+		Filter filter = new Filter();
+		Filter partnerFilter = partnerFilterWidget.getValue();
+		if (partnerFilter.hasRestrictions()) {
+			filter.addRestriction(DimensionType.Partner, partnerFilter.getRestrictions(DimensionType.Partner));
+		}
+		filter.setDateRange(dateWidget.getValue().getDateRange());
 		setValue(filter);
 	}
 

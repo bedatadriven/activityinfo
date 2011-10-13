@@ -1,5 +1,7 @@
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
+import java.util.Date;
+
 import javax.persistence.EntityManager;
 
 import org.sigmah.shared.command.LockEntity;
@@ -31,6 +33,7 @@ public class LockEntityHandler implements CommandHandler<LockEntity> {
 		Activity activity = null;
 		UserDatabase database = null;
 		Project project = null;
+		int databaseId = 0;
 		
 		LockedPeriod  lockedPeriod = new LockedPeriod();
 		LockedPeriodDTO lockedPeriodDTO = cmd.getLockedPeriod();
@@ -42,17 +45,25 @@ public class LockEntityHandler implements CommandHandler<LockEntity> {
 		if (cmd.getUserDatabseId() != 0) {
 	        database = em.find(UserDatabase.class, cmd.getUserDatabseId());
 	        lockedPeriod.setUserDatabase(database);
+	        databaseId = database.getId();
 		}
 		if (cmd.getProjectId() != 0) {
 			project = em.find(Project.class, cmd.getProjectId());
 			lockedPeriod.setProject(project);
+			databaseId = project.getUserDatabase().getId();
 		}
 		if (cmd.getActivityId() != 0) {
 			activity = em.find(Activity.class, cmd.getActivityId());
 			lockedPeriod.setActivity(activity);
+			databaseId = activity.getDatabase().getId();
 		}
 		
+        UserDatabase db = em.find(UserDatabase.class, databaseId);
+
 		em.persist(lockedPeriod);
+		
+        db.setLastSchemaUpdate(new Date());
+        em.persist(db);
 		
 		if (database != null) {
 			database.getLockedPeriods().add(lockedPeriod);

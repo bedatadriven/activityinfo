@@ -140,10 +140,7 @@ public class PivotQuery {
 
 
     protected void buildAndExecuteRestOfQuery() {
-
-
         /* Now add any other dimensions  */
-
         for (Dimension dimension : dimensions) {
 
             if (dimension.getType() == DimensionType.Activity) {
@@ -186,7 +183,7 @@ public class PivotQuery {
 
                 } else if (dateDim.getUnit() == DateUnit.QUARTER) {
                 	String yearAlias = appendDimColumn(dialect.yearFunction("Period.Date2"));
-                	String quarterAlias = appendDimColumn(dialect.monthFunction("Period.Date2"));
+                	String quarterAlias = appendDimColumn(dialect.quarterFunction("Period.Date2"));
 
                 	bundlers.add(new QuarterBundler(dimension, yearAlias, quarterAlias));
                     nextColumnIndex += 2;

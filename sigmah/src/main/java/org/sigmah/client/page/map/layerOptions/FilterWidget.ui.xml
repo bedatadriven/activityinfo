@@ -34,7 +34,7 @@
 	</ui:style>
 	<div class="{style.container}">
 		<div><span ui:field="dimensionSpan" class="{style.dimension}"/>: <span ui:field="stateSpan" class="{style.state}"/></div>
-		<div ui:field="removeIcon" class="{style.remove}"></div>
+		<!-- <div ui:field="removeIcon" class="{style.remove}"></div> -->
 	</div>
 
 </ui:UiBinder>

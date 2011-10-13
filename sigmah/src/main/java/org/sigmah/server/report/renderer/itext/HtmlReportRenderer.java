@@ -108,15 +108,18 @@ public class HtmlReportRenderer extends ItextReportRenderer {
 		}
 	}
 	
-	private static class MyImage extends Image {
+	public static class MyImage extends Image {
 		private int width;
 		private int height;
+		
 		public MyImage(URL url, int width, int height) {
 			super(url);
 			this.width=width;
 			this.height=height;
 		}
-
+		public MyImage(com.lowagie.text.Image im) {
+			super(im);
+		}
 		@Override
 		public int type() {
 			return Element.IMGTEMPLATE;
