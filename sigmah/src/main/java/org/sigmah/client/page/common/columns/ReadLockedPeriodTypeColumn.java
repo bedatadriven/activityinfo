@@ -2,7 +2,10 @@ package org.sigmah.client.page.common.columns;
 
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.LockedPeriodDTO;
+import org.sigmah.shared.dto.ProjectDTO;
+import org.sigmah.shared.dto.UserDatabaseDTO;
 
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -25,15 +28,15 @@ public class ReadLockedPeriodTypeColumn extends ColumnConfig {
 					ColumnData config, int rowIndex, int colIndex,
 					ListStore<LockedPeriodDTO> store, Grid<LockedPeriodDTO> grid) {
 				
-				if (model.getActivity() != null) {
+				if (model.getParent() instanceof ActivityDTO) {
 					return IconImageBundle.ICONS.activity().getHTML();
 				}
 				
-				if (model.getUserDatabase() != null) {
+				if (model.getParent() instanceof UserDatabaseDTO) {
 					return IconImageBundle.ICONS.database().getHTML();
 				}
 				
-				if (model.getProject() != null) {
+				if (model.getParent() instanceof ProjectDTO) {
 					return IconImageBundle.ICONS.project().getHTML();
 				}
 				

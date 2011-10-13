@@ -3,7 +3,7 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.server.report.generator.map.cluster.auto;
+package org.sigmah.server.report.generator.map.cluster.genetic;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,7 +20,6 @@ import org.sigmah.shared.report.content.Point;
  * @author Alex Bertram
  */
 public class KMeans {
-
 
     public static List<Cluster> cluster(List<MarkerGraph.Node> nodes, int numClusters) {
 

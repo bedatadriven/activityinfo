@@ -8,35 +8,45 @@ package org.sigmah.server.report;
 import java.io.File;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 
 import org.sigmah.server.report.generator.MapIconPath;
 import org.sigmah.server.report.renderer.html.ImageStorageProvider;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Provider;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
 public class ReportModule extends AbstractModule {
+    private Provider<HttpServletRequest> servletProvider;
 
-    @Override
+	public ReportModule() {
+		super();
+	}
+
+	public ReportModule(Provider<HttpServletRequest> servletProvider) {
+		super();
+		this.servletProvider = servletProvider;
+	}
+
+	@Override
     protected void configure() {
-
         bind(String.class)
 	        .annotatedWith(MapIconPath.class)
 	        .toProvider(MapIconPathProvider.class)
 	        .in(Singleton.class);
-     
-
     }
     
     @Provides
-    public ImageStorageProvider provideImageStorageProvider(ServletContext context) {
-        File tempPath = new File(context.getRealPath("/temp/"));
+    public ImageStorageProvider provideImageStorageProvider(ServletContext context, Provider<HttpServletRequest> requestProvider) {
+    	File tempPath = new File(context.getRealPath("/temp/"));
         if(!tempPath.exists()) {
             tempPath.mkdir();
         }
         ServletImageStorageProvider isp = new ServletImageStorageProvider("temp/",
-                tempPath.getAbsolutePath());
+                tempPath.getAbsolutePath(), requestProvider);
         return isp;
     }
+
 }

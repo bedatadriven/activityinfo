@@ -5,6 +5,7 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
+import java.util.Date;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
@@ -16,6 +17,7 @@ import org.sigmah.server.policy.PropertyMap;
 import org.sigmah.shared.command.UpdateEntity;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
+import org.sigmah.shared.domain.Activity;
 import org.sigmah.shared.domain.Attribute;
 import org.sigmah.shared.domain.AttributeGroup;
 import org.sigmah.shared.domain.Indicator;
@@ -101,11 +103,17 @@ public class UpdateEntityHandler extends BaseEntityHandler implements CommandHan
         // assertDesignPriviledges(user, attribute.get);
 
         updateAttributeProperties(changes, attribute);
+        AttributeGroup ag = em.find(AttributeGroup.class, attribute.getGroup().getId());
+        Activity activity = ag.getActivities().iterator().next(); // Assume only one activity for the attr group
+        activity.getDatabase().setLastSchemaUpdate(new Date());
     }
 
     private void updateAttributeGroup(UpdateEntity cmd, Map<String, Object> changes) {
         AttributeGroup group = em.find(AttributeGroup.class, cmd.getId());
 
         updateAttributeGroupProperties(group, changes);
+        
+        Activity activity = group.getActivities().iterator().next(); // Assume only one activity for the attr group
+        activity.getDatabase().setLastSchemaUpdate(new Date());
     }
 }

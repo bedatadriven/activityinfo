@@ -33,6 +33,20 @@ import com.google.inject.Inject;
  * 4. Return result
  */
 public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> {
+	
+	public class SearchParserException extends Throwable {
+		private String failReason;
+
+		public SearchParserException(String failReason) {
+			super();
+			this.failReason = failReason;
+		}
+
+		public String getFailReason() {
+			return failReason;
+		}
+	}
+
 	private GenerateElementHandler genElHandler;
 
 	@Inject 
@@ -44,6 +58,7 @@ public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> 
 	public void execute(final Search command, final ExecutionContext context, final AsyncCallback<SearchResult> callback) {
 		QueryParser parser = new QueryParser();
 		parser.parse(command.getSearchQuery());
+		checkParserResult(parser, callback);
 		if (parser.hasDimensions()) { // assume more refined search using "location:kivu"-like queries 
 			searchDimensions(parser, command, context, callback);
 		} else { // assume first time search
@@ -51,12 +66,17 @@ public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> 
 		}
 	}
 
-	/*
-	 * Assumes the user typed a generic search term without specifying a dimension. Search
-	 * using all possible searchers, and return a list of matched dimensions
-	 */
+	private void checkParserResult(QueryParser parser, AsyncCallback<SearchResult> callback) {
+		if (parser.hasFailed()) {
+			callback.onFailure(new SearchParserException(parser.getFailReason()));
+		}
+	}
+
+	/** Assumes the user typed a generic search term without specifying a dimension. Search
+	 * using all possible searchers, and return a list of matched dimensions */
 	private void searchAll(final List<String> q, final ExecutionContext context,
 			final AsyncCallback<SearchResult> callback) {
+		
 		AllSearcher allSearcher = new AllSearcher(context.getTransaction());
 		allSearcher.searchAll(q, new AsyncCallback<Filter>() {
 			@Override
@@ -98,8 +118,10 @@ public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> 
 	private void processFilter(final ExecutionContext context,
 			final AsyncCallback<SearchResult> callback,
 			final Filter resultFilter) {
+		
 		final PivotTableReportElement pivotTable = createSearchPivotTableElement();
 		final SearchResult searchResult = new SearchResult();
+		
 		if (resultFilter.getRestrictedDimensions().size() > 0) {
 			pivotTable.setFilter(resultFilter);
 			GenerateElement<PivotContent> zmd = new GenerateElement<PivotContent>(pivotTable);

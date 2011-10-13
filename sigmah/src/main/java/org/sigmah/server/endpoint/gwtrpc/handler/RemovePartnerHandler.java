@@ -5,6 +5,8 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
+import java.util.Date;
+
 import javax.persistence.EntityManager;
 
 import org.sigmah.shared.command.RemovePartner;
@@ -61,7 +63,8 @@ public class RemovePartnerHandler implements CommandHandler<RemovePartner> {
         }
 
         db.getPartners().remove(em.getReference(OrgUnit.class, cmd.getPartnerId()));
-
+        db.setLastSchemaUpdate(new Date());
+        
         return new VoidResult();
     }
 }

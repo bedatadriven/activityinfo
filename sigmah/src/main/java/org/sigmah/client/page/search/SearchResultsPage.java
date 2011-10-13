@@ -16,6 +16,8 @@ import org.sigmah.shared.dto.SearchHitDTO;
 import org.sigmah.shared.report.content.PivotContent;
 import org.sigmah.shared.report.content.PivotTableData.Axis;
 import org.sigmah.shared.report.model.DimensionType;
+import org.sigmah.shared.search.QueryChecker;
+import org.sigmah.shared.search.QueryChecker.QueryFail;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Orientation;
@@ -110,6 +112,25 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 			}
 		});
 	}
+	
+	private void showError(String error) {
+		containerFilterAndResult.el().mask(error);
+		recentSitesView.el().mask();
+	}
+
+	protected void showError(List<QueryFail> fails) {
+		StringBuilder sb = new StringBuilder();
+		for (QueryFail fail : fails) {
+			sb.append(fail.fail());
+			sb.append("\r\n");
+		}
+		showError(sb.toString());
+	}
+
+	private void clearErrorsIfShowing() {
+		containerFilterAndResult.el().unmask();
+		recentSitesView.el().unmask();
+	}
 
 	private void addEntityToSearchBox(SearchResultEntity addedEntity) {
 		textboxSearch.setText(textboxSearch.getText() + " " + createEntityText(addedEntity));
@@ -130,9 +151,14 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 		textboxSearch.addKeyUpHandler(new KeyUpHandler() {
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
-				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER
-						&& textboxSearch.getText().length() > 2) {
-					eventBus.fireEvent(new SearchEvent(textboxSearch.getText()));
+				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+					QueryChecker checker = new QueryChecker();
+					
+					if (checker.checkQuery(textboxSearch.getText())) {
+						eventBus.fireEvent(new SearchEvent(textboxSearch.getText()));
+					} else {
+						showError(checker.getFails());
+					}
 				}
 			}
 		});
@@ -187,6 +213,7 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 
 	private void showSearchResults() {
 		panelSearchResults.removeAll();
+		clearErrorsIfShowing();
 
 		int activities=0;
 		int databases=0;

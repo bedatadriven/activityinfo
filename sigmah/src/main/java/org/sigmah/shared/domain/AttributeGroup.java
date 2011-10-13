@@ -133,6 +133,7 @@ public class AttributeGroup implements Serializable, Deleteable, Orderable, Sche
 	
 	public void delete() {
 		this.setDateDeleted(new Date());
+		getActivities().iterator().next().getDatabase().setLastSchemaUpdate(new Date());
 	}
 
 	@Column(name="category", length=50, nullable=true)

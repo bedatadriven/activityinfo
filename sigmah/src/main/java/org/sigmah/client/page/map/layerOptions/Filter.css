@@ -1,0 +1,39 @@
+
+@sprite .filterRemove {
+	gwt-image: "crossIcon";
+	position: absolute;
+	top: 12px;
+	right: 3px;
+	opacity: 0.3;
+	cursor: pointer;
+}
+
+.filterItem {
+	border: 1px solid white;
+	padding: 10px 5px;
+	font-size: 12px;
+	position: relative;
+}
+
+.filterOver {
+		
+}
+
+.filterSelect {
+	
+}
+
+.filterDim {
+}
+
+.filterState {
+	color: gray;
+	cursor: pointer;		
+}
+
+
+.filterOver .filterState {
+	text-decoration: underline;
+}
+
+  

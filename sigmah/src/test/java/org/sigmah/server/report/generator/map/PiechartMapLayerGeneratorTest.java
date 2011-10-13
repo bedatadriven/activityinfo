@@ -3,7 +3,7 @@ package org.sigmah.server.report.generator.map;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-import java.util.Collections;
+import java.util.Arrays;
 
 import org.junit.Test;
 import org.sigmah.shared.dao.SiteTableColumn;
@@ -39,11 +39,13 @@ public class PiechartMapLayerGeneratorTest {
 		
 		TiledMap map = new TiledMap(500, 600, new AiLatLng(15.0, 0.0), 6);
 
-		PiechartLayerGenerator gen = new PiechartLayerGenerator(new MapReportElement(), pcml);
+		PiechartLayerGenerator gen = new PiechartLayerGenerator(new MapReportElement(), 
+				pcml,
+				Arrays.asList(siteData));
 		
 		MapContent mc = new MapContent(); 
 		
-		gen.generate(Collections.singletonList(siteData), map, mc);
+		gen.generate(map, mc);
 		
 		assertThat(mc.getMarkers().size(), equalTo(1));
 		assertThat(((PieMapMarker)mc.getMarkers().get(0)).getSlices().size(), equalTo(4));

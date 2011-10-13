@@ -129,7 +129,8 @@ public class Filter implements Serializable {
 	}
 	
 	public boolean isRestricted(DimensionType type) {
-		return restrictions.containsKey(type);
+		Set<Integer> set = restrictions.get(type);
+		return set != null && !set.isEmpty();
 	}
 	
 	public boolean hasRestrictions() {
@@ -146,10 +147,6 @@ public class Filter implements Serializable {
 
     private Map<DimensionType, Set<Integer>> getRestrictions() {
         return restrictions;
-    }
-
-    private void setRestrictions(Map<DimensionType, Set<Integer>> restrictions) {
-        this.restrictions = restrictions;
     }
 
     @XmlTransient

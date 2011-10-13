@@ -202,7 +202,7 @@ public class GetSitesTest extends CommandTestCase2{
         cmd.setSortInfo(new SortInfo(IndicatorDTO.getPropertyName(1), SortDir.DESC));
         cmd.setLimit(2);
         cmd.setSeekToSiteId(1);
-
+        
         PagingLoadResult<SiteDTO> result = execute(cmd);
 
         Assert.assertEquals("second page returned", 2, result.getOffset());

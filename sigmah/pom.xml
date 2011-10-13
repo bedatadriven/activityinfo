@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.activityinfo</groupId>
     <artifactId>activityinfo</artifactId>
@@ -18,11 +17,6 @@
         <url>http://build.bedatadriven.com/job/ActivityInfo/</url>
     </ciManagement>
     <inceptionYear>2009</inceptionYear>
-    <scm>
-        <connection>scm:git:git@github.com:akbertram/activityinfo.git</connection>
-        <url>scm:git:git@github.com:akbertram/activityinfo.git</url>
-        <developerConnection>scm:git:git@github.com:akbertram/activityinfo.git</developerConnection>
-    </scm>
     <developers>
         <developer>
             <id>akbertram</id>
@@ -51,7 +45,7 @@
 
         <!-- convenience to define GWT version in one place -->
         <gwtVersion>2.3.0</gwtVersion>
-        <rebarVersion>2.2-SNAPSHOT</rebarVersion>
+        <rebarVersion>2.2.2</rebarVersion>
 
         <!-- tell the compiler we can use 1.6 -->
         <maven.compiler.source>1.6</maven.compiler.source>
@@ -105,19 +99,6 @@
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </pluginRepository>
     </pluginRepositories>
-
-    <distributionManagement>
-        <repository>
-            <id>bedatadriven-oss</id>
-            <name>bedatadriven Open-Source releases</name>
-            <url>http://nexus.bedatadriven.com/content/repositories/oss-releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>bedatadriven-oss</id>
-            <name>bedatadriven Open-Source snapshots</name>
-            <url>http://nexus.bedatadriven.com/content/repositories/oss-snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
 
     <dependencies>
 
@@ -652,8 +633,7 @@
                         <scanTarget>${basedir}/war/WEB-INF/web.xml</scanTarget>
                     </scanTargets>
                     <connectors>
-                        <connector
-                            implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+                        <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
                             <port>9093</port>
                             <integralPort>9095</integralPort>
                         </connector>
@@ -703,7 +683,7 @@
                         <optionSetting>
                             <namespace>aws:elasticbeanstalk:application:environment</namespace>
                             <optionName>PARAM2</optionName>
-                            <value>activityinfo.22test.properties</value>
+                            <value>activityinfo22.production.properties</value>
                         </optionSetting>
                         <optionSetting>
                             <namespace>aws:elasticbeanstalk:application:environment</namespace>

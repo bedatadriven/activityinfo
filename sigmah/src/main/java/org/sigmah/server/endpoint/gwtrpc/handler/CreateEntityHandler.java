@@ -5,8 +5,11 @@
 
 package org.sigmah.server.endpoint.gwtrpc.handler;
 
-import com.google.inject.Inject;
-import com.google.inject.Injector;
+import java.util.Date;
+import java.util.Map;
+
+import javax.persistence.EntityManager;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sigmah.server.policy.ActivityPolicy;
@@ -16,17 +19,17 @@ import org.sigmah.shared.command.CreateEntity;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.CreateResult;
-import org.sigmah.shared.domain.*;
+import org.sigmah.shared.domain.Activity;
+import org.sigmah.shared.domain.Attribute;
+import org.sigmah.shared.domain.AttributeGroup;
+import org.sigmah.shared.domain.Indicator;
+import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.IllegalAccessCommandException;
 
-import javax.persistence.EntityManager;
-import java.util.Map;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 
-/**
- * @author Alex Bertram (akbertram@gmail.com)
- * @see org.sigmah.shared.command.CreateEntity
- */
 public class CreateEntityHandler extends BaseEntityHandler implements CommandHandler<CreateEntity> {
 
     private final Injector injector;
@@ -63,7 +66,6 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
     }
 
     private CommandResult createAttributeGroup(CreateEntity cmd, Map<String, Object> properties) {
-
         AttributeGroup group = new AttributeGroup();
         updateAttributeGroupProperties(group, properties);
 
@@ -72,18 +74,23 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
         Activity activity = em.find(Activity.class, properties.get("activityId"));
         activity.getAttributeGroups().add(group);
 
+        activity.getDatabase().setLastSchemaUpdate(new Date());
+
         return new CreateResult(group.getId());
     }
-
+    
     private CommandResult createAttribute(CreateEntity cmd, Map<String, Object> properties) {
-
         Attribute attribute = new Attribute();
-        attribute.setGroup(em.getReference(AttributeGroup.class, properties.get("attributeGroupId")));
+        AttributeGroup ag = em.getReference(AttributeGroup.class, properties.get("attributeGroupId")); 
+        attribute.setGroup(ag);
 
         updateAttributeProperties(properties, attribute);
+        
+        Activity activity = ag.getActivities().iterator().next(); // Assume group has only one activity
 
         em.persist(attribute);
-
+        activity.getDatabase().setLastSchemaUpdate(new Date());
+        
         return new CreateResult(attribute.getId());
     }
 
@@ -91,16 +98,16 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
             throws IllegalAccessCommandException {
 
         Indicator indicator = new Indicator();
-        indicator.setActivity(em.getReference(Activity.class, properties.get("activityId")));
+        Activity activity = em.getReference(Activity.class, properties.get("activityId"));
+        indicator.setActivity(activity);
 
         assertDesignPriviledges(user, indicator.getActivity().getDatabase());
 
         updateIndicatorProperties(indicator, properties);
 
         em.persist(indicator);
+        activity.getDatabase().setLastSchemaUpdate(new Date());
 
         return new CreateResult(indicator.getId());
-
     }
-
 }

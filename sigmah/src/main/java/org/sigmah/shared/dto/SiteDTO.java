@@ -515,4 +515,10 @@ public class SiteDTO extends BaseModelData implements EntityDTO {
 	public Integer getLocationId() {
 		return get("locationId");
 	}
+
+	@Override
+	public String getName() {
+		// TODO Leave unimplemented for now. A site with a name? 
+		return null;
+	}
 }

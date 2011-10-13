@@ -14,7 +14,11 @@ import com.extjs.gxt.ui.client.data.ModelData;
  *
  * @author Alex Bertram
  */
-public interface EntityDTO extends DTO, ModelData {
+public interface EntityDTO 
+	extends 
+		DTO, 
+		ModelData,
+		HasName {
 
     /**
      * @return the corresponding entity's @Id

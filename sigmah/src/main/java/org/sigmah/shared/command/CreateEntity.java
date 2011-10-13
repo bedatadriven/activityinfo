@@ -13,7 +13,6 @@ import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.EntityDTO;
 import org.sigmah.shared.dto.LocationTypeDTO;
 import org.sigmah.shared.dto.PartnerDTO;
-import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 
 import com.extjs.gxt.ui.client.data.RpcMap;
@@ -33,8 +32,6 @@ import com.extjs.gxt.ui.client.data.RpcMap;
  * @author Alex Bertram (akbertram@gmail.com)
  */
 public class CreateEntity implements Command<CreateResult> {
-
-
     public String entityName;
     public RpcMap properties;
 
@@ -58,10 +55,8 @@ public class CreateEntity implements Command<CreateResult> {
         this.properties.putAll(entity.getProperties());
     }
 
-    /**
-     * @return The name of the entity to create. The name should correspond to one of the
-     *         classes in {@link org.sigmah.server.domain}
-     */
+    /** @return The name of the entity to create. The name should correspond to one of the
+     *         classes in {@link org.sigmah.server.domain} */
     public String getEntityName() {
         return entityName;
     }

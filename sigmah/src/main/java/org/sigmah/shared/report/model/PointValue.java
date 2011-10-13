@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.PieMapMarker;
 import org.sigmah.shared.report.content.Point;
 
@@ -31,12 +32,18 @@ public class PointValue {
         this.value = value;
         this.px = px;
     }
-
+    
     public PointValue(SiteData site, Point px, Rectangle iconRect) {
         this.site = site;
         this.px = px;
         this.iconRect = iconRect;
         this.value = 1;
+    }
+    
+    public PointValue(SiteData site, Point px, Rectangle iconRect, double value) {
+    	this(site, px, iconRect);
+    	
+        this.value = value;
     }
 
 	public void setAdminMembership(Map<Integer, Integer> adminMembership) {
@@ -46,4 +53,26 @@ public class PointValue {
 	public Map<Integer, Integer> getAdminMembership() {
 		return adminMembership;
 	}
+
+
+	public AiLatLng getLatLng() {
+		if(site.hasLatLong()) {
+			return new AiLatLng(site.getLatitude(), site.getLongitude());
+		} else {
+			return null;
+		}
+	}
+
+	public boolean hasLatLng() {
+		return getLatLng() != null;
+	}
+
+	public boolean hasPoint() {
+		return px != null;
+	}
+
+	public Point getPoint() {
+		return px;
+	}
+
 }

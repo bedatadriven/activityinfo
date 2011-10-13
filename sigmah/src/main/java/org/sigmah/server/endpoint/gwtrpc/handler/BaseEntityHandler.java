@@ -84,7 +84,6 @@ public class BaseEntityHandler {
         if (changes.containsKey("sortOrder")) {
             attribute.setSortOrder((Integer) changes.get("sortOrder"));
         }
-
         // TODO: update lastSchemaUpdate
     }
 

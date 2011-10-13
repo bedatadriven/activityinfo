@@ -149,10 +149,10 @@
         <column label="Commentaire" source="site.comments" />
       </columns>
       <map>
-        <baseMap>zs.gray.cd</baseMap>
+        <tileBaseMap>zs.gray.cd</tileBaseMap>
         <layers>
           <bubbles>
-            <numbering>ArabicNumerals</numbering>
+            <arabicNumberSequence/>
             <minRadius>8</minRadius>
             <maxRadius>14</maxRadius>
             <scaling>Graduated</scaling>
@@ -217,10 +217,10 @@
         </column>
       </columns>
       <map>
-        <baseMap>zs.gray.cd</baseMap>
+        <tileBaseMap>zs.gray.cd</tileBaseMap>
         <layers>
           <bubbles>
-            <numbering>ArabicNumerals</numbering>
+            <arabicNumberSequence/>
             <minRadius>8</minRadius>
             <maxRadius>14</maxRadius>
             <scaling>Graduated</scaling>
@@ -262,10 +262,10 @@
         <column label="Commentaire" source="site.comments" />
       </columns>
       <map>
-        <baseMap>zs.gray.cd</baseMap>
+        <tileBaseMap>zs.gray.cd</tileBaseMap>
         <layers>
           <bubbles>
-            <numbering>ArabicNumerals</numbering>
+            <arabicNumberSequence/>
             <minRadius>8</minRadius>
             <maxRadius>14</maxRadius>
             <scaling>Graduated</scaling>

@@ -21,18 +21,15 @@ import org.sigmah.shared.dto.UserDatabaseDTO;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.bedatadriven.rebar.sql.client.SqlDatabase;
-import com.bedatadriven.rebar.sql.client.SqlException;
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
 import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
-import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 import com.bedatadriven.rebar.sql.client.util.RowHandler;
+import com.google.common.collect.Maps;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.Inject;
 
 public class GetSchemaHandler implements
 		CommandHandlerAsync<GetSchema, SchemaDTO> {
@@ -56,6 +53,7 @@ public class GetSchemaHandler implements
 		final Map<Integer, ActivityDTO> activities = new HashMap<Integer, ActivityDTO>();
 		final Map<Integer, AttributeGroupDTO> attributeGroups = new HashMap<Integer, AttributeGroupDTO>();
 		final Map<Integer, ProjectDTO> projects = new HashMap<Integer, ProjectDTO>();
+		final Map<Integer, LockedPeriodDTO> lockedPeriods = Maps.newHashMap();
 
 		SqlTransaction tx;
 		ExecutionContext context;
@@ -66,7 +64,6 @@ public class GetSchemaHandler implements
 					.appendColumn("y1", "y1").appendColumn("x2", "x2")
 					.appendColumn("y2", "y2").from("Country")
 					.execute(tx, new RowHandler() {
-
 						@Override
 						public void handleRow(SqlResultSetRow rs) {
 							CountryDTO country = new CountryDTO();
@@ -258,17 +255,16 @@ public class GetSchemaHandler implements
 							if (activity != null) { // activities can be
 													// deleted...
 								activity.getLockedPeriods().add(lockedPeriod);
-								lockedPeriod.setActivity(activity);
+								lockedPeriod.setParent(activity);
 							}
 							parentFound = true;
 						}
 						if (!row.isNull("userDatabaseId")) {
 							Integer databaseId = row.getInt("userDatabaseId");
-							UserDatabaseDTO database = databaseMap
-									.get(databaseId);
+							UserDatabaseDTO database = databaseMap.get(databaseId);
 							if (database != null) { // databases can be deleted
 								database.getLockedPeriods().add(lockedPeriod);
-								lockedPeriod.setUserDatabase(database);
+								lockedPeriod.setParent(database);
 							}
 							parentFound = true;
 						}
@@ -276,12 +272,12 @@ public class GetSchemaHandler implements
 							Integer projectId = row.getInt("projectId");
 							ProjectDTO project = projects.get(projectId);
 							project.getLockedPeriods().add(lockedPeriod);
-							lockedPeriod.setProject(project);
+							lockedPeriod.setParent(project);
 							parentFound = true;
 						}
 
 						if (!parentFound) {
-							Log.debug("Zombie lockedPeriod: No parent (UserDatabase/Activity/Project) found for LockedPeriod with Id="
+							Log.debug("Orphan lockedPeriod: No parent (UserDatabase/Activity/Project) found for LockedPeriod with Id="
 									+ lockedPeriod.getId());
 						}
 					}

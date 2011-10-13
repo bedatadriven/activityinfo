@@ -14,7 +14,7 @@ public class PivotChartContent extends PivotContent {
     private String xAxisTitle;
     private double yMin;
     private double yMax;
-    private double yStep;
+    private double yStep =  1.0;
 
     public PivotChartContent() {
     }
@@ -58,6 +58,8 @@ public class PivotChartContent extends PivotContent {
     }
 
     public void setYStep(double yStep) {
-        this.yStep = yStep;
+    	if (yStep > 0.0) {
+    		this.yStep = yStep;
+    	}
     }
 }

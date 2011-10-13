@@ -207,6 +207,7 @@ public class Activity implements Serializable, Deleteable, Orderable, SchemaElem
 
     public void delete() {
         setDateDeleted(new Date());
+        getDatabase().setLastSchemaUpdate(new Date());
     }
 
     public String getCategory() {

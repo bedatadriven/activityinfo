@@ -389,6 +389,7 @@ public class Site implements java.io.Serializable, Deleteable {
         Date now = new Date();
         setDateDeleted(now);
         setDateEdited(now);
+        getActivity().getDatabase().setLastSchemaUpdate(new Date());
 	}
 
     /**

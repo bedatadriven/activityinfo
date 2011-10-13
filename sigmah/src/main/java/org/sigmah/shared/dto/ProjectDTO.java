@@ -3,11 +3,20 @@ package org.sigmah.shared.dto;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.sigmah.shared.dto.LockedPeriodDTO.HasLockedPeriod;
+
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
-public class ProjectDTO extends BaseModelData implements DTO {
+public class ProjectDTO 
+	extends 
+		BaseModelData 
+	implements 
+		DTO,
+		HasLockedPeriod {
+	
     private Set<LockedPeriodDTO> lockedPeriods = new HashSet<LockedPeriodDTO>(0);
     private UserDatabaseDTO userDatabase;
+    public final static String entityName="Project";
 
     public ProjectDTO() {
 		super();
@@ -68,9 +77,9 @@ public class ProjectDTO extends BaseModelData implements DTO {
 	public Set<LockedPeriodDTO> getEnabledLockedPeriods() {
 	    Set<LockedPeriodDTO> lockedPeriods = new HashSet<LockedPeriodDTO>(0);
 
-	    for (LockedPeriodDTO lcokedPeriod : getLockedPeriods()) {
-	    	if (lcokedPeriod.isEnabled()) {
-	    		lockedPeriods.add(lcokedPeriod);
+	    for (LockedPeriodDTO lockedPeriod : getLockedPeriods()) {
+	    	if (lockedPeriod.isEnabled()) {
+	    		lockedPeriods.add(lockedPeriod);
 	    	}
 	    }
 	    
@@ -80,5 +89,10 @@ public class ProjectDTO extends BaseModelData implements DTO {
 	@Override
 	public String toString() {
 		return getName();
+	}
+
+	@Override
+	public String getEntityName() {
+		return entityName;
 	}
 }

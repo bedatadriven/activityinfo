@@ -152,6 +152,7 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
         newLocation.setName("Bukavu");
         newLocation.setDateCreated(new Date());
         newLocation.setDateEdited(new Date());
+        newLocation.setId(123456789);
         newLocation.setLocationType(serverEm.find(LocationType.class, 1));
         newLocation.setId(locationId);
         serverEm.getTransaction().begin();

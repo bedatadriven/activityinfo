@@ -30,7 +30,7 @@ public class LocationSearcher implements
 		SqlQuery
 				.select(primaryKey)
 				.from(tableName)
-				.onlyWhere("Name")
+				.whereLikes("Name")
 				.likeMany(testQuery)
 				
 				.execute(tx, new SqlResultCallback() {

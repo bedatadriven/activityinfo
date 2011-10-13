@@ -11,6 +11,7 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 
+import org.sigmah.client.offline.command.handler.KeyGenerator;
 import org.sigmah.shared.command.Month;
 import org.sigmah.shared.command.UpdateMonthlyReports;
 import org.sigmah.shared.command.handler.CommandHandler;
@@ -32,10 +33,12 @@ import com.google.inject.Inject;
 public class UpdateMonthlyReportsHandler implements CommandHandler<UpdateMonthlyReports> {
 
     private final EntityManager em;
+    private final KeyGenerator keyGenerator;
 
     @Inject
-    public UpdateMonthlyReportsHandler(EntityManager em) {
+    public UpdateMonthlyReportsHandler(EntityManager em, KeyGenerator keyGenerator) {
         this.em = em;
+        this.keyGenerator = keyGenerator;
     }
 
     public CommandResult execute(UpdateMonthlyReports cmd, User user) throws CommandException {
@@ -53,7 +56,8 @@ public class UpdateMonthlyReportsHandler implements CommandHandler<UpdateMonthly
             ReportingPeriod period = periods.get(change.month);
             if (period == null) {
                 period = new ReportingPeriod(site);
-
+                period.setId(keyGenerator.generateInt());
+                
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(Calendar.YEAR, change.month.getYear());
                 calendar.set(Calendar.MONTH, change.month.getMonth() - 1);

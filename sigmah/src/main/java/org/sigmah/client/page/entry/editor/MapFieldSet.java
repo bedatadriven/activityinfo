@@ -129,7 +129,7 @@ public class MapFieldSet extends LayoutContainer implements MapEditView {
                 country.getBounds().getCenterX()));
         map.setZoomLevel(6);
 
-        MapType adminMap = MapTypeFactory.createLocalisationMapType(country);
+        MapType adminMap = MapTypeFactory.createLocalisationMapType(null);
         map.addMapType(adminMap);
         map.setCurrentMapType(adminMap);
 
@@ -206,13 +206,10 @@ public class MapFieldSet extends LayoutContainer implements MapEditView {
         return lngField;
     }
 
-    @Override
-    public void setEditBounds(String name, BoundingBoxDTO bounds) {
-        latField.setBounds(name, bounds.y1, bounds.y2);
-        lngField.setBounds(name, bounds.x1, bounds.x2);
-
-        latField.validate();
-        lngField.validate();
+    public void setCoords(Double lat, Double lng) {
+        latField.setValue(lat);
+        lngField.setValue(lng);
+        map.panTo(LatLng.newInstance(lat, lng));
     }
 
     @Override
@@ -230,6 +227,11 @@ public class MapFieldSet extends LayoutContainer implements MapEditView {
         zoomToBounds(createLatLngBounds(bounds));
     }
 
+//    public void setMarkerPos(double lat, double lng) {
+//        LatLng latlng = LatLng.newInstance(lat, lng);
+//            createMarker(latlng);
+//        map.panTo(latlng);
+//    }
     public void zoomToBounds(LatLngBounds llbounds) {
 
         int zoomLevel = map.getBoundsZoomLevel(llbounds);
@@ -304,14 +306,14 @@ public class MapFieldSet extends LayoutContainer implements MapEditView {
 	}
 
 	@Override
-	public void setValue(org.sigmah.shared.report.content.AiLatLng value) {
+	public void setValue(AiLatLng value) {
         latField.setValue(value.getLat());
         lngField.setValue(value.getLng());
 	}
 
 	@Override
-	public org.sigmah.shared.report.content.AiLatLng getValue() {
-		return new org.sigmah.shared.report.content.AiLatLng(latField.getValue(), lngField.getValue());
+	public AiLatLng getValue() {
+		return new AiLatLng(latField.getValue(), lngField.getValue());
 	}
 
 	@Override
@@ -320,7 +322,7 @@ public class MapFieldSet extends LayoutContainer implements MapEditView {
 	}
 
 	@Override
-	public void panTo(org.sigmah.shared.report.content.AiLatLng latLng) {
+	public void panTo(AiLatLng latLng) {
         LatLng latlng = LatLng.newInstance(latLng.getLat(), latLng.getLng());
         map.panTo(latlng);
 	}
@@ -352,6 +354,15 @@ public class MapFieldSet extends LayoutContainer implements MapEditView {
 
 	private void maskNoCoordinates() {
 		this.el().mask("No coordinates for this location");
+	}
+
+	@Override
+	public void setEditBounds(String name, BoundingBoxDTO bounds) {
+        latField.setBounds(name, bounds.y1, bounds.y2);
+        lngField.setBounds(name, bounds.x1, bounds.x2);
+
+        latField.validate();
+        lngField.validate();
 	}
 
 }

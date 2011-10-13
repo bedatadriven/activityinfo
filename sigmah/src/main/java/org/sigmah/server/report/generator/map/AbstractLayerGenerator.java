@@ -42,6 +42,5 @@ public abstract class AbstractLayerGenerator implements LayerGenerator {
         }
         return value;
     }
-    
 
 }

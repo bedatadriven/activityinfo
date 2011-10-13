@@ -393,9 +393,8 @@ public class SiteGridTest {
         editor.onUIAction(UIActions.save);
 
         UpdateSite cmd = service.getLastExecuted(UpdateSite.class);
-        //Assert.assertEquals(sites.getData().get(0).getId(), cmd.getId());
-        Assert.assertEquals(3, cmd.getChanges().get("activityId"));
-
+        Assert.assertEquals(sites.getData().get(0).getId(), cmd.getSiteId());
+        Assert.assertEquals("Freeport Indiana", cmd.getChanges().get("locationName"));
     }
 
 }

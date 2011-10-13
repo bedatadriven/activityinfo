@@ -7,8 +7,8 @@ import javax.xml.bind.annotation.XmlElement;
  */
 public abstract class CircledMapLayer extends AbstractMapLayer {
 
-	private int minRadius = 16;
-	private int maxRadius = 48;
+	private int minRadius = 8;
+	private int maxRadius = 32;
 	private double alpha = 0.75;
 	private ScalingType scaling = ScalingType.Graduated;
 

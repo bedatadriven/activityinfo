@@ -133,7 +133,7 @@ public class PivotChartGenerator extends PivotGenerator<PivotChartReportElement>
 
         Indicator indicator = indicatorDAO.findById(indicatorId);
 
-        return indicator.getUnits();
+        return indicator != null ? indicator.getUnits() : "[Empty]";
 
     }
 

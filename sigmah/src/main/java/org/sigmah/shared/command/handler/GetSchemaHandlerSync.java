@@ -133,7 +133,7 @@ public class GetSchemaHandlerSync implements CommandHandler<GetSchema> {
             for (LockedPeriod lockedPeriod : database.getLockedPeriods()) {
             	LockedPeriodDTO lockedPeriodDTO = mapper.map(lockedPeriod, LockedPeriodDTO.class);
             	databaseDTO.getLockedPeriods().add(lockedPeriodDTO);
-            	lockedPeriodDTO.setUserDatabase(databaseDTO);
+            	lockedPeriodDTO.setParent(databaseDTO);
             }
 
             schema.getDatabases().add(databaseDTO);

@@ -27,7 +27,7 @@ public class SiteSearcher implements Searcher<Site> {
 		SqlQuery
 				.select(primaryKey)
 				.from(tableName)
-				.onlyWhere(ColumnToSearch)
+				.whereLikes(ColumnToSearch)
 				.likeMany(testQuery)
 				
 				.execute(tx, new SqlResultCallback() {

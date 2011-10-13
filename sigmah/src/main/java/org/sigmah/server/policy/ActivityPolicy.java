@@ -114,7 +114,6 @@ public class ActivityPolicy implements EntityPolicy<Activity> {
         if (changes.containsKey("sortOrder")) {
             activity.setSortOrder((Integer) changes.get("sortOrder"));
         }
-        
 
         activity.getDatabase().setLastSchemaUpdate(new Date());
     }
