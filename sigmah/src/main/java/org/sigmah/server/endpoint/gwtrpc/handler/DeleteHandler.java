@@ -20,11 +20,6 @@ import org.sigmah.shared.domain.UserDatabase;
 
 import com.google.inject.Inject;
 
-/**
- * @author Alex Bertram
- * @see org.sigmah.shared.command.Delete
- * @see org.sigmah.shared.domain.Deleteable
- */
 public class DeleteHandler implements CommandHandler<Delete> {
     private EntityManager em;
 
@@ -35,7 +30,6 @@ public class DeleteHandler implements CommandHandler<Delete> {
 
     @Override
     public CommandResult execute(Delete cmd, User user) {
-
         // TODO check permissions for delete!
         // These handler should redirect to one of the Entity policy classes.
         Class entityClass = entityClassForEntityName(cmd.getEntityName());
@@ -48,7 +42,6 @@ public class DeleteHandler implements CommandHandler<Delete> {
             if(entity instanceof Site) {
             	((Site)entity).setDateEdited(new Date());
             }
-            //db.setLastSchemaUpdate(new Date());  UGH this sucks
         }
         
         if (entity instanceof ReallyDeleteable) {
