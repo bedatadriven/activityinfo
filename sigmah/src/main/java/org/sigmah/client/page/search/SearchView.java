@@ -23,7 +23,7 @@ public interface SearchView extends ListView<SearchHitDTO, SearchResult> {
 	
 	// Since View<T> extends TakesValue<T>, the value does not need to be encapsulated
 	public class SearchEvent extends GwtEvent<SearchHandler> {
-		public static Type TYPE = new Type<SearchHandler>(); 
+		public static Type<SearchHandler> TYPE = new Type<SearchHandler>(); 
 		private String query;
 		
 		public SearchEvent(String query) {

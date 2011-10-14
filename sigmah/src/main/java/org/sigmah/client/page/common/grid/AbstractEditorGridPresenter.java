@@ -70,7 +70,7 @@ public abstract class AbstractEditorGridPresenter<M extends ModelData>
 
     protected abstract Command createSaveCommand();
 
-    public abstract <S extends Store<D>, D extends ModelData> S getStore();
+    public abstract Store getStore();
 
     /**
      * Returns the list of modified records. The default implementation

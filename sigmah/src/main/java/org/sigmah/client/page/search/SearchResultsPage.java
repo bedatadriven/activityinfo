@@ -33,7 +33,6 @@ import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.TextBox;
 
@@ -200,7 +199,7 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 	}
 
 	@Override
-	public HandlerRegistration addSearchHandler(SearchHandler handler) {
+	public com.google.gwt.event.shared.HandlerRegistration addSearchHandler(org.sigmah.client.page.search.SearchView.SearchHandler handler) {
 		return eventBus.addHandler(SearchEvent.TYPE, handler);
 	}
 
