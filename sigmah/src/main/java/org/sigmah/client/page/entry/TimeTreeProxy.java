@@ -159,7 +159,7 @@ public class TimeTreeProxy implements DataProxy<List<ModelData>> {
 			if (adminEntityViewModelParent.getAmountSites() < treshold) {
 				getSitesByAdminEntity(callback, adminEntityParent.getId(), adminlevels);
 			} else {
-				ModelData showMore = new ShowSitesViewModel(adminEntityViewModelParent.getAmountSites(), adminEntityParent.getId());
+				ModelData showMore = new ShowSitesViewModel(adminEntityViewModelParent.getAmountSites(), adminEntityParent);
 				adminlevels.add(showMore);
 				callback.onSuccess(adminlevels);
 			}

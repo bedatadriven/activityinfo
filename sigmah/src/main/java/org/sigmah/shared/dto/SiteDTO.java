@@ -34,6 +34,7 @@ public class SiteDTO extends BaseModelData implements EntityDTO {
 	private LocationDTO2 location;
 
 	public SiteDTO() {
+        set("name", " ");
 	}
 
     /**

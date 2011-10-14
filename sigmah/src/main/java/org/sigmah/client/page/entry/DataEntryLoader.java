@@ -40,22 +40,22 @@ public class DataEntryLoader implements PageLoader {
     		PageStateSerializer placeSerializer,
     		Provider<DataEntryFrameSet> dataEntryFrameSetProvider, 
     		Provider<SiteFormPage> siteFormProvider) {
+    	
         this.injector = injector;
         this.dataEntryFrameSetProvider = dataEntryFrameSetProvider;
         this.siteFormProvider=siteFormProvider;
+
         pageManager.registerPageLoader(Frames.DataEntryFrameSet, this);
         
         pageManager.registerPageLoader(SiteEditor.ID, this);
         pageManager.registerPageLoader(SiteTreeGridPageState.SITE_TREE_VIEW, this);
+        pageManager.registerPageLoader(SiteFormPage.EDIT_PAGE_ID, this);
+        pageManager.registerPageLoader(SiteFormPage.NEW_PAGE_ID, this);
         
         placeSerializer.registerParser(SiteEditor.ID, new SiteGridPageState.Parser());
         placeSerializer.registerParser(SiteTreeGridPageState.SITE_TREE_VIEW, new SiteTreeGridPageState.Parser());
-        
         placeSerializer.registerParser(SiteFormPage.EDIT_PAGE_ID, new SiteFormPage.EditPageStateParser());
-        pageManager.registerPageLoader(SiteFormPage.EDIT_PAGE_ID, this);
-        
         placeSerializer.registerParser(SiteFormPage.NEW_PAGE_ID, new SiteFormPage.NewStateParser());
-        pageManager.registerPageLoader(SiteFormPage.NEW_PAGE_ID, this);
     }
 
     @Override
@@ -65,10 +65,12 @@ public class DataEntryLoader implements PageLoader {
             public void onSuccess() {
                 if (Frames.DataEntryFrameSet.equals(pageId)) {
                     loadFrame(pageState, callback);
-                } else if (SiteTreeGridPageState.SITE_TREE_VIEW.equals(pageId) || pageId.equals(SiteEditor.ID)) {
+                }
+                if (SiteTreeGridPageState.SITE_TREE_VIEW.equals(pageId) || pageId.equals(SiteEditor.ID)) {
+                	loadFrame(pageState, callback);
                     loadSiteGrid(pageState, callback);
-                } else if (SiteFormPage.EDIT_PAGE_ID.equals(pageId) || 
-                		   SiteFormPage.NEW_PAGE_ID.equals(pageId)) {
+                    
+                } else if (SiteFormPage.EDIT_PAGE_ID.equals(pageId) || SiteFormPage.NEW_PAGE_ID.equals(pageId)) {
                 	SiteFormPage siteFormPage = siteFormProvider.get();
                 	siteFormPage.navigate(pageState);
                 	callback.onSuccess(siteFormPage);
