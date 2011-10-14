@@ -57,7 +57,7 @@
         <!-- Allow the build to continue even if there are test failures -->
         <maven.test.failure.ignore>true</maven.test.failure.ignore>
 
-        <display.version>${project.version}-${git.commit.id.abbrev}</display.version>
+        <display.version>${project.version}</display.version>
 
     </properties>
 
