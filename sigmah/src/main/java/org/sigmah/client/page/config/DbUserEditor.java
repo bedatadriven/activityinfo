@@ -25,10 +25,12 @@ import org.sigmah.shared.command.GetUsers;
 import org.sigmah.shared.command.UpdateUserPermissions;
 import org.sigmah.shared.command.result.UserResult;
 import org.sigmah.shared.command.result.VoidResult;
+import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 import org.sigmah.shared.dto.UserPermissionDTO;
 
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.ModelKeyProvider;
 import com.extjs.gxt.ui.client.data.SortInfo;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -114,14 +116,10 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO>
             return false;
         }
     }
-
-    public void onSelectionChanged(UserPermissionDTO selectedItem) {
-        if (selectedItem != null) {
-            view.setActionEnabled(UIActions.delete, db.isManageAllUsersAllowed() ||
-                    (db.isManageUsersAllowed() && db.getMyPartnerId() == selectedItem.getPartner().getId()));
-        }
-        view.setActionEnabled(UIActions.delete, selectedItem != null);
-    }
+//
+//    public void onSelectionChanged(UserPermissionDTO selectedItem) {
+//
+//    }
 
     @Override
     public void onDeleteConfirmed(final UserPermissionDTO model) {
@@ -262,6 +260,18 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO>
 				.setDatabaseId(db.getId())
 				.setShowPermissions(true);
 			service.execute(exportUsers, null, new DownloadCallback(eventBus));
+		}
+	}
+
+	@Override
+	public void onSelectionChanged(ModelData selectedItem) {
+		if (selectedItem instanceof PartnerDTO) {
+			PartnerDTO selectedPartner = (PartnerDTO) selectedItem;
+	        if (selectedItem != null) {
+	            view.setActionEnabled(UIActions.delete, db.isManageAllUsersAllowed() ||
+	                    (db.isManageUsersAllowed() && db.getMyPartnerId() == selectedPartner.getId()));
+	        }
+	        view.setActionEnabled(UIActions.delete, selectedItem != null);
 		}
 	}
 

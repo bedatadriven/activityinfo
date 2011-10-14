@@ -26,6 +26,7 @@ import org.sigmah.shared.command.UpdateSubscription;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.dto.ReportDefinitionDTO;
 
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Record;
@@ -99,8 +100,8 @@ public class ReportListPagePresenter extends AbstractEditorGridPresenter<ReportD
         return "reportGrid";
     }
 
-    public void onSelectionChanged(ReportDefinitionDTO selectedItem) {
-    }
+//    public void onSelectionChanged(ReportDefinitionDTO selectedItem) {
+//    }
 
     public PageId getPageId() {
         return ReportHome;
@@ -151,4 +152,10 @@ public class ReportListPagePresenter extends AbstractEditorGridPresenter<ReportD
     public boolean navigate(PageState place) {
         return true;
     }
+
+	@Override
+	public void onSelectionChanged(ModelData selectedItem) {
+		
+	}
+
 }

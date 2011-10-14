@@ -43,6 +43,7 @@ public class SiteDTO extends BaseModelData implements EntityDTO {
      */
     public SiteDTO(int id) {
         setId(id);
+        set("name", " ");
     }
 
     /**

@@ -34,7 +34,7 @@ public abstract class AbstractGridView<M extends ModelData, P extends GridPresen
     protected PagingToolBar pagingBar;
     private Grid<M> grid;
     
-    protected abstract Grid<M> createGridAndAddToContainer(Store store);
+    protected abstract <D extends ModelData> Grid<D> createGridAndAddToContainer(Store store);
     protected abstract void initToolBar();
 
     public void init(final P presenter, Store store) {

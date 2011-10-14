@@ -33,6 +33,7 @@ import org.sigmah.shared.dto.UserDatabaseDTO;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.data.Loader;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.SortInfo;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Record;
@@ -66,7 +67,7 @@ public class SiteEditor extends AbstractSiteEditor implements Page, GridPresente
     }
 
     @Override
-	public ListStore<SiteDTO> getStore() {
+	public Store<SiteDTO> getStore() {
 		return listStore;
 	}
 
@@ -160,25 +161,9 @@ public class SiteEditor extends AbstractSiteEditor implements Page, GridPresente
         }
     }
 
-    public void onSelectionChanged(SiteDTO selectedSite) {
-    	this.currentSite = selectedSite;
-    	view.setSite(selectedSite);
-    	
-        if (selectedSite == null) {
-            view.setActionEnabled(UIActions.delete, false);
-            view.setActionEnabled(UIActions.edit, false);
-        } else {
-
-            boolean editable = isEditable(selectedSite);
-
-            view.setActionEnabled(UIActions.delete, editable);
-            view.setActionEnabled(UIActions.edit, editable);
-            view.setActionEnabled(UIActions.showLockedPeriods, 
-            		currentSite.fallsWithinLockedPeriod(currentActivity));
-        }
-
-        eventBus.fireEvent(new SiteEvent(AppEvents.SiteSelected, this, selectedSite));
-    }
+//    public void onSelectionChanged(SiteDTO selectedSite) {
+//
+//    }
 
     @Override
     protected void onBeforeLoad(CommandLoadEvent le) {
@@ -248,4 +233,29 @@ public class SiteEditor extends AbstractSiteEditor implements Page, GridPresente
 	public SiteGridPageState getPlace() {
 		return place;
 	}
+
+	@Override
+	public void onSelectionChanged(ModelData selectedItem) {
+		if (selectedItem instanceof SiteDTO) {
+			SiteDTO selectedSite = (SiteDTO) selectedItem;
+	    	this.currentSite = selectedSite;
+	    	view.setSite(selectedSite);
+	    	
+	        if (selectedSite == null) {
+	            view.setActionEnabled(UIActions.delete, false);
+	            view.setActionEnabled(UIActions.edit, false);
+	        } else {
+	
+	            boolean editable = isEditable(selectedSite);
+	
+	            view.setActionEnabled(UIActions.delete, editable);
+	            view.setActionEnabled(UIActions.edit, editable);
+	            view.setActionEnabled(UIActions.showLockedPeriods, 
+	            		currentSite.fallsWithinLockedPeriod(currentActivity));
+	        }
+	
+	        eventBus.fireEvent(new SiteEvent(AppEvents.SiteSelected, this, selectedSite));
+		}
+	}
+
 }

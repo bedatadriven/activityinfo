@@ -2,7 +2,6 @@ package org.sigmah.client.page.entry;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
@@ -84,7 +83,7 @@ public abstract class AbstractSiteGrid
 	}
 	
 	protected ActivityDTO activity;
-    protected Grid<SiteDTO> grid;
+    protected Grid<ModelData> grid;
     protected boolean enableDragSource;
     protected List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
     protected List<AdminLevelDTO> levels;
@@ -136,7 +135,7 @@ public abstract class AbstractSiteGrid
         toolBar.add(new SeparatorToolItem());
         
         togglebuttonList = toolBar.addToggleButton(UIActions.list, I18N.CONSTANTS.list(), IconImageBundle.ICONS.list()); 
-        //togglebuttonTreeGeo = toolBar.addToggleButton(UIActions.treeGeo, "Tree geo", IconImageBundle.ICONS.treeviewAdmin());
+        togglebuttonTreeGeo = toolBar.addToggleButton(UIActions.treeGeo, "Tree geo", IconImageBundle.ICONS.treeviewAdmin());
         togglebuttonTreeTime = toolBar.addToggleButton(UIActions.treeTime, I18N.CONSTANTS.treeTime(), IconImageBundle.ICONS.treeviewTime());
         
         if (sideBarButtons.size() > 0) {
@@ -149,7 +148,7 @@ public abstract class AbstractSiteGrid
     
     protected void toggle(ToggleButton button) {
     	togglebuttonList.toggle(false);
-    	//togglebuttonTreeGeo.toggle(false);
+    	togglebuttonTreeGeo.toggle(false);
     	togglebuttonTreeTime.toggle(false);
     	button.toggle(true);
     }
@@ -177,16 +176,16 @@ public abstract class AbstractSiteGrid
     protected void createGeographyColumn() {
 		if(activity.getDatabase().isViewAllAllowed()) {
 			ColumnConfig columnGeography = new ColumnConfig();
-			GridCellRenderer<SiteDTO> projectRenderer = new GridCellRenderer<SiteDTO>() {
-
-				@Override
-				public Object render(SiteDTO model, String property, ColumnData config,
-						int rowIndex, int colIndex, ListStore<SiteDTO> store,
-						Grid<SiteDTO> grid) {
-					return null;
-				}
-			};
-			columnGeography.setRenderer(projectRenderer);
+//			GridCellRenderer<SiteDTO> projectRenderer = new GridCellRenderer<SiteDTO>() {
+//
+//				@Override
+//				public Object render(SiteDTO model, String property, ColumnData config,
+//						int rowIndex, int colIndex, ListStore<SiteDTO> store,
+//						Grid<SiteDTO> grid) {
+//					return null;
+//				}
+//			};
+			//columnGeography.setRenderer(projectRenderer);
 			columnGeography.setHeader(I18N.CONSTANTS.geography());
 			columnGeography.setWidth(100);
 			columns.add(columnGeography);
@@ -201,31 +200,28 @@ public abstract class AbstractSiteGrid
 
 	protected void createLockColumn() {
 		ColumnConfig columnLocked = new ColumnConfig("x", "", 24);
-        columnLocked.setRenderer(new GridCellRenderer<SiteDTO>() {
+        columnLocked.setRenderer(new GridCellRenderer<ModelData>() {
             @Override
-            public Object render(SiteDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
-            	StringBuilder builder = new StringBuilder();
-            	if (model.fallsWithinLockedPeriod(activity)) {
-            		String tooltip = buildTooltip(model, activity);
-            		
-            		//builder.append("<span qtip='");
-            		//builder.append(tooltip);
-            		//builder.append("'>");
-            		builder.append(IconImageBundle.ICONS.lockedPeriod().getHTML());
-            		//builder.append("</span>");
-            		return builder.toString();
-            	} else {
-            		return "";
-            	}
-            }
-
-			private String buildTooltip(SiteDTO model, ActivityDTO activity) {
-				Set<LockedPeriodDTO> lockedPeriods = model.getAffectedLockedPeriods(activity);
-				for (LockedPeriodDTO lockedPeriod : lockedPeriods) {
-
-				}
-				return "woei! tooltip";
-			}
+            public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
+            	if (model instanceof SiteDTO) {
+            		SiteDTO siteModel = (SiteDTO) model;
+	            	StringBuilder builder = new StringBuilder();
+	            	if (siteModel.fallsWithinLockedPeriod(activity)) {
+	            		//String tooltip = buildTooltip(model, activity);
+	            		
+	            		//builder.append("<span qtip='");
+	            		//builder.append(tooltip);
+	            		//builder.append("'>");
+	            		builder.append(IconImageBundle.ICONS.lockedPeriod().getHTML());
+	            		//builder.append("</span>");
+	            		return builder.toString();
+	            	} else {
+	            		return "";
+	            	}
+	            } else {
+	            	return " ";
+	            }
+        	}
         });
         columns.add(columnLocked);
 	}
@@ -295,17 +291,18 @@ public abstract class AbstractSiteGrid
 
 	protected void createMapColumn() {
 		ColumnConfig mapColumn = new ColumnConfig("x", "", 25);
-        mapColumn.setRenderer(new GridCellRenderer<SiteDTO>() {
+        mapColumn.setRenderer(new GridCellRenderer<ModelData>() {
             @Override
-            public Object render(SiteDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
-            	if (model instanceof MonthViewModel || model instanceof YearViewModel || model instanceof AdminLevelViewModel) {
-            		return "";
+            public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
+            	if (model instanceof SiteDTO) {
+            		SiteDTO siteModel = (SiteDTO) model;
+	                if(siteModel.hasCoords()) {
+	                    return "<div class='mapped'>&nbsp;&nbsp;</div>";
+	                } else {
+	                    return "<div class='unmapped'>&nbsp;&nbsp;</div>";
+	                }
             	}
-                if(model.hasCoords()) {
-                    return "<div class='mapped'>&nbsp;&nbsp;</div>";
-                } else {
-                    return "<div class='unmapped'>&nbsp;&nbsp;</div>";
-                }
+            	return " ";
             }
         });
         columns.add(mapColumn);

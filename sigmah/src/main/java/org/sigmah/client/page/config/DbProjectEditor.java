@@ -24,6 +24,7 @@ import org.sigmah.shared.exception.DuplicateException;
 import org.sigmah.shared.exception.ProjectHasSitesException;
 
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -115,10 +116,10 @@ public class DbProjectEditor extends AbstractGridPresenter<ProjectDTO> {
         });
 	}
 
-	@Override
-	public void onSelectionChanged(ProjectDTO selectedItem) {
-		view.setActionEnabled(UIActions.delete, true);
-	}
+//	@Override
+//	public void onSelectionChanged(ProjectDTO selectedItem) {
+//		view.setActionEnabled(UIActions.delete, true);
+//	}
 
 	@Override
 	public PageId getPageId() {
@@ -144,6 +145,11 @@ public class DbProjectEditor extends AbstractGridPresenter<ProjectDTO> {
 	@Override
 	protected String getStateId() {
 		return "ProjectsGrid";
+	}
+
+	@Override
+	public void onSelectionChanged(ModelData selectedItem) {
+		view.setActionEnabled(UIActions.delete, true);
 	}
 
 }

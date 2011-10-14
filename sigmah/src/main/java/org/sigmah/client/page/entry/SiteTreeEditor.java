@@ -8,21 +8,21 @@ import org.sigmah.client.page.common.grid.GridPresenter;
 import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dto.ActivityDTO;
-import org.sigmah.shared.dto.SiteDTO;
 
 import com.extjs.gxt.ui.client.data.Loader;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.TreeStore;
 
 public class SiteTreeEditor extends AbstractSiteEditor implements GridPresenter.SiteGridPresenter{
 	public interface View extends AbstractSiteEditor.View {
-        public void init(SiteTreeEditor presenter, ActivityDTO activity, TreeStore<SiteDTO> store);
+        public void init(SiteTreeEditor presenter, ActivityDTO activity, TreeStore<ModelData> store);
         public void updateMode();
 	}
 
 	private SiteTreeLoader treeLoader;
-	private TreeStore<SiteDTO> treeStore;
+	private TreeStore<ModelData> treeStore;
 	private View treeView;
-	private SiteTreeProxy proxy;
+	private TimeTreeProxy proxy;
 	private SiteTreeGridPageState place;
 	
 	public SiteTreeEditor(EventBus eventBus, Dispatcher service, StateProvider stateMgr, SiteTreeEditor.View view) {
@@ -42,19 +42,19 @@ public class SiteTreeEditor extends AbstractSiteEditor implements GridPresenter.
 
 	@Override
 	protected Loader createLoader() {
-		proxy = new SiteTreeProxy(service);
+		proxy = new TimeTreeProxy(service);
 		treeLoader = new SiteTreeLoader(proxy);
 		return treeLoader;
 	}
 
 	@Override
-	protected TreeStore<SiteDTO> createStore() {
-		treeStore = new TreeStore<SiteDTO>(treeLoader);
+	protected TreeStore<ModelData> createStore() {    
+		treeStore = new TreeStore<ModelData>(treeLoader);
 		return treeStore;
 	}
 
 	@Override
-	public TreeStore<SiteDTO> getStore() {
+	public TreeStore<ModelData> getStore() {
 		return treeStore;
 	}
 
@@ -95,5 +95,11 @@ public class SiteTreeEditor extends AbstractSiteEditor implements GridPresenter.
 
 	public SiteTreeGridPageState getPlace() {
 		return place;
+	}
+
+	@Override
+	public void onSelectionChanged(ModelData selectedItem) {
+		// TODO Auto-generated method stub
+		
 	}
 }

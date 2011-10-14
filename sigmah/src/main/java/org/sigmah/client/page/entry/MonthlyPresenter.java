@@ -27,6 +27,7 @@ import org.sigmah.shared.dto.IndicatorRowDTO;
 import org.sigmah.shared.dto.SiteDTO;
 
 import com.extjs.gxt.ui.client.data.LoadEvent;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.LoadListener;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -131,9 +132,9 @@ public class MonthlyPresenter extends AbstractEditorGridPresenter<IndicatorRowDT
         return "monthView";
     }
 
-    public void onSelectionChanged(IndicatorRowDTO selectedItem) {
-
-    }
+//    public void onSelectionChanged(IndicatorRowDTO selectedItem) {
+//
+//    }
 
     public PageId getPageId() {
         return null;
@@ -158,4 +159,10 @@ public class MonthlyPresenter extends AbstractEditorGridPresenter<IndicatorRowDT
         }
         return new UpdateMonthlyReports(currentSiteId, changes);
     }
+
+	@Override
+	public void onSelectionChanged(ModelData selectedItem) {
+		
+	}
+
 }

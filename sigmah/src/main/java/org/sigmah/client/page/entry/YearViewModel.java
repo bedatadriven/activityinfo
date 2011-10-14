@@ -1,14 +1,10 @@
 package org.sigmah.client.page.entry;
 
-import org.sigmah.shared.dto.SiteDTO;
+import com.extjs.gxt.ui.client.data.BaseModelData;
 
-public class YearViewModel extends SiteDTO {
-	
+public class YearViewModel extends BaseModelData {
 	public YearViewModel() {
 		super();
-	}
-	public YearViewModel(SiteDTO site) {
-		super(site);
 	}
 	public String getName() {
 		return (String)get("name");
@@ -19,7 +15,6 @@ public class YearViewModel extends SiteDTO {
 	}
 	public YearViewModel setYear(int year) {
 		set("year", year);
-		setId(year);
 		return this;
 	}
 	public int getYear() {

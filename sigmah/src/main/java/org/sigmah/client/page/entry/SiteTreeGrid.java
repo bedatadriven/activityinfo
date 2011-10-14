@@ -1,8 +1,7 @@
 package org.sigmah.client.page.entry;
 
-import java.util.Arrays;
-
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.entry.SiteTreeGridPageState.TreeType;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.SiteDTO;
@@ -10,6 +9,7 @@ import org.sigmah.shared.dto.SiteDTO;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.data.ModelIconProvider;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -20,9 +20,10 @@ import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.treegrid.EditorTreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 public class SiteTreeGrid extends AbstractSiteGrid implements SiteTreeEditor.View {
-	private EditorTreeGrid<SiteDTO> grid;
+	private EditorTreeGrid<ModelData> grid;
 	private SiteTreeEditor treePresenter;
 	
 	public SiteTreeGrid(boolean enableDragSource) {
@@ -30,15 +31,29 @@ public class SiteTreeGrid extends AbstractSiteGrid implements SiteTreeEditor.Vie
 	}
 
 	@Override 
-	public Grid<SiteDTO> createGridAndAddToContainer(Store store) {
-        grid = new EditorTreeGrid<SiteDTO>(treePresenter.getStore(), createColumnModel(activity));
+	public Grid<ModelData> createGridAndAddToContainer(Store store) {
+        grid = new EditorTreeGrid<ModelData>(treePresenter.getStore(), createColumnModel(activity));
         
         grid.setLoadMask(true); 
         grid.setStateful(true);
         grid.setStateId("site-treeview" + activity.getId());
         grid.setAutoExpandColumn("name");
+        grid.setIconProvider(new ModelIconProvider<ModelData>() {
+			@Override
+			public AbstractImagePrototype getIcon(ModelData model) {
+				if (model instanceof YearViewModel || model instanceof MonthViewModel || model instanceof AdminViewModel) {
+					return IconImageBundle.ICONS.folder();
+				}
+				
+				if (model instanceof ShowSitesViewModel) {
+					return IconImageBundle.ICONS.drilldown();
+				}
+				
+				return null;
+			}
+		});
         
-        GridSelectionModel<SiteDTO> sm = new GridSelectionModel<SiteDTO>();
+        GridSelectionModel<ModelData> sm = new GridSelectionModel<ModelData>();
         sm.setSelectionMode(SelectionMode.SINGLE);
 		grid.setSelectionModel(sm);
 		
@@ -110,9 +125,11 @@ public class SiteTreeGrid extends AbstractSiteGrid implements SiteTreeEditor.Vie
 
 	@Override
 	public void setSelection(int siteId) {
-		for (SiteDTO site : treePresenter.getStore().getAllItems()) {
-			if (site.getId() == siteId) {
-				grid.getSelectionModel().select(site, false);
+		for (ModelData model : treePresenter.getStore().getAllItems()) {
+			Integer id = model.get("id");
+			if (id != null) {
+				SiteDTO selectedSite = (SiteDTO) model;
+				grid.getSelectionModel().select(selectedSite, false);
 				return;
 			}
 		}
@@ -125,15 +142,15 @@ public class SiteTreeGrid extends AbstractSiteGrid implements SiteTreeEditor.Vie
 
 	@Override
 	public void update(SiteDTO updatedSite) {
-		for (SiteDTO site : treePresenter.getStore().getAllItems()) {
-			if (site instanceof MonthViewModel) {
-				MonthViewModel month = (MonthViewModel)site;
-				if (month.getYear() == site.getDate2().getYear() &&
-						month.getMonth() == site.getDate2().getMonthOfYear()) {
-					treePresenter.getStore().add(month, Arrays.asList(updatedSite), true);
-				}
-			}
-		}
+//		for (SiteDTO site : treePresenter.getStore().getAllItems()) {
+//			if (site instanceof MonthViewModel) {
+//				MonthViewModel month = (MonthViewModel)site;
+//				if (month.getYear() == site.getDate2().getYear() &&
+//						month.getMonth() == site.getDate2().getMonthOfYear()) {
+//					treePresenter.getStore().add(month, Arrays.asList(updatedSite), true);
+//				}
+//			}
+//		}
 	}
 
 	@Override
@@ -143,15 +160,15 @@ public class SiteTreeGrid extends AbstractSiteGrid implements SiteTreeEditor.Vie
 
 	@Override
 	public void remove(SiteDTO removedSite) {
-		for (SiteDTO site : treePresenter.getStore().getAllItems()) {
-			if (site.getId() == removedSite.getId()) {
-				treePresenter.getStore().remove(site);
-			}
-		}
+//		for (SiteDTO site : treePresenter.getStore().getAllItems()) {
+//			if (site.getId() == removedSite.getId()) {
+//				treePresenter.getStore().remove(site);
+//			}
+//		}
 	}
 
 	@Override
-	public void init(SiteTreeEditor presenter, ActivityDTO activity, TreeStore<SiteDTO> store) {
+	public void init(SiteTreeEditor presenter, ActivityDTO activity, TreeStore<ModelData> store) {
 		this.treePresenter=presenter;
 		this.activity = presenter.getCurrentActivity();
 

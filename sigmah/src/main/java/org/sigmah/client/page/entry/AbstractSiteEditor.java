@@ -38,6 +38,7 @@ import org.sigmah.shared.report.model.DimensionType;
 
 import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.data.Loader;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.store.Store;
@@ -70,14 +71,18 @@ public abstract class AbstractSiteEditor extends AbstractEditorGridPresenter<Sit
 
     protected ActivityDTO currentActivity;
     protected SiteDTO currentSite;
-    protected Store<SiteDTO> store;
+    protected Store<ModelData> store;
     protected Loader loader;
     protected FilterPanel filterPanel = new NullFilterPanel();
 
     private Integer siteIdToSelectOnNextLoad;
     private HandlerRegistration filterRegistration;
 
-    @Inject
+	protected abstract Loader createLoader();
+	protected abstract <S extends Store<D>, D extends ModelData> S createStore();
+	protected abstract void setFilter(Filter filter);
+
+	@Inject
     public AbstractSiteEditor(EventBus eventBus, Dispatcher service, StateProvider stateMgr, final View view) {
         super(eventBus, service, stateMgr, view);
         
@@ -92,17 +97,11 @@ public abstract class AbstractSiteEditor extends AbstractEditorGridPresenter<Sit
 
         addListeners(); 
     }
-
-	protected abstract Loader createLoader();
-
-	protected abstract Store<SiteDTO> createStore();
-	
-	protected abstract void setFilter(Filter filter);
 	
 	private void addListeners() {
         this.eventBus.addListener(AppEvents.SiteChanged, new Listener<SiteEvent>() {
             public void handleEvent(SiteEvent se) {
-                SiteDTO ourCopy = store.findModel("id", se.getSite().getId());
+                SiteDTO ourCopy = (SiteDTO) store.findModel("id", se.getSite().getId());
                 if (ourCopy != null) {
                     ourCopy.setProperties(se.getSite().getProperties());
                 }
@@ -167,10 +166,10 @@ public abstract class AbstractSiteEditor extends AbstractEditorGridPresenter<Sit
         filterRegistration.removeHandler();
     }
 
-    @Override
-    public Store<SiteDTO> getStore() {
-        return store;
-    }
+//    @Override
+//    public Store<ModelData> getStore() {
+//        return store;
+//    }
 
     @Override
     public Object getWidget() {

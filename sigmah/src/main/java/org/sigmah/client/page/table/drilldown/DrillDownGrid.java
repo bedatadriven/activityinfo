@@ -33,7 +33,7 @@ public class DrillDownGrid extends SiteGrid implements DrillDownEditor.View {
 
         } else if (activity.getId() != currentActivity.getId()) {
             currentActivity = activity;
-            grid.reconfigure(store, createColumnModel(activity));
+            //grid.reconfigure(store, createColumnModel(activity));
         } else {
             grid.getColumnModel().setDataIndex(grid.getColumnModel().getIndexById("indicator"),
                     indicator.getPropertyName());

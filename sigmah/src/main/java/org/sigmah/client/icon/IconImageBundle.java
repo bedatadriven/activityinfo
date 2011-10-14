@@ -261,4 +261,6 @@ public interface IconImageBundle extends ImageBundle {
     AbstractImagePrototype treeviewAdmin();
     AbstractImagePrototype treeviewTime();
     AbstractImagePrototype list();
+    AbstractImagePrototype drilldown();
+    AbstractImagePrototype folder();
 }

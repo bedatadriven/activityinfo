@@ -67,6 +67,10 @@ public class GetAdminEntitiesHandler implements CommandHandlerAsync<GetAdminEnti
 
 			query.where("AdminEntity.AdminEntityId").in(subQuery);
 		}
+		
+		if (cmd.getFilter() != null && cmd.getFilter().isRestricted(DimensionType.AdminLevel)) {
+			query.where("adminentityid").in(cmd.getFilter().getRestrictions(DimensionType.AdminLevel));
+		}
 		query.execute(context.getTransaction(), new SqlResultCallback() {
 
 			@Override

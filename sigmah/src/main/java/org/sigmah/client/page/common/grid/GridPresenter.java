@@ -12,7 +12,7 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.Record;
 
 public interface GridPresenter<T extends ModelData> extends ActionListener {
-    public void onSelectionChanged(T selectedItem);
+    public void onSelectionChanged(ModelData selectedItem);
     public int getPageSize();
     public void onDirtyFlagChanged(boolean isDirty);
     public boolean beforeEdit(Record record, String property);

@@ -1,8 +1,9 @@
 package org.sigmah.client.page.entry;
 
-import org.sigmah.shared.dto.SiteDTO;
+import com.extjs.gxt.ui.client.data.BaseModelData;
 
-public class MonthViewModel extends SiteDTO {
+
+public class MonthViewModel extends BaseModelData {
 	public MonthViewModel() {
 		super();
 	}
@@ -22,7 +23,6 @@ public class MonthViewModel extends SiteDTO {
 	}
 	public MonthViewModel setMonth(int month) {
 		set("month", month);
-		setId(Integer.parseInt(Integer.toString(getYear()) + month));
 		return this;
 	}
 	public int getMonth() {

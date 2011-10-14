@@ -29,6 +29,7 @@ import org.sigmah.shared.exception.DuplicateException;
 import org.sigmah.shared.exception.PartnerHasSitesException;
 
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -82,9 +83,9 @@ public class DbPartnerEditor extends AbstractGridPresenter<PartnerDTO> {
         return "PartnersGrid";
     }
 
-    public void onSelectionChanged(PartnerDTO selectedItem) {
-        this.view.setActionEnabled(UIActions.delete, selectedItem != null);
-    }
+//    public void onSelectionChanged(PartnerDTO selectedItem) {
+//        this.view.setActionEnabled(UIActions.delete, selectedItem != null);
+//    }
 
     @Override
     protected void onAdd() {
@@ -143,4 +144,9 @@ public class DbPartnerEditor extends AbstractGridPresenter<PartnerDTO> {
     public void shutdown() {
 
     }
+
+	@Override
+	public void onSelectionChanged(ModelData selectedItem) {
+        this.view.setActionEnabled(UIActions.delete, selectedItem != null);
+	}
 }

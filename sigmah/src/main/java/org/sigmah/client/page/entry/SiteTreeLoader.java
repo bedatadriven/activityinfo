@@ -2,27 +2,28 @@ package org.sigmah.client.page.entry;
 
 import java.util.List;
 
-import org.sigmah.shared.dto.SiteDTO;
-
 import com.extjs.gxt.ui.client.data.BaseTreeLoader;
+import com.extjs.gxt.ui.client.data.ModelData;
 
-public class SiteTreeLoader extends BaseTreeLoader<SiteDTO> {
+public class SiteTreeLoader extends BaseTreeLoader<ModelData> {
+	private TimeTreeProxy timeTreeProxy;
 	@Override
 	protected void onLoadFailure(Object loadConfig, Throwable t) {
 		super.onLoadFailure(loadConfig, t);
 	}
 
 	@Override
-	protected void onLoadSuccess(Object loadConfig, List<SiteDTO> result) {
+	protected void onLoadSuccess(Object loadConfig, List<ModelData> result) {
 		super.onLoadSuccess(loadConfig, result);
 	}
 
-	public SiteTreeLoader(SiteTreeProxy proxy) {
+	public SiteTreeLoader(TimeTreeProxy proxy) {
 		super(proxy);
+		this.timeTreeProxy=proxy;
 	}
 	
 	@Override
-	public boolean hasChildren(SiteDTO parent) {
-		return parent instanceof YearViewModel || parent instanceof MonthViewModel;
+	public boolean hasChildren(ModelData parent) {
+		return timeTreeProxy.hasChildren(parent);
 	}
 }
