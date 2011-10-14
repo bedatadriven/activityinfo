@@ -44,29 +44,21 @@ public class TransactionalInterceptor implements MethodInterceptor {
         //allow joining of transactions if there is an enclosing @Transactional method
         if (tx.isActive()) {
             
-            if (log.isDebugEnabled()) {
-                log.debug("[invoke] Transaction already active, just proceed the method.");
-            }
-            
+            log.trace("[invoke] Transaction already active, just proceed the method.");
             return methodInvocation.proceed();
         }
 
         tx.begin();
         
-        if (log.isDebugEnabled()) {
-            log.debug("[invoke] Begins an entity transaction.");
-        }
-        
+        log.trace("[invoke] Begining an entity transaction.");
+       
         Object result = attemptInvocation(methodInvocation, tx);
 
         // everything was normal so commit the txn (do not move into try block as it interferes
         // with the advised method's throwing semantics)
         tx.commit();
         
-        if (log.isDebugEnabled()) {
-            log.debug("[invoke] Commits the transaction.");
-        }
-        
+        log.trace("[invoke] Committed the transaction.");
         return result;
     }
 
