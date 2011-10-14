@@ -404,18 +404,12 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
-            </resource>
+            </resource>                  
             <resource>
                 <directory>src/main/java</directory>
-				<includes>
-					<include>**/emul/**/*.java</include>
-					<include>**/client/**/*.java</include>
-                    <include>**/server/**/*.*</include>
-					<include>**/login/**/*.java</include>
-					<include>**/shared/**/*.java</include>
-					<include>**/*.gwt.xml</include>
-					<include>**/*.properties</include>
-				</includes>
+                <includes>
+                	<include>**/*.properties</include>
+                </includes>
             </resource>
         </resources>
 
@@ -461,16 +455,22 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>2.3</version>
+                <version>2.4</version>
 
                 <!-- set encoding to something not platform dependent -->
 
                 <configuration>
                     <encoding>UTF-8</encoding>
+                    
+                    <!--  Change the delimiters used for filtering to avoid 
+                    	  colliding with FTL template syntaxt -->
+	                <delimiters>
+	                	<delimeter>$[*]</delimeter>
+	                </delimiters>
+	           		<useDefaultDelimiters>false</useDefaultDelimiters>
                 </configuration>
-
             </plugin>
-
+            
             <!-- configure the GWT-Maven plugin -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
