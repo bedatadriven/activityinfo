@@ -56,7 +56,7 @@
                     <label for="remember"><input name="remember" type="checkbox" value="true" id="remember"
                                                  class="checkBox"/>Rester connecté</label>
 
-                    <div id="loginHelp"><a href="login-problem.html">Vous n'arrivez pas à vous connecter ?</a></div>
+                    <div id="loginHelp"><a href="loginProblem">Vous n'arrivez pas à vous connecter ?</a></div>
                     <span id="loginBox"><input type="image" src="static/login_fr.png"
                                                id="loginButton"></span></a></span>
                 </div>

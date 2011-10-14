@@ -71,7 +71,7 @@
             key: "ABQIAAAAaKyZGjYsJ9quclBfsnGc-xSULc68XBC8rIKw1gDHypRtutTChRRhuj6VmI9buf-pphk2EHnsnmxwRg"
         };
         var VersionInfo = {
-            revision: '${display.version}'
+            revision: '$[display.version]'
         };
     </script>
 
@@ -95,7 +95,7 @@
     <div id="loading-box">
         <div class="loading-indicator">
             <img src="ActivityInfo/gxt224/images/default/shared/large-loading.gif" alt=""/>
-            ActivityInfo ${display.version}<br/>
+            ActivityInfo $[display.version]<br/>
             <span id="loading-msg">Chargement en cours...</span>
 
         </div>

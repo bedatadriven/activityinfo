@@ -75,6 +75,7 @@ public class GetSchemaTest extends CommandTestCase2 {
 
         assertThat(schema.getDatabases().size(), equalTo(1));
         assertThat("BAVON in PEAR", schema.getDatabaseById(1), is(not(nullValue())));
+        assertThat(schema.getDatabaseById(1).getMyPartnerId(), equalTo(1));
         assertThat(schema.getDatabaseById(1).isEditAllowed(), equalTo(true));
         assertThat(schema.getDatabaseById(1).isEditAllAllowed(), equalTo(false));
     }

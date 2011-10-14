@@ -34,7 +34,7 @@ public class LocationListView extends ListView<LocationViewModel> {
 		
 		getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<LocationViewModel>() {
 			@Override
-			public void selectionChanged(SelectionChangedEvent<LocationViewModel> se) {
+			public void selectionChanged(SelectionChangedEvent<LocationViewModel> se) { 
 				if (shouldFireEvent && (se.getSelectedItem() != null)) {
 					listener.onSelectLocation(se.getSelectedItem());
 				}

@@ -32,7 +32,7 @@ public class ShowLocationOnMap extends LayoutContainer {
 		loadMapAsync();
 	}
 
-	private void initializeComponent() {
+	private void initializeComponent() { 
 		setLayout(new FitLayout());
 	}
 

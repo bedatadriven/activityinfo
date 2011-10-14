@@ -67,7 +67,7 @@ public class LocationPicker
 	private LocationListView locations;
 	
 	private MapFieldSet map;
-	private MapPresenter mapPresenter;
+	private MapPresenter mapPresenter; 
 
 	private AdminFieldSetPresenter adminPresenter;
 	private AdminFieldSet adminFieldSet;

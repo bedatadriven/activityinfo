@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import org.apache.log4j.Logger;
 import org.sigmah.server.dao.AuthenticationDAO;
 import org.sigmah.server.dao.Transactional;
 import org.sigmah.server.domain.Authentication;
@@ -48,6 +49,7 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
     @Inject
     private Injector injector;
 
+    private static final Logger logger = Logger.getLogger(CommandServlet.class);
 
     @Override
     @LogException
@@ -78,6 +80,9 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
 
         List<CommandResult> results = new ArrayList<CommandResult>();
         for (Command command : commands) {
+        	
+        	logger.debug(user.getEmail() + ": " + command.getClass().getSimpleName());
+        	
             try {
                 results.add(handleCommand(user, command));
             } catch (CommandException e) {

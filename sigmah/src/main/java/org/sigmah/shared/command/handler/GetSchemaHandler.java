@@ -142,11 +142,13 @@ public class GetSchemaHandler implements
 					.appendColumn("p.AllowManageAllUsers",
 							"allowManageAllUsers")
 					.appendColumn("p.AllowDesign", "allowDesign")
+					.appendColumn("p.PartnerId", "partnerId")
 					.from("UserDatabase d")
 					.leftJoin(
-							SqlQuery.selectAll().from("UserPermission")
+							SqlQuery.selectAll()
+									.from("UserPermission")
 									.where("UserPermission.UserId")
-									.equalTo(context.getUser().getId()), "p")
+										.equalTo(context.getUser().getId()), "p")
 					.on("p.DatabaseId = d.DatabaseId").leftJoin("UserLogin o")
 					.on("d.OwnerUserId = o.UserId").where("d.DateDeleted")
 					.isNull().whereTrue("(o.userId = ? or p.AllowView = 1)")
@@ -181,6 +183,10 @@ public class GetSchemaHandler implements
 								|| row.getBoolean("allowManageAllUsers"));
 						db.setDesignAllowed(db.getAmOwner()
 								|| row.getBoolean("allowDesign"));
+						
+						if(!db.getAmOwner()) {
+							db.setMyPartnerId(row.getInt("partnerId"));
+						}
 
 						databaseMap.put(db.getId(), db);
 						databaseList.add(db);

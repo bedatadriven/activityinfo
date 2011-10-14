@@ -30,7 +30,7 @@ public class NewLocationFieldSet extends LayoutContainer {
 	}
 
 	public NewLocationFieldSet(final NewLocationPresenter presenter) {
-		setLayout(new FormLayout());
+		setLayout(new FormLayout()); 
 		setShadow(false);
 		
 		labelName = new TextField<String>();

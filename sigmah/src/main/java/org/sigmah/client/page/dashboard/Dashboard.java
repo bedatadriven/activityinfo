@@ -29,7 +29,7 @@ public class Dashboard extends Composite implements Page {
 	private Reports reports;
 	
 	@Inject
-	public Dashboard(Dispatcher service) {
+	public Dashboard(Dispatcher service) { 
 		super();
 		this.service = service;
 		{

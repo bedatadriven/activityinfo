@@ -52,7 +52,7 @@ public class LocationView extends LayoutContainer {
 	private boolean isDirty = false;
 	private ShowLocationOnMap map;
 	private LabelField labelLatitude;
-	private LabelField labelLongitude;
+	private LabelField labelLongitude; 
 	
 	public LocationView(EventBus eventBus, Dispatcher service, ActivityDTO activity) {
 		super();

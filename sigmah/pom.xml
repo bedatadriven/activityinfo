@@ -6,6 +6,13 @@
     <packaging>war</packaging>
     <version>2.3.0-SNAPSHOT</version>
     <name>ActivityInfo</name>
+    
+    <parent>
+       <groupId>org.activityinfo</groupId>
+       <artifactId>activityinfo-parent</artifactId>
+       <version>2.2.4-SNAPSHOT</version>
+    </parent>
+    
     <description>Web-based database platform for program monitoring and reporting for the UN,
         NGOs, and others working in humanitarian, development, and post-conflict contexts.</description>
     <issueManagement>
@@ -57,7 +64,7 @@
         <!-- Allow the build to continue even if there are test failures -->
         <maven.test.failure.ignore>true</maven.test.failure.ignore>
 
-        <display.version>${project.version}-${git.commit.id.abbrev}</display.version>
+        <display.version>${project.version}</display.version>
 
     </properties>
 
@@ -404,18 +411,12 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
-            </resource>
+            </resource>                  
             <resource>
                 <directory>src/main/java</directory>
-				<includes>
-					<include>**/emul/**/*.java</include>
-					<include>**/client/**/*.java</include>
-                    <include>**/server/**/*.*</include>
-					<include>**/login/**/*.java</include>
-					<include>**/shared/**/*.java</include>
-					<include>**/*.gwt.xml</include>
-					<include>**/*.properties</include>
-				</includes>
+                <includes>
+                	<include>**/*.properties</include>
+                </includes>
             </resource>
         </resources>
 
@@ -461,16 +462,22 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>2.3</version>
+                <version>2.4</version>
 
                 <!-- set encoding to something not platform dependent -->
 
                 <configuration>
                     <encoding>UTF-8</encoding>
+                    
+                    <!--  Change the delimiters used for filtering to avoid 
+                    	  colliding with FTL template syntaxt -->
+	                <delimiters>
+	                	<delimeter>$[*]</delimeter>
+	                </delimiters>
+	           		<useDefaultDelimiters>false</useDefaultDelimiters>
                 </configuration>
-
             </plugin>
-
+            
             <!-- configure the GWT-Maven plugin -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
