@@ -45,6 +45,7 @@ public class SitesPerAdminEntityHandler implements CommandHandlerAsync<SitesPerA
 				for (SqlResultSetRow row : results.getRows()) {
 					if (!row.isNull("c") && !row.isNull("id")) {
 						int amount = row.getInt("c");
+						amount = amount == 1 ? 1 : amount --; //count(*) is also counted :/
 						int id = row.getInt("id");
 						adminEntities.put(id, amount);
 					}
