@@ -1,7 +1,10 @@
 package org.sigmah.client.icon;
 
+import java.util.Map;
+
 import org.sigmah.shared.report.model.DimensionType;
 
+import com.google.common.collect.Maps;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 public class FromEntities {
@@ -9,6 +12,20 @@ public class FromEntities {
 	 * Returns an icon from given DimensionType or defaults to unknown icon if 
 	 * DimensionType is not supported
 	 */
+	private static Map<String, AbstractImagePrototype> iconsByExtension = Maps.newHashMap();
+	static {
+		iconsByExtension.put("doc", IconImageBundle.ICONS.msword());
+		iconsByExtension.put("docx", IconImageBundle.ICONS.msword());
+		iconsByExtension.put("ppt", IconImageBundle.ICONS.ppt());
+		iconsByExtension.put("pptx", IconImageBundle.ICONS.ppt());
+		iconsByExtension.put("xls", IconImageBundle.ICONS.excel());
+		iconsByExtension.put("xlx", IconImageBundle.ICONS.excel());
+		iconsByExtension.put("pdf", IconImageBundle.ICONS.pdf());
+		iconsByExtension.put("png", IconImageBundle.ICONS.image());
+		iconsByExtension.put("gif", IconImageBundle.ICONS.image());
+		iconsByExtension.put("jpg", IconImageBundle.ICONS.image());
+		iconsByExtension.put("jpeg", IconImageBundle.ICONS.image());
+	}
 	public AbstractImagePrototype fromDimension(DimensionType dimension) {
 		switch(dimension) {
 		case AdminLevel:
@@ -32,5 +49,9 @@ public class FromEntities {
 		}
 		
 		return IconImageBundle.ICONS.none();
+	}
+	
+	public AbstractImagePrototype fromExtension(String extension) {
+		return iconsByExtension.get(extension.trim().toLowerCase());
 	}
 }

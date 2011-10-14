@@ -523,4 +523,11 @@ public class SiteDTO extends BaseModelData implements EntityDTO {
 		// TODO Leave unimplemented for now. A site with a name? 
 		return null;
 	}
+	
+	public List<Integer> getAttachmentIds() {
+		return (List<Integer>) get("attachmentIds");
+	}
+	public void setAttachmentIds(List<Integer> ids) {
+		set("attachmentIds", ids);
+	}
 }
