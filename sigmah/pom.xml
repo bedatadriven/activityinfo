@@ -4,8 +4,14 @@
     <groupId>org.activityinfo</groupId>
     <artifactId>activityinfo</artifactId>
     <packaging>war</packaging>
-    <version>2.2.3-SNAPSHOT</version>
     <name>ActivityInfo</name>
+    
+    <parent>
+       <groupId>org.activityinfo</groupId>
+       <artifactId>activityinfo-parent</artifactId>
+       <version>2.2.3-SNAPSHOT</version>
+    </parent>
+    
     <description>Web-based database platform for program monitoring and reporting for the UN,
         NGOs, and others working in humanitarian, development, and post-conflict contexts.</description>
     <issueManagement>
