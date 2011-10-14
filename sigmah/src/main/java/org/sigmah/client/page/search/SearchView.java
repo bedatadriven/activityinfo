@@ -18,8 +18,13 @@ import com.google.inject.ImplementedBy;
 
 @ImplementedBy(SearchResultsPage.class)
 public interface SearchView extends ListView<SearchHitDTO, SearchResult> {
+	public HandlerRegistration addSearchHandler(SearchHandler handler);
+	void setSearchResults(PivotContent pivotTabelData);
+	void setSearchQuery(String query);
+	void setFilter(Map<DimensionType, List<SearchResultEntity>> affectedEntities);
 
-	HandlerRegistration addSearchHandler(SearchHandler handler);
+	public void setSitePoints(SitePointList sitePoints);
+	public void setSites(List<RecentSiteModel> sites);
 	
 	// Since View<T> extends TakesValue<T>, the value does not need to be encapsulated
 	public class SearchEvent extends GwtEvent<SearchHandler> {
@@ -52,11 +57,4 @@ public interface SearchView extends ListView<SearchHitDTO, SearchResult> {
 	public interface SearchHandler extends EventHandler {
 		void onSearch(SearchEvent searchEvent);
 	}
-
-	void setSearchResults(PivotContent pivotTabelData);
-	void setSearchQuery(String query);
-	void setFilter(Map<DimensionType, List<SearchResultEntity>> affectedEntities);
-
-	public void setSitePoints(SitePointList sitePoints);
-	public void setSites(List<RecentSiteModel> sites);
 }

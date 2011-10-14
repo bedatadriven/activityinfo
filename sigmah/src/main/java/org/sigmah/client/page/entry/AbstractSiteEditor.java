@@ -79,7 +79,7 @@ public abstract class AbstractSiteEditor extends AbstractEditorGridPresenter<Sit
     private HandlerRegistration filterRegistration;
 
 	protected abstract Loader createLoader();
-	protected abstract <S extends Store<D>, D extends ModelData> S createStore();
+	protected abstract Store createStore();
 	protected abstract void setFilter(Filter filter);
 
 	@Inject
