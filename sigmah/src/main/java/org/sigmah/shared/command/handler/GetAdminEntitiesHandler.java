@@ -33,16 +33,16 @@ public class GetAdminEntitiesHandler implements CommandHandlerAsync<GetAdminEnti
 			final AsyncCallback<AdminEntityResult> callback) {
 		
 		SqlQuery query =
-				SqlQuery.select("adminEntityId",
-					"name",
-					"adminLevelId",
-					"adminEntityParentId",
+				SqlQuery.select("AdminEntity.adminEntityId",
+					"AdminEntity.name",
+					"AdminEntity.adminLevelId",
+					"AdminEntity.adminEntityParentId",
 					"x1","y1","x2","y2")
 					.from("AdminEntity")
-					.orderBy("AdminEntity.Name");
+					.orderBy("AdminEntity.name");
 
 		if(cmd.getCountryId() != null) {
-			query.leftJoin("AdminLevel").on("AdminLevel.AdminLevelId=AdminEntity.adminLevelId)");
+			query.leftJoin("AdminLevel").on("AdminLevel.AdminLevelId=AdminEntity.AdminLevelId");
 			query.where("AdminLevel.CountryId").equalTo(cmd.getCountryId());
 
 			if(cmd.getParentId() == null && cmd.getLevelId() == null) {
@@ -69,7 +69,7 @@ public class GetAdminEntitiesHandler implements CommandHandlerAsync<GetAdminEnti
 		}
 		
 		if (cmd.getFilter() != null && cmd.getFilter().isRestricted(DimensionType.AdminLevel)) {
-			query.where("adminentityid").in(cmd.getFilter().getRestrictions(DimensionType.AdminLevel));
+			query.where("AdminEntityId").in(cmd.getFilter().getRestrictions(DimensionType.AdminLevel));
 		}
 		query.execute(context.getTransaction(), new SqlResultCallback() {
 
