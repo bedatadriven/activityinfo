@@ -96,10 +96,4 @@ public class SiteTreeEditor extends AbstractSiteEditor implements GridPresenter.
 	public SiteTreeGridPageState getPlace() {
 		return place;
 	}
-
-	@Override
-	public void onSelectionChanged(ModelData selectedItem) {
-		// TODO Auto-generated method stub
-		
-	}
 }

@@ -166,24 +166,6 @@ public abstract class AbstractSiteEditor extends AbstractEditorGridPresenter<Sit
         filterRegistration.removeHandler();
     }
 
-//    @Override
-//    public Store<ModelData> getStore() {
-//        return store;
-//    }
-
-    @Override
-    public Object getWidget() {
-        return view;
-    }
-
-    public ActivityDTO getCurrentActivity() {
-        return currentActivity;
-    }
-
-    private String stateId(String suffix) {
-        return "sitegridpage." + currentActivity.getId();
-    }
-
 	protected void setActionsDisabled() {
 		view.setActionEnabled(UIActions.add, currentActivity.getDatabase().isEditAllowed());
         view.setActionEnabled(UIActions.edit, false);
@@ -208,24 +190,6 @@ public abstract class AbstractSiteEditor extends AbstractEditorGridPresenter<Sit
         }
     }
 
-    public void onSelectionChanged(SiteDTO selectedSite) {
-    	this.currentSite = selectedSite;
-    	view.setSite(selectedSite);
-    	
-        if (selectedSite == null) {
-            view.setActionEnabled(UIActions.delete, false);
-            view.setActionEnabled(UIActions.edit, false);
-        } else {
-            boolean editable = isEditable(selectedSite);
-            view.setActionEnabled(UIActions.delete, editable);
-            view.setActionEnabled(UIActions.edit, editable);
-            view.setActionEnabled(UIActions.showLockedPeriods, 
-            		currentSite.fallsWithinLockedPeriod(currentActivity));
-        }
-
-        eventBus.fireEvent(new SiteEvent(AppEvents.SiteSelected, this, selectedSite));
-    }
-
     @Override
     protected void onBeforeLoad(CommandLoadEvent le) {
         super.onBeforeLoad(le);
@@ -245,7 +209,19 @@ public abstract class AbstractSiteEditor extends AbstractEditorGridPresenter<Sit
     public boolean beforeEdit(Record record, String property) {
         return isEditable((SiteDTO) record.getModel());
     }
+    
+    @Override
+    public Object getWidget() {
+        return view;
+    }
 
+    public ActivityDTO getCurrentActivity() {
+        return currentActivity;
+    }
+
+    private String stateId(String suffix) {
+        return "sitegridpage." + currentActivity.getId();
+    }
     @Override
     protected Command createSaveCommand() {
         BatchCommand batch = new BatchCommand();
@@ -324,4 +300,29 @@ public abstract class AbstractSiteEditor extends AbstractEditorGridPresenter<Sit
         String url = GWT.getModuleBaseURL() + "export?auth=#AUTH#&a=" + currentActivity.getId();
         eventBus.fireEvent(new DownloadRequestEvent("siteExport", url));
     }
+    
+
+	@Override
+	public void onSelectionChanged(ModelData selectedItem) {
+		if (selectedItem instanceof SiteDTO) {
+			SiteDTO selectedSite = (SiteDTO) selectedItem;
+	    	this.currentSite = selectedSite;
+	    	view.setSite(selectedSite);
+	    	
+	        if (selectedSite == null) {
+	            view.setActionEnabled(UIActions.delete, false);
+	            view.setActionEnabled(UIActions.edit, false);
+	        } else {
+	
+	            boolean editable = isEditable(selectedSite);
+	
+	            view.setActionEnabled(UIActions.delete, editable);
+	            view.setActionEnabled(UIActions.edit, editable);
+	            view.setActionEnabled(UIActions.showLockedPeriods, 
+	            		currentSite.fallsWithinLockedPeriod(currentActivity));
+	        }
+	
+	        eventBus.fireEvent(new SiteEvent(AppEvents.SiteSelected, this, selectedSite));
+		}
+	}
 }

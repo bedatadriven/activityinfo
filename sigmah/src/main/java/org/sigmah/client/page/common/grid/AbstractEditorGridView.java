@@ -13,7 +13,6 @@ import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreEvent;
-import com.extjs.gxt.ui.client.widget.grid.CellSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 
 public abstract class AbstractEditorGridView<M extends ModelData, P extends GridPresenter<M>>
@@ -56,15 +55,11 @@ public abstract class AbstractEditorGridView<M extends ModelData, P extends Grid
     }
 
     protected void onCellClick(GridEvent ge) {
-    	if(ge.getGrid().getSelectionModel() instanceof CellSelectionModel) {
-	        CellSelectionModel sm = (CellSelectionModel) ge.getGrid().getSelectionModel();
-	
-	        M selection = (M) sm.getSelectCell().model;
-	        if(lastSelection != selection) {
-	            lastSelection = selection;
-	            presenter.onSelectionChanged(selection); 
-	        }
-    	}
+    	M selection = (M) ge.getGrid().getSelectionModel().getSelectedItem();
+        if(lastSelection != selection) {
+            lastSelection = selection;
+            presenter.onSelectionChanged(selection); 
+        }
     }
  
     @Override

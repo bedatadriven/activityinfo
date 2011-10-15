@@ -125,13 +125,11 @@ public class SiteTreeGrid extends AbstractSiteGrid implements SiteTreeEditor.Vie
 
 	@Override
 	public void setSelection(int siteId) {
-		for (ModelData model : treePresenter.getStore().getAllItems()) {
-			Integer id = model.get("id");
-			if (id != null) {
-				SiteDTO selectedSite = (SiteDTO) model;
-				grid.getSelectionModel().select(selectedSite, false);
-				return;
-			}
+		ModelData model = treePresenter.getStore().findModel("id", siteId);
+		if (model != null) {
+			SiteDTO selectedSite = (SiteDTO) model;
+			grid.getSelectionModel().select(selectedSite, false);
+			return;
 		}
 	}
 
@@ -142,15 +140,10 @@ public class SiteTreeGrid extends AbstractSiteGrid implements SiteTreeEditor.Vie
 
 	@Override
 	public void update(SiteDTO updatedSite) {
-//		for (SiteDTO site : treePresenter.getStore().getAllItems()) {
-//			if (site instanceof MonthViewModel) {
-//				MonthViewModel month = (MonthViewModel)site;
-//				if (month.getYear() == site.getDate2().getYear() &&
-//						month.getMonth() == site.getDate2().getMonthOfYear()) {
-//					treePresenter.getStore().add(month, Arrays.asList(updatedSite), true);
-//				}
-//			}
-//		}
+		ModelData model = treePresenter.getStore().findModel(Integer.toString(updatedSite.getId()));
+		if (model !=null) {
+			treePresenter.getStore().update(model);
+		}
 	}
 
 	@Override
@@ -160,11 +153,10 @@ public class SiteTreeGrid extends AbstractSiteGrid implements SiteTreeEditor.Vie
 
 	@Override
 	public void remove(SiteDTO removedSite) {
-//		for (SiteDTO site : treePresenter.getStore().getAllItems()) {
-//			if (site.getId() == removedSite.getId()) {
-//				treePresenter.getStore().remove(site);
-//			}
-//		}
+		ModelData model = treePresenter.getStore().findModel(Integer.toString(removedSite.getId()));
+		if (model !=null) {
+			treePresenter.getStore().remove(model);
+		}
 	}
 
 	@Override
