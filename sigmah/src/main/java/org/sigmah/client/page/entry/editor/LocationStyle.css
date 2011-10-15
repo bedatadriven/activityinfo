@@ -12,6 +12,8 @@
 	vertical-align: middle;
 	font-size: 11px;
 	font-weight: bold;
+	white-space: nowrap;
+	overflow:hidden;
 }
 
 .locationAxe {
