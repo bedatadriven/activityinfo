@@ -15,18 +15,18 @@ public class WelcomeWidget extends HorizontalPanel {
 	}
 	private void initializeComponent() {
 		setSize("auto", "5em");
-		Label labelStartTitle = new Label("Info about your activities.");
-		labelStartTitle.setStyleName("dashboard-header-slogan");
+//		Label labelStartTitle = new Label("Info about your activities.");
+//		labelStartTitle.setStyleName("dashboard-header-slogan");
 		Label labelBeginName = new Label("Activity");
 		Label labelEndName = new Label("Info.");
 		labelEndName.setStyleName("dashboard-info-label");
 		Image image = IconImageBundle.ICONS.logo48().createImage();
 		image.setStyleName("dashboard-header-logo");
 		add(image);
-		add(labelStartTitle);
-		setCellVerticalAlignment(labelStartTitle, HasVerticalAlignment.ALIGN_MIDDLE);
-		labelStartTitle.setWidth("auto");
-		setCellWidth(labelStartTitle, "auto");
+//		add(labelStartTitle);
+//		setCellVerticalAlignment(labelStartTitle, HasVerticalAlignment.ALIGN_MIDDLE);
+//		labelStartTitle.setWidth("auto");
+//		setCellWidth(labelStartTitle, "auto");
 		add(labelBeginName);
 		setCellVerticalAlignment(labelBeginName, HasVerticalAlignment.ALIGN_MIDDLE);
 		add(labelEndName);
