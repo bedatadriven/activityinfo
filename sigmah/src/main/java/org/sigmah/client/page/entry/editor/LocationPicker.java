@@ -57,6 +57,7 @@ public class LocationPicker
 		LayoutContainer 
 	implements 
 		NewLocationPresenter, LocationSelectListener {
+	
 	private Dispatcher service;
 	private EventBus eventBus;
 
@@ -136,7 +137,7 @@ public class LocationPicker
 		buttonUseLocation.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent ce) {
-				useLocation();
+				callback.useLocation(selectedLocation);
 			}
 		});
 		buttonUseLocation.setIcon(IconImageBundle.ICONS.useLocation());
@@ -148,7 +149,7 @@ public class LocationPicker
 		buttonCancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent ce) {
-				cancel();
+				callback.cancel();
 			}
 		});
 		buttonCancel.setIcon(IconImageBundle.ICONS.cancel());
@@ -248,7 +249,6 @@ public class LocationPicker
 			.setAdminEntityIds(adminPresenter.getAdminEntityIds())
 			.setLocationTypeId(currentActivity.getLocationTypeId());
 		
-		System.out.println("Getting locations with following id's of adminEntities: ");
 		for (Integer id : adminPresenter.getAdminEntityIds()) {
 			System.out.println("id: " + id);
 		}
@@ -297,17 +297,8 @@ public class LocationPicker
 		locations = new LocationListView(this);
 		locations.setHeight("300px");
 		VBoxLayoutData vbldExistingLocations = new VBoxLayoutData();
-//		vbldExistingLocations.setFlex(0.5);
 		vbldExistingLocations.setMargins(new Margins(5,5,5,5));
 		leftContainer.add(locations, vbldExistingLocations);
-	}
-
-	protected void useLocation() {
-		callback.useLocation(selectedLocation);
-	}
-
-	protected void cancel() {
-		callback.cancel();
 	}
 
 	public Map<String, Object> getChanges() {

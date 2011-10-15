@@ -16,17 +16,18 @@ import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
 public class AttributeCheckBoxGroup extends CheckBoxGroup {
 
 	public AttributeCheckBoxGroup(AttributeGroupDTO group) {
-		
-		this.setFieldLabel(group.getName());
-		this.setOrientation(Orientation.VERTICAL);
-		
-		for(AttributeDTO attrib : group.getAttributes() ) {
+		if (group != null) {
+			this.setFieldLabel(group.getName());
+			this.setOrientation(Orientation.VERTICAL);
 			
-			CheckBox box = new CheckBox();
-			box.setBoxLabel(attrib.getName());
-			box.setName(attrib.getPropertyName());
-			
-			this.add(box);
+			for(AttributeDTO attrib : group.getAttributes() ) {
+				
+				CheckBox box = new CheckBox();
+				box.setBoxLabel(attrib.getName());
+				box.setName(attrib.getPropertyName());
+				
+				this.add(box);
+			}
 		}
 	}
 
