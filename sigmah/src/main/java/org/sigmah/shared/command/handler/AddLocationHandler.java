@@ -31,7 +31,7 @@ public class AddLocationHandler implements CommandHandlerAsync<AddLocation, Crea
 		LocationDTO2 newLocation = command.getLocation();
 		
 		SqlInsert.insertInto("Location")
-			.value("LocationId", locationId)
+			.value("LocationID", locationId)
 			.value("Name", newLocation.getName())
 			.value("Axe", newLocation.getAxe())
 			.value("Y", newLocation.getLatitude())
@@ -54,7 +54,7 @@ public class AddLocationHandler implements CommandHandlerAsync<AddLocation, Crea
 			if(property.getKey().startsWith(AdminLevelDTO.PROPERTY_PREFIX)) {
 				AdminEntityDTO entity =  (AdminEntityDTO) property.getValue();
 				if(entity != null) {
-					SqlInsert.insertInto("L(Integer)ocationAdminLink")
+					SqlInsert.insertInto("LocationAdminLink")
 						.value("AdminEntityId", entity.getId())
 						.value("Locationid", locationId)
 						.execute(tx);
