@@ -34,6 +34,7 @@ import com.google.common.collect.HashBiMap;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapType;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.control.SmallMapControl;
@@ -50,7 +51,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class MapFieldSet extends LayoutContainer implements MapEditView {
 	private EventBus eventBus = new SimpleEventBus();
 	private static final String markerColor = "#FF8673"; 
-	private static final String selectedMarkerColor = "#A61700";
+	private static final String selectedMarkerColor = "#00c90d";
 	private Icon defaultIcon;
     private ContentPanel panel;
     private MapWidget map = null;
@@ -343,8 +344,18 @@ public class MapFieldSet extends LayoutContainer implements MapEditView {
 				defaultIcon = marker.getIcon();
 			}
 			iconFactory.primaryColor = selectedMarkerColor;
-			Icon icon = iconFactory.createFlatIcon();
+			iconFactory.height = 48;
+			iconFactory.width = 48;
+			iconFactory.shape = "roundrect";
+			Icon icon = iconFactory.createMarkerIcon();
 			marker.setImage(icon.getImageURL());
+			marker.showMapBlowup(new InfoWindowContent(
+						I18N.CONSTANTS.location() + 
+						": <b>" + 
+						location.getName() + 
+						"</b>" + 
+						" " + 
+						location.getAxe()));
 			map.panTo(marker.getLatLng());
 			selectedMarker=marker;
 		}  else {

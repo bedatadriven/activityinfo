@@ -73,7 +73,9 @@ public class ShowLocationOnMap extends LayoutContainer {
 	private void updateUI() {
 		if (mapLoaded && location != null) {
 			if (location.hasCoordinates()) {
-				el().unmask();
+				if (isRendered()) {
+					el().unmask();
+				}
 				map.clearOverlays();
 				LatLng latLng = LatLng.newInstance(location.getLongitude(), location.getLatitude());
 		        MarkerOptions options = MarkerOptions.newInstance();
@@ -82,7 +84,9 @@ public class ShowLocationOnMap extends LayoutContainer {
 		        map.addOverlay(marker);
 		        map.panTo(latLng);
 			} else {
-				el().mask(I18N.CONSTANTS.noCoordinates());
+				if (isRendered()) {
+					el().mask(I18N.CONSTANTS.noCoordinates());
+				}
 			}
 		}
 	}
