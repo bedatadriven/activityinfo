@@ -27,7 +27,7 @@
             <url>http://nexus.bedatadriven.com/content/repositories/oss-releases</url>
         </repository>
         <snapshotRepository>
-            <id>bedatadriven-oss-snapshots</id>
+            <id>bedatadriven-snapshots</id>
             <name>bedatadriven Open-Source snapshots</name>
             <url>http://nexus.bedatadriven.com/content/repositories/oss-snapshots</url>
         </snapshotRepository>
