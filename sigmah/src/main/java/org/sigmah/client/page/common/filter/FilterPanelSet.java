@@ -28,14 +28,14 @@ public class FilterPanelSet implements FilterPanel {
 			manager = new HandlerManager(this);
 			myRegistrations = new ArrayList<HandlerRegistration>();
 			for(FilterPanel panel : panels) {
-				myRegistrations.add(panel.addValueChangeHandler(new ValueChangeHandler<Filter>() {
-					
+				HandlerRegistration registration = panel.addValueChangeHandler(new ValueChangeHandler<Filter>() {
 					@Override
 					public void onValueChange(ValueChangeEvent<Filter> event) {
 						Filter value = composeFilter(new Filter(), null);
 						ValueChangeEvent.fire(FilterPanelSet.this, value);
 					}
-				}));
+				});
+				myRegistrations.add(registration);
 			}
 		}
 		return manager;
@@ -80,7 +80,6 @@ public class FilterPanelSet implements FilterPanel {
 	public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Filter> handler) {
 		final HandlerRegistration reg = ensureHandlers().addHandler(ValueChangeEvent.getType(), handler);
 		return new HandlerRegistration() {
-			
 			@Override
 			public void removeHandler() {
 				reg.removeHandler();

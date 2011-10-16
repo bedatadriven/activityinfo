@@ -65,9 +65,8 @@ public class DataEntryLoader implements PageLoader {
             public void onSuccess() {
                 if (Frames.DataEntryFrameSet.equals(pageId)) {
                     loadFrame(pageState, callback);
-                }
-                if (SiteTreeGridPageState.SITE_TREE_VIEW.equals(pageId) || pageId.equals(SiteEditor.ID)) {
-                	loadFrame(pageState, callback);
+                    
+                } else if  (SiteTreeGridPageState.SITE_TREE_VIEW.equals(pageId) || pageId.equals(SiteEditor.ID)) {
                     loadSiteGrid(pageState, callback);
                     
                 } else if (SiteFormPage.EDIT_PAGE_ID.equals(pageId) || SiteFormPage.NEW_PAGE_ID.equals(pageId)) {

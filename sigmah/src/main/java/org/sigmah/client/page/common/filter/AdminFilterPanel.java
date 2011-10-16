@@ -7,6 +7,7 @@ package org.sigmah.client.page.common.filter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
@@ -15,8 +16,10 @@ import org.sigmah.client.page.common.filter.FilterToolBar.ApplyFilterEvent;
 import org.sigmah.client.page.common.filter.FilterToolBar.ApplyFilterHandler;
 import org.sigmah.client.page.common.filter.FilterToolBar.RemoveFilterEvent;
 import org.sigmah.client.page.common.filter.FilterToolBar.RemoveFilterHandler;
+import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dto.AdminEntityDTO;
+import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.report.model.DimensionType;
 
 import com.extjs.gxt.ui.client.Style;
@@ -27,6 +30,7 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -60,8 +64,33 @@ public class AdminFilterPanel extends ContentPanel implements FilterPanel {
         createAdminEntitiesTree();
         createFilterToolBar();
         
+        getData();
+        
         layout(true);
     }
+
+	private void getData() {
+		service.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				GWT.log("Failed to load admin entities", caught);
+			}
+
+			@Override
+			public void onSuccess(SchemaDTO result) {
+				Set<Integer> activities = filter.getRestrictions(DimensionType.Activity);
+				if(!activities.isEmpty()) {
+					loader.setCountry(result.getActivityById(activities.iterator().next()).getDatabase().getCountry());
+				} else if(!result.getCountries().isEmpty()) {
+					loader.setCountry(result.getCountries().iterator().next());
+				} else {
+					// TODO: support multiple countries!
+				}
+				loader.setFilter(filter);
+				loader.load();
+			}
+		});	
+	}
 
 	private void createAdminEntitiesTree() {
 		tree = new TreePanel<AdminEntityDTO>(store);
@@ -131,8 +160,7 @@ public class AdminFilterPanel extends ContentPanel implements FilterPanel {
     }
 
 	@Override
-	public HandlerRegistration addValueChangeHandler(
-			ValueChangeHandler<Filter> handler) {
+	public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Filter> handler) {
 		return addHandler(handler, ValueChangeEvent.getType());
 	}
 	
@@ -178,27 +206,7 @@ public class AdminFilterPanel extends ContentPanel implements FilterPanel {
 	public void applyBaseFilter(final Filter filter) {
 		if(baseFilter == null || !baseFilter.equals(filter)) {
 			baseFilter = filter;
-//			service.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
-//
-//				@Override
-//				public void onFailure(Throwable caught) {
-//					GWT.log("Failed to load admin entities", caught);
-//				}
-//
-//				@Override
-//				public void onSuccess(SchemaDTO result) {
-//					Set<Integer> activities = filter.getRestrictions(DimensionType.Activity);
-//					if(!activities.isEmpty()) {
-//						loader.setCountry(result.getActivityById(activities.iterator().next()).getDatabase().getCountry());
-//					} else if(!result.getCountries().isEmpty()) {
-//						loader.setCountry(result.getCountries().iterator().next());
-//					} else {
-//						// TODO: support multiple countries!
-//					}
-//					loader.setFilter(filter);
-//					loader.load();
-//				}
-//			});	
+
 		}
 	}
 	
