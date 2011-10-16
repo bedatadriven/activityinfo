@@ -33,7 +33,7 @@ public class SitesPerAdminEntityHandler implements CommandHandlerAsync<SitesPerA
 			.append(" left join location on site.locationid = location.locationid")
 			.append(" left join locationadminlink on site.locationid = locationadminlink.locationid")
 			.append(" left join adminentity on locationadminlink.adminentityid = adminentity.adminentityid")
-			.append(" where site.activityid="+ command.getActivityId() +" group by adminentity.adminentityId");
+			.append(" where site.activityid="+ command.getActivityId() +" and site.dateDeleted is null group by adminentity.adminentityId");
 		
 		context.getTransaction().executeSql(sb.toString(), new SqlResultCallback() {
 			
