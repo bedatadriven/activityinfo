@@ -21,7 +21,7 @@ public class SitesPerTimeHandler implements CommandHandlerAsync<SitesPerTime, Si
 	 */
 	@Override
 	public void execute(SitesPerTime command, ExecutionContext context, final AsyncCallback<SitesPerTimeResult> callback) {
-		context.getTransaction().executeSql("Select year(date2) as y, month(date2) as m, count(*) as c from site where site.activityid=" + command.getActivityId() + " group by y, m order by y desc, m desc", new SqlResultCallback() {
+		context.getTransaction().executeSql("Select year(date2) as y, month(date2) as m, count(*) as c from site where site.activityid=" + command.getActivityId() + " and dateDeleted is null group by y, m order by y desc, m desc", new SqlResultCallback() {
 			@Override
 			public void onSuccess(SqlTransaction tx, SqlResultSet results) {
 				List<YearResult> years = Lists.newArrayList();

@@ -118,8 +118,8 @@ public class TimeTreeProxy implements DataProxy<List<ModelData>> {
 		private void showMonthChildren(Object parent, final AsyncCallback<List<ModelData>> callback) {
 			MonthViewModel month = (MonthViewModel) parent;
 			GetSites getSites = new GetSites();
-			filter.setMinDate(new Date(month.getYear(), month.getMonth(), 1));
-			filter.setMaxDate(new Date(month.getYear(), month.getMonth(), 28));
+			filter.setMinDate(new Date(month.getYear(), month.getMonth() + 1, 1));
+			filter.setMaxDate(new Date(month.getYear(), month.getMonth() + 1, 28));
 			getSites.setFilter(filter);
 			getSites.setSortInfo(new SortInfo("date2", SortDir.DESC));
 			service.execute(getSites, null, new AsyncCallback<SiteResult>() {
@@ -227,9 +227,9 @@ public class TimeTreeProxy implements DataProxy<List<ModelData>> {
 			YearResult yearResult = byYear(result.getYears(), year);
 			for (MonthResult month : yearResult.getMonths()) {
 				months.add(new MonthViewModel()
-					.setName(DateTimeFormat.getFormat("MMMM yyyy").format(new Date(year -1900, month.getMonth(), 1)) + " " + "(" + month.getAmountSites() + ")")
+					.setName(DateTimeFormat.getFormat("MMMM yyyy").format(new Date(year -1900, month.getMonth() -1, 1)) + " " + "(" + month.getAmountSites() + ")")
 					.setYear(year)
-					.setMonth(month.getMonth()));
+					.setMonth(month.getMonth() - 1));
 			}
 			return months;
 		}
