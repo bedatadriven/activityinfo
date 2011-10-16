@@ -3,7 +3,6 @@ package org.sigmah.client.page.dashboard;
 import java.util.List;
 
 import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.shared.command.GetSitesWithoutCoordinates;
 import org.sigmah.shared.command.result.SitesWithoutLocationsResult;
 import org.sigmah.shared.dto.SiteDTO;
@@ -50,8 +49,8 @@ public class SitesWithoutLocations extends VerticalPanel {
 					for (SiteDTO site : data) {
 						HorizontalPanel panel = new HorizontalPanel();
 						panel.setSpacing(5);
-						panel.add(IconImageBundle.ICONS.edit().createImage());
-						panel.add(IconImageBundle.ICONS.site().createImage());
+//						panel.add(IconImageBundle.ICONS.edit().createImage());
+//						panel.add(IconImageBundle.ICONS.site().createImage());
 						panel.add(new Label(site.getLocationName()));
 						panel.add(new Label(DateTimeFormat.getFormat("yyyy-MMM-dd").format(site.getDateEdited())));
 						add(panel);
