@@ -40,6 +40,7 @@ public class ActionToolBar extends ToolBar implements Listener<ButtonEvent> {
     private Button buttonGroupTime;
     private Button buttonGroupAdminLevel;
     private Button buttonShowLockedPeriods;
+    private Button printButton;
 
     public ActionToolBar() {
     }
@@ -78,6 +79,10 @@ public class ActionToolBar extends ToolBar implements Listener<ButtonEvent> {
         this.editButton = addButton(UIActions.edit, I18N.CONSTANTS.edit(), icon);
     }
 
+    public void addPrintButton(){
+    	this.printButton = addButton(UIActions.print, I18N.CONSTANTS.printForm() ,IconImageBundle.ICONS.printer());
+    }
+    
     public void addDeleteButton() {
         this.removeButton = addButton(UIActions.delete, I18N.CONSTANTS.delete(), IconImageBundle.ICONS.delete());
     }
@@ -160,6 +165,12 @@ public class ActionToolBar extends ToolBar implements Listener<ButtonEvent> {
         } else {
             Log.warn("ActionToolBar: setActionEnabled(" + actionId + ") was called, but button is not present");
         }
+    }
+    
+    public void setPrintEnabled(boolean enabled){
+    	if(printButton != null){
+    		printButton.setEnabled(enabled);
+    	}
     }
     
     public void setDeleteEnabled(boolean enabled) {
