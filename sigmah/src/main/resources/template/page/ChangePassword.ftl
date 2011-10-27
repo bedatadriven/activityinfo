@@ -82,11 +82,7 @@
 <script type="text/javascript">
     try {
         var pageTracker = _gat._getTracker("UA-11567120-1");
-    <#if loginError == false>
-        pageTracker._trackPageview("login");
-        <#else>
-            pageTracker._trackPageview("login/error");
-    </#if>
+        pageTracker._trackPageview("changePassword");
     } catch(err) {
     }</script>
 </body>
