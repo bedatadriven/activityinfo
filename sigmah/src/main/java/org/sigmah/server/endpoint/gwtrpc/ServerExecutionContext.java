@@ -21,7 +21,7 @@ import com.bedatadriven.rebar.sql.server.jdbc.JdbcScheduler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Injector;
 
-class ServerExecutionContext implements ExecutionContext {
+public class ServerExecutionContext implements ExecutionContext {
 	
 	private User user;
 	private Injector injector;
