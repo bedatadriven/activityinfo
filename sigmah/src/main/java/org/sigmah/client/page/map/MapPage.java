@@ -144,8 +144,9 @@ public class MapPage extends LayoutContainer implements Page, ExportCallback, Ac
         toolbarMapActions.setActionEnabled(UIActions.exportData, false);
         
         AbsoluteData layout = new AbsoluteData();
-        layout.setLeft(LAYERS_STYLE_LEFT_MARGIN);
-        layout.setTop(10);
+        layout.setLeft(0);
+        layout.setTop(0);
+        layout.setAnchorSpec("none none"); 
         
         add(toolbarMapActions, layout);
     }
