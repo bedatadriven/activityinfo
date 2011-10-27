@@ -5,7 +5,7 @@
     <groupId>org.activityinfo</groupId>
     <artifactId>activityinfo-parent</artifactId>
     <packaging>pom</packaging>
-    <version>2.2.3-SNAPSHOT</version>
+    <version>2.2.6-SNAPSHOT</version>
     <name>ActivityInfo Parent POM</name>
     <licenses>
         <license>
@@ -27,7 +27,7 @@
             <url>http://nexus.bedatadriven.com/content/repositories/oss-releases</url>
         </repository>
         <snapshotRepository>
-            <id>bedatadriven-oss-snapshots</id>
+            <id>bedatadriven-snapshots</id>
             <name>bedatadriven Open-Source snapshots</name>
             <url>http://nexus.bedatadriven.com/content/repositories/oss-snapshots</url>
         </snapshotRepository>
