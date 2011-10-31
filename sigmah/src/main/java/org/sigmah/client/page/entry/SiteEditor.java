@@ -15,6 +15,7 @@ import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.common.grid.GridPresenter;
 import org.sigmah.client.page.common.toolbar.UIActions;
+import org.sigmah.client.page.entry.editor.PrintDataEntryForm;
 import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.BatchCommand;
 import org.sigmah.shared.command.Command;
@@ -202,7 +203,9 @@ public class SiteEditor extends AbstractSiteEditor implements Page, GridPresente
         } else if (UIActions.showLockedPeriods.equals(actionId)) {
         	view.showLockedPeriods(getLockedPeriods());
         } else if (UIActions.map.equals(actionId)) {
-
+        	
+        } else if (UIActions.print.equals(actionId)) {
+        	new PrintDataEntryForm(currentActivity, eventBus, service);
         }
     }
 

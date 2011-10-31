@@ -133,6 +133,5 @@ public class HibernateModule extends AbstractModule {
     protected HibernateEntityManager provideHibernateEntityManager(EntityManager entityManager) {
         return (HibernateEntityManager)entityManager;
     }
-
-    
+   
 }

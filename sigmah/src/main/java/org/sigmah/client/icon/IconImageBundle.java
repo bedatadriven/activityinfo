@@ -263,4 +263,5 @@ public interface IconImageBundle extends ImageBundle {
     AbstractImagePrototype list();
     AbstractImagePrototype drilldown();
     AbstractImagePrototype folder();
+    AbstractImagePrototype printer();
 }

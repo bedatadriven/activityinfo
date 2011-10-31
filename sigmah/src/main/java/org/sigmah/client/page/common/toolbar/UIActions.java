@@ -55,4 +55,7 @@ public class UIActions {
     public static final String treeGeo = "treeGeo";
 
     public static final String list = "sitesList";
+    public static final String print = "print";
+ 
+    public static final String mailingList = "mailingList";
 }
