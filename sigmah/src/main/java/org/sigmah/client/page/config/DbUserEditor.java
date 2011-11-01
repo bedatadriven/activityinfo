@@ -8,12 +8,10 @@ package org.sigmah.client.page.config;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.loader.PagingCmdLoader;
-import org.sigmah.client.event.DownloadRequestEvent;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.common.dialog.FormDialogCallback;
 import org.sigmah.client.page.common.dialog.FormDialogTether;
-import org.sigmah.client.page.common.dialog.MailingListDialog;
 import org.sigmah.client.page.common.grid.AbstractEditorGridPresenter;
 import org.sigmah.client.page.common.grid.GridPresenter;
 import org.sigmah.client.page.common.grid.GridView;
@@ -33,266 +31,224 @@ import com.extjs.gxt.ui.client.data.ModelKeyProvider;
 import com.extjs.gxt.ui.client.data.SortInfo;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Record;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
 
-public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO> implements
-		GridPresenter<UserPermissionDTO> {
-	public static final PageId DatabaseUsers = new PageId("dbusers");
+public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO>
+        implements GridPresenter<UserPermissionDTO> {
+    public static final PageId DatabaseUsers = new PageId("dbusers");
 
-	@ImplementedBy(DbUserGrid.class)
-	public interface View extends GridView<DbUserEditor, UserPermissionDTO> {
+    @ImplementedBy(DbUserGrid.class)
+    public interface View extends GridView<DbUserEditor, UserPermissionDTO> {
 
-		public void init(DbUserEditor presenter, UserDatabaseDTO db, ListStore<UserPermissionDTO> store);
+        public void init(DbUserEditor presenter, UserDatabaseDTO db, ListStore<UserPermissionDTO> store);
 
-		public FormDialogTether showNewForm(UserPermissionDTO user, FormDialogCallback callback);
-	}
+        public FormDialogTether showNewForm(UserPermissionDTO user, FormDialogCallback callback);
+    }
 
-	private final EventBus eventBus;
-	private final Dispatcher service;
-	private final View view;
+    private final EventBus eventBus;
+    private final Dispatcher service;
+    private final View view;
 
-	private UserDatabaseDTO db;
+    private UserDatabaseDTO db;
 
-	private ListStore<UserPermissionDTO> store;
-	private PagingCmdLoader<UserResult> loader;
+    private ListStore<UserPermissionDTO> store;
+    private PagingCmdLoader<UserResult> loader;
 
-	@Inject
-	public DbUserEditor(EventBus eventBus, Dispatcher service, StateProvider stateMgr, View view) {
-		super(eventBus, service, stateMgr, view);
-		this.eventBus = eventBus;
-		this.service = service;
-		this.view = view;
-	}
+    @Inject
+    public DbUserEditor(EventBus eventBus, Dispatcher service, StateProvider stateMgr, View view) {
+        super(eventBus, service, stateMgr, view);
+        this.eventBus = eventBus;
+        this.service = service;
+        this.view = view;
+    }
 
-	public void go(UserDatabaseDTO db, DbPageState place) {
-		this.db = db;
+    public void go(UserDatabaseDTO db, DbPageState place) {
+        this.db = db;
 
-		loader = new PagingCmdLoader<UserResult>(service);
-		loader.setCommand(new GetUsers(db.getId()));
-		initLoaderDefaults(loader, place, new SortInfo("name", Style.SortDir.ASC));
+        loader = new PagingCmdLoader<UserResult>(service);
+        loader.setCommand(new GetUsers(db.getId()));
+        initLoaderDefaults(loader, place, new SortInfo("name", Style.SortDir.ASC));
 
-		store = new ListStore<UserPermissionDTO>(loader);
-		store.setKeyProvider(new ModelKeyProvider<UserPermissionDTO>() {
-			public String getKey(UserPermissionDTO model) {
-				return model.getEmail();
-			}
-		});
+        store = new ListStore<UserPermissionDTO>(loader);
+        store.setKeyProvider(new ModelKeyProvider<UserPermissionDTO>() {
+            public String getKey(UserPermissionDTO model) {
+                return model.getEmail();
+            }
+        });
 
-		initListeners(store, loader);
+        initListeners(store, loader);
 
-		view.init(this, db, store);
-		view.setActionEnabled(UIActions.save, false);
-		view.setActionEnabled(UIActions.add, db.isManageUsersAllowed());
-		view.setActionEnabled(UIActions.delete, false);
+        view.init(this, db, store);
+        view.setActionEnabled(UIActions.save, false);
+        view.setActionEnabled(UIActions.add, db.isManageUsersAllowed());
+        view.setActionEnabled(UIActions.delete, false);
 
-		loader.load();
-	}
+        loader.load();
+    }
 
-	public void shutdown() {
-	}
+    public void shutdown() {
+    }
 
-	@Override
-	public ListStore<UserPermissionDTO> getStore() {
-		return store;
-	}
+    @Override
+    public ListStore<UserPermissionDTO> getStore() {
+        return store;
+    }
 
-	@Override
-	public int getPageSize() {
-		return 100;
-	}
+    @Override
+    public int getPageSize() {
+        return 100;
+    }
 
-	public boolean navigate(PageState place) {
-		DbPageState userPlace = (DbPageState) place;
+    public boolean navigate(PageState place) {
+        DbPageState userPlace = (DbPageState) place;
 
-		if (userPlace.getDatabaseId() == db.getId()) {
-			// internal nav
-			handleGridNavigation(loader, userPlace);
-			return true;
-		} else {
-			return false;
-		}
-	}
+        if (userPlace.getDatabaseId() == db.getId()) {
+            // internal nav
+            handleGridNavigation(loader, userPlace);
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	public void onSelectionChanged(UserPermissionDTO selectedItem) {
-		if (selectedItem != null) {
-			view.setActionEnabled(UIActions.delete,
-					db.isManageAllUsersAllowed()
-							|| (db.isManageUsersAllowed() && db.getMyPartnerId() == selectedItem.getPartner().getId()));
-		}
-		view.setActionEnabled(UIActions.delete, selectedItem != null);
-	}
+    public void onSelectionChanged(UserPermissionDTO selectedItem) {
+        if (selectedItem != null) {
+            view.setActionEnabled(UIActions.delete, db.isManageAllUsersAllowed() ||
+                    (db.isManageUsersAllowed() && db.getMyPartnerId() == selectedItem.getPartner().getId()));
+        }
+        view.setActionEnabled(UIActions.delete, selectedItem != null);
+    }
 
-	@Override
-	public void onUIAction(String actionId) {
-		super.onUIAction(actionId);
-		if (UIActions.export.equals(actionId)) {
-			onExport();
-		} else if (UIActions.mailingList.equals(actionId)) {
-			onMailingList();
-		}
-	}
+    @Override
+    public void onDeleteConfirmed(final UserPermissionDTO model) {
+        model.setAllowView(false);
+        model.setAllowViewAll(false);
+        model.setAllowEdit(false);
+        model.setAllowEditAll(false);
+        model.setAllowDesign(false);
+        model.setAllowManageAllUsers(false);
+        model.setAllowManageUsers(false);
 
-	@Override
-	public void onDeleteConfirmed(final UserPermissionDTO model) {
-		model.setAllowView(false);
-		model.setAllowViewAll(false);
-		model.setAllowEdit(false);
-		model.setAllowEditAll(false);
-		model.setAllowDesign(false);
-		model.setAllowManageAllUsers(false);
-		model.setAllowManageUsers(false);
+        service.execute(new UpdateUserPermissions(db.getId(), model), view.getDeletingMonitor(), new AsyncCallback<VoidResult>() {
+            public void onFailure(Throwable caught) {
+            }
 
-		service.execute(new UpdateUserPermissions(db.getId(), model), view.getDeletingMonitor(),
-				new AsyncCallback<VoidResult>() {
-					public void onFailure(Throwable caught) {
-					}
+            public void onSuccess(VoidResult result) {
+                store.remove(model);
+            }
+        });
+    }
 
-					public void onSuccess(VoidResult result) {
-						store.remove(model);
-					}
-				});
-	}
+    public boolean validateChange(UserPermissionDTO user, String property, boolean value) {
 
-	public boolean validateChange(UserPermissionDTO user, String property, boolean value) {
+        // If the user doesn't have the manageUser permission, then it's definitely
+        // a no.
+        if (!db.isManageUsersAllowed()) {
+            return false;
+        }
 
-		// If the user doesn't have the manageUser permission, then it's
-		// definitely
-		// a no.
-		if (!db.isManageUsersAllowed()) {
-			return false;
-		}
+        // if the user is only allowed to manager their own partners, then make
+        // sure they're changing someone from their own organisation
+        if (!db.isManageAllUsersAllowed() && db.getMyPartner().getId() != user.getPartner().getId()) {
+            return false;
+        }
 
-		// if the user is only allowed to manager their own partners, then make
-		// sure they're changing someone from their own organisation
-		if (!db.isManageAllUsersAllowed() && db.getMyPartner().getId() != user.getPartner().getId()) {
-			return false;
-		}
+        // do not allow users to set rights they themselves do not have
+        if ("allowViewAll".equals(property) && !db.isViewAllAllowed()) {
+            return false;
+        }
+        if ("allowEdit".equals(property) && !db.isEditAllowed()) {
+            return false;
+        }
+        if ("allowEditAll".equals(property) && !db.isEditAllAllowed()) {
+            return false;
+        }
+        if ("allowDesign".equals(property) && !db.isDesignAllowed()) {
+            return false;
+        }
+        if ("allowManageUsers".equals(property) && !db.isManageUsersAllowed()) {
+            return false;
+        }
+        if ("allowManageAllUsers".equals(property) && !db.isManageAllUsersAllowed()) {
+            return false;
+        }
 
-		// do not allow users to set rights they themselves do not have
-		if ("allowViewAll".equals(property) && !db.isViewAllAllowed()) {
-			return false;
-		}
-		if ("allowEdit".equals(property) && !db.isEditAllowed()) {
-			return false;
-		}
-		if ("allowEditAll".equals(property) && !db.isEditAllAllowed()) {
-			return false;
-		}
-		if ("allowDesign".equals(property) && !db.isDesignAllowed()) {
-			return false;
-		}
-		if ("allowManageUsers".equals(property) && !db.isManageUsersAllowed()) {
-			return false;
-		}
-		if ("allowManageAllUsers".equals(property) && !db.isManageAllUsersAllowed()) {
-			return false;
-		}
+        return true;
+    }
 
-		return true;
-	}
+    @Override
+    protected Command createSaveCommand() {
 
-	@Override
-	protected Command createSaveCommand() {
+        BatchCommand batch = new BatchCommand();
 
-		BatchCommand batch = new BatchCommand();
+        for (Record record : store.getModifiedRecords()) {
+            batch.add(new UpdateUserPermissions(db.getId(), (UserPermissionDTO) record.getModel()));
+        }
+        return batch;
+    }
 
-		for (Record record : store.getModifiedRecords()) {
-			batch.add(new UpdateUserPermissions(db.getId(), (UserPermissionDTO) record.getModel()));
-		}
-		return batch;
-	}
+    @Override
+    protected void onAdd() {
 
-	@Override
-	protected void onAdd() {
+        final UserPermissionDTO newUser = new UserPermissionDTO();
+        newUser.setAllowView(true);
 
-		final UserPermissionDTO newUser = new UserPermissionDTO();
-		newUser.setAllowView(true);
+        view.showNewForm(newUser, new FormDialogCallback() {
+            @Override
+            public void onValidated(final FormDialogTether dlg) {
+                service.execute(new UpdateUserPermissions(db, newUser), dlg, new AsyncCallback<VoidResult>() {
 
-		view.showNewForm(newUser, new FormDialogCallback() {
-			@Override
-			public void onValidated(final FormDialogTether dlg) {
-				service.execute(new UpdateUserPermissions(db, newUser), dlg, new AsyncCallback<VoidResult>() {
+                    public void onFailure(Throwable caught) {
+                    }
 
-					public void onFailure(Throwable caught) {
-					}
+                    public void onSuccess(VoidResult result) {
+                        loader.load();
+                        dlg.hide();
+                    }
+                });
+            }
+        });
 
-					public void onSuccess(VoidResult result) {
-						loader.load();
-						dlg.hide();
-					}
-				});
-			}
-		});
+    }
 
-	}
+    @Override
+    protected String getStateId() {
+        return "User" + db.getId();
+    }
 
-	protected void onMailingList() {
-		createMailingListPopup(CreateMailingList());
-	}
+    public PageId getPageId() {
+        return DatabaseUsers;
+    }
 
-	private String CreateMailingList() {
-		StringBuilder emails = new StringBuilder();
+    public Object getWidget() {
+        return view;
+    }
 
-		for (UserPermissionDTO dto : store.getModels()) {
-			emails.append("\"" + dto.getName() + "\"");
-			emails.append(" ");
-			emails.append("<" + dto.getEmail() + ">,");
-			emails.append(" ");
-		}
+    public String beforeWindowCloses() {
+        return null;
+    }
 
-		return emails.toString();
-	}
+    public void onRowEdit(String property, boolean value, Record record) {
+        record.beginEdit();
+        if (!value) {
+            // Cascade remove permissions
+            if ("allowViewAll".equals(property)) {
+                record.set("allowEditAll", false);
+            } else if ("allowEditAll".equals(property)) {
+                record.set("allowEdit", false);
+            }
+        } else {
+            // cascade add permissions
+            if ("allowEditAll".equals(property)) {
+                record.set("allowEdit", true);
+            }
+        }
 
-	private void createMailingListPopup(String emails) {
-		MailingListDialog dailog = new MailingListDialog(emails);
-		dailog.show();
-	}
 
-	protected void onExport() {
-		String url = GWT.getModuleBaseURL() + "export/users?auth=#AUTH#&dbUsers=" + db.getId() ;
-        eventBus.fireEvent(new DownloadRequestEvent("DatabaseUsersExport", url));
-        Window.alert("Export::>"+ url);
-	}
-
-	@Override
-	protected String getStateId() {
-		return "User" + db.getId();
-	}
-
-	public PageId getPageId() {
-		return DatabaseUsers;
-	}
-
-	public Object getWidget() {
-		return view;
-	}
-
-	public String beforeWindowCloses() {
-		return null;
-	}
-
-	public void onRowEdit(String property, boolean value, Record record) {
-		record.beginEdit();
-		if (!value) {
-			// Cascade remove permissions
-			if ("allowViewAll".equals(property)) {
-				record.set("allowEditAll", false);
-			} else if ("allowEditAll".equals(property)) {
-				record.set("allowEdit", false);
-			}
-		} else {
-			// cascade add permissions
-			if ("allowEditAll".equals(property)) {
-				record.set("allowEdit", true);
-			}
-		}
-
-		record.endEdit();
-		onDirtyFlagChanged(store.getModifiedRecords().size() != 0);
-	}
+        record.endEdit();
+        onDirtyFlagChanged(store.getModifiedRecords().size() != 0);
+    }
 
 }

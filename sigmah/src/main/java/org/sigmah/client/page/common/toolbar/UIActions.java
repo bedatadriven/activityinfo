@@ -49,6 +49,4 @@ public class UIActions {
     public static final String showLockedPeriods = "showLockedPeriods";
     
     public static final String print = "print";
- 
-    public static final String mailingList = "mailingList";
 }

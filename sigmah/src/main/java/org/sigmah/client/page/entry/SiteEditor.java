@@ -26,7 +26,6 @@ import org.sigmah.client.page.common.filter.NullFilterPanel;
 import org.sigmah.client.page.common.grid.AbstractEditorGridPresenter;
 import org.sigmah.client.page.common.grid.GridView;
 import org.sigmah.client.page.common.toolbar.UIActions;
-import org.sigmah.client.page.entry.editor.PrintDataEntryForm;
 import org.sigmah.client.page.entry.editor.SiteFormLoader;
 import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.BatchCommand;
@@ -362,7 +361,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
         } else if (UIActions.showLockedPeriods.equals(actionId)) {
         	view.showLockedPeriods(getLockedPeriods());
         } else if (UIActions.print.equals(actionId)){
-        	onPrintDataEntryForm();
+        	Window.alert("Hello Print me!");
         }
         else if (UIActions.map.equals(actionId)) {
 
@@ -457,15 +456,5 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
     private void onExport() {
         String url = GWT.getModuleBaseURL() + "export?auth=#AUTH#&a=" + currentActivity.getId();
         eventBus.fireEvent(new DownloadRequestEvent("siteExport", url));
-    }
-    
-//  www.activityinfo.org/export/dataEntryForm?activity=101
-    private void onPrintDataEntryForm(){
-    
-    	PrintDataEntryForm dataEntryfromPrint = new PrintDataEntryForm(currentActivity,eventBus, service);
-    	
-    	//String url = GWT.getModuleBaseURL() + "export/dataEntryForm?activity=" + currentActivity.getId();
-    	//Window.open(url, "Print Data EntryForm", "_blank");
-   		
     }
 }
