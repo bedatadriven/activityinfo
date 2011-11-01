@@ -8,20 +8,15 @@ package org.sigmah.server.servlet;
 import java.io.File;
 import java.io.FileOutputStream;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-import org.hibernate.ejb.HibernateEntityManager;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.dao.OnDataSet;
-import org.sigmah.server.dao.hibernate.HibernateSiteTableDAO;
-import org.sigmah.server.endpoint.export.Export;
-import org.sigmah.server.endpoint.gwtrpc.CommandTestCase;
+import org.sigmah.server.endpoint.export.SiteExporter;
+import org.sigmah.server.endpoint.gwtrpc.CommandTestCase2;
 import org.sigmah.shared.command.GetSchema;
-import org.sigmah.shared.command.handler.GetSchemaHandlerSync;
 import org.sigmah.shared.dao.SqlDialect;
-import org.sigmah.shared.dao.SiteTableDAO;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.SchemaDTO;
@@ -30,22 +25,10 @@ import org.sigmah.test.InjectionSupport;
 
 import com.google.inject.Inject;
 
-/**
- * @author Alex Bertram
- */
+
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/sites-simple1.db.xml")
-public class ExportIntegrationTest extends CommandTestCase {
-
-    @Inject
-    private EntityManagerFactory emf;
-
-    @Inject
-    private SqlDialect dialect;
-
-    @Inject
-    private GetSchemaHandlerSync getSchemaHandler;
-
+public class ExportIntegrationTest extends CommandTestCase2 {
 
     @Test
     public void fullTest() throws Throwable {
@@ -55,11 +38,9 @@ public class ExportIntegrationTest extends CommandTestCase {
         user.setId(1);
         user.setName("Alex");
 
-        EntityManager em = emf.createEntityManager();
-        SchemaDTO schema = (SchemaDTO) getSchemaHandler.execute(new GetSchema(), user);
-        SiteTableDAO siteDAO = new HibernateSiteTableDAO((HibernateEntityManager)em, dialect);
-
-        Export export = new Export(user, siteDAO);
+        SchemaDTO schema = execute(new GetSchema());
+       
+        SiteExporter export = new SiteExporter(getDispatcherSync());
         for (UserDatabaseDTO db : schema.getDatabases()) {
             for (ActivityDTO activity : db.getActivities()) {
                 export.export(activity);
@@ -72,8 +53,5 @@ public class ExportIntegrationTest extends CommandTestCase {
         FileOutputStream fos = new FileOutputStream("target/report-test/ExportTest.xls");
         export.getBook().write(fos);
         fos.close();
-
     }
-
-
 }

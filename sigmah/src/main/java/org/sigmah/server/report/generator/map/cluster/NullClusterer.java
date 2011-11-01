@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.sigmah.server.report.generator.map.RadiiCalculator;
 import org.sigmah.server.report.generator.map.TiledMap;
+import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.report.model.PointValue;
-import org.sigmah.shared.report.model.SiteData;
 
 /**
  * Does not cluster at all, rather maps points 1:1 to clusters
@@ -36,7 +36,7 @@ public class NullClusterer implements Clusterer {
 	}
 
 	@Override
-	public boolean isMapped(SiteData site) {
+	public boolean isMapped(SiteDTO site) {
 		return site.hasLatLong();
 	}
 }

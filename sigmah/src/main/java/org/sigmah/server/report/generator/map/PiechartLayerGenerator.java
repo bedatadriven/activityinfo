@@ -11,6 +11,7 @@ import org.sigmah.server.report.generator.map.cluster.Cluster;
 import org.sigmah.server.report.generator.map.cluster.Clusterer;
 import org.sigmah.server.report.generator.map.cluster.ClustererFactory;
 import org.sigmah.server.report.generator.map.cluster.genetic.MarkerGraph;
+import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.BubbleMapMarker;
 import org.sigmah.shared.report.content.DimensionCategory;
@@ -23,7 +24,6 @@ import org.sigmah.shared.report.content.Point;
 import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.MapSymbol;
 import org.sigmah.shared.report.model.PointValue;
-import org.sigmah.shared.report.model.SiteData;
 import org.sigmah.shared.report.model.layers.PiechartMapLayer;
 import org.sigmah.shared.report.model.layers.PiechartMapLayer.Slice;
 import org.sigmah.shared.report.model.layers.ScalingType;
@@ -33,9 +33,9 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
 
     private MapReportElement element;
     private PiechartMapLayer layer;
-	private List<SiteData> sites;
+	private List<SiteDTO> sites;
 
-    public PiechartLayerGenerator(MapReportElement element, PiechartMapLayer layer, List<SiteData> sites) {
+    public PiechartLayerGenerator(MapReportElement element, PiechartMapLayer layer, List<SiteDTO> sites) {
         this.element = element;
         this.layer = layer;
         this.sites=sites;
@@ -46,7 +46,7 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
         // PRE---PASS - calculate extents of sites WITH non-zero
         // values for this indicator
         Extents extents = Extents.emptyExtents();
-        for(SiteData site : sites) {
+        for(SiteDTO site : sites) {
             if (site.hasLatLong() && hasValue(site, layer.getIndicatorIds())) {
                 extents.grow(site.getLatitude(), site.getLongitude());
             }
@@ -132,7 +132,7 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
 
     	// TODO: rework method for piechart (copy/pasted from bubblelayer)
     	
-        for(SiteData site : sites) {
+        for(SiteDTO site : sites) {
             if(hasValue(site, layer.getIndicatorIds())) {
                 Point px = null;
                 
@@ -184,7 +184,7 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
         }
     }
     
-    private void calulateSlices(PointValue pv, SiteData site) {
+    private void calulateSlices(PointValue pv, SiteDTO site) {
         pv.slices = new ArrayList<PieMapMarker.SliceValue>();
         
         for(Slice slice : layer.getSlices()) {

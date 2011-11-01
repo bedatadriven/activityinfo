@@ -14,9 +14,9 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.sigmah.server.report.generator.map.cluster.genetic.MarkerGraph;
+import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.model.PointValue;
-import org.sigmah.shared.report.model.SiteData;
 import org.sigmah.shared.util.mapping.Extents;
 import org.sigmah.shared.util.mapping.TileMath;
 
@@ -58,7 +58,7 @@ public class ComplexPoints {
 
             PointValue pv = new PointValue();
             pv.value = value;
-            pv.site = new SiteData();
+            pv.site = new SiteDTO();
             points.add(pv);
 
             originalSum += value;

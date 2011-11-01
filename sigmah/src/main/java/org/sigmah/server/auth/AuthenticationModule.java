@@ -6,6 +6,7 @@
 package org.sigmah.server.auth;
 
 import org.sigmah.server.auth.impl.DatabaseAuthenticator;
+import org.sigmah.shared.auth.AuthenticatedUser;
 
 import com.google.inject.AbstractModule;
 
@@ -20,5 +21,6 @@ public class AuthenticationModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(Authenticator.class).to(DatabaseAuthenticator.class);
+        bind(AuthenticatedUser.class).toProvider(ServerSideAuthProvider.class);
     }
 }

@@ -10,12 +10,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.PieMapMarker;
 import org.sigmah.shared.report.content.Point;
 
 public class PointValue {
-    public SiteData site;
+    public SiteDTO site;
     public MapSymbol symbol;
     public double value;
     public Point px;
@@ -26,21 +27,21 @@ public class PointValue {
     public PointValue() {
     }
 
-    public PointValue(SiteData site, MapSymbol symbol, double value, Point px) {
+    public PointValue(SiteDTO site, MapSymbol symbol, double value, Point px) {
         this.site = site;
         this.symbol = symbol;
         this.value = value;
         this.px = px;
     }
     
-    public PointValue(SiteData site, Point px, Rectangle iconRect) {
+    public PointValue(SiteDTO site, Point px, Rectangle iconRect) {
         this.site = site;
         this.px = px;
         this.iconRect = iconRect;
         this.value = 1;
     }
     
-    public PointValue(SiteData site, Point px, Rectangle iconRect, double value) {
+    public PointValue(SiteDTO site, Point px, Rectangle iconRect, double value) {
     	this(site, px, iconRect);
     	
         this.value = value;

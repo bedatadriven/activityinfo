@@ -17,11 +17,11 @@ import org.sigmah.server.report.generator.map.cluster.genetic.BubbleFitnessFunct
 import org.sigmah.server.report.generator.map.cluster.genetic.GeneticSolver;
 import org.sigmah.server.report.generator.map.cluster.genetic.MarkerGraph;
 import org.sigmah.server.report.generator.map.cluster.genetic.UpperBoundsCalculator;
+import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.Point;
 import org.sigmah.shared.report.model.MapSymbol;
 import org.sigmah.shared.report.model.PointValue;
-import org.sigmah.shared.report.model.SiteData;
 
 /*
 * Real example that didn't work.
@@ -35,11 +35,11 @@ public class CoincidentPointsClusterTest extends GraphTest {
     public void testSimpleData() throws Exception {
     	
     	List<PointValue> points = new ArrayList<PointValue>();
-        points.add(new PointValue(new SiteData(), new MapSymbol(), 7.0, new Point(0, 0)));
-        points.add(new PointValue(new SiteData(), new MapSymbol(), 2.0, new Point(0, 0)));
-        points.add(new PointValue(new SiteData(), new MapSymbol(), 41.0, new Point(100, 100)));
-        points.add(new PointValue(new SiteData(), new MapSymbol(), 9.0, new Point(0, 0)));
-        points.add(new PointValue(new SiteData(), new MapSymbol(), 39.0, new Point(100, 100)));
+        points.add(new PointValue(new SiteDTO(), new MapSymbol(), 7.0, new Point(0, 0)));
+        points.add(new PointValue(new SiteDTO(), new MapSymbol(), 2.0, new Point(0, 0)));
+        points.add(new PointValue(new SiteDTO(), new MapSymbol(), 41.0, new Point(100, 100)));
+        points.add(new PointValue(new SiteDTO(), new MapSymbol(), 9.0, new Point(0, 0)));
+        points.add(new PointValue(new SiteDTO(), new MapSymbol(), 39.0, new Point(100, 100)));
 
         double originalSum = 7 + 2 + 9 + 41 + 39;
 
@@ -94,7 +94,7 @@ public class CoincidentPointsClusterTest extends GraphTest {
             pv.px = map.fromLatLngToPixel(new AiLatLng(lat, lng));
             pv.value = Double.parseDouble(columns[2]);
             pv.symbol = new MapSymbol();
-            pv.site = new SiteData();
+            pv.site = new SiteDTO();
 
             originalSum += pv.value;
 

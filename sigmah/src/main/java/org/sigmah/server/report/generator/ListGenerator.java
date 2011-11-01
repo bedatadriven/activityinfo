@@ -6,7 +6,6 @@
 package org.sigmah.server.report.generator;
 
 import org.sigmah.server.command.DispatcherSync;
-import org.sigmah.shared.dao.SiteTableDAO;
 import org.sigmah.shared.report.model.ReportElement;
 
 import com.google.inject.Inject;
@@ -24,13 +23,9 @@ public abstract class ListGenerator<ElementT extends ReportElement>
         extends BaseGenerator<ElementT> {
 
 
-    protected final SiteTableDAO siteDAO;
-
     @Inject
-    public ListGenerator(DispatcherSync dispatcher, SiteTableDAO siteDAO) {
+    public ListGenerator(DispatcherSync dispatcher) {
         super(dispatcher);
-
-        this.siteDAO = siteDAO;
     }
 
 }

@@ -6,8 +6,8 @@
 package org.sigmah.client.page;
 
 import org.sigmah.client.EventBus;
-import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.event.DownloadRequestEvent;
+import org.sigmah.shared.auth.AuthenticatedUser;
 
 import com.extjs.gxt.ui.client.core.El;
 import com.extjs.gxt.ui.client.event.EventType;
@@ -29,10 +29,10 @@ import com.google.inject.Singleton;
 public class DownloadManager {
 
     public static final EventType DownloadRequested = new EventBus.NamedEventType("DownloadRequested");
-    private final Authentication auth;
+    private final AuthenticatedUser auth;
 
     @Inject
-    public DownloadManager(EventBus eventBus, Authentication auth) {
+    public DownloadManager(EventBus eventBus, AuthenticatedUser auth) {
         this.auth = auth;
 
         eventBus.addListener(DownloadRequested, new Listener<DownloadRequestEvent>() {

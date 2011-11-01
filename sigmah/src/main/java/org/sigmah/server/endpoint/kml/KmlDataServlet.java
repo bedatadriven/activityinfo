@@ -8,7 +8,6 @@ package org.sigmah.server.endpoint.kml;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -21,24 +20,20 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.codec.binary.Base64;
 import org.sigmah.server.auth.Authenticator;
+import org.sigmah.server.command.DispatcherSync;
 import org.sigmah.server.domain.DomainFilters;
-import org.sigmah.server.report.generator.SiteDataBinder;
 import org.sigmah.server.report.util.HtmlWriter;
 import org.sigmah.server.util.KMLNamespace;
 import org.sigmah.server.util.XmlBuilder;
 import org.sigmah.shared.command.GetSchema;
-import org.sigmah.shared.command.handler.GetSchemaHandlerSync;
-import org.sigmah.shared.dao.Filter;
-import org.sigmah.shared.dao.SiteOrder;
-import org.sigmah.shared.dao.SiteTableColumn;
-import org.sigmah.shared.dao.SiteTableDAO;
+import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.dao.UserDAO;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.SchemaDTO;
+import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.exception.CommandException;
-import org.sigmah.shared.report.model.SiteData;
 import org.xml.sax.SAXException;
 
 import com.google.inject.Inject;
@@ -60,6 +55,9 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
     @Inject
     private Injector injector;
 
+    @Inject
+    private DispatcherSync dispatcher;
+    
     public void doGet(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
         PrintWriter out = res.getWriter();
@@ -144,10 +142,9 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
 
         XmlBuilder xml = new XmlBuilder(new StreamResult(out));
 
-        GetSchemaHandlerSync schemaHandler = injector.getInstance(GetSchemaHandlerSync.class);
-        SchemaDTO schema = (SchemaDTO) schemaHandler.execute(new GetSchema(), user);
-
-        List<SiteData> sites = querySites(user, schema);
+        SchemaDTO schema = dispatcher.execute(new GetSchema());
+        		
+        List<SiteDTO> sites = querySites(user, schema);
 
         xml.startDocument();
 
@@ -163,7 +160,7 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
         int lastActivityId = -1;
         ActivityDTO activity = null;
 
-        for (SiteData pm : sites) {
+        for (SiteDTO pm : sites) {
 
             if (pm.hasLatLong()) {
 
@@ -171,15 +168,15 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
                     xml.close();
                 }
 
-                if (pm.getDatabaseId() != lastDatabaseId) {
-                    if (lastDatabaseId != -1) {
-                        xml.close();
-                    }
-                    kml.startFolder();
-                    kml.name(schema.getDatabaseById(pm.getDatabaseId()).getName());
-                    kml.open(true);
-                    lastDatabaseId = pm.getDatabaseId();
-                }
+//                if (pm.getDatabaseId() != lastDatabaseId) {
+//                    if (lastDatabaseId != -1) {
+//                        xml.close();
+//                    }
+//                    kml.startFolder();
+//                    kml.name(schema.getDatabaseById(pm.getDatabaseId()).getName());
+//                    kml.open(true);
+//                    lastDatabaseId = pm.getDatabaseId();
+//                }
 
                 if (pm.getActivityId() != lastActivityId) {
                     kml.startFolder();
@@ -202,8 +199,8 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
                 xml.close();  // Description
 
                 kml.startTimeSpan();
-                kml.begin(pm.getDate1());
-                kml.end(pm.getDate2());
+                kml.begin(pm.getDate1().atMidnightInMyTimezone());
+                kml.end(pm.getDate2().atMidnightInMyTimezone());
                 xml.close(); // Timespan
 
                 kml.startPoint();
@@ -228,23 +225,23 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
 
     }
 
-    private String renderSnippet(ActivityDTO activity, SiteData pm) {
+    private String renderSnippet(ActivityDTO activity, SiteDTO pm) {
         return activity.getName() + " à " + pm.getLocationName() + " (" + pm.getPartnerName() + ")";
     }
 
-    private List<SiteData> querySites(User user, SchemaDTO schema) {
+    private List<SiteDTO> querySites(User user, SchemaDTO schema) {
 
-        List<SiteOrder> order = new ArrayList<SiteOrder>();
-        order.add(SiteOrder.ascendingOn(SiteTableColumn.database_name.property()));
-        order.add(SiteOrder.ascendingOn(SiteTableColumn.activity_name.property()));
-        order.add(SiteOrder.ascendingOn(SiteTableColumn.date2.property()));
+    	GetSites query = new GetSites();
+    	
+//        List<SiteOrder> order = new ArrayList<SiteOrder>();
+//        order.add(SiteOrder.ascendingOn(SiteTableColumn.database_name.property()));
+//        order.add(SiteOrder.ascendingOn(SiteTableColumn.activity_name.property()));
+//        order.add(SiteOrder.ascendingOn(SiteTableColumn.date2.property()));
 
-        SiteTableDAO siteDAO = injector.getInstance(SiteTableDAO.class);
-        return siteDAO.query(user, new Filter(), order, new SiteDataBinder(), SiteTableDAO.RETRIEVE_ALL, 0, -1);
-
+        return dispatcher.execute(new GetSites()).getData();
     }
 
-    private String renderDescription(ActivityDTO activity, SiteData data) {
+    private String renderDescription(ActivityDTO activity, SiteDTO data) {
         HtmlWriter html = new HtmlWriter();
 
         html.startTable();

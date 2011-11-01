@@ -3,6 +3,9 @@ package org.sigmah.server.endpoint.gwtrpc;
 import java.util.Collections;
 import java.util.List;
 
+import javax.management.RuntimeErrorException;
+
+import org.sigmah.server.command.DispatcherSync;
 import org.sigmah.server.database.TestDatabaseModule;
 import org.sigmah.server.database.dao.UserDAO;
 import org.sigmah.server.util.LocaleHelper;
@@ -77,6 +80,20 @@ public class CommandTestCase2 {
         }
 
         return (T) result;
+    }
+    
+    public DispatcherSync getDispatcherSync() {
+    	return new DispatcherSync() {
+			
+			@Override
+			public <C extends Command<R>, R extends CommandResult> R execute(C command) {
+				try {
+					return (R)CommandTestCase2.this.execute(command);
+				} catch (CommandException e) {
+					throw new RuntimeException(e);
+				}
+			}
+		};
     }
 
 }

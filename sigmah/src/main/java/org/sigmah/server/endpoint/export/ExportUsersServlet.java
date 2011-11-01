@@ -18,15 +18,8 @@ import org.sigmah.server.dao.AuthenticationDAO;
 import org.sigmah.server.domain.Authentication;
 import org.sigmah.server.domain.DomainFilters;
 import org.sigmah.server.endpoint.gwtrpc.handler.HandlerUtil;
-import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.command.GetUsers;
 import org.sigmah.shared.command.result.UserResult;
-import org.sigmah.shared.dao.SiteTableDAO;
-import org.sigmah.shared.dto.ActivityDTO;
-import org.sigmah.shared.dto.SchemaDTO;
-import org.sigmah.shared.dto.UserDatabaseDTO;
-import org.sigmah.shared.dto.UserPermissionDTO;
-import org.sigmah.shared.exception.CommandException;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;

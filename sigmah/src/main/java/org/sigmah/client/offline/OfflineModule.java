@@ -5,11 +5,11 @@
 
 package org.sigmah.client.offline;
 
-import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.offline.command.HandlerRegistry;
 import org.sigmah.client.offline.sync.Synchronizer;
 import org.sigmah.client.offline.sync.SynchronizerImpl;
 import org.sigmah.client.offline.ui.OfflineView;
+import org.sigmah.shared.auth.AuthenticatedUser;
 
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlDatabaseFactory;
@@ -31,8 +31,8 @@ public class OfflineModule extends AbstractGinModule {
     
     @Provides
     @Singleton
-    protected SqlDatabase provideSqlDatabase(Authentication auth) {
+    protected SqlDatabase provideSqlDatabase(AuthenticatedUser auth) {
     	SqlDatabaseFactory factory = GWT.create(SqlDatabaseFactory.class);
-    	return factory.open(auth.getLocalDbName());
+    	return factory.open("user" + auth.getUserId());
     }
 }

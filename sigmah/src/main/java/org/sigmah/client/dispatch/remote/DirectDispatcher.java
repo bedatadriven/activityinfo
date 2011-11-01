@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.shared.auth.AuthenticatedUser;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.RemoteCommandServiceAsync;
 import org.sigmah.shared.command.result.CommandResult;
@@ -23,11 +24,11 @@ import com.google.inject.Inject;
  * or retrying.
  */
 public class DirectDispatcher implements Dispatcher {
-    private final Authentication auth;
+    private final AuthenticatedUser auth;
     private final RemoteCommandServiceAsync service;
 
     @Inject
-    public DirectDispatcher(Authentication auth, RemoteCommandServiceAsync service) {
+    public DirectDispatcher(AuthenticatedUser auth, RemoteCommandServiceAsync service) {
         this.auth = auth;
         this.service = service;
     }

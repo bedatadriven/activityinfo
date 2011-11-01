@@ -21,12 +21,14 @@ import org.sigmah.server.report.generator.map.LayerGenerator;
 import org.sigmah.server.report.generator.map.Margins;
 import org.sigmah.server.report.generator.map.PiechartLayerGenerator;
 import org.sigmah.server.report.generator.map.TiledMap;
+import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dao.IndicatorDAO;
 import org.sigmah.shared.dao.SiteTableDAO;
 import org.sigmah.shared.domain.Indicator;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.IndicatorDTO;
+import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.map.BaseMap;
 import org.sigmah.shared.map.GoogleBaseMap;
 import org.sigmah.shared.map.PredefinedBaseMaps;
@@ -37,7 +39,6 @@ import org.sigmah.shared.report.content.MapMarker;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.MapReportElement;
-import org.sigmah.shared.report.model.SiteData;
 import org.sigmah.shared.report.model.layers.BubbleMapLayer;
 import org.sigmah.shared.report.model.layers.IconMapLayer;
 import org.sigmah.shared.report.model.layers.MapLayer;
@@ -56,10 +57,10 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
 	private final IndicatorDAO indicatorDAO;
 
     private static final Logger logger = Logger.getLogger(MapGenerator.class);
-    
+        
     @Inject
-    public MapGenerator(DispatcherSync dispatcher, SiteTableDAO siteDAO, BaseMapDAO baseMapDAO, IndicatorDAO indicatorDAO) {
-        super(dispatcher, siteDAO);
+    public MapGenerator(DispatcherSync dispatcher, BaseMapDAO baseMapDAO, IndicatorDAO indicatorDAO) {
+        super(dispatcher);
         this.baseMapDAO = baseMapDAO;
         this.indicatorDAO = indicatorDAO;
     }
@@ -80,12 +81,7 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         		// Add indicator
         		Filter layerFilter = new Filter(effectiveFilter, layer.getFilter());
         		//filter.addRestriction(DimensionType.Indicator, layer.getIndicatorIds());
-                List<SiteData> sites = siteDAO.query(
-                        user,
-                        layerFilter,
-                        null,
-                        new SiteDataBinder(),
-                        SiteTableDAO.RETRIEVE_ALL, 0, -1);
+                List<SiteDTO> sites = dispatcher.execute(new GetSites(layerFilter)).getData();
                 
 	            if (layer instanceof BubbleMapLayer) {
 	                layerGenerators.add(new BubbleLayerGenerator(element, (BubbleMapLayer) layer, sites));

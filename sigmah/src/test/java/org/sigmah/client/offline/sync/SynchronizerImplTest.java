@@ -6,7 +6,6 @@ import static org.easymock.EasyMock.replay;
 import org.junit.Before;
 import org.junit.Test;
 import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.dispatch.remote.DirectDispatcher;
 import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.mock.MockEventBus;
@@ -14,6 +13,7 @@ import org.sigmah.client.offline.command.CommandQueue;
 import org.sigmah.client.offline.command.HandlerRegistry;
 import org.sigmah.client.offline.command.LocalDispatcher;
 import org.sigmah.database.ClientDatabaseStubs;
+import org.sigmah.shared.auth.AuthenticatedUser;
 
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
 
@@ -21,13 +21,13 @@ public class SynchronizerImplTest {
 
 	
 	private HandlerRegistry registry;
-	private Authentication auth;
+	private AuthenticatedUser auth;
 	private MockEventBus eventBus;
 
 	@Before
 	public void setUp() {
 		registry = new HandlerRegistry();
-		auth = new Authentication(1, "XYZ123", "akbertram@gmail.com");
+		auth = new AuthenticatedUser(1, "XYZ123", "akbertram@gmail.com");
 		eventBus = new MockEventBus();
 	}
 

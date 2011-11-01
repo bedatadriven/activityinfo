@@ -3,12 +3,13 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.client.inject;
+package org.sigmah.client.auth;
 
-import org.sigmah.client.dispatch.remote.Authentication;
+import org.sigmah.shared.auth.AuthenticatedUser;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.i18n.client.Dictionary;
+import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.Cookies;
 import com.google.inject.Provider;
 
@@ -19,31 +20,37 @@ import com.google.inject.Provider;
  *
  * @author Alex Bertram
  */
-public class AuthProvider implements Provider<Authentication> {
+public class ClientSideAuthProvider implements Provider<AuthenticatedUser> {
 
-    public Authentication get() {
+    public AuthenticatedUser get() {
 
         if (Cookies.getCookie("authToken") != null &&
                 Cookies.getCookie("userId") != null &&
                 Cookies.getCookie("email") != null) {
 
-            return new Authentication(
-                    Integer.parseInt(Cookies.getCookie("userId")),
+            return new AuthenticatedUser(
                     Cookies.getCookie("authToken"),
-                    Cookies.getCookie("email"));
+            		Integer.parseInt(Cookies.getCookie("userId")),
+                    Cookies.getCookie("email"),
+                    currentLocale());
 
         }
 
         Dictionary userInfo;
         try {
             userInfo = Dictionary.getDictionary("UserInfo");
-            return new Authentication(
-                    Integer.parseInt(userInfo.get("userId")),
+            return new AuthenticatedUser(
                     userInfo.get("authToken"),
-                    userInfo.get("email"));
+            		Integer.parseInt(userInfo.get("userId")),
+                    userInfo.get("email"),
+                    currentLocale());
         } catch (Exception e) {
             Log.fatal("DictionaryAuthenticationProvider: exception retrieving dictionary from page", e);
             throw new Error();
         }
+    }
+    
+    private String currentLocale() {
+    	return LocaleInfo.getCurrentLocale().getLocaleName();
     }
 }

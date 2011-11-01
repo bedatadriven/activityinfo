@@ -31,13 +31,16 @@ public class TableGenerator extends ListGenerator<TableElement> {
 
     protected IndicatorDAO indicatorDAO;
     protected MapGenerator mapGenerator;
+    
+    private SiteTableDAO siteDAO;
 
     @Inject
-    public TableGenerator(DispatcherSync dispatcher, SiteTableDAO siteDAO, IndicatorDAO indicatorDAO,
+    public TableGenerator(DispatcherSync dispatcher, SiteTableDAO siteTableDAO, IndicatorDAO indicatorDAO,
                           MapGenerator mapGenerator) {
-        super(dispatcher, siteDAO);
+        super(dispatcher);
         this.indicatorDAO = indicatorDAO;
         this.mapGenerator = mapGenerator;
+        this.siteDAO = siteTableDAO;
     }
 
     @Override

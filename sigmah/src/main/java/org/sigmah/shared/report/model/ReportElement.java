@@ -51,7 +51,6 @@ import org.sigmah.shared.report.content.Content;
  * </ol>
  *
  * @author Alex Bertram
- * @see org.sigmah.shared.dao.SiteTableDAO
  * @see org.sigmah.server.report.generator.ReportGenerator
  * @see org.sigmah.shared.report.content.Content
  * @see org.sigmah.server.report.renderer.Renderer

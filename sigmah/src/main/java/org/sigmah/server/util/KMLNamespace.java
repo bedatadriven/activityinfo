@@ -10,6 +10,8 @@ import java.util.Date;
 
 import org.xml.sax.SAXException;
 
+import com.bedatadriven.rebar.time.calendar.LocalDate;
+
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
@@ -115,9 +117,8 @@ public class KMLNamespace {
     }
 
     public KMLNamespace begin(Date value) throws SAXException {
-           return s("begin", xmlDateFormat.format(value));
-       }
-
+    	return s("begin", xmlDateFormat.format(value));
+    }
 
     public KMLNamespace end(Date value) throws SAXException {
         return s("end", xmlDateFormat.format(value));

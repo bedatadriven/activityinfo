@@ -5,11 +5,7 @@
 
 package org.sigmah.server.endpoint.export;
 
-import static java.util.Collections.singletonList;
-import static org.sigmah.shared.dao.SiteOrder.descendingOn;
-
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -25,28 +21,29 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.sigmah.server.report.generator.SiteDataBinder;
+import org.sigmah.server.command.DispatcherSync;
+import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.dao.Filter;
-import org.sigmah.shared.dao.SiteTableColumn;
-import org.sigmah.shared.dao.SiteTableDAO;
-import org.sigmah.shared.domain.AdminEntity;
-import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.ActivityDTO;
+import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.AttributeDTO;
 import org.sigmah.shared.dto.AttributeGroupDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.IndicatorGroup;
+import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.report.model.DimensionType;
-import org.sigmah.shared.report.model.SiteData;
+
+import com.bedatadriven.rebar.time.calendar.LocalDate;
+import com.extjs.gxt.ui.client.Style.SortDir;
+import com.extjs.gxt.ui.client.data.SortInfo;
 
 /**
  * @author Alex Bertram
  */
-public class Export {
+public class SiteExporter {
 
-    public final User user;
-    public final SiteTableDAO siteDAO;
+    public final DispatcherSync dispatcher;
 
     public final HSSFWorkbook book;
     public final CreationHelper creationHelper;
@@ -74,9 +71,8 @@ public class Export {
     private List<Integer> attributes;
     private List<Integer> levels;
 
-    public Export(User user, SiteTableDAO siteDAO) {
-        this.user = user;
-        this.siteDAO = siteDAO;
+    public SiteExporter(DispatcherSync dispatcher) {
+        this.dispatcher = dispatcher;
 
         book = new HSSFWorkbook();
         creationHelper = book.getCreationHelper();
@@ -228,10 +224,6 @@ public class Export {
                 }
             }
         }
-//        sheet.getSheetConditionalFormatting().addConditionalFormatting(
-//                new CellRangeAddress[] { new CellRangeAddress(2, 65535, firstAttributeColumn, column-1) },
-//                new HSSFConditionalFormattingRule[] { attribTrueRule, attribFalseRule });
-
 
         levels = new ArrayList<Integer>();
         for (AdminLevelDTO level : activity.getAdminLevels()) {
@@ -246,14 +238,16 @@ public class Export {
 
     }
 
-    private List<SiteData> querySites(ActivityDTO activity) {
+    private List<SiteDTO> querySites(ActivityDTO activity) {
 
         Filter filter = new Filter();
         filter.addRestriction(DimensionType.Activity, activity.getId());
 
-        return siteDAO.query(user, filter,
-                singletonList(descendingOn(SiteTableColumn.date2.property())),
-                new SiteDataBinder(), SiteTableDAO.RETRIEVE_ALL, 0, -1);
+        GetSites query = new GetSites();
+        query.setFilter(filter);
+        query.setSortInfo(new SortInfo("date2", SortDir.DESC));
+        
+        return dispatcher.execute(query).getData();
     }
 
     private void createDataRows(ActivityDTO activity, Sheet sheet) {
@@ -263,7 +257,7 @@ public class Export {
         HSSFPatriarch patr = ((HSSFSheet) sheet).createDrawingPatriarch();
 
         int rowIndex = 2;
-        for (SiteData site : querySites(activity)) {
+        for (SiteDTO site : querySites(activity)) {
 
             Row row = sheet.createRow(rowIndex++);
             int column = 0;
@@ -297,9 +291,9 @@ public class Export {
             }
 
             for (Integer levelId : levels) {
-                AdminEntity entity = site.adminEntities.get(levelId);
+                AdminEntityDTO entity = site.getAdminEntity(levelId);
                 if (entity != null) {
-                    createCell(row, column, entity.getCode());
+                    createCell(row, column, "");
                     createCell(row, column + 1, entity.getName());
                 }
                 column += 2;
@@ -349,16 +343,11 @@ public class Export {
         return cell;
     }
 
-    private Cell createCell(Row row, int columnIndex, String text, CellStyle style) {
-        Cell cell = createCell(row, columnIndex, text);
-        cell.setCellStyle(style);
-        return cell;
-    }
-
-
-    private void createCell(Row row, int columnIndex, Date date) {
+    private void createCell(Row row, int columnIndex, LocalDate date) {
         Cell cell = row.createCell(columnIndex);
-        cell.setCellValue(date);
+        if(date != null) {
+        	cell.setCellValue(date.atMidnightInMyTimezone());
+        }
         cell.setCellStyle(dateStyle);
     }
 

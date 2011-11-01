@@ -7,9 +7,9 @@ package org.sigmah.client;
 
 
 
-import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.inject.AppInjector;
 import org.sigmah.client.util.state.SafeStateProvider;
+import org.sigmah.shared.auth.AuthenticatedUser;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.GXT;
@@ -87,7 +87,7 @@ public class ActivityInfoEntryPoint implements EntryPoint {
 		});
 	}
 
-    private void updateOlarkInfo(Authentication authentication) {
+    private void updateOlarkInfo(AuthenticatedUser authentication) {
     	try {
 	    	OlarkApi.updateEmailAddress(authentication.getEmail());
 	    	//OlarkApi.updateFullName(authentication.getUserName());
