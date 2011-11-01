@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.sigmah.server.dao.PivotDAO;
+import org.sigmah.server.command.DispatcherSync;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dao.IndicatorDAO;
 import org.sigmah.shared.dao.SiteOrder;
@@ -33,9 +33,9 @@ public class TableGenerator extends ListGenerator<TableElement> {
     protected MapGenerator mapGenerator;
 
     @Inject
-    public TableGenerator(PivotDAO pivotDAO, SiteTableDAO siteDAO, IndicatorDAO indicatorDAO,
+    public TableGenerator(DispatcherSync dispatcher, SiteTableDAO siteDAO, IndicatorDAO indicatorDAO,
                           MapGenerator mapGenerator) {
-        super(pivotDAO, siteDAO);
+        super(dispatcher, siteDAO);
         this.indicatorDAO = indicatorDAO;
         this.mapGenerator = mapGenerator;
     }
@@ -65,7 +65,6 @@ public class TableGenerator extends ListGenerator<TableElement> {
         }
         element.setContent(content);
     }
-
 
     protected List<SiteOrder> resolveOrder(TableElement element) {
         List<SiteOrder> list = new ArrayList<SiteOrder>();
@@ -100,6 +99,4 @@ public class TableGenerator extends ListGenerator<TableElement> {
 
         return data;
     }
-
-
 }

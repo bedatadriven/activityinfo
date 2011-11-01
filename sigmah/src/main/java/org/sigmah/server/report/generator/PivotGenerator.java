@@ -8,9 +8,10 @@ package org.sigmah.server.report.generator;
 import java.util.List;
 import java.util.Locale;
 
-import org.sigmah.server.dao.PivotDAO;
+import org.sigmah.server.command.DispatcherSync;
+import org.sigmah.shared.command.PivotSites;
+import org.sigmah.shared.command.PivotSites.PivotResult;
 import org.sigmah.shared.command.handler.pivot.PivotTableDataBuilder;
-import org.sigmah.shared.command.result.Bucket;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.report.content.PivotTableData;
 import org.sigmah.shared.report.model.Dimension;
@@ -21,8 +22,8 @@ import org.sigmah.shared.report.model.PivotReportElement;
  */
 public abstract class PivotGenerator<T extends PivotReportElement> extends BaseGenerator<T> {
 
-	public PivotGenerator(PivotDAO pivotDAO) {
-        super(pivotDAO);
+	public PivotGenerator(DispatcherSync dispatcher) {
+        super(dispatcher);
     }
 
     protected PivotTableData generateData(int userId, Locale locale,
@@ -30,11 +31,9 @@ public abstract class PivotGenerator<T extends PivotReportElement> extends BaseG
                                           Filter filter,
                                           List<Dimension> rowDims, List<Dimension> colDims) {
 
-        List<Bucket> buckets = pivotDAO.aggregate(
-                userId, filter,
-                element.allDimensions());
+    	PivotResult result = dispatcher.execute(new PivotSites(element.allDimensions(), filter));
     	
     	PivotTableDataBuilder builder = new PivotTableDataBuilder();
-        return builder.build(element, rowDims, colDims, buckets);
+        return builder.build(element, rowDims, colDims, result.getBuckets());
     }
 }

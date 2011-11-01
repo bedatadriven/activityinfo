@@ -6,7 +6,7 @@
 package org.sigmah.server.report.generator;
 
 
-import org.sigmah.server.dao.PivotDAO;
+import org.sigmah.server.command.DispatcherSync;
 import org.sigmah.server.util.LocaleHelper;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.domain.User;
@@ -20,8 +20,8 @@ import com.google.inject.Inject;
 public class PivotTableGenerator extends PivotGenerator<PivotTableReportElement> {
 
     @Inject
-    public PivotTableGenerator(PivotDAO pivotDAO) {
-        super(pivotDAO);
+    public PivotTableGenerator(DispatcherSync dispatcher) {
+        super(dispatcher);
     }
 
     @Override
@@ -43,6 +43,4 @@ public class PivotTableGenerator extends PivotGenerator<PivotTableReportElement>
 		content.setData(data);
         element.setContent(content);
     }
-
-
 }

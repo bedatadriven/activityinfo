@@ -9,9 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.sigmah.server.dao.PivotDAO;
+import org.sigmah.server.command.DispatcherSync;
 import org.sigmah.server.report.util.DateRangeFormat;
 import org.sigmah.server.util.LocaleHelper;
+import org.sigmah.shared.command.GetDimensionLabels;
+import org.sigmah.shared.command.GetDimensionLabels.DimensionLabels;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.report.content.FilterDescription;
@@ -28,13 +30,12 @@ import com.google.inject.Inject;
  */
 public abstract class BaseGenerator<T extends ReportElement> implements ContentGenerator<T> {
 
-    protected final PivotDAO pivotDAO;
+    protected final DispatcherSync dispatcher;
 
     @Inject
-    public BaseGenerator(PivotDAO pivotDAO) {
-        this.pivotDAO = pivotDAO;
+    public BaseGenerator(DispatcherSync dispatcher) {
+        this.dispatcher = dispatcher;
     }
-
     
     protected List<FilterDescription> generateFilterDescriptions(Filter filter, Set<DimensionType> excludeDims, User user) {
         List<FilterDescription> list = new ArrayList<FilterDescription>();
@@ -43,9 +44,8 @@ public abstract class BaseGenerator<T extends ReportElement> implements ContentG
         filterDims.removeAll(excludeDims);
         
         for (DimensionType type : filterDims) {
-            list.add(new FilterDescription(
-                    type,
-                    pivotDAO.getFilterLabels(type, filter.getRestrictions(type))));
+        	DimensionLabels labels = dispatcher.execute(new GetDimensionLabels(type, filter.getRestrictions(type)));
+        	list.add(new FilterDescription(type, labels.getLabels()));
         }
 
         if (filter.getMinDate() != null || filter.getMaxDate() != null) {
@@ -82,5 +82,4 @@ public abstract class BaseGenerator<T extends ReportElement> implements ContentG
             return template;
         }
 	}
-
 }

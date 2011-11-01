@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.sigmah.server.command.DispatcherSync;
 import org.sigmah.server.dao.BaseMapDAO;
-import org.sigmah.server.dao.PivotDAO;
 import org.sigmah.server.report.generator.map.BubbleLayerGenerator;
 import org.sigmah.server.report.generator.map.IconLayerGenerator;
 import org.sigmah.server.report.generator.map.LayerGenerator;
@@ -58,8 +58,8 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
     private static final Logger logger = Logger.getLogger(MapGenerator.class);
     
     @Inject
-    public MapGenerator(PivotDAO pivotDAO, SiteTableDAO siteDAO, BaseMapDAO baseMapDAO, IndicatorDAO indicatorDAO) {
-        super(pivotDAO, siteDAO);
+    public MapGenerator(DispatcherSync dispatcher, SiteTableDAO siteDAO, BaseMapDAO baseMapDAO, IndicatorDAO indicatorDAO) {
+        super(dispatcher, siteDAO);
         this.baseMapDAO = baseMapDAO;
         this.indicatorDAO = indicatorDAO;
     }

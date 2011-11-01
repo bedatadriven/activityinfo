@@ -19,7 +19,7 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.sigmah.server.dao.PivotDAO;
+import org.sigmah.server.command.DispatcherSync;
 import org.sigmah.server.report.generator.map.MockBaseMapDAO;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dao.IndicatorDAO;
@@ -58,7 +58,7 @@ public class TableGeneratorTest {
         TableElement table = new TableElement();
         table.addColumn(new TableColumn("Location", "location.name"));
 
-        TableGenerator gtor = new TableGenerator(createPivotDAO(), new MockSiteTableDAO(), createIndicator(), null);
+        TableGenerator gtor = new TableGenerator(createDispatcher(), new MockSiteTableDAO(), createIndicator(), null);
         gtor.generate(user, table, null, null);
 
         Assert.assertNotNull("content is set", table.getContent());
@@ -86,8 +86,8 @@ public class TableGeneratorTest {
         map.addLayer(layer);
         table.setMap(map);
 
-        TableGenerator gtor = new TableGenerator(createPivotDAO(), new MockSiteTableDAO(), createIndicator(),
-                new MapGenerator(createPivotDAO(), new MockSiteTableDAO(), new MockBaseMapDAO(), new MockIndicatorDAO()));
+        TableGenerator gtor = new TableGenerator(createDispatcher(), new MockSiteTableDAO(), createIndicator(),
+                new MapGenerator(createDispatcher(), new MockSiteTableDAO(), new MockBaseMapDAO(), new MockIndicatorDAO()));
         gtor.generate(user, table, null, null);
 
         MapContent mapContent = map.getContent();
@@ -108,10 +108,10 @@ public class TableGeneratorTest {
         return indicatorDAO;
     }
 
-    private PivotDAO createPivotDAO() {
-        PivotDAO pivotDAO = createNiceMock(PivotDAO.class);
-        replay(pivotDAO);
-        return pivotDAO;
+    private DispatcherSync createDispatcher() {
+        DispatcherSync dispatcher = createNiceMock(DispatcherSync.class);
+        replay(dispatcher);
+        return dispatcher;
     }
 
     private class MockSiteTableDAO implements SiteTableDAO {
@@ -145,6 +145,4 @@ public class TableGeneratorTest {
             return 0;
         }
     }
-
-
 }

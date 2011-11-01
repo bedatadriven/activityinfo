@@ -5,7 +5,7 @@
 
 package org.sigmah.server.report.generator;
 
-import org.sigmah.server.dao.PivotDAO;
+import org.sigmah.server.command.DispatcherSync;
 import org.sigmah.server.util.LocaleHelper;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dao.IndicatorDAO;
@@ -23,8 +23,8 @@ public class PivotChartGenerator extends PivotGenerator<PivotChartReportElement>
     protected final IndicatorDAO indicatorDAO;
 
     @Inject
-    public PivotChartGenerator(PivotDAO pivotDAO, IndicatorDAO indicatorDAO) {
-        super(pivotDAO);
+    public PivotChartGenerator(DispatcherSync dispatcher, IndicatorDAO indicatorDAO) {
+        super(dispatcher);
 
         this.indicatorDAO = indicatorDAO;
     }
