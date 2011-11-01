@@ -7,8 +7,8 @@ package org.sigmah.client.page.config;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.dispatch.callback.DownloadCallback;
 import org.sigmah.client.dispatch.loader.PagingCmdLoader;
-import org.sigmah.client.event.DownloadRequestEvent;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.common.dialog.FormDialogCallback;
@@ -21,10 +21,12 @@ import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.BatchCommand;
 import org.sigmah.shared.command.Command;
+import org.sigmah.shared.command.ExportUsers;
 import org.sigmah.shared.command.GetUsers;
 import org.sigmah.shared.command.UpdateUserPermissions;
 import org.sigmah.shared.command.result.UserResult;
 import org.sigmah.shared.command.result.VoidResult;
+import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 import org.sigmah.shared.dto.UserPermissionDTO;
 
@@ -34,8 +36,6 @@ import com.extjs.gxt.ui.client.data.ModelKeyProvider;
 import com.extjs.gxt.ui.client.data.SortInfo;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Record;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
@@ -118,25 +118,10 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO>
 		}
 	}
 
-	public void onSelectionChanged(ModelData selectedModel) {
-		UserPermissionDTO selectedItem = (UserPermissionDTO)selectedModel;
-		if (selectedItem != null) {
-			view.setActionEnabled(UIActions.delete,
-					db.isManageAllUsersAllowed()
-							|| (db.isManageUsersAllowed() && db.getMyPartnerId() == selectedItem.getPartner().getId()));
-		}
-		view.setActionEnabled(UIActions.delete, selectedItem != null);
-	}
-
-	@Override
-	public void onUIAction(String actionId) {
-		super.onUIAction(actionId);
-		if (UIActions.export.equals(actionId)) {
-			onExport();
-		} else if (UIActions.mailingList.equals(actionId)) {
-			onMailingList();
-		}
-	}
+	//
+	// public void onSelectionChanged(UserPermissionDTO selectedItem) {
+	//
+	// }
 
 	@Override
 	public void onDeleteConfirmed(final UserPermissionDTO model) {
@@ -232,34 +217,6 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO>
 
 	}
 
-	protected void onMailingList() {
-		createMailingListPopup(CreateMailingList());
-	}
-
-	private String CreateMailingList() {
-		StringBuilder emails = new StringBuilder();
-
-		for (UserPermissionDTO dto : store.getModels()) {
-			emails.append("\"" + dto.getName() + "\"");
-			emails.append(" ");
-			emails.append("<" + dto.getEmail() + ">,");
-			emails.append(" ");
-		}
-
-		return emails.toString();
-	}
-
-	private void createMailingListPopup(String emails) {
-		MailingListDialog dailog = new MailingListDialog(emails);
-		dailog.show();
-	}
-
-	protected void onExport() {
-		String url = GWT.getModuleBaseURL() + "export/users?auth=#AUTH#&dbUsers=" + db.getId() ;
-        eventBus.fireEvent(new DownloadRequestEvent("DatabaseUsersExport", url));
-        Window.alert("Export::>"+ url);
-	}
-
 	@Override
 	protected String getStateId() {
 		return "User" + db.getId();
@@ -297,5 +254,39 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO>
 		onDirtyFlagChanged(store.getModifiedRecords().size() != 0);
 	}
 
+	@Override
+	public void onUIAction(String actionId) {
+		super.onUIAction(actionId);
+
+		if (actionId.equals(UIActions.export)) {
+			ExportUsers exportUsers = new ExportUsers().setDatabaseId(db.getId()).setShowPermissions(true);
+			service.execute(exportUsers, null, new DownloadCallback(eventBus));
+		} else if (UIActions.mailingList.equals(actionId)) {
+
+			onMailingList();
+		}
+
+	}
+
+	protected void onMailingList() {
+		createMailingListPopup();
+	}
+
+	
+	private void createMailingListPopup() {
+		MailingListDialog dailog = new MailingListDialog(eventBus, service, db.getId());
+	}
+
+	@Override
+	public void onSelectionChanged(ModelData selectedItem) {
+		if (selectedItem instanceof PartnerDTO) {
+			PartnerDTO selectedPartner = (PartnerDTO) selectedItem;
+			if (selectedItem != null) {
+				view.setActionEnabled(UIActions.delete, db.isManageAllUsersAllowed()
+						|| (db.isManageUsersAllowed() && db.getMyPartnerId() == selectedPartner.getId()));
+			}
+			view.setActionEnabled(UIActions.delete, selectedItem != null);
+		}
+	}
 
 }

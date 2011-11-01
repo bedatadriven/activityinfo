@@ -171,6 +171,7 @@ public class SiteEditor extends AbstractSiteEditor implements Page, GridPresente
         view.setActionEnabled(UIActions.add, currentActivity.getDatabase().isEditAllowed());
         view.setActionEnabled(UIActions.edit, false);
         view.setActionEnabled(UIActions.delete, false);
+        view.setActionEnabled(UIActions.print, false);
     }
 
     private boolean isEditable(SiteDTO selectedSite) {
@@ -203,12 +204,16 @@ public class SiteEditor extends AbstractSiteEditor implements Page, GridPresente
         } else if (UIActions.showLockedPeriods.equals(actionId)) {
         	view.showLockedPeriods(getLockedPeriods());
         } else if (UIActions.map.equals(actionId)) {
-        	
-        } else if (UIActions.print.equals(actionId)) {
-        	new PrintDataEntryForm(currentActivity, eventBus, service);
+
+        }else if (UIActions.print.equals(actionId)){
+          onPrintDataEntryForm();
         }
     }
-
+	
+   private void onPrintDataEntryForm(){
+    	PrintDataEntryForm dataEntryfromPrint = new PrintDataEntryForm(currentActivity,eventBus, service);
+   }
+    
     @Override
     protected void onDeleteConfirmed(final SiteDTO site) {
         service.execute(new Delete(site), view.getDeletingMonitor(), new AsyncCallback<VoidResult>() {

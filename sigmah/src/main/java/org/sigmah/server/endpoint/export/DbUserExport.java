@@ -7,6 +7,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.dto.UserPermissionDTO;
 
 public class DbUserExport extends Exporter {
@@ -54,18 +55,16 @@ public class DbUserExport extends Exporter {
 		// / The HEADER rows
 		Row headerRow = sheet.createRow(0);
 		int column = 0;
-		createHeaderCell(headerRow, column++, "userid", CellStyle.ALIGN_RIGHT);
-		createHeaderCell(headerRow, column++, "name", CellStyle.ALIGN_RIGHT);
-		createHeaderCell(headerRow, column++, "firstName", CellStyle.ALIGN_RIGHT);
-		createHeaderCell(headerRow, column++, "email", CellStyle.ALIGN_RIGHT);
-		createHeaderCell(headerRow, column++, "partner", CellStyle.ALIGN_RIGHT);
-		createHeaderCell(headerRow, column++, "allowView", CellStyle.ALIGN_RIGHT);
-		createHeaderCell(headerRow, column++, "allowViewAll", CellStyle.ALIGN_RIGHT);
-		createHeaderCell(headerRow, column++, "allowDesign", CellStyle.ALIGN_RIGHT);
-		createHeaderCell(headerRow, column++, "allowEdit", CellStyle.ALIGN_RIGHT);
-		createHeaderCell(headerRow, column++, "allowEditAll", CellStyle.ALIGN_RIGHT);
-		createHeaderCell(headerRow, column++, "allowManageUsers", CellStyle.ALIGN_RIGHT);
-		createHeaderCell(headerRow, column++, "allowManageAllUsers", CellStyle.ALIGN_RIGHT);
+		createHeaderCell(headerRow, column++, I18N.CONSTANTS.name(), CellStyle.ALIGN_RIGHT);
+		createHeaderCell(headerRow, column++, I18N.CONSTANTS.email(), CellStyle.ALIGN_RIGHT);
+		createHeaderCell(headerRow, column++, I18N.CONSTANTS.partner(), CellStyle.ALIGN_RIGHT);
+		createHeaderCell(headerRow, column++, I18N.CONSTANTS.allowView(), CellStyle.ALIGN_RIGHT);
+		createHeaderCell(headerRow, column++, I18N.CONSTANTS.allowViewAll(), CellStyle.ALIGN_RIGHT);
+		createHeaderCell(headerRow, column++, I18N.CONSTANTS.allowDesign(), CellStyle.ALIGN_RIGHT);
+		createHeaderCell(headerRow, column++, I18N.CONSTANTS.allowEdit(), CellStyle.ALIGN_RIGHT);
+		createHeaderCell(headerRow, column++, I18N.CONSTANTS.allowEditAll(), CellStyle.ALIGN_RIGHT);
+		createHeaderCell(headerRow, column++, I18N.CONSTANTS.allowManageUsers(), CellStyle.ALIGN_RIGHT);
+		createHeaderCell(headerRow, column++, I18N.CONSTANTS.allowManageAllUsers(), CellStyle.ALIGN_RIGHT);
 		
 		sheet.setColumnWidth(column, 12 * 256);
 		sheet.setColumnWidth(column + 1, 12 * 256);
@@ -83,9 +82,7 @@ public class DbUserExport extends Exporter {
 
 			Row row = sheet.createRow(rowIndex++);
 			int column = 0;
-			createCell(row, column++, "");
 			createCell(row, column++, user.getName());
-			createCell(row, column++, user.getFirstName());
 			createCell(row, column++, user.getEmail());
 			createCell(row, column++, String.valueOf(user.getPartner()));
 			createCell(row, column++, String.valueOf(user.getAllowView()));

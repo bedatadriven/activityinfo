@@ -170,6 +170,7 @@ public abstract class AbstractSiteEditor extends AbstractEditorGridPresenter<Sit
 		view.setActionEnabled(UIActions.add, currentActivity.getDatabase().isEditAllowed());
         view.setActionEnabled(UIActions.edit, false);
         view.setActionEnabled(UIActions.delete, false);
+        view.setActionEnabled(UIActions.print, false);
 	}
 
     protected void onLoaded(LoadEvent le) {
@@ -319,7 +320,8 @@ public abstract class AbstractSiteEditor extends AbstractEditorGridPresenter<Sit
 	            view.setActionEnabled(UIActions.delete, editable);
 	            view.setActionEnabled(UIActions.edit, editable);
 	            view.setActionEnabled(UIActions.showLockedPeriods, 
-	            		currentSite.fallsWithinLockedPeriod(currentActivity));
+	            currentSite.fallsWithinLockedPeriod(currentActivity));
+	            view.setActionEnabled(UIActions.print, editable);
 	        }
 	
 	        eventBus.fireEvent(new SiteEvent(AppEvents.SiteSelected, this, selectedSite));

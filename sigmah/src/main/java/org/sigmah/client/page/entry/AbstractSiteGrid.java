@@ -125,14 +125,13 @@ public abstract class AbstractSiteGrid
         
         toolBar.addButton(UIActions.add, I18N.CONSTANTS.newSite(), IconImageBundle.ICONS.add());
         toolBar.addEditButton();
-        toolBar.addPrintButton();
         toolBar.addDeleteButton(I18N.CONSTANTS.deleteSite());
 
         toolBar.add(new SeparatorToolItem());
 
         toolBar.addExcelExportButton();
         toolBar.addLockedPeriodsButton();
-
+        toolBar.addPrintButton();
         toolBar.add(new SeparatorToolItem());
         
         togglebuttonList = toolBar.addToggleButton(UIActions.list, I18N.CONSTANTS.list(), IconImageBundle.ICONS.list()); 
