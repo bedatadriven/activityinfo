@@ -9,7 +9,7 @@
     <parent>
        <groupId>org.activityinfo</groupId>
        <artifactId>activityinfo-parent</artifactId>
-       <version>2.2.8-SNAPSHOT</version>
+       <version>2.2.8</version>
     </parent>
     
     <description>Web-based database platform for program monitoring and reporting for the UN,
