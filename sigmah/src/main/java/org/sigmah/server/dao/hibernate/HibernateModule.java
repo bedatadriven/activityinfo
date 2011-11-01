@@ -13,7 +13,6 @@ import javax.persistence.Persistence;
 
 import org.hibernate.ejb.HibernateEntityManager;
 import org.sigmah.server.dao.AuthenticationDAO;
-import org.sigmah.server.dao.LocationDAO;
 import org.sigmah.server.dao.PartnerDAO;
 import org.sigmah.server.dao.ReportDefinitionDAO;
 import org.sigmah.server.dao.SiteDAO;
@@ -79,7 +78,6 @@ public class HibernateModule extends AbstractModule {
         bindDAOProxy(AuthenticationDAO.class);
         bindDAOProxy(CountryDAO.class);
         bindDAOProxy(IndicatorDAO.class);
-        bind(LocationDAO.class).to(LocationHibernateDAO.class);
         bindDAOProxy(ReportDefinitionDAO.class);
         bindDAOProxy(PartnerDAO.class);
         bind(SiteTableDAO.class).to(HibernateSiteTableDAO.class);

@@ -1,4 +1,4 @@
-package org.sigmah.shared.report.generator.pivot;
+package org.sigmah.shared.command.handler.pivot.order;
 
 import java.util.Comparator;
 

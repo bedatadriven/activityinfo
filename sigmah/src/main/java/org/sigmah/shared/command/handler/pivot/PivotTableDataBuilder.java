@@ -8,11 +8,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.shared.command.handler.pivot.order.CategoryComparator;
+import org.sigmah.shared.command.handler.pivot.order.DefinedCategoryComparator;
 import org.sigmah.shared.command.result.Bucket;
 import org.sigmah.shared.report.content.DimensionCategory;
 import org.sigmah.shared.report.content.PivotTableData;
-import org.sigmah.shared.report.generator.pivot.CategoryComparator;
-import org.sigmah.shared.report.generator.pivot.DefinedCategoryComparator;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.PivotReportElement;
 

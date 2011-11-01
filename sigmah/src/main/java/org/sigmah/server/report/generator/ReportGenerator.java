@@ -12,7 +12,6 @@ import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.report.content.Content;
 import org.sigmah.shared.report.content.ReportContent;
-import org.sigmah.shared.report.generator.GeneratorUtils;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.MapReportElement;

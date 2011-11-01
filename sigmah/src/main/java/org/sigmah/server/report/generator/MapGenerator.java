@@ -34,7 +34,6 @@ import org.sigmah.shared.map.TileBaseMap;
 import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.MapMarker;
-import org.sigmah.shared.report.generator.GeneratorUtils;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.MapReportElement;

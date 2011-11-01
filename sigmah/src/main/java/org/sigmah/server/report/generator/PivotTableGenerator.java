@@ -12,7 +12,6 @@ import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.report.content.PivotContent;
 import org.sigmah.shared.report.content.PivotTableData;
-import org.sigmah.shared.report.generator.GeneratorUtils;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.PivotTableReportElement;
 

@@ -13,7 +13,6 @@ import org.sigmah.shared.domain.Indicator;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.report.content.PivotChartContent;
 import org.sigmah.shared.report.content.PivotTableData;
-import org.sigmah.shared.report.generator.GeneratorUtils;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.PivotChartReportElement;
 
