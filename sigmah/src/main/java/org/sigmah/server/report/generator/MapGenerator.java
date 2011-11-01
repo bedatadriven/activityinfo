@@ -34,6 +34,7 @@ import org.sigmah.shared.map.TileBaseMap;
 import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.MapMarker;
+import org.sigmah.shared.report.generator.GeneratorUtils;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.MapReportElement;
@@ -66,7 +67,7 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
 
     public void generate(User user, MapReportElement element, Filter inheritedFilter, DateRange dateRange) {
 
-        Filter filter = resolveElementFilter(element, dateRange);
+        Filter filter = GeneratorUtils.resolveElementFilter(element, dateRange);
         Filter effectiveFilter = inheritedFilter == null ? filter : new Filter(inheritedFilter, filter);
 
 

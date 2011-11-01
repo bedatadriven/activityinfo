@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.sigmah.server.database.TestDatabaseModule;
 import org.sigmah.server.database.dao.UserDAO;
+import org.sigmah.server.util.LocaleHelper;
 import org.sigmah.server.util.TemplateModule;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.result.CommandResult;
@@ -15,6 +16,7 @@ import org.sigmah.test.Modules;
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcScheduler;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.teklabs.gwt.i18n.server.LocaleProxy;
 
 /**
  * Test fixture for running hibernate-free 
@@ -51,6 +53,9 @@ public class CommandTestCase2 {
         User user = users.findById(userId);
         assert user != null;
 
+        LocaleProxy.setLocale(LocaleHelper.getLocaleObject(user));
+
+        
         List<CommandResult> results = servlet.handleCommands(user, Collections.<Command>singletonList(command));
 
         JdbcScheduler.get().forceCleanup();

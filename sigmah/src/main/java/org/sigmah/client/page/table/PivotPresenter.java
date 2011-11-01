@@ -19,6 +19,7 @@ import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.shared.command.GenerateElement;
+import org.sigmah.shared.command.GeneratePivotTable;
 import org.sigmah.shared.command.RenderElement;
 import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
@@ -150,12 +151,12 @@ public class PivotPresenter implements Page {
     public void onUIAction(String itemId) {
         if (UIActions.refresh.equals(itemId)) {
             final PivotTableReportElement element = createElement();
-            service.execute(new GenerateElement(element), view.getMonitor(), new AsyncCallback<Content>() {
+            service.execute(new GeneratePivotTable(element), view.getMonitor(), new AsyncCallback<PivotContent>() {
                 public void onFailure(Throwable throwable) {
                     MessageBox.alert(I18N.CONSTANTS.error(), I18N.CONSTANTS.errorOnServer(), null);
                 }
 
-                public void onSuccess(Content content) {
+                public void onSuccess(PivotContent content) {
                     element.setContent((PivotContent) content);
                     view.setContent(element);
                 }

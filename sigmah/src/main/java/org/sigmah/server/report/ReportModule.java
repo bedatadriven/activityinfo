@@ -19,15 +19,9 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
 public class ReportModule extends AbstractModule {
-    private Provider<HttpServletRequest> servletProvider;
 
 	public ReportModule() {
 		super();
-	}
-
-	public ReportModule(Provider<HttpServletRequest> servletProvider) {
-		super();
-		this.servletProvider = servletProvider;
 	}
 
 	@Override

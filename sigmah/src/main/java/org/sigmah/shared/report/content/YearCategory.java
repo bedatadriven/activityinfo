@@ -5,9 +5,6 @@
 
 package org.sigmah.shared.report.content;
 
-/**
- * @author Alex Bertram (akbertram@gmail.com)
- */
 public class YearCategory implements DimensionCategory {
 
     private int year;
@@ -59,4 +56,9 @@ public class YearCategory implements DimensionCategory {
     public String toString() {
         return "YearCategory{" + year + '}';
     }
+
+	@Override
+	public String getLabel() {
+		return Integer.toString(year);
+	}
 }

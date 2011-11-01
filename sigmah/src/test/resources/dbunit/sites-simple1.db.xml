@@ -241,7 +241,7 @@
 		Status="1" target="0" Date1="2009-01-01" Date2="2009-01-02"
 		DateCreated="2009-02-01" DateEdited="2009-02-01" ProjectId="1" />
 	<attributeValue siteId="1" attributeId="1" value="0" />
-	<attributeValue siteId="1" attributeId="2" value="1" />
+	<attributeValue siteId="1" attributeId="2" value="0" />
 
 	<reportingPeriod reportingPeriodId="1" siteId="1"
 		monitoring="0" date1="2009-01-01" date2="2009-01-02" DateCreated="2009-02-01"

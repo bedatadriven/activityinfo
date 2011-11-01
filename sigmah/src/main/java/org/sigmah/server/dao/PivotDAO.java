@@ -10,8 +10,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.sigmah.server.dao.hibernate.PivotHibernateDAO;
+import org.sigmah.shared.command.result.Bucket;
 import org.sigmah.shared.dao.Filter;
-import org.sigmah.shared.dao.pivot.Bucket;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
 

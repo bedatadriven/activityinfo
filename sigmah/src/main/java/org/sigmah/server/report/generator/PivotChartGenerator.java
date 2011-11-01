@@ -11,11 +11,10 @@ import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dao.IndicatorDAO;
 import org.sigmah.shared.domain.Indicator;
 import org.sigmah.shared.domain.User;
-import org.sigmah.shared.exception.ReportModelException;
 import org.sigmah.shared.report.content.PivotChartContent;
 import org.sigmah.shared.report.content.PivotTableData;
+import org.sigmah.shared.report.generator.GeneratorUtils;
 import org.sigmah.shared.report.model.DateRange;
-import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.PivotChartReportElement;
 
 import com.google.inject.Inject;
@@ -35,21 +34,7 @@ public class PivotChartGenerator extends PivotGenerator<PivotChartReportElement>
     public void generate(User user, PivotChartReportElement element, Filter inheritedFilter,
                          DateRange dateRange) {
 
-        if (element.getIndicators().size() == 0) {
-            throw new ReportModelException("No indicators specified for chart", element);
-        } else if (element.getIndicators().size() > 1 &&
-                !element.allDimensionTypes().contains(DimensionType.Indicator)) {
-            throw new ReportModelException("If multiple indicators are provided, either the category or legend dimension must be indicator.", element);
-        }
-
-        if (element.getSeriesDimension().size() > 0 &&
-                element.getType() == PivotChartReportElement.Type.Bar) {
-
-            throw new ReportModelException("Bar charts that are not stacked/clustered cannot have legend dimensions.", element);
-        }
-
-
-        Filter filter = resolveElementFilter(element, dateRange);
+        Filter filter = GeneratorUtils.resolveElementFilter(element, dateRange);
         Filter effectiveFilter = inheritedFilter == null ? new Filter(filter, new Filter()) : new Filter(inheritedFilter, filter);
 
         PivotTableData data = generateData(

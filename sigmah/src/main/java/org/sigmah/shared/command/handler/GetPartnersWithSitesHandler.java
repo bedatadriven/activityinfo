@@ -8,40 +8,31 @@ import java.util.List;
 import java.util.Set;
 
 import org.sigmah.shared.command.GetPartnersWithSites;
+import org.sigmah.shared.command.PivotSites;
+import org.sigmah.shared.command.result.Bucket;
 import org.sigmah.shared.command.result.PartnerResult;
-import org.sigmah.shared.dao.pivot.Bucket;
-import org.sigmah.shared.dao.pivot.PivotDAOAsync;
 import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.report.content.EntityCategory;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.Inject;
 
 public class GetPartnersWithSitesHandler implements CommandHandlerAsync<GetPartnersWithSites, PartnerResult> {
-
-	private final PivotDAOAsync pivotDAO;
-
-	@Inject
-	public GetPartnersWithSitesHandler(PivotDAOAsync pivotDAO) {
-		super();
-		this.pivotDAO = pivotDAO;
-	}
 
 	@Override
 	public void execute(GetPartnersWithSites cmd, ExecutionContext context, final AsyncCallback<PartnerResult> callback) {
 
 		final Dimension dimension = new Dimension(DimensionType.Partner);
-		pivotDAO.aggregate(context.getTransaction(),
-				Collections.singleton(dimension), cmd.getFilter(), context.getUser().getId(), new AsyncCallback<List<Bucket>>() {
+
+		context.execute(new PivotSites(Collections.singleton(dimension),  cmd.getFilter()), new AsyncCallback<PivotSites.PivotResult>() {
 
 			@Override
-			public void onSuccess(List<Bucket> buckets) {
+			public void onSuccess(PivotSites.PivotResult result) {
 
 				Set<PartnerDTO> partners = new HashSet<PartnerDTO>();
 
-				for(Bucket bucket : buckets) {
+				for(Bucket bucket : result.getBuckets()) {
 					EntityCategory category = (EntityCategory)bucket.getCategory(dimension);
 					PartnerDTO partner = new PartnerDTO();
 					partner.setId(category.getId());

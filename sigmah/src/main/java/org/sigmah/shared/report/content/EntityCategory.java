@@ -6,9 +6,11 @@
 package org.sigmah.shared.report.content;
 
 /**
- * @author Alex Bertram (akbertram@gmail.com)
+ * DimensionCategory class for all categories of Dimensions 
+ * that are defined by database entities, like partner, activity,
+ * indicator, etc.
  */
-public class EntityCategory implements LabeledDimensionCategory {
+public class EntityCategory implements DimensionCategory {
 
     private int id;
     private String label;

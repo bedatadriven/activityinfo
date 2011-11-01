@@ -12,7 +12,11 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.sigmah.shared.report.model.typeadapter.CategoryAdapter;
 
 /**
- * @author Alex Bertram (akbertram@gmail.com)
+ * I'm not sure if this is the proper OLAP terminology, but 
+ * for our purposes we consider a Dimension like year, partner, province,
+ * etc, to be divided into "categories". Each DimensionCategory has a label
+ * and can be ordered. 
+ *  
  */
 @XmlJavaTypeAdapter(CategoryAdapter.class)
 public interface DimensionCategory extends Serializable {
@@ -24,5 +28,7 @@ public interface DimensionCategory extends Serializable {
      */
     public Comparable getSortKey();
     
-
+    
+    public String getLabel();
+    
 }

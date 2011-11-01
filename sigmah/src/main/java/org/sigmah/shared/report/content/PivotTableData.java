@@ -11,6 +11,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.sigmah.shared.report.model.Dimension;
 
@@ -262,6 +263,23 @@ public class PivotTableData implements Serializable {
             return sb.toString();
         }
 
+        public void toString(int depth, StringBuilder sb) {
+        	for(int i=0;i!=depth;++i) {
+        		sb.append("  ");
+        	}
+        	sb.append(dimension).append(":").append(label);
+
+        	for(Entry<Axis, Cell> column : cells.entrySet()) {
+        		sb.append(" | ");
+        		sb.append(column.getKey().label).append("=").append(column.getValue().getValue());
+        	}
+        	sb.append("\n");
+        	for(Axis child : getChildren()) {
+        		child.toString(depth+1, sb);
+        	}
+
+        }
+
         protected void visitAllCells(CellVisitor visitor) {
             for(Map.Entry<Axis, Cell> entry : cells.entrySet()) {
                 visitor.onVisit(this, entry.getKey(), entry.getValue());
@@ -337,7 +355,6 @@ public class PivotTableData implements Serializable {
             }
         }
 
-
         public double getMinValue() {
             return minValue;
         }
@@ -345,6 +362,21 @@ public class PivotTableData implements Serializable {
         public double getMaxValue() {
             return maxValue;
         }
+    }
+    
+    @Override 
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append(" COLUMNS:\n");
+        for(Axis col : rootColumn.getChildren()) {
+                col.toString(1,sb);
+        }
+        sb.append(" ROWS:\n");
+        for(Axis row : rootRow.getChildren()) {
+                row.toString(1,sb);
+        }
+        return sb.toString();
     }
 }
 

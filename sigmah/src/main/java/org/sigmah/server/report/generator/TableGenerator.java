@@ -20,6 +20,7 @@ import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.report.content.TableContent;
 import org.sigmah.shared.report.content.TableData;
+import org.sigmah.shared.report.generator.GeneratorUtils;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.TableColumn;
@@ -42,7 +43,7 @@ public class TableGenerator extends ListGenerator<TableElement> {
 
     @Override
     public void generate(User user, TableElement element, Filter inheritedFilter, DateRange dateRange) {
-        Filter filter = resolveElementFilter(element, dateRange);
+        Filter filter = GeneratorUtils.resolveElementFilter(element, dateRange);
         Filter effectiveFilter = inheritedFilter == null ? filter : new Filter(inheritedFilter, filter);
 
         TableContent content = new TableContent();

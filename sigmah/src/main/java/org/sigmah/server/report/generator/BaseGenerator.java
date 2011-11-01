@@ -35,55 +35,12 @@ public abstract class BaseGenerator<T extends ReportElement> implements ContentG
         this.pivotDAO = pivotDAO;
     }
 
-    /**
-     * Resolves an element's filter into a the effective filter, taking into
-     * account inherited restrictions and the overall <code>DateRange</code> of the
-     * report.
-     * <p/>
-     * Interaction between the report's date range <code>DateRange</code> and the
-     * element's filter is specified in {@link org.sigmah.shared.report.model.ReportElement#getFilter()}
-     *
-     * @param element         The report element for which to resolve the filter
-     * @param inheritedFilter The <code>Filter</code> that is inherited from the enclosing <code>Report</code> or other container
-     * @param dateRange       The overall <code>DateRange</code> of the report. This may be <code>null</code>, for example if generation is not
-     *                        occuring in the context of an individual element.
-     * @return the effective <code>Filter</code>
-     */
-    protected Filter resolveEffectiveFilter(T element, Filter inheritedFilter, DateRange dateRange) {
-
-        Filter filter;
-        if (inheritedFilter != null) {
-            filter = new Filter(element.getFilter(), inheritedFilter);
-        } else {
-            filter = new Filter(element.getFilter());
-        }
-        return resolveElementFilter(element, dateRange);
-    }
-
-    protected Filter resolveElementFilter(T element, DateRange dateRange) {
-
-        Filter filter = new Filter(element.getFilter());
-
-        if (dateRange != null) {
-            if (filter.getMinDate() == null) {
-                filter.setMinDate(dateRange.getMinDate());
-            }
-            if (filter.getMaxDate() == null) {
-                filter.setMaxDate(dateRange.getMaxDate());
-            }
-        }
-        return filter;
-    }
-
-    //protected Filter resolveEffectiveFilter()
-
+    
     protected List<FilterDescription> generateFilterDescriptions(Filter filter, Set<DimensionType> excludeDims, User user) {
-
         List<FilterDescription> list = new ArrayList<FilterDescription>();
 
         Set<DimensionType> filterDims = filter.getRestrictedDimensions();
         filterDims.removeAll(excludeDims);
-
         
         for (DimensionType type : filterDims) {
             list.add(new FilterDescription(
@@ -116,7 +73,6 @@ public abstract class BaseGenerator<T extends ReportElement> implements ContentG
      * @see org.sigmah.shared.report.model.Report#getFileName()
      */
     protected String resolveTemplate(String template, DateRange range, User user) {
-
         if (template.indexOf("${DATE_RANGE}") != -1) {
             DateRangeFormat format = new DateRangeFormat(LocaleHelper.getLocaleObject(user));
             String rangeText = format.format(range);

@@ -4,9 +4,9 @@
  */
 
 package org.sigmah.shared.report.content;
-/*
- * @author Alex Bertram
- */
+
+import org.sigmah.client.i18n.I18N;
+
 
 public class QuarterCategory implements DimensionCategory {
 
@@ -73,4 +73,9 @@ public class QuarterCategory implements DimensionCategory {
     public String toString() {
         return "QuarterCategory{" + year + "Q" + quarter + "}";
     }
+
+	@Override
+	public String getLabel() {
+		return I18N.MESSAGES.quarter(year, quarter);
+	}
 }

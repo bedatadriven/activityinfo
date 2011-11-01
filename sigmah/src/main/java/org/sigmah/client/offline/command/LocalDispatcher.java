@@ -51,6 +51,7 @@ public class LocalDispatcher implements Dispatcher {
 
 				@Override
 				public void onFailure(Throwable caught) {
+					Log.debug("Offline command execution failed", caught);
 					try {
 			            if(monitor!=null) {
 			                monitor.onServerError();

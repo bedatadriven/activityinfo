@@ -12,6 +12,7 @@ import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.report.content.Content;
 import org.sigmah.shared.report.content.ReportContent;
+import org.sigmah.shared.report.generator.GeneratorUtils;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.MapReportElement;
@@ -70,8 +71,8 @@ public class ReportGenerator extends BaseGenerator<Report> {
     @Override
     public void generate(User user, Report report, Filter inheritedFilter, DateRange dateRange) {
 
-        Filter filter = resolveElementFilter(report, dateRange);
-        Filter effectiveFilter = resolveEffectiveFilter(report, inheritedFilter, dateRange);
+        Filter filter = GeneratorUtils.resolveElementFilter(report, dateRange);
+        Filter effectiveFilter = GeneratorUtils.resolveEffectiveFilter(report, inheritedFilter, dateRange);
 
         for (ReportElement element : report.getElements()) {
 

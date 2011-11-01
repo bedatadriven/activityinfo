@@ -3,23 +3,27 @@ package org.sigmah.client.offline;
 import org.sigmah.client.offline.command.HandlerRegistry;
 import org.sigmah.shared.command.AddLocation;
 import org.sigmah.shared.command.CreateSite;
+import org.sigmah.shared.command.GeneratePivotTable;
 import org.sigmah.shared.command.GetAdminEntities;
 import org.sigmah.shared.command.GetLocations;
 import org.sigmah.shared.command.GetPartnersWithSites;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.command.GetSitesWithoutCoordinates;
+import org.sigmah.shared.command.PivotSites;
 import org.sigmah.shared.command.SitesPerAdminEntity;
 import org.sigmah.shared.command.SitesPerTime;
 import org.sigmah.shared.command.UpdateSite;
 import org.sigmah.shared.command.handler.AddLocationHandler;
 import org.sigmah.shared.command.handler.CreateSiteHandler;
+import org.sigmah.shared.command.handler.GeneratePivotTableHandler;
 import org.sigmah.shared.command.handler.GetAdminEntitiesHandler;
 import org.sigmah.shared.command.handler.GetLocationsHandler;
 import org.sigmah.shared.command.handler.GetPartnersWithSitesHandler;
 import org.sigmah.shared.command.handler.GetSchemaHandler;
 import org.sigmah.shared.command.handler.GetSitesHandler;
 import org.sigmah.shared.command.handler.GetSitesWithoutCoordinatesHandler;
+import org.sigmah.shared.command.handler.PivotSitesHandler;
 import org.sigmah.shared.command.handler.SitesPerAdminEntityHandler;
 import org.sigmah.shared.command.handler.SitesPerTimeHandler;
 import org.sigmah.shared.command.handler.UpdateSiteHandler;
@@ -44,7 +48,9 @@ public class HandlerRegistryProvider implements Provider<HandlerRegistry> {
             SitesPerTimeHandler sitesPerTimeHandler,
             GetLocationsHandler getLocationsHandler,
             //SearchHandler searchHandler,
-            GetSitesWithoutCoordinatesHandler sitesWithoutCoordinateHandler) {
+            GetSitesWithoutCoordinatesHandler sitesWithoutCoordinateHandler,
+            PivotSitesHandler pivotSitesHandler,
+            GeneratePivotTableHandler generatePivotTableHandler) {
 		
 		registry = new HandlerRegistry();
     	registry.registerHandler(GetSchema.class, schemaHandler);
@@ -59,6 +65,8 @@ public class HandlerRegistryProvider implements Provider<HandlerRegistry> {
     	//registry.registerHandler(Search.class, searchHandler);
     	registry.registerHandler(GetSitesWithoutCoordinates.class, sitesWithoutCoordinateHandler);
     	registry.registerHandler(GetLocations.class, getLocationsHandler);
+    	registry.registerHandler(GeneratePivotTable.class, generatePivotTableHandler);
+    	registry.registerHandler(PivotSites.class, pivotSitesHandler);
 	}
 
 	@Override
