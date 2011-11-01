@@ -47,6 +47,4 @@ public class UIActions {
     public static final String groupAdminLevel = "groupAdminLevel";
 
     public static final String showLockedPeriods = "showLockedPeriods";
-    
-    public static final String print = "print";
 }

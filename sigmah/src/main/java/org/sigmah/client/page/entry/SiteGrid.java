@@ -118,7 +118,6 @@ public class SiteGrid extends AbstractEditorGridView<SiteDTO, SiteEditor>
                           
         toolBar.addButton(UIActions.add, I18N.CONSTANTS.newSite(), IconImageBundle.ICONS.add());
         toolBar.addEditButton();
-        toolBar.addPrintButton();
         toolBar.addDeleteButton(I18N.CONSTANTS.deleteSite());
 
         toolBar.add(new SeparatorToolItem());

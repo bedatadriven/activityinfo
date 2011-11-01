@@ -54,7 +54,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -243,7 +242,6 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
         view.setActionEnabled(UIActions.add, currentActivity.getDatabase().isEditAllowed());
         view.setActionEnabled(UIActions.edit, false);
         view.setActionEnabled(UIActions.delete, false);
-        view.setActionEnabled(UIActions.print, false);
         
         load(filterPanel.getValue());
     }
@@ -312,7 +310,6 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
 
             view.setActionEnabled(UIActions.delete, editable);
             view.setActionEnabled(UIActions.edit, editable);
-            view.setActionEnabled(UIActions.print, editable);
             view.setActionEnabled(UIActions.showLockedPeriods, 
             		currentSite.fallsWithinLockedPeriod(currentActivity));
         }
@@ -327,7 +324,6 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
         view.setActionEnabled(UIActions.add, currentActivity.getDatabase().isEditAllowed());
         view.setActionEnabled(UIActions.edit, false);
         view.setActionEnabled(UIActions.delete, false);
-        view.setActionEnabled(UIActions.print, false);
     }
 
     private boolean isEditable(SiteDTO selectedSite) {
@@ -360,10 +356,7 @@ public class SiteEditor extends AbstractEditorGridPresenter<SiteDTO> implements 
             onExport();
         } else if (UIActions.showLockedPeriods.equals(actionId)) {
         	view.showLockedPeriods(getLockedPeriods());
-        } else if (UIActions.print.equals(actionId)){
-        	Window.alert("Hello Print me!");
-        }
-        else if (UIActions.map.equals(actionId)) {
+        } else if (UIActions.map.equals(actionId)) {
 
         }
     }
