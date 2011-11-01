@@ -122,19 +122,16 @@ public class PivotDAOAsyncTest {
     @Test
     public void testAttributePivot() {
         withIndicatorAsDimension();
-        withPartnerAsDimension();
         withAttributeGroupDim(1);
 
         filter.addRestriction(DimensionType.Indicator, 1);
 
         execute();
 
-        assertThat().thereAre(3).buckets();
-        assertThat().forAttributeGroupLabeled(1, "Catastrophe Naturelle, Deplacement")
-                        .thereIsOneBucketWithValue(3600);
+        assertThat().thereAre(2).buckets();
 
         assertThat().forAttributeGroupLabeled(1, "Deplacement")
-                        .thereIsOneBucketWithValue(1500);
+                        .thereIsOneBucketWithValue(5100);
 
         assertThat().forAttributeGroupLabeled(1, "Catastrophe Naturelle")
                         .thereIsOneBucketWithValue(10000);

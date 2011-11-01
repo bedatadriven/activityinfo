@@ -15,6 +15,7 @@ import org.sigmah.shared.dao.pivot.bundler.SiteCountBundler;
 import org.sigmah.shared.dao.pivot.bundler.SumAndAverageBundler;
 import org.sigmah.shared.dao.pivot.bundler.YearBundler;
 import org.sigmah.shared.report.model.AdminDimension;
+import org.sigmah.shared.report.model.AttributeGroupDimension;
 import org.sigmah.shared.report.model.DateDimension;
 import org.sigmah.shared.report.model.DateUnit;
 import org.sigmah.shared.report.model.Dimension;
@@ -205,30 +206,35 @@ public class PivotQuery {
                 addEntityDimension(dimension, tableAlias + ".AdminEntityId", tableAlias + ".Name");
                 
             
-            } /*else if (dimension instanceof AttributeGroupDimension) {
+            } else if (dimension instanceof AttributeGroupDimension) {
+            	// this pivots the data by a single-valued attribute group
+            	
             	AttributeGroupDimension attrGroupDim = (AttributeGroupDimension) dimension;
-            	List < Integer > attributeIds = queryAttributeIds(attrGroupDim);
-            	int count = 0;
-            	for (Integer attributeId: attributeIds) {
-            		String tableAlias = "Attribute" + attributeId;
+            	
+            	String valueQueryAlias = "attributeValues" + attrGroupDim.getAttributeGroupId();
+            	String labelQueryAlias = "attributeLabels" + attrGroupDim.getAttributeGroupId();
+            	
+            	// this first query gives us the single chosen attribute for each 
+            	// site, arbitrarily taking the attribute with the minimum id if more
+            	// than one attribute has been selected (i.e db is inconsistent)
+            	SqlQuery derivedValueQuery = SqlQuery.select()
+            		.appendColumn("v.siteId", "siteId")
+            		.appendColumn("min(v.attributeId)", "attributeId")
+            		.from("AttributeValue", "v")
+            		.leftJoin("Attribute", "a").on("v.AttributeId = a.AttributeId")
+            		.whereTrue("v.value=1")
+            		.whereTrue("a.attributeGroupId=" + attrGroupDim.getAttributeGroupId())
+            		.groupBy("v.siteId");
+            	
+            	query.leftJoin(derivedValueQuery, valueQueryAlias)
+            		.on("Site.SiteId=" + valueQueryAlias + ".SiteId");
+            	
+            	// now we need the names of the attributes we've just selected
+            	query.leftJoin("Attribute", labelQueryAlias)
+            		.on(valueQueryAlias + ".AttributeId=" + labelQueryAlias + ".AttributeId");
 
-                	from.append("LEFT JOIN " +
-                			"(SELECT AttributeValue.SiteId, Attribute.Name as " + tableAlias + "val " +
-                			"FROM AttributeValue " +
-                			"LEFT JOIN  Attribute ON (Attribute.AttributeId = AttributeValue.AttributeId) " +
-                			"WHERE AttributeValue.value AND Attribute.AttributeId = ")
-                			.append(attributeId).append(") AS ").append(tableAlias).append(" ON (")
-                			.append(tableAlias).append(".SiteId = Site.SiteId)");
-
-                	dimColumns.append(", ").append(tableAlias).append(".").append(tableAlias).append("val ");
-                	count++;
-            	}
-                Log.debug("Total attribute column count = " + count);
-
-            	bundlers.add(new AttributeBundler(dimension, nextColumnIndex, count));
-            	nextColumnIndex += count;
-
-            }*/
+            	addEntityDimension(attrGroupDim, valueQueryAlias + ".AttributeId", labelQueryAlias + ".Name");
+            }
         }
 
 
