@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.sigmah.server.command.DispatcherSync;
 import org.sigmah.server.dao.AuthenticationDAO;
 import org.sigmah.server.domain.Authentication;
 import org.sigmah.server.domain.DomainFilters;
@@ -21,12 +22,7 @@ import org.sigmah.server.endpoint.gwtrpc.handler.HandlerUtil;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.command.GetUsers;
 import org.sigmah.shared.command.result.UserResult;
-import org.sigmah.shared.dao.SiteTableDAO;
-import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.SchemaDTO;
-import org.sigmah.shared.dto.UserDatabaseDTO;
-import org.sigmah.shared.dto.UserPermissionDTO;
-import org.sigmah.shared.exception.CommandException;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -40,32 +36,24 @@ import com.google.inject.Singleton;
 @Singleton
 public class ExportUsersServlet extends HttpServlet {
 
-	private Injector injector;
-
-	@Inject
-	public ExportUsersServlet(Injector injector) {
-		this.injector = injector;
-	}
+	   private DispatcherSync dispatcher;
+	    
+	    @Inject
+	    public ExportUsersServlet(DispatcherSync dispatcher) {
+	        this.dispatcher = dispatcher;
+	    }
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-		AuthenticationDAO authDAO = injector.getInstance(AuthenticationDAO.class);
-		Authentication auth = authDAO.findById(req.getParameter("auth"));
-		if (auth == null) {
-			// todo: offer basic authentication?
-			resp.setStatus(500);
-			return;
-		}
+		
 
 		int dbId = Integer.valueOf(req.getParameter("dbUsers"));
 
 		try {
 
-			DomainFilters.applyUserFilter(auth.getUser(), injector.getInstance(EntityManager.class));
-
-			UserResult userResult = HandlerUtil.execute(injector, new GetUsers(dbId), auth.getUser());
-
+			UserResult userResult  = dispatcher.execute(new GetUsers(dbId));
+		
 			DbUserExport export = new DbUserExport(userResult.getData());
 			export.createSheet();
 			

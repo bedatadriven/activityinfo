@@ -5,7 +5,6 @@
 
 package org.sigmah.server.report.generator;
 
-import static org.easymock.EasyMock.anyInt;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.isA;
@@ -13,14 +12,12 @@ import static org.easymock.EasyMock.replay;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Test;
-import org.sigmah.server.dao.PivotDAO;
-import org.sigmah.shared.dao.Filter;
-import org.sigmah.shared.dao.pivot.Bucket;
+import org.sigmah.server.command.DispatcherSync;
+import org.sigmah.shared.command.PivotSites;
+import org.sigmah.shared.command.result.Bucket;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.report.content.DimensionCategory;
 import org.sigmah.shared.report.content.EntityCategory;
@@ -63,13 +60,14 @@ public class PivotTableGeneratorTest {
 
         // collaborator : PivotDAO
 
-        PivotDAO dao = createMock(PivotDAO.class);
-        expect(dao.aggregate(anyInt(), isA(Filter.class), EasyMock.<Set<Dimension>>anyObject())).andReturn(buckets);
-        replay(dao);
+        DispatcherSync dispatcher = createMock(DispatcherSync.class);
+        expect(dispatcher.execute(isA(PivotSites.class)))
+        	.andReturn(new PivotSites.PivotResult(buckets));
+        replay(dispatcher);
 
         // CLASS UNDER TEST!!
 
-        PivotTableGenerator generator = new PivotTableGenerator(dao);
+        PivotTableGenerator generator = new PivotTableGenerator(dispatcher);
 
         generator.generate(user, element, null, null);
 
@@ -101,13 +99,14 @@ public class PivotTableGeneratorTest {
         buckets.add(newBucket(600, category(indicatorDim, 3, "Nb. deplaces", 2)));
 
         // collaborator : PivotDAO
-        PivotDAO dao = createMock(PivotDAO.class);
-        expect(dao.aggregate(anyInt(), isA(Filter.class), EasyMock.<Set<Dimension>>anyObject())).andReturn(buckets);
-        replay(dao);
-
+        DispatcherSync dispatcher = createMock(DispatcherSync.class);
+        expect(dispatcher.execute(isA(PivotSites.class)))
+        	.andReturn(new PivotSites.PivotResult(buckets));
+        replay(dispatcher);
+        
         // CLASS UNDER TEST!!
 
-        PivotTableGenerator generator = new PivotTableGenerator(dao);
+        PivotTableGenerator generator = new PivotTableGenerator(dispatcher);
 
         generator.generate(user, element, null, null);
 

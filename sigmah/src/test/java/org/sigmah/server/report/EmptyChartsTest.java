@@ -1,6 +1,5 @@
 package org.sigmah.server.report;
 
-import static org.easymock.EasyMock.anyInt;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
@@ -11,8 +10,10 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.junit.Test;
-import org.sigmah.server.dao.PivotDAO;
+import org.sigmah.server.command.DispatcherSync;
 import org.sigmah.server.report.generator.PivotChartGenerator;
+import org.sigmah.shared.command.GetDimensionLabels;
+import org.sigmah.shared.command.PivotSites;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dao.IndicatorDAO;
 import org.sigmah.shared.domain.Indicator;
@@ -33,23 +34,21 @@ public class EmptyChartsTest {
 		element.addCategoryDimension(new Dimension(DimensionType.Partner));
 		element.addSeriesDimension(new Dimension(DimensionType.Database));
 	
-		PivotDAO pivotDAO = createMock(PivotDAO.class);
+		DispatcherSync dispatcher = createMock(DispatcherSync.class);
+		expect(dispatcher.execute(new PivotSites(isA(Set.class), isA(Filter.class))))
+			.andReturn(new PivotSites.PivotResult(Collections.EMPTY_LIST));
 		
-		expect(pivotDAO.aggregate(anyInt(), isA(Filter.class), (Set<Dimension>)isA(Set.class)))
-			.andReturn(Collections.EMPTY_LIST);
+		expect(dispatcher.execute(new GetDimensionLabels(eq(DimensionType.Indicator), isA(Set.class))))
+			.andReturn(new GetDimensionLabels.DimensionLabels(Collections.EMPTY_MAP));
 		
-		expect(pivotDAO.getFilterLabels(eq(DimensionType.Indicator), 
-				(java.util.Set<Integer>)isA(Set.class)))
-			.andReturn(Collections.EMPTY_MAP);
-
-		replay(pivotDAO);
+		replay(dispatcher);
 		
 		IndicatorDAO indicatorDAO = createMock(IndicatorDAO.class);
 		expect(indicatorDAO.findById(eq(1))).andReturn(new Indicator());
 		replay(indicatorDAO);
 		
 				
-		PivotChartGenerator generator = new PivotChartGenerator(pivotDAO, indicatorDAO);
+		PivotChartGenerator generator = new PivotChartGenerator(dispatcher, indicatorDAO);
 		generator.generate(new User(), element, new Filter(), new DateRange());		
 	}
 	

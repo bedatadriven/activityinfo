@@ -13,6 +13,7 @@ import java.util.List;
 import org.sigmah.server.report.generator.map.cluster.Cluster;
 import org.sigmah.server.report.generator.map.cluster.Clusterer;
 import org.sigmah.server.report.generator.map.cluster.ClustererFactory;
+import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.BubbleLayerLegend;
 import org.sigmah.shared.report.content.BubbleMapMarker;
@@ -25,7 +26,6 @@ import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.MapSymbol;
 import org.sigmah.shared.report.model.PointValue;
-import org.sigmah.shared.report.model.SiteData;
 import org.sigmah.shared.report.model.layers.BubbleMapLayer;
 import org.sigmah.shared.report.model.layers.ScalingType;
 import org.sigmah.shared.util.mapping.Extents;
@@ -34,9 +34,9 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
 
     private MapReportElement element;
     private BubbleMapLayer layer;
-    private List<SiteData> sites;
+    private List<SiteDTO> sites;
 
-    public BubbleLayerGenerator(MapReportElement element, BubbleMapLayer layer, List<SiteData> sites) {
+    public BubbleLayerGenerator(MapReportElement element, BubbleMapLayer layer, List<SiteDTO> sites) {
         this.element = element;
         this.layer = layer;
         this.sites=sites;
@@ -47,7 +47,7 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
         // values for this indicator
 
         Extents extents = Extents.emptyExtents();
-        for(SiteData site : sites) {
+        for(SiteDTO site : sites) {
             if(site.hasLatLong() && hasValue(site, layer.getIndicatorIds())) {
                 extents.grow(site.getLatitude(), site.getLongitude());
             }
@@ -146,7 +146,7 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
 	}
 
 	public void generatePoints(
-            List<SiteData> sites,
+            List<SiteDTO> sites,
             TiledMap map,
             BubbleMapLayer layer,
             Clusterer clusterer,
@@ -154,7 +154,7 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
             List<PointValue> unmapped) {
 
     	
-        for(SiteData site : sites) {
+        for(SiteDTO site : sites) {
 
             if(hasValue(site, layer.getIndicatorIds())) {
 
@@ -184,7 +184,7 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
 	// we should be able to achieve the same result using filters on the labels
 	// --> schedule to remove
 	@Deprecated
-    public MapSymbol createSymbol(SiteData site, List<Dimension> dimensions) {
+    public MapSymbol createSymbol(SiteDTO site, List<Dimension> dimensions) {
         MapSymbol symbol = new MapSymbol();
 
         for(Dimension dimension : dimensions) {

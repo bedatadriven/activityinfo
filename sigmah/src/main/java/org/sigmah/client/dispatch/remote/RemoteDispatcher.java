@@ -17,6 +17,7 @@ import org.sigmah.client.dispatch.DispatchListener;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.cache.ProxyResult;
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.shared.auth.AuthenticatedUser;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.RemoteCommandServiceAsync;
 import org.sigmah.shared.command.result.CommandResult;
@@ -43,7 +44,7 @@ import com.google.inject.Singleton;
 public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
 
     private final RemoteCommandServiceAsync service;
-    private final Authentication authentication;
+    private final AuthenticatedUser authentication;
 
     private boolean connected = false;
     private ProxyManager proxyManager = new ProxyManager();
@@ -63,7 +64,7 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
 
     @Inject
     public RemoteDispatcher(RemoteCommandServiceAsync service,
-                            EventBus eventBus, Authentication authentication) {
+                            EventBus eventBus, AuthenticatedUser authentication) {
         this.service = service;
         this.authentication = authentication;
 

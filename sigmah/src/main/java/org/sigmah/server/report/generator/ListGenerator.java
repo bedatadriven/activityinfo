@@ -5,8 +5,7 @@
 
 package org.sigmah.server.report.generator;
 
-import org.sigmah.server.dao.PivotDAO;
-import org.sigmah.shared.dao.SiteTableDAO;
+import org.sigmah.server.command.DispatcherSync;
 import org.sigmah.shared.report.model.ReportElement;
 
 import com.google.inject.Inject;
@@ -24,13 +23,9 @@ public abstract class ListGenerator<ElementT extends ReportElement>
         extends BaseGenerator<ElementT> {
 
 
-    protected final SiteTableDAO siteDAO;
-
     @Inject
-    public ListGenerator(PivotDAO pivotDAO, SiteTableDAO siteDAO) {
-        super(pivotDAO);
-
-        this.siteDAO = siteDAO;
+    public ListGenerator(DispatcherSync dispatcher) {
+        super(dispatcher);
     }
 
 }

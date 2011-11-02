@@ -5,9 +5,7 @@
 
 package org.sigmah.server.report.generator;
 
-import static org.easymock.EasyMock.createNiceMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,8 +17,10 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.sigmah.server.dao.PivotDAO;
+import org.sigmah.server.command.DispatcherSync;
 import org.sigmah.server.report.generator.map.MockBaseMapDAO;
+import org.sigmah.shared.command.GetSites;
+import org.sigmah.shared.command.result.SiteResult;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dao.IndicatorDAO;
 import org.sigmah.shared.dao.SiteOrder;
@@ -28,6 +28,7 @@ import org.sigmah.shared.dao.SiteProjectionBinder;
 import org.sigmah.shared.dao.SiteTableColumn;
 import org.sigmah.shared.dao.SiteTableDAO;
 import org.sigmah.shared.domain.User;
+import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.report.content.BubbleMapMarker;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.TableData;
@@ -58,7 +59,7 @@ public class TableGeneratorTest {
         TableElement table = new TableElement();
         table.addColumn(new TableColumn("Location", "location.name"));
 
-        TableGenerator gtor = new TableGenerator(createPivotDAO(), new MockSiteTableDAO(), createIndicator(), null);
+        TableGenerator gtor = new TableGenerator(createDispatcher(), new MockSiteTableDAO(), createIndicator(), null);
         gtor.generate(user, table, null, null);
 
         Assert.assertNotNull("content is set", table.getContent());
@@ -85,9 +86,16 @@ public class TableGeneratorTest {
         layer.setLabelSequence(new ArabicNumberSequence());
         map.addLayer(layer);
         table.setMap(map);
+        
+        DispatcherSync dispatcher = createMock(DispatcherSync.class);
+        expect(dispatcher.execute(isA(GetSites.class)))
+        	.andReturn(new SiteResult(dummySite()))
+        	.anyTimes();
+       
+        replay(dispatcher);
 
-        TableGenerator gtor = new TableGenerator(createPivotDAO(), new MockSiteTableDAO(), createIndicator(),
-                new MapGenerator(createPivotDAO(), new MockSiteTableDAO(), new MockBaseMapDAO(), new MockIndicatorDAO()));
+        TableGenerator gtor = new TableGenerator(dispatcher, new MockSiteTableDAO(), createIndicator(),
+                new MapGenerator(dispatcher, new MockBaseMapDAO(), new MockIndicatorDAO()));
         gtor.generate(user, table, null, null);
 
         MapContent mapContent = map.getContent();
@@ -108,12 +116,21 @@ public class TableGeneratorTest {
         return indicatorDAO;
     }
 
-    private PivotDAO createPivotDAO() {
-        PivotDAO pivotDAO = createNiceMock(PivotDAO.class);
-        replay(pivotDAO);
-        return pivotDAO;
+    private DispatcherSync createDispatcher() {
+        DispatcherSync dispatcher = createNiceMock(DispatcherSync.class);
+        replay(dispatcher);
+        return dispatcher;
     }
 
+    public SiteDTO dummySite() {
+    	SiteDTO site = new SiteDTO();
+    	site.setId(1);
+    	site.setLocationName("tampa bay");
+    	site.setX(28.4);
+    	site.setY(1.2);
+    	return site;
+    }
+    
     private class MockSiteTableDAO implements SiteTableDAO {
         @Override
         public <RowT> List<RowT> query(User user, Filter filter, List<SiteOrder> orderings, SiteProjectionBinder<RowT> binder, int retrieve, int offset, int limit)  {
@@ -145,6 +162,4 @@ public class TableGeneratorTest {
             return 0;
         }
     }
-
-
 }

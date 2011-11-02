@@ -88,12 +88,14 @@ public class DbUserGrid extends AbstractEditorGridView<UserPermissionDTO, DbUser
 
         CheckColumnConfig allowManageUsers = null;
         if (db.isManageUsersAllowed()) {
-            columns.add(new CheckColumnConfig("allowManageUsers", I18N.CONSTANTS.allowManageUsers(), 150));
+        	allowManageUsers = new CheckColumnConfig("allowManageUsers", I18N.CONSTANTS.allowManageUsers(), 150);
+            columns.add(allowManageUsers);
         }
 
         CheckColumnConfig allowManageAllUsers = null;
         if (db.isManageAllUsersAllowed()) {
-            columns.add(new CheckColumnConfig("allowManageAllUsers", I18N.CONSTANTS.manageAllUsers(), 150));
+        	allowManageAllUsers = new CheckColumnConfig("allowManageAllUsers", I18N.CONSTANTS.manageAllUsers(), 150);
+            columns.add(allowManageAllUsers);
         }
 
         // only users with the right to design them selves can change the design attribute

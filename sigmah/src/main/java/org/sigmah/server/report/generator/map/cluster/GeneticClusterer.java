@@ -9,8 +9,8 @@ import org.sigmah.server.report.generator.map.cluster.genetic.GeneticSolver;
 import org.sigmah.server.report.generator.map.cluster.genetic.MarkerGraph;
 import org.sigmah.server.report.generator.map.cluster.genetic.MarkerGraph.IntersectionCalculator;
 import org.sigmah.server.report.generator.map.cluster.genetic.UpperBoundsCalculator;
+import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.report.model.PointValue;
-import org.sigmah.shared.report.model.SiteData;
 
 /**
  * Clusters PointValues together in an optimal way using
@@ -50,7 +50,7 @@ public class GeneticClusterer implements Clusterer {
 	}
 
 	@Override
-	public boolean isMapped(SiteData site) {
+	public boolean isMapped(SiteDTO site) {
 		return site.hasLatLong();
 	}
 }

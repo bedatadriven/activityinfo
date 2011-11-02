@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.sigmah.server.dao.PivotDAO;
+import org.sigmah.server.command.DispatcherSync;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dao.IndicatorDAO;
 import org.sigmah.shared.dao.SiteOrder;
@@ -31,18 +31,21 @@ public class TableGenerator extends ListGenerator<TableElement> {
 
     protected IndicatorDAO indicatorDAO;
     protected MapGenerator mapGenerator;
+    
+    private SiteTableDAO siteDAO;
 
     @Inject
-    public TableGenerator(PivotDAO pivotDAO, SiteTableDAO siteDAO, IndicatorDAO indicatorDAO,
+    public TableGenerator(DispatcherSync dispatcher, SiteTableDAO siteTableDAO, IndicatorDAO indicatorDAO,
                           MapGenerator mapGenerator) {
-        super(pivotDAO, siteDAO);
+        super(dispatcher);
         this.indicatorDAO = indicatorDAO;
         this.mapGenerator = mapGenerator;
+        this.siteDAO = siteTableDAO;
     }
 
     @Override
     public void generate(User user, TableElement element, Filter inheritedFilter, DateRange dateRange) {
-        Filter filter = resolveElementFilter(element, dateRange);
+        Filter filter = GeneratorUtils.resolveElementFilter(element, dateRange);
         Filter effectiveFilter = inheritedFilter == null ? filter : new Filter(inheritedFilter, filter);
 
         TableContent content = new TableContent();
@@ -65,7 +68,6 @@ public class TableGenerator extends ListGenerator<TableElement> {
         }
         element.setContent(content);
     }
-
 
     protected List<SiteOrder> resolveOrder(TableElement element) {
         List<SiteOrder> list = new ArrayList<SiteOrder>();
@@ -100,6 +102,4 @@ public class TableGenerator extends ListGenerator<TableElement> {
 
         return data;
     }
-
-
 }

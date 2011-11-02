@@ -17,8 +17,7 @@ import org.sigmah.shared.domain.User;
 import com.bedatadriven.rebar.sync.server.JpaUpdateBuilder;
 import com.google.inject.Inject;
 
-public class
-        AdminUpdateBuilder implements UpdateBuilder {
+public class AdminUpdateBuilder implements UpdateBuilder {
     private AdminDAO dao;
     protected int levelId;
     private AdminLocalState localState;

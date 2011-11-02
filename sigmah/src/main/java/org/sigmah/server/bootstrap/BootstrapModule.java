@@ -26,5 +26,4 @@ public class BootstrapModule extends ServletModule {
         serve("/ActivityInfo/ActivityInfo.appcache").with(SelectionServlet.class);
         serve("/ActivityInfo/ActivityInfo.gears.manifest").with(SelectionServlet.class);
     }
-
 }

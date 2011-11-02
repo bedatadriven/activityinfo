@@ -7,7 +7,7 @@ package org.sigmah.client.offline.command;
 
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.dispatch.remote.Authentication;
+import org.sigmah.shared.auth.AuthenticatedUser;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.domain.User;
@@ -25,13 +25,13 @@ import com.google.inject.Inject;
  * Dispatches commands to local handlers
  */
 public class LocalDispatcher implements Dispatcher {
-    private final Authentication auth;
+    private final AuthenticatedUser auth;
     private final HandlerRegistry registry;
     private final SqlDatabase database;
     private final CommandQueue commandQueue;
     
     @Inject
-    public LocalDispatcher(Authentication auth, SqlDatabase database, HandlerRegistry registry) {
+    public LocalDispatcher(AuthenticatedUser auth, SqlDatabase database, HandlerRegistry registry) {
         Log.trace("LocalDispatcher constructor starting...");
     	this.auth = auth;
         this.registry = registry;
@@ -51,6 +51,7 @@ public class LocalDispatcher implements Dispatcher {
 
 				@Override
 				public void onFailure(Throwable caught) {
+					Log.debug("Offline command execution failed", caught);
 					try {
 			            if(monitor!=null) {
 			                monitor.onServerError();

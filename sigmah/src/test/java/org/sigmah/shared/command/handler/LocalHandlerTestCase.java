@@ -20,7 +20,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.i18n.UIMessages;
 import org.sigmah.client.mock.MockEventBus;
@@ -29,6 +28,7 @@ import org.sigmah.client.offline.command.CommandQueue;
 import org.sigmah.client.offline.command.LocalDispatcher;
 import org.sigmah.client.offline.sync.DownSynchronizer;
 import org.sigmah.server.endpoint.gwtrpc.CommandServlet;
+import org.sigmah.shared.auth.AuthenticatedUser;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.SyncRegionUpdate;
@@ -60,7 +60,7 @@ public abstract class LocalHandlerTestCase {
 
     protected Dispatcher remoteDispatcher;
 
-    protected Authentication localAuth;
+    protected AuthenticatedUser localAuth;
     protected LocalDispatcher localDispatcher;
     protected JdbcDatabase localDatabase;
     
@@ -97,7 +97,7 @@ public abstract class LocalHandlerTestCase {
     protected void setUser(int userId) {
         user = new User();
         user.setId(userId);
-        localAuth = new Authentication(user.getId(), "X", user.getEmail());
+        localAuth = new AuthenticatedUser(user.getId(), "X", user.getEmail());
 
         Injector clientSideInjector = Guice.createInjector(new OfflineModuleStub(localAuth, localDatabase));
         localDispatcher = clientSideInjector.getInstance(LocalDispatcher.class);

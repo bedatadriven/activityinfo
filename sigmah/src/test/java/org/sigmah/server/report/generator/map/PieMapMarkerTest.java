@@ -11,14 +11,13 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.sigmah.shared.dao.SiteTableColumn;
+import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.PieMapMarker;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.MapReportElement;
-import org.sigmah.shared.report.model.SiteData;
 import org.sigmah.shared.report.model.layers.PiechartMapLayer;
 
 public class PieMapMarkerTest {
@@ -31,15 +30,15 @@ public class PieMapMarkerTest {
         dimension.setCategoryColor(102, 0x00FF00);
         dimension.setCategoryColor(103, 0x0000FF);
 
-        SiteData site1 = new SiteData();
-        site1.setValue(SiteTableColumn.id,  1);
-        site1.setValue(SiteTableColumn.x, 0d);
-        site1.setValue(SiteTableColumn.y, 0d);
+        SiteDTO site1 = new SiteDTO();
+        site1.setId(1);
+        site1.setX(0d);
+        site1.setY(0d);
         site1.setIndicatorValue(101, 50d);
         site1.setIndicatorValue(102, 40d);
         site1.setIndicatorValue(103, 10d);
 
-        List<SiteData> sites = new ArrayList<SiteData>();
+        List<SiteDTO> sites = new ArrayList<SiteDTO>();
         sites.add(site1);
 
         PiechartMapLayer layer = new PiechartMapLayer();

@@ -71,10 +71,7 @@ public class StartupListener extends GuiceServletContextListener {
                 new KmlModule(),
                 new LocaleModule());
 
-        context.setAttribute(INJECTOR_NAME, injector);
-        
+        context.setAttribute(INJECTOR_NAME, injector);   
         return injector;
     }
-
 }
-

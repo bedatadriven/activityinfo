@@ -9,10 +9,10 @@ import java.util.Date;
 
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.dispatch.remote.DirectDispatcher;
 import org.sigmah.client.offline.AuthTokenUtil;
 import org.sigmah.client.offline.command.LocalDispatcher;
+import org.sigmah.shared.auth.AuthenticatedUser;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.Ping;
 import org.sigmah.shared.command.result.VoidResult;
@@ -29,7 +29,7 @@ public class SynchronizerImpl implements Synchronizer {
     private final AppCacheSynchronizer appCacheSynchronizer;
     private final DownSynchronizer downSychronizer;
     private final UpdateSynchronizer updateSynchronizer;
-    private final Authentication auth;
+    private final AuthenticatedUser auth;
 
 
     @Inject
@@ -39,7 +39,7 @@ public class SynchronizerImpl implements Synchronizer {
                        AppCacheSynchronizer appCache,
                        DownSynchronizer synchronizer,
                        UpdateSynchronizer updateSynchronizer,
-                       Authentication auth) {
+                       AuthenticatedUser auth) {
     	this.appCacheSynchronizer = appCache;
     	this.localDispatcher = localDispatcher;
         this.remoteDispatcher = remoteDispatcher;

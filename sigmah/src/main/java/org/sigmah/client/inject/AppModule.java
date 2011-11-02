@@ -7,10 +7,10 @@ package org.sigmah.client.inject;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.LoggingEventBus;
+import org.sigmah.client.auth.ClientSideAuthProvider;
 import org.sigmah.client.dispatch.DispatchEventSource;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.RemoteServiceProvider;
-import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.dispatch.remote.Direct;
 import org.sigmah.client.dispatch.remote.DirectDispatcher;
 import org.sigmah.client.dispatch.remote.Remote;
@@ -25,6 +25,7 @@ import org.sigmah.client.page.common.GalleryPage;
 import org.sigmah.client.page.common.GalleryView;
 import org.sigmah.client.util.state.GxtStateProvider;
 import org.sigmah.client.util.state.StateProvider;
+import org.sigmah.shared.auth.AuthenticatedUser;
 import org.sigmah.shared.command.RemoteCommandServiceAsync;
 
 import com.google.gwt.inject.client.AbstractGinModule;
@@ -34,7 +35,7 @@ public class AppModule extends AbstractGinModule {
 
     @Override
     protected void configure() {
-        bind(Authentication.class).toProvider(AuthProvider.class).in(Singleton.class);
+        bind(AuthenticatedUser.class).toProvider(ClientSideAuthProvider.class);
         bind(RemoteCommandServiceAsync.class).toProvider(RemoteServiceProvider.class).in(Singleton.class);
         bind(Dispatcher.class).to(OfflineController.class).in(Singleton.class);
         bind(Dispatcher.class).annotatedWith(Direct.class).to(DirectDispatcher.class).in(Singleton.class);

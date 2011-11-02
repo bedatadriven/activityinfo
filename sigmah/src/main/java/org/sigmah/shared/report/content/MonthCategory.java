@@ -5,8 +5,13 @@
 
 package org.sigmah.shared.report.content;
 
+import java.util.Date;
+
+import org.sigmah.client.i18n.I18N;
+
 /**
- * @author Alex Bertram (akbertram@gmail.com)
+ * DimensionCategory within the Month dimension. Each category
+ * represents a calendar month.
  */
 public class MonthCategory implements DimensionCategory {
 
@@ -68,4 +73,12 @@ public class MonthCategory implements DimensionCategory {
     public String toString() {
         return "MonthCategory{" + year + "/" + month + "}";
     }
+   
+	@Override
+	@SuppressWarnings("deprecation")
+	public String getLabel() {
+    	// hackish, yes, but it's the only thing that works on client & server
+		Date date = new Date(year, month-1, 1);
+		return I18N.MESSAGES.month(date);
+	}
 }

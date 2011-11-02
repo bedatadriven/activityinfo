@@ -7,7 +7,6 @@ package org.sigmah.client.page.app;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
-import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.event.NavigationEvent;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
@@ -28,6 +27,7 @@ import org.sigmah.client.page.map.MapPageState;
 import org.sigmah.client.page.report.ReportListPageState;
 import org.sigmah.client.page.search.SearchPageState;
 import org.sigmah.client.page.table.PivotPageState;
+import org.sigmah.shared.auth.AuthenticatedUser;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -62,7 +62,7 @@ public class AppFrameSet implements Frame {
     private Viewport viewport;
 
     private ToolBar topBar;
-    private Authentication auth;
+    private AuthenticatedUser auth;
     private OfflineView offlineMenu;
 
     private Widget activeWidget;
@@ -70,7 +70,7 @@ public class AppFrameSet implements Frame {
 
 
     @Inject
-    public AppFrameSet(EventBus eventBus, Authentication auth, OfflineView offlineMenu) {
+    public AppFrameSet(EventBus eventBus, AuthenticatedUser auth, OfflineView offlineMenu) {
 
         Log.trace("AppFrameSet constructor starting");
 

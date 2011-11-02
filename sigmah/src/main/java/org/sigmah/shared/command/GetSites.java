@@ -22,9 +22,12 @@ public class GetSites extends PagingGetCommand<SiteResult> {
 
     private Integer seekToSiteId;
 
-    public GetSites() {
-		
+    public GetSites() {	
 	}
+    
+    public GetSites(Filter filter) {
+    	this.filter = filter;
+    }
 
     public Filter filter() {
         return filter;

@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.sigmah.shared.exception.ReportModelException;
 import org.sigmah.shared.report.content.PivotChartContent;
 
 public class PivotChartReportElement extends PivotReportElement<PivotChartContent> {
@@ -120,5 +121,19 @@ public class PivotChartReportElement extends PivotReportElement<PivotChartConten
 	public void setValueAxisTitle(String valueAxisTitle) {
 		this.valueAxisTitle = valueAxisTitle;
 	}
+	
+	public void validateModel() {
+        if (getIndicators().size() == 0) {
+            throw new ReportModelException("No indicators specified for chart", this);
+        } else if (getIndicators().size() > 1 &&
+                !allDimensionTypes().contains(DimensionType.Indicator)) {
+            throw new ReportModelException("If multiple indicators are provided, either the category or legend dimension must be indicator.", this);
+        }
 
+        if (getSeriesDimension().size() > 0 &&
+                getType() == PivotChartReportElement.Type.Bar) {
+
+            throw new ReportModelException("Bar charts that are not stacked/clustered cannot have legend dimensions.", this);
+        }
+	}
 }

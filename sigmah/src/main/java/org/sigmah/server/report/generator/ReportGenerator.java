@@ -7,7 +7,7 @@ package org.sigmah.server.report.generator;
 
 import java.util.Collections;
 
-import org.sigmah.server.dao.PivotDAO;
+import org.sigmah.server.command.DispatcherSync;
 import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.report.content.Content;
@@ -32,11 +32,11 @@ public class ReportGenerator extends BaseGenerator<Report> {
 
 
     @Inject
-    public ReportGenerator(PivotDAO pivotDAO,
+    public ReportGenerator(DispatcherSync dispatcher,
                            PivotTableGenerator pivotTableGenerator,
                            PivotChartGenerator pivotChartGenerator,
                            TableGenerator tableGenerator, MapGenerator mapGenerator) {
-        super(pivotDAO);
+        super(dispatcher);
 
         this.pivotTableGenerator = pivotTableGenerator;
         this.pivotChartGenerator = pivotChartGenerator;
@@ -70,8 +70,8 @@ public class ReportGenerator extends BaseGenerator<Report> {
     @Override
     public void generate(User user, Report report, Filter inheritedFilter, DateRange dateRange) {
 
-        Filter filter = resolveElementFilter(report, dateRange);
-        Filter effectiveFilter = resolveEffectiveFilter(report, inheritedFilter, dateRange);
+        Filter filter = GeneratorUtils.resolveElementFilter(report, dateRange);
+        Filter effectiveFilter = GeneratorUtils.resolveEffectiveFilter(report, inheritedFilter, dateRange);
 
         for (ReportElement element : report.getElements()) {
 

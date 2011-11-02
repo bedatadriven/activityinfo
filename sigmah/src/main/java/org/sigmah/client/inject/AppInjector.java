@@ -12,7 +12,6 @@ import org.sigmah.client.EventBus;
 import org.sigmah.client.HistoryManager;
 import org.sigmah.client.UsageTracker;
 import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.dispatch.remote.Authentication;
 import org.sigmah.client.dispatch.remote.cache.AdminEntityCache;
 import org.sigmah.client.dispatch.remote.cache.SchemaCache;
 import org.sigmah.client.i18n.UIConstants;
@@ -49,6 +48,7 @@ import org.sigmah.client.page.table.PivotModule;
 import org.sigmah.client.page.table.PivotPageLoader;
 import org.sigmah.client.page.table.PivotPresenter;
 import org.sigmah.client.util.state.StateProvider;
+import org.sigmah.shared.auth.AuthenticatedUser;
 
 import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
@@ -131,7 +131,7 @@ public interface AppInjector extends Ginjector {
 
     DbListPage getDbListPage();
 
-    Authentication getAuthentication();
+    AuthenticatedUser getAuthentication();
 
 	DashboardLoader createDashboardLoader();
 

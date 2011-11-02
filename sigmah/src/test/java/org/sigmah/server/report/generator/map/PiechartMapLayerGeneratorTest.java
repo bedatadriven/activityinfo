@@ -6,12 +6,11 @@ import static org.junit.Assert.assertThat;
 import java.util.Arrays;
 
 import org.junit.Test;
-import org.sigmah.shared.dao.SiteTableColumn;
+import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.PieMapMarker;
 import org.sigmah.shared.report.model.MapReportElement;
-import org.sigmah.shared.report.model.SiteData;
 import org.sigmah.shared.report.model.clustering.NoClustering;
 import org.sigmah.shared.report.model.layers.PiechartMapLayer;
 
@@ -19,10 +18,10 @@ public class PiechartMapLayerGeneratorTest {
 
 	@Test
 	public void testSomething() {
-		SiteData siteData = new SiteData();
-		siteData.setValue(SiteTableColumn.id, 42);
-		siteData.setValue(SiteTableColumn.x, 15.0);
-		siteData.setValue(SiteTableColumn.y, 0.0);
+		SiteDTO siteData = new SiteDTO();
+		siteData.setId(42);
+		siteData.setX(15.0);
+		siteData.setY(0.0);
 		siteData.setIndicatorValue(1, 50.0);
 		siteData.setIndicatorValue(2, 10.0);
 		siteData.setIndicatorValue(3, 20.0);

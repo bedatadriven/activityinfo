@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.dozer.Mapper;
+import org.sigmah.server.endpoint.gwtrpc.ServerExecutionContext;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.Month;
 import org.sigmah.shared.command.handler.AuthorizationHandler;
@@ -139,9 +140,14 @@ public class HandlerUtil {
 
 
     public static <T extends CommandResult> T execute(Injector injector, Command<T> cmd, User user) throws CommandException {
-        Class<? extends CommandHandler> handlerClass = handlerForCommand(cmd);
-        CommandHandler handler = injector.getInstance(handlerClass);
-        return (T) handler.execute(cmd, user);
+        Class handlerClass = handlerForCommand(cmd);
+        Object  handler = injector.getInstance(handlerClass);
+        if(handler instanceof CommandHandler) {
+        	CommandHandler syncHandler = (CommandHandler)handler;
+        	return (T) syncHandler.execute(cmd, user);	
+        } else {
+        	return (T)ServerExecutionContext.execute(injector, user, cmd);
+        }
     }
 
 

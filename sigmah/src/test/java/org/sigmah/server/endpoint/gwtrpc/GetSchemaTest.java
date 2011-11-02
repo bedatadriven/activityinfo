@@ -63,6 +63,8 @@ public class GetSchemaTest extends CommandTestCase2 {
 		assertThat("CountryId is not null", adminLevel.getId(), not(equalTo(0)));
 
         assertTrue("CountryId is not null", schema.getCountries().get(0).getAdminLevels().get(0).getCountryId()!=0);
+        
+        assertThat("deleted attribute is not present", schema.getActivityById(1).getAttributeGroups().size(), equalTo(3));
     }
 
     @Test

@@ -2,11 +2,11 @@ package org.sigmah.server.report.generator.map;
 
 import java.util.List;
 
-import org.sigmah.shared.report.model.SiteData;
+import org.sigmah.shared.dto.SiteDTO;
 
 public abstract class AbstractLayerGenerator implements LayerGenerator {
 
-    protected boolean hasValue(SiteData site, List<Integer> indicatorIds) {
+    protected boolean hasValue(SiteDTO site, List<Integer> indicatorIds) {
 
         // if no indicators are specified, we count sites
         if(indicatorIds.size() == 0) {
@@ -22,7 +22,7 @@ public abstract class AbstractLayerGenerator implements LayerGenerator {
         return false;
     }
 
-    protected Double getValue(SiteData site, List<Integer> indicatorIds) {
+    protected Double getValue(SiteDTO site, List<Integer> indicatorIds) {
 
         // if no indicators are specified, we count sites.
         if(indicatorIds.size() == 0) {

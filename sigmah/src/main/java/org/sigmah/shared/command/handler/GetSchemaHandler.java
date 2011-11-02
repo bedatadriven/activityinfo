@@ -471,7 +471,8 @@ public class GetSchemaHandler implements
 					.select("J.activityId", "J.attributeGroupId")
 					.from("AttributeGroupInActivity J "
 							+ "INNER JOIN AttributeGroup G ON (J.attributeGroupId = G.attributeGroupId)")
-					.orderBy("G.SortOrder");
+					.orderBy("G.SortOrder")
+					.where("G.dateDeleted").isNull();
 
 			if (!GWT.isClient()) {
 				query.where("ActivityId").in(

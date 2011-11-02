@@ -8,7 +8,7 @@ package org.sigmah.shared.report.content;
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class SimpleCategory implements LabeledDimensionCategory {
+public class SimpleCategory implements DimensionCategory {
 
     private String label;
 

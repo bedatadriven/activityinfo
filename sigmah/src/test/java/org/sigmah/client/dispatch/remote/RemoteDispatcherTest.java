@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.sigmah.client.dispatch.CommandProxy;
 import org.sigmah.client.dispatch.remote.cache.ProxyResult;
 import org.sigmah.client.mock.MockEventBus;
+import org.sigmah.shared.auth.AuthenticatedUser;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.command.RemoteCommandServiceAsync;
@@ -51,7 +52,7 @@ public class RemoteDispatcherTest {
         proxy = createMock("proxy", CommandProxy.class);
 
         dispatcher = new RemoteDispatcher(service, new MockEventBus(),
-                new Authentication(1, AUTH_TOKEN, "alex@alex.com"));
+                new AuthenticatedUser(1, AUTH_TOKEN, "alex@alex.com"));
     }
 
     @Test

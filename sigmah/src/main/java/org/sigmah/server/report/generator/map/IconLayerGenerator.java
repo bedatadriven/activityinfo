@@ -13,6 +13,7 @@ import org.sigmah.server.report.generator.map.cluster.Clusterer;
 import org.sigmah.server.report.generator.map.cluster.ClustererFactory;
 import org.sigmah.server.report.generator.map.cluster.genetic.MarkerGraph.IntersectionCalculator;
 import org.sigmah.server.report.generator.map.cluster.genetic.MarkerGraph.Node;
+import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.IconLayerLegend;
 import org.sigmah.shared.report.content.IconMapMarker;
@@ -21,7 +22,6 @@ import org.sigmah.shared.report.content.Point;
 import org.sigmah.shared.report.model.MapIcon;
 import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.PointValue;
-import org.sigmah.shared.report.model.SiteData;
 import org.sigmah.shared.report.model.layers.IconMapLayer;
 import org.sigmah.shared.util.mapping.Extents;
 
@@ -38,10 +38,10 @@ public class IconLayerGenerator
     private final IconMapLayer layer;
 
     private MapIcon icon;
-	private List<SiteData> sites;
+	private List<SiteDTO> sites;
 
 
-    public IconLayerGenerator(MapReportElement element, IconMapLayer layer, List<SiteData> sites) {
+    public IconLayerGenerator(MapReportElement element, IconMapLayer layer, List<SiteDTO> sites) {
         this.element = element;
         this.layer = layer;
         this.sites=sites;
@@ -49,7 +49,7 @@ public class IconLayerGenerator
         this.icon = new MapIcon(layer.getIcon(), 32, 37, 16, 35);
     }
 
-    public boolean meetsCriteria(SiteData site) {
+    public boolean meetsCriteria(SiteDTO site) {
         if(layer.getIndicatorIds().size() != 0) {
             for(Integer indicatorId : layer.getIndicatorIds()) {
                 Double indicatorValue = site.getIndicatorValue(indicatorId);
@@ -65,7 +65,7 @@ public class IconLayerGenerator
 
     public Extents calculateExtents() {
         Extents extents = Extents.emptyExtents();
-        for(SiteData site : sites) {
+        for(SiteDTO site : sites) {
             if(meetsCriteria(site) && site.hasLatLong()) {
                 extents.grow(site.getLatitude(), site.getLongitude());
             }
@@ -85,7 +85,7 @@ public class IconLayerGenerator
         List<PointValue> points = new ArrayList<PointValue>();
         IconRectCalculator rectCalculator = new IconRectCalculator(icon);
 
-        for(SiteData site : sites) {
+        for(SiteDTO site : sites) {
             if(meetsCriteria(site)) {
                 if(site.hasLatLong()) {
                     Point point = map.fromLatLngToPixel(new AiLatLng(site.getLatitude(), site.getLongitude()));

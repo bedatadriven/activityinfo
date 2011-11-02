@@ -92,8 +92,6 @@ public class DbUserExport extends Exporter {
 			createCell(row, column++, String.valueOf(user.getAllowEditAll()));
 			createCell(row, column++, String.valueOf(user.getAllowManageUsers()));
 			createCell(row, column++, String.valueOf(user.getAllowManageAllUsers()));
-	
-
 		}
 	}
 

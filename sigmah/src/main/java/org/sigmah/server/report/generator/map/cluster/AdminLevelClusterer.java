@@ -7,11 +7,11 @@ import java.util.Map;
 
 import org.sigmah.server.report.generator.map.RadiiCalculator;
 import org.sigmah.server.report.generator.map.TiledMap;
-import org.sigmah.shared.domain.AdminEntity;
+import org.sigmah.shared.dto.AdminEntityDTO;
+import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.Point;
 import org.sigmah.shared.report.model.PointValue;
-import org.sigmah.shared.report.model.SiteData;
 import org.sigmah.shared.report.model.clustering.AdministrativeLevelClustering;
 
 import com.google.common.collect.Lists;
@@ -39,7 +39,7 @@ public class AdminLevelClusterer implements Clusterer {
 		Map<Integer, Cluster> adminClusters = new HashMap<Integer,Cluster>();
 		
 		for(PointValue pv : points) {
-			AdminEntity entity = getAdminEntityId(pv);
+			AdminEntityDTO entity = getAdminEntityId(pv);
 			if(entity != null) {
 				Cluster cluster = adminClusters.get(entity.getId());
 				if(cluster == null) {
@@ -85,7 +85,7 @@ public class AdminLevelClusterer implements Clusterer {
 		}
 	}
 
-	private Point adminCenter(TiledMap map, AdminEntity entity) {
+	private Point adminCenter(TiledMap map, AdminEntityDTO entity) {
 		if(entity.getBounds() == null) {
 			return null;
 		} else {
@@ -97,12 +97,12 @@ public class AdminLevelClusterer implements Clusterer {
 		}
 	}
 
-	private AdminEntity getAdminEntityId(PointValue pv) {
+	private AdminEntityDTO getAdminEntityId(PointValue pv) {
 		return getAdminEntity(pv.site);
 	}
 
-	private AdminEntity getAdminEntity(SiteData site) {
-		Map<Integer, AdminEntity> membership = site.adminEntities;
+	private AdminEntityDTO getAdminEntity(SiteDTO site) {
+		Map<Integer, AdminEntityDTO> membership = site.getAdminEntities();
 		for(Integer levelId : model.getAdminLevels()) {
 			if(membership.containsKey(levelId)) {
 				return membership.get(levelId);
@@ -112,7 +112,7 @@ public class AdminLevelClusterer implements Clusterer {
 	}
 
 	@Override
-	public boolean isMapped(SiteData site) {
+	public boolean isMapped(SiteDTO site) {
 		return getAdminEntity(site) != null;
 	}
 }

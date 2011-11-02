@@ -3,8 +3,12 @@ package org.sigmah.server.endpoint.gwtrpc;
 import java.util.Collections;
 import java.util.List;
 
+import javax.management.RuntimeErrorException;
+
+import org.sigmah.server.command.DispatcherSync;
 import org.sigmah.server.database.TestDatabaseModule;
 import org.sigmah.server.database.dao.UserDAO;
+import org.sigmah.server.util.LocaleHelper;
 import org.sigmah.server.util.TemplateModule;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.result.CommandResult;
@@ -15,6 +19,7 @@ import org.sigmah.test.Modules;
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcScheduler;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.teklabs.gwt.i18n.server.LocaleProxy;
 
 /**
  * Test fixture for running hibernate-free 
@@ -51,6 +56,9 @@ public class CommandTestCase2 {
         User user = users.findById(userId);
         assert user != null;
 
+        LocaleProxy.setLocale(LocaleHelper.getLocaleObject(user));
+
+        
         List<CommandResult> results = servlet.handleCommands(user, Collections.<Command>singletonList(command));
 
         JdbcScheduler.get().forceCleanup();
@@ -72,6 +80,20 @@ public class CommandTestCase2 {
         }
 
         return (T) result;
+    }
+    
+    public DispatcherSync getDispatcherSync() {
+    	return new DispatcherSync() {
+			
+			@Override
+			public <C extends Command<R>, R extends CommandResult> R execute(C command) {
+				try {
+					return (R)CommandTestCase2.this.execute(command);
+				} catch (CommandException e) {
+					throw new RuntimeException(e);
+				}
+			}
+		};
     }
 
 }

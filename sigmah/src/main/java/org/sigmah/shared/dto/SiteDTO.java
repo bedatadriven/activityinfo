@@ -9,12 +9,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.RpcMap;
+import com.google.common.collect.Maps;
 
 /**
  * Projection DTO for the {@link org.sigmah.shared.domain.Site} domain object, including
@@ -262,6 +264,14 @@ public class SiteDTO extends BaseModelData implements EntityDTO {
 		return get("y");
 	}
 
+	public Double getLatitude() {
+		return getY();
+	}
+	
+	public Double getLongitude() {
+		return getY();
+	}
+	
     /**
      * Sets the Y (latitudinal) coordinate of this Site in degrees
      *
@@ -276,6 +286,11 @@ public class SiteDTO extends BaseModelData implements EntityDTO {
      */
 	public boolean hasCoords() {
 		return get("x")!=null && get("y")!=null;
+	}
+	
+
+	public boolean hasLatLong() {
+		return hasCoords();
 	}
 
     /**
@@ -530,4 +545,22 @@ public class SiteDTO extends BaseModelData implements EntityDTO {
 	public void setAttachmentIds(List<Integer> ids) {
 		set("attachmentIds", ids);
 	}
+
+	public int getPartnerId() {
+		return getPartner().getId();
+	}
+
+	public Map<Integer, AdminEntityDTO> getAdminEntities() {
+		Map<Integer, AdminEntityDTO> map = Maps.newHashMap();
+		for(String property : getPropertyNames()) {
+			if(property.startsWith(AdminLevelDTO.PROPERTY_PREFIX)) {
+				int levelId = AdminLevelDTO.levelIdForPropertyName(property);
+				map.put(levelId, (AdminEntityDTO)get(property));
+			}
+		}
+		return map;
+	}
+
+
+
 }
