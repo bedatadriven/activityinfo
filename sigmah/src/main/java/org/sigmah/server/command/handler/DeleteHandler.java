@@ -15,7 +15,6 @@ import org.sigmah.server.database.hibernate.entity.Site;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.database.hibernate.entity.UserDatabase;
 import org.sigmah.shared.command.Delete;
-import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 
 import com.google.inject.Inject;

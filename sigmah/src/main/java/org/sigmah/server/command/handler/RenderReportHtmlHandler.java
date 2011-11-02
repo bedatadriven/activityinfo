@@ -20,7 +20,6 @@ import org.sigmah.server.report.generator.ReportGenerator;
 import org.sigmah.server.report.renderer.itext.HtmlReportRenderer;
 import org.sigmah.server.util.logging.LogException;
 import org.sigmah.shared.command.RenderReportHtml;
-import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.HtmlResult;
 import org.sigmah.shared.exception.CommandException;

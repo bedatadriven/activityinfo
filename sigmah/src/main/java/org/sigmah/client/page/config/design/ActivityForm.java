@@ -85,29 +85,6 @@ class ActivityForm extends AbstractDesignForm {
         checkBoxes.setFieldLabel(I18N.CONSTANTS.attributes());
         checkBoxes.setOrientation(Style.Orientation.VERTICAL);
         this.add(checkBoxes);
-
-        CheckBox assessCheckBox = new CheckBox();
-        assessCheckBox.setBoxLabel(I18N.CONSTANTS.isAssessment());
-        assessCheckBox.setToolTip(I18N.CONSTANTS.isAssessmentToolTip());
-        binding.addFieldBinding(new FieldBinding(assessCheckBox, "assessment"));
-        checkBoxes.add(assessCheckBox);
-
-        MapIconComboBox mapIconField = new MapIconComboBox(service);
-        mapIconField.setFieldLabel(I18N.CONSTANTS.mapIcon());
-        FieldBinding mapIconBinding = new FieldBinding(mapIconField, "mapIcon");
-        mapIconBinding.setConverter(new Converter() {
-            @Override
-            public Object convertModelValue(Object value) {
-                return value == null ? null : new MapIconDTO((String) value);
-            }
-
-            @Override
-            public Object convertFieldValue(Object value) {
-                return ((MapIconDTO) value).getId();
-            }
-        });
-        binding.addFieldBinding(mapIconBinding);
-        this.add(mapIconField);
     }
 
     @Override

@@ -49,7 +49,6 @@ import javax.persistence.Transient;
 public class Site implements java.io.Serializable, Deleteable {
 
 	private int id;
-    private Site assessment;
 	private Project project;
 
 	private Activity activity;
@@ -73,9 +72,7 @@ public class Site implements java.io.Serializable, Deleteable {
 	private Set<ReportingPeriod> reportingPeriods = new HashSet<ReportingPeriod>(0);
 	
 	private String comments;
-	
-	private Set<Site> interventions = new HashSet<Site>(0);
-	
+		
 
     public Site() {
 		Date now = new Date();
@@ -98,22 +95,6 @@ public class Site implements java.io.Serializable, Deleteable {
      */
 	public void setId(int siteId) {
 		this.id = siteId;
-	}
-
-    /**
-     * @return the Site of the needs assessment on which this Site is based
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "AssessmentSiteId")
-	public Site getAssessment() {
-		return this.assessment;
-	}
-
-    /**
-     * Sets the Site of the needs assessment on which this Site is based
-     */
-	public void setAssessment(Site assessment) {
-		this.assessment = assessment;
 	}
 
     /**
@@ -191,23 +172,6 @@ public class Site implements java.io.Serializable, Deleteable {
 		this.partner = partner;
 	}
 
-    /**
-     * @deprecated No longer used
-     * @return the status of this Site
-     */
-	@Column(name = "Status", nullable = false)
-	public int getStatus() {
-		return this.status;
-	}
-
-    /**
-     * Sets the status of this Site
-     *
-     * @deprecated No longer used
-     */
-	public void setStatus(int status) {
-		this.status = status;
-	}
 
     /**
      * @return  the date on which work at this Site began
@@ -350,18 +314,6 @@ public class Site implements java.io.Serializable, Deleteable {
 	}
 
     /**
-     * @return for assessment Sites, a list of intervention Sites that are based on this assessment Site.
-     */
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "assessment")
-	public Set<Site> getInterventions() {
-		return this.interventions;
-	}
-
-	public void setInterventions(Set<Site> interventions) {
-		this.interventions = interventions;
-	}
-
-    /**
      *
      * @return the time at which this Site was deleted. Used for synchronization with clients.
      */
@@ -401,25 +353,7 @@ public class Site implements java.io.Serializable, Deleteable {
 	public boolean isDeleted() {
 		return getDateDeleted() != null;
 	}
-
-    /**
-     * Note! Not yet implemented
-     *
-     * @return The type of site: 0 for work complete, 1 for program targets
-     */
-    public int getTarget() {
-        return target;
-    }
-
-    /**
-     * Marks this site as a Target (1) or Realized (0)
-     * Not yet implemented
-     */
-    public void setTarget(int target) {
-        this.target = target;
-    }
-    
-    
+        
 	public void setProject(Project project) {
 		this.project = project;
 	}

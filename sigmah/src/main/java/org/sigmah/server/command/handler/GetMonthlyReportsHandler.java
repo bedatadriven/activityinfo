@@ -16,7 +16,6 @@ import org.sigmah.server.database.hibernate.entity.ReportingPeriod;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.shared.command.GetMonthlyReports;
 import org.sigmah.shared.command.Month;
-import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.MonthlyReportResult;
 import org.sigmah.shared.dto.IndicatorRowDTO;

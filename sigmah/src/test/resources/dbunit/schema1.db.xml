@@ -45,7 +45,6 @@
               name="NFI"
               reportingFrequency="0"
               allowEdit="1"
-              isAssessment="0"
               sortOrder="1"
               locationTypeId="1"/>
 
@@ -54,7 +53,6 @@
               name="empty activity"
               reportingFrequency="0"
               allowEdit="1"
-              isAssessment="0"
               sortOrder="2"
               locationTypeId="1"/>
 

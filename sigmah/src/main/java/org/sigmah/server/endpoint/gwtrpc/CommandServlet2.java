@@ -3,6 +3,7 @@ package org.sigmah.server.endpoint.gwtrpc;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sigmah.server.command.handler.CommandHandler;
 import org.sigmah.server.command.handler.HandlerUtil;
 import org.sigmah.server.database.dao.UserDAO;
 import org.sigmah.server.database.hibernate.dao.AuthenticationDAO;
@@ -12,7 +13,6 @@ import org.sigmah.server.util.logging.LogException;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.RemoteCommandService;
 import org.sigmah.shared.command.handler.ExecutionContext;
-import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.handler.CommandHandlerAsync;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.exception.CommandException;

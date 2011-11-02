@@ -1,12 +1,12 @@
 package org.sigmah.server.endpoint.gwtrpc;
 
+import org.sigmah.server.command.handler.CommandHandler;
 import org.sigmah.server.command.handler.HandlerUtil;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.shared.auth.AuthenticatedUser;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.MutatingCommand;
 import org.sigmah.shared.command.handler.AuthorizationHandler;
-import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.handler.CommandHandlerAsync;
 import org.sigmah.shared.command.handler.ExecutionContext;
 import org.sigmah.shared.command.result.CommandResult;

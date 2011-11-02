@@ -17,7 +17,6 @@ import org.sigmah.server.database.hibernate.dao.CountryDAO;
 import org.sigmah.server.database.hibernate.entity.Country;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.shared.command.GetCountries;
-import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.CountryResult;
 import org.sigmah.shared.dto.CountryDTO;

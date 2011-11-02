@@ -18,7 +18,6 @@ import org.sigmah.server.database.hibernate.entity.AdminLevel;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.database.hibernate.entity.UserDatabase;
 import org.sigmah.shared.command.GetSyncRegions;
-import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.SyncRegion;
 import org.sigmah.shared.command.result.SyncRegions;

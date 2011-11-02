@@ -28,7 +28,6 @@
 			name="NFI"
 			reportingFrequency="0"
 			allowEdit="1"
-			isAssessment="0"
 			sortOrder="1"
 			locationTypeId="1" />
 
@@ -52,7 +51,7 @@
 	<!-- id=1  NFI Distribution at Penekusu, Sud Kivu  2009 Q1-->
 
 	<location locationId="1" name="Penekusu" locationTypeId="1" X="1.532" Y="27.323" />
-	<site siteId="1" activityId="1" locationId="1" partnerId="1" Status="1" target="0" 
+	<site siteId="1" activityId="1" locationId="1" partnerId="1"  
 		Date1="2009-01-01"
        	Date2="2009-01-02" 
        	DateCreated="2009-02-01" 
@@ -66,7 +65,7 @@
 	
 	<location locationId="2" name="Ngshwe" locationTypeId="1" X="1.323" Y="28.232" />
 
-	<site siteId="2" activityId="1" locationId="2" partnerId="1" Status="1" target="1" Date1="2009-01-15" Date2="2009-01-16" DateCreated="2009-02-01" DateEdited="2009-02-01"/>
+	<site siteId="2" activityId="1" locationId="2" partnerId="1"  Date1="2009-01-15" Date2="2009-01-16" DateCreated="2009-02-01" DateEdited="2009-02-01"/>
 
 	<reportingPeriod reportingPeriodId="2" siteId="2" date1="2009-04-15" date2="2009-04-16" DateCreated="2009-02-01" DateEdited="2009-02-01" />
 	<indicatorValue reportingPeriodId="2" indicatorId="1" value="3600"/>
@@ -75,7 +74,7 @@
 	<!-- id=3 NFI Distribution at Boga, Ituri 2008 Q4 -->
 	
 	<location locationId="3" name="Boga" locationTypeId="1" X="3.323" Y="27.232" />
-	<site siteId="3" activityId="1" locationId="3" partnerId="1" Status="1" target="0" Date1="2008-10-05" Date2="2008-10-06" DateCreated="2009-02-01" DateEdited="2009-02-01"/>
+	<site siteId="3" activityId="1" locationId="3" partnerId="1" Date1="2008-10-05" Date2="2008-10-06" DateCreated="2009-02-01" DateEdited="2009-02-01"/>
 
 	<reportingPeriod reportingPeriodId="3" siteId="3" date1="2008-10-05" date2="2008-10-06" DateCreated="2009-02-01" DateEdited="2009-02-01" />
 	<indicatorValue reportingPeriodId="3" indicatorId="1" value="10000"/>

@@ -81,7 +81,6 @@
 			name="NFI"
 			reportingFrequency="0"
 			allowEdit="1"
-			isAssessment="0"
 			sortOrder="1"
 			locationTypeId="1" />
 			
@@ -135,7 +134,6 @@
 			name="Distribution de Kits Scolaire"
 			reportingFrequency="0"
 			allowEdit="1"
-			isAssessment="0"
 			sortOrder="1"
 			locationTypeId="1" />
 			
@@ -153,7 +151,6 @@
 			name="Appui aux centres de santé"
 			reportingFrequency="1"
 			allowEdit="1"
-			isAssessment="0"
 			sortOrder="1"
 			locationTypeId="1" />
 			
@@ -176,7 +173,6 @@
         name="Reunification of child soliders"
         reportingFrequency="1"
         allowEdit="1"
-        isAssessment="0"
         sortOrder="1"
         locationTypeId="3" />
 
@@ -206,7 +202,7 @@
 	<locationAdminLink locationId="1" adminEntityId="2"/>
 	<locationAdminLink locationId="1" adminEntityId="12"/>
 	
-	<site siteId="1" activityId="1" locationId="1" partnerId="1" Status="1" target="0" Date1="2009-01-01"
+	<site siteId="1" activityId="1" locationId="1" partnerId="1" Date1="2009-01-01"
           Date2="2009-01-02" DateCreated="2009-02-01" DateEdited="2009-02-01"
           DateDeleted="2009-01-16" />
 	<attributeValue siteId="1" attributeId="1" value="0"/>
@@ -223,7 +219,7 @@
 	<locationAdminLink locationId="2" adminEntityId="2"/>
 	<locationAdminLink locationId="2" adminEntityId="11"/>
 	
-	<site siteId="2" activityId="1" locationId="2" partnerId="1" Status="1" target="1" Date1="2009-01-15" Date2="2009-01-16" DateCreated="2009-02-01" DateEdited="2009-02-01" />
+	<site siteId="2" activityId="1" locationId="2" partnerId="1" Date1="2009-01-15" Date2="2009-01-16" DateCreated="2009-02-01" DateEdited="2009-02-01" />
 	<attributeValue siteId="2" attributeId="1" value="1"/>
 	<attributeValue siteId="2" attributeId="2" value="1"/>
 	
@@ -237,7 +233,7 @@
 	<locationAdminLink locationId="3" adminEntityId="4"/>
 	<locationAdminLink locationId="3" adminEntityId="21"/>
 	
-	<site siteId="3" activityId="1" locationId="3" partnerId="2" Status="1" target="0" Date1="2008-10-05" Date2="2008-10-06" DateCreated="2009-02-01" DateEdited="2009-02-01" />
+	<site siteId="3" activityId="1" locationId="3" partnerId="2" Date1="2008-10-05" Date2="2008-10-06" DateCreated="2009-02-01" DateEdited="2009-02-01" />
 	<attributeValue siteId="3" attributeId="1" value="1"/>
 	<attributeValue siteId="3" attributeId="2" value="0"/>
 	
@@ -252,7 +248,7 @@
 	<locationAdminLink locationId="9" adminEntityId="2"/>
 	<locationAdminLink locationId="9" adminEntityId="11"/>
 		
-	<site siteId="9" activityId="3" locationId="9" partnerId="1" Status="1" target="0" Date1="2009-01-01" Date2="2009-12-31" DateCreated="2009-01-01" DateEdited="2009-01-01" />
+	<site siteId="9" activityId="3" locationId="9" partnerId="1" Date1="2009-01-01" Date2="2009-12-31" DateCreated="2009-01-01" DateEdited="2009-01-01" />
 		
 	<reportingPeriod reportingPeriodId="91" siteId="9"  date1="2009-01-01" date2="2009-01-31" DateCreated="2009-02-01" DateEdited="2009-02-01" />
 		<indicatorValue reportingPeriodId="91" indicatorId="5" value="0.1"/>
@@ -269,11 +265,11 @@
 	<locationAdminLink locationId="4" adminEntityId="2"/>
 	<locationAdminLink locationId="4" adminEntityId="10"/>
 	
-	<site siteId="4" activityId="2" locationId="4" partnerId="2" Status="1" target="0" Date1="2008-10-06" Date2="2008-11-06" DateCreated="2009-10-05" DateEdited="2009-10-05" />
+	<site siteId="4" activityId="2" locationId="4" partnerId="2"  Date1="2008-10-06" Date2="2008-11-06" DateCreated="2009-10-05" DateEdited="2009-10-05" />
 
 	<!-- Kit scolaires in Boga Ituri -->
 
-	<site siteId="5" activityId="2" locationId="3" partnerId="1" Status="1" target="0" Date1="2008-10-05" Date2="2008-10-05" DateCreated="2009-02-01" DateEdited="2009-02-01" />
+	<site siteId="5" activityId="2" locationId="3" partnerId="1"  Date1="2008-10-05" Date2="2008-10-05" DateCreated="2009-02-01" DateEdited="2009-02-01" />
 
 
 
@@ -284,7 +280,7 @@
     <locationAdminLink locationId="6" adminEntityId="3"/>
 	<locationAdminLink locationId="6" adminEntityId="11"/>
 
-    <site siteId="6" activityId="4" locationId="6" partnerId="1" Status="1" target="0" DateCreated="2009-02-01" DateEdited="2009-02-01" />
+    <site siteId="6" activityId="4" locationId="6" partnerId="1" DateCreated="2009-02-01" DateEdited="2009-02-01" />
 
     <reportingPeriod reportingPeriodId="601" siteId="6"  date1="2009-01-01" date2="2009-01-31"  DateCreated="2009-01-01" DateEdited="2009-01-01"/>
     <indicatorValue reportingPeriodId="601" indicatorId="6" value="35"/>
@@ -299,5 +295,5 @@
     <locationAdminLink locationId="7" adminEntityId="3"/>
     <locationAdminLink locationId="7" adminEntityId="12"/>
 
-    <site siteId="7" activityId="4" locationId="7" partnerId="1" Status="1" target="0"  DateCreated="2009-02-01" DateEdited="2009-02-01" />
+    <site siteId="7" activityId="4" locationId="7" partnerId="1"  DateCreated="2009-02-01" DateEdited="2009-02-01" />
 </dataset>

@@ -12,7 +12,6 @@ import java.util.List;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.report.generator.MapIconPath;
 import org.sigmah.shared.command.GetMapIcons;
-import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.MapIconResult;
 import org.sigmah.shared.dto.MapIconDTO;

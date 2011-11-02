@@ -12,7 +12,6 @@ import org.sigmah.server.database.hibernate.entity.ReportDefinition;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.report.ReportParserJaxb;
 import org.sigmah.shared.command.UpdateReportDef;
-import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.ParseException;

@@ -10,7 +10,6 @@ import org.sigmah.server.database.hibernate.entity.Project;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.database.hibernate.entity.UserDatabase;
 import org.sigmah.shared.command.LockEntity;
-import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.dto.LockedPeriodDTO;

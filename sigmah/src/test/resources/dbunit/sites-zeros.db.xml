@@ -28,7 +28,6 @@
 			name="Appui aux centres de santé"
 			reportingFrequency="1"
 			allowEdit="1"
-			isAssessment="0"
 			sortOrder="1"
 			locationTypeId="1" />
 			
@@ -50,7 +49,6 @@
         name="Reunification of child soliders"
         reportingFrequency="1"
         allowEdit="1"
-        isAssessment="0"
         sortOrder="1"
         locationTypeId="1" />
 
@@ -75,7 +73,7 @@
 
 	<!--  PEAR Plus Health Center Support in Ngweshe -->
 
-	<site siteId="9" activityId="3" locationId="1" partnerId="1" Status="1" target="0" Date1="2009-01-01" Date2="2009-12-31" DateCreated="2009-01-01" DateEdited="2009-01-01" />
+	<site siteId="9" activityId="3" locationId="1" partnerId="1"  Date1="2009-01-01" Date2="2009-12-31" DateCreated="2009-01-01" DateEdited="2009-01-01" />
 		
 	<reportingPeriod reportingPeriodId="91" siteId="9"  date1="2009-01-01" date2="2009-01-31" DateCreated="2009-02-01" DateEdited="2009-02-01"/>
 		<indicatorValue reportingPeriodId="91" indicatorId="5" value="0.0"/>
@@ -83,7 +81,7 @@
     <!-- PEAR Plus child reunification in Walungu -->
 
 
-    <site siteId="6" activityId="4" locationId="1" partnerId="1" Status="1" target="0" DateCreated="2009-02-01" DateEdited="2009-02-01" />
+    <site siteId="6" activityId="4" locationId="1" partnerId="1" DateCreated="2009-02-01" DateEdited="2009-02-01" />
 
     <reportingPeriod reportingPeriodId="601" siteId="6"  date1="2009-01-01" date2="2009-01-31" DateCreated="2009-01-01" DateEdited="2009-01-01"/>
     <indicatorValue reportingPeriodId="601" indicatorId="6" value="0"/>

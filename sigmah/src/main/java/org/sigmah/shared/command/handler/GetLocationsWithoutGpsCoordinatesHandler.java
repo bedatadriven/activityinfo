@@ -60,12 +60,6 @@ public class GetLocationsWithoutGpsCoordinatesHandler implements CommandHandlerA
 										result.setData(locations);
 										callback.onSuccess(result);
 									}
-
-									@Override
-									public boolean onFailure(SqlException e) {
-										// TODO Auto-generated method stub
-										return super.onFailure(e);
-									}
 								});
 						}
 				});

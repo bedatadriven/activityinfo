@@ -3,7 +3,7 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.shared.command.handler;
+package org.sigmah.server.command.handler;
 
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.shared.command.Command;

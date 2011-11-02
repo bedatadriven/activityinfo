@@ -19,7 +19,6 @@ import org.sigmah.server.endpoint.gwtrpc.ServerExecutionContext;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.Month;
 import org.sigmah.shared.command.handler.AuthorizationHandler;
-import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.handler.CommandHandlerAsync;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.exception.CommandException;

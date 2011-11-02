@@ -90,7 +90,11 @@ public class HibernateModule extends AbstractModule {
 
         @Override
         public EntityManagerFactory get() {
-            return Persistence.createEntityManagerFactory("activityInfo", configProperties);
+        	// ensure that hibernate does do schema updating--liquibase is in charge
+        	Properties config = (Properties)configProperties.clone();
+        	config.setProperty("hibernate.hbm2ddl.auto", "");
+        	
+            return Persistence.createEntityManagerFactory("activityInfo", config);
         }
     }
 

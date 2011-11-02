@@ -36,7 +36,7 @@ import com.teklabs.gwt.i18n.server.LocaleProxy;
  * Process command objects from the client and returns CommandResults.
  * <p/>
  * This servlet is at the heart of the command execution pipeline, but delegates all
- * logic processing to the {@link org.sigmah.shared.command.handler.CommandHandler} corresponding
+ * logic processing to the {@link org.sigmah.server.command.handler.CommandHandler} corresponding
  * to the given {@link org.sigmah.shared.command.Command}s.
  * <p/>
  * CommandHandlers are loaded based on name from the org.sigmah.server.command.handler package.

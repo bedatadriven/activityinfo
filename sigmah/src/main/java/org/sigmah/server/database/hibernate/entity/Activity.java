@@ -55,7 +55,6 @@ public class Activity implements Serializable, Deleteable, Orderable, SchemaElem
 
     private int reportingFrequency;
 
-    private boolean assessment;
     private boolean allowEdit;
     private int sortOrder;
 
@@ -126,15 +125,6 @@ public class Activity implements Serializable, Deleteable, Orderable, SchemaElem
 
     public void setReportingFrequency(int reportingFrequency) {
         this.reportingFrequency = reportingFrequency;
-    }
-
-    @Column(name = "IsAssessment", nullable = false)
-    public boolean isAssessment() {
-        return this.assessment;
-    }
-
-    public void setAssessment(boolean assessment) {
-        this.assessment = assessment;
     }
 
     @Column(name = "AllowEdit", nullable = false)

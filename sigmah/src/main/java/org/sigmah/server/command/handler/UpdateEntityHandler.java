@@ -21,7 +21,6 @@ import org.sigmah.server.database.hibernate.entity.Indicator;
 import org.sigmah.server.database.hibernate.entity.LockedPeriod;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.shared.command.UpdateEntity;
-import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.IllegalAccessCommandException;

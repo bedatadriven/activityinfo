@@ -21,7 +21,6 @@ import org.sigmah.server.database.hibernate.entity.AttributeGroup;
 import org.sigmah.server.database.hibernate.entity.Indicator;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.shared.command.CreateEntity;
-import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.exception.CommandException;

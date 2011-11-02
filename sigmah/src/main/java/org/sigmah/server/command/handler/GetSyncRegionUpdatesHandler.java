@@ -14,7 +14,6 @@ import org.sigmah.server.command.handler.sync.SiteUpdateBuilder;
 import org.sigmah.server.command.handler.sync.UpdateBuilder;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.shared.command.GetSyncRegionUpdates;
-import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.exception.CommandException;
 

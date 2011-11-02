@@ -23,15 +23,14 @@ public enum SiteTableColumn {
     database_name(5, "UserDatabase.name"),
     date1(6, "site.date1"),
     date2(7, "site.date2"),
-    status(8, "site.status"),
-    partner_id(9, "partner.PartnerId"),
-    partner_name(10, "partner.name"),
-    location_name(11, "location.name"),
-    location_axe(12, "location.axe"),
-    location_type(13, "locationType.name"),
-    comments(14, "site.comments"),
-    x(15, "location.x"),
-    y(16, "location.y");
+    partner_id(8, "partner.PartnerId"),
+    partner_name(9, "partner.name"),
+    location_name(10, "location.name"),
+    location_axe(11, "location.axe"),
+    location_type(12, "locationType.name"),
+    comments(13, "site.comments"),
+    x(14, "location.x"),
+    y(15, "location.y");
 
     private final String property;
     private final int index;

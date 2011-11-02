@@ -26,7 +26,6 @@ import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.database.hibernate.entity.UserDatabase;
 import org.sigmah.server.database.hibernate.entity.UserPermission;
 import org.sigmah.shared.command.GetInvitationList;
-import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.InvitationList;
 import org.sigmah.shared.dto.ReportSubscriptionDTO;

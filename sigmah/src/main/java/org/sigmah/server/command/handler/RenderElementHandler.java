@@ -17,7 +17,6 @@ import org.sigmah.server.report.renderer.Renderer;
 import org.sigmah.server.report.renderer.RendererFactory;
 import org.sigmah.shared.command.GenerateElement;
 import org.sigmah.shared.command.RenderElement;
-import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.RenderResult;
 import org.sigmah.shared.exception.CommandException;

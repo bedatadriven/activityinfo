@@ -8,7 +8,6 @@ package org.sigmah.server.command.handler;
 import org.sigmah.server.database.hibernate.dao.BaseMapDAO;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.shared.command.GetBaseMaps;
-import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.BaseMapResult;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.exception.CommandException;

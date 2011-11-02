@@ -20,7 +20,6 @@ import org.sigmah.server.i18n.LocaleHelper;
 import org.sigmah.server.mail.InvitationMessage;
 import org.sigmah.server.mail.MailSender;
 import org.sigmah.shared.command.UpdateUserPermissions;
-import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.dto.UserPermissionDTO;
 import org.sigmah.shared.exception.CommandException;

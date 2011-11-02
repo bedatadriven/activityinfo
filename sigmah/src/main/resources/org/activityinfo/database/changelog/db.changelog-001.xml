@@ -31,5 +31,12 @@ xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liqui
 			Not used.
 		</comment>
 	</changeSet>
+	
+	<changeSet id="001-4" author="alex">
+		<dropColumn tableName="Activity" columnName="IsAssessment"/>
+		<dropColumn tableName="Site" columnName="AssessmentSiteId"/>
+		<dropColumn tableName="Site" columnName="Status"/>	
+		<dropColumn tableName="Site" columnName="target"/>	
+	</changeSet>
 	 
 </databaseChangeLog> 

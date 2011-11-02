@@ -15,7 +15,6 @@ import org.dozer.Mapper;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.database.hibernate.entity.UserPermission;
 import org.sigmah.shared.command.GetUsers;
-import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.UserResult;
 import org.sigmah.shared.dto.UserPermissionDTO;

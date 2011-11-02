@@ -115,10 +115,6 @@ public class BaseEntityHandler {
             activity.setName((String) changes.get("name"));
         }
 
-        if (changes.containsKey("assessment")) {
-            activity.setAssessment((Boolean) changes.get("assessment"));
-        }
-
         if (changes.containsKey("locationType")) {
             activity.setLocationType(
                     em.getReference(LocationType.class,

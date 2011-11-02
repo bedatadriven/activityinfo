@@ -310,6 +310,11 @@
             <version>3.4.0.GA</version>
         </dependency>
         <dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
+			<version>2.0.2</version>
+		</dependency>
+        <dependency>
             <groupId>com.jolbox</groupId>
             <artifactId>bonecp</artifactId>
             <version>0.7.1.RELEASE</version>
@@ -465,9 +470,6 @@
 				<configuration>
 					<driver>com.mysql.jdbc.Driver</driver>
 					<changeLogFile>org/activityinfo/database/changelog/db.changelog-master.xml</changeLogFile>
-					<url>${devDatabaseUrl}</url>
-					<username>${devDatabaseUsername}</username>
-					<password>${devDatabasePassword}</password>
 				</configuration>
 				<executions>
 					<execution>
