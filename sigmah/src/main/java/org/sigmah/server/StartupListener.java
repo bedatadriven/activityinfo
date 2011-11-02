@@ -17,11 +17,11 @@ import org.sigmah.server.endpoint.export.ExportModule;
 import org.sigmah.server.endpoint.gwtrpc.GwtRpcModule;
 import org.sigmah.server.endpoint.jsonrpc.JsonRpcModule;
 import org.sigmah.server.endpoint.kml.KmlModule;
+import org.sigmah.server.i18n.LocaleModule;
 import org.sigmah.server.mail.MailModule;
 import org.sigmah.server.report.ReportModule;
-import org.sigmah.server.util.BeanMappingModule;
-import org.sigmah.server.util.LocaleModule;
 import org.sigmah.server.util.TemplateModule;
+import org.sigmah.server.util.beanMapping.BeanMappingModule;
 import org.sigmah.server.util.logging.LoggingModule;
 
 import com.google.inject.Guice;

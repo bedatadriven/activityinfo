@@ -18,8 +18,8 @@ import org.sigmah.shared.report.model.DateUnit;
  * Abstract class providing functions for manipulating dates. There are concrete implementations
  * based on the <code>Calendar</code> class, and another for client-side usage.
  *
- * @see org.sigmah.client.util.DateUtilGWTImpl
- * @see org.sigmah.server.util.DateUtilCalendarImpl
+ * @see org.sigmah.client.util.date.DateUtilGWTImpl
+ * @see org.sigmah.server.util.date.DateUtilCalendarImpl
  *
  * @author Alex Bertram
  */

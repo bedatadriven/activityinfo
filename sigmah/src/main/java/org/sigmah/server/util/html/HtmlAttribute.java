@@ -3,22 +3,19 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.server.util;
+package org.sigmah.server.util.html;
 
+public class HtmlAttribute {
 
-public class XmlAttribute {
-
-	private String namespace = null;
 	private String name;
 	private StringBuilder value = new StringBuilder();
 	
-	public XmlAttribute(String namespace, String name) {
+	public HtmlAttribute(String name, String value) {
 		this.name = name;
-		this.namespace = namespace;
+		this.value.append(value);
 	}
 
-
-	public XmlAttribute(String name) {
+	public HtmlAttribute(String name) {
 		this.name = name;
 	}
 
@@ -50,21 +47,16 @@ public class XmlAttribute {
 		this.value.append(value);
 	}
 	
-	public XmlAttribute append(String value) {
+	public HtmlAttribute append(String value) {
 		this.value.append(value);
 		return this;
 	}
 	
-	public XmlAttribute append(String value, char delimeter) {
+	public HtmlAttribute append(String value, char delimeter) {
 		if(this.value.length() != 0) {
 			this.value.append(delimeter);
 		}
 		this.value.append(value);
 		return this;
 	}
-
-	public String getNamespace() {
-		return namespace;
-	}
-	
 }

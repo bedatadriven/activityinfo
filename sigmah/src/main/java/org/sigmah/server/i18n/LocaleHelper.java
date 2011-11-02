@@ -1,4 +1,4 @@
-package org.sigmah.server.util;
+package org.sigmah.server.i18n;
 
 import java.util.Locale;
 

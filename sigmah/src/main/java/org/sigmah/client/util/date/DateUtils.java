@@ -1,4 +1,4 @@
-package org.sigmah.client.util;
+package org.sigmah.client.util.date;
 
 import java.util.Comparator;
 import java.util.Date;

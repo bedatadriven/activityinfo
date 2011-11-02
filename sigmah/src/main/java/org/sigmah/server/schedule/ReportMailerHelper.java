@@ -11,9 +11,9 @@ import java.util.Date;
 import java.util.ResourceBundle;
 
 import org.sigmah.server.database.hibernate.entity.ReportSubscription;
-import org.sigmah.server.report.util.HtmlWriter;
-import org.sigmah.server.util.DateUtilCalendarImpl;
-import org.sigmah.server.util.LocaleHelper;
+import org.sigmah.server.i18n.LocaleHelper;
+import org.sigmah.server.util.date.DateUtilCalendarImpl;
+import org.sigmah.server.util.html.HtmlWriter;
 import org.sigmah.shared.date.DateUtil;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.DateUnit;

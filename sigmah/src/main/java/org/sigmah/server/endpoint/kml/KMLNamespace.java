@@ -3,18 +3,16 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.server.util;
+package org.sigmah.server.endpoint.kml;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.sigmah.server.util.xml.SimpleXmlElement;
+import org.sigmah.server.util.xml.XmlBuilder;
+import org.sigmah.server.util.xml.XmlElement;
 import org.xml.sax.SAXException;
 
-import com.bedatadriven.rebar.time.calendar.LocalDate;
-
-/**
- * @author Alex Bertram (akbertram@gmail.com)
- */
 public class KMLNamespace {
 
     public static String URI = "http://earth.google.com/kml/2.2";

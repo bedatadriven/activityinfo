@@ -1,4 +1,4 @@
-package org.sigmah.server.util;
+package org.sigmah.server.util.beanMapping;
 
 import java.util.Date;
 

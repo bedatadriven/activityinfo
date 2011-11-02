@@ -8,7 +8,7 @@ package org.sigmah.server.report.generator;
 
 import org.sigmah.server.command.DispatcherSync;
 import org.sigmah.server.database.hibernate.entity.User;
-import org.sigmah.server.util.LocaleHelper;
+import org.sigmah.server.i18n.LocaleHelper;
 import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.report.content.PivotContent;
 import org.sigmah.shared.report.content.PivotTableData;

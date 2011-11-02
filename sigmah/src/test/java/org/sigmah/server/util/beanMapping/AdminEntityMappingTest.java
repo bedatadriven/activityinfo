@@ -3,7 +3,7 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.server.mapping;
+package org.sigmah.server.util.beanMapping;
 
 import junit.framework.Assert;
 
@@ -13,7 +13,7 @@ import org.junit.runner.RunWith;
 import org.sigmah.server.database.hibernate.entity.AdminEntity;
 import org.sigmah.server.database.hibernate.entity.AdminLevel;
 import org.sigmah.server.database.hibernate.entity.Bounds;
-import org.sigmah.server.util.BeanMappingModule;
+import org.sigmah.server.util.beanMapping.BeanMappingModule;
 import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.Modules;

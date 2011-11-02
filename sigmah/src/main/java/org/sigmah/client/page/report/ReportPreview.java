@@ -11,7 +11,7 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.common.toolbar.ActionToolBar;
 import org.sigmah.client.page.common.toolbar.ExportMenuButton;
 import org.sigmah.client.page.common.toolbar.UIActions;
-import org.sigmah.client.util.DateUtilGWTImpl;
+import org.sigmah.client.util.date.DateUtilGWTImpl;
 import org.sigmah.shared.command.Month;
 import org.sigmah.shared.command.RenderElement;
 import org.sigmah.shared.date.DateUtil;

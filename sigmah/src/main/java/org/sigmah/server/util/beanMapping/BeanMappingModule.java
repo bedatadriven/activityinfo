@@ -3,14 +3,13 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.server.util;
+package org.sigmah.server.util.beanMapping;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
-import org.sigmah.shared.dto.DTOMapper;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
@@ -20,7 +19,6 @@ public class BeanMappingModule extends AbstractModule {
 
     @Override
     protected void configure() {
-    	bind(DTOMapper.class).to(DozerMapper.class);
     }
 
     @Provides

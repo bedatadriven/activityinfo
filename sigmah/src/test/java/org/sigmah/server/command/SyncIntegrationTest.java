@@ -29,7 +29,7 @@ import org.sigmah.server.database.hibernate.entity.AdminEntity;
 import org.sigmah.server.database.hibernate.entity.Location;
 import org.sigmah.server.database.hibernate.entity.LocationType;
 import org.sigmah.server.endpoint.gwtrpc.GwtRpcModule;
-import org.sigmah.server.util.BeanMappingModule;
+import org.sigmah.server.util.beanMapping.BeanMappingModule;
 import org.sigmah.server.util.logging.LoggingModule;
 import org.sigmah.shared.command.Delete;
 import org.sigmah.shared.command.GetSites;

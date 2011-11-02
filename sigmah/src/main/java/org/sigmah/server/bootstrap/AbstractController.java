@@ -5,7 +5,7 @@
 
 package org.sigmah.server.bootstrap;
 
-import static org.sigmah.server.util.StringUtil.isEmpty;
+import static org.sigmah.shared.util.StringUtil.isEmpty;
 
 import java.io.IOException;
 

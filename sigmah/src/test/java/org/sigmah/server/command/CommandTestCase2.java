@@ -9,7 +9,7 @@ import org.sigmah.server.database.dao.UserDAO;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.endpoint.gwtrpc.CommandServlet2;
 import org.sigmah.server.endpoint.gwtrpc.GwtRpcModule;
-import org.sigmah.server.util.LocaleHelper;
+import org.sigmah.server.i18n.LocaleHelper;
 import org.sigmah.server.util.TemplateModule;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.result.CommandResult;

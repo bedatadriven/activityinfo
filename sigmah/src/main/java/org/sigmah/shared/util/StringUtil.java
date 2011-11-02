@@ -3,7 +3,7 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.server.util;
+package org.sigmah.shared.util;
 
 public class StringUtil {
 

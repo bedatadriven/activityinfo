@@ -25,7 +25,7 @@ import org.sigmah.client.page.common.filter.PartnerFilterPanel;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.page.table.drilldown.DrillDownEditor;
 import org.sigmah.client.page.table.drilldown.DrillDownGrid;
-import org.sigmah.client.util.DateUtilGWTImpl;
+import org.sigmah.client.util.date.DateUtilGWTImpl;
 import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.command.GetSchema;

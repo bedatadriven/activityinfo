@@ -14,11 +14,7 @@ import com.extjs.gxt.ui.client.data.ModelData;
  *
  * @author Alex Bertram
  */
-public interface EntityDTO 
-	extends 
-		DTO, 
-		ModelData,
-		HasName {
+public interface EntityDTO extends DTO, ModelData {
 
     /**
      * @return the corresponding entity's @Id
@@ -29,4 +25,6 @@ public interface EntityDTO
      * @return the entity's JPA name
      */
     public String getEntityName();
+    
+    public String getName();
 }

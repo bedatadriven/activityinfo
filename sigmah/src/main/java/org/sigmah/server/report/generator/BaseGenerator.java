@@ -11,8 +11,8 @@ import java.util.Set;
 
 import org.sigmah.server.command.DispatcherSync;
 import org.sigmah.server.database.hibernate.entity.User;
-import org.sigmah.server.report.util.DateRangeFormat;
-import org.sigmah.server.util.LocaleHelper;
+import org.sigmah.server.i18n.LocaleHelper;
+import org.sigmah.server.util.date.DateRangeFormat;
 import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.command.GetDimensionLabels;
 import org.sigmah.shared.command.GetDimensionLabels.DimensionLabels;

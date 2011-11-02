@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.database.OnDataSet;
 import org.sigmah.server.endpoint.gwtrpc.GwtRpcModule;
-import org.sigmah.server.util.BeanMappingModule;
+import org.sigmah.server.util.beanMapping.BeanMappingModule;
 import org.sigmah.server.util.logging.LoggingModule;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.ActivityDTO;

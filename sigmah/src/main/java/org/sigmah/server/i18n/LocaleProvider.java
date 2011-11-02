@@ -1,4 +1,4 @@
-package org.sigmah.server.util;
+package org.sigmah.server.i18n;
 
 import com.google.gwt.i18n.client.LocalizableResource;
 import com.google.inject.Provider;

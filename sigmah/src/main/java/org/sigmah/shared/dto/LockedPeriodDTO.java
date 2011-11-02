@@ -91,34 +91,6 @@ public class LockedPeriodDTO extends BaseModelData implements EntityDTO {
 	public String getEntityName() {
 		return "LockedPeriod";
 	}
-
-//	
-//	public void setActivity(ActivityDTO activity) {
-//		set("parentName", activity.getName());
-//		this.activity = activity;
-//	}
-//
-//	public ActivityDTO getActivity() {
-//		return activity;
-//	}
-//	
-//	public UserDatabaseDTO getUserDatabase() {
-//		return userDatabase;
-//	}
-//
-//	public void setUserDatabase(UserDatabaseDTO userDatabase) {
-//		set("parentName", userDatabase.getName());
-//		this.userDatabase = userDatabase;
-//	}
-//
-//	public ProjectDTO getProject() {
-//		return project;
-//	}
-//
-//	public void setProject(ProjectDTO project) {
-//		set("parentName", project.getName());
-//		this.project = project;
-//	}
 	
 	public HasLockedPeriod getParent() {
 		return parent;

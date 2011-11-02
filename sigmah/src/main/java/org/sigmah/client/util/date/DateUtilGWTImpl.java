@@ -3,7 +3,7 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.client.util;
+package org.sigmah.client.util.date;
 
 import java.util.Date;
 

@@ -3,7 +3,7 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.server.report.util;
+package org.sigmah.server.util.html;
 
 public class MismatchedTagError extends Error {
 
