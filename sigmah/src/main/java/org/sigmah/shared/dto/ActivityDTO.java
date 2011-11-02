@@ -17,7 +17,7 @@ import org.sigmah.shared.dto.LockedPeriodDTO.HasLockedPeriod;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
- * One-to-one DTO for the {@link org.sigmah.shared.domain.Activity} domain object.
+ * One-to-one DTO for the Activity table.
  *
  * @author Alex Bertram
  */

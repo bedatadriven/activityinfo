@@ -13,7 +13,7 @@ import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class GenericSearcher implements Searcher<Object> {
+public class GenericSearcher implements Searcher {
 	private DimensionType dimension;
 	
 	public GenericSearcher(DimensionType dimension) {

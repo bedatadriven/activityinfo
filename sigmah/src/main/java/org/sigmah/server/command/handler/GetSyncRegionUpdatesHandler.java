@@ -6,16 +6,16 @@
 package org.sigmah.server.command.handler;
 
 import org.json.JSONException;
-import org.sigmah.server.sync.AdminUpdateBuilder;
-import org.sigmah.server.sync.LocationUpdateBuilder;
-import org.sigmah.server.sync.SchemaUpdateBuilder;
-import org.sigmah.server.sync.SiteTableUpdateBuilder;
-import org.sigmah.server.sync.SiteUpdateBuilder;
-import org.sigmah.server.sync.UpdateBuilder;
+import org.sigmah.server.command.handler.sync.AdminUpdateBuilder;
+import org.sigmah.server.command.handler.sync.LocationUpdateBuilder;
+import org.sigmah.server.command.handler.sync.SchemaUpdateBuilder;
+import org.sigmah.server.command.handler.sync.SiteTableUpdateBuilder;
+import org.sigmah.server.command.handler.sync.SiteUpdateBuilder;
+import org.sigmah.server.command.handler.sync.UpdateBuilder;
+import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.shared.command.GetSyncRegionUpdates;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.CommandException;
 
 import com.google.inject.Inject;

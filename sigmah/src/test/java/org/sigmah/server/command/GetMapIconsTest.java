@@ -9,11 +9,11 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.command.handler.GetMapIconsHandler;
+import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.endpoint.gwtrpc.GwtRpcModule;
 import org.sigmah.server.report.ReportModule;
 import org.sigmah.shared.command.GetMapIcons;
 import org.sigmah.shared.command.result.MapIconResult;
-import org.sigmah.shared.domain.User;
 import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.Modules;
 

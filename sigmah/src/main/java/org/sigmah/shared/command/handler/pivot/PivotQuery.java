@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.command.PivotSites;
 import org.sigmah.shared.command.PivotSites.PivotResult;
 import org.sigmah.shared.command.handler.pivot.bundler.Bundler;
@@ -16,7 +17,6 @@ import org.sigmah.shared.command.handler.pivot.bundler.SiteCountBundler;
 import org.sigmah.shared.command.handler.pivot.bundler.SumAndAverageBundler;
 import org.sigmah.shared.command.handler.pivot.bundler.YearBundler;
 import org.sigmah.shared.command.result.Bucket;
-import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.report.model.AdminDimension;
 import org.sigmah.shared.report.model.AttributeGroupDimension;
 import org.sigmah.shared.report.model.DateDimension;

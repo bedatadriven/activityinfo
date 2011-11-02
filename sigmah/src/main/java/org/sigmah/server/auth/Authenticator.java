@@ -5,7 +5,7 @@
 
 package org.sigmah.server.auth;
 
-import org.sigmah.shared.domain.User;
+import org.sigmah.server.database.hibernate.entity.User;
 
 /**
  * Service interface which provides validation of user passwords.

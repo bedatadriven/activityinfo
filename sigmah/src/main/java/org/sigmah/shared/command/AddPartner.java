@@ -9,8 +9,8 @@ import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.dto.PartnerDTO;
 
 /**
- * Adds a {@link org.sigmah.shared.domain.Partner} to the
- * the given {@link org.sigmah.shared.domain.UserDatabase}
+ * Adds a {@link org.sigmah.server.database.hibernate.entity.Partner} to the
+ * the given {@link org.sigmah.server.database.hibernate.entity.UserDatabase}
  *
  * Returns {@link org.sigmah.shared.command.result.VoidResult}
  *

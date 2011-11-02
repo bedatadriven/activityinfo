@@ -11,11 +11,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.sigmah.server.command.DispatcherSync;
-import org.sigmah.shared.dao.Filter;
-import org.sigmah.shared.dao.IndicatorDAO;
-import org.sigmah.shared.dao.SiteOrder;
-import org.sigmah.shared.dao.SiteTableDAO;
-import org.sigmah.shared.domain.User;
+import org.sigmah.server.database.hibernate.dao.IndicatorDAO;
+import org.sigmah.server.database.hibernate.dao.SiteOrder;
+import org.sigmah.server.database.hibernate.dao.SiteTableDAO;
+import org.sigmah.server.database.hibernate.entity.User;
+import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.report.content.TableContent;

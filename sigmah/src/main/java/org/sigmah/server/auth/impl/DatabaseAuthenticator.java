@@ -6,7 +6,7 @@
 package org.sigmah.server.auth.impl;
 
 import org.sigmah.server.auth.Authenticator;
-import org.sigmah.shared.domain.User;
+import org.sigmah.server.database.hibernate.entity.User;
 
 /**
  * Validates the user's password against the a hashed version stored in the database.

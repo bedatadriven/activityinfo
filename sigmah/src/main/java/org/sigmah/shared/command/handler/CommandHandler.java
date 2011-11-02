@@ -5,9 +5,9 @@
 
 package org.sigmah.shared.command.handler;
 
+import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.CommandException;
 
 /**

@@ -11,7 +11,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 
 
 /**
- * One-to-one DTO for the {@link org.sigmah.shared.domain.AdminEntity} domain object.
+ * One-to-one DTO for the {@link org.sigmah.server.database.hibernate.entity.AdminEntity} domain object.
  *
  * @author Alex Bertram
  */
@@ -106,7 +106,7 @@ public final class AdminEntityDTO extends BaseModelData implements DTO {
 
     /**
      * 
-     * @return  the id of this AdminEntity's corresponding {@link org.sigmah.shared.domain.AdminLevel}
+     * @return  the id of this AdminEntity's corresponding {@link org.sigmah.server.database.hibernate.entity.AdminLevel}
      */
 	public int getLevelId() {
 		return (Integer)get("levelId");

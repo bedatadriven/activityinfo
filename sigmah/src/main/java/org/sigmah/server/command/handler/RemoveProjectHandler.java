@@ -4,14 +4,14 @@ import java.util.Date;
 
 import javax.persistence.EntityManager;
 
+import org.sigmah.server.database.hibernate.entity.Project;
+import org.sigmah.server.database.hibernate.entity.User;
+import org.sigmah.server.database.hibernate.entity.UserDatabase;
+import org.sigmah.server.database.hibernate.entity.UserPermission;
 import org.sigmah.shared.command.RemoveProject;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.VoidResult;
-import org.sigmah.shared.domain.Project;
-import org.sigmah.shared.domain.User;
-import org.sigmah.shared.domain.UserDatabase;
-import org.sigmah.shared.domain.UserPermission;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.IllegalAccessCommandException;
 import org.sigmah.shared.exception.ProjectHasSitesException;

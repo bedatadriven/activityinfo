@@ -7,11 +7,11 @@ package org.sigmah.server.policy;
 
 import java.util.Date;
 
-import org.sigmah.shared.dao.CountryDAO;
-import org.sigmah.shared.dao.UserDatabaseDAO;
-import org.sigmah.shared.domain.Country;
-import org.sigmah.shared.domain.User;
-import org.sigmah.shared.domain.UserDatabase;
+import org.sigmah.server.database.hibernate.dao.CountryDAO;
+import org.sigmah.server.database.hibernate.dao.UserDatabaseDAO;
+import org.sigmah.server.database.hibernate.entity.Country;
+import org.sigmah.server.database.hibernate.entity.User;
+import org.sigmah.server.database.hibernate.entity.UserDatabase;
 
 import com.google.inject.Inject;
 

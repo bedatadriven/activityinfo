@@ -7,8 +7,8 @@ package org.sigmah.server.bootstrap;
 
 import org.junit.Test;
 import org.sigmah.server.bootstrap.model.HostPageModel;
-import org.sigmah.server.domain.Authentication;
-import org.sigmah.shared.domain.User;
+import org.sigmah.server.database.hibernate.entity.Authentication;
+import org.sigmah.server.database.hibernate.entity.User;
 
 public class HostViewTest extends ViewTestCase {
 

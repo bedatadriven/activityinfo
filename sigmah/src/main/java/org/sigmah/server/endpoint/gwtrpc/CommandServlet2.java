@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.sigmah.server.command.handler.HandlerUtil;
-import org.sigmah.server.dao.AuthenticationDAO;
 import org.sigmah.server.database.dao.UserDAO;
-import org.sigmah.server.domain.Authentication;
+import org.sigmah.server.database.hibernate.dao.AuthenticationDAO;
+import org.sigmah.server.database.hibernate.entity.Authentication;
+import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.util.logging.LogException;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.RemoteCommandService;
@@ -14,7 +15,6 @@ import org.sigmah.shared.command.handler.ExecutionContext;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.handler.CommandHandlerAsync;
 import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.InvalidAuthTokenException;
 import org.sigmah.shared.exception.UnexpectedCommandException;
@@ -95,7 +95,7 @@ public class CommandServlet2 extends RemoteServiceServlet implements RemoteComma
 
     @LogException(emailAlert = true)
     protected CommandResult handleCommand(User user, Command command) throws CommandException {
-    	return ServerExecutionContext.execute(injector, user, command);
+    	return ServerExecutionContext.execute(injector, command);
     }
     
    

@@ -3,7 +3,8 @@ package org.sigmah.shared.command.handler.search;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sigmah.shared.domain.AdminEntity;
+import org.sigmah.server.database.hibernate.entity.AdminEntity;
+import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.report.model.DimensionType;
 
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
@@ -13,7 +14,7 @@ import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class AdminEntitySearcher implements Searcher<AdminEntity> {
+public class AdminEntitySearcher implements Searcher {
 	
 	@Override
 	public void search(final List<String> testQuery, SqlTransaction tx, final AsyncCallback<List<Integer>> callback) {

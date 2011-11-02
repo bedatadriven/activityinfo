@@ -7,10 +7,10 @@ package org.sigmah.client.offline.command;
 
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.shared.auth.AuthenticatedUser;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.domain.User;
 import org.sigmah.shared.util.Collector;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -94,7 +94,7 @@ public class LocalDispatcher implements Dispatcher {
 			
 			@Override
 			public void begin(SqlTransaction tx) {
-				OfflineExecutionContext context = new OfflineExecutionContext(getUser(), tx, registry, commandQueue);
+				OfflineExecutionContext context = new OfflineExecutionContext(auth, tx, registry, commandQueue);
 				context.execute(command, commandResult);
 			}
 
@@ -114,11 +114,5 @@ public class LocalDispatcher implements Dispatcher {
     	return registry.hasHandler(c);    	
     }
    
-	public User getUser() {
-        User user =  new User();
-        user.setId(auth.getUserId());
-        user.setEmail(auth.getEmail());
-        return user;
-	}
     
 }

@@ -5,7 +5,7 @@
 
 package org.sigmah.server.bootstrap.model;
 
-import org.sigmah.shared.domain.User;
+import org.sigmah.server.database.hibernate.entity.User;
 
 public class ConfirmInvitePageModel extends PageModel {
     private User user;

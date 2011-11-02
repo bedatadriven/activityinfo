@@ -12,16 +12,16 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 
 import org.sigmah.client.offline.command.handler.KeyGenerator;
+import org.sigmah.server.database.hibernate.entity.Indicator;
+import org.sigmah.server.database.hibernate.entity.IndicatorValue;
+import org.sigmah.server.database.hibernate.entity.ReportingPeriod;
+import org.sigmah.server.database.hibernate.entity.Site;
+import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.shared.command.Month;
 import org.sigmah.shared.command.UpdateMonthlyReports;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.VoidResult;
-import org.sigmah.shared.domain.Indicator;
-import org.sigmah.shared.domain.IndicatorValue;
-import org.sigmah.shared.domain.ReportingPeriod;
-import org.sigmah.shared.domain.Site;
-import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.CommandException;
 
 import com.google.inject.Inject;

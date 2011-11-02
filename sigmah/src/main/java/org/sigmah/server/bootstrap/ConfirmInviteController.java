@@ -17,10 +17,10 @@ import org.sigmah.server.bootstrap.exception.IncompleteFormException;
 import org.sigmah.server.bootstrap.exception.InvalidKeyException;
 import org.sigmah.server.bootstrap.model.ConfirmInvitePageModel;
 import org.sigmah.server.bootstrap.model.InvalidInvitePageModel;
-import org.sigmah.server.dao.Transactional;
-import org.sigmah.server.domain.Authentication;
+import org.sigmah.server.database.hibernate.dao.Transactional;
+import org.sigmah.server.database.hibernate.entity.Authentication;
+import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.util.logging.LogException;
-import org.sigmah.shared.domain.User;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;

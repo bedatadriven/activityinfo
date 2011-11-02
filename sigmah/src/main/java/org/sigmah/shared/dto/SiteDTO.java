@@ -19,9 +19,9 @@ import com.extjs.gxt.ui.client.data.RpcMap;
 import com.google.common.collect.Maps;
 
 /**
- * Projection DTO for the {@link org.sigmah.shared.domain.Site} domain object, including
- * its {@link org.sigmah.shared.domain.Location Location}, and
- * {@link org.sigmah.shared.domain.ReportingPeriod ReportingPeriod} totals
+ * Projection DTO for the {@link org.sigmah.server.database.hibernate.entity.Site} domain object, including
+ * its {@link org.sigmah.server.database.hibernate.entity.Location Location}, and
+ * {@link org.sigmah.server.database.hibernate.entity.ReportingPeriod ReportingPeriod} totals
  *
  * @author Alex Bertram
  */
@@ -190,7 +190,7 @@ public class SiteDTO extends BaseModelData implements EntityDTO {
 
     /**
      * Sets the name of Location of this Site.
-     * See {@link org.sigmah.shared.domain.Location#getName()}
+     * See {@link org.sigmah.server.database.hibernate.entity.Location#getName()}
      * 
      * @param name the name of the location.
      */

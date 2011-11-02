@@ -11,7 +11,7 @@ import java.util.List;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
- * One-to-one DTO for the {@link org.sigmah.shared.domain.AttributeGroup} domain object
+ * One-to-one DTO for the {@link org.sigmah.server.database.hibernate.entity.AttributeGroup} domain object
  *
  * @author Alex Bertram
  */

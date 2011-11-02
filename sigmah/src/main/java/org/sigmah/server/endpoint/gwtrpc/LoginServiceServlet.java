@@ -17,11 +17,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.sigmah.login.client.LoginException;
 import org.sigmah.server.Cookies;
 import org.sigmah.server.auth.Authenticator;
-import org.sigmah.server.dao.AuthenticationDAO;
-import org.sigmah.server.dao.Transactional;
-import org.sigmah.server.domain.Authentication;
-import org.sigmah.shared.dao.UserDAO;
-import org.sigmah.shared.domain.User;
+import org.sigmah.server.database.hibernate.dao.AuthenticationDAO;
+import org.sigmah.server.database.hibernate.dao.Transactional;
+import org.sigmah.server.database.hibernate.dao.UserDAO;
+import org.sigmah.server.database.hibernate.entity.Authentication;
+import org.sigmah.server.database.hibernate.entity.User;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;

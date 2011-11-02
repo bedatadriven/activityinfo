@@ -63,7 +63,7 @@ public class SearchTest extends CommandTestCase {
 
 		assertTrue("Expected all searchers to succeed", result.getFailedSearchers().isEmpty());
 		
-		for (Searcher<?> searcher : AllSearcher.supportedSearchers()) {
+		for (Searcher searcher : AllSearcher.supportedSearchers()) {
 			assertHasDimension(searcher.getDimensionType(), result);
 		}
 		

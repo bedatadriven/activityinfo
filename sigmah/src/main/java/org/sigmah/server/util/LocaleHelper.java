@@ -2,7 +2,7 @@ package org.sigmah.server.util;
 
 import java.util.Locale;
 
-import org.sigmah.shared.domain.User;
+import org.sigmah.server.database.hibernate.entity.User;
 
 /**
  * Static Locale helper methods.

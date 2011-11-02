@@ -10,9 +10,9 @@ import java.util.Date;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.sigmah.server.domain.ReportDefinition;
-import org.sigmah.server.domain.ReportSubscription;
-import org.sigmah.shared.domain.User;
+import org.sigmah.server.database.hibernate.entity.ReportDefinition;
+import org.sigmah.server.database.hibernate.entity.ReportSubscription;
+import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.Report;
 import org.sigmah.shared.report.model.ReportFrequency;

@@ -22,7 +22,6 @@ import org.sigmah.server.dao.OnDataSet;
 import org.sigmah.server.database.TestDatabaseModule;
 import org.sigmah.shared.command.PivotSites;
 import org.sigmah.shared.command.result.Bucket;
-import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.report.content.DimensionCategory;
 import org.sigmah.shared.report.content.EntityCategory;

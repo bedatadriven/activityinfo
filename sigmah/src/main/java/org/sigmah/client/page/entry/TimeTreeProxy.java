@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.page.entry.SiteTreeGridPageState.TreeType;
+import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.command.GetAdminEntities;
 import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.command.SitesPerAdminEntity;
@@ -16,7 +17,6 @@ import org.sigmah.shared.command.SitesPerTime.SitesPerTimeResult;
 import org.sigmah.shared.command.SitesPerTime.SitesPerTimeResult.MonthResult;
 import org.sigmah.shared.command.SitesPerTime.SitesPerTimeResult.YearResult;
 import org.sigmah.shared.command.result.SiteResult;
-import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.report.model.DimensionType;

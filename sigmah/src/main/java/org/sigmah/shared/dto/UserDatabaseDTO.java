@@ -16,7 +16,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 
 
 /**
- * One-to-one DTO of the {@link org.sigmah.shared.domain.UserDatabase} domain object.
+ * One-to-one DTO of the {@link org.sigmah.server.database.hibernate.entity.UserDatabase} domain object.
  *
  * @author Alex Bertram
  */
@@ -171,7 +171,7 @@ public final class UserDatabaseDTO
 
 	/**
      * Sets the permission of the current user to view all partner's data in this UserDatabase.
-     * See {@link org.sigmah.shared.domain.UserPermission#setAllowViewAll(boolean)}
+     * See {@link org.sigmah.server.database.hibernate.entity.UserPermission#setAllowViewAll(boolean)}
      */
 	public void setViewAllAllowed(boolean value) {
 		set("viewAllAllowed", value);
@@ -180,7 +180,7 @@ public final class UserDatabaseDTO
     /**
      * @return  true if the client receiving the DTO is authorized to view data
      * from all partners in this UserDatabase.
-     * See {@link org.sigmah.shared.domain.UserPermission#setAllowViewAll(boolean)}
+     * See {@link org.sigmah.server.database.hibernate.entity.UserPermission#setAllowViewAll(boolean)}
      */
 	public boolean isViewAllAllowed() {
 		return (Boolean)get("viewAllAllowed");
@@ -205,7 +205,7 @@ public final class UserDatabaseDTO
 
     /**
      * Sets the permission of the current user to design this UserDatabase. See
-     * {@link org.sigmah.shared.domain.UserPermission#setAllowDesign(boolean)}
+     * {@link org.sigmah.server.database.hibernate.entity.UserPermission#setAllowDesign(boolean)}
      */
 	public void setDesignAllowed(boolean allowed) {
 		set("designAllowed", allowed);

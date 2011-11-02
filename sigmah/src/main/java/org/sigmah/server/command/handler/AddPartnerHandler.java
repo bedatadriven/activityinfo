@@ -11,14 +11,14 @@ import java.util.Set;
 
 import javax.persistence.EntityManager;
 
+import org.sigmah.server.database.hibernate.entity.Partner;
+import org.sigmah.server.database.hibernate.entity.User;
+import org.sigmah.server.database.hibernate.entity.UserDatabase;
+import org.sigmah.server.database.hibernate.entity.UserPermission;
 import org.sigmah.shared.command.AddPartner;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.CreateResult;
-import org.sigmah.shared.domain.Partner;
-import org.sigmah.shared.domain.User;
-import org.sigmah.shared.domain.UserDatabase;
-import org.sigmah.shared.domain.UserPermission;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.DuplicateException;
 import org.sigmah.shared.exception.IllegalAccessCommandException;

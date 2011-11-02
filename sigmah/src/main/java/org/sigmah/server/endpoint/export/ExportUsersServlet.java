@@ -15,9 +15,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.sigmah.server.command.handler.HandlerUtil;
-import org.sigmah.server.dao.AuthenticationDAO;
-import org.sigmah.server.domain.Authentication;
-import org.sigmah.server.domain.DomainFilters;
+import org.sigmah.server.database.hibernate.dao.AuthenticationDAO;
+import org.sigmah.server.database.hibernate.entity.Authentication;
+import org.sigmah.server.database.hibernate.entity.DomainFilters;
 import org.sigmah.shared.command.GetUsers;
 import org.sigmah.shared.command.result.UserResult;
 

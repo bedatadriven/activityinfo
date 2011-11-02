@@ -35,8 +35,8 @@ public class ServerSideAuthProvider implements Provider<AuthenticatedUser> {
 	}
 	
 	private AuthenticatedUser authFromToken(String authToken) {
-		org.sigmah.server.domain.Authentication entity =
-				entityManager.get().find(org.sigmah.server.domain.Authentication.class, authToken);
+		org.sigmah.server.database.hibernate.entity.Authentication entity =
+				entityManager.get().find(org.sigmah.server.database.hibernate.entity.Authentication.class, authToken);
 		
 		return new AuthenticatedUser(entity.getUser().getId(), authToken, entity.getUser().getEmail());
 	}

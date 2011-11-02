@@ -11,9 +11,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.sigmah.server.dao.hibernate.HibernateModule;
 import org.sigmah.server.database.TestConnectionProvider;
 import org.sigmah.server.database.TestDatabaseModule;
+import org.sigmah.server.database.hibernate.dao.HibernateModule;
 
 import com.google.inject.Provider;
 import com.google.inject.Singleton;

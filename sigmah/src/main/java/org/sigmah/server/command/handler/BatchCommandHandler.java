@@ -8,12 +8,12 @@ package org.sigmah.server.command.handler;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.shared.command.BatchCommand;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.BatchResult;
 import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.CommandException;
 
 import com.google.inject.Inject;

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.report.model.DimensionType;
 
 /** Transforms a search query string into a Filter instance/ workable data structure

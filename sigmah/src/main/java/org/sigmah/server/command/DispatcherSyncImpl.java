@@ -1,10 +1,10 @@
 package org.sigmah.server.command;
 
 import org.sigmah.server.command.handler.HandlerUtil;
+import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.shared.auth.AuthenticatedUser;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.CommandException;
 
 import com.google.inject.Inject;

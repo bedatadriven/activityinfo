@@ -16,11 +16,11 @@ import org.sigmah.server.auth.Authenticator;
 import org.sigmah.server.auth.SecureTokenGenerator;
 import org.sigmah.server.bootstrap.model.LoginPageModel;
 import org.sigmah.server.bootstrap.model.PasswordExpiredPageModel;
-import org.sigmah.server.dao.Transactional;
+import org.sigmah.server.database.hibernate.dao.Transactional;
+import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.mail.MailSender;
 import org.sigmah.server.mail.PasswordExpiredMessage;
 import org.sigmah.server.util.logging.LogException;
-import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.InvalidLoginException;
 
 import com.google.inject.Inject;

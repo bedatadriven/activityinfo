@@ -10,7 +10,7 @@ import org.sigmah.shared.report.model.ReportFrequency;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
- * One-to-one DTO for the {@link org.sigmah.server.domain.ReportDefinition} domain class
+ * One-to-one DTO for the {@link org.sigmah.server.database.hibernate.entity.ReportDefinition} domain class
  *
  * @author Alex Bertram
  */
@@ -148,7 +148,7 @@ public final class ReportDefinitionDTO extends BaseModelData implements DTO {
     }
 
     /**
-     * See {@link org.sigmah.server.domain.ReportSubscription#isSubscribed()}
+     * See {@link org.sigmah.server.database.hibernate.entity.ReportSubscription#isSubscribed()}
      *
      * @return true if the current user is subscribed to this ReportDefinition
      */
@@ -158,7 +158,7 @@ public final class ReportDefinitionDTO extends BaseModelData implements DTO {
 
     /**
      * Sets whether the current user is subscribed to this ReportDefinition.
-     * See {@link org.sigmah.server.domain.ReportSubscription#setSubscribed(boolean)}
+     * See {@link org.sigmah.server.database.hibernate.entity.ReportSubscription#setSubscribed(boolean)}
      */
     public void setSubscribed(boolean subscribed) {
         set("subscribed", subscribed);

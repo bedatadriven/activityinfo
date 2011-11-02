@@ -3,7 +3,7 @@ package org.sigmah.shared.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sigmah.shared.domain.User;
+import org.sigmah.server.database.hibernate.entity.User;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 

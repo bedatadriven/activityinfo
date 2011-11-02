@@ -9,7 +9,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 
 
 /**
- * One-to-one DTO of the {@link org.sigmah.shared.domain.LocationType LocationType}
+ * One-to-one DTO of the {@link org.sigmah.server.database.hibernate.entity.LocationType LocationType}
  * domain object.
  *
  * @author Alex Bertram

@@ -10,9 +10,9 @@ import static org.easymock.EasyMock.replay;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.util.DateUtilCalendarImpl;
 import org.sigmah.shared.date.DateUtil;
-import org.sigmah.shared.domain.User;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.Report;
 

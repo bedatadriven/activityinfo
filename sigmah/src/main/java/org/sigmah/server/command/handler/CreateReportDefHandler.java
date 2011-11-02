@@ -8,14 +8,14 @@ package org.sigmah.server.command.handler;
 import javax.persistence.EntityManager;
 import javax.xml.bind.JAXBException;
 
-import org.sigmah.server.domain.ReportDefinition;
+import org.sigmah.server.database.hibernate.entity.ReportDefinition;
+import org.sigmah.server.database.hibernate.entity.User;
+import org.sigmah.server.database.hibernate.entity.UserDatabase;
 import org.sigmah.server.report.ReportParserJaxb;
 import org.sigmah.shared.command.CreateReportDef;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.CreateResult;
-import org.sigmah.shared.domain.User;
-import org.sigmah.shared.domain.UserDatabase;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.ParseException;
 import org.sigmah.shared.report.model.Report;

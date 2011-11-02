@@ -5,12 +5,12 @@
 
 package org.sigmah.server.command.handler;
 
-import org.sigmah.server.dao.BaseMapDAO;
+import org.sigmah.server.database.hibernate.dao.BaseMapDAO;
+import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.shared.command.GetBaseMaps;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.BaseMapResult;
 import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.CommandException;
 
 import com.google.inject.Inject;

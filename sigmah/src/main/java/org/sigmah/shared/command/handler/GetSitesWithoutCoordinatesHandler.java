@@ -3,13 +3,13 @@ package org.sigmah.shared.command.handler;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.command.GetLocationsWithoutGpsCoordinates;
 import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.command.GetSitesWithoutCoordinates;
 import org.sigmah.shared.command.result.LocationsWithoutGpsResult;
 import org.sigmah.shared.command.result.SiteResult;
 import org.sigmah.shared.command.result.SitesWithoutLocationsResult;
-import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dto.LocationDTO;
 import org.sigmah.shared.report.model.DimensionType;
 

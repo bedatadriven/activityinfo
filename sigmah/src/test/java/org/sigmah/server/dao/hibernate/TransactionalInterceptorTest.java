@@ -17,7 +17,8 @@ import javax.persistence.EntityTransaction;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.sigmah.server.dao.Transactional;
+import org.sigmah.server.database.hibernate.dao.HibernateModule;
+import org.sigmah.server.database.hibernate.dao.Transactional;
 import org.sigmah.server.util.BeanMappingModule;
 import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.Modules;

@@ -18,9 +18,9 @@ import org.sigmah.client.page.common.filter.FilterToolBar.ApplyFilterHandler;
 import org.sigmah.client.page.common.filter.FilterToolBar.RemoveFilterEvent;
 import org.sigmah.client.page.common.filter.FilterToolBar.RemoveFilterHandler;
 import org.sigmah.client.page.common.filter.FilterToolBarImpl;
+import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.command.GetPartnersWithSites;
 import org.sigmah.shared.command.result.PartnerResult;
-import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.report.model.DimensionType;
 

@@ -8,7 +8,7 @@ package org.sigmah.server.bootstrap;
 import org.junit.Test;
 import org.sigmah.server.bootstrap.model.ConfirmInvitePageModel;
 import org.sigmah.server.bootstrap.model.InvalidInvitePageModel;
-import org.sigmah.shared.domain.User;
+import org.sigmah.server.database.hibernate.entity.User;
 
 public class ConfirmInviteViewTest extends ViewTestCase {
 

@@ -14,7 +14,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.sigmah.server.domain.Authentication;
+import org.sigmah.server.database.hibernate.entity.Authentication;
 import org.sigmah.shared.Cookies;
 
 import com.bedatadriven.rebar.appcache.server.DefaultSelectionServlet;

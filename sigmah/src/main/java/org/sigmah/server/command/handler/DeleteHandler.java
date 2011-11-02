@@ -9,14 +9,14 @@ import java.util.Date;
 
 import javax.persistence.EntityManager;
 
+import org.sigmah.server.database.hibernate.entity.Deleteable;
+import org.sigmah.server.database.hibernate.entity.ReallyDeleteable;
+import org.sigmah.server.database.hibernate.entity.Site;
+import org.sigmah.server.database.hibernate.entity.User;
+import org.sigmah.server.database.hibernate.entity.UserDatabase;
 import org.sigmah.shared.command.Delete;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.domain.Deleteable;
-import org.sigmah.shared.domain.ReallyDeleteable;
-import org.sigmah.shared.domain.Site;
-import org.sigmah.shared.domain.User;
-import org.sigmah.shared.domain.UserDatabase;
 
 import com.google.inject.Inject;
 

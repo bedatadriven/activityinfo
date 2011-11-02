@@ -8,7 +8,7 @@ package org.sigmah.shared.report.content;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.command.Filter;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

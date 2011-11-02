@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.CountryDTO;

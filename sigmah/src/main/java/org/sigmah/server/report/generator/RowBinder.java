@@ -10,9 +10,9 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.sigmah.shared.dao.SiteProjectionBinder;
-import org.sigmah.shared.dao.SiteTableColumn;
-import org.sigmah.shared.domain.AdminEntity;
+import org.sigmah.server.database.hibernate.dao.SiteProjectionBinder;
+import org.sigmah.server.database.hibernate.dao.SiteTableColumn;
+import org.sigmah.server.database.hibernate.entity.AdminEntity;
 import org.sigmah.shared.report.content.TableData;
 import org.sigmah.shared.report.model.TableColumn;
 

@@ -12,7 +12,8 @@ import java.io.StringWriter;
 import javax.servlet.ServletContext;
 import javax.xml.bind.JAXBException;
 
-import org.sigmah.server.dao.ReportDefinitionDAO;
+import org.sigmah.server.database.hibernate.dao.ReportDefinitionDAO;
+import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.report.ReportParserJaxb;
 import org.sigmah.server.report.ServletImageStorageProvider;
 import org.sigmah.server.report.generator.ReportGenerator;
@@ -22,7 +23,6 @@ import org.sigmah.shared.command.RenderReportHtml;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.HtmlResult;
-import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.report.model.Report;
 

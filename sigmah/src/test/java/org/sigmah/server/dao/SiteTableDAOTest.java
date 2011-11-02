@@ -14,10 +14,10 @@ import javax.persistence.EntityManager;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.sigmah.server.dao.hibernate.HibernateSiteTableDAO;
-import org.sigmah.shared.dao.SiteProjectionBinder;
-import org.sigmah.shared.dao.SiteTableDAO;
-import org.sigmah.shared.domain.User;
+import org.sigmah.server.database.hibernate.dao.HibernateSiteTableDAO;
+import org.sigmah.server.database.hibernate.dao.SiteProjectionBinder;
+import org.sigmah.server.database.hibernate.dao.SiteTableDAO;
+import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.MockHibernateModule;
 import org.sigmah.test.Modules;

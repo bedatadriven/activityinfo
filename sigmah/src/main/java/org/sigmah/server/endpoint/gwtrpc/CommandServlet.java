@@ -11,16 +11,16 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import org.apache.log4j.Logger;
-import org.sigmah.server.dao.AuthenticationDAO;
-import org.sigmah.server.dao.Transactional;
-import org.sigmah.server.domain.Authentication;
-import org.sigmah.server.domain.DomainFilters;
+import org.sigmah.server.database.hibernate.dao.AuthenticationDAO;
+import org.sigmah.server.database.hibernate.dao.Transactional;
+import org.sigmah.server.database.hibernate.entity.Authentication;
+import org.sigmah.server.database.hibernate.entity.DomainFilters;
+import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.util.LocaleHelper;
 import org.sigmah.server.util.logging.LogException;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.RemoteCommandService;
 import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.InvalidAuthTokenException;
 import org.sigmah.shared.exception.UnexpectedCommandException;
@@ -68,7 +68,7 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
         Authentication auth = retrieveAuthentication(authToken);
         applyUserFilters(auth.getUser());
         LocaleProxy.setLocale(LocaleHelper.getLocaleObject(auth.getUser()));
-        return handleCommand(auth.getUser(), command);
+        return handleCommand(command);
     }
 
     /**
@@ -84,7 +84,7 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
         	logger.debug(user.getEmail() + ": " + command.getClass().getSimpleName());
         	
             try {
-                results.add(handleCommand(user, command));
+                results.add(handleCommand(command));
             } catch (CommandException e) {
                 // include this as an error-ful result and
                 // continue executing other commands in the list
@@ -106,8 +106,8 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
 
     @Transactional
     @LogException(emailAlert = true)
-    protected CommandResult handleCommand(User user, Command command) throws CommandException {
-    	return ServerExecutionContext.execute(injector, user, command);
+    protected CommandResult handleCommand(Command command) throws CommandException {
+    	return ServerExecutionContext.execute(injector, command);
     }
     
 

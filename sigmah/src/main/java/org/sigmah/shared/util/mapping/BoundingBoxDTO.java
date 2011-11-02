@@ -11,7 +11,7 @@ import org.sigmah.shared.report.content.AiLatLng;
 
 
 /**
- * One-to-one DTO for the {@link org.sigmah.shared.domain.Bounds} domain object.
+ * One-to-one DTO for the {@link org.sigmah.server.database.hibernate.entity.Bounds} domain object.
  * 
  * @author Alex Bertram
  */

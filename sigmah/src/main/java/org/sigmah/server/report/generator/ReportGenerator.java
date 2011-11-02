@@ -8,8 +8,8 @@ package org.sigmah.server.report.generator;
 import java.util.Collections;
 
 import org.sigmah.server.command.DispatcherSync;
-import org.sigmah.shared.dao.Filter;
-import org.sigmah.shared.domain.User;
+import org.sigmah.server.database.hibernate.entity.User;
+import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.report.content.Content;
 import org.sigmah.shared.report.content.ReportContent;
 import org.sigmah.shared.report.model.DateRange;

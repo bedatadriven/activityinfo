@@ -20,11 +20,11 @@ import org.sigmah.server.Cookies;
 import org.sigmah.server.bootstrap.exception.IncompleteFormException;
 import org.sigmah.server.bootstrap.exception.InvalidKeyException;
 import org.sigmah.server.bootstrap.model.PageModel;
-import org.sigmah.server.dao.AuthenticationDAO;
-import org.sigmah.server.dao.Transactional;
-import org.sigmah.server.domain.Authentication;
-import org.sigmah.shared.dao.UserDAO;
-import org.sigmah.shared.domain.User;
+import org.sigmah.server.database.hibernate.dao.AuthenticationDAO;
+import org.sigmah.server.database.hibernate.dao.Transactional;
+import org.sigmah.server.database.hibernate.dao.UserDAO;
+import org.sigmah.server.database.hibernate.entity.Authentication;
+import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.shared.exception.InvalidLoginException;
 
 import com.google.inject.Inject;

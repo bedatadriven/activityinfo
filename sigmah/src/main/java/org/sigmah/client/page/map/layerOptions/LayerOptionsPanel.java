@@ -3,7 +3,7 @@ package org.sigmah.client.page.map.layerOptions;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.map.MapResources;
-import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.clustering.Clustering;
 import org.sigmah.shared.report.model.layers.BubbleMapLayer;

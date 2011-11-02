@@ -55,4 +55,8 @@ public class AuthenticatedUser {
 	public String getUserLocale() {
 		return userLocale;
 	}
+
+	public int getId() {
+		return userId;
+	}
 }

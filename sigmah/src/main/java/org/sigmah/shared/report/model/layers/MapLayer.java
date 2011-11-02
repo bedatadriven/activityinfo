@@ -3,7 +3,7 @@ package org.sigmah.shared.report.model.layers;
 import java.io.Serializable;
 import java.util.List;
 
-import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.report.model.clustering.Clustering;
 import org.sigmah.shared.report.model.labeling.LabelSequence;
 

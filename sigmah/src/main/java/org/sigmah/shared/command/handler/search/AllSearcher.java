@@ -8,15 +8,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.report.model.DimensionType;
 
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class AllSearcher {
-	private static Map<DimensionType, Searcher<?>> searchers = new HashMap<DimensionType, Searcher<?>>();
-	private List<Searcher<?>> failedSearchers = new ArrayList<Searcher<?>>();
+	private static Map<DimensionType, Searcher> searchers = new HashMap<DimensionType, Searcher>();
+	private List<Searcher> failedSearchers = new ArrayList<Searcher>();
 	private Filter filter = new Filter();
 	SqlTransaction tx;
 	
@@ -34,8 +34,8 @@ public class AllSearcher {
 		this.tx=tx;
 	}
 	
-	public static List<Searcher<?>> supportedSearchers() {
-		return Collections.unmodifiableList(new ArrayList<Searcher<?>>(searchers.values()));
+	public static List<Searcher> supportedSearchers() {
+		return Collections.unmodifiableList(new ArrayList<Searcher>(searchers.values()));
 	}
 	
 	public void searchDimensions(Map<DimensionType, List<String>> searchTerms, final AsyncCallback<Filter> callback) {
@@ -71,7 +71,7 @@ public class AllSearcher {
 
 		Filter filter = new Filter();
 		final Entry<DimensionType, List<String>> entry = iterator.next();
-		final Searcher<?> searcher = searchers.get(entry.getKey());
+		final Searcher searcher = searchers.get(entry.getKey());
 		
 		searcher.search(entry.getValue(), tx, new AsyncCallback<List<Integer>>() {
 			@Override
@@ -107,10 +107,10 @@ public class AllSearcher {
 		}
 	}
 	
-	public void searchNext(final List<String> q, final Iterator<Searcher<?>> iterator,
+	public void searchNext(final List<String> q, final Iterator<Searcher> iterator,
 			final SqlTransaction tx, final AsyncCallback<Filter> callback) {
 
-		final Searcher<?> searcher = iterator.next();
+		final Searcher searcher = iterator.next();
 		searcher.search(q, tx, new AsyncCallback<List<Integer>>() {
 			@Override
 			public void onFailure(Throwable caught) {
@@ -134,7 +134,7 @@ public class AllSearcher {
 	}
 	
 	private void continueOrYieldFilter(final List<String> q,
-			final Iterator<Searcher<?>> iterator,
+			final Iterator<Searcher> iterator,
 			final SqlTransaction tx,
 			final AsyncCallback<Filter> callback) {
 		

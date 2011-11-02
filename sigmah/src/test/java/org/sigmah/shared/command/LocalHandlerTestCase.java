@@ -27,13 +27,14 @@ import org.sigmah.client.offline.OfflineModuleStub;
 import org.sigmah.client.offline.command.CommandQueue;
 import org.sigmah.client.offline.command.LocalDispatcher;
 import org.sigmah.client.offline.sync.DownSynchronizer;
+import org.sigmah.server.auth.AuthenticationModuleStub;
+import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.endpoint.gwtrpc.CommandServlet;
 import org.sigmah.shared.auth.AuthenticatedUser;
-import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.SyncRegionUpdate;
-import org.sigmah.shared.domain.User;
 import org.sigmah.shared.util.Collector;
+import org.sigmah.test.Modules;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcDatabase;
@@ -43,6 +44,7 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
+@Modules({AuthenticationModuleStub.class})
 public abstract class LocalHandlerTestCase {
     @Inject
     private CommandServlet servlet;
@@ -55,12 +57,9 @@ public abstract class LocalHandlerTestCase {
      */
     @Inject
     protected EntityManager serverEm;
-    
-    protected User user;
 
     protected Dispatcher remoteDispatcher;
 
-    protected AuthenticatedUser localAuth;
     protected LocalDispatcher localDispatcher;
     protected JdbcDatabase localDatabase;
     
@@ -69,8 +68,7 @@ public abstract class LocalHandlerTestCase {
     private UIConstants uiConstants;
     private UIMessages uiMessages;
 	protected Connection localConnection;
-	
-	
+		
 	
 	private String databaseName = "target/localdbtest" + new java.util.Date().getTime();
 	protected DownSynchronizer synchronizer;
@@ -95,11 +93,9 @@ public abstract class LocalHandlerTestCase {
     }
 
     protected void setUser(int userId) {
-        user = new User();
-        user.setId(userId);
-        localAuth = new AuthenticatedUser(user.getId(), "X", user.getEmail());
-
-        Injector clientSideInjector = Guice.createInjector(new OfflineModuleStub(localAuth, localDatabase));
+    	AuthenticationModuleStub.setUserId(userId);
+    	
+        Injector clientSideInjector = Guice.createInjector(new OfflineModuleStub(AuthenticationModuleStub.currentUser, localDatabase));
         localDispatcher = clientSideInjector.getInstance(LocalDispatcher.class);
         
     }
@@ -171,7 +167,7 @@ public abstract class LocalHandlerTestCase {
     private class RemoteDispatcherStub implements Dispatcher {
         @Override
         public <T extends CommandResult> void execute(Command<T> command, AsyncMonitor monitor, AsyncCallback<T> callback) {
-            List<CommandResult> results = servlet.handleCommands(user, Collections.<Command>singletonList(command));
+            List<CommandResult> results = servlet.handleCommands(new User(AuthenticationModuleStub.currentUser), Collections.<Command>singletonList(command));
             CommandResult result = results.get(0);
 
             if(result instanceof SyncRegionUpdate) {

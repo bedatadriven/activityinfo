@@ -1,7 +1,7 @@
 package org.sigmah.client.page.map.layerOptions;
 
 import org.sigmah.client.page.common.filter.FilterPanel;
-import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.command.Filter;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;

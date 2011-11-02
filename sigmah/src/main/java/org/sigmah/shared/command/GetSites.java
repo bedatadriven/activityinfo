@@ -6,7 +6,6 @@
 package org.sigmah.shared.command;
 
 import org.sigmah.shared.command.result.SiteResult;
-import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.report.model.DimensionType;
 
 /**

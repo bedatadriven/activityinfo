@@ -6,7 +6,6 @@ import java.util.Set;
 import org.sigmah.shared.command.PivotSites.PivotResult;
 import org.sigmah.shared.command.result.Bucket;
 import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.report.model.Dimension;
 
 public class PivotSites implements Command<PivotResult> {

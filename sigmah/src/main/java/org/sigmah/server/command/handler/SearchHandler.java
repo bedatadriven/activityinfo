@@ -2,6 +2,8 @@ package org.sigmah.server.command.handler;
 
 import java.util.List;
 
+import org.sigmah.server.database.hibernate.entity.User;
+import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.command.GenerateElement;
 import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.command.Search;
@@ -11,7 +13,6 @@ import org.sigmah.shared.command.handler.search.AllSearcher;
 import org.sigmah.shared.command.handler.search.QueryParser;
 import org.sigmah.shared.command.result.SearchResult;
 import org.sigmah.shared.command.result.SiteResult;
-import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.report.content.PivotContent;
 import org.sigmah.shared.report.model.Dimension;
@@ -127,7 +128,7 @@ public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> 
 			GenerateElement<PivotContent> zmd = new GenerateElement<PivotContent>(pivotTable);
 			PivotContent content = null;
 			try {
-				content = (PivotContent) genElHandler.execute(zmd, context.getUser());
+				content = (PivotContent) genElHandler.execute(zmd, new User(context.getUser()));
 			} catch (CommandException e) {
 				callback.onFailure(e);
 			}

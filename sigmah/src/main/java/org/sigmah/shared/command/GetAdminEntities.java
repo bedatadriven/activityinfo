@@ -6,7 +6,6 @@
 package org.sigmah.shared.command;
 
 import org.sigmah.shared.command.result.AdminEntityResult;
-import org.sigmah.shared.dao.Filter;
 
 /**
  * Retrieves a list of admin entities from the server. 

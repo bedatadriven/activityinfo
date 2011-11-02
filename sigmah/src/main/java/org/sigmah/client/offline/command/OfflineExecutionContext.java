@@ -1,23 +1,24 @@
 package org.sigmah.client.offline.command;
 
+import org.sigmah.server.database.hibernate.entity.User;
+import org.sigmah.shared.auth.AuthenticatedUser;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.MutatingCommand;
 import org.sigmah.shared.command.handler.ExecutionContext;
 import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.domain.User;
 
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class OfflineExecutionContext implements ExecutionContext {
 
-	private User user;
+	private AuthenticatedUser user;
 	private SqlTransaction tx;
 	private HandlerRegistry registry;
 	private CommandQueue commandQueue;
 	
 		
-	public OfflineExecutionContext(User user, SqlTransaction tx,
+	public OfflineExecutionContext(AuthenticatedUser user, SqlTransaction tx,
 			HandlerRegistry registry,
 			CommandQueue commandQueue) {
 		super();
@@ -28,7 +29,7 @@ public class OfflineExecutionContext implements ExecutionContext {
 	}
 
 	@Override
-	public User getUser() {
+	public AuthenticatedUser getUser() {
 		return user;
 	}
 

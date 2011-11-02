@@ -2,7 +2,7 @@ package org.sigmah.shared.dto;
 
 import java.util.Map;
 
-import org.sigmah.shared.domain.LocationType;
+import org.sigmah.server.database.hibernate.entity.LocationType;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 

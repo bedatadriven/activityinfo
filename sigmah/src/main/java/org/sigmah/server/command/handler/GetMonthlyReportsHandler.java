@@ -10,15 +10,15 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import org.sigmah.server.database.hibernate.entity.Indicator;
+import org.sigmah.server.database.hibernate.entity.IndicatorValue;
+import org.sigmah.server.database.hibernate.entity.ReportingPeriod;
+import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.shared.command.GetMonthlyReports;
 import org.sigmah.shared.command.Month;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.MonthlyReportResult;
-import org.sigmah.shared.domain.Indicator;
-import org.sigmah.shared.domain.IndicatorValue;
-import org.sigmah.shared.domain.ReportingPeriod;
-import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.IndicatorRowDTO;
 import org.sigmah.shared.exception.CommandException;
 

@@ -10,7 +10,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.ResourceBundle;
 
-import org.sigmah.server.domain.ReportSubscription;
+import org.sigmah.server.database.hibernate.entity.ReportSubscription;
 import org.sigmah.server.report.util.HtmlWriter;
 import org.sigmah.server.util.DateUtilCalendarImpl;
 import org.sigmah.server.util.LocaleHelper;

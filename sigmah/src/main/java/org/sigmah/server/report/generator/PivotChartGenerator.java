@@ -6,11 +6,11 @@
 package org.sigmah.server.report.generator;
 
 import org.sigmah.server.command.DispatcherSync;
+import org.sigmah.server.database.hibernate.dao.IndicatorDAO;
+import org.sigmah.server.database.hibernate.entity.Indicator;
+import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.util.LocaleHelper;
-import org.sigmah.shared.dao.Filter;
-import org.sigmah.shared.dao.IndicatorDAO;
-import org.sigmah.shared.domain.Indicator;
-import org.sigmah.shared.domain.User;
+import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.report.content.PivotChartContent;
 import org.sigmah.shared.report.content.PivotTableData;
 import org.sigmah.shared.report.model.DateRange;

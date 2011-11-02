@@ -11,7 +11,6 @@ import org.sigmah.server.command.CommandTestCase2;
 import org.sigmah.server.dao.OnDataSet;
 import org.sigmah.server.database.TestDatabaseModule;
 import org.sigmah.shared.command.GetDimensionLabels;
-import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.test.InjectionSupport;

@@ -3,7 +3,7 @@ package org.sigmah.shared.command.handler.search;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sigmah.shared.domain.Activity;
+import org.sigmah.server.database.hibernate.entity.Activity;
 import org.sigmah.shared.report.model.DimensionType;
 
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
@@ -13,7 +13,7 @@ import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class ActivitySearcher implements Searcher<Activity> {
+public class ActivitySearcher implements Searcher {
 
 
 	@Override

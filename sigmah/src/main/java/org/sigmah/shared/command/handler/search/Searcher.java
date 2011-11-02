@@ -8,7 +8,7 @@ import org.sigmah.shared.report.model.DimensionType;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public interface Searcher<M> extends Serializable {
+public interface Searcher extends Serializable {
 	public void search(List<String> testQuery, SqlTransaction tx, final AsyncCallback<List<Integer>> callback);
 
 	public DimensionType getDimensionType();

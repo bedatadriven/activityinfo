@@ -13,6 +13,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.dozer.Mapper;
+import org.sigmah.server.database.hibernate.entity.User;
+import org.sigmah.server.database.hibernate.entity.UserDatabase;
 import org.sigmah.server.endpoint.gwtrpc.ServerExecutionContext;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.Month;
@@ -20,8 +22,6 @@ import org.sigmah.shared.command.handler.AuthorizationHandler;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.handler.CommandHandlerAsync;
 import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.domain.User;
-import org.sigmah.shared.domain.UserDatabase;
 import org.sigmah.shared.exception.CommandException;
 
 import com.google.inject.Injector;
@@ -31,22 +31,6 @@ import com.google.inject.Injector;
  */
 public class HandlerUtil {
 
-    /**
-     * Returns the entity class for the given entity name.
-     * For example, "Site" => org.sigmah.server.domain.Site.class
-     *
-     * @param name The name of the entity
-     * @return The associated domain entity class
-     * @throws ClassNotFoundException if the entity name does not match a domain entity
-     */
-    protected Class classForEntityName(String name) throws ClassNotFoundException {
-
-        if (name.equals("Database")) {
-            return UserDatabase.class;
-        }
-
-        return CommandHandler.class.getClassLoader().loadClass("org.sigmah.shared.domain." + name);
-    }
 
     /**
      * Returns the <code>CommandHandler</code> that corresponds to the given <code>Command</code>.
@@ -146,7 +130,7 @@ public class HandlerUtil {
         	CommandHandler syncHandler = (CommandHandler)handler;
         	return (T) syncHandler.execute(cmd, user);	
         } else {
-        	return (T)ServerExecutionContext.execute(injector, user, cmd);
+        	return (T)ServerExecutionContext.execute(injector, cmd);
         }
     }
 

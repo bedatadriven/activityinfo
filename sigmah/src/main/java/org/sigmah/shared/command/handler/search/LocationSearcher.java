@@ -3,7 +3,7 @@ package org.sigmah.shared.command.handler.search;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sigmah.shared.domain.Location;
+import org.sigmah.server.database.hibernate.entity.Location;
 import org.sigmah.shared.report.model.DimensionType;
 
 import com.bedatadriven.rebar.sql.client.SqlException;
@@ -17,8 +17,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 /*
  * LocationId is LocationID (note two capitals at Id)
  */
-public class LocationSearcher implements
-		Searcher<Location> {
+public class LocationSearcher implements Searcher {
 
 	@Override
 	public void search(List<String> testQuery, SqlTransaction tx,

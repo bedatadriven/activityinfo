@@ -1,6 +1,6 @@
 package org.sigmah.server.mail;
 
-import org.sigmah.shared.domain.User;
+import org.sigmah.server.database.hibernate.entity.User;
 
 public class ResetPasswordMessage extends MailMessage {
     private User user;
