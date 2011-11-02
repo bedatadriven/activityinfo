@@ -3,7 +3,7 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.server.mock;
+package org.sigmah.server.bootstrap.fixtures;
 
 import java.io.IOException;
 import java.io.StringReader;
