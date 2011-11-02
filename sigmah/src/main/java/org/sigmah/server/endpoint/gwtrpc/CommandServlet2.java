@@ -3,10 +3,10 @@ package org.sigmah.server.endpoint.gwtrpc;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sigmah.server.command.handler.HandlerUtil;
 import org.sigmah.server.dao.AuthenticationDAO;
 import org.sigmah.server.database.dao.UserDAO;
 import org.sigmah.server.domain.Authentication;
-import org.sigmah.server.endpoint.gwtrpc.handler.HandlerUtil;
 import org.sigmah.server.util.logging.LogException;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.RemoteCommandService;

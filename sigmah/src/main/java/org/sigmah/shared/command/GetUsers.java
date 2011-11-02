@@ -14,7 +14,7 @@ import org.sigmah.shared.command.result.UserResult;
  * The resulting {@link org.sigmah.shared.dto.UserPermissionDTO} are
  * a projection of the {@link org.sigmah.shared.domain.User},
  * {@link org.sigmah.shared.domain.UserPermission}, and
- * {@link org.sigmah.shared.domain.OrgUnit} entities.
+ * {@link org.sigmah.shared.domain.Partner} entities.
  *
  */
 public class GetUsers extends PagingGetCommand<UserResult>  {

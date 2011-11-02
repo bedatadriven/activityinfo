@@ -6,13 +6,13 @@
 package org.sigmah.server.dao;
 
 import org.sigmah.shared.dao.DAO;
-import org.sigmah.shared.domain.OrgUnit;
+import org.sigmah.shared.domain.Partner;
 
 /**
- * Data Access Object for the {@link org.sigmah.shared.domain.OrgUnit} domain object. Implemented automatically by
+ * Data Access Object for the {@link org.sigmah.shared.domain.Partner} domain object. Implemented automatically by
  * {@link org.sigmah.server.dao.hibernate.DAOInvocationHandler proxy}
  *
  * @author Alex Bertram
  */
-public interface PartnerDAO extends DAO<OrgUnit, Integer> {
+public interface PartnerDAO extends DAO<Partner, Integer> {
 }

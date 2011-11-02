@@ -51,7 +51,7 @@ import javax.persistence.TemporalType;
 public class UserPermission implements Serializable, SchemaElement {
 
 	private int id;
-	private OrgUnit partner;
+	private Partner partner;
 	private UserDatabase database;
 	private User user;
 	private boolean allowView;
@@ -87,10 +87,9 @@ public class UserPermission implements Serializable, SchemaElement {
      *
      * @return  The <code>Partner</code> to which the <code>user</code> belongs
      */
-    @Deprecated
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PartnerId", nullable = false)
-	public OrgUnit getPartner() {
+	public Partner getPartner() {
 		return this.partner;
 	}
 
@@ -99,8 +98,7 @@ public class UserPermission implements Serializable, SchemaElement {
      *
      * @param partner The Partner to which the <code>user</code> belongs.
      */
-    @Deprecated
-	public void setPartner(OrgUnit partner) {
+	public void setPartner(Partner partner) {
 		this.partner = partner;
 	}
 

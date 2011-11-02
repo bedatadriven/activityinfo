@@ -15,7 +15,7 @@ import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.dao.UserDatabaseDAO;
 import org.sigmah.shared.domain.Activity;
 import org.sigmah.shared.domain.LockedPeriod;
-import org.sigmah.shared.domain.OrgUnit;
+import org.sigmah.shared.domain.Partner;
 import org.sigmah.shared.domain.Project;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.UserDatabase;
@@ -116,7 +116,7 @@ public class GetSchemaHandlerSync implements CommandHandler<GetSchema> {
             databaseDTO.setManageUsersAllowed(databaseDTO.getAmOwner() || permission.isAllowManageUsers());
             databaseDTO.setManageAllUsersAllowed(databaseDTO.getAmOwner() || permission.isAllowManageAllUsers());
 
-            for (OrgUnit partner : database.getPartners()) {
+            for (Partner partner : database.getPartners()) {
                 databaseDTO.getPartners().add(mapper.map(partner, PartnerDTO.class));
             }
             

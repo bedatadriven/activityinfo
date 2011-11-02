@@ -12,9 +12,9 @@ import javax.persistence.EntityManagerFactory;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.sigmah.server.command.CommandTestCase2;
 import org.sigmah.server.dao.OnDataSet;
 import org.sigmah.server.endpoint.export.SiteExporter;
-import org.sigmah.server.endpoint.gwtrpc.CommandTestCase2;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dao.SqlDialect;
 import org.sigmah.shared.domain.User;

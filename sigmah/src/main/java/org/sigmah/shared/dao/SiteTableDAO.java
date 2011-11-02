@@ -15,7 +15,7 @@ import org.sigmah.shared.domain.User;
  * 
  * Information associated with Sites is stored across several entities, including
  * {@link org.sigmah.shared.domain.Location Location},
- * {@link org.sigmah.shared.domain.OrgUnit},
+ * {@link org.sigmah.shared.domain.Partner},
  * {@link org.sigmah.shared.domain.AttributeValue},
  * {@link org.sigmah.shared.domain.ReportingPeriod ReportingPeriod}, and
  * {@link org.sigmah.shared.domain.IndicatorValue}, but often we need this information in

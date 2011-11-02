@@ -18,7 +18,6 @@ import org.sigmah.server.dao.hibernate.HibernateDAOProvider;
 import org.sigmah.server.domain.DomainFilters;
 import org.sigmah.shared.command.GetSyncRegionUpdates;
 import org.sigmah.shared.command.result.SyncRegionUpdate;
-import org.sigmah.shared.command.result.UserFavorites;
 import org.sigmah.shared.dao.UserDatabaseDAO;
 import org.sigmah.shared.domain.Activity;
 import org.sigmah.shared.domain.AdminLevel;
@@ -28,7 +27,7 @@ import org.sigmah.shared.domain.Country;
 import org.sigmah.shared.domain.Indicator;
 import org.sigmah.shared.domain.LocationType;
 import org.sigmah.shared.domain.LockedPeriod;
-import org.sigmah.shared.domain.OrgUnit;
+import org.sigmah.shared.domain.Partner;
 import org.sigmah.shared.domain.Project;
 import org.sigmah.shared.domain.User;
 import org.sigmah.shared.domain.UserDatabase;
@@ -49,7 +48,7 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
     private List<UserDatabase> databases = new ArrayList<UserDatabase>();
 
     private Set<Integer> partnerIds = new HashSet<Integer>();
-    private List<OrgUnit> partners = new ArrayList<OrgUnit>();
+    private List<Partner> partners = new ArrayList<Partner>();
 
     private List<Activity> activities = new ArrayList<Activity>();
     private List<Indicator> indicators = new ArrayList<Indicator>();
@@ -68,7 +67,7 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
             AdminLevel.class,
             LocationType.class,
             UserDatabase.class,
-            OrgUnit.class,
+            Partner.class,
             Activity.class,
             Indicator.class,
             AttributeGroup.class,
@@ -132,7 +131,7 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
         builder.insert(Country.class, countries);
         builder.insert(AdminLevel.class, adminLevels);
         builder.insert(UserDatabase.class, databases);
-        builder.insert(OrgUnit.class, partners);
+        builder.insert(Partner.class, partners);
         builder.insert(Activity.class, activities);
         builder.insert(Indicator.class, indicators);
         builder.insert(AttributeGroup.class, attributeGroups);
@@ -146,8 +145,8 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
         builder.executeStatement("create table if not exists PartnerInDatabase (DatabaseId integer, PartnerId int)");
         builder.beginPreparedStatement("insert into PartnerInDatabase (DatabaseId, PartnerId) values (?, ?) ");
         for(UserDatabase db : databases) {
-            for(OrgUnit orgUnit : db.getPartners()) {
-                builder.addExecution(db.getId(), orgUnit.getId());
+            for(Partner partner : db.getPartners()) {
+                builder.addExecution(db.getId(), partner.getId());
             }
         }
         builder.finishPreparedStatement();
@@ -185,7 +184,7 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
                 	locationTypes.add(l);
                 }
             }
-            for(OrgUnit partner : database.getPartners()) {
+            for(Partner partner : database.getPartners()) {
                 if(!partnerIds.contains(partner.getId())) {
                     partners.add(partner);
                     partnerIds.add(partner.getId());

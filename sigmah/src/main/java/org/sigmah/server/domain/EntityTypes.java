@@ -16,7 +16,7 @@ import org.sigmah.shared.domain.Indicator;
 import org.sigmah.shared.domain.IndicatorValue;
 import org.sigmah.shared.domain.Location;
 import org.sigmah.shared.domain.LocationType;
-import org.sigmah.shared.domain.OrgUnit;
+import org.sigmah.shared.domain.Partner;
 import org.sigmah.shared.domain.ReportingPeriod;
 import org.sigmah.shared.domain.Site;
 import org.sigmah.shared.domain.User;
@@ -35,7 +35,7 @@ public class EntityTypes {
             AttributeGroup.class,
             Activity.class,
             UserPermission.class,
-            OrgUnit.class,
+            Partner.class,
             ReportSubscription.class,
             ReportDefinition.class,
             UserDatabase.class,

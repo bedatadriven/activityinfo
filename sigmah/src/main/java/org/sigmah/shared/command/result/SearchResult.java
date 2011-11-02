@@ -3,11 +3,11 @@ package org.sigmah.shared.command.result;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sigmah.shared.command.handler.search.Searcher;
 import org.sigmah.shared.dto.DTO;
 import org.sigmah.shared.dto.SearchHitDTO;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.report.content.PivotContent;
-import org.sigmah.shared.search.Searcher;
 
 public class SearchResult extends ListResult<SearchHitDTO> implements CommandResult, DTO {
 	PivotContent pivotTabelData; // hierarchy of activities

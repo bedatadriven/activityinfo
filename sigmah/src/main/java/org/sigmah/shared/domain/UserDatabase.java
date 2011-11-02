@@ -56,7 +56,7 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
     private String fullName;
     private String name;
     private User owner;
-    private Set<OrgUnit> partners = new HashSet<OrgUnit>(0);
+    private Set<Partner> partners = new HashSet<Partner>(0);
     private Set<Activity> activities = new HashSet<Activity>(0);
     private Set<UserPermission> userPermissions = new HashSet<UserPermission>(0);
     private Set<Project> projects = new HashSet<Project>(0);
@@ -166,11 +166,11 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
      */
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "PartnerInDatabase", joinColumns = { @JoinColumn(name = "DatabaseId", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "PartnerId", nullable = false, updatable = false) })
-    public Set<OrgUnit> getPartners() {
+    public Set<Partner> getPartners() {
         return this.partners;
     }
 
-    public void setPartners(Set<OrgUnit> partners) {
+    public void setPartners(Set<Partner> partners) {
         this.partners = partners;
     }
 
@@ -269,7 +269,7 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
     }
 
     @SuppressWarnings("deprecation")
-    public boolean isAllowedManageUsers(User user, OrgUnit partner) {
+    public boolean isAllowedManageUsers(User user, Partner partner) {
         if (getOwner().getId() == user.getId()) {
             return true;
         }

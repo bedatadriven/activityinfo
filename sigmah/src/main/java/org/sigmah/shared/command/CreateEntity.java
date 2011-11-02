@@ -77,7 +77,7 @@ public class CreateEntity implements Command<CreateResult> {
      * <li>{@link org.sigmah.shared.domain.Site#partner}</li>
      * <li>AdminEntities associated with Sites/Locations</li>
      * </ul>
-     * See {@link org.sigmah.server.endpoint.gwtrpc.handler.CreateEntityHandler} for the last word.
+     * See {@link org.sigmah.server.command.handler.CreateEntityHandler} for the last word.
      *
      * @return The properties/fields of the entity to create.
      */

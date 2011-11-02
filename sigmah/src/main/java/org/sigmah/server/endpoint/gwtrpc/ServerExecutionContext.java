@@ -1,6 +1,6 @@
 package org.sigmah.server.endpoint.gwtrpc;
 
-import org.sigmah.server.endpoint.gwtrpc.handler.HandlerUtil;
+import org.sigmah.server.command.handler.HandlerUtil;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.MutatingCommand;
 import org.sigmah.shared.command.handler.AuthorizationHandler;

@@ -56,7 +56,7 @@ public class Site implements java.io.Serializable, Deleteable {
 	private Location location;
 	
 	private String siteGuid;
-	private OrgUnit partner;
+	private Partner partner;
 	private int status;
 	
 	private Date date1;
@@ -180,14 +180,14 @@ public class Site implements java.io.Serializable, Deleteable {
      */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PartnerId", nullable = false)
-	public OrgUnit getPartner() {
+	public Partner getPartner() {
 		return this.partner;
 	}
 
     /**
      * Sets the Partner who owns this Site.
      */
-	public void setPartner(OrgUnit partner) {
+	public void setPartner(Partner partner) {
 		this.partner = partner;
 	}
 
