@@ -9,7 +9,7 @@ import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.command.CommandTestCase;
-import org.sigmah.server.dao.OnDataSet;
+import org.sigmah.server.database.OnDataSet;
 import org.sigmah.shared.command.Search;
 import org.sigmah.shared.command.handler.search.AllSearcher;
 import org.sigmah.shared.command.handler.search.AttributeGroupSearcher;

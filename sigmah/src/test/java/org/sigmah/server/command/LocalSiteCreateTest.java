@@ -3,7 +3,7 @@ package org.sigmah.server.command;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.sigmah.server.dao.OnDataSet;
+import org.sigmah.server.database.OnDataSet;
 import org.sigmah.server.endpoint.gwtrpc.GwtRpcModule;
 import org.sigmah.server.util.BeanMappingModule;
 import org.sigmah.server.util.logging.LoggingModule;

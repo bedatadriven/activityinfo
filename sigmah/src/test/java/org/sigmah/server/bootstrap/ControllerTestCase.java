@@ -23,7 +23,7 @@ import javax.servlet.ServletException;
 
 import org.easymock.IAnswer;
 import org.junit.Before;
-import org.sigmah.server.auth.Authenticator;
+import org.sigmah.server.authentication.Authenticator;
 import org.sigmah.server.bootstrap.model.ConfirmInvitePageModel;
 import org.sigmah.server.bootstrap.model.HostPageModel;
 import org.sigmah.server.bootstrap.model.LoginPageModel;

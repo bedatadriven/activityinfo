@@ -27,7 +27,7 @@ import org.sigmah.client.offline.OfflineModuleStub;
 import org.sigmah.client.offline.command.CommandQueue;
 import org.sigmah.client.offline.command.LocalDispatcher;
 import org.sigmah.client.offline.sync.DownSynchronizer;
-import org.sigmah.server.auth.AuthenticationModuleStub;
+import org.sigmah.server.authentication.AuthenticationModuleStub;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.endpoint.gwtrpc.CommandServlet;
 import org.sigmah.shared.auth.AuthenticatedUser;

@@ -6,7 +6,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.command.CommandTestCase2;
-import org.sigmah.server.dao.OnDataSet;
+import org.sigmah.server.database.OnDataSet;
 import org.sigmah.server.database.TestDatabaseModule;
 import org.sigmah.shared.command.GetPartnersWithSites;
 import org.sigmah.shared.command.result.PartnerResult;

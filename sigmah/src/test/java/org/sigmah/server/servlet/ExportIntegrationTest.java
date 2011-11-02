@@ -13,7 +13,7 @@ import javax.persistence.EntityManagerFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.command.CommandTestCase2;
-import org.sigmah.server.dao.OnDataSet;
+import org.sigmah.server.database.OnDataSet;
 import org.sigmah.server.database.hibernate.dao.SqlDialect;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.endpoint.export.SiteExporter;

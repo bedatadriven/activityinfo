@@ -12,7 +12,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.sigmah.server.dao.OnDataSet;
+import org.sigmah.server.database.OnDataSet;
 import org.sigmah.shared.command.BatchCommand;
 import org.sigmah.shared.command.CreateEntity;
 import org.sigmah.shared.command.GetSchema;

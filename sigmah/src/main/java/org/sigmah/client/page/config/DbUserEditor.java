@@ -118,11 +118,6 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO>
 		}
 	}
 
-	//
-	// public void onSelectionChanged(UserPermissionDTO selectedItem) {
-	//
-	// }
-
 	@Override
 	public void onDeleteConfirmed(final UserPermissionDTO model) {
 		model.setAllowView(false);
@@ -257,7 +252,6 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO>
 	@Override
 	public void onUIAction(String actionId) {
 		super.onUIAction(actionId);
-
 		if (actionId.equals(UIActions.export)) {
 			ExportUsers exportUsers = new ExportUsers().setDatabaseId(db.getId()).setShowPermissions(true);
 			service.execute(exportUsers, null, new DownloadCallback(eventBus));
@@ -265,13 +259,11 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO>
 
 			onMailingList();
 		}
-
 	}
 
 	protected void onMailingList() {
 		createMailingListPopup();
 	}
-
 	
 	private void createMailingListPopup() {
 		MailingListDialog dailog = new MailingListDialog(eventBus, service, db.getId());

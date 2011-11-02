@@ -18,7 +18,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.command.CommandTestCase2;
-import org.sigmah.server.dao.OnDataSet;
+import org.sigmah.server.database.OnDataSet;
 import org.sigmah.server.database.TestDatabaseModule;
 import org.sigmah.shared.command.PivotSites;
 import org.sigmah.shared.command.result.Bucket;

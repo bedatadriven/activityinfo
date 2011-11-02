@@ -8,7 +8,7 @@ package org.sigmah.server.command;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.sigmah.server.dao.OnDataSet;
+import org.sigmah.server.database.OnDataSet;
 import org.sigmah.shared.command.GetUsers;
 import org.sigmah.shared.command.result.UserResult;
 import org.sigmah.shared.exception.CommandException;

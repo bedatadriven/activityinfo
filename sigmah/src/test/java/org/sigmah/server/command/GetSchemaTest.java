@@ -17,7 +17,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.sigmah.server.dao.OnDataSet;
+import org.sigmah.server.database.OnDataSet;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;

@@ -16,7 +16,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.MockDb;
 import org.sigmah.server.command.handler.UpdateUserPermissionsHandler;
-import org.sigmah.server.dao.OnDataSet;
+import org.sigmah.server.database.OnDataSet;
 import org.sigmah.server.database.hibernate.dao.PartnerDAO;
 import org.sigmah.server.database.hibernate.dao.UserDAO;
 import org.sigmah.server.database.hibernate.dao.UserDatabaseDAO;

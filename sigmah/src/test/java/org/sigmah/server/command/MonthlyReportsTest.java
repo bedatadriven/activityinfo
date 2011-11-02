@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.sigmah.server.dao.OnDataSet;
+import org.sigmah.server.database.OnDataSet;
 import org.sigmah.shared.command.GetMonthlyReports;
 import org.sigmah.shared.command.Month;
 import org.sigmah.shared.command.UpdateMonthlyReports;

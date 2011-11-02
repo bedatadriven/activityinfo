@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.sigmah.server.Cookies;
-import org.sigmah.server.auth.impl.PasswordHelper;
+import org.sigmah.server.authentication.PasswordHelper;
 import org.sigmah.server.bootstrap.exception.IncompleteFormException;
 import org.sigmah.server.bootstrap.exception.InvalidKeyException;
 import org.sigmah.server.bootstrap.model.ConfirmInvitePageModel;

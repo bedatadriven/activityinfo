@@ -24,7 +24,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.client.offline.command.handler.KeyGenerator;
 import org.sigmah.server.command.handler.sync.TimestampHelper;
-import org.sigmah.server.dao.OnDataSet;
+import org.sigmah.server.database.OnDataSet;
 import org.sigmah.server.database.hibernate.entity.AdminEntity;
 import org.sigmah.server.database.hibernate.entity.Location;
 import org.sigmah.server.database.hibernate.entity.LocationType;

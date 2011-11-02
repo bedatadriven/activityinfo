@@ -7,7 +7,7 @@ package org.sigmah.client.inject;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.LoggingEventBus;
-import org.sigmah.client.auth.ClientSideAuthProvider;
+import org.sigmah.client.authentication.ClientSideAuthProvider;
 import org.sigmah.client.dispatch.DispatchEventSource;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.RemoteServiceProvider;

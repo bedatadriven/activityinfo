@@ -14,7 +14,7 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.sigmah.server.dao.OnDataSet;
+import org.sigmah.server.database.OnDataSet;
 import org.sigmah.server.database.hibernate.entity.LockedPeriod;
 import org.sigmah.server.database.hibernate.entity.Site;
 import org.sigmah.shared.command.GetSites;

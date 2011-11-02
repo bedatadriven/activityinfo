@@ -11,7 +11,7 @@ import java.io.IOException;
 
 import javax.servlet.ServletContext;
 
-import org.sigmah.server.auth.SecureTokenGenerator;
+import org.sigmah.server.authentication.SecureTokenGenerator;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.report.renderer.Renderer;
 import org.sigmah.server.report.renderer.RendererFactory;

@@ -12,7 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.sigmah.server.auth.SecureTokenGenerator;
+import org.sigmah.server.authentication.SecureTokenGenerator;
 import org.sigmah.server.bootstrap.model.ResetPasswordPageModel;
 import org.sigmah.server.database.hibernate.dao.Transactional;
 import org.sigmah.server.database.hibernate.entity.User;

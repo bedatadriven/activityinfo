@@ -60,7 +60,7 @@ public class Authentication implements java.io.Serializable {
     @Column(name = "AuthToken", unique = true, nullable = false, length = 32)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SecureSequenceGenerator")
     @org.hibernate.annotations.GenericGenerator(name = "SecureSequenceGenerator",
-            strategy = "org.sigmah.server.auth.SecureSequenceGenerator")
+            strategy = "org.sigmah.server.authentication.SecureSequenceGenerator")
     public String getId() {
         return this.id;
     }

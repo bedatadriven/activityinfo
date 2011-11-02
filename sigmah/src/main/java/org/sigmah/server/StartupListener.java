@@ -9,7 +9,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
 import org.apache.log4j.Logger;
-import org.sigmah.server.auth.AuthenticationModule;
+import org.sigmah.server.authentication.AuthenticationModule;
 import org.sigmah.server.bootstrap.BootstrapModule;
 import org.sigmah.server.database.ServerDatabaseModule;
 import org.sigmah.server.database.hibernate.dao.HibernateModule;

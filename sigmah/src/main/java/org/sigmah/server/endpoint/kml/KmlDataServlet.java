@@ -19,7 +19,7 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.codec.binary.Base64;
-import org.sigmah.server.auth.Authenticator;
+import org.sigmah.server.authentication.Authenticator;
 import org.sigmah.server.command.DispatcherSync;
 import org.sigmah.server.database.hibernate.dao.UserDAO;
 import org.sigmah.server.database.hibernate.entity.DomainFilters;

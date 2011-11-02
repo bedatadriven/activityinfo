@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.sigmah.login.client.LoginException;
 import org.sigmah.server.Cookies;
-import org.sigmah.server.auth.Authenticator;
+import org.sigmah.server.authentication.Authenticator;
 import org.sigmah.server.database.hibernate.dao.AuthenticationDAO;
 import org.sigmah.server.database.hibernate.dao.Transactional;
 import org.sigmah.server.database.hibernate.dao.UserDAO;

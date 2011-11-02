@@ -7,7 +7,7 @@ package org.sigmah.server.database.hibernate.dao;
 
 import javax.persistence.EntityManager;
 
-import org.sigmah.server.auth.SecureTokenGenerator;
+import org.sigmah.server.authentication.SecureTokenGenerator;
 import org.sigmah.server.database.hibernate.entity.User;
 
 import com.google.inject.Inject;

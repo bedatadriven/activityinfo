@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.command.CommandTestCase2;
 import org.sigmah.server.command.LocationDTOs;
-import org.sigmah.server.dao.OnDataSet;
+import org.sigmah.server.database.OnDataSet;
 import org.sigmah.shared.command.AddLocation;
 import org.sigmah.shared.command.GetLocations;
 import org.sigmah.shared.command.GetLocations.LocationsResult;

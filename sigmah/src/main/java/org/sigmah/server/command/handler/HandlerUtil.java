@@ -111,7 +111,7 @@ public class HandlerUtil {
                 cmd.getClass().getPackage().getName().length() + 1);
     	String handlerName = null;
     	
-    	handlerName = "org.sigmah.server.command.auth." +
+    	handlerName = "org.sigmah.server.command.authorization." +
     		commandName + "AuthorizationHandler";
 
         try {

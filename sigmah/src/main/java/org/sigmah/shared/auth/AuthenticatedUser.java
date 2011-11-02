@@ -10,7 +10,7 @@ package org.sigmah.shared.auth;
  * Encapsulates user identity and their authorization to access the server.
  * 
  * This is normally injected, see the default
- * {@link org.sigmah.client.auth.ClientSideAuthProvider}
+ * {@link org.sigmah.client.authentication.ClientSideAuthProvider}
  * 
  */
 public class AuthenticatedUser {

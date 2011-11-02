@@ -12,7 +12,7 @@ import java.util.Locale;
 
 import javax.persistence.EntityManager;
 
-import org.sigmah.server.auth.AuthenticationModuleStub;
+import org.sigmah.server.authentication.AuthenticationModuleStub;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.endpoint.gwtrpc.CommandServlet;
 import org.sigmah.server.endpoint.gwtrpc.GwtRpcModule;

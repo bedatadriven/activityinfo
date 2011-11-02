@@ -9,7 +9,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.sigmah.server.dao.OnDataSet;
+import org.sigmah.server.database.OnDataSet;
 import org.sigmah.shared.command.GetInvitationList;
 import org.sigmah.shared.command.result.InvitationList;
 import org.sigmah.test.InjectionSupport;

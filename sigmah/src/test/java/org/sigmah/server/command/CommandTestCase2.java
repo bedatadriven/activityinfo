@@ -3,7 +3,7 @@ package org.sigmah.server.command;
 import java.util.Collections;
 import java.util.List;
 
-import org.sigmah.server.auth.AuthenticationModuleStub;
+import org.sigmah.server.authentication.AuthenticationModuleStub;
 import org.sigmah.server.database.TestDatabaseModule;
 import org.sigmah.server.database.dao.UserDAO;
 import org.sigmah.server.database.hibernate.entity.User;

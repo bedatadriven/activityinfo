@@ -12,14 +12,14 @@ import javax.persistence.EntityManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sigmah.server.command.handler.crud.ActivityPolicy;
+import org.sigmah.server.command.handler.crud.PropertyMap;
 import org.sigmah.server.database.hibernate.entity.Activity;
 import org.sigmah.server.database.hibernate.entity.Attribute;
 import org.sigmah.server.database.hibernate.entity.AttributeGroup;
 import org.sigmah.server.database.hibernate.entity.Indicator;
 import org.sigmah.server.database.hibernate.entity.LockedPeriod;
 import org.sigmah.server.database.hibernate.entity.User;
-import org.sigmah.server.policy.ActivityPolicy;
-import org.sigmah.server.policy.PropertyMap;
 import org.sigmah.shared.command.UpdateEntity;
 import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.result.CommandResult;
