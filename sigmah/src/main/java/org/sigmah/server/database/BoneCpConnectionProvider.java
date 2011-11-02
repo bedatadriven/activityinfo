@@ -20,7 +20,7 @@ import com.jolbox.bonecp.BoneCPConfig;
 @Singleton
 public class BoneCpConnectionProvider implements Provider<Connection> {
 
-	public static final String SCHEMA_MIGRATION = "hibernate.hbm2ddl.auto";
+	public static final String SCHEMA_MIGRATION = "schema.migration";
 
 	private static final Logger logger = Logger.getLogger(BoneCpConnectionProvider.class);
 	
@@ -46,7 +46,8 @@ public class BoneCpConnectionProvider implements Provider<Connection> {
 	}
 	
 	public void maybeMigrateSchema(Properties config) {
-		if("update".equals(config.get(SCHEMA_MIGRATION))) {
+		if("enabled".equals(config.get(SCHEMA_MIGRATION)) ||
+	       "update".equals(config.get("hibernate.hbm2ddl.auto"))) {
 			try {		
 				Connection connection;
 				try {

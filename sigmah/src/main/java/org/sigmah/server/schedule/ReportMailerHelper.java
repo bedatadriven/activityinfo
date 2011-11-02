@@ -14,11 +14,11 @@ import org.sigmah.server.database.hibernate.entity.ReportSubscription;
 import org.sigmah.server.i18n.LocaleHelper;
 import org.sigmah.server.util.date.DateUtilCalendarImpl;
 import org.sigmah.server.util.html.HtmlWriter;
-import org.sigmah.shared.date.DateUtil;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.DateUnit;
 import org.sigmah.shared.report.model.Report;
 import org.sigmah.shared.report.model.ReportFrequency;
+import org.sigmah.shared.util.date.DateUtil;
 
 /*
  * @author Alex Bertram

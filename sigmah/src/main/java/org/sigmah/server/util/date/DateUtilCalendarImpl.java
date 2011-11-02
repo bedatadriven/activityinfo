@@ -9,9 +9,9 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.sigmah.shared.command.Month;
-import org.sigmah.shared.date.DateUtil;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.DateUnit;
+import org.sigmah.shared.util.date.DateUtil;
 
 public class DateUtilCalendarImpl extends DateUtil {
 
