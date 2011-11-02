@@ -77,5 +77,4 @@ public class SiteUpdateBuilderTest {
         assertThat(subsequentUpdate.getSql(), nullValue());
         assertThat(subsequentUpdate.getVersion(), equalTo(initialUpdate.getVersion()));
     }
-
 }
