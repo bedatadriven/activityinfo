@@ -77,21 +77,6 @@ class IndicatorForm extends AbstractDesignForm {
         binding.addFieldBinding(new FieldBinding(listHeaderField,"listHeader"));
         this.add(listHeaderField);
 
-        CheckBox collectInterventionField = new CheckBox();
-        collectInterventionField.setBoxLabel(constants.duringIntervention());
-        binding.addFieldBinding(new FieldBinding(collectInterventionField, "collectIntervention"));
-
-        CheckBox collectMonitoringField = new CheckBox();
-        collectMonitoringField.setBoxLabel(constants.duringMonitoring());
-        binding.addFieldBinding(new FieldBinding(collectMonitoringField, "collectMonitoring"));
-
-        CheckBoxGroup group = new CheckBoxGroup();
-        group.setFieldLabel(constants.dataCollection());
-        group.setOrientation(Orientation.VERTICAL);
-        group.add(collectInterventionField);
-        group.add(collectMonitoringField);
-        this.add(group);
-
         TextArea descField = new TextArea();
         descField.setFieldLabel(constants.description());
         binding.addFieldBinding(new FieldBinding(descField, "description"));

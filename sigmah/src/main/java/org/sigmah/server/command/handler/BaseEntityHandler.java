@@ -50,14 +50,6 @@ public class BaseEntityHandler {
             indicator.setCategory((String) changes.get("category"));
         }
 
-        if (changes.containsKey("collectIntervention")) {
-            indicator.setCollectIntervention((Boolean) changes.get("collectIntervention"));
-        }
-
-        if (changes.containsKey("collectMonitoring")) {
-            indicator.setCollectMonitoring((Boolean) changes.get("collectMonitoring"));
-        }
-
         if (changes.containsKey("listHeader")) {
             indicator.setListHeader((String) changes.get("listHeader"));
         }

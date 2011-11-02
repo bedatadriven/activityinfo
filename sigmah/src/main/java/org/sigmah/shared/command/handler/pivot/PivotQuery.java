@@ -135,7 +135,7 @@ public class PivotQuery {
         */
         String count = appendColumn("COUNT(DISTINCT Site.SiteId)");
         query.groupBy("Indicator.IndicatorId");
-        query.whereTrue("Indicator.Aggregation=2 and not Period.Monitoring ");
+        query.whereTrue("Indicator.Aggregation=2 ");
 
         bundlers.add(new SiteCountBundler(count));
 

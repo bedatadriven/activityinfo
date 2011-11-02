@@ -41,11 +41,7 @@ public class Indicator implements java.io.Serializable, Orderable, Deleteable, S
 	private String units;
 	private String description;
 	
-	private String sector;
 	private String category;
-	
-	private boolean collectIntervention;
-	private boolean collectMonitoring;
 	
 	private Activity activity;
 	
@@ -90,26 +86,6 @@ public class Indicator implements java.io.Serializable, Orderable, Deleteable, S
      */
 	public void setName(String name) {
 		this.name = name;
-	}
-
-    /**
-     * @deprecated No longer used; see the Category property for a more general classification of indicators
-     * @return the sector of intervention to which this Indicator belongs (NFI, Watsan, etc)
-     */
-	@Column(name = "Sector", nullable = true, length = 50)
-	@Deprecated
-    public String getSector() {
-		return this.sector;
-	}
-
-    /**
-     * Sets the sector of intervention to which this Indicator belongs (NFI, Watsan, etc)
-     * @deprecated No loner used; see the Category property for a more general classificaton of indicators
-     * @param sector
-     */
-    @Deprecated
-	public void setSector(String sector) {
-		this.sector = sector;
 	}
 
     /**
@@ -165,23 +141,6 @@ public class Indicator implements java.io.Serializable, Orderable, Deleteable, S
 	}
 
     /**
-     *
-     * @return true if this Indicator is collected during the actual intervention. (Some indicators
-     * are only collected afterwords, during the monitoring phase)
-     */
-	@Column(name = "CollectIntervention", nullable = false)
-	public boolean getCollectIntervention() {
-		return this.collectIntervention;
-	}
-
-    /**
-     * Sets whether this Indicator is collected during the actual intervention.
-     */
-	public void setCollectIntervention(boolean collectIntervention) {
-		this.collectIntervention = collectIntervention;
-	}
-
-    /**
      * @return  the method by which this Indicator is aggregated
      */
 	@Column(name = "Aggregation", nullable = false)
@@ -194,21 +153,6 @@ public class Indicator implements java.io.Serializable, Orderable, Deleteable, S
      */
 	public void setAggregation(int aggregation) {
 		this.aggregation = aggregation;
-	}
-
-    /**
-     * @return true if this Indicator is collected during the monitoring phase
-     */
-	@Column(name = "CollectMonitoring", nullable = false)
-	public boolean isCollectMonitoring() {
-		return this.collectMonitoring;
-	}
-
-    /**
-     * Sets whether this Indicator is collected during the monitoring phase
-     */
-	public void setCollectMonitoring(boolean collectMonitoring) {
-		this.collectMonitoring = collectMonitoring;
 	}
 
     /**

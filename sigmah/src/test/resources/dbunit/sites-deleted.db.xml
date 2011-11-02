@@ -99,9 +99,7 @@
 				category="inputs"
 				description="falling in lve"
 				listHeader="no header really"
-				collectIntervention="1"
-				collectMonitoring="1"
-				sortOrder="2"		/>
+				sortOrder="2"/>
 			
 			<!-- NFI Indicator 2: Bache  -->
 				
@@ -110,8 +108,6 @@
 				name="baches" 
 				units="menages"   
 				aggregation="0"
-				collectIntervention="1"  
-				collectMonitoring="1"  
 				category="outputs"  
 				listHeader="header"  
 				description="desc"
@@ -125,8 +121,6 @@
                 name="Nb. of distributions"
                 units="distributions"
                 aggregation="2"
-                collectIntervention="0"
-                collectMonitoring="0"
                 category="outputs"
                 listHeader="distribs"
                 description="Nomber of distributions effectuees"
@@ -171,8 +165,6 @@
 				name="Utilisaton rate"
 				units="nc/hab/month"   
 				aggregation="1"  
-				collectIntervention="1"  
-				collectMonitoring="0"  
 				category="outputs"  
 				listHeader="header"  
 				description="desc"  
@@ -193,8 +185,6 @@
                  name="Number of children"
                  units="children"
                  aggregation="1"
-                 collectIntervention="1"
-                 collectMonitoring="0"
                  listHeader="kids"
                  description="desc"
                  sortOrder="1"/>
@@ -222,7 +212,7 @@
 	<attributeValue siteId="1" attributeId="1" value="0"/>
 	<attributeValue siteId="1" attributeId="2" value="1"/>
 	
-	<reportingPeriod reportingPeriodId="1" siteId="1" monitoring="0" date1="2009-01-01" date2="2009-01-02" DateCreated="2009-02-01" DateEdited="2009-02-01" />
+	<reportingPeriod reportingPeriodId="1" siteId="1" date1="2009-01-01" date2="2009-01-02" DateCreated="2009-02-01" DateEdited="2009-02-01" />
 	<indicatorValue reportingPeriodId="1" indicatorId="1" value="1500"/>
 	<indicatorValue reportingPeriodId="1" indicatorId="2" value="500"/>
 		
@@ -237,7 +227,7 @@
 	<attributeValue siteId="2" attributeId="1" value="1"/>
 	<attributeValue siteId="2" attributeId="2" value="1"/>
 	
-	<reportingPeriod reportingPeriodId="2" siteId="2" monitoring="0" date1="2009-01-15" date2="2009-01-16" DateCreated="2009-02-01" DateEdited="2009-02-01" />
+	<reportingPeriod reportingPeriodId="2" siteId="2"  date1="2009-01-15" date2="2009-01-16" DateCreated="2009-02-01" DateEdited="2009-02-01" />
 	<indicatorValue reportingPeriodId="2" indicatorId="1" value="3600"/>
 	<indicatorValue reportingPeriodId="2" indicatorId="2" value="1200"/>
 
@@ -251,7 +241,7 @@
 	<attributeValue siteId="3" attributeId="1" value="1"/>
 	<attributeValue siteId="3" attributeId="2" value="0"/>
 	
-	<reportingPeriod reportingPeriodId="3" siteId="3" monitoring="0" date1="2008-10-05" date2="2008-10-06" DateCreated="2009-02-01" DateEdited="2009-02-01" />
+	<reportingPeriod reportingPeriodId="3" siteId="3"  date1="2008-10-05" date2="2008-10-06" DateCreated="2009-02-01" DateEdited="2009-02-01" />
 	<indicatorValue reportingPeriodId="3" indicatorId="1" value="10000"/>
 	<indicatorValue reportingPeriodId="3" indicatorId="2" value="500"/>
 
@@ -264,13 +254,13 @@
 		
 	<site siteId="9" activityId="3" locationId="9" partnerId="1" Status="1" target="0" Date1="2009-01-01" Date2="2009-12-31" DateCreated="2009-01-01" DateEdited="2009-01-01" />
 		
-	<reportingPeriod reportingPeriodId="91" siteId="9" monitoring="0" date1="2009-01-01" date2="2009-01-31" DateCreated="2009-02-01" DateEdited="2009-02-01" />
+	<reportingPeriod reportingPeriodId="91" siteId="9"  date1="2009-01-01" date2="2009-01-31" DateCreated="2009-02-01" DateEdited="2009-02-01" />
 		<indicatorValue reportingPeriodId="91" indicatorId="5" value="0.1"/>
 
-	<reportingPeriod reportingPeriodId="92" siteId="9" monitoring="0" date1="2009-02-01" date2="2009-02-28" DateCreated="2009-02-01" DateEdited="2009-02-01" />
+	<reportingPeriod reportingPeriodId="92" siteId="9"  date1="2009-02-01" date2="2009-02-28" DateCreated="2009-02-01" DateEdited="2009-02-01" />
 		<indicatorValue reportingPeriodId="92" indicatorId="5" value="0.3"/>
 
-	<reportingPeriod reportingPeriodId="93" siteId="9" monitoring="0" date1="2009-03-01" date2="2009-03-30" DateCreated="2009-02-01" DateEdited="2009-02-01" />
+	<reportingPeriod reportingPeriodId="93" siteId="9" date1="2009-03-01" date2="2009-03-30" DateCreated="2009-02-01" DateEdited="2009-02-01" />
 		<indicatorValue reportingPeriodId="93" indicatorId="5" value="0.4"/>
 
 
@@ -296,10 +286,10 @@
 
     <site siteId="6" activityId="4" locationId="6" partnerId="1" Status="1" target="0" DateCreated="2009-02-01" DateEdited="2009-02-01" />
 
-    <reportingPeriod reportingPeriodId="601" siteId="6" monitoring="0" date1="2009-01-01" date2="2009-01-31"  DateCreated="2009-01-01" DateEdited="2009-01-01"/>
+    <reportingPeriod reportingPeriodId="601" siteId="6"  date1="2009-01-01" date2="2009-01-31"  DateCreated="2009-01-01" DateEdited="2009-01-01"/>
     <indicatorValue reportingPeriodId="601" indicatorId="6" value="35"/>
 
-    <reportingPeriod reportingPeriodId="602" siteId="6" monitoring="0" date1="2009-02-01" date2="2009-02-28"  DateCreated="2009-01-01" DateEdited="2009-01-01"/>
+    <reportingPeriod reportingPeriodId="602" siteId="6"  date1="2009-02-01" date2="2009-02-28"  DateCreated="2009-01-01" DateEdited="2009-01-01"/>
     <indicatorValue reportingPeriodId="602" indicatorId="6" value="70"/>
 
 

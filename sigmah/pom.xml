@@ -458,6 +458,35 @@
                 </configuration>
             </plugin>
 
+			<plugin>
+				<groupId>org.liquibase</groupId>
+				<artifactId>liquibase-maven-plugin</artifactId>
+				<version>2.0.2</version>
+				<configuration>
+					<driver>com.mysql.jdbc.Driver</driver>
+					<changeLogFile>org/activityinfo/database/changelog/db.changelog-master.xml</changeLogFile>
+					<url>${devDatabaseUrl}</url>
+					<username>${devDatabaseUsername}</username>
+					<password>${devDatabasePassword}</password>
+				</configuration>
+				<executions>
+					<execution>
+						<id>prep-test-database</id>
+						<goals>
+							<goal>dropAll</goal>
+							<goal>update</goal>
+						</goals>
+						<phase>test-compile</phase>
+						<configuration>
+							<dropFirst>true</dropFirst>
+							<url>${testDatabaseUrl}</url>
+							<username>${testDatabaseUsername}</username>
+							<password>${testDatabasePassword}</password>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -780,6 +809,24 @@
 	                                <action>
 	                                    <execute />
 	                                </action>
+	                            </pluginExecution>
+	                            <pluginExecution>
+	                            	<pluginExecutionFilter>
+	                            		<groupId>org.liquibase</groupId>
+	                            		<artifactId>
+	                            			liquibase-maven-plugin
+	                            		</artifactId>
+	                            		<versionRange>
+	                            			[2.0.1,)
+	                            		</versionRange>
+	                            		<goals>
+	                            			<goal>update</goal>
+	                            			<goal>dropAll</goal>
+	                            		</goals>
+	                            	</pluginExecutionFilter>
+	                            	<action>
+	                            		<ignore></ignore>
+	                            	</action>
 	                            </pluginExecution>
 	                        </pluginExecutions>
 	                    </lifecycleMappingMetadata>

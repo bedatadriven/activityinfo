@@ -21,6 +21,9 @@ public class DatabaseCleaner {
 
 	private final Provider<Connection> connectionProvider;
 	
+	private static final String LIQUIBASE_TABLE_PREFIX = "databasechangelog";
+	
+	
     @Inject
     public DatabaseCleaner(Provider<Connection> connectionProvider) {
         this.connectionProvider = connectionProvider;
@@ -38,8 +41,9 @@ public class DatabaseCleaner {
 			try {
 				while(tables.next()) {
 					String tableName = tables.getString(3);
-					statement.execute("DELETE FROM " + tableName);
-					
+					if(!tableName.startsWith(LIQUIBASE_TABLE_PREFIX)) {
+						statement.execute("DELETE FROM " + tableName);
+					}
 				}
 			} finally {
 				tables.close();

@@ -66,8 +66,6 @@
                category="inputs"
                description="falling in lve"
                listHeader="no header really"
-               collectIntervention="1"
-               collectMonitoring="1"
                sortOrder="2"/>
 
     <indicator indicatorId="2"
@@ -75,8 +73,6 @@
                name="kits"
                units="menages"
                aggregation="0"
-               collectIntervention="1"
-               collectMonitoring="1"
                category="outputs"
                listHeader="header"
                description="desc"

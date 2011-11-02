@@ -132,6 +132,4 @@ public class GetSchemaTest extends CommandTestCase2 {
 
         assertEquals("property:name", "Catastrophe Naturelle", test.getName());
     }
-
-
 }

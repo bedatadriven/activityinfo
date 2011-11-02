@@ -24,17 +24,10 @@ public class Partner implements java.io.Serializable, SchemaElement {
     private String name;
     private String fullName;
     private Set<UserDatabase> databases = new HashSet<UserDatabase>(0);
-    private Location location;
-    private Partner parent;
-    private Set<Partner> children = new HashSet<Partner>(0);
-    private Double plannedBudget;
-    private Double spendBudget;
-    private Double receivedBudget;
-    private Integer calendarId;
-    private Country officeLocationCountry;
 
     public Partner() {
     }
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -78,90 +71,6 @@ public class Partner implements java.io.Serializable, SchemaElement {
 
     public void setDatabases(Set<UserDatabase> databases) {
         this.databases = databases;
-    }
-
-
-    /**
-     * The point location of the OrgUnit, generally the city of its head office.
-     * 
-     */
-    @ManyToOne
-    public Location getLocation() {
-        return location;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
-    /**
-     * The parent OrgUnit that manages this OrgUnit
-     */
-    @ManyToOne
-    public Partner getParent() {
-        return parent;
-    }
-
-    public void setParent(Partner parent) {
-        this.parent = parent;
-    }
-
-    /**
-     * The children OrgUnits that are managed by this OrgUnit
-     */
-    @OneToMany(mappedBy = "parent")
-    @OrderBy("name asc")
-    public Set<Partner> getChildren() {
-        return children;
-    }
-
-    public void setChildren(Set<Partner> children) {
-        this.children = children;
-    }
-
-    @Column(name = "planned_budget", nullable = true)
-    public Double getPlannedBudget() {
-        return plannedBudget;
-    }
-
-    public void setPlannedBudget(Double plannedBudget) {
-        this.plannedBudget = plannedBudget;
-    }
-
-    @Column(name = "spend_budget", nullable = true)
-    public Double getSpendBudget() {
-        return spendBudget;
-    }
-
-    public void setSpendBudget(Double spendBudget) {
-        this.spendBudget = spendBudget;
-    }
-
-    @Column(name = "received_budget", nullable = true)
-    public Double getReceivedBudget() {
-        return receivedBudget;
-    }
-
-    public void setReceivedBudget(Double receivedBudget) {
-        this.receivedBudget = receivedBudget;
-    }
-
-    public Integer getCalendarId() {
-        return calendarId;
-    }
-
-    public void setCalendarId(Integer calendarId) {
-        this.calendarId = calendarId;
-    }
-
-    @ManyToOne(optional = true)
-    @JoinColumn(name = "office_country_id", nullable = true)
-    public Country getOfficeLocationCountry() {
-        return officeLocationCountry;
-    }
-
-    public void setOfficeLocationCountry(Country officeLocationCountry) {
-        this.officeLocationCountry = officeLocationCountry;
     }
 
     @Override

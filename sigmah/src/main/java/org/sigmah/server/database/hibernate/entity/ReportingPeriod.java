@@ -33,7 +33,6 @@ public class ReportingPeriod implements java.io.Serializable, Deleteable {
 
 	private int id;
     private Site site;
-	private boolean monitoring;
 	private Date date1;
 	private Date date2;
 	private String comments;
@@ -42,8 +41,6 @@ public class ReportingPeriod implements java.io.Serializable, Deleteable {
 	private Date dateEdited;
 	private Date dateDeleted;
 	
-//	private Map<Integer, Double> indicatorValues = new HashMap<Integer, Double>(0);
-
 	private Set<IndicatorValue> indicatorValues = new HashSet<IndicatorValue>(0);
 	
 	public ReportingPeriod() {
@@ -78,15 +75,6 @@ public class ReportingPeriod implements java.io.Serializable, Deleteable {
 
 	public void setSite(Site site) {
 		this.site = site;
-	}
-
-	@Column(name = "Monitoring", nullable = false)
-	public boolean isMonitoring() {
-		return this.monitoring;
-	}
-
-	public void setMonitoring(boolean monitoring) {
-		this.monitoring = monitoring;
 	}
 
 	@Temporal(TemporalType.DATE)
@@ -137,23 +125,6 @@ public class ReportingPeriod implements java.io.Serializable, Deleteable {
 	public void setDateEdited(Date dateEdited) {
 		this.dateEdited = dateEdited;
 	}
-
-//	/**
-//	 * 
-//	 * @return
-//	 * @see https://forum.hibernate.org/viewtopic.php?t=953403
-//	 */
-//	@org.hibernate.annotations.CollectionOfElements
-//    @JoinTable(name="IndicatorValue", joinColumns={@JoinColumn(name="reportingPeriodId")})
-//	@org.hibernate.annotations.MapKey(columns={@Column(name="indicatorId", nullable=false)})
-//	@Column(name="Value", nullable=true, columnDefinition="REAL")   
-//	public Map<Integer, Double> getIndicatorValues() {
-//		return indicatorValues;
-//	}
-//	
-//	public void setIndicatorValues(Map<Integer,Double> values) {
-//		this.indicatorValues = values;
-//	}
 	
 	@OneToMany(mappedBy="reportingPeriod", fetch=FetchType.LAZY)
     @org.hibernate.annotations.Filter(
@@ -166,8 +137,6 @@ public class ReportingPeriod implements java.io.Serializable, Deleteable {
 	public void setIndicatorValues(Set<IndicatorValue> values) {
 		this.indicatorValues = values;
 	}
-
-    
 	
 	@Override
 	public boolean equals(Object other) {
@@ -200,11 +169,9 @@ public class ReportingPeriod implements java.io.Serializable, Deleteable {
 		setDateDeleted(new Date());
 	}
 
-
 	@Override
 	@Transient
 	public boolean isDeleted() {
 		return getDateDeleted() == null;
-	}
-	
+	}	
 }
