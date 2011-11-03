@@ -15,7 +15,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class Update extends VerticalPanel {
 	private SiteDTO site;
 	private ActivityDTO activity;
-	private final HorizontalPanel horizontalPanel = new HorizontalPanel();
 	private static final IconImageBundle iconImageBundle = IconImageBundle.ICONS;
 	private Label labelDatabase_1;
 	private Label labelPartner;

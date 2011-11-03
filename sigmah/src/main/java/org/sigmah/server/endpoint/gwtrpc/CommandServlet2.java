@@ -39,9 +39,6 @@ public class CommandServlet2 extends RemoteServiceServlet implements RemoteComma
 
     @Inject 
     private UserDAO userDAO;
-
-    @Inject
-    private SqlDatabase database;
     
     @Override
     @LogException
@@ -50,7 +47,7 @@ public class CommandServlet2 extends RemoteServiceServlet implements RemoteComma
         try {
             return handleCommands(auth.getUser(), commands);
 
-        } catch (Throwable caught) {
+        } catch (Exception caught) {
             caught.printStackTrace();
             throw new CommandException();
         }
@@ -83,7 +80,7 @@ public class CommandServlet2 extends RemoteServiceServlet implements RemoteComma
                 // include this as an error-ful result and
                 // continue executing other commands in the list
                 results.add(e);
-            } catch (Throwable e) {
+            } catch (Exception e) {
                 // something when wrong while executing the command
                 // this is already logged by the logging interceptor
                 // so just pass a new UnexpectedCommandException to the client

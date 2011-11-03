@@ -39,7 +39,7 @@ public class ReportModelException extends RuntimeException  {
 			} else {
 				message += " titled '" + element.getTitle() + "'."; 
 			}
-		} catch(Throwable caught) { 
+		} catch(Exception ignored) { 
 		}
 		return message;
 	}

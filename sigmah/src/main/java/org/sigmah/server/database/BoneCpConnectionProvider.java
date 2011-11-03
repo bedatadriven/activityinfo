@@ -48,8 +48,8 @@ public class BoneCpConnectionProvider implements Provider<Connection> {
 	public void maybeMigrateSchema(Properties config) {
 		if("enabled".equals(config.get(SCHEMA_MIGRATION)) ||
 	       "update".equals(config.get("hibernate.hbm2ddl.auto"))) {
+			Connection connection=null;
 			try {		
-				Connection connection;
 				try {
 					connection = connectionPool.getConnection();
 				} catch (SQLException e) {
@@ -61,6 +61,13 @@ public class BoneCpConnectionProvider implements Provider<Connection> {
 				liquibase.update(null);
 			} catch (LiquibaseException e) {
 				logger.error("Liquibase schema migration failed", e);
+			} finally {
+				if(connection != null) {
+					try {
+						connection.close();
+					} catch(Exception ignored){
+					}
+				}
 			}
 		}
 	}	

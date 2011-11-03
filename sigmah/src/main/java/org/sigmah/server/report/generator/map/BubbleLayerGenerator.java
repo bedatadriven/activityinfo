@@ -23,7 +23,6 @@ import org.sigmah.shared.report.content.MapMarker;
 import org.sigmah.shared.report.content.Point;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
-import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.MapSymbol;
 import org.sigmah.shared.report.model.PointValue;
 import org.sigmah.shared.report.model.layers.BubbleMapLayer;
@@ -32,12 +31,10 @@ import org.sigmah.shared.util.mapping.Extents;
 
 public class BubbleLayerGenerator extends AbstractLayerGenerator {
 
-    private MapReportElement element;
     private BubbleMapLayer layer;
     private List<SiteDTO> sites;
 
-    public BubbleLayerGenerator(MapReportElement element, BubbleMapLayer layer, List<SiteDTO> sites) {
-        this.element = element;
+    public BubbleLayerGenerator(BubbleMapLayer layer, List<SiteDTO> sites) {
         this.layer = layer;
         this.sites=sites;
     }
@@ -88,7 +85,7 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
         
         // add unmapped sites
         for(PointValue pv : unmapped) {
-            content.getUnmappedSites().add(pv.site.getId());
+            content.getUnmappedSites().add(pv.getSite().getId());
         }
 
         BubbleLayerLegend legend = new BubbleLayerLegend();
@@ -102,7 +99,7 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
             BubbleMapMarker marker =  new BubbleMapMarker();
 
             for(PointValue pv : cluster.getPointValues()) {
-                marker.getSiteIds().add(pv.site.getId());
+                marker.getSiteIds().add(pv.getSite().getId());
             }
             marker.setX(px.getX());
             marker.setY(px.getY());

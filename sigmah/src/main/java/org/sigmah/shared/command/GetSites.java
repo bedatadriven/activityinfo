@@ -15,7 +15,7 @@ import org.sigmah.shared.report.model.DimensionType;
  * @author Alex Bertram
  *
  */
-public class GetSites extends PagingGetCommand<SiteResult> {
+public class GetSites extends PagingGetCommand<SiteResult> implements Cloneable {
 	
     private Filter filter = new Filter();
 
@@ -84,15 +84,21 @@ public class GetSites extends PagingGetCommand<SiteResult> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) { 
+        	return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+        	return false;
+        }
 
         GetSites getSites = (GetSites) o;
 
-        if (!filter.equals(getSites.filter)) return false;
-        if (seekToSiteId != null ? !seekToSiteId.equals(getSites.seekToSiteId) : getSites.seekToSiteId != null)
+        if (!filter.equals(getSites.filter)) {
+        	return false;
+        }
+        if (seekToSiteId != null ? !seekToSiteId.equals(getSites.seekToSiteId) : getSites.seekToSiteId != null) {
             return false;
-
+        }
         return true;
     }
 

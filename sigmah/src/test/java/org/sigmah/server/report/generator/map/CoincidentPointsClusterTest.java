@@ -91,12 +91,12 @@ public class CoincidentPointsClusterTest extends GraphTest {
             double lng = Double.parseDouble(columns[1]);
 
             PointValue pv = new PointValue();
-            pv.px = map.fromLatLngToPixel(new AiLatLng(lat, lng));
-            pv.value = Double.parseDouble(columns[2]);
-            pv.symbol = new MapSymbol();
-            pv.site = new SiteDTO();
+            pv.setPx(map.fromLatLngToPixel(new AiLatLng(lat, lng)));
+            pv.setValue(Double.parseDouble(columns[2]));
+            pv.setSymbol(new MapSymbol());
+            pv.setSite(new SiteDTO());
 
-            originalSum += pv.value;
+            originalSum += pv.getValue();
 
             points.add(pv);
         }
@@ -109,7 +109,7 @@ public class CoincidentPointsClusterTest extends GraphTest {
         // make sure nothing was lost in the merging of coincident points
         double nodeSum = 0;
         for (MarkerGraph.Node node : graph.getNodes()) {
-            nodeSum += node.getPointValue().value;
+            nodeSum += node.getPointValue().getValue();
         }
         Assert.assertEquals("values after construction of graph", originalSum, nodeSum, 0.001);
 

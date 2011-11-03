@@ -13,25 +13,46 @@ import com.google.gwt.maps.client.overlay.Icon;
  *  This gives you static functions for creating dynamically
  *     sized and colored marker icons using the Google Charts API marker output.
  */
-public class GcIconFactory {
+public class GoogleChartsIconBuilder {
+	private int width = 32;
+	private int height = 32;
+	private String primaryColor = "#ff0000";
+	private String cornerColor = "#ffffff";
+	private String strokeColor = "#000000";
+	private String shadowColor = "#000000";
+	private String label = "";
+	private String labelColor = "#000000";
+	private int labelSize = 0;
+
+
+	public final static String SHAPE_CIRCLE = "circle";
+	public final static String SHAPE_ROUNDRECT = "roundrect";
+
+	private String shape = SHAPE_CIRCLE;
+
 	/**
 	 * Specifies, in pixels, the width of the icon.
 	 *     The width may include some blank space on the side, depending on the
 	 *     height of the icon, as the icon will scale its shape proportionately
 	 */
-	public int width = 32;
-
+	public void setWidth(int width) {
+		this.width = width;
+	}
 
 	/**
 	 * Specifies, in pixels, the height of the icon.
 	 */
-	public int height = 32;
+	public void setHeight(int height) {
+		this.height = height;
+	}
 
 	/**
 	 * Specifies, as a hexadecimal
 	 *     string, the color used for the majority of the icon body.
 	 */
-	public String primaryColor = "#ff0000";
+	public void setPrimaryColor(String primaryColor) {
+		this.primaryColor = primaryColor;
+	}
 
 	/**
 	 * Specifies, as a hexadecimal
@@ -39,67 +60,61 @@ public class GcIconFactory {
 	 *     icon to have a consistent color, make the this the same as the
 	 *     <code>primaryColor</code>.
 	 */
-	public String cornerColor = "#ffffff";
-
+	public void setCornerColor(String cornerColor) {
+		this.cornerColor = cornerColor;
+	}
+	
 	/**
 	 *  Specifies, as a hexadecimal
 	 *     string, the color used for the outside line (stroke) of the icon.
 	 */
-	public String strokeColor = "#000000";
+	public void setStrokeColor(String strokeColor) {
+		this.strokeColor = strokeColor;
+	}
 
 	/**
 	 * Specifies, as a hexadecimal
 	 *     string, the color used for the shadow of the icon.
 	 */
-	public String shadowColor = "#000000";
+	public void setShadowColor(String shadowColor) {
+		this.shadowColor = shadowColor;
+	}
+
 
 	/**
 	 *  Specifies a character or string to display
 	 *     inside the body of the icon. Generally, one or two characters looks best.
 	 */
-	public String label = "";
+	public void setLabel(String label) {
+		this.label = label;
+	}
 
 	/**
 	 * Specifies, as a hexadecimal
 	 *     string, the color used for the label text.
 	 */
-	public String labelColor = "#000000";
+	public void setLabelColor(String labelColor) {
+		this.labelColor = labelColor;
+	}
+
 
 	/**
 	 * Specifies, in pixels, the size of the label
 	 *     text. If set to 0, the text auto-sizes to fit the icon body.
 	 */
-	public int labelSize = 0;
-
-
-	public final static String SHAPE_CIRCLE = "circle";
-	public final static String SHAPE_ROUNDRECT = "roundrect";
+	public void setLabelSize(int labelSize) {
+		this.labelSize = labelSize;
+	}
 
 	/**
 	 * Specifies shape of the icon. Current
 	 *     options are "circle" for a circle or "roundrect" for a rounded rectangle.
 	 */
-	public String shape = SHAPE_CIRCLE;
+	public void setShape(String shape) {
+		this.shape = shape;
+	}
 
-	/**
-	 * Specifies whether to add a star to the
-	 *     edge of the icon.
-	 */
-	public boolean addStar = false;
-
-	/**
-	 *  Specifies, as a hexadecimal
-	 *     string, the color used for the star body.
-	 */
-	public String starPrimaryColor = "#FFFF00";
-
-	/**
-	 *  Specifies, as a hexadecimal
-	 *     string, the color used for the outside line (stroke) of the star.
-	 */
-	public String starStrokeColor = "#0000FF";
-
-
+	
 	/**
 	 * Creates an icon based on the specified options
 	 *   Supported options are: width, height, primaryColor,
@@ -195,6 +210,5 @@ public class GcIconFactory {
 
 		return imageMap;
 	}
-
 
 }

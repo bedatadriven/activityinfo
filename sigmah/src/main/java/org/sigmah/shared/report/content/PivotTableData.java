@@ -59,30 +59,6 @@ public class PivotTableData implements Serializable {
 		return getRootColumn();
 	}
 
-    private List<Dimension> getRowDimensions() {
-        return rowDimensions;
-    }
-
-    private List<Dimension> getColDimensions() {
-        return colDimensions;
-    }
-
-    private void setRowDimensions(List<Dimension> rowDimensions) {
-        this.rowDimensions = rowDimensions;
-    }
-
-    private void setColDimensions(List<Dimension> colDimensions) {
-        this.colDimensions = colDimensions;
-    }
-
-    private void setRootRow(Axis rootRow) {
-        this.rootRow = rootRow;
-    }
-
-    private void setRootColumn(Axis rootColumn) {
-        this.rootColumn = rootColumn;
-    }
-
     public static class Cell implements Serializable {
 		private Double value;
 

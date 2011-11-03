@@ -32,11 +32,7 @@ public final class AttributeGroupDTO extends BaseModelData implements EntityDTO 
     }
 	
     public boolean isEmpty() {
-    	if (this.attributes == null)
-    		return true;
-    	if (this.attributes.size() < 1) 
-    		return true;
-    	return false;
+    	return this.attributes ==  null || attributes.isEmpty();
     }
     
 	public AttributeGroupDTO(int id) {

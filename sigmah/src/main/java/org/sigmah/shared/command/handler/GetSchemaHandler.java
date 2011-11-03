@@ -27,7 +27,6 @@ import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 import com.bedatadriven.rebar.sql.client.util.RowHandler;
-import com.google.common.collect.Maps;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -43,20 +42,19 @@ public class GetSchemaHandler implements
 	}
 
 	private class SchemaBuilder {
-		final List<UserDatabaseDTO> databaseList = new ArrayList<UserDatabaseDTO>();
-		final List<CountryDTO> countryList = new ArrayList<CountryDTO>();
+		private final List<UserDatabaseDTO> databaseList = new ArrayList<UserDatabaseDTO>();
+		private final List<CountryDTO> countryList = new ArrayList<CountryDTO>();
 		
-		final Map<Integer, UserDatabaseDTO> databaseMap = new HashMap<Integer, UserDatabaseDTO>();
+		private final Map<Integer, UserDatabaseDTO> databaseMap = new HashMap<Integer, UserDatabaseDTO>();
 
-		final Map<Integer, CountryDTO> countries = new HashMap<Integer, CountryDTO>();
-		final Map<Integer, PartnerDTO> partners = new HashMap<Integer, PartnerDTO>();
-		final Map<Integer, ActivityDTO> activities = new HashMap<Integer, ActivityDTO>();
-		final Map<Integer, AttributeGroupDTO> attributeGroups = new HashMap<Integer, AttributeGroupDTO>();
-		final Map<Integer, ProjectDTO> projects = new HashMap<Integer, ProjectDTO>();
-		final Map<Integer, LockedPeriodDTO> lockedPeriods = Maps.newHashMap();
+		private final Map<Integer, CountryDTO> countries = new HashMap<Integer, CountryDTO>();
+		private final Map<Integer, PartnerDTO> partners = new HashMap<Integer, PartnerDTO>();
+		private final Map<Integer, ActivityDTO> activities = new HashMap<Integer, ActivityDTO>();
+		private final Map<Integer, AttributeGroupDTO> attributeGroups = new HashMap<Integer, AttributeGroupDTO>();
+		private final Map<Integer, ProjectDTO> projects = new HashMap<Integer, ProjectDTO>();
 
-		SqlTransaction tx;
-		ExecutionContext context;
+		private SqlTransaction tx;
+		private ExecutionContext context;
 
 		public void loadCountries() {
 			SqlQuery.select().appendColumn("CountryId", "id")

@@ -13,6 +13,6 @@ public class BubbleIntersectionCalculator implements IntersectionCalculator {
 
     public boolean intersects(MarkerGraph.Node a, MarkerGraph.Node b) {
         return a.getPoint().distance(b.getPoint()) < radius *2 &&
-                a.getPointValue().symbol.equals(b.getPointValue().symbol);
+                a.getPointValue().getSymbol().equals(b.getPointValue().getSymbol());
     }
 }

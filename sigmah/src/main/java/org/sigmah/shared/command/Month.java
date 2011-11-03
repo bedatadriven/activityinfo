@@ -36,6 +36,10 @@ public class Month implements Serializable, Comparable<Month> {
         this.year = year;
         this.month = month;
 
+        normalize();
+    }
+    
+    private void normalize() {
         while(month > 12) {
             year++;
             month -= 12;

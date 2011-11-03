@@ -122,10 +122,10 @@ public class GraphTest {
             for(PointValue pointValue : cluster.getPointValues()) {
                 svg.write(String.format("<circle cx='%d' cy='%d' r='1.5' " +
                             "style='stroke:rgb(92,92,92); stroke-width:0.1; fill: %s' title='%f'/>\n",
-                             pointValue.px.getX(),
-                             pointValue.px.getY(),
+                             pointValue.getPx().getX(),
+                             pointValue.getPx().getY(),
                              colors[colorIndex],
-                             pointValue.value));
+                             pointValue.getValue()));
             }
 
             colorIndex++;

@@ -49,7 +49,6 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 	private IndicatorTreePanel treepanelIndicators;
 	
 	// List of selected indicators
-	private Grid<IndicatorDTO> gridSelectedIndicators;
 	private ListStore<IndicatorDTO> indicatorsStore = new ListStore<IndicatorDTO>();
     
     // Indicator options

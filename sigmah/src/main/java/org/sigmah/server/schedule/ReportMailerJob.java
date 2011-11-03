@@ -77,7 +77,7 @@ public class ReportMailerJob implements Job {
                         execute(today, report, template.getSubscriptions());
                     }
                 }
-            } catch (Throwable caught) {
+            } catch (Exception caught) {
                 caught.printStackTrace();
             }
         }

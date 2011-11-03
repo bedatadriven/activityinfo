@@ -63,7 +63,7 @@ public class GeneticSolver {
         private double fitness;
 
         public Phenotype(int[] chromosomes) {
-            this.chromosomes = chromosomes;
+            this.chromosomes = Arrays.copyOf(chromosomes, chromosomes.length);
             this.clusters = new ArrayList<Cluster>();
             for(int i=0;i!=chromosomes.length;++i){
                 this.clusters.addAll(KMeans.cluster(subgraphs.get(i), chromosomes[i]));

@@ -12,7 +12,7 @@ import java.util.Map;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.map.GcIconFactory;
+import org.sigmah.client.map.GoogleChartsIconBuilder;
 import org.sigmah.client.map.IconFactory;
 import org.sigmah.client.map.MapApiLoader;
 import org.sigmah.client.map.MapTypeFactory;
@@ -91,7 +91,6 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
     
     // Model of a the map
     private MapContent mapModel;
-	private List<TileBaseMap> baseMaps;
 	
 	// True when the first layer is just put on the map
 	private boolean isFirstLayerUpdate=true;
@@ -140,7 +139,6 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
         });
         
         getSchema();
-        getBaseMaps();
     }
 
 	private void getSchema() {
@@ -306,28 +304,6 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
     	}
         overlays.clear();
     }
-    
-	private void getBaseMaps() {
-		GetBaseMaps getBaseMaps = new GetBaseMaps();
-		
-		dispatcher.execute(getBaseMaps, new MaskingAsyncMonitor(this, I18N.CONSTANTS.loading()), new AsyncCallback<BaseMapResult>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-			}
-
-			@Override
-			public void onSuccess(BaseMapResult result) {
-				if (result.getBaseMaps() == null) {
-					// TODO: handle nullresult
-				} else {
-					baseMaps = result.getBaseMaps();
-					mapReportElement.setBaseMapId(BaseMap.getDefaultMapId());
-					setValue(mapReportElement);
-				}
-			}
-		});
-	}
 	
     /**
      * Updates the size of the map and adds Overlays to reflect the content
@@ -365,8 +341,8 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
 		
 		        statusWidget.setStatus(result.getUnmappedSites().size() + " " + I18N.CONSTANTS.siteLackCoordiantes(), null);
 		
-		        GcIconFactory iconFactory = new GcIconFactory();
-		        iconFactory.primaryColor = "#0000FF";
+		        GoogleChartsIconBuilder iconFactory = new GoogleChartsIconBuilder();
+		        iconFactory.setPrimaryColor("#0000FF");
 		
 		        putMarkersOnMap(result);
 		        zoomToMarkers(result);

@@ -98,7 +98,7 @@ public class AdminLevelClusterer implements Clusterer {
 	}
 
 	private AdminEntityDTO getAdminEntityId(PointValue pv) {
-		return getAdminEntity(pv.site);
+		return getAdminEntity(pv.getSite());
 	}
 
 	private AdminEntityDTO getAdminEntity(SiteDTO site) {

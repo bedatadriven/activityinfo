@@ -46,7 +46,7 @@ public class ClientSideAuthProvider implements Provider<AuthenticatedUser> {
                     currentLocale());
         } catch (Exception e) {
             Log.fatal("DictionaryAuthenticationProvider: exception retrieving dictionary from page", e);
-            throw new Error();
+            throw new RuntimeException("Cannot retrieve user dictionary from page", e);
         }
     }
     

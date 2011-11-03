@@ -40,7 +40,7 @@ public class Cluster {
     public Cluster(PointValue pointValue) {
         pointValues = new ArrayList<PointValue>(1);
         pointValues.add(pointValue);
-        point = pointValue.px;
+        point = pointValue.getPx();
     }
 
 	public void addNode(MarkerGraph.Node node) {
@@ -73,7 +73,7 @@ public class Cluster {
         int maxX = Integer.MIN_VALUE;
         int maxY = Integer.MIN_VALUE;
         for(PointValue pointValue : pointValues) {
-            Point p = pointValue.px;
+            Point p = pointValue.getPx();
             if(p.getX() < minX) {
                 minX = p.getX();
             }
@@ -97,8 +97,8 @@ public class Cluster {
         double count=0;
 
         for(PointValue pointValue : pointValues) {
-            latSum += pointValue.site.getLatitude();
-            lngSum += pointValue.site.getLongitude();
+            latSum += pointValue.getSite().getLatitude();
+            lngSum += pointValue.getSite().getLongitude();
             count++;
         }
 
@@ -111,9 +111,9 @@ public class Cluster {
         double x = 0;
         double y = 0;
         for(PointValue pointValue : pointValues) {
-            weightSum += pointValue.value;
-            x += pointValue.px.getX() * pointValue.value;
-            y += pointValue.px.getY() * pointValue.value;
+            weightSum += pointValue.getValue();
+            x += pointValue.getPx().getX() * pointValue.getValue();
+            y += pointValue.getPx().getY() * pointValue.getValue();
         }
 
         return new Point((int)Math.round(x / weightSum), (int)Math.round(y / weightSum));
@@ -138,7 +138,7 @@ public class Cluster {
     public double sumValues() {
         double sum = 0;
         for(PointValue pointValue : pointValues) {
-            sum += pointValue.value;
+            sum += pointValue.getValue();
         }
         return sum;
     }

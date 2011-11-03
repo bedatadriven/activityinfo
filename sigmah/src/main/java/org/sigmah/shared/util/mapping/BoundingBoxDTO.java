@@ -224,8 +224,15 @@ public final class BoundingBoxDTO implements Serializable {
         }
         return false;
     }
+ 
+    @Override
+	public int hashCode() {
+    	// probably not a great hash code but we can't use
+    	// Double.longBits and this satisfies the contract
+		return Double.valueOf(x1).hashCode();
+	}
 
-    /**
+	/**
      * 
      * @return the minimum x (longitudinal) coordinate
      */
@@ -300,7 +307,4 @@ public final class BoundingBoxDTO implements Serializable {
 	public AiLatLng centroid() {
 		return new AiLatLng(getCenterY(), getCenterX());
 	}
-
-
-
 }

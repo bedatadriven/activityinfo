@@ -23,11 +23,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-/**
- * 
- * @author Alex Bertram
- *
- */
 @Entity
 public class ReportingPeriod implements java.io.Serializable, Deleteable {
 
@@ -155,6 +150,13 @@ public class ReportingPeriod implements java.io.Serializable, Deleteable {
 		return this.getId() == that.getId();
 	}
 	
+	
+	
+	@Override
+	public int hashCode() {
+		return this.getId();
+	}
+
 	@Column
 	@Temporal(value=TemporalType.TIMESTAMP)
 	protected Date getDateDeleted() {

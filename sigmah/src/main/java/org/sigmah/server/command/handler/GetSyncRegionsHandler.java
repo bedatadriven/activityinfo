@@ -11,7 +11,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.EntityManager;
 
 import org.sigmah.server.database.hibernate.dao.UserDatabaseDAO;
 import org.sigmah.server.database.hibernate.entity.AdminLevel;
@@ -28,12 +27,10 @@ import com.google.inject.Inject;
 public class GetSyncRegionsHandler implements CommandHandler<GetSyncRegions> {
 
     private UserDatabaseDAO schemaDAO;
-    private final EntityManager entityManager;
 
     @Inject
-    public GetSyncRegionsHandler(UserDatabaseDAO schemaDAO, EntityManager entityManager) {
+    public GetSyncRegionsHandler(UserDatabaseDAO schemaDAO) {
         this.schemaDAO = schemaDAO;
-        this.entityManager = entityManager;
     }
 
     @Override

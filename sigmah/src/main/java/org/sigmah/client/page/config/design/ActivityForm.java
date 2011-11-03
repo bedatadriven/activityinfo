@@ -32,7 +32,6 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
  */
 class ActivityForm extends AbstractDesignForm {
 
-    private ListStore<LocationTypeDTO> locationTypeStore;
     private FormBinding binding;
 
     public ActivityForm(Dispatcher service, UserDatabaseDTO database) {
@@ -80,11 +79,6 @@ class ActivityForm extends AbstractDesignForm {
         frequencyCombo.add(ActivityDTO.REPORT_MONTHLY, I18N.CONSTANTS.monthly());
         binding.addFieldBinding(new MappingComboBoxBinding(frequencyCombo, "reportingFrequency"));
         this.add(frequencyCombo);
-
-        CheckBoxGroup checkBoxes = new CheckBoxGroup();
-        checkBoxes.setFieldLabel(I18N.CONSTANTS.attributes());
-        checkBoxes.setOrientation(Style.Orientation.VERTICAL);
-        this.add(checkBoxes);
     }
 
     @Override

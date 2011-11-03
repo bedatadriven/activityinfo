@@ -56,9 +56,9 @@ public class DeleteHandler implements CommandHandler<Delete> {
         try {
             return (Class<Deleteable>) Class.forName(UserDatabase.class.getPackage().getName() + "." + entityName);
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Invalid entity name '" + entityName + "'");
+            throw new RuntimeException("Invalid entity name '" + entityName + "'", e);
         } catch (ClassCastException e) {
-            throw new RuntimeException("Entity type '" + entityName + "' not Deletable");
+            throw new RuntimeException("Entity type '" + entityName + "' not Deletable", e);
         }
     }
 }

@@ -13,7 +13,6 @@ public class PivotChartContent extends PivotContent {
     private String yAxisTitle;
     private String xAxisTitle;
     private double yMin;
-    private double yMax;
     private double yStep =  1.0;
 
     public PivotChartContent() {

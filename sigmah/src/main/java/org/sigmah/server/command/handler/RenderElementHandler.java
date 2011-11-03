@@ -48,7 +48,7 @@ public class RenderElementHandler implements CommandHandler<RenderElement> {
             tempFolder.mkdirs();
         } catch (SecurityException e) {
             throw new RuntimeException("Could not create the temporary folder (your_context\temp). You may need to change " +
-                    "some file permissions.");
+                    "some file permissions.", e);
         }
     }
 

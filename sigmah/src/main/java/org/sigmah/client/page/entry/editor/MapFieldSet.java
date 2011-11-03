@@ -10,7 +10,7 @@ import java.util.Collection;
 
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.map.GcIconFactory;
+import org.sigmah.client.map.GoogleChartsIconBuilder;
 import org.sigmah.client.map.MapApiLoader;
 import org.sigmah.client.map.MapTypeFactory;
 import org.sigmah.client.page.common.widget.CoordinateField;
@@ -57,7 +57,7 @@ public class MapFieldSet extends LayoutContainer implements MapEditView {
     private MapWidget map = null;
     private Marker selectedMarker = null;
     private BiMap<LocationViewModel, Marker> markersPerLocation = HashBiMap.create();
-    private GcIconFactory iconFactory = new GcIconFactory();
+    private GoogleChartsIconBuilder iconFactory = new GoogleChartsIconBuilder();
 
     private CoordinateField latField;
     private CoordinateField lngField; 
@@ -250,7 +250,7 @@ public class MapFieldSet extends LayoutContainer implements MapEditView {
         MarkerOptions options = MarkerOptions.newInstance();
         options.setDraggable(false);
         Marker marker = new Marker(latlng, options);
-        iconFactory.primaryColor = markerColor;
+        iconFactory.setPrimaryColor(markerColor);
         Icon icon = iconFactory.createFlatIcon();
         marker.setImage(icon.getImageURL());
 
@@ -343,10 +343,10 @@ public class MapFieldSet extends LayoutContainer implements MapEditView {
 			if (defaultIcon == null) {
 				defaultIcon = marker.getIcon();
 			}
-			iconFactory.primaryColor = selectedMarkerColor;
-			iconFactory.height = 48;
-			iconFactory.width = 48;
-			iconFactory.shape = "roundrect";
+			iconFactory.setPrimaryColor(selectedMarkerColor);
+			iconFactory.setHeight(48);
+			iconFactory.setWidth(48);
+			iconFactory.setShape("roundrect");
 			Icon icon = iconFactory.createMarkerIcon();
 			marker.setImage(icon.getImageURL());
 			marker.showMapBlowup(new InfoWindowContent(
