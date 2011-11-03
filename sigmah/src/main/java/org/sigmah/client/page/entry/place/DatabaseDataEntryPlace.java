@@ -1,6 +1,6 @@
 package org.sigmah.client.page.entry.place;
 
-import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 import org.sigmah.shared.report.model.DimensionType;
 

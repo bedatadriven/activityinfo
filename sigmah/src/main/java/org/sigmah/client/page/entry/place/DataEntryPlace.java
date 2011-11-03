@@ -6,7 +6,7 @@ import java.util.List;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.common.grid.AbstractPagingGridPageState;
 import org.sigmah.client.page.entry.DataEntryPage;
-import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.command.Filter;
 
 public class DataEntryPlace extends AbstractPagingGridPageState {
 

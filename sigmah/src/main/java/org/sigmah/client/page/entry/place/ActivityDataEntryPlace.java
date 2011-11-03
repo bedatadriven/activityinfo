@@ -9,7 +9,7 @@ package org.sigmah.client.page.entry.place;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.entry.DataEntryPage;
 import org.sigmah.client.page.entry.SitePageState;
-import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.dto.ActivityDTO;
 
 

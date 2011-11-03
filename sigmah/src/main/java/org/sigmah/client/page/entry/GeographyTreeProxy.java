@@ -4,13 +4,13 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.command.GetAdminEntities;
 import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.command.SitesPerAdminEntity;
 import org.sigmah.shared.command.SitesPerAdminEntity.SitesPerAdminEntityResult;
 import org.sigmah.shared.command.SitesPerAdminEntity.SitesPerAdminEntityResult.AmountPerAdminEntity;
 import org.sigmah.shared.command.result.SiteResult;
-import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.report.model.DimensionType;
