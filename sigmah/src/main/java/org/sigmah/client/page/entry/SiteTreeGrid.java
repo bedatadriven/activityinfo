@@ -1,5 +1,6 @@
 package org.sigmah.client.page.entry;
 
+import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.entry.column.ColumnModelBuilder;
 
