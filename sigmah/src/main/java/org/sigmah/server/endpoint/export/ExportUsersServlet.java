@@ -8,24 +8,16 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
 
-import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.sigmah.server.command.DispatcherSync;
-import org.sigmah.server.dao.AuthenticationDAO;
-import org.sigmah.server.domain.Authentication;
-import org.sigmah.server.domain.DomainFilters;
-import org.sigmah.server.endpoint.gwtrpc.handler.HandlerUtil;
-import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.command.GetUsers;
 import org.sigmah.shared.command.result.UserResult;
-import org.sigmah.shared.dto.SchemaDTO;
 
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
 /**

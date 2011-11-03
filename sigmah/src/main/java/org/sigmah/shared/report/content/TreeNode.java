@@ -29,7 +29,7 @@ public abstract class TreeNode<T extends TreeNode> implements Serializable {
 		return calculateDepth(0);
 	}
 	
-	private int calculateDepth(int depth) {
+	protected int calculateDepth(int depth) {
 		int maxChildDepth = depth;
 		for(T child : getChildren()) {
 			int childDepth = child.calculateDepth(depth+1);
@@ -66,7 +66,7 @@ public abstract class TreeNode<T extends TreeNode> implements Serializable {
 		return list;
 	}
 	
-	private void findLeaves(List<T> list) {
+	protected void findLeaves(List<T> list) {
 		for(T child : getChildren()) {
 			if(child.isLeaf()) {
 				list.add(child);
@@ -103,7 +103,7 @@ public abstract class TreeNode<T extends TreeNode> implements Serializable {
 		return list;		
 	}
 	
-	private void findDescendantsAtDepthRecursively(List<T> list, int depth, boolean placeholders) {
+	protected void findDescendantsAtDepthRecursively(List<T> list, int depth, boolean placeholders) {
 		if(depth==1) {
 			if(isLeaf()) {
 				if(placeholders) {
