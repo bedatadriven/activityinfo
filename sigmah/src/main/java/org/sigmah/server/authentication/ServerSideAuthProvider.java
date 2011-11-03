@@ -45,7 +45,7 @@ public class ServerSideAuthProvider implements Provider<AuthenticatedUser> {
 		Cookie[] cookies = request.get().getCookies();
 		if(cookies != null) {
 			for(Cookie cookie : cookies) {
-				if(cookie.getName().equals(org.sigmah.shared.Cookies.AUTH_TOKEN_COOKIE)) {
+				if(cookie.getName().equals(org.sigmah.shared.auth.AuthenticatedUser.AUTH_TOKEN_COOKIE)) {
 					return cookie.getValue();
 				}
 			}

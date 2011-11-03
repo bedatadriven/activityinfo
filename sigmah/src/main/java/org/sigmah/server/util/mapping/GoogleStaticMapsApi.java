@@ -1,4 +1,4 @@
-package org.sigmah.server.report.renderer.image;
+package org.sigmah.server.util.mapping;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;

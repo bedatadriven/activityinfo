@@ -22,8 +22,8 @@ public class PivotTableData implements Serializable {
 	private Axis rootRow;
 	private Axis rootColumn;
 
-    private PivotTableData() {
-        
+    @SuppressWarnings("unused")
+	private PivotTableData() {
     }
 
     public interface CellVisitor {

@@ -6,7 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.sigmah.server.Cookies;
+import org.sigmah.server.authentication.AuthCookieUtil;
 import org.sigmah.server.authentication.PasswordHelper;
 import org.sigmah.server.bootstrap.exception.IncompleteFormException;
 import org.sigmah.server.bootstrap.exception.InvalidKeyException;
@@ -72,7 +72,7 @@ public class ChangePasswordController extends AbstractController {
         changePassword(req, user);
 
         Authentication auth = createNewAuthToken(user);
-        Cookies.addAuthCookie(resp, auth, false);
+        AuthCookieUtil.addAuthCookie(resp, auth, false);
     }
 
 

@@ -11,13 +11,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.sigmah.server.Cookies;
+import org.sigmah.server.authentication.AuthCookieUtil;
 import org.sigmah.server.bootstrap.exception.NoValidAuthentication;
 import org.sigmah.server.bootstrap.model.HostPageModel;
 import org.sigmah.server.database.hibernate.dao.AuthenticationDAO;
 import org.sigmah.server.database.hibernate.dao.Transactional;
 import org.sigmah.server.database.hibernate.entity.Authentication;
 import org.sigmah.server.util.logging.LogException;
+import org.sigmah.shared.auth.AuthenticatedUser;
 
 import com.bedatadriven.rebar.appcache.server.UserAgentProvider;
 import com.google.inject.Inject;
@@ -41,7 +42,7 @@ public class HostController extends AbstractController {
         try {
             Authentication auth = getAuthentication(req);
             if("true".equals(req.getParameter("redirect"))) {
-                Cookies.addAuthCookie(resp, auth, false);
+                AuthCookieUtil.addAuthCookie(resp, auth, false);
                 resp.sendRedirect(HostController.ENDPOINT);
             } else {
                 HostPageModel model = new HostPageModel(auth, computeAppUrl(req));
@@ -66,7 +67,7 @@ public class HostController extends AbstractController {
     protected Authentication getAuthentication(HttpServletRequest request) throws NoValidAuthentication {
         String authToken = request.getParameter("auth");
         if(isEmpty(authToken)) {
-            authToken = getCookie(request, Cookies.AUTH_TOKEN_COOKIE);
+            authToken = getCookie(request, AuthenticatedUser.AUTH_TOKEN_COOKIE);
         }
         if (isEmpty(authToken)) {
             throw new NoValidAuthentication();

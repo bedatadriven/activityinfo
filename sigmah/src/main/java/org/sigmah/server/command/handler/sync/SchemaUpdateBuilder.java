@@ -88,6 +88,7 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
         		entityManager);
     }
 
+    @Override
     public SyncRegionUpdate build(User user, GetSyncRegionUpdates request) throws JSONException {
         
     	try {

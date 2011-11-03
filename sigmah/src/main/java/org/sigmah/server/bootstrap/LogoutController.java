@@ -11,7 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.sigmah.server.Cookies;
+import org.sigmah.shared.auth.AuthenticatedUser;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -35,6 +35,6 @@ public class LogoutController extends AbstractController {
     }
 
     protected void logUserOut(HttpServletResponse resp) {
-        removeCookie(resp, Cookies.AUTH_TOKEN_COOKIE);
+        removeCookie(resp, AuthenticatedUser.AUTH_TOKEN_COOKIE);
     }
 }
