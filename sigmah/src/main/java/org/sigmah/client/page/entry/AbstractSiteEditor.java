@@ -22,6 +22,7 @@ import org.sigmah.client.page.common.grid.GridView.SiteGridView;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.page.entry.SiteTreeGridPageState.TreeType;
 import org.sigmah.client.page.entry.editor.SiteFormPage;
+import org.sigmah.client.page.entry.place.ActivityDataEntryPlace;
 import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.BatchCommand;
 import org.sigmah.shared.command.Command;
@@ -182,7 +183,7 @@ public abstract class AbstractSiteEditor extends AbstractEditorGridPresenter<Sit
         }
 
         // Let everyone else know we have navigated
-        firePageEvent(new SiteGridPageState(currentActivity), le);
+        firePageEvent(new ActivityDataEntryPlace(currentActivity), le);
 
         // Select a site
         if (siteIdToSelectOnNextLoad != null) {
@@ -252,7 +253,7 @@ public abstract class AbstractSiteEditor extends AbstractEditorGridPresenter<Sit
         } else if (UIActions.list.equals(actionId)) {
         	eventBus.fireEvent(new NavigationEvent(
         			NavigationHandler.NavigationRequested, 
-        			new SiteGridPageState(currentActivity)));
+        			new ActivityDataEntryPlace(currentActivity)));
         }
     }
 

@@ -16,7 +16,7 @@ import org.sigmah.client.event.SiteEvent;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.NavigationHandler;
 import org.sigmah.client.page.common.toolbar.UIActions;
-import org.sigmah.client.page.entry.SiteGridPageState;
+import org.sigmah.client.page.entry.place.ActivityDataEntryPlace;
 import org.sigmah.shared.command.CreateSite;
 import org.sigmah.shared.command.UpdateSite;
 import org.sigmah.shared.command.result.CreateResult;
@@ -137,7 +137,7 @@ public class SiteFormPresenter  {
         } else if (UIActions.gotoGrid.equals(actionId)) {
         	eventBus.fireEvent(new NavigationEvent(
         			NavigationHandler.NavigationRequested, 
-        			new SiteGridPageState(0)));
+        			new ActivityDataEntryPlace(0)));
         }
     }
 

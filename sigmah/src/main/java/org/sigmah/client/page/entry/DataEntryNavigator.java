@@ -15,6 +15,8 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.nav.Link;
 import org.sigmah.client.page.common.nav.Navigator;
+import org.sigmah.client.page.entry.place.ActivityDataEntryPlace;
+import org.sigmah.client.page.entry.place.DatabaseDataEntryPlace;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.SchemaDTO;
@@ -34,7 +36,7 @@ public class DataEntryNavigator implements Navigator {
     }
 
     public boolean hasChildren(Link parent) {
-        return parent.getPageState() == null;
+        return parent.getChildCount() != 0;
     }
 
     public String getHeading() {
@@ -72,8 +74,9 @@ public class DataEntryNavigator implements Navigator {
         for (UserDatabaseDTO db : schema.getDatabases()) {
             if (db.getActivities().size() != 0) {
 
-                Link dbLink = Link.folderLabelled(db.getName())
-                        .usingKey(databaseKey(db))
+                Link dbLink = Link.to(new DatabaseDataEntryPlace(db))
+                        .labeled(db.getName())
+                		.usingKey(databaseKey(db))
                         .withIcon(IconImageBundle.ICONS.database())
                         .build();
 
@@ -81,7 +84,7 @@ public class DataEntryNavigator implements Navigator {
                 for (ActivityDTO activity : db.getActivities()) {
 
                     Link actLink = Link
-                            .to(new SiteGridPageState(activity))
+                            .to(new ActivityDataEntryPlace(activity))
                             .labeled(activity.getName())
                             .withIcon(IconImageBundle.ICONS.table()).build();
 

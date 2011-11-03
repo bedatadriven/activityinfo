@@ -28,7 +28,7 @@ import org.sigmah.client.mock.StateManagerStub;
 import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.common.grid.ConfirmCallback;
 import org.sigmah.client.page.common.toolbar.UIActions;
-import org.sigmah.client.page.entry.SiteGridPageState;
+import org.sigmah.client.page.entry.place.ActivityDataEntryPlace;
 import org.sigmah.shared.command.CreateEntity;
 import org.sigmah.shared.command.Delete;
 import org.sigmah.shared.command.GetSchema;
@@ -124,7 +124,7 @@ public class DesignTest {
 
         record.set("name", "New Name");
 
-        designer.requestToNavigateAway(new SiteGridPageState(), new NavigationCallback() {
+        designer.requestToNavigateAway(new ActivityDataEntryPlace(), new NavigationCallback() {
             public void onDecided(boolean allowed) {
 
             }

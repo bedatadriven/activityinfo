@@ -33,6 +33,8 @@ import org.sigmah.client.mock.DummyData;
 import org.sigmah.client.mock.MockEventBus;
 import org.sigmah.client.mock.StateManagerStub;
 import org.sigmah.client.page.common.toolbar.UIActions;
+import org.sigmah.client.page.entry.place.ActivityDataEntryPlace;
+import org.sigmah.client.page.entry.place.DataEntryPlace;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.command.UpdateSite;
@@ -81,7 +83,7 @@ public class SiteGridTest {
 
         // VERIFY that command is correct
 
-        presenter.go(new SiteGridPageState(91), schema.getActivityById(91));
+        presenter.go(new ActivityDataEntryPlace(91), schema.getActivityById(91));
 
         GetSites cmd = service.getLastExecuted(GetSites.class);
         assertThat(cmd.getFilter().getRestrictions(DimensionType.Activity), hasSingleValueEqualTo(91));
@@ -137,7 +139,7 @@ public class SiteGridTest {
 
         // navigate to NFI data entry
         // verify that the appropriate actions were enabled correctly
-        presenter.go(new SiteGridPageState(91), schema.getActivityById(91));
+        presenter.go(new ActivityDataEntryPlace(91), schema.getActivityById(91));
 
         verify(view);
 
@@ -199,7 +201,7 @@ public class SiteGridTest {
         view.setActionEnabled(UIActions.export, true);
         replay(view);
 
-        presenter.go(new SiteGridPageState(91), schema.getActivityById(91));
+        presenter.go(new ActivityDataEntryPlace(91), schema.getActivityById(91));
 
         verify(view);
     }
@@ -229,7 +231,7 @@ public class SiteGridTest {
 
         // VERIFY that the export is not enabled
 
-        presenter.go(new SiteGridPageState(91), schema.getActivityById(91));
+        presenter.go(new ActivityDataEntryPlace(91), schema.getActivityById(91));
 
         verify(view);
     }
@@ -258,7 +260,7 @@ public class SiteGridTest {
 
         // VERIFY that a navigation request result in command load
 
-        SiteGridPageState firstPlace = new SiteGridPageState(schema.getActivityById(91));
+        DataEntryPlace firstPlace = new ActivityDataEntryPlace(schema.getActivityById(91));
         firstPlace.setPageNum(2);
         firstPlace.setSortInfo(new SortInfo("location", Style.SortDir.DESC));
 
@@ -284,7 +286,7 @@ public class SiteGridTest {
 
         // verify that a navigation request for a different activity returns false
 
-        Assert.assertFalse(presenter.navigate(new SiteGridPageState(92)));
+        Assert.assertFalse(presenter.navigate(new ActivityDataEntryPlace(92)));
 
     }
 
@@ -310,7 +312,7 @@ public class SiteGridTest {
         // VERIFY that a new site triggers the correct command AND
         //        that the site is selected upon load
 
-        presenter.go(new SiteGridPageState(91), DummyData.PEAR().getActivityById(91));
+        presenter.go(new ActivityDataEntryPlace(91), DummyData.PEAR().getActivityById(91));
 
         resetToDefault(view);
         view.setSelection(3);
@@ -349,7 +351,7 @@ public class SiteGridTest {
         SiteEditor presenter = new SiteEditor(eventBus, service, new StateManagerStub(),
                 view);
 
-        presenter.go(new SiteGridPageState(91), schema.getActivityById(91));
+        presenter.go(new ActivityDataEntryPlace(91), schema.getActivityById(91));
 
         //VERIFY that an external chnage is propageted to the store
         SiteDTO site = DummyData.PEAR_Sites().get(4);
@@ -382,7 +384,7 @@ public class SiteGridTest {
         SiteEditor editor = new SiteEditor(new MockEventBus(), service, new StateManagerStub(),
                 view);
 
-        editor.go(new SiteGridPageState(91), schema.getActivityById(91));
+        editor.go(new ActivityDataEntryPlace(91), schema.getActivityById(91));
 
 
         //VERIFY that an inline change is results in an update entity call

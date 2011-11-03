@@ -76,6 +76,11 @@ public class ActionToolBar extends ToolBar implements Listener<ButtonEvent> {
         return button;
     }
     
+    public ToggleButtonBuilder addToggleButton() {
+    	return new ToggleButtonBuilder();
+    }
+    
+    
     public void addCreateButton() {
     	this.addButton = addButton(UIActions.add, I18N.CONSTANTS.addItem(), IconImageBundle.ICONS.add());
  
@@ -210,4 +215,34 @@ public class ActionToolBar extends ToolBar implements Listener<ButtonEvent> {
         addButton(UIActions.showLockedPeriods, I18N.CONSTANTS.timeLocks(), IconImageBundle.ICONS.lockedPeriod());
 	}
 
+	public class ToggleButtonBuilder {
+		
+		private ToggleButton button;
+		
+		public ToggleButtonBuilder() {
+			button = new ToggleButton();
+			add(button);
+		}
+		
+		public ToggleButtonBuilder withText(String text) {
+			button.setText(text);
+			return this;
+		}
+		
+		public ToggleButtonBuilder withIcon(AbstractImagePrototype icon) {
+			button.setIcon(icon);
+			return this;
+		}
+		
+		public ToggleButtonBuilder withListener(SelectionListener<ButtonEvent> listener) {
+			button.addSelectionListener(listener);
+			return this;
+		}
+		
+		public ToggleButtonBuilder inGroup(String group) {
+			button.setToggleGroup(group);
+			return this;
+		}
+	}
+	
 }

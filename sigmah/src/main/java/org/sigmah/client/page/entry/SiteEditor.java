@@ -16,6 +16,8 @@ import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.common.grid.GridPresenter;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.page.entry.editor.PrintDataEntryForm;
+import org.sigmah.client.page.entry.place.ActivityDataEntryPlace;
+import org.sigmah.client.page.entry.place.DataEntryPlace;
 import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.BatchCommand;
 import org.sigmah.shared.command.Command;
@@ -49,14 +51,12 @@ public class SiteEditor extends AbstractSiteEditor implements Page, GridPresente
 	}
 	
     public static final int PAGE_SIZE = 25;
-    public static final PageId ID = new PageId("site-grid");
-
     protected ListStore<SiteDTO> listStore;
     protected PagingCmdLoader<SiteResult> pagingCmdLoader;
 
     private Integer siteIdToSelectOnNextLoad;
 	private View view;
-	private SiteGridPageState place;
+	private DataEntryPlace place;
 
     @Inject
     public SiteEditor(EventBus eventBus, Dispatcher service, StateProvider stateMgr, final View view) {
@@ -110,14 +110,14 @@ public class SiteEditor extends AbstractSiteEditor implements Page, GridPresente
 
     @Override
     public PageId getPageId() {
-        return ID;
+        return DataEntryPage.PAGE_ID;
     }
 
     private String stateId(String suffix) {
         return "sitegridpage." + currentActivity.getId();
     }
 
-    public void go(SiteGridPageState place, ActivityDTO activity) {
+    public void go(DataEntryPlace place, ActivityDTO activity) {
     	this.currentActivity=activity;
         initLoaderDefaults(pagingCmdLoader, place, new SortInfo("date2", Style.SortDir.DESC));
         view.init(this, currentActivity, listStore);
@@ -127,11 +127,11 @@ public class SiteEditor extends AbstractSiteEditor implements Page, GridPresente
 
 	@Override
     public boolean navigate(final PageState place) {
-        if (!(place instanceof SiteGridPageState)) {
+        if (!(place instanceof ActivityDataEntryPlace)) {
             return false;
         }
 
-        final SiteGridPageState gridPlace = (SiteGridPageState) place;
+        final ActivityDataEntryPlace gridPlace = (ActivityDataEntryPlace) place;
 
         if (currentActivity.getId() != gridPlace.getActivityId()) {
             return false;
@@ -151,7 +151,7 @@ public class SiteEditor extends AbstractSiteEditor implements Page, GridPresente
         view.setActionEnabled(UIActions.export, result.getTotalLength() != 0);
 
         // Let everyone else know we have navigated
-        firePageEvent(new SiteGridPageState(currentActivity), le);
+        firePageEvent(new ActivityDataEntryPlace(currentActivity), le);
 
         // Select a site
         if (siteIdToSelectOnNextLoad != null) {
@@ -236,7 +236,7 @@ public class SiteEditor extends AbstractSiteEditor implements Page, GridPresente
         pagingCmdLoader.load();		
 	}
 
-	public SiteGridPageState getPlace() {
+	public DataEntryPlace getPlace() {
 		return place;
 	}
 }

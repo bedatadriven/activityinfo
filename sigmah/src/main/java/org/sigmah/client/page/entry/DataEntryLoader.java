@@ -18,6 +18,7 @@ import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.PageStateSerializer;
 import org.sigmah.client.page.common.filter.FilterPanel;
 import org.sigmah.client.page.entry.editor.SiteFormPage;
+import org.sigmah.client.page.entry.place.DataEntryPlaceParser;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.SchemaDTO;
@@ -30,7 +31,7 @@ import com.google.inject.Provider;
 
 public class DataEntryLoader implements PageLoader {
     private final AppInjector injector;
-    private final Provider<DataEntryFrameSet> dataEntryFrameSetProvider;
+    private final Provider<DataEntryPage> dataEntryPageProvider;
     private final Provider<SiteFormPage> siteFormProvider;
     private FilterPanel filterPanelSet = null;
     
@@ -38,22 +39,22 @@ public class DataEntryLoader implements PageLoader {
     public DataEntryLoader(AppInjector injector, 
     		NavigationHandler pageManager, 
     		PageStateSerializer placeSerializer,
-    		Provider<DataEntryFrameSet> dataEntryFrameSetProvider, 
+    		Provider<DataEntryPage> dataEntryPageProvider, 
     		Provider<SiteFormPage> siteFormProvider) {
     	
         this.injector = injector;
-        this.dataEntryFrameSetProvider = dataEntryFrameSetProvider;
+        this.dataEntryPageProvider = dataEntryPageProvider;
         this.siteFormProvider=siteFormProvider;
 
         pageManager.registerPageLoader(Frames.DataEntryFrameSet, this);
         
-        pageManager.registerPageLoader(SiteEditor.ID, this);
+        pageManager.registerPageLoader(DataEntryPage.PAGE_ID, this);
         pageManager.registerPageLoader(SiteTreeGridPageState.SITE_TREE_VIEW, this);
         pageManager.registerPageLoader(SiteFormPage.EDIT_PAGE_ID, this);
         pageManager.registerPageLoader(SiteFormPage.NEW_PAGE_ID, this);
         
-        placeSerializer.registerParser(SiteEditor.ID, new SiteGridPageState.Parser());
-        placeSerializer.registerParser(SiteTreeGridPageState.SITE_TREE_VIEW, new SiteTreeGridPageState.Parser());
+        placeSerializer.registerParser(DataEntryPage.PAGE_ID, new DataEntryPlaceParser());
+//        placeSerializer.registerParser(SiteTreeGridPageState.SITE_TREE_VIEW, new SiteTreeGridPageState.Parser());
         placeSerializer.registerParser(SiteFormPage.EDIT_PAGE_ID, new SiteFormPage.EditPageStateParser());
         placeSerializer.registerParser(SiteFormPage.NEW_PAGE_ID, new SiteFormPage.NewStateParser());
     }
@@ -66,8 +67,10 @@ public class DataEntryLoader implements PageLoader {
                 if (Frames.DataEntryFrameSet.equals(pageId)) {
                     loadFrame(pageState, callback);
                     
-                } else if  (SiteTreeGridPageState.SITE_TREE_VIEW.equals(pageId) || pageId.equals(SiteEditor.ID)) {
-                    loadSiteGrid(pageState, callback);
+                } else if  (SiteTreeGridPageState.SITE_TREE_VIEW.equals(pageId) || pageId.equals(DataEntryPage.PAGE_ID)) {
+                    DataEntryPage dataEntryPage = dataEntryPageProvider.get();
+                    dataEntryPage.navigate(pageState);
+					callback.onSuccess(dataEntryPage);
                     
                 } else if (SiteFormPage.EDIT_PAGE_ID.equals(pageId) || SiteFormPage.NEW_PAGE_ID.equals(pageId)) {
                 	SiteFormPage siteFormPage = siteFormProvider.get();
@@ -84,97 +87,89 @@ public class DataEntryLoader implements PageLoader {
     }
 
     private void loadFrame(PageState place, AsyncCallback<Page> callback) {
-    	DataEntryFrameSet frameSet = dataEntryFrameSetProvider.get();
-    	this.filterPanelSet = frameSet.getFilterPanelSet();
-		callback.onSuccess(frameSet);
+  
     }
 
     protected void loadSiteGrid(final PageState place, final AsyncCallback<Page> callback) {
-        injector.getService().execute(new GetSchema(), null, new Got<SchemaDTO>() {
-            @Override
-            public void got(SchemaDTO schema) {
-				SitePageState sitePlace = (SitePageState) place;
-            	if (sitePlace != null) {
-                	setDefaultActivityId(sitePlace, schema);
-            	}
-                ActivityDTO activity = schema.getActivityById(sitePlace.getActivityId());
+//				SitePageState sitePlace = (SitePageState) place;
+//            	if (sitePlace != null) {
+//                	setDefaultActivityId(sitePlace, schema);
+//            	}
+//                ActivityDTO activity = schema.getActivityById(sitePlace.getActivityId());
+//
+//                AbstractSiteGrid abstractSiteGrid = null;
+//                AbstractSiteEditor abstractSiteEditor = null;
+//                SiteEditor siteEditor = null;
+//                SiteTreeEditor siteTreeEditor = null;
+//                
+//                if (place instanceof DataEntryPageState) {
+//                	SiteGrid grid = new SiteGrid(true);
+//                	siteEditor = new SiteEditor(injector.getEventBus(), 
+//                			injector.getService(),
+//                			injector.getStateManager(), 
+//                			grid);
+//                	abstractSiteGrid = grid;
+//                	abstractSiteEditor = siteEditor;
+//                }
+//                
+//                if (place instanceof SiteTreeGridPageState) {
+//                	SiteTreeGrid grid = new SiteTreeGrid(true);
+//                	siteTreeEditor = new SiteTreeEditor(injector.getEventBus(), 
+//                			injector.getService(),
+//                			injector.getStateManager(),
+//                			grid);
+//                	abstractSiteGrid = grid;
+//                	abstractSiteEditor = siteTreeEditor;
+//                }
+//            	abstractSiteEditor.bindFilterPanel(filterPanelSet);
+//
+//                addDetailsOrReportingTabs(activity, abstractSiteGrid, abstractSiteEditor);
+//                
+//                SiteMap map = new SiteMap(injector.getEventBus(), injector.getService(), activity);
+//                abstractSiteEditor.addSubComponent(map);
+//                abstractSiteGrid.addSidePanel(I18N.CONSTANTS.map(), IconImageBundle.ICONS.map(), map);
+//
+//                if (siteEditor != null) {
+//                	siteEditor.go((DataEntryPageState) place, activity);
+//                } else if (siteTreeEditor != null) {
+//                	siteTreeEditor.go((SiteTreeGridPageState) place, activity);
+//                }
+            	
 
-                AbstractSiteGrid abstractSiteGrid = null;
-                AbstractSiteEditor abstractSiteEditor = null;
-                SiteEditor siteEditor = null;
-                SiteTreeEditor siteTreeEditor = null;
-                
-                if (place instanceof SiteGridPageState) {
-                	SiteGrid grid = new SiteGrid(true);
-                	siteEditor = new SiteEditor(injector.getEventBus(), 
-                			injector.getService(),
-                			injector.getStateManager(), 
-                			grid);
-                	abstractSiteGrid = grid;
-                	abstractSiteEditor = siteEditor;
-                }
-                
-                if (place instanceof SiteTreeGridPageState) {
-                	SiteTreeGrid grid = new SiteTreeGrid(true);
-                	siteTreeEditor = new SiteTreeEditor(injector.getEventBus(), 
-                			injector.getService(),
-                			injector.getStateManager(),
-                			grid);
-                	abstractSiteGrid = grid;
-                	abstractSiteEditor = siteTreeEditor;
-                }
-            	abstractSiteEditor.bindFilterPanel(filterPanelSet);
+   //}
+           
 
-                addDetailsOrReportingTabs(activity, abstractSiteGrid, abstractSiteEditor);
-                
-                SiteMap map = new SiteMap(injector.getEventBus(), injector.getService(), activity);
-                abstractSiteEditor.addSubComponent(map);
-                abstractSiteGrid.addSidePanel(I18N.CONSTANTS.map(), IconImageBundle.ICONS.map(), map);
+//			private void setDefaultActivityId(SitePageState sitePlace, SchemaDTO schema) {
+//                if (sitePlace.getActivityId() == 0) {
+//                	if (schema.getFirstActivity() != null) {
+//                		sitePlace.setActivityId(schema.getFirstActivity().getId());
+//                	}
+//                }
+//			}
+//
+//			private void addDetailsOrReportingTabs(ActivityDTO activity, AbstractSiteGrid abstractSiteGrid, AbstractSiteEditor editor) {
+//				if (activity.getReportingFrequency() == ActivityDTO.REPORT_MONTHLY) {
+//                    MonthlyGrid monthlyGrid = new MonthlyGrid(activity);
+//                    MonthlyTab monthlyTab = new MonthlyTab(monthlyGrid);
+//                    MonthlyPresenter monthlyPresenter = new MonthlyPresenter(
+//                            injector.getEventBus(),
+//                            injector.getService(),
+//                            injector.getStateManager(),
+//                            activity, monthlyGrid);
+//                    editor.addSubComponent(monthlyPresenter);
+//                    abstractSiteGrid.addSouthTab(monthlyTab);
+//                } else {
+//                    DetailsTab detailsTab = new DetailsTab();
+//                    DetailsPresenter detailsPresenter = new DetailsPresenter(
+//                            injector.getEventBus(),
+//                            activity,
+//                            injector.getMessages(),
+//                            detailsTab);
+//                    abstractSiteGrid.addSouthTab(detailsTab);
+//                    editor.addSubComponent(detailsPresenter);
+//                }
+//			}
 
-                if (siteEditor != null) {
-                	siteEditor.go((SiteGridPageState) place, activity);
-                } else if (siteTreeEditor != null) {
-                	siteTreeEditor.go((SiteTreeGridPageState) place, activity);
-                }
-                callback.onSuccess(abstractSiteEditor);
-            }
-
-			private void setDefaultActivityId(SitePageState sitePlace, SchemaDTO schema) {
-                if (sitePlace.getActivityId() == 0) {
-                	if (schema.getFirstActivity() != null) {
-                		sitePlace.setActivityId(schema.getFirstActivity().getId());
-                	}
-                }
-			}
-
-			private void addDetailsOrReportingTabs(ActivityDTO activity, AbstractSiteGrid abstractSiteGrid, AbstractSiteEditor editor) {
-				if (activity.getReportingFrequency() == ActivityDTO.REPORT_MONTHLY) {
-                    MonthlyGrid monthlyGrid = new MonthlyGrid(activity);
-                    MonthlyTab monthlyTab = new MonthlyTab(monthlyGrid);
-                    MonthlyPresenter monthlyPresenter = new MonthlyPresenter(
-                            injector.getEventBus(),
-                            injector.getService(),
-                            injector.getStateManager(),
-                            activity, monthlyGrid);
-                    editor.addSubComponent(monthlyPresenter);
-                    abstractSiteGrid.addSouthTab(monthlyTab);
-                } else {
-                    DetailsTab detailsTab = new DetailsTab();
-                    DetailsPresenter detailsPresenter = new DetailsPresenter(
-                            injector.getEventBus(),
-                            activity,
-                            injector.getMessages(),
-                            detailsTab);
-                    abstractSiteGrid.addSouthTab(detailsTab);
-                    editor.addSubComponent(detailsPresenter);
-                }
-			}
-
-            @Override
-            public void onFailure(Throwable caught) {
-                callback.onFailure(caught);
-            }
-        });
     }
 
 }

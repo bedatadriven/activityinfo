@@ -8,6 +8,8 @@ package org.sigmah.client.page.entry;
 import org.junit.Assert;
 import org.junit.Test;
 import org.sigmah.client.page.PageStateSerializer;
+import org.sigmah.client.page.entry.place.ActivityDataEntryPlace;
+import org.sigmah.client.page.entry.place.DataEntryPlaceParser;
 import org.sigmah.shared.dto.ActivityDTO;
 
 import com.extjs.gxt.ui.client.Style;
@@ -22,13 +24,13 @@ public class SiteGridPlaceParserTest {
     public void test() {
 
         PageStateSerializer pmgr = new PageStateSerializer();
-        pmgr.registerParser(SiteEditor.ID, new SiteGridPageState.Parser());
+        pmgr.registerParser(DataEntryPage.PAGE_ID, new DataEntryPlaceParser());
 
-        SiteGridPageState place = new SiteGridPageState(new ActivityDTO(99, "NFI Dist"));
+        ActivityDataEntryPlace place = new ActivityDataEntryPlace(new ActivityDTO(99, "NFI Dist"));
 
         String token = pmgr.serialize(place);
 
-        SiteGridPageState pplace = (SiteGridPageState)pmgr.deserialize(token);
+        ActivityDataEntryPlace pplace = (ActivityDataEntryPlace)pmgr.deserialize(token);
 
         Assert.assertEquals(place.getActivityId(), pplace.getActivityId());
 
@@ -38,9 +40,9 @@ public class SiteGridPlaceParserTest {
     public void testHarder() {
 
         PageStateSerializer pmgr = new PageStateSerializer();
-        pmgr.registerParser(SiteEditor.ID, new SiteGridPageState.Parser());
+        pmgr.registerParser(DataEntryPage.PAGE_ID, new DataEntryPlaceParser());
 
-        SiteGridPageState place = new SiteGridPageState(new ActivityDTO(99, "NFI Dist"));
+        ActivityDataEntryPlace place = new ActivityDataEntryPlace(new ActivityDTO(99, "NFI Dist"));
         place.setPageNum(3);
         place.setSortInfo(new SortInfo("date2", Style.SortDir.DESC));
 
@@ -48,7 +50,7 @@ public class SiteGridPlaceParserTest {
         
         System.out.println(token);
 
-        SiteGridPageState pplace = (SiteGridPageState)pmgr.deserialize(token);
+        ActivityDataEntryPlace pplace = (ActivityDataEntryPlace)pmgr.deserialize(token);
 
         Assert.assertEquals(place.getActivityId(), pplace.getActivityId());
 
