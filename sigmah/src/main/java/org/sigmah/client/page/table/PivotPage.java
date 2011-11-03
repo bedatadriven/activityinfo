@@ -25,10 +25,10 @@ import org.sigmah.client.page.common.filter.PartnerFilterPanel;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.page.table.drilldown.DrillDownEditor;
 import org.sigmah.client.page.table.drilldown.DrillDownGrid;
-import org.sigmah.client.util.DateUtilGWTImpl;
+import org.sigmah.client.util.date.DateUtilGWTImpl;
 import org.sigmah.client.util.state.StateProvider;
+import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.command.GetSchema;
-import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
@@ -92,28 +92,28 @@ import com.google.inject.Inject;
  */
 public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 
-	protected EventBus eventBus;
-	protected Dispatcher service;
-	protected StateProvider stateMgr;
+	private EventBus eventBus;
+	private Dispatcher service;
+	private StateProvider stateMgr;
 
-	protected PivotPresenter presenter;
+	private PivotPresenter presenter;
 
-	protected ListStore<Dimension> rowDims;
-	protected ListStore<Dimension> colDims;
+	private ListStore<Dimension> rowDims;
+	private ListStore<Dimension> colDims;
 
-	protected TreeLoader<ModelData> loader;
-	protected TreeStore<ModelData> dimensionStore;
-	protected TreePanel<ModelData> treePanel;
+	private TreeLoader<ModelData> loader;
+	private TreeStore<ModelData> dimensionStore;
+	private TreePanel<ModelData> treePanel;
 
-	protected ContentPanel filterPane;
-	protected IndicatorTreePanel indicatorPanel;
-	protected AdminFilterPanel adminPanel;
-	protected DateRangePanel datePanel;
-	protected PartnerFilterPanel partnerPanel;
-	protected LayoutContainer center;
-	protected PivotGridPanel gridContainer;
-	protected ToolBar gridToolBar;
-	protected DrillDownGrid drilldownPanel;
+	private ContentPanel filterPane;
+	private IndicatorTreePanel indicatorPanel;
+	private AdminFilterPanel adminPanel;
+	private DateRangePanel datePanel;
+	private PartnerFilterPanel partnerPanel;
+	private LayoutContainer center;
+	private PivotGridPanel gridContainer;
+	private ToolBar gridToolBar;
+	private DrillDownGrid drilldownPanel;
 	private Listener<PivotCellEvent> initialDrillDownListener;
 	private FilterPanelSet filterPanelSet;
 
@@ -383,7 +383,7 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 		center.add(gridContainer, new BorderLayoutData(Style.LayoutRegion.CENTER));
 	}
 
-	protected void createDrilldownPanel(PivotCellEvent event) {
+	private void createDrilldownPanel(PivotCellEvent event) {
 		BorderLayoutData layout = new BorderLayoutData(Style.LayoutRegion.SOUTH);
 		layout.setSplit(true);
 		layout.setCollapsible(true);

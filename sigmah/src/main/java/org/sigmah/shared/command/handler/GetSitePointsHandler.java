@@ -8,11 +8,11 @@ package org.sigmah.shared.command.handler;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.command.GetSitePoints;
 import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.command.result.SitePointList;
 import org.sigmah.shared.command.result.SiteResult;
-import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.dto.SitePointDTO;
 import org.sigmah.shared.report.model.DimensionType;

@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Locale;
 
 import org.sigmah.server.command.DispatcherSync;
+import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.command.PivotSites;
 import org.sigmah.shared.command.PivotSites.PivotResult;
 import org.sigmah.shared.command.handler.pivot.PivotTableDataBuilder;
-import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.report.content.PivotTableData;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.PivotReportElement;

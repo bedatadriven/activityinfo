@@ -16,8 +16,8 @@ import org.sigmah.client.page.common.filter.FilterToolBar.ApplyFilterEvent;
 import org.sigmah.client.page.common.filter.FilterToolBar.ApplyFilterHandler;
 import org.sigmah.client.page.common.filter.FilterToolBar.RemoveFilterEvent;
 import org.sigmah.client.page.common.filter.FilterToolBar.RemoveFilterHandler;
+import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.command.GetSchema;
-import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.report.model.DimensionType;
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 /**
- * UI Component for editing Admin restrictions on a {@link org.sigmah.shared.dao.Filter}
+ * UI Component for editing Admin restrictions on a {@link org.sigmah.shared.command.Filter}
  *
  * @author Alex Bertram
  */

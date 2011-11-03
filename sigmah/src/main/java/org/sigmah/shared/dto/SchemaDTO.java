@@ -14,11 +14,11 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 
 /**
- * Aggregate DTO for all {@link org.sigmah.shared.domain.UserDatabase}s visible
+ * Aggregate DTO for all {@link org.sigmah.server.database.hibernate.entity.UserDatabase}s visible
  * to the client, along with the UserDatabase's
- * {@link org.sigmah.shared.domain.Country Country},
- * and {@link org.sigmah.shared.domain.Attribute} and
- * {@link org.sigmah.shared.domain.Indicator}
+ * {@link org.sigmah.server.database.hibernate.entity.Country Country},
+ * and {@link org.sigmah.server.database.hibernate.entity.Attribute} and
+ * {@link org.sigmah.server.database.hibernate.entity.Indicator}
  *
  * @author Alex Bertram
  */

@@ -8,23 +8,23 @@ public class GoogleBaseMap extends BaseMap {
 	/**
 	 *  specifies a standard roadmap image, as is normally shown on the Google Maps website
 	 */
-	public static GoogleBaseMap ROADMAP = new GoogleBaseMap("Google.ROADMAP", "roadmap");
+	public static final GoogleBaseMap ROADMAP = new GoogleBaseMap("Google.ROADMAP", "roadmap");
 	
 	/**
 	 *  specifies a satellite image.
 	 */
-	public static GoogleBaseMap SATELLITE = new GoogleBaseMap("Google.SATELLITE", "satellite");
+	public static final GoogleBaseMap SATELLITE = new GoogleBaseMap("Google.SATELLITE", "satellite");
 	
 	/**
 	 * specifies a physical relief map image, showing terrain and vegetation.
 	 */
-	public static GoogleBaseMap TERRAIN = new GoogleBaseMap("Google.TERRAIN", "terrain");
+	public static final GoogleBaseMap TERRAIN = new GoogleBaseMap("Google.TERRAIN", "terrain");
 
 	/**
 	 * specifies a hybrid of the satellite and roadmap image, showing a transparent layer of
 	 * major streets and place names on the satellite image.
 	 */
-	public static GoogleBaseMap HYBRID = new GoogleBaseMap("Google.HYBRID", "hybrid");
+	public static final GoogleBaseMap HYBRID = new GoogleBaseMap("Google.HYBRID", "hybrid");
 	
 	private String id;
 	private String formatId;
@@ -68,12 +68,15 @@ public class GoogleBaseMap extends BaseMap {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		GoogleBaseMap other = (GoogleBaseMap) obj;
 		return id.equals(other.id);
 	}

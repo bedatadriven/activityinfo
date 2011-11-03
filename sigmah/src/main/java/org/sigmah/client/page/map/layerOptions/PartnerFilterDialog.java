@@ -7,9 +7,9 @@ import java.util.Set;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.command.GetPartnersWithSites;
 import org.sigmah.shared.command.result.PartnerResult;
-import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.report.model.DimensionType;
 

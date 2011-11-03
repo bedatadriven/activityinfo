@@ -6,7 +6,7 @@ import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.common.grid.GridPresenter;
 import org.sigmah.client.util.state.StateProvider;
-import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.dto.ActivityDTO;
 
 import com.extjs.gxt.ui.client.data.Loader;

@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.sigmah.shared.map.HasLatLng;
 import org.sigmah.shared.report.model.TableColumn;
 
 public class TableData implements Serializable {
@@ -85,7 +84,7 @@ public class TableData implements Serializable {
      * row in the table.
      *
      */
-    public static class Row implements HasLatLng, Serializable {
+    public static class Row implements Serializable {
 
         private Row() {
 
@@ -106,15 +105,12 @@ public class TableData implements Serializable {
              return id;
          }
 
-         @Override
         public double getLatitude() {
             return y;
         }
-        @Override
         public double getLongitude() {
             return x;
         }
-        @Override
         public boolean hasLatLong() {
             return hasXY;
         }

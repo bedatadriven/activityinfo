@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.inject.Inject;
 
 /**
- * UI component that provides a hierarchial
+ * UI component that provides a heirarchial
  * list of navigation links.
  *
  * To use, you must implement {@link org.sigmah.client.page.common.nav.Navigator},
@@ -37,14 +37,14 @@ import com.google.inject.Inject;
  *
  */
 public class NavigationPanel extends ContentPanel {
-    protected final EventBus eventBus;
+    private final EventBus eventBus;
 
-    protected TreePanel<Link> tree;
-    protected TreeLoader<Link> loader;
-    protected TreeStore<Link> store;
+    private TreePanel<Link> tree;
+    private TreeLoader<Link> loader;
+    private TreeStore<Link> store;
 
-    protected Listener<NavigationEvent> navListener;
-    protected Listener<BaseEvent> changeListener;
+    private Listener<NavigationEvent> navListener;
+    private Listener<BaseEvent> changeListener;
 
     @Inject
     public NavigationPanel(final EventBus eventBus, final Navigator navigator) {
@@ -106,7 +106,6 @@ public class NavigationPanel extends ContentPanel {
         eventBus.addListener(AppEvents.SchemaChanged, changeListener);
 
         this.add(tree);
-       
     }
     
     public void shutdown() {

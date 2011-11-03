@@ -6,7 +6,6 @@
 package org.sigmah.shared.command;
 
 import org.sigmah.shared.command.result.AdminEntityResult;
-import org.sigmah.shared.dao.Filter;
 
 /**
  * Retrieves a list of admin entities from the server. 
@@ -82,24 +81,31 @@ public class GetAdminEntities extends GetListCommand<AdminEntityResult> {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		GetAdminEntities other = (GetAdminEntities) obj;
 		if (filter == null) {
-			if (other.filter != null)
+			if (other.filter != null) {
 				return false;
-		} else if (!filter.equals(other.filter))
+			}
+		} else if (!filter.equals(other.filter)) {
 			return false;
+		}
 		if (levelId == null) {
-			if (other.levelId != null)
+			if (other.levelId != null) {
 				return false;
-		} else if (!levelId.equals(other.levelId))
+			}
+		} else if (!levelId.equals(other.levelId)) {
 			return false;
+		}
 		if (parentId == null) {
-			if (other.parentId != null)
+			if (other.parentId != null) {
 				return false;
-		} else if (!parentId.equals(other.parentId))
+			}
+		} else if (!parentId.equals(other.parentId)) {
 			return false;
+		}
 		return true;
 	}
 

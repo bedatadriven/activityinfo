@@ -16,12 +16,12 @@ import org.sigmah.shared.report.content.PieMapMarker;
 import org.sigmah.shared.report.content.Point;
 
 public class PointValue {
-    public SiteDTO site;
-    public MapSymbol symbol;
-    public double value;
-    public Point px;
-    public Rectangle iconRect;
-    public List<PieMapMarker.SliceValue> slices;
+    private SiteDTO site;
+    private MapSymbol symbol;
+    private double value;
+    private Point px;
+    private Rectangle iconRect;
+    private List<PieMapMarker.SliceValue> slices;
 	private Map<Integer, Integer> adminMembership = new HashMap<Integer, Integer>();
 
     public PointValue() {
@@ -29,22 +29,22 @@ public class PointValue {
 
     public PointValue(SiteDTO site, MapSymbol symbol, double value, Point px) {
         this.site = site;
-        this.symbol = symbol;
-        this.value = value;
-        this.px = px;
+        this.setSymbol(symbol);
+        this.setValue(value);
+        this.setPx(px);
     }
     
     public PointValue(SiteDTO site, Point px, Rectangle iconRect) {
         this.site = site;
-        this.px = px;
-        this.iconRect = iconRect;
-        this.value = 1;
+        this.setPx(px);
+        this.setIconRect(iconRect);
+        this.setValue(1);
     }
     
     public PointValue(SiteDTO site, Point px, Rectangle iconRect, double value) {
     	this(site, px, iconRect);
     	
-        this.value = value;
+        this.setValue(value);
     }
 
 	public void setAdminMembership(Map<Integer, Integer> adminMembership) {
@@ -69,11 +69,59 @@ public class PointValue {
 	}
 
 	public boolean hasPoint() {
-		return px != null;
+		return getPx() != null;
 	}
 
 	public Point getPoint() {
+		return getPx();
+	}
+
+	public SiteDTO getSite() {
+		return site;
+	}
+
+	public void setSite(SiteDTO site) {
+		this.site = site;
+	}
+
+	public MapSymbol getSymbol() {
+		return symbol;
+	}
+
+	public void setSymbol(MapSymbol symbol) {
+		this.symbol = symbol;
+	}
+
+	public double getValue() {
+		return value;
+	}
+
+	public void setValue(double value) {
+		this.value = value;
+	}
+
+	public Point getPx() {
 		return px;
+	}
+
+	public void setPx(Point px) {
+		this.px = px;
+	}
+
+	public Rectangle getIconRect() {
+		return iconRect;
+	}
+
+	public void setIconRect(Rectangle iconRect) {
+		this.iconRect = iconRect;
+	}
+
+	public List<PieMapMarker.SliceValue> getSlices() {
+		return slices;
+	}
+
+	public void setSlices(List<PieMapMarker.SliceValue> slices) {
+		this.slices = slices;
 	}
 
 }

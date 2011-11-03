@@ -4,7 +4,7 @@ import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.filter.FilterPanelSet;
-import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.report.model.DimensionType;
 
 import com.extjs.gxt.ui.client.widget.ContentPanel;

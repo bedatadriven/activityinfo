@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.report.model.clustering.AdministrativeLevelClustering;
 import org.sigmah.shared.report.model.clustering.AutomaticClustering;
 import org.sigmah.shared.report.model.clustering.Clustering;

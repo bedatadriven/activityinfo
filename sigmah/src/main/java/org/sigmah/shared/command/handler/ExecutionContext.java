@@ -1,15 +1,15 @@
 package org.sigmah.shared.command.handler;
 
+import org.sigmah.shared.auth.AuthenticatedUser;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.domain.User;
 
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface ExecutionContext {
 
-	User getUser();
+	AuthenticatedUser getUser();
 
 	/**
 	 * 

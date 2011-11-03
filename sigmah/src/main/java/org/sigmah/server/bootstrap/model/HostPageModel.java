@@ -5,7 +5,7 @@
 
 package org.sigmah.server.bootstrap.model;
 
-import org.sigmah.server.domain.Authentication;
+import org.sigmah.server.database.hibernate.entity.Authentication;
 
 public class HostPageModel extends PageModel {
     private Authentication auth;

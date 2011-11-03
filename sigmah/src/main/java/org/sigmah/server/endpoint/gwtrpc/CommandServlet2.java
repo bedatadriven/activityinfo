@@ -3,18 +3,18 @@ package org.sigmah.server.endpoint.gwtrpc;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sigmah.server.dao.AuthenticationDAO;
+import org.sigmah.server.command.handler.CommandHandler;
+import org.sigmah.server.command.handler.HandlerUtil;
 import org.sigmah.server.database.dao.UserDAO;
-import org.sigmah.server.domain.Authentication;
-import org.sigmah.server.endpoint.gwtrpc.handler.HandlerUtil;
+import org.sigmah.server.database.hibernate.dao.AuthenticationDAO;
+import org.sigmah.server.database.hibernate.entity.Authentication;
+import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.util.logging.LogException;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.RemoteCommandService;
 import org.sigmah.shared.command.handler.ExecutionContext;
-import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.handler.CommandHandlerAsync;
 import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.InvalidAuthTokenException;
 import org.sigmah.shared.exception.UnexpectedCommandException;
@@ -39,9 +39,6 @@ public class CommandServlet2 extends RemoteServiceServlet implements RemoteComma
 
     @Inject 
     private UserDAO userDAO;
-
-    @Inject
-    private SqlDatabase database;
     
     @Override
     @LogException
@@ -50,7 +47,7 @@ public class CommandServlet2 extends RemoteServiceServlet implements RemoteComma
         try {
             return handleCommands(auth.getUser(), commands);
 
-        } catch (Throwable caught) {
+        } catch (Exception caught) {
             caught.printStackTrace();
             throw new CommandException();
         }
@@ -83,7 +80,7 @@ public class CommandServlet2 extends RemoteServiceServlet implements RemoteComma
                 // include this as an error-ful result and
                 // continue executing other commands in the list
                 results.add(e);
-            } catch (Throwable e) {
+            } catch (Exception e) {
                 // something when wrong while executing the command
                 // this is already logged by the logging interceptor
                 // so just pass a new UnexpectedCommandException to the client
@@ -95,7 +92,7 @@ public class CommandServlet2 extends RemoteServiceServlet implements RemoteComma
 
     @LogException(emailAlert = true)
     protected CommandResult handleCommand(User user, Command command) throws CommandException {
-    	return ServerExecutionContext.execute(injector, user, command);
+    	return ServerExecutionContext.execute(injector, command);
     }
     
    

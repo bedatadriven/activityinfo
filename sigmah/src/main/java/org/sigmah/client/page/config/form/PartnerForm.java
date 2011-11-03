@@ -9,7 +9,6 @@ import org.sigmah.client.i18n.UIConstants;
 
 import com.extjs.gxt.ui.client.binding.FieldBinding;
 import com.extjs.gxt.ui.client.binding.FormBinding;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.core.client.GWT;
@@ -37,11 +36,6 @@ public class PartnerForm extends FormPanel {
 		fullField.setMaxLength(64);
         binding.addFieldBinding(new FieldBinding(fullField, "fullName"));
 		this.add(fullField);
-		
-		CheckBox operationalField = new CheckBox();
-		operationalField.setName("operational");
-		operationalField.setFieldLabel(constants.operational());
-		this.add(operationalField);
 	}
 
     public FormBinding getBinding() {

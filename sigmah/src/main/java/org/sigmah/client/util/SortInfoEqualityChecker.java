@@ -7,9 +7,7 @@ package org.sigmah.client.util;
 
 import com.extjs.gxt.ui.client.data.SortInfo;
 
-/**
- * @author Alex Bertram (akbertram@gmail.com)
- */
+
 public class SortInfoEqualityChecker {
 
     public static boolean equals(SortInfo a, SortInfo b) {

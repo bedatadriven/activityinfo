@@ -14,7 +14,7 @@ import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
- * One-to-one DTO for {@link org.sigmah.shared.domain.Country} domain objects.
+ * One-to-one DTO for {@link org.sigmah.server.database.hibernate.entity.Country} domain objects.
  */
 public final class CountryDTO extends BaseModelData implements DTO {
 

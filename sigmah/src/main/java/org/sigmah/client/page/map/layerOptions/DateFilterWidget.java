@@ -1,7 +1,7 @@
 package org.sigmah.client.page.map.layerOptions;
 
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.report.model.DateRange;
 
 import com.google.gwt.user.client.Event;

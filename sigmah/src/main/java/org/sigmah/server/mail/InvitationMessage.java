@@ -5,7 +5,7 @@
 
 package org.sigmah.server.mail;
 
-import org.sigmah.shared.domain.User;
+import org.sigmah.server.database.hibernate.entity.User;
 
 public class InvitationMessage extends MailMessage {
     private User newUser;

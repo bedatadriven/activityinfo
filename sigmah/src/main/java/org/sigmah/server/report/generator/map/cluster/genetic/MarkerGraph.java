@@ -61,7 +61,7 @@ public class MarkerGraph {
         }
 
         public Point getPoint() {
-            return pv.px;
+            return pv.getPx();
         }
 
         public PointValue getPointValue() {
@@ -73,7 +73,7 @@ public class MarkerGraph {
         }
 
         public double getValue() {
-            return pv.value;
+            return pv.getValue();
         }
     }
 
@@ -111,7 +111,8 @@ public class MarkerGraph {
                     // if we leave in place
                     if(ni.getPoint().equals(nj.getPoint())) {
                         // merge nodes in the case of coincidence
-                        ni.getPointValue().value += nj.getPointValue().value;
+                        ni.getPointValue().setValue(
+								ni.getPointValue().getValue() + nj.getPointValue().getValue());
                         for(Edge edge : nj.getEdges()) {
                             edge.neighbor(nj).getEdges().remove(edge);
                             edges.remove(edge);

@@ -6,14 +6,12 @@
 
 <dataset>
 
-
 	<!-- Country setup -->
 
 	<country countryId="1" name="Rdc" x1="0" y1="0" x2="0" y2="0" />
 
 	<locationType locationTypeId="1" countryId="1" name="localite" reuse="1"/>
 	<locationType locationTypeId="2" countryId="1" name="Health Center" reuse="1"/>
-
 
 	<adminLevel countryId="1" adminLevelId="1" name="Province" AllowAdd="0"	/>
 	<adminLevel countryId="1" adminLevelId="2" name="Territoire" AllowAdd="0" ParentId="1"/>
@@ -22,7 +20,6 @@
 	<adminEntity adminLevelId="1" adminEntityId="2" name="Sud Kivu" code="20" x1="0" y1="0" x2="0" y2="0"/>
 	<adminEntity adminLevelId="1" adminEntityId="3" name="Nord Kivu" code="30" x1="0" y1="0" x2="0" y2="0"/>
 	<adminEntity adminLevelId="1" adminEntityId="4" name="Ituri" code="40" x1="0" y1="0" x2="0" y2="0"/>
-
 
 	<adminEntity adminLevelId="2" adminEntityId="10" adminEntityParentId="4" name="Bukavu" code="203" x1="0" y1="0" x2="0" y2="0"/>
 	<adminEntity adminLevelId="2" adminEntityId="11" adminEntityParentId="2" name="Walungu" code="201" x1="0" y1="0" x2="0" y2="0"/>
@@ -46,7 +43,6 @@
 			name="NFI"
 			reportingFrequency="0"
 			allowEdit="1"
-			isAssessment="0"
 			sortOrder="1"
 			locationTypeId="1"/>
 			
@@ -69,7 +65,7 @@
 	<locationAdminLink locationId="1" adminEntityId="2"/>
 	<locationAdminLink locationId="1" adminEntityId="12"/>
 
-    <site siteId="1" activityId="1" locationId="1" partnerId="1" Status="1" target="0" Date1="2009-01-01" Date2="2009-01-02" DateCreated="2009-02-01" DateEdited="2009-02-01" />
+    <site siteId="1" activityId="1" locationId="1" partnerId="1" Date1="2009-01-01" Date2="2009-01-02" DateCreated="2009-02-01" DateEdited="2009-02-01" />
 
 	<!--  IRC NFI Distribution at Ngwshe, Sud Kivu 16 jan 2009 -->
 	
@@ -77,7 +73,7 @@
 	<locationAdminLink locationId="2" adminEntityId="2"/>
 	<locationAdminLink locationId="2" adminEntityId="11"/>
 	
-	<site siteId="2" activityId="1" locationId="2" partnerId="3" Status="1" target="0"
+	<site siteId="2" activityId="1" locationId="2" partnerId="3" 
           Date1="2009-01-15" Date2="2009-01-16"
           DateCreated="2009-02-01" DateEdited="2009-02-01" />
 
@@ -87,7 +83,7 @@
 	<locationAdminLink locationId="3" adminEntityId="4"/>
 	<locationAdminLink locationId="3" adminEntityId="21"/>
 	
-	<site siteId="3" activityId="1" locationId="3" partnerId="2" Status="1" target="0"
+	<site siteId="3" activityId="1" locationId="3" partnerId="2" 
           Date1="2008-10-05" Date2="2008-10-06"
           DateCreated="2009-02-01" DateEdited="2009-02-01"/>
 
@@ -96,9 +92,8 @@
     <location locationId="4" name="Mushinga" locationTypeId="1" X="3.323" Y="27.232" />
     <locationAdminLink locationId="4" adminEntityId="3"/>
 
-    <site siteId="4" activityId="1" locationId="3" partnerId="3" Status="1" target="0" 
+    <site siteId="4" activityId="1" locationId="3" partnerId="3"
           Date1="2008-10-05" Date2="2008-10-06"
           DateCreated="2009-02-01" DateEdited="2009-02-01"/>
-
     
 </dataset>

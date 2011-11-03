@@ -1,6 +1,6 @@
 package org.sigmah.server.report.generator;
 
-import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.ReportElement;
 

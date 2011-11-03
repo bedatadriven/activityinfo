@@ -162,25 +162,31 @@ public class DateRange implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		DateRange other = (DateRange) obj;
 		if (maxDate == null) {
-			if (other.maxDate != null)
+			if (other.maxDate != null) {
 				return false;
-		} else if (!maxDate.equals(other.maxDate))
+			}
+		} else if (!maxDate.equals(other.maxDate)) {
 			return false;
+		}
 		if (minDate == null) {
-			if (other.minDate != null)
+			if (other.minDate != null) {
 				return false;
-		} else if (!minDate.equals(other.minDate))
+			}
+		} else if (!minDate.equals(other.minDate)) {
 			return false;
+		}
 		return true;
 	}
-    
     
 }

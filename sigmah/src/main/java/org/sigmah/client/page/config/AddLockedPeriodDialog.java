@@ -57,9 +57,6 @@ public class AddLockedPeriodDialog extends FormPanel implements
 	private DateField datefieldFromDate;
 	private DateField datefieldToDate;
 	private CheckBox checkboxEnabled;
-	private LabelField labelParent;
-	private LabelField labelTimePeriod;  // Shows the total time
-	private Dispatcher service;
 	
 	private EventBus eventBus = new SimpleEventBus();
 	

@@ -17,7 +17,7 @@ import java.util.List;
 
 import javax.persistence.Id;
 
-import org.sigmah.shared.dao.DAO;
+import org.sigmah.server.database.hibernate.dao.DAO;
 
 public class MockDb {
 

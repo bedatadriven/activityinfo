@@ -75,7 +75,7 @@ public class GoogleStaticMapsApi {
 			return URLEncoder.encode(s, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			// should not happen
-			throw new RuntimeException(s);
+			throw new RuntimeException(s, e);
 		}
 	}
 }

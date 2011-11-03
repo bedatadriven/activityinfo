@@ -14,19 +14,19 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.sigmah.server.command.DispatcherSync;
-import org.sigmah.server.dao.BaseMapDAO;
+import org.sigmah.server.database.hibernate.dao.BaseMapDAO;
+import org.sigmah.server.database.hibernate.dao.IndicatorDAO;
+import org.sigmah.server.database.hibernate.dao.SiteTableDAO;
+import org.sigmah.server.database.hibernate.entity.Indicator;
+import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.report.generator.map.BubbleLayerGenerator;
 import org.sigmah.server.report.generator.map.IconLayerGenerator;
 import org.sigmah.server.report.generator.map.LayerGenerator;
 import org.sigmah.server.report.generator.map.Margins;
 import org.sigmah.server.report.generator.map.PiechartLayerGenerator;
 import org.sigmah.server.report.generator.map.TiledMap;
+import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.command.GetSites;
-import org.sigmah.shared.dao.Filter;
-import org.sigmah.shared.dao.IndicatorDAO;
-import org.sigmah.shared.dao.SiteTableDAO;
-import org.sigmah.shared.domain.Indicator;
-import org.sigmah.shared.domain.User;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.map.BaseMap;
@@ -84,11 +84,11 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
                 List<SiteDTO> sites = dispatcher.execute(new GetSites(layerFilter)).getData();
                 
 	            if (layer instanceof BubbleMapLayer) {
-	                layerGenerators.add(new BubbleLayerGenerator(element, (BubbleMapLayer) layer, sites));
+	                layerGenerators.add(new BubbleLayerGenerator((BubbleMapLayer) layer, sites));
 	            } else if (layer instanceof IconMapLayer) {
 	                layerGenerators.add(new IconLayerGenerator(element, (IconMapLayer) layer, sites));
 	            } else if (layer instanceof PiechartMapLayer) {
-	            	layerGenerators.add(new PiechartLayerGenerator(element, (PiechartMapLayer) layer, sites));
+	            	layerGenerators.add(new PiechartLayerGenerator((PiechartMapLayer) layer, sites));
 	            }
         	}
         }

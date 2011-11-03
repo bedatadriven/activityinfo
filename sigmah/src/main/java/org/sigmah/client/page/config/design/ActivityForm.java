@@ -32,7 +32,6 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
  */
 class ActivityForm extends AbstractDesignForm {
 
-    private ListStore<LocationTypeDTO> locationTypeStore;
     private FormBinding binding;
 
     public ActivityForm(Dispatcher service, UserDatabaseDTO database) {
@@ -80,34 +79,6 @@ class ActivityForm extends AbstractDesignForm {
         frequencyCombo.add(ActivityDTO.REPORT_MONTHLY, I18N.CONSTANTS.monthly());
         binding.addFieldBinding(new MappingComboBoxBinding(frequencyCombo, "reportingFrequency"));
         this.add(frequencyCombo);
-
-        CheckBoxGroup checkBoxes = new CheckBoxGroup();
-        checkBoxes.setFieldLabel(I18N.CONSTANTS.attributes());
-        checkBoxes.setOrientation(Style.Orientation.VERTICAL);
-        this.add(checkBoxes);
-
-        CheckBox assessCheckBox = new CheckBox();
-        assessCheckBox.setBoxLabel(I18N.CONSTANTS.isAssessment());
-        assessCheckBox.setToolTip(I18N.CONSTANTS.isAssessmentToolTip());
-        binding.addFieldBinding(new FieldBinding(assessCheckBox, "assessment"));
-        checkBoxes.add(assessCheckBox);
-
-        MapIconComboBox mapIconField = new MapIconComboBox(service);
-        mapIconField.setFieldLabel(I18N.CONSTANTS.mapIcon());
-        FieldBinding mapIconBinding = new FieldBinding(mapIconField, "mapIcon");
-        mapIconBinding.setConverter(new Converter() {
-            @Override
-            public Object convertModelValue(Object value) {
-                return value == null ? null : new MapIconDTO((String) value);
-            }
-
-            @Override
-            public Object convertFieldValue(Object value) {
-                return ((MapIconDTO) value).getId();
-            }
-        });
-        binding.addFieldBinding(mapIconBinding);
-        this.add(mapIconField);
     }
 
     @Override

@@ -1,14 +1,15 @@
 package org.sigmah.server.endpoint.gwtrpc;
 
-import org.sigmah.server.endpoint.gwtrpc.handler.HandlerUtil;
+import org.sigmah.server.command.handler.CommandHandler;
+import org.sigmah.server.command.handler.HandlerUtil;
+import org.sigmah.server.database.hibernate.entity.User;
+import org.sigmah.shared.auth.AuthenticatedUser;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.MutatingCommand;
 import org.sigmah.shared.command.handler.AuthorizationHandler;
-import org.sigmah.shared.command.handler.CommandHandler;
 import org.sigmah.shared.command.handler.CommandHandlerAsync;
 import org.sigmah.shared.command.handler.ExecutionContext;
 import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.domain.User;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.UnexpectedCommandException;
 import org.sigmah.shared.util.Collector;
@@ -23,11 +24,11 @@ import com.google.inject.Injector;
 
 public class ServerExecutionContext implements ExecutionContext {
 	
-	private User user;
+	private AuthenticatedUser user;
 	private Injector injector;
 	private SqlTransaction tx;
 
-	public ServerExecutionContext(Injector injector, SqlTransaction tx, User user) {
+	public ServerExecutionContext(Injector injector, SqlTransaction tx, AuthenticatedUser user) {
 		super();
 		this.injector = injector;
 		this.tx = tx;
@@ -35,7 +36,7 @@ public class ServerExecutionContext implements ExecutionContext {
 	}
 
 	@Override
-	public User getUser() {
+	public AuthenticatedUser getUser() {
 		return user;
 	}
 
@@ -82,15 +83,19 @@ public class ServerExecutionContext implements ExecutionContext {
 	}
 	
 	
-	public static <C extends Command<R>, R extends CommandResult> CommandResult execute(final Injector injector, final User user, final C command) throws CommandException {
+	public static <C extends Command<R>, R extends CommandResult> CommandResult execute(final Injector injector, 
+			final C command) throws CommandException {
 		final ResultCollector<R> result = new ResultCollector<R>();
 		final Collector<Boolean> txResult = Collector.newCollector();
 		
 		final Object handler = injector.getInstance(
 				HandlerUtil.handlerForCommand(command));
 		
+		final AuthenticatedUser user = injector.getInstance(AuthenticatedUser.class);
+		
 		if(handler instanceof CommandHandler) {
-			return ((CommandHandler) handler).execute(command, user);
+			
+			return ((CommandHandler) handler).execute(command, new User(user));
 		}
 		
 		// TODO: log here, if there is something in the queue there is a problem somewhere.

@@ -29,7 +29,6 @@ public class DbProjectGrid extends
     private final IconImageBundle icons;
     
     private Grid<ProjectDTO> grid;
-    private ListStore<ProjectDTO> store;
     
 	@Inject
     public DbProjectGrid(UIConstants messages, IconImageBundle icons) {

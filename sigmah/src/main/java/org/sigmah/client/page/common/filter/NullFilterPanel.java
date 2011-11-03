@@ -1,6 +1,6 @@
 package org.sigmah.client.page.common.filter;
 
-import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.command.Filter;
 
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.GwtEvent;

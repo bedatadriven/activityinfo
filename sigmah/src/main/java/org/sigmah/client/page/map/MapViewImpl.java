@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.sigmah.client.map.GcIconFactory;
+import org.sigmah.client.map.GoogleChartsIconBuilder;
 import org.sigmah.client.page.common.Shutdownable;
 import org.sigmah.shared.command.result.SitePointList;
 import org.sigmah.shared.dto.SitePointDTO;
@@ -96,8 +96,8 @@ public class MapViewImpl extends LayoutContainer implements Shutdownable, MapVie
             // so we'll bring in a ringer for the selected site
 
             if (highlitMarker == null) {
-                GcIconFactory iconFactory = new GcIconFactory();
-                iconFactory.primaryColor = "#0000FF";
+                GoogleChartsIconBuilder iconFactory = new GoogleChartsIconBuilder();
+                iconFactory.setPrimaryColor("#0000FF");
                 MarkerOptions opts = MarkerOptions.newInstance();
                 opts.setIcon(iconFactory.createMarkerIcon());
                 highlitMarker = new Marker(marker.getLatLng(), opts);

@@ -160,8 +160,6 @@ public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, Create
 			.value("ProjectId", properties.get("projectId"))
 			.value("DateCreated", new Date())
 			.value("DateEdited", new Date())
-			.value("Status", 0) // no longer used  TODO : remove from databases
-			.value("Target", 0) // no longer used TODO : remove 
 		.execute(tx);
 
 		insertAttributeValues(tx, siteId, properties);
@@ -201,7 +199,6 @@ public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, Create
 			.value("Date2", properties.get("date2"))
 			.value("DateCreated", new Date())
 			.value("DateEdited", new Date())
-			.value("Monitoring", 0) // no longer used TODO : remove
 		.execute(tx);
 
 		insertIndicatorValues(properties, tx, reportingPeriodId);

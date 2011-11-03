@@ -1,7 +1,6 @@
 package org.sigmah.shared.command;
 
 import org.sigmah.shared.command.result.PartnerResult;
-import org.sigmah.shared.dao.Filter;
 
 /**
  * Retrieves a list of partners 

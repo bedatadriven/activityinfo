@@ -10,9 +10,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.command.GetAdminEntities;
 import org.sigmah.shared.command.result.AdminEntityResult;
-import org.sigmah.shared.dao.Filter;
 import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.CountryDTO;

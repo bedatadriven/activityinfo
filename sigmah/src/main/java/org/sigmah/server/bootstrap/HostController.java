@@ -14,9 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.sigmah.server.Cookies;
 import org.sigmah.server.bootstrap.exception.NoValidAuthentication;
 import org.sigmah.server.bootstrap.model.HostPageModel;
-import org.sigmah.server.dao.AuthenticationDAO;
-import org.sigmah.server.dao.Transactional;
-import org.sigmah.server.domain.Authentication;
+import org.sigmah.server.database.hibernate.dao.AuthenticationDAO;
+import org.sigmah.server.database.hibernate.dao.Transactional;
+import org.sigmah.server.database.hibernate.entity.Authentication;
 import org.sigmah.server.util.logging.LogException;
 
 import com.bedatadriven.rebar.appcache.server.UserAgentProvider;

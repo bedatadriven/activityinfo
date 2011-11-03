@@ -1,0 +1,654 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    <changeSet author="alex (generated)" id="initial-20111102">
+        <createTable tableName="activity">
+            <column autoIncrement="true" name="ActivityId" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="AllowEdit" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="IsAssessment" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category" type="VARCHAR(255)"/>
+            <column name="dateDeleted" type="DATETIME"/>
+            <column name="mapIcon" type="VARCHAR(255)"/>
+            <column name="Name" type="VARCHAR(45)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ReportingFrequency" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SortOrder" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DatabaseId" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="LocationTypeId" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="adminentity">
+            <column autoIncrement="true" name="AdminEntityId" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="x1" type="DOUBLE"/>
+            <column name="x2" type="DOUBLE"/>
+            <column name="y1" type="DOUBLE"/>
+            <column name="y2" type="DOUBLE"/>
+            <column name="Code" type="VARCHAR(15)"/>
+            <column name="Name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="Soundex" type="VARCHAR(50)"/>
+            <column name="AdminLevelId" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="AdminEntityParentId" type="INT"/>
+        </createTable>
+
+        <createTable tableName="adminlevel">
+            <column autoIncrement="true" name="AdminLevelId" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="AllowAdd" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="Name" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CountryId" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ParentId" type="INT"/>
+        </createTable>
+  
+        <createTable tableName="attribute">
+            <column autoIncrement="true" name="AttributeId" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="dateDeleted" type="DATETIME"/>
+            <column name="Name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SortOrder" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="AttributeGroupId" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    
+        <createTable tableName="attributegroup">
+            <column autoIncrement="true" name="AttributeGroupId" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="category" type="VARCHAR(50)"/>
+            <column name="dateDeleted" type="DATETIME"/>
+            <column name="multipleAllowed" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="sortOrder" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    
+        <createTable tableName="attributegroupinactivity">
+            <column name="AttributeGroupId" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ActivityId" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+ 
+        <createTable tableName="attributevalue">
+            <column name="AttributeId" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SiteId" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="Value" type="BIT"/>
+        </createTable>
+  
+        <createTable tableName="authentication">
+            <column name="AuthToken" type="VARCHAR(32)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="dateCreated" type="DATETIME"/>
+            <column name="dateLastActive" type="DATETIME"/>
+            <column name="UserId" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="basemap">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="copyright" type="LONGTEXT"/>
+            <column name="maxZoom" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="minZoom" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="tileUrlPattern" type="LONGTEXT"/>
+            <column name="thumbnailUrl" type="VARCHAR(255)"/>
+        </createTable>
+
+        <createTable tableName="country">
+            <column autoIncrement="true" name="CountryId" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="x1" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="x2" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="y1" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="y2" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ISO2" type="VARCHAR(2)"/>
+            <column name="Name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    
+        <createTable tableName="indicator">
+            <column autoIncrement="true" name="IndicatorId" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="Aggregation" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="Category" type="VARCHAR(50)"/>
+            <column name="CollectIntervention" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CollectMonitoring" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="dateDeleted" type="DATETIME"/>
+            <column name="description" type="LONGTEXT"/>
+            <column name="ListHeader" type="VARCHAR(30)"/>
+            <column name="Name" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="Sector" type="VARCHAR(50)"/>
+            <column name="SortOrder" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="Units" type="VARCHAR(15)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ActivityId" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id_quality_criterion" type="INT"/>
+        </createTable>
+   
+        <createTable tableName="indicatorvalue">
+            <column name="IndicatorId" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ReportingPeriodId" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="Value" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="location">
+            <column name="LocationID" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="Axe" type="VARCHAR(50)"/>
+            <column name="dateCreated" type="DATETIME"/>
+            <column name="dateEdited" type="DATETIME"/>
+            <column name="LocationGuid" type="VARCHAR(36)"/>
+            <column name="Name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="X" type="DOUBLE"/>
+            <column name="Y" type="DOUBLE"/>
+            <column name="LocationTypeID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+  
+        <createTable tableName="locationadminlink">
+            <column name="AdminEntityId" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="LocationId" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+  
+        <createTable tableName="locationtype">
+            <column name="LocationTypeId" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="Name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="Reuse" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="BoundAdminLevelId" type="INT"/>
+            <column name="CountryId" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    
+        <createTable tableName="lockedperiod">
+            <column autoIncrement="true" name="LockedPeriodId" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="FromDate" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="Name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ToDate" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="UserDatabaseId" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="enabled" type="BIT"/>
+            <column name="ActivityId" type="INT"/>
+            <column name="ProjectId" type="INT"/>
+        </createTable>
+  
+        <createTable tableName="partner">
+            <column autoIncrement="true" name="PartnerId" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="calendarId" type="INT"/>
+            <column name="FullName" type="VARCHAR(64)"/>
+            <column name="Name" type="VARCHAR(16)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="planned_budget" type="DOUBLE"/>
+            <column name="received_budget" type="DOUBLE"/>
+            <column name="spend_budget" type="DOUBLE"/>
+            <column name="location_LocationID" type="INT"/>
+            <column name="office_country_id" type="INT"/>
+            <column name="id_org_unit_model" type="INT"/>
+            <column name="organization_id_organization" type="INT"/>
+            <column name="parent_PartnerId" type="INT"/>
+        </createTable>
+  
+        <createTable tableName="partnerindatabase">
+            <column name="PartnerId" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DatabaseId" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    
+        <createTable tableName="project">
+            <column autoIncrement="true" name="ProjectId" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="dateDeleted" type="DATETIME"/>
+            <column name="description" type="LONGTEXT"/>
+            <column name="name" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DatabaseId" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+ 
+        <createTable tableName="projectreportmodel">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+        </createTable>
+ 
+        <createTable tableName="reportingperiod">
+            <column name="ReportingPeriodId" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="comments" type="LONGTEXT"/>
+            <column name="Date1" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="Date2" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DateCreated" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="dateDeleted" type="DATETIME"/>
+            <column name="DateEdited" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="Monitoring" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SiteId" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="reportsubscription">
+            <column name="reportTemplateId" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="userId" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subscribed" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="invitingUserId" type="INT"/>
+        </createTable>
+  
+        <createTable tableName="reporttemplate">
+            <column autoIncrement="true" name="ReportTemplateId" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="dateDeleted" type="DATETIME"/>
+            <column name="day" type="INT"/>
+            <column name="description" type="LONGTEXT"/>
+            <column name="frequency" type="VARCHAR(255)"/>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="visibility" type="INT"/>
+            <column name="xml" type="LONGTEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DatabaseId" type="INT"/>
+            <column name="OwnerUserId" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+   
+        <createTable tableName="site">
+            <column name="SiteId" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="comments" type="LONGTEXT"/>
+            <column name="Date1" type="DATE"/>
+            <column name="Date2" type="DATE"/>
+            <column name="DateCreated" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="dateDeleted" type="DATETIME"/>
+            <column name="DateEdited" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DateSynchronized" type="DATETIME"/>
+            <column name="SiteGuid" type="VARCHAR(36)"/>
+            <column name="Status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="target" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ActivityId" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="AssessmentSiteId" type="INT"/>
+            <column name="LocationId" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PartnerId" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ProjectId" type="INT"/>
+        </createTable>
+  
+        <createTable tableName="userdatabase">
+            <column autoIncrement="true" name="DatabaseId" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="dateDeleted" type="DATETIME"/>
+            <column name="FullName" type="VARCHAR(50)"/>
+            <column name="lastSchemaUpdate" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="Name" type="VARCHAR(16)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="StartDate" type="DATE"/>
+            <column name="CountryId" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="OwnerUserId" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+  
+        <createTable tableName="userlogin">
+            <column autoIncrement="true" name="UserId" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="changePasswordKey" type="VARCHAR(34)"/>
+            <column name="dateChangePasswordKeyIssued" type="DATETIME"/>
+            <column name="Email" type="VARCHAR(75)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="FirstName" type="VARCHAR(50)"/>
+            <column name="Password" type="VARCHAR(150)"/>
+            <column name="Locale" type="VARCHAR(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="Name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NewUser" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="userpermission">
+            <column autoIncrement="true" name="UserPermissionId" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="AllowDesign" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="AllowEdit" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="AllowEditAll" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="allowManageAllUsers" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="allowManageUsers" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="AllowView" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="AllowViewAll" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lastSchemaUpdate" type="DATETIME"/>
+            <column name="DatabaseId" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PartnerId" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="UserId" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    
+        <addPrimaryKey columnNames="ActivityId, AttributeGroupId" tableName="attributegroupinactivity"/>
+        <addPrimaryKey columnNames="AttributeId, SiteId" tableName="attributevalue"/>
+        <addPrimaryKey columnNames="IndicatorId, ReportingPeriodId" tableName="indicatorvalue"/>
+        <addPrimaryKey columnNames="LocationId, AdminEntityId" tableName="locationadminlink"/>
+        <addPrimaryKey columnNames="DatabaseId, PartnerId" tableName="partnerindatabase"/>
+        <addPrimaryKey columnNames="reportTemplateId, userId" tableName="reportsubscription"/>
+        
+        <addForeignKeyConstraint baseColumnNames="ProjectId" baseTableName="lockedperiod" 
+        	constraintName="FK7CF5F98BE4EA806B" deferrable="false" 
+        	initiallyDeferred="false" onDelete="NO ACTION" 
+        	onUpdate="NO ACTION" referencedColumnNames="ProjectId"
+        	referencedTableName="project" 
+        	referencesUniqueColumn="false"/>
+        <createIndex indexName="FKA126572F494BD9E" tableName="activity" unique="false">
+            <column name="DatabaseId"/>
+        </createIndex>
+        <createIndex indexName="FKA126572F8C0165BB" tableName="activity" unique="false">
+            <column name="LocationTypeId"/>
+        </createIndex>
+        <createIndex indexName="FK2E3083F227F5CAC7" tableName="adminentity" unique="false">
+            <column name="AdminLevelId"/>
+        </createIndex>
+        <createIndex indexName="FK2E3083F2FF2BADA7" tableName="adminentity" unique="false">
+            <column name="AdminEntityParentId"/>
+        </createIndex>
+        <createIndex indexName="FK9EC33D95B6676E25" tableName="adminlevel" unique="false">
+            <column name="CountryId"/>
+        </createIndex>
+        <createIndex indexName="FK9EC33D95E01B109C" tableName="adminlevel" unique="false">
+            <column name="ParentId"/>
+        </createIndex>
+        <createIndex indexName="FK7839CA7CDA7C5E3" tableName="attribute" unique="false">
+            <column name="AttributeGroupId"/>
+        </createIndex>
+        <createIndex indexName="FKDD8C951780BF17DB" tableName="attributegroupinactivity" unique="false">
+            <column name="ActivityId"/>
+        </createIndex>
+        <createIndex indexName="FKDD8C9517DA7C5E3" tableName="attributegroupinactivity" unique="false">
+            <column name="AttributeGroupId"/>
+        </createIndex>
+        <createIndex indexName="FK4ED7045544C2434B" tableName="attributevalue" unique="false">
+            <column name="SiteId"/>
+        </createIndex>
+        <createIndex indexName="FK4ED70455AFED0B31" tableName="attributevalue" unique="false">
+            <column name="AttributeId"/>
+        </createIndex>
+        <createIndex indexName="FKDDEEAE9848B34B53" tableName="authentication" unique="false">
+            <column name="UserId"/>
+        </createIndex>
+        <createIndex indexName="FK4D01DDEF70812310" tableName="indicator" unique="false">
+            <column name="id_quality_criterion"/>
+        </createIndex>
+        <createIndex indexName="FK4D01DDEF80BF17DB" tableName="indicator" unique="false">
+            <column name="ActivityId"/>
+        </createIndex>
+        <createIndex indexName="FK676020C247C62157" tableName="indicatorvalue" unique="false">
+            <column name="IndicatorId"/>
+        </createIndex>
+        <createIndex indexName="FK676020C284811DB7" tableName="indicatorvalue" unique="false">
+            <column name="ReportingPeriodId"/>
+        </createIndex>
+        <createIndex indexName="FK752A03D58C0165BB" tableName="location" unique="false">
+            <column name="LocationTypeID"/>
+        </createIndex>
+        <createIndex indexName="FK50408394368DDFA7" tableName="locationadminlink" unique="false">
+            <column name="LocationId"/>
+        </createIndex>
+        <createIndex indexName="FK50408394CD1204FD" tableName="locationadminlink" unique="false">
+            <column name="AdminEntityId"/>
+        </createIndex>
+        <createIndex indexName="FK65214AF20FEB745" tableName="locationtype" unique="false">
+            <column name="BoundAdminLevelId"/>
+        </createIndex>
+        <createIndex indexName="FK65214AFB6676E25" tableName="locationtype" unique="false">
+            <column name="CountryId"/>
+        </createIndex>
+        <createIndex indexName="FK33F574A8350D2271" tableName="partner" unique="false">
+            <column name="location_LocationID"/>
+        </createIndex>
+        <createIndex indexName="FK33F574A84BA27D70" tableName="partner" unique="false">
+            <column name="id_org_unit_model"/>
+        </createIndex>
+        <createIndex indexName="FK33F574A85179B874" tableName="partner" unique="false">
+            <column name="parent_PartnerId"/>
+        </createIndex>
+        <createIndex indexName="FK33F574A8CF94C360" tableName="partner" unique="false">
+            <column name="organization_id_organization"/>
+        </createIndex>
+        <createIndex indexName="FK33F574A8FAEC4ABB" tableName="partner" unique="false">
+            <column name="office_country_id"/>
+        </createIndex>
+        <createIndex indexName="FKA9A62C88494BD9E" tableName="partnerindatabase" unique="false">
+            <column name="DatabaseId"/>
+        </createIndex>
+        <createIndex indexName="FKA9A62C8879D901C9" tableName="partnerindatabase" unique="false">
+            <column name="PartnerId"/>
+        </createIndex>
+        <createIndex indexName="FKDCFE056F44C2434B" tableName="reportingperiod" unique="false">
+            <column name="SiteId"/>
+        </createIndex>
+        <createIndex indexName="FK35F790911741F030" tableName="reportsubscription" unique="false">
+            <column name="reportTemplateId"/>
+        </createIndex>
+        <createIndex indexName="FK35F7909148B34B53" tableName="reportsubscription" unique="false">
+            <column name="userId"/>
+        </createIndex>
+        <createIndex indexName="FK35F7909173633C59" tableName="reportsubscription" unique="false">
+            <column name="invitingUserId"/>
+        </createIndex>
+        <createIndex indexName="FKC69DDEE494BD9E" tableName="reporttemplate" unique="false">
+            <column name="DatabaseId"/>
+        </createIndex>
+        <createIndex indexName="FKC69DDEEA5C52BC6" tableName="reporttemplate" unique="false">
+            <column name="OwnerUserId"/>
+        </createIndex>
+        <createIndex indexName="FK2753671FCDE08D" tableName="site" unique="false">
+            <column name="AssessmentSiteId"/>
+        </createIndex>
+        <createIndex indexName="FK275367368DDFA7" tableName="site" unique="false">
+            <column name="LocationId"/>
+        </createIndex>
+        <createIndex indexName="FK27536779D901C9" tableName="site" unique="false">
+            <column name="PartnerId"/>
+        </createIndex>
+        <createIndex indexName="FK27536780BF17DB" tableName="site" unique="false">
+            <column name="ActivityId"/>
+        </createIndex>
+        <createIndex indexName="FK275367E4EA806B" tableName="site" unique="false">
+            <column name="ProjectId"/>
+        </createIndex>
+        <createIndex indexName="FK275367F87ABA8F" tableName="site" unique="false">
+            <column name="ProjectId"/>
+        </createIndex>
+        <createIndex indexName="deleted" tableName="site" unique="false">
+            <column name="dateDeleted"/>
+        </createIndex>
+        <createIndex indexName="FK46AEBA86A5C52BC6" tableName="userdatabase" unique="false">
+            <column name="OwnerUserId"/>
+        </createIndex>
+        <createIndex indexName="FK46AEBA86B6676E25" tableName="userdatabase" unique="false">
+            <column name="CountryId"/>
+        </createIndex>
+        <createIndex indexName="Email" tableName="userlogin" unique="true">
+            <column name="Email"/>
+        </createIndex>
+        <createIndex indexName="FKD265581A48B34B53" tableName="userpermission" unique="false">
+            <column name="UserId"/>
+        </createIndex>
+        <createIndex indexName="FKD265581A494BD9E" tableName="userpermission" unique="false">
+            <column name="DatabaseId"/>
+        </createIndex>
+        <createIndex indexName="FKD265581A79D901C9" tableName="userpermission" unique="false">
+            <column name="PartnerId"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

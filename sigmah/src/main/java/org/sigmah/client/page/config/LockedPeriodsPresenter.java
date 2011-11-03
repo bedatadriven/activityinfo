@@ -220,9 +220,6 @@ public class LockedPeriodsPresenter
 
 			@Override
 			public void onSuccess(SchemaDTO result) {
-				for (LockedPeriodDTO lp : result.getDatabaseById(4).getLockedPeriods())
-					System.out.println();
-				
 				initialize(result.getDatabaseById(parentModel.getId()));
 			}
 		});

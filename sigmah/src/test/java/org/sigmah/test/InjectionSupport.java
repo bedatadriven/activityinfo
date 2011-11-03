@@ -17,8 +17,8 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
-import org.sigmah.server.dao.OnDataSet;
-import org.sigmah.server.dao.hibernate.LoadDataSet;
+import org.sigmah.server.database.LoadDataSet;
+import org.sigmah.server.database.OnDataSet;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;

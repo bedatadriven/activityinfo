@@ -53,4 +53,11 @@ public class AttributeGroupDimension extends Dimension {
         	return false;
         }
     }
+
+	@Override
+	public int hashCode() {
+		return attributeGroupId;
+	}
+	
+	
 }

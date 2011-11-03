@@ -2,8 +2,8 @@ package org.sigmah.server.mail;
 
 import java.util.ResourceBundle;
 
-import org.sigmah.server.util.LocaleHelper;
-import org.sigmah.shared.domain.User;
+import org.sigmah.server.database.hibernate.entity.User;
+import org.sigmah.server.i18n.LocaleHelper;
 
 public abstract class MailMessage {
 	

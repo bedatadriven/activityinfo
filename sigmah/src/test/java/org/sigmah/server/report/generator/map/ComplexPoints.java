@@ -57,8 +57,8 @@ public class ComplexPoints {
             double value = Double.parseDouble(columns[4]);
 
             PointValue pv = new PointValue();
-            pv.value = value;
-            pv.site = new SiteDTO();
+            pv.setValue(value);
+            pv.setSite(new SiteDTO());
             points.add(pv);
 
             originalSum += value;
@@ -74,7 +74,7 @@ public class ComplexPoints {
         TiledMap map = new TiledMap(640, 480, extents.center(), zoom);
 
         for(int i=0;i!= points.size(); ++i) {
-            points.get(i).px = map.fromLatLngToPixel(latlngs.get(i));
+            points.get(i).setPx(map.fromLatLngToPixel(latlngs.get(i)));
         }
 
         // build graph

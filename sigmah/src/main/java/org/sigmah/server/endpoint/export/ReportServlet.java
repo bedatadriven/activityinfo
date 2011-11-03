@@ -14,10 +14,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.sigmah.server.dao.AuthenticationDAO;
-import org.sigmah.server.domain.Authentication;
-import org.sigmah.server.domain.DomainFilters;
-import org.sigmah.server.domain.ReportDefinition;
+import org.sigmah.server.database.hibernate.dao.AuthenticationDAO;
+import org.sigmah.server.database.hibernate.entity.Authentication;
+import org.sigmah.server.database.hibernate.entity.DomainFilters;
+import org.sigmah.server.database.hibernate.entity.ReportDefinition;
 import org.sigmah.server.report.ReportParserJaxb;
 import org.sigmah.server.report.generator.ReportGenerator;
 import org.sigmah.server.report.renderer.Renderer;

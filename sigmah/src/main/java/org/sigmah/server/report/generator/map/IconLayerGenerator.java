@@ -99,7 +99,7 @@ public class IconLayerGenerator
         IntersectionCalculator intersectionCalculator = new IntersectionCalculator() {
 			@Override
 			public boolean intersects(Node a, Node b) {
-	        	  return a.getPointValue().iconRect.intersects(b.getPointValue().iconRect);
+	        	  return a.getPointValue().getIconRect().intersects(b.getPointValue().getIconRect());
 			}
 		};
         

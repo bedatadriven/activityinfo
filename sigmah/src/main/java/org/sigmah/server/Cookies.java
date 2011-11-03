@@ -8,7 +8,7 @@ package org.sigmah.server;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
-import org.sigmah.server.domain.Authentication;
+import org.sigmah.server.database.hibernate.entity.Authentication;
 
 public class Cookies extends org.sigmah.shared.Cookies {
     

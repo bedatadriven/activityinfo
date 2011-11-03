@@ -98,7 +98,7 @@ public class ComplexClusterTest extends GraphTest {
 
         double sumAfterMerging = 0;
         for (MarkerGraph.Node node : data.graph.getNodes()) {
-            sumAfterMerging += node.getPointValue().value;
+            sumAfterMerging += node.getPointValue().getValue();
         }
         Assert.assertEquals("originalSum==sumAfterMerging", data.originalSum, sumAfterMerging, DELTA);
 

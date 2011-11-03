@@ -7,7 +7,6 @@ package org.sigmah.client.page.common.nav;
 
 import org.sigmah.client.page.PageState;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.data.BaseTreeModel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 

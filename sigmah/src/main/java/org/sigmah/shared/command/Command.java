@@ -17,7 +17,7 @@ import org.sigmah.shared.command.result.CommandResult;
  * {@link org.sigmah.shared.command.RemoteCommandService#execute(String, java.util.List)} method
  * which accepts objects that implement this marker interface.
  * <p/>
- * On the server, each Command class has a corresponding {@link org.sigmah.shared.command.handler.CommandHandler}
+ * On the server, each Command class has a corresponding {@link org.sigmah.server.command.handler.CommandHandler}
  * class which carries out the operation.
  * <p/>
  * This approach is a bit of a riff on Aspect Oriented Programming (AOP),

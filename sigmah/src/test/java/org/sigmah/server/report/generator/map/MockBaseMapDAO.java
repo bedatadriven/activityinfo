@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.sigmah.server.dao.BaseMapDAO;
+import org.sigmah.server.database.hibernate.dao.BaseMapDAO;
 import org.sigmah.shared.map.TileBaseMap;
 
 /**

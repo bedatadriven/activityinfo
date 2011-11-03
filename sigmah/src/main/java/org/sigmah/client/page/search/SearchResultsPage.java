@@ -10,14 +10,14 @@ import org.sigmah.client.page.entry.SiteMap;
 import org.sigmah.client.page.search.SearchFilterView.DimensionAddedEvent;
 import org.sigmah.client.page.search.SearchFilterView.DimensionAddedEventHandler;
 import org.sigmah.client.page.search.SearchPresenter.RecentSiteModel;
+import org.sigmah.shared.command.handler.search.QueryChecker;
+import org.sigmah.shared.command.handler.search.QueryChecker.QueryFail;
 import org.sigmah.shared.command.result.SearchResult;
 import org.sigmah.shared.command.result.SitePointList;
 import org.sigmah.shared.dto.SearchHitDTO;
 import org.sigmah.shared.report.content.PivotContent;
 import org.sigmah.shared.report.content.PivotTableData.Axis;
 import org.sigmah.shared.report.model.DimensionType;
-import org.sigmah.shared.search.QueryChecker;
-import org.sigmah.shared.search.QueryChecker.QueryFail;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Orientation;

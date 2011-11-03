@@ -13,7 +13,7 @@ import org.sigmah.client.page.common.filter.FilterToolBar.ApplyFilterEvent;
 import org.sigmah.client.page.common.filter.FilterToolBar.ApplyFilterHandler;
 import org.sigmah.client.page.common.filter.FilterToolBar.RemoveFilterEvent;
 import org.sigmah.client.page.common.filter.FilterToolBar.RemoveFilterHandler;
-import org.sigmah.shared.dao.Filter;
+import org.sigmah.shared.command.Filter;
 
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.HasValue;
 
 /**
  * UI Component for selecting a range of dates to be used with
- * a {@link org.sigmah.shared.dao.Filter}
+ * a {@link org.sigmah.shared.command.Filter}
  *
  * @author Alex Bertram
  */

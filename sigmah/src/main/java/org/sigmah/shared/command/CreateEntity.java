@@ -69,15 +69,15 @@ public class CreateEntity implements Command<CreateResult> {
      * A map of properties to create.
      * <p/>
      * Note: For the most part, references to related entities should be specified
-     * by id: for example, {@link org.sigmah.shared.domain.Activity#database}
+     * by id: for example, {@link org.sigmah.server.database.hibernate.entity.Activity#database}
      * should be entered as databaseId in the property map.
      * <p/>
      * There are some exceptions to this that will take some time to fix:
      * <ul>
-     * <li>{@link org.sigmah.shared.domain.Site#partner}</li>
+     * <li>{@link org.sigmah.server.database.hibernate.entity.Site#partner}</li>
      * <li>AdminEntities associated with Sites/Locations</li>
      * </ul>
-     * See {@link org.sigmah.server.endpoint.gwtrpc.handler.CreateEntityHandler} for the last word.
+     * See {@link org.sigmah.server.command.handler.CreateEntityHandler} for the last word.
      *
      * @return The properties/fields of the entity to create.
      */

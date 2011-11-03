@@ -62,6 +62,11 @@ public class DateDimension extends Dimension {
 		DateDimension that = (DateDimension)other;
 		return this.unit == that.unit;
 	}
+    
+    @Override
+	public int hashCode() {
+    	return unit.hashCode();
+    }
 
 	/**
 	 * 
@@ -76,6 +81,4 @@ public class DateDimension extends Dimension {
 	public void setFormat(String format) {
 		this.format = format;
 	}
-
-
 }

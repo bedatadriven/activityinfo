@@ -310,6 +310,11 @@
             <version>3.4.0.GA</version>
         </dependency>
         <dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
+			<version>2.0.2</version>
+		</dependency>
+        <dependency>
             <groupId>com.jolbox</groupId>
             <artifactId>bonecp</artifactId>
             <version>0.7.1.RELEASE</version>
@@ -457,6 +462,32 @@
                     <dotGitDirectory>${project.basedir}/../.git</dotGitDirectory>
                 </configuration>
             </plugin>
+
+			<plugin>
+				<groupId>org.liquibase</groupId>
+				<artifactId>liquibase-maven-plugin</artifactId>
+				<version>2.0.2</version>
+				<configuration>
+					<driver>com.mysql.jdbc.Driver</driver>
+					<changeLogFile>org/activityinfo/database/changelog/db.changelog-master.xml</changeLogFile>
+				</configuration>
+				<executions>
+					<execution>
+						<id>prep-test-database</id>
+						<goals>
+							<goal>dropAll</goal>
+							<goal>update</goal>
+						</goals>
+						<phase>test-compile</phase>
+						<configuration>
+							<dropFirst>true</dropFirst>
+							<url>${testDatabaseUrl}</url>
+							<username>${testDatabaseUsername}</username>
+							<password>${testDatabasePassword}</password>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -780,6 +811,24 @@
 	                                <action>
 	                                    <execute />
 	                                </action>
+	                            </pluginExecution>
+	                            <pluginExecution>
+	                            	<pluginExecutionFilter>
+	                            		<groupId>org.liquibase</groupId>
+	                            		<artifactId>
+	                            			liquibase-maven-plugin
+	                            		</artifactId>
+	                            		<versionRange>
+	                            			[2.0.1,)
+	                            		</versionRange>
+	                            		<goals>
+	                            			<goal>update</goal>
+	                            			<goal>dropAll</goal>
+	                            		</goals>
+	                            	</pluginExecutionFilter>
+	                            	<action>
+	                            		<ignore></ignore>
+	                            	</action>
 	                            </pluginExecution>
 	                        </pluginExecutions>
 	                    </lifecycleMappingMetadata>

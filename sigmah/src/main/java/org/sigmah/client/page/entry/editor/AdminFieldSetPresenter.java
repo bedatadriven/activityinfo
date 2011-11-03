@@ -307,11 +307,15 @@ public class AdminFieldSetPresenter {
         if (((bounds == null) != (oldBounds == null) ||
                 ((bounds != null && !bounds.equals(oldBounds))))) {
 
-            boundsName = AdminBoundsHelper.name(bounds, levels, new AdminBoundsHelper.EntityAccessor() {
-                public AdminEntityDTO get(int levelId) {
-                    return selection.get(levelId);
-                }
-            });
+        	if(bounds == null) {
+        		boundsName = null;
+        	} else {
+	            boundsName = AdminBoundsHelper.name(bounds, levels, new AdminBoundsHelper.EntityAccessor() {
+	                public AdminEntityDTO get(int levelId) {
+	                    return selection.get(levelId);
+	                }
+	            });
+        	} 
 
             if (fireEvent && listener != null) {
                 listener.onBoundsChanged(boundsName, bounds);

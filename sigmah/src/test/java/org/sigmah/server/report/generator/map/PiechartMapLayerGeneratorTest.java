@@ -10,7 +10,6 @@ import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.PieMapMarker;
-import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.clustering.NoClustering;
 import org.sigmah.shared.report.model.layers.PiechartMapLayer;
 
@@ -38,8 +37,7 @@ public class PiechartMapLayerGeneratorTest {
 		
 		TiledMap map = new TiledMap(500, 600, new AiLatLng(15.0, 0.0), 6);
 
-		PiechartLayerGenerator gen = new PiechartLayerGenerator(new MapReportElement(), 
-				pcml,
+		PiechartLayerGenerator gen = new PiechartLayerGenerator(pcml, 
 				Arrays.asList(siteData));
 		
 		MapContent mc = new MapContent(); 

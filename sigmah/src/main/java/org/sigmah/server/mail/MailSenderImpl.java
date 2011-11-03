@@ -14,7 +14,7 @@ import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
-import org.sigmah.server.util.LocaleHelper;
+import org.sigmah.server.i18n.LocaleHelper;
 import org.sigmah.server.util.logging.LogException;
 import org.sigmah.server.util.logging.Trace;
 

@@ -21,7 +21,6 @@ import org.sigmah.shared.report.content.MapMarker;
 import org.sigmah.shared.report.content.PieChartLegend;
 import org.sigmah.shared.report.content.PieMapMarker;
 import org.sigmah.shared.report.content.Point;
-import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.MapSymbol;
 import org.sigmah.shared.report.model.PointValue;
 import org.sigmah.shared.report.model.layers.PiechartMapLayer;
@@ -31,12 +30,10 @@ import org.sigmah.shared.util.mapping.Extents;
 
 public class PiechartLayerGenerator extends AbstractLayerGenerator {
 
-    private MapReportElement element;
     private PiechartMapLayer layer;
 	private List<SiteDTO> sites;
 
-    public PiechartLayerGenerator(MapReportElement element, PiechartMapLayer layer, List<SiteDTO> sites) {
-        this.element = element;
+    public PiechartLayerGenerator(PiechartMapLayer layer, List<SiteDTO> sites) {
         this.layer = layer;
         this.sites=sites;
     }
@@ -81,7 +78,7 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
         
         // add unmapped sites
         for(PointValue pv : unmapped) {
-            content.getUnmappedSites().add(pv.site.getId());
+            content.getUnmappedSites().add(pv.getSite().getId());
         }
         
         List<Cluster> clusters = clusterer.cluster(map, points);
@@ -95,7 +92,7 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
 
             sumSlices((PieMapMarker) marker, cluster.getPointValues());
             for(PointValue pv : cluster.getPointValues()) {
-                marker.getSiteIds().add(pv.site.getId());
+                marker.getSiteIds().add(pv.getSite().getId());
             }
             marker.setX(px.getX());
             marker.setY(px.getY());
@@ -180,12 +177,12 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
 
         public boolean intersects(MarkerGraph.Node a, MarkerGraph.Node b) {
             return a.getPoint().distance(b.getPoint()) < radius *2 &&
-                    a.getPointValue().symbol.equals(b.getPointValue().symbol);
+                    a.getPointValue().getSymbol().equals(b.getPointValue().getSymbol());
         }
     }
     
     private void calulateSlices(PointValue pv, SiteDTO site) {
-        pv.slices = new ArrayList<PieMapMarker.SliceValue>();
+        pv.setSlices(new ArrayList<PieMapMarker.SliceValue>());
         
         for(Slice slice : layer.getSlices()) {
             EntityCategory indicatorCategory = new EntityCategory(slice.getIndicatorId());
@@ -198,7 +195,7 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
                 sliceValue.setColor(slice.getColor());
                 sliceValue.setIndicatorId(slice.getIndicatorId());
 
-                pv.slices.add(sliceValue);
+                pv.getSlices().add(sliceValue);
             }
         }
     }
@@ -206,7 +203,7 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
     private void sumSlices(PieMapMarker marker, List<PointValue> pvs) {
         Map<DimensionCategory, PieMapMarker.SliceValue> slices = new HashMap<DimensionCategory, PieMapMarker.SliceValue>();
         for(PointValue pv : pvs ) {
-            for(PieMapMarker.SliceValue slice : pv.slices)  {
+            for(PieMapMarker.SliceValue slice : pv.getSlices())  {
                 PieMapMarker.SliceValue summedSlice = slices.get(slice.getCategory());
                 if(summedSlice == null) {
                     summedSlice = new PieMapMarker.SliceValue(slice);

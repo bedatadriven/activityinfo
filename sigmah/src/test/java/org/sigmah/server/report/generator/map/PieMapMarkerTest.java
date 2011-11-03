@@ -54,7 +54,7 @@ public class PieMapMarkerTest {
 
         TiledMap map = new TiledMap(640, 480, new AiLatLng(0, 0), 6);
 
-        PiechartLayerGenerator generator = new PiechartLayerGenerator(mapElement, layer, sites);
+        PiechartLayerGenerator generator = new PiechartLayerGenerator(layer, sites);
         generator.generate(map, content);
 
         Assert.assertEquals(1, content.getMarkers().size());

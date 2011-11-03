@@ -5,9 +5,6 @@
 
 package org.sigmah.shared.map;
 
-/**
- * @author Alex Bertram (akbertram@gmail.com)
- */
 public abstract class AbstractCoordinateEditor {
 
     protected String posHemiChars;

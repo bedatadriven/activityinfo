@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.easymock.EasyMock;
 import org.junit.Test;
-import org.sigmah.server.domain.Authentication;
+import org.sigmah.server.database.hibernate.entity.Authentication;
 import org.sigmah.shared.Cookies;
 
 import com.google.inject.Provider;

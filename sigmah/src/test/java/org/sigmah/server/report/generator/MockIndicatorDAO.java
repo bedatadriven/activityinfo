@@ -1,7 +1,7 @@
 package org.sigmah.server.report.generator;
 
-import org.sigmah.shared.dao.IndicatorDAO;
-import org.sigmah.shared.domain.Indicator;
+import org.sigmah.server.database.hibernate.dao.IndicatorDAO;
+import org.sigmah.server.database.hibernate.entity.Indicator;
 
 public class MockIndicatorDAO implements IndicatorDAO {
 

@@ -8,7 +8,7 @@ package org.sigmah.shared.dto;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
- * Projection DTO for the {@link org.sigmah.server.domain.ReportSubscription ReportSubscription}
+ * Projection DTO for the {@link org.sigmah.server.database.hibernate.entity.ReportSubscription ReportSubscription}
  * domain class.
  * 
  * A row in a list of users who can be invited to view a report.

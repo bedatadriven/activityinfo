@@ -18,7 +18,7 @@ import org.sigmah.client.event.SiteEvent;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.map.AdminBoundsHelper;
-import org.sigmah.client.map.GcIconFactory;
+import org.sigmah.client.map.GoogleChartsIconBuilder;
 import org.sigmah.client.map.MapApiLoader;
 import org.sigmah.client.map.MapTypeFactory;
 import org.sigmah.client.page.common.Shutdownable;
@@ -353,8 +353,8 @@ public class SiteMap extends ContentPanel implements Shutdownable {
             // so we'll bring in a ringer for the selected site
 
             if (highlitMarker == null) {
-                GcIconFactory iconFactory = new GcIconFactory();
-                iconFactory.primaryColor = "#0000FF";
+                GoogleChartsIconBuilder iconFactory = new GoogleChartsIconBuilder();
+                iconFactory.setPrimaryColor("#0000FF");
                 MarkerOptions opts = MarkerOptions.newInstance();
                 opts.setIcon(iconFactory.createMarkerIcon());
                 highlitMarker = new Marker(marker.getLatLng(), opts);

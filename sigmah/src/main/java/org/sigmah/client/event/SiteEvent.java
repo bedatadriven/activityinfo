@@ -11,7 +11,7 @@ import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.EventType;
 
 /**
- * Encapsulates details for {@link org.sigmah.shared.domain.Site} related events.
+ * Encapsulates details for {@link org.sigmah.server.database.hibernate.entity.Site} related events.
  *
  * @author Alex Bertram
  */

@@ -2,21 +2,9 @@ package org.sigmah.shared.dto;
 
 import java.util.Map;
 
-import org.sigmah.shared.domain.LocationType;
-
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 public class LocationDTO extends BaseModelData implements DTO {
-	private int id;
-    private LocationType locationType;
-	private String name;
-	
-	public LocationDTO(int id, LocationType locationType, String name) {
-		super();
-		this.id = id;
-		this.locationType = locationType;
-		this.name = name;
-	}
 
 	public LocationDTO() {
 	}
@@ -31,14 +19,6 @@ public class LocationDTO extends BaseModelData implements DTO {
 
 	public void setId(int id) {
 		set("id", id);
-	}
-
-	public LocationType getLocationType() {
-		return (LocationType)get("locationType");
-	}
-
-	public void setLocationType(LocationType locationType) {
-		set("locationType", locationType);
 	}
 
 	public String getName() {
