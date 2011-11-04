@@ -21,20 +21,21 @@ public interface MapEditView extends MapView {
     public HandlerRegistration addCoordinatesChangedHandler(CoordinatesChangedHandler handler);
     public HandlerRegistration addMapViewChangedHandler(MapViewChangedHandler handler);
     
-    public interface MarkerMovedHandler extends EventHandler {
+    interface MarkerMovedHandler extends EventHandler {
     	public void onMarkedMoved(MarkerMovedEvent event);
     }
-    public interface CoordinatesChangedHandler extends EventHandler {
+    interface CoordinatesChangedHandler extends EventHandler {
     	public void onCoordinatesChanged(CoordinatesChangedEvent event);
     }
-    public interface MapViewChangedHandler extends EventHandler {
+    interface MapViewChangedHandler extends EventHandler {
     	public void onMapViewChanged(MapViewChangedEvent event);
     }
     
-    public class MarkerMovedEvent extends GwtEvent<MarkerMovedHandler> {
-		public static Type<MarkerMovedHandler> TYPE = new Type<MarkerMovedHandler>();
-    	double my;
-    	double mx;
+    class MarkerMovedEvent extends GwtEvent<MarkerMovedHandler> {
+		public static final Type<MarkerMovedHandler> TYPE = new Type<MarkerMovedHandler>();
+    	
+		private double my;
+    	private double mx;
 		
     	public MarkerMovedEvent(double my, double mx) {
 			this.my = my;

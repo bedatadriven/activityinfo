@@ -16,11 +16,10 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 public class SiteTreeGrid extends EditorTreeGrid<ModelData> {
 
-	public SiteTreeGrid(Dispatcher dispatcher, int activityId) {
+	public SiteTreeGrid(Dispatcher dispatcher) {
 		super(createStore(), createColumnModel());
 		setLoadMask(true); 
 		setStateful(true);
-		//grid.setStateId("site-treeview" + activity.getId());
 		setAutoExpandColumn("name");
 		setClicksToEdit(ClicksToEdit.TWO);
 		
@@ -42,9 +41,6 @@ public class SiteTreeGrid extends EditorTreeGrid<ModelData> {
 		GridSelectionModel<ModelData> sm = new GridSelectionModel<ModelData>();
 		sm.setSelectionMode(SelectionMode.SINGLE);
 		setSelectionModel(sm);
-		
-		 
-
 	}
 
 	public static TreeStore<ModelData> createStore() {
@@ -58,4 +54,6 @@ public class SiteTreeGrid extends EditorTreeGrid<ModelData> {
 		.build();
 
 	}
+	
+	
 }

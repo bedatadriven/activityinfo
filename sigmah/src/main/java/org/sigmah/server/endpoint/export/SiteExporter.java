@@ -43,12 +43,12 @@ import com.extjs.gxt.ui.client.data.SortInfo;
  */
 public class SiteExporter {
 
-    public final DispatcherSync dispatcher;
+    private final DispatcherSync dispatcher;
 
-    public final HSSFWorkbook book;
-    public final CreationHelper creationHelper;
+    private final HSSFWorkbook book;
+    private final CreationHelper creationHelper;
 
-    public HashMap<String, Integer> sheetNames;
+    private HashMap<String, Integer> sheetNames;
 
     private CellStyle dateStyle;
     private CellStyle coordStyle;

@@ -34,8 +34,10 @@ public class ConfigModule extends AbstractModule {
     public Properties provideConfigProperties(ServletContext context) {
         Properties properties = new Properties();
 
+        tryToLoadFrom(properties, legacyWebInfDirectory(context));
         tryToLoadFrom(properties, webInfDirectory(context));
-        tryToLoadFrom(properties, tomcatConfigurationDirectory());
+        tryToLoadFrom(properties, userSettings());
+        
         tryToLoadFromS3(properties);
 
         return properties;
@@ -99,12 +101,15 @@ public class ConfigModule extends AbstractModule {
         }
     }
 
-    private File webInfDirectory(ServletContext context) {
+    private File legacyWebInfDirectory(ServletContext context) {
         return new File(context.getRealPath("WEB-INF") + File.separator + "sigmah.properties");
     }
-
-    private File tomcatConfigurationDirectory() {
-        return  new File(System.getenv("CATALINA_BASE") + File.separator +
-                "conf" + File.separator + "sigmah.properties");
+    
+    private File webInfDirectory(ServletContext context) {
+        return new File(context.getRealPath("WEB-INF") + File.separator + "activityinfo.properties");
+    }
+    
+    private File userSettings() {
+    	return new File(System.getProperty("user.home") + File.separator + ".activityinfo.properties");
     }
 }

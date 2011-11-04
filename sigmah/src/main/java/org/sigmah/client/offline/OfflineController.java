@@ -901,9 +901,9 @@ public class OfflineController implements Dispatcher {
 	}
 
 	private static class CommandRequest {
-		final Command command;
-		final AsyncMonitor monitor;
-		final AsyncCallback callback;
+		private final Command command;
+		private final AsyncMonitor monitor;
+		private final AsyncCallback callback;
 
 		public CommandRequest(Command command, AsyncMonitor monitor,
 				AsyncCallback callback) {
@@ -911,6 +911,10 @@ public class OfflineController implements Dispatcher {
 			this.command = command;
 			this.monitor = monitor;
 			this.callback = callback;
+		}
+
+		public void dispatch(Strategy strategy) {
+			strategy.dispatch(command, monitor, callback);
 		}
 	}
 
@@ -922,8 +926,7 @@ public class OfflineController implements Dispatcher {
 				@Override
 				public void execute() {
 					for (CommandRequest request : requests) {
-						activeStrategy.dispatch(request.command,
-								request.monitor, request.callback);
+						request.dispatch(activeStrategy);
 					}
 				}
 			});

@@ -7,11 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.sigmah.server.authentication.AuthCookieUtil;
-import org.sigmah.server.authentication.PasswordHelper;
 import org.sigmah.server.bootstrap.exception.IncompleteFormException;
 import org.sigmah.server.bootstrap.exception.InvalidKeyException;
 import org.sigmah.server.bootstrap.model.ChangePasswordPageModel;
-import org.sigmah.server.bootstrap.model.ConfirmInvitePageModel;
 import org.sigmah.server.bootstrap.model.InvalidInvitePageModel;
 import org.sigmah.server.database.hibernate.dao.Transactional;
 import org.sigmah.server.database.hibernate.entity.Authentication;
@@ -27,7 +25,7 @@ import freemarker.template.Configuration;
 @Singleton
 public class ChangePasswordController extends AbstractController {
 
-	public static String ENDPOINT = "/changePassword";
+	public static final String ENDPOINT = "/changePassword";
 
 	@Inject
 	public ChangePasswordController(Injector injector, Configuration templateCfg) {
@@ -79,7 +77,7 @@ public class ChangePasswordController extends AbstractController {
     @Transactional
     protected void changePassword(HttpServletRequest request, User user) throws IncompleteFormException {
         String password = getRequiredParameter(request, "password");         
-        user.setHashedPassword(PasswordHelper.hashPassword(password));
+        user.changePassword(password);
         user.clearChangePasswordKey();
         user.setNewUser(false);
     }

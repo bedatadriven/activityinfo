@@ -14,6 +14,10 @@ import com.google.gwt.maps.client.overlay.Icon;
  *     sized and colored marker icons using the Google Charts API marker output.
  */
 public class GoogleChartsIconBuilder {
+	
+	public final static String SHAPE_CIRCLE = "circle";
+	public final static String SHAPE_ROUNDRECT = "roundrect";
+	
 	private int width = 32;
 	private int height = 32;
 	private String primaryColor = "#ff0000";
@@ -23,10 +27,6 @@ public class GoogleChartsIconBuilder {
 	private String label = "";
 	private String labelColor = "#000000";
 	private int labelSize = 0;
-
-
-	public final static String SHAPE_CIRCLE = "circle";
-	public final static String SHAPE_ROUNDRECT = "roundrect";
 
 	private String shape = SHAPE_CIRCLE;
 
@@ -210,5 +210,4 @@ public class GoogleChartsIconBuilder {
 
 		return imageMap;
 	}
-
 }

@@ -5,13 +5,13 @@
 
 package org.sigmah.client.page.entry;
 
+import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.entry.column.ColumnModelBuilder;
-import org.sigmah.client.page.entry.place.ActivityDataEntryPlace;
 import org.sigmah.client.page.entry.place.DataEntryPlace;
-import org.sigmah.client.page.entry.place.DatabaseDataEntryPlace;
+import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.command.result.SiteResult;
@@ -19,14 +19,18 @@ import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
+import org.sigmah.shared.report.model.DimensionType;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.data.BasePagingLoader;
+import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoader;
 import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.event.LoadListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -35,14 +39,15 @@ import com.extjs.gxt.ui.client.widget.grid.EditorGrid.ClicksToEdit;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.tips.QuickTip;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 /** 
- * Displays a list of activity sites 
+ * Displays of sites in a "flat" projection with a paging toolbar.
  */
-public class SiteListPanel extends ContentPanel {
+public class FlatSiteGridPanel extends ContentPanel {
     private final Dispatcher dispatcher;
 	
 	private EditorGrid<SiteDTO> editorGrid;
@@ -51,9 +56,11 @@ public class SiteListPanel extends ContentPanel {
 
     private DataEntryPlace currentPlace = new DataEntryPlace();
     
+    private final AsyncMonitor loadingMonitor = new MaskingAsyncMonitor(this, I18N.CONSTANTS.loading());
+    
     	
     @Inject
-    public SiteListPanel(Dispatcher dispatcher) {
+    public FlatSiteGridPanel(Dispatcher dispatcher) {
     	this.dispatcher = dispatcher;
     	
     	setHeaderVisible(false);
@@ -63,21 +70,9 @@ public class SiteListPanel extends ContentPanel {
     	setBottomComponent(pagingToolBar);
     }
 	
-    public void navigate(DataEntryPlace place) {
+    public void navigate(final DataEntryPlace place) {
     	this.currentPlace = place;
-    	if(place instanceof ActivityDataEntryPlace) {
-    		showActivity(((ActivityDataEntryPlace) place).getActivityId());
-    	} else if(place instanceof DatabaseDataEntryPlace) {
-    		showDatabase(((DatabaseDataEntryPlace) place).getDatabaseId());
-    	}
-	}
-    
-    public void loadAll(SchemaDTO schema) {
-    	initGrid(ColumnModelBuilder.buildForAll(schema));
-    }
-    
-    public void showDatabase(final int databaseId) {
-    	dispatcher.execute(new GetSchema(), new MaskingAsyncMonitor(this, I18N.CONSTANTS.loading()), new AsyncCallback<SchemaDTO>() {
+    	dispatcher.execute(new GetSchema(), loadingMonitor, new AsyncCallback<SchemaDTO>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -86,52 +81,45 @@ public class SiteListPanel extends ContentPanel {
 
 			@Override
 			public void onSuccess(SchemaDTO result) {
-				showDatabase(result.getDatabaseById(databaseId));
+		    	Filter filter = place.getFilter();
+				if(filter.isDimensionRestrictedToSingleCategory(DimensionType.Activity)) {
+		    		showActivity( result.getActivityById( filter.getRestrictedCategory(DimensionType.Activity)) );
+		    	} else if(filter.isDimensionRestrictedToSingleCategory(DimensionType.Database)) {
+		    		showDatabase( result.getDatabaseById( filter.getRestrictedCategory(DimensionType.Activity)) );
+		    	} else {
+		    		showAll(result);
+		    	}
 			}
     	});
+	}
+
+    public void loadAll(SchemaDTO schema) {
+    	initGrid(ColumnModelBuilder.buildForAll(schema));
     }
     
     public void showDatabase(UserDatabaseDTO database) {
     	initGrid(ColumnModelBuilder.buildForDatabase(database));
     }
     
-    public void showActivity(final int activityId) {
-    	dispatcher.execute(new GetSchema(), new MaskingAsyncMonitor(this, I18N.CONSTANTS.loading()), new AsyncCallback<SchemaDTO>() {
-
-			@Override
-			public void onFailure(Throwable arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void onSuccess(SchemaDTO schema) {
-				showActivity(schema.getActivityById(activityId));
-			}
-    	});
-    }
-    
     public void showActivity(ActivityDTO activity) {
     	initGrid(ColumnModelBuilder.buildForActivity(activity));
     }
-//
-//    public void setSelection(int siteId) {
-//        for(int r=0; r!=listStore.getCount(); ++r) {
-//            if(listStore.getAt(r).getId() == siteId) {
-//            	this.currentSite=listStore.getAt(r);
-//            	editorGrid.getView().ensureVisible(r, 0, false);
-//                if(editorGrid.getSelectionModel() instanceof CellSelectionModel) {
-//                    ((CellSelectionModel) editorGrid.getSelectionModel()).selectCell(r, 0);                	
-//                } else {
-//                	editorGrid.getSelectionModel().setSelection(Collections.singletonList(listStore.getAt(r)));
-//                }
-//            }
-//        }
-//    }
-
+    
+    public void showAll(SchemaDTO schema) {
+    	initGrid(ColumnModelBuilder.buildForAll(schema));
+    }
+    
 	private void initGrid(ColumnModel columnModel) {
 		
 		PagingLoader<PagingLoadResult<SiteDTO>> loader = new BasePagingLoader<PagingLoadResult<SiteDTO>>(new SiteProxy());
+		loader.addLoadListener(new LoadListener() {
+
+			@Override
+			public void loaderLoadException(LoadEvent le) {
+				Log.debug("Exception thrown during load of FlatSiteGrid: ", le.exception);
+			}
+			
+		});
 		pagingToolBar.bind(loader);
 		listStore = new ListStore<SiteDTO>(loader);
     	
@@ -140,11 +128,14 @@ public class SiteListPanel extends ContentPanel {
 	    	editorGrid.setLoadMask(true);
 	    	editorGrid.setStateful(true);
 			editorGrid.setClicksToEdit(ClicksToEdit.TWO);
+			editorGrid.setStripeRows(true);
 
 	    	GridSelectionModel<SiteDTO> sm = new GridSelectionModel<SiteDTO>();
 	        sm.setSelectionMode(SelectionMode.SINGLE);
 	        editorGrid.setSelectionModel(sm);
-
+	        
+	        QuickTip quickTip = new QuickTip(editorGrid);
+	        
 	        add(editorGrid, new BorderLayoutData(Style.LayoutRegion.CENTER));
 	        layout();
 
@@ -181,6 +172,4 @@ public class SiteListPanel extends ContentPanel {
 			});
 		}
 	}
-
-
 }

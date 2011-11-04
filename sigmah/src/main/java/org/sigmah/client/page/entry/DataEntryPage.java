@@ -31,7 +31,7 @@ public class DataEntryPage extends LayoutContainer  implements Page {
 
 	private final Dispatcher dispatcher;
 	
-	private NavigationPanel filterPanel;
+	private NavigationPanel databasePanel;
 	private SiteGridPanel gridPanel;
 	
 	
@@ -41,12 +41,12 @@ public class DataEntryPage extends LayoutContainer  implements Page {
 		
 		setLayout(new BorderLayout());
 		
-		filterPanel = new NavigationPanel(eventBus, new DataEntryNavigator(dispatcher));
+		databasePanel = new NavigationPanel(eventBus, new DataEntryNavigator(dispatcher));
 		BorderLayoutData filterLayout = new BorderLayoutData(LayoutRegion.WEST);
 		filterLayout.setCollapsible(true);
 		filterLayout.setMargins(new Margins(0,5,0,0));
 		filterLayout.setSplit(true);
-		add(filterPanel, filterLayout);
+		add(databasePanel, filterLayout);
 		
 		gridPanel = new SiteGridPanel(dispatcher);
 		add(gridPanel, new BorderLayoutData(LayoutRegion.CENTER));

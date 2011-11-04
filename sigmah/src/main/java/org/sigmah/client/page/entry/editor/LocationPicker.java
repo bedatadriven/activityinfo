@@ -9,6 +9,8 @@ import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.client.page.entry.admin.AdminComboBoxSet;
+import org.sigmah.client.page.entry.admin.AdminFieldSetPresenter;
 import org.sigmah.client.page.entry.editor.LocationListView.LocationSelectListener;
 import org.sigmah.client.page.entry.editor.NewLocationFieldSet.NewLocationPresenter;
 import org.sigmah.shared.command.AddLocation;
@@ -71,7 +73,7 @@ public class LocationPicker
 	private MapPresenter mapPresenter; 
 
 	private AdminFieldSetPresenter adminPresenter;
-	private AdminFieldSet adminFieldSet;
+	private AdminComboBoxSet adminFieldSet;
 	private NewLocationFieldSet fieldsetNewLocation;
 	private Window windowAddLocation;
 
@@ -199,28 +201,28 @@ public class LocationPicker
     }
 
 	private void createPresenters() {
-		adminPresenter = new AdminFieldSetPresenter(service, currentActivity, adminFieldSet);
-		mapPresenter = new MapPresenter(map);
-        adminPresenter.setListener(new AdminFieldSetPresenter.Listener() {
-            @Override
-            public void onBoundsChanged(String name, BoundingBoxDTO bounds) {
-                mapPresenter.setBounds(name, bounds);
-            }
-
-            @Override
-            public void onModified() {
-            	getLocations();
-            }
-        });
+//		adminPresenter = new AdminFieldSetPresenter(service, currentActivity, adminFieldSet);
+//		mapPresenter = new MapPresenter(map);
+//        adminPresenter.setListener(new AdminFieldSetPresenter.Listener() {
+//            @Override
+//            public void onBoundsChanged(String name, BoundingBoxDTO bounds) {
+//                mapPresenter.setBounds(name, bounds);
+//            }
+//
+//            @Override
+//            public void onModified() {
+//            	getLocations();
+//            }
+//        });
 	}
 
 	private void createAdminFieldSet() {
 		VBoxLayoutData dataAdminFields = new VBoxLayoutData();
 		dataAdminFields.setMargins(new Margins(5,2,5,2));
-		adminFieldSet = new AdminFieldSet(currentActivity);
-		adminFieldSet.setBorders(false);
-		adminFieldSet.setHeight("50px");
-		add(adminFieldSet, dataAdminFields);
+//		adminFieldSet = new AdminComboBoxSet(currentActivity);
+//		adminFieldSet.setBorders(false);
+//		adminFieldSet.setHeight("50px");
+//		add(adminFieldSet, dataAdminFields);
 	}
 
 	private void createLocationsAndMapContainer() {
@@ -301,30 +303,23 @@ public class LocationPicker
 		leftContainer.add(locations, vbldExistingLocations);
 	}
 
-	public Map<String, Object> getChanges() {
-		return adminPresenter.getChangeMap();
-	}
-
-	public boolean isDirty() {
-		return adminPresenter.isDirty();
-	}
 
 	public Map<String, Object> getAllValues() {
-		return adminPresenter.getChangeMap();
+		return null; //return adminPresenter.getChangeMap();
 	}
 
 	public void setSite(SiteDTO site) {
 		this.site=site;
-		adminPresenter.setSite(site);
+		adminPresenter.setSelection(site);
 	}
 	
 	/** Called by view(s) when adding a new location */
 	@Override
 	public void onAdd(final LocationDTO2 lcoation) {
 		// Ensure AdminEntities are set
-		for (Entry<Integer, AdminEntityDTO> property : adminPresenter.getPropertyMapById().entrySet()) {
-			lcoation.setAdminEntity(property.getKey(), property.getValue());
-		}
+//		for (Entry<Integer, AdminEntityDTO> property : adminPresenter.getPropertyMapById().entrySet()) {
+//			lcoation.setAdminEntity(property.getKey(), property.getValue());
+//		}
 		// Ensure locationType is set
 		lcoation.setLocationTypeId(1);
 		service.execute(new AddLocation().setLocation(lcoation), fieldsetNewLocation.getMonitor(), new AsyncCallback<CreateResult>() {

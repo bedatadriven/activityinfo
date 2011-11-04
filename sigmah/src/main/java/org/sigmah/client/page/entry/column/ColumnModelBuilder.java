@@ -38,8 +38,8 @@ public class ColumnModelBuilder {
     		.maybeAddDateColumn(activity)
     		.maybeAddPartnerColumn(activity.getDatabase())
     		.maybeAddProjectColumn(activity.getDatabase())
-    		.maybeAddLocationColumns(activity)
     		.addAdminLevelColumns(activity)
+    		.maybeAddLocationColumns(activity)
     		.build();
      }
     
@@ -159,14 +159,14 @@ public class ColumnModelBuilder {
 	
 	public ColumnModelBuilder maybeAddLocationColumns(ActivityDTO activity) {
 		if(activity.getLocationType().getBoundAdminLevelId() == null) {
-			addLocationColumn();
-			columns.add(new ReadTextColumn("locationAxe", I18N.CONSTANTS.axe(), 100));
+	        ReadTextColumn column = new ReadTextColumn("locationName", activity.getLocationType().getName(), 100);
+	        column.setRenderer(new LocationColumnRenderer());
+			columns.add(column);
         }
 		return this;
 	}
 	
 	public ColumnModelBuilder addLocationColumn() {
-        columns.add(new ReadTextColumn("locationName", I18N.CONSTANTS.location(), 100));
         return this;
 	}
 
@@ -175,9 +175,9 @@ public class ColumnModelBuilder {
 	}
 
 	public ColumnModelBuilder addAdminLevelColumns(List<AdminLevelDTO> adminLevels) {
-		for (AdminLevelDTO level : adminLevels) {
-            columns.add(new ColumnConfig(level.getPropertyName(), level.getName(), 75));
-        }
+		ColumnConfig admin = new ColumnConfig("admin", I18N.CONSTANTS.location(), 100);
+		admin.setRenderer(new AdminColumnRenderer(adminLevels));
+		columns.add(admin);
 		return this;
 	}
 	

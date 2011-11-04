@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.sigmah.server.authentication.AuthCookieUtil;
-import org.sigmah.server.authentication.PasswordHelper;
 import org.sigmah.server.bootstrap.exception.IncompleteFormException;
 import org.sigmah.server.bootstrap.exception.InvalidKeyException;
 import org.sigmah.server.bootstrap.model.ConfirmInvitePageModel;
@@ -90,7 +89,7 @@ public class ConfirmInviteController extends AbstractController {
         user.setName(name);
         user.setLocale(locale);
          
-        user.setHashedPassword(PasswordHelper.hashPassword(password));
+        user.changePassword(password);
         user.clearChangePasswordKey();
         user.setNewUser(false);
     }

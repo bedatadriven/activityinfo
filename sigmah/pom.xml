@@ -243,6 +243,12 @@
             <artifactId>krysalis-jCharts</artifactId>
             <version>1.0.0-alpha-1</version>
         </dependency>
+        
+        <dependency>
+        	<groupId>org.mindrot.bcrypt</groupId>
+        	<artifactId>bcrypt</artifactId>
+        	<version>0.3</version>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -535,7 +541,6 @@
                         </goals>
                         <configuration>
                             <logLevel>ALL</logLevel>
-                            <generateDirectory>${basedir}/src/main/java</generateDirectory>
                             <i18nConstantsBundle>org.sigmah.client.i18n.UIConstants</i18nConstantsBundle>
                         </configuration>
                     </execution>

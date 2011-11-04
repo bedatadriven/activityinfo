@@ -5,6 +5,7 @@
 
 package org.sigmah.server.authentication;
 
+import org.mindrot.bcrypt.BCrypt;
 import org.sigmah.server.database.hibernate.entity.User;
 
 /**

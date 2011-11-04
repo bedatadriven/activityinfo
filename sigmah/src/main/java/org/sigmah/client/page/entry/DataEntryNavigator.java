@@ -15,8 +15,7 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.nav.Link;
 import org.sigmah.client.page.common.nav.Navigator;
-import org.sigmah.client.page.entry.place.ActivityDataEntryPlace;
-import org.sigmah.client.page.entry.place.DatabaseDataEntryPlace;
+import org.sigmah.client.page.entry.place.DataEntryPlace;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.SchemaDTO;
@@ -35,26 +34,32 @@ public class DataEntryNavigator implements Navigator {
         this.service = service;
     }
 
-    public boolean hasChildren(Link parent) {
+    @Override
+	public boolean hasChildren(Link parent) {
         return parent.getChildCount() != 0;
     }
 
-    public String getHeading() {
-        return I18N.CONSTANTS.activities();
+    @Override
+	public String getHeading() {
+        return I18N.CONSTANTS.databases();
     }
 
-    public String getStateId() {
+    @Override
+	public String getStateId() {
         return "entryNavPanel";
     }
 
-    public void load(DataReader<List<Link>> dataReader, Object parent, final AsyncCallback<List<Link>> callback) {
+    @Override
+	public void load(DataReader<List<Link>> dataReader, Object parent, final AsyncCallback<List<Link>> callback) {
         if (parent == null) {
             service.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
-                public void onFailure(Throwable caught) {
+                @Override
+				public void onFailure(Throwable caught) {
                     callback.onFailure(caught);
                 }
 
-                public void onSuccess(SchemaDTO schema) {
+                @Override
+				public void onSuccess(SchemaDTO schema) {
                     List<Link> list = buildTree(schema);
                     callback.onSuccess(list);
                 }
@@ -74,7 +79,7 @@ public class DataEntryNavigator implements Navigator {
         for (UserDatabaseDTO db : schema.getDatabases()) {
             if (db.getActivities().size() != 0) {
 
-                Link dbLink = Link.to(new DatabaseDataEntryPlace(db))
+                Link dbLink = Link.to(new DataEntryPlace(db))
                         .labeled(db.getName())
                 		.usingKey(databaseKey(db))
                         .withIcon(IconImageBundle.ICONS.database())
@@ -84,7 +89,7 @@ public class DataEntryNavigator implements Navigator {
                 for (ActivityDTO activity : db.getActivities()) {
 
                     Link actLink = Link
-                            .to(new ActivityDataEntryPlace(activity))
+                            .to(new DataEntryPlace(activity))
                             .labeled(activity.getName())
                             .withIcon(IconImageBundle.ICONS.table()).build();
 

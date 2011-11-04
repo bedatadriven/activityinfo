@@ -36,6 +36,13 @@ public final class AdminLevelDTO extends BaseModelData implements DTO {
         setParentLevelId(parentId);
         setName(name);
     }
+    
+    public AdminLevelDTO(int id, AdminLevelDTO parent, String name) {
+        super();
+        setId(id);
+        setParentLevelId(parent.getId());
+        setName(name);
+    }
 
     /**
      * Sets the id of this AdminLevel
@@ -121,6 +128,11 @@ public final class AdminLevelDTO extends BaseModelData implements DTO {
 
 	public int getCountryId() {
 		return (Integer)get("countryId");
+	}
+	
+	@Override
+	public String toString() {
+		return getName();
 	}
 
 }

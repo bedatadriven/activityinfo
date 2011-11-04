@@ -25,7 +25,7 @@ import com.google.common.collect.Maps;
  *
  * @author Alex Bertram
  */
-public class SiteDTO extends BaseModelData implements EntityDTO {
+public class SiteDTO extends BaseModelData implements EntityDTO, HasAdminEntityValues {
 
 	
     public static final String ENTITY_NAME = "Site";
@@ -225,6 +225,7 @@ public class SiteDTO extends BaseModelData implements EntityDTO {
 		set(AdminLevelDTO.getPropertyName(levelId), value);
 	}
 
+	@Override
 	public AdminEntityDTO getAdminEntity(int levelId) {
 		return get(AdminLevelDTO.getPropertyName(levelId));
 	}

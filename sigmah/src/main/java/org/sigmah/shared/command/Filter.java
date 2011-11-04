@@ -133,6 +133,10 @@ public class Filter implements Serializable {
 		return set != null && !set.isEmpty();
 	}
 	
+	public boolean isNull() {
+		return restrictions.isEmpty() && !isDateRestricted();
+	}
+	
 	public boolean hasRestrictions() {
 		return !restrictions.isEmpty();
 	}
@@ -179,6 +183,26 @@ public class Filter implements Serializable {
 		this.isOr = isOr;
 	}
 
+	public boolean isDimensionRestrictedToSingleCategory(DimensionType type) {
+		return getRestrictions(DimensionType.Activity).size() == 1;
+	}
+	
+	/**
+	 * 
+	 * @param activity
+	 * @return
+	 * @throws UnsupportedOperationException if the dimension is not restricted to exactly one category
+	 */
+	public int getRestrictedCategory(DimensionType type) {
+		Set<Integer> ids = getRestrictions(type);
+		if(ids.size() != 1) {
+			throw new UnsupportedOperationException("Cannot return a unique category, the dimension " + type + " is restricted to " +
+					ids.size()  + " categories");
+		}
+		return ids.iterator().next();
+	}
+
+	
 	@XmlElement
     public DateRange getDateRange() {
         if(dateRange == null) {
@@ -256,7 +280,5 @@ public class Filter implements Serializable {
 		return getDateRange().equals(other.getDateRange()) &&
 				getRestrictions().equals(other.getRestrictions());
 	}
-
-    
 
 }

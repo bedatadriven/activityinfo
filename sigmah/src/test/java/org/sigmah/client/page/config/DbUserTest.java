@@ -13,7 +13,6 @@ import static org.easymock.EasyMock.verify;
 import org.junit.Assert;
 import org.junit.Test;
 import org.sigmah.client.mock.DispatcherStub;
-import org.sigmah.client.mock.DummyData;
 import org.sigmah.client.mock.MockEventBus;
 import org.sigmah.client.mock.StateManagerStub;
 import org.sigmah.client.page.common.toolbar.UIActions;
@@ -21,6 +20,7 @@ import org.sigmah.shared.command.GetUsers;
 import org.sigmah.shared.command.UpdateUserPermissions;
 import org.sigmah.shared.command.result.UserResult;
 import org.sigmah.shared.command.result.VoidResult;
+import org.sigmah.shared.dto.DTOs;
 import org.sigmah.shared.dto.SchemaDTO;
 
 import com.extjs.gxt.ui.client.store.Record;
@@ -35,8 +35,8 @@ public class DbUserTest {
 
 
         // Test Data
-        UserResult users = DummyData.RRM_Users();
-        SchemaDTO schema = DummyData.PEAR();
+        UserResult users = DTOs.RRM_Users();
+        SchemaDTO schema = DTOs.PEAR();
 
         // Collaborator: command service
         DispatcherStub service = new DispatcherStub();
@@ -70,8 +70,8 @@ public class DbUserTest {
 
 
         // Test Data
-        UserResult users = DummyData.RRM_Users();
-        SchemaDTO schema = DummyData.PEAR();
+        UserResult users = DTOs.RRM_Users();
+        SchemaDTO schema = DTOs.PEAR();
 
         // Collaborator: command service
         DispatcherStub service = new DispatcherStub();
@@ -105,8 +105,8 @@ public class DbUserTest {
 
 
         // Test Data
-        UserResult users = DummyData.RRM_Users();
-        SchemaDTO schema = DummyData.PEAR();
+        UserResult users = DTOs.RRM_Users();
+        SchemaDTO schema = DTOs.PEAR();
 
         // Collaborator: command service
         DispatcherStub service = new DispatcherStub();

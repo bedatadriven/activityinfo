@@ -6,7 +6,6 @@
 package org.sigmah.client.page.map;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.sigmah.client.dispatch.Dispatcher;
@@ -17,14 +16,11 @@ import org.sigmah.client.map.IconFactory;
 import org.sigmah.client.map.MapApiLoader;
 import org.sigmah.client.map.MapTypeFactory;
 import org.sigmah.shared.command.GenerateElement;
-import org.sigmah.shared.command.GetBaseMaps;
 import org.sigmah.shared.command.GetSchema;
-import org.sigmah.shared.command.result.BaseMapResult;
 import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.map.BaseMap;
-import org.sigmah.shared.map.TileBaseMap;
 import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.BubbleMapMarker;
 import org.sigmah.shared.report.content.IconMapMarker;
@@ -83,8 +79,8 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
     private LatLngBounds pendingZoom = null;
 	private SchemaDTO schema;
 
-    private Map<Overlay, MapMarker> overlays = new HashMap<Overlay, MapMarker>();
-    private Status statusWidget;
+    private final Map<Overlay, MapMarker> overlays = new HashMap<Overlay, MapMarker>();
+    private final Status statusWidget;
 
     // A map rendered serverside for reporting usage
     private MapReportElement mapReportElement = new MapReportElement();

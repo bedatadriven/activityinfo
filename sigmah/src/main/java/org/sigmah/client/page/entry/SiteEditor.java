@@ -16,7 +16,6 @@ import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.common.grid.GridPresenter;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.page.entry.editor.PrintDataEntryForm;
-import org.sigmah.client.page.entry.place.ActivityDataEntryPlace;
 import org.sigmah.client.page.entry.place.DataEntryPlace;
 import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.BatchCommand;
@@ -127,23 +126,25 @@ public class SiteEditor extends AbstractSiteEditor implements Page, GridPresente
 
 	@Override
     public boolean navigate(final PageState place) {
-        if (!(place instanceof ActivityDataEntryPlace)) {
-            return false;
-        }
-
-        final ActivityDataEntryPlace gridPlace = (ActivityDataEntryPlace) place;
-
-        if (currentActivity.getId() != gridPlace.getActivityId()) {
-            return false;
-        }
-        this.place=gridPlace;
-
-        handleGridNavigation(pagingCmdLoader, gridPlace);
-
-        return true;
+//        if (!(place instanceof DataEntryPlace)) {
+//            return false;
+//        }
+//
+//        final DataEntryPlace gridPlace = (DataEntryPlace) place;
+//
+//        if (currentActivity.getId() != gridPlace.getActivityId()) {
+//            return false;
+//        }
+//        this.place=gridPlace;
+//
+//        handleGridNavigation(pagingCmdLoader, gridPlace);
+//
+//        return true;
+		return false;
     }
 
-    protected void onLoaded(LoadEvent le) {
+    @Override
+	protected void onLoaded(LoadEvent le) {
         super.onLoaded(le);
 
         PagingResult result = (PagingResult) le.getData();
@@ -151,7 +152,7 @@ public class SiteEditor extends AbstractSiteEditor implements Page, GridPresente
         view.setActionEnabled(UIActions.export, result.getTotalLength() != 0);
 
         // Let everyone else know we have navigated
-        firePageEvent(new ActivityDataEntryPlace(currentActivity), le);
+        firePageEvent(new DataEntryPlace(currentActivity), le);
 
         // Select a site
         if (siteIdToSelectOnNextLoad != null) {
@@ -217,11 +218,13 @@ public class SiteEditor extends AbstractSiteEditor implements Page, GridPresente
     @Override
     protected void onDeleteConfirmed(final SiteDTO site) {
         service.execute(new Delete(site), view.getDeletingMonitor(), new AsyncCallback<VoidResult>() {
-            public void onFailure(Throwable caught) {
+            @Override
+			public void onFailure(Throwable caught) {
 
             }
 
-            public void onSuccess(VoidResult result) {
+            @Override
+			public void onSuccess(VoidResult result) {
                 listStore.remove(site);
             }
         });
