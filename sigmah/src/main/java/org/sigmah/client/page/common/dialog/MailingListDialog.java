@@ -5,11 +5,9 @@ import java.util.List;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.shared.command.GetUsers;
 import org.sigmah.shared.command.result.UserResult;
 import org.sigmah.shared.dto.UserPermissionDTO;
-
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -62,12 +60,12 @@ public class MailingListDialog extends Window {
 		});
 	}
 
+		
 	private void createTextField() {
 		emailsTextField = new TextArea();
 		emailsTextField.setHeight("175px");
 		emailsTextField.setWidth("250px");
 		emailsTextField.selectAll();
-
 		add(emailsTextField);
 	}
 
@@ -102,28 +100,5 @@ public class MailingListDialog extends Window {
 		return emails.toString();
 
 	}
-
-	native void copy_to_clipboard(String text) /*-{
-		alert('The text is copied to your clipboard...');
-		if (window.clipboardData) {
-			window.clipboardData.setData('text', text);
-		} else {
-			var clipboarddiv = document.getElementById('divclipboardswf');
-			if (!clipboarddiv) {
-				clipboarddiv = document.createElement('div');
-				clipboarddiv.setAttribute("name", "divclipboardswf");
-				clipboarddiv.setAttribute("id", "divclipboardswf");
-				document.body.appendChild(clipboarddiv);
-				alert('4');
-			}
-			alert('5');
-			clipboarddiv.innerHTML = '<embed src="/ActivityInfo/image/clipboard.swf" FlashVars="clipboard='
-					+ encodeURIComponent(text)
-					+ '" width="0" height="0" type="application/x-shockwave-flash"></embed>';
-
-			alert('clipboarddiv.innerHTML>> ' + clipboarddiv.innerHTML);
-		}
-		alert('The text is copied to your clipboard...');
-	}-*/;
 
 }
