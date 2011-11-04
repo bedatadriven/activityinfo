@@ -24,7 +24,7 @@ public class AuthTokenUtil {
         // Since BootstrapScriptServlet relies on the token to select the
         // appropriate locale, without the cookie set, trying to retrieve
         // the latest manifest will fail
-        Cookies.setCookie(org.sigmah.shared.Cookies.AUTH_TOKEN_COOKIE, auth.getAuthToken(), oneYearLater()  );
+        Cookies.setCookie(org.sigmah.shared.auth.AuthenticatedUser.AUTH_TOKEN_COOKIE, auth.getAuthToken(), oneYearLater()  );
     }
 
     private static Date oneYearLater() {

@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.easymock.EasyMock;
 import org.junit.Test;
 import org.sigmah.server.database.hibernate.entity.Authentication;
-import org.sigmah.shared.Cookies;
+import org.sigmah.shared.auth.AuthenticatedUser;
 
 import com.google.inject.Provider;
 
@@ -65,7 +65,7 @@ public class SelectionServletTest {
 		replay(provider);
 		
 		Cookie[] cookies = new Cookie[] { 
-				new Cookie(Cookies.AUTH_TOKEN_COOKIE, "badtoken")		
+				new Cookie(AuthenticatedUser.AUTH_TOKEN_COOKIE, "badtoken")		
 		};
 
 		URL permutationMap = getClass().getResource("permutations");

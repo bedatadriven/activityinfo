@@ -14,8 +14,8 @@ import javax.servlet.ServletException;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.sigmah.server.Cookies;
 import org.sigmah.server.bootstrap.model.HostPageModel;
+import org.sigmah.shared.auth.AuthenticatedUser;
 
 public class HostControllerTest extends ControllerTestCase {
 
@@ -35,7 +35,7 @@ public class HostControllerTest extends ControllerTestCase {
 
     @Test
     public void verifyThatRequestWithValidAuthTokensReceiveTheView() throws IOException, ServletException {
-        req.addCookie(Cookies.AUTH_TOKEN_COOKIE, GOOD_AUTH_TOKEN);
+        req.addCookie(AuthenticatedUser.AUTH_TOKEN_COOKIE, GOOD_AUTH_TOKEN);
 
         get();
 
@@ -44,7 +44,7 @@ public class HostControllerTest extends ControllerTestCase {
 
     @Test
     public void verifyThatRequestWithFakeAuthTokensAreRedirectedToLogin() throws IOException, ServletException {
-        req.addCookie(Cookies.AUTH_TOKEN_COOKIE, BAD_AUTH_TOKEN);
+        req.addCookie(AuthenticatedUser.AUTH_TOKEN_COOKIE, BAD_AUTH_TOKEN);
 
         get();
 
